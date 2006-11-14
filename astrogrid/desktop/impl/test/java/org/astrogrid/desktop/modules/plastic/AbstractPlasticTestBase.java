@@ -18,6 +18,7 @@ import org.astrogrid.acr.system.RmiServer;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.common.namegen.InMemoryNameGen;
 import org.astrogrid.common.namegen.NameGen;
+import org.astrogrid.desktop.modules.system.UIInternal;
 
 import EDU.oswego.cs.dl.util.concurrent.DirectExecutor;
 import EDU.oswego.cs.dl.util.concurrent.Executor;
@@ -30,6 +31,10 @@ public class AbstractPlasticTestBase extends TestCase {
 	protected static final URI SENDER_ID = URI.create("ivo://junit");
 
 
+    protected UIInternal ui; //TODO fill in with something
+    
+    protected String version = "test";
+    
 	protected Executor executor;
 
 	protected NameGen idGenerator;

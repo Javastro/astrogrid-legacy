@@ -14,6 +14,7 @@ import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.RmiServer;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.common.namegen.InMemoryNameGen;
+import org.astrogrid.desktop.modules.system.UIInternal;
 import org.votech.plastic.CommonMessageConstants;
 import org.votech.plastic.HubMessageConstants;
 import org.votech.plastic.PlasticHubListener;
@@ -123,7 +124,11 @@ public class RMIListenerUnitTest extends AbstractPlasticBaseNotDeaf {
             }
             
         };
-        PlasticHubImpl impl = new PlasticHubImpl(executor , idGenerator,   rmi, web, new PrettyPrinterImpl(null), config);
+        
+        UIInternal ui = null; //TODO something sensible?
+        String version = "test";
+        
+        PlasticHubImpl impl = new PlasticHubImpl(version, ui, executor , idGenerator,   rmi, web, new PrettyPrinterImpl(null), config);
         final MessageHandler internalhandler = new StandardHandler("Astro Runtime","description","ivo://foo","http://news.bbc.co.uk",PlasticListener.CURRENT_VERSION);
         impl.registerSelf("Astro Runtime", internalhandler.getHandledMessages(), new PlasticListener() {
            public Object perform(URI arg0, URI arg1, List arg2) {

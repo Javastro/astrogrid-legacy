@@ -12,8 +12,8 @@ import org.votech.plastic.PlasticHubListener;
 import org.votech.plastic.incoming.handlers.ExtendableHandler;
 import org.votech.plastic.incoming.handlers.MessageHandler;
 import org.votech.plastic.incoming.messages.hub.ApplicationChangeListener;
-import org.votech.plastic.incoming.messages.hub.ApplicationRegisteredMessage;
-import org.votech.plastic.incoming.messages.hub.ApplicationUnregisteredMessage;
+import org.votech.plastic.incoming.messages.hub.ApplicationRegisteredMessageInvoker;
+import org.votech.plastic.incoming.messages.hub.ApplicationUnregisteredMessageInvoker;
 
 import EDU.oswego.cs.dl.util.concurrent.CountDown;
 import EDU.oswego.cs.dl.util.concurrent.Executor;
@@ -52,8 +52,8 @@ public class SlightlyStressfulIntegrationTest extends TestCase {
             public AppRegisteredAwareDecorator(TestPlasticApplication app) {
                 this.core = app;
                 ExtendableHandler handler = new ExtendableHandler();
-                handler.addMessage(new ApplicationRegisteredMessage(this));
-                handler.addMessage(new ApplicationUnregisteredMessage(this));
+                handler.addMessageInvoker(new ApplicationRegisteredMessageInvoker(this));
+                handler.addMessageInvoker(new ApplicationUnregisteredMessageInvoker(this));
                 core.addHandler(handler);
             }
             public URI registerWith(PlasticHubListener hub, String name) {
@@ -71,11 +71,11 @@ public class SlightlyStressfulIntegrationTest extends TestCase {
             }
             
             private int registeredAppsThatIKnowAbout = 0;
-            public void applicationRegistered(String plid) {
+            public void applicationRegistered(URI plid) {
                 // Can't actually do much ... just want to receive the message
                 registeredAppsThatIKnowAbout++; //no need for synch...atomic
             }
-            public void applicationUnregistered(String plid) {
+            public void applicationUnregistered(URI plid) {
                 // Can't actually do much ... just want to receive the message
                 registeredAppsThatIKnowAbout--;
             }

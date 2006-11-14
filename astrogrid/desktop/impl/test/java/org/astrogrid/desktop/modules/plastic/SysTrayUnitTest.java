@@ -62,7 +62,7 @@ public class SysTrayUnitTest extends AbstractPlasticTestBase {
 	}
 
 	private PlasticHubListener getNewHub() {
-		return new PlasticHubImpl(executor, idGenerator,  rmi, web, tray, new PrettyPrinterImpl(browser),config);
+		return new PlasticHubImpl(version, ui, executor, idGenerator,  rmi, web, tray, new PrettyPrinterImpl(browser),config);
 	}
 	
 	public void testPreferenceNotSet() {

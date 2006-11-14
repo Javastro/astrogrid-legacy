@@ -34,7 +34,7 @@ public class BasicUnitTest  extends AbstractPlasticTestBase {
     public void testContructsOK() {
 		File file = new File(System.getProperty("user.home"),".plastic");
 		assertFalse("Plastic file should not exist before test", file.exists());
-		PlasticHubImpl listener = new PlasticHubImpl(executor , idGenerator,  rmi, web, new PrettyPrinterImpl(browser), config);
+		PlasticHubImpl listener = new PlasticHubImpl(version, ui, executor , idGenerator,  rmi, web, new PrettyPrinterImpl(browser), config);
 		listener.start();
         
         pretendHub = new PlasticListener() {
@@ -58,7 +58,7 @@ public class BasicUnitTest  extends AbstractPlasticTestBase {
 	}
 	
 	public void testShutDown() {
-		PlasticHubImpl hub = new PlasticHubImpl(executor , idGenerator,  rmi, web, new PrettyPrinterImpl(browser), config);
+		PlasticHubImpl hub = new PlasticHubImpl(version, ui, executor , idGenerator,  rmi, web, new PrettyPrinterImpl(browser), config);
 		hub.start();
         hub.registerSelf("hub", new Vector(), pretendHub);
 		TestListener2 client = new TestListener2();
