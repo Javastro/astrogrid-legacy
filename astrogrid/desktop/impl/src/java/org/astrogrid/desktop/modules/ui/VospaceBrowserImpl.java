@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowserImpl.java,v 1.13 2006/10/16 14:32:44 pjn3 Exp $
+/*$Id: VospaceBrowserImpl.java,v 1.14 2006/11/14 09:58:36 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -507,7 +507,11 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
                     "<dt>Modified<dd>").append(df.format(m.getModifyDate().getTime())).append(
                     "<dt>Node Ivorn<dd>").append(m.getNodeIvorn());
             if (n.isFile()) {
-                buff.append("<dt>Size<dd>").append(Math.round(m.getSize().longValue() / 1024))
+            	// dave pointed out thiat this shows <1K files as 0 in size.
+                //int sz = Math.round(m.getSize().longValue() / 1024);
+            	float kbs = m.getSize().longValue() / 1024 ;
+            	int sz = kbs < 1 ? 1 : Math.round(kbs);
+				buff.append("<dt>Size<dd>").append(sz)
                         .append(" Kb").append("<dt>Store<dd>").append(m.getContentLocation());
             } else {
                 buff.append("<dt>Children<dd>").append(n.getChildCount());
@@ -745,6 +749,9 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
 /*
  * $Log: VospaceBrowserImpl.java,v $
+ * Revision 1.14  2006/11/14 09:58:36  nw
+ * myspace fixlet.
+ *
  * Revision 1.13  2006/10/16 14:32:44  pjn3
  * Bugs # 1892 and 1896
  * Menu alterred to include File/Edit and close
