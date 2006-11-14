@@ -173,23 +173,29 @@ public final class AdqlTree extends JTree
             
             String html = null ;
             try {
-                 html = ((AdqlNode)value).toHtml( expanded, leaf, this ) ;
+                html = ((AdqlNode)value).toHtml( expanded, leaf, this ) ;
+                //
+                // The following code ensures we draw a tasteful border around any displays
+                // which are multi-lined. Dont like the way it is done, but hopefully this
+                // will be a short-term measure.
+                if( html.indexOf( "<br>") != -1 ) {
+                    ((JLabel)getCellRenderer()).setBorder( BorderFactory.createEtchedBorder() ) ;
+                }
+                else {
+                    ((JLabel)getCellRenderer()).setBorder( BorderFactory.createEmptyBorder() ) ;
+                }          
+                return super.convertValueToText( html, sel, expanded, leaf, row, hasFocus ) ;   
             }
             catch( Exception ex ) {
-                log.debug( "AdqlTree.convertValueToText(): ", ex );
+                log.debug("AdqlTree.convertValueToText():") ;
+                log.debug( "value: " + value.toString() ) ;
+                log.debug( "sel: " + sel ) ;
+                log.debug( "expanded: " + expanded ) ;
+                log.debug( "leaf: " + leaf ) ;
+                log.debug( "row: " + row ) ;
+                log.debug( "hasFocus: " + hasFocus ) ;
+                log.debug( ex );
             }
-            
-            //
-            // The following code ensures we draw a tasteful border around any displays
-            // which are multi-lined. Dont like the way it is done, but hopefully this
-            // will be a short-term measure.
-            if( html.indexOf( "<br>") != -1 ) {
-                ((JLabel)getCellRenderer()).setBorder( BorderFactory.createEtchedBorder() ) ;
-            }
-            else {
-               ((JLabel)getCellRenderer()).setBorder( BorderFactory.createEmptyBorder() ) ;
-            }          
-            return super.convertValueToText( html, sel, expanded, leaf, row, hasFocus ) ;       
         }
         return super.convertValueToText( value, sel, expanded, leaf, row, hasFocus ) ;
     }
@@ -507,8 +513,7 @@ public final class AdqlTree extends JTree
     private String extractAttributeValue( XmlObject xmlObject ) {
         String retVal = null ;
         XmlObject intermediateObject ;         
-        SchemaType type = xmlObject.schemaType() ;
-        String[] attributeName = (String[])AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
+        String[] attributeName = AdqlUtils.getEditableAttributes( xmlObject ) ;
         intermediateObject = AdqlUtils.get( xmlObject, attributeName[0] ) ;
         if( intermediateObject != null )
             retVal = ((SimpleValue)(intermediateObject)).getStringValue() ;
@@ -664,7 +669,8 @@ public final class AdqlTree extends JTree
         private static final int MINIMUM_WIDTH = 100 ;
         Vector listeners = new Vector() ;
         AdqlNode adqlNode ;
-        EnumeratedEditor enumeratedEditor ;
+        EnumeratedAttributeEditor enumeratedAttributeEditor ;
+        EnumeratedElementEditor enumeratedElementEditor ;
         SingletonTextEditor singletonTextEditor ;
         TupleTextEditor tupleTextEditor ;
         CellEditor currentEditor ;
@@ -672,9 +678,12 @@ public final class AdqlTree extends JTree
         
         public AdqlTreeCellEditor( AdqlTreeCellRenderer renderer ) {
             this.renderer = renderer ;
-            enumeratedEditor = new EnumeratedEditor() ;
-            enumeratedEditor.setFont( AdqlTree.this.getFont() ) ;
-            enumeratedEditor.addActionListener( this ) ;
+            enumeratedAttributeEditor = new EnumeratedAttributeEditor() ;
+            enumeratedAttributeEditor.setFont( AdqlTree.this.getFont() ) ;
+            enumeratedAttributeEditor.addActionListener( this ) ;
+            enumeratedElementEditor = new EnumeratedElementEditor() ;
+            enumeratedElementEditor.setFont( AdqlTree.this.getFont() ) ;
+            enumeratedElementEditor.addActionListener( this ) ;
             singletonTextEditor = new SingletonTextEditor() ;
             singletonTextEditor.setFont( AdqlTree.this.getFont() ) ;
             singletonTextEditor.addActionListener( this ) ;
@@ -690,9 +699,13 @@ public final class AdqlTree extends JTree
                                                    , boolean leaf
                                                    , int row ) {
             this.adqlNode = (AdqlNode)value ;
-            if( AdqlUtils.isEnumerated( adqlNode.getSchemaType() ) ) {
-                currentEditor = enumeratedEditor ;
-                enumeratedEditor.setValue() ;
+            if( AdqlUtils.isDrivenByEnumeratedAttribute( adqlNode.getSchemaType() ) ) {
+                currentEditor = enumeratedAttributeEditor ;
+                enumeratedAttributeEditor.setComboValue() ;
+            }
+            else if( AdqlUtils.isDrivenByEnumeratedElement( adqlNode.getSchemaType() ) ) {
+                currentEditor = enumeratedElementEditor ;
+                enumeratedElementEditor.setComboValue() ;
             }
             else if( isTupleEditorRequired( this.adqlNode ) ) {
                 currentEditor = tupleTextEditor ;
@@ -759,127 +772,53 @@ public final class AdqlTree extends JTree
         }
         
         private boolean isTupleEditorRequired( AdqlNode entry ) {
-            String[] names = (String[])AdqlData.EDITABLE.get( entry.getXmlObject().schemaType().getName().getLocalPart() ) ;
+            String[] names = AdqlUtils.getEditableAttributes( entry.getXmlObject() ) ;
             return ( names != null && names.length > 1 ) ;
         }
         
         
-        public class EnumeratedEditor extends JComboBox implements CellEditor {
+        
+        // 
+        // NB: See note to AbstractEnumeratedEditor.
+        public class EnumeratedAttributeEditor extends AbstractEnumeratedEditor {
             
             XmlObject attribObj ;
                     
-            public EnumeratedEditor() {
+            public EnumeratedAttributeEditor() {
                 super() ;
-           //     setKeySelectionManager( new EnumeratedEditor.KeySelectionManager() ) ;
-                setPrototypeDisplayValue( new String( "mmmmmmmmmmmmmmmm" ) ) ;
-                setEditable( true ) ; 
             }
-            
-            public void addCellEditorListener( CellEditorListener l ) {
-                AdqlTreeCellEditor.this.addCellEditorListener( l ) ;
-            }
-            public void cancelCellEditing() {}
-            
-            public Object getCellEditorValue() {
-                setAttributeValue( (String)getSelectedItem() ) ;
-                return adqlNode.getXmlObject();
-            }
-            public boolean isCellEditable(EventObject anEvent) {
-              return true ;
-            }
-            public void removeCellEditorListener(CellEditorListener l) {
-                AdqlTreeCellEditor.this.removeCellEditorListener( l ) ;
-            }
-            public boolean shouldSelectCell(EventObject anEvent) {
-                return true ;
-            }
-            public boolean stopCellEditing() {
-                try {
-                    if( getSelectedItem() == null )
-                        getItemAt( 0 ) ;
-                    return true ;
-                }
-                catch( Exception ex ) {
-                    ;
-                }
-                return false;
-            }
-            
-            public void setValue() {              
+                
+            public void setComboValue() {              
                 DefaultComboBoxModel model = (DefaultComboBoxModel)getModel();
                 model.removeAllElements() ;
                 SchemaType type = adqlNode.getSchemaType() ;
-                String attributeTypeName = (String)AdqlData.ENUMERATED_ATTRIBUTES.get( type.getName().getLocalPart() ) ;
-                SchemaProperty[] properties = type.getAttributeProperties() ;
-                XmlAnySimpleType[] enumeratedValues = null ;
-                for( int i=0; i<properties.length; i++ ) {
-                    if( attributeTypeName.equals( properties[i].getType().getName().getLocalPart() ) ) {
-                        enumeratedValues = properties[i].getType().getEnumerationValues() ;
-                        break ;
-                    }
-                }
-                
-                String[] attributeNames = (String[])AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
+                String enumeratedValues[] = AdqlUtils.getEnumValuesGivenDrivenType( type ) ;                
+                String[] attributeNames = AdqlUtils.getEditableAttributes( type ) ;
                 // Retrieve and remember the attribute object.
                 // This is used when the user has finished editing to set the new value...
                 this.attribObj = AdqlUtils.get( adqlNode.getXmlObject(), attributeNames[0] ) ;
                 String currentValue = ((SimpleValue)(this.attribObj)).getStringValue() ;
-                String comboValue = null ;
                 for( int i=0; i<enumeratedValues.length; i++ ) {
-                    comboValue = enumeratedValues[i].getStringValue() ;
-                    addItem( comboValue ) ;
-                    if( currentValue.equals( comboValue ) ) {
+                    addItem( enumeratedValues[i] ) ;
+                    if( currentValue.equals( enumeratedValues[i] ) ) {
                         setSelectedIndex( i ) ;
                     }
-                }
-                
+                }               
             }
             
-            public void setBounds( Rectangle rectangle ) {
-                super.setBounds( AdqlTreeCellEditor.this.setBounds( rectangle ) ) ;
-            }
-            
-            public void setBounds( int x, int y, int w, int h ) {
-                Rectangle r = AdqlTreeCellEditor.this.setBounds( x, y, w, h ) ;
-                super.setBounds( r.x, r.y, r.width, r.height ) ;
-            }
-            
-            private void setAttributeValue( String value ) {
+            protected void setEnumeratedValue( String value ) {
                 try {
-                    ((SimpleValue)this.attribObj).setStringValue( value ) ;
+                    String enumValue = AdqlUtils.getMasterEnumSynonym( value ) ;
+                    ((SimpleValue)this.attribObj).setStringValue( enumValue ) ;
                 }
                 catch( Exception ex ) {
-                    log.warn( "Failure to set attribut value:", ex ) ;
+                    log.warn( "Failure to set attribute value:", ex ) ;
                 }
   
             }
-
-            public class KeySelectionManager implements JComboBox.KeySelectionManager {
                 
-                public int selectionForKey( char aKey, ComboBoxModel aModel ) {
-                    int index = -1 ;
-                    int move = 0 ;
-                    if( aKey == KeyEvent.VK_UP || aKey == KeyEvent.VK_KP_UP ) {
-                        move = -1 ;
-                    }
-                    else if( aKey == KeyEvent.VK_DOWN || aKey == KeyEvent.VK_KP_DOWN ) {
-                        move = +1 ;
-                    }
-                    else {
-                        return index ;
-                    } 
-                    DefaultComboBoxModel model = (DefaultComboBoxModel)aModel ;
-                    int listSize = model.getSize() ;
-                    index = model.getIndexOf( model.getSelectedItem() ) + move ;
-                    if( index >= listSize )
-                        index = -1 ;
-                    
-                    return index ;
-                }
-                        
-            }
-                
-        } // end of class EnumeratedEditor
+        } // end of class EnumeratedAttributeEditor
+        
         
         public class SingletonTextEditor extends JTextField implements CellEditor {
             
@@ -919,8 +858,8 @@ public final class AdqlTree extends JTree
                     if( adqlNode instanceof AtomNode ) {
                         value = ((AtomNode)adqlNode).formatDisplay() ;
                     }
-                    else if( AdqlUtils.isAttributeDriven( xmlObject.schemaType() ) ) {
-                        String[] attributeNames = (String[])AdqlData.EDITABLE.get( xmlObject.schemaType().getName().getLocalPart() ) ;
+                    else if( AdqlUtils.isAttributeDriven( xmlObject ) ) {
+                        String[] attributeNames = AdqlUtils.getEditableAttributes( xmlObject ) ;
                         XmlObject attribObj = AdqlUtils.get( adqlNode.getXmlObject(), attributeNames[0] ) ;
                         value = ((SimpleValue)(attribObj)).getStringValue() ;
                     }
@@ -961,7 +900,7 @@ public final class AdqlTree extends JTree
                         ((AtomNode)adqlNode).setValue( value ) ;
                     }
                     else if( AdqlUtils.isAttributeDriven( type ) ) {
-                        String[] attributeNames = (String[])AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
+                        String[] attributeNames = AdqlUtils.getEditableAttributes( type ) ;
                         XmlObject attr = AdqlUtils.get( xmlObject, attributeNames[0] ) ;
                         if( value == null || value.trim().length() == 0 ) {
                            // I cannot see any reason for the attribute be optional
@@ -1027,7 +966,7 @@ public final class AdqlTree extends JTree
                 XmlObject xmlObject = adqlNode.getXmlObject() ;
                 XmlObject attribute = null ;
                 try {
-                    String[] attrNames = (String[])AdqlData.EDITABLE.get( xmlObject.schemaType().getName().getLocalPart() ) ;
+                    String[] attrNames = AdqlUtils.getEditableAttributes( xmlObject ) ;
                     for( int i=0; i<attrNames.length; i++ ) {
                         attribute = AdqlUtils.get( xmlObject, attrNames[i] ) ;
                         if( attribute == null ) {
@@ -1057,8 +996,7 @@ public final class AdqlTree extends JTree
                     String newValue = null ;
                     String oldValue = null ;
                     XmlObject element = adqlNode.getXmlObject() ;
-                    XmlObject attribute = null ;
-                    String[] attributeNames = (String[])AdqlData.EDITABLE.get( AdqlUtils.getLocalName( element ) ) ;
+                    String[] attributeNames = AdqlUtils.getEditableAttributes( AdqlUtils.getLocalName( element ) ) ;
                     
                     for( int i=0; i<attributeNames.length; i++ ) {                        
                         boolean bOptional = AdqlUtils.isOptionalAttribute( element, attributeNames[i] ) ;
@@ -1293,6 +1231,135 @@ public final class AdqlTree extends JTree
             }
             
         } // end of class TupleTextEditor
+
+
+        //
+        // NB: The classes AbstractEnumeratedEditor, EnumeratedAttributeEditor and EnumeratedElementEditor
+        // were produced to see whether I could capitalize on commonality. As it turns out, enumerated
+        // attributes and enumerated elements are to all intents and purposes identical, much to my surprize.
+        // For the moment, I'm keeping them rather than collapsing them all into one class, just in case
+        // developments show up the need.
+        //
+        public abstract class AbstractEnumeratedEditor extends JComboBox implements CellEditor {
+                    
+            public AbstractEnumeratedEditor() {
+                super() ;
+           //     setKeySelectionManager( new EnumeratedEditor.KeySelectionManager() ) ;
+                setPrototypeDisplayValue( new String( "mmmmmmmmmmmmmmmm" ) ) ;
+                setEditable( true ) ; 
+            }
+            
+            public void addCellEditorListener( CellEditorListener l ) {
+                AdqlTreeCellEditor.this.addCellEditorListener( l ) ;
+            }
+            public void cancelCellEditing() {}
+            
+            public Object getCellEditorValue() {
+                setEnumeratedValue( (String)getSelectedItem() ) ;
+                return adqlNode.getXmlObject();
+            }
+            public boolean isCellEditable(EventObject anEvent) {
+              return true ;
+            }
+            public void removeCellEditorListener(CellEditorListener l) {
+                AdqlTreeCellEditor.this.removeCellEditorListener( l ) ;
+            }
+            public boolean shouldSelectCell(EventObject anEvent) {
+                return true ;
+            }
+            public boolean stopCellEditing() {
+                try {
+                    if( getSelectedItem() == null )
+                        getItemAt( 0 ) ;
+                    return true ;
+                }
+                catch( Exception ex ) {
+                    ;
+                }
+                return false;
+            }
+            
+            public abstract void setComboValue() ;
+            
+            public void setBounds( Rectangle rectangle ) {
+                super.setBounds( AdqlTreeCellEditor.this.setBounds( rectangle ) ) ;
+            }
+            
+            public void setBounds( int x, int y, int w, int h ) {
+                Rectangle r = AdqlTreeCellEditor.this.setBounds( x, y, w, h ) ;
+                super.setBounds( r.x, r.y, r.width, r.height ) ;
+            }
+            
+            protected abstract void setEnumeratedValue( String value ) ;
+        
+            public class KeySelectionManager implements JComboBox.KeySelectionManager {
+                
+                public int selectionForKey( char aKey, ComboBoxModel aModel ) {
+                    int index = -1 ;
+                    int move = 0 ;
+                    if( aKey == KeyEvent.VK_UP || aKey == KeyEvent.VK_KP_UP ) {
+                        move = -1 ;
+                    }
+                    else if( aKey == KeyEvent.VK_DOWN || aKey == KeyEvent.VK_KP_DOWN ) {
+                        move = +1 ;
+                    }
+                    else {
+                        return index ;
+                    } 
+                    DefaultComboBoxModel model = (DefaultComboBoxModel)aModel ;
+                    int listSize = model.getSize() ;
+                    index = model.getIndexOf( model.getSelectedItem() ) + move ;
+                    if( index >= listSize )
+                        index = -1 ;
+                    
+                    return index ;
+                }
+                        
+            }
+                
+        } // end of class AbstractEnumeratedEditor
+
+
+        // 
+        // NB: See note to AbstractEnumeratedEditor.
+        public class EnumeratedElementEditor extends AbstractEnumeratedEditor {
+            
+            XmlObject drivingObject ;
+    
+            public EnumeratedElementEditor() {
+                super() ;
+            }
+                
+            public void setComboValue() {              
+                DefaultComboBoxModel model = (DefaultComboBoxModel)getModel();
+                model.removeAllElements() ;
+                SchemaType type = adqlNode.getSchemaType() ;
+                String[] enumeratedValues = AdqlUtils.getEnumValuesGivenDrivenType( type ) ;               
+                String[] elementNames = AdqlUtils.getEditableElements( type ) ;
+                // Retrieve and remember the element object.
+                // This is used when the user has finished editing to set the new value...
+                this.drivingObject = AdqlUtils.get( adqlNode.getXmlObject(), elementNames[0] ) ;
+                String currentValue = ((SimpleValue)(this.drivingObject)).getStringValue() ;
+                for( int i=0; i<enumeratedValues.length; i++ ) {
+                    addItem( enumeratedValues[i] ) ;
+                    if( currentValue.equals( enumeratedValues[i] ) ) {
+                        setSelectedIndex( i ) ;
+                    }
+                }            
+            }
+            
+            protected void setEnumeratedValue( String value ) {
+                try {
+                    String enumValue = AdqlUtils.getMasterEnumSynonym( value ) ;
+                    ((SimpleValue)this.drivingObject).setStringValue( enumValue ) ;
+                }
+                catch( Exception ex ) {
+                    log.warn( "Failure to set element value:", ex ) ;
+                }
+        
+            }
+                
+        } // end of class EnumeratedElementEditor
         
     } // end of class AdqlTreeCellEditor
     

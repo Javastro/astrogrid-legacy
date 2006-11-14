@@ -235,7 +235,7 @@ public class TableMetadataPanel extends JPanel {
                 return "" ;
             ColumnBean astroColumn = astroTable.getColumns()[ rowIndex ] ;
             switch( columnIndex ) {
-            	case 0: return new Integer( rowIndex ) ;
+            	case 0: return new Integer( rowIndex+1 ) ;
             	case 1: return astroColumn.getName() ;
             	case 2: return astroColumn.getUCD() ;
             	case 3: return astroColumn.getUnit() ;

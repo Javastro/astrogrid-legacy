@@ -78,18 +78,14 @@ public class EnumeratedInsertCommand extends StandardInsertCommand {
     }
     
     public String[] getEnumeratedValues() {
-        SchemaStringEnumEntry[] stringEnumEntries = attrType.getStringEnumEntries() ;
-        String[] enumStrings = new String[ stringEnumEntries.length ] ;
-        for( int j=0; j<stringEnumEntries.length; j++ ) {
-            enumStrings[j] = stringEnumEntries[j].getString() ;
-        }
-        return enumStrings ;
+        return AdqlUtils.getEnumValuesGivenDrivingType( attrType ) ;
     }
     
     protected Result _execute() {
         Result result = super._execute() ;
         if( result != CommandExec.FAILED ) {
             try {          
+                attrValue = AdqlUtils.getMasterEnumSynonym( attrValue ) ;
                 XmlObject enumValue = XmlString.Factory.newInstance() ;
                 enumValue = enumValue.set(  XmlString.Factory.newValue( attrValue ) ) ;
                 enumValue = enumValue.changeType( attrType ) ;       

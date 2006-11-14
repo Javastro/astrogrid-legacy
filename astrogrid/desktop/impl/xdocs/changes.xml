@@ -13,6 +13,10 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<action dev="jl" type="add" issue="1794">
+		Workbench - Query Builder: Adql/s view now uses new AdqlStoX compiler.
+		AdqlStoX dependency added. 
+</action>
 <release version="2006.4.rc2" date="unreleased">
 	<action dev="nw" type="fix">
 		Myspace: fles of size less than 1kb are reported as 1kb, not Okb.

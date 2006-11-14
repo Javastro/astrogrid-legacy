@@ -25,6 +25,8 @@ public class AdqlData {
     public static final String PI_ADQL_SCHEMA_VERSION_TAG = "ag-adql-schema-version" ;
     public static final String PI_ADQL_SCHEMA_VERSION_VALUE = "v1.0a1" ;
     
+    
+    public static final String ELEMENT_FROM_TABLE_TYPE = "fromTableType" ;
     public static final String DUMMY_ENTRY = "".intern() ;
     public static final String COLUMN_REFERENCE_TYPE = "columnReferenceType" ;
     public static final String SELECT_TYPE = "selectType" ;
@@ -34,6 +36,7 @@ public class AdqlData {
     public static final String TABLE_TYPE = "tableType" ;
     public static final String ARCHIVE_TABLE_TYPE = "archiveTableType" ;
     public static final String BINARY_EXPRESSION_TYPE = "binaryExprType" ;
+    public static final String BINARY_OPERATOR_TYPE = "binaryOperatorType" ;
     public static final String UNARY_EXPRESSION_TYPE = "unaryExprType" ;
     public static final String TRIG_FUNCTION_TYPE = "trigonometricFunctionType" ;
     public static final String MATH_FUNCTION_TYPE = "mathFunctionType" ;
@@ -48,8 +51,15 @@ public class AdqlData {
     public static final String ATOM_TYPE = "atomType" ;
     public static final String ALL_SELECTION_ITEM_TYPE = "allSelectionItemType" ;
     public static final String SELECTION_LIST_TYPE = "selectionListType" ;
+    public static final String SELECTION_OPTION_TYPE = "selectionOptionType" ;
     public static final String INTERSECTION_SEARCH_TYPE = "intersectionSearchType" ;
     public static final String UNION_SEARCH_TYPE = "unionSearchType" ;
+    public static final String ALIAS_SELECTION_ITEM_TYPE = "aliasSelectionItemType" ;
+    
+    // NB: The literal is almost certainly a typo in the schema and should read
+    // "joinTableQualifierType". Make any future changes/corrections easier by 
+    // using this definition.
+    public static final String JOIN_TABLE_QUALIFIER_TYPE = "jointTableQualifierType" ;
     
     
     public static final String TYPE_ENTRY = "TYPE".intern() ;
@@ -59,31 +69,31 @@ public class AdqlData {
     static {
         T2D_NAMES = new Hashtable() ;
         T2D_NAMES.put( "closedExprType", "Bracket" ) ;
-        T2D_NAMES.put( "binaryExprType", "Binary Expression" ) ;
-        T2D_NAMES.put( "binaryOperatorType", "+ - * /" ) ;
-        T2D_NAMES.put( "unaryExprType", "Unary expression" ) ;
-        T2D_NAMES.put( "columnReferenceType", "Column" ) ;
+        T2D_NAMES.put( BINARY_EXPRESSION_TYPE, "Binary Expression" ) ;
+        T2D_NAMES.put( BINARY_OPERATOR_TYPE, "+ - * /" ) ;
+        T2D_NAMES.put( UNARY_EXPRESSION_TYPE, "Unary expression" ) ;
+        T2D_NAMES.put( COLUMN_REFERENCE_TYPE, "Column" ) ;
         // Experiment
-        T2D_NAMES.put( "atomType", "Literal" ) ;
-        T2D_NAMES.put( "realType", "Literal" ) ;
-        T2D_NAMES.put( "integerType", "Literal" ) ;
-        T2D_NAMES.put( "stringType", "Literal" ) ;
-//        T2D_NAMES.put( "realType", "Real" ) ;
-//        T2D_NAMES.put( "integerType", "Integer" ) ;
-//        T2D_NAMES.put( "stringType", "String" ) ;
+        T2D_NAMES.put( ATOM_TYPE, "Literal" ) ;
+//        T2D_NAMES.put( REAL_TYPE, "Literal" ) ;
+//        T2D_NAMES.put( INTEGER_TYPE, "Literal" ) ;
+//        T2D_NAMES.put( STRING_TYPE, "Literal" ) ;
+        T2D_NAMES.put( REAL_TYPE, "Real" ) ;
+        T2D_NAMES.put( INTEGER_TYPE, "Integer" ) ;
+        T2D_NAMES.put( STRING_TYPE, "String" ) ;
         // End of experiment
         
-        T2D_NAMES.put( "selectionOptionType", "Allow" ) ;
-        T2D_NAMES.put( "trigonometricFunctionType", "Trig Function" ) ;
-        T2D_NAMES.put( "mathFunctionType", "Maths Function" ) ;
-        T2D_NAMES.put( "aggregateFunctionType", "Aggregate Function" ) ;
+        T2D_NAMES.put( SELECTION_OPTION_TYPE, "Allow" ) ;
+        T2D_NAMES.put( TRIG_FUNCTION_TYPE, "Trig Function" ) ;
+        T2D_NAMES.put( MATH_FUNCTION_TYPE, "Maths Function" ) ;
+        T2D_NAMES.put( AGGREGATE_FUNCTION_TYPE, "Aggregate Function" ) ;
         T2D_NAMES.put( "userDefinedFunctionType", "User-defined Function" ) ;
-        T2D_NAMES.put( "aliasSelectionItemType", "Aliased Expression" ) ;
-        T2D_NAMES.put( "allSelectionItemType", "All Columns" ) ;
+        T2D_NAMES.put( ALIAS_SELECTION_ITEM_TYPE, "Aliased Expression" ) ;
+        T2D_NAMES.put( ALL_SELECTION_ITEM_TYPE, "All Columns" ) ;
         T2D_NAMES.put( "comparisonType", "Comparison" ) ;
         T2D_NAMES.put( "archiveTableType", "Archive table" ) ;
         T2D_NAMES.put( "tableType", "Table" ) ;
-        T2D_NAMES.put( "joinTableType", "Join Table" ) ;
+        T2D_NAMES.put( JOIN_TABLE_TYPE, "Join Table" ) ;
         T2D_NAMES.put( "includeTableType", "Include Table" ) ;
         T2D_NAMES.put( "dropTableType", "Exclude table" ) ;
         T2D_NAMES.put( INTERSECTION_SEARCH_TYPE, "And" ) ;
@@ -107,12 +117,12 @@ public class AdqlData {
         T2D_NAMES.put( "orderType", "Item" ) ;
         T2D_NAMES.put( "orderOptionType", "Order" ) ;
         T2D_NAMES.put( "orderExpressionType", "Order By" ) ;
-        T2D_NAMES.put( "selectType", "Select" ) ;
+        T2D_NAMES.put( SELECT_TYPE, "Select" ) ;
         T2D_NAMES.put( "intoType", "Into" ) ;  
         T2D_NAMES.put( "inclusiveSearchType", "In" ) ; 
         T2D_NAMES.put( "exclusiveSearchType", "Not In" ) ;
         T2D_NAMES.put( "ArrayOfFromTableType", "Tables" ) ;
-        T2D_NAMES.put( "jointTableQualifierType", "Join Qualifier" ) ;
+        T2D_NAMES.put( JOIN_TABLE_QUALIFIER_TYPE, "Join Qualifier" ) ;
              
         T2D_NAMES.put( "Select", "Select" ) ;
         T2D_NAMES.put( "From", "From" ) ;
@@ -174,14 +184,13 @@ public class AdqlData {
     public static final Hashtable UNSUPPORTED_TYPES ;
     static {
         UNSUPPORTED_TYPES = new Hashtable() ;
-        UNSUPPORTED_TYPES.put( "joinTableType", TYPE_ENTRY ) ;
+//        UNSUPPORTED_TYPES.put( JOIN_TABLE_TYPE, TYPE_ENTRY ) ;
         UNSUPPORTED_TYPES.put( "archiveTableType", TYPE_ENTRY ) ;
-        UNSUPPORTED_TYPES.put( "aliasSelectionItemType", TYPE_ENTRY ) ;
-        UNSUPPORTED_TYPES.put( "exclusiveSearchType", TYPE_ENTRY ) ;
-//???      UNSUPPORTED_TYPES.put( "inclusiveSetType", TYPE_ENTRY ) ;
-        UNSUPPORTED_TYPES.put( "inclusiveSearchType", TYPE_ENTRY ) ;
-        UNSUPPORTED_TYPES.put( "subQuerySet", TYPE_ENTRY ) ;
-        UNSUPPORTED_TYPES.put( "constantListSet", TYPE_ENTRY ) ;
+//        UNSUPPORTED_TYPES.put( ALIAS_SELECTION_ITEM_TYPE, TYPE_ENTRY ) ;
+//        UNSUPPORTED_TYPES.put( "exclusiveSearchType", TYPE_ENTRY ) ;
+//        UNSUPPORTED_TYPES.put( "inclusiveSearchType", TYPE_ENTRY ) ;
+//        UNSUPPORTED_TYPES.put( "subQuerySet", TYPE_ENTRY ) ;
+//        UNSUPPORTED_TYPES.put( "constantListSet", TYPE_ENTRY ) ;
         UNSUPPORTED_TYPES.put( "intoType", TYPE_ENTRY ) ;
         
         UNSUPPORTED_TYPES.put( "xMatchType", TYPE_ENTRY ) ;
@@ -201,9 +210,9 @@ public class AdqlData {
 //    public static final Hashtable UNSUPPORTED_TYPES_74 ;
 //    static {
 //        UNSUPPORTED_TYPES_74 = new Hashtable() ;
-//        UNSUPPORTED_TYPES_74.put( "joinTableType", TYPE_ENTRY ) ;
+//        UNSUPPORTED_TYPES_74.put( JOIN_TABLE_TYPE, TYPE_ENTRY ) ;
 //        UNSUPPORTED_TYPES_74.put( "archiveTableType", TYPE_ENTRY ) ;
-//        UNSUPPORTED_TYPES_74.put( "aliasSelectionItemType", TYPE_ENTRY ) ;
+//        UNSUPPORTED_TYPES_74.put( ALIAS_SELECTION_ITEM_TYPE, TYPE_ENTRY ) ;
 //        UNSUPPORTED_TYPES_74.put( "exclusiveSearchType", TYPE_ENTRY ) ;
 //        UNSUPPORTED_TYPES_74.put( "inclusiveSetType", TYPE_ENTRY ) ;
 //        UNSUPPORTED_TYPES_74.put( "inclusiveSearchType", TYPE_ENTRY ) ;
@@ -218,28 +227,27 @@ public class AdqlData {
 //    public static final Hashtable UNSUPPORTED_TYPES_10 ;
 //    static {
 //        UNSUPPORTED_TYPES_10 = new Hashtable() ;
-//        UNSUPPORTED_TYPES_10.put( "joinTableType", TYPE_ENTRY ) ;
+//        UNSUPPORTED_TYPES_10.put( JOIN_TABLE_TYPE, TYPE_ENTRY ) ;
 //        UNSUPPORTED_TYPES_10.put( "archiveTableType", TYPE_ENTRY ) ;
-//        UNSUPPORTED_TYPES_10.put( "aliasSelectionItemType", TYPE_ENTRY ) ;
+//        UNSUPPORTED_TYPES_10.put( ALIAS_SELECTION_ITEM_TYPE, TYPE_ENTRY ) ;
 //        UNSUPPORTED_TYPES_10.put( "intoType", TYPE_ENTRY ) ; 
 //    }
-    
-    
     
     
     public static final Hashtable CASCADEABLE ;
     static {
         CASCADEABLE = new Hashtable() ;
-        CASCADEABLE.put( "columnReferenceType", DUMMY_ENTRY ) ;
-        CASCADEABLE.put( "trigonometricFunctionType", DUMMY_ENTRY ) ;
+        CASCADEABLE.put( COLUMN_REFERENCE_TYPE, DUMMY_ENTRY ) ;
+        CASCADEABLE.put( TRIG_FUNCTION_TYPE, DUMMY_ENTRY ) ;
         CASCADEABLE.put( "tableType", DUMMY_ENTRY ) ;    
-        CASCADEABLE.put( "mathFunctionType", DUMMY_ENTRY ) ;  
-        CASCADEABLE.put( "aggregateFunctionType", DUMMY_ENTRY ) ;  
+        CASCADEABLE.put( MATH_FUNCTION_TYPE, DUMMY_ENTRY ) ;  
+        CASCADEABLE.put( AGGREGATE_FUNCTION_TYPE, DUMMY_ENTRY ) ;  
         CASCADEABLE.put( "archiveTableType", DUMMY_ENTRY ) ;  
-        CASCADEABLE.put( "jointTableQualifierType", DUMMY_ENTRY ) ;   
-        CASCADEABLE.put( "binaryExprType", DUMMY_ENTRY ) ;  
-        CASCADEABLE.put( "unaryExprType", DUMMY_ENTRY ) ;  
-        CASCADEABLE.put( "selectionOptionType", DUMMY_ENTRY ) ;  
+ //       CASCADEABLE.put( JOIN_TABLE_QUALIFIER_TYPE, DUMMY_ENTRY ) ; 
+        CASCADEABLE.put( "joinTableType", DUMMY_ENTRY ) ;  
+        CASCADEABLE.put( BINARY_EXPRESSION_TYPE, DUMMY_ENTRY ) ;  
+        CASCADEABLE.put( UNARY_EXPRESSION_TYPE, DUMMY_ENTRY ) ;  
+        CASCADEABLE.put( SELECTION_OPTION_TYPE, DUMMY_ENTRY ) ;  
         CASCADEABLE.put( "comparisonPredType", DUMMY_ENTRY ) ;  
         CASCADEABLE.put( "orderOptionType", DUMMY_ENTRY ) ;  
     }
@@ -247,22 +255,53 @@ public class AdqlData {
     public static final Hashtable ENUMERATED_ATTRIBUTES ;
     static {
         ENUMERATED_ATTRIBUTES = new Hashtable() ;
-        ENUMERATED_ATTRIBUTES.put( "trigonometricFunctionType" , "trigonometricFunctionNameType" ) ;
-        ENUMERATED_ATTRIBUTES.put( "mathFunctionType" , "mathFunctionNameType" ) ;
-        ENUMERATED_ATTRIBUTES.put( "aggregateFunctionType" , "aggregateFunctionNameType" ) ;
-        ENUMERATED_ATTRIBUTES.put( "binaryExprType" , "binaryOperatorType" ) ;
-        ENUMERATED_ATTRIBUTES.put( "unaryExprType" , "unaryOperatorType" ) ;
-        ENUMERATED_ATTRIBUTES.put( "selectionOptionType" , "allOrDistinctType" ) ;
+        ENUMERATED_ATTRIBUTES.put( TRIG_FUNCTION_TYPE , "trigonometricFunctionNameType" ) ;
+        ENUMERATED_ATTRIBUTES.put( MATH_FUNCTION_TYPE , "mathFunctionNameType" ) ;
+        ENUMERATED_ATTRIBUTES.put( AGGREGATE_FUNCTION_TYPE , "aggregateFunctionNameType" ) ;
+        ENUMERATED_ATTRIBUTES.put( BINARY_EXPRESSION_TYPE , BINARY_OPERATOR_TYPE ) ;
+        ENUMERATED_ATTRIBUTES.put( UNARY_EXPRESSION_TYPE , "unaryOperatorType" ) ;
+        ENUMERATED_ATTRIBUTES.put( SELECTION_OPTION_TYPE , "allOrDistinctType" ) ;
         ENUMERATED_ATTRIBUTES.put( "comparisonPredType" , "comparisonType" ) ;
         ENUMERATED_ATTRIBUTES.put( "orderOptionType" , "orderDirectionType" ) ;
-//        ENUMERATED_ATTRIBUTES.put( "joinTableType" , "jointTableQualifierType" ) ;  // this is incorrect
     }
     
     
     public static final Hashtable ENUMERATED_ELEMENTS ;
     static {
         ENUMERATED_ELEMENTS = new Hashtable() ;
-        ENUMERATED_ELEMENTS.put( "jointTableQualifierType" , "jointTableQualifierType" ) ;
+        ENUMERATED_ELEMENTS.put( JOIN_TABLE_TYPE , JOIN_TABLE_QUALIFIER_TYPE ) ;
+    }
+    
+    // Enumerated values which for some obscure reason or reasons
+    // we do not wish to be exposed. Better here and visible so they
+    // are easier to track.  
+    // (1) CROSS is for join tables. A cross join should not possess
+    //     a predicate. But the schema says the predicate is mandatory.
+    //     So, for the moment we need to suppress cross joins.
+    //
+    public static final Hashtable ENUM_FILTERED_VALUES ;
+    static {
+        ENUM_FILTERED_VALUES = new Hashtable() ;
+        ENUM_FILTERED_VALUES.put( "CROSS", DUMMY_ENTRY ) ;
+    }
+    
+    public static final Hashtable ENUM_SYNONYMS ;
+    static {
+        ENUM_SYNONYMS = new Hashtable() ;
+        ENUM_SYNONYMS.put( "<>", new String[]{ "<>", "!="  } ) ;
+        ENUM_SYNONYMS.put( "!=", new String[]{ "<>", "!="  } ) ;
+    }
+    
+    // An experiment where we need to prevent an AdqlNode being formed.
+    // At the moment these are not context sensitive.
+    // Also, HidingNode (abstract class) does the same thing with a blunderbuss...
+    // It prevents all its children from forming nodes.
+    // The important one in the following is JoinTableQualifierType, which so
+    // far is our only enumerated element.
+    public static final Hashtable NON_NODE_FORMING ;
+    static {
+        NON_NODE_FORMING = new Hashtable() ;
+        NON_NODE_FORMING.put( JOIN_TABLE_QUALIFIER_TYPE , DUMMY_ENTRY ) ;
     }
     
     
@@ -270,37 +309,44 @@ public class AdqlData {
     static {
         METADATA_LINK_TABLE = new Hashtable() ;
         METADATA_LINK_TABLE.put( "tableType", DUMMY_ENTRY ) ;
-        METADATA_LINK_TABLE.put( "joinTableType", DUMMY_ENTRY ) ;
+//        METADATA_LINK_TABLE.put( JOIN_TABLE_TYPE, DUMMY_ENTRY ) ;
         METADATA_LINK_TABLE.put( "archiveTableType", DUMMY_ENTRY ) ;
     }
     
     public static final Hashtable METADATA_LINK_COLUMN ;
     static {
         METADATA_LINK_COLUMN = new Hashtable() ;
-        METADATA_LINK_COLUMN.put( "columnReferenceType", DUMMY_ENTRY ) ;
+        METADATA_LINK_COLUMN.put( COLUMN_REFERENCE_TYPE, DUMMY_ENTRY ) ;
     }
     
     
-    public static final Hashtable EDITABLE ;
+    public static final Hashtable EDITABLE_ATTRIBUTES ;
     static {
-        EDITABLE = new Hashtable() ;
-        EDITABLE.put( "selectionLimitType", new String[] { "Top" } ) ;
-        EDITABLE.put( "realType", new String[] { "Value" } ) ;
-        EDITABLE.put( "integerType", new String[] { "Value" } ) ;
-        EDITABLE.put( "stringType", new String[] { "Value" } ) ;
-        EDITABLE.put( "comparisonPredType", new String[] { "Comparison" } ) ;    
-        EDITABLE.put( "aggregateFunctionType", new String[] { "Name" } ) ;
-        EDITABLE.put( "trigonometricFunctionType", new String[] { "Name" } ) ;
-        EDITABLE.put( "mathFunctionType", new String[] { "Name" } ) ;
-        EDITABLE.put( "binaryExprType", new String[] { "Oper" } ) ;
-        EDITABLE.put( "unaryExprType", new String[] { "Oper" } ) ;
-        EDITABLE.put( "selectionOptionType", new String[] { "Option" } ) ;
-        EDITABLE.put( "orderOptionType", new String[] { "Direction" } ) ; 
-        EDITABLE.put( "columnReferenceType", new String[] { "Table", "Name"  } ) ;
-        EDITABLE.put( "tableType", new String[] { "Name", "Alias"  } ) ;
-//        EDITABLE.put( "atomType", DUMMY_ENTRY ) ;  // experiment     
-        EDITABLE.put( "string", DUMMY_ENTRY ) ; // this is the built in type
-        EDITABLE.put( "double", DUMMY_ENTRY ) ; // this is the built in type
+        EDITABLE_ATTRIBUTES = new Hashtable() ;
+        EDITABLE_ATTRIBUTES.put( "selectionLimitType", new String[] { "Top" } ) ;
+        EDITABLE_ATTRIBUTES.put( REAL_TYPE, new String[] { "Value" } ) ;
+        EDITABLE_ATTRIBUTES.put( INTEGER_TYPE, new String[] { "Value" } ) ;
+        EDITABLE_ATTRIBUTES.put( STRING_TYPE, new String[] { "Value" } ) ;
+        EDITABLE_ATTRIBUTES.put( "comparisonPredType", new String[] { "Comparison" } ) ;    
+        EDITABLE_ATTRIBUTES.put( AGGREGATE_FUNCTION_TYPE, new String[] { "Name" } ) ;
+        EDITABLE_ATTRIBUTES.put( TRIG_FUNCTION_TYPE, new String[] { "Name" } ) ;
+        EDITABLE_ATTRIBUTES.put( MATH_FUNCTION_TYPE, new String[] { "Name" } ) ;
+        EDITABLE_ATTRIBUTES.put( BINARY_EXPRESSION_TYPE, new String[] { "Oper" } ) ;
+        EDITABLE_ATTRIBUTES.put( UNARY_EXPRESSION_TYPE, new String[] { "Oper" } ) ;
+        EDITABLE_ATTRIBUTES.put( SELECTION_OPTION_TYPE, new String[] { "Option" } ) ;
+        EDITABLE_ATTRIBUTES.put( "orderOptionType", new String[] { "Direction" } ) ; 
+//        EDITABLE.put( JOIN_TABLE_TYPE, new String[] { "Qualifier" } ) ; 
+        EDITABLE_ATTRIBUTES.put( COLUMN_REFERENCE_TYPE, new String[] { "Table", "Name"  } ) ;
+        EDITABLE_ATTRIBUTES.put( "tableType", new String[] { "Name", "Alias"  } ) ;
+//        EDITABLE.put( ATOM_TYPE, DUMMY_ENTRY ) ;  // experiment     
+        EDITABLE_ATTRIBUTES.put( "string", DUMMY_ENTRY ) ; // this is the built in type
+        EDITABLE_ATTRIBUTES.put( "double", DUMMY_ENTRY ) ; // this is the built in type
+    }
+    
+    public static final Hashtable EDITABLE_ELEMENTS ;
+    static {
+        EDITABLE_ELEMENTS = new Hashtable() ;
+        EDITABLE_ELEMENTS.put( JOIN_TABLE_TYPE, new String[] { "Qualifier" } ) ; 
     }
     
     public static final Hashtable CROSS_VALIDATION ;
@@ -315,9 +361,15 @@ public class AdqlData {
     static {
         ATTRIBUTE_DEFAULTS = new Hashtable() ;
         ATTRIBUTE_DEFAULTS.put( "selectionLimitType", "100" ) ;
-        ATTRIBUTE_DEFAULTS.put( "realType", "0" ) ;
-        ATTRIBUTE_DEFAULTS.put( "integerType", "0" ) ;
-        ATTRIBUTE_DEFAULTS.put( "stringType", "" ) ;
+        ATTRIBUTE_DEFAULTS.put( REAL_TYPE, "0" ) ;
+        ATTRIBUTE_DEFAULTS.put( INTEGER_TYPE, "0" ) ;
+        ATTRIBUTE_DEFAULTS.put( STRING_TYPE, "" ) ;
+    }
+    
+    public static final Hashtable IMPOSED_CARDINIALITIES ;
+    static {
+        IMPOSED_CARDINIALITIES = new Hashtable() ;
+        IMPOSED_CARDINIALITIES.put( ELEMENT_FROM_TABLE_TYPE, new Integer[]{ new Integer(2), new Integer(2) } ) ;
     }
     
     public static final Hashtable DERIVED_DEFAULTS ;
@@ -331,6 +383,8 @@ public class AdqlData {
         DERIVED_DEFAULTS.put( "double7Type", "0 0 0 0 0 0 0" ) ;
         DERIVED_DEFAULTS.put( "double8Type", "0 0 0 0 0 0 0 0" ) ;
         DERIVED_DEFAULTS.put( "double9Type", "0 0 0 0 0 0 0 0 0" ) ;
+        
+//        DERIVED_DEFAULTS.put( JOIN_TABLE_QUALIFIER_TYPE, "INNER" ) ;
     }
 //    public static final String NEW_QUERY =
 //        "<Select xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" " +

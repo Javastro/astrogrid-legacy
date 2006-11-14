@@ -24,6 +24,9 @@ import org.astrogrid.desktop.modules.adqlEditor.nodes.NodeFactory;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
+import org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanel;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * @author jl99@star.le.ac.uk
@@ -33,6 +36,10 @@ import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
  */
 public class TableInsertCommand extends StandardInsertCommand {
     
+    private static final Log log = LogFactory.getLog( TableInsertCommand.class ) ;
+    private static final boolean DEBUG_ENABLED = false ;
+    private static final boolean TRACE_ENABLED = false ;
+   
     protected Catalog database ;
     protected String tableName ;
     protected String allocatedAlias ;
@@ -142,34 +149,47 @@ public class TableInsertCommand extends StandardInsertCommand {
         // This processing attempts the automatic removal of the dummy table 
         // which is included in the initial template for a new query...
         // (Bit of a bind I'm afraid)
-        XmlObject o = getParentObject() ;
-        int arraySize = AdqlUtils.sizeOfArray( o, getChildElementName() ) ;
-        if( arraySize == 1 ) {
-            Object table = AdqlUtils.getArray( o, getChildElementName(), 0 ) ;
-            String name = ((XmlString)AdqlUtils.get( (XmlObject)table, "name" )).getStringValue() ;
-            if( name.equals( AdqlData.DUMMY_TABLE_NAME ) ) {
-                AdqlNode entry = getParentEntry().getChild( 0 ) ;           
-//   	        AdqlEntry.removeInstance( parent, entry ) ;
-    	        CutCommand cutCommand = new CutCommand( adqlTree, undoManager, entry ) ;
-    	        cutCommand.execute() ;
+        try {
+            XmlObject o = getParentObject() ;
+            int arraySize = AdqlUtils.sizeOfArray( o, getChildElementName() ) ;
+            if( arraySize == 1 ) {
+                Object table = AdqlUtils.getArray( o, getChildElementName(), 0 ) ;
+                String name = ((XmlString)AdqlUtils.get( (XmlObject)table, "name" )).getStringValue() ;
+                if( name.equals( AdqlData.DUMMY_TABLE_NAME ) ) {
+                    AdqlNode entry = getParentEntry().getChild( 0 ) ;           
+//                  AdqlEntry.removeInstance( parent, entry ) ;
+                    CutCommand cutCommand = new CutCommand( adqlTree, undoManager, entry ) ;
+                    cutCommand.execute() ;
+                }
             }
         }
+        catch( Exception ex ) {
+            log.warn( "TableInsertCommand.removeDummyTable() failed.\n" +
+                      "  Probable cause: inappropriate context." ) ;
+        }
+       
     }
     
     private void _reinstateDummyTable() {
-        XmlObject o = getParentObject() ;
-        if( !AdqlUtils.areTypesEqual( getParentEntry().getSchemaType()
-                                    , AdqlUtils.getType( o, AdqlData.FROM_TYPE ) ) ) 
-           return ;
-        int arraySize = AdqlUtils.sizeOfArray( o, getChildElementName() ) ;
-        if( arraySize == 0 ) {
-            XmlObject newObject = AdqlUtils.addNewToEndOfArray( o, getChildElementName() ) ;
-            newObject = newObject.changeType( childType ) ;
-            NodeFactory.newInstance( getParentEntry(), newObject ) ;
-            AdqlUtils.set( newObject
-                         , "name"
-                         , XmlString.Factory.newValue( AdqlData.DUMMY_TABLE_NAME ) ) ;
+        try {
+            XmlObject o = getParentObject() ;
+            if( !AdqlUtils.areTypesEqual( getParentEntry().getSchemaType()
+                                        , AdqlUtils.getType( o, AdqlData.FROM_TYPE ) ) ) 
+               return ;
+            int arraySize = AdqlUtils.sizeOfArray( o, getChildElementName() ) ;
+            if( arraySize == 0 ) {
+                XmlObject newObject = AdqlUtils.addNewToEndOfArray( o, getChildElementName() ) ;
+                newObject = newObject.changeType( childType ) ;
+                NodeFactory.newInstance( getParentEntry(), newObject ) ;
+                AdqlUtils.set( newObject
+                             , "name"
+                             , XmlString.Factory.newValue( AdqlData.DUMMY_TABLE_NAME ) ) ;
+            }
         }
+        catch( Exception ex ) {
+            log.warn( "TableInsertCommand._reinstateDummyTable() failed.\n" +
+            "  Probable cause: inappropriate context." ) ;
+        }      
     }
         
 }

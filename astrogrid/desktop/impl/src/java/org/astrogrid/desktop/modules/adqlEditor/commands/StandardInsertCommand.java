@@ -38,6 +38,8 @@ public class StandardInsertCommand extends AbstractCommand {
     private static final Log log = LogFactory.getLog( StandardInsertCommand.class ) ;
     private static final boolean DEBUG_ENABLED = false ;
     private static final boolean TRACE_ENABLED = false ;
+    
+    private XmlObject sourceObject = null ;
    
     /**
      * @param target
@@ -60,7 +62,7 @@ public class StandardInsertCommand extends AbstractCommand {
     }
     
     public void setSelectedValue( String value ) {}
-       
+    
     public Result execute() {      
         Result result = _execute() ;
         if( result != CommandExec.FAILED ) {

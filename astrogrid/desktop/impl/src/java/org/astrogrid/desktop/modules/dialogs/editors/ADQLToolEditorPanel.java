@@ -23,6 +23,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedInputStream;
+import java.io.StringReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -79,6 +80,7 @@ import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Catalog;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.adql.AdqlStoX;
 import org.astrogrid.adql.v1_0.beans.SelectDocument;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
@@ -91,6 +93,7 @@ import org.astrogrid.desktop.modules.adqlEditor.commands.CommandExec;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CommandFactory;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CutCommand;
 import org.astrogrid.desktop.modules.adqlEditor.commands.EnumeratedInsertCommand;
+import org.astrogrid.desktop.modules.adqlEditor.commands.EnumeratedElementInsertCommand;
 import org.astrogrid.desktop.modules.adqlEditor.commands.PasteIntoCommand;
 import org.astrogrid.desktop.modules.adqlEditor.commands.PasteNextToCommand;
 import org.astrogrid.desktop.modules.adqlEditor.commands.PasteOverCommand;
@@ -129,6 +132,8 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     protected final Adql074 validator;
     protected final ResourceChooserInternal resourceChooser;
     protected final Registry registry ;
+      
+    private AdqlStoX adqlCompiler ;
     
     // LHS Editor tabs...
     private JTabbedPane tabbedEditorPane ;
@@ -809,7 +814,11 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	        else if( command.isChildDrivenByEnumeratedAttribute() ) {
 	            menu = getEnumeratedMenus( command ) ;
 	            menu.setEnabled( command.isChildEnabled() ) ;
-	        }        
+	        }  
+            else if( command.isChildDrivenByEnumeratedElement() ) {
+                menu = getEnumeratedElementMenus( command ) ;
+                menu.setEnabled( command.isChildEnabled() ) ;
+            }
 	        return menu;
 	    }
 	       
@@ -1171,6 +1180,15 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         }
         return menu ;
     }
+    
+    private JMenu getEnumeratedElementMenus( StandardInsertCommand command ) {
+        JMenu menu = new JMenu( command.getChildDisplayName() ) ;
+        String[] elementValues = ((EnumeratedElementInsertCommand)command).getEnumeratedValues() ;
+        for( int i=0; i<elementValues.length; i++ ) {
+            menu.add( new JMenuItem( new InsertAction( elementValues[i], command ) ) );
+        }
+        return menu ;
+    }
         
     private JMenu getInsertColumnMenu( StandardInsertCommand command ) {
         ColumnInsertCommand cic = (ColumnInsertCommand)command ;
@@ -1209,6 +1227,21 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     }
        
     private JMenu getInsertTableMenu( StandardInsertCommand command ) {
+        TableInsertCommand tic= (TableInsertCommand)command ;       
+        JMenu insertMenu = new JMenu( command.getChildDisplayName() ) ;
+        DataCollection tdb = adqlTree.getCatalogueResource() ;
+        if( tdb != null ) {
+            Catalog db = tdb.getCatalog();
+            tic.setDatabase( db ) ;
+            TableBean[] tables = db.getTables() ;
+            for( int i=0; i<tables.length; i++ ){            
+               insertMenu.add( new InsertAction( tables[i].getName(), command ) ) ;
+            }
+        }
+        return insertMenu ;
+    }
+    
+    private JMenu getInsertJoinTableMenu( StandardInsertCommand command ) {
         TableInsertCommand tic= (TableInsertCommand)command ;       
         JMenu insertMenu = new JMenu( command.getChildDisplayName() ) ;
         DataCollection tdb = adqlTree.getCatalogueResource() ;
@@ -1490,30 +1523,23 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         
         protected void validateAdql() {
             if( DEBUG_ENABLED ) log.debug( "AdqlStringView.validateAdql() entry" ) ;
-            //
-            // Kludge to replace some form of white space that is screwing up the adql/s
-            // parser. This is the simplest solution. And the parser looks like it might
-            // have a short-term life in comparison.
-            String text = getAdqlTextPane().getText().trim(); //.replaceAll( "\\s", " " ) ;
-            
+            String text = getAdqlTextPane().getText() ;
+            if( text.lastIndexOf( ';') == -1 ){
+                text = text + ';' ;
+            }           
             if( text.equals( this.adqlString ) == false ) {
                 try {  
                     this.adqlString = text ;
-//bz#1664                    Document doc = validator.s2x( text ); 
-//bz#1664                    String xmlString = XMLUtils.DocumentToString( doc ) ;
-                    String xmlString = Sql2Adql.translateToAdql074( adqlString ) ; //bz#1664                   
-                    log.debug( "Parser returned: \n" + xmlString ) ; 
-                    this.processedRoot = SelectDocument.Factory.parse( adaptToVersion( xmlString ) ) ;
+                    if( adqlCompiler == null ) {
+                        adqlCompiler = new AdqlStoX( new StringReader( adqlString ) ) ;
+                    }
+                    else {
+                        adqlCompiler.ReInit( new StringReader( adqlString ) ) ;
+                    }
+                    this.processedRoot = adqlCompiler.compileToXmlBeans() ;
                     diagnostics.setText( "" ) ;                  
                 } 
                 catch( Throwable sx ) {
-//                    log.debug( sx ) ;
-//                    Throwable th = sx.getCause() ;
-//                    String message = "Adql invalid. No message available" ;
-//                    if( th != null ) {
-//                        message = th.getMessage() ;
-//                    }
-//                    diagnostics.setText( message ) ;
                     String message = sx.getLocalizedMessage() ;
                     if( message != null && message.length() > 0) {
                         diagnostics.setText( message ) ;

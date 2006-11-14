@@ -98,6 +98,8 @@ public class CommandFactory {
                     childType = elements[i].getType() ;
                     if( !AdqlUtils.isSupportedType( childType ) )
                         continue ;
+                    if( AdqlUtils.isEnumeratedElement( childType ) )
+                        continue ;
                     concreteSubtypes = AdqlUtils.getConcreteSubtypes( childType ) ;
                     // If no concrete subtypes, treat the child as the concrete type...
                     if( concreteSubtypes.length == 0 ) {
@@ -107,6 +109,8 @@ public class CommandFactory {
                     for( int j=0; j<concreteSubtypes.length; j++ ) {
                         if( !AdqlUtils.isSupportedType( concreteSubtypes[j] ) )
                             continue ;
+                        if( AdqlUtils.isEnumeratedElement( concreteSubtypes[j] ) )
+                            continue ;
                         if( AdqlUtils.isColumnLinked( concreteSubtypes[j] ) ) {
                             insertCommands.add( newColumnInsertCommand( parent, concreteSubtypes[j], elements[i] ) ) ;
                         }
@@ -115,6 +119,9 @@ public class CommandFactory {
                         }
                         else if( AdqlUtils.isDrivenByEnumeratedAttribute( concreteSubtypes[j] ) ) {
                             insertCommands.add( newEnumeratedInsertCommand( parent, concreteSubtypes[j], elements[i] ) ) ;
+                        }
+                        else if( AdqlUtils.isDrivenByEnumeratedElement( concreteSubtypes[j] ) ) {
+                            insertCommands.add( newEnumeratedElementInsertCommand( parent, concreteSubtypes[j], elements[i] ) ) ;
                         }
                         else {
                             insertCommands.add( newStandardInsertCommand( parent, concreteSubtypes[j], elements[i] ) ) ;
@@ -170,6 +177,18 @@ public class CommandFactory {
 							              , attributeName ) ;
     }
     
+    
+    public EnumeratedElementInsertCommand newEnumeratedElementInsertCommand( AdqlNode parent
+                                                                           , SchemaType childType
+                                                                           , SchemaProperty childElement ) { 
+        return new EnumeratedElementInsertCommand( adqlTree
+                , undoManager
+                , parent
+                , childType
+                , childElement ) ;
+    }
+    
+   
     public StandardInsertCommand newStandardInsertCommand( AdqlNode parent
             										     , SchemaType childType
             											 , SchemaProperty childElement  ) {

@@ -107,6 +107,11 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
                 minOccurs = childElement.getMinOccurs().intValue() ;
                 maxOccurs = -1 ;
             }
+            else if( AdqlUtils.isCardinalityImposed( childElement ) ) {
+                Integer[] cardinalities = AdqlUtils.getImposedCardinality( childElement ) ;
+                minOccurs = cardinalities[0].intValue() ;
+                maxOccurs = cardinalities[1].intValue() ;
+            }
             else {
                 minOccurs = childElement.getMinOccurs().intValue() ;
                 BigInteger biMaxOccurs = childElement.getMaxOccurs() ;
@@ -278,8 +283,8 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
         return AdqlUtils.isDrivenByEnumeratedAttribute( childType ) ;
     }
        
-    public boolean isChildAnEnumeratedElement() {
-        return AdqlUtils.isEnumeratedElement( childType ) ;
+    public boolean isChildDrivenByEnumeratedElement() {
+        return AdqlUtils.isDrivenByEnumeratedElement( childType ) ;
     }
     
     

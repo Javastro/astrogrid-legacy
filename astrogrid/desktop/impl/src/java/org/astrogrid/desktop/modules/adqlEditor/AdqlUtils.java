@@ -11,9 +11,9 @@
 package org.astrogrid.desktop.modules.adqlEditor ;
 import org.apache.xmlbeans.* ;
 
-import java.util.Hashtable ;
+//import java.util.Hashtable ;
 import org.apache.xmlbeans.SchemaType;
-import org.apache.xmlbeans.XmlString.Factory;
+//import org.apache.xmlbeans.XmlString.Factory;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
@@ -25,7 +25,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanel;
+//import org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanel;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 
 // import org.astrogrid.adql.v1_0.beans.* ;
@@ -92,6 +92,38 @@ public final class AdqlUtils {
         return foundTypes ;
     }
     
+    static public String[] getEnumValuesGivenDrivingType( SchemaType drivingType ) {    
+        SchemaStringEnumEntry[] stringEnumEntries = drivingType.getStringEnumEntries() ;
+        ArrayList enumList = new ArrayList( stringEnumEntries.length + 2 ) ;
+        String[] enumStrings = null ;
+        String entry = null ;
+        for( int j=0; j<stringEnumEntries.length; j++ ) {
+            entry = stringEnumEntries[j].getString() ;
+            if( !AdqlData.ENUM_FILTERED_VALUES.containsKey( entry ) ) {
+                enumList.add( entry ) ;
+                if( isEnumValueSynonymed(  entry ) ) {
+                    String synonym = getSlaveEnumSynonym( entry ) ;
+                    if( synonym != entry ) {
+                        enumList.add( synonym ) ;
+                    }
+                }
+            }
+        }
+        enumStrings = new String[ enumList.size() ] ;
+        enumStrings = (String[])enumList.toArray( enumStrings );
+        return enumStrings ;
+    }
+    
+    static public String[] getEnumValuesGivenDrivenType( SchemaType drivenType ) {
+        String drivenLocalTypeName = getLocalName( drivenType ) ;
+        String drivingLocalTypeName = (String)AdqlData.ENUMERATED_ATTRIBUTES.get( drivenLocalTypeName ) ;
+        if( drivingLocalTypeName == null || drivingLocalTypeName.length() == 0 ) {
+            drivingLocalTypeName = (String)AdqlData.ENUMERATED_ELEMENTS.get( drivenLocalTypeName ) ;
+        }
+        SchemaType drivingType = getType( drivenType, drivingLocalTypeName ) ;
+        return getEnumValuesGivenDrivingType( drivingType ) ;
+    }
+    
     static private void findSubtypes( ArrayList list, SchemaType aType ){
         if( aType.isSimpleType() ) 
             return ;
@@ -147,7 +179,7 @@ public final class AdqlUtils {
         SchemaType schemaType = null ;
         SchemaType[] sgTypes = typeSystem.globalTypes() ;
         for( int i=0; i<sgTypes.length; i++ ) {
-            if( sgTypes[i].getName().getLocalPart().equals( unqualifiedName ) ) {
+            if( getLocalName( sgTypes[i] ).equals( unqualifiedName ) ) {
                 schemaType = sgTypes[i] ;
                 break ;
             }
@@ -170,7 +202,7 @@ public final class AdqlUtils {
     public static boolean isEnumerated( SchemaType type ) {
         if( isDrivenByEnumeratedAttribute( type )
             ||
-            isEnumeratedElement( type ) ) {
+            isDrivenByEnumeratedElement( type ) ) {
             return true ;
         }
         return false ;
@@ -182,7 +214,7 @@ public final class AdqlUtils {
     
     public static boolean isDrivenByEnumeratedAttribute( SchemaType type ) {
         try {
-            return AdqlData.ENUMERATED_ATTRIBUTES.containsKey( type.getName().getLocalPart() ) ;
+            return AdqlData.ENUMERATED_ATTRIBUTES.containsKey( getLocalName( type ) ) ;
         }
         catch( Exception ex ) {
             ;
@@ -194,6 +226,31 @@ public final class AdqlUtils {
         return isDrivenByEnumeratedAttribute( xmlObject.schemaType() ) ;
     }
     
+    
+    public static boolean isEditable( SchemaType type ) {
+        try {
+            if( type.isAnonymousType() ){
+                return false ;
+            }
+            else if( type.isSimpleType() ) {
+                return true ;
+            }
+            else if( AdqlData.EDITABLE_ATTRIBUTES.containsKey( getLocalName( type ) ) ) {
+                return true ;
+            }
+            else if( AdqlData.EDITABLE_ELEMENTS.containsKey( getLocalName( type ) ) ) {
+                return true ;
+            }
+        }
+        catch( Exception ex ) {
+            ;
+        }          
+        return false ;
+    }
+    
+    public static boolean isEditable( XmlObject xmlObject ) {    
+        return isEditable( xmlObject.schemaType() ) ;
+    }
     
     // Use org.apache.xmlbeans.SchemaLocalAttribute to test the return value:
     // OPTIONAL, PROHIBITED or REQUIRED 
@@ -212,9 +269,9 @@ public final class AdqlUtils {
     
     
     
-    public static boolean isEnumeratedElement( SchemaType type ) {
+    public static boolean isDrivenByEnumeratedElement( SchemaType type ) {
         try {
-            return AdqlData.ENUMERATED_ATTRIBUTES.containsKey( type.getName().getLocalPart() ) ;
+            return AdqlData.ENUMERATED_ELEMENTS.containsKey( getLocalName( type ) ) ;
         }
         catch( Exception ex ) {
             ;
@@ -227,6 +284,83 @@ public final class AdqlUtils {
     }
     
     
+    public static boolean isEnumeratedElement( SchemaType type ) {
+        try {
+            return AdqlData.ENUMERATED_ELEMENTS.containsValue( getLocalName( type ) ) ;
+        }
+        catch( Exception ex ) {
+            ;
+        }          
+        return false ;
+    }
+    
+    public static boolean isDrivenByEnumeratedElement( XmlObject xmlObject ) {    
+        return isDrivenByEnumeratedElement( xmlObject.schemaType() ) ;
+    }
+    
+    public static boolean isNodeForming( SchemaType type ) {
+        try {
+            return !AdqlData.NON_NODE_FORMING.containsKey( getLocalName( type ) ) ;
+        }
+        catch( Exception ex ) {}
+        return false ;
+    }
+    
+    public static boolean isEnumValueSynonymed( String enumValue  ) {
+        boolean retVal = false ;
+        try {
+            retVal = AdqlData.ENUM_SYNONYMS.containsKey(enumValue) ;
+        }
+        catch( Exception ex ) {}
+        return retVal ;
+    }
+    
+    public static String getMasterEnumSynonym( String enumValue ) {
+        String[] enumArray = null ;
+        String retVal = null ;
+        try {
+            enumArray = (String[])AdqlData.ENUM_SYNONYMS.get( enumValue ) ;
+            if( enumArray == null ) {
+                retVal = enumValue ;
+            }
+            else if( enumArray[1].equalsIgnoreCase( enumValue ) ) {
+                retVal = enumArray[0] ;
+            }
+            else {
+                retVal = enumValue ;
+            }
+        }
+        catch( Exception ex ) {
+            retVal = enumValue ;
+        }
+        return retVal ;
+    }
+    
+    public static String getSlaveEnumSynonym( String enumValue ) {
+        String[] enumArray = null ;
+        String retVal = null ;
+        try {
+            enumArray = (String[])AdqlData.ENUM_SYNONYMS.get( enumValue ) ;
+            if( enumArray == null ) {
+                retVal = enumValue ;
+            }
+            else if( enumArray[0].equalsIgnoreCase( enumValue ) ) {
+                retVal = enumArray[1] ;
+            }
+            else {
+                retVal = enumValue ;
+            }
+        }
+        catch( Exception ex ) {
+            retVal = enumValue ;
+        }
+        return retVal ;
+    }
+    
+    public static boolean isNodeForming( XmlObject xmlObject ) {
+        return isNodeForming( xmlObject.schemaType() ) ;
+    }
+    
     public static boolean isCascadeable( XmlObject xmlObject ) {
         return isCascadeable( xmlObject.schemaType() ) ;
     }
@@ -234,7 +368,7 @@ public final class AdqlUtils {
     public static boolean isCascadeable( SchemaType type ) {
         boolean answer = false ;   
         try {
-            answer = AdqlData.CASCADEABLE.containsKey( type.getName().getLocalPart() ) ;
+            answer = AdqlData.CASCADEABLE.containsKey( getLocalName( type ) ) ;
         }
         catch( Exception ex ) {
             ;
@@ -249,7 +383,7 @@ public final class AdqlUtils {
     public static boolean isColumnLinked( SchemaType type ) {
         boolean answer = false ;     
         try {
-            answer = AdqlData.METADATA_LINK_COLUMN.containsKey( type.getName().getLocalPart() ) ;
+            answer = AdqlData.METADATA_LINK_COLUMN.containsKey( getLocalName( type ) ) ;
         }
         catch( Exception ex ) {
             ;
@@ -261,7 +395,7 @@ public final class AdqlUtils {
     public static boolean isSupportedType( SchemaType type ) {
         boolean retValue = false ;
         try {
-            retValue = !AdqlData.UNSUPPORTED_TYPES.containsKey( type.getName().getLocalPart() ) ;
+            retValue = !AdqlData.UNSUPPORTED_TYPES.containsKey( getLocalName( type ) ) ;
         }
         catch( Exception ex ) {
             ;
@@ -278,7 +412,7 @@ public final class AdqlUtils {
     public static boolean isTableLinked( SchemaType type  ) {
         boolean answer = false ;
         try {
-            answer = AdqlData.METADATA_LINK_TABLE.containsKey( type.getName().getLocalPart() ) ;
+            answer = AdqlData.METADATA_LINK_TABLE.containsKey( getLocalName( type ) ) ;
         }
         catch( Exception ex ) {
             ;
@@ -286,6 +420,35 @@ public final class AdqlUtils {
         return answer ;
     }
     
+    public static boolean isCardinalityImposed( SchemaProperty schemaProperty ) {
+        return isCardinalityImposed( schemaProperty.getName().getLocalPart() ) ;
+    }
+    
+    public static boolean isCardinalityImposed( String elementName  ) {
+        boolean answer = false ;
+        try {
+            answer = AdqlData.IMPOSED_CARDINIALITIES.containsKey( elementName ) ;
+        }
+        catch( Exception ex ) {
+            ;
+        }             
+        return answer ;
+    }
+    
+    public static Integer[] getImposedCardinality( String elementName ) {
+        Integer[] cardinalityArray = null ;
+        try {
+            cardinalityArray = (Integer[])AdqlData.IMPOSED_CARDINIALITIES.get( elementName ) ;
+        }
+        catch( Exception ex ) {
+            ;
+        }
+        return cardinalityArray ;
+    }
+    
+    public static Integer[] getImposedCardinality( SchemaProperty schemaProperty ) {
+        return getImposedCardinality( schemaProperty.getName().getLocalPart() ) ;
+    }
     
     static public String extractDisplayName( String name ) {
         String retValue = (String)AdqlData.T2D_NAMES.get( name ) ; ;
@@ -311,10 +474,10 @@ public final class AdqlUtils {
     static public String extractDisplayName( SchemaType schemaType ) {
         String retValue = null ;
         if( schemaType.isAnonymousType() ) {
-            retValue = EMPTY_STRING ;
+            retValue = EMPTY_STRING ; 
         }
         else {
-            retValue = (String)AdqlData.T2D_NAMES.get( schemaType.getName().getLocalPart() ) ;
+            retValue = (String)AdqlData.T2D_NAMES.get( getLocalName( schemaType ) ) ;
             if( retValue == null )
                 retValue = EMPTY_STRING ;
         }
@@ -394,7 +557,7 @@ public final class AdqlUtils {
         SchemaType type = o.schemaType() ;
         if( type.isBuiltinType() || type.isAnonymousType() )
             return false ;
-        if( type.getName().getLocalPart().equals( name ) ) 
+        if( getLocalName( type ).equals( name ) ) 
             return true ;
         return false ;
     }
@@ -547,7 +710,12 @@ public final class AdqlUtils {
     }
     
     static private String capitalize( String name ) {
-        return (name.substring(0,1).toUpperCase() + name.substring(1)).trim() ;
+        if( name == null )
+            return "" ;
+        name = name.trim();
+        if( name.length() == 0 )
+            return "" ;
+        return (name.substring(0,1).toUpperCase() + name.substring(1)) ;
     }
         
     static private Object[] getInterfaces( Class cls ) {
@@ -672,16 +840,33 @@ public final class AdqlUtils {
     }
     
     public static int findChildIndex( XmlObject parent, XmlObject child ) {
+        return findChildIndexWithOptionalFilter( parent, child, false ) ;
+    }
+    
+    public static int findFilteredChildIndex( XmlObject parent, XmlObject child ) {      
+        return findChildIndexWithOptionalFilter( parent, child, true ) ;
+    }
+    
+    private static int findChildIndexWithOptionalFilter( XmlObject parent
+                                                       , XmlObject child
+                                                       , boolean useFilter ) {
         int index = 0 ;
         boolean found = false ;
         XmlCursor cursor = parent.newCursor() ;
+        XmlObject xmlObject = null ;
         cursor.toFirstChild() ; // There has to be a first child!
         do {
-            if( child == cursor.getObject() ) {
+            xmlObject = cursor.getObject() ;
+            if( child == xmlObject ) {
                 found = true ;
                 break ;
             }
-            index++ ;
+            if( useFilter && !isNodeForming( xmlObject ) ) {
+                continue ;
+            }
+            else {
+                index++ ;
+            }
         } while( cursor.toNextSibling() ) ;
         if( found == false ) {
             index = -1 ;
@@ -747,19 +932,51 @@ public final class AdqlUtils {
         }   
         return xmlObject ;
     }
-
-    public static boolean isAttributeDriven( SchemaType type ) {
-        String[] name = (String[])AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
-        return ( name != null && name.length == 1 ) ;
+    
+    
+    public static String[] getEditableAttributes( String localName ) {
+        return (String[])AdqlData.EDITABLE_ATTRIBUTES.get( localName ) ;
+    }
+    
+    public static String[] getEditableAttributes( SchemaType type ) {
+        return getEditableAttributes( getLocalName( type ) ) ;
+    }
+    
+    public static String[] getEditableAttributes( XmlObject xmlObject ) {
+        return getEditableAttributes( xmlObject.schemaType() ) ;
+    }
+    
+    public static String[] getEditableElements( String localName ) {
+        return (String[])AdqlData.EDITABLE_ELEMENTS.get( localName ) ;
+    }
+    
+    public static String[] getEditableElements( SchemaType type ) {
+        return getEditableElements( getLocalName( type ) ) ;
+    }
+    
+    public static String[] getEditableElements( XmlObject xmlObject ) {
+        return getEditableElements( xmlObject.schemaType() ) ;
     }
 
+    //
+    // Just be careful here.
+    // Being attribute driven is NOT the same as having an enumerated attribute!!!
+    //
+    public static boolean isAttributeDriven( SchemaType type ) {
+        String[] name = (String[])AdqlData.EDITABLE_ATTRIBUTES.get( getLocalName( type ) ) ;
+        return ( name != null && name.length == 1 ) ;
+    }
+    
+    
+    public static boolean isAttributeDriven( XmlObject xmlObject ) {
+        return isAttributeDriven( xmlObject.schemaType() ) ;
+    }
+    
     public static XmlObject setAttributeDrivenDefaults( XmlObject xmlObject ) {
-        XmlObject retVal = xmlObject ;
         SchemaType type = xmlObject.schemaType() ;
-        String[] attributeNames = (String[])AdqlData.EDITABLE.get( type.getName().getLocalPart() ) ;
+        String[] attributeNames = getEditableAttributes( type ) ;
         XmlString tempObject = XmlString.Factory.newInstance() ;
-        tempObject.setStringValue( (String)AdqlData.ATTRIBUTE_DEFAULTS.get( type.getName().getLocalPart() ) ) ; 
-        
+        tempObject.setStringValue( (String)AdqlData.ATTRIBUTE_DEFAULTS.get( getLocalName( type ) ) ) ;       
         //
         // There is a better way to do this provided I can get at the fully qualified name
         // of the attribute. Needs thinking about.
@@ -778,13 +995,16 @@ public final class AdqlUtils {
     }
 
     public static XmlObject setDerivedSimpleDefaults( XmlObject xmlObject ) {
-        XmlObject retVal = xmlObject ;
         SchemaType type = xmlObject.schemaType() ;
-        // Cooerce the empty element into an XmlString...
-        XmlString tempObject = (XmlString)xmlObject.changeType( XmlString.type ) ;
-        tempObject.setStringValue( (String)AdqlData.DERIVED_DEFAULTS.get( type.getName().getLocalPart() ) ) ;
-        // Cooerce back to original type...
-        retVal = tempObject.changeType( type ) ;
+        String value = (String)AdqlData.DERIVED_DEFAULTS.get( getLocalName( type ) ) ;
+        XmlObject retVal = xmlObject ;
+        if( value != null ) {        
+            // Cooerce the empty element into an XmlString...
+            XmlString tempObject = (XmlString)xmlObject.changeType( XmlString.type ) ;
+            tempObject.setStringValue( value ) ;
+            // Cooerce back to original type...
+            retVal = tempObject.changeType( type ) ;
+        }       
         return retVal ;
     }
 

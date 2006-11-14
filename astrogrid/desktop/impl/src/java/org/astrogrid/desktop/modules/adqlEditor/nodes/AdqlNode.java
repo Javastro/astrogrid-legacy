@@ -68,7 +68,7 @@ public class AdqlNode extends DefaultMutableTreeNode {
         // Time to check where the position within the xml tree so we
         // can keep the display and the tree in line...  
         XmlObject childObject = childNode.getXmlObject() ;
-        int index = AdqlUtils.findChildIndex( this.getXmlObject(), childObject ) ;
+        int index = AdqlUtils.findFilteredChildIndex( this.getXmlObject(), childObject ) ;
         if( index < 0 )
             add( childNode ) ; 
         else
@@ -87,7 +87,9 @@ public class AdqlNode extends DefaultMutableTreeNode {
         XmlObject[] childArray = o.selectPath("./*") ;
         if( childArray != null ) {
             for( int i=0; i<childArray.length; i++ ) {
-                NodeFactory.newInstance( this, childArray[i] ) ;
+                if( AdqlUtils.isNodeForming( childArray[i] ) ) {
+                    NodeFactory.newInstance( this, childArray[i] ) ;
+                }              
             }       
         }
     }
@@ -101,17 +103,7 @@ public class AdqlNode extends DefaultMutableTreeNode {
     }
     
     public boolean isBottomLeafEditable() {
-        SchemaType type = getSchemaType() ;
-        if( type.isAnonymousType() ){
-            return false ;
-        }
-        else if( type.isSimpleType() ) {
-            return true ;
-        }
-        else if( AdqlData.EDITABLE.containsKey( type.getName().getLocalPart() ) ) {
-            return true ;
-        }
-        return false ;
+        return AdqlUtils.isEditable( getSchemaType() ) ;     
     }
     
     public String getDisplayName() {
@@ -120,11 +112,11 @@ public class AdqlNode extends DefaultMutableTreeNode {
     
     
     public boolean isTableLinked() {
-        return (this.getDisplayName().toUpperCase().indexOf( "TABLE" ) != -1) ;
+        return AdqlUtils.isTableLinked( getSchemaType() ) ;
     }
     
     public boolean isColumnLinked() {
-        return (this.getDisplayName().toUpperCase().indexOf( "COLUMN" ) != -1) ;
+        return AdqlUtils.isColumnLinked( getSchemaType() ) ;
     }
     
     
@@ -182,6 +174,10 @@ public class AdqlNode extends DefaultMutableTreeNode {
         if( expanded ) {
             String shortName = getShortTypeName() ;
             displayInfo = displayName ;
+            //
+            // As you can see, this is not very generic.
+            // See AdqlData.EDITABLE_ATTRIBUTES and AdqlData.EDITABLE_ELEMENTS
+            // for some idea how the following can be made more aesthetic...
             if( shortName.equals( AdqlData.COMPARISON_PRED_TYPE ) ) {
                 // "Comparison" here is the name of an xml attribute. Sorry. Not very generic.
                 displayInfo += (" " + ((SimpleValue)AdqlUtils.get( getXmlObject(), "Comparison" )).getStringValue() ) ;
@@ -199,6 +195,9 @@ public class AdqlNode extends DefaultMutableTreeNode {
                      shortName.equals( AdqlData.TRIG_FUNCTION_TYPE ) ) {
                 // "Name" here is the name of an xml attribute. Sorry. Not very generic.
                 displayInfo += (" " + ((SimpleValue)AdqlUtils.get( getXmlObject(), "Name" )).getStringValue() ) ;
+            }
+            else if( shortName.equals( AdqlData.JOIN_TABLE_TYPE ) ) {
+                displayInfo += (" " + ((SimpleValue)AdqlUtils.get( getXmlObject(), "Qualifier" )).getStringValue() ) ;
             }
             else {
                 displayInfo = displayName ;

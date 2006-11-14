@@ -66,7 +66,7 @@ public interface CommandInfo {
 
     public boolean isChildDrivenByEnumeratedAttribute();
     
-    public boolean isChildAnEnumeratedElement() ;
+    public boolean isChildDrivenByEnumeratedElement() ;
     
     public boolean isChildInPatternContext() ;
 
