@@ -10,7 +10,7 @@
 			possible variations.</p>
 		
 		<subsection name="Java Runtime Environment">
-                  <p>Use SUN Microsystem's implemenation of Java 5.
+                  <p>Use SUN Microsystem's implementation of Java 5.
                   You only need the Java Runtime Environment package; you don't 
                   need the full Java Development Kit.</p>
 		</subsection>
