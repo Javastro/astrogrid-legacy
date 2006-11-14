@@ -111,7 +111,9 @@
 			<construct class="org.astrogrid.desktop.modules.plastic.PlasticHubImpl"
 				initialize-method="start">
 				<event-listener service-id="builtin.shutdown" />					
-				<service>system.executor</service>
+                <string>${astrogrid.desktop.version}</string>
+				<service>system.ui</service>
+                <service>system.executor</service>
 				<service>namegen</service>
 				<service>system.rmi</service>
 				<service>system.webserver</service>

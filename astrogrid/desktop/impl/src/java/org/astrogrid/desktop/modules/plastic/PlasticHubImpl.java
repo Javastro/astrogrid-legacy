@@ -24,6 +24,7 @@ import java.util.Properties;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
@@ -36,6 +37,7 @@ import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.common.namegen.NameGen;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.system.UIInternal;
 import org.votech.plastic.CommonMessageConstants;
 import org.votech.plastic.HubMessageConstants;
 import org.votech.plastic.PlasticHubListener;
@@ -73,6 +75,10 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
 	private Executor sequentialExecutor = new DirectExecutor();
 
+    private UIInternal ui;
+
+    private String arVersion;
+
 	/**
 	 * The keys used to identify this hub
 	 * @see PlasticHubListener#PLASTIC_CONFIG_FILENAME
@@ -83,14 +89,14 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
 
     /** constructor selected by acrFactory when systemtray is not available */
-    public PlasticHubImpl(Executor executor, NameGen idGenerator,
+    public PlasticHubImpl(String arVersion, UIInternal ui,Executor executor, NameGen idGenerator,
             RmiServer rmi,  WebServer web, PrettyPrinterInternal prettyPrinter, Configuration config) {
-        this(executor,idGenerator,rmi, web,null, prettyPrinter, config);
+        this(arVersion, ui,executor,idGenerator,rmi, web,null, prettyPrinter, config);
     }
     
     /** constructor selected by acrFactory when systemtray is available 
      * @param prettyPrinter */
-    public PlasticHubImpl(Executor executor, NameGen idGenerator,
+    public PlasticHubImpl(String arVersion, UIInternal ui,Executor executor, NameGen idGenerator,
             RmiServer rmi, WebServer web,SystemTray tray, PrettyPrinterInternal prettyPrinter, Configuration config) {
         this.tray = tray;
         this.rmiServer= rmi;
@@ -99,6 +105,8 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         this.idGenerator = idGenerator;
         this.prettyPrinter = prettyPrinter;
         this.config = config;
+        this.ui = ui;
+        this.arVersion = arVersion;
         logger.info("Constructing a PlasticHubImpl");
     }
 
@@ -433,24 +441,27 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
             props.put(PlasticHubListener.PLASTIC_RMI_PORT_KEY, Integer.toString(rmiPort));
             props.put(PlasticHubListener.PLASTIC_XMLRPC_URL_KEY, xmlServer);
             props.put(PlasticHubListener.PLASTIC_VERSION_KEY, PlasticListener.CURRENT_VERSION);
-            String version = System.getProperty("workbench.version","Unknown");
-            props.put(PlasticHubImpl.ACR_VERSION, version);
+            props.put(PlasticHubImpl.ACR_VERSION, arVersion);
             //props.put(PlasticHubImpl.HUB_IMPL, this.toString());
             File homeDir = new File(System.getProperty("user.home"));
             plasticPropertyFile = new File(homeDir, PlasticHubListener.PLASTIC_CONFIG_FILENAME);
             if (plasticPropertyFile.exists()) {
                 logger.info("Plastic config file was already present");
+                // See if we can guess who it is.
+                // TODO decide on an official plastic.name key
+                String runningHubName="Unknown application";
                 Properties alreadyPresent = loadExistingDotPlastic();
-                String whoisit = alreadyPresent.getProperty(PlasticHubImpl.ACR_VERSION);
+                if (alreadyPresent.containsKey("uk.ac.starlink.plastic.servid")) runningHubName="Topcat";
+                if (alreadyPresent.containsKey(ACR_VERSION)) runningHubName="the Astro Runtime";
                 
-                if (version.equals(whoisit)) {
-                	logger.warn("An ACR hub of version "+version+" left this file - probably orphaned...deleting");
-                	plasticPropertyFile.delete();
-                } else {
-                	logger.warn("A Plastic hub " + whoisit==null ? " of unknown origin " :" (ACR version +"+whoisit+") " + "is already running.  Plastic features will NOT be available through this ACR");
-                	return; //TODO disable hub
-                }
                 
+                JOptionPane.showMessageDialog(ui.getComponent(),
+                        "<html>It appears that a Plastic Hub is already running on your system inside "+runningHubName+
+                        ".<br>We <em>will not</em> start our Plastic Hub.  If you are sure that there is no other Hub" +
+                        " <br>actually running on your machine, then delete your .plastic file and restart this application.</html>" 
+                        ,"Plastic Hub Already Running",JOptionPane.OK_OPTION);
+                
+                return;
             }
             plasticPropertyFile.deleteOnExit();
             weWroteTheConfigFile = true;
