@@ -5,6 +5,15 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
+          <action dev="gtr" type="fix" issue="1986">
+            Branch cea-gtr-1986. This refactors the mavenation of astrogrid/applications
+            to eliminate the use of XML schemata from workflow-objects and to
+            loosen the coupling between the astrogrid/applications/* sub-projects.
+            At the same time, I have encorporated the fix for BZ2010 concerning
+            HTTP chunking. At this version, the CEA app-servers are cleared
+            to run with Java 5 and Tomcat 5.5 and I now recommend those versions
+            in the documentation.
+          </action>
           <action dev="gtr" type="fix" issue="1981">
             Branch jes-gtr-1981. This breaks JES' dependence on the schema and
             WSDD files in workflow-objects. The build is simpler, the coupling
