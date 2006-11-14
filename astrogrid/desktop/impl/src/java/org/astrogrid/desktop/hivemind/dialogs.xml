@@ -15,7 +15,7 @@
 	<!-- contributions to existing configurations -->
 	
 	<contribution configuration-id="hivemind.FactoryDefaults">
-		<default symbol="dialogs.resourceChooser.useNewDialog" value="false" />
+		<default symbol="dialogs.resourceChooser.useNewDialog" value="true" />
 	</contribution>
 	
 	<contribution configuration-id="toolEditors">
@@ -49,8 +49,9 @@
 		<action parentName="debug" name="driveToolEditor" text="Launch ToolEditor"
 			object="service:toolEditor" methodName="selectAndBuild" />
 		<action parentName="debug" name="driveRegistryChooser" text="Launch RegistryChooser"
-			object="service:registryGoogle" methodName="chooseResource" >		
+			object="service:registryGoogle" methodName="selectResources" >		
 			<parameter>Choose a resource!</parameter>
+			<parameter>false</parameter>
 		</action>
 	</contribution>		
 	
