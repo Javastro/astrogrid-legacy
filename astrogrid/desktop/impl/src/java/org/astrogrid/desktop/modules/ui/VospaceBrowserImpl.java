@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowserImpl.java,v 1.14 2006/11/14 09:58:36 nw Exp $
+/*$Id: VospaceBrowserImpl.java,v 1.15 2006/11/14 10:30:39 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -507,10 +507,11 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
                     "<dt>Modified<dd>").append(df.format(m.getModifyDate().getTime())).append(
                     "<dt>Node Ivorn<dd>").append(m.getNodeIvorn());
             if (n.isFile()) {
-            	// dave pointed out thiat this shows <1K files as 0 in size.
+            	final long rawSize = m.getSize().longValue();
+				// dave pointed out thiat this shows <1K files as 0 in size.
                 //int sz = Math.round(m.getSize().longValue() / 1024);
-            	float kbs = m.getSize().longValue() / 1024 ;
-            	int sz = kbs < 1 ? 1 : Math.round(kbs);
+            	float kbs = rawSize / 1024 ;
+            	int sz = rawSize == 0 ? 0  :  ( kbs < 1 ? 1 : Math.round(kbs));
 				buff.append("<dt>Size<dd>").append(sz)
                         .append(" Kb").append("<dt>Store<dd>").append(m.getContentLocation());
             } else {
@@ -749,6 +750,9 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
 /*
  * $Log: VospaceBrowserImpl.java,v $
+ * Revision 1.15  2006/11/14 10:30:39  nw
+ * fixed my previous fix.
+ *
  * Revision 1.14  2006/11/14 09:58:36  nw
  * myspace fixlet.
  *
