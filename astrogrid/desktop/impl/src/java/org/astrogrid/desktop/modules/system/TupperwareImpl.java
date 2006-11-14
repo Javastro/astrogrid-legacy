@@ -173,14 +173,14 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
 
 		protected Object construct() throws Exception {
 		    List noArgs = new ArrayList();
-		    String ivorn = (String)singleTargetPlasticMessage(CommonMessageConstants.GET_IVORN,noArgs,this.id);
+		    String ivorn = singleTargetPlasticMessage(CommonMessageConstants.GET_IVORN,noArgs,this.id).toString();
 		    if (AR_IVORN.equals(ivorn)) {
 		    	return null; // it's only ourselves
 		    }
 		    String name =hub.getName(this.id) ;
-		    String description = (String)singleTargetPlasticMessage(CommonMessageConstants.GET_DESCRIPTION,noArgs,this.id);
-		    String version = (String)singleTargetPlasticMessage(CommonMessageConstants.GET_VERSION,noArgs,this.id);
-		    String iconURLString =  (String)singleTargetPlasticMessage(CommonMessageConstants.GET_ICON,noArgs,this.id);
+		    String description = singleTargetPlasticMessage(CommonMessageConstants.GET_DESCRIPTION,noArgs,this.id).toString();
+		    String version = singleTargetPlasticMessage(CommonMessageConstants.GET_VERSION,noArgs,this.id).toString();
+		    String iconURLString = singleTargetPlasticMessage(CommonMessageConstants.GET_ICON,noArgs,this.id).toString();
 		    URL iconUrl;
             ImageIcon icon;
             try {
