@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionBaseTestCase.java,v 1.8 2006/03/17 17:50:58 clq2 Exp $
+ * $Id: DescriptionBaseTestCase.java,v 1.9 2006/11/15 16:06:23 clq2 Exp $
  * 
  * Created on 04-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -75,10 +75,12 @@ public class DescriptionBaseTestCase extends TestCase {
 
 
    protected void setUp() throws Exception {
-      super.setUp();      
-      inputFile = this.getClass().getResource(appInfo.getConfigFileName());
-      System.out.println("Application description is " + inputFile.toString());
+      super.setUp();
+      String configFileName = appInfo.getConfigFileName();
+      System.out.println("Looking for " + configFileName + " on the classpath...");
+      inputFile = this.getClass().getResource(configFileName);
       assertNotNull("application config file not found:", inputFile);
+      System.out.println("Application description is " + inputFile.toString());
       {
          TESTAPPNAME = appInfo.getAppName();
       }

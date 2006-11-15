@@ -1,61 +1,11 @@
 <?xml version="1.0"?>
 <!-- extension maven script -->
-<project xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
+<project xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="war:war">
 
-
-  <!-- standard goals - defined in server project-->
-
-  <!-- war packaging -->
-  <!-- this is the name of the goal that does the packaging in the parent project.
-  it's hooked into the war build as a pregoal to war:war
-  because of a quirk of inheritance, its necessary to redefine this goal, rather than
-  adding a new hook - otherwise the inherited hook/goal will be run too, with hilarious concequences.
-  -->
-  <goal name="package-war">
-        <attainGoal name="merge-common-webapp" />
-        <!-- defined in parent maven.xml - just adjust where things are going to go.. -->
-        <property name="webapp.docs" value="${maven.war.webapp.dir}" />
-        <attainGoal name="webapp-docs"  />
-  </goal>
-  <goal name="merge-common-webapp" description="copy contents of existing war into the webapp directory">
-     <deploy:copy-deps todir="${working.dir}" />
-     <unwar dest="${maven.war.webapp.dir}">
-        <fileset dir="${working.dir}"><!-- select the file to unzip -->
-                <include name="astrogrid-cea-server-*.war" />
-        </fileset>
-     	<patternset><!-- what to unzip -->
-     		<exclude name="WEB-INF/web.xml"/>  <!-- CL-CEC has its own web.xml -->
-        <exclude name="WEB-INF/classes/*/**" />
-        <exclude name="WEB-INF/lib/**" />
-        <exclude name="provider/**" />
-      </patternset>
-    </unwar>
-  </goal>
-
-  <!-- redefine goal 'force.compile.tests' - as we don't want it to happen in this project -->
-  <goal name="force.compile.tests" />
-
-	<!-- After building the web-site with the documentation, the download document needs to be
-	     updated with the version and build numbers. This is done in the XHTML output, instead
-	     of in the xdoc input, so as to keep the build idempotent. Note that the links built
-	     in the download document will be broken until this build is loaded onto the AstroGrid
-	     software site. -->
-	<postGoal name="xdoc">
-		<!-- Use an ant filter to replace the version-number token with its value. Use the 
-  	     ant move task, "moving" the file to its current location, to activate the filter. -->
-		<move file="${maven.docs.dest}/DOWNLOAD.html" 
-			tofile="${maven.docs.dest}/DOWNLOAD-versioned.html" 
-			filtering="true"
-			failonerror="false">
-			<filterset>
-				<filter token="astrogrid.applications.version" value="${astrogrid.applications.version}"/>
-			</filterset>
-		</move>
-		<move file="${maven.docs.dest}/DOWNLOAD-versioned.html" 
-			tofile="${maven.docs.dest}/DOWNLOAD.html" 
-			filtering="false"
-			failonerror="false"/>
-	</postGoal>
+  <!-- Before building the WAR, build its documents
+       using the goal in the parent POM. -->
+  <preGoal name="war:war">
+    <attainGoal name="webapp-docs"/>
+  </preGoal>
 	
-
 </project>

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<document>
+  <properties>
+    <author email="gtr@ast.cam.ac.uk">Guy Rixon</author>
+    <title>Changes in this version</title>
+  </properties>
+  <body>
+    <section name="Changes in this version">
+      <ul>
+        <li>Java 5 is the recommended JRE.</li>
+        <li>Apache-Tomcat 5.5 is the recommended web-container.</li>
+        <li>"HTTP chunking" is enabled for writing to MySpace, at least when
+        the JRE is Java 5 or later. This disuades the web-appplication from
+        buffering entire, large files in memory and hence running out of
+        memory.</li>
+      </ul>
+    </section>
+  </body>
+</document>

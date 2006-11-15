@@ -1,8 +1,9 @@
-.project
-target
-*.log
+.DS_Store
+.settings
 .classpath
-server-config.wsdd
+target
 bin
 .metadata
-.settings
+server-config.wsdd
+*.log
+.project

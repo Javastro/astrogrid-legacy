@@ -1,5 +1,6 @@
-target
-.classpath
-.project
+.DS_Store
 tests.log
+.classpath
 velocity.log
+.project
+target

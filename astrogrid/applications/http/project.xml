@@ -13,23 +13,27 @@
   			<packages>org.astrogrid.applications.http*</packages>
   		</packageGroup>
 	  </packageGroups>
+    <reports>
+      <report>download</report>
+      <report>maven-changelog-plugin</report>
+      <report>maven-changes-plugin</report>
+      <report>maven-developer-activity-plugin</report>
+      <report>maven-file-activity-plugin</report>
+      <report>maven-javadoc-plugin</report>
+      <report>maven-junit-report-plugin</report>
+      <report>maven-jxr-plugin</report>
+      <report>maven-license-plugin</report>
+      <report>maven-pmd-plugin</report>
+    </reports>
     <dependencies>
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-cea-server-jar</artifactId>
-            <version>${pom.currentVersion}</version>
-            <jar>astrogrid-cea-server-${pom.currentVersion}.jar</jar>
-            <type>jar</type>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-cea-server</artifactId>
             <version>${pom.currentVersion}</version>
-            <type>war</type>
-            <properties/>
+            <type>jar</type>
+            <properties>
+              <war.bundle>true</war.bundle>
+            </properties>
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>
@@ -41,8 +45,7 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-    	
- 
     </dependencies>
     <properties/>
+    
 </project>
