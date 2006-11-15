@@ -75,9 +75,9 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
 	private Executor sequentialExecutor = new DirectExecutor();
 
-    private UIInternal ui;
+    private final UIInternal ui;
 
-    private String arVersion;
+    private final String arVersion;
 
 	/**
 	 * The keys used to identify this hub
