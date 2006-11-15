@@ -13,25 +13,29 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<action dev="jl" type="add" issue="1794">
+<release version="2006.4.151106" date="151106">
+	<action dev="jl" type="add" issue="1794">
 		Workbench - Query Builder: Adql/s view now uses new AdqlStoX compiler.
 		AdqlStoX dependency added. 
-</action>
-<release version="2006.4.rc2" date="unreleased">
+	</action>
 	<action dev="nw" type="fix">
-		Myspace: fles of size less than 1kb are reported as 1kb, not Okb.
+		Workbench - Myspace: fles of size less than 1kb are reported as 1kb, not 0kb.
+	</action>
+	<action dev="jdt" type="update">
+		Packaging: Updated plastic library to latest release
 	</action>
 	<action dev="nw" type="update">
-		Updated minimum supported java version to 1.4.2
+		Packaging: Updated various 3rd party libraries to latest releases - xfire, ehcache
+	</action>
+	<action dev="nw" type="update">
+		Packaging: Updated minimum supported java version to 1.4.2
 	</action>
 	<action dev="nw" type="fix" issue="1958">
-		Improved reliability of opening web pages from workbench
+		Workbench: Improved reliability of opening web pages from workbench
 	</action>
-<!-- 
-
-pending changes
-	- filechooser editor
- -->
+	<action dev="nw" type="add" issue="1885">
+		Workbench - Usability:  Reimplemented file chooser dialogue, based in dialogue used in Topcat. Still experimental.
+	</action>
 </release>
 <release version="2006.4.rc1" date="2006-11-06">
 
