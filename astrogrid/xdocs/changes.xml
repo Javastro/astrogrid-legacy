@@ -49,15 +49,17 @@
     		  
     		  Reg_KMB_Xfire is the only reg branch needs to be merged. Reg_KMB_Paging had been abandened.
     	</action>
-    	<action dev="gtr" type="fix">
+      
+        </release>
+		
+		<release version="HEAD">
+		
+		<action dev="gtr" type="fix">
           <em>Branch contracts-gtr-1922.</em> This branch replaces/reindexes
           missing schemata. Please see BZ1922 for detailed instructions about
           merging and publishing these fixes.
           see bug 1946 before finishing this branch -CLQ
-    	</action>       
-        </release>
-		
-		<release version="HEAD">
+    	</action> 
           <action dev="gtr" type="fix" issue="1986">
             Branch cea-gtr-1986. This refactors the mavenation of astrogrid/applications
             to eliminate the use of XML schemata from workflow-objects and to
