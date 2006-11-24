@@ -24,7 +24,8 @@
 
   <goal name="download:report">
     
-    <!-- Use an ant filter to replace the version-number token with its value. 
+    <!-- Copy the page to the location and name expected by AstroGrid.
+         Use an ant filter to replace the version-number token with its value. 
          Use the ant copy task to activate the filter. -->
     <copy file="${plugin.resources}/DOWNLOAD.xml" 
           tofile="${maven.gen.docs}/DOWNLOAD.xml" 
@@ -38,6 +39,13 @@
         <filter token="type"       value="${download.artifact.type}"/>
       </filterset>
     </copy>
+    
+    <!-- Copy the page to the location expected by Maven.
+         Copy the pre-filtered page. -->
+    <copy file="${maven.gen.docs}/DOWNLOAD.xml"
+          tofile="${maven.gen.docs}/download-report.xml"
+          verbose="true"/>
+    
     
   </goal>
   
