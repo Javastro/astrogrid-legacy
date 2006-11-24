@@ -3,7 +3,7 @@
   <pomVersion>3</pomVersion>
   <artifactId>download-page-maven-1-plugin</artifactId>
   <groupId>org.astrogrid</groupId>
-  <currentVersion>1.0</currentVersion>
+  <currentVersion>2.0</currentVersion>
   <name>Maven plug-in to generate download pages</name>
   <package>org.astrogrid.download-page-plugin</package>
   <logo>/aglogo2.gif</logo>
