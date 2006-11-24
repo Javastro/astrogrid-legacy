@@ -15,7 +15,9 @@
       can all be varied to suit the project. The artifact type must be set
       explictly using a property of this plug-in, but the other variables are set 
       automatically from the POM. The report is put in the file <it>DOWNLOAD.xml</it>
-      in the directory identified by <it>${maven.gen.docs}</it>.</p>
+      in the directory identified by <it>${maven.gen.docs}</it>, which matches 
+      AstroGrid conventions and also in the file download-report.xml (in the same
+      directory, which matches Maven conventions.</p>
 
       <p>Using the plug-in avoids the need either to hard-code the version of
       the artifact in the source of the download page, or to add code to 
