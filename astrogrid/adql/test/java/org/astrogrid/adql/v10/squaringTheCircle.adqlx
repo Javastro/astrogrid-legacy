@@ -10,7 +10,7 @@
         <v1:Condition xsi:type="v1:intersectionSearchType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <v1:Condition xsi:type="v1:closedSearchType">
                 <v1:Condition xsi:type="v1:betweenPredType">
-                    <v1:Arg Name="&quot;DEC&quot;" Table="c" xsi:type="v1:columnReferenceType"/>
+                    <v1:Arg Name="DEC" Table="c" xsi:type="v1:columnReferenceType"/>
                     <v1:Arg xsi:type="v1:closedExprType">
                         <v1:Arg Oper="-" xsi:type="v1:binaryExprType">
                             <v1:Arg Oper="-" xsi:type="v1:unaryExprType">
@@ -45,7 +45,7 @@
                                 <v1:Arg Oper="*" xsi:type="v1:binaryExprType">
                                     <v1:Arg Name="SIN" xsi:type="v1:trigonometricFunctionType">
                                         <v1:Arg Name="RADIANS" xsi:type="v1:mathFunctionType">
-                                            <v1:Arg Name="&quot;DEC&quot;" Table="c" xsi:type="v1:columnReferenceType"/>
+                                            <v1:Arg Name="DEC" Table="c" xsi:type="v1:columnReferenceType"/>
                                         </v1:Arg>
                                     </v1:Arg>
                                     <v1:Arg Name="SIN" xsi:type="v1:trigonometricFunctionType">
@@ -61,7 +61,7 @@
                                 <v1:Arg Oper="*" xsi:type="v1:binaryExprType">
                                     <v1:Arg Name="COS" xsi:type="v1:trigonometricFunctionType">
                                         <v1:Arg Name="RADIANS" xsi:type="v1:mathFunctionType">
-                                            <v1:Arg Name="&quot;DEC&quot;" Table="c" xsi:type="v1:columnReferenceType"/>
+                                            <v1:Arg Name="DEC" Table="c" xsi:type="v1:columnReferenceType"/>
                                         </v1:Arg>
                                     </v1:Arg>
                                     <v1:Arg Oper="*" xsi:type="v1:binaryExprType">
