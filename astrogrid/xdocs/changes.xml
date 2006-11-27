@@ -5,7 +5,14 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
-
+          <action dev="kea" type="fix">
+            Branch PAL_KEA_1950.
+            Fixes and enhancements for bugzilla tickets 1951 (disabling
+            registration of samplestars plugin), 1957 (removing clear-status
+            command), 1961 (showing endpoint for default registry in
+            registration form box) and 2028 (fixing conesearch haversine
+            maths).
+          </action>
           <action dev="gtr" type="fix" issue="1981">
             Branch jes-gtr-1981. This breaks JES' dependence on the schema and
             WSDD files in workflow-objects. The build is simpler, the coupling
