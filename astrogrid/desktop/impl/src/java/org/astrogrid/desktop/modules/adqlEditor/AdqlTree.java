@@ -1046,10 +1046,35 @@ public final class AdqlTree extends JTree
                 String newValue = field.getText() ;
                 if( newValue != null ) {
                     newValue = newValue.trim() ;
-                    if( newValue.length() == 0 )
+                    if( newValue.length() == 0 ) {
                         newValue = null ;
+                    }
+                    else {
+                        // This is a short-term measure to deal with
+                        // quoted identifiers. In fact eliminating any
+                        // possibility at this level. This needs to 
+                        // be eliminated when we allow delimited identifiers
+                        // within the xml!!!
+                        if( newValue.startsWith( "\"" ) ) {
+                            newValue = newValue.substring( 1 ) ;
+                        }
+                        if( newValue.endsWith( "\"" ) ) {
+                            newValue = newValue.substring( 0, newValue.length()-1 ) ;
+                        }
+                        // This is a little bit of fail safe craziness!
+                        if( newValue.indexOf( '\"' ) > 0 ) {
+                            StringBuffer buffer = new StringBuffer() ;
+                            String[] tempValues = newValue.split( "\"" ) ;
+                            if( tempValues != null && tempValues.length > 0 ) {
+                                for( int i=0; i<tempValues.length; i++ ) {
+                                    buffer.append( tempValues[i] ) ;
+                                }
+                                newValue = buffer.toString() ;
+                            }                         
+                        }
+                    }                   
                 }
-                return newValue ;
+            return newValue ;
             }
             
             private boolean areEqual( String oldValue, String newValue ) {

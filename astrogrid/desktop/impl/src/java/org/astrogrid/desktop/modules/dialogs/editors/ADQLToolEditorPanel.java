@@ -22,6 +22,8 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.BufferedInputStream;
 import java.io.StringReader;
 import java.net.URI;
@@ -84,6 +86,7 @@ import org.astrogrid.adql.AdqlStoX;
 import org.astrogrid.adql.v1_0.beans.SelectDocument;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
+import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils ;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTransformer;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.TableMetadataPanel;
@@ -117,19 +120,21 @@ import org.astrogrid.workflow.beans.v1.Tool;
  */
 public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements ToolEditListener, TreeModelListener {
     
-
     private static final Log log = LogFactory.getLog( ADQLToolEditorPanel.class ) ;
     private static final boolean DEBUG_ENABLED = false ;
     private static final boolean TRACE_ENABLED = false ;
-   
-
-    
+    private static StringBuffer logIndent ;
+    static {
+        if( DEBUG_ENABLED | TRACE_ENABLED ) {
+            logIndent = new StringBuffer() ;
+        }
+    }   
+  
     private ParameterValue queryParam = null ;
     
     protected final MyspaceInternal myspace ;  
     protected final UIComponent parent;
     protected final RegistryGoogle regChooser;
-    protected final Adql074 validator;
     protected final ResourceChooserInternal resourceChooser;
     protected final Registry registry ;
       
@@ -168,17 +173,15 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     private Popup popup = null ;
     private BranchExpansionListener branchExpansionListener = null ;
     private AdqlTransformer transformer ;
-    
-       
+    private boolean statusAfterValidate = false ;
+          
     public ADQLToolEditorPanel( ToolModel toolModel
                               , ResourceChooserInternal resourceChooser
                               , RegistryGoogle regChooser
-                              , Adql074 adql
                               , UIComponent parent
                               , MyspaceInternal myspace
                               , Registry registry ) {
         super( toolModel );
-        this.validator = adql;
         this.parent = parent;
         this.regChooser = regChooser;
         this.resourceChooser = resourceChooser ; 
@@ -465,13 +468,13 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         // Tree panel...
         this.controller = new ControllerImpl() ;
         adqlTreeView = new AdqlTreeView( tabbedEditorPane, controller ) ;
-        
+ 
         // Text panel...
-        adqlStringView = new AdqlStringView( tabbedEditorPane, controller ) ;   
-     
+        adqlStringView = new AdqlStringView( tabbedEditorPane, controller ) ;     
+        
         // Adql/x panel...
         adqlXmlView = new AdqlXmlView( tabbedEditorPane, controller ) ;
-        
+              
         adqlTree.addTreeSelectionListener( new TreeSelectionListener() {
             public void valueChanged( TreeSelectionEvent e ) {
 //                setXmlAndStringContent() ;      
@@ -588,7 +591,8 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     }
     
     private void validateAdql() {
-        if( DEBUG_ENABLED ) log.debug( "ADQLToolEditorPanel.validateAdql() enter" ) ;
+        if( TRACE_ENABLED ) enterTrace( "ADQLToolEditorPanel.validateAdql" ) ; 
+        statusAfterValidate = false ;
         // Create an XmlOptions instance and set the error listener.
         XmlOptions validateOptions = new XmlOptions();
         ArrayList errorList = new ArrayList();
@@ -610,16 +614,25 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
                 	.append( "\n" )
                 	.append( "Error at: " ) ;
                 XmlObject xmlObj = error.getObjectLocation() ;
-                if( xmlObj == null ) {
-                    buffer.append( "no location given." ) ;
-                 }
-                else {
-                    buffer.append( xmlObj.schemaType().getName().getLocalPart() ) ;
+                try {
+                    if( xmlObj == null ) {
+                        buffer.append( "no location given." ) ;
+                     }
+                    else {
+                        buffer.append( xmlObj.schemaType().getName().getLocalPart() ) ;
+                    }
+                    buffer.append( "\n" ) ;
                 }
-                buffer.append( "\n" ) ;
+                catch( Exception ex ) {
+                    buffer.append( "The XML is not well formed.\n");
+                } 
             }
             this.diagnostics.setText( buffer.toString() ) ;
         }
+        else {
+            statusAfterValidate = true ;
+        }
+        if( TRACE_ENABLED ) exitTrace( "ADQLToolEditorPanel.validateAdql" ) ; 
     }
     
     
@@ -639,8 +652,10 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         }
         
         public void updateModel( Object source, XmlObject root ) {
+            if( TRACE_ENABLED ) enterTrace( "ControllerImpl.updateModel" ) ; 
             this.root = root ;
             fireStateChanged( source ) ;
+            if( TRACE_ENABLED ) exitTrace( "ControllerImpl.updateModel" ) ; 
         }
         
         public XmlObject getRootInstance() {
@@ -705,8 +720,6 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     } // end of class BranchExpansionListener
  
 	private class Popup extends MouseAdapter {
-	    	    
-//	    private Hashtable popupMenus = new Hashtable() ;
 	    
         //fix for mac. for portability, need to check on mousePressed 
         // and mouseReleased whether it's the 'popupTrigger' event.
@@ -1285,39 +1298,47 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
             this.component = component ;
             this.controller.addChangeListener( this ) ;
             this.initSelectedProcessing() ;
+            this.initFocusProcessing() ;
         }
         
         
         protected void initKeyProcessing( JTextPane textPane ) {
-            if( textPane == null )
-                return ;
-            //
-            // First we need to find the default action for the Enter key and preserve this.
-            // We will use it to invoke the default action after having processed the Enter key.
-            Object key = textPane.getInputMap( JComponent.WHEN_FOCUSED ).get( KeyStroke.getKeyStroke( KeyEvent.VK_ENTER, 0 ) ) ;
-            final Action action = textPane.getActionMap().get( key ) ;
-            // Set up our own key for the Enter key...
-            textPane.getInputMap( JComponent.WHEN_FOCUSED )
-            .put( KeyStroke.getKeyStroke( KeyEvent.VK_ENTER, 0 ), "ValidateAdqlString" ) ; 
-            //            adqlText.getInputMap( JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT )
-            //        		.put( KeyStroke.getKeyStroke( KeyEvent.VK_ENTER, 0 ), "ValidateAdqlString" ) ;
-            
-            //
-            // Now our substitute action. Note how we invoke the default action at the end...
-            // (JL Note: not sure whether I should invoke the default process first!!!)
-            textPane.getActionMap().put( "ValidateAdqlString", new AbstractAction (){
-                public void actionPerformed(ActionEvent e) {
-                    validateAdql() ;
-                    action.actionPerformed( e ) ;
-                }
-            } );   
+            if( TRACE_ENABLED ) enterTrace( "AdqlView.initKeyProcessing" ) ;
+            if( textPane != null ) {
+                if( DEBUG_ENABLED ) log.debug( "initKeyProcessing triggered" ) ;
+                //
+                // First we need to find the default action for the Enter key and preserve this.
+                // We will use it to invoke the default action after having processed the Enter key.
+                KeyStroke keyStroke = KeyStroke.getKeyStroke( KeyEvent.VK_ENTER, 0 ) ;
+                Object key = textPane.getInputMap( JComponent.WHEN_FOCUSED ).get( keyStroke ) ;
+                final Action action = textPane.getActionMap().get( key ) ;
+                // Set up our own key for the Enter key...
+                textPane.getInputMap( JComponent.WHEN_FOCUSED ).put( keyStroke, "ValidateAdql" ) ; 
+                //            adqlText.getInputMap( JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT )
+                //              .put( KeyStroke.getKeyStroke( KeyEvent.VK_ENTER, 0 ), "ValidateAdqlString" ) ;
+                
+                //
+                // Now our substitute action. Note how we invoke the default action at the end...
+                // (JL Note: not sure whether I should invoke the default process first!!!)
+                textPane.getActionMap().put( "ValidateAdql", new AbstractAction (){
+                    public void actionPerformed(ActionEvent e) {
+                        if( TRACE_ENABLED ) enterTrace( "AdqlView.VK_ENTER.actionPerformed" ) ;
+                        validateAdql() ;
+                        action.actionPerformed( e ) ;
+                        if( TRACE_ENABLED ) exitTrace( "AdqlView.VK_ENTER.actionPerformed" ) ;
+                    }
+                } );                  
+            }
+            if( TRACE_ENABLED ) exitTrace( "AdqlView.initKeyProcessing" ) ;
         }
         
         abstract protected void validateAdql() ;
        
         protected void initSelectedProcessing() {
+            if( TRACE_ENABLED ) enterTrace( "AdqlView.initSelectedProcessing" ) ;
             this.owner.addChangeListener( new ChangeListener() {
                 public void stateChanged( ChangeEvent e ) {
+                    if( TRACE_ENABLED ) enterTrace( "AdqlView.stateChanged" ) ;
                     Object selectedComponent = ((JTabbedPane)e.getSource()).getSelectedComponent() ;
                     if( selectedComponent == ADQLToolEditorPanel.AdqlView.this 
                         &&
@@ -1329,26 +1350,34 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
                         selected = false ;
                         selectionLost() ;
                     }
+                    if( TRACE_ENABLED ) exitTrace( "AdqlView.stateChanged" ) ;
                 }
             }) ;
+            if( TRACE_ENABLED ) exitTrace( "AdqlView.initSelectedProcessing" ) ;
         }
         
         protected void selectionGained() {
-            AdqlView.this.component.requestFocus() ;
+            if( TRACE_ENABLED ) enterTrace( "AdqlView.selectionGained" ) ;
+            AdqlView.this.owner.requestFocus() ;
+            if( TRACE_ENABLED ) exitTrace( "AdqlView.selectionGained" ) ;
         }
         
         abstract protected void selectionLost() ;
         
         public void stateChanged(ChangeEvent e) {
+            if( TRACE_ENABLED ) enterTrace( "AdqlView.stateChanged" ) ;
             if( e != null && e.getSource() != this ) {
                 refreshFromModel() ;
             }
+            if( TRACE_ENABLED ) exitTrace( "AdqlView.stateChanged" ) ;
         }
         
         abstract protected void refreshFromModel() ;
         
         protected void processPotentialUpdates( XmlObject rootBefore, XmlObject rootAfter ) {
+            if( TRACE_ENABLED ) enterTrace( "AdqlView.processPotentialUpdates" ) ;
             if( rootAfter != null && rootBefore != null ) {
+                if( DEBUG_ENABLED ) enterTrace( "potential updates triggered" ) ;
                 XmlOptions options = new XmlOptions();
                 options.setSavePrettyPrint();
                 options.setSavePrettyPrintIndent(4);
@@ -1362,13 +1391,31 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
                     this.controller.updateModel( this, rootAfter ) ;
                 }
             }
+            if( TRACE_ENABLED ) exitTrace( "AdqlView.processPotentialUpdates" ) ;
         }
         
-    }
+        protected void initFocusProcessing() {  
+            if( TRACE_ENABLED ) enterTrace( "AdqlView.initFocusProcessing" ) ;
+            
+            this.component.addFocusListener( new FocusListener() {
+                public void focusGained( FocusEvent e ) {
+                    if( TRACE_ENABLED ) enterTrace( "AdqlView.focusGained" ) ;
+                    if( TRACE_ENABLED ) exitTrace( "AdqlView.focusGained" ) ;
+                }
+                public void focusLost( FocusEvent e ) {
+                    if( TRACE_ENABLED ) enterTrace( "AdqlView.focusLost" ) ;
+                    validateAdql() ;
+                    if( TRACE_ENABLED ) exitTrace( "AdqlView.focusLost" ) ;
+                }
+            }) ;
+            
+            if( TRACE_ENABLED ) exitTrace( "AdqlView.initFocusProcessing" ) ;
+        }
+        
+    } // end of class AdqlView
      
     private class AdqlXmlView extends AdqlView {
         
-        //JTextPane xmlTextPane ;
         String xmlString ;
         XmlObject rootOnGainingSelection ;
         XmlObject processedRoot ;
@@ -1392,28 +1439,42 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         }
         
         protected void selectionGained() {
+            if( TRACE_ENABLED ) enterTrace( "AdqlXmlView.selectionGained" ) ;
             super.selectionGained() ;
             refreshFromModel() ;
-            validateAdql() ;
+//            validateAdql() ;
+            if( TRACE_ENABLED ) exitTrace( "AdqlXmlView.selectionGained" ) ;
         }
         
         protected void selectionLost() {
+            if( TRACE_ENABLED ) enterTrace( "AdqlXmlView.selectionLost" ) ;
             validateAdql() ;
-            processPotentialUpdates( rootOnGainingSelection, processedRoot ) ;
+            if( TRACE_ENABLED ) exitTrace( "AdqlXmlView.selectionLost" ) ;
         }
         
         protected void refreshFromModel() {
+            if( TRACE_ENABLED ) enterTrace( "AdqlXmlView.refreshFromModel" ) ;
             this.rootOnGainingSelection = this.controller.getRootInstance() ;
+            this.rootOnGainingSelection = AdqlUtils.unModifyQuotedIdentifiers( this.rootOnGainingSelection ) ;
             XmlCursor nodeCursor = rootOnGainingSelection.newCursor();
             XmlOptions options = new XmlOptions();
             options.setSavePrettyPrint();
             options.setSavePrettyPrintIndent(4);
             getXmlTextPane().setText( nodeCursor.xmlText(options) ) ;
             nodeCursor.dispose() ;
+            if( TRACE_ENABLED ) exitTrace( "AdqlXmlView.refreshFromModel" ) ;
         }
         
         protected void validateAdql() {
-            if( DEBUG_ENABLED ) log.debug( "AdqlXmlView.validateAdql() entry" ) ;
+            if( TRACE_ENABLED ) enterTrace( "AdqlXmlView.validateAdql" ) ;
+            validateAdql2() ;
+            processPotentialUpdates( rootOnGainingSelection, processedRoot ) ;
+            ADQLToolEditorPanel.this.validateAdql() ; 
+            if( TRACE_ENABLED ) exitTrace( "AdqlXmlView.validateAdql" ) ;
+        }
+        
+        protected void validateAdql2() {
+            if( TRACE_ENABLED ) enterTrace( "AdqlXmlView.validateAdql2" ) ; ;
             String text = getXmlTextPane().getText().trim() ;
             if( text.equals( xmlString ) == false ) {
                 try {
@@ -1431,9 +1492,10 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
                     }                 
                 }
             }
+            if( TRACE_ENABLED ) exitTrace( "AdqlXmlView.validateAdql2" ) ;
         }
         
-    }
+    } // end of class AdqlXmlView
 
     private class AdqlTreeView extends AdqlView {
         
@@ -1458,15 +1520,41 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         }
         
         protected void refreshFromModel() {         
-            if( DEBUG_ENABLED ) log.debug( "AdqlTreeView.stateChanged() is resetting adqlTree" ) ;
+            if( TRACE_ENABLED ) enterTrace( "AdqlTreeView.refreshFromModel" ) ;
             adqlTree.setTree( NodeFactory.newInstance( this.controller.getRootInstance() ), registry, toolModel.getInfo().getId() );
             adqlTree.getModel().addTreeModelListener( ADQLToolEditorPanel.this );
             setAdqlParameter() ;
             adqlTree.openBranches() ;
+            if( TRACE_ENABLED ) exitTrace( "AdqlTreeView.refreshFromModel" ) ;
         }
         
-        protected void selectionLost() {}
-        protected void validateAdql() {}
+//        protected void selectionLost() {}
+//        protected void validateAdql() {}
+        
+        protected void selectionGained() {
+            if( TRACE_ENABLED ) enterTrace( "AdqlTreeView.selectionGained" ) ;
+            super.selectionGained() ;
+//            refreshFromModel() ;
+            validateAdql() ;
+            if( TRACE_ENABLED ) exitTrace( "AdqlTreeView.selectionGained" ) ;
+        }
+        
+        protected void selectionLost() {
+            if( TRACE_ENABLED ) enterTrace( "AdqlTreeView.selectionLost" ) ;
+            validateAdql() ;
+            if( TRACE_ENABLED ) exitTrace( "AdqlTreeView.selectionLost" ) ;
+        }
+        
+        protected void validateAdql() {
+            if( TRACE_ENABLED ) enterTrace( "AdqlTreeView.validateAdql" ) ;
+            try {
+               ADQLToolEditorPanel.this.validateAdql() ; 
+            }
+            catch ( Exception ex ) {
+                ;
+            }
+            if( TRACE_ENABLED ) exitTrace( "AdqlTreeView.validateAdql" ) ;
+        }
         
     }
       
@@ -1476,7 +1564,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         String adqlString ;
         XmlObject rootOnGainingSelection ;
         XmlObject processedRoot ;
-        boolean dirtyFlag = false ;
+        //boolean dirtyFlag = false ;
         
         public AdqlStringView( JTabbedPane owner, Controller controller ) {
             super( owner, controller, new JTextPane() ) ;
@@ -1486,13 +1574,12 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
             textScrollContent.setViewportView( getAdqlTextPane() );
             this.setLayout( new BorderLayout() ) ;
             this.add(textScrollContent, BorderLayout.CENTER );
+            this.owner.addTab( "Adql/s", this ) ;
             //
             // Set up the Enter key as a processing key for Adql.
             // ie: everytime the user presses the Enter key we
             // validate and store the results...
-            initKeyProcessing( getAdqlTextPane() ) ;
-   
-            this.owner.addTab( "Adql/s", this ) ;
+            initKeyProcessing( getAdqlTextPane() ) ;           
         }
         
         private JTextPane getAdqlTextPane() {
@@ -1500,29 +1587,43 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         }
         
         protected void selectionGained() {
+            if( TRACE_ENABLED ) enterTrace( "AdqlStringView.selectionGained" ) ;
             super.selectionGained() ;
             refreshFromModel() ;
-//            this.validateAdql() ;
+            if( TRACE_ENABLED ) exitTrace( "AdqlStringView.selectionGained" ) ;
         }
         
         protected void selectionLost() {
+            if( TRACE_ENABLED ) enterTrace( "AdqlStringView.selectionLost" ) ;
             validateAdql() ;
-            processPotentialUpdates( rootOnGainingSelection, processedRoot ) ;
+            if( TRACE_ENABLED ) exitTrace( "AdqlStringView.selectionLost" ) ;
         }
         
         protected void refreshFromModel() {
+            if( TRACE_ENABLED ) enterTrace( "AdqlStringView.refreshFromModel" ) ;
             this.rootOnGainingSelection = this.controller.getRootInstance() ;
+            this.rootOnGainingSelection = AdqlUtils.modifyQuotedIdentifiers( this.rootOnGainingSelection ) ;
             XmlCursor nodeCursor = rootOnGainingSelection.newCursor();
             XmlOptions options = new XmlOptions();
             options.setSavePrettyPrint();
             options.setSavePrettyPrintIndent(4);
             String text = nodeCursor.xmlText(options);
             nodeCursor.dispose() ;
+            this.rootOnGainingSelection = AdqlUtils.unModifyQuotedIdentifiers( this.rootOnGainingSelection ) ;
             getAdqlTextPane().setText( transformer.transformToAdqls( text, " " ).trim() ) ; 
+            if( TRACE_ENABLED ) exitTrace( "AdqlStringView.refreshFromModel" ) ;
         }
         
         protected void validateAdql() {
-            if( DEBUG_ENABLED ) log.debug( "AdqlStringView.validateAdql() entry" ) ;
+            if( TRACE_ENABLED ) enterTrace( "AdqlStringView.validateAdql" ) ;
+            validateAdql2() ;
+            processPotentialUpdates( rootOnGainingSelection, processedRoot ) ;
+            if( TRACE_ENABLED ) exitTrace( "AdqlStringView.validateAdql" ) ;
+        }
+        
+        protected void validateAdql2() {
+            if( TRACE_ENABLED ) enterTrace( "AdqlStringView.validateAdql2" ) ;
+            statusAfterValidate = false ;
             String text = getAdqlTextPane().getText() ;
             if( text.lastIndexOf( ';') == -1 ){
                 text = text + ';' ;
@@ -1537,7 +1638,8 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
                         adqlCompiler.ReInit( new StringReader( adqlString ) ) ;
                     }
                     this.processedRoot = adqlCompiler.compileToXmlBeans() ;
-                    diagnostics.setText( "" ) ;                  
+                    diagnostics.setText( "" ) ;  
+                    statusAfterValidate = true ;
                 } 
                 catch( Throwable sx ) {
                     String message = sx.getLocalizedMessage() ;
@@ -1549,6 +1651,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
                     }   
                 }
             }
+            if( TRACE_ENABLED ) exitTrace( "AdqlStringView.validateAdql2" ) ;
         }
            
     } // end of class AdqlStringView
@@ -1593,5 +1696,43 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
             return false ;
         return true ;
     }
+
+
+    /** Method overridden.
+     * 
+     * If we are about to execute with a query containing detectable errors,
+     * then we issue a suitable warning message.
+     * 
+     * @param actionType the action about to be performed
+     * @return a suitable warning message or null ;
+     */
+    public String getActionWarningMessage( ActionType actionType ) {
+        String message = null ;
+        if( actionType == EXECUTE ) {
+            if( this.statusAfterValidate == false ) {
+                message = "Query Panel: errors or unprocessed edits have been detected." ;
+            }
+        }       
+        return message ;
+    }
+    
+    private void enterTrace( String entry ) {
+        log.debug( logIndent.toString() + "enter: " + entry ) ;
+        indentPlus() ;
+    }
+
+    private void exitTrace( String entry ) {
+        indentMinus() ;
+        log.debug( logIndent.toString() + "exit : " + entry ) ;
+    }
+    
+    private static void indentPlus() {
+        logIndent.append( ' ' ) ;
+    }
+    
+    private static void indentMinus() {
+        logIndent.deleteCharAt( logIndent.length()-1 ) ;
+    }
+    
     
 } // end of ADQLToolEditor

@@ -17,6 +17,7 @@ import org.apache.xmlbeans.SchemaType;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
+import java.util.regex.Matcher ;
 import java.lang.reflect.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -267,6 +268,91 @@ public final class AdqlUtils {
         return ( getAttributeUsage( element, attributeName ) == SchemaLocalAttribute.REQUIRED ) ;
     }
     
+    
+    public static boolean isRegularIdentifier( String name ) {
+        boolean retVal = false ;      
+        Matcher m = AdqlData.REGULAR_IDENTIFIER.matcher( name );
+        if( m.matches() ) {
+            if( !AdqlData.ADQL_RESERVED_WORDS.contains( name.toUpperCase() ) ) {
+                retVal = true  ;
+            }
+        }
+        return retVal ;
+    }
+    
+    public static XmlObject modifyQuotedIdentifiers( XmlObject xmlObject ) {
+        XmlCursor cursor = xmlObject.newCursor() ;
+        XmlObject element ;
+        cursor.toStartDoc() ;
+        cursor.toFirstChild() ; // There has to be a first child!
+        do {
+            if( cursor.isStart() ) {
+                element = cursor.getObject() ;
+                if( AdqlUtils.isColumnLinked( element ) ) {
+                    setPossibleModifiedAttributeValue( element, "table" ) ;
+                    setPossibleModifiedAttributeValue( element, "name" ) ;      
+                } 
+                else if( AdqlUtils.isTableLinked( element ) ) {
+                    setPossibleModifiedAttributeValue( element, "alias" ) ;
+                    setPossibleModifiedAttributeValue( element, "name" ) ;       
+                }
+            }                 
+        } while( cursor.toNextToken() != XmlCursor.TokenType.NONE ) ;
+        cursor.dispose() ;       
+        return xmlObject ;
+    }
+    
+    public static XmlObject unModifyQuotedIdentifiers( XmlObject xmlObject ) {
+        XmlCursor cursor = xmlObject.newCursor() ;
+        XmlObject element ;
+        cursor.toStartDoc() ;
+        cursor.toFirstChild() ; // There has to be a first child!
+        do {
+            if( cursor.isStart() ) {
+                element = cursor.getObject() ;
+                if( AdqlUtils.isColumnLinked( element ) ) {
+                    unsetPossibleModifiedAttributeValue( element, "table" ) ;
+                    unsetPossibleModifiedAttributeValue( element, "name" ) ;      
+                } 
+                else if( AdqlUtils.isTableLinked( element ) ) {
+                    unsetPossibleModifiedAttributeValue( element, "alias" ) ;
+                    unsetPossibleModifiedAttributeValue( element, "name" ) ;       
+                }
+            }                 
+        } while( cursor.toNextToken() != XmlCursor.TokenType.NONE ) ;
+        cursor.dispose() ;       
+        return xmlObject ;
+    }
+    
+    
+    
+    private static void setPossibleModifiedAttributeValue( XmlObject element, String attrName ) {        
+        SimpleValue sv = (SimpleValue)AdqlUtils.get( element, attrName ) ;
+        String id ;
+        if( sv != null ) {
+            id = sv.getStringValue() ;
+            if( id != null ) {
+                if( !AdqlUtils.isRegularIdentifier( id ) ) {
+                    id = "\"" + id + "\"" ;
+                }
+                AdqlUtils.set( element, attrName, XmlString.Factory.newValue( id ) ) ;
+            }           
+        }
+    }
+    
+    private static void unsetPossibleModifiedAttributeValue( XmlObject element, String attrName ) {        
+        SimpleValue sv = (SimpleValue)AdqlUtils.get( element, attrName ) ;
+        String id ;
+        if( sv != null ) {
+            id = sv.getStringValue() ;
+            if( id != null ) {
+                if( id.startsWith("\"") ) {
+                    id = id.substring(1, id.length()-1 ) ;
+                }
+                AdqlUtils.set( element, attrName, XmlString.Factory.newValue( id ) ) ;
+            }           
+        }
+    }
     
     
     public static boolean isDrivenByEnumeratedElement( SchemaType type ) {

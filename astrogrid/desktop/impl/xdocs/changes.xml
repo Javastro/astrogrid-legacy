@@ -13,6 +13,15 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<action dev="jl" type="fix" issue="2022">
+		Combination of fixes.
+		Dependent on fix #2020 on the AdqlStoX compiler.
+		Solves bugs #2023 and #2025
+		(1) The different views for Adql are consulted before executing a query just in
+		    case there are errors or uncommitted edits. 
+		(2) Quoted identifiers are allowed (eg: "2xmmp" for a table name) but the xml
+		    given to the dsa remains the same.		 
+</action>
 <release version="2006.4.151106" date="151106">
 	<action dev="jl" type="add" issue="1794">
 		Workbench - Query Builder: Adql/s view now uses new AdqlStoX compiler.

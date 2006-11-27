@@ -1,4 +1,4 @@
-/*$Id: AbstractToolEditorPanel.java,v 1.3 2006/08/15 10:22:06 nw Exp $
+/*$Id: AbstractToolEditorPanel.java,v 1.4 2006/11/27 18:38:09 jl99 Exp $
  * Created on 06-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,23 @@ import org.astrogrid.workflow.beans.v1.Tool;
  */
 public abstract class AbstractToolEditorPanel extends JPanel {
 
+    public static final ActionType OPEN = new ActionType( "Open" ) ; 
+    public static final ActionType CLOSE = new ActionType( "Close" ) ;
+    public static final ActionType NEW = new ActionType( "New" ) ; 
+    public static final ActionType EXECUTE = new ActionType( "Execute" ) ;
+    public static final ActionType SAVE = new ActionType( "Save" ) ;
 
+    public static final class ActionType {
+        private String name ;
+        private ActionType() {}
+        private ActionType( String name ) {
+            this.name = name ;
+        }    
+        public String toString() {
+            return name ;
+        }
+    }
+    
     public AbstractToolEditorPanel(ToolModel tm) {
         this.toolModel = tm;
     }
@@ -60,12 +76,28 @@ public abstract class AbstractToolEditorPanel extends JPanel {
      
     public abstract boolean isApplicable(Tool t, CeaApplication info); 
     
+    /** Method designed to be overridden.
+     * 
+     * If an action has potential deletorous effects, issue a suitable warning message.
+     * 
+     * @param actionType the action about to be performed
+     * @return a suitable warning message or null ;
+     */
+    public String getActionWarningMessage( ActionType actionType ) {
+        return null ;
+    }
     
 }
 
 
 /* 
 $Log: AbstractToolEditorPanel.java,v $
+Revision 1.4  2006/11/27 18:38:09  jl99
+Merge of branch workbench-jl-2022
+
+Revision 1.3.22.1  2006/11/23 10:33:32  jl99
+Attempts to deal with multiple warning messages issued by multiple panels when a user chooses an action where there may be errors somewhere in the overall tools dialog. This situation will get easier when the Query Builder reduces its set of views of a query.
+
 Revision 1.3  2006/08/15 10:22:06  nw
 migrated from old to new registry models.
 

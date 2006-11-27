@@ -112,13 +112,21 @@ public class ColumnInsertCommand extends StandardInsertCommand {
                                  , XmlString.Factory.newValue( tableAlias ) ) ;
                 }
                 else {
+                    String tableName = table.getName() ;
+//                    if( !AdqlUtils.isRegularIdentifier( tableName.toUpperCase() ) ) {
+//                        tableName = "\"" +tableName + "\""  ;
+//                    }
                     AdqlUtils.set( getChildObject()
                                  , "table"
-                                 , XmlString.Factory.newValue( table.getName() ) ) ;
-                }      
+                                 , XmlString.Factory.newValue( tableName ) ) ;
+                } 
+                String colName = columnName ;
+//                if( !AdqlUtils.isRegularIdentifier( colName.toUpperCase() ) ) {
+//                    colName = "\"" +colName + "\""  ;
+//                }
                 AdqlUtils.set( getChildObject()
                              , "name"
-                             , XmlString.Factory.newValue( columnName ) ) ;
+                             , XmlString.Factory.newValue( colName ) ) ;
             }
             catch( Exception exception ) {
                 result = CommandExec.FAILED ;

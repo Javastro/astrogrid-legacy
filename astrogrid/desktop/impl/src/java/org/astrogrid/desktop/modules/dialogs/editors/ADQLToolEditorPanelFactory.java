@@ -19,17 +19,15 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 public class ADQLToolEditorPanelFactory implements ToolEditorPanelFactory {
 	private final ResourceChooserInternal resourceChooser;
 	private final RegistryGoogle regChooser;
-	private final Adql074 adql;
 	private final MyspaceInternal myspace;
 	private final Registry registry;
 	public AbstractToolEditorPanel create(ToolModel model, UIComponent parent) {
-		return new ADQLToolEditorPanel(model,resourceChooser,regChooser,adql,parent,myspace,registry);
+		return new ADQLToolEditorPanel(model,resourceChooser,regChooser,parent,myspace,registry);
 	}
-	public ADQLToolEditorPanelFactory(final ResourceChooserInternal resourceChooser, final RegistryGoogle regChooser, final Adql074 adql, final MyspaceInternal myspace, final Registry registry) {
-		super();
+    public ADQLToolEditorPanelFactory(final ResourceChooserInternal resourceChooser, final RegistryGoogle regChooser, final MyspaceInternal myspace, final Registry registry) {	
+    super();
 		this.resourceChooser = resourceChooser;
 		this.regChooser = regChooser;
-		this.adql = adql;
 		this.myspace = myspace;
 		this.registry = registry;
 	}

@@ -114,9 +114,13 @@ public class TableInsertCommand extends StandardInsertCommand {
                 AdqlUtils.set( getChildObject()
                              , "alias"
                              , XmlString.Factory.newValue( allocatedAlias ) ) ;
+                String tabName = tableName ;
+//                if( !AdqlUtils.isRegularIdentifier( tabName ) ) {
+//                    tabName = "\"" + tabName + "\"" ;
+//                }
                 AdqlUtils.set( getChildObject()
                              , "name"
-                             , XmlString.Factory.newValue( tableName ) ) ;
+                             , XmlString.Factory.newValue( tabName ) ) ;
                 String name = childType.getName().getLocalPart() ;
                 if( name.equals( "archiveTableType" ) ) {
                     AdqlUtils.set( getChildObject()

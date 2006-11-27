@@ -202,7 +202,6 @@
 			<construct class="org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanelFactory">
 				<service>resourceChooser</service>
 				<service>registryGoogle</service>
-				<service>ivoa.adql074</service>
 				<service>astrogrid.myspace</service>
 				<service>ivoa.registry</service>
 			</construct>

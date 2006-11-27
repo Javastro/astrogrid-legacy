@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.26 2006/10/16 15:04:50 pjn3 Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.27 2006/11/27 18:38:09 jl99 Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -171,7 +171,11 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
-            
+            if( pollPanelsForWarnings( EXECUTE ) == true ) {
+                if( displayWarningDialog( EXECUTE ) == false ) {
+                    return ;
+                }
+            }           
             final Tool tOrig = getToolModel().getTool();
             final String securityMethod = getToolModel().getSecurityMethod();
             logger.info("Security method = " + securityMethod);
@@ -252,6 +256,10 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         }        
 
         public void actionPerformed(ActionEvent e) {
+            int code = JOptionPane.showConfirmDialog(CompositeToolEditorPanel.this,"Discard current task?","Are you sure?",JOptionPane.OK_CANCEL_OPTION);
+            if (code == JOptionPane.CANCEL_OPTION) {
+                return ;
+            }
             final URI u = rChooser.chooseResourceWithParent("Select tool document to load",true,true, true,CompositeToolEditorPanel.this);
             if (u == null) {
                 return;
@@ -350,6 +358,10 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
+            int code = JOptionPane.showConfirmDialog(CompositeToolEditorPanel.this,"Discard current task?","Are you sure?",JOptionPane.OK_CANCEL_OPTION);
+            if (code == JOptionPane.CANCEL_OPTION) {
+                return ;
+            }
             parent.hide();
             parent.dispose();
         }
@@ -410,6 +422,8 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
     protected Action newAction, saveAction, openAction, executeAction, closeAction;
     protected final JButton creditsButton;
     protected final BrowserControl browser;
+    
+    private ArrayList warningMessages ;
    
 
     /** set the lookout reference - not passed into constructor, as may not always be available*/
@@ -510,11 +524,74 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
 		return fileMenu;
 	}
     
+   /** 
+     * 
+     * Polls each of the views to see whether each would like to caution the user
+     * on the associated action before the action is performed. Maintains an
+     * ArrayList for the purposes of displaying messages from muliple views.
+     * 
+     * @param actionType the action about to be performed
+     * @return a boolean if one or more messages have been built;
+     */
+    private boolean pollPanelsForWarnings( ActionType actionType ) {
+        if( warningMessages != null ) {
+            warningMessages.clear() ;
+        }
+        else {
+            warningMessages = new ArrayList() ;
+        }
+        String message ;
+        for( int i=0; i<views.length; i++ ) {
+            message = views[i].getActionWarningMessage( actionType ) ;
+            if( message != null ) {
+                warningMessages.add( message ) ;
+            }
+        }
+        if( warningMessages.size() > 0 )
+            return true ;
+        return false ;
+    }
+    
+    /** 
+     * 
+     * Displays a dialog of one or more warning messages associated
+     * with a particular action. Returns true if the user says
+     * proceed anyway, false otherwise.
+     * 
+     * @param actionType the action about to be performed
+     * @return a boolean indicating whether to continue or not;
+     */
+    private boolean displayWarningDialog( ActionType actionType ) {
+        StringBuffer buffer = new StringBuffer() ;
+        Iterator iterator = warningMessages.listIterator() ;
+        while( iterator.hasNext() ) {
+            buffer
+                .append( iterator.next() ) 
+                .append( '\n' ) ;
+        }
+        buffer.append( "\nPress \"OK\" to continue, \"Cancel\" to return." ) ;
+        int code = JOptionPane.showConfirmDialog( CompositeToolEditorPanel.this
+                                                , buffer.toString()
+                                                , "Warning on " + actionType.toString()
+                                                , JOptionPane.OK_CANCEL_OPTION ) ;
+        if (code == JOptionPane.OK_OPTION) {
+            return true ;
+        }
+        
+        return false ;
+    }
+    
 }
 
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.27  2006/11/27 18:38:09  jl99
+Merge of branch workbench-jl-2022
+
+Revision 1.26.6.1  2006/11/23 10:33:32  jl99
+Attempts to deal with multiple warning messages issued by multiple panels when a user chooses an action where there may be errors somewhere in the overall tools dialog. This situation will get easier when the Query Builder reduces its set of views of a query.
+
 Revision 1.26  2006/10/16 15:04:50  pjn3
 new file open image #1889
 

@@ -11,6 +11,9 @@
 package org.astrogrid.desktop.modules.adqlEditor ;
 
 import java.util.Hashtable;
+import java.util.HashSet;
+import java.util.HashMap ;
+import java.util.regex.Pattern ;
 
 /**
  * @author jl99
@@ -18,6 +21,17 @@ import java.util.Hashtable;
  *
  */
 public class AdqlData {
+    
+    /**
+     * This pattern is suitable for vetting so-called Regular Identifiers...
+     * Names within a database system that must begin with an alphabetic character
+     * and then continue with alphabetic characters, digits or the two special
+     * characters _ and $. (ie: underscore and dollar sign).
+     * 
+     * This range may not be adequate in the medium to long term.
+     * 
+     */
+    public static Pattern REGULAR_IDENTIFIER  = Pattern.compile( "\\p{Alpha}{1}[\\p{Alpha}\\p{Digit}_$]*" ) ;
     
     public static String NAMESPACE_0_74 = "http://www.ivoa.net/xml/ADQL/v0.7.4" ;
     public static String NAMESPACE_1_0 = "http://www.ivoa.net/xml/ADQL/v1.0" ;
@@ -386,6 +400,44 @@ public class AdqlData {
         
 //        DERIVED_DEFAULTS.put( JOIN_TABLE_QUALIFIER_TYPE, "INNER" ) ;
     }
+    
+   
+    private static String RESERVED_WORDS = 
+           "ABSOLUTE | ACTION | ADD | ALL " +
+         "| ALLOCATE | ALTER | AND | ANY | ARE | AS | ASC | ASSERTION | AT | AUTHORIZATION | AVG | BEGIN " +
+         "| BETWEEN | BIT | BIT_LENGTH | BOTH | BY | CASCADE | CASCADED | CASE | CAST | CATALOG | CHAR " +
+         "| CHARACTER | CHAR_LENGTH | CHARACTER_LENGTH | CHECK | CLOSE | COALESCE | COLLATE | COLLATION " +
+         "| COLUMN | COMMIT | CONNECT | CONNECTION | CONSTRAINT | CONSTRAINTS | CONTINUE | CONVERT | CORRESPONDING " +
+         "| COUNT | CREATE | CROSS | CURRENT | CURRENT_DATE | CURRENT_TIME | CURRENT_TIMESTAMP | CURRENT_USER " +
+         "| CURSOR | DATE | DAY | DEALLOCATE | DEC | DECIMAL | DECLARE | DEFAULT | DEFERRABLE | DEFERRED | DELETE " +
+         "| DESC | DESCRIBE | DESCRIPTOR | DIAGNOSTICS | DISCONNECT | DISTINCT | DOMAIN | DOUBLE | DROP | ELSE " +
+         "| END | END-EXEC | ESCAPE | EXCEPT | EXCEPTION | EXEC | EXECUTE | EXISTS" +
+         "| EXTERNAL | EXTRACT | FALSE | FETCH | FIRST | FLOAT | FOR | FOREIGN | FOUND | FROM | FULL | GET | GLOBAL " +
+         "| GO | GOTO | GRANT | GROUP | HAVING | HOUR | IDENTITY | IMMEDIATE | IN | INDICATOR | INITIALLY | INNER " +
+         "| INPUT | INSENSITIVE | INSERT | INT | INTEGER | INTERSECT | INTERVAL | INTO | IS | ISOLATION | JOIN | KEY " +
+         "| LANGUAGE | LAST | LEADING | LEFT | LEVEL | LIKE | LOCAL | LOWER" +
+         "| MATCH | MAX | MIN | MINUTE | MODULE | MONTH | NAMES | NATIONAL | NATURAL | NCHAR | NEXT | NO | NOT " +
+         "| NULL | NULLIF | NUMERIC | OCTET_LENGTH | OF | ON | ONLY | OPEN | OPTION | OR | ORDER | OUTER | OUTPUT " +
+         "| OVERLAPS | PAD | PARTIAL | POSITION | PRECISION | PREPARE | PRESERVE | PRIMARY | PRIOR | PRIVILEGES " +
+         "| PROCEDURE | PUBLIC | READ | REAL | REFERENCES | RELATIVE | RESTRICT | REVOKE | RIGHT | ROLLBACK | ROWS " +
+         "| SCHEMA | SCROLL | SECOND | SECTION | SELECT | SESSION | SESSION_USER | SET | SIZE | SMALLINT | SOME " +
+         "| SPACE | SQL | SQLCODE | SQLERROR | SQLSTATE | SUBSTRING | SUM | SYSTEM_USER | TABLE | TEMPORARY | THEN " +
+         "| TIME | TIMESTAMP | TIMEZONE_HOUR | TIMEZONE_MINUTE | TO | TRAILING | TRANSACTION | TRANSLATE " +
+         "| TRANSLATION | TRIM | TRUE | UNION | UNIQUE | UNKNOWN | UPDATE | UPPER | USAGE | USER | USING | VALUE " +
+         "| VALUES | VARCHAR | VARYING | VIEW | WHEN | WHENEVER | WHERE | WITH | WORK | WRITE | YEAR | ZONE" ;
+  
+
+    public static final HashSet ADQL_RESERVED_WORDS ;
+    static {
+        String[] reservedWords = RESERVED_WORDS.split( " | " ) ;
+        ADQL_RESERVED_WORDS = new HashSet( reservedWords.length ) ;
+        for( int i=0; i<reservedWords.length; i++ ) {
+            ADQL_RESERVED_WORDS.add( reservedWords[i] ) ;
+        }
+        RESERVED_WORDS = null ;
+        reservedWords = null ;
+    }
+      
 //    public static final String NEW_QUERY =
 //        "<Select xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" " +
 //        "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
