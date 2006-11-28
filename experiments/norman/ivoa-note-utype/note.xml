@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="utf-8"?><!--*- nxml -*-->
+<!-- Based on template at
+     http://www.ivoa.net/Documents/templates/ivoa-tmpl.html -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="en" lang='en'>
+
+<head>
+<title>UTypes and URIs</title>
+<link rev="made"
+      href="http://nxg.me.uk/norman/#norman"
+      title="Norman Gray"/>
+<meta name="author" content="Norman Gray"/>
+<meta name="keywords"
+      content="IVOA, International, Virtual, Observatory, Alliance" />
+<link href="http://www.ivoa.net/misc/ivoa_note.css"
+      rel="stylesheet"
+      type="text/css" />
+<style type='text/css'>
+/* make the ToC a little more compact, and without bullets */
+div.toc ul {list-style: none; padding-left: 1em }
+.todo {background: #ff7; }
+</style>
+</head>
+
+<body>
+<div class='head'>
+<table>
+<tr><td><a href="http://www.ivoa.net/"
+           ><img alt="IVOA logo"
+           src="http://ivoa.net/icons/ivoa_logo_small.jpg"
+           border="0"/></a></td></tr>
+</table>
+
+<h1>UTypes and URIs<br/>$Revision: 1.1 $</h1>
+<h2>IVOA Draft Note, $Date: 2006/11/28 21:51:19 $</h2>
+<dl>
+<dt>This version</dt>
+<dd>XXX to appear</dd>
+
+<dt>Latest version</dt>
+<dd>XXX to appear</dd>
+
+<dt>Author</dt>
+<dd><a href="http://nxg.me.uk" >Norman Gray</a>,
+<a href='http://eurovotech.org/' >Euro-VOTech project</a>
+and
+<a href='http://www.star.le.ac.uk/' >University of Leicester</a></dd>
+</dl>
+<hr/>
+</div>
+
+<div class='section-nonum' id='abstract'>
+<p>Abstract</p>
+
+<p>We describe a minor change to the interpretation of UType values in
+VOTables, which helps document UType meanings, and makes it easy to
+relate UTypes to each other, supporting interoperability while
+requiring a minimum of extra standardisation.</p>
+</div>
+
+<div class='section-nonum' id='status'>
+<p>Status of this document</p>
+
+<p>This is an IVOA Note.</p>
+
+<p>This document is an IVOA Note expressing suggestions from and opinions of
+the authors.  The first release of this document was YYYY
+Month DD.</p>
+
+<p>It is intended to share best practices, possible approaches, or
+other perspectives on interoperability with the Virtual Observatory.
+It should not be referenced or otherwise interpreted as a standard
+specification.</p>
+
+<p>A list of current IVOA Recommendations and other technical
+documents can be found at
+<a href="http://www.ivoa.net/Documents/"
+   ><code>http://www.ivoa.net/Documents/</code></a>.</p>
+
+<h3>Acknowledgments</h3>
+
+<p>None, yet</p>
+
+</div>
+
+<h2><a id="contents" name="contents">Table of Contents</a></h2>
+<div class="head">
+<?toc?>
+</div>
+
+<hr/>
+
+<div class='section' id='introduction'>
+<p>Introduction</p>
+
+<p>UTypes are defined in section 4.5 of the VOTable standard <span
+class='cite'>std:votable</span>, with a definition which is
+sufficiently compact that we can reproduce it in full here.</p>
+<blockquote>
+<p>In some contexts, it can be important that <code>FIELD</code>s or
+<code>PARAM</code>eters are explicitly designed as being the parameter
+performing some well-defined role in some external data model. For
+instance, it might be important for an application to know that a
+given <code>FIELD</code> expresses the surface brightness processed by
+an explicit method. None of the existing <code>name</code>,
+<code>ID</code> or <code>ucd</code> attributes can fill this role, and
+the <code>utype</code> (usage-specific or unique type) attribute has
+been added in VOTable 1.1 to fill this gap. By extension, most
+elements may refer to some external data model, and the
+<code>utype</code> attribute is legal also in <code>RESOURCE</code>,
+<code>TABLE</code> and <code>GROUP</code> elements.</p>
+
+<p>In order to avoid name collisions, the data model identification
+should be introduced following the XML namespace conventions, as
+<code>utype="datamodel_identifier:role_identifier"</code>. The mapping
+of <code>datamodel_identifier</code> to an xml-type attribute is
+recommended, but not required.</p>
+</blockquote>
+
+<p>At the time, this was addressing an anticipated, but not yet
+actual, need, and so this terse definition sensibly neither constrains
+UType syntax, nor defines any specific UTypes.</p>
+
+<p>Our situation is now different.  The SIA protocol <span
+class='cite'>std:sia</span> has acquired a number of UTypes
+(informally introduced in <a
+href='http://www.ivoa.net/forum/dm/0404/0408.htm' >a mail message from
+J C McDowell</a>), and the on-going Dataset Characterisation effort
+<span class='cite'>std:characterisation</span> includes a list of
+UTypes in at least <a
+href='http://www.ivoa.net/Documents/Notes/DMAstroDS/DMAstroDS-20060228.pdf'
+>one version of its draft note</a>.  None of these have yet been
+formally standardised, so that now, with examples in mind and
+standardisation in prospect, is a good moment to refine the UType
+definition.</p>
+
+<p>Our goals in this Note are threefold.  We propose:</p>
+<ol>
+<li>elaborating and tightening the VOTable UType definition;</li>
+<li>slightly extending it by mandating that documentation
+be immediately available; and</li>
+<li>defining a mechanism which allows the VO community to avoid
+the costs of centralised formal UType standardisation, without
+sacrificing mutual intelligibility.</li>
+</ol>
+<p>The second and third goals build on the first, but are independent
+of each other.</p>
+
+<p>In brief, we suggest:</p>
+<ol>
+<li>Regarding the <code>datamodel_identifier</code> prefix above as an
+XML namespace, and interpreting the UType as a URI naming a concept.</li>
+<li>Requiring that each UType URI be resolvable, on the web, to
+human-readable documentation for the concept thus named.</li>
+<li>Requiring that each UType URI be resolvable, separately, to a
+formal (RDF) expression of its semantics, which would be immediately
+retrievable, aggressively cacheable, and easily used by software to
+interpret the data annotated with the UType.</li>
+</ol>
+
+<p>Further discussion of each of these suggestions appears in the
+sections below.</p>
+
+<div class='section' id='costs'>
+<p>Standardisation costs, and subcommunities</p>
+
+<p>Standardisation is expensive, in both time and effort.</p>
+
+<p>While it might be syntactically possible to mint this huge range of
+UTypes, is it at all desirable?  Surely this variety would vitiate
+interoperability, and lead to chaos by vastly increasing the number of
+UTypes which applications would have to (or more likely, would not)
+understand.  We believe this increased flexibility is both
+desirable and unproblematic.  In section <span
+class='xref'>utype-docs</span> we show how it is immediately
+straightforward to associate documentation with URI UTypes, and in
+section <span class='xref'>utype-rdf</span> we show how UType creators
+can link their new UTypes to other UTypes they regard as important,
+using a mechanism which is machine-intelligible and practical.</p>
+
+<p>mint UTypes because:
+particular interest group wants to share specific semantics
+version standardised UTypes, adding deprecation etc.
+in particular, prototype standards-track UTypes
+</p>
+
+<blockquote class='todo'>
+@@TODO Elaborate this
+</blockquote>
+
+</div>
+
+<div class='section' id='utype-create'>
+<p>Creating UTypes</p>
+
+<p>In this proposal, creating a UType consists of three steps,
+mirroring the steps described in section <span
+class='xref'>introduction</span>.</p>
+<ol>
+<li>Determine a namespace URI, identifying a URI in a DNS namespace
+you control.</li>
+<li>Create documentation for the namespace, as described in section
+<span class='xref' >utype-docs</span>.</li>
+<li>Create a simple RDF document expressing how the new UTypes relate
+to other standardised or well-known UTypes, as described in section
+<span class='xref' >utype-rdf</span>.</li>
+</ol>
+
+</div>
+
+</div>
+
+<div class='section' id='utype-uris'>
+<p>UTypes as URIs</p>
+
+<p>The UType definition quoted above (section <span
+class='xref'>introduction</span>) includes a <code>datamodel_identifier</code>
+which syntactically resembles an XML namespace identifier without
+necessarily being one, and in particular without being necessarily
+associated with a URI which would give it uniqueness and a potential
+reference to documentation.</p>
+
+<p>We suggest slightly expanding the UType definition by interpreting this
+<code>datamodel_identifier</code> prefix as precisely an XML namespace
+identifier (which must therefore be defined if it is used), and
+identifying the UType as the string concatenation of the <em>namespace
+name</em> and <em>local name</em> as given in the <code>utype</code>
+attribute, using the terminology of <span class='cite'
+>std:xmlns</span>.  There is precedent for this approach in the
+definition of `Compact URIs' (CURIE, see <span
+class='cite'>birbeck05</span>), and it is a syntax used extensively
+and successfully in the RDF world.</p>
+
+<p>In this interpretation, the following three fragments would expand
+to identical UTypes</p>
+<ul>
+<li><code>xmlns:utns="http://www.ivoa.net/ut#" utype="utns:axis"</code></li>
+<li><code>xmlns="http://www.ivoa.net/ut#" utype="axis"</code></li>
+<li><code>utype="http://www.ivoa.net/ut#axis"</code></li>
+</ul>
+<p>The first is the usual XML namespace mechanism, and closely resembles
+the VOTable definition, the second uses the XML notion of the default
+namespace, and the third gives the explicit namespaceless URI which
+the other two resolve to.  As with XML namespaces, the string used as
+the prefix -- <code>utns</code> in the example here -- would be
+arbitrary, and it is only the post-concatenation URI that has any
+meaning attached to it.</p>
+
+<p>The UType string that results from this concatenation must be a valid URI.
+Since the namespace name is necessarily a URI, this constraint is
+satisfied if the <em>local name</em> matches the syntax</p>
+<blockquote>
+<code>( path-absolute | path-rootless ) [ "?" query ] [ "#" fragment ]</code>
+</blockquote>
+<p>of RFC3986 (see <span class='cite' >std:rfc3986</span>).
+<blockquote class='todo'>
+@@TODO: what characters should be allowed in the <em>local
+name</em>?  The above is a rather conservative set.  XML allows the
+local name to be <code>(Letter | "_") (NameChar-":")*</code>, but
+<code>NameChar</code> includes large chunks of Unicode.  This could be
+accomodated by requiring support for IRIs <span class='cite'
+>std:rfc3987</span>, but the XML namespace document includes only
+ambiguous support for that.  Is the VO ready for kanji in its UTypes?
+</blockquote>
+</p>
+
+<p>In this example and below, we illustrate
+UTypes using the URI fragment identifier <code>#</code>: this is
+regarded as best practice in the RDF community and would generally be
+more convenient in the procedure we illustrate, but there is no
+technical reason why a set of distinct, fragmentless, URIs could not
+be used instead.</p>
+
+<p>UTypes used in non-XML contexts -- such as FITS files -- would have
+to use either the third explicit mechanism or some separate namespacing
+mechanism, not specified here, though briefly discussed in appendix
+<span class='xref' >fits</span>.</p>
+
+<p>This mechanism makes it possible to mint URI UTypes through a wide
+variety of processes, from very formal and widely shared ones, managed
+by an elaborate standards process and probably in a
+<code>www.ivoa.net</code> namespace; through semi-formal ones specific
+to, and managed by, particular interest groups, perhaps on the way to
+full standardisation; to very precise ones, perhaps specific to a
+single instrument.</p>
+
+</div>
+
+<div class='section' id='utype-docs'>
+<p>Documentation</p>
+
+<p>Once UTypes have been defined as URIs, then they immediately
+provide a source of documentation, if the namespace URI is made
+dereferenceable.</p>
+
+<p>For example, to define a UType
+<code>http://example.org/utypes/1.0#sharpBounds</code> (presuming that we own
+the <code>example.org</code> domain), we would create a web page at
+the URL <code>http://example.org/utypes/1.0</code> (see section <span
+class='xref' >web-recipes</span> for hints on making Apache return
+HTML for such URLs which don't end in <code>.html</code>), within
+which we have a link target with the same name, which leads to a
+human-readable description of the UType's semantics.</p>
+<pre>
+&lt;h2&gt;&lt;a name='sharpBounds'&gt;Accurate bounds&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;In our data, &lt;code&gt;#sharpBounds&lt;/code&gt; are the
+bounds on a bandpass where the transmission goes from 0% to 100%
+within 10nm.  This is distinguished from
+&lt;code&gt;#fuzzyBounds&lt;/code&gt; data, where...
+</pre>
+
+<p>The description here can go into as much or as little detail as is
+appropriate for the formality and intricacy of the document.  The URI
+UType will, when entered into a browser, show the documentation for
+precisely that concept.</p>
+
+</div>
+
+<div class='section' id='utype-rdf'>
+<p>Shared semantics</p>
+
+<p>While the UType documentation described in section <span
+class='xref' >utype-docs</span> is useful for humans, it is of course
+unintelligible to the applications that must interpret the data source
+annotated with the UType.</p>
+
+<p>To continue our example, we might wish to share data using our new
+<code>#sharpBounds</code> concept.  Doing so means that any application which
+is written to understand our more precise concept can make good use of the
+more precise meaning, but we want to make it possible for applications
+which do <em>not</em> know about this concept to make use of the data also.</p>
+
+<p>We suggest a minimal profile of the W3C
+best-practice document <span class='cite'>w3c:swbp</span> which
+describes how best to share standard RDF <span class='cite'
+>std:rdf</span> and RDFS <span class='cite' >std:rdfs</span>
+vocabularies.</p>
+
+<p>We want to assert that our new <code>#sharpBounds</code> UType is a
+more specific version of a concept
+<code>#characterization.characterizationAxis.coverage.bounds</code>,
+which we presume has already defined by the IVOA in the namespace
+<code>http://www.ivoa.net/ut#</code>.  We can do so using RDFS (here
+written in Notation3 syntax <span class='cite' >std:n3</span>):</p>
+<pre>
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;.
+@prefix myns: &lt;http://example.org/utypes/1.0#&gt;.
+@prefix ivoa: &lt;http://www.ivoa.net/ut#&gt;.
+
+myns:sharpBounds a rdfs:Class; 
+    rdfs:subClassOf 
+        ivoa:characterization.characterizationAxis.coverage.bounds.
+</pre>
+<p>This asserts that
+<code>http://example.org/utypes/1.0#sharpBounds</code> is a concept --
+a Class in RDFS terms -- and that it is a more specific concept than
+the Characterisation model's bounds concept.</p>
+
+<p>We propose that the file containing this machine-readable
+documentation of our UTypes be available at the namespace URI, and
+returned when the URI is dereferenced using an HTTP Accept header of
+<code>text/rdf+n3</code>.  All non-trivial HTTP APIs have support for
+manipulating request headers in this fashion, and if all else fails,
+the command-line <code>curl</code> application can do the
+retrieval:</p>
+<pre>
+% curl --header accept:text/rdf+n3 http://example.org/utypes/1.0
+</pre>
+<p>Recipes for setting up a web server to support such content
+negotiation are in <span class='xref' >web-recipes</span>.</p>
+
+<div class='section'>
+<p>Reasoning systems</p>
+
+<p>There are multiple systems (for example <span class='cite'
+>app:jena</span> and <span class='cite' >app:pellet</span>), in
+multiple languages, which can ingest
+such specifications and help an application make the necessary
+deduction.  However it is straightforward to wrap such a reasoning
+system in a web-based service, and a system such as this has been
+prototyped.</p>
+
+<p>Using such a resolver, an application which comes across the
+previously-unknown UType
+<code>http://example.org/utypes/1.0#sharpBounds</code> can resolve it
+in a single URL dereference (shown using <code>curl</code> here):</p>
+<pre>
+% curl http://localhost/resolver?q=http://example.org/utypes/1.0%23sharpBounds
+http://www.w3.org/2000/01/rdf-schema#Class
+http://www.ivoa.net/ut#characterization.characterizationAxis.coverage.bounds
+http://example.org/utypes/1.0#sharpBounds
+</pre>
+<p>This returns the list of superclasses of the
+<code>#sharpBounds</code> concept (which includes the
+<code>#sharpBounds</code> class itself,
+and the technical RDFS class), and so the application can simply work
+through this list until it finds a UType it recognises, and then
+proceed exactly as if that UType had been the one found in the input data
+stream, instead of the previously unknown <code>#sharpBounds</code>
+Utype.  By making the assertions above we have stated that this is a
+reasonable thing for an application to do.</p>
+
+<p>The resolver does not need to be pre-loaded with a set of known
+UTypes.  In fact, the reasoner can start off knowing about no UTypes
+at all, since when it is asked to resolve a hitherto unknown UType
+such as this one, it can simply dereference the URI as described above
+and add the described relationships to its knowledgebase.  Since UType
+definitions will be stable, they can be aggressively cached (the
+assertions will be stable in principle, but might include bugfixes
+and updates in practice).</p>
+
+</div>
+
+</div>
+
+<div class='appendices'>
+
+<div class='section' id='fits'>
+<p>UTypes and FITS</p>
+
+<p>Describe a potential <code>TUTYPnn</code> header card (see IVOA
+list archives), and <code>TUTYPNSn</code> card for namespaces.</p>
+<blockquote class='todo'>
+@@TODO Elaborate, and make reference to the appropriate messages in
+the IVOA archives: http://www.ivoa.net/forum/dm/0610/1257.htm and
+following thread.
+</blockquote>
+</div>
+
+<div class='section' id='web-recipes'>
+<p>Apache recipes</p>
+
+<blockquote class='todo'>
+@@TODO Elaborate, based on the recipes in the W3C WD <a
+href='http://www.w3.org/TR/swbp-vocab-pub/'
+><code>Best Practice Recipes for Publishing RDF Vocabularies</code></a>.
+</blockquote>
+
+</div>
+
+<div class='section-nonum' id='bibliography'>
+<p>Bibliography</p>
+<?bibliography?>
+</div>
+
+</div>
+
+</body>
+</html>
