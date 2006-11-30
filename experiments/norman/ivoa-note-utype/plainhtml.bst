@@ -5,7 +5,7 @@
 %%
 %% Copyright 1999, 2005, 2006, Norman Gray <norman@astro.gla.ac.uk>
 %
-% $Id: plainhtml.bst,v 1.1 2006/11/28 21:51:19 norman Exp $
+% $Id: plainhtml.bst,v 1.2 2006/11/30 18:13:30 norman Exp $
 %
 % Released under the terms of the GNU General Public Licence --
 % see the file LICENCE, included in the distribution.
@@ -1212,7 +1212,13 @@ FUNCTION {presort.by.year}
   'sort.key$ :=
 }
 
-ITERATE {presort.by.author}
+FUNCTION {presort.by.cite}
+{
+  cite$ 'sort.key$ :=
+}
+
+%ITERATE {presort.by.author}
+ITERATE {presort.by.cite}
 
 SORT
 
