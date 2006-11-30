@@ -17,8 +17,8 @@
       type="text/css" />
 <style type='text/css'>
 /* make the ToC a little more compact, and without bullets */
-div.toc ul {list-style: none; padding-left: 1em }
-.todo {background: #ff7; }
+div.toc ul { list-style: none; padding-left: 1em; }
+.todo { background: #ff7; }
 </style>
 </head>
 
@@ -31,8 +31,10 @@ div.toc ul {list-style: none; padding-left: 1em }
            border="0"/></a></td></tr>
 </table>
 
-<h1>UTypes and URIs<br/>$Revision: 1.1 $</h1>
-<h2>IVOA Draft Note, $Date: 2006/11/28 21:51:19 $</h2>
+<h1>UTypes and URIs<br/>Draft version $Revision: 1.2 $</h1>
+<!-- <span class='rcsinfo' >$Revision: 1.2 $</span></h1> -->
+<h2>IVOA Draft Note, $Date: 2006/11/30 17:38:13 $</h2>
+<!-- <span class='rcsinfo' >$Date: 2006/11/30 17:38:13 $</span></h2> -->
 <dl>
 <dt>This version</dt>
 <dd>XXX to appear</dd>
@@ -55,7 +57,7 @@ and
 <p>We describe a minor change to the interpretation of UType values in
 VOTables, which helps document UType meanings, and makes it easy to
 relate UTypes to each other, supporting interoperability while
-requiring a minimum of extra standardisation.</p>
+requiring minimal standardisation.</p>
 </div>
 
 <div class='section-nonum' id='status'>
@@ -118,8 +120,8 @@ recommended, but not required.</p>
 </blockquote>
 
 <p>At the time, this was addressing an anticipated, but not yet
-actual, need, and so this terse definition sensibly neither constrains
-UType syntax, nor defines any specific UTypes.</p>
+actual, need, and so this terse definition sensibly neither greatly constrains
+UType syntax, nor defines any specific instances.</p>
 
 <p>Our situation is now different.  The SIA protocol <span
 class='cite'>std:sia</span> has acquired a number of UTypes
@@ -134,61 +136,32 @@ formally standardised, so that now, with examples in mind and
 standardisation in prospect, is a good moment to refine the UType
 definition.</p>
 
-<p>Our goals in this Note are threefold.  We propose:</p>
+<p>We make three suggestions, which we can summarise as follows.</p>
 <ol>
-<li>elaborating and tightening the VOTable UType definition;</li>
-<li>slightly extending it by mandating that documentation
-be immediately available; and</li>
-<li>defining a mechanism which allows the VO community to avoid
-the costs of centralised formal UType standardisation, without
-sacrificing mutual intelligibility.</li>
+<li>Regard the <code>datamodel_identifier</code> prefix above as an
+XML namespace, with the syntactic requirements that implies, and
+interpret the UType as a URI naming a concept.</li>
+<li>Require that each UType URI be resolvable, on the web, to
+human-readable documentation for the concept thus named.</li>
+<li>Require that each UType URI be resolvable, separately, to a
+formal (RDF) expression of its semantics, which would therefore be
+immediately retrievable, aggressively cacheable, and easily used by
+software to interpret data annotated with the UType.</li>
 </ol>
-<p>The second and third goals build on the first, but are independent
+<p>The second and third suggestions build on the first, but are independent
 of each other.</p>
 
-<p>In brief, we suggest:</p>
-<ol>
-<li>Regarding the <code>datamodel_identifier</code> prefix above as an
-XML namespace, and interpreting the UType as a URI naming a concept.</li>
-<li>Requiring that each UType URI be resolvable, on the web, to
-human-readable documentation for the concept thus named.</li>
-<li>Requiring that each UType URI be resolvable, separately, to a
-formal (RDF) expression of its semantics, which would be immediately
-retrievable, aggressively cacheable, and easily used by software to
-interpret the data annotated with the UType.</li>
-</ol>
+<p>Further discussion of each of these appears in the sections below,
+and a rationale for the overall approach appears in <span class='xref'
+>rationale</span>.  Although
+simple uses of the reasoning framework described there would be
+immediately available, the more elaborate possibilities would require
+further work.  We would like to stress, however, that this is not the
+only benefit of the UType refinement we are suggesting, and that the
+consistency and documentation benefits described here would follow
+even if the reasoning potential were never exploited.</p>
 
-<p>Further discussion of each of these suggestions appears in the
-sections below.</p>
 
-<div class='section' id='costs'>
-<p>Standardisation costs, and subcommunities</p>
-
-<p>Standardisation is expensive, in both time and effort.</p>
-
-<p>While it might be syntactically possible to mint this huge range of
-UTypes, is it at all desirable?  Surely this variety would vitiate
-interoperability, and lead to chaos by vastly increasing the number of
-UTypes which applications would have to (or more likely, would not)
-understand.  We believe this increased flexibility is both
-desirable and unproblematic.  In section <span
-class='xref'>utype-docs</span> we show how it is immediately
-straightforward to associate documentation with URI UTypes, and in
-section <span class='xref'>utype-rdf</span> we show how UType creators
-can link their new UTypes to other UTypes they regard as important,
-using a mechanism which is machine-intelligible and practical.</p>
-
-<p>mint UTypes because:
-particular interest group wants to share specific semantics
-version standardised UTypes, adding deprecation etc.
-in particular, prototype standards-track UTypes
-</p>
-
-<blockquote class='todo'>
-@@TODO Elaborate this
-</blockquote>
-
-</div>
 
 <div class='section' id='utype-create'>
 <p>Creating UTypes</p>
@@ -197,7 +170,7 @@ in particular, prototype standards-track UTypes
 mirroring the steps described in section <span
 class='xref'>introduction</span>.</p>
 <ol>
-<li>Determine a namespace URI, identifying a URI in a DNS namespace
+<li>Determine a namespace URI, identifying a URI in a DNS domain
 you control.</li>
 <li>Create documentation for the namespace, as described in section
 <span class='xref' >utype-docs</span>.</li>
@@ -231,18 +204,18 @@ definition of `Compact URIs' (CURIE, see <span
 class='cite'>birbeck05</span>), and it is a syntax used extensively
 and successfully in the RDF world.</p>
 
-<p>In this interpretation, the following three fragments would expand
-to identical UTypes</p>
+<p>In this interpretation, the following three fragments would
+represent identical UTypes and would be deemed to be equivalent.</p>
 <ul>
-<li><code>xmlns:utns="http://www.ivoa.net/ut#" utype="utns:axis"</code></li>
-<li><code>xmlns="http://www.ivoa.net/ut#" utype="axis"</code></li>
-<li><code>utype="http://www.ivoa.net/ut#axis"</code></li>
+<li><code>xmlns:utns="http://www.ivoa.net/ut/#" utype="utns:axis"</code></li>
+<li><code>xmlns="http://www.ivoa.net/ut/#" utype="axis"</code></li>
+<li><code>utype="http://www.ivoa.net/ut/#axis"</code></li>
 </ul>
 <p>The first is the usual XML namespace mechanism, and closely resembles
 the VOTable definition, the second uses the XML notion of the default
-namespace, and the third gives the explicit namespaceless URI which
+namespace, and the third explicitly gives the URI which
 the other two resolve to.  As with XML namespaces, the string used as
-the prefix -- <code>utns</code> in the example here -- would be
+the prefix -- <code>utns</code> in the example here -- is
 arbitrary, and it is only the post-concatenation URI that has any
 meaning attached to it.</p>
 
@@ -252,24 +225,41 @@ satisfied if the <em>local name</em> matches the syntax</p>
 <blockquote>
 <code>( path-absolute | path-rootless ) [ "?" query ] [ "#" fragment ]</code>
 </blockquote>
-<p>of RFC3986 (see <span class='cite' >std:rfc3986</span>).
+<p>of RFC3986 (see <span class='cite' >std:rfc3986</span>).  In
+practice, we expect most UTypes `local name' parts would match the syntax
+<code>[0-9a-zA-Z_/.-]+</code>.</p>
 <blockquote class='todo'>
-@@TODO: what characters should be allowed in the <em>local
+<p>@@TODO: what characters should be allowed in the <em>local
 name</em>?  The above is a rather conservative set.  XML allows the
 local name to be <code>(Letter | "_") (NameChar-":")*</code>, but
 <code>NameChar</code> includes large chunks of Unicode.  This could be
 accomodated by requiring support for IRIs <span class='cite'
 >std:rfc3987</span>, but the XML namespace document includes only
 ambiguous support for that.  Is the VO ready for kanji in its UTypes?
+Probably not.</p>
+<p>Even without worrying about IRIs, we shouldn't rely on the fact
+that XML has Unicode sorted out.  Other formats, and other software,
+will have to read UTypes, and so encoding issues rear their heads.  In
+particular, we mustn't require any encoding which uses more than one byte
+per character, since that would generate various transcoding
+challenges, to put it mildly, when handling FITS files.</p>
+<p>We could restrict ourselves to the characters of 7-bit ASCII, but
+it would probably be painless to use ISO-8859-1 in fact.  The
+defined 0-127 characters in that set exactly match the printable 7-bit
+ASCII characters, and ISO-8859-1 as a whole matches the Unicode
+code points 0-255.  Thus, although this does not correspond to any
+Unicode encoding, there is a broad <em>compatibility</em> with Unicode
+in this case.</p>
 </blockquote>
-</p>
 
 <p>In this example and below, we illustrate
 UTypes using the URI fragment identifier <code>#</code>: this is
 regarded as best practice in the RDF community and would generally be
 more convenient in the procedure we illustrate, but there is no
 technical reason why a set of distinct, fragmentless, URIs could not
-be used instead.</p>
+be used instead.  One advantage of using the fragment identifier is
+that in this case it is natural to have the namespace URI referring to
+an overview document describing the namespace as a whole.</p>
 
 <p>UTypes used in non-XML contexts -- such as FITS files -- would have
 to use either the third explicit mechanism or some separate namespacing
@@ -310,7 +300,7 @@ within 10nm.  This is distinguished from
 </pre>
 
 <p>The description here can go into as much or as little detail as is
-appropriate for the formality and intricacy of the document.  The URI
+appropriate for the formality and intricacy of the document.  Thus the URI
 UType will, when entered into a browser, show the documentation for
 precisely that concept.</p>
 
@@ -328,7 +318,11 @@ annotated with the UType.</p>
 <code>#sharpBounds</code> concept.  Doing so means that any application which
 is written to understand our more precise concept can make good use of the
 more precise meaning, but we want to make it possible for applications
-which do <em>not</em> know about this concept to make use of the data also.</p>
+which do <em>not</em> know about this concept to make use of the data
+also.</p>
+
+<div class='section' id='share-rdf'>
+<p>Describing subclass relationships</p>
 
 <p>We suggest a minimal profile of the W3C
 best-practice document <span class='cite'>w3c:swbp</span> which
@@ -340,12 +334,13 @@ vocabularies.</p>
 more specific version of a concept
 <code>#characterization.characterizationAxis.coverage.bounds</code>,
 which we presume has already defined by the IVOA in the namespace
-<code>http://www.ivoa.net/ut#</code>.  We can do so using RDFS (here
+<code>http://www.ivoa.net/ut/#</code>, and which we can reasonably
+expect software to know about.  We can do this using RDFS (here
 written in Notation3 syntax <span class='cite' >std:n3</span>):</p>
 <pre>
 @prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;.
 @prefix myns: &lt;http://example.org/utypes/1.0#&gt;.
-@prefix ivoa: &lt;http://www.ivoa.net/ut#&gt;.
+@prefix ivoa: &lt;http://www.ivoa.net/ut/#&gt;.
 
 myns:sharpBounds a rdfs:Class; 
     rdfs:subClassOf 
@@ -369,16 +364,18 @@ retrieval:</p>
 <p>Recipes for setting up a web server to support such content
 negotiation are in <span class='xref' >web-recipes</span>.</p>
 
+</div>
+
 <div class='section'>
 <p>Reasoning systems</p>
 
 <p>There are multiple systems (for example <span class='cite'
 >app:jena</span> and <span class='cite' >app:pellet</span>), in
-multiple languages, which can ingest
-such specifications and help an application make the necessary
-deduction.  However it is straightforward to wrap such a reasoning
-system in a web-based service, and a system such as this has been
-prototyped.</p>
+multiple languages, which can ingest such specifications and help an
+application make the necessary deduction.  While an application could
+incorporate such functionality, it is straightforward to wrap such a
+reasoning system in a web-based service, and a system such as this has
+been prototyped.</p>
 
 <p>Using such a resolver, an application which comes across the
 previously-unknown UType
@@ -387,7 +384,7 @@ in a single URL dereference (shown using <code>curl</code> here):</p>
 <pre>
 % curl http://localhost/resolver?q=http://example.org/utypes/1.0%23sharpBounds
 http://www.w3.org/2000/01/rdf-schema#Class
-http://www.ivoa.net/ut#characterization.characterizationAxis.coverage.bounds
+http://www.ivoa.net/ut/#characterization.characterizationAxis.coverage.bounds
 http://example.org/utypes/1.0#sharpBounds
 </pre>
 <p>This returns the list of superclasses of the
@@ -397,17 +394,21 @@ and the technical RDFS class), and so the application can simply work
 through this list until it finds a UType it recognises, and then
 proceed exactly as if that UType had been the one found in the input data
 stream, instead of the previously unknown <code>#sharpBounds</code>
-Utype.  By making the assertions above we have stated that this is a
-reasonable thing for an application to do.</p>
+Utype.  By making the <code>subClassOf</code> assertion above we have
+stated that this is a reasonable thing for an application to do.</p>
 
 <p>The resolver does not need to be pre-loaded with a set of known
 UTypes.  In fact, the reasoner can start off knowing about no UTypes
 at all, since when it is asked to resolve a hitherto unknown UType
-such as this one, it can simply dereference the URI as described above
-and add the described relationships to its knowledgebase.  Since UType
-definitions will be stable, they can be aggressively cached (the
-assertions will be stable in principle, but might include bugfixes
-and updates in practice).</p>
+such as this one, it can simply dereference the URI as described in
+section <span class='xref' >share-rdf</span>, and add the retrieved
+relationships to its knowledgebase, ready to respond to this and any
+future queries.  Since UType definitions will be stable, they can be
+aggressively cached (the assertions will be stable in principle, but
+might include bugfixes and updates in practice).  Thus this proposal
+requires no infrastructure beyond the dereferenceable URIs described
+above, and the commitment of the authors of those UTypes to maintain
+the URIs into the future.</p>
 
 </div>
 
@@ -418,23 +419,224 @@ and updates in practice).</p>
 <div class='section' id='fits'>
 <p>UTypes and FITS</p>
 
-<p>Describe a potential <code>TUTYPnn</code> header card (see IVOA
-list archives), and <code>TUTYPNSn</code> card for namespaces.</p>
+<p>The description above is expressed in terms of XML, through its
+reference to XML namespaces and its use of VOTable examples, but it is
+not specific to XML.  To demonstrate this, and illustrate the
+potential use of these UTypes in other systems, we present here an
+example of how one might include UTypes in FITS files.</p>
+
+<p>In <a href='http://www.ivoa.net/forum/dm/0610/1257.htm' >a message
+to the IVOA data-modelling group</a>, Jonathan McDowell proposed FITS
+keywords for UCDs and UTypes, namely <code>TUCDnnnn</code> and
+<code>TUTYPnnn</code>, each providing a UCD and UType for the data in
+the <code>nnn</code>th column.</p>
+
+<p>We could expand Jonathan's proposal by requiring the
+<code>TUTYPnnn</code> to include a namespace prefix, exactly as the
+<code>utype</code> VOTable attribute has, and adding a further header
+card to define the namespace prefix.  This could be done with a header
+card <code>TUTNSnnn</code>, as follows:</p>
+<pre>
+TUTNS001=pfx:http://www.ivoa.net/ut/#
+TUTYP010=pfx:axis
+</pre>
+<p>where the numbers <code>nnn</code> in <code>TUTYPnnn</code> refer
+to the annotated column, and <code>nnn</code> in <code>TUTNSnnn</code>
+distinguishes the namespace header cards from each other.
+Alternatively, namespaces could be defined with a card
+<code>TUTNSaaa</code> where the <code>aaa</code> letters define the
+necessarily short namespace prefix, as in</p>
+<pre>
+TUTNSpfx=http://www.ivoa.net/ut/#
+TUTYP010=pfx:axis
+</pre>
+
+<p>This would have the side-effect of requiring that UTypes (or
+rather, the part of them following the namespace URI) have a maximum
+length of 68 characters (72 characters of a FITS card value, minus the
+three <code>aaa</code> characters and the colon).  While this is
+unlikely to be a great imposition, it is worth noting that some of the
+proposed Characterisation UTypes <span class='cite'
+>std:characterisation</span> are already tens of characters long.</p>
+
 <blockquote class='todo'>
-@@TODO Elaborate, and make reference to the appropriate messages in
-the IVOA archives: http://www.ivoa.net/forum/dm/0610/1257.htm and
-following thread.
+@@TODO is there more to say, here?
 </blockquote>
+
 </div>
 
 <div class='section' id='web-recipes'>
 <p>Apache recipes</p>
 
-<blockquote class='todo'>
-@@TODO Elaborate, based on the recipes in the W3C WD <a
-href='http://www.w3.org/TR/swbp-vocab-pub/'
-><code>Best Practice Recipes for Publishing RDF Vocabularies</code></a>.
-</blockquote>
+<p>In sections <span class='xref' >utype-docs</span> and <span
+class='xref' >utype-rdf</span> above we describe dereferencing a URL
+and retrieving either HTML or RDF depending on the content-negotiation
+phase of the HTTP transaction -- that is, depending on the content of
+the HTTP <code>Accept</code> header.  In this appendix we describe a
+simple recipe for configuring Apache to support this.  We describe
+only a single configuration here; fuller examples are available in the
+W3C best-practice document <span class='cite' >w3c:swbp</span>.</p>
+
+<p>A namespace such as <code>http://www.ivoa.net/ut/#</code> would
+(very likely) correspond to a directory <code>.../ut</code> on the web
+server.  Let us suppose that we have, in this server directory, HTML
+documentation in a file <code>namespace.html</code> and RDF in the
+Notation3 syntax in a file <code>namespace.n3</code>.  For
+completeness, we might as well have the same information in (the
+largely unreadable) RDF/XML <span class='cite' >std:rdfxml</span>
+syntax as well, in a file <code>namespace.rdf</code>.</p>
+
+<p>We presume that this configuration is being done in a per-directory
+<code>.htaccess</code> file, and that the server has been configured
+to allow this, by allowing the <code>FileInfo Options</code>
+<em>overrides</em>.  The following <code>.htaccess</code> file will
+have the desired effect:</p>
+<pre>
+AddType application/rdf+xml .rdf
+# The MIME type for .n3 should be text/rdf+n3, not application/n3:
+# see MIME notes at http://www.w3.org/2000/10/swap/doc/changes.html
+AddType text/rdf+n3 .n3
+AddCharset UTF-8 .n3
+
+RewriteEngine on
+# RewriteBase is the path to the current directory
+RewriteBase /ut
+
+# Use response code 303, 'See Other'.
+RewriteCond %{HTTP_ACCEPT} application/rdf\+xml
+RewriteRule ^$ namespace.rdf [R=303]
+
+RewriteCond %{HTTP_ACCEPT} text/rdf\+n3
+RewriteRule ^$ namespace.n3 [R=303]
+
+# Default -- typically text/html
+RewriteRule ^$ namespace.html
+</pre>
+<p>With this configuration we can dereference the namespace URL in two
+different ways, to retrieve to different results:</p>
+<pre>
+% curl http://www.ivoa.net/ut/
+&lt;html&gt;
+&lt;head&gt;
+[...]
+% curl -i --header accept:text/rdf+n3 http://www.ivoa.net/ut/
+HTTP/1.0 303 See Other
+Date: Thu, 30 Nov 2006 16:19:51 GMT
+Server: Apache/1.3.33
+Location: http://www.ivoa.net/ut/namespace.n3
+Content-Type: text/html; charset=iso-8859-1
+
+[...]
+% curl -L --header accept:text/rdf+n3 http://www.ivoa.net/ut/
+@prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .
+[...]
+%
+</pre>
+<p>(the HTTP 303 `see also' response is the appropriate RFC2616 <span
+class='cite' >std:rfc2616</span> response indicating that <em>[t]he response
+to the request can be found under a different URI and SHOULD be
+retrieved using a GET method on that resource</em>, and the
+<code>-L</code> option tells <code>curl</code> to follow any
+<code>Location</code> headers in the initial response).</p>
+
+</div>
+
+<div class='section' id='rationale'>
+<p>Rationale</p>
+
+<p><em>We include in this appendix a more discursive introduction to
+the problem this proposal is attempting to solve, and the larger
+social structure we expect to arise from it.</em></p>
+
+<p>Standardisation is expensive, in both time and effort.</p>
+
+<p>A standard must be as small as possible, so that it is more easily
+agreed on, and so that its documentation is not overwhelming; and it
+must at the same time be as large as possible, so that it covers
+enough of what its users want to exchange, to justify the effort
+of agreeing.  The pressure for expanding the standard comes from the
+costs of going beyond the standard, in the consequent loss of
+interoperability.  Thus standardisation is not an end in itself, but
+merely a means to reach the real goal of universal
+interoperability.</p>
+
+<p>The costs of standardisation arise because the participants in the
+standardisation process will have different designs in mind, and bring
+different implementations to the discussion.  Sometimes these
+differences are merely accidents of history and taste, but sometimes
+they arise because the participants have different and incompatible
+requirements, so that the resulting standard ends up substantially
+more complicated than the designs that preceded it, still without
+completely satisfying anybody.  Our particular concern here is the
+data models which structure shared data, which are variously designed
+for the convenience of the various data providers, and which various
+data reduction applications hope to read.</p>
+
+<p>In this Note, we propose a structure which allows the different
+participants to retain their data models, and achieve
+interoperability, not by transforming their data into some never quite
+satisfactory consensus model, but by `explaining' their data model in
+terms applications can understand.  Data providers can `explain' their
+model by analogy, saying that a concept in their data model is the
+same as, or a more specific variant of, a concept in another data
+model; if the latter concept is one which an application understands,
+then it knows how to handle the underlying data.</p>
+
+<p>We would therefore expect to see a hierarchy of sets of UTypes.</p>
+<ul>
+<li>At one extreme, it would be practical for data providers to
+provide extremely specific UTypes, to support those users who must
+deal with, for example, the nitty-gritty of a specific instrument.
+Such information would either be ignored by more generic data users,
+or be used by them as an instance of a more general, and more
+generally known, concept.  A specialist user might care which specific
+filter was used, where the general user would only need to know that
+it was J-band.</li>
+<li>Users in a specific community, defined by wavelength (X-Ray or
+radio) or object (solar physicists), have sets of interoperable
+concepts which are important to them, but which would bloat an
+astronomy-wide standard.  Radio astronomers use `janskys per beam' and
+`beam width in RA', in the face of general incomprehension; and though
+X-Ray astronomers are happy to talk about `barycentric coordinate
+time', (most) other astronomers are extremely happy not to.</li>
+<li>At the top of this stack is the set of concepts which is used and
+understood by almost all of astronomy, and thus the set of UTypes used
+and understood by almost all astronomical applications.  This is the
+level which would see the most careful standardisation of a relatively
+small set of UTypes.</li>
+</ul>
+
+<p>We would therefore expect to see a large number of UTypes, which
+are of equal status in principle, but not in practice.  It is in data
+providers' interests to make their data as widely intelligible as
+possible, by either using well-known UTypes or, where that is
+insufficiently precise, by `explaining' more specific ones in those
+terms.  This creates an instability which produces a consensus on
+which UTypes are recognised as `well-known'.  Of course, this process
+could be primed with an initial set of high level IVOA standard
+UTypes.</p>
+
+<p>With this proposal, this last highest-level set of UTypes can be
+smaller than it might otherwise be, because it is no longer a disaster
+to omit things.  If in retrospect it appears that a high-level
+standard omitted important concepts, then those can be developed in an
+agile fashion and stitched into the larger structure.</p>
+
+<p>This agility emerges because this proposal facilitates not only
+different levels of specification, but also versioning and
+deprecation.  The costs of versioning arise because it is expensive
+for applications to be reworked to use an updated version of a
+standard.  If the new version's concepts are described in terms of the
+older version's, however, then it becomes reasonable for data
+providers to use the new improved version of a UType set, knowing that
+applications can deduce the relationship with the previous version
+they have coded-in knowledge of.</p>
+
+<p>As well as versioning, reducing the community's reliance on a small
+set of gold standards makes it possible for components of, or
+extensions to, standards to be developed, prototyped, and maintained
+by specific interest groups, either in the long term, or as a
+precursor to a subsequent IVOA blessing.</p>
 
 </div>
 
