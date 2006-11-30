@@ -10,7 +10,7 @@
 # Following relies on BIBINPUTS and BSTINPUTS being set OK.
 %.bbl: %.aux
 	bibtex $<
-	sed '/% *$$/{N;s/% *\n//;}; s/[{}]//g; s,\([^/]\)~,\1 ,g' $@ >$(@:=.tmp)
+	sed '/% *$$/{N;s/% *\n//;}; s/[{}]//g; s,\([^/]\)~,\1 ,g; s+\\,c+ç+g' $@ >$(@:=.tmp)
 	mv $(@:=.tmp) $@
 
 note.html: note.xml note.bbl structure.xslt
