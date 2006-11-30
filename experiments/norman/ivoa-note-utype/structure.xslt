@@ -1,4 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Support a mildly enhanced HTML.
+
+    <div class='section' id='foo'><p>Title</p> ...</div>
+        Support sectioning and cross references.  These <div> elements
+        can be nested to give subsections.
+
+    <div class='appendices'> ... </div>
+        Contains all the <div> elements marked as appendices
+
+    <span class='xref'>div-id</span>
+        Generates a cross-reference to a <div class='section' id='div-id'>
+        element.
+
+    <?toc?>
+        Generate a table of contents from the <div class='section'> elements
+
+    <?bibliography?>
+        Include a bibliography, generated externally.
+
+    <span class='cite'>foo</span>
+        Make a link to a bibliography entry.  If the stylesheet is
+        invoked with the 'target' parameter being "aux", then instead
+        of generating HTML, generate a LaTeX .aux file, which can be
+        separately processed into a .bbl file, which is what the
+        <?bibliography?> PI incorporates.
+
+    <span class='rcsinfo' >$Foo: xxx yyy $</span>
+        Expands to just "xxx yyy".
+
+    Apart from these constructions, the input is copied to the output.
+-->
+
 <x:stylesheet xmlns:x="http://www.w3.org/1999/XSL/Transform"
                 version="1.0"
                 exclude-result-prefixes="h"
@@ -146,15 +179,18 @@
     <x:copy-of select="document(concat(substring-before($document-id, '.xml'),'.bbl'))"/>
   </x:template>
 
+  <!-- Process all <span class='cite'>foo</span> elements into a link to
+       a bibliography entry which has a ref:foo target.  This bibliography
+       is externally generated, and pulled in by the <?bibliography?> PI. -->
   <x:template match="h:span[@class='cite']">
-    <em>
+    <h:em>
       <x:text>[</x:text>
       <h:a>
         <x:attribute name="href">#ref:<x:value-of select="."/></x:attribute>
         <x:value-of select="."/>
       </h:a>
       <x:text>]</x:text>
-    </em>
+    </h:em>
   </x:template>
 
   <x:template match="processing-instruction('bibliography')" mode="extract-aux">
@@ -177,6 +213,8 @@
     -->
   </x:template>
 
+  <!-- In the extract-aux mode, create a list of \citation{blah} commands
+       from any <span class='cite'>blah</span> elements. -->
   <x:template match="h:span[@class='cite']" mode="extract-aux">
     <x:call-template name="make-tex-command">
       <x:with-param name="command">citation</x:with-param>
@@ -187,6 +225,8 @@
   </x:template>
 
   <!-- Set up cross references to div elements containing id attributes.
+           <span class='xref'>id-value</span>
+       (where id-value is a div/@id attribute).
        We could do this with ID attributes, but this removes dependence
        on there being a DTD to hand.  Thanks to the XSL FAQ for the hint.
        The div target of the link has an id attribute, and we make the
@@ -198,6 +238,12 @@
       <x:apply-templates select="key('xrefs',$id)"
                          mode='make-section-name'/>
     </h:a>
+  </x:template>
+
+  <!-- Extract CVS/RCS information, "xxx" contained within
+       <span class='rcsinfo' >$blah: xxx $</span> -->
+  <x:template match="h:span[@class='rcsinfo']">
+    <x:value-of select='substring-before(substring-after(.,": ")," $")'/>
   </x:template>
 
   <x:template name="make-tex-command">
