@@ -38,10 +38,16 @@
                 xmlns:h="http://www.w3.org/1999/xhtml">
 
   <x:output method="xml"
+            encoding="UTF-8"
             version="1.0"
+            omit-xml-declaration="yes"/>
+<!--
+    The following aren't terribly useful, so might as well be skipped.
+    Also, they cause xsltproc to produce a not-as-helpful-as-it-thinks
+    http-equiv meta element setting the character encoding.
             doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
             doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
-            omit-xml-declaration="yes"/>
+-->
 
   <x:param name="target"/>
   <x:param name="document-id">document-id</x:param>
@@ -112,9 +118,11 @@
     <h:li>
       <!--<h:a href="#{$id}"><x:call-template name='make-section-name'/></h:a>-->
       <h:a href="#{$id}"><x:apply-templates select='.' mode='make-section-name'/></h:a>
-      <h:ul>
-        <x:apply-templates select="h:div[@class='section' or @class='section-nonum']" mode="make-toc"/>
-      </h:ul>
+      <x:if test="h:div[@class='section' or @class='section-nonum']">
+        <h:ul>
+          <x:apply-templates select="h:div[@class='section' or @class='section-nonum']" mode="make-toc"/>
+        </h:ul>
+      </x:if>
     </h:li>
   </x:template>
 
