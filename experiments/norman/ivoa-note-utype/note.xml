@@ -15,9 +15,13 @@
 <link href="http://www.ivoa.net/misc/ivoa_note.css"
       rel="stylesheet"
       type="text/css" />
+<!-- style: make the ToC a little more compact, and without bullets -->
 <style type='text/css'>
-/* make the ToC a little more compact, and without bullets */
 div.toc ul { list-style: none; padding-left: 1em; }
+span.userinput { font-weight: bold; }
+q { color: #666; }
+q:before { content: "“"; }
+q:after  { content: "”"; }
 .todo { background: #ff7; }
 </style>
 </head>
@@ -31,10 +35,10 @@ div.toc ul { list-style: none; padding-left: 1em; }
            border="0"/></a></td></tr>
 </table>
 
-<h1>UTypes and URIs<br/>Draft version $Revision: 1.2 $</h1>
-<!-- <span class='rcsinfo' >$Revision: 1.2 $</span></h1> -->
-<h2>IVOA Draft Note, $Date: 2006/11/30 17:38:13 $</h2>
-<!-- <span class='rcsinfo' >$Date: 2006/11/30 17:38:13 $</span></h2> -->
+<h1>UTypes and URIs<br/>Draft version $Revision: 1.3 $</h1>
+<!-- <span class='rcsinfo' >$Revision: 1.3 $</span></h1> -->
+<h2>IVOA Draft Note, $Date: 2006/12/01 15:09:53 $</h2>
+<!-- <span class='rcsinfo' >$Date: 2006/12/01 15:09:53 $</span></h2> -->
 <dl>
 <dt>This version</dt>
 <dd>XXX to appear</dd>
@@ -226,7 +230,7 @@ satisfied if the <em>local name</em> matches the syntax</p>
 <code>( path-absolute | path-rootless ) [ "?" query ] [ "#" fragment ]</code>
 </blockquote>
 <p>of RFC3986 (see <span class='cite' >std:rfc3986</span>).  In
-practice, we expect most UTypes `local name' parts would match the syntax
+practice, we expect most UTypes' `local name' parts would match the syntax
 <code>[0-9a-zA-Z_/.-]+</code>.</p>
 <blockquote class='todo'>
 <p>@@TODO: what characters should be allowed in the <em>local
@@ -359,15 +363,15 @@ manipulating request headers in this fashion, and if all else fails,
 the command-line <code>curl</code> application can do the
 retrieval:</p>
 <pre>
-% curl --header accept:text/rdf+n3 http://example.org/utypes/1.0
+% <span class='userinput'>curl --header accept:text/rdf+n3 http://example.org/utypes/1.0</span>
 </pre>
 <p>Recipes for setting up a web server to support such content
-negotiation are in <span class='xref' >web-recipes</span>.</p>
+negotiation are in section <span class='xref' >web-recipes</span>.</p>
 
 </div>
 
 <div class='section'>
-<p>Reasoning systems</p>
+<p>Reasoning about UTypes</p>
 
 <p>There are multiple systems (for example <span class='cite'
 >app:jena</span> and <span class='cite' >app:pellet</span>), in
@@ -382,7 +386,7 @@ previously-unknown UType
 <code>http://example.org/utypes/1.0#sharpBounds</code> can resolve it
 in a single URL dereference (shown using <code>curl</code> here):</p>
 <pre>
-% curl http://localhost/resolver?q=http://example.org/utypes/1.0%23sharpBounds
+% <span class='userinput'>curl http://localhost/resolver?q=http://example.org/utypes/1.0%23sharpBounds</span>
 http://www.w3.org/2000/01/rdf-schema#Class
 http://www.ivoa.net/ut/#characterization.characterizationAxis.coverage.bounds
 http://example.org/utypes/1.0#sharpBounds
@@ -515,11 +519,11 @@ RewriteRule ^$ namespace.html
 <p>With this configuration we can dereference the namespace URL in two
 different ways, to retrieve to different results:</p>
 <pre>
-% curl http://www.ivoa.net/ut/
+% <span class='userinput'>curl http://www.ivoa.net/ut/</span>
 &lt;html&gt;
 &lt;head&gt;
 [...]
-% curl -i --header accept:text/rdf+n3 http://www.ivoa.net/ut/
+% <span class='userinput'>curl -i --header accept:text/rdf+n3 http://www.ivoa.net/ut/</span>
 HTTP/1.0 303 See Other
 Date: Thu, 30 Nov 2006 16:19:51 GMT
 Server: Apache/1.3.33
@@ -527,15 +531,15 @@ Location: http://www.ivoa.net/ut/namespace.n3
 Content-Type: text/html; charset=iso-8859-1
 
 [...]
-% curl -L --header accept:text/rdf+n3 http://www.ivoa.net/ut/
+% <span class='userinput'>curl -L --header accept:text/rdf+n3 http://www.ivoa.net/ut/</span>
 @prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .
 [...]
 %
 </pre>
 <p>(the HTTP 303 `see also' response is the appropriate RFC2616 <span
-class='cite' >std:rfc2616</span> response indicating that <em>[t]he response
+class='cite' >std:rfc2616</span> response indicating that <q>[t]he response
 to the request can be found under a different URI and SHOULD be
-retrieved using a GET method on that resource</em>, and the
+retrieved using a GET method on that resource</q>, and the
 <code>-L</code> option tells <code>curl</code> to follow any
 <code>Location</code> headers in the initial response).</p>
 
@@ -617,7 +621,7 @@ could be primed with an initial set of high level IVOA standard
 UTypes.</p>
 
 <p>With this proposal, this last highest-level set of UTypes can be
-smaller than it might otherwise be, because it is no longer a disaster
+smaller than it might otherwise be, because it is no longer a costly disaster
 to omit things.  If in retrospect it appears that a high-level
 standard omitted important concepts, then those can be developed in an
 agile fashion and stitched into the larger structure.</p>
@@ -633,10 +637,9 @@ applications can deduce the relationship with the previous version
 they have coded-in knowledge of.</p>
 
 <p>As well as versioning, reducing the community's reliance on a small
-set of gold standards makes it possible for components of, or
-extensions to, standards to be developed, prototyped, and maintained
-by specific interest groups, either in the long term, or as a
-precursor to a subsequent IVOA blessing.</p>
+set of gold-plated standards makes it possible for components of, or
+extensions to, standards to be designed, prototyped and maintained by
+specific interest groups, working independently.</p>
 
 </div>
 
