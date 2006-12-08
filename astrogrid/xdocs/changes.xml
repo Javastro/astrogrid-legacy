@@ -25,14 +25,7 @@
         </release>
         
         <release version="(Undertest)">
-          <action dev="kea" type="fix">
-            Branch PAL_KEA_1950.
-            Fixes and enhancements for bugzilla tickets 1951 (disabling
-            registration of samplestars plugin), 1957 (removing clear-status
-            command), 1961 (showing endpoint for default registry in
-            registration form box) and 2028 (fixing conesearch haversine
-            maths).
-          </action>
+
           
     	  <action dev="gtr" type="add">
     	    <em>Branch common-gtr-1933.</em> I have added code to AstrogridAssert
@@ -61,6 +54,14 @@
         </release>
 		
 		<release version="HEAD">
+          <action dev="kea" type="fix">
+            Branch PAL_KEA_1950.
+            Fixes and enhancements for bugzilla tickets 1951 (disabling
+            registration of samplestars plugin), 1957 (removing clear-status
+            command), 1961 (showing endpoint for default registry in
+            registration form box) and 2028 (fixing conesearch haversine
+            maths).
+          </action>		
 		
 		<action dev="gtr" type="fix">
           <em>Branch contracts-gtr-1922.</em> This branch replaces/reindexes
