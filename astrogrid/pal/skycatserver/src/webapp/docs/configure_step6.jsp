@@ -72,7 +72,11 @@ Again, in summary, the self-test functions are as follows:
     <li><a href="../admin/sqlSyntaxTests.jsp">SQL syntax test</a> for checking that the ADQL-to-SQL translation being used is compatible with your RDBMS.
     <br/>Note that the SQL syntax
     checking tests <strong>may take a long time to run</strong>,
-    depending on the size of your dataset. </li>
+    depending on the size of your dataset. If your browser times out 
+    waiting for the tests to finish, you can watch their progress in the
+    <tt>Server status</tt> page (click on <tt>View server status</tt> in 
+        the left sidebar.)   When no new self-test queries appear, the
+       tests have finished.</li>
 </ul>
 
 </body>

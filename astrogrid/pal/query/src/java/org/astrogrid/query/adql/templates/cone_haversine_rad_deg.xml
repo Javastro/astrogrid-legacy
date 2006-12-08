@@ -38,7 +38,7 @@
                                     <Arg xsi:type="mathFunctionType" Name="POWER">
                                         <Arg xsi:type="trigonometricFunctionType" Name="SIN">
                                             <Arg xsi:type="binaryExprType" Oper="/">
-                                                <Arg xsi:type="binaryExprType" Oper="+">
+                                                <Arg xsi:type="binaryExprType" Oper="-">
                                                     <Arg xsi:type="mathFunctionType" Name="RADIANS">
                                                         <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_NAME_DEC"/>
                                                     </Arg>
@@ -58,19 +58,10 @@
                                     <Arg xsi:type="closedExprType">
                                         <Arg xsi:type="binaryExprType" Oper="*">
                                             <Arg xsi:type="trigonometricFunctionType" Name="COS">
-                                                <Arg xsi:type="binaryExprType" Oper="/">
-                                                    <Arg xsi:type="binaryExprType" Oper="+">
-                                                        <Arg xsi:type="mathFunctionType" Name="RADIANS">
-                                                            <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_NAME_DEC"/>
-                                                        </Arg>
-                                                        <Arg xsi:type="atomType">
-                                                            <Literal xsi:type="realType" Value="INSERT_VALUE_DEC_RAD"/>
-                                                        </Arg>
-                                                    </Arg>
-                                                    <Arg xsi:type="atomType">
-                                                        <Literal xsi:type="realType" Value="2.0"/>
-                                                    </Arg>
+                                                <Arg xsi:type="mathFunctionType" Name="RADIANS">
+                                                   <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_NAME_DEC"/>
                                                 </Arg>
+
                                             </Arg>
                                             <Arg xsi:type="binaryExprType" Oper="*">
                                                 <Arg xsi:type="trigonometricFunctionType" Name="COS">
@@ -81,7 +72,7 @@
                                                 <Arg xsi:type="mathFunctionType" Name="POWER">
                                                     <Arg xsi:type="trigonometricFunctionType" Name="SIN">
                                                         <Arg xsi:type="binaryExprType" Oper="/">
-                                                            <Arg xsi:type="binaryExprType" Oper="+">
+                                                            <Arg xsi:type="binaryExprType" Oper="-">
                                                                 <Arg xsi:type="mathFunctionType" Name="RADIANS">
                                                                     <Arg xsi:type="columnReferenceType" Table="a" Name="INSERT_NAME_RA"/>
                                                                 </Arg>

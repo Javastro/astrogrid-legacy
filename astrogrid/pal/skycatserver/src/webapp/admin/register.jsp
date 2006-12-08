@@ -27,11 +27,34 @@
 <body>
 
   <h1>Registering <%= DataServer.getDatacenterName() %></h1>
+
+<%
+    boolean usingTestPlugin = false;
+
+    // Optionally enable registration (DISABLED when SampleStarsPlugin in use)
+    String thePlugin = ConfigFactory.getCommonConfig().getString(
+                   "datacenter.querier.plugin");
+    if ( (thePlugin != null) && (thePlugin.equals("org.astrogrid.tableserver.test.SampleStarsPlugin")) ) {
+       usingTestPlugin = true;
+    }
+
+    if (usingTestPlugin == true) { %>
+        <p><strong>This DSA/catalog installation is currently using the default
+         test SampleStars plugin, which is for local testing purposes only.</strong></p>
+         
+        <p>You can only register this DSA/catalog installation once you have 
+        configured it to access a real data set of your own, rather than the
+        SampleStars internal test data.
+        </p>
+
+        <% }
+        else {
+        %>
   <p>
   You can send the Registry details from this datacenter to a remote Registry using this form:
          <form action="Register" method="POST">
           <p>
-            Registry URL <input type="text" name="RegistryUrl" size="60"/>
+            Registry URL <input type="text" name="RegistryUrl" size="60" value='<%= ConfigFactory.getCommonConfig().getString(RegistryDelegateFactory.ADMIN_URL_PROPERTY, "[WARNING: Property "+RegistryDelegateFactory.ADMIN_URL_PROPERTY+" not set]") %>'/>
             (leave blank to register on the
             <a href='<%= ConfigFactory.getCommonConfig().getString(RegistryDelegateFactory.ADMIN_URL_PROPERTY, "[WARNING: Property "+RegistryDelegateFactory.ADMIN_URL_PROPERTY+" not set]") %>'>Default Registry</a>)
             <br />
@@ -45,7 +68,8 @@
       the left to get the XML document, copy it into your clip board, then go to
       the entry forms of the relevent Registry and paste it in.
       <p>
-<%
+<% 
+
    //put a link to the default registry page
    URL registerUrl = ConfigFactory.getCommonConfig().getUrl(RegistryDelegateFactory.ADMIN_URL_PROPERTY, null);
    if (( registerUrl != null)) {
@@ -61,7 +85,10 @@
       out.write("<a href='"+indexUrl+"'>Main Page</a> and <a href='"+entryFormUrl+"'>Entry Form</a>");
       out.write("</p>");
    }
+ }
 %>
+
+
 <!-- NO LONGER EXPLICITLY LISTED: links to test/standard registries -->
 <!--
 <hr>
@@ -118,5 +145,3 @@
 <%@ include file='../footer.xml' %>
 </body>
 </html>
-
-

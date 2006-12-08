@@ -25,9 +25,18 @@
       <ul>
         <li><a href="./GenerateMetaDoc">Generate template metadoc</a>
           <li><a href="../viewMetadata.jsp">View metadata table</a> or <a href='../GetMetadata'>XML</a></li>
-        <li><a href="./register.jsp">Register this DSA/catalog</a>
+       <%
+           // Optionally enable registration (DISABLED when SampleStarsPlugin in use)
+           String querierPlugin = ConfigFactory.getCommonConfig().getString(
+                   "datacenter.querier.plugin");
+           if ( (querierPlugin != null) && (!querierPlugin.equals("org.astrogrid.tableserver.test.SampleStarsPlugin")) ) {
+             out.write("<li><a href=\"./register.jsp\">Register this DSA/catalog</a></li>");
+           }
+           else {
+             out.write("<li><font color=\"#999999\">Register this DSA/catalog</font></li>");
+           }
+       %>
         <li><a href="./serverStatus.jsp">View server status</a></li>
-        <li><a href="./clearStatusLog.jsp">Clear status log</a>
      </ul>
    </div>
 

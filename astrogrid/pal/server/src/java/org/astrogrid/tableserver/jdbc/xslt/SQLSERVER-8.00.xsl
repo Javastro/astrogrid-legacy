@@ -253,10 +253,20 @@
 		<xsl:value-of select="$spaceCharacter"/>
 	</xsl:template>
 	
+   <!-- KEA: 
+       - Added brackets around binary expressions to ensure correct
+          precendence
+       - Put spaces around operator to avoid issues with e.g. subtracting
+          a negated arg. (SQLServer doesn't like doubled - with no spaces)
+   -->
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'binaryExprType'] | *[@xsi:type = 'binaryExprType']">
+		<xsl:text> (</xsl:text>
 		<xsl:apply-templates select="ad:Arg[1]"/>
+		<xsl:value-of select="$spaceCharacter"/>
 		<xsl:value-of select="@Oper"/>
+		<xsl:value-of select="$spaceCharacter"/>
 		<xsl:apply-templates select="ad:Arg[2]"/>
+		<xsl:text>) </xsl:text>
 		<xsl:value-of select="$spaceCharacter"/>
 	</xsl:template>
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'unaryExprType'] | *[@xsi:type = 'unaryExprType']">

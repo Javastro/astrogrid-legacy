@@ -127,6 +127,12 @@
           <version>${astrogrid.community.version}</version>
       </dependency>
 
+    <!-- jes - for CEA? -->
+    <dependency>
+      <artifactId>astrogrid-jes-delegate</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>${astrogrid.jes.version}</version>
+    </dependency>
 
     <!-- cea -->
     <dependency>

@@ -47,11 +47,11 @@
     <dependency>
        <groupId>org.astrogrid</groupId>
        <artifactId>astrogrid-contracts</artifactId>
-       <!--
        <version>${astrogrid.contracts.version}</version>
-       -->
        <!-- HARDWIRED UNTIL LATEST CONTRACTS JAR FIXED -->
+       <!--
        <version>2006.3.02con</version>
+       -->
        <type>jar</type>
        <properties>
           <war.bundle>true</war.bundle>
@@ -173,6 +173,16 @@
             <url>http://www.astrogrid.org/</url>
       <properties>         <war.bundle>true</war.bundle>      </properties>
         </dependency>
+
+    <!-- jes - for CEA? -->
+     <dependency>
+        <artifactId>astrogrid-jes-delegate</artifactId>
+        <groupId>org.astrogrid</groupId>
+        <version>${astrogrid.jes.version}</version>
+        <properties>
+         <war.bundle>true</war.bundle>
+       </properties>
+     </dependency>
 
     <!-- cea -->
     <dependency>
