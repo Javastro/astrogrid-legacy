@@ -35,10 +35,10 @@ q:after  { content: "”"; }
            border="0"/></a></td></tr>
 </table>
 
-<h1>UTypes and URIs<br/>Draft version $Revision: 1.4 $</h1>
-<!-- <span class='rcsinfo' >$Revision: 1.4 $</span></h1> -->
-<h2>IVOA Draft Note, $Date: 2006/12/12 13:09:04 $</h2>
-<!-- <span class='rcsinfo' >$Date: 2006/12/12 13:09:04 $</span></h2> -->
+<h1>UTypes and URIs<br/>Draft version $Revision: 1.5 $</h1>
+<!-- <span class='rcsinfo' >$Revision: 1.5 $</span></h1> -->
+<h2>IVOA Draft Note, $Date: 2006/12/13 18:33:53 $</h2>
+<!-- <span class='rcsinfo' >$Date: 2006/12/13 18:33:53 $</span></h2> -->
 <dl>
 <dt>This version</dt>
 <dd>XXX to appear</dd>
@@ -158,9 +158,9 @@ of each other.</p>
 @@TODO MBT strongly recommends that `require', above, be changed to
 `strongly recommend', on the practical grounds that that is how it
 would probably be used in fact.  My own feeling is that blessing that
-degree of casualness in creating UTypes would be harmful to the
-usefulness of UTypes, but I can appreciate the practical force of the
-argument, and see the extra permissiveness as encouraging the uptake
+degree of casualness in creating UTypes might be harmful to their
+usefulness, but I can appreciate the practical force of the
+argument, and can see the extra permissiveness as encouraging the uptake
 of UTypes.
 </blockquote>
 
@@ -174,17 +174,23 @@ only benefit of the UType refinement we are suggesting, and that the
 consistency and documentation benefits described here would follow
 even if the reasoning potential were never exploited.</p>
 
+<p>The draft characterization document describes a possible mechanism
+for serialising a data source using a data model and UTypes.  We
+presume the existence of such an agreed-upon mechanism in the
+discussion of data sharing below.</p>
 
 
 <div class='section' id='utype-create'>
 <p>Creating UTypes</p>
 
-<p>In this proposal, creating a UType consists of three steps,
-mirroring the steps described in section <span
-class='xref'>introduction</span>.</p>
+<p>In this proposal, an organisation creating a UType must perform
+three steps, mirroring the steps described in section
+<span class='xref'>introduction</span>.</p>
 <ol>
-<li>Determine a namespace URI, identifying a URI in a DNS domain
-you control.</li>
+<li>Determine a namespace URI, creating a URI in a DNS domain
+the organisation controls; then identify individual UType names
+respecting the syntax described in section
+<span class='xref' >utype-uris</span>.</li>
 <li>Create documentation for the namespace, as described in section
 <span class='xref' >utype-docs</span>.</li>
 <li>Create a simple RDF document expressing how the new UTypes relate
@@ -233,15 +239,21 @@ the prefix -- <code>utns</code> in the example here -- is
 arbitrary, and it is only the post-concatenation URI that has any
 meaning attached to it.</p>
 
+<p>This proposal requires no syntactic changes to the VOTable
+specification.  It is purely a mild reinterpretation of the syntax
+already defined and used.</p>
+
 <p>The UType string that results from this concatenation must be a valid URI.
 Since the namespace name is necessarily a URI, this constraint is
-satisfied if the <em>local name</em> matches the syntax</p>
+satisfied if the <em>local name</em> matches a restricted form of the
+<code>URI</code> syntax of of RFC3986 (see <span class='cite'
+>std:rfc3986</span>):</p>
 <blockquote>
 <code>( path-absolute | path-rootless ) [ "?" query ] [ "#" fragment ]</code>
 </blockquote>
-<p>of RFC3986 (see <span class='cite' >std:rfc3986</span>).  In
-practice, we expect most UTypes' `local name' parts would match the syntax
-<code>[0-9a-zA-Z_/.-]+</code>.</p>
+<p>In practice, we expect most UTypes' local name parts would match
+the <code>fragment</code> syntax, and more specifically that subset of
+it matching <code>[0-9a-zA-Z_/.-]+</code>.</p>
 <blockquote class='todo'>
 <p>@@TODO: what characters should be allowed in the <em>local
 name</em>?  The above is a rather conservative set.  XML allows the
@@ -266,6 +278,11 @@ ASCII characters, and ISO-8859-1 as a whole matches Unicode
 code points 0-255.  Thus, although this does not correspond to any
 Unicode encoding, there is a broad <em>compatibility</em> with Unicode
 in this case.</p>
+
+<p>It would be wise to exclude '.' from the set of UType characters,
+as this character plays a syntactic role in Notation3, so that it
+would be mildly inconvenient to describe UTypes including a dot.  Are
+there more similar restrictions?</p>
 </blockquote>
 
 <p>In this example and below, we illustrate
@@ -274,7 +291,7 @@ regarded as best practice in the RDF community and would generally be
 more convenient in the procedure we illustrate, but there is no
 technical reason why a set of distinct, fragmentless, URIs could not
 be used instead.  One advantage of using the fragment identifier is
-that in this case it is natural to have the namespace URI referring to
+that in this case it is natural to have the namespace URI refer to
 an overview document describing the namespace as a whole.</p>
 
 <p>UTypes used in non-XML contexts -- such as FITS files -- would have
@@ -327,6 +344,11 @@ appropriate for the formality and intricacy of the document.  Thus the URI
 UType will, when entered into a browser, show the documentation for
 precisely that concept.</p>
 
+<p>Obviously, any entity minting UTypes is making an institutional
+commitment to the long-term stability of the namespace URI.  An entity
+unable or unwilling to make such a commitment should avoid
+creating externally visible UTypes.</p>
+
 </div>
 
 <div class='section' id='utype-rdf'>
@@ -355,19 +377,20 @@ vocabularies.</p>
 
 <p>We wish to assert that our new <code>#sharpBounds</code> UType is a
 more specific version of a concept
-<code>#characterization.characterizationAxis.coverage.bounds</code>,
+<code>#characterizationAxis-coverage-bounds</code>,
 which we presume has already defined by the IVOA in the namespace
-<code>http://www.ivoa.net/ut/#</code>, and which we can reasonably
+<code>http://www.ivoa.net/ut/characterization#</code>, and which we
+can reasonably 
 expect software to know about.  We can do this using RDFS (here
 written in Notation3 syntax <span class='cite' >std:n3</span>):</p>
 <pre>
 @prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;.
 @prefix myns: &lt;http://example.org/utypes/1.0#&gt;.
-@prefix ivoa: &lt;http://www.ivoa.net/ut/#&gt;.
+@prefix ivoa: &lt;http://www.ivoa.net/ut/characterization#&gt;.
 
 myns:sharpBounds a rdfs:Class; 
     rdfs:subClassOf 
-        ivoa:characterization.characterizationAxis.coverage.bounds.
+        ivoa:characterizationAxis-coverage-bounds .
 </pre>
 <p>This asserts that
 <code>http://example.org/utypes/1.0#sharpBounds</code> is a concept --
@@ -500,7 +523,8 @@ class='xref' >utype-rdf</span> above we describe dereferencing a URL
 and retrieving either HTML or RDF depending on the content-negotiation
 phase of the HTTP transaction -- that is, depending on the content of
 the HTTP <code>Accept</code> header.  In this appendix we describe a
-simple recipe for configuring Apache to support this.  We describe
+simple recipe for configuring Apache to support this; there will be
+similar configurations for other web servers.  We describe
 only a single configuration here; fuller examples are available in the
 W3C best-practice document <span class='cite' >w3c:swbp</span>.</p>
 
@@ -516,7 +540,7 @@ syntax as well, in a file <code>namespace.rdf</code>.</p>
 <p>We presume that this configuration is being done in a per-directory
 <code>.htaccess</code> file, and that the server has been configured
 to allow this, by allowing the <code>FileInfo Options</code>
-<em>overrides</em>.  The following <code>.htaccess</code> file will
+overrides.  The following <code>.htaccess</code> file will
 have the desired effect:</p>
 <pre>
 AddType application/rdf+xml .rdf
@@ -540,7 +564,7 @@ RewriteRule ^$ namespace.n3 [R=303]
 RewriteRule ^$ namespace.html
 </pre>
 <p>With this configuration we can dereference the namespace URL in two
-different ways, to retrieve to different results:</p>
+different ways, to retrieve two different results:</p>
 <pre>
 % <span class='userinput'>curl http://www.ivoa.net/ut/</span>
 &lt;html&gt;
@@ -583,7 +607,7 @@ must at the same time be as large as possible, so that it covers
 enough of what its users want to exchange, to justify the effort
 of agreeing.  The pressure for expanding the standard arises because,
 while standardisation is expensive, going beyond the standard incurs
-crippling costs, as a result of the consequent loss of
+crippling costs as a result of the consequent loss of
 interoperability.  Thus standardisation is not an end in itself, but
 merely a means to reach the real goal of universal
 interoperability.</p>
@@ -617,8 +641,8 @@ provide extremely specific UTypes, to support those users who must
 deal with, for example, the nitty-gritty of a specific instrument.
 Such information would either be ignored by more generic data users,
 or be used by them as an instance of a more general, and more
-generally known, concept.  A specialist user might care which specific
-filter was used in an observation, where the general user would only
+generally known, concept.  A specialist user might care which particular
+filter was used in an observation, where a more general user would only
 need to know that it was J-band.</li>
 <li>Users in a specific community, defined by wavelength (X-Ray or
 radio) or object (solar physicists), have sets of interoperable
