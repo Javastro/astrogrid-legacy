@@ -20,7 +20,7 @@
 
 <goal name="astrogrid-build-artifact">
 
-                <attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
+        <attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
         <maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar" />
         <attainGoal name="jar" />
         <attainGoal name="war" />
@@ -28,7 +28,7 @@
 
 <goal name="astrogrid-build-snapshot">
 
-                <attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
+        <attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
         <maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar:snapshot" />
         <attainGoal name="jar:snapshot" />
         <!-- no goal to build a snapshot in target directory - gah -->
@@ -38,7 +38,7 @@
 <goal name="astrogrid-install-site" prereqs="astrogrid-build-site" />
 
 <goal name="astrogrid-install-artifact">
-                <attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
+        <attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
         <maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar:install" />
         <maven:maven descriptor="${basedir}/deployment/project.xml" goals="jar:install" />
         <maven:maven descriptor="${basedir}/installer/project.xml" goals="javaapp:install" />        
@@ -48,7 +48,7 @@
 
 <goal name="astrogrid-install-snapshot">
 
-                <attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
+        <attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
         <maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar:install-snapshot" />
         <maven:maven descriptor="${basedir}/deployment/project.xml" goals="jar:install-snapshot" />
         <maven:maven descriptor="${basedir}/installer/project.xml" goals="javaapp:install-snapshot" />        
@@ -62,8 +62,8 @@
 
 <goal name="astrogrid-deploy-snapshot">
 
-                <attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
-                <maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar:deploy-snapshot" />
+        <attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
+        <maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar:deploy-snapshot" />
         <maven:maven descriptor="${basedir}/deployment/project.xml" goals="jar:deploy-snapshot" />
         <maven:maven descriptor="${basedir}/installer/project.xml" goals="javaapp:deploy-snapshot" />        
         <attainGoal name="jar:deploy-snapshot" />
@@ -73,8 +73,8 @@
 
 <goal name="astrogrid-deploy-artifact">
 
-                <attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
-                <maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar:deploy" />
+        <attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
+        <maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar:deploy" />
         <maven:maven descriptor="${basedir}/deployment/project.xml" goals="jar:deploy" />
         <maven:maven descriptor="${basedir}/installer/project.xml" goals="javaapp:deploy" />        
         <attainGoal name="jar:deploy" />
@@ -88,7 +88,6 @@
 <!-- hooks into existing goals -->
 
 <preGoal name="war:war" >
-        <attainGoal name="configure-webapp" />
         <attainGoal name="site-webapp" />
         <copy todir="${maven.war.build.dir}/${pom.artifactId}" overwrite="yes">
                 <fileset dir="${webapp.docs}" />
@@ -96,71 +95,11 @@
 </preGoal>
 
 
-<goal name="grab-schema" description="grab schema, wsdl from workflow-objects">
-        <echo> grabbing schema, wsdd and wsdl from workflow-object.jar</echo>
-        <mkdir dir="${working.dir}" />
-        <deploy:copy-deps todir="${working.dir}" />
-        <unjar dest="${working.dir}" overwrite="true">
-                <fileset dir="${working.dir}">
-                        <include name="*workflow-objects*.jar" />
-                </fileset>
-                <patternset>
-                        <include name="wsdd/**" />
-                        <include name="schema/**" />
-                        <include name="wsdl/**" />
-                </patternset>
-        </unjar>
-        <!-- clean up rest of stuff -->
-        <delete>
-                <fileset dir="${working.dir}">
-                        <include name="*.jar" />
-                </fileset>
-        </delete>
-</goal>
-
-<goal name="configure-webapp" prereqs="grab-schema" description="assemble individual wsdd into server-config.wsdd">
-         <!-- hack from mailing list to fix Maven XLST bug -->
-        ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
-
-        <!-- patch Results-Listener-deploy.wsdd to specify our own implementaiton class -->
-        <xslt in="${working.dir}/wsdd/CEAResultsListener-deploy.wsdd"
-              out="${working.dir}/wsdd/JesResultsListener-deploy.wsdd"
-              extension=".wsdd"
-              style="${basedir}/build/results-listener-config.xsl"
-        >
-                <outputproperty name="omit-xml-declaration" value="yes" /><!-- otherwise can't merge -->
-        </xslt>
-
-        <!-- need to concat xml files together first.. watch this.. -->
-        <property name="all.wsdd" location="${working.dir}/all.wsdd" />
-        <!-- header -->
-        <echo file="${all.wsdd}" message="&lt;services&gt;" />
-
-        <!-- body -->
-        <concat destfile="${all.wsdd}" append="true">
-                <fileset dir="${working.dir}/wsdd">
-                        <include name="JesResultsListener-deploy.wsdd" />
-                        <include name="JobController-deploy.wsdd" />
-                        <include name="JobMonitor-deploy.wsdd" />
-                </fileset>
-        </concat>
-        <!-- footer -->
-        <echo file="${all.wsdd}" append="true" message="&lt;/services&gt;" />
-        <!-- now transform -->
-        <xslt in="${all.wsdd}"
-              out="${webapp.root}/WEB-INF/server-config.wsdd"
-              extension=".wsdd"
-              style="${basedir}/build/server-config.xsl"
-        />
-        <delete file="${all.wsdd}"/><!-- clean up -->
-
-</goal>
-
-
-<goal name="site-webapp" prereqs="grab-schema"
+<goal name="site-webapp"
         description="generate webapp docs to a temp direcotry, for inclusion later in webapp - work around for a bug that stops build">
 
         <echo> generating webapp site into ${webapp.docs}" </echo>
+        <mkdir dir="${working.dir}" />
         <!-- first merge two doc sets - site xdocs take precendence  -->
         <property name="tmp.docs" location="${basedir}/target/webapp-docs-src" />
         <mkdir dir="${tmp.docs}" />

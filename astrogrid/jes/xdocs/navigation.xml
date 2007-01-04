@@ -37,7 +37,7 @@
                         <item name="Control Logic, Variables &amp; Scripts" href="userguide-jescript.html" />
                         <item name="JEScript Objects" href="api-reference.html" />
                         <item name="Execution Results" href="userguide-running.html" />
-                        <item name="Document Schema" href="userguide-workflowschema.html" />
+                        <item name="Document Schema" href="http://software.astrogrid.org/schemata/" />
 -               </item>
 
                 <item name="Examples" href="userguide-examples.html">

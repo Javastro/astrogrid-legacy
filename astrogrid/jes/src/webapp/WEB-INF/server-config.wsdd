@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment xmlns="http://xml.apache.org/axis/wsdd/" xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+ <globalConfiguration>
+  <parameter name="adminPassword" value="admin"/>
+  <parameter name="enableNamespacePrefixOptimization" value="false"/>
+  <parameter name="dotNetSoapEncFix" value="true"/>
+  <parameter name="disablePrettyXML" value="true"/>
+  <parameter name="sendMultiRefs" value="true"/>
+  <parameter name="sendXsiTypes" value="true"/>
+  <parameter name="attachments.implementation" value="org.apache.axis.attachments.AttachmentsImpl"/>
+  <parameter name="sendXMLDeclaration" value="true"/>
+  <requestFlow>
+   <handler type="java:org.apache.axis.handlers.JWSHandler">
+    <parameter name="scope" value="session"/>
+   </handler>
+   <handler type="java:org.apache.axis.handlers.JWSHandler">
+    <parameter name="scope" value="request"/>
+    <parameter name="extension" value=".jwr"/>
+   </handler>
+  </requestFlow>
+ </globalConfiguration>
+ <handler name="LocalResponder" type="java:org.apache.axis.transport.local.LocalResponder"/>
+ <handler name="URLMapper" type="java:org.apache.axis.handlers.http.URLMapper"/>
+ <handler name="Authenticate" type="java:org.apache.axis.handlers.SimpleAuthenticationHandler"/>
+ <service name="AdminService" provider="java:MSG">
+  <parameter name="allowedMethods" value="AdminService"/>
+  <parameter name="enableRemoteAdmin" value="false"/>
+  <parameter name="className" value="org.apache.axis.utils.Admin"/>
+  <namespace>http://xml.apache.org/axis/wsdd/</namespace>
+ </service>
+ <service name="Version" provider="java:RPC">
+  <parameter name="allowedMethods" value="getVersion"/>
+  <parameter name="className" value="org.apache.axis.Version"/>
+ </service>
+ <service name="JobControllerService" provider="java:RPC" style="wrapped" use="literal">
+  <operation name="submitWorkflow" qname="ns2:submitWorkflow" returnQName="urn" returnType="ns1:jobURN" soapAction="" xmlns:ns1="http://www.astrogrid.org/schema/ExecutionRecord/v1" xmlns:ns2="urn:jes/jobcontroller-wrapper/v1">
+   <parameter name="workflow-document" type="ns1:workflow-string"/>
+   <fault class="org.astrogrid.jes.delegate.v1.jobcontroller.JesFault" qname="message" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+  </operation>
+  <operation name="cancelJob" qname="ns3:cancelJob" soapAction="" xmlns:ns3="urn:jes/jobcontroller-wrapper/v1">
+   <parameter name="urn" type="ns4:jobURN" xmlns:ns4="http://www.astrogrid.org/schema/ExecutionRecord/v1"/>
+  </operation>
+  <operation name="deleteJob" qname="ns5:deleteJob" soapAction="" xmlns:ns5="urn:jes/jobcontroller-wrapper/v1">
+   <parameter name="urn" type="ns6:jobURN" xmlns:ns6="http://www.astrogrid.org/schema/ExecutionRecord/v1"/>
+  </operation>
+  <operation name="readJobList" qname="ns8:readJobList" returnQName="ns7:workflow-summary-list" returnType="ns7:workflow-summary-list" soapAction="" xmlns:ns7="http://www.astrogrid.org/schema/ExecutionRecord/v1" xmlns:ns8="urn:jes/jobcontroller-wrapper/v1">
+   <parameter qname="ns9:Account" type="ns9:Account" xmlns:ns9="http://www.astrogrid.org/schema/Credentials/v1"/>
+   <fault class="org.astrogrid.jes.delegate.v1.jobcontroller.JesFault" qname="message" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+  </operation>
+  <operation name="readJob" qname="ns11:readJob" returnQName="workflow-document" returnType="ns10:workflow-string" soapAction="" xmlns:ns10="http://www.astrogrid.org/schema/ExecutionRecord/v1" xmlns:ns11="urn:jes/jobcontroller-wrapper/v1">
+   <parameter name="urn" type="ns10:jobURN"/>
+   <fault class="org.astrogrid.jes.delegate.v1.jobcontroller.JesFault" qname="message" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+  </operation>
+  <parameter name="allowedMethods" value="deleteJob readJobList readJob cancelJob submitWorkflow"/>
+  <parameter name="wsdlPortType" value="JobController"/>
+  <parameter name="scope" value="Application"/>
+  <parameter name="className" value="org.astrogrid.jes.delegate.v1.jobcontroller.JobControllerServiceSoapBindingImpl"/>
+  <parameter name="wsdlServicePort" value="JobControllerService"/>
+  <parameter name="wsdlTargetNamespace" value="urn:jes/jobcontroller/v1"/>
+  <parameter name="wsdlServiceElement" value="JobControllerService"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns12:workflow-summary-type" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.jes.beans.v1.axis.executionrecord.WorkflowSummaryType" xmlns:ns12="http://www.astrogrid.org/schema/ExecutionRecord/v1"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.EnumDeserializerFactory" encodingStyle="" qname="ns13:execution-phase" serializer="org.apache.axis.encoding.ser.EnumSerializerFactory" type="java:org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase" xmlns:ns13="http://www.astrogrid.org/schema/CEATypes/v1"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory" encodingStyle="" qname="ns14:workflow-string" serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory" type="java:org.astrogrid.jes.beans.v1.axis.executionrecord.WorkflowString" xmlns:ns14="http://www.astrogrid.org/schema/ExecutionRecord/v1"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory" encodingStyle="" qname="ns15:extension" serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory" type="java:org.astrogrid.jes.beans.v1.axis.executionrecord._extension" xmlns:ns15="http://www.astrogrid.org/schema/ExecutionRecord/v1"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.EnumDeserializerFactory" encodingStyle="" qname="ns16:log-level" serializer="org.apache.axis.encoding.ser.EnumSerializerFactory" type="java:org.astrogrid.jes.types.v1.cea.axis.LogLevel" xmlns:ns16="http://www.astrogrid.org/schema/CEATypes/v1"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns17:workflow-summary-list" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.jes.beans.v1.axis.executionrecord._workflowSummaryList" xmlns:ns17="http://www.astrogrid.org/schema/ExecutionRecord/v1"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns18:Account" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.community.beans.v1.axis._Account" xmlns:ns18="http://www.astrogrid.org/schema/Credentials/v1"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory" encodingStyle="" qname="ns19:jobURN" serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory" type="java:org.astrogrid.jes.beans.v1.axis.executionrecord.JobURN" xmlns:ns19="http://www.astrogrid.org/schema/ExecutionRecord/v1"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns20:BaseIdentifier" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.community.beans.v1.axis.BaseIdentifier" xmlns:ns20="http://www.astrogrid.org/schema/Credentials/v1"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory" encodingStyle="" qname="ns21:Identifier" serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory" type="java:org.astrogrid.community.beans.v1.axis.Identifier" xmlns:ns21="http://www.astrogrid.org/schema/Credentials/v1"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns22:Group" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.community.beans.v1.axis._Group" xmlns:ns22="http://www.astrogrid.org/schema/Credentials/v1"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns23:message-type" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.jes.types.v1.cea.axis.MessageType" xmlns:ns23="http://www.astrogrid.org/schema/CEATypes/v1"/>
+ </service>
+ <service name="ResultListener" provider="java:RPC" style="wrapped" use="literal">
+  <operation name="putResults" qname="ns24:putResults" soapAction="" xmlns:ns24="urn:cea/resultslistener-wrapper/v1">
+   <parameter qname="ns25:job-identifier" type="ns25:job-identifier-type" xmlns:ns25="http://www.astrogrid.org/schema/CEATypes/v1"/>
+   <parameter name="result-list" type="ns26:result-list-type" xmlns:ns26="http://www.astrogrid.org/schema/CEATypes/v1"/>
+  </operation>
+  <parameter name="allowedMethods" value="putResults"/>
+  <parameter name="wsdlPortType" value="ResultsListener"/>
+  <parameter name="scope" value="Application"/>
+  <parameter name="className" value="org.astrogrid.jes.service.v1.cearesults.ResultsListenerServiceSoapBindingImpl"/>
+  <parameter name="wsdlServicePort" value="ResultListener"/>
+  <parameter name="wsdlTargetNamespace" value="urn:cea/resultslistener/v1"/>
+  <parameter name="wsdlServiceElement" value="ResultsListenerService"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns27:result-list-type" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.jes.types.v1.cea.axis.ResultListType" xmlns:ns27="http://www.astrogrid.org/schema/CEATypes/v1"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory" encodingStyle="" qname="ns28:job-identifier-type" serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory" type="java:org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType" xmlns:ns28="http://www.astrogrid.org/schema/CEATypes/v1"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns29:parameterValue" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue" xmlns:ns29="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+ </service>
+ <service name="JobMonitorService" provider="java:RPC" style="wrapped" use="literal">
+  <operation name="monitorJob" qname="ns30:monitorJob" soapAction="" xmlns:ns30="urn:jes/jobmonitor-wrapper/v1">
+   <parameter qname="ns31:job-identifier" type="ns31:job-identifier-type" xmlns:ns31="http://www.astrogrid.org/schema/CEATypes/v1"/>
+   <parameter qname="ns32:message" type="ns32:message-type" xmlns:ns32="http://www.astrogrid.org/schema/CEATypes/v1"/>
+  </operation>
+  <parameter name="allowedMethods" value="monitorJob"/>
+  <parameter name="wsdlPortType" value="JobMonitor"/>
+  <parameter name="wsdlServicePort" value="JobMonitorService"/>
+  <parameter name="className" value="org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitorServiceSoapBindingImpl"/>
+  <parameter name="scope" value="Application"/>
+  <parameter name="wsdlTargetNamespace" value="urn:jes/jobmonitor/v1"/>
+  <parameter name="wsdlServiceElement" value="JobMonitorService"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.EnumDeserializerFactory" encodingStyle="" qname="ns33:execution-phase" serializer="org.apache.axis.encoding.ser.EnumSerializerFactory" type="java:org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase" xmlns:ns33="http://www.astrogrid.org/schema/CEATypes/v1"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory" encodingStyle="" qname="ns34:job-identifier-type" serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory" type="java:org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType" xmlns:ns34="http://www.astrogrid.org/schema/CEATypes/v1"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.EnumDeserializerFactory" encodingStyle="" qname="ns35:log-level" serializer="org.apache.axis.encoding.ser.EnumSerializerFactory" type="java:org.astrogrid.jes.types.v1.cea.axis.LogLevel" xmlns:ns35="http://www.astrogrid.org/schema/CEATypes/v1"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns36:message-type" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.jes.types.v1.cea.axis.MessageType" xmlns:ns36="http://www.astrogrid.org/schema/CEATypes/v1"/>
+ </service>
+ <transport name="http">
+  <requestFlow>
+   <handler type="URLMapper"/>
+   <handler type="java:org.apache.axis.handlers.http.HTTPAuthHandler"/>
+  </requestFlow>
+  <parameter name="qs:list" value="org.apache.axis.transport.http.QSListHandler"/>
+  <parameter name="qs:wsdl" value="org.apache.axis.transport.http.QSWSDLHandler"/>
+  <parameter name="qs:method" value="org.apache.axis.transport.http.QSMethodHandler"/>
+ </transport>
+ <transport name="local">
+  <responseFlow>
+   <handler type="LocalResponder"/>
+  </responseFlow>
+ </transport>
+</deployment>
