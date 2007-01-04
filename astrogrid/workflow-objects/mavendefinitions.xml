@@ -1,34 +1,37 @@
-<project xmlns:j="jelly:core"
-        xmlns:jsl="jelly:jsl"
-        xmlns:jxml="jelly:xml"
-        xmlns:maven="jelly:maven"
-        xmlns:util="jelly:util"
-        xmlns:deploy="deploy"
-        xmlns:http="jelly:http"
-                xmlns:define="jelly:define"
-                xmlns:ag="org.astrogrid.objects"
-    >
-        <define:taglib uri="org.astrogrid.objects">
-            <define:tag name="CastorGenerate">
-                <j:set var="schema.name" value="${name}"/>
-                         <java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
-                            <echo>
-                                **Castor Generate for ${schema.name}</echo>
-                <classpath>
-                        <pathelement location="${basedir}/build" />
-                        <path refid="maven.dependency.classpath" />
-                </classpath>
-                    <arg value="-i"/>
-                    <arg file="${basedir}/schema/${schema.name}" />
-                <arg value="-binding-file" />
-                <arg file="${basedir}/build/castor-binding.xml" />
-                    <arg value="-dest" />
-                    <arg file="${generated.src}" />
-                <arg value="-verbose" />
-                <arg value="-types"/>
-                <arg value="arraylist"/>
-        </java>
-                
-            </define:tag>
-</define:taglib>    
+<project 
+  xmlns:j="jelly:core"
+  xmlns:jsl="jelly:jsl"
+  xmlns:jxml="jelly:xml"
+  xmlns:maven="jelly:maven"
+  xmlns:util="jelly:util"
+  xmlns:deploy="deploy"
+  xmlns:http="jelly:http"
+  xmlns:define="jelly:define"
+  xmlns:ag="org.astrogrid.objects"
+>
+  <!-- Generates code with Castor for one W3C XML schema.
+       To use the tag, first set these properties:
+         schema.path - the absolute path to the .xsd file.
+         generated.src - the directory below which code is generated. -->
+  <define:taglib uri="org.astrogrid.objects">
+    <define:tag name="CastorGenerate">
+      <java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" 
+          classpathref="maven.dependency.classpath">
+        <echo>**Castor Generate for ${schema.path}</echo>
+        <classpath>
+          <pathelement location="${basedir}/build" />
+          <path refid="maven.dependency.classpath" />
+        </classpath>
+        <arg value="-i"/>
+        <arg file="${schema.path}" />
+        <arg value="-binding-file" />
+        <arg file="${basedir}/build/castor-binding.xml" />
+        <arg value="-dest" />
+        <arg file="${generated.src}" />
+        <arg value="-verbose" />
+        <arg value="-types"/>
+        <arg value="arraylist"/>
+      </java>            
+    </define:tag>
+  </define:taglib>    
 </project>

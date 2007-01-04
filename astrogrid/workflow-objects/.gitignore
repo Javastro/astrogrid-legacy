@@ -1,7 +1,8 @@
-target
+.DS_Store
 maven.log
-.project
-velocity.log
 .classpath
-.checkstyle
 .settings
+velocity.log
+.checkstyle
+target
+.project

@@ -1,21 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="AstroGrid">
-
+<project name="AstroGrid Workflow Objects">
   <title>AstroGrid Project - Workflow Objects</title>
-
-  <body>
-    <menu name="Schema">
-    	<item name="cvs location"  href="http://www.astrogrid.org/viewcvs/astrogrid/workflow-objects/schema/"/>
-    	<item name="documentation"  href="schema/"/>    		
-    </menu>
-    <menu name="WSDL">
-    	<item name="cvs location"  href="http://www.astrogrid.org/viewcvs/astrogrid/workflow-objects/wsdl/"/>
-    		
-    </menu>
-    <links>
-       <item name="AstroGrid"  href="http://www.astrogrid.org"/>
-       <item name="Projects"   href="../../index.html"/>
-       <item name="Workflow Objects" href="../index.html"/>
-    </links>
-  </body>
+  <body/>
 </project>

@@ -1,4 +1,4 @@
-/*$Id: SchemaMap.java,v 1.2 2005/07/05 08:27:01 clq2 Exp $
+/*$Id: SchemaMap.java,v 1.3 2007/01/04 16:26:37 clq2 Exp $
  * Created on 01-Sep-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ import java.util.Map;
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Sep-2004
  * @author pharriso@eso.org May 27, 2005
  *@ see org.astrogrid.test.AstrogridAssert
+ * @deprecated Use org.astrogrid.contracts.SchemaMap instead.
  */
 public class SchemaMap {
    /**
@@ -97,6 +98,12 @@ public class SchemaMap {
 
 /* 
 $Log: SchemaMap.java,v $
+Revision 1.3  2007/01/04 16:26:37  clq2
+wo_gtr_1942
+
+Revision 1.2.48.1  2006/10/17 17:25:54  gtr
+This class is deprecated in favour of org.astrogrid.contracts.SchemaMap.
+
 Revision 1.2  2005/07/05 08:27:01  clq2
 paul's 559b and 559c for wo/apps and jes
 
@@ -113,7 +120,8 @@ Revision 1.1.90.3  2005/05/27 10:08:40  pah
 fix broken mappings for jes types and v05 data service
 
 Revision 1.1.90.2  2005/05/25 09:01:05  pah
-will create v10 registry objects in addition to the v9 objects (which have been left so as not to break existing components that use v9)rearranged the generation so that it occurs into the gen folder - easier to see the few handwritten classes in this module
+will create v10 registry objects in addition to the v9 objects (which have been left so as not to break existing components that use v9)
+rearranged the generation so that it occurs into the gen folder - easier to see the few handwritten classes in this module
 
 Revision 1.1.90.1  2005/05/17 11:39:38  pah
 moved generated source to the gen tree - src only has hand written source
