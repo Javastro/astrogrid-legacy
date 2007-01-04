@@ -34,6 +34,9 @@
         </release>
 		
 		<release version="HEAD">
+		  <action dev="gtr" type="fix" issue="1942">
+            Branch wo-gtr-1942. Deleted lots file for ease of make registry and CEA evolution.
+          </action>  
           <action dev="gtr" type="fix" issue="1981">
             Branch jes-gtr-1981. This breaks JES' dependence on the schema and
             WSDD files in workflow-objects. The build is simpler, the coupling
