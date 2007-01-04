@@ -5,38 +5,12 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
-
-          <action dev="gtr" type="fix" issue="1981">
-            Branch jes-gtr-1981. This breaks JES' dependence on the schema and
-            WSDD files in workflow-objects. The build is simpler, the coupling
-            is reduced and it allows the schemata to be dropped from workflow-objects
-            in favour of the current ones in contracts.
-          </action>
-          <action dev="gtr" type="fix" issue="1966">
-            Branch community-gtr-1966: fix the password-change and account-deletion
-            features in the community component.
-          </action>
-			<action dev="jl" type="add" issue="1496">
-				Branch common-jl-1496
-				Addition of new folder structure to cover xmlbeans generated for v1.0a1 of adql schema
-				1496 was regarding the autogeneration of xmlbeans using maven build. the jar is currently hand generate, 
-				ignore this branch until Jeff's update - CLQ
-			</action>	
-        </release>
-        
-        <release version="(Undertest)">
-
-          
-    	  <action dev="gtr" type="add">
-    	    <em>Branch common-gtr-1933.</em> I have added code to AstrogridAssert
-            such that it reports line and column numbers when it finds invalidities
-            while validating an XML file against a W3C XML schema.
-            See bug 1945 before finishing this branch -CLQ 
-    	  </action>
-	       
-    	  <action dev="kmb" type="fix">
+    	
+    	<action dev="kmb" type="fix">
     	    <em>Branch Reg_KMB_ErrorMessageFix2.</em> Fixed server messages due to a problem: when
     	    a auth id is not managed by the registry, it was not giving any messages suggesting where went wrong.
+    	    -this branch has been merged into Reg_KMB_Xfire, so will be abounened.
+    	    NOTE: won't go in 2006.4 release
     	  </action>    	  
 	        
      	<action dev="kmb" type="add">
@@ -48,12 +22,40 @@
     		  contracts branch Contracts_KMB_XForms (which needs Guy's approval). - Kev will let me know when this is ready - CLQ
     		  This branch had been abandened and replaced with branch Reg_KMB_Xfire and still in process of being merged/tested - CLQ 05/Oct/06
     		  
-    		  Reg_KMB_Xfire is the only reg branch needs to be merged. Reg_KMB_Paging had been abandened.
+    		  <b>Reg_KMB_Xfire is the only reg branch needs to be merged.</b> Reg_KMB_Paging had been abandened. 
+    		  NOTE: won't go in 2006.4 release 
     	</action>
-      
+
+
+        </release>
+        
+        <release version="(Undertest)">
+
         </release>
 		
 		<release version="HEAD">
+          <action dev="gtr" type="fix" issue="1981">
+            Branch jes-gtr-1981. This breaks JES' dependence on the schema and
+            WSDD files in workflow-objects. The build is simpler, the coupling
+            is reduced and it allows the schemata to be dropped from workflow-objects
+            in favour of the current ones in contracts.
+          </action>          
+    	  <action dev="gtr" type="add">
+    	    <em>Branch common-gtr-1933.</em> I have added code to AstrogridAssert
+            such that it reports line and column numbers when it finds invalidities
+            while validating an XML file against a W3C XML schema.
+            See bug 1945 before finishing this branch -CLQ 
+    	  </action>		
+          <action dev="gtr" type="fix" issue="1966">
+            Branch community-gtr-1966: fix the password-change and account-deletion
+            features in the community component.
+          </action>			
+			<action dev="jl" type="add" issue="1496">
+				Branch common-jl-1496
+				Addition of new folder structure to cover xmlbeans generated for v1.0a1 of adql schema
+				1496 was regarding the autogeneration of xmlbeans using maven build. the jar is currently hand generate, 
+				ignore this branch until Jeff's update - CLQ
+			</action>		
           <action dev="kea" type="fix">
             Branch PAL_KEA_1950.
             Fixes and enhancements for bugzilla tickets 1951 (disabling
