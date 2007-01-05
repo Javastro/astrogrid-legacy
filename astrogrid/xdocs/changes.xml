@@ -121,7 +121,7 @@
             OR USED.
        		</action>		
     		<action dev="clq" type="fix">
-    		  <em>Branch clq_helpdocs_1570 helpdocs. This branch had been merged in Aug 2006
+    		  <em>Branch clq_helpdocs_1570 helpdocs.</em> This branch had been merged in Aug 2006
     		</action> 		
     		<action dev="kmb" type="add">
     		  <em>Branch Contracts_KMB_XForms n astrogrid/contracts:</em>  Only merge in src/java and src/schema stuff.  Originally
