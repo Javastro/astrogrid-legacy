@@ -23,6 +23,10 @@
 <action dev="nw" type="fix">
 	Cleaned out and improved unit and integration tests
 </action>
+<action dev="nw" type="add">
+Added AR interface to vomon monitoring service.
+Used this to improve UI (login dialogue, registry google)
+</action>
 <action dev="nw" type="fix">
 	On startup, workbench will fallback to local copies of config if wiki is unavailable.
 	Set shorter timeout for connecting to wiki. 

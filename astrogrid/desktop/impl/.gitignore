@@ -6,3 +6,6 @@ target
 .byecycle
 .clover
 cobertura.ser
+bin-groovy
+.externalToolBuilders
+.fbprefs
