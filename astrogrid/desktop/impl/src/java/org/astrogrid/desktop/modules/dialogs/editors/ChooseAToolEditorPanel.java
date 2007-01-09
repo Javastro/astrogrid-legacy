@@ -1,4 +1,4 @@
-/*$Id: ChooseAToolEditorPanel.java,v 1.12 2006/09/14 09:55:47 jdt Exp $
+/*$Id: ChooseAToolEditorPanel.java,v 1.13 2007/01/09 16:19:57 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,6 +36,7 @@ import org.astrogrid.desktop.modules.ivoa.CacheFactory;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.workflow.beans.v1.Tool;
+import org.votech.VoMon;
 
 /** Tool Editor Panel that prompts the user to search for and select a tool.
  * <p>
@@ -48,12 +49,12 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel implements P
 	private RegistryGooglePanel rcp;
 
 
-	public ChooseAToolEditorPanel(ToolModel tm,final UIComponent parent, RegistryInternal reg, final ApplicationsInternal apps, BrowserControl browser, RegistryBrowser regBrowser, CacheFactory cache) {
+	public ChooseAToolEditorPanel(ToolModel tm,final UIComponent parent, RegistryInternal reg, final ApplicationsInternal apps, BrowserControl browser, RegistryBrowser regBrowser, CacheFactory cache, VoMon vomon) {
 		super(tm);
 
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 		add(new JLabel("Select an Application:"));
-		rcp = new RegistryGooglePanel( parent,reg,browser,regBrowser,cache);
+		rcp = new RegistryGooglePanel( parent,reg,browser,regBrowser,cache,vomon);
 		rcp.setMultipleResources(false);
 		setChooseCEAOnly(false);
 		toolModel.addToolEditListener(new ToolEditAdapter() {
@@ -151,6 +152,9 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel implements P
 
 /* 
 $Log: ChooseAToolEditorPanel.java,v $
+Revision 1.13  2007/01/09 16:19:57  nw
+uses vomon.
+
 Revision 1.12  2006/09/14 09:55:47  jdt
 typo
 

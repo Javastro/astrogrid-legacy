@@ -1,4 +1,4 @@
-/*$Id: RegistryGoogleDialog.java,v 1.2 2006/08/31 21:34:46 nw Exp $
+/*$Id: RegistryGoogleDialog.java,v 1.3 2007/01/09 16:19:57 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,6 +40,7 @@ import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
+import org.votech.VoMon;
 
 /** wraps a dialogue around a registry chooser pane.
  * @author Noel Winstanley nw@jb.man.ac.uk 02-Sep-2005
@@ -57,10 +58,10 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
     /** Construct a new RegistryChooserDialog
      * @throws java.awt.HeadlessException
      */
-    public RegistryGoogleDialog(  Configuration conf, HelpServerInternal help, UIInternal ui,RegistryInternal reg,BrowserControl browser, RegistryBrowser regBrowser, CacheFactory cache) throws HeadlessException {
+    public RegistryGoogleDialog(  Configuration conf, HelpServerInternal help, UIInternal ui,RegistryInternal reg,BrowserControl browser, RegistryBrowser regBrowser, CacheFactory cache,VoMon vomon) throws HeadlessException {
         super();
         this.parent = new UIComponentImpl(conf,help,ui);
-        this.chooserPanel = new RegistryGooglePanel(parent,reg,browser,regBrowser,cache);
+        this.chooserPanel = new RegistryGooglePanel(parent,reg,browser,regBrowser,cache,vomon);
         this.setContentPane(getJOptionPane());           
      
         this.setTitle("Resource Chooser");
@@ -79,8 +80,8 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
         this.setSize(425,600);        
     }
     
-    public RegistryGoogleDialog(Component parentComponent, Configuration conf, HelpServerInternal help, UIInternal ui,RegistryInternal reg, BrowserControl browser, RegistryBrowser regBrowser,CacheFactory cache) throws HeadlessException {
-        this(conf,help,ui,reg,browser, regBrowser,cache);
+    public RegistryGoogleDialog(Component parentComponent, Configuration conf, HelpServerInternal help, UIInternal ui,RegistryInternal reg, BrowserControl browser, RegistryBrowser regBrowser,CacheFactory cache, VoMon vomon) throws HeadlessException {
+        this(conf,help,ui,reg,browser, regBrowser,cache,vomon);
         setLocationRelativeTo(parentComponent);
     }
     
@@ -178,6 +179,9 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
 
 /* 
 $Log: RegistryGoogleDialog.java,v $
+Revision 1.3  2007/01/09 16:19:57  nw
+uses vomon.
+
 Revision 1.2  2006/08/31 21:34:46  nw
 minor tweaks and doc fixes.
 

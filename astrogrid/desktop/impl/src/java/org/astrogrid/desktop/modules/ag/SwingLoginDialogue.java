@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.4 2006/08/31 21:13:13 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.5 2007/01/09 16:21:32 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,6 +45,8 @@ import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory;
 import org.astrogrid.store.Ivorn;
+import org.votech.VoMon;
+import org.votech.VoMonBean;
 
 import com.l2fprod.common.swing.JLinkButton;
 
@@ -74,7 +76,7 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
      * @throws MalformedURLException 
      * @throws ServiceException 
      */
-    public SwingLoginDialogue(final BrowserControl browser, Registry reg, String registerLink, String defaultCommunity) throws MalformedURLException, ServiceException {
+    public SwingLoginDialogue(final VoMon monitor,final BrowserControl browser, Registry reg, String registerLink, String defaultCommunity) throws MalformedURLException, ServiceException {
     	this.defaultCommunity = defaultCommunity;
     	// this query blocks - but I think that's acceptable.
     	Resource[] knownCommunities = reg.xquerySearch(
@@ -110,7 +112,7 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
         
         /* The main panel will be a JOptionPane since it has icons and
          * layout set up for free.  We won't be using its various
-         * static show methods though. */
+          * static show methods though. */
         opane_ = new JOptionPane();
         opane_.setMessageType( JOptionPane.QUESTION_MESSAGE );
         opane_.setOptionType( JOptionPane.OK_CANCEL_OPTION );
@@ -126,7 +128,18 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
 		
 				if (value instanceof Resource) {
 					Resource r = (Resource) value;
-					setText(mkCommunityString(r)); //@future when registry moves to v1.0, add in more data display here.
+					String s = mkCommunityString(r); //@future when registry moves to v1.0, add in more data display here.
+					VoMonBean b = monitor.checkAvailability(r.getId());
+					if (b == null) {
+						setText("<html><font color='#666666'>" + s);
+						setToolTipText("This community is unknown to the monitoring appliction");
+					} else 	if (b.getCode() != VoMonBean.UP_CODE) {
+						setText("<html><font color='#AAAAAA'>" + s);
+						setToolTipText("This community appears to be unavailable at the moment");
+					} else {
+						setText(s);
+						setToolTipText("Available");
+					}
 				} else {
 					setText(value.toString());
 				}
@@ -244,7 +257,7 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
   
     /** show the dialog, to get user input. will return 'true' if user confirms, 'false' if user cancels*/
     public boolean showDialog() {
-        JDialog dialog = opane_.createDialog( null, "Astrogrid Login" );
+        JDialog dialog = opane_.createDialog( null, "Virtual Observatory Login" );
         dialog.getContentPane().add( opane_ );               
             dialog.show();
             passField_.requestFocus();     
@@ -301,6 +314,9 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.5  2007/01/09 16:21:32  nw
+uses vomon.
+
 Revision 1.4  2006/08/31 21:13:13  nw
 added drop-down list of communitiies.
 

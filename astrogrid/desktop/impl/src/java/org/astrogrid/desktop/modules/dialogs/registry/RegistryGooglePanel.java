@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.3 2006/09/02 00:48:34 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.4 2007/01/09 16:19:33 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -61,7 +61,9 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
@@ -75,6 +77,8 @@ import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.ExternalViewerHyperlinkListener;
 import org.astrogrid.desktop.modules.ui.RegistryBrowserImpl;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.votech.VoMon;
+import org.votech.VoMonBean;
 import org.w3c.dom.Document;
 
 /**
@@ -197,38 +201,7 @@ public class RegistryGooglePanel extends JPanel implements ActionListener {
 		    selectTable.requestFocusInWindow();
 		}
 	}
-	/**
-     * Simple cell renderer used to wrap cell contents to 
-     * sensible length (WRAP_LENGTH)
-     */
-    private static class RegistryTreeRenderer extends DefaultTreeCellRenderer {
-		public Component getTreeCellRendererComponent(JTree tree, 
-	            Object value,
-				  boolean isSelected,
-				  boolean expanded, 
-				  boolean leaf, 
-				  int row, 
-				  boolean hasFocus) {
-			tree.setRowHeight(0);
-			JLabel label = (JLabel)super.getTreeCellRendererComponent(tree, 
-                        											  value, 
-																	  isSelected, 
-																	  expanded, 
-																	  leaf, 
-																	  row, 
-																	  hasFocus);
-			if (value.toString().length() > CELL_WRAP_LENGTH) {
-				StringBuffer sb = new StringBuffer();
-				sb.append("<html>");
-				sb.append(value.toString() != null ?   WordUtils.wrap(value.toString(),WRAP_LENGTH,"<br>",false) : "");
-				sb.append("</html>");
-				label.setText(sb.toString());
-			} else {
-				label.setText("" + value);
-			}			
-			return(label);
-		}
-	}
+	
 	/** listens to changes to gui, and fetches and displays XML documents as needed.
      * Also displays the formatted record.
 	 * @author Noel Winstanley
@@ -271,14 +244,7 @@ public class RegistryGooglePanel extends JPanel implements ActionListener {
 		
 		    protected Object construct() throws Exception {
 		    	Document doc = reg.getResourceXML(selectTableModel.getRow(row).getId());
-		        xmlPane.setText(XMLUtils.DocumentToString(doc));        
-		        try {                            
-		        	RegistryTree xmltree = new RegistryTree(doc);
-		        	tree.setModel(xmltree.getModel());                            	
-		        } catch (Exception e) {
-		        	RegistryGooglePanel.logger.error("Problem creating registry browser tree: " + e.getMessage());
-		        	tree.setModel(null);
-		        }                            
+		        xmlPane.setText(XMLUtils.DocumentToString(doc));                                  
 		        return null;
 		    }
 		    protected void doFinished(Object o) {
@@ -328,8 +294,7 @@ public class RegistryGooglePanel extends JPanel implements ActionListener {
             detailsPane.setText("<html><body></body></html>");
             xmlPane.setText("No entry selected");
             tabPane.setSelectedIndex(0);
-          //  keywordField.setText("");
-            tree.setModel(null);            
+          //  keywordField.setText("");      
             fireTableDataChanged();
         }
         // makes a checkbox appear in col 1 if parent is application launcher or workflow builder, not registry browser
@@ -378,10 +343,45 @@ public class RegistryGooglePanel extends JPanel implements ActionListener {
                     return  Boolean.valueOf(selectionModel.isSelectedIndex(rowIndex));
                 case 1:
                     
-                    return  ri.get(rowIndex) == null ? "" : ((Resource)ri.get(rowIndex)).getTitle();//short name?
+                    return createTitle(rowIndex);
                 default:
                        return "";
             }
+        }
+        
+        private String createTitle(int rowIndex) {
+        	Resource r = (Resource)ri.get(rowIndex);
+        	if (r == null) {
+        		return "";
+        	}
+        	String title = r.getTitle();
+        	if (r instanceof Service) {
+        		VoMonBean b = vomon.checkAvailability(r.getId());
+        		if (b == null) {// unknown
+        			return "<html><font color='#666666'>" + title;
+        		} else if ( b.getCode() != VoMonBean.UP_CODE) { // service down
+        			return "<html><font color='#AAAAAA'>" + title;
+        		} else {
+        			return title;
+        		}
+        	} else if (r instanceof CeaApplication) {
+        		VoMonBean[] providers = vomon.checkCeaAvailability(r.getId());
+        		if (providers == null ) { 
+        			 // unknown application.
+        			return "<html><font color='#666666'>" + title;
+        		} else {
+        			for (int i = 0; i < providers.length; i++) {
+        				if (providers[i].getCode() == VoMonBean.UP_CODE) {
+        					return title; // at least one available server
+        				}
+        			}
+        			// all servers unavailable.
+        			return "<html><font color='#AAAAAA'>" + title;
+        		}
+
+        	}
+        	// default - pass thru
+        	return title;
         }
         
         // make the first cell editable
@@ -423,7 +423,6 @@ public class RegistryGooglePanel extends JPanel implements ActionListener {
     private ResourceTableModel selectTableModel= new ResourceTableModel();
     private JSplitPane split = null;
     private JTabbedPane tabPane;
-    private JTree tree = null;
     private final XMLDisplayer xmlDisplayer = new XMLDisplayer();
     private JTextArea xmlPane = new JTextArea();
     
@@ -445,10 +444,11 @@ public class RegistryGooglePanel extends JPanel implements ActionListener {
     protected final RegistryBrowser regBrowser;
     protected final Ehcache resources ;
     protected final Ehcache bulk;
+    protected final VoMon vomon;
     /** Construct a new RegistryChooserPanel
      * 
      */
-    public RegistryGooglePanel(UIComponent parent,RegistryInternal reg, BrowserControl browser, RegistryBrowser regBrowser, CacheFactory fac) {
+    public RegistryGooglePanel(UIComponent parent,RegistryInternal reg, BrowserControl browser, RegistryBrowser regBrowser, CacheFactory fac, VoMon vomon) {
         super();    
         this.parent = parent;
         this.reg = reg;
@@ -456,6 +456,7 @@ public class RegistryGooglePanel extends JPanel implements ActionListener {
         this.regBrowser = regBrowser;
         this.resources = fac.getManager().getCache(CacheFactory.RESOURCES_CACHE);
         this.bulk = fac.getManager().getCache(CacheFactory.BULK_CACHE);
+        this.vomon = vomon;
 
         
         initialize();
@@ -566,7 +567,38 @@ public class RegistryGooglePanel extends JPanel implements ActionListener {
                      result.append("<b>").append(ri.getTitle()).append("</b><br>");
                      result.append("<i>");
                      result.append(ri.getId());
-                     result.append("</i></html>");                                          
+                     result.append("</i>");
+                     if (ri instanceof Service) {
+                    	 VoMonBean b = vomon.checkAvailability(ri.getId());
+                    	 if (b == null) {
+                    		 result.append("<br>The Monitoring service knows nothing about this service");
+                    	 } else {
+                    		 result.append("<br>Status at ")
+                    		 .append(b.getTimestamp())
+                    		 	.append(" - <b>" )
+                    		 	.append(b.getStatus())
+                    		 	.append("</b>");
+                    	 }
+                     } else if (ri instanceof CeaApplication) {
+                    	 VoMonBean[] arr = vomon.checkCeaAvailability(ri.getId());
+                    	 if (arr == null || arr.length == 0) {
+                    		 result.append("<br>the monitoring service knows of no providers of this application");
+                    	 } else {
+                    		 result.append("<br>Provided by<ul>");
+                    		 for (int i =0; i < arr.length; i++) {
+                    			 VoMonBean b = arr[i];
+                    			 result.append("<li>")
+                    			 	.append(b.getId())
+                    			 	.append(" - status at ")
+                    			 	.append(b.getTimestamp())
+                    			 	.append(" - <b>")
+                    			 	.append(b.getStatus())
+                    			 	.append("</b>");
+                    		 }
+                    		 result.append("</ul>");
+                    	 }
+                     }
+                     result.append("</html>");                                          
                      tip= result.toString(); 
                  } else { 
                      tip = super.getToolTipText(e);
@@ -621,16 +653,6 @@ private JButton getGoButton() {
         return keywordField;
     }
 
-   
-   /** build / access the tree */
-private JTree getTree() {
-    if (tree == null) {
-    	tree = new JTree();
-    	tree.setModel(null);
-    	tree.setCellRenderer(new RegistryTreeRenderer());
-    }
-    return tree;
-}
 
    
    /** assemble the ui */
@@ -656,11 +678,6 @@ private void initialize() {
     detailsPane.addHyperlinkListener(new ExternalViewerHyperlinkListener(browser, regBrowser));
     tabPane.addTab("Details", null, new JScrollPane(detailsPane), "Details of chosen entry");
 	JPanel treePanel = new JPanel(new BorderLayout());
-	final JTree tree2 = getTree();
-	JScrollPane scrollPane = new JScrollPane(tree2);
-	treePanel.add(scrollPane);
-	treePanel.setPreferredSize(new Dimension(300,200));    
-	tabPane.addTab("Tree View", IconHelper.loadIcon("tree.gif"), treePanel, "Display results in tree form");
     tabPane.addTab("XML entry", IconHelper.loadIcon("document.gif"), getBottomPanel(), "View the XML as entered in the registry");       
     tabPane.addChangeListener(xmlDisplayer);
     split = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,getCenterPanel(),tabPane);
@@ -680,6 +697,9 @@ public void clear() {
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.4  2007/01/09 16:19:33  nw
+uses vomon.
+
 Revision 1.3  2006/09/02 00:48:34  nw
 fixed caching bug
 
