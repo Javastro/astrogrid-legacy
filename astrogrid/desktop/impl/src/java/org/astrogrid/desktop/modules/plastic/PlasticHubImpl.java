@@ -37,6 +37,7 @@ import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.common.namegen.NameGen;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.votech.plastic.CommonMessageConstants;
 import org.votech.plastic.HubMessageConstants;
@@ -53,8 +54,8 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
      * Logger for this class
      */
     private static final Log logger = LogFactory.getLog(PlasticHubImpl.class);
-
-	static final String PLASTIC_NOTIFICATIONS_ENABLED = "org.votech.plastic.notificationsenabled";
+    // NWW - replaced use of config with new preferences.
+	//static final String PLASTIC_NOTIFICATIONS_ENABLED = "org.votech.plastic.notificationsenabled";
 
     private final ApplicationStore clients = new ApplicationStore();
 
@@ -68,8 +69,9 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
     private File plasticPropertyFile;
 
 	private PrettyPrinterInternal prettyPrinter;
-
-	private Configuration config;
+//NWW - replaced use of configuration with new preferences.
+//	private Configuration config;
+	private final Preference notificationsEnabled;
 
 	private boolean weWroteTheConfigFile;
 
@@ -90,21 +92,21 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
     /** constructor selected by acrFactory when systemtray is not available */
     public PlasticHubImpl(String arVersion, UIInternal ui,Executor executor, NameGen idGenerator,
-            RmiServer rmi,  WebServer web, PrettyPrinterInternal prettyPrinter, Configuration config) {
-        this(arVersion, ui,executor,idGenerator,rmi, web,null, prettyPrinter, config);
+            RmiServer rmi,  WebServer web, PrettyPrinterInternal prettyPrinter, Preference p) {
+        this(arVersion, ui,executor,idGenerator,rmi, web,null, prettyPrinter, p);
     }
     
     /** constructor selected by acrFactory when systemtray is available 
      * @param prettyPrinter */
     public PlasticHubImpl(String arVersion, UIInternal ui,Executor executor, NameGen idGenerator,
-            RmiServer rmi, WebServer web,SystemTray tray, PrettyPrinterInternal prettyPrinter, Configuration config) {
+            RmiServer rmi, WebServer web,SystemTray tray, PrettyPrinterInternal prettyPrinter, Preference p) {
         this.tray = tray;
         this.rmiServer= rmi;
         this.webServer= web;
         this.systemExecutor = executor;
         this.idGenerator = idGenerator;
         this.prettyPrinter = prettyPrinter;
-        this.config = config;
+        this.notificationsEnabled = p;
         this.ui = ui;
         this.arVersion = arVersion;
         logger.info("Constructing a PlasticHubImpl");
@@ -213,7 +215,8 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
      */
     private void displayInfoMessage(String caption, String message) {
     	//If the config is not set, then assume we will show popups
-        if (tray != null && !("false".equalsIgnoreCase(config.getKey(PLASTIC_NOTIFICATIONS_ENABLED)))) {
+    	//NWW - replaced config with a prefernece, but followed same rules.
+        if (tray != null && !("false".equalsIgnoreCase(notificationsEnabled.getValue()))) {
             tray.displayInfoMessage(caption, message);
         } else {
             logger.info(caption + " : " + message);
@@ -297,6 +300,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         // the method.
         //
         final Map returns = new HashMap(); //Doesn't need synchronization as it's not read until all writes are done.
+        	// NWW - consider using LinkedHashMap - if maintaining order of insertion is important.
         class Messager implements Runnable {
 
             private PlasticClientProxy client;
@@ -573,7 +577,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 	}
 	
 	public void setNotificationsEnabled(boolean enable) {
-		config.setKey(PLASTIC_NOTIFICATIONS_ENABLED, Boolean.toString(enable));
+		notificationsEnabled.setValue(Boolean.toString(enable)); 
 	}
 
 	public void halting() {

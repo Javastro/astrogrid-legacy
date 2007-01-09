@@ -26,7 +26,7 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.resource.RegistryService;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.desktop.modules.system.Preference;
 import org.codehaus.xfire.util.STAXUtils;
 import org.w3c.dom.Document;
 
@@ -55,8 +55,8 @@ public class StreamingRegistryImpl implements RegistryInternal {
 			.getLog(StreamingRegistryImpl.class);
 
 	private final ExternalRegistryInternal reg;
-	private final URI endpoint;
-	private final URI fallbackEndpoint;
+	private final Preference endpoint;
+	private final Preference fallbackEndpoint;
 	private final XMLOutputFactory outputFactory;
 	private final Ehcache resourceCache;
 	private final Ehcache documentCache;	
@@ -64,13 +64,11 @@ public class StreamingRegistryImpl implements RegistryInternal {
 	
 			
 		
-	public StreamingRegistryImpl(final ExternalRegistryInternal reg, final Configuration config, final  CacheFactory cacheFac) throws URISyntaxException {
+	public StreamingRegistryImpl(final ExternalRegistryInternal reg,Preference endpoint,Preference fallbackEndpoint, final  CacheFactory cacheFac) throws URISyntaxException {
 		super();
 		this.reg = reg;
-        String endpoint = config.getKey("org.astrogrid.registry.query.endpoint"); //JDT1836
-        String fallbackEndpoint = config.getKey("org.astrogrid.registry.query.altendpoint");
-		this.endpoint = new URI(endpoint);
-		this.fallbackEndpoint = new URI(fallbackEndpoint);
+		this.endpoint = endpoint;
+		this.fallbackEndpoint =fallbackEndpoint;
 		this.outputFactory = XMLOutputFactory.newInstance();	
 		this.resourceCache = cacheFac.getManager().getCache(CacheFactory.RESOURCES_CACHE);
 		this.documentCache = cacheFac.getManager().getCache(CacheFactory.DOCUMENTS_CACHE);
@@ -296,12 +294,20 @@ public class StreamingRegistryImpl implements RegistryInternal {
 			}
 		}
 		
-		public final URI getFallbackSystemRegistryEndpoint() {
-			return fallbackEndpoint;
+		public final URI getFallbackSystemRegistryEndpoint() throws ServiceException {
+			try {
+				return new URI(fallbackEndpoint.getValue());
+			} catch (URISyntaxException x) {
+				throw new ServiceException("Misconfigured url",x);
+			}
 		}
 
-		public final URI getSystemRegistryEndpoint() {
-			return endpoint;
+		public final URI getSystemRegistryEndpoint() throws ServiceException {
+			try {
+				return new URI(endpoint.getValue());
+			} catch (URISyntaxException x) {
+				throw new ServiceException("Misconfigured url",x);
+			}				
 		}
 
 

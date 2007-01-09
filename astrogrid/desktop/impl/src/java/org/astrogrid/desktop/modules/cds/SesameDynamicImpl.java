@@ -1,4 +1,4 @@
-/*$Id: SesameDynamicImpl.java,v 1.5 2006/10/11 10:38:39 nw Exp $
+/*$Id: SesameDynamicImpl.java,v 1.6 2007/01/09 16:20:12 nw Exp $
  * Created on 28-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,6 +28,7 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.cds.Sesame;
 import org.astrogrid.acr.cds.SesamePositionBean;
+import org.astrogrid.desktop.modules.system.Preference;
 /**
  * implementaiton of the sesame client, using dynamic webservice invocation - i.e.
  * without using marshalling beans
@@ -38,27 +39,32 @@ import org.astrogrid.acr.cds.SesamePositionBean;
  */
 public class SesameDynamicImpl implements Sesame {
 
+	
     public SesameDynamicImpl() {
         super();
         service = new Service();
         inputFactory = XMLInputFactory.newInstance(); 
+        // initialize to sensible default.
+        endpoint = new Preference();
+        endpoint.setValue(DEFAULT_ENDPOINT);
        
     }
     protected final Service service;
     protected final XMLInputFactory inputFactory;
-    protected  String endpoint = DEFAULT_ENDPOINT;
+    protected  Preference endpoint ;
     public final static String DEFAULT_ENDPOINT =  "http://cdsws.u-strasbg.fr/axis/services/Sesame";
 
-    public void setEndpoint(String e) {
+    public void setEndpoint(Preference e) {
         this.endpoint = e;
     }
     
-    public String sesame(String arg0, String arg1) throws ServiceException {
+    public String sesame(String parameter, String arg1) throws ServiceException {
     try {
-        Call call = (Call)service.createCall();
-        call.setTargetEndpointAddress(endpoint);
+        Call call = service.createCall();
+        
+        call.setTargetEndpointAddress(endpoint.getValue());
         call.setOperationName(new QName("urn:Sesame","sesame"));
-        return (String)call.invoke(new Object[]{arg0,arg1});
+        return (String)call.invoke(new Object[]{parameter,arg1});
     } catch (javax.xml.rpc.ServiceException e) {
         throw new ServiceException(e);
     } catch (RemoteException e) {
@@ -69,8 +75,8 @@ public class SesameDynamicImpl implements Sesame {
     public String sesameChooseService(String arg0, String arg1, boolean arg2, String arg3)
             throws ServiceException {
         try {
-            Call call = (Call)service.createCall();
-            call.setTargetEndpointAddress(endpoint);
+            Call call = service.createCall();
+            call.setTargetEndpointAddress(endpoint.getValue());
             call.setOperationName(new QName("urn:Sesame","sesame"));
             return (String)call.invoke(new Object[]{arg0,arg1,Boolean.valueOf(arg2),arg3});
         } catch (javax.xml.rpc.ServiceException e) {
@@ -152,6 +158,9 @@ public class SesameDynamicImpl implements Sesame {
 
 /* 
 $Log: SesameDynamicImpl.java,v $
+Revision 1.6  2007/01/09 16:20:12  nw
+updated to use preference.
+
 Revision 1.5  2006/10/11 10:38:39  nw
 added response parsing.
 

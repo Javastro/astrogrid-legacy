@@ -1,4 +1,4 @@
-/*$Id: UCDImpl.java,v 1.4 2006/04/18 23:25:44 nw Exp $
+/*$Id: UCDImpl.java,v 1.5 2007/01/09 16:20:12 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,15 +12,14 @@ package org.astrogrid.desktop.modules.cds;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.rmi.RemoteException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.cds.Glu;
 import org.astrogrid.acr.cds.UCD;
 import org.astrogrid.desktop.modules.cds.ucd.UCDService;
 import org.astrogrid.desktop.modules.cds.ucd.UCDServiceLocator;
+import org.astrogrid.desktop.modules.system.Preference;
 
 /** Implementaton of the UCD service
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Aug-2005
@@ -36,34 +35,22 @@ public class UCDImpl implements UCD {
      * @throws MalformedURLException 
      * 
      */
-    public UCDImpl(Glu glu, String endpoint) throws javax.xml.rpc.ServiceException, MalformedURLException  {
+    public UCDImpl(Preference endpoint) throws javax.xml.rpc.ServiceException, MalformedURLException  {
         super();
-        UCDService serv = new UCDServiceLocator();
-        org.astrogrid.desktop.modules.cds.ucd.UCD ucd1 = null;
-        if (endpoint == null || endpoint.trim().length() == 0) {
-        try {
-            String gluEndpoint = glu.getURLfromTag(UCD_WS_GLU_TAG);
-            ucd1 = serv.getUCD(new URL(gluEndpoint));
-        } catch (Exception e) {
-            logger.warn("Exception when finding endpoint via glu - falling back",e);
-            ucd1 = serv.getUCD();
-        }
-        } else {
-            ucd1 = serv.getUCD(new URL(endpoint));
-        }
-        ucd = ucd1;
-    
+        this.endpoint = endpoint;
+        serv = new UCDServiceLocator();    
     } 
-    protected final org.astrogrid.desktop.modules.cds.ucd.UCD ucd;
     public static final String UCD_WS_GLU_TAG = "CDS/ws/UCD.WS";
+	private final UCDService serv;
+	private final Preference endpoint;
     /**
      * @see org.astrogrid.acr.cds.UCD#UCDList()
      */
     public String UCDList() throws ServiceException {
         try {
-            String s= ucd.UCDList();
+            String s= getUcd().UCDList();
             return s;
-        } catch (RemoteException e) {
+        } catch (Exception e) {
             throw new ServiceException(e);
         }
     }
@@ -73,8 +60,8 @@ public class UCDImpl implements UCD {
      */
     public String resolveUCD(String arg0) throws ServiceException {
         try {
-            return ucd.resolveUCD(arg0);
-        } catch (RemoteException e) {
+            return getUcd().resolveUCD(arg0);
+        } catch (Exception e) {
             throw new ServiceException(e);
         }
     }
@@ -84,8 +71,8 @@ public class UCDImpl implements UCD {
      */
     public String UCDofCatalog(String arg0) throws ServiceException {
         try {
-            return ucd.UCDofCatalog(arg0);
-        } catch (RemoteException e) {
+            return getUcd().UCDofCatalog(arg0);
+        } catch (Exception e) {
             throw new ServiceException(e);
         }
     }
@@ -95,8 +82,8 @@ public class UCDImpl implements UCD {
      */
     public String translate(String arg0) throws ServiceException {
         try {
-            return ucd.translate(arg0);
-        } catch (RemoteException e) {
+            return getUcd().translate(arg0);
+        } catch (Exception e) {
             throw new ServiceException(e);
         }
     }
@@ -106,8 +93,8 @@ public class UCDImpl implements UCD {
      */
     public String upgrade(String arg0) throws ServiceException {
         try {
-            return ucd.upgrade(arg0);
-        } catch (RemoteException e) {
+            return getUcd().upgrade(arg0);
+        } catch (Exception e) {
             throw new ServiceException(e);
         }
     }
@@ -117,8 +104,8 @@ public class UCDImpl implements UCD {
      */
     public String validate(String arg0) throws ServiceException {
         try {
-            return ucd.validate(arg0);
-        } catch (RemoteException e) {
+            return getUcd().validate(arg0);
+        } catch (Exception e) {
             throw new ServiceException(e);
         }
     }
@@ -128,8 +115,8 @@ public class UCDImpl implements UCD {
      */
     public String explain(String arg0) throws ServiceException {
         try {
-            return ucd.explain(arg0);
-        } catch (RemoteException e) {
+            return getUcd().explain(arg0);
+        } catch (Exception e) {
             throw new ServiceException(e);
         }
     }
@@ -139,17 +126,29 @@ public class UCDImpl implements UCD {
      */
     public String assign(String arg0) throws ServiceException {
         try {
-            return ucd.assign(arg0);
-        } catch (RemoteException e) {
+            return getUcd().assign(arg0);
+        } catch (Exception e) {
             throw new ServiceException(e);
         }
     }
+
+	/**
+	 * @return the ucd
+	 * @throws javax.xml.rpc.ServiceException 
+	 * @throws MalformedURLException 
+	 */
+	protected org.astrogrid.desktop.modules.cds.ucd.UCD getUcd() throws MalformedURLException, javax.xml.rpc.ServiceException {
+		return	serv.getUCD(new URL(endpoint.getValue()));
+	}
 
 }
 
 
 /* 
 $Log: UCDImpl.java,v $
+Revision 1.5  2007/01/09 16:20:12  nw
+updated to use preference.
+
 Revision 1.4  2006/04/18 23:25:44  nw
 merged asr development.
 

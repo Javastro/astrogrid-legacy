@@ -1,4 +1,4 @@
-/*$Id: GluImpl.java,v 1.4 2006/08/31 21:34:46 nw Exp $
+/*$Id: GluImpl.java,v 1.5 2007/01/09 16:20:12 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,7 @@ import org.astrogrid.acr.cds.Glu;
 import org.astrogrid.desktop.modules.cds.jglu.Jglu;
 import org.astrogrid.desktop.modules.cds.jglu.JgluService;
 import org.astrogrid.desktop.modules.cds.jglu.JgluServiceLocator;
+import org.astrogrid.desktop.modules.system.Preference;
 
 /** Implementation of the GLU service
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Aug-2005
@@ -25,38 +26,50 @@ import org.astrogrid.desktop.modules.cds.jglu.JgluServiceLocator;
  */
 public class GluImpl implements Glu {
 
-    /** Construct a new GluImpl
+    private final JgluService serv;
+    private final Preference endpoint;
+
+	/** Construct a new GluImpl
      * @throws javax.xml.rpc.ServiceException
      * @throws MalformedURLException 
      * 
      */
-    public GluImpl(String endpoint) throws javax.xml.rpc.ServiceException, MalformedURLException {
+    public GluImpl(Preference endpoint) throws javax.xml.rpc.ServiceException, MalformedURLException {
         super();
-        JgluService serv = new JgluServiceLocator();            
-        if (endpoint == null || endpoint.trim().length() == 0) {
-            this.jglu = serv.getJglu();
-        } else {           
-            this.jglu = serv.getJglu(new URL(endpoint));            
-        }
+        serv = new JgluServiceLocator();    
+        this.endpoint = endpoint;
+
     }
-    protected final Jglu jglu;
+
 
     /**
      * @see org.astrogrid.acr.cds.Glu#getURLfromTag(java.lang.String)
      */
     public String getURLfromTag(String arg0) throws ServiceException {
         try {
-            return jglu.getURLfromTag(arg0);
+            return getJglu().getURLfromTag(arg0);
         } catch (Throwable e) {
             throw new ServiceException(e);
         }
     }
+
+	/**
+	 * @return the jglu
+	 * @throws javax.xml.rpc.ServiceException 
+	 * @throws MalformedURLException 
+	 */
+	protected Jglu getJglu() throws MalformedURLException, javax.xml.rpc.ServiceException {
+		return serv.getJglu(new URL(endpoint.getValue()));
+	}
 
 }
 
 
 /* 
 $Log: GluImpl.java,v $
+Revision 1.5  2007/01/09 16:20:12  nw
+updated to use preference.
+
 Revision 1.4  2006/08/31 21:34:46  nw
 minor tweaks and doc fixes.
 

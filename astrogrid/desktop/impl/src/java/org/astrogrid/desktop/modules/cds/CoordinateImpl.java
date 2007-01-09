@@ -1,4 +1,4 @@
-/*$Id: CoordinateImpl.java,v 1.4 2006/04/18 23:25:44 nw Exp $
+/*$Id: CoordinateImpl.java,v 1.5 2007/01/09 16:20:12 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,16 +12,15 @@ package org.astrogrid.desktop.modules.cds;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.rmi.RemoteException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.cds.Coordinate;
-import org.astrogrid.acr.cds.Glu;
 import org.astrogrid.desktop.modules.cds.astrocoo.AstroCoo;
 import org.astrogrid.desktop.modules.cds.astrocoo.AstroCooService;
 import org.astrogrid.desktop.modules.cds.astrocoo.AstroCooServiceLocator;
+import org.astrogrid.desktop.modules.system.Preference;
 
 /** Implementation of the Coordinate service
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Aug-2005
@@ -37,41 +36,29 @@ public class CoordinateImpl implements Coordinate {
      * @throws MalformedURLException 
      * 
      */
-    public CoordinateImpl(Glu glu, String endpoint) throws javax.xml.rpc.ServiceException, MalformedURLException  {
+    public CoordinateImpl(Preference endpoint) throws javax.xml.rpc.ServiceException, MalformedURLException  {
         super();
-        AstroCooService serv = new AstroCooServiceLocator();
-        AstroCoo coo1 = null;
-        if (endpoint == null || endpoint.trim().length() == 0) {
-        try {
-            String coordEndpoint = glu.getURLfromTag(COORDINATE_WS_GLU_TAG);
-            coo1 = serv.getAstroCoo(new URL(coordEndpoint));
-        } catch (Exception e) {            
-            logger.warn("Exception when finding endpoint via glu - falling back",e);
-            coo1 = serv.getAstroCoo();
-        } 
-        } else {
-            coo1 = serv.getAstroCoo(new URL(endpoint));
-        }
-        coo = coo1;
-
+        serv = new AstroCooServiceLocator();
+        this.endpoint = endpoint;
     }
-    protected final AstroCoo coo;
-    public final static String COORDINATE_WS_GLU_TAG = "CDS/ws/AstroCoo.WS";   
+    private final Preference endpoint;
+    public final static String COORDINATE_WS_GLU_TAG = "CDS/ws/AstroCoo.WS";
+	private final AstroCooService serv;   
     /**
      * @see org.astrogrid.acr.cds.Coordinate#convert(double, double, double, int)
      */
     public String convert(double arg0, double arg1, double arg2, int arg3) throws ServiceException {
         try {
-            return coo.convert(arg0,arg1,arg2,arg3);
-        } catch (RemoteException e) {
+            return getCoo().convert(arg0,arg1,arg2,arg3);
+        } catch (Exception e) {
             throw new ServiceException(e);
         }
     }
 
     public String convertL(double arg0, double arg1, int arg2) throws ServiceException {
         try {
-            return coo.convert(arg0,arg1,arg2);
-        } catch (RemoteException e) {
+            return getCoo().convert(arg0,arg1,arg2);
+        } catch (Exception e) {
             throw new ServiceException(e);
         }
     }
@@ -79,8 +66,8 @@ public class CoordinateImpl implements Coordinate {
     public String convertE(int arg0, int arg1, double arg2, double arg3, double arg4, int arg5, double arg6, double arg7)
             throws ServiceException {
         try {
-            return coo.convert(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7);
-        } catch (RemoteException e) {
+            return getCoo().convert(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7);
+        } catch (Exception e) {
             throw new ServiceException(e);
         }
     }
@@ -88,17 +75,31 @@ public class CoordinateImpl implements Coordinate {
     public String convertLE(int arg0, int arg1, double arg2, double arg3, int arg4, double arg5, double arg6)
             throws ServiceException {
         try {
-            return coo.convert(arg0,arg1,arg2,arg3,arg4,arg5,arg6);
-        } catch (RemoteException e) {
+            return getCoo().convert(arg0,arg1,arg2,arg3,arg4,arg5,arg6);
+        } catch (Exception e) {
             throw new ServiceException(e);
         }
     }
+
+	/**
+	 * @return the coo
+	 * @throws javax.xml.rpc.ServiceException 
+	 * @throws MalformedURLException 
+	 */
+	protected AstroCoo getCoo() throws MalformedURLException, javax.xml.rpc.ServiceException {
+		return  serv.getAstroCoo(new URL(endpoint.getValue()));
+
+
+	}
 
 }
 
 
 /* 
 $Log: CoordinateImpl.java,v $
+Revision 1.5  2007/01/09 16:20:12  nw
+updated to use preference.
+
 Revision 1.4  2006/04/18 23:25:44  nw
 merged asr development.
 
