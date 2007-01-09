@@ -1,4 +1,4 @@
-/*$Id: HivemindMutableACR.java,v 1.5 2006/06/15 09:41:01 nw Exp $
+/*$Id: HivemindMutableACR.java,v 1.6 2007/01/09 16:26:52 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,13 +48,13 @@ public class HivemindMutableACR implements ACRInternal {
 
     }
     /** map between String and ServiceBean */
-    private final Map servicesByName;
+    protected final Map servicesByName;
     /** map between Class and service bean */
-    private final Map servicesByClass;
+    protected final Map servicesByClass;
     /** map between string and module descriptor */
-    private final Map descriptors;
+    protected final Map descriptors;
     /** map between string and module object */
-    private final Map modules;
+    protected final Map modules;
 
     private final  Map createInterfaceClassIndex(final Map services) {
         Map result = new HashMap(services.size());
@@ -83,6 +83,7 @@ public class HivemindMutableACR implements ACRInternal {
         for (Iterator i = m.values().iterator(); i.hasNext();) {
             ModuleDescriptor d = (ModuleDescriptor)i.next();
             Module module = this.getModule(d.getName());
+           
             inner:
             for (Iterator j = d.componentIterator(); j.hasNext(); ) {
                 ComponentDescriptor c = (ComponentDescriptor)j.next();
@@ -106,10 +107,17 @@ public class HivemindMutableACR implements ACRInternal {
      * 
      *  - it's a little bit lazy to delegate to the mutable acr - but at least it
      *  keeps the code consistent.
+     *  
+     *  @todo - test it's safe to serialize an inner class without serializing the outer.s
      *  */
     private class HivemindModuleAdapter implements Module, Serializable {
 
-        public HivemindModuleAdapter(String moduleName) {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = -8775877307037598162L;
+
+		public HivemindModuleAdapter(String moduleName) {
             this.moduleName= moduleName;
         }
         private final String moduleName;
@@ -173,6 +181,9 @@ public class HivemindMutableACR implements ACRInternal {
 
 /* 
 $Log: HivemindMutableACR.java,v $
+Revision 1.6  2007/01/09 16:26:52  nw
+minor
+
 Revision 1.5  2006/06/15 09:41:01  nw
 fixed minor behaviour bug
 

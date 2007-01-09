@@ -1,4 +1,4 @@
-/*$Id: ReflectionHelper.java,v 1.2 2005/08/25 16:59:58 nw Exp $
+/*$Id: ReflectionHelper.java,v 1.3 2007/01/09 16:22:47 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 public class ReflectionHelper {
 
     private ReflectionHelper() {
-        super();
+    	// do nothing.
     }
 
 
@@ -46,6 +46,9 @@ public class ReflectionHelper {
 
 /* 
 $Log: ReflectionHelper.java,v $
+Revision 1.3  2007/01/09 16:22:47  nw
+minor
+
 Revision 1.2  2005/08/25 16:59:58  nw
 1.1-beta-3
 

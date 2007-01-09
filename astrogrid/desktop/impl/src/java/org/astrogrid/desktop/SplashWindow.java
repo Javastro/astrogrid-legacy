@@ -68,7 +68,7 @@ public class SplashWindow extends Window {
      * @see #paint
      * @see #splash
      */
-    private boolean paintCalled = false;
+    boolean paintCalled = false;
     
     /**
      * Creates a new instance.
@@ -84,7 +84,9 @@ public class SplashWindow extends Window {
         mt.addImage(image,0);
         try {
             mt.waitForID(0);
-        } catch(InterruptedException ie){}
+        } catch(InterruptedException ie){
+        	// do nothing.
+        }
         
         // Center the window on the screen
         int imgWidth = image.getWidth(this);
@@ -154,8 +156,8 @@ public class SplashWindow extends Window {
             instance = new SplashWindow(f, image);
             
             // Show the window.
-            instance.show();
-            
+            //instance.show();
+            instance.setVisible(true);
             // Note: To make sure the user gets a chance to see the
             // splash window we wait until its paint method has been
             // called at least once by the AWT event dispatcher thread.
@@ -165,7 +167,9 @@ public class SplashWindow extends Window {
             && Runtime.getRuntime().availableProcessors() == 1) {
                 synchronized (instance) {
                     while (! instance.paintCalled) {
-                        try { instance.wait(); } catch (InterruptedException e) {}
+                        try { instance.wait(); } catch (InterruptedException e) {
+                        	// do nothing
+                        }
                     }
                 }
             }

@@ -1,4 +1,4 @@
-/*$Id: BuildInprocessACR.java,v 1.4 2006/06/15 09:38:46 nw Exp $
+/*$Id: BuildInprocessACR.java,v 1.5 2007/01/09 16:26:19 nw Exp $
  * Created on 28-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -70,7 +70,7 @@ public class BuildInprocessACR  {
         try {
            
             Shutdown sh = (Shutdown)launcher.getRegistry().getService(Shutdown.class);
-            sh.halt();             
+            sh.halt();       
         } catch (Throwable e) {
             logger.error("Failed to call shutdown",e);
         }       

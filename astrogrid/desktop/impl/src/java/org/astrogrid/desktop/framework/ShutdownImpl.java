@@ -1,4 +1,4 @@
-/*$Id: ShutdownImpl.java,v 1.7 2006/10/11 10:34:58 nw Exp $
+/*$Id: ShutdownImpl.java,v 1.8 2007/01/09 16:22:47 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.desktop.framework;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -89,7 +88,7 @@ public class ShutdownImpl  extends Thread implements Shutdown{
         logger.debug("halt() - end");
     }
     
-    private String fmt(List l) {
+    String fmt(List l) {
         logger.debug("fmt(List) - start");
 
         StringBuffer sb = new StringBuffer();
@@ -111,9 +110,12 @@ public class ShutdownImpl  extends Thread implements Shutdown{
      * @see org.astrogrid.acr.builtin.Shutdown#reallyHalt()
      */
     public void reallyHalt() {
-    	run();
+    	logger.debug("reallyHalt() - start");
+    	run(); // intentional
+    	logger.info("Halted");
         if (callSystemExit) {
-        	System.exit(0);
+        	logger.info("Calling System.exit()");
+        	System.exit(0); // intentional
         }
 
     }
@@ -124,7 +126,6 @@ public class ShutdownImpl  extends Thread implements Shutdown{
     	if (alreadyHalting.set(true)) { // atomic action - sets, and returns previous value. 		
     		return;
     	}
-        logger.debug("reallyHalt() - start");
 
         // tell everyone 
         List copy = new ArrayList(listeners);
@@ -188,6 +189,9 @@ public class ShutdownImpl  extends Thread implements Shutdown{
 
 /* 
 $Log: ShutdownImpl.java,v $
+Revision 1.8  2007/01/09 16:22:47  nw
+minor
+
 Revision 1.7  2006/10/11 10:34:58  nw
 added fixme comment
 

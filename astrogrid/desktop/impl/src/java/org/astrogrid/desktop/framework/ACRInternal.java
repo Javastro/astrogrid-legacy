@@ -1,4 +1,4 @@
-/*$Id: ACRInternal.java,v 1.3 2006/06/02 00:16:15 nw Exp $
+/*$Id: ACRInternal.java,v 1.4 2007/01/09 16:23:42 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,11 +31,11 @@ public interface ACRInternal extends ACR {
     public Map getDescriptors();
     /** get the named module
      * @param name
-     * @return
+     * @return the module
      */
     public Module getModule(String name);
     /** iterate through all available modules. 
-     * @return
+     * @return an iterator over the module.
      */
     public Iterator moduleIterator();
 }
@@ -43,6 +43,9 @@ public interface ACRInternal extends ACR {
 
 /* 
 $Log: ACRInternal.java,v $
+Revision 1.4  2007/01/09 16:23:42  nw
+minor
+
 Revision 1.3  2006/06/02 00:16:15  nw
 Moved Module, Component and Method-Descriptors from implementation code into interface. Then added methods to ApiHelp that provide access to these beans.
 
