@@ -3,6 +3,7 @@
  */
 package org.astrogrid.desktop.modules.system.contributions;
 
+import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,7 +33,11 @@ public class StylesheetsContribution {
 	 * @throws TransformerConfigurationException 
 	 */
 	public void setSheet(String name) throws TransformerConfigurationException {
-		this.templates = fac.newTemplates(new StreamSource(Xml2XhtmlTransformer.class.getResourceAsStream(name)));
+		final InputStream stream = Xml2XhtmlTransformer.class.getResourceAsStream(name);
+		if (stream == null) {
+			throw new TransformerConfigurationException("Failed to read resource: " + name);
+		}
+		this.templates = fac.newTemplates(new StreamSource(stream));
 	}
 
 
