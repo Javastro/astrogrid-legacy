@@ -88,7 +88,7 @@
 		</reports>
 
         <dependencies>
-<!-- help set for workbench -->
+<!-- help set for workbench - not used anymore 
 
 	<dependency>
 		<groupId>org.astrogrid</groupId>
@@ -99,7 +99,7 @@
 			<strip>false</strip>	
 		</properties>
 	</dependency>
-
+-->
 
   <!-- libraries needed for workbench gui -->
  <dependency>

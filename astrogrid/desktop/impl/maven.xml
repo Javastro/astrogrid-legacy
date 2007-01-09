@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!-- extension maven script -->
-<project xmlns:j="jelly:core"  xmlns:jsl="jelly:jsl" xmlns:jxml="jelly:xml" xmlns:wb="workbench" >
+<project xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:jsl="jelly:jsl" xmlns:jxml="jelly:xml" >
 
 	<!--  indicates we're building the workbench -->
 	  	<goal name="setup">
@@ -240,6 +240,6 @@
 </goal>
 
 
-	
+
 </project>
 
