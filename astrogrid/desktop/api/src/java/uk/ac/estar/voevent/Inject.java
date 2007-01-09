@@ -3,7 +3,7 @@
  */
 package uk.ac.estar.voevent;
 
-/**
+/** UNIMPLEMENTED
  * Inject VOEvent messages into the network
  * 
  * ADD USER DOCUMENTATION HERE - valid XHTML
@@ -12,7 +12,7 @@ package uk.ac.estar.voevent;
  * @author Noel Winstanley (CHANGE ME)
  * @since 2006.3.rc5
  * 
- * @service voevent.inject
+ * @not-yet-a-service voevent.inject
  * 
  */
 public interface Inject {

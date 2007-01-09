@@ -1,4 +1,4 @@
-/*$Id: HelpServer.java,v 1.4 2006/02/02 14:19:47 nw Exp $
+/*$Id: HelpServer.java,v 1.5 2007/01/09 15:47:14 nw Exp $
  * Created on 17-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.acr.system;
 
 import javax.swing.Action;
 
-/**Control the workbench in-program help viewer.
+/**Control the workbench help viewer.
  *
  * @service system.help
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Jun-2005
@@ -31,6 +31,9 @@ public interface HelpServer {
 
 /* 
  $Log: HelpServer.java,v $
+ Revision 1.5  2007/01/09 15:47:14  nw
+ tidied docs
+
  Revision 1.4  2006/02/02 14:19:47  nw
  fixed up documentation.
 
