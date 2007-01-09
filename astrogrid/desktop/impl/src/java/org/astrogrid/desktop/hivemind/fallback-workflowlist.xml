@@ -1,0 +1,12 @@
+
+<index>
+<!--  fallback workflowlist - snapshot taken 21/12/06 - used if 'live' version on 
+wiki cannot be accessed. -->
+<workflow-template>http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/SolarMovieMaker.wf</workflow-template>
+<workflow-template>http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/redshiftmakerng.xml</workflow-template>
+<workflow-template>http://www.merlin.ac.uk/astrogrid/colourcutter.xml</workflow-template>
+<workflow-template>http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/ctipmodeA.xml</workflow-template>
+<workflow-template>http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/sdss-dr4.xml</workflow-template>
+<workflow-template>http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/conesearchlist.wf</workflow-template>
+<workflow-template>http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/ctipmodeB.xml</workflow-template>
+</index>

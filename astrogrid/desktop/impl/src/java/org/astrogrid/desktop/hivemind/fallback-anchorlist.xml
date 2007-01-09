@@ -1,0 +1,16 @@
+<index>
+<!--  fallback anchorlist - snapshot taken 21/12/06
+used if live version on wiki cannot be accessed. -->
+	<item>
+		http://ag01.ast.cam.ac.uk:8081/astrogrid.cam-community/certificates/2c8f8e16.0
+	</item>
+	<!-- astrogrid.cam internal CA -->
+	<item>
+		http://ag01.ast.cam.ac.uk:8081/astrogrid.cam-community/certificates/01621954.0
+	</item>
+	<!-- UK e-Science CA -->
+	<item>
+		http://hempriggs.roe.ac.uk/ukidss-community/certificates/fc3426d1.0
+	</item>
+	<!-- UKIDSS Community-->
+</index>

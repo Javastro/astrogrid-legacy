@@ -1,0 +1,5 @@
+	<default value="unreleased" symbol="astrogrid.desktop.version"></default>
+	<default value="unknown" symbol="astrogrid.build.date"></default>
+	<default value="unknown" symbol="astrogrid.build.location"></default>
+	<default value="unknown" symbol="astrogrid.build.by"></default>
+	<default value="unknown" symbol="astrogrid.build.jdk"></default>
