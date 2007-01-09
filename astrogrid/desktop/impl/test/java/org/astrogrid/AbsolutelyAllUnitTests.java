@@ -4,12 +4,12 @@
 package org.astrogrid;
 
 
+import org.astrogrid.desktop.modules.votech.AllVotechUnitTests;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-/** Hook to run all unit tests in the project.
- * useful for running within eclipse. not used within maven build - which recognizes
- * individuals tests according to names
+/** Runs all unit tests - handy hook for within eclipse
  * @author Noel Winstanley
  * @since Jun 6, 20062:35:36 PM
  */
@@ -17,22 +17,25 @@ public class AbsolutelyAllUnitTests {
 
 	public static Test suite() {
 		TestSuite suite = new TestSuite("All unit tests for workbench");
-		suite.addTest(AllUnitTests.suite());
-		suite.addTest(org.astrogrid.acr.AllUnitTests.suite());
-		suite.addTest(org.astrogrid.desktop.alternatives.AllUnitTests.suite());
-		suite.addTest(org.astrogrid.desktop.framework.AllUnitTests.suite());
-		suite.addTest(org.astrogrid.desktop.hivemind.AllUnitTests.suite());
-		suite.addTest(org.astrogrid.desktop.modules.system.contributions.AllUnitTests.suite());
-		suite.addTest(org.astrogrid.desktop.modules.system.converters.AllUnitTests.suite());
-		suite.addTest(org.astrogrid.desktop.modules.system.transformers.AllUnitTests.suite());
-		suite.addTest(org.astrogrid.desktop.modules.ivoa.AllUnitTests.suite());
-		suite.addTest(org.astrogrid.desktop.modules.ivoa.resource.AllUnitTests.suite());
-		suite.addTest(org.astrogrid.desktop.modules.ag.recorder.AllUnitTests.suite());
-		suite.addTest(org.astrogrid.desktop.modules.ag.AllUnitTests.suite());
-		suite.addTest(org.astrogrid.desktop.modules.plastic.AllUnitTests.suite());
-		suite.addTest(org.astrogrid.desktop.modules.ui.sendto.AllUnitTests.suite());
-		suite.addTest(org.astrogrid.desktop.modules.util.AllUnitTests.suite());
-		suite.addTest(org.astrogrid.desktop.modules.dialogs.registry.AllUnitTests.suite());
+		suite.addTest(AllStartupUnitTests.suite());
+		suite.addTest(org.astrogrid.acr.AllAcrUnitTests.suite());
+		suite.addTest(org.astrogrid.desktop.alternatives.AllAlternativesUnitTests.suite());
+		suite.addTest(org.astrogrid.desktop.framework.AllFrameworkUnitTests.suite());
+		suite.addTest(org.astrogrid.desktop.hivemind.AllHivemindUnitTests.suite());
+		suite.addTest(org.astrogrid.desktop.modules.system.AllSystemUnitTests.suite());
+		suite.addTest(org.astrogrid.desktop.modules.system.contributions.AllSystemContributionUnitTests.suite());
+		suite.addTest(org.astrogrid.desktop.modules.system.converters.AllSystemConverterUnitTests.suite());
+		suite.addTest(org.astrogrid.desktop.modules.system.transformers.AllSystemTransformerUnitTests.suite());
+		suite.addTest(org.astrogrid.desktop.modules.ivoa.AllIvoaUnitTests.suite());
+		suite.addTest(org.astrogrid.desktop.modules.ivoa.resource.AllResourceUnitTests.suite());
+		suite.addTest(org.astrogrid.desktop.modules.ag.recorder.AllRecorderUnitTests.suite());
+		suite.addTest(org.astrogrid.desktop.modules.ag.AllAstrogridUnitTests.suite());
+		suite.addTest(org.astrogrid.desktop.modules.plastic.AllPlasticUnitTests.suite());
+		suite.addTest(org.astrogrid.desktop.modules.ui.sendto.AllSendtoUnitTests.suite());
+		suite.addTest(org.astrogrid.desktop.modules.util.AllUtilUnitTests.suite());
+		suite.addTest(org.astrogrid.desktop.modules.dialogs.registry.AllRegistryDialogUnitTests.suite());
+		suite.addTest(org.astrogrid.desktop.protocol.AllProtocolUnitTests.suite());
+		suite.addTest(AllVotechUnitTests.suite());
 		return suite;
 	}
 

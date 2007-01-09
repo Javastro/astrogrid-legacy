@@ -1,16 +1,9 @@
 Description of Workbench Testing.
 ======================
-
-For efficiencies sake, test are split into 3 sets
-see also http://www.astrogrid.org/desktop/contributing/testing/
-
+Different kinds of tests.
 Unit
 Integration
 System
-
-Maven project has goals to generate reports for each of these - see 'maven -u' for info.
-
-Rules for writing tests..
 
 Unit Tests
 ======
@@ -19,9 +12,9 @@ Tests a single class in isolation.
 Named xxxUnitTest.java
 Added to a AllUnitTests.java suite
 Should test a class in isolation, outside the hivemind / workbench framework. 
-No external resources or services should be called.
+No external resources or network services should be called.
 Other dependencies should be mocked or stubbed.
-
+If a component needs to fetch a url, provide a classpath resource and pass it  the url of that.
 
 Integration Tests
 ===========
@@ -49,7 +42,11 @@ Subdivisions of System Test
 PerformanceSystemTest - a test that loads or times the system (not to destruction)
 UISystemTest - user interface testing
 
+
 Other Tests
 =========
+TransportTest - tests that same funcitonality is available (i.e. data can be accessed) 
+using the xmlrpc / rmi interface.
+
 Destructive tests - e.g. Stress testing, to be named as such, and kept distinct from other tests
-- as can't really generate reports from these, and will mess up the automated build.
+- as can't really generate reports from these, and will mess up any kind of build.s
