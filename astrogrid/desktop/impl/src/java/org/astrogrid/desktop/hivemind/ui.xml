@@ -1,53 +1,20 @@
 <?xml version="1.0"?>
 <!DOCTYPE module  [
 	<!ENTITY descriptors SYSTEM "classpath:/org/astrogrid/desktop/hivemind/ui-descriptors.xml">
+	<!ENTITY workflows SYSTEM "fallback:httpclient://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/index.xml,classpath:/org/astrogrid/desktop/hivemind/fallback-workflowlist.xml">
+
 	]>
 <module id="ui" version="1.0.0" package="org.astrogrid.acr.ui">
+<!--  PREAMBLE -->
 	<dependency module-id="system"/>
+	<dependency module-id="framework" />
 	<dependency module-id="astrogrid" />
 	<dependency module-id="dialogs" />
 	<dependency module-id="ivoa" />
 	<dependency module-id="nvo" />
 	<dependency module-id="cds" />
 	<dependency module-id="plastic" />				
-		
-	<!-- new configurations -->
-		
-	<configuration-point id="workflowTemplates">
-		Lists available parameterized workflows
-		Main contribution to this config point is in externalConfig module.
-		<schema>
-			<element name="index">
-				just a container. ignored.
-				<element name="workflow-template">
-					Gives the url of a workflow template.
-					<rules>
-						<push-content />
-						<invoke-parent method="addElement" />
-					</rules>
-				</element>
-			</element>
-		</schema>
-	</configuration-point>
-	.
-
-	<configuration-point id="sendToItems" schema-id="system.objects">
-		List of SendToActions and SendToActionFactories used to populate the send-to menu.
-	</configuration-point>
-
-	<contribution configuration-id="sendToItems">
-		<!-- too likely to fail (large data, or poor job of displaying) so will comment out
-		<object>instance:org.astrogrid.desktop.modules.ui.sendto.ShowSTA</object>
-		-->
-		<object>service:saveSTA</object>
-		<object>service:viewBrowserSTA</object>
-		<object>service:viewTranscriptSTA</object>
-		<object>service:plasticSTF</object>
-		<object>service:votableBroadcastSTA</object>
-		<object>service:fitsBroadcastSTA</object>
-		<object>service:spectrumBroadcastSTA</object>
-	</contribution>
-	
+			
 	<contribution configuration-id="framework.descriptors">
 		<acr-module name="ui" description="Applications for working with the VO">
 		&descriptors;
@@ -66,6 +33,12 @@
 			<acrService id="registryBrowser" interface="RegistryBrowser" />
 	</contribution>
 
+	
+<!--  
+==============================
+UI STRUCTURES
+ -->
+
 <!-- assume that if this module is loaded, we're running as workbench -->
 	<contribution configuration-id="system.uiStructure">
 		<tab name="workflow" text="Data Analysis" after="discovery" before="services" />
@@ -74,24 +47,36 @@
 			after="*" > 
 			<parameter><![CDATA[
 			<html>
-			<h1>Astrogrid Workbench v${astrogrid.desktop.version}</h1>			
+			<h1>Astrogrid Workbench v${astrogrid.desktop.version}</h1>		
 			<b>http://www.astrogrid.org/desktop</b><br>
-
-			<h2>Development</h2
+			<h2>Contributors</h2>
 			<ul>
+			 <li>Alasdair Allan</li>
+			<li>Elizabeth Auden</li>
+			<li>Kona Andrews</li>
 			<li>Kevin Benson</li>
+			<li>Silvia Dalla</li>
+			<li>Gary Gilchrist</li>
+			<li>Eduardo Gonzalez</li>
+			<li>Norman Gray</li>
+			<li>Paul Harrison</li>
+			<li>Tony Linde</li>
 			<li>Jeff Lusted</li>
 			<li>Phil Nicholson</li>
+			<li>Keith Noddle</li>
+			<li>Jonathan Tedds</li>
+			<li>Dave Morris</li>
 			<li>Catherine Qin</li>
+			<li>Anita Richards</li>
 			<li>Guy Rixon</li>
 			<li>John Taylor</li>
+			<li>Mark Taylor</li>
+			<li>Nicholas Walton</li>
 			<li>Noel Winstanley</li>
 			</ul>			
 			<h2>Acknowledgements</h2>
-			Contains code, or integrates with services, provided by CDS, Starlink, Plastic, ESAVO, NVO..
-			
-			<h2>Copyright</h2>
-			link..
+			Contains code and/or integrates with services provided by CADC, CDS, ESA-VO, NVO, Starlink, Plastic, VOTech
+
 			<hr>
 			<h2>Build Information</h2>
 			Built: ${astrogrid.build.date}<br>
@@ -102,133 +87,15 @@
 			]]></parameter>
 		</action>	
 	</contribution>
-
-	<contribution configuration-id="system.uiStructure" if="not (property ui.astroscope.disabled)" >
-		<action parentName="discovery" name="astroscope" text="AstroScope" before="helioscope" iconName="astroscope.png"
-			object="service:astroscope" methodName="show">
-			<tooltip><![CDATA[
-				<html>Search and visualise matches in all <br>
-					available image, catalogue and  spectral archives by <br>
-					offset from user defined sky position and radius.
-					]]></tooltip>
-		  </action>
-	</contribution>
-	
-	<contribution configuration-id="system.uiStructure" if="not (property ui.helioscope.disabled)" >	
-		<action parentName="discovery" name="helioscope" text="HelioScope" after="astroscope" before="applicationLauncher1"  iconName="helioscope.png"
-			object="service:helioscope" methodName="show">
-			<tooltip><![CDATA[
-			<html>Search and visualise matches in all <br>
-					available solar archives by<br>
-					offset from user defined start and end times
-			]]></tooltip>			
-		</action>
-	</contribution>
 	
 	
-	<contribution configuration-id="system.uiStructure" if="not (property ui.applicationLauncher.disabled)" >	
-		<action parentName="workflow" name="applicationLauncher" text="Task Launcher" iconName="applaunch.png"
-			object="service:applicationLauncher" methodName="show" before="*">
-			<tooltip><![CDATA[
-		<html>Launches a single task to be executed on the AstroGrid system.<br>
-	A task can be either a Query to a data centre or a noninteractive<br>
-	Application that, e.g. operates on data files or runs a model.
-			]]></tooltip>			
-			</action>			
-	</contribution>	
-
-		<contribution configuration-id="system.uiStructure" if="not (property ui.applicationLauncher.disabled)" >	
-		<action parentName="discovery" name="applicationLauncher1" text="Task Launcher" iconName="applaunch.png"
-			object="service:applicationLauncher" methodName="show" after="*">
-			<tooltip><![CDATA[
-		<html>Launches a single task to be executed on the AstroGrid system.<br>
-	A task can be either a Query to a data centre or a noninteractive<br>
-	Application that, e.g. operates on data files or runs a model.
-			]]></tooltip>			
-			</action>			
-	</contribution>
-
-	<contribution configuration-id="system.uiStructure" if="not (property ui.parameterizedWorkflows.disabled)" >	
-		<action parentName="workflow" name="parameterizedWorkflows" text="Science Workflows" iconName="logo48x48.png"
-			object="service:parameterizedWorkflows" methodName="run" after="applicationLauncher">
-			<tooltip><![CDATA[
-		<html>Direct access and editing of pre-canned workflows <br>
-			for commonly required astronomical tasks.			
-			]]></tooltip>
-		</action>
-	</contribution>		
-		
-		<contribution configuration-id="system.uiStructure" if="not (property ui.workflowBuilder.disabled)" >	
-		<action parentName="workflow" name="workflowBuilder" text="Workflow Builder" iconName="workflow.png"
-			after="parameterizedWorkflows" 
-			object="service:workflowBuilder" methodName="show" >
-			<tooltip><![CDATA[
-			<html>Interactive GUI workflow builder for sequencing tasks and queries to<br>
-			AstroGrid and other VO services.
-			]]></tooltip>
-		</action>
-	</contribution>	
-
-	<contribution configuration-id="system.uiStructure" if="not (property ui.lookout.disabled)" >	
-		<action parentName="services" name="lookout" text="Lookout" iconName="lookout.png"
-			before="*" 
-			object="service:lookout" methodName="show" >
-			<tooltip><![CDATA[
-		<html>Monitor the progress of Tasks, Queries and Workflows submitted for<br>
-		execution on the AstroGrid system including links to job transcripts.						
-			]]></tooltip>
-		</action>					
-	</contribution>		
-		
-		<contribution configuration-id="system.uiStructure" if="not (property ui.myspaceBrowser.disabled)" >	
-		<action parentName="workflow" name="myspaceBrowser" text="Myspace" iconName="myspace.png"
-			object="service:myspaceBrowser" methodName="show" after="*" >			
-			<tooltip><![CDATA[
-			<html>Login to MySpace for browsing and utilisation of returned datasets,<br>
-			queries and workflows in AstroGrid environment.
-			]]></tooltip>
-		</action>
-	</contribution>	
-	
-	<contribution configuration-id="system.uiStructure" if="not (property ui.myspaceBrowser.disabled)" >	
-		<action parentName="services"  name="myspaceBrowser1" text="Myspace" iconName="myspace.png"
-			object="service:myspaceBrowser" methodName="show" after="lookout" >			
-			<tooltip><![CDATA[
-			<html>Login to MySpace for browsing and utilisation of returned datasets,<br>
-			queries and workflows in AstroGrid environment.
-			]]></tooltip>
-		</action>
-	</contribution>		
-		
-		<contribution configuration-id="system.uiStructure" if="not (property ui.registryBrowser.disabled)" >	
-		<action parentName="services" name="registryBrowser" text="Resources" iconName="resource.png"
-			object="service:registryBrowser" methodName="show" after="*" >
-			<tooltip><![CDATA[
-			<html>Simple text-entry search for available <br>
-			services and archives in the VO registry.
-			]]></tooltip>			
-		</action>
-	</contribution>			
-	
-	<!-- everything else - eager when testing -->
-	<contribution configuration-id="hivemind.EagerLoad" if="property acr.debug">
-		<load service-id="astroscope" />
-		<load service-id="helioscope" />
-		<load service-id="lookout" />
-		<load service-id="parameterizedWorkflows" />
-		<load service-id="applicationLauncher" />
-		<load service-id="workflowBuilder" />
-		<load service-id="myspaceBrowser" />
-		<load service-id="jobMonitor" />
-		<load service-id="registryBrowser" />
-	</contribution>	
-	
-	<!-- services and implementations -->
-
+<!--  
+===============================
+ASTROSCOPE
+ -->
 	<service-point id="astroscope" interface="AstroScope">
 			<interceptor service-id="system.snitchInterceptor" />
 		<invoke-factory> 
-<!--			<construct class="org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl" >-->
 		<construct class="org.astrogrid.desktop.modules.ui.AstroScopeFactory" >
 				<service>system.ui</service> 
 				<service>system.configuration</service>
@@ -253,10 +120,24 @@
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>
 	
+	<contribution configuration-id="system.uiStructure" if="not (property ui.astroscope.disabled)" >
+		<action parentName="discovery" name="astroscope" text="AstroScope" before="helioscope" iconName="astroscope.png"
+			object="service:astroscope" methodName="show">
+			<tooltip><![CDATA[
+				<html>Search and visualise matches in all <br>
+					available image, catalogue and  spectral archives by <br>
+					offset from user defined sky position and radius.
+					]]></tooltip>
+		  </action>
+	</contribution>	
+	
+	<!-- 
+	=================================
+	HELIOSCOPE
+	 -->
 	<service-point id="helioscope" interface="HelioScope">
 				<interceptor service-id="system.snitchInterceptor" />
 		<invoke-factory>
-		<!--	<construct class="org.astrogrid.desktop.modules.ui.HelioScopeLauncherImpl" >-->
 			<construct class="org.astrogrid.desktop.modules.ui.HelioScopeFactory">
 				<service>system.ui</service> 
 				<service>system.configuration</service>
@@ -277,7 +158,22 @@
 	<implementation service-id="helioscope" if="property ui.helioscope.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>	
-			
+	
+	<contribution configuration-id="system.uiStructure" if="not (property ui.helioscope.disabled)" >	
+		<action parentName="discovery" name="helioscope" text="HelioScope" after="astroscope" before="applicationLauncher1"  iconName="helioscope.png"
+			object="service:helioscope" methodName="show">
+			<tooltip><![CDATA[
+			<html>Search and visualise matches in all <br>
+					available solar archives by<br>
+					offset from user defined start and end times
+			]]></tooltip>			
+		</action>
+	</contribution>	
+	
+	<!--  
+	====================================
+	LOOKOUT
+	 -->		
 	<service-point id="lookout" interface="Lookout">
 		<interceptor service-id="system.snitchInterceptor" />
 		<interceptor service-id="astrogrid.login" />	
@@ -302,6 +198,31 @@
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>	
 
+	<contribution configuration-id="system.uiStructure" if="not (property ui.lookout.disabled)" >	
+		<action parentName="services" name="lookout" text="Lookout" iconName="lookout.png"
+			before="*" 
+			object="service:lookout" methodName="show" >
+			<tooltip><![CDATA[
+		<html>Monitor the progress of Tasks, Queries and Workflows submitted for<br>
+		execution on the AstroGrid system including links to job transcripts.						
+			]]></tooltip>
+		</action>					
+	</contribution>		
+	
+	<!-- for backwards compatabiltiy - delegates to lookout -->		
+	<service-point id="jobMonitor" interface="JobMonitor">
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.ui.LegacyJobMonitor" />
+		</invoke-factory>	
+	</service-point>
+
+	<implementation service-id="jobMonitor" if="property ui.lookout.disabled"> <!-- disable this if lookout is disabled -->
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
+	</implementation>	
+<!-- 
+===========================
+PW WORKFLOWS
+ -->
 	<service-point id="parameterizedWorkflows" interface="ParameterizedWorkflowLauncher">
 		<interceptor service-id="system.snitchInterceptor" />
 		<interceptor service-id="astrogrid.login" />
@@ -318,16 +239,51 @@
 				<service>ivoa.cache</service>
 			</construct>
 		</invoke-factory>	
-	</service-point>
+	</service-point>	
 
 	<implementation service-id="parameterizedWorkflows" if="property ui.parameterizedWorkflows.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />				
 	</implementation>	
 	
+	<contribution configuration-id="system.uiStructure" if="not (property ui.parameterizedWorkflows.disabled)" >	
+		<action parentName="workflow" name="parameterizedWorkflows" text="Science Workflows" iconName="logo48x48.png"
+			object="service:parameterizedWorkflows" methodName="run" after="applicationLauncher">
+			<tooltip><![CDATA[
+		<html>Direct access and editing of pre-canned workflows <br>
+			for commonly required astronomical tasks.			
+			]]></tooltip>
+		</action>
+	</contribution>			
+	
+	<configuration-point id="workflowTemplates">
+		Lists available parameterized workflows
+		Main contribution to this config point is in externalConfig module.
+		<schema>
+			<element name="index">
+				just a container. ignored.
+				<element name="workflow-template">
+					Gives the url of a workflow template.
+					<rules>
+						<push-content />
+						<invoke-parent method="addElement" />
+					</rules>
+				</element>
+			</element>
+		</schema>
+	</configuration-point>
+	
+	<contribution configuration-id="workflowTemplates">
+		&workflows;<!--  loads from wiki, fallsback to version of document in classpath -->
+	</contribution>	
+	.
+	
+	<!-- 
+	=======================================
+	TASK LAUNCHER
+	 -->
 	<service-point id="applicationLauncher" interface="ApplicationLauncher">
 		<interceptor service-id="system.snitchInterceptor" />
 		<invoke-factory>
-			<!--<construct class="org.astrogrid.desktop.modules.ui.ApplicationLauncherImpl" >-->
 			<construct class="org.astrogrid.desktop.modules.ui.ApplicationLauncherFactory">
 				<configuration>dialogs.toolEditors</configuration>
 				<service>dialogs.resourceChooser</service>
@@ -347,10 +303,35 @@
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>	
 
+	<contribution configuration-id="system.uiStructure" if="not (property ui.applicationLauncher.disabled)" >	
+		<action parentName="workflow" name="applicationLauncher" text="Task Launcher" iconName="applaunch.png"
+			object="service:applicationLauncher" methodName="show" before="*">
+			<tooltip><![CDATA[
+		<html>Launches a single task to be executed on the AstroGrid system.<br>
+	A task can be either a Query to a data centre or a noninteractive<br>
+	Application that, e.g. operates on data files or runs a model.
+			]]></tooltip>			
+			</action>			
+	</contribution>	
+
+		<contribution configuration-id="system.uiStructure" if="not (property ui.applicationLauncher.disabled)" >	
+		<action parentName="discovery" name="applicationLauncher1" text="Task Launcher" iconName="applaunch.png"
+			object="service:applicationLauncher" methodName="show" after="*">
+			<tooltip><![CDATA[
+		<html>Launches a single task to be executed on the AstroGrid system.<br>
+	A task can be either a Query to a data centre or a noninteractive<br>
+	Application that, e.g. operates on data files or runs a model.
+			]]></tooltip>			
+			</action>			
+	</contribution>
+
+<!-- 
+===========================================
+WORKFLOW BUILDER
+ -->
 	<service-point id="workflowBuilder" interface="WorkflowBuilder">
 		<interceptor service-id="system.snitchInterceptor" />
 		<invoke-factory>
-			<!--<construct class="org.astrogrid.desktop.modules.ui.WorkflowBuilderImpl" >-->
 			<construct class="org.astrogrid.desktop.modules.ui.WorkflowBuilderFactory">
 				<service>astrogrid.applications</service>
 				<service>astrogrid.jobs</service>
@@ -371,7 +352,21 @@
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>				
 
-	
+		<contribution configuration-id="system.uiStructure" if="not (property ui.workflowBuilder.disabled)" >	
+		<action parentName="workflow" name="workflowBuilder" text="Workflow Builder" iconName="workflow.png"
+			after="parameterizedWorkflows" 
+			object="service:workflowBuilder" methodName="show" >
+			<tooltip><![CDATA[
+			<html>Interactive GUI workflow builder for sequencing tasks and queries to<br>
+			AstroGrid and other VO services.
+			]]></tooltip>
+		</action>
+	</contribution>	
+
+	<!-- 
+	=======================================
+	MYSPACE BROWSER
+	 -->
 	<service-point id="myspaceBrowser" interface="MyspaceBrowser">
 		<interceptor service-id="system.snitchInterceptor" />
 		<interceptor service-id="astrogrid.login" />
@@ -385,8 +380,7 @@
 				<service>astrogrid.myspace</service>
 				<service>ui.sendTo</service>
 				<service>system.browser</service>
-				<service>dialogs.resourceChooser</service>			
-			<!--	<service>astrogrid.community</service>-->
+				<service>dialogs.resourceChooser</service>		
 				<event-listener service-id="builtin.shutdown" />	
 				<event-listener service-id="astrogrid.community" />						
 			</construct>
@@ -397,21 +391,32 @@
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>
 	
-	<!-- for backwards compatabiltiy - delegates to lookout -->		
-	<service-point id="jobMonitor" interface="JobMonitor">
-		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.ui.LegacyJobMonitor" />
-		</invoke-factory>	
-	</service-point>
-
-	<implementation service-id="jobMonitor" if="property ui.lookout.disabled"> <!-- disable this if lookout is disabled -->
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
-	</implementation>	
+		<contribution configuration-id="system.uiStructure" if="not (property ui.myspaceBrowser.disabled)" >	
+		<action parentName="workflow" name="myspaceBrowser" text="Myspace" iconName="myspace.png"
+			object="service:myspaceBrowser" methodName="show" after="*" >			
+			<tooltip><![CDATA[
+			<html>Login to MySpace for browsing and utilisation of returned datasets,<br>
+			queries and workflows in AstroGrid environment.
+			]]></tooltip>
+		</action>
+	</contribution>	
 	
+	<contribution configuration-id="system.uiStructure" if="not (property ui.myspaceBrowser.disabled)" >	
+		<action parentName="services"  name="myspaceBrowser1" text="Myspace" iconName="myspace.png"
+			object="service:myspaceBrowser" methodName="show" after="lookout" >			
+			<tooltip><![CDATA[
+			<html>Login to MySpace for browsing and utilisation of returned datasets,<br>
+			queries and workflows in AstroGrid environment.
+			]]></tooltip>
+		</action>
+	</contribution>			
+	<!-- 
+	==================================
+	REGISTRY BROWSER
+	 -->
 	<service-point id="registryBrowser" interface="RegistryBrowser">
 			<interceptor service-id="system.snitchInterceptor" />
 		<invoke-factory>
-		<!--	<construct class="org.astrogrid.desktop.modules.ui.RegistryBrowserImpl" >-->
 		<construct class="org.astrogrid.desktop.modules.ui.RegistryBrowserFactory" >
 				<service>ivoa.registry</service>
 				<service>system.help</service>
@@ -419,6 +424,7 @@
 				<service>system.configuration</service>
 				<service>system.browser</service>
 				<service>ivoa.cache</service>
+				<service>votech.vomon</service>
 				<!--<event-listener service-id="builtin.shutdown" />						-->
 			</construct>
 		</invoke-factory>	
@@ -428,19 +434,49 @@
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>	
 	
-	<!-- support menu -->
+	
+		<contribution configuration-id="system.uiStructure" if="not (property ui.registryBrowser.disabled)" >	
+		<action parentName="services" name="registryBrowser" text="Resources" iconName="resource.png"
+			object="service:registryBrowser" methodName="show" after="*" >
+			<tooltip><![CDATA[
+			<html>Simple text-entry search for available <br>
+			services and archives in the VO registry.
+			]]></tooltip>			
+		</action>
+	</contribution>		
+	<!--
+	================================
+	SEND-TO MENU
+	 -->
 	<service-point id="sendTo" interface="org.astrogrid.desktop.modules.ui.sendto.SendToMenu">
-	<invoke-factory>
+	<invoke-factory model="primitive">
 		<construct class="org.astrogrid.desktop.modules.ui.sendto.SendToMenuImpl">
 			<configuration>sendToItems</configuration>
 		</construct>
 	</invoke-factory>
 	</service-point>
 	
+	<configuration-point id="sendToItems" schema-id="system.objects">
+		List of SendToActions and SendToActionFactories used to populate the send-to menu.
+	</configuration-point>
+
+	<contribution configuration-id="sendToItems">
+		<!-- too likely to fail (large data, or poor job of displaying) so will comment out
+		<object>instance:org.astrogrid.desktop.modules.ui.sendto.ShowSTA</object>
+		-->
+		<object>service:saveSTA</object>
+		<object>service:viewBrowserSTA</object>
+		<object>service:viewTranscriptSTA</object>
+		<object>service:plasticSTF</object>
+		<object>service:votableBroadcastSTA</object>
+		<object>service:fitsBroadcastSTA</object>
+		<object>service:spectrumBroadcastSTA</object>
+	</contribution>	
+	
 	<!-- actions for the menu -->
 	<service-point id="saveSTA" visibility="private"
 		interface="org.astrogrid.desktop.modules.ui.sendto.SendToAction">
-		<invoke-factory>
+		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.ui.sendto.SaveSTA">
 				<service>dialogs.resourceChooser</service>
 				<service>astrogrid.myspace</service>
@@ -450,7 +486,7 @@
 
 	<service-point id="viewBrowserSTA" visibility="private"
 		interface="org.astrogrid.desktop.modules.ui.sendto.SendToAction">
-		<invoke-factory>
+		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.ui.sendto.ViewBrowserSTA">
 				<service>system.browser</service>
 				<service>framework.htmlResultTransformer</service>
@@ -460,7 +496,7 @@
 	
 		<service-point id="viewTranscriptSTA" visibility="private"
 		interface="org.astrogrid.desktop.modules.ui.sendto.SendToAction">
-		<invoke-factory>
+		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.ui.sendto.ViewWorkflowTranscriptSTA">
 				<service>ui.workflowBuilder</service>
 			</construct>
@@ -469,7 +505,7 @@
 	
 		<service-point id="votableBroadcastSTA" visibility="private"
 		interface="org.astrogrid.desktop.modules.ui.sendto.SendToAction">
-		<invoke-factory>
+		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.ui.sendto.BroadcastPlasticVotableSTA">
 				<service>astrogrid.myspace</service>
 				<service>system.tupperware</service>
@@ -479,17 +515,16 @@
 	
 		<service-point id="fitsBroadcastSTA" visibility="private"
 		interface="org.astrogrid.desktop.modules.ui.sendto.SendToAction">
-		<invoke-factory>
+		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.ui.sendto.BroadcastPlasticFitsSTA">
 				<service>system.tupperware</service>
 			</construct>
 		</invoke-factory>
 	</service-point>	
 	
-	
 			<service-point id="spectrumBroadcastSTA" visibility="private"
 		interface="org.astrogrid.desktop.modules.ui.sendto.SendToAction">
-		<invoke-factory>
+		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.ui.sendto.BroadcastPlasticSpectrumSTA">
 				<service>system.tupperware</service>
 			</construct>
@@ -498,7 +533,7 @@
 	
 			<service-point id="plasticSTF" visibility="private"
 		interface="org.astrogrid.desktop.modules.ui.sendto.SendToActionFactory">
-		<invoke-factory>
+		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.ui.sendto.PlasticSendToActionFactory">
 				<service>astrogrid.myspace</service>
 				<service>system.tupperware</service>

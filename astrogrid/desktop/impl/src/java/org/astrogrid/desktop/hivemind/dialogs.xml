@@ -6,27 +6,7 @@
 	User Interface Dialogues.
 	<dependency module-id="system" />
 	<dependency module-id="astrogrid" />
-	<!-- new configurations -->
-	
-	<configuration-point id="toolEditors" schema-id="system.objects">
-	 	List of tool editors. Each must implemen ToolEditorPanelFactory;
-	</configuration-point>
-	
-	<!-- contributions to existing configurations -->
-	
-	<contribution configuration-id="hivemind.FactoryDefaults">
-		<default symbol="dialogs.resourceChooser.useNewDialog" value="true" />
-	</contribution>
-	
-	<contribution configuration-id="toolEditors">
-		<object>service:chooserPanel</object>
-		<object>service:adqlPanel</object>
-		<object>service:basicPanel</object>
-		<object>service:xmlPanel</object>
-		<object>service:informationPanel</object>
-		<object>service:securityPanel</object>
-	</contribution>
-	
+	<!-- PREAMBLE -->
 	<contribution configuration-id="framework.descriptors">
 		<acr-module name="dialogs" description="Reusable UI Dialogues">
 		&descriptors;
@@ -40,32 +20,11 @@
 			<acrService id="registryGoogle" interface="RegistryGoogle" />
 	</contribution>
 
-	<contribution configuration-id="system.uiStructure" if="property acr.debug">
-		<action parentName="debug" name="driveResourceChooser" text="Launch ResourceChooser"
-			object="service:resourceChooser" methodName="chooseResource" >
-			<parameter>Choose file</parameter>
-			<parameter>true</parameter>
-		</action>
-		<action parentName="debug" name="driveToolEditor" text="Launch ToolEditor"
-			object="service:toolEditor" methodName="selectAndBuild" />
-		<action parentName="debug" name="driveRegistryChooser" text="Launch RegistryChooser"
-			object="service:registryGoogle" methodName="selectResources" >		
-			<parameter>Choose a resource!</parameter>
-			<parameter>false</parameter>
-		</action>
-	</contribution>		
-	
-	<contribution configuration-id="hivemind.EagerLoad" if="property acr.debug">
-		<load service-id="resourceChooser" />
-		<load service-id="toolEditor" />
-		<load service-id="registryChooser" />
-		<load service-id="registryGoogle" />
-	</contribution>	
-	
-	<!-- services and implementations -->
-	
-	
-	<!-- todo: make non-singleton -->
+<!-- 
+==========================
+RESOURCE (FILE) CHOOSER
+ -->
+ 	<!--  todo - make non-singleton -->
 	<service-point id="resourceChooser" interface="org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal">
 		Select a local or myspace file
 		<interceptor service-id="astrogrid.login" />
@@ -86,7 +45,28 @@
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>
 	
-	<!-- todo: make non-singleton -->			
+	<contribution configuration-id="framework.preferences">
+		<preference name="dialogs.resourceChooser.useNewDialog" 
+			advanced="true"
+			requires-restart="true"
+			default-value="true" >
+			<ui-name>Use new-style dialogs</ui-name>
+			<description>select new or old filechooser dialogue implementation</description>
+			</preference>
+	</contribution>	
+
+	<contribution configuration-id="system.uiStructure" if="property acr.debug">
+		<action parentName="debug" name="driveResourceChooser" text="Launch ResourceChooser"
+			object="service:resourceChooser" methodName="chooseResource" >
+			<parameter>Choose file</parameter>
+			<parameter>true</parameter>
+		</action>
+	</contribution>			
+<!-- 
+===========================
+TOOL EDITOR
+ -->
+	<!-- todo: make non-singleton? -->			
 	<service-point id="toolEditor" interface="org.astrogrid.desktop.modules.dialogs.ToolEditorInternal">
 		Edit a remote application invocation.
 		<invoke-factory>
@@ -108,6 +88,27 @@
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>
 	
+	<configuration-point id="toolEditors" schema-id="system.objects">
+	 	List of tool editors. Each must implemen ToolEditorPanelFactory;
+	</configuration-point>
+	
+	<contribution configuration-id="toolEditors">
+		<object>service:chooserPanel</object>
+		<object>service:adqlPanel</object>
+		<object>service:basicPanel</object>
+		<object>service:xmlPanel</object>
+		<object>service:informationPanel</object>
+		<object>service:securityPanel</object>
+	</contribution>
+	
+		<contribution configuration-id="system.uiStructure" if="property acr.debug">
+		<action parentName="debug" name="driveToolEditor" text="Launch ToolEditor"
+			object="service:toolEditor" methodName="selectAndBuild" />
+	</contribution>		
+<!-- 
+=======================
+SIMPLIFIED TOOL EDITOR
+ -->	
 	<service-point id="simpleToolEditor" interface="org.astrogrid.desktop.modules.dialogs.ToolEditorInternal">
 		Edit a remote application invocation in a very simple tool editor
 		<invoke-factory>
@@ -126,6 +127,10 @@
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>	
 
+<!--  
+============================
+REGISTRY GOOGLE
+ -->
 		<!-- todo: make non-singleton -->
 	<service-point id="registryGoogle" interface="RegistryGoogle">
 		Select a registry resource
@@ -138,6 +143,7 @@
 				<service>system.browser</service>
 				<service>ui.registryBrowser</service>
 				<service>ivoa.cache</service>
+				<service>votech.vomon</service>
 			</construct>
 		</invoke-factory>	
 	</service-point>
@@ -145,6 +151,14 @@
 	<implementation service-id="registryGoogle" if="property dialogs.registryGoogle.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>		
+
+	<contribution configuration-id="system.uiStructure" if="property acr.debug">
+		<action parentName="debug" name="driveRegistryChooser" text="Launch RegistryChooser"
+			object="service:registryGoogle" methodName="selectResources" >		
+			<parameter>Choose a resource!</parameter>
+			<parameter>false</parameter>
+		</action>
+	</contribution>		
 	
 	<!-- obsolete version - only present for backwards compat. -->
 <service-point id="registryChooser" interface="RegistryChooser">
@@ -163,42 +177,53 @@
 	</implementation>		
 	
 	
-	
-	<!-- tool editor factories -->
+	<!-- =================
+	TOOL EDITOR PANES
+	 -->
 	<service-point id="informationPanel" visibility="private" interface="org.astrogrid.desktop.modules.dialogs.editors.ToolEditorPanelFactory">
-		<invoke-factory>
+		Displays information on the tool - repeats information shown on the chooser pane, really. candidate for removal.
+		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.dialogs.editors.ToolinformationPanelFactory">
 				<service>astrogrid.applications</service>
 			</construct>
 		</invoke-factory>
 	</service-point>
+	
 	<service-point id="xmlPanel" visibility="private" interface="org.astrogrid.desktop.modules.dialogs.editors.ToolEditorPanelFactory">
-		<invoke-factory>
+		a panel which displays the undelrying xmld tool document - a candidate for hiding.
+		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.dialogs.editors.RawXMLToolEditorPanelFactory">
 				<service>astrogrid.applications</service>
 			</construct>
 		</invoke-factory>
 	</service-point>	
+	
 	<service-point id="chooserPanel" visibility="private" interface="org.astrogrid.desktop.modules.dialogs.editors.ToolEditorPanelFactory">
-		<invoke-factory>
+		registry-browsing panel
+		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.dialogs.editors.ChooseToolEditorPanelFactory">
 				<service>ivoa.registry</service>
 				<service>astrogrid.applications</service>
 				<service>system.browser</service>
 				<service>ui.registryBrowser</service>
 				<service>ivoa.cache</service>
+				<service>votech.vomon</service>
 			</construct>
 		</invoke-factory>
 	</service-point>	
+	
 	<service-point id="basicPanel" visibility="private" interface="org.astrogrid.desktop.modules.dialogs.editors.ToolEditorPanelFactory">
-		<invoke-factory>
+		basic form-input panel
+		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.dialogs.editors.BasicToolEditorPanelFactory">
 				<service>resourceChooser</service>
 			</construct>
 		</invoke-factory>
 	</service-point>	
+	
 	<service-point id="adqlPanel" visibility="private" interface="org.astrogrid.desktop.modules.dialogs.editors.ToolEditorPanelFactory">
-		<invoke-factory>
+		Allows user to build adql queries
+		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanelFactory">
 				<service>resourceChooser</service>
 				<service>registryGoogle</service>
@@ -207,8 +232,10 @@
 			</construct>
 		</invoke-factory>
 	</service-point>	
+	
 	<service-point id="securityPanel" visibility="private" interface="org.astrogrid.desktop.modules.dialogs.editors.ToolEditorPanelFactory">
-		<invoke-factory>
+		Allows user to provide credentials to the service
+		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.dialogs.editors.SecurityToolEditorPanelFactory">
 				<service>astrogrid.community</service>
 			</construct>

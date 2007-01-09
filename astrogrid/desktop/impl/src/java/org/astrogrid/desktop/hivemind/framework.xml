@@ -1,10 +1,159 @@
 <?xml version="1.0"?>
-
+<!DOCTYPE module [
+	<!ENTITY version SYSTEM "fallback:classpath:/org/astrogrid/desktop/hivemind/version.xml,classpath:/org/astrogrid/desktop/hivemind/fallback-version.xml">
+]>
 <module id="framework" version="1.0.0" package="org.astrogrid.desktop.framework">
-	Base module - defines ACR configuration points, and in
-	turn configures hivemind.
+	Base module - defines ACR configuration points, fundamental config keys, configures hivemind.
+
+
+	<contribution configuration-id="preferences">
+		<preference name="acr.advanced" default-value="false">
+			<ui-name>Advanced Mode</ui-name>
+			<description>Enables additional UI components for advanced use</description>
+		</preference>
+		<preference name="acr.debug" default-value="false">
+			<ui-name>Debugging Mode</ui-name>
+			<description>Enables additional UI components for debugging and testing</description>
+		</preference>
+	</contribution>
+
+	<!--  loads in version information, from file written externally during build -->
+	<contribution configuration-id="hivemind.ApplicationDefaults">
+		&version;
+	</contribution>
 	
-	<!-- new configuraiton points -->
+	
+	<!--  
+	========================
+	flavour-specific configuration -->
+
+<!--  as PLASTIC HUB -->
+	<contribution configuration-id="hivemind.ApplicationDefaults" if="property hub.mode">
+		<default symbol="system.ui.title" value="AstroGrid PLASTIC Hub" />
+		<default symbol="system.rmi.disableConnectionFile" value="true" /> <!-- as we've not got acr running, and plastic records connection details in it's own way -->
+		<default symbol="system.webserver.disableConnectionFile" value="true" />
+		<default symbol="app.mode" value="hub" />
+	</contribution>
+	<contribution configuration-id="preferenceClass" if="property hub.mode">
+		<class>org.astrogrid.PlasticHub</class>
+	</contribution>
+	
+	<!--  as ASR -->
+	<contribution configuration-id="hivemind.ApplicationDefaults" if="property asr.mode">
+		<default symbol="app.mode" value="asr" />
+		<default symbol="system.ui.title" value="Astro Runtime" />		
+	</contribution>
+	<contribution configuration-id="preferenceClass" if="property asr.mode">
+		<class>org.astrogrid.HeadlessAstroRuntime</class>
+	</contribution>	
+	
+	<!--  as ACR -->
+	<contribution configuration-id="hivemind.ApplicationDefaults" if="property acr.mode">
+		<default symbol="app.mode" value="acr" />
+		<default symbol="system.ui.title" value="Astro Runtime" />		
+	</contribution>
+	<contribution configuration-id="preferenceClass" if="property acr.mode">
+		<class>org.astrogrid.AstroRuntime</class>
+	</contribution>	
+	
+	<!--  as Workbench -->
+	<contribution configuration-id="hivemind.ApplicationDefaults" if="property workbench.mode">
+			<default symbol="app.mode" value="workbench" />
+	</contribution>
+	<contribution configuration-id="preferenceClass" if="property workbench.mode">
+		<class>org.astrogrid.Workbench</class>
+	</contribution>	
+	
+<!--  default -->
+	<contribution configuration-id="hivemind.FactoryDefaults">	
+		<default symbol="system.ui.title" value="AstroGrid Workbench" />
+	</contribution>	
+		
+	
+	
+	<!--
+	======================================
+	  preferences system 
+	  
+	  although all configuraiton points are defined here, the 
+	  actual preferences service is defined in 'system' - historical 
+	  reasons - as that's where the previous 'configuraiton' serivce (whose
+	  interface it still supports) was located.
+	  -->
+
+	
+	<configuration-point id="preferenceClass" occurs="1">
+		Defines the class key to store preferences under.
+		<schema>
+			<element name="class" content-translator="class">
+			The name of the preference class
+			<rules>
+				<push-content />
+				<invoke-parent method="addElement" />
+			</rules>
+			</element>
+		</schema>
+	</configuration-point>
+	
+	<configuration-point id="preferences">
+		Defines the available preferences.
+		<schema>
+			<element name="preference" key-attribute="name">
+				<attribute name="name" required="true" unique="true">
+					The name of the preference
+				</attribute>
+				<attribute name="default-value" required="true">
+					The default value
+				</attribute>
+				<attribute name="advanced" translator="boolean">
+					true if this is an 'advanced' preference - not to be shown in all views.
+				</attribute>
+				<attribute name="requires-restart" translator="boolean">
+					true if restart is required to effect changes to this preference
+				</attribute>
+				<attribute name="propagate-to-config" translator="boolean">
+					true if the default value, and all modifications of this prefernece
+					should be copied into the ag.commons.Config used by other 
+					AG components (such as delegates).
+					If false, this preference is not visible to such code.
+				</attribute>
+				<element name="ui-name">
+				Name to display in UI
+				</element>
+				<element name="description">
+				Description of this preference
+				</element>
+				<element name="units">
+					Units of this value - add into parsing
+				</element>
+				<element name="alternative">
+				  a suggested alternative value for this preference - need to add into parsing
+				 </element>
+				<conversion class="org.astrogrid.desktop.modules.system.Preference" />
+			</element>
+		</schema>
+	</configuration-point>
+	
+	<!--  see system module for the 'configuration' service that consumes this -->
+
+	<!--  symbol sources - as a service, as is referred to by preferences -->
+	
+	<service-point id="sysproperties" interface="org.apache.hivemind.SymbolSource">
+		<create-instance model="primitive" class="org.apache.hivemind.impl.SystemPropertiesSymbolSource" />
+	</service-point>
+	
+		<contribution  configuration-id="hivemind.SymbolSources">
+		Enable hivemind system to access system properties
+		<source 
+			name="sysproperties" 
+			before="*" 
+			service-id="sysproperties" />
+	</contribution>
+	
+	<!-- 
+===========================
+FUNDAMENTAL CONFIGURATION POINTS
+ -->
 	<configuration-point id="acrServices">
 		Map of known ACR components / services.
 		<schema>
@@ -73,7 +222,31 @@
 		</schema>
 	</configuration-point>
 		
+<!-- 
+======================
+DATA CONVERTORS - string -> object
+ -->
 
+	<service-point id="converter" interface="org.apache.commons.beanutils.Converter">
+		Converts string inputs to the correct types
+		<create-instance model="primitive" class="org.astrogrid.desktop.modules.system.converters.DefaultConverter" />
+	</service-point>			
+	
+
+<!-- register converters with beanutils system -->
+	<service-point id="registerConverters" visibility="private" interface="java.lang.Runnable">
+	  <invoke-factory model="primitive">
+	    <construct class="org.astrogrid.desktop.modules.system.converters.RegisterConverters">
+	      <configuration>converters</configuration>
+	    </construct>
+	  </invoke-factory>
+	</service-point>
+
+	<!--  run this as startup -->
+	<contribution configuration-id="hivemind.Startup">
+	  <startup object="service:registerConverters" />
+	</contribution>	
+ 
 	<configuration-point id="converters">
 	  Register list of string-to-object convertors
 	  <schema>
@@ -91,58 +264,6 @@
 	  	</element>
 	  </schema>
 	</configuration-point>
-	
-	<configuration-point id="plainResultTransformers" schema-id="hivemind.lib.StrategyRegistry">
-	  Convertors for taking results to plain text.
-	</configuration-point>
-	
-		<configuration-point id="htmlResultTransformers" schema-id="hivemind.lib.StrategyRegistry">
-	  Convertors for taking results to html text.
-	</configuration-point>
-
-	<configuration-point id="rpcResultTransformers" schema-id="hivemind.lib.StrategyRegistry">
-	  Convertors for taking results to xmlrpc results
-	</configuration-point>	
-	
-
-	<configuration-point id="stylesheets">
-		list of stylesheets to use to render xml results to html.
-		<schema>
-			<element name="stylesheet">
-				<attribute name="regexp" required="true">
-				  Pattern to match xml input against to determine whether this stylesheet is appropriate.
-				</attribute>
-				<attribute name="sheet" required="true">
-				unqualified name of the stylesheet to apply. must be in the org.astorgird.desktop.modules.system.transformers package.
-				</attribute>
-				<conversion class="org.astrogrid.desktop.modules.system.contributions.StylesheetsContribution" />
-			</element>
-		</schema>
-	</configuration-point>
-	
-		
-	<!-- configuration of hivemind system -->
-	<contribution configuration-id="hivemind.FactoryDefaults">	
-		<default symbol="acr.debug" value="false" />		
-	</contribution>
-	
-	<contribution configuration-id="hivemind.Startup">
-	  <startup object="service:registerConverters" />
-	</contribution>
-	<!-- enable subst symbols from sys properties too -->	
-	<contribution configuration-id="hivemind.SymbolSources">
-		<source name="sysproperties" before="hivemind.ApplicationDefaults" class="org.apache.hivemind.impl.SystemPropertiesSymbolSource" />
-		<source name="manifest" before="hivemind.ApplicationDefaults" class="org.astrogrid.desktop.hivemind.VersionSymbolSource" />
-	</contribution>
-	
-	<contribution configuration-id="hivemind.ObjectProviders">
-		<provider prefix="primitive" service-id="primitiveObjectProvider" />
-	</contribution>
-	
-	<service-point id="primitiveObjectProvider" interface="org.apache.hivemind.service.ObjectProvider">
-		<create-instance class="org.astrogrid.desktop.hivemind.PrimitiveObjectProvider" />
-	</service-point>
-	
 	<!-- setup initial set of convertors and transformers
 	 -->
 	<contribution configuration-id="converters">
@@ -151,53 +272,13 @@
 		<register output="org.w3c.dom.Document" converter="instance:org.astrogrid.desktop.modules.system.converters.DocumentConverter" />
 		<register output="java.util.List" converter="instance:org.astrogrid.desktop.modules.system.converters.CollectionConvertor" />
 		<register output="java.lang.Object" array="true" converter="instance:org.astrogrid.desktop.modules.system.converters.ArrayConvertor"/>
-	</contribution>
+	</contribution>	
 	
-	
-	<contribution configuration-id="htmlResultTransformers">
-		<strategy class="java.lang.Object" object="service:defaultHtmlTransformer" />
-		<strategy class="org.w3c.dom.Document" object="service:stylesheetTransformer" />
-	</contribution>
-	
-	<contribution configuration-id="plainResultTransformers">
-		<strategy class="java.lang.Object" object="service:defaultPlainTransformer" />
-		<strategy class="org.w3c.dom.Document" object="service:documentTransformer" />		
-	</contribution>
-	
-	<contribution configuration-id="rpcResultTransformers">
-		<strategy class="java.lang.Object" object="service:typeStructureTransformer" />
-		<strategy class="org.w3c.dom.Document" object="service:documentTransformer" />		
-	</contribution>
-	
-	<contribution configuration-id="stylesheets">
-		<stylesheet regexp=".*&lt;workflow" sheet="workflow.xsl" />
-	<!-- stopped using this one - as doesn't work for all votables. fallback to xml verbatim instead.
-		<stylesheet regexp=".*&lt;VOTABLE" sheet="VOTable2XHTML.xsl" /> -->
-		<stylesheet regexp="." sheet="xmlverbatim.xsl" />
-	</contribution>
-		
-	
-
-<!-- 
-	converters and transformers for input and output data
-	 -->	
-	<service-point id="converter" interface="org.apache.commons.beanutils.Converter">
-		Converts string inputs to the correct types
-		<create-instance class="org.astrogrid.desktop.modules.system.converters.DefaultConverter" />
-	</service-point>			
-	
-
-<!-- register converters with beanutils system -->
-	<service-point id="registerConverters" visibility="private" interface="java.lang.Runnable">
-	  <invoke-factory>
-	    <construct class="org.astrogrid.desktop.modules.system.converters.RegisterConverters">
-	      <configuration>converters</configuration>
-	    </construct>
-	  </invoke-factory>
-	</service-point>
 
  
- <!-- various kinds of result transformer - handles the result in some way or other -->
+ <!-- 
+ ======================
+ RESULT TRANSFORMER - object -> string -->
  
  <!-- use the builtin strategy factory to assemble a strategy implementation from a configuratiobn
  for each of the three public result transformers.
@@ -208,21 +289,51 @@
  		<construct configuration-id="plainResultTransformers" />
  	</invoke-factory>
  </service-point>
- 
+
+ 	<configuration-point id="plainResultTransformers" schema-id="hivemind.lib.StrategyRegistry">
+	  Convertors for taking results to plain text.
+	</configuration-point>
+
+	<contribution configuration-id="plainResultTransformers">
+		<strategy class="java.lang.Object" object="service:defaultPlainTransformer" />
+		<strategy class="org.w3c.dom.Document" object="service:documentTransformer" />		
+	</contribution>
+	
+	
   <service-point id="htmlResultTransformer" interface="org.apache.commons.collections.Transformer">
  	<invoke-factory service-id="hivemind.lib.StrategyFactory">
  		<construct configuration-id="htmlResultTransformers" />
  	</invoke-factory>
  </service-point>
- 
+
+		<configuration-point id="htmlResultTransformers" schema-id="hivemind.lib.StrategyRegistry">
+	  Convertors for taking results to html text.
+	</configuration-point>
+
+		<contribution configuration-id="htmlResultTransformers">
+		<strategy class="java.lang.Object" object="service:defaultHtmlTransformer" />
+		<strategy class="org.w3c.dom.Document" object="service:stylesheetTransformer" />
+	</contribution>
+	 
   <service-point id="rpcResultTransformer" interface="org.apache.commons.collections.Transformer">
  	<invoke-factory service-id="hivemind.lib.StrategyFactory">
  		<construct configuration-id="rpcResultTransformers" />
  	</invoke-factory>
  </service-point>
 
+	<configuration-point id="rpcResultTransformers" schema-id="hivemind.lib.StrategyRegistry">
+	  Convertors for taking results to xmlrpc results
+	</configuration-point>	
 
-<!-- basic transformer implementations - to start things off - private to this module.-->
+<contribution configuration-id="rpcResultTransformers">
+		<strategy class="java.lang.Object" object="service:typeStructureTransformer" />
+		<strategy class="org.w3c.dom.Document" object="service:documentTransformer" />		
+	</contribution>	
+
+<!--
+=======================
+BASIC TRANSFORMERS
+ to start things off - private to this module.-->
 <service-point id="typeStructureTransformer" visibility="private" interface="org.apache.commons.collections.Transformer">
 	<invoke-factory>
 		<construct class="org.astrogrid.desktop.modules.system.transformers.TypeStructureTransformer">
@@ -248,17 +359,43 @@
 </service-point>
 
 <service-point id="documentTransformer" visibility="private" interface="org.apache.commons.collections.Transformer">
-	<create-instance class="org.astrogrid.desktop.modules.system.transformers.DocumentTransformer"/>
+	<create-instance model="primitive" class="org.astrogrid.desktop.modules.system.transformers.DocumentTransformer"/>
 </service-point>
 
+<!-- 
+==============
+STYLESHEET TRANSFORMER
+ -->
 <service-point id="stylesheetTransformer"  interface="org.apache.commons.collections.Transformer">
-	<invoke-factory>
+	<invoke-factory model="primitive">
 		<construct class="org.astrogrid.desktop.modules.system.transformers.Xml2XhtmlTransformer">
 			<configuration>stylesheets</configuration>
 		</construct>
 	</invoke-factory>
 </service-point>
 
+	<configuration-point id="stylesheets">
+		list of stylesheets to use to render xml results to html.
+		<schema>
+			<element name="stylesheet">
+				<attribute name="regexp" required="true">
+				  Pattern to match xml input against to determine whether this stylesheet is appropriate.
+				</attribute>
+				<attribute name="sheet" required="true">
+				unqualified name of the stylesheet to apply. must be in the org.astorgird.desktop.modules.system.transformers package.
+				</attribute>
+				<conversion class="org.astrogrid.desktop.modules.system.contributions.StylesheetsContribution" />
+			</element>
+		</schema>
+	</configuration-point>
+	
+	<contribution configuration-id="stylesheets">
+		<stylesheet regexp=".*&lt;workflow" sheet="workflow.xsl" />
+	<!-- stopped using this one - as doesn't work for all votables. fallback to xml verbatim instead.
+		<stylesheet regexp=".*&lt;VOTABLE" sheet="VOTable2XHTML.xsl" /> -->
+		<stylesheet regexp="." sheet="xmlverbatim.xsl" />
+	</contribution>
+		
 	
  </module>
  

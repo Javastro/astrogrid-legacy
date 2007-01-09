@@ -5,7 +5,7 @@
 <module id="builtin" version="1.0.0" package="org.astrogrid.acr.builtin">
 Builtin Components
 	
-	<!-- contributions -->
+	<!--PREAMBLE -->
 	<contribution configuration-id="framework.acrServices">
 			<acrService id="shutdown" interface="Shutdown" />
 	</contribution>
@@ -21,7 +21,33 @@ Builtin Components
 		<load service-id="shutdown"/> 
 	</contribution>
 
+<!-- 
+========================
+ACR itself
+ -->
+	<service-point id="acr" interface="org.astrogrid.desktop.framework.ACRInternal">
+		Registry of all available acr components. Consumes the acrServices and descriptors configuration
+		<invoke-factory model="primitive">
+			<construct class="org.astrogrid.desktop.hivemind.HivemindMutableACR">
+				<configuration>framework.acrServices</configuration>
+				<configuration>framework.descriptors</configuration>
+			</construct>
+		</invoke-factory>
+	</service-point>
 	
+<!-- 
+=========================
+SHUTDOWN
+ -->
+	<service-point id="shutdown" interface="Shutdown">
+		Service to shutdown the ACR
+		<invoke-factory model="primitive">
+			<construct  class="org.astrogrid.desktop.framework.ShutdownImpl" >
+				<service>hivemind.ShutdownCoordinator</service>
+				<boolean>${builtin.shutdown.exit}</boolean>
+			</construct>
+		</invoke-factory>	
+	</service-point>	
 		
 	<contribution configuration-id="system.rmiListenerInterfaces">
 		<service id="shutdown">
@@ -40,26 +66,7 @@ Builtin Components
 		<default symbol="builtin.shutdown.exit" value="true" />
 	</contribution>
 	
-	<!-- services and iimplementations -->
-	<service-point id="acr" interface="org.astrogrid.desktop.framework.ACRInternal">
-		Registry of all available acr components. Consumes the acrServices and descriptors configuration
-		<invoke-factory>
-			<construct class="org.astrogrid.desktop.hivemind.HivemindMutableACR">
-				<configuration>framework.acrServices</configuration>
-				<configuration>framework.descriptors</configuration>
-			</construct>
-		</invoke-factory>
-	</service-point>
-	
-	<service-point id="shutdown" interface="Shutdown">
-		Service to shutdown the ACR
-		<invoke-factory>
-			<construct class="org.astrogrid.desktop.framework.ShutdownImpl" >
-				<service>hivemind.ShutdownCoordinator</service>
-				<boolean>${builtin.shutdown.exit}</boolean>
-			</construct>
-		</invoke-factory>	
-	</service-point>
+
 	
 
  </module>

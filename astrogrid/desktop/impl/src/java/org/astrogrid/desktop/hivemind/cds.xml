@@ -4,11 +4,7 @@
 	]>
 <module id="cds" version="1.0.0" package="org.astrogrid.acr.cds">
 	
-	<!-- new configurations -->
-	
-	
-	<!-- contributions to existing configurations -->
-
+	<!--  PREAMBLE -->
 	
 	<contribution configuration-id="framework.descriptors">
 		<acr-module name="cds" description="Access to services provided by Centre de Donnees astronomiques de Strasbourg">
@@ -24,45 +20,16 @@
 			<acrService id="glu" interface="Glu" />
 	</contribution>
 	
-	<contribution configuration-id="system.uiStructure" if="not (property system.browser.disabled)">
-		<action parentName="projects" name="cdsProject" 
-			text="CDS" iconName="cds_icon.gif"
-			object="service:system.browser" methodName="openURL">
-			<tooltip>Centre de Donnees Astronomiques Home Page</tooltip>			
-			<parameter>http://cdsweb.u-strasbg.fr/</parameter>
-		</action>		
-
-	</contribution>	
-	
-		<!-- factory defaults for enabled services and config properties -->
-	<contribution configuration-id="hivemind.FactoryDefaults">
-		<default symbol="cds.glu.endpoint" value="http://cdsws.u-strasbg.fr/axis/services/Jglu" />
-		<default symbol="cds.sesame.endpoint" value="http://cdsws.u-strasbg.fr/axis/services/Sesame" />
-		<!-- set these to null / empty to force use of GLU to resolve endpoints (which rarely seems to work) -->
-		<default symbol="cds.coordinate.endpoint" value="http://cdsws.u-strasbg.fr/axis/services/AstroCoo" />
-		<default symbol="cds.ucd.endpoint" value="http://cdsws.u-strasbg.fr/axis/services/UCD" />
-		<default symbol="cds.vizier.endpoint" value="http://cdsws.u-strasbg.fr/axis/services/VizieR" />
-		<default symbol="cds.vizier2.endpoint" value="http://cdsws.u-strasbg.fr/axis/services/VizieRBeta" />
-	</contribution>
-
-	
-	<!-- everything else - eager when testing -->
-	<contribution configuration-id="hivemind.EagerLoad" if="property acr.debug">
-		<load service-id="sesame"/>
-		<load service-id="vizier" />
-		<load service-id="coordinate" />
-		<load service-id="ucd" />
-		<load service-id="glu" />
-	</contribution>	
-	
-	<!-- services and implementations -->
-	
+<!-- 
+======================
+SESAME
+ -->
 	<service-point id="sesame" interface="Sesame">
 		Name resolver
 		<interceptor service-id="system.throbber" />		
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.cds.SesameDynamicImpl" >
-			<set property="endpoint" value="${cds.sesame.endpoint}" />
+			<set-object property="endpoint" value="preference:cds.sesame.endpoint" />
 			</construct>
 		</invoke-factory>	
 	</service-point>
@@ -70,14 +37,24 @@
 	<implementation service-id="sesame" if="property cds.sesame.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>
-			
+	
+	<contribution configuration-id="framework.preferences">
+		<preference name="cds.sesame.endpoint" 
+			default-value="http://cdsws.u-strasbg.fr/axis/services/Sesame">
+				<ui-name>Sesame service endpoint</ui-name>
+				<description>http url of the sesame name resolver service</description>
+			</preference>
+	</contribution>
+<!-- 
+======================
+VIZIER
+ -->			
 		<service-point id="vizier" interface="VizieR">
 			VizieR
 		<interceptor service-id="system.throbber" />			
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.cds.VizieRImpl">
-				<service>glu</service>
-				<string>${cds.vizier.endpoint}</string>
+				<object>preference:cds.vizier.endpoint</object>
 			</construct>
 		</invoke-factory>			
 	</service-point>
@@ -85,14 +62,31 @@
 	<implementation service-id="vizier" if="property cds.vizier.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>
-
+ 	<contribution configuration-id="framework.preferences">
+ 		<preference name="cds.vizier.endpoint" 
+ 			default-value="http://cdsws.u-strasbg.fr/axis/services/VizieR">
+ 			<ui-name>Vizier service endpoint</ui-name>
+ 			<description>http url of the vizier service</description>
+ 		</preference>
+ 		<!--  unused 
+ 		<preference name="cds.vizier2.endpoint" 
+ 			default-value="http://cdsws.u-strasbg.fr/axis/services/VizieRBeta">
+ 			<ui-name>Vizier 2 service endpoint</ui-name>
+ 			<description>http url of the vizier 2 service</description>
+ 		</preference>
+ 		--> 		
+ 	</contribution>
+	
+	
+<!-- =====================
+COORDINATES
+ -->
 	<service-point id="coordinate" interface="Coordinate">
 		Coordinate conversion
 		<interceptor service-id="system.throbber" />		
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.cds.CoordinateImpl">
-				<service>glu</service>
-				<string>${cds.coordinate.endpoint}</string>
+				<object>preference:cds.coordinate.endpoint</object>
 			</construct>
 		</invoke-factory>			
 	</service-point>
@@ -100,14 +94,23 @@
 	<implementation service-id="coordinate" if="property cds.coordinate.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>	
-
+	
+	<contribution configuration-id="framework.preferences">
+		<preference name="cds.coordinate.endpoint" 
+			default-value="http://cdsws.u-strasbg.fr/axis/services/AstroCoo" >
+				<ui-name>Coordinate service endpoint</ui-name>
+				<description>http url of the coordinate conversion service</description>
+		</preference>
+	</contribution>
+<!-- ===================
+UCD Dictionary
+ -->
 	<service-point id="ucd" interface="UCD">
 		UCD dictionary
 		<interceptor service-id="system.throbber" />		
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.cds.UCDImpl">
-				<service>glu</service>
-				<string>${cds.ucd.endpoint}</string>
+				<object>preference:cds.ucd.endpoint</object>
 			</construct>
 		</invoke-factory>			
 	</service-point>
@@ -116,12 +119,24 @@
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>		
 	
+	<contribution configuration-id="framework.preferences">
+		<preference name="cds.ucd.endpoint" 
+			default-value="http://cdsws.u-strasbg.fr/axis/services/UCD" >
+				<ui-name>Ucd dictionary service endpoint</ui-name>
+				<description>http url of the dictionary service</description>
+		</preference>
+	</contribution>
+	
+	<!-- 
+	=========================
+	GLU
+	 -->	
 	<service-point id="glu" interface="Glu">
 		CDS service registry
 		<interceptor service-id="system.throbber" />		
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.cds.GluImpl">
-				<string>${cds.glu.endpoint}</string>
+				<object>preference:cds.glu.endpoint</object>
 			</construct>
 		</invoke-factory>			
 	</service-point>
@@ -129,6 +144,13 @@
 	<implementation service-id="glu" if="property cds.glu.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>	
-		
+	
+		<contribution configuration-id="framework.preferences">
+			<preference name="cds.glu.endpoint" 
+				default-value="http://cdsws.u-strasbg.fr/axis/services/Jglu" >
+					<ui-name>GLU resolver service endpoint</ui-name>
+					<description>http url of the resolver service</description>
+			</preference>
+	</contribution>	
  </module>
  

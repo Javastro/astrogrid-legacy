@@ -3,9 +3,9 @@
 	<!ENTITY descriptors SYSTEM "classpath:/org/astrogrid/desktop/hivemind/test-descriptors.xml">
 	]>
 <module id="test" version="1.0.0" package="org.astrogrid.acr.test">
-Builtin Components
+Components for self-testing
 	
-	<!-- contributions -->
+	<!-- PREAMBLE-->
 	<contribution configuration-id="framework.acrServices">
 			<acrService id="transporttest" interface="TransportTest" />
 	</contribution>
@@ -15,10 +15,7 @@ Builtin Components
 		&descriptors;
 		</acr-module>
 	</contribution>
-
-	<contribution configuration-id="hivemind.EagerLoad" if="property acr.debug">
-		<load service-id="transporttest"/> 
-	</contribution>	
+	
 	
 	<!-- services and iimplementations -->
 
@@ -26,10 +23,7 @@ Builtin Components
 	<service-point id="transporttest" interface="TransportTest">
 		Service to test connection to acr.
 		<interceptor service-id="system.throbber" />	
-		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.test.TransportTestImpl" >
-			</construct>
-		</invoke-factory>	
+		<create-instance class="org.astrogrid.desktop.modules.test.TransportTestImpl" />	
 	</service-point>
 	
 

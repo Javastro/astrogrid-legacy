@@ -3,7 +3,7 @@
 	<!ENTITY descriptors SYSTEM "classpath:/org/astrogrid/desktop/hivemind/util-descriptors.xml">
 	]>
 <module id="util" version="1.0.0" package="org.astrogrid.acr.util">
-Builtin Components
+Utility Components
 	
 	<!-- contributions -->
 	<contribution configuration-id="framework.acrServices">
@@ -16,30 +16,24 @@ Builtin Components
 		</acr-module>
 	</contribution>
 	
-	<contribution configuration-id="hivemind.EagerLoad">
-		<load service-id="tables"/> <!--  as it configures stil -->
-	</contribution>
-	
-	<!--  
-	<contribution configuration-id="hivemind.EagerLoad" if="property acr.debug">
-		<load service-id="shutdown"/> 
-	</contribution>	
-	-->
-		
-	<contribution configuration-id="system.rmiListenerInterfaces">
-		<service id="shutdown">
-			<listener interface="org.astrogrid.acr.builtin.ShutdownListener" />
-		</service>
-	</contribution>
+
+<!-- 
+============================================
+TABLES
+ -->
 	
 	<service-point id="tables" interface="Tables">
 		Table Manipulation Utilities (STIL)
-		<invoke-factory>
+		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.util.TablesImpl" >
 				<service>astrogrid.myspace</service>
 			</construct>
 		</invoke-factory>	
 	</service-point>
+
+	<contribution configuration-id="hivemind.EagerLoad">
+		<load service-id="tables"/> <!--  as it configures stil -->
+	</contribution>
 	
 
  </module>

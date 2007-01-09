@@ -11,32 +11,17 @@
 
 	<!--  publishing info -->
 	<contribution configuration-id="framework.descriptors">
-		<acr-module name="voevent" description="Access to services VOEVENT services - AL REFINE THIS.">
+		<acr-module name="voevent" description="UNIMPLEMENTED">
 		&descriptors;
 		</acr-module>
 	</contribution>	
 		
 	<!--  all services to publish to this list -->
+	<!--  
 	<contribution configuration-id="framework.acrServices">
 			<acrService id="inject" interface="Inject" />
 	</contribution>
-	
-	<!--  add credits to the UI -->
-	<contribution configuration-id="system.uiStructure" if="not (property system.browser.disabled)">
-		<!--  AL - add  nice & small ESTAR & VOEVENT logos in the org.astrogrid.desktop.icons package -->
-		<action parentName="projects" name="estarProject" 
-			text="EStar" iconName="estar_icon.gif"
-			object="service:system.browser" methodName="openURL">
-			<tooltip>ESTAR - FILL in TITLE of PAGE</tooltip>			
-			<parameter>FILL IN ESTAR URL</parameter>
-		</action>		
-		<action parentName="projects" name="voeventProject" 
-			text="VOEvent" iconName="voevent_icon.gif"
-			object="service:system.browser" methodName="openURL">
-			<tooltip>VOEVENT - FILL in TITLE of PAGE</tooltip>			
-			<parameter>FILL IN VOEVNET URL</parameter>
-		</action>	
-	</contribution>	
+	-->
 	
 	<!-- factory defaults for config values -->
 	<contribution configuration-id="hivemind.FactoryDefaults">
@@ -47,12 +32,7 @@
 	<contribution configuration-id="hivemind.EagerLoad">
 		<!--  none -->
 	</contribution>
-	
-	<!-- make everything else  eager when testing -->
-	<contribution configuration-id="hivemind.EagerLoad" if="property acr.debug">
-		<load service-id="inject"/>
-	</contribution>	
-	
+
 	<!-- services and implementations -->
 	
 	<service-point id="inject" interface="Inject">

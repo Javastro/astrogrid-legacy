@@ -4,10 +4,6 @@
 	]>
 <module id="ivoa" version="1.0.0" package="org.astrogrid.acr.ivoa">
 	IVOA standard services.
-	<!-- new configurations -->
-	
-	
-	<!-- contributions to existing configurations -->
 
 	
 	<contribution configuration-id="framework.descriptors">
@@ -26,15 +22,6 @@
 			<acrService id="externalRegistry" interface="ExternalRegistry" />
 	</contribution>
 	
-	<contribution configuration-id="system.uiStructure" if="not (property system.browser.disabled)">
-		<action parentName="projects" name="ivoaProject" text="IVOA" iconName="ivoa.gif"
-			object="service:system.browser" methodName="openURL"
-			>
-			<tooltip>Home Page for the International Virtual Observatory Alliance</tooltip>
-			<parameter>http://www.ivoa.net</parameter>
-		</action>		
-
-	</contribution>	
 	
 	<contribution configuration-id="system.uiStructure" if="not (property ivoa.cache.disabled)">
 		<action parentName="edit" name="cacheClear" text="Flush Cache"
@@ -45,33 +32,12 @@
 			]]></confirmMessage>
 		</action>		
 	</contribution>		
-		<!-- factory defaults for enabled services and config properties -->
-	<contribution configuration-id="hivemind.FactoryDefaults">
-		<default symbol="ivoa.adql074.endpoint" value="http://openskyquery.net/AdqlTranslator/ADQLTrans.asmx"/>			
-		<default symbol="ivoa.registry.of.registries.endpoint" value="http://FILL.ME.IN" />
-		
-		<!-- astrogrid prefix, but in this descriptor - as used within the registry component -->
-		<default symbol="org.astrogrid.registry.query.endpoint" 
-			value="http://galahad.star.le.ac.uk:8080/galahad-registry/services/RegistryQuery" />
-		<default symbol="org.astrogrid.registry.query.altendpoint"
-			value="http://cass123.ast.cam.ac.uk/astrogrid-registry/services/RegistryQuery" />
-		
-	</contribution>
+	
 
 	
-	<!-- everything else - eager when testing -->
-	<contribution configuration-id="hivemind.EagerLoad" if="property acr.debug">
-		<load service-id="ssap"/>
-		<load service-id="siap" />
-		<load service-id="cone" />
-		<load service-id="skyNode" />
-		<load service-id="adql074" />
-		<load service-id="registry" />
-		<load service-id="externalRegistry" />
-		<load service-id="cache" />		
-	</contribution>	
-	
-	<!-- services and implementations -->
+	<!-- =====================
+	REGISTRY
+	-->
 	
 	<service-point id="registry" interface="org.astrogrid.desktop.modules.ivoa.RegistryInternal">
 		System Registry
@@ -79,7 +45,8 @@
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ivoa.StreamingRegistryImpl" >
 				<service>externalRegistry</service>
-                <service>system.configuration</service><!-- JDT1836 -->
+               <object>preference:org.astrogrid.registry.query.endpoint</object>
+               <object>preference:org.astrogrid.registry.query.altendpoint</object>
 				<service>ivoa.cache</service>				
 			</construct>
 		</invoke-factory>
@@ -89,6 +56,23 @@
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>	
 	
+		<contribution configuration-id="framework.preferences">
+		<preference name="org.astrogrid.registry.query.endpoint" 
+			advanced="true" requires-restart="true" propagate-to-config="true"
+			default-value="http://galahad.star.le.ac.uk:8080/galahad-registry/services/RegistryQuery">
+				<ui-name>Registry service endpoint</ui-name>
+				<description>http url of the main registry service</description>
+		</preference>
+		<preference name="org.astrogrid.registry.query.altendpoint"
+			advanced="true" requires-restart="true" propagate-to-config="true"		
+			default-value="http://cass123.ast.cam.ac.uk/astrogrid-registry/services/RegistryQuery" >
+				<ui-name>Registry service endpoint</ui-name>
+				<description>http url of the main registry service</description>
+		</preference>
+	</contribution>
+	<!-- =========================
+	EXTERNAL REGISTRY
+	 -->
 	<service-point id="externalRegistry" interface="org.astrogrid.desktop.modules.ivoa.ExternalRegistryInternal">
 		External Registries.
 		<interceptor service-id="system.throbber" />
@@ -103,6 +87,15 @@
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>
 	
+
+	
+	<contribution configuration-id="hivemind.FactoryDefaults">
+		<default symbol="ivoa.registry.of.registries.endpoint" value="http://FILL.ME.IN" />	
+	</contribution>	
+<!-- 
+=========================
+SSAP
+ -->
 	<service-point id="ssap" interface="Ssap">
 		Simple Spectral Access Protocol
 		<interceptor service-id="system.throbber" />		
@@ -113,11 +106,15 @@
 			</construct>
 		</invoke-factory>	
 	</service-point>
-
+	
 	<implementation service-id="ssap" if="property ivoa.ssap.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>
-			
+
+<!-- 
+==========================
+SKYNODE
+ -->			
 		<service-point id="skyNode" interface="SkyNode">
 			Skynode (unfinished)
 		<interceptor service-id="system.throbber" />			
@@ -129,7 +126,10 @@
 	<implementation service-id="skyNode" if="property ivoa.skynode.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>
-
+<!-- 
+====================
+SIAP
+ -->
 	<service-point id="siap" interface="Siap">
 		Simple Image Access Protocol
 		<interceptor service-id="system.throbber" />		
@@ -144,7 +144,10 @@
 	<implementation service-id="siap" if="property ivoa.siap.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>	
-	
+	<!-- 
+	=====================
+	CONE
+	 -->
 	<service-point id="cone" interface="Cone">
 		Client to Cone Services
 		<interceptor service-id="system.throbber" />		
@@ -159,7 +162,12 @@
 	<implementation service-id="cone" if="property ivoa.cone.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>	
-
+	<!-- 
+	============================
+	DEPRECATED ADQL CONVERTOR
+	
+	TODO - add deprecation interceptor to this
+	 -->
 	<service-point id="adql074" interface="Adql074">
 		ADQL convertor
 		<interceptor service-id="system.throbber" />		
@@ -172,13 +180,20 @@
 	
 	<implementation service-id="adql074" if="property ivoa.adql074.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
-	</implementation>		
-<!--  result cache. -->
+	</implementation>	
+		<!-- leaving this as-is - not upgrading to new system, as is deprecated -->
+	<contribution configuration-id="hivemind.FactoryDefaults">
+		<default symbol="ivoa.adql074.endpoint" value="http://openskyquery.net/AdqlTranslator/ADQLTrans.asmx"/>			
+	</contribution>		
+<!--  
+=======================
+RESULT CACHE 
+-->
 	<service-point id="cache" interface="org.astrogrid.desktop.modules.ivoa.CacheFactory">
 	Result Cache. Would fit more logically in the system module, but then causes build
 	problems for the hub. so it's better suited here - as it's used mostly in the ivoa.registry
 	clients anyhow.
-		<invoke-factory>
+		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.ivoa.CacheFactoryImpl">
 				<string>${astrogrid.store.workdir}</string>
 				<event-listener service-id="builtin.shutdown" />			
@@ -189,6 +204,6 @@
 		<implementation service-id="cache"  if="property ivoa.cache.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
 	</implementation>			
-	
+	<!--  TODO - add more cache configuraiton options here -->
  </module>
  

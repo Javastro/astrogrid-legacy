@@ -3,7 +3,7 @@
 	<!ENTITY descriptors SYSTEM "classpath:/org/astrogrid/desktop/hivemind/nvo-descriptors.xml">
 	]>
 <module id="nvo" version="1.0.0" package="org.astrogrid.acr.nvo">
-	Services from American NVO
+	Services from American NVO - not much here anymore.
 	<!-- new configurations -->
 	
 	
@@ -19,24 +19,10 @@
 	<contribution configuration-id="framework.acrServices">
 			<acrService id="cone" interface="Cone"/>
 	</contribution>
-	
-	<contribution configuration-id="system.uiStructure" if="not (property system.browser.disabled)">
-		<action parentName="projects" name="nvoProject" text="NVO" iconName="nvo.gif"
-			object="service:system.browser" methodName="openURL"
-			>
-			<tooltip>Home Page for the US National Virtual Observatory</tooltip>
-			<parameter>http://www.us-vo.org/</parameter>
-		</action>		
 
-	</contribution>	
-	
-	<!-- everything else - eager when testing -->
-	<contribution configuration-id="hivemind.EagerLoad" if="property acr.debug">
-		<load service-id="cone"/>
-	</contribution>	
 	
 	<!-- services and implementations -->
-	
+	<!--  TODO - do I need to mark this as deprecated -->
 	<service-point id="cone" interface="Cone">
 		Client to Cone Services
 		<interceptor service-id="system.throbber" />		
