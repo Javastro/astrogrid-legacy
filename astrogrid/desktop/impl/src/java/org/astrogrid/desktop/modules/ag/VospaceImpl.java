@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.15 2006/11/09 12:08:33 nw Exp $
+/*$Id: VospaceImpl.java,v 1.16 2007/01/09 16:21:22 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -902,6 +902,7 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
 	public Service listStores() throws ServiceException {
 		return null;
 		//@implement this as part of the myspace makeover.
+		//@todo should return Service[]
 	}    
 
 
@@ -913,6 +914,9 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.16  2007/01/09 16:21:22  nw
+minor
+
 Revision 1.15  2006/11/09 12:08:33  nw
 final set of changes for 2006.4.rc1
 

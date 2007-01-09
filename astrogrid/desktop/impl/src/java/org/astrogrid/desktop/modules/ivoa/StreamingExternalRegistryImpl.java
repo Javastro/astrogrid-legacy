@@ -46,7 +46,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /** Streaming implementation of New registry client.
- * @fixme debug adql routines.
+ * @fixme debug adql routines - use new adql translator
  * @future upgrade to registry 1.0
  * @future at the moment, no caching. could introduce caching later - would need to key on query + regID however.
  * @author Noel Winstanley
@@ -139,7 +139,7 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 	public static final String REG_NS = "http://www.ivoa.net/schemas/services/QueryRegistry/wsdl";
 	// ffor version 10.public static final String REG_NS = "http://www.ivoa.net/wsdl/RegistrySearch/v1.0";
 
-	private static final  DocumentBuilderFactory fac= DocumentBuilderFactory.newInstance();
+	static final  DocumentBuilderFactory fac= DocumentBuilderFactory.newInstance();
 
 	private final XMLInputFactory inputFactory;
 	private final ObjectServiceFactory osf;
