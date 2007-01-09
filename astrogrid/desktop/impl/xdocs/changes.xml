@@ -13,7 +13,21 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<action dev="jl" type="fix" issue="2022">
+<release version="2007.1" date="unreleased">
+<action dev="nw" type="add">
+	Implemented preference system (unfinished)
+</action>
+<action dev="nw" type="update">
+	Replaced javahelp system with linkage to website (unfinished)
+</action>
+<action dev="nw" type="fix">
+	Cleaned out and improved unit and integration tests
+</action>
+<action dev="nw" type="fix">
+	On startup, workbench will fallback to local copies of config if wiki is unavailable.
+	Set shorter timeout for connecting to wiki. 
+</action>
+<action dev="jl" type="fix" issue="2022, 2023, 2025">
 		Combination of fixes.
 		Dependent on fix #2020 on the AdqlStoX compiler.
 		Solves bugs #2023 and #2025
@@ -22,7 +36,8 @@
 		(2) Quoted identifiers are allowed (eg: "2xmmp" for a table name) but the xml
 		    given to the dsa remains the same.		 
 </action>
-<release version="2006.4.151106" date="151106">
+</release>
+<release version="2006.4.151106" date="2006-11-15">
 	<action dev="jl" type="add" issue="1794">
 		Workbench - Query Builder: Adql/s view now uses new AdqlStoX compiler.
 		AdqlStoX dependency added. 
