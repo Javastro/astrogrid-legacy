@@ -18,7 +18,10 @@ public class ServletsContributionUnitTest extends TestCase {
 		super.setUp();
 		s = new ServletsContribution();
 	}
-	
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		s = null;
+	}
 	protected ServletsContribution s;
 
 	/*

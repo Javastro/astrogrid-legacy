@@ -7,7 +7,8 @@ import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.ivoa.Adql074;
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
 import org.astrogrid.desktop.modules.system.ApiHelpIntegrationTest;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.w3c.dom.Document;
@@ -20,7 +21,7 @@ import junit.framework.TestSuite;
  * @author Noel Winstanley
  * @since Jun 13, 200612:23:00 AM
  */
-public class Adql074SystemTest extends TestCase {
+public class Adql074SystemTest extends InARTestCase {
 
 	/*
 	 * @see TestCase#setUp()
@@ -32,10 +33,7 @@ public class Adql074SystemTest extends TestCase {
 	}
 	
 	protected Adql074 adql;
-	
-    protected ACR getACR() throws Exception{
-        return (ACR)ACRTestSetup.acrFactory.getACR();
-    }    
+
 	/*
 	 * Test method for 'org.astrogrid.desktop.modules.ivoa.Adql074DynamicImpl.s2x(String)'
 	 */
@@ -59,7 +57,7 @@ public class Adql074SystemTest extends TestCase {
 	}
 
     public static Test suite() {
-        return new ACRTestSetup(new TestSuite(Adql074SystemTest.class));
+        return new ARTestSetup(new TestSuite(Adql074SystemTest.class));
     }
 
 	public static void main(String[] args) {

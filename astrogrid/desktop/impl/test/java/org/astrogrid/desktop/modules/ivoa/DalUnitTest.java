@@ -53,6 +53,18 @@ public class DalUnitTest extends TestCase {
 		localSiapURL = TablesImplUnitTest.class.getResource("siap.vot");
 		nonCompliantSiapService = new URL("http://www.slashdot.org");		
 	}
+	
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		myspaceControl = null;
+		registryControl = null;
+		mockMs = null;
+		mockReg = null;
+		dal = null;
+		u = null;
+		localSiapURL = null;
+		nonCompliantSiapService = null;
+	}
 	private MockControl myspaceControl;
 	private MockControl registryControl;
 	private MyspaceInternal mockMs;

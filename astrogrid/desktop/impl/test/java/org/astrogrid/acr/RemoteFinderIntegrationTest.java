@@ -1,4 +1,4 @@
-/*$Id: RemoteFinderIntegrationTest.java,v 1.1 2006/06/15 09:18:24 nw Exp $
+/*$Id: RemoteFinderIntegrationTest.java,v 1.2 2007/01/09 16:12:20 nw Exp $
  * Created on 28-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,17 +10,19 @@
 **/
 package org.astrogrid.acr;
 
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /** test finder can connect via rmi to an already running acr
  * the acr happens to be in the same process, but that isn't important.
+ * 
+ * although this extends from a 'separate test', this test is well behaved, and can be run in conjunction with others.
  * @author Noel Winstanley nw@jb.man.ac.uk 28-Jul-2005
  *
  */
-public class RemoteFinderIntegrationTest  extends InProcessFinderIntegrationTest{
+public class RemoteFinderIntegrationTest  extends InProcessFinderSeparateTest{
 
     /** Construct a new RemoteFinderTest
      * 
@@ -35,7 +37,7 @@ public class RemoteFinderIntegrationTest  extends InProcessFinderIntegrationTest
     
     /** start a fixture that creates an acr before running the tests */
     public static Test suite() {
-        return new ACRTestSetup(new TestSuite(RemoteFinderIntegrationTest.class));
+        return new ARTestSetup(new TestSuite(RemoteFinderIntegrationTest.class));
     }
 
 }
@@ -43,6 +45,9 @@ public class RemoteFinderIntegrationTest  extends InProcessFinderIntegrationTest
 
 /* 
 $Log: RemoteFinderIntegrationTest.java,v $
+Revision 1.2  2007/01/09 16:12:20  nw
+improved tests - still need extending though.
+
 Revision 1.1  2006/06/15 09:18:24  nw
 improved junit tests
 

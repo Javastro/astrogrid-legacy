@@ -13,7 +13,8 @@ import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.ivoa.ExternalRegistry;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.w3c.dom.Document;
 
@@ -22,7 +23,7 @@ import org.w3c.dom.Document;
  * @author Noel Winstanley
  * @since Aug 3, 20062:20:00 AM
  */
-public class ExternalRegistryKeywordSystemTest extends TestCase {
+public class ExternalRegistryKeywordSystemTest extends InARTestCase {
 
 
 
@@ -35,16 +36,15 @@ public class ExternalRegistryKeywordSystemTest extends TestCase {
 		endpoint = internal.getSystemRegistryEndpoint();
 		assertNotNull(endpoint);
 	}
-	
-    protected ACR getACR() throws Exception{
-        return (ACR)ACRTestSetup.acrFactory.getACR();
-    }   
+
 	protected ExternalRegistry ex;
 	protected URI endpoint;
 	
 
 	protected void tearDown() throws Exception {
 		super.tearDown();
+		ex = null;
+		endpoint = null;
 	}
 	
 	
@@ -109,6 +109,6 @@ public class ExternalRegistryKeywordSystemTest extends TestCase {
 
 
     public static Test suite() {
-        return new ACRTestSetup(new TestSuite(ExternalRegistryKeywordSystemTest.class));
+        return new ARTestSetup(new TestSuite(ExternalRegistryKeywordSystemTest.class));
     }
 }

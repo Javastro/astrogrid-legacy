@@ -26,7 +26,13 @@ public class MessagingInternalUnitTest extends TestCase {
 		msg = new SourcedExecutionMessage(null,null,null,null,null);
 		
 	}
-	
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		m = null;
+		listenerControl = null;
+		listener = null;
+		msg = null;
+	}
 	protected MessagingImpl m;
 	protected MockControl listenerControl;
 	protected MessageListener listener;

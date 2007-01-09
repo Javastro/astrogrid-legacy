@@ -3,7 +3,8 @@
  */
 package org.astrogrid.desktop.modules.system;
 
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -15,18 +16,22 @@ import junit.framework.TestSuite;
  * @author Noel Winstanley
  * @since Jun 9, 20065:12:40 PM
  */
-public class UIInternalIntegrationTest extends TestCase {
+public class UIInternalIntegrationTest extends InARTestCase {
 
 	/*
 	 * @see TestCase#setUp()
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		ui = (UIInternal)ACRTestSetup.acrFactory.getHivemindRegistry().getService(UIInternal.class);
+		ui = (UIInternal)getHivemindRegistry().getService(UIInternal.class);
 		assertNotNull(ui);
 	}
 	
 	protected UIInternal ui;
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		ui = null;
+	}
 
 	/*
 	 * Test method for 'org.astrogrid.desktop.modules.system.UIInternal.getComponent()'
@@ -117,7 +122,7 @@ public class UIInternalIntegrationTest extends TestCase {
 	}
 	
 	public static Test suite() {
-		return new ACRTestSetup(new TestSuite(UIInternalIntegrationTest.class));
+		return new ARTestSetup(new TestSuite(UIInternalIntegrationTest.class));
 	}
 
 }

@@ -37,6 +37,15 @@ public class SsapUnitTest extends TestCase {
 		ssap = new SsapImpl(mockReg,mockMs);
 		url = new URL("http://www.astrogrid.org/cone");		
 	}
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		mockReg = null;
+		regControl = null;
+		mockMs = null;
+		msControl = null;
+		ssap = null;
+		url = null;
+	}
 	protected Registry mockReg;
 	protected MockControl regControl;
 	protected MyspaceInternal mockMs;

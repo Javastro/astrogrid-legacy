@@ -18,6 +18,11 @@ public class QueryVisitorUnitTest extends TestCase implements QueryVisitor {
 		assertNotNull(q);
 	}
 	
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		q = null;
+	}
+	
 	
 	protected AbstractQuery q;
 	

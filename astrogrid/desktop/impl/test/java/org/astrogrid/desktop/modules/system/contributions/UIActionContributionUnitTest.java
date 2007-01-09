@@ -22,6 +22,10 @@ public class UIActionContributionUnitTest extends TestCase {
 		super.setUp();
 		act = new UIActionContribution();
 	}
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		act = null;
+	}
 	protected UIActionContribution act;
 
 	/* too hard to test - means I need to get an instance of UIImpl - which drages everything else in.

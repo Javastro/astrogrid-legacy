@@ -32,54 +32,23 @@ public class StapUnitTest extends TestCase {
 		stap = new StapImpl(mockReg,mockMs);
 		url = new URL("http://www.astrogrid.org/cone");		
 	}
+	
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		mockReg = null;
+		regControl = null;
+		mockMs = null;
+		msControl = null;
+		stap = null;
+		url = null;
+	}
+	
 	protected Registry mockReg;
 	protected MockControl regControl;
 	protected MyspaceInternal mockMs;
 	protected MockControl msControl;
 	protected Stap stap;
 	protected URL url;
-	/*
-	 * Test method for 'org.astrogrid.desktop.modules.ag.StapImpl.constructQuery(URI, Calendar, Calendar)'
-	 */
-	public void testConstructQueryURICalendarCalendar() {
-		fail("implement me");
-	}
-
-	/*
-	 * Test method for 'org.astrogrid.desktop.modules.ag.StapImpl.constructQueryF(URI, Calendar, Calendar, String)'
-	 */
-	public void testConstructQueryFURICalendarCalendarString() {
-		fail("implement me");
-	}
-
-	/*
-	 * Test method for 'org.astrogrid.desktop.modules.ag.StapImpl.constructQuery(URI, Calendar, Calendar, double, double, double)'
-	 */
-	public void testConstructQueryURICalendarCalendarDoubleDoubleDouble() {
-		fail("implement me");
-	}
-
-	/*
-	 * Test method for 'org.astrogrid.desktop.modules.ag.StapImpl.constructQueryF(URI, Calendar, Calendar, double, double, double, String)'
-	 */
-	public void testConstructQueryFURICalendarCalendarDoubleDoubleDoubleString() {
-		fail("implement me");
-	}
-
-	/*
-	 * Test method for 'org.astrogrid.desktop.modules.ag.StapImpl.constructQueryS(URI, Calendar, Calendar, double, double, double, double)'
-	 */
-	public void testConstructQueryS() {
-		fail("implement me");
-	}
-
-	/*
-	 * Test method for 'org.astrogrid.desktop.modules.ag.StapImpl.constructQuerySF(URI, Calendar, Calendar, double, double, double, double, String)'
-	 */
-	public void testConstructQuerySF() {
-		fail("implement me");
-	}
-
 
 	public void testGetRegistryAdqlQuery() {
 		assertNotNull(stap.getRegistryAdqlQuery());

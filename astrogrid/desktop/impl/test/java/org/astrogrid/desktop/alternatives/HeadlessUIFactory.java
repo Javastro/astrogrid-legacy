@@ -8,6 +8,8 @@ import org.astrogrid.desktop.modules.system.BackgroundExecutorImpl;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 
+import EDU.oswego.cs.dl.util.concurrent.Executor;
+
 /** Factory that takes care of the circular dependency between HeadlessUI and BackgroundExecutor
  * @author Noel Winstanley
  * @since Jun 6, 20065:40:24 PM
@@ -20,6 +22,7 @@ public class HeadlessUIFactory implements BackgroundExecutor {
 		this.be = new BackgroundExecutorImpl(ui);
 		this.be.init();
 	}
+	
 	
 //	 implementation of the background executor iterface - used to work around
 	// construction cycle.

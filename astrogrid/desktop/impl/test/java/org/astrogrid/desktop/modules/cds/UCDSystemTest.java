@@ -10,13 +10,14 @@ import junit.framework.TestSuite;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.cds.UCD;
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
 
 /** rudimentary connections tests for UCD service
  * @author Noel Winstanley
  * @since Jun 9, 20066:57:04 PM
  */
-public class UCDSystemTest extends TestCase {
+public class UCDSystemTest extends InARTestCase {
 
 	/**
 	 * 
@@ -37,12 +38,12 @@ public class UCDSystemTest extends TestCase {
 		ucd = (UCD)reg.getService(UCD.class);
 	
 	}
-	
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		ucd = null;
+	}
 	protected UCD ucd;
 
-	protected ACR getACR() throws Exception{
-        return (ACR)ACRTestSetup.acrFactory.getACR();		
-	}
 
 	/*
 	 * Test method for 'org.astrogrid.desktop.modules.cds.UCDImpl.UCDList()'
@@ -122,7 +123,7 @@ public class UCDSystemTest extends TestCase {
 	}
 	
     public static Test suite() {
-        return new ACRTestSetup(new TestSuite(UCDSystemTest.class));
+        return new ARTestSetup(new TestSuite(UCDSystemTest.class));
     }
 
 }

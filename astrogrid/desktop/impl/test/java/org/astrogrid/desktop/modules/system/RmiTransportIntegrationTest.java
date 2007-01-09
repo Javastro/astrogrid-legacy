@@ -1,4 +1,4 @@
-/*$Id: RmiTransportIntegrationTest.java,v 1.3 2006/08/31 21:07:58 nw Exp $
+/*$Id: RmiTransportIntegrationTest.java,v 1.4 2007/01/09 16:12:20 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,7 +32,7 @@ import org.astrogrid.acr.ivoa.ExternalRegistry;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.acr.test.TransportTest;
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParserUnitTest;
 import org.astrogrid.io.Piper;
 import org.astrogrid.util.DomHelper;
@@ -55,7 +55,10 @@ public class RmiTransportIntegrationTest extends TestCase {
             
         }
         protected ACR reg;
-
+        protected void tearDown() throws Exception {
+        	super.tearDown();
+        	reg = null;
+        }
 
     public void testCheckedException() throws InvalidArgumentException, ACRException {
     	TransportTest tt = (TransportTest)this.reg.getService(TransportTest.class);
@@ -119,13 +122,16 @@ public class RmiTransportIntegrationTest extends TestCase {
 
 
     public static Test suite() {
-        return new ACRTestSetup(new TestSuite(RmiTransportIntegrationTest.class));
+        return new ARTestSetup(new TestSuite(RmiTransportIntegrationTest.class));
     }
 }
 
 
 /* 
 $Log: RmiTransportIntegrationTest.java,v $
+Revision 1.4  2007/01/09 16:12:20  nw
+improved tests - still need extending though.
+
 Revision 1.3  2006/08/31 21:07:58  nw
 testing of transport of rtesource beans.
 

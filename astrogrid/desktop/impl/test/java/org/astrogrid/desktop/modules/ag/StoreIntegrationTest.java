@@ -1,4 +1,4 @@
-/*$Id: StoreIntegrationTest.java,v 1.1 2006/06/15 09:18:24 nw Exp $
+/*$Id: StoreIntegrationTest.java,v 1.2 2007/01/09 16:12:19 nw Exp $
  * Created on 24-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,8 @@
 package org.astrogrid.desktop.modules.ag;
 
 import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
 
 import jdbm.RecordManager;
 
@@ -19,7 +20,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class StoreIntegrationTest extends TestCase {
+public class StoreIntegrationTest extends InARTestCase {
 
     /*
      * Test method for 'org.astrogrid.desktop.modules.ag.StoreImpl.getManager()'
@@ -28,24 +29,29 @@ public class StoreIntegrationTest extends TestCase {
         RecordManager m = store.getManager();
         assertNotNull(m);
     }
-    protected ACR getACR() throws Exception {
-        return ACRTestSetup.acrFactory.getACR();
-    }
     
     public static Test suite() {
-        return new ACRTestSetup(new TestSuite(StoreIntegrationTest.class),true); 
+        return new ARTestSetup(new TestSuite(StoreIntegrationTest.class),true); 
     }    
     protected void setUp() throws Exception {
         super.setUp();
-        ACR reg =getACR();
-         store = (StoreInternal)reg.getService(StoreInternal.class);        
+         store = (StoreInternal)getHivemindRegistry().getService(StoreInternal.class);        
     }
+    
+    protected void tearDown() throws Exception {
+    	super.tearDown();
+    	store = null;
+    }
+    
     protected StoreInternal store;
 }
 
 
 /* 
 $Log: StoreIntegrationTest.java,v $
+Revision 1.2  2007/01/09 16:12:19  nw
+improved tests - still need extending though.
+
 Revision 1.1  2006/06/15 09:18:24  nw
 improved junit tests
 

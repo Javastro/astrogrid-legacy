@@ -1,4 +1,4 @@
-/*$Id: HtmlTransportIntegrationTest.java,v 1.1 2006/06/15 09:18:24 nw Exp $
+/*$Id: HtmlTransportIntegrationTest.java,v 1.2 2007/01/09 16:12:20 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import net.sourceforge.jwebunit.WebTestCase;
 
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.system.WebServer;
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
 
 import com.meterware.httpunit.WebClient;
 
@@ -39,10 +39,9 @@ public class HtmlTransportIntegrationTest extends WebTestCase {
         serv = (WebServer)reg.getService(WebServer.class);
         assertNotNull(serv); 
         getTestContext().setBaseUrl(serv.getUrlRoot());        
-        
     }
     protected ACR getACR() throws Exception{
-        return (ACR)ACRTestSetup.acrFactory.getACR();
+        return (ACR)ARTestSetup.fixture.getACR();
     }
     protected WebServer serv;
 
@@ -51,6 +50,7 @@ public class HtmlTransportIntegrationTest extends WebTestCase {
      */
     protected void tearDown() throws Exception {
         super.tearDown();
+        serv = null;
     }
 
     public void testRoot() {
@@ -181,7 +181,7 @@ public class HtmlTransportIntegrationTest extends WebTestCase {
         
     }
     
-    public void testByteArrayTransport() {
+    public void testByteArrayTransport() { 
     	beginAt("/");
     	assertLinkPresentWithText("test");
     	clickLinkWithText("test");
@@ -192,18 +192,23 @@ public class HtmlTransportIntegrationTest extends WebTestCase {
         assertFormPresent("call");
         setFormElement("arr","fred"); //can't pass in a byte array - has to be as string.
         submit();
-        assertTextPresent("fred");  
+        // lets me peek at the text.
+        //        this.tester.dumpResponse();
+        assertTextPresent("fred");  //@todo at moment, we're seing [B@ - need to work out where and how to fix this.
     }
     
     
     public static Test suite() {
-        return new ACRTestSetup(new TestSuite(HtmlTransportIntegrationTest.class));
+        return new ARTestSetup(new TestSuite(HtmlTransportIntegrationTest.class));
     }
 }
 
 
 /* 
 $Log: HtmlTransportIntegrationTest.java,v $
+Revision 1.2  2007/01/09 16:12:20  nw
+improved tests - still need extending though.
+
 Revision 1.1  2006/06/15 09:18:24  nw
 improved junit tests
 

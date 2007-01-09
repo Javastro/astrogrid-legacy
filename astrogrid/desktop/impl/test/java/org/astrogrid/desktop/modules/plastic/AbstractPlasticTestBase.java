@@ -18,6 +18,8 @@ import org.astrogrid.acr.system.RmiServer;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.common.namegen.InMemoryNameGen;
 import org.astrogrid.common.namegen.NameGen;
+import org.astrogrid.desktop.alternatives.HeadlessUIFactory;
+import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.system.UIInternal;
 
 import EDU.oswego.cs.dl.util.concurrent.DirectExecutor;
@@ -31,7 +33,7 @@ public class AbstractPlasticTestBase extends TestCase {
 	protected static final URI SENDER_ID = URI.create("ivo://junit");
 
 
-    protected UIInternal ui; //TODO fill in with something
+    protected UIInternal ui; //NWW- filled in. fill in with something
     
     protected String version = "test";
     
@@ -45,11 +47,32 @@ public class AbstractPlasticTestBase extends TestCase {
 	
 	protected BrowserControl browser;
 	
-	protected Configuration config;
+	// NWW - replaced by a preference.
+	//protected Configuration config;
+	
+	protected Preference notifyEvents;
 	
 	protected Shutdown shutdown;
 
-	public void setUp() {
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		executor = null;
+		idGenerator = null;
+		web = null;
+		rmi = null;
+		browser = null;
+		notifyEvents = null;
+		shutdown = null;
+		ui = null;
+	}
+	
+	protected void setUp() {
+		// NWW
+		notifyEvents = new Preference();
+		notifyEvents.setDefaultValue("true");
+		notifyEvents.setName("notifyEvents");
+		HeadlessUIFactory fac = new HeadlessUIFactory();
+		ui = fac.getUI();
 		executor = new DirectExecutor();
 		idGenerator = new InMemoryNameGen();
 		web = new WebServer() {
@@ -74,7 +97,7 @@ public class AbstractPlasticTestBase extends TestCase {
 			}
 
 		};
-
+/* NW - unneeded?
 		config = new Configuration() {
 			Map store = new HashMap();
 			public boolean setKey(String arg0, String arg1) {
@@ -99,6 +122,7 @@ public class AbstractPlasticTestBase extends TestCase {
 			}
 			
 		};
+		*/
 		
 		shutdown = new Shutdown() {
 

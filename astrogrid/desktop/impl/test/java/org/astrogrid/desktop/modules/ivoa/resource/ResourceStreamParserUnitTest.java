@@ -308,6 +308,7 @@ public class ResourceStreamParserUnitTest extends TestCase {
 	
 	protected void tearDown() throws Exception {
 		super.tearDown();
+		fac = null;
 	}
 	
 	// @todo add tests for malformed docs, and docs that express difference between v1.0 and v0.10

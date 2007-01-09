@@ -12,7 +12,8 @@ import junit.framework.TestSuite;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.cds.VizieR;
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
 import org.astrogrid.test.AstrogridAssert;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.w3c.dom.Document;
@@ -21,7 +22,7 @@ import org.w3c.dom.Document;
  * @author Noel Winstanley
  * @since Jun 9, 20067:13:58 PM
  */
-public class VizierSystemTest extends TestCase {
+public class VizierSystemTest extends InARTestCase{
 
 	/*
 	 * @see TestCase#setUp()
@@ -34,9 +35,9 @@ public class VizierSystemTest extends TestCase {
 	}
 	
 	protected VizieR viz;
-
-	protected ACR getACR() throws Exception{
-        return (ACR)ACRTestSetup.acrFactory.getACR();		
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		viz = null;
 	}
 
 	/*
@@ -92,7 +93,7 @@ public class VizierSystemTest extends TestCase {
 	}
 	
     public static Test suite() {
-        return new ACRTestSetup(new TestSuite(VizierSystemTest.class));
+        return new ARTestSetup(new TestSuite(VizierSystemTest.class));
     }
 
 

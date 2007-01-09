@@ -14,6 +14,8 @@ import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.RmiServer;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.common.namegen.InMemoryNameGen;
+import org.astrogrid.desktop.alternatives.HeadlessUIFactory;
+import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.votech.plastic.CommonMessageConstants;
 import org.votech.plastic.HubMessageConstants;
@@ -23,6 +25,7 @@ import org.votech.plastic.incoming.handlers.MessageHandler;
 import org.votech.plastic.incoming.handlers.StandardHandler;
 
 import EDU.oswego.cs.dl.util.concurrent.DirectExecutor;
+import EDU.oswego.cs.dl.util.concurrent.Executor;
 // TODO refactor this
 public class RMIListenerUnitTest extends AbstractPlasticBaseNotDeaf {
 
@@ -51,6 +54,9 @@ public class RMIListenerUnitTest extends AbstractPlasticBaseNotDeaf {
     
     // TODO stick this somewhere else
     private PlasticHubListener createHubWithMocks() {
+    	//NWW 
+    	HeadlessUIFactory fac = new HeadlessUIFactory();
+    	
         DirectExecutor executor = new DirectExecutor();
         InMemoryNameGen idGenerator = new InMemoryNameGen();
         WebServer web = new WebServer() {
@@ -75,7 +81,7 @@ public class RMIListenerUnitTest extends AbstractPlasticBaseNotDeaf {
             }
 
         };
-
+/* NWW - not needed
         Configuration config = new Configuration() {
             Map store = new HashMap();
             public boolean setKey(String arg0, String arg1) {
@@ -100,7 +106,7 @@ public class RMIListenerUnitTest extends AbstractPlasticBaseNotDeaf {
             }
             
         };
-        
+*/        
         Shutdown shutdown = new Shutdown() {
 
             public void halt() {
@@ -125,10 +131,11 @@ public class RMIListenerUnitTest extends AbstractPlasticBaseNotDeaf {
             
         };
         
-        UIInternal ui = null; //TODO something sensible?
+        UIInternal ui = fac.getUI(); //NWW - fixed: TODO something sensible?
         String version = "test";
         
-        PlasticHubImpl impl = new PlasticHubImpl(version, ui, executor , idGenerator,   rmi, web, new PrettyPrinterImpl(null), config);
+        Preference notifyPreference = new Preference();
+        PlasticHubImpl impl = new PlasticHubImpl(version, ui, executor , idGenerator,   rmi, web, new PrettyPrinterImpl(null), notifyPreference);
         final MessageHandler internalhandler = new StandardHandler("Astro Runtime","description","ivo://foo","http://news.bbc.co.uk",PlasticListener.CURRENT_VERSION);
         impl.registerSelf("Astro Runtime", internalhandler.getHandledMessages(), new PlasticListener() {
            public Object perform(URI arg0, URI arg1, List arg2) {

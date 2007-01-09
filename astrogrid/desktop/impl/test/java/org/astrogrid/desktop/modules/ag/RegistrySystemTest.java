@@ -1,4 +1,4 @@
-/*$Id: RegistrySystemTest.java,v 1.5 2006/08/31 21:06:36 nw Exp $
+/*$Id: RegistrySystemTest.java,v 1.6 2007/01/09 16:12:18 nw Exp $
  * Created on 01-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,8 @@ package org.astrogrid.desktop.modules.ag;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
 import org.astrogrid.desktop.modules.system.ApiHelpIntegrationTest;
 import org.astrogrid.registry.client.query.ResourceData;
 
@@ -34,7 +35,7 @@ import junit.framework.TestSuite;
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Aug-2005
  *
  */
-public class RegistrySystemTest extends TestCase {
+public class RegistrySystemTest extends InARTestCase {
 
     /*
      * @see TestCase#setUp()
@@ -46,15 +47,17 @@ public class RegistrySystemTest extends TestCase {
         assertNotNull(registry);
         testURI = new URI("ivo://uk.ac.le.star/filemanager");
     }
+    
+    protected void tearDown() throws Exception {
+    	super.tearDown();
+    	testURI = null;
+    	registry = null;
+    }
     protected URI testURI;
     protected Registry registry;
-    
-    protected ACR getACR() throws Exception {
-        return ACRTestSetup.acrFactory.getACR();
-    }
-    
+
     public static Test suite() {
-        return new ACRTestSetup(new TestSuite(RegistrySystemTest.class),true); // login.
+        return new ARTestSetup(new TestSuite(RegistrySystemTest.class),true); // login.
     }    
     
     public void testResolveIdentifier()  throws Exception{
@@ -163,6 +166,9 @@ public class RegistrySystemTest extends TestCase {
 
 /* 
 $Log: RegistrySystemTest.java,v $
+Revision 1.6  2007/01/09 16:12:18  nw
+improved tests - still need extending though.
+
 Revision 1.5  2006/08/31 21:06:36  nw
 doc fixes
 

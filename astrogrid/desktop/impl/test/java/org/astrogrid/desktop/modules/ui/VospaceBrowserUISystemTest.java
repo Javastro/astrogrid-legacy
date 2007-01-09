@@ -8,7 +8,8 @@ import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.acr.ui.AstroScope;
 import org.astrogrid.acr.ui.Lookout;
 import org.astrogrid.acr.ui.MyspaceBrowser;
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -18,7 +19,7 @@ import junit.framework.TestSuite;
  * @author Noel Winstanley
  * @since Jun 6, 20062:30:04 AM
  */
-public class VospaceBrowserUISystemTest extends TestCase {
+public class VospaceBrowserUISystemTest extends InARTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -26,8 +27,10 @@ public class VospaceBrowserUISystemTest extends TestCase {
         browser = (MyspaceBrowser)reg.getService(MyspaceBrowser.class);
         assertNotNull(browser);
     } 
-    protected ACR getACR() throws Exception{
-        return ACRTestSetup.acrFactory.getACR();
+
+    protected void tearDown() throws Exception {
+    	super.tearDown();
+    	browser = null;
     }
     protected MyspaceBrowser browser;
 	public void testShow() {
@@ -38,7 +41,7 @@ public class VospaceBrowserUISystemTest extends TestCase {
 		browser.hide();
 	}
     public static Test suite() {
-        return new ACRTestSetup(new TestSuite(VospaceBrowserUISystemTest.class),true);
+        return new ARTestSetup(new TestSuite(VospaceBrowserUISystemTest.class),true);
     }
 
 }

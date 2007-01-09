@@ -23,7 +23,10 @@ public class ConverterContributionUnitTest extends TestCase {
 	}
 	
 	protected ConverterContribution c;
-
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		c = null;
+	}
 	/*
 	 * Test method for 'org.astrogrid.desktop.modules.system.contributions.ConverterContribution.setConverter(Converter)'
 	 */

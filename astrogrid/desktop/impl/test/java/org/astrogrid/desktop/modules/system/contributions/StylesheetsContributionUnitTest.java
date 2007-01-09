@@ -27,7 +27,10 @@ public class StylesheetsContributionUnitTest extends TestCase {
 		super.setUp();
 		sc = new StylesheetsContribution();
 	}
-	
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		sc = null;
+	}
 	protected StylesheetsContribution sc;
 
 

@@ -62,9 +62,10 @@ public class SysTrayUnitTest extends AbstractPlasticTestBase {
 	}
 
 	private PlasticHubListener getNewHub() {
-		return new PlasticHubImpl(version, ui, executor, idGenerator,  rmi, web, tray, new PrettyPrinterImpl(browser),config);
+		return new PlasticHubImpl(version, ui, executor, idGenerator,  rmi, web, tray, new PrettyPrinterImpl(browser),notifyEvents);
 	}
 	
+	/* NWW - Never applies - preference is always "true" or "false"
 	public void testPreferenceNotSet() {
 		// just to make sure
 		config.removeKey(PlasticHubImpl.PLASTIC_NOTIFICATIONS_ENABLED);
@@ -72,7 +73,7 @@ public class SysTrayUnitTest extends AbstractPlasticTestBase {
 		assertEquals("Plastic", tray.getCaption());
 		assertNotNull(tray.getMessage());
 	}
-	
+	*/
 	public void testNotificationsDisabled() {
 		((PlasticHubListenerInternal) hub).setNotificationsEnabled(false);
 		//check it persists

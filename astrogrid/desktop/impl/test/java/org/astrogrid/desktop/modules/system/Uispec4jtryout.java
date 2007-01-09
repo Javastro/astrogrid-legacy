@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.BuildInprocessWorkbench;
 import org.uispec4j.TabGroup;
 import org.uispec4j.UISpec4J;

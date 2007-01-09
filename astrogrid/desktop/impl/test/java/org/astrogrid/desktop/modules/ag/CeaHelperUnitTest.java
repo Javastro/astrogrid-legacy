@@ -14,6 +14,7 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.CeaService;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
+import org.astrogrid.desktop.InARTestCase;
 import org.easymock.MockControl;
 
 import junit.framework.TestCase;
@@ -37,6 +38,16 @@ public class CeaHelperUnitTest extends TestCase {
 	protected CeaHelper cea;
 	protected URI serverId;
 	protected URL endpoint;
+	
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		regControl = null;
+		reg = null;
+		cea = null;
+		serverId = null;
+		endpoint = null;
+	}
+	
 	/* @todo 
 	
 	public void testCreateDelegate() throws MalformedURLException {

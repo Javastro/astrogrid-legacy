@@ -6,7 +6,8 @@ package org.astrogrid.desktop.modules.cds;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.cds.Coordinate;
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
 import org.astrogrid.desktop.modules.system.ApiHelpIntegrationTest;
 
 import junit.framework.Test;
@@ -20,7 +21,7 @@ import junit.framework.TestSuite;
  * @author Noel Winstanley
  * @since Jun 9, 20065:37:47 PM
  */
-public class CoordinateSystemTest extends TestCase {
+public class CoordinateSystemTest extends InARTestCase {
 
 	/*
 	 * @see TestCase#setUp()
@@ -33,11 +34,12 @@ public class CoordinateSystemTest extends TestCase {
 		assertNotNull(coord);
 	}
 	
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		coord = null;
+	}
 	protected Coordinate coord;
-	
-	protected ACR getACR() throws Exception{
-        return (ACR)ACRTestSetup.acrFactory.getACR();
-    }  
+
 	/*
 	 * Test method for 'org.astrogrid.desktop.modules.cds.CoordinateImpl.convert(double, double, double, int)'
 	 */
@@ -75,7 +77,7 @@ public class CoordinateSystemTest extends TestCase {
 
 	}
     public static Test suite() {
-        return new ACRTestSetup(new TestSuite(CoordinateSystemTest.class));
+        return new ARTestSetup(new TestSuite(CoordinateSystemTest.class));
     }
 
 }

@@ -1,4 +1,4 @@
-/*$Id: MyspaceSystemTest.java,v 1.6 2006/08/31 21:06:36 nw Exp $
+/*$Id: MyspaceSystemTest.java,v 1.7 2007/01/09 16:12:19 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import org.astrogrid.acr.astrogrid.NodeInformation;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.filestore.common.FileStoreInputStream;
 import org.astrogrid.filestore.common.FileStoreOutputStream;
 import org.astrogrid.io.Piper;
@@ -58,8 +58,13 @@ public class MyspaceSystemTest extends TestCase {
         super.setUp();
         ACR reg = getACR();
         myspace = (Myspace)reg.getService(Myspace.class);
-        assertNotNull(reg);
+        assertNotNull(myspace);
 
+    }
+    protected void tearDown() throws Exception {
+    	super.tearDown();
+    	myspace = null;
+    	
     }
     protected static URI testDir;
     protected static URI testFile;
@@ -69,11 +74,11 @@ public class MyspaceSystemTest extends TestCase {
    
     
     protected ACR getACR() throws Exception {
-        return ACRTestSetup.acrFactory.getACR();
+        return ARTestSetup.fixture.getACR();
     }
     
     public static Test suite() {
-        return new ACRTestSetup(new TestSuite(MyspaceSystemTest.class),true); // login.
+        return new ARTestSetup(new TestSuite(MyspaceSystemTest.class),true); // login.
     }    
 
     public void testGetHome() throws Exception{
@@ -348,6 +353,9 @@ public class MyspaceSystemTest extends TestCase {
 
 /* 
 $Log: MyspaceSystemTest.java,v $
+Revision 1.7  2007/01/09 16:12:19  nw
+improved tests - still need extending though.
+
 Revision 1.6  2006/08/31 21:06:36  nw
 doc fixes
 

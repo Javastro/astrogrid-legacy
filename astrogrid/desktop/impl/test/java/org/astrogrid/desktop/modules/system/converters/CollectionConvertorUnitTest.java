@@ -26,8 +26,12 @@ public class CollectionConvertorUnitTest extends TestCase {
 		this.conv  = new CollectionConvertor();
 	}
 	protected Converter conv;
-	protected final String sequence = "1,2,3,4";
-
+	protected final static String sequence = "1,2,3,4";
+protected void tearDown() throws Exception {
+	super.tearDown();
+	conv = null;
+}
+	
 	/*
 	 * Test method for 'org.astrogrid.desktop.modules.system.converters.CollectionConvertor.convert(Class, Object)'
 	 */

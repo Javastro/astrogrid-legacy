@@ -3,7 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ui;
 
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -20,7 +20,6 @@ public class AllUISystemTests {
 	public static Test suite() {
 		TestSuite suite = new TestSuite("UI Module Tests");
 		//$JUnit-BEGIN$
-		suite.addTestSuite(ScopeUnitTest.class);
 		suite.addTestSuite(LookoutUISystemTest.class);
 		suite.addTestSuite(AstroscopeUISystemTest.class);
 		suite.addTestSuite(HelioscopeUISystemTest.class);
@@ -30,7 +29,7 @@ public class AllUISystemTests {
 		suite.addTestSuite(VospaceBrowserUISystemTest.class);
 		suite.addTestSuite(RegistryBrowserUISystemTest.class);
 		//$JUnit-END$
-		return new ACRTestSetup(suite, true);
+		return new ARTestSetup(suite, true);
 	}
 
 }

@@ -21,14 +21,15 @@ import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
 
 
 /**
  * @author Noel Winstanley
  * @since Jun 13, 20062:22:58 PM
  */
-public class SiapSystemTest extends TestCase {
+public class SiapSystemTest extends InARTestCase {
 
 	/*
 	 * @see TestCase#setUp()
@@ -42,14 +43,18 @@ public class SiapSystemTest extends TestCase {
 		reg = (Registry)acr.getService(Registry.class);
 		ses = (Sesame)acr.getService(Sesame.class);
 	}
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		siap = null;
+		reg = null;
+		ses = null;
+	}
 	protected Siap siap;
 	protected Registry reg;
 	protected Sesame ses;
-	   protected ACR getACR() throws Exception{
-	        return (ACR)ACRTestSetup.acrFactory.getACR();
-	    }    
+
 	    public static Test suite() {
-	        return new ACRTestSetup(new TestSuite(SiapSystemTest.class));
+	        return new ARTestSetup(new TestSuite(SiapSystemTest.class));
 	    }    
 
 	/*

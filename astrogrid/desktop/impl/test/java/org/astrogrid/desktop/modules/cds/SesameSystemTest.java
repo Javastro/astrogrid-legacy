@@ -18,7 +18,8 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.cds.Sesame;
 import org.astrogrid.acr.cds.SesamePositionBean;
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
 import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.util.DomHelper;
 import org.custommonkey.xmlunit.XMLAssert;
@@ -32,7 +33,7 @@ import org.xml.sax.SAXParseException;
  * @author Noel Winstanley
  * @since Jun 9, 20066:01:46 PM
  */
-public class SesameSystemTest extends TestCase {
+public class SesameSystemTest extends InARTestCase {
 
 	/*
 	 * @see TestCase#setUp()
@@ -44,12 +45,12 @@ public class SesameSystemTest extends TestCase {
 		sesame = (Sesame)reg.getService(Sesame.class);
 	
 	}
-	
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		sesame = null;
+	}
 	protected Sesame sesame;
 
-	protected ACR getACR() throws Exception{
-        return (ACR)ACRTestSetup.acrFactory.getACR();		
-	}
 
 	public void testResolve() throws Exception {
 		SesamePositionBean pos = sesame.resolve("crab");
@@ -161,7 +162,7 @@ public class SesameSystemTest extends TestCase {
 	
 	
     public static Test suite() {
-        return new ACRTestSetup(new TestSuite(SesameSystemTest.class));
+        return new ARTestSetup(new TestSuite(SesameSystemTest.class));
     }
 
 }

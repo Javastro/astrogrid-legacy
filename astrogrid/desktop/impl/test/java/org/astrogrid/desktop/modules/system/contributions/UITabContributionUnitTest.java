@@ -21,6 +21,10 @@ public class UITabContributionUnitTest extends TestCase {
 		super.setUp();
 		t = new UITabContribution();
 	}
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		t = null;
+	}
 	protected UITabContribution t;
 	
 	/*

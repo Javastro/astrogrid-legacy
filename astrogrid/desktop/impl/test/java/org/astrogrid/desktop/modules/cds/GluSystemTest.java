@@ -9,7 +9,8 @@ import java.net.URL;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.cds.Glu;
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
 import org.astrogrid.desktop.modules.system.ApiHelpIntegrationTest;
 
 import junit.framework.Test;
@@ -20,7 +21,7 @@ import junit.framework.TestSuite;
  * @author Noel Winstanley
  * @since Jun 9, 20065:49:58 PM
  */
-public class GluSystemTest extends TestCase {
+public class GluSystemTest extends InARTestCase {
 
 	/*
 	 * @see TestCase#setUp()
@@ -33,10 +34,10 @@ public class GluSystemTest extends TestCase {
 	}
 	
 	protected Glu glu;
-
-	protected ACR getACR() throws Exception{
-        return (ACR)ACRTestSetup.acrFactory.getACR();
-    }  
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		glu = null;
+	}
 	
 	/** @todo fails at the moment.
 	 * Test method for 'org.astrogrid.desktop.modules.cds.GluImpl.getURLfromTag(String)'
@@ -69,7 +70,7 @@ public class GluSystemTest extends TestCase {
 	
 	
     public static Test suite() {
-        return new ACRTestSetup(new TestSuite(GluSystemTest.class));
+        return new ARTestSetup(new TestSuite(GluSystemTest.class));
     }
 
 }

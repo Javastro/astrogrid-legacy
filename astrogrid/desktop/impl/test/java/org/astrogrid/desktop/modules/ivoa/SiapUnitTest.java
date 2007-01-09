@@ -39,6 +39,15 @@ public class SiapUnitTest extends TestCase {
 		siap = new SiapImpl(mockReg,mockMs);
 		url = new URL("http://www.astrogrid.org/cone");		
 	}
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		mockReg = null;
+		regControl = null;
+		mockMs = null;
+		msControl = null;
+		siap = null;
+		url = null;
+	}
 	protected Registry mockReg;
 	protected MockControl regControl;
 	protected MyspaceInternal mockMs;

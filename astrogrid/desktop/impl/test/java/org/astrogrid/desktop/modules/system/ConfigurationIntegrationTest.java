@@ -1,4 +1,4 @@
-/*$Id: ConfigurationIntegrationTest.java,v 1.1 2006/06/15 09:18:24 nw Exp $
+/*$Id: ConfigurationIntegrationTest.java,v 1.2 2007/01/09 16:12:20 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,8 @@ package org.astrogrid.desktop.modules.system;
 
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
 import org.astrogrid.desktop.framework.ACRInternal;
 
 import java.util.Map;
@@ -26,7 +27,7 @@ import junit.framework.TestSuite;
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Mar-2005
  *
  */
-public class ConfigurationIntegrationTest extends TestCase {
+public class ConfigurationIntegrationTest extends InARTestCase {
 
     /*
      * @see TestCase#setUp()
@@ -38,13 +39,11 @@ public class ConfigurationIntegrationTest extends TestCase {
         conf = (Configuration)reg.getService(Configuration.class);
         assertNotNull(conf);
     }
-    
-    /**
-     * @return
-     */
-    protected ACR getACR() throws Exception{
-        return (ACR)ACRTestSetup.acrFactory.getACR();
+    protected void tearDown() throws Exception {
+    	super.tearDown();
+    	conf = null;
     }
+
 
     protected Configuration conf;
     
@@ -69,7 +68,7 @@ public class ConfigurationIntegrationTest extends TestCase {
     
     
     public static Test suite() {
-        return new ACRTestSetup(new TestSuite(ConfigurationIntegrationTest.class));
+        return new ARTestSetup(new TestSuite(ConfigurationIntegrationTest.class));
     }
 
 }
@@ -77,6 +76,9 @@ public class ConfigurationIntegrationTest extends TestCase {
 
 /* 
 $Log: ConfigurationIntegrationTest.java,v $
+Revision 1.2  2007/01/09 16:12:20  nw
+improved tests - still need extending though.
+
 Revision 1.1  2006/06/15 09:18:24  nw
 improved junit tests
 

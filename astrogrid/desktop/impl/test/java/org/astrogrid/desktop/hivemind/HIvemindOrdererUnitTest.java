@@ -1,4 +1,4 @@
-/*$Id: HIvemindOrdererUnitTest.java,v 1.1 2006/06/15 09:18:24 nw Exp $
+/*$Id: HIvemindOrdererUnitTest.java,v 1.2 2007/01/09 16:12:21 nw Exp $
  * Created on 29-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,9 +35,21 @@ public class HIvemindOrdererUnitTest extends TestCase {
        orderer = new Orderer(err,"Test Orderer");
        expected = new ArrayList();
     }
+    
+    /*
+     * @see junit.framework.TestCase#tearDown()
+     */
+    
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        orderer = null;
+        err = null;
+        expected = null;
+        
+    }
     private Orderer orderer;
     private ErrorHandler err;
-    private String[] values = new String[]{"A","B","C","D","E"};
+    private static String[] values = new String[]{"A","B","C","D","E"};
     private List expected;
 
     /** '*' means before or after all */
@@ -201,19 +213,16 @@ public class HIvemindOrdererUnitTest extends TestCase {
         orderer.add(values[3],values[3],"C",null);
         assertEquals(expected,orderer.getOrderedObjects());        
     }
-    /*
-     * @see junit.framework.TestCase#tearDown()
-     */
-    
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
+
 
 }
 
 
 /* 
 $Log: HIvemindOrdererUnitTest.java,v $
+Revision 1.2  2007/01/09 16:12:21  nw
+improved tests - still need extending though.
+
 Revision 1.1  2006/06/15 09:18:24  nw
 improved junit tests
 

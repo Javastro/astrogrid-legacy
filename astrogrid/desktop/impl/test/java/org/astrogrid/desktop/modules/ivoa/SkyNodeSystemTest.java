@@ -26,7 +26,8 @@ import org.astrogrid.adql.v1_0.beans.SelectDocument;
 import org.astrogrid.adql.v1_0.beans.SelectType;
 import org.astrogrid.adql.v1_0.beans.SelectionItemType;
 import org.astrogrid.adql.v1_0.beans.TableType;
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
 import org.w3c.dom.Document;
 
@@ -38,7 +39,7 @@ import junit.framework.TestSuite;
  * @author Noel Winstanley
  * @since Jun 13, 20062:25:04 PM
  */
-public class SkyNodeSystemTest extends TestCase {
+public class SkyNodeSystemTest extends InARTestCase {
 
 	/*
 	 * @see TestCase#setUp()
@@ -50,13 +51,15 @@ public class SkyNodeSystemTest extends TestCase {
 		skynode = (SkyNode)reg.getService(SkyNode.class);
 		assertNotNull(skynode);
 	}
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		skynode  = null;
+	}
 	
 	protected SkyNode skynode;
-	   protected ACR getACR() throws Exception{
-	        return (ACR)ACRTestSetup.acrFactory.getACR();
-	    }    
+  
 	    public static Test suite() {
-	        return new ACRTestSetup(new TestSuite(SkyNodeSystemTest.class));
+	        return new ARTestSetup(new TestSuite(SkyNodeSystemTest.class));
 	    }    
 
 
@@ -126,84 +129,7 @@ public class SkyNodeSystemTest extends TestCase {
 	        }
 	    }
 
-	/*
-	 * Test method for 'org.astrogrid.desktop.modules.ivoa.SkyNodeImpl.SkyNodeImpl()'
-	 */
-	public void testSkyNodeImpl() {
-		fail("implement me");
-	}
-
-	/*
-	 * Test method for 'org.astrogrid.desktop.modules.ivoa.SkyNodeImpl.getAvailability(URI)'
-	 */
-	public void testGetAvailability() {
-		fail("implement me");
-	}
-
-	/*
-	 * Test method for 'org.astrogrid.desktop.modules.ivoa.SkyNodeImpl.getFootprint(URI, Document)'
-	 */
-	public void testGetFootprint() {
-		fail("implement me");
-	}
-
-	/*
-	 * Test method for 'org.astrogrid.desktop.modules.ivoa.SkyNodeImpl.getFormats(URI)'
-	 */
-	public void testGetFormats() {
-		fail("implement me");
-	}
-
-	/*
-	 * Test method for 'org.astrogrid.desktop.modules.ivoa.SkyNodeImpl.getFunctions(URI)'
-	 */
-	public void testGetFunctions() {
-		fail("implement me");
-	}
-
-	/*
-	 * Test method for 'org.astrogrid.desktop.modules.ivoa.SkyNodeImpl.getMetadata(URI)'
-	 */
-	public void testGetMetadata() {
-		fail("implement me");
-	}
-
-
-
-	/*
-	 * Test method for 'org.astrogrid.desktop.modules.ivoa.SkyNodeImpl.getResults(URI, Document)'
-	 */
-	public void testGetResults() {
-		fail("implement me");
-	}
-
-	/*
-	 * Test method for 'org.astrogrid.desktop.modules.ivoa.SkyNodeImpl.getResultsF(URI, Document, String)'
-	 */
-	public void testGetResultsF() {
-		fail("implement me");
-	}
-
-	/*
-	 * Test method for 'org.astrogrid.desktop.modules.ivoa.SkyNodeImpl.saveResults(URI, Document, URI)'
-	 */
-	public void testSaveResults() {
-		fail("implement me");
-	}
-
-	/*
-	 * Test method for 'org.astrogrid.desktop.modules.ivoa.SkyNodeImpl.saveResultsF(URI, Document, URI, String)'
-	 */
-	public void testSaveResultsF() {
-		fail("implement me");
-	}
-
-	/*
-	 * Test method for 'org.astrogrid.desktop.modules.ivoa.SkyNodeImpl.estimateQueryCost(long, Document)'
-	 */
-	public void testEstimateQueryCost() {
-		fail("implement me");
-	}
+	
 
 	public void testGetAdqlRegistryQueryNewReg() throws InvalidArgumentException, NotFoundException, ACRException, Exception {
 		String q = skynode.getRegistryAdqlQuery();

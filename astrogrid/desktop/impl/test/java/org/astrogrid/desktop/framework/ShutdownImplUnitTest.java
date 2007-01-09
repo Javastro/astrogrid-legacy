@@ -3,6 +3,9 @@
  */
 package org.astrogrid.desktop.framework;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.hivemind.ShutdownCoordinator;
 import org.astrogrid.acr.builtin.ShutdownListener;
 import org.easymock.MockControl;
@@ -29,6 +32,15 @@ public class ShutdownImplUnitTest extends TestCase {
 		listener = (ShutdownListener)listenerControl.getMock();
 	}
 
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		coordControl = null;
+		coord = null;
+		listenerControl = null;
+		listener = null;
+		shutdown = null;
+	}
+	
 	protected MockControl coordControl;
 	protected ShutdownCoordinator coord;
 	protected MockControl listenerControl;
@@ -127,5 +139,22 @@ public class ShutdownImplUnitTest extends TestCase {
 		listenerControl.verify();
 		coordControl.verify();
 	}
+	
+	public void testFmtEmpty() throws Exception {
+		List l = new ArrayList();
+		String s= shutdown.fmt(l);
+		assertNotNull(s);
+		assertTrue(s.trim().length() > 0);
+	}
+	
+	public void testFmt() throws Exception {
+		List l = new ArrayList();
+		l.add(new Object());
+		String s= shutdown.fmt(l);
+		assertNotNull(s);
+		assertTrue(s.trim().length() > 0);		
+	}
+	
+	
 
 }

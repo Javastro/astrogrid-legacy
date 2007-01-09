@@ -23,7 +23,8 @@ import org.astrogrid.adql.v1_0.beans.SelectDocument;
 import org.astrogrid.adql.v1_0.beans.SelectType;
 import org.astrogrid.adql.v1_0.beans.impl.SelectDocumentImpl;
 import org.astrogrid.adql.v1_0.beans.impl.TableTypeImpl;
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal.StreamProcessor;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParserUnitTest;
 import org.astrogrid.util.DomHelper;
@@ -40,7 +41,7 @@ import junit.framework.TestSuite;
  * @author Noel Winstanley
  * @since Aug 3, 20062:20:00 AM
  */
-public class ExternalRegistryBasicsSystemTest extends TestCase {
+public class ExternalRegistryBasicsSystemTest extends InARTestCase {
 
 	
 
@@ -54,15 +55,15 @@ public class ExternalRegistryBasicsSystemTest extends TestCase {
 		assertNotNull(endpoint);
 	}
 	
-    protected ACR getACR() throws Exception{
-        return (ACR)ACRTestSetup.acrFactory.getACR();
-    }   
+
 	protected ExternalRegistry ex;
 	protected URI endpoint;
 	
 
 	protected void tearDown() throws Exception {
 		super.tearDown();
+		ex = null;
+		endpoint = null;
 	}
 
 	/**
@@ -188,6 +189,6 @@ public class ExternalRegistryBasicsSystemTest extends TestCase {
 
 
     public static Test suite() {
-        return new ACRTestSetup(new TestSuite(ExternalRegistryBasicsSystemTest.class));
+        return new ARTestSetup(new TestSuite(ExternalRegistryBasicsSystemTest.class));
     }
 }

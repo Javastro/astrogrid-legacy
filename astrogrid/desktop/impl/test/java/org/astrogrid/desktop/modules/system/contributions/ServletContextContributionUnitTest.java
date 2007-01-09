@@ -19,6 +19,10 @@ public class ServletContextContributionUnitTest extends TestCase {
 		c = new ServletContextContribution();
 	}
 	protected ServletContextContribution c;
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		c = null;
+	}
 	/*
 	 * Test method for 'org.astrogrid.desktop.modules.system.contributions.ServletContextContribution.setName(String)'
 	 */

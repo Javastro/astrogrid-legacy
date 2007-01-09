@@ -31,6 +31,15 @@ public class FolderImplUnitTest extends TestCase {
 		parent = new URI("id:parent");
 		f = new FolderImpl(info,parent);
 	}
+	
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		info = null;
+		f = null;
+		id = null;
+		parent = null;
+	}
+	
 	protected ExecutionInformation info;
 	protected FolderImpl f;
 	protected URI id;

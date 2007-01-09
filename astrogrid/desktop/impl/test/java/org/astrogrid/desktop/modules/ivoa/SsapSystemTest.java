@@ -14,13 +14,14 @@ import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.ivoa.Ssap;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
 
 /** @implement some test queries.
  * @author Noel Winstanley
  * @since Jun 13, 20062:24:01 PM
  */
-public class SsapSystemTest extends TestCase {
+public class SsapSystemTest extends InARTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		ACR reg = getACR();
@@ -28,12 +29,14 @@ public class SsapSystemTest extends TestCase {
 		ssap = (Ssap)reg.getService(Ssap.class);
 		assertNotNull(ssap);		
 	}
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		ssap = null;
+	}
 	protected Ssap ssap;
-	   protected ACR getACR() throws Exception{
-	        return (ACR)ACRTestSetup.acrFactory.getACR();
-	    }    
+
 	    public static Test suite() {
-	        return new ACRTestSetup(new TestSuite(SsapSystemTest.class));
+	        return new ARTestSetup(new TestSuite(SsapSystemTest.class));
 	    }    
 
 

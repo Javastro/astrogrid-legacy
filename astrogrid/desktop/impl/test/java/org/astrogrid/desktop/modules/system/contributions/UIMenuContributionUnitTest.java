@@ -12,8 +12,13 @@ import junit.framework.TestCase;
  */
 public class UIMenuContributionUnitTest extends TestCase {
 
-	protected void setUp() {
+	protected void setUp() throws Exception {
+		super.setUp();
 		t = new UIMenuContribution();
+	}
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		t = null;
 	}
 	protected UIMenuContribution t;
 	

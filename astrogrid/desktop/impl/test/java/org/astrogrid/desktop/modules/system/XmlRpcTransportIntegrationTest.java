@@ -1,4 +1,4 @@
-/*$Id: XmlRpcTransportIntegrationTest.java,v 1.3 2006/08/31 21:07:58 nw Exp $
+/*$Id: XmlRpcTransportIntegrationTest.java,v 1.4 2007/01/09 16:12:20 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,8 @@ import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.system.WebServer;
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParserUnitTest;
 import org.astrogrid.io.Piper;
 
@@ -36,14 +37,14 @@ import org.astrogrid.io.Piper;
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
  *
  */
-public class XmlRpcTransportIntegrationTest extends TestCase {
+public class XmlRpcTransportIntegrationTest extends InARTestCase {
 
     /*
      * @see TestCase#setUp()
      */
     protected void setUp() throws Exception {
             super.setUp();
-            reg = ACRTestSetup.acrFactory.getACR();
+            reg = getACR();
             WebServer serv = (WebServer)reg.getService(WebServer.class);
             assertNotNull(serv);
             client = new XmlRpcClient(serv.getUrlRoot() + "xmlrpc");
@@ -52,7 +53,12 @@ public class XmlRpcTransportIntegrationTest extends TestCase {
         protected ACR reg;
         protected XmlRpcClient client;
         protected Vector v ;
-
+        protected void tearDown() throws Exception {
+        	super.tearDown();
+        	reg = null;
+        	client = null;
+        	v = null;
+        }
 
     public void testInstrospection1() throws XmlRpcException, IOException {
         List results = (List)client.execute("system.listMethods",new Vector());
@@ -200,13 +206,16 @@ public class XmlRpcTransportIntegrationTest extends TestCase {
     
     
     public static Test suite() {
-        return new ACRTestSetup(new TestSuite(XmlRpcTransportIntegrationTest.class));
+        return new ARTestSetup(new TestSuite(XmlRpcTransportIntegrationTest.class));
     }
 }
 
 
 /* 
 $Log: XmlRpcTransportIntegrationTest.java,v $
+Revision 1.4  2007/01/09 16:12:20  nw
+improved tests - still need extending though.
+
 Revision 1.3  2006/08/31 21:07:58  nw
 testing of transport of rtesource beans.
 

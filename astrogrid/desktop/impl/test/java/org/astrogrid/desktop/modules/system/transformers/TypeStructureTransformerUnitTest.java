@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformerUnitTest.java,v 1.1 2006/06/15 09:18:24 nw Exp $
+/*$Id: TypeStructureTransformerUnitTest.java,v 1.2 2007/01/09 16:12:20 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -76,6 +76,14 @@ public class TypeStructureTransformerUnitTest extends TestCase {
     protected List l;
     protected Map m;
     
+    protected void tearDown() throws Exception {
+    	super.tearDown();
+    	trans = null;
+    	a = null;
+    	b = null;
+    	l = null;
+    	m = null;
+    }
     
     public void testString() {
         assertEquals("foo",trans.transform("foo"));
@@ -188,7 +196,7 @@ public class TypeStructureTransformerUnitTest extends TestCase {
     
     public void testNull() {
     	Object result = trans.transform(null);
-    	assertNull(result);
+    	assertEquals("null",result);
     }
     
     /** dunno if exceptions will ever be passed through this, but want to make sure that they don't beeak the system if this is the case */
@@ -276,6 +284,9 @@ private int i;
 
 /* 
 $Log: TypeStructureTransformerUnitTest.java,v $
+Revision 1.2  2007/01/09 16:12:20  nw
+improved tests - still need extending though.
+
 Revision 1.1  2006/06/15 09:18:24  nw
 improved junit tests
 

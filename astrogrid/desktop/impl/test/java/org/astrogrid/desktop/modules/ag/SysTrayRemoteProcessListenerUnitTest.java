@@ -37,6 +37,18 @@ public class SysTrayRemoteProcessListenerUnitTest extends TestCase {
 		information = new ExecutionInformation(uri,"name",null,null,null,null);
 	}
 	
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		listener = null;
+		recorder = null;
+		recorderControl = null;
+		tray = null;
+		trayControl = null;
+		uri = null;
+		folderControl = null;
+		folder = null;
+		information = null;
+	}
 	protected SysTrayRemoteProcessListener listener;
 	protected MessageRecorderInternal recorder;
 	protected MockControl recorderControl;

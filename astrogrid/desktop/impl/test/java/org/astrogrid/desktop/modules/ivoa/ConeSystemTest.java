@@ -3,7 +3,12 @@
  */
 package org.astrogrid.desktop.modules.ivoa;
 
+import java.net.URI;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import junit.framework.Test;
@@ -20,13 +25,16 @@ import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
+import org.votech.VoMon;
+import org.votech.VoMonBean;
 
 /** System test for the cone search interface.
  * @author Noel Winstanley
  * @since Jun 10, 200610:18:51 AM
  */
-public class ConeSystemTest extends TestCase {
+public class ConeSystemTest extends InARTestCase {
 
 	/*
 	 * @see TestCase#setUp()
@@ -38,17 +46,23 @@ public class ConeSystemTest extends TestCase {
 		cone = (Cone)acr.getService(Cone.class);
 		reg = (Registry)acr.getService(Registry.class);
 		ses = (Sesame)acr.getService(Sesame.class);		
+		vomon = (VoMon)acr.getService(VoMon.class);
 		assertNotNull(cone);
 	}
-	
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		cone =null;
+		reg = null;
+		ses = null;
+		vomon = null;
+	}
 	protected Cone cone;
 	protected Registry reg;
-	protected Sesame ses;	
-    protected ACR getACR() throws Exception{
-        return (ACR)ACRTestSetup.acrFactory.getACR();
-    }    
+	protected Sesame ses;
+	protected VoMon vomon;
+ 
     public static Test suite() {
-        return new ACRTestSetup(new TestSuite(ConeSystemTest.class));
+        return new ARTestSetup(new TestSuite(ConeSystemTest.class));
     }    
 
 	/*
@@ -59,13 +73,28 @@ public class ConeSystemTest extends TestCase {
 		Resource[] res = reg.xquerySearch(xq);
 		assertNotNull(res);
 		assertTrue(res.length > 0);
-		Resource r = res[0];
+		List l = Arrays.asList(res);
+		Collections.shuffle(l);
+		Resource r = null;
+		// find a service that is up.
+		for (Iterator i = l.iterator(); i.hasNext();) {
+			Resource x = (Resource)i.next();
+			URI id = x.getId();
+			VoMonBean bean = vomon.checkAvailability(id);
+			if (bean != null && bean.getStatus().equals("up")) {
+				r = x;
+				break;
+			}
+		}
+		assertNotNull("no available service found",r);
+		System.out.println(r.getId());
 		SesamePositionBean pos = ses.resolve("crab");
 		assertNotNull(pos);
+		System.out.println(pos);
 		URL u = cone.constructQuery(r.getId(),pos.getRa(),pos.getDec(),1.0);
 		Map[] rows = cone.execute(u);
 		assertNotNull(rows);
-		assertTrue(rows.length > 0);
+		assertTrue("no results returned",rows.length > 0);
 
 	}
 	

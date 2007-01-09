@@ -7,8 +7,9 @@ import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.acr.ui.AstroScope;
 import org.astrogrid.acr.ui.Lookout;
-import org.astrogrid.desktop.ACRTestSetup;
-import org.astrogrid.desktop.modules.system.ApiHelpRmiIntegrationTest;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
+import org.astrogrid.desktop.modules.system.ApiHelpRmiTransportTest;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -18,7 +19,7 @@ import junit.framework.TestSuite;
  * @author Noel Winstanley
  * @since Jun 6, 20062:30:04 AM
  */
-public class AstroscopeUISystemTest extends TestCase {
+public class AstroscopeUISystemTest extends InARTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -26,16 +27,18 @@ public class AstroscopeUISystemTest extends TestCase {
         scope = (AstroScope)reg.getService(AstroScope.class);
         assertNotNull(scope);
     } 
-    protected ACR getACR() throws Exception{
-        return ACRTestSetup.acrFactory.getACR();
+    protected void tearDown() throws Exception {
+    	super.tearDown();
+    	scope = null;
     }
+
     protected AstroScope scope;
 	public void testShow() {
 		scope.show();
 	}
 	
     public static Test suite() {
-        return new ACRTestSetup(new TestSuite(AstroscopeUISystemTest.class));
+        return new ARTestSetup(new TestSuite(AstroscopeUISystemTest.class));
     }
 
 }

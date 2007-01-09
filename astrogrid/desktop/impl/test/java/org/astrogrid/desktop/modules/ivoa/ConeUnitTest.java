@@ -37,7 +37,15 @@ public class ConeUnitTest extends TestCase {
 		cone = new ConeImpl(mockReg,mockMs);
 		url = new URL("http://www.astrogrid.org/cone");
 	}
-
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		mockReg = null;
+		regControl = null;
+		mockMs = null;
+		msControl = null;
+		cone = null;
+		url = null;
+	}
 	protected Registry mockReg;
 	protected MockControl regControl;
 	protected MyspaceInternal mockMs;

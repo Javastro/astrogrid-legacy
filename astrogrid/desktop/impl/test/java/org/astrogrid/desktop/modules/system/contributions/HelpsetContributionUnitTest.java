@@ -19,6 +19,10 @@ public class HelpsetContributionUnitTest extends TestCase {
 		c = new HelpsetContribution();
 	}
 	protected HelpsetContribution c;
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		c = null;
+	}
 	/*
 	 * Test method for 'org.astrogrid.desktop.modules.system.contributions.HelpsetContribution.setPath(String)'
 	 */

@@ -1,4 +1,4 @@
-/*$Id: ApiHelpIntegrationTest.java,v 1.1 2006/06/15 09:18:24 nw Exp $
+/*$Id: ApiHelpIntegrationTest.java,v 1.2 2007/01/09 16:12:20 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,8 @@ import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.system.ApiHelp;
 import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
 
 import org.apache.xmlrpc.XmlRpcException;
 
@@ -36,7 +37,7 @@ import junit.framework.TestSuite;
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
  *
  */
-public class ApiHelpIntegrationTest extends TestCase {
+public class ApiHelpIntegrationTest extends InARTestCase {
 
     /*
      * @see TestCase#setUp()
@@ -56,13 +57,10 @@ public class ApiHelpIntegrationTest extends TestCase {
      */
     protected void tearDown() throws Exception {
         super.tearDown();
+        help = null;
+        uri = null;
     }
-    /**
-     * @return
-     */
-    protected ACR getACR() throws Exception{
-        return (ACR)ACRTestSetup.acrFactory.getACR();
-    }    
+
 
     public void testListMethods() {
         List l = Arrays.asList(help.listMethods());
@@ -500,13 +498,16 @@ public class ApiHelpIntegrationTest extends TestCase {
                                             
 
     public static Test suite() {
-        return new ACRTestSetup(new TestSuite(ApiHelpIntegrationTest.class));
+        return new ARTestSetup(new TestSuite(ApiHelpIntegrationTest.class));
     }
 }
 
 
 /* 
 $Log: ApiHelpIntegrationTest.java,v $
+Revision 1.2  2007/01/09 16:12:20  nw
+improved tests - still need extending though.
+
 Revision 1.1  2006/06/15 09:18:24  nw
 improved junit tests
 

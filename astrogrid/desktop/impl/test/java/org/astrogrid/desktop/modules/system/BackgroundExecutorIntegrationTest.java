@@ -3,7 +3,8 @@
  */
 package org.astrogrid.desktop.modules.system;
 
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.easymock.MockControl;
@@ -18,7 +19,7 @@ import junit.framework.TestSuite;
  * @author Noel Winstanley
  * @since Jun 9, 20062:34:21 PM
  */
-public class BackgroundExecutorIntegrationTest extends TestCase {
+public class BackgroundExecutorIntegrationTest extends InARTestCase {
 
 	/**
 	 * @author Noel Winstanley
@@ -69,14 +70,18 @@ public class BackgroundExecutorIntegrationTest extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		exec = (BackgroundExecutor)ACRTestSetup.acrFactory.getHivemindRegistry().getService(BackgroundExecutor.class);
+		exec = (BackgroundExecutor)getHivemindRegistry().getService("system.executor",BackgroundExecutor.class);
 		assertNotNull(exec);
-		ui = (UIInternal)ACRTestSetup.acrFactory.getHivemindRegistry().getService(UIInternal.class);
+		ui = (UIInternal)getHivemindRegistry().getService(UIInternal.class);
 		assertNotNull(ui);
 	}
 	protected BackgroundExecutor exec;
 	protected UIInternal ui;
-
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		exec = null;
+		ui = null;
+	}
 	/*
 	 * Test method for 'org.astrogrid.desktop.modules.system.BackgroundExecutorImpl.executeWorker(BackgroundWorker)'
 	 */
@@ -167,7 +172,7 @@ public class BackgroundExecutorIntegrationTest extends TestCase {
 	
 	
 	public static Test suite() {
-		return new ACRTestSetup(new TestSuite(BackgroundExecutorIntegrationTest.class));
+		return new ARTestSetup(new TestSuite(BackgroundExecutorIntegrationTest.class));
 	}
 
 }

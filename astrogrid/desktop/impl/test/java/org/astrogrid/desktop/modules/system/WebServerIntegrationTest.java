@@ -1,4 +1,4 @@
-/*$Id: WebServerIntegrationTest.java,v 1.1 2006/06/15 09:18:24 nw Exp $
+/*$Id: WebServerIntegrationTest.java,v 1.2 2007/01/09 16:12:20 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,8 @@ package org.astrogrid.desktop.modules.system;
 
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.system.WebServer;
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -25,7 +26,7 @@ import junit.framework.TestSuite;
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
  *
  */
-public class WebServerIntegrationTest extends TestCase {
+public class WebServerIntegrationTest extends InARTestCase {
 
     /*
      * @see TestCase#setUp()
@@ -36,9 +37,11 @@ public class WebServerIntegrationTest extends TestCase {
         serv = (WebServer)reg.getService(WebServer.class);
         assertNotNull(serv);
     } 
-    protected ACR getACR() throws Exception{
-        return (ACR)ACRTestSetup.acrFactory.getACR();
+    protected void tearDown() throws Exception {
+    	super.tearDown();
+    	serv = null;
     }
+
     protected WebServer serv;
 
 
@@ -58,7 +61,7 @@ public class WebServerIntegrationTest extends TestCase {
     
     
     public static Test suite() {
-        return new ACRTestSetup(new TestSuite(WebServerIntegrationTest.class));
+        return new ARTestSetup(new TestSuite(WebServerIntegrationTest.class));
     }
 
 }
@@ -66,6 +69,9 @@ public class WebServerIntegrationTest extends TestCase {
 
 /* 
 $Log: WebServerIntegrationTest.java,v $
+Revision 1.2  2007/01/09 16:12:20  nw
+improved tests - still need extending though.
+
 Revision 1.1  2006/06/15 09:18:24  nw
 improved junit tests
 

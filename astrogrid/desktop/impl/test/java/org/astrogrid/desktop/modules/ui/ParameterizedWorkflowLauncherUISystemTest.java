@@ -8,7 +8,8 @@ import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.acr.ui.AstroScope;
 import org.astrogrid.acr.ui.Lookout;
 import org.astrogrid.acr.ui.ParameterizedWorkflowLauncher;
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -18,7 +19,7 @@ import junit.framework.TestSuite;
  * @author Noel Winstanley
  * @since Jun 6, 20062:30:04 AM
  */
-public class ParameterizedWorkflowLauncherUISystemTest extends TestCase {
+public class ParameterizedWorkflowLauncherUISystemTest extends InARTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -26,8 +27,10 @@ public class ParameterizedWorkflowLauncherUISystemTest extends TestCase {
         launcher = (ParameterizedWorkflowLauncher)reg.getService(ParameterizedWorkflowLauncher.class);
         assertNotNull(launcher);
     } 
-    protected ACR getACR() throws Exception{
-        return ACRTestSetup.acrFactory.getACR();
+
+    protected void tearDown() throws Exception {
+    	super.tearDown();
+    	launcher = null;
     }
     protected ParameterizedWorkflowLauncher launcher;
     /** blocks the rest of the applicaiton, and doesn't test uch */
@@ -35,6 +38,6 @@ public class ParameterizedWorkflowLauncherUISystemTest extends TestCase {
 		launcher.run();
 	}
     public static Test suite() {
-        return new ACRTestSetup(new TestSuite(ParameterizedWorkflowLauncherUISystemTest.class));
+        return new ARTestSetup(new TestSuite(ParameterizedWorkflowLauncherUISystemTest.class));
     }
 }

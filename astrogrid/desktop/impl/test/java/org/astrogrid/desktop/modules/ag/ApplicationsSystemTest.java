@@ -1,4 +1,4 @@
-/*$Id: ApplicationsSystemTest.java,v 1.4 2006/08/15 10:28:48 nw Exp $
+/*$Id: ApplicationsSystemTest.java,v 1.5 2007/01/09 16:12:18 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,8 @@ import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.ivoa.SiapInformation;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.desktop.ACRTestSetup;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
 
 import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Document;
@@ -42,27 +43,31 @@ import junit.framework.TestSuite;
  * @author Noel Winstanley nw@jb.man.ac.uk 09-Aug-2005
  *
  */
-public class ApplicationsSystemTest extends TestCase {
+public class ApplicationsSystemTest extends InARTestCase {
 
     /*
      * @see TestCase#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
-        reg = getACR();
+        ACR reg = getACR();
         apps = (Applications)reg.getService(Applications.class);
         assertNotNull(apps);
         registry = (Registry)reg.getService(Registry.class);
     }
-    protected Applications apps;
-    protected ACR reg;
-    protected Registry registry;
-    protected ACR getACR() throws Exception {
-        return ACRTestSetup.acrFactory.getACR();
+    
+    protected void tearDown() throws Exception {
+    	super.tearDown();
+    	apps = null;
+    	registry = null;
     }
     
+    protected Applications apps;
+    protected Registry registry;
+   
+    
     public static Test suite() {
-        return new ACRTestSetup(new TestSuite(ApplicationsSystemTest.class),true); // login.
+        return new ARTestSetup(new TestSuite(ApplicationsSystemTest.class),true); // login.
     }    
     public void testList() throws Exception {
         URI[] a = apps.list();
@@ -248,6 +253,9 @@ public class ApplicationsSystemTest extends TestCase {
 
 /* 
 $Log: ApplicationsSystemTest.java,v $
+Revision 1.5  2007/01/09 16:12:18  nw
+improved tests - still need extending though.
+
 Revision 1.4  2006/08/15 10:28:48  nw
 migrated from old to new registry models.
 

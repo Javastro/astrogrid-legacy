@@ -27,6 +27,14 @@ public class FoldersUnitTest extends TestCase {
 		folders = Folders.findOrCreate(rec);
 	}
 	
+protected void tearDown() throws Exception {
+	super.tearDown();
+	recControl = null;
+	btree = null;
+	rec = null;
+	folders = null;
+}	
+	
 	protected MockControl recControl;
 	protected BTree btree;
 	protected RecordManager rec;
