@@ -5,6 +5,7 @@ package org.astrogrid.desktop.modules.system;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
 
 import org.astrogrid.desktop.modules.system.Preference;
 
@@ -143,6 +144,16 @@ public class PreferenceUnitTest extends TestCase {
 		assertNull(pref.getUnits());
 		pref.setUnits("uni");
 		assertEquals("uni",pref.getUnits());
+	}
+	
+	public void testAlternatices() throws Exception {
+		String[] alts = pref.getAlternatives();
+		assertNotNull(alts);
+		assertEquals(0,alts.length);
+		pref.addAlternative("foo");
+		pref.addAlternative("bar");
+		alts = pref.getAlternatives();
+		assertTrue(Arrays.equals(new String[] {"foo","bar"}, alts));
 	}
 
 }

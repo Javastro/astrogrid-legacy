@@ -10,6 +10,7 @@ import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
 
 /** Integration test for preferences.
+ * tests parsing of preferneces from contributions
  * @author Noel Winstanley
  * @since Jan 9, 20073:16:00 PM
  */
@@ -28,7 +29,20 @@ public class PreferencesIntegrationTest extends InARTestCase {
 		ci = null;
 	}
 	
-    
+    public void testPreferenceExists() throws Exception {
+		Preference p = ci.find("org.astrogrid.registry.query.endpoint");
+		assertNotNull(p);
+		assertNotNull(p.getValue());
+		assertNotNull(p.getDefaultValue());
+		assertNotNull(p.getName());
+		assertTrue(p.isAdvanced());
+		assertTrue(p.isPropagateToConfig());
+		assertTrue(p.isRequiresRestart());
+		assertNotNull(p.getUiName());
+		assertNotNull(p.getDescription());
+	}
+	
+	
     public static Test suite() {
         return new ARTestSetup(new TestSuite(PreferencesIntegrationTest.class));
     }

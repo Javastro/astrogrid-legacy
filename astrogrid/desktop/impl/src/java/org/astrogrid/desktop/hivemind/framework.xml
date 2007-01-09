@@ -119,15 +119,31 @@
 				</attribute>
 				<element name="ui-name">
 				Name to display in UI
+					<rules>
+						<push-content/>
+					<invoke-parent method="setUiName" />
+					</rules>
 				</element>
 				<element name="description">
 				Description of this preference
+					<rules>
+						<push-content/>
+					<invoke-parent method="setDescription" />
+					</rules>				
 				</element>
 				<element name="units">
-					Units of this value - add into parsing
+					Units of this value
+					<rules>
+						<push-content/>
+					<invoke-parent method="setUnits" />
+					</rules>						
 				</element>
 				<element name="alternative">
-				  a suggested alternative value for this preference - need to add into parsing
+				  a suggested alternative value for this preference
+				  	<rules>
+						<push-content/>
+						<invoke-parent method="addAlternative" />
+					</rules>	
 				 </element>
 				<conversion class="org.astrogrid.desktop.modules.system.Preference" />
 			</element>

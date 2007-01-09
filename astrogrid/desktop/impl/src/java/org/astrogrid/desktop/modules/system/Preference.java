@@ -5,6 +5,8 @@ package org.astrogrid.desktop.modules.system;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
+import java.util.List;
 
 /** Representation of a single preference value.
  * 
@@ -32,7 +34,7 @@ import java.beans.PropertyChangeSupport;
  */
 public class Preference {
 
-	
+	private List alternatives = new ArrayList();
 	private String name;
 	private String defaultValue;
 	private boolean advanced;
@@ -42,6 +44,17 @@ public class Preference {
 	private String uiName;
 	private String description;
 	private String value;
+	
+	/** list possible alternative values */
+	public String[] getAlternatives() {
+		return (String[]) alternatives.toArray(new String[alternatives.size()]);
+	}
+	
+	public void addAlternative (String s) {
+		alternatives.add(s);
+	}
+		
+	
 	/** true if this is considered an 'advanced' option which could be hidden from
 	 * the users.
 	 */
