@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.17 2006/09/15 14:37:50 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.18 2007/01/09 16:20:45 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,8 +18,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -408,7 +410,7 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
         Tool document;
         try {
             document = (Tool)Unmarshaller.unmarshal(Tool.class,doc);    
-        Hashtable result = new Hashtable();
+        Map result = new LinkedHashMap();
         result.put("interface",document.getInterface());
         result.put("name",document.getName());
         Hashtable inputs= new Hashtable();
@@ -697,6 +699,9 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.18  2007/01/09 16:20:45  nw
+use linkedhashmap instead of map
+
 Revision 1.17  2006/09/15 14:37:50  nw
 added caching to applications - prevents workflow builder freezups.
 

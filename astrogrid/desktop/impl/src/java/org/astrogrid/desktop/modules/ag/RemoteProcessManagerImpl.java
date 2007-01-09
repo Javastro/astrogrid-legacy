@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManagerImpl.java,v 1.8 2006/06/27 19:11:09 nw Exp $
+/*$Id: RemoteProcessManagerImpl.java,v 1.9 2007/01/09 16:20:59 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -332,7 +333,7 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, RecorderL
     }
 
    private Map convert(ResultListType rs) {
-    Map result = new HashMap();        
+    Map result = new LinkedHashMap();        
     for (int i =0 ; i < rs.getResultCount(); i++) {
         ParameterValue val = rs.getResult(i);
         result.put(val.getName(),val.getValue());
@@ -346,6 +347,9 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, RecorderL
 
 /* 
 $Log: RemoteProcessManagerImpl.java,v $
+Revision 1.9  2007/01/09 16:20:59  nw
+use linkedhashmap instead of map
+
 Revision 1.8  2006/06/27 19:11:09  nw
 adjusted todo tags.
 
