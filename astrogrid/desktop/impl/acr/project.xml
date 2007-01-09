@@ -59,14 +59,14 @@
  	</dependency>
  	 
 <!-- online help system -->
-
+	<!--  not using any more
 	<dependency> 
 		<groupId>org.astrogrid</groupId>
 		<artifactId>acr-interface-javahelp</artifactId>
 		<version>${astrogrid.desktop.version}</version>
 		<properties>			
 			<dist.bundle>true</dist.bundle>	
-			<strip>false</strip> <!--  all needed -->				
+			<strip>false</strip> 			
 		</properties>
 	</dependency>
 	
@@ -77,9 +77,10 @@
 	 <jar>jh.jar</jar>
 	 <properties>
 	<dist.bundle>true</dist.bundle>	
-				    <strip>false</strip> <!--  signing problems. -->
+				    <strip>false</strip>
 	 </properties>
  </dependency>
+ -->
  <!-- end of help system --> 
  
  <!-- text editing extension -->
