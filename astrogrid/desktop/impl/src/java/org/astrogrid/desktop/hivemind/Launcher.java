@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.9 2006/10/11 10:35:25 nw Exp $
+/*$Id: Launcher.java,v 1.10 2007/01/09 16:27:35 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.desktop.hivemind;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -20,24 +19,15 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.UIManager;
-import javax.xml.parsers.SAXParser;
 
-import org.apache.hivemind.ApplicationRuntimeException;
 import org.apache.hivemind.ClassResolver;
-import org.apache.hivemind.ErrorHandler;
 import org.apache.hivemind.ModuleDescriptorProvider;
 import org.apache.hivemind.Registry;
-import org.apache.hivemind.Resource;
 import org.apache.hivemind.impl.DefaultClassResolver;
 import org.apache.hivemind.impl.RegistryBuilder;
 import org.apache.hivemind.impl.XmlModuleDescriptorProvider;
-import org.apache.hivemind.parse.DescriptorParser;
-import org.apache.hivemind.parse.ModuleDescriptor;
-import org.apache.hivemind.parse.XmlResourceProcessor;
 import org.apache.hivemind.util.ClasspathResource;
 import org.apache.hivemind.util.URLResource;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  *Assembles and starts some flavour of AR. Used by the main classes in {@link org.astrogrid}
@@ -55,7 +45,7 @@ import org.xml.sax.SAXException;
  * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2006
  *
  */
-public final class Launcher implements Runnable {
+public class Launcher implements Runnable {
     private final ClassResolver cl;
     private final List resources = new ArrayList();
   
@@ -64,6 +54,9 @@ public final class Launcher implements Runnable {
     public static final Properties defaults = new Properties(){{
     	setProperty("java.net.preferIPv4Stack","true");
         setProperty("java.net.preferIPv6Addresses","false");
+        // add in core custom protocol handlers..
+        setProperty("java.protocol.handler.pkgs","org.astrogrid.desktop.protocol");
+        
         setProperty("ivoa.skynode.disabled","true");
         // log4j
         setProperty("log4j.configuration","default-log4j.properties");
@@ -76,24 +69,27 @@ public final class Launcher implements Runnable {
         		Class.forName("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
         		lafName = "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
         	} catch (Exception noMatter) {
+        		// don't care.
         	}
         } 
 //        lafName = UIManager.getCrossPlatformLookAndFeelClassName();
         setProperty("swing.defaultlaf",lafName);
         // properties for apple - ignored in other contexts.
-        if (! System.getProperty("java.specification.version").equals("1.4")) {
-        	// under java 1.4 on macs, I keep getting odd 3 > 2 errors.
-        	setProperty("apple.laf.useScreenMenuBar","true");
-        }
+        // under java 1.4 on macs, I keep getting odd 3 > 2 errors.
+        setProperty("apple.laf.useScreenMenuBar",Boolean.toString(
+        			! System.getProperty("java.specification.version").equals("1.4")));
+
 //	    setProperty("apple.awt.antialiasing","true");
 //	    setProperty("apple.awt.textantialiasing","true");
+        //FIXME - diable this before release.
+        //setProperty("acr.debug","true");
     }};    
     
     /** access the hivemind registry. creates acr if necessary */
     public Registry getRegistry() {
         if (reg == null) {
             this.run();
-        }
+        } 
         return reg;
     }
         
@@ -119,7 +115,7 @@ public final class Launcher implements Runnable {
 
     /** add a descriptor to the load set, pointed to by a URL
      * to be called before {@link #run}
-  @param resourceName url pointing to to a hivemind descriptor.
+  @param resourceURL url pointing to to a hivemind descriptor.
      *  */
     public void addModuleURL(URL resourceURL){
     	this.resources.add(new URLResource(resourceURL));
@@ -135,50 +131,31 @@ public final class Launcher implements Runnable {
 
     /** assemble the service and start it running */
     public void run() { 
-    	// splice our defaults _behind_ existing system properties
+    	spliceInDefaults();
+    	
+        RegistryBuilder builder = new RegistryBuilder();
+        builder.addModuleDescriptorProvider(createModuleDescriptorProvider()); // this one loads our own descriptors
+        reg = builder.constructRegistry(Locale.getDefault());        
+    }
+
+	/**
+	 * 
+	 */
+	protected void spliceInDefaults() {
+		// splice our defaults _behind_ existing system properties
     	for (Iterator i = defaults.entrySet().iterator(); i.hasNext(); ) {
     		Map.Entry e = (Map.Entry)i.next();
     		if (System.getProperty(e.getKey().toString()) == null) {
     			System.setProperty(e.getKey().toString(),e.getValue().toString());
     		}
     	}
-    	
-        ModuleDescriptorProvider provider = createModuleDescriptorProvider();        
-        RegistryBuilder builder = new RegistryBuilder();
-      //  builder.addModuleDescriptorProvider(new XmlModuleDescriptorProvider(cl)); //this one loads descriptors for libraries from default locations.
-        builder.addModuleDescriptorProvider(provider); // this one loads our own descriptors
-        reg = builder.constructRegistry(Locale.getDefault());        
-    }
+	}
 
-	/**
-	 * @return
+	/** Creates the provider / factory for descirptors
+	 * @return a module provider.
 	 */
 	public ModuleDescriptorProvider createModuleDescriptorProvider() {
-		// unpleasant hack - dive into internals to set entity resolver on the parser used.
-        // otherwise, doesn't see external entity references.
-        // doesn't seem to be a nicer way to do this.
-        ModuleDescriptorProvider provider = new XmlModuleDescriptorProvider(cl,resources) {
-            protected XmlResourceProcessor getResourceProcessor(ClassResolver arg0, ErrorHandler arg1) {
-                // code copied from XmlResourceProcessor
-                return new XmlResourceProcessor(arg0,arg1) {
-                    protected ModuleDescriptor parseResource(Resource resource, SAXParser parser, DescriptorParser contentHandler) throws SAXException, IOException {
-                       InputSource source = getInputSource(resource);
-                       parser.parse(source, new ResolvingDescriptorParser(contentHandler));
-                       return contentHandler.getModuleDescriptor();                       
-                    }  
-                    private InputSource getInputSource(Resource resource){
-                        try{
-                            URL url = resource.getResourceURL();
-                            return new InputSource(url.openStream());
-                        } catch (Exception e) {
-                            throw new ApplicationRuntimeException("Missing Resource " + resource,
-                                    resource, null, e);
-                        }
-                    }                    
-                };
-            }
-        };
-		return provider;
+        return  new XmlModuleDescriptorProvider(cl,resources) ;
 	}
     
 
@@ -187,6 +164,9 @@ public final class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.10  2007/01/09 16:27:35  nw
+uses protocol handlers instead of overriding the resolver.
+
 Revision 1.9  2006/10/11 10:35:25  nw
 started thinking about security managers
 
