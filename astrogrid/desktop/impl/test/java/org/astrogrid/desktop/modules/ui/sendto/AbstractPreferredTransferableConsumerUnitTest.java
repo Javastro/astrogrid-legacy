@@ -73,4 +73,11 @@ public class AbstractPreferredTransferableConsumerUnitTest extends TestCase {
 		compControl = MockControl.createControl(UIComponent.class);
 		comp = (UIComponent)compControl.getMock();
 		}
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		transControl = null;
+		trans = null;
+		compControl = null;
+		comp = null;
+	}
 }

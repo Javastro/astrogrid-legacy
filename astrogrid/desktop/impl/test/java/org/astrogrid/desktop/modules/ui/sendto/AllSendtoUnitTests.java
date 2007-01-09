@@ -10,7 +10,7 @@ import junit.framework.TestSuite;
  * @author Noel Winstanley
  * @since Jun 21, 20063:31:47 PM
  */
-public class AllUnitTests {
+public class AllSendtoUnitTests {
 
 	public static Test suite() {
 		TestSuite suite = new TestSuite(

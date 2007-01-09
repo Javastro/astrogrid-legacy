@@ -45,13 +45,23 @@ public class ParameterValueTransferableUnitTest extends TestCase {
 		remote = new ParameterValue();
 		remote.setIndirect(true);
 		remote.setName("remote");
-		remote.setValue("http://www.slashdot.org");
-		
+	//	remote.setValue("http://www.slashdot.org"); - removed - test with a 'local' remote resource.
+		URL u = ParameterValueTransferableUnitTest.class.getResource("ParameterValueTransferableUnitTest.class");
+		assertNotNull("I don't exist",u);
+		remote.setValue(u.toString());
 		
 		ivo = new ParameterValue();
 		ivo.setIndirect(true);
 		ivo.setName("ivo");
 		ivo.setValue("ivo://comm/user#path/val.vot");	
+	}
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		myspaceControl = null;
+		myspace = null;
+		local = null;
+		remote = null;
+		ivo = null;
 	}
 	
 	protected MockControl myspaceControl;
