@@ -1,0 +1,2193 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="../hivemind.css" type="text/css" rel="stylesheet">
+<title>HiveMind Registry -  Configuration Point system.uiStructure</title>
+</head>
+<body>
+<div class="title"> Module <a href="../module/system.html">system</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<hr>
+<table cellspacing="0" class="top-level-object">
+<tr>
+<th class="object-id"><img alt="[public]" height="20" width="20" src="../public.png"> Configuration Point system.uiStructure</th><th>Occurs:</th><td> unbounded </td>
+</tr>
+<tr>
+<td colspan="3" class="description">Defines menus, tabs, and entries of the user interface.</td>
+</tr>
+<tr>
+<th class="section" colspan="3">Schema</th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<table cellspacing="0" class="nested-object">
+<tr>
+<th class="object-id" colspan="3"> Element &lt;menu&gt; </th>
+</tr>
+<tr>
+<td colspan="3" class="description">A new menu</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute after</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">list of names of items that this menu should appear after. Use '*' to indicate all.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute before</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">list of names of items that this menu should appear before.
+					Use '*' to indicate all.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute iconName</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">unqualified name of the icon file. Must be loadable by IconHelper</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute name (required)  (unique) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">the name of this new menu</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute parentName (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">names the parent of this menu - i.e. where it should be added.
+					Either nominate another menu, or 'menubar' to add a new top-level menu</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute text (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">Display text for this menu</td>
+</tr>
+<tr>
+<th class="section" colspan="3">Nested Elements</th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<table cellspacing="0" class="nested-object">A new menu<tr>
+<th class="sub-id">Attribute parentName (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">names the parent of this menu - i.e. where it should be added.
+					Either nominate another menu, or 'menubar' to add a new top-level menu</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute name (required)  (unique) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">the name of this new menu</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute text (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">Display text for this menu</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute iconName</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">unqualified name of the icon file. Must be loadable by IconHelper</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute before</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">list of names of items that this menu should appear before.
+					Use '*' to indicate all.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute after</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">list of names of items that this menu should appear after. Use '*' to indicate all.</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;tooltip&gt; </th>
+</tr>
+<tr>
+<th class="section" colspan="3">Conversion Rules</th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;push-content /&gt; <br>
+     &lt;invoke-parent
+         
+        <span class="attribute">method</span>="<span class="attribute-value">setToolTipText</span>"
+       /&gt; </div>
+</td>
+</tr>
+<div class="xml">
+     &lt;conversion
+         
+        <span class="attribute">class</span>="<span class="attribute-value">org.astrogrid.desktop.modules.system.contributions.UIMenuContribution</span>"
+       /&gt; </div>
+</table>
+</td>
+</tr>
+<tr>
+<th class="section" colspan="3">Conversion Rules</th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;conversion
+         
+        <span class="attribute">class</span>="<span class="attribute-value">org.astrogrid.desktop.modules.system.contributions.UIMenuContribution</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;action&gt; </th>
+</tr>
+<tr>
+<td colspan="3" class="description">A new action - materializes as a button or menu entry.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute after</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">list of names of items that this menu should appear after.
+					Use '*' to indicate all.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute before</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">list of names of items that this menu should appear before.
+					Use '*' to indicate all.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute iconName</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">unqualified name of the icon file. Must be loadable by IconHelper</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute methodName (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">name of the method to invoke.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute name (required)  (unique) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">name of this action.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute object (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">object</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">The object that this action invokes a method on. May refer to an
+					existing service using 'service:..' or a new object using 'instance:..'</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute parentName (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">Names the parent tab or menu for this action.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute text (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">Display text for this action.</td>
+</tr>
+<tr>
+<th class="section" colspan="3">Nested Elements</th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<table cellspacing="0" class="nested-object">A new action - materializes as a button or menu entry.<tr>
+<th class="sub-id">Attribute parentName (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">Names the parent tab or menu for this action.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute name (required)  (unique) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">name of this action.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute text (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">Display text for this action.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute iconName</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">unqualified name of the icon file. Must be loadable by IconHelper</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute before</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">list of names of items that this menu should appear before.
+					Use '*' to indicate all.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute after</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">list of names of items that this menu should appear after.
+					Use '*' to indicate all.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute object (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">object</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">The object that this action invokes a method on. May refer to an
+					existing service using 'service:..' or a new object using 'instance:..'</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute methodName (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">name of the method to invoke.</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;tooltip&gt; </th>
+</tr>
+<tr>
+<th class="section" colspan="3">Conversion Rules</th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;push-content /&gt; <br>
+     &lt;invoke-parent
+         
+        <span class="attribute">method</span>="<span class="attribute-value">setToolTipText</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;confirmMessage&gt; </th>
+</tr>
+<tr>
+<td colspan="3" class="description">If present, this element defines a message to display in a 'yes'/'no' popup
+					dialogue before invoking the action method. Useful for 'are you sure'
+					checks.</td>
+</tr>
+<tr>
+<th class="section" colspan="3">Conversion Rules</th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;push-content /&gt; <br>
+     &lt;invoke-parent
+         
+        <span class="attribute">method</span>="<span class="attribute-value">setConfirmMessage</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;parameter&gt; </th>
+</tr>
+<tr>
+<td colspan="3" class="description">An inline parameter to the action method. Will be converted from
+					string to the appropriate basic type if necessary.</td>
+</tr>
+<tr>
+<th class="section" colspan="3">Conversion Rules</th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;push-content /&gt; <br>
+     &lt;invoke-parent
+         
+        <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;reference&gt; </th>
+</tr>
+<tr>
+<td colspan="3" class="description">A parameter given as a reference to some other object 
+					- e.g. a  service: or instance:</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute value</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">object</a></td>
+</tr>
+<tr>
+<th class="section" colspan="3">Conversion Rules</th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;push-attribute
+         
+        <span class="attribute">attribute</span>="<span class="attribute-value">value</span>"
+       /&gt; <br>
+     &lt;invoke-parent
+         
+        <span class="attribute">method</span>="<span class="attribute-value">addParameter</span>"
+       /&gt; </div>
+</td>
+</tr>
+<div class="xml">
+     &lt;conversion
+         
+        <span class="attribute">class</span>="<span class="attribute-value">org.astrogrid.desktop.modules.system.contributions.UIActionContribution</span>"
+       /&gt; </div>
+</table>
+</td>
+</tr>
+<tr>
+<th class="section" colspan="3">Conversion Rules</th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;conversion
+         
+        <span class="attribute">class</span>="<span class="attribute-value">org.astrogrid.desktop.modules.system.contributions.UIActionContribution</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;tab&gt; </th>
+</tr>
+<tr>
+<td colspan="3" class="description">A new tab in the user interface</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute after</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">list of names of items that this menu should appear after.
+					Use '*' to indicate all.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute before</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">list of names of items that this menu should appear before.
+					Use '*' to indicate all.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute iconName</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">unqualified name of the icon file. Must be loadable by IconHelper</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute name (required)  (unique) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">name of this tab</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute text (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">text to display</td>
+</tr>
+<tr>
+<th class="section" colspan="3">Nested Elements</th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<table cellspacing="0" class="nested-object">A new tab in the user interface<tr>
+<th class="sub-id">Attribute name (required)  (unique) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">name of this tab</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute text (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">text to display</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute iconName</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">unqualified name of the icon file. Must be loadable by IconHelper</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute before</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">list of names of items that this menu should appear before.
+					Use '*' to indicate all.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute after</th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">string</a></td>
+</tr>
+<tr>
+<td colspan="3" class="description">list of names of items that this menu should appear after.
+					Use '*' to indicate all.</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Element &lt;tooltip&gt; </th>
+</tr>
+<tr>
+<th class="section" colspan="3">Conversion Rules</th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;push-content /&gt; <br>
+     &lt;invoke-parent
+         
+        <span class="attribute">method</span>="<span class="attribute-value">setToolTipText</span>"
+       /&gt; </div>
+</td>
+</tr>
+<div class="xml">
+     &lt;conversion
+         
+        <span class="attribute">class</span>="<span class="attribute-value">org.astrogrid.desktop.modules.system.contributions.UITabContribution</span>"
+       /&gt; </div>
+</table>
+</td>
+</tr>
+<tr>
+<th class="section" colspan="3">Conversion Rules</th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;conversion
+         
+        <span class="attribute">class</span>="<span class="attribute-value">org.astrogrid.desktop.modules.system.contributions.UITabContribution</span>"
+       /&gt; </div>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<th class="section" colspan="3"> Contribution from module <a href="../module/astrogrid.html">astrogrid</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">before</span>="<span class="attribute-value">close,exit,logout</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">connect_creating.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">guiLogin</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">login</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:community</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">file</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Login</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>Log in to AstroGrid</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; <br>
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">login</span>"
+      
+         
+        <span class="attribute">before</span>="<span class="attribute-value">close,exit</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">connect_no.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">logout</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">logout</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:community</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">file</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Logout</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>Log out of AstroGrid</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/astrogrid.html">astrogrid</a></th><th>If:</th><td>not (property system.help.disabled)</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">contents</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">java_lib_obj.gif</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">showHelpForTarget</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">acrHelp</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:system.help</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">help</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Astro Runtime API Help</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>Concepts,  lists available functions, gives examples of their use</li>
+</ul> &lt;/tooltip&gt; </li>
+<li>
+     &lt;parameter &gt; <ul>
+<li>overview</li>
+</ul> &lt;/parameter&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/astrogrid.html">astrogrid</a></th><th>If:</th><td>((not (property system.webserver.disabled)) and (not (property system.html.disabled))) and (not (property system.browser.disabled))</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">overview48.gif</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">openRelative</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">htmlACR</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:system.browser</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">advanced</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">AR web interface</span>"
+       &gt; <ul>
+<li>
+     &lt;parameter /&gt; </li>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>Browse and execute AR and PLASTIC functions</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/astrogrid.html">astrogrid</a></th><th>If:</th><td>(property acr.mode) or (property asr.mode)</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">info_obj.gif</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">concat</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">about</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">instance:java.lang.String</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">help</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">About Astro Runtime..</span>"
+       &gt; <ul>
+<li>
+     &lt;parameter &gt; <ul>
+<li>&lt;html&gt;
+			&lt;h1&gt;Astro Runtime v${astrogrid.desktop.version}&lt;/h1&gt;			
+			http://www.astrogrid.org/desktop/astro-runtime
+
+	&lt;hr&gt;
+			&lt;h2&gt;Build Information&lt;/h2&gt;
+			Built: ${astrogrid.build.date}&lt;br&gt;
+			At: ${astrogrid.build.location}&lt;br&gt;
+			With ${astrogrid.build.jdk}&lt;br&gt;
+			By: ${astrogrid.build.by}		
+	&lt;hr&gt;
+			&lt;/html&gt;</li>
+</ul> &lt;/parameter&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/dialogs.html">dialogs</a></th><th>If:</th><td>property acr.debug</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">chooseResource</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">driveResourceChooser</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:resourceChooser</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">debug</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Launch ResourceChooser</span>"
+       &gt; <ul>
+<li>
+     &lt;parameter &gt; <ul>
+<li>Choose file</li>
+</ul> &lt;/parameter&gt; </li>
+<li>
+     &lt;parameter &gt; <ul>
+<li>true</li>
+</ul> &lt;/parameter&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/dialogs.html">dialogs</a></th><th>If:</th><td>property acr.debug</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">selectAndBuild</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">driveToolEditor</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:toolEditor</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">debug</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Launch ToolEditor</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/dialogs.html">dialogs</a></th><th>If:</th><td>property acr.debug</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">selectResources</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">driveRegistryChooser</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:registryGoogle</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">debug</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Launch RegistryChooser</span>"
+       &gt; <ul>
+<li>
+     &lt;parameter &gt; <ul>
+<li>Choose a resource!</li>
+</ul> &lt;/parameter&gt; </li>
+<li>
+     &lt;parameter &gt; <ul>
+<li>false</li>
+</ul> &lt;/parameter&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/ivoa.html">ivoa</a></th><th>If:</th><td>not (property ivoa.cache.disabled)</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">before</span>="<span class="attribute-value">configreset</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">flush</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">cacheClear</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:cache</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">edit</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Flush Cache</span>"
+       &gt; <ul>
+<li>
+     &lt;confirmMessage &gt; <ul>
+<li>&lt;html&gt;
+				Remove all cached registry documents?
+				Proceed?</li>
+</ul> &lt;/confirmMessage&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/plastic.html">plastic</a></th><th>If:</th><td>property hub.mode</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">before</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">plastic.gif</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">prettyPrintRegisteredApps</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">listPlastic</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:hub</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">advanced</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">List Plastic Applications</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>List details of all connected Plastic Applications</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; <br>
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">AGlogo16x16.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">concat</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">about</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">instance:java.lang.String</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">help</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">About AstroGrid PLASTIC Hub...</span>"
+       &gt; <ul>
+<li>
+     &lt;parameter &gt; <ul>
+<li>&lt;html&gt;
+			&lt;h1&gt;AstroGrid PLASTIC Hub v${astrogrid.desktop.version}&lt;/h1&gt;			
+			&lt;b&gt;http://www.astrogrid.org/desktop&lt;/b&gt;&lt;br&gt;
+			This is the reference implementation of the Plastic Hub.  PLASTIC is a widely
+            supported specification for connecting client-side astronomical tools together.
+			
+			&lt;h1&gt;PLASTIC - Platform for Astronomy Tool InterCommunication&lt;/h1&gt;
+			&lt;b&gt;http://plastic.sourceforge.net&lt;/b&gt;&lt;br&gt;
+			Moulded by 
+			&lt;ul&gt;
+			&lt;li&gt;Thomas Boch
+			&lt;li&gt;Marco Comparato
+			&lt;li&gt;John Taylor
+			&lt;li&gt;Mark Taylor
+			&lt;li&gt;Noel Winstanley
+			&lt;/ul&gt;
+			&lt;hr&gt;
+			&lt;h2&gt;Build Information&lt;/h2&gt;
+			Built: ${astrogrid.build.date}&lt;br&gt;
+			At: ${astrogrid.build.location}&lt;br&gt;
+			With ${astrogrid.build.jdk}&lt;br&gt;
+			By: ${astrogrid.build.by}
+			&lt;/html&gt;</li>
+</ul> &lt;/parameter&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/plastic.html">plastic</a></th><th>If:</th><td>((not (property system.webserver.disabled)) and (not (property system.html.disabled))) and (not (property system.browser.disabled)) and (property hub.mode)</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">listPlastic</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">overview48.gif</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">openRelative</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">htmlPLASTIC</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:system.browser</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">advanced</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">PLASTIC web interface</span>"
+       &gt; <ul>
+<li>
+     &lt;parameter /&gt; </li>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>Browse and execute Plastic functions in a webbrowser</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/system.html">system</a></th><th>If:</th><td>property acr.mode</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;tab
+         
+        <span class="attribute">before</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">advanced</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Astro Runtime</span>"
+       /&gt; <br>
+     &lt;tab
+         
+        <span class="attribute">after</span>="<span class="attribute-value">advanced</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">links</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Links</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/system.html">system</a></th><th>If:</th><td>property hub.mode</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;tab
+         
+        <span class="attribute">before</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">advanced</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Plastic</span>"
+       /&gt; <br>
+     &lt;tab
+         
+        <span class="attribute">after</span>="<span class="attribute-value">advanced</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">links</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Links</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/system.html">system</a></th><th>If:</th><td>property workbench.mode</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;tab
+         
+        <span class="attribute">before</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">discovery</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Data Discovery</span>"
+       /&gt; <br>
+     &lt;tab
+         
+        <span class="attribute">after</span>="<span class="attribute-value">workflow</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">services</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">System Services</span>"
+       /&gt; <br>
+     &lt;tab
+         
+        <span class="attribute">after</span>="<span class="attribute-value">services</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">links</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Helper Applications</span>"
+       /&gt; <br>
+     &lt;tab
+         
+        <span class="attribute">after</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">advanced</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Advanced</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section" colspan="3"> Contribution from module <a href="../module/system.html">system</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;menu
+         
+        <span class="attribute">before</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">file</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">menubar</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">File</span>"
+       /&gt; <br>
+     &lt;menu
+         
+        <span class="attribute">after</span>="<span class="attribute-value">file</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">edit</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">menubar</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Edit</span>"
+       /&gt; <br>
+     &lt;menu
+         
+        <span class="attribute">after</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">help</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">menubar</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Help</span>"
+       /&gt; <br>
+     &lt;menu
+         
+        <span class="attribute">before</span>="<span class="attribute-value">about</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">projects</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">help</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">About Projects</span>"
+       /&gt; <br>
+     &lt;action
+         
+        <span class="attribute">before</span>="<span class="attribute-value">exit</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">hide</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">close</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:ui</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">file</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Close</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>Close this window, but keep the service running</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; <br>
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">exit_small.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">halt</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">exit</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:builtin.shutdown</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">file</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Exit</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>Close this window, and halt the service</li>
+</ul> &lt;/tooltip&gt; </li>
+<li>
+     &lt;confirmMessage &gt; <ul>
+<li>Exit: are you sure?</li>
+</ul> &lt;/confirmMessage&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/system.html">system</a></th><th>If:</th><td>not (property system.browser.disabled)</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">before</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">logo1.gif</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">openURL</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">agProject</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:browser</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">projects</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">AstroGrid</span>"
+       &gt; <ul>
+<li>
+     &lt;parameter &gt; <ul>
+<li>http://www.astrogrid.org/desktop</li>
+</ul> &lt;/parameter&gt; </li>
+</ul> &lt;/action&gt; <br>
+     &lt;action
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">cadc.jpg</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">openURL</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">cadcProject</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:system.browser</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">projects</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">CADC</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>Home Page for Canadian Astronomy Data Center (CADC)</li>
+</ul> &lt;/tooltip&gt; </li>
+<li>
+     &lt;parameter &gt; <ul>
+<li>http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/cadc</li>
+</ul> &lt;/parameter&gt; </li>
+</ul> &lt;/action&gt; <br>
+     &lt;action
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">cds_icon.gif</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">openURL</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">cdsProject</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:system.browser</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">projects</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">CDS</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>Centre de Donnees Astronomiques Home Page</li>
+</ul> &lt;/tooltip&gt; </li>
+<li>
+     &lt;parameter &gt; <ul>
+<li>http://cdsweb.u-strasbg.fr/</li>
+</ul> &lt;/parameter&gt; </li>
+</ul> &lt;/action&gt; <br>
+     &lt;action
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">esavo33.gif</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">openURL</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">esacProject</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:system.browser</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">projects</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">ESA-VO</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>Home Page for ESA-VO</li>
+</ul> &lt;/tooltip&gt; </li>
+<li>
+     &lt;parameter &gt; <ul>
+<li>http://esavo.esa.int/</li>
+</ul> &lt;/parameter&gt; </li>
+</ul> &lt;/action&gt; <br>
+     &lt;action
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">ivoa.gif</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">openURL</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">ivoaProject</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:system.browser</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">projects</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">IVOA</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>Home Page for the International Virtual Observatory Alliance</li>
+</ul> &lt;/tooltip&gt; </li>
+<li>
+     &lt;parameter &gt; <ul>
+<li>http://www.ivoa.net</li>
+</ul> &lt;/parameter&gt; </li>
+</ul> &lt;/action&gt; <br>
+     &lt;action
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">plastic.gif</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">openURL</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">plasticProject</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:system.browser</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">projects</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Plastic</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>Home Page for PLASTIC</li>
+</ul> &lt;/tooltip&gt; </li>
+<li>
+     &lt;parameter &gt; <ul>
+<li>http://plastic.sourceforge.net/</li>
+</ul> &lt;/parameter&gt; </li>
+</ul> &lt;/action&gt; <br>
+     &lt;action
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">votech_icon.gif</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">openURL</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">votechProject</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:system.browser</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">projects</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">VOTech</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>Euro-VO VOTech Project Home Page</li>
+</ul> &lt;/tooltip&gt; </li>
+<li>
+     &lt;parameter &gt; <ul>
+<li>http://eurovotech.org/</li>
+</ul> &lt;/parameter&gt; </li>
+</ul> &lt;/action&gt; <br>
+     &lt;action
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">openURL</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">bugreport</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:browser</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">help</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Report a bug / Request a feature</span>"
+       &gt; <ul>
+<li>
+     &lt;parameter &gt; <ul>
+<li>http://www.astrogrid.org/bugzilla/enter_bug.cgi?product=Workbench%20and%20ACR</li>
+</ul> &lt;/parameter&gt; </li>
+</ul> &lt;/action&gt; <br>
+     &lt;action
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">aladin_48pix.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">openURL</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">aladin</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:browser</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">links</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Aladin</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;&lt;b&gt;Aladin&lt;/b&gt; is an interactive software sky atlas allowing the user to &lt;br&gt;
+			visualize digitized images of any part of the sky, to superimpose entries from &lt;br&gt;
+			astronomical catalogs or personal user data files, and to interactively access related &lt;br&gt;
+			data and information from the SIMBAD, NED, VizieR, or other archives for all known objects in the field. &lt;/tooltip&gt;</li>
+</ul> &lt;/tooltip&gt; </li>
+<li>
+     &lt;parameter &gt; <ul>
+<li>http://aladin.u-strasbg.fr/</li>
+</ul> &lt;/parameter&gt; </li>
+</ul> &lt;/action&gt; <br>
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">aladin</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">gaialogo.gif</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">openURL</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">gaia</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:browser</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">links</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">GAIA</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;&lt;b&gt;GAIA&lt;/b&gt; is an image display and analysis tool. It provides the usual &lt;br&gt;
+			facilities of image display tools, plus more astronomically useful ones such as &lt;br&gt;
+			aperture &amp; optimal photometry, contouring, source detection, surface photometry, &lt;br&gt;
+			arbitrary region analysis, celestial coordinate readout, calibration and modification,&lt;br&gt;
+			 grid overlays, blink comparison, defect patching and the ability to&lt;br&gt;
+			  query on-line (WWW) catalogues.</li>
+</ul> &lt;/tooltip&gt; </li>
+<li>
+     &lt;parameter &gt; <ul>
+<li>http://star-www.dur.ac.uk/~pdraper/gaia/gaia.html</li>
+</ul> &lt;/parameter&gt; </li>
+</ul> &lt;/action&gt; <br>
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">gaia</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">cvo.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">openURL</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">octet</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:browser</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">links</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Octet</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;With Octet, CVO has developed advanced observation query capabilities to help users &lt;br&gt;
+			fully exploit the broad wavelength coverage of our collections. We have also included data from &lt;br&gt;
+			select external collections to increase wavelength coverage from radio (FIRST) to X-ray (RASS).</li>
+</ul> &lt;/tooltip&gt; </li>
+<li>
+     &lt;parameter &gt; <ul>
+<li>http://www2.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/cvo/</li>
+</ul> &lt;/parameter&gt; </li>
+</ul> &lt;/action&gt; <br>
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">octet</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">splat.gif</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">openURL</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">splat</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:browser</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">links</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">SPLAT</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;&lt;b&gt;SPLAT&lt;/b&gt;is a graphical tool for displaying, comparing, modifying and&lt;br&gt;
+			 analysing astronomical spectra stored in NDF, FITS and TEXT files &lt;br&gt;
+			 as well as the new NDX format.</li>
+</ul> &lt;/tooltip&gt; </li>
+<li>
+     &lt;parameter &gt; <ul>
+<li>http://star-www.dur.ac.uk/~pdraper/splat/splat.html</li>
+</ul> &lt;/parameter&gt; </li>
+</ul> &lt;/action&gt; <br>
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">splat</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">tc3.gif</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">openURL</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">topcat</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:browser</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">links</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">TopCat</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;&lt;b&gt;TOPCAT&lt;/b&gt; is an interactive graphical viewer and editor for tabular data.&lt;br&gt;
+			 It has been designed for use with astronomical tables such as object catalogues, but is not &lt;br&gt;
+			 restricted to astronomical applications. It understands a number of different astronomically&lt;br&gt;
+			 important formats (including FITS and VOTable) and more formats can be added.</li>
+</ul> &lt;/tooltip&gt; </li>
+<li>
+     &lt;parameter &gt; <ul>
+<li>http://www.star.bris.ac.uk/~mbt/topcat/</li>
+</ul> &lt;/parameter&gt; </li>
+</ul> &lt;/action&gt; <br>
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">topcat</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">visivo.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">openURL</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">visivo</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:browser</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">links</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">VisIVO</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;&lt;b&gt;VisIVO&lt;/b&gt; is a visualisation and analysis software for astrophysical data.&lt;br&gt;
+			 VisIVO can handle both observational and theoretical data.&lt;br&gt;
+			  It can be used both as a stand-alone application, that acts on local files, &lt;br&gt;
+			  and as an interface to the Virtual Observatory framework.</li>
+</ul> &lt;/tooltip&gt; </li>
+<li>
+     &lt;parameter &gt; <ul>
+<li>http://visivo.cineca.it/</li>
+</ul> &lt;/parameter&gt; </li>
+</ul> &lt;/action&gt; <br>
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">visivo</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">vospecLogo.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">openURL</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">vospec</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:browser</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">links</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">VOSpec</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;&lt;b&gt;VOSpec&lt;/b&gt;: A tool to handle VO-compatible spectra</li>
+</ul> &lt;/tooltip&gt; </li>
+<li>
+     &lt;parameter &gt; <ul>
+<li>http://esavo.esa.int/vospecapp</li>
+</ul> &lt;/parameter&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/system.html">system</a></th><th>If:</th><td>not (property system.browser.disabled) and ((property hub.mode) or (property acr.mode))</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">before</span>="<span class="attribute-value">aladin</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">logo48x48.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">openURL</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">workbench</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:browser</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">links</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Workbench</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;&lt;b&gt;AstroGrid Workbench&lt;/b&gt; is a suite of programs for working with the AstroGrid system&lt;br&gt;
+			and the VO in general. Notable featues include &lt;b&gt;AstroScope&lt;/b&gt;, &lt;b&gt;HelioScope&lt;/b&gt; &lt;br&gt;
+			&lt;b&gt;Application Launcher&lt;/b&gt; and &lt;b&gt;Workflow Editor&lt;/b&gt;</li>
+</ul> &lt;/tooltip&gt; </li>
+<li>
+     &lt;parameter &gt; <ul>
+<li>http://www.astrogrid.org/desktop</li>
+</ul> &lt;/parameter&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/system.html">system</a></th><th>If:</th><td>not (property system.help.disabled)</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">before</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">help.gif</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">showHelp</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">contents</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:help</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">help</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Help Contents..</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section" colspan="3"> Contribution from module <a href="../module/system.html">system</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">reset</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">configreset</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:configuration</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">edit</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Reset Configuration</span>"
+       &gt; <ul>
+<li>
+     &lt;confirmMessage &gt; <ul>
+<li>&lt;html&gt;
+				This will reset the application's configuration to factory settings.
+				 All user settings will be lost.
+				Proceed?</li>
+</ul> &lt;/confirmMessage&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/system.html">system</a></th><th>If:</th><td>property acr.debug</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;menu
+         
+        <span class="attribute">after</span>="<span class="attribute-value">edit</span>"
+      
+         
+        <span class="attribute">before</span>="<span class="attribute-value">help</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">debug</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">menubar</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Debug</span>"
+       /&gt; <br>
+     &lt;action
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">list</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">configdump</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:configuration</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">debug</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Show Configuration</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section" colspan="3"> Contribution from module <a href="../module/ui.html">ui</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;tab
+         
+        <span class="attribute">after</span>="<span class="attribute-value">discovery</span>"
+      
+         
+        <span class="attribute">before</span>="<span class="attribute-value">services</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">workflow</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Data Analysis</span>"
+       /&gt; <br>
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">AGlogo16x16.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">concat</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">about</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">instance:java.lang.String</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">help</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">About AstroGrid Workbench..</span>"
+       &gt; <ul>
+<li>
+     &lt;parameter &gt; <ul>
+<li>&lt;html&gt;
+			&lt;h1&gt;Astrogrid Workbench v${astrogrid.desktop.version}&lt;/h1&gt;		
+			&lt;b&gt;http://www.astrogrid.org/desktop&lt;/b&gt;&lt;br&gt;
+			&lt;h2&gt;Contributors&lt;/h2&gt;
+			&lt;ul&gt;
+			 &lt;li&gt;Alasdair Allan&lt;/li&gt;
+			&lt;li&gt;Elizabeth Auden&lt;/li&gt;
+			&lt;li&gt;Kona Andrews&lt;/li&gt;
+			&lt;li&gt;Kevin Benson&lt;/li&gt;
+			&lt;li&gt;Silvia Dalla&lt;/li&gt;
+			&lt;li&gt;Gary Gilchrist&lt;/li&gt;
+			&lt;li&gt;Eduardo Gonzalez&lt;/li&gt;
+			&lt;li&gt;Norman Gray&lt;/li&gt;
+			&lt;li&gt;Paul Harrison&lt;/li&gt;
+			&lt;li&gt;Tony Linde&lt;/li&gt;
+			&lt;li&gt;Jeff Lusted&lt;/li&gt;
+			&lt;li&gt;Phil Nicholson&lt;/li&gt;
+			&lt;li&gt;Keith Noddle&lt;/li&gt;
+			&lt;li&gt;Jonathan Tedds&lt;/li&gt;
+			&lt;li&gt;Dave Morris&lt;/li&gt;
+			&lt;li&gt;Catherine Qin&lt;/li&gt;
+			&lt;li&gt;Anita Richards&lt;/li&gt;
+			&lt;li&gt;Guy Rixon&lt;/li&gt;
+			&lt;li&gt;John Taylor&lt;/li&gt;
+			&lt;li&gt;Mark Taylor&lt;/li&gt;
+			&lt;li&gt;Nicholas Walton&lt;/li&gt;
+			&lt;li&gt;Noel Winstanley&lt;/li&gt;
+			&lt;/ul&gt;			
+			&lt;h2&gt;Acknowledgements&lt;/h2&gt;
+			Contains code and/or integrates with services provided by CADC, CDS, ESA-VO, NVO, Starlink, Plastic, VOTech
+
+			&lt;hr&gt;
+			&lt;h2&gt;Build Information&lt;/h2&gt;
+			Built: ${astrogrid.build.date}&lt;br&gt;
+			At: ${astrogrid.build.location}&lt;br&gt;
+			With ${astrogrid.build.jdk}&lt;br&gt;
+			By: ${astrogrid.build.by}
+			&lt;/html&gt;</li>
+</ul> &lt;/parameter&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/ui.html">ui</a></th><th>If:</th><td>not (property ui.astroscope.disabled)</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">before</span>="<span class="attribute-value">helioscope</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">astroscope.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">show</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">astroscope</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:astroscope</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">discovery</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">AstroScope</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;Search and visualise matches in all &lt;br&gt;
+					available image, catalogue and  spectral archives by &lt;br&gt;
+					offset from user defined sky position and radius.</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/ui.html">ui</a></th><th>If:</th><td>not (property ui.helioscope.disabled)</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">astroscope</span>"
+      
+         
+        <span class="attribute">before</span>="<span class="attribute-value">applicationLauncher1</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">helioscope.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">show</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">helioscope</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:helioscope</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">discovery</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">HelioScope</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;Search and visualise matches in all &lt;br&gt;
+					available solar archives by&lt;br&gt;
+					offset from user defined start and end times</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/ui.html">ui</a></th><th>If:</th><td>not (property ui.lookout.disabled)</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">before</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">lookout.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">show</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">lookout</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:lookout</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">services</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Lookout</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;Monitor the progress of Tasks, Queries and Workflows submitted for&lt;br&gt;
+		execution on the AstroGrid system including links to job transcripts.</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/ui.html">ui</a></th><th>If:</th><td>not (property ui.parameterizedWorkflows.disabled)</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">applicationLauncher</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">logo48x48.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">run</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">parameterizedWorkflows</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:parameterizedWorkflows</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">workflow</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Science Workflows</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;Direct access and editing of pre-canned workflows &lt;br&gt;
+			for commonly required astronomical tasks.</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/ui.html">ui</a></th><th>If:</th><td>not (property ui.applicationLauncher.disabled)</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">before</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">applaunch.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">show</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">applicationLauncher</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:applicationLauncher</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">workflow</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Task Launcher</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;Launches a single task to be executed on the AstroGrid system.&lt;br&gt;
+	A task can be either a Query to a data centre or a noninteractive&lt;br&gt;
+	Application that, e.g. operates on data files or runs a model.</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/ui.html">ui</a></th><th>If:</th><td>not (property ui.applicationLauncher.disabled)</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">applaunch.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">show</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">applicationLauncher1</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:applicationLauncher</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">discovery</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Task Launcher</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;Launches a single task to be executed on the AstroGrid system.&lt;br&gt;
+	A task can be either a Query to a data centre or a noninteractive&lt;br&gt;
+	Application that, e.g. operates on data files or runs a model.</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/ui.html">ui</a></th><th>If:</th><td>not (property ui.workflowBuilder.disabled)</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">parameterizedWorkflows</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">workflow.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">show</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">workflowBuilder</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:workflowBuilder</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">workflow</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Workflow Builder</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;Interactive GUI workflow builder for sequencing tasks and queries to&lt;br&gt;
+			AstroGrid and other VO services.</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/ui.html">ui</a></th><th>If:</th><td>not (property ui.myspaceBrowser.disabled)</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">myspace.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">show</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">myspaceBrowser</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:myspaceBrowser</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">workflow</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Myspace</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;Login to MySpace for browsing and utilisation of returned datasets,&lt;br&gt;
+			queries and workflows in AstroGrid environment.</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/ui.html">ui</a></th><th>If:</th><td>not (property ui.myspaceBrowser.disabled)</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">lookout</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">myspace.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">show</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">myspaceBrowser1</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:myspaceBrowser</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">services</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Myspace</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;Login to MySpace for browsing and utilisation of returned datasets,&lt;br&gt;
+			queries and workflows in AstroGrid environment.</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/ui.html">ui</a></th><th>If:</th><td>not (property ui.registryBrowser.disabled)</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">resource.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">show</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">registryBrowser</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:registryBrowser</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">services</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Resources</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;Simple text-entry search for available &lt;br&gt;
+			services and archives in the VO registry.</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+</table>
+<hr>
+<div class="title"> Module <a href="../module/system.html">system</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>

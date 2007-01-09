@@ -1,0 +1,1480 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="../hivemind.css" type="text/css" rel="stylesheet">
+<title>HiveMind Registry -  Module ui</title>
+</head>
+<body>
+<div class="title">Module ui</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<table cellspacing="0" class="top-level-object">
+<tr>
+<th class="object-id">Module ui</th><th>Version:</th><td>1.0.0</td>
+</tr>
+<tr>
+<th colspan="2" class="object-id">Package:</th><td>org.astrogrid.acr.ui</td>
+</tr>
+<tr>
+<td colspan="3" class="description">.</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<table cellspacing="0" class="layout">
+<tr>
+<td>
+<table cellspacing="0" class="summary">
+<tr>
+<th>Configuration Points</th>
+</tr>
+<tr>
+<td><a href="../config/ui.sendToItems.html">ui.sendToItems</a></td>
+</tr>
+<tr>
+<td><a href="../config/ui.workflowTemplates.html">ui.workflowTemplates</a></td>
+</tr>
+</table>
+<div class="info">2 configuration points
+      </div>
+</td><td>
+<table cellspacing="0" class="summary">
+<tr>
+<th>Service Points</th>
+</tr>
+<tr>
+<td><a href="../service/ui.applicationLauncher.html">ui.applicationLauncher</a></td>
+</tr>
+<tr>
+<td><a href="../service/ui.astroscope.html">ui.astroscope</a></td>
+</tr>
+<tr>
+<td><a href="../service/ui.fitsBroadcastSTA.html">ui.fitsBroadcastSTA</a></td>
+</tr>
+<tr>
+<td><a href="../service/ui.helioscope.html">ui.helioscope</a></td>
+</tr>
+<tr>
+<td><a href="../service/ui.jobMonitor.html">ui.jobMonitor</a></td>
+</tr>
+<tr>
+<td><a href="../service/ui.lookout.html">ui.lookout</a></td>
+</tr>
+<tr>
+<td><a href="../service/ui.myspaceBrowser.html">ui.myspaceBrowser</a></td>
+</tr>
+<tr>
+<td><a href="../service/ui.parameterizedWorkflows.html">ui.parameterizedWorkflows</a></td>
+</tr>
+<tr>
+<td><a href="../service/ui.plasticSTF.html">ui.plasticSTF</a></td>
+</tr>
+<tr>
+<td><a href="../service/ui.registryBrowser.html">ui.registryBrowser</a></td>
+</tr>
+<tr>
+<td><a href="../service/ui.saveSTA.html">ui.saveSTA</a></td>
+</tr>
+<tr>
+<td><a href="../service/ui.sendTo.html">ui.sendTo</a></td>
+</tr>
+<tr>
+<td><a href="../service/ui.spectrumBroadcastSTA.html">ui.spectrumBroadcastSTA</a></td>
+</tr>
+<tr>
+<td><a href="../service/ui.viewBrowserSTA.html">ui.viewBrowserSTA</a></td>
+</tr>
+<tr>
+<td><a href="../service/ui.viewTranscriptSTA.html">ui.viewTranscriptSTA</a></td>
+</tr>
+<tr>
+<td><a href="../service/ui.votableBroadcastSTA.html">ui.votableBroadcastSTA</a></td>
+</tr>
+<tr>
+<td><a href="../service/ui.workflowBuilder.html">ui.workflowBuilder</a></td>
+</tr>
+</table>
+<div class="info">17 service points
+      </div>
+</td><td></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.acrServices.html">framework.acrServices</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;acrService
+         
+        <span class="attribute">id</span>="<span class="attribute-value">astroscope</span>"
+      
+         
+        <span class="attribute">interface</span>="<span class="attribute-value">AstroScope</span>"
+       /&gt; <br>
+     &lt;acrService
+         
+        <span class="attribute">id</span>="<span class="attribute-value">helioscope</span>"
+      
+         
+        <span class="attribute">interface</span>="<span class="attribute-value">HelioScope</span>"
+       /&gt; <br>
+     &lt;acrService
+         
+        <span class="attribute">id</span>="<span class="attribute-value">lookout</span>"
+      
+         
+        <span class="attribute">interface</span>="<span class="attribute-value">Lookout</span>"
+       /&gt; <br>
+     &lt;acrService
+         
+        <span class="attribute">id</span>="<span class="attribute-value">parameterizedWorkflows</span>"
+      
+         
+        <span class="attribute">interface</span>="<span class="attribute-value">ParameterizedWorkflowLauncher</span>"
+       /&gt; <br>
+     &lt;acrService
+         
+        <span class="attribute">id</span>="<span class="attribute-value">applicationLauncher</span>"
+      
+         
+        <span class="attribute">interface</span>="<span class="attribute-value">ApplicationLauncher</span>"
+       /&gt; <br>
+     &lt;acrService
+         
+        <span class="attribute">id</span>="<span class="attribute-value">workflowBuilder</span>"
+      
+         
+        <span class="attribute">interface</span>="<span class="attribute-value">WorkflowBuilder</span>"
+       /&gt; <br>
+     &lt;acrService
+         
+        <span class="attribute">id</span>="<span class="attribute-value">myspaceBrowser</span>"
+      
+         
+        <span class="attribute">interface</span>="<span class="attribute-value">MyspaceBrowser</span>"
+       /&gt; <br>
+     &lt;acrService
+         
+        <span class="attribute">id</span>="<span class="attribute-value">jobMonitor</span>"
+      
+         
+        <span class="attribute">interface</span>="<span class="attribute-value">JobMonitor</span>"
+       /&gt; <br>
+     &lt;acrService
+         
+        <span class="attribute">id</span>="<span class="attribute-value">registryBrowser</span>"
+      
+         
+        <span class="attribute">interface</span>="<span class="attribute-value">RegistryBrowser</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.descriptors.html">framework.descriptors</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;acr-module
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Applications for working with the VO</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">ui</span>"
+       &gt; <ul>
+<li>
+     &lt;component
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Control the  Application Launcher GUI.
+ 
+ &lt;img src="doc-files/applauncher.png"/&gt;</span>"
+      
+         
+        <span class="attribute">interface-class</span>="<span class="attribute-value">org.astrogrid.acr.ui.ApplicationLauncher</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">applicationLauncher</span>"
+       &gt; <ul>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">display the application launcher gui</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">show</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">hide the application launcher window</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">hide</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+</ul> &lt;/component&gt; </li>
+<li>
+     &lt;component
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Control  AstroScope.
+ 
+ &lt;img src="doc-files/astroscope.png"/&gt;</span>"
+      
+         
+        <span class="attribute">interface-class</span>="<span class="attribute-value">org.astrogrid.acr.ui.AstroScope</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">astroscope</span>"
+       &gt; <ul>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">display a new instance of astroscope</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">show</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+</ul> &lt;/component&gt; </li>
+<li>
+     &lt;component
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Control  AstroScope.
+ 
+ &lt;img src="doc-files/astroscope.png"/&gt;</span>"
+      
+         
+        <span class="attribute">interface-class</span>="<span class="attribute-value">org.astrogrid.acr.ui.HelioScope</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">helioscope</span>"
+       &gt; <ul>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">display a new instance of helioscope</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">show</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+</ul> &lt;/component&gt; </li>
+<li>
+     &lt;component
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Deprecated: 
+    replaced by {@link Lookout}
+   </span>"
+      
+         
+        <span class="attribute">interface-class</span>="<span class="attribute-value">org.astrogrid.acr.ui.JobMonitor</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">jobMonitor</span>"
+       &gt; <ul>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">show the job monitor window</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">show</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">hide the job monitor  window</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">hide</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">manually refresh the job list</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">refresh</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Add a new application to the monitor</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">addApplication</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">user-friendly name of the app</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">name</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">identifier of the application</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">executionId</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">bring the application tab of the monitor uppermost</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">displayApplicationTab</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">bring the jes tab of the monitor uppermost</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">displayJobTab</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+</ul> &lt;/component&gt; </li>
+<li>
+     &lt;component
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Control the Lookout UI.
+ 
+ &lt;img src="doc-files/lookout.png"/&gt;</span>"
+      
+         
+        <span class="attribute">interface-class</span>="<span class="attribute-value">org.astrogrid.acr.ui.Lookout</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">lookout</span>"
+       &gt; <ul>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">show</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">hide</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">refresh</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+</ul> &lt;/component&gt; </li>
+<li>
+     &lt;component
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Control the  Myspace Browser UI.
+ 
+ &lt;img src="doc-files/filemanager.png"/&gt;</span>"
+      
+         
+        <span class="attribute">interface-class</span>="<span class="attribute-value">org.astrogrid.acr.ui.MyspaceBrowser</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">myspaceBrowser</span>"
+       &gt; <ul>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">show the explorer gui</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">show</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">hide the explorer gui</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">hide</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+</ul> &lt;/component&gt; </li>
+<li>
+     &lt;component
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Control the parameterized workflows launcher .
+
+ &lt;img src="doc-files/pw-choice.png" /&gt;</span>"
+      
+         
+        <span class="attribute">interface-class</span>="<span class="attribute-value">org.astrogrid.acr.ui.ParameterizedWorkflowLauncher</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">parameterizedWorkflows</span>"
+       &gt; <ul>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">run the launcher  wizard</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">run</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+</ul> &lt;/component&gt; </li>
+<li>
+     &lt;component
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Control the registry browser UI.
+ 
+ &lt;img src="doc-files/registry.png"/&gt;</span>"
+      
+         
+        <span class="attribute">interface-class</span>="<span class="attribute-value">org.astrogrid.acr.ui.RegistryBrowser</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">registryBrowser</span>"
+       &gt; <ul>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">show a new instance of registry browser ui</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">show</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">hide the registry browser ui</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">hide</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">show an new instance of the registry browser, and perform the requiested search (keywords)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">search</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">s</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">display a particular record in a new instacne of the browser</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">open</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">uri</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+</ul> &lt;/component&gt; </li>
+<li>
+     &lt;component
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Control the Workflow Viewer / Builder UI.
+
+ &lt;img src="doc-files/wfbuilder.png"/&gt;</span>"
+      
+         
+        <span class="attribute">interface-class</span>="<span class="attribute-value">org.astrogrid.acr.ui.WorkflowBuilder</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">workflowBuilder</span>"
+       &gt; <ul>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">show the workflow builder UI</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">show</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">display transcript viewer</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">showTranscript</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">wf</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">hide the workflow builder UI</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">hide</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+</ul> &lt;/component&gt; </li>
+</ul> &lt;/acr-module&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/system.uiStructure.html">system.uiStructure</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;tab
+         
+        <span class="attribute">after</span>="<span class="attribute-value">discovery</span>"
+      
+         
+        <span class="attribute">before</span>="<span class="attribute-value">services</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">workflow</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Data Analysis</span>"
+       /&gt; <br>
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">AGlogo16x16.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">concat</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">about</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">instance:java.lang.String</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">help</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">About AstroGrid Workbench..</span>"
+       &gt; <ul>
+<li>
+     &lt;parameter &gt; <ul>
+<li>&lt;html&gt;
+			&lt;h1&gt;Astrogrid Workbench v${astrogrid.desktop.version}&lt;/h1&gt;		
+			&lt;b&gt;http://www.astrogrid.org/desktop&lt;/b&gt;&lt;br&gt;
+			&lt;h2&gt;Contributors&lt;/h2&gt;
+			&lt;ul&gt;
+			 &lt;li&gt;Alasdair Allan&lt;/li&gt;
+			&lt;li&gt;Elizabeth Auden&lt;/li&gt;
+			&lt;li&gt;Kona Andrews&lt;/li&gt;
+			&lt;li&gt;Kevin Benson&lt;/li&gt;
+			&lt;li&gt;Silvia Dalla&lt;/li&gt;
+			&lt;li&gt;Gary Gilchrist&lt;/li&gt;
+			&lt;li&gt;Eduardo Gonzalez&lt;/li&gt;
+			&lt;li&gt;Norman Gray&lt;/li&gt;
+			&lt;li&gt;Paul Harrison&lt;/li&gt;
+			&lt;li&gt;Tony Linde&lt;/li&gt;
+			&lt;li&gt;Jeff Lusted&lt;/li&gt;
+			&lt;li&gt;Phil Nicholson&lt;/li&gt;
+			&lt;li&gt;Keith Noddle&lt;/li&gt;
+			&lt;li&gt;Jonathan Tedds&lt;/li&gt;
+			&lt;li&gt;Dave Morris&lt;/li&gt;
+			&lt;li&gt;Catherine Qin&lt;/li&gt;
+			&lt;li&gt;Anita Richards&lt;/li&gt;
+			&lt;li&gt;Guy Rixon&lt;/li&gt;
+			&lt;li&gt;John Taylor&lt;/li&gt;
+			&lt;li&gt;Mark Taylor&lt;/li&gt;
+			&lt;li&gt;Nicholas Walton&lt;/li&gt;
+			&lt;li&gt;Noel Winstanley&lt;/li&gt;
+			&lt;/ul&gt;			
+			&lt;h2&gt;Acknowledgements&lt;/h2&gt;
+			Contains code and/or integrates with services provided by CADC, CDS, ESA-VO, NVO, Starlink, Plastic, VOTech
+
+			&lt;hr&gt;
+			&lt;h2&gt;Build Information&lt;/h2&gt;
+			Built: ${astrogrid.build.date}&lt;br&gt;
+			At: ${astrogrid.build.location}&lt;br&gt;
+			With ${astrogrid.build.jdk}&lt;br&gt;
+			By: ${astrogrid.build.by}
+			&lt;/html&gt;</li>
+</ul> &lt;/parameter&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Contribution to <a href="../config/system.uiStructure.html">system.uiStructure</a></th><th>If:</th><td>not (property ui.astroscope.disabled)</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">before</span>="<span class="attribute-value">helioscope</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">astroscope.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">show</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">astroscope</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:astroscope</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">discovery</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">AstroScope</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;Search and visualise matches in all &lt;br&gt;
+					available image, catalogue and  spectral archives by &lt;br&gt;
+					offset from user defined sky position and radius.</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Contribution to <a href="../config/system.uiStructure.html">system.uiStructure</a></th><th>If:</th><td>not (property ui.helioscope.disabled)</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">astroscope</span>"
+      
+         
+        <span class="attribute">before</span>="<span class="attribute-value">applicationLauncher1</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">helioscope.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">show</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">helioscope</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:helioscope</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">discovery</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">HelioScope</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;Search and visualise matches in all &lt;br&gt;
+					available solar archives by&lt;br&gt;
+					offset from user defined start and end times</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Contribution to <a href="../config/system.uiStructure.html">system.uiStructure</a></th><th>If:</th><td>not (property ui.lookout.disabled)</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">before</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">lookout.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">show</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">lookout</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:lookout</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">services</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Lookout</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;Monitor the progress of Tasks, Queries and Workflows submitted for&lt;br&gt;
+		execution on the AstroGrid system including links to job transcripts.</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Contribution to <a href="../config/system.uiStructure.html">system.uiStructure</a></th><th>If:</th><td>not (property ui.parameterizedWorkflows.disabled)</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">applicationLauncher</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">logo48x48.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">run</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">parameterizedWorkflows</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:parameterizedWorkflows</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">workflow</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Science Workflows</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;Direct access and editing of pre-canned workflows &lt;br&gt;
+			for commonly required astronomical tasks.</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Contribution to <a href="../config/system.uiStructure.html">system.uiStructure</a></th><th>If:</th><td>not (property ui.applicationLauncher.disabled)</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">before</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">applaunch.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">show</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">applicationLauncher</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:applicationLauncher</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">workflow</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Task Launcher</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;Launches a single task to be executed on the AstroGrid system.&lt;br&gt;
+	A task can be either a Query to a data centre or a noninteractive&lt;br&gt;
+	Application that, e.g. operates on data files or runs a model.</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Contribution to <a href="../config/system.uiStructure.html">system.uiStructure</a></th><th>If:</th><td>not (property ui.applicationLauncher.disabled)</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">applaunch.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">show</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">applicationLauncher1</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:applicationLauncher</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">discovery</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Task Launcher</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;Launches a single task to be executed on the AstroGrid system.&lt;br&gt;
+	A task can be either a Query to a data centre or a noninteractive&lt;br&gt;
+	Application that, e.g. operates on data files or runs a model.</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Contribution to <a href="../config/system.uiStructure.html">system.uiStructure</a></th><th>If:</th><td>not (property ui.workflowBuilder.disabled)</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">parameterizedWorkflows</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">workflow.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">show</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">workflowBuilder</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:workflowBuilder</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">workflow</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Workflow Builder</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;Interactive GUI workflow builder for sequencing tasks and queries to&lt;br&gt;
+			AstroGrid and other VO services.</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Contribution to <a href="../config/system.uiStructure.html">system.uiStructure</a></th><th>If:</th><td>not (property ui.myspaceBrowser.disabled)</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">myspace.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">show</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">myspaceBrowser</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:myspaceBrowser</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">workflow</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Myspace</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;Login to MySpace for browsing and utilisation of returned datasets,&lt;br&gt;
+			queries and workflows in AstroGrid environment.</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Contribution to <a href="../config/system.uiStructure.html">system.uiStructure</a></th><th>If:</th><td>not (property ui.myspaceBrowser.disabled)</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">lookout</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">myspace.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">show</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">myspaceBrowser1</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:myspaceBrowser</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">services</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Myspace</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;Login to MySpace for browsing and utilisation of returned datasets,&lt;br&gt;
+			queries and workflows in AstroGrid environment.</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Contribution to <a href="../config/system.uiStructure.html">system.uiStructure</a></th><th>If:</th><td>not (property ui.registryBrowser.disabled)</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">resource.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">show</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">registryBrowser</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:registryBrowser</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">services</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Resources</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>&lt;html&gt;Simple text-entry search for available &lt;br&gt;
+			services and archives in the VO registry.</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/ui.sendToItems.html">ui.sendToItems</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;object &gt; <ul>
+<li>service:saveSTA</li>
+</ul> &lt;/object&gt; <br>
+     &lt;object &gt; <ul>
+<li>service:viewBrowserSTA</li>
+</ul> &lt;/object&gt; <br>
+     &lt;object &gt; <ul>
+<li>service:viewTranscriptSTA</li>
+</ul> &lt;/object&gt; <br>
+     &lt;object &gt; <ul>
+<li>service:plasticSTF</li>
+</ul> &lt;/object&gt; <br>
+     &lt;object &gt; <ul>
+<li>service:votableBroadcastSTA</li>
+</ul> &lt;/object&gt; <br>
+     &lt;object &gt; <ul>
+<li>service:fitsBroadcastSTA</li>
+</ul> &lt;/object&gt; <br>
+     &lt;object &gt; <ul>
+<li>service:spectrumBroadcastSTA</li>
+</ul> &lt;/object&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/ui.workflowTemplates.html">ui.workflowTemplates</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;index &gt; <ul>
+<li>
+     &lt;workflow-template &gt; <ul>
+<li>http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/SolarMovieMaker.wf</li>
+</ul> &lt;/workflow-template&gt; </li>
+<li>
+     &lt;workflow-template &gt; <ul>
+<li>http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/redshiftmakerng.xml</li>
+</ul> &lt;/workflow-template&gt; </li>
+<li>
+     &lt;workflow-template &gt; <ul>
+<li>http://www.merlin.ac.uk/astrogrid/colourcutter.xml</li>
+</ul> &lt;/workflow-template&gt; </li>
+<li>
+     &lt;workflow-template &gt; <ul>
+<li>http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/ctipmodeA.xml</li>
+</ul> &lt;/workflow-template&gt; </li>
+<li>
+     &lt;workflow-template &gt; <ul>
+<li>http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/sdss-dr4.xml</li>
+</ul> &lt;/workflow-template&gt; </li>
+<li>
+     &lt;workflow-template &gt; <ul>
+<li>http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/conesearchlist.wf</li>
+</ul> &lt;/workflow-template&gt; </li>
+<li>
+     &lt;workflow-template &gt; <ul>
+<li>http://wiki.astrogrid.org/pub/Astrogrid/ParameterizedWorkflows/ctipmodeB.xml</li>
+</ul> &lt;/workflow-template&gt; </li>
+</ul> &lt;/index&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Implementation for service <a href="../service/ui.applicationLauncher.html">ui.applicationLauncher</a></th><th>If:</th><td>property ui.applicationLauncher.disabled</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../service/hivemind.lib.PlaceholderFactory.html">hivemind.lib.PlaceholderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  /&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Implementation for service <a href="../service/ui.astroscope.html">ui.astroscope</a></th><th>If:</th><td>property ui.astroscope.disabled</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../service/hivemind.lib.PlaceholderFactory.html">hivemind.lib.PlaceholderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  /&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Implementation for service <a href="../service/ui.helioscope.html">ui.helioscope</a></th><th>If:</th><td>property ui.helioscope.disabled</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../service/hivemind.lib.PlaceholderFactory.html">hivemind.lib.PlaceholderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  /&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Implementation for service <a href="../service/ui.jobMonitor.html">ui.jobMonitor</a></th><th>If:</th><td>property ui.lookout.disabled</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../service/hivemind.lib.PlaceholderFactory.html">hivemind.lib.PlaceholderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  /&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Implementation for service <a href="../service/ui.lookout.html">ui.lookout</a></th><th>If:</th><td>property ui.lookout.disabled</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../service/hivemind.lib.PlaceholderFactory.html">hivemind.lib.PlaceholderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  /&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Implementation for service <a href="../service/ui.myspaceBrowser.html">ui.myspaceBrowser</a></th><th>If:</th><td>property ui.myspaceBrowser.disabled</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../service/hivemind.lib.PlaceholderFactory.html">hivemind.lib.PlaceholderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  /&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Implementation for service <a href="../service/ui.parameterizedWorkflows.html">ui.parameterizedWorkflows</a></th><th>If:</th><td>property ui.parameterizedWorkflows.disabled</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../service/hivemind.lib.PlaceholderFactory.html">hivemind.lib.PlaceholderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  /&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Implementation for service <a href="../service/ui.registryBrowser.html">ui.registryBrowser</a></th><th>If:</th><td>property ui.registryBrowser.disabled</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../service/hivemind.lib.PlaceholderFactory.html">hivemind.lib.PlaceholderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  /&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Implementation for service <a href="../service/ui.workflowBuilder.html">ui.workflowBuilder</a></th><th>If:</th><td>property ui.workflowBuilder.disabled</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../service/hivemind.lib.PlaceholderFactory.html">hivemind.lib.PlaceholderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  /&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+<hr>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>

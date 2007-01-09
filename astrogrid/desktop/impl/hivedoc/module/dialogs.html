@@ -1,0 +1,967 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="../hivemind.css" type="text/css" rel="stylesheet">
+<title>HiveMind Registry -  Module dialogs</title>
+</head>
+<body>
+<div class="title">Module dialogs</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<table cellspacing="0" class="top-level-object">
+<tr>
+<th class="object-id">Module dialogs</th><th>Version:</th><td>1.0.0</td>
+</tr>
+<tr>
+<th colspan="2" class="object-id">Package:</th><td>org.astrogrid.acr.dialogs</td>
+</tr>
+<tr>
+<td colspan="3" class="description">User Interface Dialogues.</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<table cellspacing="0" class="layout">
+<tr>
+<td>
+<table cellspacing="0" class="summary">
+<tr>
+<th>Configuration Points</th>
+</tr>
+<tr>
+<td><a href="../config/dialogs.toolEditors.html">dialogs.toolEditors</a></td>
+</tr>
+</table>
+<div class="info">1 configuration points
+      </div>
+</td><td>
+<table cellspacing="0" class="summary">
+<tr>
+<th>Service Points</th>
+</tr>
+<tr>
+<td><a href="../service/dialogs.adqlPanel.html">dialogs.adqlPanel</a></td>
+</tr>
+<tr>
+<td><a href="../service/dialogs.basicPanel.html">dialogs.basicPanel</a></td>
+</tr>
+<tr>
+<td><a href="../service/dialogs.chooserPanel.html">dialogs.chooserPanel</a></td>
+</tr>
+<tr>
+<td><a href="../service/dialogs.informationPanel.html">dialogs.informationPanel</a></td>
+</tr>
+<tr>
+<td><a href="../service/dialogs.registryChooser.html">dialogs.registryChooser</a></td>
+</tr>
+<tr>
+<td><a href="../service/dialogs.registryGoogle.html">dialogs.registryGoogle</a></td>
+</tr>
+<tr>
+<td><a href="../service/dialogs.resourceChooser.html">dialogs.resourceChooser</a></td>
+</tr>
+<tr>
+<td><a href="../service/dialogs.securityPanel.html">dialogs.securityPanel</a></td>
+</tr>
+<tr>
+<td><a href="../service/dialogs.simpleToolEditor.html">dialogs.simpleToolEditor</a></td>
+</tr>
+<tr>
+<td><a href="../service/dialogs.toolEditor.html">dialogs.toolEditor</a></td>
+</tr>
+<tr>
+<td><a href="../service/dialogs.xmlPanel.html">dialogs.xmlPanel</a></td>
+</tr>
+</table>
+<div class="info">11 service points
+      </div>
+</td><td></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/dialogs.toolEditors.html">dialogs.toolEditors</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;object &gt; <ul>
+<li>service:chooserPanel</li>
+</ul> &lt;/object&gt; <br>
+     &lt;object &gt; <ul>
+<li>service:adqlPanel</li>
+</ul> &lt;/object&gt; <br>
+     &lt;object &gt; <ul>
+<li>service:basicPanel</li>
+</ul> &lt;/object&gt; <br>
+     &lt;object &gt; <ul>
+<li>service:xmlPanel</li>
+</ul> &lt;/object&gt; <br>
+     &lt;object &gt; <ul>
+<li>service:informationPanel</li>
+</ul> &lt;/object&gt; <br>
+     &lt;object &gt; <ul>
+<li>service:securityPanel</li>
+</ul> &lt;/object&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.acrServices.html">framework.acrServices</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;acrService
+         
+        <span class="attribute">id</span>="<span class="attribute-value">resourceChooser</span>"
+      
+         
+        <span class="attribute">interface</span>="<span class="attribute-value">ResourceChooser</span>"
+       /&gt; <br>
+     &lt;acrService
+         
+        <span class="attribute">id</span>="<span class="attribute-value">toolEditor</span>"
+      
+         
+        <span class="attribute">interface</span>="<span class="attribute-value">ToolEditor</span>"
+       /&gt; <br>
+     &lt;acrService
+         
+        <span class="attribute">id</span>="<span class="attribute-value">registryChooser</span>"
+      
+         
+        <span class="attribute">interface</span>="<span class="attribute-value">RegistryChooser</span>"
+       /&gt; <br>
+     &lt;acrService
+         
+        <span class="attribute">id</span>="<span class="attribute-value">registryGoogle</span>"
+      
+         
+        <span class="attribute">interface</span>="<span class="attribute-value">RegistryGoogle</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.descriptors.html">framework.descriptors</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;acr-module
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Reusable UI Dialogues</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">dialogs</span>"
+       &gt; <ul>
+<li>
+     &lt;component
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Deprecated: 
+    use dialogs.registryGoogle.
+   </span>"
+      
+         
+        <span class="attribute">interface-class</span>="<span class="attribute-value">org.astrogrid.acr.dialogs.RegistryChooser</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">registryChooser</span>"
+       &gt; <ul>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">display the registry chooser dialogue,</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">chooseResource</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">selected resgistry resource</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">org.astrogrid.acr.astrogrid.ResourceInformation</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">
+   key-value map, See ResourceInformation for structure.
+  </span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">message to prompt user</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">prompt</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">display the resource chooser dialogue, and enable resources that only match the filter</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">chooseResourceWithFilter</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">selected registry resource</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">org.astrogrid.acr.astrogrid.ResourceInformation</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">
+   key-value map, See ResourceInformation for structure.
+  </span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">message to prompt user</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">prompt</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">adql-like 'where' clause.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">filter</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">multiple selection variant of {@link #chooseResource}</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">chooseResources</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">org.astrogrid.acr.astrogrid.ResourceInformation[]</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">List of : 
+   key-value map, See ResourceInformation for structure.
+  </span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">prompt</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">multiple selection variant of {@link #chooseResourceWith Filter}</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">chooseResourcesWithFilter</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">org.astrogrid.acr.astrogrid.ResourceInformation[]</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">List of : 
+   key-value map, See ResourceInformation for structure.
+  </span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">prompt</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">filter</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+</ul> &lt;/component&gt; </li>
+<li>
+     &lt;component
+         
+        <span class="attribute">description</span>="<span class="attribute-value">prompt the user to select a registry resource by displaying  a more advanced registry chooser dialogue.</span>"
+      
+         
+        <span class="attribute">interface-class</span>="<span class="attribute-value">org.astrogrid.acr.dialogs.RegistryGoogle</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">registryGoogle</span>"
+       &gt; <ul>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">display the resource chooser dialogue.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">selectResources</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">0 or more selected resources. never null.</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">org.astrogrid.acr.ivoa.resource.Resource[]</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">List of : Resource</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">message to prompt user for input.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">prompt</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">if true, allow multiple selections.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">multiple</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">boolean</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">boolean</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">display the resource chooser dialogue, enabling only resources which match a filter.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">selectResourcesAdqlFilter</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">0 or more selected resources. never null.</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">org.astrogrid.acr.ivoa.resource.Resource[]</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">List of : Resource</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">message to prompt user for input.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">prompt</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">if true, allow multiple selections.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">multiple</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">boolean</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">boolean</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">adql-like 'where' clause.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">adqlFilter</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">display the resource chooser dialogue, enabling only resources which match a filter</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">selectResourcesXQueryFilter</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">0 or more selected resources. never null.</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">org.astrogrid.acr.ivoa.resource.Resource[]</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">List of : Resource</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">message to prompt user for input.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">prompt</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">if true, allow multiple selections.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">multiple</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">boolean</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">boolean</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">xpath-like condition</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">xqueryFilter</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+</ul> &lt;/component&gt; </li>
+<li>
+     &lt;component
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Prompt the user to select a local file / myspace resource / url by displaying a resource chooser dialogue.
+  
+ This is a  generalisation of the 'open/save file' browser that also allows a myspace resource, or arbitrary URL to be selected.
+ &lt;br /&gt;
+ &lt;img src="doc-files/myspacechooser.png"/&gt;
+ &lt;br /&gt;</span>"
+      
+         
+        <span class="attribute">interface-class</span>="<span class="attribute-value">org.astrogrid.acr.dialogs.ResourceChooser</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">resourceChooser</span>"
+       &gt; <ul>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">show the resource chooser, and block until user selects.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">chooseResource</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">URI of the selected resource, or null if the user cancelled.</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">title for the dialogue - e.g.'choose file to open'</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">title</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">- if true, enable the myspace tab. if false, don't display this.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">enableMySpace</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">boolean</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">boolean</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">fully-configurable resource chooser - a generalization of {@link #chooseResource}</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">fullChooseResource</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">the URI of the selected resource, or null if the user cancelled</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">title for the dialogue</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">title</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">if true, enable the myspace tab</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">enableMySpace</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">boolean</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">boolean</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">if true, enable the local file tab</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">enableLocalFile</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">boolean</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">boolean</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">if true, enable the 'enter a URL' tab</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">enableURI</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">boolean</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">boolean</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+</ul> &lt;/component&gt; </li>
+<li>
+     &lt;component
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Display the remote invocation document editor as a dialogue.
+ 
+ Can be used to construct calls to Remote applications, such as data processor and catalogues.
+
+ &lt;br /&gt;
+ Displays the content of a invocation document, augmented with data about this application loaded from
+ the registry. Enables user to edit input ad output parameters (including using the {@link org.astrogrid.acr.dialogs.ResourceChooser}
+ dialogue to select indirect parameters.
+ &lt;br /&gt;
+ &lt;img src="doc-files/pw-params.png"/&gt;</span>"
+      
+         
+        <span class="attribute">interface-class</span>="<span class="attribute-value">org.astrogrid.acr.dialogs.ToolEditor</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">toolEditor</span>"
+       &gt; <ul>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Prompt the user to edit a tool document</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">edit</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">an edited copy of this document</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">org.w3c.dom.Document</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string containing XML</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">document conforming to Tool schema</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">t</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">org.w3c.dom.Document</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string containing XML</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">prompt the user to edit a tool document stored elsewhere</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">editStored</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">edited copy of this document</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">org.w3c.dom.Document</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string containing XML</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">location the tool document is stored at (http://, ftp://, ivo://)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">documentLocation</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">prompt the user to select a VO service (application, datacenter, or something else) and construct a query against it.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">selectAndBuild</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">a new tool document</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">org.w3c.dom.Document</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string containing XML</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+</ul> &lt;/component&gt; </li>
+</ul> &lt;/acr-module&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.preferences.html">framework.preferences</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;preference
+         
+        <span class="attribute">advanced</span>="<span class="attribute-value">true</span>"
+      
+         
+        <span class="attribute">default-value</span>="<span class="attribute-value">true</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">dialogs.resourceChooser.useNewDialog</span>"
+      
+         
+        <span class="attribute">requires-restart</span>="<span class="attribute-value">true</span>"
+       &gt; <ul>
+<li>
+     &lt;ui-name &gt; <ul>
+<li>Use new-style dialogs</li>
+</ul> &lt;/ui-name&gt; </li>
+<li>
+     &lt;description &gt; <ul>
+<li>select new or old filechooser dialogue implementation</li>
+</ul> &lt;/description&gt; </li>
+</ul> &lt;/preference&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Contribution to <a href="../config/system.uiStructure.html">system.uiStructure</a></th><th>If:</th><td>property acr.debug</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">chooseResource</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">driveResourceChooser</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:resourceChooser</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">debug</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Launch ResourceChooser</span>"
+       &gt; <ul>
+<li>
+     &lt;parameter &gt; <ul>
+<li>Choose file</li>
+</ul> &lt;/parameter&gt; </li>
+<li>
+     &lt;parameter &gt; <ul>
+<li>true</li>
+</ul> &lt;/parameter&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Contribution to <a href="../config/system.uiStructure.html">system.uiStructure</a></th><th>If:</th><td>property acr.debug</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">selectAndBuild</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">driveToolEditor</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:toolEditor</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">debug</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Launch ToolEditor</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Contribution to <a href="../config/system.uiStructure.html">system.uiStructure</a></th><th>If:</th><td>property acr.debug</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">selectResources</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">driveRegistryChooser</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:registryGoogle</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">debug</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">Launch RegistryChooser</span>"
+       &gt; <ul>
+<li>
+     &lt;parameter &gt; <ul>
+<li>Choose a resource!</li>
+</ul> &lt;/parameter&gt; </li>
+<li>
+     &lt;parameter &gt; <ul>
+<li>false</li>
+</ul> &lt;/parameter&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Implementation for service <a href="../service/dialogs.registryChooser.html">dialogs.registryChooser</a></th><th>If:</th><td>property dialogs.registryChooser.disabled</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../service/hivemind.lib.PlaceholderFactory.html">hivemind.lib.PlaceholderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  /&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Implementation for service <a href="../service/dialogs.registryGoogle.html">dialogs.registryGoogle</a></th><th>If:</th><td>property dialogs.registryGoogle.disabled</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../service/hivemind.lib.PlaceholderFactory.html">hivemind.lib.PlaceholderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  /&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Implementation for service <a href="../service/dialogs.resourceChooser.html">dialogs.resourceChooser</a></th><th>If:</th><td>property dialogs.resourceChooser.disabled</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../service/hivemind.lib.PlaceholderFactory.html">hivemind.lib.PlaceholderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  /&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Implementation for service <a href="../service/dialogs.simpleToolEditor.html">dialogs.simpleToolEditor</a></th><th>If:</th><td>property dialogs.toolEditor.disabled</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../service/hivemind.lib.PlaceholderFactory.html">hivemind.lib.PlaceholderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  /&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Implementation for service <a href="../service/dialogs.toolEditor.html">dialogs.toolEditor</a></th><th>If:</th><td>property dialogs.toolEditor.disabled</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../service/hivemind.lib.PlaceholderFactory.html">hivemind.lib.PlaceholderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  /&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+<hr>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>

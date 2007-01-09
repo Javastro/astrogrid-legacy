@@ -1,0 +1,138 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="../hivemind.css" type="text/css" rel="stylesheet">
+<title>HiveMind Registry -  Service Point system.ui</title>
+</head>
+<body>
+<div class="title"> Module <a href="../module/system.html">system</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<hr>
+<table cellspacing="0" class="top-level-object">
+<tr>
+<th class="object-id"><img alt="[public]" height="20" width="20" src="../public.png"> Service Point system.ui</th><th> Interface: </th><td>org.astrogrid.desktop.modules.system.UIInternal</td>
+</tr>
+<tr>
+<td colspan="3" class="description">Main user interface - consumes the uiStructure configuration</td>
+</tr>
+<tr>
+<th class="section" colspan="3">Implementation</th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../services/hivemind.BuilderFactory.html">hivemind.BuilderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  &gt; <ul>
+<li>
+     &lt;construct
+         
+        <span class="attribute">class</span>="<span class="attribute-value">org.astrogrid.desktop.modules.system.UIImpl</span>"
+       &gt; <ul>
+<li>
+     &lt;service &gt; <ul>
+<li>system.browser</li>
+</ul> &lt;/service&gt; </li>
+<li>
+     &lt;service &gt; <ul>
+<li>builtin.acr</li>
+</ul> &lt;/service&gt; </li>
+<li>
+     &lt;service &gt; <ul>
+<li>builtin.shutdown</li>
+</ul> &lt;/service&gt; </li>
+<li>
+     &lt;service &gt; <ul>
+<li>configuration</li>
+</ul> &lt;/service&gt; </li>
+<li>
+     &lt;service &gt; <ul>
+<li>help</li>
+</ul> &lt;/service&gt; </li>
+<li>
+     &lt;service &gt; <ul>
+<li>executor</li>
+</ul> &lt;/service&gt; </li>
+<li>
+     &lt;service &gt; <ul>
+<li>framework.converter</li>
+</ul> &lt;/service&gt; </li>
+<li>
+     &lt;service &gt; <ul>
+<li>framework.htmlResultTransformer</li>
+</ul> &lt;/service&gt; </li>
+<li>
+     &lt;configuration &gt; <ul>
+<li>uiStructure</li>
+</ul> &lt;/configuration&gt; </li>
+<li>
+     &lt;error-handler /&gt; </li>
+<li>
+     &lt;service &gt; <ul>
+<li>plasticList</li>
+</ul> &lt;/service&gt; </li>
+<li>
+     &lt;event-listener
+         
+        <span class="attribute">service-id</span>="<span class="attribute-value">builtin.shutdown</span>"
+       /&gt; </li>
+<li>
+     &lt;set
+         
+        <span class="attribute">property</span>="<span class="attribute-value">visible</span>"
+      
+         
+        <span class="attribute">value</span>="<span class="attribute-value">${system.ui.visible}</span>"
+       /&gt; </li>
+<li>
+     &lt;set
+         
+        <span class="attribute">property</span>="<span class="attribute-value">title</span>"
+      
+         
+        <span class="attribute">value</span>="<span class="attribute-value">${system.ui.title}</span>"
+       /&gt; </li>
+</ul> &lt;/construct&gt; </li>
+</ul> &lt;/invoke-factory&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<th class="section"> Implementation from module <a href="../module/system.html">system</a></th><th>If:</th><td>property system.ui.disabled</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../services/hivemind.BuilderFactory.html">hivemind.BuilderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  &gt; <ul>
+<li>
+     &lt;construct
+         
+        <span class="attribute">class</span>="<span class="attribute-value">org.astrogrid.desktop.alternatives.HeadlessUI</span>"
+       &gt; <ul>
+<li>
+     &lt;string &gt; <ul>
+<li>UI</li>
+</ul> &lt;/string&gt; </li>
+<li>
+     &lt;service &gt; <ul>
+<li>system.executor</li>
+</ul> &lt;/service&gt; </li>
+</ul> &lt;/construct&gt; </li>
+</ul> &lt;/invoke-factory&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+<hr>
+<div class="title"> Module <a href="../module/system.html">system</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>

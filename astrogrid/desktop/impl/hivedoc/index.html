@@ -1,0 +1,688 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>HiveMind Registry</title>
+<link href="hivemind.css" type="text/css" rel="STYLESHEET">
+</head>
+<body>
+<div class="title">HiveMind Module Registry</div>
+<table cellspacing="0" class="summary">
+<tr>
+<th>Module</th><th>Version</th><th>Description</th>
+</tr>
+<tr>
+<td><a href="module/astrogrid.html">astrogrid</a></td><td>1.0.0</td><td>AstroGrid Services</td>
+</tr>
+<tr>
+<td><a href="module/background.html">background</a></td><td>1.0.0</td><td>Module of background services</td>
+</tr>
+<tr>
+<td><a href="module/builtin.html">builtin</a></td><td>1.0.0</td><td>Builtin Components</td>
+</tr>
+<tr>
+<td><a href="module/cds.html">cds</a></td><td>1.0.0</td><td></td>
+</tr>
+<tr>
+<td><a href="module/dialogs.html">dialogs</a></td><td>1.0.0</td><td>User Interface Dialogues.</td>
+</tr>
+<tr>
+<td><a href="module/framework.html">framework</a></td><td>1.0.0</td><td>Base module - defines ACR configuration points, fundamental config keys, configures hivemind.</td>
+</tr>
+<tr>
+<td><a href="module/hivemind.html">hivemind</a></td><td>1.1.0</td><td>The master module for HiveMind, defining core, universal functionality.</td>
+</tr>
+<tr>
+<td><a href="module/hivemind.lib.html">hivemind.lib</a></td><td>1.1.0</td><td>Standard library for HiveMind, providing commonly used services.</td>
+</tr>
+<tr>
+<td><a href="module/ivoa.html">ivoa</a></td><td>1.0.0</td><td>IVOA standard services.</td>
+</tr>
+<tr>
+<td><a href="module/nvo.html">nvo</a></td><td>1.0.0</td><td>Services from American NVO - not much here anymore.</td>
+</tr>
+<tr>
+<td><a href="module/plastic.html">plastic</a></td><td>1.0.0</td><td>PLASTIC - PLatform for AStronomical Tools Inter Connection</td>
+</tr>
+<tr>
+<td><a href="module/system.html">system</a></td><td>1.0.0</td><td>System module.
+	&sect;
+	
+	
+	
+		
+	
+	
+	
+			
+	
+	
+	
+	
+		
+	
+
+	
+	
+	
+
+	
+		
+	
+	
+	
+	
+
+		
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	Controls the webbrowser</td>
+</tr>
+<tr>
+<td><a href="module/test.html">test</a></td><td>1.0.0</td><td>Components for self-testing</td>
+</tr>
+<tr>
+<td><a href="module/ui.html">ui</a></td><td>1.0.0</td><td>.</td>
+</tr>
+<tr>
+<td><a href="module/util.html">util</a></td><td>1.0.0</td><td>Utility Components</td>
+</tr>
+<tr>
+<td><a href="module/voevent.html">voevent</a></td><td>1.0.0</td><td></td>
+</tr>
+<tr>
+<td><a href="module/votech.html">votech</a></td><td>1.0.0</td><td></td>
+</tr>
+</table>
+<table cellspacing="0" class="layout">
+<tr>
+<td>
+<table cellspacing="0" class="summary">
+<tr>
+<th>Configuration Points</th>
+</tr>
+<tr>
+<td><a href="config/astrogrid.processStrategies.html">astrogrid.processStrategies</a></td>
+</tr>
+<tr>
+<td><a href="config/astrogrid.trustAnchors.html">astrogrid.trustAnchors</a></td>
+</tr>
+<tr>
+<td><a href="config/background.applicationDescriptions.html">background.applicationDescriptions</a></td>
+</tr>
+<tr>
+<td><a href="config/dialogs.toolEditors.html">dialogs.toolEditors</a></td>
+</tr>
+<tr>
+<td><a href="config/framework.acrServices.html">framework.acrServices</a></td>
+</tr>
+<tr>
+<td><a href="config/framework.converters.html">framework.converters</a></td>
+</tr>
+<tr>
+<td><a href="config/framework.descriptors.html">framework.descriptors</a></td>
+</tr>
+<tr>
+<td><a href="config/framework.htmlResultTransformers.html">framework.htmlResultTransformers</a></td>
+</tr>
+<tr>
+<td><a href="config/framework.plainResultTransformers.html">framework.plainResultTransformers</a></td>
+</tr>
+<tr>
+<td><a href="config/framework.preferenceClass.html">framework.preferenceClass</a></td>
+</tr>
+<tr>
+<td><a href="config/framework.preferences.html">framework.preferences</a></td>
+</tr>
+<tr>
+<td><a href="config/framework.rpcResultTransformers.html">framework.rpcResultTransformers</a></td>
+</tr>
+<tr>
+<td><a href="config/framework.stylesheets.html">framework.stylesheets</a></td>
+</tr>
+<tr>
+<td><a href="config/hivemind.ApplicationDefaults.html">hivemind.ApplicationDefaults</a></td>
+</tr>
+<tr>
+<td><a href="config/hivemind.EagerLoad.html">hivemind.EagerLoad</a></td>
+</tr>
+<tr>
+<td><a href="config/hivemind.FactoryDefaults.html">hivemind.FactoryDefaults</a></td>
+</tr>
+<tr>
+<td><a href="config/hivemind.ObjectProviders.html">hivemind.ObjectProviders</a></td>
+</tr>
+<tr>
+<td><a href="config/hivemind.ServiceModels.html">hivemind.ServiceModels</a></td>
+</tr>
+<tr>
+<td><a href="config/hivemind.Startup.html">hivemind.Startup</a></td>
+</tr>
+<tr>
+<td><a href="config/hivemind.SymbolSources.html">hivemind.SymbolSources</a></td>
+</tr>
+<tr>
+<td><a href="config/hivemind.Translators.html">hivemind.Translators</a></td>
+</tr>
+<tr>
+<td><a href="config/system.plasticMessageHandlers.html">system.plasticMessageHandlers</a></td>
+</tr>
+<tr>
+<td><a href="config/system.rmiListenerInterfaces.html">system.rmiListenerInterfaces</a></td>
+</tr>
+<tr>
+<td><a href="config/system.scheduledTasks.html">system.scheduledTasks</a></td>
+</tr>
+<tr>
+<td><a href="config/system.servletContext.html">system.servletContext</a></td>
+</tr>
+<tr>
+<td><a href="config/system.servlets.html">system.servlets</a></td>
+</tr>
+<tr>
+<td><a href="config/system.uiStructure.html">system.uiStructure</a></td>
+</tr>
+<tr>
+<td><a href="config/ui.sendToItems.html">ui.sendToItems</a></td>
+</tr>
+<tr>
+<td><a href="config/ui.workflowTemplates.html">ui.workflowTemplates</a></td>
+</tr>
+</table>
+<div class="info">29 configuration points
+    </div>
+</td><td>
+<table cellspacing="0" class="summary">
+<tr>
+<th>Service Points</th>
+</tr>
+<tr>
+<td><a href="service/astrogrid.applications.html">astrogrid.applications</a></td>
+</tr>
+<tr>
+<td><a href="service/astrogrid.bundlePrefs.html">astrogrid.bundlePrefs</a></td>
+</tr>
+<tr>
+<td><a href="service/astrogrid.castorTransformer.html">astrogrid.castorTransformer</a></td>
+</tr>
+<tr>
+<td><a href="service/astrogrid.community.html">astrogrid.community</a></td>
+</tr>
+<tr>
+<td><a href="service/astrogrid.installCertificates.html">astrogrid.installCertificates</a></td>
+</tr>
+<tr>
+<td><a href="service/astrogrid.jobs.html">astrogrid.jobs</a></td>
+</tr>
+<tr>
+<td><a href="service/astrogrid.login.html">astrogrid.login</a></td>
+</tr>
+<tr>
+<td><a href="service/astrogrid.loginDialogue.html">astrogrid.loginDialogue</a></td>
+</tr>
+<tr>
+<td><a href="service/astrogrid.messaging.html">astrogrid.messaging</a></td>
+</tr>
+<tr>
+<td><a href="service/astrogrid.myspace.html">astrogrid.myspace</a></td>
+</tr>
+<tr>
+<td><a href="service/astrogrid.processManager.html">astrogrid.processManager</a></td>
+</tr>
+<tr>
+<td><a href="service/astrogrid.recorder.html">astrogrid.recorder</a></td>
+</tr>
+<tr>
+<td><a href="service/astrogrid.registry.html">astrogrid.registry</a></td>
+</tr>
+<tr>
+<td><a href="service/astrogrid.stap.html">astrogrid.stap</a></td>
+</tr>
+<tr>
+<td><a href="service/astrogrid.store.html">astrogrid.store</a></td>
+</tr>
+<tr>
+<td><a href="service/astrogrid.styledCastorTransformer.html">astrogrid.styledCastorTransformer</a></td>
+</tr>
+<tr>
+<td><a href="service/astrogrid.toStringTransformer.html">astrogrid.toStringTransformer</a></td>
+</tr>
+<tr>
+<td><a href="service/background.appDescLib.html">background.appDescLib</a></td>
+</tr>
+<tr>
+<td><a href="service/background.authResolver.html">background.authResolver</a></td>
+</tr>
+<tr>
+<td><a href="service/background.ceaStrategy.html">background.ceaStrategy</a></td>
+</tr>
+<tr>
+<td><a href="service/background.coneAppDesc.html">background.coneAppDesc</a></td>
+</tr>
+<tr>
+<td><a href="service/background.controller.html">background.controller</a></td>
+</tr>
+<tr>
+<td><a href="service/background.envFactory.html">background.envFactory</a></td>
+</tr>
+<tr>
+<td><a href="service/background.execHist.html">background.execHist</a></td>
+</tr>
+<tr>
+<td><a href="service/background.idGen.html">background.idGen</a></td>
+</tr>
+<tr>
+<td><a href="service/background.jesStrategy.html">background.jesStrategy</a></td>
+</tr>
+<tr>
+<td><a href="service/background.protocols.html">background.protocols</a></td>
+</tr>
+<tr>
+<td><a href="service/background.query.html">background.query</a></td>
+</tr>
+<tr>
+<td><a href="service/background.ret.html">background.ret</a></td>
+</tr>
+<tr>
+<td><a href="service/background.siapAppDesc.html">background.siapAppDesc</a></td>
+</tr>
+<tr>
+<td><a href="service/background.tasks.html">background.tasks</a></td>
+</tr>
+<tr>
+<td><a href="service/builtin.acr.html">builtin.acr</a></td>
+</tr>
+<tr>
+<td><a href="service/builtin.shutdown.html">builtin.shutdown</a></td>
+</tr>
+<tr>
+<td><a href="service/cds.coordinate.html">cds.coordinate</a></td>
+</tr>
+<tr>
+<td><a href="service/cds.glu.html">cds.glu</a></td>
+</tr>
+<tr>
+<td><a href="service/cds.sesame.html">cds.sesame</a></td>
+</tr>
+<tr>
+<td><a href="service/cds.ucd.html">cds.ucd</a></td>
+</tr>
+<tr>
+<td><a href="service/cds.vizier.html">cds.vizier</a></td>
+</tr>
+<tr>
+<td><a href="service/dialogs.adqlPanel.html">dialogs.adqlPanel</a></td>
+</tr>
+<tr>
+<td><a href="service/dialogs.basicPanel.html">dialogs.basicPanel</a></td>
+</tr>
+<tr>
+<td><a href="service/dialogs.chooserPanel.html">dialogs.chooserPanel</a></td>
+</tr>
+<tr>
+<td><a href="service/dialogs.informationPanel.html">dialogs.informationPanel</a></td>
+</tr>
+<tr>
+<td><a href="service/dialogs.registryChooser.html">dialogs.registryChooser</a></td>
+</tr>
+<tr>
+<td><a href="service/dialogs.registryGoogle.html">dialogs.registryGoogle</a></td>
+</tr>
+<tr>
+<td><a href="service/dialogs.resourceChooser.html">dialogs.resourceChooser</a></td>
+</tr>
+<tr>
+<td><a href="service/dialogs.securityPanel.html">dialogs.securityPanel</a></td>
+</tr>
+<tr>
+<td><a href="service/dialogs.simpleToolEditor.html">dialogs.simpleToolEditor</a></td>
+</tr>
+<tr>
+<td><a href="service/dialogs.toolEditor.html">dialogs.toolEditor</a></td>
+</tr>
+<tr>
+<td><a href="service/dialogs.xmlPanel.html">dialogs.xmlPanel</a></td>
+</tr>
+<tr>
+<td><a href="service/framework.converter.html">framework.converter</a></td>
+</tr>
+<tr>
+<td><a href="service/framework.defaultHtmlTransformer.html">framework.defaultHtmlTransformer</a></td>
+</tr>
+<tr>
+<td><a href="service/framework.defaultPlainTransformer.html">framework.defaultPlainTransformer</a></td>
+</tr>
+<tr>
+<td><a href="service/framework.documentTransformer.html">framework.documentTransformer</a></td>
+</tr>
+<tr>
+<td><a href="service/framework.htmlResultTransformer.html">framework.htmlResultTransformer</a></td>
+</tr>
+<tr>
+<td><a href="service/framework.plainResultTransformer.html">framework.plainResultTransformer</a></td>
+</tr>
+<tr>
+<td><a href="service/framework.registerConverters.html">framework.registerConverters</a></td>
+</tr>
+<tr>
+<td><a href="service/framework.rpcResultTransformer.html">framework.rpcResultTransformer</a></td>
+</tr>
+<tr>
+<td><a href="service/framework.stylesheetTransformer.html">framework.stylesheetTransformer</a></td>
+</tr>
+<tr>
+<td><a href="service/framework.sysproperties.html">framework.sysproperties</a></td>
+</tr>
+<tr>
+<td><a href="service/framework.typeStructureTransformer.html">framework.typeStructureTransformer</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.ApplicationDefaultsSymbolSource.html">hivemind.ApplicationDefaultsSymbolSource</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.BuilderFactory.html">hivemind.BuilderFactory</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.ClassFactory.html">hivemind.ClassFactory</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.ClassObjectProvider.html">hivemind.ClassObjectProvider</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.ConfigurationObjectProvider.html">hivemind.ConfigurationObjectProvider</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.EagerLoad.html">hivemind.EagerLoad</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.FactoryDefaultsSymbolSource.html">hivemind.FactoryDefaultsSymbolSource</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.InterfaceSynthesizer.html">hivemind.InterfaceSynthesizer</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.lib.BeanFactoryBuilder.html">hivemind.lib.BeanFactoryBuilder</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.lib.BeanFactoryObjectProvider.html">hivemind.lib.BeanFactoryObjectProvider</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.lib.ChainBuilder.html">hivemind.lib.ChainBuilder</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.lib.ChainFactory.html">hivemind.lib.ChainFactory</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.lib.DefaultImplementationBuilder.html">hivemind.lib.DefaultImplementationBuilder</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.lib.DefaultSpringBeanFactory.html">hivemind.lib.DefaultSpringBeanFactory</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.lib.DefaultSpringBeanFactoryHolder.html">hivemind.lib.DefaultSpringBeanFactoryHolder</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.lib.EJBProxyFactory.html">hivemind.lib.EJBProxyFactory</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.lib.MethodInterceptorFactory.html">hivemind.lib.MethodInterceptorFactory</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.lib.NameLookup.html">hivemind.lib.NameLookup</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.lib.PipelineFactory.html">hivemind.lib.PipelineFactory</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.lib.PlaceholderFactory.html">hivemind.lib.PlaceholderFactory</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.lib.RemoteExceptionCoordinator.html">hivemind.lib.RemoteExceptionCoordinator</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.lib.ServicePropertyFactory.html">hivemind.lib.ServicePropertyFactory</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.lib.SpringLookupFactory.html">hivemind.lib.SpringLookupFactory</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.lib.SpringObjectProvider.html">hivemind.lib.SpringObjectProvider</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.lib.StrategyFactory.html">hivemind.lib.StrategyFactory</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.LoggingInterceptor.html">hivemind.LoggingInterceptor</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.ObjectInstanceObjectProvider.html">hivemind.ObjectInstanceObjectProvider</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.ObjectTranslator.html">hivemind.ObjectTranslator</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.ServiceObjectProvider.html">hivemind.ServiceObjectProvider</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.ServicePropertyObjectProvider.html">hivemind.ServicePropertyObjectProvider</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.ShutdownCoordinator.html">hivemind.ShutdownCoordinator</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.Startup.html">hivemind.Startup</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.ThreadEventNotifier.html">hivemind.ThreadEventNotifier</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.ThreadLocale.html">hivemind.ThreadLocale</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.ThreadLocaleFactory.html">hivemind.ThreadLocaleFactory</a></td>
+</tr>
+<tr>
+<td><a href="service/hivemind.ThreadLocalStorage.html">hivemind.ThreadLocalStorage</a></td>
+</tr>
+<tr>
+<td><a href="service/ivoa.adql074.html">ivoa.adql074</a></td>
+</tr>
+<tr>
+<td><a href="service/ivoa.cache.html">ivoa.cache</a></td>
+</tr>
+<tr>
+<td><a href="service/ivoa.cone.html">ivoa.cone</a></td>
+</tr>
+<tr>
+<td><a href="service/ivoa.externalRegistry.html">ivoa.externalRegistry</a></td>
+</tr>
+<tr>
+<td><a href="service/ivoa.registry.html">ivoa.registry</a></td>
+</tr>
+<tr>
+<td><a href="service/ivoa.siap.html">ivoa.siap</a></td>
+</tr>
+<tr>
+<td><a href="service/ivoa.skyNode.html">ivoa.skyNode</a></td>
+</tr>
+<tr>
+<td><a href="service/ivoa.ssap.html">ivoa.ssap</a></td>
+</tr>
+<tr>
+<td><a href="service/nvo.cone.html">nvo.cone</a></td>
+</tr>
+<tr>
+<td><a href="service/plastic.hub.html">plastic.hub</a></td>
+</tr>
+<tr>
+<td><a href="service/plastic.namegen.html">plastic.namegen</a></td>
+</tr>
+<tr>
+<td><a href="service/plastic.prettyPrinter.html">plastic.prettyPrinter</a></td>
+</tr>
+<tr>
+<td><a href="service/system.apihelp.html">system.apihelp</a></td>
+</tr>
+<tr>
+<td><a href="service/system.browser.html">system.browser</a></td>
+</tr>
+<tr>
+<td><a href="service/system.configuration.html">system.configuration</a></td>
+</tr>
+<tr>
+<td><a href="service/system.deprecation.html">system.deprecation</a></td>
+</tr>
+<tr>
+<td><a href="service/system.executor.html">system.executor</a></td>
+</tr>
+<tr>
+<td><a href="service/system.help.html">system.help</a></td>
+</tr>
+<tr>
+<td><a href="service/system.macSetup.html">system.macSetup</a></td>
+</tr>
+<tr>
+<td><a href="service/system.plasticList.html">system.plasticList</a></td>
+</tr>
+<tr>
+<td><a href="service/system.rmi.html">system.rmi</a></td>
+</tr>
+<tr>
+<td><a href="service/system.scheduler.html">system.scheduler</a></td>
+</tr>
+<tr>
+<td><a href="service/system.singleInstanceListener.html">system.singleInstanceListener</a></td>
+</tr>
+<tr>
+<td><a href="service/system.snitch.html">system.snitch</a></td>
+</tr>
+<tr>
+<td><a href="service/system.snitchInterceptor.html">system.snitchInterceptor</a></td>
+</tr>
+<tr>
+<td><a href="service/system.systray.html">system.systray</a></td>
+</tr>
+<tr>
+<td><a href="service/system.throbber.html">system.throbber</a></td>
+</tr>
+<tr>
+<td><a href="service/system.tupperware.html">system.tupperware</a></td>
+</tr>
+<tr>
+<td><a href="service/system.ui.html">system.ui</a></td>
+</tr>
+<tr>
+<td><a href="service/system.update.html">system.update</a></td>
+</tr>
+<tr>
+<td><a href="service/system.webserver.html">system.webserver</a></td>
+</tr>
+<tr>
+<td><a href="service/test.transporttest.html">test.transporttest</a></td>
+</tr>
+<tr>
+<td><a href="service/ui.applicationLauncher.html">ui.applicationLauncher</a></td>
+</tr>
+<tr>
+<td><a href="service/ui.astroscope.html">ui.astroscope</a></td>
+</tr>
+<tr>
+<td><a href="service/ui.fitsBroadcastSTA.html">ui.fitsBroadcastSTA</a></td>
+</tr>
+<tr>
+<td><a href="service/ui.helioscope.html">ui.helioscope</a></td>
+</tr>
+<tr>
+<td><a href="service/ui.jobMonitor.html">ui.jobMonitor</a></td>
+</tr>
+<tr>
+<td><a href="service/ui.lookout.html">ui.lookout</a></td>
+</tr>
+<tr>
+<td><a href="service/ui.myspaceBrowser.html">ui.myspaceBrowser</a></td>
+</tr>
+<tr>
+<td><a href="service/ui.parameterizedWorkflows.html">ui.parameterizedWorkflows</a></td>
+</tr>
+<tr>
+<td><a href="service/ui.plasticSTF.html">ui.plasticSTF</a></td>
+</tr>
+<tr>
+<td><a href="service/ui.registryBrowser.html">ui.registryBrowser</a></td>
+</tr>
+<tr>
+<td><a href="service/ui.saveSTA.html">ui.saveSTA</a></td>
+</tr>
+<tr>
+<td><a href="service/ui.sendTo.html">ui.sendTo</a></td>
+</tr>
+<tr>
+<td><a href="service/ui.spectrumBroadcastSTA.html">ui.spectrumBroadcastSTA</a></td>
+</tr>
+<tr>
+<td><a href="service/ui.viewBrowserSTA.html">ui.viewBrowserSTA</a></td>
+</tr>
+<tr>
+<td><a href="service/ui.viewTranscriptSTA.html">ui.viewTranscriptSTA</a></td>
+</tr>
+<tr>
+<td><a href="service/ui.votableBroadcastSTA.html">ui.votableBroadcastSTA</a></td>
+</tr>
+<tr>
+<td><a href="service/ui.workflowBuilder.html">ui.workflowBuilder</a></td>
+</tr>
+<tr>
+<td><a href="service/util.tables.html">util.tables</a></td>
+</tr>
+<tr>
+<td><a href="service/voevent.inject.html">voevent.inject</a></td>
+</tr>
+<tr>
+<td><a href="service/votech.vomon.html">votech.vomon</a></td>
+</tr>
+</table>
+<div class="info">148 service points
+    </div>
+</td><td>
+<table cellspacing="0" class="summary">
+<tr>
+<th>Schemas</th>
+</tr>
+<tr>
+<td><a href="schema/hivemind.Defaults.html">hivemind.Defaults</a></td>
+</tr>
+<tr>
+<td><a href="schema/hivemind.lib.BeanFactoryContribution.html">hivemind.lib.BeanFactoryContribution</a></td>
+</tr>
+<tr>
+<td><a href="schema/hivemind.lib.ChainContribution.html">hivemind.lib.ChainContribution</a></td>
+</tr>
+<tr>
+<td><a href="schema/hivemind.lib.Pipeline.html">hivemind.lib.Pipeline</a></td>
+</tr>
+<tr>
+<td><a href="schema/hivemind.lib.StrategyRegistry.html">hivemind.lib.StrategyRegistry</a></td>
+</tr>
+<tr>
+<td><a href="schema/hivemind.MethodFilter.html">hivemind.MethodFilter</a></td>
+</tr>
+<tr>
+<td><a href="schema/system.objects.html">system.objects</a></td>
+</tr>
+</table>
+<div class="info">7 schemas
+    </div>
+</td>
+</tr>
+</table>
+</body>
+</html>

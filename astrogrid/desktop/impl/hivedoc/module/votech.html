@@ -1,0 +1,270 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="../hivemind.css" type="text/css" rel="stylesheet">
+<title>HiveMind Registry -  Module votech</title>
+</head>
+<body>
+<div class="title">Module votech</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<table cellspacing="0" class="top-level-object">
+<tr>
+<th class="object-id">Module votech</th><th>Version:</th><td>1.0.0</td>
+</tr>
+<tr>
+<th colspan="2" class="object-id">Package:</th><td>org.votech</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<table cellspacing="0" class="layout">
+<tr>
+<td></td><td>
+<table cellspacing="0" class="summary">
+<tr>
+<th>Service Points</th>
+</tr>
+<tr>
+<td><a href="../service/votech.vomon.html">votech.vomon</a></td>
+</tr>
+</table>
+<div class="info">1 service points
+      </div>
+</td><td></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.acrServices.html">framework.acrServices</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;acrService
+         
+        <span class="attribute">id</span>="<span class="attribute-value">vomon</span>"
+      
+         
+        <span class="attribute">interface</span>="<span class="attribute-value">VoMon</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.descriptors.html">framework.descriptors</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;acr-module
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Services and infrastructure developed as part of the VOTech project</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">votech</span>"
+       &gt; <ul>
+<li>
+     &lt;component
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Monitor service availability using the VoMon service</span>"
+      
+         
+        <span class="attribute">interface-class</span>="<span class="attribute-value">org.votech.VoMon</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">vomon</span>"
+       &gt; <ul>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">forces the status information to be reloaded from the vomon server 
+ - potentially expensive operation</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">reload</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">check the availability of a service</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">checkAvailability</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">a monitor bean describing this service's availability, or null if this  service is not known</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">org.votech.VoMonBean</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">
+   key-value map, See VoMonBean for structure.
+  </span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">registry id of the service</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">id</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">check the availability of a cea application</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">checkCeaAvailability</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">an array of monitoring beans, one for each server that  states it provides this application. May be null if the application is unknown,   i.e if no servers provide this application.</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">org.votech.VoMonBean[]</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">List of : 
+   key-value map, See VoMonBean for structure.
+  </span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">registry id of the application</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">id</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+</ul> &lt;/component&gt; </li>
+</ul> &lt;/acr-module&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.preferences.html">framework.preferences</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;preference
+         
+        <span class="attribute">default-value</span>="<span class="attribute-value">http://thor.roe.ac.uk/vomon-full/status.xml</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">votech.vomon.endpoint</span>"
+      
+         
+        <span class="attribute">requires-restart</span>="<span class="attribute-value">true</span>"
+       &gt; <ul>
+<li>
+     &lt;ui-name &gt; <ul>
+<li>Endpoint of the monitoring service</li>
+</ul> &lt;/ui-name&gt; </li>
+<li>
+     &lt;description &gt; <ul>
+<li>A http url that returns a vomon xml document</li>
+</ul> &lt;/description&gt; </li>
+<li>
+     &lt;alternative &gt; <ul>
+<li>http://software.astrogrid.org/all-vo-mon/status.xml</li>
+</ul> &lt;/alternative&gt; </li>
+</ul> &lt;/preference&gt; <br>
+     &lt;preference
+         
+        <span class="attribute">default-value</span>="<span class="attribute-value">3600</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">votech.vomon.reload</span>"
+      
+         
+        <span class="attribute">requires-restart</span>="<span class="attribute-value">true</span>"
+       &gt; <ul>
+<li>
+     &lt;ui-name &gt; <ul>
+<li>System monitoring refresh period</li>
+</ul> &lt;/ui-name&gt; </li>
+<li>
+     &lt;units &gt; <ul>
+<li>seconds</li>
+</ul> &lt;/units&gt; </li>
+<li>
+     &lt;description &gt; <ul>
+<li>Period between reloading the monitoring information</li>
+</ul> &lt;/description&gt; </li>
+</ul> &lt;/preference&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.EagerLoad.html">hivemind.EagerLoad</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;load
+         
+        <span class="attribute">service-id</span>="<span class="attribute-value">vomon</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/system.scheduledTasks.html">system.scheduledTasks</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;object &gt; <ul>
+<li>service:vomon</li>
+</ul> &lt;/object&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Implementation for service <a href="../service/votech.vomon.html">votech.vomon</a></th><th>If:</th><td>property votech.vomon.disabled</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../service/hivemind.lib.PlaceholderFactory.html">hivemind.lib.PlaceholderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  /&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+<hr>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>

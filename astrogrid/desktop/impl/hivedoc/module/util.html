@@ -1,0 +1,422 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="../hivemind.css" type="text/css" rel="stylesheet">
+<title>HiveMind Registry -  Module util</title>
+</head>
+<body>
+<div class="title">Module util</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<table cellspacing="0" class="top-level-object">
+<tr>
+<th class="object-id">Module util</th><th>Version:</th><td>1.0.0</td>
+</tr>
+<tr>
+<th colspan="2" class="object-id">Package:</th><td>org.astrogrid.acr.util</td>
+</tr>
+<tr>
+<td colspan="3" class="description">Utility Components</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<table cellspacing="0" class="layout">
+<tr>
+<td></td><td>
+<table cellspacing="0" class="summary">
+<tr>
+<th>Service Points</th>
+</tr>
+<tr>
+<td><a href="../service/util.tables.html">util.tables</a></td>
+</tr>
+</table>
+<div class="info">1 service points
+      </div>
+</td><td></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.acrServices.html">framework.acrServices</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;acrService
+         
+        <span class="attribute">id</span>="<span class="attribute-value">tables</span>"
+      
+         
+        <span class="attribute">interface</span>="<span class="attribute-value">Tables</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.descriptors.html">framework.descriptors</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;acr-module
+         
+        <span class="attribute">description</span>="<span class="attribute-value">useful utility services</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">util</span>"
+       &gt; <ul>
+<li>
+     &lt;component
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Utility functions for working with tables.
+ Exposes some of the functionality of STIL</span>"
+      
+         
+        <span class="attribute">interface-class</span>="<span class="attribute-value">org.astrogrid.acr.util.Tables</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">tables</span>"
+       &gt; <ul>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Converts a table in a file between supported formats.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">convertFiles</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">input location: may be a http://, file://, ivo:// , ftp://                      compressed using unix compress, gzip or bzip2</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">inLocation</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">input handler name: generally one of                        fits, votable, ascii, csv, ipac, wdc or null</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">inFormat</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">output location: file://, ivo://, ftp://</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">outLocation</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">output format: generally one of                       fits, fits-plus,                       votable, votable-tabledata, votable-binary-inline,                       votable-binary-href, votable-fits-inline,                        votable-fits-href,                       text, ascii, csv, html, html-element, latex,                       latex-document or null</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">outFormat</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Writes an in-memory table to a table in a file, converting between supported formats.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">convertToFile</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">the input table</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">input</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">input handler name: generally one of                        fits, votable, ascii, csv, ipac, wdc or null</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">inFormat</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">output location: file://, ivo://, ftp://</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">outLocation</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">output format: generally one of                       fits, fits-plus,                       votable, votable-tabledata, votable-binary-inline,                       votable-binary-href, votable-fits-inline,                        votable-fits-href,                       text, ascii, csv, html, html-element, latex,                       latex-document or null</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">outFormat</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Reads a table in a file into an in-memory table, converting between supported formats
+ Will only give good results for text-based table formats.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">convertFromFile</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">the converted representation of the table.</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">input location: may be a http://, file://, ivo:// , ftp://                      compressed using unix compress, gzip or bzip2</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">inLocation</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">input handler name: generally one of                        fits, votable, ascii, csv, ipac, wdc or null</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">inFormat</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">output format: generally one of                       fits, fits-plus,                       votable, votable-tabledata, votable-binary-inline,                       votable-binary-href, votable-fits-inline,                        votable-fits-href,                       text, ascii, csv, html, html-element, latex,                       latex-document or null</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">outFormat</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Converts an in-memory table between supported formats. 
+ Will only give good results for text-based table formats.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">convert</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">a table in the requested format.</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">the input table.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">input</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">input handler name: generally one of                        fits, votable, ascii, csv, ipac, wdc or null</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">inFormat</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">output format: generally one of                       fits, fits-plus,                       votable, votable-tabledata, votable-binary-inline,                       votable-binary-href, votable-fits-inline,                        votable-fits-href,                       text, ascii, csv, html, html-element, latex,                       latex-document or null</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">outFormat</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">list the names of the table formats this module can write out as</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">listOutputFormats</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String[]</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">List of : string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">list the names of the table formats this module can read in from</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">listInputFormats</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String[]</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">List of : string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+</ul> &lt;/component&gt; </li>
+</ul> &lt;/acr-module&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.EagerLoad.html">hivemind.EagerLoad</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;load
+         
+        <span class="attribute">service-id</span>="<span class="attribute-value">tables</span>"
+       /&gt; </div>
+</td>
+</tr>
+</table>
+<hr>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>

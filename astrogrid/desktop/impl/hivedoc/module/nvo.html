@@ -1,0 +1,390 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="../hivemind.css" type="text/css" rel="stylesheet">
+<title>HiveMind Registry -  Module nvo</title>
+</head>
+<body>
+<div class="title">Module nvo</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<table cellspacing="0" class="top-level-object">
+<tr>
+<th class="object-id">Module nvo</th><th>Version:</th><td>1.0.0</td>
+</tr>
+<tr>
+<th colspan="2" class="object-id">Package:</th><td>org.astrogrid.acr.nvo</td>
+</tr>
+<tr>
+<td colspan="3" class="description">Services from American NVO - not much here anymore.</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<table cellspacing="0" class="layout">
+<tr>
+<td></td><td>
+<table cellspacing="0" class="summary">
+<tr>
+<th>Service Points</th>
+</tr>
+<tr>
+<td><a href="../service/nvo.cone.html">nvo.cone</a></td>
+</tr>
+</table>
+<div class="info">1 service points
+      </div>
+</td><td></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.acrServices.html">framework.acrServices</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;acrService
+         
+        <span class="attribute">id</span>="<span class="attribute-value">cone</span>"
+      
+         
+        <span class="attribute">interface</span>="<span class="attribute-value">Cone</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.descriptors.html">framework.descriptors</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;acr-module
+         
+        <span class="attribute">description</span>="<span class="attribute-value">NVO Services</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">nvo</span>"
+       &gt; <ul>
+<li>
+     &lt;component
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Deprecated: 
+    use the ivoa.cone interface instead.
+   </span>"
+      
+         
+        <span class="attribute">interface-class</span>="<span class="attribute-value">org.astrogrid.acr.nvo.Cone</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">cone</span>"
+       &gt; <ul>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">construct a query on RA, DEC, SR</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">constructQuery</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">query URL that can be fetched using a HTTP GET to execute the query</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URL</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">URL</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">URL of the service endpoint, or ivorn of the service description</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">service</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">right ascension</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">ra</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">double</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">double</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">declination</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">dec</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">double</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">double</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">search radius</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">sr</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">double</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">double</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Add an option to a previously constructed query</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">addOption</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">&lt;tt&gt;query&lt;/tt&gt; with the option appended.</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URL</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">URL</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">the query url</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">coneQuery</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URL</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">URL</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">the name of the option to add</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">optionName</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">value for the new option</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">optionValue</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">execute a cone query.
+ 
+ Convenience method - just performs a 'GET' on the query URL - many programming languages
+ support this themselves</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">getResults</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">a votable of results</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">org.w3c.dom.Document</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string containing XML</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">query url to execute</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">coneQuery</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URL</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">URL</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">execute a cone query and save the results</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">saveResults</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">the query url to execute</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">coneQuery</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URL</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">URL</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">location to save result document - may be file://, ivo:// (myspace), ftp://</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">saveLocation</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Deprecated: 
+      use getRegistryAdqlQuery()
+     </span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">getRegistryQuery</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">an adql query string</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">returns an ADQL/s query that should be passed to a registry to list all available cone services</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">getRegistryAdqlQuery</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">returns an xquery that should be passed to a registry to list all available cone services</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">getRegistryXQuery</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+</ul> &lt;/component&gt; </li>
+</ul> &lt;/acr-module&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Implementation for service <a href="../service/nvo.cone.html">nvo.cone</a></th><th>If:</th><td>property nvo.cone.disabled</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../service/hivemind.lib.PlaceholderFactory.html">hivemind.lib.PlaceholderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  /&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+<hr>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>

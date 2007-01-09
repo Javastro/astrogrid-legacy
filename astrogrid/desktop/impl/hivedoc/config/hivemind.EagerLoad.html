@@ -1,0 +1,206 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="../hivemind.css" type="text/css" rel="stylesheet">
+<title>HiveMind Registry -  Configuration Point hivemind.EagerLoad</title>
+</head>
+<body>
+<div class="title"> Module <a href="../module/hivemind.html">hivemind</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<hr>
+<table cellspacing="0" class="top-level-object">
+<tr>
+<th class="object-id"><img alt="[public]" height="20" width="20" src="../public.png"> Configuration Point hivemind.EagerLoad</th><th>Occurs:</th><td> unbounded </td>
+</tr>
+<tr>
+<td colspan="3" class="description">Configuration to which services may be contributed. The corresponding services are instantiated eagerly, as the Registry is started. 
+    The order in which services are instantiated is not specified.</td>
+</tr>
+<tr>
+<th class="section" colspan="3">Schema</th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<table cellspacing="0" class="nested-object">
+<tr>
+<th class="object-id" colspan="3"> Element &lt;load&gt; </th>
+</tr>
+<tr>
+<td colspan="3" class="description">Identifies a service that will be eagerly loaded.</td>
+</tr>
+<tr>
+<th class="sub-id">Attribute service-id (required) </th><th> Translator: </th><td><a href="../config/hivemind.Translators.html">service-point</a></td>
+</tr>
+<tr>
+<th class="section" colspan="3">Conversion Rules</th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;push-attribute
+         
+        <span class="attribute">attribute</span>="<span class="attribute-value">service-id</span>"
+       /&gt; <br>
+     &lt;invoke-parent
+         
+        <span class="attribute">method</span>="<span class="attribute-value">addElement</span>"
+       /&gt; </div>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<th class="section" colspan="3"> Contribution from module <a href="../module/astrogrid.html">astrogrid</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;load
+         
+        <span class="attribute">service-id</span>="<span class="attribute-value">messaging</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section" colspan="3"> Contribution from module <a href="../module/builtin.html">builtin</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;load
+         
+        <span class="attribute">service-id</span>="<span class="attribute-value">acr</span>"
+       /&gt; <br>
+     &lt;load
+         
+        <span class="attribute">service-id</span>="<span class="attribute-value">shutdown</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section" colspan="3"> Contribution from module <a href="../module/plastic.html">plastic</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;load
+         
+        <span class="attribute">service-id</span>="<span class="attribute-value">hub</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section" colspan="3"> Contribution from module <a href="../module/system.html">system</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;load
+         
+        <span class="attribute">service-id</span>="<span class="attribute-value">webserver</span>"
+       /&gt; <br>
+     &lt;load
+         
+        <span class="attribute">service-id</span>="<span class="attribute-value">rmi</span>"
+       /&gt; <br>
+     &lt;load
+         
+        <span class="attribute">service-id</span>="<span class="attribute-value">scheduler</span>"
+       /&gt; <br>
+     &lt;load
+         
+        <span class="attribute">service-id</span>="<span class="attribute-value">executor</span>"
+       /&gt; <br>
+     &lt;load
+         
+        <span class="attribute">service-id</span>="<span class="attribute-value">configuration</span>"
+       /&gt; <br>
+     &lt;load
+         
+        <span class="attribute">service-id</span>="<span class="attribute-value">snitch</span>"
+       /&gt; <br>
+     &lt;load
+         
+        <span class="attribute">service-id</span>="<span class="attribute-value">tupperware</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section" colspan="3"> Contribution from module <a href="../module/system.html">system</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;load
+         
+        <span class="attribute">service-id</span>="<span class="attribute-value">ui</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/system.html">system</a></th><th>If:</th><td>class javax.jnlp.ServiceManager</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;load
+         
+        <span class="attribute">service-id</span>="<span class="attribute-value">singleInstanceListener</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section"> Contribution from module <a href="../module/system.html">system</a></th><th>If:</th><td>class com.apple.eawt.Application</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;load
+         
+        <span class="attribute">service-id</span>="<span class="attribute-value">macSetup</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section" colspan="3"> Contribution from module <a href="../module/util.html">util</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;load
+         
+        <span class="attribute">service-id</span>="<span class="attribute-value">tables</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="section" colspan="3"> Contribution from module <a href="../module/voevent.html">voevent</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3"></td>
+</tr>
+<tr>
+<th class="section" colspan="3"> Contribution from module <a href="../module/votech.html">votech</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;load
+         
+        <span class="attribute">service-id</span>="<span class="attribute-value">vomon</span>"
+       /&gt; </div>
+</td>
+</tr>
+</table>
+<hr>
+<div class="title"> Module <a href="../module/hivemind.html">hivemind</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>

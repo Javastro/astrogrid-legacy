@@ -1,0 +1,69 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="../hivemind.css" type="text/css" rel="stylesheet">
+<title>HiveMind Registry -  Service Point ivoa.cone</title>
+</head>
+<body>
+<div class="title"> Module <a href="../module/ivoa.html">ivoa</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<hr>
+<table cellspacing="0" class="top-level-object">
+<tr>
+<th class="object-id"><img alt="[public]" height="20" width="20" src="../public.png"> Service Point ivoa.cone</th><th> Interface: </th><td>org.astrogrid.acr.ivoa.Cone</td>
+</tr>
+<tr>
+<td colspan="3" class="description">Client to Cone Services</td>
+</tr>
+<tr>
+<th class="section" colspan="3">Implementation</th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../services/hivemind.BuilderFactory.html">hivemind.BuilderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  &gt; <ul>
+<li>
+     &lt;construct
+         
+        <span class="attribute">class</span>="<span class="attribute-value">org.astrogrid.desktop.modules.ivoa.ConeImpl</span>"
+       &gt; <ul>
+<li>
+     &lt;service &gt; <ul>
+<li>ivoa.registry</li>
+</ul> &lt;/service&gt; </li>
+<li>
+     &lt;service &gt; <ul>
+<li>astrogrid.myspace</li>
+</ul> &lt;/service&gt; </li>
+</ul> &lt;/construct&gt; </li>
+</ul> &lt;/invoke-factory&gt; </li>
+<li> &lt;interceptor <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../service/system.throbber.html">system.throbber</a></span>"  /&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<th class="section"> Implementation from module <a href="../module/ivoa.html">ivoa</a></th><th>If:</th><td>property ivoa.cone.disabled</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../service/hivemind.lib.PlaceholderFactory.html">hivemind.lib.PlaceholderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  /&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+<hr>
+<div class="title"> Module <a href="../module/ivoa.html">ivoa</a>
+</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>

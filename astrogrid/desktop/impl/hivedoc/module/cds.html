@@ -1,0 +1,1554 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="../hivemind.css" type="text/css" rel="stylesheet">
+<title>HiveMind Registry -  Module cds</title>
+</head>
+<body>
+<div class="title">Module cds</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<table cellspacing="0" class="top-level-object">
+<tr>
+<th class="object-id">Module cds</th><th>Version:</th><td>1.0.0</td>
+</tr>
+<tr>
+<th colspan="2" class="object-id">Package:</th><td>org.astrogrid.acr.cds</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<table cellspacing="0" class="layout">
+<tr>
+<td></td><td>
+<table cellspacing="0" class="summary">
+<tr>
+<th>Service Points</th>
+</tr>
+<tr>
+<td><a href="../service/cds.coordinate.html">cds.coordinate</a></td>
+</tr>
+<tr>
+<td><a href="../service/cds.glu.html">cds.glu</a></td>
+</tr>
+<tr>
+<td><a href="../service/cds.sesame.html">cds.sesame</a></td>
+</tr>
+<tr>
+<td><a href="../service/cds.ucd.html">cds.ucd</a></td>
+</tr>
+<tr>
+<td><a href="../service/cds.vizier.html">cds.vizier</a></td>
+</tr>
+</table>
+<div class="info">5 service points
+      </div>
+</td><td></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.acrServices.html">framework.acrServices</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;acrService
+         
+        <span class="attribute">id</span>="<span class="attribute-value">sesame</span>"
+      
+         
+        <span class="attribute">interface</span>="<span class="attribute-value">Sesame</span>"
+       /&gt; <br>
+     &lt;acrService
+         
+        <span class="attribute">id</span>="<span class="attribute-value">vizier</span>"
+      
+         
+        <span class="attribute">interface</span>="<span class="attribute-value">VizieR</span>"
+       /&gt; <br>
+     &lt;acrService
+         
+        <span class="attribute">id</span>="<span class="attribute-value">coordinate</span>"
+      
+         
+        <span class="attribute">interface</span>="<span class="attribute-value">Coordinate</span>"
+       /&gt; <br>
+     &lt;acrService
+         
+        <span class="attribute">id</span>="<span class="attribute-value">ucd</span>"
+      
+         
+        <span class="attribute">interface</span>="<span class="attribute-value">UCD</span>"
+       /&gt; <br>
+     &lt;acrService
+         
+        <span class="attribute">id</span>="<span class="attribute-value">glu</span>"
+      
+         
+        <span class="attribute">interface</span>="<span class="attribute-value">Glu</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.descriptors.html">framework.descriptors</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;acr-module
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Access to services provided by Centre de Donnees astronomiques de Strasbourg</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">cds</span>"
+       &gt; <ul>
+<li>
+     &lt;component
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Astronomical Coordinate Web Service, from CDS</span>"
+      
+         
+        <span class="attribute">interface-class</span>="<span class="attribute-value">org.astrogrid.acr.cds.Coordinate</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">coordinate</span>"
+       &gt; <ul>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">convert a coordinate</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">convert</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">a String like 03 45 14.3838 +47 58 07.990 (J2000.0)</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(10.0)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">x</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">double</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">double</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(15.0)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">y</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">double</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">double</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(20.0)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">z</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">double</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">double</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(0=NONE, 1=DEG, 3=ARCMIN, 5=ARCSEC, 8=MAS)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">precision</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">int</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">int</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">convert a longitude-lattitude coordinate</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">convertL</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">a String like 04 21 34. +53 32.5 (J2000.0)</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(12.0)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">lon</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">double</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">double</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(45.0)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">lat</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">double</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">double</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(0=NONE, 1=DEG, 3=ARCMIN, 5=ARCSEC, 8=MAS)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">precision</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">int</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">int</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">convert a coordinate, considering equinox</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">convertE</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">a String like 150.4806267 -05.3873952 (Gal)</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(1=FK4, 2=GAL, 3=SGAL, 4=ECL, 5=FK5, 6=ICRS)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">frame1</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">int</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">int</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(1=FK4, 2=GAL, 3=SGAL, 4=ECL, 5=FK5, 6=ICRS)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">frame2</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">int</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">int</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(10.0)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">x</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">double</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">double</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(15.0)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">y</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">double</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">double</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(20.0)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">z</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">double</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">double</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(0=NONE, 1=DEG, 3=ARCMIN, 5=ARCSEC, 8=MAS)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">precision</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">int</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">int</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(Julian Years or Besselian, unused for GAL, SGAL, ICRS)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">equinox1</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">double</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">double</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(Julian Years or Besselian, unused for GAL, SGAL, ICRS)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">equinox2</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">double</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">double</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">convert a longitude-latitude coordinate,  considering equinox</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">convertLE</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(1=FK4, 2=GAL, 3=SGAL, 4=ECL, 5=FK5, 6=ICRS)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">frame1</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">int</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">int</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(1=FK4, 2=GAL, 3=SGAL, 4=ECL, 5=FK5, 6=ICRS)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">frame2</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">int</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">int</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(12.0)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">lon</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">double</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">double</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(45.0)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">lat</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">double</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">double</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(0=NONE, 1=DEG, 3=ARCMIN, 5=ARCSEC, 8=MAS)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">precision</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">int</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">int</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(Julian Years or Besselian, unused for GAL, SGAL, ICRS)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">equinox1</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">double</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">double</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(Julian Years or Besselian, unused for GAL, SGAL, ICRS)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">equinox2</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">double</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">double</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+</ul> &lt;/component&gt; </li>
+<li>
+     &lt;component
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Webservice to resolve  GLU  (Generateur de Liens Uniformes).tags.</span>"
+      
+         
+        <span class="attribute">interface-class</span>="<span class="attribute-value">org.astrogrid.acr.cds.Glu</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">glu</span>"
+       &gt; <ul>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Resolve a tag.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">getURLfromTag</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Result :  URL corresponding to the tag (example : http://vizier.u-strasbg.fr/cgi-bin/votable?-meta)</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">a tag to resolve (example : VizieR.MetaCat)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">id</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+</ul> &lt;/component&gt; </li>
+<li>
+     &lt;component
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Resolve object  names to position by querying  Simbad and/or NED and/or VizieR.
+ 
+ {@link #resolve} resolves an object name to a datastructure containing position, error, aliases, etc.
+ &lt;br /&gt;
+ {@link #sesame} and {@link #sesameChooseService(String, String, boolean, String)}
+ provide low-level access to the raw webservice.</span>"
+      
+         
+        <span class="attribute">interface-class</span>="<span class="attribute-value">org.astrogrid.acr.cds.Sesame</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">sesame</span>"
+       &gt; <ul>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Resolve an object name to a position using Sesame</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">resolve</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">a datastructure of positional information about the object.</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">org.astrogrid.acr.cds.SesamePositionBean</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">
+   key-value map, See SesamePositionBean for structure.
+  </span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">the object name to resolve</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">name</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">resolve a name to position</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">sesame</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">format depending on the resultTtype parameter</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">the name to resolve</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">name</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">&lt;pre&gt;            u = usual (corresponding to the deprecated Sesame(String name) output)                 H = html                  x = XML (XSD at http://vizier.u-strasbg.fr/xml/sesame_1.xsd, DTD at http://vizier.u-strasbg.fr/xml/sesame_1.dtd)                  p (for plain (text/plain)) and i (for all identifiers) options can be added to H or x                 &lt;/pre&gt;</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">resultType</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">resolve a name, selecing which services to use.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">sesameChooseService</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">format depending on the resultTtype parameter</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">the name to resolve</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">name</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">* &lt;pre&gt;            u = usual (corresponding to the deprecated Sesame(String name) output)                 H = html                x = XML (XSD at http://vizier.u-strasbg.fr/xml/sesame_1.xsd, DTD at http://vizier.u-strasbg.fr/xml/sesame_1.dtd)                 p (for plain (text/plain)) and i (for all identifiers) options can be added to H or x                 &lt;/pre&gt;</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">resultType</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">true if all identifiers wanted</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">all</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">boolean</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">boolean</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">&lt;pre&gt;    S=Simbad         N=NED          V=VizieR         A=all         &lt;/pre&gt;         (examples : S to query in Simbad, NS to query in Ned if not found in Simbad,         NS to query in Ned and Simbad, A to query in Ned, Simbad and VizieR, ...)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">service</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+</ul> &lt;/component&gt; </li>
+<li>
+     &lt;component
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Web Service for manipulating 
+Unified Content Descriptors (UCD).</span>"
+      
+         
+        <span class="attribute">interface-class</span>="<span class="attribute-value">org.astrogrid.acr.cds.UCD</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">ucd</span>"
+       &gt; <ul>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">list of UCD1</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">UCDList</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">html document containing all ucd1</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">resolve a UCD1 (wont work with UCD1+)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">resolveUCD</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">sentence corresponding to the UCD1 (example : Johnson magnitude V (JHN))</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">ucd  the UCD1 to resolve (example : PHOT_JHN_V)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">ucd</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">UCDofCatalog</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">list of UCD1 (in raw text) contained in a given catalog</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">designes the catalog (example : I/239)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">catalog_designation</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">makes the translation of old-style UCD1 into the newer UCD1+ easier:</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">translate</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">String ucd. This function returns the default UCD1+ corresponding to an old-style UCD1.</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">The argument is a UCD1 (not UCD1+ !).</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">ucd</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">upgrade a ucd</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">upgrade</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">String ucd. This function returns a valid UCD1+ corresponding to a deprecated word.                       It is useful when some reference words of the UCD1+ vocabulary are changed,                       and ensures backward compatibility.</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">a deprecated UCD1+ (word or combination).                     Useful when the 'validate' method returns with code 2.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">ucd</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">validate a ucd</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">validate</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">String, this function checks that a UCD is well-formed &lt;pre&gt; The first word of the string is an error code, possibly followed by an explanation of the error.  A return value of 0 indicates no error (valid UCD).  The error-code results from the combination (logical OR) of the following values:   1: warning indicating use of non-standard namespace (not ivoa:)  2: use of deprecated word  4: use of non-existing word  8: syntax error (extra space or unallowed character)  &lt;/pre&gt;</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(e.g. ivoa:phot.mag;em.opt.B)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">ucd</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">returns description of a ucd</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">explain</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">String, this function gives a human-readable explanation for a UCD composed of one or several words</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(e.g. ivoa:phot.mag;em.opt.B)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">ucd</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Find the UCD associated with a description</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">assign</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">String ucd. This function returns the UCD1+ corresponding to the description</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Plain text description of a parameter to be described</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">descr</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+</ul> &lt;/component&gt; </li>
+<li>
+     &lt;component
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Access VizieR catalogues from CDS</span>"
+      
+         
+        <span class="attribute">interface-class</span>="<span class="attribute-value">org.astrogrid.acr.cds.VizieR</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">vizier</span>"
+       &gt; <ul>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">get metadata about catalogues.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">cataloguesMetaData</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">metadata about catalogues depending on the given parameters (VOTable format)</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">org.w3c.dom.Document</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string containing XML</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(example : M31)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">target</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(example : 1.0)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">radius</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">double</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">double</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(example : arcmin)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">unit</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(author, ..., example : Ochsenbein)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">text</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">get metadata about catalogues</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">cataloguesMetaDataWavelength</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">metadata about catalogues depending on the given parameters (VOTable format)</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">org.w3c.dom.Document</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string containing XML</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(example : M31)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">target</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(example : 1.0)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">radius</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">double</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">double</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(example : arcmin)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">unit</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(author, ..., example : Ochsenbein)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">text</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(example : optical, Radio, like in the VizieR Web interface)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">wavelength</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">get catalogue data</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">cataloguesData</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">data about catalogues depending on the given parameters (VOTable format)</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">org.w3c.dom.Document</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string containing XML</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(example : M31)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">target</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(example : 1.0)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">radius</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">double</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">double</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(example : arcmin)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">unit</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(author, ..., example : Ochsenbein)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">text</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">get catalogue data for a wavelength</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">cataloguesDataWavelength</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">data about catalogues depending on the given parameters (VOTable format)</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">org.w3c.dom.Document</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string containing XML</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(example : M31)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">target</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(example : 1.0)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">radius</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">double</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">double</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(example : arcmin)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">unit</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(author, ..., example : Ochsenbein)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">text</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">(example : optical, Radio, like in the VizieR Web interface)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">wavelength</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">get metadata for all catalogues</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">metaAll</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">all metadata about catalogues in VizieR (VOTable format)</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">org.w3c.dom.Document</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string containing XML</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+</ul> &lt;/component&gt; </li>
+</ul> &lt;/acr-module&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.preferences.html">framework.preferences</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;preference
+         
+        <span class="attribute">default-value</span>="<span class="attribute-value">http://cdsws.u-strasbg.fr/axis/services/Sesame</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">cds.sesame.endpoint</span>"
+       &gt; <ul>
+<li>
+     &lt;ui-name &gt; <ul>
+<li>Sesame service endpoint</li>
+</ul> &lt;/ui-name&gt; </li>
+<li>
+     &lt;description &gt; <ul>
+<li>http url of the sesame name resolver service</li>
+</ul> &lt;/description&gt; </li>
+</ul> &lt;/preference&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.preferences.html">framework.preferences</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;preference
+         
+        <span class="attribute">default-value</span>="<span class="attribute-value">http://cdsws.u-strasbg.fr/axis/services/VizieR</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">cds.vizier.endpoint</span>"
+       &gt; <ul>
+<li>
+     &lt;ui-name &gt; <ul>
+<li>Vizier service endpoint</li>
+</ul> &lt;/ui-name&gt; </li>
+<li>
+     &lt;description &gt; <ul>
+<li>http url of the vizier service</li>
+</ul> &lt;/description&gt; </li>
+</ul> &lt;/preference&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.preferences.html">framework.preferences</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;preference
+         
+        <span class="attribute">default-value</span>="<span class="attribute-value">http://cdsws.u-strasbg.fr/axis/services/AstroCoo</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">cds.coordinate.endpoint</span>"
+       &gt; <ul>
+<li>
+     &lt;ui-name &gt; <ul>
+<li>Coordinate service endpoint</li>
+</ul> &lt;/ui-name&gt; </li>
+<li>
+     &lt;description &gt; <ul>
+<li>http url of the coordinate conversion service</li>
+</ul> &lt;/description&gt; </li>
+</ul> &lt;/preference&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.preferences.html">framework.preferences</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;preference
+         
+        <span class="attribute">default-value</span>="<span class="attribute-value">http://cdsws.u-strasbg.fr/axis/services/UCD</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">cds.ucd.endpoint</span>"
+       &gt; <ul>
+<li>
+     &lt;ui-name &gt; <ul>
+<li>Ucd dictionary service endpoint</li>
+</ul> &lt;/ui-name&gt; </li>
+<li>
+     &lt;description &gt; <ul>
+<li>http url of the dictionary service</li>
+</ul> &lt;/description&gt; </li>
+</ul> &lt;/preference&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.preferences.html">framework.preferences</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;preference
+         
+        <span class="attribute">default-value</span>="<span class="attribute-value">http://cdsws.u-strasbg.fr/axis/services/Jglu</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">cds.glu.endpoint</span>"
+       &gt; <ul>
+<li>
+     &lt;ui-name &gt; <ul>
+<li>GLU resolver service endpoint</li>
+</ul> &lt;/ui-name&gt; </li>
+<li>
+     &lt;description &gt; <ul>
+<li>http url of the resolver service</li>
+</ul> &lt;/description&gt; </li>
+</ul> &lt;/preference&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Implementation for service <a href="../service/cds.coordinate.html">cds.coordinate</a></th><th>If:</th><td>property cds.coordinate.disabled</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../service/hivemind.lib.PlaceholderFactory.html">hivemind.lib.PlaceholderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  /&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Implementation for service <a href="../service/cds.glu.html">cds.glu</a></th><th>If:</th><td>property cds.glu.disabled</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../service/hivemind.lib.PlaceholderFactory.html">hivemind.lib.PlaceholderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  /&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Implementation for service <a href="../service/cds.sesame.html">cds.sesame</a></th><th>If:</th><td>property cds.sesame.disabled</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../service/hivemind.lib.PlaceholderFactory.html">hivemind.lib.PlaceholderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  /&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Implementation for service <a href="../service/cds.ucd.html">cds.ucd</a></th><th>If:</th><td>property cds.ucd.disabled</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../service/hivemind.lib.PlaceholderFactory.html">hivemind.lib.PlaceholderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  /&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Implementation for service <a href="../service/cds.vizier.html">cds.vizier</a></th><th>If:</th><td>property cds.vizier.disabled</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../service/hivemind.lib.PlaceholderFactory.html">hivemind.lib.PlaceholderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  /&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+<hr>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>

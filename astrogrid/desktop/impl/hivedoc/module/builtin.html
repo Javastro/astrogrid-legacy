@@ -1,0 +1,204 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="../hivemind.css" type="text/css" rel="stylesheet">
+<title>HiveMind Registry -  Module builtin</title>
+</head>
+<body>
+<div class="title">Module builtin</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<table cellspacing="0" class="top-level-object">
+<tr>
+<th class="object-id">Module builtin</th><th>Version:</th><td>1.0.0</td>
+</tr>
+<tr>
+<th colspan="2" class="object-id">Package:</th><td>org.astrogrid.acr.builtin</td>
+</tr>
+<tr>
+<td colspan="3" class="description">Builtin Components</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<table cellspacing="0" class="layout">
+<tr>
+<td></td><td>
+<table cellspacing="0" class="summary">
+<tr>
+<th>Service Points</th>
+</tr>
+<tr>
+<td><a href="../service/builtin.acr.html">builtin.acr</a></td>
+</tr>
+<tr>
+<td><a href="../service/builtin.shutdown.html">builtin.shutdown</a></td>
+</tr>
+</table>
+<div class="info">2 service points
+      </div>
+</td><td></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.acrServices.html">framework.acrServices</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;acrService
+         
+        <span class="attribute">id</span>="<span class="attribute-value">shutdown</span>"
+      
+         
+        <span class="attribute">interface</span>="<span class="attribute-value">Shutdown</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.descriptors.html">framework.descriptors</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;acr-module
+         
+        <span class="attribute">description</span>="<span class="attribute-value">intrinsic services that all others depend upon.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">builtin</span>"
+       &gt; <ul>
+<li>
+     &lt;component
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Component that shutsdown the AR.</span>"
+      
+         
+        <span class="attribute">interface-class</span>="<span class="attribute-value">org.astrogrid.acr.builtin.Shutdown</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">shutdown</span>"
+       &gt; <ul>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">bring the whole AR system to a graceful halt. 
+ 
+ notifies all listeners, and if there's any objections displays a prompt for the user to acknowledge
+ then calls {@link #reallyHalt}</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">halt</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">bring the ACR to a graceful halt, not giving clients chance to object.
+ Use this method with care - prefer {@link #halt} when theres a chance that the ACR has other clients (i.e. always).
+
+ still notifies all listeners that the system is shutting down</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">reallyHalt</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+</ul> &lt;/component&gt; </li>
+</ul> &lt;/acr-module&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Contribution to <a href="../config/hivemind.ApplicationDefaults.html">hivemind.ApplicationDefaults</a></th><th>If:</th><td>class javax.jnlp.ServiceManager</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;default
+         
+        <span class="attribute">symbol</span>="<span class="attribute-value">builtin.shutdown.exit</span>"
+      
+         
+        <span class="attribute">value</span>="<span class="attribute-value">true</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.EagerLoad.html">hivemind.EagerLoad</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;load
+         
+        <span class="attribute">service-id</span>="<span class="attribute-value">acr</span>"
+       /&gt; <br>
+     &lt;load
+         
+        <span class="attribute">service-id</span>="<span class="attribute-value">shutdown</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.FactoryDefaults.html">hivemind.FactoryDefaults</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;default
+         
+        <span class="attribute">symbol</span>="<span class="attribute-value">builtin.shutdown.exit</span>"
+      
+         
+        <span class="attribute">value</span>="<span class="attribute-value">true</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/system.rmiListenerInterfaces.html">system.rmiListenerInterfaces</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;service
+         
+        <span class="attribute">id</span>="<span class="attribute-value">shutdown</span>"
+       &gt; <ul>
+<li>
+     &lt;listener
+         
+        <span class="attribute">interface</span>="<span class="attribute-value">org.astrogrid.acr.builtin.ShutdownListener</span>"
+       /&gt; </li>
+</ul> &lt;/service&gt; </div>
+</td>
+</tr>
+</table>
+<hr>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,987 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="../hivemind.css" type="text/css" rel="stylesheet">
+<title>HiveMind Registry -  Module plastic</title>
+</head>
+<body>
+<div class="title">Module plastic</div>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+<table cellspacing="0" class="top-level-object">
+<tr>
+<th class="object-id">Module plastic</th><th>Version:</th><td>1.0.0</td>
+</tr>
+<tr>
+<th colspan="2" class="object-id">Package:</th><td>org.votech.plastic</td>
+</tr>
+<tr>
+<td colspan="3" class="description">PLASTIC - PLatform for AStronomical Tools Inter Connection</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<table cellspacing="0" class="layout">
+<tr>
+<td></td><td>
+<table cellspacing="0" class="summary">
+<tr>
+<th>Service Points</th>
+</tr>
+<tr>
+<td><a href="../service/plastic.hub.html">plastic.hub</a></td>
+</tr>
+<tr>
+<td><a href="../service/plastic.namegen.html">plastic.namegen</a></td>
+</tr>
+<tr>
+<td><a href="../service/plastic.prettyPrinter.html">plastic.prettyPrinter</a></td>
+</tr>
+</table>
+<div class="info">3 service points
+      </div>
+</td><td></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.acrServices.html">framework.acrServices</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;acrService
+         
+        <span class="attribute">id</span>="<span class="attribute-value">hub</span>"
+      
+         
+        <span class="attribute">interface</span>="<span class="attribute-value">PlasticHubListener</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.descriptors.html">framework.descriptors</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;acr-module
+         
+        <span class="attribute">description</span>="<span class="attribute-value">PLatform for AStronomical Tools Inter Connection</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">plastic</span>"
+       &gt; <ul>
+<li>
+     &lt;component
+         
+        <span class="attribute">description</span>="<span class="attribute-value">The interface that a Plastic Hub should support. For information on what a Plastic Hub is, and why you'd want one,
+ please see the URL below.</span>"
+      
+         
+        <span class="attribute">interface-class</span>="<span class="attribute-value">org.votech.plastic.PlasticHubListener</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">hub</span>"
+       &gt; <ul>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Get all the IDs of the currently registered applications.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">getRegisteredIds</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">see above</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.util.List</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">List</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Get this hub's ID. The hub "registers with itself", and this method will give you its own Id.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">getHubId</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">see above</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Get the name of this application, as used at registration.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">getName</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">The user friendly name</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">the plastic ID returned at registration</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">plid</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Get the messages understood by this application.    Note that just because an application declares itself
+ to be interested in a message, it's no guarantee it will act on it.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">getUnderstoodMessages</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">A list of message URIs</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.util.List</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">List</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">the plastic ID returned at registration</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">plid</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Get all the applications that support a particular message</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">getMessageRegisteredIds</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">a list of plastic ids.</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.util.List</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">List</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">the messageId you're interested in</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">message</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Register an application with the hub. Each application that wishes to use the hub should register with it - the
+ hub may not forward messages from applications whose ID it doesn't recognise. There are different register
+ methods dependening on how (and whether) the application wishes to receive messages back from the hub.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">registerXMLRPC</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">a hub-assigned ID</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">An optional string with a short name describing the application. This may be added to the hub             assigned ID, making it more human friendly.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">name</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">an array of messages (as URIs) the application is interested in.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">supportedMessages</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.util.List</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">List</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">the application's internal xmlrpc server URL. Used by the hub to send messages to the             application.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">callBackURL</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URL</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">URL</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">A java-rmi version of {@link #registerXMLRPC(String, List, URL) registerXMLRPC}</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">registerRMI</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">see {@link #registerRMI(String, List, PlasticListener) registerRMI}</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">name</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">supportedMessages</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.util.List</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">List</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">the PlasticListener that wishes to register</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">caller</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">org.votech.plastic.PlasticListener</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">PlasticListener</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Register this application with the hub, but don't send it any messages in return. This is to allow uncallable
+ applications like scripting environments to register. 
+ spec.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">registerNoCallBack</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">name</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Register this application with the hub, but store messages for later recovery by polling.
+ Note that this message is experimental and not part of the Plastic Spec.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">registerPolling</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">name</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.String</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">string</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">supportedMessages</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.util.List</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">List</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Poll for messages.  Returns a List of messages.  Each List is another
+ List containing (sender, message, args).
+ Note that this message is experimental and not part of the Plasti Spec.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">pollForMessages</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.util.List</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">List</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">id</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Unregister the application from the hub.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">unregister</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">the application to unregister</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">id</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Send a message to all registered Plastic applications.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">request</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value">a Map of application ids to responses</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.util.Map</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">key-value map</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">the id of the originating tool - provided by the hub on   registration.  Note that the hub is at liberty to refused to forward requests that             don't come from an ID that it has registered.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">sender</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">the message to send.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">message</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">any arguments to pass with the message</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">args</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.util.List</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">List</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Send a request to listed registered Plastic apps. See {@link #request(URI, URI, List) request} for
+ details of the other parameters.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">requestToSubset</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.util.Map</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">key-value map</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">sender</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">message</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">args</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.util.List</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">List</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">a list of target application ids (as URIs)</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">recipientIds</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.util.List</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">List</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Send a request to listed registered Plastic apps, but don't wait for a response.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">requestToSubsetAsynch</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">sender</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">message</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">args</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.util.List</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">List</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value">a List of target application ids (as URIs). See {@link #request(URI, URI, List) request} for             details of the other parameters.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">recipientIds</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.util.List</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">List</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+<li>
+     &lt;method
+         
+        <span class="attribute">description</span>="<span class="attribute-value">Send a request to all registered Plastic apps, but don't wait for a response. See
+ {@link #request(URI, URI, List) request} for details of parameters.</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">requestAsynch</span>"
+       &gt; <ul>
+<li>
+     &lt;return
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.lang.Void</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">nothing</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">sender</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">message</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.net.URI</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">Ivorn or other URI</span>"
+       /&gt; </li>
+<li>
+     &lt;param
+         
+        <span class="attribute">description</span>="<span class="attribute-value"></span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">args</span>"
+      
+         
+        <span class="attribute">type</span>="<span class="attribute-value">java.util.List</span>"
+      
+         
+        <span class="attribute">uitype</span>="<span class="attribute-value">List</span>"
+       /&gt; </li>
+</ul> &lt;/method&gt; </li>
+</ul> &lt;/component&gt; </li>
+</ul> &lt;/acr-module&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/framework.preferences.html">framework.preferences</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;preference
+         
+        <span class="attribute">default-value</span>="<span class="attribute-value">true</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">org.votech.plastic.notificationsenabled</span>"
+       &gt; <ul>
+<li>
+     &lt;ui-name &gt; <ul>
+<li>Display plastic events</li>
+</ul> &lt;/ui-name&gt; </li>
+<li>
+     &lt;description &gt; <ul>
+<li>Show plastic event notifications in the system tray</li>
+</ul> &lt;/description&gt; </li>
+</ul> &lt;/preference&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/hivemind.EagerLoad.html">hivemind.EagerLoad</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;load
+         
+        <span class="attribute">service-id</span>="<span class="attribute-value">hub</span>"
+       /&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id" colspan="3"> Contribution to <a href="../config/system.rmiListenerInterfaces.html">system.rmiListenerInterfaces</a></th>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;service
+         
+        <span class="attribute">id</span>="<span class="attribute-value">hub</span>"
+       &gt; <ul>
+<li>
+     &lt;listener
+         
+        <span class="attribute">interface</span>="<span class="attribute-value">org.votech.plastic.PlasticListener</span>"
+       /&gt; </li>
+</ul> &lt;/service&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Contribution to <a href="../config/system.uiStructure.html">system.uiStructure</a></th><th>If:</th><td>property hub.mode</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">before</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">plastic.gif</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">prettyPrintRegisteredApps</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">listPlastic</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:hub</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">advanced</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">List Plastic Applications</span>"
+       &gt; <ul>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>List details of all connected Plastic Applications</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; <br>
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">*</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">AGlogo16x16.png</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">concat</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">about</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">instance:java.lang.String</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">help</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">About AstroGrid PLASTIC Hub...</span>"
+       &gt; <ul>
+<li>
+     &lt;parameter &gt; <ul>
+<li>&lt;html&gt;
+			&lt;h1&gt;AstroGrid PLASTIC Hub v${astrogrid.desktop.version}&lt;/h1&gt;			
+			&lt;b&gt;http://www.astrogrid.org/desktop&lt;/b&gt;&lt;br&gt;
+			This is the reference implementation of the Plastic Hub.  PLASTIC is a widely
+            supported specification for connecting client-side astronomical tools together.
+			
+			&lt;h1&gt;PLASTIC - Platform for Astronomy Tool InterCommunication&lt;/h1&gt;
+			&lt;b&gt;http://plastic.sourceforge.net&lt;/b&gt;&lt;br&gt;
+			Moulded by 
+			&lt;ul&gt;
+			&lt;li&gt;Thomas Boch
+			&lt;li&gt;Marco Comparato
+			&lt;li&gt;John Taylor
+			&lt;li&gt;Mark Taylor
+			&lt;li&gt;Noel Winstanley
+			&lt;/ul&gt;
+			&lt;hr&gt;
+			&lt;h2&gt;Build Information&lt;/h2&gt;
+			Built: ${astrogrid.build.date}&lt;br&gt;
+			At: ${astrogrid.build.location}&lt;br&gt;
+			With ${astrogrid.build.jdk}&lt;br&gt;
+			By: ${astrogrid.build.by}
+			&lt;/html&gt;</li>
+</ul> &lt;/parameter&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Contribution to <a href="../config/system.uiStructure.html">system.uiStructure</a></th><th>If:</th><td>((not (property system.webserver.disabled)) and (not (property system.html.disabled))) and (not (property system.browser.disabled)) and (property hub.mode)</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+     &lt;action
+         
+        <span class="attribute">after</span>="<span class="attribute-value">listPlastic</span>"
+      
+         
+        <span class="attribute">iconName</span>="<span class="attribute-value">overview48.gif</span>"
+      
+         
+        <span class="attribute">methodName</span>="<span class="attribute-value">openRelative</span>"
+      
+         
+        <span class="attribute">name</span>="<span class="attribute-value">htmlPLASTIC</span>"
+      
+         
+        <span class="attribute">object</span>="<span class="attribute-value">service:system.browser</span>"
+      
+         
+        <span class="attribute">parentName</span>="<span class="attribute-value">advanced</span>"
+      
+         
+        <span class="attribute">text</span>="<span class="attribute-value">PLASTIC web interface</span>"
+       &gt; <ul>
+<li>
+     &lt;parameter /&gt; </li>
+<li>
+     &lt;tooltip &gt; <ul>
+<li>Browse and execute Plastic functions in a webbrowser</li>
+</ul> &lt;/tooltip&gt; </li>
+</ul> &lt;/action&gt; </div>
+</td>
+</tr>
+<tr>
+<th class="object-id"> Implementation for service <a href="../service/plastic.hub.html">plastic.hub</a></th><th>If:</th><td>property plastic.hub.disabled</td>
+</tr>
+<tr>
+<td class="container" colspan="3">
+<div class="xml">
+<ul>
+<li> &lt;invoke-factory <span class="attribute">service-id</span>="<span class="attribute-value"><a href="../service/hivemind.lib.PlaceholderFactory.html">hivemind.lib.PlaceholderFactory</a></span>" <span class="attribute">model</span>="<span class="attribute-value"><a href="../config/hivemind.ServiceModels.html">singleton</a></span>"  /&gt; </li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+<hr>
+<div class="center-nav">
+<a href="../index.html">Back to master index</a>
+</div>
+</body>
+</html>
