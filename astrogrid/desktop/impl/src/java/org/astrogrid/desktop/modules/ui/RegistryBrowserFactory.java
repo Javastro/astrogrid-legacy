@@ -15,6 +15,7 @@ import org.astrogrid.desktop.modules.ivoa.CacheFactory;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
+import org.votech.VoMon;
 
 /** @todo add an internal interface to allow displaying of pre-parsed resource objkects.
  * @author Noel Winstanley
@@ -30,7 +31,7 @@ public class RegistryBrowserFactory implements RegistryBrowser {
 	 * @throws TransformerConfigurationException
 	 * @throws TransformerFactoryConfigurationError
 	 */
-	public RegistryBrowserFactory(RegistryInternal reg, HelpServerInternal hs, UIInternal ui, Configuration conf, BrowserControl browser, CacheFactory cache) 
+	public RegistryBrowserFactory(RegistryInternal reg, HelpServerInternal hs, UIInternal ui, Configuration conf, BrowserControl browser, CacheFactory cache,VoMon vomon) 
 	throws TransformerConfigurationException, TransformerFactoryConfigurationError {
 		this.ui = ui;
 		this.conf = conf;
@@ -38,6 +39,7 @@ public class RegistryBrowserFactory implements RegistryBrowser {
 		this.reg = reg;
 		this.browser = browser;
 		this.cache = cache;
+		this.vomon = vomon;
 	}
 	private final BrowserControl browser;
 	private final UIInternal ui;
@@ -45,21 +47,22 @@ public class RegistryBrowserFactory implements RegistryBrowser {
 	private final HelpServerInternal hs;
 	private final RegistryInternal reg;
 	private final CacheFactory cache;
+	private final VoMon vomon;
 	public void hide() {
 		// ignore.
 	}
 	public void show() {
-		RegistryBrowser r = new RegistryBrowserImpl(reg,hs,ui,conf,browser,this,cache);
+		RegistryBrowser r = new RegistryBrowserImpl(reg,hs,ui,conf,browser,this,cache,vomon);
 		r.show();
 	}
 	public void search(String arg0) {
-		RegistryBrowser r = new RegistryBrowserImpl(reg,hs,ui,conf,browser,this,cache);
+		RegistryBrowser r = new RegistryBrowserImpl(reg,hs,ui,conf,browser,this,cache,vomon);
 		r.search(arg0);
 		r.show();
 	}
 	
 	public void open(URI arg0) {
-		RegistryBrowser r = new RegistryBrowserImpl(reg,hs,ui,conf,browser,this,cache);
+		RegistryBrowser r = new RegistryBrowserImpl(reg,hs,ui,conf,browser,this,cache,vomon);
 		r.open(arg0);
 		r.show();
 	}

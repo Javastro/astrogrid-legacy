@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowserImpl.java,v 1.15 2006/11/14 10:30:39 nw Exp $
+/*$Id: VospaceBrowserImpl.java,v 1.16 2007/01/09 16:14:02 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,6 +42,7 @@ import javax.swing.JToolBar;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.MyspaceBrowser;
@@ -58,6 +59,7 @@ import org.astrogrid.filemanager.common.FileManagerFault;
 import org.astrogrid.filemanager.common.NodeNotFoundFault;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.store.Ivorn;
+import org.votech.VoMon;
 
 import com.l2fprod.common.swing.JTaskPane;
 import com.l2fprod.common.swing.JTaskPaneGroup;
@@ -261,7 +263,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
                 return;
             }
             // prompt for store to relocate to.
-            // could do with popping up a registry micro-browser here.
+            // achieve this by popping up a registry micro-browser here.
             /*
             String newStore = JOptionPane.showInputDialog(VospaceBrowserImpl.this,
                     "<html>" + n.getName() +" is currently located at " + n.getMetadata().getContentLocation() + "<br>Enter ivorn of filestore to relocate to</html>"
@@ -558,7 +560,6 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
     protected final BrowserControl browser;
     protected final ResourceChooserInternal chooser;
-
     private Actions actions = null;
 
     private JMenu fileMenu, editMenu;
@@ -750,6 +751,9 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
 /*
  * $Log: VospaceBrowserImpl.java,v $
+ * Revision 1.16  2007/01/09 16:14:02  nw
+ * added use of monitoring service
+ *
  * Revision 1.15  2006/11/14 10:30:39  nw
  * fixed my previous fix.
  *
