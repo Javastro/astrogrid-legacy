@@ -11,7 +11,11 @@ import org.astrogrid.acr.test.TransportTest;
  * @since Jun 15, 20061:34:13 AM
  */
 public class TransportTestImpl implements TransportTest {
-
+/**
+ * 
+ */
+public TransportTestImpl() {
+}
 	public byte[] echoByteArray(byte[] arg0) {
 		return arg0;
 	}
