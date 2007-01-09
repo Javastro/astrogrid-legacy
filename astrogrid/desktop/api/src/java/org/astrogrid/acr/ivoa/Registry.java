@@ -74,7 +74,7 @@ public interface Registry {
 	RegistryService getIdentity()  throws ServiceException; 
 	
 	/** gives the endpoint of the system registry */
-	URI getSystemRegistryEndpoint();
+	URI getSystemRegistryEndpoint()  throws ServiceException;
 	/** gives the endpoint of the fallback system registry */
-	URI getFallbackSystemRegistryEndpoint();
+	URI getFallbackSystemRegistryEndpoint()  throws ServiceException;
 }
