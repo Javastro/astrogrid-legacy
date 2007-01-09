@@ -1,4 +1,4 @@
-/*$Id: ComponentDescriptor.java,v 1.2 2006/10/30 12:12:36 nw Exp $
+/*$Id: ComponentDescriptor.java,v 1.3 2007/01/09 15:47:43 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.acr.builtin;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 
@@ -28,7 +29,7 @@ public class ComponentDescriptor extends Descriptor{
     public ComponentDescriptor() {
         super();
     }
-    protected final Map methods = new HashMap();
+    protected final Map methods = new LinkedHashMap();
     	//new ListOrderedMap();
     /** retrieve the descriptor for a named method */
     public MethodDescriptor getMethod(String name) {
@@ -86,6 +87,9 @@ public class ComponentDescriptor extends Descriptor{
 
 /* 
 $Log: ComponentDescriptor.java,v $
+Revision 1.3  2007/01/09 15:47:43  nw
+change from HashMap to LinkedHashMap to preserve ordering.
+
 Revision 1.2  2006/10/30 12:12:36  nw
 documentation improvements.
 

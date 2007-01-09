@@ -1,4 +1,4 @@
-/*$Id: ModuleDescriptor.java,v 1.1 2006/06/02 00:17:10 nw Exp $
+/*$Id: ModuleDescriptor.java,v 1.2 2007/01/09 15:47:43 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.acr.builtin;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /** Representation of a module of the AR.
@@ -29,7 +30,7 @@ public class ModuleDescriptor  extends Descriptor {
     }
 
     /** components in this module */
-    protected final Map components = new HashMap();
+    protected final Map components = new LinkedHashMap();
     	//new ListOrderedMap(); - don't think this is necessary anymore.
   /** retreive a named component descriptor */
    public ComponentDescriptor getComponent(String name) {
@@ -68,6 +69,9 @@ public class ModuleDescriptor  extends Descriptor {
 
 /* 
 $Log: ModuleDescriptor.java,v $
+Revision 1.2  2007/01/09 15:47:43  nw
+change from HashMap to LinkedHashMap to preserve ordering.
+
 Revision 1.1  2006/06/02 00:17:10  nw
 Moved Module, Component and Method-Descriptors from implementation code into interface. Then added methods to ApiHelp that provide access to these beans.
 
