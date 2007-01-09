@@ -3,8 +3,6 @@
  */
 package org.astrogrid;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Options;
 import org.astrogrid.desktop.hivemind.Launcher;
 
 /** 
@@ -17,16 +15,11 @@ public class Workbench1 {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Options o = CmdLineParser.createDefaultOptions();
-		CommandLine cl = CmdLineParser.parse(args,"workbench",o);
-		if (cl != null) {
-    	Launcher l = new Launcher();
-    	configureLauncherAsWorkbench(l);
-    	
-    	
-    	CmdLineParser.processCommandLine(cl,l);    	
+		CmdLineParser parser = new CmdLineParser();
+		Launcher l = parser.parse(args,"workbench");
+		configureLauncherAsWorkbench(l);
+     	parser.processCommandLine(l);    	
     	l.run();
-		}
 	}
 
 	/**
@@ -37,19 +30,18 @@ public class Workbench1 {
     	System.setProperty("org.apache.commons.logging.Log","org.apache.commons.logging.impl.Log4JLogger");
   		
 		System.setProperty("workbench.mode","true");
-		System.setProperty("app.mode","workbench");
     	l.addModuleByName("background");
     	l.addModuleByName("ui");
     	l.addModuleByName("dialogs");
     	l.addModuleByName("plastic");
     	l.addModuleByName("ivoa");
-    	l.addModuleByName("voevent");    	
+    	l.addModuleByName("voevent");  
+    	l.addModuleByName("votech");    	
     	l.addModuleByName("nvo");
     	l.addModuleByName("cds");
     	l.addModuleByName("astrogrid");
     	l.addModuleByName("system");
         l.addModuleByName("util");    	
-        l.addModuleByName("externalConfig"); 
 	}
 
 }

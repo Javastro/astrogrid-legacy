@@ -3,8 +3,6 @@
  */
 package org.astrogrid;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Options;
 import org.astrogrid.desktop.hivemind.Launcher;
 
 /** variant of astro runtime in headless (non-ui) mode.<p>
@@ -19,38 +17,31 @@ public class HeadlessAstroRuntime {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Options o = CmdLineParser.createDefaultOptions();
-		CommandLine cl = CmdLineParser.parse(args,"asr",o);
-		if (cl != null) {
-    	Launcher l = new Launcher();
+		CmdLineParser parser = new CmdLineParser();
+		Launcher l = parser.parse(args,"asr");		
 
-    	System.setProperty("asr.mode","true"); // "@todo unsure whether to use a different key here.  
-		System.setProperty("app.mode","asr");    	
+    	System.setProperty("asr.mode","true"); // "@todo unsure whether to use a different key here.  	
     	System.setProperty("system.ui.disabled","true");
     	System.setProperty("system.systray.disabled","true");
     	System.setProperty("system.help.disabled","true");
     	System.setProperty("system.browser.disabled","true");
     	System.setProperty("astrogrid.loginDialogue.disabled","true");
-    	
-    	System.setProperty("system.configuration.preferenceClass",HeadlessAstroRuntime.class.getName());
-    	// we're packaging log4j in this release, so configure clogging to use it.
+   	// we're packaging log4j in this release, so configure clogging to use it.
     	System.setProperty("org.apache.commons.logging.Log","org.apache.commons.logging.impl.Log4JLogger");
     	
     	l.addModuleByName("background");
     	l.addModuleByName("plastic");
     	l.addModuleByName("ivoa");
-    	l.addModuleByName("voevent");    	
+    	l.addModuleByName("voevent");   
+    	l.addModuleByName("votech");    	
     	l.addModuleByName("nvo");
     	l.addModuleByName("cds");
     	l.addModuleByName("astrogrid");
     	l.addModuleByName("system");
-        l.addModuleByName("util");     
-        l.addModuleByName("externalConfig");        
+        l.addModuleByName("util");        
 
-        CmdLineParser.processCommandLine(cl,l);
-    	
+     	parser.processCommandLine(l);    	
     	l.run();
-		}
 	}
 
 }

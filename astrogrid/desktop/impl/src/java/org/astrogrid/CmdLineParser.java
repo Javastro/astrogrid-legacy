@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -20,21 +19,72 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.hivemind.Element;
-import org.apache.hivemind.ErrorHandler;
-import org.apache.hivemind.impl.DefaultErrorHandler;
-import org.apache.hivemind.parse.ContributionDescriptor;
-import org.apache.hivemind.parse.ModuleDescriptor;
+import org.astrogrid.desktop.hivemind.GenerateHivedoc;
 import org.astrogrid.desktop.hivemind.Launcher;
+import org.astrogrid.desktop.hivemind.ListProperties;
 
-/** Sets up the default commandline parser for all the different app variants.
+/** General Commandline Parser for different variants of AR
+ * 
+ * Usage.
+ * <ol>
+ * <li>Create: parser = new CmdLineParser()
+ * <li>Optional - declare additional commandline args: parser.getOptions();
+ * <li>Parse to create Launcher - Launcher l = parser.parse(args, "app name");
+ * <br> This will return a launcher, or a specialzed subclass.
+ * <li>Optional - Configure the launcher instance further, process any additional commandline args: 
+ * <li>process the rest of the commandline - parser.processCommandLine(l)
+ * <li>Execute the launcher - l.run() 
+ * </ol>
  * @author Noel Winstanley
  * @since Apr 11, 200611:42:55 AM
  */
 class CmdLineParser {
-	private CmdLineParser() {
+	/** Custom subclass of Launcher that just displays the commandline help and exits.
+	 */
+	final class ShowHelp extends Launcher {
+		/**
+		 * 
+		 */
+		private final String usage;
+
+		/**
+		 * @param usage
+		 */
+		public ShowHelp(String usage) {
+			this.usage = usage;
+		}
+
+		public void run() {
+			spliceInDefaults();
+			HelpFormatter f = new HelpFormatter();
+			f.printHelp(this.usage,options);						
+		}
 	}
-	public static Options createDefaultOptions() {
+	
+	public CmdLineParser() {
+		options = createDefaultOptions();
+	}
+	
+	 final Options options;
+	
+	/** access the options - to add new flags, etc. */
+	public Options getOptions() {
+		return options;
+	}
+	private CommandLine commandLine;
+	
+	public CommandLine getCommandLine() {
+		if (commandLine == null) {
+			throw new IllegalStateException("No commandline parsed yet");
+		}
+		return commandLine;
+	}
+	
+	/** set of default commandline options
+	 * @todo come back to these later 
+	 * @return parsed up options
+	 */
+	private static Options createDefaultOptions() {
 		Options o = new Options();
 		
 		// properties
@@ -43,10 +93,12 @@ class CmdLineParser {
         						.withValueSeparator()
         						.withDescription( "use value for given property" )
         						.create( "D" ));
+		
 		o.addOption(OptionBuilder.withArgName("properties file")
 						.hasArg()
 						.withDescription("file location of properties file")
 						.create("propertyFile"));
+		
 		o.addOption(OptionBuilder.withArgName("URL")
 				.hasArg()
 				.withDescription("URL location of properties file")
@@ -64,118 +116,77 @@ class CmdLineParser {
 		
 		// other options.
 		o.addOption(OptionBuilder.withDescription("Enable Debugging").create("debug"));
-		o.addOption(OptionBuilder.withDescription("Print Help").create("help"));
-		o.addOption(OptionBuilder.withDescription("List available properties").create("list"));
-;
-		
+		o.addOption(OptionBuilder.withDescription("Show help and exit").create("help"));
+		o.addOption(OptionBuilder.withDescription("List configuration properties and exit").create("list"));
+		o.addOption(OptionBuilder.withDescription("Generate Hivedoc and exit").create("hivedoc"));
 		return o;
 	}
 
-	/** atempts to parse commandline . 
-	 * if it fails, or 'help' flag is passed in, prints an error message, 
-	 * followed by usage information, then returns null.
-	 * @param args commandline args passed in
-	 * @param usage usage information for reporting to user.
-	 * @param options options to parse
-	 * @return a parsed commandline, or null if failed to parse.
+	/** parse the commandline, and return a suitable instance of 
+	 * Launcher depending on the options provided (and their correctness).
+	 * After this, call {@link #processCommandLine(Launcher)}
+	 * @param args commandline arguments
+	 * @param usage - usage documentation string
+	 * @return an instance of launcher. never null.
 	 */
-	public static CommandLine parse(String[] args, String usage, Options options) {
-		
+	public Launcher parse(final String[] args, final String usage) {
+		final BasicParser parser = new BasicParser();
 		try {
-			//CommandLine cl = (new PosixParser()).parse(options,args);
-			CommandLine cl = (new BasicParser()).parse(options,args);
-			if (cl.hasOption("help")) {
-				showHelp(usage,options);
-				return null;
+			commandLine = parser.parse(options,args);
+			if (commandLine.hasOption("help")) {
+				return new ShowHelp(usage);
+			} else if (commandLine.hasOption("hivedoc")) {
+				return new GenerateHivedoc();
+			} else if (commandLine.hasOption("list")) {
+				return new ListProperties();
+			} else {
+				return new Launcher();
 			}
-			
-			  return cl;
-			
 		} catch (ParseException x) {
+			// set it to 'null'
+			try {
+			commandLine = parser.parse(options,new String[]{});
+			} catch (ParseException xx) {
+				throw new RuntimeException("Unexpected",xx);
+			}
 			System.out.println(x.getMessage());
-			showHelp(usage,options);
-			return null;
+			return new ShowHelp(usage);
 		}
 	}
-	
-	public static void showHelp(String usage, Options options) {
-		HelpFormatter f = new HelpFormatter();
-		f.printHelp(usage,options);
-	}
-	
-	public static void processCommandLine(CommandLine cl,Launcher l) {
+
+	public void processCommandLine(Launcher l) {
 		// process the debug flag first.
-		if(cl.hasOption("debug")) {
+		//@todo remove this option - not supporting todo any more.
+		if(commandLine.hasOption("debug")) {
 			System.setProperty("acr.debug","true");
 		}
 		// process -D first.
-		String[] props = cl.getOptionValues('D');
+		String[] props = commandLine.getOptionValues('D');
 		if (props != null) { // irritating that this returns null..
 			processPropertyKeys(props);
 		}
 		// now any properties files
-		String[] propsFiles = cl.getOptionValues("propertyFile");
+		String[] propsFiles = commandLine.getOptionValues("propertyFile");
 		if (propsFiles != null) {
 			processPropertyFiles(propsFiles);
 		}
 		
 		// now any properties URLs
-		String[] propsURLs = cl.getOptionValues("propertyURL");
+		String[] propsURLs = commandLine.getOptionValues("propertyURL");
 		if (propsURLs != null) {
 			processPropertyURLs(propsURLs);
 		}
 		// now any modules in files
-		String[] moduleFiles = cl.getOptionValues("addModule");
+		String[] moduleFiles = commandLine.getOptionValues("addModule");
 		if (moduleFiles != null) {
 			processModuleFiles(l, moduleFiles);
 		}
 		
 		// now any modules at URLs
-		String[] moduleURLs = cl.getOptionValues("addModuleURL");
+		String[] moduleURLs = commandLine.getOptionValues("addModuleURL");
 		if (moduleURLs != null ) {
 			processModuleURLs(l, moduleURLs);		
 		}
-		// once we've loaded up everything, check whether we're to just list, or to go live.
-		if (cl.hasOption("list")) {
-			listConfiguration(l);
-			System.exit(0); // urgh. best to do this for now.
-		}
-	}
-	/** List all the configuration properties, etc in the currently configured launcher.
-	 * @param l
-	 */
-	private static void listConfiguration(Launcher l) {
-		System.out.println("System Settings");
-		Properties props = System.getProperties();
-		props.list(System.out);
-		System.out.println();
-		System.out.println("System Defaults - can be overridden");
-		Launcher.defaults.list(System.out);
-		System.out.println();
-		System.out.println("Module Defaults - can be overridden");
-		ErrorHandler err = new DefaultErrorHandler();
-		List descr = l.createModuleDescriptorProvider().getModuleDescriptors(err);
-		for (Iterator i = descr.iterator(); i.hasNext(); ) {
-			ModuleDescriptor md = (ModuleDescriptor) i.next();
-			if (md.getModuleId().indexOf("hivemind") != -1) {
-				// skip system modules.
-				continue;
-			}
-			System.out.println();
-			System.out.println(md.getModuleId());
-			for (Iterator j = md.getContributions().iterator(); j.hasNext(); ) {
-				ContributionDescriptor cd = (ContributionDescriptor)j.next();
-				if (cd.getConfigurationId().equals("hivemind.FactoryDefaults")) {
-					for (Iterator k = cd.getElements().iterator(); k.hasNext(); ) {
-						Element e= (Element)k.next();
-						System.out.println(e.getAttributeValue("symbol") + "=" + e.getAttributeValue("value"));
-					}
-				}
-			}
-		}
-		System.out.println();
-		System.out.println("Any service can be disabled by setting the property 'service.name.disabled");
-		System.out.println("For example, to disable the rmi server, set 'system.rmi.disabled'");
 	}
 	/**
 	 * @param l
