@@ -5,13 +5,19 @@ package org.astrogrid.desktop.hivemind;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 
 import org.apache.hivemind.Element;
 import org.apache.hivemind.ErrorHandler;
+import org.apache.hivemind.Registry;
 import org.apache.hivemind.impl.DefaultErrorHandler;
+import org.apache.hivemind.impl.RegistryBuilder;
 import org.apache.hivemind.parse.ContributionDescriptor;
 import org.apache.hivemind.parse.ModuleDescriptor;
+import org.apache.hivemind.service.impl.FactoryDefault;
+import org.astrogrid.acr.builtin.Shutdown;
+import org.astrogrid.desktop.modules.system.Preference;
 
 /** Just lists all configuration properties, and exits.
  * @author Noel Winstanley
@@ -20,38 +26,45 @@ import org.apache.hivemind.parse.ModuleDescriptor;
 public class ListProperties extends Launcher {
 	public void run() {
 		spliceInDefaults();
-		
-		System.out.println("System Settings");
-		Properties props = System.getProperties();
-		props.list(System.out);
-		System.out.println();
-		System.out.println("System Defaults - can be overridden");
-		Launcher.defaults.list(System.out);
-		System.out.println();
-		System.out.println("Module Defaults - can be overridden");
 		ErrorHandler err = new DefaultErrorHandler();
-		List descr = createModuleDescriptorProvider().getModuleDescriptors(err);
-		for (Iterator i = descr.iterator(); i.hasNext(); ) {
-			ModuleDescriptor md = (ModuleDescriptor) i.next();
-			if (md.getModuleId().indexOf("hivemind") != -1) {
-				// skip system modules.
+		RegistryBuilder rb = new RegistryBuilder();
+		rb.addModuleDescriptorProvider(createModuleDescriptorProvider());
+		Registry registry = rb.constructRegistry(Locale.getDefault());
+		List l = registry.getConfiguration("framework.preferences");
+		
+		System.out.println("Application Preferences");
+		System.out.println("===============");		
+		for (Iterator i = l.iterator(); i.hasNext();) {
+			Preference p = (Preference) i.next();
+			System.out.println(p.getUiName() + p.getDescription());
+			System.out.println( "     " + p.getName() +  " = " + p.getValue());
+		}
+		
+		System.out.println();
+		System.out.println("System Defaults");
+		System.out.println("==========");
+		Launcher.defaults.list(System.out);
+		
+		System.out.println();
+		System.out.println("Module Defaults");
+		System.out.println("==========");		
+		
+		l = registry.getConfiguration("hivemind.FactoryDefaults");
+		for (Iterator i = l.iterator(); i.hasNext();) {
+			FactoryDefault element = (FactoryDefault) i.next();
+			if (element.getSymbol().startsWith("java") || element.getSymbol().startsWith("hivemind")) {
 				continue;
 			}
-			System.out.println();
-			System.out.println(md.getModuleId());
-			for (Iterator j = md.getContributions().iterator(); j.hasNext(); ) {
-				ContributionDescriptor cd = (ContributionDescriptor)j.next();
-				if (cd.getConfigurationId().equals("hivemind.FactoryDefaults")) {
-					for (Iterator k = cd.getElements().iterator(); k.hasNext(); ) {
-						Element e= (Element)k.next();
-						System.out.println(e.getAttributeValue("symbol") + "=" + e.getAttributeValue("value"));
-					}
-				}
-			}
+			System.out.println(element.getSymbol() + " = " + element.getValue());
 		}
-		System.out.println();
-		System.out.println("Any service can be disabled by setting the property 'service.name.disabled");
-		System.out.println("For example, to disable the rmi server, set 'system.rmi.disabled'");
 		
+		System.out.println();
+		System.out.println("Any of these opotions can be overridden on the commandline by using the -D name=value flag");
+		System.out.println("Furthermore, any component can be disabled by setting the property 'service.name.disabled");
+		System.out.println("For example, to disable rmi access to AR, set 'system.rmi.disabled'");
+			
+		Shutdown sd = (Shutdown)registry.getService(Shutdown.class);
+		sd.reallyHalt();
 	}
+
 }
