@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.17 2006/10/11 10:39:15 nw Exp $
+/*$Id: UIImpl.java,v 1.18 2007/01/10 14:55:14 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved. 
@@ -15,8 +15,13 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -32,6 +37,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -77,7 +83,7 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
         private final UIActionContribution action;
         public InvokerWorker(UIActionContribution action) {
             super("Running " + action.getName());
-            this.action = action;
+            this.action = action; 
         }
           /**
          * @see EDU.oswego.cs.dl.util.concurrent.misc.SwingWorker#construct()
@@ -340,20 +346,23 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
         }
         //add them.
         for (Iterator i = orderer.getOrderedObjects().iterator(); i.hasNext(); ) {
-            UIStructureContribution m = (UIStructureContribution)i.next();
+            final UIStructureContribution m = (UIStructureContribution)i.next();
             // bit ugly.
             if (m instanceof UIActionContribution) {
-                UIActionContribution a = (UIActionContribution)m;
+                final UIActionContribution a = (UIActionContribution)m;
                 a.setUIImpl(this); // pass reference to self into the component.
                 if (a.getName().equals("about")) {
                 	aboutAction = a;
                 }
                 //@todo add similar check for preferences?? or is preferences going to be defined elsewhere?
                 if (current instanceof JMenu) {
-                    ((JMenu)current).add(a);
+                	final JMenuItem mi = new JMenuItem(a);
+                	a.setParentComponent(mi);	
+                    ((JMenu)current).add(mi);
                 } else if (current instanceof JComponent) {                
-                    JButton b = new JButton(a);
-                    b.setText("<html><center>" + a.getText()); // StringUtils.replace(a.getText()," ","<br>"));
+                    final JButton b = new JButton(a);
+                    a.setParentComponent(b);
+                    b.setText("<html><center>" + a.getText()); 
                     // fix for bz 1735
                     b.setHorizontalTextPosition(JButton.CENTER);
                     b.setVerticalTextPosition(JButton.BOTTOM);
@@ -364,11 +373,11 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
                     err.error(logger,"Unknown type",null,null);
                 }
             } else { // assume it's a JComponent - and so is it's parent.
-                JComponent o = (JComponent)m;
+                final JComponent o = (JComponent)m;
                 addStructures(o,m.getName(),multi); // recursive call
 
                 if (current instanceof JTabbedPane) {
-                    JScrollPane sc= new JScrollPane(o);
+                    final JScrollPane sc= new JScrollPane(o);
                     sc.setAutoscrolls(true);
                     //sc.setBorder(EMPTY_BORDER);
                     sc.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
@@ -376,7 +385,25 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
                     sc.getHorizontalScrollBar().setBorder(EMPTY_BORDER);
                     sc.getHorizontalScrollBar().putClientProperty("is3DEnabled",Boolean.FALSE);          
                     sc.getViewport().setPreferredSize(new Dimension(600,100));
-                    ((JTabbedPane)current).addTab(m.getText(),m.getIcon(),sc,o.getToolTipText());
+                    final JTabbedPane tabs = (JTabbedPane)current;
+                    final ComponentAdapter visibilityListener = new ComponentAdapter() {
+											public void componentHidden(ComponentEvent e) {
+												int ix = tabs.indexOfTab(m.getText());
+												if (ix != -1) {
+													tabs.removeTabAt(ix);
+												}
+											}
+											public void componentShown(ComponentEvent e) {
+												  tabs.addTab(m.getText(),m.getIcon(),sc,o.getToolTipText());				
+											}
+					                    };
+					o.addComponentListener(visibilityListener);
+                    // now fire it off to initialize.
+					if (o.isVisible()) {
+						visibilityListener.componentShown(null);
+					} else {
+						visibilityListener.componentHidden(null);
+					}                    
                 } else {
                     ((JComponent)current).add(o);
                 }
@@ -466,6 +493,9 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.18  2007/01/10 14:55:14  nw
+added support for hiding UI components.
+
 Revision 1.17  2006/10/11 10:39:15  nw
 changed icons.
 
