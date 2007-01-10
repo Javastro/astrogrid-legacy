@@ -1,4 +1,4 @@
-/*$Id: ARTestSetup.java,v 1.1 2007/01/09 16:11:24 nw Exp $
+/*$Id: ARTestSetup.java,v 1.2 2007/01/10 14:57:10 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,23 +10,14 @@
 **/
 package org.astrogrid.desktop;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.acr.builtin.Shutdown;
-import org.astrogrid.config.Config;
-import org.astrogrid.config.PropertyNotFoundException;
-import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.desktop.BuildInprocessACR;
-import org.astrogrid.desktop.BuildInprocessWorkbench;
-
-import sun.tools.tree.SuperExpression;
-
 import junit.extensions.TestSetup;
 import junit.framework.Test;
-import junit.framework.TestResult;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.config.PropertyNotFoundException;
+import org.astrogrid.config.SimpleConfig;
 
 /** sets up a fixture of a running in-process workbench,
  *
@@ -140,6 +131,9 @@ public class ARTestSetup extends TestSetup{
 
 /* 
 $Log: ARTestSetup.java,v $
+Revision 1.2  2007/01/10 14:57:10  nw
+organized imports.
+
 Revision 1.1  2007/01/09 16:11:24  nw
 freshened and fixed InARTestCase- now can be nested, and works within eclipse.
 
