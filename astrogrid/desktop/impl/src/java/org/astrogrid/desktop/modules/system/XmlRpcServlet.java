@@ -1,4 +1,4 @@
-/*$Id: XmlRpcServlet.java,v 1.5 2006/06/27 10:40:26 nw Exp $
+/*$Id: XmlRpcServlet.java,v 1.6 2007/01/10 14:54:55 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -184,7 +184,7 @@ public class XmlRpcServlet extends HttpServlet {
     throws ServletException, IOException {
         //can't call a service - so just list out the methods we've got.
          PrintWriter out = response.getWriter();
-        out.println("<html><body><a href='./.' >up</a><h1>XMLRPC Server</h1>");
+        out.println("<html><body><a href='./.' >up</a><h1>XMLRPC Interface to AR</h1>");
         out.println("To call service, use POST");
 
         out.println("</body></html>");        
@@ -217,6 +217,9 @@ public class XmlRpcServlet extends HttpServlet {
 
 /* 
 $Log: XmlRpcServlet.java,v $
+Revision 1.6  2007/01/10 14:54:55  nw
+tidied.
+
 Revision 1.5  2006/06/27 10:40:26  nw
 findbugs tweaks
 
