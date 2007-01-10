@@ -62,7 +62,7 @@ public class ServiceBeanUnitTest extends TestCase {
 		}
 
 		public String getModuleId() {
-			return null;
+			return "mockModule";
 		}
 
 		public Object getService(Class arg0) {

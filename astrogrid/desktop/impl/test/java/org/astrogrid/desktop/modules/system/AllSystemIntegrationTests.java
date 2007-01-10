@@ -1,4 +1,4 @@
-/*$Id: AllSystemIntegrationTests.java,v 1.1 2007/01/09 16:12:20 nw Exp $
+/*$Id: AllSystemIntegrationTests.java,v 1.2 2007/01/10 14:57:35 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,6 +33,7 @@ public class AllSystemIntegrationTests {
         suite.addTest(ApiHelpIntegrationTest.suite());   
         suite.addTest(BackgroundExecutorIntegrationTest.suite());
         suite.addTest(UIInternalIntegrationTest.suite());
+        suite.addTest(PreferenceEditorServletIntegrationTest.suite());
         // tests the fundamentals of each trasnport.
         suite.addTest(HtmlTransportIntegrationTest.suite());
         suite.addTest(XmlRpcTransportIntegrationTest.suite());    
@@ -46,6 +47,9 @@ public class AllSystemIntegrationTests {
 
 /* 
 $Log: AllSystemIntegrationTests.java,v $
+Revision 1.2  2007/01/10 14:57:35  nw
+tests for preferences.
+
 Revision 1.1  2007/01/09 16:12:20  nw
 improved tests - still need extending though.
 

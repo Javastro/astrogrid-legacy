@@ -15,7 +15,6 @@ public class AllSystemContributionUnitTests {
 	public static Test suite() {
 		TestSuite suite = new TestSuite(
 				"Unit Test for System Contributions");
-		//$JUnit-BEGIN$
 		suite.addTestSuite(ServletsContributionUnitTest.class);
 		suite.addTestSuite(UITabContributionUnitTest.class);
 		suite.addTestSuite(HelpsetContributionUnitTest.class);
@@ -24,7 +23,6 @@ public class AllSystemContributionUnitTests {
 		suite.addTestSuite(ServletContextContributionUnitTest.class);
 		suite.addTestSuite(UIActionContributionUnitTest.class);
 		suite.addTestSuite(StylesheetsContributionUnitTest.class);
-		//$JUnit-END$
 		return suite;
 	}
 

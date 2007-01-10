@@ -19,6 +19,7 @@ public class CmdLineParserUnitTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		super.setUp();
+		System.setProperty("builtin.shutdown.exit", "false");		
 		this.parser = new CmdLineParser();
 	}
 	

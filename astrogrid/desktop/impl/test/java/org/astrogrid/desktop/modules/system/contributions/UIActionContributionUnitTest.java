@@ -3,17 +3,24 @@
  */
 package org.astrogrid.desktop.modules.system.contributions;
 
+import java.awt.Component;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+import javax.swing.JButton;
+
 import org.astrogrid.desktop.alternatives.HeadlessUIFactory;
+import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.system.UIImpl;
 import org.easymock.MockControl;
 
 import junit.framework.TestCase;
 
-/**
+/** unit tests for the ui action contribution.
  * @author Noel Winstanley
  * @since Jun 6, 20065:25:52 PM
  */
-public class UIActionContributionUnitTest extends TestCase {
+public class UIActionContributionUnitTest extends TestCase implements PropertyChangeListener {
 
 	/*
 	 * @see TestCase#setUp()
@@ -39,8 +46,8 @@ public class UIActionContributionUnitTest extends TestCase {
 		rControl.replay();
 		act.setObject(r);
 		act.setMethodName("run");
-		//HeadlessUIFactory fac = new HeadlessUIFactory();
-		//act.setUIImpl();
+		HeadlessUIFactory fac = new HeadlessUIFactory();
+		//act.setUIImpl(fac.getUI());
 	//	UIImpl ui = new UIImpl(
 	//	MockControl uiControl = MockControl.createControl(UII
 		
@@ -53,7 +60,13 @@ public class UIActionContributionUnitTest extends TestCase {
 	 * Test method for 'org.astrogrid.desktop.modules.system.contributions.UIActionContribution.addParameter(Object)'
 	 */
 	public void testAddParameter() {
-
+		assertNotNull(act.getParameters());
+		assertEquals(0,act.getParameters().size());
+		act.addParameter("foo");
+		act.addParameter("bar");
+		assertEquals(2,act.getParameters().size());
+		assertEquals("foo",act.getParameters().get(0));
+		assertEquals("bar",act.getParameters().get(1));
 	}
 	public void testSetAfter() {
 		assertNull(act.getAfter());
@@ -153,6 +166,61 @@ public class UIActionContributionUnitTest extends TestCase {
 	 */
 	public void testSetUIImpl() {
 
+	}
+	public void testVisibleConditionPropertyChange() throws Exception {
+		assertTrue(act.isVisible());
+		Preference p = new Preference();
+		p.setValue("false");
+		act.setVisibleCondition(p);
+		assertSame(p,act.getVisibleCondition());		
+		assertFalse(act.isVisible());
+		// check visibility updates on preferrnce change.
+		act.addPropertyChangeListener(this);
+		p.setValue("true");
+		assertTrue("doesn't update on preference change",act.isVisible());
+		Thread.yield();
+		Thread.sleep(200);
+		assertTrue(visible); // checks listener interfaces.
+	
+		// and back again.
+		// on non boolean value, goes to invisible.
+		p.setValue("blergh");
+		assertFalse("should be invisible now",act.isVisible());
+		Thread.yield();
+		Thread.sleep(200);
+		assertFalse(visible);
+	}
+
+	
+	public void testVisibleConditionParentComponent() throws Exception {
+		assertTrue(act.isVisible());
+		Preference p = new Preference();
+		p.setValue("false");
+		act.setVisibleCondition(p);
+		assertFalse(act.isVisible());
+		
+		Component c= new JButton();
+		assertTrue(c.isVisible());
+		act.setParentComponent(c);
+		assertFalse("component visibliy not sycnhe on set",c.isVisible());
+		
+		p.setValue("true");
+		assertTrue("doesn't update on preference change",act.isVisible());
+		assertTrue(c.isVisible());
+	
+		// and back again.
+		// on non boolean value, goes to invisible.
+		p.setValue("blergh");
+		assertFalse("should be invisible now",act.isVisible());
+		assertFalse(c.isVisible());
+	}
+	
+	boolean visible;
+	public void propertyChange(PropertyChangeEvent evt) {
+		assertSame(act,evt.getSource());
+		assertEquals(UIActionContribution.VISIBLE_PROPERTY,evt.getPropertyName());
+		visible = ((Boolean)evt.getNewValue()).booleanValue();
+		
 	}
 
 }

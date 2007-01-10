@@ -3,6 +3,12 @@
  */
 package org.astrogrid.desktop.modules.system.contributions;
 
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+
+import javax.swing.SwingUtilities;
+
+import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.system.UIImpl;
 
 import junit.framework.TestCase;
@@ -12,7 +18,7 @@ import junit.framework.TestCase;
  * @author Noel Winstanley
  * @since Jun 6, 20065:12:14 PM
  */
-public class UITabContributionUnitTest extends TestCase {
+public class UITabContributionUnitTest extends TestCase implements ComponentListener{
 
 	/*
 	 * @see TestCase#setUp()
@@ -26,6 +32,10 @@ public class UITabContributionUnitTest extends TestCase {
 		t = null;
 	}
 	protected UITabContribution t;
+	private boolean hiddenSeen;
+	private boolean resizedSeen;
+	private boolean movedSeen;
+	private boolean shownSeen;
 	
 	/*
 	 * Test method for 'org.astrogrid.desktop.modules.system.contributions.UITabContribution.setAfter(String)'
@@ -77,6 +87,42 @@ public class UITabContributionUnitTest extends TestCase {
 	 */
 	public void testGetParentName() {
 		assertEquals(UIImpl.TABS_NAME,t.getParentName());
+	}
+	
+	public void testVisibleCondition() throws Exception {
+		assertTrue(t.isVisible());
+		Preference p = new Preference();
+		p.setValue("false");
+		t.setVisibleCondition(p);
+		assertSame(p,t.getVisibleCondition());		
+		assertFalse(t.isVisible());
+		// check visibility updates on preferrnce change.
+		t.addComponentListener(this);
+		p.setValue("true");
+		assertTrue("doesn't update on preference change",t.isVisible());
+		Thread.yield();
+		Thread.sleep(200);
+		assertTrue(shownSeen); // checks listener interfaces.
+	
+		// and back again.
+		// on non boolean value, goes to invisible.
+		p.setValue("blergh");
+		assertFalse("should be invisible now",t.isVisible());
+		Thread.yield();
+		Thread.sleep(200);
+		assertTrue(hiddenSeen);
+	}
+	public void componentHidden(ComponentEvent e) {
+		hiddenSeen = true;
+	}
+	public void componentMoved(ComponentEvent e) {
+		movedSeen = true;
+	}
+	public void componentResized(ComponentEvent e) {
+		resizedSeen = true;
+	}
+	public void componentShown(ComponentEvent e) {
+		shownSeen= true;
 	}
 
 }

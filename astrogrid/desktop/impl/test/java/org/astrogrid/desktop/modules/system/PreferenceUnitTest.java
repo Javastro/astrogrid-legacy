@@ -7,6 +7,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 
+import org.apache.hivemind.internal.Module;
+import org.astrogrid.desktop.hivemind.ServiceBeanUnitTest;
 import org.astrogrid.desktop.modules.system.Preference;
 
 import junit.framework.TestCase;
@@ -146,7 +148,7 @@ public class PreferenceUnitTest extends TestCase {
 		assertEquals("uni",pref.getUnits());
 	}
 	
-	public void testAlternatices() throws Exception {
+	public void testAlternatives() throws Exception {
 		String[] alts = pref.getAlternatives();
 		assertNotNull(alts);
 		assertEquals(0,alts.length);
@@ -154,6 +156,24 @@ public class PreferenceUnitTest extends TestCase {
 		pref.addAlternative("bar");
 		alts = pref.getAlternatives();
 		assertTrue(Arrays.equals(new String[] {"foo","bar"}, alts));
+	}
+	
+	public void testOptions() throws Exception {
+		String[] opts = pref.getOptions();
+		assertNotNull(opts);
+		assertEquals(0,opts.length);
+		pref.addOption("true");
+		pref.addOption("false");
+		opts = pref.getOptions();
+		assertTrue(Arrays.equals(new String[] {"true","false"}, opts));
+	}
+	
+	public void testModuleName() throws Exception {
+		assertNull(pref.getModuleName());
+		ServiceBeanUnitTest.MockModule m = new ServiceBeanUnitTest.MockModule();
+		pref.setModule(m);
+		String s = pref.getModuleName();
+		assertNotNull(s);
 	}
 
 }

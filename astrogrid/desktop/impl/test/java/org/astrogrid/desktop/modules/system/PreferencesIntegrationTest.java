@@ -40,6 +40,27 @@ public class PreferencesIntegrationTest extends InARTestCase {
 		assertTrue(p.isRequiresRestart());
 		assertNotNull(p.getUiName());
 		assertNotNull(p.getDescription());
+		assertEquals("ivoa",p.getModuleName());
+		assertEquals(0,p.getAlternatives().length);
+		assertEquals(0,p.getOptions().length);
+
+	}
+    
+    public void testOptionPreference() throws Exception {
+		Preference p = ci.find("org.votech.plastic.notificationsenabled");
+		assertNotNull(p);
+		assertNotNull(p.getValue());
+		assertNotNull(p.getDefaultValue());
+		assertNotNull(p.getName());
+		assertFalse(p.isAdvanced());
+		assertFalse(p.isPropagateToConfig());
+		assertFalse(p.isRequiresRestart());
+		assertNotNull(p.getUiName());
+		assertNotNull(p.getDescription());
+		assertEquals("plastic",p.getModuleName());
+		assertEquals(0,p.getAlternatives().length);
+		assertEquals(2,p.getOptions().length);		
+
 	}
 	
 	

@@ -9,6 +9,7 @@ import org.astrogrid.desktop.modules.background.AllBackgroundIntegrationTests;
 import org.astrogrid.desktop.modules.cds.AllCdsIntegrationTests;
 import org.astrogrid.desktop.modules.ivoa.AllIvoaIntegrationTests;
 import org.astrogrid.desktop.modules.plastic.AllPlasticIntegrationTests;
+import org.astrogrid.desktop.modules.system.contributions.AllSystemContributionIntegrationTests;
 import org.astrogrid.desktop.modules.votech.AllVotechIntegrationTests;
 
 import junit.framework.Test;
@@ -26,6 +27,7 @@ public class AbsolutelyAllIntegrationTests {
 		inar.addTest(org.astrogrid.acr.AllAcrIntegrationTests.suite());
 		inar.addTest(org.astrogrid.desktop.modules.ag.AllAstrogridIntegrationTests.suite());
 		inar.addTest(org.astrogrid.desktop.modules.system.AllSystemIntegrationTests.suite());
+		inar.addTest(AllSystemContributionIntegrationTests.suite());
         inar.addTest(AllIvoaIntegrationTests.suite());
         inar.addTest(AllFrameworkIntegrationTests.suite());
         inar.addTest(org.astrogrid.desktop.modules.system.transformers.AllTransformerIntegrationTests.suite());
