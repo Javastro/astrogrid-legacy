@@ -57,7 +57,7 @@ class CmdLineParser {
 		public void run() {
 			spliceInDefaults();
 			HelpFormatter f = new HelpFormatter();
-			f.printHelp(this.usage,options);						
+			f.printHelp(this.usage + " <options>",options);						
 		}
 	}
 	
@@ -86,12 +86,14 @@ class CmdLineParser {
 	 */
 	private static Options createDefaultOptions() {
 		Options o = new Options();
+		o.addOption(OptionBuilder.withDescription("Shows this help and exit").create("help"));
 		
 		// properties
-		o.addOption(OptionBuilder.withArgName( "property=value" )
+		o.addOption(OptionBuilder.withArgName( "option=value" )
         						.hasArg()
         						.withValueSeparator()
-        						.withDescription( "use value for given property" )
+        						.withDescription( "set a configuration option (see --list for available options). " +
+        								"Don't forget a space between the -D and opt=value" )
         						.create( "D" ));
 		
 		o.addOption(OptionBuilder.withArgName("properties file")
@@ -99,6 +101,8 @@ class CmdLineParser {
 						.withDescription("file location of properties file")
 						.create("propertyFile"));
 		
+		o.addOption(OptionBuilder.withDescription("List configuration properties and exit").create("list"));
+				
 		o.addOption(OptionBuilder.withArgName("URL")
 				.hasArg()
 				.withDescription("URL location of properties file")
@@ -114,10 +118,7 @@ class CmdLineParser {
 			.withDescription("URL location of additional module file")
 			.create("addModuleURL"));
 		
-		// other options.
-		o.addOption(OptionBuilder.withDescription("Enable Debugging").create("debug"));
-		o.addOption(OptionBuilder.withDescription("Show help and exit").create("help"));
-		o.addOption(OptionBuilder.withDescription("List configuration properties and exit").create("list"));
+
 		o.addOption(OptionBuilder.withDescription("Generate Hivedoc and exit").create("hivedoc"));
 		return o;
 	}
@@ -155,11 +156,7 @@ class CmdLineParser {
 	}
 
 	public void processCommandLine(Launcher l) {
-		// process the debug flag first.
-		//@todo remove this option - not supporting todo any more.
-		if(commandLine.hasOption("debug")) {
-			System.setProperty("acr.debug","true");
-		}
+
 		// process -D first.
 		String[] props = commandLine.getOptionValues('D');
 		if (props != null) { // irritating that this returns null..
