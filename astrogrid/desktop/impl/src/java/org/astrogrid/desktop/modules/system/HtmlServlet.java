@@ -1,4 +1,4 @@
-/*$Id: HtmlServlet.java,v 1.6 2006/08/31 21:32:49 nw Exp $
+/*$Id: HtmlServlet.java,v 1.7 2007/01/10 14:53:57 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -69,6 +69,10 @@ public class HtmlServlet extends AbstractReflectionServlet {
             out.println("</dd>");
         }
         out.println("</dl>");
+        out.println("<a href='./preferences'><h1>Preferences</h1></a>");
+        out.println("View and edit the configuration settings for this AR");
+        out.println("<a href='./xmlrpc'<h1>XML-RPC interface</h1></a>");
+        out.println("Endpoint for the XML-RPC interface to this AR");
         footer(out);
     }
     
@@ -292,6 +296,9 @@ public class HtmlServlet extends AbstractReflectionServlet {
 
 /* 
 $Log: HtmlServlet.java,v $
+Revision 1.7  2007/01/10 14:53:57  nw
+added preferences editor
+
 Revision 1.6  2006/08/31 21:32:49  nw
 doc fixes.
 
