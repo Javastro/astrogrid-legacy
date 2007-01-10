@@ -1,4 +1,4 @@
-/*$Id: UITabContribution.java,v 1.3 2006/08/31 21:31:37 nw Exp $
+/*$Id: UITabContribution.java,v 1.4 2007/01/10 14:55:30 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,19 +10,23 @@
 **/
 package org.astrogrid.desktop.modules.system.contributions;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.system.UIImpl;
 
 import com.l2fprod.common.swing.JButtonBar;
 /**
- * ui contribution that is a tab in the pane.
+ * ui contribution that is a tab in the main window
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Mar-2006
  *
  */
-public class UITabContribution extends JButtonBar implements UIStructureContribution {
+public class UITabContribution extends JButtonBar implements UIStructureContribution, PropertyChangeListener {
 
     public UITabContribution() {
         super();
@@ -35,8 +39,40 @@ public class UITabContribution extends JButtonBar implements UIStructureContribu
     private String toolTipText;
     private Icon icon;
     
+    private Preference visiblePreference;
+    /** provide an optional preference object which is 'watched'.
+     * when this preference goes 'true', the 'visible' property of this object
+     * goes 'true', and a ComponentEvent is fired.. When the preference goes 'false'
+     * this visible property of this object goes 'false'
+     * @param p
+     */        
+    public void setVisibleCondition(Preference p) {
+    	// remove any previous listeners.
+    	if (visiblePreference != null) {
+    		visiblePreference.removePropertyChangeListener(this);
+    	}
+    	visiblePreference = p;
+    	visiblePreference.addPropertyChangeListener(this);
+    	boolean b = Boolean.parseBoolean(visiblePreference.getValue());
+    	setVisible(b);
+    }
+    
+    // package-private method, for testing only.
+    Preference getVisibleCondition() {
+    	return visiblePreference;
+    }    
 
-    public String getAfter() {
+/** used internally to watch for preference changes */
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getSource() == visiblePreference) {
+	    	boolean b = Boolean.parseBoolean(visiblePreference.getValue());
+	    	setVisible(b);			
+		}
+	}
+
+
+
+	public String getAfter() {
         return this.after;
     }
 
@@ -98,6 +134,9 @@ public class UITabContribution extends JButtonBar implements UIStructureContribu
 
 /* 
 $Log: UITabContribution.java,v $
+Revision 1.4  2007/01/10 14:55:30  nw
+integrated with preference system.
+
 Revision 1.3  2006/08/31 21:31:37  nw
 minor tweaks and doc fixes.
 

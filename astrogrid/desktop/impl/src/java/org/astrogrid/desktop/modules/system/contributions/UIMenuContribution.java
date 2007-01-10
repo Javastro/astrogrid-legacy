@@ -1,4 +1,4 @@
-/*$Id: UIMenuContribution.java,v 1.4 2006/06/15 09:57:05 nw Exp $
+/*$Id: UIMenuContribution.java,v 1.5 2007/01/10 14:55:30 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,16 @@
 **/
 package org.astrogrid.desktop.modules.system.contributions;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import javax.swing.JMenu;
 
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.system.Preference;
 
 /** bean modelling a menu in the user interface.*/
-public class UIMenuContribution extends JMenu implements UIStructureContribution {
+public class UIMenuContribution extends JMenu implements UIStructureContribution, PropertyChangeListener {
 
     public UIMenuContribution() {
         super();
@@ -26,7 +30,41 @@ public class UIMenuContribution extends JMenu implements UIStructureContribution
     private String before;
     private String parentName;
     
-    /** sets the icon to use */
+    
+    private Preference visiblePreference;
+    
+    /** provide an optional preference object which is 'watched'.
+     * when this preference goes 'true', the 'visible' property of this object
+     * goes 'true', and a ComponentEvent is fired.. When the preference goes 'false'
+     * this visible property of this object goes 'false'
+     * @param p
+     */    
+    public void setVisibleCondition(Preference p) {
+    	// remove any previous listeners.
+    	if (visiblePreference != null) {
+    		visiblePreference.removePropertyChangeListener(this);
+    	}
+    	visiblePreference = p;
+    	visiblePreference.addPropertyChangeListener(this);
+    	boolean b = Boolean.parseBoolean(visiblePreference.getValue());
+    	setVisible(b);
+    }
+    
+    // package-private method, for testing only.
+    Preference getVisibleCondition() {
+    	return visiblePreference;
+    }
+
+
+    /** used internally to watch for preference changes */
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getSource() == visiblePreference) {
+	    	boolean b = Boolean.parseBoolean(visiblePreference.getValue());
+	    	setVisible(b);			
+		}
+	}
+ 
+	/** sets the icon to use */
     public void setIconName(String icon) {
         super.setIcon(IconHelper.loadIcon(icon));
     }
@@ -69,6 +107,9 @@ public class UIMenuContribution extends JMenu implements UIStructureContribution
 
 /* 
 $Log: UIMenuContribution.java,v $
+Revision 1.5  2007/01/10 14:55:30  nw
+integrated with preference system.
+
 Revision 1.4  2006/06/15 09:57:05  nw
 doc fix
 

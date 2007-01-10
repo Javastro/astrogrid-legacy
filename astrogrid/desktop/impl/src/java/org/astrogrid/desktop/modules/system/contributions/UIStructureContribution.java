@@ -1,4 +1,4 @@
-/*$Id: UIStructureContribution.java,v 1.3 2006/06/15 09:57:05 nw Exp $
+/*$Id: UIStructureContribution.java,v 1.4 2007/01/10 14:55:30 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,10 +41,14 @@ public interface UIStructureContribution {
     /** display icon fopr this component */
     public Icon getIcon();
 
+    
 }
 
 /* 
  $Log: UIStructureContribution.java,v $
+ Revision 1.4  2007/01/10 14:55:30  nw
+ integrated with preference system.
+
  Revision 1.3  2006/06/15 09:57:05  nw
  doc fix
 

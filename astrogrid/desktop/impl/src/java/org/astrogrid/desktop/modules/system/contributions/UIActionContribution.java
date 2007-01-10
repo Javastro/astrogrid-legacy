@@ -1,4 +1,4 @@
-/*$Id: UIActionContribution.java,v 1.4 2006/06/27 19:13:37 nw Exp $
+/*$Id: UIActionContribution.java,v 1.5 2007/01/10 14:55:30 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,17 +10,18 @@
 **/
 package org.astrogrid.desktop.modules.system.contributions;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.system.UIImpl;
 import org.astrogrid.desktop.modules.system.UIImpl.InvokerWorker;
 
@@ -28,17 +29,13 @@ import org.astrogrid.desktop.modules.system.UIImpl.InvokerWorker;
  * Extends AbstractAction with methods to control display,
  * and details of a method name to invoke on a supplied object
  * when the action is triggered.
- * 
  * Method is invoked in a background worker thread.
+ * @todo move some functionality from UIImpl into this class
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Mar-2006
  *
  */
-public class UIActionContribution extends AbstractAction implements UIStructureContribution{
-    /**
-     * Logger for this class
-     */
-    private static final Log logger = LogFactory.getLog(UIActionContribution.class);
-
+public class UIActionContribution extends AbstractAction implements UIStructureContribution, PropertyChangeListener{
+   
     private String after;
     
     private String before;
@@ -49,8 +46,68 @@ public class UIActionContribution extends AbstractAction implements UIStructureC
     private List parameters= new ArrayList();
     private UIImpl parentImpl;
     private String parentName;
+    private Component parentComponent;
     
-    public UIActionContribution() {
+    public static String VISIBLE_PROPERTY = "visible";
+    private Preference visiblePreference;
+    private boolean visible = true;
+    
+    /** register a 'parent component' with this action.
+     * then, when a watche preference goes 'true', the visible 
+     * property of the parent component is altered accordingly.
+     * @param c
+     */
+    public void setParentComponent(Component c) {
+    	parentComponent = c;
+    	parentComponent.setVisible(isVisible());
+    }
+    
+    /** provide an optional preference object which is 'watched'.
+     * when this preference goes 'true', the 'visible' property of this object
+     * goes 'true', and a propertyChangeEvent is fired from this class,
+     * of {@link #VISIBLE_PROPERTY}
+     * @param p
+     */
+    public void setVisibleCondition(Preference p) {
+    	// remove any previous listeners.
+    	if (visiblePreference != null) {
+    		visiblePreference.removePropertyChangeListener(this);
+    	}
+    	visiblePreference = p;
+    	visiblePreference.addPropertyChangeListener(this);
+    	boolean b = Boolean.parseBoolean(visiblePreference.getValue());
+    	setVisible(b);
+    }
+    
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getSource() == visiblePreference) {
+	    	boolean b = Boolean.parseBoolean(visiblePreference.getValue());
+	    	setVisible(b);	
+	    	if (parentComponent != null) {
+	    		parentComponent.setVisible(b);
+	    	}
+		}
+	}
+
+    // package-private method, for testing only.
+    Preference getVisibleCondition() {
+    	return visiblePreference;
+    }    	
+	
+	/** sets the visiblity of the action */
+	public void setVisible(boolean b) {
+		if (visible != b) {
+			boolean old = visible;
+			visible = b;
+			firePropertyChange(VISIBLE_PROPERTY, Boolean.valueOf(old),Boolean.valueOf(b));
+		}
+	}
+	/** access the visibility of the action */
+	public boolean isVisible() {
+		return visible;
+	}
+	
+	public UIActionContribution() {
         super();
     }
     
@@ -167,6 +224,9 @@ public class UIActionContribution extends AbstractAction implements UIStructureC
 
 /* 
 $Log: UIActionContribution.java,v $
+Revision 1.5  2007/01/10 14:55:30  nw
+integrated with preference system.
+
 Revision 1.4  2006/06/27 19:13:37  nw
 minor tweaks
 
