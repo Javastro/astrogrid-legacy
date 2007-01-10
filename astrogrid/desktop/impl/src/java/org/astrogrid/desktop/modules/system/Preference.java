@@ -8,6 +8,8 @@ import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.hivemind.internal.Module;
+
 /** Representation of a single preference value.
  * 
  * Provides access to the name, value and defaultValue of the preference.
@@ -35,6 +37,7 @@ import java.util.List;
 public class Preference {
 
 	private List alternatives = new ArrayList();
+	private List options = new ArrayList();	
 	private String name;
 	private String defaultValue;
 	private boolean advanced;
@@ -44,8 +47,20 @@ public class Preference {
 	private String uiName;
 	private String description;
 	private String value;
+	private String moduleName;
 	
-	/** list possible alternative values */
+	public void setModule(Module m) {
+		moduleName = m.getModuleId();
+	}
+	
+	/** names the module to which this preference belongs */
+	public String getModuleName() {
+		return moduleName;
+	}
+	
+	/** list possible alternative values
+	 * @return an array of alternatives, or an empty array if none provided.
+	 * never null. */
 	public String[] getAlternatives() {
 		return (String[]) alternatives.toArray(new String[alternatives.size()]);
 	}
@@ -54,6 +69,16 @@ public class Preference {
 		alternatives.add(s);
 	}
 		
+	/** lists permitted option values
+	 * @return an array of options, or an empty array if none provided.
+	 * never null. */
+	public String[] getOptions() {
+		return (String[]) options.toArray(new String[options.size()]);
+	}
+	
+	public void addOption (String s) {
+		options.add(s);
+	}	
 	
 	/** true if this is considered an 'advanced' option which could be hidden from
 	 * the users.
