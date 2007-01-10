@@ -1,4 +1,4 @@
-/*$Id: UITabContribution.java,v 1.4 2007/01/10 14:55:30 nw Exp $
+/*$Id: UITabContribution.java,v 1.5 2007/01/10 19:12:16 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -53,8 +53,7 @@ public class UITabContribution extends JButtonBar implements UIStructureContribu
     	}
     	visiblePreference = p;
     	visiblePreference.addPropertyChangeListener(this);
-    	boolean b = Boolean.parseBoolean(visiblePreference.getValue());
-    	setVisible(b);
+    	setVisible(visiblePreference.asBoolean());
     }
     
     // package-private method, for testing only.
@@ -65,8 +64,7 @@ public class UITabContribution extends JButtonBar implements UIStructureContribu
 /** used internally to watch for preference changes */
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getSource() == visiblePreference) {
-	    	boolean b = Boolean.parseBoolean(visiblePreference.getValue());
-	    	setVisible(b);			
+	    	setVisible(visiblePreference.asBoolean());			
 		}
 	}
 
@@ -134,6 +132,9 @@ public class UITabContribution extends JButtonBar implements UIStructureContribu
 
 /* 
 $Log: UITabContribution.java,v $
+Revision 1.5  2007/01/10 19:12:16  nw
+integrated with preferences.
+
 Revision 1.4  2007/01/10 14:55:30  nw
 integrated with preference system.
 

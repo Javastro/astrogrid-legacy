@@ -1,4 +1,4 @@
-/*$Id: RegistryGoogleDialog.java,v 1.3 2007/01/09 16:19:57 nw Exp $
+/*$Id: RegistryGoogleDialog.java,v 1.4 2007/01/10 19:12:16 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,6 +38,7 @@ import org.astrogrid.desktop.modules.dialogs.registry.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ivoa.CacheFactory;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.votech.VoMon;
@@ -47,21 +48,18 @@ import org.votech.VoMon;
  *
  */
 public class RegistryGoogleDialog extends JDialog implements PropertyChangeListener {
-    /**
-     * Commons Logger for this class
-     */
-    private static final Log logger = LogFactory.getLog(RegistryGoogleDialog.class);
 
-    private JOptionPane jOptionPane = null;
-    private final RegistryGooglePanel chooserPanel;
+    JOptionPane jOptionPane = null;
+    final RegistryGooglePanel chooserPanel;
     private final UIComponentImpl parent;
     /** Construct a new RegistryChooserDialog
+     * @param pref 
      * @throws java.awt.HeadlessException
      */
-    public RegistryGoogleDialog(  Configuration conf, HelpServerInternal help, UIInternal ui,RegistryInternal reg,BrowserControl browser, RegistryBrowser regBrowser, CacheFactory cache,VoMon vomon) throws HeadlessException {
+    public RegistryGoogleDialog(  Configuration conf, HelpServerInternal help, UIInternal ui,RegistryInternal reg,BrowserControl browser, RegistryBrowser regBrowser, CacheFactory cache,VoMon vomon, Preference pref) throws HeadlessException {
         super();
         this.parent = new UIComponentImpl(conf,help,ui);
-        this.chooserPanel = new RegistryGooglePanel(parent,reg,browser,regBrowser,cache,vomon);
+        this.chooserPanel = new RegistryGooglePanel(parent,reg,browser,regBrowser,cache,vomon, pref);
         this.setContentPane(getJOptionPane());           
      
         this.setTitle("Resource Chooser");
@@ -80,8 +78,8 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
         this.setSize(425,600);        
     }
     
-    public RegistryGoogleDialog(Component parentComponent, Configuration conf, HelpServerInternal help, UIInternal ui,RegistryInternal reg, BrowserControl browser, RegistryBrowser regBrowser,CacheFactory cache, VoMon vomon) throws HeadlessException {
-        this(conf,help,ui,reg,browser, regBrowser,cache,vomon);
+    public RegistryGoogleDialog(Component parentComponent, Configuration conf, HelpServerInternal help, UIInternal ui,RegistryInternal reg, BrowserControl browser, RegistryBrowser regBrowser,CacheFactory cache, VoMon vomon, Preference pref) throws HeadlessException {
+    	this(conf,help,ui,reg,browser, regBrowser,cache,vomon,pref);
         setLocationRelativeTo(parentComponent);
     }
     
@@ -146,9 +144,7 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
         return topLabel;
     }
         
-    /**
-     * @return
-     */
+ 
     private JOptionPane getJOptionPane() {
        if (jOptionPane == null) {
            JPanel main = parent.getMainPanel();
@@ -179,6 +175,9 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
 
 /* 
 $Log: RegistryGoogleDialog.java,v $
+Revision 1.4  2007/01/10 19:12:16  nw
+integrated with preferences.
+
 Revision 1.3  2007/01/09 16:19:57  nw
 uses vomon.
 

@@ -24,5 +24,8 @@ public class BasicToolEditorPanelFactory implements ToolEditorPanelFactory {
 	public String getName() {
 		return "Parameter";
 	}
+	public boolean isAdvanced() {
+		return false;
+	}
 
 }

@@ -10,6 +10,7 @@ import org.astrogrid.acr.ui.MyspaceBrowser;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 
@@ -26,8 +27,9 @@ public class VoSpaceBrowserFactory implements	MyspaceBrowser {
 	 * @param vos
 	 * @param browser
 	 * @param chooser
+	 * @param pref 
 	 */
-	public VoSpaceBrowserFactory(Configuration conf, HelpServerInternal hs, UIInternal ui, MyspaceInternal vos,SendToMenu sendTo, BrowserControl browser, ResourceChooserInternal chooser, Community comm) {
+	public VoSpaceBrowserFactory(Configuration conf, HelpServerInternal hs, UIInternal ui, MyspaceInternal vos,SendToMenu sendTo, BrowserControl browser, ResourceChooserInternal chooser, Community comm, Preference pref) {
 		this.ui = ui;
 		this.conf = conf;
 		this.hs = hs;
@@ -36,6 +38,7 @@ public class VoSpaceBrowserFactory implements	MyspaceBrowser {
 		this.browser = browser;
 		this.comm = comm;
 		this.sendTo = sendTo;
+		this.pref = pref;
 	}
 
 	private final SendToMenu sendTo;
@@ -46,11 +49,12 @@ public class VoSpaceBrowserFactory implements	MyspaceBrowser {
 	private final ResourceChooserInternal chooser;
 	private final BrowserControl browser;
 	private final Community comm;
+	private final Preference pref;
 	public void hide() {
 		// ignored.
 	}
 	public void show() {
-		VospaceBrowserImpl mb = new VospaceBrowserImpl(conf, hs, ui, myspace, sendTo,browser, chooser);
+		VospaceBrowserImpl mb = new VospaceBrowserImpl(conf, hs, ui, myspace, sendTo,browser, chooser,pref);
 		comm.addUserLoginListener(mb); // @todo - should this be a weak refernece?
 		mb.show();
 	}

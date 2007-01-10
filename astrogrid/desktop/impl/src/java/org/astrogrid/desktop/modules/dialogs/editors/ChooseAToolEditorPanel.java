@@ -1,4 +1,4 @@
-/*$Id: ChooseAToolEditorPanel.java,v 1.13 2007/01/09 16:19:57 nw Exp $
+/*$Id: ChooseAToolEditorPanel.java,v 1.14 2007/01/10 19:12:16 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,10 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
-import net.sf.ehcache.CacheManager;
-
 import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.BrowserControl;
@@ -34,6 +31,7 @@ import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
 import org.astrogrid.desktop.modules.dialogs.registry.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ivoa.CacheFactory;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
+import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.votech.VoMon;
@@ -46,15 +44,15 @@ import org.votech.VoMon;
  */
 public class ChooseAToolEditorPanel extends AbstractToolEditorPanel implements PropertyChangeListener {
 
-	private RegistryGooglePanel rcp;
+	RegistryGooglePanel rcp;
 
 
-	public ChooseAToolEditorPanel(ToolModel tm,final UIComponent parent, RegistryInternal reg, final ApplicationsInternal apps, BrowserControl browser, RegistryBrowser regBrowser, CacheFactory cache, VoMon vomon) {
+	public ChooseAToolEditorPanel(ToolModel tm,final UIComponent parent, RegistryInternal reg, final ApplicationsInternal apps, BrowserControl browser, RegistryBrowser regBrowser, CacheFactory cache, VoMon vomon, Preference pref) {
 		super(tm);
 
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 		add(new JLabel("Select an Application:"));
-		rcp = new RegistryGooglePanel( parent,reg,browser,regBrowser,cache,vomon);
+		rcp = new RegistryGooglePanel( parent,reg,browser,regBrowser,cache,vomon, pref);
 		rcp.setMultipleResources(false);
 		setChooseCEAOnly(false);
 		toolModel.addToolEditListener(new ToolEditAdapter() {
@@ -98,19 +96,17 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel implements P
 							ex.printStackTrace();
 						}
 					} else {
-						if (resource != null) {//@todo fix this.
-							parent.setStatusMessage(resource.getTitle() + " is not a known kind of Application");
-						} else {
 							parent.setStatusMessage("NULL!!");
-						}
 					}
 				}
 			}
 
 			public void intervalRemoved(ListDataEvent e) {
+				// intentionally empty
 			}
 
 			public void contentsChanged(ListDataEvent e) {
+				// intentionally empty.
 			}
 		});
 		add(rcp);        
@@ -152,6 +148,9 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel implements P
 
 /* 
 $Log: ChooseAToolEditorPanel.java,v $
+Revision 1.14  2007/01/10 19:12:16  nw
+integrated with preferences.
+
 Revision 1.13  2007/01/09 16:19:57  nw
 uses vomon.
 

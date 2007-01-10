@@ -1,4 +1,4 @@
-/*$Id: ToolEditorImpl.java,v 1.11 2006/08/15 10:21:14 nw Exp $
+/*$Id: ToolEditorImpl.java,v 1.12 2007/01/10 19:12:16 nw Exp $
  * Created on 16-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,6 +30,7 @@ import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.editors.ToolEditorPanelFactory;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -47,17 +48,15 @@ public class ToolEditorImpl implements ToolEditorInternal {
    private final ToolEditorDialog dialog;
    private final MyspaceInternal myspace;    
 
-    /** Construct a new ToolEditorImpl
-     * 
-     */
+
     public ToolEditorImpl(
     		List panelFactories
             ,ResourceChooserInternal rChooser
             ,Registry reg           
             , Configuration conf, HelpServerInternal help, UIInternal ui
-            , ApplicationsInternal apps, MyspaceInternal myspace, BrowserControl browser) {
+            , ApplicationsInternal apps, MyspaceInternal myspace, BrowserControl browser, Preference pref) {
         super(); 
-        dialog = new ToolEditorDialog(panelFactories,rChooser,apps,myspace,reg,conf,help,ui,browser);
+        dialog = new ToolEditorDialog(panelFactories,rChooser,apps,myspace,reg,conf,help,ui,browser,pref);
         //dialog.setSize(600,425);
         dialog.pack();      
         
@@ -200,6 +199,9 @@ public class ToolEditorImpl implements ToolEditorInternal {
 
 /* 
 $Log: ToolEditorImpl.java,v $
+Revision 1.12  2007/01/10 19:12:16  nw
+integrated with preferences.
+
 Revision 1.11  2006/08/15 10:21:14  nw
 added constructor that specifies tool editor to use.upgraded to use new reg model.
 

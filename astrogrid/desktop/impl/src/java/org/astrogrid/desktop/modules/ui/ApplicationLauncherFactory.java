@@ -13,6 +13,7 @@ import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.system.UIInternal;
 
 /**
@@ -30,8 +31,9 @@ public class ApplicationLauncherFactory implements ApplicationLauncher {
 	 * @param conf
 	 * @param help
 	 * @param ui
+	 * @param preference 
 	 */
-	public ApplicationLauncherFactory(List panelFactories, ResourceChooserInternal rChooser, ApplicationsInternal apps, MyspaceInternal myspace, Lookout lookout, Configuration conf, HelpServerInternal help, UIInternal ui, BrowserControl browser) {
+	public ApplicationLauncherFactory(List panelFactories, ResourceChooserInternal rChooser, ApplicationsInternal apps, MyspaceInternal myspace, Lookout lookout, Configuration conf, HelpServerInternal help, UIInternal ui, BrowserControl browser, Preference preference) {
 		this.panelFactories = panelFactories;
 		this.rChooser = rChooser;
 		this.apps = apps;
@@ -41,6 +43,7 @@ public class ApplicationLauncherFactory implements ApplicationLauncher {
 		this.conf = conf;
 		this.help = help;
 		this.browser = browser;
+		this.preference = preference;
 	}
 	private final BrowserControl browser;
 	private final List panelFactories;
@@ -51,12 +54,13 @@ public class ApplicationLauncherFactory implements ApplicationLauncher {
 	private final Configuration conf;
 	private final HelpServerInternal help;
 	private final Lookout lookout;
+	private final Preference preference;
 	public void hide() {
 		// ignore.
 	}
 
 	public void show() {
-		ApplicationLauncher app = new ApplicationLauncherImpl(panelFactories, rChooser, apps, myspace, lookout, conf, help, ui,browser);
+		ApplicationLauncher app = new ApplicationLauncherImpl(panelFactories, rChooser, apps, myspace, lookout, conf, help, ui,browser,preference);
 		app.show();
 	}
 

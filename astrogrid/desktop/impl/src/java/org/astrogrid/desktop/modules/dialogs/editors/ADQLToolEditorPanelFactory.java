@@ -34,5 +34,8 @@ public class ADQLToolEditorPanelFactory implements ToolEditorPanelFactory {
 	public String getName() {
 		return "Query";
 	}
+	public boolean isAdvanced() {
+		return false;
+	}
 
 }

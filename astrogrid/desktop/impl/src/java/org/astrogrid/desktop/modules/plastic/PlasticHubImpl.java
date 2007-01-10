@@ -216,7 +216,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
     private void displayInfoMessage(String caption, String message) {
     	//If the config is not set, then assume we will show popups
     	//NWW - replaced config with a prefernece, but followed same rules.
-        if (tray != null && !("false".equalsIgnoreCase(notificationsEnabled.getValue()))) {
+        if (tray != null && notificationsEnabled.asBoolean()) {
             tray.displayInfoMessage(caption, message);
         } else {
             logger.info(caption + " : " + message);

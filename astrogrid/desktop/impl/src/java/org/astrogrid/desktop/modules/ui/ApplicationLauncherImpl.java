@@ -1,4 +1,4 @@
-/*$Id: ApplicationLauncherImpl.java,v 1.14 2006/08/15 10:10:20 nw Exp $
+/*$Id: ApplicationLauncherImpl.java,v 1.15 2007/01/10 19:12:16 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,6 +28,7 @@ import org.astrogrid.desktop.modules.dialogs.editors.CompositeToolEditorPanel;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditAdapter;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.system.UIInternal;
 /** Implementation of the Application Launcher component
  * <p>
@@ -44,10 +45,10 @@ public class ApplicationLauncherImpl extends UIComponentImpl  implements Applica
             ,ApplicationsInternal apps
             ,MyspaceInternal myspace
             ,Lookout lookout                                  
-            ,Configuration conf, HelpServerInternal help, UIInternal ui, BrowserControl browser) {
+            ,Configuration conf, HelpServerInternal help, UIInternal ui, BrowserControl browser, Preference pref) {
             super(conf, help, ui);
             editor =  new CompositeToolEditorPanel(
-                    panelFactories,rChooser,apps,myspace,this,help,browser);
+                    panelFactories,rChooser,apps,myspace,this,help,browser,pref);
             editor.setLookout(lookout);
             this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
             this.setSize(600,425); // same proportions as A4, etc., and 600 high.   
@@ -86,12 +87,15 @@ public class ApplicationLauncherImpl extends UIComponentImpl  implements Applica
             });
     }
     
-    private final CompositeToolEditorPanel editor;
+    final CompositeToolEditorPanel editor;
   
 }
 
 /* 
 $Log: ApplicationLauncherImpl.java,v $
+Revision 1.15  2007/01/10 19:12:16  nw
+integrated with preferences.
+
 Revision 1.14  2006/08/15 10:10:20  nw
 migrated from old to new registry models.
 

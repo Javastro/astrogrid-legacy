@@ -294,6 +294,7 @@ PW WORKFLOWS
 				<service>system.help</service>
 				<service>system.ui</service>
 				<service>system.browser</service>
+				<object>preference:acr.advanced</object>
 <!--				<event-listener service-id="builtin.shutdown" />						-->
 			</construct>
 		</invoke-factory>	
@@ -380,7 +381,8 @@ WORKFLOW BUILDER
 				<service>astrogrid.myspace</service>
 				<service>ui.sendTo</service>
 				<service>system.browser</service>
-				<service>dialogs.resourceChooser</service>		
+				<service>dialogs.resourceChooser</service>	
+				<object>preference:acr.advanced</object>	
 				<event-listener service-id="builtin.shutdown" />	
 				<event-listener service-id="astrogrid.community" />						
 			</construct>
@@ -425,6 +427,7 @@ WORKFLOW BUILDER
 				<service>system.browser</service>
 				<service>ivoa.cache</service>
 				<service>votech.vomon</service>
+				<object>preference:acr.advanced</object>
 				<!--<event-listener service-id="builtin.shutdown" />						-->
 			</construct>
 		</invoke-factory>	

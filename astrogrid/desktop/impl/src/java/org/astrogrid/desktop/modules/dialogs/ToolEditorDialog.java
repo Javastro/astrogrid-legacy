@@ -1,4 +1,4 @@
-/*$Id: ToolEditorDialog.java,v 1.8 2006/08/16 11:10:23 pjn3 Exp $
+/*$Id: ToolEditorDialog.java,v 1.9 2007/01/10 19:12:16 nw Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,6 +38,7 @@ import org.astrogrid.desktop.modules.dialogs.editors.CompositeToolEditorPanel;
 import org.astrogrid.desktop.modules.dialogs.editors.ToolEditorPanelFactory;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -50,13 +51,9 @@ import org.astrogrid.workflow.beans.v1.Tool;
  *
  */
 public class ToolEditorDialog extends JDialog implements PropertyChangeListener {
-    /**
-     * Commons Logger for this class
-     */
-    private static final Log logger = LogFactory.getLog(ToolEditorDialog.class);
+
     
-    
-    private JOptionPane jOptionPane = null;
+    JOptionPane jOptionPane = null;
     private final AbstractToolEditorPanel parametersPanel;
     private final UIComponentImpl parent;
     
@@ -70,10 +67,10 @@ public class ToolEditorDialog extends JDialog implements PropertyChangeListener 
             ,MyspaceInternal myspace
             ,Registry reg
             ,Configuration conf, HelpServerInternal help, UIInternal ui
-            ,BrowserControl browser) throws HeadlessException {
+            ,BrowserControl browser, Preference pref) throws HeadlessException {
         super();          
         this.parent = new UIComponentImpl(conf,help,ui);        
-        parametersPanel = new CompositeToolEditorPanel(panelFactories,rChooser,apps,myspace,parent,help,browser);
+        parametersPanel = new CompositeToolEditorPanel(panelFactories,rChooser,apps,myspace,parent,help,browser,pref);
         init();
     }
     
@@ -172,9 +169,7 @@ public class ToolEditorDialog extends JDialog implements PropertyChangeListener 
         }
     }
     
-	/**
-     * @return
-     */
+
     private JOptionPane getJOptionPane() {
        if (jOptionPane == null) {
            JPanel main = parent.getMainPanel();
@@ -206,6 +201,9 @@ public class ToolEditorDialog extends JDialog implements PropertyChangeListener 
 
 /* 
 $Log: ToolEditorDialog.java,v $
+Revision 1.9  2007/01/10 19:12:16  nw
+integrated with preferences.
+
 Revision 1.8  2006/08/16 11:10:23  pjn3
 Possible resolution to OK/Cancl bug #1505
 

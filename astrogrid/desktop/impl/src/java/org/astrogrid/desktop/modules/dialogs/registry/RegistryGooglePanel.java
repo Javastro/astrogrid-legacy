@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.4 2007/01/09 16:19:33 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.5 2007/01/10 19:12:16 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,12 +11,13 @@
 package org.astrogrid.desktop.modules.dialogs.registry;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
@@ -47,20 +47,13 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.xml.stream.XMLStreamReader;
 
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 
 import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.WordUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
@@ -70,9 +63,9 @@ import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ivoa.CacheFactory;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal.StreamProcessor;
-import org.astrogrid.desktop.modules.ivoa.StreamingExternalRegistryImpl.DocumentBuilderStreamProcessor;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceFormatter;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParser;
+import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.ExternalViewerHyperlinkListener;
 import org.astrogrid.desktop.modules.ui.RegistryBrowserImpl;
@@ -86,7 +79,7 @@ import org.w3c.dom.Document;
  * @todo implement using standard xquery
  * @todo optimize query - no //vor:resouc
  */
-public class RegistryGooglePanel extends JPanel implements ActionListener {
+public class RegistryGooglePanel extends JPanel implements ActionListener, PropertyChangeListener {
     
     /** worker class that does the search.
 	 * @author Noel Winstanley
@@ -104,7 +97,7 @@ public class RegistryGooglePanel extends JPanel implements ActionListener {
 		 * @param msg
 		 * @param q
 		 */
-		private SearchWorker(UIComponent parent, String msg, AbstractQuery q) {
+		public SearchWorker(UIComponent parent, String msg, AbstractQuery q) {
 			super(parent, msg);
 			this.q = q;	
 		}
@@ -207,7 +200,7 @@ public class RegistryGooglePanel extends JPanel implements ActionListener {
 	 * @author Noel Winstanley
 	 * @since Aug 5, 20062:57:44 AM
 	 */
-	private final class XMLDisplayer implements ListSelectionListener, ChangeListener {
+	final class XMLDisplayer implements ListSelectionListener, ChangeListener {
 		protected int currentRow = -1;
 		protected int currentTab = 0;
 
@@ -259,9 +252,9 @@ public class RegistryGooglePanel extends JPanel implements ActionListener {
      */
     public class ResourceTableModel extends AbstractTableModel {
         private int COLUMN_COUNT = 2;
-        private final DefaultListModel listModel;
+        final DefaultListModel listModel;
         private List ri = new ArrayList();
-        private final ListSelectionModel selectionModel;
+        final ListSelectionModel selectionModel;
         public ResourceTableModel() {
             listModel = new DefaultListModel() ;
             selectionModel = new DefaultListSelectionModel();
@@ -402,29 +395,19 @@ public class RegistryGooglePanel extends JPanel implements ActionListener {
             }
         }
     } // end resource information table model. 
-    private static final int CELL_WRAP_LENGTH = 100;
-    
-    /**
-     * Commons Logger for this class
-     */
-    private static final Log logger = LogFactory.getLog(RegistryGooglePanel.class);
-      
 
-
-    private static final int WRAP_LENGTH = 70;
-    
-    private JEditorPane detailsPane ;
-    private JCheckBox exhaustiveCheck = new JCheckBox("Full-text Search");
+    JEditorPane detailsPane ;
+    JCheckBox exhaustiveCheck = new JCheckBox("Full-text Search");
    
-    private String filter = null;
+    String filter = null;
     private JButton goButton = null;
     private JTextField keywordField = null;
-    private JTable selectTable = null;
-    private ResourceTableModel selectTableModel= new ResourceTableModel();
+    JTable selectTable = null;
+    ResourceTableModel selectTableModel= new ResourceTableModel();
     private JSplitPane split = null;
-    private JTabbedPane tabPane;
+    JTabbedPane tabPane;
     private final XMLDisplayer xmlDisplayer = new XMLDisplayer();
-    private JTextArea xmlPane = new JTextArea();
+    JTextArea xmlPane = new JTextArea();
     
 
     
@@ -445,10 +428,18 @@ public class RegistryGooglePanel extends JPanel implements ActionListener {
     protected final Ehcache resources ;
     protected final Ehcache bulk;
     protected final VoMon vomon;
+    protected final Preference advancedPreference;
     /** Construct a new RegistryChooserPanel
      * 
+     * @param parent parent component
+     * @param reg used to perform the query
+     * @param browser used to display external resources
+     * @param regBrowser used to display related registry entires.
+     * @param fac caches resources.
+     * @param vomon used to annotate registry entries with availability information
+     * @param pref controls whether to display 'advanced' features of the ui.
      */
-    public RegistryGooglePanel(UIComponent parent,RegistryInternal reg, BrowserControl browser, RegistryBrowser regBrowser, CacheFactory fac, VoMon vomon) {
+    public RegistryGooglePanel(final UIComponent parent,final RegistryInternal reg, final BrowserControl browser, final RegistryBrowser regBrowser, final CacheFactory fac, final VoMon vomon, Preference pref) {
         super();    
         this.parent = parent;
         this.reg = reg;
@@ -457,7 +448,8 @@ public class RegistryGooglePanel extends JPanel implements ActionListener {
         this.resources = fac.getManager().getCache(CacheFactory.RESOURCES_CACHE);
         this.bulk = fac.getManager().getCache(CacheFactory.BULK_CACHE);
         this.vomon = vomon;
-
+        this.advancedPreference = pref;
+        advancedPreference.addPropertyChangeListener(this);
         
         initialize();
    }
@@ -500,7 +492,7 @@ public class RegistryGooglePanel extends JPanel implements ActionListener {
 
     private final QueryVisitor feedbackVisitor = new KeywordQueryVisitor();
     /** access the resources selected by the user
-	    * @return
+	    * @return an array of resources. - maybe an empty array, but never null;
 	    */
 	   public Resource[] getSelectedResources() {
 	       ListModel m = getSelectedResourcesModel();
@@ -677,8 +669,7 @@ private void initialize() {
     detailsPane.setText("<html><body></body></html>");
     detailsPane.addHyperlinkListener(new ExternalViewerHyperlinkListener(browser, regBrowser));
     tabPane.addTab("Details", null, new JScrollPane(detailsPane), "Details of chosen entry");
-	JPanel treePanel = new JPanel(new BorderLayout());
-    tabPane.addTab("XML entry", IconHelper.loadIcon("document.gif"), getBottomPanel(), "View the XML as entered in the registry");       
+    showHideAdvancedFeatures();
     tabPane.addChangeListener(xmlDisplayer);
     split = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,getCenterPanel(),tabPane);
     split.setPreferredSize(new Dimension(300,200));
@@ -692,11 +683,36 @@ private void initialize() {
 public void clear() {
 	selectTableModel.clear();
 }
+// triggered when value of preference changes. - shows / hides xml representation.
+public void propertyChange(PropertyChangeEvent evt) {
+	if (evt.getSource() == this.advancedPreference && ! evt.getNewValue().equals(evt.getOldValue())) {
+
+				showHideAdvancedFeatures();
+	
+	}
+}
+
+/**
+ * 
+ */
+private void showHideAdvancedFeatures() {
+	if (advancedPreference.asBoolean()) {
+		 tabPane.addTab("XML entry", IconHelper.loadIcon("document.gif"), getBottomPanel(), "View the XML as entered in the registry");       			
+	} else {
+		int ix = tabPane.indexOfTab("XML entry");
+		if (ix != -1) {
+			tabPane.removeTabAt(ix);
+		}
+	}
+}
 
 }
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.5  2007/01/10 19:12:16  nw
+integrated with preferences.
+
 Revision 1.4  2007/01/09 16:19:33  nw
 uses vomon.
 

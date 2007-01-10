@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowserImpl.java,v 1.16 2007/01/09 16:14:02 nw Exp $
+/*$Id: VospaceBrowserImpl.java,v 1.17 2007/01/10 19:12:15 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,12 +13,11 @@ package org.astrogrid.desktop.modules.ui;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
@@ -42,24 +41,19 @@ import javax.swing.JToolBar;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
-import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.MyspaceBrowser;
-import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.filemanager.client.NodeMetadata;
-import org.astrogrid.filemanager.common.FileManagerFault;
-import org.astrogrid.filemanager.common.NodeNotFoundFault;
-import org.astrogrid.registry.RegistryException;
 import org.astrogrid.store.Ivorn;
-import org.votech.VoMon;
 
 import com.l2fprod.common.swing.JTaskPane;
 import com.l2fprod.common.swing.JTaskPaneGroup;
@@ -109,7 +103,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
             VospaceBrowserImpl.this.setStatusMessage("Cut " + n.getName() + " to clipboard");
         }
     }    
-    private  static class Clipboard {
+    static class Clipboard {
         public FileManagerNode node;
         public int action;
         public static final int CUT = 1;
@@ -151,6 +145,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
                         clipboard.node.move(null,target,null);
                     } else {
                         FileManagerNode newNode = clipboard.node.copy(null,target,null);
+                        // @todo do something with this.
                     }
                     return null;
                 }
@@ -190,13 +185,13 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
                                                // delete the thing.
             (new BackgroundOperation("Deleting " + n.getName()) {
                 protected Object construct() throws Exception {
-                    FileManagerNode parent = n.getParentNode(); // find it's
+                    FileManagerNode parentNode = n.getParentNode(); // find it's
                                                                 // parent - so
                                                                 // we can inform
                                                                 // it of the
                                                                 // removal.
                     n.delete();
-                    return parent;
+                    return parentNode;
                 }
 
                 protected void doAlways() {
@@ -343,7 +338,8 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
             }).start();
         }    
 
-    private String conformToMyspaceName(String name) {
+    private String conformToMyspaceName(String n) {
+    	String name = n;
         name = name.replaceAll(" ", "_");
         name = name.replaceAll("/", "_");
         return name;
@@ -358,12 +354,11 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
      * @param node the current selected file or directory node in myspace. 
      * @throws Exception
      */
-    private void transferFiles(URI uri, FileManagerNode node) throws Exception { 
+    void transferFiles(URI uri, FileManagerNode node) throws Exception { 
         URL url = uri.toURL();
         File file = new File(uri.getPath());
         
         String name = file.getName();
-        InputStream is = null;
         String voName = conformToMyspaceName(name);
             //check if the myspace selected node is a file, if so then normal overwrite occurrs.
             if(node.isFile()) {
@@ -470,21 +465,26 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
         }
     }
 
-    /** pane that displays information about a node */
-    private static class InformationPane extends JTaskPane implements Observer {
+    /** pane that displays information about a node 
+     * implements the observer interface - which notifies of changes to the selected node.
+     * implements property listener, which notifies changes to preferences that control what is displayed.
+     * */
+    static class InformationPane extends JTaskPane implements Observer, PropertyChangeListener {
 
         private final JLabel furtherInformation;
         private final JLabel information;
+        private final JTaskPaneGroup furtherGroup ;
         {
             JTaskPaneGroup infoGroup = new JTaskPaneGroup();
             infoGroup.setText("Properties");
             infoGroup.setIcon(IconHelper.loadIcon("info_obj.gif"));
             infoGroup.setSpecial(true);
 
-            JTaskPaneGroup furtherGroup = new JTaskPaneGroup();
+            furtherGroup = new JTaskPaneGroup();
             furtherGroup.setText("Advanced");
             furtherGroup.setIcon(IconHelper.loadIcon("read_obj.gif"));
             furtherGroup.setExpanded(false);
+            
 
             add(infoGroup);
             add(furtherGroup);
@@ -556,6 +556,11 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
             information.setText("");
             furtherInformation.setText("");
         }
+
+		public void propertyChange(PropertyChangeEvent evt) {
+			boolean showAdvanced = Boolean.parseBoolean(evt.getNewValue().toString());
+			furtherGroup.setVisible(showAdvanced);
+		}
     }
 
     protected final BrowserControl browser;
@@ -564,26 +569,21 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
     private JMenu fileMenu, editMenu;
 
-    private InformationPane informationPane;
+    InformationPane informationPane;
 
     private JMenuBar jJMenuBar = null;
 
     private JSplitPane jSplitPane = null;
-
+    private final Preference advancedPreference;
     /**
      * This is the default constructor
-     * 
-     * @throws CommunityException
-     * @throws RegistryException
-     * @throws URISyntaxException
-     * @throws RemoteException
-     * @throws NodeNotFoundFault
-     * @throws FileManagerFault
+
      */
-    public VospaceBrowserImpl(Configuration conf, HelpServerInternal hs,UIInternal ui, MyspaceInternal vos, SendToMenu sendTo,BrowserControl browser,ResourceChooserInternal chooser) {
+    public VospaceBrowserImpl(Configuration conf, HelpServerInternal hs,UIInternal ui, MyspaceInternal vos, SendToMenu sendTo,BrowserControl browser,ResourceChooserInternal chooser, Preference pref) {
         super(conf, hs,ui,vos, sendTo);       
         this.browser = browser;
         this.chooser =chooser;
+        this.advancedPreference = pref;
         initialize();
     }
 
@@ -620,6 +620,11 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
     protected InformationPane getInformationPane() {
         if (informationPane == null) {
             informationPane = new InformationPane();
+            advancedPreference.addPropertyChangeListener(informationPane);
+            // initialize it by firing in an event.
+            String s= advancedPreference.getValue();
+            PropertyChangeEvent e = new PropertyChangeEvent(advancedPreference,"value",s,s);
+			informationPane.propertyChange(e);
         }
         return informationPane;
     }
@@ -730,7 +735,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.myspaceBrowser");          
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setIconImage(IconHelper.loadIcon("filenav_nav.gif").getImage());         
-        JPanel pane = getJContentPane();
+        JPanel pane = getMainPanel();
         pane.add(getJSplitPane(), java.awt.BorderLayout.CENTER);
         JToolBar toolBar = getToolBar();
         pane.add(toolBar, java.awt.BorderLayout.NORTH);
@@ -751,6 +756,9 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
 /*
  * $Log: VospaceBrowserImpl.java,v $
+ * Revision 1.17  2007/01/10 19:12:15  nw
+ * integrated with preferences.
+ *
  * Revision 1.16  2007/01/09 16:14:02  nw
  * added use of monitoring service
  *

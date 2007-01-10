@@ -1,4 +1,4 @@
-/*$Id: BackgroundWorker.java,v 1.6 2006/08/31 21:31:37 nw Exp $
+/*$Id: BackgroundWorker.java,v 1.7 2007/01/10 19:12:16 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -132,8 +132,8 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
             SwingUtilities.invokeLater(new Runnable() {// finish off by updating ui.
                 public void run() {
                     try {
-                        Object result = get();
-                        doFinished(result);
+                        Object o = get();
+                        doFinished(o);
                     } catch (InterruptedException e) {
                         parent.setStatusMessage(msg + " - Interrupted");
                     } catch (InvocationTargetException e) {                    
@@ -276,6 +276,9 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
 
 /* 
 $Log: BackgroundWorker.java,v $
+Revision 1.7  2007/01/10 19:12:16  nw
+integrated with preferences.
+
 Revision 1.6  2006/08/31 21:31:37  nw
 minor tweaks and doc fixes.
 

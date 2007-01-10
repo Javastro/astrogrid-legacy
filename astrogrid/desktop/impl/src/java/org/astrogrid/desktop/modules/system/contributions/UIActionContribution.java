@@ -1,4 +1,4 @@
-/*$Id: UIActionContribution.java,v 1.5 2007/01/10 14:55:30 nw Exp $
+/*$Id: UIActionContribution.java,v 1.6 2007/01/10 19:12:16 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -75,16 +75,14 @@ public class UIActionContribution extends AbstractAction implements UIStructureC
     	}
     	visiblePreference = p;
     	visiblePreference.addPropertyChangeListener(this);
-    	boolean b = Boolean.parseBoolean(visiblePreference.getValue());
-    	setVisible(b);
+    	setVisible(visiblePreference.asBoolean());
     }
     
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getSource() == visiblePreference) {
-	    	boolean b = Boolean.parseBoolean(visiblePreference.getValue());
-	    	setVisible(b);	
+	    		setVisible(visiblePreference.asBoolean());	
 	    	if (parentComponent != null) {
-	    		parentComponent.setVisible(b);
+	    		parentComponent.setVisible(visiblePreference.asBoolean());
 	    	}
 		}
 	}
@@ -224,6 +222,9 @@ public class UIActionContribution extends AbstractAction implements UIStructureC
 
 /* 
 $Log: UIActionContribution.java,v $
+Revision 1.6  2007/01/10 19:12:16  nw
+integrated with preferences.
+
 Revision 1.5  2007/01/10 14:55:30  nw
 integrated with preference system.
 

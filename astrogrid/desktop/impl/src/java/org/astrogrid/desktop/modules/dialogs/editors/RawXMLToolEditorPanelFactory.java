@@ -24,5 +24,8 @@ public class RawXMLToolEditorPanelFactory implements ToolEditorPanelFactory {
 	public String getName() {
 		return "XML";
 	}
+	public boolean isAdvanced() {
+		return true;
+	}
 
 }

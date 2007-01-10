@@ -16,4 +16,7 @@ public interface ToolEditorPanelFactory {
 	AbstractToolEditorPanel create(ToolModel model, UIComponent parent);
 	/** access the UI name of this kind of panel */
 	String getName();
+	
+	/** if true, is an 'advanced' tool editor - to be hidden in some views */
+	boolean isAdvanced();
 }

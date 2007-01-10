@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.27 2006/11/27 18:38:09 jl99 Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.28 2007/01/10 19:12:16 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,7 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -25,6 +26,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -61,6 +63,7 @@ import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditAdapter;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditListener;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.ui.ApplicationLauncherImpl;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
@@ -76,7 +79,7 @@ import com.l2fprod.common.swing.JLinkButton;
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Sep-2005
  *
  */
-public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
+public class CompositeToolEditorPanel extends AbstractToolEditorPanel implements PropertyChangeListener {
     
    /** listen to changes, display icon and metadata */
 	protected final class ProviderCreditsButton extends JLinkButton {
@@ -391,22 +394,24 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
                
         
         private void enableApplicable(Tool t, CeaApplication info) {
-                    int firstApplicable = 0;
-                    for (int i = 1; i < views.length; i++ ) { 
-                    	// start at 1, as 0 is hte chooser - always applicable, but other applicable should take precedence
-                        int pos = tabPane.indexOfComponent(views[i]);
-
-                        if (views[i].isApplicable(t, info)) {
-                            tabPane.setEnabledAt(pos,true);
-                            if (firstApplicable == 0) {
-                                firstApplicable = pos;
-                            }                    
-                        } else {
-                            tabPane.setEnabledAt(pos,false);
-                        }
-                    }
-                    tabPane.setSelectedIndex(firstApplicable);
-                }                   
+        	int firstApplicable = 0;
+        	for (int i = 1; i < views.length; i++ ) { 
+        		final AbstractToolEditorPanel panel = views[i];
+        		// start at 1, as 0 is hte chooser - always applicable, but other applicable should take precedence
+        		int pos = tabPane.indexOfComponent(panel);
+        		if (pos != -1) { // else it's an advanced one, not visible at the moment.
+        			if (panel.isApplicable(t, info)) {
+        				tabPane.setEnabledAt(pos,true);
+        				if (firstApplicable == 0) {
+        					firstApplicable = pos;
+        				}                    
+        			} else {
+        				tabPane.setEnabledAt(pos,false);
+        			}
+        		}
+        	}
+        	tabPane.setSelectedIndex(firstApplicable);
+        }                   
     }
     /**
      * Commons Logger for this class
@@ -422,8 +427,11 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
     protected Action newAction, saveAction, openAction, executeAction, closeAction;
     protected final JButton creditsButton;
     protected final BrowserControl browser;
+    protected final Preference advancedPreference;
     
     private ArrayList warningMessages ;
+	private final int[] preferenceIndexes;
+	private final List panelFactories;
    
 
     /** set the lookout reference - not passed into constructor, as may not always be available*/
@@ -440,30 +448,56 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
             , UIComponentImpl parent
             ,HelpServerInternal hs
             ,BrowserControl browser
+            ,Preference advancedPref
             ) {        
-        this.parent = parent;        
+        this.panelFactories = panelFactories;
+		this.parent = parent;        
         this.browser = browser;
         this.rChooser = rChooser;
         this.apps = apps;
         this.myspace = myspace;
+        this.advancedPreference = advancedPref;
+        advancedPreference.addPropertyChangeListener(this);
+        
         tabPane = new JTabbedPane();
         tabPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         tabPane.setTabPlacement(SwingConstants.LEFT);
         tabPane.setPreferredSize(new Dimension(600,495));
+        
         parent.setJMenuBar(getJJMenuBar());
 
-        List panels = new ArrayList();
-        for (Iterator i = panelFactories.iterator(); i.hasNext(); ) {
-        	ToolEditorPanelFactory fac = (ToolEditorPanelFactory)i.next();
+        // deep breath. instantiate each panel in turn.
+        // for those that are 'standard', add them into the tabpane
+        // for those that are 'advanced', note their index, 
+        // and later trigger a mass add/remove.
+        int advancedCount = 0;
+        int[] advancedIndexes = new int[panelFactories.size()];
+        views = new AbstractToolEditorPanel[panelFactories.size()];
+        for (int i = 0; i < panelFactories.size(); i++) {
+        	ToolEditorPanelFactory fac = (ToolEditorPanelFactory)panelFactories.get(i);
         	AbstractToolEditorPanel p = fac.create(getToolModel(),parent);
-        	panels.add(p);
+        	views[i] = p;
         	// if anyone of them is interested, register as a property change listener..
         	if (p instanceof PropertyChangeListener) {
         		this.addPropertyChangeListener((PropertyChangeListener)p);
         	}
-        	tabPane.addTab(fac.getName(),p);
+        	if (fac.isAdvanced()) {
+        		// make a note of it's position.
+        		advancedIndexes[advancedCount++] = i;
+        	} else { // add it immediately
+        		tabPane.addTab(fac.getName(),p);
+        	}
         }   
-        views = (AbstractToolEditorPanel[])panels.toArray(new AbstractToolEditorPanel[panels.size()]);
+        // trim the array of indexes and store in a member variable.
+        this.preferenceIndexes = new int[advancedCount];
+        System.arraycopy(advancedIndexes, 0, preferenceIndexes, 0, advancedCount);
+        
+        // now, if 'advanced' is set, insert those.
+    	if (advancedPreference.asBoolean()) {
+    		showHideAdvancedFeatures();
+    	}
+        
+        // ok. tricky part all done.
         hs.enableHelp(tabPane, "userInterface.workflowBuilder.taskEditor");
            
         newAction = new NewAction();
@@ -495,6 +529,26 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         this.add(tabPane,BorderLayout.CENTER);
       this.getToolModel().addToolEditListener(new Controller());
         //this.setPreferredSize(new Dimension(600,425));
+    }
+    
+    private void showHideAdvancedFeatures() {
+    	if (advancedPreference.asBoolean()) {
+    		for (int i = 0; i < this.preferenceIndexes.length; i++) {
+    			int ix = preferenceIndexes[i];
+    			ToolEditorPanelFactory fac = (ToolEditorPanelFactory) panelFactories.get(ix);
+    			AbstractToolEditorPanel panel = views[ix];
+    			tabPane.insertTab(fac.getName(), null, panel, null, ix);	
+    		}
+     	} else {
+    		for (int i = 0; i < this.preferenceIndexes.length; i++) {
+    			int ix = preferenceIndexes[i];
+    			AbstractToolEditorPanel panel = views[ix];
+    			int tabIndex = tabPane.indexOfComponent(panel);
+    			if (tabIndex != -1) {
+    				tabPane.removeTabAt(tabIndex);
+    			}
+    		}
+    	}
     }
 
     /** able to handle everything */
@@ -581,11 +635,21 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel {
         return false ;
     }
     
+    /** notifies when the advancedPreference changes value. */
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getSource() == this.advancedPreference && ! evt.getNewValue().equals(evt.getOldValue())) {
+			showHideAdvancedFeatures();
+		}		
+	}
+    
 }
 
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.28  2007/01/10 19:12:16  nw
+integrated with preferences.
+
 Revision 1.27  2006/11/27 18:38:09  jl99
 Merge of branch workbench-jl-2022
 

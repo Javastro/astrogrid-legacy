@@ -134,6 +134,11 @@ public class Preference {
 	public String getValue() {
 		return this.value;
 	}
+	
+	/** access the value of the preference as a boolean */
+	public boolean asBoolean() {
+		return Boolean.parseBoolean(getValue());
+	}
 	public void setValue(String nuValue) {
 		if (nuValue == null || nuValue.equals(this.value)) {
 			// ignore. don't want nulls, or no change.

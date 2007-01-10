@@ -27,4 +27,8 @@ public class SecurityToolEditorPanelFactory implements ToolEditorPanelFactory {
 		this.comm = comm;
 	}
 
+	public boolean isAdvanced() {
+		return false;
+	}
+
 }

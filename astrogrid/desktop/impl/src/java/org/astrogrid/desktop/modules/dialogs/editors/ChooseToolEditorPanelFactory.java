@@ -9,6 +9,7 @@ import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
 import org.astrogrid.desktop.modules.ivoa.CacheFactory;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
+import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.votech.VoMon;
 
@@ -25,10 +26,11 @@ public class ChooseToolEditorPanelFactory implements ToolEditorPanelFactory {
 	private final RegistryBrowser regBrowser;
 	private final CacheFactory cache;
 	private final VoMon vomon;
+	private final Preference pref;
 	public AbstractToolEditorPanel create(ToolModel model, UIComponent parent) {
-		return new ChooseAToolEditorPanel(model,parent,registry,apps,browser,regBrowser,cache,vomon);
+		return new ChooseAToolEditorPanel(model,parent,registry,apps,browser,regBrowser,cache,vomon,pref);
 	}
-	public ChooseToolEditorPanelFactory(final RegistryInternal registry, final ApplicationsInternal apps,BrowserControl browser, RegistryBrowser regBrowser, CacheFactory cache, VoMon vomon) {
+	public ChooseToolEditorPanelFactory(final RegistryInternal registry, final ApplicationsInternal apps,BrowserControl browser, RegistryBrowser regBrowser, CacheFactory cache, VoMon vomon, Preference pref) {
 		super();
 		this.registry = registry;
 		this.apps = apps;
@@ -36,9 +38,13 @@ public class ChooseToolEditorPanelFactory implements ToolEditorPanelFactory {
 		this.regBrowser = regBrowser;
 		this.cache =cache;
 		this.vomon = vomon;
+		this.pref = pref;
 	}
 	public String getName() {
 		return "Chooser";
+	}
+	public boolean isAdvanced() {
+		return false;
 	}
 
 }

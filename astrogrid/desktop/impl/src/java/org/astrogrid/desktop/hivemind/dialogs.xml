@@ -82,7 +82,8 @@ TOOL EDITOR
 				<service>system.ui</service>
 				<service>astrogrid.applications</service>
 				<service>astrogrid.myspace</service>	
-				<service>system.browser</service>							
+				<service>system.browser</service>
+				<object>preference:acr.advanced</object>							
 			</construct>
 		</invoke-factory>	
 	</service-point>
@@ -148,6 +149,7 @@ REGISTRY GOOGLE
 				<service>ui.registryBrowser</service>
 				<service>ivoa.cache</service>
 				<service>votech.vomon</service>
+				<object>preference:acr.advanced</object>				
 			</construct>
 		</invoke-factory>	
 	</service-point>
@@ -213,6 +215,7 @@ REGISTRY GOOGLE
 				<service>ui.registryBrowser</service>
 				<service>ivoa.cache</service>
 				<service>votech.vomon</service>
+				<object>preference:acr.advanced</object>				
 			</construct>
 		</invoke-factory>
 	</service-point>	

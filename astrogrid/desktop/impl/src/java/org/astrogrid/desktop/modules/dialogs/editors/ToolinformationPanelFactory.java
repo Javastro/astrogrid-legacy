@@ -31,4 +31,9 @@ public class ToolinformationPanelFactory implements ToolEditorPanelFactory {
 		return "Info";
 	}
 
+
+	public boolean isAdvanced() {
+		return true; // not so much advanced as unnecessary.
+	}
+
 }

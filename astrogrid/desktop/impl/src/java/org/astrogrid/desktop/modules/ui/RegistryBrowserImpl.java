@@ -1,4 +1,4 @@
-/*$Id: RegistryBrowserImpl.java,v 1.10 2007/01/09 16:14:02 nw Exp $
+/*$Id: RegistryBrowserImpl.java,v 1.11 2007/01/10 19:12:15 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,6 +25,7 @@ import org.astrogrid.desktop.modules.dialogs.registry.RegistryGooglePanel.Resour
 import org.astrogrid.desktop.modules.ivoa.CacheFactory;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.votech.VoMon;
 /** Implementation of the registry browser component.
@@ -35,13 +36,14 @@ public class RegistryBrowserImpl extends UIComponentImpl implements  RegistryBro
 {
    
 
-    public RegistryBrowserImpl(RegistryInternal reg, HelpServerInternal hs,UIInternal ui,Configuration conf, BrowserControl browser, RegistryBrowser factory, CacheFactory cache, VoMon vomon) {
+    public RegistryBrowserImpl(RegistryInternal reg, HelpServerInternal hs,UIInternal ui,Configuration conf, BrowserControl browser, RegistryBrowser factory, CacheFactory cache, VoMon vomon, Preference pref) {
         super(conf,hs,ui);
         this.reg=reg;
         this.browser =browser;
         this.factory = factory;
         this.cache = cache;
         this.vomon = vomon;
+        this.pref = pref;
         initialize();        
     }
     protected final RegistryInternal reg;
@@ -49,6 +51,7 @@ public class RegistryBrowserImpl extends UIComponentImpl implements  RegistryBro
     protected final RegistryBrowser factory;
     protected final CacheFactory cache;
     protected final VoMon vomon;
+    protected final Preference pref;
 	private void initialize() {
 		this.setSize(425, 600); // same proportions as A4, etc., and 600 high.   
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.registryBrowser");        
@@ -62,7 +65,7 @@ public class RegistryBrowserImpl extends UIComponentImpl implements  RegistryBro
     private RegistryGooglePanel regChooser;
     private RegistryGooglePanel getRegistryChooser() {
         if (regChooser == null) {
-            regChooser = new RegistryGooglePanel(this,reg,browser,factory,cache,vomon);
+            regChooser = new RegistryGooglePanel(this,reg,browser,factory,cache,vomon, pref);
         }
         return regChooser;
     }
@@ -81,6 +84,9 @@ public class RegistryBrowserImpl extends UIComponentImpl implements  RegistryBro
 
 /* 
 $Log: RegistryBrowserImpl.java,v $
+Revision 1.11  2007/01/10 19:12:15  nw
+integrated with preferences.
+
 Revision 1.10  2007/01/09 16:14:02  nw
 added use of monitoring service
 
