@@ -52,11 +52,14 @@ RESOURCE (FILE) CHOOSER
 			default-value="true" >
 			<ui-name>Use new-style dialogs</ui-name>
 			<description>select new or old filechooser dialogue implementation</description>
+			<option>true</option>
+			<option>false</option>
 			</preference>
 	</contribution>	
 
-	<contribution configuration-id="system.uiStructure" if="property acr.debug">
-		<action parentName="debug" name="driveResourceChooser" text="Launch ResourceChooser"
+	<contribution configuration-id="system.uiStructure" >
+		<action parentName="debug" name="driveResourceChooser" 
+			text="Launch ResourceChooser" visibleCondition="preference:acr.debug"
 			object="service:resourceChooser" methodName="chooseResource" >
 			<parameter>Choose file</parameter>
 			<parameter>true</parameter>
@@ -101,9 +104,10 @@ TOOL EDITOR
 		<object>service:securityPanel</object>
 	</contribution>
 	
-		<contribution configuration-id="system.uiStructure" if="property acr.debug">
+		<contribution configuration-id="system.uiStructure">
 		<action parentName="debug" name="driveToolEditor" text="Launch ToolEditor"
-			object="service:toolEditor" methodName="selectAndBuild" />
+			object="service:toolEditor" methodName="selectAndBuild" 
+			visibleCondition="preference:acr.debug"/>
 	</contribution>		
 <!-- 
 =======================
@@ -152,8 +156,9 @@ REGISTRY GOOGLE
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>		
 
-	<contribution configuration-id="system.uiStructure" if="property acr.debug">
-		<action parentName="debug" name="driveRegistryChooser" text="Launch RegistryChooser"
+	<contribution configuration-id="system.uiStructure">
+		<action parentName="debug" name="driveRegistryChooser"
+			 text="Launch RegistryChooser" visibleCondition="preference:acr.debug"
 			object="service:registryGoogle" methodName="selectResources" >		
 			<parameter>Choose a resource!</parameter>
 			<parameter>false</parameter>

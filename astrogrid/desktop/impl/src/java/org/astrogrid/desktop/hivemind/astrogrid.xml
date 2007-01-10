@@ -46,10 +46,11 @@ UI CONFIGURATION -->
 		</action>
 	</contribution>
 	
-	<!--  to be remoed - replaced with a web link. -->
+	<!--  TODO - replace with a web link. -->
 	<contribution configuration-id="system.uiStructure" if="not (property system.help.disabled)">
 		<action text="Astro Runtime API Help" name="acrHelp"  parentName="help" iconName="java_lib_obj.gif"
-			object="service:system.help" methodName="showHelpForTarget" after="contents">
+			object="service:system.help" methodName="showHelpForTarget" 
+			after="contents" visibleCondition="preference:acr.advanced">
 					<tooltip>Concepts,  lists available functions, gives examples of their use</tooltip>
 			<parameter>overview</parameter>
 		</action>		
@@ -57,7 +58,7 @@ UI CONFIGURATION -->
 	
 	<contribution configuration-id="system.uiStructure" if="((not (property system.webserver.disabled)) and (not (property system.html.disabled))) and (not (property system.browser.disabled))">
 		<action parentName="advanced" name="htmlACR" text="AR web interface"
-			iconName="overview48.gif"
+			iconName="overview48.gif" visibleCondition="preference:acr.advanced"
 			object="service:system.browser" methodName="openRelative" after="*" >
 			<parameter></parameter> <!-- intentionally blank -->
 			<tooltip>Browse and execute AR and PLASTIC functions</tooltip>
@@ -124,10 +125,10 @@ MYSPACE
 	<service-point id="bundlePrefs" visibility="private" interface="org.astrogrid.filemanager.common.BundlePreferences">
 		configuration object for myspace client.
 		<invoke-factory model="primitive">
-			<construct class="org.astrogrid.filemanager.common.BundlePreferences">
+			<construct class="org.astrogrid.desktop.modules.ag.HivemindBundlePreferences">
 				<set property="fetchParents" value="${astrogrid.myspace.fetchParents}" />
-				<set-object property="maxExtraNodes" value="primitive:${astrogrid.myspace.maxExtraNodes}" />
-				<set-object property="prefetchDepth" value="primitive:${astrogrid.myspace.prefetchDepth}" />
+				<set property="maxExtraNodesInt" value="${astrogrid.myspace.maxExtraNodes}" />
+				<set property="prefetchDepthInt" value="${astrogrid.myspace.prefetchDepth}" />
 			</construct>
 		</invoke-factory>
 	</service-point>

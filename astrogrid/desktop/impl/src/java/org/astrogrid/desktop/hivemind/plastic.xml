@@ -20,7 +20,7 @@
 		flavouring of ui if we're in hub mode. -->		
 	<contribution configuration-id="system.uiStructure" if="property hub.mode">
 		<action parentName="advanced" name="listPlastic" text="List Plastic Applications"
-			iconName="plastic.gif" before="*"
+			iconName="plastic.gif" before="*" 
 			object="service:hub" methodName="prettyPrintRegisteredApps">
 			<tooltip>List details of all connected Plastic Applications</tooltip>
 		</action>
@@ -57,7 +57,7 @@
 
 	<contribution configuration-id="system.uiStructure" if="((not (property system.webserver.disabled)) and (not (property system.html.disabled))) and (not (property system.browser.disabled)) and (property hub.mode)">
 		<action parentName="advanced" name="htmlPLASTIC" text="PLASTIC web interface"
-			iconName="overview48.gif" after="listPlastic"
+			iconName="overview48.gif" after="listPlastic" 
 			object="service:system.browser" methodName="openRelative"  >
 			<parameter></parameter> <!-- intentionally blank -->
 			<tooltip>Browse and execute Plastic functions in a webbrowser</tooltip>
@@ -111,6 +111,8 @@
 			default-value="true">
 			<ui-name>Display plastic events</ui-name>
 			<description>Show plastic event notifications in the system tray</description>
+			<option>true</option>
+			<option>false</option>
 		</preference>
 	</contribution>
 	

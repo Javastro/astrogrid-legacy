@@ -52,7 +52,7 @@ System module.
 		<tab name="discovery" text="Data Discovery" before="*" />		
 		<tab name="services" text="System Services" after="workflow" />
 		<tab name="links" text="Helper Applications" after="services" />		
-		<tab name="advanced" text="Advanced" after="*" />
+		<tab name="advanced" text="Advanced" after="*" visibleCondition="preference:acr.advanced"/>
 	</contribution>
 
 	
@@ -62,7 +62,7 @@ System module.
 		<menu name="help" text="Help" parentName="menubar" after="*" />
 		<menu name="projects" text="About Projects" parentName="help" before="about" />
 
-		<action parentName="file" name="close" text="Close" 
+		<action parentName="file" name="close" text="Close" visibleCondition="preference:acr.advanced"
 			object="service:ui" methodName="hide" before="exit">		
 			<tooltip>Close this window, but keep the service running</tooltip>
 			</action>
@@ -118,6 +118,11 @@ System module.
 			object="service:system.browser" methodName="openURL">
 			<tooltip>Euro-VO VOTech Project Home Page</tooltip>			
 			<parameter>http://eurovotech.org/</parameter>
+		</action>
+		<action parentName="help" name="_perspective" visibleCondition="preference:acr.advanced"
+			text="Perspective" object="service:system.browser" methodName="openURL">
+			<tooltip>It helps to keep a sense of perspective...</tooltip>
+			<parameter>http://dingo.care2.com/cards/flash/5409/galaxy.swf</parameter>
 		</action>	
 	
 		<!--  TODO - add RVO, VO-Paris, and others listed in weasl.
@@ -298,8 +303,9 @@ System module.
 	BROWSER CONTROL
 	 -->
 	
-	<service-point id="browser" interface="BrowserControl"/>
+	<service-point id="browser" interface="BrowserControl">
 	Controls the webbrowser
+	</service-point>
 	<implementation service-id="browser" if="(class javax.jnlp.ServiceManager) and (not (property system.browser.disabled))">
 		<invoke-factory>
 		<construct class="org.astrogrid.desktop.modules.system.WebstartBrowserControl">
@@ -368,9 +374,11 @@ System module.
 		</action>	
 	</contribution>
 		
-			<contribution configuration-id="uiStructure" if="property acr.debug">
-		<menu name="debug" text="Debug" parentName="menubar" before="help" after="edit"/>
+			<contribution configuration-id="uiStructure" >
+		<menu name="debug" text="Debug" parentName="menubar"
+		 before="help" after="edit" visibleCondition="preference:acr.debug"/>
 		<action parentName="debug" name="configdump" text="Show Configuration"
+			visibleCondition="preference:acr.debug"
 			object="service:configuration" methodName="list"  />
 	</contribution>		
 	
@@ -424,6 +432,8 @@ System module.
 			default-value="true">
 			<ui-name>Display UI on startup</ui-name>
 			<description>If false, will startup in hidden mode</description>
+			<option>true</option>
+			<option>false</option>
 		</preference>
 	</contribution>	
 		
@@ -448,6 +458,10 @@ System module.
 				</attribute>
 				<attribute name="text" required="true" >
 					Display text for this menu
+				</attribute>
+				<attribute name="visibleCondition" translator="object">
+					tie this ui component to a preference object, and only make this component visible when the
+					preference is true
 				</attribute>
 				<element name="tooltip">
 					<rules>
@@ -478,6 +492,10 @@ System module.
 				<attribute name="text" required="true" >
 					Display text for this action.
 				</attribute>
+				<attribute name="visibleCondition" translator="object">
+					tie this ui component to a preference object, and only make this component visible when the
+					preference is true
+				</attribute>			
 				<element name="tooltip">
 					<rules>
 						<push-content />
@@ -539,6 +557,10 @@ System module.
 				<attribute name="text" required="true" >
 					text to display
 				</attribute>
+				<attribute name="visibleCondition" translator="object">
+					tie this ui component to a preference object, and only make this component visible when the
+					preference is true
+				</attribute>			
 				<element name="tooltip">
 					<rules>
 						<push-content />

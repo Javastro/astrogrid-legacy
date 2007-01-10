@@ -10,10 +10,14 @@
 		<preference name="acr.advanced" default-value="false">
 			<ui-name>Advanced Mode</ui-name>
 			<description>Enables additional UI components for advanced use</description>
+			<option>true</option>
+			<option>false</option>
 		</preference>
 		<preference name="acr.debug" default-value="false">
 			<ui-name>Debugging Mode</ui-name>
 			<description>Enables additional UI components for debugging and testing</description>
+			<option>true</option>
+			<option>false</option>			
 		</preference>
 	</contribution>
 
@@ -145,7 +149,23 @@
 						<invoke-parent method="addAlternative" />
 					</rules>	
 				 </element>
-				<conversion class="org.astrogrid.desktop.modules.system.Preference" />
+				<element name="option">
+				enumerates one of the allowed values for this preference
+				  	<rules>
+						<push-content/>
+						<invoke-parent method="addOption" />
+					</rules>	
+				 </element>				 
+				<rules>
+					<create-object class="org.astrogrid.desktop.modules.system.Preference"/>
+					<set-module property="module" />
+					<read-attribute property="defaultValue" attribute="default-value" />
+					<read-attribute property="name" attribute="name" />
+					<read-attribute property="advanced" attribute="advanced" />
+					<read-attribute property="propagateToConfig" attribute="propagate-to-config" />
+					<read-attribute property="requiresRestart" attribute="requires-restart" />																						
+					<invoke-parent method="addElement"/>
+				</rules>
 			</element>
 		</schema>
 	</configuration-point>
