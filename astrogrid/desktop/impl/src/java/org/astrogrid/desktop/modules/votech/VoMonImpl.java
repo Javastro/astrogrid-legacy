@@ -145,9 +145,15 @@ public class VoMonImpl implements VoMonInternal {
 		}
 	}
 
-	public VoMonImpl(final String endpoint, final int refreshSeconds, final CacheFactory cacheFac, final UIInternal ui) throws MalformedURLException {
+	public VoMonImpl(final String endpoint, final int refreshSeconds, final CacheFactory cacheFac, final UIInternal ui)  {
 		super();
-		this.voMonEndpoint = new URL(endpoint);
+		URL u; 
+		try {
+			u= new URL(endpoint);
+		} catch (MalformedURLException e) {
+			u = null; // not going to work..
+		}
+		this.voMonEndpoint = u;
 		this.refreshSeconds = refreshSeconds;
 		cache = cacheFac.getManager().getCache(CacheFactory.VOMON_CACHE);
 		this.ui = ui;
