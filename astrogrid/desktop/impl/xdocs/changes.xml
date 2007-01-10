@@ -15,7 +15,7 @@
 <body>
 <release version="2007.1" date="unreleased">
 <action dev="nw" type="add">
-	Implemented preference system (unfinished)
+	Implemented preference system
 </action>
 <action dev="nw" type="update">
 	Replaced javahelp system with linkage to website (unfinished)
