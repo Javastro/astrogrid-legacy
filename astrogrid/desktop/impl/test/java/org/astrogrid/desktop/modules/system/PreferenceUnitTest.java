@@ -175,5 +175,15 @@ public class PreferenceUnitTest extends TestCase {
 		String s = pref.getModuleName();
 		assertNotNull(s);
 	}
+	
+	public void testAsBoolean() throws Exception {
+		assertFalse(pref.asBoolean());
+		pref.setValue("true");
+		assertTrue(pref.asBoolean());
+		pref.setValue("boo");
+		assertFalse(pref.asBoolean());
+		pref.setValue("false");
+		assertFalse(pref.asBoolean());
+	}
 
 }
