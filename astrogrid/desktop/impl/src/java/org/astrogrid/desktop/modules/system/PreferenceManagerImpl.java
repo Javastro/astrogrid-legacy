@@ -139,7 +139,7 @@ public class PreferenceManagerImpl implements  ConfigurationInternal,  Preferenc
 		// here system properties (anything passed in on commandline) take precedence
 		// but aren't persisted - as may only be there for this session.
 		//NB - this might be a problem when we do a configuration dialogue??
-		p.setValue(getDefault(p));
+		p.setValue(val != null ? val : getDefault(p));
 		// register synch - so any further changes to this property are managed.
 		p.addPropertyChangeListener(this);
 
