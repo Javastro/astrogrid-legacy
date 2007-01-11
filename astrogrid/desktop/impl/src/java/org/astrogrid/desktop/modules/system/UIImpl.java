@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.18 2007/01/10 14:55:14 nw Exp $
+/*$Id: UIImpl.java,v 1.19 2007/01/11 18:15:48 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved. 
@@ -359,9 +359,17 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
                 	final JMenuItem mi = new JMenuItem(a);
                 	a.setParentComponent(mi);	
                     ((JMenu)current).add(mi);
+                    String help = a.getHelpId();
+                    if (help != null) {
+                    	getHelpServer().enableHelp(mi, help);
+                    }
                 } else if (current instanceof JComponent) {                
                     final JButton b = new JButton(a);
                     a.setParentComponent(b);
+                    String help = a.getHelpId();
+                    if (help != null) {
+                    	getHelpServer().enableHelp(b, help);
+                    }                    
                     b.setText("<html><center>" + a.getText()); 
                     // fix for bz 1735
                     b.setHorizontalTextPosition(JButton.CENTER);
@@ -493,6 +501,9 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.19  2007/01/11 18:15:48  nw
+fixed help system to point to ag site.
+
 Revision 1.18  2007/01/10 14:55:14  nw
 added support for hiding UI components.
 

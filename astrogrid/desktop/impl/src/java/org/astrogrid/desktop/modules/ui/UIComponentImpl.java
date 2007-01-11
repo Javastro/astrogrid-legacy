@@ -1,4 +1,4 @@
-/*$Id: UIComponentImpl.java,v 1.7 2006/08/04 15:30:22 jdt Exp $
+/*$Id: UIComponentImpl.java,v 1.8 2007/01/11 18:15:49 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -490,7 +490,7 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
     protected Action createHelpAction() {
     	return new AbstractAction("Help Contents") {
     		public void actionPerformed(ActionEvent e) {
-    			getHelpServer().showHelp();
+    			getHelpServer().showHelpForTarget("contents");
     		}
     	};
     }
@@ -557,6 +557,9 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
 
 /* 
 $Log: UIComponentImpl.java,v $
+Revision 1.8  2007/01/11 18:15:49  nw
+fixed help system to point to ag site.
+
 Revision 1.7  2006/08/04 15:30:22  jdt
 typo
 

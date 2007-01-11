@@ -35,11 +35,9 @@
                 <sourceDirectory>src/java</sourceDirectory>
                 <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
                 <unitTest>
-                <!--  explicitly disable tests here - by using a pattern that will match nothing.
-                		then later, we define our own set of tests to run.
-                 -->
+ 
                         <includes>	
-                        	<include>matches-nothing</include>							
+                        	<include>**/*UnitTest.java</include>							
                         </includes>
                         
 			<excludes>
@@ -88,18 +86,6 @@
 		</reports>
 
         <dependencies>
-<!-- help set for workbench - not used anymore 
-
-	<dependency>
-		<groupId>org.astrogrid</groupId>
-		<artifactId>workbench-userdocs-javahelp</artifactId>
-		<version>${astrogrid.desktop.version}</version>
-		<properties>		
-			<dist.bundle>true</dist.bundle>
-			<strip>false</strip>	
-		</properties>
-	</dependency>
--->
 
   <!-- libraries needed for workbench gui -->
  <dependency>
@@ -153,16 +139,7 @@
       <id>xmlunit</id>
       <version>1.0</version>
     </dependency>		
-    
-    <dependency><!-- proper static analysis of code problems -->
-    	<artifactId>maven-findbugs-plugin</artifactId>
-    	<groupId>maven-plugins</groupId>
-    	<version>1.2</version>
-    	<type>plugin</type>
-           	            <properties>
-		            		<uberjar.bundle>false</uberjar.bundle>
-		            	</properties>     	
-    </dependency>
+
 
  <!-- mocks for testing -->
  	<dependency>
@@ -186,7 +163,7 @@
 		            	</properties>  	
  </dependency>
  
-<!-- testing html interface  - only used a little -->
+<!-- testing html interface  -->
  <dependency>
                         <groupId>httpunit</groupId>
                         <artifactId>httpunit</artifactId>

@@ -1,4 +1,4 @@
-/*$Id: UIActionContribution.java,v 1.6 2007/01/10 19:12:16 nw Exp $
+/*$Id: UIActionContribution.java,v 1.7 2007/01/11 18:15:50 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,6 +47,8 @@ public class UIActionContribution extends AbstractAction implements UIStructureC
     private UIImpl parentImpl;
     private String parentName;
     private Component parentComponent;
+    private String helpId;
+    
     
     public static String VISIBLE_PROPERTY = "visible";
     private Preference visiblePreference;
@@ -217,11 +219,22 @@ public class UIActionContribution extends AbstractAction implements UIStructureC
         this.parentImpl= p;
     }
 
+	/** an optional HelpID to link to for further help */
+	public String getHelpId() {
+		return this.helpId;
+	}
+
+	public void setHelpId(String helpId) {
+		this.helpId = helpId;
+	}
 }
 
 
 /* 
 $Log: UIActionContribution.java,v $
+Revision 1.7  2007/01/11 18:15:50  nw
+fixed help system to point to ag site.
+
 Revision 1.6  2007/01/10 19:12:16  nw
 integrated with preferences.
 

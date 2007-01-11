@@ -1,4 +1,4 @@
-/*$Id: UITabContribution.java,v 1.5 2007/01/10 19:12:16 nw Exp $
+/*$Id: UITabContribution.java,v 1.6 2007/01/11 18:15:50 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Icon;
 
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.system.UIImpl;
 
@@ -38,6 +39,10 @@ public class UITabContribution extends JButtonBar implements UIStructureContribu
     private String text;
     private String toolTipText;
     private Icon icon;
+    
+    public void setHelpId(String s) {
+    	CSH.setHelpIDString(this, s);
+    }
     
     private Preference visiblePreference;
     /** provide an optional preference object which is 'watched'.
@@ -132,6 +137,9 @@ public class UITabContribution extends JButtonBar implements UIStructureContribu
 
 /* 
 $Log: UITabContribution.java,v $
+Revision 1.6  2007/01/11 18:15:50  nw
+fixed help system to point to ag site.
+
 Revision 1.5  2007/01/10 19:12:16  nw
 integrated with preferences.
 

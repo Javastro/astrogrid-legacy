@@ -1,4 +1,4 @@
-/*$Id: HelpServerInternal.java,v 1.3 2006/04/18 23:25:44 nw Exp $
+/*$Id: HelpServerInternal.java,v 1.4 2007/01/11 18:15:49 nw Exp $
  * Created on 11-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,14 +34,17 @@ public interface HelpServerInternal extends HelpServer{
     public void enableHelpKey(Component comp, String defaultHelpId);
    
     /**
-     * associate a helpId with a component
+     * associate a helpId with a component.
+     * Preferred to {@link CSH#setHelpIDString(Component, String)} - although
+     * that is an alternative is an instance of helpServer is not available.
      * @param comp some ui widget
      * @param helpId the id of the help doc associated with this component.
      */
     public void enableHelp(Component comp, String helpId);
     
     /** associate a helpId with a menu item
-     * 
+      * Preferred to {@link CSH#setHelpIDString(MenuItem, String)} - although
+     * that is an alternative is an instance of helpServer is not available.
      * @param comp a menu item
      * @param helpId the id of the help doc associated with this menu item.
      */
@@ -68,6 +71,9 @@ public interface HelpServerInternal extends HelpServer{
 
 /* 
 $Log: HelpServerInternal.java,v $
+Revision 1.4  2007/01/11 18:15:49  nw
+fixed help system to point to ag site.
+
 Revision 1.3  2006/04/18 23:25:44  nw
 merged asr development.
 

@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.54 2006/10/31 12:56:09 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.55 2007/01/11 18:15:50 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,6 +26,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -137,6 +138,21 @@ public class AstroScopeLauncherImpl extends AbstractScope
 		 }
 		
 	}
+   
+   /** override:  create a help menu with additional entries */
+   protected JMenu createHelpMenu() {
+	JMenu menu = super.createHelpMenu();
+	menu.insertSeparator(0);
+/*
+	JMenuItem ref = new JMenuItem("Reference");
+	getHelpServer().enableHelpOnButton(ref, "astroscope.menu.reference");
+	menu.insert(ref,0);
+	*/
+	JMenuItem sci = new JMenuItem("Astroscope Help");
+	getHelpServer().enableHelpOnButton(sci, "astroscope.menu.science");
+	menu.insert(sci,0);
+	return menu;
+}
 	
 	/** implementation of an item in the history menu.
 	 * 
@@ -456,6 +472,9 @@ public class AstroScopeLauncherImpl extends AbstractScope
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.55  2007/01/11 18:15:50  nw
+fixed help system to point to ag site.
+
 Revision 1.54  2006/10/31 12:56:09  nw
 removed vospec button
 

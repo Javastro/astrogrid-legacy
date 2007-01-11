@@ -1,4 +1,4 @@
-/*$Id: HelpServerImpl.java,v 1.8 2006/05/08 15:58:04 nw Exp $
+/*$Id: HelpServerImpl.java,v 1.9 2007/01/11 18:15:49 nw Exp $
  * Created on 17-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,27 +12,41 @@ package org.astrogrid.desktop.modules.system;
 
 import java.awt.Component;
 import java.awt.MenuItem;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Iterator;
-import java.util.List;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.Map;
 
-import javax.help.CSH;
-import javax.help.HelpBroker;
-import javax.help.HelpSet;
-import javax.help.HelpSetException;
-import javax.help.InvalidHelpSetContextException;
-import javax.help.Map;
 import javax.swing.AbstractButton;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.desktop.modules.system.contributions.HelpsetContribution;
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.system.BrowserControl;
+import org.astrogrid.desktop.modules.system.contributions.HelpItemContribution;
 
 /** Implementation of the help server.
+ * 
+ * Previusly was implemented over javahelp. However, this is quite heavyweight, and
+ * does a poor job of displaying help documentation. (html 3.2, no decent media).
+ * <p>
+ * So rewritten to control external browser to point to astrogrid plone site.
+ * Interface remains the same - and implmeentation of the methods now taken from the 
+ * source of javahelp's DefaultHelpBroker and CSH, but simplified 
+ * <ul>
+ * <li>removed concept of presentation
+ * <li> no multiple help sets, 
+ * <li> no support for awt, only swing
+ * <li>display help in external browser.
+ * </ul> 
+ * 
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Jun-2005
  *
  */
-public class HelpServerImpl implements  HelpServerInternal{
+public class HelpServerImpl implements  HelpServerInternal, KeyListener{
     /**
      * Commons Logger for this class
      */
@@ -40,79 +54,150 @@ public class HelpServerImpl implements  HelpServerInternal{
 
     /** Construct a new HelpServerImpl
      * 
+     * @param helpMapping a mapping between helpIDs (string) and help resources (URL)
      */
         
-    public HelpServerImpl(List helpsets) {
-    	super();
-    	for (Iterator i = helpsets.iterator();i.hasNext(); ) {
-    		try {
-    			HelpsetContribution c = (HelpsetContribution)i.next();
-    			HelpSet h= getHelpset(c);
-    			if (hs == null) {
-    				// use first valid helpset in the list as the 'root'
-    				hs = h;
-    				broker = hs.createHelpBroker();
-    			} else {
-    				// add rest as subsids
-    				hs.add(h);
-    			}
-    		} catch (Exception e) {
-    			logger.warn("Failed to load helpset",e);
-    		}        	
-    	}
-
+    public HelpServerImpl(BrowserControl browser,Map helpMapping) {
+    	this.browser = browser;
+    	this.helpMapping = helpMapping;
     }
-    
-    private HelpSet getHelpset(HelpsetContribution c) throws HelpSetException {
-		return  new HelpSet(
-				c.getResourceAnchor().getClassLoader()
-				,HelpSet.findHelpSet(c.getResourceAnchor().getClassLoader(),c.getPath())
-				);
-	}
- 
-    protected HelpBroker broker;
-    protected HelpSet hs;
 
+    private final Map helpMapping;
+    private final BrowserControl browser;
 
     
     public void showHelp() {
-        Map.ID home = hs.getHomeID();
-        try {
-            broker.setCurrentID(home);
-        } catch (InvalidHelpSetContextException e) {
-            logger.warn("InvalidHelpSetContextException",e);
-        }
-        broker.setDisplayed(true);
+    	showHelpForTarget(HelpItemContribution.HOME_ID);
     }
     
     public void showHelpForTarget(String target) {
-        broker.setCurrentID(target);
-        broker.setDisplayed(true);
+    	if (target == null) {
+    		logger.error("Null help target - ignoring");
+    		return;
+    	}
+    	HelpItemContribution item = (HelpItemContribution) helpMapping.get(target);
+    	if (item != null) {
+    		try {
+				browser.openURL(item.getUrlObject());
+			} catch (ACRException x) {
+				logger.error("Failed to display browser for help: " + item);
+			}
+    	} else {
+    		logger.warn("Unknown help target: " + target);
+    		if (! HelpItemContribution.HOME_ID.equals(target)) { // show the default, if that hasn't already failed
+    			showHelpForTarget(HelpItemContribution.HOME_ID);
+    		} 
+    	}
     }
 
-    public void enableHelpKey(Component comp, String defaultHelpId) {
-        broker.enableHelpKey(comp,defaultHelpId,null);
+    public void enableHelpKey(Component comp, String id) {
+    	if (id == null) {
+    	    throw new IllegalArgumentException("id");
+    	}
+    	CSH.setHelpIDString(comp, id);
+    	if (comp instanceof JComponent) {
+    	    JComponent root = (JComponent) comp;
+    	    ActionListener al = getDisplayHelpFromFocus();
+    	  
+    	    root.registerKeyboardAction(al,
+    				   KeyStroke.getKeyStroke(KeyEvent.VK_HELP, 0),
+    				   JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+    	    root.registerKeyboardAction(al,
+    				    KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0),
+    				    JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+    	} else {
+    	    comp.addKeyListener(this);
+    	}
     }
  
-    public void enableHelp(Component comp, String helpId) {
-        broker.enableHelp(comp,helpId,null);
+    public void enableHelp(Component comp, String id) {
+    	if (id == null) {
+    	    throw new IllegalArgumentException("id");
+    	}
+    	CSH.setHelpIDString(comp, id);
     }
 
-    public void enableHelp(MenuItem comp, String helpId) {
-        broker.enableHelp(comp,helpId,null);        
+    // unused at present
+    public void enableHelp(MenuItem comp, String id) {
+    	if (id == null) {
+    	    throw new IllegalArgumentException("id");
+    	}
+    	CSH.setHelpIDString(comp, id);  
     }
   
-    public void enableHelpOnButton(AbstractButton b, String helpId) {
-        broker.enableHelp(b,helpId,null);
+    // unused at present
+    public void enableHelpOnButton(AbstractButton comp, String id) {
+    	if (id == null) {
+    	    throw new IllegalArgumentException("id");
+    	}
+    	CSH.setHelpIDString(comp, id);
+    	    comp.addActionListener(getDisplayHelpFromSource());
     }
-   
-    public void enableHelpOnButton(MenuItem b, String helpId) {
-        broker.enableHelp(b,helpId,null);        
+   // unused at present.
+    public void enableHelpOnButton(MenuItem comp, String id) {
+    	if (comp == null) {
+    	    throw new IllegalArgumentException("Invalid Component");
+    	}
+    	if (id == null) {
+    	    throw new IllegalArgumentException("id");
+    	}
+    	CSH.setHelpIDString(comp, id);
+    	comp.addActionListener(getDisplayHelpFromSource());     
     }
 
+    
     public ActionListener createContextSensitiveHelpListener() {
-        return new CSH.DisplayHelpAfterTracking(broker); // wonder whether we can reuse a single instance of this??
+        return new CSH.DisplayHelpAfterTracking(this); // wonder whether we can reuse a single instance of this??
     }
+    
+    // lazy-initialzation for listeners
+    protected ActionListener displayHelpFromFocus;
+    protected ActionListener displayHelpFromSource;
+    /**
+     * Returns the default DisplayHelpFromFocus listener.
+     *
+     * @see enableHelpKey
+     */
+    
+    protected ActionListener getDisplayHelpFromFocus() {
+	if (displayHelpFromFocus == null) {
+	    displayHelpFromFocus = new CSH.DisplayHelpFromFocus(this);
+	}
+	return displayHelpFromFocus;
+    }
+
+    /**
+     * Returns the default DisplayHelpFromSource listener.
+     *
+     * @see enableHelp
+     */
+    protected ActionListener getDisplayHelpFromSource() {
+	if (displayHelpFromSource==null) {
+	    displayHelpFromSource = new CSH.DisplayHelpFromSource(this);
+	}
+	return displayHelpFromSource;
+    }
+    
+    // key listerner interface.
+
+	public void keyPressed(KeyEvent e) {
+		// ignore
+	}
+
+	public void keyReleased(KeyEvent e) {
+		// simulate what is done in JComponents registerKeyboardActions.
+		int code = e.getKeyCode();
+		if (code == KeyEvent.VK_F1 || code == KeyEvent.VK_HELP) {
+		    ActionListener al= getDisplayHelpFromFocus();
+		    al.actionPerformed(new ActionEvent(e.getComponent(),
+						       ActionEvent.ACTION_PERFORMED,
+						       null));
+		}		
+	}
+
+	public void keyTyped(KeyEvent e) {
+		// ignore
+	}
     
     
     
@@ -121,6 +206,9 @@ public class HelpServerImpl implements  HelpServerInternal{
 
 /* 
 $Log: HelpServerImpl.java,v $
+Revision 1.9  2007/01/11 18:15:49  nw
+fixed help system to point to ag site.
+
 Revision 1.8  2006/05/08 15:58:04  nw
 removed dependency on javax.help from HelpsetContribution - javax.help now only required by the HelpServerImpl
 

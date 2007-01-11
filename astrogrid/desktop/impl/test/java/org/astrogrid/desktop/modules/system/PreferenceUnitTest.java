@@ -185,5 +185,11 @@ public class PreferenceUnitTest extends TestCase {
 		pref.setValue("false");
 		assertFalse(pref.asBoolean());
 	}
+	
+	public void testHelpId() throws Exception {
+		assertNull(pref.getHelpId());
+		pref.setHelpId("fred");
+		assertEquals("fred",pref.getHelpId());
+	}
 
 }

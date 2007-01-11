@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.28 2007/01/10 19:12:16 nw Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.29 2007/01/11 18:15:50 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -498,7 +498,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel implements
     	}
         
         // ok. tricky part all done.
-        hs.enableHelp(tabPane, "userInterface.workflowBuilder.taskEditor");
+        hs.enableHelp(tabPane, "userInterface.taskEditor");
            
         newAction = new NewAction();
         openAction = new OpenAction();
@@ -647,6 +647,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel implements
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.29  2007/01/11 18:15:50  nw
+fixed help system to point to ag site.
+
 Revision 1.28  2007/01/10 19:12:16  nw
 integrated with preferences.
 

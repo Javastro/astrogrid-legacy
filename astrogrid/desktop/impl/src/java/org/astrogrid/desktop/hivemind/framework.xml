@@ -121,6 +121,9 @@
 					AG components (such as delegates).
 					If false, this preference is not visible to such code.
 				</attribute>
+				<attribute name="help-id">
+					An optional link to further help.
+				</attribute>
 				<element name="ui-name">
 				Name to display in UI
 					<rules>
@@ -164,6 +167,7 @@
 					<read-attribute property="advanced" attribute="advanced" />
 					<read-attribute property="propagateToConfig" attribute="propagate-to-config" />
 					<read-attribute property="requiresRestart" attribute="requires-restart" />																						
+					<read-attribute property="helpId" attribute="help-id" />
 					<invoke-parent method="addElement"/>
 				</rules>
 			</element>

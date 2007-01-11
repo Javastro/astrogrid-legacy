@@ -41,20 +41,31 @@ System module.
 	 -->
 	<!-- always define a tab named advanced, but labelling and placement differs by mode -->
 	<contribution configuration-id="uiStructure" if="property acr.mode">
-		<tab name="advanced" text="Astro Runtime" before="*" />	
-		<tab name="links" text="Links" after="advanced" />			
+		<tab name="advanced" text="Astro Runtime" before="*" help-id="tab.advanced " />	
+		<tab name="links" text="Links" after="advanced" help-id="tab.links" />			
 	</contribution>
 		<contribution configuration-id="uiStructure" if="property hub.mode">
-		<tab name="advanced" text="Plastic" before="*" />	
-		<tab name="links" text="Links" after="advanced" />			
+		<tab name="advanced" text="Plastic" before="*" help-id="tab.plastic" />	
+		<tab name="links" text="Links" after="advanced" help-id="tab.links"  />			
 	</contribution>
 	<contribution configuration-id="uiStructure" if="property workbench.mode">
-		<tab name="discovery" text="Data Discovery" before="*" />		
-		<tab name="services" text="System Services" after="workflow" />
-		<tab name="links" text="Helper Applications" after="services" />		
-		<tab name="advanced" text="Advanced" after="*" visibleCondition="preference:acr.advanced"/>
+		<tab name="discovery" text="Data Discovery" before="*"  help-id="tab.discovery"/>		
+		<tab name="workflow" text="Data Analysis" after="discovery" before="services" help-id="tab.workflow" />
+		
+		<tab name="services" text="System Services" after="workflow" help-id="tab.services" />
+		<tab name="links" text="Helper Applications" after="services" help-id="tab.links" />		
+		<tab name="advanced" text="Advanced" after="*" visibleCondition="preference:acr.advanced" help-id="tab.advanced"/>
 	</contribution>
 
+	<!--  help for these structures. -->
+	<contribution configuration-id="helpmap">
+		<item id="tab.discovery" url="http://www2.astrogrid.org/science/documentation/data-explore" />
+		<item id="tab.advanced" url="http://www2.astrogrid.org/science" /> <!-- todo  -->
+		<item id="tab.plastic" url="http://plastic.sourceforge.org" />
+		<item id="tab.links" url="http://www2.astrogrid.org/science/documentation/workbench-helper-applications" />
+		<item id="tab.services" url="http://www2.astrogrid.org/science/documentation/workbench-system-services" />
+		<item id="tab.workflow" url="http://www2.astrogrid.org/science/documentation/workbench-data-analysis"/>
+	</contribution>
 	
 	<contribution configuration-id="uiStructure">
 		<menu name="file" text="File" parentName="menubar" before="*" />
@@ -119,8 +130,9 @@ System module.
 			<tooltip>Euro-VO VOTech Project Home Page</tooltip>			
 			<parameter>http://eurovotech.org/</parameter>
 		</action>
-		<action parentName="help" name="_perspective" visibleCondition="preference:acr.advanced"
-			text="Perspective" object="service:system.browser" methodName="openURL">
+		<action parentName="projects" name="_perspective" visibleCondition="preference:acr.advanced"
+			text="Perspective" object="service:system.browser" methodName="openURL"
+			after="*">
 			<tooltip>It helps to keep a sense of perspective...</tooltip>
 			<parameter>http://dingo.care2.com/cards/flash/5409/galaxy.swf</parameter>
 		</action>	
@@ -142,8 +154,8 @@ System module.
 		</action>	
 		-->				
 		<!--  other menu items -->
-		<action parentName="help" name="bugreport" text="Report a bug / Request a feature"
-			object="service:browser" methodName="openURL" >
+		<action parentName="help" name="bugreport" text="Feature request / Bug report "
+			object="service:browser" methodName="openURL"  after="tutorials" before="projects">
 			<parameter>http://www.astrogrid.org/bugzilla/enter_bug.cgi?product=Workbench%20and%20ACR</parameter>
 		</action>
 		<!--  
@@ -284,19 +296,87 @@ System module.
 	============================
 	HELP
 	 -->
-	<service-point id="help" interface="org.astrogrid.desktop.modules.system.HelpServerInternal"> <!-- subclass of Help -->
-		Help Browser
-		<!-- TODO - implement this. -->
-			<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />			
+	<service-point id="help" interface="org.astrogrid.desktop.modules.system.HelpServerInternal">			
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.system.HelpServerImpl">
+				<service>browser</service>
+				<configuration>helpmap</configuration>
+			</construct>
+		</invoke-factory>
 	</service-point>
 	
-	<implementation service-id="help" if="property system.help.disabled">
+	<implementation service-id="help" if="(property system.help.disabled) or (property system.browser.disabled)">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>
+
+	<configuration-point id="helpmap">
+		<schema>
+			<element name="item" key-attribute="id">
+			  defines a single help page.
+				<attribute name="id" required="true" unique="true">
+					The abstract id of the page
+				</attribute>
+				<attribute name="url" required="true">
+					The URL this id points to
+				</attribute>
+				<conversion class="org.astrogrid.desktop.modules.system.contributions.HelpItemContribution" />
+			</element>
+		</schema>
+	</configuration-point>
+	
+	<contribution configuration-id="helpmap">
+		<!--  front page -->
+		<item id="top" url="http://www2.astrogrid.org/science" />
+		<!--  contents / index -->
+		<item id="contents" url="http://www2.astrogrid.org/sitemap" />
+		<item id="gettingStarted" url="http://www2.astrogrid.org/science/getting-started/" />
+		<item id="tutorial.dataAccess" url="http://www2.astrogrid.org/science/data-access/data-access-worksheet" />
+		<item id="tutorial.solar" url="http://www2.astrogrid.org/science/solar-system" />
+		<item id="tutorial.galactic" url="http://www2.astrogrid.org/science/science-examples-galaxies" />
+		<item id="tutorial.stars" url="http://www2.astrogrid.org/science/science-examples-stars" />
+		<item id="tutorial.cosmology" url="http://www2.astrogrid.org/science/science-cosmology" />
+	</contribution>
 	
 	<contribution configuration-id="uiStructure" if="not (property system.help.disabled)">
-		<action parentName="help" name="contents" text="Help Contents.."
-			object="service:help" methodName="showHelp" before="*" iconName="help.gif" />
+		<action parentName="help" name="intro" text="Introduction"
+			object="service:help" methodName="showHelp" before="*" />
+
+		<action parentName="help" name="started" text="Getting Started"
+			object="service:help" methodName="showHelpForTarget" 
+			after="intro"  before="contents" iconName="help.gif" >
+			<parameter>gettingStarted</parameter>
+		</action>		
+		
+		<action parentName="help" name="contents" text="Help Contents"
+			object="service:help" methodName="showHelpForTarget" 
+			after="started" before="tutorials" 
+			iconName="java_lib_obj.gif" >
+			<parameter>contents</parameter>
+		</action>
+		
+	<menu name="tutorials" text="Tutorials" parentName="help" after="contents" />
+
+ 	<action parentName="tutorials" name="access" text="Data Access"
+ 		object="service:help" methodName="showHelpForTarget" before="*">
+ 			<parameter>tutorial.dataAccess</parameter>
+ 	</action>
+ 	 	<action parentName="tutorials" name="cosmology" text="Cosmology"
+ 		object="service:help" methodName="showHelpForTarget"  after="access" before="galaxy">
+ 			<parameter>tutorial.cosmology</parameter>
+ 	</action>
+ 	 	<action parentName="tutorials" name="galaxy" text="Galaxies"
+ 		object="service:help" methodName="showHelpForTarget"  after="cosmology" before="star">
+ 			<parameter>tutorial.galactic</parameter>
+ 	</action>
+ 	 	<action parentName="tutorials" name="star" text="Stars"
+ 		object="service:help" methodName="showHelpForTarget" before="solar" after="galaxy">
+ 			<parameter>tutorial.stars</parameter>
+ 	</action>
+ 	 	<action parentName="tutorials" name="solar" text="Solar"
+ 		object="service:help" methodName="showHelpForTarget" after="*">
+ 			<parameter>tutorial.solar</parameter>
+ 	</action>
+	
 	</contribution>
 	<!--  
 	================================
@@ -520,6 +600,9 @@ System module.
 				<attribute name="methodName" required="true" >	
 					name of the method to invoke.
 				</attribute>
+				<attribute name="help-id">
+					a help id to display help for this tab.
+				</attribute>					
 				<element name="confirmMessage" > 
 					If present, this element defines a message to display in a 'yes'/'no' popup
 					dialogue before invoking the action method. Useful for 'are you sure'
@@ -577,6 +660,9 @@ System module.
 				<attribute name="after" >		
 		list of names of items that this menu should appear after.
 					Use '*' to indicate all.		
+				</attribute>
+				<attribute name="help-id">
+					a help id to display help for this tab.
 				</attribute>					
 				<conversion class="org.astrogrid.desktop.modules.system.contributions.UITabContribution" />				
 			</element>							

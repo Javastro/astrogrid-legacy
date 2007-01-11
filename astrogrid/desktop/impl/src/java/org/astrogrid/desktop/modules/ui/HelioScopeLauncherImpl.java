@@ -1,4 +1,4 @@
-/*$Id: HelioScopeLauncherImpl.java,v 1.19 2006/08/15 10:09:04 nw Exp $
+/*$Id: HelioScopeLauncherImpl.java,v 1.20 2007/01/11 18:15:49 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,7 @@ import java.util.Iterator;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
@@ -55,6 +56,21 @@ public class HelioScopeLauncherImpl extends AbstractScope
     private JCalendarCombo startCal;
     private JCalendarCombo endCal;
 
+    
+    /** override:  create a help menu with additional entries */
+    protected JMenu createHelpMenu() {
+ 	JMenu menu = super.createHelpMenu();
+ 	menu.insertSeparator(0);
+ 	/*
+ 	JMenuItem ref = new JMenuItem("Reference");
+ 	getHelpServer().enableHelpOnButton(ref, "helioscope.menu.reference");
+ 	menu.insert(ref,0);
+ 	*/
+ 	JMenuItem sci = new JMenuItem("Helioscope Help");
+ 	getHelpServer().enableHelpOnButton(sci, "helioscope.menu.science");
+ 	menu.insert(sci,0);
+ 	return menu;
+ }
 
     
     /**
@@ -257,6 +273,9 @@ public class HelioScopeLauncherImpl extends AbstractScope
 
 /* 
 $Log: HelioScopeLauncherImpl.java,v $
+Revision 1.20  2007/01/11 18:15:49  nw
+fixed help system to point to ag site.
+
 Revision 1.19  2006/08/15 10:09:04  nw
 migrated from old to new registry models.
 

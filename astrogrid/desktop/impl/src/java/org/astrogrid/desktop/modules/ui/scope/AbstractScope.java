@@ -439,6 +439,7 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 		}
 		return menuBar;
 	}
+
 	
 	private static final String KEY_LINK = "KEY_LINK";
 	/** panel containing summary of search results */

@@ -58,29 +58,6 @@
  		</properties>
  	</dependency>
  	 
-<!-- online help system -->
-	<!--  not using any more
-	<dependency> 
-		<groupId>org.astrogrid</groupId>
-		<artifactId>acr-interface-javahelp</artifactId>
-		<version>${astrogrid.desktop.version}</version>
-		<properties>			
-			<dist.bundle>true</dist.bundle>	
-			<strip>false</strip> 			
-		</properties>
-	</dependency>
-	
- <dependency>
-	 <artifactId>jh</artifactId>
-	 <groupId>javahelp</groupId>
-	 <version>2.0.02</version>
-	 <jar>jh.jar</jar>
-	 <properties>
-	<dist.bundle>true</dist.bundle>	
-				    <strip>false</strip>
-	 </properties>
- </dependency>
- -->
  <!-- end of help system --> 
  
  <!-- text editing extension -->

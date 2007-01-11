@@ -46,24 +46,46 @@ UI CONFIGURATION -->
 		</action>
 	</contribution>
 	
-	<!--  TODO - replace with a web link. -->
 	<contribution configuration-id="system.uiStructure" if="not (property system.help.disabled)">
-		<action text="Astro Runtime API Help" name="acrHelp"  parentName="help" iconName="java_lib_obj.gif"
+		<action text="Astro Runtime Overview" name="acrHelp"  parentName="help" iconName="help.gif"
 			object="service:system.help" methodName="showHelpForTarget" 
 			after="contents" visibleCondition="preference:acr.advanced">
+					<tooltip>Introduction to Astro Runtime</tooltip>
+			<parameter>acr.overview</parameter>
+		</action>		
+		
+		<action text="Astro Runtime API Reference" name="acrApi"  parentName="help" iconName="java_lib_obj.gif"
+			object="service:system.help" methodName="showHelpForTarget" 
+			after="acrHelp" visibleCondition="preference:acr.advanced">
 					<tooltip>Concepts,  lists available functions, gives examples of their use</tooltip>
-			<parameter>overview</parameter>
+			<parameter>acr.api</parameter>
 		</action>		
 	</contribution>	
 	
 	<contribution configuration-id="system.uiStructure" if="((not (property system.webserver.disabled)) and (not (property system.html.disabled))) and (not (property system.browser.disabled))">
 		<action parentName="advanced" name="htmlACR" text="AR web interface"
 			iconName="overview48.gif" visibleCondition="preference:acr.advanced"
-			object="service:system.browser" methodName="openRelative" after="*" >
+			object="service:system.browser" methodName="openRelative" before="downloadAR"
+			help-id="acr.overview"
+			 >
 			<parameter></parameter> <!-- intentionally blank -->
 			<tooltip>Browse and execute AR and PLASTIC functions</tooltip>
 		</action>
+		<action parentName="advanced" name="downloadAR" text="Download AR development kit"
+		iconName="package_utilities.png" visibleCondition="preference:acr.advanced"
+			object="service:system.browser" methodName="openURL" after="*"
+			help-id="acr.overview"
+			 >
+			<parameter>http://www2.astrogrid.org/desktop/download/acr-interface-${astrogrid.desktop.version}.zip</parameter> <!-- intentionally blank -->
+			<tooltip>Download a development kit of examples and documentation</tooltip>
+		</action>	
 	</contribution>		
+	
+	<contribution configuration-id="system.helpmap">
+		<item id="acr.api" url="http://software.astrogrid.org/astro-runtime-docs/apidocs/index.html" />
+		<item id="acr.overview" url="http://www2.astrogrid.org/desktop/astro-runtime" />
+		
+	</contribution>
 	
 <!--  FLAVORING AS ASTRO-RUNTIME -->
 

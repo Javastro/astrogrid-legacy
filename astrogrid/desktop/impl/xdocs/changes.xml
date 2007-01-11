@@ -18,7 +18,7 @@
 	Implemented preference system
 </action>
 <action dev="nw" type="update">
-	Replaced javahelp system with linkage to website (unfinished)
+	Replaced javahelp system with linkage to website 
 </action>
 <action dev="nw" type="fix">
 	Cleaned out and improved unit and integration tests

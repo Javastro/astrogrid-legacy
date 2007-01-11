@@ -48,6 +48,8 @@ public class Preference {
 	private String description;
 	private String value;
 	private String moduleName;
+	private String helpId;
+	
 	
 	public void setModule(Module m) {
 		moduleName = m.getModuleId();
@@ -204,6 +206,15 @@ public class Preference {
 	}
 	public void setPropagateToConfig(boolean propagateToConfig) {
 		this.propagateToConfig = propagateToConfig;
+	}
+
+	/** an optional HelpID to link to for further help */
+	public String getHelpId() {
+		return this.helpId;
+	}
+
+	public void setHelpId(String helpId) {
+		this.helpId = helpId;
 	}
 	
 	

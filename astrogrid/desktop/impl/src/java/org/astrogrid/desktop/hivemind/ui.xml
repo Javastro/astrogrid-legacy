@@ -41,8 +41,7 @@ UI STRUCTURES
 
 <!-- assume that if this module is loaded, we're running as workbench -->
 	<contribution configuration-id="system.uiStructure">
-		<tab name="workflow" text="Data Analysis" after="discovery" before="services" />
-		<action parentName="help" name="about" text="About AstroGrid Workbench.."
+			<action parentName="help" name="about" text="About AstroGrid Workbench.."
 			object="instance:java.lang.String" methodName="concat" iconName="AGlogo16x16.png"
 			after="*" > 
 			<parameter><![CDATA[
@@ -122,7 +121,7 @@ ASTROSCOPE
 	
 	<contribution configuration-id="system.uiStructure" if="not (property ui.astroscope.disabled)" >
 		<action parentName="discovery" name="astroscope" text="AstroScope" before="helioscope" iconName="astroscope.png"
-			object="service:astroscope" methodName="show">
+			object="service:astroscope" methodName="show" help-id="userInterface.astroscopeLauncher">
 			<tooltip><![CDATA[
 				<html>Search and visualise matches in all <br>
 					available image, catalogue and  spectral archives by <br>
@@ -130,6 +129,12 @@ ASTROSCOPE
 					]]></tooltip>
 		  </action>
 	</contribution>	
+		<contribution configuration-id="system.helpmap">
+		<item id="userInterface.astroscopeLauncher" url="http://www2.astrogrid.org/science/documentation/data-explore/astroscope" />
+		<item id="astroscope.menu.science" url="http://www2.astrogrid.org/science/documentation/data-explore/astroscope" />
+		<item id="astroscope.menu.reference" url="http://www2.astrogrid.org/science" />
+
+	</contribution>
 	
 	<!-- 
 	=================================
@@ -161,13 +166,19 @@ ASTROSCOPE
 	
 	<contribution configuration-id="system.uiStructure" if="not (property ui.helioscope.disabled)" >	
 		<action parentName="discovery" name="helioscope" text="HelioScope" after="astroscope" before="applicationLauncher1"  iconName="helioscope.png"
-			object="service:helioscope" methodName="show">
+			object="service:helioscope" methodName="show" help-id="userInterface.helioscopeLauncher">
 			<tooltip><![CDATA[
 			<html>Search and visualise matches in all <br>
 					available solar archives by<br>
 					offset from user defined start and end times
 			]]></tooltip>			
 		</action>
+	</contribution>	
+	<contribution configuration-id="system.helpmap">
+		<item id="userInterface.helioscopeLauncher" url="http://www2.astrogrid.org/science/documentation/data-explore/helioscope" />
+		<item id="helioscope.menu.science" url="http://www2.astrogrid.org/science/documentation/data-explore/helioscope" />
+		<item id="helioscope.menu.reference" url="http://www2.astrogrid.org/science" />
+		
 	</contribution>	
 	
 	<!--  
@@ -201,13 +212,20 @@ ASTROSCOPE
 	<contribution configuration-id="system.uiStructure" if="not (property ui.lookout.disabled)" >	
 		<action parentName="services" name="lookout" text="Lookout" iconName="lookout.png"
 			before="*" 
-			object="service:lookout" methodName="show" >
+			object="service:lookout" methodName="show" help-id="userInterface.lookout" >
 			<tooltip><![CDATA[
 		<html>Monitor the progress of Tasks, Queries and Workflows submitted for<br>
 		execution on the AstroGrid system including links to job transcripts.						
 			]]></tooltip>
 		</action>					
 	</contribution>		
+	
+	<contribution configuration-id="system.helpmap">
+		<item id="userInterface.lookout" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/lookout" />
+		<item id="lo.folderTree" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/lookout" />
+		<item id="lo.messageTable" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/lookout" />		
+		<item id="lookout.resultsTable" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/lookout" />
+	</contribution>	
 	
 	<!-- for backwards compatabiltiy - delegates to lookout -->		
 	<service-point id="jobMonitor" interface="JobMonitor">
@@ -247,6 +265,7 @@ PW WORKFLOWS
 	
 	<contribution configuration-id="system.uiStructure" if="not (property ui.parameterizedWorkflows.disabled)" >	
 		<action parentName="workflow" name="parameterizedWorkflows" text="Science Workflows" iconName="logo48x48.png"
+			help-id="userInterface.scienceWorkflows"
 			object="service:parameterizedWorkflows" methodName="run" after="applicationLauncher">
 			<tooltip><![CDATA[
 		<html>Direct access and editing of pre-canned workflows <br>
@@ -254,6 +273,10 @@ PW WORKFLOWS
 			]]></tooltip>
 		</action>
 	</contribution>			
+
+	<contribution configuration-id="system.helpmap">
+		<item id="userInterface.scienceWorkflows" url="http://www2.astrogrid.org/science/documentation/workbench-data-analysis/science-examples/copy_of_parameterised-workflows" />
+	</contribution>
 	
 	<configuration-point id="workflowTemplates">
 		Lists available parameterized workflows
@@ -306,7 +329,8 @@ PW WORKFLOWS
 
 	<contribution configuration-id="system.uiStructure" if="not (property ui.applicationLauncher.disabled)" >	
 		<action parentName="workflow" name="applicationLauncher" text="Task Launcher" iconName="applaunch.png"
-			object="service:applicationLauncher" methodName="show" before="*">
+			object="service:applicationLauncher" methodName="show" before="*"
+			help-id="userInterface.applicationLauncher">
 			<tooltip><![CDATA[
 		<html>Launches a single task to be executed on the AstroGrid system.<br>
 	A task can be either a Query to a data centre or a noninteractive<br>
@@ -317,13 +341,18 @@ PW WORKFLOWS
 
 		<contribution configuration-id="system.uiStructure" if="not (property ui.applicationLauncher.disabled)" >	
 		<action parentName="discovery" name="applicationLauncher1" text="Task Launcher" iconName="applaunch.png"
-			object="service:applicationLauncher" methodName="show" after="*">
+			object="service:applicationLauncher" methodName="show" after="*"
+			help-id="userInterface.applicationLauncher">
 			<tooltip><![CDATA[
 		<html>Launches a single task to be executed on the AstroGrid system.<br>
 	A task can be either a Query to a data centre or a noninteractive<br>
 	Application that, e.g. operates on data files or runs a model.
 			]]></tooltip>			
 			</action>			
+	</contribution>
+	
+	<contribution configuration-id="system.helpmap">
+		<item id="userInterface.applicationLauncher" url="http://www2.astrogrid.org/science/documentation/workbench-data-analysis/task-launcher/task-launcher/" />
 	</contribution>
 
 <!-- 
@@ -355,7 +384,7 @@ WORKFLOW BUILDER
 
 		<contribution configuration-id="system.uiStructure" if="not (property ui.workflowBuilder.disabled)" >	
 		<action parentName="workflow" name="workflowBuilder" text="Workflow Builder" iconName="workflow.png"
-			after="parameterizedWorkflows" 
+			after="parameterizedWorkflows"  help-id="userInterface.workflowBuilder"
 			object="service:workflowBuilder" methodName="show" >
 			<tooltip><![CDATA[
 			<html>Interactive GUI workflow builder for sequencing tasks and queries to<br>
@@ -363,7 +392,18 @@ WORKFLOW BUILDER
 			]]></tooltip>
 		</action>
 	</contribution>	
+	
+	<contribution configuration-id="system.helpmap">
+		<item id="userInterface.workflowBuilder" url="http://www2.astrogrid.org/science/documentation/workbench-data-analysis/science/documentation/workbench-data-analysis/workflows/workflows" />
+		<item id="userInterface.workflowBuilder.activityList" url="http://www2.astrogrid.org/science/documentation/workbench-data-analysis/science/documentation/workbench-data-analysis/workflows/workflows" />
+		<item id="userInterface.workflowBuilder.statusBar" url="http://www2.astrogrid.org/science/documentation/workbench-data-analysis/science/documentation/workbench-data-analysis/workflows/workflows" />
+		<item id="userInterface.workflowBuilder.editMenu" url="http://www2.astrogrid.org/science/documentation/workbench-data-analysis/science/documentation/workbench-data-analysis/workflows/workflows" />
+		<item id="userInterface.workflowBuilder.fileMenu" url="http://www2.astrogrid.org/science/documentation/workbench-data-analysis/science/documentation/workbench-data-analysis/workflows/workflows" />
+		<item id="userInterface.workflowBuilder.docPanel" url="http://www2.astrogrid.org/science/documentation/workbench-data-analysis/science/documentation/workbench-data-analysis/workflows/workflows" />
+		<item id="userInterface.workflowBuilder.treePanel" url="http://www2.astrogrid.org/science/documentation/workbench-data-analysis/science/documentation/workbench-data-analysis/workflows/workflows" />
+		<item id="userInterface.workflowBuilder.toolbar" url="http://www2.astrogrid.org/science/documentation/workbench-data-analysis/science/documentation/workbench-data-analysis/workflows/workflows" />
 
+	</contribution>
 	<!-- 
 	=======================================
 	MYSPACE BROWSER
@@ -395,7 +435,9 @@ WORKFLOW BUILDER
 	
 		<contribution configuration-id="system.uiStructure" if="not (property ui.myspaceBrowser.disabled)" >	
 		<action parentName="workflow" name="myspaceBrowser" text="Myspace" iconName="myspace.png"
-			object="service:myspaceBrowser" methodName="show" after="*" >			
+			object="service:myspaceBrowser" methodName="show" after="*"
+			help-id="userInterface.myspaceBrowser"
+			 >			
 			<tooltip><![CDATA[
 			<html>Login to MySpace for browsing and utilisation of returned datasets,<br>
 			queries and workflows in AstroGrid environment.
@@ -405,12 +447,17 @@ WORKFLOW BUILDER
 	
 	<contribution configuration-id="system.uiStructure" if="not (property ui.myspaceBrowser.disabled)" >	
 		<action parentName="services"  name="myspaceBrowser1" text="Myspace" iconName="myspace.png"
-			object="service:myspaceBrowser" methodName="show" after="lookout" >			
+			object="service:myspaceBrowser" methodName="show" after="lookout"
+			help-id="userInterface.myspaceBrowser"			
+			 >			
 			<tooltip><![CDATA[
 			<html>Login to MySpace for browsing and utilisation of returned datasets,<br>
 			queries and workflows in AstroGrid environment.
 			]]></tooltip>
 		</action>
+	</contribution>	
+	<contribution configuration-id="system.helpmap">
+		<item id="userInterface.myspaceBrowser" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/myspace/myspace-help" />
 	</contribution>			
 	<!-- 
 	==================================
@@ -440,13 +487,17 @@ WORKFLOW BUILDER
 	
 		<contribution configuration-id="system.uiStructure" if="not (property ui.registryBrowser.disabled)" >	
 		<action parentName="services" name="registryBrowser" text="Resources" iconName="resource.png"
-			object="service:registryBrowser" methodName="show" after="*" >
+			object="service:registryBrowser" methodName="show" after="*" 
+			help-id="userInterface.registryBrowser">
 			<tooltip><![CDATA[
 			<html>Simple text-entry search for available <br>
 			services and archives in the VO registry.
 			]]></tooltip>			
 		</action>
 	</contribution>		
+	<contribution configuration-id="system.helpmap">
+		<item id="userInterface.registryBrowser" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/resources/resources/" />
+	</contribution>	
 	<!--
 	================================
 	SEND-TO MENU
