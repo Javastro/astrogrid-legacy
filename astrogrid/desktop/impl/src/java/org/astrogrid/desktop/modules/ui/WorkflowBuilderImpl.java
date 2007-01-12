@@ -294,19 +294,7 @@ public class WorkflowBuilderImpl extends UIComponentImpl implements org.astrogri
         	activateMenus();
         }
     }    
-    /** close action */
-    protected final class CloseAction extends AbstractAction {
-        public CloseAction() {
-            super("Close",IconHelper.loadIcon("exit_small.png"));
-            this.putValue(SHORT_DESCRIPTION,"Close the Workflow Builder");
-            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
-        }
 
-        public void actionPerformed(ActionEvent e) {
-            hide();
-            dispose();
-        }
-    }    
     /** collapse workflow */
 	protected final class CollapseAction extends AbstractAction {
 	    public CollapseAction() {
@@ -981,6 +969,21 @@ public class WorkflowBuilderImpl extends UIComponentImpl implements org.astrogri
 		}
 		return jJMenuBar;
 	}
+	   /** override:  create a help menu with additional entries */
+	   protected JMenu createHelpMenu() {
+		JMenu menu = super.createHelpMenu();
+		menu.insertSeparator(0);
+	/*
+		JMenuItem ref = new JMenuItem("Reference");
+		getHelpServer().enableHelpOnButton(ref, "astroscope.menu.reference");
+		menu.insert(ref,0);
+		*/
+		JMenuItem sci = new JMenuItem("WorkflowBuilder Help");
+		getHelpServer().enableHelpOnButton(sci, "workflow.menu.science");
+		menu.insert(sci,0);
+		return menu;
+	}
+			
 	/**
 	 * This method initializes jMenu	
 	 * 	

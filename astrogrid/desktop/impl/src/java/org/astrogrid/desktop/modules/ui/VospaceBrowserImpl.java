@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowserImpl.java,v 1.17 2007/01/10 19:12:15 nw Exp $
+/*$Id: VospaceBrowserImpl.java,v 1.18 2007/01/12 13:20:04 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,6 +31,7 @@ import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -298,18 +299,6 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
         }
     }
 
-    /** close action */
-    protected final class CloseAction extends AbstractAction {
-        public CloseAction() {
-            super("Close",IconHelper.loadIcon("exit_small.png"));
-            this.putValue(SHORT_DESCRIPTION,"Close the Workflow Builder");
-            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
-        }
-        public void actionPerformed(ActionEvent e) {
-        	hide();
-        	dispose();
-        }
-    }
     
     protected final class CreateContentAction extends AbstractAction implements FileAction, FolderAction {
 
@@ -697,7 +686,20 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
         return jJMenuBar;
     }
     
-    
+	   /** override:  create a help menu with additional entries */
+	   protected JMenu createHelpMenu() {
+		JMenu menu = super.createHelpMenu();
+		menu.insertSeparator(0);
+	/*
+		JMenuItem ref = new JMenuItem("Reference");
+		getHelpServer().enableHelpOnButton(ref, "astroscope.menu.reference");
+		menu.insert(ref,0);
+		*/
+		JMenuItem sci = new JMenuItem("Myspace Help");
+		getHelpServer().enableHelpOnButton(sci, "myspaceBrowser.menu.science");
+		menu.insert(sci,0);
+		return menu;
+	}    
 
     /**
      * This method initializes jSplitPane
@@ -756,6 +758,9 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
 /*
  * $Log: VospaceBrowserImpl.java,v $
+ * Revision 1.18  2007/01/12 13:20:04  nw
+ * made sure every ui app has a help menu.
+ *
  * Revision 1.17  2007/01/10 19:12:15  nw
  * integrated with preferences.
  *

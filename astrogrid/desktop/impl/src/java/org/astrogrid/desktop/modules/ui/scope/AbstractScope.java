@@ -126,19 +126,7 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
         }    	
     }
     
-    /** close window action */
-    protected class CloseAction extends AbstractAction {
-        public CloseAction() {
-            super("Close",IconHelper.loadIcon("exit_small.png"));
-            this.putValue(SHORT_DESCRIPTION,"Close");
-            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
-        }
 
-        public void actionPerformed(ActionEvent e) {
-            hide();
-            dispose();
-        }
-    }
     
     /** halt seartch action */
     protected class HaltAction extends AbstractAction {

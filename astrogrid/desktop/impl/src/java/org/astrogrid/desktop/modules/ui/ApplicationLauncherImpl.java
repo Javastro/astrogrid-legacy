@@ -1,4 +1,4 @@
-/*$Id: ApplicationLauncherImpl.java,v 1.15 2007/01/10 19:12:16 nw Exp $
+/*$Id: ApplicationLauncherImpl.java,v 1.16 2007/01/12 13:20:05 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,9 +11,14 @@
 package org.astrogrid.desktop.modules.ui;
 
 import java.awt.Image;
+import java.awt.event.KeyEvent;
 import java.util.List;
 
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.system.BrowserControl;
@@ -58,7 +63,10 @@ public class ApplicationLauncherImpl extends UIComponentImpl  implements Applica
              pane.add(editor, java.awt.BorderLayout.CENTER);
             this.setContentPane(pane);
             this.setTitle("Task Launcher");
-            getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.applicationLauncher");        
+            getJMenuBar().add(createHelpMenu());
+            getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.applicationLauncher");
+            // belt and braces.
+            getHelpServer().enableHelpKey(editor,"userInterface.applicationLauncher");             
             editor.getToolModel().addToolEditListener(new ToolEditAdapter() {
 
                 public void toolSet(ToolEditEvent te) {
@@ -86,6 +94,22 @@ public class ApplicationLauncherImpl extends UIComponentImpl  implements Applica
                 }                
             });
     }
+
+	
+	/** override:  create a help menu with additional entries */
+    protected JMenu createHelpMenu() {
+ 	JMenu menu = super.createHelpMenu();
+ 	menu.insertSeparator(0);
+ /*
+ 	JMenuItem ref = new JMenuItem("Reference");
+ 	getHelpServer().enableHelpOnButton(ref, "applicationLauncher.menu.reference");
+ 	menu.insert(ref,0);
+ 	*/
+ 	JMenuItem sci = new JMenuItem("Task Launcher Help");
+ 	getHelpServer().enableHelpOnButton(sci, "applicationLauncher.menu.science");
+ 	menu.insert(sci,0);
+ 	return menu;
+    }
     
     final CompositeToolEditorPanel editor;
   
@@ -93,6 +117,9 @@ public class ApplicationLauncherImpl extends UIComponentImpl  implements Applica
 
 /* 
 $Log: ApplicationLauncherImpl.java,v $
+Revision 1.16  2007/01/12 13:20:05  nw
+made sure every ui app has a help menu.
+
 Revision 1.15  2007/01/10 19:12:16  nw
 integrated with preferences.
 

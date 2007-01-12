@@ -225,6 +225,8 @@ ASTROSCOPE
 		<item id="lo.folderTree" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/lookout" />
 		<item id="lo.messageTable" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/lookout" />		
 		<item id="lookout.resultsTable" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/lookout" />
+		<item id="lookout.menu.science" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/lookout" />
+
 	</contribution>	
 	
 	<!-- for backwards compatabiltiy - delegates to lookout -->		
@@ -255,6 +257,7 @@ PW WORKFLOWS
 				<service>dialogs.resourceChooser</service>		
 				<configuration>workflowTemplates</configuration>
 				<service>ivoa.cache</service>
+				<service>system.help</service>
 			</construct>
 		</invoke-factory>	
 	</service-point>	
@@ -353,6 +356,8 @@ PW WORKFLOWS
 	
 	<contribution configuration-id="system.helpmap">
 		<item id="userInterface.applicationLauncher" url="http://www2.astrogrid.org/science/documentation/workbench-data-analysis/task-launcher/task-launcher/" />
+		<item id="applicationLauncher.menu.science" url="http://www2.astrogrid.org/science/documentation/workbench-data-analysis/task-launcher/task-launcher/" />
+		
 	</contribution>
 
 <!-- 
@@ -402,6 +407,7 @@ WORKFLOW BUILDER
 		<item id="userInterface.workflowBuilder.docPanel" url="http://www2.astrogrid.org/science/documentation/workbench-data-analysis/science/documentation/workbench-data-analysis/workflows/workflows" />
 		<item id="userInterface.workflowBuilder.treePanel" url="http://www2.astrogrid.org/science/documentation/workbench-data-analysis/science/documentation/workbench-data-analysis/workflows/workflows" />
 		<item id="userInterface.workflowBuilder.toolbar" url="http://www2.astrogrid.org/science/documentation/workbench-data-analysis/science/documentation/workbench-data-analysis/workflows/workflows" />
+		<item id="workflow.menu.science" url="http://www2.astrogrid.org/science/documentation/workbench-data-analysis/science/documentation/workbench-data-analysis/workflows/workflows" />
 
 	</contribution>
 	<!-- 
@@ -458,6 +464,8 @@ WORKFLOW BUILDER
 	</contribution>	
 	<contribution configuration-id="system.helpmap">
 		<item id="userInterface.myspaceBrowser" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/myspace/myspace-help" />
+		<item id="myspaceBrowser.menu.science" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/myspace/myspace-help" />
+
 	</contribution>			
 	<!-- 
 	==================================
@@ -497,6 +505,7 @@ WORKFLOW BUILDER
 	</contribution>		
 	<contribution configuration-id="system.helpmap">
 		<item id="userInterface.registryBrowser" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/resources/resources/" />
+		<item id="registryBrowser.menu.science" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/resources/resources/" />
 	</contribution>	
 	<!--
 	================================

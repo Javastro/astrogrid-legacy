@@ -1,4 +1,4 @@
-/*$Id: LookoutImpl.java,v 1.18 2006/08/31 21:31:37 nw Exp $
+/*$Id: LookoutImpl.java,v 1.19 2007/01/12 13:20:05 nw Exp $
  * Created on 26-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,6 +24,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -240,19 +241,7 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
     
 
 
-    /** close action */
-    protected final class CloseAction extends AbstractAction {
 
-        public CloseAction() {
-            super("Close",IconHelper.loadIcon("exit_small.png"));
-            this.putValue(SHORT_DESCRIPTION,"Close Lookout");
-            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
-        }
-        public void actionPerformed(ActionEvent e) {
-            hide();
-            dispose();
-        }
-    }
     private MessageDisplayPane contentPane;
     private Folder currentFolder;
    private final DeleteAction deleteAction;
@@ -327,6 +316,20 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
         }
         return jJMenuBar;
     }
+    /** override:  create a help menu with additional entries */
+    protected JMenu createHelpMenu() {
+ 	JMenu menu = super.createHelpMenu();
+ 	menu.insertSeparator(0);
+ /*
+ 	JMenuItem ref = new JMenuItem("Reference");
+ 	getHelpServer().enableHelpOnButton(ref, "astroscope.menu.reference");
+ 	menu.insert(ref,0);
+ 	*/
+ 	JMenuItem sci = new JMenuItem("Lookout Help");
+ 	getHelpServer().enableHelpOnButton(sci, "lookout.menu.science");
+ 	menu.insert(sci,0);
+ 	return menu;
+ }    
 
     private JMenu getFileMenu() {
     	if (fileMenu == null) {
@@ -520,6 +523,9 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
 /* 
  
 $Log: LookoutImpl.java,v $
+Revision 1.19  2007/01/12 13:20:05  nw
+made sure every ui app has a help menu.
+
 Revision 1.18  2006/08/31 21:31:37  nw
 minor tweaks and doc fixes.
 

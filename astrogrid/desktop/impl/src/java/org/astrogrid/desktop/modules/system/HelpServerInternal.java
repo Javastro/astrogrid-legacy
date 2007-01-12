@@ -1,4 +1,4 @@
-/*$Id: HelpServerInternal.java,v 1.4 2007/01/11 18:15:49 nw Exp $
+/*$Id: HelpServerInternal.java,v 1.5 2007/01/12 13:20:05 nw Exp $
  * Created on 11-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import java.awt.MenuItem;
 import java.awt.event.ActionListener;
 
 import javax.swing.AbstractButton;
+import javax.swing.JButton;
 
 import org.astrogrid.acr.system.HelpServer;
 
@@ -66,11 +67,22 @@ public interface HelpServerInternal extends HelpServer{
     public void enableHelpOnButton(MenuItem b, String helpId);
     
     public ActionListener createContextSensitiveHelpListener();
+    
+    /** convenience funtion. - creates a small buttons iwth a '?' icon which will
+     * take to the specified help location when clicked
+     * @param helpId
+     * @return
+     */
+    
+    public JButton createHelpButton(String helpId);
 }
 
 
 /* 
 $Log: HelpServerInternal.java,v $
+Revision 1.5  2007/01/12 13:20:05  nw
+made sure every ui app has a help menu.
+
 Revision 1.4  2007/01/11 18:15:49  nw
 fixed help system to point to ag site.
 

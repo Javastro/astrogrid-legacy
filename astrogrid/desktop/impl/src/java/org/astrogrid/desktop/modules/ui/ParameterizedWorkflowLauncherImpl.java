@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.14 2006/11/09 12:08:33 nw Exp $
+/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.15 2007/01/12 13:20:04 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.desktop.modules.ui;
 
+import java.awt.FlowLayout;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
@@ -20,7 +21,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.xml.stream.XMLInputFactory;
 
 import net.sf.ehcache.CacheManager;
@@ -35,11 +39,13 @@ import org.astrogrid.acr.astrogrid.Jobs;
 import org.astrogrid.acr.ui.Lookout;
 import org.astrogrid.acr.ui.ParameterizedWorkflowLauncher;
 import org.astrogrid.community.beans.v1.Account;
+import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.dialogs.ToolEditorInternal;
 import org.astrogrid.desktop.modules.ivoa.CacheFactory;
+import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.exolab.castor.xml.Marshaller;
@@ -57,7 +63,7 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
      */
     private static final Log logger = LogFactory.getLog(ParameterizedWorkflowLauncherImpl.class);    
     
-    public ParameterizedWorkflowLauncherImpl(Community community,Lookout monitor, Jobs jobs,MyspaceInternal vos,ApplicationsInternal apps, ToolEditorInternal editor, ResourceChooserInternal chooser,List templateURLs, CacheFactory cacheFac) throws IOException, SAXException{ 
+    public ParameterizedWorkflowLauncherImpl(Community community,Lookout monitor, Jobs jobs,MyspaceInternal vos,ApplicationsInternal apps, ToolEditorInternal editor, ResourceChooserInternal chooser,List templateURLs, CacheFactory cacheFac, HelpServerInternal help) throws IOException, SAXException{ 
         URL[] list = new URL[templateURLs.size()];
         Iterator i = templateURLs.iterator();
         for (int ix = 0; i.hasNext(); ix++) {
@@ -71,9 +77,10 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
     this.apps = apps;
     this.vos = vos;
     this.chooser = chooser;
+    this.help = help;
     
 }
-       
+    protected final HelpServerInternal help;
     protected final ApplicationsInternal apps;
     protected final MyspaceInternal vos;
     protected final ParameterizedWorkflowTemplate[] templates;
@@ -191,9 +198,14 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
     /** prompt user in some way to choose a template 
      * retruns null to indicate a cancelled operaiton.*/
     protected  ParameterizedWorkflowTemplate chooseTemplate() {
+    	JPanel panel = new JPanel();
+    	panel.setLayout(new FlowLayout(FlowLayout.LEADING));
+    	panel.add(new JLabel("Choose a workflow to run"));
+    	JButton b = help.createHelpButton("userInterface.scienceWorkflows");
+    	panel.add(b);
         return (ParameterizedWorkflowTemplate) JOptionPane.showInputDialog(null
-        		,"Choose a template workflow"
-        		, "Template Chooser"
+        		,panel
+        		, "Workflow Chooser"
         		,JOptionPane.QUESTION_MESSAGE
         		,null
         		,templates
@@ -212,6 +224,9 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
 
 /* 
 $Log: ParameterizedWorkflowLauncherImpl.java,v $
+Revision 1.15  2007/01/12 13:20:04  nw
+made sure every ui app has a help menu.
+
 Revision 1.14  2006/11/09 12:08:33  nw
 final set of changes for 2006.4.rc1
 

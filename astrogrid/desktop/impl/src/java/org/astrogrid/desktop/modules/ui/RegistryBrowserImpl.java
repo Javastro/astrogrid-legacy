@@ -1,4 +1,4 @@
-/*$Id: RegistryBrowserImpl.java,v 1.11 2007/01/10 19:12:15 nw Exp $
+/*$Id: RegistryBrowserImpl.java,v 1.12 2007/01/12 13:20:04 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,8 +11,12 @@
 package org.astrogrid.desktop.modules.ui;
 
 import java.awt.BorderLayout;
+import java.awt.event.KeyEvent;
 import java.net.URI;
 
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -57,6 +61,7 @@ public class RegistryBrowserImpl extends UIComponentImpl implements  RegistryBro
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.registryBrowser");        
         JPanel pane = getMainPanel();
         pane.add(getRegistryChooser(),BorderLayout.CENTER); 
+        setJMenuBar(getJJMenuBar());
 		this.setContentPane(pane);
 		this.setTitle("Registry Browser");
         setIconImage(IconHelper.loadIcon("java_lib_obj.gif").getImage());        
@@ -78,12 +83,53 @@ public class RegistryBrowserImpl extends UIComponentImpl implements  RegistryBro
 		RegistryGooglePanel panel = getRegistryChooser();
 		panel.doOpen(ivorn);
 	}
+	
+    private JMenuBar jJMenuBar;
+    private JMenu fileMenu;
+    
+	private JMenuBar getJJMenuBar() {
+		if (jJMenuBar == null) {
+			jJMenuBar = new JMenuBar();
+			jJMenuBar.add(getFileMenu());		 
+			jJMenuBar.add(createHelpMenu());
+		}
+		return jJMenuBar;
+	}
+   
+	private JMenu getFileMenu() {
+		if (fileMenu == null) {
+			fileMenu = new JMenu();
+			fileMenu.setText("File");
+			fileMenu.setMnemonic(KeyEvent.VK_F);
+			fileMenu.add(new CloseAction());
+		}
+		return fileMenu;
+	}
+	
+	
+	   /** override:  create a help menu with additional entries */
+	   protected JMenu createHelpMenu() {
+		JMenu menu = super.createHelpMenu();
+		menu.insertSeparator(0);
+	/*
+		JMenuItem ref = new JMenuItem("Reference");
+		getHelpServer().enableHelpOnButton(ref, "astroscope.menu.reference");
+		menu.insert(ref,0);
+		*/
+		JMenuItem sci = new JMenuItem("Registry Browser Help");
+		getHelpServer().enableHelpOnButton(sci, "registryBrowser.menu.science");
+		menu.insert(sci,0);
+		return menu;
+	}    
 
 }  //  @jve:decl-index=0:visual-constraint="10,10"
 
 
 /* 
 $Log: RegistryBrowserImpl.java,v $
+Revision 1.12  2007/01/12 13:20:04  nw
+made sure every ui app has a help menu.
+
 Revision 1.11  2007/01/10 19:12:15  nw
 integrated with preferences.
 

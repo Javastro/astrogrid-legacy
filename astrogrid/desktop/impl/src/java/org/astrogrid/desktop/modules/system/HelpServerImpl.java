@@ -1,4 +1,4 @@
-/*$Id: HelpServerImpl.java,v 1.9 2007/01/11 18:15:49 nw Exp $
+/*$Id: HelpServerImpl.java,v 1.10 2007/01/12 13:20:05 nw Exp $
  * Created on 17-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import java.awt.event.KeyListener;
 import java.util.Map;
 
 import javax.swing.AbstractButton;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 
@@ -26,6 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.system.BrowserControl;
+import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.contributions.HelpItemContribution;
 
 /** Implementation of the help server.
@@ -198,6 +200,12 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
 	public void keyTyped(KeyEvent e) {
 		// ignore
 	}
+
+	public JButton createHelpButton(String id) {
+		JButton b = new JButton(IconHelper.loadIcon("help.gif"));
+		this.enableHelpOnButton(b, id);
+		return b;
+	}
     
     
     
@@ -206,6 +214,9 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
 
 /* 
 $Log: HelpServerImpl.java,v $
+Revision 1.10  2007/01/12 13:20:05  nw
+made sure every ui app has a help menu.
+
 Revision 1.9  2007/01/11 18:15:49  nw
 fixed help system to point to ag site.
 

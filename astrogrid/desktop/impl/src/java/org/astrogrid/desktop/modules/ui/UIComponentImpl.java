@@ -1,4 +1,4 @@
-/*$Id: UIComponentImpl.java,v 1.8 2007/01/11 18:15:49 nw Exp $
+/*$Id: UIComponentImpl.java,v 1.9 2007/01/12 13:20:05 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -68,6 +68,9 @@ import com.l2fprod.common.swing.StatusBar;
  *<p>
  *extends position-remembering frame, adds a progress bar / status message at the bottom, and
  *provides a worker class that indicates progress using these.
+ *
+ *Also provides a place to have convenient common functionality - definitions of a 
+ *close operation, help menu, etc.
  *@see org.astrogrid.desktop.modules.ui.BackgroundWorker
  * @author Noel Winstanley nw@jb.man.ac.uk 07-Apr-2005
  *
@@ -96,6 +99,19 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
          }
      }
 
+     /** generic close window action */
+     protected final class CloseAction extends AbstractAction {
+         public CloseAction() {
+             super("Close",IconHelper.loadIcon("exit_small.png"));
+             this.putValue(SHORT_DESCRIPTION,"Close");
+             this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
+         }
+
+         public void actionPerformed(ActionEvent e) {
+             hide();
+             dispose();
+         }
+     }
      /**
      * Commons Logger for this class - can be used by subclasses too.
      */
@@ -290,7 +306,7 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
             bottomPanel.setZoneBorder(EMPTY_BORDER);            
             bottomPanel.addZone("status",getBottomLabel(),"*");
             bottomPanel.addZone("background tasks",getTasksButton(),"20");
-            bottomPanel.addZone("help",getHelpButton(),"20");
+            bottomPanel.addZone("help",getContextSensitiveHelpButton(),"20");
             bottomPanel.addZone("progress",getProgressBar(),"60");
     	}
     	return bottomPanel;
@@ -327,7 +343,7 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
         return tasksButton;
     }
     private JButton tasksButton;
-    private JButton getHelpButton() {
+    private JButton getContextSensitiveHelpButton() {
         if (helpButton == null) {
             helpButton = new JButton(IconHelper.loadIcon("help.gif"));
             helpButton.putClientProperty("is3DEnabled",Boolean.TRUE);
@@ -557,6 +573,9 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
 
 /* 
 $Log: UIComponentImpl.java,v $
+Revision 1.9  2007/01/12 13:20:05  nw
+made sure every ui app has a help menu.
+
 Revision 1.8  2007/01/11 18:15:49  nw
 fixed help system to point to ag site.
 
