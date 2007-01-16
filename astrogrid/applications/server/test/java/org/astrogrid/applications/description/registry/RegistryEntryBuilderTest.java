@@ -1,4 +1,4 @@
-/*$Id: RegistryEntryBuilderTest.java,v 1.4 2005/07/05 08:27:00 clq2 Exp $
+/*$Id: RegistryEntryBuilderTest.java,v 1.5 2007/01/16 09:53:49 gtr Exp $
  * Created on 26-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,27 +10,8 @@
 **/
 package org.astrogrid.applications.description.registry;
 
-import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.TestApplicationDescriptionLibrary;
-import org.astrogrid.common.bean.v1.Namespaces;
-import org.astrogrid.registry.beans.v10.wsinterface.VOResources;
-import org.astrogrid.test.AstrogridAssert;
-import org.astrogrid.test.schema.SchemaMap;
-
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
-import org.w3c.dom.Document;
-
-import java.io.PrintWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.net.URL;
-
-import junit.framework.TestCase;
 
 /**
  * Test to see if the registry entry is valid in various ways.
@@ -58,6 +39,9 @@ public class RegistryEntryBuilderTest extends RegistryEntryBuilderTestBase {
 
 /* 
 $Log: RegistryEntryBuilderTest.java,v $
+Revision 1.5  2007/01/16 09:53:49  gtr
+Many spurious import statements were removed.
+
 Revision 1.4  2005/07/05 08:27:00  clq2
 paul's 559b and 559c for wo/apps and jes
 
