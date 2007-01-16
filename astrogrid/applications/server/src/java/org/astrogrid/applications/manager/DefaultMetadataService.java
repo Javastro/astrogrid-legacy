@@ -1,4 +1,4 @@
-/*$Id: DefaultMetadataService.java,v 1.13 2006/03/17 17:50:58 clq2 Exp $
+/*$Id: DefaultMetadataService.java,v 1.14 2007/01/16 09:57:37 gtr Exp $
  * Created on 21-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,7 @@ import org.astrogrid.applications.description.exception.ApplicationDescriptionNo
 import org.astrogrid.applications.description.registry.IvornUtil;
 import org.astrogrid.common.bean.v1.Namespaces;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
+import org.astrogrid.contracts.SchemaMap;
 import org.astrogrid.registry.beans.v10.cea.ApplicationDefinition;
 import org.astrogrid.registry.beans.v10.cea.CeaApplicationType;
 import org.astrogrid.registry.beans.v10.cea.CeaServiceType;
@@ -29,7 +30,6 @@ import org.astrogrid.registry.beans.v10.cea.Parameters;
 import org.astrogrid.registry.beans.v10.resource.AccessURL;
 import org.astrogrid.registry.beans.v10.wsinterface.VOResources;
 import org.astrogrid.test.AstrogridAssert;
-import org.astrogrid.test.schema.SchemaMap;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
@@ -472,6 +472,8 @@ public class DefaultMetadataService implements MetadataService,
       }
 
       public void testGetRegistryEntry() throws Exception {
+        System.out.println(Namespaces.VODATASERVICE);
+        System.out.println(Namespaces.CEAIMPL);
          Document entry = returnRegistryEntry();
          assertNotNull(entry);
          AstrogridAssert.assertSchemaValid(entry, "VOResources", SchemaMap.ALL);
@@ -482,6 +484,9 @@ public class DefaultMetadataService implements MetadataService,
 
 /*
  * $Log: DefaultMetadataService.java,v $
+ * Revision 1.14  2007/01/16 09:57:37  gtr
+ * I replaced org.astrogrid.comon.test.SchemaMap with org.astrogrid.contracts.SchemaMap. This is part of the fix for BZ2051.
+ *
  * Revision 1.13  2006/03/17 17:50:58  clq2
  * gtr_1489_cea correted version
  *
