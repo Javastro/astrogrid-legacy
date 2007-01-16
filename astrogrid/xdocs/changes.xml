@@ -5,6 +5,13 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
+          
+          <action dev="gtr" type="fix">
+          <em>Branch apps-gtr-2051</em>: fix for BZ2051. This alters 
+          astrogrid/applications/server to use the SchemaMap class from
+          contracts (current) rather than the one from workflow-objects 
+          (obsolete). The contracts jar is added as a dependency.
+          </action>
     	
     	<action dev="kmb" type="fix">
     	    <em>Branch Reg_KMB_ErrorMessageFix2.</em> Fixed server messages due to a problem: when
