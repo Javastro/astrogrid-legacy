@@ -121,7 +121,7 @@
                  (receive-message!/partial sock buf)
            (and count-or-false
                 buf)))))
-  (let ((server-url (format #f "~a/kb/~a" (server-context) kb-name))
+  (let ((server-url (format #f "~a/kb/~a" (base-url) kb-name))
         (crlf (list->string (list (ascii->char #o15) (ascii->char #o12))))
         (sock (socket-connect protocol-family/internet
                               socket-type/stream
