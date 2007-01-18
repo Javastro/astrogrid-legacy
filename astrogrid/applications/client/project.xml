@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-<extend>../../maven-base/project.xml</extend>
+<extend>${basedir}/../project.xml</extend>
 <id>astrogrid-cea-client</id>
 <currentVersion>${astrogrid.applications.version}</currentVersion>
 <name>CEA Client</name>
