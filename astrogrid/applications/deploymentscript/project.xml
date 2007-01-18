@@ -1,7 +1,7 @@
 <project>
-    <extend>../../maven-base/project.xml</extend>
+    <extend>../project.xml</extend>
     <artifactId>astrogrid-cea-deploy-script</artifactId>
-    <name>filemanager Installation Script</name>
+    <name>CEA Installation Script</name>
     <currentVersion>${astrogrid.applications.version}</currentVersion>
     <description>This project contains everything necessary to install the application, when run as a stand-alone ant script. This is then bundled into a jar 
         for installation on a webserver from where it can be accessed by other applications. </description>
