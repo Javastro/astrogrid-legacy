@@ -1708,11 +1708,15 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
      */
     public String getActionWarningMessage( ActionType actionType ) {
         String message = null ;
-        if( actionType == EXECUTE ) {
-            if( this.statusAfterValidate == false ) {
+        // START JBL: Altered in head (!) as an urgent fix for bz #2066 
+        if( actionType == EXECUTE 
+            && 
+            isApplicable( toolModel.getTool(), toolModel.getInfo() )
+            &&
+            this.statusAfterValidate == false  ) {
                 message = "Query Panel: errors or unprocessed edits have been detected." ;
-            }
-        }       
+        } 
+        // END JBL: of bz #2066
         return message ;
     }
     
