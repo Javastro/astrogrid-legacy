@@ -33,7 +33,7 @@ public class AbstractPlasticTestBase extends TestCase {
 	protected static final URI SENDER_ID = URI.create("ivo://junit");
 
 
-    protected UIInternal ui; //NWW- filled in. fill in with something
+    protected UIInternal ui; 
     
     protected String version = "test";
     
@@ -47,8 +47,7 @@ public class AbstractPlasticTestBase extends TestCase {
 	
 	protected BrowserControl browser;
 	
-	// NWW - replaced by a preference.
-	//protected Configuration config;
+
 	
 	protected Preference notifyEvents;
 	
@@ -67,7 +66,7 @@ public class AbstractPlasticTestBase extends TestCase {
 	}
 	
 	protected void setUp() {
-		// NWW
+		
 		notifyEvents = new Preference();
 		notifyEvents.setDefaultValue("true");
 		notifyEvents.setName("notifyEvents");

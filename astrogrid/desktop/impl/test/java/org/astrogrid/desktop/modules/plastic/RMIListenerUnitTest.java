@@ -54,7 +54,7 @@ public class RMIListenerUnitTest extends AbstractPlasticBaseNotDeaf {
     
     // TODO stick this somewhere else
     private PlasticHubListener createHubWithMocks() {
-    	//NWW 
+
     	HeadlessUIFactory fac = new HeadlessUIFactory();
     	
         DirectExecutor executor = new DirectExecutor();
@@ -81,32 +81,7 @@ public class RMIListenerUnitTest extends AbstractPlasticBaseNotDeaf {
             }
 
         };
-/* NWW - not needed
-        Configuration config = new Configuration() {
-            Map store = new HashMap();
-            public boolean setKey(String arg0, String arg1) {
-                store.put(arg0,arg1);
-                return true;
-            }
-
-            public String getKey(String arg0) {
-                return (String) store.get(arg0);
-            }
-
-            public String[] listKeys() throws ACRException {
-                return (String[]) store.keySet().toArray(new String[]{});
-            }
-
-            public Map list() throws ACRException {
-                return store;
-            }
-
-            public void removeKey(String arg0) {
-                store.remove(arg0);
-            }
-            
-        };
-*/        
+    
         Shutdown shutdown = new Shutdown() {
 
             public void halt() {
@@ -131,7 +106,7 @@ public class RMIListenerUnitTest extends AbstractPlasticBaseNotDeaf {
             
         };
         
-        UIInternal ui = fac.getUI(); //NWW - fixed: TODO something sensible?
+        UIInternal ui = fac.getUI(); 
         String version = "test";
         
         Preference notifyPreference = new Preference();

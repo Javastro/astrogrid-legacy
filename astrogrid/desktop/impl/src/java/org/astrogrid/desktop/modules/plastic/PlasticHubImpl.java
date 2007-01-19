@@ -31,7 +31,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.builtin.ShutdownListener;
-import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.RmiServer;
 import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.acr.system.WebServer;
@@ -54,8 +53,6 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
      * Logger for this class
      */
     private static final Log logger = LogFactory.getLog(PlasticHubImpl.class);
-    // NWW - replaced use of config with new preferences.
-	//static final String PLASTIC_NOTIFICATIONS_ENABLED = "org.votech.plastic.notificationsenabled";
 
     private final ApplicationStore clients = new ApplicationStore();
 
@@ -69,8 +66,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
     private File plasticPropertyFile;
 
 	private PrettyPrinterInternal prettyPrinter;
-//NWW - replaced use of configuration with new preferences.
-//	private Configuration config;
+
 	private final Preference notificationsEnabled;
 
 	private boolean weWroteTheConfigFile;
@@ -215,7 +211,6 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
      */
     private void displayInfoMessage(String caption, String message) {
     	//If the config is not set, then assume we will show popups
-    	//NWW - replaced config with a prefernece, but followed same rules.
         if (tray != null && notificationsEnabled.asBoolean()) {
             tray.displayInfoMessage(caption, message);
         } else {
@@ -301,6 +296,9 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         //
         final Map returns = new HashMap(); //Doesn't need synchronization as it's not read until all writes are done.
         	// NWW - consider using LinkedHashMap - if maintaining order of insertion is important.
+            // JDT Don't think it is.  I'm tempted by http://gee.cs.oswego.edu/dl/jsr166/dist/docs/java/util/concurrent/ConcurrentHashMap.html though
+            // even though I don't _think_ I need this to be synchronized.
+            // TODO Rethink use of Collections.
         class Messager implements Runnable {
 
             private PlasticClientProxy client;
