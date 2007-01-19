@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.5 2007/01/10 19:12:16 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.6 2007/01/19 19:55:16 jdt Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -60,7 +60,7 @@ import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ivoa.CacheFactory;
+import org.astrogrid.desktop.modules.ivoa.CacheFactoryInternal;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal.StreamProcessor;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceFormatter;
@@ -439,14 +439,14 @@ public class RegistryGooglePanel extends JPanel implements ActionListener, Prope
      * @param vomon used to annotate registry entries with availability information
      * @param pref controls whether to display 'advanced' features of the ui.
      */
-    public RegistryGooglePanel(final UIComponent parent,final RegistryInternal reg, final BrowserControl browser, final RegistryBrowser regBrowser, final CacheFactory fac, final VoMon vomon, Preference pref) {
+    public RegistryGooglePanel(final UIComponent parent,final RegistryInternal reg, final BrowserControl browser, final RegistryBrowser regBrowser, final CacheFactoryInternal fac, final VoMon vomon, Preference pref) {
         super();    
         this.parent = parent;
         this.reg = reg;
         this.browser = browser;
         this.regBrowser = regBrowser;
-        this.resources = fac.getManager().getCache(CacheFactory.RESOURCES_CACHE);
-        this.bulk = fac.getManager().getCache(CacheFactory.BULK_CACHE);
+        this.resources = fac.getManager().getCache(CacheFactoryInternal.RESOURCES_CACHE);
+        this.bulk = fac.getManager().getCache(CacheFactoryInternal.BULK_CACHE);
         this.vomon = vomon;
         this.advancedPreference = pref;
         advancedPreference.addPropertyChangeListener(this);
@@ -710,6 +710,9 @@ private void showHideAdvancedFeatures() {
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.6  2007/01/19 19:55:16  jdt
+Move flush cache to the public interface.   It's currently in the IVOA module, which is probably not the right place.  *Not tested*  I can't test because Eclipse seems to be getting confused with the mixture of JDKs 1.4 and 1.5.
+
 Revision 1.5  2007/01/10 19:12:16  nw
 integrated with preferences.
 

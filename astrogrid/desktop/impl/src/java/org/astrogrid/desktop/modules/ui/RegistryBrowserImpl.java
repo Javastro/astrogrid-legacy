@@ -1,4 +1,4 @@
-/*$Id: RegistryBrowserImpl.java,v 1.12 2007/01/12 13:20:04 nw Exp $
+/*$Id: RegistryBrowserImpl.java,v 1.13 2007/01/19 19:55:16 jdt Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,14 +19,13 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
-import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.ivoa.CacheFactory;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.registry.RegistryGooglePanel;
-import org.astrogrid.desktop.modules.dialogs.registry.RegistryGooglePanel.ResourceTableModel;
-import org.astrogrid.desktop.modules.ivoa.CacheFactory;
+import org.astrogrid.desktop.modules.ivoa.CacheFactoryInternal;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.Preference;
@@ -40,7 +39,7 @@ public class RegistryBrowserImpl extends UIComponentImpl implements  RegistryBro
 {
    
 
-    public RegistryBrowserImpl(RegistryInternal reg, HelpServerInternal hs,UIInternal ui,Configuration conf, BrowserControl browser, RegistryBrowser factory, CacheFactory cache, VoMon vomon, Preference pref) {
+    public RegistryBrowserImpl(RegistryInternal reg, HelpServerInternal hs,UIInternal ui,Configuration conf, BrowserControl browser, RegistryBrowser factory, CacheFactoryInternal cache, VoMon vomon, Preference pref) {
         super(conf,hs,ui);
         this.reg=reg;
         this.browser =browser;
@@ -53,7 +52,7 @@ public class RegistryBrowserImpl extends UIComponentImpl implements  RegistryBro
     protected final RegistryInternal reg;
     protected final BrowserControl browser;
     protected final RegistryBrowser factory;
-    protected final CacheFactory cache;
+    protected final CacheFactoryInternal cache;
     protected final VoMon vomon;
     protected final Preference pref;
 	private void initialize() {
@@ -127,6 +126,9 @@ public class RegistryBrowserImpl extends UIComponentImpl implements  RegistryBro
 
 /* 
 $Log: RegistryBrowserImpl.java,v $
+Revision 1.13  2007/01/19 19:55:16  jdt
+Move flush cache to the public interface.   It's currently in the IVOA module, which is probably not the right place.  *Not tested*  I can't test because Eclipse seems to be getting confused with the mixture of JDKs 1.4 and 1.5.
+
 Revision 1.12  2007/01/12 13:20:04  nw
 made sure every ui app has a help menu.
 

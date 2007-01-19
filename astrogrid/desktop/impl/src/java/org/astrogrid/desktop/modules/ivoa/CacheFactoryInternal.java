@@ -4,16 +4,17 @@
 package org.astrogrid.desktop.modules.ivoa;
 
 import net.sf.ehcache.CacheManager;
+import org.astrogrid.acr.ivoa.CacheFactory;
 
 /** interface to a data cache.
  * @author Noel Winstanley
  * @since Aug 8, 20061:16:54 AM
  */
-public interface CacheFactory {
+public interface CacheFactoryInternal extends CacheFactory {
 	
 	public CacheManager getManager() ;
 	
-	public void flush();
+	
 	
 	public final static String RESOURCES_CACHE = "resources";
 	public final static String PW_CACHE = "pw";

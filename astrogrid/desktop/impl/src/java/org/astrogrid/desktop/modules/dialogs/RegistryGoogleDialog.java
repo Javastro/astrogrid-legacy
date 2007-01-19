@@ -1,4 +1,4 @@
-/*$Id: RegistryGoogleDialog.java,v 1.4 2007/01/10 19:12:16 nw Exp $
+/*$Id: RegistryGoogleDialog.java,v 1.5 2007/01/19 19:55:16 jdt Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,15 +27,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.modules.dialogs.registry.RegistryGooglePanel;
-import org.astrogrid.desktop.modules.ivoa.CacheFactory;
+import org.astrogrid.desktop.modules.ivoa.CacheFactoryInternal;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.Preference;
@@ -56,7 +53,7 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
      * @param pref 
      * @throws java.awt.HeadlessException
      */
-    public RegistryGoogleDialog(  Configuration conf, HelpServerInternal help, UIInternal ui,RegistryInternal reg,BrowserControl browser, RegistryBrowser regBrowser, CacheFactory cache,VoMon vomon, Preference pref) throws HeadlessException {
+    public RegistryGoogleDialog(  Configuration conf, HelpServerInternal help, UIInternal ui,RegistryInternal reg,BrowserControl browser, RegistryBrowser regBrowser, CacheFactoryInternal cache,VoMon vomon, Preference pref) throws HeadlessException {
         super();
         this.parent = new UIComponentImpl(conf,help,ui);
         this.chooserPanel = new RegistryGooglePanel(parent,reg,browser,regBrowser,cache,vomon, pref);
@@ -78,7 +75,7 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
         this.setSize(425,600);        
     }
     
-    public RegistryGoogleDialog(Component parentComponent, Configuration conf, HelpServerInternal help, UIInternal ui,RegistryInternal reg, BrowserControl browser, RegistryBrowser regBrowser,CacheFactory cache, VoMon vomon, Preference pref) throws HeadlessException {
+    public RegistryGoogleDialog(Component parentComponent, Configuration conf, HelpServerInternal help, UIInternal ui,RegistryInternal reg, BrowserControl browser, RegistryBrowser regBrowser,CacheFactoryInternal cache, VoMon vomon, Preference pref) throws HeadlessException {
     	this(conf,help,ui,reg,browser, regBrowser,cache,vomon,pref);
         setLocationRelativeTo(parentComponent);
     }
@@ -175,6 +172,9 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
 
 /* 
 $Log: RegistryGoogleDialog.java,v $
+Revision 1.5  2007/01/19 19:55:16  jdt
+Move flush cache to the public interface.   It's currently in the IVOA module, which is probably not the right place.  *Not tested*  I can't test because Eclipse seems to be getting confused with the mixture of JDKs 1.4 and 1.5.
+
 Revision 1.4  2007/01/10 19:12:16  nw
 integrated with preferences.
 

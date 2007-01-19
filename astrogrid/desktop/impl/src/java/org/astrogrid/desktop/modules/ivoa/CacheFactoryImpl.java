@@ -21,7 +21,7 @@ import org.astrogrid.acr.builtin.ShutdownListener;
  * @modified made the caching more conservative.
  * @since Aug 8, 20061:17:09 AM
  */
-public class CacheFactoryImpl implements ShutdownListener, CacheFactory {
+public class CacheFactoryImpl implements ShutdownListener, CacheFactoryInternal {
 
 	private final CacheManager manager;
 	

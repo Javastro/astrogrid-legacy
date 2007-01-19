@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.18 2007/01/09 16:20:45 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.19 2007/01/19 19:55:16 jdt Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -61,7 +61,7 @@ import org.astrogrid.acr.ivoa.resource.SiapService;
 import org.astrogrid.acr.nvo.ConeInformation;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.common.bean.BaseBean;
-import org.astrogrid.desktop.modules.ivoa.CacheFactory;
+import org.astrogrid.desktop.modules.ivoa.CacheFactoryInternal;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.ivoa.StreamingExternalRegistryImpl.KnowledgeAddingResourceArrayBuilder;
 import org.astrogrid.workflow.beans.v1.Input;
@@ -88,13 +88,13 @@ public class ApplicationsImpl implements ApplicationsInternal {
     /** 
      * 
      */
-    public ApplicationsImpl(RemoteProcessManager manager,MyspaceInternal vos, RegistryInternal nuReg,Registry reg, Adql074 adql, CacheFactory cacheFac) throws  ACRException{
+    public ApplicationsImpl(RemoteProcessManager manager,MyspaceInternal vos, RegistryInternal nuReg,Registry reg, Adql074 adql, CacheFactoryInternal cacheFac) throws  ACRException{
         this.manager = manager;
         this.vos = vos;
         this.reg = reg;
         this.adql = adql;
         this.nuReg = nuReg;
-        this.applicationResourceCache = cacheFac.getManager().getCache(CacheFactory.APPLICATION_RESOURCES_CACHE);
+        this.applicationResourceCache = cacheFac.getManager().getCache(CacheFactoryInternal.APPLICATION_RESOURCES_CACHE);
     }
     protected final Ehcache applicationResourceCache;
     protected final RegistryInternal nuReg;
@@ -699,6 +699,9 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.19  2007/01/19 19:55:16  jdt
+Move flush cache to the public interface.   It's currently in the IVOA module, which is probably not the right place.  *Not tested*  I can't test because Eclipse seems to be getting confused with the mixture of JDKs 1.4 and 1.5.
+
 Revision 1.18  2007/01/09 16:20:45  nw
 use linkedhashmap instead of map
 
@@ -727,7 +730,8 @@ Revision 1.10  2006/04/18 23:25:44  nw
 merged asr development.
 
 Revision 1.8.34.3  2006/04/14 02:45:01  nw
-finished code.extruded plastic hub.
+finished code.
+extruded plastic hub.
 
 Revision 1.8.34.2  2006/03/28 13:47:35  nw
 first webstartable version.

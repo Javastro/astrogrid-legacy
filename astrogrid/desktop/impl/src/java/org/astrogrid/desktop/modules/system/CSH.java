@@ -842,9 +842,9 @@ public class CSH {
             
                 cursors = new Hashtable();
                 topComponents = getTopContainers(e.getSource());
-                Enumeration enum = topComponents.elements();
-                while (enum.hasMoreElements()) {
-                    setAndStoreCursors((Container)enum.nextElement(), onItemCursor);
+                Enumeration enm = topComponents.elements();
+                while (enm.hasMoreElements()) {
+                    setAndStoreCursors((Container)enm.nextElement(), onItemCursor);
                 }
             
             MouseEvent event = CSH.getMouseEvent();

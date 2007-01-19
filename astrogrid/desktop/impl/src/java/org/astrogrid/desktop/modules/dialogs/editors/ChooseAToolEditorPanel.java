@@ -1,4 +1,4 @@
-/*$Id: ChooseAToolEditorPanel.java,v 1.14 2007/01/10 19:12:16 nw Exp $
+/*$Id: ChooseAToolEditorPanel.java,v 1.15 2007/01/19 19:55:16 jdt Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,7 +29,7 @@ import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditAdapter;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
 import org.astrogrid.desktop.modules.dialogs.registry.RegistryGooglePanel;
-import org.astrogrid.desktop.modules.ivoa.CacheFactory;
+import org.astrogrid.desktop.modules.ivoa.CacheFactoryInternal;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.ui.UIComponent;
@@ -47,7 +47,7 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel implements P
 	RegistryGooglePanel rcp;
 
 
-	public ChooseAToolEditorPanel(ToolModel tm,final UIComponent parent, RegistryInternal reg, final ApplicationsInternal apps, BrowserControl browser, RegistryBrowser regBrowser, CacheFactory cache, VoMon vomon, Preference pref) {
+	public ChooseAToolEditorPanel(ToolModel tm,final UIComponent parent, RegistryInternal reg, final ApplicationsInternal apps, BrowserControl browser, RegistryBrowser regBrowser, CacheFactoryInternal cache, VoMon vomon, Preference pref) {
 		super(tm);
 
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
@@ -148,6 +148,9 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel implements P
 
 /* 
 $Log: ChooseAToolEditorPanel.java,v $
+Revision 1.15  2007/01/19 19:55:16  jdt
+Move flush cache to the public interface.   It's currently in the IVOA module, which is probably not the right place.  *Not tested*  I can't test because Eclipse seems to be getting confused with the mixture of JDKs 1.4 and 1.5.
+
 Revision 1.14  2007/01/10 19:12:16  nw
 integrated with preferences.
 

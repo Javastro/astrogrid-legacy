@@ -25,7 +25,7 @@ import net.sf.ehcache.Element;
 import org.apache.commons.collections.MultiHashMap;
 import org.apache.commons.collections.MultiMap;
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.desktop.modules.ivoa.CacheFactory;
+import org.astrogrid.desktop.modules.ivoa.CacheFactoryInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.votech.VoMon;
@@ -145,7 +145,7 @@ public class VoMonImpl implements VoMonInternal {
 		}
 	}
 
-	public VoMonImpl(final String endpoint, final int refreshSeconds, final CacheFactory cacheFac, final UIInternal ui)  {
+	public VoMonImpl(final String endpoint, final int refreshSeconds, final CacheFactoryInternal cacheFac, final UIInternal ui)  {
 		super();
 		URL u; 
 		try {
@@ -155,7 +155,7 @@ public class VoMonImpl implements VoMonInternal {
 		}
 		this.voMonEndpoint = u;
 		this.refreshSeconds = refreshSeconds;
-		cache = cacheFac.getManager().getCache(CacheFactory.VOMON_CACHE);
+		cache = cacheFac.getManager().getCache(CacheFactoryInternal.VOMON_CACHE);
 		this.ui = ui;
 		// start things happening - get list of services on a background thread.
 		createWorker().start();
