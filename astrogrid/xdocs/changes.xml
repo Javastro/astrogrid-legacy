@@ -41,6 +41,9 @@
         </release>
 		
 		<release version="HEAD">
+		  <action dev="gtr" type="fix" issue="2051">
+            Branch apps-gtr-2051 to fix contracts for pal to work. 
+          </action>
 		  <action dev="gtr" type="fix" issue="1942">
             Branch wo-gtr-1942. Deleted lots file for ease of make registry and CEA evolution.
           </action>  
