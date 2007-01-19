@@ -6,7 +6,7 @@
     <links>
       <item name="Front" href="/index.html" />
       <item name="Users" href="/userdocs/index.html" />
-      <item name="Installers" href="/installdocs/index.html" />
+      <!--item name="Installers" href="/installdocs/index.html" /-->
       <item name="Developers" href="/developerdocs/index.html" />
     </links>
 
@@ -15,7 +15,7 @@
         -->
 
     <menu name="About Astrogrid">
-      <item name="Announcing Astrogrid 2006.3" href="/index.html" />
+      <item name="Announcing Astrogrid 2007.1" href="/index.html" />
       <item name="What is Astrogrid?" href="/what-is-ag.html" />
       <!--item name="Feature Summary" href="/feature-summary.html" /-->
       <item name="FAQ" href="/faq.html" />
@@ -97,26 +97,26 @@
 		<item name="Information for Installers" href="/installdocs/download.html" 
 			collapse="true">
 			<item name="Download" href="/installdocs/index.html" >
-				<item name="Installers" href="/installdocs/installer.html" collapse="true">
-					<item name="-All-" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=*.jar" target="_blank"/>
-                    <item name="CEA" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-cea-installer*.jar" target="_blank"/>
-                    <item name="FileStore" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-filestore-installer*.jar" target="_blank"/>
-                    <item name="FileManager" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-filemanager-installer*.jar" target="_blank"/>
-                    <item name="JES" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-jes-installer*.jar" target="_blank"/>
-                    <item name="Portal" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-portal-installer*.jar" target="_blank"/>
-                    <item name="Registry" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-registry-installer*.jar" target="_blank"/>
-				</item>
+				<!--item name="Installers" href="/installdocs/installer.html" collapse="true"-->
+					<!--item name="-All-" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=*.jar" target="_blank"/-->
+                    <!--item name="CEA" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-cea-installer*.jar" target="_blank"/-->
+                    <!--item name="FileStore" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-filestore-installer*.jar" target="_blank"/-->
+                    <!--item name="FileManager" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-filemanager-installer*.jar" target="_blank"/-->
+                    <!--item name="JES" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-jes-installer*.jar" target="_blank"/-->
+                    <!--item name="Portal" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-portal-installer*.jar" target="_blank"/-->
+                    <!--item name="Registry" href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-registry-installer*.jar" target="_blank"/-->
+				<!--/item-->
 				<item name="AstroGrid Components" href="/installdocs/agcomponents.html" collapse="true">
-					<item name="-All-" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=*2006.3*.war" target="_blank"/>
-                    <item name="CEA" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-cea-*2006.3*.war" target="_blank"/>
-                    <item name="Community" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-community-*2006.3*.war" target="_blank"/>
-                    <item name="FileManager" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-filemanager-*2006.3*.war" target="_blank"/>
-                    <item name="FileStore" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-filestore-*2006.3*.war" target="_blank"/>
-                    <item name="JES" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-jes-*2006.3*.war" target="_blank"/>
+					<item name="-All-" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=*2007.1*.war" target="_blank"/>
+                    <item name="CEA" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-cea-*2007.1*.war" target="_blank"/>
+                    <item name="Community" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-community-*2007.1*.war" target="_blank"/>
+                    <item name="FileManager" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-filemanager-*2007.1*.war" target="_blank"/>
+                    <item name="FileStore" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-filestore-*2007.1*.war" target="_blank"/>
+                    <item name="JES" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-jes-*2007.1*.war" target="_blank"/>
                     <!--item name="mySpace" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-mySpace-1.0*-b*.war"/-->
-                    <item name="DSA" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=*dsa-catalog-*2006.3*.war" target="_blank"/>
-                    <item name="Portal" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-portal-2006.3*.war" target="_blank"/>
-                    <item name="Registry" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-registry-*2006.3*.war" target="_blank"/>
+                    <item name="DSA" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=*dsa-catalog-*2007.1*.war" target="_blank"/>
+                    <item name="Portal" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-portal-2007.1*.war" target="_blank"/>
+                    <item name="Registry" href="http://www.astrogrid.org/maven/org.astrogrid/wars/?C=M&amp;O=D&amp;P=astrogrid-registry-*2007.1*.war" target="_blank"/>
 				</item>
 			</item>
 			<item name="General Instructions" href="/installdocs/generic.html">
@@ -280,7 +280,7 @@
       collapse="true">
         <item name="Client Development Kits" href="/developerdocs/cdk.html" />
         <item name="Work with AstroGrid Source"       href="/developerdocs/source.html"/>
-          <item name="Obtaining source code" href="/cvs-usage.html" />
+          <!--item name="Obtaining source code" href="/cvs-usage.html" /-->
           <item name="Architecture" href="/developerdocs/astrogrid-v1.1-architecture.htm" />
 		  <!-- NWW: we've not policy on this, and there's not much to say here that hasn't been said on previous pages
           <item name="Contributing" href="/developerdocs/contributing.html" />
@@ -313,7 +313,7 @@
         -->
 
     <menu name="Other Formats">
-      <item name="PDF" href="/astrogrid-release-2006-3.pdf" />
+      <item name="PDF" href="/astrogrid-release-2007-1.pdf" />
     </menu>
 
     <menu name="Previous Releases">
@@ -321,7 +321,7 @@
     </menu>
 
     <menu name="About this documentation">
-      <item name="Editing" href="/about.html" />
+      <!--item name="Editing" href="/about.html" /-->
       <!--item name="Linkcheck Report" href="/linkcheck.html" /-->
       <item name="Corrections &amp; Broken Links"
       href="mailto:astrogrid_help@star.le.ac.uk" />

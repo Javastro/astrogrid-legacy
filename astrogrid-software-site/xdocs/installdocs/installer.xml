@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: installer.xml,v 1.6 2006/06/30 12:34:18 clq2 Exp $ -->
+<!-- $Id: installer.xml,v 1.7 2007/01/19 18:50:45 clq2 Exp $ -->
 <document>
         <properties>
                 <title>Information for Installers</title>
@@ -9,19 +9,19 @@
                 <section name="Information for Installers"><p>
                 You can download AG installers from this section.
 				</p><p>
-                    <a href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=*2006.3*.jar" target="_blank">All</a>
+                    <a href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=*2007.1*.jar" target="_blank">All</a>
 					</p><p>
-                    <a href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-cea-installer*2006.3*.jar" target="_blank">CEA</a>
+                    <a href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-cea-installer*2007.1*.jar" target="_blank">CEA</a>
 					</p><p>
-                    <a href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-filestore-installer*2006.3*.jar" target="_blank">FileStore</a>
+                    <a href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-filestore-installer*2007.1*.jar" target="_blank">FileStore</a>
 					</p><p>
-                    <a href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-filemanager-installer*2006.3*.jar" target="_blank">FileManager</a>
+                    <a href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-filemanager-installer*2007.1*.jar" target="_blank">FileManager</a>
 					</p><p>
-                    <a href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-jes-installer*2006.3*.jar" target="_blank">JES</a>
+                    <a href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-jes-installer*2007.1*.jar" target="_blank">JES</a>
 					</p><p>
-                    <a href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-portal-installer*2006.3*.jar" target="_blank">Portal</a>
+                    <a href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-portal-installer*2007.1*.jar" target="_blank">Portal</a>
 					</p><p>
-                    <a href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-registry-installer*2006.3*.jar" target="_blank">Registry</a>
+                    <a href="http://www.astrogrid.org/maven/org.astrogrid/apps/?C=M&amp;O=D&amp;P=astrogrid-registry-installer*2007.1*.jar" target="_blank">Registry</a>
                 </p>
                 </section>
         </body>
