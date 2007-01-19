@@ -79,6 +79,12 @@
 		        <include>*</include>
 		    </includes>            	
         </resource>
+        <resource>
+        	<directory>${basedir}/src/java</directory>
+		    <includes>
+		        <include>*/**</include>
+		    </includes>            	
+        </resource>
     </resources>
         
     <!--+

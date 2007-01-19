@@ -33,12 +33,15 @@ public class StapSearch implements IStapSearch {
     
     private HashMap noDuplMap = null;
     
+    private static String STAP_DEFAULT_FORMAT;        
+    
     /**
      * Static to be used on the initiatian of this class for the config
      */   
     static {
        if(conf == null) {
           conf = org.astrogrid.config.SimpleConfig.getSingleton();
+          STAP_DEFAULT_FORMAT = conf.getString("format.default","TIME_SERIES");
        }
     }       
     
@@ -63,7 +66,7 @@ public class StapSearch implements IStapSearch {
             formatReq = ((String [])info.get("FORMAT"))[0];
         }
         
-        String convertFormat = conf.getString("convert.time.format","yyyy-MM-dd'T'HH:mm:ss");
+        String convertFormat = conf.getString("convert.time.format","yyyy-MM-dd HH:mm:ss");
         String endTimeSQL = null;
         String startTimeSQL = null;
         SimpleDateFormat dateFormat = new SimpleDateFormat();
@@ -129,54 +132,53 @@ public class StapSearch implements IStapSearch {
         Statement stmt = conn.createStatement();
         String query = conf.getString("full.sql.syntax");
         String sql = query.replaceAll("__start__", startTimeSQL).replaceAll("__end__", endTimeSQL);        
-        
+        System.out.println("Query to be Executed by Stap -- " + sql);
         ResultSet rs = stmt.executeQuery(sql);
        
-
-  
-        
         stapMaker.writeBeginVOTable(out,conf.getString("results.name","DSA"));        
         Calendar startTimeCal = Calendar.getInstance();
         Calendar endTimeCal = Calendar.getInstance();
-
         
         Calendar startTemp = Calendar.getInstance();
         Calendar endTemp = Calendar.getInstance();
         
-        String tempFormat = null;
+        String tempRS = null;
         while(rs.next()){
          //System.out.println("the title = " + views[i].getTitle() + " id = " + views[i].getId());
         	if(queryCols[0] != null)
         		stapMaker.setDataID(rs.getString(queryCols[0]));        	
         	if(queryCols[1] != null) {
-        		tempFormat = rs.getString(queryCols[1]);
+        		tempRS = rs.getString(queryCols[1]);
         		if(convertFormat.equals("milliseconds")) {
-        			startTemp.setTimeInMillis(Long.valueOf(tempFormat).longValue());
+        			startTemp.setTimeInMillis(Long.valueOf(tempRS).longValue());
         		}else {
         			startTemp.setTime(dateFormat.parse(rs.getString(queryCols[1])));
         		}
-        		stapMaker.setTimeStart(stapDateFormat.format(startTemp));
+        		stapMaker.setTimeStart(stapDateFormat.format(startTemp.getTime()));
         	}
         	if(queryCols[2] != null) {
-        		tempFormat = rs.getString(queryCols[1]);
+        		tempRS = rs.getString(queryCols[1]);
         		if(convertFormat.equals("milliseconds")) {
-        			endTemp.setTimeInMillis(Long.valueOf(tempFormat).longValue());
+        			endTemp.setTimeInMillis(Long.valueOf(tempRS).longValue());
         		}else {
         			endTemp.setTime(dateFormat.parse(rs.getString(queryCols[2])));
         		}
-        		stapMaker.setTimeEnd(stapDateFormat.format(endTemp));
+        		stapMaker.setTimeEnd(stapDateFormat.format(endTemp.getTime()));
         	}
-        		
-        	if(queryCols[3] != null)
-        		stapMaker.setAccessReference(accRefPrePend + rs.getString(queryCols[3]));
+        	stapMaker.setFormat(STAP_DEFAULT_FORMAT);        		
+        	if(queryCols[3] != null) {
+        		tempRS = rs.getString(queryCols[3]);
+        		stapMaker.setAccessReference(accRefPrePend + tempRS);
+        		stapMaker.setFormat(getFormat(tempRS));
+        	}
         	if(queryCols[4] != null)
         		stapMaker.setProvider(rs.getString(queryCols[4]));
         	if(queryCols[5] != null)
         		stapMaker.setDescription(rs.getString(queryCols[5]));
-        	if(queryCols[6] != null)
-        		stapMaker.setInstrumentID(rs.getString(queryCols[6]));
+        	if(queryCols[6] != null)        		
+        		stapMaker.setDescriptionURL(rs.getString(queryCols[6]));
         	if(queryCols[7] != null)
-        		stapMaker.setDescriptionURL(rs.getString(queryCols[7]));
+        		stapMaker.setInstrumentID(rs.getString(queryCols[7]));
         	
         	if(resultsData[0] != null)
         		stapMaker.setDataID(resultsData[0]);        	
@@ -189,19 +191,14 @@ public class StapSearch implements IStapSearch {
         	if(resultsData[5] != null)
         		stapMaker.setDescription(resultsData[5]);
         	if(resultsData[6] != null)
-        		stapMaker.setInstrumentID(resultsData[6]);
-        	if(resultsData[7] != null)
-        		stapMaker.setDescriptionURL(resultsData[7]);
-        	
-        	
-            tempFormat = DEFAULT_FORMAT;            
-            stapMaker.setFormat(tempFormat);                                  
+        		stapMaker.setDescriptionURL(resultsData[6]);
+        	if(resultsData[7] != null)        		
+        		stapMaker.setInstrumentID(resultsData[7]);
             stapMaker.addRow();
-            if(stapMaker.getRowCount() > 0) {
-                stapMaker.writeTable(out);
-            }
           }
-         
+        	if(stapMaker.getRowCount() > 0) {
+        		stapMaker.writeTable(out);
+        	}
         }catch(SQLException sqe) {
         	sqe.printStackTrace();
         	out.write(sqe.getMessage());
@@ -216,34 +213,22 @@ public class StapSearch implements IStapSearch {
         }
     }
     
-    private static final String DEFAULT_FORMAT = "TIME_SERIES";
-    
-    private boolean correctFormat(String format, String accessRefExtension) {
-        boolean timeSeries = false;
-        boolean graphics = false;
-        if(format == null || format.trim().length() == 0) {
-            return true;
-        }
+    private String getFormat(String accessRefExtension) {
         if(accessRefExtension.lastIndexOf('.') != -1)
             accessRefExtension = accessRefExtension.substring(accessRefExtension.lastIndexOf('.')+1);
         
-        if((accessRefExtension.equalsIgnoreCase("fits") || accessRefExtension.equalsIgnoreCase("jpg") ||
-            accessRefExtension.equalsIgnoreCase("gif") || accessRefExtension.equalsIgnoreCase("fts"))) {
-            graphics = true;
+        if(accessRefExtension.equalsIgnoreCase("fits") || accessRefExtension.equalsIgnoreCase("fts")) {
+        	return conf.getString("format.ending.fits","FITS");
+        }else if(accessRefExtension.equalsIgnoreCase("jpg") || accessRefExtension.equalsIgnoreCase("gif") ) {
+        	return "GRAPHICS";
+        }else if(accessRefExtension.equalsIgnoreCase("cdf")) {
+        	return conf.getString("format.ending.cdf","TIME_SERIES-CDF");        	
+        }else if(accessRefExtension.equalsIgnoreCase("txt")) {
+        	return conf.getString("format.ending.txt","TIME_SERIES-ASCII");        	
+        }else if(accessRefExtension.equalsIgnoreCase("vot")) {
+        	return conf.getString("format.ending.vot","TIME_SERIES-VOT");        	
         }
-        
-        if((accessRefExtension.equalsIgnoreCase("cdf") || accessRefExtension.equalsIgnoreCase("txt") ||
-                 accessRefExtension.equalsIgnoreCase("vot"))) {
-            timeSeries = true;
-        }
-        if(format.equalsIgnoreCase("TIME_SERIES") && timeSeries)
-            return true;
-        else if(format.equalsIgnoreCase("GRAPHICS") && graphics)
-            return true;
-        else if(!timeSeries && !graphics && format.equalsIgnoreCase(DEFAULT_FORMAT))
-            return true;
-
-        return false;
+        return STAP_DEFAULT_FORMAT;
     }
     
 }

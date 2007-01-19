@@ -47,5 +47,15 @@
    		<servlet-name>StapSearch</servlet-name>
    		<url-pattern>/SolarFetch</url-pattern>
 	</servlet-mapping>
+	
+	<!--
+	
+	<env-entry>
+      <description>Sample env entry of pointing to another properties file.  Usefull if setting up several STAP's for tables.</description>
+      <env-entry-name>org.astrogrid.config.filename</env-entry-name>
+      <env-entry-value>/disk/astrogrid.properties</env-entry-value>
+      <env-entry-type>java.lang.String</env-entry-type>
+   </env-entry>  	
+   -->
 
 </web-app>
