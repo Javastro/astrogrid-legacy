@@ -1,4 +1,4 @@
-/*$Id: Finder.java,v 1.12 2006/10/30 12:12:36 nw Exp $
+/*$Id: Finder.java,v 1.13 2007/01/23 19:58:29 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -83,7 +83,7 @@ public class Finder {
     /**
      * Commons Logger for this class
      */
-    private static final Log logger = LogFactory.getLog(Finder.class);
+    protected static final Log logger = LogFactory.getLog(Finder.class);
 
     /** Construct a new Finder
      * 
@@ -241,18 +241,8 @@ public class Finder {
      * @throws RemoteException
      * @throws NotBoundException
      */
-    private ACR connectExternal() throws FileNotFoundException, NumberFormatException, IOException, RemoteException, NotBoundException {
-    	File conf = configurationFile();  
-    	if (!conf.exists()) {
-    		logger.info("No configuration file - suggests an acr instance is not running at the moment");
-    		return null;    		
-    	}
-    	
-    	logger.info("configuration file indicates an acr is already running");                
-    	BufferedReader br = new BufferedReader(new FileReader(conf));                
-    	int port = Integer.parseInt(br.readLine());
-    	br.close(); //Otherwise the file can be locked and left undeleted when the ACR shuts down.
-    	logger.info("Port determined to be " + port);
+    protected ACR connectExternal() throws FileNotFoundException, NumberFormatException, IOException, RemoteException, NotBoundException {
+    	int port = parseConfigFile();
     	final Client client = new Client("localhost",port);
     	final ApiHelp api = (ApiHelp)client.lookup(ApiHelp.class);
     	ACR newAcr = new ACR() {
@@ -312,6 +302,35 @@ public class Finder {
     	return newAcr;           
     	
     }
+
+	/**
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	protected int parseConfigFile() throws IOException {
+		File conf = configurationFile();  
+    	if (!conf.exists()) {
+    		logger.info("No configuration file - suggests an acr instance is not running at the moment");
+    		throw new FileNotFoundException(conf.getAbsolutePath());
+    	}
+    
+    	logger.info("configuration file indicates an acr is already running");                
+    	BufferedReader br = null;
+		try {
+			br = new BufferedReader(new FileReader(conf));
+			int port = Integer.parseInt(br.readLine());
+			logger.info("Port determined to be " + port);
+			return port;
+		} finally {
+			if (br != null) {
+				try {
+					br.close(); //Otherwise the file can be locked and left undeleted when the ACR shuts down.
+				} catch (IOException e) {
+				}
+			}
+		}
+	}
    
     
     private ACR acr;
@@ -390,6 +409,9 @@ public class Finder {
 
 /* 
 $Log: Finder.java,v $
+Revision 1.13  2007/01/23 19:58:29  nw
+made finder more overridable, and improved cleanup code. (added a finally block)
+
 Revision 1.12  2006/10/30 12:12:36  nw
 documentation improvements.
 
