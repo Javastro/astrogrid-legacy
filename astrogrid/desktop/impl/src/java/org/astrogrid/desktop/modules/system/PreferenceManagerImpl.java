@@ -132,8 +132,7 @@ public class PreferenceManagerImpl implements  ConfigurationInternal,  Preferenc
 	private void initialize(Preference p) {
 		String val = preferenceRegistry.get(p.getName(),null);
 		if (val == null) {// preference is unknown to store - copy default into store
-			val = p.getDefaultValue();
-			preferenceRegistry.put(p.getName(), val);
+			preferenceRegistry.put(p.getName(), p.getDefaultValue());
 		}
 		// set the value of the preference
 		// here system properties (anything passed in on commandline) take precedence

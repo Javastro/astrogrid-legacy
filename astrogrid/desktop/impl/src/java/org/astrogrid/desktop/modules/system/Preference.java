@@ -3,10 +3,15 @@
  */
 package org.astrogrid.desktop.modules.system;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.Vector;
 
 import org.apache.hivemind.internal.Module;
 
@@ -55,6 +60,11 @@ public class Preference {
 		moduleName = m.getModuleId();
 	}
 	
+	// only for ease of testing.
+	void setModuleName(String s) {
+		moduleName = s;
+	}
+	
 	/** names the module to which this preference belongs */
 	public String getModuleName() {
 		return moduleName;
@@ -69,6 +79,21 @@ public class Preference {
 	
 	public void addAlternative (String s) {
 		alternatives.add(s);
+	}
+	
+	/** list all possible alternative values, based on alternatives, default and current
+	 * values
+	 * @return an array of suggestions, no duplicates,where first one will be the current value
+	 */
+	public String[] getAllAlternatives() {
+		Set s= new HashSet(); // use a set to merge recommendations, current, default.
+		s.addAll(Arrays.asList(getAlternatives()));
+		s.add(getDefaultValue());
+		s.remove(getValue()); // if it's already there.
+		List l = new ArrayList();
+		l.add(getValue());
+		l.addAll(s);
+		return (String[]) l.toArray(new String[l.size()]);
 	}
 		
 	/** lists permitted option values
@@ -137,9 +162,27 @@ public class Preference {
 		return this.value;
 	}
 	
+	/**
+	 * Fires a
+	 * property change event into the specified listener. The event
+	 * contains the current value of this preference.
+	 * 
+	 * This is a helper method that makes client code simpler - there's no need to initialize
+	 * the client by querying the preference value, and then repeat the code in a listener.
+	 * Instead, the code can just occur in the listener, and then on construction this
+	 * method can be called to cause the client to be initialized.
+	 * The event fired with have oldValue==null, and newValue == this.getValue();
+	 * @param p
+	 */
+	public void initializeThroughListener(PropertyChangeListener p) {
+		PropertyChangeEvent evt = new PropertyChangeEvent(this,"value",null,this.value);
+		p.propertyChange(evt);
+	}
+	
 	/** access the value of the preference as a boolean */
 	public boolean asBoolean() {
-		return Boolean.parseBoolean(getValue());
+		// 1.5 specific return Boolean.parseBoolean(getValue());
+		return Boolean.valueOf(getValue()).booleanValue();
 	}
 	public void setValue(String nuValue) {
 		if (nuValue == null || nuValue.equals(this.value)) {
@@ -187,7 +230,8 @@ public class Preference {
 		this.support.removePropertyChangeListener(listener);
 	}
 	/** a description of the units (e.g. seconds, ) this property is expected in. 
-	 * can also be used to provide formatting hints (e.g. http://..)
+	 * can also be set to one of the constants in this class - FILE, URL, NUMBER - in which case an editor could 
+	 * be expected to provide different ui capabilities.
 	 */
 	public String getUnits() {
 		return this.units;
@@ -195,6 +239,15 @@ public class Preference {
 	public void setUnits(String units) {
 		this.units = units;
 	}
+	
+	// constants for UNITS property
+	public static final String FILE = "file";
+	public static final String DIRECTORY = "directory";
+	public static final String URL = "url";
+	public static final String NUMBER = "number";
+	public static final String SECONDS = "seconds"; // treat as equivalent to number
+	public static final String BOOLEAN = "boolean";
+	
 	/**
 	 * 					true if the default value, and all modifications of this prefernece
 					should be copied into the ag.commons.Config used by other 
