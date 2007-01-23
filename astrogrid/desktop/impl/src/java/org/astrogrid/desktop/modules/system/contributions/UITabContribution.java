@@ -1,4 +1,4 @@
-/*$Id: UITabContribution.java,v 1.6 2007/01/11 18:15:50 nw Exp $
+/*$Id: UITabContribution.java,v 1.7 2007/01/23 11:50:50 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.system.UIImpl;
 
 import com.l2fprod.common.swing.JButtonBar;
+import com.l2fprod.common.swing.plaf.blue.BlueishButtonBarUI;
 /**
  * ui contribution that is a tab in the main window
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Mar-2006
@@ -32,6 +33,8 @@ public class UITabContribution extends JButtonBar implements UIStructureContribu
     public UITabContribution() {
         super();
         setBorder(BorderFactory.createEmptyBorder());
+    		setUI(new BlueishButtonBarUI());
+    	       
     }
    
     private String before;
@@ -58,7 +61,7 @@ public class UITabContribution extends JButtonBar implements UIStructureContribu
     	}
     	visiblePreference = p;
     	visiblePreference.addPropertyChangeListener(this);
-    	setVisible(visiblePreference.asBoolean());
+    	visiblePreference.initializeThroughListener(this);
     }
     
     // package-private method, for testing only.
@@ -137,6 +140,9 @@ public class UITabContribution extends JButtonBar implements UIStructureContribu
 
 /* 
 $Log: UITabContribution.java,v $
+Revision 1.7  2007/01/23 11:50:50  nw
+preferences integration.
+
 Revision 1.6  2007/01/11 18:15:50  nw
 fixed help system to point to ag site.
 

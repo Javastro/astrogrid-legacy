@@ -1,4 +1,4 @@
-/*$Id: UIMenuContribution.java,v 1.6 2007/01/10 19:12:16 nw Exp $
+/*$Id: UIMenuContribution.java,v 1.7 2007/01/23 11:50:49 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,7 +46,7 @@ public class UIMenuContribution extends JMenu implements UIStructureContribution
     	}
     	visiblePreference = p;
     	visiblePreference.addPropertyChangeListener(this);
-    	setVisible(visiblePreference.asBoolean());
+    	visiblePreference.initializeThroughListener(this);
     }
     
     // package-private method, for testing only.
@@ -105,6 +105,9 @@ public class UIMenuContribution extends JMenu implements UIStructureContribution
 
 /* 
 $Log: UIMenuContribution.java,v $
+Revision 1.7  2007/01/23 11:50:49  nw
+preferences integration.
+
 Revision 1.6  2007/01/10 19:12:16  nw
 integrated with preferences.
 

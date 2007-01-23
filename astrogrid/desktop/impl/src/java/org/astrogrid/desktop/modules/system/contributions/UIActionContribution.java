@@ -1,4 +1,4 @@
-/*$Id: UIActionContribution.java,v 1.7 2007/01/11 18:15:50 nw Exp $
+/*$Id: UIActionContribution.java,v 1.8 2007/01/23 11:50:49 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -77,7 +77,7 @@ public class UIActionContribution extends AbstractAction implements UIStructureC
     	}
     	visiblePreference = p;
     	visiblePreference.addPropertyChangeListener(this);
-    	setVisible(visiblePreference.asBoolean());
+    	visiblePreference.initializeThroughListener(this);
     }
     
 	public void propertyChange(PropertyChangeEvent evt) {
@@ -232,6 +232,9 @@ public class UIActionContribution extends AbstractAction implements UIStructureC
 
 /* 
 $Log: UIActionContribution.java,v $
+Revision 1.8  2007/01/23 11:50:49  nw
+preferences integration.
+
 Revision 1.7  2007/01/11 18:15:50  nw
 fixed help system to point to ag site.
 

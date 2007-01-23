@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.6 2007/01/19 19:55:16 jdt Exp $
+/*$Id: RegistryGooglePanel.java,v 1.7 2007/01/23 11:49:10 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -55,6 +55,7 @@ import net.sf.ehcache.Element;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.astrogrid.CeaApplication;
+import org.astrogrid.acr.ivoa.CacheFactory;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.system.BrowserControl;
@@ -452,6 +453,7 @@ public class RegistryGooglePanel extends JPanel implements ActionListener, Prope
         advancedPreference.addPropertyChangeListener(this);
         
         initialize();
+        advancedPreference.initializeThroughListener(this);
    }
     
     public void doSearch(String s) {
@@ -669,7 +671,7 @@ private void initialize() {
     detailsPane.setText("<html><body></body></html>");
     detailsPane.addHyperlinkListener(new ExternalViewerHyperlinkListener(browser, regBrowser));
     tabPane.addTab("Details", null, new JScrollPane(detailsPane), "Details of chosen entry");
-    showHideAdvancedFeatures();
+   
     tabPane.addChangeListener(xmlDisplayer);
     split = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,getCenterPanel(),tabPane);
     split.setPreferredSize(new Dimension(300,200));
@@ -685,24 +687,17 @@ public void clear() {
 }
 // triggered when value of preference changes. - shows / hides xml representation.
 public void propertyChange(PropertyChangeEvent evt) {
-	if (evt.getSource() == this.advancedPreference && ! evt.getNewValue().equals(evt.getOldValue())) {
+	if (evt.getSource() == this.advancedPreference ) {
 
-				showHideAdvancedFeatures();
+				if (advancedPreference.asBoolean()) {
+					 tabPane.addTab("XML entry", IconHelper.loadIcon("document.gif"), getBottomPanel(), "View the XML as entered in the registry");       			
+				} else {
+					int ix = tabPane.indexOfTab("XML entry");
+					if (ix != -1) {
+						tabPane.removeTabAt(ix);
+					}
+				}
 	
-	}
-}
-
-/**
- * 
- */
-private void showHideAdvancedFeatures() {
-	if (advancedPreference.asBoolean()) {
-		 tabPane.addTab("XML entry", IconHelper.loadIcon("document.gif"), getBottomPanel(), "View the XML as entered in the registry");       			
-	} else {
-		int ix = tabPane.indexOfTab("XML entry");
-		if (ix != -1) {
-			tabPane.removeTabAt(ix);
-		}
 	}
 }
 
@@ -710,8 +705,8 @@ private void showHideAdvancedFeatures() {
 
 /* 
 $Log: RegistryGooglePanel.java,v $
-Revision 1.6  2007/01/19 19:55:16  jdt
-Move flush cache to the public interface.   It's currently in the IVOA module, which is probably not the right place.  *Not tested*  I can't test because Eclipse seems to be getting confused with the mixture of JDKs 1.4 and 1.5.
+Revision 1.7  2007/01/23 11:49:10  nw
+preferences integration.
 
 Revision 1.5  2007/01/10 19:12:16  nw
 integrated with preferences.

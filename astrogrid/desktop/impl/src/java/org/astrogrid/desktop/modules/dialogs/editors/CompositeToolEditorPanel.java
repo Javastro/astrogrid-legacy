@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.29 2007/01/11 18:15:50 nw Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.30 2007/01/23 11:48:48 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -492,10 +492,8 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel implements
         this.preferenceIndexes = new int[advancedCount];
         System.arraycopy(advancedIndexes, 0, preferenceIndexes, 0, advancedCount);
         
-        // now, if 'advanced' is set, insert those.
-    	if (advancedPreference.asBoolean()) {
-    		showHideAdvancedFeatures();
-    	}
+        // configure which tabs to show.
+        advancedPreference.initializeThroughListener(this);
         
         // ok. tricky part all done.
         hs.enableHelp(tabPane, "userInterface.taskEditor");
@@ -531,26 +529,6 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel implements
         //this.setPreferredSize(new Dimension(600,425));
     }
     
-    private void showHideAdvancedFeatures() {
-    	if (advancedPreference.asBoolean()) {
-    		for (int i = 0; i < this.preferenceIndexes.length; i++) {
-    			int ix = preferenceIndexes[i];
-    			ToolEditorPanelFactory fac = (ToolEditorPanelFactory) panelFactories.get(ix);
-    			AbstractToolEditorPanel panel = views[ix];
-    			tabPane.insertTab(fac.getName(), null, panel, null, ix);	
-    		}
-     	} else {
-    		for (int i = 0; i < this.preferenceIndexes.length; i++) {
-    			int ix = preferenceIndexes[i];
-    			AbstractToolEditorPanel panel = views[ix];
-    			int tabIndex = tabPane.indexOfComponent(panel);
-    			if (tabIndex != -1) {
-    				tabPane.removeTabAt(tabIndex);
-    			}
-    		}
-    	}
-    }
-
     /** able to handle everything */
     public boolean isApplicable(Tool t, CeaApplication info) {
         return true;
@@ -637,9 +615,23 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel implements
     
     /** notifies when the advancedPreference changes value. */
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getSource() == this.advancedPreference && ! evt.getNewValue().equals(evt.getOldValue())) {
-			showHideAdvancedFeatures();
-		}		
+			if (advancedPreference.asBoolean()) {
+				for (int i = 0; i < this.preferenceIndexes.length; i++) {
+					int ix = preferenceIndexes[i];
+					ToolEditorPanelFactory fac = (ToolEditorPanelFactory) panelFactories.get(ix);
+					AbstractToolEditorPanel panel = views[ix];
+					tabPane.insertTab(fac.getName(), null, panel, null, ix);	
+				}
+			} else {
+				for (int i = 0; i < this.preferenceIndexes.length; i++) {
+					int ix = preferenceIndexes[i];
+					AbstractToolEditorPanel panel = views[ix];
+					int tabIndex = tabPane.indexOfComponent(panel);
+					if (tabIndex != -1) {
+						tabPane.removeTabAt(tabIndex);
+					}
+				}
+			}
 	}
     
 }
@@ -647,6 +639,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel implements
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.30  2007/01/23 11:48:48  nw
+preferences integration.
+
 Revision 1.29  2007/01/11 18:15:50  nw
 fixed help system to point to ag site.
 
