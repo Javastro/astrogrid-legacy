@@ -12,11 +12,11 @@ import org.astrogrid.filemanager.common.BundlePreferences;
 public class HivemindBundlePreferences extends BundlePreferences {
 
 	public void setMaxExtraNodesInt(int arg0) {
-		super.setMaxExtraNodes(Integer.valueOf(arg0));
+		super.setMaxExtraNodes(new Integer(arg0));
 	}
 	
 	public void setPrefetchDepthInt(int arg0) {
-		super.setPrefetchDepth(Integer.valueOf(arg0));
+		super.setPrefetchDepth(new Integer(arg0));
 	}
 	
 }
