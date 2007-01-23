@@ -14,7 +14,7 @@ import java.net.URL;
 import java.util.Calendar;
 import java.util.Set;
 
-
+import uk.ac.starlink.table.ColumnInfo;
 import java.sql.*;
 
 import org.astrogrid.tools.votable.stap.v0_1.STAPMaker;
@@ -33,7 +33,11 @@ public class StapSearch implements IStapSearch {
     
     private HashMap noDuplMap = null;
     
-    private static String STAP_DEFAULT_FORMAT;        
+    private static String STAP_DEFAULT_FORMAT;   
+    
+    private final int numCols;
+    
+    private STAPMaker stapMaker;
     
     /**
      * Static to be used on the initiatian of this class for the config
@@ -47,6 +51,8 @@ public class StapSearch implements IStapSearch {
     
     public StapSearch() {
         noDuplMap = new HashMap();
+        this.stapMaker = createStapMaker();
+        numCols = stapMaker.getNumberOfColumns();
     }
     
     private void printMap(Map info) {
@@ -57,10 +63,66 @@ public class StapSearch implements IStapSearch {
         }//for
     }
     
+    private STAPMaker createStapMaker() {
+    	String moreCols = null;
+    	int i = 0;
+    	while( (moreCols = conf.getString("results.more." + String.valueOf(i),null)) != null) {
+    		i++;
+    	}
+    	
+    	ColumnInfo []defValues;
+        defValues = new ColumnInfo[(9+i)];
+        defValues[0] = new ColumnInfo("ACCESS_URL",String.class,"Url pointing to data file");
+        defValues[0].setUCD("VOX:AccessReference");
+        defValues[1] = new ColumnInfo("PROVIDER",String.class,"The archive (STAP service) providing the data");
+        defValues[1].setUCD("meta.curation");
+        defValues[2] = new ColumnInfo("TIME_START",String.class,"Start time of data in the file  ");
+        defValues[2].setUCD("time.obs.start");
+        defValues[2].setUnitString("iso8601");
+        defValues[3] = new ColumnInfo("TIME_END",String.class,"End time of data in the file  ");
+        defValues[3].setUCD("time.obs.end");
+        defValues[3].setUnitString("iso8601");
+        defValues[4] = new ColumnInfo("DATA_ID",String.class,"Short description of the measurement");
+        defValues[4].setUCD("meta.title");        
+        defValues[5] = new ColumnInfo("INSTRUMENT_ID",String.class,"A string specifiying the mission and instrument");
+        defValues[5].setUCD("INST_ID");        
+        defValues[6] = new ColumnInfo("DESCRIPTION",String.class,"A string containing supplemental information on the data file");
+        defValues[6].setUCD("meta");
+        defValues[7] = new ColumnInfo("DESCRIPTION_URL",String.class,"A URL pointing to information on the data product");
+        defValues[7].setUCD("meta.ref.url");
+        defValues[8] = new ColumnInfo("FORMAT",String.class,"Format");
+        defValues[8].setUCD("VOX:Format");  
+        String []newCols;
+        
+        for(int j = 0;j < i;j++) {
+        	newCols = conf.getString("results.more." + String.valueOf(j)).split("\\|");
+        	//System.out.println("the newcols 0 = " + newCols[0] + " 1 = " + newCols[1] + " 2 " + newCols[2] + " 3 " + newCols[3] + " 4" + newCols[4] + " 5 " + newCols[5]);
+        	defValues[j+9] = new ColumnInfo(newCols[0]);
+        	if(newCols[1] != null && newCols[1].trim().length() > 0) {
+        		try {
+        			defValues[j+9].setContentClass(Class.forName("java.lang." + newCols[1]));
+        		}catch(ClassNotFoundException cfe) {
+        			cfe.printStackTrace();
+        		}
+        	}
+        	if(newCols[2] != null && newCols[2].trim().length() > 0) {
+        		defValues[j+9].setDescription(newCols[2]);
+        	}
+        	if(newCols[3] != null && newCols[3].trim().length() > 0) {
+        		defValues[j+9].setUnitString(newCols[3]);
+        	}
+        	if(newCols[4] != null && newCols[4].trim().length() > 0) {
+        		defValues[j+9].setUCD(newCols[4]);
+        	}
+        }
+        STAPMaker stapMaker = new STAPMaker(defValues);
+        return stapMaker;
+    }
+    
     
     public void execute(Calendar startTime, Calendar endTime, Map info, PrintWriter output) throws IOException {
 
-        STAPMaker stapMaker = new STAPMaker();
+        STAPMaker stapMaker = createStapMaker();
     	String formatReq = null;
         if(info.containsKey("FORMAT")) {
             formatReq = ((String [])info.get("FORMAT"))[0];
@@ -85,8 +147,8 @@ public class StapSearch implements IStapSearch {
         stapDateFormat.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
         
 
-        String []resultsData = new String[8];
-        String []queryCols = new String[8];
+        String []resultsData = new String[numCols];
+        String []queryCols = new String[numCols];
         String cols = "";
         
         resultsData[0] = conf.getString("results.dataid",null);
@@ -97,6 +159,13 @@ public class StapSearch implements IStapSearch {
         resultsData[5] = conf.getString("results.description",null);
         resultsData[6] = conf.getString("results.descriptionURL",null);
         resultsData[7] = conf.getString("results.instrumentID",null);
+        resultsData[8] = STAP_DEFAULT_FORMAT;
+        
+        
+        for(int j = 0;j < (numCols - 9);j++) {
+        	String []newCols = (conf.getString("results.more." + String.valueOf(j))).split("\\|");
+        	resultsData[9 + j] = newCols[5];
+        }
         
         String accRefPrePend = conf.getString("accessref.prepend","");
         
@@ -179,6 +248,13 @@ public class StapSearch implements IStapSearch {
         		stapMaker.setDescriptionURL(rs.getString(queryCols[6]));
         	if(queryCols[7] != null)
         		stapMaker.setInstrumentID(rs.getString(queryCols[7]));
+        	if(queryCols.length >= 9) {
+        		for(int j = 9;j < queryCols.length;j++) {
+        			if(queryCols[j] != null) {
+        				stapMaker.setColumn(j,rs.getObject(queryCols[j]));
+        			}//if
+        		}//for
+        	}//if
         	
         	if(resultsData[0] != null)
         		stapMaker.setDataID(resultsData[0]);        	
@@ -194,6 +270,14 @@ public class StapSearch implements IStapSearch {
         		stapMaker.setDescriptionURL(resultsData[6]);
         	if(resultsData[7] != null)        		
         		stapMaker.setInstrumentID(resultsData[7]);
+        	if(resultsData.length >= 9) {
+        		for(int j = 9;j < resultsData.length;j++) {
+        			if(resultsData[j] != null) {
+        				//System.out.println("ouch its in result data for some reason");
+        				stapMaker.setColumn(j,(Object)resultsData[j]);
+        			}//if
+        		}//for        		
+        	}
             stapMaker.addRow();
           }
         	if(stapMaker.getRowCount() > 0) {
