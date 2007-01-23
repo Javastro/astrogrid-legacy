@@ -18,18 +18,35 @@ import org.votech.plastic.incoming.handlers.StandardHandler;
  */
 public abstract class AbstractTestListener implements TestPlasticApplication {
 
-    public AbstractTestListener(Properties metaData, String comms) {
+    public AbstractTestListener(Properties metaData, String comms, MessageHandler defaultHandler) {
         if (metaData==null) metaData = new Properties();
-        final String name = metaData.getProperty(TestPlasticApplication.NAME,"TestListener"+comms);
+        name = metaData.getProperty(TestPlasticApplication.NAME,"TestListener"+comms);
         final String desc = metaData.getProperty(TestPlasticApplication.DESC,"A testing client that uses "+comms+" for comms");
         final String ivorn = metaData.getProperty(TestPlasticApplication.IVORN,"");
         final String logoUrl = metaData.getProperty(TestPlasticApplication.LOGOURL,"");
         final String version = metaData.getProperty(TestPlasticApplication.VERSION,PlasticListener.CURRENT_VERSION);
         
+        System.out.println("Creating a test listener:");
+        System.out.println("name "+name);
+        System.out.println("desc "+desc);
+        System.out.println("ivorn "+ivorn);
+        System.out.println("logoUrl "+logoUrl);
+        System.out.println("version "+version);
         
-       // handler = new EchoHandler();
-        handler= new StandardHandler(name,desc,ivorn,logoUrl,version);
-        //handler.setNextHandler(handler1);
+        
+        StandardHandler handler1 = new StandardHandler(name,desc,ivorn,logoUrl,version);
+        if (defaultHandler==null) {
+            handler =handler1;
+        } else {
+            handler = defaultHandler;
+            handler.appendHandler(handler1);
+        }
+        
+
+    }
+    
+    public String getName() {
+        return name;
     }
 
     /**
@@ -43,11 +60,11 @@ public abstract class AbstractTestListener implements TestPlasticApplication {
     }
 
     protected MessageHandler handler;
+    private String name;
 
     /** Add a new message handler to the start of the chain */
-    public synchronized void addHandler(MessageHandler h) {
-        h.setNextHandler(handler);
-        handler = h;
+    public synchronized void appendHandler(MessageHandler h) {
+        h.appendHandler(handler);
     }
 
     public List getMessages() {

@@ -24,8 +24,9 @@ public interface TestPlasticApplication {
      * @param hub
      * @return
      */
-    public URI registerWith(PlasticHubListener hub, String name);
+    public URI registerWith(PlasticHubListener hub);
     public List getMessages();
-    public void addHandler(MessageHandler h) ;
+    public void appendHandler(MessageHandler h) ;
     public boolean isDeaf();
+    public String getName();
 }

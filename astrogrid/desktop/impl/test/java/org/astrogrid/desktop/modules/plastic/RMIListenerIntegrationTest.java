@@ -5,6 +5,7 @@ import java.util.Properties;
 import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.builtin.ACR;
 import org.votech.plastic.PlasticHubListener;
+import org.votech.plastic.incoming.handlers.MessageHandler;
 import org.votech.plastic.outgoing.policies.BlockingPolicy;
 import org.votech.plastic.outgoing.policies.HubStartPolicy;
 /**
@@ -29,8 +30,8 @@ public class RMIListenerIntegrationTest extends AbstractPlasticBaseNotDeaf {
         return hubStartPolicy.getHub();
     }
 
-    protected TestPlasticApplication getApplication(Properties appData) {
-        return new TestListenerRMI(appData);
+    protected TestPlasticApplication getApplication(Properties appData, MessageHandler handler) {
+        return new TestListenerRMI(appData, handler);
     }
 	
 	

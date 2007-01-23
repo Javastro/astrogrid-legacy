@@ -253,8 +253,8 @@ public class RMIListenerUnitTest extends AbstractPlasticBaseNotDeaf {
         return hub1;
     }
 
-    protected TestPlasticApplication getApplication(Properties appData) {
-        return new TestListenerRMI(appData);
+    protected TestPlasticApplication getApplication(Properties appData, MessageHandler handler) {
+        return new TestListenerRMI(appData, handler);
     }
 	
 	

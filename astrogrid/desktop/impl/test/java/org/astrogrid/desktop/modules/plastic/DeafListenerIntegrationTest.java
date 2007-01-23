@@ -5,6 +5,7 @@ import java.util.Properties;
 import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.builtin.ACR;
 import org.votech.plastic.PlasticHubListener;
+import org.votech.plastic.incoming.handlers.MessageHandler;
 
 /**
  * System tests for interacting with a hub "via rmi" (actually will go in-process), with an unresponding app.
@@ -20,8 +21,8 @@ public class DeafListenerIntegrationTest extends AbstractPlasticBase {
         return listener;
     }
 
-    protected TestPlasticApplication getApplication(Properties appData) {
-        return new TestListenerNoCallBack();
+    protected TestPlasticApplication getApplication(Properties appData, MessageHandler handler) {
+        return new TestListenerNoCallBack(appData);
     }
 
 }

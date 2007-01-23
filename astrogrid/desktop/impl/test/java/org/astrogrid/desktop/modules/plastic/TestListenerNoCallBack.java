@@ -6,6 +6,7 @@ package org.astrogrid.desktop.modules.plastic;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.votech.plastic.CommonMessageConstants;
 import org.votech.plastic.PlasticHubListener;
@@ -17,16 +18,22 @@ import org.votech.plastic.incoming.handlers.MessageHandler;
  *
  */
 public class TestListenerNoCallBack  implements TestPlasticApplication, PlasticListener {
+    private String name = "Deaf";
+    public TestListenerNoCallBack(Properties appData) {
+        if (appData!=null) {
+            this.name = appData.getProperty(TestPlasticApplication.NAME, this.name);
+        } 
+    }
 
-    public URI registerWith(PlasticHubListener hub, String name) {
-        return hub.registerNoCallBack(name);
+    public URI registerWith(PlasticHubListener hub) {
+        return hub.registerNoCallBack(getName());
     }
     private List empty = new ArrayList();
     public List getMessages() {
         return empty;
     }
 
-    public void addHandler(MessageHandler h) {
+    public void appendHandler(MessageHandler h) {
         // do nothing
         
     }
@@ -38,6 +45,10 @@ public class TestListenerNoCallBack  implements TestPlasticApplication, PlasticL
 
     public boolean isDeaf() {
         return true;
+    }
+
+    public String getName() {
+        return name;
     }
 
     

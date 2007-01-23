@@ -55,16 +55,16 @@ public class PlasticHubStressTest extends TestCase {
                 ExtendableHandler handler = new ExtendableHandler();
                 handler.addMessageInvoker(new ApplicationRegisteredMessageInvoker(this));
                 handler.addMessageInvoker(new ApplicationUnregisteredMessageInvoker(this));
-                core.addHandler(handler);
+                core.appendHandler(handler);
             }
-            public URI registerWith(PlasticHubListener hub, String name) {
-                return core.registerWith(hub,name);
+            public URI registerWith(PlasticHubListener hub) {
+                return core.registerWith(hub);
             }
             public List getMessages() {
                 return core.getMessages();
             }
-            public void addHandler(MessageHandler h) {
-                core.addHandler(h);
+            public void appendHandler(MessageHandler h) {
+                core.appendHandler(h);
                 
             }
             public boolean isDeaf() {
@@ -92,6 +92,9 @@ public class PlasticHubStressTest extends TestCase {
             public void setRegisteredAppsThatIKnowAbout(int registeredAppsThatIKnowAbout) {
                 this.registeredAppsThatIKnowAbout = registeredAppsThatIKnowAbout;
             }
+            public String getName() {
+                return core.getName();
+            }
 
 
 
@@ -116,7 +119,7 @@ public class PlasticHubStressTest extends TestCase {
                 URI plid = null;
                 try {
                     Thread.sleep((long) (Math.random()*2000));
-                    plid = listener.registerWith(hub, "TestListener");
+                    plid = listener.registerWith(hub);
                     Thread.sleep((long) (Math.random()*2000));
                 } catch (InterruptedException e) {
                     // doesn't matter
@@ -128,9 +131,9 @@ public class PlasticHubStressTest extends TestCase {
         }
         
         
-        AppRegisteredAwareDecorator monitor = new AppRegisteredAwareDecorator(new TestListenerRMI(null));
+        AppRegisteredAwareDecorator monitor = new AppRegisteredAwareDecorator(new TestListenerRMI(null,null));
         
-        URI monitorPlid = monitor.registerWith(hub,"monitor");
+        URI monitorPlid = monitor.registerWith(hub);
         Thread.sleep(1000); //Wait for messages to arrive.  This is fragile, but I can't think of another way to do it without polluting the hub interface.
         assertEquals("I should have received an application registered message about myself",1,monitor.getRegisteredAppsThatIKnowAbout());
         monitor.setRegisteredAppsThatIKnowAbout(0); //reset the clock
@@ -140,9 +143,9 @@ public class PlasticHubStressTest extends TestCase {
         for (int i=0;i<NLISTENERS;++i) {
             TestPlasticApplication grunt;
             if (i % 2 ==0) {
-                grunt = new AppRegisteredAwareDecorator(new TestListenerRMI(null)); 
+                grunt = new AppRegisteredAwareDecorator(new TestListenerRMI(null, null)); 
             } else {
-                grunt =  new AppRegisteredAwareDecorator(new TestListenerXMLRPC(null));
+                grunt =  new AppRegisteredAwareDecorator(new TestListenerXMLRPC(null, null));
             }
             testApps.add(grunt);
         }       

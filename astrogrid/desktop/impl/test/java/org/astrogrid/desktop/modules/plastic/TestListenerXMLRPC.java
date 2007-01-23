@@ -15,6 +15,7 @@ import java.util.Vector;
 import org.apache.xmlrpc.WebServer;
 import org.votech.plastic.CommonMessageConstants;
 import org.votech.plastic.PlasticHubListener;
+import org.votech.plastic.incoming.handlers.MessageHandler;
 
 
 /**
@@ -44,13 +45,13 @@ public class TestListenerXMLRPC extends AbstractTestListener implements TestPlas
      * @param metaData meta data about the app...see the keys in the TestPlasticApplication interface.  If null or empty then defaults are used.
      * 
      */
-    public TestListenerXMLRPC(Properties metaData) {
-        super(metaData, "XMLRPC");
+    public TestListenerXMLRPC(Properties metaData, MessageHandler handler) {
+        super(metaData, "XMLRPC", handler);
         server = new Server(this);
     }
 
-    public URI registerWith(PlasticHubListener hub, String name) {
-        return hub.registerXMLRPC(name, getMessages(), getCallBackURL());
+    public URI registerWith(PlasticHubListener hub) {
+        return hub.registerXMLRPC(getName(), getMessages(), getCallBackURL());
     }
     
     public Object perform(String sender, String message, Vector args) {

@@ -37,12 +37,21 @@ public abstract class AbstractPlasticBase extends TestCase {
     /**
      * Create an application of the appropriate type e.g. RMI or XML-RPC
      * You can supply a set of properties defining name, description etc.
-     * If you don't defaults will be used.
-     * @param appData
+     * If you don't then defaults will be used.
+     * @param appData values for name etc...see TestPlasticApplication for keys.  Can be null
+     * @param handler default message handler (ie first in the chain).  May be null.
      * @return
      */
-    protected abstract TestPlasticApplication getApplication(Properties appData);
+    protected abstract TestPlasticApplication getApplication(Properties appData, MessageHandler handler);
+    
+    protected TestPlasticApplication getApplication(Properties appData) {
+        return getApplication(appData,null);
+    }
 
+    /**
+     * Set up the test env.
+     * Must be called by any subclasses that override it.
+     */
     public void setUp() throws Exception {
         // Any subclasses that override this method, must delegate to us too.
         hub = getHub();
@@ -55,10 +64,9 @@ public abstract class AbstractPlasticBase extends TestCase {
         URI hubId = hub.getHubId();
         plids.remove(hubId); 
         for (Iterator it = plids.iterator();it.hasNext();) {
-      //NWW: found this to be returning Strings now      
-        	//URI plid = (URI) it.next();
-        	// will work nomatter whether uri or string is returned - JOHN - check what you want here.
-        	URI plid = new URI(it.next().toString());
+            //Note: Noel found the following line gave classcasts due to the iterator returning
+            //Strings.  Works for me though.  JOHN
+        	URI plid = (URI) it.next();
             hub.unregister(plid);
         }
         List newPlids = hub.getRegisteredIds();
@@ -82,9 +90,8 @@ public abstract class AbstractPlasticBase extends TestCase {
     public void testHubId() {
         
         TestPlasticApplication app = getApplication(null);
-        URI appId = app.registerWith(hub,"app");
+        URI appId = app.registerWith(hub);
         String hubName = basicHubMetadataCheck(CommonMessageConstants.GET_NAME, appId);
-        //assertEquals("AstroGrid Workbench", hubName); NWW it varties. when run in isolation it's 'Astro Runtime', when run asa part of all integration tests, its' AstroGrid Workencnh'
         assertTrue(hubName.equals("AstroGrid Workbench") || hubName.equals("Astro Runtime"));
         basicHubMetadataCheck(CommonMessageConstants.GET_DESCRIPTION, appId);
         basicHubMetadataCheck(CommonMessageConstants.GET_IVORN, appId);
@@ -103,9 +110,12 @@ public abstract class AbstractPlasticBase extends TestCase {
     }
     
     public void testRegistersOK() {
-        TestPlasticApplication app = getApplication(null);
         final String TESTAPPNAME = "Test Application";
-        URI plid = app.registerWith(hub, TESTAPPNAME); 
+        Properties props = new Properties();
+        props.put(TestPlasticApplication.NAME, TESTAPPNAME);
+        TestPlasticApplication app = getApplication(props);
+        
+        URI plid = app.registerWith(hub); 
         assertNotNull(plid);
         
         String name = hub.getName(plid);
@@ -117,7 +127,7 @@ public abstract class AbstractPlasticBase extends TestCase {
     
     public void testUnregistersOK() {
         TestPlasticApplication app = getApplication(null);
-        URI plid = app.registerWith(hub, DEFAULTAPPNAME); 
+        URI plid = app.registerWith(hub); 
         assertNotNull(plid);
         
         hub.unregister(plid);
@@ -134,7 +144,7 @@ public abstract class AbstractPlasticBase extends TestCase {
      * badly written clients.
      *
      */
-    public void testHardened() {
+public void testHardened() {
         hub.unregister(hub.getHubId());
         hub.unregister(null);
         hub.unregister(URI.create("http://news.bbc.co.uk"));
@@ -159,11 +169,14 @@ public abstract class AbstractPlasticBase extends TestCase {
         hub.request(hub.getHubId(), CommonMessageConstants.GET_NAME, new Vector());
         
     }
-    
+   
     public void testApplicationsUnderstoodMessages() {
-        TestPlasticApplication app = getApplication(null);
         final String TESTAPPNAME = "Test Application";
-        URI plid = app.registerWith(hub, TESTAPPNAME);
+        Properties props = new Properties();
+        props.put(TestPlasticApplication.NAME, TESTAPPNAME);
+        TestPlasticApplication app = getApplication(null);
+        
+        URI plid = app.registerWith(hub);
         
         List messages = hub.getUnderstoodMessages(plid);
         
@@ -179,11 +192,12 @@ public abstract class AbstractPlasticBase extends TestCase {
         CachingMessageHandler cache = new CachingMessageHandler();
         Properties papp = new Properties();
         papp.setProperty(TestPlasticApplication.NAME, name);
-        TestPlasticApplication app = getApplication(papp);
-        app.addHandler(cache);
-        if (handler!=null) app.addHandler(handler);
+        TestPlasticApplication app = getApplication(papp, cache);
         
-        URI plid = app.registerWith(hub, name);
+        if (handler!=null) app.appendHandler(handler);
+        
+        URI plid = app.registerWith(hub);
+        System.out.println("Registered application: "+app.getName()+" with plid "+plid);
         createdAppCaches.put(plid, cache);
         createdApps.put(plid, app);
 //      Just check there's nothing cached
@@ -195,7 +209,7 @@ public abstract class AbstractPlasticBase extends TestCase {
         URI plid2 = createAndRegisterCleanApp(2,null);
         URI plid3 = createAndRegisterCleanApp(3,null);
 
-        TestPlasticApplication app1 = (TestPlasticApplication) createdApps.get(plid1);
+        //TestPlasticApplication app1 = (TestPlasticApplication) createdApps.get(plid1);
         TestPlasticApplication app2 = (TestPlasticApplication) createdApps.get(plid2);
         TestPlasticApplication app3 = (TestPlasticApplication) createdApps.get(plid3);
 
@@ -207,6 +221,11 @@ public abstract class AbstractPlasticBase extends TestCase {
         String name3 = (String) results.get(plid3);
         
         assertNull(name1);// no result returned for sender
+        
+        //TODO delete
+        System.out.println("Application 2: "+app2.getName()+" with ID "+plid2+" returned "+name2);
+        
+        
         if (!app2.isDeaf()) {
             assertEquals("Application 2", name2);
         } else {
