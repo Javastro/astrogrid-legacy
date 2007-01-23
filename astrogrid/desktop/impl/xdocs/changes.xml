@@ -1,3 +1,4 @@
+
 	<document>
 	<!-- see http://maven.apache.org/reference/plugins/changes/index.html 
 	     
@@ -13,7 +14,7 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="2007.1" date="unreleased">
+<release version="2007.1.rc1" date="unreleased">
 <action dev="nw" type="add">
 	Implemented preference system
 </action>
