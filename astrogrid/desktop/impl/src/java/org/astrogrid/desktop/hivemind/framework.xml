@@ -8,16 +8,14 @@
 
 	<contribution configuration-id="preferences">
 		<preference name="acr.advanced" default-value="false">
-			<ui-name>Advanced Mode</ui-name>
+			<ui-name>Enable Advanced Features</ui-name>
 			<description>Enables additional UI components for advanced use</description>
-			<option>true</option>
-			<option>false</option>
+			<units>boolean</units>
 		</preference>
-		<preference name="acr.debug" default-value="false">
+		<preference name="acr.debug" default-value="false" advanced="true">
 			<ui-name>Debugging Mode</ui-name>
 			<description>Enables additional UI components for debugging and testing</description>
-			<option>true</option>
-			<option>false</option>			
+			<units>boolean</units>		
 		</preference>
 	</contribution>
 
@@ -139,7 +137,8 @@
 					</rules>				
 				</element>
 				<element name="units">
-					Units of this value
+					Units / type of this value. Recognized values are 'boolean', 'file', 'url'
+					'number','seconds'. Other values may also be used. 
 					<rules>
 						<push-content/>
 					<invoke-parent method="setUnits" />

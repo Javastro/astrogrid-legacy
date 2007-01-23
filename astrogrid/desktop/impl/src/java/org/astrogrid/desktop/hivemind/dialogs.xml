@@ -52,8 +52,7 @@ RESOURCE (FILE) CHOOSER
 			default-value="true" >
 			<ui-name>Use new-style dialogs</ui-name>
 			<description>select new or old filechooser dialogue implementation</description>
-			<option>true</option>
-			<option>false</option>
+			<units>boolean</units>
 			</preference>
 	</contribution>	
 

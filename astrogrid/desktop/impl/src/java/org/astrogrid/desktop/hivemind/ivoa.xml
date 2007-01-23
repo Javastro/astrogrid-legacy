@@ -20,6 +20,7 @@
 			<acrService id="adql074" interface="Adql074" />
 			<acrService id="registry" interface="Registry" />
 			<acrService id="externalRegistry" interface="ExternalRegistry" />
+			<acrService id="cache" interface="CacheFactory" />
 	</contribution>
 	
 	
@@ -60,14 +61,16 @@
 		<preference name="org.astrogrid.registry.query.endpoint" 
 			advanced="true" requires-restart="true" propagate-to-config="true"
 			default-value="http://galahad.star.le.ac.uk:8080/galahad-registry/services/RegistryQuery">
-				<ui-name>Registry service endpoint</ui-name>
+				<ui-name>Registry endpoint</ui-name>
 				<description>http url of the main registry service</description>
+				<units>url</units>
 		</preference>
 		<preference name="org.astrogrid.registry.query.altendpoint"
 			advanced="true" requires-restart="true" propagate-to-config="true"		
 			default-value="http://cass123.ast.cam.ac.uk/astrogrid-registry/services/RegistryQuery" >
-				<ui-name>Registry service endpoint</ui-name>
+				<ui-name>Fallback Registry endpoint</ui-name>
 				<description>http url of the main registry service</description>
+				<units>url</units>
 		</preference>
 	</contribution>
 	<!-- =========================
@@ -189,7 +192,7 @@ SIAP
 =======================
 RESULT CACHE 
 -->
-	<service-point id="cache" interface="org.astrogrid.desktop.modules.ivoa.CacheFactory">
+	<service-point id="cache" interface="org.astrogrid.desktop.modules.ivoa.CacheFactoryInternal">
 	Result Cache. Would fit more logically in the system module, but then causes build
 	problems for the hub. so it's better suited here - as it's used mostly in the ivoa.registry
 	clients anyhow.

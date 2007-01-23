@@ -4,7 +4,7 @@
 	]>
 <module id="system" version="1.0.0" package="org.astrogrid.acr.system">
 System module.
-	<dependency module-id="framework" />§
+	<dependency module-id="framework" />
 	<!-- PREAMBLE -->
 	
 	<contribution configuration-id="framework.acrServices">
@@ -81,7 +81,9 @@ System module.
 			object="service:builtin.shutdown" methodName="halt" after="*">
 			<tooltip>Close this window, and halt the service</tooltip>
 			<confirmMessage>Exit: are you sure?</confirmMessage>
-		</action>				
+		</action>	
+		<action parentName="edit" name="prefs" text="Preferences.."
+			object="service:configDialogue" methodName="run" before="*" />			
 	</contribution>
 	
 
@@ -275,7 +277,8 @@ System module.
 			requires-restart="true"
 			default-value="${user.home}${file.separator}.workbench" >
 			<ui-name>Working directory</ui-name>
-			<description>directory to cache results</description>
+			<description>directory to cache registry query results</description>
+			<units>directory</units>
 		</preference>	
 
 	</contribution>
@@ -508,12 +511,11 @@ System module.
 	</implementation>
 		<!--  need to add some extra logic here - so that it's possible to get it back after hide. -->
 	<contribution configuration-id="framework.preferences" if="not (property asr.mode)">
-		<preference name="system.ui.visible"
+		<preference name="system.ui.visible" advanced="true"
 			default-value="true">
-			<ui-name>Display UI on startup</ui-name>
+			<ui-name>Display main window on startup</ui-name>
 			<description>If false, will startup in hidden mode</description>
-			<option>true</option>
-			<option>false</option>
+			<units>boolean</units>
 		</preference>
 	</contribution>	
 		
@@ -698,19 +700,24 @@ System module.
 
 	<contribution configuration-id="framework.preferences" if="not (property system.webserver.disabled)">
 		<preference name="system.webserver.port" default-value="-1"
-		requires-restart="true">
-			<ui-name>Webserver port</ui-name>
-			<description>Specifiy a port, or set to -1 to scan for first available port</description>
+		requires-restart="true" advanced="true">
+			<ui-name>Run Webserver on port</ui-name>
+			<alternative>-1</alternative>
+			<units>(-1 to scan for available port)</units>
+			<description></description>
+			<units>number</units>
 		</preference>		
 		<preference name="system.webserver.startScanPort" default-value="8001" 
-			requires-restart="true">
-			<ui-name>Webserver start scan port</ui-name>
+			requires-restart="true" advanced="true">
+			<ui-name>Webserver: scan from port</ui-name>
 			<description>network port number to start scanning from</description>		
+			<units>number</units>
 		</preference>
 		<preference name="system.webserver.endScanPort" default-value="8800" 
-			requires-restart="true">
-			<ui-name>Webserver end scan port</ui-name>
+			requires-restart="true" advanced="true">
+			<ui-name>until port</ui-name>
 			<description>network port number to scan up to</description>		
+			<units>number</units>
 		</preference>
 	</contribution>
 	
@@ -856,19 +863,24 @@ SYSTEM TRAY
 	
 	<contribution configuration-id="framework.preferences" if="not (property system.rmi.disabled)">
 		<preference name="system.rmi.port" default-value="-1"
-		requires-restart="true">
-			<ui-name>RMI server port</ui-name>
-			<description>Specifiy a port, or set to -1 to scan for first available port</description>
+		requires-restart="true" advanced="true">
+			<ui-name>Run RMI server on port</ui-name>
+			<alternative>-1</alternative>
+			<description></description>
+			<units>(-1 to scan for available port)</units>
+			<units>number</units>
 		</preference>		
 		<preference name="system.rmi.startScanPort" default-value="1099" 
-			requires-restart="true">
-			<ui-name>RMI server start scan port</ui-name>
+			requires-restart="true" advanced="true">
+			<ui-name>RMI server: scan from port </ui-name>
 			<description>network port number to start scanning from</description>		
+			<units>number</units>
 		</preference>
 		<preference name="system.rmi.endScanPort" default-value="2099" 
-			requires-restart="true">
-			<ui-name>RMI server end scan port</ui-name>
-			<description>network port number to scan up to</description>		
+			requires-restart="true" advanced="true">
+			<ui-name>until port</ui-name>
+			<description>network port number to scan up to</description>	
+			<units>number</units>
 		</preference>
 	</contribution>
 
@@ -1105,6 +1117,24 @@ MAC SETUP
 	List of handlers to register as processors of plastic messages.
 	Should all be instances of org.votech.plastic.incoming.handlers.MessageHandler
 	</configuration-point>
+
+<!-- ================================
+	CONFIGURATION DIALOGUE
+ -->
+ 	<service-point id="configDialogue" visibility="private" interface="java.lang.Runnable">
+ 		<invoke-factory>
+ 			<construct class="org.astrogrid.desktop.modules.system.PreferenceEditorDialogue">
+ 				<configuration>framework.preferences</configuration>
+ 				<object>preference:acr.advanced</object>
+ 				<object>service-property:ui:component</object>
+ 				<service>browser</service>
+ 				<service>help</service>
+ 			</construct>
+ 		</invoke-factory>
+ 	</service-point>
+ 	
+ 	
+ 		
 
 <!--  ======================
 PLASTIC LIST MODEL -->

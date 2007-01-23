@@ -111,8 +111,7 @@
 			default-value="true">
 			<ui-name>Display plastic events</ui-name>
 			<description>Show plastic event notifications in the system tray</description>
-			<option>true</option>
-			<option>false</option>
+			<units>boolean</units>
 		</preference>
 	</contribution>
 	

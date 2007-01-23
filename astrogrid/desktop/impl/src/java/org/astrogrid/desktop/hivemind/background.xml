@@ -9,7 +9,7 @@ JES EXECUTION STRATEGY
 		<preference name="background.jesStrategy.refreshSeconds" 
 		requires-restart="true"
 		default-value="240" >
-			<ui-name>Workflow progress refresh period</ui-name>
+			<ui-name>Refresh workflows every</ui-name>
 			<units>seconds</units>
 			<description>Period between checking for progress of workflow progress</description>
 		</preference>
@@ -37,7 +37,7 @@ CEA EXECUTION STRATEGY
 		<preference name="background.ceaStrategy.refreshSeconds" 
 		requires-restart="true"
 		default-value="240" >
-			<ui-name>Remote tasks refresh period</ui-name>
+			<ui-name>Refesh tasks every</ui-name>
 			<units>seconds</units>
 			<description>Period between checking for progress of remote tasks</description>
 		</preference>
@@ -56,11 +56,11 @@ CEA Server components --><service-point id="tasks" interface="TasksInternal">
 	
 	<contribution configuration-id="framework.preferences">
 		<preference name="background.tasks.workdir"
-			advanced="true"
 			requires-restart="true"
 			default-value="${user.home}${file.separator}.workbench${file.separator}cea">
-				<ui-name>Working directory for tasks</ui-name>
-				<description>Stores records and results of remote task execution</description>
+				<ui-name>Working directory</ui-name>
+				<description>Stores records and results of remote task execution (may get large)</description>
+				<units>directory</units>
 		</preference>
 	</contribution>
 	

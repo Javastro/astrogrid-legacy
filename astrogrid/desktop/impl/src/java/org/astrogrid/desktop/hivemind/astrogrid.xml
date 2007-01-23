@@ -196,10 +196,11 @@ COMMUNITY -->	<service-point id="community" interface="org.astrogrid.desktop.mo
 	</contribution>	
 	
 	<contribution configuration-id="framework.preferences">
-		<preference name="trusted.cert.dir" advanced="true" requires-restart="true"
+		<preference name="trusted.cert.dir"  requires-restart="true"
 			default-value="${user.home}${file.separator}.workbench${file.separator}trusted-certificates">
 			<ui-name>Certificates Directory</ui-name>
 			<description>Location of community certificates</description>
+			<units>directory</units>
 		</preference>
 	</contribution>
 <!-- 
@@ -296,10 +297,11 @@ JOBS
 	</implementation>		
 	
 <contribution configuration-id="framework.preferences">
-		<preference name="jes.job.controller.endpoint" requires-restart="true" propagate-to-config="true"
+		<preference name="jes.job.controller.endpoint"  advanced="true" requires-restart="true" propagate-to-config="true"
 			default-value="http://galahad.star.le.ac.uk:8080/astrogrid-jes/services/JobControllerService" >
 			<ui-name>Job Execution Server</ui-name>
 			<description>http url of the JES server</description>
+			<units>url</units>
 		</preference>
 	</contribution>		
 <!-- 

@@ -39,10 +39,11 @@ SESAME
 	</implementation>
 	
 	<contribution configuration-id="framework.preferences">
-		<preference name="cds.sesame.endpoint" 
+		<preference name="cds.sesame.endpoint"  advanced="true"
 			default-value="http://cdsws.u-strasbg.fr/axis/services/Sesame">
-				<ui-name>Sesame service endpoint</ui-name>
+				<ui-name>Sesame endpoint</ui-name>
 				<description>http url of the sesame name resolver service</description>
+				<units>url</units>
 			</preference>
 	</contribution>
 <!-- 
@@ -63,10 +64,11 @@ VIZIER
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>
  	<contribution configuration-id="framework.preferences">
- 		<preference name="cds.vizier.endpoint" 
+ 		<preference name="cds.vizier.endpoint"   advanced="true"
  			default-value="http://cdsws.u-strasbg.fr/axis/services/VizieR">
- 			<ui-name>Vizier service endpoint</ui-name>
+ 			<ui-name>Vizier endpoint</ui-name>
  			<description>http url of the vizier service</description>
+ 			<units>url</units>
  		</preference>
  		<!--  unused 
  		<preference name="cds.vizier2.endpoint" 
@@ -96,10 +98,11 @@ COORDINATES
 	</implementation>	
 	
 	<contribution configuration-id="framework.preferences">
-		<preference name="cds.coordinate.endpoint" 
+		<preference name="cds.coordinate.endpoint"   advanced="true"
 			default-value="http://cdsws.u-strasbg.fr/axis/services/AstroCoo" >
-				<ui-name>Coordinate service endpoint</ui-name>
+				<ui-name>Coordinate endpoint</ui-name>
 				<description>http url of the coordinate conversion service</description>
+				<units>url</units>
 		</preference>
 	</contribution>
 <!-- ===================
@@ -120,10 +123,11 @@ UCD Dictionary
 	</implementation>		
 	
 	<contribution configuration-id="framework.preferences">
-		<preference name="cds.ucd.endpoint" 
+		<preference name="cds.ucd.endpoint"   advanced="true"
 			default-value="http://cdsws.u-strasbg.fr/axis/services/UCD" >
-				<ui-name>Ucd dictionary service endpoint</ui-name>
+				<ui-name>Ucd dictionary endpoint</ui-name>
 				<description>http url of the dictionary service</description>
+				<units>url</units>
 		</preference>
 	</contribution>
 	
@@ -146,10 +150,11 @@ UCD Dictionary
 	</implementation>	
 	
 		<contribution configuration-id="framework.preferences">
-			<preference name="cds.glu.endpoint" 
+			<preference name="cds.glu.endpoint"  advanced="true"
 				default-value="http://cdsws.u-strasbg.fr/axis/services/Jglu" >
-					<ui-name>GLU resolver service endpoint</ui-name>
+					<ui-name>GLU resolver endpoint</ui-name>
 					<description>http url of the resolver service</description>
+					<units>url</units>
 			</preference>
 	</contribution>	
  </module>
