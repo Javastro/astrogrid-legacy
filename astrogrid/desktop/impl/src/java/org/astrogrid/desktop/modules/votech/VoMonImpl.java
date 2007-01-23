@@ -167,7 +167,7 @@ public class VoMonImpl implements VoMonInternal {
 				try {
 					reload();
 				} catch (Throwable t) {
-					logger.warn("Failed to download service statuses: " + t.getMessage());
+					logger.warn("Failed to download service statuses: ",t);
 				}
 				return null;
 			}
