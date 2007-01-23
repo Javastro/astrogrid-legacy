@@ -1,4 +1,4 @@
-/*$Id: BuildInprocessACR.java,v 1.5 2007/01/09 16:26:19 nw Exp $
+/*$Id: BuildInprocessACR.java,v 1.6 2007/01/23 20:06:36 nw Exp $
  * Created on 28-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,14 @@
 **/
 package org.astrogrid.desktop;
 
+import java.lang.reflect.Method;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hivemind.Registry;
-import org.astrogrid.AstroRuntime1;
 import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.desktop.framework.ACRInternal;
+import org.astrogrid.desktop.framework.ReflectionHelper;
 import org.astrogrid.desktop.hivemind.Launcher;
 
 /** class that assembles and creates a new in-process ACR.
@@ -41,10 +43,50 @@ public class BuildInprocessACR  {
     }
 
 	/** configure the launcher as the particular variant of acr to use.
-	 * 
+	 * @todo - won't work for hub / asr variant.
 	 */
-	protected void configureLauncher() {
-		AstroRuntime1.configureLauncherAsACR(launcher);
+	protected  void configureLauncher() {
+		
+		//AstroRuntime1.configureLauncherAsACR(launcher);
+		// see what 'main' main classes are available, and use these, falling back by order of functinality
+		Class main;
+		Method m;
+		try {
+			main = Class.forName("org.astrogrid.Workbench1");
+			m = ReflectionHelper.getMethodByName(main, "configureLauncherAsWorkbench");
+			logger.info("Starting as Workbench");
+		} catch (Exception e) {
+			try {
+				main = Class.forName("org.astrogrid.AstroRuntime1");
+				m = ReflectionHelper.getMethodByName(main, "configureLauncherAsACR");
+				logger.info("Starting as Astro Runtime");
+			} catch (Exception f) {
+				try {
+					main = Class.forName("org.astrogrid.HeadlessAstroRuntime");
+					m = ReflectionHelper.getMethodByName(main, "configureLauncherAsASR");					
+					logger.info("Starting as Headless Astro Runtime");
+				} catch(Exception g) {
+					try {
+						main = Class.forName("org.astrogrid.PlasticHub1");
+
+						m = ReflectionHelper.getMethodByName(main, "configureLauncherAsHub");						
+						logger.info("Starting as Plastic Hub");
+					} catch (Exception h) {
+						logger.fatal("Failed to find any AR main classes on classpath");
+						return;
+					}
+				} 
+			}
+		}
+		if (main == null || m == null) { // double check.
+			logger.fatal("Failed to find any AR main class on the classpath");
+		}
+		
+		try {
+			m.invoke(null, new Object[] {launcher});
+		} catch (Exception x) {
+			logger.fatal("Failed to configure launcher",x);
+		} 
 	}
     
     protected final Launcher launcher;
