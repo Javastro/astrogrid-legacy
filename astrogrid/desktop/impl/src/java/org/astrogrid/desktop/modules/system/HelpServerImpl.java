@@ -1,4 +1,4 @@
-/*$Id: HelpServerImpl.java,v 1.10 2007/01/12 13:20:05 nw Exp $
+/*$Id: HelpServerImpl.java,v 1.11 2007/01/23 11:49:27 nw Exp $
  * Created on 17-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -203,6 +203,7 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
 
 	public JButton createHelpButton(String id) {
 		JButton b = new JButton(IconHelper.loadIcon("help.gif"));
+		b.setToolTipText("Show help");
 		this.enableHelpOnButton(b, id);
 		return b;
 	}
@@ -214,6 +215,9 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
 
 /* 
 $Log: HelpServerImpl.java,v $
+Revision 1.11  2007/01/23 11:49:27  nw
+ui improvmenet.
+
 Revision 1.10  2007/01/12 13:20:05  nw
 made sure every ui app has a help menu.
 
