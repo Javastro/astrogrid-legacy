@@ -3,13 +3,12 @@
  */
 package org.astrogrid.desktop.alternatives;
 
-import org.astrogrid.desktop.modules.system.BackgroundExecutor;
+import junit.framework.TestCase;
+
 import org.astrogrid.desktop.modules.system.BackgroundExecutorImpl;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.easymock.MockControl;
-
-import junit.framework.TestCase;
 
 /** Test for the Headless UI alternative.
  * @author Noel Winstanley

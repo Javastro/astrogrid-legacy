@@ -3,12 +3,11 @@
  */
 package org.astrogrid.desktop.modules.system;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /** Desparate attempt to test some functionality of the main UI.
  * limited on what I can do until work out how to drive UI.

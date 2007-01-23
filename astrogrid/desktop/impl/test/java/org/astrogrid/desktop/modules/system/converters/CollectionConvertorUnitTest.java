@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.commons.beanutils.Converter;
-
 import junit.framework.TestCase;
+
+import org.apache.commons.beanutils.Converter;
 
 /** unit test for the collection convertor
  * @author Noel Winstanley

@@ -6,6 +6,9 @@ package org.astrogrid.desktop.modules.ivoa;
 import java.net.URI;
 import java.util.Arrays;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.xmlbeans.XmlUnsignedInt;
@@ -14,8 +17,6 @@ import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.ivoa.FunctionBean;
-import org.astrogrid.acr.ivoa.Siap;
-import org.astrogrid.acr.ivoa.SiapInformation;
 import org.astrogrid.acr.ivoa.SkyNode;
 import org.astrogrid.acr.ivoa.SkyNodeTableBean;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -30,10 +31,6 @@ import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
 import org.w3c.dom.Document;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * @author Noel Winstanley

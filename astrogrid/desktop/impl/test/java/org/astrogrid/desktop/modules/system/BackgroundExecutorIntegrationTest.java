@@ -3,15 +3,14 @@
  */
 package org.astrogrid.desktop.modules.system;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.easymock.MockControl;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /** test the basic functionality of background executor - that we can run, timeout and interrupt processes.
  * Also verifies behaviour of BackgroundWorker - as both classes cooperate quite closely.

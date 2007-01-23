@@ -3,15 +3,13 @@
  */
 package org.astrogrid.desktop.modules.ui;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.acr.ui.Lookout;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * @author Noel Winstanley

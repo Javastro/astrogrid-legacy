@@ -10,7 +10,6 @@ import junit.framework.TestSuite;
 
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
-import org.astrogrid.desktop.modules.system.PreferencesIntegrationTest;
 
 /** test that ui components are getting parsed correctly, 
  * and try to invoke one.
@@ -48,7 +47,7 @@ public class UIContributionIntegrationTest extends InARTestCase {
 		assertEquals("edit",m.getAfter());
 		assertEquals("help",m.getBefore());
 		assertNotNull(m.getVisibleCondition());
-		assertEquals("acr.advanced",m.getVisibleCondition().getName());
+		assertEquals("acr.debug",m.getVisibleCondition().getName());
 	}
 	
 	public void testTab() throws Exception {

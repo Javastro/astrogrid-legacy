@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<container>
+<ns2:Resource status="deleted" updated="2006-03-20T14:25:10Z" xmlns="http://www.ivoa.net/xml/RegistryInterface/v0.1" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:ns2="http://www.ivoa.net/xml/RegistryInterface/v0.1" xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" xsi:schemaLocation="http://www.ivoa.net/xml/VODataService/v0.5 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v0.5/VODataService.xsd http://www.ivoa.net/xml/VOTable/v1.0 http://software.astrogrid.org/schema/vo-formats/VOTable/v1.0/VOTable.xsd http://www.ivoa.net/xml/VODataService/v0.5 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v0.5/VODataService.xsd http://www.ivoa.net/xml/VOTable/v1.0 http://software.astrogrid.org/schema/vo-formats/VOTable/v1.0/VOTable.xsd http://www.ivoa.net/xml/CEAService/v0.2 http://software.astrogrid.org/schema/vo-resource-types/CEAService/v0.2/CEAService.xsd " xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cea:CeaServiceType">
+        <vr:title xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">Test CEC</vr:title>
+        <vr:shortName xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">Test CEC</vr:shortName>
+        <vr:identifier xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">ivo://org.astrogrid/Pegase-test-CEC</vr:identifier>
+        <vr:curation xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">
+            <vr:publisher>Guy Rixon</vr:publisher>
+            <vr:creator>
+                <vr:name>AstroGrid</vr:name>
+            </vr:creator>
+            <vr:date role="representative">2006-01-01</vr:date>
+            <vr:version>2006.0</vr:version>
+            <vr:contact>
+                <vr:name>Guy Rixon</vr:name>
+                <vr:email>gtr@ast.cam.ac.uk</vr:email>
+            </vr:contact>
+        </vr:curation>
+        <vr:content xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">
+            <vr:subject>service, CEA, virtual observatory</vr:subject>
+            <vr:description>A test CEC set up to check the fix for issue BZ1502.</vr:description>
+            <vr:referenceURL>http://www.astrogrid.org/maven/docs/head/applications/</vr:referenceURL>
+            <vr:type>Other</vr:type>
+        </vr:content>
+        <vr:interface xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" xsi:schemaLocation="http://www.ivoa.net/xml/VODataService/v0.5 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v0.5/VODataService.xsd http://www.ivoa.net/xml/VOTable/v1.0 http://software.astrogrid.org/schema/vo-formats/VOTable/v1.0/VOTable.xsd " xsi:type="vs:WebService">
+            <vr:accessURL>http://ag01.ast.cam.ac.uk:8085/astrogrid-cea-http/services/CommonExecutionConnectorService</vr:accessURL>
+        </vr:interface>
+        <cea:ManagedApplications>
+            <cea:ApplicationReference>ivo://org.astrogrid/INTWideFieldSurveySIAP</cea:ApplicationReference>
+            <cea:ApplicationReference>ivo://uk.ac.cam.ast/IPHAS/images/CEA-application</cea:ApplicationReference>
+            <cea:ApplicationReference>ivo://uk.ac.le.star/GOODS/images/CEA-application</cea:ApplicationReference>
+            <cea:ApplicationReference>ivo://obspm.fr/PegaseHR_full</cea:ApplicationReference>
+            <cea:ApplicationReference>ivo://uk.ac.le.star/HelloWorldHttpApp</cea:ApplicationReference>
+            <cea:ApplicationReference>ivo://uk.ac.le.star/SXDS/images/CEA-application</cea:ApplicationReference>
+            <cea:ApplicationReference>ivo://obspm.fr/BasecolFits</cea:ApplicationReference>
+            <cea:ApplicationReference>ivo://uk.ac.cam.ast/INT-WFS/images/CEA-application</cea:ApplicationReference>
+            <cea:ApplicationReference>ivo://obspm.fr/SkyBoT</cea:ApplicationReference>
+            <cea:ApplicationReference>ivo://uk.ac.le.star/SDSS-DR3/images/CEA-application</cea:ApplicationReference>
+            <cea:ApplicationReference>ivo://uk.ac.cam.ast/WFCAM/images/CEA-application</cea:ApplicationReference>
+            <cea:ApplicationReference>ivo://uk.ac.cam.ast/SWIRE/images/CEA-application</cea:ApplicationReference>
+            <cea:ApplicationReference>ivo://uk.ac.le.star/HST-UDF/images/CEA-application</cea:ApplicationReference>
+            <cea:ApplicationReference>ivo://uk.ac.le.star/XMM/images/CEA-application</cea:ApplicationReference>
+            <cea:ApplicationReference>ivo://uk.ac.le.star/SDSS-DR4/images/CEA-application</cea:ApplicationReference>
+        </cea:ManagedApplications>
+    </ns2:Resource>
+    <some-noise>
+    	<foo/>
+    </some-noise>
+    <nested-at-different-level>
+    <Resource status="active" updated="2006-07-06T18:33:26Z" xmlns="http://www.ivoa.net/xml/RegistryInterface/v0.1" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" xsi:schemaLocation="http://www.ivoa.net/xml/VODataService/v0.5 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v0.5/VODataService.xsd http://www.ivoa.net/xml/VOTable/v1.0 http://software.astrogrid.org/schema/vo-formats/VOTable/v1.0/VOTable.xsd http://www.ivoa.net/xml/CEAService/v0.2 http://software.astrogrid.org/schema/vo-resource-types/CEAService/v0.2/CEAService.xsd " xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cea:CeaApplicationType">
+        <vr:title xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">Pegase</vr:title>
+        <vr:shortName xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">Pegase</vr:shortName>
+        <vr:identifier xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">ivo://org.astrogrid/Pegase</vr:identifier>
+        <vr:curation xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">
+            <vr:publisher>Astrogrid</vr:publisher>
+            <vr:creator>
+                <vr:name>Astrogrid</vr:name>
+                <vr:logo>??</vr:logo>
+            </vr:creator>
+            <vr:date role="representative">2004-03-26</vr:date>
+            <vr:version>1.0</vr:version>
+            <vr:contact>
+                <vr:name>Paul Harrison</vr:name>
+                <vr:email>pah@jb.man.ac.uk</vr:email>
+            </vr:contact>
+        </vr:curation>
+        <vr:content xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">
+            <vr:subject>???</vr:subject>
+            <vr:description>PEGASE is a code which computes the spectral evolution of galaxies. The evolution of the stars, gas and metals is computed according to user selected star formation laws and initial stellar mass function.  The stellar evolutionary tracks extend from the main sequence to the white dwarf stage. The emission of the gas in HII regions is also taken into account. The effect of extinction by dust is also modelled using a radiative transfer code.</vr:description>
+            <vr:referenceURL>http://www2.iap.fr/users/fioc/PEGASE.html</vr:referenceURL>
+            <vr:type>Other</vr:type>
+        </vr:content>
+        <cea:ApplicationDefinition>
+            <cea:Parameters>
+                <cea:ParameterDefinition name="LMASS" type="double">
+                    <ceapd:UI_Name>Lower mass</ceapd:UI_Name>
+                    <ceapd:UI_Description>Lower mass</ceapd:UI_Description>
+                    <ceapd:UCD/>
+                    <ceapd:DefaultValue>0.1</ceapd:DefaultValue>
+                    <ceapd:Units>Solar Masses</ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="WINDS" type="boolean">
+                    <ceapd:UI_Name>Stellar Winds</ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD/>
+                    <ceapd:DefaultValue>Y</ceapd:DefaultValue>
+                    <ceapd:Units/>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="COLOURS" type="binary">
+                    <ceapd:UI_Name>Synthesized colours</ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD/>
+                    <ceapd:DefaultValue/>
+                    <ceapd:Units/>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="GLOBALEXTINCTION" type="integer">
+                    <ceapd:UI_Name>Global Extinction?</ceapd:UI_Name>
+                    <ceapd:UI_Description>0: No extinction
+ 1: Extinction for a spheroidal geometry
+ 2: Extinction for a disk geometry: inclination-averaged
+ 3: Extinction for a disk geometry: specific inclination</ceapd:UI_Description>
+                    <ceapd:UCD/>
+                    <ceapd:DefaultValue>0</ceapd:DefaultValue>
+                    <ceapd:Units/>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="GALWIND" type="boolean">
+                    <ceapd:UI_Name>Galactic winds</ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD/>
+                    <ceapd:DefaultValue>n</ceapd:DefaultValue>
+                    <ceapd:Units/>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="SNMODEL" type="text">
+                    <ceapd:UI_Name>SN Model (A/B/C)</ceapd:UI_Name>
+                    <ceapd:UI_Description>model A, B or C of Woosley &amp;amp; Weaver</ceapd:UI_Description>
+                    <ceapd:UCD/>
+                    <ceapd:DefaultValue>B</ceapd:DefaultValue>
+                    <ceapd:Units/>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="FRACSUB" type="double">
+                    <ceapd:UI_Name>SubStellar fraction</ceapd:UI_Name>
+                    <ceapd:UI_Description>Mass fraction of substellar objects formed (real in [0.,1.])</ceapd:UI_Description>
+                    <ceapd:UCD/>
+                    <ceapd:DefaultValue>0</ceapd:DefaultValue>
+                    <ceapd:Units/>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="BINFRAC" type="double">
+                    <ceapd:UI_Name>binary fraction</ceapd:UI_Name>
+                    <ceapd:UI_Description>Fraction of close binary systems</ceapd:UI_Description>
+                    <ceapd:UCD/>
+                    <ceapd:DefaultValue>0.05</ceapd:DefaultValue>
+                    <ceapd:Units/>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="CONEVOL" type="boolean">
+                    <ceapd:UI_Name>Consistent Evolution</ceapd:UI_Name>
+                    <ceapd:UI_Description>Consistent evolution of the stellar metallicity (y/n)?</ceapd:UI_Description>
+                    <ceapd:UCD/>
+                    <ceapd:DefaultValue>y</ceapd:DefaultValue>
+                    <ceapd:Units/>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="INFALLMETAL" type="double">
+                    <ceapd:UI_Name>Infall Metalicity</ceapd:UI_Name>
+                    <ceapd:UI_Description>Metallicity of the infalling gas (mass fraction, real in [0.,1.])</ceapd:UI_Description>
+                    <ceapd:UCD/>
+                    <ceapd:DefaultValue>0</ceapd:DefaultValue>
+                    <ceapd:Units/>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="NEBEMISS" type="boolean">
+                    <ceapd:UI_Name>Nebular Emission</ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD/>
+                    <ceapd:DefaultValue>n</ceapd:DefaultValue>
+                    <ceapd:Units/>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="INFALLTIME" type="double">
+                    <ceapd:UI_Name>Infall Timescale</ceapd:UI_Name>
+                    <ceapd:UI_Description>Infall timescale (Myr, real)</ceapd:UI_Description>
+                    <ceapd:UCD/>
+                    <ceapd:DefaultValue>0.10000E+04</ceapd:DefaultValue>
+                    <ceapd:Units/>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="SPECTRA" type="binary">
+                    <ceapd:UI_Name>Synthesized spectra</ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD/>
+                    <ceapd:DefaultValue/>
+                    <ceapd:Units/>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="IMF" type="integer">
+                    <ceapd:UI_Name>Initial Mass Function</ceapd:UI_Name>
+                    <ceapd:UI_Description>1: IMF_Kennicutt.dat                                                       
+   2: IMF_Kroupa.dat                                                          
+   3: IMF_MillerScalo.dat                                                     
+   4: IMF_Salpeter.dat                                                        
+   5: IMF_Scalo86.dat                                                         
+   6: IMF_Scalo98.dat                                                         
+   7: lognormal IMF
+   8: Rana &amp;amp; Basu (1992)
+   9: Ferrini (1991)</ceapd:UI_Description>
+                    <ceapd:UCD/>
+                    <ceapd:DefaultValue>4</ceapd:DefaultValue>
+                    <ceapd:Units/>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="METALICITY" type="double">
+                    <ceapd:UI_Name>Metalicity</ceapd:UI_Name>
+                    <ceapd:UI_Description>Metallicity (mass fraction) of the ISM at t=0 (real in [0.,1.])</ceapd:UI_Description>
+                    <ceapd:UCD/>
+                    <ceapd:DefaultValue>0.0</ceapd:DefaultValue>
+                    <ceapd:Units/>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="GALWINDAGE" type="double">
+                    <ceapd:UI_Name>Galactic wind age</ceapd:UI_Name>
+                    <ceapd:UI_Description>Age of the galactic winds (Myr, real)</ceapd:UI_Description>
+                    <ceapd:UCD/>
+                    <ceapd:DefaultValue>0.20001E+05</ceapd:DefaultValue>
+                    <ceapd:Units/>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="SFSCENARIO" type="integer">
+                    <ceapd:UI_Name>Star formation scenario</ceapd:UI_Name>
+                    <ceapd:UI_Description>Type of star formation scenario?
+ -2: file giving the SFR and the metallicity
+ -1: file giving the SFR
+  0: instantaneous burst
+  1: SFR=p1 from t=0 to p2
+  2: SFR=p2*exp(-t/p1)/p1
+  3: SFR=(Mgas^p1)/p2
+ 10 or more: code of the SFR law you have implemented in &amp;quot;spectra.f&amp;quot;</ceapd:UI_Description>
+                    <ceapd:UCD/>
+                    <ceapd:DefaultValue>0</ceapd:DefaultValue>
+                    <ceapd:Units/>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="UMASS" type="double">
+                    <ceapd:UI_Name>Upper mass</ceapd:UI_Name>
+                    <ceapd:UI_Description>Upper mass</ceapd:UI_Description>
+                    <ceapd:UCD/>
+                    <ceapd:DefaultValue>120.0</ceapd:DefaultValue>
+                    <ceapd:Units>Solar Masses</ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="INFALL" type="boolean">
+                    <ceapd:UI_Name>Infall</ceapd:UI_Name>
+                    <ceapd:UI_Description/>
+                    <ceapd:UCD/>
+                    <ceapd:DefaultValue>n</ceapd:DefaultValue>
+                    <ceapd:Units/>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="SMETAL" type="double">
+                    <ceapd:UI_Name>Stellar metallicity</ceapd:UI_Name>
+                    <ceapd:UI_Description>(real in [0.,1.])</ceapd:UI_Description>
+                    <ceapd:UCD/>
+                    <ceapd:DefaultValue>0.02</ceapd:DefaultValue>
+                    <ceapd:Units/>
+                </cea:ParameterDefinition>
+            </cea:Parameters>
+            <cea:Interfaces>
+                <ceab:Interface name="simple">
+                    <ceab:input>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="IMF"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="LMASS"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="UMASS"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="SNMODEL"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="WINDS"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="BINFRAC"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="METALICITY"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="INFALL"/>
+                        <ceab:pref maxoccurs="1" minoccurs="0" ref="INFALLTIME"/>
+                        <ceab:pref maxoccurs="1" minoccurs="0" ref="INFALLMETAL"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="SFSCENARIO"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="CONEVOL"/>
+                        <ceab:pref maxoccurs="1" minoccurs="0" ref="SMETAL"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="FRACSUB"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="GALWIND"/>
+                        <ceab:pref maxoccurs="1" minoccurs="0" ref="GALWINDAGE"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="NEBEMISS"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="GLOBALEXTINCTION"/>
+                    </ceab:input>
+                    <ceab:output>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="SPECTRA"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="COLOURS"/>
+                    </ceab:output>
+                </ceab:Interface>
+            </cea:Interfaces>
+        </cea:ApplicationDefinition>
+    </Resource>
+        </nested-at-different-level>
+        <vor:Resource xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1" status="active" updated="2006-07-25T14:06:43Z" xmlns="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.3" xmlns:sia="http://www.ivoa.net/xml/SIA/v0.7" xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3" xmlns:vc="http://www.ivoa.net/xml/VOCommunity/v0.2" xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" xsi:schemaLocation=" http://www.ivoa.net/xml/VORegistry/v0.3 http://software.astrogrid.org/schema/vo-resource-types/VORegistry/v0.3/VORegistry.xsd " xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="vg:Registry">
+        <title xmlns:vc="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">Galahad Full Registry</title>
+        <identifier xmlns:vc="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">ivo://uk.ac.le.star/org.astrogrid.registry.RegistryService</identifier>
+        <curation xmlns:vc="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">
+            <publisher>Main Astrogrid Full Registry</publisher>
+            <contact>
+                <name>Tony Linde</name>
+                <email>ael@star.le.ac.uk</email>
+            </contact>
+        </curation>
+        <content xmlns:vc="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">
+            <subject>registry</subject>
+            <description>Main Astrogrid Registry for the Full Registry.</description>
+            <referenceURL>http://galahad.star.le.ac.uk:8081/astrogrid-registry</referenceURL>
+            <type>Archive</type>
+        </content>
+        <interface xmlns:vc="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1" xsi:schemaLocation="" xsi:type="WebBrowser">
+            <accessURL use="full">http://galahad.star.le.ac.uk:8080/galahad-registry/OAIHandlerv0_10</accessURL>
+        </interface>
+        <vc:managedAuthority xmlns:vc="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">uk.ac.le.star</vc:managedAuthority>
+        <vc:managedAuthority xmlns:vc="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">uk.ac.man.jb</vc:managedAuthority>
+        <vc:managedAuthority xmlns:vc="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">org.astrogrid</vc:managedAuthority>
+        <vc:managedAuthority xmlns:vc="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">org.astrogrid.vospace</vc:managedAuthority>
+        <vg:managedAuthority>ion.le.ac.uk</vg:managedAuthority>
+    </vor:Resource>
+    </container>

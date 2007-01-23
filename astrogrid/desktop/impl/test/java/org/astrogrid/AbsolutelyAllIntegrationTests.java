@@ -3,6 +3,9 @@
  */
 package org.astrogrid;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.framework.AllFrameworkIntegrationTests;
 import org.astrogrid.desktop.modules.background.AllBackgroundIntegrationTests;
@@ -11,9 +14,6 @@ import org.astrogrid.desktop.modules.ivoa.AllIvoaIntegrationTests;
 import org.astrogrid.desktop.modules.plastic.AllPlasticIntegrationTests;
 import org.astrogrid.desktop.modules.system.contributions.AllSystemContributionIntegrationTests;
 import org.astrogrid.desktop.modules.votech.AllVotechIntegrationTests;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**All integration tests, run inside a single instance of AR
  * these tests are repeatable, in general.

@@ -12,7 +12,6 @@ import junit.framework.TestCase;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ivoa.Registry;
-import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.acr.ivoa.Ssap;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.easymock.MockControl;

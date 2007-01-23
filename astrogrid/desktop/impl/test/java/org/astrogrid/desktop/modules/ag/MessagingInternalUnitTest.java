@@ -3,11 +3,11 @@
  */
 package org.astrogrid.desktop.modules.ag;
 
+import junit.framework.TestCase;
+
 import org.astrogrid.desktop.modules.ag.MessagingInternal.MessageListener;
 import org.astrogrid.desktop.modules.ag.MessagingInternal.SourcedExecutionMessage;
 import org.easymock.MockControl;
-
-import junit.framework.TestCase;
 
 /**
  * @author Noel Winstanley

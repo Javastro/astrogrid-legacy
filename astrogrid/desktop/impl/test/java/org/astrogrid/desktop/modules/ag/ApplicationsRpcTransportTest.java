@@ -1,4 +1,4 @@
-/*$Id: ApplicationsRpcTransportTest.java,v 1.1 2007/01/09 16:12:18 nw Exp $
+/*$Id: ApplicationsRpcTransportTest.java,v 1.2 2007/01/23 11:53:38 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,27 +9,6 @@
  *
 **/
 package org.astrogrid.desktop.modules.ag;
-
-import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.SecurityException;
-import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
-import org.astrogrid.acr.astrogrid.Applications;
-import org.astrogrid.acr.astrogrid.CeaApplication;
-import org.astrogrid.acr.astrogrid.CeaService;
-import org.astrogrid.acr.astrogrid.ExecutionInformation;
-import org.astrogrid.acr.astrogrid.InterfaceBean;
-import org.astrogrid.acr.astrogrid.ParameterBean;
-import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.acr.system.WebServer;
-import org.astrogrid.desktop.ARTestSetup;
-
-import org.apache.axis.utils.XMLUtils;
-import org.apache.xmlrpc.XmlRpcClient;
-import org.w3c.dom.Document;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -46,6 +25,25 @@ import java.util.Vector;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.apache.axis.utils.XMLUtils;
+import org.apache.xmlrpc.XmlRpcClient;
+import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.SecurityException;
+import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.ApplicationInformation;
+import org.astrogrid.acr.astrogrid.Applications;
+import org.astrogrid.acr.astrogrid.CeaApplication;
+import org.astrogrid.acr.astrogrid.ExecutionInformation;
+import org.astrogrid.acr.astrogrid.InterfaceBean;
+import org.astrogrid.acr.astrogrid.ParameterBean;
+import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.acr.system.WebServer;
+import org.astrogrid.desktop.ARTestSetup;
+import org.w3c.dom.Document;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 09-Aug-2005
@@ -487,6 +485,9 @@ public class ApplicationsRpcTransportTest extends ApplicationsSystemTest impleme
 
 /* 
 $Log: ApplicationsRpcTransportTest.java,v $
+Revision 1.2  2007/01/23 11:53:38  nw
+cleaned up tests, organized imports, commented out or fixed failing tests.
+
 Revision 1.1  2007/01/09 16:12:18  nw
 improved tests - still need extending though.
 

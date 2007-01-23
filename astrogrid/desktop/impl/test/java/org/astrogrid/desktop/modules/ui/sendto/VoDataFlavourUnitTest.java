@@ -6,8 +6,6 @@ package org.astrogrid.desktop.modules.ui.sendto;
 import java.awt.datatransfer.DataFlavor;
 import java.io.InputStream;
 
-import org.astrogrid.desktop.modules.ui.sendto.VoDataFlavour;
-
 import junit.framework.TestCase;
 
 /** Test the constants in vodataflavor - also the behaviour of DataFlavor

@@ -17,11 +17,12 @@ public abstract class AbstractPlasticBaseNotDeaf extends AbstractPlasticBase {
      * be immune to any changes made on the client side.
      *
      */
-    public void testSupportedMessagesImmutable() {
+    public void testSupportedMessagesImmutable() throws Exception {
         URI plid1 = createAndRegisterCleanApp(1,null);
         List supportedMessages = hub.getUnderstoodMessages(plid1);
         assertTrue("Test app doesn't support any messages",supportedMessages.size()>0);
-        URI firstMessage = (URI) supportedMessages.get(0);
+      //NW: URI vs String problem  URI firstMessage = (URI) supportedMessages.get(0);
+        URI firstMessage = new URI(supportedMessages.get(0).toString());
         List appsUnderstandingMessage = hub.getMessageRegisteredIds(firstMessage);
         assertTrue("Application doesn't understand a message it registered for", appsUnderstandingMessage.contains(plid1));
         try {

@@ -1,7 +1,5 @@
 package org.astrogrid.desktop.modules.plastic;
 
-import org.astrogrid.desktop.ARTestSetup;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 

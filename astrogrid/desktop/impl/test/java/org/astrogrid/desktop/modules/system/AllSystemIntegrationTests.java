@@ -1,4 +1,4 @@
-/*$Id: AllSystemIntegrationTests.java,v 1.2 2007/01/10 14:57:35 nw Exp $
+/*$Id: AllSystemIntegrationTests.java,v 1.3 2007/01/23 11:53:37 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,10 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import org.astrogrid.desktop.ARTestSetup;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.astrogrid.desktop.ARTestSetup;
 
 /** Tests the system components.
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
@@ -47,6 +47,9 @@ public class AllSystemIntegrationTests {
 
 /* 
 $Log: AllSystemIntegrationTests.java,v $
+Revision 1.3  2007/01/23 11:53:37  nw
+cleaned up tests, organized imports, commented out or fixed failing tests.
+
 Revision 1.2  2007/01/10 14:57:35  nw
 tests for preferences.
 

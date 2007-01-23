@@ -3,9 +3,9 @@
  */
 package org.astrogrid.desktop.modules.ivoa;
 
-import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotFoundException;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.ivoa.Adql074;
 import org.astrogrid.acr.ivoa.Cone;
@@ -16,10 +16,6 @@ import org.astrogrid.acr.ivoa.SkyNode;
 import org.astrogrid.acr.ivoa.Ssap;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /** Integration test that verifies all components in ivoa module are at least instantiable
  *  - by fetching each in turn, and callinig trivial methods on them
@@ -83,7 +79,7 @@ public class IvoaModuleIntegrationTest extends InARTestCase {
 	}
 	
 	public void testCache() throws Exception {
-		CacheFactory fac = (CacheFactory)assertComponentExists(CacheFactory.class, "ivoa.cache");
+		CacheFactoryInternal fac = (CacheFactoryInternal)assertComponentExists(CacheFactoryInternal.class, "ivoa.cache");
 		fac.getManager();
 	}
 	

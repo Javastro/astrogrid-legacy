@@ -1,4 +1,4 @@
-/*$Id: ApiHelpIntegrationTest.java,v 1.2 2007/01/09 16:12:20 nw Exp $
+/*$Id: ApiHelpIntegrationTest.java,v 1.3 2007/01/23 11:53:37 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,30 +10,23 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.InvalidArgumentException;
+import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.system.ApiHelp;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
-
-import org.apache.xmlrpc.XmlRpcException;
-
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.astrogrid.desktop.modules.ivoa.LooselyTypedFunctionCallIntegrationTest;
 
 /** test the apihelp interface
+ * @see LooselyTypedFunctionCallIntegrationTest for additional tests of this component.
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
  *
  */
@@ -353,149 +346,8 @@ public class ApiHelpIntegrationTest extends InARTestCase {
     		//ok.
     	}    	
     }
-    
-    public void testCallFunctionSimpleOriginal() throws InvalidArgumentException, NotFoundException, ACRException{
-
-    	Object result = help.callFunction(
-    			"astrogrid.registry.getResourceInformation"
-    			,ApiHelp.ORIGINAL
-    			, new Object[]{uri}
-    			);
-    	assertNotNull(result);
-    	if (result instanceof ResourceInformation ) {
-    		assertEquals(uri,((ResourceInformation)result).getId());
-    	} else if (result instanceof Map) {
-    		assertEquals(uri.toString(),((Map)result).get("id"));
-    	} else {
-    		fail("wrong type");
-    	}
-    }
-    
-    public void testCallFunctionSimpleOriginalWithStringParam() throws InvalidArgumentException, NotFoundException, ACRException {
-    	Object result = help.callFunction(
-    			"astrogrid.registry.getResourceInformation"
-    			,ApiHelp.ORIGINAL
-    			, new Object[]{uri.toString()} // will have to convert to correct type.
-    			);
-    	assertNotNull(result);
-    	if (result instanceof ResourceInformation ) {
-    		assertEquals(uri,((ResourceInformation)result).getId());
-    	} else if (result instanceof Map) {
-    		assertEquals(uri.toString(),((Map)result).get("id"));
-    	} else {
-    		fail("wrong type");
-    	}
-    }
-    
-    public void testCallFunctionSimpleDatastrucrtre() throws  InvalidArgumentException, NotFoundException, ACRException {
-    	Object result = help.callFunction(
-    			"astrogrid.registry.getResourceInformation"
-    			,ApiHelp.DATASTRUCTURE
-    			, new Object[]{uri}
-    			);
-    	assertNotNull(result);
-    	assertTrue(result instanceof Map);
-    	assertEquals(uri.toString(),((Map)result).get("id"));    	
-    }
-    
-    public void testCallFunctionSimpleString() throws  InvalidArgumentException, NotFoundException, ACRException {
-    	Object result = help.callFunction(
-    			"astrogrid.registry.getResourceInformation"
-    			,ApiHelp.STRING
-    			, new Object[]{uri}
-    			);
-    	assertNotNull(result);
-    	assertTrue(result instanceof String);
-    	assertTrue(((String)result).trim().length() > 0);  	
-    	assertTrue(((String)result).indexOf(uri.toString()) != -1);
-    }
-    
-    
-
-    
-    public void testCallFunctionWrongNumberOfParameters() throws InvalidArgumentException, NotFoundException, ACRException{
-    	try {
-    	Object result = help.callFunction(
-    			"astrogrid.registry.getResourceInformation"
-    			,ApiHelp.ORIGINAL
-    			, new Object[]{}
-    			);
-    	fail("expected to fail");
-    	} catch (InvalidArgumentException e) {
-    		// ok
-    	}
-    }    
-    /* will fail in function-specific ways if wrng parameters are passed in.
-     * all attempt is made to convert to correct type - but usually produces a meaningless
-     * value - garbage in, garbage out.
-     */
-//    public void testCallFunctionWrongParameterTypes() throws InvalidArgumentException, NotFoundException, ACRException, MalformedURLException{
-//    	try {
-//        	Object result = help.callFunction(
-//        			"astrogrid.registry.getResourceInformation"
-//        			,ApiHelp.ORIGINAL
-//        			, new Object[]{new Integer(42)}
-//        			);
-//        	fail("expected to fail");
-//        	} catch (InvalidArgumentException e) {
-//        		// ok
-//        	}
-//        }    
-    
-    public void testCallFunctionWrongNumberOfParametersNull() throws InvalidArgumentException, NotFoundException, ACRException{
-    	try {
-        	Object result = help.callFunction(
-        			"astrogrid.registry.getResourceInformation"
-        			,ApiHelp.ORIGINAL
-        			, null
-        			);
-        	fail("expected to fail");
-        	} catch (InvalidArgumentException e) {
-        		// ok
-        	}
-        }    
-
-    // when called with unknown kind, falls back to default.
-    public void testCallFunctionUnknownKind() throws InvalidArgumentException, NotFoundException, ACRException {
-    	assertEquals(
-    			help.callFunction("system.webserver.getPort",ApiHelp.ORIGINAL,new String[]{})
-    			, help.callFunction("system.webserver.getPort",42,new String[]{})
-    			);
-    }
-    
-    public void testCallFunctionNullParameter() throws InvalidArgumentException, NotFoundException, ACRException {
-    	Object result = help.callFunction("system.webserver.getPort",ApiHelp.ORIGINAL, new Object[]{});
-    	assertNotNull(result);    	
-    	assertEquals(Integer.class,result.getClass());
-    }
-    
-    public void testCallFunctionNull() throws ACRException {
-    	try {
-    		help.callFunction(null,ApiHelp.DATASTRUCTURE,null);
-    		fail("Expected to barf");
-    	} catch (InvalidArgumentException e) {
-    		//ok.
-    	}
-    }
-    
-    public void testCallFunctionUnknown() throws InvalidArgumentException, ACRException {
-    	try {
-    		help.callFunction("wibble.foo.bar",ApiHelp.DATASTRUCTURE,new Object[]{});
-    		fail("Expected to barf");
-    	} catch (NotFoundException e) {
-    		//ok.
-    	}    	    	
-    }
-    
-    public void testCallFunctionMalformed() throws  ACRException {
-    	try {
-    		help.callFunction("wibble",ApiHelp.DATASTRUCTURE,new Object[]{});
-    		fail("Expected to barf");
-    	} catch (InvalidArgumentException e) {
-    		//ok.
-    	}    	
-    }
-                                            
+   
+                
 
     public static Test suite() {
         return new ARTestSetup(new TestSuite(ApiHelpIntegrationTest.class));
@@ -505,6 +357,9 @@ public class ApiHelpIntegrationTest extends InARTestCase {
 
 /* 
 $Log: ApiHelpIntegrationTest.java,v $
+Revision 1.3  2007/01/23 11:53:37  nw
+cleaned up tests, organized imports, commented out or fixed failing tests.
+
 Revision 1.2  2007/01/09 16:12:20  nw
 improved tests - still need extending though.
 

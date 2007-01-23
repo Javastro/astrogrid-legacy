@@ -5,10 +5,10 @@ package org.astrogrid.desktop.modules.ag.recorder;
 
 import java.io.IOException;
 
+import junit.framework.TestCase;
+
 import org.astrogrid.WorkbenchAssert;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
-
-import junit.framework.TestCase;
 
 /** unit test for message container
  * @author Noel Winstanley

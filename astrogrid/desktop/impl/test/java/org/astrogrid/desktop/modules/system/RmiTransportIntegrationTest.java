@@ -1,4 +1,4 @@
-/*$Id: RmiTransportIntegrationTest.java,v 1.4 2007/01/09 16:12:20 nw Exp $
+/*$Id: RmiTransportIntegrationTest.java,v 1.5 2007/01/23 11:53:37 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,11 +11,7 @@
 package org.astrogrid.desktop.modules.system;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -33,8 +29,6 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.acr.test.TransportTest;
 import org.astrogrid.desktop.ARTestSetup;
-import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParserUnitTest;
-import org.astrogrid.io.Piper;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
@@ -108,7 +102,7 @@ public class RmiTransportIntegrationTest extends TestCase {
     // as this is an integration test, bot a system test, do this by getting ar to parse
     // in a passed-in xml document, and return the resource objects it contains
     public void testResourceProxyObject() throws Exception {
-    	InputStream is = ResourceStreamParserUnitTest.class.getResourceAsStream("multiple.xml");
+    	InputStream is = RmiTransportIntegrationTest.class.getResourceAsStream("multiple.xml");
     	assertNotNull(is);
     	Document d = DomHelper.newDocument(is);
      	ExternalRegistry er = (ExternalRegistry)this.reg.getService(ExternalRegistry.class);
@@ -129,6 +123,9 @@ public class RmiTransportIntegrationTest extends TestCase {
 
 /* 
 $Log: RmiTransportIntegrationTest.java,v $
+Revision 1.5  2007/01/23 11:53:37  nw
+cleaned up tests, organized imports, commented out or fixed failing tests.
+
 Revision 1.4  2007/01/09 16:12:20  nw
 improved tests - still need extending though.
 

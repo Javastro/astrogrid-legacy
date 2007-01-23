@@ -1,4 +1,4 @@
-/*$Id: ApplicationsSystemTest.java,v 1.5 2007/01/09 16:12:18 nw Exp $
+/*$Id: ApplicationsSystemTest.java,v 1.6 2007/01/23 11:53:37 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,25 +10,6 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
-import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
-import org.astrogrid.acr.astrogrid.Applications;
-import org.astrogrid.acr.astrogrid.ExecutionInformation;
-import org.astrogrid.acr.astrogrid.Jobs;
-import org.astrogrid.acr.astrogrid.Registry;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.acr.ivoa.SiapInformation;
-import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.desktop.ARTestSetup;
-import org.astrogrid.desktop.InARTestCase;
-
-import org.apache.axis.utils.XMLUtils;
-import org.w3c.dom.Document;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URI;
@@ -36,8 +17,22 @@ import java.net.URL;
 import java.util.Map;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.astrogrid.ApplicationInformation;
+import org.astrogrid.acr.astrogrid.Applications;
+import org.astrogrid.acr.astrogrid.ExecutionInformation;
+import org.astrogrid.acr.astrogrid.Registry;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.builtin.ACR;
+import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
+import org.w3c.dom.Document;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 09-Aug-2005
@@ -253,6 +248,9 @@ public class ApplicationsSystemTest extends InARTestCase {
 
 /* 
 $Log: ApplicationsSystemTest.java,v $
+Revision 1.6  2007/01/23 11:53:37  nw
+cleaned up tests, organized imports, commented out or fixed failing tests.
+
 Revision 1.5  2007/01/09 16:12:18  nw
 improved tests - still need extending though.
 

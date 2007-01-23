@@ -3,10 +3,10 @@
  */
 package org.astrogrid.desktop.modules.ivoa;
 
-import org.astrogrid.desktop.ARTestSetup;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.astrogrid.desktop.ARTestSetup;
 
 /**
  * @author Noel Winstanley
@@ -18,6 +18,7 @@ public class AllIvoaIntegrationTests {
 		TestSuite suite = new TestSuite(
 				"Integration tests for IVOA module.");
 		suite.addTestSuite(IvoaModuleIntegrationTest.class);
+		suite.addTestSuite(LooselyTypedFunctionCallIntegrationTest.class);
 		return new ARTestSetup(suite,true);
 	}
 }

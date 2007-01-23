@@ -3,9 +3,9 @@
  */
 package org.astrogrid.desktop.modules.ag;
 
-import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotFoundException;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.Jobs;
@@ -13,15 +13,8 @@ import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.RemoteProcessManager;
 import org.astrogrid.acr.astrogrid.Stap;
-import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
-import org.astrogrid.desktop.modules.ag.transformers.CastorTransformer;
-import org.astrogrid.desktop.modules.ivoa.IvoaModuleIntegrationTest;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**Integration test that verifies all components in astrogrid module are at least instantiable
  *  - by fetching each in turn, and callinig trivial methods on them

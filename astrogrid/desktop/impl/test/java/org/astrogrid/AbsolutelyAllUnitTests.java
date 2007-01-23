@@ -4,10 +4,10 @@
 package org.astrogrid;
 
 
-import org.astrogrid.desktop.modules.votech.AllVotechUnitTests;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.astrogrid.desktop.modules.votech.AllVotechUnitTests;
 
 /** Runs all unit tests - handy hook for within eclipse
  * @author Noel Winstanley

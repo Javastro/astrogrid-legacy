@@ -1,4 +1,4 @@
-/*$Id: ApiHelpRpcTransportTest.java,v 1.1 2007/01/09 16:12:20 nw Exp $
+/*$Id: ApiHelpRpcTransportTest.java,v 1.2 2007/01/23 11:53:37 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,26 +10,19 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+import java.util.Vector;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
+import org.apache.xmlrpc.XmlRpcClient;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.builtin.ModuleDescriptor;
 import org.astrogrid.acr.system.ApiHelp;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.ARTestSetup;
-
-import org.apache.xmlrpc.XmlRpcClient;
-import org.apache.xmlrpc.XmlRpcException;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Vector;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /** repeat of apihelp tests, via xmlrpc interface - exercise this transport, and make sure configuration is correct
  * @author Noel Winstanley nw@jb.man.ac.uk 03-Aug-2005
@@ -198,6 +191,9 @@ public class ApiHelpRpcTransportTest extends ApiHelpIntegrationTest implements A
 
 /* 
 $Log: ApiHelpRpcTransportTest.java,v $
+Revision 1.2  2007/01/23 11:53:37  nw
+cleaned up tests, organized imports, commented out or fixed failing tests.
+
 Revision 1.1  2007/01/09 16:12:20  nw
 improved tests - still need extending though.
 

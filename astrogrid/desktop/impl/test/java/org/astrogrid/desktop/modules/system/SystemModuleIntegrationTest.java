@@ -15,10 +15,8 @@ import org.astrogrid.acr.system.RmiServer;
 import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.acr.system.UI;
 import org.astrogrid.acr.system.WebServer;
-import org.astrogrid.applications.manager.SystemTest;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
-import org.astrogrid.desktop.modules.ivoa.IvoaModuleIntegrationTest;
 
 /**
  * @author Noel Winstanley

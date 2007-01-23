@@ -8,18 +8,16 @@ import java.beans.PropertyChangeListener;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import net.sourceforge.jwebunit.WebTestCase;
 
-import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.ARTestSetup;
-
-import net.sourceforge.jwebunit.WebTestCase;
 
 /** Integration test that exercises the preferences html interace.
  * @author Noel Winstanley
  * @since Jan 9, 20077:07:05 PM
  */
-public class PreferenceEditorServletIntegrationTest extends WebTestCase {
+public class PreferenceEditorServletIntegrationTest	 extends WebTestCase {
 
 	/**
 	 * 
@@ -99,8 +97,9 @@ public class PreferenceEditorServletIntegrationTest extends WebTestCase {
 		Watcher watcher = new Watcher();
 		optionPref.addPropertyChangeListener(watcher);
 		
-		String orig = optionPref.getValue();		
-		String nuVal = Boolean.toString(! Boolean.parseBoolean(orig));
+		String orig = optionPref.getValue();		 
+		String nuVal = Boolean.toString(! ((new Boolean(orig)).booleanValue()));
+	//	1.5 only.String nuVal = Boolean.toString(! Boolean.parseBoolean(orig));
 		
 		selectOption(TEST_OPTION_PREFERENCE_KEY, nuVal);
 		submit();

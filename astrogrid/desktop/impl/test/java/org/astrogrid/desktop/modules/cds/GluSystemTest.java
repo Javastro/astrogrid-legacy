@@ -6,16 +6,14 @@ package org.astrogrid.desktop.modules.cds;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.cds.Glu;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
-import org.astrogrid.desktop.modules.system.ApiHelpIntegrationTest;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /** test for interface to glu service. never works for me..
  * @author Noel Winstanley

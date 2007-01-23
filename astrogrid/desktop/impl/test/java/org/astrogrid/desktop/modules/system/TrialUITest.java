@@ -3,16 +3,8 @@
  */
 package org.astrogrid.desktop.modules.system;
 
-import javax.swing.JFrame;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
-import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.BuildInprocessWorkbench;
 import org.uispec4j.TabGroup;
-import org.uispec4j.UISpec4J;
-import org.uispec4j.UISpecAdapter;
 import org.uispec4j.UISpecTestCase;
 import org.uispec4j.Window;
 
@@ -20,7 +12,7 @@ import org.uispec4j.Window;
  * @author Noel Winstanley
  * @since Jun 15, 20064:37:40 PM
  */
-public class Uispec4jtryout extends UISpecTestCase {
+public class TrialUITest extends UISpecTestCase {
 
 	/*
 	 * @see UISpecTestCase#setUp()

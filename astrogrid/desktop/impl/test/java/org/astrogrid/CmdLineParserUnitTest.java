@@ -3,12 +3,12 @@
  */
 package org.astrogrid;
 
+import junit.framework.TestCase;
+
 import org.apache.commons.cli.CommandLine;
 import org.astrogrid.desktop.hivemind.GenerateHivedoc;
 import org.astrogrid.desktop.hivemind.Launcher;
 import org.astrogrid.desktop.hivemind.ListProperties;
-
-import junit.framework.TestCase;
 
 /** test for the commandline parser.
  * @author Noel Winstanley
@@ -20,6 +20,7 @@ public class CmdLineParserUnitTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		System.setProperty("builtin.shutdown.exit", "false");		
+		//System.setProperty("asr.mode","true");
 		this.parser = new CmdLineParser();
 	}
 	

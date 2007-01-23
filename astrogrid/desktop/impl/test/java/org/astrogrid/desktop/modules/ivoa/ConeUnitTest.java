@@ -7,14 +7,14 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import junit.framework.TestCase;
+
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.easymock.MockControl;
-
-import junit.framework.TestCase;
 
 /** unit test for cone search interface
  * @author Noel Winstanley

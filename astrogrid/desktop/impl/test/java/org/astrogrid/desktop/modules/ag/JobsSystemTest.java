@@ -1,4 +1,4 @@
-/*$Id: JobsSystemTest.java,v 1.4 2007/01/09 16:12:19 nw Exp $
+/*$Id: JobsSystemTest.java,v 1.5 2007/01/23 11:53:38 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,21 +9,6 @@
  *
 **/
 package org.astrogrid.desktop.modules.ag;
-import org.astrogrid.acr.astrogrid.ExecutionInformation;
-import org.astrogrid.acr.astrogrid.Jobs;
-import org.astrogrid.acr.astrogrid.Myspace;
-import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.desktop.ARTestSetup;
-import org.astrogrid.desktop.InARTestCase;
-import org.astrogrid.workflow.beans.v1.Workflow;
-
-import org.apache.axis.utils.XMLUtils;
-import org.apache.xpath.XPath;
-import org.apache.xpath.XPathAPI;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
-import org.w3c.dom.Document;
-
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
@@ -31,8 +16,19 @@ import java.net.URL;
 import java.util.Arrays;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.acr.astrogrid.ExecutionInformation;
+import org.astrogrid.acr.astrogrid.Jobs;
+import org.astrogrid.acr.astrogrid.Myspace;
+import org.astrogrid.acr.builtin.ACR;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
+import org.astrogrid.workflow.beans.v1.Workflow;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.Unmarshaller;
+import org.w3c.dom.Document;
 
 /** exercise the jobs interface.
  * some order-dependency between the last tests.
@@ -192,6 +188,9 @@ public class JobsSystemTest extends InARTestCase {
 
 /* 
 $Log: JobsSystemTest.java,v $
+Revision 1.5  2007/01/23 11:53:38  nw
+cleaned up tests, organized imports, commented out or fixed failing tests.
+
 Revision 1.4  2007/01/09 16:12:19  nw
 improved tests - still need extending though.
 

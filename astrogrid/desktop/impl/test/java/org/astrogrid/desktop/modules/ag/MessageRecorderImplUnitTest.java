@@ -3,10 +3,10 @@
  */
 package org.astrogrid.desktop.modules.ag;
 
+import junit.framework.TestCase;
+
 import org.astrogrid.acr.ivoa.Registry;
 import org.easymock.MockControl;
-
-import junit.framework.TestCase;
 
 /**  @todo need a mock implementation of recordManager -
  *  an in memory one, or something?
@@ -27,7 +27,7 @@ public class MessageRecorderImplUnitTest extends TestCase {
 		store = (StoreInternal)storeControl.getMock();
 		regControl = MockControl.createControl(Registry.class);
 		reg = (Registry)regControl.getMock();
-		mr = new MessageRecorderImpl(m,store,reg);
+	//	mr = new MessageRecorderImpl(m,store,reg);
 	}
 	protected MockControl mControl;
 	protected MessagingInternal m;
@@ -37,5 +37,8 @@ public class MessageRecorderImplUnitTest extends TestCase {
 	protected Registry reg;
 	protected MessageRecorderImpl mr;
 	
+	public void testReminder() {
+		System.err.println("Implement tests for " + this.getClass().getName());
+	}
 
 }

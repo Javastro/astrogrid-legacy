@@ -1,4 +1,4 @@
-/*$Id: XmlRpcTransportIntegrationTest.java,v 1.4 2007/01/09 16:12:20 nw Exp $
+/*$Id: XmlRpcTransportIntegrationTest.java,v 1.5 2007/01/23 11:53:37 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,6 @@ import java.util.Random;
 import java.util.Vector;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.xmlrpc.XmlRpcClient;
@@ -30,7 +29,6 @@ import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
-import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParserUnitTest;
 import org.astrogrid.io.Piper;
 
 /** tests xmlrpc transport
@@ -176,7 +174,7 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
     // as this is an integration test, bot a system test, do this by getting ar to parse
     // in a passed-in xml document, and return the resource objects it contains
     public void testResourceProxyObject() throws Exception {
-    	InputStream is = ResourceStreamParserUnitTest.class.getResourceAsStream("multiple.xml");
+    	InputStream is = XmlRpcTransportIntegrationTest.class.getResourceAsStream("multiple.xml");
     	assertNotNull(is);
     	StringWriter sw = new StringWriter();
     	Piper.pipe(new InputStreamReader(is),sw);
@@ -213,6 +211,9 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
 
 /* 
 $Log: XmlRpcTransportIntegrationTest.java,v $
+Revision 1.5  2007/01/23 11:53:37  nw
+cleaned up tests, organized imports, commented out or fixed failing tests.
+
 Revision 1.4  2007/01/09 16:12:20  nw
 improved tests - still need extending though.
 

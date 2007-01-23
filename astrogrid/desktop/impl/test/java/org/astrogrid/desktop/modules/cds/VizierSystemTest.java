@@ -6,7 +6,6 @@ package org.astrogrid.desktop.modules.cds;
 import javax.xml.transform.TransformerException;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.astrogrid.acr.ServiceException;
@@ -14,7 +13,6 @@ import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.cds.VizieR;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
-import org.astrogrid.test.AstrogridAssert;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.w3c.dom.Document;
 

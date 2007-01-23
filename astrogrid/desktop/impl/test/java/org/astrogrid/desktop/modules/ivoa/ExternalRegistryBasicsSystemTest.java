@@ -4,13 +4,11 @@
 package org.astrogrid.desktop.modules.ivoa;
 
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamWriter;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
@@ -19,22 +17,12 @@ import org.astrogrid.acr.ivoa.ExternalRegistry;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.adql.v1_0.beans.SelectDocument;
-import org.astrogrid.adql.v1_0.beans.SelectType;
-import org.astrogrid.adql.v1_0.beans.impl.SelectDocumentImpl;
-import org.astrogrid.adql.v1_0.beans.impl.TableTypeImpl;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
-import org.astrogrid.desktop.modules.ivoa.RegistryInternal.StreamProcessor;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParserUnitTest;
 import org.astrogrid.util.DomHelper;
-import org.codehaus.xfire.util.STAXUtils;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.w3c.dom.Document;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /** System tests for Basic parts of the External Registry Component.
  * @implement implement RoR, and Identitiy.

@@ -3,9 +3,9 @@
  */
 package org.astrogrid.desktop.modules.dialogs.registry;
 
-import org.astrogrid.acr.InvalidArgumentException;
-
 import junit.framework.TestCase;
+
+import org.astrogrid.acr.InvalidArgumentException;
 
 /**
  * @author Noel Winstanley

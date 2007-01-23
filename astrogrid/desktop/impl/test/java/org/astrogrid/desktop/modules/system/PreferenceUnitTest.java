@@ -7,11 +7,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 
-import org.apache.hivemind.internal.Module;
-import org.astrogrid.desktop.hivemind.ServiceBeanUnitTest;
-import org.astrogrid.desktop.modules.system.Preference;
-
 import junit.framework.TestCase;
+
+import org.astrogrid.desktop.hivemind.ServiceBeanUnitTest;
 
 /**
  * @author Noel Winstanley

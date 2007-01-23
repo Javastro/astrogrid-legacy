@@ -4,16 +4,12 @@
 package org.astrogrid.desktop.modules.plastic;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.acr.builtin.ShutdownListener;
 import org.astrogrid.acr.system.BrowserControl;
-import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.RmiServer;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.common.namegen.InMemoryNameGen;

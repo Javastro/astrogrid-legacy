@@ -4,13 +4,11 @@
 package org.astrogrid.desktop.modules.cds;
 
 import java.io.IOException;
-import java.net.URL;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.astrogrid.acr.NotFoundException;
@@ -20,7 +18,6 @@ import org.astrogrid.acr.cds.Sesame;
 import org.astrogrid.acr.cds.SesamePositionBean;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
-import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.util.DomHelper;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.xml.sax.SAXException;

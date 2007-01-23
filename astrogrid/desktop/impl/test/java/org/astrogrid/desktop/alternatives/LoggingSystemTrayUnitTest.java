@@ -3,9 +3,9 @@
  */
 package org.astrogrid.desktop.alternatives;
 
-import org.astrogrid.acr.system.SystemTray;
-
 import junit.framework.TestCase;
+
+import org.astrogrid.acr.system.SystemTray;
 
 /** tests the loggin system tray. not much to see here - just checking for npes
  * @author Noel Winstanley

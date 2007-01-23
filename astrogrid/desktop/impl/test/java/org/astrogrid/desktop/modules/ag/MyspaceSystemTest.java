@@ -1,4 +1,4 @@
-/*$Id: MyspaceSystemTest.java,v 1.7 2007/01/09 16:12:19 nw Exp $
+/*$Id: MyspaceSystemTest.java,v 1.8 2007/01/23 11:53:38 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,27 +10,11 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.astrogrid.Myspace;
-import org.astrogrid.acr.astrogrid.NodeInformation;
-import org.astrogrid.acr.astrogrid.Registry;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.desktop.ARTestSetup;
-import org.astrogrid.filestore.common.FileStoreInputStream;
-import org.astrogrid.filestore.common.FileStoreOutputStream;
-import org.astrogrid.io.Piper;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
@@ -39,6 +23,19 @@ import java.util.Arrays;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.astrogrid.Myspace;
+import org.astrogrid.acr.astrogrid.NodeInformation;
+import org.astrogrid.acr.astrogrid.ResourceInformation;
+import org.astrogrid.acr.builtin.ACR;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.filestore.common.FileStoreInputStream;
+import org.astrogrid.filestore.common.FileStoreOutputStream;
+import org.astrogrid.io.Piper;
 
 /** Exercise the myspace interface.
  * tests are a bit order dependent - can't be helped really.
@@ -353,6 +350,9 @@ public class MyspaceSystemTest extends TestCase {
 
 /* 
 $Log: MyspaceSystemTest.java,v $
+Revision 1.8  2007/01/23 11:53:38  nw
+cleaned up tests, organized imports, commented out or fixed failing tests.
+
 Revision 1.7  2007/01/09 16:12:19  nw
 improved tests - still need extending though.
 

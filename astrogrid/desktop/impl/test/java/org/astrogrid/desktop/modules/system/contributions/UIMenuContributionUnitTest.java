@@ -6,9 +6,9 @@ package org.astrogrid.desktop.modules.system.contributions;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
-import org.astrogrid.desktop.modules.system.Preference;
-
 import junit.framework.TestCase;
+
+import org.astrogrid.desktop.modules.system.Preference;
 
 /** test ofr a ui menu contribution.
  * @author Noel Winstanley

@@ -1,4 +1,4 @@
-/*$Id: WebServerIntegrationTest.java,v 1.2 2007/01/09 16:12:20 nw Exp $
+/*$Id: WebServerIntegrationTest.java,v 1.3 2007/01/23 11:53:36 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,17 +10,16 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.acr.system.WebServer;
-import org.astrogrid.desktop.ARTestSetup;
-import org.astrogrid.desktop.InARTestCase;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.astrogrid.acr.builtin.ACR;
+import org.astrogrid.acr.system.WebServer;
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
@@ -69,6 +68,9 @@ public class WebServerIntegrationTest extends InARTestCase {
 
 /* 
 $Log: WebServerIntegrationTest.java,v $
+Revision 1.3  2007/01/23 11:53:36  nw
+cleaned up tests, organized imports, commented out or fixed failing tests.
+
 Revision 1.2  2007/01/09 16:12:20  nw
 improved tests - still need extending though.
 

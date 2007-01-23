@@ -6,12 +6,10 @@ package org.astrogrid.desktop.modules.system.contributions;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
-import javax.swing.SwingUtilities;
+import junit.framework.TestCase;
 
 import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.system.UIImpl;
-
-import junit.framework.TestCase;
 
 /** test for a ui tab contribution.
  * just works oout getter and setter methods.

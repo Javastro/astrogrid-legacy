@@ -1,4 +1,4 @@
-/*$Id: RegistryRpcTransportTest.java,v 1.1 2007/01/09 16:12:19 nw Exp $
+/*$Id: RegistryRpcTransportTest.java,v 1.2 2007/01/23 11:53:38 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,22 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
+import junit.framework.AssertionFailedError;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
+import org.apache.axis.utils.XMLUtils;
+import org.apache.xmlrpc.XmlRpcClient;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Registry;
@@ -17,32 +33,7 @@ import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.ARTestSetup;
-import org.astrogrid.desktop.modules.system.ApiHelpRpcTransportTest;
-
-import org.apache.axis.utils.XMLUtils;
-import org.apache.xmlrpc.XmlRpcClient;
-import org.apache.xmlrpc.XmlRpcException;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
-import javax.xml.parsers.ParserConfigurationException;
-
-import junit.framework.AssertionFailedError;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /** exercises ag registry component via xmlrpc.
  * @author Noel Winstanley nw@jb.man.ac.uk 03-Aug-2005
@@ -250,6 +241,9 @@ protected void tearDown() throws Exception {
 
 /* 
 $Log: RegistryRpcTransportTest.java,v $
+Revision 1.2  2007/01/23 11:53:38  nw
+cleaned up tests, organized imports, commented out or fixed failing tests.
+
 Revision 1.1  2007/01/09 16:12:19  nw
 improved tests - still need extending though.
 

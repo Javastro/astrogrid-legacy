@@ -4,7 +4,6 @@
 package org.astrogrid.desktop.modules.cds;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.astrogrid.acr.ServiceException;

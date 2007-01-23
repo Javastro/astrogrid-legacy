@@ -13,7 +13,6 @@ import org.astrogrid.acr.cds.UCD;
 import org.astrogrid.acr.cds.VizieR;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
-import org.astrogrid.desktop.modules.ag.AstrogridModuleIntegrationTest;
 
 /**
  * @author Noel Winstanley

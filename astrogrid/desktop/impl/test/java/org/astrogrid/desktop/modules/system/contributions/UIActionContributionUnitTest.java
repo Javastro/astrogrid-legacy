@@ -9,12 +9,11 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JButton;
 
+import junit.framework.TestCase;
+
 import org.astrogrid.desktop.alternatives.HeadlessUIFactory;
 import org.astrogrid.desktop.modules.system.Preference;
-import org.astrogrid.desktop.modules.system.UIImpl;
 import org.easymock.MockControl;
-
-import junit.framework.TestCase;
 
 /** unit tests for the ui action contribution.
  * @author Noel Winstanley

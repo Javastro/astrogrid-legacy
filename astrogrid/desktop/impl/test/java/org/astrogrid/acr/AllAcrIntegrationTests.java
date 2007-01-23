@@ -3,12 +3,12 @@
  */
 package org.astrogrid.acr;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.ARTestSetup;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * @author Noel Winstanley

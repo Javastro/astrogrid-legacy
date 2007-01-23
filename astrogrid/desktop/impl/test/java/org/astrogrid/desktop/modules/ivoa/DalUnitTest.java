@@ -15,7 +15,6 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.apache.commons.lang.NotImplementedException;
-import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.NotFoundException;
@@ -23,13 +22,8 @@ import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParser;
-import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParserUnitTest;
 import org.astrogrid.desktop.modules.util.TablesImplUnitTest;
-import org.astrogrid.test.AstrogridAssert;
-import org.custommonkey.xmlunit.XMLAssert;
 import org.easymock.AbstractMatcher;
-import org.easymock.ArgumentsMatcher;
 import org.easymock.MockControl;
 import org.w3c.dom.Document;
 

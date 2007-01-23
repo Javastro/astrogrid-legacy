@@ -6,14 +6,12 @@ package org.astrogrid.desktop.modules.ag;
 import java.io.IOException;
 import java.net.URI;
 
+import junit.framework.TestCase;
+
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.Folder;
-import org.easymock.AbstractMatcher;
-import org.easymock.ArgumentsMatcher;
 import org.easymock.MockControl;
-
-import junit.framework.TestCase;
 
 /**
  * @author Noel Winstanley

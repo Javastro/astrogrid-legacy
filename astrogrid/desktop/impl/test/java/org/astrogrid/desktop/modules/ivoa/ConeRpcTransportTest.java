@@ -5,8 +5,6 @@ package org.astrogrid.desktop.modules.ivoa;
 
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -15,7 +13,6 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.xmlrpc.XmlRpcClient;
-import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;

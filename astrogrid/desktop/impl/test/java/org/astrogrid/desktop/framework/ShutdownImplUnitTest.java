@@ -6,11 +6,11 @@ package org.astrogrid.desktop.framework;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.TestCase;
+
 import org.apache.hivemind.ShutdownCoordinator;
 import org.astrogrid.acr.builtin.ShutdownListener;
 import org.easymock.MockControl;
-
-import junit.framework.TestCase;
 
 /** unit test of shutdown.
  * disables the confirmation dialog - so not tested completely.

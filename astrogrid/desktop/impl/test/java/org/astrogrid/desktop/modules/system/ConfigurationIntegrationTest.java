@@ -1,4 +1,4 @@
-/*$Id: ConfigurationIntegrationTest.java,v 1.2 2007/01/09 16:12:20 nw Exp $
+/*$Id: ConfigurationIntegrationTest.java,v 1.3 2007/01/23 11:53:36 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,18 +10,15 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+import java.util.Map;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
-import org.astrogrid.desktop.framework.ACRInternal;
-
-import java.util.Map;
-import java.util.prefs.BackingStoreException;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /** test the configuration component in a running acr.
  * @author Noel Winstanley nw@jb.man.ac.uk 17-Mar-2005
@@ -76,6 +73,9 @@ public class ConfigurationIntegrationTest extends InARTestCase {
 
 /* 
 $Log: ConfigurationIntegrationTest.java,v $
+Revision 1.3  2007/01/23 11:53:36  nw
+cleaned up tests, organized imports, commented out or fixed failing tests.
+
 Revision 1.2  2007/01/09 16:12:20  nw
 improved tests - still need extending though.
 

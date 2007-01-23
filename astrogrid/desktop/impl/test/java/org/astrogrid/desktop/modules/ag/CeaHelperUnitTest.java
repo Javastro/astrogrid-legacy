@@ -3,21 +3,15 @@
  */
 package org.astrogrid.desktop.modules.ag;
 
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.astrogrid.acr.NotApplicableException;
-import org.astrogrid.acr.NotFoundException;
+import junit.framework.TestCase;
+
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.CeaService;
 import org.astrogrid.acr.ivoa.Registry;
-import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
-import org.astrogrid.desktop.InARTestCase;
 import org.easymock.MockControl;
-
-import junit.framework.TestCase;
 
 /** Unit test for cea helper.
  * @author Noel Winstanley

@@ -3,14 +3,14 @@
  */
 package org.astrogrid.desktop;
 
+import junit.framework.TestCase;
+
 import org.apache.hivemind.Registry;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.desktop.framework.ACRInternal;
-
-import junit.framework.TestCase;
 
 /** Subclass of test case that runs in-ar.
  * @author Noel Winstanley

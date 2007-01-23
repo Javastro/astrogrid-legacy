@@ -3,13 +3,12 @@
  */
 package org.astrogrid.desktop.alternatives;
 
+import junit.framework.TestCase;
+
 import org.astrogrid.desktop.modules.system.BackgroundExecutor;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.easymock.MockControl;
-
-import junit.framework.TestCase;
 
 /** test for the in thread executor.
  * @author Noel Winstanley

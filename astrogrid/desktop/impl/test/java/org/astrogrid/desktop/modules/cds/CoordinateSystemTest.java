@@ -3,16 +3,14 @@
  */
 package org.astrogrid.desktop.modules.cds;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.cds.Coordinate;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
-import org.astrogrid.desktop.modules.system.ApiHelpIntegrationTest;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /** test of the coordinate conversion service from cds.
  * not a test of the correctness of the data from the service - that's their problem.

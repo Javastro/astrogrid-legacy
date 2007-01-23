@@ -1,4 +1,4 @@
-/*$Id: ConfigurationRmiTransportTest.java,v 1.1 2007/01/09 16:12:19 nw Exp $
+/*$Id: ConfigurationRmiTransportTest.java,v 1.2 2007/01/23 11:53:36 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,15 +10,12 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import org.astrogrid.acr.Finder;
-import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.desktop.ARTestSetup;
-
-import java.util.Map;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.astrogrid.acr.Finder;
+import org.astrogrid.acr.builtin.ACR;
+import org.astrogrid.desktop.ARTestSetup;
 
 /** perform same tests on configuration component, but this time going through java rmi.
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2005
@@ -40,6 +37,9 @@ public class ConfigurationRmiTransportTest extends ConfigurationIntegrationTest 
 
 /* 
 $Log: ConfigurationRmiTransportTest.java,v $
+Revision 1.2  2007/01/23 11:53:36  nw
+cleaned up tests, organized imports, commented out or fixed failing tests.
+
 Revision 1.1  2007/01/09 16:12:19  nw
 improved tests - still need extending though.
 

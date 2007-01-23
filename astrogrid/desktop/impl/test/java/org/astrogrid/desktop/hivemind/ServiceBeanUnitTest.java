@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import junit.framework.TestCase;
+
 import org.apache.hivemind.ClassResolver;
 import org.apache.hivemind.ErrorHandler;
 import org.apache.hivemind.Location;
@@ -15,8 +17,6 @@ import org.apache.hivemind.internal.Module;
 import org.apache.hivemind.internal.ServiceModelFactory;
 import org.apache.hivemind.internal.ServicePoint;
 import org.apache.hivemind.schema.Translator;
-
-import junit.framework.TestCase;
 
 /** Simple unit tests for the service bean
  * @author Noel Winstanley

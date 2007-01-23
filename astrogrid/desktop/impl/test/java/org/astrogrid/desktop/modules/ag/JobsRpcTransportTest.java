@@ -1,4 +1,4 @@
-/*$Id: JobsRpcTransportTest.java,v 1.1 2007/01/09 16:12:19 nw Exp $
+/*$Id: JobsRpcTransportTest.java,v 1.2 2007/01/23 11:53:38 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,21 +9,6 @@
  *
 **/
 package org.astrogrid.desktop.modules.ag;
-
-import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.SecurityException;
-import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.ExecutionInformation;
-import org.astrogrid.acr.astrogrid.Jobs;
-import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.acr.system.WebServer;
-import org.astrogrid.desktop.ARTestSetup;
-
-import org.apache.axis.utils.XMLUtils;
-import org.apache.xmlrpc.XmlRpcClient;
-import org.omg.CORBA.SystemException;
-import org.w3c.dom.Document;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -36,6 +21,18 @@ import java.util.Vector;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.apache.axis.utils.XMLUtils;
+import org.apache.xmlrpc.XmlRpcClient;
+import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.SecurityException;
+import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.ExecutionInformation;
+import org.astrogrid.acr.astrogrid.Jobs;
+import org.astrogrid.acr.system.WebServer;
+import org.astrogrid.desktop.ARTestSetup;
+import org.w3c.dom.Document;
 
 /** exercise xmlrpc interface to  jobs component.
  * @author Noel Winstanley nw@jb.man.ac.uk 09-Aug-2005
@@ -231,6 +228,9 @@ public class JobsRpcTransportTest extends JobsSystemTest implements Jobs {
 
 /* 
 $Log: JobsRpcTransportTest.java,v $
+Revision 1.2  2007/01/23 11:53:38  nw
+cleaned up tests, organized imports, commented out or fixed failing tests.
+
 Revision 1.1  2007/01/09 16:12:19  nw
 improved tests - still need extending though.
 

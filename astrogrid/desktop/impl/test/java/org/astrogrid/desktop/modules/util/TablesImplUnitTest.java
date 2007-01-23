@@ -2,25 +2,13 @@ package org.astrogrid.desktop.modules.util;
 
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.URI;
 import java.net.URL;
 
-import javax.xml.parsers.ParserConfigurationException;
+import junit.framework.TestCase;
 
-import org.apache.commons.lang.StringUtils;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.io.Piper;
-import org.custommonkey.xmlunit.XMLAssert;
-import org.custommonkey.xmlunit.XMLUnit;
 import org.easymock.MockControl;
-import org.xml.sax.SAXException;
-
-import junit.framework.TestCase;
 
 /**
  * @author Noel Winstanley

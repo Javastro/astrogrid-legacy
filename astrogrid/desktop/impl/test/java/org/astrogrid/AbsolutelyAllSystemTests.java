@@ -3,12 +3,11 @@
  */
 package org.astrogrid;
 
-import org.astrogrid.desktop.ARTestSetup;
-import org.astrogrid.desktop.modules.ui.AllUISystemTests;
-import org.astrogrid.desktop.modules.votech.AllVotechSystemTests;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.modules.votech.AllVotechSystemTests;
 
 /**All system tests - tests workbench's integration with external services.
  * Looong running and not very repeatable - these coud do with some tidying up.

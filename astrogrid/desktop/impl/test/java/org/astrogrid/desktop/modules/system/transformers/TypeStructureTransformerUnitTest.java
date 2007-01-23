@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformerUnitTest.java,v 1.2 2007/01/09 16:12:20 nw Exp $
+/*$Id: TypeStructureTransformerUnitTest.java,v 1.3 2007/01/23 11:53:38 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,13 +11,6 @@
 package org.astrogrid.desktop.modules.system.transformers;
 
 
-import org.apache.commons.beanutils.MethodUtils;
-import org.apache.commons.collections.Transformer;
-import org.astrogrid.acr.builtin.ComponentDescriptor;
-import org.astrogrid.acr.builtin.MethodDescriptor;
-import org.astrogrid.acr.builtin.ModuleDescriptor;
-import org.astrogrid.acr.builtin.ValueDescriptor;
-
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -29,6 +22,12 @@ import java.util.Map;
 import java.util.Vector;
 
 import junit.framework.TestCase;
+
+import org.apache.commons.collections.Transformer;
+import org.astrogrid.acr.builtin.ComponentDescriptor;
+import org.astrogrid.acr.builtin.MethodDescriptor;
+import org.astrogrid.acr.builtin.ModuleDescriptor;
+import org.astrogrid.acr.builtin.ValueDescriptor;
 
 /** test for the type structure transformer.
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Feb-2005
@@ -284,6 +283,9 @@ private int i;
 
 /* 
 $Log: TypeStructureTransformerUnitTest.java,v $
+Revision 1.3  2007/01/23 11:53:38  nw
+cleaned up tests, organized imports, commented out or fixed failing tests.
+
 Revision 1.2  2007/01/09 16:12:20  nw
 improved tests - still need extending though.
 

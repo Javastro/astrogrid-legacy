@@ -3,10 +3,10 @@
  */
 package org.astrogrid.desktop.modules.background;
 
-import org.astrogrid.desktop.ARTestSetup;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.astrogrid.desktop.ARTestSetup;
 
 /**
  * @author Noel Winstanley

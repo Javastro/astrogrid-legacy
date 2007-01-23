@@ -9,7 +9,6 @@ import junit.framework.TestSuite;
 import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.desktop.ARTestSetup;
-import org.astrogrid.desktop.modules.system.ApiHelpRmiTransportTest;
 
 /**
  * @author Noel Winstanley

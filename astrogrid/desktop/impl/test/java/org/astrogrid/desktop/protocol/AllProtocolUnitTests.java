@@ -3,10 +3,10 @@
  */
 package org.astrogrid.desktop.protocol;
 
-import org.astrogrid.desktop.protocol.classpath.HandlerUnitTest;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.astrogrid.desktop.protocol.classpath.HandlerUnitTest;
 
 /**
  * @author Noel Winstanley

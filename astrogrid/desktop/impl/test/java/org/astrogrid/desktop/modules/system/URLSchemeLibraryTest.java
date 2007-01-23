@@ -5,11 +5,10 @@ package org.astrogrid.desktop.modules.system;
 
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.channels.Pipe;
-
-import org.astrogrid.io.Piper;
 
 import junit.framework.TestCase;
+
+import org.astrogrid.io.Piper;
 
 /** Tests the behaviour of 'undocumented' url protocol handlers.
  * @author Noel Winstanley

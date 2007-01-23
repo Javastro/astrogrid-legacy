@@ -3,10 +3,10 @@
  */
 package org.astrogrid.desktop.modules.ui;
 
-import org.astrogrid.desktop.ARTestSetup;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.astrogrid.desktop.ARTestSetup;
 
 /** tests the UI components.
  * at present, just verifies that each can be displayed

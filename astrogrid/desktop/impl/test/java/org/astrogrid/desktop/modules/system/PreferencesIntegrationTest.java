@@ -46,7 +46,7 @@ public class PreferencesIntegrationTest extends InARTestCase {
 
 	}
     
-    public void testOptionPreference() throws Exception {
+    public void testBooleanPreference() throws Exception {
 		Preference p = ci.find("org.votech.plastic.notificationsenabled");
 		assertNotNull(p);
 		assertNotNull(p.getValue());
@@ -59,7 +59,8 @@ public class PreferencesIntegrationTest extends InARTestCase {
 		assertNotNull(p.getDescription());
 		assertEquals("plastic",p.getModuleName());
 		assertEquals(0,p.getAlternatives().length);
-		assertEquals(2,p.getOptions().length);		
+		assertEquals(0,p.getOptions().length);		
+		assertEquals(Preference.BOOLEAN,p.getUnits());
 
 	}
 	

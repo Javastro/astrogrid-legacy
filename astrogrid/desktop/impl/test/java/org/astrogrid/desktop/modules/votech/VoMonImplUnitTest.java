@@ -5,25 +5,18 @@ package org.astrogrid.desktop.modules.votech;
 
 import java.net.URI;
 import java.net.URL;
-import java.util.Arrays;
 
+import junit.framework.TestCase;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.config.Configuration;
 
-import org.astrogrid.acr.system.UI;
-import org.astrogrid.desktop.alternatives.HeadlessUI;
 import org.astrogrid.desktop.alternatives.HeadlessUIFactory;
-import org.astrogrid.desktop.modules.ivoa.CacheFactory;
-import org.astrogrid.desktop.modules.ivoa.CacheFactoryImpl;
-import org.astrogrid.desktop.modules.system.BackgroundExecutor;
+import org.astrogrid.desktop.modules.ivoa.CacheFactoryInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
-import org.easymock.MockControl;
 import org.votech.VoMon;
 import org.votech.VoMonBean;
-
-import junit.framework.TestCase;
 
 /**
  * @author Noel Winstanley
@@ -35,14 +28,14 @@ public class VoMonImplUnitTest extends TestCase {
 		super.setUp();
 		endpoint = VoMonImplUnitTest.class.getResource("status.xml");
 		assertNotNull("status.xml not availebl",endpoint);
-		cacheFactory = new CacheFactory() {
+		cacheFactory = new CacheFactoryInternal() {
 			Configuration conf = new Configuration();
 			CacheConfiguration defaults = new CacheConfiguration() {{
 
 				conf.setDefaultCacheConfiguration(this);
 			}};
 			CacheConfiguration tmp = new CacheConfiguration() {{
-				setName(CacheFactory.VOMON_CACHE);
+				setName(CacheFactoryInternal.VOMON_CACHE);
 				setDiskPersistent(false);
 				setOverflowToDisk(false);
 				setMaxElementsInMemory(1000);
@@ -61,7 +54,7 @@ public class VoMonImplUnitTest extends TestCase {
 		};
 		HeadlessUIFactory fac = new HeadlessUIFactory();
 		ui = fac.getUI();
-		cache = cacheFactory.getManager().getCache(CacheFactory.VOMON_CACHE);
+		cache = cacheFactory.getManager().getCache(CacheFactoryInternal.VOMON_CACHE);
 		
 		assertNotNull("cache is null",cache);
 	}
@@ -69,7 +62,7 @@ public class VoMonImplUnitTest extends TestCase {
 	final static int refresh = 30;
 	URL endpoint;
 	UIInternal ui;
-	CacheFactory cacheFactory;
+	CacheFactoryInternal cacheFactory;
 	Cache cache;
 	
 	protected void tearDown() throws Exception {

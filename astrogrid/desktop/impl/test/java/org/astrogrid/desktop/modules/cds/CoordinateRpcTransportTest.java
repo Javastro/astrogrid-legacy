@@ -13,7 +13,6 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.cds.Coordinate;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.ARTestSetup;
-import org.astrogrid.desktop.modules.system.ApiHelpRpcTransportTest;
 
 /** test coordinate component over xmlrpc
  * @author Noel Winstanley

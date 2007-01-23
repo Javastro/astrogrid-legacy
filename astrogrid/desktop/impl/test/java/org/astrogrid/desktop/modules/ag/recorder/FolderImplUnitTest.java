@@ -6,12 +6,10 @@ package org.astrogrid.desktop.modules.ag.recorder;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Comparator;
 import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.collections.ComparatorUtils;
 import org.astrogrid.WorkbenchAssert;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 

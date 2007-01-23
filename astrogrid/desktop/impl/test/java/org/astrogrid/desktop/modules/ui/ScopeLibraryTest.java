@@ -9,10 +9,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.jar.Manifest;
 
+import junit.framework.TestCase;
+
 import org.apache.commons.collections.BufferOverflowException;
 import org.apache.commons.collections.buffer.BoundedFifoBuffer;
-
-import junit.framework.TestCase;
 
 /** tests of some libraries used to build astroscope.
  * @author Noel Winstanley

@@ -1,4 +1,4 @@
-/*$Id: ACRExceptionUnitTest.java,v 1.1 2006/06/15 09:18:24 nw Exp $
+/*$Id: ACRExceptionUnitTest.java,v 1.2 2007/01/23 11:53:37 nw Exp $
  * Created on 29-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,14 +10,17 @@
 **/
 package org.astrogrid.acr;
 
-import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 
 import java.io.IOException;
 import java.rmi.UnexpectedException;
 
 import junit.framework.TestCase;
 
+import org.apache.hivemind.ApplicationRuntimeException;
+
 /** tests the cause-exception converting behaviour of acr exception.
+ * 
+ * @TODO fix the exception creation
  * @author Noel Winstanley nw@jb.man.ac.uk 29-Jul-2005
  *
  */
@@ -39,7 +42,7 @@ public class ACRExceptionUnitTest extends TestCase {
     }
     
     public void testUnknownCause() {
-        Exception cause = new WorkflowInterfaceException("a message");
+        Exception cause = new ApplicationRuntimeException("a message");
         ACRException e = new ACRException("message",cause);
         assertNotNull(e.getCause());
         assertNull(e.getCause().getCause());
@@ -50,7 +53,7 @@ public class ACRExceptionUnitTest extends TestCase {
     }
     
     public void testJavaUnknownCause() {
-        Exception innermost = new WorkflowInterfaceException(" a message");
+        Exception innermost = new ApplicationRuntimeException (" a message");
         Exception cause = new UnexpectedException("msg",innermost);
         ACRException e = new ACRException("wibble",cause);
         assertNotNull(e.getCause());
@@ -64,7 +67,7 @@ public class ACRExceptionUnitTest extends TestCase {
     
     public void testUnknownJavaCause() {
         Exception innermost = new UnexpectedException(" a message");
-        Exception cause = new WorkflowInterfaceException("msg",innermost);
+        Exception cause = new ApplicationRuntimeException("msg",innermost);
         ACRException e = new ACRException("wibble",cause);
         assertNotNull(e.getCause());
         assertNotNull(e.getCause().getCause());
@@ -76,8 +79,8 @@ public class ACRExceptionUnitTest extends TestCase {
     
     
     public void testUnknownUnknownCause() {
-        Exception innermost = new WorkflowInterfaceException(" a message");
-        Exception cause = new WorkflowInterfaceException("msg",innermost);
+        Exception innermost = new ApplicationRuntimeException(" a message");
+        Exception cause = new ApplicationRuntimeException("msg",innermost);
         ACRException e = new ACRException("wibble",cause);
         assertNotNull(e.getCause());
         assertNotNull(e.getCause().getCause());
@@ -105,6 +108,9 @@ public class ACRExceptionUnitTest extends TestCase {
 
 /* 
 $Log: ACRExceptionUnitTest.java,v $
+Revision 1.2  2007/01/23 11:53:37  nw
+cleaned up tests, organized imports, commented out or fixed failing tests.
+
 Revision 1.1  2006/06/15 09:18:24  nw
 improved junit tests
 

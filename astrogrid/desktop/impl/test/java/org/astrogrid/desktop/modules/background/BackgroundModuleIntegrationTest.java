@@ -5,14 +5,12 @@ package org.astrogrid.desktop.modules.background;
 
 import java.net.URI;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
-import org.astrogrid.desktop.modules.ag.AstrogridModuleIntegrationTest;
 import org.astrogrid.desktop.modules.ag.RemoteProcessStrategy;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * @author Noel Winstanley

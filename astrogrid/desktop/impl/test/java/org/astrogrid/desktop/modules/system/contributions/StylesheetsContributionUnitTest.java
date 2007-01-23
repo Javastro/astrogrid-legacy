@@ -8,11 +8,11 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 
+import junit.framework.TestCase;
+
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-
-import junit.framework.TestCase;
 
 /** tests for the stylesheetcontribution bean.
  * @author Noel Winstanley

@@ -3,10 +3,10 @@
  */
 package org.astrogrid.desktop.modules.system.contributions;
 
+import junit.framework.TestCase;
+
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.beanutils.converters.ByteConverter;
-
-import junit.framework.TestCase;
 
 /** simple tests for the converter contribution.
  * @author Noel Winstanley

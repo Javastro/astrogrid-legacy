@@ -7,6 +7,8 @@ import java.util.NoSuchElementException;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
+import junit.framework.TestCase;
+
 import org.apache.commons.collections.IteratorUtils;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.CeaServerCapability;
@@ -25,8 +27,6 @@ import org.astrogrid.acr.ivoa.resource.ResourceName;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.SiapCapability;
 import org.astrogrid.acr.ivoa.resource.SiapService;
-
-import junit.framework.TestCase;
 
 /** unit test for the resource stream parser. */
 public class ResourceStreamParserUnitTest extends TestCase {

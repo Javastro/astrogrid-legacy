@@ -3,7 +3,6 @@
  */
 package org.astrogrid.desktop.modules.cds;
 
-import java.rmi.RemoteException;
 import java.util.Vector;
 
 import junit.framework.Test;

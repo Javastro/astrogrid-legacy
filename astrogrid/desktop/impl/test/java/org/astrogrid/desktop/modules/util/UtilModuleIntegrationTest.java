@@ -9,7 +9,6 @@ import junit.framework.TestSuite;
 import org.astrogrid.acr.util.Tables;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
-import org.astrogrid.desktop.modules.system.SystemModuleIntegrationTest;
 
 /**
  * @author Noel Winstanley

@@ -1,4 +1,4 @@
-/*$Id: RegistrySystemTest.java,v 1.6 2007/01/09 16:12:18 nw Exp $
+/*$Id: RegistrySystemTest.java,v 1.7 2007/01/23 11:53:38 nw Exp $
  * Created on 01-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,25 +10,19 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
+import java.net.URI;
+import java.net.URL;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
+import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
-import org.astrogrid.desktop.modules.system.ApiHelpIntegrationTest;
-import org.astrogrid.registry.client.query.ResourceData;
-
-import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Document;
-
-import java.net.URI;
-import java.net.URL;
-
-
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /** test functionality of in-process registry.
  * system test - requires a running astrogrid to connect to.
@@ -166,6 +160,9 @@ public class RegistrySystemTest extends InARTestCase {
 
 /* 
 $Log: RegistrySystemTest.java,v $
+Revision 1.7  2007/01/23 11:53:38  nw
+cleaned up tests, organized imports, commented out or fixed failing tests.
+
 Revision 1.6  2007/01/09 16:12:18  nw
 improved tests - still need extending though.
 

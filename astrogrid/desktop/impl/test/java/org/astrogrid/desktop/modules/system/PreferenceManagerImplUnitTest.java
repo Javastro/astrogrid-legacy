@@ -9,15 +9,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.prefs.Preferences;
+
+import junit.framework.TestCase;
 
 import org.apache.hivemind.SymbolSource;
 import org.astrogrid.config.PropertyNotFoundException;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.desktop.modules.system.Preference;
-import org.astrogrid.desktop.modules.system.PreferenceManagerImpl;
 import org.easymock.MockControl;
-
-import junit.framework.TestCase;
 
 /**
  * @author Noel Winstanley
@@ -35,9 +34,14 @@ public class PreferenceManagerImplUnitTest extends TestCase {
 		pref2.setName("b");
 		pref2.setDefaultValue("b");
 		root = new ArrayList();
-		root.add(this.getClass());
+		Class clazz = this.getClass();
+		Preferences javaPrefs = Preferences.userNodeForPackage(clazz);
+		javaPrefs.removeNode();
+		javaPrefs.flush();
+		root.add(clazz);
 		symbolsControl = MockControl.createControl(SymbolSource.class);
 		symbols = (SymbolSource)symbolsControl.getMock();
+		
 	}
 
 	protected void tearDown() throws Exception {
@@ -128,8 +132,8 @@ public class PreferenceManagerImplUnitTest extends TestCase {
 		assertSame(pref1,candidate);
 		assertNotNull(candidate.getValue());
 		assertEquals("x",candidate.getValue());
-		
 		symbolsControl.verify();
+		
 		// as we've set it all up already, just check this last stage here.		
 		assertEquals("x",pMan.valueForSymbol(pref1.getName()));
 		assertEquals("x",pMan.provideObject(null, String.class, pref1.getName(), null));

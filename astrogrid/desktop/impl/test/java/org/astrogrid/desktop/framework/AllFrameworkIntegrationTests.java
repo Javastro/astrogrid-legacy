@@ -1,4 +1,4 @@
-/*$Id: AllFrameworkIntegrationTests.java,v 1.1 2007/01/09 16:12:21 nw Exp $
+/*$Id: AllFrameworkIntegrationTests.java,v 1.2 2007/01/23 11:53:38 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,10 @@
  **/
 package org.astrogrid.desktop.framework;
 
-import org.astrogrid.desktop.ARTestSetup;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.astrogrid.desktop.ARTestSetup;
 
 /** tests for the framework package */
 public class AllFrameworkIntegrationTests {
@@ -32,6 +32,9 @@ public class AllFrameworkIntegrationTests {
 
 /* 
  $Log: AllFrameworkIntegrationTests.java,v $
+ Revision 1.2  2007/01/23 11:53:38  nw
+ cleaned up tests, organized imports, commented out or fixed failing tests.
+
  Revision 1.1  2007/01/09 16:12:21  nw
  improved tests - still need extending though.
 

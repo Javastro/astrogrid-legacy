@@ -55,7 +55,10 @@ public abstract class AbstractPlasticBase extends TestCase {
         URI hubId = hub.getHubId();
         plids.remove(hubId); 
         for (Iterator it = plids.iterator();it.hasNext();) {
-            URI plid = (URI) it.next(); 
+      //NWW: found this to be returning Strings now      
+        	//URI plid = (URI) it.next();
+        	// will work nomatter whether uri or string is returned - JOHN - check what you want here.
+        	URI plid = new URI(it.next().toString());
             hub.unregister(plid);
         }
         List newPlids = hub.getRegisteredIds();
@@ -81,7 +84,8 @@ public abstract class AbstractPlasticBase extends TestCase {
         TestPlasticApplication app = getApplication(null);
         URI appId = app.registerWith(hub,"app");
         String hubName = basicHubMetadataCheck(CommonMessageConstants.GET_NAME, appId);
-        assertEquals("Astro Runtime", hubName);
+        //assertEquals("AstroGrid Workbench", hubName); NWW it varties. when run in isolation it's 'Astro Runtime', when run asa part of all integration tests, its' AstroGrid Workencnh'
+        assertTrue(hubName.equals("AstroGrid Workbench") || hubName.equals("Astro Runtime"));
         basicHubMetadataCheck(CommonMessageConstants.GET_DESCRIPTION, appId);
         basicHubMetadataCheck(CommonMessageConstants.GET_IVORN, appId);
         basicHubMetadataCheck(CommonMessageConstants.GET_ICON, appId);

@@ -3,14 +3,12 @@
  */
 package org.astrogrid.desktop.modules.ui.sendto;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
+
+import junit.framework.TestCase;
 
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.easymock.MockControl;
-
-
-import junit.framework.TestCase;
 
 /** unit test for the functionality in the consumer base class
  * @author Noel Winstanley

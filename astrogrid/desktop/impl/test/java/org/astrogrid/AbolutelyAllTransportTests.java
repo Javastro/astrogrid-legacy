@@ -3,15 +3,13 @@
  */
 package org.astrogrid;
 
-import org.astrogrid.desktop.ARTestSetup;
-import org.astrogrid.desktop.framework.AllFrameworkIntegrationTests;
-import org.astrogrid.desktop.modules.cds.AllCdsTransportTests;
-import org.astrogrid.desktop.modules.ivoa.AllIvoaIntegrationTests;
-import org.astrogrid.desktop.modules.ivoa.AllIvoaTransportTests;
-import org.astrogrid.desktop.modules.system.AllSystemTransportTests;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.modules.cds.AllCdsTransportTests;
+import org.astrogrid.desktop.modules.ivoa.AllIvoaTransportTests;
+import org.astrogrid.desktop.modules.system.AllSystemTransportTests;
 
 /**All tests that exercise the rmi / xmlrpc transports.
  * most are based on system tests - so aren't easily repeatable, and slow.

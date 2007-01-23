@@ -3,19 +3,17 @@
  */
 package org.astrogrid.desktop.modules.ivoa;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.ivoa.Adql074;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
-import org.astrogrid.desktop.modules.system.ApiHelpIntegrationTest;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.w3c.dom.Document;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * @author Noel Winstanley

@@ -6,7 +6,6 @@ package org.astrogrid.desktop.modules.ivoa;
 import java.net.URI;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.astrogrid.acr.builtin.ACR;

@@ -2,15 +2,12 @@ package org.astrogrid.desktop.modules.plastic;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.acr.builtin.ShutdownListener;
-import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.RmiServer;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.common.namegen.InMemoryNameGen;
@@ -25,7 +22,6 @@ import org.votech.plastic.incoming.handlers.MessageHandler;
 import org.votech.plastic.incoming.handlers.StandardHandler;
 
 import EDU.oswego.cs.dl.util.concurrent.DirectExecutor;
-import EDU.oswego.cs.dl.util.concurrent.Executor;
 // TODO refactor this
 public class RMIListenerUnitTest extends AbstractPlasticBaseNotDeaf {
 

@@ -1,4 +1,4 @@
-/*$Id: HIvemindOrdererUnitTest.java,v 1.2 2007/01/09 16:12:21 nw Exp $
+/*$Id: HIvemindOrdererUnitTest.java,v 1.3 2007/01/23 11:53:38 nw Exp $
  * Created on 29-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,16 +10,14 @@
 **/
 package org.astrogrid.desktop.hivemind;
 
-import org.apache.hivemind.ApplicationRuntimeException;
-import org.apache.hivemind.ErrorHandler;
-import org.apache.hivemind.impl.DefaultErrorHandler;
-import org.apache.hivemind.impl.StrictErrorHandler;
-import org.apache.hivemind.order.Orderer;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
+
+import org.apache.hivemind.ErrorHandler;
+import org.apache.hivemind.impl.DefaultErrorHandler;
+import org.apache.hivemind.order.Orderer;
 
 /**
  * test my understanding of the hiemind order class - don't think I'm using it correctly at the moment.
@@ -220,6 +218,9 @@ public class HIvemindOrdererUnitTest extends TestCase {
 
 /* 
 $Log: HIvemindOrdererUnitTest.java,v $
+Revision 1.3  2007/01/23 11:53:38  nw
+cleaned up tests, organized imports, commented out or fixed failing tests.
+
 Revision 1.2  2007/01/09 16:12:21  nw
 improved tests - still need extending though.
 

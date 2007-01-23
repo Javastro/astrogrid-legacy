@@ -19,6 +19,8 @@ public class MessagesUnitTest extends TestCase {
 		super.setUp();
 	}
 	
-	
+	public void testReminder() {
+		System.err.println("Implement tests for : " + this.getClass().getName());
+	}
 
 }

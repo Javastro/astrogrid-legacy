@@ -7,7 +7,6 @@ import java.net.URL;
 import java.util.Map;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.astrogrid.acr.ACRException;
