@@ -6,7 +6,8 @@
         <currentVersion>${astrogrid.desktop.version}</currentVersion>
         <name>Top Level Project for AR / Workbenchs</name>
         <description>
-        Workbench and AR requires the astrogrid/aggregate and astrogrid/maven-base projects to be checked out adjacent to this folder.
+        Workbench and AR requires the astrogrid/maven-base projects to be checked out adjacent to this folder.
+        (NB: previous versions also required the aggregate project - this is no longer necessary)
       	---
         You may wish to increase the memory maven runs with. create a '~/.mavenrc' which contains the line 
         	MAVEN_OPTS="-Xmx1024m"
