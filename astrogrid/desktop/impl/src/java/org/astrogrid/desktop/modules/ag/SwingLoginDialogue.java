@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.5 2007/01/09 16:21:32 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.6 2007/01/23 11:48:14 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -54,7 +54,7 @@ import com.l2fprod.common.swing.JLinkButton;
  * Dialog for logging in to an Astrogrid community.
  * can be used on its own to acquire a logged-in 
  * {@link org.astrogrid.store.tree.TreeClient}.
- *@todo move to dialogues module.
+ *@todo pass in UIImpl to use as parent for dialogue.
  * @author   Mark Taylor (Starlink)
  * @since    25 Nov 2004
  * @modified Noel Winstanley added a combo-box for authority. not editable at the moment - but codes around that possibility.
@@ -259,7 +259,7 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
     public boolean showDialog() {
         JDialog dialog = opane_.createDialog( null, "Virtual Observatory Login" );
         dialog.getContentPane().add( opane_ );               
-            dialog.show();
+            dialog.setVisible(true);
             passField_.requestFocus();     
             dialog.toFront();  
             Object status = opane_.getValue();            
@@ -314,6 +314,9 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.6  2007/01/23 11:48:14  nw
+minor.
+
 Revision 1.5  2007/01/09 16:21:32  nw
 uses vomon.
 
