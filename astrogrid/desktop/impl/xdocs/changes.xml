@@ -15,6 +15,9 @@
 	</head>
 <body>
 <release version="2007.1.rc1" date="unreleased">
+<action dev="jdt" type="add" issue="2041"> 
+    Cache is now flushable programmatically.
+</action>
 <action dev="nw" type="add">
 	Implemented preference system
 </action>
