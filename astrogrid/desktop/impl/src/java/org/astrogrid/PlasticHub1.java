@@ -17,14 +17,19 @@ public class PlasticHub1 {
 		CmdLineParser parser = new CmdLineParser();
 		Launcher l = parser.parse(args,"hub");
 
-		System.setProperty("hub.mode","true");	
-		System.setProperty("system.help.disabled","true");
-		System.setProperty("system.apihelp.disabled","true");
-		System.setProperty("system.scheduler.disabled","true");
-		l.addModuleByName("plastic");
-    	l.addModuleByName("system");
+		configureLauncherAsHub(l);
     	
      	parser.processCommandLine(l);  	
     	l.run();
 		}
+
+	/**
+	 * @param l
+	 */
+	public static void configureLauncherAsHub(Launcher l) {
+		System.setProperty("hub.mode","true");	
+		System.setProperty("system.scheduler.disabled","true");
+		l.addModuleByName("plastic");
+    	l.addModuleByName("system");
+	}
 }

@@ -20,7 +20,17 @@ public class HeadlessAstroRuntime {
 		CmdLineParser parser = new CmdLineParser();
 		Launcher l = parser.parse(args,"asr");		
 
-    	System.setProperty("asr.mode","true"); // "@todo unsure whether to use a different key here.  	
+    	configureLauncherAsASR(l);        
+
+     	parser.processCommandLine(l);    	
+    	l.run();
+	}
+
+	/**
+	 * @param l
+	 */
+	public static void configureLauncherAsASR(Launcher l) {
+		System.setProperty("asr.mode","true"); // "@todo unsure whether to use a different key here.  	
     	System.setProperty("system.ui.disabled","true");
     	System.setProperty("system.systray.disabled","true");
     	System.setProperty("system.help.disabled","true");
@@ -38,10 +48,7 @@ public class HeadlessAstroRuntime {
     	l.addModuleByName("cds");
     	l.addModuleByName("astrogrid");
     	l.addModuleByName("system");
-        l.addModuleByName("util");        
-
-     	parser.processCommandLine(l);    	
-    	l.run();
+        l.addModuleByName("util");
 	}
 
 }
