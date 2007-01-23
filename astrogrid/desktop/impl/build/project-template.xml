@@ -29,6 +29,7 @@
                                                 <include>**/*.xsl</include>
                                                 <include>**/*.dtd</include>
                                                 <include>**/*.xsd</include>
+                                                <include>**/*.vot</include>
                                         </includes>
                                 </resource>								
                         </resources>		        		
@@ -271,7 +272,7 @@
         <dependency>
         <groupId>l2fprod</groupId>
         <artifactId>l2fprod-common-directorychooser</artifactId>
-        <version>6.5.1</version> <!--  TODO : upgrade to 6.11 -->
+        <version>6.11</version> 
 	<properties>
 		<dist.bundle>${ifBuildingASR.getValue() != 'true'}</dist.bundle>
 		<uberjar.bundle>${ifBuildingASR.getValue() != 'true'}</uberjar.bundle>
