@@ -4,14 +4,15 @@
 package org.astrogrid.acr.ivoa;
 
 
-/** interface to a data cache.
+/** data cache.
+ * @service ivoa.cache 
  * @author Noel Winstanley
- * @since Aug 8, 20061:16:54 AM
+ * @since 2007.1
  */
 public interface CacheFactory {
 	
 	
-	
+	/** flush all cached data - for example registry entries */
 	public void flush();
 	
 	
