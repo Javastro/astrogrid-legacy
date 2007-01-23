@@ -8,6 +8,7 @@ import junit.framework.TestCase;
 
 import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.builtin.ACR;
+import org.astrogrid.desktop.TestingFinder;
 import org.votech.plastic.PlasticHubListener;
 import org.votech.plastic.incoming.handlers.ExtendableHandler;
 import org.votech.plastic.incoming.handlers.MessageHandler;
@@ -28,7 +29,7 @@ import EDU.oswego.cs.dl.util.concurrent.ThreadedExecutor;
 public class PlasticHubStressTest extends TestCase {
     private PlasticHubListener hub;
     protected PlasticHubListener getHub() throws Exception {
-        ACR acr = new Finder().find();
+        ACR acr = new TestingFinder().find();
         //Make sure that the hub is loaded and started
         PlasticHubListener listener = (PlasticHubListener) acr.getService(PlasticHubListener.class); 
         return listener;

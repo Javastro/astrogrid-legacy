@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 
 import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.builtin.ACR;
+import org.astrogrid.desktop.TestingFinder;
 import org.votech.plastic.PlasticHubListener;
 
 import uk.ac.starlink.plastic.HubTester;
@@ -17,7 +18,7 @@ import uk.ac.starlink.plastic.HubTester;
 public class PlaskitIntegrationTest extends TestCase {
     public void setUp() throws Exception {
         super.setUp();
-        ACR acr = new Finder().find();
+        ACR acr = new TestingFinder().find();
         //Make sure that the hub is loaded and started
         PlasticHubListener listener = (PlasticHubListener) acr.getService(PlasticHubListener.class); 
         assertNotNull(listener);

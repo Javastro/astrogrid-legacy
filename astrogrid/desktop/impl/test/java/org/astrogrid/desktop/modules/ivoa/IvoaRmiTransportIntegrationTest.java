@@ -1,4 +1,4 @@
-/*$Id: RmiTransportIntegrationTest.java,v 1.6 2007/01/23 20:07:33 nw Exp $
+/*$Id: IvoaRmiTransportIntegrationTest.java,v 1.1 2007/01/23 20:07:32 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.desktop.modules.system;
+package org.astrogrid.desktop.modules.ivoa;
 
 import java.io.InputStream;
 import java.util.Arrays;
@@ -30,14 +30,15 @@ import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.acr.test.TransportTest;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.TestingFinder;
+import org.astrogrid.desktop.modules.system.RmiTransportIntegrationTest;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
-/** tests rmi transport - whether certain classes are serializable etc.
+/** additional tests of rmi transport for new objects itnroduced by this module.
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
  *
  */
-public class RmiTransportIntegrationTest extends TestCase {
+public class IvoaRmiTransportIntegrationTest extends TestCase {
 
     /*
      * @see TestCase#setUp()
@@ -55,60 +56,34 @@ public class RmiTransportIntegrationTest extends TestCase {
         	reg = null;
         }
 
-    public void testCheckedException() throws InvalidArgumentException, ACRException {
-    	TransportTest tt = (TransportTest)this.reg.getService(TransportTest.class);
-    	assertNotNull(tt);
-    	try {
-    		tt.throwCheckedException();
-    		fail("expected to chuck");
-    	} catch (NotFoundException e) {
-    		// ok.
-    	}
-    }
-    
-    public void testUncheckedException() throws InvalidArgumentException, NotFoundException, ACRException {
-    	TransportTest tt = (TransportTest)this.reg.getService(TransportTest.class);
-    	assertNotNull(tt);
-    	try {
-    		tt.throwUncheckedException();
-    		fail("expected to chuck");
-    	} catch (NullPointerException e) {
-    		// ok.
-    	}
-    }
-    
-    public void testUncheckedUnknownException() throws InvalidArgumentException, NotFoundException, ACRException {
-    	TransportTest tt = (TransportTest)this.reg.getService(TransportTest.class);
-    	assertNotNull(tt);
-    	try {
-    		tt.throwUncheckedExceptionOfUnknownType();
-    		fail("expected to chuck");
-    	} catch (RuntimeException e) {
-    		assertEquals(RuntimeException.class,e.getClass());
-    	}
-    }
-    
-    public void testByteArrayTransport() throws InvalidArgumentException, NotFoundException, ACRException {
-    	TransportTest tt = (TransportTest)this.reg.getService(TransportTest.class);
-    	assertNotNull(tt);    
-    	byte[] bytes = "fred".getBytes();    
-    	byte[] other = tt.echoByteArray(bytes);
-    	assertNotSame(bytes,other);
-    	assertTrue(Arrays.equals(bytes,other));
-    }
-    
 
+    // verify that resource objects can be successfully serialized over rmi 
+    // little odd- as they're dynamically generated proxies.
+    // as this is an integration test, bot a system test, do this by getting ar to parse
+    // in a passed-in xml document, and return the resource objects it contains
+    public void testResourceProxyObject() throws Exception {
+    	InputStream is = RmiTransportIntegrationTest.class.getResourceAsStream("multiple.xml");
+    	assertNotNull(is);
+    	Document d = DomHelper.newDocument(is);
+     	ExternalRegistry er = (ExternalRegistry)this.reg.getService(ExternalRegistry.class);
+    	Resource[] res = er.buildResources(d);
+    	assertNotNull(res);
+    	assertEquals(3,res.length);
+    	assertTrue(res[0] instanceof CeaService);
+    	assertTrue(res[1] instanceof CeaApplication);
+    }
+    
 
 
     public static Test suite() {
-        return new ARTestSetup(new TestSuite(RmiTransportIntegrationTest.class));
+        return new ARTestSetup(new TestSuite(IvoaRmiTransportIntegrationTest.class));
     }
 }
 
 
 /* 
-$Log: RmiTransportIntegrationTest.java,v $
-Revision 1.6  2007/01/23 20:07:33  nw
+$Log: IvoaRmiTransportIntegrationTest.java,v $
+Revision 1.1  2007/01/23 20:07:32  nw
 fixes to use subclass of finder, and to work in a hub setting.
 
 Revision 1.5  2007/01/23 11:53:37  nw

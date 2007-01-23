@@ -19,6 +19,8 @@ public class AllIvoaIntegrationTests {
 				"Integration tests for IVOA module.");
 		suite.addTestSuite(IvoaModuleIntegrationTest.class);
 		suite.addTestSuite(LooselyTypedFunctionCallIntegrationTest.class);
+		suite.addTestSuite(IvoaXmlRpcTransportIntegrationTest.class);
+		suite.addTestSuite(IvoaRmiTransportIntegrationTest.class);
 		return new ARTestSetup(suite,true);
 	}
 }

@@ -23,7 +23,7 @@ public class PreferenceEditorServletIntegrationTest	 extends WebTestCase {
 	 * 
 	 */
 	private static final String TEST_OPTION_PREFERENCE_KEY = "acr.advanced";
-	private static final String TEST_PREFERENCE_KEY = "background.ceaStrategy.refreshSeconds";
+	private static final String TEST_PREFERENCE_KEY = "system.webserver.port";
 	protected void setUp() throws Exception {
 		super.setUp();
 		serv = (WebServer)ARTestSetup.fixture.getACR().getService(WebServer.class);
@@ -85,6 +85,7 @@ public class PreferenceEditorServletIntegrationTest	 extends WebTestCase {
 		pref.setValue(orig);
 	}
 	
+	/* @todo further testing  - however, this prference is not an option anymore.
 	public void testOptionPreference() {
 		beginAt("/");
 		assertLinkPresentWithText("Preferences");
@@ -114,6 +115,7 @@ public class PreferenceEditorServletIntegrationTest	 extends WebTestCase {
 		// finally, reset back to original value.
 		optionPref.setValue(orig);
 	}
+	*/
 	
 	class Watcher implements PropertyChangeListener {
 		boolean seen;

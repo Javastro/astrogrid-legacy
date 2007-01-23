@@ -9,6 +9,7 @@ import junit.framework.TestSuite;
 import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.TestingFinder;
 
 /**
  * @author Noel Winstanley
@@ -16,7 +17,7 @@ import org.astrogrid.desktop.ARTestSetup;
  */
 public class VizierRmiTransportTest extends VizierSystemTest {
     protected ACR getACR() throws Exception{
-        return (new Finder()).find();
+        return (new TestingFinder()).find();
     }
     public static Test suite() {
         return new ARTestSetup(new TestSuite(VizierRmiTransportTest.class));

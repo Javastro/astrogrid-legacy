@@ -1,4 +1,4 @@
-/*$Id: ApiHelpRmiTransportTest.java,v 1.2 2007/01/23 11:53:37 nw Exp $
+/*$Id: ApiHelpRmiTransportTest.java,v 1.3 2007/01/23 20:07:33 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,7 @@ import junit.framework.TestSuite;
 import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.TestingFinder;
 
 /** repeat tests on apiHelp component, but using java rmi mechanism.
  * @author Noel Winstanley nw@jb.man.ac.uk 03-Aug-2005
@@ -23,7 +24,7 @@ import org.astrogrid.desktop.ARTestSetup;
  */
 public class ApiHelpRmiTransportTest extends ApiHelpIntegrationTest {
     protected ACR getACR() throws Exception{
-        return (new Finder()).find();
+        return (new TestingFinder()).find();
     }
     public static Test suite() {
         return new ARTestSetup(new TestSuite(ApiHelpRmiTransportTest.class));
@@ -33,6 +34,9 @@ public class ApiHelpRmiTransportTest extends ApiHelpIntegrationTest {
 
 /* 
 $Log: ApiHelpRmiTransportTest.java,v $
+Revision 1.3  2007/01/23 20:07:33  nw
+fixes to use subclass of finder, and to work in a hub setting.
+
 Revision 1.2  2007/01/23 11:53:37  nw
 cleaned up tests, organized imports, commented out or fixed failing tests.
 

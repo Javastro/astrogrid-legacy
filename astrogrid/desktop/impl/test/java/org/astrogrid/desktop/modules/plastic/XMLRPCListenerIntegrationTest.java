@@ -5,6 +5,7 @@ import java.util.Properties;
 
 import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.builtin.ACR;
+import org.astrogrid.desktop.TestingFinder;
 import org.votech.plastic.PlasticHubListener;
 import org.votech.plastic.incoming.handlers.MessageHandler;
 import org.votech.plastic.outgoing.policies.StandardXmlRpcPolicy;
@@ -18,7 +19,7 @@ import org.votech.plastic.outgoing.policies.StandardXmlRpcPolicy;
 public class XMLRPCListenerIntegrationTest extends AbstractPlasticBaseNotDeaf {
 
     protected PlasticHubListener getHub() throws Exception {
-        ACR acr = new Finder().find();
+        ACR acr = new TestingFinder().find();
         //Make sure that the hub is loaded and started
         PlasticHubListener listener = (PlasticHubListener) acr.getService(PlasticHubListener.class); 
         //We actually want to return a proxy to this, that does all the comms by xmlrpc.
@@ -31,7 +32,7 @@ public class XMLRPCListenerIntegrationTest extends AbstractPlasticBaseNotDeaf {
     protected TestPlasticApplication getApplication(Properties appData, MessageHandler handler) {
         return new TestListenerXMLRPC(appData, handler);
     }
-    
+
     /**
      * Deliberately override this test and do a nop, since there's a bug
      * in the plastic library.
@@ -40,6 +41,5 @@ public class XMLRPCListenerIntegrationTest extends AbstractPlasticBaseNotDeaf {
      */
     public void testHardened() {
         System.out.println("testHardened has been deliberately removed for the XMLRPC protocol.");
-    }
-
+}
 }

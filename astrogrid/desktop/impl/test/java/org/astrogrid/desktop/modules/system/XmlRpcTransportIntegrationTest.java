@@ -1,4 +1,4 @@
-/*$Id: XmlRpcTransportIntegrationTest.java,v 1.5 2007/01/23 11:53:37 nw Exp $
+/*$Id: XmlRpcTransportIntegrationTest.java,v 1.6 2007/01/23 20:07:33 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -170,24 +170,6 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
     }
     
 
-    // verify that resource objects can be successfully serialized over xmlrpc.
-    // as this is an integration test, bot a system test, do this by getting ar to parse
-    // in a passed-in xml document, and return the resource objects it contains
-    public void testResourceProxyObject() throws Exception {
-    	InputStream is = XmlRpcTransportIntegrationTest.class.getResourceAsStream("multiple.xml");
-    	assertNotNull(is);
-    	StringWriter sw = new StringWriter();
-    	Piper.pipe(new InputStreamReader(is),sw);
-    	v.add(sw.toString());
-    	List results = (List)client.execute("ivoa.externalRegistry.buildResources",v);
-    	assertNotNull(results);
-    	assertEquals(3,results.size());
-    	for (int i = 0; i < results.size(); i++) {
-    		assertTrue(results.get(i) instanceof Map);
-    		//@future - more testing of structure here??
-    	}
-    }
-    
     
     /* not really possible - as makes a best effort to convert
     public void testMethodWithWrongTypeOfParams() throws XmlRpcException, IOException {
@@ -211,6 +193,9 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
 
 /* 
 $Log: XmlRpcTransportIntegrationTest.java,v $
+Revision 1.6  2007/01/23 20:07:33  nw
+fixes to use subclass of finder, and to work in a hub setting.
+
 Revision 1.5  2007/01/23 11:53:37  nw
 cleaned up tests, organized imports, commented out or fixed failing tests.
 

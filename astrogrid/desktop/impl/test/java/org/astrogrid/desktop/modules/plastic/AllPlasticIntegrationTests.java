@@ -12,7 +12,6 @@ public class AllPlasticIntegrationTests {
         suite.addTestSuite(DeafListenerIntegrationTest.class);
         suite.addTestSuite(PlaskitIntegrationTest.class);
         suite.addTestSuite(RMIListenerIntegrationTest.class);
-    // caues too many dialogs to be thrown up - run it separately.   suite.addTestSuite(SlightlyStressfulIntegrationTest.class);
         //$JUnit-END$
         return suite;
     }

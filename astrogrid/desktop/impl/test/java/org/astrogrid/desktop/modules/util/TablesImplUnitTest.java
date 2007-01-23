@@ -22,6 +22,7 @@ public class TablesImplUnitTest extends TestCase {
 		mockMs = (MyspaceInternal)myspaceControl.getMock();
 		this.tables = new TablesImpl(mockMs);
 		this.input = this.getClass().getResource("siap.vot");
+		assertNotNull(input);
 	}
 
 	private MockControl myspaceControl;

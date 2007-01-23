@@ -30,18 +30,18 @@ public class PreferencesIntegrationTest extends InARTestCase {
 	}
 	
     public void testPreferenceExists() throws Exception {
-		Preference p = ci.find("org.astrogrid.registry.query.endpoint");
+		Preference p = ci.find("system.webserver.port");
 		assertNotNull(p);
 		assertNotNull(p.getValue());
 		assertNotNull(p.getDefaultValue());
 		assertNotNull(p.getName());
 		assertTrue(p.isAdvanced());
-		assertTrue(p.isPropagateToConfig());
+		assertFalse(p.isPropagateToConfig());
 		assertTrue(p.isRequiresRestart());
 		assertNotNull(p.getUiName());
 		assertNotNull(p.getDescription());
-		assertEquals("ivoa",p.getModuleName());
-		assertEquals(0,p.getAlternatives().length);
+		assertEquals("system",p.getModuleName());
+		assertEquals(1,p.getAlternatives().length);
 		assertEquals(0,p.getOptions().length);
 
 	}
