@@ -133,8 +133,10 @@ import org.apache.hivemind.schema.rules.SetParentRule;
 import org.apache.hivemind.schema.rules.SetPropertyRule;
 
 import org.apache.hivemind.util.IdUtils;
+import org.astrogrid.util.DomHelper;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Text;
 
 import org.w3c.dom.Element;
 
@@ -1007,7 +1009,9 @@ class RegistrySerializer
         //NWW - added code to get text content of elements too
         String content = parameter.getContent();
         if (content != null && content.trim().length() > 0) {
-        	element.setTextContent(content);
+        	//1.5 only, element.setTextContent(content);
+        	Text t = _document.createTextNode(content);
+        	element.appendChild(t);
         }
         //NWW end
 
