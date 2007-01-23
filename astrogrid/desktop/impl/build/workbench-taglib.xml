@@ -13,16 +13,7 @@
 	
 	<!--  record version infromation. -->
 	<postGoal name="java:jar-resources">
-	<echo>Setting Version Information</echo>
-<!--   write it out as xml instead.
-		<echo file="${maven.build.dir}/classes/org/astrogrid/desktop/hivemind/astrogrid.version">
-astrogrid.desktop.version=${astrogrid.desktop.version}
-astrogrid.build.date=${maven.jar.manifest.attribute.BuildDate}
-astrogrid.build.location=${maven.jar.manifest.attribute.BuildLocation}
-astrogrid.build.by=${user.name}
-astrogrid.build.jdk=${java.version}
-			</echo>	
--->			
+	<echo>Setting Version Information</echo>	
 			<echo file="${maven.build.dir}/classes/org/astrogrid/desktop/hivemind/version.xml">
 	<default symbol="astrogrid.desktop.version" value="${astrogrid.desktop.version}" />
 	<default symbol="astrogrid.build.date" value="${maven.jar.manifest.attribute.BuildDate}" />
