@@ -15,7 +15,7 @@
 		Publisher should just run the goals listed in this project - no need to run goals in individual sub-projects.
 		E.g. to build and publish new suite of AR:
 		1. % maven astrogrid-clean
-		2. Edit astrogrid.destop.version in maven-base/project.properties
+		2. Edit astrogrid.destop.version in impl/build/project.properties
 		3. % maven astrogrid-build-artifact
 		---
 		Build products are then left in ${basedir}/target/artifacts directory, from where they 
