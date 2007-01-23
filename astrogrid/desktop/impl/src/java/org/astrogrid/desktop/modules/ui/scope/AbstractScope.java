@@ -71,6 +71,7 @@ import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 import org.votech.plastic.CommonMessageConstants;
 
 import com.l2fprod.common.swing.JButtonBar;
+import com.l2fprod.common.swing.plaf.blue.BlueishButtonBarUI;
 
 import edu.berkeley.guir.prefuse.event.FocusEvent;
 import edu.berkeley.guir.prefuse.event.FocusListener;
@@ -214,6 +215,9 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 
 	/** bar of buttons dynamically built for available plastic apps */
 	protected JButtonBar dynamicButtons = new JButtonBar(JButtonBar.VERTICAL);
+	{//@todo need to check this makes things look better on all platforms.
+		dynamicButtons.setUI(new BlueishButtonBarUI());
+	}
 
 	protected Action haltAction = new HaltAction();
 
