@@ -37,7 +37,8 @@
                 <unitTest>
  
                         <includes>	
-                        	<include>**/*UnitTest.java</include>							
+                        	<include>**/*UnitTest.java</include>		
+                        	<include>**/IntegrationTest.java</include>					
                         </includes>
                         
 			<excludes>
@@ -50,6 +51,7 @@
                                         <includes>
                                                 <include>**/*.properties</include>
                                                 <include>**/*.xml</include>
+                                                <include>**/*.xsl</include>
                                                 <include>**/*.dtd</include>
                                                 <include>**/*.xsd</include>
                                         </includes>
@@ -122,84 +124,6 @@
     </dependency>
 
 
-<!-- used within development only -->
-    <!-- Mark Taylor's plaskit, for testing only -->
-     <dependency>
-      <artifactId>plastic</artifactId>
-      <groupId>starlink</groupId>
-      <version>20060808-unsigned</version>
-      <url>http://www.star.bris.ac.uk/~mbt/plastic</url>
-		<properties>
-			<uberjar.bundle>false</uberjar.bundle>
-		</properties>
-    </dependency>
 
-<!-- code to unit test xml -->
-    <dependency>
-      <id>xmlunit</id>
-      <version>1.0</version>
-    </dependency>		
-
-
- <!-- mocks for testing -->
- 	<dependency>
- 		<groupId>easymock</groupId>
- 		<artifactId>easymock</artifactId>
- 		<version>1.2</version>
- 		<url>http://www.easymock.org/</url>
-           	            <properties>
-		            		<uberjar.bundle>false</uberjar.bundle>
-		            	</properties>  		
- 	</dependency>
- 	
- <!-- swing testing - todo verify whether this is actually useful. -->
- <dependency>
- 	<groupId>uispec4j</groupId>
- 	<artifactId>uispec4j</artifactId>
- 	<version>1.1</version>
- 	<url>http://www.uispec4j.org/</url>
-           	            <properties>
-		            		<uberjar.bundle>false</uberjar.bundle>
-		            	</properties>  	
- </dependency>
- 
-<!-- testing html interface  -->
- <dependency>
-                        <groupId>httpunit</groupId>
-                        <artifactId>httpunit</artifactId>
-                        <version>1.5.4</version>
-                        <url>http://httpunit.sourceforge.net/</url>
-		            <properties>
-		            	<uberjar.bundle>false</uberjar.bundle>
-		            </properties>                         
-                </dependency>
-                <dependency>
-                        <groupId>jwebunit</groupId>
-                        <artifactId>jwebunit</artifactId>
-                        <version>1.2</version>
-                        <url>http://jwebunit.sourceforge.net/</url>
-                        <properties>
-		            		<uberjar.bundle>false</uberjar.bundle>
-		            	</properties> 
-                </dependency>
-                <dependency>
-                        <groupId>rhino</groupId>
-                        <artifactId>js</artifactId>
-                        <version>1.5R4.1</version>
-           	            <properties>
-		            		<uberjar.bundle>false</uberjar.bundle>
-		            	</properties> 
-                </dependency>
-                <dependency>
-                        <groupId>nekohtml</groupId>
-                        <artifactId>nekohtml</artifactId>
-                        <version>0.8.1</version>
-                        <url>http://www.apache.org/~andyc/neko/doc/html/</url>
-       		            <properties>
-		        	    	<uberjar.bundle>false</uberjar.bundle>
-		   		         </properties> 
-                </dependency>
-
-	
     </dependencies>
 </project>

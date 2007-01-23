@@ -12,7 +12,6 @@
  
  
         <build>
-                <sourceDirectory>${basedir}/../src/java</sourceDirectory>
                 <!-- modifications to compile the acr portion -->
                 <sourceModifications>
                   <sourceModification>
@@ -21,8 +20,13 @@
                       <exclude>org/astrogrid/desktop/*.java</exclude>
                       <exclude>org/astrogrid/desktop/modules/ui/**</exclude>
                       <exclude>org/astrogrid/desktop/modules/workflowBuilder/**</exclude>
-                      <exclude>org/astrogrid/desktop/modules/dialogs/ScriptDialog.java</exclude>
+                      <exclude>org/astrogrid/desktop/modules/dialogs/Script*</exclude>
                       <exclude>org/astrogrid/desktop/modules/ivoa/SkyNodeImpl.java</exclude>                     
+						<!--  test classes we can't compile or don't want -->
+                      <exclude>**/*All*Tests*</exclude>
+                      <exclude>**/*SystemTest*</exclude>
+                      <exclude>**/*TransportTest*</exclude>
+                      <exclude>**/*UITest*</exclude>                      
                   	</excludes>
                   </sourceModification>
                	</sourceModifications>
@@ -37,6 +41,7 @@
                                         <include>org/astrogrid/acr-splash.gif</include>
           								<include>org/astrogrid/desktop/icons/*.gif</include> 
           								<include>org/astrogrid/desktop/icons/*.png</include> 
+          								<include>org/astrogrid/desktop/icons/*.jpg</include>
           						</includes>
                         </resource>
                         
@@ -46,19 +51,10 @@
         <dependencies>
         
  
-  <!-- brower control -->
- 	<dependency>
- 		<artifactId>BrowserLauncher2</artifactId>
- 		<groupId>BrowserLauncher2</groupId>
- 		<version>10rc4</version>
- 		<url>http://browserlaunch2.sourceforge.net/</url>
- 		<properties>
- 			<dist.bundle>true</dist.bundle>
- 			<strip>true</strip>
- 		</properties>
- 	</dependency>
- 	 
- <!-- end of help system --> 
+
+
+ 
+
  
  <!-- text editing extension -->
   <dependency>

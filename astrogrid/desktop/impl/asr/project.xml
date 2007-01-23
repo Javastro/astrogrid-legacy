@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
 
-    <extend>${basedir}/../../../aggregate/cdk/script/project.xml</extend>
+    <extend>${basedir}/../build/project-template.xml</extend>
         <artifactId>asr</artifactId>
         <currentVersion>${astrogrid.desktop.version}</currentVersion>
         <name>Astro Runtime (Headless version)</name>
@@ -11,7 +11,6 @@
         <shortDescription>Astro Runtime - An API for the Virtual Observatory</shortDescription>
  
         <build>
-                <sourceDirectory>${basedir}/../src/java</sourceDirectory>
                 <!-- modifications to compile the hub portion -->
                 <sourceModifications>
                   <sourceModification>
@@ -29,6 +28,11 @@
                       <exclude>org/astrogrid/desktop/modules/workflowBuilder/**</exclude>
                       <!-- keep this out - as unfinished, and drags in all xbean stuff -->
                       <exclude>org/astrogrid/desktop/modules/ivoa/SkyNodeImpl.java</exclude>
+						<!--  test classes we can't compile or don't want -->
+                      <exclude>**/*All*Tests*</exclude>
+                      <exclude>**/*SystemTest*</exclude>
+                      <exclude>**/*TransportTest*</exclude>
+                      <exclude>**/*UITest*</exclude>                      
                   	</excludes>
                   	
                   </sourceModification>
@@ -52,52 +56,405 @@
                 </resources>
         </build>
 
-        <!--  defines reports to place in the distro -->
-    <reports>
-        <report>maven-javadoc-plugin</report>
-        <report>maven-jxr-plugin</report>
-        <report>maven-license-plugin</report>
-    </reports>
-
         <dependencies>
 
 
+<!--  scripting CDK -->
+ <dependency>
+       <groupId>org.astrogrid</groupId>
+       <artifactId>astrogrid-scripting</artifactId><!--  todo - is this used anywhere? -->
+       <version>${astrogrid.scripting.version}</version>
+                <properties>
+		    <dist.bundle>true</dist.bundle>		
+		    <strip>true</strip>    
+                </properties>
+    </dependency>
+        <dependency>
+                <groupId>org.astrogrid</groupId>
+                <artifactId>astrogrid-cea-server</artifactId>
+                <version>${astrogrid.applications.version}</version>
+                <properties>
+		    <dist.bundle>true</dist.bundle>		    
+		    <strip>true</strip>
+                </properties>
+        </dependency>
+        <!-- helper libraries -->
+        <dependency>
+                <groupId>starlink</groupId>
+                <artifactId>stil</artifactId>
+               <version>2.6</version>
+                <url>http://www.star.bristol.ac.uk/~mbt/stil/</url>
+                <properties>
+		    <dist.bundle>true</dist.bundle>		    
+		    <strip>true</strip>
+                </properties>
+        </dependency>
+    <dependency>
+      <artifactId>junit</artifactId>
+      <groupId>junit</groupId>
+      <version>3.8</version>
+      <properties>
+		    <dist.bundle>true</dist.bundle>		    
+		    <strip>true</strip>
+      </properties>
+    </dependency>
 
-<!-- public interfaces of the acr -->
-	<dependency>
-		<groupId>org.astrogrid</groupId>
-		<artifactId>acr-interface</artifactId>
-		<version>${astrogrid.desktop.version}</version>
-		<properties>
-			<dist.bundle>true</dist.bundle>		
-			<strip>false</strip>
-		</properties>
-	</dependency>
+<!--  WORKFLOW CDK -->
+     <!-- workflow objects -->
+                <dependency>
+                        <groupId>org.astrogrid</groupId>
+                        <artifactId>astrogrid-workflow</artifactId>
+                        <version>${astrogrid.workflow.version}</version>
+                        <url>http://www.astrogrid.org/</url>
+                        <properties>
+				<dist.bundle>true</dist.bundle>
+				<strip>true</strip>
+                        </properties>
+                </dependency>
+        <!-- jes -->
+                <dependency>
+                           <groupId>org.astrogrid</groupId>
+                           <artifactId>astrogrid-jes-delegate</artifactId>
+                           <version>${astrogrid.jes.version}</version>
+                        <url>http://www.astrogrid.org/</url>
+                        <properties>
+				<dist.bundle>true</dist.bundle>		
+				<strip>true</strip>						
+                        </properties>
+                    </dependency>
+                <dependency>
+                           <groupId>org.astrogrid</groupId>
+                           <artifactId>astrogrid-workflow-objects</artifactId>
+                           <version>${astrogrid.workflowobjects.version}</version>
+                        <url>http://www.astrogrid.org/</url>
+                        <properties>
+				<dist.bundle>true</dist.bundle>			
+				<strip>${strip.castor}</strip>                            
+                        </properties>
+                </dependency>
+        <!-- cea client -->
+                <dependency>
+                           <groupId>org.astrogrid</groupId>
+                           <artifactId>astrogrid-cea-client</artifactId>
+                           <version>${astrogrid.applications.version}</version>
+                        <url>http://www.astrogrid.org/</url>
+                        <properties>
+				<dist.bundle>true</dist.bundle>	
+				<strip>true</strip>                                
+                        </properties>
+                </dependency>
+	  
 
-	<dependency>
-	    <groupId>org.votech.ds6.plastic</groupId>
-	    <artifactId>plastic</artifactId>
-	    <version>0.6.1</version>
-	    <url>http://plastic.sourceforge.net</url>
+        <!-- external libs -->
+                  <!-- helper for object models -->
+                <dependency>
+                        <artifactId>commons-jxpath</artifactId>
+                        <groupId>commons-jxpath</groupId>
+                        <url>http://jakarta.apache.org/commons/</url>
+                        <version>1.1-patched</version>
+                        <properties>
+				<dist.bundle>true</dist.bundle>		
+				<strip>${strip.castor}</strip>				
+                        </properties>
+                </dependency>
+                <!-- required by castor -->
+                <dependency>
+                        <artifactId>castor</artifactId>
+                        <groupId>castor</groupId>
+                        <version>0.9.5-xml</version>
+                        <url>http://castor.exolab.org/</url>
+                        <properties>
+				<dist.bundle>true</dist.bundle>						
+				<strip>${strip.castor}</strip>				
+                        </properties>
+                </dependency>
+               <dependency>
+                    <id>regexp</id>
+                <version>1.3</version>
+                <url>http://jakarta.apache.org/commons/</url>
+                        <properties>
+				<dist.bundle>true</dist.bundle>				
+				<strip>${strip.castor}</strip>			
+                        </properties>
+                </dependency>
+                
+                
+       <!--  CORE CDK -->
+
+<!-- filemanager -->
+    <dependency>
+      <artifactId>astrogrid-filemanager-client</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>${astrogrid.filemanager.version}</version>
+      <properties>
+        <dist.bundle>true</dist.bundle>
+        <strip>true</strip>        
+      </properties>
+    </dependency>
+
+    <dependency>
+      <artifactId>astrogrid-filemanager-contract</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>${astrogrid.filemanager.version}</version>
+      <properties>
+        <dist.bundle>true</dist.bundle>
+        <strip>true</strip>        
+      </properties>
+    </dependency>
+
+<!-- filestore -->
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-filestore-client</artifactId>
+      <version>${astrogrid.filestore.version}</version>
+      <type>jar</type>
+      <url>http://www.astrogrid.org/</url>
+      <properties>
+        <dist.bundle>true</dist.bundle>
+        <strip>true</strip>        
+      </properties>
+    </dependency>
+
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-filestore-common</artifactId>
+      <version>${astrogrid.filestore.version}</version>
+      <type>jar</type>
+      <url>http://www.astrogrid.org/</url>
+      <properties>
+        <dist.bundle>true</dist.bundle>
+        <strip>true</strip>        
+      </properties>
+    </dependency>
+
+<!-- community -->
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-community-common</artifactId>
+      <version>${astrogrid.community.version}</version>
+      <type>jar</type>
+      <url>http://www.astrogrid.org/</url>
+      <properties>
+        <dist.bundle>true</dist.bundle>
+        <strip>${strip.security}</strip>        
+      </properties>
+    </dependency>
+
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-community-client</artifactId>
+      <version>${astrogrid.community.version}</version>
+      <type>jar</type>
+      <url>http://www.astrogrid.org/</url>
+      <properties>
+        <dist.bundle>true</dist.bundle>
+        <strip>${strip.security}</strip>        
+      </properties>
+    </dependency>
+
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-community-resolver</artifactId>
+      <version>${astrogrid.community.version}</version>
+      <type>jar</type>
+      <url>http://www.astrogrid.org/</url>
+      <properties>
+        <dist.bundle>true</dist.bundle>
+        <strip>${strip.security}</strip>    
+      </properties>
+    </dependency>
+
+    <dependency>
+      <artifactId>astrogrid-registry-common</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>${astrogrid.registry.version}</version>
+      <url>http://www.astrogrid.org/</url>
+      <properties>
+        <dist.bundle>true</dist.bundle>
+        <strip>true</strip>        
+      </properties>
+    </dependency>
+
+    <dependency>
+      <artifactId>astrogrid-registry-client-lite</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>${astrogrid.registry.version}</version>
+      <url>http://www.astrogrid.org/</url>
+      <properties>
+        <dist.bundle>true</dist.bundle>
+        <strip>true</strip>        
+      </properties>
+    </dependency>
+
+<!-- supporting libraries for registry- don't understand what half of these do,
+                TODO: work out which can be removed.-->
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-pal-oldquery</artifactId>
+      <version>${astrogrid.pal.version}</version>
+      <type>jar</type>
+      <properties>
+        <dist.bundle>true</dist.bundle>
+        <strip>true</strip>        
+      </properties>
+    </dependency>
+
+    <dependency>
+<!-- dunno if this one is required -->
+      <artifactId>astrogrid-slinger-api</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>${astrogrid.slinger.version}</version>
+      <properties>
+        <dist.bundle>true</dist.bundle>
+        <strip>true</strip>        
+      </properties>
+    </dependency>
+
+    <dependency>
+<!-- more crap? -->
+      <artifactId>astrogrid-utils</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>${astrogrid.utils.stable}</version>
+      <properties>
+        <dist.bundle>true</dist.bundle>
+        <strip>true</strip>        
+      </properties>
+    </dependency>
+
+<!-- 3rd party libs - all defined in their own extension-->
+<dependency> 
+     <!-- jaxp will be native for java 1.5. Until then this is required -->
+	 <artifactId>jaxp</artifactId>
+	 <groupId>jaxp</groupId>
+	 <version>1.4-20050623</version>
+	 <type>jar</type>
+	 <properties>    	 
+      <dist.bundle>true</dist.bundle>
+                <strip>${strip.xml}</strip>
+	 </properties>		 
+ </dependency>
+ 
+    <dependency>
+      <groupId>xerces</groupId>
+<!--	<artifactId>xercesImpl</artifactId>-->
+      <artifactId>xerces</artifactId>
+      <version>2.4.0-patched</version>
+<!--
+	<version>2.7.1</version>
+-->
+      <type>jar</type>
+      <url>http://xml.apache.org/</url>
+      <properties>     
+        <dist.bundle>true</dist.bundle>
+                <strip>${strip.xml}</strip>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <groupId>xalan</groupId>
+      <artifactId>xalan</artifactId>
+      <version>2.7.0</version>
+      <type>jar</type>
+      <url>http://xml.apache.org/</url>
+      <properties>   
+        <dist.bundle>true</dist.bundle>
+                <strip>${strip.xml}</strip>
+      </properties>
+    </dependency>
+    
+  <dependency>
+    <groupId>xalan</groupId>
+    <artifactId>serializer</artifactId>
+    <version>2.7.0</version>
+    <type>jar</type>
+    <url>http://xml.apache.org/</url>
+    <properties>    
+      <dist.bundle>true</dist.bundle>
+                <strip>${strip.xml}</strip>
+    </properties>
+  </dependency>
+    
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+      <version>1.0.b2-patched</version>
+      <type>jar</type>
+      <url>http://xml.apache.org/</url>
+      <properties>   
+        <dist.bundle>true</dist.bundle>
+                <strip>${strip.xml}</strip>
+      </properties>
+    </dependency>
+
+    
+    <!-- axis, and the jars it relies upon
+    
+     -->
+    <dependency>
+	    <groupId>axis</groupId>
+	    <type>jar</type>
+	    <artifactId>axis</artifactId>
+	    <version>1.3</version>
 	    <properties>
-	        <dist.bundle>true</dist.bundle>
-	        <strip>true</strip>
+        	<dist.bundle>true</dist.bundle>     			    
+	    		 <strip>true</strip>	 	
 	    </properties>
-	</dependency>
+    </dependency>
+    <dependency>
+	    <groupId>axis</groupId>
+	    <type>jar</type>
+	    <artifactId>wsdl4j</artifactId>
+	    <version>1.5.1</version>
+	    <properties>
+	    		 <strip>true</strip>			    
+		    <dist.bundle>true</dist.bundle>	    	
+	    </properties>
+    </dependency>
+    <dependency>
+	    <groupId>axis</groupId>
+	    <type>jar</type>
+	    <artifactId>axis-saaj</artifactId>
+	    <version>1.3</version>
+	    <properties>
+	    		 <strip>true</strip>	   
+		    <dist.bundle>true</dist.bundle>		    
+	    </properties>
+    </dependency>
+    <dependency>
+	    <groupId>axis</groupId>
+	    <type>jar</type>
+	    <artifactId>axis-jaxrpc</artifactId>
+	    <version>1.3</version>
+	    <properties>
+	    		 <strip>true</strip>	    
+		    <dist.bundle>true</dist.bundle>	    
+	    </properties>
+    </dependency>
 
+    <dependency>
+	    <groupId>axis</groupId>
+	    <type>jar</type>
+	    <artifactId>commons-discovery</artifactId>
+	    <version>0.2</version>
+	    <properties>
+	    		 <strip>false</strip>	<!--  causes evil errors - related to missing static methods -->    
+		    <dist.bundle>true</dist.bundle>		    
+	    </properties>
+    	</dependency>    
+    <!--  don't want this , but required by globus. -->
+    <dependency>
+	    <id>log4j</id>	    
+	    <version>1.2.8</version>	    
+	    <properties>		     
+	    		 <strip>true</strip>
+		    <dist.bundle>true</dist.bundle>
+	    </properties>
+    </dependency>    
 
-	<dependency>
-        		<groupId>org.astrogrid</groupId>
-        		<artifactId>astrogrid-security</artifactId>
-        		<version>${astrogrid.security.version}</version>
-        		<type>jar</type>
-	 	<properties>
- 			<dist.bundle>true</dist.bundle>
- 			<strip>${strip.security}</strip>
- 		</properties>        		
-        	</dependency>
-        		  
-  <!-- storage -->
+    
+      
+      <!--  Even more stuff, above that provided by CDK--> 
+        <!-- storage -->
 <dependency>
 	<artifactId>jdbm</artifactId>
 	<groupId>jdbm</groupId>
@@ -118,170 +475,18 @@
 					    <strip>true</strip>    
 		</properties>
 	</dependency>
-
- <!-- jakarta commons -->
-
- <dependency>
-	 <artifactId>commons-beanutils</artifactId>
-	 <groupId>commons-beanutils</groupId>
-	 <version>1.6</version>
-	 <type>jar</type>
-	 <properties>		 
-		 <dist.bundle>true</dist.bundle>
-		 <strip>true</strip>
-	 </properties>		 
- </dependency>
- 
- <dependency>
-	 <artifactId>commons-lang</artifactId>
-	 <groupId>commons-lang</groupId>
-	 <version>2.0</version>
-	 <type>jar</type>
-	 <properties>		 
-		 <dist.bundle>true</dist.bundle>
-		 <strip>true</strip>
-	 </properties>		 
-        </dependency>  
-        
-	  <dependency>
-	  	<artifactId>commons-cli</artifactId>
-	  	<groupId>commons-cli</groupId>
-	  	<version>1.0</version>
-	  	<properties>			
-		<dist.bundle>true</dist.bundle>			
-		<strip>true</strip>
-	  	</properties>
-	  </dependency>
-
-<!-- container system - hivemind     -->
-<!--  don't plan to mess with these - too important.-->
-<dependency>
-	<groupId>hivemind</groupId>
-	<artifactId>hivemind</artifactId>
-	<version>1.1.1</version>
-	<properties>			
-		<dist.bundle>true</dist.bundle>	
-				 <strip>false</strip> <!--  too precious, not much to remove -->		
-	</properties>
-</dependency>
-<dependency>
-	<groupId>hivemind</groupId>
-	<artifactId>hivemind-lib</artifactId>
-	<version>1.1.1</version>
-	<properties>
-		<dist.bundle>true</dist.bundle>
-				 <strip>false</strip> <!--  too precious and xml driven -->			
-	</properties>	
-</dependency>
-
-<dependency>
-	<groupId>javassist</groupId>
-	<artifactId>javassist</artifactId>
-	<version>3.0</version>
-	<properties>
-				 <strip>false</strip> <!--  not worth stripping. -->	
-		<dist.bundle>true</dist.bundle>	
-	</properties>
-</dependency>
- <dependency>
-	 <id>oro</id>
-	 <version>2.0.7</version>
-	 <properties>
-				 <strip>false</strip> <!--  too hard to strip. -->		
-		 <dist.bundle>true</dist.bundle>
-	 </properties>	 
- </dependency>
- 
- <!-- jetty webserver -->
- <dependency> 
-	 <groupId>jetty</groupId>
-	 <artifactId>org.mortbay.jetty</artifactId>
-	 <version>5.1.2</version>
-	 <!-- upgrade to 5.1.11 ? -->
-	 <type>jar</type>
-	 <properties>
-		 <dist.bundle>true</dist.bundle>
-		 <strip>true</strip>
-	 </properties>
- </dependency>
- <dependency>
-	 <artifactId>servletapi</artifactId>
-	 <groupId>servletapi</groupId>
-	 <version>2.3</version>	
-	 <properties>
-		 <dist.bundle>true</dist.bundle>	
-		 <strip>true</strip>
-	 </properties>	 
-    </dependency>
-    
-    <dependency>
-	    <artifactId>rmi-lite</artifactId>
-	    <groupId>rmilite</groupId>
-	    <version>1.0</version>
-	    <properties>
-		    <dist.bundle>true</dist.bundle>	
-		    <strip>false</strip><!--small and perfectly formed -->
-	    </properties>
-</dependency> 
-<dependency> 
-	<groupId>xmlrpc</groupId>
-	<artifactId>xmlrpc</artifactId>
-	<version>1.2-b1</version>
-	<type>jar</type>
-	<properties>
-		<dist.bundle>true</dist.bundle>		
-		<strip>false</strip><!-- true causes a NPE, and only saves 30K -->
-	</properties>
-</dependency>
-<!-- end of jetty servers -->
-
-    <!-- extra widgets: statusBar and ButtonBar . -->
-   <dependency>
-        <groupId>l2fprod</groupId>
-        <artifactId>l2fprod-common-buttonbar</artifactId>
-        <version>6.11</version> 
-	<properties>
-		<dist.bundle>${ifBuildingASR.getValue() != 'true'}</dist.bundle>
-		<uberjar.bundle>${ifBuildingASR.getValue() != 'true'}</uberjar.bundle>
-		<strip>true</strip>	
-	 </properties>	 	
-    </dependency>
-    
-   <dependency>
-        <groupId>l2fprod</groupId>
-        <artifactId>l2fprod-common-tasks</artifactId>
-        <version>6.11</version> 
-	<properties>
-		<dist.bundle>${ifBuildingASR.getValue() != 'true'}</dist.bundle>
-		<uberjar.bundle>${ifBuildingASR.getValue() != 'true'}</uberjar.bundle>
-		<strip>true</strip>	
-	 </properties>	 	
-    </dependency>   
-    
-       <dependency>
-        <groupId>l2fprod</groupId>
-        <artifactId>l2fprod-common-shared</artifactId>
-        <version>6.11</version> 
-	<properties>
-		<dist.bundle>${ifBuildingASR.getValue() != 'true'}</dist.bundle>
-		<uberjar.bundle>${ifBuildingASR.getValue() != 'true'}</uberjar.bundle>
-		<strip>true</strip>	
-	 </properties>	 	
-    </dependency>    
-      
- <!-- concurrent stuff-->
-    <dependency>
-	    <artifactId>concurrent</artifactId>
-	    <groupId>concurrent</groupId>
-	    <version>1.3.4</version>
-	    <properties>
-	    	<!-- add this aftrer the main javaapp process, as a work-around for package capitalization -->
-			<bundle.later>true</bundle.later>
-		    <uberjar.bundle>false</uberjar.bundle>		    
-		    <dist.bundle>true</dist.bundle>
-			<strip>true</strip>    
-	 </properties>	 	    
- </dependency>    
+	 
+	<dependency>
+        		<groupId>org.astrogrid</groupId>
+        		<artifactId>astrogrid-security</artifactId>
+        		<version>${astrogrid.security.version}</version>
+        		<type>jar</type>
+	 	<properties>
+ 			<dist.bundle>true</dist.bundle>
+ 			<strip>${strip.security}</strip>
+ 		</properties>        		
+        	</dependency>
+        		 
 <!-- security -->
  <!-- Dependencies introduced by use of MyProxy. -->
  <dependency>
@@ -460,78 +665,8 @@
         		</properties>
         	</dependency>       
  
-  <!-- JDIC components - a bit tricky, because of binary nature.. 
--->
- <dependency>
-	 <artifactId>jdic</artifactId>
-	 <groupId>jdic</groupId>
-	 <version>0.9.1</version>
-	 <properties>
-		 <dist.bundle>true</dist.bundle>
-		 <uberjar.bundle>${isBuildingWorkbench.getValue() == 'true'}</uberjar.bundle>
-		 <strip>true</strip>
-	 </properties>
- </dependency>
- <!--NB: comment out following two when generating dependencies on macosx -->
- <!--
- <dependency>
-	 <artifactId>jdic_stub_${ag.os.name}</artifactId>
-	 <groupId>jdic</groupId>
-	 <version>0.9.1</version>
-	 <properties>
-		 <dist.bundle>true</dist.bundle>
-		 <uberjar.bundle>${isBuildingWorkbench.getValue() == 'true'}</uberjar.bundle>
-	 </properties>	 
- </dependency>
--->  
-<!-- NB - this is the jar of native libs, that needs to be locally installed. 
-      not a real dependency as such - and not needed for development
-      -->
- <!--<dependency>
-	 <artifactId>jdic_native_${ag.os.name}_${ag.os.arch}</artifactId>
-	 <groupId>jdic</groupId>
-	 <version>0.9.1</version>
-	 <properties>
-		 <dist.bundle>true</dist.bundle>
-		 <uberjar.bundle>${isBuildingWorkbench.getValue() == 'true'}</uberjar.bundle>
-	 </properties>	 
- </dependency>
---> 
-<!-- end of jdic -->
+
   
 
-<!-- used within development only -->
-
-	<!--  jar shrinking -->
-    	    <dependency>
-	<groupId>proguard</groupId>
-	<artifactId>proguard</artifactId>
-	<version>3.6</version>
-	<properties>
-		<uberjar.bundle>false</uberjar.bundle>
-	</properties>
-</dependency>	         
-<!-- make an OSX app -->
-	<dependency>
-		<groupId>jarbundler</groupId>
-		<artifactId>jarbundler</artifactId>
-		<version>1.4</version><!--  more recent versions don't seem to work
-		 with the version of ant inside maven - and this does the job  -->
-		<properties>
-			<uberjar.bundle>false</uberjar.bundle>
-		</properties>
-		<url>http://informagen.com/JarBundler/</url>
-	</dependency>	        	
-<!--  make a platform-independent installer -->
-	<dependency>
-		<groupId>izpack</groupId>
-		<artifactId>standalone-compiler</artifactId>
-		<version>3.8.2</version>
-		<properties>
-			<uberjar.bundle>false</uberjar.bundle>
-		</properties>
-		<url>http://www.izforge.com/izpack/</url>
-		</dependency>    	      		        
-    	      		   
     </dependencies>
 </project>
