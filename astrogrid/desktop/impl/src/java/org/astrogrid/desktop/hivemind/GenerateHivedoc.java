@@ -19,7 +19,6 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.astrogrid.io.Piper;
-import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
 /** Specialized subclass of launcher that just generates Hivemind documentation.
@@ -37,16 +36,7 @@ public class GenerateHivedoc extends Launcher {
 		serializer.addModuleDescriptorProvider(createModuleDescriptorProvider());
 		Document result = serializer.createRegistryDocument();
 		
-		File f = new File("registry.xml");
-		System.out.println("Hivemind registry dumped to " + f.getAbsolutePath());
-		FileOutputStream fos;
-		try {
-			fos = new FileOutputStream(f);
-			DomHelper.DocumentToStream(result,fos);
-			fos.close();
-		} catch (IOException x) {
-			x.printStackTrace();
-		}
+
 		// create hivedoc.
 		File targetDir = new File("hivedoc");
 		targetDir.mkdir();
