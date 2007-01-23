@@ -5,6 +5,7 @@ package org.astrogrid.desktop.protocol.httpclient;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -46,7 +47,7 @@ public final class Handler extends URLStreamHandler {
 	protected URLConnection openConnection(URL u) throws IOException {
 		GetMethod meth = null;
 		try {
-		meth = new GetMethod("http:" + u.toURI().getSchemeSpecificPart()); //JDT this is also JDK1.5
+		meth = new GetMethod("http:" + new URI(u.toString()).getSchemeSpecificPart());
 		HttpMethodParams params = meth.getParams();
 		// set defaults.
 		//params.setSoTimeout(DEFAULT_TIMEOUT_MS); // data timeout is one second.

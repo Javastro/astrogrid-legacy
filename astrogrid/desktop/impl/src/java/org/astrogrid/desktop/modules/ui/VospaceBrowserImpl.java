@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowserImpl.java,v 1.18 2007/01/12 13:20:04 nw Exp $
+/*$Id: VospaceBrowserImpl.java,v 1.19 2007/01/23 11:51:18 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -547,7 +547,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
         }
 
 		public void propertyChange(PropertyChangeEvent evt) {
-			boolean showAdvanced = Boolean.parseBoolean(evt.getNewValue().toString());
+			boolean showAdvanced = Boolean.valueOf(evt.getNewValue().toString()).booleanValue();
 			furtherGroup.setVisible(showAdvanced);
 		}
     }
@@ -758,6 +758,9 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
 /*
  * $Log: VospaceBrowserImpl.java,v $
+ * Revision 1.19  2007/01/23 11:51:18  nw
+ * 1.5 fix.
+ *
  * Revision 1.18  2007/01/12 13:20:04  nw
  * made sure every ui app has a help menu.
  *
