@@ -3,6 +3,7 @@
  */
 package org.astrogrid.desktop.modules.system.contributions;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,7 +15,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 
 import org.astrogrid.desktop.modules.system.transformers.Xml2XhtmlTransformer;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
 
 /** Contribution bean for a stylesheet for rendering xml results into html.
@@ -50,7 +51,11 @@ public class StylesheetsContribution {
 	
 	/** @see {@link #isApplicable(CharSequence)} */
 	public boolean isApplicable(Document d) {
-		return isApplicable(DomHelper.DocumentToString(d));
+		try {
+			return isApplicable(DomHelper.DocumentToString(d));
+		} catch (IOException x) {
+			return false;
+		}
 		
 	}
 	/** test if this sheet is applicable to an input by matching the regexp against it */
