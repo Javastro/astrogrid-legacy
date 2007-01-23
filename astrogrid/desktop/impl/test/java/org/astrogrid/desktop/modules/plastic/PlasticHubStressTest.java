@@ -20,11 +20,12 @@ import EDU.oswego.cs.dl.util.concurrent.Executor;
 import EDU.oswego.cs.dl.util.concurrent.ThreadedExecutor;
 
 /**
+ * A simple stress test to hammer the Hub.
  * Register and unregister lots of applications and see what breaks.
  * @author jdt
  *
  */
-public class SlightlyStressfulIntegrationTest extends TestCase {
+public class PlasticHubStressTest extends TestCase {
     private PlasticHubListener hub;
     protected PlasticHubListener getHub() throws Exception {
         ACR acr = new Finder().find();
