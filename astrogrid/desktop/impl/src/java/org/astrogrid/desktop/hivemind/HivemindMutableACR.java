@@ -1,4 +1,4 @@
-/*$Id: HivemindMutableACR.java,v 1.6 2007/01/09 16:26:52 nw Exp $
+/*$Id: HivemindMutableACR.java,v 1.7 2007/01/23 11:45:40 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -95,6 +95,7 @@ public class HivemindMutableACR implements ACRInternal {
                     }
                 } catch (ACRException e) {
                     // not worried.
+                	logger.debug("Failed when accessing component: " + c.getName(),e);
                 }
                 // fall through - if not continued by now, something is wrong - remove this one.
                 logger.info("Removing component " + c.getName() + " - not available");
@@ -181,6 +182,9 @@ public class HivemindMutableACR implements ACRInternal {
 
 /* 
 $Log: HivemindMutableACR.java,v $
+Revision 1.7  2007/01/23 11:45:40  nw
+logging.
+
 Revision 1.6  2007/01/09 16:26:52  nw
 minor
 
