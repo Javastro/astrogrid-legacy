@@ -5,6 +5,14 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
+          <action dev="gtr" type="update">
+            Branch apps-gtr-2061. The project is refactored: maven-base is no
+            longer used and the Java-class-application server is split into
+            a separate sub-project from the server framework. A new sub-project
+            for integration tests is added. In support of the integration tests,
+            the server framework now adds a built-in application to its jar.
+            This addresses issues 2061 and 2071.
+          </action>
           
           <action dev="gtr" type="fix">
           <em>Branch apps-gtr-2051</em>: fix for BZ2051. This alters 
