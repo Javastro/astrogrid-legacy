@@ -7,7 +7,7 @@
 	     -->
 	<properties>
 		<title>Workbench / ACR Changes</title>
-		<author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+		<author email="noel.winstanley@manchester.ac.uk">Noel Winstanley</author>
 	</properties>
 	<head>
 		<link rel="alternate" title="RSS" 
@@ -15,8 +15,11 @@
 	</head>
 <body>
 <release version="2007.1.rc1" date="unreleased">
-<action dev="jdt" type="add" issue="2041"> 
-    Cache is now flushable programmatically.
+<action dev="nw" type="fix" issue="1970">
+	registry explorer renders urls with odd schemes correctly.
+</action>
+<action dev="nw" type="fix" issue="1855">
+	Fixed xml display when reg explorer is empty.
 </action>
 <action dev="nw" type="add">
 	Implemented preference system
