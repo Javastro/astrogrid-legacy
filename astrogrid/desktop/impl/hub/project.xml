@@ -56,7 +56,7 @@
                 <!-- modifications to compile the hub portion -->
                 <sourceModifications>
                   <sourceModification>
-                    <className>neverPresent</className>
+                    <className>alwayst</className>
                     <includes>
                     	<include>org/astrogrid/Plastic*.java</include>
                     	<include>org/astrogrid/*UnitTest.java</include>
@@ -103,7 +103,12 @@
 
 
         <dependencies>
- 
+        <!--  only required during build -->
+     <dependency>
+      <artifactId>junit</artifactId>
+      <groupId>junit</groupId>
+      <version>3.8</version>
+    </dependency>
    </dependencies>
 
 </project>

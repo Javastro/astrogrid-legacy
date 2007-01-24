@@ -1,10 +1,8 @@
 <?xml version="1.0" ?>
-<project xmlns:j="jelly:core" xmlns:define="jelly:define"    xmlns:artifact="artifact" xmlns:u="jelly:util">
+<project xmlns:j="jelly:core" xmlns:define="jelly:define"    
+	xmlns:artifact="artifact" xmlns:u="jelly:util" >
 <!-- 
-    this taglib thingie (mostly a set of hooks) 
-    captures commonality between the 4 different impl projects
-    
-    it's included in each project - which really simplifies the project.xml themselves.
+common definitions and hooks used by other projects.
  -->
 
 
@@ -28,8 +26,6 @@
 <!--  
 	real packaging routine. - hangs off back of 'dist' goal-
 -->
-
-
 
 <!--  makes an all-in-one executable jar - replacement for javaapp goal -->
   <goal name="app-jar"
@@ -63,7 +59,7 @@
 
 <!-- package as an osx app - build only works on osx -->
 	<goal name="osx"  
-	description="builds an osx-specific app. depends on dist:build-bin, and requires osx to run">
+	description="builds an osx-specific app. depends on app-jar, and only works on OSX">
 	  <echo>Building OSX Install Image: ${maven.final.name}.dmg</echo>
 	<!--  remove if already there - otherwise task won't proceed -->
 	<delete dir="${maven.build.dir}/osx" quiet ="true" />
@@ -109,8 +105,8 @@
 	</java>
 </goal>
 
-<goal name="run-jar"
-	description="run the application from within the dist/bin directory - useful for testing stripping. Depends on dist:build-bin"
+<goal name="run-app-jar"
+	description="run the (stripped) application jar- useful for testing stripping. Depends on app-jar"
 	>
 	<echo>Running ${maven.javaapp.mainclass}</echo>
 	<java classname="${maven.javaapp.mainclass}"
@@ -118,13 +114,12 @@
 <!--  		<arg value="-debug" />-->
 		<classpath>
 			<pathelement location="${maven.build.dir}/${maven.final.name}-app.jar" />
-			<pathelement location="debug" />
 		</classpath>
 	</java>
 </goal>
 
 	<goal name="installer"
-		description="Build an os-independent installer using IzPack">
+		description="Build an os-independent installer using IzPack. Depends on app-jar">
 		<echo>
 			Building installer : ${maven.final.name}-installer.jar
 		</echo>
@@ -229,7 +224,7 @@
 	</goal>
 
 	<goal name="webstart" 
-	description="build zip containing jnlp and appllication. depends on dist:build-bin">
+	description="build zip containing jnlp and appllication. depends on app-jar">
   <echo>Building Webstart Zip: ${maven.final.name}-jnlp.zip</echo>
 	<mkdir dir="${maven.build.dir}/jnlp" />
 <!--  copy requirements into dir -->
@@ -501,6 +496,46 @@
     </proguard>	
 	</goal>
 	
+	<goal name="smoke-test" description="Run a 'smoke test' that verifies that stripped packaged jar is minimally functional. depends on app-jar">
+	 	<echo>Running Smoke Test: ${smoke.test}</echo>
+	 	<!--  doesn't work.. can't tell why. so pre-req is that test has been previously run
+          <taskdef
+            name="junit"
+            classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"
+            classpathref="maven.dependency.classpath"
+          />  
+          -->
+	 	<!--  based on maven test plugin. -->
+	 	<mkdir dir="${maven.build.dir}/smoke-test-reports" />
+		<junit printsummary="${maven.junit.printSummary}"          failureProperty="maven.test.failure"
+			 fork="${maven.junit.fork}" dir="${maven.junit.dir}"
+			haltonerror="true" >
+            <u:tokenize var="listOfProperties" delim=" ">${maven.junit.sysproperties}</u:tokenize>
+            	<j:forEach var="someProperty" items="${listOfProperties}">
+              		<sysproperty key="${someProperty}" value="${context.getVariable(someProperty)}"/>
+            	</j:forEach>	
+            	<formatter type="xml" />
+	            <formatter type="${maven.junit.format}" usefile="${maven.junit.usefile}"/>
+				<classpath>
+					<pathelement location="${maven.build.dir}/${maven.final.name}-app.jar" />				
+					<pathelement location="${maven.test.dest}" />
+					<pathelement path="${pom.getDependencyPath('junit')}" />
+					<j:forEach var="lib" items="${pom.artifacts}">
+    					<j:set var="dep" value="${lib.dependency}"/>
+    					<j:if test="${dep.getProperty('testing.jar')=='true'}">
+							<pathelement path="${lib.path}" />
+ 						</j:if>
+ 					</j:forEach> 
+				</classpath>
+				<test name="${smoke.test}" todir="${maven.build.dir}/smoke-test-reports" />
+		</junit>
+          <j:if test="${maven.test.failure}">
+            <j:if test="${context.getVariable('maven.test.failure.ignore') != 'true'}">
+              <fail message="There were failures in the smoke test"/>
+            </j:if>
+          </j:if>	
+	</goal>
+	
 <define:taglib uri="workbench">
 	<!--  simple tag that signs the build product. 
 	
@@ -515,6 +550,8 @@
 
 <!--  definitions of custom ant tasks. -->
 
+	
+          
 	<!--  strips unused classes and methods from a jar -->
 	<taskdef resource="proguard/ant/task.properties"
       classpathref="maven.dependency.classpath"/>

@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <!-- extension maven script -->
 <project xmlns:j="jelly:core"  xmlns:wb="workbench" >
-	<j:import inherit="true" file="${buildlib}/workbench-taglib.xml"/>
-
+	
    
     <goal name="astrogrid-build-artifact" prereqs="dist:build-bin"
     description="Build the artifacts and leave in the target directory"
@@ -24,9 +23,11 @@
 	<attainGoal name="jar-strip" />
 <!--  package as a jar file -->
 	<attainGoal name="app-jar" />
-<!--  sign this jar -->	
-	<wb:sign />
-<!--  package as a webstart app -->
+	<!-- smoke-test it -->
+	<attainGoal name="smoke-test" />
+	<!--  sign this jar -->	
+		<wb:sign />
+	<!--  package as a webstart app -->
 	<attainGoal name="webstart" />
 
 <!--  package as an osx app -->

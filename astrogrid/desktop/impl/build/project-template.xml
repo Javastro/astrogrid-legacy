@@ -14,32 +14,10 @@
 	<build>
                 <sourceDirectory>${basedir}/../src/java</sourceDirectory>
                 <unitTestSourceDirectory>${basedir}/../test/java</unitTestSourceDirectory>
-     	<unitTest>
-        		<!--  list of unit tests applicable to this packaging of AR -->
-        		<includes>
-        			<include>**/*UnitTest.java</include>
-        			<include>**/*IntegrationTest.java</include>
-	  		</includes>
-                        <resources>
-                                <resource>
-                                        <directory>${basedir}/../test/java</directory>
-                                        <includes>
-                                                <include>**/*.properties</include>
-                                                <include>**/*.xml</include>
-                                                <include>**/*.xsl</include>
-                                                <include>**/*.dtd</include>
-                                                <include>**/*.xsd</include>
-                                                <include>**/*.vot</include>
-                                        </includes>
-                                </resource>								
-                        </resources>		        		
-        	</unitTest>
      
      </build>
 
     <reports>
-        <report>maven-javadoc-plugin</report>
-        <report>maven-jxr-plugin</report>
         <report>maven-license-plugin</report>
     </reports>
 
@@ -415,6 +393,7 @@
       <url>http://www.star.bris.ac.uk/~mbt/plastic</url>
 		<properties>
 			<uberjar.bundle>false</uberjar.bundle>
+			<testing.jar>true</testing.jar>
 		</properties>
     </dependency>
 
@@ -422,6 +401,9 @@
     <dependency>
       <id>xmlunit</id>
       <version>1.0</version>
+		<properties>
+			<testing.jar>true</testing.jar>
+		</properties>      
     </dependency>		
 
 
@@ -432,6 +414,7 @@
  		<version>1.2</version>
  		<url>http://www.easymock.org/</url>
            	            <properties>
+           	            	<testing.jar>true</testing.jar>
 		            		<uberjar.bundle>false</uberjar.bundle>
 		            	</properties>  		
  	</dependency>
@@ -443,6 +426,7 @@
  	<version>1.1</version>
  	<url>http://www.uispec4j.org/</url>
            	            <properties>
+           	            	<testing.jar>true</testing.jar>
 		            		<uberjar.bundle>false</uberjar.bundle>
 		            	</properties>  	
  </dependency>
@@ -455,14 +439,17 @@
                         <url>http://httpunit.sourceforge.net/</url>
 		            <properties>
 		            	<uberjar.bundle>false</uberjar.bundle>
+		            	<testing.jar>true</testing.jar>
 		            </properties>                         
                 </dependency>
+                
                 <dependency>
                         <groupId>jwebunit</groupId>
                         <artifactId>jwebunit</artifactId>
                         <version>1.2</version>
                         <url>http://jwebunit.sourceforge.net/</url>
                         <properties>
+                        	<testing.jar>true</testing.jar>
 		            		<uberjar.bundle>false</uberjar.bundle>
 		            	</properties> 
                 </dependency>
@@ -471,6 +458,7 @@
                         <artifactId>js</artifactId>
                         <version>1.5R4.1</version>
            	            <properties>
+                        	<testing.jar>true</testing.jar>           	            
 		            		<uberjar.bundle>false</uberjar.bundle>
 		            	</properties> 
                 </dependency>
@@ -480,10 +468,19 @@
                         <version>0.8.1</version>
                         <url>http://www.apache.org/~andyc/neko/doc/html/</url>
        		            <properties>
+                        	<testing.jar>true</testing.jar>       		            
 		        	    	<uberjar.bundle>false</uberjar.bundle>
 		   		         </properties> 
                 </dependency>
-
-	
+                
+<!--                <dependency>-->
+<!--                	<groupId>ant</groupId>-->
+<!--                	<artifactId>ant-optional</artifactId>-->
+<!--                	<version>1.5.3-1</version>-->
+<!--                	<properties>-->
+<!--                		<testing.jar>true</testing.jar>-->
+<!--                	</properties>-->
+<!--                -->
+<!--                </dependency>-->
 	</dependencies>
 </project>
