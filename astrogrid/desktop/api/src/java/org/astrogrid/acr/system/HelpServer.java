@@ -1,4 +1,4 @@
-/*$Id: HelpServer.java,v 1.5 2007/01/09 15:47:14 nw Exp $
+/*$Id: HelpServer.java,v 1.6 2007/01/24 14:04:44 nw Exp $
  * Created on 17-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,7 @@ import javax.swing.Action;
 /**Control the workbench help viewer.
  *
  * @service system.help
- * @author Noel Winstanley nw@jb.man.ac.uk 17-Jun-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Jun-2005
  * 
  */
 public interface HelpServer {
@@ -31,6 +31,9 @@ public interface HelpServer {
 
 /* 
  $Log: HelpServer.java,v $
+ Revision 1.6  2007/01/24 14:04:44  nw
+ updated my email address
+
  Revision 1.5  2007/01/09 15:47:14  nw
  tidied docs
 

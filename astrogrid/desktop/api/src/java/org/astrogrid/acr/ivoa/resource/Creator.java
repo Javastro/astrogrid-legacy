@@ -4,6 +4,8 @@
 package org.astrogrid.acr.ivoa.resource;
 
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 
 /**       The entity (e.g. person or organisation) primarily responsible 
@@ -19,17 +21,31 @@ public class Creator implements Serializable {
 	 */
 	private static final long serialVersionUID = -4484705219406811935L;
 	private  ResourceName name;
-	private  URL logo;
+	private  URI logo;
 	
-	/** url pointing to a logo for this entity */
+	/** url pointing to a logo for this entity 
+	 * 
+	 * 	 * warning: will return null for an url with an unknown scheme, or
+	 * which is invalid. To access the value then, use {@link #getLogoURI}
+	 * @deprecated prefer {@link #getLogoURI}
+	 * */
 	public URL getLogo() {
+		try {
+			
+			return this.logo == null ? null :this.logo.toURL();
+		} catch (MalformedURLException x) {
+			return null;
+		}
+	}
+	
+	public URI getLogoURI() {
 		return this.logo;
 	}
 	/** name of the creator */
 	public ResourceName getName() {
 		return this.name;
 	}
-	public void setLogo(URL logo) {
+	public void setLogoURI(URI logo) {
 		this.logo = logo;
 	}
 	public void setName(ResourceName name) {

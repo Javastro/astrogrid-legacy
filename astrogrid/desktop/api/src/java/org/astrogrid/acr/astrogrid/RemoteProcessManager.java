@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManager.java,v 1.5 2006/08/15 09:48:55 nw Exp $
+/*$Id: RemoteProcessManager.java,v 1.6 2007/01/24 14:04:44 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,7 @@ import java.util.Map;
  * RemoteProcessManager unifies the  functionality in {@link org.astrogrid.acr.astrogrid.Jobs} and {@link org.astrogrid.acr.astrogrid.Applications}
  * and provides additional features - notably ability to register callbacks for progress notifications. It is still valid to use the <tt>Jobs</tt> or <tt>Applications</tt>, 
  * however, this interface also knows how to invoke other kinds of service, and provides a uniform interface to cea, cone, siap, ssap services.
- * @author Noel Winstanley nw@jb.man.ac.uk 08-Nov-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 08-Nov-2005
  *@since 1.3
  */
 public interface RemoteProcessManager {
@@ -166,6 +166,9 @@ public interface RemoteProcessManager {
 
 /* 
 $Log: RemoteProcessManager.java,v $
+Revision 1.6  2007/01/24 14:04:44  nw
+updated my email address
+
 Revision 1.5  2006/08/15 09:48:55  nw
 added new registry interface, and bean objects returned by it.
 

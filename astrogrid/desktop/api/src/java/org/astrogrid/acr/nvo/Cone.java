@@ -1,4 +1,4 @@
-/*$Id: Cone.java,v 1.4 2006/10/10 14:06:59 nw Exp $
+/*$Id: Cone.java,v 1.5 2007/01/24 14:04:46 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import java.net.URI;
 import java.net.URL;
 
 /** Query  catalogs using Cone-search services
- * @author Noel Winstanley nw@jb.man.ac.uk 17-Oct-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Oct-2005
  * @service nvo.cone
  * @since 1.3
  * @deprecated use the ivoa.cone interface instead.
@@ -89,6 +89,9 @@ public interface Cone {
 
 /* 
 $Log: Cone.java,v $
+Revision 1.5  2007/01/24 14:04:46  nw
+updated my email address
+
 Revision 1.4  2006/10/10 14:06:59  nw
 deprecated this interface.
 

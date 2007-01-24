@@ -1,4 +1,4 @@
-/*$Id: RegistryGoogle.java,v 1.2 2006/08/31 20:21:39 nw Exp $
+/*$Id: RegistryGoogle.java,v 1.3 2007/01/24 14:04:44 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,7 @@ import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.ivoa.resource.Resource;
 
 /**prompt the user to select a registry resource by displaying  a more advanced registry chooser dialogue.
- * @author Noel Winstanley nw@jb.man.ac.uk 02-Sep-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Sep-2005
  * @service dialogs.registryGoogle
  */
 public interface RegistryGoogle {
@@ -50,6 +50,9 @@ public interface RegistryGoogle {
 
 /* 
 $Log: RegistryGoogle.java,v $
+Revision 1.3  2007/01/24 14:04:44  nw
+updated my email address
+
 Revision 1.2  2006/08/31 20:21:39  nw
 improved documentation
 

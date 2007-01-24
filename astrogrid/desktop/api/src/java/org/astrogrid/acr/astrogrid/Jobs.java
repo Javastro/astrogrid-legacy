@@ -1,4 +1,4 @@
-/*$Id: Jobs.java,v 1.7 2006/02/02 14:19:48 nw Exp $
+/*$Id: Jobs.java,v 1.8 2007/01/24 14:04:44 nw Exp $
  * Created on 18-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,7 +47,7 @@ import java.net.URI;
  * @see org.astrogrid.acr.ui.JobMonitor
  * @see org.astrogrid.acr.ui.WorkflowBuilder
  * @see org.astrogrid.acr.astrogrid.ExecutionInformation
- * @author Noel Winstanley nw@jb.man.ac.uk 18-Mar-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 18-Mar-2005
  * @service astrogrid.jobs
  */
 public interface Jobs {
@@ -156,6 +156,9 @@ public interface Jobs {
 
 /* 
  $Log: Jobs.java,v $
+ Revision 1.8  2007/01/24 14:04:44  nw
+ updated my email address
+
  Revision 1.7  2006/02/02 14:19:48  nw
  fixed up documentation.
 

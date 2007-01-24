@@ -1,4 +1,4 @@
-/*$Id: RmiServer.java,v 1.3 2006/02/02 14:19:47 nw Exp $
+/*$Id: RmiServer.java,v 1.4 2007/01/24 14:04:44 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,7 @@ package org.astrogrid.acr.system;
  * 
  * No management functions - just query methods.
  * @service system.rmi
- * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 25-Jul-2005
  *
  */
 public interface RmiServer {
@@ -28,6 +28,9 @@ public interface RmiServer {
 
 /* 
 $Log: RmiServer.java,v $
+Revision 1.4  2007/01/24 14:04:44  nw
+updated my email address
+
 Revision 1.3  2006/02/02 14:19:47  nw
 fixed up documentation.
 

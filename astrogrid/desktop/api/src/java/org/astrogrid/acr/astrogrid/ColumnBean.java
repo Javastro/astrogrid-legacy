@@ -1,4 +1,4 @@
-/*$Id: ColumnBean.java,v 1.5 2006/06/15 09:01:27 nw Exp $
+/*$Id: ColumnBean.java,v 1.6 2007/01/24 14:04:44 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.acr.astrogrid;
 import java.io.Serializable;
 
 /** describes a single column in a tabular database.
- * @author Noel Winstanley nw@jb.man.ac.uk 12-Sep-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 12-Sep-2005
  * @since 1.2
  */
 public class ColumnBean implements Serializable{
@@ -128,6 +128,9 @@ public class ColumnBean implements Serializable{
 
 /* 
 $Log: ColumnBean.java,v $
+Revision 1.6  2007/01/24 14:04:44  nw
+updated my email address
+
 Revision 1.5  2006/06/15 09:01:27  nw
 provided implementations of equals()
 

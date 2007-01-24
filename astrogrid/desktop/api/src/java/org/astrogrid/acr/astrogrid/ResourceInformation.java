@@ -1,4 +1,4 @@
-/*$Id: ResourceInformation.java,v 1.9 2006/08/15 09:48:55 nw Exp $
+/*$Id: ResourceInformation.java,v 1.10 2007/01/24 14:04:45 nw Exp $
  * Created on 01-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,7 @@ import java.net.URL;
  * 
  * <tt>getId()</tt> will return a registry identifier - an ivorn of form <tt>ivo://<i>Authority-Id</i>/<i>Resource-Id</i></tt>
  * @xmlrpc returned as a struct, with keys corresponding to bean names
- * @author Noel Winstanley nw@jb.man.ac.uk 01-Aug-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 01-Aug-2005
  * @deprecated prefer the ivoa.registry object model
  */
 public class ResourceInformation extends AbstractInformation {
@@ -88,6 +88,9 @@ public class ResourceInformation extends AbstractInformation {
 
 /* 
 $Log: ResourceInformation.java,v $
+Revision 1.10  2007/01/24 14:04:45  nw
+updated my email address
+
 Revision 1.9  2006/08/15 09:48:55  nw
 added new registry interface, and bean objects returned by it.
 

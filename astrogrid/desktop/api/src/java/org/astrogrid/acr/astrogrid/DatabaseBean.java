@@ -1,4 +1,4 @@
-/*$Id: DatabaseBean.java,v 1.4 2006/06/15 09:01:27 nw Exp $
+/*$Id: DatabaseBean.java,v 1.5 2007/01/24 14:04:44 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 /** describes a  single database in a TablularDB registry entry
- * @author Noel Winstanley nw@jb.man.ac.uk 12-Sep-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 12-Sep-2005
  *@since 1.2
  */
 public class DatabaseBean implements Serializable{
@@ -106,6 +106,9 @@ public class DatabaseBean implements Serializable{
 
 /* 
 $Log: DatabaseBean.java,v $
+Revision 1.5  2007/01/24 14:04:44  nw
+updated my email address
+
 Revision 1.4  2006/06/15 09:01:27  nw
 provided implementations of equals()
 

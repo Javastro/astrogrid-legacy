@@ -1,4 +1,4 @@
-/*$Id: ModuleDescriptor.java,v 1.2 2007/01/09 15:47:43 nw Exp $
+/*$Id: ModuleDescriptor.java,v 1.3 2007/01/24 14:04:46 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /** Representation of a module of the AR.
- * @author Noel Winstanley nw@jb.man.ac.uk 
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 
  * @since 2.2
  *
  */
@@ -69,6 +69,9 @@ public class ModuleDescriptor  extends Descriptor {
 
 /* 
 $Log: ModuleDescriptor.java,v $
+Revision 1.3  2007/01/24 14:04:46  nw
+updated my email address
+
 Revision 1.2  2007/01/09 15:47:43  nw
 change from HashMap to LinkedHashMap to preserve ordering.
 

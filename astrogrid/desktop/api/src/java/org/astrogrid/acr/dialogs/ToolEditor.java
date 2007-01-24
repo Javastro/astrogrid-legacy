@@ -1,4 +1,4 @@
-/*$Id: ToolEditor.java,v 1.6 2006/08/15 09:48:55 nw Exp $
+/*$Id: ToolEditor.java,v 1.7 2007/01/24 14:04:44 nw Exp $
  * Created on 16-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,7 +33,7 @@ import java.net.URI;
  * @see <a href="http://www.astrogrid.org/maven/docs/HEAD/astrogrid-workflow-objects/schema/AGParameterDefinition.html#type_parameter">Value Parameter Element Schema-Documentation</a>
  * @see <a href="http://www.astrogrid.org/viewcvs/astrogrid/workflow-objects/schema/">XSD Schemas</a>
  * @see <a href="doc-files/example-tool.xml"> Example Tool Document</a>
- * @author Noel Winstanley nw@jb.man.ac.uk 16-May-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 16-May-2005
  * @todo add options later to just display tool document, without ability to edit.
  * @see org.astrogrid.acr.astrogrid.Applications
  *
@@ -70,6 +70,9 @@ public interface ToolEditor {
 
 /* 
 $Log: ToolEditor.java,v $
+Revision 1.7  2007/01/24 14:04:44  nw
+updated my email address
+
 Revision 1.6  2006/08/15 09:48:55  nw
 added new registry interface, and bean objects returned by it.
 

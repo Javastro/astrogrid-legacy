@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @see <a href="http://www.ivoa.net/Documents/latest/ADQL.html">ADQL Query Language Specification</a>
  * @see <a href="http://www.ivoa.net/twiki/bin/view/IVOA/IvoaResReg">IVOA Registry Working Group</a>
  * @see <a href="http://www.w3schools.com/xquery/default.asp">XQuery Language Tutorial</a>
- * @author Noel Winstanley nw@jb.man.ac.uk 18-Mar-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 18-Mar-2005
  * @service ivoa.registry
  * @see org.astrogrid.acr.ui.RegistryBrowser
  * @see org.astrogrid.acr.ivoa.ExternalRegistry - to query other IVOA registries, and the Registry of Registries.

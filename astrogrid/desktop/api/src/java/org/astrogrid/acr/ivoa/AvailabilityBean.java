@@ -1,4 +1,4 @@
-/*$Id: AvailabilityBean.java,v 1.4 2006/08/31 20:22:13 nw Exp $
+/*$Id: AvailabilityBean.java,v 1.5 2007/01/24 14:04:45 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import java.util.Date;
 /**
  * Description of the availability of a server
  * @since 1.9
- * @author Noel Winstanley nw@jb.man.ac.uk 22-Feb-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 22-Feb-2006
  *
  */
 public class AvailabilityBean implements Serializable {
@@ -145,6 +145,9 @@ public class AvailabilityBean implements Serializable {
 
 /* 
 $Log: AvailabilityBean.java,v $
+Revision 1.5  2007/01/24 14:04:45  nw
+updated my email address
+
 Revision 1.4  2006/08/31 20:22:13  nw
 doc fix.
 

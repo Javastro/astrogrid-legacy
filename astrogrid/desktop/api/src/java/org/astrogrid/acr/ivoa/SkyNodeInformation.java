@@ -1,4 +1,4 @@
-/*$Id: SkyNodeInformation.java,v 1.3 2006/08/15 09:48:55 nw Exp $
+/*$Id: SkyNodeInformation.java,v 1.4 2007/01/24 14:04:45 nw Exp $
  * Created on 21-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,7 @@ import java.util.Map;
 http://www.ivoa.net/Documents/latest/SkyNodeInterface.html for definition of this information
 @xmlrpc returned as a struct, with keys corresponding to bean names.
  * @deprecated prefer the v1.0 registry object model
- * @author Noel Winstanley nw@jb.man.ac.uk 21-Feb-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Feb-2006
  *
  */
 public class SkyNodeInformation extends ApplicationInformation {
@@ -152,6 +152,9 @@ public class SkyNodeInformation extends ApplicationInformation {
 
 /* 
 $Log: SkyNodeInformation.java,v $
+Revision 1.4  2007/01/24 14:04:45  nw
+updated my email address
+
 Revision 1.3  2006/08/15 09:48:55  nw
 added new registry interface, and bean objects returned by it.
 

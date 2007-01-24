@@ -1,4 +1,4 @@
-/*$Id: Lookout.java,v 1.4 2006/10/12 02:22:33 nw Exp $
+/*$Id: Lookout.java,v 1.5 2007/01/24 14:04:45 nw Exp $
  * Created on 27-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,7 @@ package org.astrogrid.acr.ui;
  * 
  * <img src="doc-files/lookout.png"/>
  * @service userInterface.lookout
- * @author Noel Winstanley nw@jb.man.ac.uk 27-Oct-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Oct-2005
  *
  */
 public interface Lookout  {
@@ -26,6 +26,9 @@ public interface Lookout  {
 
 /* 
  $Log: Lookout.java,v $
+ Revision 1.5  2007/01/24 14:04:45  nw
+ updated my email address
+
  Revision 1.4  2006/10/12 02:22:33  nw
  fixed up documentaiton
 

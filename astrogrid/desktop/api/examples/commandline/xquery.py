@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #Noel Winstanley, AstroGrid, 2006
-#nw@jb.man.ac.uk
+#noel.winstanley@manchester.ac.uk
 #Fire an xquery at a vo registry.
 #Usage: start Workbench / AR
 # 	execute 'python xquery.py myquery.xquery'

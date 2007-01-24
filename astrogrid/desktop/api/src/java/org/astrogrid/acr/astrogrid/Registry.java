@@ -1,4 +1,4 @@
-/*$Id: Registry.java,v 1.7 2006/08/15 09:48:55 nw Exp $
+/*$Id: Registry.java,v 1.8 2007/01/24 14:04:44 nw Exp $
  * Created on 18-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,7 +31,7 @@ import java.net.URL;
  * @see <a href="http://www.ivoa.net/Documents/latest/ADQL.html">ADQL Query Language Specification</a>
  * @see <a href="http://www.ivoa.net/twiki/bin/view/IVOA/IvoaResReg">IVOA Registry Working Group</a>
  * @see <a href="http://www.w3schools.com/xquery/default.asp">XQuery Language Tutorial</a>
- * @author Noel Winstanley nw@jb.man.ac.uk 18-Mar-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 18-Mar-2005
  * @service astrogrid.registry
  * @see org.astrogrid.acr.ui.RegistryBrowser
  * @see org.astrogrid.acr.astrogrid.ResourceInformation
@@ -196,6 +196,9 @@ public interface Registry {
 
 /* 
  $Log: Registry.java,v $
+ Revision 1.8  2007/01/24 14:04:44  nw
+ updated my email address
+
  Revision 1.7  2006/08/15 09:48:55  nw
  added new registry interface, and bean objects returned by it.
 

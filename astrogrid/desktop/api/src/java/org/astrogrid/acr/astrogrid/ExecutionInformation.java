@@ -1,4 +1,4 @@
-/*$Id: ExecutionInformation.java,v 1.6 2006/06/15 09:01:27 nw Exp $
+/*$Id: ExecutionInformation.java,v 1.7 2007/01/24 14:04:44 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import java.util.Date;
 /**  description of  the progress of a remote process - e.g. a workflow job, or CEA application.
  *  
  * <tt>getId()</tt> will return the execution identifier - either a job urn (for workfows) or an execution ivorn (for cea and other remote appilications).
- * @author Noel Winstanley nw@jb.man.ac.uk 04-Aug-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 04-Aug-2005
   * @xmlrpc returned as a struct, with keys corresponding to bean names
  *
  */
@@ -145,6 +145,9 @@ public class ExecutionInformation extends AbstractInformation {
 
 /* 
 $Log: ExecutionInformation.java,v $
+Revision 1.7  2007/01/24 14:04:44  nw
+updated my email address
+
 Revision 1.6  2006/06/15 09:01:27  nw
 provided implementations of equals()
 

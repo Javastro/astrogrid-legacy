@@ -1,4 +1,4 @@
-/*$Id: ACR.java,v 1.4 2006/10/30 12:12:36 nw Exp $
+/*$Id: ACR.java,v 1.5 2007/01/24 14:04:46 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import java.util.Iterator;
  * 
  * Note that this isn't a component interface itself.
  *
- * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 15-Mar-2005
  * @see org.astrogrid.acr.Finder How to create an instance of ACR
  *
  */
@@ -72,6 +72,9 @@ public interface ACR {
 
 /* 
  $Log: ACR.java,v $
+ Revision 1.5  2007/01/24 14:04:46  nw
+ updated my email address
+
  Revision 1.4  2006/10/30 12:12:36  nw
  documentation improvements.
 

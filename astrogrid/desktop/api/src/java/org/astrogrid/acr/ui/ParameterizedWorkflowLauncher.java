@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowLauncher.java,v 1.4 2006/10/12 02:22:33 nw Exp $
+/*$Id: ParameterizedWorkflowLauncher.java,v 1.5 2007/01/24 14:04:45 nw Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,7 @@ package org.astrogrid.acr.ui;
  * <img src="doc-files/pw-choice.png" />
  * @service userInterface.parameterizedWorkflows 
   @see org.astrogrid.acr.ui.JobMonitor
- * @author Noel Winstanley nw@jb.man.ac.uk 23-Mar-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 23-Mar-2005
  *
  */
 public interface ParameterizedWorkflowLauncher {
@@ -25,6 +25,9 @@ public interface ParameterizedWorkflowLauncher {
 
 /* 
  $Log: ParameterizedWorkflowLauncher.java,v $
+ Revision 1.5  2007/01/24 14:04:45  nw
+ updated my email address
+
  Revision 1.4  2006/10/12 02:22:33  nw
  fixed up documentaiton
 

@@ -1,4 +1,4 @@
-/*$Id: ParameterBean.java,v 1.3 2006/04/18 23:25:45 nw Exp $
+/*$Id: ParameterBean.java,v 1.4 2007/01/24 14:04:44 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import java.net.URI;
 /** description of a single parameter for a remote application.
  * 
  * NB - all fields, apart from <tt>name</tt> and <tt>type</tt> may be null
- * @author Noel Winstanley nw@jb.man.ac.uk 17-Aug-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Aug-2005
  *
  */
 public class ParameterBean  implements Serializable{
@@ -135,6 +135,9 @@ public class ParameterBean  implements Serializable{
 
 /* 
 $Log: ParameterBean.java,v $
+Revision 1.4  2007/01/24 14:04:44  nw
+updated my email address
+
 Revision 1.3  2006/04/18 23:25:45  nw
 merged asr development.
 

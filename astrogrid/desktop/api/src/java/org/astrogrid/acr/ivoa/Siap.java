@@ -1,4 +1,4 @@
-/*$Id: Siap.java,v 1.5 2006/10/10 14:07:44 nw Exp $
+/*$Id: Siap.java,v 1.6 2007/01/24 14:04:45 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,7 @@ import java.util.Map;
  * @see http://www.ivoa.net/Documents/latest/SIA.html 
  * @service ivoa.siap
  * @since 1.3
- * @author Noel Winstanley nw@jb.man.ac.uk 17-Oct-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Oct-2005
  */
 public interface Siap extends Dal {
     /** construct query on RA, DEC, SIZE 
@@ -87,6 +87,9 @@ public Map[] execute(URL query) throws ServiceException;
 
 /* 
 $Log: Siap.java,v $
+Revision 1.6  2007/01/24 14:04:45  nw
+updated my email address
+
 Revision 1.5  2006/10/10 14:07:44  nw
 upgraded the dal interfaces.
 

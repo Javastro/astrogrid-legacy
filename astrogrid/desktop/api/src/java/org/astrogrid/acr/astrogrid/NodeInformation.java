@@ -1,4 +1,4 @@
-/*$Id: NodeInformation.java,v 1.6 2006/06/15 09:01:27 nw Exp $
+/*$Id: NodeInformation.java,v 1.7 2007/01/24 14:04:44 nw Exp $
  * Created on 02-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import java.util.Map;
  * 
  * <tt>getId()</tt> will return a myspace resouce locator - an ivorn of form 
  * <tt>ivo://<i>Community-Id</i>/<i>User-Id</i>#<i>File-Path</i></tt>
- * @author Noel Winstanley nw@jb.man.ac.uk 02-Aug-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Aug-2005
   * @xmlrpc returned as a struct, with keys corresponding to bean names
   * @see org.astrogrid.acr.astrogrid.Myspace
  *
@@ -165,6 +165,9 @@ public class NodeInformation extends AbstractInformation {
 
 /* 
 $Log: NodeInformation.java,v $
+Revision 1.7  2007/01/24 14:04:44  nw
+updated my email address
+
 Revision 1.6  2006/06/15 09:01:27  nw
 provided implementations of equals()
 

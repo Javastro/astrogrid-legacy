@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #Noel Winstanley, AstroGrid, 2006
-#nw@jb.man.ac.uk
+#noel.winstanley@manchester.ac.uk
 #Produce HTML report of assets available in registry.
 # A pracitcal example of an inline (monster) xquery.
 #Usage: start Workbench / ACR

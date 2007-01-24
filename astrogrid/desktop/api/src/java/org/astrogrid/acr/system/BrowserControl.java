@@ -1,4 +1,4 @@
-/*$Id: BrowserControl.java,v 1.4 2006/08/31 20:23:09 nw Exp $
+/*$Id: BrowserControl.java,v 1.5 2007/01/24 14:04:44 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import java.net.URL;
  * @service system.browser
 
 
- * @author Noel Winstanley nw@jb.man.ac.uk 01-Feb-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 01-Feb-2005
  *
  */
 public interface BrowserControl {
@@ -49,6 +49,9 @@ public interface BrowserControl {
 
 /* 
 $Log: BrowserControl.java,v $
+Revision 1.5  2007/01/24 14:04:44  nw
+updated my email address
+
 Revision 1.4  2006/08/31 20:23:09  nw
 doc fix.
 

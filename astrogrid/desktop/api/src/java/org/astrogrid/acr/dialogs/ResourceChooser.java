@@ -1,4 +1,4 @@
-/*$Id: ResourceChooser.java,v 1.3 2006/02/02 14:19:47 nw Exp $
+/*$Id: ResourceChooser.java,v 1.4 2007/01/24 14:04:44 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import java.net.URI;
  * <br />
  * @service  dialogs.resourceChooser
  * @see org.astrogrid.acr.astrogrid.Myspace
- * @author Noel Winstanley nw@jb.man.ac.uk 21-Apr-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Apr-2005
  *
  */
 public interface ResourceChooser {
@@ -45,6 +45,9 @@ public interface ResourceChooser {
 
 /* 
  $Log: ResourceChooser.java,v $
+ Revision 1.4  2007/01/24 14:04:44  nw
+ updated my email address
+
  Revision 1.3  2006/02/02 14:19:47  nw
  fixed up documentation.
 

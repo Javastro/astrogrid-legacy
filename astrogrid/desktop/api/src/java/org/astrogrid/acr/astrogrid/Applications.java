@@ -1,4 +1,4 @@
-/*$Id: Applications.java,v 1.8 2006/08/31 20:21:16 nw Exp $
+/*$Id: Applications.java,v 1.9 2007/01/24 14:04:44 nw Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,7 +37,7 @@ import java.util.Map;
  * Each new application invocation is assigned a new globally unique id.
  *  These id's  should be treated as opaque objects - the internal structure is still liable to change.
  * 
- * @author Noel Winstanley nw@jb.man.ac.uk 21-Mar-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Mar-2005
  * @see <a href="http://www.astrogrid.org/maven/docs/HEAD/applications/design/CEADesignIVOANote.html">Common Execution Architecture - IVOA Proposal</a>
  * <br/>
 * @see <a href="http://www.astrogrid.org/maven/docs/HEAD/astrogrid-workflow-objects/schema/Workflow.html#element_tool">Tool Document Schema-Documentation</a>
@@ -317,6 +317,9 @@ public interface Applications {
 
 /* 
  $Log: Applications.java,v $
+ Revision 1.9  2007/01/24 14:04:44  nw
+ updated my email address
+
  Revision 1.8  2006/08/31 20:21:16  nw
  removed obsolete @todos
 

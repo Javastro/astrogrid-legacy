@@ -1,4 +1,4 @@
-/*$Id: UserInformation.java,v 1.3 2006/04/18 23:25:45 nw Exp $
+/*$Id: UserInformation.java,v 1.4 2007/01/24 14:04:44 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,7 @@ import java.net.URI;
  * <li><tt>id</tt></li> - will be the user ivorn
  * <li><tt>name</tt></li> - will be the user's name.
  * </ul>
- * @author Noel Winstanley nw@jb.man.ac.uk 17-Aug-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Aug-2005
  *@see org.astrogrid.acr.astrogrid.Community
  */
 public class UserInformation extends AbstractInformation {
@@ -58,6 +58,9 @@ public class UserInformation extends AbstractInformation {
 
 /* 
 $Log: UserInformation.java,v $
+Revision 1.4  2007/01/24 14:04:44  nw
+updated my email address
+
 Revision 1.3  2006/04/18 23:25:45  nw
 merged asr development.
 

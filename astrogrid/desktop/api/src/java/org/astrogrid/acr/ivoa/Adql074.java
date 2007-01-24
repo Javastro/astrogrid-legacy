@@ -1,4 +1,4 @@
-/*$Id: Adql074.java,v 1.3 2006/08/15 09:48:55 nw Exp $
+/*$Id: Adql074.java,v 1.4 2007/01/24 14:04:45 nw Exp $
  * Created on 09-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import org.astrogrid.acr.ServiceException;
 import org.w3c.dom.Document;
 
 /** Routines for  with Astronomy Data Query Language (ADQL)
- * @author Noel Winstanley nw@jb.man.ac.uk 09-Sep-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 09-Sep-2005
  *@service ivoa.adql074
  *@deprecated implemented against the nvo webservice, which is poorly-specified and prone to err.
  */
@@ -40,6 +40,9 @@ public interface Adql074 {
 
 /* 
 $Log: Adql074.java,v $
+Revision 1.4  2007/01/24 14:04:45  nw
+updated my email address
+
 Revision 1.3  2006/08/15 09:48:55  nw
 added new registry interface, and bean objects returned by it.
 

@@ -1,4 +1,4 @@
-/*$Id: InterfaceBean.java,v 1.4 2006/06/15 09:01:27 nw Exp $
+/*$Id: InterfaceBean.java,v 1.5 2007/01/24 14:04:44 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 /** Description of  an interface to a remote application.
- * @author Noel Winstanley nw@jb.man.ac.uk 17-Aug-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Aug-2005
  *@see org.astrogrid.acr.astrogrid.ParameterBean
  *@see org.astrogrid.acr.astrogrid.ParameterReferenceBean
  */
@@ -110,6 +110,9 @@ public class InterfaceBean implements Serializable {
 
 /* 
 $Log: InterfaceBean.java,v $
+Revision 1.5  2007/01/24 14:04:44  nw
+updated my email address
+
 Revision 1.4  2006/06/15 09:01:27  nw
 provided implementations of equals()
 

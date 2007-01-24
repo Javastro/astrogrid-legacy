@@ -1,4 +1,4 @@
-/*$Id: AbstractInformation.java,v 1.5 2006/04/18 23:25:45 nw Exp $
+/*$Id: AbstractInformation.java,v 1.6 2007/01/24 14:04:45 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,7 @@ import java.net.URI;
 
 /** Base class - all 'information' structures returned by ACR extend this class.
  * @xmlrpc returned as a struct, with keys corresponding to bean names
- * @author Noel Winstanley nw@jb.man.ac.uk 04-Aug-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 04-Aug-2005
  *
  */
 public abstract class AbstractInformation implements Serializable {
@@ -81,6 +81,9 @@ public abstract class AbstractInformation implements Serializable {
 
 /* 
 $Log: AbstractInformation.java,v $
+Revision 1.6  2007/01/24 14:04:45  nw
+updated my email address
+
 Revision 1.5  2006/04/18 23:25:45  nw
 merged asr development.
 

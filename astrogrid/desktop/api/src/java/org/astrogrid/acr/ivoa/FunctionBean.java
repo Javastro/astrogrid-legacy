@@ -1,4 +1,4 @@
-/*$Id: FunctionBean.java,v 1.3 2006/06/15 09:01:42 nw Exp $
+/*$Id: FunctionBean.java,v 1.4 2007/01/24 14:04:45 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,7 @@ import java.util.Arrays;
 /**
  * description of one ADQL function
  * @since 1.9
- * @author Noel Winstanley nw@jb.man.ac.uk 22-Feb-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 22-Feb-2006
  *
  */
 public class FunctionBean implements Serializable{
@@ -114,6 +114,9 @@ public class FunctionBean implements Serializable{
 
 /* 
 $Log: FunctionBean.java,v $
+Revision 1.4  2007/01/24 14:04:45  nw
+updated my email address
+
 Revision 1.3  2006/06/15 09:01:42  nw
 provided implementations of equals()
 

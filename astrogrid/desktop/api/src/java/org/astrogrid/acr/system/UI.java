@@ -1,4 +1,4 @@
-/*$Id: UI.java,v 1.3 2006/02/02 14:19:47 nw Exp $
+/*$Id: UI.java,v 1.4 2007/01/24 14:04:44 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ package org.astrogrid.acr.system;
  * Show or Hide the main user interface, display messages in the status bar<br />
  * <img src="doc-files/workbench.png"/>
  * @service system.ui
- * @author Noel Winstanley nw@jb.man.ac.uk 17-Mar-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Mar-2005
  *
  */
 public interface UI{
@@ -49,6 +49,9 @@ public interface UI{
 
 /* 
  $Log: UI.java,v $
+ Revision 1.4  2007/01/24 14:04:44  nw
+ updated my email address
+
  Revision 1.3  2006/02/02 14:19:47  nw
  fixed up documentation.
 

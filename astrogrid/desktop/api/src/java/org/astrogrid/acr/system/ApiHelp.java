@@ -1,4 +1,4 @@
-/*$Id: ApiHelp.java,v 1.4 2006/06/02 00:18:10 nw Exp $
+/*$Id: ApiHelp.java,v 1.5 2007/01/24 14:04:44 nw Exp $
  * Created on 23-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import org.astrogrid.acr.builtin.ModuleDescriptor;
  * It also provides a technique for dynamically calling AR methods
  * 
  * @service system.apihelp
- * @author Noel Winstanley nw@jb.man.ac.uk 23-Jun-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 23-Jun-2005
  *
  */
 public interface ApiHelp {
@@ -121,6 +121,9 @@ public interface ApiHelp {
 
 /* 
  $Log: ApiHelp.java,v $
+ Revision 1.5  2007/01/24 14:04:44  nw
+ updated my email address
+
  Revision 1.4  2006/06/02 00:18:10  nw
  Moved Module, Component and Method-Descriptors from implementation code into interface. Then added methods to ApiHelp that provide access to these beans.
 

@@ -1,4 +1,4 @@
-/*$Id: SkyNodeColumnBean.java,v 1.2 2006/04/18 23:25:45 nw Exp $
+/*$Id: SkyNodeColumnBean.java,v 1.3 2007/01/24 14:04:45 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.acr.ivoa;
 import org.astrogrid.acr.astrogrid.ColumnBean;
 /** extension of column bean for sky node services, which provide further metadata
  * @since 1.9
- * @author Noel Winstanley nw@jb.man.ac.uk 22-Feb-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 22-Feb-2006
  *
  */
 public class SkyNodeColumnBean extends ColumnBean {
@@ -76,6 +76,9 @@ public class SkyNodeColumnBean extends ColumnBean {
 
 /* 
 $Log: SkyNodeColumnBean.java,v $
+Revision 1.3  2007/01/24 14:04:45  nw
+updated my email address
+
 Revision 1.2  2006/04/18 23:25:45  nw
 merged asr development.
 

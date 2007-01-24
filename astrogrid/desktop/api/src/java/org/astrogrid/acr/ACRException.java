@@ -1,4 +1,4 @@
-/*$Id: ACRException.java,v 1.6 2006/10/30 12:12:36 nw Exp $
+/*$Id: ACRException.java,v 1.7 2007/01/24 14:04:45 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import java.lang.reflect.Constructor;
  * 
  * This type is rarely thrown - usualy more specific subtypes are thrown. However, it's convenient to catch all exceptions in one place
  * by matching against this type in a <tt>catch</tt> clause.
- * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 26-Jul-2005
  *
  */
 public class ACRException extends Exception {
@@ -93,6 +93,9 @@ public class ACRException extends Exception {
 
 /* 
 $Log: ACRException.java,v $
+Revision 1.7  2007/01/24 14:04:45  nw
+updated my email address
+
 Revision 1.6  2006/10/30 12:12:36  nw
 documentation improvements.
 

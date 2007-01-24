@@ -4,6 +4,8 @@
 package org.astrogrid.acr.ivoa.resource;
 
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 
 /** Access URL for a service.
@@ -11,16 +13,34 @@ import java.net.URL;
  * @since Jul 31, 20064:46:22 PM
  */
 public class AccessURL implements Serializable {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1783716927492650825L;
-	private  URL value;
+	private static final long serialVersionUID = -6840826388724043304L;
+	private  URI value;
 	private  String use;
-	/** the service endpoint */
+	/** the service endpoint 
+	 * warning: will return null for an url with an unknown scheme, or
+	 * which is invalid. To access the value then, use {@link #getValueURI}
+	 * @deprecated prefer {@link #getValueURI}
+	 * */
 	public URL getValue() {
-		return this.value;
+		try {
+			return this.value==null ? null : this.value.toURL();
+		} catch (MalformedURLException x) {
+		return null;
+		}
 	}
+	
+	/** access the literal value of the access url - useful in cases where getValue()
+	 * returns null
+	 * @return
+	 */
+	public URI getValueURI() {
+			return this.value;
+	}
+	
 	/**     A flag indicating whether this should be interpreted as a base
                URL, a full URL, or a URL to a directory that will produce a 
                listing of files. */
@@ -54,7 +74,7 @@ public class AccessURL implements Serializable {
 			return false;
 		return true;
 	}
-	public void setValue(URL url) {
+	public void setValueURI(URI url) {
 		this.value = url;
 	}
 	public void setUse(String use) {

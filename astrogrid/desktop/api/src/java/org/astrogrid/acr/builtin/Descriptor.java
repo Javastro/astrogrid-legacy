@@ -1,4 +1,4 @@
-/*$Id: Descriptor.java,v 1.1 2006/06/02 00:17:10 nw Exp $
+/*$Id: Descriptor.java,v 1.2 2007/01/24 14:04:45 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.acr.builtin;
 import java.io.Serializable;
 
 /** Base class for all descriptors.
- * @author Noel Winstanley nw@jb.man.ac.uk
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk
  * @since 2.2
  *
  */
@@ -83,6 +83,9 @@ public abstract class Descriptor implements Serializable {
 
 /* 
 $Log: Descriptor.java,v $
+Revision 1.2  2007/01/24 14:04:45  nw
+updated my email address
+
 Revision 1.1  2006/06/02 00:17:10  nw
 Moved Module, Component and Method-Descriptors from implementation code into interface. Then added methods to ApiHelp that provide access to these beans.
 

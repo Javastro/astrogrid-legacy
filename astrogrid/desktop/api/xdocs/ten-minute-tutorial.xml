@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <document>
 <properties>
-        <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+        <author email="noel.winstanley@manchester.ac.uk">Noel Winstanley</author>
         <title>Ten Minute Tutorial</title>
 </properties>
 <body>
@@ -441,6 +441,15 @@ http://localhost:8001/a6d4c15eaaefe3c/astrogrid/jobs/getJobInformation/plain?job
 	 Where possible, the documentation for each component contains
 		references to the relevant standards, plus simple examples of how to
 		use the api. 
+		</p>
+	</section>
+	<section name="Questions?">
+		<p>
+			If you're using the AR in your own project, or are considering doing so, we'd
+			love to hear from you. Furthermore, if you've questions on how to use particular parts
+			of the API, we'll do our best to help. There are some <a href="mail-lists.html">Mailing Lists</a> set
+			up for this.
+			
 		</p>
 	</section>
 </body>

@@ -1,4 +1,4 @@
-/*$Id: Shutdown.java,v 1.5 2006/10/30 12:12:36 nw Exp $
+/*$Id: Shutdown.java,v 1.6 2007/01/24 14:04:45 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.acr.builtin;
 
 /** Component that shutsdown the AR.
  * @service builtin.shutdown
- * @author Noel Winstanley nw@jb.man.ac.uk 17-Mar-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Mar-2005
  
  */
 public interface Shutdown {
@@ -49,6 +49,9 @@ public interface Shutdown {
 
 /* 
 $Log: Shutdown.java,v $
+Revision 1.6  2007/01/24 14:04:45  nw
+updated my email address
+
 Revision 1.5  2006/10/30 12:12:36  nw
 documentation improvements.
 

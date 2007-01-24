@@ -1,4 +1,4 @@
-/*$Id: JobMonitor.java,v 1.5 2006/10/12 02:22:33 nw Exp $
+/*$Id: JobMonitor.java,v 1.6 2007/01/24 14:04:45 nw Exp $
  * Created on 31-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import java.net.URI;
  * 
  * @service userInterface.jobMonitor
  * @deprecated replaced by {@link Lookout} 
- * @author Noel Winstanley nw@jb.man.ac.uk 31-Mar-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 31-Mar-2005
  *@see org.astrogrid.acr.astrogrid.Jobs
  */
 public interface JobMonitor {
@@ -43,6 +43,9 @@ public interface JobMonitor {
 
 /* 
  $Log: JobMonitor.java,v $
+ Revision 1.6  2007/01/24 14:04:45  nw
+ updated my email address
+
  Revision 1.5  2006/10/12 02:22:33  nw
  fixed up documentaiton
 

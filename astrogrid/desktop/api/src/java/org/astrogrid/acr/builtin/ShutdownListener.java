@@ -1,4 +1,4 @@
-/*$Id: ShutdownListener.java,v 1.2 2006/04/18 23:25:47 nw Exp $
+/*$Id: ShutdownListener.java,v 1.3 2007/01/24 14:04:46 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,7 @@ import java.util.EventListener;
 
 /** Listener interface for things that want to be notified of proposed or real shutdowns of the acr
  * @see org.astrogrid.acr.builtin.Shutdown
- * @author Noel Winstanley nw@jb.man.ac.uk 17-Aug-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Aug-2005
  *
  */
 public interface ShutdownListener extends EventListener {
@@ -30,6 +30,9 @@ public interface ShutdownListener extends EventListener {
 
 /* 
 $Log: ShutdownListener.java,v $
+Revision 1.3  2007/01/24 14:04:46  nw
+updated my email address
+
 Revision 1.2  2006/04/18 23:25:47  nw
 merged asr development.
 

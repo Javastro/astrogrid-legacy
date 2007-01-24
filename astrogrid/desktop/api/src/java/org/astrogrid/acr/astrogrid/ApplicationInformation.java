@@ -1,4 +1,4 @@
-/*$Id: ApplicationInformation.java,v 1.9 2006/08/15 09:48:55 nw Exp $
+/*$Id: ApplicationInformation.java,v 1.10 2007/01/24 14:04:45 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,7 @@ import java.util.Map;
  * 
  * <tt>getId()</tt> will contain a registry identifier - see {@link org.astrogrid.acr.astrogrid.ResourceInformation} for
  * definition
- * @author Noel Winstanley nw@jb.man.ac.uk 04-Aug-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 04-Aug-2005
   * @xmlrpc returned as a struct, with keys corresponding to bean names
  * @see org.astrogrid.acr.astrogrid.Applications
  * @since 1.2 extends ResourceInformation
@@ -83,6 +83,9 @@ public class ApplicationInformation extends ResourceInformation{
 
 /* 
 $Log: ApplicationInformation.java,v $
+Revision 1.10  2007/01/24 14:04:45  nw
+updated my email address
+
 Revision 1.9  2006/08/15 09:48:55  nw
 added new registry interface, and bean objects returned by it.
 

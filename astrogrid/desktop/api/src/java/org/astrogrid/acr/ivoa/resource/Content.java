@@ -4,6 +4,8 @@
 package org.astrogrid.acr.ivoa.resource;
 
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
 
@@ -12,6 +14,11 @@ import java.util.Arrays;
  * @since Jul 31, 20064:04:51 PM
  */
 public class Content implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8759669056738166514L;
+
 	private static int hashCode(Object[] array) {
 		final int PRIME = 31;
 		if (array == null)
@@ -22,17 +29,14 @@ public class Content implements Serializable {
 		}
 		return result;
 	}
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 4108094414678499781L;
+
 	/**
 	 * 
 	 */
 	private  Source source;
 	private  String[] subject;
 	private  String description;
-	private  URL referenceURL;
+	private  URI referenceURI;
 	private  String[] type;
 	private  String[] contentLevel;
 	private  Relationship[] relationships;
@@ -46,10 +50,26 @@ public class Content implements Serializable {
 		return this.description;
 	}
 	/**               URL pointing to a human-readable document describing this 
-                resource.    */
+                resource.  
+                	 * warning: will return null for an url with an unknown scheme, or
+	 * which is invalid. To access the value then, use {@link getValueURI}
+	 * @deprecated use {@link #getReferenceURI}
+                  *
+                  */
 	public URL getReferenceURL() {
-		return this.referenceURL;
+		try {
+			return this.referenceURI == null ? null : this.referenceURI.toURL();
+		} catch (MalformedURLException x) {
+			return null;
+		}
 	}
+	
+	public URI getReferenceURI() {
+			return this.referenceURI;
+	}
+	
+	
+	
 	/**    a description of a relationship to another resource.  
               */
 	public Relationship[] getRelationships() {
@@ -78,8 +98,8 @@ public void setContentLevel(String[] contentLevel) {
 public void setDescription(String description) {
 	this.description = description;
 }
-public void setReferenceURL(URL referenceURL) {
-	this.referenceURL = referenceURL;
+public void setReferenceURI(URI referenceURL) {
+	this.referenceURI = referenceURL;
 }
 public void setRelationships(Relationship[] relationships) {
 	this.relationships = relationships;
@@ -98,7 +118,7 @@ public int hashCode() {
 	int result = 1;
 	result = PRIME * result + Content.hashCode(this.contentLevel);
 	result = PRIME * result + ((this.description == null) ? 0 : this.description.hashCode());
-	result = PRIME * result + ((this.referenceURL == null) ? 0 : this.referenceURL.hashCode());
+	result = PRIME * result + ((this.referenceURI == null) ? 0 : this.referenceURI.hashCode());
 	result = PRIME * result + Content.hashCode(this.relationships);
 	result = PRIME * result + ((this.source == null) ? 0 : this.source.hashCode());
 	result = PRIME * result + Content.hashCode(this.subject);
@@ -120,10 +140,10 @@ public boolean equals(Object obj) {
 			return false;
 	} else if (!this.description.equals(other.description))
 		return false;
-	if (this.referenceURL == null) {
-		if (other.referenceURL != null)
+	if (this.referenceURI == null) {
+		if (other.referenceURI != null)
 			return false;
-	} else if (!this.referenceURL.equals(other.referenceURL))
+	} else if (!this.referenceURI.equals(other.referenceURI))
 		return false;
 	if (!Arrays.equals(this.relationships, other.relationships))
 		return false;
@@ -150,7 +170,7 @@ public boolean equals(Object obj) {
 				Arrays.asList(subject).toString());
 		}
 		buffer.append(", description = ").append(description);
-		buffer.append(", referenceURL = ").append(referenceURL);
+		buffer.append(", referenceURL = ").append(referenceURI);
 		if (type == null) {
 			buffer.append(", type = ").append("null");
 		} else {

@@ -34,7 +34,7 @@
 <xsl:template match="jel">
 <document>
 <properties>
-	<author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+	<author email="noel.winstanley@manchester.ac.uk">Noel Winstanley</author>
 	<title>Astro Runtime - XML-RPC Interface</title>
 </properties>
 <body>

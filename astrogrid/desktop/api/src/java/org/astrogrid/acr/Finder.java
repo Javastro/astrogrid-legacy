@@ -1,4 +1,4 @@
-/*$Id: Finder.java,v 1.13 2007/01/23 19:58:29 nw Exp $
+/*$Id: Finder.java,v 1.14 2007/01/24 14:04:45 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,7 +45,7 @@ import javax.swing.JOptionPane;
      * the interface returned will either be a  RMI stub or direct instance, depending on how the AR was found.
      * <p />
      * No matter how the AR is found, the ACR interface returned is a singleton - it is stored in this class for simple access the next time
- * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 26-Jul-2005
  * @example
  * <pre>
  * import org.astrogrid.acr.builtin.ACR;
@@ -409,6 +409,9 @@ public class Finder {
 
 /* 
 $Log: Finder.java,v $
+Revision 1.14  2007/01/24 14:04:45  nw
+updated my email address
+
 Revision 1.13  2007/01/23 19:58:29  nw
 made finder more overridable, and improved cleanup code. (added a finally block)
 

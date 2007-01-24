@@ -1,4 +1,4 @@
-/*$Id: ComponentDescriptor.java,v 1.3 2007/01/09 15:47:43 nw Exp $
+/*$Id: ComponentDescriptor.java,v 1.4 2007/01/24 14:04:45 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import java.util.Map;
 
 
 /** Descriptor for a component (service) of the AR
- * @author Noel Winstanley nw@jb.man.ac.uk 
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 
  * @since 2.2
  *
  */
@@ -87,6 +87,9 @@ public class ComponentDescriptor extends Descriptor{
 
 /* 
 $Log: ComponentDescriptor.java,v $
+Revision 1.4  2007/01/24 14:04:45  nw
+updated my email address
+
 Revision 1.3  2007/01/09 15:47:43  nw
 change from HashMap to LinkedHashMap to preserve ordering.
 

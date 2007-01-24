@@ -1,4 +1,4 @@
-/*$Id: SystemTray.java,v 1.4 2006/04/18 23:25:47 nw Exp $
+/*$Id: SystemTray.java,v 1.5 2007/01/24 14:04:44 nw Exp $
  * Created on 21-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ package org.astrogrid.acr.system;
  * Only supported on some operating systems - windows and some flavours of unix. If not supported on the current OS,
  * {@link org.astrogrid.acr.builtin.ACR#getService(Class)} will throw a {@link org.astrogrid.acr.NotFoundException} when attempting to retreive this service.
  * @service system.systray
- * @author Noel Winstanley nw@jb.man.ac.uk 21-Jun-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Jun-2005
  *
  */
 public interface SystemTray {
@@ -47,6 +47,9 @@ public interface SystemTray {
 
 /* 
  $Log: SystemTray.java,v $
+ Revision 1.5  2007/01/24 14:04:44  nw
+ updated my email address
+
  Revision 1.4  2006/04/18 23:25:47  nw
  merged asr development.
 

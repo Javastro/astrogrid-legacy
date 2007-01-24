@@ -1,4 +1,4 @@
-/*$Id: TabularDatabaseInformation.java,v 1.5 2006/08/15 09:48:55 nw Exp $
+/*$Id: TabularDatabaseInformation.java,v 1.6 2007/01/24 14:04:44 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import java.util.Map;
 
 /** description of a tabular databse registry entry (TabularDB record).
  * 
- * @author Noel Winstanley nw@jb.man.ac.uk 12-Sep-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 12-Sep-2005
  *@since 1.2
  *@deprecated prefer the ivoa.resource objects.
  */
@@ -59,6 +59,9 @@ public class TabularDatabaseInformation extends ResourceInformation {
 
 /* 
 $Log: TabularDatabaseInformation.java,v $
+Revision 1.6  2007/01/24 14:04:44  nw
+updated my email address
+
 Revision 1.5  2006/08/15 09:48:55  nw
 added new registry interface, and bean objects returned by it.
 

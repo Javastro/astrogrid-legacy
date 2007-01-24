@@ -1,4 +1,4 @@
-/*$Id: SkyNode.java,v 1.4 2006/08/31 20:22:13 nw Exp $
+/*$Id: SkyNode.java,v 1.5 2007/01/24 14:04:45 nw Exp $
  * Created on 21-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import java.net.URI;
 
 /** Query for data from SkyNode services 
  * @see http://www.ivoa.net/Documents/latest/SkyNodeInterface.html
- * @author Noel Winstanley nw@jb.man.ac.uk 21-Feb-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Feb-2006
  * @since 2006.03
  * @service ivoa.skyNode
  *
@@ -166,6 +166,9 @@ public interface SkyNode {
 
 /* 
 $Log: SkyNode.java,v $
+Revision 1.5  2007/01/24 14:04:45  nw
+updated my email address
+
 Revision 1.4  2006/08/31 20:22:13  nw
 doc fix.
 

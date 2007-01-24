@@ -1,4 +1,4 @@
-/*$Id: Community.java,v 1.4 2006/02/02 14:19:48 nw Exp $
+/*$Id: Community.java,v 1.5 2007/01/24 14:04:44 nw Exp $
  * Created on 18-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import org.astrogrid.acr.ServiceException;
  * 
  * At the moment provides login ability. Later will provide access to permissioning and quota information for the current user.
  * <img src="doc-files/login.png"/>
- * @author Noel Winstanley nw@jb.man.ac.uk 18-Mar-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 18-Mar-2005
  * @service astrogrid.community
  */
 public interface Community {
@@ -66,6 +66,9 @@ public interface Community {
 
 /* 
  $Log: Community.java,v $
+ Revision 1.5  2007/01/24 14:04:44  nw
+ updated my email address
+
  Revision 1.4  2006/02/02 14:19:48  nw
  fixed up documentation.
 

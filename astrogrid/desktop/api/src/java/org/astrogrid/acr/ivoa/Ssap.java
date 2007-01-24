@@ -1,4 +1,4 @@
-/*$Id: Ssap.java,v 1.4 2006/10/10 14:07:44 nw Exp $
+/*$Id: Ssap.java,v 1.5 2007/01/24 14:04:45 nw Exp $
  * Created on 26-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ import java.net.URL;
  * <b>NB:</b> working, but based on unfinished IVOA specification - interface may need to change to follow specificaiton.
  * @service ivoa.ssap
  * @since 2.0
- * @author Noel Winstanley nw@jb.man.ac.uk 26-Jan-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 26-Jan-2006
  *
  */
 public interface Ssap extends Dal {
@@ -55,6 +55,9 @@ public interface Ssap extends Dal {
 
 /* 
 $Log: Ssap.java,v $
+Revision 1.5  2007/01/24 14:04:45  nw
+updated my email address
+
 Revision 1.4  2006/10/10 14:07:44  nw
 upgraded the dal interfaces.
 

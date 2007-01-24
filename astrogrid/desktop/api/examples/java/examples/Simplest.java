@@ -9,7 +9,7 @@ import java.net.URI;
 import java.util.Iterator;
 import java.util.Map;
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 13-Jan-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 13-Jan-2006
 
 minimal example of connecting to acr and calling a service
 requires acr client jars in java classpath

@@ -1,4 +1,4 @@
-/*$Id: Myspace.java,v 1.10 2006/08/15 09:48:55 nw Exp $
+/*$Id: Myspace.java,v 1.11 2007/01/24 14:04:44 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,7 +32,7 @@ import java.io.InputStream;
  * <b>NB</b>: At present this interface doesn't contain suficient functionality to work with myspace in a truly efficient manner. Expect a cleaner, more efficient interface
  * to myspace to be added later. However this interface and it's current methods will remain available, and won't be deprecated. 
  * @see <a href="http://www.ivoa.net/twiki/bin/view/IVOA/IvoaGridAndWebServices#VO_Store_Proposal">IVOA VOStore</a>
- * @author Noel Winstanley nw@jb.man.ac.uk 22-Mar-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 22-Mar-2005
   * @service astrogrid.myspace
   * @see org.astrogrid.acr.ui.MyspaceBrowser
   * @see org.astrogrid.acr.dialogs.ResourceChooser
@@ -452,6 +452,9 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
 
 /* 
  $Log: Myspace.java,v $
+ Revision 1.11  2007/01/24 14:04:44  nw
+ updated my email address
+
  Revision 1.10  2006/08/15 09:48:55  nw
  added new registry interface, and bean objects returned by it.
 

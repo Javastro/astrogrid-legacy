@@ -1,4 +1,4 @@
-/*$Id: WebServer.java,v 1.3 2006/02/02 14:19:47 nw Exp $
+/*$Id: WebServer.java,v 1.4 2007/01/24 14:04:44 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ package org.astrogrid.acr.system;
  * This interface provides only informational methods, useful for working out how to connect to the webserver. 
  * It provides no way of administering the server or deploying new servlets.
  * @service system.webserver
- * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 15-Mar-2005
  *
  */
 public interface WebServer  {
@@ -42,6 +42,9 @@ public interface WebServer  {
 
 /* 
  $Log: WebServer.java,v $
+ Revision 1.4  2007/01/24 14:04:44  nw
+ updated my email address
+
  Revision 1.3  2006/02/02 14:19:47  nw
  fixed up documentation.
 

@@ -1,4 +1,4 @@
-/*$Id: MethodDescriptor.java,v 1.1 2006/06/02 00:17:10 nw Exp $
+/*$Id: MethodDescriptor.java,v 1.2 2007/01/24 14:04:46 nw Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /** Description of a method (function) belonging to a component of AR.
- * @author Noel Winstanley nw@jb.man.ac.uk 
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 
  * @since 2.2
  *
  */
@@ -81,6 +81,9 @@ public class MethodDescriptor extends Descriptor {
 
 /* 
 $Log: MethodDescriptor.java,v $
+Revision 1.2  2007/01/24 14:04:46  nw
+updated my email address
+
 Revision 1.1  2006/06/02 00:17:10  nw
 Moved Module, Component and Method-Descriptors from implementation code into interface. Then added methods to ApiHelp that provide access to these beans.
 

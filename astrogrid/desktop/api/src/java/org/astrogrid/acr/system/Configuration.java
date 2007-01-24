@@ -1,4 +1,4 @@
-/*$Id: Configuration.java,v 1.5 2006/02/02 14:19:47 nw Exp $
+/*$Id: Configuration.java,v 1.6 2007/01/24 14:04:44 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import java.util.Map;
  * useful for storing bits of state that should persist between script invocations (e.g. preferences, window positions and sizes), plus configuration information (e.g. username, service endpoints)
  * @service system.configuration
  * 
- * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 15-Mar-2005
  *
  */
 public interface Configuration {
@@ -64,6 +64,9 @@ public interface Configuration {
 
 /* 
  $Log: Configuration.java,v $
+ Revision 1.6  2007/01/24 14:04:44  nw
+ updated my email address
+
  Revision 1.5  2006/02/02 14:19:47  nw
  fixed up documentation.
 

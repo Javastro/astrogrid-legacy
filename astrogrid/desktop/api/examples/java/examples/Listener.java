@@ -6,7 +6,7 @@ import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.acr.builtin.ACR;
 
-/*$Id: Listener.java,v 1.1 2006/10/12 02:24:39 nw Exp $
+/*$Id: Listener.java,v 1.2 2007/01/24 14:04:46 nw Exp $
  * Created on 13-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,7 @@ import org.astrogrid.acr.builtin.ACR;
  **/
 
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 13-Jan-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 13-Jan-2006
  demonstration of attaching a listener to the AR
 
 requires AR client jars in java  classpath
@@ -61,6 +61,9 @@ public class Listener {
 
 /* 
 $Log: Listener.java,v $
+Revision 1.2  2007/01/24 14:04:46  nw
+updated my email address
+
 Revision 1.1  2006/10/12 02:24:39  nw
 build script,fixed for java 1.4
 

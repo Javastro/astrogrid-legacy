@@ -1,4 +1,4 @@
-/*$Id: SsapInformation.java,v 1.5 2006/08/31 20:22:13 nw Exp $
+/*$Id: SsapInformation.java,v 1.6 2007/01/24 14:04:45 nw Exp $
  * Created on 26-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import java.util.Map;
 /**  description of a SSAP service.
  * no additional information here at present - as standard has not been agreed.
  * - so just the information for a standard application information. 
- * @author Noel Winstanley nw@jb.man.ac.uk 26-Jan-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 26-Jan-2006
  * @deprecated prefer the v1.0 registry object model
  *
  */
@@ -122,6 +122,9 @@ public class SsapInformation extends ApplicationInformation {
 
 /* 
 $Log: SsapInformation.java,v $
+Revision 1.6  2007/01/24 14:04:45  nw
+updated my email address
+
 Revision 1.5  2006/08/31 20:22:13  nw
 doc fix.
 
