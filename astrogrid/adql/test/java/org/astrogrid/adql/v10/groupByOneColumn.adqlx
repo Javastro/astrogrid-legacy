@@ -4,9 +4,7 @@
         <v1:Item Name="state_code" Table="v" xsi:type="v1:columnReferenceType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
         <v1:Item Name="city_name" Table="v" xsi:type="v1:columnReferenceType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
         <v1:Item Name="COUNT" xsi:type="v1:aggregateFunctionType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-            <v1:Arg xsi:type="v1:atomType">
-                <v1:Literal Value="*" xsi:type="v1:stringType"/>
-            </v1:Arg>
+            <v1:Arg xsi:type="v1:allSelectionItemType"/>
         </v1:Item>
     </v1:SelectionList>
     <v1:From>

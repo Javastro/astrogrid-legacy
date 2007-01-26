@@ -1,4 +1,4 @@
-/*$Id: AdqlStoXTest.java,v 1.12 2006/10/28 22:12:50 jl99 Exp $
+/*$Id: AdqlStoXTest.java,v 1.13 2007/01/26 09:45:57 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -47,6 +47,11 @@ public class AdqlStoXTest extends XMLTestCase {
 	
 	private File currentSFile ; 
 	private File currentXFile ;
+    
+    private static long accumulatedTime ;
+    private static int testMethodCount ;
+    private long startTime ;
+    private long endTime ;
 
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
@@ -62,7 +67,6 @@ public class AdqlStoXTest extends XMLTestCase {
 		}
 		locateFilesForTest() ;
 	}
-	
     public void testOf_v10_BADdelimitedIdentifier() throws Exception { execTest() ; }
 	public void testOf_v10_BADemptyFrom() throws Exception { execTest() ; }
 	public void testOf_v10_BADemptyWhere() throws Exception { execTest() ; }
@@ -72,9 +76,12 @@ public class AdqlStoXTest extends XMLTestCase {
     public void testOf_v10_BADreservedWordAsTableName() throws Exception { execTest() ; }
 	public void testOf_v10_BADselectEmptyAlias() throws Exception { execTest() ; }
 	public void testOf_v10_BADselectOrderByDirOnly() throws Exception { execTest() ; }
+    public void testOf_v10_BADthreeWayJoinAcrossArchives() throws Exception { execTest() ; }
     public void testOf_v10_BADtop() throws Exception { execTest() ; }
     public void testOf_v10_ceilingFunction() throws Exception { execTest() ; }
     public void testOf_v10_complexSelect01() throws Exception { execTest() ; }
+    public void testOf_v10_coneSearch01() throws Exception { execTest() ; }
+    public void testOf_v10_coneSearch02() throws Exception { execTest() ; }
     public void testOf_v10_delimitedIdentifier() throws Exception { execTest() ; }
     public void testOf_v10_fullOuterJoinWithJoinCondition() throws Exception { execTest() ; }
     public void testOf_v10_groupByOneColumn() throws Exception { execTest() ; }
@@ -119,19 +126,37 @@ public class AdqlStoXTest extends XMLTestCase {
     public void testOf_v10_selectTwoTablesFourColsNoAlias() throws Exception { execTest() ; }
     public void testOf_v10_selectUnaries() throws Exception { execTest() ; }
     public void testOf_v10_selectValueTweakMathsFuncs() throws Exception { execTest() ; }
+    public void testOf_v10_spectralLines() throws Exception { execTest() ; }
     public void testOf_v10_squaringTheCircle() throws Exception { execTest() ; }
+    public void testOf_v10_threeWayJoin() throws Exception { execTest() ; }
     public void testOf_v10_whereWithBinaryOpsAndUnaryOps() throws Exception { execTest() ; }
     public void testOf_v10_whereWithNegativeUnaryLiteral() throws Exception { execTest() ; }
     public void testOf_v10_whereWithPositiveUnaryLiteral() throws Exception { execTest() ; }
-    public void testOf_v10_whereWithUnsignedNumericLiteral() throws Exception { execTest() ; }
+    public void testOf_v10_whereWithUnsignedNumericLiteral() throws Exception { execTest() ; reportTail() ; }
 
+    public void execTop() throws Exception {
+       startTime = System.currentTimeMillis() ; 
+    }
+    
+    public void execTail() throws Exception {
+       endTime = System.currentTimeMillis() ;
+       accumulatedTime += (endTime-startTime) ;        
+    }
+    
+    public void reportTail() throws Exception {
+        System.out.println( "Total elapse time in milliseconds: " + accumulatedTime ) ;
+        System.out.println( "Average compilation time: " + accumulatedTime / testMethodCount ) ;
+    }
+    
 	private void execTest() throws Exception {
 		SelectDocument sd = null ;
 		printHelpfulStuff( currentSFile.getName() ) ;
 		System.out.println( "== From: ===>" ) ;
 		printFile( currentSFile ) ;
 		try {
-			sd = getCompiler( currentSFile ).exec() ;		
+            execTop() ;
+			sd = getCompiler( currentSFile ).exec() ;	
+            execTail() ;
 			System.out.println( "\nCompilation suceeded..." ) ;			
 			System.out.println( "==== To: ===>" ) ;
 			printCompilation( sd ) ;			
@@ -216,7 +241,7 @@ public class AdqlStoXTest extends XMLTestCase {
 			// Work out the number of tests...	
 			// And also attempt to extract the directories involved...
 			Method[] methodArray = this.getClass().getMethods() ;
-			int testMethodCount = 0 ;
+			testMethodCount = 0 ;
 			Hashtable directories = new Hashtable() ;
 			for( int i=0; i<methodArray.length; i++ ) {
 				String methodName = methodArray[i].getName() ;
@@ -335,9 +360,18 @@ public class AdqlStoXTest extends XMLTestCase {
 
 
 /* $Log: AdqlStoXTest.java,v $
- * Revision 1.12  2006/10/28 22:12:50  jl99
- * Reinstated aliased expressions tests.
+ * Revision 1.13  2007/01/26 09:45:57  jl99
+ * Merge of adql-jl-2031-a into HEAD
  *
+/* Revision 1.12.6.2  2007/01/25 14:09:00  jl99
+/* More unit tests plus instrumentation for measuring compile times.
+/*
+/* Revision 1.12.6.1  2007/01/19 08:34:32  jl99
+/* New unit test material folded in (cone searches etc provided by Kona)
+/*
+/* Revision 1.12  2006/10/28 22:12:50  jl99
+/* Reinstated aliased expressions tests.
+/*
 /* Revision 1.11  2006/10/27 14:32:20  jl99
 /* Made alliases for tables compulsary.
 /* Changed unit tests accordingly.

@@ -1,1 +1,1 @@
-SElect * from people p where ( p.name like '%son' ) ;
+SElect * from people p where ( p.name like '%son' ) 

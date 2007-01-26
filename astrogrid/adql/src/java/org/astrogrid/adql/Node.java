@@ -2,6 +2,8 @@
 
 package org.astrogrid.adql;
 
+import org.apache.xmlbeans.XmlObject ;
+
 /* All AST nodes must implement this interface.  It provides basic
    machinery for constructing the parent and child relationships
    between nodes. */
@@ -31,4 +33,11 @@ public interface Node {
 
   /** Return the number of children the node has. */
   public int jjtGetNumChildren();
+  
+  /** Return the generated object. */
+  public Object getGeneratedObject() ;
+  
+  /** Sets the generated object. */
+  public void setGeneratedObject( Object generatedObject ) ;
+  
 }

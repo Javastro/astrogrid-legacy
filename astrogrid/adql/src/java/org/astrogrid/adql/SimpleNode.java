@@ -2,26 +2,39 @@
 
 package org.astrogrid.adql;
 
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+//import org.astrogrid.adql.v1_0.beans.SelectionListType;
+import org.apache.xmlbeans.SchemaType;
+import org.apache.xmlbeans.SimpleValue;
+import org.apache.xmlbeans.XmlAnySimpleType;
+import org.apache.xmlbeans.XmlException;
+import org.apache.xmlbeans.XmlObject;
+import org.apache.xmlbeans.XmlString;
+import org.apache.xmlbeans.XmlCursor;
+
 public class SimpleNode implements Node {
+    
+  private static Log log = LogFactory.getLog( SimpleNode.class ) ;
+      
   protected Node parent;
   protected Node[] children;
   protected int id;
   protected AdqlStoX parser;
+  protected Object generatedObject ;
+  
+  protected Token firstToken, lastToken;
 
-  public SimpleNode(int i) {
-    id = i;
-  }
-
-  public SimpleNode(AdqlStoX p, int i) {
-    this(i);
+  public SimpleNode( AdqlStoX p, int i ) {
+    this.id = i ;
     parser = p;
   }
 
   public void jjtOpen() {
+      getTracker() ;     
   }
 
-  public void jjtClose() {
-  }
+  public void jjtClose() {}
   
   public void jjtSetParent(Node n) { parent = n; }
   public Node jjtGetParent() { return parent; }
@@ -68,5 +81,84 @@ public class SimpleNode implements Node {
       }
     }
   }
+
+  public Object getGeneratedObject() {
+    return generatedObject;
 }
+
+public void setGeneratedObject( Object generatedObject ) {
+    this.generatedObject = generatedObject ;
+    if( isCommentPresent() == true ) {
+        getTracker().setComment( firstToken.specialToken.image ) ;
+    }
+}
+
+public Token getFirstToken() {
+    return firstToken;
+}
+
+public void setFirstToken(Token firstToken) {
+    this.firstToken = firstToken;
+}
+
+public Token getLastToken() {
+    return lastToken;
+}
+
+public void setLastToken(Token lastToken) {
+    this.lastToken = lastToken;
+}
+
+private boolean isCommentPresent() {
+    if( generatedObject instanceof XmlObject 
+        &&
+        firstToken.specialToken != null 
+        &&
+        firstToken.specialToken.kind == AdqlStoXConstants.COMMENT ) {
+        return true ;
+    }
+    return false ;
+}
+
+public void writeComment() {
+    if( log.isTraceEnabled() ) { log.trace("writeComment() - enter"); }
+    // It has to be an XmlObject to be relevant (it could be a String!)
+    // The special token may not exist and if it does it must be of
+    // kind COMMENT (otherwise why are we trying to write a comment?).
+    if( generatedObject instanceof XmlObject 
+        &&
+        firstToken.specialToken != null 
+        &&
+        firstToken.specialToken.kind == AdqlStoXConstants.COMMENT
+            ) {
+        XmlCursor cursor = null ;
+        try {
+            XmlObject xo = (XmlObject)generatedObject ;
+            cursor = xo.newCursor() ;
+            boolean moved = cursor.toChild(0) ;
+            String comment = firstToken.specialToken.image ;
+            if( log.isDebugEnabled() ) {
+                log.debug( "xo.schemaType: " + xo.schemaType().getName() ) ;
+                log.debug( "cursor.getName(): " + cursor.getName() ) ;
+                log.debug( "moved: " + moved ) ;
+                log.debug( "Writing comment: " + comment ) ;
+            }
+            cursor.insertComment( comment ) ;          
+        }
+        catch( Exception ex ) {
+            log.debug( ex ) ;
+        }
+        finally {
+            if( cursor != null )
+                cursor.dispose();
+        }
+    }
+    if( log.isTraceEnabled() ) { log.trace( "writeComment() - exit" ) ; }   
+}
+
+public Tracker getTracker() {
+    return parser.getTracker() ;
+}
+  
+} // end of class SimpleNode
 
