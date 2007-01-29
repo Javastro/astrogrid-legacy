@@ -1,4 +1,4 @@
-/*$Id: UIInternal.java,v 1.5 2006/06/27 10:39:33 nw Exp $
+/*$Id: UIInternal.java,v 1.6 2007/01/29 10:49:19 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 26-Jul-2005
  *
  */
 public interface UIInternal extends UI, UIComponent{
@@ -38,12 +38,14 @@ public interface UIInternal extends UI, UIComponent{
 
   public void showAboutDialog();
   
-  public void showPreferencesDialog();
 }
 
 
 /* 
 $Log: UIInternal.java,v $
+Revision 1.6  2007/01/29 10:49:19  nw
+removed unused method.
+
 Revision 1.5  2006/06/27 10:39:33  nw
 added new menus
 
