@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.16 2007/01/09 16:21:22 nw Exp $
+/*$Id: VospaceImpl.java,v 1.17 2007/01/29 10:56:03 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -51,6 +51,8 @@ import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.community.common.exception.CommunityException;
+import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.filemanager.client.FileManagerClient;
 import org.astrogrid.filemanager.client.FileManagerClientFactory;
 import org.astrogrid.filemanager.client.FileManagerNode;
@@ -67,7 +69,7 @@ import org.astrogrid.registry.client.query.ResourceData;
 import org.astrogrid.store.Ivorn;
 
 /** implementation of the vospace componet.
- * @author Noel Winstanley nw@jb.man.ac.uk 02-Feb-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Feb-2005
  * @todo aren't always throwing the right kind of exception in all cases - needs testing / inspection of myspace client
  */
 public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
@@ -81,11 +83,13 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
     /** Construct a new Vospace
      * 
      */
-    public VospaceImpl(Community community, BundlePreferences preferences) {
+    public VospaceImpl(Community community, BundlePreferences preferences, UIInternal ui) {
         super();
         this.community = community;
         this.prefs = preferences;
+        this.ui = ui;
     }
+    protected final UIInternal ui;
    protected final Community community;
    protected final BundlePreferences prefs;
     protected URI home;
@@ -813,6 +817,14 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
      * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogin(org.astrogrid.desktop.modules.ag.UserLoginEvent)
      */
     public void userLogin(UserLoginEvent e) {
+    	// perceptual speedup.
+    	(new BackgroundWorker(ui,"Prefetching Myspace root") {
+    		protected Object construct() throws Exception {
+    			getClient().home();
+    			return null;
+    		}
+    	}).start();
+    	
     }
 
 
@@ -914,6 +926,9 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.17  2007/01/29 10:56:03  nw
+prefetches myspace root on login.
+
 Revision 1.16  2007/01/09 16:21:22  nw
 minor
 
