@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.19 2007/01/11 18:15:48 nw Exp $
+/*$Id: UIImpl.java,v 1.20 2007/01/29 10:49:04 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved. 
@@ -75,7 +75,7 @@ import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 
 import com.l2fprod.common.swing.StatusBar;
 /**Implementation of the UI component
- * @author Noel Winstanley nw@jb.man.ac.uk 01-Feb-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 01-Feb-2005
  */
 public class UIImpl extends UIComponentImpl implements UIInternal {
 
@@ -95,9 +95,15 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
             // convert parameter values to correct types.
             Iterator i =action.getParameters().iterator();
             for (int j = 0; j < parameterTypes.length && i.hasNext(); j++) {
-                args[j] = conv.convert(parameterTypes[j],i.next());
+                final String pValue = i.next().toString();
+                if ("null".equals(pValue)) {
+                	args[j] = null;
+                } else {
+                	args[j] = conv.convert(parameterTypes[j],pValue);
+                }
             }                
-            Object result = MethodUtils.invokeMethod(action.getObject(),action.getMethodName(),args);
+            //Object result = MethodUtils.invokeMethod(action.getObject(),action.getMethodName(),args);
+            Object result = MethodUtils.invokeExactMethod(action.getObject(), action.getMethodName(), args, parameterTypes);
                 if (result != null) { // display results, if this method produced any.
                     return trans.transform(result);
                 } else {
@@ -138,7 +144,6 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
 	private StatusBar statusBar;
 	
 	private Action aboutAction;
-	private Action preferencesAction;
     
     private JTabbedPane tabbedPane;
     // make throbber calls nest.    
@@ -167,8 +172,7 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
         JPanel main = getMainPanel();
         main.add(getTabbedPane(), java.awt.BorderLayout.CENTER);    
         this.setContentPane(main);
-        getHelpServer().enableHelpKey(this.getRootPane(),"top"); 
-       // setIconImage(IconHelper.loadIcon("AGlogo16x16.png").getImage());     //@todo alter this to ivoa icon.       
+        getHelpServer().enableHelpKey(this.getRootPane(),"top");   
         setIconImage(IconHelper.loadIcon("server.png").getImage());          
         //this.setSize(425, ); // same proportions as A4, etc., and 600 high.   
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -354,8 +358,7 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
                 if (a.getName().equals("about")) {
                 	aboutAction = a;
                 }
-                //@todo add similar check for preferences?? or is preferences going to be defined elsewhere?
-                if (current instanceof JMenu) {
+               if (current instanceof JMenu) {
                 	final JMenuItem mi = new JMenuItem(a);
                 	a.setParentComponent(mi);	
                     ((JMenu)current).add(mi);
@@ -487,11 +490,7 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
 
 
 
-	public void showPreferencesDialog() {
-		if (preferencesAction != null) {
-			preferencesAction.actionPerformed(null);
-		}
-	}
+
 
 
 
@@ -501,6 +500,9 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.20  2007/01/29 10:49:04  nw
+allow null as an execution parameter.
+
 Revision 1.19  2007/01/11 18:15:48  nw
 fixed help system to point to ag site.
 
