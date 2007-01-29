@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.7 2007/01/23 11:49:10 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.8 2007/01/29 10:51:49 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.desktop.modules.dialogs.registry;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -47,6 +48,8 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 import javax.xml.stream.XMLStreamReader;
 
 import net.sf.ehcache.Ehcache;
@@ -55,13 +58,11 @@ import net.sf.ehcache.Element;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.astrogrid.CeaApplication;
-import org.astrogrid.acr.ivoa.CacheFactory;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ivoa.CacheFactoryInternal;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal.StreamProcessor;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceFormatter;
@@ -79,6 +80,8 @@ import org.w3c.dom.Document;
  * Implementation of the registry-google chooser.
  * @todo implement using standard xquery
  * @todo optimize query - no //vor:resouc
+ * @todo understand why this component manages it's own cache - doesn't the registry client do all the 
+ * caching that's necessary? not a bug, just not time to understand this yet.
  */
 public class RegistryGooglePanel extends JPanel implements ActionListener, PropertyChangeListener {
     
@@ -225,6 +228,9 @@ public class RegistryGooglePanel extends JPanel implements ActionListener, Prope
 		         }
 		     } else if (selectTable.getSelectedColumn() <= 1 && lsm.getMinSelectionIndex() != currentRow) {                                          
 		         currentRow = lsm.getMinSelectionIndex();
+		         if (currentRow < 0) {
+		        	 return;
+		         }
 		    	detailsPane.setText(ResourceFormatter.renderResourceAsHTML(selectTableModel.getRow(currentRow)));
 		    	detailsPane.setCaretPosition(0);
 		    	if (tabPane.getSelectedIndex() > 0) { // i.e any but the first tab
@@ -234,10 +240,14 @@ public class RegistryGooglePanel extends JPanel implements ActionListener, Prope
 		 }
 
 		void retrieveAndDisplayXML( final int row) {
+			final Resource res = selectTableModel.getRow(row);
+			if (res == null) { // traps out-of-bounds row indexes.
+				return;
+			}
 		(new BackgroundWorker(parent,"Fetching Record") {
 		
 		    protected Object construct() throws Exception {
-		    	Document doc = reg.getResourceXML(selectTableModel.getRow(row).getId());
+				Document doc = reg.getResourceXML(res.getId());
 		        xmlPane.setText(XMLUtils.DocumentToString(doc));                                  
 		        return null;
 		    }
@@ -248,7 +258,7 @@ public class RegistryGooglePanel extends JPanel implements ActionListener, Prope
 		}
 	}
     /**
-     * @author Noel Winstanley nw@jb.man.ac.uk 07-Sep-2005
+     * @author Noel Winstanley noel.winstanley@manchester.ac.uk 07-Sep-2005
      *
      */
     public class ResourceTableModel extends AbstractTableModel {
@@ -315,6 +325,9 @@ public class RegistryGooglePanel extends JPanel implements ActionListener, Prope
             return listModel;
         }
         public Resource getRow(int i) {
+        	if (i < 0 || i >= ri.size()) {
+        		return null;
+        	}
         	return (Resource)ri.get(i);
         }
 
@@ -430,6 +443,7 @@ public class RegistryGooglePanel extends JPanel implements ActionListener, Prope
     protected final Ehcache bulk;
     protected final VoMon vomon;
     protected final Preference advancedPreference;
+    protected final boolean showCheckBox;
     /** Construct a new RegistryChooserPanel
      * 
      * @param parent parent component
@@ -440,16 +454,37 @@ public class RegistryGooglePanel extends JPanel implements ActionListener, Prope
      * @param vomon used to annotate registry entries with availability information
      * @param pref controls whether to display 'advanced' features of the ui.
      */
-    public RegistryGooglePanel(final UIComponent parent,final RegistryInternal reg, final BrowserControl browser, final RegistryBrowser regBrowser, final CacheFactoryInternal fac, final VoMon vomon, Preference pref) {
-        super();    
+    public RegistryGooglePanel(final UIComponent parent,final RegistryInternal reg, final BrowserControl browser, final RegistryBrowser regBrowser,
+    		final Ehcache resources, final Ehcache bulk,
+    		final VoMon vomon, Preference pref) {
+    	this(parent,reg,browser,regBrowser,resources, bulk,vomon,pref,true);
+    }
+    
+    /** Construct a new RegistryChooserPanel
+     * 
+     * @param parent parent component
+     * @param reg used to perform the query
+     * @param browser used to display external resources
+     * @param regBrowser used to display related registry entires.
+     * @param fac caches resources.
+     * @param vomon used to annotate registry entries with availability information
+     * @param pref controls whether to display 'advanced' features of the ui.
+     * @param showCheckBox if false, hides the first column of the registry entries list.
+     */
+    public RegistryGooglePanel(final UIComponent parent,final RegistryInternal reg, final BrowserControl browser, final RegistryBrowser regBrowser, 
+    		final Ehcache resources, final Ehcache bulk
+    		, final VoMon vomon, Preference pref, boolean showCheckBox) {
+   
+    	super();    
         this.parent = parent;
         this.reg = reg;
         this.browser = browser;
         this.regBrowser = regBrowser;
-        this.resources = fac.getManager().getCache(CacheFactoryInternal.RESOURCES_CACHE);
-        this.bulk = fac.getManager().getCache(CacheFactoryInternal.BULK_CACHE);
+        this.resources = resources;
+        this.bulk = bulk;
         this.vomon = vomon;
         this.advancedPreference = pref;
+        this.showCheckBox = showCheckBox;
         advancedPreference.addPropertyChangeListener(this);
         
         initialize();
@@ -541,6 +576,7 @@ public class RegistryGooglePanel extends JPanel implements ActionListener, Prope
         editorScrollPane.setPreferredSize(new Dimension(300,200));
         return editorScrollPane;
     }
+    
     private JPanel getCenterPanel() {         
          JPanel centerPanel = new JPanel();
          centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
@@ -603,8 +639,17 @@ public class RegistryGooglePanel extends JPanel implements ActionListener, Prope
          
          selectTable.getColumnModel().getColumn(0).setPreferredWidth(8);
          selectTable.getColumnModel().getColumn(0).setMaxWidth(10);
-         selectTable.setToolTipText("Results");
-         
+         selectTable.setToolTipText("Click an entry to display details, click checkbox to select it");
+         TableColumn column = selectTable.getColumnModel().getColumn(0);
+         if(! showCheckBox) { // remove display of first column.
+        	 column.setHeaderValue(null);
+        	 column.setCellRenderer(new TableCellRenderer() {
+        		 JLabel lab = new JLabel();
+        		 public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        			 return lab;
+        		 }
+        	 });
+         }
          selectTable.getSelectionModel().addListSelectionListener(xmlDisplayer);
          centerPanel.add(new JScrollPane(selectTable));
          centerPanel.setPreferredSize(new Dimension(300,200));
@@ -705,6 +750,9 @@ public void propertyChange(PropertyChangeEvent evt) {
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.8  2007/01/29 10:51:49  nw
+moved cache configuration into hivemind.
+
 Revision 1.7  2007/01/23 11:49:10  nw
 preferences integration.
 

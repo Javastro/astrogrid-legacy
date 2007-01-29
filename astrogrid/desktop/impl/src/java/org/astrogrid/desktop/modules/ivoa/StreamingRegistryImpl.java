@@ -64,15 +64,16 @@ public class StreamingRegistryImpl implements RegistryInternal {
 	
 			
 		
-	public StreamingRegistryImpl(final ExternalRegistryInternal reg,Preference endpoint,Preference fallbackEndpoint, final  CacheFactoryInternal cacheFac) throws URISyntaxException {
+	public StreamingRegistryImpl(final ExternalRegistryInternal reg,Preference endpoint,Preference fallbackEndpoint, 
+			Ehcache resource, Ehcache document, Ehcache bulk) throws URISyntaxException {
 		super();
 		this.reg = reg;
 		this.endpoint = endpoint;
 		this.fallbackEndpoint =fallbackEndpoint;
 		this.outputFactory = XMLOutputFactory.newInstance();	
-		this.resourceCache = cacheFac.getManager().getCache(CacheFactoryInternal.RESOURCES_CACHE);
-		this.documentCache = cacheFac.getManager().getCache(CacheFactoryInternal.DOCUMENTS_CACHE);
-		this.bulkCache = cacheFac.getManager().getCache(CacheFactoryInternal.BULK_CACHE);
+		this.resourceCache  = resource;
+		this.documentCache = document;
+		this.bulkCache =bulk;
 		
 	}
 
