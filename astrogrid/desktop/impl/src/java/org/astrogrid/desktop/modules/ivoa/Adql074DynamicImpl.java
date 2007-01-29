@@ -1,4 +1,4 @@
-/*$Id: Adql074DynamicImpl.java,v 1.4 2006/06/27 10:29:19 nw Exp $
+/*$Id: Adql074DynamicImpl.java,v 1.5 2007/01/29 11:11:36 nw Exp $
  * Created on 28-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,7 +40,7 @@ import org.xml.sax.SAXException;
 /**
  * implementation of the adql translator, that calls the web service using
  * the javax.xml.soap api - so no stub or proxy objects.
- * @author Noel Winstanley nw@jb.man.ac.uk 28-Feb-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 28-Feb-2006
  *
  */
 public class Adql074DynamicImpl implements Adql074 {
@@ -184,6 +184,9 @@ public class Adql074DynamicImpl implements Adql074 {
 
 /* 
 $Log: Adql074DynamicImpl.java,v $
+Revision 1.5  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.4  2006/06/27 10:29:19  nw
 findbugs tweaks
 

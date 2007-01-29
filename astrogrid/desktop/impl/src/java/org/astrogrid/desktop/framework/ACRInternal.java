@@ -1,4 +1,4 @@
-/*$Id: ACRInternal.java,v 1.4 2007/01/09 16:23:42 nw Exp $
+/*$Id: ACRInternal.java,v 1.5 2007/01/29 11:11:37 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,7 @@ import org.astrogrid.acr.builtin.ModuleDescriptor;
 
 
 /** (internal interface) Extension to the {@link ACR} interface, that allows new modules to be added to the registry.
- * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 15-Mar-2005
  *
  */
 public interface ACRInternal extends ACR {
@@ -43,6 +43,9 @@ public interface ACRInternal extends ACR {
 
 /* 
 $Log: ACRInternal.java,v $
+Revision 1.5  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.4  2007/01/09 16:23:42  nw
 minor
 

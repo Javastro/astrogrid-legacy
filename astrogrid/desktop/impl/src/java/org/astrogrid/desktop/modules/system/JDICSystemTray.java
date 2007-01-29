@@ -1,4 +1,4 @@
-/*$Id: JDICSystemTray.java,v 1.4 2006/10/11 10:39:15 nw Exp $
+/*$Id: JDICSystemTray.java,v 1.5 2007/01/29 11:11:37 nw Exp $
  * Created on 21-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,7 @@ import org.jdesktop.jdic.tray.SystemTray;
 import org.jdesktop.jdic.tray.TrayIcon;
 
 /** Implementation of System Tray, using JDIC extensions.
- * @author Noel Winstanley nw@jb.man.ac.uk 21-Jun-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Jun-2005
  *
  */
 public class JDICSystemTray implements org.astrogrid.acr.system.SystemTray,ShutdownListener {
@@ -168,6 +168,9 @@ public class JDICSystemTray implements org.astrogrid.acr.system.SystemTray,Shutd
 
 /* 
 $Log: JDICSystemTray.java,v $
+Revision 1.5  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.4  2006/10/11 10:39:15  nw
 changed icons.
 

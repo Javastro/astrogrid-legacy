@@ -1,4 +1,4 @@
-/*$Id: TabularDatabaseInformationBuilder.java,v 1.8 2006/08/02 13:29:19 nw Exp $
+/*$Id: TabularDatabaseInformationBuilder.java,v 1.9 2007/01/29 11:11:37 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /** information builder for tablular database registry entries
- * @author Noel Winstanley nw@jb.man.ac.uk 12-Sep-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 12-Sep-2005
  * * @deprecated part of the obsolete registry infrastructure
  */
 public class TabularDatabaseInformationBuilder extends ResourceInformationBuilder {
@@ -121,6 +121,9 @@ public boolean isApplicable(CachedXPathAPI xpath, Element el) {
 
 /* 
 $Log: TabularDatabaseInformationBuilder.java,v $
+Revision 1.9  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.8  2006/08/02 13:29:19  nw
 marked all as obsolete.
 

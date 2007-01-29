@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessStrategy.java,v 1.3 2006/05/26 15:23:45 nw Exp $
+/*$Id: RemoteProcessStrategy.java,v 1.4 2007/01/29 11:11:35 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import org.w3c.dom.Document;
 /** interface to something that knows how to handle a certain flavour of remote process.
  * extends scheduled task - assumption is that each process strategy will need to 
  * poll / check progress on a regiular basis - this is handled from the scheduler.
- * @author Noel Winstanley nw@jb.man.ac.uk 08-Nov-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 08-Nov-2005
  *
  */
 public interface RemoteProcessStrategy extends ScheduledTask {
@@ -62,6 +62,9 @@ public interface RemoteProcessStrategy extends ScheduledTask {
 
 /* 
 $Log: RemoteProcessStrategy.java,v $
+Revision 1.4  2007/01/29 11:11:35  nw
+updated contact details.
+
 Revision 1.3  2006/05/26 15:23:45  nw
 implemented snitching.
 

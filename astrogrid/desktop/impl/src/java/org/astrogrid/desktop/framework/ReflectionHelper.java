@@ -1,4 +1,4 @@
-/*$Id: ReflectionHelper.java,v 1.3 2007/01/09 16:22:47 nw Exp $
+/*$Id: ReflectionHelper.java,v 1.4 2007/01/29 11:11:37 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
 
 /** Helpler methods for working for working with java.lang.reflect;
  * @todo either add more here, or move this code elsewhere.
- * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 31-Jan-2005
  */
 public class ReflectionHelper {
 
@@ -46,6 +46,9 @@ public class ReflectionHelper {
 
 /* 
 $Log: ReflectionHelper.java,v $
+Revision 1.4  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.3  2007/01/09 16:22:47  nw
 minor
 

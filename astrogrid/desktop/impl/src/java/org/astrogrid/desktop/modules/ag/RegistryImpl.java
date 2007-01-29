@@ -1,4 +1,4 @@
-/*$Id: RegistryImpl.java,v 1.12 2006/08/31 21:28:59 nw Exp $
+/*$Id: RegistryImpl.java,v 1.13 2007/01/29 11:11:35 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,7 +43,7 @@ import org.w3c.dom.NodeList;
 /** implementation of the registry component
  * 
  
- * @author Noel Winstanley nw@jb.man.ac.uk 02-Feb-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Feb-2005
  *
  */
 public class RegistryImpl implements Registry {
@@ -326,6 +326,9 @@ public class RegistryImpl implements Registry {
 
 /* 
 $Log: RegistryImpl.java,v $
+Revision 1.13  2007/01/29 11:11:35  nw
+updated contact details.
+
 Revision 1.12  2006/08/31 21:28:59  nw
 doc fix.
 

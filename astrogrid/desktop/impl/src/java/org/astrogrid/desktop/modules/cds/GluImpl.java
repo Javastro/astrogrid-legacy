@@ -1,4 +1,4 @@
-/*$Id: GluImpl.java,v 1.5 2007/01/09 16:20:12 nw Exp $
+/*$Id: GluImpl.java,v 1.6 2007/01/29 11:11:37 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import org.astrogrid.desktop.modules.cds.jglu.JgluServiceLocator;
 import org.astrogrid.desktop.modules.system.Preference;
 
 /** Implementation of the GLU service
- * @author Noel Winstanley nw@jb.man.ac.uk 16-Aug-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 16-Aug-2005
  *@fixme work out why this never works - mabe replace with dynamic implementation?
  */
 public class GluImpl implements Glu {
@@ -67,6 +67,9 @@ public class GluImpl implements Glu {
 
 /* 
 $Log: GluImpl.java,v $
+Revision 1.6  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.5  2007/01/09 16:20:12  nw
 updated to use preference.
 

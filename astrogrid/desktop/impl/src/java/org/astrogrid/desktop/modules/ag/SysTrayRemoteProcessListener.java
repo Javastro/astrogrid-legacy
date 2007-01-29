@@ -1,4 +1,4 @@
-/*$Id: SysTrayRemoteProcessListener.java,v 1.4 2006/06/15 09:46:07 nw Exp $
+/*$Id: SysTrayRemoteProcessListener.java,v 1.5 2007/01/29 11:11:34 nw Exp $
  * Created on 03-Apr-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.Folder;
 import org.astrogrid.desktop.modules.background.JesStrategyImpl;
 /**
  * displays process events in the system tray.
- * @author Noel Winstanley nw@jb.man.ac.uk 03-Apr-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 03-Apr-2006
  *
  */
 public final class SysTrayRemoteProcessListener implements RemoteProcessListener {
@@ -72,6 +72,9 @@ public final class SysTrayRemoteProcessListener implements RemoteProcessListener
 
 /* 
 $Log: SysTrayRemoteProcessListener.java,v $
+Revision 1.5  2007/01/29 11:11:34  nw
+updated contact details.
+
 Revision 1.4  2006/06/15 09:46:07  nw
 fixed minor bug
 

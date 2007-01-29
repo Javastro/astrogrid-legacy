@@ -1,4 +1,4 @@
-/*$Id: FallbackBrowserControl.java,v 1.2 2006/04/18 23:25:45 nw Exp $
+/*$Id: FallbackBrowserControl.java,v 1.3 2007/01/29 11:11:37 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 /** fallback implementation of the browser control 
  * 
  * used when not running under webstart (i.e. during development)- tells user which http url to go to.
- * @author Noel Winstanley nw@jb.man.ac.uk 21-Feb-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Feb-2005
  *
  */
 public class FallbackBrowserControl implements BrowserControl {
@@ -75,6 +75,9 @@ public class FallbackBrowserControl implements BrowserControl {
 
 /* 
 $Log: FallbackBrowserControl.java,v $
+Revision 1.3  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.2  2006/04/18 23:25:45  nw
 merged asr development.
 

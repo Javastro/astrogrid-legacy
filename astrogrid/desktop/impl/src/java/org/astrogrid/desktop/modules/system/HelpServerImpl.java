@@ -1,4 +1,4 @@
-/*$Id: HelpServerImpl.java,v 1.11 2007/01/23 11:49:27 nw Exp $
+/*$Id: HelpServerImpl.java,v 1.12 2007/01/29 11:11:37 nw Exp $
  * Created on 17-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,7 +45,7 @@ import org.astrogrid.desktop.modules.system.contributions.HelpItemContribution;
  * <li>display help in external browser.
  * </ul> 
  * 
- * @author Noel Winstanley nw@jb.man.ac.uk 17-Jun-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Jun-2005
  *
  */
 public class HelpServerImpl implements  HelpServerInternal, KeyListener{
@@ -215,6 +215,9 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
 
 /* 
 $Log: HelpServerImpl.java,v $
+Revision 1.12  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.11  2007/01/23 11:49:27  nw
 ui improvmenet.
 

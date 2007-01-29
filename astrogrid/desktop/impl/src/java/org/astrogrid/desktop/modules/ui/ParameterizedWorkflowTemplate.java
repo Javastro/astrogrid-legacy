@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowTemplate.java,v 1.4 2006/08/15 10:04:30 nw Exp $
+/*$Id: ParameterizedWorkflowTemplate.java,v 1.5 2007/01/29 11:11:37 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -49,7 +49,7 @@ import org.w3c.dom.ProcessingInstruction;
 
 /**
  * data class that holds all the info and metadata for a parameterized workflow template 
- * @author Noel Winstanley nw@jb.man.ac.uk 22-Mar-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 22-Mar-2005
  *
  */
 class ParameterizedWorkflowTemplate implements Serializable  {
@@ -161,6 +161,9 @@ class ParameterizedWorkflowTemplate implements Serializable  {
 
 /* 
 $Log: ParameterizedWorkflowTemplate.java,v $
+Revision 1.5  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.4  2006/08/15 10:04:30  nw
 migrated from old to new registry models.
 

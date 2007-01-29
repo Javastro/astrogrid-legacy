@@ -1,4 +1,4 @@
-/*$Id: CoordinateImpl.java,v 1.5 2007/01/09 16:20:12 nw Exp $
+/*$Id: CoordinateImpl.java,v 1.6 2007/01/29 11:11:37 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import org.astrogrid.desktop.modules.cds.astrocoo.AstroCooServiceLocator;
 import org.astrogrid.desktop.modules.system.Preference;
 
 /** Implementation of the Coordinate service
- * @author Noel Winstanley nw@jb.man.ac.uk 16-Aug-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 16-Aug-2005
  *
  */
 public class CoordinateImpl implements Coordinate {
@@ -97,6 +97,9 @@ public class CoordinateImpl implements Coordinate {
 
 /* 
 $Log: CoordinateImpl.java,v $
+Revision 1.6  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.5  2007/01/09 16:20:12  nw
 updated to use preference.
 

@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserImpl.java,v 1.6 2006/08/15 10:19:53 nw Exp $
+/*$Id: RegistryChooserImpl.java,v 1.7 2007/01/29 11:11:37 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,7 @@ import org.astrogrid.desktop.modules.system.UIInternal;
  * It's an inefficent stop-gap in terms of RegistryGoogle, and then selected
  * resources are looked up in obsolete registry interface.
  * @deprecated
- * @author Noel Winstanley nw@jb.man.ac.uk 02-Sep-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Sep-2005
  *
  */
 public class RegistryChooserImpl implements RegistryChooser {
@@ -101,6 +101,9 @@ public class RegistryChooserImpl implements RegistryChooser {
 
 /* 
 $Log: RegistryChooserImpl.java,v $
+Revision 1.7  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.6  2006/08/15 10:19:53  nw
 implemented new registry google dialog.
 

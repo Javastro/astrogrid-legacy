@@ -1,4 +1,4 @@
-/*$Id: MessageRecorderInternal.java,v 1.4 2006/04/26 15:55:57 nw Exp $
+/*$Id: MessageRecorderInternal.java,v 1.5 2007/01/29 11:11:35 nw Exp $
  * Created on 25-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,7 @@ import org.astrogrid.acr.astrogrid.ExecutionMessage;
  * 
  * NB: quite a stateful service- tree model isn't too bad, but the table model might be a problem.
  * maybe a case for factoring this out into a separate class - so different clients can create their own instances.
- * @author Noel Winstanley nw@jb.man.ac.uk 25-Oct-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 25-Oct-2005
  *
  */
 public interface MessageRecorderInternal {
@@ -97,6 +97,9 @@ public interface MessageRecorderInternal {
 
 /* 
  $Log: MessageRecorderInternal.java,v $
+ Revision 1.5  2007/01/29 11:11:35  nw
+ updated contact details.
+
  Revision 1.4  2006/04/26 15:55:57  nw
  fixed jdic-tray bug by refactoring.
 

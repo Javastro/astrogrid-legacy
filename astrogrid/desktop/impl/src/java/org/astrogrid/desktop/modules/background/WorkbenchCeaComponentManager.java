@@ -1,4 +1,4 @@
-/*$Id: WorkbenchCeaComponentManager.java,v 1.7 2006/04/18 23:25:43 nw Exp $
+/*$Id: WorkbenchCeaComponentManager.java,v 1.8 2007/01/29 11:11:36 nw Exp $
  * Created on 19-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.desktop.modules.background;
 import org.astrogrid.applications.manager.QueryService;
 
 /** Custom cea component manager - just the things needed for an in-process cea server.
- * @author Noel Winstanley nw@jb.man.ac.uk 19-Oct-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 19-Oct-2005
  * 
  */
 public class WorkbenchCeaComponentManager implements TasksInternal{
@@ -54,6 +54,9 @@ public class WorkbenchCeaComponentManager implements TasksInternal{
 
 /* 
 $Log: WorkbenchCeaComponentManager.java,v $
+Revision 1.8  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.7  2006/04/18 23:25:43  nw
 merged asr development.
 

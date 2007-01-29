@@ -1,4 +1,4 @@
-/*$Id: ToolEditorDialog.java,v 1.9 2007/01/10 19:12:16 nw Exp $
+/*$Id: ToolEditorDialog.java,v 1.10 2007/01/29 11:11:37 nw Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,7 +47,7 @@ import org.astrogrid.workflow.beans.v1.Tool;
  * <p>
  * tool editing business done by {@link org.astrogrid.desktop.modules.dialogs.editors.BasicToolEditorPanel}
  * this class is just concerned with the dialogue side of thinigs
- * @author Noel Winstanley nw@jb.man.ac.uk 23-Mar-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 23-Mar-2005
  *
  */
 public class ToolEditorDialog extends JDialog implements PropertyChangeListener {
@@ -201,6 +201,9 @@ public class ToolEditorDialog extends JDialog implements PropertyChangeListener 
 
 /* 
 $Log: ToolEditorDialog.java,v $
+Revision 1.10  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.9  2007/01/10 19:12:16  nw
 integrated with preferences.
 

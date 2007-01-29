@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowserImpl.java,v 1.19 2007/01/23 11:51:18 nw Exp $
+/*$Id: VospaceBrowserImpl.java,v 1.20 2007/01/29 11:11:37 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -63,7 +63,7 @@ import com.l2fprod.common.swing.JTaskPaneGroup;
  * 
  * Implementation of the myspaceBrowser component
  * 
- * @author Noel Winstanley nw@jb.man.ac.uk 22-Mar-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 22-Mar-2005
  *  
  */
 public class VospaceBrowserImpl extends AbstractVospaceBrowser implements MyspaceBrowser {
@@ -758,6 +758,9 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
 /*
  * $Log: VospaceBrowserImpl.java,v $
+ * Revision 1.20  2007/01/29 11:11:37  nw
+ * updated contact details.
+ *
  * Revision 1.19  2007/01/23 11:51:18  nw
  * 1.5 fix.
  *

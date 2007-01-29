@@ -1,4 +1,4 @@
-/*$Id: LegacyJobMonitor.java,v 1.2 2006/04/18 23:25:43 nw Exp $
+/*$Id: LegacyJobMonitor.java,v 1.3 2007/01/29 11:11:37 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import org.astrogrid.acr.ui.Lookout;
 
 /** backwards-compatability class - makes lookout implement old job monitor interface.
  * keep in place for old scripts / xmlrpc clients
- * @author Noel Winstanley nw@jb.man.ac.uk 11-Nov-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 11-Nov-2005
  *
  */
 public class LegacyJobMonitor implements JobMonitor {
@@ -75,6 +75,9 @@ public class LegacyJobMonitor implements JobMonitor {
 
 /* 
 $Log: LegacyJobMonitor.java,v $
+Revision 1.3  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.2  2006/04/18 23:25:43  nw
 merged asr development.
 

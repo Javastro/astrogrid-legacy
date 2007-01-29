@@ -15,7 +15,7 @@ import org.astrogrid.store.Ivorn;
 
 /** Interface to astrogird scripting environment objects
  * @todo move to separate subpackage, or refactor away.
- * @author Noel Winstanley nw@jb.man.ac.uk 20-Dec-2004
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 20-Dec-2004
  *
  */
 interface ScriptEnvironment {

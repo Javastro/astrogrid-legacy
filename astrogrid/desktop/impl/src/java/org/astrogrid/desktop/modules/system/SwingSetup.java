@@ -1,4 +1,4 @@
-/*$Id: SwingSetup.java,v 1.7 2006/08/31 21:32:49 nw Exp $
+/*$Id: SwingSetup.java,v 1.8 2007/01/29 11:11:36 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * simple class that does some global configuration of swing.
- * @author Noel Winstanley nw@jb.man.ac.uk 21-Mar-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Mar-2006
  *
  */
 public class SwingSetup implements Runnable {
@@ -49,6 +49,9 @@ private static final Log logger = LogFactory.getLog(SwingSetup.class);
 
 /* 
 $Log: SwingSetup.java,v $
+Revision 1.8  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.7  2006/08/31 21:32:49  nw
 doc fixes.
 

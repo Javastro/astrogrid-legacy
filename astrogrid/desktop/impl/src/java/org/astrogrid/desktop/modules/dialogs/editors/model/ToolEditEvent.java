@@ -1,4 +1,4 @@
-/*$Id: ToolEditEvent.java,v 1.2 2006/04/18 23:25:47 nw Exp $
+/*$Id: ToolEditEvent.java,v 1.3 2007/01/29 11:11:37 nw Exp $
  * Created on 06-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,7 @@ import org.astrogrid.desktop.modules.dialogs.editors.AbstractToolEditorPanel;
 
 /** event object fired by tool editors - source will be an instance of the {@link ToolEditor} interface
  * 
- * @author Noel Winstanley nw@jb.man.ac.uk 06-Sep-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 06-Sep-2005
  *
  */
 public class ToolEditEvent extends EventObject {
@@ -51,6 +51,9 @@ public class ToolEditEvent extends EventObject {
 
 /* 
 $Log: ToolEditEvent.java,v $
+Revision 1.3  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.2  2006/04/18 23:25:47  nw
 merged asr development.
 

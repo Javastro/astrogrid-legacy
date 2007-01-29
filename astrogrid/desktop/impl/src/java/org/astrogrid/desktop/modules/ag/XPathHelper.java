@@ -1,4 +1,4 @@
-/*$Id: XPathHelper.java,v 1.6 2006/08/31 21:28:59 nw Exp $
+/*$Id: XPathHelper.java,v 1.7 2007/01/29 11:11:35 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /** Class of Helper methods for working with XPath, namespaces, and registry documents in particular.
- * @author Noel Winstanley nw@jb.man.ac.uk 17-Aug-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Aug-2005
  *
  */
 public class XPathHelper {
@@ -104,6 +104,9 @@ public class XPathHelper {
 
 /* 
 $Log: XPathHelper.java,v $
+Revision 1.7  2007/01/29 11:11:35  nw
+updated contact details.
+
 Revision 1.6  2006/08/31 21:28:59  nw
 doc fix.
 

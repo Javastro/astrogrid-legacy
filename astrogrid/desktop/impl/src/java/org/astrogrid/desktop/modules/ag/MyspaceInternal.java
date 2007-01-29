@@ -1,4 +1,4 @@
-/*$Id: MyspaceInternal.java,v 1.6 2006/11/09 12:08:33 nw Exp $
+/*$Id: MyspaceInternal.java,v 1.7 2007/01/29 11:11:35 nw Exp $
  * Created on 02-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,7 +26,7 @@ import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.registry.RegistryException;
 
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 02-Aug-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Aug-2005
  *
  */
 public interface MyspaceInternal extends Myspace {
@@ -79,6 +79,9 @@ public interface MyspaceInternal extends Myspace {
 
 /* 
 $Log: MyspaceInternal.java,v $
+Revision 1.7  2007/01/29 11:11:35  nw
+updated contact details.
+
 Revision 1.6  2006/11/09 12:08:33  nw
 final set of changes for 2006.4.rc1
 

@@ -1,4 +1,4 @@
-/*$Id: BackgroundWorker.java,v 1.7 2007/01/10 19:12:16 nw Exp $
+/*$Id: BackgroundWorker.java,v 1.8 2007/01/29 11:11:37 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,7 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
       *
       * @todo integrate with glass pane / hourglass cursor in cases where it should be a blocking operation (but still must be in a background thread so that other
       * UI windows are responsive, and the UI is repainted).     
-      * @author Noel Winstanley nw@jb.man.ac.uk 02-Apr-2005
+      * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Apr-2005
       *
       */
     public abstract class BackgroundWorker  extends Observable implements Runnable, Comparable  {
@@ -276,6 +276,9 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
 
 /* 
 $Log: BackgroundWorker.java,v $
+Revision 1.8  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.7  2007/01/10 19:12:16  nw
 integrated with preferences.
 

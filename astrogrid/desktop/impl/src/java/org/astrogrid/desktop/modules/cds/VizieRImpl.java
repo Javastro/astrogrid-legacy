@@ -1,4 +1,4 @@
-/*$Id: VizieRImpl.java,v 1.5 2007/01/09 16:20:12 nw Exp $
+/*$Id: VizieRImpl.java,v 1.6 2007/01/29 11:11:37 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,7 @@ import org.w3c.dom.Document;
  * 
  * @todo later, if demand, cache delegate between uses, and listen for preference
  * updates before invalidating it.
- * @author Noel Winstanley nw@jb.man.ac.uk 16-Aug-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 16-Aug-2005
  *
  */
 public class VizieRImpl implements VizieR {
@@ -127,6 +127,9 @@ public class VizieRImpl implements VizieR {
 
 /* 
 $Log: VizieRImpl.java,v $
+Revision 1.6  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.5  2007/01/09 16:20:12  nw
 updated to use preference.
 

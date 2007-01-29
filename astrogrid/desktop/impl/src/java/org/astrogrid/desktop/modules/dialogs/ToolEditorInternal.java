@@ -1,4 +1,4 @@
-/*$Id: ToolEditorInternal.java,v 1.5 2006/08/15 10:20:24 nw Exp $
+/*$Id: ToolEditorInternal.java,v 1.6 2007/01/29 11:11:37 nw Exp $
  * Created on 24-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import org.astrogrid.acr.dialogs.ToolEditor;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 /** extension of the tool editor interface with some more handy methods.
- * @author Noel Winstanley nw@jb.man.ac.uk 24-Aug-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 24-Aug-2005
  *
  */
 public interface ToolEditorInternal extends ToolEditor {
@@ -34,7 +34,7 @@ public interface ToolEditorInternal extends ToolEditor {
      * @throws InvalidArgumentException if the parameter document is malformed - ie.is not a tool
      * @throws ServiceException if any other exception occurs during editing (e.g. failure to communicate to registry)
      * 
-     * @author Noel Winstanley nw@jb.man.ac.uk 02-Sep-2005
+     * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Sep-2005
      *
      */
     public Tool editTool(Tool t,Component comp) throws  InvalidArgumentException;
@@ -82,6 +82,9 @@ public interface ToolEditorInternal extends ToolEditor {
 
 /* 
 $Log: ToolEditorInternal.java,v $
+Revision 1.6  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.5  2006/08/15 10:20:24  nw
 migrated from old to new registry models.
 

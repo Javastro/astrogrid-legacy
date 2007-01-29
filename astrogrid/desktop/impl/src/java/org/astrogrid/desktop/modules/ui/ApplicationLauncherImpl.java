@@ -1,4 +1,4 @@
-/*$Id: ApplicationLauncherImpl.java,v 1.16 2007/01/12 13:20:05 nw Exp $
+/*$Id: ApplicationLauncherImpl.java,v 1.17 2007/01/29 11:11:37 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,7 +38,7 @@ import org.astrogrid.desktop.modules.system.UIInternal;
 /** Implementation of the Application Launcher component
  * <p>
  * not just a thin wrapper around the composite tool editor;
- * @author Noel Winstanley nw@jb.man.ac.uk 12-May-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 12-May-2005
  *
  */
 public class ApplicationLauncherImpl extends UIComponentImpl  implements ApplicationLauncher {
@@ -117,6 +117,9 @@ public class ApplicationLauncherImpl extends UIComponentImpl  implements Applica
 
 /* 
 $Log: ApplicationLauncherImpl.java,v $
+Revision 1.17  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.16  2007/01/12 13:20:05  nw
 made sure every ui app has a help menu.
 

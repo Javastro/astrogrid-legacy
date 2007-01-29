@@ -1,4 +1,4 @@
-/*$Id: ApiHelpImpl.java,v 1.7 2006/06/27 10:38:34 nw Exp $
+/*$Id: ApiHelpImpl.java,v 1.8 2007/01/29 11:11:36 nw Exp $
  * Created on 23-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,7 +35,7 @@ import org.astrogrid.desktop.framework.Module;
 import org.astrogrid.desktop.framework.ReflectionHelper;
 
 /** Implementation of the APIHelp component
- * @author Noel Winstanley nw@jb.man.ac.uk 23-Jun-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 23-Jun-2005
  * @todo strip html tags from responses - this should be text-only.
  * @todo transform results of invocations.
  */
@@ -378,6 +378,9 @@ public class ApiHelpImpl implements ApiHelp {
 
 /* 
 $Log: ApiHelpImpl.java,v $
+Revision 1.8  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.7  2006/06/27 10:38:34  nw
 findbugs tweaks
 

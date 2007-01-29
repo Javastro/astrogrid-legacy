@@ -1,4 +1,4 @@
-/*$Id: AbstractReflectionServlet.java,v 1.6 2006/06/27 19:18:32 nw Exp $
+/*$Id: AbstractReflectionServlet.java,v 1.7 2007/01/29 11:11:36 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,7 +30,7 @@ import org.astrogrid.desktop.framework.ACRInternal;
 import org.astrogrid.desktop.framework.Module;
 
 /** Abstract servlet class for exposing services.
- * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 31-Jan-2005
   */
 public abstract class AbstractReflectionServlet extends HttpServlet {
 
@@ -177,6 +177,9 @@ public abstract class AbstractReflectionServlet extends HttpServlet {
 
 /*
  * $Log: AbstractReflectionServlet.java,v $
+ * Revision 1.7  2007/01/29 11:11:36  nw
+ * updated contact details.
+ *
  * Revision 1.6  2006/06/27 19:18:32  nw
  * adjusted todo tags.
  *

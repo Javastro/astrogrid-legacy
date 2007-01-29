@@ -1,4 +1,4 @@
-/*$Id: StoreImpl.java,v 1.3 2006/04/18 23:25:44 nw Exp $
+/*$Id: StoreImpl.java,v 1.4 2007/01/29 11:11:35 nw Exp $
  * Created on 25-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,7 +31,7 @@ import org.astrogrid.acr.builtin.ShutdownListener;
  *  uses community, but doesn't implement UserLoginListener - instead,
  *  cleanup at logout of the store is done by MessageRecorderImpl - as
  *  has to do some other work before closing the user's store.
- * @author Noel Winstanley nw@jb.man.ac.uk 25-Oct-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 25-Oct-2005
  */
 public class StoreImpl implements StoreInternal, ShutdownListener{
     /**
@@ -122,6 +122,9 @@ public class StoreImpl implements StoreInternal, ShutdownListener{
 
 /* 
 $Log: StoreImpl.java,v $
+Revision 1.4  2007/01/29 11:11:35  nw
+updated contact details.
+
 Revision 1.3  2006/04/18 23:25:44  nw
 merged asr development.
 

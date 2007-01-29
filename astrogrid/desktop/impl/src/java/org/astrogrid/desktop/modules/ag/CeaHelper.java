@@ -1,4 +1,4 @@
-/*$Id: CeaHelper.java,v 1.4 2006/08/15 10:15:59 nw Exp $
+/*$Id: CeaHelper.java,v 1.5 2007/01/29 11:11:35 nw Exp $
  * Created on 20-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,7 +26,7 @@ import org.astrogrid.applications.delegate.DelegateFactory;
 /** helper object for working with cea services.
  * <P>
  * tries to hid difference between local and remote cea apps.
- * @author Noel Winstanley nw@jb.man.ac.uk 20-Oct-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 20-Oct-2005
  */
 public class CeaHelper {
 
@@ -114,6 +114,9 @@ public CommonExecutionConnectorClient createCEADelegate(URI executionId) throws 
 
 /* 
 $Log: CeaHelper.java,v $
+Revision 1.5  2007/01/29 11:11:35  nw
+updated contact details.
+
 Revision 1.4  2006/08/15 10:15:59  nw
 migrated from old to new registry models.
 

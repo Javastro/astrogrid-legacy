@@ -1,4 +1,4 @@
-/*$Id: ConfigurationInternal.java,v 1.3 2007/01/09 16:25:33 nw Exp $
+/*$Id: ConfigurationInternal.java,v 1.4 2007/01/29 11:11:36 nw Exp $
  * Created on 23-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import org.astrogrid.acr.system.Configuration;
  * The other interfaces extended are hivemind internal things - their methods should
  * not be called directly.
  * @see PreferenceManagerImpl for full documentation
- * @author Noel Winstanley nw@jb.man.ac.uk 23-Aug-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 23-Aug-2005
  *
  */
 public interface ConfigurationInternal extends Configuration, ObjectProvider, SymbolSource {
@@ -40,6 +40,9 @@ public interface ConfigurationInternal extends Configuration, ObjectProvider, Sy
 
 /* 
 $Log: ConfigurationInternal.java,v $
+Revision 1.4  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.3  2007/01/09 16:25:33  nw
 new preferences system
 

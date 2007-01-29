@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescriptionEnvironmentFactory.java,v 1.2 2006/04/18 23:25:43 nw Exp $
+/*$Id: ApplicationDescriptionEnvironmentFactory.java,v 1.3 2007/01/29 11:11:36 nw Exp $
  * Created on 23-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 
 /** work-around for appDescEnv's irritating lack of no-args constructor or
  * interface.
- * @author Noel Winstanley nw@jb.man.ac.uk 23-Mar-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 23-Mar-2006
  *
  */
 public class ApplicationDescriptionEnvironmentFactory implements IApplicationDescriptionEnvironmentFactory {
@@ -37,6 +37,9 @@ public class ApplicationDescriptionEnvironmentFactory implements IApplicationDes
 
 /* 
 $Log: ApplicationDescriptionEnvironmentFactory.java,v $
+Revision 1.3  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.2  2006/04/18 23:25:43  nw
 merged asr development.
 

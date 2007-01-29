@@ -1,4 +1,4 @@
-/*$Id: UIComponentImpl.java,v 1.9 2007/01/12 13:20:05 nw Exp $
+/*$Id: UIComponentImpl.java,v 1.10 2007/01/29 11:11:37 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -72,7 +72,7 @@ import com.l2fprod.common.swing.StatusBar;
  *Also provides a place to have convenient common functionality - definitions of a 
  *close operation, help menu, etc.
  *@see org.astrogrid.desktop.modules.ui.BackgroundWorker
- * @author Noel Winstanley nw@jb.man.ac.uk 07-Apr-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 07-Apr-2005
  *
  */ 
 public class UIComponentImpl extends PositionRememberingJFrame implements UIComponent, ShutdownListener {
@@ -573,6 +573,9 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
 
 /* 
 $Log: UIComponentImpl.java,v $
+Revision 1.10  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.9  2007/01/12 13:20:05  nw
 made sure every ui app has a help menu.
 

@@ -1,4 +1,4 @@
-/*$Id: CastorBeanUtilsConvertor.java,v 1.2 2006/04/18 23:25:47 nw Exp $
+/*$Id: CastorBeanUtilsConvertor.java,v 1.3 2007/01/29 11:11:37 nw Exp $
  * Created on 03-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import org.exolab.castor.xml.ValidationException;
 /**
  * New converter in the BeanUtils framework to unmarshall documents
  * into castor objects.
- * @author Noel Winstanley nw@jb.man.ac.uk 03-Feb-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 03-Feb-2005
  *
  */
 public final class CastorBeanUtilsConvertor implements Converter {
@@ -40,6 +40,9 @@ public final class CastorBeanUtilsConvertor implements Converter {
 
 /* 
 $Log: CastorBeanUtilsConvertor.java,v $
+Revision 1.3  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.2  2006/04/18 23:25:47  nw
 merged asr development.
 

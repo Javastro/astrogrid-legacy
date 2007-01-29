@@ -1,4 +1,4 @@
-/*$Id: PositionRememberingJFrame.java,v 1.9 2006/06/27 10:36:13 nw Exp $
+/*$Id: PositionRememberingJFrame.java,v 1.10 2007/01/29 11:11:37 nw Exp $
  * Created on 04-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,7 +30,7 @@ import org.astrogrid.desktop.modules.system.UIInternal;
  *iif can't get previously-stored position information, will set position relative to the ui component.
  * <p>
  * key used in configuration for this info is the classname
- * @author Noel Winstanley nw@jb.man.ac.uk 04-Apr-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 04-Apr-2005
  *
  */
 public class PositionRememberingJFrame extends JFrame {
@@ -147,6 +147,9 @@ public class PositionRememberingJFrame extends JFrame {
 
 /* 
 $Log: PositionRememberingJFrame.java,v $
+Revision 1.10  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.9  2006/06/27 10:36:13  nw
 findbugs tweaks
 

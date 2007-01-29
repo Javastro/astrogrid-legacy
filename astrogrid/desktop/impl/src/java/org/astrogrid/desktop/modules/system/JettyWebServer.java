@@ -1,4 +1,4 @@
-/*$Id: JettyWebServer.java,v 1.8 2006/08/31 21:32:49 nw Exp $
+/*$Id: JettyWebServer.java,v 1.9 2007/01/29 11:11:37 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,7 +37,7 @@ import org.mortbay.util.InetAddrPort;
 /** Factory to create a webserver, listening to a random port, with a hashed key path.
  * @todo remove helpful 'context not found' page
  * @fixme find out how to get this component to shut down cleanly - this seems to be the cause of the stay-alive problem at the moment.
- * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 31-Jan-2005
  *
  */
 public class JettyWebServer implements WebServer, ShutdownListener{
@@ -234,6 +234,9 @@ public void setInetAddress(String netAddress) throws UnknownHostException {
 
 /* 
 $Log: JettyWebServer.java,v $
+Revision 1.9  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.8  2006/08/31 21:32:49  nw
 doc fixes.
 

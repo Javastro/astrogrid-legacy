@@ -1,4 +1,4 @@
-/*$Id: RmiLiteRmiServerImpl.java,v 1.9 2006/09/02 00:49:42 nw Exp $
+/*$Id: RmiLiteRmiServerImpl.java,v 1.10 2007/01/29 11:11:36 nw Exp $
  * Created on 27-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,8 +31,8 @@ import org.astrogrid.desktop.framework.ACRInternal;
 import org.astrogrid.desktop.framework.Module;
 
 /** Implementation of the RmiServer using rmi lite.
- * @author Noel Winstanley nw@jb.man.ac.uk 27-Jul-2005
- * @todo configure the java.rmi.server.codebase property to point to the internal webserver - so that clients can grab missing classes if needed.
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jul-2005
+ * @future configure the java.rmi.server.codebase property to point to the internal webserver - so that clients can grab missing classes if needed.
  * @todo find way to reliably shut down the rmi server / registry - sometimes it seems to hang around.
  * @todo restrict connections to specified ports.
    @modified inlined the source from RmiLite's server - so we can adapt it (hard to extend).
@@ -135,6 +135,9 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
 
 /* 
 $Log: RmiLiteRmiServerImpl.java,v $
+Revision 1.10  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.9  2006/09/02 00:49:42  nw
 inlined rmilite server, as precursor to customization.
 

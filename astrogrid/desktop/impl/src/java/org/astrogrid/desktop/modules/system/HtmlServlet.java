@@ -1,4 +1,4 @@
-/*$Id: HtmlServlet.java,v 1.7 2007/01/10 14:53:57 nw Exp $
+/*$Id: HtmlServlet.java,v 1.8 2007/01/29 11:11:36 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** servlet that exposes ACR functions over plain old http.
- * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 31-Jan-2005
  * 
  */
 public class HtmlServlet extends AbstractReflectionServlet {
@@ -296,6 +296,9 @@ public class HtmlServlet extends AbstractReflectionServlet {
 
 /* 
 $Log: HtmlServlet.java,v $
+Revision 1.8  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.7  2007/01/10 14:53:57  nw
 added preferences editor
 

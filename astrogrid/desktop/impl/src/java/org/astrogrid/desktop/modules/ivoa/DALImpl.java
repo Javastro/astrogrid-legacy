@@ -1,4 +1,4 @@
-/*$Id: DALImpl.java,v 1.8 2006/10/11 19:41:55 nw Exp $
+/*$Id: DALImpl.java,v 1.9 2007/01/29 11:11:36 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -59,7 +59,7 @@ import uk.ac.starlink.votable.TableHandler;
 
 
 /** Abstract class for implemntations of HTTP-GET based DAL standards
- * @author Noel Winstanley nw@jb.man.ac.uk 17-Oct-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Oct-2005
  *@todo move to new registry
  */
 public abstract class DALImpl implements Dal{
@@ -437,6 +437,9 @@ public abstract class DALImpl implements Dal{
 
 /* 
 $Log: DALImpl.java,v $
+Revision 1.9  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.8  2006/10/11 19:41:55  nw
 refined interfaces on DAL andTables after some testing of usability.
 

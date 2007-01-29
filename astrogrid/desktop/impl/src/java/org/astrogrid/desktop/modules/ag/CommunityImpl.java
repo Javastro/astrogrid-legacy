@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.11 2006/10/31 12:55:40 nw Exp $
+/*$Id: CommunityImpl.java,v 1.12 2007/01/29 11:11:35 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,7 +36,7 @@ import org.astrogrid.registry.RegistryException;
 import org.astrogrid.security.SecurityGuard;
 
 /** Community Service implementation
- * @author Noel Winstanley nw@jb.man.ac.uk 01-Feb-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 01-Feb-2005
  */
 public class CommunityImpl implements CommunityInternal {
     /**
@@ -104,7 +104,6 @@ public class CommunityImpl implements CommunityInternal {
                 break;
             }
             try {
-            //@todo move this to debug, once the novelty wares off :)
             	logger.info("About to authenticate at the community...");
                 authenticate();
                 logger.info("Authenticated");
@@ -223,6 +222,9 @@ public class CommunityImpl implements CommunityInternal {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.12  2007/01/29 11:11:35  nw
+updated contact details.
+
 Revision 1.11  2006/10/31 12:55:40  nw
 added logging message
 

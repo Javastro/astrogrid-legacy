@@ -1,4 +1,4 @@
-/*$Id: SiapApplicationDescription.java,v 1.3 2006/08/15 10:15:34 nw Exp $
+/*$Id: SiapApplicationDescription.java,v 1.4 2007/01/29 11:11:36 nw Exp $
  * Created on 19-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,7 +43,7 @@ import org.astrogrid.io.Piper;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 /** implementation of a siap search proxy.
- * @author Noel Winstanley nw@jb.man.ac.uk 19-Oct-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 19-Oct-2005
  *
  */
 public class SiapApplicationDescription extends AbstractApplicationDescription {
@@ -175,6 +175,9 @@ public class SiapApplicationDescription extends AbstractApplicationDescription {
 
 /* 
 $Log: SiapApplicationDescription.java,v $
+Revision 1.4  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.3  2006/08/15 10:15:34  nw
 migrated from old to new registry models.
 

@@ -1,4 +1,4 @@
-/*$Id: SesameDynamicImpl.java,v 1.6 2007/01/09 16:20:12 nw Exp $
+/*$Id: SesameDynamicImpl.java,v 1.7 2007/01/29 11:11:37 nw Exp $
  * Created on 28-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,7 +34,7 @@ import org.astrogrid.desktop.modules.system.Preference;
  * without using marshalling beans
  * 
  * nice simple xml.rpc style interface - so can call through rpc api - next to no messing with soap.
- * @author Noel Winstanley nw@jb.man.ac.uk 28-Feb-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 28-Feb-2006
  *
  */
 public class SesameDynamicImpl implements Sesame {
@@ -158,6 +158,9 @@ public class SesameDynamicImpl implements Sesame {
 
 /* 
 $Log: SesameDynamicImpl.java,v $
+Revision 1.7  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.6  2007/01/09 16:20:12  nw
 updated to use preference.
 

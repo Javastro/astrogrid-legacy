@@ -1,4 +1,4 @@
-/*$Id: SsapImpl.java,v 1.7 2006/08/31 21:34:46 nw Exp $
+/*$Id: SsapImpl.java,v 1.8 2007/01/29 11:11:36 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,7 @@ import org.astrogrid.acr.ivoa.Ssap;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 
 /** implementation of a component that does ssap queries.
- * @author Noel Winstanley nw@jb.man.ac.uk 27-Jan-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jan-2006
  * @future - at moment inherits most of functionality from the siap impl. need to watch when specs diverge.
  */
 public class SsapImpl extends SiapImpl implements Ssap {
@@ -52,6 +52,9 @@ public class SsapImpl extends SiapImpl implements Ssap {
 
 /* 
 $Log: SsapImpl.java,v $
+Revision 1.8  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.7  2006/08/31 21:34:46  nw
 minor tweaks and doc fixes.
 

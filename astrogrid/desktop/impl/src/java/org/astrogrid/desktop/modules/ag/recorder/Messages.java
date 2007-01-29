@@ -1,4 +1,4 @@
-/*$Id: Messages.java,v 1.5 2006/08/15 10:15:16 nw Exp $
+/*$Id: Messages.java,v 1.6 2007/01/29 11:11:35 nw Exp $
  * Created on 07-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,7 +32,7 @@ import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.MessageContainer
 
 /**
  * implementation of a table of messages, and management of their storage.
- * @author Noel Winstanley nw@jb.man.ac.uk 07-Nov-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 07-Nov-2005
  *@todo experiment to see whether synchronization of methods is necessary.
  * only needed if called from more than the UI thread.
  * - or if so, maybe passing them onto the scheduler for single threaded calling is faster
@@ -206,6 +206,9 @@ public class Messages extends AbstractTableModel {
 
 /* 
 $Log: Messages.java,v $
+Revision 1.6  2007/01/29 11:11:35  nw
+updated contact details.
+
 Revision 1.5  2006/08/15 10:15:16  nw
 minor bugfix.
 

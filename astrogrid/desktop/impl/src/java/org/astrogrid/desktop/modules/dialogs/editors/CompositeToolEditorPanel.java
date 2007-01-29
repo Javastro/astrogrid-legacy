@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.30 2007/01/23 11:48:48 nw Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.31 2007/01/29 11:11:37 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -76,7 +76,7 @@ import com.l2fprod.common.swing.JLinkButton;
 
 /** Tool Editor Panel that composites together a bunch of other ones, and determines which
  * to show.
- * @author Noel Winstanley nw@jb.man.ac.uk 08-Sep-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 08-Sep-2005
  *
  */
 public class CompositeToolEditorPanel extends AbstractToolEditorPanel implements PropertyChangeListener {
@@ -639,6 +639,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel implements
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.31  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.30  2007/01/23 11:48:48  nw
 preferences integration.
 

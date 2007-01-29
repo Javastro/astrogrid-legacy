@@ -1,4 +1,4 @@
-/*$Id: Main.java,v 1.7 2006/05/26 15:08:09 nw Exp $
+/*$Id: Main.java,v 1.8 2007/01/29 11:11:35 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import org.astrogrid.Workbench1;
  * instead.
  * 
  * Delegtes to {@link Workbench1}
- * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 15-Mar-2005
  */
 public class Main  {
   
@@ -42,6 +42,9 @@ public class Main  {
 
 /* 
 $Log: Main.java,v $
+Revision 1.8  2007/01/29 11:11:35  nw
+updated contact details.
+
 Revision 1.7  2006/05/26 15:08:09  nw
 minor changes.
 

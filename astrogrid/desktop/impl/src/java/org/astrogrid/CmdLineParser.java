@@ -81,7 +81,6 @@ class CmdLineParser {
 	}
 	
 	/** set of default commandline options
-	 * @todo come back to these later 
 	 * @return parsed up options
 	 */
 	private static Options createDefaultOptions() {

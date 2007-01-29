@@ -1,4 +1,4 @@
-/*$Id: MessagingExecutionController.java,v 1.7 2006/08/15 10:15:34 nw Exp $
+/*$Id: MessagingExecutionController.java,v 1.8 2007/01/29 11:11:36 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,7 +32,7 @@ import org.astrogrid.desktop.modules.system.BackgroundExecutor;
 
 /** Execution controller that adds a monitor to applicatoins that inserts progress messages into 
  * our internal messaging system..
- * @author Noel Winstanley nw@jb.man.ac.uk 21-Oct-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Oct-2005
  *
  */
 public class MessagingExecutionController extends ThreadPoolExecutionController implements ManagingExecutionController {
@@ -118,6 +118,9 @@ public class MessagingExecutionController extends ThreadPoolExecutionController 
 
 /* 
 $Log: MessagingExecutionController.java,v $
+Revision 1.8  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.7  2006/08/15 10:15:34  nw
 migrated from old to new registry models.
 

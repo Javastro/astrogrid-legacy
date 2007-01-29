@@ -1,4 +1,4 @@
-/*$Id: PooledExecutorAdapter.java,v 1.1 2005/12/02 13:43:41 nw Exp $
+/*$Id: PooledExecutorAdapter.java,v 1.2 2007/01/29 11:11:36 nw Exp $
  * Created on 02-Dec-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 
 /**wraps a BackgroundExecutor to look like a PooledExecutor - which is what is required by the cea system.
  * cea _should_ just depend on the interface Executor - would make this class unnecessary. 
- * @author Noel Winstanley nw@jb.man.ac.uk 02-Dec-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Dec-2005
  *
  */
 public class PooledExecutorAdapter extends PooledExecutor {
@@ -40,6 +40,9 @@ public class PooledExecutorAdapter extends PooledExecutor {
 
 /* 
 $Log: PooledExecutorAdapter.java,v $
+Revision 1.2  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.1  2005/12/02 13:43:41  nw
 linked internal cea into new thread-pool system.
  

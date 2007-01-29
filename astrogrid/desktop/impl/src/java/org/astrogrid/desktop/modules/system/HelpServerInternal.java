@@ -1,4 +1,4 @@
-/*$Id: HelpServerInternal.java,v 1.5 2007/01/12 13:20:05 nw Exp $
+/*$Id: HelpServerInternal.java,v 1.6 2007/01/29 11:11:36 nw Exp $
  * Created on 11-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import javax.swing.JButton;
 import org.astrogrid.acr.system.HelpServer;
 
 /** Internal interface for the help server component
- * @author Noel Winstanley nw@jb.man.ac.uk 11-Oct-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 11-Oct-2005
  *
  */
 public interface HelpServerInternal extends HelpServer{
@@ -80,6 +80,9 @@ public interface HelpServerInternal extends HelpServer{
 
 /* 
 $Log: HelpServerInternal.java,v $
+Revision 1.6  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.5  2007/01/12 13:20:05  nw
 made sure every ui app has a help menu.
 

@@ -1,4 +1,4 @@
-/*$Id: StatusChangeExecutionMessage.java,v 1.3 2006/04/18 23:25:46 nw Exp $
+/*$Id: StatusChangeExecutionMessage.java,v 1.4 2007/01/29 11:11:35 nw Exp $
  * Created on 09-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,7 @@ import java.util.Date;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
 
 /** internal subtype of execution message - not to be passed across the wire.
- * @author Noel Winstanley nw@jb.man.ac.uk 09-Nov-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 09-Nov-2005
  *
  */
 public class StatusChangeExecutionMessage extends ExecutionMessage {
@@ -36,6 +36,9 @@ public class StatusChangeExecutionMessage extends ExecutionMessage {
 
 /* 
 $Log: StatusChangeExecutionMessage.java,v $
+Revision 1.4  2007/01/29 11:11:35  nw
+updated contact details.
+
 Revision 1.3  2006/04/18 23:25:46  nw
 merged asr development.
 

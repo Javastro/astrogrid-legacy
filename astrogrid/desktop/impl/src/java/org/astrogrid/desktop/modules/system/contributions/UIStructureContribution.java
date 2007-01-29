@@ -1,4 +1,4 @@
-/*$Id: UIStructureContribution.java,v 1.4 2007/01/10 14:55:30 nw Exp $
+/*$Id: UIStructureContribution.java,v 1.5 2007/01/29 11:11:37 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.desktop.modules.system.contributions;
 import javax.swing.Icon;
 /** interface common to all ui structure contributions *
  * defines the minimum required to assemble the contributions into the ui
- * @author Noel Winstanley nw@jb.man.ac.uk 21-Mar-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Mar-2006
  *
  */ 
 public interface UIStructureContribution {
@@ -46,6 +46,9 @@ public interface UIStructureContribution {
 
 /* 
  $Log: UIStructureContribution.java,v $
+ Revision 1.5  2007/01/29 11:11:37  nw
+ updated contact details.
+
  Revision 1.4  2007/01/10 14:55:30  nw
  integrated with preference system.
 

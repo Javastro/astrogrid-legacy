@@ -1,4 +1,4 @@
-/*$Id: JesStrategyImpl.java,v 1.10 2006/08/31 21:29:28 nw Exp $
+/*$Id: JesStrategyImpl.java,v 1.11 2007/01/29 11:11:36 nw Exp $
  * Created on 05-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -67,7 +67,7 @@ import org.w3c.dom.Document;
  *  - see RemoteProcessManagerImpl
  * periodically poll job service, inject messages into the system
  * temporary , until jes supports CEA interface like it should.
- * @author Noel Winstanley nw@jb.man.ac.uk 05-Nov-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 05-Nov-2005
  *
  */
 public class JesStrategyImpl implements RemoteProcessStrategy, UserLoginListener {
@@ -386,6 +386,9 @@ public class JesStrategyImpl implements RemoteProcessStrategy, UserLoginListener
 
 /* 
 $Log: JesStrategyImpl.java,v $
+Revision 1.11  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.10  2006/08/31 21:29:28  nw
 doc fix.
 

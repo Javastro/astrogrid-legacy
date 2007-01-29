@@ -10,7 +10,6 @@ import java.awt.HeadlessException;
 import java.net.URI;
 
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 
 /** Abstract class that captures commonality of andy implementation of a resource chooser dialogue.
  * not an interface, as want to extends from JDialog too.
@@ -73,7 +72,7 @@ public abstract class AbstractResourceChooserDialog extends JDialog {
 	public abstract  void setEnableMySpacePanel(boolean enableMySpacePanel);
 	public abstract void setEnableURIPanel(boolean enableURIPanel) ;
 
-	public abstract void setEnabledDirectorySelection(boolean enableDirectorySelection);
+	public abstract void setChooseDirectories(boolean enableDirectorySelection);
 
 	/** resets the dialog, then hides it. */
 	public abstract void resetAndHide();

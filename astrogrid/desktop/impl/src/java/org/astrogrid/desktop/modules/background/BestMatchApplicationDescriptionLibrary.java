@@ -1,4 +1,4 @@
-/*$Id: BestMatchApplicationDescriptionLibrary.java,v 1.5 2006/09/02 00:48:15 nw Exp $
+/*$Id: BestMatchApplicationDescriptionLibrary.java,v 1.6 2007/01/29 11:11:36 nw Exp $
  * Created on 20-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,7 +31,7 @@ import org.astrogrid.applications.description.exception.ApplicationDescriptionNo
  * also fits applications to descriptions in a more general way than just name matching
  *  - works based on the kind of service being invoked.
  * @FIXME HARD-CODED for now - will come up with a better solution later.
- * @author Noel Winstanley nw@jb.man.ac.uk 20-Oct-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 20-Oct-2005
  *
  */
 public class BestMatchApplicationDescriptionLibrary extends BaseApplicationDescriptionLibrary implements IBestMatchApplicationDescriptionLibrary {
@@ -87,6 +87,9 @@ public class BestMatchApplicationDescriptionLibrary extends BaseApplicationDescr
 
 /* 
 $Log: BestMatchApplicationDescriptionLibrary.java,v $
+Revision 1.6  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.5  2006/09/02 00:48:15  nw
 cleaned up exeception handling that was hiding a bug.
 

@@ -1,4 +1,4 @@
-/*$Id: ResultDialog.java,v 1.4 2005/11/24 01:13:24 nw Exp $
+/*$Id: ResultDialog.java,v 1.5 2007/01/29 11:11:37 nw Exp $
  * Created on 10-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,7 @@ import javax.swing.JScrollPane;
 /**
  * Simple dialog that displays a result in a text box - which allows for cutting / copying
  * the result into something else. 
- * @author Noel Winstanley nw@jb.man.ac.uk 10-May-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 10-May-2005
  *
  */
 public class ResultDialog extends JDialog {
@@ -108,6 +108,9 @@ public class ResultDialog extends JDialog {
 
 /* 
 $Log: ResultDialog.java,v $
+Revision 1.5  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.4  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
 

@@ -1,4 +1,4 @@
-/*$Id: BaseBeanEditorDialog.java,v 1.3 2006/04/18 23:25:44 nw Exp $
+/*$Id: BaseBeanEditorDialog.java,v 1.4 2007/01/29 11:11:37 nw Exp $
  * Created on 10-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import javax.swing.JPanel;
 import org.astrogrid.common.bean.BaseBean;
 
 /** Abstract base class for all pop-up dialogs used in the workflow editor.
- * @author Noel Winstanley nw@jb.man.ac.uk 10-Oct-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 10-Oct-2005
  *
  */
 public abstract class BaseBeanEditorDialog extends JDialog implements PropertyChangeListener {
@@ -130,6 +130,9 @@ public abstract class BaseBeanEditorDialog extends JDialog implements PropertyCh
 
 /* 
 $Log: BaseBeanEditorDialog.java,v $
+Revision 1.4  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.3  2006/04/18 23:25:44  nw
 merged asr development.
 

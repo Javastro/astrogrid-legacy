@@ -1,4 +1,4 @@
-/*$Id: SingleInstanceListener.java,v 1.4 2006/06/27 19:18:32 nw Exp $
+/*$Id: SingleInstanceListener.java,v 1.5 2007/01/29 11:11:36 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,7 @@ import org.astrogrid.desktop.framework.ReflectionHelper;
  * implementation of the single instance listener interface
  * - used in jnlp. If running under webstart, will attempt to register as a handler.
  * @future extend to be an open-file handler too.
- * @author Noel Winstanley nw@jb.man.ac.uk 21-Mar-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Mar-2006
  *
  */
 public class SingleInstanceListener implements InvocationHandler {
@@ -78,6 +78,9 @@ public class SingleInstanceListener implements InvocationHandler {
 
 /* 
 $Log: SingleInstanceListener.java,v $
+Revision 1.5  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.4  2006/06/27 19:18:32  nw
 adjusted todo tags.
 

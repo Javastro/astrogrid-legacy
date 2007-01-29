@@ -1,4 +1,4 @@
-/*$Id: MessageContainerImpl.java,v 1.4 2006/06/15 09:48:10 nw Exp $
+/*$Id: MessageContainerImpl.java,v 1.5 2007/01/29 11:11:35 nw Exp $
  * Created on 07-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.MessageContainer
 
 /**
  * implementation of the message data object
- * @author Noel Winstanley nw@jb.man.ac.uk 07-Nov-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 07-Nov-2005
  *
  */
 public class MessageContainerImpl implements Serializable, MessageContainer{
@@ -100,6 +100,9 @@ public class MessageContainerImpl implements Serializable, MessageContainer{
 
 /* 
 $Log: MessageContainerImpl.java,v $
+Revision 1.5  2007/01/29 11:11:35  nw
+updated contact details.
+
 Revision 1.4  2006/06/15 09:48:10  nw
 improvements coming from unit testing
 

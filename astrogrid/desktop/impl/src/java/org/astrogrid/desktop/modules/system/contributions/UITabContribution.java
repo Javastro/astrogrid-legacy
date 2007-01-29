@@ -1,4 +1,4 @@
-/*$Id: UITabContribution.java,v 1.7 2007/01/23 11:50:50 nw Exp $
+/*$Id: UITabContribution.java,v 1.8 2007/01/29 11:11:37 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,7 @@ import com.l2fprod.common.swing.JButtonBar;
 import com.l2fprod.common.swing.plaf.blue.BlueishButtonBarUI;
 /**
  * ui contribution that is a tab in the main window
- * @author Noel Winstanley nw@jb.man.ac.uk 21-Mar-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Mar-2006
  *
  */
 public class UITabContribution extends JButtonBar implements UIStructureContribution, PropertyChangeListener {
@@ -140,6 +140,9 @@ public class UITabContribution extends JButtonBar implements UIStructureContribu
 
 /* 
 $Log: UITabContribution.java,v $
+Revision 1.8  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.7  2007/01/23 11:50:50  nw
 preferences integration.
 

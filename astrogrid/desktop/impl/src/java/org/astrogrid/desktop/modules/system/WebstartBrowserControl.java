@@ -1,4 +1,4 @@
-/*$Id: WebstartBrowserControl.java,v 1.3 2006/11/09 12:08:33 nw Exp $
+/*$Id: WebstartBrowserControl.java,v 1.4 2007/01/29 11:11:36 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,7 @@ import org.astrogrid.desktop.framework.ReflectionHelper;
 /** Implementation of browsercontrol using the webstart additional APIs.
  * if it fails to get a service, will fallback to BrowserLauncherBrowserControl.
  * Likewise, will fallback if it fails to open the url.
- * @author Noel Winstanley nw@jb.man.ac.uk 01-Feb-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 01-Feb-2005
  *
  */
 public class WebstartBrowserControl extends BrowserLauncherBrowserControl implements BrowserControl {
@@ -81,6 +81,9 @@ public class WebstartBrowserControl extends BrowserLauncherBrowserControl implem
 
 /* 
 $Log: WebstartBrowserControl.java,v $
+Revision 1.4  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.3  2006/11/09 12:08:33  nw
 final set of changes for 2006.4.rc1
 

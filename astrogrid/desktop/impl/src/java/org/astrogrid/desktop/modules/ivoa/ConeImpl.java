@@ -1,4 +1,4 @@
-/*$Id: ConeImpl.java,v 1.1 2006/10/11 10:39:01 nw Exp $
+/*$Id: ConeImpl.java,v 1.2 2007/01/29 11:11:36 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 17-Oct-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Oct-2005
  *
  */
 public class ConeImpl extends DALImpl implements Cone {
@@ -81,6 +81,9 @@ public class ConeImpl extends DALImpl implements Cone {
 
 /* 
 $Log: ConeImpl.java,v $
+Revision 1.2  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.1  2006/10/11 10:39:01  nw
 enhanced dal support.
 

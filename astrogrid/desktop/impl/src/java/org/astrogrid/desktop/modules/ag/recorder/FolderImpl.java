@@ -1,4 +1,4 @@
-/*$Id: FolderImpl.java,v 1.6 2006/06/27 10:25:45 nw Exp $
+/*$Id: FolderImpl.java,v 1.7 2007/01/29 11:11:35 nw Exp $
  * Created on 07-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.Folder;
 
 /**
  * implementation of a folder - little more than a bean.
- * @author Noel Winstanley nw@jb.man.ac.uk 07-Nov-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 07-Nov-2005
  *
  */
 public class FolderImpl implements Serializable, Folder {
@@ -126,6 +126,9 @@ public class FolderImpl implements Serializable, Folder {
 
 /* 
 $Log: FolderImpl.java,v $
+Revision 1.7  2007/01/29 11:11:35  nw
+updated contact details.
+
 Revision 1.6  2006/06/27 10:25:45  nw
 findbugs tweaks
 

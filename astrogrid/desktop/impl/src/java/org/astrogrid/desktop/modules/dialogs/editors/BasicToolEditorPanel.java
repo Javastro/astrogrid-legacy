@@ -51,14 +51,14 @@ import org.astrogrid.workflow.beans.v1.Tool;
 
 /** A panel for editing tool documents (i.e. sets of input and output parameters)
  * 
- * @author Noel Winstanley nw@jb.man.ac.uk 13-May-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 13-May-2005
  */
 public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
     
     /**Editor for a cell that pops up resource chooser as needed. 
      * cribbed from 
      * http://java.sun.com/docs/books/tutorial/uiswing/components/table.html#editrender
-     * @author Noel Winstanley nw@jb.man.ac.uk 16-May-2005
+     * @author Noel Winstanley noel.winstanley@manchester.ac.uk 16-May-2005
      *
      */
 
@@ -813,6 +813,9 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
 
 /* 
 $Log: BasicToolEditorPanel.java,v $
+Revision 1.20  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.19  2006/08/15 10:22:06  nw
 migrated from old to new registry models.
 

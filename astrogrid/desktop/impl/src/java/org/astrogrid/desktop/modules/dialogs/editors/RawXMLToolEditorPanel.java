@@ -1,4 +1,4 @@
-/*$Id: RawXMLToolEditorPanel.java,v 1.3 2006/08/15 10:22:06 nw Exp $
+/*$Id: RawXMLToolEditorPanel.java,v 1.4 2007/01/29 11:11:37 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,7 +38,7 @@ import org.exolab.castor.xml.Marshaller;
 import org.w3c.dom.Document;
 
 /** Cheap n cheerful Tool Editor Panel that just displays raw xml.
- * @author Noel Winstanley nw@jb.man.ac.uk 08-Sep-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 08-Sep-2005
 
  */
 public class RawXMLToolEditorPanel extends AbstractToolEditorPanel {
@@ -180,6 +180,9 @@ public class RawXMLToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: RawXMLToolEditorPanel.java,v $
+Revision 1.4  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.3  2006/08/15 10:22:06  nw
 migrated from old to new registry models.
 

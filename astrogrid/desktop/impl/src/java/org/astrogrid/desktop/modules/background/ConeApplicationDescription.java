@@ -1,4 +1,4 @@
-/*$Id: ConeApplicationDescription.java,v 1.6 2006/09/05 12:46:41 nw Exp $
+/*$Id: ConeApplicationDescription.java,v 1.7 2007/01/29 11:11:36 nw Exp $
  * Created on 19-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,7 +42,7 @@ import org.astrogrid.io.Piper;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 /** implementation of a cone-search cea proxy.
- * @author Noel Winstanley nw@jb.man.ac.uk 19-Oct-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 19-Oct-2005
  *
  */
 public class ConeApplicationDescription extends AbstractApplicationDescription {
@@ -168,6 +168,9 @@ public class ConeApplicationDescription extends AbstractApplicationDescription {
 
 /* 
 $Log: ConeApplicationDescription.java,v $
+Revision 1.7  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.6  2006/09/05 12:46:41  nw
 VERB=3
 

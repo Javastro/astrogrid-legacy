@@ -1,4 +1,4 @@
-/*$Id: JobsInternal.java,v 1.2 2006/04/18 23:25:44 nw Exp $
+/*$Id: JobsInternal.java,v 1.3 2007/01/29 11:11:35 nw Exp $
  * Created on 06-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,7 @@ import org.astrogrid.acr.astrogrid.Jobs;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 06-Sep-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 06-Sep-2005
  *
  */
 public interface JobsInternal extends Jobs {
@@ -37,6 +37,9 @@ public interface JobsInternal extends Jobs {
 
 /* 
 $Log: JobsInternal.java,v $
+Revision 1.3  2007/01/29 11:11:35  nw
+updated contact details.
+
 Revision 1.2  2006/04/18 23:25:44  nw
 merged asr development.
 

@@ -1,4 +1,4 @@
-/*$Id: ToolModel.java,v 1.4 2006/08/15 10:14:23 nw Exp $
+/*$Id: ToolModel.java,v 1.5 2007/01/29 11:11:37 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,7 +27,7 @@ import org.astrogrid.workflow.beans.v1.Tool;
  * Works by reference - editos take references to the tool contained in this model, and then call the 
  * mutators on it to alter parameter values, etc. editors are responsible for firing events to 
  * notify other listners when an alteration to the tool is made
- * @author Noel Winstanley nw@jb.man.ac.uk 08-Sep-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 08-Sep-2005
  *
  */
 public class ToolModel {
@@ -200,6 +200,9 @@ public class ToolModel {
 
 /* 
 $Log: ToolModel.java,v $
+Revision 1.5  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.4  2006/08/15 10:14:23  nw
 migrated from old to new registry models.
 

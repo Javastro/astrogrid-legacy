@@ -30,7 +30,7 @@ public class HeadlessAstroRuntime {
 	 * @param l
 	 */
 	public static void configureLauncherAsASR(Launcher l) {
-		System.setProperty("asr.mode","true"); // "@todo unsure whether to use a different key here.  	
+		System.setProperty("asr.mode","true");
     	System.setProperty("system.ui.disabled","true");
     	System.setProperty("system.systray.disabled","true");
     	System.setProperty("system.help.disabled","true");

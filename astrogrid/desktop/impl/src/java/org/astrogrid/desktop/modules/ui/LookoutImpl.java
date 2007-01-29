@@ -1,4 +1,4 @@
-/*$Id: LookoutImpl.java,v 1.19 2007/01/12 13:20:05 nw Exp $
+/*$Id: LookoutImpl.java,v 1.20 2007/01/29 11:11:37 nw Exp $
  * Created on 26-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -65,7 +65,7 @@ import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 26-Oct-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 26-Oct-2005
  *   
  *
  */
@@ -523,6 +523,9 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
 /* 
  
 $Log: LookoutImpl.java,v $
+Revision 1.20  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.19  2007/01/12 13:20:05  nw
 made sure every ui app has a help menu.
 

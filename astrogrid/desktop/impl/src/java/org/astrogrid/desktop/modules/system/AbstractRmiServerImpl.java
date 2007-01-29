@@ -1,4 +1,4 @@
-/*$Id: AbstractRmiServerImpl.java,v 1.5 2006/06/27 10:38:34 nw Exp $
+/*$Id: AbstractRmiServerImpl.java,v 1.6 2007/01/29 11:11:36 nw Exp $
  * Created on 27-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,7 +26,7 @@ import org.astrogrid.acr.system.RmiServer;
 
 /** Abstract class for implementations of the RmiServer
  * implements the scanning bit.
- * @author Noel Winstanley nw@jb.man.ac.uk 27-Jul-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jul-2005
  *
  */
 public abstract class AbstractRmiServerImpl implements RmiServer{
@@ -160,6 +160,9 @@ public abstract class AbstractRmiServerImpl implements RmiServer{
 
 /* 
 $Log: AbstractRmiServerImpl.java,v $
+Revision 1.6  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.5  2006/06/27 10:38:34  nw
 findbugs tweaks
 

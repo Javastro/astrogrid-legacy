@@ -1,4 +1,4 @@
-/*$Id: MessagingInternal.java,v 1.3 2006/08/02 13:28:28 nw Exp $
+/*$Id: MessagingInternal.java,v 1.4 2007/01/29 11:11:34 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,7 @@ import org.astrogrid.acr.astrogrid.ExecutionMessage;
 
 
 /** Internal interface to a messaging component.
- * @author Noel Winstanley nw@jb.man.ac.uk 21-Oct-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Oct-2005
  *
  */
 public interface MessagingInternal {
@@ -85,6 +85,9 @@ public interface MessagingInternal {
 
 /* 
 $Log: MessagingInternal.java,v $
+Revision 1.4  2007/01/29 11:11:34  nw
+updated contact details.
+
 Revision 1.3  2006/08/02 13:28:28  nw
 doc fix
 

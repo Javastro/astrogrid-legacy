@@ -1,4 +1,4 @@
-/*$Id: BuildInprocessACR.java,v 1.6 2007/01/23 20:06:36 nw Exp $
+/*$Id: BuildInprocessACR.java,v 1.7 2007/01/29 11:11:35 nw Exp $
  * Created on 28-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,7 +27,7 @@ import org.astrogrid.desktop.hivemind.Launcher;
  *Name can't be changed now - as is referenced in the Finder class in the public api.
  *
  *will retun a instance of ACR - seems like the most sensible variant to provide for in-process finder.
- * @author Noel Winstanley nw@jb.man.ac.uk 28-Jul-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 28-Jul-2005
  *
  */
 public class BuildInprocessACR  {
@@ -42,9 +42,6 @@ public class BuildInprocessACR  {
         configureLauncher();
     }
 
-	/** configure the launcher as the particular variant of acr to use.
-	 * @todo - won't work for hub / asr variant.
-	 */
 	protected  void configureLauncher() {
 		
 		//AstroRuntime1.configureLauncherAsACR(launcher);

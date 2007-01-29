@@ -1,4 +1,4 @@
-/*$Id: XmlRpcServlet.java,v 1.6 2007/01/10 14:54:55 nw Exp $
+/*$Id: XmlRpcServlet.java,v 1.7 2007/01/29 11:11:37 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,7 +46,7 @@ import org.astrogrid.desktop.framework.ACRInternal;
 import org.astrogrid.desktop.framework.Module;
 import org.astrogrid.desktop.framework.ReflectionHelper;
 /** Implementation of full-featured XMLRPC server that exposes the ACR functions
- * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 31-Jan-2005
  *
  */
 public class XmlRpcServlet extends HttpServlet {
@@ -217,6 +217,9 @@ public class XmlRpcServlet extends HttpServlet {
 
 /* 
 $Log: XmlRpcServlet.java,v $
+Revision 1.7  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.6  2007/01/10 14:54:55  nw
 tidied.
 

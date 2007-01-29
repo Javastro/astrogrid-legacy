@@ -1,4 +1,4 @@
-/*$Id: PlasticHub.java,v 1.4 2006/10/11 10:34:34 nw Exp $
+/*$Id: PlasticHub.java,v 1.5 2007/01/29 11:11:35 nw Exp $
  * Created on 04-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid;
 import org.astrogrid.desktop.SplashWindow;
 
 /** Entry point for launching the minimal plastic hub
- * @author Noel Winstanley nw@jb.man.ac.uk 04-Jul-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 04-Jul-2005
  */
 public class PlasticHub {
 
@@ -36,6 +36,9 @@ public class PlasticHub {
 
 /* 
 $Log: PlasticHub.java,v $
+Revision 1.5  2007/01/29 11:11:35  nw
+updated contact details.
+
 Revision 1.4  2006/10/11 10:34:34  nw
 revamped all the splash screens.
 

@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.6 2007/01/23 11:48:14 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.7 2007/01/29 11:11:35 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -105,7 +105,7 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
 					// not expected to fail.
 					logger.error("Failed to open register link",x);
 				}
-				//@todo close the dialog.
+				//@future close the dialog?
         	}
         });
         
@@ -314,6 +314,9 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.7  2007/01/29 11:11:35  nw
+updated contact details.
+
 Revision 1.6  2007/01/23 11:48:14  nw
 minor.
 

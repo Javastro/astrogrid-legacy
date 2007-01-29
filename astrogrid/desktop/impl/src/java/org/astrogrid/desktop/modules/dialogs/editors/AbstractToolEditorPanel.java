@@ -1,4 +1,4 @@
-/*$Id: AbstractToolEditorPanel.java,v 1.4 2006/11/27 18:38:09 jl99 Exp $
+/*$Id: AbstractToolEditorPanel.java,v 1.5 2007/01/29 11:11:37 nw Exp $
  * Created on 06-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,7 @@ import org.astrogrid.workflow.beans.v1.Tool;
 
 /** Abstract implementation of a tool editor
  *  - provdes event notifcation mechanisms, etc.
- * @author Noel Winstanley nw@jb.man.ac.uk 06-Sep-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 06-Sep-2005
  *
  */
 public abstract class AbstractToolEditorPanel extends JPanel {
@@ -92,6 +92,9 @@ public abstract class AbstractToolEditorPanel extends JPanel {
 
 /* 
 $Log: AbstractToolEditorPanel.java,v $
+Revision 1.5  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.4  2006/11/27 18:38:09  jl99
 Merge of branch workbench-jl-2022
 

@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.12 2006/08/31 21:29:28 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.13 2007/01/29 11:11:36 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -73,7 +73,7 @@ import org.w3c.dom.ProcessingInstruction;
  * see RemoteProcessManagerImpl
  * periodically poll remote cea servers, injjct messages into the system
  *  - temporary, until cea actually calls back into the workbench.
- * @author Noel Winstanley nw@jb.man.ac.uk 11-Nov-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 11-Nov-2005
  *
  */
 public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener {
@@ -522,6 +522,9 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.13  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.12  2006/08/31 21:29:28  nw
 doc fix.
 

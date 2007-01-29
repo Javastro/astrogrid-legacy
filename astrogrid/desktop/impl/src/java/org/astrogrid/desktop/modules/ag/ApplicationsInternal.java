@@ -1,4 +1,4 @@
-/*$Id: ApplicationsInternal.java,v 1.5 2006/08/15 10:15:59 nw Exp $
+/*$Id: ApplicationsInternal.java,v 1.6 2007/01/29 11:11:35 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,7 @@ import org.astrogrid.workflow.beans.v1.Tool;
 /** Internal interface to further applications operations.
  * 
  * move stuff here that is too low-level for public interface, or which can't be easily remoted.
- * @author Noel Winstanley nw@jb.man.ac.uk 04-Aug-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 04-Aug-2005
  * 
  */
 public interface ApplicationsInternal extends Applications {
@@ -53,6 +53,9 @@ public interface ApplicationsInternal extends Applications {
 
 /* 
 $Log: ApplicationsInternal.java,v $
+Revision 1.6  2007/01/29 11:11:35  nw
+updated contact details.
+
 Revision 1.5  2006/08/15 10:15:59  nw
 migrated from old to new registry models.
 

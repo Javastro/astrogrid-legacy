@@ -1,4 +1,4 @@
-/*$Id: Xml2XhtmlTransformer.java,v 1.6 2006/06/15 09:58:18 nw Exp $
+/*$Id: Xml2XhtmlTransformer.java,v 1.7 2007/01/29 11:11:36 nw Exp $
  * Created on 11-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
 /** Transforms a result by looking through a set of stylesheets.
  * input is expected to be xml, output is expected to be xhtml
  * 
- * @author Noel Winstanley nw@jb.man.ac.uk 11-May-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 11-May-2005
  */
 public class Xml2XhtmlTransformer implements Transformer{
     /**
@@ -88,6 +88,9 @@ public class Xml2XhtmlTransformer implements Transformer{
 
 /* 
 $Log: Xml2XhtmlTransformer.java,v $
+Revision 1.7  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.6  2006/06/15 09:58:18  nw
 improvements coming from unit testing
 

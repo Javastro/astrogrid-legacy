@@ -1,4 +1,4 @@
-/*$Id: RegisterConverters.java,v 1.3 2006/06/15 10:07:18 nw Exp $
+/*$Id: RegisterConverters.java,v 1.4 2007/01/29 11:11:36 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import org.astrogrid.desktop.modules.system.contributions.ConverterContribution;
  * startup component that  registers all the result converters.
  * 
  * 
- * @author Noel Winstanley nw@jb.man.ac.uk 22-Mar-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 22-Mar-2005
  *  
  */
 public class RegisterConverters implements Runnable {
@@ -57,6 +57,9 @@ public class RegisterConverters implements Runnable {
 
 /*
  * $Log: RegisterConverters.java,v $
+ * Revision 1.4  2007/01/29 11:11:36  nw
+ * updated contact details.
+ *
  * Revision 1.3  2006/06/15 10:07:18  nw
  * improvements coming from unit testingadded new convertors.
  *

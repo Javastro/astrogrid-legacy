@@ -1,4 +1,4 @@
-/*$Id: ManagingFileStoreExecutionHistory.java,v 1.3 2006/04/18 23:25:43 nw Exp $
+/*$Id: ManagingFileStoreExecutionHistory.java,v 1.4 2007/01/29 11:11:36 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import org.astrogrid.applications.manager.persist.FileStoreExecutionHistory;
  * bit nasrty - original class isn't easy to extend, so have had to reverse-engineer - making it a little brittle
  * to change. 
  * 
- * @author Noel Winstanley nw@jb.man.ac.uk 11-Nov-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 11-Nov-2005
  *
  */
 public class ManagingFileStoreExecutionHistory extends FileStoreExecutionHistory {
@@ -79,6 +79,9 @@ public class ManagingFileStoreExecutionHistory extends FileStoreExecutionHistory
 
 /* 
 $Log: ManagingFileStoreExecutionHistory.java,v $
+Revision 1.4  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.3  2006/04/18 23:25:43  nw
 merged asr development.
 

@@ -1,4 +1,4 @@
-/*$Id: MessagingImpl.java,v 1.4 2006/06/15 09:45:21 nw Exp $
+/*$Id: MessagingImpl.java,v 1.5 2007/01/29 11:11:35 nw Exp $
  * Created on 28-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,7 +26,7 @@ import EDU.oswego.cs.dl.util.concurrent.QueuedExecutor;
 /** Implementation of the messaging component.
  * main thing it has to consider is to allow various threads to inject messages without blocking or contention.
  * and then these messages are passed to all event processors - which, again, are executed in a concurrency-sensitive manner.
- * @author Noel Winstanley nw@jb.man.ac.uk 28-Mar-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 28-Mar-2006
  *
  */
 public class MessagingImpl implements MessagingInternal{
@@ -98,6 +98,9 @@ public class MessagingImpl implements MessagingInternal{
 
 /* 
 $Log: MessagingImpl.java,v $
+Revision 1.5  2007/01/29 11:11:35  nw
+updated contact details.
+
 Revision 1.4  2006/06/15 09:45:21  nw
 improvements coming from unit testing
 

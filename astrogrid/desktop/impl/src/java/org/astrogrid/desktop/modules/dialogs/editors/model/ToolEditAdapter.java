@@ -1,4 +1,4 @@
-/*$Id: ToolEditAdapter.java,v 1.1 2005/09/12 15:21:16 nw Exp $
+/*$Id: ToolEditAdapter.java,v 1.2 2007/01/29 11:11:37 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,7 @@
 package org.astrogrid.desktop.modules.dialogs.editors.model;
 
 /** Adapter for a tool edit listener - just provides empty implememntations of all methods
- * @author Noel Winstanley nw@jb.man.ac.uk 08-Sep-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 08-Sep-2005
  *
  */
 public class ToolEditAdapter implements ToolEditListener {
@@ -64,6 +64,9 @@ public class ToolEditAdapter implements ToolEditListener {
 
 /* 
 $Log: ToolEditAdapter.java,v $
+Revision 1.2  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.1  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
  

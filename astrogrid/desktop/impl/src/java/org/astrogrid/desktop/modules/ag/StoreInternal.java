@@ -1,4 +1,4 @@
-/*$Id: StoreInternal.java,v 1.2 2005/11/24 01:13:24 nw Exp $
+/*$Id: StoreInternal.java,v 1.3 2007/01/29 11:11:35 nw Exp $
  * Created on 25-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.desktop.modules.ag;
 import jdbm.RecordManager;
 
 /** Internal-only interface to a store component - very low-level - hence internal only.
- * @author Noel Winstanley nw@jb.man.ac.uk 25-Oct-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 25-Oct-2005
  *
  */
 public interface StoreInternal {
@@ -26,6 +26,9 @@ public interface StoreInternal {
 
 /* 
  $Log: StoreInternal.java,v $
+ Revision 1.3  2007/01/29 11:11:35  nw
+ updated contact details.
+
  Revision 1.2  2005/11/24 01:13:24  nw
  merged in final changes from release branch.
 

@@ -16,7 +16,7 @@ import org.astrogrid.store.Ivorn;
 /** Implementation of ScriptEnvironment that enforces login --
  * a bit crap, but will have to do until we have proper security.
  * @todo move to separate subprtoject
- * @author Noel Winstanley nw@jb.man.ac.uk 20-Dec-2004
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 20-Dec-2004
  *
  */
 public class LoginScriptEnvironment implements ScriptEnvironment {

@@ -1,4 +1,4 @@
-/*$Id: TasksInternal.java,v 1.4 2006/04/18 23:25:43 nw Exp $
+/*$Id: TasksInternal.java,v 1.5 2007/01/29 11:11:36 nw Exp $
  * Created on 19-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.desktop.modules.background;
 import org.astrogrid.applications.manager.QueryService;
 
 /**low-level interface into a minimalistic cea server
- * @author Noel Winstanley nw@jb.man.ac.uk 19-Oct-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 19-Oct-2005
  *
  */
 public interface TasksInternal {
@@ -27,6 +27,9 @@ public interface TasksInternal {
 
 /* 
 $Log: TasksInternal.java,v $
+Revision 1.5  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.4  2006/04/18 23:25:43  nw
 merged asr development.
 

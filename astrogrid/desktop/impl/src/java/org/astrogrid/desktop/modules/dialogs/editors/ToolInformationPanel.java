@@ -1,4 +1,4 @@
-/*$Id: ToolInformationPanel.java,v 1.6 2006/08/15 10:22:06 nw Exp $
+/*$Id: ToolInformationPanel.java,v 1.7 2007/01/29 11:11:37 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,7 +26,7 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 /** an 'editor' that just displays information about the tool - doesn't permit any editing.
- * @author Noel Winstanley nw@jb.man.ac.uk 08-Sep-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 08-Sep-2005
  *
  */
 public class ToolInformationPanel extends AbstractToolEditorPanel {
@@ -94,6 +94,9 @@ public class ToolInformationPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: ToolInformationPanel.java,v $
+Revision 1.7  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.6  2006/08/15 10:22:06  nw
 migrated from old to new registry models.
 

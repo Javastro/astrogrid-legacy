@@ -1,4 +1,4 @@
-/*$Id: SpringLayoutHelper.java,v 1.1 2006/05/17 23:59:06 nw Exp $
+/*$Id: SpringLayoutHelper.java,v 1.2 2007/01/29 11:11:37 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /** Class of helper code for phil's spring layout stuff
- * @author Noel Winstanley nw@jb.man.ac.uk 08-Sep-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 08-Sep-2005
  *
  */
 public class SpringLayoutHelper {
@@ -120,6 +120,9 @@ public class SpringLayoutHelper {
 
 /* 
 $Log: SpringLayoutHelper.java,v $
+Revision 1.2  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.1  2006/05/17 23:59:06  nw
 documentaiton, and tweaks.
 

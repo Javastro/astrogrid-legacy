@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManagerImpl.java,v 1.9 2007/01/09 16:20:59 nw Exp $
+/*$Id: RemoteProcessManagerImpl.java,v 1.10 2007/01/29 11:11:35 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -52,7 +52,7 @@ import org.w3c.dom.Document;
  *  - handles running cea / jes / whatever else.
  * 
  *  - kind of a central clearing house - delegates to appropriate strategy based on uri / document type.
- * @author Noel Winstanley nw@jb.man.ac.uk 08-Nov-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 08-Nov-2005
  *
  */
 public class RemoteProcessManagerImpl implements RemoteProcessManager, RecorderListener{
@@ -347,6 +347,9 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, RecorderL
 
 /* 
 $Log: RemoteProcessManagerImpl.java,v $
+Revision 1.10  2007/01/29 11:11:35  nw
+updated contact details.
+
 Revision 1.9  2007/01/09 16:20:59  nw
 use linkedhashmap instead of map
 

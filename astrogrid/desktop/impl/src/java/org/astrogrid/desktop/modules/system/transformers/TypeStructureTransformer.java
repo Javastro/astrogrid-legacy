@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformer.java,v 1.10 2006/10/11 10:39:41 nw Exp $
+/*$Id: TypeStructureTransformer.java,v 1.11 2007/01/29 11:11:36 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,7 +33,7 @@ import org.apache.commons.collections.Transformer;
 
 /** implem,entation of transformer that will render almost any object tree down to types suitable for xmlrpc lib.
  * Output should just be primitives,  maps, vectors.
- * @author Noel Winstanley nw@jb.man.ac.uk 21-Feb-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Feb-2005
  *
  */
 public class TypeStructureTransformer implements Transformer {
@@ -185,6 +185,9 @@ public class TypeStructureTransformer implements Transformer {
 
 /* 
 $Log: TypeStructureTransformer.java,v $
+Revision 1.11  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.10  2006/10/11 10:39:41  nw
 made a start on handling nulls.
 

@@ -1,4 +1,4 @@
-/*$Id: ScheduledTask.java,v 1.4 2007/01/09 16:24:50 nw Exp $
+/*$Id: ScheduledTask.java,v 1.5 2007/01/29 11:11:36 nw Exp $
  * Created on 05-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,7 @@ import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 /** interface to a schedulable task.
  * basically iit's a factory for background workers, and a period. The factory is called 
  * each 'period' <b>milliseconds</b>, and the new worker then executed.
- * @author Noel Winstanley nw@jb.man.ac.uk 05-Nov-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 05-Nov-2005
  *
  */
 public interface ScheduledTask{
@@ -28,6 +28,9 @@ public interface ScheduledTask{
 
 /* 
 $Log: ScheduledTask.java,v $
+Revision 1.5  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.4  2007/01/09 16:24:50  nw
 doc fix.
 

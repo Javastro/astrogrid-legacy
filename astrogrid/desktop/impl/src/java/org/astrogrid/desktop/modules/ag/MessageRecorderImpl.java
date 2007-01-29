@@ -1,4 +1,4 @@
-/*$Id: MessageRecorderImpl.java,v 1.7 2006/08/15 10:16:24 nw Exp $
+/*$Id: MessageRecorderImpl.java,v 1.8 2007/01/29 11:11:35 nw Exp $
  * Created on 25-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,7 +46,7 @@ import org.astrogrid.desktop.modules.ag.recorder.StatusChangeExecutionMessage;
  * Collates and records them to a persistent store.
  * datastructures used are in the 'recorder' sub-package. this class defines the message listeners
  * that receive the messages, and the public api.
- * @author Noel Winstanley nw@jb.man.ac.uk 25-Oct-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 25-Oct-2005
  * @todo implement against new registry.
  */
 public class MessageRecorderImpl implements UserLoginListener,MessageRecorderInternal{
@@ -282,6 +282,9 @@ public class MessageRecorderImpl implements UserLoginListener,MessageRecorderInt
 
 /* 
 $Log: MessageRecorderImpl.java,v $
+Revision 1.8  2007/01/29 11:11:35  nw
+updated contact details.
+
 Revision 1.7  2006/08/15 10:16:24  nw
 migrated from old to new registry models.
 

@@ -1,4 +1,4 @@
-/*$Id: SchedulerInternal.java,v 1.4 2006/05/26 15:19:31 nw Exp $
+/*$Id: SchedulerInternal.java,v 1.5 2007/01/29 11:11:37 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import org.astrogrid.desktop.modules.ui.BackgroundWorker;
  * 
  * can also be used as a single-threaded background worker.
  * @todo not used in this module - maybe move to background module
- * @author Noel Winstanley nw@jb.man.ac.uk 21-Oct-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Oct-2005
  *
  */
 public interface SchedulerInternal {
@@ -28,6 +28,9 @@ public interface SchedulerInternal {
 
 /* 
 $Log: SchedulerInternal.java,v $
+Revision 1.5  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.4  2006/05/26 15:19:31  nw
 reworked scheduled tasks,
 

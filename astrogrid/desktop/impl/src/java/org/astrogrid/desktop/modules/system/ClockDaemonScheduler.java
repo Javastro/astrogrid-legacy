@@ -1,4 +1,4 @@
-/*$Id: ClockDaemonScheduler.java,v 1.5 2006/06/15 09:53:16 nw Exp $
+/*$Id: ClockDaemonScheduler.java,v 1.6 2007/01/29 11:11:37 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,7 +26,7 @@ import EDU.oswego.cs.dl.util.concurrent.ThreadFactory;
  * 
  * Just creatres a new backgroundWorker for each task every period seconds..
  * takes a list of services to schedule.
- * @author Noel Winstanley nw@jb.man.ac.uk 21-Oct-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Oct-2005
  *
  */
 public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListener{
@@ -97,6 +97,9 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
 
 /* 
 $Log: ClockDaemonScheduler.java,v $
+Revision 1.6  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.5  2006/06/15 09:53:16  nw
 improvements coming from unit testing
 

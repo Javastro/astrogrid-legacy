@@ -1,4 +1,4 @@
-/*$Id: ManagingExecutionController.java,v 1.1 2005/11/11 17:53:27 nw Exp $
+/*$Id: ManagingExecutionController.java,v 1.2 2007/01/29 11:11:36 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.desktop.modules.background;
 import org.astrogrid.applications.manager.ExecutionController;
 
 /** extension to standard executioin controller, with more management functions.
- * @author Noel Winstanley nw@jb.man.ac.uk 11-Nov-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 11-Nov-2005
  *
  */
 public interface ManagingExecutionController extends ExecutionController {
@@ -28,6 +28,9 @@ public interface ManagingExecutionController extends ExecutionController {
 
 /* 
 $Log: ManagingExecutionController.java,v $
+Revision 1.2  2007/01/29 11:11:36  nw
+updated contact details.
+
 Revision 1.1  2005/11/11 17:53:27  nw
 added cea polling to lookout.
  

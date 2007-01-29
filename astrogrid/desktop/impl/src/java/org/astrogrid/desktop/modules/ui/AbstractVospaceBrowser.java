@@ -1,4 +1,4 @@
-/*$Id: AbstractVospaceBrowser.java,v 1.10 2006/11/09 12:08:33 nw Exp $
+/*$Id: AbstractVospaceBrowser.java,v 1.11 2007/01/29 11:11:37 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -52,7 +52,7 @@ import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 import org.astrogrid.filemanager.client.FileManagerNode;
 
 /** Abstract class for displays of myspace - in file chooser dialogues and myspace browser.
- * @author Noel Winstanley nw@jb.man.ac.uk 21-Apr-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Apr-2005
  *  @todo make tree expansion behave same as clicking on name - both show child folders, and contents.
  */
 public abstract class AbstractVospaceBrowser extends UIComponentImpl implements UserLoginListener {
@@ -278,7 +278,7 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
      * require calls to the server under-the-hood to retreive the next layer of
      * nodes, etc.
      * 
-     * @author Noel Winstanley nw@jb.man.ac.uk 14-Apr-2005
+     * @author Noel Winstanley noel.winstanley@manchester.ac.uk 14-Apr-2005
      *  
      */
     protected class FolderTreeModel extends DefaultTreeModel {
@@ -641,6 +641,9 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
 
 /*
  * $Log: AbstractVospaceBrowser.java,v $
+ * Revision 1.11  2007/01/29 11:11:37  nw
+ * updated contact details.
+ *
  * Revision 1.10  2006/11/09 12:08:33  nw
  * final set of changes for 2006.4.rc1
  *

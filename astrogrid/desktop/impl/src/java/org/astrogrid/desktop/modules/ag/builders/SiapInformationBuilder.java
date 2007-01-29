@@ -1,4 +1,4 @@
-/*$Id: SiapInformationBuilder.java,v 1.5 2006/08/02 13:29:19 nw Exp $
+/*$Id: SiapInformationBuilder.java,v 1.6 2007/01/29 11:11:37 nw Exp $
  * Created on 18-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 18-Oct-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 18-Oct-2005
  * * @deprecated part of the obsolete registry infrastructure
  */
 public class SiapInformationBuilder extends ResourceInformationBuilder {
@@ -169,6 +169,9 @@ public class SiapInformationBuilder extends ResourceInformationBuilder {
 
 /* 
 $Log: SiapInformationBuilder.java,v $
+Revision 1.6  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.5  2006/08/02 13:29:19  nw
 marked all as obsolete.
 

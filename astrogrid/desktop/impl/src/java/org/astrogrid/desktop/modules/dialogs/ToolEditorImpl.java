@@ -1,4 +1,4 @@
-/*$Id: ToolEditorImpl.java,v 1.12 2007/01/10 19:12:16 nw Exp $
+/*$Id: ToolEditorImpl.java,v 1.13 2007/01/29 11:11:37 nw Exp $
  * Created on 16-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,7 +40,7 @@ import org.w3c.dom.Document;
 
 /** Implementation of the ToolEditor component.
  * Displays a {@link org.astrogrid.desktop.modules.dialogs.editors.BasicToolEditorPanel} in a dialogue 
- *  @author Noel Winstanley nw@jb.man.ac.uk 16-May-2005
+ *  @author Noel Winstanley noel.winstanley@manchester.ac.uk 16-May-2005
  *
  */
 public class ToolEditorImpl implements ToolEditorInternal {
@@ -199,6 +199,9 @@ public class ToolEditorImpl implements ToolEditorInternal {
 
 /* 
 $Log: ToolEditorImpl.java,v $
+Revision 1.13  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.12  2007/01/10 19:12:16  nw
 integrated with preferences.
 

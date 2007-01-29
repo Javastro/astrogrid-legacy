@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.10 2007/01/09 16:27:35 nw Exp $
+/*$Id: Launcher.java,v 1.11 2007/01/29 11:11:37 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,7 +42,7 @@ import org.apache.hivemind.util.URLResource;
  *If using system properties to configure the assembled system, these should be 
  *loaded before calling <tt>run()</tt>
  * 
- * @author Noel Winstanley nw@jb.man.ac.uk 15-Mar-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 15-Mar-2006
  *
  */
 public class Launcher implements Runnable {
@@ -164,6 +164,9 @@ public class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.11  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.10  2007/01/09 16:27:35  nw
 uses protocol handlers instead of overriding the resolver.
 

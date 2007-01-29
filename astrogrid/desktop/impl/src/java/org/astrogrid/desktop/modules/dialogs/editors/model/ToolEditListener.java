@@ -1,4 +1,4 @@
-/*$Id: ToolEditListener.java,v 1.1 2005/09/12 15:21:16 nw Exp $
+/*$Id: ToolEditListener.java,v 1.2 2007/01/29 11:11:37 nw Exp $
  * Created on 06-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.desktop.modules.dialogs.editors.model;
 import java.util.EventListener;
 
 /** listener interface, for notification of tool edit events
- * @author Noel Winstanley nw@jb.man.ac.uk 06-Sep-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 06-Sep-2005
  *
  */
 public interface ToolEditListener extends EventListener {
@@ -36,6 +36,9 @@ public interface ToolEditListener extends EventListener {
 
 /* 
 $Log: ToolEditListener.java,v $
+Revision 1.2  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.1  2005/09/12 15:21:16  nw
 reworked application launcher. starting on workflow builder
  

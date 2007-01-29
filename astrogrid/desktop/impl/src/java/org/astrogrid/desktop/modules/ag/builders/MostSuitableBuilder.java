@@ -1,4 +1,4 @@
-/*$Id: MostSuitableBuilder.java,v 1.8 2006/08/31 21:29:14 nw Exp $
+/*$Id: MostSuitableBuilder.java,v 1.9 2007/01/29 11:11:37 nw Exp $
  * Created on 07-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.w3c.dom.Element;
 
 /** aggregating builder which chooses the most suitable builder from a set.
- * @author Noel Winstanley nw@jb.man.ac.uk 07-Sep-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 07-Sep-2005
  * * @deprecated part of the obsolete registry infrastructure
  */
 public class MostSuitableBuilder implements InformationBuilder {
@@ -74,6 +74,9 @@ public class MostSuitableBuilder implements InformationBuilder {
 
 /* 
 $Log: MostSuitableBuilder.java,v $
+Revision 1.9  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.8  2006/08/31 21:29:14  nw
 doc fix.
 

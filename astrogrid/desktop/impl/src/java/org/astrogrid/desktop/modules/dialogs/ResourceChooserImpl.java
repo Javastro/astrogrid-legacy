@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserImpl.java,v 1.10 2006/11/09 12:08:33 nw Exp $
+/*$Id: ResourceChooserImpl.java,v 1.11 2007/01/29 11:11:37 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,11 +23,21 @@ import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 
 /** Implementation of the ResourceChooser component
- * @author Noel Winstanley nw@jb.man.ac.uk 21-Apr-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Apr-2005
  * wrapper component around the dialog to publish the chooser methods 
  */
 public class ResourceChooserImpl implements ResourceChooserInternal {
  
+	/**
+	 * @todo remove old vospace resource chooser.
+	 * @param vos myspace component 
+	 * @param sendTo list of send-to actions.
+	 * @param conf configurationn object - only required by old vospace
+	 * @param help help server
+	 * @param ui main ui component - only required by old vospace.
+	 * @param comm community
+	 * @param useStil if true, use new stil-based dialogue (the default)
+	 */
     public ResourceChooserImpl(MyspaceInternal vos,SendToMenu sendTo,Configuration conf,HelpServerInternal help,UIInternal ui, Community comm, boolean useStil) {
     	if (useStil) {
     		dialog = new FileStoreChooserResourceChooserDialog(vos,comm);
@@ -41,7 +51,6 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
          AbstractResourceChooserDialog d = getDialog();
         d.setTitle(title);
         d.setEnableMySpacePanel(enableMySpace);
-       // dialog.setUri(null);
         d.setLocationRelativeTo(null);
         d.setVisible(true);
         d.requestFocus();
@@ -55,25 +64,26 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
         return chooseResource(title,enableMySpace);        
     }
     
+/////
+
     public synchronized URI chooseResourceWithParent(String title,boolean enableMySpace,boolean enableLocalFile, boolean enableURI,Component comp) {
-        return chooseResourceWithParent(title,enableMySpace,enableLocalFile,false,enableURI,comp);
-    }    
-    
-    public synchronized URI chooseResourceWithParent(String title,boolean enableMySpace,boolean enableLocalFile, boolean enableDirectorySelection, boolean enableURI,Component comp) {
-                
-        getDialog().setLocationRelativeTo(comp);
+    	getDialog().setLocationRelativeTo(comp);
         getDialog().setTitle(title);
         getDialog().setEnableLocalFilePanel(enableLocalFile);
         getDialog().setEnableURIPanel(enableURI);
         getDialog().setEnableMySpacePanel(enableMySpace);
-        getDialog().setEnabledDirectorySelection(enableDirectorySelection);
-        //dialog.setUri(null);
+
         getDialog().setVisible(true);
         getDialog().requestFocus();
         getDialog().toFront();
-        return getDialog().getUri();    
-    }
+        return getDialog().getUri(); 
+    }    
 
+    public synchronized URI chooseDirectoryWithParent(String title,boolean enableMySpace,boolean enableLocalFile, boolean enableURI,Component comp) {
+        getDialog().setChooseDirectories(true);
+        return chooseResourceWithParent(title, enableMySpace, enableLocalFile, enableURI, comp);
+    }
+    
 	/**
 	 * @return the dialog
 	 */
@@ -86,6 +96,9 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
 
 /* 
 $Log: ResourceChooserImpl.java,v $
+Revision 1.11  2007/01/29 11:11:37  nw
+updated contact details.
+
 Revision 1.10  2006/11/09 12:08:33  nw
 final set of changes for 2006.4.rc1
 

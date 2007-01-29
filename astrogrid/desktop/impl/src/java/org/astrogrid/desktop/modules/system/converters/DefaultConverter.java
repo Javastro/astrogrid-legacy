@@ -1,4 +1,4 @@
-/*$Id: DefaultConverter.java,v 1.5 2006/06/15 10:07:18 nw Exp $
+/*$Id: DefaultConverter.java,v 1.6 2007/01/29 11:11:35 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /** Default implementation of the converter interface - uses convertUtils, and previously registered convertors.
- * @author Noel Winstanley nw@jb.man.ac.uk 01-Feb-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 01-Feb-2005
  *
  */
 public class DefaultConverter implements Converter {
@@ -56,6 +56,9 @@ public class DefaultConverter implements Converter {
 
 /* 
 $Log: DefaultConverter.java,v $
+Revision 1.6  2007/01/29 11:11:35  nw
+updated contact details.
+
 Revision 1.5  2006/06/15 10:07:18  nw
 improvements coming from unit testingadded new convertors.
 
