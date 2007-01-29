@@ -1,4 +1,4 @@
-/*$Id: ARTestSetup.java,v 1.2 2007/01/10 14:57:10 nw Exp $
+/*$Id: ARTestSetup.java,v 1.3 2007/01/29 10:37:59 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,13 +10,15 @@
 **/
 package org.astrogrid.desktop;
 
+import java.io.InputStream;
+import java.util.Properties;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.config.PropertyNotFoundException;
 import org.astrogrid.config.SimpleConfig;
 
 /** sets up a fixture of a running in-process workbench,
@@ -27,7 +29,7 @@ import org.astrogrid.config.SimpleConfig;
  *
  * This allows instances of this class to be nested in the test hierarchy. -
  * enabling tests to be run singularly or in bulk without major code gymnastics.
- * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 25-Jul-2005
  *
  */
 public class ARTestSetup extends TestSetup{
@@ -85,14 +87,15 @@ public class ARTestSetup extends TestSetup{
     		if (! comm.isLoggedIn()) {	    		
     			logger.info("Logging in");            
     			try {
-    				// these properties are read from test/java/astrogrid.properties
-    				// @todo verify this works.
-    				String username = SimpleConfig.getProperty("ag.test.username");
-    				String password = SimpleConfig.getProperty("ag.test.password");
-    				String community = SimpleConfig.getProperty("ag.test.community");
+    				Properties props = new Properties();
+    				InputStream is = ARTestSetup.class.getResourceAsStream("test-user.properties");
+    				props.load(is);
+    				String username = props.getProperty("ag.test.username");
+    				String password = props.getProperty("ag.test.password");
+    				String community = props.getProperty("ag.test.community");
     				comm.login(username,password,community);
     				logger.info("Logged in as " + username + " / " + community);
-    			} catch (PropertyNotFoundException e) { // try ui login.
+    			} catch (Throwable e) { // try ui login.
     				logger.warn("Failed to read login settings from astrogrid.properties - prompting using GUI");
     				comm.guiLogin();
     			}
@@ -111,7 +114,7 @@ public class ARTestSetup extends TestSetup{
     		logger.info("Creating AR fixture");			
     		System.setProperty("builtin.shutdown.exit", "false");
 			fixture = new BuildInprocessWorkbench();
-			//@todo add furtyher config in here - e.g. different java.util.properties base class,
+			//if needed add furtyher config in here - e.g. different java.util.properties base class,
 			// custom system properties, etc.
 			fixture.start();
     		logger.info("AR Fixture started");
@@ -131,6 +134,9 @@ public class ARTestSetup extends TestSetup{
 
 /* 
 $Log: ARTestSetup.java,v $
+Revision 1.3  2007/01/29 10:37:59  nw
+altered how testsetup finds login settings.
+
 Revision 1.2  2007/01/10 14:57:10  nw
 organized imports.
 
