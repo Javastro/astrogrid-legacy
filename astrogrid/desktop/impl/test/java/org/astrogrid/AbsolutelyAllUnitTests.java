@@ -7,6 +7,7 @@ package org.astrogrid;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.astrogrid.desktop.modules.dialogs.file.AllFileDialogUnitTests;
 import org.astrogrid.desktop.modules.votech.AllVotechUnitTests;
 
 /** Runs all unit tests - handy hook for within eclipse
@@ -36,6 +37,7 @@ public class AbsolutelyAllUnitTests {
 		suite.addTest(org.astrogrid.desktop.modules.dialogs.registry.AllRegistryDialogUnitTests.suite());
 		suite.addTest(org.astrogrid.desktop.protocol.AllProtocolUnitTests.suite());
 		suite.addTest(AllVotechUnitTests.suite());
+		suite.addTest(AllFileDialogUnitTests.suite());
 		return suite;
 	}
 
