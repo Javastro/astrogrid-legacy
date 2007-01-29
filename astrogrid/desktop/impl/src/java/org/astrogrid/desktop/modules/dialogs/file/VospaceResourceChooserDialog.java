@@ -1,4 +1,4 @@
-/*$Id: VospaceResourceChooserDialog.java,v 1.1 2006/11/09 12:08:33 nw Exp $
+/*$Id: VospaceResourceChooserDialog.java,v 1.2 2007/01/29 10:52:19 nw Exp $
  * Created on 15-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,6 @@ import java.net.URISyntaxException;
 
 import javax.swing.Action;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -47,8 +46,8 @@ import org.astrogrid.desktop.modules.ui.AbstractVospaceBrowser;
 import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 import org.astrogrid.filemanager.client.FileManagerNode;
 /** Dialog that allows the user to choose a resource in file:// or ivo:// space.
- * @fixme implementation is pretty horrible at the moment - quite unusable. replace with 'file browser' dialog from topcat - much better design.
- * @author Noel Winstanley nw@jb.man.ac.uk 15-Apr-2005
+ @deprecated use {@link FileStoreChooserResourceChooserDialog} instead.
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 15-Apr-2005
 
  */
 public class VospaceResourceChooserDialog extends AbstractResourceChooserDialog implements PropertyChangeListener{
@@ -168,7 +167,7 @@ public class VospaceResourceChooserDialog extends AbstractResourceChooserDialog 
     }
     
     boolean enableDirectorySelection = false;
-    public void setEnabledDirectorySelection(boolean enableDirectorySelection) {
+    public void setChooseDirectories(boolean enableDirectorySelection) {
         if(enableDirectorySelection) {
             localPanel.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         } else {
@@ -401,6 +400,9 @@ public class VospaceResourceChooserDialog extends AbstractResourceChooserDialog 
 
 /* 
 $Log: VospaceResourceChooserDialog.java,v $
+Revision 1.2  2007/01/29 10:52:19  nw
+completed and debugged implementation of new filestore chooser.
+
 Revision 1.1  2006/11/09 12:08:33  nw
 final set of changes for 2006.4.rc1
 

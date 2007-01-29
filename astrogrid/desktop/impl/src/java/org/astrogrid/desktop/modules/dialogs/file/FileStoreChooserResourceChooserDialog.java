@@ -20,12 +20,12 @@ import org.astrogrid.desktop.modules.dialogs.AbstractResourceChooserDialog;
 
 import uk.ac.starlink.connect.FileBranch;
 import uk.ac.starlink.connect.FileNode;
-import uk.ac.starlink.connect.Leaf;
 import uk.ac.starlink.connect.Node;
 
-/**
+/** @future enabble dialogue to be positioned at a particular folder / resource.
+ * @todo implement enablement options.
  * @author Noel Winstanley
- * @since Nov 6, 20063:37:22 PM
+ * @since Nov 6, 20063:37:22 PM 
  */
 public class FileStoreChooserResourceChooserDialog extends
 		AbstractResourceChooserDialog{
@@ -34,7 +34,7 @@ public class FileStoreChooserResourceChooserDialog extends
 	
 	class AcrFilestoreChooser extends FilestoreChooser {
 		{
-			addDefaultBranches();
+			addDefaultBranches(); 
 		}
 
 		  /** COPIED AND HACKED FROM PARENT IMPL.
@@ -66,7 +66,7 @@ public class FileStoreChooserResourceChooserDialog extends
 	            }
 	        }
 	        try {
-	        setBranch(new MyspaceRootNode(ms,comm));
+	        addBranch(new MyspaceRootNode(ms,comm));
 	        } catch (Exception e) {
 	        	// oh well.
 	        	logger.warn("Unable to add myspace branch",e);
@@ -106,7 +106,7 @@ public class FileStoreChooserResourceChooserDialog extends
 	    		return null;
 	    	}
 	    }	    
-	}
+	} // end of inner class.
 	
 	public FileStoreChooserResourceChooserDialog(MyspaceInternal ms, Community comm) {
 		setModal(true);
@@ -152,13 +152,13 @@ public class FileStoreChooserResourceChooserDialog extends
         	}
         });        
         this.setContentPane(optionPane);
-        resetAndHide();
+        resetAndHide(); // configures it into default state.
 	}
 	
-	private final MyspaceInternal ms;
-	private final Community comm;
-	private final AcrFilestoreChooser fst;
-	private final JOptionPane optionPane;
+	final MyspaceInternal ms;
+	final Community comm;
+	final AcrFilestoreChooser fst;
+	final JOptionPane optionPane;
 	
 	private URI uri;
 	
@@ -179,16 +179,21 @@ public class FileStoreChooserResourceChooserDialog extends
         setEnableLocalFilePanel(true);
         setEnableMySpacePanel(true);
         setEnableURIPanel(true);
-        setEnabledDirectorySelection(false);
+        setChooseDirectories(false);
         
+        // clear previously entered data.
+        this.fst.resourceUriField.setText("");
+        this.fst.nameField_.setText("");
     }
-
+    private boolean enableLocal = true;
+    private boolean enableMyspace = true;
 	public void setEnableLocalFilePanel(boolean enableLocalFilePanel) {
-		//@todo
+		//@implement setEnableLocalFilePanel properly
+		this.enableLocal = enableLocalFilePanel;
 	}
-
 	public void setEnableMySpacePanel(boolean enableMySpacePanel) {
-		//@todo
+		//@implement setEnableMyspacePanel
+		this.enableMyspace = enableMySpacePanel;
 	}
 
 	public void setEnableURIPanel(boolean enableURIPanel) {
@@ -196,10 +201,12 @@ public class FileStoreChooserResourceChooserDialog extends
 		this.fst.resourceUriField.setEnabled(enableURIPanel);
 	}
 
-	public void setEnabledDirectorySelection(boolean enableDirectorySelection) {
+	public void setChooseDirectories(boolean enableDirectorySelection) {
 		// implies directory only.
 		this.fst.setEnableDirectorySelection(enableDirectorySelection);
 		this.fst.setEnableFileSelection(!enableDirectorySelection);
+		this.fst.nameField_.setEditable(! enableDirectorySelection);
+		this.fst.nameField_.setEnabled(! enableDirectorySelection);
 	}
 
     public void setUri(URI uri) {

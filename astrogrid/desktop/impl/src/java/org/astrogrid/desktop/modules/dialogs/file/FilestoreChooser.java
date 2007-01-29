@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
@@ -15,18 +14,19 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.BoundedRangeModel;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
@@ -39,7 +39,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
+import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
@@ -47,13 +47,17 @@ import javax.swing.event.ListSelectionListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.system.UIImpl;
+import org.astrogrid.filemanager.client.FileManagerNode;
+import org.astrogrid.filemanager.common.DuplicateNodeFault;
+import org.astrogrid.filemanager.common.FileManagerFault;
+import org.astrogrid.filemanager.common.NodeNotFoundFault;
 
 import uk.ac.starlink.connect.Branch;
 import uk.ac.starlink.connect.BranchComboBox;
 import uk.ac.starlink.connect.ConnectorAction;
-import uk.ac.starlink.connect.ConnectorManager;
 import uk.ac.starlink.connect.FileBranch;
-import uk.ac.starlink.connect.FileNode;
 import uk.ac.starlink.connect.Leaf;
 import uk.ac.starlink.connect.Node;
 import uk.ac.starlink.connect.NodeComparator;
@@ -61,6 +65,12 @@ import uk.ac.starlink.connect.NodeComparator;
 /** COPIED from topcat source - and then loosened up, to make easier to 
  * extend.
  * 
+ * NWW:
+ * @todo fix drive / folder icons shown in dropdown.
+ * @todo add progress / status / background manager for potentially long-running network calls.
+ * @todo cleanup on logout - move view back to local files if in myspace at the time.
+ * @future hide files when in folder-choose usage
+ * Original Doc:
  * Generalised file browser which can browse virtual remote filesystems
  * as well as the local filesystem.  The objects it holds are instances
  * of the {@link Node} interface.
@@ -76,8 +86,8 @@ import uk.ac.starlink.connect.NodeComparator;
  */
 public abstract class FilestoreChooser extends JPanel {
 
-    private final BranchComboBox branchSelector_;
-    private final JList nodeList_;
+    final BranchComboBox branchSelector_;
+    final JList nodeList_;
     private final JScrollPane scroller_;
     protected final JTextField nameField_;
     protected final JTextField resourceUriField; 
@@ -109,7 +119,7 @@ public abstract class FilestoreChooser extends JPanel {
 
         /* Construct and place a chooser for the current directory. */
         branchSelector_ = new BranchComboBox();
-        branchSelector_.setToolTipText("Select local or myspace folder");
+        branchSelector_.setToolTipText("Select local or remote folder");
         activeList.add( branchSelector_ );
         Box branchBox = Box.createHorizontalBox();
         branchBox.add( new JLabel( "Location: " ) );
@@ -118,10 +128,11 @@ public abstract class FilestoreChooser extends JPanel {
         add( branchBox, BorderLayout.NORTH );
 
         /* Define and add a button for moving up a directory. */
-        Icon upIcon = UIManager.getIcon( "FileChooser.upFolderIcon" );
+        Icon upIcon =  IconHelper.loadIcon("up.png");
+        		// found on mac to look same as 'new folder' - "FileChooser.upFolderIcon" );
         upAction_ = new AbstractAction( null, upIcon ) {
         	{
-        		putValue(Action.SHORT_DESCRIPTION,"Move up to parent folder");
+        		putValue(Action.SHORT_DESCRIPTION,"Move up to parent directory");
         	}
             public void actionPerformed( ActionEvent evt ) {
                 Branch parent = getBranch().getParent();
@@ -153,8 +164,58 @@ public abstract class FilestoreChooser extends JPanel {
         branchBox.add( Box.createHorizontalStrut( 5 ) );
         branchBox.add( homeButton );
 
+        Icon newIcon = UIManager.getIcon("FileChooser.newFolderIcon");
+        Action newAction = new AbstractAction(null, newIcon) {
+        	{
+        		putValue(Action.SHORT_DESCRIPTION,"Create a new directory");
+        	}
+        	public void actionPerformed(ActionEvent e) {
+        		Branch curr = getBranch();
+        		if (! (curr instanceof MyspaceBranch || curr instanceof FileBranch)) {
+        			// don't know how to proces it.
+        			return;
+        		}
+        		String name = JOptionPane.showInputDialog(FilestoreChooser.this, "Name of new directory:", "New Folder",JOptionPane.PLAIN_MESSAGE);
+        		if (name != null) {
+        			Node[] children = curr.getChildren();
+        			for (int i = 0; i < children.length; i++) {
+						if (children[i].getName().equals(name)) {
+							JOptionPane.showMessageDialog(FilestoreChooser.this, "An object named '" + name + "' already exists","Can't create",JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+					}
+        			// harrumph - there's no method on the node to create a new folder. Need to inspect the type of the node, and do some dodgy hacks.
+        			// fragile to new node types.
+        			if (curr instanceof FileBranch) {
+        				FileBranch fb = (FileBranch)curr;
+        				File f=  fb.getFile();
+        				File newF = new File(f,name);
+        				if (! newF.exists()) {
+        					newF.mkdirs();
+        				}
+        			} else if (curr instanceof MyspaceBranch) {
+        				MyspaceBranch mb = (MyspaceBranch)curr;
+        				try {
+        					// not so good - happens on event thread. can't think of a meaningful alternative at the moment.
+							mb.getNode().addFolder(name);
+						} catch (IOException x) {
+							UIImpl.showError(FilestoreChooser.this, "Failed to create: '" + name, x);
+						} 
+        			}
+    				//   refresh the list.
+        			refreshList();
+    				//@future select the newly created folder.
+        		}
+        	}
+        };
+        JButton newButton = new JButton(newAction);
+        activeList.add(newButton);
+        branchBox.add(Box.createHorizontalStrut(5));
+        branchBox.add(newButton);
+        
         /* Button for login/logout.  This will only be visible if the current
-         * branch represents a remote filesystem. */
+         * branch represents a remote filesystem.
+         * @future remove this - not used in present context. */
         logBox_ = Box.createHorizontalBox();
         logButton_ = new JButton();
         logLabel_ = new JLabel();
@@ -168,6 +229,7 @@ public abstract class FilestoreChooser extends JPanel {
 
         /* Main JList containing nodes in the current branch. */
         nodeList_ = new JList();
+        nodeList_.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         nodeList_.setCellRenderer( new NodeRenderer() );
         scroller_ = new JScrollPane( nodeList_ );
         scroller_.setBorder( BorderFactory.createCompoundBorder( gapBorder,
@@ -186,7 +248,7 @@ public abstract class FilestoreChooser extends JPanel {
 
         /* Text entry field to type in entire URI */
         resourceUriField = new JTextField();
-        resourceUriField.setToolTipText("Enter new URI: http://, ftp://, ...");
+        resourceUriField.setToolTipText("Enter new URI: http://, ftp://, file://, ivo:// ...");
         activeList.add(resourceUriField);
         Box uriBox = Box.createHorizontalBox();
         uriBox.add(new JLabel("URI: "));
@@ -223,11 +285,13 @@ public abstract class FilestoreChooser extends JPanel {
         nodeList_.addMouseListener( new MouseAdapter() {
             public void mouseClicked( MouseEvent evt ) {
                 if ( evt.getClickCount() == 2 ) {
-                    ok();
-                } else  {
+              //      ok();
+               // } else  {
                 	Node node = getSelectedNode();
 					if (node instanceof Branch) {
 						setBranch( (Branch) node);
+						nameField_.setText("");
+						resourceUriField.setText("");
 					}
                 }
             }
@@ -245,9 +309,16 @@ public abstract class FilestoreChooser extends JPanel {
                 Object[] selected = nodeList_.getSelectedValues();
                 String text = null;
                 if ( selected.length == 1 ) {
-                    text = ((Node) selected[ 0 ]).getName();
-                    nameField_.setText( text );
-                    resourceUriField.setText(mkURI((Node)selected[0]).toString());
+                    final Node node = (Node) selected[ 0 ];
+                    if ( (enableFileSelection && node instanceof Leaf)
+                    	|| (enableDirectorySelection && node instanceof Branch)) {
+                    	final URI u = mkURI(node);
+                    	if (u != null) {
+                    		text = (node).getName();
+                    		nameField_.setText( text );
+                    		resourceUriField.setText(u.toString());
+                    	}
+                    }
                 }
             }
         } );
@@ -258,6 +329,7 @@ public abstract class FilestoreChooser extends JPanel {
                 resourceUriField.setText("");
             }
             public void focusLost( FocusEvent evt ) {
+            	// intentionally empty
             }
         } );
         resourceUriField.addFocusListener(new FocusListener() {
@@ -266,6 +338,7 @@ public abstract class FilestoreChooser extends JPanel {
                 nameField_.setText("");
             }
             public void focusLost( FocusEvent evt ) {
+            	// intentionally empty            	
             }
         });
 
@@ -346,6 +419,11 @@ public abstract class FilestoreChooser extends JPanel {
         upAction_.setEnabled( branch.getParent() != null );
     }
 
+    /** adds a branch, without selecting it. */
+    public void addBranch(Branch branch) {
+    	branchSelector_.addBranch(branch);
+    }
+    
     /**
      * Ensures that the list contains the correct children for the
      * currently selected branch.
@@ -421,21 +499,22 @@ public abstract class FilestoreChooser extends JPanel {
      * counts as a final selection.
      */
     public void ok() {
-        if ( okAction_.isEnabled() ) {
-            Node node = getSelectedNode();
-            if (node == null) {
-            	try {
-					uriSelected(new URI(resourceUriField.getText()));
-				} catch (URISyntaxException x) {
-					JOptionPane.showConfirmDialog(this,"Not a valid URI");
-				}
-            } else if ( enableFileSelection && node instanceof Leaf ) {
-                uriSelected(  mkURI(node) );
-            }
-            else if ( enableDirectorySelection &&  node instanceof Branch ) {
-                uriSelected(  mkURI(node) );
-            }
-        }
+    	if ( okAction_.isEnabled() ) {
+    		Node node = getSelectedNode();
+    		if (node != null &&  enableFileSelection && node instanceof Leaf ) {
+    			uriSelected(  mkURI(node) );
+    		} else if (node != null &&  enableDirectorySelection &&  node instanceof Branch ) {
+    			uriSelected(  mkURI(node) );
+    		} else {
+    			if (resourceUriField.getText() != null && resourceUriField.getText().length() > 0) {
+    				try {
+    					uriSelected(new URI(resourceUriField.getText()));
+    				} catch (URISyntaxException x) {
+    					JOptionPane.showConfirmDialog(this,"Not a valid URI");
+    				} 
+    			}
+    		}
+    	}
     }
     
     private boolean enableFileSelection = true;
@@ -504,6 +583,7 @@ public abstract class FilestoreChooser extends JPanel {
 
     
     protected void uriSelected(URI u) {
+    	// intentionally empty    	
     }
 
     /**
@@ -530,9 +610,9 @@ public abstract class FilestoreChooser extends JPanel {
     /**
      * Renderer for list items.
      */
-    private static class NodeRenderer extends DefaultListCellRenderer {
-        private Icon branchIcon = UIManager.getIcon( "Tree.closedIcon" );
-        private Icon leafIcon = UIManager.getIcon( "Tree.leafIcon" );
+    static class NodeRenderer extends DefaultListCellRenderer {
+        private Icon branchIcon = UIManager.getIcon("FileView.directoryIcon"); //UIManager.getIcon( "Tree.closedIcon" );
+        private Icon leafIcon = UIManager.getIcon("FileView.fileIcon");//UIManager.getIcon( "Tree.leafIcon" );
         public Component getListCellRendererComponent( JList list, Object value,
                                                        int index, 
                                                        boolean isSelected,

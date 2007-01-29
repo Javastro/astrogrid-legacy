@@ -4,11 +4,8 @@
 package org.astrogrid.desktop.modules.dialogs.file;
 
 import java.net.URI;
-import java.rmi.RemoteException;
 
 import org.astrogrid.filemanager.client.FileManagerNode;
-import org.astrogrid.filemanager.common.FileManagerFault;
-import org.astrogrid.filemanager.common.NodeNotFoundFault;
 
 import uk.ac.starlink.connect.Branch;
 import uk.ac.starlink.connect.Node;
@@ -28,8 +25,9 @@ class MyspaceNode implements Node {
 		this.parent = parent;
 	}
 
+	/** returns the name of the node, or null of the node is not set */
 	public String getName() {
-		return getNode().getName();
+		return getNode() == null ? null : getNode().getName();
 	}
 
 	public Branch getParent() {
@@ -40,19 +38,23 @@ class MyspaceNode implements Node {
 		return this.node;
 	}
 	
-	protected final void setNode(FileManagerNode fn) {
+	protected void setNode(FileManagerNode fn) {
 		this.node = fn;
 	}
 	
+	/** returns the URI of getNode(), or null if this node is not set */
 	public final URI getURI()  throws Exception {
-		return new URI(getNode().getIvorn().toString());
+		return getNode() == null ? null : new URI(getNode().getIvorn().toString());
 	}
 	
 	public String toString() {
+		if (getNode() == null) {
+			return "no filemanager node set";
+		}
 		try {
 			return getURI().toString();
 		} catch (Exception x) {
-			return node.getMetadata().getNodeIvorn().toString();
+			return getNode().getMetadata().getNodeIvorn().toString();
 		}
 	}
 

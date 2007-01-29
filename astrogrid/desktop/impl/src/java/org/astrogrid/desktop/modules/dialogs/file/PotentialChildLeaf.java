@@ -3,26 +3,25 @@
  */
 package org.astrogrid.desktop.modules.dialogs.file;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.OutputStream;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.filemanager.client.FileManagerNode;
 
-import uk.ac.starlink.connect.Branch;
 import uk.ac.starlink.connect.Leaf;
-import uk.ac.starlink.util.DataSource;
 
 class PotentialChildLeaf extends MyspaceLeaf implements Leaf {
+	/**
+	 * Logger for this class
+	 */
+	private static final Log logger = LogFactory
+			.getLog(PotentialChildLeaf.class);
 
 	private final String name;
-	private final MyspaceBranch parent;
-	private FileManagerNode childNode;
 
 	public PotentialChildLeaf(String name,MyspaceBranch parent) {
 		super(null,parent);
 		this.name = name;
-		this.parent = parent;
 	}
 	
 	public String getName() {
@@ -32,9 +31,9 @@ protected FileManagerNode getNode() {
 	synchronized(this) {
 		if (super.getNode() == null) {
 			try {
-			setNode(parent.getNode().addFile(name));
+			setNode(((MyspaceBranch)parent).getNode().addFile(name));
 			} catch (Exception e) {
-				return null;
+				logger.error("Failed to create child node: " + name,e);
 			}
 		}
 	}
