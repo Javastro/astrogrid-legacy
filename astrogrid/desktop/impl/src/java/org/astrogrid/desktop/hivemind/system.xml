@@ -77,7 +77,7 @@ System module.
 			object="service:ui" methodName="hide" before="exit" onEventDispatchThread="true">		
 			<tooltip>Close this window, but keep the service running</tooltip>
 			</action>
-		<action parentName="file" name="exit" text="Exit" iconName="exit_small.png"
+		<action parentName="file" name="exit" text="Exit" iconName="exit_small.png" onEventDispatchThread="true"
 			object="service:builtin.shutdown" methodName="halt" after="*">
 			<tooltip>Close this window, and halt the service</tooltip>
 			<confirmMessage>Exit: are you sure?</confirmMessage>
@@ -447,7 +447,7 @@ System module.
 	</contribution>	
 	
 	<contribution configuration-id="uiStructure" >
-		<action parentName="edit" name="configreset" text="Reset Configuration"
+		<action parentName="edit" name="configreset" text="Reset Configuration" onEventDispatchThread="true"
 			object="service:configuration" methodName="reset" after="*" >
 			<confirmMessage><![CDATA[<html>
 				This will reset the application's configuration to factory settings.

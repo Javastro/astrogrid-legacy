@@ -1,4 +1,4 @@
-/*$Id: SchedulerInternal.java,v 1.5 2007/01/29 11:11:37 nw Exp $
+/*$Id: SchedulerInternal.java,v 1.6 2007/01/29 16:45:07 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 
 /** Internal interface to a low-level scheduler.
  * 
@@ -28,6 +27,9 @@ public interface SchedulerInternal {
 
 /* 
 $Log: SchedulerInternal.java,v $
+Revision 1.6  2007/01/29 16:45:07  nw
+cleaned up imports.
+
 Revision 1.5  2007/01/29 11:11:37  nw
 updated contact details.
 

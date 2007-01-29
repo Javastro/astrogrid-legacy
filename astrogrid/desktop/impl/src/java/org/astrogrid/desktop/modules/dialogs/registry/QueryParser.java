@@ -3,18 +3,15 @@
  */
 package org.astrogrid.desktop.modules.dialogs.registry;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.astrogrid.acr.InvalidArgumentException;
-
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
-import java.util.Enumeration;
-import java.util.Stack;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.InvalidArgumentException;
 
 /** Parses a search string into an expression tree.
  * not thread safe

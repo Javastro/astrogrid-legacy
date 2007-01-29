@@ -12,24 +12,23 @@ package org.astrogrid.desktop.modules.adqlEditor.nodes;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.ListIterator;
+
+import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.SchemaProperty;
 import org.apache.xmlbeans.SchemaType;
-import org.apache.xmlbeans.SimpleValue;
-import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlCursor;
+import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
-import org.apache.xmlbeans.XmlCursor.XmlBookmark;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CommandInfo;
-import javax.xml.namespace.QName ;
 
 /**
  * @author jl99

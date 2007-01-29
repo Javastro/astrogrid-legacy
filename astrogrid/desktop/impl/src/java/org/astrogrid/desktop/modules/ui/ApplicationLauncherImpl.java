@@ -1,4 +1,4 @@
-/*$Id: ApplicationLauncherImpl.java,v 1.17 2007/01/29 11:11:37 nw Exp $
+/*$Id: ApplicationLauncherImpl.java,v 1.18 2007/01/29 16:45:09 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,14 +11,11 @@
 package org.astrogrid.desktop.modules.ui;
 
 import java.awt.Image;
-import java.awt.event.KeyEvent;
 import java.util.List;
 
 import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.system.BrowserControl;
@@ -117,6 +114,9 @@ public class ApplicationLauncherImpl extends UIComponentImpl  implements Applica
 
 /* 
 $Log: ApplicationLauncherImpl.java,v $
+Revision 1.18  2007/01/29 16:45:09  nw
+cleaned up imports.
+
 Revision 1.17  2007/01/29 11:11:37  nw
 updated contact details.
 

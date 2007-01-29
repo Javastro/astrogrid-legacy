@@ -51,7 +51,6 @@ import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;

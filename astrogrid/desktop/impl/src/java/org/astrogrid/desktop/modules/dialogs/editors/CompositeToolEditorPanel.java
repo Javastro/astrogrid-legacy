@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.31 2007/01/29 11:11:37 nw Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.32 2007/01/29 16:45:09 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,7 +26,6 @@ import java.io.Reader;
 import java.io.Writer;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -639,6 +638,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel implements
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.32  2007/01/29 16:45:09  nw
+cleaned up imports.
+
 Revision 1.31  2007/01/29 11:11:37  nw
 updated contact details.
 

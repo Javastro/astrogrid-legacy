@@ -3,9 +3,6 @@
  */
 package org.astrogrid.desktop.modules.ivoa.resource;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.astrogrid.acr.astrogrid.InterfaceBean;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.astrogrid.ParameterReferenceBean;

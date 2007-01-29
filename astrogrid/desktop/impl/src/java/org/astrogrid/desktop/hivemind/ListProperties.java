@@ -6,15 +6,11 @@ package org.astrogrid.desktop.hivemind;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Properties;
 
-import org.apache.hivemind.Element;
 import org.apache.hivemind.ErrorHandler;
 import org.apache.hivemind.Registry;
 import org.apache.hivemind.impl.DefaultErrorHandler;
 import org.apache.hivemind.impl.RegistryBuilder;
-import org.apache.hivemind.parse.ContributionDescriptor;
-import org.apache.hivemind.parse.ModuleDescriptor;
 import org.apache.hivemind.service.impl.FactoryDefault;
 import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.desktop.modules.system.Preference;
@@ -33,7 +29,8 @@ public class ListProperties extends Launcher {
 		List l = registry.getConfiguration("framework.preferences");
 		
 		System.out.println("Application Preferences");
-		System.out.println("===============");		
+		System.out.println("===============");	
+		//@todo use the PreferencesArranger to get a more pleasing list here..
 		for (Iterator i = l.iterator(); i.hasNext();) {
 			Preference p = (Preference) i.next();
 			System.out.println(p.getUiName() + p.getDescription());

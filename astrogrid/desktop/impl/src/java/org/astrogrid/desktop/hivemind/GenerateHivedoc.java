@@ -5,7 +5,6 @@ package org.astrogrid.desktop.hivemind;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -35,7 +34,6 @@ public class GenerateHivedoc extends Launcher {
 		RegistrySerializer serializer = new RegistrySerializer(); 
 		serializer.addModuleDescriptorProvider(createModuleDescriptorProvider());
 		Document result = serializer.createRegistryDocument();
-		
 
 		// create hivedoc.
 		File targetDir = new File("hivedoc");

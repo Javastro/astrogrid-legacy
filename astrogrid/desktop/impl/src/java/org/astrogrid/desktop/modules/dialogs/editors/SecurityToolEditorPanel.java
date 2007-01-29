@@ -2,6 +2,7 @@ package org.astrogrid.desktop.modules.dialogs.editors;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;

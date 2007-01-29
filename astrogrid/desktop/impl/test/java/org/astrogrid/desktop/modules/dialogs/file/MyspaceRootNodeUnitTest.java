@@ -2,6 +2,7 @@ package org.astrogrid.desktop.modules.dialogs.file;
 
 import java.net.URI;
 
+import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.UserInformation;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
@@ -20,11 +21,15 @@ public class MyspaceRootNodeUnitTest extends MyspaceBranchUnitTest {
 		commControl = MockControl.createControl(Community.class);
 		comm= (Community)commControl.getMock();
 		
+		
 		super.setUp();
 		assertTrue(msbranch instanceof MyspaceRootNode);
 		msroot = (MyspaceRootNode)msbranch;
 	
 		// setup default expectation.
+		comm.isLoggedIn();
+		commControl.setDefaultReturnValue(true);
+		
 		msi.getClient();
 		msiControl.setReturnValue(client,0,1); // expect will be called no more than once per tests
 	
@@ -81,13 +86,12 @@ public class MyspaceRootNodeUnitTest extends MyspaceBranchUnitTest {
 		msroot.getNode();
 		s = msroot.getName();
 		assertNotNull(s);
-		assertTrue(s.contains(id.toString()));
+		//assertTrue(s.contains(id.toString())); 1.5 only.
+		assertTrue(StringUtils.contains(s, id.toString()));
 		verify();
 	}
 
-	public void testGetNameNullNode() throws Exception {
-		// implementation ovverides getName - so this test isn'nt meaningful.
-	}
+
 	
 	public void testToString() throws Exception {
 		comm.getUserInformation();
@@ -106,6 +110,9 @@ public class MyspaceRootNodeUnitTest extends MyspaceBranchUnitTest {
 	}
 	
 	/////////////////////////// disabled tests.
+	public void testGetNameNullNode() throws Exception {
+		// implementation ovverides getName - so this test isn'nt meaningful.
+	}
 	public void testToStringNodeException() throws Exception {
 		// impldementation overrides the toString - this test isn't relevant.
 	}

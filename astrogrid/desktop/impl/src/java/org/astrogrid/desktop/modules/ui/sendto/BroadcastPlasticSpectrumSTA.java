@@ -6,14 +6,12 @@ package org.astrogrid.desktop.modules.ui.sendto;
 import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.scope.SpectrumLoadPlasticButton;
 import org.astrogrid.desktop.modules.ui.scope.SsapRetrieval;
-import org.votech.plastic.CommonMessageConstants;
 
 /**
  * @author Noel Winstanley

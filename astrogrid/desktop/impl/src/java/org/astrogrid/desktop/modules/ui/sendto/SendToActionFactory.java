@@ -3,8 +3,6 @@
  */
 package org.astrogrid.desktop.modules.ui.sendto;
 
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 

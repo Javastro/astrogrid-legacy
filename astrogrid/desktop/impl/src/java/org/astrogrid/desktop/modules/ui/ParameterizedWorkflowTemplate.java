@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowTemplate.java,v 1.5 2007/01/29 11:11:37 nw Exp $
+/*$Id: ParameterizedWorkflowTemplate.java,v 1.6 2007/01/29 16:45:09 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,9 +29,7 @@ import javax.xml.transform.dom.DOMSource;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xpath.CachedXPathAPI;
 import org.astrogrid.acr.astrogrid.CeaApplication;
-import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParser;
@@ -161,6 +159,9 @@ class ParameterizedWorkflowTemplate implements Serializable  {
 
 /* 
 $Log: ParameterizedWorkflowTemplate.java,v $
+Revision 1.6  2007/01/29 16:45:09  nw
+cleaned up imports.
+
 Revision 1.5  2007/01/29 11:11:37  nw
 updated contact details.
 

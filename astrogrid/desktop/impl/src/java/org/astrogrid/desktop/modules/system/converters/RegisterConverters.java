@@ -1,4 +1,4 @@
-/*$Id: RegisterConverters.java,v 1.4 2007/01/29 11:11:36 nw Exp $
+/*$Id: RegisterConverters.java,v 1.5 2007/01/29 16:45:09 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
  **/
 package org.astrogrid.desktop.modules.system.converters;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -57,6 +56,9 @@ public class RegisterConverters implements Runnable {
 
 /*
  * $Log: RegisterConverters.java,v $
+ * Revision 1.5  2007/01/29 16:45:09  nw
+ * cleaned up imports.
+ *
  * Revision 1.4  2007/01/29 11:11:36  nw
  * updated contact details.
  *

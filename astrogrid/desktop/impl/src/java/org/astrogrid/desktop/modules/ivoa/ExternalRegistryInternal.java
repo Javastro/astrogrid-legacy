@@ -6,11 +6,8 @@ package org.astrogrid.desktop.modules.ivoa;
 import java.net.URI;
 
 import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.ExternalRegistry;
-import org.astrogrid.acr.ivoa.resource.RegistryService;
-import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal.StreamProcessor;
 import org.w3c.dom.Document;
 

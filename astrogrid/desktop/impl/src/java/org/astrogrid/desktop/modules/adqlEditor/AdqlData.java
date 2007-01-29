@@ -10,10 +10,9 @@
 **/
 package org.astrogrid.desktop.modules.adqlEditor ;
 
-import java.util.Hashtable;
 import java.util.HashSet;
-import java.util.HashMap ;
-import java.util.regex.Pattern ;
+import java.util.Hashtable;
+import java.util.regex.Pattern;
 
 /**
  * @author jl99

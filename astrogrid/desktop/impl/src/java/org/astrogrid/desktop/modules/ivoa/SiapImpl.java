@@ -1,4 +1,4 @@
-/*$Id: SiapImpl.java,v 1.9 2007/01/29 11:11:36 nw Exp $
+/*$Id: SiapImpl.java,v 1.10 2007/01/29 16:45:08 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,18 +10,14 @@
 **/
 package org.astrogrid.desktop.modules.ivoa;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
 import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.ivoa.DALImpl.StructureBuilder;
 import org.xml.sax.SAXException;
 
 import uk.ac.starlink.table.StarTable;
@@ -124,6 +120,9 @@ public class SiapImpl extends DALImpl implements Siap {
 
 /* 
 $Log: SiapImpl.java,v $
+Revision 1.10  2007/01/29 16:45:08  nw
+cleaned up imports.
+
 Revision 1.9  2007/01/29 11:11:36  nw
 updated contact details.
 

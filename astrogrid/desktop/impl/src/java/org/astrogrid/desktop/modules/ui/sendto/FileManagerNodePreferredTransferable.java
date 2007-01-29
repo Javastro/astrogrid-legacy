@@ -14,7 +14,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.ui.AbstractVospaceBrowser;
-import org.astrogrid.desktop.modules.ui.AbstractVospaceBrowser.CurrentNodeManager;
 import org.astrogrid.filemanager.client.FileManagerNode;
 
 

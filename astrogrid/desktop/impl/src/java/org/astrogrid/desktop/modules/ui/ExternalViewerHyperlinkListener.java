@@ -3,15 +3,14 @@
  */
 package org.astrogrid.desktop.modules.ui;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.net.URL;
 
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.RegistryBrowser;
 

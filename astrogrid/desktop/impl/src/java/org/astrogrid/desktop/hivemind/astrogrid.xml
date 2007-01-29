@@ -27,7 +27,7 @@
 	<!-- things to start eager -->	
 	<contribution configuration-id="hivemind.EagerLoad">
 		<load service-id="messaging" />
-		<load service-id="myspace" /> <!--  so it gets notified of login, and prefetches ms root - for preception of speedup -->
+		<load service-id="myspace" />   <!--  enabling this means myspace it gets notified of login, and prefetches ms root - for preception of speedup -->
 	</contribution>
 	
 <!-- 
@@ -92,7 +92,7 @@ UI CONFIGURATION -->
 
 	
 	<contribution configuration-id="system.uiStructure" if="(property acr.mode) or (property asr.mode)">
-	<action parentName="help" name="about" text="About Astro Runtime.."
+	<action parentName="help" name="about" text="About Astro Runtime.." onEventDispatchThread="true"
 			object="instance:java.lang.String" methodName="concat" iconName="info_obj.gif"
 			after="*" > 
 			<parameter><![CDATA[

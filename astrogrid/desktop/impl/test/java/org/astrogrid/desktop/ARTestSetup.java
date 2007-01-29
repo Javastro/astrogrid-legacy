@@ -1,4 +1,4 @@
-/*$Id: ARTestSetup.java,v 1.3 2007/01/29 10:37:59 nw Exp $
+/*$Id: ARTestSetup.java,v 1.4 2007/01/29 16:45:10 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -96,7 +96,7 @@ public class ARTestSetup extends TestSetup{
     				comm.login(username,password,community);
     				logger.info("Logged in as " + username + " / " + community);
     			} catch (Throwable e) { // try ui login.
-    				logger.warn("Failed to read login settings from astrogrid.properties - prompting using GUI");
+    				logger.warn("Failed to read login settings from astrogrid.properties - prompting using GUI",e);
     				comm.guiLogin();
     			}
     		}
@@ -134,6 +134,9 @@ public class ARTestSetup extends TestSetup{
 
 /* 
 $Log: ARTestSetup.java,v $
+Revision 1.4  2007/01/29 16:45:10  nw
+cleaned up imports.
+
 Revision 1.3  2007/01/29 10:37:59  nw
 altered how testsetup finds login settings.
 

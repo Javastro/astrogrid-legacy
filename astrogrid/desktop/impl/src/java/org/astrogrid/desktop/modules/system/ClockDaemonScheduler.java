@@ -1,4 +1,4 @@
-/*$Id: ClockDaemonScheduler.java,v 1.6 2007/01/29 11:11:37 nw Exp $
+/*$Id: ClockDaemonScheduler.java,v 1.7 2007/01/29 16:45:07 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,8 +16,6 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.builtin.ShutdownListener;
-import org.astrogrid.acr.system.UI;
-import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 
 import EDU.oswego.cs.dl.util.concurrent.ClockDaemon;
 import EDU.oswego.cs.dl.util.concurrent.ThreadFactory;
@@ -97,6 +95,9 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
 
 /* 
 $Log: ClockDaemonScheduler.java,v $
+Revision 1.7  2007/01/29 16:45:07  nw
+cleaned up imports.
+
 Revision 1.6  2007/01/29 11:11:37  nw
 updated contact details.
 

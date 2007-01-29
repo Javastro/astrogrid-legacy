@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.20 2007/01/29 10:49:04 nw Exp $
+/*$Id: UIImpl.java,v 1.21 2007/01/29 16:45:07 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved. 
@@ -10,18 +10,14 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -44,12 +40,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
-import javax.swing.LookAndFeel;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.WindowConstants;
-import javax.swing.UIManager.LookAndFeelInfo;
 
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.beanutils.MethodUtils;
@@ -500,6 +492,9 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.21  2007/01/29 16:45:07  nw
+cleaned up imports.
+
 Revision 1.20  2007/01/29 10:49:04  nw
 allow null as an execution parameter.
 

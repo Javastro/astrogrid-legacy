@@ -41,7 +41,7 @@ UI STRUCTURES
 
 <!-- assume that if this module is loaded, we're running as workbench -->
 	<contribution configuration-id="system.uiStructure">
-			<action parentName="help" name="about" text="About AstroGrid Workbench.."
+			<action parentName="help" name="about" text="About AstroGrid Workbench.." onEventDispatchThread="true"
 			object="instance:java.lang.String" methodName="concat" iconName="AGlogo16x16.png"
 			after="*" > 
 			<parameter><![CDATA[
@@ -279,7 +279,7 @@ PW WORKFLOWS
 	
 	<contribution configuration-id="system.uiStructure" if="not (property ui.parameterizedWorkflows.disabled)" >	
 		<action parentName="workflow" name="parameterizedWorkflows" text="Science Workflows" iconName="logo48x48.png"
-			help-id="userInterface.scienceWorkflows"
+			help-id="userInterface.scienceWorkflows" onEventDispatchThread="true"
 			object="service:parameterizedWorkflows" methodName="run" after="applicationLauncher">
 			<tooltip><![CDATA[
 		<html>Direct access and editing of pre-canned workflows <br>

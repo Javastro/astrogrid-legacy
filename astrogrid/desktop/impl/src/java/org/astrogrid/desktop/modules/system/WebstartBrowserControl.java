@@ -1,4 +1,4 @@
-/*$Id: WebstartBrowserControl.java,v 1.4 2007/01/29 11:11:36 nw Exp $
+/*$Id: WebstartBrowserControl.java,v 1.5 2007/01/29 16:45:07 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,6 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.WebServer;
-import org.astrogrid.desktop.alternatives.FallbackBrowserControl;
 import org.astrogrid.desktop.framework.ReflectionHelper;
 
 /** Implementation of browsercontrol using the webstart additional APIs.
@@ -81,6 +80,9 @@ public class WebstartBrowserControl extends BrowserLauncherBrowserControl implem
 
 /* 
 $Log: WebstartBrowserControl.java,v $
+Revision 1.5  2007/01/29 16:45:07  nw
+cleaned up imports.
+
 Revision 1.4  2007/01/29 11:11:36  nw
 updated contact details.
 

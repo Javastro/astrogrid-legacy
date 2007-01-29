@@ -24,7 +24,7 @@
 			object="service:hub" methodName="prettyPrintRegisteredApps">
 			<tooltip>List details of all connected Plastic Applications</tooltip>
 		</action>
-	<action parentName="help" name="about" text="About AstroGrid PLASTIC Hub..."
+	<action parentName="help" name="about" text="About AstroGrid PLASTIC Hub..." onEventDispatchThread="true"
 			object="instance:java.lang.String" methodName="concat" iconName="AGlogo16x16.png"
 			after="*" > 
 			<parameter><![CDATA[

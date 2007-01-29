@@ -77,6 +77,7 @@ public class CmdLineParserUnitTest extends TestCase {
 		l.run();
 	}
 	
+
 	public void testUnknown() {
 		Launcher l = parser.parse(new String[]{"--wibble"},"testing");
 		assertNotNull(l);

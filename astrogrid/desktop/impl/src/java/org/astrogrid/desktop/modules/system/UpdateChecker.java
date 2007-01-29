@@ -15,7 +15,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.system.BrowserControl;
-import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 
 /** checks for updates to the software.

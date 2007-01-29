@@ -1,4 +1,4 @@
-/*$Id: SwingSetup.java,v 1.8 2007/01/29 11:11:36 nw Exp $
+/*$Id: SwingSetup.java,v 1.9 2007/01/29 16:45:07 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,6 @@ import java.awt.Color;
 
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,6 +48,9 @@ private static final Log logger = LogFactory.getLog(SwingSetup.class);
 
 /* 
 $Log: SwingSetup.java,v $
+Revision 1.9  2007/01/29 16:45:07  nw
+cleaned up imports.
+
 Revision 1.8  2007/01/29 11:11:36  nw
 updated contact details.
 

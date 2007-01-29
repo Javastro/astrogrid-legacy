@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.12 2007/01/29 11:11:35 nw Exp $
+/*$Id: CommunityImpl.java,v 1.13 2007/01/29 16:45:08 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.UserInformation;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
@@ -222,6 +221,9 @@ public class CommunityImpl implements CommunityInternal {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.13  2007/01/29 16:45:08  nw
+cleaned up imports.
+
 Revision 1.12  2007/01/29 11:11:35  nw
 updated contact details.
 

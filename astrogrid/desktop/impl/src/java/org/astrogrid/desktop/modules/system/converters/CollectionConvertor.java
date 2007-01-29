@@ -13,7 +13,6 @@ package org.astrogrid.desktop.modules.system.converters;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -79,6 +78,9 @@ public class CollectionConvertor implements Converter {
 
 /* 
 $Log$
+Revision 1.6  2007/01/29 16:45:09  nw
+cleaned up imports.
+
 Revision 1.5  2006/08/31 21:31:37  nw
 minor tweaks and doc fixes.
 

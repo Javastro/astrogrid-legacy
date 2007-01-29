@@ -1,4 +1,4 @@
-/*$Id: ToolEditorDialog.java,v 1.10 2007/01/29 11:11:37 nw Exp $
+/*$Id: ToolEditorDialog.java,v 1.11 2007/01/29 16:45:09 nw Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,8 +25,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.system.BrowserControl;
@@ -201,6 +199,9 @@ public class ToolEditorDialog extends JDialog implements PropertyChangeListener 
 
 /* 
 $Log: ToolEditorDialog.java,v $
+Revision 1.11  2007/01/29 16:45:09  nw
+cleaned up imports.
+
 Revision 1.10  2007/01/29 11:11:37  nw
 updated contact details.
 

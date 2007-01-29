@@ -2,6 +2,7 @@ package org.astrogrid.desktop.modules.ag;
 
 import java.net.URISyntaxException;
 import java.security.Principal;
+
 import org.astrogrid.store.Ivorn;
 
 /**

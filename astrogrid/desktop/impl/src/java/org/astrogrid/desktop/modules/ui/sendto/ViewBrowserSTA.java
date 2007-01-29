@@ -1,21 +1,11 @@
 package org.astrogrid.desktop.modules.ui.sendto;
 
 import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.Writer;
 import java.net.URL;
-import java.nio.channels.Pipe;
 
 import org.apache.commons.collections.Transformer;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.io.Piper;
-import org.astrogrid.util.DomHelper;
-import org.w3c.dom.Document;
 
 
 /** consumer that displays result in a browser */

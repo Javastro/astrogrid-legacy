@@ -3,16 +3,9 @@
  */
 package org.astrogrid.desktop.modules.ivoa.resource;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-
 import java.lang.reflect.Proxy;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,6 +18,9 @@ import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.CeaServerCapability;
 import org.astrogrid.acr.astrogrid.CeaService;
@@ -33,7 +29,6 @@ import org.astrogrid.acr.astrogrid.InterfaceBean;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
 import org.astrogrid.acr.astrogrid.TableBean;
-import org.astrogrid.acr.ivoa.SiapInformation;
 import org.astrogrid.acr.ivoa.resource.AccessURL;
 import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.Catalog;
@@ -41,7 +36,6 @@ import org.astrogrid.acr.ivoa.resource.ConeCapability;
 import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.Contact;
 import org.astrogrid.acr.ivoa.resource.Content;
-import org.astrogrid.acr.ivoa.resource.Coverage;
 import org.astrogrid.acr.ivoa.resource.Creator;
 import org.astrogrid.acr.ivoa.resource.Curation;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
@@ -59,7 +53,6 @@ import org.astrogrid.acr.ivoa.resource.SiapCapability;
 import org.astrogrid.acr.ivoa.resource.SiapService;
 import org.astrogrid.acr.ivoa.resource.Source;
 import org.astrogrid.acr.ivoa.resource.Validation;
-import org.codehaus.xfire.util.STAXUtils;
 
 /** Streaming parser of vo resource objects.
  * 

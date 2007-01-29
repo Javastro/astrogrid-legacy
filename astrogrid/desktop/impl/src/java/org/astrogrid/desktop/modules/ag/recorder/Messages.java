@@ -1,4 +1,4 @@
-/*$Id: Messages.java,v 1.6 2007/01/29 11:11:35 nw Exp $
+/*$Id: Messages.java,v 1.7 2007/01/29 16:45:09 nw Exp $
  * Created on 07-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,6 @@ import java.util.List;
 
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
 
 import jdbm.RecordManager;
 import jdbm.btree.BTree;
@@ -206,6 +205,9 @@ public class Messages extends AbstractTableModel {
 
 /* 
 $Log: Messages.java,v $
+Revision 1.7  2007/01/29 16:45:09  nw
+cleaned up imports.
+
 Revision 1.6  2007/01/29 11:11:35  nw
 updated contact details.
 

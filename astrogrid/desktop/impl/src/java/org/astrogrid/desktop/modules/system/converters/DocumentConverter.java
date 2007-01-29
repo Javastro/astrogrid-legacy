@@ -1,14 +1,8 @@
 package org.astrogrid.desktop.modules.system.converters;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.commons.beanutils.Converter;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 /** Parse a string into a XML DOM Document
  * @author Noel Winstanley

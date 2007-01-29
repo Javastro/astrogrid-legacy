@@ -3,24 +3,9 @@
  */
 package org.astrogrid.desktop.modules.ui.sendto;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.awt.Component;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.StringReader;
-import java.io.Writer;
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.swing.Action;
 import javax.swing.JMenu;
@@ -28,14 +13,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.desktop.modules.dialogs.ResultDialog;
-import org.astrogrid.desktop.modules.system.TupperwareInternal;
-import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.astrogrid.io.Piper;
-import org.astrogrid.util.DomHelper;
-import org.w3c.dom.Document;
 
 /** Implementation of a shared 'send-to' menu component - used to pass data to other 
  * uitilies for vieing.

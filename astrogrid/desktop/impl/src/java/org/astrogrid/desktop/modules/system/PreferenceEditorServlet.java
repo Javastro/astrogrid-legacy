@@ -5,25 +5,17 @@ package org.astrogrid.desktop.modules.system;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.MultiHashMap;
-import org.apache.commons.collections.MultiMap;
 
 /** Servlet that provides a way to view and edito configuration preferences.
  * @todo implement test, choose, reset buttons for each item.

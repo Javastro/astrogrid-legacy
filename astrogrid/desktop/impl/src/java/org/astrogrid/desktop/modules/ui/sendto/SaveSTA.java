@@ -1,22 +1,16 @@
 package org.astrogrid.desktop.modules.ui.sendto;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.awt.datatransfer.DataFlavor;
 import java.awt.event.ActionEvent;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.Writer;
 import java.net.URI;
 import java.net.URL;
 
-import org.astrogrid.acr.dialogs.ResourceChooser;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;

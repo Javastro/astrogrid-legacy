@@ -1,4 +1,4 @@
-/*$Id: ConeImpl.java,v 1.8 2007/01/29 11:11:37 nw Exp $
+/*$Id: ConeImpl.java,v 1.9 2007/01/29 16:45:09 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.desktop.modules.nvo;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
@@ -18,7 +17,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.nvo.Cone;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
@@ -89,6 +87,9 @@ public class ConeImpl extends DALImpl implements Cone {
 
 /* 
 $Log: ConeImpl.java,v $
+Revision 1.9  2007/01/29 16:45:09  nw
+cleaned up imports.
+
 Revision 1.8  2007/01/29 11:11:37  nw
 updated contact details.
 

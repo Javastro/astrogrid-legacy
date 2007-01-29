@@ -1,4 +1,4 @@
-/*$Id: RegistryChooserImpl.java,v 1.7 2007/01/29 11:11:37 nw Exp $
+/*$Id: RegistryChooserImpl.java,v 1.8 2007/01/29 16:45:09 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,17 +12,11 @@ package org.astrogrid.desktop.modules.dialogs;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.dialogs.RegistryChooser;
 import org.astrogrid.acr.dialogs.RegistryGoogle;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.UIInternal;
 
 /** Impleentaitn of the obsolete registry chooser component.
  * It's an inefficent stop-gap in terms of RegistryGoogle, and then selected
@@ -101,6 +95,9 @@ public class RegistryChooserImpl implements RegistryChooser {
 
 /* 
 $Log: RegistryChooserImpl.java,v $
+Revision 1.8  2007/01/29 16:45:09  nw
+cleaned up imports.
+
 Revision 1.7  2007/01/29 11:11:37  nw
 updated contact details.
 

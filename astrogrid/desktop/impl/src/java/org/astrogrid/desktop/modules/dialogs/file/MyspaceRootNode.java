@@ -5,7 +5,6 @@ package org.astrogrid.desktop.modules.dialogs.file;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.UserInformation;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;

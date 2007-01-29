@@ -9,24 +9,38 @@
  *
 **/
 package org.astrogrid.desktop.modules.adqlEditor ;
-import org.apache.xmlbeans.* ;
-
-//import java.util.Hashtable ;
-import org.apache.xmlbeans.SchemaType;
-//import org.apache.xmlbeans.XmlString.Factory;
-
-import java.util.ArrayList;
-import java.util.ListIterator;
-import java.util.regex.Matcher ;
-import java.lang.reflect.*;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.ListIterator;
+import java.util.regex.Matcher;
 
 import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-//import org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanel;
+import org.apache.xmlbeans.SchemaAttributeModel;
+import org.apache.xmlbeans.SchemaLocalAttribute;
+import org.apache.xmlbeans.SchemaParticle;
+import org.apache.xmlbeans.SchemaProperty;
+import org.apache.xmlbeans.SchemaStringEnumEntry;
+import org.apache.xmlbeans.SchemaType;
+import org.apache.xmlbeans.SchemaTypeSystem;
+import org.apache.xmlbeans.SimpleValue;
+import org.apache.xmlbeans.XmlCursor;
+import org.apache.xmlbeans.XmlDecimal;
+import org.apache.xmlbeans.XmlDouble;
+import org.apache.xmlbeans.XmlFloat;
+import org.apache.xmlbeans.XmlInt;
+import org.apache.xmlbeans.XmlInteger;
+import org.apache.xmlbeans.XmlLong;
+import org.apache.xmlbeans.XmlObject;
+import org.apache.xmlbeans.XmlPositiveInteger;
+import org.apache.xmlbeans.XmlString;
+import org.apache.xmlbeans.XmlUnsignedInt;
+import org.apache.xmlbeans.XmlUnsignedLong;
+import org.apache.xmlbeans.XmlUnsignedShort;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 
 // import org.astrogrid.adql.v1_0.beans.* ;

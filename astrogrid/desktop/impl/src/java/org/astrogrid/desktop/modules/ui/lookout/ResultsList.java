@@ -17,7 +17,6 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 
-import org.apache.xerces.impl.xpath.XPath.Step;
 import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
@@ -29,10 +28,7 @@ import org.astrogrid.desktop.modules.ui.sendto.ParameterValueTransferable;
 import org.astrogrid.desktop.modules.ui.sendto.PreferredTransferable;
 import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 import org.astrogrid.workflow.beans.v1.Workflow;
-import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 import org.exolab.castor.xml.CastorException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
 
 /** List for displaying results.
  * @author Noel Winstanley

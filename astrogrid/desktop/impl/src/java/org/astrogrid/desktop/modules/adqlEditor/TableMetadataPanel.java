@@ -10,51 +10,44 @@
 **/
 package org.astrogrid.desktop.modules.adqlEditor;
 
-import java.awt.Dimension;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.LayoutManager;
-
-import java.awt.Component;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.awt.Point;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
 
 import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTable;
-import javax.swing.table.* ;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
-import javax.swing.JLabel;
+import javax.swing.JTextPane;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xmlbeans.* ;
-
-import org.astrogrid.acr.astrogrid.DatabaseBean;
-import org.astrogrid.acr.astrogrid.TableBean ;
-import org.astrogrid.acr.astrogrid.ColumnBean ;
+import org.apache.xmlbeans.SchemaProperty;
+import org.apache.xmlbeans.SchemaType;
+import org.astrogrid.acr.astrogrid.ColumnBean;
+import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.ivoa.resource.Catalog;
-import org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanel;
-import org.astrogrid.desktop.modules.adqlEditor.commands.*;
+import org.astrogrid.desktop.modules.adqlEditor.commands.CommandExec;
+import org.astrogrid.desktop.modules.adqlEditor.commands.CommandFactory;
+import org.astrogrid.desktop.modules.adqlEditor.commands.MultipleColumnInsertCommand;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
+import org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanel;
 
 /**
  * @author jl99

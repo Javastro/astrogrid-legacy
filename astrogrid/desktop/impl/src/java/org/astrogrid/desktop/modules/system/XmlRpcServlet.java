@@ -1,4 +1,4 @@
-/*$Id: XmlRpcServlet.java,v 1.7 2007/01/29 11:11:37 nw Exp $
+/*$Id: XmlRpcServlet.java,v 1.8 2007/01/29 16:45:07 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,7 +39,6 @@ import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.builtin.ComponentDescriptor;
 import org.astrogrid.acr.builtin.MethodDescriptor;
 import org.astrogrid.acr.builtin.ModuleDescriptor;
-import org.astrogrid.acr.builtin.ValueDescriptor;
 import org.astrogrid.acr.system.ApiHelp;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.framework.ACRInternal;
@@ -217,6 +216,9 @@ public class XmlRpcServlet extends HttpServlet {
 
 /* 
 $Log: XmlRpcServlet.java,v $
+Revision 1.8  2007/01/29 16:45:07  nw
+cleaned up imports.
+
 Revision 1.7  2007/01/29 11:11:37  nw
 updated contact details.
 

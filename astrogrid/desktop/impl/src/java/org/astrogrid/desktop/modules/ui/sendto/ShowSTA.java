@@ -6,7 +6,6 @@ import java.io.InputStream;
 
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.io.Piper;
 
 

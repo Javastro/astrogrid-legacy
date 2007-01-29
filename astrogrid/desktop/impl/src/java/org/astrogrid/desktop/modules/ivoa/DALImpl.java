@@ -1,4 +1,4 @@
-/*$Id: DALImpl.java,v 1.9 2007/01/29 11:11:36 nw Exp $
+/*$Id: DALImpl.java,v 1.10 2007/01/29 16:45:08 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,11 +18,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,9 +29,7 @@ import java.util.Map;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 
-
 import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -437,6 +433,9 @@ public abstract class DALImpl implements Dal{
 
 /* 
 $Log: DALImpl.java,v $
+Revision 1.10  2007/01/29 16:45:08  nw
+cleaned up imports.
+
 Revision 1.9  2007/01/29 11:11:36  nw
 updated contact details.
 

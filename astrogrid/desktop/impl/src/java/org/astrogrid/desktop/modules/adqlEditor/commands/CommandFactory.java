@@ -10,27 +10,19 @@
 **/
 package org.astrogrid.desktop.modules.adqlEditor.commands;
 
-import java.util.Iterator;
-import java.util.ListIterator;
-import java.util.List ;
-import java.util.ArrayList ;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.List;
 import java.util.Random;
-import javax.swing.JMenuItem;
-import javax.swing.undo.UndoManager;
-import javax.swing.undo.UndoableEdit;
 
-import org.apache.xmlbeans.SchemaStringEnumEntry;
-import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.SchemaProperty;
+import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlObject;
-import org.astrogrid.acr.astrogrid.ColumnBean;
-import org.astrogrid.acr.astrogrid.DatabaseBean;
-import org.astrogrid.acr.astrogrid.TableBean;
-import org.astrogrid.desktop.modules.adqlEditor.* ;
-import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode ;
-
-import java.util.Hashtable ;
+import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
+import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
+import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 /**
  * @author jl99
  *

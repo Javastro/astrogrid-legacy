@@ -39,106 +39,56 @@ so had to cut-n-paste, and then edit the problem.
 
 
 import java.util.ArrayList;
-
 import java.util.Collection;
-
 import java.util.HashSet;
-
 import java.util.Iterator;
-
 import java.util.List;
-
 import java.util.Set;
 
-
-
 import javax.xml.parsers.DocumentBuilder;
-
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import javax.xml.parsers.ParserConfigurationException;
 
-
-
 import org.apache.hivemind.ApplicationRuntimeException;
-
 import org.apache.hivemind.Attribute;
-
 import org.apache.hivemind.ClassResolver;
-
 import org.apache.hivemind.ErrorHandler;
-
 import org.apache.hivemind.ModuleDescriptorProvider;
-
 import org.apache.hivemind.Occurances;
-
 import org.apache.hivemind.impl.DefaultClassResolver;
-
 import org.apache.hivemind.impl.DefaultErrorHandler;
-
 import org.apache.hivemind.impl.XmlModuleDescriptorProvider;
-
 import org.apache.hivemind.internal.Visibility;
-
 import org.apache.hivemind.parse.AttributeMappingDescriptor;
-
 import org.apache.hivemind.parse.ConfigurationPointDescriptor;
-
 import org.apache.hivemind.parse.ContributionDescriptor;
-
 import org.apache.hivemind.parse.ConversionDescriptor;
-
 import org.apache.hivemind.parse.CreateInstanceDescriptor;
-
 import org.apache.hivemind.parse.DependencyDescriptor;
-
 import org.apache.hivemind.parse.ImplementationDescriptor;
-
 import org.apache.hivemind.parse.InstanceBuilder;
-
 import org.apache.hivemind.parse.InterceptorDescriptor;
-
 import org.apache.hivemind.parse.InvokeFactoryDescriptor;
-
 import org.apache.hivemind.parse.ModuleDescriptor;
-
 import org.apache.hivemind.parse.ServicePointDescriptor;
-
 import org.apache.hivemind.parse.SubModuleDescriptor;
-
 import org.apache.hivemind.schema.AttributeModel;
-
 import org.apache.hivemind.schema.ElementModel;
-
 import org.apache.hivemind.schema.Rule;
-
 import org.apache.hivemind.schema.impl.SchemaImpl;
-
 import org.apache.hivemind.schema.rules.CreateObjectRule;
-
 import org.apache.hivemind.schema.rules.InvokeParentRule;
-
 import org.apache.hivemind.schema.rules.PushAttributeRule;
-
 import org.apache.hivemind.schema.rules.PushContentRule;
-
 import org.apache.hivemind.schema.rules.ReadAttributeRule;
-
 import org.apache.hivemind.schema.rules.ReadContentRule;
-
 import org.apache.hivemind.schema.rules.SetModuleRule;
-
 import org.apache.hivemind.schema.rules.SetParentRule;
-
 import org.apache.hivemind.schema.rules.SetPropertyRule;
-
 import org.apache.hivemind.util.IdUtils;
-import org.astrogrid.util.DomHelper;
-
 import org.w3c.dom.Document;
-import org.w3c.dom.Text;
-
 import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 
 
 

@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.7 2007/01/29 11:11:35 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.8 2007/01/29 16:45:08 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,9 +9,6 @@
  *
 **/
 package org.astrogrid.desktop.modules.ag;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -34,9 +31,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.ListCellRenderer;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.Registry;
@@ -314,6 +312,9 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.8  2007/01/29 16:45:08  nw
+cleaned up imports.
+
 Revision 1.7  2007/01/29 11:11:35  nw
 updated contact details.
 

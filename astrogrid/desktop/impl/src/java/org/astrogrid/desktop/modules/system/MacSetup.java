@@ -3,16 +3,13 @@
  */
 package org.astrogrid.desktop.modules.system;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-import javax.swing.JOptionPane;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.desktop.framework.ReflectionHelper;
 

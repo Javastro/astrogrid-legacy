@@ -49,9 +49,10 @@
  * @version 1.11 01/23/03
  * @author Philip Milne */
 package org.astrogrid.desktop.modules.adqlEditor;
-import javax.swing.table.*; 
-import javax.swing.event.TableModelListener; 
-import javax.swing.event.TableModelEvent; 
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableModel;
 
 public class TableMap extends AbstractTableModel implements TableModelListener
 {

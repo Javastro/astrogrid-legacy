@@ -5,8 +5,6 @@ package org.astrogrid.desktop.modules.ui.sendto;
 
 import java.awt.Component;
 import java.awt.Image;
-import java.util.HashMap;
-import java.util.List;
 
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -24,7 +22,6 @@ import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.system.ReportingListModel.ReportingListDataListener;
 import org.astrogrid.desktop.modules.ui.scope.SpectrumLoadPlasticButton;
-import org.astrogrid.desktop.modules.ui.sendto.SendToMenuImpl.ActionJMenuItem;
 import org.votech.plastic.CommonMessageConstants;
 
 /** Factory for actions based on plastic applications.

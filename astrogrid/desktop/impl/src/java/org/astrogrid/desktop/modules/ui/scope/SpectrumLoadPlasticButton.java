@@ -8,17 +8,14 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.votech.plastic.CommonMessageConstants;
 
 import edu.berkeley.guir.prefuse.event.FocusEvent;
 import edu.berkeley.guir.prefuse.focus.FocusSet;

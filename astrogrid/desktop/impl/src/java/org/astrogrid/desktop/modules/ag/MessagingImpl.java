@@ -1,4 +1,4 @@
-/*$Id: MessagingImpl.java,v 1.5 2007/01/29 11:11:35 nw Exp $
+/*$Id: MessagingImpl.java,v 1.6 2007/01/29 16:45:08 nw Exp $
  * Created on 28-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,14 +10,12 @@
 **/
 package org.astrogrid.desktop.modules.ag;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.astrogrid.desktop.modules.system.SchedulerInternal;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import EDU.oswego.cs.dl.util.concurrent.Executor;
 import EDU.oswego.cs.dl.util.concurrent.QueuedExecutor;
@@ -98,6 +96,9 @@ public class MessagingImpl implements MessagingInternal{
 
 /* 
 $Log: MessagingImpl.java,v $
+Revision 1.6  2007/01/29 16:45:08  nw
+cleaned up imports.
+
 Revision 1.5  2007/01/29 11:11:35  nw
 updated contact details.
 

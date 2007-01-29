@@ -10,7 +10,6 @@ import java.io.InputStream;
 import org.astrogrid.acr.ui.WorkflowBuilder;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.io.Piper;
-import org.astrogrid.util.DomHelper;
 
 /**
  * @author Noel Winstanley

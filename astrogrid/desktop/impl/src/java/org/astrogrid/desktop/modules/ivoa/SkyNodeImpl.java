@@ -1,4 +1,4 @@
-/*$Id: SkyNodeImpl.java,v 1.5 2006/08/31 21:34:46 nw Exp $
+/*$Id: SkyNodeImpl.java,v 1.6 2007/01/29 16:45:08 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ package org.astrogrid.desktop.modules.ivoa;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -40,10 +39,8 @@ import javax.xml.xpath.XPathFunctionResolver;
 import javax.xml.xpath.XPathVariableResolver;
 
 import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xmlbeans.XmlUnsignedInt;
 import org.apache.xpath.jaxp.XPathFactoryImpl;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
@@ -55,13 +52,6 @@ import org.astrogrid.acr.ivoa.FunctionBean;
 import org.astrogrid.acr.ivoa.SkyNode;
 import org.astrogrid.acr.ivoa.SkyNodeColumnBean;
 import org.astrogrid.acr.ivoa.SkyNodeTableBean;
-import org.astrogrid.adql.v1_0.beans.AllSelectionItemType;
-import org.astrogrid.adql.v1_0.beans.FromTableType;
-import org.astrogrid.adql.v1_0.beans.SelectDocument;
-import org.astrogrid.adql.v1_0.beans.SelectType;
-import org.astrogrid.adql.v1_0.beans.SelectionItemType;
-import org.astrogrid.adql.v1_0.beans.TableType;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -651,6 +641,9 @@ private URL resolveService(URI id) throws InvalidArgumentException {
 
 /* 
 $Log: SkyNodeImpl.java,v $
+Revision 1.6  2007/01/29 16:45:08  nw
+cleaned up imports.
+
 Revision 1.5  2006/08/31 21:34:46  nw
 minor tweaks and doc fixes.
 

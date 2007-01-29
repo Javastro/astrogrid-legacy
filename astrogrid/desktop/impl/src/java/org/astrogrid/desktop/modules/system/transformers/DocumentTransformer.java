@@ -3,8 +3,6 @@
  */
 package org.astrogrid.desktop.modules.system.transformers;
 
-import java.io.StringWriter;
-
 import org.apache.commons.collections.Transformer;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;

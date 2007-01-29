@@ -2,27 +2,22 @@ package org.astrogrid.desktop.modules.adqlEditor.nodes ;
 
 
 import java.util.Enumeration;
-import java.util.Hashtable;
-import java.lang.Integer;
+
+import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xmlbeans.SchemaProperty;
+import org.apache.xmlbeans.SchemaType;
+import org.apache.xmlbeans.SimpleValue;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
-import org.apache.xmlbeans.XmlOptions;
-import org.apache.xmlbeans.SchemaProperty; 
-import org.apache.xmlbeans.SchemaType; 
-import org.apache.xmlbeans.SimpleValue; 
 import org.apache.xmlbeans.XmlString;
-import org.apache.xmlbeans.XmlLong ;
-import org.apache.xmlbeans.XmlDouble ;
-
-import javax.swing.tree.DefaultMutableTreeNode ;
-
-import org.astrogrid.desktop.modules.adqlEditor.*;
-import org.astrogrid.desktop.modules.adqlEditor.commands.CommandExec;
-import org.astrogrid.desktop.modules.adqlEditor.commands.CommandInfo;
+import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTransformer;
+import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
+import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
+import org.astrogrid.desktop.modules.adqlEditor.commands.CommandInfo;
 
 /**
  * Represents the data for a single node in the XmlTree. This class (known as a

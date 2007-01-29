@@ -15,7 +15,6 @@ import org.astrogrid.desktop.modules.ui.scope.SiapRetrieval;
 import org.astrogrid.desktop.modules.ui.scope.SsapRetrieval;
 import org.astrogrid.desktop.modules.ui.scope.StapRetrieval;
 
-
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 /** transferable object for a node in a scope tree.

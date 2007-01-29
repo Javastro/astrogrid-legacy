@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,10 +48,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.UIImpl;
-import org.astrogrid.filemanager.client.FileManagerNode;
-import org.astrogrid.filemanager.common.DuplicateNodeFault;
-import org.astrogrid.filemanager.common.FileManagerFault;
-import org.astrogrid.filemanager.common.NodeNotFoundFault;
 
 import uk.ac.starlink.connect.Branch;
 import uk.ac.starlink.connect.BranchComboBox;

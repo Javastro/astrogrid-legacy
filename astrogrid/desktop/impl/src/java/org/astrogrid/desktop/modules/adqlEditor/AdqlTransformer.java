@@ -29,8 +29,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.XmlCursor;
-
-import org.astrogrid.desktop.modules.adqlEditor.nodes.*;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 
 /**
  * @author jl99

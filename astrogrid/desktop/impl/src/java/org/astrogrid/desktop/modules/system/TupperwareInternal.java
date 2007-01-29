@@ -7,11 +7,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.ListModel;
-import javax.swing.event.ListDataListener;
-
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
-import org.votech.plastic.incoming.handlers.MessageHandler;
 
 /**
  * Tupperware is a plastic container that keeps things fresh.

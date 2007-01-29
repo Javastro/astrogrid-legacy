@@ -1,4 +1,4 @@
-/*$Id: JettyWebServer.java,v 1.9 2007/01/29 11:11:37 nw Exp $
+/*$Id: JettyWebServer.java,v 1.10 2007/01/29 16:45:07 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Iterator;
@@ -234,6 +233,9 @@ public void setInetAddress(String netAddress) throws UnknownHostException {
 
 /* 
 $Log: JettyWebServer.java,v $
+Revision 1.10  2007/01/29 16:45:07  nw
+cleaned up imports.
+
 Revision 1.9  2007/01/29 11:11:37  nw
 updated contact details.
 
