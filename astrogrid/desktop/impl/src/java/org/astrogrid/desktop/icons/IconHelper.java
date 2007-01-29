@@ -1,4 +1,4 @@
-/*$Id: IconHelper.java,v 1.7 2006/08/31 21:12:06 nw Exp $
+/*$Id: IconHelper.java,v 1.8 2007/01/29 10:56:50 nw Exp $
  * Created on 06-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.io.Piper;
 
 /** class of helper methods for locating and loading icons.
- * @author Noel Winstanley nw@jb.man.ac.uk 06-Apr-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 06-Apr-2005
  *@todo integrate with new cache system - means making this a service, rather than an object. but then could cache remote icons to disk.
  */
 public class IconHelper {
@@ -111,6 +111,9 @@ public class IconHelper {
 
 /* 
 $Log: IconHelper.java,v $
+Revision 1.8  2007/01/29 10:56:50  nw
+added new icon for filechooser
+
 Revision 1.7  2006/08/31 21:12:06  nw
 doc fix.
 
