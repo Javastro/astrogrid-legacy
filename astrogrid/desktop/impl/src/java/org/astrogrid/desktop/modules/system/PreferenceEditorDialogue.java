@@ -6,7 +6,6 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.LayoutManager;
 import java.awt.Toolkit;
@@ -15,24 +14,15 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.InputVerifier;
@@ -45,23 +35,18 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.border.Border;
 
-import org.apache.commons.collections.MultiHashMap;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.system.BrowserControl;
-import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.desktop.icons.IconHelper;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
-import com.jgoodies.forms.debug.FormDebugPanel;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.FormLayout;
 import com.l2fprod.common.swing.JButtonBar;
@@ -94,52 +79,17 @@ public class PreferenceEditorDialogue  extends JPanel implements Runnable, Prope
 	 * @param browser used to display configurationn urls
 	 * @param help to display further help for settings.
 	 */
-		public PreferenceEditorDialogue(List preferences, Preference advancedPreference, Component parent,BrowserControl browser, HelpServerInternal help) {
+		public PreferenceEditorDialogue(PreferencesArranger arranger, Preference advancedPreference, Component parent,BrowserControl browser, HelpServerInternal help) {
 			this.parent = parent;
 			this.showAdvancedPreference = advancedPreference;
 			this.browser = browser;
 			this.help = help;
-			Map basic = new MultiHashMap();
-			Map advanced = new MultiHashMap();
-			//sort preferences by module, and then according to advancedNess
-			for (Iterator i = preferences.iterator(); i.hasNext();) {
-				Preference p = (Preference) i.next();
-				// merge framework module into system.
-				String key = p.getModuleName().equalsIgnoreCase("framework")
-					? "system"
-					: p.getModuleName();
-				if (p.isAdvanced()) {
-					advanced.put(key, p);
-				} else {
-					basic.put(key,p);
-				}
-			}
-			// compute a set of module names.
-			Set names = new HashSet(basic.keySet());
-			names.addAll(advanced.keySet());
-			List moduleNames = new ArrayList(names);
-			// alphabetic sort, but with 'system' being first.
-			Collections.sort(moduleNames,new Comparator() {
-
-				public int compare(Object arg0, Object arg1) {
-					String s1 = (String)arg0;
-					String s2 = (String)arg1;
-					if (s1.equalsIgnoreCase("system")) {
-						return -1;
-					} 
-					if (s2.equalsIgnoreCase("system")) {
-						return 1;
-					}
-					
-					return s1.compareToIgnoreCase(s2);
-				}
-			});
+			
 			// build the user interface.
-			initUI(moduleNames,basic,advanced);
+			initUI(arranger);
 			// start listening to changes 
 			this.showAdvancedPreference.addPropertyChangeListener(this);
-			// trigger an event with the current value to initialize the ui.
-			this.showAdvancedPreference.initializeThroughListener(this);
+
 		}
 	// used to center the dialog on parent ui.
 	protected final Component parent;
@@ -147,16 +97,7 @@ public class PreferenceEditorDialogue  extends JPanel implements Runnable, Prope
 	protected final BrowserControl browser;
 	protected final HelpServerInternal help;
 	
-	/** comparator that sorts preferences by name */
-	private final Comparator preferenceComparator = new Comparator() {
 
-		public int compare(Object arg0, Object arg1) {
-			Preference a = (Preference) arg0;
-			Preference b = (Preference) arg1;
-			return a.getName().compareTo(b.getName());
-		}
-	};
-	
 	// manages a stack of config panes.
 	protected final CardLayout cardLayout = new CardLayout();
 	protected final JPanel cardContainer = new JPanel(cardLayout);
@@ -172,17 +113,25 @@ public class PreferenceEditorDialogue  extends JPanel implements Runnable, Prope
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getSource() == showAdvancedPreference) {
 			boolean vis = showAdvancedPreference.asBoolean();
-			for (Iterator i = componentsOnlyVisibleWhenAdvanced.iterator(); i.hasNext();) {
-				JComponent c = (JComponent) i.next();
-				c.setVisible(vis);
-			}		
+			showOptionalComponents(vis);		
 			
 		}
 		
 	}
 
+	/** flip visibility of all optional components.
+	 * @param vis if true, show all optional components,
+	 */
+	void showOptionalComponents(boolean vis) {
+		for (Iterator i = componentsOnlyVisibleWhenAdvanced.iterator(); i.hasNext();) {
+			JComponent c = (JComponent) i.next();
+			c.setVisible(vis);
+		}
+	}
+
 	/** displays the dialogue and takes action on 'ok' or 'cancel' */
 	public void run() {
+
 		// reset / update all fields
 		for (Iterator i1 = inputComponents.iterator(); i1.hasNext();) {
 			JComponent c1 = (JComponent) i1.next();
@@ -203,7 +152,16 @@ public class PreferenceEditorDialogue  extends JPanel implements Runnable, Prope
 		opane.setMessage(this);
 		JDialog dialog = opane.createDialog(parent, "Preferences");
 		dialog.setContentPane(opane);
-	    dialog.pack();		
+		// temporarily enable advanced view, so that we pack to the correct size.
+		boolean showOptional =  showAdvancedPreference.asBoolean();
+		if (! showOptional) {
+		showOptionalComponents(true);
+		}
+	    dialog.pack(); // packs for maximum size.
+	    // now flip back to the selected view setting.
+	    if (! showOptional) {
+	    	showOptionalComponents(false);
+	    }
 	    dialog.setVisible(true);
 	    dialog.toFront();
 	    Object status = opane.getValue();
@@ -222,7 +180,7 @@ public class PreferenceEditorDialogue  extends JPanel implements Runnable, Prope
 				String editedValue = ((ValueAccess)c).getValue();
 				p.setValue(editedValue); // only firest events if a value change has happened.
 			}
-	    } 
+	    }  
 	}
 
 
@@ -230,11 +188,8 @@ public class PreferenceEditorDialogue  extends JPanel implements Runnable, Prope
 	 * Initialize the UI.
 	 * not private - so can be overridden when testing.
 	 * 
-	 * @param moduleNames list of module names (stirngs)
-	 * @param basic map of module_name -> [basic preference]
-	 * @param advanced map of module_name -> [advanced_preference]
 	 */
-	void initUI(List moduleNames, Map basic, Map advanced) {
+	void initUI(PreferencesArranger arranger) {
 		JButtonBar toolbar = new JButtonBar(JButtonBar.VERTICAL );
 		toolbar.setPreferredSize(new Dimension(90,300)); // only x-coord is relevant here.
 		toolbar.setUI(new BlueishButtonBarUI());
@@ -248,17 +203,16 @@ public class PreferenceEditorDialogue  extends JPanel implements Runnable, Prope
 
 		ButtonGroup group = new ButtonGroup();
 
-		for (Iterator modules = moduleNames.iterator(); modules.hasNext();) {
-			String moduleName = (String) modules.next();
-			Collection basicPrefs = (Collection)basic.get(moduleName);
-			Collection advancedPrefs = (Collection)advanced.get(moduleName);
-			String displayName = StringUtils.capitalize(moduleName);
-			JPanel p =  makePanel(displayName,basicPrefs,advancedPrefs);
-			cardContainer.add(p,displayName);
-			JComponent butt = addButton(displayName, null /*@todo  no icon available here at present */
+		for (Iterator cats = arranger.listPreferenceCategories().iterator(); cats.hasNext();) {
+			String catName = (String) cats.next();
+			List basicPrefs = arranger.listBasicPreferencesForCategory(catName);
+			List advancedPrefs = arranger.listAdvancedPreferencesForCategory(catName);
+			JPanel p =  makePanel(catName,basicPrefs,advancedPrefs);
+			cardContainer.add(p,catName);
+			JComponent butt = addButton(catName, null /*@todo  no icon available here at present */
 					, toolbar
 					, group);
-			if (basicPrefs == null) {
+			if (basicPrefs.size() == 0) {
 				componentsOnlyVisibleWhenAdvanced.add(butt);
 			}
 			//@todo set selected button / pane to one visible in this view.
@@ -303,7 +257,7 @@ public class PreferenceEditorDialogue  extends JPanel implements Runnable, Prope
 	 * @return a panel.
 	 * @see  #makeForm(Collection, Collection)
 	 */
-	private JPanel makePanel(String title, Collection basicPrefs, Collection advancedPrefs) {
+	private JPanel makePanel(String title, List basicPrefs, List advancedPrefs) {
 		FormLayout layout = new FormLayout(
 				"12dlu,right:max(90dlu;min), 3dlu, left:max(200dlu;min),3dlu,max(7dlu;min),1dlu,max(3dlu;min)"
 				,"");
@@ -323,8 +277,6 @@ public class PreferenceEditorDialogue  extends JPanel implements Runnable, Prope
 		if (basicPrefs != null) {
 			// order the preferences  first.
 			RowFactory fac = new RowFactory();
-			List l= new ArrayList(basicPrefs);
-			Collections.sort(l, preferenceComparator);
 			for (Iterator i = basicPrefs.iterator(); i.hasNext();) {
 				Preference p = (Preference) i.next();
 				fac.buildFormRow(builder, p);
@@ -332,10 +284,7 @@ public class PreferenceEditorDialogue  extends JPanel implements Runnable, Prope
 			thisPanelInputComponents.addAll(fac.inputComponentList);
 		}
 		if (advancedPrefs != null ) {
-			RowFactory fac = new RowFactory();
-			// would like to sort these first.
-			List l= new ArrayList(advancedPrefs);
-			Collections.sort(l, preferenceComparator);			
+			RowFactory fac = new RowFactory();		
 			JComponent label = builder.appendSeparator("Advanced");
 			componentsOnlyVisibleWhenAdvanced.add(label); // want this to vanish.
 			builder.nextLine();
@@ -463,7 +412,7 @@ public class PreferenceEditorDialogue  extends JPanel implements Runnable, Prope
 		} else {
 			// plain text input
 			// single line - either a short or long input box.
-			int sz = p.getDefaultValue().length() < 5 ? 5 : 50;
+			int sz = p.getDefaultValue().length() < 7 ? 7 : 50;
 			comp = new TextInput(p.getValue(),sz);
 			if (p.getDefaultValue().length() > OVERSIZE) {
 				int fontSize = comp.getFont().getSize();
@@ -525,7 +474,9 @@ public class PreferenceEditorDialogue  extends JPanel implements Runnable, Prope
 						public void actionPerformed(ActionEvent e) {
 							final ValueAccess valueAccess = ((ValueAccess)c);
 							File f = new File(valueAccess.getValue());
-							fileChooser.setCurrentDirectory(f);
+							fileChooser.setCurrentDirectory(f); // will be set to parent dir of this file.
+							fileChooser.ensureFileIsVisible(f);
+							
 							if (JFileChooser.APPROVE_OPTION == fileChooser.showDialog(c, "Choose")) {
 								f = fileChooser.getSelectedFile();
 								if (f != null) {
@@ -546,7 +497,9 @@ public class PreferenceEditorDialogue  extends JPanel implements Runnable, Prope
 						public void actionPerformed(ActionEvent e) {
 							final ValueAccess valueAccess = ((ValueAccess)c);							
 							File f = new File(valueAccess.getValue());
+							//@todo these 2 methods don't do as much as you'd hope. seems to be a bug in the implementation.
 							directoryChooser.setCurrentDirectory(f);
+							directoryChooser.ensureFileIsVisible(f);
 							if (JFileChooser.APPROVE_OPTION == directoryChooser.showDialog(c, "Choose")) {
 								f = directoryChooser.getSelectedFile();
 								if (f != null) {
@@ -603,7 +556,9 @@ public class PreferenceEditorDialogue  extends JPanel implements Runnable, Prope
 	
 	// supporting components
 	protected final JFileChooser fileChooser = new JFileChooser();
-	protected final JDirectoryChooser directoryChooser = new JDirectoryChooser();
+	protected final JDirectoryChooser directoryChooser = new JDirectoryChooser() {{
+		setFileHidingEnabled(false);
+	}};
 	
 	/** input verifiers */
 	
@@ -727,7 +682,7 @@ public class PreferenceEditorDialogue  extends JPanel implements Runnable, Prope
 		private static final class OptionInput extends JComboBox implements ValueAccess {
 	
 	
-			private OptionInput(String[] items, String val) {
+			OptionInput(String[] items, String val) {
 				super(items);
 				setEditable(false);
 				setSelectedItem(val);
