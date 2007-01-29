@@ -7,13 +7,12 @@ import java.net.URI;
 import java.net.URL;
 
 import junit.framework.TestCase;
-import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.config.Configuration;
 
 import org.astrogrid.desktop.alternatives.HeadlessUIFactory;
-import org.astrogrid.desktop.modules.ivoa.CacheFactoryInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.votech.VoMon;
 import org.votech.VoMonBean;
@@ -28,14 +27,14 @@ public class VoMonImplUnitTest extends TestCase {
 		super.setUp();
 		endpoint = VoMonImplUnitTest.class.getResource("status.xml");
 		assertNotNull("status.xml not availebl",endpoint);
-		cacheFactory = new CacheFactoryInternal() {
-			Configuration conf = new Configuration();
+
+			final Configuration conf = new Configuration();
 			CacheConfiguration defaults = new CacheConfiguration() {{
 
 				conf.setDefaultCacheConfiguration(this);
 			}};
 			CacheConfiguration tmp = new CacheConfiguration() {{
-				setName(CacheFactoryInternal.VOMON_CACHE);
+				setName("test-vomon");
 				setDiskPersistent(false);
 				setOverflowToDisk(false);
 				setMaxElementsInMemory(1000);
@@ -44,17 +43,12 @@ public class VoMonImplUnitTest extends TestCase {
 				setTimeToLiveSeconds(120);				
 				conf.addCache(this);
 			}};			
-			CacheManager manager = new CacheManager(conf);
-			public void flush() {
-				manager.clearAll();
-			}
-			public CacheManager getManager() {
-				return manager;
-			}
-		};
+			manager = new CacheManager(conf);
+
 		HeadlessUIFactory fac = new HeadlessUIFactory();
 		ui = fac.getUI();
-		cache = cacheFactory.getManager().getCache(CacheFactoryInternal.VOMON_CACHE);
+		
+		cache = manager.getEhcache("test-vomon");
 		
 		assertNotNull("cache is null",cache);
 	}
@@ -62,20 +56,20 @@ public class VoMonImplUnitTest extends TestCase {
 	final static int refresh = 30;
 	URL endpoint;
 	UIInternal ui;
-	CacheFactoryInternal cacheFactory;
-	Cache cache;
+	CacheManager manager;
+	Ehcache cache;
 	
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		endpoint = null;
-		cacheFactory.getManager().shutdown();
-		cacheFactory = null;
+		manager.shutdown();
+		manager = null;
 		ui = null;
 		cache = null;
 	}
 
 	public void testLoad() throws Exception {
-		VoMonImpl mon = new VoMonImpl(endpoint.toString(),refresh,cacheFactory,ui);
+		VoMonImpl mon = new VoMonImpl(endpoint.toString(),refresh,cache,ui);
 		mon.reload();
 		assertTrue(cache.getSize() > 0);
 		//System.out.println(cache.getKeys());
@@ -84,7 +78,7 @@ public class VoMonImplUnitTest extends TestCase {
 	}
 	
 	public void testCheckAvailabilityUp() throws Exception {
-		VoMon mon = new VoMonImpl(endpoint.toString(),refresh,cacheFactory,ui);
+		VoMon mon = new VoMonImpl(endpoint.toString(),refresh,cache,ui);
 		mon.reload();
 		URI u = new URI("ivo://cadc.nrc.ca/siap/cfht");
 		VoMonBean bean = mon.checkAvailability(u);
@@ -97,7 +91,7 @@ public class VoMonImplUnitTest extends TestCase {
 	}
 	
 	public void testCheckAvailabilityDown() throws Exception {
-		VoMon mon = new VoMonImpl(endpoint.toString(),refresh,cacheFactory,ui);
+		VoMon mon = new VoMonImpl(endpoint.toString(),refresh,cache,ui);
 		mon.reload();
 		URI u = new URI("ivo://uk.ac.le.star/TXM");
 		VoMonBean bean = mon.checkAvailability(u);
@@ -110,7 +104,7 @@ public class VoMonImplUnitTest extends TestCase {
 	}
 	
 	public void testCheckAvailabilityUnknown() throws Exception {
-		VoMon mon = new VoMonImpl(endpoint.toString(),refresh,cacheFactory,ui);
+		VoMon mon = new VoMonImpl(endpoint.toString(),refresh,cache,ui);
 		mon.reload();
 		URI u = new URI("ivo://wfau.roe.ac.uk/unknown");
 		VoMonBean bean = mon.checkAvailability(u);
@@ -118,7 +112,7 @@ public class VoMonImplUnitTest extends TestCase {
 	}
 	
 	public void testCheckCEAAvailability() throws Exception {
-		VoMon mon = new VoMonImpl(endpoint.toString(),refresh,cacheFactory,ui);
+		VoMon mon = new VoMonImpl(endpoint.toString(),refresh,cache,ui);
 		mon.reload();
 		URI u = new URI("ivo://uk.ac.le.star/CADC-HSTCA/images/CEA-application");
 		VoMonBean[] beans = mon.checkCeaAvailability(u);
@@ -133,7 +127,7 @@ public class VoMonImplUnitTest extends TestCase {
 	}	
 	
 	public void testCheckCEAAvailabilityUnknown() throws Exception {
-		VoMon mon = new VoMonImpl(endpoint.toString(),refresh,cacheFactory,ui);
+		VoMon mon = new VoMonImpl(endpoint.toString(),refresh,cache,ui);
 		mon.reload();
 		URI u = new URI("ivo://uk.ac.le.star/CADC-HSTCA/images/CEA-application1");
 		VoMonBean[] beans = mon.checkCeaAvailability(u);
@@ -143,7 +137,7 @@ public class VoMonImplUnitTest extends TestCase {
 	}	
 	
 	public void testCheckAvailabilityNulls() throws Exception {
-		VoMon mon = new VoMonImpl(endpoint.toString(),refresh,cacheFactory,ui);
+		VoMon mon = new VoMonImpl(endpoint.toString(),refresh,cache,ui);
 		mon.reload();
 		assertNull(mon.checkAvailability(null));
 		assertNotNull(mon.checkCeaAvailability(null));
