@@ -28,7 +28,7 @@ public class DimensionTextField extends JFormattedTextField implements DecSexLis
 	
 	/** construct a dimension field, whose value is initialized to 0.1,0.1 */ 
 	public DimensionTextField() {
-		this(new DoubleDimension(0.1,Double.NaN));
+		this(new DoubleDimension(0.01,Double.NaN));
 	}
 	
 	/** construct a dimension field, providing a starting value */
