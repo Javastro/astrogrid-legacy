@@ -1,4 +1,4 @@
-/*$Id: VizualizationManager.java,v 1.4 2006/09/15 14:37:20 nw Exp $
+/*$Id: VizualizationManager.java,v 1.5 2007/01/29 10:43:49 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,7 @@ import edu.berkeley.guir.prefuse.render.ImageFactory;
  * 
  *<p>
  *also contains resources, helper objects, etc that are shared between vizualizations.
- * @author Noel Winstanley nw@jb.man.ac.uk 27-Jan-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jan-2006
  *
  */
 public class VizualizationManager {
@@ -97,6 +97,9 @@ public class VizualizationManager {
 
 /* 
 $Log: VizualizationManager.java,v $
+Revision 1.5  2007/01/29 10:43:49  nw
+documentation fixes.
+
 Revision 1.4  2006/09/15 14:37:20  nw
 reduced size of thumbnails.
 

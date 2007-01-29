@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformerUnitTest.java,v 1.3 2007/01/23 11:53:38 nw Exp $
+/*$Id: TypeStructureTransformerUnitTest.java,v 1.4 2007/01/29 10:40:47 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,7 +30,7 @@ import org.astrogrid.acr.builtin.ModuleDescriptor;
 import org.astrogrid.acr.builtin.ValueDescriptor;
 
 /** test for the type structure transformer.
- * @author Noel Winstanley nw@jb.man.ac.uk 21-Feb-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Feb-2005
  */
 public class TypeStructureTransformerUnitTest extends TestCase {
 
@@ -283,6 +283,9 @@ private int i;
 
 /* 
 $Log: TypeStructureTransformerUnitTest.java,v $
+Revision 1.4  2007/01/29 10:40:47  nw
+documentation fixes.
+
 Revision 1.3  2007/01/23 11:53:38  nw
 cleaned up tests, organized imports, commented out or fixed failing tests.
 

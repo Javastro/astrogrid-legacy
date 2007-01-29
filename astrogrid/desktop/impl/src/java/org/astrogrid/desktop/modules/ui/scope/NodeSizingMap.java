@@ -1,4 +1,4 @@
-/*$Id: NodeSizingMap.java,v 1.1 2006/02/02 14:51:11 nw Exp $
+/*$Id: NodeSizingMap.java,v 1.2 2007/01/29 10:43:49 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import java.util.Map;
  * Maintains associations between node labels and sizing information.
  * 
  * an encapuslation of the map type previously used.
- * @author Noel Winstanley nw@jb.man.ac.uk 27-Jan-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jan-2006
  *
  */
 public class NodeSizingMap {
@@ -82,6 +82,9 @@ public class NodeSizingMap {
 
 /* 
 $Log: NodeSizingMap.java,v $
+Revision 1.2  2007/01/29 10:43:49  nw
+documentation fixes.
+
 Revision 1.1  2006/02/02 14:51:11  nw
 components of astroscope, plus new ssap component.
  

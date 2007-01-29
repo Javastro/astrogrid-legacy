@@ -1,4 +1,4 @@
-/*$Id: SiapProtocol.java,v 1.7 2006/08/15 09:59:58 nw Exp $
+/*$Id: SiapProtocol.java,v 1.8 2007/01/29 10:43:49 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 27-Jan-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jan-2006
  *
  */
 public class SiapProtocol extends SpatialDalProtocol {
@@ -57,6 +57,9 @@ public class SiapProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: SiapProtocol.java,v $
+Revision 1.8  2007/01/29 10:43:49  nw
+documentation fixes.
+
 Revision 1.7  2006/08/15 09:59:58  nw
 migrated from old to new registry models.
 

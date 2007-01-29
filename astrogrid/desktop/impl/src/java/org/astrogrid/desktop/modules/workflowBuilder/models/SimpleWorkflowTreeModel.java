@@ -1,4 +1,4 @@
-/*$Id: SimpleWorkflowTreeModel.java,v 1.7 2006/02/24 13:23:43 pjn3 Exp $
+/*$Id: SimpleWorkflowTreeModel.java,v 1.8 2007/01/29 10:43:02 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,7 +39,7 @@ import org.exolab.castor.xml.Unmarshaller;
 
 /**
  * simple model, based on default tree model
- * @author Noel Winstanley nw@jb.man.ac.uk 12-Sep-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 12-Sep-2005
  *
  */
 public class SimpleWorkflowTreeModel extends DefaultTreeModel {
@@ -281,6 +281,9 @@ private DefaultMutableTreeNode activityTree( AbstractActivity activity, boolean 
 
 /* 
 $Log: SimpleWorkflowTreeModel.java,v $
+Revision 1.8  2007/01/29 10:43:02  nw
+documentation fixes.
+
 Revision 1.7  2006/02/24 13:23:43  pjn3
 Added ability to strip transcripts of execution info
 

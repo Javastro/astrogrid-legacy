@@ -1,4 +1,4 @@
-/*$Id: SaveNodesButton.java,v 1.4 2006/09/14 13:52:59 nw Exp $
+/*$Id: SaveNodesButton.java,v 1.5 2007/01/29 10:43:49 nw Exp $
  * Created on 03-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,7 +46,7 @@ import edu.berkeley.guir.prefuse.focus.FocusSet;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 /** Action that takes a set of nodes and saves to myspace / localspace.
- * @author Noel Winstanley nw@jb.man.ac.uk 03-Feb-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 03-Feb-2006
  *
  */
 public class SaveNodesButton extends NodeConsumerButton {
@@ -79,7 +79,7 @@ public class SaveNodesButton extends NodeConsumerButton {
     public void actionPerformed(ActionEvent e) {       
 
         //choose a uri to save the data to.             
-        final URI saveLocationRoot = chooser.chooseResourceWithParent("Save Data",true,true,true,false,ui.getFrame());
+        final URI saveLocationRoot = chooser.chooseDirectoryWithParent("Save Data",true,true,false,ui.getFrame());
         if (saveLocationRoot == null) {
             return;
         }
@@ -273,6 +273,9 @@ public class SaveNodesButton extends NodeConsumerButton {
 
 /* 
  $Log: SaveNodesButton.java,v $
+ Revision 1.5  2007/01/29 10:43:49  nw
+ documentation fixes.
+
  Revision 1.4  2006/09/14 13:52:59  nw
  implemented plastic spectrum messaging.
 

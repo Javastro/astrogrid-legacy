@@ -1,4 +1,4 @@
-/*$Id: NodeConsumerButton.java,v 1.2 2006/04/18 23:25:44 nw Exp $
+/*$Id: NodeConsumerButton.java,v 1.3 2007/01/29 10:43:49 nw Exp $
  * Created on 03-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import edu.berkeley.guir.prefuse.focus.FocusSet;
  * when this action is enabled. (implementors must provide the actionPerformed and 
  * focusChanged methods)
  * 
- * @author Noel Winstanley nw@jb.man.ac.uk 03-Feb-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 03-Feb-2006
  *
  */
 public  abstract class  NodeConsumerButton extends JButton implements FocusListener, ActionListener{
@@ -49,6 +49,9 @@ public  abstract class  NodeConsumerButton extends JButton implements FocusListe
 
 /* 
 $Log: NodeConsumerButton.java,v $
+Revision 1.3  2007/01/29 10:43:49  nw
+documentation fixes.
+
 Revision 1.2  2006/04/18 23:25:44  nw
 merged asr development.
 

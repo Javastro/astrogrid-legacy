@@ -1,4 +1,4 @@
-/*$Id: DalProtocolManager.java,v 1.5 2006/10/31 12:57:31 nw Exp $
+/*$Id: DalProtocolManager.java,v 1.6 2007/01/29 10:43:49 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ import org.astrogrid.acr.ivoa.resource.Service;
  * aggregates a set of retreivers together - so they can be operated as a whole.
  * also manages a tablemodel that summarizes the resultls of querying each service - this is also accessible through
  * the separate {@link QueryResultSummarizer} interface - as later, we may want to refactor this elewhere.
- * @author Noel Winstanley nw@jb.man.ac.uk 27-Jan-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jan-2006
  *
  */
 public class DalProtocolManager implements QueryResultSummarizer {
@@ -80,6 +80,9 @@ public class DalProtocolManager implements QueryResultSummarizer {
 
 /* 
 $Log: DalProtocolManager.java,v $
+Revision 1.6  2007/01/29 10:43:49  nw
+documentation fixes.
+
 Revision 1.5  2006/10/31 12:57:31  nw
 removed commented out code - available in previous revision if needed.
 

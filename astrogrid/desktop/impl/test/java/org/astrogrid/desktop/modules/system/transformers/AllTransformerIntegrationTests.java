@@ -1,4 +1,4 @@
-/*$Id: AllTransformerIntegrationTests.java,v 1.2 2007/01/23 11:53:38 nw Exp $
+/*$Id: AllTransformerIntegrationTests.java,v 1.3 2007/01/29 10:40:47 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import junit.framework.TestSuite;
 import org.astrogrid.desktop.ARTestSetup;
 
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 25-Jul-2005
  *
  */
 public class AllTransformerIntegrationTests {
@@ -32,6 +32,9 @@ public class AllTransformerIntegrationTests {
 
 /* 
  $Log: AllTransformerIntegrationTests.java,v $
+ Revision 1.3  2007/01/29 10:40:47  nw
+ documentation fixes.
+
  Revision 1.2  2007/01/23 11:53:38  nw
  cleaned up tests, organized imports, commented out or fixed failing tests.
 

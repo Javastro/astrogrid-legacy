@@ -1,4 +1,4 @@
-/*$Id: WindowedRadialColorFunction.java,v 1.2 2006/04/18 23:25:44 nw Exp $
+/*$Id: WindowedRadialColorFunction.java,v 1.3 2007/01/29 10:43:49 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import edu.berkeley.guir.prefuse.action.assignment.ColorFunction;
 import edu.berkeley.guir.prefuse.util.ColorMap;
 /**
  * colorer that determines color of elemnts in astroscope vizualizations
- * @author Noel Winstanley nw@jb.man.ac.uk 27-Jan-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jan-2006
  *
  */
 public class WindowedRadialColorFunction extends ColorFunction {
@@ -82,6 +82,9 @@ public class WindowedRadialColorFunction extends ColorFunction {
 
 /* 
 $Log: WindowedRadialColorFunction.java,v $
+Revision 1.3  2007/01/29 10:43:49  nw
+documentation fixes.
+
 Revision 1.2  2006/04/18 23:25:44  nw
 merged asr development.
 

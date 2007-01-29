@@ -1,4 +1,4 @@
-/*$Id: VotableLoadPlasticButton.java,v 1.6 2006/09/14 13:52:59 nw Exp $
+/*$Id: VotableLoadPlasticButton.java,v 1.7 2007/01/29 10:43:49 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,7 +33,7 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 /** button that loads a votable over plastic.
  * 
- * @author Noel Winstanley nw@jb.man.ac.uk 22-Feb-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 22-Feb-2006
  *
  */
 public class VotableLoadPlasticButton extends PlasticButton {
@@ -83,6 +83,9 @@ public class VotableLoadPlasticButton extends PlasticButton {
 
 /* 
 $Log: VotableLoadPlasticButton.java,v $
+Revision 1.7  2007/01/29 10:43:49  nw
+documentation fixes.
+
 Revision 1.6  2006/09/14 13:52:59  nw
 implemented plastic spectrum messaging.
 

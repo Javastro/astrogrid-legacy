@@ -1,4 +1,4 @@
-/*$Id: AllSystemTransformerUnitTests.java,v 1.1 2007/01/09 16:12:20 nw Exp $
+/*$Id: AllSystemTransformerUnitTests.java,v 1.2 2007/01/29 10:40:47 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 25-Jul-2005
  *
  */
 public class AllSystemTransformerUnitTests {
@@ -36,6 +36,9 @@ public class AllSystemTransformerUnitTests {
 
 /* 
 $Log: AllSystemTransformerUnitTests.java,v $
+Revision 1.2  2007/01/29 10:40:47  nw
+documentation fixes.
+
 Revision 1.1  2007/01/09 16:12:20  nw
 improved tests - still need extending though.
 

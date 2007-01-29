@@ -1,4 +1,4 @@
-/*$Id: TextImageItemSizeRenderer.java,v 1.5 2006/04/18 23:25:44 nw Exp $
+/*$Id: TextImageItemSizeRenderer.java,v 1.6 2007/01/29 10:43:49 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,7 @@ import edu.berkeley.guir.prefuse.VisualItem;
 import edu.berkeley.guir.prefuse.render.TextImageItemRenderer;
 /**
  * renderer for node that produces a text and image, where the text varies in size.
- * @author Noel Winstanley nw@jb.man.ac.uk 27-Jan-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jan-2006
  *
  */
 public class TextImageItemSizeRenderer extends TextImageItemRenderer {
@@ -63,6 +63,9 @@ public class TextImageItemSizeRenderer extends TextImageItemRenderer {
 
 /* 
 $Log: TextImageItemSizeRenderer.java,v $
+Revision 1.6  2007/01/29 10:43:49  nw
+documentation fixes.
+
 Revision 1.5  2006/04/18 23:25:44  nw
 merged asr development.
 

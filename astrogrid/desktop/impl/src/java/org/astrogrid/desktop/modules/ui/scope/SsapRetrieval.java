@@ -1,4 +1,4 @@
-/*$Id: SsapRetrieval.java,v 1.5 2006/09/14 13:52:59 nw Exp $
+/*$Id: SsapRetrieval.java,v 1.6 2007/01/29 10:43:49 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -163,7 +163,7 @@ public class SsapRetrieval extends Retriever {
                 && spectrumDimeqCol >= 0
                 && spectrumScaleqCol >= 0                
             ; 
-                //@todo should I require unites too?
+                //@todo should I require units too?
         }        
         
         public void endTable() throws SAXException {
@@ -181,6 +181,9 @@ public class SsapRetrieval extends Retriever {
 
 /* 
 $Log: SsapRetrieval.java,v $
+Revision 1.6  2007/01/29 10:43:49  nw
+documentation fixes.
+
 Revision 1.5  2006/09/14 13:52:59  nw
 implemented plastic spectrum messaging.
 

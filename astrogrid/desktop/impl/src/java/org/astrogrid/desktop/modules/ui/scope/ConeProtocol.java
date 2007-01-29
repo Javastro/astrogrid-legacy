@@ -1,4 +1,4 @@
-/*$Id: ConeProtocol.java,v 1.9 2006/08/15 10:01:12 nw Exp $
+/*$Id: ConeProtocol.java,v 1.10 2007/01/29 10:43:49 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import org.astrogrid.acr.nvo.Cone;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 27-Jan-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jan-2006
  *
  */
 public class ConeProtocol extends SpatialDalProtocol {
@@ -58,6 +58,9 @@ public class ConeProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: ConeProtocol.java,v $
+Revision 1.10  2007/01/29 10:43:49  nw
+documentation fixes.
+
 Revision 1.9  2006/08/15 10:01:12  nw
 migrated from old to new registry models.
 

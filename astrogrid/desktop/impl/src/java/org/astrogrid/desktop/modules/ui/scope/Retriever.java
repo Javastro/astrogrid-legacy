@@ -32,7 +32,7 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  *   return an instance of {@link Retriever.SummarizingTableHandler} that containis the parsed results of 
  *   querying this service.
  *  
- * @author Noel Winstanley nw@jb.man.ac.uk 28-Oct-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 28-Oct-2005
  *
  */
 public abstract class Retriever extends BackgroundWorker {
@@ -107,7 +107,7 @@ public abstract class Retriever extends BackgroundWorker {
 
     /** sax-style parser for votables - these methods get called in callbacks, sax-style, as the document whizzes by, instead of having an in-memory model
      * maybe this will stop my laptop overheating whenever I do M54,1.0 - at the moment the overheating trip cuts in and shus the machine down. :)
-     * @author Noel Winstanley nw@jb.man.ac.uk 02-Dec-2005
+     * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Dec-2005
      */
    public class BasicTableHandler implements SummarizingTableHandler {
 
