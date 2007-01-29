@@ -34,10 +34,11 @@ public class SnitchImpl implements SnitchInternal {
 	private final boolean snitchDisabled;
 
 	
-	public SnitchImpl( UIInternal ui,String version, String appMode, final ReportingListModel plasticList) {
+	public SnitchImpl( UIInternal ui,String version, String appMode, final ReportingListModel plasticList, Preference doSnitch) {
 		super();
 		this.ui = ui;
-		this.snitchDisabled = version.equals("${astrogrid.desktop.version}"); // if the key isn't available, the keyname is passed in instead.
+		this.snitchDisabled = (! doSnitch.asBoolean()) 
+						|| version.equals("${astrogrid.desktop.version}"); // if the key isn't available, the keyname is passed in instead.
 		// this key isn't availahble when running in eclipse - so won't snitch if we're in development mode - as will give meaningless results.
 
 		if (! snitchDisabled) {
