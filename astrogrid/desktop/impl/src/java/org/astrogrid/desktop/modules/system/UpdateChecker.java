@@ -30,19 +30,24 @@ public class UpdateChecker implements Runnable {
 
 	private static final String versionURLString = "http://www.astrogrid.org/desktop/download/version.txt";
 	private static final String downloadURLString = "http://www.astrogrid.org/desktop/download";
-	public UpdateChecker(UIInternal ui, BrowserControl browser, String currentVersion) throws MalformedURLException {
+	public UpdateChecker(UIInternal ui, BrowserControl browser, String currentVersion,Preference check) throws MalformedURLException {
 		versionURL = new URL(versionURLString);
 		downloadURL = new URL(downloadURLString);
 		this.ui = ui;
 		this.browser = browser;
 		this.currentVersion = currentVersion;
+		this.check = check;
 	}
+	protected final Preference check;
 	protected final String currentVersion;
 	protected final URL versionURL;
 	protected final URL downloadURL;
 	protected final UIInternal ui;
 	protected final BrowserControl browser;
 	public void run() {
+		if (!check.asBoolean()) {
+			return; //
+		}
 		if (! currentVersion.equals( "${astrogrid.desktop.version}") ) { // not in development mode
 			(new BackgroundWorker(ui,"Checking for software updates") {
 				protected Object construct() throws Exception {
@@ -50,10 +55,14 @@ public class UpdateChecker implements Runnable {
 					BufferedReader vr =null;
 					try {
 						vr = new BufferedReader(new InputStreamReader(versionURL.openStream()));
-					String newVersion = vr.readLine().trim();
-					logger.info("Current Version: " + currentVersion);
-					logger.info("New Version: " + newVersion);
-					return currentVersion.compareTo(newVersion) < 0 ? newVersion : null;
+						if (vr != null) {
+							String newVersion = vr.readLine().trim();
+							logger.info("Current Version: " + currentVersion);
+							logger.info("New Version: " + newVersion);
+							return currentVersion.compareTo(newVersion) < 0 ? newVersion : null;
+						}
+					} catch (Throwable t) {
+						logger.info("Update checker failed",t);
 					} finally {
 						if (vr != null) {
 							try {
@@ -62,6 +71,7 @@ public class UpdateChecker implements Runnable {
 							}
 						}
 					}
+					return null;
 				}
 				protected void doFinished(Object result) {
 					if (result != null) {
