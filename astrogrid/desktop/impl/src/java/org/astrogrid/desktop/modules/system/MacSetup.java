@@ -34,9 +34,10 @@ public class MacSetup implements InvocationHandler {
 	 */
 	private static final Log logger = LogFactory.getLog(MacSetup.class);
 	
-	public MacSetup(UIInternal ui, Shutdown shutdown) throws ClassNotFoundException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+	public MacSetup(UIInternal ui, Shutdown shutdown, Runnable config) throws ClassNotFoundException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		this.ui = ui;
 		this.shutdown = shutdown;
+		this.config = config;
 		Class applicationClass = Class.forName("com.apple.eawt.Application");
 		Class listenerClass = Class.forName("com.apple.eawt.ApplicationListener");
 		Class eventClass= Class.forName("com.apple.eawt.ApplicationEvent");
@@ -70,6 +71,7 @@ public class MacSetup implements InvocationHandler {
 	protected final UIInternal ui;
 	protected final Shutdown shutdown;
 	protected final Method handledMethod;
+	protected final Runnable config;
 
 	/** handles calls to the menu */
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -77,7 +79,7 @@ public class MacSetup implements InvocationHandler {
 			ui.showAboutDialog();
 			handledMethod.invoke(args[0],new Object[]{Boolean.TRUE});			
 		} else if (method.equals(preferencesMethod)) {
-			ui.showPreferencesDialog();
+			config.run();
 			handledMethod.invoke(args[0],new Object[]{Boolean.TRUE});			
 		} else if (method.equals(quitMethod)) {
 			shutdown.reallyHalt(); // no way of stopping it, but at least we can notify folk.
