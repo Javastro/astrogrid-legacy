@@ -7,14 +7,16 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.test.TransportTest;
 
 /** implementation of transport test.
+ * not named 'TransportTestImpl', as this conflicts with naming convention for tests, 
+ * and gets everyting messed up.
  * @author Noel Winstanley
  * @since Jun 15, 20061:34:13 AM
  */
-public class TransportTestImpl implements TransportTest {
+public class TestTransportComponentImpl implements TransportTest {
 /**
  * 
  */
-public TransportTestImpl() {
+public TestTransportComponentImpl() {
 }
 	public byte[] echoByteArray(byte[] arg0) {
 		return arg0;
