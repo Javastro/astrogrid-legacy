@@ -3,6 +3,8 @@
  */
 package org.astrogrid.desktop.modules.ivoa.resource;
 
+import java.net.URI;
+
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.CeaServerCapability;
@@ -99,8 +101,8 @@ public final class ResourceFormatter {
 				sb.append("<br>");
 			}
 			//@FIXME find a way to scale the logo
-			if (creator.getLogo() != null) {
-				sb.append("<img align='right'  border='1' alt='").append(creator.getLogo()).append("' src='").append(creator.getLogo()).append("'>").append("<br>");
+			if (creator.getLogoURI() != null) {
+				sb.append("<img align='right'  border='1' alt='").append(creator.getLogoURI()).append("' src='").append(creator.getLogoURI()).append("'>").append("<br>");
 			}
 			
 			
@@ -183,8 +185,8 @@ public final class ResourceFormatter {
 					if (u.getUse() != null) {
 						sb.append(u.getUse()).append(" - ");
 					}
-					sb.append("<a href='").append(u.getValue()).append("'>");
-					sb.append(u.getValue()).append("</a>");
+					final URI url = u.getValueURI();
+					formatURI(sb, url);
 				}
 				if (iface.getSecurityMethods().length > 0) {
 					sb.append("<li>Security - ");
@@ -201,6 +203,23 @@ public final class ResourceFormatter {
 				sb.append("<br>Service Rights - ");
 				fmtStringArray(sb,s.getRights());
 			}
+		}
+	}
+
+	/** Write out a url/uri -if it's a well known scheme - http / ftp / ivo, add a hyperlink around it.
+	 * @param sb
+	 * @param url
+	 */
+	private static void formatURI(StringBuffer sb, final URI url) {
+		if (url != null) {
+		String scheme = url.getScheme();
+		// fix for BZ 1970 - odd scheme types.
+		if (scheme != null && (scheme.equals("http") || scheme.equals("ftp") || scheme.equals("ivo"))) {
+			sb.append("<a href='").append(url).append("'>");
+			sb.append(url).append("</a>");
+		} else {
+				sb.append(url);
+		}
 		}
 	}
 
@@ -274,10 +293,11 @@ public final class ResourceFormatter {
 		if (! (content.getDescription() == null || content.getDescription().equals("not set") || content.getDescription().equals("(no description available)")) ) {
 			sb.append("<p>").append(content.getDescription()).append("</p>");
 		}
-		if (content.getReferenceURL() != null) {
+		final URI referenceURI = content.getReferenceURI();
+		if (referenceURI != null) {
 			sb.append("<br>Further information - ");
-			sb.append("<a href='").append(content.getReferenceURL()).append("'>");
-			sb.append(content.getReferenceURL()).append("</a><br>");
+			formatURI(sb, referenceURI);
+			sb.append("<br>");
 		}
 		final Source source = content.getSource();
 		if (source != null) {
