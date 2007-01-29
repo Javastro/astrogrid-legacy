@@ -1,4 +1,4 @@
-/*$Id: UIActionContribution.java,v 1.8 2007/01/23 11:50:49 nw Exp $
+/*$Id: UIActionContribution.java,v 1.9 2007/01/29 10:46:28 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,6 +20,8 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.system.UIImpl;
@@ -31,7 +33,7 @@ import org.astrogrid.desktop.modules.system.UIImpl.InvokerWorker;
  * when the action is triggered.
  * Method is invoked in a background worker thread.
  * @todo move some functionality from UIImpl into this class
- * @author Noel Winstanley nw@jb.man.ac.uk 21-Mar-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Mar-2006
  *
  */
 public class UIActionContribution extends AbstractAction implements UIStructureContribution, PropertyChangeListener{
@@ -48,6 +50,7 @@ public class UIActionContribution extends AbstractAction implements UIStructureC
     private String parentName;
     private Component parentComponent;
     private String helpId;
+    private boolean onEventDispatchThread;
     
     
     public static String VISIBLE_PROPERTY = "visible";
@@ -118,8 +121,12 @@ public class UIActionContribution extends AbstractAction implements UIStructureC
             result = JOptionPane.showConfirmDialog(parentImpl,confirmMessage,"Confirmation",JOptionPane.YES_NO_OPTION);
         }
         if (result == JOptionPane.YES_OPTION) {
-            InvokerWorker op = parentImpl.new InvokerWorker(this);
-            op.start();
+        	InvokerWorker op = parentImpl.new InvokerWorker(this);
+        	if (onEventDispatchThread) { //run direct on swing thread.
+        		SwingUtilities.invokeLater(op);
+        	} else {
+        		op.start(); // run in background.
+        	}
         }
     }
     
@@ -227,11 +234,26 @@ public class UIActionContribution extends AbstractAction implements UIStructureC
 	public void setHelpId(String helpId) {
 		this.helpId = helpId;
 	}
+
+	/** if true, this action should be executed on the EDT.
+	 * if false (the default) it should be executed on a background thread
+	 * @return
+	 */
+	public boolean isOnEventDispatchThread() {
+		return this.onEventDispatchThread;
+	}
+
+	public void setOnEventDispatchThread(boolean onEventDispatchThread) {
+		this.onEventDispatchThread = onEventDispatchThread;
+	}
 }
 
 
 /* 
 $Log: UIActionContribution.java,v $
+Revision 1.9  2007/01/29 10:46:28  nw
+allow to execute actions on EDT in some cases.
+
 Revision 1.8  2007/01/23 11:50:49  nw
 preferences integration.
 
