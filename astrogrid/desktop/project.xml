@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
 
-    <extend>${basedir}/../maven-base/project.xml</extend>
+    <extend>${basedir}/template/project-template.xml</extend>
         <artifactId>astrogrid-desktop-root</artifactId>
-        <currentVersion>${astrogrid.desktop.version}</currentVersion>
         <name>Top Level Project for AR / Workbenchs</name>
         <description>
         Workbench and AR requires the astrogrid/maven-base projects to be checked out adjacent to this folder.

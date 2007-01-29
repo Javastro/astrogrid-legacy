@@ -18,11 +18,7 @@
 	
  <goal name="install-materials" 
 	description="build all the pre-requsites (docs, examples, api jars etc), install them in local repo">
-		<maven:reactor
-			basedir="${basedir}"
-			goals="astrogrid-install-artifact"
-			ignoreFailures="false"
-			includes="${supporting.projects}" />
+		<maven:maven basedir="api" descriptor="api/project.xml" goals="astrogrid-install-artifact" />
 	</goal>
 	
 	<goal name="build-artifacts" 
@@ -39,7 +35,7 @@
 	<goal name="gather"
 		description="collects together artifacts build by subprojects into a single directory">
 		<mkdir dir="${basedir}/target/artifacts"/>
-		<copy todir="${basedir}/target/artifacts" flatten="true">
+		<move todir="${basedir}/target/artifacts" flatten="true">
 			<fileset dir="${basedir}">
 				<include name="**/target/*.dmg" /><!--  os images -->
 				<include name="**/target/*-app.jar" /><!--  standalone apps -->
@@ -51,7 +47,7 @@
 				<include name="**/target/ar-script-examples*.jar" />
 				<!-- api/docs, api/generated-xdocs/xmlrpc doc- already in the api distrubution zip-->
 			</fileset>
-		</copy>
+		</move>
 	</goal>
 	
 	<!-- 

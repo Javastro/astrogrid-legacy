@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+
+    <extend>../../maven-base/project.xml</extend>
+        <currentVersion>${astrogrid.desktop.version}</currentVersion>
+        <logo></logo><!--  fill in when we get one -->
+        <url>http://www.astrogrid.org/desktop/astro-runtime</url>
+        <description>
+	Template maven project that all other workbench projects should extend from.
+	
+	Provides a common set of version numbers.
+		  </description>
+
+	
+</project>
