@@ -1,4 +1,4 @@
-/*$Id: InProcessFinderSeparateTest.java,v 1.3 2007/01/23 20:07:33 nw Exp $
+/*$Id: InProcessFinderSeparateTest.java,v 1.4 2007/01/29 10:38:40 nw Exp $
  * Created on 28-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import org.astrogrid.desktop.TestingFinder;
 /** test finders ability to start off an acr instance.
  * is a 'separate test' - can't be run in conjunction with other integration tests (although that's what it really is)
  * because this test needs to create and destroy it's own acr instance.
- * @author Noel Winstanley nw@jb.man.ac.uk 28-Jul-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 28-Jul-2005
  *
  */
 public class InProcessFinderSeparateTest extends TestCase {
@@ -117,6 +117,9 @@ public class InProcessFinderSeparateTest extends TestCase {
 
 /* 
 $Log: InProcessFinderSeparateTest.java,v $
+Revision 1.4  2007/01/29 10:38:40  nw
+documentation fixes.
+
 Revision 1.3  2007/01/23 20:07:33  nw
 fixes to use subclass of finder, and to work in a hub setting.
 

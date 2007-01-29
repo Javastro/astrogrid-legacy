@@ -1,4 +1,4 @@
-/*$Id: HIvemindOrdererUnitTest.java,v 1.3 2007/01/23 11:53:38 nw Exp $
+/*$Id: HIvemindOrdererUnitTest.java,v 1.4 2007/01/29 10:38:40 nw Exp $
  * Created on 29-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import org.apache.hivemind.order.Orderer;
 
 /**
  * test my understanding of the hiemind order class - don't think I'm using it correctly at the moment.
- * @author Noel Winstanley nw@jb.man.ac.uk 29-Mar-2006
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 29-Mar-2006
  *
  */
 public class HIvemindOrdererUnitTest extends TestCase {
@@ -218,6 +218,9 @@ public class HIvemindOrdererUnitTest extends TestCase {
 
 /* 
 $Log: HIvemindOrdererUnitTest.java,v $
+Revision 1.4  2007/01/29 10:38:40  nw
+documentation fixes.
+
 Revision 1.3  2007/01/23 11:53:38  nw
 cleaned up tests, organized imports, commented out or fixed failing tests.
 

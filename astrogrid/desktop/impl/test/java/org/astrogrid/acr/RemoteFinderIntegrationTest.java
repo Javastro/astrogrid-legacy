@@ -1,4 +1,4 @@
-/*$Id: RemoteFinderIntegrationTest.java,v 1.3 2007/01/23 11:53:37 nw Exp $
+/*$Id: RemoteFinderIntegrationTest.java,v 1.4 2007/01/29 10:38:40 nw Exp $
  * Created on 28-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,7 @@ import org.astrogrid.desktop.ARTestSetup;
  * the acr happens to be in the same process, but that isn't important.
  * 
  * although this extends from a 'separate test', this test is well behaved, and can be run in conjunction with others.
- * @author Noel Winstanley nw@jb.man.ac.uk 28-Jul-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 28-Jul-2005
  *
  */
 public class RemoteFinderIntegrationTest  extends InProcessFinderSeparateTest{
@@ -45,6 +45,9 @@ public class RemoteFinderIntegrationTest  extends InProcessFinderSeparateTest{
 
 /* 
 $Log: RemoteFinderIntegrationTest.java,v $
+Revision 1.4  2007/01/29 10:38:40  nw
+documentation fixes.
+
 Revision 1.3  2007/01/23 11:53:37  nw
 cleaned up tests, organized imports, commented out or fixed failing tests.
 

@@ -37,7 +37,7 @@ public class ShutdownImplIntegrationTest extends InARTestCase implements Shutdow
 	/* Hard to test - requires UI input
 	 * Test method for 'org.astrogrid.desktop.framework.ShutdownImpl.halt()'
 	 */
-	/* @todo fix this test
+	/* @fixme fix this test
 	protected void testHalt() {
 		shutdown.addShutdownListener(this);
 		shutdown.addShutdownListener(this);

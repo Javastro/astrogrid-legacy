@@ -1,4 +1,4 @@
-/*$Id: ReflectionHelperUnitTest.java,v 1.1 2006/06/15 09:18:24 nw Exp $
+/*$Id: ReflectionHelperUnitTest.java,v 1.2 2007/01/29 10:38:40 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
 import junit.framework.TestCase;
 
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 25-Jul-2005
  *
  */
 public class ReflectionHelperUnitTest extends TestCase {
@@ -44,6 +44,9 @@ public class ReflectionHelperUnitTest extends TestCase {
 
 /* 
 $Log: ReflectionHelperUnitTest.java,v $
+Revision 1.2  2007/01/29 10:38:40  nw
+documentation fixes.
+
 Revision 1.1  2006/06/15 09:18:24  nw
 improved junit tests
 

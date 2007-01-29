@@ -1,4 +1,4 @@
-/*$Id: ACRExceptionUnitTest.java,v 1.2 2007/01/23 11:53:37 nw Exp $
+/*$Id: ACRExceptionUnitTest.java,v 1.3 2007/01/29 10:38:40 nw Exp $
  * Created on 29-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,8 +20,7 @@ import org.apache.hivemind.ApplicationRuntimeException;
 
 /** tests the cause-exception converting behaviour of acr exception.
  * 
- * @TODO fix the exception creation
- * @author Noel Winstanley nw@jb.man.ac.uk 29-Jul-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 29-Jul-2005
  *
  */
 public class ACRExceptionUnitTest extends TestCase {
@@ -108,6 +107,9 @@ public class ACRExceptionUnitTest extends TestCase {
 
 /* 
 $Log: ACRExceptionUnitTest.java,v $
+Revision 1.3  2007/01/29 10:38:40  nw
+documentation fixes.
+
 Revision 1.2  2007/01/23 11:53:37  nw
 cleaned up tests, organized imports, commented out or fixed failing tests.
 
