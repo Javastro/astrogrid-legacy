@@ -3,7 +3,6 @@
 
     <extend>${basedir}/../build/project-template.xml</extend>
         <artifactId>plastic-hub</artifactId>
-        <currentVersion>${astrogrid.desktop.version}</currentVersion>
         <name>PLASTIC Hub</name>
         <description>
 		PLASTIC Hub - binds applications together
@@ -13,8 +12,8 @@
         		<!--  list of unit tests applicable to this packaging of AR -->
      	<unitTest>
      	<includes>
-     		<include>**/system/AllSystemIntegrationTests.java</include>
-     		<include>**/system/AllSystemUnitTests.java</include>
+     		<include>**/system/**/All*IntegrationTests.java</include>
+     		<include>**/system/**/All*UnitTests.java</include>
      		<include>**/plastic/AllPlasticIntegrationTests.java</include>
      		<include>**/plastic/AllPlasticUnitTests.java</include>
      		
@@ -36,7 +35,6 @@
         	<include>**/classpath/*UnitTest.java</include>        	
         	<include>**/classpath/*IntegrationTest.java</include>    
      	</includes>
-
                         <resources>
                                 <resource>
                                         <directory>${basedir}/../test/java</directory>
@@ -52,11 +50,10 @@
                         </resources>		        		
         	</unitTest>  			
 
-
-                <!-- modifications to compile the hub portion -->
+                <!-- modifications to compile the hub portion only -->
                 <sourceModifications>
                   <sourceModification>
-                    <className>alwayst</className>
+                    <className>always</className>
                     <includes>
                     	<include>org/astrogrid/Plastic*.java</include>
                     	<include>org/astrogrid/*UnitTest.java</include>
@@ -103,6 +100,8 @@
 
 
         <dependencies>
+        <!-- only requires those that are in template project -->
+        
         <!--  only required during build -->
      <dependency>
       <artifactId>junit</artifactId>

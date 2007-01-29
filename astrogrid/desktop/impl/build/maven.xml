@@ -1,12 +1,10 @@
 <?xml version="1.0" ?>
 <project xmlns:j="jelly:core" xmlns:define="jelly:define"    
-	xmlns:artifact="artifact" xmlns:u="jelly:util" >
+	xmlns:artifact="artifact" xmlns:u="jelly:util">
 <!-- 
-common definitions and hooks used by other projects.
+common definitions and hooks used by the impl projects.
  -->
 
-
-	
 <!--  hooks -->
 	
 	<!--  record version infromation. -->
@@ -23,6 +21,56 @@ common definitions and hooks used by other projects.
 	</postGoal>
 	
 	
+    <postGoal name="dist:prepare-bin-filesystem">
+        	<echo>Copying dependencies into distro</echo>
+                <j:forEach var="lib" items="${pom.artifacts}">
+                        <j:set var="dep" value="${lib.dependency}"/>
+                                <j:if test="${dep.getProperty('dist.bundle')=='true'}">
+                                        <copy todir="${maven.dist.bin.assembly.dir}" file="${lib.path}"/>
+                                </j:if>
+                </j:forEach>
+    </postGoal>		
+	
+    <goal name="astrogrid-build-artifact" prereqs="setup,dist:build-bin"
+    description="Build the artifacts and leave in the target directory"
+    />	
+    
+    <!--overridable goal, to zap appropriate settings (necessary when running in multiproject mode -->
+		<goal name="setup">
+			<j:set var="ifBuildingASR" scope="parent" value="false" />
+		</goal>
+    
+    
+    	
+<!--  all the libs are now in maven.dist.bin.assembly.dir -here we list all the other things we're going to do with them-->
+<postGoal name="dist:build-bin">
+<!--  strip surplus classes -->
+	<attainGoal name="jar-strip" />
+<!--  package as a jar file -->
+	<attainGoal name="app-jar" />
+	<!--  sign this jar .-->	
+		<attainGoal name="sign" />
+	<!-- smoke-test -->
+		<attainGoal name="smoke-test" />
+
+	<j:if test="${! (ifBuildingASR.getValue().equals('true'))}">
+		<!-- package as an installer -->
+			<attainGoal name="installer" />		
+	<!--  package as a webstart app -->
+		<attainGoal name="webstart" />
+	</j:if>
+<!--  package as an osx app -->
+	<j:set var="tmpVar" value="${os.name}" />
+   <j:if test="${tmpVar == 'Mac OS X'}">
+	<attainGoal name="osx" />
+	</j:if>	
+</postGoal>
+
+	
+  <!--==================================
+  	Supporting goals
+  	-->
+    
 <!--  
 	real packaging routine. - hangs off back of 'dist' goal-
 -->
@@ -496,17 +544,31 @@ common definitions and hooks used by other projects.
     </proguard>	
 	</goal>
 	
+	<!-- smoke test: defintion from wikipedia (fount of all my knowledge ;)
+	
+		It refers to the first test made after repairs or first assembly to provide some 
+		assurance that a device, plumbing, woodwind instrument, or software will not 
+		catastrophically fail. After a smoke test proves that the pipes will not leak, 
+		the keys seal properly, the circuit will not burn, or the software will not crash 
+		outright, the assembly is ready for more stressful testing.
+	
+	-->
 	<goal name="smoke-test" description="Run a 'smoke test' that verifies that stripped packaged jar is minimally functional. depends on app-jar">
-	 	<echo>Running Smoke Test: ${smoke.test}</echo>
-	 	<!--  doesn't work.. can't tell why. so pre-req is that test has been previously run
+	 	<echo>Assembling Smoke Tests</echo>
+	 	<attainGoal name="test:eclipse" /><!-- for some reason, necessary before I can taskdef the next op -->
           <taskdef
             name="junit"
             classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"
-            classpathref="maven.dependency.classpath"
           />  
-          -->
+         <!-- sign test classes - so that they can be run with the signed jar -->
+         <j:set var="testJar" value="${maven.build.dir}/${maven.final.name}-tests.jar" />
+         <jar destfile="${testJar}" basedir="${maven.test.dest}" />
+         <signjar jar="${testJar}" 
+         	alias="${astrogrid.signature.alias}" storepass="${astrogrid.signature.storepass}" 
+         	lazy="true"/>
 	 	<!--  based on maven test plugin. -->
 	 	<mkdir dir="${maven.build.dir}/smoke-test-reports" />
+	 	<echo>Running Smoke Tests</echo>
 		<junit printsummary="${maven.junit.printSummary}"          failureProperty="maven.test.failure"
 			 fork="${maven.junit.fork}" dir="${maven.junit.dir}"
 			haltonerror="true" >
@@ -517,9 +579,9 @@ common definitions and hooks used by other projects.
             	<formatter type="xml" />
 	            <formatter type="${maven.junit.format}" usefile="${maven.junit.usefile}"/>
 				<classpath>
+					<pathelement location="${pom.getDependencyPath('junit')}" /> <!-- must come first, before any stripped version in the app jar -->
 					<pathelement location="${maven.build.dir}/${maven.final.name}-app.jar" />				
-					<pathelement location="${maven.test.dest}" />
-					<pathelement path="${pom.getDependencyPath('junit')}" />
+					<pathelement location="${testJar}" />
 					<j:forEach var="lib" items="${pom.artifacts}">
     					<j:set var="dep" value="${lib.dependency}"/>
     					<j:if test="${dep.getProperty('testing.jar')=='true'}">
@@ -527,7 +589,10 @@ common definitions and hooks used by other projects.
  						</j:if>
  					</j:forEach> 
 				</classpath>
-				<test name="${smoke.test}" todir="${maven.build.dir}/smoke-test-reports" />
+			<u:tokenize var="tList" delim=" ">${smoke.tests}</u:tokenize>
+			<j:forEach var="t" items="${tList}">
+				<test name="${t}" todir="${maven.build.dir}/smoke-test-reports" />
+			</j:forEach>
 		</junit>
           <j:if test="${maven.test.failure}">
             <j:if test="${context.getVariable('maven.test.failure.ignore') != 'true'}">
@@ -535,18 +600,15 @@ common definitions and hooks used by other projects.
             </j:if>
           </j:if>	
 	</goal>
-	
-<define:taglib uri="workbench">
+
 	<!--  simple tag that signs the build product. 
-	
-	don't think there was much point doing this as a taglib - seemed a good idea at the time,
-	but might as well be another goal.
+
 	-->
-	<define:tag name="sign">
-	<echo>Signing Jar: ${maven.final.name}-app.jar</echo>
-<signjar alias="astrogrid" storepass="qwertyuiop" jar="${maven.build.dir}/${maven.final.name}-app.jar"/>
-	</define:tag>
-</define:taglib>
+	<goal name="sign" >
+		<echo>Signing Jar: ${maven.final.name}-app.jar</echo>
+		<signjar  alias="${astrogrid.signature.alias}" storepass="${astrogrid.signature.storepass}" 
+			jar="${maven.build.dir}/${maven.final.name}-app.jar"/>
+	</goal>
 
 <!--  definitions of custom ant tasks. -->
 

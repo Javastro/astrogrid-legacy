@@ -2,37 +2,12 @@
 <!-- extension maven script -->
 <project xmlns:j="jelly:core"  xmlns:wb="workbench" >
 
-         <goal name="astrogrid-build-artifact" prereqs="setup,dist:build-bin"
-		    description="Build the artifacts and leave in the target directory"                  
-         />
 		
-		<!--overridable goal, to zap appropriate settings (necessary when running in multiproject mode -->
+		<!-- overridden -->
 		<goal name="setup">
 			<j:set var="ifBuildingASR" scope="parent" value="true" />
 		</goal>
-	
-<!--  all the libs are now in maven.dist.bin.assembly.dir -here we list all the other things we're going to do with them-->
-<postGoal name="dist:build-bin">
-<!--  strip surplus classes -->
-	<attainGoal name="jar-strip" />
-<!--  package as a jar file -->
-	<attainGoal name="app-jar" />
-	<!--  sign this jar .-->	
-		<wb:sign />
-	<j:if test="${! (ifBuildingASR.getValue().equals('true'))}">
-		<!-- package as an installer -->
-			<attainGoal name="installer" />		
-	<!--  package as a webstart app -->
-		<attainGoal name="webstart" />
-	</j:if>
-<!--  package as an osx app -->
-	<j:set var="tmpVar" value="${os.name}" />
-   <j:if test="${tmpVar == 'Mac OS X'}">
-	<attainGoal name="osx" />
-	</j:if>	
-</postGoal>
 
-	
 
 </project>
 

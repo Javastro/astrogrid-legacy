@@ -2,17 +2,13 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" > 
     <extend>${basedir}/acr/project.xml</extend>
         <artifactId>workbench</artifactId>
-        <currentVersion>${astrogrid.desktop.version}</currentVersion>
         <name>Workbench</name>
         <description>
-	  This project builds and packages the entire workbench sourcebase, and also contains goals to test and produce reports.
-	  ---
-	  The subprojects hub, asr, acr build and package controlled subsets of the workbench sources  - these are use to create the cut-down versions of the workbench. No testing or reporting is done in those projects.
-	  ---
-	  Testing - run the goals unit-tests, integration-tests or system-tests, etc to exercise the workbench
-	  using different levels of testing
+			Astro Grid Workbench
 	</description>
 	<shortDescription>Workbench - Explore the Virtual Observatory</shortDescription>
+	
+	<!-- groups the implementation javadoc -->
   <packageGroups>
     <packageGroup>
       <title>ACR Framework</title>
@@ -35,15 +31,10 @@
                 <sourceDirectory>src/java</sourceDirectory>
                 <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
                 <unitTest>
- 
                         <includes>	
                         	<include>**/*UnitTest.java</include>		
                         	<include>**/*IntegrationTest.java</include>					
                         </includes>
-                        
-			<excludes>
-				<!--  needed? -->
-			</excludes>
 			
                         <resources>
                                 <resource>
@@ -64,9 +55,9 @@
                         	<directory>${basedir}/src/java</directory>
                         	<includes>
                         		<include>*.properties</include>
-                        		<include>*.hs</include>
                         		<include>**/*.xml</include>
                         		<include>**/*.png</include>
+                        		<include>**/*.jpg</include>
                         		<include>**/*.html</include>
                         		<include>**/*.xsl</include>
                         		<include>**/*.gif</include> 
@@ -78,8 +69,7 @@
                 </resources>
         </build>
 
-		<!--  - definin small set of reports to place in distro.
-			as don't want to run all tests, etc, etc. when generating a project site.
+		<!-- small set of reports to run when generating project docs
 			 -->
 		<reports>
 			<report>maven-changes-plugin</report>
@@ -123,8 +113,6 @@
 		 		    <strip>true</strip>    
 	 </properties>
     </dependency>
-
-
 
     </dependencies>
 </project>

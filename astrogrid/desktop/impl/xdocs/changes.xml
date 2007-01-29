@@ -22,7 +22,8 @@
 	Fixed xml display when reg explorer is empty.
 </action>
 <action dev="nw" type="add">
-	Implemented preference system
+	Implemented preference system. Makes it simple to: altering caching behavior, 
+	location of working directory, registry endpoint, etc. 
 </action>
 <action dev="nw" type="update">
 	Replaced javahelp system with linkage to website 

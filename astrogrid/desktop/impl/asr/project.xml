@@ -3,7 +3,6 @@
 
     <extend>${basedir}/../build/project-template.xml</extend>
         <artifactId>asr</artifactId>
-        <currentVersion>${astrogrid.desktop.version}</currentVersion>
         <name>Astro Runtime (Headless version)</name>
         <description>
 	 Astro Runtime - server version
@@ -11,12 +10,55 @@
         <shortDescription>Astro Runtime - An API for the Virtual Observatory</shortDescription>
  
         <build>
-                <!-- modifications to compile the hub portion -->
-                <sourceModifications>
+                <!-- asr - run all tests apart from the ones involving ui -->
+             <unitTest>
+             	<includes>
+             		<include>**/All*IntegrationTests.java</include>
+             		<include>**/All*UnitTests.java</include>
+             	</includes>
+             	<excludes>
+             		<exclude>**/ui/**</exclude>
+             		<exclude>**/dialogs/**</exclude>
+             		<exclude>**/adqlEditor/**</exclude>
+             		<exclude>**/workflowBuilder/**</exclude>
+             	</excludes>
+					  <resources>
+                                <resource>
+                                        <directory>${basedir}/../test/java</directory>
+                                        <includes>
+                                                <include>**/*.properties</include>
+                                                <include>**/*.xml</include>
+                                                <include>**/*.xsl</include>
+                                                <include>**/*.dtd</include>
+                                                <include>**/*.xsd</include>
+                                                <include>**/*.vot</include>
+                                        </includes>
+                                </resource>								
+                        </resources>	             	
+             </unitTest>
+             <!-- modifications to build asr - basically no UI -->
+             <sourceModifications>
                   <sourceModification>
                     <className>${ifBuildingASR}</className>
+                    <includes>
+                    	<include>org/astrogrid/Headless*.java</include>
+                    	<include>org/astrogrid/*UnitTest.java</include>
+                    	<include>org/astrogrid/*IntegrationTest.java</include>
+                    	
+                    	<include>org/astrogrid/acr/AllAcrIntegrationTests.java</include>
+                    	<include>org/astrogrid/acr/AllAcrUnitTests.java</include>                    	
+                    	<include>org/astrogrid/desktop/BuildInprocess*.java</include>
+                    	<include>**/alternatives/*.java</include>
+                    	<include>**/framework/*.java</include>
+                    	<include>**/hivemind/**</include>
+                    	
+                    	<include>**/modules/**</include>
+                    	<include>**/protocol/**</include>
+                    	
+                    	<include>**/All*IntegrationTests.java</include>
+                    	<include>**/All*UnitTests.java</include>
+                    </includes>
                     <excludes>
-                      <exclude>org/astrogrid/desktop/*.java</exclude>
                       <exclude>org/astrogrid/desktop/modules/ui/**</exclude>
                       <exclude>org/astrogrid/desktop/modules/system/HelpServerImpl.java</exclude>
                       <exclude>org/astrogrid/desktop/modules/system/SwingSetup.java</exclude>
@@ -29,10 +71,8 @@
                       <!-- keep this out - as unfinished, and drags in all xbean stuff -->
                       <exclude>org/astrogrid/desktop/modules/ivoa/SkyNodeImpl.java</exclude>
 						<!--  test classes we can't compile or don't want -->
-                      <exclude>**/*All*Tests*</exclude>
-                      <exclude>**/*SystemTest*</exclude>
-                      <exclude>**/*TransportTest*</exclude>
-                      <exclude>**/*UITest*</exclude>                      
+                      <exclude>**/*SystemTest*.java</exclude>
+                      <exclude>**/*TransportTest*.java</exclude>              
                   	</excludes>
                   	
                   </sourceModification>
@@ -47,7 +87,7 @@
                                         <include>org/astrogrid/desktop/modules/system/transformers/*.xsl</include>
                                 </includes>
                         </resource>
-                        <resource>
+                        <resource><!-- includes custom log4j file for asr variant -->
                         	<directory>${basedir}/resources</directory>
                         	<includes>
                         		<include>*.properties</include>
