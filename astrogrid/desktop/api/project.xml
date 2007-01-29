@@ -1,22 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
-  <extend>${basedir}/../../maven-base/project.xml</extend>
-  <!-- todo: make this project extend from the template project instead. 
-  Am having trouble with this - as template project defines all kinds of unneeded stuff at the moemnt
-  - really only want to inherit the jar versions in project.properties.
-  -->
-  <!--    <extend>../impl/build/project-template.xml</extend>-->
+  <extend>${basedir}/../template/project-template.xml</extend>
+
         <artifactId>acr-interface</artifactId>
-        <currentVersion>${astrogrid.desktop.version}</currentVersion>
-        <name>Astro Runtime Interfaces</name>
-        <logo></logo><!--  fill in when we get one -->
-        <url>http://www.astrogrid.org/desktop/astro-runtime</url>
+        <name>Astro Runtime API</name>
         <description>
 	Subproject for the public API to AR.
 	Run % maven astrogrid-install-artifact
 	 to create the pre-requisites required for the ../impl builds
-	(also need to do same in ../userdocs). Alternatively, run 
-	% maven install-materials
+	Alternatively, run % maven install-materials
 	to do all this from the root project.
 		  </description>
         <shortDescription>Astro Runtime Interfaces</shortDescription>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- extension maven script -->
 <project   xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:artifact="artifact">
-
+	
 	<goal name="astrogrid-install-artifact" prereqs="jar:install,dist-install"
 	description="Installs interface jar, distribution zip in the local maven repository"
 	/>
