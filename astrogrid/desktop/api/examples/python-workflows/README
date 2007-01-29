@@ -4,5 +4,3 @@ run-sdss.py - an example of invoking, monitoring, and gettings results from an
 asyncronous CEA service.
 
 adass2006-example - example shown at ADASS 2006 - simple workflow based around a siap query.
-
-redshiftmaker.py - a transcription of the redshiftmaker parameterized workflow. (still to be done)

@@ -6,7 +6,7 @@ import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.acr.builtin.ACR;
 
-/*$Id: Listener.java,v 1.2 2007/01/24 14:04:46 nw Exp $
+/*$Id: Listener.java,v 1.3 2007/01/29 10:33:28 nw Exp $
  * Created on 13-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,11 +18,11 @@ import org.astrogrid.acr.builtin.ACR;
  **/
 
 /**
- * @author Noel Winstanley noel.winstanley@manchester.ac.uk 13-Jan-2006
  demonstration of attaching a listener to the AR
 
 requires AR client jars in java  classpath
 connects to acr using rmi access - listeners are not available in the xmlrpc access method
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 13-Jan-2006
 */
 
 public class Listener {
@@ -61,6 +61,9 @@ public class Listener {
 
 /* 
 $Log: Listener.java,v $
+Revision 1.3  2007/01/29 10:33:28  nw
+tidied up
+
 Revision 1.2  2007/01/24 14:04:46  nw
 updated my email address
 

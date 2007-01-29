@@ -4,8 +4,6 @@
 package examples.dalclient;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 

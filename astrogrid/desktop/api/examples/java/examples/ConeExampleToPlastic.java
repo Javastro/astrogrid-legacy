@@ -3,13 +3,10 @@
  */
 package examples;
 
-import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.builtin.ACR;
@@ -17,7 +14,6 @@ import org.astrogrid.acr.cds.Sesame;
 import org.astrogrid.acr.cds.SesamePositionBean;
 import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.Registry;
-import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.votech.plastic.CommonMessageConstants;
 import org.votech.plastic.PlasticHubListener;

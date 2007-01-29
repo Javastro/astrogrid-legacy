@@ -5,12 +5,10 @@ package examples.dalclient;
 
 import java.net.URI;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Map;
 
 import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.Siap;
 
 /** Transcribed from DALClient siap1.java - as a comparison of using DalClient vs AR

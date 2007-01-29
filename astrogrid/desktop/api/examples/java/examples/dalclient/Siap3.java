@@ -6,12 +6,9 @@ package examples.dalclient;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Map;
 
 import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.acr.util.Tables;
 
