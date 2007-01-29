@@ -1,4 +1,4 @@
-/*$Id: WebServerIntegrationTest.java,v 1.3 2007/01/23 11:53:36 nw Exp $
+/*$Id: WebServerIntegrationTest.java,v 1.4 2007/01/29 10:42:48 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,7 @@ import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
 
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 25-Jul-2005
  *
  */
 public class WebServerIntegrationTest extends InARTestCase {
@@ -68,6 +68,9 @@ public class WebServerIntegrationTest extends InARTestCase {
 
 /* 
 $Log: WebServerIntegrationTest.java,v $
+Revision 1.4  2007/01/29 10:42:48  nw
+tidied.
+
 Revision 1.3  2007/01/23 11:53:36  nw
 cleaned up tests, organized imports, commented out or fixed failing tests.
 

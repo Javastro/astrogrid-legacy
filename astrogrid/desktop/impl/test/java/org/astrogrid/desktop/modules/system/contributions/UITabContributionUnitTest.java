@@ -8,6 +8,7 @@ import java.awt.event.ComponentListener;
 
 import junit.framework.TestCase;
 
+import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.system.UIImpl;
 
@@ -58,8 +59,10 @@ public class UITabContributionUnitTest extends TestCase implements ComponentList
 	 */
 	public void testSetIconName() {
 		assertNull(t.getIcon());
-		t.setIconName("collapse.gif");
-		assertNotNull(t.getIcon());
+		t.setIconName("collapse.gif"); 
+		if (! Boolean.getBoolean("asr.mode") && IconHelper.loadIcon("collapse.gif") != null) { // no icons present in asr mode.
+			assertNotNull(t.getIcon());
+		}
 	}
 
 	/*

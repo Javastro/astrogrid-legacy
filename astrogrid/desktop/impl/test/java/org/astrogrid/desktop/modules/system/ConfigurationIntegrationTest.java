@@ -1,4 +1,4 @@
-/*$Id: ConfigurationIntegrationTest.java,v 1.3 2007/01/23 11:53:36 nw Exp $
+/*$Id: ConfigurationIntegrationTest.java,v 1.4 2007/01/29 10:42:48 nw Exp $
  * Created on 17-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
 
 /** test the configuration component in a running acr.
- * @author Noel Winstanley nw@jb.man.ac.uk 17-Mar-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Mar-2005
  *
  */
 public class ConfigurationIntegrationTest extends InARTestCase {
@@ -73,6 +73,9 @@ public class ConfigurationIntegrationTest extends InARTestCase {
 
 /* 
 $Log: ConfigurationIntegrationTest.java,v $
+Revision 1.4  2007/01/29 10:42:48  nw
+tidied.
+
 Revision 1.3  2007/01/23 11:53:36  nw
 cleaned up tests, organized imports, commented out or fixed failing tests.
 

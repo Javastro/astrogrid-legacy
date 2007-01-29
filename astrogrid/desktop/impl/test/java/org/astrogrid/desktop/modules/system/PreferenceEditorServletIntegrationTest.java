@@ -85,7 +85,7 @@ public class PreferenceEditorServletIntegrationTest	 extends WebTestCase {
 		pref.setValue(orig);
 	}
 	
-	/* @todo further testing  - however, this prference is not an option anymore.
+	/* @fixme further testing  - however, this prference is not an option anymore.
 	public void testOptionPreference() {
 		beginAt("/");
 		assertLinkPresentWithText("Preferences");

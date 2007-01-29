@@ -51,19 +51,24 @@ public class UIContributionIntegrationTest extends InARTestCase {
 	}
 	
 	public void testTab() throws Exception {
-		UITabContribution m = (UITabContribution) contrib.get("discovery");
+		if (! Boolean.getBoolean("asr.mode")) { // no tabs present in asr mode
+		UITabContribution m = (UITabContribution) contrib.get("links");
 		assertNotNull(m);
-		assertEquals("discovery",m.getName());
-		assertEquals("Data Discovery",m.getText());
-		assertEquals("*",m.getBefore());
+		assertEquals("links",m.getName());
+// varies according to variant.
+//		assertEquals("Data Discovery",m.getText());
+//		assertEquals("*",m.getBefore());
 		assertNull(m.getVisibleCondition());
+		}else {
+			assertNull(contrib.get("links"));
+		}
 	}
 
 	public void testAction() throws Exception {
-		UIActionContribution m = (UIActionContribution) contrib.get("astroscope");
+		UIActionContribution m = (UIActionContribution) contrib.get("close");
 		assertNotNull(m);
-		assertEquals("astroscope",m.getName());
-		assertEquals("AstroScope",m.getText());
-		assertNull(m.getVisibleCondition());
+		assertEquals("close",m.getName());
+		assertEquals("Close",m.getText());
+		assertNotNull(m.getVisibleCondition());
 	}
 }

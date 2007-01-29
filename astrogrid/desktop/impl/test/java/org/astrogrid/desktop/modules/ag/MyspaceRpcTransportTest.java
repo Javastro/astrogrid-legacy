@@ -1,4 +1,4 @@
-/*$Id: MyspaceRpcTransportTest.java,v 1.2 2007/01/23 11:53:38 nw Exp $
+/*$Id: MyspaceRpcTransportTest.java,v 1.3 2007/01/29 10:42:48 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,7 +37,7 @@ import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.ARTestSetup;
 
 /** exercise xmlrpc interface to myspace component.
- * @author Noel Winstanley nw@jb.man.ac.uk 03-Aug-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 03-Aug-2005
  *
  */
 public class MyspaceRpcTransportTest extends MyspaceSystemTest implements Myspace{
@@ -425,6 +425,9 @@ public class MyspaceRpcTransportTest extends MyspaceSystemTest implements Myspac
 
 /* 
 $Log: MyspaceRpcTransportTest.java,v $
+Revision 1.3  2007/01/29 10:42:48  nw
+tidied.
+
 Revision 1.2  2007/01/23 11:53:38  nw
 cleaned up tests, organized imports, commented out or fixed failing tests.
 

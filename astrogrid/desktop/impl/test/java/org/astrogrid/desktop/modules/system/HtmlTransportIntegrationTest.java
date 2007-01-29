@@ -1,4 +1,4 @@
-/*$Id: HtmlTransportIntegrationTest.java,v 1.3 2007/01/23 11:53:37 nw Exp $
+/*$Id: HtmlTransportIntegrationTest.java,v 1.4 2007/01/29 10:42:48 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import org.astrogrid.desktop.ARTestSetup;
 import com.meterware.httpunit.WebClient;
 
 /** tests the html interface;
- * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 25-Jul-2005
  *
  */
 public class HtmlTransportIntegrationTest extends WebTestCase {
@@ -178,7 +178,7 @@ public class HtmlTransportIntegrationTest extends WebTestCase {
         assertTextPresent("AnUnknownRuntimeException");  
         
     }
-    /* @todo fix this.
+    /* @fixme fix this test
     public void testByteArrayTransport() { 
     	beginAt("/");
     	assertLinkPresentWithText("test");
@@ -204,6 +204,9 @@ public class HtmlTransportIntegrationTest extends WebTestCase {
 
 /* 
 $Log: HtmlTransportIntegrationTest.java,v $
+Revision 1.4  2007/01/29 10:42:48  nw
+tidied.
+
 Revision 1.3  2007/01/23 11:53:37  nw
 cleaned up tests, organized imports, commented out or fixed failing tests.
 

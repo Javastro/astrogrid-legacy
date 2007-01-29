@@ -1,4 +1,4 @@
-/*$Id: ApiHelpRpcTransportTest.java,v 1.2 2007/01/23 11:53:37 nw Exp $
+/*$Id: ApiHelpRpcTransportTest.java,v 1.3 2007/01/29 10:42:48 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,7 @@ import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.ARTestSetup;
 
 /** repeat of apihelp tests, via xmlrpc interface - exercise this transport, and make sure configuration is correct
- * @author Noel Winstanley nw@jb.man.ac.uk 03-Aug-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 03-Aug-2005
  *
  */
 public class ApiHelpRpcTransportTest extends ApiHelpIntegrationTest implements ApiHelp {
@@ -191,6 +191,9 @@ public class ApiHelpRpcTransportTest extends ApiHelpIntegrationTest implements A
 
 /* 
 $Log: ApiHelpRpcTransportTest.java,v $
+Revision 1.3  2007/01/29 10:42:48  nw
+tidied.
+
 Revision 1.2  2007/01/23 11:53:37  nw
 cleaned up tests, organized imports, commented out or fixed failing tests.
 

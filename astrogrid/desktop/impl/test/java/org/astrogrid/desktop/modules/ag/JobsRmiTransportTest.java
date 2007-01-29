@@ -1,4 +1,4 @@
-/*$Id: JobsRmiTransportTest.java,v 1.3 2007/01/23 20:07:33 nw Exp $
+/*$Id: JobsRmiTransportTest.java,v 1.4 2007/01/29 10:42:48 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,7 @@ import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.TestingFinder;
 
 /** execrcise jobs, via rmi interface
- * @author Noel Winstanley nw@jb.man.ac.uk 09-Aug-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 09-Aug-2005
  *
  */
 public class JobsRmiTransportTest extends JobsSystemTest {
@@ -36,6 +36,9 @@ public class JobsRmiTransportTest extends JobsSystemTest {
 
 /* 
 $Log: JobsRmiTransportTest.java,v $
+Revision 1.4  2007/01/29 10:42:48  nw
+tidied.
+
 Revision 1.3  2007/01/23 20:07:33  nw
 fixes to use subclass of finder, and to work in a hub setting.
 

@@ -1,4 +1,4 @@
-/*$Id: ConfigurationRmiTransportTest.java,v 1.3 2007/01/23 20:07:33 nw Exp $
+/*$Id: ConfigurationRmiTransportTest.java,v 1.4 2007/01/29 10:42:48 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,7 @@ import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.TestingFinder;
 
 /** perform same tests on configuration component, but this time going through java rmi.
- * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 26-Jul-2005
  *
  */
 public class ConfigurationRmiTransportTest extends ConfigurationIntegrationTest {
@@ -38,6 +38,9 @@ public class ConfigurationRmiTransportTest extends ConfigurationIntegrationTest 
 
 /* 
 $Log: ConfigurationRmiTransportTest.java,v $
+Revision 1.4  2007/01/29 10:42:48  nw
+tidied.
+
 Revision 1.3  2007/01/23 20:07:33  nw
 fixes to use subclass of finder, and to work in a hub setting.
 

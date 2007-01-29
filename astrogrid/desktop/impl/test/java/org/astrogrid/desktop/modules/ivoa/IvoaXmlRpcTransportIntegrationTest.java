@@ -1,4 +1,4 @@
-/*$Id: IvoaXmlRpcTransportIntegrationTest.java,v 1.1 2007/01/23 20:07:32 nw Exp $
+/*$Id: IvoaXmlRpcTransportIntegrationTest.java,v 1.2 2007/01/29 10:42:28 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,7 +33,7 @@ import org.astrogrid.desktop.modules.system.XmlRpcTransportIntegrationTest;
 import org.astrogrid.io.Piper;
 
 /** tests xmlrpc transport for new objects introduced by ivoa module.
- * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 25-Jul-2005
  *
  */
 public class IvoaXmlRpcTransportIntegrationTest extends InARTestCase {
@@ -86,6 +86,9 @@ public class IvoaXmlRpcTransportIntegrationTest extends InARTestCase {
 
 /* 
 $Log: IvoaXmlRpcTransportIntegrationTest.java,v $
+Revision 1.2  2007/01/29 10:42:28  nw
+tidied.
+
 Revision 1.1  2007/01/23 20:07:32  nw
 fixes to use subclass of finder, and to work in a hub setting.
 

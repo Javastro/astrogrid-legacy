@@ -8,6 +8,7 @@ import java.awt.event.ComponentListener;
 
 import junit.framework.TestCase;
 
+import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.Preference;
 
 /** test ofr a ui menu contribution.
@@ -36,7 +37,9 @@ public class UIMenuContributionUnitTest extends TestCase implements ComponentLis
 	public void testSetIconName() {
 		assertNull(t.getIcon());
 		t.setIconName("collapse.gif");
-		assertNotNull(t.getIcon());
+		if (! Boolean.getBoolean("asr.mode") && IconHelper.loadIcon("collapse.gif") != null) { // no icons present in asr mode.
+			assertNotNull(t.getIcon());
+		}
 	}
 
 	/*

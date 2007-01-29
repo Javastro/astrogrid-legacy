@@ -8,6 +8,7 @@ import junit.framework.TestSuite;
 
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.ivoa.Adql074;
+import org.astrogrid.acr.ivoa.CacheFactory;
 import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.ExternalRegistry;
 import org.astrogrid.acr.ivoa.Registry;
@@ -79,8 +80,8 @@ public class IvoaModuleIntegrationTest extends InARTestCase {
 	}
 	
 	public void testCache() throws Exception {
-		CacheFactoryInternal fac = (CacheFactoryInternal)assertComponentExists(CacheFactoryInternal.class, "ivoa.cache");
-		fac.getManager();
+		CacheFactory fac = (CacheFactory)assertComponentExists(CacheFactory.class, "ivoa.cache");
+		//@todo find something non-descrutive to do here.
 	}
 	
 

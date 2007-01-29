@@ -1,4 +1,4 @@
-/*$Id: IvoaRmiTransportIntegrationTest.java,v 1.1 2007/01/23 20:07:32 nw Exp $
+/*$Id: IvoaRmiTransportIntegrationTest.java,v 1.2 2007/01/29 10:42:28 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,7 +35,7 @@ import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
 /** additional tests of rmi transport for new objects itnroduced by this module.
- * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 25-Jul-2005
  *
  */
 public class IvoaRmiTransportIntegrationTest extends TestCase {
@@ -83,6 +83,9 @@ public class IvoaRmiTransportIntegrationTest extends TestCase {
 
 /* 
 $Log: IvoaRmiTransportIntegrationTest.java,v $
+Revision 1.2  2007/01/29 10:42:28  nw
+tidied.
+
 Revision 1.1  2007/01/23 20:07:32  nw
 fixes to use subclass of finder, and to work in a hub setting.
 

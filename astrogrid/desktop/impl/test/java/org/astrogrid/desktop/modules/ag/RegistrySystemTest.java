@@ -1,4 +1,4 @@
-/*$Id: RegistrySystemTest.java,v 1.7 2007/01/23 11:53:38 nw Exp $
+/*$Id: RegistrySystemTest.java,v 1.8 2007/01/29 10:42:48 nw Exp $
  * Created on 01-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
 
 /** test functionality of in-process registry.
  * system test - requires a running astrogrid to connect to.
- * @author Noel Winstanley nw@jb.man.ac.uk 01-Aug-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 01-Aug-2005
  *
  */
 public class RegistrySystemTest extends InARTestCase {
@@ -160,6 +160,9 @@ public class RegistrySystemTest extends InARTestCase {
 
 /* 
 $Log: RegistrySystemTest.java,v $
+Revision 1.8  2007/01/29 10:42:48  nw
+tidied.
+
 Revision 1.7  2007/01/23 11:53:38  nw
 cleaned up tests, organized imports, commented out or fixed failing tests.
 

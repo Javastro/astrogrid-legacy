@@ -1,4 +1,4 @@
-/*$Id: LooselyTypedFunctionCallIntegrationTest.java,v 1.1 2007/01/23 11:53:36 nw Exp $
+/*$Id: LooselyTypedFunctionCallIntegrationTest.java,v 1.2 2007/01/29 10:42:28 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,7 +29,7 @@ import org.astrogrid.desktop.InARTestCase;
  * 
  * in this package, as requires a variant of the ar which has 
  * a component which takes a complex type as an argument.
- * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 25-Jul-2005
  *
  */
 public class LooselyTypedFunctionCallIntegrationTest extends InARTestCase {
@@ -198,6 +198,9 @@ public class LooselyTypedFunctionCallIntegrationTest extends InARTestCase {
 
 /* 
 $Log: LooselyTypedFunctionCallIntegrationTest.java,v $
+Revision 1.2  2007/01/29 10:42:28  nw
+tidied.
+
 Revision 1.1  2007/01/23 11:53:36  nw
 cleaned up tests, organized imports, commented out or fixed failing tests.
 

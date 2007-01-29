@@ -1,4 +1,4 @@
-/*$Id: ApplicationsSystemTest.java,v 1.6 2007/01/23 11:53:37 nw Exp $
+/*$Id: ApplicationsSystemTest.java,v 1.7 2007/01/29 10:42:48 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,7 +35,7 @@ import org.astrogrid.desktop.InARTestCase;
 import org.w3c.dom.Document;
 
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 09-Aug-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 09-Aug-2005
  *
  */
 public class ApplicationsSystemTest extends InARTestCase {
@@ -248,6 +248,9 @@ public class ApplicationsSystemTest extends InARTestCase {
 
 /* 
 $Log: ApplicationsSystemTest.java,v $
+Revision 1.7  2007/01/29 10:42:48  nw
+tidied.
+
 Revision 1.6  2007/01/23 11:53:37  nw
 cleaned up tests, organized imports, commented out or fixed failing tests.
 

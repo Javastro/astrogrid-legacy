@@ -1,4 +1,4 @@
-/*$Id: MyspaceRmiTransportTest.java,v 1.3 2007/01/23 20:07:33 nw Exp $
+/*$Id: MyspaceRmiTransportTest.java,v 1.4 2007/01/29 10:42:48 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,7 @@ import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.TestingFinder;
 
 /** exercise myspace, via rmi interface.
- * @author Noel Winstanley nw@jb.man.ac.uk 03-Aug-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 03-Aug-2005
  *
  */
 public class MyspaceRmiTransportTest extends MyspaceSystemTest {
@@ -35,6 +35,9 @@ public class MyspaceRmiTransportTest extends MyspaceSystemTest {
 
 /* 
 $Log: MyspaceRmiTransportTest.java,v $
+Revision 1.4  2007/01/29 10:42:48  nw
+tidied.
+
 Revision 1.3  2007/01/23 20:07:33  nw
 fixes to use subclass of finder, and to work in a hub setting.
 

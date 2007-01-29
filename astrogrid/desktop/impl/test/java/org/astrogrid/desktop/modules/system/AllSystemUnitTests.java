@@ -18,6 +18,7 @@ public class AllSystemUnitTests {
 		//$JUnit-BEGIN$
 		suite.addTestSuite(PreferenceManagerImplUnitTest.class);
 		suite.addTestSuite(PreferenceUnitTest.class);
+		suite.addTestSuite(PreferencesArrangerImplUnitTest.class);
 		//$JUnit-END$
 		return suite;
 	}

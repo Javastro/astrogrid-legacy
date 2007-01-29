@@ -36,7 +36,11 @@ public class UIInternalIntegrationTest extends InARTestCase {
 	 * Test method for 'org.astrogrid.desktop.modules.system.UIInternal.getComponent()'
 	 */
 	public void testGetComponent() {
-		assertNotNull(ui.getComponent());
+		if (! Boolean.getBoolean("asr.mode")) { // behaviour differs in asr mode.
+			assertNotNull(ui.getComponent());
+		} else {
+		assertNull(ui.getComponent());
+		}
 
 	}
 
@@ -87,7 +91,11 @@ public class UIInternalIntegrationTest extends InARTestCase {
 	 * Test method for 'org.astrogrid.desktop.modules.ui.UIComponent.getFrame()'
 	 */
 	public void testGetFrame() {
-		assertNotNull(ui.getFrame());
+		if (! Boolean.getBoolean("asr.mode")) { // behaviour differs here..
+			assertNotNull(ui.getFrame());
+		} else {
+			assertNull(ui.getFrame());
+		}
 	}
 	
 	

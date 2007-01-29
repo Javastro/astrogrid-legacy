@@ -1,4 +1,4 @@
-/*$Id: AllSystemIntegrationTests.java,v 1.4 2007/01/23 20:07:33 nw Exp $
+/*$Id: AllSystemIntegrationTests.java,v 1.5 2007/01/29 10:42:48 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import junit.framework.TestSuite;
 import org.astrogrid.desktop.ARTestSetup;
 
 /** Tests the system components.
- * @author Noel Winstanley nw@jb.man.ac.uk 25-Jul-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 25-Jul-2005
  *
  */
 public class AllSystemIntegrationTests {
@@ -45,6 +45,9 @@ public class AllSystemIntegrationTests {
 
 /* 
 $Log: AllSystemIntegrationTests.java,v $
+Revision 1.5  2007/01/29 10:42:48  nw
+tidied.
+
 Revision 1.4  2007/01/23 20:07:33  nw
 fixes to use subclass of finder, and to work in a hub setting.
 

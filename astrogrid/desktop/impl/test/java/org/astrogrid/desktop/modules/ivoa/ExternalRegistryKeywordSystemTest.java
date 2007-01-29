@@ -18,7 +18,7 @@ import org.custommonkey.xmlunit.XMLAssert;
 import org.w3c.dom.Document;
 
 /** System tests for Keyword Search part of  External Registry Component.
- * @todo get registry oddities sorted.
+ * @fixme get registry oddities sorted.
  * @author Noel Winstanley
  * @since Aug 3, 20062:20:00 AM
  */
