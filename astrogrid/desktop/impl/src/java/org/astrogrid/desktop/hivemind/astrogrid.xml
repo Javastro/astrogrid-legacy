@@ -27,6 +27,7 @@
 	<!-- things to start eager -->	
 	<contribution configuration-id="hivemind.EagerLoad">
 		<load service-id="messaging" />
+		<load service-id="myspace" /> <!--  so it gets notified of login, and prefetches ms root - for preception of speedup -->
 	</contribution>
 	
 <!-- 
@@ -36,7 +37,7 @@ UI CONFIGURATION -->
 	<!-- NEW ACTIONS -->
 	<!-- add login and logout actions -->
 	<contribution configuration-id="system.uiStructure">
-		<action text="Login" name="login" parentName="file" iconName="connect_creating.png"
+		<action text="Login" name="login"  parentName="file" iconName="connect_creating.png"
 			object="service:community" methodName="guiLogin" before="close,exit,logout">
 			<tooltip>Log in to AstroGrid</tooltip>
 		</action>
@@ -139,6 +140,7 @@ MYSPACE
 			<construct class="org.astrogrid.desktop.modules.ag.VospaceImpl" >
 				<service>community</service>
 				<service>bundlePrefs</service>
+				<service>system.ui</service>
 				<event-listener service-id="community" />	
 			</construct>
 		</invoke-factory>	
@@ -175,7 +177,7 @@ COMMUNITY -->	<service-point id="community" interface="org.astrogrid.desktop.mo
 				<service>system.ui</service>
 				<service>loginDialogue</service>
 				<service>system.snitch</service>
-				<string>${trusted.cert.dir}</string>
+				<string>${astrogrid.workdir}${file.separator}trusted-certificates</string>
 			</construct>
 		</invoke-factory>	
 	</service-point>
@@ -194,7 +196,7 @@ COMMUNITY -->	<service-point id="community" interface="org.astrogrid.desktop.mo
 		<default symbol="astrogrid.community.register" value="mailto:astrogrid_signup@star.le.ac.uk?subject=New%20Account%20Request&amp;body=Name:%0D%0AInstitute:"/>
 		<default symbol="astrogrid.community.defaultCommunity" value="uk.ac.le.star" />
 	</contribution>	
-	
+	<!--  removed - use .workdir instead - makes it simpler to configure
 	<contribution configuration-id="framework.preferences">
 		<preference name="trusted.cert.dir"  requires-restart="true"
 			default-value="${user.home}${file.separator}.workbench${file.separator}trusted-certificates">
@@ -203,6 +205,7 @@ COMMUNITY -->	<service-point id="community" interface="org.astrogrid.desktop.mo
 			<units>directory</units>
 		</preference>
 	</contribution>
+	-->
 <!-- 
 ===========================
 LOGIN DIALOGUE -->
@@ -266,7 +269,7 @@ APPLICATIONS
 				<service>ivoa.registry</service>
 				<service>registry</service>
 				<service>ivoa.adql074</service>
-				<service>ivoa.cache</service>
+				<object>cache:applicationResources</object>
 			</construct>
 		</invoke-factory>	
 	</service-point>
@@ -274,6 +277,20 @@ APPLICATIONS
 	<implementation service-id="applications" if="property astrogrid.applications.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>		
+	
+	<contribution configuration-id="ivoa.caches">
+ small cache of resources that have been treated as applications.
+		 not entirely happy about thios one - will do for now.
+		 makes workflow builder much more responsive.	
+		<cache name="applicationResources"
+			maxElementsInMemory="20"
+			maxElementsOnDisk="100"
+			overflowToDisk="true"
+			diskPersistent="true"
+			timeToLiveSeconds="${ivo.registry.cacheLife}"
+			timeToIdleSeconds="345600"
+		/>
+	</contribution>
 
 <!-- 
 =============================
@@ -381,7 +398,7 @@ STORE
 			<construct class="org.astrogrid.desktop.modules.ag.StoreImpl" >
 				<event-listener service-id="builtin.shutdown" />
 				<service>community</service>
-				<set property="workDir" value="${astrogrid.store.workdir}" />				
+				<set property="workDir" value="${astrogrid.workdir}" />				
 			</construct>
 		</invoke-factory>	
 	</service-point>
@@ -439,7 +456,7 @@ CERTIFICATE INSTALLER
 		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.ag.InstallCertificates">
 				<service>system.ui</service>
-				<string>${trusted.cert.dir}</string> <!--  defined in community section of this module -->
+				<string>${astrogrid.workdir}${file.separator}trusted-certificates</string> <!-- must match with the dir passed into the community component -->
 				<configuration>trustAnchors</configuration>
 			</construct>
 		</invoke-factory>
@@ -452,7 +469,7 @@ CERTIFICATE INSTALLER
 	
 <!--  list of anchors -->	
 <configuration-point id="trustAnchors">
-		List of urls to download and install in the user's trusted.cert.dir
+		List of urls to download and install in the user's certificate dir
 		<schema>
 			<element name="index">
 				just a container - ignored

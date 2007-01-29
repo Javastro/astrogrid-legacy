@@ -1,4 +1,4 @@
-/*$Id: RegistryGoogleDialog.java,v 1.5 2007/01/19 19:55:16 jdt Exp $
+/*$Id: RegistryGoogleDialog.java,v 1.6 2007/01/29 10:53:21 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,12 +27,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
+import net.sf.ehcache.Ehcache;
+
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.modules.dialogs.registry.RegistryGooglePanel;
-import org.astrogrid.desktop.modules.ivoa.CacheFactoryInternal;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.Preference;
@@ -41,7 +42,7 @@ import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.votech.VoMon;
 
 /** wraps a dialogue around a registry chooser pane.
- * @author Noel Winstanley nw@jb.man.ac.uk 02-Sep-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Sep-2005
  *
  */
 public class RegistryGoogleDialog extends JDialog implements PropertyChangeListener {
@@ -53,10 +54,11 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
      * @param pref 
      * @throws java.awt.HeadlessException
      */
-    public RegistryGoogleDialog(  Configuration conf, HelpServerInternal help, UIInternal ui,RegistryInternal reg,BrowserControl browser, RegistryBrowser regBrowser, CacheFactoryInternal cache,VoMon vomon, Preference pref) throws HeadlessException {
+    public RegistryGoogleDialog(  Configuration conf, HelpServerInternal help, UIInternal ui,RegistryInternal reg,BrowserControl browser, RegistryBrowser regBrowser
+    		, Ehcache cache1, Ehcache cache2,VoMon vomon, Preference pref) throws HeadlessException {
         super();
         this.parent = new UIComponentImpl(conf,help,ui);
-        this.chooserPanel = new RegistryGooglePanel(parent,reg,browser,regBrowser,cache,vomon, pref);
+        this.chooserPanel = new RegistryGooglePanel(parent,reg,browser,regBrowser,cache1,cache2,vomon, pref);
         this.setContentPane(getJOptionPane());           
      
         this.setTitle("Resource Chooser");
@@ -75,8 +77,10 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
         this.setSize(425,600);        
     }
     
-    public RegistryGoogleDialog(Component parentComponent, Configuration conf, HelpServerInternal help, UIInternal ui,RegistryInternal reg, BrowserControl browser, RegistryBrowser regBrowser,CacheFactoryInternal cache, VoMon vomon, Preference pref) throws HeadlessException {
-    	this(conf,help,ui,reg,browser, regBrowser,cache,vomon,pref);
+    public RegistryGoogleDialog(Component parentComponent, Configuration conf, HelpServerInternal help, UIInternal ui,RegistryInternal reg, BrowserControl browser, RegistryBrowser regBrowser
+    		,Ehcache cache1, Ehcache cache2,
+    		VoMon vomon, Preference pref) throws HeadlessException {
+    	this(conf,help,ui,reg,browser, regBrowser,cache1,cache2,vomon,pref);
         setLocationRelativeTo(parentComponent);
     }
     
@@ -172,6 +176,9 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
 
 /* 
 $Log: RegistryGoogleDialog.java,v $
+Revision 1.6  2007/01/29 10:53:21  nw
+moved cache configuration into hivemind.
+
 Revision 1.5  2007/01/19 19:55:16  jdt
 Move flush cache to the public interface.   It's currently in the IVOA module, which is probably not the right place.  *Not tested*  I can't test because Eclipse seems to be getting confused with the mixture of JDKs 1.4 and 1.5.
 

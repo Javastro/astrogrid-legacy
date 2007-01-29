@@ -22,7 +22,7 @@ Components for self-testing
 	<service-point id="transporttest" interface="TransportTest">
 		Service to test connection to acr.
 		<interceptor service-id="system.throbber" />	
-		<create-instance class="org.astrogrid.desktop.modules.test.TransportTestImpl" />	
+		<create-instance class="org.astrogrid.desktop.modules.test.TestTransportComponentImpl" />	
 	</service-point>
 	
 

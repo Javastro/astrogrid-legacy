@@ -27,7 +27,6 @@ RESOURCE (FILE) CHOOSER
  	<!--  todo - make non-singleton -->
 	<service-point id="resourceChooser" interface="org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal">
 		Select a local or myspace file
-		<interceptor service-id="astrogrid.login" />
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.dialogs.ResourceChooserImpl" >
 			    <service>astrogrid.myspace</service>
@@ -50,19 +49,51 @@ RESOURCE (FILE) CHOOSER
 			advanced="true"
 			requires-restart="true"
 			default-value="true" >
-			<ui-name>Use new-style dialogs</ui-name>
+			<ui-name>Use new filechooser dialog (recommended)</ui-name>
 			<description>select new or old filechooser dialogue implementation</description>
 			<units>boolean</units>
 			</preference>
 	</contribution>	
 
 	<contribution configuration-id="system.uiStructure" >
-		<action parentName="debug" name="driveResourceChooser" 
-			text="Launch ResourceChooser" visibleCondition="preference:acr.debug"
-			object="service:resourceChooser" methodName="chooseResource" >
-			<parameter>Choose file</parameter>
+		<action parentName="debug"  onEventDispatchThread="true"  before="*"
+			name="fullChooseResource1" 
+			text="fullChooseResource(ms=true,file=true,uri=true)" visibleCondition="preference:acr.debug"
+			object="service:resourceChooser" methodName="fullChooseResource" >
+			<parameter>fullChooseResource(ms=true,file=true,uri=true)</parameter>
+			<parameter>true</parameter>
+			<parameter>true</parameter>
 			<parameter>true</parameter>
 		</action>
+		<action parentName="debug"  onEventDispatchThread="true"  after="fullChooseResource1"
+			name="fullChooseResource2" 
+			text="fullChooseResource(ms=false,file=true,uri=false)" visibleCondition="preference:acr.debug"
+			object="service:resourceChooser" methodName="fullChooseResource" >
+			<parameter>fullChooseResource(ms=false,file=true,uri=false)</parameter>
+			<parameter>false</parameter>
+			<parameter>true</parameter>
+			<parameter>false</parameter>
+		</action>		
+		<action parentName="debug"  onEventDispatchThread="true" 
+			name="fullChooseResource3" after="fullChooseResource2"
+			text="fullChooseResource(ms=true,file=false,uri=true)" visibleCondition="preference:acr.debug"
+			object="service:resourceChooser" methodName="fullChooseResource" >
+			<parameter>fullChooseResource(ms=true,file=false,uri=true)</parameter>
+			<parameter>true</parameter>
+			<parameter>false</parameter>
+			<parameter>true</parameter>
+		</action>
+		<action parentName="debug"  onEventDispatchThread="true" 
+			name="chooseDirectory1" after="fullChooseResource3"
+			text="chooseDirectory(ms=true,file=true,uri=true)" visibleCondition="preference:acr.debug"
+			object="service:resourceChooser" methodName="chooseDirectoryWithParent" >
+			<parameter>chooseDirectory(ms=true,file=true,uri=true)</parameter>
+			<parameter>true</parameter>
+			<parameter>true</parameter>
+			<parameter>true</parameter>
+			<parameter>null</parameter>
+		</action>
+	
 	</contribution>			
 <!-- 
 ===========================
@@ -105,7 +136,7 @@ TOOL EDITOR
 	</contribution>
 	
 		<contribution configuration-id="system.uiStructure">
-		<action parentName="debug" name="driveToolEditor" text="Launch ToolEditor"
+		<action parentName="debug" onEventDispatchThread="true" name="driveToolEditor" text="Launch ToolEditor"
 			object="service:toolEditor" methodName="selectAndBuild" 
 			visibleCondition="preference:acr.debug"/>
 	</contribution>		
@@ -149,7 +180,8 @@ REGISTRY GOOGLE
 				<service>ivoa.registry</service>
 				<service>system.browser</service>
 				<service>ui.registryBrowser</service>
-				<service>ivoa.cache</service>
+				<object>cache:resources</object>
+				<object>cache:bulk</object>
 				<service>votech.vomon</service>
 				<object>preference:acr.advanced</object>				
 			</construct>
@@ -161,7 +193,7 @@ REGISTRY GOOGLE
 	</implementation>		
 
 	<contribution configuration-id="system.uiStructure">
-		<action parentName="debug" name="driveRegistryChooser"
+		<action parentName="debug" name="driveRegistryChooser" onEventDispatchThread="true"
 			 text="Launch RegistryChooser" visibleCondition="preference:acr.debug"
 			object="service:registryGoogle" methodName="selectResources" >		
 			<parameter>Choose a resource!</parameter>
@@ -215,7 +247,8 @@ REGISTRY GOOGLE
 				<service>astrogrid.applications</service>
 				<service>system.browser</service>
 				<service>ui.registryBrowser</service>
-				<service>ivoa.cache</service>
+				<object>cache:resources</object>
+				<object>cache:bulk</object>
 				<service>votech.vomon</service>
 				<object>preference:acr.advanced</object>				
 			</construct>

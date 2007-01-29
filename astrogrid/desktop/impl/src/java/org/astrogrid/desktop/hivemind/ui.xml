@@ -256,11 +256,22 @@ PW WORKFLOWS
 				<service>dialogs.simpleToolEditor</service>
 				<service>dialogs.resourceChooser</service>		
 				<configuration>workflowTemplates</configuration>
-				<service>ivoa.cache</service>
+				<object>cache:pw</object>
 				<service>system.help</service>
 			</construct>
 		</invoke-factory>	
 	</service-point>	
+	
+		<contribution configuration-id="ivoa.caches">
+		disk cache of parameterized workflows
+		<cache name="pw"
+			maxElementsInMemory="1"
+			overflowToDisk="true"
+			diskPersistent="true"
+			timeToLiveSeconds="${ivo.registry.cacheLife}"
+			timeToIdleSeconds="345600"
+		/>
+		</contribution>
 
 	<implementation service-id="parameterizedWorkflows" if="property ui.parameterizedWorkflows.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />				
@@ -480,7 +491,8 @@ WORKFLOW BUILDER
 				<service>system.ui</service>
 				<service>system.configuration</service>
 				<service>system.browser</service>
-				<service>ivoa.cache</service>
+				<object>cache:resources</object>
+				<object>cache:bulk</object>
 				<service>votech.vomon</service>
 				<object>preference:acr.advanced</object>
 				<!--<event-listener service-id="builtin.shutdown" />						-->

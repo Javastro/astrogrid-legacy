@@ -60,7 +60,7 @@ System module.
 	<!--  help for these structures. -->
 	<contribution configuration-id="helpmap">
 		<item id="tab.discovery" url="http://www2.astrogrid.org/science/documentation/data-explore" />
-		<item id="tab.advanced" url="http://www2.astrogrid.org/science" /> <!-- todo  -->
+		<item id="tab.advanced" url="http://www2.astrogrid.org/desktop/astro-runtime" /> <!-- todo  -->
 		<item id="tab.plastic" url="http://plastic.sourceforge.org" />
 		<item id="tab.links" url="http://www2.astrogrid.org/science/documentation/workbench-helper-applications" />
 		<item id="tab.services" url="http://www2.astrogrid.org/science/documentation/workbench-system-services" />
@@ -74,7 +74,7 @@ System module.
 		<menu name="projects" text="About Projects" parentName="help" before="about" />
 
 		<action parentName="file" name="close" text="Close" visibleCondition="preference:acr.advanced"
-			object="service:ui" methodName="hide" before="exit">		
+			object="service:ui" methodName="hide" before="exit" onEventDispatchThread="true">		
 			<tooltip>Close this window, but keep the service running</tooltip>
 			</action>
 		<action parentName="file" name="exit" text="Exit" iconName="exit_small.png"
@@ -82,7 +82,7 @@ System module.
 			<tooltip>Close this window, and halt the service</tooltip>
 			<confirmMessage>Exit: are you sure?</confirmMessage>
 		</action>	
-		<action parentName="edit" name="prefs" text="Preferences.."
+		<action parentName="edit" name="prefs" text="Preferences.." onEventDispatchThread="true"
 			object="service:configDialogue" methodName="run" before="*" />			
 	</contribution>
 	
@@ -272,12 +272,12 @@ System module.
 	</contribution>
 	
 	<contribution configuration-id="framework.preferences">	
-		<!--  storage directory - used for various components -->
-		<preference name="astrogrid.store.workdir"
+		<!-- working directory - used for storing various data. -->
+		<preference name="astrogrid.workdir"
 			requires-restart="true"
 			default-value="${user.home}${file.separator}.workbench" >
 			<ui-name>Working directory</ui-name>
-			<description>directory to cache registry query results</description>
+			<description>Location to store query results, cache registry queries, etc</description>
 			<units>directory</units>
 		</preference>	
 
@@ -473,6 +473,7 @@ System module.
 	
 	<contribution configuration-id="servletContext">
 		<attribute name="preferences" object="configuration:framework.preferences" />
+		<attribute name="arranger" object="service:preferencesArranger" />
 	</contribution>
 
 	<!-- 
@@ -565,6 +566,11 @@ System module.
 			</element>		
 		<element name="action" key-attribute="name">	
 			A new action - materializes as a button or menu entry.
+				<attribute name="onEventDispatchThread" translator="boolean">
+					If true, run on EDT, if false, run in background (default).
+					Set to true for blocking dialogues  - else once the background task
+					timesout, the dialogue will be dismissed.
+				</attribute>
 				<attribute name="parentName"  required="true">
 					Names the parent tab or menu for this action.
 				</attribute>
@@ -705,7 +711,6 @@ System module.
 			<alternative>-1</alternative>
 			<units>(-1 to scan for available port)</units>
 			<description></description>
-			<units>number</units>
 		</preference>		
 		<preference name="system.webserver.startScanPort" default-value="8001" 
 			requires-restart="true" advanced="true">
@@ -868,7 +873,6 @@ SYSTEM TRAY
 			<alternative>-1</alternative>
 			<description></description>
 			<units>(-1 to scan for available port)</units>
-			<units>number</units>
 		</preference>		
 		<preference name="system.rmi.startScanPort" default-value="1099" 
 			requires-restart="true" advanced="true">
@@ -1004,6 +1008,7 @@ MAC SETUP
 			<construct class="org.astrogrid.desktop.modules.system.MacSetup">
 				<service>ui</service>
 				<service>builtin.shutdown</service>
+				<service>configDialogue</service>
 			</construct>
 		</invoke-factory>		
 	</implementation>
@@ -1046,7 +1051,6 @@ MAC SETUP
 	
 	<!--  ===========================
 	SNITCH
-	TODO - replace with something in the votech project
 	 -->
 	<service-point id="snitch" interface="org.astrogrid.desktop.modules.system.SnitchInternal">
 		Reporting Service
@@ -1056,9 +1060,19 @@ MAC SETUP
 				<string>${astrogrid.desktop.version}</string>
 				<string>${app.mode}</string>
 				<service>plasticList</service>
+				<object>preference:system.doSnitch</object>
 			</construct>
 		</invoke-factory>
 	</service-point>
+	
+	<contribution configuration-id="framework.preferences"> 
+		<preference name="system.doSnitch" default-value="true" 
+		advanced="true" requires-restart="true">
+			<ui-name>Track usage</ui-name>
+			<description></description>
+			<units>boolean</units>
+		</preference>		
+	</contribution>		
 	
 	<implementation service-id="snitch" if="property system.snitch.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
@@ -1122,13 +1136,23 @@ MAC SETUP
 	CONFIGURATION DIALOGUE
  -->
  	<service-point id="configDialogue" visibility="private" interface="java.lang.Runnable">
+ 		A configuration dialogue
  		<invoke-factory>
  			<construct class="org.astrogrid.desktop.modules.system.PreferenceEditorDialogue">
- 				<configuration>framework.preferences</configuration>
+ 				<service>preferencesArranger</service>
  				<object>preference:acr.advanced</object>
  				<object>service-property:ui:component</object>
  				<service>browser</service>
  				<service>help</service>
+ 			</construct>
+ 		</invoke-factory>
+ 	</service-point>
+ 	
+ 	<service-point id="preferencesArranger" interface="org.astrogrid.desktop.modules.system.PreferencesArranger">
+ 		Helper component that sorts preferences into structures for ui work.
+ 		<invoke-factory>
+ 			<construct class="org.astrogrid.desktop.modules.system.PreferencesArrangerImpl">
+ 				<configuration>framework.preferences</configuration>
  			</construct>
  		</invoke-factory>
  	</service-point>
@@ -1159,9 +1183,19 @@ UPDATE CHECKER
 				<service>ui</service>
 				<service>browser</service>
 				<string>${astrogrid.desktop.version}</string>
+				<object>preference:system.checkForUpdates</object>
 			</construct>
 		</invoke-factory>		
 	</implementation>
+	
+	<contribution configuration-id="framework.preferences" if="not(class javax.jnlp.ServiceManager)"> 
+		<preference name="system.checkForUpdates" default-value="true">
+			<ui-name>Check for updates on startup</ui-name>
+			<description></description>
+			<units>boolean</units>
+		</preference>		
+	</contribution>	
+	
 	
 	<implementation service-id="update"  if="(class javax.jnlp.ServiceManager) or (property system.update.disabled) or (property asr.mode)">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					

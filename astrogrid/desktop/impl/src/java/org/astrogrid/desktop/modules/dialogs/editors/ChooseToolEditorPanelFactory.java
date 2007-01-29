@@ -3,12 +3,12 @@
  */
 package org.astrogrid.desktop.modules.dialogs.editors;
 
-import org.astrogrid.acr.ivoa.CacheFactory;
+import net.sf.ehcache.Ehcache;
+
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
-import org.astrogrid.desktop.modules.ivoa.CacheFactoryInternal;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.ui.UIComponent;
@@ -25,19 +25,22 @@ public class ChooseToolEditorPanelFactory implements ToolEditorPanelFactory {
 	private final ApplicationsInternal apps;
 	private final BrowserControl browser;
 	private final RegistryBrowser regBrowser;
-	private final CacheFactoryInternal cache;
+	private final Ehcache cache1;
+	private final Ehcache cache2;
 	private final VoMon vomon;
 	private final Preference pref;
 	public AbstractToolEditorPanel create(ToolModel model, UIComponent parent) {
-		return new ChooseAToolEditorPanel(model,parent,registry,apps,browser,regBrowser,cache,vomon,pref);
+		return new ChooseAToolEditorPanel(model,parent,registry,apps,browser,regBrowser,cache1,cache2,vomon,pref);
 	}
-	public ChooseToolEditorPanelFactory(final RegistryInternal registry, final ApplicationsInternal apps,BrowserControl browser, RegistryBrowser regBrowser, CacheFactoryInternal cache, VoMon vomon, Preference pref) {
+	public ChooseToolEditorPanelFactory(final RegistryInternal registry, final ApplicationsInternal apps,BrowserControl browser, RegistryBrowser regBrowser,
+			Ehcache cache1, Ehcache cache2, VoMon vomon, Preference pref) {
 		super();
 		this.registry = registry;
 		this.apps = apps;
 		this.browser = browser;
 		this.regBrowser = regBrowser;
-		this.cache =cache;
+		this.cache1 = cache1;
+		this.cache2 = cache2;
 		this.vomon = vomon;
 		this.pref = pref;
 	}

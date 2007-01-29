@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.19 2007/01/19 19:55:16 jdt Exp $
+/*$Id: ApplicationsImpl.java,v 1.20 2007/01/29 10:57:16 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -26,16 +25,13 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 
-import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xpath.CachedXPathAPI;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
@@ -54,14 +50,11 @@ import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.ivoa.Adql074;
 import org.astrogrid.acr.ivoa.SiapInformation;
 import org.astrogrid.acr.ivoa.SsapInformation;
-import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.acr.ivoa.resource.SiapService;
 import org.astrogrid.acr.nvo.ConeInformation;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.common.bean.BaseBean;
-import org.astrogrid.desktop.modules.ivoa.CacheFactoryInternal;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.ivoa.StreamingExternalRegistryImpl.KnowledgeAddingResourceArrayBuilder;
 import org.astrogrid.workflow.beans.v1.Input;
@@ -72,11 +65,10 @@ import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /** Application service.
- * @author Noel Winstanley nw@jb.man.ac.uk 31-Jan-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 31-Jan-2005
  * * @todo refine exception reporting.
  */
 public class ApplicationsImpl implements ApplicationsInternal {
@@ -88,14 +80,16 @@ public class ApplicationsImpl implements ApplicationsInternal {
     /** 
      * 
      */
-    public ApplicationsImpl(RemoteProcessManager manager,MyspaceInternal vos, RegistryInternal nuReg,Registry reg, Adql074 adql, CacheFactoryInternal cacheFac) throws  ACRException{
+    public ApplicationsImpl(RemoteProcessManager manager,MyspaceInternal vos, 
+    		RegistryInternal nuReg,Registry reg, Adql074 adql,
+    		Ehcache applicationResourceCache) throws  ACRException{
         this.manager = manager;
         this.vos = vos;
         this.reg = reg;
         this.adql = adql;
         this.nuReg = nuReg;
-        this.applicationResourceCache = cacheFac.getManager().getCache(CacheFactoryInternal.APPLICATION_RESOURCES_CACHE);
-    }
+        this.applicationResourceCache = applicationResourceCache;
+       }
     protected final Ehcache applicationResourceCache;
     protected final RegistryInternal nuReg;
     protected final RemoteProcessManager manager;
@@ -699,6 +693,9 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.20  2007/01/29 10:57:16  nw
+moved cache configuration into hivemind.
+
 Revision 1.19  2007/01/19 19:55:16  jdt
 Move flush cache to the public interface.   It's currently in the IVOA module, which is probably not the right place.  *Not tested*  I can't test because Eclipse seems to be getting confused with the mixture of JDKs 1.4 and 1.5.
 

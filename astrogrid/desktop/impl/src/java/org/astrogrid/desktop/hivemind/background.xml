@@ -52,8 +52,8 @@ CEA Server components --><service-point id="tasks" interface="TasksInternal">
 		  	<service>protocols</service>
 		  </construct>
 		  </invoke-factory>	</service-point>		<service-point id="execHist" visibility="private" interface="org.astrogrid.applications.manager.persist.ExecutionHistory">
-		Execution history manager		<invoke-factory model="primitive">		<construct class="ManagingFileStoreExecutionHistory">				<string>${background.tasks.workdir}</string>			</construct>		</invoke-factory>	</service-point>
-	
+		Execution history manager		<invoke-factory model="primitive">		<construct class="ManagingFileStoreExecutionHistory">				<string>${astrogrid.workdir}${file.separator}cea</string>			</construct>		</invoke-factory>	</service-point>
+	<!--   removed - use astrogrid.workdir instead
 	<contribution configuration-id="framework.preferences">
 		<preference name="background.tasks.workdir"
 			requires-restart="true"
@@ -63,6 +63,7 @@ CEA Server components --><service-point id="tasks" interface="TasksInternal">
 				<units>directory</units>
 		</preference>
 	</contribution>
+	-->
 	
 			  <service-point id="ret" visibility="private" interface="org.astrogrid.applications.manager.ApplicationEnvironmentRetriver">
 	  	Execution environment retriever.		  <invoke-factory model="primitive">			  <construct class="org.astrogrid.applications.manager.DefaultApplicationEnvironmentRetriever" >				  <service>execHist</service>			  </construct>		</invoke-factory>	</service-point>							<service-point id="appDescLib" visibility="private" interface="IBestMatchApplicationDescriptionLibrary">		

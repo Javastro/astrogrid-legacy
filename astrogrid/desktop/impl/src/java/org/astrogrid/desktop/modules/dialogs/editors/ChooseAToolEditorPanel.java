@@ -1,4 +1,4 @@
-/*$Id: ChooseAToolEditorPanel.java,v 1.15 2007/01/19 19:55:16 jdt Exp $
+/*$Id: ChooseAToolEditorPanel.java,v 1.16 2007/01/29 10:52:43 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,8 @@ import javax.swing.JOptionPane;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
+import net.sf.ehcache.Ehcache;
+
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -29,7 +31,6 @@ import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditAdapter;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
 import org.astrogrid.desktop.modules.dialogs.registry.RegistryGooglePanel;
-import org.astrogrid.desktop.modules.ivoa.CacheFactoryInternal;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.ui.UIComponent;
@@ -39,7 +40,7 @@ import org.votech.VoMon;
 /** Tool Editor Panel that prompts the user to search for and select a tool.
  * <p>
  * just a wrapper of some event listeners around the registry chooser panel - nice!
- * @author Noel Winstanley nw@jb.man.ac.uk 08-Sep-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 08-Sep-2005
  *
  */
 public class ChooseAToolEditorPanel extends AbstractToolEditorPanel implements PropertyChangeListener {
@@ -47,12 +48,13 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel implements P
 	RegistryGooglePanel rcp;
 
 
-	public ChooseAToolEditorPanel(ToolModel tm,final UIComponent parent, RegistryInternal reg, final ApplicationsInternal apps, BrowserControl browser, RegistryBrowser regBrowser, CacheFactoryInternal cache, VoMon vomon, Preference pref) {
+	public ChooseAToolEditorPanel(ToolModel tm,final UIComponent parent, RegistryInternal reg, final ApplicationsInternal apps, BrowserControl browser, RegistryBrowser regBrowser,  
+			Ehcache cache1, Ehcache cache2,VoMon vomon, Preference pref) {
 		super(tm);
 
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 		add(new JLabel("Select an Application:"));
-		rcp = new RegistryGooglePanel( parent,reg,browser,regBrowser,cache,vomon, pref);
+		rcp = new RegistryGooglePanel( parent,reg,browser,regBrowser,cache1,cache2,vomon, pref);
 		rcp.setMultipleResources(false);
 		setChooseCEAOnly(false);
 		toolModel.addToolEditListener(new ToolEditAdapter() {
@@ -148,6 +150,9 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel implements P
 
 /* 
 $Log: ChooseAToolEditorPanel.java,v $
+Revision 1.16  2007/01/29 10:52:43  nw
+moved cache configuration into hivemind.
+
 Revision 1.15  2007/01/19 19:55:16  jdt
 Move flush cache to the public interface.   It's currently in the IVOA module, which is probably not the right place.  *Not tested*  I can't test because Eclipse seems to be getting confused with the mixture of JDKs 1.4 and 1.5.
 

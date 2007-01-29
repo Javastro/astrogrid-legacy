@@ -8,7 +8,7 @@
 
 	<contribution configuration-id="preferences">
 		<preference name="acr.advanced" default-value="false">
-			<ui-name>Enable Advanced Features</ui-name>
+			<ui-name>Show Advanced Features</ui-name>
 			<description>Enables additional UI components for advanced use</description>
 			<units>boolean</units>
 		</preference>

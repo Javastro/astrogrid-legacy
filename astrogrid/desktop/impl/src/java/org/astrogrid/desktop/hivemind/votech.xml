@@ -29,11 +29,24 @@ VOMON
 			<construct class="org.astrogrid.desktop.modules.votech.VoMonImpl" >
 			<string>${votech.vomon.endpoint}</string><!--  endpoint to fetch vomon status.xml from -->
 			<int>${votech.vomon.reload}</int><!--  period between refreshes of the status.xml (seconds) -->
-			<service>ivoa.cache</service>
+			<object>cache:vomon</object>
 			<service>system.ui</service>
 			</construct>
 		</invoke-factory>	
 	</service-point>
+
+	<contribution configuration-id="ivoa.caches">
+		cache of service status.
+		'unlimited' disk storage for entire document
+		<cache name="vomon"
+			maxElementsInMemory="100"
+			maxElementsOnDisk="10000"
+			overflowToDisk="true"
+			diskPersistent="false"
+			timeToLiveSeconds="7200"
+			timeToIdleSeconds="7200"
+		/>
+	</contribution>
 
 	<implementation service-id="vomon" if="property votech.vomon.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
@@ -42,10 +55,10 @@ VOMON
 	<contribution configuration-id="framework.preferences">
 		<preference name="votech.vomon.endpoint" 
 			requires-restart="true" advanced="true"
-			default-value="http://thor.roe.ac.uk/vomon-full/status.xml" >
+			default-value="http://software.astrogrid.org/all-vo-mon/status.xml" >
 			<ui-name>Monitoring endpoint</ui-name>
 			<description>A http url that returns a vomon xml document</description>
-			<alternative>http://software.astrogrid.org/all-vo-mon/status.xml</alternative>
+			<alternative>http://thor.roe.ac.uk/vomon-full/status.xml</alternative>
 			<units>url</units>
 		</preference>
 		<preference name="votech.vomon.reload" 

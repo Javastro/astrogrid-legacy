@@ -48,10 +48,44 @@
 				<service>externalRegistry</service>
                <object>preference:org.astrogrid.registry.query.endpoint</object>
                <object>preference:org.astrogrid.registry.query.altendpoint</object>
-				<service>ivoa.cache</service>				
+				<object>cache:resources</object>
+				<object>cache:documents</object>
+				<object>cache:bulk</object>				
 			</construct>
 		</invoke-factory>
 	</service-point>
+	
+	<contribution configuration-id="ivoa.caches">
+		cache for individual resource objects
+		<cache name="resources"
+			maxElementsInMemory="50"
+			maxElementsOnDisk="300"
+			overflowToDisk="true"
+			diskPersistent="true"
+			timeToLiveSeconds="${ivo.registry.cacheLife}"
+			timeToIdleSeconds="345600"
+		/>
+		cache for registry return documents - resource docs, and xquery docs
+		sized so it's just enough in memory one up, one down in registry google.
+		<cache name="documents"
+			maxElementsInMemory="3"
+			maxElementsOnDisk="20"
+			overflowToDisk="true"
+			diskPersistent="true"
+			timeToLiveSeconds="${ivo.registry.cacheLife}"
+			timeToIdleSeconds="345600"
+		/>
+		cache for buld searches, etc, of registry documents.
+		smallest amount in memory, enough on disk to store astroscope queries.
+		<cache name="bulk"
+			maxElementsInMemory="1"
+			maxElementsOnDisk="10"
+			overflowToDisk="true"
+			diskPersistent="true"
+			timeToLiveSeconds="${ivo.registry.cacheLife}"
+			timeToIdleSeconds="345600"
+		/>			
+	</contribution>
 	
 	<implementation service-id="registry" if="property ivoa.registry.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
@@ -71,6 +105,12 @@
 				<ui-name>Fallback Registry endpoint</ui-name>
 				<description>http url of the main registry service</description>
 				<units>url</units>
+		</preference>
+		<preference name="ivo.registry.cacheLife" requires-restart="true"
+			default-value="604800">
+				<ui-name>Cached entries expire after</ui-name>
+				<description>86400 seconds = a day, 604800 seconds = a week</description>
+				<units>seconds</units>
 		</preference>
 	</contribution>
 	<!-- =========================
@@ -192,21 +232,56 @@ SIAP
 =======================
 RESULT CACHE 
 -->
-	<service-point id="cache" interface="org.astrogrid.desktop.modules.ivoa.CacheFactoryInternal">
+	<service-point id="cache" interface="org.astrogrid.acr.ivoa.CacheFactory">
 	Result Cache. Would fit more logically in the system module, but then causes build
 	problems for the hub. so it's better suited here - as it's used mostly in the ivoa.registry
 	clients anyhow.
 		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.ivoa.CacheFactoryImpl">
-				<string>${astrogrid.store.workdir}</string>
+				<string>${astrogrid.workdir}</string>
+				<configuration>caches</configuration>
 				<event-listener service-id="builtin.shutdown" />			
 			</construct>
 		</invoke-factory>
 	</service-point>
 	
-		<implementation service-id="cache"  if="property ivoa.cache.disabled">
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
-	</implementation>			
-	<!--  TODO - add more cache configuraiton options here -->
+	<contribution configuration-id="hivemind.ObjectProviders">
+		<provider prefix="cache" service-id="cache" />
+	</contribution>
+		
+	
+	<configuration-point id="caches">
+		Defines caches for components to use.
+		<schema>
+			<element name="cache" key-attribute="name">
+				<attribute name="name" required="true" unique="true">
+					name of the cache
+				</attribute>
+				<attribute name="diskPersistent" translator="boolean">
+				For caches that overflow to disk, whether the disk cache persists between CacheManager instances.				
+				</attribute>
+				<attribute name="eternal" translator="boolean">
+				 Sets whether elements are eternal.
+				</attribute>
+				<attribute name="maxElementsInMemory">
+				the maximum objects to be held in the MemoryStore.
+				</attribute>
+				<attribute name="maxElementsOnDisk">
+				  the maximum objects to be held in the DiskStore.
+				</attribute>
+				<attribute name="overflowToDisk" translator="boolean">
+				whether elements can overflow to disk when the in-memory cache has reached the set limit.				
+				</attribute>
+				<attribute name="timeToIdleSeconds" >
+				he time to idle for an element before it expires.
+				</attribute>
+				<attribute name="timeToLiveSeconds">
+				 Sets the time to idle for an element before it expires.
+				</attribute>
+				<conversion class="net.sf.ehcache.config.CacheConfiguration" />
+			</element>
+		</schema>
+	</configuration-point>
+	
  </module>
  
