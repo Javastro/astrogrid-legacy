@@ -125,29 +125,8 @@ public class Quaestor extends HttpServlet {
         }
     }
                 
-//     private void xXcallQuaestorHandler(String quaestorMethod,
-//                                      HttpServletRequest request,
-//                                      HttpServletResponse response)
-//             throws IOException, ServletException {
-//         response.setContentType("text/html");
-//         log("Quaestor calling " + quaestorMethod);
-//         assert request != null && response != null;
-//         try {
-//             Object val = SchemeWrapper
-//                     .getInstance()
-//                     .eval(quaestorMethod, new Object[] { request, response });
-//             if (val instanceof String) {
-//                 PrintWriter out = response.getWriter();
-//                 out.println(val);
-//             }
-//         } catch (SchemeException e) {
-//             log("Scheme exception: " + e);
-//             throw new ServletException(e);
-//         }
-//     }
-
     /**
-     * Handle a GET method by handing it over to the quaestor get
+     * Handle a GET method by handing it over to the appropriate quaestor
      * procedure.
      */
     public void doGet(HttpServletRequest request,
@@ -157,7 +136,7 @@ public class Quaestor extends HttpServlet {
     }
 
     /**
-     * Handle a PUT method by handing it over to the quaestor put
+     * Handle a PUT method by handing it over to the appropriate quaestor
      * procedure.
      */
     public void doPut(HttpServletRequest request,
@@ -167,7 +146,7 @@ public class Quaestor extends HttpServlet {
     }
 
     /**
-     * Handle a DELETE method by handing it over to the quaestor put
+     * Handle a DELETE method by handing it over to the appropriate quaestor
      * procedure.
      */
     public void doDelete(HttpServletRequest request,
@@ -177,7 +156,7 @@ public class Quaestor extends HttpServlet {
     }
 
     /**
-     * Handle a POST method by handing it over to the quaestor put
+     * Handle a POST method by handing it over to the appropriate quaestor
      * procedure.
      */
     public void doPost(HttpServletRequest request,
@@ -187,7 +166,7 @@ public class Quaestor extends HttpServlet {
     }
 
     /**
-     * Handle a POST method by handing it over to the quaestor put
+     * Handle a POST method by handing it over to the appropriate quaestor
      * procedure.
      */
     public void doHead(HttpServletRequest request,
