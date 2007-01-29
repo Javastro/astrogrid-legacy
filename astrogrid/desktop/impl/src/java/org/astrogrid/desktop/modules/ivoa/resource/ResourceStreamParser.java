@@ -276,8 +276,8 @@ public final class ResourceStreamParser implements Iterator {
 						c.setSource(parseSource());					
 					} else if (elementName.equals("referenceURL")) {
 						try {
-							c.setReferenceURL(new URL(in.getElementText().trim()));
-						} catch (MalformedURLException e) {
+							c.setReferenceURI(new URI(in.getElementText().trim()));
+						} catch (URISyntaxException e) {
 							logger.debug("Content - Description",e);
 						}							
 					} else if (elementName.equals("type")) {
@@ -425,8 +425,8 @@ public final class ResourceStreamParser implements Iterator {
 				if (elementName.equals("logo")) {
 					try {
 						String url = in.getElementText().trim();
-						c.setLogo(new URL(url));
-					} catch (MalformedURLException x) {
+						c.setLogoURI(new URI(url));
+					} catch (URISyntaxException x) {
 						logger.debug("creator logo",x);
 					}
 				} else if (elementName.equals("name")) {
@@ -921,7 +921,7 @@ public final class ResourceStreamParser implements Iterator {
 		try {
 			final String element = in.getElementText().trim();
 			if (element != null) {
-				url.setValue(new URL(element));
+				url.setValueURI(new URI(element));
 			}
 		} catch (Exception e) {
 			logger.debug("invalid access URL",e);
