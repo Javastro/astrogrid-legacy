@@ -1,4 +1,4 @@
-/*$Id: RegistryBrowserImpl.java,v 1.13 2007/01/19 19:55:16 jdt Exp $
+/*$Id: RegistryBrowserImpl.java,v 1.14 2007/01/29 10:44:37 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,32 +19,36 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
-import org.astrogrid.acr.ivoa.CacheFactory;
+import net.sf.ehcache.Ehcache;
+
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.registry.RegistryGooglePanel;
-import org.astrogrid.desktop.modules.ivoa.CacheFactoryInternal;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.votech.VoMon;
 /** Implementation of the registry browser component.
- * @author Noel Winstanley nw@jb.man.ac.uk 30-Mar-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 30-Mar-2005
  *
  */
 public class RegistryBrowserImpl extends UIComponentImpl implements  RegistryBrowser
 {
    
 
-    public RegistryBrowserImpl(RegistryInternal reg, HelpServerInternal hs,UIInternal ui,Configuration conf, BrowserControl browser, RegistryBrowser factory, CacheFactoryInternal cache, VoMon vomon, Preference pref) {
+    public RegistryBrowserImpl(RegistryInternal reg, HelpServerInternal hs,UIInternal ui,
+    		Configuration conf, BrowserControl browser, RegistryBrowser factory, 
+    		Ehcache cache1, Ehcache cache2
+    		, VoMon vomon, Preference pref) {
         super(conf,hs,ui);
         this.reg=reg;
         this.browser =browser;
         this.factory = factory;
-        this.cache = cache;
+        this.cache1 = cache1;
+        this.cache2 = cache2;
         this.vomon = vomon;
         this.pref = pref;
         initialize();        
@@ -52,7 +56,8 @@ public class RegistryBrowserImpl extends UIComponentImpl implements  RegistryBro
     protected final RegistryInternal reg;
     protected final BrowserControl browser;
     protected final RegistryBrowser factory;
-    protected final CacheFactoryInternal cache;
+    protected final Ehcache cache1;
+    protected final Ehcache cache2;
     protected final VoMon vomon;
     protected final Preference pref;
 	private void initialize() {
@@ -69,7 +74,8 @@ public class RegistryBrowserImpl extends UIComponentImpl implements  RegistryBro
     private RegistryGooglePanel regChooser;
     private RegistryGooglePanel getRegistryChooser() {
         if (regChooser == null) {
-            regChooser = new RegistryGooglePanel(this,reg,browser,factory,cache,vomon, pref);
+            regChooser = new RegistryGooglePanel(this,reg,browser,factory,cache1,cache2,vomon, pref,false);
+         
         }
         return regChooser;
     }
@@ -126,6 +132,9 @@ public class RegistryBrowserImpl extends UIComponentImpl implements  RegistryBro
 
 /* 
 $Log: RegistryBrowserImpl.java,v $
+Revision 1.14  2007/01/29 10:44:37  nw
+updated to new cache system.
+
 Revision 1.13  2007/01/19 19:55:16  jdt
 Move flush cache to the public interface.   It's currently in the IVOA module, which is probably not the right place.  *Not tested*  I can't test because Eclipse seems to be getting confused with the mixture of JDKs 1.4 and 1.5.
 

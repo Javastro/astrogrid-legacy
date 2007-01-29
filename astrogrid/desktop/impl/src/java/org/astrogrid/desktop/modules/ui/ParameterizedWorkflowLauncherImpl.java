@@ -1,4 +1,4 @@
-/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.16 2007/01/19 19:55:16 jdt Exp $
+/*$Id: ParameterizedWorkflowLauncherImpl.java,v 1.17 2007/01/29 10:45:07 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,7 +41,6 @@ import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.dialogs.ToolEditorInternal;
-import org.astrogrid.desktop.modules.ivoa.CacheFactoryInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
@@ -50,7 +49,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 /** Implementaton of the parameterized workflow launcher component.
- * @author Noel Winstanley nw@jb.man.ac.uk 22-Mar-2005
+ * @author Noel Winstanley noel.winstanley@manchester.ac.uk 22-Mar-2005
  * @todo adjust to use process manager, instead of jes.
  *
  */
@@ -60,13 +59,16 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
      */
     private static final Log logger = LogFactory.getLog(ParameterizedWorkflowLauncherImpl.class);    
     
-    public ParameterizedWorkflowLauncherImpl(Community community,Lookout monitor, Jobs jobs,MyspaceInternal vos,ApplicationsInternal apps, ToolEditorInternal editor, ResourceChooserInternal chooser,List templateURLs, CacheFactoryInternal cacheFac, HelpServerInternal help) throws IOException, SAXException{ 
+    public ParameterizedWorkflowLauncherImpl(Community community,Lookout monitor, 
+    		Jobs jobs,MyspaceInternal vos,ApplicationsInternal apps, 
+    		ToolEditorInternal editor, ResourceChooserInternal chooser,List templateURLs, 
+    		Ehcache cache, HelpServerInternal help) throws IOException, SAXException{ 
         URL[] list = new URL[templateURLs.size()];
         Iterator i = templateURLs.iterator();
         for (int ix = 0; i.hasNext(); ix++) {
             list[ix] = new URL((String)i.next());
         }
-    templates = loadWorkflows(cacheFac.getManager().getCache(CacheFactoryInternal.PW_CACHE),list);        
+    this.templates = loadWorkflows(cache,list);
     this.community = community;
     this.editor = editor;
     this.monitor = monitor;
@@ -221,6 +223,9 @@ public class ParameterizedWorkflowLauncherImpl implements ParameterizedWorkflowL
 
 /* 
 $Log: ParameterizedWorkflowLauncherImpl.java,v $
+Revision 1.17  2007/01/29 10:45:07  nw
+updated to new cache system.
+
 Revision 1.16  2007/01/19 19:55:16  jdt
 Move flush cache to the public interface.   It's currently in the IVOA module, which is probably not the right place.  *Not tested*  I can't test because Eclipse seems to be getting confused with the mixture of JDKs 1.4 and 1.5.
 

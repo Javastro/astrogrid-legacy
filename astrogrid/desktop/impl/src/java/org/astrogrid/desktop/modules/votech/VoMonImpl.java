@@ -3,9 +3,6 @@
  */
 package org.astrogrid.desktop.modules.votech;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -19,16 +16,16 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import net.sf.ehcache.Cache;
+import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 
 import org.apache.commons.collections.MultiHashMap;
 import org.apache.commons.collections.MultiMap;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.desktop.modules.ivoa.CacheFactoryInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.votech.VoMon;
 import org.votech.VoMonBean;
 
 /** Implementation of the VoMon service.
@@ -43,7 +40,7 @@ public class VoMonImpl implements VoMonInternal {
 
 	private final URL voMonEndpoint;
 	private final int refreshSeconds;
-	private final Cache cache;
+	private final Ehcache cache;
 	private final UIInternal ui;
 
 
@@ -145,7 +142,7 @@ public class VoMonImpl implements VoMonInternal {
 		}
 	}
 
-	public VoMonImpl(final String endpoint, final int refreshSeconds, final CacheFactoryInternal cacheFac, final UIInternal ui)  {
+	public VoMonImpl(final String endpoint, final int refreshSeconds, Ehcache cache ,final UIInternal ui)  {
 		super();
 		URL u; 
 		try {
@@ -155,7 +152,7 @@ public class VoMonImpl implements VoMonInternal {
 		}
 		this.voMonEndpoint = u;
 		this.refreshSeconds = refreshSeconds;
-		cache = cacheFac.getManager().getCache(CacheFactoryInternal.VOMON_CACHE);
+		this.cache =cache;
 		this.ui = ui;
 		// start things happening - get list of services on a background thread.
 		createWorker().start();
