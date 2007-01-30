@@ -5,15 +5,16 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 
 /**
- * A lazy output handler.  The ServletResponse object can have its
- * <code>getOutputStream</code> or <code>getWriter</code> method
- * called at most once.  However two parts of a code (for example
- * including an error handler) may want to write to the Response, and
- * cannot know if the other has already opened the output.  If they
+ * A lazy output handler.  A {@link javax.servlet.ServletResponse}
+ * object may have either its <code>getOutputStream</code> method called,
+ * or its <code>getWriter</code> method, but not both.
+ * However two parts of a code (for example the body of a code and
+ * an error handler) may want to write to the Response, and
+ * cannot know whether the other has already opened the output.  If they
  * instead go via this class, then they do not have to care.
  *
  * <p>If the access to the output stream is mediated through this
- * class, then the problem disappears, both the {@link #getOutputStream}
+ * class, then the problem disappears: both the {@link #getOutputStream}
  * and the {@link #getWriter} methods of this class may be called,
  * possibly multiple times.
  *
@@ -71,6 +72,7 @@ public class LazyOutputStream {
 
     /**
      * Returns the output stream associated with this object.
+     * @throws java.io.IOException if the underlying response object throws it
      */
     public synchronized OutputStream getOutputStream()
             throws java.io.IOException {
@@ -83,6 +85,7 @@ public class LazyOutputStream {
 
     /**
      * Returns the Writer associated with this object.
+     * @throws java.io.IOException if the underlying response object throws it
      */
     public synchronized PrintWriter getWriter() 
             throws java.io.IOException {
