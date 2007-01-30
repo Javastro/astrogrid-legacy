@@ -1,0 +1,43 @@
+body {
+  color: black;
+  background: #FFDA7F;
+  margin-left: +10%;
+  margin-right: +10%;
+}
+
+a:link { color: #7F5B00; }
+a:visited { color: #7F5B00; }
+a[href]:hover {
+  background: #FFB600;
+  font-style: oblique;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: Optima, "Gill Sans", gill, sans-serif;
+  background: #FFB600;
+  color: black;
+  text-align: right;
+}
+h1 {
+  margin-left: -10%;
+  margin-right: -10%;
+  padding: 0.5em;
+}
+h2 {
+  margin-left: -5%;
+  margin-right: -5%;
+  padding: 0.5em;
+}
+
+pre {
+  background: #FD0;
+  font-size: smaller;
+}
+
+table {
+  background: #FFB600;
+  font-size: smaller;
+}
+td {
+  padding: 0.5ex;
+}
