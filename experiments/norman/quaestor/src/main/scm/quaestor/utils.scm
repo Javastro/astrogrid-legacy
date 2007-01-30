@@ -10,10 +10,8 @@
 (require-library 'util/lambda-contract)
 (require-library 'util/sexp-xml)
 
-
 (module utils
- (;sexp->xml
-  collection->list
+ (collection->list
   iterator->list
   jlist->list
   enumeration->list
@@ -56,6 +54,9 @@
 
 (import* sexp-xml
          sexp-xml:sexp->xml)
+
+(import debugging)                      ;for print-stack-trace
+
 
 
 ;; predicates used in contracts
