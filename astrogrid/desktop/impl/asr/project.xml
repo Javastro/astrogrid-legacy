@@ -82,6 +82,7 @@
                                 <directory>${basedir}/../src/java</directory>
                                 <includes>
                                         <include>**/hivemind/*.xml</include>
+                                        <include>**/hivedoc/*.*</include>                                        
                                         <include>astrogrid.properties</include>
                                         <include>default-log4j.properties</include>
                                         <include>org/astrogrid/desktop/modules/system/transformers/*.xsl</include>
@@ -97,8 +98,18 @@
         </build>
 
         <dependencies>
-
-
+<!--  interface zip - only used in packaging. -->
+<dependency>
+	<groupId>org.astrogrid</groupId>
+	<artifactId>acr-interface-zip</artifactId>
+	<version>${astrogrid.desktop.version}</version>
+	<!--  work-around for maven bug - can't have 2 artifacts with same id, even if they are differtent types -->
+	<jar>acr-interface-${astrogrid.desktop.version}.zip</jar>
+	<type>zip</type>
+	<properties>
+		<unzip>true</unzip>
+	</properties>
+</dependency>
 <!--  scripting CDK -->
  <dependency>
        <groupId>org.astrogrid</groupId>
@@ -276,7 +287,8 @@
       <url>http://www.astrogrid.org/</url>
       <properties>
         <dist.bundle>true</dist.bundle>
-        <strip>${strip.security}</strip>        
+<!--        <strip>${strip.security}</strip>        -->
+		<strip>true</strip>
       </properties>
     </dependency>
 
@@ -288,7 +300,8 @@
       <url>http://www.astrogrid.org/</url>
       <properties>
         <dist.bundle>true</dist.bundle>
-        <strip>${strip.security}</strip>        
+<!--        <strip>${strip.security}</strip>        -->
+			<strip>true</strip>
       </properties>
     </dependency>
 
@@ -300,7 +313,8 @@
       <url>http://www.astrogrid.org/</url>
       <properties>
         <dist.bundle>true</dist.bundle>
-        <strip>${strip.security}</strip>    
+<!--        <strip>${strip.security}</strip>    -->
+			<strip>true</strip>
       </properties>
     </dependency>
 
@@ -523,7 +537,8 @@
         		<type>jar</type>
 	 	<properties>
  			<dist.bundle>true</dist.bundle>
- 			<strip>${strip.security}</strip>
+<!-- 			<strip>${strip.security}</strip>-->
+				<strip>true</strip>
  		</properties>        		
         	</dependency>
         		 
@@ -668,7 +683,7 @@
 		<version>1.0.1</version>
 		<properties>
 			<dist.bundle>true</dist.bundle>
-			<strip>true</strip>
+			<strip>false</strip>
 		</properties>		
 	</dependency>
 	
@@ -678,7 +693,7 @@
 		<version>3.0.1</version>
 		<properties>
 			<dist.bundle>true</dist.bundle>
-			<strip>false</strip><!--  all spi driven - a nightmare to strip --> 
+			<strip>false</strip> 
 		</properties>		
 	</dependency>
 	

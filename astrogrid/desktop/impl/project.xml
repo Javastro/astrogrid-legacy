@@ -55,6 +55,7 @@
                         	<directory>${basedir}/src/java</directory>
                         	<includes>
                         		<include>*.properties</include>
+                        	    <include>**/hivedoc/*.*</include>                        		
                         		<include>**/*.xml</include>
                         		<include>**/*.png</include>
                         		<include>**/*.jpg</include>

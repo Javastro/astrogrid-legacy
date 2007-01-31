@@ -42,7 +42,6 @@
 		</properties>						
    </dependency>	
 	
-	
 
 <!-- container system - hivemind     -->
 <!--  don't plan to mess with these - too important.-->
@@ -297,38 +296,45 @@
  <dependency>
 	 <artifactId>jdic</artifactId>
 	 <groupId>jdic</groupId>
-	 <version>0.9.1</version>
+	<version>${jdic.version}</version>
 	 <properties>
 		 <dist.bundle>true</dist.bundle>
-		 <uberjar.bundle>${isBuildingWorkbench.getValue() == 'true'}</uberjar.bundle>
 		 <strip>true</strip>
 	 </properties>
  </dependency>
  <!--NB: comment out following two when generating dependencies on macosx -->
- <!--
+ <!--  
  <dependency>
 	 <artifactId>jdic_stub_${ag.os.name}</artifactId>
 	 <groupId>jdic</groupId>
-	 <version>0.9.1</version>
+	<version>${jdic.version}</version>
 	 <properties>
 		 <dist.bundle>true</dist.bundle>
-		 <uberjar.bundle>${isBuildingWorkbench.getValue() == 'true'}</uberjar.bundle>
 	 </properties>	 
  </dependency>
--->  
+-->
 <!-- NB - this is the jar of native libs, that needs to be locally installed. 
       not a real dependency as such - and not needed for development
       -->
- <!--<dependency>
+      <!--  
+ <dependency>
 	 <artifactId>jdic_native_${ag.os.name}_${ag.os.arch}</artifactId>
 	 <groupId>jdic</groupId>
-	 <version>0.9.1</version>
+	<version>${jdic.version}</version>
 	 <properties>
 		 <dist.bundle>true</dist.bundle>
-		 <uberjar.bundle>${isBuildingWorkbench.getValue() == 'true'}</uberjar.bundle>
 	 </properties>	 
  </dependency>
---> 
+-->
+<dependency>
+	<artifactId>jdic_native_all</artifactId>
+	<groupId>jdic</groupId>
+	<version>${jdic.version}</version>
+	<type>zip</type>
+	<properties>
+		<unzip>true</unzip>
+	</properties>
+</dependency>
 <!-- end of jdic -->
 
 <!-- used within development only -->
@@ -337,7 +343,7 @@
     	    <dependency>
 	<groupId>proguard</groupId>
 	<artifactId>proguard</artifactId>
-	<version>3.6</version>
+	<version>3.7</version>
 	<properties>
 		<uberjar.bundle>false</uberjar.bundle>
 	</properties>
@@ -358,7 +364,8 @@
 	<dependency>
 		<groupId>izpack</groupId>
 		<artifactId>standalone-compiler</artifactId>
-		<version>3.8.2</version>
+		<!--<version>3.8.2</version>-->
+		<version>3.9</version>
 		<properties>
 			<uberjar.bundle>false</uberjar.bundle>
 		</properties>
@@ -468,15 +475,6 @@
 		        	    	<uberjar.bundle>false</uberjar.bundle>
 		   		         </properties> 
                 </dependency>
-                
-<!--                <dependency>-->
-<!--                	<groupId>ant</groupId>-->
-<!--                	<artifactId>ant-optional</artifactId>-->
-<!--                	<version>1.5.3-1</version>-->
-<!--                	<properties>-->
-<!--                		<testing.jar>true</testing.jar>-->
-<!--                	</properties>-->
-<!--                -->
-<!--                </dependency>-->
+
 	</dependencies>
 </project>

@@ -88,6 +88,7 @@
                                 <!-- todo: trim these more -->
                                 <includes>
                                         <include>**/hivemind/*.xml</include>
+                                        <include>**/hivedoc/*.*</include>
                                         <include>default-log4j.properties</include>                                        
                                         <include>org/astrogrid/desktop/icons/*.png</include>
           								<include>org/astrogrid/desktop/icons/*.gif</include>

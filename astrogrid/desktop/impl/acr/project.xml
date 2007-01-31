@@ -74,6 +74,7 @@
                                 <directory>${basedir}/../src/java</directory>
                                 <includes>
                                         <include>**/hivemind/*.xml</include>
+                                        <include>**/hivedoc/*.*</include>                                        
                                         <include>astrogrid.properties</include>
                                         <include>default-log4j.properties</include>
                                         <include>org/astrogrid/desktop/modules/system/transformers/*.xsl</include>

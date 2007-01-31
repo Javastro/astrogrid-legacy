@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
-<project xmlns:j="jelly:core" xmlns:define="jelly:define"    
-	xmlns:artifact="artifact" xmlns:u="jelly:util">
+<project xmlns:j="jelly:core" xmlns:define="jelly:define"  
+	xmlns:artifact="artifact" xmlns:u="jelly:util" xmlns:x="jelly:xml">
 <!-- 
 common definitions and hooks used by the impl projects.
  -->
@@ -53,17 +53,18 @@ common definitions and hooks used by the impl projects.
 	<!-- smoke-test -->
 		<attainGoal name="smoke-test" />
 
-	<j:if test="${! (ifBuildingASR.getValue().equals('true'))}">
-		<!-- package as an installer -->
-			<attainGoal name="installer" />		
-	<!--  package as a webstart app -->
-		<attainGoal name="webstart" />
-	</j:if>
+
 <!--  package as an osx app -->
 	<j:set var="tmpVar" value="${os.name}" />
    <j:if test="${tmpVar == 'Mac OS X'}">
 	<attainGoal name="osx" />
 	</j:if>	
+	<!-- package as an installer -->
+	<attainGoal name="installer" />		
+	<j:if test="${! (ifBuildingASR.getValue().equals('true'))}">
+	<!--  package as a webstart app -->
+		<attainGoal name="webstart" />
+	</j:if>
 </postGoal>
 
 	
@@ -75,7 +76,7 @@ common definitions and hooks used by the impl projects.
 	real packaging routine. - hangs off back of 'dist' goal-
 -->
 
-<!--  makes an all-in-one executable jar - replacement for javaapp goal -->
+<!--  makes an all-in-one executable jar -->
   <goal name="app-jar"
   description="build an all-in-one executable jar: depends on dist:build-bin">
   <echo>Building Application Jar: ${maven.final.name}-app.jar</echo>
@@ -105,10 +106,10 @@ common definitions and hooks used by the impl projects.
 	</jar>  
   </goal>	
 
-<!-- package as an osx app - build only works on osx -->
+<!-- package as an osx app - build only works on osx
+todo see if we can include other things in the disk image too. -->
 	<goal name="osx"  
 	description="builds an osx-specific app. depends on app-jar, and only works on OSX">
-	  <echo>Building OSX Install Image: ${maven.final.name}.dmg</echo>
 	<!--  remove if already there - otherwise task won't proceed -->
 	<delete dir="${maven.build.dir}/osx" quiet ="true" />
 	<mkdir dir="${maven.build.dir}/osx"	/>
@@ -126,21 +127,32 @@ common definitions and hooks used by the impl projects.
     	vmoptions="-Xmx512m"
     	jars="${maven.build.dir}/${maven.final.name}-app.jar">
     </jarbundler>
+    <!--  remove the executable jar - so got a smaller package -->
+    <echo> removing app jar </echo>
+    <delete file="${maven.build.dir}/osx/${pom.name}.app/Contents/Resources/Java/${maven.final.name}-app.jar" />
     <!--  package it up as a osx disk image.-->
-    <exec executable="/usr/bin/hdiutil" dir="${maven.build.dir}" os="Mac OS X">
-      <arg value="create"/>
-      <arg value="-srcfolder"/>
-      <arg value="${maven.build.dir}/osx"/>
-      <arg value="-volname"/>
-      <arg value="${maven.final.name}"/>
-      <arg value="-ov"/>
-      <arg value="${maven.final.name}.dmg"/>
-    </exec>    
+<!--    <exec executable="/usr/bin/hdiutil" dir="${maven.build.dir}" os="Mac OS X">-->
+<!--      <arg value="create"/>-->
+<!--      <arg value="-srcfolder"/>-->
+<!--      <arg value="${maven.build.dir}/osx"/>-->
+<!--      <arg value="-volname"/>-->
+<!--      <arg value="${maven.final.name}"/>-->
+<!--      <arg value="-ov"/>-->
+<!--      <arg value="${maven.final.name}.dmg"/>-->
+<!--    </exec>    -->
+	<exec executable="/usr/bin/ditto" dir="${maven.build.dir}" os="Mac OS X">
+		<arg value="-c" />
+		<arg value="-X" />
+		<arg value="-z"/>
+		<arg value="--rsrc" />
+		<arg value="${maven.build.dir}/osx" />
+		<arg value="${maven.build.dir}/${maven.final.name}-osx.cpio" />
+	</exec>
 </goal>
 
 <!--  try running stripped - testing / development only -->
 <goal name="run" 
-	description="run the application from within the dist/bin directory - useful for testing stripping. Depends on dist:build-bin"
+	description="run the application from within the dist/bin directory - useful as part of testing. Depends on dist:build-bin"
 	>
 	<echo>Running ${maven.javaapp.mainclass}</echo>
 	<java classname="${maven.javaapp.mainclass}"
@@ -159,15 +171,27 @@ common definitions and hooks used by the impl projects.
 	<echo>Running ${maven.javaapp.mainclass}</echo>
 	<java classname="${maven.javaapp.mainclass}"
 		fork="true">
-<!--  		<arg value="-debug" />-->
 		<classpath>
 			<pathelement location="${maven.build.dir}/${maven.final.name}-app.jar" />
 		</classpath>
 	</java>
 </goal>
 
+	<!--  helper goal - unpackage resource zips, so that they can be referenced by the installer builder -->
+	<goal name="unzipResources">
+		<j:set scope="parent" var="resourceDir" value="${maven.build.dir}/resources" />
+		<mkdir dir="${resourceDir}" />
+        <j:forEach var="lib" items="${pom.artifacts}">
+        	<j:set var="dep" value="${lib.dependency}"/>
+            <j:if test="${dep.getProperty('unzip')}">
+            	<unzip src="${lib.path}" dest="${resourceDir}" />
+	        </j:if>
+       </j:forEach>		
+	</goal>
+
 	<goal name="installer"
-		description="Build an os-independent installer using IzPack. Depends on app-jar">
+		description="Build an os-independent installer using IzPack. Depends on app-jar"
+		prereqs="unzipResources">
 		<echo>
 			Building installer : ${maven.final.name}-installer.jar
 		</echo>
@@ -197,7 +221,7 @@ common definitions and hooks used by the impl projects.
 						iconFile="$INSTALL_PATH/logo.png" 
 						programGroup="yes" desktop="yes" type="Application" encoding="UTF-8" />
 				</shortcuts>
-			</j:file>			
+			</j:file>						
 		<!--  write out installer config file -->
 		<j:file name="${maven.build.dir}/izpack.xml" omitXmlDeclaration="false" trim="true" xmlns="dummy">
 				<installation version="1.0">
@@ -216,59 +240,125 @@ common definitions and hooks used by the impl projects.
 						<javaversion>${minimum.jvm.version}</javaversion>
 					</info>
 					<variables>
+						<!--  these can then be referenced in start scripts, etc -->
 						<variable name="jarname" value="${maven.final.name}-app.jar" />
+						<variable name="jdicversion" value="${jdic.version}" />
+						<variable name="mainclass" value="${maven.javaapp.mainclass}" />
+						<variable name="cpio" value="${maven.final.name}-osx.cpio" />
+						<variable name="appname" value="${pom.name}" />
+						<!--  customization of ui -->
+						<variable name="desktopshortcutcheckboxenabled" value="true"/> 						
 					</variables>
-					<guiprefs height="600" resizable="yes" width="800" />
+					<guiprefs height="600" resizable="yes" width="800" >
+					  <modifier key="headingPanelCounter" value="progressbar"/>
+					  <modifier key="headingPanelCounterPos" value="inNavigationPanel"/>
+					</guiprefs>
 					<locale>
 						<langpack iso3="eng" />
 					</locale>
-					<resources>
+					<resources><!-- to here. -->
 						<res id="Installer.image" src="${basedir}/src/webapp/logo.gif" />
 						<res id="LicencePanel.licence"
 							src="${maven.license.licenseFile}" />
 						<res src="${maven.build.dir}/windows_shortcuts.xml"
      							id="shortcutSpec.xml"/><!--  for windows -->
 						<res src="${maven.build.dir}/unix_shortcuts.xml"
-     								id="Unix_shortcutSpec.xml"/>							
+     								id="Unix_shortcutSpec.xml"/>			
 					</resources>
 					<panels>
 						<panel classname="HelloPanel" />
 					  	<panel classname="LicencePanel" />
-						<panel classname="TargetPanel" />
 						<panel classname="PacksPanel" />
+						<panel classname="TargetPanel" />
+						<panel classname="SummaryPanel" />
 						<panel classname="InstallPanel" />
 						<panel classname="ShortcutPanel" />
 						<panel classname="SimpleFinishPanel" />
 					</panels>
 					<packs>
+						<!--  program files pack -->
 						<pack name="${pom.name}" required="yes" preselected="yes">
 							<description>
 								Program Files
-							</description>						
-							<file src="${maven.build.dir}/${maven.final.name}-app.jar" targetdir="$INSTALL_PATH" />
-							<file src="${buildlib}/launch.sh" targetdir="$INSTALL_PATH" /> 
-							<file src="${buildlib}/launch.bat" targetdir="$INSTALL_PATH" os="windows"/>
+							</description>
+							<!--  new - check on what this can do.-->
+<!--							<updatecheck>-->
+<!--								<include name="*.jar" />-->
+<!--							</updatecheck>		-->
+							<file src="${maven.build.dir}/${maven.final.name}-app.jar" targetdir="$INSTALL_PATH/lib"/>
+							<file src="${buildlib}/launch.sh" targetdir="$INSTALL_PATH" override="true">
+								<os family="unix" /> 
+							</file> 
+							<file src="${buildlib}/launch.bat" targetdir="$INSTALL_PATH" os="windows" override="true"/>
 							<fileset dir="${basedir}/src/webapp" targetdir="$INSTALL_PATH">
-								<include name="*.png" />
+								<os family="windows" />
 								<include name="*.ico" />
 							</fileset>
-							<parsable targetfile="$INSTALL_PATH/launch.sh" type="shell"/>	
+							<fileset dir="${basedir}/src/webapp" targetdir="$INSTALL_PATH">
+								<os family="unix" />
+								<include name="*.png" />
+							</fileset>							
+							<!-- jdic native libraries -->
+							<fileset dir="${resourceDir}/jdic_native_all-${jdic.version}/windows"  targetdir="$INSTALL_PATH/lib">
+								<os family="windows" />
+							</fileset>
+							<fileset dir="${resourceDir}/jdic_native_all-${jdic.version}/linux"  targetdir="$INSTALL_PATH/lib">
+								<os name="Linux" arch="i386" />
+							</fileset>
+							<fileset dir="${resourceDir}/jdic_native_all-${jdic.version}/solaris"  targetdir="$INSTALL_PATH/lib">
+								<os name="Solaris" />
+							</fileset>
+							<fileset dir="${resourceDir}/jdic_native_all-${jdic.version}/solaris/i386"  targetdir="$INSTALL_PATH/lib">
+								<os name="Solaris" arch="i386" />
+							</fileset>											
+							<fileset dir="${resourceDir}/jdic_native_all-${jdic.version}/solaris/sparc"  targetdir="$INSTALL_PATH/lib">
+								<os name="Solaris" arch="SPARC" />
+							</fileset>					
+							<file src="${maven.build.dir}/${maven.final.name}-osx.cpio" targetdir="$INSTALL_PATH" >
+								<os family="mac"/>
+							</file>		
+							<file src="${buildlib}/osx-install.sh" targetdir="$INSTALL_PATH" os="mac" override="true" />
+																										
+							<parsable targetfile="$INSTALL_PATH/launch.sh" type="shell" os="unix"/>	
 							<parsable targetfile="$INSTALL_PATH/launch.bat" os="windows"/>			
-							<executable targetfile="$INSTALL_PATH/launch.sh" stage="never"/>							
+							<parsable targetfile="$INSTALL_PATH/osx-install.sh" os="mac" type="shell"/>
+							<executable targetfile="$INSTALL_PATH/launch.sh" stage="never" failure="warn"/>							
+							<executable targetfile="$INSTALL_PATH/osx-install.sh" os="mac" stage="postinstall" failure="abort"/>
 						</pack>
-						<!--  later - add in native jdic libraries. -->
+						<!--  optional pack of documentation -->
+						<j:if test="${pom.artifactId != 'plastic-hub'}"> <!--  no point including examples for this one. -->
+						<pack name="AR Scripting Support" required="no" preselected="yes">
+							<description>
+								Documentation and Examples of scripting the Astro Runtime 
+							</description>
+							<fileset dir="${resourceDir}/acr-interface-${astrogrid.desktop.version}"
+								targetdir="$INSTALL_PATH/scripting" override="true"
+							/>	
+						</pack>
+						</j:if>
+						<!--  later - web installer? osx option? -->
+						<!--  later : add shortcuts to other docuemntation, examples, etc -->
 					</packs>
 					<native type="izpack" name="ShellLink.dll"/>
 				</installation>		
 		</j:file>
 		<!--  run installer compiler -->
-		<java classname="com.izforge.izpack.compiler.Compiler" 
-			classpathref="maven.dependency.classpath" fork="true" dir="${buildlib}"> <!--  run in a particular directory, so it can find the native libs. sheesh. -->
+			<echo>Building Installer</echo>
+		<java classname="com.izforge.izpack.compiler.Compiler"  failonerror="true"
+			classpathref="maven.dependency.classpath" fork="true" dir="${buildlib}">
+			 <!--    run in a particular directory, so it can find the native libs. sheesh. -->
 			<arg file="${maven.build.dir}/izpack.xml" />
 			<arg value="-o"/><arg value="${maven.build.dir}/${maven.final.name}-installer.jar" />
 		  	<arg value="-b"/><arg file="${basedir}" />
-			<arg value="-k"/><arg value="standard" /> <!--  or web  -->
+			<arg value="-k"/><arg value="standard" />   <!--  or web -->  
 		</java>
+<!--  dosn't work - so need to run directly. -->
+<!--			<izpack input="${maven.build.dir}/izpack.xml"-->
+<!--				output="${maven.build.dir}/${maven.final.name}-installer.jar"-->
+<!--				installerType="standard"-->
+<!--				basedir="${basedir}"-->
+<!--				izPackDir="${buildlib}"-->
+<!--			/>-->
 	</goal>
 
 	<goal name="webstart" 
@@ -311,6 +401,67 @@ common definitions and hooks used by the impl projects.
 		update="false"/>
 </goal>
 
+	<!--  parses all the hivemind descriptors, and extracts a list of classes referenced by them.
+		this result is left in a variable 'hivemindRequiredClasses' in the parent scope.
+	 -->
+	<goal name="scanDescriptors">
+			<!--  define a set of results. -->
+			<j:new var="classSet" className="java.util.HashSet" />
+			<!--  find a list of descriptors -->
+		 	<u:file var="d" name="${maven.build.dest}/org/astrogrid/desktop/hivemind" />
+	 		<j:forEach var="f" items="${d.listFiles()}"> 
+	 			<!--  a file called *.xml, but not hivemind*.xml or fallback*.xml -->
+	 			<j:set var="fname" value="${f.getName()}" />	
+	 			<j:if test="${fname.endsWith('.xml') &amp;&amp; ! fname.startsWith('hivemind') &amp;&amp; ! fname.startsWith('fallback') &amp;&amp; ! fname.startsWith('version')}">		
+	 				<echo>${fname}</echo>
+					<!-- load the file, and filter oout the entity references that maven can't handle-->
+					<loadfile property="${fname}" srcFile="${f}"><!--  this ant task assigns to a write-once property - so need to use a new property each iteration. -->
+						<filterchain>
+							<linecontainsregexp >
+								<regexp pattern="^(?!.*ENTITY)" /> <!--  regexps are horrible. this means 'lines not matching ENTITY' -->
+								<regexp pattern="^.*&amp;lt;|^.*&amp;amp;|^(?!.*&amp;\w+;)" /> <!-- 
+						here I'm trying to say:  'pass any lines  not containing an entity reference apart from lt; and amp;' 
+						however,all I can manage is 'pass any lines containing amp;, or lt; or no-other entity reference.
+						not quite equiuvalent, but does the job
+						-->						
+							</linecontainsregexp>
+						</filterchain>
+					</loadfile>
+					<!--  now parse the filtered file  - need to double dereference fname -->
+					<x:parse var="hd" validate="false" text="${context.findVariable(fname)}" />
+					
+					<!--  use xpath to search for referecned classes within the parsed descriptor -->
+					<x:set var="classes" select="
+						  $hd//@class
+						| $hd//@servletClass
+						| $hd//@interface[not(starts-with(.,'org.astrogrid.acr')) and contains(.,'.')]
+						| $hd//@*[starts-with(.,'instance:')]
+						| $hd//text()[starts-with(.,'instance:')]
+						" />
+
+					<!--  append classes we found in this descriptor to the set -->
+					<j:forEach var="i" items="${classes}">
+						<j:set var="classname" value="${i.getStringValue()}" />
+						 <j:choose>
+							<j:when test="${classname.startsWith('instance:')}">
+								<!--  only interested in side-effect - j:set just used to prevent lots of output to console -->
+								<j:set var="ignored" value="${classSet.add(classname.substring(9))}" />
+							</j:when>
+							<j:otherwise>
+								<j:set var="ignored"	value="${classSet.add(classname)}"/>
+							</j:otherwise>
+						</j:choose>
+					</j:forEach>
+				</j:if>
+			</j:forEach>
+			<j:set scope="parent" var="hivemindRequiredClasses" value="${classSet}" />
+	</goal>
+	
+	<!--  helper goal, that lists extracted descriptors -->
+	<goal name="listDescriptors" prereqs="scanDescriptors">
+		<echo>${hivemindRequiredClasses}</echo>
+	</goal>
+	
 	
 	<!-- strip unused classes, and optimize the rest
 	
@@ -318,44 +469,87 @@ common definitions and hooks used by the impl projects.
 	as jars aren't available in these cases.
 	-->
 <goal name="jar-strip"
-	description="strip and optimize the jars. depends on dist:build-bin">
+	description="strip and optimize the jars. depends on dist:build-bin" prereqs="scanDescriptors">
 	<echo>Stripping Jar: ${maven.final.name}-app.jar</echo>
 	<!--  very twitchy about whitespace inside loops and between tags. - need to pass in args directly for it to work. -->
     <proguard  printseeds="false"
-    	skipnonpubliclibraryclasses="true"
-    	skipnonpubliclibraryclassmembers="true"
-    	ignorewarnings="true" warn="false"
+    	skipnonpubliclibraryclasses="false"
+    	skipnonpubliclibraryclassmembers="false"
+    	allowaccessmodification="false"
+    	verbose="true"
+    	ignorewarnings="true" 
+    	warn="true" note="true"
     	shrink="true" optimize="true" obfuscate="false" >
-     	-injars ${maven.build.dir}/${maven.final.name}.jar
+     	-injars ${maven.build.dir}/${maven.final.name}.jar     	
      	<j:forEach var="lib" items="${pom.artifacts}">
     		<j:set var="dep" value="${lib.dependency}"/>
     		<j:if test="${dep.getProperty('dist.bundle')=='true'  &amp;&amp; dep.getProperty('strip') == 'true'}" trim="false">
- 		-injars ${lib.path}
+ 			-injars "${lib.path}" 
  		</j:if>
- 		</j:forEach> 
+ 		</j:forEach>   
     	-outjars ${maven.dist.bin.assembly.dir}
     	<!--  list of libs to preserve -->
      	<j:forEach var="lib" items="${pom.artifacts}">
     		<j:set var="dep" value="${lib.dependency}" />
+    		<!--  libraries that avoid the stripping process, but will be bundled in later -->
     		<j:if test="${dep.getProperty('dist.bundle')=='true'  &amp;&amp; dep.getProperty('strip') != 'true'}" trim="false">
-    		-libraryjars ${lib.path}
-    	</j:if>
+    		<echo>Excluding lib: ${lib.name} from stripping</echo>
+    		 -libraryjars ${lib.path} 
+    		</j:if>
+    		<!--  libraries that don't get bundled, but are used in testing process. -->
+    		<j:if test="${dep.getProperty('testing.jar')=='true'}" trim="false">
+    		  -libraryjars ${lib.path}
+    		</j:if>
     	</j:forEach>
-    	-libraryjars ${sun.boot.class.path} <!--  Sun implementation dependent - but can't find any other way round. ${java.home}/lib/rt.jar don't work on OSX -->
-  	<!--  main classes -->	
-    	-keep public class ${maven.javaapp.mainclass}* {
+    		<!--  system libraries -->
+			<j:set var="tmpVar" value="${os.name}" />  			
+  			<j:choose>
+  				<j:when test="${tmpVar == 'Mac OS X'}" trim="false"> <!--  for OSX -->
+  				-libraryjars ${java.home}/../Classes/classes.jar
+  				</j:when>
+  				<j:otherwise trim="false"><!--  for other os. -->
+  				-libraryjars ${java.home}/lib/rt.jar 
+  				</j:otherwise>
+  			</j:choose>
+  	<!-- 
+  	=============
+  	ROOTS - which classes to keep
+  	 -->
+  	<!--  main classes-->	
+    	-keep public class org.astrogrid.* {
     		public static void main(java.lang.String[]);
-    	}	
-  	<!--  keep all astrogrid desktop classes visibly the same from outside - necessary for hivemind assembly -->
-    	-keep public class org.astrogrid.desktop.** {
     		public protected *;
-    		}	
-	<!--  leave public class and method names unadjusted, for all required classes and methods -->
-	-keepnames public class * {
-		public *;
-		}
+    	}	
+    <!--  keep all classes referenced from hivemind visibly the same. -->	
+    <j:forEach var="cl" items="${hivemindRequiredClasses}" trim="false">
+    	-keep class ${cl} {
+    		public  protected *;
+    	}
+    </j:forEach>
+    	<!--  preserve handlers too -->
+    	-keep class org.astrogrid.desktop.protocol.** {
+    		public protected *;
+    		}
+    <!-- keep all things that extend AR interface classes -->
+    	-keep class * implements org.astrogrid.acr.** {
+    		public protected *;
+    	}
+    <!-- smoke-testing entry point -->
+    	-keep class org.astrogrid.desktop.BuildInprocessWorkbench {
+    		public protected *;
+    		}
+    		
+    <!--  blunderbuss - would like to remove this rule in the fututre, and just use the ones above 
+    	seems to be necessary to fix problems with xstream. todo - look into this.
+    -->
+    -keep class org.astrogrid.desktop.** {
+    	public protected *;
+    	}
+	<!-- 
+	=================== 
+	How to preserve classes that are kept.
+	-->
     	<!--  preserve naming and serialization code  , in any serializable classes that are required -->
-	-keepnames class * implements java.io.Serializable
 	-keepclassmembers class * implements java.io.Serializable {
 			*;
     		static final long serialVersionUID;
@@ -364,6 +558,41 @@ common definitions and hooks used by the impl projects.
     		java.lang.Object writeReplace();
     		java.lang.Object readResolve();
 		}		
+	<!-- 
+	=================
+	Additional Rules for AG codebase -->
+        <!--  Dynamically checked by the Finder class see bug JDT1845  -->
+        -keep class org.astrogrid.desktop.BuildInprocessACR {
+            public protected *;
+        }		
+	<!--  required to make security work. -->		
+	-keep class org.astrogrid.community.** { <!-- could narrow to community**securtity?? -->
+		public protected *;
+	}
+	-keep class org.astrogrid.security.** {
+		public protected *;
+		}  
+	<!--  castor beans - keep these classes -->
+	-keep class org.astrogrid.workflow.beans.**.* {
+		*;
+		}
+	-keep class org.astrogrid.applications.beans.**.* {
+		*;
+		}			      
+	<!--  complains that it can't find javax.xml.rpc.Service.createCall() - so make it a root -->
+	 -keep class org.astrogrid.applications.delegate.impl.CommonExecutionConnectorDelegateImpl {
+	 	*;
+	 	}
+	 -keep class javax.xml.rpc.Service {
+	 	public protected *;
+	 }
+	 -keep class * implements javax.xml.rpc.Service {
+	 	public protected *;
+	 	}
+	<!-- 
+	=================
+	Additional Rules for supporting libraries
+	 -->	
 	<!--  preserve commons logging factory -->
 	-keep class org.apache.commons.logging.impl.LogFactoryImpl {
 		public *;
@@ -388,25 +617,10 @@ common definitions and hooks used by the impl projects.
 	-keep class org.apache.log4j.Category {
 		public *;
 	}		
-        <!--  Dynamically checked by the Finder class see bug JDT1845  -->
-        -keep public class org.astrogrid.desktop.BuildInprocessACR {
-            public *;
-        }		
-    	<!--  things required from ag commons -->
-    	-keep public class org.astrogrid.common.namegen.InMemoryNameGen {
-	    	public *;
-    	}
 		<!--  preserve UI look and feel - always dynamically loaded-->			
 	-keep class com.l2fprod.**.* extends javax.swing.plaf.ComponentUI {
     	public static javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent);
 	}    
-	<!-- cea components-->
-	-keep class org.astrogrid.applications.manager.DefaultApplicationEnvironmentRetriever {
-		public *;
-	}	
-	-keep class org.astrogrid.applications.manager.DefaultQueryService {
-		public *;
-		}
 	<!--  security -->
 	-keep class org.globus.myproxy.MyProxy {
 		public *;
@@ -421,7 +635,6 @@ common definitions and hooks used by the impl projects.
 	-keep public class cryptix.** {
 		public *;
 		}
-	
 	-keep public class org.apache.xml.security.** {
 		public *;
 		}
@@ -441,22 +654,12 @@ common definitions and hooks used by the impl projects.
 	-keep class org.apache.xml.security.algorithms.implementations.SignatureBaseRSA {
 		public *;
 		}-->
-		
 	-keep public class org.bouncycastle.** {
 		public *;
 		}	
 	-keep public class org.apache.ws.security.**.* {
 		public *;
 		}
-
-<!--  dunno why.. but these are necessary to make castor work. v odd. -->		
-	-keep class org.astrogrid.community.**.* {
-		public *;
-	}
-	-keep class org.astrogrid.security.**.* {
-		public *;
-		}
-	
 	<!--  jdbm -->
 	-keep class jdbm.recman.Provider {
 		public *;
@@ -493,25 +696,22 @@ common definitions and hooks used by the impl projects.
 		}	
 	-keep class org.apache.xmlbeans.impl.schema.SchemaTypeSystemImpl {
 		public *;
-		}
-	<!--  castor beans - keep these classes -->
-	-keep class org.astrogrid.workflow.beans.**.* {
-		*;
-		}
-	-keep class org.astrogrid.applications.beans.**.* {
-		*;
-		}		
+		}	
 	<!--  castor - preserve all for the moment, else seems to fail - but include in strip path, so dependencies are processed. -->
 	-keep class org.exolab.castor.**.* {
 		*;
 		}
-	<!--  for jxpath (used within castor) -->
+	<!--  for jxpath (used within castor)  todo either remove, or strip this lib -->
 	-keep public class * implements org.apache.commons.jxpath.ri.model.NodePointerFactory {
 		public *;
 		}
 	-keep class org.apache.commons.jxpath.ri.JXPathContextFactoryReferenceImpl {
 		public *;
 		}
+	<!--  xml streaming / xfire todo - todo try removing this-->
+<!--	-keep class * implements javax.xml.stream.XMLStreamReader{-->
+<!--		public *;-->
+<!--		}-->
 	<!--  axis, and dependent jars--> 
 	-keep class org.apache.axis.transport.http.HTTPSender {
 		public *;
@@ -534,7 +734,7 @@ common definitions and hooks used by the impl projects.
 	-keep class * implements org.apache.axis.components.net.SocketFactory {
 		public *;
 	}
-	<!--  stilts -->
+	<!--  stilts - uses a plugin discovery mechanism. -->
 	-keep class * implements uk.ac.starlink.table.StarTableWriter {
 		public *;
 	}
