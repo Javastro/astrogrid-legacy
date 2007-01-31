@@ -1,4 +1,4 @@
-/*$Id: ApplicationLauncherImpl.java,v 1.18 2007/01/29 16:45:09 nw Exp $
+/*$Id: ApplicationLauncherImpl.java,v 1.19 2007/01/31 11:26:19 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -70,7 +70,7 @@ public class ApplicationLauncherImpl extends UIComponentImpl  implements Applica
                     final CeaApplication info = editor.getToolModel().getInfo();
 					setTitle("Task Launcher - " + info.getTitle());
 					
-					if (info.getCuration().getCreators().length > 0 && info.getCuration().getCreators()[0].getLogo() != null) {
+					if (info.getCuration().getCreators().length > 0 && info.getCuration().getCreators()[0].getLogoURI() != null) {
 						(new BackgroundOperation("Fetching Creator Icon") {
 							protected Object construct() throws Exception {
 								return IconHelper.loadIcon( info.getCuration().getCreators()[0].getLogo()).getImage();
@@ -114,6 +114,9 @@ public class ApplicationLauncherImpl extends UIComponentImpl  implements Applica
 
 /* 
 $Log: ApplicationLauncherImpl.java,v $
+Revision 1.19  2007/01/31 11:26:19  nw
+fixed bug caused by getLogo throwing.
+
 Revision 1.18  2007/01/29 16:45:09  nw
 cleaned up imports.
 

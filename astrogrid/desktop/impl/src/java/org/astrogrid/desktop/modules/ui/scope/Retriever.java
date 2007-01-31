@@ -317,8 +317,9 @@ public abstract class Retriever extends BackgroundWorker {
         serviceNode.setAttribute(SERVICE_ID_ATTRIBUTE, information.getId().toString());
         serviceNode.setAttribute(SERVICE_URL_ATTRIBUTE,serviceURL.toString());
         serviceNode.setAttribute(TOOLTIP_ATTRIBUTE,tooltip);        
-        if (information.getCuration() != null && information.getCuration().getCreators().length != 0 && information.getCuration().getCreators()[0].getLogo() != null) {
-            serviceNode.setAttribute(SERVICE_LOGO_ATTRIBUTE,information.getCuration().getCreators()[0].getLogo().toString());                    
+        if (information.getCuration() != null && information.getCuration().getCreators().length != 0 && information.getCuration().getCreators()[0].getLogoURI() != null) {
+           // @todo getLogo liable to throw a wobbly - need to trap exceptions / malformatted data
+        	serviceNode.setAttribute(SERVICE_LOGO_ATTRIBUTE,information.getCuration().getCreators()[0].getLogo().toString());                    
         }
         return serviceNode;
     }
@@ -327,6 +328,7 @@ public abstract class Retriever extends BackgroundWorker {
     	if (s.getCapabilities().length != 0 
     			&& s.getCapabilities()[0].getInterfaces().length != 0
     			&& s.getCapabilities()[0].getInterfaces()[0].getAccessUrls().length != 0) {
+    		//@todo make error tolerant of problems with getValue()
     		return s.getCapabilities()[0].getInterfaces()[0].getAccessUrls()[0].getValue();
     	}
     	throw new NotFoundException(s.getId() + " has no access URL");

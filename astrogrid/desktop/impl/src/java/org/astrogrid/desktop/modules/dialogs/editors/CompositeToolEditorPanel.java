@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.32 2007/01/29 16:45:09 nw Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.33 2007/01/31 11:26:19 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -106,7 +106,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel implements
 					if (info.getCuration().getCreators().length > 0) {
 
 						final Creator c = info.getCuration().getCreators()[0];
-						if (c.getLogo() != null) {
+						if (c.getLogoURI() != null) {
 							(new BackgroundWorker(parent,"Fetching Creator Icon") {
 								protected Object construct() throws Exception {
 									return new ImageIcon(IconHelper.loadIcon(c.getLogo()).getImage().getScaledInstance(-1,48,Image.SCALE_SMOOTH));
@@ -638,6 +638,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel implements
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.33  2007/01/31 11:26:19  nw
+fixed bug caused by getLogo throwing.
+
 Revision 1.32  2007/01/29 16:45:09  nw
 cleaned up imports.
 
