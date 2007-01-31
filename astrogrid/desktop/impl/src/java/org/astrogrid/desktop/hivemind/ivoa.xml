@@ -26,7 +26,7 @@
 	
 	<contribution configuration-id="system.uiStructure" if="not (property ivoa.cache.disabled)">
 		<action parentName="edit" name="cacheClear" text="Flush Cache" onEventDispatchThread="true"
-			object="service:cache" methodName="flush" before="configreset" >
+			object="service:cache" methodName="flush" after="*" >
 			<confirmMessage><![CDATA[<html>
 				Remove all cached registry documents?
 				Proceed?

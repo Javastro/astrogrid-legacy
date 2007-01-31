@@ -58,7 +58,7 @@ RESOURCE (FILE) CHOOSER
 	<contribution configuration-id="system.uiStructure" >
 		<action parentName="debug"  onEventDispatchThread="true"  before="*"
 			name="fullChooseResource1" 
-			text="fullChooseResource(ms=true,file=true,uri=true)" visibleCondition="preference:acr.debug"
+			text="fullChooseResource(ms=true,file=true,uri=true)" 
 			object="service:resourceChooser" methodName="fullChooseResource" >
 			<parameter>fullChooseResource(ms=true,file=true,uri=true)</parameter>
 			<parameter>true</parameter>
@@ -67,7 +67,7 @@ RESOURCE (FILE) CHOOSER
 		</action>
 		<action parentName="debug"  onEventDispatchThread="true"  after="fullChooseResource1"
 			name="fullChooseResource2" 
-			text="fullChooseResource(ms=false,file=true,uri=false)" visibleCondition="preference:acr.debug"
+			text="fullChooseResource(ms=false,file=true,uri=false)"
 			object="service:resourceChooser" methodName="fullChooseResource" >
 			<parameter>fullChooseResource(ms=false,file=true,uri=false)</parameter>
 			<parameter>false</parameter>
@@ -76,7 +76,7 @@ RESOURCE (FILE) CHOOSER
 		</action>		
 		<action parentName="debug"  onEventDispatchThread="true" 
 			name="fullChooseResource3" after="fullChooseResource2"
-			text="fullChooseResource(ms=true,file=false,uri=true)" visibleCondition="preference:acr.debug"
+			text="fullChooseResource(ms=true,file=false,uri=true)" 
 			object="service:resourceChooser" methodName="fullChooseResource" >
 			<parameter>fullChooseResource(ms=true,file=false,uri=true)</parameter>
 			<parameter>true</parameter>
@@ -85,7 +85,7 @@ RESOURCE (FILE) CHOOSER
 		</action>
 		<action parentName="debug"  onEventDispatchThread="true" 
 			name="chooseDirectory1" after="fullChooseResource3"
-			text="chooseDirectory(ms=true,file=true,uri=true)" visibleCondition="preference:acr.debug"
+			text="chooseDirectory(ms=true,file=true,uri=true)" 
 			object="service:resourceChooser" methodName="chooseDirectoryWithParent" >
 			<parameter>chooseDirectory(ms=true,file=true,uri=true)</parameter>
 			<parameter>true</parameter>
@@ -137,8 +137,7 @@ TOOL EDITOR
 	
 		<contribution configuration-id="system.uiStructure">
 		<action parentName="debug" onEventDispatchThread="true" name="driveToolEditor" text="Launch ToolEditor"
-			object="service:toolEditor" methodName="selectAndBuild" 
-			visibleCondition="preference:acr.debug"/>
+			object="service:toolEditor" methodName="selectAndBuild" />
 	</contribution>		
 	<contribution configuration-id="system.helpmap">
 		<item id="userInterface.taskEditor" url="http://www2.astrogrid.org/science" />
@@ -194,7 +193,7 @@ REGISTRY GOOGLE
 
 	<contribution configuration-id="system.uiStructure">
 		<action parentName="debug" name="driveRegistryChooser" onEventDispatchThread="true"
-			 text="Launch RegistryChooser" visibleCondition="preference:acr.debug"
+			 text="Launch RegistryChooser" 
 			object="service:registryGoogle" methodName="selectResources" >		
 			<parameter>Choose a resource!</parameter>
 			<parameter>false</parameter>

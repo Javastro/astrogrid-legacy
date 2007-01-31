@@ -63,8 +63,31 @@
 			<tooltip>Browse and execute Plastic functions in a webbrowser</tooltip>
 		</action>
 	</contribution>
-
 	
+	<!--  documentation links for plastic -->
+	<contribution configuration-id="system.uiStructure" if="not (property system.help.disabled) and (property hub.mode)">
+		<action text="Introduction" name="plasticHelp" parentName="help" iconName="help.gif"
+		object="service:system.help" methodName="showHelpForTarget" before="*">
+			<tooltip>Introduction to Plastic</tooltip>
+			<parameter>plastic.overview</parameter>
+		</action>
+		<!--  john - feel free to add more here. -->
+	</contribution>
+	
+	<!--  documentaiton links for plastic in non-hub mode. -->
+	<contribution configuration-id="system.uiStructure" if="not (property system.help.disabled) and not(property hub.mode)">
+		<action text="Plastic - Introduction" name="plasticHelp" parentName="help" iconName="help.gif"
+		object="service:system.help" methodName="showHelpForTarget" after="acrApi" before="projects">
+			<tooltip>Introduction to Plastic</tooltip>
+			<parameter>plastic.overview</parameter>
+		</action>
+		<!--  john - feel free to add more here. -->
+	</contribution>
+	
+	<contribution configuration-id="system.helpmap">
+		<item id="plastic.overview" url="http://plastic.sourceforge.net/index.html#elevator" />
+	</contribution>	
+
 	<!--  start hub when program runs. -->
 	<contribution configuration-id="hivemind.EagerLoad">
 		<load service-id="hub"/> 

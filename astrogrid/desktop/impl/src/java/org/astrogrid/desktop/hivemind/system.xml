@@ -15,6 +15,7 @@ System module.
 		    <acrService id="webserver" interface="WebServer" />
 			<acrService id="apihelp" interface="ApiHelp" />
 			<acrService id="rmi" interface="RmiServer" />
+			<acrService id="" interface="SystemTray" />
 	</contribution>
 		
 	<contribution configuration-id="framework.descriptors">
@@ -61,7 +62,7 @@ System module.
 	<contribution configuration-id="helpmap">
 		<item id="tab.discovery" url="http://www2.astrogrid.org/science/documentation/data-explore" />
 		<item id="tab.advanced" url="http://www2.astrogrid.org/desktop/astro-runtime" /> <!-- todo  -->
-		<item id="tab.plastic" url="http://plastic.sourceforge.org" />
+		<item id="tab.plastic" url="http://plastic.sourceforge.net" />
 		<item id="tab.links" url="http://www2.astrogrid.org/science/documentation/workbench-helper-applications" />
 		<item id="tab.services" url="http://www2.astrogrid.org/science/documentation/workbench-system-services" />
 		<item id="tab.workflow" url="http://www2.astrogrid.org/science/documentation/workbench-data-analysis"/>
@@ -88,20 +89,21 @@ System module.
 	
 
 	<!--  APP AND PROJECT LINKS -->
-	<contribution configuration-id="uiStructure" if="not (property system.browser.disabled)">
-		<!-- 
-		PROJECTS
-		 -->
-		<action parentName="projects" name="agProject" text="AstroGrid" iconName="logo1.gif"
-			object="service:browser" methodName="openURL" before="*">
-			<parameter>http://www.astrogrid.org/desktop</parameter>
+	<!--  Links that don't appear in 'hiub mode' -->
+	<contribution configuration-id="uiStructure" if="not (property system.browser.disabled) and not (property hub.mode)">
+		<action parentName="projects" name="ivoaProject" text="IVOA" iconName="ivoa.gif"
+			object="service:system.browser" methodName="openURL"
+			>
+			<tooltip>Home Page for the International Virtual Observatory Alliance</tooltip>
+			<parameter>http://www.ivoa.net</parameter>
 		</action>	
 		<action parentName="projects" name="cadcProject" text="CADC" iconName="cadc.jpg"
 			object="service:system.browser" methodName="openURL"
 			>
 			<tooltip>Home Page for Canadian Astronomy Data Center (CADC)</tooltip>
 			<parameter>http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/cadc</parameter>
-		</action>	
+		</action>
+
 		<action parentName="projects" name="cdsProject" 
 			text="CDS" iconName="cds_icon.gif"
 			object="service:system.browser" methodName="openURL">
@@ -113,32 +115,14 @@ System module.
 			>
 			<tooltip>Home Page for ESA-VO</tooltip>
 			<parameter>http://esavo.esa.int/</parameter>
-		</action>				
-		<action parentName="projects" name="ivoaProject" text="IVOA" iconName="ivoa.gif"
-			object="service:system.browser" methodName="openURL"
-			>
-			<tooltip>Home Page for the International Virtual Observatory Alliance</tooltip>
-			<parameter>http://www.ivoa.net</parameter>
-		</action>		
-		<action parentName="projects" name="plasticProject" text="Plastic" iconName="plastic.gif"
-			object="service:system.browser" methodName="openURL"
-			>
-			<tooltip>Home Page for PLASTIC</tooltip>
-			<parameter>http://plastic.sourceforge.net/</parameter>
-		</action>					
-		<action parentName="projects" name="votechProject" 
-			text="VOTech" iconName="votech_icon.gif"
-			object="service:system.browser" methodName="openURL">
-			<tooltip>Euro-VO VOTech Project Home Page</tooltip>			
-			<parameter>http://eurovotech.org/</parameter>
-		</action>
-		<action parentName="projects" name="_perspective" visibleCondition="preference:acr.advanced"
+		</action>	
+		<action parentName="projects" name="egg" visibleCondition="preference:acr.advanced"
 			text="Perspective" object="service:system.browser" methodName="openURL"
 			after="*">
 			<tooltip>It helps to keep a sense of perspective...</tooltip>
 			<parameter>http://dingo.care2.com/cards/flash/5409/galaxy.swf</parameter>
 		</action>	
-	
+		
 		<!--  TODO - add RVO, VO-Paris, and others listed in weasl.
 		also - member os plastic?? -->
 		<!--  TODO - find details
@@ -154,10 +138,36 @@ System module.
 			<tooltip>VOEVENT - FILL in TITLE of PAGE</tooltip>			
 			<parameter>FILL IN VOEVNET URL</parameter>
 		</action>	
-		-->				
+		-->	
+	</contribution>
+	
+	<!--  LINKS that alwasys appear -->
+	<contribution configuration-id="uiStructure" if="not (property system.browser.disabled)">
+		<!-- 
+		PROJECTS
+		 -->
+		<action parentName="projects" name="plasticProject" text="Plastic" iconName="plastic.gif"
+			object="service:system.browser" methodName="openURL"
+			>
+			<tooltip>Home Page for PLASTIC</tooltip>
+			<parameter>http://plastic.sourceforge.net/</parameter>
+		</action>	
+		<action parentName="projects" name="votechProject" 
+			text="VOTech" iconName="votech_icon.gif"
+			object="service:system.browser" methodName="openURL">
+			<tooltip>Euro-VO VOTech Project Home Page</tooltip>			
+			<parameter>http://eurovotech.org/</parameter>
+		</action>
+		<action parentName="projects" name="agProject" text="AstroGrid" iconName="logo1.gif"
+			object="service:browser" methodName="openURL" before="*">
+			<parameter>http://www.astrogrid.org</parameter>
+		</action>	
+	
+
 		<!--  other menu items -->
-		<action parentName="help" name="bugreport" text="Feature request / Bug report "
-			object="service:browser" methodName="openURL"  after="tutorials" before="projects">
+		<action parentName="help" name="bugreport" text="Feature request / Bug report " 
+			after="projects" before="about"
+			object="service:browser" methodName="openURL"  >
 			<parameter>http://www.astrogrid.org/bugzilla/enter_bug.cgi?product=Workbench%20and%20ACR</parameter>
 		</action>
 		<!--  
@@ -226,19 +236,7 @@ System module.
 			  ]]></tooltip>
 			<parameter>http://visivo.cineca.it/</parameter>
 		</action>
-		<!-- not very good
-		<action parentName="links" name="voplot" text="VOPlot" iconName="voplot.png"
-			after="visivo"
-			object="service:browser" methodName="openURL">
-			<tooltip><![CDATA[
-			<html><b>VOPlot</b> is a tool for visualizing astronomical data.<br>
-			 VOPlot is developed in JAVA, and acts on data available in the VOTable format.<br>
-			  VOPlot is available as a stand alone version, which is to be installed on the user's machine, `<br>
-			  or as a web-based version fully integrated with the VizieR database.</tooltip>
-			  ]]></tooltip>
-			<parameter>http://vo.iucaa.ernet.in/~voi/voplot.htm</parameter>
-		</action>
-		-->
+
 		<action parentName="links" name="vospec" text="VOSpec" iconName="vospecLogo.png"
 			after="visivo"
 			object="service:browser" methodName="openURL">
@@ -247,16 +245,7 @@ System module.
 			  ]]></tooltip>
 			<parameter>http://esavo.esa.int/vospecapp</parameter>
 		</action>
-		<!-- not very popular				
-		<action parentName="links" name="xmdv" text="xmdv-lite" 
-			after="vospec" iconName="xmdv.png"
-			object="service:browser" methodName="openURL">
-			<tooltip><![CDATA[
-			<html><b>xmdv-lite-vo</b> is a vo-enabled, plasticized version of the XMDV visualization tool
-			]]></tooltip>
-			<parameter>http://software.astrogrid.org/votech/ds6/xmdv/</parameter>
-		</action>		
-		-->
+
 	</contribution>	
 	<!-- add a link to the workbench if we're not running in workbench mode. -->
 	<contribution configuration-id="uiStructure" if="not (property system.browser.disabled) and ((property hub.mode) or (property acr.mode))">
@@ -265,9 +254,9 @@ System module.
 			<tooltip><![CDATA[
 			<html><b>AstroGrid Workbench</b> is a suite of programs for working with the AstroGrid system<br>
 			and the VO in general. Notable featues include <b>AstroScope</b>, <b>HelioScope</b> <br>
-			<b>Application Launcher</b> and <b>Workflow Editor</b>
+			<b>Task Launcher</b> and <b>Workflow Editor</b>
 			]]></tooltip>
-			<parameter>http://www.astrogrid.org/desktop</parameter>
+			<parameter>http://www2.astrogrid.org/desktop</parameter>
 		</action>
 	</contribution>
 	
@@ -340,7 +329,8 @@ System module.
 		<item id="tutorial.cosmology" url="http://www2.astrogrid.org/science/science-cosmology" />
 	</contribution>
 	
-	<contribution configuration-id="uiStructure" if="not (property system.help.disabled)">
+	<!--  only display this set of help in workbench mode. later maybe add an equivalent set of buttons for plastic. -->
+	<contribution configuration-id="uiStructure" if="not (property system.help.disabled) and (property workbench.mode)">
 		<action parentName="help" name="intro" text="Introduction"
 			object="service:help" methodName="showHelp" before="*" />
 
@@ -357,7 +347,7 @@ System module.
 			<parameter>contents</parameter>
 		</action>
 		
-	<menu name="tutorials" text="Tutorials" parentName="help" after="contents" />
+	<menu name="tutorials" text="Tutorials" parentName="help" before="projects" />
 
  	<action parentName="tutorials" name="access" text="Data Access"
  		object="service:help" methodName="showHelpForTarget" before="*">
@@ -447,7 +437,7 @@ System module.
 	</contribution>	
 	
 	<contribution configuration-id="uiStructure" >
-		<action parentName="edit" name="configreset" text="Reset Configuration" onEventDispatchThread="true"
+		<action parentName="debug" name="configreset" text="Reset Configuration" onEventDispatchThread="true"
 			object="service:configuration" methodName="reset" after="*" >
 			<confirmMessage><![CDATA[<html>
 				This will reset the application's configuration to factory settings.

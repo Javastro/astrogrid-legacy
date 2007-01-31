@@ -47,33 +47,53 @@ UI CONFIGURATION -->
 		</action>
 	</contribution>
 	
-	<contribution configuration-id="system.uiStructure" if="not (property system.help.disabled)">
-		<action text="Astro Runtime Overview" name="acrHelp"  parentName="help" iconName="help.gif"
+	<!--  buttons, help links, etc to use when runnin as 'ACR' -->
+	<contribution configuration-id="system.uiStructure" if="not (property system.help.disabled) and (property acr.mode)">
+		<action text="Introduction" name="acrHelp"  parentName="help" iconName="help.gif"
 			object="service:system.help" methodName="showHelpForTarget" 
-			after="contents" visibleCondition="preference:acr.advanced">
+			before="*">
 					<tooltip>Introduction to Astro Runtime</tooltip>
 			<parameter>acr.overview</parameter>
 		</action>		
-		
-		<action text="Astro Runtime API Reference" name="acrApi"  parentName="help" iconName="java_lib_obj.gif"
+		<action text="API Reference" name="acrApi"  parentName="help" iconName="java_lib_obj.gif"
 			object="service:system.help" methodName="showHelpForTarget" 
-			after="acrHelp" visibleCondition="preference:acr.advanced">
-					<tooltip>Concepts,  lists available functions, gives examples of their use</tooltip>
+			after="acrHelp" before="projects">
+					<tooltip>Lists available functions, gives examples of their use</tooltip>
 			<parameter>acr.api</parameter>
 		</action>		
 	</contribution>	
 	
+	<!--  equivalent to use with running as 'workbench'  - basically just make these 'advanced'-->
+	<contribution configuration-id="system.uiStructure" if="not (property system.help.disabled) and (property workbench.mode)">
+		<action text="Astro Runtime - Introduction" name="acrHelp"  parentName="help" iconName="help.gif"
+			object="service:system.help" methodName="showHelpForTarget" 
+			after="contents" before="projects" visibleCondition="preference:acr.advanced">
+					<tooltip>Introduction to Astro Runtime</tooltip>
+			<parameter>acr.overview</parameter>
+		</action>		
+		<action text="Astro Runtime - API Reference" name="acrApi"  parentName="help" iconName="java_lib_obj.gif"
+			object="service:system.help" methodName="showHelpForTarget" 
+			after="acrHelp" before="projects" visibleCondition="preference:acr.advanced">
+					<tooltip>Lists available functions, gives examples of their use</tooltip>
+			<parameter>acr.api</parameter>
+		</action>		
+	</contribution>	
+	
+	<!--  always added to 'advanced' tab - depends on particular ar variant whther this tab is visible or not. -->
 	<contribution configuration-id="system.uiStructure" if="((not (property system.webserver.disabled)) and (not (property system.html.disabled))) and (not (property system.browser.disabled))">
 		<action parentName="advanced" name="htmlACR" text="AR web interface"
-			iconName="overview48.gif" visibleCondition="preference:acr.advanced"
-			object="service:system.browser" methodName="openRelative" before="downloadAR"
+			iconName="overview48.gif" 
+			object="service:system.browser" methodName="openRelative" before="*"
 			help-id="acr.overview"
 			 >
 			<parameter></parameter> <!-- intentionally blank -->
 			<tooltip>Browse and execute AR and PLASTIC functions</tooltip>
 		</action>
+	</contribution>
+	<!--  show a download link only if we're in webstart - otherwise people will have downloaded dev kit through teh installer -->
+	<contribution configuration-id="system.uiStructure" if="not (property system.browser.disabled) and (class javax.jnlp.ServiceManager) ">
 		<action parentName="advanced" name="downloadAR" text="Download AR development kit"
-		iconName="package_utilities.png" visibleCondition="preference:acr.advanced"
+		iconName="package_utilities.png"
 			object="service:system.browser" methodName="openURL" after="*"
 			help-id="acr.overview"
 			 >
@@ -85,10 +105,7 @@ UI CONFIGURATION -->
 	<contribution configuration-id="system.helpmap">
 		<item id="acr.api" url="http://software.astrogrid.org/astro-runtime-docs/apidocs/index.html" />
 		<item id="acr.overview" url="http://www2.astrogrid.org/desktop/astro-runtime" />
-		
 	</contribution>
-	
-<!--  FLAVORING AS ASTRO-RUNTIME -->
 
 	
 	<contribution configuration-id="system.uiStructure" if="(property acr.mode) or (property asr.mode)">
@@ -414,7 +431,7 @@ REMOTE PROCESS LISTENER
 	<!-- harrumph - got myself all confused here.
 	not sure whether this should be a remote process listerner, or a recorder listener.
 	no time to fix now - will code read and try to add back in after japan
-	also have to watch whether ti forces login behaviour
+	also have to watch whether ti forces login behaviour -->
 	<service-point id="trayRemoteProcessListener" visibility="private" interface="org.astrogrid.acr.astrogrid.RemoteProcessListener">						
 		Display process events in systray.
 		<invoke-factory>
@@ -426,11 +443,11 @@ REMOTE PROCESS LISTENER
 		</invoke-factory>		
 	</service-point>						
 	-->
-<!-- FIXME - needs testing 
+<!-- FIXME - needs testing -->
 	<contribution configuration-id="hivemind.EagerLoad"  if="(class org.jdesktop.jdic.tray.SystemTray ) and ( not ( property system.systray.disabled))">
 		<load service-id="trayRemoteProcessListener"/>
 	</contribution>
-	-->
+	
 		
 	
 <!-- 
