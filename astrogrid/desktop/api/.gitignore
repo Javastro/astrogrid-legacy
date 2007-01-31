@@ -3,3 +3,4 @@
 target
 javadoc*
 build.properties
+.pydevproject
