@@ -67,8 +67,10 @@
     (let ((kb-name (as-symbol kb-name-param)))
       (or kb-name
           (error 'kb:get "bad call to kb:get with object ~s" kb-name-param))
-      (let ((kbpair (assq kb-name _model-list)))
-        (and kbpair (cdr kbpair)))))
+      (cond ((assq kb-name _model-list)
+             => cdr)
+            (else
+             #f))))
 
   ;; kb:new string -> knowledgebase
   ;;
@@ -128,13 +130,15 @@
                                  (new-submodel-model jena-model?)
                                  (tbox?              boolean?)
                                  -> list?)
-    (let ((sm-list (assq new-submodel-name submodel-list)))
-      (if sm-list
-          (begin (set-cdr! sm-list      ;already exists
-                           (cons tbox? new-submodel-model))
-                 submodel-list)
-          (cons `(,new-submodel-name ,tbox? . ,new-submodel-model) ;new
-                submodel-list))))
+    (cond ((assq new-submodel-name submodel-list)
+           => (lambda (sm-list)         ;already exists
+                (set-cdr! sm-list
+                          (cons tbox? new-submodel-model))
+                submodel-list))
+          (else                         ;create a new one by consing
+                                        ;an entry to the front
+           (cons `(,new-submodel-name ,tbox? . ,new-submodel-model)
+                 submodel-list))))
   
 
   ;; make-kb symbol -> knowledgebase
