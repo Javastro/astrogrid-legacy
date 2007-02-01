@@ -44,8 +44,7 @@
   )
 
 (import* srfi-1
-         remove
-         filter)
+         remove)
 (import* srfi-13
          string-prefix?
          string-downcase
@@ -279,11 +278,6 @@
           ((is-java-type? msg <exception>)
            (to-string msg))
           ((format-error-ancestors rec))
-;;           (msg)
-;;           ((error-message (error-parent-error rec)))
-;;           ((error-message
-;;             (error-parent-error
-;;              (error-parent-error rec))))
           (else
            rec))))
 
