@@ -30,7 +30,6 @@
     </init-param>
   </servlet>
 
-  <!--
   <servlet>
     <servlet-name>codemanager</servlet-name>
     <description>Allows direct interaction with the SISC REPL</description>
@@ -40,23 +39,29 @@
       <param-value>enabled</param-value>
     </init-param>
   </servlet>
-  -->
 
   <servlet-mapping>
     <servlet-name>utype-resolver</servlet-name>
     <!-- this must match the utype-resolver servlet parameters, above -->
-    <url-pattern>/resolve/*</url-pattern>
+    <url-pattern>/resolve</url-pattern>
   </servlet-mapping>
 
-  <!--
   <servlet-mapping>
     <servlet-name>codemanager</servlet-name>
     <url-pattern>/code</url-pattern>
   </servlet-mapping>
-  -->
 
   <session-config>
     <session-timeout>30</session-timeout>    <!-- 30 minutes -->
   </session-config>
+
+  <mime-mapping>
+    <extension>n3</extension>
+    <mime-type>text/rdf+n3</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>rdf</extension>
+    <mime-type>application/rdf+xml</mime-type>
+  </mime-mapping>
 
 </web-app>
