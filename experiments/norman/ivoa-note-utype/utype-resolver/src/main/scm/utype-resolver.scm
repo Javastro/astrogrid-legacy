@@ -13,7 +13,7 @@
   `((utype-resolver-version . "@VERSION@")
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (string
-     . "utype-resolver.scm @VERSION@ ($Id: utype-resolver.scm,v 1.1 2007/01/30 19:18:59 norman Exp $)")))
+     . "utype-resolver.scm @VERSION@ ($Id: utype-resolver.scm,v 1.2 2007/02/01 16:35:14 norman Exp $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -69,12 +69,22 @@
                    (p "The details of the request follow:")
                    ,@(tabulate-request-information request))))
 
+;; get-resolve : list-of-strings string http-request http-response -> string-or-false
+;; The main handler.  If the PATH-INFO-LIST is null and the URL is non-false,
+;; then resolve the URL and return an appropriate page (text/plain in the
+;; case of a successful resolution, text/html otherwise).
 (define (get-resolve path-info-list url request response)
   (cond ((and (= (length path-info-list) 0)
               url)                      ;normal case
-         (response-page request response
-                        "UType resolver: Resolving"
-                        `((p ,(format "Resolving URL ~a" url)))))
+         (cond ((resolve-uri url)
+                => (lambda (resp)
+                     (set-response-status! response '|SC_OK| "text/plain")
+                     resp))
+               (else
+                (set-response-status! response '|SC_BAD_REQUEST|)
+                (response-page request response
+                               "UType resolver: can't resolve URI"
+                               `((p "Unable to resolve URL ~a" url))))))
         ((= (length path-info-list) 0)  ;oops: for us, but query missing
          (set-response-status! response '|SC_BAD_REQUEST|)
          (response-page request response
@@ -84,3 +94,17 @@
          #f)))                          ;go to next handler
 
 (define get-handlers `(,get-resolve ,get-fallback))
+
+;; resolve-uri : string -> string-or-false
+;; Resolve the URI, and return a suitable response string
+(define (resolve-uri uri-string)
+  (define-java-class <uri> |java.net.URI|)
+  (define-generic-java-methods
+    get-fragment
+    (to-url |toURL|)
+    to-string)
+  (let ((uri (java-new <uri> (->jstring uri-string))))
+    (format #f "~a -> frag ~a, URL ~a"
+            url
+            (->string (get-fragment uri))
+            (->string (to-string (to-url uri))))))
