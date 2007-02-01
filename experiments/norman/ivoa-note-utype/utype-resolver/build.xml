@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.1 2007/01/30 19:18:59 norman Exp $
+     $Id: build.xml,v 1.2 2007/02/01 16:33:38 norman Exp $
 -->
 
 
@@ -122,8 +122,9 @@
   <property name="build.tests"   value="${build.home}/tests"/>
   <property name="dist.home"     value="${basedir}/dist"/>
   <property name="docs.home"     value="${basedir}/docs"/>
-  <property name="manager.url"   value="http://localhost:8080/manager"/>
-  <property name="resolver.url"  value="http://localhost:8080/${app.name}"/>
+  <property name="host.port"     value="localhost:8080"/>
+  <property name="manager.url"   value="http://${host.port}/manager"/>
+  <property name="resolver.url"  value="http://${host.port}/${app.name}"/>
   <property name="src.home"      value="${basedir}/src/main"/>
   <property name="scm.src.home"  value="${basedir}/src/main/scm"/>
   <property name="src.etc"       value="${basedir}/src/etc"/>
@@ -325,14 +326,12 @@
     <!-- Copy Scheme utility scripts into the classpath.
      !   Don't use a JAR: see the quaestor.jar target.
      ! -->
-    <!--
-        No, no extra utilities required, beyond those in quaestor.jar
     <mkdir  dir="${build.classes}/${app.name}"/>
     <copy todir="${build.classes}/${app.name}">
-      <fileset dir="${scm.src.home}/quaestor"
+      <fileset dir="${scm.src.home}/utype-resolver"
                includes="*.scm"/>
     </copy>
-    -->
+
     <!--
     <mkdir  dir="${build.classes}/util"/>
     <copy todir="${build.classes}/util">
@@ -550,6 +549,7 @@
       <!--<fileset dir="${web.home}" excludes="generate/**"/>-->
       <filterset>
         <filter token="VERSION" value="${app.version}"/>
+        <filter token="HOSTPORT" value="${host.port}"/>
       </filterset>
     </copy>
 
@@ -559,8 +559,9 @@
   <!-- Run regression tests -->
 
   <target name="test"
-          depends="scm-tests, junit-tests"
+          depends="scm-tests"
           description="Run all tests"/>
+          <!--depends="scm-tests, junit-tests"-->
 
   <path id="sisc.test.classpath">
     <pathelement location="${build.classes}"/>
@@ -586,6 +587,25 @@
       <arg value="--"/>
       <!-- First argument must be location of the test script -->
       <arg value="${scm.test.home}/run-tests.scm"/>
+      <!-- add further arguments? -->
+    </java>
+  </target>
+  <target name="scm-tests-experimental"
+          depends="compile"
+          description="Run regression tests">
+    <java classname="sisc.REPL"
+          fork="true"
+          classpathref="sisc.test.classpath"
+          failonerror="true">
+      <sysproperty key="sisc.home" value="${build.lib}"/>
+      <arg value="-h"/>
+      <arg value="${build.classes}/sisc.shp"/>
+      <arg value="${scm.test.home}/run-self-tests.scm"/>
+      <arg value="--no-repl"/>
+      <arg value="--call-with-args"/>
+      <arg value="main"/>
+      <arg value="--"/>
+      <arg value="${scm.src.home}/"/>
       <!-- add further arguments? -->
     </java>
   </target>
