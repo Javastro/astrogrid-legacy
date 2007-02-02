@@ -86,29 +86,18 @@ public class SchemeWrapper {
     /**
      * Evaluates the string, returning the value as a String.  This is
      * not (currently) wrapped in the error-handling code of
-     * {@link #eval(String,Object[])}.
-     * (XXX It's not currently used by Quaestor.java, which is why the
-     * 'public' declaration is commented out)
-     *
-     * <p>The value returned is converted from a Scheme value to a Java value
-     * as follows:
-     * <table border="1">
-     * <tr><th>Scheme value</th><th align="left">Java value</th></tr>
-     * <tr><td>boolean</td><td>{@link Boolean}</td></tr>
-     * <tr><td>string</td><td>{@link String}</td></tr>
-     * <tr><td>void</td><td>null</td></tr>
-     * <tr><td>otherwise</td><td>a String representation of the object</td></tr>
-     * </table>
+     * {@link #eval(String,Object[])}, because it's only used within this
+     * class, which we can hope would get things right (hmm).
      *
      * @param expr a scheme expression, which should not be null
      * @return a Java Object (String, Boolean or null) representing the 
-     * value of the expression; if <code>expr</code> is null, then return
+     *   value of the expression; if <code>expr</code> is null, then return
      * <code>Boolean.FALSE</code>
      * @throws IOException if there was a problem parsing the expression
      * @throws SchemeException if one there was a problem executing
-     * the expression
+     *   the expression
      */
-    /* public */ private Object eval(final String expr)
+    private Object eval(final String expr)
             throws IOException, SchemeException {
         if (expr == null)
             return Boolean.FALSE;
@@ -132,37 +121,37 @@ public class SchemeWrapper {
     }
 
     /**
-     * Evaluates a named procedure, with arguments.  This is
+     * Evaluates a procedure, with arguments.  This is
      * equivalent to the expr <code>proc args...</code>, but wrapped
      * in an error-handler (procedure <code>APPLY-WITH-TOP-FC</code>
      * which translates errors and exceptions to a suitable string,
-     * which it returns.
+     * which it returns.  This procedure is defined in
+     * <code>src/main/scm/quaestor/utils.scm</code> -- ought it to be 
+     * somewhere else?
      *
-     * @param proc the name of a Scheme procedure defined in the top level
+     * @param proc a Scheme {@link Procedure} defined in the top level
      * @param args an array of Java objects
      * @return a Java Object (String, Boolean or null) representing the
-     * value of the expression
+     *   value of the expression
      * @throws IOException if there was a problem parsing the expression
-     * @throws SchemeException if one there was a problem executing
-     * the expression
+     * @throws SchemeException if there was a problem executing
+     *   the expression
      * @throws ServletException if the SISC procedure returns one
      */
-    public Object eval(final String proc, final Object[] args)
+    public Object eval(final Procedure proc, final Object[] args)
             throws IOException, SchemeException, ServletException {
-        Object o = Context.execute
-            (new SchemeCaller() {
-                 public Object execute(Interpreter r)
-                         throws SchemeException {
-                     Procedure apply =
-                             (Procedure)r.eval(Symbol.get("apply-with-top-fc"));
-                     Procedure p = (Procedure)r.eval(Symbol.get(proc));
-                     Value[] v = r.createValues(args.length+1);
-                     v[0] = p;
-                     for (int i=0; i<args.length; i++)
-                         v[i+1] = new sisc.modules.s2j.JavaObject(args[i]);
-                     return schemeToJava(r.eval(apply, v));
-                 }
-                });
+        Object o = Context.execute(new SchemeCaller() {
+                public Object execute(Interpreter r)
+                        throws SchemeException {
+                    Procedure apply =
+                            (Procedure)r.eval(Symbol.get("apply-with-top-fc"));
+                    Value[] v = r.createValues(args.length+1);
+                    v[0] = proc;
+                    for (int i=0; i<args.length; i++)
+                        v[i+1] = new sisc.modules.s2j.JavaObject(args[i]);
+                    return schemeToJava(r.eval(apply, v));
+                }
+            });
         if (o instanceof Exception) {
             if (o instanceof IOException)
                 throw (IOException)o;
@@ -175,8 +164,33 @@ public class SchemeWrapper {
     }
 
     /**
+     * Evaluates a procedure, with arguments.
+     * Equivalent to {@link #eval(Procedure,Object[])}, but with a
+     * string argument to the procedure.
+     *
+     * @param proc the name of a Scheme procedure defined in the top level
+     * @param args an array of Java objects
+     * @return a Java Object (String, Boolean or null) representing the
+     *   value of the expression
+     * @throws IOException if there was a problem parsing the expression
+     * @throws SchemeException if there was a problem executing
+     *   the expression
+     * @throws ServletException if the SISC procedure returns one
+     */
+    public Object eval(final String proc, final Object[] args)
+            throws IOException, SchemeException, ServletException {
+        Procedure p = (Procedure)Context.execute(new SchemeCaller() {
+                public Object execute(Interpreter r)
+                        throws SchemeException {
+                    return r.eval(Symbol.get(proc));
+                }
+            });
+        return eval(p, args);
+    }
+
+    /**
      * Evals the given input stream.  This is not (currently) wrapped
-     * in the error-handling code of {@link #eval(String,Object[])}.
+     * in the error-handling code of {@link #eval(Procedure,Object[])}.
      *
      * @return a Java Object (String, Boolean or null) representing the
      * value of the expression
@@ -229,6 +243,9 @@ public class SchemeWrapper {
         // eval(String,Object[]), because this is used to load
         // quaestor.scm, before which the APPLY-WITH-TOP-FC procedure
         // is not defined.
+        //
+        // Am I making this overly complicated?  I've forgotten what
+        // happens if I just let the SchemeException come out.
         Object o = eval("(with/fc (lambda (m e) (define (show-err r) (let ((parent (error-parent-error r))) (format #f \"Error at ~a: ~a~a\" (error-location r) (error-message r) (if parent (string-append \" :-- \" (show-err parent)) \"\")))) (show-err m)) (lambda () (load \"" + loadFile + "\") #t))");
         if (o instanceof String) {
             // Contains an error message from the failure-continuation.
@@ -243,7 +260,7 @@ public class SchemeWrapper {
     }
     
     /**
-     * Loads the given source file at least once.  This works like
+     * Loads the given source file at most once.  This works like
      * {@link #load}, except that if it is called a second time with
      * the same <code>loadFile</code>, it will do nothing and return
      * true.
@@ -252,7 +269,6 @@ public class SchemeWrapper {
      * succeeded with this filename; false otherwise
      * @throws IOException if the file cannot be parsed
      * @throws SchemeException if there is a scheme error when reading the file
-     * scheme error when reading the file
      */
     public boolean loadOnce(final String loadFile)
             throws IOException, SchemeException {
