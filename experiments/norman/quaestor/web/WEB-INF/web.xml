@@ -23,10 +23,19 @@
   <servlet>
     <servlet-name>quaestor</servlet-name>
     <description>
-      This servlet plays the main role.  At present, it simply
+      This servlet plays the main role.  Supports managing a knowledgebase,
+      providing a RESTful and (minimal) XML-RPC interface to it.
       reports parameters.
     </description>
-    <servlet-class>org.eurovotech.quaestor.Quaestor</servlet-class>
+    <servlet-class>org.eurovotech.quaestor.SchemeServlet</servlet-class>
+    <init-param>
+      <param-name>main-script</param-name>
+      <param-value>WEB-INF/quaestor.scm</param-value>
+    </init-param>
+    <init-param>
+      <param-name>main-script-initialiser</param-name>
+      <param-value>initialise-quaestor</param-value>
+    </init-param>
     <init-param>
       <param-name>kb-context</param-name>
       <param-value>/kb</param-value>

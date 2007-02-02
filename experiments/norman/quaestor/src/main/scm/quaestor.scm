@@ -33,7 +33,7 @@
   `((quaestor.version . "@VERSION@")
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.38 $ $Date: 2007/01/29 15:11:54 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.39 $ $Date: 2007/02/02 13:21:56 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -92,6 +92,25 @@
 ;;       (parameterize ((suppressed-stack-trace-source-kinds '()))
 ;;                     (apply proc args)))))
 
+(define (initialise-quaestor scheme-servlet)
+  (define-generic-java-methods
+    register-handler
+    get-init-parameter)
+  (let ((kb (get-init-parameter scheme-servlet (->jstring "kb-context")))
+        (xmlrpc (get-init-parameter scheme-servlet (->jstring "xmlrpc-context")))
+        (pickup (get-init-parameter scheme-servlet (->jstring "pickup-context"))))
+    (define (reg method context proc)
+      (register-handler scheme-servlet
+                        (->jstring method)
+                        context
+                        (java-wrap proc)))
+    (reg "GET" kb http-get)
+    (reg "HEAD" kb http-head)
+    (reg "PUT" kb http-put)
+    (reg "POST" kb http-post)
+    (reg "DELETE" kb http-delete)
+    (reg "POST" xmlrpc xmlrpc-handler)
+    (reg "GET" pickup pickup-dispatcher)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
