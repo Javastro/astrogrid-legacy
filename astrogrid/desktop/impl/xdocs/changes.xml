@@ -14,7 +14,7 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="2007.1.rc1" date="unreleased">
+<release version="2007.1" date="2007-12-31">
 <action dev="nw" type="fix" issue="1970">
 	registry explorer renders urls with odd schemes correctly.
 </action>
