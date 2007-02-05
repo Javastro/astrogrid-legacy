@@ -11,23 +11,38 @@ echo "Installing AstroGrid Tomcat"
 echo "  ASTROGRID_HOST : ${ASTROGRID_HOST:?"undefined"}"
 echo "  ASTROGRID_HOME : ${ASTROGRID_HOME:?"undefined"}"
 echo "  ASTROGRID_USER : ${ASTROGRID_USER:?"undefined"}"
+echo "  ASTROGRID_PASS : ${ASTROGRID_PASS:?"undefined"}"
 
 #
 # Set the Tomcat version.
 export TOMCAT_VERSION=5.5.20
 echo "  TOMCAT_VERSION : ${TOMCAT_VERSION:?"undefined"}"
 #
+# Set the Tomcat zipfile.
+export TOMCAT_ZIPFILE=apache-tomcat-${TOMCAT_VERSION}.zip
+echo "  TOMCAT_ZIPFILE : ${TOMCAT_ZIPFILE:?"undefined"}"
+#
 # Set the Tomcat download site.
-export TOMCAT_MIRROR=http://www.mirrorservice.org/sites/ftp.apache.org/tomcat/tomcat-5/v5.5.20/bin/apache-tomcat-5.5.20.zip
-echo "  TOMCAT_MIRROR : ${TOMCAT_MIRROR:?"undefined"}"
+export TOMCAT_MIRROR=http://www.mirrorservice.org/sites/ftp.apache.org/tomcat/tomcat-5
+echo "  TOMCAT_MIRROR  : ${TOMCAT_MIRROR:?"undefined"}"
 #
 # Set the Tomcat source.
-export TOMCAT_SOURCE=${TOMCAT_MIRROR}/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.zip
-echo "  TOMCAT_SOURCE : ${TOMCAT_SOURCE:?"undefined"}"
+export TOMCAT_SOURCE=${TOMCAT_MIRROR}/v${TOMCAT_VERSION}/bin/${TOMCAT_ZIPFILE}
+echo "  TOMCAT_SOURCE  : ${TOMCAT_SOURCE:?"undefined"}"
+
+#
+# Check the home directory.
+if [ ! -d ${ASTROGRID_HOME} ]
+then
+    echo "Unable to locate ASTROGRID_HOME"
+	echo "  ASTROGRID_HOME : ${ASTROGRID_HOME:?"undefined"}"
+    exit 1
+fi
 
 #
 # Create downloads directory
-if [ ! -d $ASTROGRID_HOME ]
+if [ ! -d ${ASTROGRID_HOME}/downloads ]
+then
     echo "Creating AstroGrid downloads directory"
     echo "  Path : ${ASTROGRID_HOME}/downloads"
     mkdir ${ASTROGRID_HOME}/downloads
@@ -36,33 +51,47 @@ fi
 
 #
 # Get the current Tomcat distro.
-echo "Downloading Tomcat zipfile"
-pushd ${ASTROGRID_HOME}/downloads
-    wget ${TOMCAT_SOURCE}
-popd
+if [ ! -f ${ASTROGRID_HOME}/downloads/${TOMCAT_ZIPFILE} ]
+then
+	echo "Downloading Tomcat zipfile"
+	pushd ${ASTROGRID_HOME}/downloads
+    	wget ${TOMCAT_SOURCE}
+	popd
+fi
 
 #
 # Unpack the Tomcat distro.
-echo "Unpacking Tomcat zipfile"
-pushd ${ASTROGRID_HOME}
-    unzip ${ASTROGRID_HOME}/downloads/apache-tomcat-${TOMCAT_VERSION}.zip
-popd
+if [ ! -f ${ASTROGRID_HOME}/downloads/${TOMCAT_ZIPFILE} ]
+then
+    echo "Unable to locate Tomcat zip file"
+	echo "  ${ASTROGRID_HOME}/downloads/${TOMCAT_ZIPFILE}"
+    exit 1
+else
+    echo "Unpacking Tomcat zip file"
+    pushd ${ASTROGRID_HOME}
+        unzip ${ASTROGRID_HOME}/downloads/apache-tomcat-${TOMCAT_VERSION}.zip
+    popd
+fi
 
 #
 # Set CATALINA_HOME environment variable.
-export CATALINA_HOME=${ASTROGRID_HOME}/apache-tomcat-${TOMCAT_VERSION}
 echo "Setting CATALINA_HOME"
-echo "  CATALINA_HOME : ${CATALINA_HOME:?"undefined"}"
+export CATALINA_HOME=${ASTROGRID_HOME}/apache-tomcat-${TOMCAT_VERSION}
+if [ ! -d ${CATALINA_HOME} ]
+then
+    echo "ERROR : Unable to locate CATALINIA_HOME"
+	echo "  CATALINA_HOME : ${CATALINA_HOME:?"undefined"}"
+    exit 1
+fi
 
 #
 # Set the CATALINA opts.
+# The Tomcat startup scripts look for a setenv file in ${CATALINA_HOME}/bin
 # For high traffic or large volume system, you will need to increase the memory the JVM is allowed to use.
-export CATALINA_OPTS="-Xmx512M"
 echo "Setting CATALINA_OPTS"
-echo "  CATALINA_OPTS : ${CATALINA_OPTS:?"undefined"}"
-#
-# Add this so a script file in Tomcat bin.
-#
+cat >> ${CATALINA_HOME}/bin/setenv.sh << EOF
+export CATALINA_OPTS="-Xmx512M"
+EOF
 
 #
 # Set the permissions on the Tomcat control scripts.
@@ -70,17 +99,22 @@ echo "Setting Tomcat script permissions"
 chmod a+x ${CATALINA_HOME}/bin/*.sh
 
 #
-# Add the wokshop account and roles.
+# Add the Tomcat login account.
 # *separate <role> elements are not required in Tomcat 5.5 
-#vi $CATALINA_HOME/conf/tomcat-users.xml
-#
-#    <tomcat-users>
-#      <user username="tomcat" password="tomcat" roles="tomcat"/>
-#      <user username="both" password="tomcat" roles="tomcat,role1"/>
-#      <user username="role1" password="tomcat" roles="role1"/>
-#+     <user username="workshop" password="qwerty" roles="manager,admin,paladmin"/>
-#    </tomcat-users>
-#
+pushd ${CATALINA_HOME}/conf
+patch -p1 << EOF
+*** old/tomcat-users.xml  2007-02-05 14:53:39.000000000 +0000
+--- new/tomcat-users.xml  2007-02-05 14:53:39.000000000 +0000
+***************
+*** 7,10 ****
+--- 7,11 ----
+    <user name="tomcat" password="tomcat" roles="tomcat" />
+    <user name="role1"  password="tomcat" roles="role1"  />
+    <user name="both"   password="tomcat" roles="tomcat,role1" />
++   <user username="astrogrid" password="PASS" roles="manager,admin,paladmin"/>
+  </tomcat-users>
+EOF
+popd
 
 #
 # Start Tomcat.
