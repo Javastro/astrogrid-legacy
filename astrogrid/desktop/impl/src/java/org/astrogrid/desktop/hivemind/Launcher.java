@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.11 2007/01/29 11:11:37 nw Exp $
+/*$Id: Launcher.java,v 1.12 2007/02/05 18:50:45 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,8 @@
 package org.astrogrid.desktop.hivemind;
 
 import java.net.URL;
+import java.net.URLStreamHandler;
+import java.net.URLStreamHandlerFactory;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -54,8 +56,6 @@ public class Launcher implements Runnable {
     public static final Properties defaults = new Properties(){{
     	setProperty("java.net.preferIPv4Stack","true");
         setProperty("java.net.preferIPv6Addresses","false");
-        // add in core custom protocol handlers..
-        setProperty("java.protocol.handler.pkgs","org.astrogrid.desktop.protocol");
         
         setProperty("ivoa.skynode.disabled","true");
         // log4j
@@ -81,7 +81,7 @@ public class Launcher implements Runnable {
 
 //	    setProperty("apple.awt.antialiasing","true");
 //	    setProperty("apple.awt.textantialiasing","true");
-        //FIXME - diable this before release.
+        // disable this before release.
         //setProperty("acr.debug","true");
     }};    
     
@@ -100,11 +100,39 @@ public class Launcher implements Runnable {
         Thread.currentThread().setContextClassLoader(Launcher.class.getClassLoader()); 
         Thread.currentThread().setName("Main Thread");
         cl = new DefaultClassResolver(Thread.currentThread().getContextClassLoader());
+        
         /* experimental - not finisheid yet
     	if (System.getSecurityManager() == null) {
     		System.setSecurityManager(new SecurityManager());
     	}
     	*/
+        
+        // should be enough - but isn't/
+        System.setProperty("java.protocol.handler.pkgs","org.astrogrid.desktop.protocol");
+        // try fixing Protocol Handler loading bugs under jnlp
+        // see http://forum.java.sun.com/thread.jspa?threadID=269651&messageID=1031648
+        // however, the proposed work-around is quite brittle  - not happy doing this.
+        // I need to enumerate all custom url protocols here, and make sure it's only called once.
+        synchronized (Launcher.class) {
+        	if (!haveSetHandlerFactory) {
+        		haveSetHandlerFactory = true;
+        		URL.setURLStreamHandlerFactory(new URLStreamHandlerFactory() {
+
+        			public URLStreamHandler createURLStreamHandler(String protocol) {
+        				if ("classpath".equals(protocol)) {
+        					return new org.astrogrid.desktop.protocol.classpath.Handler();
+        				} else if ("fallback".equals(protocol)) {
+        					return new org.astrogrid.desktop.protocol.fallback.Handler();
+        				} else if ("httpclient".equals(protocol)) {
+        					return new org.astrogrid.desktop.protocol.httpclient.Handler();
+        				} else {
+        					return null; // defers back to system protocol handers.
+        				}
+        			} 
+        		});
+        	}
+        }
+       
         // add the preliminary resources.
         addModuleByName("hivemind");
         addModuleByName("hivemind-lib");
@@ -113,6 +141,9 @@ public class Launcher implements Runnable {
         addModuleByName("test");
     }
 
+    // internal flag to keep track of whether the handler factory has been set in this vm yet.
+    private static boolean haveSetHandlerFactory = false;
+    
     /** add a descriptor to the load set, pointed to by a URL
      * to be called before {@link #run}
   @param resourceURL url pointing to to a hivemind descriptor.
@@ -164,6 +195,9 @@ public class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.12  2007/02/05 18:50:45  nw
+worked-around jnlp bug.
+
 Revision 1.11  2007/01/29 11:11:37  nw
 updated contact details.
 
