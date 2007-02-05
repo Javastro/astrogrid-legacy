@@ -299,7 +299,9 @@
 	<version>${jdic.version}</version>
 	 <properties>
 		 <dist.bundle>true</dist.bundle>
-		 <strip>true</strip>
+		 <!-- don't strip this - include as-is. -->
+<!--		 <strip>true</strip>-->
+		<strip>false</strip>
 	 </properties>
  </dependency>
  <!--NB: comment out following two when generating dependencies on macosx -->
