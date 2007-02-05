@@ -114,7 +114,7 @@ chmod a+x ${CATALINA_HOME}/bin/*.sh
 echo ""
 echo "Patching Tomcat users"
 pushd ${CATALINA_HOME}/conf
-patch -p1 << EOF
+patch -p1 tomcat-users.xml << EOF
 *** old/tomcat-users.xml  2007-02-05 14:53:39.000000000 +0000
 --- new/tomcat-users.xml  2007-02-05 14:53:39.000000000 +0000
 ***************
