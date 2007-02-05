@@ -22,6 +22,10 @@ echo "  TOMCAT_VERSION : ${TOMCAT_VERSION:?"undefined"}"
 export TOMCAT_ZIPFILE=apache-tomcat-${TOMCAT_VERSION}.zip
 echo "  TOMCAT_ZIPFILE : ${TOMCAT_ZIPFILE:?"undefined"}"
 #
+# Set the Tomcat-admin zipfile.
+export TOMCAT_ADMIN_ZIPFILE=apache-tomcat-${TOMCAT_VERSION}-admin.zip
+echo "  TOMCAT_ADMIN_ZIPFILE : ${TOMCAT_ADMIN_ZIPFILE:?"undefined"}"
+#
 # Set the Tomcat download site.
 export TOMCAT_MIRROR=http://www.mirrorservice.org/sites/ftp.apache.org/tomcat/tomcat-5
 echo "  TOMCAT_MIRROR  : ${TOMCAT_MIRROR:?"undefined"}"
@@ -29,6 +33,10 @@ echo "  TOMCAT_MIRROR  : ${TOMCAT_MIRROR:?"undefined"}"
 # Set the Tomcat source.
 export TOMCAT_SOURCE=${TOMCAT_MIRROR}/v${TOMCAT_VERSION}/bin/${TOMCAT_ZIPFILE}
 echo "  TOMCAT_SOURCE  : ${TOMCAT_SOURCE:?"undefined"}"
+#
+# Set the Tomcat-admin source.
+export TOMCAT_ADMIN_SOURCE=${TOMCAT_MIRROR}/v${TOMCAT_VERSION}/bin/${TOMCAT_ADMIN_ZIPFILE}
+echo "  TOMCAT_ADMIN_SOURCE  : ${TOMCAT_ADMIN_SOURCE:?"undefined"}"
 
 #
 # Check the home directory.
@@ -56,6 +64,7 @@ then
 	echo "Downloading Tomcat zipfile"
 	pushd ${ASTROGRID_HOME}/downloads
     	wget ${TOMCAT_SOURCE}
+    	wget ${TOMCAT_ADMIN_SOURCE}
 	popd
 fi
 
@@ -70,6 +79,8 @@ else
     echo "Unpacking Tomcat zip file"
     pushd ${ASTROGRID_HOME}
         unzip ${ASTROGRID_HOME}/downloads/apache-tomcat-${TOMCAT_VERSION}.zip
+    echo "Unpacking Tomcat-admin zip file"
+        unzip -o ${ASTROGRID_HOME}/downloads/apache-tomcat-${TOMCAT_VERSION}-admin.zip
     popd
 fi
 
