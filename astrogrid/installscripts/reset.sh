@@ -19,6 +19,13 @@ echo "  ASTROGRID_HOME : ${ASTROGRID_HOME:?"undefined"}"
 echo "  ASTROGRID_USER : ${ASTROGRID_USER:?"undefined"}"
 
 #
+# Shutdown tomcat.
+if [ -f /home/astrogrid/apache-tomcat-5.5.20/bin/shutdown.sh ]
+then
+	/home/astrogrid/apache-tomcat-5.5.20/bin/shutdown.sh
+fi
+#
 # Remove the directories.
 rm -rf /home/astrogrid/downloads
 rm -rf /home/astrogrid/apache-tomcat-5.5.20
+

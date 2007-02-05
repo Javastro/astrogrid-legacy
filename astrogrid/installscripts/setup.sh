@@ -39,7 +39,8 @@ echo "  ASTROGRID_USER : ${ASTROGRID_USER:?"undefined"}"
 # Create the astrogrid user account.
 if [ ! -d ${ASTROGRID_HOME} ]
 then
-    echo "Creating user account"
+	echo ""
+    echo "Creating AstroGrid user account"
     echo "   Name : ${ASTROGRID_USER}"
     echo "   Home : ${ASTROGRID_HOME}"
     useradd -c "AstroGrid" -m -d ${ASTROGRID_HOME} ${ASTROGRID_USER} 
@@ -50,6 +51,7 @@ fi
 # Create the downloads directory.
 if [ ! -d ${ASTROGRID_HOME}/downloads ]
 then
+	echo ""
     echo "Creating AstroGrid downloads directory"
     echo "  Path : ${ASTROGRID_HOME}/downloads"
     mkdir ${ASTROGRID_HOME}/downloads
@@ -63,6 +65,8 @@ fi
 if [ ! -f ${ASTROGRID_HOME}/downloads/${JAVA_RPM} ]
 then
 	pushd $ASTROGRID_HOME/downloads
+		echo ""
+		echo "Downloading Java JDK .."
     	wget http://www.astrogrid.org/maven/java--downloads/${JAVA_RPM}
 	popd
 fi
@@ -71,11 +75,14 @@ fi
 # Install the JDK (need to be root).
 if [ ! -e ${JAVA_HOME}/bin/java ]
 then
+	echo ""
+	echo "Installing Java JDK .."
 	rpm -i ${ASTROGRID_HOME}/downloads/${JAVA_RPM}
 fi
 
 #
 # Check the Java settings.
+echo ""
 echo "Checking Java settings .."
 echo "  JAVA_HOME    : ${JAVA_HOME}"
 if [ ! -d ${JAVA_HOME} ]

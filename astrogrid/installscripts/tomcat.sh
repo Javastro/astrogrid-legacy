@@ -30,6 +30,11 @@ echo "  TOMCAT_ADMIN_ZIPFILE : ${TOMCAT_ADMIN_ZIPFILE:?"undefined"}"
 # Set the Tomcat download site.
 export TOMCAT_MIRROR=http://www.mirrorservice.org/sites/ftp.apache.org/tomcat/tomcat-5/v${TOMCAT_VERSION}/bin
 echo "  TOMCAT_MIRROR  : ${TOMCAT_MIRROR:?"undefined"}"
+#
+# Set the Tomcat port number.
+# We don't have anything to configure the Tomcat port number yet.
+export TOMCAT_PORT=8080
+echo "  TOMCAT_PORT    : ${TOMCAT_PORT:?"undefined"}"
 
 #
 # Check the home directory.
@@ -85,6 +90,7 @@ fi
 echo ""
 echo "Setting CATALINA_HOME"
 export CATALINA_HOME=${ASTROGRID_HOME}/apache-tomcat-${TOMCAT_VERSION}
+echo "  CATALINA_HOME : ${CATALINA_HOME}"
 if [ ! -d ${CATALINA_HOME} ]
 then
     echo "ERROR : Unable to locate CATALINIA_HOME"
@@ -99,7 +105,7 @@ fi
 echo ""
 echo "Setting CATALINA_OPTS"
 cat >> ${CATALINA_HOME}/bin/setenv.sh << EOF
-export CATALINA_OPTS="-Xmx512M"
+CATALINA_OPTS="-Xmx512M"
 EOF
 
 #
@@ -110,7 +116,7 @@ chmod a+x ${CATALINA_HOME}/bin/*.sh
 
 #
 # Add the Tomcat login account.
-# *separate <role> elements are not required in Tomcat 5.5 
+# *separate <role> elements are not required in Tomcat 5.5
 echo ""
 echo "Patching Tomcat users"
 pushd ${CATALINA_HOME}/conf
@@ -130,20 +136,53 @@ popd
 
 #
 # Start Tomcat.
-#$CATALINA_HOME/bin/startup.sh
+echo ""
+echo "Starting Tomcat"
+${CATALINA_HOME}/bin/startup.sh
 
 #
-# Check Tomcat running.
-# http://${ASTROGRID_HOSTNAME}:8080/
+# Pause to let Tomcat startup.
+echo ""
+echo "Waiting for Tomcat to start"
+sleep 10s
 
 #
-# Check Tomcat admin login (workshop, qwerty)
-# http://${ASTROGRID_HOSTNAME}:8080/admin
-
+# Set the Tomcat URLs.
+TOMCAT_BASE=http://${ASTROGRID_HOST}:${TOMCAT_PORT}
+TOMCAT_HOME=${TOMCAT_BASE}/
+TOMCAT_ADMIN=${TOMCAT_BASE}/admin/
+TOMCAT_MANAGER=${TOMCAT_BASE}/manager/html
 #
-# Check Tomcat manager login (workshop, qwerty)
-# http://${ASTROGRID_HOSTNAME}:8080/manager/html
-
-
-
+# Check Tomcat home page.
+echo ""
+echo "Checking Tomcat home page"
+echo "  URL : ${TOMCAT_HOME}"
+if [ `curl -s --head ${TOMCAT_HOME} | grep -c "200 OK"` = 1 ]
+then
+	echo "  PASS"
+else
+	echo "  FAIL"
+fi
+#
+# Check Tomcat admin login
+echo ""
+echo "Checking Tomcat admin"
+echo "  URL : ${TOMCAT_ADMIN}"
+if [ `curl -s --head -u ${ASTROGRID_USER}:${ASTROGRID_PASS} ${TOMCAT_ADMIN} | grep -c "200 OK"` = 1 ]
+then
+	echo "  PASS"
+else
+	echo "  FAIL"
+fi
+#
+# Check Tomcat manager login
+echo ""
+echo "Checking Tomcat manager"
+echo "  URL : ${TOMCAT_MANAGER}"
+if [ `curl -s --head -u ${ASTROGRID_USER}:${ASTROGRID_PASS} ${TOMCAT_MANAGER} | grep -c "200 OK"` = 1 ]
+then
+	echo "  PASS"
+else
+	echo "  FAIL"
+fi
 
