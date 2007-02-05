@@ -451,7 +451,7 @@
 	    <version>1.3</version>
 	    <properties>
         	<dist.bundle>true</dist.bundle>     			    
-	    		 <strip>true</strip>	 	
+	    		 <strip>false</strip>	 	
 	    </properties>
     </dependency>
     <dependency>
@@ -460,7 +460,7 @@
 	    <artifactId>wsdl4j</artifactId>
 	    <version>1.5.1</version>
 	    <properties>
-	    		 <strip>true</strip>			    
+	    		 <strip>false</strip>			    
 		    <dist.bundle>true</dist.bundle>	    	
 	    </properties>
     </dependency>
@@ -470,7 +470,7 @@
 	    <artifactId>axis-saaj</artifactId>
 	    <version>1.3</version>
 	    <properties>
-	    		 <strip>true</strip>	   
+	    		 <strip>false</strip>	   
 		    <dist.bundle>true</dist.bundle>		    
 	    </properties>
     </dependency>
@@ -480,7 +480,7 @@
 	    <artifactId>axis-jaxrpc</artifactId>
 	    <version>1.3</version>
 	    <properties>
-	    		 <strip>true</strip>	    
+	    		 <strip>false</strip><!-- was seeing oddities about missing statics -->	    
 		    <dist.bundle>true</dist.bundle>	    
 	    </properties>
     </dependency>
