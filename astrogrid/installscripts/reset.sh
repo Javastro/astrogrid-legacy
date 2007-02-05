@@ -19,6 +19,6 @@ echo "  ASTROGRID_HOME : ${ASTROGRID_HOME:?"undefined"}"
 echo "  ASTROGRID_USER : ${ASTROGRID_USER:?"undefined"}"
 
 #
-# Remove the dowloads directory.
+# Remove the directories.
 rm -rf /home/astrogrid/downloads
 rm -rf /home/astrogrid/apache-tomcat-5.5.20
