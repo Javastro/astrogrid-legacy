@@ -1,0 +1,18 @@
+  cat > temp1 << tac
+<?xml version='1.0' encoding='utf-8'?>
+<!-- Configure the docBase -->
+<Context
+    displayName="AstroGrid publishing registry"
+    docBase="{ASTROGRID_HOME}/registry/webapp/astrogrid-registry-{ASTROGRID_REGISTRY_VERSION}.war"
+    path="/astrogrid-registry"
+    >
+
+tac
+
+#  $0 --help   Print this message
+
+
+sed "s/{ASTROGRID_HOME}/`hostname -s`/g" temp1
+
+#sed "s/{ASTROGRID_HOME}/`hostname -s`/g" astrogrid-registry.xml
+#sed "s/{ASTROGRID_HOME}/TEST/g" temp1
