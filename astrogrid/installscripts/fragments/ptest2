@@ -1,0 +1,12 @@
+patch --verbose tomcat-users.xml << EOF
+*** tomcat-users.xml.orig	2007-02-05 17:11:04.000000000 +0000
+--- tomcat-users.xml	2007-02-05 17:14:53.000000000 +0000
+***************
+*** 7,10 ****
+--- 7,11 ----
+    <user name="tomcat" password="tomcat" roles="tomcat" />
+    <user name="role1"  password="tomcat" roles="role1"  />
+    <user name="both"   password="tomcat" roles="tomcat,role1" />
++   <user username="astrogrid" password="${ASTROGRID_PASS}" roles="manager,admin,paladmin"/>
+  </tomcat-users>
+EOF
