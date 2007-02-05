@@ -392,6 +392,7 @@ todo see if we can include other things in the disk image too. -->
 		<j2se version="${minimum.jvm.version}+" max-heap-size="512m" initial-heap-size="32m" />
 		<jar href="${maven.final.name}-app.jar" />
 		<extension href="/jnlp/desktop-integration/desktop-integration.jnlp" name="Java Desktop Integration Components" />
+		<property name="java.protocol.handler.pkgs" value="org.astrogrid.desktop.protocol"/><!-- should work, but doesn't -->
 	</resources>
 	<application-desc main-class="${maven.javaapp.mainclass}" />
 </jnlp>
