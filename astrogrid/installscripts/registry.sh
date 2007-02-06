@@ -14,6 +14,10 @@ export REGISTRY_WARFILE=astrogrid-registry-${REGISTRY_VERSION}.war
 export REGISTRY_CONTEXT=astrogrid-registry
 export REGISTRY_CXTFILE=${CATALINA_HOME}/conf/Catalina/localhost/${REGISTRY_CONTEXT}.xml
 
+export REGISTRY_ADMIN=${ASTROGRID_BASE}/${REGISTRY_CONTEXT}/services/RegistryUpdate
+export REGISTRY_QUERY=${ASTROGRID_BASE}/${REGISTRY_CONTEXT}/services/RegistryQuery
+export REGISTRY_ENTRY=${ASTROGRID_BASE}/${REGISTRY_CONTEXT}/admin/addResourceEntry.jsp
+
 echo ""
 echo "Installing AstroGrid registry"
 echo "  JAVA_HOME        : ${JAVA_HOME:?"undefined"}"
@@ -39,6 +43,10 @@ echo "  ASTROGRID_BASE  : ${ASTROGRID_BASE:?"undefined"}"
 echo "  REGISTRY_VERSION : ${REGISTRY_VERSION:?"undefined"}"
 echo "  REGISTRY_CONTEXT : ${REGISTRY_CONTEXT:?"undefined"}"
 
+echo "  REGISTRY_ADMIN   : ${REGISTRY_ADMIN:?"undefined"}"
+echo "  REGISTRY_QUERY   : ${REGISTRY_QUERY:?"undefined"}"
+echo "  REGISTRY_ENTRY   : ${REGISTRY_ENTRY:?"undefined"}"
+
 #
 # Create registry directories.
 if [ -d ${ASTROGRID_HOME}/registry ]
@@ -53,9 +61,9 @@ echo ""
 echo "Creating registry directories"
 echo "  Path : ${ASTROGRID_HOME}/registry"
 mkdir ${ASTROGRID_HOME}/registry
-mkdir ${ASTROGRID_HOME}/registry/webapp
 mkdir ${ASTROGRID_HOME}/registry/log
 mkdir ${ASTROGRID_HOME}/registry/exist
+mkdir ${ASTROGRID_HOME}/registry/webapp
 
 #
 # Get the registry war file.
@@ -94,7 +102,6 @@ echo ""
 echo "Generating webapp context"
 cat > ${REGISTRY_CXTFILE} << EOF
 <?xml version='1.0' encoding='utf-8'?>
-<!-- Configure the docBase -->
 <Context
     displayName="AstroGrid publishing registry"
     docBase="${ASTROGRID_HOME}/registry/webapp/${REGISTRY_WARFILE}"
@@ -105,7 +112,7 @@ cat > ${REGISTRY_CXTFILE} << EOF
         description="The main authority ID for this registry"
         name="reg.amend.authorityid"
         type="java.lang.String"
-        value="${REGISTRY_AUTH}"
+        value="${ASTROGRID_AUTH}"
         />
     <!-- Configure the OAI registry name -->
     <Environment
@@ -147,13 +154,13 @@ cat > ${REGISTRY_CXTFILE} << EOF
         description="The the OAI publishing url for 0.10 (not required)"
         name="reg.amend.oaipublish.0.10"
         type="java.lang.String"
-        value="http://${TOMCAT_BASE}/${REGISTRY_CONTEXT}/OAIHandlerv0_10"
+        value="http://localhost:${ASTROGRID_PORT}/${REGISTRY_CONTEXT}/OAIHandlerv0_10"
         />
     <Environment
         description="The the OAI publishing url for 0.1 (not required)"
         name="reg.amend.oaipublish.0.1"
         type="java.lang.String"
-        value="http://${TOMCAT_BASE}/${REGISTRY_CONTEXT}/OAIHandlerv0_10"
+        value="http://localhost:${ASTROGRID_PORT}/${REGISTRY_CONTEXT}/OAIHandlerv0_10"
         />
 </Context>
 EOF
@@ -162,14 +169,16 @@ EOF
 # Pause to let Tomcat load the webapp.
 echo ""
 echo "Waiting for registry to start"
-sleep 10s
+sleep 20s
 
 #
 # Check the registry home page.
 echo ""
 echo "Checking registry home page"
 echo "  URL  : ${ASTROGRID_BASE}/${REGISTRY_CONTEXT}/"
-if [ `curl -s --head ${ASTROGRID_BASE}/${REGISTRY_CONTEXT}/ | grep -c "200 OK"` = 1 ]
+if [ `curl -s --head \
+      --url ${ASTROGRID_BASE}/${REGISTRY_CONTEXT}/ \
+      | grep -c "200 OK"` = 1 ]
 then
 	echo "  PASS"
 else
@@ -184,7 +193,10 @@ echo "Checking registry admin page"
 echo "  URL  : ${ASTROGRID_BASE}/${REGISTRY_CONTEXT}/admin/index.jsp"
 echo "  name : ${ASTROGRID_USER}"
 echo "  pass : ${ASTROGRID_PASS}"
-if [ `curl -s --head -u ${ASTROGRID_USER}:${ASTROGRID_PASS} ${ASTROGRID_BASE}/${REGISTRY_CONTEXT}/admin/index.jsp | grep -c "200 OK"` = 1 ]
+if [ `curl -s --head \
+     --url ${ASTROGRID_BASE}/${REGISTRY_CONTEXT}/admin/index.jsp \
+     --user ${ASTROGRID_USER}:${ASTROGRID_PASS} \
+     | grep -c "200 OK"` = 1 ]
 then
 	echo "  PASS"
 else
@@ -236,9 +248,9 @@ EOF
 # ** Server does not return an error code if it fails **
 echo ""
 echo "Registering service"
-echo "  URL  : ${ASTROGRID_BASE}/${REGISTRY_CONTEXT}/admin/addResourceEntry.jsp"
+echo "  URL  : ${REGISTRY_ENTRY}"
 if [ `curl -s -i \
-     --url  ${ASTROGRID_BASE}/${REGISTRY_CONTEXT}/admin/addResourceEntry.jsp \
+     --url  ${REGISTRY_ENTRY} \
      --user ${ASTROGRID_USER}:${ASTROGRID_PASS} \
      --data "addFromURL=true" \
      --data "uploadFromURL=upload"  \

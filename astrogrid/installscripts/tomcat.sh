@@ -147,7 +147,7 @@ ${CATALINA_HOME}/bin/startup.sh
 # Pause to let Tomcat startup.
 echo ""
 echo "Waiting for Tomcat to start"
-sleep 10s
+sleep 20s
 
 #
 # Check Tomcat home page.

@@ -54,3 +54,6 @@ echo "  ASTROGRID_BASE  : ${ASTROGRID_BASE:?"undefined"}"
 #
 # Install AstroGrid registry.
 . ${SCRIPT_PATH}/registry.sh
+#
+# Install AstroGrid filestore.
+. ${SCRIPT_PATH}/filestore.sh
