@@ -33,7 +33,7 @@
   `((quaestor.version . "@VERSION@")
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.39 $ $Date: 2007/02/02 13:21:56 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.40 $ $Date: 2007/02/06 23:07:52 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -170,7 +170,7 @@
 
     (let* ((kb (kb:get kb-name))
            (info (kb 'info))
-           (base-uri (request->url request #t))
+           (base-uri (webapp-base-from-request request #t))
            (submodel-pair (assq 'submodels info))) ;cdr is list of alists
       `(li "Knowledgebase "
            (a (@ (href ,(format #f "~a/~a" base-uri kb-name)))
@@ -431,7 +431,7 @@
                  (report-exception 'http-put
                                    '|SC_BAD_REQUEST|
                                    "Can't post metadata without a content-type"))
-             (let ((kb-uri (string-append (request->url request #t)
+             (let ((kb-uri (string-append (webapp-base-from-request request #t)
                                           "/" kb-name)))
                (if (string=? content-type "text/plain")
                    (kb 'set-metadata
@@ -467,7 +467,7 @@
 
             (else                         ;normal case
              (let ((nkb (kb:new kb-name))
-                   (kb-uri (string-append (request->url request #t)
+                   (kb-uri (string-append (webapp-base-from-request request #t)
                                           "/" kb-name)))
                (if (string=? content-type "text/plain")
                    (nkb 'set-metadata
@@ -843,7 +843,7 @@
                  ;; Now do the actual work of reading the method
                  ;; call from the input reader.
                  (do-xmlrpc-call
-                  (request->url request)
+                  (webapp-base-from-request request)
                   (get-reader request)))
 
                 (else
