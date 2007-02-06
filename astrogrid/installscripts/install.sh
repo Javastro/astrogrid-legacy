@@ -28,7 +28,7 @@ export ASTROGRID_PASS=W6G117
 export ASTROGRID_HOST=`hostname -f`
 export ASTROGRID_PORT=8080
 
-export ASTROGRID_MAVEN=http://www.astrogrid.org/maven/org.astrogrid
+export ASTROGRID_MAVEN=http://www.astrogrid.org/maven
 
 export ASTROGRID_AUTH=org.metagrid.caltech-demo
 export ASTROGRID_EMAIL=astrogrid.demo@metagrid.org
@@ -79,8 +79,14 @@ fi
 # Install Tomcat.
 . ${SCRIPT_PATH}/tomcat.sh
 #
-# Install AstroGrid registry.
+# Install AstroGrid Registry.
 . ${SCRIPT_PATH}/registry.sh
 #
-# Install AstroGrid filestore.
+# Install AstroGrid FileStore.
 . ${SCRIPT_PATH}/filestore.sh
+#
+# Install AstroGrid FileManager.
+. ${SCRIPT_PATH}/filemanager.sh
+#
+# Install AstroGrid Community.
+. ${SCRIPT_PATH}/community.sh

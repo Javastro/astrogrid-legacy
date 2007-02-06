@@ -70,7 +70,7 @@ mkdir ${ASTROGRID_HOME}/registry/webapp
 echo ""
 echo "Downloading registry war file"
 pushd ${ASTROGRID_HOME}/registry/webapp
-	wget ${ASTROGRID_MAVEN}/wars/${REGISTRY_WARFILE}
+	wget ${ASTROGRID_MAVEN}/org.astrogrid/wars/${REGISTRY_WARFILE}
 popd
 
 #
@@ -260,6 +260,6 @@ then
 	echo "  PASS"
 else
 	echo "  ERROR : Failed to register the service"
-#    exit 1
+    exit 1
 fi
 

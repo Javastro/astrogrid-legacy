@@ -138,6 +138,12 @@ EOF
 popd
 
 #
+# Install the HSQLDB jar for Community.
+echo ""
+echo "Installing HSQLBD driver"
+wget -P ${CATALINA_HOME}/common/lib ${ASTROGRID_MAVEN}/hsqldb/jars/hsqldb-1.7.1.jar
+
+#
 # Start Tomcat.
 echo ""
 echo "Starting Tomcat"

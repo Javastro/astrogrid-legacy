@@ -8,14 +8,14 @@
 #
 
 #
-# FileStore settings.
-export FILESTORE_VERSION=2006.3.01fs
-export FILESTORE_WARFILE=astrogrid-filestore-${FILESTORE_VERSION}.war
-export FILESTORE_CONTEXT=astrogrid-filestore
-export FILESTORE_CXTFILE=${CATALINA_HOME}/conf/Catalina/localhost/${FILESTORE_CONTEXT}.xml
+# FileManager settings.
+export FILEMANAGER_VERSION=2006.3.01fm
+export FILEMANAGER_WARFILE=astrogrid-filemanager-${FILEMANAGER_VERSION}.war
+export FILEMANAGER_CONTEXT=astrogrid-filemanager
+export FILEMANAGER_CXTFILE=${CATALINA_HOME}/conf/Catalina/localhost/${FILEMANAGER_CONTEXT}.xml
 
 echo ""
-echo "Installing AstroGrid FileStore"
+echo "Installing AstroGrid FileManager"
 echo "  JAVA_HOME        : ${JAVA_HOME:?"undefined"}"
 echo "  CATALINA_HOME    : ${CATALINA_HOME:?"undefined"}"
 if [ ! -d ${CATALINA_HOME} ]
@@ -40,65 +40,65 @@ echo "  REGISTRY_ADMIN  : ${REGISTRY_ADMIN:?"undefined"}"
 echo "  REGISTRY_QUERY  : ${REGISTRY_QUERY:?"undefined"}"
 echo "  REGISTRY_ENTRY  : ${REGISTRY_ENTRY:?"undefined"}"
 
-echo "  FILESTORE_VERSION : ${FILESTORE_VERSION:?"undefined"}"
-echo "  FILESTORE_CONTEXT : ${FILESTORE_CONTEXT:?"undefined"}"
+echo "  FILEMANAGER_VERSION : ${FILEMANAGER_VERSION:?"undefined"}"
+echo "  FILEMANAGER_CONTEXT : ${FILEMANAGER_CONTEXT:?"undefined"}"
 
 #
-# Create FileStore directories.
-if [ -d ${ASTROGRID_HOME}/filestore ]
+# Create FileManager directories.
+if [ -d ${ASTROGRID_HOME}/filemanager ]
 then
     echo ""
-    echo "FileStore directory already exists"
-    echo "  Path : ${ASTROGRID_HOME}/filestore"
+    echo "FileManager directory already exists"
+    echo "  Path : ${ASTROGRID_HOME}/filemanager"
 	exit 1
 fi
 
 echo ""
-echo "Creating FileStore directories"
-echo "  Path : ${ASTROGRID_HOME}/filestore"
-mkdir ${ASTROGRID_HOME}/filestore
-mkdir ${ASTROGRID_HOME}/filestore/data
-mkdir ${ASTROGRID_HOME}/filestore/webapp
+echo "Creating FileManager directories"
+echo "  Path : ${ASTROGRID_HOME}/filemanager"
+mkdir ${ASTROGRID_HOME}/filemanager
+mkdir ${ASTROGRID_HOME}/filemanager/data
+mkdir ${ASTROGRID_HOME}/filemanager/webapp
 
 #
-# Get the filestore war file.
+# Get the filemanager war file.
 echo ""
-echo "Downloading FileStore war file"
-pushd ${ASTROGRID_HOME}/filestore/webapp
-	wget ${ASTROGRID_MAVEN}/org.astrogrid/wars/${FILESTORE_WARFILE}
+echo "Downloading FileManager war file"
+pushd ${ASTROGRID_HOME}/filemanager/webapp
+	wget ${ASTROGRID_MAVEN}/org.astrogrid/wars/${FILEMANAGER_WARFILE}
 popd
 
 #
 # Generate the webapp context.
 echo ""
 echo "Generating webapp context"
-cat > ${FILESTORE_CXTFILE} << EOF
+cat > ${FILEMANAGER_CXTFILE} << EOF
 <?xml version='1.0' encoding='utf-8'?>
 <Context
-    displayName="AstroGrid FileStore"
-    docBase="${ASTROGRID_HOME}/filestore/webapp/${FILESTORE_WARFILE}"
-    path="/${FILESTORE_CONTEXT}"
+    displayName="AstroGrid FileManager"
+    docBase="${ASTROGRID_HOME}/filemanager/webapp/${FILEMANAGER_WARFILE}"
+    path="/${FILEMANAGER_CONTEXT}"
     >
-    <!-- Configure the filestore service identifier -->
+    <!-- Configure the service identifier -->
     <Environment
-        description="The FileStore service identifier"
-        name="org.astrogrid.filestore.service.ivorn"
+        description="The FileManager service identifier"
+        name="org.astrogrid.filemanager.service.ivorn"
+        type="java.lang.String"
+        value="ivo://${ASTROGRID_AUTH}/filemanager"
+        />
+    <!-- Configure the default filestore -->
+    <Environment
+        description="The default FileStore identifier"
+        name="org.astrogrid.filemanager.filestore.ivorn"
         type="java.lang.String"
         value="ivo://${ASTROGRID_AUTH}/filestore"
         />
-    <!-- Configure the data access URL -->
+    <!-- Configure the filemanager repository location -->
     <Environment
-        description="The FileStore access URL"
-        name="org.astrogrid.filestore.service.url"
+        description="The FileManager repository location"
+        name="org.astrogrid.filemanager.basedir"
         type="java.lang.String"
-        value="http://${ASTROGRID_BASE}/${FILESTORE_CONTEXT}/filestore"
-        />
-    <!-- Configure the repository location -->
-    <Environment
-        description="The FileStore repository location"
-        name="org.astrogrid.filestore.repository"
-        type="java.lang.String"
-        value="${ASTROGRID_HOME}/filestore/data"
+        value="${ASTROGRID_HOME}/filemanager/data"
         />
     <!-- Configure the local publishing registry endpoint -->
     <Environment
@@ -120,39 +120,39 @@ EOF
 #
 # Pause to let Tomcat load the webapp.
 echo ""
-echo "Waiting for FileStore to start"
+echo "Waiting for FileManager to start"
 sleep 20s
 
 #
-# Check the FileStore home page.
+# Check the FileManager home page.
 echo ""
-echo "Checking FileStore home page"
-echo "  URL  : ${ASTROGRID_BASE}/${FILESTORE_CONTEXT}/"
+echo "Checking FileManager home page"
+echo "  URL  : ${ASTROGRID_BASE}/${FILEMANAGER_CONTEXT}/"
 if [ `curl -s --head \
-      --url ${ASTROGRID_BASE}/${FILESTORE_CONTEXT}/ \
+      --url ${ASTROGRID_BASE}/${FILEMANAGER_CONTEXT}/ \
       | grep -c "200 OK"` = 1 ]
 then
 	echo "  PASS"
 else
-	echo "  ERROR : Error accessing FileStore home page"
+	echo "  ERROR : Error accessing FileManager home page"
     exit 1
 fi
 
 #
-# Check the FileStore admin page
+# Check the FileManager admin page
 echo ""
-echo "Checking FileStore admin page"
-echo "  URL  : ${ASTROGRID_BASE}/${FILESTORE_CONTEXT}/admin/index.jsp"
+echo "Checking FileManager admin page"
+echo "  URL  : ${ASTROGRID_BASE}/${FILEMANAGER_CONTEXT}/admin/index.jsp"
 echo "  name : ${ASTROGRID_USER}"
 echo "  pass : ${ASTROGRID_PASS}"
 if [ `curl -s --head \
       --user ${ASTROGRID_USER}:${ASTROGRID_PASS} \
-      --url ${ASTROGRID_BASE}/${FILESTORE_CONTEXT}/admin/index.jsp \
+      --url ${ASTROGRID_BASE}/${FILEMANAGER_CONTEXT}/admin/index.jsp \
       | grep -c "200 OK"` = 1 ]
 then
 	echo "  PASS"
 else
-	echo "  ERROR : Error accessing FileStore admin page"
+	echo "  ERROR : Error accessing FileManager admin page"
     exit 1
 fi
 
@@ -161,7 +161,7 @@ fi
 # ** Change this to generate a v1.0 resource **
 echo ""
 echo "Generating service registration"
-cat > ${ASTROGRID_HOME}/filestore/resource.xml << EOF
+cat > ${ASTROGRID_HOME}/filemanager/resource.xml << EOF
 <vor:VOResources
     xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -171,8 +171,8 @@ cat > ${ASTROGRID_HOME}/filestore/resource.xml << EOF
     xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5"
     xmlns="http://www.ivoa.net/xml/VOResource/v0.10">
     <vor:Resource xsi:type="vr:Service"  updated="2004-11-20T15:34:22Z" status="active">
-        <title>FileStore Service</title>
-        <identifier>ivo://${ASTROGRID_AUTH}/filestore</identifier>
+        <title>FileManager Service</title>
+        <identifier>ivo://${ASTROGRID_AUTH}/filemanager</identifier>
         <curation>
             <publisher>AstroGrid</publisher>
             <contact>
@@ -181,18 +181,18 @@ cat > ${ASTROGRID_HOME}/filestore/resource.xml << EOF
             </contact>
         </curation>
         <content>
-            <subject>FileStore</subject>
+            <subject>FileManager</subject>
             <subject>VOStore</subject>
-            <description>FileStore service</description>
+            <description>FileManager service</description>
             <referenceURL>http://www.astrogrid.org</referenceURL>
             <type>BasicData</type>
             <relationship>
             	<relationshipType>derived-from</relationshipType>
-            	<relatedResource ivo-id="ivo://org.astrogrid/FileStoreKind">FileStore Kind</relatedResource>
+            	<relatedResource ivo-id="ivo://org.astrogrid/FileManagerKind">FileManager Kind</relatedResource>
             </relationship>  
         </content>
         <interface xsi:type="vs:WebService">
-        	<accessURL use="full">${ASTROGRID_BASE}/${FILESTORE_CONTEXT}/services/FileStore</accessURL>
+        	<accessURL use="full">${ASTROGRID_BASE}/${FILEMANAGER_CONTEXT}/services/FileManagerPort</accessURL>
         </interface> 
     </vor:Resource>
 </vor:VOResources>
@@ -210,7 +210,7 @@ if [ `curl -s -i \
      --user ${ASTROGRID_USER}:${ASTROGRID_PASS} \
      --data "addFromURL=true" \
      --data "uploadFromURL=upload"  \
-     --data "docurl=file://${ASTROGRID_HOME}/filestore/resource.xml" \
+     --data "docurl=file://${ASTROGRID_HOME}/filemanager/resource.xml" \
      | head -n 10 | grep -c "200 OK"` = 1 ]
 then
 	echo "  PASS"

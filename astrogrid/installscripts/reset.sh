@@ -32,4 +32,6 @@ rm -rf /home/astrogrid/downloads
 rm -rf /home/astrogrid/apache-tomcat-5.5.20
 rm -rf /home/astrogrid/registry
 rm -rf /home/astrogrid/filestore
+rm -rf /home/astrogrid/filemanager
+rm -rf /home/astrogrid/community
 
