@@ -31,7 +31,7 @@
   request->path-list
   request->query-string
   request->content-type
-  request->url
+  webapp-base-from-request
   content-headers-ok?
   request->header-alist
   request->accept-mime-types
@@ -507,7 +507,7 @@
         #f
         (->string content-jstring))))
 
-;; request->url java-request optional-bool -> string
+;; webapp-base-from-request java-request optional-bool -> string
 ;;
 ;; Given a Java REQUEST, return the URL for the webapp
 ;; (for example http://localhost:8080/quaestor).  If the optional boolean
@@ -516,8 +516,10 @@
 ;;
 ;; This is different from request.getRequestURI(), as this synthesises
 ;; the base URI, and so (a) is independent of the servlet invoked, and
-;; (b) avoids issues with trailing slashes and so on.
-(define (request->url request . with-servlet?)
+;; (b) avoids issues with trailing slashes and so on.  Property (a) means
+;; that, although it is derived from a request, the one-arg form will give
+;; the same value for any request made by a given servlet.
+(define (webapp-base-from-request request . with-servlet?)
   (define-generic-java-methods
     get-local-name get-local-port get-context-path get-servlet-path)
   (format #f "http://~a:~a~a~a"
