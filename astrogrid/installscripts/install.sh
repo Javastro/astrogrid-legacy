@@ -48,6 +48,10 @@ echo "  ASTROGRID_EMAIL : ${ASTROGRID_EMAIL:?"undefined"}"
 echo "  ASTROGRID_ADMIN : ${ASTROGRID_ADMIN:?"undefined"}"
 echo "  ASTROGRID_BASE  : ${ASTROGRID_BASE:?"undefined"}"
 
+
+#
+# Check system tools already installed
+. ${SCRIPT_PATH}/system.sh
 #
 # Install Tomcat.
 . ${SCRIPT_PATH}/tomcat.sh
