@@ -9,10 +9,19 @@
 
 echo ""
 echo "Installing AstroGrid Tomcat"
-echo "  ASTROGRID_HOST : ${ASTROGRID_HOST:?"undefined"}"
-echo "  ASTROGRID_HOME : ${ASTROGRID_HOME:?"undefined"}"
-echo "  ASTROGRID_USER : ${ASTROGRID_USER:?"undefined"}"
-echo "  ASTROGRID_PASS : ${ASTROGRID_PASS:?"undefined"}"
+echo "  JAVA_HOME      : ${JAVA_HOME:?"undefined"}"
+
+echo "  ASTROGRID_HOME  : ${ASTROGRID_HOME:?"undefined"}"
+echo "  ASTROGRID_USER  : ${ASTROGRID_USER:?"undefined"}"
+echo "  ASTROGRID_PASS  : ${ASTROGRID_PASS:?"undefined"}"
+
+echo "  ASTROGRID_HOST  : ${ASTROGRID_HOST:?"undefined"}"
+echo "  ASTROGRID_PORT  : ${ASTROGRID_PORT:?"undefined"}"
+
+echo "  ASTROGRID_AUTH  : ${ASTROGRID_AUTH:?"undefined"}"
+echo "  ASTROGRID_EMAIL : ${ASTROGRID_EMAIL:?"undefined"}"
+echo "  ASTROGRID_ADMIN : ${ASTROGRID_ADMIN:?"undefined"}"
+echo "  ASTROGRID_BASE  : ${ASTROGRID_BASE:?"undefined"}"
 
 #
 # Set the Tomcat version.
@@ -30,17 +39,12 @@ echo "  TOMCAT_ADMIN_ZIPFILE : ${TOMCAT_ADMIN_ZIPFILE:?"undefined"}"
 # Set the Tomcat download site.
 export TOMCAT_MIRROR=http://www.mirrorservice.org/sites/ftp.apache.org/tomcat/tomcat-5/v${TOMCAT_VERSION}/bin
 echo "  TOMCAT_MIRROR  : ${TOMCAT_MIRROR:?"undefined"}"
-#
-# Set the Tomcat port number.
-# We don't have anything to configure the Tomcat port number yet.
-export TOMCAT_PORT=8080
-echo "  TOMCAT_PORT    : ${TOMCAT_PORT:?"undefined"}"
 
 #
 # Check the home directory.
 if [ ! -d ${ASTROGRID_HOME} ]
 then
-    echo "Unable to locate ASTROGRID_HOME"
+    echo "ERROR : Unable to locate ASTROGRID_HOME"
     echo "  ASTROGRID_HOME : ${ASTROGRID_HOME:?"undefined"}"
     exit 1
 fi
@@ -72,7 +76,7 @@ fi
 # Unpack the Tomcat distro.
 if [ ! -f ${ASTROGRID_HOME}/downloads/${TOMCAT_ZIPFILE} ]
 then
-    echo "Unable to locate Tomcat zip file"
+    echo "ERROR : Unable to locate Tomcat zip file"
 	echo "  ${ASTROGRID_HOME}/downloads/${TOMCAT_ZIPFILE}"
     exit 1
 else
@@ -94,7 +98,6 @@ echo "  CATALINA_HOME : ${CATALINA_HOME}"
 if [ ! -d ${CATALINA_HOME} ]
 then
     echo "ERROR : Unable to locate CATALINIA_HOME"
-	echo "  CATALINA_HOME : ${CATALINA_HOME:?"undefined"}"
     exit 1
 fi
 
@@ -120,7 +123,7 @@ chmod a+x ${CATALINA_HOME}/bin/*.sh
 echo ""
 echo "Patching Tomcat users"
 pushd ${CATALINA_HOME}/conf
-patch -p1 tomcat-users.xml << EOF
+patch -b -p1 tomcat-users.xml << EOF
 *** old/tomcat-users.xml  2007-02-05 14:53:39.000000000 +0000
 --- new/tomcat-users.xml  2007-02-05 14:53:39.000000000 +0000
 ***************
@@ -147,42 +150,43 @@ echo "Waiting for Tomcat to start"
 sleep 10s
 
 #
-# Set the Tomcat URLs.
-TOMCAT_BASE=http://${ASTROGRID_HOST}:${TOMCAT_PORT}
-TOMCAT_HOME=${TOMCAT_BASE}/
-TOMCAT_ADMIN=${TOMCAT_BASE}/admin/
-TOMCAT_MANAGER=${TOMCAT_BASE}/manager/html
-#
 # Check Tomcat home page.
 echo ""
 echo "Checking Tomcat home page"
-echo "  URL : ${TOMCAT_HOME}"
-if [ `curl -s --head ${TOMCAT_HOME} | grep -c "200 OK"` = 1 ]
+echo "  URL : ${ASTROGRID_BASE}/"
+if [ `curl -s --head ${ASTROGRID_BASE}/ | grep -c "200 OK"` = 1 ]
 then
-	echo "  PASS"
+    echo "  PASS"
 else
-	echo "  FAIL"
+    echo "  ERROR : Error accessing Tomcat home page"
+    exit 1
 fi
 #
 # Check Tomcat admin login
 echo ""
 echo "Checking Tomcat admin"
-echo "  URL : ${TOMCAT_ADMIN}"
-if [ `curl -s --head -u ${ASTROGRID_USER}:${ASTROGRID_PASS} ${TOMCAT_ADMIN} | grep -c "200 OK"` = 1 ]
+echo "  URL  : ${ASTROGRID_BASE}/admin/"
+echo "  name : ${ASTROGRID_USER}"
+echo "  pass : ${ASTROGRID_PASS}"
+if [ `curl -s --head -u ${ASTROGRID_USER}:${ASTROGRID_PASS} ${ASTROGRID_BASE}/admin/ | grep -c "200 OK"` = 1 ]
 then
-	echo "  PASS"
+    echo "  PASS"
 else
-	echo "  FAIL"
+    echo "  ERROR : Error accessing Tomcat admin page"
+    exit 1
 fi
 #
 # Check Tomcat manager login
 echo ""
 echo "Checking Tomcat manager"
-echo "  URL : ${TOMCAT_MANAGER}"
-if [ `curl -s --head -u ${ASTROGRID_USER}:${ASTROGRID_PASS} ${TOMCAT_MANAGER} | grep -c "200 OK"` = 1 ]
+echo "  URL  : ${ASTROGRID_BASE}/manager/html"
+echo "  name : ${ASTROGRID_USER}"
+echo "  pass : ${ASTROGRID_PASS}"
+if [ `curl -s --head -u ${ASTROGRID_USER}:${ASTROGRID_PASS} ${ASTROGRID_BASE}/manager/html | grep -c "200 OK"` = 1 ]
 then
-	echo "  PASS"
+    echo "  PASS"
 else
-	echo "  FAIL"
+    echo "  ERROR : Error accessing Tomcat manager page"
+    exit 1
 fi
 

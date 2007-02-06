@@ -19,17 +19,38 @@ INSTALL_USER=`whoami`
 
 #
 # Test settings.
-export ASTROGRID_HOST=`hostname -f`
+export JAVA_HOME=/usr/java/jdk1.5.0_08
+
 export ASTROGRID_HOME=/home/astrogrid
 export ASTROGRID_USER=astrogrid
 export ASTROGRID_PASS=W6G117
 
+export ASTROGRID_HOST=`hostname -f`
+export ASTROGRID_PORT=8080
+
+export ASTROGRID_MAVEN=http://www.astrogrid.org/maven/org.astrogrid
+
+export ASTROGRID_AUTH=org.metagrid.caltech-demo
+export ASTROGRID_EMAIL=astrogrid.demo@metagrid.org
+export ASTROGRID_ADMIN="Astrogrid admin"
+export ASTROGRID_BASE=http://${ASTROGRID_HOST}:${ASTROGRID_PORT}
+
 echo "Installing AstroGrid services"
-echo "  ASTROGRID_HOST : ${ASTROGRID_HOST:?"undefined"}"
-echo "  ASTROGRID_HOME : ${ASTROGRID_HOME:?"undefined"}"
-echo "  ASTROGRID_USER : ${ASTROGRID_USER:?"undefined"}"
-echo "  ASTROGRID_PASS : ${ASTROGRID_PASS:?"undefined"}"
+echo "  ASTROGRID_HOME  : ${ASTROGRID_HOME:?"undefined"}"
+echo "  ASTROGRID_USER  : ${ASTROGRID_USER:?"undefined"}"
+echo "  ASTROGRID_PASS  : ${ASTROGRID_PASS:?"undefined"}"
+
+echo "  ASTROGRID_HOST  : ${ASTROGRID_HOST:?"undefined"}"
+echo "  ASTROGRID_PORT  : ${ASTROGRID_PORT:?"undefined"}"
+
+echo "  ASTROGRID_AUTH  : ${ASTROGRID_AUTH:?"undefined"}"
+echo "  ASTROGRID_EMAIL : ${ASTROGRID_EMAIL:?"undefined"}"
+echo "  ASTROGRID_ADMIN : ${ASTROGRID_ADMIN:?"undefined"}"
+echo "  ASTROGRID_BASE  : ${ASTROGRID_BASE:?"undefined"}"
 
 #
 # Install Tomcat.
-${SCRIPT_PATH}/tomcat.sh
+. ${SCRIPT_PATH}/tomcat.sh
+#
+# Install AstroGrid registry.
+. ${SCRIPT_PATH}/registry.sh

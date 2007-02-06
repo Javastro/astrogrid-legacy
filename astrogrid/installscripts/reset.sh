@@ -13,6 +13,8 @@ export ASTROGRID_HOST=`hostname -f`
 export ASTROGRID_HOME=/home/astrogrid
 export ASTROGRID_USER=astrogrid
 
+export JAVA_HOME=/usr/java/jdk1.5.0_08
+
 echo "Removing AstroGrid services"
 echo "  ASTROGRID_HOST : ${ASTROGRID_HOST:?"undefined"}"
 echo "  ASTROGRID_HOME : ${ASTROGRID_HOME:?"undefined"}"
@@ -28,4 +30,5 @@ fi
 # Remove the directories.
 rm -rf /home/astrogrid/downloads
 rm -rf /home/astrogrid/apache-tomcat-5.5.20
+rm -rf /home/astrogrid/registry
 
