@@ -71,8 +71,7 @@
                     	<include>**/modules/plastic/**</include>
                     	<include>**/modules/test/**</include>
                     	
-                    	<include>**/protocol/classpath/**</include>
-                    	<include>**/protocol/fallback/**</include>
+                    	<include>**/protocol/**</include>
                     </includes>
                     <excludes>
 						  <!--   test classes we can't compile or don't want -->
