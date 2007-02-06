@@ -214,7 +214,7 @@ if [ `curl -s -i \
      --user ${ASTROGRID_USER}:${ASTROGRID_PASS} \
      --data "addFromURL=true" \
      --data "uploadFromURL=upload"  \
-     --data "docurl=file://${ASTROGRID_HOME}/registry/resource.xml" \
+     --data "docurl=file://${ASTROGRID_HOME}/filestore/resource.xml" \
      | head -n 10 | grep -c "200 OK"` = 1 ]
 then
 	echo "  PASS"
