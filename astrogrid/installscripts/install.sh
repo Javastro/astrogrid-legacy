@@ -13,6 +13,11 @@ SCRIPT_NAME=`basename "$0"`
 SCRIPT_PATH=`dirname "$0"`
 
 #
+# Set the install variables.
+INSTALL_DATE=`date "+%Y%m%d%H%M%S"`
+INSTALL_USER=`whoami`
+
+#
 # Test settings.
 export ASTROGRID_HOST=`hostname -f`
 export ASTROGRID_HOME=/home/astrogrid
