@@ -169,11 +169,11 @@ public class StapRetrieval extends Retriever {
                 tooltip.append("<br>")
                 .append(titles[v])
                 .append( ": ")
-                .append(o.getClass().isArray() ? ArrayUtils.toString(o) : o.toString());
+                .append(safeTrim(o));
             }
             tooltip.append("</p></html>");
             valNode.setAttribute(TOOLTIP_ATTRIBUTE,tooltip.toString());
-            String instrumentID = row[instCol].toString();
+            String instrumentID = safeTrim(row[instCol]);
             TreeNode instrNode = model.findNode(instrumentID, getServiceNode());
             if(instrNode == null) {
                 instrNode = new DefaultTreeNode();
@@ -189,12 +189,12 @@ public class StapRetrieval extends Retriever {
    protected void rowDataExtensionPoint(Object[] row, TreeNode valNode) {
         String imgURL = "";
         if(row[accessCol] != null) {
-            imgURL = row[accessCol].toString();
+            imgURL = safeTrim(row[accessCol]);
         }
 
         String details; 
         if (timeStart > -1 && row[timeStart] != null) {
-            details = row[timeStart].toString();
+            details = safeTrim(row[timeStart]);
         } else {
             details  = "No Start Time";
         }
@@ -208,7 +208,7 @@ public class StapRetrieval extends Retriever {
         
         valNode.setAttribute(IMAGE_URL_ATTRIBUTE,imgURL);
         if(formatCol > -1 && row[formatCol] != null) {
-            String type = row[formatCol].toString();
+            String type = safeTrim(row[formatCol]);
             //@todo Should fix this more correctly on the retriever or check about stap doing a real mime type on the return.
             if(type.indexOf('-') > -1) {
                 valNode.setAttribute(IMAGE_TYPE_ATTRIBUTE ,"/" + type.substring(type.indexOf('-')+1).toLowerCase());

@@ -1,4 +1,4 @@
-/*$Id: SsapRetrieval.java,v 1.6 2007/01/29 10:43:49 nw Exp $
+/*$Id: SsapRetrieval.java,v 1.7 2007/02/06 18:56:10 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -102,19 +102,19 @@ public class SsapRetrieval extends Retriever {
         }
         
         protected void rowDataExtensionPoint(Object[] row, TreeNode valNode) {
-            String url = row[urlCol].toString();
+            String url = safeTrim(row[urlCol]);
             valNode.setAttribute(SPECTRA_URL_ATTRIBUTE,url);
           
             String title;
             if (titleCol > -1) {
-                title = row[titleCol].toString();
+                title = safeTrim(row[titleCol]);
             } else {
                 title  = "untitled";
             }
             valNode.setAttribute(SPECTRA_TITLE_ATTRIBUTE,title);
             String type;
             if (formatCol > -1) {
-                type = row[formatCol].toString();
+                type = safeTrim(row[formatCol]);
             } else {
                 type="unknown";
             }
@@ -123,10 +123,10 @@ public class SsapRetrieval extends Retriever {
             valNode.setAttribute(LABEL_ATTRIBUTE,title + ", " + StringUtils.substringAfterLast(type,"/"));
             
             if (spectrumAxesCol > -1) {                   
-                valNode.setAttribute(SPECTRA_AXES_ATTRIBUTE,row[spectrumAxesCol].toString());
+                valNode.setAttribute(SPECTRA_AXES_ATTRIBUTE,safeTrim(row[spectrumAxesCol]));
             }
             if (spectrumDimeqCol > -1) {                
-                valNode.setAttribute(SPECTRA_DIMEQ_ATTRIBUTE,row[spectrumDimeqCol].toString());                
+                valNode.setAttribute(SPECTRA_DIMEQ_ATTRIBUTE,safeTrim(row[spectrumDimeqCol]));                
             }
             if (spectrumScaleqCol > -1) {                 
                 StringBuffer sb = new StringBuffer();
@@ -138,14 +138,14 @@ public class SsapRetrieval extends Retriever {
                         sb.append(is[i]);
                         sb.append(" ");
                     }
-                } else if (o.getClass().equals(String.class)) {
-                    sb.append(o.toString());
+                } else  {
+                    sb.append(safeTrim(o));
                 }
                 valNode.setAttribute(SPECTRA_SCALEQ_ATTRIBUTE,sb.toString());                
             }
             
             if (spectrumUnitsCol > -1) {
-            	valNode.setAttribute(SPECTRA_UNITS_ATTRIBUTE,row[spectrumUnitsCol].toString());
+            	valNode.setAttribute(SPECTRA_UNITS_ATTRIBUTE,safeTrim(row[spectrumUnitsCol]));
             }
         }
         
@@ -181,6 +181,9 @@ public class SsapRetrieval extends Retriever {
 
 /* 
 $Log: SsapRetrieval.java,v $
+Revision 1.7  2007/02/06 18:56:10  nw
+made response parsing resilient to whitespace in columns.
+
 Revision 1.6  2007/01/29 10:43:49  nw
 documentation fixes.
 

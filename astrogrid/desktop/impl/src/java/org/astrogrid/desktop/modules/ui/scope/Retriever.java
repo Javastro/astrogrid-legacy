@@ -65,6 +65,9 @@ public abstract class Retriever extends BackgroundWorker {
     protected final VizModel model;
     protected final TreeNode primaryNode;
     
+    
+
+    
     public Retriever(UIComponent comp,Service information,TreeNode primaryNode,VizModel model,double ra, double dec) {
         super(comp,information.getTitle(),1000*60L,Thread.MIN_PRIORITY+3); // make low priority, timeout after 1 min.
         this.ra = ra;
@@ -112,7 +115,20 @@ public abstract class Retriever extends BackgroundWorker {
    public class BasicTableHandler implements SummarizingTableHandler {
 
 
-
+	    /** utility method - converts an object using toString(), and then trims it if not null */
+	    protected final String safeTrim(Object o) {
+	    	if (o == null) {
+	    		return "";
+	    	} 
+	    	if (o.getClass().isArray()) {
+	    		return ArrayUtils.toString(o) ;
+	    	}
+	    	String s = o.toString();
+	    	if (s == null) {
+	    		return "";
+	    	}
+	    	return s.trim();
+	    }
 
 
     public BasicTableHandler(TreeNode serviceNode) {
@@ -191,8 +207,8 @@ public abstract class Retriever extends BackgroundWorker {
             return;
         }
         resultCount++;
-        String rowRa = row[raCol].toString();
-        String rowDec = row[decCol].toString();                                 
+        String rowRa = safeTrim(row[raCol]);
+        String rowDec = safeTrim(row[decCol]);                                 
         DefaultTreeNode valNode = new DefaultTreeNode();
         String positionString = chopValue(String.valueOf(rowRa),6) + "," + chopValue(String.valueOf(rowDec),6);
         valNode.setAttribute(LABEL_ATTRIBUTE,"*");
@@ -217,7 +233,7 @@ public abstract class Retriever extends BackgroundWorker {
             tooltip.append("<br>")
             .append(titles[v])
             .append( ": ")
-            .append(o.getClass().isArray() ? ArrayUtils.toString(o) : o.toString());
+            .append(safeTrim(o));
         }        
         tooltip.append("</p></html>");
         valNode.setAttribute(TOOLTIP_ATTRIBUTE,tooltip.toString());  

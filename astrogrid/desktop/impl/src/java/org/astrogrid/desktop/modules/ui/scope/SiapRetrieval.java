@@ -90,21 +90,21 @@ public class SiapRetrieval extends Retriever {
         }
      }
 protected void rowDataExtensionPoint(Object[] row, TreeNode valNode) {
-        String imgURL = row[imgCol].toString();
+        String imgURL = safeTrim(row[imgCol]);
         long size;
         try {
-            size = Long.parseLong(row[sizeCol].toString()) / 1024; // kb.
+            size = Long.parseLong(safeTrim(row[sizeCol])) / 1024; // kb.
         } catch (Throwable t) { // not found, or can't parse
             size = Long.MAX_VALUE; // assume the worse
         }
         String title; 
         if (titleCol > -1) {
-            title = row[titleCol].toString();
+            title = safeTrim(row[titleCol]);
         } else {
             title  = "untitled";
         }
         valNode.setAttribute(IMAGE_URL_ATTRIBUTE,imgURL);
-        String type = row[formatCol].toString();
+        String type = safeTrim(row[formatCol]);
         valNode.setAttribute(IMAGE_TYPE_ATTRIBUTE ,type);
 
         valNode.setAttribute(LABEL_ATTRIBUTE,title + ", " + StringUtils.substringAfterLast(type,"/") + ", " + size + "k");   
