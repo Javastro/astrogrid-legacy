@@ -289,8 +289,28 @@
  			<strip>true</strip>			
  		</properties>
  	</dependency>
-     
-    
+  
+  <!--  httpclient -->   	
+	<dependency>
+		<groupId>commons-httpclient</groupId>
+		<artifactId>commons-httpclient</artifactId>
+		<version>3.0</version>
+		<properties>
+			<dist.bundle>true</dist.bundle>
+			<strip>true</strip>
+		</properties>		
+	</dependency>
+	
+    <dependency>
+		<groupId>commons-codec</groupId>
+		<artifactId>commons-codec</artifactId>
+		<version>1.3</version>
+		<properties>
+			<dist.bundle>true</dist.bundle>
+			<strip>true</strip>
+		</properties>		
+	</dependency>	
+	
   <!-- JDIC components - a bit tricky, because of binary nature.. 
 -->
  <dependency>
@@ -299,12 +319,9 @@
 	<version>${jdic.version}</version>
 	 <properties>
 		 <dist.bundle>true</dist.bundle>
-		 <!-- don't strip this - include as-is. -->
-<!--		 <strip>true</strip>-->
-		<strip>false</strip>
+		<strip>false</strip><!--  fails if stripped - TODO work on this later. -->
 	 </properties>
  </dependency>
- <!--NB: comment out following two when generating dependencies on macosx -->
  <!--  
  <dependency>
 	 <artifactId>jdic_stub_${ag.os.name}</artifactId>
@@ -328,6 +345,7 @@
 	 </properties>	 
  </dependency>
 -->
+<!--  a zip of all the native libs, for all platforms - used by the installer. -->
 <dependency>
 	<artifactId>jdic_native_all</artifactId>
 	<groupId>jdic</groupId>
