@@ -23,10 +23,22 @@
   <servlet>
     <servlet-name>utype-resolver</servlet-name>
     <description>Main servlet -- nothing exciting so far</description>
-    <servlet-class>org.eurovotech.utypes.UtypeResolver</servlet-class>
+    <servlet-class>org.eurovotech.quaestor.SchemeServlet</servlet-class>
+    <init-param>
+      <param-name>main-script</param-name>
+      <param-value>WEB-INF/utype-resolver.scm</param-value>
+    </init-param>
+    <init-param>
+      <param-name>main-script-initialiser</param-name>
+      <param-value>initialise-resolver</param-value>
+    </init-param>    
     <init-param>
       <param-name>resolver-context</param-name>
       <param-value>/resolve</param-value>
+    </init-param>
+    <init-param>
+      <param-name>test-server</param-name>
+      <param-value>/test</param-value>
     </init-param>
   </servlet>
 
@@ -44,6 +56,11 @@
     <servlet-name>utype-resolver</servlet-name>
     <!-- this must match the utype-resolver servlet parameters, above -->
     <url-pattern>/resolve</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>utype-resolver</servlet-name>
+    <url-pattern>/test/*</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

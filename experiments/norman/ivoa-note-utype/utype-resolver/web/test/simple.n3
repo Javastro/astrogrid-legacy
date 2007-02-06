@@ -1,8 +1,0 @@
-# Notation3 file, based on the example shown in the (draft) IVOA note
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
-@prefix myns: <http://@HOSTPORT@/test/simple.n3#>.
-@prefix ivoa: <http://www.ivoa.net/ut/characterization#>.
-
-myns:sharpBounds a rdfs:Class; 
-    rdfs:subClassOf 
-        ivoa:characterizationAxis-coverage-bounds .

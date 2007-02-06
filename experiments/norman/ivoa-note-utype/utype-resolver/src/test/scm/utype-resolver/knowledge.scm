@@ -73,4 +73,6 @@ ivoa:characterizationAxis-coverage-bounds a rdfs:Class;
         '("http://www.ivoa.net/ut/characterization#characterizationAxis-coverage-bounds"
           "http://www.ivoa.net/ut/characterization#characterizationAxis-info")
 
-        (query-utype-superclasses "http://example.org/utypes/1.0#sharpBounds"))
+        (sort-list
+         (query-utype-superclasses "http://example.org/utypes/1.0#sharpBounds")
+         string<=?))

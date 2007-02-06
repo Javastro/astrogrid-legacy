@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.2 2007/02/01 16:33:38 norman Exp $
+     $Id: build.xml,v 1.3 2007/02/06 23:00:42 norman Exp $
 -->
 
 
@@ -585,11 +585,12 @@
       <arg value="--call-with-args"/>
       <arg value="main"/>
       <arg value="--"/>
-      <!-- First argument must be location of the test script -->
-      <arg value="${scm.test.home}/run-tests.scm"/>
-      <!-- add further arguments? -->
+      <arg value="--base-file=${scm.test.home}/run-tests.scm"/>
+      <arg value="--url=${resolver.url}/"/>
     </java>
   </target>
+  <!-- The following target works with the self-test structure currently
+       commented out of the run-tests.scm file. -->
   <target name="scm-tests-experimental"
           depends="compile"
           description="Run regression tests">
@@ -606,7 +607,6 @@
       <arg value="main"/>
       <arg value="--"/>
       <arg value="${scm.src.home}/"/>
-      <!-- add further arguments? -->
     </java>
   </target>
   
