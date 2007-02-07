@@ -500,7 +500,7 @@
 	    <id>log4j</id>	    
 	    <version>1.2.8</version>	    
 	    <properties>		     
-	    		 <strip>true</strip>
+	    		 <strip>false</strip>
 		    <dist.bundle>true</dist.bundle>
 	    </properties>
     </dependency>    
@@ -538,7 +538,7 @@
 	 	<properties>
  			<dist.bundle>true</dist.bundle>
 <!-- 			<strip>${strip.security}</strip>-->
-				<strip>true</strip>
+				<strip>false</strip>
  		</properties>        		
         	</dependency>
         		 
@@ -551,7 +551,7 @@
  	<type>jar</type>
  	<properties>
  		<dist.bundle>true</dist.bundle>
- 			<strip>true</strip>
+ 			<strip>false</strip>
  	</properties>
  </dependency>
  
@@ -562,7 +562,7 @@
  	<type>jar</type>
  	<properties>
  		<dist.bundle>true</dist.bundle>
- 			<strip>true</strip>
+ 			<strip>false</strip>
  	</properties>
  </dependency>
 
@@ -576,7 +576,7 @@
 			<bundle.later>true</bundle.later>
 		    <uberjar.bundle>false</uberjar.bundle>		  	
  		<dist.bundle>true</dist.bundle>
- 			<strip>true</strip>
+ 			<strip>false</strip>
  	</properties> 	
  </dependency>
 <!--  problem here. -->
@@ -587,7 +587,7 @@
    <type>jar</type>
  	<properties>
  		<dist.bundle>true</dist.bundle>
- 			<strip>true</strip>
+ 			<strip>false</strip>
  	</properties>   
  </dependency>
        
@@ -598,7 +598,7 @@
         		<type>jar</type>
  	<properties>
  		<dist.bundle>true</dist.bundle>
- 			<strip>true</strip>
+ 			<strip>false</strip>
  	</properties>        		
         	</dependency>
         	
@@ -609,7 +609,7 @@
         		<type>jar</type>
  	<properties>
  		<dist.bundle>true</dist.bundle>
- 			<strip>true</strip>
+ 			<strip>false</strip>
  	</properties>        		
         	</dependency>
      	<!-- dependencies for signatures -->
@@ -620,7 +620,7 @@
         		<type>jar</type>
  	<properties>
  		<dist.bundle>true</dist.bundle>
- 			<strip>true</strip>
+ 			<strip>false</strip>
  	</properties>        		
         	</dependency>
         	
@@ -632,7 +632,7 @@
         		<type>jar</type>
  	<properties> 	
  		<dist.bundle>true</dist.bundle>
- 			<strip>true</strip>	
+ 			<strip>false</strip>	
  	</properties>        		
         	</dependency>
 
