@@ -4,6 +4,8 @@
 package org.astrogrid.desktop.modules.ivoa.resource;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.astrogrid.CeaApplication;
@@ -47,8 +49,9 @@ public final class ResourceFormatter {
 		if (r.getShortName() != null ) {
 			sb.append(r.getShortName()).append(", ");
 		}
-		sb.append(r.getId()).append("</i><br><hr>");
+		sb.append(r.getId()).append("</i><br>"); 
 		//@future add some indication of validation level.
+		sb.append(formatType(r.getType())).append("<hr>");
 		// content.
 		final Content content = r.getContent();
 		formatContent(sb, content);
@@ -77,22 +80,62 @@ public final class ResourceFormatter {
 		}
 		// curation
 		final Curation curation = r.getCuration();
-		sb.append("<hr><br>");
+		sb.append("<hr>");
 		formatCuration(sb, curation);
 		
 		//@todo some description of coverage, column metadata, etc.
 		// requires that we parse this stuff up first.
 		
 		// footer
+		sb.append("<hr>");
+		sb.append("<h3>Record Information</h3>");
+		String s = r.getCreated();
+		if (s != null) {
+			sb.append("Created:").append(s).append("<br>");
+		}
+		s = r.getUpdated();
+		if (s != null) {
+			sb.append("Last updated:").append(s).append("<br>");
+		}
+		s = r.getStatus();
+		if (s != null) {
+			sb.append("Status:").append(s).append("<br>");
+		}
 		sb.append("</body></html>");
 		return sb.toString();
 	}
 
+	//@future increase number of mappings, and add icons for each type.
+	private final static String formatType(String type) {
+		if (type == null) {
+			return "Type: <i>unspecified</i>";
+		}
+		String unprefixed = type.indexOf(":") != -1 
+			? StringUtils.substringAfterLast( type,":")
+					: type;
+		String converted = (String)typeMapper.get(unprefixed);
+		return converted == null ? "Type: " + unprefixed : "Type: " + converted;
+		
+	}
+	
+	//@todo surely I've already got this information somewhere.
+	public static final Map typeMapper = new HashMap();
+	static {
+		typeMapper.put("ConeSearch","Catalog service");
+		typeMapper.put("SimpleImageAccess", "Image service");
+		typeMapper.put("SimpleSpectrumAccess","Spectrum Service");
+		typeMapper.put("CeaApplicationType","Long-running Task");//@todo find a better characterization of cea.
+		typeMapper.put("CeaHttpApplicationType", "Long-running Task");
+	//	typeMapper.put("
+	}
+	
+	
 	/**
 	 * @param sb
 	 * @param curation
 	 */
 	public static void formatCuration(StringBuffer sb, final Curation curation) {
+		sb.append("<h3>Curation</h3>");
 		if (curation.getCreators().length > 0) {
 			final Creator creator = curation.getCreators()[0];
 			if (creator.getName() != null) {
@@ -156,13 +199,13 @@ public final class ResourceFormatter {
 			} else {
 				title = StringUtils.substringAfterLast(c.getClass().getName(),".");
 			}
-			sb.append("<h3>Capability ").append(title).append("</h3>");
+			sb.append("<h3>Service Capability ").append(title).append("</h3>");
 			//@todo validation level
 			if (c.getDescription() != null) {
 				sb.append("<p>").append(c.getDescription()).append("</p>");
 			}
 			if (c instanceof CeaServerCapability) {
-				sb.append("Provides tasks - ");
+				sb.append("Provides Tasks - ");
 				fmtStringArray(sb,((CeaServerCapability)c).getManagedApplications());
 			}
 			sb.append("<ul>");
