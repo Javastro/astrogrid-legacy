@@ -14,7 +14,18 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="2007.1" date="2007-12-31">
+<release version="2007.1.1" date="2007-02-06">
+	<action dev="nw" type="remove">
+		Removed stripping of axis and security jars. Larger filesize, but ukidss access works again. 
+	</action>
+	<action dev="nw" type="fix">
+	  Improved display of registry entry content - type of registry entry.
+	</action>
+	<action dev="nw" type="fix">
+		Improved astroscope service response parsing - handles ISO response correctly.
+	</action>
+</release>
+<release version="2007.1" date="2007-01-31">
 <action dev="nw" type="fix" issue="1970">
 	registry explorer renders urls with odd schemes correctly.
 </action>
