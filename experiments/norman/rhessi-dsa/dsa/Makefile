@@ -1,3 +1,6 @@
+# prefix must be set on command-line
+prefix=/no/such/directory
+
 # distribution details
 SOURCEWAR=astrogrid-dsa-catalog-2006.3.05pl
 DISTBASE=http://www.astrogrid.org/maven/org.astrogrid/wars/
@@ -32,6 +35,9 @@ $(WEBAPP_NAME).war: $(WEBAPP_NAME)
 
 $(SOURCEWAR).war:
 	wget $(DISTBASE)$(SOURCEWAR).war
+$(MYSQL_JDBC):
+	@echo "Component missing! Download $(MYSQL_JDBC) from dev.mysql.com"
+	@false
 
 $(WEBAPP_NAME): $(SOURCEWAR).war $(MYSQL_JDBC) \
 		rhessi-dsa.properties $(METADOC)
@@ -45,6 +51,11 @@ $(WEBAPP_NAME): $(SOURCEWAR).war $(MYSQL_JDBC) \
 rhessi-dsa.properties: rhessi-dsa.properties.in Makefile
 	rm -f $@ $@.tmp
 	$(edit) $< >$@.tmp && mv $@.tmp $@
+
+install: $(WEBAPP_NAME).war
+	test -d $(prefix) || { echo "No directory $(prefix)"; false; }
+	test -d $(prefix)/lib || mkdir $(prefix)/lib
+	cp $(WEBAPP_NAME).war $(prefix)/lib
 
 clean:
 	rm -Rf $(WEBAPP_NAME) $(WEBAPP_NAME).war
