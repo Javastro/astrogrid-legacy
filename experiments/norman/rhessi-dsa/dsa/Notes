@@ -1,0 +1,30 @@
+Machines
+MySQL on terra
+Tomcat on terranova
+
+Accounts
+dsaadmin: norman:norman
+mysql: norman:sitrepdentist
+mysql: dsaaccess:<nothing>
+www.astro Tomcat: manager:dentist4Feets
+
+TODO:
+Integrate into crontab
+Change name from rhessi-dsa-0.1 to, say, just rhessi-dsa, and...
+Choose a suitable AuthorityID and publish the resource to the registry
+
+
+
+
+
+Retrieved
+http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-dsa-catalog-2007.1pl.war
+and deployed it at http://www.astro.gla.ac.uk:8080/manager (without
+changing the name, for the moment)
+
+Try deploying it locally, first (requires config changes).
+Edit conf/tomcat-users.xml to add me with dsaadmin role, and to add
+conf/Catalina/localhost/rhessi-dsa.{xml,props} as configuration files
+for a virtual DSA installation (see
+<http://software.astrogrid.org/components/dsa/deploy.html>
+

@@ -1,0 +1,188 @@
+<?xml version='1.0'?>
+<DatasetDescription xmlns='urn:astrogrid:schema:TableMetaDoc:v1'>
+   <!-- For some further discussion of the values in the following columns, 
+    !   see http://hesperia.gsfc.nasa.gov/ssw/hessi/doc/faq_hessi_analysis.htm
+    !   and http://hesperia.gsfc.nasa.gov/ssw/hessi/doc/faq.html
+    !-->
+   <Catalog>
+      <Name>RHESSI</Name>
+      <Description>RHESSI first-look light-curve image and flag database</Description>
+      <Table ID='rhessi'>
+         <Name>rhessi</Name>
+         <Description>RHESSI first-look light-curve image and flag database</Description>
+         <Column ID='rhessi.starttime' indexed='false'>
+            <Name>starttime</Name>
+            <Datatype>dateTime</Datatype>
+            <Description>start time of 4 second time interval (time in ISO 8601 format) </Description>
+            <Units>date</Units>
+            <UCD version='1'>TIME_DATE</UCD>
+            <UCD version='1+'>time.start</UCD>
+         </Column>
+         <Column ID='rhessi.rate0' indexed='false'>
+            <Name>rate0</Name>
+            <Datatype>int</Datatype>
+            <Description>Corrected count rate in 3-6 keV</Description>
+            <Units>count/sec</Units>
+            <UCD version='1'>PHOT_COUNT-RATE_X</UCD>
+            <UCD version='1+'>phot.count;em.X-ray</UCD>
+            <!-- phot.count is count/s -->
+         </Column>
+         <Column ID='rhessi.rate1' indexed='false'>
+            <Name>rate1</Name>
+            <Datatype>int</Datatype>
+            <Description>Corrected count rate in 6-12 keV</Description>
+            <Units>count/sec</Units>
+            <UCD version='1'>PHOT_COUNT-RATE_X</UCD>
+            <UCD version='1+'>phot.count;em.X-ray</UCD>
+            <!-- phot.count is count/s -->
+         </Column>
+         <Column ID='rhessi.rate2' indexed='false'>
+            <Name>rate2</Name>
+            <Datatype>int</Datatype>
+            <Description>Corrected count rate in 12-25 keV</Description>
+            <Units>count/sec</Units>
+            <UCD version='1'>PHOT_COUNT-RATE_X</UCD>
+            <UCD version='1+'>phot.count;em.X-ray</UCD>
+            <!-- phot.count is count/s -->
+         </Column>
+         <Column ID='rhessi.rate3' indexed='false'>
+            <Name>rate3</Name>
+            <Datatype>int</Datatype>
+            <Description>Corrected count rate in 25-50 keV</Description>
+            <Units>count/sec</Units>
+            <UCD version='1'>PHOT_COUNT-RATE_X</UCD>
+            <UCD version='1+'>phot.count;em.X-ray</UCD>
+            <!-- phot.count is count/s -->
+         </Column>
+         <Column ID='rhessi.rate4' indexed='false'>
+            <Name>rate4</Name>
+            <Datatype>int</Datatype>
+            <Description>Corrected count rate in 50-100 keV</Description>
+            <Units>count/sec</Units>
+            <UCD version='1'>PHOT_COUNT-RATE_X</UCD>
+            <UCD version='1+'>phot.count;em.X-ray</UCD>
+            <!-- phot.count is count/s -->
+         </Column>
+         <Column ID='rhessi.rate5' indexed='false'>
+            <Name>rate5</Name>
+            <Datatype>int</Datatype>
+            <Description>Corrected count rate in 100-300 keV</Description>
+            <Units>count/sec</Units>
+            <UCD version='1'>PHOT_COUNT-RATE_X</UCD>
+            <UCD version='1+'>phot.count;em.X-ray</UCD>
+            <!-- phot.count is count/s -->
+         </Column>
+         <Column ID='rhessi.rate6' indexed='false'>
+            <Name>rate6</Name>
+            <Datatype>int</Datatype>
+            <Description>Corrected count rate in 300-800 keV</Description>
+            <Units>count/sec</Units>
+            <UCD version='1'>PHOT_COUNT-RATE_X</UCD>
+            <UCD version='1+'>phot.count;em.X-ray</UCD>
+            <!-- phot.count is count/s -->
+         </Column>
+         <Column ID='rhessi.rate7' indexed='false'>
+            <Name>rate7</Name>
+            <Datatype>int</Datatype>
+            <Description>Corrected count rate in 800-7000 keV</Description>
+            <Units>count/sec</Units>
+            <UCD version='1'>PHOT_COUNT-RATE_X</UCD>
+            <UCD version='1+'>phot.count;em.X-ray</UCD>
+            <!-- phot.count is count/s -->
+         </Column>
+         <Column ID='rhessi.rate8' indexed='false'>
+            <Name>rate8</Name>
+            <Datatype>int</Datatype>
+            <Description>Corrected count rate in 7000-20000 keV</Description>
+            <Units>count/sec</Units>
+            <UCD version='1'>PHOT_COUNT-RATE_X</UCD>
+            <UCD version='1+'>phot.count;em.X-ray</UCD>
+            <!-- phot.count is count/s -->
+         </Column>
+         <Column ID='rhessi.ccrurl' indexed='false'>
+            <Name>ccrurl</Name>
+            <Datatype>string</Datatype>
+            <Description>URL to (uncorrected) count rate picture</Description>
+            <UCD version='1'>DATA_LINK</UCD>       <!--better UCD?-->
+            <UCD version='1+'>meta.ref.uri</UCD>
+         </Column>
+         <Column ID='rhessi.ccurl' indexed='false'>
+            <Name>ccurl</Name>
+            <Datatype>string</Datatype>
+            <Description>URL to corrected count rate picture</Description>
+            <UCD version='1'>DATA_LINK</UCD>       <!--better UCD?-->
+            <UCD version='1+'>meta.ref.uri</UCD>
+         </Column>
+         <Column ID='rhessi.attenuator' indexed='false'>
+            <Name>attenuator</Name>
+            <Datatype>short</Datatype>
+            <Description>Attenuator state (0= open,1=thin,3=thin+thick)</Description>
+            <UCD version='1'>CODE_MISC</UCD>
+            <UCD version='1+'>meta.code</UCD>
+         </Column>
+         <Column ID='rhessi.elipse' indexed='false'>
+            <Name>elipse</Name>
+            <Datatype>short</Datatype>
+            <Description>Eclipse flag (1=night)</Description>
+            <UCD version='1'>CODE_QUALITY</UCD>
+            <UCD version='1+'>meta.code.qual</UCD>
+         </Column>
+         <Column ID='rhessi.saa' indexed='false'>
+            <Name>saa</Name>
+            <Datatype>short</Datatype>
+            <Description>Southern Atlantic Anomaly flag </Description>
+            <UCD version='1'>CODE_QUALITY</UCD>
+            <UCD version='1+'>meta.code.qual</UCD>
+         </Column>
+         <Column ID='rhessi.particle' indexed='false'>
+            <Name>particle</Name>
+            <Datatype>short</Datatype>
+            <Description>Particle flag</Description>
+            <UCD version='1'>CODE_QUALITY</UCD>
+            <UCD version='1+'>meta.code.qual</UCD>
+         </Column>
+         <Column ID='rhessi.datagap' indexed='false'>
+            <Name>datagap</Name>
+            <Datatype>short</Datatype>
+            <Description>Data gap flag</Description>
+            <UCD version='1'>CODE_QUALITY</UCD>
+            <UCD version='1+'>meta.code.qual</UCD>
+         </Column>
+         <Column ID='rhessi.flare' indexed='false'>
+            <Name>flare</Name>
+            <Datatype>short</Datatype>
+            <Description>Flare flag</Description>
+            <UCD version='1'>CODE_QUALITY</UCD>
+            <UCD version='1+'>meta.code.qual</UCD>
+         </Column>
+         <Column ID='rhessi.fdweight' indexed='false'>
+            <Name>fdweight</Name>
+            <Datatype>int</Datatype>
+            <Description>Front decimation weight</Description>
+            <UCD version='1'>INST_PARAM</UCD>
+            <UCD version='1+'>instr.param</UCD>
+         </Column>
+         <Column ID='rhessi.rdweight' indexed='false'>
+            <Name>rdweight</Name>
+            <Datatype>int</Datatype>
+            <Description>Rear decimation weight</Description>
+            <UCD version='1'>INST_PARAM</UCD>
+            <UCD version='1+'>instr.param</UCD>
+         </Column>
+         <Column ID='rhessi.fdenergy' indexed='false'>
+            <Name>fdenergy</Name>
+            <Datatype>int</Datatype>
+            <Description>Front segment decimation energy</Description>
+            <UCD version='1'>INST_PARAM</UCD>
+            <UCD version='1+'>instr.param</UCD>
+         </Column>
+         <Column ID='rhessi.rdenergy' indexed='false'>
+            <Name>rdenergy</Name>
+            <Datatype>int</Datatype>
+            <Description>Front segment decimation channel/128</Description>
+            <UCD version='1'>INST_PARAM</UCD>
+            <UCD version='1+'>instr.param</UCD>
+         </Column>
+      </Table>
+   </Catalog>
+</DatasetDescription>

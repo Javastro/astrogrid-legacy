@@ -1,0 +1,96 @@
+-- For some further discussion of the values in the following columns, see
+-- http://hesperia.gsfc.nasa.gov/ssw/hessi/doc/faq_hessi_analysis.htm
+-- http://hesperia.gsfc.nasa.gov/ssw/hessi/doc/faq.html
+create table rhessi (
+  starttime     datetime
+    not null
+    primary key
+    comment 'start time of 4 second time interval',
+
+  rate0         integer
+    not null
+    comment 'Corrected count rate in 3-6 keV range',
+
+  rate1         integer
+    not null
+    comment 'Corrected count rate in 6-12 keV',
+
+  rate2         integer
+    not null
+    comment 'Corrected count rate in 12-25 keV',
+
+  rate3         integer
+    not null
+    comment 'Corrected count rate in 25-50 keV',
+
+  rate4         integer
+    not null
+    comment 'Corrected count rate in 50-100 keV',
+
+  rate5         integer
+    not null
+    comment 'Corrected count rate in 100-300 keV',
+
+  rate6         integer
+    not null
+    comment 'Corrected count rate in 300-800 keV',
+
+  rate7         integer
+    not null
+    comment 'Corrected count rate in 800-7000 keV',
+
+  rate8         integer
+    not null
+    comment 'Corrected count rate in 7000-20000 keV',
+
+  ccrurl        varchar(256)
+    not null -- when there is no URL associated with a time, use empty string
+    comment 'URL to (uncorrected) count rate picture',
+    --     (is this string long enough?)
+
+  ccurl         varchar(256)
+    not null
+    comment 'URL to corrected count rate picture',
+
+  attenuator    bit(2)
+    not null
+    comment 'Attenuator state (0= open,1=thin,3=thin+thick)',
+
+  elipse        boolean
+    not null
+    comment 'Eclipse flag (1=night)',
+
+  saa           boolean
+    not null
+    comment 'Southern Atlantic Anomaly flag',
+
+  particle      boolean
+    not null
+    comment 'Particle flag',
+
+  datagap       boolean
+    not null
+    comment 'Data gap flag',
+
+  flare         boolean
+    not null
+    comment 'Flare flag',
+
+  fdweight      integer
+    not null
+    comment 'Front decimation weight',
+
+  rdweight      integer
+    not null
+    comment 'Rear decimation weight',
+
+  fdenergy      integer
+    not null
+    comment 'Front segment decimation energy',
+
+  rdenergy      integer
+    not null
+    comment 'Front segment decimation channel/128'
+    --     'rdenergy' is the name in Eduard's script, but that doesn't
+    --     seem to correspond to this comment
+);

@@ -1,0 +1,23 @@
+#! /bin/csh
+
+# setup for ssw, to make RHESSI data available, and allow
+# Eduard's rhessi2dbase.pro to run.
+#
+# This is a bit hit-and-miss, as what's below is basically those bits
+# of Eduard's .cshrc which looked vaguely relevant.
+
+setenv SSW /opt/ssw
+setenv SSW_INSTR 'hessi xray spex trace ethz goes sxt eit eis'
+setenv HESSI_PATH $SSW/hessi:.
+#setenv HESSI_PATH $SSW/hessi
+source $SSW/gen/setup/setup.ssw
+setenv HSI_DATA_ARCHIVE /opt/rhessi
+setenv HSI_CATALOG_ARCHIVE /opt/rhessi/metadata/catalog
+setenv SUMMARY_DATA /opt/rhessi/metadata/catalog
+
+#/usr/local/lib/use/use.pl csh sswidl
+use idl
+# eval `/usr/local/lib/use/use.pl csh idl`
+
+# alias sswidl -> /opt/ssw/gen/setup/ssw_idl
+exec /opt/ssw/gen/setup/ssw_idl

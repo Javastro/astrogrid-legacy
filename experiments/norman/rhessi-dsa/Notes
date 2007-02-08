@@ -1,0 +1,100 @@
+
+
+The database is (currently) on bern.astro, and the cron job runs on
+malmquist, which is local to the data.  There are two users of the
+database, 'norman', who has all access, and 'dsaaccess' who has
+read-only access from within 130.209.45.%.  The script has 'norman's
+MySQL password inside it, in clear.
+
+The scripts' home is /home/norman/rhessi-dsa, and this is currently
+parameterised in the upload script.  Adjust this?
+
+Accounts and machines:
+    mysql
+        On bern.astro
+        norman:sitrepdentist and dsaaccess:<no password>
+    tomcat
+        On www.astro.gla.ac.uk:8080
+        manager:dentist4Feets, and norman:norman has the dsaadmin role
+
+
+
+Things in this directory:
+
+Within scripts/
+---------------
+
+rhessi2dbase.pro
+    The working version of the script
+
+dsa-create.mysql
+    MySQL statements to create the database table.  Matched with
+    rhessi2dbase.pro, since that outputs its data in the column order
+    required for upload to this table.
+
+ssw-for-rhessi
+    Invokes SSW/IDL with the environment variables required to get to
+    the RHESSI data.  Adapted from Eduard's .cshrc in a rather
+    hit-and-miss way.
+
+upload.sh
+    The upload script.  See below
+
+ 
+The upload.sh script works by extracting RHESSI data into an ASCII
+file, and then forking off a process to upload that to the database.
+Unfortunately, the extraction script turns out to be quadratic in the
+length of the time interval.  On malmquist, 2/3/5/7/10/31 days took
+25/38/71/147/287/3565s.  I therefore do the upload in (by default)
+5-day chunks.
+
+
+Within old-stuff/
+-----------------
+
+rhessi2dbase.pro-orig
+    Eduard's original version
+rhessi2dbase.pro-with-twiddles
+    An abortive version which tries hard to be a bit cleverer about
+    which data it extracts (based on files rather than dates), but is
+    frustrated by the undocumented/buggy/incomprehensible support for
+    this in solarsoft.
+upload.sh-with-pipes
+    An alternative version of upload.sh, which sends its data through
+    named pipes rather than temporary files.  There's some blocking
+    problem, though, and this just jams.  No problem -- plain
+    upload.sh works OK.
+
+Within dsa/
+-----------
+
+The Makefile in this directory handles creating an appropriately
+configured .war file, which can then be uploaded in a lump to the
+Tomcat on www.astro.
+
+
+
+
+Miscellaneous scribbles
+-----------------------
+
+Eduard's script is in rhessi2dbase.pro.  To run it:
+
+    % echo "rhessi2dbase,time_interval=['2005-01-01','2005-01-02']"|./ssw-for-rhessi
+
+That produces a 6.2MB text file, so a whole year is about 1GB.  By the
+look of things, I can put this up as a single big table, so the next
+thing to do is to work out how to import this sort of stuff into
+MySQL, which surely can't be hard.
+
+Describe the table with
+
+    % mysql -h terra -u norman -p dsa <dsa-create.mysql
+
+and load with 
+
+    mysql> load data local infile '/home/norman/rhessi-dsa/out.txt' into table rhessi;
+
+Thus the following works:
+
+    mysql> select starttime,rate0,rate2,rate4 from rhessi where starttime < '2005-01-01T00:03';
