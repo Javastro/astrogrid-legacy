@@ -1,4 +1,5 @@
 #! /bin/sh -
+### @GENERATED_FILE@
 #
 # Usage: $progname [options]                    # perform incremental update
 #        $progname [options] --all              # new db, upload all data
@@ -25,7 +26,7 @@
 # 2007-01-01 and 2007-01-01T00:00:00 differently!), so be rather careful
 # about dates below, in general leaving times out of anything passed to `date`.
 #
-# $Id: upload.sh,v 1.2 2007/02/08 15:26:44 norman Exp $
+# $Id: upload.sh,v 1.3 2007/02/08 15:32:30 norman Exp $
 
 
 progname=`basename $0`

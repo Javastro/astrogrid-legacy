@@ -5,7 +5,8 @@ bindir=$(prefix)/bin
 INST_FILES=dsa-create.mysql ssw-for-rhessi rhessi2dbase.pro
 EDIT_FILES=upload.sh
 
-edit=sed 's,@BASEDIR\@,$(prefix),g'
+edit=sed -e 's,@BASEDIR\@,$(prefix),g' \
+	 -e 's/@GENERATED_FILE\@/Generated file, DO NOT EDIT!/'
 
 all:
 	@echo "Nothing to do"
