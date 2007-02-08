@@ -6,15 +6,21 @@
     !-->
    <Catalog>
       <Name>RHESSI</Name>
-      <Description>RHESSI first-look light-curve image and flag database</Description>
-      <Table ID='rhessi'>
+      <Description>RHESSI solar data at University of Glasgow</Description>
+      <Table ID='rhessi_observing_summary'>
          <Name>rhessi</Name>
-         <Description>RHESSI first-look light-curve image and flag database</Description>
-         <Column ID='rhessi.starttime' indexed='false'>
-            <Name>starttime</Name>
+         <Description>RHESSI first-look observing summary. Provides
+         count-rates pre-binned to coarse energy and time resolution,
+         and observing flags. This database was created by importing
+         information from the RHESSI observing summary files
+         (e.g. hsi_obssumm_20030224_040.fits) to allow immediate
+         visualisation of the summary data. For a detailed description
+         of observing summary data see: http://hesperia.gsfc.nasa.gov/ssw/hessi/doc/hessi_data_access.htm </Description>
+         <Column ID='rhessi.time_start' indexed='false'>
+            <Name>time_start</Name>
             <Datatype>dateTime</Datatype>
-            <Description>start time of 4 second time interval (time in ISO 8601 format) </Description>
-            <Units>date</Units>
+            <Description>start time of 4 second time interval (ISO 8601 format)</Description>
+            <Units>iso8601</Units>
             <UCD version='1'>TIME_DATE</UCD>
             <UCD version='1+'>time.start</UCD>
          </Column>
@@ -116,7 +122,7 @@
          <Column ID='rhessi.attenuator' indexed='false'>
             <Name>attenuator</Name>
             <Datatype>short</Datatype>
-            <Description>Attenuator state (0= open,1=thin,3=thin+thick)</Description>
+            <Description>Attenuator state (0=open, 1=thin, 3=thin+thick)</Description>
             <UCD version='1'>CODE_MISC</UCD>
             <UCD version='1+'>meta.code</UCD>
          </Column>
@@ -130,7 +136,7 @@
          <Column ID='rhessi.saa' indexed='false'>
             <Name>saa</Name>
             <Datatype>short</Datatype>
-            <Description>Southern Atlantic Anomaly flag </Description>
+            <Description>Southern Atlantic Anomaly flag</Description>
             <UCD version='1'>CODE_QUALITY</UCD>
             <UCD version='1+'>meta.code.qual</UCD>
          </Column>
