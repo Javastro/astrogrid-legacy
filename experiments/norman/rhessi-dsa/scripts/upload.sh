@@ -17,16 +17,27 @@
 # of the interval given to it.  Uploading in increments of 5 days
 # seems to be a reasonable tradeoff point.
 #
+# We expect the environment variable $RHESSI_DSA_HOME to be set to the
+# home of this script, so that $RHESSI_DSA_HOME/scripts/upload.sh is
+# this script.  The default is @BASEDIR@.
+#
 # `date` is rather flaky about parsing times (it seems to parse
 # 2007-01-01 and 2007-01-01T00:00:00 differently!), so be rather careful
 # about dates below, in general leaving times out of anything passed to `date`.
+#
+# $Id: upload.sh,v 1.2 2007/02/08 15:26:44 norman Exp $
+
 
 progname=`basename $0`
 
-dsahome=/home/norman/rhessi-dsa
+dsahome=${RHESSI_DSA_HOME-@BASEDIR@}
+if ! test -d $dsahome; then
+    echo "$progname: No directory $dsahome -- exiting"
+    exit 1
+fi
 
 # where do the scripts live?
-scriptdir=$dsahome/scripts
+scriptdir=$dsahome/bin
 
 # the stamp file used by update mode
 stampfile=$dsahome/last-run-stamp
