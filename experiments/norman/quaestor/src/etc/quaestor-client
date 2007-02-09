@@ -144,17 +144,17 @@
   (define (verbose-option) (if (chatter) '("--verbose") '()))
   (let ((full-url (format #f "~a/code" (base-url))))
     (if (char=? (string-ref code 0) #\()
-        (begin (chatter "PUT expr '~a' to URL ~a" code full-url)
+        (begin (chatter "POST expr '~a' to URL ~a" code full-url)
                (call-curl
                 (curl ,@(verbose-option)
-                      --upload-file -
+                      --data-binary @- ;--upload-file -
                       ,full-url)
                 (<< ,code)))
         (begin (check-file-exists code)
-               (chatter "PUT code in ~a to URL ~a" code full-url)
+               (chatter "POST code in ~a to URL ~a" code full-url)
                (call-curl
                 (curl ,@(verbose-option)
-                      --upload-file ,code
+                      --data-binary ,(string-append "@" code) ;--upload-file ,code
                       ,full-url))))))
 
 ;; POST the contents of the given file (which may be '-') to the

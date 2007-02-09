@@ -20,14 +20,14 @@ public class CodeManager extends HttpServlet {
     }
 
     /**
-     * Handle a PUT method which contains some code to be included in the
+     * Handle a POST method which contains some code to be included in the
      * Quaestor instance.
      *
      * <p>Check the value of the <code>status</code> init-parameter:
      * it must be one of <code>enabled</code> or <code>disabled</code>.
      */
-    public void doPut(HttpServletRequest request,
-                      HttpServletResponse response)
+    public void doPost(HttpServletRequest request,
+                       HttpServletResponse response)
             throws IOException, ServletException {
         try {
             response.setContentType("text/plain");
@@ -37,23 +37,31 @@ public class CodeManager extends HttpServlet {
                 throw new ServletException
                         ("CodeManager: status init parameter does not exist!");
             } else if (codeStatus.equals("enabled")) {
+                java.io.OutputStream out = response.getOutputStream();
+                java.io.PrintStream ps = new java.io.PrintStream(out);
+
                 Object val = SchemeWrapper
-                        .getInstance().evalInput(request.getInputStream());
+                        .getInstance()
+                        .evalInput(request.getInputStream(), out);
+
+//                 response.setStatus(response.SC_OK);
+//                 ps.println("los:val=" + val.toString()
+//                           + ", class="
+//                           + val.getClass().toString());
+
                 // XXX following is pretty cruddy
                 if (val == null) {
                     response.setStatus(response.SC_NO_CONTENT);
                 } else if (val instanceof String) {
                     response.setStatus(response.SC_OK);
-                    response.getWriter().println(val);
+                    ps.println(val);
                 } else if (val instanceof Boolean) {
                     response.setStatus(response.SC_OK);
-                    response.getWriter()
-                            .println(((Boolean)val).booleanValue() ? "#t" : "#f");
+                    ps.println(((Boolean)val).booleanValue() ? "#t" : "#f");
                 } else {
                     response.setStatus(response.SC_BAD_REQUEST); // ???
-                    PrintWriter p = response.getWriter();
-                    p.println(";; Bad request?");
-                    p.println(val.toString());
+                    ps.println(";; Bad request?");
+                    ps.println(val.toString());
                 }
             } else if (codeStatus.equals("disabled")) {
                 response.setStatus(response.SC_FORBIDDEN);

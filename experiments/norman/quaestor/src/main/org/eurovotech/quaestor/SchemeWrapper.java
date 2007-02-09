@@ -13,18 +13,28 @@ import sisc.data.SchemeBoolean;
 import sisc.data.SchemeString;
 import sisc.data.SchemeVoid;
 import sisc.data.Symbol;
+import sisc.env.DynamicEnvironment;
 import sisc.interpreter.Interpreter;
 import sisc.interpreter.Context;
 import sisc.interpreter.AppContext;
 import sisc.interpreter.SchemeException;
 import sisc.interpreter.SchemeCaller;
-import sisc.io.StreamInputPort;
 
 /**
  * Wrapper for SISC.
  * 
- * <p>There are examples of how to use SISC for a servlet
- * in the <code>contrib</code> section of the SISC CVS tree.
+ * <p>The various <code>eval</code> procedures below return their
+ * values as Java objects, translated from Scheme objects as described below:
+ * <dl>
+ * <dt>(scheme) boolean</dt>
+ * <dd>return a Java {@link Boolean}</dd>
+ *
+ * <dt>scheme void</dt>
+ * <dd>return null</dd>
+ *
+ * <dt>otherwise</dt>
+ * <dd>convert it to a String value in the usual way (for SISC)
+ * </dl>
  */
 public class SchemeWrapper {
 
@@ -107,9 +117,9 @@ public class SchemeWrapper {
                  public Object execute(Interpreter i)
                          throws SchemeException {
                      try {
-                         return schemeToJava(i.eval(expr));
+                         return i.eval(expr);
                      } catch (IOException e) {
-                         return e;
+                         return e; // return exception as value
                      }
                  }
              });
@@ -117,13 +127,14 @@ public class SchemeWrapper {
             assert o instanceof IOException;
             throw (IOException)o;
         }
-        return o;
+        assert o instanceof Value;
+        return schemeToJava((Value)o);
     }
 
     /**
      * Evaluates a procedure, with arguments.  This is
      * equivalent to the expr <code>proc args...</code>, but wrapped
-     * in an error-handler (procedure <code>APPLY-WITH-TOP-FC</code>
+     * in an error-handler (procedure <code>APPLY-WITH-TOP-FC</code>)
      * which translates errors and exceptions to a suitable string,
      * which it returns.  This procedure is defined in
      * <code>src/main/scm/quaestor/utils.scm</code> -- ought it to be 
@@ -132,35 +143,34 @@ public class SchemeWrapper {
      * @param proc a Scheme {@link Procedure} defined in the top level
      * @param args an array of Java objects
      * @return a Java Object (String, Boolean or null) representing the
-     *   value of the expression
+     *   value of the expression, translated as described above
      * @throws IOException if there was a problem parsing the expression
      * @throws SchemeException if there was a problem executing
      *   the expression
      * @throws ServletException if the SISC procedure returns one
      */
     public Object eval(final Procedure proc, final Object[] args)
-            throws IOException, SchemeException, ServletException {
+            throws SchemeException, ServletException {
         Object o = Context.execute(new SchemeCaller() {
                 public Object execute(Interpreter r)
                         throws SchemeException {
+                    // The failure-continuation within procedure
+                    // APPLY-WITH-TOP-FC returns a ServletException
                     Procedure apply =
                             (Procedure)r.eval(Symbol.get("apply-with-top-fc"));
                     Value[] v = r.createValues(args.length+1);
                     v[0] = proc;
                     for (int i=0; i<args.length; i++)
                         v[i+1] = new sisc.modules.s2j.JavaObject(args[i]);
-                    return schemeToJava(r.eval(apply, v));
+                    return r.eval(apply, v);
                 }
             });
         if (o instanceof Exception) {
-            if (o instanceof IOException)
-                throw (IOException)o;
-            else if (o instanceof ServletException)
-                throw (ServletException)o;
-            else
-                assert false : "Impossible assertion from SchemeCaller: " + o;
+            assert o instanceof ServletException;
+            throw (ServletException)o;
         }
-        return o;
+        assert o instanceof Value;
+        return schemeToJava((Value)o);
     }
 
     /**
@@ -171,14 +181,14 @@ public class SchemeWrapper {
      * @param proc the name of a Scheme procedure defined in the top level
      * @param args an array of Java objects
      * @return a Java Object (String, Boolean or null) representing the
-     *   value of the expression
+     *   value of the expression, translated as described above
      * @throws IOException if there was a problem parsing the expression
      * @throws SchemeException if there was a problem executing
      *   the expression
      * @throws ServletException if the SISC procedure returns one
      */
     public Object eval(final String proc, final Object[] args)
-            throws IOException, SchemeException, ServletException {
+            throws SchemeException, ServletException {
         Procedure p = (Procedure)Context.execute(new SchemeCaller() {
                 public Object execute(Interpreter r)
                         throws SchemeException {
@@ -188,27 +198,79 @@ public class SchemeWrapper {
         return eval(p, args);
     }
 
+    // I'm pretty sure the following isn't required any more
+//     /**
+//      * Evals the given input stream.  This is not (currently) wrapped
+//      * in the error-handling code of {@link #eval(Procedure,Object[])}.
+//      *
+//      * @return a Java Object (String, Boolean or null) representing the
+//      * value of the expression
+//      * @throws IOException if the input stream cannot be parsed
+//      * @throws SchemeException if there is a syntax error reading the 
+//      * Scheme input
+//      */
+//     public Object deletemeEvalInput(final java.io.InputStream in)
+//             throws IOException, SchemeException {
+//         Object o = Context.execute
+//             (new SchemeCaller() {
+//                  public Object execute(Interpreter i)
+//                          throws SchemeException {
+//                      try {
+//                          StreamInputPort p = new StreamInputPort(in);
+// // SISC 1.16 onwards removes StreamInputPort, and requires
+// // java.io.PushbackReader as the argument to Interpreter.evalInput
+// //                          java.io.PushbackReader p
+// //                                  = new java.io.PushbackReader
+// //                                  (new java.io.BufferedReader
+// //                                   (new java.io.InputStreamReader(in)));
+//                          return schemeToJava(i.evalInput(p));
+//                      } catch (IOException e) {
+//                          return e;
+//                      }
+//                  }
+//              });
+//         if (o instanceof Exception) {
+//             assert(o instanceof IOException);
+//             throw (IOException)o;
+//         }
+//         return o;
+//     }
+
     /**
-     * Evals the given input stream.  This is not (currently) wrapped
-     * in the error-handling code of {@link #eval(Procedure,Object[])}.
+     * Evals the given input stream, wrapped in basic
+     * error-handling code.  The method acts as a basic REPL, reading
+     * expressions from the input stream, displaying any output on the
+     * output stream, and returning the value of the last expression
+     * evaluated.  If there is an error, it is trapped, and returned
+     * as a semi-readable string.
      *
+     * @param in a stream from which expressions are read
+     * @param out a stream to which any output is written
      * @return a Java Object (String, Boolean or null) representing the
-     * value of the expression
+     *   value of the expression, translated as described above
      * @throws IOException if the input stream cannot be parsed
      * @throws SchemeException if there is a syntax error reading the 
-     * Scheme input
+     *   Scheme input
      */
-    public Object evalInput(final java.io.InputStream in)
+    public Object evalInput(final java.io.InputStream in,
+                            final java.io.OutputStream out)
             throws IOException, SchemeException {
-        Object o = Context.execute
-            (new SchemeCaller() {
-                 public Object execute(Interpreter i)
+        DynamicEnvironment de
+                = new DynamicEnvironment(Context.getDefaultAppContext(),
+                                         in,
+                                         out);
+        Object o = Context.execute(de, new SchemeCaller() {
+                public Object execute(Interpreter i)
                          throws SchemeException {
                      try {
-                         return schemeToJava(i.evalInput
-                                             (new StreamInputPort(in)));
+                         // The following is a basic REPL, with a
+                         // failure continuation which evaluates to a
+                         // semi-readable error message.
+                         String evalCurrentInput = "(with/fc (lambda (m e) (define (show-err r) (let ((parent (error-parent-error r))) (format #f \"Error at ~a: ~a~a\" (error-location r) (error-message r) (if parent (string-append \" :-- \" (show-err parent)) \"\")))) (show-err m)) (lambda () (let loop ((e (read)) (last #f)) (if (eof-object? e) last (loop (read) (eval e))))))";
+
+                         return i.eval(evalCurrentInput);
                      } catch (IOException e) {
-                         return e;
+                         return e; // return exception as value
                      }
                  }
              });
@@ -216,7 +278,8 @@ public class SchemeWrapper {
             assert(o instanceof IOException);
             throw (IOException)o;
         }
-        return o;
+        assert o instanceof Value;
+        return schemeToJava((Value)o);
     }
     
     /**
@@ -242,10 +305,8 @@ public class SchemeWrapper {
         // We use the elaborate eval, rather than using
         // eval(String,Object[]), because this is used to load
         // quaestor.scm, before which the APPLY-WITH-TOP-FC procedure
-        // is not defined.
-        //
-        // Am I making this overly complicated?  I've forgotten what
-        // happens if I just let the SchemeException come out.
+        // is not defined.  If we don't do this, we get a SchemeException
+        // dumped into the logs.
         Object o = eval("(with/fc (lambda (m e) (define (show-err r) (let ((parent (error-parent-error r))) (format #f \"Error at ~a: ~a~a\" (error-location r) (error-message r) (if parent (string-append \" :-- \" (show-err parent)) \"\")))) (show-err m)) (lambda () (load \"" + loadFile + "\") #t))");
         if (o instanceof String) {
             // Contains an error message from the failure-continuation.
@@ -327,30 +388,4 @@ public class SchemeWrapper {
         }
         return ret;
     }
-
-    /**
-     * Main function, for testing.  I'm not sure this still works -- I
-     * haven't tested it for a while.
-     */
-//     public static void main(String args[]) {
-//         try {
-//             SchemeWrapper sw = new SchemeWrapper();
-//             if (args.length < 1) {
-//                 System.out.println("Usage: SchemeWrapper expr");
-//                 System.exit(1);
-//             } else {
-//                 for (int i=0; i<args.length; i++) {
-//                     String expr = args[i];
-//                     if (expr.startsWith("(")) {
-//                         System.out.println(sw.eval(expr));
-//                     } else {
-//                         System.out.println(sw.eval(expr, new Object[] { }));
-//                     }
-//                 }
-//             }
-//         } catch (Exception e) {
-//             System.out.println("Exception: " + e);
-//             e.printStackTrace();
-//         }
-//     }
 }
