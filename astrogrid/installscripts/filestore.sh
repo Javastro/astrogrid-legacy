@@ -185,7 +185,7 @@ cat > ${ASTROGRID_HOME}/filestore/resource.xml << EOF
     xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5"
     xmlns="http://www.ivoa.net/xml/VOResource/v0.10">
     <vor:Resource xsi:type="vr:Service"  updated="2004-11-20T15:34:22Z" status="active">
-        <title>FileStore Service</title>
+        <title>FileStore demo service</title>
         <identifier>ivo://${ASTROGRID_AUTH}/filestore</identifier>
         <curation>
             <publisher>AstroGrid</publisher>

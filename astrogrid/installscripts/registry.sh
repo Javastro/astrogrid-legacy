@@ -298,7 +298,7 @@ cat > ${ASTROGRID_HOME}/registry/resource.xml << EOF
     xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5"
     xmlns="http://www.ivoa.net/xml/VOResource/v0.10">
     <vor:Resource xsi:type="vg:Registry" updated="2004-11-20T15:34:22Z" status="active">
-        <title>AstroGrid registry</title>
+        <title>AstroGrid demo registry</title>
         <identifier>ivo://${ASTROGRID_AUTH}/org.astrogrid.registry.RegistryService</identifier>
         <curation>
             <publisher>AstroGrid</publisher>
