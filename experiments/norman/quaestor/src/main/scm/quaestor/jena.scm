@@ -74,25 +74,36 @@
   ((generic-java-method '|createDefaultModel|)
    (java-null <com.hp.hpl.jena.rdf.model.model-factory>)))
 
+;; rdf:ingest-from-uri : string -> model
 ;; Given a URI, this reads in the RDF within it, and returns the
 ;; resulting model.
 ;;
-;; UNTESTED
-(define/contract (rdf:ingest-from-uri (uri string?) -> jena-model?)
-  (define-generic-java-methods
-    read
-    open-connection
-    get-input-stream
-    get-content-type)
-  (define-java-classes
-    <java.io.file-input-stream>
-    <java.lang.string>
-    (<URL> |java.net.URL|))
-  (let* ((full-uri (normalise-uri uri))
-         (conn (open-connection (java-new <URL> (->jstring full-uri)))))
-    (rdf:ingest-from-stream/language (get-input-stream conn)
-                                     full-uri
-                                     (get-content-type conn))))
+;; Either succeeds, or throws an exception using REPORT-EXCEPTION (of the 
+;; type expected by MAKE-FC)
+;; 
+;; NB: not currently covered by test cases
+;; (define/contract (rdf:ingest-from-uri
+;;                   (uri (or (string? uri)
+;;                            (is-java-type? uri '|java.net.URI|)))
+;;                   -> jena-model?)
+;;   (define-generic-java-methods
+;;     ;read
+;;     open-connection
+;;     get-input-stream
+;;     get-content-type
+;;     (to-url |toURL|))
+;;   (define-java-classes
+;;     ;<java.io.file-input-stream>
+;;     ;<java.lang.string>
+;;     (<URL> |java.net.URL|))
+;;   (let ((conn (open-connection (if (string? uri)
+;;                                    (java-new <URL> (->jstring uri))
+;;                                    (to-url uri)))))
+;; ;  (let* ((full-uri (normalise-uri uri))
+;; ;         (conn (open-connection (java-new <URL> (->jstring full-uri)))))
+;;     (rdf:ingest-from-stream/language (get-input-stream conn)
+;;                                      uri
+;;                                      (get-content-type conn))))
 
 ;; Given a list of RDF models, merge them into a single one, and return it
 (define/contract (rdf:merge-models (models list?) -> jena-model?)
@@ -204,9 +215,12 @@
 ;; The LANGUAGE may be a java or scheme string representing a content-type
 ;; or (if it is not a valid content-type) a Jena language.  The LANGUAGE
 ;; may not be null (ie, we don't fall back on the default Jena behaviour).
+;;
+;; Either succeeds, or throws an exception using REPORT-EXCEPTION (of the 
+;; type expected by MAKE-FC)
 (define/contract (rdf:ingest-from-stream/language
                   (stream java-input?)
-                  (base-uri string?)
+                  (base-uri (or (jstring? base-uri) (string? base-uri)))
                   (language (or (jstring? language) (string? language)))
                   -> jena-model?)
   (define-generic-java-methods
@@ -237,7 +251,8 @@
     (or reader
         (error "Failed to get reader!"))
 
-    (set-error-handler reader (rdf-error-handler base-uri logger))
+    (set-error-handler reader
+                       (rdf-error-handler (as-scheme-string base-uri) logger))
 
     ;; should the following be MAKE-FC (and have the extra logic folded 
     ;; in there)
@@ -246,14 +261,14 @@
           (report-exception 'ingest-from-stream
                             '|SC_BAD_REQUEST|
                             "Error reading ~a (~a)~%~a"
-                            base-uri
+                            (as-scheme-string base-uri)
                             (format-error-record m)
                             (if (null? (logger))
                                 ""
                                 (format #f "Other warnings:~%~a~%"
                                         (apply string-append (logger))))))
       (lambda ()
-        (read reader model stream (->jstring base-uri))))
+        (read reader model stream (as-java-string base-uri))))
     ;; we might as well add any logger warnings to the (chatter)
     (chatter (apply string-append (cons "Logger warnings: " (logger))))
     model))
@@ -265,6 +280,13 @@
          s)
         ((java-object? s)               ;should be a jstring
          (->string s))
+        (else
+         #f)))
+(define (as-java-string s)
+  (cond ((jstring? s)
+         s)
+        ((string? s)
+         (->jstring s))
         (else
          #f)))
 
