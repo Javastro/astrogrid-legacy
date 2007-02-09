@@ -33,7 +33,7 @@ then
     if [ -d ${CATALINA_HOME} ]
     then
     	${CATALINA_HOME}/bin/shutdown.sh
-fi
+    fi
 fi
 
 #
