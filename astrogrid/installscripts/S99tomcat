@@ -1,5 +1,6 @@
 #!/bin/sh
 # A script for starting and stopping tomcat.
+# Put this in /home/astrogrid/bin
 
 # Use a server JVM with large memory limits.
 export JAVA_OPTS="-server -Xmx1024M -XX:+UseAdaptiveSizePolicy -Djava.net.preferIPv4Stack=true"

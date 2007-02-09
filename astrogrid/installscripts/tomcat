@@ -1,0 +1,20 @@
+#!/bin/sh
+# Init file for AstroGrid tomcats
+#
+# chkconfig: 2345 99 02
+# description: AstroGrid tomcats
+#
+# Installation instructions for redhat linux:
+# 1. Copy this file to /etc/rc.d/init.d/
+# 2. Run command "chkconfig --add agtomcats"
+#
+# Run these services in the agrid account which is unprivileged.
+# The S99tomcat* in /home/astrogrid/bin contain the code that
+# actually starts and stops the tomcats.
+su - astrogrid -c "/home/astrogrid/bin/S99tomcat $1"
+
+
+#su - astrogrid -c "/home/astrogrid/bin/S99tomcat2 $1"
+#su - astrogrid -c "/home/astrogrid/bin/S99tomcat3 $1"
+#su - astrogrid -c "/home/astrogrid/bin/S99tomcat4 $1"
+#su - astrogrid -c "/home/astrogrid/bin/S99tomcat6 $1"
