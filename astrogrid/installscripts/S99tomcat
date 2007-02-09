@@ -1,0 +1,36 @@
+#!/bin/sh
+# A script for starting and stopping tomcat.
+
+# Use a server JVM with large memory limits.
+export JAVA_OPTS="-server -Xmx1024M -XX:+UseAdaptiveSizePolicy -Djava.net.preferIPv4Stack=true"
+
+# Set no limits on the stack size.
+ulimit -s unlimited
+
+# Change these locations to suit your system.
+export PATH=.:/usr/java/jdk1.5.0_08/bin:$PATH
+export JAVA_HOME=/usr/java/jdk1.5.0_08
+export CATALINA_HOME=/home/astrogrid/apache-tomcat-5.5.20
+cd $CATALINA_HOME/bin
+
+case "$1" in
+
+start)
+   $CATALINA_HOME/bin/startup.sh
+   ;;
+
+stop)
+   $CATALINA_HOME/bin/shutdown.sh
+   ;;
+
+restart)
+   $CATALINA_HOME/bin/shutdown.sh
+   $CATALINA_HOME/bin/startup.sh
+   ;;
+
+*)
+   echo "Usage: $0 {start|stop|restart}"
+   exit 1
+   ;;
+
+esac
