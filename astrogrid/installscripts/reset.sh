@@ -8,30 +8,58 @@
 #
 
 #
-# Test settings.
-export ASTROGRID_HOST=`hostname -f`
-export ASTROGRID_HOME=/home/astrogrid
-export ASTROGRID_USER=astrogrid
+# Read existing settings
+if [ -f astrogrid-settings ]
+then
+    . astrogrid-settings
+fi
 
-export JAVA_HOME=/usr/java/jdk1.5.0_08
+#
+# Default settings.
+ASTROGRID_HOME=${ASTROGRID_HOME:-"/home/astrogrid"}
+ASTROGRID_USER=${ASTROGRID_USER:-"astrogrid"}
+ASTROGRID_HOST=${ASTROGRID_HOST:-`hostname -f`}
 
+export JAVA_HOME=${JAVA_HOME:-"/usr/java/jdk1.5.0_08"}
+export CATALINA_HOME=${CATALINA_HOME:-"unknown"}
+
+echo ""
 echo "Removing AstroGrid services"
-echo "  ASTROGRID_HOST : ${ASTROGRID_HOST:?"undefined"}"
-echo "  ASTROGRID_HOME : ${ASTROGRID_HOME:?"undefined"}"
-echo "  ASTROGRID_USER : ${ASTROGRID_USER:?"undefined"}"
 
 #
 # Shutdown tomcat.
-if [ -f /home/astrogrid/apache-tomcat-5.5.20/bin/shutdown.sh ]
+if [ ${CATALINA_HOME} ]
 then
-	/home/astrogrid/apache-tomcat-5.5.20/bin/shutdown.sh
+    if [ -d ${CATALINA_HOME} ]
+    then
+    	${CATALINA_HOME}/bin/shutdown.sh
 fi
+fi
+
 #
-# Remove the directories.
-rm -rf /home/astrogrid/downloads
-rm -rf /home/astrogrid/apache-tomcat-5.5.20
-rm -rf /home/astrogrid/registry
-rm -rf /home/astrogrid/filestore
-rm -rf /home/astrogrid/filemanager
-rm -rf /home/astrogrid/community
+# Remove the astrogrid directories.
+if [ -d ${ASTROGRID_HOME}/downloads ]
+then
+    rm -rf ${ASTROGRID_HOME}/downloads
+fi
+
+if [ -d ${ASTROGRID_HOME}/registry ]
+then
+    rm -rf ${ASTROGRID_HOME}/registry
+fi
+
+if [ -d ${ASTROGRID_HOME}/filestore ]
+then
+    rm -rf ${ASTROGRID_HOME}/filestore
+fi
+
+if [ -d ${ASTROGRID_HOME}/filemanager ]
+then
+    rm -rf ${ASTROGRID_HOME}/filemanager
+fi
+
+if [ -d ${ASTROGRID_HOME}/community ]
+then
+    rm -rf ${ASTROGRID_HOME}/community
+fi
 

@@ -9,21 +9,22 @@
 
 #
 # Community settings.
-export COMMUNITY_VERSION=2006.3.04ct
-export COMMUNITY_WARFILE=astrogrid-community-${COMMUNITY_VERSION}.war
-export COMMUNITY_CONTEXT=astrogrid-community
-export COMMUNITY_CXTFILE=${CATALINA_HOME}/conf/Catalina/localhost/${COMMUNITY_CONTEXT}.xml
+COMMUNITY_VERSION=2006.3.04ct
+COMMUNITY_WARFILE=astrogrid-community-${COMMUNITY_VERSION}.war
+COMMUNITY_CONTEXT=astrogrid-community
 
 echo ""
 echo "Installing AstroGrid Community"
-echo "  JAVA_HOME        : ${JAVA_HOME:?"undefined"}"
-echo "  CATALINA_HOME    : ${CATALINA_HOME:?"undefined"}"
-if [ ! -d ${CATALINA_HOME} ]
-then
-    echo "ERROR : Unable to locate CATALINIA_HOME"
-    exit 1
-fi
 
+echo ""
+echo "  COMMUNITY_VERSION : ${COMMUNITY_VERSION:?"undefined"}"
+echo "  COMMUNITY_CONTEXT : ${COMMUNITY_CONTEXT:?"undefined"}"
+
+echo ""
+echo "  JAVA_HOME       : ${JAVA_HOME:?"undefined"}"
+echo "  CATALINA_HOME   : ${CATALINA_HOME:?"undefined"}"
+
+echo ""
 echo "  ASTROGRID_HOME  : ${ASTROGRID_HOME:?"undefined"}"
 echo "  ASTROGRID_USER  : ${ASTROGRID_USER:?"undefined"}"
 echo "  ASTROGRID_PASS  : ${ASTROGRID_PASS:?"undefined"}"
@@ -34,14 +35,14 @@ echo "  ASTROGRID_PORT  : ${ASTROGRID_PORT:?"undefined"}"
 echo "  ASTROGRID_AUTH  : ${ASTROGRID_AUTH:?"undefined"}"
 echo "  ASTROGRID_EMAIL : ${ASTROGRID_EMAIL:?"undefined"}"
 echo "  ASTROGRID_ADMIN : ${ASTROGRID_ADMIN:?"undefined"}"
-echo "  ASTROGRID_BASE  : ${ASTROGRID_BASE:?"undefined"}"
 
 echo "  REGISTRY_ADMIN  : ${REGISTRY_ADMIN:?"undefined"}"
 echo "  REGISTRY_QUERY  : ${REGISTRY_QUERY:?"undefined"}"
 echo "  REGISTRY_ENTRY  : ${REGISTRY_ENTRY:?"undefined"}"
 
-echo "  COMMUNITY_VERSION : ${COMMUNITY_VERSION:?"undefined"}"
-echo "  COMMUNITY_CONTEXT : ${COMMUNITY_CONTEXT:?"undefined"}"
+echo "  INTERNAL_URL    : ${ASTROGRID_INTERNAL:?"undefined"}/${COMMUNITY_CONTEXT:?"undefined"}/"
+echo "  EXTERNAL_URL    : ${ASTROGRID_EXTERNAL:?"undefined"}/${COMMUNITY_CONTEXT:?"undefined"}/"
+
 
 # ####
 # ** EXTRA STEP required to add HSQLDB jar to Tomcat **
@@ -98,18 +99,14 @@ popd
 # Generate the webapp context.
 echo ""
 echo "Generating webapp context"
-cat > ${COMMUNITY_CXTFILE} << EOF
+cat > ${ASTROGRID_HOME}/community/webapp/context.xml << EOF
 <?xml version='1.0' encoding='utf-8'?>
 <Context
     displayName="AstroGrid Community"
     docBase="${ASTROGRID_HOME}/community/webapp/${COMMUNITY_WARFILE}"
     path="/${COMMUNITY_CONTEXT}"
     >
-    <!--+
-        | Configure the community identifier.
-        | ** This is not a full identifier ivo://{ASTROGRID_REGISTRY_AUTH}/community **
-        | ** This is just the authority ID {ASTROGRID_REGISTRY_AUTH} **
-        +-->
+    <!-- Configure the community identifier -->
     <Environment
         description="The Community identifier"
         name="org.astrogrid.community.ident"
@@ -152,18 +149,32 @@ cat > ${COMMUNITY_CXTFILE} << EOF
 EOF
 
 #
-# Pause to let Tomcat load the webapp.
+# Ask Tomcat to load the webapp.
 echo ""
-echo "Waiting for Community to start"
-sleep 20s
+echo "Starting registry webapp"
+echo "  URL : ${ASTROGRID_INTERNAL}/manager/html/deploy"
+echo "  CXT : /${COMMUNITY_CONTEXT}"
+echo "  XML : file://${ASTROGRID_HOME}/community/webapp/context.xml"
+if [ `curl -s \
+      --url ${ASTROGRID_INTERNAL}/manager/html/deploy \
+      --user ${ASTROGRID_USER}:${ASTROGRID_PASS} \
+      --data "deployPath=/${COMMUNITY_CONTEXT}" \
+      --data "deployConfig=file://${ASTROGRID_HOME}/community/webapp/context.xml" \
+      | grep -c "OK - Deployed application at context path /${COMMUNITY_CONTEXT}"` = 1 ]
+then
+	echo "  PASS"
+else
+	echo "  ERROR : Error starting Community webapp"
+    exit 1
+fi
 
 #
 # Check the Community home page.
 echo ""
 echo "Checking Community home page"
-echo "  URL  : ${ASTROGRID_BASE}/${COMMUNITY_CONTEXT}/"
+echo "  URL  : ${ASTROGRID_INTERNAL}/${COMMUNITY_CONTEXT}/"
 if [ `curl -s --head \
-      --url ${ASTROGRID_BASE}/${COMMUNITY_CONTEXT}/ \
+      --url ${ASTROGRID_INTERNAL}/${COMMUNITY_CONTEXT}/ \
       | grep -c "200 OK"` = 1 ]
 then
 	echo "  PASS"
@@ -176,12 +187,12 @@ fi
 # Check the Community admin page
 echo ""
 echo "Checking Community admin page"
-echo "  URL  : ${ASTROGRID_BASE}/${COMMUNITY_CONTEXT}/admin/index.jsp"
+echo "  URL  : ${ASTROGRID_INTERNAL}/${COMMUNITY_CONTEXT}/admin/index.jsp"
 echo "  name : ${ASTROGRID_USER}"
 echo "  pass : ${ASTROGRID_PASS}"
 if [ `curl -s --head \
       --user ${ASTROGRID_USER}:${ASTROGRID_PASS} \
-      --url ${ASTROGRID_BASE}/${COMMUNITY_CONTEXT}/admin/index.jsp \
+      --url ${ASTROGRID_INTERNAL}/${COMMUNITY_CONTEXT}/admin/index.jsp \
       | grep -c "200 OK"` = 1 ]
 then
 	echo "  PASS"
@@ -194,9 +205,9 @@ fi
 # Initialise the database.
 echo ""
 echo "Initialising database"
-echo "  URL  : ${ASTROGRID_BASE}/${COMMUNITY_CONTEXT}admin/ResetDB.jsp"
+echo "  URL  : ${ASTROGRID_INTERNAL}/${COMMUNITY_CONTEXT}admin/ResetDB.jsp"
 if [ `curl -s -i \
-     --url  ${ASTROGRID_BASE}/${COMMUNITY_CONTEXT}/admin/ResetDB.jsp \
+     --url  ${ASTROGRID_INTERNAL}/${COMMUNITY_CONTEXT}/admin/ResetDB.jsp \
      --user ${ASTROGRID_USER}:${ASTROGRID_PASS} \
      --data "resetdb=true" \
      --data "resetdbsubmit=Initialize DB"  \
@@ -243,7 +254,7 @@ cat > ${ASTROGRID_HOME}/community/resource.xml << EOF
 			</relationship>
 		</content>
 		<interface xsi:type="vs:WebService">
-			<accessURL use="full">${ASTROGRID_BASE}/${COMMUNITY_CONTEXT}/services/PolicyManager</accessURL>
+			<accessURL use="full">${ASTROGRID_EXTERNAL}/${COMMUNITY_CONTEXT}/services/PolicyManager</accessURL>
 		</interface> 
 	</vor:Resource>
 	<vor:Resource xsi:type="vr:Service"  updated="2004-11-20T15:34:22Z" status="active">
@@ -263,7 +274,7 @@ cat > ${ASTROGRID_HOME}/community/resource.xml << EOF
 			<type>BasicData</type>
 		</content>
 		<interface xsi:type="vs:WebService">
-			<accessURL use="full">${ASTROGRID_BASE}/${COMMUNITY_CONTEXT}/services/PolicyService</accessURL>
+			<accessURL use="full">${ASTROGRID_EXTERNAL}/${COMMUNITY_CONTEXT}/services/PolicyService</accessURL>
 		</interface> 
 	</vor:Resource>
 	<vor:Resource xsi:type="vr:Service"  updated="2004-11-20T15:34:22Z" status="active">
@@ -283,7 +294,7 @@ cat > ${ASTROGRID_HOME}/community/resource.xml << EOF
 			<type>BasicData</type>
 		</content>
 		<interface xsi:type="vs:WebService">
-			<accessURL use="full">${ASTROGRID_BASE}/${COMMUNITY_CONTEXT}/services/SecurityManager</accessURL>
+			<accessURL use="full">${ASTROGRID_EXTERNAL}/${COMMUNITY_CONTEXT}/services/SecurityManager</accessURL>
 		</interface> 
 	</vor:Resource>
 	<vor:Resource xsi:type="vr:Service"  updated="2004-11-20T15:34:22Z" status="active">
@@ -303,7 +314,7 @@ cat > ${ASTROGRID_HOME}/community/resource.xml << EOF
 			<type>BasicData</type>
 		</content>
 		<interface xsi:type="vs:WebService">
-			<accessURL use="full">${ASTROGRID_BASE}/${COMMUNITY_CONTEXT}/services/SecurityService</accessURL>
+			<accessURL use="full">${ASTROGRID_EXTERNAL}/${COMMUNITY_CONTEXT}/services/SecurityService</accessURL>
 		</interface> 
 	</vor:Resource>
 </vor:VOResources>
@@ -316,6 +327,7 @@ EOF
 echo ""
 echo "Registering service"
 echo "  URL  : ${REGISTRY_ENTRY}"
+echo "  XML  : file://${ASTROGRID_HOME}/community/resource.xml"
 if [ `curl -s -i \
      --url  ${REGISTRY_ENTRY} \
      --user ${ASTROGRID_USER}:${ASTROGRID_PASS} \

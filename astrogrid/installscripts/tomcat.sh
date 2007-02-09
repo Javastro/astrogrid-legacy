@@ -7,10 +7,37 @@
 # </meta:header>
 #
 
+#
+# Set the Tomcat version.
+${TOMCAT_VERSION:=5.5.20}
+#
+# Set the Tomcat zipfile.
+${TOMCAT_COREZIP:=apache-tomcat-${TOMCAT_VERSION}.zip}
+#
+# Set the Tomcat-admin zipfile.
+${TOMCAT_ADMINZIP:=apache-tomcat-${TOMCAT_VERSION}-admin.zip}
+#
+# Set the Tomcat download site.
+${TOMCAT_MIRROR:=http://www.mirrorservice.org/sites/ftp.apache.org/tomcat/tomcat-5/v${TOMCAT_VERSION}/bin}
+
+#
+# Set the CATALINA_HOME
+CATALINA_HOME=${ASTROGRID_HOME}/apache-tomcat-${TOMCAT_VERSION}
+
 echo ""
 echo "Installing AstroGrid Tomcat"
-echo "  JAVA_HOME      : ${JAVA_HOME:?"undefined"}"
 
+echo ""
+echo "  TOMCAT_VERSION  : ${TOMCAT_VERSION:?"undefined"}"
+echo "  TOMCAT_COREZIP  : ${TOMCAT_COREZIP:?"undefined"}"
+echo "  TOMCAT_ADMINZIP : ${TOMCAT_ADMINZIP:?"undefined"}"
+echo "  TOMCAT_MIRROR   : ${TOMCAT_MIRROR:?"undefined"}"
+
+echo ""
+echo "  JAVA_HOME       : ${JAVA_HOME:?"undefined"}"
+echo "  CATALINA_HOME   : ${CATALINA_HOME:?"undefined"}"
+
+echo ""
 echo "  ASTROGRID_HOME  : ${ASTROGRID_HOME:?"undefined"}"
 echo "  ASTROGRID_USER  : ${ASTROGRID_USER:?"undefined"}"
 echo "  ASTROGRID_PASS  : ${ASTROGRID_PASS:?"undefined"}"
@@ -21,24 +48,9 @@ echo "  ASTROGRID_PORT  : ${ASTROGRID_PORT:?"undefined"}"
 echo "  ASTROGRID_AUTH  : ${ASTROGRID_AUTH:?"undefined"}"
 echo "  ASTROGRID_EMAIL : ${ASTROGRID_EMAIL:?"undefined"}"
 echo "  ASTROGRID_ADMIN : ${ASTROGRID_ADMIN:?"undefined"}"
-echo "  ASTROGRID_BASE  : ${ASTROGRID_BASE:?"undefined"}"
 
-#
-# Set the Tomcat version.
-export TOMCAT_VERSION=5.5.20
-echo "  TOMCAT_VERSION : ${TOMCAT_VERSION:?"undefined"}"
-#
-# Set the Tomcat zipfile.
-export TOMCAT_ZIPFILE=apache-tomcat-${TOMCAT_VERSION}.zip
-echo "  TOMCAT_ZIPFILE : ${TOMCAT_ZIPFILE:?"undefined"}"
-#
-# Set the Tomcat-admin zipfile.
-export TOMCAT_ADMIN_ZIPFILE=apache-tomcat-${TOMCAT_VERSION}-admin.zip
-echo "  TOMCAT_ADMIN_ZIPFILE : ${TOMCAT_ADMIN_ZIPFILE:?"undefined"}"
-#
-# Set the Tomcat download site.
-export TOMCAT_MIRROR=http://www.mirrorservice.org/sites/ftp.apache.org/tomcat/tomcat-5/v${TOMCAT_VERSION}/bin
-echo "  TOMCAT_MIRROR  : ${TOMCAT_MIRROR:?"undefined"}"
+echo "  INTERNAL_URL    : ${ASTROGRID_INTERNAL:?"undefined"}/"
+echo "  EXTERNAL_URL    : ${ASTROGRID_EXTERNAL:?"undefined"}/"
 
 #
 # Check the home directory.
@@ -62,38 +74,37 @@ fi
 
 #
 # Get the current Tomcat distro.
-if [ ! -f ${ASTROGRID_HOME}/downloads/${TOMCAT_ZIPFILE} ]
+if [ ! -f ${ASTROGRID_HOME}/downloads/${TOMCAT_COREZIP} ]
 then
 	echo ""
 	echo "Downloading Tomcat zipfile"
 	pushd ${ASTROGRID_HOME}/downloads
-    	wget ${TOMCAT_MIRROR}/${TOMCAT_ZIPFILE}
-    	wget ${TOMCAT_MIRROR}/${TOMCAT_ADMIN_ZIPFILE}
+    	wget ${TOMCAT_MIRROR}/${TOMCAT_COREZIP}
+    	wget ${TOMCAT_MIRROR}/${TOMCAT_ADMINZIP}
 	popd
 fi
 
 #
 # Unpack the Tomcat distro.
-if [ ! -f ${ASTROGRID_HOME}/downloads/${TOMCAT_ZIPFILE} ]
+if [ ! -f ${ASTROGRID_HOME}/downloads/${TOMCAT_COREZIP} ]
 then
     echo "ERROR : Unable to locate Tomcat zip file"
-	echo "  ${ASTROGRID_HOME}/downloads/${TOMCAT_ZIPFILE}"
+	echo "  ${ASTROGRID_HOME}/downloads/${TOMCAT_COREZIP}"
     exit 1
 else
     pushd ${ASTROGRID_HOME}
 		echo ""
         echo "Unpacking Tomcat zip file"
-        unzip -o ${ASTROGRID_HOME}/downloads/${TOMCAT_ZIPFILE}
+        unzip -o ${ASTROGRID_HOME}/downloads/${TOMCAT_COREZIP}
         echo "Unpacking Tomcat-admin zip file"
-        unzip -o ${ASTROGRID_HOME}/downloads/${TOMCAT_ADMIN_ZIPFILE}
+        unzip -o ${ASTROGRID_HOME}/downloads/${TOMCAT_ADMINZIP}
     popd
 fi
 
 #
-# Set CATALINA_HOME environment variable.
+# Check CATALINA_HOME environment variable.
 echo ""
-echo "Setting CATALINA_HOME"
-export CATALINA_HOME=${ASTROGRID_HOME}/apache-tomcat-${TOMCAT_VERSION}
+echo "Checking CATALINA_HOME"
 echo "  CATALINA_HOME : ${CATALINA_HOME}"
 if [ ! -d ${CATALINA_HOME} ]
 then
@@ -159,8 +170,10 @@ sleep 20s
 # Check Tomcat home page.
 echo ""
 echo "Checking Tomcat home page"
-echo "  URL : ${ASTROGRID_BASE}/"
-if [ `curl -s --head ${ASTROGRID_BASE}/ | grep -c "200 OK"` = 1 ]
+echo "  URL : ${ASTROGRID_INTERNAL}/"
+if [ `curl -s --head \
+      --url ${ASTROGRID_INTERNAL}/ \
+      | grep -c "200 OK"` = 1 ]
 then
     echo "  PASS"
 else
@@ -171,10 +184,13 @@ fi
 # Check Tomcat admin login
 echo ""
 echo "Checking Tomcat admin"
-echo "  URL  : ${ASTROGRID_BASE}/admin/"
+echo "  URL  : ${ASTROGRID_INTERNAL}/admin/"
 echo "  name : ${ASTROGRID_USER}"
 echo "  pass : ${ASTROGRID_PASS}"
-if [ `curl -s --head -u ${ASTROGRID_USER}:${ASTROGRID_PASS} ${ASTROGRID_BASE}/admin/ | grep -c "200 OK"` = 1 ]
+if [ `curl -s --head \
+      --user ${ASTROGRID_USER}:${ASTROGRID_PASS} \
+      --url ${ASTROGRID_INTERNAL}/admin/ \
+      | grep -c "200 OK"` = 1 ]
 then
     echo "  PASS"
 else
@@ -185,10 +201,13 @@ fi
 # Check Tomcat manager login
 echo ""
 echo "Checking Tomcat manager"
-echo "  URL  : ${ASTROGRID_BASE}/manager/html"
+echo "  URL  : ${ASTROGRID_INTERNAL}/manager/html"
 echo "  name : ${ASTROGRID_USER}"
 echo "  pass : ${ASTROGRID_PASS}"
-if [ `curl -s --head -u ${ASTROGRID_USER}:${ASTROGRID_PASS} ${ASTROGRID_BASE}/manager/html | grep -c "200 OK"` = 1 ]
+if [ `curl -s --head \
+      --user ${ASTROGRID_USER}:${ASTROGRID_PASS} \
+      --url ${ASTROGRID_INTERNAL}/manager/html \
+      | grep -c "200 OK"` = 1 ]
 then
     echo "  PASS"
 else

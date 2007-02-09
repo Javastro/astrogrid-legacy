@@ -9,25 +9,22 @@
 
 #
 # Registry settings.
-export REGISTRY_VERSION=2006.3.03r
-export REGISTRY_WARFILE=astrogrid-registry-${REGISTRY_VERSION}.war
-export REGISTRY_CONTEXT=astrogrid-registry
-export REGISTRY_CXTFILE=${CATALINA_HOME}/conf/Catalina/localhost/${REGISTRY_CONTEXT}.xml
-
-export REGISTRY_ADMIN=${ASTROGRID_BASE}/${REGISTRY_CONTEXT}/services/RegistryUpdate
-export REGISTRY_QUERY=${ASTROGRID_BASE}/${REGISTRY_CONTEXT}/services/RegistryQuery
-export REGISTRY_ENTRY=${ASTROGRID_BASE}/${REGISTRY_CONTEXT}/admin/addResourceEntry.jsp
+REGISTRY_VERSION=2006.3.03r
+REGISTRY_WARFILE=astrogrid-registry-${REGISTRY_VERSION}.war
+REGISTRY_CONTEXT=astrogrid-registry
 
 echo ""
 echo "Installing AstroGrid registry"
-echo "  JAVA_HOME        : ${JAVA_HOME:?"undefined"}"
-echo "  CATALINA_HOME    : ${CATALINA_HOME:?"undefined"}"
-if [ ! -d ${CATALINA_HOME} ]
-then
-    echo "ERROR : Unable to locate CATALINIA_HOME"
-    exit 1
-fi
 
+echo ""
+echo "  REGISTRY_VERSION : ${REGISTRY_VERSION:?"undefined"}"
+echo "  REGISTRY_CONTEXT : ${REGISTRY_CONTEXT:?"undefined"}"
+
+echo ""
+echo "  JAVA_HOME       : ${JAVA_HOME:?"undefined"}"
+echo "  CATALINA_HOME   : ${CATALINA_HOME:?"undefined"}"
+
+echo ""
 echo "  ASTROGRID_HOME  : ${ASTROGRID_HOME:?"undefined"}"
 echo "  ASTROGRID_USER  : ${ASTROGRID_USER:?"undefined"}"
 echo "  ASTROGRID_PASS  : ${ASTROGRID_PASS:?"undefined"}"
@@ -38,14 +35,82 @@ echo "  ASTROGRID_PORT  : ${ASTROGRID_PORT:?"undefined"}"
 echo "  ASTROGRID_AUTH  : ${ASTROGRID_AUTH:?"undefined"}"
 echo "  ASTROGRID_EMAIL : ${ASTROGRID_EMAIL:?"undefined"}"
 echo "  ASTROGRID_ADMIN : ${ASTROGRID_ADMIN:?"undefined"}"
-echo "  ASTROGRID_BASE  : ${ASTROGRID_BASE:?"undefined"}"
 
-echo "  REGISTRY_VERSION : ${REGISTRY_VERSION:?"undefined"}"
-echo "  REGISTRY_CONTEXT : ${REGISTRY_CONTEXT:?"undefined"}"
+echo "  INTERNAL_URL    : ${ASTROGRID_INTERNAL:?"undefined"}/${REGISTRY_CONTEXT:?"undefined"}/"
+echo "  EXTERNAL_URL    : ${ASTROGRID_EXTERNAL:?"undefined"}/${REGISTRY_CONTEXT:?"undefined"}/"
 
-echo "  REGISTRY_ADMIN   : ${REGISTRY_ADMIN:?"undefined"}"
-echo "  REGISTRY_QUERY   : ${REGISTRY_QUERY:?"undefined"}"
-echo "  REGISTRY_ENTRY   : ${REGISTRY_ENTRY:?"undefined"}"
+#
+# Set the local registry endpoints.
+REGISTRY_ADMIN=${ASTROGRID_INTERNAL}/${REGISTRY_CONTEXT}/services/RegistryUpdate
+REGISTRY_ENTRY=${ASTROGRID_INTERNAL}/${REGISTRY_CONTEXT}/admin/addResourceEntry.jsp
+REGISTRY_INTERNAL=${ASTROGRID_INTERNAL}/${REGISTRY_CONTEXT}/services/RegistryQuery
+REGISTRY_EXTERNAL=${ASTROGRID_EXTERNAL}/${REGISTRY_CONTEXT}/services/RegistryQuery
+
+#
+# Set the external registry endpoints.
+ASTROGRID_DEV=http://katatjuta.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQuery
+ASTROGRID_LIVE=http://galahad.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQuery
+#
+# Set the query registry endpoint.
+
+if [ ! ${REGISTRY_QUERY} ]
+then
+    REGISTRY_QUERY=${REGISTRY_INTERNAL}
+fi
+
+echo ""
+echo "Please select the external registry endpoint :"
+echo ""
+echo "1) Local registry (internal) :"
+echo "   ${REGISTRY_INTERNAL}"
+echo ""
+echo "2) Local registry (external) :"
+echo "   ${REGISTRY_EXTERNAL}"
+echo ""
+echo "3) AstroGrid dev registry :"
+echo "   ${ASTROGRID_DEV}"
+echo ""
+echo "4) AstroGrid live registry :"
+echo "   ${ASTROGRID_LIVE}"
+echo ""
+echo "*) Current setting :"
+echo "   ${REGISTRY_QUERY}"
+
+read RESPONSE
+case $RESPONSE in
+
+    1)
+        REGISTRY_QUERY=${REGISTRY_INTERNAL}
+        ;;
+
+    2)
+        REGISTRY_QUERY=${REGISTRY_EXTERNAL}
+        ;;
+
+    3)
+        REGISTRY_QUERY=${ASTROGRID_DEV}
+        ;;
+
+    4)
+        REGISTRY_QUERY=${ASTROGRID_LIVE}
+        ;;
+
+    *)
+        ;;
+
+esac
+
+if [ ! ${REGISTRY_QUERY} ]
+then
+    echo ""
+    echo "ERROR : External registry endpoint required"
+fi
+
+echo ""
+echo "Registry endpoints"
+echo "  REGISTRY_ADMIN  : ${REGISTRY_ADMIN:?"undefined"}"
+echo "  REGISTRY_QUERY  : ${REGISTRY_QUERY:?"undefined"}"
+echo "  REGISTRY_ENTRY  : ${REGISTRY_ENTRY:?"undefined"}"
 
 #
 # Create registry directories.
@@ -100,7 +165,7 @@ EOF
 # Generate the webapp context.
 echo ""
 echo "Generating webapp context"
-cat > ${REGISTRY_CXTFILE} << EOF
+cat > ${ASTROGRID_HOME}/registry/webapp/context.xml << EOF
 <?xml version='1.0' encoding='utf-8'?>
 <Context
     displayName="AstroGrid publishing registry"
@@ -166,23 +231,37 @@ cat > ${REGISTRY_CXTFILE} << EOF
 EOF
 
 #
-# Pause to let Tomcat load the webapp.
+# Ask Tomcat to load the webapp.
 echo ""
-echo "Waiting for registry to start"
-sleep 20s
+echo "Starting registry webapp"
+echo "  URL : ${ASTROGRID_INTERNAL}/manager/html/deploy"
+echo "  CXT : /${REGISTRY_CONTEXT}"
+echo "  XML : file://${ASTROGRID_HOME}/registry/webapp/context.xml"
+if [ `curl -s \
+      --url ${ASTROGRID_INTERNAL}/manager/html/deploy \
+      --user ${ASTROGRID_USER}:${ASTROGRID_PASS} \
+      --data "deployPath=/${REGISTRY_CONTEXT}" \
+      --data "deployConfig=file://${ASTROGRID_HOME}/registry/webapp/context.xml" \
+      | grep -c "OK - Deployed application at context path /${REGISTRY_CONTEXT}"` = 1 ]
+then
+	echo "  PASS"
+else
+	echo "  ERROR : Error starting Registry webapp"
+    exit 1
+fi
 
 #
 # Check the registry home page.
 echo ""
 echo "Checking registry home page"
-echo "  URL  : ${ASTROGRID_BASE}/${REGISTRY_CONTEXT}/"
+echo "  URL  : ${ASTROGRID_INTERNAL}/${REGISTRY_CONTEXT}/"
 if [ `curl -s --head \
-      --url ${ASTROGRID_BASE}/${REGISTRY_CONTEXT}/ \
+      --url ${ASTROGRID_INTERNAL}/${REGISTRY_CONTEXT}/ \
       | grep -c "200 OK"` = 1 ]
 then
 	echo "  PASS"
 else
-	echo "  ERROR : Error accessing registry home page"
+	echo "  ERROR : Error accessing Registry home page"
     exit 1
 fi
 
@@ -190,17 +269,17 @@ fi
 # Check the registry admin page
 echo ""
 echo "Checking registry admin page"
-echo "  URL  : ${ASTROGRID_BASE}/${REGISTRY_CONTEXT}/admin/index.jsp"
+echo "  URL  : ${ASTROGRID_INTERNAL}/${REGISTRY_CONTEXT}/admin/index.jsp"
 echo "  name : ${ASTROGRID_USER}"
 echo "  pass : ${ASTROGRID_PASS}"
 if [ `curl -s --head \
-     --url ${ASTROGRID_BASE}/${REGISTRY_CONTEXT}/admin/index.jsp \
-     --user ${ASTROGRID_USER}:${ASTROGRID_PASS} \
-     | grep -c "200 OK"` = 1 ]
+      --url ${ASTROGRID_INTERNAL}/${REGISTRY_CONTEXT}/admin/index.jsp \
+      --user ${ASTROGRID_USER}:${ASTROGRID_PASS} \
+      | grep -c "200 OK"` = 1 ]
 then
 	echo "  PASS"
 else
-	echo "  ERROR : Error accessing registry admin page"
+	echo "  ERROR : Error accessing Registry admin page"
     exit 1
 fi
 
@@ -231,11 +310,11 @@ cat > ${ASTROGRID_HOME}/registry/resource.xml << EOF
         <content>
             <subject>registry</subject>
             <description>Astrogrid Registry</description>
-            <referenceURL>${ASTROGRID_BASE}/${REGISTRY_CONTEXT}</referenceURL>
+            <referenceURL>${ASTROGRID_EXTERNAL}/${REGISTRY_CONTEXT}</referenceURL>
             <type>Archive</type>
         </content>
         <interface xsi:type="vs:WebService">
-            <accessURL use="full">${ASTROGRID_BASE}/${REGISTRY_CONTEXT}/services/RegistryHarvest</accessURL>
+            <accessURL use="full">${ASTROGRID_EXTERNAL}/${REGISTRY_CONTEXT}/services/RegistryHarvest</accessURL>
         </interface>
         <vg:managedAuthority>${ASTROGRID_AUTH}</vg:managedAuthority>
     </vor:Resource>
@@ -249,6 +328,7 @@ EOF
 echo ""
 echo "Registering service"
 echo "  URL  : ${REGISTRY_ENTRY}"
+echo "  XML  : file://${ASTROGRID_HOME}/registry/resource.xml"
 if [ `curl -s -i \
      --url  ${REGISTRY_ENTRY} \
      --user ${ASTROGRID_USER}:${ASTROGRID_PASS} \

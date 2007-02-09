@@ -9,21 +9,22 @@
 
 #
 # FileManager settings.
-export FILEMANAGER_VERSION=2006.3.01fm
-export FILEMANAGER_WARFILE=astrogrid-filemanager-${FILEMANAGER_VERSION}.war
-export FILEMANAGER_CONTEXT=astrogrid-filemanager
-export FILEMANAGER_CXTFILE=${CATALINA_HOME}/conf/Catalina/localhost/${FILEMANAGER_CONTEXT}.xml
+FILEMANAGER_VERSION=2006.3.01fm
+FILEMANAGER_WARFILE=astrogrid-filemanager-${FILEMANAGER_VERSION}.war
+FILEMANAGER_CONTEXT=astrogrid-filemanager
 
 echo ""
 echo "Installing AstroGrid FileManager"
-echo "  JAVA_HOME        : ${JAVA_HOME:?"undefined"}"
-echo "  CATALINA_HOME    : ${CATALINA_HOME:?"undefined"}"
-if [ ! -d ${CATALINA_HOME} ]
-then
-    echo "ERROR : Unable to locate CATALINIA_HOME"
-    exit 1
-fi
 
+echo ""
+echo "  FILEMANAGER_VERSION : ${FILEMANAGER_VERSION:?"undefined"}"
+echo "  FILEMANAGER_CONTEXT : ${FILEMANAGER_CONTEXT:?"undefined"}"
+
+echo ""
+echo "  JAVA_HOME       : ${JAVA_HOME:?"undefined"}"
+echo "  CATALINA_HOME   : ${CATALINA_HOME:?"undefined"}"
+
+echo ""
 echo "  ASTROGRID_HOME  : ${ASTROGRID_HOME:?"undefined"}"
 echo "  ASTROGRID_USER  : ${ASTROGRID_USER:?"undefined"}"
 echo "  ASTROGRID_PASS  : ${ASTROGRID_PASS:?"undefined"}"
@@ -34,14 +35,13 @@ echo "  ASTROGRID_PORT  : ${ASTROGRID_PORT:?"undefined"}"
 echo "  ASTROGRID_AUTH  : ${ASTROGRID_AUTH:?"undefined"}"
 echo "  ASTROGRID_EMAIL : ${ASTROGRID_EMAIL:?"undefined"}"
 echo "  ASTROGRID_ADMIN : ${ASTROGRID_ADMIN:?"undefined"}"
-echo "  ASTROGRID_BASE  : ${ASTROGRID_BASE:?"undefined"}"
 
 echo "  REGISTRY_ADMIN  : ${REGISTRY_ADMIN:?"undefined"}"
 echo "  REGISTRY_QUERY  : ${REGISTRY_QUERY:?"undefined"}"
 echo "  REGISTRY_ENTRY  : ${REGISTRY_ENTRY:?"undefined"}"
 
-echo "  FILEMANAGER_VERSION : ${FILEMANAGER_VERSION:?"undefined"}"
-echo "  FILEMANAGER_CONTEXT : ${FILEMANAGER_CONTEXT:?"undefined"}"
+echo "  INTERNAL_URL    : ${ASTROGRID_INTERNAL:?"undefined"}/${FILEMANAGER_CONTEXT:?"undefined"}/"
+echo "  EXTERNAL_URL    : ${ASTROGRID_EXTERNAL:?"undefined"}/${FILEMANAGER_CONTEXT:?"undefined"}/"
 
 #
 # Create FileManager directories.
@@ -72,7 +72,7 @@ popd
 # Generate the webapp context.
 echo ""
 echo "Generating webapp context"
-cat > ${FILEMANAGER_CXTFILE} << EOF
+cat > ${ASTROGRID_HOME}/filemanager/webapp/context.xml << EOF
 <?xml version='1.0' encoding='utf-8'?>
 <Context
     displayName="AstroGrid FileManager"
@@ -118,18 +118,32 @@ cat > ${FILEMANAGER_CXTFILE} << EOF
 EOF
 
 #
-# Pause to let Tomcat load the webapp.
+# Ask Tomcat to load the webapp.
 echo ""
-echo "Waiting for FileManager to start"
-sleep 20s
+echo "Starting registry webapp"
+echo "  URL : ${ASTROGRID_INTERNAL}/manager/html/deploy"
+echo "  CXT : /${FILEMANAGER_CONTEXT}"
+echo "  XML : file://${ASTROGRID_HOME}/filemanager/webapp/context.xml"
+if [ `curl -s \
+      --url ${ASTROGRID_INTERNAL}/manager/html/deploy \
+      --user ${ASTROGRID_USER}:${ASTROGRID_PASS} \
+      --data "deployPath=/${FILEMANAGER_CONTEXT}" \
+      --data "deployConfig=file://${ASTROGRID_HOME}/filemanager/webapp/context.xml" \
+      | grep -c "OK - Deployed application at context path /${FILEMANAGER_CONTEXT}"` = 1 ]
+then
+	echo "  PASS"
+else
+	echo "  ERROR : Error starting FileManager webapp"
+    exit 1
+fi
 
 #
 # Check the FileManager home page.
 echo ""
 echo "Checking FileManager home page"
-echo "  URL  : ${ASTROGRID_BASE}/${FILEMANAGER_CONTEXT}/"
+echo "  URL  : ${ASTROGRID_INTERNAL}/${FILEMANAGER_CONTEXT}/"
 if [ `curl -s --head \
-      --url ${ASTROGRID_BASE}/${FILEMANAGER_CONTEXT}/ \
+      --url ${ASTROGRID_INTERNAL}/${FILEMANAGER_CONTEXT}/ \
       | grep -c "200 OK"` = 1 ]
 then
 	echo "  PASS"
@@ -142,12 +156,12 @@ fi
 # Check the FileManager admin page
 echo ""
 echo "Checking FileManager admin page"
-echo "  URL  : ${ASTROGRID_BASE}/${FILEMANAGER_CONTEXT}/admin/index.jsp"
+echo "  URL  : ${ASTROGRID_INTERNAL}/${FILEMANAGER_CONTEXT}/admin/index.jsp"
 echo "  name : ${ASTROGRID_USER}"
 echo "  pass : ${ASTROGRID_PASS}"
 if [ `curl -s --head \
       --user ${ASTROGRID_USER}:${ASTROGRID_PASS} \
-      --url ${ASTROGRID_BASE}/${FILEMANAGER_CONTEXT}/admin/index.jsp \
+      --url ${ASTROGRID_INTERNAL}/${FILEMANAGER_CONTEXT}/admin/index.jsp \
       | grep -c "200 OK"` = 1 ]
 then
 	echo "  PASS"
@@ -192,7 +206,7 @@ cat > ${ASTROGRID_HOME}/filemanager/resource.xml << EOF
             </relationship>  
         </content>
         <interface xsi:type="vs:WebService">
-        	<accessURL use="full">${ASTROGRID_BASE}/${FILEMANAGER_CONTEXT}/services/FileManagerPort</accessURL>
+        	<accessURL use="full">${ASTROGRID_EXTERNAL}/${FILEMANAGER_CONTEXT}/services/FileManagerPort</accessURL>
         </interface> 
     </vor:Resource>
 </vor:VOResources>
@@ -205,6 +219,7 @@ EOF
 echo ""
 echo "Registering service"
 echo "  URL  : ${REGISTRY_ENTRY}"
+echo "  XML  : file://${ASTROGRID_HOME}/filemanager/resource.xml"
 if [ `curl -s -i \
      --url  ${REGISTRY_ENTRY} \
      --user ${ASTROGRID_USER}:${ASTROGRID_PASS} \

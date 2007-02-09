@@ -9,21 +9,22 @@
 
 #
 # FileStore settings.
-export FILESTORE_VERSION=2006.3.01fs
-export FILESTORE_WARFILE=astrogrid-filestore-${FILESTORE_VERSION}.war
-export FILESTORE_CONTEXT=astrogrid-filestore
-export FILESTORE_CXTFILE=${CATALINA_HOME}/conf/Catalina/localhost/${FILESTORE_CONTEXT}.xml
+FILESTORE_VERSION=2006.3.01fs
+FILESTORE_WARFILE=astrogrid-filestore-${FILESTORE_VERSION}.war
+FILESTORE_CONTEXT=astrogrid-filestore
 
 echo ""
 echo "Installing AstroGrid FileStore"
-echo "  JAVA_HOME        : ${JAVA_HOME:?"undefined"}"
-echo "  CATALINA_HOME    : ${CATALINA_HOME:?"undefined"}"
-if [ ! -d ${CATALINA_HOME} ]
-then
-    echo "ERROR : Unable to locate CATALINIA_HOME"
-    exit 1
-fi
 
+echo ""
+echo "  FILESTORE_VERSION : ${FILESTORE_VERSION:?"undefined"}"
+echo "  FILESTORE_CONTEXT : ${FILESTORE_CONTEXT:?"undefined"}"
+
+echo ""
+echo "  JAVA_HOME       : ${JAVA_HOME:?"undefined"}"
+echo "  CATALINA_HOME   : ${CATALINA_HOME:?"undefined"}"
+
+echo ""
 echo "  ASTROGRID_HOME  : ${ASTROGRID_HOME:?"undefined"}"
 echo "  ASTROGRID_USER  : ${ASTROGRID_USER:?"undefined"}"
 echo "  ASTROGRID_PASS  : ${ASTROGRID_PASS:?"undefined"}"
@@ -34,14 +35,13 @@ echo "  ASTROGRID_PORT  : ${ASTROGRID_PORT:?"undefined"}"
 echo "  ASTROGRID_AUTH  : ${ASTROGRID_AUTH:?"undefined"}"
 echo "  ASTROGRID_EMAIL : ${ASTROGRID_EMAIL:?"undefined"}"
 echo "  ASTROGRID_ADMIN : ${ASTROGRID_ADMIN:?"undefined"}"
-echo "  ASTROGRID_BASE  : ${ASTROGRID_BASE:?"undefined"}"
 
 echo "  REGISTRY_ADMIN  : ${REGISTRY_ADMIN:?"undefined"}"
 echo "  REGISTRY_QUERY  : ${REGISTRY_QUERY:?"undefined"}"
 echo "  REGISTRY_ENTRY  : ${REGISTRY_ENTRY:?"undefined"}"
 
-echo "  FILESTORE_VERSION : ${FILESTORE_VERSION:?"undefined"}"
-echo "  FILESTORE_CONTEXT : ${FILESTORE_CONTEXT:?"undefined"}"
+echo "  INTERNAL_URL    : ${ASTROGRID_INTERNAL:?"undefined"}/${FILESTORE_CONTEXT:?"undefined"}/"
+echo "  EXTERNAL_URL    : ${ASTROGRID_EXTERNAL:?"undefined"}/${FILESTORE_CONTEXT:?"undefined"}/"
 
 #
 # Create FileStore directories.
@@ -72,7 +72,7 @@ popd
 # Generate the webapp context.
 echo ""
 echo "Generating webapp context"
-cat > ${FILESTORE_CXTFILE} << EOF
+cat > ${ASTROGRID_HOME}/filestore/webapp/context.xml << EOF
 <?xml version='1.0' encoding='utf-8'?>
 <Context
     displayName="AstroGrid FileStore"
@@ -91,7 +91,7 @@ cat > ${FILESTORE_CXTFILE} << EOF
         description="The FileStore access URL"
         name="org.astrogrid.filestore.service.url"
         type="java.lang.String"
-        value="http://${ASTROGRID_BASE}/${FILESTORE_CONTEXT}/filestore"
+        value="http://${ASTROGRID_EXTERNAL}/${FILESTORE_CONTEXT}/filestore"
         />
     <!-- Configure the repository location -->
     <Environment
@@ -118,18 +118,32 @@ cat > ${FILESTORE_CXTFILE} << EOF
 EOF
 
 #
-# Pause to let Tomcat load the webapp.
+# Ask Tomcat to load the webapp.
 echo ""
-echo "Waiting for FileStore to start"
-sleep 20s
+echo "Starting registry webapp"
+echo "  URL : ${ASTROGRID_INTERNAL}/manager/html/deploy"
+echo "  CXT : /${FILESTORE_CONTEXT}"
+echo "  XML : file://${ASTROGRID_HOME}/filestore/webapp/context.xml"
+if [ `curl -s \
+      --url ${ASTROGRID_INTERNAL}/manager/html/deploy \
+      --user ${ASTROGRID_USER}:${ASTROGRID_PASS} \
+      --data "deployPath=/${FILESTORE_CONTEXT}" \
+      --data "deployConfig=file://${ASTROGRID_HOME}/filestore/webapp/context.xml" \
+      | grep -c "OK - Deployed application at context path /${FILESTORE_CONTEXT}"` = 1 ]
+then
+	echo "  PASS"
+else
+	echo "  ERROR : Error starting FileStore webapp"
+    exit 1
+fi
 
 #
 # Check the FileStore home page.
 echo ""
 echo "Checking FileStore home page"
-echo "  URL  : ${ASTROGRID_BASE}/${FILESTORE_CONTEXT}/"
+echo "  URL  : ${ASTROGRID_INTERNAL}/${FILESTORE_CONTEXT}/"
 if [ `curl -s --head \
-      --url ${ASTROGRID_BASE}/${FILESTORE_CONTEXT}/ \
+      --url ${ASTROGRID_INTERNAL}/${FILESTORE_CONTEXT}/ \
       | grep -c "200 OK"` = 1 ]
 then
 	echo "  PASS"
@@ -142,12 +156,12 @@ fi
 # Check the FileStore admin page
 echo ""
 echo "Checking FileStore admin page"
-echo "  URL  : ${ASTROGRID_BASE}/${FILESTORE_CONTEXT}/admin/index.jsp"
+echo "  URL  : ${ASTROGRID_INTERNAL}/${FILESTORE_CONTEXT}/admin/index.jsp"
 echo "  name : ${ASTROGRID_USER}"
 echo "  pass : ${ASTROGRID_PASS}"
 if [ `curl -s --head \
       --user ${ASTROGRID_USER}:${ASTROGRID_PASS} \
-      --url ${ASTROGRID_BASE}/${FILESTORE_CONTEXT}/admin/index.jsp \
+      --url ${ASTROGRID_INTERNAL}/${FILESTORE_CONTEXT}/admin/index.jsp \
       | grep -c "200 OK"` = 1 ]
 then
 	echo "  PASS"
@@ -192,7 +206,7 @@ cat > ${ASTROGRID_HOME}/filestore/resource.xml << EOF
             </relationship>  
         </content>
         <interface xsi:type="vs:WebService">
-        	<accessURL use="full">${ASTROGRID_BASE}/${FILESTORE_CONTEXT}/services/FileStore</accessURL>
+        	<accessURL use="full">${ASTROGRID_EXTERNAL}/${FILESTORE_CONTEXT}/services/FileStore</accessURL>
         </interface> 
     </vor:Resource>
 </vor:VOResources>
@@ -205,6 +219,7 @@ EOF
 echo ""
 echo "Registering service"
 echo "  URL  : ${REGISTRY_ENTRY}"
+echo "  XML  : file://${ASTROGRID_HOME}/filestore/resource.xml"
 if [ `curl -s -i \
      --url  ${REGISTRY_ENTRY} \
      --user ${ASTROGRID_USER}:${ASTROGRID_PASS} \
