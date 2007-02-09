@@ -34,6 +34,8 @@ then
     then
     	${CATALINA_HOME}/bin/shutdown.sh
     fi
+    sleep 30
+    rm -rf ${CATALINA_HOME}
 fi
 
 #
