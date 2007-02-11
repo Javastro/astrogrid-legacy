@@ -321,8 +321,11 @@ cat > ${ASTROGRID_HOME}/registry/resource.xml << EOF
         <interface xsi:type="vs:WebService">
             <accessURL use="full">${ASTROGRID_EXTERNAL}/${REGISTRY_CONTEXT}/services/RegistryHarvest</accessURL>
         </interface>
-            +-->
         <interface xsi:type="vs:ParamHttp">
+            <accessURL use="full">${ASTROGRID_EXTERNAL}/${REGISTRY_CONTEXT}/OAIHandlerv0_10</accessURL>
+        </interface>
+            +-->
+        <interface xsi:type="vs:WebBrowser">
             <accessURL use="full">${ASTROGRID_EXTERNAL}/${REGISTRY_CONTEXT}/OAIHandlerv0_10</accessURL>
         </interface>
         <vg:managedAuthority>${ASTROGRID_AUTH}</vg:managedAuthority>
