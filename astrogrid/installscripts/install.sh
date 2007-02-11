@@ -30,7 +30,8 @@ export JAVA_HOME=${JAVA_HOME:-/usr/java/jdk1.5.0_08}
 
 export ASTROGRID_USER=${ASTROGRID_USER:-"astrogrid"}
 export ASTROGRID_PASS=${ASTROGRID_PASS:-"W6G117"}
-export ASTROGRID_HOST=${ASTROGRID_HOST:-`hostname -f`}#
+export ASTROGRID_HOST=${ASTROGRID_HOST:-`hostname -f`}
+#
 # Set the install date (used in registration documents).
 INSTALL_DATE=`date "+%Y-%m-%dT%H:%M:%SZ%z"`
 
