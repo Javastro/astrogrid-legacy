@@ -9,7 +9,8 @@
 
 #
 # Registry settings.
-REGISTRY_VERSION=2006.3.03r
+#REGISTRY_VERSION=2006.3.03r
+REGISTRY_VERSION=2007.1r
 REGISTRY_WARFILE=astrogrid-registry-${REGISTRY_VERSION}.war
 REGISTRY_CONTEXT=astrogrid-registry
 

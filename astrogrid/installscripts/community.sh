@@ -9,7 +9,8 @@
 
 #
 # Community settings.
-COMMUNITY_VERSION=2006.3.04ct
+#COMMUNITY_VERSION=2006.3.04ct
+COMMUNITY_VERSION=2007.1ct
 COMMUNITY_WARFILE=astrogrid-community-${COMMUNITY_VERSION}.war
 COMMUNITY_CONTEXT=astrogrid-community
 
