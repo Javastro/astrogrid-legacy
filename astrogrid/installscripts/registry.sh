@@ -301,7 +301,34 @@ cat > ${ASTROGRID_HOME}/registry/resource.xml << EOF
     xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3"
     xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5"
     xmlns="http://www.ivoa.net/xml/VOResource/v0.10">
-    <vor:Resource xsi:type="vg:Registry" updated="${INSTALL_DATE}" status="active">
+    <vor:Resource
+        status="active"
+        xsi:type="vg:Authority"
+        updated="${INSTALL_DATE}"
+        >
+        <title>Astrogrid demo authority</title>
+        <identifier>ivo://org.astrogrid</identifier>
+        <curation>
+            <publisher>AstroGrid</publisher>
+            <contact>
+                <name>${ASTROGRID_ADMIN}</name>
+                <email>${ASTROGRID_EMAIL}</email>
+            </contact>
+        </curation>
+    	<content>
+            <subject>A demo registry authority</subject>
+            <description>
+                This authority ID will be used to identify demo resources installed by the Astrogrid consortium
+            </description>
+            <referenceURL>${ASTROGRID_EXTERNAL}/${REGISTRY_CONTEXT}</referenceURL>
+            <type>Archive</type>
+        </content>
+    </vor:Resource>
+    <vor:Resource
+        status="active"
+        xsi:type="vg:Registry"
+        updated="${INSTALL_DATE}"
+        >
         <title>AstroGrid demo registry</title>
         <identifier>ivo://${ASTROGRID_AUTH}/org.astrogrid.registry.RegistryService</identifier>
         <curation>
