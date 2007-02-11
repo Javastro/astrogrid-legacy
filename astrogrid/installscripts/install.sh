@@ -13,9 +13,9 @@ SCRIPT_NAME=`basename "$0"`
 SCRIPT_PATH=`dirname "$0"`
 
 #
-# Set the install variables.
-INSTALL_DATE=`date "+%Y%m%d%H%M%S"`
+# Set the install date (used in registration documents).
 INSTALL_USER=`whoami`
+INSTALL_DATE=`date "+%Y-%m-%dT%H:%M:%SZ%z"`
 
 #
 # Read existing settings
@@ -30,7 +30,10 @@ export JAVA_HOME=${JAVA_HOME:-/usr/java/jdk1.5.0_08}
 
 export ASTROGRID_USER=${ASTROGRID_USER:-"astrogrid"}
 export ASTROGRID_PASS=${ASTROGRID_PASS:-"W6G117"}
-export ASTROGRID_HOST=${ASTROGRID_HOST:-`hostname -f`}
+export ASTROGRID_HOST=${ASTROGRID_HOST:-`hostname -f`}#
+# Set the install date (used in registration documents).
+INSTALL_DATE=`date "+%Y-%m-%dT%H:%M:%SZ%z"`
+
 export ASTROGRID_PORT=${ASTROGRID_PORT:-"8080"}
 export ASTROGRID_MAVEN=${ASTROGRID_MAVEN:-"http://www.astrogrid.org/maven"}
 export ASTROGRID_AUTH=${ASTROGRID_AUTH:-"org.astrogrid.demo"}

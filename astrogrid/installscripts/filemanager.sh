@@ -13,6 +13,9 @@
 FILEMANAGER_VERSION=2007.1fm
 FILEMANAGER_WARFILE=astrogrid-filemanager-${FILEMANAGER_VERSION}.war
 FILEMANAGER_CONTEXT=astrogrid-filemanager
+#
+# Set the install date (used in registration documents).
+INSTALL_DATE=`date "+%Y-%m-%dT%H:%M:%SZ%z"`
 
 echo ""
 echo "Installing AstroGrid FileManager"
@@ -121,7 +124,7 @@ EOF
 #
 # Ask Tomcat to load the webapp.
 echo ""
-echo "Starting registry webapp"
+echo "Starting FileManager webapp"
 echo "  URL : ${ASTROGRID_INTERNAL}/manager/html/deploy"
 echo "  CXT : /${FILEMANAGER_CONTEXT}"
 echo "  XML : file://${ASTROGRID_HOME}/filemanager/webapp/context.xml"
@@ -185,7 +188,7 @@ cat > ${ASTROGRID_HOME}/filemanager/resource.xml << EOF
     xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3"
     xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5"
     xmlns="http://www.ivoa.net/xml/VOResource/v0.10">
-    <vor:Resource xsi:type="vr:Service"  updated="2004-11-20T15:34:22Z" status="active">
+    <vor:Resource xsi:type="vr:Service"  updated="${INSTALL_DATE}" status="active">
         <title>FileManager demo service</title>
         <identifier>ivo://${ASTROGRID_AUTH}/filemanager</identifier>
         <curation>

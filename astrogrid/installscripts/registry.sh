@@ -13,6 +13,9 @@
 REGISTRY_VERSION=2007.1r
 REGISTRY_WARFILE=astrogrid-registry-${REGISTRY_VERSION}.war
 REGISTRY_CONTEXT=astrogrid-registry
+#
+# Set the install date (used in registration documents).
+INSTALL_DATE=`date "+%Y-%m-%dT%H:%M:%SZ%z"`
 
 echo ""
 echo "Installing AstroGrid registry"
@@ -298,7 +301,7 @@ cat > ${ASTROGRID_HOME}/registry/resource.xml << EOF
     xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3"
     xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5"
     xmlns="http://www.ivoa.net/xml/VOResource/v0.10">
-    <vor:Resource xsi:type="vg:Registry" updated="2004-11-20T15:34:22Z" status="active">
+    <vor:Resource xsi:type="vg:Registry" updated="${INSTALL_DATE}" status="active">
         <title>AstroGrid demo registry</title>
         <identifier>ivo://${ASTROGRID_AUTH}/org.astrogrid.registry.RegistryService</identifier>
         <curation>

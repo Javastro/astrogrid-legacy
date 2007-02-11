@@ -14,6 +14,10 @@ COMMUNITY_VERSION=2007.1ct
 COMMUNITY_WARFILE=astrogrid-community-${COMMUNITY_VERSION}.war
 COMMUNITY_CONTEXT=astrogrid-community
 
+#
+# Set the install date (used in registration documents).
+INSTALL_DATE=`date "+%Y-%m-%dT%H:%M:%SZ%z"`
+
 echo ""
 echo "Installing AstroGrid Community"
 
@@ -234,7 +238,7 @@ cat > ${ASTROGRID_HOME}/community/resource.xml << EOF
     xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3"
     xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5"
     xmlns="http://www.ivoa.net/xml/VOResource/v0.10">
-	<vor:Resource xsi:type="vr:Service"  updated="2004-11-20T15:34:22Z" status="active">
+	<vor:Resource xsi:type="vr:Service"  updated="${INSTALL_DATE}" status="active">
 		<title>Policy manager</title>
 		<identifier>ivo://${ASTROGRID_AUTH}/org.astrogrid.community.common.policy.manager.PolicyManager</identifier>
 		<curation>
@@ -258,7 +262,7 @@ cat > ${ASTROGRID_HOME}/community/resource.xml << EOF
 			<accessURL use="full">${ASTROGRID_EXTERNAL}/${COMMUNITY_CONTEXT}/services/PolicyManager</accessURL>
 		</interface> 
 	</vor:Resource>
-	<vor:Resource xsi:type="vr:Service"  updated="2004-11-20T15:34:22Z" status="active">
+	<vor:Resource xsi:type="vr:Service"  updated="${INSTALL_DATE}" status="active">
 		<title>Policy service</title>
 		<identifier>ivo://${ASTROGRID_AUTH}/org.astrogrid.community.common.policy.service.PolicyService</identifier>
 		<curation>
@@ -278,7 +282,7 @@ cat > ${ASTROGRID_HOME}/community/resource.xml << EOF
 			<accessURL use="full">${ASTROGRID_EXTERNAL}/${COMMUNITY_CONTEXT}/services/PolicyService</accessURL>
 		</interface> 
 	</vor:Resource>
-	<vor:Resource xsi:type="vr:Service"  updated="2004-11-20T15:34:22Z" status="active">
+	<vor:Resource xsi:type="vr:Service"  updated="${INSTALL_DATE}" status="active">
 		<title>Security manager</title>
 		<identifier>ivo://${ASTROGRID_AUTH}/org.astrogrid.community.common.security.manager.SecurityManager</identifier>
 		<curation>
@@ -298,7 +302,7 @@ cat > ${ASTROGRID_HOME}/community/resource.xml << EOF
 			<accessURL use="full">${ASTROGRID_EXTERNAL}/${COMMUNITY_CONTEXT}/services/SecurityManager</accessURL>
 		</interface> 
 	</vor:Resource>
-	<vor:Resource xsi:type="vr:Service"  updated="2004-11-20T15:34:22Z" status="active">
+	<vor:Resource xsi:type="vr:Service"  updated="${INSTALL_DATE}" status="active">
 		<title>Security service</title>
 		<identifier>ivo://${ASTROGRID_AUTH}/org.astrogrid.community.common.security.service.SecurityService</identifier>
 		<curation>
