@@ -303,29 +303,6 @@ cat > ${ASTROGRID_HOME}/registry/resource.xml << EOF
     xmlns="http://www.ivoa.net/xml/VOResource/v0.10">
     <vor:Resource
         status="active"
-        xsi:type="vg:Authority"
-        updated="${INSTALL_DATE}"
-        >
-        <title>Astrogrid demo authority</title>
-        <identifier>ivo://org.astrogrid</identifier>
-        <curation>
-            <publisher>AstroGrid</publisher>
-            <contact>
-                <name>${ASTROGRID_ADMIN}</name>
-                <email>${ASTROGRID_EMAIL}</email>
-            </contact>
-        </curation>
-    	<content>
-            <subject>A demo registry authority</subject>
-            <description>
-                This authority ID will be used to identify demo resources installed by the Astrogrid consortium
-            </description>
-            <referenceURL>${ASTROGRID_EXTERNAL}/${REGISTRY_CONTEXT}</referenceURL>
-            <type>Archive</type>
-        </content>
-    </vor:Resource>
-    <vor:Resource
-        status="active"
         xsi:type="vg:Registry"
         updated="${INSTALL_DATE}"
         >
@@ -344,15 +321,7 @@ cat > ${ASTROGRID_HOME}/registry/resource.xml << EOF
             <referenceURL>${ASTROGRID_EXTERNAL}/${REGISTRY_CONTEXT}</referenceURL>
             <type>Archive</type>
         </content>
-        <!--+
-        <interface xsi:type="vs:WebService">
-            <accessURL use="full">${ASTROGRID_EXTERNAL}/${REGISTRY_CONTEXT}/services/RegistryHarvest</accessURL>
-        </interface>
-        <interface xsi:type="vs:ParamHttp">
-            <accessURL use="full">${ASTROGRID_EXTERNAL}/${REGISTRY_CONTEXT}/OAIHandlerv0_10</accessURL>
-        </interface>
-            +-->
-        <interface xsi:type="vs:WebBrowser">
+        <interface xsi:type="WebBrowser">
             <accessURL use="full">${ASTROGRID_EXTERNAL}/${REGISTRY_CONTEXT}/OAIHandlerv0_10</accessURL>
         </interface>
         <vg:managedAuthority>${ASTROGRID_AUTH}</vg:managedAuthority>
@@ -382,3 +351,64 @@ else
     exit 1
 fi
 
+#
+# Generate the registration document.
+# ** Change this to generate a v1.0 resource **
+echo ""
+echo "Generating authority registration"
+cat > ${ASTROGRID_HOME}/registry/authority.xml << EOF
+<vor:VOResources
+    xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10"
+    xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3"
+    xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5"
+    xmlns="http://www.ivoa.net/xml/VOResource/v0.10">
+    <vor:Resource
+        status="active"
+        xsi:type="vg:Authority"
+        updated="${INSTALL_DATE}"
+        >
+        <title>Astrogrid demo authority</title>
+        <identifier>ivo://org.astrogrid</identifier>
+        <curation>
+            <publisher>AstroGrid</publisher>
+            <contact>
+                <name>${ASTROGRID_ADMIN}</name>
+                <email>${ASTROGRID_EMAIL}</email>
+            </contact>
+        </curation>
+    	<content>
+            <subject>A demo registry authority</subject>
+            <description>
+                This authority ID will be used to identify demo resources installed by the Astrogrid consortium
+            </description>
+            <referenceURL>${ASTROGRID_EXTERNAL}/${REGISTRY_CONTEXT}</referenceURL>
+            <type>Archive</type>
+        </content>
+    </vor:Resource>
+</vor:VOResources>
+EOF
+
+#
+# Register the authority.
+# ** No validation for this version of registry **
+# ** Server does not return an error code if it fails **
+echo ""
+echo "Registering authority"
+echo "  URL  : ${REGISTRY_ENTRY}"
+echo "  XML  : file://${ASTROGRID_HOME}/registry/authority.xml"
+if [ `curl -s -i \
+     --url  ${REGISTRY_ENTRY} \
+     --user ${ASTROGRID_USER}:${ASTROGRID_PASS} \
+     --data "addFromURL=true" \
+     --data "uploadFromURL=upload"  \
+     --data "docurl=file://${ASTROGRID_HOME}/registry/authority.xml" \
+     | head -n 10 | grep -c "200 OK"` = 1 ]
+then
+	echo "  PASS"
+else
+	echo "  ERROR : Failed to register the authority"
+    exit 1
+fi
