@@ -116,6 +116,13 @@
                                         #f
                                         "http://purl.org/dc/elements/1.1/name"
                                         (->jstring "Norman"))))
+    (expect select-subjects-literal2    ;the same, but predicate is jstring
+            '("urn:example#norman")
+            (map node->string
+                 (rdf:select-statements test-model
+                                        #f
+                                        (->jstring "http://purl.org/dc/elements/1.1/name")
+                                        (->jstring "Norman"))))
     (expect-failure select-subjects-bad ;object is scheme string
                     (map node->string
                          (rdf:select-statements test-model

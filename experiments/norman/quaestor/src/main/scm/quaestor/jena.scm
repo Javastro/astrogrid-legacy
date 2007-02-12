@@ -15,7 +15,8 @@
          report-exception
          format-error-record
          is-java-type?
-         iterator->list)
+         iterator->list
+         chatter)
 
 (require-library 'util/lambda-contract)
 
@@ -23,9 +24,7 @@
 ( rdf:new-empty-model
   rdf:ingest-from-stream
   rdf:ingest-from-stream/language
-  ;rdf:ingest-from-uri
   rdf:merge-models
-  ;rdf:language-ok?
   rdf:mime-type->language
   rdf:language->mime-type
   rdf:mime-type-list
@@ -139,6 +138,8 @@
     ;; ...http://www.dajobe.org/2001/06/ntriples/
     ))
 
+;; RDF:MIME-TYPE->LANGUAGE : string-or-false -> string-or-false
+;;
 ;; Given a MIME type (a non-null string), return an RDF language, as
 ;; one of the strings accepted by RDF:LANGUAGE-OK?.
 ;; As a convenience, the `string' may be passed as #f,
@@ -151,6 +152,8 @@
         (and p (cdr p)))
       (rdf:mime-type->language "*/*")))
 
+;; RDF:LANGUAGE->MIME-TYPE : string -> string-or-false
+;;
 ;; Map RDF language to MIME type.  This is the inverse of
 ;; RDF:MIME-TYPE->LANGUAGE.  Return #f if LANG is not a legal language.
 (define/contract (rdf:language->mime-type (lang string?) -> string-or-false?)
@@ -166,8 +169,8 @@
 (define (rdf:mime-type-list)
   (map car (cdr mime-lang-mappings)))
 
-;; rdf:ingest-from-stream java-stream string -> java-model
-;; rdf:ingest-from-stream java-reader string -> java-model
+;; RDF:INGEST-FROM-STREAM java-stream string -> java-model
+;; RDF:INGEST-FROM-STREAM java-reader string -> java-model
 ;;
 ;; Given a Java STREAM or Java Reader, this reads in the RDF within it,
 ;; and returns the resulting model.
@@ -227,7 +230,7 @@
     read
     get-reader
     set-error-handler)
-  (define logger                        ;collects warnings from rdf-error-handler
+  (define logger             ;collects warnings from rdf-error-handler
     (let ((errlist '()))
       (lambda args
         (if (null? args)
@@ -236,26 +239,18 @@
                   (cons (apply format `(#f ,(string-append (car args) "~%")
                                            . ,(cdr args)))
                         errlist))))))
-  (let* ((ser-lang (cond ((and (string? language)
-                               (rdf:mime-type->language language))
-                          => ->jstring)
-                         ((string? language)
-                          (->jstring language))
-                         ((rdf:mime-type->language (->string language))
-                          => ->jstring)
-                         (else
-                          language)))
-         (model (rdf:new-empty-model))
-         (reader (and model (get-reader model ser-lang))))
 
-    (or reader
-        (error "Failed to get reader!"))
+  (let ((ser-lang (cond ((and (string? language)
+                              (rdf:mime-type->language language))
+                         => ->jstring)
+                        ((string? language)
+                         (->jstring language))
+                        ((rdf:mime-type->language (->string language))
+                         => ->jstring)
+                        (else
+                         language)))
+        (model (rdf:new-empty-model)))
 
-    (set-error-handler reader
-                       (rdf-error-handler (as-scheme-string base-uri) logger))
-
-    ;; should the following be MAKE-FC (and have the extra logic folded 
-    ;; in there)
     (with/fc
         (lambda (m e)
           (report-exception 'ingest-from-stream
@@ -268,7 +263,16 @@
                                 (format #f "Other warnings:~%~a~%"
                                         (apply string-append (logger))))))
       (lambda ()
-        (read reader model stream (as-java-string base-uri))))
+        (let ((reader (and model (get-reader model ser-lang))))
+
+          (or reader
+              (error "Failed to get reader!"))
+
+          (set-error-handler reader
+                             (rdf-error-handler (as-scheme-string base-uri)
+                                                logger))
+
+          (read reader model stream (as-java-string base-uri)))))
     ;; we might as well add any logger warnings to the (chatter)
     (chatter (apply string-append (cons "Logger warnings: " (logger))))
     model))
@@ -324,8 +328,8 @@
 ;;
 ;; Query a model, matching the specified patterns.
 ;;
-;; SUBJECT and PREDICATE may be scheme strings, or Java objects of type
-;; Resource and Property respectively.  In the latter cases, they are
+;; SUBJECT and PREDICATE may be scheme/java strings, or Java objects of type
+;; Resource and Property respectively.  In the former cases, they are
 ;; transformed into the appropriate Java objects.
 ;;
 ;; OBJECT may be either an RDFNode or a _Java_ object.  In the latter case,
@@ -337,10 +341,12 @@
 (define/contract (rdf:select-statements (model     jena-model?)
                                         (subject   (or (not subject)
                                                        (jena-resource? subject)
-                                                       (string? subject)))
+                                                       (string? subject)
+                                                       (jstring? subject)))
                                         (predicate (or (not predicate)
                                                        (jena-property? predicate)
-                                                       (string? predicate)))
+                                                       (string? predicate)
+                                                       (jstring? predicate)))
                                         (object    (or (not object)
                                                        (jena-rdfnode? object)
                                                        (java-object? object)))
@@ -375,14 +381,16 @@
                              (jobj-or-null subject
                                            <com.hp.hpl.jena.rdf.model.resource>
                                            (lambda (subj)
-                                             (create-resource model
-                                                              (->jstring subj))))
+                                             (create-resource
+                                              model
+                                              (as-java-string subj))))
                              (jobj-or-null predicate
                                            <com.hp.hpl.jena.rdf.model.property>
                                            (lambda (pred)
-                                             (create-property model
-                                                              (->jstring pred)
-                                                              (->jstring ""))))
+                                             (create-property
+                                              model
+                                              (as-java-string pred)
+                                              (->jstring ""))))
                              (jobj-or-null object ;presume it's a literal
                                            <rdf-node>
                                            (cut create-typed-literal
