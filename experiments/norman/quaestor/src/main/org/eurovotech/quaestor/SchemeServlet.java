@@ -139,8 +139,9 @@ public class SchemeServlet extends GenericServlet {
             StringBuffer msg = new StringBuffer();
             msg.append(method)
                     .append(context)
-                    .append(": calling procedure on ")
-                    .append(request.getPathInfo());
+                    .append(": calling procedure on <")
+                    .append(request.getPathInfo())
+                    .append(">");
             log(msg.toString());
 
             // following statuses will very probably be overridden within the
@@ -158,7 +159,7 @@ public class SchemeServlet extends GenericServlet {
                     PrintWriter out =
                             LazyOutputStream.getLazyOutputStream(response)
                             .getWriter();
-                    out.println(val);
+                    out.print(val);
                     out.flush();
                 }
             } catch (SchemeException e) {
