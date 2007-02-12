@@ -371,7 +371,7 @@ cat > ${ASTROGRID_HOME}/registry/authority.xml << EOF
         updated="${INSTALL_DATE}"
         >
         <title>Astrogrid demo authority</title>
-        <identifier>ivo://org.astrogrid</identifier>
+        <identifier>ivo://${ASTROGRID_AUTH}</identifier>
         <curation>
             <publisher>AstroGrid</publisher>
             <contact>

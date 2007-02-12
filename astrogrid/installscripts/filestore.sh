@@ -95,7 +95,7 @@ cat > ${ASTROGRID_HOME}/filestore/webapp/context.xml << EOF
         description="The FileStore access URL"
         name="org.astrogrid.filestore.service.url"
         type="java.lang.String"
-        value="http://${ASTROGRID_EXTERNAL}/${FILESTORE_CONTEXT}/filestore"
+        value="${ASTROGRID_EXTERNAL}/${FILESTORE_CONTEXT}/filestore"
         />
     <!-- Configure the repository location -->
     <Environment
