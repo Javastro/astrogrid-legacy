@@ -19,6 +19,7 @@
   is-java-type?
   url-decode-to-jstring
   reader->jstring
+  input-stream->jstring
   report-exception
   chatter
   parse-http-accept-header
@@ -61,7 +62,8 @@
 ;; predicates used in contracts
 (define-java-classes
   <java.lang.string>
-  <java.io.reader>)
+  <java.io.reader>
+  <java.io.input-stream>)
 (define (jiterator? x)
   (is-java-type? x '|java.util.Iterator|))
 (define (jlist? x)
@@ -180,6 +182,18 @@
             (to-string sb)
             (loop (append sb carr zo rlen)))))))
 
+;; INPUT-STREAM->JSTRING input-stream -> jstring
+;;
+;; Given a SOURCE which is a Java InputStream, return a Java string containing
+;; the contents of the stream
+(define/contract (input-stream->jstring
+                  (source (is-java-type? source <java.io.input-stream>))
+                  -> jstring?)
+  (define-java-classes
+    <java.io.input-stream-reader>)
+  (reader->jstring (java-new <java.io.input-stream-reader> source)))
+
+;; report-exception : symbol integer string . obj -> does-not-return
 ;; Variant of ERROR, which can be called in a region handled by the failure
 ;; continuation created by MAKE-FC.  Throw an error, in the given LOCATION,
 ;; with a message formatted with the given FMT and ARGS.  However instead
@@ -225,7 +239,7 @@
                       init
                       (kons (car i) (loop (cdr i))))))))
 
-    (let ((chatter-list (make-circular-list 8)))
+    (let ((chatter-list (make-circular-list 16)))
       (lambda msg
         (cond ((null? msg)                 ;retrieve messages
                (let ((r (reduce-circular-list (lambda (l r) (if l (cons l r) r))
@@ -237,7 +251,7 @@
                                               '()
                                               chatter-list)))
                  (if (car msg)
-                     (set! chatter-list (make-circular-list 8))) ; new clear list
+                     (set! chatter-list (make-circular-list 16))) ; new clear list
                  (and (not (null? r)) r)))  ;return list or #f
               (else
                (set! chatter-list   ;append a new message
@@ -276,58 +290,127 @@
     (cond ((is-java-type? msg <throwable>)
            (get-message (get-undeclared-throwable msg)))
           ((is-java-type? msg <exception>)
-           (to-string msg))
+           (->string (to-string msg)))
           ((format-error-ancestors rec))
           (else
            rec))))
 
- ;; Parse an HTTP Accept header into a list of acceptable MIME types.
- ;; The JHEADER is a Java string in the format required by RFC 2616, that is,
- ;; as a comma-separated list of media-type tokens:
- ;;   media-type     = type "/" subtype *( ";" parameter )
- ;;   parameter      = attribute "=" value
- ;;   attribute      = token
- ;;   value          = token | quoted-string
- ;; There's a good discussion, albeit in a Python context, at
- ;; <http://www.xml.com/pub/a/2005/06/08/restful.html>
- ;; The result is sorted in order of descending weight parameter, though
- ;; the sort isn't stable, so order of equally-weighted types isn't preserved.
- (define parse-http-accept-header
-   (let ((commas #f)
-         (parameters #f))
-     (define-generic-java-methods
-       split
-       compile
-       matcher
-       matches
-       group
-       parse-float)
-     (define-java-classes
-       <java.util.regex.pattern>
-       <java.lang.float>)
-     (lambda (jheader)
-       (if (not commas)
-           (begin (set! commas
-                        (compile (java-null <java.util.regex.pattern>)
-                                 (->jstring " *, *")))
-                  (set! parameters
-                        (compile (java-null <java.util.regex.pattern>)
-                                 (->jstring "\([^;]*\); *q=\([0-9.]+\).*")))))
-       (let ((pairs (map (lambda (js)
-                           (let ((js-matcher (matcher parameters js)))
-                             (if (->boolean (matches js-matcher))
-                                 (cons (->string
-                                        (group js-matcher (->jint 1)))
-                                       (string->number
-                                        (->string
-                                         (group js-matcher (->jint 2)))))
-                                 (cons (->string js) 1))))
-                         (->list (split commas jheader)))))
-         (remove (lambda (s) (= (string-length s) 0))
-                 (map car
-                      (sort-list pairs
-                                 (lambda (a b)
-                                   (> (cdr a) (cdr b))))))))))
+;; Parse an HTTP Accept header into a list of acceptable MIME types.
+;; The JHEADER is a Java string in the format required by RFC 2616, that is,
+;; as a comma-separated list of media-type tokens:
+;;   media-type     = type "/" subtype *( ";" parameter )
+;;   parameter      = attribute "=" value
+;;   attribute      = token
+;;   value          = token | quoted-string
+;; See RFC 2616, section 14.1.
+;; There's a good discussion, albeit in a Python context, at
+;; <http://www.xml.com/pub/a/2005/06/08/restful.html>
+;; The result is sorted in order of descending weight parameter, though
+;; the sort isn't stable, so order of equally-weighted types isn't preserved.
+;;
+;; Types or subtypes equal to "*" sort lower than all other strings.
+;; We ignore other parameters such as ";level=1" (but make sure they're
+;; not errors).
+(define parse-http-accept-header
+  (let ((commas #f)
+        (content-type #f))
+    (define (non-null x)
+      (and (not (java-null? x)) x))
+    (define-generic-java-methods
+      split
+      compile
+      matcher
+      matches
+      group)
+    (define-java-classes
+      <java.util.regex.pattern>)
+    (lambda (jheader)
+      (if (not commas)
+          (begin (set! commas
+                       (compile (java-null <java.util.regex.pattern>)
+                                (->jstring " *, *")))
+                 (set! content-type
+                       (compile (java-null <java.util.regex.pattern>)
+                                (->jstring "([^/]+)/([^;]+)(?:; *(?:q=([0-9.]+))?.*)?")))))
+      (let ((key-and-mimes
+             (remove
+              (lambda (x) (not x))
+              (map (lambda (js)
+                     (let ((js-matcher (matcher content-type js)))
+                       (if (->boolean (matches js-matcher))
+                           (let ((type
+                                  (->string (group js-matcher (->jint 1))))
+                                 (subtype
+                                  (->string (group js-matcher (->jint 2))))
+                                 (qparam
+                                  (non-null (group js-matcher (->jint 3)))))
+                             `(#(,type ,subtype ,(if qparam
+                                                     (string->number
+                                                      (->string qparam))
+                                                     1))
+                               . ,(string-append type "/" subtype)))
+                           #f       ; what's this? -- ignore it anyway
+                           )))
+                   (->list (split commas jheader))))))
+;;         (format #t "header=~a -> mimes ~a~%"
+;;                 (->string jheader)
+;;                 key-and-mimes)
+        (map cdr
+             (sort-list key-and-mimes
+                        (lambda (a b)
+                          (let ((ta  (vector-ref (car a) 0))
+                                (sta (vector-ref (car a) 1))
+                                (qa  (vector-ref (car a) 2))
+                                (tb  (vector-ref (car b) 0))
+                                (stb (vector-ref (car b) 1))
+                                (qb  (vector-ref (car b) 2)))
+                            (cond ((not (= qa qb))
+                                   (>= qa qb))
+                                  ((string=? ta "*")
+                                   #f)
+                                  ((string=? tb "*")
+                                   #t)
+                                  ((string=? sta "*")
+                                   #f)
+                                  ((string=? stb "*")
+                                   #t)
+                                  (else #t))))))))))
+;;  (define parse-http-accept-header
+;;    (let ((commas #f)
+;;          (parameters #f))
+;;      (define-generic-java-methods
+;;        split
+;;        compile
+;;        matcher
+;;        matches
+;;        group
+;;        parse-float)
+;;      (define-java-classes
+;;        <java.util.regex.pattern>
+;;        <java.lang.float>)
+;;      (lambda (jheader)
+;;        (if (not commas)
+;;            (begin (set! commas
+;;                         (compile (java-null <java.util.regex.pattern>)
+;;                                  (->jstring " *, *")))
+;;                   (set! parameters
+;;                         (compile (java-null <java.util.regex.pattern>)
+;;                                  (->jstring "\([^;]*\); *q=\([0-9.]+\).*")))))
+;;        (let ((pairs (map (lambda (js)
+;;                            (let ((js-matcher (matcher parameters js)))
+;;                              (if (->boolean (matches js-matcher))
+;;                                  (cons (->string
+;;                                         (group js-matcher (->jint 1)))
+;;                                        (string->number
+;;                                         (->string
+;;                                          (group js-matcher (->jint 2)))))
+;;                                  (cons (->string js) 1))))
+;;                          (->list (split commas jheader)))))
+;;          (remove (lambda (s) (= (string-length s) 0))
+;;                  (map car
+;;                       (sort-list pairs
+;;                                  (lambda (a b)
+;;                                    (> (cdr a) (cdr b))))))))))
 
  ;; Simple implementation of heapsort (?).  Probably not massively efficient
  ;; but there isn't a SRFI for sorting yet.  Sort the given list L with

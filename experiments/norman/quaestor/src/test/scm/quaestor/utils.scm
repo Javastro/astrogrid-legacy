@@ -63,16 +63,19 @@
           ("text/plain" "text/xml")
           ("text/plain" "text/xml" "*/*")
           ("application/xml" "text/plain")
-          ("a/a" "b/b" "c/c"))
+          ("a/a" "b/b" "c/c")
+          ("text/x-c" "text/html" "text/x-dvi" "text/plain")
+          ("text/html" "text/html" "text/*" "*/*"))
         (map (lambda (ss)
                (PARSE-HTTP-ACCEPT-HEADER (->jstring ss)))
              '("text/plain"
                "*/*"
-               ;"text/plain, application/xml" ;omit this -- sort isn't stable
                "text/plain, text/xml; q=0.2"            ;simple
                "text/plain, text/xml;q=.5, */*;q=.2"    ;no leading 0 on numbers
                "text/plain; q=0.5 , , application/xml," ; empty elements
                "c/c;q=0.2,b/b;q=0.5,a/a,,,"             ;list is reversed
+             "text/plain;q=0.5,text/html;q=0.9,text/x-dvi;q=0.8,,text/x-c"
+             "text/*, text/html, text/html;level=1, */*"
                )))
 
 (expect parse-query-string
