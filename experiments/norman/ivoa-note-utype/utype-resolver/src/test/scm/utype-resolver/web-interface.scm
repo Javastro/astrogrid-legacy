@@ -5,6 +5,9 @@
 (require-library 'sisc/libs/srfi/srfi-8)      ;receive
 (import srfi-8)
 
+(define-java-classes
+  (<jstring> |java.lang.String|))
+
 ;; Set the current URL, for normalisation purposes, to the value
 ;; determined in the caller
 (current-url (option-service-url))
@@ -37,11 +40,18 @@
       (lambda ()
         (let ((c (open-connection (java-new <url> (->jstring full-url))))
               (hh (header-handler)))
+;;           (define-generic-java-methods
+;;             to-string
+;;             (get-url-from-connection |getURL|))
+;;           (format #t "get-url: opened connection to ~a~%"
+;;                   (->string (to-string (get-url-from-connection c))))
           (if mime-types
               (set-request-property c
                                     (->jstring "Accept")
                                     (->jstring mime-types))
               (set-request-property c   ; override `helpful' URLConnection
+                                        ; (there's no way to remove this header
+                                        ; completely, so we can't test that)
                                     (->jstring "Accept")
                                     (->jstring "*/*")))
           (set-follow-redirects c (->jboolean #f))
@@ -121,8 +131,9 @@
                            strings))))))))
 
 
-;; call-with-content : string number string proc -> void
-;; call-with-content : string (string) number string proc proc -> void
+;; CALL-AND-EXPECT-RESPONSE : symbol string number string proc -> void
+;; CALL-AND-EXPECT-RESPONSE : symbol string (string) number string proc proc -> void
+;;
 ;; Retrieve the relurl, check that its status and content-type are as shown,
 ;; then call the first procedure with the content string as argument.
 ;; If the second procedure is present and not #f, then call it with the
@@ -131,33 +142,51 @@
 ;; may be #f to omit the corresponding check.
 (define-syntax call-and-expect-response
   (syntax-rules ()
-    ((_ relurl expected-status expected-type check-content)
-     (call-and-expect-response relurl (#f)
+    ((_ id relurl expected-status expected-type check-content)
+     (call-and-expect-response id relurl (#f)
                                expected-status expected-type
                                check-content #f))
-    ((_ relurl (accept-header)
+    ((_ id relurl (accept-header)
         expected-status expected-type
         check-content check-headers)
      (receive (status headers content)
          (get-url relurl accept-header)
        (if status
            (let ()
-;;              (format #t "status=~a(~a)  type=~a(~a, req ~a)  content-length=~a~%"
+;;              (format #t "test ~a:~%  status=~a(~a)  type=~a(~a, req ~a)  content-length=~a~%  content=~a~%"
+;;                      id
 ;;                      status expected-status
 ;;                      (headers 'content-type) expected-type accept-header
-;;                      (and content (string-length content)))
+;;                      (and content (string-length content))
+;;                      (if (= status expected-status)
+;;                          "<suppressed>"
+;;                          content))
              (if expected-status
-                 (expect (relurl status) expected-status status))
+                 (expect (id status) expected-status status))
              (if expected-type
-                 (expect (relurl type) expected-type (headers 'content-type)))
+                 (expect (id type) expected-type (headers 'content-type)))
              (if check-content
                  (check-content content))
              (if check-headers
-                 (check-headers headers)))
+                 (check-headers headers))
+             (if (failures-in-block?)
+                 (format #t "test ~a:~%  status=~a(~a)  type=~a(~a, req ~a)  content-length=~a~%  content=~a~%"
+                         (quote id)
+                         status expected-status
+                         (headers 'content-type) expected-type accept-header
+                         (and content (string-length content))
+                         (cond ((not content)
+                                "<none>")
+                               ((= status expected-status)
+                                "<suppressed>")
+                               (else
+                                content)))))
            #f)))))
 
-
-(define (ignore-content headers) #t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Start tests
 
 (receive (status headers content)
     (get-url "." #f)
@@ -165,57 +194,165 @@
       (error "server is not running -- web-interface tests skipped")))
 
 (call-and-expect-response
- "." 200 "text/html"
+ top "."
+ 200
+ "text/html"
  (lambda (content-string)
-   (expect (relurl content) #t (> (string-length content-string) 0))))
+   (expect (top content) #t (> (string-length content-string) 0))))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Test redirections for simple1
-(call-and-expect-response
- "test/testcases/simple1" (#f) 303 #f
- ignore-content
- (lambda (hh)
-      (expect (resolve-resolver-url "test/testcases/simple1.n3")
-              (hh 'location))))
-(call-and-expect-response
- "test/testcases/simple1" ("text/rdf+n3") 303 #f
- ignore-content
- (lambda (hh)
-   (expect (resolve-resolver-url "test/testcases/simple1.n3")
-           (hh 'location))))
-(call-and-expect-response
- "test/testcases/simple1" ("application/rdf+xml") 404 #f
- ignore-content
- (lambda (hh)
-   (expect #f (hh 'location))))
 
-;; same for simple2
+;; Note that we don't care about the MIME type on the redirections, 303.
+;; This will typically be text/html, but that's just for browser
+;; convenience, and an RDF reader typically won't care.
 (call-and-expect-response
- "test/testcases/simple2" (#f) 303 #f
- ignore-content
- (lambda (hh)
-      (expect (resolve-resolver-url "test/testcases/simple2.n3")
+ simple1 "test/testcases/simple1" (#f)
+ 303                                    ;303 status
+ #f                                     ;any MIME type
+ #f                                     ;any content
+ (lambda (hh)                           ;check Location header
+      (expect simple1-headers
+              (resolve-resolver-url "test/testcases/simple1.n3")
               (hh 'location))))
 (call-and-expect-response
- "test/testcases/simple2" ("text/rdf+n3") 303 #f
- ignore-content
+ simple1-n3 "test/testcases/simple1" ("text/rdf+n3")
+ 303
+ #f
+ #f
  (lambda (hh)
-   (expect (resolve-resolver-url "test/testcases/simple2.n3")
+   (expect simple1-n3-headers
+           (resolve-resolver-url "test/testcases/simple1.n3")
            (hh 'location))))
 (call-and-expect-response
- "test/testcases/simple2" ("application/rdf+xml") 303 #f
- ignore-content
+ simple1-rdf                            ; there's no rdf+xml rep'n of this
+ "test/testcases/simple1" ("application/rdf+xml")
+ 406
+ #f
+ #f
  (lambda (hh)
-   (expect (resolve-resolver-url "test/testcases/simple2.rdf")
+   (expect simple1-rdf-headers #f (hh 'location))))
+
+;; so much for redirections: now retrieve the results
+(call-and-expect-response
+ simple1-retrieve-plain
+ "test/testcases/simple1.n3"
+ 200
+ "text/rdf+n3"
+ #f)
+;; same, but with an accept header
+(call-and-expect-response
+ simple1-retrieve-accept
+ "test/testcases/simple1.n3" ("text/rdf+n3")
+ 200
+ "text/rdf+n3"
+ #f
+ #f)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; same for simple2
+
+;; First, a simple call with no accept header (or rather, */*)
+(call-and-expect-response
+ simple2 "test/testcases/simple2" (#f)
+ 303
+ #f
+ #f
+ (lambda (hh)
+   (expect simple2-headers
+           (resolve-resolver-url "test/testcases/simple2.n3")
+           (hh 'location))))
+;; simple calls, with single accept headers
+(call-and-expect-response
+ simple2-n3 "test/testcases/simple2" ("text/rdf+n3")
+ 303
+ #f
+ #f
+ (lambda (hh)
+   (expect simple2-n3-headers
+           (resolve-resolver-url "test/testcases/simple2.n3")
            (hh 'location))))
 (call-and-expect-response
- "test/testcases/simple2" ("text/html,application/wibble") 303 #f
- ignore-content
+ simple2-rdf "test/testcases/simple2" ("application/rdf+xml")
+ 303
+ #f
+ #f
  (lambda (hh)
-   (expect (resolve-resolver-url "test/testcases/simple2.html")
+   (expect simple2-rdf-headers
+           (resolve-resolver-url "test/testcases/simple2.rdf")
            (hh 'location))))
-(call-and-expect-response ;there is a mapping for this, but to a missing file
- "test/testcases/simple2" ("text/undefined") 404 #f
- ignore-content
+
+;; The same two calls, but with both MIME types in the Accept header
+(call-and-expect-response
+ simple2-n3-2
+ "test/testcases/simple2" ("application/rdf+xml;q=0.5, text/rdf+n3")
+ 303
+ #f
+ #f
  (lambda (hh)
-   (expect #f
+   (expect simple2-n3-2-headers
+           (resolve-resolver-url "test/testcases/simple2.n3")
            (hh 'location))))
+(call-and-expect-response
+ simple2-rdf-2
+ "test/testcases/simple2" ("application/rdf+xml, text/rdf+n3;q=0.9")
+ 303
+ #f
+ #f
+ (lambda (hh)
+   (expect simple2-rdf-2-headers
+           (resolve-resolver-url "test/testcases/simple2.rdf")
+           (hh 'location))))
+
+;; Call with unsupported MIME type, should return 406, Not Acceptable
+(call-and-expect-response
+ simple2-badmime
+ "test/testcases/simple2" ("application/wibble")
+ 406
+ #f
+ #f
+ #f)
+
+;; supported MIME type, after unsupported one
+(call-and-expect-response
+ simple2-badmime2
+ "test/testcases/simple2" ("application/wibble,text/html")
+ 303
+ #f
+ #f
+ (lambda (hh)
+   (expect simple2-badmime2-headers
+           (resolve-resolver-url "test/testcases/simple2.html")
+           (hh 'location))))
+
+;; MIME type which has a mapping, but to a missing file -- server error, 500
+(call-and-expect-response
+ simple2-missingmime
+ "test/testcases/simple2" ("text/undefined")
+ 500
+ #f
+ #f
+ (lambda (hh)
+   (expect simple2-missingmime-headers #f
+           (hh 'location))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Now, finally, the reasoning/resolver cases
+
+(let ((testcases-url (resolve-resolver-url "/utype-resolver/test/testcases/")))
+  (format #t "testcases-url=~a~%" testcases-url)
+  (call-and-expect-response
+   resolve1
+   (string-append "resolve?" testcases-url "simple1%23c2")
+   200
+   "text/plain"
+   (lambda (content)
+     (expect resolve1-content
+             (string-append testcases-url "simple1#c1\r\n")
+             content))))

@@ -22,16 +22,16 @@
       ctx)))
 
 ;; our-resource-as-stream : string -> pair-or-false
-;; Get one of our resources (only one level -- no /x/y) and return a
-;; (stream . string) pair containing the stream connected to it, and
-;; its mime type.  If there's no such resource, return #f.
+;; Get one of our resources and return a (stream . string) pair containing
+;; the stream connected to it, and its mime type.
+;; If there's no such resource, return #f.
 (define (our-resource-as-stream name)
   (define-generic-java-methods get-resource-as-stream get-mime-type)
   (let ((jname (->jstring name)))
     (cond ((non-null (get-resource-as-stream (servlet 'context) jname))
            => (lambda (stream)
-                (servlet 'log "resource ~s/~s produced stream ~s and mime-type ~s"
-                         name jname stream
+                (servlet 'log "resource ~s produced stream with mime-type ~s"
+                         name 
                          (->string-if-non-null
                           (get-mime-type (servlet 'context) jname)))
                 (cons stream
@@ -40,11 +40,15 @@
           (else
            #f))))
 
-;; rewrite-resource : string list-of-strings -> string-or-false
+;; rewrite-resource : string list-of-strings -> string/symbol/#f
 ;; rewrite-resource : #f object -> #f
 ;; Given a RESOURCE and a list of mime types, return a string resource which
-;; is what that should map to as controlled by the
-;; /WEB-INF/rewrite-map.scm file.
+;; is what that should map to as controlled by the /WEB-INF/rewrite-map.scm file.
+;;
+;; If we know nothing of the resource, return #f.
+;;
+;; If we know about the resource, but there are no acceptable MIME types,
+;; return 'unacceptable
 (define rewrite-resource
   (let ((rewrite-map #f))  ;map of ((name (mime file) (mime file))...)
     (define (match-name-and-mime name acceptable-mimes)
@@ -58,7 +62,7 @@
                     (and (not (null? mime-file-mappings))
                          (let loop ((ok-mimes acceptable-mimes))
                            (cond ((null? ok-mimes)
-                                  #f)
+                                  'unacceptable)
                                  ((string=? (car ok-mimes) "*/*")
                                   (cadar mime-file-mappings))
                                  ((assoc (car ok-mimes) mime-file-mappings)
@@ -106,7 +110,7 @@
     close
     copy)
   (let ((ostream (get-output-stream response)))
-    (set-response-status! response '|SC_OK| "text/html")
+    ;(set-response-status! response '|SC_OK| "text/html")
     (copy (java-null <q-utils>) istream ostream)
     (flush ostream)
     (close istream)
@@ -147,38 +151,52 @@
                => (lambda (newres)
                     (define-java-classes <java.io.file>)
                     (define-generic-java-methods exists)
-                    (let ((real-path (servlet 'real-path newres))
-                          (new-url (string-append (redirector-context request)
-                                                  newres)))
-                      (cond ((and real-path
-                                  (->boolean (exists (java-new <java.io.file>
-                                                               real-path))))
-                             ;; ...and it maps to an actual file
-                             ;; (normal case)
-                             (set-response-status! response
-                                                   '|SC_SEE_OTHER|
-                                                   "text/html")
-                             (set-header response
-                                         (->jstring "Location")
-                                         (->jstring new-url))
-                             (response-page request response "See elsewhere"
-                                            `((p ,(format #f "The resource you are looking for can be found at ~a" new-url)))))
+                    (cond ((and (symbol? newres)
+                                (eq? newres 'unacceptable))
+                           (set-response-status! response
+                                                 '|SC_NOT_ACCEPTABLE|
+                                                 "text/html")
+                           (response-page request response
+                                          "No acceptable representations"
+                                          `((p ,(format #f "No representations of the resource ~s could be found, in one of the requested representations ~s"
+                                                        res acceptable)))))
 
-                            (real-path
-                             ;; ...but it maps to a non-existent file
-                             (set-response-status! response '|SC_NOT_FOUND|)
-                             (servlet 'log "Resource ~a mapped to ~a, but real path ~a not found"
-                                      res newres (->string real-path))
-                             (response-page request response "Not found"
-                                            `((p ,(format #f "Resource ~a not found" res)))))
+                          ((string? newres)
+                           (let ((real-path (servlet 'real-path newres))
+                                 (new-url (string-append (redirector-context request)
+                                                         newres)))
+                             (cond ((and real-path
+                                         (->boolean (exists (java-new <java.io.file>
+                                                                      real-path))))
+                                    ;; ...and it maps to an actual file
+                                    ;; (normal case)
+                                    (set-response-status! response
+                                                          '|SC_SEE_OTHER|
+                                                          "text/html")
+                                    (set-header response
+                                                (->jstring "Location")
+                                                (->jstring new-url))
+                                    (response-page request response "See elsewhere"
+                                                   `((p ,(format #f "The resource you are looking for can be found at ~a" new-url)))))
 
-                            (else
-                             ;; does this case ever happen?
-                             (set-response-status! response
-                                                   '|SC_NOT_FOUND|
-                                                   "text/html")
-                             (response-page request response "Not found"
-                                            `((p ,(format #f "Resource ~a not found" res)))))))))
+                                   (real-path
+                                    ;; ...but it maps to a non-existent file
+                                    (set-response-status! response '|SC_INTERNAL_SERVER_ERROR|)
+                                    (servlet 'log "Resource ~a mapped to ~a, but real path ~a not found"
+                                             res newres (->string real-path))
+                                    (response-page request response "Not found"
+                                                   `((p ,(format #f "Resource ~a not found" res)))))
+
+                                   (else
+                                    ;; does this case ever happen?
+                                    (set-response-status! response
+                                                          '|SC_NOT_FOUND|
+                                                          "text/html")
+                                    (response-page request response "Not found"
+                                                   `((p ,(format #f "Resource ~a not found" res))))))))
+                          (else
+                           (error 'test-redirector
+                                  (format #f "Unexpected response ~s from rewriting" newres))))))
 
               (else
                ;; resource couldn't be rewritten
