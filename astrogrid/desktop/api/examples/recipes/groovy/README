@@ -1,0 +1,3 @@
+examples for groovy
+rmi/ - examples connecting to AR using RMI
+xmlrpc/ - equivalent examples connecting to AR using XML-RPC

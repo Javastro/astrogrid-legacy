@@ -5,7 +5,7 @@ import org.astrogrid.acr.system.*
 /*
 Noel Winstanley, Astrogrid, 2005
 
-demonstration of attaching a listener to the AR
+demonstration of attaching an event listener to the AR
 
 requires acr client jars in groovy classpath
 connects to acr using rmi access - listeners are not available in the xmlrpc access method
@@ -27,13 +27,13 @@ acr = f.find()
 
 
 // register the listener
-community = acr.getService(Community.class) # get a service by classname
+community = acr.getService(Community.class) // get a service by classname
 community.addUserLoginListener(new MyListener())
 
-myspace = acr.getService("astrogrid.myspace") # get a service by name - alternative would be reg.getService(MySpace.class)
+myspace = acr.getService("astrogrid.myspace") // get a service by name - alternative would be reg.getService(MySpace.class)
 
 // assuming the acr is not already logged in, the following will force a login, and we will observe a callback to the listener
 println myspace.getHome()
 
-// shut the app down - necessary, as won't close by itself.
+// shut this script down - necessary, as won't close by itself - it will keep listening for events.
 System.exit(0)
