@@ -14,6 +14,15 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<action dev="jl" type="add" issue="2032">
+    (1) Removal of Adql/x view unless in advanced mode. Read only when present.
+        Meant introducing an Options drop down menu.
+        Needs to be reviewed by Noel (regarding merging into advanced settings). 
+    (2) Partial merging of tree and Adql/s views.
+    (3) Introduction of an edit history pane.
+    (4) Introduction of Edit drop down menu.
+    (5) Now uses a more advanced version of AdqlStoX.	 
+</action>
 <release version="2007.1.1" date="2007-02-06">
 	<action dev="nw" type="remove">
 		Removed stripping of axis and security jars. Larger filesize, but ukidss access works again. 

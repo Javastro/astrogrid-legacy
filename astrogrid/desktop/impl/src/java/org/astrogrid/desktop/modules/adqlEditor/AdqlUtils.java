@@ -52,9 +52,7 @@ import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
  */
 public final class AdqlUtils {
     
-    private static final Log logger = LogFactory.getLog( AdqlUtils.class ) ;
-    private static final boolean DEBUG_ENABLED = false ;
-    private static final boolean TRACE_ENABLED = false ;
+    private static final Log log = LogFactory.getLog( AdqlUtils.class ) ;
     
     private static final String EMPTY_STRING = "".intern() ;
      
@@ -127,6 +125,13 @@ public final class AdqlUtils {
         enumStrings = new String[ enumList.size() ] ;
         enumStrings = (String[])enumList.toArray( enumStrings );
         return enumStrings ;
+    }
+    
+    static public SchemaType getEnumeratedAttributeTypeGivenDrivenType( SchemaType drivenType ) {
+        String drivenTypeName = getLocalName( drivenType ) ;
+        String attrbTypeName = (String)AdqlData.ENUMERATED_ATTRIBUTES.get( drivenTypeName ) ;
+        SchemaType attrbSchemaType = getAttributeType( attrbTypeName, drivenType.getTypeSystem() ) ;
+        return attrbSchemaType ;
     }
     
     static public String[] getEnumValuesGivenDrivenType( SchemaType drivenType ) {
@@ -700,6 +705,27 @@ public final class AdqlUtils {
         return typeOne.getName().equals( typeTwo.getName() ) ;
     }
     
+    static public boolean areTypesEqual( XmlObject objOne, XmlObject objTwo ) {
+        return areTypesEqual( objOne.schemaType(), objTwo.schemaType() ) ;
+    }
+    
+    static public boolean areTypesEqual( XmlObject obj, SchemaType type ) {
+        if( obj == null || type == null )
+            return false ;
+        SchemaType objType = obj.schemaType() ;
+        if( objType == null )
+            return false ;
+        QName qname1 = objType.getName() ;
+        QName qname2 = type.getName() ;
+        if( qname1 == null || qname2 == null )
+            return false ;
+        return qname1.equals( qname2 ) ;
+    }
+    
+    static public boolean areTypesEqual(  XmlObject objOne, String typeTwoLocalName ) {
+        SchemaType typeOne = objOne.schemaType() ;
+        return areTypesEqual( typeOne, getType( typeOne, typeTwoLocalName ) ) ;
+    }
     
     static public boolean areTypesEqual( SchemaType typeOne, String typeTwoLocalName ) {
         return areTypesEqual( typeOne, getType( typeOne, typeTwoLocalName ) ) ;
@@ -888,10 +914,10 @@ public final class AdqlUtils {
                 retObj = method.invoke( o, params ) ;
             }
             catch( java.lang.reflect.InvocationTargetException itx ) {
-                logger.error( "AdqlUtils.invoke: ", itx.getCause() ) ;
+                log.error( "invoke() failed: ", itx.getCause() ) ;
             }
             catch( Exception ex2 ) {
-                logger.error( "AdqlUtils.invoke: ", ex2 );
+                log.error( "invoke() failed: ", ex2 );
             }
         }
         return retObj ;

@@ -40,8 +40,6 @@ import org.astrogrid.desktop.modules.adqlEditor.nodes.NestingNode;
 public abstract class AbstractCommand extends AbstractUndoableEdit implements CommandExec, CommandInfo {
 
     private static final Log log = LogFactory.getLog( AbstractCommand.class ) ;
-    private static final boolean DEBUG_ENABLED = true ;
-    private static final boolean TRACE_ENABLED = true ;
     
     protected AdqlTree adqlTree ;
     protected UndoManager undoManager ;
@@ -53,6 +51,8 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
     protected SchemaType childType ;
     protected int minOccurs ;
     protected int maxOccurs ;
+    
+    private String[] messages ;
     /**
      * @param undoManager TODO
      * 
@@ -63,7 +63,6 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
         this.childToken = addToEditStore( child ) ;
         this.parentToken = addToEditStore( (AdqlNode)child.getParent() ) ;
         this.childType = child.getSchemaType() ;
-        getChildIndex() ;
         initializeElementInfo() ;
     }
     
@@ -117,7 +116,7 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
             }          
         }
         catch( Exception ex ) {
-            log.debug( ex );
+            log.debug( "Failure to initialize element information.", ex );
         }
         
     }
@@ -143,9 +142,12 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
      * @see org.astrogrid.desktop.modules.adqlEditor.Command#getMessages()
      */
     public String[] getMessages() {
-        return null;
+        return messages ;
     }
     
+    public void setMessages( String[] messages ) {
+        this.messages = messages ;
+    }
     
 
     public AdqlNode getChildEntry() {
@@ -208,7 +210,7 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
             	enabled = true ;
         }
         else {
-            log.debug( "Problems with cardinality in AbstractCommand.isChildEnabled()" ) ;
+            log.debug( "Problems with element cardinality in AbstractCommand.isChildEnabled()" ) ;
         }
         return enabled ;
     }

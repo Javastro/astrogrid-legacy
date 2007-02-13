@@ -10,19 +10,22 @@
 **/
 package org.astrogrid.desktop.modules.adqlEditor.commands;
 
-import java.util.ArrayList;
+import java.io.StringReader;
+import java.util.List ;
+import java.util.ArrayList ;
 import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.List;
 import java.util.Random;
+import java.util.HashMap;
 
-import org.apache.xmlbeans.SchemaProperty;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.apache.xmlbeans.SchemaType;
-import org.apache.xmlbeans.XmlObject;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
-import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
+import org.apache.xmlbeans.SchemaProperty;
+import org.astrogrid.desktop.modules.adqlEditor.* ;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode ;
+import org.astrogrid.adql.AdqlStoX;
+
 /**
  * @author jl99
  *
@@ -31,9 +34,12 @@ import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
  */
 public class CommandFactory {
     
+    private static final Log log = LogFactory.getLog( CommandFactory.class ) ;
+    
     private AdqlTree adqlTree ;
     private UndoManager undoManager ;
     private EditStore editStore ;
+    private AdqlStoX adqlCompiler ;
 
     /**
      * 
@@ -47,24 +53,24 @@ public class CommandFactory {
     private CommandFactory() {}
    
     
-    public PasteOverCommand newPasteOverCommand( AdqlNode targetOfPasteOver, XmlObject pasteObject  ) {
-        if( AdqlUtils.isSuitablePasteOverTarget( targetOfPasteOver, pasteObject ) ) {
-            return new PasteOverCommand( adqlTree, undoManager, targetOfPasteOver, pasteObject ) ;
+    public PasteOverCommand newPasteOverCommand( AdqlNode targetOfPasteOver, CopyHolder copy  ) {
+        if( AdqlUtils.isSuitablePasteOverTarget( targetOfPasteOver, copy.getSource() ) ) {
+            return new PasteOverCommand( adqlTree, undoManager, targetOfPasteOver, copy ) ;
         }
         return null ;
     }
     
-    public PasteIntoCommand newPasteIntoCommand( AdqlNode targetOfPasteInto, XmlObject pasteObject ) {
-        SchemaType pastableType = AdqlUtils.findSuitablePasteIntoTarget( targetOfPasteInto, pasteObject ) ;
+    public PasteIntoCommand newPasteIntoCommand( AdqlNode targetOfPasteInto, CopyHolder copy ) {
+        SchemaType pastableType = AdqlUtils.findSuitablePasteIntoTarget( targetOfPasteInto, copy.getSource() ) ;
         if( pastableType != null ) {
-            return new PasteIntoCommand( adqlTree, undoManager, targetOfPasteInto, pastableType, pasteObject ) ;
+            return new PasteIntoCommand( adqlTree, undoManager, targetOfPasteInto, pastableType, copy ) ;
         }
         return null ;
     }
     
-    public PasteNextToCommand newPasteNextToCommand( AdqlNode targetOfNextTo, XmlObject pasteObject, boolean before ) {
-        if( AdqlUtils.isSuitablePasteOverTarget( targetOfNextTo, pasteObject ) ) {
-            return new PasteNextToCommand( adqlTree, undoManager, targetOfNextTo, pasteObject, before ) ;
+    public PasteNextToCommand newPasteNextToCommand( AdqlNode targetOfNextTo, CopyHolder copy, boolean before ) {
+        if( AdqlUtils.isSuitablePasteOverTarget( targetOfNextTo, copy.getSource() ) ) {
+            return new PasteNextToCommand( adqlTree, undoManager, targetOfNextTo, copy, before ) ;
         }
         return null ;
     }
@@ -148,6 +154,35 @@ public class CommandFactory {
         return new ColumnInsertCommand( adqlTree, undoManager, parent, childType, childElement ) ;
     }
     
+    public EditCommand newEditCommand( AdqlTree adqlTree, AdqlNode target, String source ) {
+        source = source.trim() ;
+        if( source.length() == 0 || source.charAt( source.length()-1 ) != ';' ) {
+            source += ';' ;
+        }
+        if( adqlCompiler == null ) {
+            adqlCompiler = new AdqlStoX( new StringReader( source ) ) ;
+        }
+        else {
+            adqlCompiler.ReInit( new StringReader( source ) ) ;
+        }
+        return new EditCommand( adqlTree, undoManager, target, adqlCompiler ) ;
+    }
+    
+    public EditEnumeratedAttributeCommand newEditEnumeratedAttributeCommand( AdqlTree adqlTree, AdqlNode target ) {
+        return new EditEnumeratedAttributeCommand( adqlTree, undoManager, target ) ;
+    }
+   
+    public EditEnumeratedElementCommand newEditEnumeratedElementCommand( AdqlTree adqlTree, AdqlNode target ) {
+        return new EditEnumeratedElementCommand( adqlTree, undoManager, target ) ;
+    }
+    
+    public EditSingletonTextCommand newEditSingletonTextCommand( AdqlTree adqlTree, AdqlNode target ) {
+        return new EditSingletonTextCommand( adqlTree, undoManager, target ) ;
+    }
+    
+    public EditTupleTextCommand newEditTupleTextCommand( AdqlTree adqlTree, AdqlNode target, HashMap fromTables ) {
+        return new EditTupleTextCommand( adqlTree, undoManager, target, fromTables ) ;
+    }
     
     public TableInsertCommand newTableInsertCommand( AdqlNode parent, SchemaType childType, SchemaProperty childElement ) {
         return new TableInsertCommand( adqlTree, undoManager, parent, childType, childElement ) ;        
@@ -241,8 +276,11 @@ public class CommandFactory {
     public class EditStore {
          
         private Random random = new Random() ;
-        private Hashtable tokenToEntryStore = new Hashtable() ;
-        private Hashtable entryToTokenStore = new Hashtable() ;
+//        private Hashtable tokenToEntryStore = new Hashtable( 64 ) ;
+//        private Hashtable entryToTokenStore = new Hashtable( 64 ) ;
+        
+        private HashMap tokenToEntryStore = new HashMap( 64 ) ;
+        private HashMap entryToTokenStore = new HashMap( 64 ) ;
         
         private Integer newToken() {
             Integer token ;
@@ -261,7 +299,10 @@ public class CommandFactory {
                 token = newToken() ;
                 tokenToEntryStore.put( token, entry ) ;
                 entryToTokenStore.put( entry, token ) ;
-            }           
+            }       
+            if( log.isDebugEnabled() ) log.debug("EditStore.add():\n" +
+                                          "   tokenToEntryStore.size(): " + tokenToEntryStore.size() +
+                                          "   entryToTokenStore.size(): " + entryToTokenStore.size() ) ;
             return token ;
         }
         
@@ -276,6 +317,9 @@ public class CommandFactory {
                 tokenToEntryStore.remove( token ) ;
                 tokenToEntryStore.put( token, in ) ;
             }
+            if( log.isDebugEnabled() ) log.debug("EditStore.exchange(AdqlNode,AdqlNode):\n" +
+                                          "   tokenToEntryStore.size(): " + tokenToEntryStore.size() +
+                                          "   entryToTokenStore.size(): " + entryToTokenStore.size() ) ;
             return token ;
         }
         
@@ -287,10 +331,17 @@ public class CommandFactory {
                 tokenToEntryStore.remove( token ) ;
                 tokenToEntryStore.put( token, in ) ;
             }
+            if( log.isDebugEnabled() ) log.debug("EditStore.exchange(Integer,AdqlNode):\n" +
+                                          "   tokenToEntryStore.size(): " + tokenToEntryStore.size() +
+                                          "   entryToTokenStore.size(): " + entryToTokenStore.size() ) ;
         }
         
         public AdqlNode get( Integer token ) {
             return (AdqlNode)tokenToEntryStore.get( token ) ;
+        }
+        
+        public Integer get( AdqlNode node ) {
+            return (Integer)entryToTokenStore.get( node ) ;
         }
         
     } // end of class EditStore 

@@ -1,15 +1,25 @@
 package org.astrogrid.desktop.modules.adqlEditor.nodes;
 
 
+import java.util.Enumeration;
 import java.util.Hashtable;
+import java.lang.Integer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xmlbeans.SchemaType;
+import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
+import org.apache.xmlbeans.XmlOptions;
+import org.apache.xmlbeans.SchemaProperty; 
+import org.apache.xmlbeans.SchemaType; 
+import org.apache.xmlbeans.SimpleValue; 
+import org.apache.xmlbeans.XmlString;
+import org.apache.xmlbeans.XmlLong ;
+import org.apache.xmlbeans.XmlDouble ;
+
+import javax.swing.tree.DefaultMutableTreeNode ;
+
+import org.astrogrid.desktop.modules.adqlEditor.*;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CommandInfo;
 
 /**
@@ -41,15 +51,15 @@ public abstract class HidingNode extends AdqlNode {
     }
 
     
-    HidingNode( AdqlNode parent, XmlObject o ) throws UnsupportedObjectException {
-        super( parent, o, false ) ;
+    HidingNode( NodeFactory nodeFactory, AdqlNode parent, XmlObject o ) throws UnsupportedObjectException {
+        super( nodeFactory, parent, o, false ) ;
         if( !HIDE_CHILDREN.containsKey( AdqlUtils.getLocalName( o ) ) ) {
             throw new UnsupportedObjectException( "Object " + o.schemaType().getName() + " does not support Child Hiding." ) ;
         }
     }
     
-    HidingNode( AdqlNode parent, XmlObject o, int childNodeIndex ) throws UnsupportedObjectException {
-        super( parent, o, childNodeIndex ) ;
+    HidingNode( NodeFactory nodeFactory, AdqlNode parent, XmlObject o, int childNodeIndex ) throws UnsupportedObjectException {
+        super( nodeFactory, parent, o, childNodeIndex, false ) ;
         if( !HIDE_CHILDREN.containsKey( AdqlUtils.getLocalName( o ) ) ) {
             throw new UnsupportedObjectException( "Object " + o.schemaType().getName() + " does not support Child Hiding." ) ;
         }

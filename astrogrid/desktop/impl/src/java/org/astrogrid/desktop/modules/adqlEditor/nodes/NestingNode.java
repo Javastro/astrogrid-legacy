@@ -12,23 +12,24 @@ package org.astrogrid.desktop.modules.adqlEditor.nodes;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Enumeration;
 import java.util.ListIterator;
-
-import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.SchemaProperty;
 import org.apache.xmlbeans.SchemaType;
-import org.apache.xmlbeans.XmlCursor;
+import org.apache.xmlbeans.SimpleValue;
 import org.apache.xmlbeans.XmlObject;
+import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlOptions;
+import org.apache.xmlbeans.XmlCursor.XmlBookmark;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CommandInfo;
+import javax.xml.namespace.QName ;
 
 /**
  * @author jl99
@@ -54,7 +55,6 @@ public class NestingNode extends AdqlNode {
     }
     
     public static boolean isNestingRequired( SchemaType type ) {
-        boolean retValue = false ;
         if(  ( type.isBuiltinType() == false )
              &&
              ( type.isAnonymousType() == false )
@@ -71,8 +71,8 @@ public class NestingNode extends AdqlNode {
     /**
      * @param o
      */
-    NestingNode( AdqlNode parent, XmlObject o ) throws UnsupportedObjectException {
-        super( parent, o, true );
+    NestingNode( NodeFactory nodeFactory, AdqlNode parent, XmlObject o ) throws UnsupportedObjectException {
+        super( nodeFactory, parent, o, true );
         if( !CHILDREN_NESTING.containsKey( AdqlUtils.getLocalName( o.schemaType() ) ) ) {
             throw new UnsupportedObjectException( "Object " + o.schemaType().getName() + " does not support Child Nesting." ) ;
         }
@@ -80,8 +80,8 @@ public class NestingNode extends AdqlNode {
     }
     
     
-    NestingNode( AdqlNode parent, XmlObject o, int childNodeIndex ) throws UnsupportedObjectException {
-        super( parent, o, childNodeIndex );
+    NestingNode( NodeFactory nodeFactory, AdqlNode parent, XmlObject o, int childNodeIndex ) throws UnsupportedObjectException {
+        super( nodeFactory, parent, o, childNodeIndex );
         if( !CHILDREN_NESTING.containsKey( AdqlUtils.getLocalName( o.schemaType() ) ) ) {
             throw new UnsupportedObjectException( "Object " + o.schemaType().getName() + " does not support Child Nesting." ) ;
         }
@@ -118,7 +118,7 @@ public class NestingNode extends AdqlNode {
                     build( (XmlObject)obs[i] ) ;
                 } 
                 else {
-                    NodeFactory.newInstance( this, (XmlObject)obs[i] ) ;
+                    nodeFactory.newInstance( this, (XmlObject)obs[i] ) ;
                 }
             }
         }
@@ -135,7 +135,7 @@ public class NestingNode extends AdqlNode {
             int index = super.getIndex( ci.getChildEntry() ) ;
             if( before == false )
                 index++ ;
-            newInstance = NodeFactory.newInstance( this, add( ci, targetNode, nestedObject, before ).set( source ), index ) ;
+            newInstance = nodeFactory.newInstance( this, add( ci, targetNode, nestedObject, before ).set( source ), index ) ;
         }
         return newInstance ;
     }
@@ -156,7 +156,7 @@ public class NestingNode extends AdqlNode {
                 targetNode = getChild( index ) ;
             }          
             XmlObject nestedObject = AdqlUtils.getParent( targetNode.getXmlObject() ) ;        
-            newInstance = NodeFactory.newInstance( this, add( ci, targetNode, nestedObject, before ).set( source ), index ) ;
+            newInstance = nodeFactory.newInstance( this, add( ci, targetNode, nestedObject, before ).set( source ), index ) ;
         }
         return newInstance ;
     }
@@ -168,7 +168,7 @@ public class NestingNode extends AdqlNode {
             newInstance = super.insert( ci, source ) ;
         }
         else {
-            newInstance = NodeFactory.newInstance( this, add( ci, lastNested ).set( source ) ) ;
+            newInstance = nodeFactory.newInstance( this, add( ci, lastNested ).set( source ) ) ;
         }
         return newInstance ;
     }
@@ -180,7 +180,7 @@ public class NestingNode extends AdqlNode {
             newInstance = super.insert( ci ) ;
         }
         else {
-            newInstance = NodeFactory.newInstance( this, add( ci, lastNested ) ) ;
+            newInstance = nodeFactory.newInstance( this, add( ci, lastNested ) ) ;
         }
         return newInstance ;
     }
@@ -319,7 +319,7 @@ public class NestingNode extends AdqlNode {
         XmlObject nextNested = AdqlUtils.addNewToEndOfArray( lastNested, ci.getChildElementName() ).changeType( lastNested.schemaType() ) ;
         // Reknit the old and new to the new nested object...
         disconnectedObject = AdqlUtils.addNewToEndOfArray( nextNested, ci.getChildElementName() ).set( disconnectedObject ) ;
-        NodeFactory.newInstance( parentNode, disconnectedObject ) ;
+        nodeFactory.newInstance( parentNode, disconnectedObject ) ;
         XmlObject newObject = AdqlUtils.addNewToEndOfArray( nextNested, ci.getChildElementName() ) ;
         newObject = newObject.changeType( ci.getChildType() ) ;
         newObject = AdqlUtils.setDefaultValue( newObject ) ;        
@@ -485,7 +485,7 @@ public class NestingNode extends AdqlNode {
                     qualifiedName = cursor.getObject().schemaType().getName() ;
                     if( qualifiedName != null && !qualifiedName.equals( nestingType.getName() ) ) {
                         xmlObject = cursor.getObject() ;
-                        newNodes.add( NodeFactory.newInstance( this, xmlObject ) );
+                        newNodes.add( nodeFactory.newInstance( this, xmlObject ) );
                         check = cursor.toNextSibling() ;
                         continue ;
                     } 
@@ -502,7 +502,7 @@ public class NestingNode extends AdqlNode {
             // end object (which has been moved to pair it with its new sibling)...
             check = cursor.toPrevSibling() ; // Point to previous end object
             xmlObject = cursor.getObject() ; // Get the previous end object
-            newNodes.add( NodeFactory.newInstance( this, xmlObject ) ) ; // Rebuild its node
+            newNodes.add( nodeFactory.newInstance( this, xmlObject ) ) ; // Rebuild its node
         }
         cursor.dispose() ;
         updateEditStore( ci, newNodes, oldNodes ) ;
@@ -524,7 +524,7 @@ public class NestingNode extends AdqlNode {
                     if( qualifiedName != null ) {
                         if( !qualifiedName.equals( nestingType.getName() ) ) {
                             xmlObject = cursor.getObject() ;
-                            newNodes.add( NodeFactory.newInstance( this, xmlObject ) ) ;
+                            newNodes.add( nodeFactory.newInstance( this, xmlObject ) ) ;
                             check = cursor.toNextSibling() ;
                             depth-- ;
                             continue ;

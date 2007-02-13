@@ -2,22 +2,28 @@ package org.astrogrid.desktop.modules.adqlEditor.nodes ;
 
 
 import java.util.Enumeration;
-
-import javax.swing.tree.DefaultMutableTreeNode;
+import java.util.Hashtable;
+import java.lang.Integer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xmlbeans.SchemaProperty;
-import org.apache.xmlbeans.SchemaType;
-import org.apache.xmlbeans.SimpleValue;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
+import org.apache.xmlbeans.XmlOptions;
+import org.apache.xmlbeans.SchemaProperty; 
+import org.apache.xmlbeans.SchemaType; 
+import org.apache.xmlbeans.SimpleValue; 
 import org.apache.xmlbeans.XmlString;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlTransformer;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
+import org.apache.xmlbeans.XmlLong ;
+import org.apache.xmlbeans.XmlDouble ;
+
+import javax.swing.tree.DefaultMutableTreeNode ;
+import javax.swing.tree.TreeNode ;
+
+import org.astrogrid.desktop.modules.adqlEditor.*;
+import org.astrogrid.desktop.modules.adqlEditor.commands.CommandExec;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CommandInfo;
+import org.astrogrid.desktop.modules.adqlEditor.AdqlTransformer;
 
 /**
  * Represents the data for a single node in the XmlTree. This class (known as a
@@ -27,55 +33,69 @@ import org.astrogrid.desktop.modules.adqlEditor.commands.CommandInfo;
  */
 public class AdqlNode extends DefaultMutableTreeNode {
     
-    private static final boolean DEBUG_ENABLED = true ;
-    private static final boolean TRACE_ENABLED = true ;
     private static final Log log = LogFactory.getLog( AdqlNode.class ) ;
-    
     
     private static AdqlTransformer transformer = new AdqlTransformer() ;
     
+    protected NodeFactory nodeFactory ;
     private boolean expanded = false ;
     private int useableWidth = 0 ;
     
     private AdqlNode() {}
     
-    AdqlNode( AdqlNode parent, XmlObject o ) {
-        this( parent, o, true ) ;
+    AdqlNode( NodeFactory nodeFactory, AdqlNode parent, XmlObject o ) {
+        this( nodeFactory, parent, o, true ) ;
     }
     
-    AdqlNode( AdqlNode parent, XmlObject o, boolean allowsChildren ) {
-        super( o, allowsChildren ) ;  
+    AdqlNode( NodeFactory nodeFactory
+            , AdqlNode parent
+            , XmlObject o
+            , boolean childAllowedChildren ) {
+        super( o, childAllowedChildren ) ;  
+        this.nodeFactory = nodeFactory ;
         if( parent != null )
-            parent.maintainNodeIndex( this ) ;
+            parent.maintainNodeIndex( parent, this ) ;
         if( allowsChildren )
             build( o ) ;
     }
     
-    AdqlNode( AdqlNode parent, XmlObject o, int childNodeIndex ) {
-        super( o, true ) ;  
+    AdqlNode( NodeFactory nodeFactory
+            , AdqlNode parent
+            , XmlObject o
+            , int childNodeIndex ) {
+        this( nodeFactory, parent, o, childNodeIndex, true );
+    }
+    
+    AdqlNode( NodeFactory nodeFactory
+            , AdqlNode parent
+            , XmlObject o
+            , int childNodeIndex
+            , boolean childAllowedChildren ) {
+        super( o, childAllowedChildren ) ;  
+        this.nodeFactory = nodeFactory ;
         if( parent != null )
-            parent.maintainNodeIndex( this, childNodeIndex ) ;
+            parent.maintainNodeIndex( parent, this, childNodeIndex ) ;
         if( allowsChildren )
             build( o ) ;
     }
     
-    protected void maintainNodeIndex( AdqlNode childNode ) {
+    protected void maintainNodeIndex( AdqlNode parent, AdqlNode childNode ) {
         // Time to check where the position within the xml tree so we
         // can keep the display and the tree in line...  
         XmlObject childObject = childNode.getXmlObject() ;
         int index = AdqlUtils.findFilteredChildIndex( this.getXmlObject(), childObject ) ;
         if( index < 0 )
-            add( childNode ) ; 
+            nodeFactory.add( parent, childNode ) ;
         else
-            insert( childNode, index ) ;
+            nodeFactory.insert( parent, childNode, index ) ;
     }
     
-    protected void maintainNodeIndex( AdqlNode childNode, int childNodeIndex ) {
+    protected void maintainNodeIndex( AdqlNode parent, AdqlNode childNode, int childNodeIndex ) {
         int size = getChildCount() ;
         if( childNodeIndex > size-1 )
-            add( childNode ) ;
+            nodeFactory.add( parent, childNode ) ;
         else
-            insert( childNode, childNodeIndex ) ;      
+            nodeFactory.insert( parent, childNode, childNodeIndex ) ;      
     }
     
     protected void build( XmlObject o ) {
@@ -83,7 +103,7 @@ public class AdqlNode extends DefaultMutableTreeNode {
         if( childArray != null ) {
             for( int i=0; i<childArray.length; i++ ) {
                 if( AdqlUtils.isNodeForming( childArray[i] ) ) {
-                    NodeFactory.newInstance( this, childArray[i] ) ;
+                    nodeFactory.newInstance( this, childArray[i] ) ;
                 }              
             }       
         }
@@ -157,71 +177,6 @@ public class AdqlNode extends DefaultMutableTreeNode {
         return entryChildren;
     }
 
-    public String toHtml( boolean expanded, boolean leaf, AdqlTree tree ) { 
-        String displayName = null;
-        try {
-            displayName = AdqlUtils.extractDisplayName( getXmlObject() ) ;
-        }
-        catch( Exception ex ) {
-            log.debug( "AdqlNode.toHtml(boolean,boolean,AdqlTree)", ex ) ;
-        }
-        String displayInfo = null ;
-        if( expanded ) {
-            String shortName = getShortTypeName() ;
-            displayInfo = displayName ;
-            //
-            // As you can see, this is not very generic.
-            // See AdqlData.EDITABLE_ATTRIBUTES and AdqlData.EDITABLE_ELEMENTS
-            // for some idea how the following can be made more aesthetic...
-            if( shortName.equals( AdqlData.COMPARISON_PRED_TYPE ) ) {
-                // "Comparison" here is the name of an xml attribute. Sorry. Not very generic.
-                displayInfo += (" " + ((SimpleValue)AdqlUtils.get( getXmlObject(), "Comparison" )).getStringValue() ) ;
-            }
-            else if( shortName.equals( AdqlData.BINARY_EXPRESSION_TYPE ) 
-                     ||
-                     shortName.equals( AdqlData.UNARY_EXPRESSION_TYPE ) ) {
-                // "Oper" here is the name of an xml attribute. Sorry. Not very generic.
-                displayInfo += (" " + ((SimpleValue)AdqlUtils.get( getXmlObject(), "Oper" )).getStringValue() ) ;
-            }
-            else if( shortName.equals( AdqlData.AGGREGATE_FUNCTION_TYPE ) 
-                     ||
-                     shortName.equals( AdqlData.MATH_FUNCTION_TYPE )
-                     ||
-                     shortName.equals( AdqlData.TRIG_FUNCTION_TYPE ) ) {
-                // "Name" here is the name of an xml attribute. Sorry. Not very generic.
-                displayInfo += (" " + ((SimpleValue)AdqlUtils.get( getXmlObject(), "Name" )).getStringValue() ) ;
-            }
-            else if( shortName.equals( AdqlData.JOIN_TABLE_TYPE ) ) {
-                displayInfo += (" " + ((SimpleValue)AdqlUtils.get( getXmlObject(), "Qualifier" )).getStringValue() ) ;
-            }
-            else {
-                displayInfo = displayName ;
-            }
-        }
-        else {
-            // Get the ADQL/s representation of this element ...
-            displayInfo = transformer.transformDisplayValues( this, tree, expanded, leaf ) ; 
-            int index = displayInfo.toUpperCase().indexOf( displayName.toUpperCase() ) ;
-            // This is a temporary kludge....
-            if( index == -1 ) {
-                index = displayInfo.indexOf( '>', "<html>".length() ) ;
-                StringBuffer buffer = new StringBuffer( displayInfo.length() + 32 ) ;
-                buffer
-                	.append( displayInfo.substring( 0, index+1 ) ) 
-                	.append( displayName )
-                	.append( ' ' ) 
-                	.append( displayInfo.substring( index+1 ) ) ;
-                displayInfo = buffer.toString() ;
-            } 
-        }
-
-        if( displayInfo == null || displayInfo.trim().length() == 0 ) {
-            displayInfo = "NO NAME" ;
-        } 
-        return displayInfo ;
-    }
-    
-    
     private String dealWithPatternContext( String displayName ) {
         String elementName = null ;
         XmlCursor cursor = this.getXmlObject().newCursor() ;
@@ -294,11 +249,15 @@ public class AdqlNode extends DefaultMutableTreeNode {
             log.debug( "Has no children." ) ;
         } 
         else {
+            StringBuffer buffer = new StringBuffer() ;
             for( int i=0; i<children.length; i++ ) {
-                log.debug( "child as xmlobject " + i + ":") ;
-                log.debug( children[i].getXmlObject().toString() ) ;
-                log.debug( "AdqlNode hashcode: " + children[i].hashCode() ) ;
-                log.debug( "xmlobject hashcode: " + children[i].getXmlObject().hashCode() ) ;
+                buffer
+                    .append( "child as xmlobject " + i + ":\n" )
+                    .append( children[i].getXmlObject().toString() ) 
+                    .append( "\nAdqlNode hashcode: " + children[i].hashCode() ) 
+                    .append( "\nxmlobject hashcode: " + children[i].getXmlObject().hashCode() ) ;
+                log.debug( buffer ) ;
+                buffer.delete( 0, buffer.length() ) ;
             }
         }
     }
@@ -318,13 +277,48 @@ public class AdqlNode extends DefaultMutableTreeNode {
         this.useableWidth = useableWidth;
     }
     
+    public String getElementContextPath() {
+        TreeNode[] nodes = this.getPath() ;
+        XmlObject xmlObj = null ;
+        StringBuffer buffer = new StringBuffer( nodes.length * 32 ) ;
+        buffer.append( '/' ) ;
+        for( int i=1; i<nodes.length; i++ ) {
+            xmlObj = ((AdqlNode)nodes[i]).getXmlObject() ;
+            buffer
+               .append( AdqlUtils.extractElementLocalName( xmlObj ) )
+               .append( "[@type='" )
+               .append( AdqlUtils.getLocalName( xmlObj ) )
+               .append( "']" ) ;
+            if( i<nodes.length-1 )
+                buffer.append( '/' ) ;
+        }
+        return buffer.toString() ;
+    }
     
+    public String getRelativeElementContextPath( AdqlNode ancestor ) {
+        Enumeration e = this.pathFromAncestorEnumeration( ancestor ) ;
+        XmlObject xmlObj = null ;
+        StringBuffer buffer = new StringBuffer( 128 ) ;
+        e.nextElement() ;
+        buffer.append( '.' ) ;
+        while( e.hasMoreElements() ) {
+            buffer.append( '/' ) ;
+            xmlObj = ((AdqlNode)e.nextElement()).getXmlObject() ;
+            buffer
+               .append( AdqlUtils.extractElementLocalName( xmlObj ) )
+               .append( "[@type='" )
+               .append( AdqlUtils.getLocalName( xmlObj ) )
+               .append( "']" ) ;     
+        }
+        return buffer.toString() ;
+    }
+     
     public AdqlNode insert( CommandInfo ci, XmlObject source ) {
-        return NodeFactory.newInstance( this, add( ci ).set( source ) ) ;
+        return nodeFactory.newInstance( this, add( ci ).set( source ) ) ;
     }
     
     public AdqlNode insert( CommandInfo ci ) {
-        return NodeFactory.newInstance( this, add( ci ) ) ;
+        return nodeFactory.newInstance( this, add( ci ) ) ;
     }
     
     public AdqlNode insert( CommandInfo ci, XmlObject source, int index ) {
@@ -336,7 +330,7 @@ public class AdqlNode extends DefaultMutableTreeNode {
         else {         
             log.error( "AdqlNode.insert(CommandIndfo,XmlObject,int) invoked where parent is NOT COMPOSED solely of an array of elements/types!" ) ;
         }
-        return NodeFactory.newInstance( this, newObject.set( source ) ) ;
+        return nodeFactory.newInstance( this, newObject.set( source ) ) ;
     }
     
     public AdqlNode insert( CommandInfo ci, XmlObject source, boolean before ) {
@@ -371,7 +365,7 @@ public class AdqlNode extends DefaultMutableTreeNode {
 	                        newObject = AdqlUtils.insertNewInArray( ci.getParentObject(), childElementName, offset+1 ) ;
 	                    }
 	                } 
-                    newInstance = NodeFactory.newInstance( this, newObject.set( source ) ) ;
+                    newInstance = nodeFactory.newInstance( this, newObject.set( source ) ) ;
 	            }
 	            else {
 	                log.error( "Serious error in array structure with Paste before/after!" ) ;
@@ -382,7 +376,7 @@ public class AdqlNode extends DefaultMutableTreeNode {
 	        }	        
         }
         catch( Exception exception ) {
-            log.error( exception ) ;
+            log.error( "Insert failure.", exception ) ;
         }
         return newInstance ;
     }
@@ -419,7 +413,11 @@ public class AdqlNode extends DefaultMutableTreeNode {
     }
     
     public void remove( CommandInfo ci ) {
-        NodeFactory.removeInstance( this, ci.getChildEntry() ) ;
+        nodeFactory.removeInstance( this, ci.getChildEntry() ) ;
+    }
+    
+    public void removeNode( AdqlNode child ) {
+        nodeFactory.removeInstance( this , child ) ;
     }
     
     public AdqlNode replace( CommandInfo ci, XmlObject source ) {
@@ -434,15 +432,65 @@ public class AdqlNode extends DefaultMutableTreeNode {
             }
             index++ ;
         }
-        ci.getChildEntry().removeFromParent() ;
-        return NodeFactory.newInstance( this, targetObject, index ) ; 
+        nodeFactory.remove( ci.getParentEntry(), ci.getChildEntry() ) ;
+        return nodeFactory.newInstance( this, targetObject, index ) ; 
     }
     
+    public String toHtml( boolean expanded, boolean leaf, AdqlTree tree ) { 
+        String displayName = null;
+        try {
+            displayName = AdqlUtils.extractDisplayName( getXmlObject() ) ;
+        }
+        catch( Exception ex ) {
+            log.debug( "AdqlNode.toHtml(boolean,boolean,AdqlTree)", ex ) ;
+        }
+        String displayInfo = null ;
+        if( expanded ) {
+            String shortName = getShortTypeName() ;
+            displayInfo = displayName ;
+            String[] attrOrElementNames = AdqlUtils.getEditableAttributes( shortName ) ;
+            if( attrOrElementNames != null && attrOrElementNames.length == 1 ) {
+                displayInfo += (" " + ((SimpleValue)AdqlUtils.get( getXmlObject(), attrOrElementNames[0] )).getStringValue() ) ;
+            } 
+            else {
+                attrOrElementNames = AdqlUtils.getEditableElements( shortName ) ;
+                if( attrOrElementNames != null && attrOrElementNames.length == 1 ) {
+                    displayInfo += (" " + ((SimpleValue)AdqlUtils.get( getXmlObject(), attrOrElementNames[0] )).getStringValue() ) ;
+                }
+            }
+        }
+        else {
+            // Get the ADQL/s representation of this element ...
+            displayInfo = transformer.transformDisplayValues( this, tree, expanded, leaf ) ; 
+            int index = displayInfo.toUpperCase().indexOf( displayName.toUpperCase() ) ;
+            // This is a temporary kludge....
+            if( index == -1 ) {
+                index = displayInfo.indexOf( '>', "<html>".length() ) ;
+                StringBuffer buffer = new StringBuffer( displayInfo.length() + 32 ) ;
+                buffer
+                	.append( displayInfo.substring( 0, index+1 ) ) 
+                	.append( displayName )
+                	.append( ' ' ) 
+                	.append( displayInfo.substring( index+1 ) ) ;
+                displayInfo = buffer.toString() ;
+            } 
+        }
+    
+        if( displayInfo == null || displayInfo.trim().length() == 0 ) {
+            displayInfo = "NO NAME" ;
+        } 
+        return displayInfo ;
+    }
+
     public static class UnsupportedObjectException extends Exception {
         
         public UnsupportedObjectException(String message) {
             super(message);
         }
         
+    }
+
+    public NodeFactory getNodeFactory() {
+        return nodeFactory;
     }
 }

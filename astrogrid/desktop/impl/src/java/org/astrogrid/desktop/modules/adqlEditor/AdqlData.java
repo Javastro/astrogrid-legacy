@@ -10,9 +10,9 @@
 **/
 package org.astrogrid.desktop.modules.adqlEditor ;
 
-import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.regex.Pattern;
+import java.util.HashSet;
+import java.util.regex.Pattern ;
 
 /**
  * @author jl99
@@ -348,7 +348,6 @@ public class AdqlData {
         EDITABLE_ATTRIBUTES.put( UNARY_EXPRESSION_TYPE, new String[] { "Oper" } ) ;
         EDITABLE_ATTRIBUTES.put( SELECTION_OPTION_TYPE, new String[] { "Option" } ) ;
         EDITABLE_ATTRIBUTES.put( "orderOptionType", new String[] { "Direction" } ) ; 
-//        EDITABLE.put( JOIN_TABLE_TYPE, new String[] { "Qualifier" } ) ; 
         EDITABLE_ATTRIBUTES.put( COLUMN_REFERENCE_TYPE, new String[] { "Table", "Name"  } ) ;
         EDITABLE_ATTRIBUTES.put( "tableType", new String[] { "Name", "Alias"  } ) ;
 //        EDITABLE.put( ATOM_TYPE, DUMMY_ENTRY ) ;  // experiment     
@@ -454,6 +453,7 @@ public class AdqlData {
 //        "</Select>" ;
     
     public static final String DUMMY_TABLE_NAME = "Replace_with_correct_table_name" ;
+//    public static final String DUMMY_TABLE_NAME = "\"Enter a table name here\"" ;
     
     public static final String NEW_QUERY =
         "<Select xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" " +

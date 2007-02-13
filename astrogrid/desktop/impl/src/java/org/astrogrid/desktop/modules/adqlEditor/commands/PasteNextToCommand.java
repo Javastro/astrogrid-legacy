@@ -10,15 +10,22 @@
 **/
 package org.astrogrid.desktop.modules.adqlEditor.commands;
 
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.undo.CannotRedoException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.xmlbeans.SchemaProperty;
+import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlObject;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode ;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.NodeFactory ;
+import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
-import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
+import org.astrogrid.desktop.modules.adqlEditor.commands.CommandExec.Result;
+import org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanel;
 
 /**
  * @author jl99
@@ -32,7 +39,7 @@ public class PasteNextToCommand extends AbstractCommand {
     private static final boolean DEBUG_ENABLED = false ;
     private static final boolean TRACE_ENABLED = false ;
     
-    private XmlObject sourceValue ;
+    private CopyHolder source ;
     private boolean before ;
     private AdqlNode newInstance ;
     private Integer newInstanceToken ;
@@ -44,10 +51,10 @@ public class PasteNextToCommand extends AbstractCommand {
     public PasteNextToCommand( AdqlTree adqlTree
                              , UndoManager undoManager
                              , AdqlNode targetOfNextTo
-                             , XmlObject source
+                             , CopyHolder source
                              , boolean before ) {
         super( adqlTree, undoManager, targetOfNextTo ) ;
-        this.sourceValue = source ;
+        this.source = source ;
         this.before = before ;
     }
     
@@ -68,7 +75,8 @@ public class PasteNextToCommand extends AbstractCommand {
     private Result _execute() {
         Result result = CommandExec.OK ;
         try {          
-           newInstance = getParentEntry().insert( this, sourceValue, before ) ;
+           newInstance = getParentEntry().insert( this, source.getSource(), before ) ;
+           source.openBranchesOn( newInstance ) ;
         }
         catch( Exception exception ) {
             result = CommandExec.FAILED ;
@@ -82,7 +90,7 @@ public class PasteNextToCommand extends AbstractCommand {
         try {
             AdqlNode parent = getFromEditStore( parentToken ) ;
             newInstance = getFromEditStore( newInstanceToken ) ;
-	        parent.remove( newInstance ) ;
+	        parent.removeNode( newInstance ) ;
         }
         catch( Exception exception ) {
             result = CommandExec.FAILED ;

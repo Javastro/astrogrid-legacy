@@ -4,62 +4,60 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.net.URI;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.ListIterator;
-import java.util.Stack;
 import java.util.Vector;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.event.ActionListener;
 
+import java.util.Stack;
+
+import javax.swing.Box;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ComboBoxModel;
+import javax.swing.plaf.basic.BasicTreeUI ;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.CellEditor;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JTree;
+import javax.swing.JComboBox ;
 import javax.swing.KeyStroke;
+import javax.swing.CellEditor;
 import javax.swing.event.CellEditorListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.plaf.basic.BasicTreeUI;
 import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.SimpleValue;
-import org.apache.xmlbeans.XmlAnySimpleType;
-import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlString;
+import org.apache.xmlbeans.XmlCursor;
 import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Catalog;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
 import org.astrogrid.adql.v1_0.beans.SelectDocument;
-import org.astrogrid.desktop.modules.adqlEditor.commands.CommandFactory;
-import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
-import org.astrogrid.desktop.modules.adqlEditor.nodes.AtomNode;
-import org.astrogrid.desktop.modules.adqlEditor.nodes.NodeFactory;
+import org.astrogrid.desktop.modules.adqlEditor.commands.*;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.*;
+import org.astrogrid.desktop.modules.adqlEditor.commands.CommandExec.Result;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 /**
  * A tree view on XML, with nodes representing both elements and attributes. See
  * {@link XmlEntry}and {@link XmlModel}for information on how information
@@ -68,8 +66,6 @@ import org.astrogrid.desktop.modules.adqlEditor.nodes.NodeFactory;
  */
 public final class AdqlTree extends JTree
 {
-    private static final boolean DEBUG_ENABLED = false ;
-    private static final boolean TRACE_ENABLED = false ;
     private static final Log log = LogFactory.getLog( AdqlTree.class ) ;
     private static final String EDIT_PROMPT_NAME = "Ctrl+Space" ;
     private static final String POPUP_PROMPT_NAME = "Ctrl+M/m" ;
@@ -82,38 +78,39 @@ public final class AdqlTree extends JTree
     private AliasStack aliasStack ;
     private DataCollection catalogueResource = null ;
     private HashMap fromTables = new HashMap() ;
-    private XmlObject xmlFrom ;
     
     private boolean editingActive = false ;
     private int availableWidth ;
     private CommandFactory commandFactory ;
+    private NodeFactory nodeFactory ;
     private String adqlSchemaVersion ;
+    private final ChangeEvent changeEvent = new ChangeEvent( this ) ;
+    protected final UIComponent parent;
     
-    /**
-     * Constructs the tree using <em>xmlFile</em> as an original source of
-     * nodes.
-     * 
-     * @param xmlFile The XML file the new tree should represent.
-     */
-    public AdqlTree( File xmlFile, Registry registry, URI toolIvorn ) {
-        initialize( AdqlTree.parseXml( xmlFile ), registry, toolIvorn ) ;
+   
+    public AdqlTree( UIComponent parent, File xmlFile, Registry registry, URI toolIvorn ) {
+        this.parent = parent ;
+        initialize( parseXml( xmlFile ), registry, toolIvorn ) ;
+    }
+     
+    public AdqlTree( UIComponent parent, InputStream xmlStream, Registry registry, URI toolIvorn ) {
+        this.parent = parent ;
+        initialize( parseXml( xmlStream ), registry, toolIvorn ) ;
     }
     
-    
-    public AdqlTree( InputStream xmlStream, Registry registry, URI toolIvorn ) {
-        initialize( AdqlTree.parseXml( xmlStream ), registry, toolIvorn ) ;
+    public AdqlTree( UIComponent parent, Registry registry, URI toolIvorn ) {
+        this.parent = parent ;
+        initialize( parseXml( AdqlData.NEW_QUERY ), registry, toolIvorn ) ;
     }
     
-    public AdqlTree(  Registry registry, URI toolIvorn ) {
-        initialize( AdqlTree.parseXml( AdqlData.NEW_QUERY ), registry, toolIvorn ) ;
+    public AdqlTree( UIComponent parent, String xmlString, Registry registry, URI toolIvorn ) {
+        this.parent = parent ;
+        initialize( parseXml( xmlString ), registry, toolIvorn ) ;
     }
     
-    public AdqlTree( String xmlString, Registry registry, URI toolIvorn ) {
-        initialize( AdqlTree.parseXml( xmlString ), registry, toolIvorn ) ;
-    }
-    
-    public AdqlTree( org.w3c.dom.Node node, Registry registry, URI toolIvorn ) {
-        initialize( AdqlTree.parseXml( node ), registry, toolIvorn ) ;
+    public AdqlTree( UIComponent parent, org.w3c.dom.Node node, Registry registry, URI toolIvorn ) {
+        this.parent = parent ;
+        initialize( parseXml( node ), registry, toolIvorn ) ;
     }
     
     public void setTree( AdqlNode rootEntry, Registry registry, URI toolIvorn ) {
@@ -124,6 +121,12 @@ public final class AdqlTree extends JTree
         return (AdqlTreeCellRenderer)super.getCellRenderer() ;
     }
  
+    public NodeFactory getNodeFactory() {
+        if( nodeFactory == null ) {
+            nodeFactory = new NodeFactory( this ) ;
+        }
+        return nodeFactory ;
+    }
 
     public boolean isPathEditable( TreePath path ) {
         boolean result = false ;
@@ -176,14 +179,19 @@ public final class AdqlTree extends JTree
                 return super.convertValueToText( html, sel, expanded, leaf, row, hasFocus ) ;   
             }
             catch( Exception ex ) {
-                log.debug("AdqlTree.convertValueToText():") ;
-                log.debug( "value: " + value.toString() ) ;
-                log.debug( "sel: " + sel ) ;
-                log.debug( "expanded: " + expanded ) ;
-                log.debug( "leaf: " + leaf ) ;
-                log.debug( "row: " + row ) ;
-                log.debug( "hasFocus: " + hasFocus ) ;
-                log.debug( ex );
+                if( log.isDebugEnabled() ) {
+                    StringBuffer buffer = new StringBuffer() ;
+                    buffer
+                        .append( "convertValueToText(): ") 
+                        .append( "\nvalue: " + value.toString() ) 
+                        .append( "\nsel: " + sel ) 
+                        .append( "\nexpanded: " + expanded ) 
+                        .append( "\nleaf: " + leaf ) 
+                        .append( "\nrow: " + row ) 
+                        .append( "\nhasFocus: " + hasFocus ) ;                   
+                    log.debug( buffer, ex ) ;
+                }               
+                value = "" ;
             }
         }
         return super.convertValueToText( value, sel, expanded, leaf, row, hasFocus ) ;
@@ -198,18 +206,11 @@ public final class AdqlTree extends JTree
     }
     
     
-    /**
-     * Parses <em>xmlFile</em> into XMLBeans types (XmlObject instances),
-     * returning the instance representing the root.
-     * 
-     * @param xmlFile The XML file to parse.
-     * @return An XmlObject representing the root of the parsed XML.
-     */
-    public static AdqlNode parseXml(File xmlFile)
+    public AdqlNode parseXml(File xmlFile)
     {
         AdqlNode entry = null ;
         try {
-            entry = NodeFactory.newInstance( SelectDocument.Factory.parse( xmlFile ) ) ;
+            entry = getNodeFactory().newInstance( SelectDocument.Factory.parse( xmlFile ) ) ;
         } catch (XmlException xmle) {
             System.err.println(xmle.toString());
         } catch (IOException ioe) {
@@ -218,11 +219,11 @@ public final class AdqlTree extends JTree
         return entry ;
     }
     
-    public static AdqlNode parseXml( InputStream xmlStream )
+    public AdqlNode parseXml( InputStream xmlStream )
     {
         AdqlNode entry = null ;
         try {
-            entry = NodeFactory.newInstance( SelectDocument.Factory.parse( xmlStream ) ) ;
+            entry = getNodeFactory().newInstance( SelectDocument.Factory.parse( xmlStream ) ) ;
         } catch (XmlException xmle) {
             System.err.println(xmle.toString());
         } catch (IOException ioe) {
@@ -232,22 +233,22 @@ public final class AdqlTree extends JTree
     }
     
     
-    public static AdqlNode parseXml( String xmlString )
+    public AdqlNode parseXml( String xmlString )
     {
         AdqlNode entry = null ;
         try {
-            entry = NodeFactory.newInstance( SelectDocument.Factory.parse( xmlString ) ) ;
+            entry = getNodeFactory().newInstance( SelectDocument.Factory.parse( xmlString ) ) ;
         } catch (XmlException xmle) {
             System.err.println(xmle.toString());
         }
         return entry ;
     }
     
-    public static AdqlNode parseXml( org.w3c.dom.Node xmlNode )
+    public AdqlNode parseXml( org.w3c.dom.Node xmlNode )
     {
         AdqlNode entry = null ;
         try {
-            entry = NodeFactory.newInstance( SelectDocument.Factory.parse( xmlNode ) ) ;
+            entry = getNodeFactory().newInstance( SelectDocument.Factory.parse( xmlNode ) ) ;
         } catch (XmlException xmle) {
             System.err.println(xmle.toString());
         }
@@ -262,15 +263,11 @@ public final class AdqlTree extends JTree
     private void initialize( AdqlNode rootEntry, Registry registry, URI toolIvorn ) {
    
         this.commandFactory = new CommandFactory( this ) ;
-        setModel( new DefaultTreeModel( rootEntry ) );
         getSelectionModel().setSelectionMode( TreeSelectionModel.SINGLE_TREE_SELECTION ) ;
         this.registry = registry ;
         this.toolIvorn = toolIvorn ;
         retrieveAdqlSchemaVersion() ;
         this.resetCatalogueData() ;
-        if( catalogueResource != null ){
-            reestablishTablesCollection() ;
-        }
       
         AdqlTreeCellRenderer renderer = new AdqlTreeCellRenderer() ;
         setCellRenderer( renderer ) ;
@@ -289,87 +286,132 @@ public final class AdqlTree extends JTree
         	.put( KeyStroke.getKeyStroke( KeyEvent.VK_SPACE, InputEvent.CTRL_MASK ), EDIT_PROMPT_NAME ) ; 
         this.getInputMap( JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT )
     		.put( KeyStroke.getKeyStroke( KeyEvent.VK_SPACE, InputEvent.CTRL_MASK ), EDIT_PROMPT_NAME ) ;
-        
+  
     }
     
-    private void resetCatalogueData() {
-        String piName = null ;
-        String piValue = null ;
-        this.catalogueResource = null ;
-        XmlCursor cursor = getRoot().newCursor() ;
-        if( DEBUG_ENABLED ) log.debug( "Searching for catalogue PI..." ) ;
-        while( !cursor.toNextToken().isNone() ) {
-            if( cursor.isProcinst() ) {
-                piName = cursor.getName().getLocalPart() ;             
-            	if( piName.equals ( AdqlData.PI_QB_REGISTRY_RESOURCES ) )  {
-            	    if( DEBUG_ENABLED ) log.debug( "PI name: " + cursor.getName() ) ;
-                    if( DEBUG_ENABLED ) log.debug( "PI text: " + cursor.getTextValue() ) ;
-            	    piValue = cursor.getTextValue().trim() ;
-            	    if( piValue.equals( "none" ) )
-            	        break ;
-            	    
-            	    	String id = formatCatalogueId(piValue);
-            	    	try {
-            	            catalogueResource = (DataCollection) registry.getResource(new URI(id));
-            	    	} catch (Throwable e) {
-            	    		log.info("searching for table definition using " + id + " failed");
-            	    	}
-            	    // NB. This query of the registry is currently on the main thread!!!
-                    if( DEBUG_ENABLED ) log.debug( "catalogueResource: " + (catalogueResource==null?"null":"not null") ) ;
-                    break ;
-            	}
-            }
-        } // end while
-        cursor.dispose();
-        //
-        // Here I am trying to second-guess the appropriate database for this dsa tool.
-        // Cannot see any harm to this. If it fails, the user still has the option of
-        // choosing for him/herself.
-        if( catalogueResource == null ) {
-            String ivorn = toolIvorn.toString() ;
-            int index = ivorn.lastIndexOf( "ceaApplication" ) ;
-            if( index != -1 ) {
-            	String id= ivorn.substring(0,index) + "TDB";
-                try {
-                	catalogueResource = (DataCollection)registry.getResource(new URI(id));
-                } catch (Throwable e) {
-                	log.info("searching for table definition using " + id + " failed");
+    private synchronized void resetCatalogueData() {
+         
+        final XmlCursor cursor = getRoot().newCursor() ;
+        
+        (new BackgroundWorker( parent, "Fetching Catalogue Data" ) {
+            protected Object construct() throws Exception {
+                DataCollection dc = null ;
+                String piName = null ;
+                String piValue = null ;
+                StringBuffer buffer = null ;
+                if( log.isDebugEnabled() ) {
+                    buffer = new StringBuffer() ;
+                    buffer.append( "Searching for catalogue PI..." ) ;
                 }
-                if( DEBUG_ENABLED ) log.debug( "catalogueResource: " + (catalogueResource==null?"null":"not null") ) ;              
+                while( !cursor.toNextToken().isNone() ) {
+                    if( cursor.isProcinst() ) {
+                        piName = cursor.getName().getLocalPart() ;             
+                        if( piName.equals ( AdqlData.PI_QB_REGISTRY_RESOURCES ) )  {
+                            if( log.isDebugEnabled() ) {
+                                buffer.append( "\nPI name: " + cursor.getName() ) ;
+                                buffer.append( "\nPI text: " + cursor.getTextValue() ) ;
+                            }
+                            piValue = cursor.getTextValue().trim() ;
+                            if( piValue.equals( "none" ) )
+                                break ;                           
+                                String id = formatCatalogueId(piValue);
+                                try {
+                                    dc = (DataCollection) registry.getResource(new URI(id));
+                                } catch (Throwable e) {
+                                    log.info("Searching for table definition using " + id + " failed.");
+                                }
+                            if( log.isDebugEnabled() ) {
+                                buffer.append( "\ndc: " + (dc==null?"null":"not null") ) ;
+                            }
+                            break ;
+                        }
+                    }
+                } // end while
+                //
+                // Here I am trying to second-guess the appropriate database for this dsa tool.
+                // Cannot see any harm to this. If it fails, the user still has the option of
+                // choosing for him/herself.
+                if( dc == null ) {
+                    String ivorn = toolIvorn.toString() ;
+                    int index = ivorn.lastIndexOf( "ceaApplication" ) ;
+                    if( index != -1 ) {
+                        String id= ivorn.substring(0,index) + "TDB";
+                        try {
+                            dc = (DataCollection)registry.getResource(new URI(id));
+                        } catch (Throwable e) {
+                            log.info("Searching for table definition using " + id + " failed");
+                        }
+                        if( log.isDebugEnabled() ) {
+                            buffer.append( "\ndc: " + (dc==null?"null":"not null") ) ;
+                        }             
+                    }
+                }
+                if( log.isDebugEnabled() && buffer.length() > 0 ) {
+                    log.debug( buffer ) ;
+                }
+                return dc ;                      
             }
-        }
+            protected void doFinished( Object result ) {
+                cursor.dispose() ;
+                catalogueResource = (DataCollection)result ;
+                if( catalogueResource != null ){
+                    reestablishTablesCollection() ;
+                    fireStateChanged() ;
+                }
+            }
+            protected void doError(Throwable ex) {
+                cursor.dispose() ;
+                if( log.isDebugEnabled() ) {
+                    log.debug( "Worker thread failed searching for catalogue data.", ex )  ;    
+                }
+            }
+        }).start();
+     
     }
     
     private void retrieveAdqlSchemaVersion() {
         String piName = null ;
         String piValue = null ;
         adqlSchemaVersion = null ;
+        StringBuffer buffer = null ;
         XmlCursor cursor = getRoot().newCursor() ;
-        if( DEBUG_ENABLED ) log.debug( "Searching for schema version PI..." ) ;
-        while( !cursor.toNextToken().isNone() ) {
-            if( cursor.isStart()
-                &&
-                cursor.getObject().schemaType().getName().getLocalPart().equals( AdqlData.SELECT_TYPE ) ) {
-            	    cursor.push() ; // remember where the actual Select statement is.
-            }
-            else if( cursor.isProcinst() ) {
-                piName = cursor.getName().getLocalPart() ;
-            	if( piName.equals( AdqlData.PI_ADQL_SCHEMA_VERSION_TAG ) )  {
-            	    if( DEBUG_ENABLED ) log.debug( "PI name: " + cursor.getName() ) ;
-                    if( DEBUG_ENABLED ) log.debug( "PI text: " + cursor.getTextValue() ) ;
-            	    piValue = cursor.getTextValue().trim() ;
-            	    adqlSchemaVersion = piValue ;
-                    break ;
-            	}         	
-            }
-        } // end while
-        if( adqlSchemaVersion == null ) {
-            cursor.pop() ; // position on the Select statement.
-            // We write a version PI to track the version of the ADQL schema used...
-            // This places it immediately before the Select statement.
-            cursor.insertProcInst( AdqlData.PI_ADQL_SCHEMA_VERSION_TAG, AdqlData.PI_ADQL_SCHEMA_VERSION_VALUE ) ;
+        if( log.isDebugEnabled() ) {
+            buffer = new StringBuffer() ;
+            buffer.append( "Searching for schema version PI..." ) ;
         }
-        cursor.dispose();
+        try {
+            while( !cursor.toNextToken().isNone() ) {
+                if( cursor.isStart()
+                    &&
+                    cursor.getObject().schemaType().getName().getLocalPart().equals( AdqlData.SELECT_TYPE ) ) {
+                        cursor.push() ; // remember where the actual Select statement is.
+                }
+                else if( cursor.isProcinst() ) {
+                    piName = cursor.getName().getLocalPart() ;
+                    if( piName.equals( AdqlData.PI_ADQL_SCHEMA_VERSION_TAG ) )  {
+                        if( log.isDebugEnabled() ) {
+                            buffer.append( "\nPI name: " + cursor.getName() ) ;
+                            buffer.append( "\nPI text: " + cursor.getTextValue() ) ;                          
+                        }
+                        piValue = cursor.getTextValue().trim() ;
+                        adqlSchemaVersion = piValue ;
+                        break ;
+                    }           
+                }
+            } // end while
+            if( adqlSchemaVersion == null ) {
+                cursor.pop() ; // position on the Select statement.
+                // We write a version PI to track the version of the ADQL schema used...
+                // This places it immediately before the Select statement.
+                cursor.insertProcInst( AdqlData.PI_ADQL_SCHEMA_VERSION_TAG, AdqlData.PI_ADQL_SCHEMA_VERSION_VALUE ) ;
+            }
+        }
+        finally {
+            if( log.isDebugEnabled() ) {
+                log.debug( buffer ) ;
+            }
+            cursor.dispose();
+        }  
         // OK. This is a placeholder for future processing, when some action will be
         // required to accommodate changes in ADQL between versions.
     }
@@ -381,7 +423,9 @@ public final class AdqlTree extends JTree
 	    // Note: The portal QB allows only one table (no joins) so the metadata
 	    // reflects the one table. But we need the whole catalogue/database.
         String ivornString = "ivo://" + piValue.substring( 0, piValue.lastIndexOf( '!' ) ).replace( '!', '/' ) ;
-        if( DEBUG_ENABLED ) log.debug( "catalogue ivorn: " + ivornString ) ;
+        if( log.isDebugEnabled() ) {
+            log.debug( "Catalogue ivorn: " + ivornString ) ;
+        }
         return ivornString ;
     }
     
@@ -391,84 +435,90 @@ public final class AdqlTree extends JTree
         String piName = null ;
         String piValue = null ;
         XmlCursor cursor = getRoot().newCursor() ;
-        if( DEBUG_ENABLED ) log.debug( "Searching for PI's..." ) ;
-        while( !cursor.toNextToken().isNone() ) {
-            if( cursor.isProcinst() ) {
-                piName = cursor.getName().getLocalPart() ;
-                if( DEBUG_ENABLED ) log.debug( "PI name: " + cursor.getName() ) ;
-                if( DEBUG_ENABLED ) log.debug( "PI text: " + cursor.getTextValue() ) ;
-            	if( piName.equals( AdqlData.PI_QB_REGISTRY_RESOURCES ) )  {
-            	   // OK. There's already one here.
-            	   // But does it say "none"?...
-            	    if( cursor.getTextValue().trim().equals( "none") ) {
-            	        piValue = catalogueResource.getId().getSchemeSpecificPart().substring( 2 ) 
-                        + '!' 
-                        + catalogueResource.getCatalog().getTables()[0].getName() ;
-            	        cursor.setTextValue( piValue ) ;
-            	    }
-            	}
+        StringBuffer buffer = null ;
+        if( log.isDebugEnabled() ) {
+            buffer = new StringBuffer() ;
+            buffer.append( "Searching for PI's..." ) ;
+        }
+        try {
+            while( !cursor.toNextToken().isNone() ) {
+                if( cursor.isProcinst() ) {
+                    piName = cursor.getName().getLocalPart() ;
+                    if( log.isDebugEnabled() ) {
+                        buffer.append( "\nPI name: " + cursor.getName() ) ;
+                        buffer.append( "\nPI text: " + cursor.getTextValue() ) ;
+                    }
+                    if( piName.equals( AdqlData.PI_QB_REGISTRY_RESOURCES ) )  {
+                       // OK. There's already one here.
+                       // But does it say "none"?...
+                        if( cursor.getTextValue().trim().equals( "none") ) {
+                            piValue = catalogueResource.getId().getSchemeSpecificPart().substring( 2 ) 
+                            + '!' 
+                            + catalogueResource.getCatalog().getTables()[0].getName() ;
+                            cursor.setTextValue( piValue ) ;
+                        }
+                    }
+                }
+                else if( cursor.isStart()
+                         &&
+                         cursor.getObject().schemaType().getName().getLocalPart().equals( AdqlData.SELECT_TYPE ) ) {
+                    // We need to create the required PI to track the catalogue resource.
+                    // Currently only one catalogue. Soon we will need to cover multiple catalogues...
+                    // (I've simply chosen the first table to align it with the portal)
+                    piValue = catalogueResource.getId().getSchemeSpecificPart().substring( 2 ) 
+                            + '!' 
+                            + catalogueResource.getCatalog().getTables()[0].getName() ;
+                    if( log.isDebugEnabled() ) {
+                        buffer.append( "\nNew PI Text: " +piValue ) ;
+                    }
+                    cursor.insertProcInst( AdqlData.PI_QB_REGISTRY_RESOURCES, piValue ) ;
+                    break ;               
+                }
+            } // end while
+        }
+        finally {
+            if( log.isDebugEnabled() ) {
+                log.debug( buffer ) ;
             }
-            else if( cursor.isStart()
-                     &&
-                     cursor.getObject().schemaType().getName().getLocalPart().equals( AdqlData.SELECT_TYPE ) ) {
-                // We need to create the required PI to track the catalogue resource.
-                // Currently only one catalogue. Soon we will need to cover multiple catalogues...
-                // (I've simply chosen the first table to align it with the portal)
-                piValue = catalogueResource.getId().getSchemeSpecificPart().substring( 2 ) 
-                        + '!' 
-                        + catalogueResource.getCatalog().getTables()[0].getName() ;
-                if( DEBUG_ENABLED ) log.debug( "new PI Text: " +piValue ) ;
-                cursor.insertProcInst( AdqlData.PI_QB_REGISTRY_RESOURCES, piValue ) ;
-                break ;               
-            }
-        } // end while
-        cursor.dispose();
+            cursor.dispose();
+        }
+       
     }
     
     
     private void reestablishTablesCollection() {
-        // JBL aliasStack = new AliasStack() ;
         XmlString xTableName = null ;
         XmlString xAlias = null ;
         String alias = null ;
-//        String greatestAlias = null ;
         Catalog db = catalogueResource.getCatalog() ;
         //
         // Loop through the whole of the query looking for table types....
-        // (JL: This is somewhat weak. I think there may be complications
-        //      with join tables )
         XmlCursor cursor = getRoot().newCursor() ;
-        while( !cursor.toNextToken().isNone() ) {
-            if( cursor.isStart()  
-                && 
-                ( cursor.getObject().schemaType().getName().getLocalPart().equals( AdqlData.TABLE_TYPE ) 
-                  ||
-                  cursor.getObject().schemaType().getName().getLocalPart().equals( AdqlData.ARCHIVE_TABLE_TYPE ) )                       
-            ) {
-                xTableName = (XmlString)AdqlUtils.get( cursor.getObject(), "name" ) ;
-                xAlias = (XmlString)AdqlUtils.get( cursor.getObject(), "alias" ) ;
-                alias = (xAlias == null ? null : xAlias.getStringValue())  ; 
-                if( DEBUG_ENABLED ) log.debug( "table name: " 
-                         + xTableName.getStringValue() 
-                         + " with alias: "
-                         + (xAlias==null ? "null" : xAlias.getStringValue()) ) ;  
-                fromTables.put( xTableName.getStringValue()
-                              , new TableData( db, findTableIndex( db, xTableName.getStringValue()), alias ) ) ;
-//                if( alias != null && (greatestAlias == null || greatestAlias.compareTo(alias) < 0) ) {
-//                        greatestAlias = alias ;
-//                }
-            }
-        } // end while
-        cursor.dispose();
-        // Reset the alias stack to the "largest" previously used value... 
-//        if( greatestAlias != null ) {
-//            // This is potentially dangerous. So until I have time to work out a better way,
-//            // I'm assuming no more then 100 tables will ever be tried...
-//            for( int i=0; i<100; i++ ) {
-//                if( aliasStack.pop().equals( greatestAlias ) ) 
-//                    break ;
-//            }    
-//        }
+        try {
+            while( !cursor.toNextToken().isNone() ) {
+                if( cursor.isStart()  
+                    && 
+                    ( cursor.getObject().schemaType().getName().getLocalPart().equals( AdqlData.TABLE_TYPE ) 
+                      ||
+                      cursor.getObject().schemaType().getName().getLocalPart().equals( AdqlData.ARCHIVE_TABLE_TYPE ) )                       
+                ) {
+                    xTableName = (XmlString)AdqlUtils.get( cursor.getObject(), "name" ) ;
+                    xAlias = (XmlString)AdqlUtils.get( cursor.getObject(), "alias" ) ;
+                    alias = (xAlias == null ? null : xAlias.getStringValue())  ; 
+                    if( log.isDebugEnabled() ) {
+                        log.debug( "table name: " + xTableName.getStringValue() 
+                                 + " with alias: "
+                                 + (xAlias==null ? "null" : xAlias.getStringValue()) ) ;
+                    }                           
+                    fromTables.put( xTableName.getStringValue()
+                                  , new TableData( db, findTableIndex( db, xTableName.getStringValue()), alias ) ) ;
+                }
+            } // end while
+        }
+        finally {
+            cursor.dispose();
+        }
+ 
     }
     
     private int findTableIndex( Catalog db, String tableName ) {
@@ -495,7 +545,7 @@ public final class AdqlTree extends JTree
     }
    
     public XmlObject getRoot() {
-        return ((AdqlNode)(getModel().getRoot())).getXmlObject() ;
+        return nodeFactory.getRootEntry().getXmlObject() ;
     }
     
 
@@ -599,11 +649,8 @@ public final class AdqlTree extends JTree
     
     
     public class AdqlTreeCellRenderer extends DefaultTreeCellRenderer {
-        
-        
+              
         private volatile int useableWidth ;
-        private boolean expanded ;
-        private boolean useOppositeExpansionState = false ;
         
         public AdqlTreeCellRenderer() {
             setIcon( null ) ;
@@ -616,8 +663,7 @@ public final class AdqlTree extends JTree
         }
         
         public void setIcon( javax.swing.Icon icon ) { }
-        
-        
+               
         public Component getTreeCellRendererComponent( JTree tree
                                                      , Object value
                                                      , boolean sel
@@ -638,11 +684,7 @@ public final class AdqlTree extends JTree
             entry.setUseableWidth( this.useableWidth ) ;
             return super.getTreeCellRendererComponent( tree, value, sel, expanded, leaf, row, hasFocus) ;
         }
-        
-        public void setUseOppositeExpansionState() {
-            useOppositeExpansionState = true ;
-        }
-        
+            
         public Dimension getPreferredSize() {
             Dimension d = super.getPreferredSize() ;
             d.width = this.useableWidth ;
@@ -721,9 +763,6 @@ public final class AdqlTree extends JTree
                 return false ;
             }
             return true ;
-//            if( currentEditor == null )
-//                return true ;
-//            return currentEditor.isCellEditable( anEvent ) ;
         }
         public void removeCellEditorListener( CellEditorListener l ) {
             listeners.removeElement( l ) ;
@@ -770,23 +809,18 @@ public final class AdqlTree extends JTree
         // 
         // NB: See note to AbstractEnumeratedEditor.
         public class EnumeratedAttributeEditor extends AbstractEnumeratedEditor {
-            
-            XmlObject attribObj ;
+
+            EditEnumeratedAttributeCommand command = null ;
                     
             public EnumeratedAttributeEditor() {
                 super() ;
             }
-                
+            
             public void setComboValue() {              
-                DefaultComboBoxModel model = (DefaultComboBoxModel)getModel();
-                model.removeAllElements() ;
-                SchemaType type = adqlNode.getSchemaType() ;
-                String enumeratedValues[] = AdqlUtils.getEnumValuesGivenDrivenType( type ) ;                
-                String[] attributeNames = AdqlUtils.getEditableAttributes( type ) ;
-                // Retrieve and remember the attribute object.
-                // This is used when the user has finished editing to set the new value...
-                this.attribObj = AdqlUtils.get( adqlNode.getXmlObject(), attributeNames[0] ) ;
-                String currentValue = ((SimpleValue)(this.attribObj)).getStringValue() ;
+                ((DefaultComboBoxModel)getModel()).removeAllElements() ;
+                command = getCommandFactory().newEditEnumeratedAttributeCommand(AdqlTree.this, adqlNode ) ;
+                String enumeratedValues[] = command.getEnumeratedValues() ; 
+                String currentValue = command.getOldValue() ;
                 for( int i=0; i<enumeratedValues.length; i++ ) {
                     addItem( enumeratedValues[i] ) ;
                     if( currentValue.equals( enumeratedValues[i] ) ) {
@@ -796,20 +830,19 @@ public final class AdqlTree extends JTree
             }
             
             protected void setEnumeratedValue( String value ) {
-                try {
-                    String enumValue = AdqlUtils.getMasterEnumSynonym( value ) ;
-                    ((SimpleValue)this.attribObj).setStringValue( enumValue ) ;
-                }
-                catch( Exception ex ) {
-                    log.warn( "Failure to set attribute value:", ex ) ;
+                command.setNewValue( value ) ;
+                Result result = command.execute();
+                if( result != CommandExec.OK ) {
+                    log.warn( "Failure to set attribute value." ) ;
                 }
   
-            }
-                
+            }                
         } // end of class EnumeratedAttributeEditor
         
         
         public class SingletonTextEditor extends JTextField implements CellEditor {
+            
+            EditSingletonTextCommand command = null ;
             
             public SingletonTextEditor() {
                 super() ;
@@ -822,7 +855,7 @@ public final class AdqlTree extends JTree
             
             public Object getCellEditorValue() {
                 setElementValue( getText() ) ;
-                return adqlNode.getXmlObject() ;
+                return command.getChildObject() ;
             }
             public boolean isCellEditable(EventObject anEvent) {
                 return true ;
@@ -838,30 +871,8 @@ public final class AdqlTree extends JTree
             }
             
             public void setValue() {
-                String value = null ;
-                XmlObject xmlObject = adqlNode.getXmlObject() ;
-                try {
-//                    if( AdqlUtils.localNameEquals( xmlObject, "atomType") ) {
-//                        value = (new AdqlNode.Atom( xmlObject )).formatDisplay() ;
-//                    }
-                    if( adqlNode instanceof AtomNode ) {
-                        value = ((AtomNode)adqlNode).formatDisplay() ;
-                    }
-                    else if( AdqlUtils.isAttributeDriven( xmlObject ) ) {
-                        String[] attributeNames = AdqlUtils.getEditableAttributes( xmlObject ) ;
-                        XmlObject attribObj = AdqlUtils.get( adqlNode.getXmlObject(), attributeNames[0] ) ;
-                        value = ((SimpleValue)(attribObj)).getStringValue() ;
-                    }
-                    else {
-                        value = ((SimpleValue)xmlObject).getStringValue() ;
-                    }
-
-                }
-                catch( Exception ex ) {
-                    value = "" ;
-                    log.error( ex ) ;
-                }
-                setText( value ) ;
+                command = getCommandFactory().newEditSingletonTextCommand( AdqlTree.this, adqlNode ) ;
+                setText( command.getOldValue() ) ;
             }
             
             public void setBounds( Rectangle rectangle ) {
@@ -874,43 +885,10 @@ public final class AdqlTree extends JTree
             }
             
             private void setElementValue( String value ) {
-                try {
-                    XmlObject xmlObject = adqlNode.getXmlObject() ;
-                    SchemaType type = xmlObject.schemaType() ;
-                    SchemaType listType = type.getListItemType() ;
-                    if( listType != null ) {
-                        // This surprisingly works for a list...
-                        ((XmlAnySimpleType)xmlObject).setStringValue( value )  ;
-                    }
-//                    else if( AdqlUtils.localNameEquals( xmlObject, "atomType") ) {
-//                        (new AdqlNode.Atom( xmlObject )).setValue( value ) ;
-//                    }
-                    else if( adqlNode instanceof AtomNode ) {
-                        ((AtomNode)adqlNode).setValue( value ) ;
-                    }
-                    else if( AdqlUtils.isAttributeDriven( type ) ) {
-                        String[] attributeNames = AdqlUtils.getEditableAttributes( type ) ;
-                        XmlObject attr = AdqlUtils.get( xmlObject, attributeNames[0] ) ;
-                        if( value == null || value.trim().length() == 0 ) {
-                           // I cannot see any reason for the attribute be optional
-                           // and not existing, but for safety's sake...
-                           if( AdqlUtils.isOptionalAttribute( xmlObject, attributeNames[0] ) ) {
-                               AdqlUtils.unset( xmlObject, attributeNames[0] ) ;
-                           }
-                           else {
-                               ;  // we do nothing, ignoring any changes.
-                           }
-                        }
-                        else {
-                            ((XmlAnySimpleType)attr).setStringValue( value ) ;
-                        }                  
-                    }
-                    else {
-                        ((XmlAnySimpleType)xmlObject).setStringValue( value )  ;
-                    }
-                }
-                catch( Exception ex ) {
-                    log.warn( "Failure to set element values: ", ex ) ;
+                command.setNewValue( value ) ;
+                CommandExec.Result result = command.execute() ;
+                if( result != CommandExec.OK ) {           
+                    log.warn( "Failure to set element value. " ) ;
                 }              
             }
             
@@ -918,6 +896,7 @@ public final class AdqlTree extends JTree
         
         public class TupleTextEditor extends Box implements CellEditor {
             
+            private EditTupleTextCommand command = null ;
             private JTextField[] fields = new JTextField[2] ;
             
             public TupleTextEditor() {
@@ -936,7 +915,7 @@ public final class AdqlTree extends JTree
             
             public Object getCellEditorValue() {
                 setElementValue() ;
-                return adqlNode.getXmlObject() ;
+                return command.getChildObject() ;
             }
             public boolean isCellEditable(EventObject anEvent) {
                 return true ;
@@ -952,22 +931,15 @@ public final class AdqlTree extends JTree
             }
             
             public void setValue() {
-                XmlObject xmlObject = adqlNode.getXmlObject() ;
-                XmlObject attribute = null ;
-                try {
-                    String[] attrNames = AdqlUtils.getEditableAttributes( xmlObject ) ;
-                    for( int i=0; i<attrNames.length; i++ ) {
-                        attribute = AdqlUtils.get( xmlObject, attrNames[i] ) ;
-                        if( attribute == null ) {
-                            fields[i].setText( "" ) ;
-                        }
-                        else {
-                            fields[i].setText( ((SimpleValue)attribute).getStringValue() ) ;
-                        }                       
+                command = getCommandFactory().newEditTupleTextCommand( AdqlTree.this, adqlNode, fromTables ) ;
+                String values[] = command.getOldValues() ;
+                for( int i=0; i<values.length; i++ ) {
+                    if( values[i] == null ) {
+                        fields[i].setText( "" ) ;
                     }
-                }
-                catch( Exception ex ) {
-                    log.error( ex ) ;
+                    else {
+                        fields[i].setText( values[i] ) ;
+                    }                       
                 }
             }
             
@@ -981,55 +953,18 @@ public final class AdqlTree extends JTree
             }
             
             private void setElementValue() {
-                try {
-                    String newValue = null ;
-                    String oldValue = null ;
-                    XmlObject element = adqlNode.getXmlObject() ;
-                    String[] attributeNames = AdqlUtils.getEditableAttributes( AdqlUtils.getLocalName( element ) ) ;
-                    
-                    for( int i=0; i<attributeNames.length; i++ ) {                        
-                        boolean bOptional = AdqlUtils.isOptionalAttribute( element, attributeNames[i] ) ;
-                        oldValue = getOldValue( element, attributeNames[i], bOptional ) ;
-                        newValue = getNewValue( fields[i] ) ;
-                        if( newValue == null ) {
-                           if( bOptional
-                               &&
-                               AdqlUtils.isSet( element, attributeNames[i] ) 
-                               && 
-                               preValidateOK( element, attributeNames[i], bOptional, oldValue, newValue ) ) {
-                               AdqlUtils.unset( element, attributeNames[i] ) ;
-                               crossValidateDelete( element, attributeNames[i], oldValue, newValue ) ;
-                           }
-                           else {
-                               ;  // Cannot delete a non-optional attribute. We do nothing, ignoring any changes.
-                           }
-                        }
-                        else if( oldValue == null 
-                                 && 
-                                 preValidateOK( element, attributeNames[i], bOptional, oldValue, newValue ) ) {                          
-                            AdqlUtils.set( element, attributeNames[i], XmlString.Factory.newValue( newValue ) ) ;
-                            crossValidateCreate(element, attributeNames[i], oldValue, newValue ) ;                                 
-                        }
-                        else if( !areEqual( oldValue, newValue )
-                                 && 
-                                 preValidateOK( element, attributeNames[i], bOptional, oldValue, newValue ) ) {              
-                            AdqlUtils.set( element, attributeNames[i], XmlString.Factory.newValue( newValue ) ) ;
-                            crossValidateUpdate(element, attributeNames[i], oldValue, newValue ) ;                         
-                        }                  
-                    }
+                //
+                // We need old values purely for the size...
+                String[] values = new String[ command.getOldValues().length ] ;
+                for( int i=0; i<values.length; i++ ) {
+                    values[i] = getNewValue( fields[i] ) ;
                 }
-                catch( Exception ex ) {      
-                    log.warn( "Failure to set element values: ", ex ) ;
-                }
+                command.setNewValues( values ) ;
+                CommandExec.Result result = command.execute() ;
+                if( result != CommandExec.OK ) {           
+                    log.warn( "Failure to set element value. " ) ;
+                }              
             } // end of setElementValue()
-            
-            private String getOldValue( XmlObject element, String attributeName, boolean bOptional ) {
-                String oldValue = null ;
-                if( !bOptional || AdqlUtils.isSet( element, attributeName ) ) {
-                    oldValue = ((SimpleValue)AdqlUtils.get( element, attributeName )).getStringValue() ;           
-                }
-                return oldValue ;
-            }
             
             private String getNewValue( JTextField field ) {
                 String newValue = field.getText() ;
@@ -1063,185 +998,7 @@ public final class AdqlTree extends JTree
                         }
                     }                   
                 }
-            return newValue ;
-            }
-            
-            private boolean areEqual( String oldValue, String newValue ) {
-                if( oldValue == null & newValue == null )
-                    return true ;
-                return String.valueOf( oldValue ).equals( newValue ) ;
-            }
-            
-            private boolean preValidateOK( XmlObject element
-                                         , String attributeName
-                                         , boolean attributeOptional
-                                         , String oldValue
-                                         , String newValue ) {
-                if( isTableValidationRequired( element, attributeName ) )
-                    return preValidateTable( element, attributeName, attributeOptional, oldValue, newValue ) ;
-                return true ;
-            }
-            
-            private void crossValidateDelete( XmlObject element
-                                            , String attributeName
-                                            , String oldValue
-                                            , String newValue ) {
-                if( isTableValidationRequired( element, attributeName ) )
-                    crossValidateTableDelete( element, attributeName, oldValue, newValue ) ;
-            }
-            
-            private void crossValidateUpdate( XmlObject element
-                                            , String attributeName
-                                            , String oldValue
-                                            , String newValue ) {
-                if( isTableValidationRequired( element, attributeName ) )
-                    crossValidateTableUpdate( element, attributeName, oldValue, newValue ) ;
-            }
-            
-            private void crossValidateCreate( XmlObject element
-                                            , String attributeName
-                                            , String oldValue
-                                            , String newValue ) {
-                if( isTableValidationRequired( element, attributeName ) )
-                    crossValidateTableCreate( element, attributeName, oldValue, newValue ) ;
-            }
-            
-            private boolean isTableValidationRequired( XmlObject element, String attributeName ) {
-                String elementTypeName = AdqlUtils.getLocalName( element ) ;
-                if( AdqlData.METADATA_LINK_TABLE.containsKey( elementTypeName ) ) {
-                    String[] attrNames = (String[])AdqlData.CROSS_VALIDATION.get( elementTypeName ) ;
-                    for( int i=0; i<attrNames.length; i++ ) {
-                        if( attrNames[i].equals( attributeName ) )
-                            return true ;
-                    }
-                }
-                return false ;
-            }
-            
-            // As currently defined this is the deletion of the alias for a table.
-            // We go through the query, changing every reference to this table back
-            // to its full name rather than the alias.
-            // eg: from a.ra to hipass.ra
-            private void crossValidateTableDelete( XmlObject tableElement
-                                                 , String attributeName
-                                                 , String oldValue
-                                                 , String newValue  ) {
-                XmlCursor cursor = tableElement.newCursor() ;
-                String tableName = ((SimpleValue)AdqlUtils.get( tableElement, "name" )).getStringValue() ;
-                XmlObject xmlTableName = XmlString.Factory.newValue( tableName ) ;
-                XmlObject element ;
-                cursor.toStartDoc() ;
-                cursor.toFirstChild() ; // There has to be a first child!
-                do {
-                    if( cursor.isStart() ) {
-                        element = cursor.getObject() ;
-                        // 
-                        // If this is a column reference AND its table name is set to the old alias
-                        // Then we set the table name to the original table name...
-                        if( AdqlUtils.getLocalName( element ).equals( AdqlData.COLUMN_REFERENCE_TYPE ) 
-                            &&
-                            ((SimpleValue)AdqlUtils.get( element, "table" )).getStringValue().equals( oldValue ) ) {
-                                AdqlUtils.set( element, "table", xmlTableName ) ;
-                        }                       
-                    }                 
-                } while( cursor.toNextToken() != XmlCursor.TokenType.NONE ) ;
-                cursor.dispose() ;
-                
-                ((TableData)fromTables.get( tableName )).alias = null ;
-            }
-            
-            
-            private void crossValidateTableUpdate( XmlObject tableElement
-                                                 , String attributeName
-                                                 , String oldAliasValue
-                                                 , String newAliasValue  ) {
-                XmlCursor cursor = tableElement.newCursor() ;
-                String tableName = ((SimpleValue)AdqlUtils.get( tableElement, "name" )).getStringValue() ;
-                XmlObject xmlNewAlias = XmlString.Factory.newValue( newAliasValue ) ;
-                XmlObject element ;
-                cursor.toStartDoc() ;
-                cursor.toFirstChild() ; // There has to be a first child!
-                do {
-                    if( cursor.isStart() ) {
-                        element = cursor.getObject() ;
-                        if( AdqlUtils.getLocalName( element ).equals( AdqlData.COLUMN_REFERENCE_TYPE ) 
-                            &&
-                            ((SimpleValue)AdqlUtils.get( element, "table" )).getStringValue().equals( oldAliasValue ) ) {
-                            AdqlUtils.set( element, "table", xmlNewAlias ) ;
-                        }                       
-                    }                 
-                } while( cursor.toNextToken() != XmlCursor.TokenType.NONE ) ;
-                cursor.dispose() ;
-                ((TableData)fromTables.get( tableName )).alias = newAliasValue ;
-            }
-            
-            
-            private void crossValidateTableCreate( XmlObject tableElement
-                                                 , String attributeName
-                                                 , String oldAliasValue
-                                                 , String newAliasValue  ) {
-                XmlCursor cursor = tableElement.newCursor() ;
-                String tableName = ((SimpleValue)AdqlUtils.get( tableElement, "name" )).getStringValue() ;
-                XmlObject xmlAliasName = XmlString.Factory.newValue( newAliasValue ) ;
-                XmlObject element ;
-                cursor.toStartDoc() ;
-                cursor.toFirstChild() ; // There has to be a first child!
-                do {
-                    if( cursor.isStart() ) {
-                        element = cursor.getObject() ;
-                        // 
-                        // If this is a column reference AND its table name is the correct one
-                        // Then we set the alias name ...
-                        if( AdqlUtils.getLocalName( element ).equals( AdqlData.COLUMN_REFERENCE_TYPE ) 
-                                &&
-                            ((SimpleValue)AdqlUtils.get( element, "table" )).getStringValue().equals( tableName ) ) {
-                            AdqlUtils.set( element, "table", xmlAliasName ) ;
-                        }                       
-                    }                 
-                } while( cursor.toNextToken() != XmlCursor.TokenType.NONE ) ;
-                cursor.dispose() ;
-                ((TableData)fromTables.get( tableName )).alias = newAliasValue ;
-            }
-            
-            
-            // Changing a table alias to one already in use will corrupt the query!
-            private boolean preValidateTable( XmlObject tableElement
-                                            , String attributeName
-                                            , boolean attributeOptional
-                                            , String oldAliasValue
-                                            , String newAliasValue  ) {
-                if( newAliasValue == null )
-                    return true ;
-                boolean retValue = true ;
-                ArrayList tableList = new ArrayList(); 
-                XmlObject xmlAliasName = null ;
-                XmlObject element = null ;
-                XmlCursor cursor = tableElement.newCursor() ;               
-                cursor.toStartDoc() ;   // Reposition on the top of the document
-                cursor.toFirstChild() ; // And then to the first child!
-                do {
-                    // Only deal with elements...
-                    if( cursor.isStart() ) {
-                        element = cursor.getObject() ;
-                        // We make a collection of all the table elements in a query...
-                        if( AdqlUtils.getLocalName( element ).equals( AdqlData.TABLE_TYPE ) ) {
-                            tableList.add( element ) ;
-                        }                       
-                    }                 
-                } while( cursor.toNextToken() != XmlCursor.TokenType.NONE ) ;
-                cursor.dispose() ;
-                ListIterator iterator = tableList.listIterator() ;
-                while( iterator.hasNext() ) {
-                    element = (XmlObject)iterator.next() ;
-                    if( element == tableElement )
-                        continue ;
-                    xmlAliasName = AdqlUtils.get( element, attributeName ) ;
-                    if( xmlAliasName != null && ((SimpleValue)xmlAliasName).getStringValue().equals( newAliasValue ) ) {
-                        retValue = false ;
-                        break ;
-                    }
-                }              
-                return retValue ;
+                return newValue ;
             }
             
         } // end of class TupleTextEditor
@@ -1338,22 +1095,17 @@ public final class AdqlTree extends JTree
         // NB: See note to AbstractEnumeratedEditor.
         public class EnumeratedElementEditor extends AbstractEnumeratedEditor {
             
-            XmlObject drivingObject ;
+            EditEnumeratedElementCommand command ;
     
             public EnumeratedElementEditor() {
                 super() ;
             }
                 
             public void setComboValue() {              
-                DefaultComboBoxModel model = (DefaultComboBoxModel)getModel();
-                model.removeAllElements() ;
-                SchemaType type = adqlNode.getSchemaType() ;
-                String[] enumeratedValues = AdqlUtils.getEnumValuesGivenDrivenType( type ) ;               
-                String[] elementNames = AdqlUtils.getEditableElements( type ) ;
-                // Retrieve and remember the element object.
-                // This is used when the user has finished editing to set the new value...
-                this.drivingObject = AdqlUtils.get( adqlNode.getXmlObject(), elementNames[0] ) ;
-                String currentValue = ((SimpleValue)(this.drivingObject)).getStringValue() ;
+                ((DefaultComboBoxModel)getModel()).removeAllElements() ;
+                command = getCommandFactory().newEditEnumeratedElementCommand( AdqlTree.this, adqlNode ) ;
+                String[] enumeratedValues = command.getEnumeratedValues() ;                           
+                String currentValue = command.getOldValue() ;
                 for( int i=0; i<enumeratedValues.length; i++ ) {
                     addItem( enumeratedValues[i] ) ;
                     if( currentValue.equals( enumeratedValues[i] ) ) {
@@ -1363,16 +1115,13 @@ public final class AdqlTree extends JTree
             }
             
             protected void setEnumeratedValue( String value ) {
-                try {
-                    String enumValue = AdqlUtils.getMasterEnumSynonym( value ) ;
-                    ((SimpleValue)this.drivingObject).setStringValue( enumValue ) ;
+                command.setNewValue( value ) ;
+                Result result = command.execute();
+                if( result != CommandExec.OK ) {
+                    log.warn( "Failure to set element value:" ) ; ;
                 }
-                catch( Exception ex ) {
-                    log.warn( "Failure to set element value:", ex ) ;
-                }
-        
             }
-                
+            
         } // end of class EnumeratedElementEditor
         
     } // end of class AdqlTreeCellEditor
@@ -1486,6 +1235,28 @@ public final class AdqlTree extends JTree
         }
 
     } // end of class AliasStack
+    
+    
+    public void addChangeListener( ChangeListener chl ) {
+        listenerList.add( ChangeListener.class, chl ) ;
+    }
+
+    public void removeChangeListener( ChangeListener chl ) {
+        listenerList.remove( ChangeListener.class, chl ) ;
+    }
+
+    public ChangeListener[] getChangeListeners() {
+        return ( ChangeListener[] )listenerList.getListeners( ChangeListener.class ) ;
+    }
+
+    protected void fireStateChanged() {
+        Object[] listeners = listenerList.getListenerList();
+        for( int i=listeners.length-2; i>=0; i-=2) {
+            if( listeners[i] == ChangeListener.class ) {
+                ((ChangeListener)listeners[i+1]).stateChanged( changeEvent ) ;
+            }          
+        }
+    }
     
     
 } // end of class AdqlTree

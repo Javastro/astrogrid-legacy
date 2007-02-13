@@ -16,9 +16,9 @@ import javax.swing.undo.UndoManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xmlbeans.XmlObject;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
-import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
+
+import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode ;
+import org.astrogrid.desktop.modules.adqlEditor.AdqlTree ;
 
 /**
  * @author jl99@star.le.ac.uk
@@ -29,18 +29,19 @@ import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 public class CutCommand extends AbstractCommand {
     
     private static final Log log = LogFactory.getLog( CutCommand.class ) ;
-    private static final boolean DEBUG_ENABLED = true ;
-    private static final boolean TRACE_ENABLED = true ;
-    private XmlObject preservedValue ;
+
+    private CopyHolder preserved ;
     private int arrayIndex = -1 ;
 
     /**
      * @param target
      * @param source
      */
-    public CutCommand( AdqlTree adqlTree, UndoManager undoManager, AdqlNode cutTarget ) {
+    public CutCommand( AdqlTree adqlTree
+                     , UndoManager undoManager
+                     , AdqlNode cutTarget ) {
         super( adqlTree, undoManager, cutTarget ) ;
-        preservedValue = getChildObject().copy() ;
+        preserved = CopyHolder.holderForCopyPurposes( cutTarget ) ;
         if( isChildHeldInArray() ) {
             AdqlNode parent = getParentEntry() ;
             AdqlNode child = getChildEntry() ;
@@ -55,49 +56,52 @@ public class CutCommand extends AbstractCommand {
             this.adqlTree.getCommandFactory().getUndoManager().addEdit( this ) ;
         return result ;
     }
+    
+    public CopyHolder getCopy() {
+        return this.preserved ;
+    }
    
     private Result _execute() {
-        if( TRACE_ENABLED ) log.debug( "CutCommand._execute() entry" ) ;
+        if( log.isTraceEnabled() ) log.trace( "_execute() entry" ) ;
         // NB: This invalidates the Adql parent/child relationship.
         // So affects somewhat the integrity of the CommandInfo interface.
         Result result = CommandExec.OK ;
         try {  
             AdqlNode parent = getFromEditStore( parentToken ) ;
-            AdqlNode child = getFromEditStore( childToken ) ;
             parent.remove( this ) ;
         }
         catch( Exception exception ) {
             result = CommandExec.FAILED ;
-            log.debug( exception ) ;
+            log.debug( "CutCommand execution failed,", exception ) ;
         }
         finally {
-            if( TRACE_ENABLED ) log.debug( "CutCommand._execute() exit" ) ;
+            if( log.isTraceEnabled() ) log.trace( "_execute() exit" ) ;
         }
         return result ;
     }
     
     
     private Result _unexecute() {
-        if( TRACE_ENABLED ) log.debug( "CutCommand._unexecute() entry" ) ;
+        if( log.isTraceEnabled() ) log.trace( "_unexecute() entry" ) ;
         Result result = CommandExec.OK ;
         try {
             // This restores the integrity of the CommandInfo interface.
             AdqlNode parent = getFromEditStore( parentToken ) ;
             AdqlNode child ;
             if( isChildHeldInArray() ) {
-                child = parent.insert( this, preservedValue, arrayIndex ) ;
+                child = parent.insert( this, preserved.getSource(), arrayIndex ) ;
             }
             else {
-                child = parent.insert( this, preservedValue ) ;
+                child = parent.insert( this, preserved.getSource() ) ;
             }          
 	        exchangeInEditStore( childToken, child ) ;
         }
         catch( Exception exception ) {
             result = CommandExec.FAILED ;
-            log.debug( "CutCommand._unexecute", exception ) ;
+            log.debug( "CutCommand _unexecute() failed.", exception ) ;
         }
         finally {
-            if( TRACE_ENABLED ) log.debug( "CutCommand._unexecute() exit " ) ;
+            if( log.isTraceEnabled() ) log.trace( "_unexecute() exit " ) ;
         }
         return result ;
     }

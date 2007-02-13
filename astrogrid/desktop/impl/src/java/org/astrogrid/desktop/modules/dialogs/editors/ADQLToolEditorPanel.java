@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.desktop.modules.dialogs.editors;
 
+import javax.swing.JViewport ;
 import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -25,20 +26,27 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedInputStream;
-import java.io.StringReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Stack;
 
+import java.awt.Color ;
+import javax.swing.BorderFactory ;
+import javax.swing.Box ;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ImageIcon ;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem ;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -49,7 +57,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.EventListenerList;
+import javax.swing.event.MenuEvent;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeModelEvent;
@@ -59,14 +67,15 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+import javax.swing.event.MenuListener ;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlError;
-import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
+import org.astrogrid.acr.system.Configuration ;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.ColumnBean;
 import org.astrogrid.acr.astrogrid.TableBean;
@@ -76,19 +85,19 @@ import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Catalog;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.adql.AdqlStoX;
-import org.astrogrid.adql.v1_0.beans.SelectDocument;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTransformer;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
 import org.astrogrid.desktop.modules.adqlEditor.TableMetadataPanel;
-import org.astrogrid.desktop.modules.adqlEditor.commands.AbstractCommand;
 import org.astrogrid.desktop.modules.adqlEditor.commands.ColumnInsertCommand;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CommandExec;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CommandFactory;
+import org.astrogrid.desktop.modules.adqlEditor.commands.CopyHolder;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CutCommand;
+import org.astrogrid.desktop.modules.adqlEditor.commands.EditCommand;
 import org.astrogrid.desktop.modules.adqlEditor.commands.EnumeratedElementInsertCommand;
 import org.astrogrid.desktop.modules.adqlEditor.commands.EnumeratedInsertCommand;
 import org.astrogrid.desktop.modules.adqlEditor.commands.PasteIntoCommand;
@@ -97,7 +106,6 @@ import org.astrogrid.desktop.modules.adqlEditor.commands.PasteOverCommand;
 import org.astrogrid.desktop.modules.adqlEditor.commands.StandardInsertCommand;
 import org.astrogrid.desktop.modules.adqlEditor.commands.TableInsertCommand;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
-import org.astrogrid.desktop.modules.adqlEditor.nodes.NodeFactory;
 import org.astrogrid.desktop.modules.ag.ApplicationsImpl;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
@@ -105,24 +113,27 @@ import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditListener;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.UIComponentImpl;
+// import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 /**
  * @author jl99
  *
  */
-public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements ToolEditListener, TreeModelListener {
+public class ADQLToolEditorPanel 
+       extends AbstractToolEditorPanel 
+       implements ToolEditListener
+                , TreeModelListener
+                , ChangeListener {
     
     private static final Log log = LogFactory.getLog( ADQLToolEditorPanel.class ) ;
-    private static final boolean DEBUG_ENABLED = false ;
-    private static final boolean TRACE_ENABLED = false ;
-    private static StringBuffer logIndent ;
-    static {
-        if( DEBUG_ENABLED | TRACE_ENABLED ) {
-            logIndent = new StringBuffer() ;
-        }
-    }   
-  
+    private StringBuffer logIndent ;
+    
+    public static final String CONFIG_KEY_DEBUG_VIEW = "adqleditor.debugview" ; 
+    public static final String GOOD_COMPILE_ICON = "greentick.gif" ;
+    public static final String BAD_COMPILE_ICON = "redcross.gif" ;
+    
     private ParameterValue queryParam = null ;
     
     protected final MyspaceInternal myspace ;  
@@ -130,21 +141,14 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     protected final RegistryGoogle regChooser;
     protected final ResourceChooserInternal resourceChooser;
     protected final Registry registry ;
+    protected final Configuration configuration ;
       
-    private AdqlStoX adqlCompiler ;
-    
     // LHS Editor tabs...
     private JTabbedPane tabbedEditorPane ;
-    // This is the tree tab...
+   
     private AdqlTree adqlTree ;
-    private AdqlTreeView adqlTreeView ;
-    private ControllerImpl controller ;
-    
-    // This is the text tab...
-    private AdqlStringView adqlStringView ;
-    
-    // This is the adql/x tab...
     private AdqlXmlView adqlXmlView ;
+    private AdqlMainView adqlMainView ;
     
     //RHS Metadata tabs...
     private JTabbedPane tabbedMetadataPane ;
@@ -153,18 +157,114 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     private JTabbedPane tabbedBottomPane;
     // This is the diagnostics tab...
     private JTextPane diagnostics ;
-    
-    //private static XmlObject root ;
+    private JTextPane history ;
     
     private JButton chooseResourceButton ;
     
-    //
-    // This is a limited adhoc approach to clipboard and editing.
-    // Needs to be rewritten to fit into undoable framework...
-    private XmlObject clipBoard = null ;
+    private JButton validateEditButton ;
+    
+    private SizedStack clipBoard = new SizedStack() ;
+    
+    private String editWindowOldImage ;
+    private boolean bEditWindowUpdatedByFocusGained = false ;
+    
+    private SizedStack historyStack = new SizedStack() ;
+    final JLabel historyStackCount = new JLabel() ;       
+    final JButton historyTopButton = new JButton( "Top" ) ;
+    final JButton historyUpButton = new JButton( "Up" ) ;
+    final JButton historyDownButton = new JButton( "Down" ) ;
+    final JButton historyBottomButton = new JButton( "Bottom" ) ;
+    
+    private class SizedStack extends Stack {
+        
+        private int maxSize ;
+        private int currentPosition = 0 ;
+        
+        public SizedStack() {
+            this( 16 ) ;
+        }
+        
+        public SizedStack( int maxSize ) {
+            this.maxSize = maxSize ;
+        }
 
-    private Popup popup = null ;
-    private BranchExpansionListener branchExpansionListener = null ;
+        public Object push( Object item ) {
+            if( size() == maxSize ) {
+                removeElementAt( 0 ) ;
+            }
+            currentPosition = 1 ;
+            return super.push(item);
+        }
+        
+        public Object peek( int position ) {
+            if( isEmpty() )
+                throw new java.util.EmptyStackException() ;            
+            return get( vectorDisplacement() ) ;
+        }
+        
+        public Object down() {
+            if( currentPosition >= size() )
+                return null ;
+            return peek( currentPosition++ ) ;
+        }
+        
+        public Object up() {
+            if( currentPosition <= 1  )
+                return null ;
+            return peek( currentPosition-- ) ;         
+        }
+        
+        public Object top() {
+            if( isEmpty() )
+                return null ;
+            currentPosition = 1 ;
+            return peek()  ;
+        }
+        
+        public Object bottom() {
+            if( isEmpty() )
+                return null ;
+            currentPosition = size() ;
+            return peek( currentPosition )  ;
+        }
+        
+        public boolean isAtBottom() {
+            if( isEmpty() )
+                return false ;
+            return ( currentPosition == size() ) ;
+        }
+        
+        public boolean isAtTop() {
+            if( isEmpty() )
+                return false ;
+            return ( currentPosition == 1 ) ;
+        }
+
+        public int getCurrentPosition() {
+            return currentPosition;
+        }
+
+        public void setCurrentPosition(int currentPosition) {
+            this.currentPosition = currentPosition;
+        }
+
+        public int getMaxSize() {
+            return maxSize;
+        }
+
+        public void setMaxSize(int maxSize) {
+            this.maxSize = maxSize;
+        }
+        
+        private int vectorDisplacement() {
+            if( isEmpty() )
+                return -1 ;
+            return size() - currentPosition ;
+        }
+               
+    }
+    
+    // private BranchExpansionListener branchExpansionListener = null ;
     private AdqlTransformer transformer ;
     private boolean statusAfterValidate = false ;
           
@@ -173,13 +273,15 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
                               , RegistryGoogle regChooser
                               , UIComponent parent
                               , MyspaceInternal myspace
-                              , Registry registry ) {
+                              , Registry registry
+                              , Configuration configuration ) {
         super( toolModel );
         this.parent = parent;
         this.regChooser = regChooser;
         this.resourceChooser = resourceChooser ; 
         this.myspace = myspace ;
         this.registry = registry ;
+        this.configuration = configuration ;
         this.transformer = new AdqlTransformer() ;
         this.toolModel.addToolEditListener( this );
     }
@@ -190,7 +292,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     }
     
     public void parameterChanged(ToolEditEvent te) {
-        if( TRACE_ENABLED ) log.debug( "parameterChanged(ToolEditEvent te)"  ) ;
+        if( log.isTraceEnabled() ) enterTrace( "parameterChanged(ToolEditEvent te)"  ) ;
         if ( te.getSource() != ADQLToolEditorPanel.this // only listen if change has come from elsewhere..
              && 
              te.getChangedParameter() == queryParam ) { 
@@ -207,6 +309,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
             	this.removeAll() ;
             	this.init() ;
             }
+        if( log.isTraceEnabled() ) exitTrace( "parameterChanged(ToolEditEvent te)"  ) ;
     }
    
     public void parameterRemoved(ToolEditEvent te) {
@@ -214,19 +317,21 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     }
     
     public void toolChanged(ToolEditEvent te) {
-        if( TRACE_ENABLED ) log.debug( "toolChanged(ToolEditEvent te)"  ) ;
+        if( log.isTraceEnabled() ) enterTrace( "toolChanged(ToolEditEvent te)"  ) ;
         toolSet(te);
+        if( log.isTraceEnabled() ) exitTrace( "toolChanged(ToolEditEvent te)"  ) ;
     }
    
     public void toolCleared(ToolEditEvent te) {
-        if( TRACE_ENABLED ) log.debug( "toolCleared(ToolEditEvent te)"  ) ;
+        if( log.isTraceEnabled() ) enterTrace( "toolCleared(ToolEditEvent te)"  ) ;
         queryParam = null;
         setEnabled(false);
         this.removeAll() ;
+        if( log.isTraceEnabled() ) exitTrace( "toolCleared(ToolEditEvent te)"  ) ;
     }
     
     public void toolSet(ToolEditEvent te) {
-        if( TRACE_ENABLED ) log.debug( "toolCleared(ToolEditEvent te)"  ) ;
+        if( log.isTraceEnabled() ) enterTrace( "toolCleared(ToolEditEvent te)"  ) ;
         String[] toks = ApplicationsImpl.listADQLParameters(toolModel.getTool().getInterface(),toolModel.getInfo());
         if (toks.length > 0) {
             setEnabled(true);
@@ -234,17 +339,17 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
             this.removeAll() ;
             this.init() ;
         }
+        if( log.isTraceEnabled() ) exitTrace( "toolCleared(ToolEditEvent te)"  ) ;
     }
-    
-   
+      
     private AdqlTree setAdqlTree() { 
-        if( TRACE_ENABLED ) log.debug( "setAdqlTree"  ) ;
+        if( log.isTraceEnabled() ) enterTrace( "setAdqlTree()"  ) ;
         URI toolIvorn = toolModel.getInfo().getId() ;
         String query = null ;
         this.adqlTree = null ;
         if( queryParam == null ) {
             if( this.adqlTree == null ) {
-                this.adqlTree = new AdqlTree( registry, toolIvorn ) ;
+                this.adqlTree = new AdqlTree( parent, registry, toolIvorn ) ;
             }
         }
         //
@@ -252,21 +357,21 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         // However, I will test for the presence of the indirection flag AND
         // whether it is set to true....
         else if( queryParam.hasIndirect() == true  && queryParam.getIndirect() == true ) {
-            if( DEBUG_ENABLED ) log.debug( "Query is a remote reference." ) ;
+            if( log.isDebugEnabled() ) log.debug( "Query is a remote reference." ) ;
             query = readQuery() ;
             if( query == null || query.length() < 5 ) {
-                this.adqlTree = new AdqlTree( registry, toolIvorn ) ;
+                this.adqlTree = new AdqlTree( parent, registry, toolIvorn ) ;
             }
             else if( query.startsWith( "<" ) ) {
                 query = adaptToVersion( query ) ;
                 try {          
-                    this.adqlTree = new AdqlTree( query, registry, toolIvorn ) ;
+                    this.adqlTree = new AdqlTree( parent, query, registry, toolIvorn ) ;
                 }
                 catch ( Exception ex ) {
-                    this.adqlTree = new AdqlTree( registry, toolIvorn ) ;
+                    this.adqlTree = new AdqlTree( parent, registry, toolIvorn ) ;
                 }
             }  
-            if( DEBUG_ENABLED ) log.debug( "...setting indirect to false" ) ;
+            if( log.isDebugEnabled() ) log.debug( "...setting indirect to false" ) ;
             queryParam.setIndirect( false ) ;
 //            try {
 //                URI fileLocation = new URI( queryParam.getValue().trim() ) ;               
@@ -286,19 +391,19 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
               
         }
         else {          
-            if( DEBUG_ENABLED ) log.debug( "Query is inline..." ) ;
+            if( log.isDebugEnabled() ) log.debug( "Query is inline..." ) ;
            query = queryParam.getValue() ;
            if( query == null || query.length() < 5 ) {
-               this.adqlTree = new AdqlTree( registry, toolIvorn ) ;
+               this.adqlTree = new AdqlTree( parent, registry, toolIvorn ) ;
            }
            else if( query.startsWith( "<" ) ) {
                // Assume this is an instream adql/x query...
                query = adaptToVersion( query ) ;
                try {          
-                   this.adqlTree = new AdqlTree( query, registry, toolIvorn ) ;
+                   this.adqlTree = new AdqlTree( parent, query, registry, toolIvorn ) ;
                }
                catch ( Exception ex ) {
-                   this.adqlTree = new AdqlTree( registry, toolIvorn ) ;
+                   this.adqlTree = new AdqlTree( parent, registry, toolIvorn ) ;
                }
            }
            else { 
@@ -309,7 +414,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
                // can be recovered from the adql/s in a simple way
                // (maybe some specialized comment?)
                // So for the moment...
-               this.adqlTree = new AdqlTree( registry, toolIvorn ) ;
+               this.adqlTree = new AdqlTree( parent, registry, toolIvorn ) ;
 //                      
 //               Document doc = null ;
 //               try {          
@@ -325,17 +430,17 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         } 
         this.adqlTree.setEnabled( true ) ;
         this.adqlTree.addTreeExpansionListener( new BranchExpansionListener() ) ;
-        this.adqlTree.addMouseListener( new Popup() ) ;      
-        if( DEBUG_ENABLED ) {
-            log.debug( "ADQLToolEditorPanel.setAdqlTree()" ) ;
-            log.debug( "Pretty print from root: " ) ;
+        this.adqlTree.addMouseListener( new Popup() ) ;   
+        this.adqlTree.addChangeListener( this ) ;
+        if( log.isDebugEnabled() ) {
             XmlOptions opts = new XmlOptions();
             opts.setSavePrettyPrint();
             opts.setSavePrettyPrintIndent(4);
-            log.debug( getRoot().toString() ) ;
+            log.debug( "setAdqlTree() pretty print from root:\n" + getRoot().toString() ) ;
         }
         this.setAdqlParameter() ;
         this.adqlTree.getModel().addTreeModelListener( this );
+        if( log.isTraceEnabled() ) exitTrace( "setAdqlTree()"  ) ;
         return this.adqlTree ;
     }
     
@@ -345,14 +450,14 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         StringBuffer buffer = new StringBuffer( returnQuery ) ;
         int index = buffer.indexOf( AdqlData.NAMESPACE_0_74 ) ;
         if( index != -1 ) {
-            if( DEBUG_ENABLED ) log.debug( "Namespace replaced" ) ;
+            if( log.isDebugEnabled() ) log.debug( "Namespace replaced" ) ;
             buffer.replace( index
                           , index + AdqlData.NAMESPACE_0_74.length()
                           , AdqlData.NAMESPACE_1_0 ) ;
             returnQuery = buffer.toString() ;
         }
         else if( buffer.indexOf( AdqlData.NAMESPACE_1_0) == -1 ) {
-            log.error( "Unrecognized namespace" ) ;
+            log.error( "Unrecognized namespace in query:\n" + query ) ;
         }       
         return returnQuery ;
     }
@@ -361,8 +466,9 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     private String readQuery() {
         String retQuery = null ;
         BufferedInputStream bis = null ; 
+        URI fileLocation = null ;
         try {
-            URI fileLocation = new URI( queryParam.getValue().trim() ) ;
+            fileLocation = new URI( queryParam.getValue().trim() ) ;
             bis = new BufferedInputStream( myspace.getInputStream( fileLocation ), 2000 ) ;
             StringBuffer buffer = new StringBuffer( 2000 ) ;
             int c ;
@@ -372,7 +478,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
             retQuery = buffer.toString() ;           
         }
         catch( Exception exception ) {
-            if( DEBUG_ENABLED ) log.debug( "Failed to read adql file" ) ;
+            log.error( "Failed to read adql file: " + fileLocation, exception ) ;
         }
         finally {
             try{ bis.close(); } catch( Exception ex ) {;}
@@ -451,53 +557,186 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         return topView ;
     }
     
-    private JTabbedPane initLeftHandView() {
+    private JPanel initLeftHandView() {
+        
+        // LHS top pane...
+        JPanel lhsPanel = new JPanel() ;
+        lhsPanel.setLayout( new GridBagLayout() ) ;
+        
         // Create the components for the left side of the split pane:
         // the panel, scrolling panel, and the XML tree it will contain.
         tabbedEditorPane = new JTabbedPane();
         tabbedEditorPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         tabbedEditorPane.setTabPlacement(SwingConstants.TOP);
         
-        // Tree panel...
-        this.controller = new ControllerImpl() ;
-        adqlTreeView = new AdqlTreeView( tabbedEditorPane, controller ) ;
- 
-        // Text panel...
-        adqlStringView = new AdqlStringView( tabbedEditorPane, controller ) ;     
+        // Experiment with combined views (tree/adql/s)...
+        this.setAdqlTree() ;
+        this.adqlMainView = new AdqlMainView( tabbedEditorPane ) ;
+
+        // Adql/x panel ...
+        // This is really only here for debug purposes...
+        boolean bDebugView = Boolean.valueOf( configuration.getKey( CONFIG_KEY_DEBUG_VIEW ) ).booleanValue() ;
+        if( bDebugView ) {
+            this.adqlXmlView = new AdqlXmlView( tabbedEditorPane ) ;
+        }
+            
+        GridBagConstraints gbc = new GridBagConstraints() ;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.gridheight = 7 ;
+        gbc.gridwidth = 8 ;
+        gbc.gridx = 0 ;
+        gbc.gridy = 0 ;   
+        gbc.fill = GridBagConstraints.BOTH ;
+        lhsPanel.add( tabbedEditorPane, gbc ) ;
         
-        // Adql/x panel...
-        adqlXmlView = new AdqlXmlView( tabbedEditorPane, controller ) ;
-              
-        adqlTree.addTreeSelectionListener( new TreeSelectionListener() {
-            public void valueChanged( TreeSelectionEvent e ) {
-//                setXmlAndStringContent() ;      
-            }
-        }) ;
+        gbc.weighty = 0;
+        gbc.gridheight = 1 ;
+        gbc.gridwidth = 8 ;
+        gbc.gridx = 0 ;
+        gbc.gridy = 7 ;        
+        gbc.fill = GridBagConstraints.HORIZONTAL ;
         
-        return tabbedEditorPane ;    
+        lhsPanel.add( getValidateEditButton(), gbc) ;  
+            
+        return lhsPanel ;    
     }
     
     private JTabbedPane initBottomView() {
+        //
         // Create the components for the bottom view:
-        // Idea is for this to contain diagnostics
+       
         tabbedBottomPane = new JTabbedPane();
         tabbedBottomPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         tabbedBottomPane.setTabPlacement(SwingConstants.TOP);
         
-        JPanel pnlContent = new JPanel();
-        JScrollPane scrContent = new JScrollPane();
-        diagnostics = new JTextPane();
-        scrContent.setViewportView( diagnostics );
-        pnlContent.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.weightx = 1;
         gbc.weighty = 1;
+        
+        formatDiagnosticsTab( gbc ) ;
+        
+        formatHistoryTab( gbc ) ;
+        
+        return tabbedBottomPane ;          
+    }
+    
+    private void formatDiagnosticsTab( GridBagConstraints gbc ) {
+        JPanel pnlContent = new JPanel();
+        JScrollPane scrContent = new JScrollPane();
+        diagnostics = new JTextPane();
+        scrContent.setViewportView( diagnostics );
+        pnlContent.setLayout(new GridBagLayout());
         pnlContent.add(scrContent, gbc);
         tabbedBottomPane.addTab( "Diagnostics", pnlContent ) ;
-            
-        return tabbedBottomPane ;          
+    }
+    
+    private void formatHistoryTab( GridBagConstraints gbc ) {
+
+        JPanel hpnlContent = new JPanel();
+        JScrollPane hscrContent = new JScrollPane() ;
+        
+        historyStack = new SizedStack() ;
+        historyStackCount.setText( "0 of 0" ) ;      
+        historyTopButton.setEnabled( false ) ;
+        historyUpButton.setEnabled( false ) ;
+        historyDownButton.setEnabled( false ) ;
+        historyBottomButton.setEnabled( false ) ;
+        
+        if( historyTopButton.getActionListeners().length == 0 ) {
+            historyStackCount.setBorder( BorderFactory.createLineBorder( Color.BLACK ) ) ;    
+            historyTopButton.addActionListener( new ActionListener() {
+                public void actionPerformed(ActionEvent e) {           
+                    setHistoryText( (String)getHistoryStack().top() ) ;
+                }            
+            }) ;
+            historyUpButton.addActionListener( new ActionListener() {
+                public void actionPerformed(ActionEvent e) {              
+                    setHistoryText( (String)getHistoryStack().up() ) ;
+                }            
+            }) ;
+            historyDownButton.addActionListener( new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    setHistoryText( (String)getHistoryStack().down() ) ;
+                }            
+            }) ;
+            historyBottomButton.addActionListener( new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    setHistoryText( (String)getHistoryStack().bottom() ) ;
+                }            
+            }) ;
+        }
+        
+        Box buttons = Box.createHorizontalBox() ;
+        buttons.add( historyStackCount ) ;
+        buttons.add( historyTopButton ) ;
+        buttons.add( historyDownButton ) ;
+        buttons.add( historyUpButton ) ;
+        buttons.add( historyBottomButton ) ;
+        buttons.add( Box.createHorizontalGlue() ) ;
+        JViewport buttonView = new JViewport() ;
+        buttonView.setView( buttons ) ;
+        hscrContent.setColumnHeaderView( buttonView ) ;
+ 
+        history = new JTextPane() ; 
+        hscrContent.setViewportView( history );
+        hpnlContent.setLayout(new GridBagLayout());
+        hpnlContent.add(hscrContent, gbc ) ;
+        tabbedBottomPane.addTab( "History stack", hpnlContent ) ;
+    }
+    
+    private SizedStack getHistoryStack() {
+        return historyStack ;
+    }
+    
+    private void setHistoryText( String text ) {
+        if( text != null ) {            
+            historyStackCount.setText( historyStack.getCurrentPosition() + " of " + historyStack.size() ) ;
+            history.setText( text ) ;
+        }
+        enableHistoryButtons() ;
+    }
+    
+    private void enableHistoryButtons() {
+        SizedStack stack = getHistoryStack() ;
+        if( stack.size() <= 1 ) {
+            historyTopButton.setEnabled( false ) ;
+            historyUpButton.setEnabled( false ) ;
+            historyDownButton.setEnabled( false ) ;
+            historyBottomButton.setEnabled( false ) ;
+        }
+        else if( stack.isAtBottom() ) {
+            historyTopButton.setEnabled( true ) ;
+            historyUpButton.setEnabled( true ) ;
+            historyDownButton.setEnabled( false ) ;
+            historyBottomButton.setEnabled( false ) ;
+        }
+        else if( stack.isAtTop() ) {
+            historyTopButton.setEnabled( false ) ;
+            historyUpButton.setEnabled( false ) ;
+            historyDownButton.setEnabled( true ) ;
+            historyBottomButton.setEnabled( true ) ;
+        }
+        else {
+            historyTopButton.setEnabled( true ) ;
+            historyUpButton.setEnabled( true ) ;
+            historyDownButton.setEnabled( true ) ;
+            historyBottomButton.setEnabled( true ) ;
+        }
+    }
+    
+    private void setDiagnosticsIcon( boolean errorFree ) {
+        ImageIcon icon = null ;
+        if( errorFree ) {
+            icon = IconHelper.loadIcon( GOOD_COMPILE_ICON ) ; 
+        }
+        else {
+            icon = IconHelper.loadIcon( BAD_COMPILE_ICON ) ;
+        }
+        int i = tabbedBottomPane.indexOfTab( "Diagnostics" ) ;
+        tabbedBottomPane.setIconAt( i, icon ) ;
     }
   
     
@@ -537,45 +776,55 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         //
         // If we are reloading a previous adql query, then we first load
         // the catalogue data, then prime the tables collection...
-        if( adqlTree.isCatalogueResourceSet() ) {
-            chooseResourceButton.setEnabled( false ) ;
-            formatCatalogTab() ;
-        }
-        else {
-            chooseResourceButton.setEnabled( true ) ;
-        }             
+        chooseResourceButton.setEnabled( false ) ;
+//        if( adqlTree.isCatalogueResourceSet() ) {
+//            chooseResourceButton.setEnabled( false ) ;
+//            formatCatalogTab() ;
+//        }
+//        else {
+//            chooseResourceButton.setEnabled( true ) ;
+//        }             
         return rhsPanel ;
     }
     
         
-
     /** applicable when it's a dsa-style tool - ie. has an ADQL parameter*/
     public boolean isApplicable(Tool t, CeaApplication info) {
         return t != null && info != null && ApplicationsImpl.listADQLParameters(t.getInterface(),info).length > 0;
     }
-
-    
-    
     
     public void treeNodesChanged(TreeModelEvent e) {
         if( e != null /* && e.getSource() != ADQLToolEditorPanel.this */ ) {
             this.setAdqlParameter() ;
+            this.adqlMainView.displayText() ;
+            refreshDebugView() ;
         }
     }
     public void treeNodesInserted(TreeModelEvent e) {
         if( e != null /* && e.getSource() != ADQLToolEditorPanel.this */ ) {
             this.update() ;
+            this.adqlMainView.displayText() ;
+            refreshDebugView() ;
         }
     }
     public void treeNodesRemoved(TreeModelEvent e) {
         if( e != null /* && e.getSource() != ADQLToolEditorPanel.this */ ) {
             this.update() ;
+            this.adqlMainView.displayText() ;
+            refreshDebugView() ;
         }
     }
     public void treeStructureChanged(TreeModelEvent e) {
         if( e != null /* && e.getSource() != ADQLToolEditorPanel.this */ ) {
             this.update() ;
+            this.adqlMainView.displayText() ;
+            refreshDebugView() ;
         }
+    }
+    
+    private void refreshDebugView() {
+        if( this.adqlXmlView != null )
+            this.adqlXmlView.refreshFromModel() ;
     }
     
     private void update() {
@@ -584,7 +833,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     }
     
     private void validateAdql() {
-        if( TRACE_ENABLED ) enterTrace( "ADQLToolEditorPanel.validateAdql" ) ; 
+        if( log.isTraceEnabled() ) enterTrace( "validateAdql()" ) ; 
         statusAfterValidate = false ;
         // Create an XmlOptions instance and set the error listener.
         XmlOptions validateOptions = new XmlOptions();
@@ -625,89 +874,19 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         else {
             statusAfterValidate = true ;
         }
-        if( TRACE_ENABLED ) exitTrace( "ADQLToolEditorPanel.validateAdql" ) ; 
+        if( log.isTraceEnabled() ) exitTrace( "validateAdql()" ) ; 
     }
-    
-    
-    private interface Controller {
-        public void updateModel( Object source, XmlObject root ) ;
-        public XmlObject getRootInstance() ;
-        public void addChangeListener( ChangeListener l ) ;
-        public void removeChangeListener( ChangeListener l ) ;
-    }
-    
-    private class ControllerImpl implements Controller {
-        
-        private EventListenerList listenerList = new EventListenerList();
-        private XmlObject root ;
-              
-        public ControllerImpl() {
-        }
-        
-        public void updateModel( Object source, XmlObject root ) {
-            if( TRACE_ENABLED ) enterTrace( "ControllerImpl.updateModel" ) ; 
-            this.root = root ;
-            fireStateChanged( source ) ;
-            if( TRACE_ENABLED ) exitTrace( "ControllerImpl.updateModel" ) ; 
-        }
-        
-        public XmlObject getRootInstance() {
-            return root ;
-        }
-        
-        
-        public void addChangeListener(ChangeListener l) {
-            listenerList.add(ChangeListener.class, l);
-        }
-        
- 
-        public void removeChangeListener(ChangeListener l) {
-            listenerList.remove(ChangeListener.class, l);
-        }
-
-        private void fireStateChanged( Object source ) {
-            Object[] listeners = listenerList.getListenerList();
-            // Process the listeners last to first, notifying
-            // those that are interested in this event
-            for( int i=listeners.length-2 ; i>=0 ; i-=2 ) {
-                if( listeners[i] == ChangeListener.class ) {
-                    ChangeEvent changeEvent = new ChangeEvent( source ) ;
-                    ( (ChangeListener)listeners[i+1] ).stateChanged( changeEvent ) ;
-                }          
-            }
-        }   
-    }
-    
-    
-//    private class BranchWillExpandListener implements TreeWillExpandListener {
-//        
-//        public void treeWillCollapse( TreeExpansionEvent event ) throws ExpandVetoException {
-//            AdqlEntry entry = (AdqlEntry)event.getPath().getLastPathComponent() ;
-//            AdqlTree.AdqlTreeCellRenderer renderer = adqlTree.getTreeCellRenderer() ;
-// //           renderer.setNextValue( entry, false ) ;
-//        }
-//  
-//        public void treeWillExpand( TreeExpansionEvent event ) throws ExpandVetoException {
-//            AdqlEntry entry = (AdqlEntry)event.getPath().getLastPathComponent() ;
-//            AdqlTree.AdqlTreeCellRenderer renderer = adqlTree.getTreeCellRenderer() ;
-// //           renderer.setNextValue( entry, true ) ;
-//        }
-//    }
     
     private class BranchExpansionListener implements TreeExpansionListener {
         
         public void treeCollapsed( TreeExpansionEvent event ) {
             AdqlNode entry = (AdqlNode)event.getPath().getLastPathComponent() ;
             entry.setExpanded( false ) ;
-//            AdqlTree.AdqlTreeCellRenderer renderer = adqlTree.getTreeCellRenderer() ;
-//            renderer.unsetNextValue( entry ) ;
         }
     
         public void treeExpanded( TreeExpansionEvent event ) {
             AdqlNode entry = (AdqlNode)event.getPath().getLastPathComponent() ;
             entry.setExpanded( true ) ;
- //           AdqlTree.AdqlTreeCellRenderer renderer = adqlTree.getTreeCellRenderer() ;
- //           renderer.unsetNextValue( entry ) ;
         }
         
     } // end of class BranchExpansionListener
@@ -750,84 +929,11 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	    }
 	    
 	    private JPopupMenu getPopupMenu( AdqlNode entry ) {
-	        return buildPopup( entry ) ;
+            JPopupMenu popup = new JPopupMenu( "AdqlTreeContextMenu" ) ;
+	        buildEditMenu( popup, entry ) ;
+            return popup ;
 	    }
-	    
-	    
-	    private JPopupMenu buildPopup( AdqlNode entry ) {
-	        JPopupMenu popup = new JPopupMenu( "AdqlTreeContextMenu" ) ;
-	        // Place a name tag at the top with a separator.
-	        // This is purely cosmetic. It does nothing.
-	        // Can remove later if redundant / not liked.
-	        popup.add( "Insert into " + entry.getDisplayName() ) ;
-	        popup.addSeparator() ;
-	        if( entry.isBottomLeafEditable() ) {
-//	            popup.add( new EditAction( entry ) ) ;
-	        }
-	        popup.add( new CutAction( entry ) ) ;
-	        popup.add( new CopyAction( entry ) ) ;
-	        popup.add( new PasteIntoAction( entry ) ) ;
-	        popup.add( new PasteOverAction( entry ) ) ;
-	        popup.add( new  PasteNextToAction( entry, true ) ) ; // Before
-	        popup.add( new  PasteNextToAction( entry, false ) ) ; // After	        
-	        popup.addSeparator() ;
-	        popup.add( new UndoAction() ) ;
-	        popup.add( new RedoAction() ) ;
-     
-	        List commandArray = adqlTree.getCommandFactory().newInsertCommands( entry ) ;
-	        if( commandArray != null ) {
-		        popup.addSeparator() ;
-	            ListIterator iterator = commandArray.listIterator() ;	            
-	            while( iterator.hasNext() ) {
-	                StandardInsertCommand command = (StandardInsertCommand)iterator.next() ;
-	                if( !command.isChildSupportedType() )
-	                    continue ;
-	                if( command.isChildCascadeable() ) {
-	                    popup.add( getCascadeableMenu( command ) ) ;
-	                }
-	                else {
-	                    popup.add( new InsertAction( command.getChildDisplayName(), command ) ) ;
-	                }
-	            }
-	        }      
-	        adqlTree.add( popup ) ;
-	        return popup ;
-	    }
-	    
-	    
-	    private JMenu getCascadeableMenu( StandardInsertCommand command ) {
-	        JMenu menu = new JMenu( command.getChildDisplayName() ) ;
-	    
-	        if( command.isChildColumnLinked() ) {
-	            if( adqlTree.getFromTables().isEmpty() == false ) {
-	                menu = getInsertColumnMenu( command ) ;
-		            menu.setEnabled( command.isChildEnabled() ) ;
-	            }
-	            else {
-	                menu.setEnabled( false ) ;
-	            }
-	
-	        }
-	        else if( command.isChildTableLinked() ) {
-	            if( adqlTree.isCatalogueResourceSet() ) { 
-	                menu = getInsertTableMenu( command ) ;
-	                menu.setEnabled( command.isChildEnabled() ) ;
-	            }
-	            else {
-	                menu.setEnabled( false ) ;
-	            }
-	        }
-	        else if( command.isChildDrivenByEnumeratedAttribute() ) {
-	            menu = getEnumeratedMenus( command ) ;
-	            menu.setEnabled( command.isChildEnabled() ) ;
-	        }  
-            else if( command.isChildDrivenByEnumeratedElement() ) {
-                menu = getEnumeratedElementMenus( command ) ;
-                menu.setEnabled( command.isChildEnabled() ) ;
-            }
-	        return menu;
-	    }
-	       
+	           
 	} // end of class PopupMenu
 	
 	private class CutAction extends AbstractAction {
@@ -836,48 +942,38 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	    public CutAction( AdqlNode entry ) {
 	        super( "Cut" ) ;
 	        TreePath path = adqlTree.getSelectionPath() ;
-	        // If the path is null or there is no parent
+            if( log.isDebugEnabled() ) {
+                if( path == null ) {
+                    log.debug("CutAction path: " + path ) ;
+                }
+                else {
+                    log.debug( "CutAction path: " 
+                             + "\n path count = " + path.getPathCount() 
+                             + "\n last path component is of type " 
+                             + ((AdqlNode)path.getLastPathComponent()).getShortTypeName() 
+                             + "\n element context path = "
+                             + ((AdqlNode)path.getLastPathComponent()).getElementContextPath() ) ;
+                }
+            }
+	        // If the path is null or there is no parent ( count < 2 )
+            // Or it is the top select element (count == 2 )
 	        // Then we cannot cut...
-	        if( path == null || path.getPathCount() < 2 ){
-	            setEnabled( false ) ;
-	            return ;
+	        if( path == null ) {
+                setEnabled( false ) ;
+                return ;
 	        }     
-	        // Get the select element path which we will also not allow to be removed
-	        // (This is one below the document root)...
-	        TreePath selectRoot = new TreePath( new Object[] { path.getPathComponent(0), path.getPathComponent(1) } ) ;
-	        if( path.equals( selectRoot ) ) {
-	            setEnabled( false ) ;
-	            return ;
-	        }
+            if( path.getPathCount() <= 2 ) {
+                setEnabled( false ) ;
+                return ;
+            }
 	        this.command = adqlTree.getCommandFactory().newCutCommand( adqlTree
 	                                                                 , adqlTree.getCommandFactory().getUndoManager()
 	                                                                 , (AdqlNode)path.getLastPathComponent() ) ;
 	    }
 	    
 	    public void actionPerformed( ActionEvent e ) {
-//	        TreePath path = adqlTree.getSelectionPath() ;
-	        //
-	        // This bit ensures we can "ungrey" (ie enable) the table choice that we have just
-	        // cut from a particular selection. Note this is probably weak, as I am assuming you
-	        // can only choose a table once. This is probably not the case when we take joinTableType
-	        // into account!!!
-//	        try {
-//	            String typeName = entry.getXmlObject().schemaType().getName().getLocalPart() ;
-//	            if( typeName.equals( "tableType" ) || typeName.equals( "archiveTableType" ) ) {
-//	                String name = ((XmlString)AdqlUtils.get( entry.getXmlObject(), "name " )).getStringValue() ;
-//	                if( name != null && adqlTree.getFromTables().containsKey( name ) ) 
-//	                    adqlTree.getFromTables().remove( name ) ;
-//	            }
-//	        }
-//	        catch( Exception ex ){
-//	            ; ex.printStackTrace() ;
-//	        } 
-	        // Now do the business...
-	        clipBoard = command.getChildEntry().getXmlObject().copy() ;
+            clipBoard.push( command.getCopy() ) ;    
 	        if( command.execute() != CommandExec.FAILED ) {
-	            adqlTree.getCommandFactory().retireOutstandingMultipleInsertCommands() ;
-        	    // Refresh tree...
-    	        ((DefaultTreeModel)adqlTree.getModel()).nodeStructureChanged( command.getParentEntry() ) ;
     	        adqlTree.repaint() ;
         	}
 	    }
@@ -888,16 +984,35 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	       
 	    public CopyAction( AdqlNode entry ) {
 	        super( "Copy" ) ;
+            TreePath path = adqlTree.getSelectionPath() ;
+            if( log.isDebugEnabled() ) {
+                if( path == null ) {
+                    log.debug("CopyAction path: " + path ) ;
+                }
+                else {
+                    log.debug( "CopyAction path: " 
+                             + "\n path count = " + path.getPathCount() 
+                             + "\n last path component is of type " 
+                             + ((AdqlNode)path.getLastPathComponent()).getShortTypeName() 
+                             + "\n element context path = "
+                             + ((AdqlNode)path.getLastPathComponent()).getElementContextPath() ) ;
+                }
+            }
+            // If the path is null or there is no parent ( count < 2 )
+            // Then we cannot copy...
+            if( path == null ) {
+                setEnabled( false ) ;
+                return ;
+            }     
+            if( path.getPathCount() < 2 ) {
+                setEnabled( false ) ;
+                return ;
+            }
 	        this.entry = entry ;
 	    }
 	    
 	    public void actionPerformed( ActionEvent e ) {
-	        TreePath path = adqlTree.getSelectionPath() ;
-	        // If the path is null or there is no relevant parent
-	        // Then we cannot copy this entry...
-	        if( path == null || path.getPathCount() < 2 )
-	            return ;
-	        clipBoard = entry.getXmlObject().copy() ;
+	        clipBoard.push( CopyHolder.holderForCopyPurposes( entry ) ) ;
 	    }
 	}
 	
@@ -908,20 +1023,16 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	    public PasteOverAction( AdqlNode entry ) {
 	        super( "Paste over" ) ;
 	        if( preConditionsForPaste() == true ) {
-	            this.command = adqlTree.getCommandFactory().newPasteOverCommand( entry, clipBoard );
+	            this.command = adqlTree.getCommandFactory().newPasteOverCommand( entry, (CopyHolder)clipBoard.peek() ) ;
 	        }
 	        setEnabled( command != null ) ;
 	    }
 	    
 	    public void actionPerformed( ActionEvent e ) {	        
         	if( command.execute() != CommandExec.FAILED ) {
-        	    adqlTree.getCommandFactory().retireOutstandingMultipleInsertCommands() ;
-        	    // Refresh tree...
-    	        ((DefaultTreeModel)adqlTree.getModel()).nodeStructureChanged( command.getParentEntry() ) ;
     	        adqlTree.repaint() ;
         	}
-	    }
-	    
+	    }	    
 	}
 	
 	private class PasteNextToAction extends AbstractAction {
@@ -936,17 +1047,14 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	            super.putValue( Action.NAME, "Paste after" ) ;
 	        }    
 	        if( preConditionsForPaste() == true ) {
-	            this.command = adqlTree.getCommandFactory().newPasteNextToCommand( entry, clipBoard, before );
+	            this.command = adqlTree.getCommandFactory().newPasteNextToCommand( entry, (CopyHolder)clipBoard.peek(), before );
 	        }
 	        setEnabled( command != null && command.isChildEnabled() ) ;    
 	    }
 	    	    
 	    public void actionPerformed( ActionEvent e ) {
 	        if( command.execute() != CommandExec.FAILED ) {
-	            adqlTree.getCommandFactory().retireOutstandingMultipleInsertCommands() ;
-        	    // Refresh tree...
-    	        ((DefaultTreeModel)adqlTree.getModel()).nodeStructureChanged( command.getParentEntry() ) ;
-    	        adqlTree.repaint() ;
+	            adqlTree.repaint() ;
         	}
 	    }
 	    
@@ -959,16 +1067,13 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	        super( "Paste into" ) ;
 	        if( preConditionsForPaste() == true ) {
 	            this.command = 
-	                adqlTree.getCommandFactory().newPasteIntoCommand( entry, clipBoard );
+	                adqlTree.getCommandFactory().newPasteIntoCommand( entry, (CopyHolder)clipBoard.peek() );
 	        }
 	        setEnabled( command != null && command.isChildEnabled() ) ;
 	    }
 	    
 	    public void actionPerformed( ActionEvent e ) {
 	        if( command.execute() != CommandExec.FAILED ) {
-	            adqlTree.getCommandFactory().retireOutstandingMultipleInsertCommands() ;
-        	    // Refresh tree...
-    	        ((DefaultTreeModel)adqlTree.getModel()).nodeStructureChanged( command.getParentEntry() ) ;
     	        adqlTree.repaint() ;
         	}
 	    }
@@ -986,11 +1091,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	    }
 	    
 	    public void actionPerformed( ActionEvent e ) {
-	        DefaultTreeModel model = (DefaultTreeModel)adqlTree.getModel() ;
-	        AbstractCommand ac = undoManager.getCommandToBeUndone() ;
-	        undoManager.undo() ;	       
-	        model.nodeStructureChanged( (TreeNode)adqlTree.getModel().getRoot() ) ;	  
-	        adqlTree.openBranches() ;
+	        undoManager.undo() ;	    
 	        adqlTree.repaint() ;
 	    }
 	    
@@ -1008,40 +1109,28 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
 	    }
 	    
 	    public void actionPerformed( ActionEvent e ) {
-	        DefaultTreeModel model = (DefaultTreeModel)adqlTree.getModel() ;
-	        AbstractCommand ac = undoManager.getCommandToBeRedone() ;
 	        undoManager.redo() ;
-	        model.nodeStructureChanged( (TreeNode)model.getRoot() ) ;
-	        adqlTree.openBranches() ;
 	        adqlTree.repaint() ;	     
 	    }
 	    
 	}
 	
 	private class EditAction extends AbstractAction {
-	    private AdqlNode entry ;
 	       
 	    public EditAction( AdqlNode entry ) {
-	        super( "Edit" ) ;
-	        this.entry = entry ;
+	        super( "Micro edit" ) ;
+            TreePath path = adqlTree.getSelectionPath() ;
+            if( path != null ) {
+                AdqlNode selectedEntry = (AdqlNode)adqlTree.getLastSelectedPathComponent();
+                if( selectedEntry.isBottomLeafEditable() ) {
+                    this.setEnabled( true ) ;
+                }
+            }
 	    }
 	    
 	    public void actionPerformed( ActionEvent e ) {
-//	        TreePath path = adqlTree.getSelectionPath() ;
-//	        // If the path is null or there is no parent
-//	        // Then we cannot delete this entry...
-//	        if( path == null || path.getPathCount() < 2 )
-//	            return ;
-//	        // Get the select element path which we will also not allow to be removed
-//	        // (This is one below the document root)...
-//	        TreePath selectRoot = new TreePath( new Object[] { path.getPathComponent(0), path.getPathComponent(1) } ) ;
-//	        if( path.equals( selectRoot ) ) 
-//	            return ;
-//	        AdqlEntry parent = (AdqlEntry)path.getParentPath().getLastPathComponent()  ;
-//	        AdqlEntry.removeInstance( parent, entry ) ;
-//	        clipBoard.add( entry ) ;
-//	        ((DefaultTreeModel)adqlTree.getModel()).nodeStructureChanged( parent ) ;
-//            adqlTree.repaint() ;
+            AdqlTree.EditPromptAction action = adqlTree.new EditPromptAction( "Micro Edit" ) ;
+            action.actionPerformed( e ) ;
 	    }
 	}
 	
@@ -1111,7 +1200,7 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
                                                                    , "(@xsi:type &= '*TabularDB')"
                                                                    ) ;
                    if( selection != null && selection.length > 0 ) {
-                       if( DEBUG_ENABLED ) log.debug( "regChooser.chooseResourceWithFilter() returned object of type: " + selection[0].getClass().getName() ) ; 
+                       if( log.isDebugEnabled() ) log.debug( "regChooser.chooseResourceWithFilter() returned object of type: " + selection[0].getClass().getName() ) ; 
                        adqlTree.setCatalogueResource( (DataCollection)selection[0]) ;
                        chooseResourceButton.setEnabled( false ) ;
                        formatCatalogTab() ;
@@ -1120,6 +1209,19 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
             });
         }
         return chooseResourceButton;
+    }
+    
+    protected JButton getValidateEditButton() {
+        if ( validateEditButton == null) {
+            validateEditButton = new JButton("Validate Edit");
+            validateEditButton.addActionListener(new ActionListener() {               
+                public void actionPerformed(ActionEvent e) {
+                   // validateEditButton.setEnabled( false ) ;
+                   ADQLToolEditorPanel.this.adqlMainView.executeEditCommand() ;
+                }
+            });
+        }
+        return validateEditButton ;
     }
     
     private void formatCatalogTab() {
@@ -1277,28 +1379,199 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
     }
     
 
-    private abstract class AdqlView extends JPanel implements ChangeListener {
+    private class AdqlXmlView extends JPanel {
         
-        JTabbedPane owner ;
-        Controller controller ;
-        protected JComponent component ;
-        boolean selected = false ;
+        JTextPane textPane = new JTextPane() ;  ;
         
-        public AdqlView( JTabbedPane owner, Controller controller, JComponent component ) {
+        public AdqlXmlView( JTabbedPane owner ) {
             super() ;
-            this.owner = owner ;
-            this.controller = controller ;
-            this.component = component ;
-            this.controller.addChangeListener( this ) ;
-            this.initSelectedProcessing() ;
-            this.initFocusProcessing() ;
+            JScrollPane xmlScrollContent = new JScrollPane();
+            xmlScrollContent.setViewportView( textPane );
+            textPane.setEditable( false ) ;
+            this.setLayout( new BorderLayout() ) ;
+            this.add(xmlScrollContent, BorderLayout.CENTER );
+            owner.addTab( "Debug", this ) ; 
+            this.refreshFromModel() ;
         }
         
+        protected void refreshFromModel() {
+            if( log.isTraceEnabled() ) enterTrace( "AdqlXmlView.refreshFromModel()" ) ;
+            XmlCursor nodeCursor = adqlTree.getRoot().newCursor() ;
+            XmlOptions options = new XmlOptions();
+            options.setSavePrettyPrint();
+            options.setSavePrettyPrintIndent(4);
+            textPane.setText( nodeCursor.xmlText(options) ) ;
+            nodeCursor.dispose() ;
+            if( log.isTraceEnabled() ) exitTrace( "AdqlXmlView.refreshFromModel()" ) ;
+        }
+             
+    } // end of class AdqlXmlView
+
+    private class AdqlMainView extends JPanel {
+        
+        // AdqlNode selectedNode ;
+        Integer selectedNodeToken ;
+        JTabbedPane owner ;
+        JTextPane textPane = new JTextPane() ;  
+        JSplitPane splitEditor = new JSplitPane( JSplitPane.VERTICAL_SPLIT ) ;
+        
+        public AdqlMainView( JTabbedPane owner ) {
+            super() ;
+            this.owner = owner ;
+        
+            GridBagConstraints gbc ;
+            
+            final JScrollPane scrTree = new JScrollPane();
+            
+            scrTree.addComponentListener ( 
+                    new ComponentAdapter() {
+                        public void componentResized( ComponentEvent e ) {
+                            adqlTree.setAvailableWidth( scrTree.getWidth() ) ;
+                        }
+                    } 
+            ) ;
+            
+            adqlTree.addTreeSelectionListener( new TreeSelectionListener() {
+                public void valueChanged( TreeSelectionEvent e ) {
+                    
+                    AdqlNode newSelectedNode = (AdqlNode)adqlTree.getLastSelectedPathComponent() ;
+                    if( newSelectedNode != null ) {
+                        // selectedNode = newSelectedNode ;
+                        selectedNodeToken = adqlTree.getCommandFactory().getEditStore().add( newSelectedNode ) ;
+                        displayText() ; 
+                    }                  
+                }
+            } ) ;
+            
+            //
+            // On creation, default to root node...
+            // selectedNode = (AdqlNode)adqlTree.getModel().getRoot() ;
+            TreeNode[] nodes = ((AdqlNode)adqlTree.getModel().getRoot()).getPath() ;
+            adqlTree.setSelectionPath( new TreePath( nodes ) ) ;
+                       
+            scrTree.setViewportView( adqlTree ) ;           
+            splitEditor.setTopComponent( scrTree ) ;
+                                  
+            //
+            // Set up the text pane in a scrolling panel etc...
+            JScrollPane textScrollContent = new JScrollPane();
+            textScrollContent.setViewportView( textPane );
+            splitEditor.setBottomComponent( textScrollContent ) ;
+            
+            
+            textPane.addFocusListener(
+                    new FocusListener() {
+                        public void focusGained(FocusEvent e) {
+                            editWindowOldImage = textPane.getText() ;
+                            bEditWindowUpdatedByFocusGained = true ;
+                        }
+                        public void focusLost(FocusEvent e) {
+                            if( bEditWindowUpdatedByFocusGained ) {
+                                maintainHistory( editWindowOldImage, textPane.getText() ) ;
+                                bEditWindowUpdatedByFocusGained = false ;
+                            }
+                           
+                        }                       
+                    }         
+            ) ;
+
+            // Set the rest of the split pane's properties,
+            splitEditor.setDividerLocation( 0.80 );
+            splitEditor.setResizeWeight( 0.80 ) ;
+            gbc = new GridBagConstraints();
+            gbc.gridx = 0;
+            gbc.gridy = 1;
+            gbc.weightx = 1;
+
+            gbc.weighty = 1;
+            gbc.fill = GridBagConstraints.BOTH;
+            gbc.gridheight = GridBagConstraints.REMAINDER;
+            gbc.anchor = GridBagConstraints.NORTH;
+            add(splitEditor, gbc);
+                       
+            adqlTree.openBranches() ;
+            this.setLayout( new BorderLayout() ) ;
+            this.add(splitEditor, BorderLayout.CENTER );
+            this.owner.addTab( "ADQL", this ) ; 
+            
+            initKeyProcessing( textPane ) ;
+        }
+ 
+        private void maintainHistory( String beforeImage, String afterImage ) {
+            if( afterImage == null )
+                return ;
+            afterImage = afterImage.trim() ;
+            if( afterImage.length() == 0 )
+                return ;
+            if( beforeImage != null ) {
+                beforeImage = beforeImage.trim() ;
+                if( afterImage.equals( beforeImage ) ) {
+                    return ;
+                }
+            }
+           
+            if( !historyStack.isEmpty() && afterImage.equals( (String)historyStack.peek() ) )
+                return ;    
+//            java.util.Enumeration e = historyStack.elements() ;
+//            while( e.hasMoreElements() ) {
+//                if( content.equals( (String)e.nextElement() ) ) 
+//                    return ;
+//            }
+            historyStack.push( afterImage ) ; 
+            historyStack.setCurrentPosition( 1 ) ;
+            setHistoryText( afterImage ) ;    
+        }
+        
+        protected void refreshFromModel() {         
+            if( log.isTraceEnabled() ) enterTrace( "AdqlMainView.refreshFromModel()" ) ;
+//            adqlTree.setTree( NodeFactory.newInstance( this.controller.getRoot() ), registry, toolModel.getInfo().getId() );
+//            adqlTree.getModel().addTreeModelListener( ADQLToolEditorPanel.this );
+            setAdqlParameter() ;
+//            adqlTree.openBranches() ;
+            if( log.isTraceEnabled() ) exitTrace( "AdqlMainView.refreshFromModel()" ) ;
+        }
+        
+//        protected String getDisplayText() {
+//            AdqlNode node = adqlTree.getCommandFactory().getEditStore().get( selectedNodeToken ) ;
+//            XmlObject userObject = node.getXmlObject() ;       
+//            userObject = AdqlUtils.modifyQuotedIdentifiers( userObject ) ;
+//            XmlCursor nodeCursor = userObject.newCursor();
+//            String text = nodeCursor.xmlText();
+//            nodeCursor.dispose() ;
+//            userObject = AdqlUtils.unModifyQuotedIdentifiers( userObject ) ;
+//            return transformer.transformToAdqls( text, " " ).trim() ; 
+//        }
+        
+        protected void displayText() {
+            if( bEditWindowUpdatedByFocusGained ) {
+                maintainHistory( editWindowOldImage, textPane.getText() ) ;
+                bEditWindowUpdatedByFocusGained = false ;
+            }
+            AdqlNode node = adqlTree.getCommandFactory().getEditStore().get( selectedNodeToken ) ;
+            try {
+                if( node != null ) {
+                    XmlObject userObject = node.getXmlObject() ;       
+                    userObject = AdqlUtils.modifyQuotedIdentifiers( userObject ) ;
+                    XmlCursor nodeCursor = userObject.newCursor();
+                    String text = nodeCursor.xmlText();
+                    nodeCursor.dispose() ;
+                    userObject = AdqlUtils.unModifyQuotedIdentifiers( userObject ) ;
+                    textPane.setText( transformer.transformToAdqls( text, " " ) ) ; 
+                }
+                else {
+                    textPane.setText( "" ) ;
+                }       
+            }
+            catch( Exception ex ) {
+                textPane.setText( "" ) ;
+            }
+            
+        }
         
         protected void initKeyProcessing( JTextPane textPane ) {
-            if( TRACE_ENABLED ) enterTrace( "AdqlView.initKeyProcessing" ) ;
+            if( log.isTraceEnabled() ) enterTrace( "AdqlMainView.initKeyProcessing()" ) ;
             if( textPane != null ) {
-                if( DEBUG_ENABLED ) log.debug( "initKeyProcessing triggered" ) ;
+                if( log.isDebugEnabled() ) log.debug( "initKeyProcessing triggered" ) ;
                 //
                 // First we need to find the default action for the Enter key and preserve this.
                 // We will use it to invoke the default action after having processed the Enter key.
@@ -1315,340 +1588,44 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
                 // (JL Note: not sure whether I should invoke the default process first!!!)
                 textPane.getActionMap().put( "ValidateAdql", new AbstractAction (){
                     public void actionPerformed(ActionEvent e) {
-                        if( TRACE_ENABLED ) enterTrace( "AdqlView.VK_ENTER.actionPerformed" ) ;
-                        validateAdql() ;
+                        if( log.isTraceEnabled() ) enterTrace( "AdqlMainView.VK_ENTER.actionPerformed()" ) ;
+                        executeEditCommand() ;
                         action.actionPerformed( e ) ;
-                        if( TRACE_ENABLED ) exitTrace( "AdqlView.VK_ENTER.actionPerformed" ) ;
+                        if( log.isTraceEnabled() ) exitTrace( "AdqlMainView.VK_ENTER.actionPerformed()" ) ;
                     }
                 } );                  
             }
-            if( TRACE_ENABLED ) exitTrace( "AdqlView.initKeyProcessing" ) ;
+            if( log.isTraceEnabled() ) exitTrace( "AdqlMainView.initKeyProcessing()" ) ;
         }
         
-        abstract protected void validateAdql() ;
-       
-        protected void initSelectedProcessing() {
-            if( TRACE_ENABLED ) enterTrace( "AdqlView.initSelectedProcessing" ) ;
-            this.owner.addChangeListener( new ChangeListener() {
-                public void stateChanged( ChangeEvent e ) {
-                    if( TRACE_ENABLED ) enterTrace( "AdqlView.stateChanged" ) ;
-                    Object selectedComponent = ((JTabbedPane)e.getSource()).getSelectedComponent() ;
-                    if( selectedComponent == ADQLToolEditorPanel.AdqlView.this 
-                        &&
-                        selected == false ) {
-                        selected = true ;
-                        selectionGained() ;
-                    }
-                    else if( selected == true ){
-                        selected = false ;
-                        selectionLost() ;
-                    }
-                    if( TRACE_ENABLED ) exitTrace( "AdqlView.stateChanged" ) ;
-                }
-            }) ;
-            if( TRACE_ENABLED ) exitTrace( "AdqlView.initSelectedProcessing" ) ;
-        }
-        
-        protected void selectionGained() {
-            if( TRACE_ENABLED ) enterTrace( "AdqlView.selectionGained" ) ;
-            AdqlView.this.owner.requestFocus() ;
-            if( TRACE_ENABLED ) exitTrace( "AdqlView.selectionGained" ) ;
-        }
-        
-        abstract protected void selectionLost() ;
-        
-        public void stateChanged(ChangeEvent e) {
-            if( TRACE_ENABLED ) enterTrace( "AdqlView.stateChanged" ) ;
-            if( e != null && e.getSource() != this ) {
-                refreshFromModel() ;
+        protected void executeEditCommand() {
+            AdqlNode node = adqlTree.getCommandFactory().getEditStore().get( selectedNodeToken ) ;
+            String image = textPane.getText() ;
+            EditCommand editCommand = adqlTree.getCommandFactory().newEditCommand( adqlTree, node, image ) ;
+            CommandExec.Result result = editCommand.execute() ;
+            if( result == CommandExec.FAILED ) {
+                setDiagnosticsIcon( false ) ;
+                diagnostics.setText( editCommand.getMessages()[0] ) ;
             }
-            if( TRACE_ENABLED ) exitTrace( "AdqlView.stateChanged" ) ;
-        }
-        
-        abstract protected void refreshFromModel() ;
-        
-        protected void processPotentialUpdates( XmlObject rootBefore, XmlObject rootAfter ) {
-            if( TRACE_ENABLED ) enterTrace( "AdqlView.processPotentialUpdates" ) ;
-            if( rootAfter != null && rootBefore != null ) {
-                if( DEBUG_ENABLED ) enterTrace( "potential updates triggered" ) ;
-                XmlOptions options = new XmlOptions();
-                options.setSavePrettyPrint();
-                options.setSavePrettyPrintIndent(4);
-                XmlCursor nodeCursor = rootBefore.newCursor();               
-                String xmlStringBefore = nodeCursor.xmlText(options);
-                nodeCursor.dispose() ;
-                nodeCursor = rootAfter.newCursor();               
-                String xmlStringAfter = nodeCursor.xmlText(options);
-                nodeCursor.dispose() ;
-                if( xmlStringBefore.equals( xmlStringAfter ) == false )  {
-                    this.controller.updateModel( this, rootAfter ) ;
-                }
+            else {       
+                setDiagnosticsIcon( true ) ;
+                diagnostics.setText( "" ) ;
+                // Refresh tree...
+                // NB: Cosmetically this requires improvement.
+                // Refreshing using the child entry is cosmetically better, but does not properly update
+                // the model, leading to exceptions being thrown when a menu is built (particularly on
+                // a delete action). Using the parent entry gives no errors, but tends to collapse 
+                // branches in the parent. Some method of using the parent but ensuring branches remain
+                // open is called for.               
+//                ((DefaultTreeModel)adqlTree.getModel()).nodeStructureChanged( editCommand.getChildEntry() ) ;
+                ((DefaultTreeModel)adqlTree.getModel()).nodeStructureChanged( editCommand.getParentEntry() ) ;
+                adqlTree.repaint() ;
             }
-            if( TRACE_ENABLED ) exitTrace( "AdqlView.processPotentialUpdates" ) ;
-        }
-        
-        protected void initFocusProcessing() {  
-            if( TRACE_ENABLED ) enterTrace( "AdqlView.initFocusProcessing" ) ;
-            
-            this.component.addFocusListener( new FocusListener() {
-                public void focusGained( FocusEvent e ) {
-                    if( TRACE_ENABLED ) enterTrace( "AdqlView.focusGained" ) ;
-                    if( TRACE_ENABLED ) exitTrace( "AdqlView.focusGained" ) ;
-                }
-                public void focusLost( FocusEvent e ) {
-                    if( TRACE_ENABLED ) enterTrace( "AdqlView.focusLost" ) ;
-                    validateAdql() ;
-                    if( TRACE_ENABLED ) exitTrace( "AdqlView.focusLost" ) ;
-                }
-            }) ;
-            
-            if( TRACE_ENABLED ) exitTrace( "AdqlView.initFocusProcessing" ) ;
-        }
-        
-    } // end of class AdqlView
-     
-    private class AdqlXmlView extends AdqlView {
-        
-        String xmlString ;
-        XmlObject rootOnGainingSelection ;
-        XmlObject processedRoot ;
-        
-        public AdqlXmlView( JTabbedPane owner, Controller controller ) {
-            super( owner, controller, new JTextPane() ) ;
-            JScrollPane xmlScrollContent = new JScrollPane();
-            xmlScrollContent.setViewportView( getXmlTextPane() );
-            this.setLayout( new BorderLayout() ) ;
-            this.add(xmlScrollContent, BorderLayout.CENTER );
-            this.owner.addTab( "Adql/x", this ) ;
-            //
-            // Set up the Enter key as a processing key for Adql.
-            // ie: everytime the user presses the Enter key we
-            // validate and store the results...
-            initKeyProcessing( getXmlTextPane() ) ;
-        }
-        
-        private JTextPane getXmlTextPane() {
-            return (JTextPane)component ;
-        }
-        
-        protected void selectionGained() {
-            if( TRACE_ENABLED ) enterTrace( "AdqlXmlView.selectionGained" ) ;
-            super.selectionGained() ;
-            refreshFromModel() ;
-//            validateAdql() ;
-            if( TRACE_ENABLED ) exitTrace( "AdqlXmlView.selectionGained" ) ;
-        }
-        
-        protected void selectionLost() {
-            if( TRACE_ENABLED ) enterTrace( "AdqlXmlView.selectionLost" ) ;
-            validateAdql() ;
-            if( TRACE_ENABLED ) exitTrace( "AdqlXmlView.selectionLost" ) ;
-        }
-        
-        protected void refreshFromModel() {
-            if( TRACE_ENABLED ) enterTrace( "AdqlXmlView.refreshFromModel" ) ;
-            this.rootOnGainingSelection = this.controller.getRootInstance() ;
-            this.rootOnGainingSelection = AdqlUtils.unModifyQuotedIdentifiers( this.rootOnGainingSelection ) ;
-            XmlCursor nodeCursor = rootOnGainingSelection.newCursor();
-            XmlOptions options = new XmlOptions();
-            options.setSavePrettyPrint();
-            options.setSavePrettyPrintIndent(4);
-            getXmlTextPane().setText( nodeCursor.xmlText(options) ) ;
-            nodeCursor.dispose() ;
-            if( TRACE_ENABLED ) exitTrace( "AdqlXmlView.refreshFromModel" ) ;
-        }
-        
-        protected void validateAdql() {
-            if( TRACE_ENABLED ) enterTrace( "AdqlXmlView.validateAdql" ) ;
-            validateAdql2() ;
-            processPotentialUpdates( rootOnGainingSelection, processedRoot ) ;
-            ADQLToolEditorPanel.this.validateAdql() ; 
-            if( TRACE_ENABLED ) exitTrace( "AdqlXmlView.validateAdql" ) ;
-        }
-        
-        protected void validateAdql2() {
-            if( TRACE_ENABLED ) enterTrace( "AdqlXmlView.validateAdql2" ) ; ;
-            String text = getXmlTextPane().getText().trim() ;
-            if( text.equals( xmlString ) == false ) {
-                try {
-                    xmlString = text ;
-                    processedRoot = SelectDocument.Factory.parse( xmlString ) ;
-                    diagnostics.setText( "" ) ; 
-                } 
-                catch( XmlException xmle ) {
-                    String message = xmle.getLocalizedMessage() ;
-                    if( message != null && message.length() > 0) {
-                        diagnostics.setText( message ) ;
-                    }
-                    else {
-                        diagnostics.setText( xmle.toString() ) ;
-                    }                 
-                }
-            }
-            if( TRACE_ENABLED ) exitTrace( "AdqlXmlView.validateAdql2" ) ;
-        }
-        
-    } // end of class AdqlXmlView
-
-    private class AdqlTreeView extends AdqlView {
-        
-        public AdqlTreeView( JTabbedPane owner, Controller controller ) {
-            super( owner, controller, setAdqlTree() ) ;
-            final JScrollPane scrTree = new JScrollPane();
-            
-            scrTree.addComponentListener ( 
-                    new ComponentAdapter() {
-                        public void componentResized( ComponentEvent e ) {
-                            adqlTree.setAvailableWidth( scrTree.getWidth() ) ;
-                        }
-                    } 
-            ) ;
-                       
-            scrTree.setViewportView( component ) ;
-            adqlTree.openBranches() ;
-            this.controller.updateModel( this, ((AdqlNode)adqlTree.getModel().getRoot()).getXmlObject() ) ;
-            this.setLayout( new BorderLayout() ) ;
-            this.add(scrTree, BorderLayout.CENTER );
-            this.owner.addTab( "Tree", this ) ; 
-        }
-        
-        protected void refreshFromModel() {         
-            if( TRACE_ENABLED ) enterTrace( "AdqlTreeView.refreshFromModel" ) ;
-            adqlTree.setTree( NodeFactory.newInstance( this.controller.getRootInstance() ), registry, toolModel.getInfo().getId() );
-            adqlTree.getModel().addTreeModelListener( ADQLToolEditorPanel.this );
-            setAdqlParameter() ;
-            adqlTree.openBranches() ;
-            if( TRACE_ENABLED ) exitTrace( "AdqlTreeView.refreshFromModel" ) ;
-        }
-        
-//        protected void selectionLost() {}
-//        protected void validateAdql() {}
-        
-        protected void selectionGained() {
-            if( TRACE_ENABLED ) enterTrace( "AdqlTreeView.selectionGained" ) ;
-            super.selectionGained() ;
-//            refreshFromModel() ;
-            validateAdql() ;
-            if( TRACE_ENABLED ) exitTrace( "AdqlTreeView.selectionGained" ) ;
-        }
-        
-        protected void selectionLost() {
-            if( TRACE_ENABLED ) enterTrace( "AdqlTreeView.selectionLost" ) ;
-            validateAdql() ;
-            if( TRACE_ENABLED ) exitTrace( "AdqlTreeView.selectionLost" ) ;
-        }
-        
-        protected void validateAdql() {
-            if( TRACE_ENABLED ) enterTrace( "AdqlTreeView.validateAdql" ) ;
-            try {
-               ADQLToolEditorPanel.this.validateAdql() ; 
-            }
-            catch ( Exception ex ) {
-                ;
-            }
-            if( TRACE_ENABLED ) exitTrace( "AdqlTreeView.validateAdql" ) ;
+            maintainHistory( null, image ) ;
         }
         
     }
       
-    private class AdqlStringView extends AdqlView {
-        
-        //JTextPane adqlTextPane ;
-        String adqlString ;
-        XmlObject rootOnGainingSelection ;
-        XmlObject processedRoot ;
-        //boolean dirtyFlag = false ;
-        
-        public AdqlStringView( JTabbedPane owner, Controller controller ) {
-            super( owner, controller, new JTextPane() ) ;
-            //
-            // Set up the text pane in a scrolling panel etc...
-            JScrollPane textScrollContent = new JScrollPane();
-            textScrollContent.setViewportView( getAdqlTextPane() );
-            this.setLayout( new BorderLayout() ) ;
-            this.add(textScrollContent, BorderLayout.CENTER );
-            this.owner.addTab( "Adql/s", this ) ;
-            //
-            // Set up the Enter key as a processing key for Adql.
-            // ie: everytime the user presses the Enter key we
-            // validate and store the results...
-            initKeyProcessing( getAdqlTextPane() ) ;           
-        }
-        
-        private JTextPane getAdqlTextPane() {
-            return (JTextPane)component ;
-        }
-        
-        protected void selectionGained() {
-            if( TRACE_ENABLED ) enterTrace( "AdqlStringView.selectionGained" ) ;
-            super.selectionGained() ;
-            refreshFromModel() ;
-            if( TRACE_ENABLED ) exitTrace( "AdqlStringView.selectionGained" ) ;
-        }
-        
-        protected void selectionLost() {
-            if( TRACE_ENABLED ) enterTrace( "AdqlStringView.selectionLost" ) ;
-            validateAdql() ;
-            if( TRACE_ENABLED ) exitTrace( "AdqlStringView.selectionLost" ) ;
-        }
-        
-        protected void refreshFromModel() {
-            if( TRACE_ENABLED ) enterTrace( "AdqlStringView.refreshFromModel" ) ;
-            this.rootOnGainingSelection = this.controller.getRootInstance() ;
-            this.rootOnGainingSelection = AdqlUtils.modifyQuotedIdentifiers( this.rootOnGainingSelection ) ;
-            XmlCursor nodeCursor = rootOnGainingSelection.newCursor();
-            XmlOptions options = new XmlOptions();
-            options.setSavePrettyPrint();
-            options.setSavePrettyPrintIndent(4);
-            String text = nodeCursor.xmlText(options);
-            nodeCursor.dispose() ;
-            this.rootOnGainingSelection = AdqlUtils.unModifyQuotedIdentifiers( this.rootOnGainingSelection ) ;
-            getAdqlTextPane().setText( transformer.transformToAdqls( text, " " ).trim() ) ; 
-            if( TRACE_ENABLED ) exitTrace( "AdqlStringView.refreshFromModel" ) ;
-        }
-        
-        protected void validateAdql() {
-            if( TRACE_ENABLED ) enterTrace( "AdqlStringView.validateAdql" ) ;
-            validateAdql2() ;
-            processPotentialUpdates( rootOnGainingSelection, processedRoot ) ;
-            if( TRACE_ENABLED ) exitTrace( "AdqlStringView.validateAdql" ) ;
-        }
-        
-        protected void validateAdql2() {
-            if( TRACE_ENABLED ) enterTrace( "AdqlStringView.validateAdql2" ) ;
-            statusAfterValidate = false ;
-            String text = getAdqlTextPane().getText() ;
-            if( text.lastIndexOf( ';') == -1 ){
-                text = text + ';' ;
-            }           
-            if( text.equals( this.adqlString ) == false ) {
-                try {  
-                    this.adqlString = text ;
-                    if( adqlCompiler == null ) {
-                        adqlCompiler = new AdqlStoX( new StringReader( adqlString ) ) ;
-                    }
-                    else {
-                        adqlCompiler.ReInit( new StringReader( adqlString ) ) ;
-                    }
-                    this.processedRoot = adqlCompiler.compileToXmlBeans() ;
-                    diagnostics.setText( "" ) ;  
-                    statusAfterValidate = true ;
-                } 
-                catch( Throwable sx ) {
-                    String message = sx.getLocalizedMessage() ;
-                    if( message != null && message.length() > 0) {
-                        diagnostics.setText( message ) ;
-                    }
-                    else {
-                        diagnostics.setText( sx.toString() ) ;
-                    }   
-                }
-            }
-            if( TRACE_ENABLED ) exitTrace( "AdqlStringView.validateAdql2" ) ;
-        }
-           
-    } // end of class AdqlStringView
-
     private Point[]	elastic ;
     
     protected void paintChildren(Graphics g) {
@@ -1682,10 +1659,12 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
         TreePath path = adqlTree.getSelectionPath() ;
         // If the path is null or there is no parent
         // Then we cannot paste into this entry...
-        if( path == null || path.getPathCount() < 2 )
+        if( path == null )
+            return false ;
+        if( path.getPathCount() < 2 )
             return false ;
         // If the clipboard is empty then there is nothing to paste...
-        if( clipBoard == null )
+        if( clipBoard.size() == 0 )
             return false ;
         return true ;
     }
@@ -1701,34 +1680,301 @@ public class ADQLToolEditorPanel extends AbstractToolEditorPanel implements Tool
      */
     public String getActionWarningMessage( ActionType actionType ) {
         String message = null ;
-        // START JBL: Altered in head (!) as an urgent fix for bz #2066 
         if( actionType == EXECUTE 
             && 
             isApplicable( toolModel.getTool(), toolModel.getInfo() )
             &&
             this.statusAfterValidate == false  ) {
                 message = "Query Panel: errors or unprocessed edits have been detected." ;
-        } 
-        // END JBL: of bz #2066
+        }       
         return message ;
     }
     
+    
+    
+    /* (non-Javadoc)
+     * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
+     */
+    public void stateChanged( ChangeEvent e) {
+        if( e.getSource() == adqlTree ) {
+            if( adqlTree.isCatalogueResourceSet() ) {
+                chooseResourceButton.setEnabled( false ) ;
+                formatCatalogTab() ;
+            }
+            else {
+                chooseResourceButton.setEnabled( true ) ;
+            }  
+            return ;
+        }
+        if( e.getSource() instanceof JTabbedPane == false )
+            return ;
+        JTabbedPane tp = (JTabbedPane)e.getSource() ;
+        java.awt.Component c = tp.getSelectedComponent() ;
+        if( c == this ) {
+            // We have just gained selection:
+            boolean bEditFound = false ;
+            boolean bOptionsFound = false ;
+            JMenuBar mb = ((UIComponentImpl)parent).getJMenuBar() ;
+            int mc = mb.getMenuCount() ;
+            JMenu menu = null ;
+            for( int i=0; i<mc; i++ ) {
+                menu = mb.getMenu(i) ;
+                String name = menu.getName() ;
+                if( name == null )
+                    continue ;
+                if( name.equals("Edit") ) {
+                    bEditFound = true ;
+                    menu.setEnabled( true ) ;
+                }
+                else if( name.equals( "Options" ) ) {
+                    bOptionsFound = true ;
+                    menu.setEnabled( true ) ;
+                }
+            }
+            if( !bEditFound ) {
+                final JMenu editMenu = new JMenu( "Edit" ) ;
+                editMenu.setName( "Edit") ;
+                editMenu.addMenuListener( new MenuListener() {
+
+                    public void menuCanceled( MenuEvent e ) { }
+                    public void menuDeselected(MenuEvent e) { }
+                    public void menuSelected(MenuEvent e) {  
+                        AdqlNode entry = (AdqlNode)adqlTree.getLastSelectedPathComponent() ;                       
+                        buildEditMenu( editMenu, entry ) ;
+                    }
+                                       
+                } ) ;
+               
+                mb.add(editMenu) ;
+                editMenu.setEnabled( true ) ;
+            }
+            else {
+                buildEditMenu( menu, (AdqlNode)adqlTree.getLastSelectedPathComponent() ) ;
+            }
+            if( !bOptionsFound ) {
+                final JMenu optionsMenu = new JMenu( "Options" ) ;
+                optionsMenu.setName( "Options" ) ;               
+                optionsMenu.addMenuListener( new MenuListener() {
+                    public void menuCanceled( MenuEvent e ) { }
+                    public void menuDeselected(MenuEvent e) { }
+                    public void menuSelected(MenuEvent e) {                        
+                        buildOptionsMenu( optionsMenu ) ;
+                    }                                       
+                } ) ;
+                mb.add( optionsMenu ) ;
+                optionsMenu.setEnabled( true ) ;
+            }
+        }
+        else {
+            // We have just lost selection:
+            JMenuBar mb = ((UIComponentImpl)parent).getJMenuBar() ;
+            int mc = mb.getMenuCount() ;
+            for( int i=0; i<mc; i++ ) {
+                JMenu menu = mb.getMenu(i) ;
+                String name = menu.getName() ;
+                if( name.equals("Edit") ) {
+                    menu.setEnabled( false ) ;
+                }
+                else if( name.equals( "Options" ) ) {
+                    menu.setEnabled( false ) ;
+                }
+            }
+        }
+    }
+    
+    private void buildOptionsMenu( JMenu optionsMenu ) {
+        if( optionsMenu.getMenuComponentCount() == 0 ) {            
+            //
+            // Whether xml debug view is required...
+            boolean bDebugView = Boolean.valueOf( configuration.getKey( CONFIG_KEY_DEBUG_VIEW ) ).booleanValue() ;
+            JCheckBoxMenuItem cbmi = new JCheckBoxMenuItem( "Show debug view", bDebugView ) ;                    
+         
+            cbmi.addActionListener( new ActionListener() {
+                public void actionPerformed( ActionEvent e ) {
+                    boolean bState = Boolean.valueOf( configuration.getKey( CONFIG_KEY_DEBUG_VIEW ) ).booleanValue() ;
+                    if( bState == false ) {
+                        ADQLToolEditorPanel.this.adqlXmlView = new AdqlXmlView( tabbedEditorPane ) ;
+                    }
+                    else {                       
+                        tabbedEditorPane.removeTabAt( tabbedEditorPane.indexOfComponent( adqlXmlView) ) ;
+                        adqlXmlView = null ;
+                    }
+                    configuration.setKey( CONFIG_KEY_DEBUG_VIEW, Boolean.toString( !bState ) ) ;
+                }                 
+            } ) ;              
+            optionsMenu.add( cbmi ) ;
+        }     
+    }
+    
+    
+    private void buildEditMenu( JComponent menuComponent, AdqlNode entry ) {
+        
+        final class MenuAdapter {
+            
+            private JComponent menuComponent ;
+            
+            MenuAdapter( JComponent menuComponent ) {
+                this.menuComponent = menuComponent ;
+                if( this.menuComponent instanceof JPopupMenu ) {
+                    ((JPopupMenu)menuComponent).removeAll() ;
+                }
+                else if( this.menuComponent instanceof JMenu ) {
+                    ((JMenu)menuComponent).removeAll() ;
+                }
+                else if( menuComponent == null ){
+                    log.debug( "buildEditMenu().MenuAdapter(): menuComponent = " + menuComponent ) ;
+                }
+                else {
+                    log.debug( "buildEditMenu().MenuAdapter(): menuComponent = " + menuComponent.getClass() ) ;
+                }
+            }
+            
+            JComponent add( Action action ) {
+                JComponent jc = null ;
+                if( this.menuComponent instanceof JPopupMenu ) {
+                    jc = ((JPopupMenu)menuComponent).add( action ) ;
+                }
+                else if( this.menuComponent instanceof JMenu ) {
+                    jc = ((JMenu)menuComponent).add( action ) ;
+                }
+                return jc ;
+            }
+            
+            JComponent add( JMenu menu ) {
+                JComponent jc = null ;
+                if( this.menuComponent instanceof JPopupMenu ) {
+                    jc = ((JPopupMenu)menuComponent).add( menu ) ;
+                }
+                else if( this.menuComponent instanceof JMenu ) {
+                    jc = ((JMenu)menuComponent).add( menu ) ;
+                }
+                return jc ;
+            }
+            
+            JComponent add( String text) {
+                JComponent jc = null ;
+                if( this.menuComponent instanceof JPopupMenu ) {
+                    jc = ((JPopupMenu)menuComponent).add( text ) ;
+                }
+                else if( this.menuComponent instanceof JMenu ) {
+                    jc = ((JMenu)menuComponent).add( text ) ;
+                }
+                return jc ;
+            }
+            
+            void addSeparator() {
+                if( this.menuComponent instanceof JPopupMenu ) {
+                    ((JPopupMenu)menuComponent).addSeparator() ;
+                }
+                else if( this.menuComponent instanceof JMenu ) {
+                    ((JMenu)menuComponent).addSeparator() ;
+                }
+            }
+        }
+        
+        //
+        // Safety first...
+        if( entry == null ) {
+            log.debug( "buildEditMenu(JComponent, AdqlNode): AdqlNode is null." ) ;
+            // Create an empty menu...
+            new MenuAdapter( menuComponent ) ;
+            return ;
+        }
+            
+        MenuAdapter ma = new MenuAdapter( menuComponent ) ;
+       
+        if( entry.isBottomLeafEditable() ) {
+            ma.add( new EditAction( entry ) ) ;
+        }
+        ma.add( new CutAction( entry ) ) ;
+        ma.add( new CopyAction( entry ) ) ;
+        ma.add( new PasteIntoAction( entry ) ) ;
+        ma.add( new PasteOverAction( entry ) ) ;
+        ma.add( new  PasteNextToAction( entry, true ) ) ; // Before
+        ma.add( new  PasteNextToAction( entry, false ) ) ; // After          
+        ma.addSeparator() ;
+        ma.add( new UndoAction() ) ;
+        ma.add( new RedoAction() ) ;
+ 
+        List commandArray = adqlTree.getCommandFactory().newInsertCommands( entry ) ;
+        if( commandArray != null && commandArray.size() > 0 ) {
+            ma.addSeparator() ;
+            ma.add( "Insert into " + entry.getDisplayName() + "..." ) ;
+            // ma.addSeparator() ;
+            ListIterator iterator = commandArray.listIterator() ;               
+            while( iterator.hasNext() ) {
+                StandardInsertCommand command = (StandardInsertCommand)iterator.next() ;
+                if( !command.isChildSupportedType() )
+                    continue ;
+                if( command.isChildCascadeable() ) {
+                    ma.add( getCascadeableMenu( command ) ) ;
+                }
+                else {
+                    ma.add( new InsertAction( command.getChildDisplayName(), command ) ) ;
+                }
+            }
+        }      
+
+    }
+    
+    
+    private JMenu getCascadeableMenu( StandardInsertCommand command ) {
+        JMenu menu = new JMenu( command.getChildDisplayName() ) ;
+    
+        if( command.isChildColumnLinked() ) {
+            if( adqlTree.getFromTables().isEmpty() == false ) {
+                menu = getInsertColumnMenu( command ) ;
+                menu.setEnabled( command.isChildEnabled() ) ;
+            }
+            else {
+                menu.setEnabled( false ) ;
+            }
+
+        }
+        else if( command.isChildTableLinked() ) {
+            if( adqlTree.isCatalogueResourceSet() ) { 
+                menu = getInsertTableMenu( command ) ;
+                menu.setEnabled( command.isChildEnabled() ) ;
+            }
+            else {
+                menu.setEnabled( false ) ;
+            }
+        }
+        else if( command.isChildDrivenByEnumeratedAttribute() ) {
+            menu = getEnumeratedMenus( command ) ;
+            menu.setEnabled( command.isChildEnabled() ) ;
+        }  
+        else if( command.isChildDrivenByEnumeratedElement() ) {
+            menu = getEnumeratedElementMenus( command ) ;
+            menu.setEnabled( command.isChildEnabled() ) ;
+        }
+        return menu;
+    }
+   
+
     private void enterTrace( String entry ) {
-        log.debug( logIndent.toString() + "enter: " + entry ) ;
+        log.trace( getLogIndent().toString() + "enter: " + entry ) ;
         indentPlus() ;
     }
 
     private void exitTrace( String entry ) {
         indentMinus() ;
-        log.debug( logIndent.toString() + "exit : " + entry ) ;
+        log.trace( getLogIndent().toString() + "exit : " + entry ) ;
     }
     
-    private static void indentPlus() {
+    private void indentPlus() {
         logIndent.append( ' ' ) ;
     }
     
-    private static void indentMinus() {
+    private void indentMinus() {
         logIndent.deleteCharAt( logIndent.length()-1 ) ;
+    }
+    
+    private StringBuffer getLogIndent() {
+        if( logIndent == null ) {
+            logIndent = new StringBuffer() ;
+        }
+        return logIndent ;
     }
     
     

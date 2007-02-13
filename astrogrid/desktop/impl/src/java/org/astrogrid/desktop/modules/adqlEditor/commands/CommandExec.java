@@ -24,6 +24,7 @@ public interface CommandExec {
     public Result execute() ;
     
     public String[] getMessages() ;
+    public void setMessages( String[] messages ) ;
     
     public static class Result {       
         private int code ;

@@ -166,7 +166,7 @@ public class ColumnInsertCommand extends StandardInsertCommand {
         if( arraySize == 0 ) {
             XmlObject newObject = AdqlUtils.addNewToEndOfArray( o, getChildElementName() ) ;
             newObject = newObject.changeType( AdqlUtils.getType( o, AdqlData.ALL_SELECTION_ITEM_TYPE ) ) ;
-            NodeFactory.newInstance( getParentEntry(), newObject ) ;
+            adqlTree.getNodeFactory().newInstance( getParentEntry(), newObject ) ;
         }
     }
    

@@ -1,17 +1,25 @@
 package org.astrogrid.desktop.modules.adqlEditor.nodes ;
 
 
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.lang.Integer;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xmlbeans.SimpleValue;
 import org.apache.xmlbeans.XmlCursor;
-import org.apache.xmlbeans.XmlDouble;
-import org.apache.xmlbeans.XmlLong;
 import org.apache.xmlbeans.XmlObject;
+import org.apache.xmlbeans.XmlOptions;
+import org.apache.xmlbeans.SchemaProperty; 
+import org.apache.xmlbeans.SchemaType; 
+import org.apache.xmlbeans.SimpleValue; 
 import org.apache.xmlbeans.XmlString;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
+import org.apache.xmlbeans.XmlLong ;
+import org.apache.xmlbeans.XmlDouble ;
+
+import javax.swing.tree.DefaultMutableTreeNode ;
+
+import org.astrogrid.desktop.modules.adqlEditor.*;
 
 /**
  * 
@@ -22,12 +30,12 @@ public class AtomNode extends HidingNode {
     private static final boolean TRACE_ENABLED = true ;
     private static final Log log = LogFactory.getLog( AtomNode.class ) ;
     
-    AtomNode( AdqlNode parent, XmlObject o ) throws HidingNode.UnsupportedObjectException {
-        super( parent, o ) ;
+    AtomNode( NodeFactory nodeFactory, AdqlNode parent, XmlObject o ) throws HidingNode.UnsupportedObjectException {
+        super( nodeFactory, parent, o ) ;
     }
     
-    AtomNode( AdqlNode parent, XmlObject o, int childNodeIndex ) throws HidingNode.UnsupportedObjectException {
-        super( parent, o, childNodeIndex ) ;
+    AtomNode( NodeFactory nodeFactory, AdqlNode parent, XmlObject o, int childNodeIndex ) throws HidingNode.UnsupportedObjectException {
+        super( nodeFactory, parent, o, childNodeIndex ) ;
     }
     
     public boolean isBottomLeafEditable() {

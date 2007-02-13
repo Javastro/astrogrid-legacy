@@ -271,6 +271,7 @@ REGISTRY GOOGLE
 				<service>registryGoogle</service>
 				<service>astrogrid.myspace</service>
 				<service>ivoa.registry</service>
+				<service>system.configuration</service>
 			</construct>
 		</invoke-factory>
 	</service-point>	

@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.33 2007/01/31 11:26:19 nw Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.34 2007/02/13 09:55:47 jl99 Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,6 +43,9 @@ import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
+
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
@@ -480,6 +483,14 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel implements
         	if (p instanceof PropertyChangeListener) {
         		this.addPropertyChangeListener((PropertyChangeListener)p);
         	}
+        	// JL: 
+            // In order to detect tab changes, implement the ChangeListener interface.
+            // Use for dynamic menu changing (for instance).
+            // This is used in the query buider (ADQLToolEditorPanel)
+            // to display or hide the Edit and Options menus.
+            if (p instanceof ChangeListener) {
+                tabPane.addChangeListener((ChangeListener)p);
+            }
         	if (fac.isAdvanced()) {
         		// make a note of it's position.
         		advancedIndexes[advancedCount++] = i;
@@ -550,6 +561,10 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel implements
 		if (fileMenu == null) {
 			fileMenu = new JMenu();
 			fileMenu.setText("File");
+            // Giving it a name means we can manipulate menus with language 
+            // independence, since language specific stuff would be text
+            // ie: using the setText method.
+            fileMenu.setName("File");
 			fileMenu.setMnemonic(KeyEvent.VK_F);
 		}
 		return fileMenu;
@@ -638,6 +653,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel implements
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.34  2007/02/13 09:55:47  jl99
+Merge of branch workbench-jl-2032-a
+
 Revision 1.33  2007/01/31 11:26:19  nw
 fixed bug caused by getLogo throwing.
 

@@ -3,7 +3,7 @@
  */
 package org.astrogrid.desktop.modules.dialogs.editors;
 
-
+import org.astrogrid.acr.system.Configuration ;
 import org.astrogrid.acr.dialogs.RegistryGoogle;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
@@ -20,15 +20,27 @@ public class ADQLToolEditorPanelFactory implements ToolEditorPanelFactory {
 	private final RegistryGoogle regChooser;
 	private final MyspaceInternal myspace;
 	private final Registry registry;
-	public AbstractToolEditorPanel create(ToolModel model, UIComponent parent) {
-		return new ADQLToolEditorPanel(model,resourceChooser,regChooser,parent,myspace,registry);
+    private final Configuration configuration ;
+	public AbstractToolEditorPanel create( ToolModel model, UIComponent parent ) {
+		return new ADQLToolEditorPanel( model
+                                      , resourceChooser
+                                      , regChooser
+                                      , parent
+                                      , myspace
+                                      , registry
+                                      , configuration );
 	}
-    public ADQLToolEditorPanelFactory(final ResourceChooserInternal resourceChooser, final RegistryGoogle regChooser, final MyspaceInternal myspace, final Registry registry) {	
+    public ADQLToolEditorPanelFactory( final ResourceChooserInternal resourceChooser
+                                     , final RegistryGoogle regChooser
+                                     , final MyspaceInternal myspace
+                                     , final Registry registry
+                                     , final Configuration configuration ) {	
     super();
 		this.resourceChooser = resourceChooser;
 		this.regChooser = regChooser;
 		this.myspace = myspace;
 		this.registry = registry;
+        this.configuration = configuration ;
 	}
 	public String getName() {
 		return "Query";
