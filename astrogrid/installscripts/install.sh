@@ -198,3 +198,12 @@ if [ ${RESPONSE:-y} = "y" ]
 then
     . ${SCRIPT_PATH}/community.sh
 fi
+#
+# Install Example application.
+echo ""
+echo "Install Example (Y/n) ?"
+read RESPONSE
+if [ ${RESPONSE:-y} = "y" ]
+then
+    . ${SCRIPT_PATH}/example.sh
+fi
