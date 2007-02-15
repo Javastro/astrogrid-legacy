@@ -44,12 +44,7 @@ public class CodeManager extends HttpServlet {
                         .getInstance()
                         .evalInput(request.getInputStream(), out);
 
-//                 response.setStatus(response.SC_OK);
-//                 ps.println("los:val=" + val.toString()
-//                           + ", class="
-//                           + val.getClass().toString());
-
-                // XXX following is pretty cruddy
+                // the following isn't particularly elegant, but it suffices
                 if (val == null) {
                     response.setStatus(response.SC_NO_CONTENT);
                 } else if (val instanceof String) {
@@ -61,7 +56,10 @@ public class CodeManager extends HttpServlet {
                 } else {
                     response.setStatus(response.SC_BAD_REQUEST); // ???
                     ps.println(";; Bad request?");
-                    ps.println(val.toString());
+                    ps.println(";; returned object <" 
+                               + val.toString()
+                               + "> of type "
+                               + val.getClass().toString());
                 }
             } else if (codeStatus.equals("disabled")) {
                 response.setStatus(response.SC_FORBIDDEN);
