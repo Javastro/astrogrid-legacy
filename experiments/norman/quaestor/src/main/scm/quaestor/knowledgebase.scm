@@ -4,6 +4,8 @@
 
 (import s2j)
 
+(import quaestor-support)
+
 (require-library 'quaestor/jena)
 (require-library 'quaestor/utils)
 (require-library 'util/lambda-contract)
@@ -22,7 +24,8 @@
   (import jena)
   (import* utils
            is-java-type?
-           chatter)
+           ;;chatter
+           )
 
   (define (jena-model? x)
     (is-java-type? x '|com.hp.hpl.jena.rdf.model.Model|))

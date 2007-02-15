@@ -51,20 +51,15 @@ public class SchemeServlet extends GenericServlet {
             throw new ServletException
                     ("Parameters main-script and main-script-initialiser must both have values");
 
-        // Turn the script name into a full path
-        String mainScript = getServletContext().getRealPath(mainScriptName);
-        if (mainScript == null)
-            throw new ServletException("Can't find full path for script "
-                                       + mainScriptName);
-
         try {
             // load the script
-            if (!SchemeWrapper.getInstance().loadOnce(mainScript)) {
-                // shouldn't happen -- load returns true or throws exception
+            java.io.InputStream is = getServletContext()
+                    .getResourceAsStream(mainScriptName);
+            if (is == null)
                 throw new ServletException
-                        ("Unexpected return from Quaestor load: " + mainScript);
-            }
-            log("Loaded main script from " + mainScript
+                        ("Failed to find resource " + mainScriptName);
+            SchemeWrapper.getInstance().evalInputStream(is);
+            log("Loaded main script from " + mainScriptName
                 + " with initialiser " + initialiserProcedure);
 
             // ...and initialise it
@@ -74,13 +69,13 @@ public class SchemeServlet extends GenericServlet {
                           new Object[] { this });
             if (val instanceof String) {
                 throw new ServletException
-                        ("Failed to initialise main-script " + mainScript
+                        ("Failed to initialise main-script " + mainScriptName
                          + ": procedure " + initialiserProcedure
                          + " reported " + val);
             }
         } catch (IOException e) {
             throw new ServletException
-                    ("Error starting SISC (code=" + mainScript + ")", e);
+                    ("Error starting SISC (code=" + mainScriptName + ")", e);
         } catch (SchemeException e) {
             log("Scheme exception: " + e);
             throw new ServletException(e);

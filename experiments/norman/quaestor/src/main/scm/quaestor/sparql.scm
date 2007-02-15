@@ -3,6 +3,8 @@
 
 (import s2j)
 
+(import quaestor-support)
+
 (require-library 'quaestor/utils)
 (require-library 'quaestor/knowledgebase)
 (require-library 'quaestor/jena)
@@ -12,8 +14,8 @@
  sparql:make-query-runner)
 
 (import* utils
-         report-exception
-         chatter
+         ;report-exception
+         ;chatter
          jlist->list
          is-java-type?)
 (import* knowledgebase

@@ -42,7 +42,7 @@ public class CodeManager extends HttpServlet {
 
                 Object val = SchemeWrapper
                         .getInstance()
-                        .evalInput(request.getInputStream(), out);
+                        .evalInputStream(request.getInputStream(), out);
 
                 // the following isn't particularly elegant, but it suffices
                 if (val == null) {

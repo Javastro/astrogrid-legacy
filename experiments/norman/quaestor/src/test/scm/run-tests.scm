@@ -3,6 +3,10 @@
 
 (import s2j)
 
+;; We don't actually import this library here, but the tested modules
+;; do import quaestor-support
+(require-library 'org/eurovotech/quaestor/scheme-wrapper-support)
+
 (define nfails 0)
 (define-syntax expect
   (syntax-rules ()

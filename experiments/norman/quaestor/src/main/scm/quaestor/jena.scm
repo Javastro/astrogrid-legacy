@@ -3,6 +3,8 @@
 
 (import s2j)
 
+(import quaestor-support)
+
 (require-library 'sisc/libs/srfi/srfi-1)
 (import* srfi-1
          reduce)
@@ -12,11 +14,12 @@
 
 (require-library 'quaestor/utils)
 (import* utils
-         report-exception
-         format-error-record
+         ;report-exception
+         ;format-error-record
          is-java-type?
          iterator->list
-         chatter)
+         ;chatter
+         )
 
 (require-library 'util/lambda-contract)
 
@@ -228,6 +231,7 @@
                   -> jena-model?)
   (define-generic-java-methods
     read
+    close
     get-reader
     set-error-handler)
   (define logger             ;collects warnings from rdf-error-handler
@@ -263,6 +267,9 @@
                                 (format #f "Other warnings:~%~a~%"
                                         (apply string-append (logger))))))
       (lambda ()
+        (chatter "rdf:ingest-from-stream/language: base=~a language=~s -> ~s"
+                 (as-scheme-string base-uri)
+                 language ser-lang)
         (let ((reader (and model (get-reader model ser-lang))))
 
           (or reader
@@ -272,7 +279,8 @@
                              (rdf-error-handler (as-scheme-string base-uri)
                                                 logger))
 
-          (read reader model stream (as-java-string base-uri)))))
+          (read reader model stream (as-java-string base-uri))
+          (close stream))))
     ;; we might as well add any logger warnings to the (chatter)
     (chatter (apply string-append (cons "Logger warnings: " (logger))))
     model))

@@ -39,7 +39,6 @@ import sisc.interpreter.SchemeCaller;
 public class SchemeWrapper {
 
     private static SchemeWrapper instance;
-    private static java.util.Set loadedOnce;
 
     /**
      * Constructs a new wrapper for SISC.  Private constructor.
@@ -80,6 +79,17 @@ public class SchemeWrapper {
             throws IOException {
         if (instance == null) {
             instance = new SchemeWrapper();
+            try {
+                InputStream is = SchemeWrapper.class
+                        .getResourceAsStream("scheme-wrapper-support.scm");
+                if (is == null)
+                    throw new IOException
+                            ("Failed to find scheme-wrapper-support.scm");
+                instance.evalInputStream(is);
+            } catch (SchemeException e) {
+                throw new IOException
+                        ("Error loading scheme wrapper support:" + e);
+            }   
         }
         return instance;
     }
@@ -198,44 +208,35 @@ public class SchemeWrapper {
         return eval(p, args);
     }
 
-    // I'm pretty sure the following isn't required any more
-//     /**
-//      * Evals the given input stream.  This is not (currently) wrapped
-//      * in the error-handling code of {@link #eval(Procedure,Object[])}.
-//      *
-//      * @return a Java Object (String, Boolean or null) representing the
-//      * value of the expression
-//      * @throws IOException if the input stream cannot be parsed
-//      * @throws SchemeException if there is a syntax error reading the 
-//      * Scheme input
-//      */
-//     public Object deletemeEvalInput(final java.io.InputStream in)
-//             throws IOException, SchemeException {
-//         Object o = Context.execute
-//             (new SchemeCaller() {
-//                  public Object execute(Interpreter i)
-//                          throws SchemeException {
-//                      try {
-//                          StreamInputPort p = new StreamInputPort(in);
-// // SISC 1.16 onwards removes StreamInputPort, and requires
-// // java.io.PushbackReader as the argument to Interpreter.evalInput
-// //                          java.io.PushbackReader p
-// //                                  = new java.io.PushbackReader
-// //                                  (new java.io.BufferedReader
-// //                                   (new java.io.InputStreamReader(in)));
-//                          return schemeToJava(i.evalInput(p));
-//                      } catch (IOException e) {
-//                          return e;
-//                      }
-//                  }
-//              });
-//         if (o instanceof Exception) {
-//             assert(o instanceof IOException);
-//             throw (IOException)o;
-//         }
-//         return o;
-//     }
-
+    /**
+     * Evaluate an input stream.  This is a package-only method.
+     * Unlike the public methods of this class, the return value is
+     * not converted to a convenient Java value.
+     * @param in an input stream from which s-expressions can be read
+     * @returns the value of the last expression evaluated, as a SISC Value
+     */
+    sisc.data.Value evalInputStream(final java.io.InputStream in)
+            throws IOException, SchemeException {
+        Object o = Context.execute(new SchemeCaller() {
+                public Object execute(Interpreter i)
+                        throws SchemeException {
+                    try {
+                        return i.evalInput
+                                (new sisc.io.ReaderInputPort
+                                 (new java.io.InputStreamReader(in)));
+                    } catch (IOException e) {
+                        return e;
+                    }
+                }
+            });
+        if (o instanceof Exception) {
+            assert o instanceof IOException;
+            throw((IOException)o);
+        }
+        assert o instanceof sisc.data.Value;
+        return (sisc.data.Value)o;
+    }
+                
     /**
      * Evals the given input stream, wrapped in basic
      * error-handling code.  The method acts as a basic REPL, reading
@@ -252,8 +253,8 @@ public class SchemeWrapper {
      * @throws SchemeException if there is a syntax error reading the 
      *   Scheme input
      */
-    public Object evalInput(final java.io.InputStream in,
-                            final java.io.OutputStream out)
+    public Object evalInputStream(final java.io.InputStream in,
+                                  final java.io.OutputStream out)
             throws IOException, SchemeException {
         DynamicEnvironment de
                 = new DynamicEnvironment(Context.getDefaultAppContext(),
@@ -321,31 +322,6 @@ public class SchemeWrapper {
     }
     
     /**
-     * Loads the given source file at most once.  This works like
-     * {@link #load}, except that if it is called a second time with
-     * the same <code>loadFile</code>, it will do nothing and return
-     * true.
-     * @param loadFile the full path of a file to load
-     * @return true if the load succeeded, or if the load previously
-     * succeeded with this filename; false otherwise
-     * @throws IOException if the file cannot be parsed
-     * @throws SchemeException if there is a scheme error when reading the file
-     */
-    public boolean loadOnce(final String loadFile)
-            throws IOException, SchemeException {
-        if (loadedOnce == null)
-            loadedOnce = new java.util.HashSet();
-        if (loadedOnce.contains(loadFile)) {
-            return true;
-        } else if (load(loadFile)) {
-            loadedOnce.add(loadFile);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * Convert a SISC Value to a Java Object.  If the value is:
      * <dl>
      * <dt>(scheme) boolean</dt>
@@ -368,7 +344,7 @@ public class SchemeWrapper {
      * </dl>
      *
      * @param v a SISC Value, which may or may not be a SchemeString
-     * @return a Java Object, which will be Boolean or String
+     * @return a Java Object, which will be null, Boolean or String
      * as appropriate.
      */
     private Object schemeToJava(Value v) {
@@ -383,9 +359,12 @@ public class SchemeWrapper {
             ret = null;
         } else if (v instanceof sisc.modules.s2j.JavaObject) {
             ret = ((sisc.modules.s2j.JavaObject)v).get();
+            if (ret != null)
+                ret = ret.toString();
         } else {
             ret = v.toString();
         }
+        assert ret == null || ret instanceof String || ret instanceof Boolean;
         return ret;
     }
 }
