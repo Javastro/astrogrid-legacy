@@ -5,6 +5,13 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
+          <action dev="kea" type="update/fix">
+          Branch PAL_KEA_2062.
+          Covers the following bugzilla tickets:
+          2054, 2064, 2016, 2013, 2004, 1984, 2073, 2069, 2078, 1699, 2053,
+          2059, 2091, 1949, 1956, 2019, 1831.
+          </action>
+
           <action dev="gtr" type="update">
             Branch apps-gtr-2061. The project is refactored: maven-base is no
             longer used and the Java-class-application server is split into
