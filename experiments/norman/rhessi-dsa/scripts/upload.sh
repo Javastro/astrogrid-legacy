@@ -26,10 +26,13 @@
 # 2007-01-01 and 2007-01-01T00:00:00 differently!), so be rather careful
 # about dates below, in general leaving times out of anything passed to `date`.
 #
-# $Id: upload.sh,v 1.3 2007/02/08 15:32:30 norman Exp $
+# $Id: upload.sh,v 1.4 2007/02/16 12:49:01 norman Exp $
 
 
 progname=`basename $0`
+
+# Chatter, to make sure there's stuff in the cron log
+echo "$progname: starting at `date`"
 
 dsahome=${RHESSI_DSA_HOME-@BASEDIR@}
 if ! test -d $dsahome; then
@@ -155,6 +158,8 @@ workdir=X # dummy
 # including this one.
 pgid=$$
 
+echo "$progname: pgid=$pgid"
+
 # The following is a bit of whimsy, to log the memory usage
 # of the group of processes.  Leave it in, just in case it
 # becomes useful again.
@@ -218,6 +223,8 @@ elif test $# = 2; then
 else
     Usage
 fi
+
+echo "$progname: dates=[$startdate,$enddate], daylist=$daylist, args=$@"
 
 ########################################
 #
