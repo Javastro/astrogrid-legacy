@@ -6,8 +6,10 @@
     <menu name="Component Projects">
 		<item name="Client" href="multiproject/astrogrid-cea-client/index.html"/>
 		<item name="Server Framework" href="multiproject/astrogrid-cea-server/index.html" />
-		<item name="Commandline CEC" href="multiproject/astrogrid-cea-commandline/index.html" />
-		<item name="HTTP GET/POST CEC" href="multiproject/astrogrid-cea-http/index.html" />
+		<item name="Command-line-application server" href="multiproject/astrogrid-cea-commandline/index.html" />
+		<item name="HTTP-application server" href="multiproject/astrogrid-cea-http/index.html" />
+    <item name="Java-class-application server" href="multiproject/astrogrid-cea-javaclass/index.html"/>
+    <item name="Integration tests" href="multiproject/astrogrid-cea-integrationtest/index.html"/>
     </menu>
     <menu name="CEA" >
         <item name="Design Document" href="design/"/>

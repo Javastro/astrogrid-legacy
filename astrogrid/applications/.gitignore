@@ -4,6 +4,7 @@
 target
 bin
 .metadata
+velocity.log.1
 server-config.wsdd
 *.log
 .project
