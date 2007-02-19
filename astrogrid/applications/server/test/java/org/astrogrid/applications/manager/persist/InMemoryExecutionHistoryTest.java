@@ -1,4 +1,4 @@
-/*$Id: InMemoryExecutionHistoryTest.java,v 1.6 2006/03/17 17:50:58 clq2 Exp $
+/*$Id: InMemoryExecutionHistoryTest.java,v 1.7 2007/02/19 16:20:33 gtr Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,11 +14,9 @@ import org.astrogrid.applications.Application;
 import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
+import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.base.TestAuthorityResolver;
-import org.astrogrid.applications.javaclass.BaseJavaClassConfiguration;
-import org.astrogrid.applications.javaclass.JavaClassApplicationDescriptionLibrary;
-import org.astrogrid.applications.javaclass.SampleJavaClassApplications;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.community.User;
 import org.astrogrid.workflow.beans.v1.Input;
@@ -45,7 +43,7 @@ public class InMemoryExecutionHistoryTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         ApplicationDescriptionEnvironment env = new ApplicationDescriptionEnvironment(new InMemoryIdGen(),null, new TestAuthorityResolver());
-        lib = new JavaClassApplicationDescriptionLibrary(new BaseJavaClassConfiguration(), env);
+        lib = new BaseApplicationDescriptionLibrary(env);
         appDesc = lib.getDescription(lib.getApplicationNames()[0]);
         assertNotNull(appDesc);
         Tool tool = new Tool();
@@ -99,6 +97,12 @@ public class InMemoryExecutionHistoryTest extends TestCase {
 
 /* 
 $Log: InMemoryExecutionHistoryTest.java,v $
+Revision 1.7  2007/02/19 16:20:33  gtr
+Branch apps-gtr-1061 is merged.
+
+Revision 1.6.32.1  2007/01/18 17:50:59  gtr
+A BaseApplicationDescriptionLibrary is used instead of a JavaClassApplicationDescriptionLibrary.
+
 Revision 1.6  2006/03/17 17:50:58  clq2
 gtr_1489_cea correted version
 

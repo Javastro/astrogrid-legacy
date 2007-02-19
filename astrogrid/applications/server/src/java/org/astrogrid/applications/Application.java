@@ -1,5 +1,5 @@
 /*
- * $Id: Application.java,v 1.6 2004/09/20 16:40:43 pah Exp $
+ * $Id: Application.java,v 1.7 2007/02/19 16:20:32 gtr Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -61,18 +61,13 @@ as the basis for messages sent to the observers of the application.
 @see org.astrogrid.applications.Status
  */
 public interface Application  {
-   /**
-    * Start the execution of an application.<p> 
-    * This is the main entry point for the application, and is expected to return quickly, with the application continuing execution in another thread if needed.
-    * @return true if the application has successfully been started executing.
-    * @throws CeaException
-    * @deprecated - use {@link #createExecutionTask} instead
-    */
-   boolean execute() throws CeaException;
    
-   /** return a runnable that will perform the execution of the application
-    * main new entry point for the application. expectred to return quickly, with main processing suspended within the runnable object.
-    * @return
+   /** 
+    * Generates a runnable that will perform the execution of the application
+    * main new entry point for the application. The method is expected to 
+    * return quickly; this is not a method that blocks until the execution
+    * is complete. The method must not start the Runnable.
+    * @return The Runnable object.
     */
    Runnable createExecutionTask() throws CeaException;
    

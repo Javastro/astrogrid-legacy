@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineDescriptionsLoaderTest.java,v 1.12 2006/03/17 17:50:58 clq2 Exp $
+ * $Id: CommandLineDescriptionsLoaderTest.java,v 1.13 2007/02/19 16:18:47 gtr Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -73,7 +73,7 @@ public class CommandLineDescriptionsLoaderTest extends DescriptionBaseTestCase {
             ParameterNotInInterfaceException, ParameterDescriptionNotFoundException {
 
         try {
-            assertEquals("there should be 4 apps defined", 4, dl
+            assertEquals("Wrong numbr of apps defined", 5, dl
                     .getApplicationNames().length);
             ApplicationDescription x = dl.getDescription(TESTAPPNAME);
             assertTrue(x instanceof CommandLineApplicationDescription);

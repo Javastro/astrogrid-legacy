@@ -1,4 +1,4 @@
-/*$Id: CEAComponentManagerFactoryTest.java,v 1.9 2006/03/17 17:50:58 clq2 Exp $
+/*$Id: CEAComponentManagerFactoryTest.java,v 1.10 2007/02/19 16:20:32 gtr Exp $
  * Created on 02-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,21 +37,21 @@ public class CEAComponentManagerFactoryTest extends TestCase {
     public void testDefaulttGetInstance() {
         CEAComponentManager man = CEAComponentManagerFactory.getInstance();
         assertNotNull(man);
-        assertTrue(man instanceof JavaClassCEAComponentManager);
+        assertTrue(man instanceof BaseCEAComponentManager);
         man.getContainer().verify();
         man.informationHTML();
         // would be nice to test that the picocontainer has been started too, but no method on the container for this.
     }
     
-    public static class MyJavaClassCEAComponentManager extends JavaClassCEAComponentManager {
+    public static class MyCEAComponentManager extends BaseCEAComponentManager {
     };
     
   
     public void testConfguredGetInstance() {
-        SimpleConfig.getSingleton().setProperty(CEAComponentManagerFactory.COMPONENT_MANAGER_IMPL,MyJavaClassCEAComponentManager.class.getName());
+        SimpleConfig.getSingleton().setProperty(CEAComponentManagerFactory.COMPONENT_MANAGER_IMPL,MyCEAComponentManager.class.getName());
         CEAComponentManager man = CEAComponentManagerFactory.getInstance();
         assertNotNull(man);
-        assertTrue(man instanceof MyJavaClassCEAComponentManager);        
+        assertTrue(man instanceof MyCEAComponentManager);        
     }
     public void testSuite() {
         Test suite = CEAComponentManagerFactory.suite();
@@ -66,6 +66,12 @@ public class CEAComponentManagerFactoryTest extends TestCase {
 
 /* 
 $Log: CEAComponentManagerFactoryTest.java,v $
+Revision 1.10  2007/02/19 16:20:32  gtr
+Branch apps-gtr-1061 is merged.
+
+Revision 1.9.32.1  2007/01/18 18:03:47  gtr
+A BaseApplicationDescriptionLibrary is used instead of a JavaClassApplicationDescriptionLibrary.
+
 Revision 1.9  2006/03/17 17:50:58  clq2
 gtr_1489_cea correted version
 

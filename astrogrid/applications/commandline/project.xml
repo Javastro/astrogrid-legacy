@@ -1,31 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project>
     <!-- take note - this project extends the generic server project
     - in this way we inhierit all the dependencies -->
     <extend>${basedir}/../server/project.xml</extend>
     <id>astrogrid-cea-commandline</id>
-    <currentVersion>${astrogrid.applications.version}</currentVersion>
-    <name>AstroGrid Commandline applications CEA server</name>
-    <description>The applications integration component provides users with a mechanism to run applications. They will most often be run from a workflow component, rather than being invoked directly.
-  &lt;p&gt; The main functionality that this component provides is.
-         &lt;ol&gt;
-          &lt;li&gt;A standard description of application parameters that allows for automated GUI building and workflow creation.&lt;/li&gt;
-          &lt;li&gt;A wrapper to allow the application to retrieve/store information in MySpace.&lt;/li&gt;
-         &lt;/ol&gt;
-This functionality is provided with the ApplicationController service, of which there can be specializations to call command line applications, datacentre and other general web services. In iteration 4 there is only a  specialization to call command line applications.
-&lt;/p&gt;
-
-&lt;p&gt;The delegate is built in the same directory using the delegate-project.xml, but all of the reports are generated from this main project&lt;/p&gt;</description>
-    <shortDescription>AstroGrid Commandline Application CEA Server</shortDescription>
+    <currentVersion>2007.1.1</currentVersion>
+    <name>CEA command-line-application server</name>
+    <description>
+      A CEA application-server for running command-line applications.
+      The service provides CEA's standard SOAP interface, "CEC".
+      
+      This Maven project extends astrogrid/applications/server
+    </description>
+    <shortDescription>CEA server for command-line applications</shortDescription>
     <reports>
       <report>download</report>
       <report>maven-changelog-plugin</report>
       <report>maven-changes-plugin</report>
-      <report>maven-developer-activity-plugin</report>
-      <report>maven-file-activity-plugin</report>
       <report>maven-javadoc-plugin</report>
       <report>maven-junit-report-plugin</report>
-      <report>maven-jxr-plugin</report>
       <report>maven-license-plugin</report>
       <report>maven-pmd-plugin</report>
     </reports>

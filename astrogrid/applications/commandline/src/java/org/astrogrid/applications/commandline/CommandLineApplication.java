@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplication.java,v 1.24 2006/06/12 13:45:57 clq2 Exp $
+ * $Id: CommandLineApplication.java,v 1.25 2007/02/19 16:18:47 gtr Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -88,16 +88,6 @@ public class CommandLineApplication extends AbstractApplication implements Runna
       super(new DefaultIDs(jobStepId,env.getExecutionId()),t, interf,lib);
       this.applicationEnvironment = env;
    }
-
-   public boolean execute() throws CeaException {
-        logger.info("creating new thread to execute.. " + this.toString());
-        
-        exeThread = new Thread(CommandLineApplication.this);
-        exeThread.start();
-        return true;
-    }
-
-   
    
     public Runnable createExecutionTask() throws CeaException {
       return this;

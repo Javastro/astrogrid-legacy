@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: AllTests.java,v 1.3 2007/02/19 16:20:32 gtr Exp $
  * Created on 02-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,14 +22,20 @@ public class AllTests {
     public static Test suite() {
         TestSuite suite = new TestSuite("Test for org.astrogrid.applications.component");
         //$JUnit-BEGIN$
+        suite.addTest(new TestSuite(BaseCEAComponentManagerTest.class));
         suite.addTest(new TestSuite(CEAComponentManagerFactoryTest.class));
-        suite.addTest(new TestSuite(JavaClassCEAComponentManagerTest.class));
         //$JUnit-END$
         return suite;
     }
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.3  2007/02/19 16:20:32  gtr
+Branch apps-gtr-1061 is merged.
+
+Revision 1.2.264.1  2007/01/18 18:18:19  gtr
+Javaclass-application stuff is moved to a separate project.
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

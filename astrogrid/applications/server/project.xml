@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <extend>../../maven-base/project.xml</extend>
+<project>
+    <extend>${basedir}/../project.xml</extend>
     <id>astrogrid-cea-server</id>
-    <currentVersion>${astrogrid.applications.version}</currentVersion>
-    <name>AstroGrid CEA Framework</name>
-    <description>This project builds a web application, in a WAR, that runs applications provided as Java classes.
-		This WAR is deployable by itself and is also used as a bse on which to  build the CL-CEC and HTTP-CEC 
-		(sibling projects to this one).</description>
-    <shortDescription>AstroGrid CEA Server common components</shortDescription>
+    <currentVersion>2007.1.1</currentVersion>
+    <name>CEA server-framework</name>
+    <description>This project builds a class library from which CEA services may be made.</description>
+    <shortDescription>CEA framework for services</shortDescription>
+    
+  <reports>
+    <report>maven-changes-plugin</report>
+    <report>maven-javadoc-plugin</report>
+    <report>maven-junit-report-plugin</report>
+    <report>maven-pmd-plugin</report>
+    <report>maven-license-plugin</report>
+  </reports>
+  
     <packageGroups>
         <packageGroup>
             <title>Application Execution</title>
@@ -512,13 +519,8 @@
     </build>
     <reports>
         <report>download</report>
-        <report>maven-changelog-plugin</report>
-        <report>maven-changes-plugin</report>
-        <report>maven-developer-activity-plugin</report>
-        <report>maven-file-activity-plugin</report>
         <report>maven-javadoc-plugin</report>
         <report>maven-junit-report-plugin</report>
-        <report>maven-jxr-plugin</report>
         <report>maven-license-plugin</report>
         <report>maven-pmd-plugin</report>
     </reports>

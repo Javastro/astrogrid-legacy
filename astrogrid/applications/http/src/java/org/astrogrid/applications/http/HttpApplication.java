@@ -1,4 +1,4 @@
-/* $Id: HttpApplication.java,v 1.14 2006/03/17 17:50:58 clq2 Exp $
+/* $Id: HttpApplication.java,v 1.15 2007/02/19 16:19:26 gtr Exp $
  * Created on Jul 24, 2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -119,18 +119,6 @@ public class HttpApplication extends AbstractApplication  {
         return task;
     }
 
-public boolean execute() throws CeaException {
-    if (log.isTraceEnabled()) {
-        log.trace("execute() - start");
-    }
-    log.debug("execute() - starting thread");
-    (new Thread(createExecutionTask())).start();
-    if (log.isTraceEnabled()) {
-            log.trace("execute() - end - return value = " + true);
-    }        
-    return true;
-    }    
-
     private class Exec implements Runnable {
     
        /**
@@ -243,6 +231,12 @@ public boolean execute() throws CeaException {
 
 /*
  * $Log: HttpApplication.java,v $
+ * Revision 1.15  2007/02/19 16:19:26  gtr
+ * Branch apps-gtr-1061 is merged.
+ *
+ * Revision 1.14.32.1  2007/01/17 18:10:35  gtr
+ * The deprecated method Application.execute() has been removed.
+ *
  * Revision 1.14  2006/03/17 17:50:58  clq2
  * gtr_1489_cea correted version
  *

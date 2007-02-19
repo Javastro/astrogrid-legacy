@@ -1,4 +1,4 @@
-/*$Id: DefaultMetadataService.java,v 1.14 2007/01/16 09:57:37 gtr Exp $
+/*$Id: DefaultMetadataService.java,v 1.15 2007/02/19 16:20:33 gtr Exp $
  * Created on 21-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -131,37 +131,42 @@ public class DefaultMetadataService implements MetadataService,
       ManagedApplications managedApplications = new ManagedApplications();
       service.setManagedApplications(managedApplications);
       ApplicationList applist = makeApplist(lib);
+      
       //add each of the application definitions.
       for (int i = 0; i < applist.getApplicationDefnCount(); i++) {
+        ApplicationBase theapp = applist.getApplicationDefn(i);
+        String applicationName = theapp.getName();
+        
+        // Applications without names break the container, so don't use them.
+        if (applicationName == null) continue;
+        
+        // Applications in the org.astrogrid.unregistered authority are
+        // for special tests and shouldn't go in the registry. Don't use them.
+        if (applicationName.startsWith("org.astrogrid.unregistered")) continue;
 
-         ApplicationBase theapp = applist.getApplicationDefn(i);
-         ApplicationDescription theAppDesc = lib.getDescription(theapp
-               .getName());
+         
+         ApplicationDescription theAppDesc = 
+             lib.getDescription(applicationName);
 
-         if (theapp.getName() != null) { //TODO this test is only here to get
-                                         // round a bug in the container, where
-                                         // a null application seems to be
-                                         // instantiated.
-            CeaApplicationType appentry = makeApplicationEntry(
-                  applicationTemplate, theapp);
+         CeaApplicationType appentry = 
+             makeApplicationEntry(applicationTemplate, theapp);
 
-            appentry.getContent()
-                  .setDescription(theAppDesc.getAppDescription());
-            appentry.getContent().setReferenceURL(theAppDesc.getReferenceURL());
-            appentry.setTitle(theAppDesc.getUIName());
-            //TODO getting short name from ui name - probably not appropriate
-            String shortname = theAppDesc.getUIName();
-            if(shortname.length() > 16)
-            {
-               logger.warn("truncating "+shortname+"to 16 characters to fit in VO shortname");
-               shortname = shortname.substring(0, 15);
-            }
-            appentry.setShortName(shortname);
-            vodesc.addResource(appentry);
-            //add this application to the list of managed applications.
-            managedApplications.addApplicationReference(appentry
-                  .getIdentifier());
+         appentry.getContent()
+             .setDescription(theAppDesc.getAppDescription());
+         
+         appentry.getContent().setReferenceURL(theAppDesc.getReferenceURL());
+         appentry.setTitle(theAppDesc.getUIName());
+         //TODO getting short name from ui name - probably not appropriate
+         String shortname = theAppDesc.getUIName();
+         if (shortname.length() > 16) {
+           logger.warn("truncating "+shortname+"to 16 characters to fit in VO shortname");
+           shortname = shortname.substring(0, 15);
          }
+         appentry.setShortName(shortname);
+         vodesc.addResource(appentry);
+         
+        //add this application to the list of managed applications.
+         managedApplications.addApplicationReference(appentry.getIdentifier());
 
       }
       //add the service description
@@ -484,6 +489,15 @@ public class DefaultMetadataService implements MetadataService,
 
 /*
  * $Log: DefaultMetadataService.java,v $
+ * Revision 1.15  2007/02/19 16:20:33  gtr
+ * Branch apps-gtr-1061 is merged.
+ *
+ * Revision 1.14.2.2  2007/01/18 14:17:18  gtr
+ * I fixed a string test that relied on a feature from Java 5. It now works on Java 1.4.2.
+ *
+ * Revision 1.14.2.1  2007/01/18 13:57:23  gtr
+ * Applications in the org.astrogrid.unregistered namespace are not registered.
+ *
  * Revision 1.14  2007/01/16 09:57:37  gtr
  * I replaced org.astrogrid.comon.test.SchemaMap with org.astrogrid.contracts.SchemaMap. This is part of the fix for BZ2051.
  *

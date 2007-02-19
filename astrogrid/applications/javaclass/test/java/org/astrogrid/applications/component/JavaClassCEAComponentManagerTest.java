@@ -1,4 +1,4 @@
-/*$Id: JavaClassCEAComponentManagerTest.java,v 1.6 2006/03/17 17:50:58 clq2 Exp $
+/*$Id: JavaClassCEAComponentManagerTest.java,v 1.2 2007/02/19 16:20:21 gtr Exp $
  * Created on 10-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.applications.component;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.applications.component.*;
 import org.w3c.dom.Document;
 
 import org.astrogrid.applications.CeaException;
@@ -69,6 +70,12 @@ public class JavaClassCEAComponentManagerTest extends AbstractComponentManagerTe
 
 /* 
 $Log: JavaClassCEAComponentManagerTest.java,v $
+Revision 1.2  2007/02/19 16:20:21  gtr
+Branch apps-gtr-1061 is merged.
+
+Revision 1.1.2.1  2007/01/18 18:29:18  gtr
+no message
+
 Revision 1.6  2006/03/17 17:50:58  clq2
 gtr_1489_cea correted version
 

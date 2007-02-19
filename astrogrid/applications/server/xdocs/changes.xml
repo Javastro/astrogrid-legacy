@@ -1,0 +1,18 @@
+<document>
+  <properties>
+    <title>Changes since previous release</title>
+  </properties>
+  <body>
+    <release version="apps-gtr-2061">
+      <action dev="gtr" type="update" issue="2071">
+        <ul>
+          <li>The project is refactored to avoid relying on the maven-base project.</li>
+          <li>Dependencies have changed.</li>
+          <li>Classes specific to the Java-class-application server have been
+              moved to a separate sub-project. These classes are no longer
+              available in the server core.</li>
+        </ul>
+      </action>	
+    </release>
+  </body>
+</document>

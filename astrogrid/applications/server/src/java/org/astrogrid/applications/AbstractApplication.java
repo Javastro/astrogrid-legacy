@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplication.java,v 1.11 2005/08/10 17:45:10 clq2 Exp $
+ * $Id: AbstractApplication.java,v 1.12 2007/02/19 16:20:32 gtr Exp $
  *
  * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -243,31 +243,6 @@ private void checkCardinality(String inputName, boolean isInput) throws Paramete
        mt.setTimestamp(new Date());
        mt.setPhase(status.toExecutionPhase());
        return mt;
-   }
-
-   /**<b>Deprecated</b> 
-    * to be overridden- should start the application running, and then return
-    * <p>
-    * Usual pattern.
-    * <ol>
-    * <li>(optional) inspect / adjust parameter values
-    * <li> call {@link #createAdapters()} to create parameterAdapters 
-    * <li>iterate through input parameter adapters, calling {@link ParameterAdapter#process()} on each, collecting returned parameter values
-    * <li>set application state to {@link Status#INITIALIZED}
-    * <li>before returning, start background thread which
-    * <ol>
-    *   <li>sets application state to {@link Status#RUNNING}
-    *   <li>performs applicatioin execution in some way, passing in parameter values
-    *   <li>reports progress via {@link #reportMessage(String)}, etc.
-    *   <li> on application complettion, set application state to {@link Status#WRITINGBACK}
-    *   <li>iterate through output parameter adapters, calling {@link ParameterAdapter#writeBack(Object)} on each.
-    *   <li>set application state to {@link Status#COMPLETED}
-    * </ol>
-    *</ol>
-    *@deprecated - use {@link #createExecutionTask()} instead
-  */
-   public  boolean execute() throws CeaException {
-       return false;
    }
    
    /** subclassing helper - find a parameter by name in the tool inputs */

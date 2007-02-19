@@ -1,4 +1,4 @@
-/*$Id: CEAComponentManagerFactory.java,v 1.4 2004/08/17 15:07:55 nw Exp $
+/*$Id: CEAComponentManagerFactory.java,v 1.5 2007/02/19 16:20:32 gtr Exp $
  * Created on 04-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -52,7 +52,7 @@ public class CEAComponentManagerFactory {
                         logger.info("Creating component manager");
                         String componentManagerClass = null;
                         try {
-                            componentManagerClass = SimpleConfig.getSingleton().getString(COMPONENT_MANAGER_IMPL,JavaClassCEAComponentManager.class.getName());
+                            componentManagerClass = SimpleConfig.getSingleton().getString(COMPONENT_MANAGER_IMPL, "org.astrogrid.applications.component.BaseCEAComponentManager");
                             logger.info("Will instantiate component manager class '" + componentManagerClass + "'");
                             theInstance = (CEAComponentManager)Class.forName(componentManagerClass).newInstance();
                             logger.info("Instantiated. Now Starting");
@@ -99,6 +99,15 @@ public class CEAComponentManagerFactory {
 
 /* 
 $Log: CEAComponentManagerFactory.java,v $
+Revision 1.5  2007/02/19 16:20:32  gtr
+Branch apps-gtr-1061 is merged.
+
+Revision 1.4.226.2  2007/01/18 18:03:28  gtr
+A BaseApplicationDescriptionLibrary is the default instead of a JavaClassApplicationDescriptionLibrary.
+
+Revision 1.4.226.1  2007/01/18 17:37:12  gtr
+It now longer defaults to JavaClassCEAComponentManager if the manager is not configured.
+
 Revision 1.4  2004/08/17 15:07:55  nw
 tried to improve behaviour on webapp stop
 

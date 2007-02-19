@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+	<properties>
+		<author email="gtr@ast.cam.ac.uk">Guy Rixon</author>
+		<title>Installation options</title>
+	</properties>
+	
+	<body>
+	<section name="Installation options">
+		<p>This document discusses alternatives to the the standard installation.</p>
+		
+	<subsection name="Alternative versions of SUN Java">
+          <p>Instead of SUN Java 5, you may use the JRE for SUN Java 1.4.2,
+          provided that you also switch to Jakarta-Tomcat 5.0. Tomcat 5.0.28 is
+          recommended.</p>
+          <p>If you use Java 1.4.2, you lose the ability to handle large outputs
+          robustly. With this Java version, each output file will be buffered
+          entirely in memory before being sent to MySpace. If the output is
+          larger than the available memory then your web-application will crash
+          and you will need to restart Tomcat manually. The "HTTP chunking"
+          feature that we use to avoid this problem is only available in Java 5
+          and later.
+          </p>
+	<p>Versions of SUN Java older than 1.4.2 will not run the web-application
+	properly in all respects.</p>
+	<p>We expect SUN Java 6 to work as well as SUN Java 5 for this
+	web-application. We have not tested this configuration yet.</p>
+	</subsection>
+		<subsection name="Alternative implementations of Java">
+		<p>You may use another implementation of Java, provided that it
+		is a complete implementation of the Java platform. Some Java 
+                implementations omit some library classes and these are likely
+		to cause serious problems. In particular, the <i>Kaffe</i>
+		implementation of java, which is included in many Linux
+		distributions, currently lacks some classes and cannot run this
+		web-application.</p>
+		</subsection>
+	<subsection name="Alternative versions of Tomcat">
+          <p>You may use Tomcat 5.0 in place of Tomcat 5.5 provided that you also
+          use Java 1.4.2 as noted above. Please remember that this limits the
+          web-application's ability to handle large outputs.</p>
+          <p>Tomcat 3 and Tomcat 4 are not suitable for this web-application.
+          At the time of writing we have not tested the web-application with
+          Tomcat 6.</p>
+	</subsection>
+	<subsection name="Alternative web containers">
+          <p>You might use a web container other than Tomcat. We have not
+          tested this web-application in any other containers and cannot
+          support such a configuration. However, you might find one that
+          works well.</p>
+	</subsection>
+    </section>
+  </body>
+</document>

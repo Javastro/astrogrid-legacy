@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationProviderTest.java,v 1.16 2006/03/17 17:50:58 clq2 Exp $
+/*$Id: HttpApplicationProviderTest.java,v 1.17 2007/02/19 16:19:26 gtr Exp $
  * Created on 30-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,7 @@ import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.Application;
+import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.MockMonitor;
 import org.astrogrid.applications.Status;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
@@ -85,7 +86,7 @@ public class HttpApplicationProviderTest extends TestCase {
     public void testLibrary() throws Exception {
         String[] names = applicationDescriptionLibrary.getApplicationNames();
         assertNotNull(names);
-        assertEquals(numberOfApps,names.length);        
+        assertEquals(numberOfApps + 1,names.length); // 1 extra built-in app        
     }
     
     public void testNoDescriptionFound() {
@@ -109,7 +110,7 @@ public class HttpApplicationProviderTest extends TestCase {
         Application app = hw.initializeApplication("testrun",user,tool);
         assertNotNull(app);
         app.addObserver(monitor);
-        app.execute();
+        this.execute(app);
         monitor.waitFor(10);
         assertTrue(monitor.sawExit);
         ResultListType results= app.getResult();
@@ -150,7 +151,7 @@ public class HttpApplicationProviderTest extends TestCase {
         Application app = hw.initializeApplication("testrun",user,tool);
         assertNotNull(app);
         app.addObserver(monitor);
-        app.execute();
+        this.execute(app);
         monitor.waitFor(10);
         assertTrue(monitor.sawExit);
         ResultListType results= app.getResult();
@@ -173,7 +174,7 @@ public class HttpApplicationProviderTest extends TestCase {
         Application app = hw.initializeApplication("testrun",user,tool);
         assertNotNull(app);
         app.addObserver(monitor);
-        app.execute();
+        this.execute(app);
         monitor.waitFor(10);
         assertTrue(monitor.sawExit);
         ResultListType results= app.getResult();
@@ -196,7 +197,7 @@ public class HttpApplicationProviderTest extends TestCase {
         Application app = hw.initializeApplication("testrun",user,tool);
         assertNotNull(app);
         app.addObserver(monitor);
-        app.execute();
+        this.execute(app);
         monitor.waitFor(10);
         assertTrue(monitor.sawExit);
         ResultListType results= app.getResult();
@@ -219,7 +220,7 @@ public class HttpApplicationProviderTest extends TestCase {
         Application app = hw.initializeApplication("testrun",user,tool);
         assertNotNull(app);
         app.addObserver(monitor);
-        app.execute();
+        this.execute(app);
         monitor.waitFor(10);
         assertTrue(monitor.sawExit);
         ResultListType results= app.getResult();
@@ -256,7 +257,7 @@ public class HttpApplicationProviderTest extends TestCase {
         Application app = hw.initializeApplication("testrun",user,tool);
         assertNotNull(app);
         app.addObserver(monitor);
-        app.execute();
+        this.execute(app);
         monitor.waitFor(10);
         assertTrue(monitor.sawExit);
         ResultListType results= app.getResult();
@@ -283,7 +284,7 @@ public class HttpApplicationProviderTest extends TestCase {
             Application app = hw.initializeApplication("testrun",user,tool);
             assertNotNull(app);
             app.addObserver(monitor);
-            app.execute();
+            this.execute(app);
             monitor.waitFor(10);
             assertTrue(monitor.sawError);
             Status status = app.getStatus();
@@ -302,7 +303,7 @@ public class HttpApplicationProviderTest extends TestCase {
             Application app = hw.initializeApplication("testrun",user,tool);
             assertNotNull(app);
             app.addObserver(monitor);
-            app.execute();
+            this.execute(app);
             monitor.waitFor(10);
             assertTrue(monitor.sawError);
             Status status = app.getStatus();
@@ -321,7 +322,7 @@ public class HttpApplicationProviderTest extends TestCase {
             Application app = hw.initializeApplication("testrun",user,tool);
             assertNotNull(app);
             app.addObserver(monitor);
-            app.execute();
+            this.execute(app);
             monitor.waitFor(10);
             assertTrue(monitor.sawError);
             Status status = app.getStatus();
@@ -342,7 +343,7 @@ public class HttpApplicationProviderTest extends TestCase {
             Application app = hw.initializeApplication("testrun",user,tool);
             assertNotNull(app);
             app.addObserver(monitor);
-            app.execute();
+            this.execute(app);
             monitor.waitFor(10);
             //Should fail internally with an UnsupportedOperationException
             assertTrue(monitor.sawError);
@@ -350,11 +351,33 @@ public class HttpApplicationProviderTest extends TestCase {
     
     //@TODO what if the registry entry is garbage?
 
+  /**
+   * Starts the execution of a given Application.
+   * This is a convenience method to hide the thread handling.
+   *
+   * @param app The Application to be executed.
+   * @throws CeaException if the Application fails to provide a Runnable task.
+   */
+  private void execute(Application app) throws CeaException {
+    Runnable r = app.createExecutionTask();
+    assertNotNull(r);
+    Thread t = new Thread(r);
+    t.start();
+  }
 }
 
 
 /* 
 $Log: HttpApplicationProviderTest.java,v $
+Revision 1.17  2007/02/19 16:19:26  gtr
+Branch apps-gtr-1061 is merged.
+
+Revision 1.16.32.2  2007/01/18 13:38:21  gtr
+A built-in application is provided for testing.
+
+Revision 1.16.32.1  2007/01/17 18:10:34  gtr
+The deprecated method Application.execute() has been removed.
+
 Revision 1.16  2006/03/17 17:50:58  clq2
 gtr_1489_cea correted version
 

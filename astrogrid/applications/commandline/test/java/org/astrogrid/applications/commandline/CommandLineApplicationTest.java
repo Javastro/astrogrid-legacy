@@ -1,4 +1,4 @@
-/*$Id: CommandLineApplicationTest.java,v 1.12 2005/08/10 14:45:37 clq2 Exp $
+/*$Id: CommandLineApplicationTest.java,v 1.13 2007/02/19 16:18:48 gtr Exp $
  * Created on 27-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -245,7 +245,7 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
         MockMonitor monitor = new MockMonitor();
 //        app.addObserver(controller);
         app.addObserver(monitor);
-        app.execute();
+        this.execute(app);
         monitor.waitFor(WAIT_SECONDS);
         assertNotNull(monitor.sawApp);
         assertTrue(monitor.sawError);
@@ -294,7 +294,7 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
            MockMonitor monitor = new MockMonitor();
    //        app.addObserver(controller);
            app.addObserver(monitor);
-           app.execute();
+           this.execute(app);
            monitor.waitFor(WAIT_SECONDS);
            assertNotNull(monitor.sawApp);
            assertTrue(monitor.sawError);
@@ -330,7 +330,7 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
         MockMonitor monitor = new MockMonitor();
 //        app.addObserver(controller);
         app.addObserver(monitor);
-        app.execute();
+        this.execute(app);
         monitor.waitFor(WAIT_SECONDS);
 
         // ok, either timed out, or the application finished..
@@ -364,10 +364,31 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
    protected Tool buildTool(String delay) throws Exception {
       return Toolbuilder.buildTool(delay, testAppDescr);
       }
+   
+   
+  /**
+   * Starts the execution of a given Application.
+   * This is a convenience method to hide the thread handling.
+   *
+   * @param app The Application to be executed.
+   * @throws CeaException if the Application fails to provide a Runnable task.
+   */
+  private void execute(Application app) throws CeaException {
+    Runnable r = app.createExecutionTask();
+    assertNotNull(r);
+    Thread t = new Thread(r);
+    t.start();
+  }
 }
 
 /*
  * $Log: CommandLineApplicationTest.java,v $
+ * Revision 1.13  2007/02/19 16:18:48  gtr
+ * Branch apps-gtr-1061 is merged.
+ *
+ * Revision 1.12.64.1  2007/01/17 18:19:44  gtr
+ * The deprecated method Application.execute() has been removed.
+ *
  * Revision 1.12  2005/08/10 14:45:37  clq2
  * cea_pah_1317
  *

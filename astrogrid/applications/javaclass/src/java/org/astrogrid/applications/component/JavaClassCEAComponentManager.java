@@ -1,5 +1,5 @@
 /*
- * $Id: JavaClassCEAComponentManager.java,v 1.12 2006/03/17 17:50:58 clq2 Exp $
+ * $Id: JavaClassCEAComponentManager.java,v 1.2 2007/02/19 16:20:23 gtr Exp $
  * Created on 10-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -71,6 +71,12 @@ public class JavaClassCEAComponentManager extends EmptyCEAComponentManager {
 
 /* 
 $Log: JavaClassCEAComponentManager.java,v $
+Revision 1.2  2007/02/19 16:20:23  gtr
+Branch apps-gtr-1061 is merged.
+
+Revision 1.1.2.1  2007/01/18 18:23:34  gtr
+Javaclass-application stuff is moved to a separate project.
+
 Revision 1.12  2006/03/17 17:50:58  clq2
 gtr_1489_cea correted version
 

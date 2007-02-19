@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2005/08/10 17:45:10 clq2 Exp $
+/*$Id: AllTests.java,v 1.2 2007/02/19 16:20:24 gtr Exp $
  * Created on 21-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,6 +35,12 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
+Revision 1.2  2007/02/19 16:20:24  gtr
+Branch apps-gtr-1061 is merged.
+
+Revision 1.1.2.1  2007/01/18 18:29:18  gtr
+no message
+
 Revision 1.2  2005/08/10 17:45:10  clq2
 cea-server-nww-improve-tests
 

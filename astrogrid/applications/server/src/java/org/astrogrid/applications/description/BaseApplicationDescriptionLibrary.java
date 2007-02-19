@@ -1,4 +1,4 @@
-/*$Id: BaseApplicationDescriptionLibrary.java,v 1.15 2006/03/17 17:50:58 clq2 Exp $
+/*$Id: BaseApplicationDescriptionLibrary.java,v 1.16 2007/02/19 16:20:32 gtr Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,7 @@
  *
 **/
 package org.astrogrid.applications.description;
+import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
@@ -36,13 +37,19 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
      */
     private static final Log logger = LogFactory.getLog(BaseApplicationDescriptionLibrary.class);
     
-    /**Construct a new BaseApplicationDescriptionLibrary
-    * @param env2
-    */
-   public BaseApplicationDescriptionLibrary(ApplicationDescriptionEnvironment env2) {
-      
-     this.env = env2;
-   }
+  /**
+   * Constructs a new BaseApplicationDescriptionLibrary
+   * @param env2
+   */
+  public BaseApplicationDescriptionLibrary(ApplicationDescriptionEnvironment env2) {
+    this.env = env2;
+    try {
+      // Every application-description library carries one built-in application.
+      this.addApplicationDescription(new BuiltInApplicationDescription(env2));
+    } catch (CeaException ex) {
+      throw new RuntimeException("Can't add the built-in application!", ex);
+    }
+  }
 
    /**
          * @see org.astrogrid.applications.description.ApplicationDescriptionLibrary#getDescription(java.lang.String)
@@ -129,6 +136,12 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
 
 /* 
 $Log: BaseApplicationDescriptionLibrary.java,v $
+Revision 1.16  2007/02/19 16:20:32  gtr
+Branch apps-gtr-1061 is merged.
+
+Revision 1.15.32.1  2007/01/18 13:38:06  gtr
+A built-in application is provided for testing.
+
 Revision 1.15  2006/03/17 17:50:58  clq2
 gtr_1489_cea correted version
 

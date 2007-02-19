@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project>
 <extend>${basedir}/../project.xml</extend>
 <id>astrogrid-cea-client</id>
-<currentVersion>${astrogrid.applications.version}</currentVersion>
+<currentVersion>2007.1.1</currentVersion>
 <name>CEA Client</name>
-<description>Client / Delegate library for communicatng with CEA services</description>
+<description>Client library for communicating with CEA services</description>
 <shortDescription>AstroGrid CEA Client</shortDescription>
+
+  <reports>
+    <report>maven-changes-plugin</report>
+    <report>maven-javadoc-plugin</report>
+    <report>maven-junit-report-plugin</report>
+    <report>maven-pmd-plugin</report>
+    <report>maven-license-plugin</report>
+  </reports>
+  
 <build>
   <sourceDirectory>src/java</sourceDirectory>
   <unitTestSourceDirectory>test/java</unitTestSourceDirectory>

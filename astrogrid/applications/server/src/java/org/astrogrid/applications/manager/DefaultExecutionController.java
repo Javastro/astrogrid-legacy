@@ -1,5 +1,5 @@
 /*
- * $Id: DefaultExecutionController.java,v 1.10 2006/06/13 20:33:13 clq2 Exp $
+ * $Id: DefaultExecutionController.java,v 1.11 2007/02/19 16:20:33 gtr Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -59,26 +59,21 @@ public class DefaultExecutionController
 
       this.executionHistory = executionHistory;
    }
-public  boolean execute(String executionId) throws CeaException {
-    logger.info("executing "+ executionId);
-      boolean success = false;
+   
+  public  boolean execute(String executionId) throws CeaException {
+    logger.info("Executing " + executionId);
 
-      if (executionHistory.isApplicationInCurrentSet(executionId)) {
-        Application app =
-            (Application)executionHistory.getApplicationFromCurrentSet(executionId);
-        //NWW - altered this, to handle new method of running applications.
-        // will still fallback to legacy method.
-        Runnable r = app.createExecutionTask();
-        if (r == null) {
-            return app.execute();
-        } else {
-            return startRunnable(r);
-        }
-      }
-
-      return success;
-
-   }
+    if (executionHistory.isApplicationInCurrentSet(executionId)) {
+      Application app =
+          (Application)executionHistory.getApplicationFromCurrentSet(executionId);
+      Runnable r = app.createExecutionTask();
+      assert r != null;
+      return startRunnable(r);
+    }
+    else {
+      return false;
+    }
+  }
 
 
 

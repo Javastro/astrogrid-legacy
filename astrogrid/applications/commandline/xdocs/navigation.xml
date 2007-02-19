@@ -4,15 +4,9 @@
   <title>AstroGrid Project</title>
 
   <body>
-    <links>
-       <item name="AstroGrid"  href="http://www.astrogrid.org"/>
-       <item name="Components" href="../index.html"/>
-       <item name="CL-CEC"     href="index.html"/>
-    </links>
       
      <menu name="Administrator Quickstart">
        <item name="Overview" href="index.html"/>
-       <item name="Changes" href="CHANGES.html"/>
        <item name="Download" href="DOWNLOAD.html"/>
        <item name="Installation" href="INSTALL.html"/>
        <item name="Configuration" href="CONFIGURE.html"/>

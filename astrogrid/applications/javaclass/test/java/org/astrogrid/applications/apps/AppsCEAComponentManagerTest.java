@@ -1,4 +1,4 @@
-/*$Id: AppsCEAComponentManagerTest.java,v 1.5 2006/03/17 17:50:58 clq2 Exp $
+/*$Id: AppsCEAComponentManagerTest.java,v 1.2 2007/02/19 16:20:24 gtr Exp $
  * Created on 21-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,16 +22,18 @@ import org.astrogrid.applications.component.CEAComponentManager;
 public class AppsCEAComponentManagerTest 
     extends AbstractComponentManagerTestCase {
 
-    /** Construct a new AppsCEAComponentManagerTest
-     * 
-     */
+    /**
+   * Construct a new AppsCEAComponentManagerTest
+   */
     public AppsCEAComponentManagerTest() {
         super();
     }
 
-    /** Construct a new AppsCEAComponentManagerTest
-     * @param arg0
-     */
+    /**
+   * Construct a new AppsCEAComponentManagerTest
+   * 
+   * @param arg0
+   */
     public AppsCEAComponentManagerTest(String arg0) {
         super(arg0);
     }
@@ -51,6 +53,12 @@ public class AppsCEAComponentManagerTest
 
 /* 
 $Log: AppsCEAComponentManagerTest.java,v $
+Revision 1.2  2007/02/19 16:20:24  gtr
+Branch apps-gtr-1061 is merged.
+
+Revision 1.1.2.1  2007/01/18 18:29:18  gtr
+no message
+
 Revision 1.5  2006/03/17 17:50:58  clq2
 gtr_1489_cea correted version
 

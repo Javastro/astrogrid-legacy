@@ -1,12 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project>
     <extend>../server/project.xml</extend>
     <artifactId>astrogrid-cea-http</artifactId>
-    <currentVersion>${astrogrid.applications.version}</currentVersion>
-    <name>AstroGrid HTTP applications CEA server</name>
+    <currentVersion>2007.1.1</currentVersion>
+    <name>CEA HTTP-application server</name>
     <description>
         Library to publish HTTP applications in the Common Execution Architecture
    </description>
-    <shortDescription>AstroGrid HTTP Application CEA Server</shortDescription>
+    <shortDescription>CEA facade for external HTTP applications</shortDescription>
       <packageGroups>
   		<packageGroup>
   			<title>Http Applications</title>
@@ -15,13 +16,9 @@
 	  </packageGroups>
     <reports>
       <report>download</report>
-      <report>maven-changelog-plugin</report>
       <report>maven-changes-plugin</report>
-      <report>maven-developer-activity-plugin</report>
-      <report>maven-file-activity-plugin</report>
       <report>maven-javadoc-plugin</report>
       <report>maven-junit-report-plugin</report>
-      <report>maven-jxr-plugin</report>
       <report>maven-license-plugin</report>
       <report>maven-pmd-plugin</report>
     </reports>

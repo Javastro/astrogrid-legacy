@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<properties>
+        <author email="gtr@ast.cam.ac.uk">Guy Rixon</author>
+        <title>Uninstallation</title>
+</properties>
+
+<body>
+	
+<section name="Deregistration">
+	<p>
+		You should deregister any resource for which you intend to cease service.
+		For the CEC you should
+	</p>
+	<ol>
+		<li><em>definitely</em> deregister the service;</li>
+		<li><em>possibly</em> deregister the applications.</li>
+	</ol>
+	<p>
+		You should only deregister the applications if you originally registered them and if
+		no other application is providing those applications.
+	</p>
+	<p>
+		In each case, deregistration means that you edit a resource document in the registry, changing
+		its status to "deleted". Please refer to the 
+		<a href="REGISTER.html">registration guide</a> for instructions.
+	</p>
+</section>
+
+<section name="Uninstallation">
+	<p>
+	To uninstall the CEC, you must remove its web-application from Tomcat.
+	Use the Tomcat "manager" application to "undeploy" the web-application.
+	Please see the Tomcat documentation for details.
+</p>
+</section>
+
+
+</body>
+</document>

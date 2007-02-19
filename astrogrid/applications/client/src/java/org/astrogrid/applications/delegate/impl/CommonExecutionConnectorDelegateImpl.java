@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorDelegateImpl.java,v 1.5 2006/06/13 20:33:13 clq2 Exp $
+ * $Id: CommonExecutionConnectorDelegateImpl.java,v 1.6 2007/02/19 16:18:25 gtr Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -101,9 +101,11 @@ public class CommonExecutionConnectorDelegateImpl
        result = cec.init(Castor2Axis.convert(tool), jobstepID);
      }
      catch (RemoteException e) {
-       String message = "The job-step " + 
+       String message = "The application " +
+                        tool.getName() + 
+                        " (job-step " + 
                         jobstepID.toString() + 
-                        "could not be initialized; " +
+                        ") could not be initialized; " +
                         "the service at " + 
                         this.targetEndPoint +
                         " rejected it. ";

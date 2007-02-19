@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:j="jelly:core">
+
+  <goal name="astrogrid-build-artifact">
+    <attainGoal name="javaapp:jar"/>
+  </goal>
+                      
+  <goal name="astrogrid-install-artifact">
+    <attainGoal name="javaapp:install"/>
+  </goal>
+
+  <goal name="astrogrid-deploy-artifact">
+    <attainGoal name="javaapp:deploy-artifact"/>  
+  </goal>
+  
+  <goal name="astrogrid-install-snapshot">
+    <attainGoal name="javaapp:install-snapshot"/>
+  </goal>
+	  
+</project>
+
