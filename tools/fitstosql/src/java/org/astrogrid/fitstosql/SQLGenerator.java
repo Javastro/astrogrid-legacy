@@ -20,6 +20,8 @@ import java.util.Iterator;
 import java.util.Locale;
 import nom.tam.fits.Fits;
 import nom.tam.fits.Header;
+import nom.tam.fits.BasicHDU;
+import nom.tam.fits.HeaderCard;
 
 // End of Import
 
@@ -51,11 +53,12 @@ public  class  SQLGenerator {
         System.out.println("Number of hdus = " + reader.getNumberOfHDUs());
         StringBuffer JDecGenerated49=new StringBuffer();
         
-        System.out.println("Number of BAsicHDus again from read = " + reader.read().length);
+        //System.out.println("Number of BAsicHDus again from read = " + reader.read().length);
         HashMap  result=null;
         HashMap JDecGenerated78=new HashMap();
         HashMap  sqlCommands=JDecGenerated78;
         int i=0;
+        /*
         while(i < reader.getNumberOfHDUs()) {
           Header header=reader.getHDU(i).getHeader();
           result = this.makeIndexSnippet(header,filename);
@@ -66,7 +69,51 @@ public  class  SQLGenerator {
           sqlCommands.put(filename,result);
           i=i+1;
         }
+       
+        BasicHDU bh;
+        while((bh = reader.readHDU()) != null) {
+          System.out.println("reading a hdu");
+          Header header= bh.getHeader();
+          result = this.makeIndexSnippet(header,filename);
+          if(sqlCommands.containsKey(filename)!=false) {
+            HashMap  prevResult=(HashMap)sqlCommands.get(filename);
+            result.putAll(prevResult);
+		  }
+          sqlCommands.put(filename,result);
+     
+        }  
+         */      
+        System.out.println("lets try to do a read to get the hdu's");
+        BasicHDU []bh = reader.read();
+        System.out.println("success and there are these many hdu's = " + bh.length);
+        for(int j = 0;j < bh.length;j++) {
+          System.out.println("reading a hdu index = " + j);
+          Header header= bh[j].getHeader();
+          result = this.makeIndexSnippet(header,filename);
+          if(sqlCommands.containsKey(filename)!=false) {
+            HashMap  prevResult=(HashMap)sqlCommands.get(filename);
+            result.putAll(prevResult);
+		  }
+          sqlCommands.put(filename,result);
+        }//for
+        System.out.println("Made mapping of columns the size = " + sqlCommands.size() + " if 0 then most likely skipped and no data to write for that file.");
         return sqlCommands;
+   }
+   
+   private String translateUpper(String val) {
+	   if(props.getProperty("nameuppercasecolumns").equals("true")) {
+	          return val.toUpperCase();
+       }
+	   return val;
+   }
+   
+   private String translateKey(String val) {
+		  if(props.getProperty("column." + val + ".translate") != null) {
+	          	return (props.getProperty("column." + val + ".translate"));
+	      }
+		  return val;
+		  
+	   
    }
 
    public   HashMap makeIndexSnippet(Header header,String fileLocation) throws java.io.IOException  ,nom.tam.fits.FitsException
@@ -85,54 +132,57 @@ public  class  SQLGenerator {
         String key = null;
         SimpleDateFormat indexDateFormat = null;
         Date dateVal = null;
+        
+
+        /*
         while(i < header.getNumberOfCards())
         {
-		  value = null;
+        		  key=header.getKey(i).trim();
+        */
+        for ( Iterator it = header.iterator(); it.hasNext(); ) {
+        	key = null;
+            value = null;
 
-		  key=header.getKey(i).trim();
+            HeaderCard card = (HeaderCard) it.next();
+            key = card.getKey().trim();
+            value = card.getValue();
 		  if(key != null && key.trim().length() > 0) {
-		  if(props.getProperty("nameuppercasecolumns").equals("true")) {
-	          key = key.toUpperCase();
-          }  
-		  if(props.getProperty("column." + key + ".translate") != null) {
-	          	key = props.getProperty("column." + key + ".translate");
-	      }
           if(props.getProperty("column." + key + ".ignore") == null) {
 	          
 	          keyProp = props.getProperty("column." + key + ".datatype");
 	                    
 	          if(keyProp == null || keyProp.toLowerCase().indexOf("varchar") != -1 || 
 	             keyProp.toLowerCase().indexOf("char") != -1) {
-	          	 value=header.getStringValue(key);
+	          	 //value=header.getStringValue(key);
 	          	if(value != null)
-		          	sqlColsAndVals.put(key,"'" + value + "'");
+		          	sqlColsAndVals.put(translateKey(translateUpper(key)),"'" + value + "'");
 		        else
-			        sqlColsAndVals.put(key,null);
+			        sqlColsAndVals.put(translateKey(translateUpper(key)),null);
 	          }else if(keyProp.toLowerCase().indexOf("float") != -1) {
-				value = String.valueOf(header.getFloatValue(key));          
+				//value = String.valueOf(header.getFloatValue(key));          
 				if(value.equals("0.0") && "true".equals(props.getProperty("column." + key + ".numval0nullable")))
-					sqlColsAndVals.put(key,null);
+					sqlColsAndVals.put(translateKey(translateUpper(key)),null);
 				else
 	    	      	sqlColsAndVals.put(key,value);
 	          }else if(keyProp.toLowerCase().indexOf("boolean") != -1) {
-	          	value = String.valueOf(header.getBooleanValue(key));
+	          	//value = String.valueOf(header.getBooleanValue(key));
 				if(value.equals("0.0") && "true".equals(props.getProperty("column." + key + ".numval0nullable")))
-					sqlColsAndVals.put(key,null);
+					sqlColsAndVals.put(translateKey(translateUpper(key)),null);
 				else
-	    	      	sqlColsAndVals.put(key,value);          	
+	    	      	sqlColsAndVals.put(translateKey(translateUpper(key)),value);          	
 	          }else if(keyProp.toLowerCase().indexOf("int") != -1) {
-		          	value = String.valueOf(header.getIntValue(key));
+		          	//value = String.valueOf(header.getIntValue(key));
 					if(value.equals("0") && "true".equals(props.getProperty("column." + key + ".numval0nullable")))
-						sqlColsAndVals.put(key,null);
+						sqlColsAndVals.put(translateKey(translateUpper(key)),null);
 					else
-		    	      	sqlColsAndVals.put(key,value);	        	  
+		    	      	sqlColsAndVals.put(translateKey(translateUpper(key)),value);	        	  
 	          }
 	          else if(keyProp.toLowerCase().indexOf("double") != -1) {
-	          	value = String.valueOf(header.getDoubleValue(key));
+	          	//value = String.valueOf(header.getDoubleValue(key));
 				if(value.equals("0.0") && "true".equals(props.getProperty("column." + key + ".numval0nullable")))
-					sqlColsAndVals.put(key,null);
+					sqlColsAndVals.put(translateKey(translateUpper(key)),null);
 				else
-	    	      	sqlColsAndVals.put(key,value);
+	    	      	sqlColsAndVals.put(translateKey(translateUpper(key)),value);
 	          }else if(keyProp.toLowerCase().indexOf("datetime") != -1) {
 	            if(value != null) {
 		           try
@@ -140,14 +190,14 @@ public  class  SQLGenerator {
 		              indexDateFormat = new SimpleDateFormat(props.getProperty("datetime.syntax"));
 		              dateVal = indexDateFormat.parse(value);
 		              value = indexDateFormat.format(dateVal);
-		          	sqlColsAndVals.put(key,"'" + value + "'");
+		          	sqlColsAndVals.put(translateKey(translateUpper(key)),"'" + value + "'");
 		            }
 		            catch(ParseException  e)
 		            {
 		
 		            }
 	            }else
-	  	          	sqlColsAndVals.put(key,null);
+	  	          	sqlColsAndVals.put(translateKey(translateUpper(key)),null);
 	          }else if(keyProp.toLowerCase().indexOf("date") != -1) {
 	            if(value != null) {
 		           try
@@ -155,26 +205,26 @@ public  class  SQLGenerator {
 		              indexDateFormat = new SimpleDateFormat(props.getProperty("date.syntax"));
 		              dateVal = indexDateFormat.parse(value);
 		              value = indexDateFormat.format(dateVal);
-		              	          	sqlColsAndVals.put(key,"'" + value + "'");
+		              	          	sqlColsAndVals.put(translateKey(translateUpper(key)),"'" + value + "'");
 		            }
 		            catch(ParseException  e)
 		            {
 		
 		            }
 	            }else {
-	           		sqlColsAndVals.put(key,null);
+	           		sqlColsAndVals.put(translateKey(translateUpper(key)),null);
 	            }
 	          }else {
 	 	          	 value=header.getStringValue(key);
 	 	          	if(value != null)
-	 		          	sqlColsAndVals.put(key,"'" + value + "'");
+	 		          	sqlColsAndVals.put(translateKey(translateUpper(key)),"'" + value + "'");
 	 		        else
-	 			        sqlColsAndVals.put(key,null);
+	 			        sqlColsAndVals.put(translateKey(translateUpper(key)),null);
 	          }
 	        
-	            if(!this.colMap.containsKey(key))
+	            if(!this.colMap.containsKey(translateKey(translateUpper(key))))
 	            {
-	              this.colMap.put(key,null);
+	              this.colMap.put(translateKey(translateUpper(key)),null);
 	            }
 	    	}
 		  }
@@ -195,8 +245,9 @@ public  class  SQLGenerator {
         String  line=null;
         while((line = in.readLine()) != null)
         {
-          URL JDecGenerated34 = new URL(line);
-          this.writeInsert(this.makeIndexSnippet(JDecGenerated34),tableName);
+        	  URL inputURL = new URL(line);
+	          this.writeInsert(this.makeIndexSnippet(inputURL),tableName);
+
         }
         return this.writeCreate(tableName);
    }
@@ -303,23 +354,27 @@ public  class  SQLGenerator {
    }
 
 
-   public  static   void main(String [] args) throws java.io.IOException  ,java.net.MalformedURLException  ,nom.tam.fits.FitsException  ,java.lang.Exception
-   {
-
-       
-        if((args==null) || (args.length != 3)  )
+   public  static   void main(String [] args) {
+	   //System.out.println("args length = " + args.length);
+	   //System.out.println("processing urls in file = " + args[0] + " for table name = " + args[1]);
+        if((args==null) || (args.length != 2)  )
         {
-          System.out.println("java SQLGenerator -file <filename of urls (one url per line)> <tablename>");
+          System.out.println("java SQLGenerator <filename of urls (one url per line)> <tablename>");
           return;
         }
         SQLGenerator  generator=new SQLGenerator();
-        
-        if("-file".equals(args[0]))
-        {
-          FileInputStream JDecGenerated55 = new FileInputStream(args[1]);
-          generator.generateIndex(JDecGenerated55,args[2]);
-          return;
+        try {
+          System.out.println("processing urls in file = " + args[0] + " for table name = " + args[1]);
+          FileInputStream JDecGenerated55 = new FileInputStream(args[0]);
+          generator.generateIndex(JDecGenerated55,args[1]);
+        }catch(java.io.IOException ioe) {
+        	ioe.printStackTrace();
+        }catch(nom.tam.fits.FitsException fe) {
+        	fe.printStackTrace();
+        }catch(Exception e) {
+        	e.printStackTrace();
         }
+      
    }
 
 	Properties props = null;
