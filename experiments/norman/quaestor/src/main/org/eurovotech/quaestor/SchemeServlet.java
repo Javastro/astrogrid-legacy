@@ -19,7 +19,7 @@ import sisc.data.Procedure;
  */
 public class SchemeServlet extends GenericServlet {
 
-    private java.util.Map requestHandlerMap;
+    private java.util.Map<String,Procedure> requestHandlerMap;
 
     /**
      * Initialise the servlet.
@@ -41,7 +41,7 @@ public class SchemeServlet extends GenericServlet {
      */
     public void init()
             throws ServletException {
-        requestHandlerMap = new java.util.HashMap();
+        requestHandlerMap = new java.util.HashMap<String,Procedure>();
 
         // find the main script and initialiser parameters
         String mainScriptName = getInitParameter("main-script");
@@ -109,7 +109,7 @@ public class SchemeServlet extends GenericServlet {
 
         String method = request.getMethod();
         String context = request.getServletPath();
-        Procedure proc = (Procedure)requestHandlerMap.get(method+context);
+        Procedure proc = requestHandlerMap.get(method+context);
 
         if (proc == null) {
             // error: unrecognised method+context combination
@@ -117,17 +117,21 @@ public class SchemeServlet extends GenericServlet {
             response.setStatus(response.SC_NOT_IMPLEMENTED);
 
             StringBuffer mapkeys = new StringBuffer();
-            for (java.util.Iterator i=requestHandlerMap.keySet().iterator();
-                 i.hasNext(); ) {
-                mapkeys.append((String)i.next()).append(", ");
+            boolean firsttime = true;
+            for (String key : requestHandlerMap.keySet()) {
+                if (firsttime)
+                    firsttime = false;
+                else
+                    mapkeys.append(", ");
+                mapkeys.append(key);
             }
             
             PrintWriter out = LazyOutputStream.getLazyOutputStream(response)
                     .getWriter();
             out.println
-                    ("Method " + method + " not implemented for context "
+                    ("Method " + method + " not implemented for context <"
                      + context
-                     + " (can have" + mapkeys.toString() + ")");
+                     + "> (can have " + mapkeys.toString() + ")");
             out.flush();
         } else {
             // OK: normal case
