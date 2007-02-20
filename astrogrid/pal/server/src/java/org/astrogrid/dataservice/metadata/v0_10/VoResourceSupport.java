@@ -1,5 +1,5 @@
 /*
- * $Id: VoResourceSupport.java,v 1.17 2006/10/17 10:11:41 clq2 Exp $
+ * $Id: VoResourceSupport.java,v 1.18 2007/02/20 12:22:15 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -60,7 +60,7 @@ public class VoResourceSupport {
     * strings 
     * @TOFIX : Add property for logo and proper creator name 
     * */
-   public String makeCore(String title, String id, String publisher, String contactName, String contactEmail, String description, String refUrl, String type) {
+   public String makeCore(String title, String id, String publisher, String contactName, String contactEmail, String creatorName, String creatorLogo, String description, String rootUrl, String refUrl, String type) {
    
       String core =
          "\n<title>"+title+"</title>\n"+
@@ -68,9 +68,11 @@ public class VoResourceSupport {
          "<curation>\n"+
            "<publisher>"+publisher+"</publisher>\n"+
            "<creator>\n"+
-           // NB THIS NEXT SHOULD REALLY BE DATASET CREATOR'S NAME?
-           "<name>"+contactName+"</name>\n" +
-           "<logo>" +refUrl + "/logo.gif</logo>\n" +
+           "<name>"+creatorName+"</name>\n" +
+           "<logo>"+creatorLogo+"</logo>\n" +
+           /*
+           "<logo>" +rootUrl + "/logo.gif</logo>\n" +
+           */
            "</creator>\n"+
            "<contact>\n"+
              "<name>"+contactName+"</name>\n"+
@@ -146,14 +148,28 @@ public class VoResourceSupport {
    /** Constructs core VOResource elements from settings in the configuration file */
    private String makeConfigCore(String idEnd) throws IOException {
       
+         String refUrl = 
+           ConfigFactory.getCommonConfig().getString("datacenter.reference.url", "");
+         if ((refUrl == null) || ("".equals(refUrl))) { 
+           refUrl = ConfigFactory.getCommonConfig().getString("datacenter.url", "");
+         }
+         String creatorLogo = 
+           ConfigFactory.getCommonConfig().getString("datacenter.data.creator.logo", "");
+         if ((creatorLogo == null) || ("".equals(creatorLogo))) { 
+           creatorLogo = ConfigFactory.getCommonConfig().getString(
+               "datacenter.url", "")+"/logo.gif";
+         }
          return makeCore(
             DataServer.getDatacenterName(),
             makeId(idEnd),
             ConfigFactory.getCommonConfig().getString("datacenter.publisher",null),
             ConfigFactory.getCommonConfig().getString("datacenter.contact.name", ""),
             ConfigFactory.getCommonConfig().getString("datacenter.contact.email", ""),
-            ConfigFactory.getCommonConfig().getString("data.description", ""),
+            ConfigFactory.getCommonConfig().getString("datacenter.data.creator.name", ""),
+            creatorLogo,
+            ConfigFactory.getCommonConfig().getString("datacenter.description", ""),
             ConfigFactory.getCommonConfig().getString("datacenter.url", ""),
+            refUrl,
             "Catalog"
          );
    }

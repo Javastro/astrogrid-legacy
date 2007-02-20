@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: project.xml,v 1.12 2006/09/26 15:34:42 clq2 Exp $ -->
+<!-- $Id: project.xml,v 1.13 2007/02/20 12:22:15 clq2 Exp $ -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
     xsi:noNamespaceSchemaLocation="//../maven-base/xsd/maven-project.xsd">
 
     <!--will eventually extend from /base when Maven RC3 installed-->
-
+    <!--
     <extend>${basedir}/../../maven-base/project.xml</extend>
+    -->
+    <extend>${basedir}/../project.xml</extend>
 
     <currentVersion>${astrogrid.pal.latest}</currentVersion>
 
@@ -33,6 +35,14 @@
       <dependency>
         <id>xmlunit</id>
         <version>1.0</version>
+      </dependency>
+
+      <!-- Jeff's ADQL translator -->
+     <!-- TOFIX use version variable here -->
+      <dependency>
+         <artifactId>astrogrid-adqlstox</artifactId>
+         <groupId>org.astrogrid</groupId>
+         <version>2007.1.01sx</version>
       </dependency>
 
       <dependency>
@@ -166,25 +176,42 @@
 	 <!-- end beans for adql -->
 
     </dependencies>
-   
-   <build>
-     <resources>
-       <resource>
-         <directory>${basedir}/src/</directory>
-         <includes>
-           <include>**/*.xml</include>
-           <include>**/*.xsl</include>
-         </includes>
-       </resource>
-       <resource>
-         <directory>${basedir}/test/java/</directory>
-         <includes>
-           <include>**/*.xml</include>
-           <include>**/*.xsl</include>
-         </includes>
-       </resource>
-     </resources>
+
+    <build>
+    	<sourceDirectory>src/java</sourceDirectory>
+    	<unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+    	<resources>
+    		<resource>
+    			<directory>${basedir}/src/</directory>
+    			<includes>
+    				<include>**/*.xml</include>
+    				<include>**/*.xsl</include>
+    				<include>**/*.sql</include>
+    			</includes>
+    		</resource>
+    	</resources>
+    	<unitTest>
+
+    		<!--+
+    			| Which tests to include.
+    			+-->
+    		<includes>
+    			<include>**/*Test.java</include>
+    		</includes>
+    		<resources>
+    			<resource>
+    				<directory>${basedir}/test/java</directory>
+    				<includes>
+    					<include>**/*.xml</include>
+    					<include>**/*.xsl</include>
+    					<include>**/*.sql</include>
+    				</includes>
+    			</resource>
+    		</resources>
+    	</unitTest>
+
+
     </build>
- 
+
 
 </project>

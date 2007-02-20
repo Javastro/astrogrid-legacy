@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableWriter.java,v 1.9 2006/10/17 10:11:41 clq2 Exp $
+ * $Id: VoTableWriter.java,v 1.10 2007/02/20 12:22:15 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,6 +8,8 @@ package org.astrogrid.tableserver.out;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
+import java.io.OutputStream;
 import java.io.Writer;
 import java.security.Principal;
 import java.util.Date;
@@ -33,7 +35,6 @@ import org.astrogrid.ucd.UcdException;
 
 public class VoTableWriter implements TableWriter {
    
-   
    protected static final Log log = org.apache.commons.logging.LogFactory.getLog(VoTableWriter.class);
 
    protected PrintWriter printOut = null;
@@ -44,10 +45,15 @@ public class VoTableWriter implements TableWriter {
     * Construct this wrapping the given stream.
     */
    public VoTableWriter(TargetIdentifier target, String title, Principal user) throws IOException {
-      
       target.setMimeType(MimeTypes.VOTABLE);
-      
       printOut = new PrintWriter(new BufferedWriter(target.openWriter()));
+   }
+   /**
+    * Construct this wrapping the given stream.
+    */
+   public VoTableWriter(OutputStream out, String title, Principal user) throws IOException {
+      printOut = new PrintWriter( 
+          new BufferedWriter( new OutputStreamWriter (out)));
    }
    
    public void open() {
@@ -103,7 +109,14 @@ public class VoTableWriter implements TableWriter {
             //Create the votable type attributes from the metadoc type. 
             //Convert using java class as the medium
             if (cols[i].getPublicType() != null) {
+
+               log.debug("VOTable generator: public type of column " +
+                   cols[i].getName() + " is " + cols[i].getPublicType()); 
+
                Class colType = StdDataTypes.getJavaType(cols[i].getPublicType());
+               log.debug("VOTable generator: coltype of column " +
+                   cols[i].getName() + " is " + colType.toString());
+
                printOut.print(VoTypes.getVoTableTypeAttributes(colType));
             }
             /*
@@ -205,6 +218,16 @@ public class VoTableWriter implements TableWriter {
 
 /*
  $Log: VoTableWriter.java,v $
+ Revision 1.10  2007/02/20 12:22:15  clq2
+ PAL_KEA_2062
+
+ Revision 1.9.4.2  2007/02/13 15:54:29  kea
+ A useful utility from Mark Taylor to help with binary votable output.
+
+ Revision 1.9.4.1  2007/02/01 11:16:50  kea
+ Fix to bug whereby double columns were being reported as floats in VOTable
+ (bug 2078);  extra debug logging.
+
  Revision 1.9  2006/10/17 10:11:41  clq2
  PAL_KEA_1869
 

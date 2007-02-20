@@ -1,5 +1,5 @@
 /*
- * $Id: StatusLogger.java,v 1.3 2005/05/27 16:21:18 clq2 Exp $
+ * $Id: StatusLogger.java,v 1.4 2007/02/20 12:22:16 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.queriers.status;
@@ -61,6 +61,10 @@ public class StatusLogger {
       }
 
       /** Store status page if it can be reached */
+      // Removed by KEA - don't think these logs are very useful, and they
+      // were timing out very slowly in unit tests (when no page is 
+      // present to open), in some contexts. 
+      /*
       String statusUrl = null;
       try {
          statusUrl = ServletHelper.getUrlStem()+"queryStatus.jsp?ID="+status.getId();
@@ -81,7 +85,7 @@ public class StatusLogger {
          //couldn't find stem, never mind
          log.warn(pnfe+", copying query "+status.getId()+" status from '"+statusUrl+"' to "+statusPageDirectory+" -> could not persist status page");
       }
-      
+      */
    }
    
    /** Returns TaskStatus representation of past queries from persisted list

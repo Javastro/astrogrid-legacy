@@ -5,7 +5,6 @@
           Results Format
           <select name='Format'>
              <%= ServletHelper.getFormatOptions() %>
-             <option>Count</option>  <!-- not really right to put this here, but anyway -->
           </select>
           Compression
           <select name='Compression'>

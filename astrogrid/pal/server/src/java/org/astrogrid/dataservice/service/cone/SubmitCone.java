@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitCone.java,v 1.8 2006/09/26 15:34:42 clq2 Exp $
+ * $Id: SubmitCone.java,v 1.9 2007/02/20 12:22:16 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.cone;
@@ -45,6 +45,19 @@ public class SubmitCone extends DefaultServlet {
       if (plugin.equals("org.astrogrid.tableserver.test.SampleStarsPlugin")) {
          // This has no effect if the plugin is already initialised
          SampleStarsPlugin.initialise();  // Just in case
+      }
+
+      // Check that conesearch interface is not enabled
+      String coneEnabled = ConfigFactory.getCommonConfig().getString(
+         "datacenter.implements.conesearch");
+      if ( (coneEnabled == null) || 
+          (coneEnabled.equals("false") || coneEnabled.equals("FALSE")) ) { 
+        // Conesearch is not enabled, so throw an exception
+         IOException ioe =  new IOException(
+             "Conesearch interface is disabled in config");
+         doError(response, 
+           "Conesearch interface is disabled in DSA/catalog configuration", ioe);
+         throw ioe;
       }
 
       // Extract the query parameters

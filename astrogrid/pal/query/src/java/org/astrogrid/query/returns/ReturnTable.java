@@ -1,5 +1,5 @@
 /*
- * $Id: ReturnTable.java,v 1.5 2006/06/15 16:50:10 clq2 Exp $
+ * $Id: ReturnTable.java,v 1.6 2007/02/20 12:22:17 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -27,7 +27,8 @@ public class ReturnTable  extends ReturnSpec {
    public static final String HTML         = MimeTypes.HTML;
    public static final String TSV          = MimeTypes.TSV;
    public static final String FITS         = MimeTypes.FITS;
-   public static final String VOTABLE_FITSLIST  = MimeTypes.VOTABLE_FITSLIST;
+  // public static final String VOTABLE_FITSLIST  = MimeTypes.VOTABLE_FITSLIST;
+   public static final String VOTABLE_BINARY  = MimeTypes.VOTABLE_BINARY;
    
    /** Creates a definition specifying only the target destination */
    public ReturnTable(TargetIdentifier aTarget) {
@@ -45,6 +46,7 @@ public class ReturnTable  extends ReturnSpec {
       for (int i = 0; i < formats.length; i++) {
          if (formats[i].trim().toLowerCase().equals(CSV) ||
              formats[i].trim().toLowerCase().equals(VOTABLE) ||
+             formats[i].trim().toLowerCase().equals(VOTABLE_BINARY) ||
              formats[i].trim().toLowerCase().equals(HTML) ||
              formats[i].trim().toLowerCase().equals(FITS)) {
             return true;

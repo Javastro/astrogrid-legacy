@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescription.java,v 1.2 2005/11/21 12:54:18 clq2 Exp $
+/*$Id: DatacenterApplicationDescription.java,v 1.3 2007/02/20 12:22:14 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -106,7 +106,7 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
        this.addParameterDescription(radius);
         
         BaseParameterDescription format = new BaseParameterDescription();
-        format.setDisplayDescription("How the results are to be returned.  VOTABLE or CSV for now");
+        format.setDisplayDescription("How the results are to be returned.  VOTABLE (tabledata) or VOTABLE-BINARY (binary form) or CSV for now");
         format.setDisplayName(FORMAT);
         format.setName(FORMAT);
         format.setDefaultValue("VOTABLE");
@@ -126,9 +126,6 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
         adql.addInputParameter(QUERY);
         adql.addOutputParameter(RESULT);
    
-       //removed cone altogether for the moment, otherwise it turns up before the adql i/f on the portal
-       //UI, which at the omment can only handle one i/f
-       // PUT BACK BY KEA WHEN FIXING UNIT TESTS - JDT says portal can now cope 
         BaseApplicationInterface cone = new BaseApplicationInterface(CONE_IFACE,this);
         this.addInterface(cone);
         cone.addInputParameter(FORMAT);
@@ -156,6 +153,13 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
 
 /*
 $Log: DatacenterApplicationDescription.java,v $
+Revision 1.3  2007/02/20 12:22:14  clq2
+PAL_KEA_2062
+
+Revision 1.2.56.1  2007/02/13 15:58:59  kea
+Added proper OptionList for supported output types (including new
+support for binary VOTable).
+
 Revision 1.2  2005/11/21 12:54:18  clq2
 DSA_KEA_1451
 

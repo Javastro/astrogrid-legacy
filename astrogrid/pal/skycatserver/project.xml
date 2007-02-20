@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
+  <!-- This uses webapp-base to manage the jar dependencies to be
+         bundled in the WAR. -->
     <extend>${basedir}/../webapp-base/project.xml</extend>
         <id>astrogrid-dsa-catalog</id>
         <name>Astrogrid DSA/Catalog WebApp</name>
@@ -37,7 +39,27 @@
     </dependency>
 
 
-
   </dependencies>
+
+   <build>
+        <sourceDirectory>src/java</sourceDirectory>
+        <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+     <resources>
+       <resource>
+         <directory>${basedir}/src/</directory>
+         <includes>
+           <include>**/*.xml</include>
+           <include>**/*.xsl</include>
+         </includes>
+       </resource>
+       <resource>
+         <directory>${basedir}/test/java/</directory>
+         <includes>
+           <include>**/*.xml</include>
+           <include>**/*.xsl</include>
+         </includes>
+       </resource>
+     </resources>
+    </build>
 
 </project>

@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.8 2006/09/26 15:34:42 clq2 Exp $
+ * $Id: SampleStarsPlugin.java,v 1.9 2007/02/20 12:22:16 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -59,6 +59,8 @@ public class SampleStarsPlugin extends JdbcPlugin
       ConfigFactory.getCommonConfig().setProperty(ConeConfigQueryableResource.CONE_SEARCH_COL_UNITS_KEY, "deg");
       ConfigFactory.getCommonConfig().setProperty(
           "db.trigfuncs.in.radians","true");
+      ConfigFactory.getCommonConfig().setProperty(
+          "conesearch.radius.limit","180.0");
 
       //set up properties so we connect to the db and translate to the correct
       //flavour of SQL

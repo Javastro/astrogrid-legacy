@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.7 2006/08/21 15:39:30 clq2 Exp $
+/*$Id: InstallationSelfCheck.java,v 1.8 2007/02/20 12:22:16 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -165,21 +165,31 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
         // Don't run conesearch test if conesearch switched off in config
          return;
       }
-      else {
-         // Otherwise, use context configured in properties file.
-         // this test is called as a servlet, so get url stem from 
-         // servlet context
-         endpoint = ServletHelper.getUrlStem()+"/SubmitCone";
+
+      // OK, conesearch is enabled.
+      double minRad;
+      String minRadString = ConfigFactory.getCommonConfig().getString(
+        "conesearch.radius.limit","");
+      if ("0".equals(minRadString)) {
+        minRad = 0.01;
       }
+      else {
+        // Ensure radius is less than specified conesearch limit
+        minRad = Double.parseDouble(minRadString) * 0.99;
+      }
+      // Otherwise, use context configured in properties file.
+      // this test is called as a servlet, so get url stem from 
+      // servlet context
+      endpoint = ServletHelper.getUrlStem()+"/SubmitCone";
+
       NvoConeSearcher searcher = new NvoConeSearcher(endpoint);
       
-      InputStream is = searcher.coneSearch(30, -80, 0.1);
+      // Exercise haversine conesearch 
+      InputStream is = searcher.coneSearch(30, -80, minRad);
       assertNotNull(is);
 
       // Read first 1000 bytes to look for an error message
       byte[] block = new byte[1000];
-      int ibytes = 0;
-      int imult = 1;
       int read = is.read(block);
       String s = new String(block);
       //System.out.println("String is ");
@@ -188,6 +198,22 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
         // Got an error message in the stream
         throw new QueryException(s);
       }
+
+      // Exercise greatcircle conesearch unless conesearch limit is lower
+      if (minRad >= 0.168) {
+        is = searcher.coneSearch(30, -80, 0.168);
+        assertNotNull(is);
+
+        // Read first 1000 bytes to look for an error message
+        read = is.read(block);
+        s = new String(block);
+        //System.out.println("String is ");
+        //System.out.println(s);
+        if (s.indexOf("ASTROGRID DSA ERROR") != -1) {
+          // Got an error message in the stream
+          throw new QueryException(s);
+        }
+     }
    }
 
    /** Would check the CEA Interface, but the CEA stuff is very clever and so

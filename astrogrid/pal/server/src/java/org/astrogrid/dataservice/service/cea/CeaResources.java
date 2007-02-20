@@ -1,5 +1,5 @@
 /*
- * $Id: CeaResources.java,v 1.13 2006/10/17 10:11:41 clq2 Exp $
+ * $Id: CeaResources.java,v 1.14 2007/02/20 12:22:15 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -87,8 +87,13 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
                "</cea:ParameterDefinition>\n"+
                "<cea:ParameterDefinition name='Format' type='text'>\n"+
                   "<ceapd:UI_Name>Format</ceapd:UI_Name>\n"+
-                  "<ceapd:UI_Description>How the results are to be returned.  VOTABLE or CSV for now</ceapd:UI_Description>\n"+
+                  "<ceapd:UI_Description>How the results are to be returned.  VOTABLE, VOTABLE-BINARY or CSV for now</ceapd:UI_Description>\n"+
                   "<ceapd:DefaultValue>VOTABLE</ceapd:DefaultValue>\n"+
+                  "<ceapd:OptionList>\n"+
+                       "<ceapd:OptionVal>VOTABLE</ceapd:OptionVal>\n"+
+                       "<ceapd:OptionVal>VOTABLE-BINARY</ceapd:OptionVal>\n"+
+                       "<ceapd:OptionVal>COMMA-SEPARATED</ceapd:OptionVal>\n"+
+                  "</ceapd:OptionList>\n"+
                "</cea:ParameterDefinition>\n"+
                "<cea:ParameterDefinition name='RA' type='double'>\n"+
                   "<ceapd:UI_Name>RA</ceapd:UI_Name>\n"+

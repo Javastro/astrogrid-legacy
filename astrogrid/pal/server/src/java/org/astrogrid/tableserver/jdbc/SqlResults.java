@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.11 2006/08/21 15:39:30 clq2 Exp $
+ * $Id: SqlResults.java,v 1.12 2007/02/20 12:22:16 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -341,12 +341,18 @@ public class SqlResults extends TableResults {
    
    /** Returns the formats that this plugin can provide.  Doesn't provide Raw */
    public static String[] listFormats() {
-      return new String[] { ReturnTable.VOTABLE, ReturnTable.CSV, ReturnTable.HTML } ;
+      return new String[] { ReturnTable.VOTABLE, ReturnTable.VOTABLE_BINARY, ReturnTable.CSV, ReturnTable.HTML } ;
    }
 }
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.12  2007/02/20 12:22:16  clq2
+ PAL_KEA_2062
+
+ Revision 1.11.14.1  2007/02/13 15:59:34  kea
+ Support for binary VOTable output added.
+
  Revision 1.11  2006/08/21 15:39:30  clq2
  PAL_KEA_1716
 

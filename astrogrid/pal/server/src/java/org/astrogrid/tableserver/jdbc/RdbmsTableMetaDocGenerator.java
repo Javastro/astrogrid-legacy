@@ -1,5 +1,5 @@
 /*
- * $Id: RdbmsTableMetaDocGenerator.java,v 1.8 2006/09/26 15:34:42 clq2 Exp $
+ * $Id: RdbmsTableMetaDocGenerator.java,v 1.9 2007/02/20 12:22:16 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -158,7 +158,12 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
 //
 // ZRQ
 // Added the root tag to the XML writer. 
-         XmlPrinter rootTag = xw.newTag("DatasetDescription", new String[] {"xmlns='urn:astrogrid:schema:TableMetaDoc:v1'"});
+         XmlPrinter rootTag = xw.newTag("DatasetDescription", 
+             new String[] {
+               "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
+               "xmlns='urn:astrogrid:schema:TableMetaDoc:v1'",
+               "xsi:schemaLocation='urn:astrogrid:schema:TableMetaDoc:v1 http://software.astrogrid.org/schema/dsa/DSAMetadoc/v1.0/TableMetaDoc.xsd'"
+             });
          XmlPrinter catTag = rootTag.newTag("Catalog");
          // Below gives proper Name and Description tag pairs
          XmlPrinter catNameTag = catTag.newTag("Name");

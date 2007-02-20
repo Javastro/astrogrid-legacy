@@ -1,5 +1,5 @@
 /*
- * $Id: ConeConverter.java,v 1.2 2006/06/15 16:50:09 clq2 Exp $
+ * $Id: ConeConverter.java,v 1.3 2007/02/20 12:22:16 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,10 +14,12 @@ import org.astrogrid.io.Piper;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.cfg.PropertyNotFoundException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Utility class for taking conesearch parameters and converting them
- * into an ADQL/xml query format.  Note that this class assumes that
+ * into an ADQL/sql query format.  Note that this class assumes that
  * the database table stores RA and DEC columns in decimal degrees.
  *
  * See notes about conesearch maths appended at end.
@@ -26,6 +28,8 @@ import org.astrogrid.cfg.PropertyNotFoundException;
  */
 
 public class ConeConverter  {
+
+     protected static Log log = LogFactory.getLog(ConeConverter.class);
 
      static final String TABLE_NAME = "INSERT_NAME_TABLE";
      static final String RA_NAME = "INSERT_NAME_RA";
@@ -40,6 +44,7 @@ public class ConeConverter  {
      static final String DECMAX_VALUE_DEG = "INSERT_VALUE_MAX_DEC_DEG";
      static final String DECMIN_VALUE_RAD = "INSERT_VALUE_MIN_DEC_RAD";
      static final String DECMAX_VALUE_RAD = "INSERT_VALUE_MAX_DEC_RAD";
+     static final String RA_CLIP_CONDITION = "INSERT_RA_CLIP_CONDITION";
 
      static final double CONVERT_FACTOR = Math.PI/180.0;
          
@@ -115,32 +120,103 @@ public class ConeConverter  {
       else {
          throw new QueryException(
             "Unrecognised value " + colUnits + 
-            " for property 'conesearch.columns.units' is not set, " +
+            " for property 'conesearch.columns.units', " +
             "should be 'deg' or 'rad'");
+      }
+      // Now check for input radius limit
+      String radiusLimitString;
+      double radiusLimit;
+      try {
+         radiusLimitString = ConfigFactory.getCommonConfig().getString("conesearch.radius.limit");
+      }
+      catch (PropertyNotFoundException nfe) {
+         throw new QueryException(
+            "DSA local property 'conesearch.radius.limit' is not set, " +
+            "please check your configuration");
+      }
+      if ("0".equals(radiusLimitString)) {
+         radiusLimit = 360.0; // No limit, effectively
+      }
+      else {
+        try {
+          radiusLimit = Double.parseDouble(radiusLimitString); 
+        }
+        catch (NumberFormatException nfe) {
+          throw new QueryException(
+            "Unrecognised value " + radiusLimitString + 
+            " for property 'conesearch.radius.limit', " +
+            "should be a valid decimal number (expecting decimal degrees).");
+        }
+      }
+      if (coneRadius > radiusLimit) {
+          throw new QueryException(
+            "Input conesearch radius " + Double.toString(coneRadius) + 
+            " is too large;  maximum allowed radius is "+ Double.toString(radiusLimit));
       }
 
       // These are for use in an initial box-cut filter in the ADQL
       // (to make for more efficient calculation) - NB IN DEGREES HERE
       double decMin = coneDec - coneRadius;
       double decMax = coneDec + coneRadius;
+
+      double raMin = coneRA - coneRadius;
+      double raMax = coneRA + coneRadius;
+      String raClipCondition = "";
+      if (coneRadius >= 180) {
+        // Forget about RA clipping in this case, might as well do
+        // the lot.
+        log.debug("Ignoring RA boxcut for huge search radius");
+        raClipCondition = "";
+      }
+      else if ((raMin >= 0.0) && (raMax < 360.0)) {
+        log.debug("Got simple RA boxcut");
+        // Ahh, nice simple boxcut here!
+        raClipCondition = " AND ( (a.INSERT_NAME_RA >= " + raMin + ") AND " +
+            "(a.INSERT_NAME_RA <= " + raMax + ") )";
+      }
+      else if (raMin < 0.0) {
+        // Wrapping leftwards :  <   |0|   *        >
+        // Two cases here: 
+        //   (ra > 360+raMin) OR (ra <= raMax)
+        log.debug("Got RA boxcut left wrap");
+        double realMin = 360.0 + raMin;   // A value less than 360.0
+        raClipCondition = " AND ( " +
+          "(a.INSERT_NAME_RA >= "+ Double.toString(realMin) + ") OR " +
+            "(a.INSERT_NAME_RA <= " + raMax + ") )";
+      }
+      else if (raMax >= 360.0) {
+        // Wrapping rightwards :  <       *    |0|   >
+        // Two cases here: 
+        //   (ra >= raMin) OR (ra < raMax-360) 
+        log.debug("Got RA boxcut right wrap");
+        double realMax = raMax-360.0;   // A value greater than 0
+        raClipCondition = " AND ( " +
+          "(a.INSERT_NAME_RA >= "+ Double.toString(raMin) + ") OR " +
+          "(a.INSERT_NAME_RA <= " + Double.toString(realMax) + ") )";
+      }
+      else {
+        //SHOULDN'T GET HERE!
+         throw new QueryException(
+            "Got unexpected conditions in conesearch - this is a bug, please advise of it at http://www.astrogrid.org/bugzilla");
+      }
  
       if (coneRadius < 0.167) { // < roughly 10 arcmin
           // Haversine is more accurate for small circles
           // (avoids rounding-related errors)
           if (funcsInRads) {
              if (colsInDegs) {
-                adqlString = getConeTemplate("adql/templates/cone_haversine_rad_deg.xml");
+                adqlString = getConeTemplate("adql/templates/cone_haversine_rad_deg.sql");
              }
              else {
-               adqlString = getConeTemplate("adql/templates/cone_haversine_rad_rad.xml");
+               adqlString = getConeTemplate("adql/templates/cone_haversine_rad_rad.sql");
             }
           } 
           else {
              if (colsInDegs) {
-                adqlString = getConeTemplate("adql/templates/cone_haversine_deg_deg.xml");
+                adqlString = getConeTemplate("adql/templates/cone_haversine_deg_deg.sql");
              }
              else {
-                adqlString = getConeTemplate("adql/templates/cone_haversine_deg_rad.xml");
+                adqlString = getConeTemplate("adql/templates/cone_haversine_deg_rad.sql");
             }
           }
       }
@@ -148,18 +224,18 @@ public class ConeConverter  {
          // Great circle ok for larger circles
          if (funcsInRads) {
             if (colsInDegs) {
-               adqlString = getConeTemplate("adql/templates/cone_greatcircle_rad_deg.xml");
+               adqlString = getConeTemplate("adql/templates/cone_greatcircle_rad_deg.sql");
             }
             else {
-               adqlString = getConeTemplate("adql/templates/cone_greatcircle_rad_rad.xml");
+               adqlString = getConeTemplate("adql/templates/cone_greatcircle_rad_rad.sql");
             }
          }
          else {
             if (colsInDegs) {
-               adqlString = getConeTemplate("adql/templates/cone_greatcircle_deg_deg.xml");
+               adqlString = getConeTemplate("adql/templates/cone_greatcircle_deg_deg.sql");
             }
             else {
-               adqlString = getConeTemplate("adql/templates/cone_greatcircle_deg_rad.xml");
+               adqlString = getConeTemplate("adql/templates/cone_greatcircle_deg_rad.sql");
             }
          }
       }
@@ -168,6 +244,10 @@ public class ConeConverter  {
       //System.out.println(adqlString);
 
       // Perform necessary substitutions
+      
+      // First of all, insert RA clip condition
+      adqlString = adqlString.replaceAll(RA_CLIP_CONDITION,raClipCondition);
+      
       // Note that the ADQL trig assumes input values are in radians.
       adqlString = adqlString.replaceAll(TABLE_NAME,tableName);
       adqlString = adqlString.replaceAll(RA_NAME,raColName);

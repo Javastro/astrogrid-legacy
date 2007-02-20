@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.4 2006/06/15 16:50:08 clq2 Exp $
+/*$Id: DatacenterApplication.java,v 1.5 2007/02/20 12:22:14 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -55,7 +55,7 @@ import org.astrogrid.slinger.ivo.IVORN;
  * @author K Andrews
  *
  */
-public class DatacenterApplication extends AbstractApplication implements QuerierListener {
+public class DatacenterApplication extends AbstractApplication implements QuerierListener, Runnable {
    
    /**
     * Commons Logger for this class
@@ -131,19 +131,28 @@ public class DatacenterApplication extends AbstractApplication implements Querie
       
    }
    
+   /**
+    * @see org.astrogrid.applications.Application#createExecutionTask()
+    */
+   public Runnable createExecutionTask() throws CeaException {
+     return this;
+   }
    
    /**
-    * @see org.astrogrid.applications.Application#execute()
+    * 
     */
-   public boolean execute() throws CeaException {
-      createAdapters();
+   public void run() {
       try {
+         createAdapters();
          ParameterValue resultTarget = findOutputParameter(DatacenterApplicationDescription.RESULT);
          TargetIdentifier ti = null;
          if (resultTarget.getIndirect()==true) {
             //results will go to the URI given in the parameter
             if ((resultTarget.getValue() == null) || (resultTarget.getValue().trim().length() == 0)) {
-               throw new CeaException("ResultTarget is indirect but value is empty");
+               //throw new CeaException("ResultTarget is indirect but value is empty");
+               setStatus(Status.ERROR);
+               this.reportError("Query parameter error: ResultTarget is indirect but value is empty");
+               return;
             }
             
             //special botch for converting ivo:// to homespace:// etc
@@ -158,6 +167,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
          }
 
          String resultsFormat = MimeNames.getMimeType( findInputParameterAdapter(DatacenterApplicationDescription.FORMAT).process().toString());
+         logger.debug("Selected results format is " + resultsFormat);
          
          Query query = buildQuery(getApplicationInterface());
          query.getResultsDef().setTarget(ti);
@@ -168,16 +178,19 @@ public class DatacenterApplication extends AbstractApplication implements Querie
          setStatus(Status.INITIALIZED);
          querierID = serv.submitQuerier(querier);
          logger.info("assigned QuerierID " + querierID);
-         return true;
       }
       catch (Throwable e) {
-         reportError(e+" executing "+this.getTool().getName(),e);
+         this.reportError(e+" executing "+this.getTool().getName(),e);
+         // run() shouldn't really throw exceptions, better to report
+         // error in normal framework
+         /*
          if (e instanceof CeaException) {
             throw (CeaException) e;
          }
          else {
             throw new CeaException(e+", executing application "+this.getTool().getName(),e);
          }
+         */
       }
    }
 
@@ -309,6 +322,18 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
  $Log: DatacenterApplication.java,v $
+ Revision 1.5  2007/02/20 12:22:14  clq2
+ PAL_KEA_2062
+
+ Revision 1.4.20.2  2007/02/13 15:58:59  kea
+ Added proper OptionList for supported output types (including new
+ support for binary VOTable).
+
+ Revision 1.4.20.1  2007/01/18 13:15:33  kea
+ Checking in current state of project files to get help with debugging.
+ Also made changes to DatacenterApplication re bug 2064 (but not
+ fully tested this yet).
+
  Revision 1.4  2006/06/15 16:50:08  clq2
  PAL_KEA_1612
 

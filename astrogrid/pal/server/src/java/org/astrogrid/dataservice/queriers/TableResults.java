@@ -1,5 +1,5 @@
 /*
- * $Id: TableResults.java,v 1.10 2006/06/15 16:50:08 clq2 Exp $
+ * $Id: TableResults.java,v 1.11 2007/02/20 12:22:16 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -25,6 +25,7 @@ import org.astrogrid.tableserver.out.FilteredTableWriter;
 import org.astrogrid.tableserver.out.HtmlTableWriter;
 import org.astrogrid.tableserver.out.TableWriter;
 import org.astrogrid.tableserver.out.VoTableWriter;
+import org.astrogrid.tableserver.out.VoTableBinaryWriter;
 import org.astrogrid.tableserver.out.XsvTableWriter;
 
 /** A container interface that holds the results of a query that is in some
@@ -54,7 +55,7 @@ public abstract class TableResults implements QueryResults
 
    /** returns the formats that this result implementation can produce (ie VOTABLE, HTML, CSV, etc) */
    public static String[] listFormats() {
-      return new String[] { ReturnTable.VOTABLE, ReturnTable.CSV, ReturnTable.HTML };
+      return new String[] { ReturnTable.VOTABLE, ReturnTable.VOTABLE_BINARY, ReturnTable.CSV, ReturnTable.HTML };
    }
    
    /** Returns the number of results - or -1 if unknown */
@@ -79,6 +80,9 @@ public abstract class TableResults implements QueryResults
 
       if (requestedFormat.equals(ReturnTable.VOTABLE)) {
          return new VoTableWriter(target, "Query Results", user);
+      }
+      else if (requestedFormat.equals(ReturnTable.VOTABLE_BINARY)) {
+         return new VoTableBinaryWriter(target, "Query Results", user);
       }
       else if (requestedFormat.equals(ReturnTable.CSV)) {
          return new XsvTableWriter(target, "Query Results", ",", user);

@@ -1,5 +1,5 @@
 /*
- * $Id: TableMetaDocInterpreter.java,v 1.13 2006/09/26 15:34:42 clq2 Exp $
+ * $Id: TableMetaDocInterpreter.java,v 1.14 2007/02/20 12:22:15 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -269,6 +269,17 @@ public class TableMetaDocInterpreter
       return catNames;
    }
 
+   /** Returns the list of descriptions of all the catalogs in the metadoc */
+   public String[] getCatalogDescriptions()  {
+      Element[] elements = DomHelper.getChildrenByTagName(metadoc, "Catalog");
+      String[] catDescs = new String[elements.length];
+      for (int i = 0; i < elements.length; i++)
+      {
+         catDescs[i] = DomHelper.getValueOf(elements[i], "Description");
+      }
+      return catDescs;
+   }
+
    public TableInfo[] getTables(String catalog)  {
       Element[] elements = DomHelper.getChildrenByTagName(getCatalogElement(catalog), "Table");
       TableInfo[] infos = new TableInfo[elements.length];
@@ -339,6 +350,8 @@ public class TableMetaDocInterpreter
          //info.setJavaType(XmlTypes.getJavaType(info.getPublicType()));
          info.setJavaType(StdDataTypes.getJavaType(info.getPublicType()));
       }
+      log.debug("In metadoc interpreter: setting type of " + info.getName() + 
+            " to public type " + info.getPublicType().toString());
       return info;
    }
    

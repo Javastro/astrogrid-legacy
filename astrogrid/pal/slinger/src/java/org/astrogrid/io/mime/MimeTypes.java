@@ -1,5 +1,5 @@
 /*
- * $Id: MimeTypes.java,v 1.2 2006/09/26 15:34:42 clq2 Exp $
+ * $Id: MimeTypes.java,v 1.3 2007/02/20 12:22:15 clq2 Exp $
  *
  */
 
@@ -35,13 +35,15 @@ public interface MimeTypes  {
    public static final String FITS_IMAGE  = "image/fits"  ;
 
    //see ivoa forum comments http://www.ivoa.net/forum/dal/0406/0198.htm.
-   public static final String VOTABLE           = "application/x-votable+xml";
-   public static final String VOTABLE_FITSLIST  = "application/x-votable+xml+fitslist";
+   // "encoding=" part added by KEA at MB's suggestion
+   public static final String VOTABLE           = "application/x-votable+xml; encoding=\"TABLEDATA\"";
+   public static final String VOTABLE_BINARY = "application/x-votable+xml; encoding=\"BINARY\"";
+   // This one is not in use
+   //public static final String VOTABLE_FITSLIST  = "application/x-votable+xml; encoding=\"FITSLIST\"";
    
 //   public static final String VOLIST   = "text/xml +org.astrogrid.volist"  ;
 
    public static final String ZIP     = "application/zip"     ;
-
 
    public static final String IMAGE    = "image";
    public static final String GIF      = "image/gif";

@@ -1,6 +1,6 @@
 
 /*
- * $Id: DatacenterApplicationTest.java,v 1.8 2006/03/17 17:56:58 clq2 Exp $
+ * $Id: DatacenterApplicationTest.java,v 1.9 2007/02/20 12:22:16 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -152,8 +152,9 @@ public class DatacenterApplicationTest extends TestCase {
    public void testRun() throws Exception {
 
       //starts application (submits query)
-      assertTrue(app.execute());
-      
+      //assertTrue(app.execute());
+      app.createExecutionTask().run();
+
       // wait for app to finish,
       long endTime = System.currentTimeMillis() + 60 * 1000; // i.e. now plus 60 seconds
       while (notFinished(app.getStatus()) ) {
@@ -254,6 +255,12 @@ public class DatacenterApplicationTest extends TestCase {
 
 /*
  $Log: DatacenterApplicationTest.java,v $
+ Revision 1.9  2007/02/20 12:22:16  clq2
+ PAL_KEA_2062
+
+ Revision 1.8.32.1  2007/01/18 16:25:00  kea
+ Nightly checkin.
+
  Revision 1.8  2006/03/17 17:56:58  clq2
  gtr_1489_cea correted version
 

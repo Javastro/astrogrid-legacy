@@ -1,8 +1,8 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/pal/slinger/src/java/org/astrogrid/io/mime/MimeNames.java,v $</cvs:source>
  * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2006/09/26 15:34:42 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2007/02/20 12:22:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  */
 
@@ -36,6 +36,7 @@ public class MimeNames implements MimeTypes  {
       //populate lookup tables
       addLookup(PLAINTEXT, "Text");
       addLookup(VOTABLE,   "VOTable");
+      addLookup(VOTABLE_BINARY,   "VOTable-binary");
       addLookup(HTML,      "HTML");
       addLookup(CSV,       "Comma-Separated");
       addLookup(TSV,       "Tab-Separated");
@@ -94,6 +95,12 @@ public class MimeNames implements MimeTypes  {
 }
 /*
  *   $Log: MimeNames.java,v $
+ *   Revision 1.3  2007/02/20 12:22:15  clq2
+ *   PAL_KEA_2062
+ *
+ *   Revision 1.2.10.1  2007/02/13 16:00:07  kea
+ *   Support for binary VOTable added;  mimetypes stuff tidied a bit.
+ *
  *   Revision 1.2  2006/09/26 15:34:42  clq2
  *   SLI_KEA_1794 for slinger and PAL_KEA_1974 for pal and xml, deleted slinger jar from repo, merged with pal
  *

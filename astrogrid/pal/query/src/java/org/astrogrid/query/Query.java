@@ -1,5 +1,5 @@
 /*
- * $Id: Query.java,v 1.7 2006/08/21 15:39:30 clq2 Exp $
+ * $Id: Query.java,v 1.8 2007/02/20 12:22:16 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,6 +7,7 @@
 package org.astrogrid.query;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,6 +18,9 @@ import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.slinger.targets.WriterTarget;
+
+// AG ADQL stuff
+import org.astrogrid.adql.AdqlStoX;
 
 // XMLBeans stuff
 import org.apache.xmlbeans.* ;
@@ -93,9 +97,12 @@ public class Query  {
    private static String FROM_ADQL =
       "<Table xsi:type=\"tableType\" Alias=\"a\" Name=\"INSERT_TABLE\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.ivoa.net/xml/ADQL/v1.0\"/>";
    
-
-  /** For xmlbeans validation against schema */
+   /** For xmlbeans validation against schema */
    private static XmlOptions xmlOptions;
+
+   /** For converting from ADQL/sql strings to XML Beans */
+   private AdqlStoX compiler;
+
 
    /** Constructs a Query from a string containing ADQL/xml. 
     */
@@ -112,6 +119,16 @@ public class Query  {
          this.results = returnSpec;
       }
    }
+
+   /** Constructs a Query from a pre-initialised SelectDocument.
+    *  
+    */
+   public Query(SelectDocument select) throws QueryException 
+   {
+      setSelectDocument(select);
+      this.results = new ReturnTable(new WriterTarget(new StringWriter()));
+   }
+
    /** Constructs a Query from a string containing ADQL/xml, with
     * a default StringWriter return type. 
     */
@@ -192,7 +209,15 @@ public class Query  {
       String adqlString = ConeConverter.getAdql(
           tableName, raColName, decColName, 
           coneRA, coneDec, coneRadius);
-      setSelectDocument(adqlString);
+
+      StringReader source = new StringReader(adqlString) ;
+      try {
+         setSelectDocument( 
+           (SelectDocument)getCompiler(source).compileToXmlBeans() );
+      } 
+      catch (Exception e) {
+         throw new QueryException("Could not translate conesearch ADQL/sql query into valid ADQL/xml", e);
+      }
       this.results = returnSpec;
    }
 
@@ -204,7 +229,15 @@ public class Query  {
         throw new QueryException("ReturnSpec may not be null");
       }
       String adqlString = ConeConverter.getAdql(coneRA, coneDec, coneRadius);
-      setSelectDocument(adqlString);
+      //setSelectDocument(adqlString);
+      StringReader source = new StringReader(adqlString) ;
+      try {
+         setSelectDocument( 
+           (SelectDocument)getCompiler(source).compileToXmlBeans() );
+      } 
+      catch (Exception e) {
+         throw new QueryException("Could not translate conesearch ADQL/sql query into valid ADQL/xml", e);
+      }
       this.results = returnSpec;
    }
 
@@ -629,6 +662,114 @@ public class Query  {
       catch (XmlException e) {
         throw new QueryException("Couldn't parse ADQL: " + e, e);
       }
+
+      // Postprocess to meet our query conventions
+      postprocessSelectDocument();
+/*
+      try {
+        validateAdql();
+      }
+      catch (QueryException e) {
+        this.selectDocument = null; // Kill the adql
+        throw e;
+      }
+      // Make sure a FROM clause is present - add a default one
+      // if none is present and "default.table" property is set,
+      // otherwise reject query.
+      SelectType selectType = this.selectDocument.getSelect();
+      if (!selectType.isSetFrom()) {
+         String defaultTable = 
+            ConfigFactory.getCommonConfig().getString("default.table", null);
+         if (defaultTable == null) {
+           throw new QueryException(
+             "No default table specified in DSA configuration - please specify in your ADQL query which table you wish to use");
+         }
+         String fromString = FROM_ADQL.replaceAll("INSERT_TABLE",defaultTable);
+         try {
+            selectType.setFrom( FromType.Factory.parse(fromString));
+         }
+         catch (org.apache.xmlbeans.XmlException xE) {
+           throw new QueryException("Couldn't parse ADQL: " + xE, xE);
+         }
+         //Check still valid
+         try {
+            validateAdql();
+         }
+         catch (QueryException e) {
+            this.selectDocument = null; // Kill the adql
+            throw e;
+         }
+      }
+      else {
+         // TOFIX BETTER (Later) Check already-present From clauses, and 
+         // add aliases to any that don't have aliases.  This is a quick
+         // fix, find a more flexible solution later?  We have a problem
+         // with resolving aliases/table names when no alias is supplied
+         // in the From clause, leading to a null pointer error.
+         FromType from = selectType.getFrom();
+         int numTables = from.sizeOfTableArray();
+         for (int i = 0; i < numTables; i++) {
+            TableType tableType = (TableType)(from.getTableArray(i));
+            boolean hasAlias = tableType.isSetAlias();
+            if (hasAlias == false) {
+              // If no alias, add one same as table name
+              // Any column references elsewhere in the query will
+              // be referenced by table name, so the pseudo-alias
+              // will be consistent with this.
+               String name = tableType.getName();
+               tableType.setAlias(name);
+            }
+            // Check for blank aliases and reject the query if the alias
+            // is set to whitespace or an empty string - because it's not
+            // clear how to interpret any subsequent column references
+            // if there is a blank alias
+            else {
+              String alias = tableType.getAlias();
+              if ((alias == null) || (alias.trim().equals("")) ) {
+                // reject 
+                throw new QueryException(
+                    "Empty alias supplied for table " +
+                    tableType.getName() + 
+                    " - alias must not be empty.");
+              }
+            }
+         }
+      }
+      */
+   }
+
+   /** Accepts an ADQL/xml query as a DOM Element, converts it to xmlbeans
+    * representation (including validation against schema) and stores 
+    * the beans tree within the Query instance (to support legacy 
+    * interfaces - may be removed). 
+    */
+   private void setSelectDocument(Element adqlElement) throws QueryException
+   {
+      String adqlString;
+      // Extract the XML
+      try {
+         adqlString = 
+            tweakNamespace(DomHelper.ElementToString(adqlElement)); 
+      }
+      catch (IOException e) {
+        throw new QueryException("Failed to process ADQL Document: " + e, e);
+      }
+      setSelectDocument(adqlString);
+   }
+
+   /** Accepts an ADQL/xml query as precompiled Adqlbeans SelectDocument.
+    */
+   private void setSelectDocument(SelectDocument document) throws QueryException
+   {
+      this.selectDocument = document;
+      // Postprocess to meet our query conventions
+      postprocessSelectDocument();
+   }
+
+   /** 
+    */
+   private void postprocessSelectDocument() throws QueryException
+   {
       try {
         validateAdql();
       }
@@ -700,25 +841,6 @@ public class Query  {
       }
    }
 
-   /** Accepts an ADQL/xml query as a DOM Element, converts it to xmlbeans
-    * representation (including validation against schema) and stores 
-    * the beans tree within the Query instance (to support legacy 
-    * interfaces - may be removed). 
-    */
-   private void setSelectDocument(Element adqlElement) throws QueryException
-   {
-      String adqlString;
-      // Extract the XML
-      try {
-         adqlString = 
-            tweakNamespace(DomHelper.ElementToString(adqlElement)); 
-      }
-      catch (IOException e) {
-        throw new QueryException("Failed to process ADQL Document: " + e, e);
-      }
-      setSelectDocument(adqlString);
-   }
-
    /** Uses xmlbeans functionality to validate the query's current 
     * contents against schema. */
    private void validateAdql() throws QueryException
@@ -771,5 +893,18 @@ public class Query  {
          }
       }
       return adqlString;
+   }
+
+   /** Creates an ADQL/sql compiler where required, and/or compiles
+    * a given ADQL/sql fragment.  */ 
+   private AdqlStoX getCompiler(StringReader source) 
+   {
+      if (compiler == null) {
+         compiler = new AdqlStoX(source);
+      }
+      else {
+         compiler.ReInit(source);
+      }
+      return compiler;
    }
 }

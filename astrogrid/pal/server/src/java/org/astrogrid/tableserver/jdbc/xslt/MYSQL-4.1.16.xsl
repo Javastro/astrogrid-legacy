@@ -145,16 +145,22 @@
 	<!-- the 'searchType' templates -->
 	
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'intersectionSearchType'] | *[@xsi:type = 'intersectionSearchType']">    
+		<xsl:text> (</xsl:text>
 		<xsl:apply-templates select="ad:Condition[1]"/>
+		<xsl:text>) </xsl:text>
 		<xsl:text> And </xsl:text>
+		<xsl:text> (</xsl:text>
 		<xsl:apply-templates select="ad:Condition[2]"/>
-		<xsl:value-of select="$spaceCharacter"/>
+		<xsl:text>) </xsl:text>
 	</xsl:template>
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'unionSearchType'] | *[@xsi:type = 'unionSearchType']">
+		<xsl:text> (</xsl:text>
 		<xsl:apply-templates select="ad:Condition[1]"/>
+		<xsl:text>) </xsl:text>
 		<xsl:text> Or </xsl:text>
+		<xsl:text> (</xsl:text>
 		<xsl:apply-templates select="ad:Condition[2]"/>
-        <xsl:value-of select="$spaceCharacter"/>		
+		<xsl:text>) </xsl:text>
 	</xsl:template>
 	
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'likePredType'] | *[@xsi:type = 'likePredType']">

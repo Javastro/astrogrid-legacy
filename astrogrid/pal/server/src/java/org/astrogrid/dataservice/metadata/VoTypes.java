@@ -1,5 +1,5 @@
 /*
- * $Id: VoTypes.java,v 1.6 2006/09/26 15:34:42 clq2 Exp $
+ * $Id: VoTypes.java,v 1.7 2007/02/20 12:22:16 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -150,7 +150,7 @@ public class VoTypes  {
         return "datatype='"+FLOAT+"'";   
       }
       else if (javatype == Double.class) {   
-        return "datatype='"+FLOAT+"'";  
+        return "datatype='"+DOUBLE+"'";  
       }
       else if (javatype == Boolean.class) {  
         return "datatype='"+BOOLEAN+"'";    
@@ -200,6 +200,13 @@ public class VoTypes  {
 
 /*
  $Log: VoTypes.java,v $
+ Revision 1.7  2007/02/20 12:22:16  clq2
+ PAL_KEA_2062
+
+ Revision 1.6.10.1  2007/02/01 11:16:50  kea
+ Fix to bug whereby double columns were being reported as floats in VOTable
+ (bug 2078);  extra debug logging.
+
  Revision 1.6  2006/09/26 15:34:42  clq2
  SLI_KEA_1794 for slinger and PAL_KEA_1974 for pal and xml, deleted slinger jar from repo, merged with pal
 

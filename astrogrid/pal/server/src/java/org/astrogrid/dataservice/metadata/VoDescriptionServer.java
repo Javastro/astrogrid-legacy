@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.18 2006/10/17 10:11:41 clq2 Exp $
+ * $Id: VoDescriptionServer.java,v 1.19 2007/02/20 12:22:16 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -31,7 +31,6 @@ import org.astrogrid.slinger.ivo.IVORN;
 import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.contracts.SchemaMap;
 
-
 /**
  * Assembles the various VoResource elements provided by the plugins, and
  * serves them all up wrapped in a VoDescription element for submitting to registries
@@ -42,6 +41,7 @@ import org.astrogrid.contracts.SchemaMap;
  */
 
 public class VoDescriptionServer {
+
    protected static Log log = LogFactory.getLog(VoDescriptionServer.class);
    
    private static Document cache = null;

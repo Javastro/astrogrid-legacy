@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
+  <!--
     <extend>${basedir}/../../maven-base/project.xml</extend>
+    -->
+    <extend>${basedir}/../project.xml</extend>
      <id>astrogrid-pal-server</id>
      <name>Astrogrid Server Library</name>
   <currentVersion>${astrogrid.pal.latest}</currentVersion>
@@ -38,11 +41,7 @@
     <dependency>
          <groupId>org.astrogrid</groupId>
          <artifactId>astrogrid-contracts</artifactId>
-         <!--
          <version>${astrogrid.contracts.version}</version>
-         -->
-         <!-- HARDWIRED UNTIL LATEST CONTRACTS JAR FIXED -->
-         <version>2006.3.02con</version>
          <type>jar</type>
     </dependency>
 
@@ -169,6 +168,19 @@
       <version>${astrogrid.pal.latest}</version>
     </dependency>
 
+    <dependency>
+      <id>stil</id>
+      <groupId>starlink</groupId>
+      <version>2.6</version>
+    </dependency>
+
+    <!-- A few classes from STILTS, custom-bundled -->
+    <dependency>
+      <id>stilts</id>
+      <groupId>starlink</groupId>
+      <version>1.3-AGDSA</version>
+    </dependency>
+
     <!-- for XML Catalog with Xerces -->
     <!--
     <dependency>
@@ -257,12 +269,6 @@
       <version>1.8.0</version>
     </dependency>
 
-    <dependency>
-      <artifactId>stil</artifactId>
-      <groupId>starlink</groupId>
-      <version>2.0-3</version>
-    </dependency>
-
     <!-- castor, and what it needs -->
     <dependency>
       <id>castor</id>
@@ -270,6 +276,13 @@
       <jar>castor-0.9.5-xml.jar</jar>
     </dependency>
 
+      <!-- Jeff's ADQL translator -->
+      <!-- This is needed for unit tests -->
+      <dependency>
+         <artifactId>astrogrid-adqlstox</artifactId>
+         <groupId>org.astrogrid</groupId>
+         <version>2007.1.01sx</version>
+      </dependency>
 
     <!-- servlet support (for compiling against - no need for deployment war as servlet container should have it) -->
     <dependency>
@@ -397,7 +410,8 @@
             | The location of our Java source code.
             +-->
         <sourceDirectory>src/java</sourceDirectory>
-      
+        <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+
          <!-- include xml and xsl source -->
          <resources>
           <resource>
@@ -439,8 +453,6 @@
             </resources>
         </unitTest>
     </build>
-
-
 
 </project>
 

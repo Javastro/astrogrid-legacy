@@ -1,5 +1,5 @@
 /*
- * $Id: StilStarTableWriter.java,v 1.4 2005/05/27 16:21:02 clq2 Exp $
+ * $Id: StilStarTableWriter.java.NOTUSED,v 1.2 2007/02/20 12:22:15 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -187,7 +187,13 @@ public class StilStarTableWriter extends AbstractStarTable implements TableWrite
 }
 
 /*
- $Log: StilStarTableWriter.java,v $
+ $Log: StilStarTableWriter.java.NOTUSED,v $
+ Revision 1.2  2007/02/20 12:22:15  clq2
+ PAL_KEA_2062
+
+ Revision 1.1.2.1  2007/02/13 15:54:29  kea
+ A useful utility from Mark Taylor to help with binary votable output.
+
  Revision 1.4  2005/05/27 16:21:02  clq2
  mchv_1
 

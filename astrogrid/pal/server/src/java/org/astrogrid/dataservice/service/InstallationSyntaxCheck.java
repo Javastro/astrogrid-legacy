@@ -1,4 +1,4 @@
-/*$Id: InstallationSyntaxCheck.java,v 1.5 2006/09/26 15:34:42 clq2 Exp $
+/*$Id: InstallationSyntaxCheck.java,v 1.6 2007/02/20 12:22:16 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,6 +24,9 @@ import org.astrogrid.query.QueryException;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.tableserver.jdbc.AdqlSqlMaker;
+
+import org.astrogrid.cfg.PropertyNotFoundException;
+import org.astrogrid.tableserver.test.SampleStarsPlugin;
 
 // For validation
 import org.astrogrid.xml.DomHelper;
@@ -76,6 +79,20 @@ public class InstallationSyntaxCheck {
    
    public String runAllTests() 
    {
+      /* Initialise plugin if required, just in case the user runs
+       * this test first */
+      String plugin = "";
+      try {
+         plugin = ConfigFactory.getCommonConfig().getString(
+            "datacenter.querier.plugin");
+      }
+      catch (PropertyNotFoundException e) {
+        // Ignore this one in this context - just want to initialise
+        // samplestars if needed
+      } 
+      if ("org.astrogrid.tableserver.test.SampleStarsPlugin".equals(plugin)) {
+         SampleStarsPlugin.initConfig();
+      }
       StringBuffer failQueries = new StringBuffer();
       StringBuffer succeedQueries = new StringBuffer();
 

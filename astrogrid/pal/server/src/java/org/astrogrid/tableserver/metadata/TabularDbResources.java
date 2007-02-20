@@ -1,5 +1,5 @@
 /*
- * $Id: TabularDbResources.java,v 1.12 2006/09/26 15:34:42 clq2 Exp $
+ * $Id: TabularDbResources.java,v 1.13 2007/02/20 12:22:15 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -56,10 +56,12 @@ public class TabularDbResources extends VoResourceSupport implements VoResourceP
       if (catalog == null) {
          throw new MetadataException("Server error: no catalog or table metadata are defined for this DSA/catalog installation;  please check your metadoc file and/or configuration!");
       }
+      String[] catalogDescs = reader.getCatalogDescriptions();
+      String desc = catalogDescs[0];
       tabularDb.append(
          "<tdb:name>"+catalog+"</tdb:name>\n"+
-         "<tdb:description/>\n"
-      );
+         "<tdb:description>"+ 
+            XmlPrinter.transformSpecials(desc) + "</tdb:description>\n");
       
       TableInfo[] tables = reader.getTables(catalog);
       for (int t = 0; t < tables.length; t++) {

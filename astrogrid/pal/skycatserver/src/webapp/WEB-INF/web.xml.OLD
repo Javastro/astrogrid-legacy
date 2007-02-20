@@ -39,6 +39,27 @@
     <servlet-class>org.astrogrid.dataservice.service.cone.SubmitCone</servlet-class>
   </servlet>
 
+  <!-- THESE ARE NOT IN USE NOW -->
+  <!--
+  <servlet>
+    <servlet-name>SubmitQuery</servlet-name>
+    <description>Servlet for submitting (asynchronous) queries via POST or GET</description>
+    <servlet-class>org.astrogrid.dataservice.service.servlet.SubmitQuery</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>AskQuery</servlet-name>
+    <description>Servlet for asking (synchronous) queries via POST or GET</description>
+    <servlet-class>org.astrogrid.dataservice.service.servlet.AskQuery</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>AskCount</servlet-name>
+    <description>Servlet that just gets the number of rows, rather than the rows themselves, for a query</description>
+    <servlet-class>org.astrogrid.dataservice.service.servlet.AskCount</servlet-class>
+  </servlet>
+  -->
+
   <servlet>
     <servlet-name>BrowserAskQuery</servlet-name>
     <description>Servlet for asking (synchronous) queries via POST or GET suitable for browsers</description>
@@ -50,6 +71,22 @@
     <description>Servlet for attempting to abort a query</description>
     <servlet-class>org.astrogrid.dataservice.service.servlet.AttemptAbort</servlet-class>
   </servlet>
+
+  <!--  NO LONGER SUPPORTED
+  <servlet>
+    <servlet-name>SimpleImageQuery</servlet-name>
+    <description>serves using Simple Image Access Protocol</description>
+    <servlet-class>org.astrogrid.dataservice.service.siap.SimpleImageQuery</servlet-class>
+  </servlet>
+  -->
+
+  <!--  NO LONGER SUPPORTED
+  <servlet>
+    <servlet-name>SimpleSpectraQuery</servlet-name>
+    <description>serves using Simple Spectra Access Protocol</description>
+    <servlet-class>org.astrogrid.dataservice.service.ssap.SimpleSpectraQuery</servlet-class>
+  </servlet>
+  -->
 
   <!-- Admin servlets -->
   <servlet>
@@ -76,6 +113,16 @@
     <servlet-class>org.astrogrid.tableserver.jdbc.RdbmsTableMetaDocGenerator</servlet-class>
   </servlet>
 
+
+  <!-- NOT IN USE NOW -->
+  <!--
+  <servlet>
+    <servlet-name>StoreFileResolver</servlet-name>
+    <description>Resolves a store file reference to a stream</description>
+    <servlet-class>org.astrogrid.slinger.ResolverServlet</servlet-class>
+  </servlet>
+  -->
+
   <!-- CEA -->
   <servlet>
       <servlet-name>cec-http</servlet-name>
@@ -90,6 +137,23 @@
   </servlet>
 
   <!-- Query Managing tasks -->
+
+  <!--
+  <servlet-mapping>
+    <servlet-name>SubmitQuery</servlet-name>
+    <url-pattern>SubmitQuery</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>AskQuery</servlet-name>
+    <url-pattern>/admin/AskQuery</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>AskCount</servlet-name>
+    <url-pattern>/admin/AskCount</url-pattern>
+  </servlet-mapping>
+  -->
 
   <servlet-mapping>
     <servlet-name>BrowserAskQuery</servlet-name>
@@ -111,6 +175,38 @@
     <url-pattern>/admin/Abort</url-pattern>
   </servlet-mapping>
 
+  <!-- THESE ARE NO LONGER SUPPORTED
+  <servlet-mapping>
+    <servlet-name>SimpleImageQuery</servlet-name>
+    <url-pattern>/SIA</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>SimpleImageQuery</servlet-name>
+    <url-pattern>/SimpleImageAccess</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>SimpleImageQuery</servlet-name>
+    <url-pattern>/SimpleImageQuery</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>SimpleSpectraQuery</servlet-name>
+    <url-pattern>/SimpleSpectraQuery</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>SimpleSpectraQuery</servlet-name>
+    <url-pattern>/SimpleSpectraAccess</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>SimpleSpectraQuery</servlet-name>
+    <url-pattern>/SSA</url-pattern>
+  </servlet-mapping>
+  -->
+
   <!-- Administration type stuff -->
   <servlet-mapping>
     <servlet-name>GetLog</servlet-name>
@@ -131,6 +227,14 @@
     <servlet-name>MetaDocGenerator</servlet-name>
     <url-pattern>/admin/GenerateMetaDoc</url-pattern>
   </servlet-mapping>
+
+  <!-- Store Browser -->
+  <!--
+  <servlet-mapping>
+    <servlet-name>StoreFileResolver</servlet-name>
+    <url-pattern>/ViewFile</url-pattern>
+  </servlet-mapping>
+  -->
 
   <!-- Axis -->
   <servlet-mapping>
@@ -218,5 +322,30 @@
      <env-entry-value>org.astrogrid.dataservice.service.cea.DatacenterCEAComponentManager</env-entry-value>
      <env-entry-type>java.lang.String</env-entry-type>
   </env-entry>
+
+
+  <!-- causes Tomcat to throw an exception... fix later
+  <resource-ref>
+   <description>Datasource to use to access the database</description>
+   <res-ref-name>jdbc/pal-datasource</res-ref-name>
+   <res-type>javax.sql.DataSource</res-type>
+   <res-auth>Container</res-auth>
+  </resource-ref>
+  -->
+
+  <!--think of an alternative - this will keep repopulating the JNDI environment variables with
+  this key even if the user deletes the entry env-entry>
+      <description>URL giving location of the properties file to use for configuration</description>
+      <env-entry-name>org.astrogrid.config.filename</env-entry-name>
+      <env-entry-value>${catalina.home}/conf/datacenter.properties</env-entry-value>
+      <env-entry-type>java.lang.String</env-entry-type>
+  </env-entry -->
+  <!--
+  <resource-ref>
+   <res-ref-name>org.astrogrid.config.url</res-ref-name>
+   <res-type>java.lang.String</res-type>
+   <res-auth>Container</res-auth>
+  </resource-ref>
+-->
 
 </web-app>

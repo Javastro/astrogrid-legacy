@@ -1,4 +1,4 @@
-/*$Id: InstallationPropertiesCheck.java,v 1.6 2006/10/17 10:11:41 clq2 Exp $
+/*$Id: InstallationPropertiesCheck.java,v 1.7 2007/02/20 12:22:16 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,6 +32,7 @@ public class InstallationPropertiesCheck extends TestCase {
    public void testAllPropertiesSet()
    {
       boolean allOK = true;
+      int bad = 0;
       String test;
       Vector accum = new Vector();
 
@@ -51,51 +52,58 @@ public class InstallationPropertiesCheck extends TestCase {
       }
 
       // Check all properties are set
-      allOK = allOK && checkSet("datacenter.url", accum);
-      allOK = allOK && checkSet("datacenter.metadoc.file", accum);
-      allOK = allOK && checkSet("datacenter.querier.plugin", accum);
-      allOK = allOK && checkSet("datacenter.sqlmaker.xslt", accum);
-      allOK = allOK && checkSet("db.trigfuncs.in.radians", accum);
+      if (!checkSet("datacenter.url", accum)) { bad = bad+1; }
+      if (!checkSet("datacenter.metadoc.file", accum)) { bad = bad+1; }
+      if (!checkSet("datacenter.querier.plugin", accum)) { bad = bad+1; }
+      if (!checkSet("datacenter.sqlmaker.xslt", accum)) { bad = bad+1; }
+      if (!checkSet("db.trigfuncs.in.radians", accum)) { bad = bad+1; }
 
-      allOK = allOK && checkSet("datacenter.max.return", accum);
-      allOK = allOK && checkSet("datacenter.max.queries", accum);
-      allOK = allOK && checkSet("datacenter.sql.timeout", accum);
+      if (!checkSet("datacenter.max.return", accum)) { bad = bad+1; }
+      if (!checkSet("datacenter.max.queries", accum)) { bad = bad+1; }
+      if (!checkSet("datacenter.sql.timeout", accum)) { bad = bad+1; }
 
-      allOK = allOK && checkSet("datacenter.self-test.table", accum);
-      allOK = allOK && checkSet("datacenter.self-test.column1", accum);
-      allOK = allOK && checkSet("datacenter.self-test.column2", accum);
+      if (!checkSet("datacenter.self-test.table", accum)) { bad = bad+1; }
+      if (!checkSet("datacenter.self-test.column1", accum)) { bad = bad+1; }
+      if (!checkSet("datacenter.self-test.column2", accum)) { bad = bad+1; }
 
-      allOK = allOK && checkSet("datacenter.implements.conesearch", accum);
-      allOK = allOK && checkSet("conesearch.table", accum);
-      allOK = allOK && checkSet("conesearch.ra.column", accum);
-      allOK = allOK && checkSet("conesearch.dec.column", accum);
-      allOK = allOK && checkSet("conesearch.columns.units", accum);
+      if (!checkSet("datacenter.implements.conesearch", accum)) { bad = bad+1; }
+      String cone = ConfigFactory.getCommonConfig().getString(
+          "datacenter.implements.conesearch");
+      if ((cone != null) && (cone.toLowerCase().equals("true")) ) {
+        if (!checkSet("conesearch.table", accum)) { bad = bad+1; }
+        if (!checkSet("conesearch.ra.column", accum)) { bad = bad+1; }
+        if (!checkSet("conesearch.dec.column", accum)) { bad = bad+1; }
+        if (!checkSet("conesearch.columns.units", accum)) { bad = bad+1; }
+        if (!checkSet("conesearch.radius.limit", accum)) { bad = bad+1; }
+      }
+      if (!checkSet("datacenter.name", accum)) { bad = bad+1; }
+      if (!checkSet("datacenter.description", accum)) { bad = bad+1; }
 
-      allOK = allOK && checkSet("datacenter.name", accum);
-      allOK = allOK && checkSet("datacenter.description", accum);
+      if (!checkSet("datacenter.authorityId", accum)) { bad = bad+1; }
+      if (!checkSet("datacenter.resourceKey", accum)) { bad = bad+1; }
 
-      allOK = allOK && checkSet("datacenter.authorityId", accum);
-      allOK = allOK && checkSet("datacenter.resourceKey", accum);
+      if (!checkSet("datacenter.publisher", accum)) { bad = bad+1; }
+      if (!checkSet("datacenter.contact.name", accum)) { bad = bad+1; }
+      if (!checkSet("datacenter.contact.email", accum)) { bad = bad+1; }
+      if (!checkSet("datacenter.data.creator.name", accum)) { bad = bad+1; }
 
       // Assume we need at least one resource (something to publish)
-      allOK = allOK && checkSet("datacenter.resource.plugin.1", accum);
+      if (!checkSet("datacenter.resource.plugin.1", accum)) { bad = bad+1; }
 
-      allOK = allOK && checkSet("org.astrogrid.registry.admin.endpoint", accum);
-      allOK = allOK && checkSet("org.astrogrid.registry.query.endpoint", accum);
-      allOK = allOK && checkSet("org.astrogrid.registry.query.altendpoint", accum);
-      allOK = allOK && checkSet("cea.component.manager.class", accum);
+      if (!checkSet("org.astrogrid.registry.admin.endpoint", accum)) { bad = bad+1; }
+      if (!checkSet("org.astrogrid.registry.query.endpoint", accum)) { bad = bad+1; }
+      if (!checkSet("org.astrogrid.registry.query.altendpoint", accum)) { bad = bad+1; }
+      if (!checkSet("cea.component.manager.class", accum)) { bad = bad+1; }
+
       // These ones aren't compulsory:
-      // datacenter.publisher
-      // datacenter.contact.name
-      // datacenter.contact.email
       // datacenter.ucd.version
       //
 
       // These ones are used by the jdbc plugin
       if ("org.astrogrid.tableserver.jdbc.JdbcPlugin".equals(plugin)) {
-        allOK = allOK && checkSet("datacenter.plugin.jdbc.user", accum);
-        allOK = allOK && checkSet("datacenter.plugin.jdbc.drivers", accum);
-        allOK = allOK && checkSet("datacenter.plugin.jdbc.url", accum);
+        if (!checkSet("datacenter.plugin.jdbc.user", accum)) { bad = bad+1; }
+        if (!checkSet("datacenter.plugin.jdbc.drivers", accum)) { bad = bad+1; }
+        if (!checkSet("datacenter.plugin.jdbc.url", accum)) { bad = bad+1; }
         // This one is allowed to be empty - it's possible that the RDBMS
         // has no password
         //allOK = allOK && checkSet("datacenter.plugin.jdbc.password", accum);
@@ -104,6 +112,9 @@ public class InstallationPropertiesCheck extends TestCase {
       String accumString = "";
       for (int i = 0; i < accum.size(); i++) {
         accumString = accumString + (String)accum.elementAt(i);
+      }
+      if (bad > 0) {
+        allOK = false;
       }
       assertTrue("SOME PROPERTIES ARE NOT SET!<br/>\n" + accumString,allOK);
    }
