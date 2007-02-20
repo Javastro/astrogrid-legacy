@@ -200,6 +200,20 @@ REGISTRY GOOGLE
 		</action>
 	</contribution>		
 	
+	<!--  help keys for registry panel - they're pointing to the wiki for now. -->
+	<contribution configuration-id="system.helpmap">
+		<item id="reg.general" url="http://wiki.astrogrid.org/bin/view/Astrogrid/RegistryExplorer" />
+		<item id="reg.search" url="http://wiki.astrogrid.org/bin/view/Astrogrid/RegistryExplorer#Search_Field" />
+		<item id="reg.filter" url="http://wiki.astrogrid.org/bin/view/Astrogrid/RegistryExplorer#Filter_Field" />
+		<item id="reg.filters" url="http://wiki.astrogrid.org/bin/view/Astrogrid/RegistryExplorer#Filters_Table" />
+		<item id="reg.table" url="http://wiki.astrogrid.org/bin/view/Astrogrid/RegistryExplorer#Resources_List" />
+		<item id="reg.details" url="http://wiki.astrogrid.org/bin/view/Astrogrid/RegistryExplorer#Resource_Details" />
+		<item id="reg.xml" url="http://wiki.astrogrid.org/bin/view/Astrogrid/RegistryExplorer#Resource_XML" />
+		
+	</contribution>
+	
+	
+	
 	<!-- obsolete version - only present for backwards compat. -->
 <service-point id="registryChooser" interface="RegistryChooser">
 		Select a registry resource (obsolete)
@@ -271,7 +285,7 @@ REGISTRY GOOGLE
 				<service>registryGoogle</service>
 				<service>astrogrid.myspace</service>
 				<service>ivoa.registry</service>
-				<service>system.configuration</service>
+				<object>preference:acr.advanced</object>		
 			</construct>
 		</invoke-factory>
 	</service-point>	
