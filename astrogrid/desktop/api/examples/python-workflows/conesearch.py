@@ -37,7 +37,7 @@ Iterate through a list of sources, for each querying a sequence of catalog servi
 Results are grouped by source, and maybe saved to local disk, or to myspace.
 ''')
 parser.add_option('-r','--radius', type='float',default=radius, metavar="FLOAT",
-                      help="search radius (default: %s)" % radius)
+                      help="search radius - decimal degrees (default: %s)" % radius)
 parser.add_option('-f','--sourcefile', metavar="FILE",
                   help="URI/file location of sourcelist votable (default: prompt using dialogue)")
 parser.add_option('-o','--outputdir',default=output_dir, metavar="DIR",
@@ -88,9 +88,9 @@ vot.parseText(votString)
 #inspect the metadata forthe table.
 # handy getColumnIdx will match on any metadata for a field - name, ucd, etc.
 
-nameCol = vot.getColumnIdx('Name')
-raCol = vot.getColumnIdx('_RAJ2000')
-decCol = vot.getColumnIdx('_DEJ2000')
+nameCol = vot.getColumnIdx('ID_IDENTIFIER')
+raCol = vot.getColumnIdx('POS_EQ_RA_MAIN')
+decCol = vot.getColumnIdx('POS_EQ_DEC_MAIN')
 # verify we've found something
 assert nameCol > -1, "Could not locate name column"
 assert raCol > -1, "Could not locate RA column"
