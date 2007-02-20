@@ -35,6 +35,9 @@ import java.util.ListIterator;
 import java.util.Stack;
 
 import java.awt.Color ;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import javax.swing.BorderFactory ;
 import javax.swing.Box ;
 import javax.swing.AbstractAction;
@@ -112,6 +115,7 @@ import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditListener;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
+import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 // import org.astrogrid.desktop.modules.ui.BackgroundWorker;
@@ -125,7 +129,8 @@ public class ADQLToolEditorPanel
        extends AbstractToolEditorPanel 
        implements ToolEditListener
                 , TreeModelListener
-                , ChangeListener {
+                , ChangeListener
+                , PropertyChangeListener{
     
     private static final Log log = LogFactory.getLog( ADQLToolEditorPanel.class ) ;
     private StringBuffer logIndent ;
@@ -141,11 +146,11 @@ public class ADQLToolEditorPanel
     protected final RegistryGoogle regChooser;
     protected final ResourceChooserInternal resourceChooser;
     protected final Registry registry ;
-    protected final Configuration configuration ;
+    protected final Preference showDebugPanePreference;
       
     // LHS Editor tabs...
     private JTabbedPane tabbedEditorPane ;
-   
+    
     private AdqlTree adqlTree ;
     private AdqlXmlView adqlXmlView ;
     private AdqlMainView adqlMainView ;
@@ -274,15 +279,16 @@ public class ADQLToolEditorPanel
                               , UIComponent parent
                               , MyspaceInternal myspace
                               , Registry registry
-                              , Configuration configuration ) {
+                              , Preference showDebugPanePref ) {
         super( toolModel );
         this.parent = parent;
         this.regChooser = regChooser;
         this.resourceChooser = resourceChooser ; 
         this.myspace = myspace ;
         this.registry = registry ;
-        this.configuration = configuration ;
         this.transformer = new AdqlTransformer() ;
+        this.showDebugPanePreference = showDebugPanePref;
+        this.showDebugPanePreference.addPropertyChangeListener(this);
         this.toolModel.addToolEditListener( this );
     }
     
@@ -575,7 +581,7 @@ public class ADQLToolEditorPanel
 
         // Adql/x panel ...
         // This is really only here for debug purposes...
-        boolean bDebugView = Boolean.valueOf( configuration.getKey( CONFIG_KEY_DEBUG_VIEW ) ).booleanValue() ;
+        boolean bDebugView = showDebugPanePreference.asBoolean();
         if( bDebugView ) {
             this.adqlXmlView = new AdqlXmlView( tabbedEditorPane ) ;
         }
@@ -1751,19 +1757,6 @@ public class ADQLToolEditorPanel
             else {
                 buildEditMenu( menu, (AdqlNode)adqlTree.getLastSelectedPathComponent() ) ;
             }
-            if( !bOptionsFound ) {
-                final JMenu optionsMenu = new JMenu( "Options" ) ;
-                optionsMenu.setName( "Options" ) ;               
-                optionsMenu.addMenuListener( new MenuListener() {
-                    public void menuCanceled( MenuEvent e ) { }
-                    public void menuDeselected(MenuEvent e) { }
-                    public void menuSelected(MenuEvent e) {                        
-                        buildOptionsMenu( optionsMenu ) ;
-                    }                                       
-                } ) ;
-                mb.add( optionsMenu ) ;
-                optionsMenu.setEnabled( true ) ;
-            }
         }
         else {
             // We have just lost selection:
@@ -1782,29 +1775,21 @@ public class ADQLToolEditorPanel
         }
     }
     
-    private void buildOptionsMenu( JMenu optionsMenu ) {
-        if( optionsMenu.getMenuComponentCount() == 0 ) {            
-            //
-            // Whether xml debug view is required...
-            boolean bDebugView = Boolean.valueOf( configuration.getKey( CONFIG_KEY_DEBUG_VIEW ) ).booleanValue() ;
-            JCheckBoxMenuItem cbmi = new JCheckBoxMenuItem( "Show debug view", bDebugView ) ;                    
-         
-            cbmi.addActionListener( new ActionListener() {
-                public void actionPerformed( ActionEvent e ) {
-                    boolean bState = Boolean.valueOf( configuration.getKey( CONFIG_KEY_DEBUG_VIEW ) ).booleanValue() ;
-                    if( bState == false ) {
-                        ADQLToolEditorPanel.this.adqlXmlView = new AdqlXmlView( tabbedEditorPane ) ;
-                    }
-                    else {                       
-                        tabbedEditorPane.removeTabAt( tabbedEditorPane.indexOfComponent( adqlXmlView) ) ;
-                        adqlXmlView = null ;
-                    }
-                    configuration.setKey( CONFIG_KEY_DEBUG_VIEW, Boolean.toString( !bState ) ) ;
-                }                 
-            } ) ;              
-            optionsMenu.add( cbmi ) ;
-        }     
-    }
+
+    /** called when value of prefernece changes */
+	public void propertyChange(PropertyChangeEvent evt) {
+		// test which preference has changed (in future, might be listening to more than one prefernece 
+		if (evt.getSource() == this.showDebugPanePreference) {
+		     boolean bState = this.showDebugPanePreference.asBoolean();
+             if( bState) {
+                 ADQLToolEditorPanel.this.adqlXmlView = new AdqlXmlView( tabbedEditorPane ) ;
+             }
+             else {                       
+                 tabbedEditorPane.removeTabAt( tabbedEditorPane.indexOfComponent( adqlXmlView) ) ;
+                 adqlXmlView = null ;
+             }		
+		}
+	}
     
     
     private void buildEditMenu( JComponent menuComponent, AdqlNode entry ) {
@@ -1976,6 +1961,9 @@ public class ADQLToolEditorPanel
         }
         return logIndent ;
     }
+
+
+
     
     
 } // end of ADQLToolEditor
