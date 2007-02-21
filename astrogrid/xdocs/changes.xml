@@ -5,13 +5,6 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
-          
-          <action dev="gtr" type="fix">
-          <em>Branch apps-gtr-2051</em>: fix for BZ2051. This alters 
-          astrogrid/applications/server to use the SchemaMap class from
-          contracts (current) rather than the one from workflow-objects 
-          (obsolete). The contracts jar is added as a dependency.
-          </action>
     	
     	<action dev="kmb" type="fix">
     	    <em>Branch Reg_KMB_ErrorMessageFix2.</em> Fixed server messages due to a problem: when
@@ -41,6 +34,10 @@
         </release>
 		
         <release version="HEAD">
+          <action dev="gtr" type="update">
+            Branch Contracts_KMB_RegStoreValidate. Various changes and additions
+            to schemata in support of the move to VOResource 1.0.
+          </action>
            <action dev="kea" type="update/fix">
           Branch PAL_KEA_2062.
           Covers the following bugzilla tickets:
@@ -56,10 +53,14 @@
             This addresses issues 2061 and 2071.
           </action>
           
-	  <action dev="gtr" type="fix" issue="2051">
-            Branch apps-gtr-2051 to fix contracts for pal to work. 
+          <action dev="gtr" type="fix">
+          <em>Branch apps-gtr-2051</em>: fix for BZ2051. This alters 
+          astrogrid/applications/server to use the SchemaMap class from
+          contracts (current) rather than the one from workflow-objects 
+          (obsolete). The contracts jar is added as a dependency.
           </action>
-		  <action dev="gtr" type="fix" issue="1942">
+          
+          <action dev="gtr" type="fix" issue="1942">
             Branch wo-gtr-1942. Deleted lots file for ease of make registry and CEA evolution.
           </action>  
           <action dev="gtr" type="fix" issue="1981">
