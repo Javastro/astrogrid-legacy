@@ -1,13 +1,11 @@
-/*$Id: SchemaMap.java,v 1.6 2006/10/18 09:12:52 clq2 Exp $
- * Created on 01-Sep-2004
- *
+/*
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
  * Software License version 1.2, a copy of which has been included 
  * with this distribution in the LICENSE.txt file.  
  *
-**/
+ */
 package org.astrogrid.contracts;
 
 import java.util.HashMap;
@@ -63,11 +61,10 @@ public class SchemaMap {
 
         
         //registry schemas
-        
+        ALL.put("http://www.ivoa.net/xml/RegistryInterface/v1.0",SchemaMap.class.getResource("/schema/registry/RegistryInterface/v1.0/RegistryInterface.xsd"));
         ALL.put("http://www.ivoa.net/xml/RegistryInterface/v0.1",SchemaMap.class.getResource("/schema/registry/RegistryInterface/v0.1/RegistryInterface.xsd"));
-        ALL.put("http://www.astrogrid.org/schema/VOResourcesUpdate/v1.0",SchemaMap.class.getResource("/schema/registry/RegistryUpdate/v1.0/VOResourcesUpdate.xsd"));        
         
-        //oai shemas
+        //oai schemas
         ALL.put("http://www.openarchives.org/OAI/2.0/",SchemaMap.class.getResource("/schema/oai/OAI/v2.0/OAI.xsd"));
         
         //dsa schemas
@@ -129,6 +126,10 @@ public class SchemaMap {
 
 /* 
 $Log: SchemaMap.java,v $
+Revision 1.7  2007/02/21 21:28:18  gtr
+Changes in support of the move to VOResource 1.0.
+
+<<<<<<< SchemaMap.java
 Revision 1.6  2006/10/18 09:12:52  clq2
 merged contracts-gtr-1922
 
@@ -138,6 +139,24 @@ I removed duplicate entries for TableMetaDoc.
 Revision 1.5.10.1  2006/10/16 11:43:10  gtr
 I added TableMetaDoc v0.2 and v1.0, CEAService v0.3. I removed RegistryInterface v1.0.
 
+=======
+Revision 1.5.2.5  2007/02/21 21:08:31  gtr
+I removed StoreResources from the map.
+
+Revision 1.5.2.4  2007/02/21 16:48:50  KevinBenson
+got rid of a schema reference that is not used anymore.
+
+Revision 1.5.2.3  2006/11/17 10:26:07  KevinBenson
+Added back the correct reference to RegistryInterface.xsd
+
+Revision 1.5.2.2  2006/10/16 13:33:39  KevinBenson
+forgot to add v1.0 RegistryInterface_xml.xsd, now it is there.
+
+Revision 1.5.2.1  2006/10/02 14:52:03  KevinBenson
+New Storage schemas for the Registry.  So users can validate with xml directly
+from the database.  And know exactly how the update goes on web service calls.
+
+>>>>>>> 1.5.2.5
 Revision 1.5  2006/09/27 09:53:41  KevinBenson
 commented out a line that was not needed at this moment referenced a schema fiel that did not exist.
 
