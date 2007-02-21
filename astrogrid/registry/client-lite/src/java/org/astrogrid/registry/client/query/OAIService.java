@@ -67,6 +67,8 @@ public interface OAIService  {
        
     public Document identify() throws RegistryException;
     
+    public void setEndPoint(URL endPoint);
+    
     public Document listRecords() throws RegistryException;
     
     public Document listRecords(String resumptionToken) throws RegistryException;    

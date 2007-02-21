@@ -42,8 +42,6 @@ public class RegistryDOMHelper {
     */
    private static String versionNumber = null;
    
-   private static String defaultRoot = null;
-   
    /**
     * Static to be used on the initiatian of this class for the config
     */   
@@ -166,7 +164,7 @@ public class RegistryDOMHelper {
    
    private static final int VORESOURCE_VERSION_SEARCHTYPE = 0;
    private static final int ADQL_VERSION_SEARCHTYPE = 1;
-   private static final int CONTRACT_VERSION_SEARCHTYPE = 2;
+   //private static final int CONTRACT_VERSION_SEARCHTYPE = 2;
    
 
    private static String processChildNodes(NodeList children,int searchType) {
@@ -184,35 +182,17 @@ public class RegistryDOMHelper {
    }
    
    public static String findVOResourceVersionFromNode(Node currentNode) {
-       String version = null;
        switch(currentNode.getNodeType() ) {       
            case Node.DOCUMENT_NODE :
                return findVOResourceVersionFromNode(((Document)currentNode).getDocumentElement());
            case Node.ELEMENT_NODE :
-               NamedNodeMap attributeNodes = currentNode.getAttributes();
-               for(int i = 0;i < attributeNodes.getLength();i++) {
-                   Attr attribute = (Attr) attributeNodes.item(i);
-                   if(attribute.getNodeValue() != null && attribute.getNodeValue().startsWith("http://www.ivoa.net/xml/VOResource") ) {
-                       return attribute.getNodeValue().substring(attribute.getNodeValue().lastIndexOf("v") + 1);
-                   }//if
-               }//for
-               if(currentNode.getNamespaceURI() != null && currentNode.getNamespaceURI().startsWith("http://www.ivoa.net/xml/VOResource") ) {
-                   return currentNode.getNamespaceURI().substring(currentNode.getNamespaceURI().lastIndexOf("v") + 1);
+               NodeList nl = ((Element)currentNode).getElementsByTagNameNS("*","identifier");
+               if(nl.getLength() > 0 && nl.item(0).getNamespaceURI() != null) {
+                   return nl.item(0).getNamespaceURI().substring(nl.item(0).getNamespaceURI().lastIndexOf("v") + 1);
                }
-               if(currentNode.getNodeName().toLowerCase().indexOf("identifier") != -1) {
-                   return null;
-                   //log.error("Attempted to try and find version number from VOResoruce Namespace and it was not found.");
-                   //hmmmm remember queries call this to and they want have it on there except astrogrid registries.                   
-               }else {
-                   version =  processChildNodes(currentNode.getChildNodes(),VORESOURCE_VERSION_SEARCHTYPE);
-                   if(version != null) {
-                       return version;
-                   }
-               }       
        }
        return null;
    }
-   
    
    
    /**
@@ -262,5 +242,6 @@ public class RegistryDOMHelper {
        //          " defaulting to config.");
        return versionNumber;
    }
+   
 
 }

@@ -1,19 +1,14 @@
-<%@ page import="org.astrogrid.registry.server.IChecker,
-					  org.astrogrid.registry.server.CheckerFactory,
-					  org.astrogrid.registry.server.CheckerException,
-                 org.astrogrid.registry.client.query.RegistryService,
-				     org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
-                 org.astrogrid.registry.client.RegistryDelegateFactory,
+<%@ page import="org.astrogrid.registry.client.query.RegistryService,
+		 org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
                  org.astrogrid.registry.client.RegistryDelegateFactory,
                  org.astrogrid.registry.common.RegistryDOMHelper,
                  org.astrogrid.registry.common.RegistryValidator,             
+                 org.astrogrid.registry.server.query.*,
                  junit.framework.AssertionFailedError,
                  org.astrogrid.store.Ivorn,
                  org.w3c.dom.Document,
-                 org.astrogrid.query.sql.Sql2Adql,
                  org.astrogrid.io.Piper,
                  org.astrogrid.util.DomHelper,
-                 org.astrogrid.config.SimpleConfig,
                  org.w3c.dom.NodeList,
                  org.w3c.dom.Element,                 
                  java.net.*,
@@ -31,28 +26,22 @@
 </head>
 
 <body>
-<%@ include file="ivoa_header.xml" %>
-<%@ include file="ivoa_navigation.xml" %>
+<%@ include file="/style/header.xml" %>
+<%@ include file="/style/navigation.xml" %>
 
 <div id='bodyColumn'>
 
 <h1>Query Registry</h1>
 
 <p>
-   The first two options are for loading adql (xml version) from a local file or url.
-   The third option allows you to put in sql statements in which then we will translate it to
-   adql for querying the registry.
-   <br />
-   Results will be shown below.<br />
+<font color='blue'>Current Contract Version <%=JSPHelper.getContractVersion(request)%></font>
+<br />
 </p>
-
-
 <br />
 
 <form method="post">
 <p>
-Paste ADQL xml:<br />
-<br />Endpoint: <input type="text"   size="100"  name="endpoint" value="<%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/services/RegistryQuery" /><br />
+<br />Endpoint: <input type="text"   size="100"  name="endpoint" value="<%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/services/RegistryQueryv<%= JSPHelper.getContractVersion(request).replace('.','_') %> "/><br />
 <input type="hidden" name="performquery" value="true" />
 Keywords: <input type="text" name="keywords" /><br />
 Search for "any" of the words: <input type="checkbox" name="orValues" value="true">Any/Or the words</input>
@@ -82,32 +71,27 @@ Search for "any" of the words: <input type="checkbox" name="orValues" value="tru
    	}
    }//if
 		if("true".equals(performQuery)) {
-		   String contractVersion = JSPHelper.getQueryContractVersion(request);
-		   IChecker checker = CheckerFactory.createQueryChecker(contractVersion);
+           ISearch validateChecker = JSPHelper.getQueryService(request);
+           RegistryService rs = RegistryDelegateFactory.createQuery(new URL(endpoint), validateChecker.getContractVersion());
 	      
 	      boolean orValue = new Boolean(request.getParameter("orValues")).booleanValue();
-	      RegistryService rs = RegistryDelegateFactory.createQuery(new URL(endpoint));
+	      
 	      Document entry = rs.keywordSearch(keywords,orValue);
 	      out.write("<p>If entries are returned, then the xml will be validated, shown tabular, then full xml at the bottom.");
-	      boolean valid = false;
-	      try {
-		      valid = checker.checkValidResources(entry);
-		   }catch(CheckerException ce) {
-		     out.write("<p><font color='red'>Invalid to Schema: " + ce.getMessage() + "</p>");
-		   }
-		   try {
-		      valid = checker.checkValidWSContract(entry,"SearchResponse");
-		   }catch(CheckerException ce) {
-			   out.write("<p><font color='red'>Invalid to Web Service Call: " + ce.getMessage() + "</p>");
-		   }
-	                  
+	      boolean valid = true;//false;
+	     /*
+      try {
+      valid = validateChecker.validateSOAPSearch(entry);
+      }catch(Exception e) {
+        out.write("<p><font color='red'>Invalid to Schema: " + e.getMessage() + "</p>");
+      }
+      */
+
 	      out.write("<table border=1>");
 	      out.write("<tr><td>AuthorityID</td><td>ResourceKey</td><td>View XML</td></tr>");
-	      NodeList resources = entry.getElementsByTagNameNS("*","Resource");
-	         
+	      NodeList resources = entry.getElementsByTagNameNS("*","Resource");	         
 	      for (int n=0; n < resources.getLength();n++) {
-	         out.write("<tr>\n");
-	         
+	         out.write("<tr>\n");	         
 	           String authority = RegistryDOMHelper.getAuthorityID((Element)resources.item(n));
 	           String resource = RegistryDOMHelper.getResourceKey((Element)resources.item(n));
 	

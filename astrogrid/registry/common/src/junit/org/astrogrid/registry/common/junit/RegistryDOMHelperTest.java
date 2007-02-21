@@ -1,16 +1,11 @@
 package org.astrogrid.registry.common.junit;
 
 import java.io.InputStream;
-import java.util.Iterator;
-
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
 import junit.framework.*;
-import org.astrogrid.registry.common.RegistryValidator;
 import org.astrogrid.registry.common.RegistryDOMHelper;
-import java.util.Map;
-import java.util.Iterator;
 
 /**
  * Class: RegistryDOMHelperTest
@@ -70,16 +65,6 @@ public class RegistryDOMHelperTest extends TestCase {
                      RegistryDOMHelper.getIdentifier(queryDoc.getDocumentElement()));
     }
     
-    /**
-     * Method: testGetRegistryVersionFromXML
-     * Description: test to extract the version number from the vr namespace from a XML Resource.
-     * @throws Exception standard junit exception to be thrown.
-     */       
-    public void testGetRegistryVersionFromXML() throws Exception {
-        Document queryDoc = askQueryFromFile("Cambridge0_10.xml");
-        assertEquals("0.10",
-                     RegistryDOMHelper.getRegistryVersionFromNode(queryDoc.getDocumentElement()));
-    }
     
     public void testfindRegistryVersionFromXML() throws Exception {
         Document queryDoc = askQueryFromFile("Cambridge0_10.xml");

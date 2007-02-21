@@ -1,13 +1,11 @@
 package org.astrogrid.registry.common;
 
 import org.astrogrid.test.AstrogridAssert;
-import org.astrogrid.util.DomHelper;
 import org.astrogrid.contracts.SchemaMap;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
 
 /**
  * A Small helper class to validate XML from the Registry primarily updates to the Registry.
@@ -29,6 +27,18 @@ public class RegistryValidator {
         for(int i = 0;i < nl.getLength(); i++) { 
             AstrogridAssert.assertSchemaValid((Element)nl.item(i),rootElement,SchemaMap.ALL);
         }
+        return true;
+    }
+    
+    /**
+     * Method: isValid
+     * Description: Performs a validation on the XML from xerces to see if it is a valid XML for the Registry.
+     * @param doc XML document to be validated
+     * @param rootElement - rootElement of the XML
+     * @return true if it is valid otherwise an Exception is thrown up.
+     */
+    public static boolean isValid(Element elem, String rootElement) {
+        AstrogridAssert.assertSchemaValid(elem,rootElement,SchemaMap.ALL);        
         return true;
     }
     

@@ -12,9 +12,7 @@
     xmlns:log="jelly:log"
     xmlns:define="jelly:define"
     xmlns:artifact="artifact"    
-    xmlns:deploy="deploy"
-	default="astrogrid-install-snapshot"		
-    >
+    xmlns:deploy="deploy">
 
     <!--+
         | Primary goals are :

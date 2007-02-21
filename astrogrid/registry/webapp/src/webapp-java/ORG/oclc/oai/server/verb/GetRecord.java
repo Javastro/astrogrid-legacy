@@ -94,13 +94,13 @@ public class GetRecord extends ServerVerb {
 	    sb.append(styleSheet);
 	    sb.append("\"?>");
 	}
-        sb.append("<OAI-PMH xmlns=\"http://www.openarchives.org/OAI/2.0/\"");
+        sb.append("<oai:OAI-PMH xmlns:oai=\"http://www.openarchives.org/OAI/2.0/\"");
         sb.append(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
         sb.append(" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/");
         sb.append(" http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd\">");
-        sb.append("<responseDate>");
+        sb.append("<oai:responseDate>");
         sb.append(createResponseDate(new Date()));
-        sb.append("</responseDate>");
+        sb.append("</oai:responseDate>");
 //         sb.append("<requestURL>");
 //         sb.append(getRequestURL(request));
 //         sb.append("</requestURL>");
@@ -119,18 +119,18 @@ public class GetRecord extends ServerVerb {
 		    if (hasBadArguments(request, validParamNames.iterator(), validParamNames)) {
 			sb.append(new BadArgumentException().getMessage());
 		    } else {
-			sb.append("<GetRecord>");
+			sb.append("<oai:GetRecord>");
 			sb.append(record);
-			sb.append("</GetRecord>");
+			sb.append("</oai:GetRecord>");
 		    }
 		} else {
 		    throw new IdDoesNotExistException(identifier);
 		}
 	    }
 	} catch (BadArgumentException e) {
-	    sb.append("<request verb=\"GetRecord\">");
+	    sb.append("<oai:request verb=\"GetRecord\">");
 	    sb.append(baseURL);
-	    sb.append("</request>");
+	    sb.append("</oai:request>");
 	    sb.append(e.getMessage());
 	} catch (CannotDisseminateFormatException e) {
 	    sb.append(getRequestElement(request, validParamNames, baseURL));
@@ -139,7 +139,7 @@ public class GetRecord extends ServerVerb {
 	    sb.append(getRequestElement(request, validParamNames, baseURL));
 	    sb.append(e.getMessage());
 	}
-        sb.append("</OAI-PMH>");
+        sb.append("</oai:OAI-PMH>");
         return render(response, "text/xml; charset=UTF-8", sb.toString(), serverTransformer);
     }
 }

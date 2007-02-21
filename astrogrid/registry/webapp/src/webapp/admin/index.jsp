@@ -28,6 +28,15 @@ your browser on the site you have installed the WAR file on.
 <li>Installed the eXist database
 </ul>
 
+<h2>Indexes</h2>
+<p>
+Located here is something new whereby you can manage the indexes in the database.  
+This page will allow you to
+add Indexes to your database, again there is a different index page for different "Contract" versions such
+as the 1.0 and 0.10 Resources.<br />
+<a href="addIndexCheck.jsp">Click here</a> to add or update indexes.<br />
+</p>
+
 <h2>Initial Configuration</h2>
 <p>You must 'self register' the Registry with itself in order for it to work.
 You must also set the configuration property <code>org.astrogrid.registry.authorityid</code> to
@@ -36,26 +45,27 @@ entry page where you may upload a custom full Registry Type xml Resource.  Or yo
 an autmoated creator which is the first link.</p>
 <ul>
 <li><a href="selfRegisterForm.jsp">Self Registration</a></li>
-<li><a href="../editEntry.jsp">Self Registration Custom</a></li>
+<li><a href="editEntry.jsp">Self Registration Custom</a></li>
 </ul>
-<p>
-<p>To have your registry mirrored by other registries - for them to harvest this
-one to pick up resources that have been registered on it - you must copy
+
+<h2>Getting your Registry known</h2>
+<p><font color='blue'>Warning</font> At this time RofR has only recently came up in the last month and currently has no interface for submitting your Registry Type.
+Currently suggest e-mailing the url to your OAI Identify to the <a href='mailto:registry@ivoa.net'>registry@ivoa.net</a>.  <br />
+Your HTTP-GET OAI url corresponding to Registry Interface version 1.0 is: <br />
+<%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/OAIHandlerv1_0
+<br /><br />
+<font color='red'>For 0.10 only</font>To have your registry harvested by other registries you must copy
 your registryType entry into those registries. (This is optional)</p>
 <ul>
 <li><a href="registerSelfInExternalRegistry.jsp">Register with other Registries</a></li>
 </ul>
 
-<p>To make your registry mirror other registries - for it to 'harvest' them regularly
-to pick up resources that have been registered on them - you must copy their
-registryType entries into your registry. (This is optional)</p>
-
+<h2>Harvesting other Registries</h2>
+<p>To make your registry harvest other registries - you must get the other known Registry type Resources.
+This is typically done by getting all the Registry Type Resources from Registry of Registries (RofR).  Click on the link below to do this.</p>
 <ul>
-<li><a href="registerExternalRegistryInSelf.jsp">Harvesting other Registries</a></li>
+<li><a href="getRegistryFromHarvest.jsp">Harvesting other Registries</a></li>
 </ul>
-
-<h2>Populating your Registry</h2>
-<p>Add new entries using the <a href='editEntry.jsp'>Entry/Update Form</a> </p>
 
 
 

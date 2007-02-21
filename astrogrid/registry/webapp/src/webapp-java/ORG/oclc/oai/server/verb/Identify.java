@@ -33,6 +33,10 @@ import javax.xml.transform.TransformerException;
 import java.util.Properties;
 import java.util.Date;
 import java.util.Enumeration;
+import org.astrogrid.util.DomHelper;
+import org.astrogrid.registry.server.query.ISearch;
+import org.astrogrid.registry.server.query.QueryFactory;
+import org.xmldb.api.base.ResourceSet;
 // import org.xml.sax.SAXException;
 
 /**
@@ -78,13 +82,13 @@ public class Identify extends ServerVerb {
 	    sb.append(styleSheet);
 	    sb.append("\"?>");
 	}
-        sb.append("<OAI-PMH xmlns=\"http://www.openarchives.org/OAI/2.0/\"");
+        sb.append("<oai:OAI-PMH xmlns:oai=\"http://www.openarchives.org/OAI/2.0/\"");
         sb.append(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
         sb.append(" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/");
         sb.append(" http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd\">");
-	sb.append("<responseDate>");
+	sb.append("<oai:responseDate>");
 	sb.append(createResponseDate(new Date()));
-	sb.append("</responseDate>");
+	sb.append("</oai:responseDate>");
 // 	sb.append("<requestURL>");
 //         sb.append(getRequestURL(request));
 // 	sb.append("</requestURL>");
@@ -92,36 +96,60 @@ public class Identify extends ServerVerb {
 	if (hasBadArguments(request, validParamNames.iterator(), validParamNames)) {
 	    sb.append(new BadArgumentException().getMessage());
 	} else {
-	    sb.append("<Identify>");
-	    sb.append("<repositoryName>");
+	    sb.append("<oai:Identify>");
+	    sb.append("<oai:repositoryName>");
 	    sb.append(properties.getProperty("Identify.repositoryName",
 					     "undefined"));
-	    sb.append("</repositoryName>");
-	    sb.append("<baseURL>");
+	    sb.append("</oai:repositoryName>");
+	    sb.append("<oai:baseURL>");
 	    sb.append(baseURL);
-	    sb.append("</baseURL>");
-	    sb.append("<protocolVersion>2.0</protocolVersion>");
-	    sb.append("<adminEmail>");
+	    sb.append("</oai:baseURL>");
+	    sb.append("<oai:protocolVersion>2.0</oai:protocolVersion>");
+	    sb.append("<oai:adminEmail>");
 	    sb.append(properties.getProperty("Identify.adminEmail", "undefined"));
-	    sb.append("</adminEmail>");
-	    sb.append("<earliestDatestamp>");
+	    sb.append("</oai:adminEmail>");
+	    sb.append("<oai:earliestDatestamp>");
 	    sb.append(properties.getProperty("Identify.earliestDatestamp", "undefined"));
-	    sb.append("</earliestDatestamp>");
-	    sb.append("<deletedRecord>");
+	    sb.append("</oai:earliestDatestamp>");
+	    sb.append("<oai:deletedRecord>");
 	    sb.append(properties.getProperty("Identify.deletedRecord", "undefined"));
-	    sb.append("</deletedRecord>");
+	    sb.append("</oai:deletedRecord>");
 	    String granularity = properties.getProperty("AbstractCatalog.granularity");
 	    if (granularity != null) {
-		sb.append("<granularity>");
+		sb.append("<oai:granularity>");
 		sb.append(granularity);
-		sb.append("</granularity>");
+		sb.append("</oai:granularity>");
+		  sb.append("<oai:compression>gzip</oai:compression>");
+//	 	    sb.append("<compression>compress</compression>");
+		    sb.append("<oai:compression>deflate</oai:compression>");
 	    }
+		//sb.append
+		String contractVersion = properties.getProperty("registry_contract_version",null);
+	    ISearch rsSearch = null;
+	    sb.append("<oai:description>");
+	    try {
+	           rsSearch = QueryFactory.createQueryService(contractVersion);
+	           ResourceSet resSet = rsSearch.getQueryHelper().loadMainRegistry();
+	           //org.w3c.dom.NodeList nl = identityDoc.getElementsByTagNameNS("*","Resource");
+	          
+	           if(resSet.getSize() > 0) {
+	        	   sb.append(resSet.getResource(0).getContent().toString());
+	           }else {
+	        	   sb.append("Could not find Resource, printing what was found");
+	        	   //sb.append(DomHelper.DocumentToString(identityDoc));
+	           }
+	          
+	    }catch(Exception e) {
+	    	//throw new OAIInternalServerError("Could not get Query Service" + e.toString());
+	    	sb.append("Could not get Query Service for some reason, contractVersion = " + contractVersion + " exception message = " + e.getMessage());
+	    }
+	    sb.append("</oai:description>");
+	    
 	    // 	String compression = properties.getProperty("Identify.compression");
 	    // 	if (compression != null) {
-	    sb.append("<compression>gzip</compression>");
-// 	    sb.append("<compression>compress</compression>");
-	    sb.append("<compression>deflate</compression>");
+	  
 	    // 	}
+	    /*
 	    String repositoryIdentifier = properties.getProperty("Identify.repositoryIdentifier");
 	    String sampleIdentifier = properties.getProperty("Identify.sampleIdentifier");
 	    if (repositoryIdentifier != null && sampleIdentifier != null) {
@@ -152,9 +180,10 @@ public class Identify extends ServerVerb {
 	    sb.append("<description><toolkit xsi:schemaLocation=\"http://oai.dlib.vt.edu/OAI/metadata/toolkit http://oai.dlib.vt.edu/OAI/metadata/toolkit.xsd\" xmlns=\"http://oai.dlib.vt.edu/OAI/metadata/toolkit\"><title>OCLC's OAICat Repository Framework</title><author><name>Jeffrey A. Young</name><email>jyoung@oclc.org</email><institution>OCLC</institution></author><version>");
 	    sb.append(version);
 	    sb.append("</version><toolkitIcon>http://alcme.oclc.org/oaicat/oaicat_icon.gif</toolkitIcon><URL>http://www.oclc.org/research/software/oai/cat.shtm</URL></toolkit></description>");
-	    sb.append("</Identify>");
+	    */
+	    sb.append("</oai:Identify>");
 	}
-        sb.append("</OAI-PMH>");
+        sb.append("</oai:OAI-PMH>");
         return render(response, "text/xml; charset=UTF-8", sb.toString(), serverTransformer);
     }
 }

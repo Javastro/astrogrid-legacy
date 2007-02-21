@@ -25,6 +25,7 @@ package astrogrid.registry.oai;
 import ORG.oclc.oai.server.crosswalk.*;
 
 import java.util.Properties;
+import org.astrogrid.util.DomHelper;
 import ORG.oclc.oai.server.verb.CannotDisseminateFormatException;
 
 /**
@@ -37,6 +38,8 @@ import ORG.oclc.oai.server.verb.CannotDisseminateFormatException;
 public class XML2ivo_vrCrosswalk extends Crosswalk {
     private static String elementName = "Resource";
     private static final String prefix = "vr:";
+    
+    private String versionStr = null;
 
     //private static final String elementStart = "<" + elementName;
     //private static final String elementEnd = elementName + ">";
@@ -49,6 +52,7 @@ public class XML2ivo_vrCrosswalk extends Crosswalk {
      */
     public XML2ivo_vrCrosswalk(Properties properties) {
      super("http://www.ivoa.net/xml/VOResource/v" + properties.getProperty("registry_version") + " http://www.ivoa.net/xml/VOResource/VOResource-v" + properties.getProperty("registry_version") + ".xsd ");
+     this.versionStr = properties.getProperty("registry_version");
     }
 
     /**
@@ -58,7 +62,7 @@ public class XML2ivo_vrCrosswalk extends Crosswalk {
      */
     public boolean isAvailableFor(Object nativeItem) {
         String fullItem = (String)nativeItem;
-        if ((fullItem.indexOf(("<" + elementName)) >= 0) || (fullItem.indexOf(("<" + prefix +  elementName)) >= 0) )
+        if ((fullItem.indexOf(("<" + elementName)) >= 0) || (fullItem.indexOf(("<" + prefix + ":" + elementName)) >= 0) )
             return true;
         return false;
    }
@@ -75,17 +79,18 @@ public class XML2ivo_vrCrosswalk extends Crosswalk {
      */
     public String createMetadata(Object nativeItem)
    throws CannotDisseminateFormatException {
-   String fullItem = (String)nativeItem;
-   String elementEnd = "</" + elementName + ">";
-   int startOffset = fullItem.indexOf(("<" + elementName));
-   if(startOffset == -1) {
-       startOffset = fullItem.indexOf(("<" + prefix + elementName));
-       elementEnd = "</" + prefix + elementName + ">";
-   }
-   if (startOffset == -1) {
-       throw new CannotDisseminateFormatException(getSchemaLocation());
-   }
-      int endOffset = fullItem.indexOf(elementEnd) + elementEnd.length();
-      return fullItem.substring(startOffset, endOffset);
+	   String fullItem = (String)nativeItem;
+	   try {
+		   org.w3c.dom.Document doc = DomHelper.newDocument("<wrapper xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">" + fullItem + "</wrapper>");
+		   org.w3c.dom.NodeList nl = doc.getElementsByTagNameNS("*","Resource");
+		   if(nl.getLength() > 0) 
+			   return DomHelper.ElementToString((org.w3c.dom.Element)nl.item(0));
+		   else
+			   throw new CannotDisseminateFormatException(getSchemaLocation());
+	   }catch(Exception e) {
+		   e.printStackTrace();
+		   throw new CannotDisseminateFormatException(getSchemaLocation());
+	   }
+   
     }
 }

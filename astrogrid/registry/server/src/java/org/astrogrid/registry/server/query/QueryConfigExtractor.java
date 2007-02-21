@@ -1,10 +1,7 @@
 package org.astrogrid.registry.server.query;
 
-import org.astrogrid.config.Config;
 import org.astrogrid.registry.server.ConfigExtractor;
 
-import java.util.Map;
-import java.util.HashMap;
 
 /**
  * Class: QueryConfigExtractor
@@ -15,14 +12,7 @@ import java.util.HashMap;
  * @author Kevin Benson
  *
  */
-public class QueryConfigExtractor extends ConfigExtractor {
-    
-
-    /**
-     * Small HashMap that has the queries.
-     */
-    private static Map queries = new HashMap();
-        
+public class QueryConfigExtractor extends ConfigExtractor {     
     
     /**
      * final variable for the default AuthorityID associated to this registry.
@@ -30,27 +20,6 @@ public class QueryConfigExtractor extends ConfigExtractor {
     private static final String AUTHORITYID_PROPERTY =
                                            "reg.amend.authorityid";    
         
-    /**
-     * Static to be used on the initiatian of this class for the config
-     */   
-    static {
-        if(queries.size() == 0) {
-          queries.put("findResourceWithoutAuthority",conf.getString("reg.custom.query.one"));
-          
-          queries.put("findAllResourceWithoutAuthority",conf.getString("reg.custom.query.two"));
-          /*
-          queries.put("findResourceWithAuthority",conf.getString("reg.custom.query.three"));
-          queries.put("findResourceWithAuthorityAndResourceKey",conf.getString("reg.custom.query.four"));          
-          queries.put("findResourcesWithAuthorityAndResourceKey",conf.getString("reg.custom.query.five"));
-          */
-          queries.put("findRegistryQuery",conf.getString("reg.custom.query.six"));
-          queries.put("findRegistryQueryWithOutAuthority",conf.getString("reg.custom.query.seven"));
-          //queries.put("findRegistryQueryWithAuthority",conf.getString("reg.custom.query.eight"));
-          queries.put("findAllRegistryQuery",conf.getString("reg.custom.query.nine"));
-          queries.put("findAll",conf.getString("reg.custom.query.ten"));
-          queries.put("startQuery",conf.getString("reg.custom.query.eleven"));
-        }
-    }
     
     public static String getDefaultContractVersion() {
         return conf.getString("reg.custom.query.defaultContractVersion","0.1");
@@ -74,7 +43,8 @@ public class QueryConfigExtractor extends ConfigExtractor {
      * @return String of the query.
      */
     public static String queryForRegistries(String versionNumber) {
-        return ((String)queries.get("findRegistryQuery")).replaceAll("<rootnode>",
+    	
+        return conf.getString("reg.custom.query.registrytypes." + versionNumber).replaceAll("<rootnode>",
                getRootNodeName(versionNumber));
     }
 
@@ -86,10 +56,9 @@ public class QueryConfigExtractor extends ConfigExtractor {
      * @return String of the query.
      */
     public static String queryForResource(String identifier, String versionNumber) {
-        boolean hasAuthorityID = conf.getBoolean(
-                "reg.custom.identifier.hasauthorityid." + versionNumber,false);
-        String mainQuery = null;        
-        mainQuery = ((String)queries.get("findResourceWithoutAuthority")).replaceAll("<id>",identifier);
+        String mainQuery = null;
+        
+        mainQuery = conf.getString("reg.custom.query.singleidentifer." + versionNumber).replaceAll("<id>",identifier);
         return mainQuery.replaceAll("<rootnode>",
         getRootNodeName(versionNumber));
     }
@@ -102,10 +71,8 @@ public class QueryConfigExtractor extends ConfigExtractor {
      * @return String of the query.
      */
     public static String queryForAllResource(String identifier, String versionNumber) {
-        boolean hasAuthorityID = conf.getBoolean(
-                "reg.custom.identifier.hasauthorityid." + versionNumber,false);
-        String mainQuery = null;        
-        mainQuery = ((String)queries.get("findAllResourceWithoutAuthority")).replaceAll("<id>",identifier);
+        String mainQuery = null;  
+        mainQuery = conf.getString("reg.custom.query.multipleidentifier." + versionNumber).replaceAll("<id>",identifier);
         return mainQuery.replaceAll("<rootnode>",
         getRootNodeName(versionNumber));
     }
@@ -118,11 +85,9 @@ public class QueryConfigExtractor extends ConfigExtractor {
      * @return String of the query.
      */
     public static String queryForMainRegistry(String versionNumber) {
-        boolean hasAuthorityID = conf.getBoolean(
-                "reg.custom.identifier.hasauthorityid." + versionNumber,false);
         String mainQuery = null;
         String authorityID = conf.getString(AUTHORITYID_PROPERTY);
-        mainQuery = ((String)queries.get("findRegistryQueryWithOutAuthority")).replaceAll("<id>",authorityID);
+        mainQuery = conf.getString("reg.custom.query.registrytypewithident." + versionNumber).replaceAll("<id>",authorityID);
         return mainQuery.replaceAll("<rootnode>",
                getRootNodeName(versionNumber));
     }
@@ -135,7 +100,7 @@ public class QueryConfigExtractor extends ConfigExtractor {
      * @return String of the query.
      */
     public static String getStartQuery(String versionNumber) {
-        return ((String)queries.get("startQuery")).replaceAll("<rootnode>",
+        return conf.getString("reg.custom.query.start").replaceAll("<rootnode>",
                getRootNodeName(versionNumber));
     }
     
@@ -145,17 +110,9 @@ public class QueryConfigExtractor extends ConfigExtractor {
      * @param versionNumber - versionNumber of the registry (from vr namespace).
      * @return String of the query.
      */
-    public static String getAllQuery(String versionNumber) {
-        return ((String)queries.get("findAll")).replaceAll("<rootnode>",
+    public static String getAllQuery(String versionNumber) {    	
+        return conf.getString("reg.custom.query.everything").replaceAll("<rootnode>",
         getRootNodeName(versionNumber));        
     }
     
-    /**
-     * Method: getAllRegistryQuery
-     * Description: Query String for all Registry types.
-     * @return String of the query.
-     */
-    public static String getAllRegistryQuery() {
-        return ((String)queries.get("findAllRegistryQuery")); 
-    }
 }

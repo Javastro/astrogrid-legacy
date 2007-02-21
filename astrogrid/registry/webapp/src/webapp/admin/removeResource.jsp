@@ -1,6 +1,6 @@
 <%@ page import="org.astrogrid.config.SimpleConfig,
                  org.astrogrid.registry.server.admin.*,
- 	  				  org.astrogrid.registry.server.http.servlets.helper.JSPHelper,                 
+ 	  		 	 org.astrogrid.registry.server.http.servlets.helper.JSPHelper,                 
                  org.astrogrid.registry.server.query.*,
                  org.astrogrid.registry.common.RegistryDOMHelper,                 
                  org.astrogrid.registry.server.*,
@@ -50,9 +50,8 @@ if("true".equals(removeRes)) {
 	  out.println("<font color'red'>Need to put an id</font>");
 	} else {
 		if(removeRes != null && removeRes.equals("true")) {
-		   ISearch server = JSPHelper.getQueryService(request);
-	  		RegistryAdminService ras = new RegistryAdminService();
-		  	ras.remove(id,server.getResourceVersion());
+			IAdmin server = JSPHelper.getAdminService(request);	  	  		
+		  	server.remove(id);
 	  		out.print("<font color='blue'>Removed resource</font>");
 		}
 	}

@@ -11,9 +11,9 @@ import org.astrogrid.registry.server.query.DefaultOAIService;
  *
  * @author Kevin Benson
  */
-public class OAIService extends DefaultOAIService {
+public class OAIService extends DefaultOAIService implements org.astrogrid.registry.server.query.IOAIHarvestService {
     
-    public static final String OAI_WSDL_NS = "http://www.someoaiwsdlns";
+    public static final String OAI_WSDL_NS = "http://www.ivoa.net/wsdl/RegistryHarvest/v0.1";
     
     public static final String CONTRACT_VERSION = "0.1";    
 

@@ -1,7 +1,9 @@
 <%@ page import="org.astrogrid.registry.server.query.*,
                  org.astrogrid.store.Ivorn,
- 	  				  org.astrogrid.registry.server.http.servlets.helper.JSPHelper,                 
+  	             org.astrogrid.registry.server.http.servlets.helper.JSPHelper,                 
                  org.w3c.dom.Document,
+                 org.w3c.dom.Element,
+                 org.w3c.dom.NodeList,
                  org.astrogrid.io.Piper,
                  org.astrogrid.util.DomHelper,
                  org.apache.axis.utils.XMLUtils,
@@ -14,11 +16,12 @@
 <%
    ISearch server = JSPHelper.getQueryService(request);
    Document entry = server.getQueryHelper().getResourceByIdentifier(request.getParameter("IVORN"));
+   NodeList nl = entry.getElementsByTagNameNS("*","Resource");
    
-   if (entry == null) {
+   if (entry == null || nl.getLength() == 0) {
        out.write("<Error>No entry returned</Error>");
    } else {
-      XMLUtils.ElementToWriter(entry.getDocumentElement(),out);
+      XMLUtils.ElementToWriter((Element)nl.item(0),out);
    }
    
 %>

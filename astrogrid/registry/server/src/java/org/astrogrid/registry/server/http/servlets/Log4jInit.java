@@ -18,7 +18,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: Log4jInit.java,v 1.2 2006/02/07 14:45:50 clq2 Exp $
+ *  $Id: Log4jInit.java,v 1.3 2007/02/21 16:35:39 KevinBenson Exp $
  */
 
 package org.astrogrid.registry.server.http.servlets;
@@ -128,7 +128,7 @@ public class Log4jInit extends HttpServlet {
             if(!logsdir.exists()) {
                 logsdir.mkdirs();
             }
-            System.setProperty("logger.dir", logsdir.getAbsolutePath() );      
+            System.setProperty("logger.dir.registry", logsdir.getAbsolutePath() );      
                         
             // Configure log4j
             DOMConfigurator.configure(logURLResource);

@@ -3,25 +3,17 @@ package org.astrogrid.registry.server.query;
 import java.util.ArrayList;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
-
-import java.net.URL;
-import java.net.MalformedURLException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.registry.common.RegistryDOMHelper;
 import org.astrogrid.registry.server.xmldb.XMLDBRegistry;
-import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.server.SOAPFaultException;
 import org.astrogrid.util.DomHelper;
 import org.astrogrid.config.Config;
@@ -30,7 +22,6 @@ import org.astrogrid.store.Ivorn;
 
 import org.xmldb.api.base.ResourceSet;
 import org.xmldb.api.modules.XMLResource;
-import org.xmldb.api.base.Resource;
 import org.xmldb.api.base.Collection;
 import org.xmldb.api.base.XMLDBException;
 
@@ -42,6 +33,8 @@ public class QueryHelper {
      * @see org.astrogrid.config.Config
      */   
     public static Config conf = null;
+    
+    private static int queryLimit;
     
     private String queryWSDLNS = null;
     
@@ -64,8 +57,13 @@ public class QueryHelper {
     static {
        if(conf == null) {
           conf = org.astrogrid.config.SimpleConfig.getSingleton();
+          queryLimit = conf.getInt("reg.amend.returncount",100);
        }
-    }    
+    }
+    
+    public QueryHelper(ISearch search) {
+        this(search.getWSDLNameSpace(),search.getContractVersion(),search.getResourceVersion());
+    }
     
     public QueryHelper(String queryWSDLNS, String contractVersion, String voResourceVersion) {
         this.queryWSDLNS = queryWSDLNS;
@@ -90,15 +88,19 @@ public class QueryHelper {
      * @param version of the schema to be queryied on (the vr namespace); hence the collection
      * @return XML docuemnt object representing the result of the query.
      */
-    public Document loadMainRegistry() {
+    public ResourceSet loadMainRegistry()  throws SOAPFaultException {
         String xqlString = QueryConfigExtractor.queryForMainRegistry(voResourceVersion);
-        log.info("XQL String = " + xqlString);
-        Node resultDoc = queryRegistry(xqlString);        
+        //log.info("XQL String = " + xqlString);
+        //Document resultDoc = queryRegistry(xqlString);        
         log.debug("end loadRegistry");
+        return queryRegistry(xqlString);
         
-        return processQueryResults(resultDoc, "SearchResponse");
+        //return resultDoc;
     }
     
+    public ResourceSet keywordQuery(String keywords, boolean orKeywords)  throws SOAPFaultException {
+        return keywordQuery(keywords, orKeywords, null, null);
+    }
         
     /**
      * Method: keywordQuery
@@ -111,7 +113,7 @@ public class QueryHelper {
      * @param version - The version number from vr namespace used to form the collection name and get the xpaths from the properties. 
      * @return XML docuemnt object representing the result of the query.
      */   
-    public Document keywordQuery(String keywords, boolean orKeywords) {
+    public ResourceSet keywordQuery(String keywords, boolean orKeywords, String start, String max)  throws SOAPFaultException {
         long beginQ = System.currentTimeMillis();
         //split the keywords from there spaces
         String []keyword = keywords.split(" ");
@@ -122,13 +124,12 @@ public class QueryHelper {
         
         //get the first part of the query which is basically to query on the
         //Resource element.
-        String xqlString = QueryConfigExtractor.getStartQuery(voResourceVersion);
-        
+        String xqlString = "//" + QueryConfigExtractor.getRootNodeName(voResourceVersion) + "[(@status = 'active') and (";
         //go through all the xpaths and buildup a keyword string.
         for(int i = 0;i < xqlPath.length;i++) {
             xqlString += " (";
             for(int j = 0;j < keyword.length;j++) {
-              xqlString += "$x/" + xqlPath[i].trim() + " &= '*" + keyword[j] + "*'";
+              xqlString += " match-all(" + xqlPath[i].trim() + ",'" + keyword[j] + "')";
               if(j != (keyword.length - 1)) {
                   if(orKeywords) { 
                       xqlString += " or ";
@@ -142,16 +143,17 @@ public class QueryHelper {
                 xqlString += " or ";
             }
         }//for
-        xqlString += " return $x";
+        xqlString += ")] ";
         
-        Node resultDoc = queryRegistry(xqlString); 
+        //Document resultDoc = queryRegistry(xqlString, start, max); 
         log.info("Time taken to complete keywordsearch on server = " +
                 (System.currentTimeMillis() - beginQ));
         log.debug("end keywordsearch");         
-        
+        return queryRegistry(xqlString,start,max);
+        //return resultDoc;
         //To be correct we need to transform the results, with a correct response element 
         //for the soap message and for the right root element around the resources.
-        return processQueryResults(resultDoc, "SearchResponse");
+        //return processQueryResults(resultDoc, "SearchResponse");
     }
     
     /**
@@ -161,10 +163,11 @@ public class QueryHelper {
      * @param versionNumber version number to form the collection(like a table) to query on.
      * @return XML docuemnt object representing the result of the query.
      */
-    public Document getAll() {    
+    public ResourceSet getAll()  throws SOAPFaultException {    
         String xqlString = QueryConfigExtractor.getAllQuery(voResourceVersion);
-        Node resultDoc = queryRegistry(xqlString);
-        return processQueryResults(resultDoc, "GetAllResponse");
+        return queryRegistry(xqlString);
+        //Document resultDoc = queryRegistry(xqlString);
+        //return resultDoc;
     }
 
     /**
@@ -179,9 +182,9 @@ public class QueryHelper {
      * @param versionNumber - version number to query on, if null use the default version number for the registry.
      * @return XML docuemnt object representing the result of the query.
      */
-    public Document getResourcesByIdentifier(String ivorn) {
+    public ResourceSet getResourcesByIdentifier(String ivorn) throws SOAPFaultException {
         if(ivorn == null || ivorn.trim().length() <= 0) {
-            return SOAPFaultException.createQuerySOAPFaultException("Server Error: Cannot have empty or null identifier","Cannot have empty or null identifier");
+            throw new SOAPFaultException("Server Error: Cannot have empty or null identifier","Cannot have empty or null identifier",queryWSDLNS, SOAPFaultException.QUERYSOAP_TYPE);
         }
         String queryIvorn = ivorn;
         //this is a hack for now delete later.  Some old client delegates might not pass the ivorn
@@ -189,8 +192,9 @@ public class QueryHelper {
         if(!Ivorn.isIvorn(ivorn))
             queryIvorn = "ivo://" + ivorn;
         String xqlString = QueryConfigExtractor.queryForResource(queryIvorn,voResourceVersion);
-        Node resultDoc = queryRegistry(xqlString);
-        return processQueryResults(resultDoc, "GetResourceByIdentifier");
+        return queryRegistry(xqlString);
+        //Document resultDoc = queryRegistry(xqlString);
+        //return resultDoc;
     }
 
     /**
@@ -203,13 +207,13 @@ public class QueryHelper {
      * @param query - soab body containing a identifier element for the identifier to query on.
      * @return XML docuemnt object representing the result of the query.
      */
-    public Document getResourceByIdentifier(String ivorn) {
+    public Document getResourceByIdentifier(String ivorn) throws SOAPFaultException {
         if(ivorn == null || ivorn.trim().length() <= 0) {
-            return SOAPFaultException.createQuerySOAPFaultException("Server Error: Cannot have empty or null identifier","Cannot have empty or null identifier");
+            throw new SOAPFaultException("Server Error: Cannot have empty or null identifier","Cannot have empty or null identifier",queryWSDLNS, SOAPFaultException.QUERYSOAP_TYPE);
         }
-        return getResourcesByIdentifier(ivorn);
+        //return getResourcesByIdentifier(ivorn);
 
-        /*
+        
         String queryIvorn = ivorn;
         if(Ivorn.isIvorn(ivorn)) { 
             queryIvorn = ivorn.substring(6);
@@ -217,24 +221,44 @@ public class QueryHelper {
         
         String id = queryIvorn.replaceAll("[^\\w*]","_");
         try {
+            
             XMLResource xmr = xdbRegistry.getResource(id, collectionName);              
             if(xmr == null || xmr.getContentAsDOM() == null) {
-                return SOAPFaultException.createQuerySOAPFaultException("Resource Not Found ivorn = " + ivorn,
-                                                                        "Resource Not Found ivorn = " + ivorn);
+                throw new SOAPFaultException("Resource Not Found ivorn = " + ivorn,
+                                                                        "Resource Not Found ivorn = " + ivorn,queryWSDLNS, SOAPFaultException.NOTFOUNDSOAP_TYPE);
             }
-            Document resDoc = (Document)xmr.getContentAsDOM();
-            return processQueryResults(resDoc.getDocumentElement(), "GetResourceByIdentifier");
+            //Document resDoc = (Document)xmr.getContentAsDOM();
+            /*
+            Node resultNode = xmr.getContentAsDOM();
+            if(resultNode instanceof Element) {
+                
+            }else if(resultNode instanceof Document) {
+            }
+            */
+            return DomHelper.newDocument(xmr.getContent().toString());
+            //return (Document)xmr.getContentAsDOM();
+            //return processQueryResults(resDoc.getDocumentElement(), "GetResourceByIdentifier");
         }catch(XMLDBException xdbe) {
-            return SOAPFaultException.createQuerySOAPFaultException(xdbe.getMessage(),xdbe);
+            throw new SOAPFaultException(xdbe.getMessage(),xdbe,queryWSDLNS, SOAPFaultException.QUERYSOAP_TYPE);
+        }catch(ParserConfigurationException pce) {
+            pce.printStackTrace();
+            throw new SOAPFaultException("Server Error: " + pce.getMessage(),pce,queryWSDLNS, SOAPFaultException.QUERYSOAP_TYPE);
+        }catch(SAXException sax) {
+            sax.printStackTrace();
+            throw new SOAPFaultException("Server Error: " + sax.getMessage(),sax,queryWSDLNS, SOAPFaultException.QUERYSOAP_TYPE);
+        }catch(IOException ioe) {
+            ioe.printStackTrace();
+            throw new SOAPFaultException("Server Error: " + ioe.getMessage(),ioe,queryWSDLNS, SOAPFaultException.QUERYSOAP_TYPE);
         }
-        */
+        
     }
     
 
-    public Document getResourcesByAnyIdentifier(String ivorn) {
+    public ResourceSet getResourcesByAnyIdentifier(String ivorn) throws SOAPFaultException  {
         String xqlString = QueryConfigExtractor.queryForAllResource(ivorn,voResourceVersion);
-        Node resultDoc = queryRegistry(xqlString);
-        return processQueryResults(resultDoc, "GetResourceByIdentifier");
+        return queryRegistry(xqlString);
+        //Document resultDoc = queryRegistry(xqlString);
+        //return resultDoc;
     }
     
     /**
@@ -246,10 +270,11 @@ public class QueryHelper {
      * @return Resource entries of type Registries.
      * @see org.astrogrid.registry.server.harvest.RegistryHarvestService
      */   
-    public Document getRegistriesQuery() {
-        String xqlString = QueryConfigExtractor.queryForRegistries(voResourceVersion);             
-        Node resultDoc = queryRegistry(xqlString);
-        return processQueryResults(resultDoc, "GetRegistriesResponse");       
+    public ResourceSet getRegistriesQuery()  throws SOAPFaultException {
+        String xqlString = QueryConfigExtractor.queryForRegistries(voResourceVersion);
+        return queryRegistry(xqlString);
+        //Document resultDoc = queryRegistry(xqlString);
+        //return resultDoc;       
     }
     
     
@@ -274,6 +299,10 @@ public class QueryHelper {
         return al;
     }
     
+    public ResourceSet queryRegistry(String xqlString) throws SOAPFaultException   {
+        return queryRegistry(xqlString,null,null);
+    }
+    
     
     /**
      * Method: queryRegistry
@@ -284,13 +313,24 @@ public class QueryHelper {
      * @param collectionName the location in the database to query (sort of like a table)
      * @return xml DOM object returned from the database, which are Resource elements
      */
-    public Node queryRegistry(String xqlString) {
+    public ResourceSet queryRegistry(String xqlString, String start, String max) throws SOAPFaultException {
         
        log.debug("start queryRegistry");
-       Collection coll = null;
        int tempIndex = 0;
+       
        try {
-           String returnCount = conf.getString("reg.amend.returncount","100");
+    	   int maxInt = -1;
+    	   int startInt = 1;
+    	   if(max != null && max.trim().length() > 0)
+    		   maxInt = Integer.parseInt(max);
+    	   if(start != null && start.trim().length() > 0)
+    		   startInt = Integer.parseInt(start);
+    	   if(maxInt > queryLimit || maxInt < 0)
+    		   maxInt = queryLimit + 1;
+           
+           String startCount = String.valueOf(startInt);
+           String returnCount = max == null ? String.valueOf((queryLimit+startInt)) : String.valueOf(maxInt + startInt);
+           
            //get the xquery expression.
            String xqlExpression = conf.getString("reg.custom.query.expression"); 
            xqlExpression = xqlExpression.replaceAll("__declareNS__", QueryConfigExtractor.getXQLDeclarations(voResourceVersion));
@@ -300,38 +340,46 @@ public class QueryHelper {
            //xqlExpression = xqlExpression.replaceAll("__query__", xqlString);
            tempIndex = xqlExpression.indexOf("__query__");
            if(tempIndex == -1) {
-               return SOAPFaultException.createQuerySOAPFaultException("Server Error: XQL Expression has no placement for a Query",
-                                                                       "XQL Expression has no placement for a Query");
+               throw new  SOAPFaultException("Server Error: XQL Expression has no placement for a Query",
+                                                                       "XQL Expression has no placement for a Query",queryWSDLNS, SOAPFaultException.QUERYSOAP_TYPE);
            }
            //todo: check into this again, for some reason could not do a replaceAll so currently placing
            //in the string the hard way.
            String endString = xqlExpression.substring(tempIndex+9);
            xqlExpression = xqlExpression.substring(0,tempIndex);
-           xqlExpression += xqlString + endString;          
-           xqlExpression = xqlExpression.replaceAll("__returnCount__", returnCount);
-           
+           xqlExpression += xqlString + endString;
+           xqlExpression = xqlExpression.replaceAll("__startCount__", startCount);
+           xqlExpression = xqlExpression.replaceAll("__returnCount__", returnCount);           
+           //System.out.println("here is the xql for the query = " + xqlExpression + " and collectionnae = " + collectionName);           
            ResourceSet xmlrSet = xdbRegistry.query(xqlExpression, collectionName);
+           //log.debug("Query Performed = " + xqlExpression + " For collection/table = " + collectionName + " And Resulting Size = " + xmlrSet.getSize());
+           //System.out.println("here is the ressetsize of the query = " + xmlrSet.getSize());
+           return xmlrSet;
+           /*
            if(xmlrSet.getSize() == 0) {
                return DomHelper.newDocument();
            }
-           Resource xmlr = xmlrSet.getMembersAsResource();          
-           return DomHelper.newDocument(xmlr.getContent().toString());
+           */
+           
+           //Resource xmlr = xmlrSet.getMembersAsResource();          
+           //return DomHelper.newDocument(xmlr.getContent().toString());
        }catch(XMLDBException xdbe) {
            xdbe.printStackTrace();
-           return SOAPFaultException.createQuerySOAPFaultException("Server Error: " + xdbe.getMessage(),xdbe);
-       } catch(ParserConfigurationException pce) {
+           throw new SOAPFaultException("Server Error: " + xdbe.getMessage(),xdbe,queryWSDLNS, SOAPFaultException.QUERYSOAP_TYPE);
+       }
+       /*
+       catch(ParserConfigurationException pce) {
            pce.printStackTrace();
-           return SOAPFaultException.createQuerySOAPFaultException("Server Error: " + pce.getMessage(),pce);
+           throw new SOAPFaultException("Server Error: " + pce.getMessage(),pce,queryWSDLNS, SOAPFaultException.QUERYSOAP_TYPE);
        }catch(SAXException sax) {
            sax.printStackTrace();
-           return SOAPFaultException.createQuerySOAPFaultException("Server Error: " + sax.getMessage(),sax);
+           throw new SOAPFaultException("Server Error: " + sax.getMessage(),sax,queryWSDLNS, SOAPFaultException.QUERYSOAP_TYPE);
        }catch(IOException ioe) {
            ioe.printStackTrace();
-           return SOAPFaultException.createQuerySOAPFaultException("Server Error: " + ioe.getMessage(),ioe);
-       }
+           throw new SOAPFaultException("Server Error: " + ioe.getMessage(),ioe,queryWSDLNS, SOAPFaultException.QUERYSOAP_TYPE);
+       }*/
     }
     
-
     /**
      * Method: getQuery
      * Description: Transforms ADQL to XQuery, uses the namespace of ADQL to allow the
@@ -353,16 +401,6 @@ public class QueryHelper {
         
         XSLHelper xslHelper = new XSLHelper();
         return xslHelper.transformADQLToXQL(query, adqlVersion, 
-                         QueryConfigExtractor.getRootNodeName(voResourceVersion),"");
-    }    
-    
-    protected Document processQueryResults(Node resultDoc, String responseWrapper) {
-        if(contractVersion == null) {
-            //something internal to the registry like updates are getting results, but does not
-            //care about the actual contract query performed.  So just return the document.
-            return (Document)resultDoc;
-        }
-        return ProcessResults.processQueryResults(resultDoc,queryWSDLNS, contractVersion, responseWrapper);   
-    }    
-    
+                         QueryConfigExtractor.getRootNodeName(voResourceVersion),contractVersion);
+    }
 }

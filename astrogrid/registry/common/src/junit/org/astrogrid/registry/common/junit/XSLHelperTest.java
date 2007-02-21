@@ -1,16 +1,12 @@
 package org.astrogrid.registry.common.junit;
 
 import java.io.InputStream;
-import java.util.Iterator;
 
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
 import junit.framework.*;
-import org.astrogrid.registry.common.RegistryValidator;
 import org.astrogrid.registry.common.XSLHelper;
-import java.util.Map;
-import java.util.Iterator;
 
 /**
  * Class: XSLHelperTest

@@ -57,9 +57,11 @@ public class AuthorityListManager {
        this.xdbRegistry = xdbRegistry;
    }
    
+   
    public AuthorityListManager() {
        xdbRegistry = new XMLDBRegistry();
    }
+   
     
    public void clearManagedAuthoritiesForOwner(String owner, String versionNumber) {
         java.util.Collection values = RegistryAdminService.manageAuths.values();
@@ -116,8 +118,9 @@ public class AuthorityListManager {
         Document registries = null;
         try {
             ResourceSet rs = xdbRegistry.query(xqlQuery, collectionName);
-            if(rs.getSize() == 0) 
+            if(rs.getSize() == 0) {
                 return manageAuthorities;
+            }
             Resource xmlr = rs.getMembersAsResource();
             registries = DomHelper.newDocument(xmlr.getContent().toString());           
         }catch(ParserConfigurationException pce) {
@@ -130,15 +133,10 @@ public class AuthorityListManager {
         
         NodeList resources = registries.getElementsByTagNameNS("*","Resource");
         log.info("Number of Resources found loading up registries = " + resources.getLength());
-        boolean sameRegistry = false;
-        String regAuthID = conf.getString("reg.amend.authorityid");
         String val = null;       
         for(int j = 0;j < resources.getLength();j++) {
             String mainOwner = RegistryDOMHelper.getAuthorityID((Element)resources.item(j));
-            NodeList mgList = ((Element)resources.item(j)).getElementsByTagNameNS("*","ManagedAuthority");
-            if(mgList.getLength() == 0) {
-                mgList = ((Element)resources.item(j)).getElementsByTagNameNS("*","managedAuthority");
-            }
+            NodeList mgList = ((Element)resources.item(j)).getElementsByTagNameNS("*","managedAuthority");
             log.info("mglist size = " + mgList.getLength());
             for(int i = 0;i < mgList.getLength();i++) {
                 val = mgList.item(i).getFirstChild().getNodeValue();

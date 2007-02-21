@@ -1,6 +1,0 @@
-<query>
-	<selectionSequence>
-		<selection item="searchElements" itemOp="EQ" value="Resource"/>
-		<selection item="AuthorityID" itemOp="CONTAINS" value="digit"/>
-	</selectionSequence>
-</query>

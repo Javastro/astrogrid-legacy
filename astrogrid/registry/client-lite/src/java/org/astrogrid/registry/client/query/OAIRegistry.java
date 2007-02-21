@@ -88,7 +88,7 @@ public class OAIRegistry implements OAIService {
       * @author Kevin Benson
       */
      public OAIRegistry() {
-        this(conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.OAI_URL_PROPERTY,null));
+        //this(conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.OAI_URL_PROPERTY,null));
      }
 
 
@@ -100,7 +100,11 @@ public class OAIRegistry implements OAIService {
      public OAIRegistry(URL endPoint) {
           logger
                   .info("QueryRegistry(URL) - entered const(url) of RegistryService");
-        this.endPoint = endPoint;
+        setEndPoint(endPoint);
+     }
+     
+     public void setEndPoint(URL endPoint) {
+         this.endPoint = endPoint;
      }
 
      /**

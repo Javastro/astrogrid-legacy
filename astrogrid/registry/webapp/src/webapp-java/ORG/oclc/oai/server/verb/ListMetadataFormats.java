@@ -92,7 +92,7 @@ public class ListMetadataFormats extends ServerVerb {
 	    sb.append(styleSheet);
 	    sb.append("\"?>");
 	}
-        sb.append("<OAI-PMH xmlns=\"http://www.openarchives.org/OAI/2.0/\"");
+        sb.append("<OAI-PMH xmlns:oai=\"http://www.openarchives.org/OAI/2.0/\" xmlns=\"http://www.openarchives.org/OAI/2.0/\"");
         sb.append(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
         sb.append(" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/");
         sb.append(" http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd\">");

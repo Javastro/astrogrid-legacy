@@ -22,15 +22,11 @@
 
 <%
    String authorityID = request.getParameter("AuthorityID");
-//   InitialContext jndiContext = new InitialContext();
-
-//   jndiContext.addToEnvironment("org.astrogrid.registry.authorityid", authorityID);
-//   jndiContext.addToEnvironment("java:comp/env/org.astrogrid.registry.authorityid", authorityID);
-//   jndiContext.bind("org.astrogrid.registry.authorityid", authorityID);
-//   jndiContext.bind("java:comp/env/org.astrogrid.registry.authorityid", authorityID);
 %>
 
-<p>This is the generated Registry Resource:
+<p>This is the generated Registry Resource and the corresponding types Authority and Organisation:
+<i>Created and Updated date attributes on the Resources are only here for validation, they will be
+changed correctly when updating.</i>
 <p>
 
 <form action="addResourceEntry.jsp" method="post">
@@ -41,15 +37,21 @@
 <textarea name="Resource" cols='80' rows='20'>
 <%
 String version = request.getParameter("version");
-if(version == null || version.trim().length() <= 0 || version.equals("null") ||  version.equals("0.9")) {
-%>
-<%@ include file="makeRegistryType0.9.jsp" %>
-<%}else if(version.equals("0.10")) { %>
+if(version.equals("0.10")) { %>
 <%@ include file="makeRegistryType0.10.jsp" %>
-<%}%>
+<%}else if(version.equals("1.0")) { %>
+<ri:VOResources
+          xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0"
+          xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+          xmlns:vg="http://www.ivoa.net/xml/VORegistry/v1.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" from="1" numberReturned="3" more="false">
+<%@ include file="makeRegistryType1.0.jsp" %>
+<%@ include file="makeOrganisationType1.0.jsp" %>
+<%@ include file="makeAuthorityType1.0.jsp" %>
+</ri:VOResources>
+<%} %>
 </textarea>
 <p>
-Press this button and if all goes OK then restart the registry service:
 <input name="button" value="Register" type="submit">
 </form>
 

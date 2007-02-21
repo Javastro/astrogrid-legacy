@@ -1,13 +1,11 @@
 package org.astrogrid.registry.server.query;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.codehaus.xfire.util.STAXUtils;
+import java.io.StringReader;
 
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.SAXException;
+import javax.xml.stream.*;
 
 import java.io.IOException;
 
@@ -15,20 +13,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.registry.server.xmldb.XMLDBRegistry;
-import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.server.SOAPFaultException;
-import org.astrogrid.registry.common.RegistryDOMHelper;
-
+import org.astrogrid.registry.server.ConfigExtractor;
+import org.astrogrid.contracts.http.filters.ContractsFilter;
 
 import org.astrogrid.util.DomHelper;
 import org.astrogrid.config.Config;
-import org.astrogrid.registry.server.XSLHelper;
-import org.astrogrid.store.Ivorn;
 
 import org.xmldb.api.base.ResourceSet;
-import org.xmldb.api.modules.XMLResource;
-import org.xmldb.api.base.Resource;
-import org.xmldb.api.base.Collection;
 import org.xmldb.api.base.XMLDBException;
 
 /**
@@ -60,26 +52,30 @@ public abstract class DefaultQueryService {
    private String voResourceVersion = null;
    
    private String collectionName = null;
-
-   /**
-    * final variable for the default AuthorityID associated to this registry.
-    */
-   private static final String AUTHORITYID_PROPERTY =
-                                          "org.astrogrid.registry.authorityid";   
    
    private XMLDBRegistry xdbRegistry = null;
    
-   private QueryHelper queryHelper = null;
+   protected QueryHelper queryHelper = null;
    
-  
+   private static final String ASTROGRID_SCHEMA_BASE = "http://software.astrogrid.org/schema/";
+   
+   protected static String schemaLocationBase;
+
    /**
     * Static to be used on the initiatian of this class for the config
     */   
    static {
       if(conf == null) {
          conf = org.astrogrid.config.SimpleConfig.getSingleton();
+         if(schemaLocationBase == null) {              
+             schemaLocationBase = ContractsFilter.getContextURL() != null ? ContractsFilter.getContextURL() + "/schema/" :
+                                  ASTROGRID_SCHEMA_BASE;
+         }//if
+         
       }
    }
+   
+   private SOAPFaultException sfe;
       
    public DefaultQueryService(String queryWSDLNS, String contractVersion, String voResourceVersion) {
        this.queryWSDLNS = queryWSDLNS;
@@ -87,13 +83,17 @@ public abstract class DefaultQueryService {
        this.voResourceVersion = voResourceVersion;
        collectionName = "astrogridv" + voResourceVersion.replace('.','_');       
        xdbRegistry = new XMLDBRegistry();
-       queryHelper = new QueryHelper(queryWSDLNS, contractVersion, voResourceVersion);
+       getQueryHelper();
    }
+         
+   public abstract XMLStreamReader processSingleResult(Node resultDBNode,String responseWrapper);
    
-   protected Document processQueryResults(Node resultDoc, String responseWrapper) {
-       return ProcessResults.processQueryResults(resultDoc,queryWSDLNS, contractVersion, responseWrapper);   
-   }
+   public abstract XMLStreamReader processSingleResult(ResourceSet resultSet,String responseWrapper);
    
+   public abstract XMLStreamReader processResults(ResourceSet resultSet,String responseWrapper);
+   
+   public abstract XMLStreamReader processResults(ResourceSet resultSet,String responseWrapper, String start, String max, String identOnly);
+      
    /**
     * Method: Search
     * Description: Web Service method to take ADQL DOM and perform a query on the
@@ -103,28 +103,43 @@ public abstract class DefaultQueryService {
     * @return - Resource DOM object of the Resources from the query of the registry. 
     * 
     */
-   public Document Search(Document query) {
+   public XMLStreamReader Search(Document query) {
       log.debug("start Search");
       long beginQ = System.currentTimeMillis();
 
       //transform the ADQL to an XQuery for the registry.
       String xqlQuery = null;
+      String start, max, identOnly;
       try {
           xqlQuery = queryHelper.getQuery(query);
+          start = DomHelper.getNodeTextValue(query,"from");
+          max = DomHelper.getNodeTextValue(query,"max");
+          if(max == null && contractVersion.equals("0.1")) {
+              max = conf.getString("reg.amend.returncount","100");
+          }
+          identOnly = DomHelper.getNodeTextValue(query,"identifiersOnly");
       }catch(Exception e) {
-          return SOAPFaultException.createQuerySOAPFaultException("Server Error: " + e.getMessage(),e.getMessage());
+          e.printStackTrace();
+          sfe = new SOAPFaultException("Server Error: " + e.getMessage(),e, queryWSDLNS, SOAPFaultException.QUERYSOAP_TYPE);
+          return processSingleResult(sfe.getFaultDocument(),null);
       }
-      log.info("The XQLQuery From ADQLSearch = " + xqlQuery);
-      //perform the query and log how long it took to query.
-      Node resultDoc = queryHelper.queryRegistry(xqlQuery);      
-      log.info("Time taken to complete search on server = " +
-              (System.currentTimeMillis() - beginQ));
-      log.debug("end Search");
-      
-      //To be correct we need to transform the results, with a correct response element 
-      //for the soap message and for the right root element around the resources.
-      return processQueryResults(resultDoc,"SearchResponse");      
+      log.debug("The XQLQuery From ADQLSearch = " + xqlQuery);
+
+      try {
+	      //perform the query and log how long it took to query.
+	      ResourceSet resultSet = queryHelper.queryRegistry(xqlQuery, start, max);
+	      log.info("Time taken to complete search on server = " +
+	              (System.currentTimeMillis() - beginQ));
+	      log.debug("end Search");
+	            
+	      //To be correct we need to transform the results, with a correct response element 
+	      //for the soap message and for the right root element around the resources.
+	      return processResults(resultSet,"SearchResponse", start, max, identOnly);
+      }catch(SOAPFaultException soapexc) {
+    	  return processSingleResult(soapexc.getFaultDocument(),null);
+      }
    }
+   
 
    
    /**
@@ -136,41 +151,113 @@ public abstract class DefaultQueryService {
     * @param query - XQuery string to be used directly on the registry.
     * @return - Resource DOM object of the Resources from the query of the registry.
     */
-   public Document XQuerySearch(Document query) {
+   public XMLStreamReader XQuerySearch(Document query) {
          log.debug("start XQuerySearch");         
          try {
-             String xql = DomHelper.getNodeTextValue(query,"XQuery");
-             log.info("Found XQuery in XQuerySearch = " + xql);
-             ResourceSet rs = xdbRegistry.query(xql,collectionName);
-             Document resDoc = null;
-             if(rs.getSize() == 0) {
-                 resDoc = DomHelper.newDocument("<XQuerySearchResponse />");
-             } else {
-                 resDoc = DomHelper.newDocument();
-                 resDoc.appendChild(resDoc.createElement("XQuerySearchResponse"));
-                 for(int j = 0;j < rs.getSize();j++) {
-                     //Node importNode = resDoc.importNode(((XMLResource)rs.getResource(j)).getContentAsDOM(),true);
-                     Node importNode = resDoc.importNode(DomHelper.newDocument(rs.getResource(j).getContent().toString()).getDocumentElement(),true);
-                     resDoc.getDocumentElement().appendChild(importNode);
-                 }
+             String xql = DomHelper.getNodeTextValue(query,"xquery");
+             int tempIndexCheck1 = 0;
+             int tempIndexCheck2;
+             if(xql == null || xql.trim().length() == 0)
+            	 xql = DomHelper.getNodeTextValue(query,"XQuery");
+             log.debug("Found XQuery in XQuerySearch = " + xql);
+             /*
+              * Hmmmm right now Astrogrid knows it is vor:Resource in our db, but others do not and
+              * might send vr:Resource we will need to translate/replace those and possibly
+              * add a vor namespace. New RI spec now says "//Resource" is a special keyword for the root.
+              * @todo use a full path this actually replaces things always to //vor:Resource be nice to be
+              * Astrogrid/vor:Resource, but hard to do till we move up to 1.0
+             */
+            
+             if(xql.indexOf("//RootResource") != -1) {
+                 xql = xql.replaceAll("//RootResource","//" + ConfigExtractor.getRootNodeName(voResourceVersion));
              }
-             return resDoc;
+             else if(xql.indexOf("/RootResource") != -1) {
+                 xql = xql.replaceAll("/RootResource","//" + ConfigExtractor.getRootNodeName(voResourceVersion));
+             }
+             else if(xql.indexOf("RootResource") != -1) {
+                xql = xql.replaceAll("RootResource","//" + ConfigExtractor.getRootNodeName(voResourceVersion));
+             }
+             
+             boolean cont = true;
+             String []paramCheck;
+             String xqlTemp = null;
+             /*
+              * Hack: Task Launcher and Resource queries will typically send a 'matches' xquery with
+              * a lot of 'or' statements these tend to come back in around 6 seconds, but if I switch it to
+              * using eXist specefic text method then it comes back in about 2 seconds sometimes 1 second.
+              * Problem: Changes things to use eXist near() function but near() does not have full
+              * regular expression support like xqueryspec-matches or eXistspecefic-match-all.  A user
+              * will be able to do wildcards'*' and '?' and thats about it which is all I ever see anybody
+              * do anyways.  We can't quite use match-all because of the way eXist tokenizes strings
+              * whereby match-all(node,'x-ray') will find every word 'x' and every word 'ray' :(  The
+              * near() function works better it is similiar on the tokenizing of match-all but requires
+              * the words to be next to one another unles a user puts in a 3rd parameter integer to let it
+              * be further seperated.
+              */
+             if(xql.split(" or ").length > 2) {
+	             while(cont) {
+	            	 //use split.length to get how many
+		             if((tempIndexCheck1 = xql.indexOf("contains(",tempIndexCheck1+10)) != -1) {            	 
+		            	 paramCheck = xql.substring(tempIndexCheck1,(tempIndexCheck2 = xql.indexOf(')',tempIndexCheck1))).split(",");
+		            	 //System.out.println("it had a contains and paramcheck = " + paramCheck.length);
+		            	 if(paramCheck.length == 2) {
+		            		 xql = xql.replaceAll("contains\\("," near(");	 
+		            	 }
+		             }else {
+		            	 cont = false;
+		             }
+	             }
+	             tempIndexCheck1 = 0;
+	             cont = true;
+	             while(cont) {
+		             if((tempIndexCheck1 = xql.indexOf("matches(",tempIndexCheck1+10)) != -1) {
+		            	 paramCheck = xql.substring(tempIndexCheck1,(tempIndexCheck2 = xql.indexOf(')',tempIndexCheck1))).split(",");
+		            	 if(paramCheck.length == 2) {
+		            		 //same thing as a near and its case insensitive which is what registry is supposed to be.
+		            		 xql = xql.replaceAll("matches\\("," near(");	 
+		            	 }
+		            	 if(paramCheck.length == 3) {
+		            		 if(paramCheck[2].trim().charAt(1) == 's' || paramCheck[2].trim().charAt(1) == 'i' ||
+		            			paramCheck[2].trim().charAt(1) == 'm' || paramCheck[2].trim().charAt(1) == 'x') {
+		            				//ok there doing the matches with just a regular expression setting lets
+		            				//drop it and use near.
+		            				xqlTemp = xql.substring(0,tempIndexCheck1) + paramCheck[0].replaceAll("matches", "near") + "," + paramCheck[1] + ") " + xql.substring(tempIndexCheck2+1);
+		            				xql = xqlTemp;
+		            		 }//if
+		            	 }//if
+		             }else {
+		            	 cont = false;
+		             }//else
+	             }//while
+	             xql = xql.replaceAll("\\.\\*:", "*:");
+             }//if
+             
+             /*
+              * Hack for older clients there is a bug with eXist with a particular query using the older
+              * slower style of where clause with variable and wildcards
+              * :( bummer i have to do this. 
+              */
+             if(xql.indexOf("&=") != -1 || xql.indexOf("&amp;=") != -1) {
+            	 //ok using older eXist style functions lets to a relaceAll on $r/ and
+            	 //hoopefully will be good after that.
+            	 xql = xql.replaceAll("\\$r/", "");
+             }
+             
+             //log.info("Query to be ran = " + xql);
+             ResourceSet rs = xdbRegistry.query(xql,collectionName);
+             String wrapper = ("<ri:XQuerySearchResponse xmlns:ri=\"" + queryWSDLNS +"\"></ri:XQuerySearchResponse>");
+             return new ResultStreamer(rs, wrapper);
          }catch(XMLDBException xdbe) {
              xdbe.printStackTrace();
-             return SOAPFaultException.createQuerySOAPFaultException("Server Error: " + xdbe.getMessage(),xdbe);
-         }catch(ParserConfigurationException pce) {
-             pce.printStackTrace();
-             return SOAPFaultException.createQuerySOAPFaultException("Server Error: " + pce.getMessage(),pce);
-         }catch(SAXException sax) {
-             sax.printStackTrace();
-             return SOAPFaultException.createQuerySOAPFaultException("Server Error: " + sax.getMessage(),sax);
+             sfe = new SOAPFaultException("Server Error: " + xdbe.getMessage(),xdbe,queryWSDLNS, SOAPFaultException.QUERYSOAP_TYPE);
+             return STAXUtils.createXMLStreamReader(new StringReader(DomHelper.DocumentToString(sfe.getFaultDocument())));
          }catch(IOException ioe) {
              ioe.printStackTrace();
-             return SOAPFaultException.createQuerySOAPFaultException("Server Error: " + ioe.getMessage(),ioe);
-         }
+             sfe = new SOAPFaultException("Server Error: " + ioe.getMessage(),ioe,queryWSDLNS, SOAPFaultException.QUERYSOAP_TYPE);
+             return STAXUtils.createXMLStreamReader(new StringReader(DomHelper.DocumentToString(sfe.getFaultDocument())));             
+         }         
    }
-
-
+      
    /**
     * Method: loadRegistry
     * Description: Grabs the versionNumber from the DOM if possible and call the
@@ -180,12 +267,24 @@ public abstract class DefaultQueryService {
     * @param query actually normally empty/null and is ignored.
     * @return XML docuemnt object representing the result of the query.
     */
-   public Document loadRegistry(Document query) {
-      log.debug("start loadRegistry");           
-      return queryHelper.loadMainRegistry();
+   public XMLStreamReader loadRegistry(Document query) {
+      log.debug("start loadRegistry");
+      try {
+    	  return processResults((ResourceSet)queryHelper.loadMainRegistry(),"SearchResponse");
+      }catch(SOAPFaultException soapexc) {
+    	  return processSingleResult(soapexc.getFaultDocument(),null);
+      }    	  
    }
-
-      
+   
+   public XMLStreamReader GetIdentity(Document query) {
+	   try {
+		   ResourceSet rs = queryHelper.loadMainRegistry();
+		   return processSingleResult(rs,"ResolveResource");
+	   }catch(SOAPFaultException soapexc) {
+	      return processSingleResult(soapexc.getFaultDocument(),null);
+	   }
+	   
+   }      
 
    /**
     * Method KeywordSearch
@@ -196,18 +295,34 @@ public abstract class DefaultQueryService {
     * @param query - The soap body of the web service call, containing sub elements of keywords.
     * @return XML docuemnt object representing the result of the query.
     */
-   public Document KeywordSearch(Document query) {
+   public XMLStreamReader KeywordSearch(Document query) {
        log.debug("start keywordsearch");                   
        String keywords = null;
        String orValue = null;
+       String start = null;
+       String max = null;
+       String identOnly = null;
        try {
            keywords = DomHelper.getNodeTextValue(query,"keywords");
            orValue = DomHelper.getNodeTextValue(query,"orValue");
+           start = DomHelper.getNodeTextValue(query,"from");
+           max = DomHelper.getNodeTextValue(query,"max");
+           if(max == null && contractVersion.equals("0.1")) {
+               max = conf.getString("reg.amend.returncount","100");
+           }           
+           identOnly = DomHelper.getNodeTextValue(query,"identifiersOnly");
        }catch(IOException ioe) {
-           return SOAPFaultException.createQuerySOAPFaultException("Server Error: " + "IO problem trying to get keywords and orValue",ioe);
+           sfe = new SOAPFaultException("Server Error: " + "IO problem trying to get keywords and orValue",ioe,queryWSDLNS, SOAPFaultException.QUERYSOAP_TYPE);
        }
-       boolean orKeywords = new Boolean(orValue).booleanValue();
-       return queryHelper.keywordQuery(keywords,orKeywords);
+       
+       
+       boolean orKeywords = Boolean.valueOf(orValue).booleanValue();
+       try {
+    	   ResourceSet resultSet =  queryHelper.keywordQuery(keywords, orKeywords, start, max);
+    	   return processResults(resultSet, "SearchResponse", start, max, identOnly);
+       }catch(SOAPFaultException soapexc) {
+     	  return processSingleResult(soapexc.getFaultDocument(),null);
+       }
    }
    
    
@@ -224,17 +339,21 @@ public abstract class DefaultQueryService {
     * @param query - A Soap body request containing an identifier element holding the identifier to be queries on.
     * @return XML docuemnt object representing the result of the query.
     */
-   public Document GetResource(Document query) {
+   public XMLStreamReader GetResource(Document query) {
        log.debug("start GetResource");                   
        String ident = null;
        try {
 //           log.info("The soapbody in regserver1 = " + DomHelper.DocumentToString(query));
            ident = DomHelper.getNodeTextValue(query,"identifier");
+           
            log.info("found identifier in web service request = " + ident);
+           return processSingleResult((Node)queryHelper.getResourceByIdentifier(ident), "ResolveResource");
        }catch(IOException ioe) {
-           return SOAPFaultException.createQuerySOAPFaultException("Server Error: " + "IO problem trying to get identifier",ioe);
+           sfe = new SOAPFaultException("Server Error: " + "IO problem trying to get identifier",ioe,queryWSDLNS, SOAPFaultException.QUERYSOAP_TYPE);
+           return processSingleResult(sfe.getFaultDocument(),null);
+       }catch(SOAPFaultException soapexc) {
+    	   return processSingleResult(soapexc.getFaultDocument(),null);
        }
-       return queryHelper.getResourceByIdentifier(ident);
    }   
    
    /**
@@ -249,17 +368,20 @@ public abstract class DefaultQueryService {
     * @param query - A Soap body request containing an identifier element holding the identifier to be queries on.
     * @return XML docuemnt object representing the result of the query.
     */
-   public Document GetResourcesByIdentifier(Document query) {
+   public XMLStreamReader GetResourcesByIdentifier(Document query) {
        log.debug("start GetResourcesByIdentifier");                   
        String ident = null;
        try {
   //         log.info("The soapbody in regserver2 = " + DomHelper.DocumentToString(query));
            ident = DomHelper.getNodeTextValue(query,"identifier");
            log.info("found identifier in web service request = " + ident);
+           return processResults((ResourceSet)queryHelper.getResourcesByIdentifier(ident), "GetResourcesByIdentifier");           
        }catch(IOException ioe) {
-           return SOAPFaultException.createQuerySOAPFaultException("Server Error: " + "IO problem trying to get identifier",ioe);
+           sfe = new SOAPFaultException("Server Error: " + "IO problem trying to get identifier",ioe,queryWSDLNS, SOAPFaultException.QUERYSOAP_TYPE);
+           return processSingleResult(sfe.getFaultDocument(),null);
+       }catch(SOAPFaultException soapexc) {
+    	   return processSingleResult(soapexc.getFaultDocument(),null);
        }
-       return queryHelper.getResourcesByIdentifier(ident);
    }
    
 
@@ -272,16 +394,19 @@ public abstract class DefaultQueryService {
     * @param query - soab body containing a identifier element for the identifier to query on.
     * @return XML docuemnt object representing the result of the query.
     */
-   public Document GetResourceByIdentifier(Document query) {
+   public XMLStreamReader GetResourceByIdentifier(Document query) {
        log.debug("start GetResourcesByIdentifier");                   
        String ident = null;
        try {
            ident = DomHelper.getNodeTextValue(query,"identifier");
            log.info("found identifier in web service request = " + ident);
+           return processSingleResult((Node)queryHelper.getResourceByIdentifier(ident), "GetResourceByIdentifier");
        }catch(IOException ioe) {
-           return SOAPFaultException.createQuerySOAPFaultException("Server Error: " + "IO problem trying to get identifier",ioe);
+           sfe = new SOAPFaultException("Server Error: " + "IO problem trying to get identifier",ioe,queryWSDLNS, SOAPFaultException.QUERYSOAP_TYPE);
+           return processSingleResult(sfe.getFaultDocument(),null);
+       }catch(SOAPFaultException soapexc) {
+    	   return processSingleResult(soapexc.getFaultDocument(),null);
        }
-       return queryHelper.getResourceByIdentifier(ident);
    }
 
 
@@ -295,12 +420,13 @@ public abstract class DefaultQueryService {
     * name.
     * @return Resource entries of type Registries.
     */
-   public Document GetRegistries(Document query) {
-      return queryHelper.getRegistriesQuery();
+   public XMLStreamReader GetRegistries(Document query) {
+	   try {
+		   return processResults((ResourceSet)queryHelper.getRegistriesQuery(), "SearchResponse");
+       }catch(SOAPFaultException soapexc) {
+    	   return processSingleResult(soapexc.getFaultDocument(),null);
+       }		   
    }
    
-   public QueryHelper getQueryHelper() {
-       return this.queryHelper;
-   }
-  
+   public abstract QueryHelper getQueryHelper();  
 }

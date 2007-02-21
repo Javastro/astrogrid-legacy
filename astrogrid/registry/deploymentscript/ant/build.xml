@@ -42,8 +42,7 @@
 		<tempfile property="registry.regentry10"/>
 		<filterset id="regfilter">
             <filter token="REGISTRY_AUTHID"   value="${input.registry.regauthority}"/>
-            <filter token="reg.amend.oaipublish.0.10" value="${input.registry.public.url}/OAIHandlerv0_10"/>
-            <filter token="reg.amend.oaipublish.0.1" value="${input.registry.public.url}/OAIHandlerv0_10"/>
+            <filter token="reg.amend.oaipublish.0.1" value="${input.registry.public.url}/OAIHandlerv0_1"/>
             <filter token="TITLE" value="${input.reg.title}"/>
         	<filter token="CONTACT_NAME" value="${input.reg.contact.name}"/>            	
         	<filter token="CONTACT_EMAIL" value="${input.reg.contact.email}"/>            				
@@ -164,8 +163,7 @@
         <filterset id="myfilter">
             <filter token="REGISTRY_AUTHID"   value="${input.registry.regauthority}"/>
             <filter token="REGISTRY_WEBAPP" value="${input.registry.contextpath}"/>
-            <filter token="reg.amend.oaipublish.0.10" value="${input.registry.public.url}/OAIHandlerv0_10"/>
-            <filter token="reg.amend.oaipublish.0.1" value="${input.registry.public.url}/OAIHandlerv0_10"/>
+            <filter token="reg.amend.oaipublish.0.1" value="${input.registry.public.url}/OAIHandlerv0_1"/>
         </filterset>
     	<echo>This registry is being installed with the following settings:</echo>
     	<echo>AuthId: ${input.registry.regauthority}</echo>

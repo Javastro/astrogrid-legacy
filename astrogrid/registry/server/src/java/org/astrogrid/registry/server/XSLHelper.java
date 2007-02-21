@@ -15,7 +15,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory; 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.astrogrid.util.DomHelper;
 import org.astrogrid.contracts.http.filters.ContractsFilter;
 import org.astrogrid.registry.RegistryException;
 
@@ -78,22 +77,23 @@ public class XSLHelper {
     * @param namespaceDeclare A long string of all the 'declare namespace' for the XQL.
     * @return A XQL (XQuery) String to be used for querying on the XML database.
     */
-   public String transformADQLToXQL(Node doc, String versionNumber,String rootNode, String namespaceDeclare) throws RegistryException {
+   public String transformADQLToXQL(Node doc, String versionNumber,String rootNode, String contractVersion) throws RegistryException {
       
       Source xmlSource = new DOMSource(doc);
-      Document resultDoc = null;      
-      
       logger
             .debug("transformADQLToXQL(Node, String) - the file resource = ADQLToXQL-"
-                    + versionNumber + ".xsl");
+                    + versionNumber + ".xsl");      
       try {
+    	 
          Source xslSource = new StreamSource(
-                  new InputStreamReader(loadStyleSheet(XSL_DIRECTORY + "ADQLToXQL-" + versionNumber + ".xsl"),"UTF-8"));
+                  new InputStreamReader(loadStyleSheet(XSL_DIRECTORY + "ADQLToXQL-" + versionNumber + "-" + contractVersion +  ".xsl"),"UTF-8"));
+         /*
          DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
           
          builderFactory.setNamespaceAware(true);
          DocumentBuilder builder = builderFactory.newDocumentBuilder();
          resultDoc = builder.newDocument();
+         */
          
          TransformerFactory transformerFactory = TransformerFactory.newInstance();
          //DOMResult result = new DOMResult(resultDoc);
@@ -102,7 +102,7 @@ public class XSLHelper {
          
          Transformer transformer = transformerFactory.newTransformer(xslSource);
          transformer.setParameter("resource_elem", rootNode);
-         transformer.setParameter("declare_elems", namespaceDeclare);         
+         //transformer.setParameter("declare_elems", namespaceDeclare);         
          transformer.transform(xmlSource,result);
          String xqlResult = sw.toString();
          if (xqlResult.startsWith("<?")) {
@@ -110,9 +110,10 @@ public class XSLHelper {
          }
          xqlResult = xqlResult.replaceAll("&gt;", ">").replaceAll("&lt;", "<").replaceAll("&amp;","&");
          return xqlResult;
-      }catch(ParserConfigurationException pce) {
+      /*}catch(ParserConfigurationException pce) {
         logger.error("transformADQLToXQL(Node, String)", pce);
         throw new RegistryException(pce);
+      */
       }catch(TransformerConfigurationException tce) {
         logger.error("transformADQLToXQL(Node, String)", tce);
         throw new RegistryException(tce);
@@ -180,7 +181,7 @@ public class XSLHelper {
     * @param responseElement An optional string to wrap around another element for web service methods.
     * @return XML document to be returned.
     */
-   public Document transformExistResult(Node doc, String contractVersion) throws
+   public Document transformExistResult(Node doc, String contractVersion, String start, String more, String identOnly) throws
        ParserConfigurationException, TransformerConfigurationException, TransformerException, UnsupportedEncodingException  {
       
       if(doc != null && (doc.getNodeName().indexOf("Fault") != -1 ||
@@ -203,7 +204,21 @@ public class XSLHelper {
       DOMResult result = new DOMResult(resultDoc);
       Transformer transformer = transformerFactory.newTransformer(xslSource);
       transformer.setParameter("schemaLocationBase", schemaLocationBase);
-        
+      if(start == null)
+          start = "1";
+      if(identOnly == null)
+          identOnly = "false";
+      
+      transformer.setParameter("from", start);      
+      transformer.setParameter("identOnly", identOnly);
+      transformer.setParameter("more", more);
+      if(doc instanceof Document)          
+          transformer.setParameter("numReturned", String.valueOf(((Document)doc).getElementsByTagNameNS("*","Resource").getLength()));
+      else if(doc instanceof Element)
+          transformer.setParameter("numReturned", String.valueOf(((Element)doc).getElementsByTagNameNS("*","Resource").getLength()));
+          
+      if(doc.hasChildNodes())
+                
       transformer.transform(xmlSource,result);
       return resultDoc;
    }
@@ -235,6 +250,7 @@ public class XSLHelper {
        logger.debug("transformUpdate(Node, String) - the stylesheet name = "
             + styleSheetName);
        try {
+    	  
           Source xslSource = new StreamSource(new InputStreamReader(loadStyleSheet(XSL_DIRECTORY + styleSheetName),"UTF-8"));
           DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();           
           builderFactory.setNamespaceAware(true);

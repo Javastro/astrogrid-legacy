@@ -11,9 +11,7 @@
     xmlns:define="jelly:define"
     xmlns:artifact="artifact"    
     xmlns:deploy="deploy"
-    xmlns:astro="org.astrogrid.maven"
-	default="astrogrid-install-snapshot"	
-    >
+    xmlns:astro="org.astrogrid.maven">
 
     <!--+
         | Primary goals are :

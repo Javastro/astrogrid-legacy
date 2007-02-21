@@ -7,7 +7,8 @@ import javax.servlet.http.*;
 
 
 import org.astrogrid.config.Config;
-import org.astrogrid.registry.server.harvest.RegistryHarvestService;
+import org.astrogrid.registry.server.harvest.IHarvest;
+import org.astrogrid.registry.server.harvest.HarvestFactory;
 import org.astrogrid.registry.RegistryException;
 //import org.apache.axis.AxisFault;
 
@@ -38,7 +39,7 @@ public class HarvestDaemon extends HttpServlet //implements Runnable
    /**
     * Main harvest service class.
     */
-   RegistryHarvestService rhs;
+   IHarvest rhs;
    
    boolean harvestOnLoad = false;
    boolean valuesSet = false;
@@ -49,11 +50,6 @@ public class HarvestDaemon extends HttpServlet //implements Runnable
    public static boolean harvestStarted;
 
    
-   /**
-    * Need to check, I don't believe it is used anymore.
-    */
-   private ServletContext context = null;   
-
    public static final String INTERVAL_HOURS_PROPERTY =
        "reg.custom.harvest.interval_hours";
    public static Config conf = null;
@@ -107,11 +103,16 @@ public class HarvestDaemon extends HttpServlet //implements Runnable
       
        System.out.println("initialized HarvestDaemon");
        
+       String contractVersion = getInitParameter("registry_contract_version");
        //get the current date and time.
        servletInitTime = new Date();
        //instantiate teh harvest service.
-       rhs = new RegistryHarvestService();
-       
+       try {
+           rhs = HarvestFactory.createHarvestService(contractVersion);
+       }catch(Exception e) { 
+           System.out.println("something happen trying to get harveste service for contractversion = " + contractVersion);
+           e.printStackTrace();
+       }
        //hmmm lets make sure there is no timer going at the moment.
        if(scheduleTimer != null) {
            //hmmm just in case the servlet container decides to re-initialize
@@ -143,8 +144,8 @@ public class HarvestDaemon extends HttpServlet //implements Runnable
           
           //schedule the timer class.
           scheduleTimer.scheduleAtFixedRate(new HarvestTimer("HarvestNow"),
-                       harvestInterval*3600*1000,
-                       harvestInterval*3600*1000);          
+                       (long)harvestInterval*3600*1000,
+                       (long)harvestInterval*3600*1000);          
           //Thread myThread = new Thread(this);
           //myThread.start();
        }else {
@@ -238,6 +239,7 @@ public class HarvestDaemon extends HttpServlet //implements Runnable
                    System.out.println("Immediate harvesting will be commenced!");
                    try {
                        rhs.harvestAll(true,true);
+                       //rhs.harvestAll();
                    }catch(RegistryException e) {
                         e.printStackTrace();
                    }
@@ -246,6 +248,7 @@ public class HarvestDaemon extends HttpServlet //implements Runnable
                    System.out.println("Immediate replicate is beginning!");
                    try {
                       rhs.harvestAll(true,false);
+                       //rhs.harvestAll();
                    }catch(RegistryException e) {
                       e.printStackTrace();
                    }

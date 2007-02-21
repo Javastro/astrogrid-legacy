@@ -3,14 +3,7 @@ package org.astrogrid.registry.server.admin;
 import org.astrogrid.registry.server.IChecker;
 import org.astrogrid.registry.server.DefaultChecker;
 import org.astrogrid.registry.server.CheckerException;
-import org.astrogrid.registry.common.RegistryValidator;
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import junit.framework.AssertionFailedError;
-import java.io.IOException;
-
-
-import org.astrogrid.util.DomHelper;
 
 public class AdminChecker extends DefaultChecker implements IChecker {
     

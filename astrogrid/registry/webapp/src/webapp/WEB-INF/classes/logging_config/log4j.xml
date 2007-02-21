@@ -16,7 +16,7 @@
 
     <!-- the following appenders write to files  -->
     <appender name="exist.core" class="org.apache.log4j.RollingFileAppender">
-        <param name="File" value="${logger.dir}/exist.log"/>
+        <param name="File" value="${logger.dir.registry}/exist.log"/>
         <param name="MaximumFileSize" value="500000"/>
         <param name="Encoding" value="UTF-8"/>
         <layout class="org.apache.log4j.PatternLayout">
@@ -25,7 +25,7 @@
     </appender>
 
     <appender name="exist.xmldb" class="org.apache.log4j.RollingFileAppender">
-        <param name="File" value="${logger.dir}/xmldb.log"/>
+        <param name="File" value="${logger.dir.registry}/xmldb.log"/>
         <param name="MaximumFileSize" value="500000"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d [%t] %-5p (%F [%M]:%L) - %m\n"/>
@@ -34,7 +34,7 @@
 
     <!-- the following appenders write to files  -->
     <appender name="registry.core" class="org.apache.log4j.RollingFileAppender">
-        <param name="File" value="${logger.dir}/ag_registry.log"/>
+        <param name="File" value="${logger.dir.registry}/ag_registry.log"/>
         <param name="MaximumFileSize" value="500000"/>
         <param name="Encoding" value="UTF-8"/>
         <layout class="org.apache.log4j.PatternLayout">
@@ -44,7 +44,7 @@
 
     <!-- the following appenders write to files  -->
     <appender name="registry.other" class="org.apache.log4j.RollingFileAppender">
-        <param name="File" value="${logger.dir}/ag_other.log"/>
+        <param name="File" value="${logger.dir.registry}/ag_other.log"/>
         <param name="MaximumFileSize" value="500000"/>
         <param name="Encoding" value="UTF-8"/>
         <layout class="org.apache.log4j.PatternLayout">

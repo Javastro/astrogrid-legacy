@@ -6,8 +6,16 @@
 <html>
 <head>
 <title>System Fingerprint</title>
+<style type="text/css" media="all">
+   <%@ include file="/style/astrogrid.css" %>          
+</style>
 </head>
 <body bgcolor=#ffffff>
+<%@ include file="/style/header.xml" %>
+<%@ include file="/style/navigation.xml" %>
+
+<div id='bodyColumn'>
+
 <%!
 
     /*
@@ -318,5 +326,6 @@ if (container.startsWith("Tomcat Web Server/3.2")) {
     //TODO: identify more servlet engine classpaths.
 }
 %>
+</div>
 </body>
 </html>

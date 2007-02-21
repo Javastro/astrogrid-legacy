@@ -1,6 +1,7 @@
 <%@ page import="org.astrogrid.registry.server.admin.*,
                  org.astrogrid.store.Ivorn,
                  org.astrogrid.registry.common.RegistryValidator,
+                 org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
                  junit.framework.AssertionFailedError,
                  org.w3c.dom.Document,
                  org.astrogrid.io.Piper,
@@ -68,7 +69,7 @@
       
   } else if(request.getParameter("addFromText") != null &&
      request.getParameter("addFromText").trim().length() > 0) {
-    doc = DomHelper.newDocument(request.getParameter("Resource"));
+    doc = DomHelper.newDocument(request.getParameter("Resource").trim());
      update = true;
       if(request.getParameter("validate") != null &&
          request.getParameter("validate").equals("true")) {     
@@ -105,12 +106,13 @@
 <%
    if(update) {
       Document result = null;
-      RegistryAdminService server = new RegistryAdminService();   
-      result = server.updateResource(doc);
+      IAdmin server = JSPHelper.getAdminService(request);	  
       out.write("<p>Attempt at updating Registry, if any errors occurred it will be printed below<br /></p>");
+      result = server.updateInternal(doc);
       if (result != null) {
         DomHelper.DocumentToWriter(result, out);
       }
+     
    }
 %>
 </pre>

@@ -167,7 +167,9 @@ public interface RegistryService  {
    public ResourceData getResourceDataByIdentifier(Ivorn ident) throws RegistryException;
    
    public ResourceData[] getResourceDataByRelationship(Ivorn ident) throws RegistryException;
-   public ResourceData[] getResourceDataByRelationship(String ident) throws RegistryException;   
+   public ResourceData[] getResourceDataByRelationship(String ident) throws RegistryException;
+   
+   public void setEndPoint(URL endPoint);
    
 
 

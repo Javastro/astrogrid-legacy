@@ -10,7 +10,7 @@ import junit.framework.*;
 import org.astrogrid.contracts.SchemaMap;
 import org.astrogrid.registry.common.RegistryValidator;
 import java.util.Map;
-import java.util.Iterator;
+
 /**
  * Class: ValidatorTest
  * Description: A Class that simply tests out a lot of various XML resources based on the Registry schemas.

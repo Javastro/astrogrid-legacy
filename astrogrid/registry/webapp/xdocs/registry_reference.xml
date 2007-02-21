@@ -6,7 +6,7 @@
     <body>
     <section name="Reference">
       <p>
-         This area is dedicated for more information on various areas in the registry and some tips and tricks in certain areas.  Please read the eXist guide as well.
+         This area is dedicated for more information on various areas in the registry and some tips and tricks in certain areas.
       </p>
       <subsection name="Properties">
 		<p>
@@ -23,35 +23,30 @@ sections on other certain ideas on manipulating the properties to help you in ce
          In general you can switch to another db that supports xmldb but this is untested read more below on that.</li>
          <li>xmldb.driver -- 
       The XMLDB driver to be the registered xml database.</li>
-         <li>xmldb.query.service -- 
-      What type of query service, XQueryService or XPathQueryService.</li>
          <li>xmldb.admin.user -- 
-      The user used to create Resources or collections, and shutdown the internal eXist database if it is internally being ran.</li>
+      The user used to create Resources or collections, and startup/shutdown the internal eXist database if it is internally being ran.</li>
          <li>xmldb.admin.password -- 
-      The admin password used to create Resources or collections, and shutdown the internal eXist database if it is internally being ran.</li>
+      The admin password used to create Resources or collections, and startup/shutdown the internal eXist database if it is internally being ran.</li>
          <li>xmldb.query.user -- 
-      The user used to create Resources or collections, and shutdown the internal eXist database if it is internally being ran.</li>
+      The user used to query.</li>
          <li>xmldb.query.password -- 
-      The query password used to create Resources or collections, and shutdown the internal eXist database if it is internally being ran.</li>
-         <li>reg.amend.defaultversion -- 
-      The default registry version used, May be overriden on updates and queries based on vr namespace.</li>
-         <li>reg.amend.validate -- 
-      Have validation on or off.</li>
-         <li>reg.amend.quiton.invalid -- 
-      Quit on validation; if a document being updated is invalid then don't update it.</li>
+      The query user password.</li>
          <li>reg.amend.returncount -- 
       The maximum number of results to return from queries.</li>
 		  <li>reg.custom.restrict.ipaddresses
-	  The ip addresses restricted for WebDav and XMLRPC servlet.  You may use expressions as well ex: 127.*  by defaut it is set to localhost.</li>
+	  The ip addresses restricted for WebDav and XMLRPC servlet.  You may use expressions as well ex: 127.*  by default it is set to 127.0.0.1.</li>
+ 		  <li>reg.custom.restrict.ipaddresses.updates
+	  The ip addresses restricted for web service Update calls normally from other components.  You may use expressions as well ex: 127.*  by default it is set to 127.0.0.1.</li>	  
 		  <li>reg.custom.loggingdirectory
-	  The logging directory where logs are placed.</li>
-		 
+	  The logging directory where logs are placed.</li>		 
          <li>reg.amend.harvest -- 
       Does this registry need to do harvesting.</li>
-         <li>reg.amend.oaipublish.0.10 -- 
-      The url to the oai publishing url for 0.10, default is set to astrogrid servlet, but is not required to use.</li>
+         <li>reg.amend.oaipublish.0.1 -- 
+      The url to the oai publishing url for 0.10, default is set to astrogrid servlet, needs to be changed if your context is not astrogrid-registry.</li>
+         <li>reg.amend.oaipublish.1.0 -- 
+      The url to the oai publishing url for 1.0, default is set to astrogrid servlet, needs to be changed if your context is not astrogrid-registry.</li>
          <li>reg.custom.exist.configuration -- 
-      Point to another exist configuration file on your disk hence a different data directory as well.  (only for internal db use).  This is recommended if you want to use the internal database, but not have the configuration file and data directory of eXist db with the war file so undeploying/updating wars will not lose data. Also use if servlet container does not unpack war file.</li>
+      Point to another exist configuration file on your disk hence a different data directory as well.  (only for internal db use).  This is recommended if you want to use the internal database, but not have the configuration file and data directory of eXist db with the war file so undeploying/updating wars will not lose data. Also use if servlet container does not unpack war file. Ignored if xmldb.uri is pointed to an exteranl eXist db.</li>
          <li>reg.custom.harvest.interval_hours -- 
       Number of hours between harvest (if harvest is enabled)</li>
          <li>reg.amend.identify.repositoryName -- 
@@ -60,37 +55,30 @@ sections on other certain ideas on manipulating the properties to help you in ce
       Used for the Identify verb in OAI.  The administration Email of this OAI repository.</li>
          <li>reg.custom.identify.earliestDatestamp -- 
       Used for the Identify verb in OAI.  The earliest date stamp for records/metadata being published.</li>
-         <li>reg.custom.harveststylesheet.0.10 -- 
-      (Advanced) Specify stylesheets to be used on harvest updates for particular versions.</li>
          <li>reg.custom.keywordxpaths.0.10 -- 
       (Advanced) Specify xpath for keyword search based on various versions in the registry.</li>
+               <li>reg.custom.keywordxpaths.1.0 -- 
+      (Advanced) Specify xpath for keyword search based on various versions in the registry.</li>
+      
          <li>reg.custom.rootNode.default -- 
       (Advanced) The default root node for elements in the Registry. Can override on various versions in the registry.</li>
-         <li>reg.custom.rootNode.0.10 -- 
-      (Advanced) The default root node for elements in the Registry. Can override on various versions in the registry.</li>
          <li>reg.custom.declareNS.0.10 --
-      (Advanced) Declare the namespaces used on the registry, based on registry versions.</li>
+      (Advanced) Declare the namespaces used on the registry queries, based on registry resource version 0.10.</li>
+         <li>reg.custom.declareNS.1.0 --
+      (Advanced) Declare the namespaces used on the registry, based on registry resource version 1.0.</li>      
+         <li> several xquery properties that can be customized.</li>
+         <li>reg.custom.harvest.set-{main authority id} -- allows you to harvest only a particular set for a registry.  By default ivo_managed set is what is used.</li>
+         <li>Finaly various properties used in the OAI servlet and should not need changing.</li>
    </ul>
    </p>
    </subsection>
-   <subsection name="How to Manage other authority id's">
-	<p>
-      Normally you just need your main authority id which is your default authority id being managed, but sometimes you may need to
-manage more, such as other departments, instead of setting up another registry just simply manage an authority id for another department. There
-are two ways of doing this:<br />
-1.) The preferred way is to add a "Authroity Type" xml resource, once added it will then automatically change your Registry Type xml entry to put this as a managed
- authority you can use.<br />
-2.) The easy quick way is go and edit your main Registry Type xml entry to add more {managedAuthority} elements which is an element at the bottom of your xml on your main Registry type.  Your main registry type
-is found on the home page of your registry.
-   </p>
-   </subsection>
+   
    <subsection name="Extend Registry">
 	<p>
-      Lets say you needed to extend some of the xml resources, meaning add your own namespaces with your own element extensions.  Well you can add this already now, you won't be able to validate
- the xml though, but you can add it into the registry.  Now for querying on it though you will need to change the property "reg.custom.declareNS.0.10".  In
-  here add your declare namespace for your extensions.  Now you are able to query on your data. Advisable that soon registry will have by default quiton.invalid set to true
-this means that invalid xml resources coming in for an update will be rejected.  Advise on extensions to use schemalocations or be sure your namespace points to your schema file so 
-validation can continue otherwise you will need to turn off validation which is not endorsed.<br />
+      Lets say you needed to extend some of the xml resources, meaning add your own namespaces with your own element extensions.  You can already do this by default, be sure your xml instance documents has schemaLocations or what is needed 
+      to make it valid xml.  If your schema uses qualified namespace elements which is frowned up in the 1.0 version, but if used you will need to change the property reg.custom.declareNS.{contractversion} (see above properties).  
+      This property allows you to declare a namespace with a prefix for queries.  
+     <br />
    </p>
    </subsection>
    <subsection name="Another XMLDB">
@@ -104,7 +92,7 @@ need to change the queries up to conform to your xml database.
    </subsection>
    <subsection name="Changing Queries"> 
 	<p>
-      You might find a more powerfull way of doing xqueries or decide to experiment on the xqueries on your own.  Currently not located in the JNDI/web.xml piece, but located in the file
+      You might find a more powerfull way of doing xqueries or decide to experiment on the xqueries on your own.  Currently not located in the environment entries web.xml piece, but located in the file
       "astrogrid.properties" in the WEB-INF/classes directory under your {context name} directory. You will find a set of internal queries that you may change.  Also in the WEB-INF/classes/xsl directory
       you will find the xsl stylesheets that take a ADQL (xml) and convert it to XQuery.
 	  </p>

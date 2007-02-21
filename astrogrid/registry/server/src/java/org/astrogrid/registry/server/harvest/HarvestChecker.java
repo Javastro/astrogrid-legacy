@@ -14,9 +14,9 @@ import org.astrogrid.util.DomHelper;
 
 public class HarvestChecker extends DefaultChecker implements IChecker {
     
-    private static final String QUERY_ROOT = "VOResources";
+    //private static final String QUERY_ROOT = "VOResources";
     private static final String HARVEST_WS_NAMESPACE = "http://www.ivoa.net/wsdl";
-    private static final String OAI_NAMESPACE = "http://www.openarchives.org/OAI/2.0/";
+    //private static final String OAI_NAMESPACE = "http://www.openarchives.org/OAI/2.0/";
     
     public boolean checkValidResources(Document resourcesDoc) throws CheckerException {
         try {

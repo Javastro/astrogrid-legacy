@@ -6,9 +6,9 @@
     <body>
     <section name="External Testing">
       <p>
-         Check out {context name}/externalkeywordquery.jsp this essentially allows you to query on any Registry in the world, but 
-primarily is for your own registry for testing purposes. You may try it on any registry you know as long as you know the query service endpoint, 
- but for Non-Astrogrid registries getResourceFromIdentifier will not work at this moment in time.
+         Originally there was jsp pages for testing registries externally, but now recommend a small
+         NVO tool recently written by Ray Plante to test out registries. It is primarlly for 1.0 Registries and can be found at
+         <a href="http://www.ivoa.net">Registry Testing tool</a>
       </p>
    </section>
     </body>

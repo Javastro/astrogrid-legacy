@@ -1,15 +1,13 @@
-<%@ page import="org.astrogrid.registry.server.IChecker,
-					  org.astrogrid.registry.server.CheckerFactory,
-					  org.astrogrid.registry.server.CheckerException,
-                 org.astrogrid.registry.client.query.RegistryService,
-				     org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
+<%@ page import="org.astrogrid.registry.client.query.RegistryService,
+ 		 org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
                  org.astrogrid.registry.client.RegistryDelegateFactory,
                  org.astrogrid.registry.common.RegistryDOMHelper,
-                 org.astrogrid.registry.common.RegistryValidator,             
+                 org.astrogrid.registry.common.RegistryValidator,
+                 org.astrogrid.registry.server.query.*,
                  junit.framework.AssertionFailedError,
                  org.astrogrid.store.Ivorn,
                  org.w3c.dom.Document,
-                 org.astrogrid.query.sql.Sql2Adql,
+                 org.astrogrid.oldquery.sql.Sql2Adql,
                  org.astrogrid.io.Piper,
                  org.astrogrid.util.DomHelper,
                  org.astrogrid.config.SimpleConfig,
@@ -17,7 +15,7 @@
                  org.w3c.dom.Element,                 
                  java.net.*,
                  java.util.*,
-                org.apache.commons.fileupload.*,                  
+                 org.apache.commons.fileupload.*,                  
                  java.io.*"
     session="false" %>
 
@@ -30,13 +28,16 @@
 </head>
 
 <body>
-<%@ include file="ivoa_header.xml" %>
-<%@ include file="ivoa_navigation.xml" %>
+<%@ include file="/style/header.xml" %>
+<%@ include file="/style/navigation.xml" %>
 
 <div id='bodyColumn'>
 
 <h1>Query Registry</h1>
-
+<p>
+<font color='blue'>Current Contract Version <%=JSPHelper.getContractVersion(request)%></font>
+<br />
+</p>
 <p>
    The first two options are for loading adql (xml version) from a local file or url.
    The third option allows you to put in sql statements in which then we will translate it to
@@ -48,7 +49,7 @@
 <form enctype="multipart/form-data" method="post">
 <p>
 Upload adql xml file:<br />
-<br />Endpoint: <input type="text"   size="100" name="endpoint" value="<%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/services/RegistryQuery" /><br />
+<br />Endpoint: <input type="text"   size="100" name="endpoint" value="<%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/services/RegistryQueryv<%=JSPHelper.getContractVersion(request).replace('.','_')  %>"/><br />
 <input type="file"   size="100"  name="docfile" />
 <input type="hidden" name="addFromFile" value="true" />
 <input type="hidden" name="performquery" value="true" /><br />
@@ -60,7 +61,7 @@ Upload adql xml file:<br />
 <form method="post">
 <p>
 URL to an adql xml file: <br />
-<br />Endpoint: <input type="text"  size="100" name="endpoint" value="<%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/services/RegistryQuery" /><br />
+<br />Endpoint: <input type="text"  size="100" name="endpoint" value="<%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/services/RegistryQueryv<%=JSPHelper.getContractVersion(request).replace('.','_') %> "/><br />
 <input type="text"  size="100" name="docurl" />
 <input type="hidden" name="performquery" value="true" />
 <input type="hidden" name="queryFromURL" value="true" /><br />
@@ -71,7 +72,7 @@ URL to an adql xml file: <br />
 <form method="post">
 <p>
 Enter SQL (actually adqls).  This will only send adql 0.7.4 at the moment use above approaches to send other versions:<br />
-<br />Endpoint: <input type="text"   size="100"  name="endpoint" value="<%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/services/RegistryQuery" /><br />
+<br />Endpoint: <input type="text"   size="100"  name="endpoint" value="<%= request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath() %>/services/RegistryQueryv<%=JSPHelper.getContractVersion(request).replace('.','_') %> "/><br />
 <input type="hidden" name="performquery" value="true" />
 <i>Only for ADQL 0.7.4</i><br />
 <textarea name="Resource" rows="30" cols="90"></textarea>
@@ -84,22 +85,20 @@ Select * from Registry where vr:title = 'hello' and vr:content/vr:description li
 </form>
 
 <br />
-
 <pre>
 <%
-	String performQuery = request.getParameter("performquery");
+   String performQuery = request.getParameter("performquery");
    String endpoint = request.getParameter("endpoint");   		
-	Document adql = null;	
-	if("true".equals(performQuery)) {
-   	System.out.println("performQuery true and endpoint = " + request.getParameter("endpoint"));
-
+   Document adql = null;	
+   if("true".equals(performQuery)) {
+      System.out.println("performQuery true and endpoint = " + request.getParameter("endpoint"));
       if(endpoint == null || endpoint.trim().length() == 0) {
         out.write("<p><font color='red'>No endpoint given</font></p>");
         performQuery = "false";
       }  
-		boolean isMultipart = FileUpload.isMultipartContent(request);
-  		System.out.println("The-get2 Resource = " + request.getParameter("Resource") + " and size of it = " + request.getParameter("Resource").trim().length());
-	  	if(isMultipart) {
+      boolean isMultipart = FileUpload.isMultipartContent(request);
+      System.out.println("The-get2 Resource = " + request.getParameter("Resource") + " and size of it = " + request.getParameter("Resource").trim().length());
+      if(isMultipart) {
 		   DiskFileUpload upload = new DiskFileUpload();
 		   List /* FileItem */ items = upload.parseRequest(request);
 		   Iterator iter = items.iterator();
@@ -110,12 +109,12 @@ Select * from Registry where vr:title = 'hello' and vr:content/vr:description li
 		       }//if
 		   }//while
 	  	}else if(request.getParameter("queryFromURL") != null &&
-	     request.getParameter("addFromURL").trim().length() > 0) {
-	     adql = DomHelper.newDocument(new URL(request.getParameter("docurl")));
-	  	}else if(request.getParameter("xadql") != null && 
-	           request.getParameter("Resource").trim().length() > 0) {
-	     adql = DomHelper.newDocument(request.getParameter("Resource").trim());                      
-	  	} else if(request.getParameter("Resource").trim().length() > 0) {  
+         request.getParameter("addFromURL").trim().length() > 0) {
+         adql = DomHelper.newDocument(new URL(request.getParameter("docurl")));
+  	}else if(request.getParameter("xadql") != null && 
+          request.getParameter("Resource").trim().length() > 0) {
+         adql = DomHelper.newDocument(request.getParameter("Resource").trim()); 
+  } else if(request.getParameter("Resource").trim().length() > 0) { 
 	  	System.out.println("okay lets do the translation");
 	   String resource = Sql2Adql.translateToAdql074(request.getParameter("Resource").trim());
 	   adql = DomHelper.newDocument(resource);
@@ -123,24 +122,21 @@ Select * from Registry where vr:title = 'hello' and vr:content/vr:description li
 	}//if
 
 	if("true".equals(performQuery)) {
- 		String contractVersion = JSPHelper.getQueryContractVersion(request);
-		IChecker checker = CheckerFactory.createQueryChecker(contractVersion);
-      RegistryService rs = RegistryDelegateFactory.createQuery(new URL(endpoint));
-      Document entry = rs.search(adql);
+           ISearch validateChecker = JSPHelper.getQueryService(request);
+           RegistryService rs = RegistryDelegateFactory.createQuery(new URL(endpoint), validateChecker.getContractVersion());
+           System.out.println("the endpoint = " + endpoint + " and contractversion = " + validateChecker.getContractVersion());
+           if(rs == null) 
+            System.out.println("rs was null for some reason");
+           Document entry = rs.search(adql);
       out.write("<p>If entries are returned, then the xml will be validated, shown tabular, then full xml at the bottom.");
-      boolean valid = false;
+      boolean valid = true;//false;
+/*
       try {
-	      valid = checker.checkValidResources(entry);
-	   }catch(CheckerException ce) {
-	     out.write("<p><font color='red'>Invalid to Schema: " + ce.getMessage() + "</p>");
-	   }
-	   try {
-	      valid = checker.checkValidWSContract(entry,"SearchResponse");
-	   }catch(CheckerException ce) {
-		   out.write("<p><font color='red'>Invalid to Web Service Call: " + ce.getMessage() + "</p>");
-	   }
-      
-            
+      valid = validateChecker.validateSOAPSearch(entry);
+      }catch(Exception e) {
+        out.write("<p><font color='red'>Invalid to Schema: " + e.getMessage() + "</p>");
+      }
+*/
       out.write("<table border=1>");
       out.write("<tr><td>AuthorityID</td><td>ResourceKey</td><td>View XML</td></tr>");
       NodeList resources = entry.getElementsByTagNameNS("*","Resource");
@@ -166,7 +162,6 @@ Select * from Registry where vr:title = 'hello' and vr:content/vr:description li
 
          ivoStr = java.net.URLEncoder.encode(("ivo://" + ivoStr),"UTF-8");
          endpoint = java.net.URLEncoder.encode(endpoint,"UTF-8");
-
          out.write("<td><a href=externalResourceEntry.jsp?performquery=true&IVORN="+ivoStr+"&endpoint=" + endpoint + ">View</a></td>\n");
          out.write("</tr>\n");
          

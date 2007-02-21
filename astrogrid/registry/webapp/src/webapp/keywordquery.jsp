@@ -1,8 +1,9 @@
 <%@ page import="org.astrogrid.registry.server.query.*,
-				 	  org.astrogrid.registry.server.*,
-				 	  org.astrogrid.registry.common.RegistryDOMHelper,
-  	  				  org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
+				 org.astrogrid.registry.server.*,
+				 org.astrogrid.registry.common.RegistryDOMHelper,
+  	  		     org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
                  org.astrogrid.store.Ivorn,
+                 org.xmldb.api.base.ResourceSet,
                  org.w3c.dom.Document,
                  org.astrogrid.io.Piper,
                  org.astrogrid.util.DomHelper,
@@ -72,8 +73,14 @@ Require all words: <input type="checkbox" name="orValues" value="true">All words
 
       
       Document entry = null;
-   	ISearch server = JSPHelper.getQueryService(request);      
-      entry = server.getQueryHelper().keywordQuery(keywords,!orValue);
+   	  ISearch server = JSPHelper.getQueryService(request);      
+   	  ResourceSet resultSet = server.getQueryHelper().keywordQuery(keywords,!orValue);
+   	  if(resultSet.getSize() > 50) {
+   			do {
+   			  resultSet.removeResource(50);
+   			}while(resultSet.getSize() > 50);
+   		 }
+      entry = DomHelper.newDocument(resultSet.getMembersAsResource().getContent().toString());
       
       if (entry == null) {
         out.write("<p>No entry returned</p>");
@@ -112,8 +119,8 @@ Require all words: <input type="checkbox" name="orValues" value="true">All words
          }         
 
          out.write("<td><a href=viewResourceEntry.jsp?IVORN="+ivoStr+">View,</a>");
-         out.write("<a href=admin/editEntry.jsp?IVORN="+ivoStr+">Edit,</a>");
-         out.write("<a href=admin/xforms/XFormsProcessor.jsp?mapType="+xsiType+"&IVORN="+ ivoStr + ">XEdit</a></td>");         
+         out.write("<a href=admin/editEntry.jsp?IVORN="+ivoStr+">Edit</a>");
+//         out.write("<a href=admin/xforms/XFormsProcessor.jsp?mapType="+xsiType+"&IVORN="+ ivoStr + ">XEdit</a></td>");         
          out.write("</tr>\n");
          
       }//for

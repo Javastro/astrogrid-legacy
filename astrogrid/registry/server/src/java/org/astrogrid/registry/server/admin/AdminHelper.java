@@ -36,7 +36,7 @@ public class AdminHelper {
         return createStats(tempIdent,true);
     }    
     
-    public Node createStats( String tempIdent, boolean addMillis) {
+    public Node createStats(String tempIdent, boolean addMillis) {
         log.debug("start createStats");
         Date statsTimeMillis = new Date();
         DateFormat shortDT = DateFormat.getDateTimeInstance();

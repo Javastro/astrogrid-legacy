@@ -52,43 +52,48 @@ public class XSLHelperTest extends TestCase {
         }
     }
     
+
+    
     /**
      * Method: testXSLADQLToXQLTest
      * Description: test to transform ADQL to XQL.
      * @throws Exception standard junit exception to be thrown.
-     */        
-    public void testXSLADQLToXQLTest() throws Exception {        
-        Document adql = askQueryFromFile("QueryForIdentifier--adql-v0.7.4.xml");        
+     */   
+    public void testXSLADQLToXQL4Test() throws Exception {        
+        Document adql = askQueryFromFile("QueryForLike--adql-v1.0-1.0.xml");        
         XSLHelper xsl = new XSLHelper();
-        String xql = xsl.transformADQLToXQL(adql,"0.7.4","vor:Resource","declare namespace hello;");
+        String xql = xsl.transformADQLToXQL(adql,"1.0","Resource","1.0");
+        System.out.println("here is the xql fromadqlxsl = " + xql);
         assertTrue((xql.length() > 0));        
     }  
     
     /**
-     * Method: testXSLResourceToOAITest
-     * Description: test to transform an XML Resource to the OAI version of a XML Resource..
+     * Method: testXSLADQLToXQLTest
+     * Description: test to transform ADQL to XQL.
      * @throws Exception standard junit exception to be thrown.
-     */        
-    public void testXSLResourceToOAITest() throws Exception {        
-        Document res = askQueryFromFile("Cambridge0_10_Reg.xml");
+     */   
+    public void testXSLADQLToXQL5Test() throws Exception {        
+        Document adql = askQueryFromFile("QueryForLike2--adql-v1.0-1.0.xml");        
         XSLHelper xsl = new XSLHelper();
-        Document doc = xsl.transformToOAI(res.getDocumentElement(),"0.10");
-        assertNotNull(doc);  
-        assertTrue((doc.getElementsByTagNameNS("*","record").getLength() > 0));        
+        String xql = xsl.transformADQLToXQL(adql,"1.0","Resource","1.0");
+        System.out.println("here is the xql fromadqlxsl = " + xql);
+        assertTrue((xql.length() > 0));        
     }    
     
     /**
-     * Method: testXSLUpdateResource
-     * Description: test to transform an XML Resource to a xml resource acceptable for updating into the registry.
+     * Method: testXSLADQLToXQLTest
+     * Description: test to transform ADQL to XQL.
      * @throws Exception standard junit exception to be thrown.
-     */        
-    public void testXSLUpdateResource() throws Exception {        
-        Document res = askQueryFromFile("Cambridge0_10_Reg.xml");
+     */   
+    public void testXSLADQLToXQL6Test() throws Exception {        
+        Document adql = askQueryFromFile("QueryForLike3--adql-v1.0-1.0.xml");        
         XSLHelper xsl = new XSLHelper();
-        Document doc = xsl.transformUpdate(res.getDocumentElement(),"0.10",false);        
-        assertNotNull(doc);        
-        assertTrue((doc.getElementsByTagNameNS("*","Resource").getLength() > 0));
-    }      
+        String xql = xsl.transformADQLToXQL(adql,"1.0","Resource","1.0");
+        System.out.println("here is the xql fromadqlxsl = " + xql);
+        assertTrue((xql.length() > 0));        
+    } 
+    
+  
            
     /**
      * Method: askQueryFromFile

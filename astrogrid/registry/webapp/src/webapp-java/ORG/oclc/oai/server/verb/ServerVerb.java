@@ -139,7 +139,7 @@ public abstract class ServerVerb {
 					      String baseURL,
 					      boolean xmlEncodeSetSpec) {
         StringBuffer sb = new StringBuffer();
-	sb.append("<request");
+	sb.append("<oai:request");
         Enumeration params = request.getParameterNames();
         while (params.hasMoreElements()) {
             String name = (String)params.nextElement();
@@ -166,7 +166,7 @@ public abstract class ServerVerb {
         }
 	sb.append(">");
 	sb.append(baseURL);
-	sb.append("</request>");
+	sb.append("</oai:request>");
         return sb.toString();
     }
 

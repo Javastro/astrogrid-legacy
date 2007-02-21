@@ -28,8 +28,8 @@
       out.write("No Resource given (Parameter 'Resource' empty)");
    }
    else {
-      RegistryAdminService server = new RegistryAdminService();
-      Document serverResponse = server.updateResource(DomHelper.newDocument(resource));
+	  IAdmin server = JSPHelper.getAdminService(request);
+	  Document serverResponse = server.updateResource(DomHelper.newDocument(resource));
       out.write("<b>Server Response:</b><p><pre>");
       if (serverResponse != null) {
          out.write(DomHelper.DocumentToString(serverResponse).replaceAll("<","&lt;").replaceAll(">","&gt;"));

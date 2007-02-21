@@ -14,8 +14,8 @@
     session="false" %>
     
 <%
-   ISearch server = JSPHelper.getQueryService(request);   
-   RegistryHarvestService rhs = new RegistryHarvestService();
+   ISearch server = JSPHelper.getQueryService(request);
+   IHarvest rhs = JSPHelper.getHarvestService(request);
 %>
 
 <html>
@@ -39,7 +39,7 @@
 <p>Harvest a particular Registry Resource.</p>
 <p>
 <%
-	Document entries = server.getQueryHelper().getRegistriesQuery();
+	Document entries = DomHelper.newDocument(server.getQueryHelper().getRegistriesQuery().getMembersAsResource().getContent().toString());
 	
 	String doHarvest = request.getParameter("doharvest");
 	if(doHarvest != null && doHarvest.trim().length() > 0) {
@@ -57,7 +57,7 @@
 			}
 		   
 			Document harvestEntry = server.getQueryHelper().getResourceByIdentifier(request.getParameter("ident").trim());
-			rhs.beginHarvest(harvestEntry.getDocumentElement(),parsedDate,server.getResourceVersion());
+			rhs.beginHarvest(harvestEntry.getDocumentElement(),parsedDate,null);
 		}
 	}
    
@@ -89,7 +89,7 @@
          }
 
 	     boolean deleted = false; 
-	     if(resourceElement.getAttribute("status") != null)
+	     if(resourceElement.getAttribute("status").length() > 0)
 		  	deleted = resourceElement.getAttribute("status").toLowerCase().equals("deleted");
          
          String bgColour = "#FFFFFF";
@@ -110,9 +110,6 @@
          
          //type
          out.write("<td>"+setFG+resourceElement.getAttribute("xsi:type")+endFG+"</td>");
-
-            
-
             if (authority == null || authority.trim().length() <= 0) {
                out.write("<td>null?!</td>");
             } else {
@@ -132,7 +129,8 @@
             out.write("<td>");
    
             out.write("<a href=../viewResourceEntry.jsp?IVORN="+ivoStr+">XML</a>,  ");
-            out.write("</td>");
+            out.write(" <a href=harvestStatus.jsp?IVORN="+ivoStr+">Status</a>,  ");
+            out.write("</td>");                        
          out.write("</font></tr>\n");
       }
       out.write("</table>");

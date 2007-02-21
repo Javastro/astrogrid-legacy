@@ -9,19 +9,20 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import org.apache.axis.AxisFault;
+import org.codehaus.xfire.util.STAXUtils;
 
 import java.util.HashMap;
 
-import junit.framework.*;
-import org.astrogrid.registry.server.admin.RegistryAdminService;
-import org.astrogrid.registry.server.admin.AuthorityListManager;
-import java.util.Map;
-import java.util.Iterator;
-import java.util.Properties;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-import org.astrogrid.config.Config;
-//import org.astrogrid.config.FallbackConfig;
+import junit.framework.*;
+import org.astrogrid.registry.server.admin.IAdmin;
+import org.astrogrid.registry.server.admin.AdminFactory;
+
+import org.astrogrid.registry.server.admin.AuthorityListManager;
+import org.astrogrid.registry.server.admin.AuthorityList;
+import java.util.Properties;
 
 /**
  * Class: RegistryAdminTest
@@ -34,8 +35,16 @@ import org.astrogrid.config.Config;
  */
 public class RegistryAdminTest extends TestCase {
     
-    RegistryAdminService ras = null;
+    IAdmin ras = null;
+    IAdmin rasv1_0 = null;
     AuthorityListManager alm = null;
+    
+    /**
+     * Our debug logger.
+     *
+     */
+    //private static Log log = LogFactory.getLog(RegistryAdminTest.class);    
+    
     public RegistryAdminTest() {
         
     }
@@ -46,98 +55,114 @@ public class RegistryAdminTest extends TestCase {
     */ 
     public void setUp() throws Exception {
         super.setUp();
+        //log.debug("doing setup log4j");
+        //log.info("how about log4j info doing setup log4j");        
         File fi = new File("target/test-classes/conf.xml");
         Properties props = new Properties();
         props.setProperty("create-database", "true");
         props.setProperty("configuration",fi.getAbsolutePath());
-        
         if(fi != null) {
           XMLDBManager.registerDB(props);
         }
-        ras = new RegistryAdminService();
+        ras = AdminFactory.createAdminService("0.1");
+        rasv1_0 = AdminFactory.createAdminService("1.0");
         alm = new AuthorityListManager();
     }
+
     
-        
-    public void testUpdateARegv10() throws Exception {
-        Document doc = askQueryFromFile("ARegistryv10.xml");
-        ras.Update(doc);
+    public void testUpdateARegv1_0() throws Exception {
+    	System.out.println("start testUpdateARegv1_0");    	
+        Document doc = askQueryFromFile("ARegistryv1_0.xml");
+        Document resultDoc = rasv1_0.updateInternal(doc);
+        HashMap hm = alm.getManagedAuthorities("astrogridv1_0","1.0");
+        System.out.println("hm tostring = " + hm.toString());
+        assertTrue(hm.containsKey(new AuthorityList("registry.test","1.0")));
+        assertTrue(hm.containsValue(new AuthorityList("registry.test","1.0","registry.test"))) ;       
+        assertTrue(!resultDoc.getDocumentElement().hasChildNodes());        
+        assertEquals(resultDoc.getDocumentElement().getLocalName(),"UpdateResponse");   
+    	System.out.println("start testUpdateARegv1_0");    	
+    }
+    
+    public void testUpdateMultipleRecordsv1_0() throws Exception {
+        Document doc = askQueryFromFile("Multiple_ResourceRecordsv1_0.xml");
+        Document resultDoc = rasv1_0.updateInternal(doc);
+        assertTrue(!resultDoc.getDocumentElement().hasChildNodes());
+        assertEquals(resultDoc.getDocumentElement().getLocalName(),"UpdateResponse");        
+    }  
+
+    public void testUpdateInvalidv1_0NotManaged() throws Exception {
+        Document doc = askQueryFromFile("InvalidEntryv1_0.xml");
+        Document resultDoc = rasv1_0.updateInternal(doc);
+        assertEquals(1,resultDoc.getElementsByTagNameNS("*","Fault").getLength());
+    }
+    
+    public void testUpdateNewRegv1_0() throws Exception {
+        Document doc = askQueryFromFile("NewRegistryv1_0.xml");
+        Document resultDoc = rasv1_0.updateInternal(doc);
+        HashMap hm = alm.getManagedAuthorities("astrogridv1_0","1.0");
+        System.out.println("newreghm tostring = " + hm.toString());
+        assertTrue(hm.containsKey(new AuthorityList("new.registry","1.0")));
+        assertTrue(hm.containsValue(new AuthorityList("new.registry","1.0","new.registry")));
+        assertTrue(hm.containsValue(new AuthorityList("new.registry.1","1.0","new.registry")));        
+        assertTrue(!resultDoc.getDocumentElement().hasChildNodes());        
+        assertEquals(resultDoc.getDocumentElement().getLocalName(),"UpdateResponse");       
+    }
+
+    public void testUpdateAnotherNewRegInvalidv1_0() throws Exception {
+        Document doc = askQueryFromFile("NewRegistryInvalidv1_0.xml");
+        Document resultDoc = rasv1_0.updateInternal(doc);
+        HashMap hm = alm.getManagedAuthorities("astrogridv1_0","1.0");
+        assertTrue(hm.containsKey(new AuthorityList("new.registry","1.0")));
+        assertTrue(hm.containsValue(new AuthorityList("new.registry","1.0","new.registry")));
+        assertTrue(hm.containsValue(new AuthorityList("new.registry.1","1.0","new.registry")));        
+        assertEquals(resultDoc.getDocumentElement().getLocalName(),"Fault");       
+    }
+    
+    public void testUpdateARegv0_10() throws Exception {
+    	System.out.println("start testUpdateAregv0_10");
+        Document doc = askQueryFromFile("ARegistryv0_10.xml");
+        Document resultDoc = ras.updateInternal(doc);
         HashMap hm = alm.getManagedAuthorities("astrogridv0_10","0.10");
-        System.out.println("managed authorities size = " + hm.size());
-        assertEquals(1,hm.size());
+        System.out.println("hm.tostring = " + hm.toString());
+        assertTrue(hm.containsKey(new AuthorityList("registry.test","0.10")));
+        assertTrue(hm.containsValue(new AuthorityList("registry.test","0.10","registry.test")));
+        assertTrue(!resultDoc.getDocumentElement().hasChildNodes());        
+        assertEquals(resultDoc.getDocumentElement().getLocalName(),"UpdateResponse");
+    	System.out.println("done testUpdateAregv0_10");        
+    }
+
+    public void testUpdateAuthorityv0_10() throws Exception {
+        Document doc = askQueryFromFile("AstrogridStandardAuthorityv0_10.xml");
+        Document resultDoc = ras.updateInternal(doc);
+        HashMap hm = alm.getManagedAuthorities("astrogridv0_10","0.10");
+        assertTrue(hm.containsValue(new AuthorityList("astrogrid.org","0.10","registry.test")));        
+        assertTrue(!resultDoc.getDocumentElement().hasChildNodes());
+        assertEquals(resultDoc.getDocumentElement().getLocalName(),"UpdateResponse");        
     }
     
 
-    public void testUpdateAuthorityv10() throws Exception {
-        Document doc = askQueryFromFile("AstrogridStandardAuthorityv10.xml");
-        ras.Update(doc);
-        HashMap hm = alm.getManagedAuthorities("astrogridv0_10","0.10");
-        System.out.println("managed authorities size = " + hm.size());
-        assertEquals(2,hm.size());
-    }
-        
     public void testUpdateInvalidv0_10NotManaged() throws Exception {
-        Document doc = askQueryFromFile("InvalidEntryv10.xml");
-        Document docUpdate = ras.Update(doc);
-        assertEquals(1,docUpdate.getElementsByTagNameNS("*","Fault").getLength());
+        Document doc = askQueryFromFile("InvalidEntryv0_10.xml");
+        Document resultDoc = ras.updateInternal(doc);
+        assertEquals(1,resultDoc.getElementsByTagNameNS("*","Fault").getLength());
     }
-        
-    public void testUpdateOtherRegv10() throws Exception {
+    
+    public void testUpdateNewReg0_10() throws Exception {
         Document doc = askQueryFromFile("Cambridge0_10_Reg.xml");
-        ras.Update(doc);
+        Document resultDoc = ras.updateInternal(doc);
         HashMap hm = alm.getManagedAuthorities("astrogridv0_10","0.10");
-        System.out.println("managed authorities size = " + hm.size());
-        assertEquals(3,hm.size());
+        assertTrue(hm.containsKey(new AuthorityList("uk.ac.cam.ast","0.10")));
+        assertTrue(hm.containsValue(new AuthorityList("uk.ac.cam.ast","0.10","uk.ac.cam.ast")));        
+        assertTrue(!resultDoc.getDocumentElement().hasChildNodes());
+        assertEquals(resultDoc.getDocumentElement().getLocalName(),"UpdateResponse");        
     }
-        
-    public void testUpdateAuthorityInvalidv0_10NotManaged() throws Exception {
-        Document doc = askQueryFromFile("AstrogridStandardAuthorityv10Invalid.xml");
-        Document docUpdate = ras.Update(doc);
-        assertEquals(1,docUpdate.getElementsByTagNameNS("*","Fault").getLength());
-    }
-        
-    public void testUpdateRegistryInvalidv0_10MisMatch() throws Exception {
+    
+    public void testUpdateInvalidNewReg0_10() throws Exception {
         Document doc = askQueryFromFile("Cambridge0_10_RegInvalid.xml");
-        Document docUpdate = ras.Update(doc);
-        assertEquals(1,docUpdate.getElementsByTagNameNS("*","Fault").getLength());
-    }
-    
-        
-    public void testUpdateRegistryInvalidv0_10MissingAuth() throws Exception {
-        Document doc = askQueryFromFile("Cambridge0_10_RegInvalid2.xml");
-        Document docUpdate = ras.Update(doc);
-        assertEquals(1,docUpdate.getElementsByTagNameNS("*","Fault").getLength());
-    }
-    
-    /*
-    public void testUpdateOAIv0_10() throws Exception {
-        RegistryAdminService ras = new RegistryAdminService();
-        Document doc = askQueryFromFile("OAIHandlerv0_10.xml");
-        ras.updateNoCheck(doc,"0.10");        
-    }
-    
-    public void testUpdateOAIv0_9() throws Exception {
-        RegistryAdminService ras = new RegistryAdminService();
-        Document doc = askQueryFromFile("OAIHandlerv0_9.xml");
-        ras.updateNoCheck(doc,"0.9");
-    }
-    */
-
-    /*
-    public void testUpdateOAIInvalidv0_10() throws Exception {
-        RegistryAdminService ras = new RegistryAdminService();
-        Document doc = askQueryFromFile("OAIHandlerInvalidv0_10.xml");
-        ras.updateNoCheck(doc,"0.10");
-        fail("ERROR: Should have caught an invalid exception and it passed.");        
-    }
-    
-    public void testUpdateOAIInvalidv0_9() throws Exception {
-        RegistryAdminService ras = new RegistryAdminService();
-        Document doc = askQueryFromFile("OAIHandlerInvalidv0_9.xml");
-        ras.updateNoCheck(doc,"0.9");
-        fail("ERROR: Should have caught an invalid exception and it passed.");            
-    }
-    */
+        Document resultDoc = ras.updateInternal(doc);
+        HashMap hm = alm.getManagedAuthorities("astrogridv0_10","0.10");
+        assertEquals(resultDoc.getDocumentElement().getLocalName(),"Fault");        
+    }    
     
     /**
      * Method: askQueryFromFile

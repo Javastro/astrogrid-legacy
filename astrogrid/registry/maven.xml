@@ -11,9 +11,7 @@
     xmlns:util="jelly:util"
     xmlns:log="jelly:log"
     xmlns:define="jelly:define"
-    xmlns:deploy="deploy"
-	default="astrogrid-install-snapshot"	
-    >
+    xmlns:deploy="deploy">
     
     <goal name="astrogrid-deploy-site">
     	<attainGoal name="astrogrid-build-site" />

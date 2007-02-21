@@ -21,20 +21,18 @@
 	<description> <![CDATA[
 	<p>
 		<br />
-		Download Location of war: http://www.astrogrid.org/maven/org.astrogrid/wars/
- 		<br />See astrogrid-registry-???.war  where ??? is a version number.  Look at dates for latest release.
-		
-		
-		The registry is based around metadata for virtual observatories based on IVOA standards <a href="http://www.ivoa.net">IVOA website</a>.
-		A registry holds vast amounts of metadata for particular Resources.
-		A Resource can be a data sets, web services, services, information on other registries.  
-		For the registry to be interoperable with
-		other registries in other varous virtual observatories, the registry must conform to an international recognized schema.  
-		The registry currently conforms to the IVOA Resoruce metatadata schema.
-		See the <a href="http://www.ivoa.net/twiki/bin/view/IVOA/IVOARegWp03">IVOA website for the current schema</a>.
-		Astrogrid is one of the first implementors of a VO trhough a grid, because of this Astrogrid is ahead of IVOA standards
-		causing some implementations or standards to be extended, recently the registry metadata has been extended to allow
-		for particular specefic applications metadata to be entered into the registry.
+		The IVOA Registry will allow an astronomer or service to be able to locate, get details of, and make use of, any resource located anywhere in the IVO space, ie in any Virtual Observatory. The IVOA will define the protocols and standards whereby different registry services are able to interoperate and thereby realise this goal. This page is information about the Astrogrid Registry service that conforms to those standards.
+		<br />
+There are a few specifications that the IVOA Registry has defined and you can find reference to that on the main IVOA Registry page: http://www.ivoa.net/twiki/bin/view/IVOA/IvoaResReg or at the main document repository at: http://www.ivoa.net/Documents.  There are mainly two areas:
+<br />
+    * Metadata - Which is a set of XML schemas describing 'Resources'.  Such as Services, Data Sets, Applications, and others.
+<br />
+    * Interface Specification - is a specification that details how the registry can be searched and how registries must interoperate with other registries.
+<br />
+
+There are two main types of Registries.  A 'Publishing' registry which must publish its data in accordance with the Interface specification, and a 'Full' Registry which must be able to hold all 'Resource' records comply with the search interface and be able to harvest other registries hence it must conform with the Interface Specification fully.  Though not as common there is also a 'Specialized' registry that is the same as a 'Full' registry just does not hold all Resource records.
+<br />
+The Astrogrid Registry conforms fully with the IVOA specification and can be setup as just a 'Publishing', 'Full' or 'Special' registry all installs have a Search interface for searching and a Harvest interface for publishing. 
 	
 		<br />
 		<b>See the webapp section for documentation on how to install the registry and how it runs</b>		

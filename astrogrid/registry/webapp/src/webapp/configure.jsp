@@ -171,10 +171,6 @@ Below you will find various configuration and installation instructions for your
 		The query password used to create Resources or collections, and shutdown the internal eXist database if it is internally being ran.</li>
 			<li>reg.amend.defaultversion -- 
 		The default registry version used, May be overriden on updates and queries based on vr namespace.</li>
-			<li>reg.amend.validate -- 
-		Have validation on or off.</li>
-			<li>reg.amend.quiton.invalid -- 
-		Quit on validation.</li>
 			<li>reg.amend.returncount -- 
 		The maximum number of results to return from queries.</li>
 			<li>reg.amend.harvest -- 

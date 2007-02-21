@@ -4,7 +4,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import org.astrogrid.registry.server.query.QueryConfigExtractor;
 import org.astrogrid.xmldb.client.XMLDBFactory;
 import org.astrogrid.xmldb.client.XMLDBService;
 import org.astrogrid.config.Config;
@@ -13,7 +12,6 @@ import org.astrogrid.util.DomHelper;
 
 import org.xmldb.api.base.ResourceSet;
 import org.xmldb.api.modules.XMLResource;
-import org.xmldb.api.base.Resource;
 import org.xmldb.api.base.Collection;
 import org.xmldb.api.base.XMLDBException;
 
@@ -65,10 +63,11 @@ public class XMLDBRegistry {
        Collection coll = null;
        try {
            coll = xdb.openCollection(collectionName);
-           log.info("Now querying in colleciton = " + collectionName + " query = " + xqlString);
+           log.info("Now querying in collection = " + collectionName + " query = " + xqlString);
            //start a time to see how long the query took.
            long beginQ = System.currentTimeMillis(); 
            ResourceSet rs = xdb.queryXQuery(coll,xqlString);
+           
            log.info("Total Query Time = " + (System.currentTimeMillis() - beginQ));
            log.info("Number of results found in query = " + rs.getSize());
            return rs;
@@ -110,31 +109,51 @@ public class XMLDBRegistry {
             }
         }
     }
-    
-    
+        
     public boolean storeXMLResource(String ident, String collectionName, Node node) throws XMLDBException, InvalidStorageNodeException {
         if(Node.ELEMENT_NODE == node.getNodeType()) {
             return storeXMLResource(ident, collectionName, DomHelper.ElementToString((Element)node));
         } else if(Node.DOCUMENT_NODE == node.getNodeType()) {
             return storeXMLResource(ident, collectionName, DomHelper.DocumentToString((Document)node));
         }
-        throw new InvalidStorageNodeException();
+        throw new InvalidStorageNodeException("Unknown or Invalid Node trying to be stored in the registry db.  Only Document and Element nodes are allowed");
     }
-    
+
     private boolean storeXMLResource(String ident,String collectionName, String node) throws XMLDBException {
         Collection coll = null;
         try {
             coll = xdb.openAdminCollection(collectionName);
             xdb.storeXMLResource(coll,ident,node);
         }finally {
-            try {
-                xdb.closeCollection(coll);
-            }catch(XMLDBException xmldb) {
-                log.error(xmldb);
-            }
+            xdb.closeCollection(coll);
         }
         return true;
     }
+    
+    public Collection getCollection(String collectionName, boolean admin) throws XMLDBException {
+        if(admin)
+            return xdb.openAdminCollection(collectionName);
+        else
+            return xdb.openCollection(collectionName);
+    }
+    
+    public boolean storeXMLResource(Collection coll, String ident, Node node) throws XMLDBException, InvalidStorageNodeException {
+    	
+    	 if(Node.ELEMENT_NODE == node.getNodeType()) {  
+    		 xdb.storeXMLResource(coll,ident,DomHelper.ElementToString((Element)node));
+    		 return true;        
+    	 }else if(Node.DOCUMENT_NODE == node.getNodeType() ) {
+    		 xdb.storeXMLResource(coll,ident,DomHelper.DocumentToString((Document)node));
+    		 return true;        
+    	 }    	
+        throw new InvalidStorageNodeException("Unknown or Invalid Node trying to be stored in the registry db.  Only Document and Element nodes are allowed");
+    }
+    
+    public boolean closeCollection(Collection coll) throws XMLDBException {
+        xdb.closeCollection(coll);
+        return true;
+    }
+        
     
     public void removeResource(String ident, String collectionName) throws XMLDBException {
         Collection coll = null;
@@ -142,11 +161,7 @@ public class XMLDBRegistry {
             coll = xdb.openAdminCollection(collectionName);
             xdb.removeResource(coll,ident);
         } finally {
-            try {
-                xdb.closeCollection(coll);
-            }catch(XMLDBException xmldb) {
-                log.error(xmldb);
-            }            
+            xdb.closeCollection(coll);
         }
     }
 }

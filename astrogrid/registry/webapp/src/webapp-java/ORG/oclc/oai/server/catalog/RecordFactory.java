@@ -167,18 +167,18 @@ public abstract class RecordFactory {
              String datestamp, Iterator setSpecs, boolean isDeleted)
    throws IllegalArgumentException, OAIInternalServerError {
        StringBuffer xmlHeader = new StringBuffer();
-       xmlHeader.append("<header");
+       xmlHeader.append("<oai:header");
        if (isDeleted) {
       xmlHeader.append(" status=\"deleted\"");
        }
-       xmlHeader.append("><identifier>");
+       xmlHeader.append("><oai:identifier>");
        xmlHeader.append(OAIUtil.xmlEncode(identifier));
-       xmlHeader.append("</identifier><datestamp>");
+       xmlHeader.append("</oai:identifier><oai:datestamp>");
        xmlHeader.append(datestamp);
-       xmlHeader.append("</datestamp>");
+       xmlHeader.append("</oai:datestamp>");
        if (setSpecs != null) {
       while (setSpecs.hasNext()) {
-          xmlHeader.append("<setSpec>");
+          xmlHeader.append("<oai:setSpec>");
 //                     try {
 //                         if (encodeSetSpec) {
 //                             xmlHeader.append(URLEncoder.encode((String)setSpecs.next(), "UTF-8"));
@@ -190,10 +190,10 @@ public abstract class RecordFactory {
 //                         e.printStackTrace();
 //                         throw new OAIInternalServerError(e.getMessage());
 //                     }
-          xmlHeader.append("</setSpec>");
+          xmlHeader.append("</oai:setSpec>");
       }
        }
-       xmlHeader.append("</header>");
+       xmlHeader.append("</oai:header>");
        return new String[] {
       xmlHeader.toString(),
       identifier
@@ -233,9 +233,9 @@ public abstract class RecordFactory {
    throws IllegalArgumentException, CannotDisseminateFormatException {
         try {
             if (isDeleted(nativeItem)) {
-                StringBuffer sb = new StringBuffer("<record>");
+                StringBuffer sb = new StringBuffer("<oai:record>");
                 sb.append(createHeader(nativeItem)[0]);
-                sb.append("</record>");
+                sb.append("</oai:record>");
                 return sb.toString();
             }
             String result = quickCreate(nativeItem, schemaURL, metadataPrefix);
@@ -291,18 +291,18 @@ public abstract class RecordFactory {
    throws IllegalArgumentException, CannotDisseminateFormatException, OAIInternalServerError {
         if (debug) System.out.println("RecordFactory.create");
    StringBuffer xmlRec = new StringBuffer();
-   xmlRec.append("<record><header");
+   xmlRec.append("<oai:record><oai:header");
    if (isDeleted) {
        xmlRec.append(" status=\"deleted\"");
    }
-   xmlRec.append("><identifier>");
+   xmlRec.append("><oai:identifier>");
    xmlRec.append(OAIUtil.xmlEncode(identifier));
-   xmlRec.append("</identifier><datestamp>");
+   xmlRec.append("</oai:identifier><oai:datestamp>");
    xmlRec.append(datestamp);
-   xmlRec.append("</datestamp>");
+   xmlRec.append("</oai:datestamp>");
    if (setSpecs != null) {
        while (setSpecs.hasNext()) {
-      xmlRec.append("<setSpec>");
+      xmlRec.append("<oai:setSpec>");
 //                 try {
 //                     if (encodeSetSpec) {
 //                         xmlRec.append(URLEncoder.encode((String)setSpecs.next(), "UTF-8"));
@@ -313,14 +313,14 @@ public abstract class RecordFactory {
 //                     e.printStackTrace();
 //                     throw new OAIInternalServerError(e.getMessage());
 //                 }
-      xmlRec.append("</setSpec>");
+      xmlRec.append("</oai:setSpec>");
        }
    }
-   xmlRec.append("</header>");
+   xmlRec.append("</oai:header>");
       if (debug) System.out.println("RecordFactory.create: header finished");
    if (!isDeleted) {
             if (debug) System.out.println("RecordFactory.create: starting metadata");
-       xmlRec.append("<metadata>");
+       xmlRec.append("<oai:metadata>");
        Iterator iterator = getCrosswalks().iterator();
        while (iterator.hasNext()) {
       Map.Entry entry = (Map.Entry)iterator.next();
@@ -334,17 +334,17 @@ public abstract class RecordFactory {
           xmlRec.append(crosswalk.createMetadata(getMetaDataFromMap(nativeItem)));
       }
        }
-       xmlRec.append("</metadata>");
+       xmlRec.append("</oai:metadata>");
             if (debug) System.out.println("RecordFactory.create: finished metadata");
        if (abouts != null) {
       while (abouts.hasNext()) {
-          xmlRec.append("<about>");
+          xmlRec.append("<oai:about>");
           xmlRec.append((String)abouts.next());
-          xmlRec.append("</about>");
+          xmlRec.append("</oai:about>");
       }
        }
    }
-   xmlRec.append("</record>");
+   xmlRec.append("</oai:record>");
         if (debug) System.out.println("RecordFactory.create: return=" + xmlRec.toString());
    return xmlRec.toString();
     }

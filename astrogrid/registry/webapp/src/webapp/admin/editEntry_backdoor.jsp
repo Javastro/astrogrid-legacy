@@ -39,7 +39,9 @@
 <p>
 This page is similiar to Enter resource, but calls add/update method that the harvester uses in that it
 updates any Resource even if it is not managed by this Registry. This is normally dangerous, you should let the 
-harvester grab resources, but it can be usefull to quickly get in a resource.
+harvester grab resources, but it can be usefull to quickly get in or repair a resource.
+<font color='blue'>Warning this will use your current Contract Version-VOResource Version for the update, see your menu to 
+check it is correct.</font>
 </p>
 
 

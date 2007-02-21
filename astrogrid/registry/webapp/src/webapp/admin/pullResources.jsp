@@ -30,7 +30,7 @@ Adding resources at <%= resourceUrl %>
 
 <pre>
 <%
-   RegistryAdminService server = new RegistryAdminService();
+   IAdmin server = JSPHelper.getAdminService(request);
    //Document entry = server.harvestFromResource(DomHelper.newDocument(resource));
    Document result = server.updateResource(DomHelper.newDocument(resourceUrl));
    if (result != null) {

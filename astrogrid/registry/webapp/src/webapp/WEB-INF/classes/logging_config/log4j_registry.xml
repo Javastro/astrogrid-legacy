@@ -16,7 +16,7 @@
 
     <!-- the following appenders write to files  -->
     <appender name="registry.core" class="org.apache.log4j.RollingFileAppender">
-        <param name="File" value="${logger.dir}/ag_registry.log"/>
+        <param name="File" value="${logger.dir.registry}/ag_registry.log"/>
         <param name="MaximumFileSize" value="500000"/>
         <param name="Encoding" value="UTF-8"/>
         <layout class="org.apache.log4j.PatternLayout">
@@ -26,7 +26,7 @@
 
     <!-- the following appenders write to files  -->
     <appender name="registry.other" class="org.apache.log4j.RollingFileAppender">
-        <param name="File" value="${logger.dir}/ag_other.log"/>
+        <param name="File" value="${logger.dir.registry}/ag_other.log"/>
         <param name="MaximumFileSize" value="500000"/>
         <param name="Encoding" value="UTF-8"/>
         <layout class="org.apache.log4j.PatternLayout">

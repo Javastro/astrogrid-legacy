@@ -85,14 +85,14 @@
     </dependency>
     <dependency>
       <groupId>xerces</groupId>
-      <artifactId>xerces</artifactId>
-      <version>2.4.0</version>
+      <artifactId>xercesImpl</artifactId>
+      <version>20060228</version>
       <type>jar</type>
     </dependency>
     <dependency>
       <groupId>xml-apis</groupId>
       <artifactId>xml-apis</artifactId>
-      <version>1.0.b2</version>
+        <version>20060225</version>
       <type>jar</type>
     </dependency>
     <dependency>

@@ -11,9 +11,7 @@
     xmlns:log="jelly:log"
     xmlns:define="jelly:define"
     xmlns:deploy="deploy"
-    xmlns:artifact="artifact"		
-	default="astrogrid-install-snapshot"
-    >
+    xmlns:artifact="artifact">
 	
 	<property name="webapp.docs" location="${basedir}/target/webapp-docs" />	
 
@@ -230,11 +228,12 @@
         <ant:echo message="Artifact : ${pom.artifactId}"/>
         <ant:echo message="Pre-processing for webapp task"/>
         <attainGoal name="site-webapp"/>
-        <attainGoal name="init.axis"/>
+        <!--<attainGoal name="init.axis"/>
         <ant:echo message="Modifying war:webapp location"/>
         <ant:echo message="  Before : ${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
         <core:expr value="${pom.getPluginContext('maven-war-plugin').setVariable('maven.war.webapp.dir', axisDir)}"/>
         <ant:echo message="  After  : ${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
+        -->
     </preGoal>
 
     <!--+
@@ -290,13 +289,15 @@
                 <include name="xsl/*.xsl"/>            	
             </patternset>
         </ant:unzip>
+    	<!--
         <ant:copy toDir="${wsddDir}" flatten="true">
             <fileset dir="${tempDir}">
                 <include name="**/*.wsdd"/>
             </fileset>
         </ant:copy>
+    	-->
     	
-        <ant:copy verbose="false" todir="${axisDir}/WEB-INF/classes/xsl" overwrite="false">
+        <ant:copy verbose="false" todir="${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}/WEB-INF/classes/xsl" overwrite="false">
         	<fileset dir="${tempDir}/xsl">        
             </fileset>
         </ant:copy>
@@ -316,7 +317,7 @@
         </ant:copy>
         -->
     	
-        <ant:copy verbose="false" todir="${axisDir}/docs" overwrite="false">
+        <ant:copy verbose="false" todir="${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}/docs" overwrite="false">
         	<fileset dir="${webapp.docs}">
             </fileset>
         </ant:copy>
@@ -331,11 +332,12 @@
         -->
         <!--+
             | Initialise our classpaths.
-            +-->
+    
         <attainGoal name="init.classpath"/>
+        +-->        
         <!--+
             | Deploy our Query service.
-            +-->
+           
         <ant:echo message="Deploying Registry Query WebService"/>
         <ant:java classname="org.apache.axis.utils.Admin"
             dir="${axisDir}/WEB-INF"
@@ -345,9 +347,10 @@
             <arg value="server"/>
             <arg value="${wsddDir}/querydeploy.wsdd"/>
         </ant:java>
+         +-->
         <!--+
             | Deploy our Registry Admin WebService.
-            +-->
+            
         <ant:echo message="Deploying Registry Admin WebService"/>
         <ant:java classname="org.apache.axis.utils.Admin"
             dir="${axisDir}/WEB-INF"
@@ -357,14 +360,13 @@
             <arg value="server"/>
             <arg value="${wsddDir}/adminquerydeploy.wsdd"/>
         </ant:java>
+        +-->
 
     	<!--
         <ant:copy verbose="false" todir="${maven.build.dir}/${pom.artifactId}" overwrite="false">
             <ant:fileset dir="${axisDir}">
             </ant:fileset>
         </ant:copy>
-		
-
 	    </preGoal>		
 	    -->
     </postGoal>

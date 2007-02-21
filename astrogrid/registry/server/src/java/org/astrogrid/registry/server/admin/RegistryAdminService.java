@@ -3,43 +3,27 @@ package org.astrogrid.registry.server.admin;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Attr;
 
-import javax.security.auth.Subject;
+import org.xmldb.api.base.ResourceSet;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import java.io.OutputStream;
 
-import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
+import javax.xml.parsers.ParserConfigurationException;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.ArrayList;
 
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.config.Config;
 import org.astrogrid.registry.server.XSLHelper;
-import org.astrogrid.registry.server.query.QueryConfigExtractor;
 
 import org.astrogrid.registry.common.RegistryDOMHelper;
 import org.astrogrid.registry.common.RegistryValidator;
 import org.astrogrid.util.DomHelper;
 import org.astrogrid.registry.RegistryException;
-import org.astrogrid.registry.server.query.DefaultQueryService;
-import org.astrogrid.registry.server.harvest.RegistryHarvestService;
 import org.astrogrid.registry.server.SOAPFaultException;
 import org.astrogrid.registry.server.xmldb.XMLDBRegistry;
 import org.astrogrid.registry.server.InvalidStorageNodeException;
@@ -48,28 +32,17 @@ import org.astrogrid.registry.server.query.QueryHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.StringReader;
-
-import java.net.URL;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import junit.framework.AssertionFailedError;
-
 import org.xmldb.api.base.XMLDBException;
 
 //import org.astrogrid.security.ServiceSecurityGuard;
 /**
  * Class Name: RegistryAdminService
  * Description: This class represents the web service to the Administration
- * piece of the registry.  This class will handle inserts/updates Ressources
- * in the registry including ones by the harvester.  It also makes sure Authority ids
+ * piece of the registry.  This class will handle inserts/updates Resources
+ * in the registry.  It also makes sure Authority ids
  * do not conflict with one another.  A registry may manage 1 to many authority id's, but no 
  * other Regitry type can have those authority id's.  Read more on the manageAuths HashMap variable for more
  * information on this.
@@ -77,7 +50,7 @@ import org.xmldb.api.base.XMLDBException;
  * @author Kevin Benson
  * 
  */
-public class RegistryAdminService {
+public abstract class RegistryAdminService {
                           
     /**
      * Logging variable for writing information to the logs
@@ -87,6 +60,13 @@ public class RegistryAdminService {
    
    
    protected XMLDBRegistry xdbRegistry = null;
+   
+   
+   
+   /**
+    * @deprecated Not used anymore originally an outputstream to stream back results.
+    */
+   protected OutputStream out = null;
 
    /**
     * conf - Config variable to access the configuration for the server normally
@@ -95,11 +75,6 @@ public class RegistryAdminService {
     */   
    public static Config conf = null;
 
-   /**
-    * final variable for the default AuthorityID associated to this registry.
-    */   
-   private static final String AUTHORITYID_PROPERTY = 
-                               "org.astrogrid.registry.authorityid";
 
    /**
     * Hashmap of the Authories managed by this registry, and the authority
@@ -115,7 +90,6 @@ public class RegistryAdminService {
    
    protected AuthorityListManager alm = null;
    
-
    /**
     * Static to be used on the initiatian of this class for the config
     */
@@ -127,29 +101,31 @@ public class RegistryAdminService {
       }      
    }
    
+   /**
+    * Default Constructor: RegistryAdminService
+    * Description: Instantiated by the XFire service for the Update WebService or via the
+    * jsp pages (currently editEntry.jsp)
+    *
+   
    public RegistryAdminService() {
        xdbRegistry = new XMLDBRegistry();
        adminHelper = new AdminHelper();
        alm = new AuthorityListManager(xdbRegistry);
-   }
+   } */ 
    
-   /**
-    * Method: Update
-    * Description: Update Web Service method, performs an update to the registry. Actually calls updateResponse.  It can
-    * handle many Resource elements if necessary to do multiple updates to the registry.  If a element
-    * is not present in the database it automatically inserts.  Only Resource elements that are managed by
-    * this registry are allowed, with the exception to Registry types(for discovering new registries)
-    * and Authority types(for inserting an authority id to be managed by this registry).
-    * 
-    * @param update XML DOM containing Resource XML elements
-    * @return Nothing is returned except an empty UpdateResponse element for conforming with SOAP standards
-    * of a wrapped wsdl.
-    */
-   public Document Update(Document update) {
-      log.debug("start update");      
-      return updateResource(update);
-   }
+   private String contractVersion = null;
+   private String voResourceVersion = null;
+   private String adminwsdlNS = null;
    
+   public RegistryAdminService(String contractVersion, String voResourceVersion, String adminwsdlNS) {
+	   this.contractVersion = contractVersion;
+	   this.voResourceVersion = voResourceVersion;
+	   this.adminwsdlNS = adminwsdlNS;
+       xdbRegistry = new XMLDBRegistry();
+       adminHelper = new AdminHelper();
+       alm = new AuthorityListManager(xdbRegistry);
+   }
+      
    /**
     * Method: updateResponse
     * Description: Called by the web service method and jsp's, performs an update to the registry. It can
@@ -158,15 +134,19 @@ public class RegistryAdminService {
     * this registry are allowed, with the exception to Registry types(for discovering new registries)
     * and Authority types(for inserting an authority id to be managed by this registry).
     * 
-    * @param update XML DOM containing Resource XML elements
+    * @param update XML DOM containing Resource XML elements.
+    * @param version specify the version.  This is the VOResource 'vr namespace' version. May be null in
+    * which case will see if there is a version attribute or try to find it from the vr namespace and if that
+    * fails grabs the default version from the properties.
     * @return Nothing is returned except an empty UpdateResponse element for conforming with SOAP standards
     * of a wrapped wsdl.
     */
-   public Document updateResource(Document update) {
+   protected Document updateResource(Document update) throws SOAPFaultException {
       log.debug("start updateResource");
       long beginUpdate = System.currentTimeMillis();
       boolean error = false;
       String soapErrorMessage = "";
+      String version = voResourceVersion;
 
       //get the main authority id for this registry.
       String authorityID = conf.getString("reg.amend.authorityid");
@@ -177,46 +157,48 @@ public class RegistryAdminService {
       // xml can come in a few various forms.  This xsl will make it
       // consistent in the db and throughout this registry.
       
-      Document xsDoc = null;
-      
-      String defaultNS = null;            
+      Document xsDoc = null;          
       boolean hasStyleSheet = false;            
       
       if(update == null) {
-          return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + "Nothing on request 'null sent'","Nothing on request 'null sent'");          
+    	  
+          throw new SOAPFaultException("Server Error: " + "Nothing on request 'null sent'","Nothing on request 'null sent'", adminwsdlNS, SOAPFaultException.ADMINSOAP_TYPE);          
       }
       
-      //Make a date. The registry automatically fills in the updated attribute for a Resource.
-      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-      Date updateDate = new Date();
-      String updateDateString = sdf.format(updateDate);
       
       //Get all the Resource elements
       NodeList nl = null;
+      String versionNumber = null;
       
-      String attrVersion = null;
-      /*
-      Element findVersionElement = null;
-      if(update.getDocumentElement().hasChildNodes()) {
-          nl = update.getDocumentElement().getChildNodes();
-          for(int k = 0;k < nl.getLength() && findVersionElement == null;k++) {
-              if(Node.ELEMENT_NODE == nl.item(k).getNodeType())
-                  findVersionElement = (Element) nl.item(k);
-          }
-      }else {
-          findVersionElement = (Element)update.getDocumentElement();
+      if(version != null)
+    	  versionNumber = version;
+      else {
+    	  version = update.getDocumentElement().getAttribute("version");
+    	  if(version.trim().length() > 0) {
+    		  versionNumber = version;
+    	  }else {
+    		  versionNumber = RegistryDOMHelper.findVOResourceVersionFromNode((Node)update.getDocumentElement());
+    		  if(versionNumber == null) {
+    			  throw new SOAPFaultException("Server Error: " + "Cannot determine version number (voresource version) to make update","Cannot determine version number (voresource version) to make update", adminwsdlNS, SOAPFaultException.ADMINSOAP_TYPE);
+    		  }//if
+    	  }
       }
-      */
+
+      //Make a date. The registry automatically fills in the updated attribute for a Resource.
+      String updateFormat = "yyyy-MM-dd'T'HH:mm:ss";
+      if(versionNumber.equals("0.10")) {
+    	  updateFormat = "yyyy-MM-dd";
+      }
+      SimpleDateFormat sdf = new SimpleDateFormat(updateFormat);
+      Date updateDate = new Date();
+      String updateDateString = sdf.format(updateDate);
       
-      String versionNumber = RegistryDOMHelper.findVOResourceVersionFromNode((Node)update.getDocumentElement());
       
       log.debug("Registry Version being updated = " + versionNumber);      
-      String vrNS = "http://www.ivoa.net/xml/VOResource/v" + versionNumber;
-      //log.info("Registry namespace being updated = " + vrNS);
       String collectionName = "astrogridv" + versionNumber.replace('.','_');
       log.debug("Collection Name = " + collectionName);
       //do we have a stylesheet to massage the data to make it consistent in the db.
-      hasStyleSheet = conf.getBoolean("reg.custom.updatestylesheet." + versionNumber,false);
+      hasStyleSheet = true;//conf.getBoolean("reg.custom.updatestylesheet." + versionNumber,false);
       //perform the transformation if necessary; either way set xsDoc to the
       //Document element to perform the updates through.
       XSLHelper xs = new XSLHelper();
@@ -232,37 +214,31 @@ public class RegistryAdminService {
       } else {
          xsDoc = update;
       }
+      
 
       //Get all the Resource nodes.
       nl = xsDoc.getElementsByTagNameNS("*","Resource");
       if(nl.getLength() == 0) {
-          return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + "No Resources Found to be updated","No Resources Found to be updated");          
+          throw new SOAPFaultException("Server Error: " + "No Resources Found to be updated be sure you are submitting 'Resource' elements not 'resource' or other variants","No Resources Found to be updated be sure you are submitting 'Resource' elements not 'resource' or other variants", adminwsdlNS, SOAPFaultException.ADMINSOAP_TYPE);          
       }
       
       //is validation turned on.
-      boolean validateXML = conf.getBoolean("reg.amend.validate",false);
-
+      boolean validateXML = true;//conf.getBoolean("reg.amend.validate",false);
       if(validateXML) {
           try {
+        	  String validRootElement = xsDoc.getDocumentElement().getLocalName();
+        	  if(validRootElement.equals("Update") || validRootElement.indexOf("Update") != -1) {
+        		  validRootElement = xsDoc.getDocumentElement().getFirstChild().getLocalName();
+        	  }
               //validate the xml (start with the element below the <UPDATE> from the soap body)
-              String rootElement = update.getDocumentElement().getFirstChild().getLocalName();
-              if(rootElement == null) {
-                  rootElement = update.getDocumentElement().getFirstChild().getNodeName();
-              }
-              log.debug("try Validating for version = " + versionNumber +
-                       " with rootElement = " + rootElement);
-              RegistryValidator.isValid(xsDoc,rootElement);
+              RegistryValidator.isValid(xsDoc,validRootElement);
           }catch(AssertionFailedError afe) {
               afe.printStackTrace();
               log.error("Error invalid document = " + afe.getMessage());
-              if(conf.getBoolean("reg.amend.quiton.invalid",false)) {
-                  return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + "Invalid update, document not valid ",afe.getMessage());
-              }//if              
+              throw new SOAPFaultException("Server Error: " + "Invalid update, document not valid ","Server Error: " + "Invalid update, document not valid " + afe.getMessage(), adminwsdlNS, SOAPFaultException.ADMINSOAP_TYPE);           
           }//catch
       }//if
-      
-      log.info("Number of Resources to be attempted for update = " + nl.getLength());
-      
+      log.info("Number of Resources to be attempted for update = " + nl.getLength());      
       AuthorityList someTestAuth = new AuthorityList(authorityID,versionNumber);
       //our cache of managed authorityid's is empty (container must have started).
       //so go and see if we can fill it up based on Managed Authority elements from
@@ -272,7 +248,7 @@ public class RegistryAdminService {
               alm.populateManagedMaps(collectionName, versionNumber);
           }catch(XMLDBException xmldbe) {
               xmldbe.printStackTrace();
-              return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + xmldbe.getMessage(),xmldbe);
+              throw new SOAPFaultException("Server Error: " + xmldbe.getMessage(),xmldbe, adminwsdlNS, SOAPFaultException.ADMINSOAP_TYPE);
           }          
       }else if(!manageAuths.isEmpty() && !manageAuths.containsKey(someTestAuth)) {
           //todo: I do not believe this is needed
@@ -282,58 +258,41 @@ public class RegistryAdminService {
               alm.populateManagedMaps(collectionName, versionNumber);
           }catch(XMLDBException xmldbe) {
               xmldbe.printStackTrace();
-              return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + xmldbe.getMessage(),xmldbe);              
+              throw new SOAPFaultException("Server Error: " + xmldbe.getMessage(),xmldbe,adminwsdlNS,  SOAPFaultException.ADMINSOAP_TYPE);              
           }
       }
 
       if(manageAuths.isEmpty()) {
           //okay this must be the very first time into the registry where
-          //registry is empty. So put a an empty entry for this version.
+          //registry is empty.
           log.info("Empty Registry; no registry types found");
       }
       
-      
-      ArrayList al = new ArrayList();
-      String xql = null;
-      DocumentFragment df = null;
       Node root = null;
-      Document resultDoc = null;
       String ident = null;
       String resKey = null;
       String tempIdent = null;
       boolean addManageError = false;
       String manageNodeVal = null;
       AuthorityList tempAuthorityListKey = null;
-      AuthorityList tempAuthorityListVal = null;
-      
-      //log.info("here is the nl length = " + bhyxdtgdxdsnl.getLength());
-      
+      AuthorityList tempAuthorityListVal = null;      
+
       final int resourceNum = nl.getLength();
       //go through the various resource entries.
       for(int i = 0;i < resourceNum;i++) {
          error = false;
          long beginQ = System.currentTimeMillis();
-         //Looks sort of odd always getting item at number 0
-         //this is because we append it to another element later
-         //hence the nodelist is like a queue and no longer
-         //has the current resource and moves everything up the queue
-         //get the ident/authorityid and resource key elements.
-         ident = RegistryDOMHelper.getAuthorityID((Element)nl.item(0));
+         Element currentResource = (Element)nl.item(0);
+         ident = RegistryDOMHelper.getAuthorityID(currentResource);
          log.info("here is the auth id(1) = " + ident);
          if(ident == null || ident.trim().length() <= 0) {
-             return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + "Could not find the AuthorityID from the Identifier","Could not find the AuthorityID from the Identifier");             
+             throw new SOAPFaultException("Server Error: " + "Could not find the AuthorityID from the Identifier","Could not find the AuthorityID from the Identifier", adminwsdlNS, SOAPFaultException.ADMINSOAP_TYPE);             
          }//if
-         log.debug("here is the ident/authid = " + ident);         
-         resKey = RegistryDOMHelper.getResourceKey((Element)nl.item(0));
+         log.debug("here is the ident/authid = " + ident);
+         resKey = RegistryDOMHelper.getResourceKey(currentResource);
          log.debug("here is the reskey = " + resKey);
          log.info("inspecting in updateResource this auth id = " + ident + " and reskey = " + resKey);
          //set the currentResource element.
-         Element currentResource = (Element)nl.item(0);
-
-         NamedNodeMap attrNNMTest = currentResource.getAttributes();
-         for(int tt= 0;tt < attrNNMTest.getLength();tt++) {
-             Node attrNodeTest = attrNNMTest.item(tt);
-         }
          
          //Sometimes there are other namespaces defined above the
          //Resource element so be sure this Resource element has a
@@ -341,28 +300,46 @@ public class RegistryAdminService {
          //of having invalid xml.
          Node parentNode = currentResource.getParentNode();
          if(parentNode != null && Node.ELEMENT_NODE == parentNode.getNodeType()) {
+             
              //get the attributes.
              NamedNodeMap attrNNM = parentNode.getAttributes();             
              for(int k= 0;k < attrNNM.getLength();k++) {
                  Node attrNode = attrNNM.item(k);
                  if(!currentResource.hasAttribute(attrNode.getNodeName()) &&
-                    !currentResource.hasAttributeNS(attrNode.getNamespaceURI(),attrNode.getLocalName())) {                 
+                    !currentResource.hasAttributeNS(attrNode.getNamespaceURI(),attrNode.getLocalName())) {
                      //okay were only after namespaces. if it is xmlns then set it on our resource.
-                     if(attrNode.getNodeName().indexOf("xmlns") != -1 ) {
-                         currentResource.setAttributeNS(attrNode.getNamespaceURI(),attrNode.getNodeName(),
-                                                        attrNode.getNodeValue());
+                     if(attrNode.getNodeName().indexOf("xmlns") != -1 && 
+                        attrNode.getNodeValue().indexOf("VOResourcesUpdate") == -1) {
+                         currentResource.setAttributeNodeNS((Attr)attrNode.cloneNode(true));
+                         //currentResource.setAttributeNS(attrNode.getNamespaceURI(),attrNode.getNodeName(),
+                         //                               attrNode.getNodeValue());
                      }//else
                  }//if
              }//for
          }//if
          
+         
+         if(!currentResource.hasAttribute("status")) {
+        	 currentResource.setAttribute("status", "active");
+         }
+         
          //set our new updated date attribute as well for the current date&time.
          currentResource.setAttribute("updated",updateDateString);
+         
          
          //set a temporary identifier.
          tempIdent = ident;
          if(resKey != null && resKey.trim().length() > 0) tempIdent += "/" + resKey;
       
+         try {
+        	 if(xdbRegistry.getResource(tempIdent.replaceAll("[^\\w*]","_") + ".xml",collectionName) == null) {
+        		 currentResource.setAttribute("created", updateDateString);
+        	 }
+         } catch(XMLDBException xdbe) {
+             log.error(xdbe);
+             throw new SOAPFaultException("Server Error: " + xdbe.getMessage(),xdbe,adminwsdlNS,  SOAPFaultException.ADMINSOAP_TYPE);
+         } 
+             
          log.debug("serverside update ident = " + ident + " reskey = " + 
                   resKey + " the nl getlenth here = " + nl.getLength());
          
@@ -386,21 +363,20 @@ public class RegistryAdminService {
             //our own element. Would have been nice just to store the Resource element
             //at the root level, but it seems the XQueries on the database have problems
             //with that.
-            root = xsDoc.createElement("AstrogridResource");
+            root = xsDoc.createElementNS("urn:astrogrid:schema:RegistryStoreResource:v1","agr:AstrogridResource");
             root.appendChild(currentResource);
-
             try {
                xdbRegistry.storeXMLResource(tempIdent.replaceAll("[^\\w*]","_") + ".xml",
-                                            collectionName, root);
+                                            collectionName, root/*currentResource*/);
                xdbRegistry.storeXMLResource(tempIdent.replaceAll("[^\\w*]","_") + ".xml",
                                             "statv" + versionNumber.replace('.','_'), 
-                                            adminHelper.createStats(tempIdent));
+                                            adminHelper.createStats(tempIdent));               
             } catch(XMLDBException xdbe) {
                log.error(xdbe);
-               return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + xdbe.getMessage(),xdbe);
+               throw new SOAPFaultException("Server Error: " + xdbe.getMessage(),xdbe,adminwsdlNS,  SOAPFaultException.ADMINSOAP_TYPE);
             } catch(Exception e) {
                 log.error(e);
-                return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + e.getMessage(),e);                
+                throw new SOAPFaultException("Server Error: " + e.getMessage(),e, adminwsdlNS, SOAPFaultException.ADMINSOAP_TYPE);
             }
          }else {
              //Okay it is either not managed by this Registry or a Registry type.
@@ -409,7 +385,7 @@ public class RegistryAdminService {
             if(nodeVal.indexOf("Registry") != -1) {
                 addManageError = false;
                 log.debug("This is a RegistryType");
-                root = xsDoc.createElement("AstrogridResource");
+                root = xsDoc.createElementNS("urn:astrogrid:schema:RegistryStoreResource:v1","agr:AstrogridResource");
                 root.appendChild(currentResource);                
                 NodeList manageList = adminHelper.getManagedAuthorities(currentResource);
                 boolean managedAuthorityFound = false;
@@ -450,19 +426,20 @@ public class RegistryAdminService {
                 }
 
                 try {
+                	//System.out.println("okay storing the registry type root doc = " + DomHelper.ElementToString((Element)root) + " and collectionanme = " + collectionName);
                     xdbRegistry.storeXMLResource(tempIdent.replaceAll("[^\\w*]","_") + ".xml", 
-                                                 collectionName, root);
+                                                 collectionName, root /*currentResource*/);
                     if(xdbRegistry.getResource(tempIdent.replaceAll("[^\\w*]","_") + ".xml",collectionName) == null) {
                         xdbRegistry.storeXMLResource(tempIdent.replaceAll("[^\\w*]","_") + ".xml",
                                                      "statv" + versionNumber.replace('.','_'), 
-                                                     adminHelper.createStats(tempIdent,false));
+                                                     adminHelper.createStats(tempIdent,false));                        
                      }
                  } catch(XMLDBException xdbe) {
                      log.error(xdbe);
-                     return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + xdbe.getMessage(),xdbe);
+                     throw new SOAPFaultException("Server Error: " + xdbe.getMessage(),xdbe, adminwsdlNS, SOAPFaultException.ADMINSOAP_TYPE);
                  } catch(InvalidStorageNodeException isne) {
                      log.error(isne);
-                     return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + isne.getMessage(),isne);                     
+                     throw new SOAPFaultException("Server Error: " + isne.getMessage(),isne,adminwsdlNS,  SOAPFaultException.ADMINSOAP_TYPE);                     
                  }
              }else if(nodeVal.indexOf("Authority") != -1) {
                  // Okay it is an AuthorityType and if no other registries 
@@ -475,7 +452,24 @@ public class RegistryAdminService {
                     // Grab our current Registry resource we need to add
                     // a new managed authority tag.
                     QueryHelper queryHelper = new QueryHelper(versionNumber);
-                    Document loadedRegistry = queryHelper.loadMainRegistry();
+                    Document loadedRegistry = null;
+                    /*try {*/
+                    	ResourceSet mainRegRS = queryHelper.loadMainRegistry();
+                    try{
+                    	
+                    	if(mainRegRS.getSize() != 1) {
+                    		throw new SOAPFaultException("Server Error: Could not find this registries main Registry Resource which is needed","Server Error: Could not find this registries main Registry Resource which is needed", adminwsdlNS, SOAPFaultException.ADMINSOAP_TYPE);
+                    	}
+	                    loadedRegistry = DomHelper.newDocument(queryHelper.loadMainRegistry().getResource(0).getContent().toString());
+                    }catch(org.xmldb.api.base.XMLDBException xdbe) {
+                    	throw new SOAPFaultException("Server Error: " + xdbe.getMessage(),xdbe, adminwsdlNS, SOAPFaultException.ADMINSOAP_TYPE);                    
+                    }catch(javax.xml.parsers.ParserConfigurationException pce) {
+                    	throw new SOAPFaultException("Server Error: " + pce.getMessage(),pce, adminwsdlNS, SOAPFaultException.ADMINSOAP_TYPE);
+                    }catch(org.xml.sax.SAXException sae) {
+                    	throw new SOAPFaultException("Server Error: " + sae.getMessage(),sae, adminwsdlNS, SOAPFaultException.ADMINSOAP_TYPE);
+                    }catch(java.io.IOException ioe) {
+                    	throw new SOAPFaultException("Server Error: " + ioe.getMessage(),ioe, adminwsdlNS, SOAPFaultException.ADMINSOAP_TYPE);
+                    }
 
                     // Get a ManagedAuthority Node region/area
                     // so we can append a sibling to it, and
@@ -507,20 +501,20 @@ public class RegistryAdminService {
                        manageAuths.put(new AuthorityList(ident,versionNumber),new AuthorityList(ident,versionNumber,authorityID));
 
                        // Update our currentResource into the database
-                       root = xsDoc.createElement("AstrogridResource");
+                       root = xsDoc.createElementNS("urn:astrogrid:schema:RegistryStoreResource:v1","agr:AstrogridResource");
                        root.appendChild(currentResource);
                        try {
                            xdbRegistry.storeXMLResource(tempIdent.replaceAll("[^\\w*]","_") + ".xml", 
                                                         "statv" + versionNumber.replace('.','_'), 
                                                         adminHelper.createStats(tempIdent));
                            xdbRegistry.storeXMLResource(tempIdent.replaceAll("[^\\w*]","_") + ".xml", 
-                                                        collectionName, root);
+                                                        collectionName, root /*currentResource*/);
                        } catch(XMLDBException xdbe) {
                            log.error(xdbe);
-                           return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + xdbe.getMessage(),xdbe);                               
+                           throw new SOAPFaultException("Server Error: " + xdbe.getMessage(),xdbe, adminwsdlNS, SOAPFaultException.ADMINSOAP_TYPE);                               
                        } catch(InvalidStorageNodeException isne) {
                            log.error(isne);
-                           return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + isne.getMessage(),isne);                     
+                           throw new SOAPFaultException("Server Error: " + isne.getMessage(),isne, adminwsdlNS, SOAPFaultException.ADMINSOAP_TYPE);
                        }
                        
                        // Now get the information to re-update the
@@ -535,19 +529,18 @@ public class RegistryAdminService {
                        tempIdent = ident;
                        if(resKey != null) tempIdent += "/" + resKey;
                        resListForAuth = loadedRegistry.getElementsByTagNameNS("*","Resource");
-                       Element elem = loadedRegistry.
-                                      createElement("AstrogridResource");
-                       elem.appendChild(resListForAuth.item(0));                           
+                       Element elem2 = loadedRegistry.createElementNS("urn:astrogrid:schema:RegistryStoreResource:v1","agr:AstrogridResource");
+                       elem2.appendChild(resListForAuth.item(0));
                        try {
                            log.debug("updating the new registy");
                            xdbRegistry.storeXMLResource(tempIdent.replaceAll("[^\\w*]","_") + ".xml", 
-                                                        collectionName, elem);
+                                                        collectionName, elem2);
                        } catch(XMLDBException xdbe) {
                            log.error(xdbe);
-                           return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + xdbe.getMessage(),xdbe);                               
+                           throw new SOAPFaultException("Server Error: " + xdbe.getMessage(),xdbe,adminwsdlNS,  SOAPFaultException.ADMINSOAP_TYPE);                               
                        } catch(InvalidStorageNodeException isne) {
                            log.error(isne);
-                           return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + isne.getMessage(),isne);                     
+                           throw new SOAPFaultException("Server Error: " + isne.getMessage(),isne, adminwsdlNS, SOAPFaultException.ADMINSOAP_TYPE);                     
                        }                                                    
                     }else {
                        log.error("Skipping this update of resource - but somehow the Registries" +
@@ -567,21 +560,22 @@ public class RegistryAdminService {
          log.info("Time taken to update an entry = " + 
                   (System.currentTimeMillis() - beginQ) +
                   " for ident  = " + tempIdent);
+         //currentResource.getParentNode().removeChild(currentResource);         
       }//for
 
       Document returnDoc = null;      
       if(soapErrorMessage.trim().length() > 0) {
-          return SOAPFaultException.createAdminSOAPFaultException("Server Error: (See Error String) ",soapErrorMessage);
+          throw new SOAPFaultException("Server Error: " + soapErrorMessage,soapErrorMessage, adminwsdlNS, SOAPFaultException.ADMINSOAP_TYPE);
       }
       // errored Resource that was not able to be updated in the db.
       try {      
           returnDoc = DomHelper.newDocument();
-          returnDoc.appendChild(returnDoc.createElementNS("http://www.astrogrid.org/registry/wsdl","UpdateResponse"));          
+          returnDoc.appendChild(returnDoc.createElementNS(adminwsdlNS,"ru:UpdateResponse"));          
       }catch(ParserConfigurationException pce) {
           pce.printStackTrace();
           log.error(pce);
-          return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + "Could not create successfull DOM for soap body",
-                  new RegistryException("Could not create successfull DOM for soap body"));          
+          throw new SOAPFaultException("Server Error: " + "Could not create successfull DOM for soap body",
+                  new RegistryException("Could not create successfull DOM for soap body"),adminwsdlNS, SOAPFaultException.ADMINSOAP_TYPE);          
       }
       
       log.info("Time taken to complete update on server = " +
@@ -591,8 +585,8 @@ public class RegistryAdminService {
       return returnDoc;
    }
    
-   public void remove(String id, String versionNumber) throws RegistryException, XMLDBException {
-       String collectionName = "astrogridv" + versionNumber.replace('.','_');
+   public void remove(String id) throws RegistryException, XMLDBException {
+       String collectionName = "astrogridv" + voResourceVersion.replace('.','_');
        if(id == null || id.trim().length() <= 0) {
            throw new RegistryException("Cannot have empty or null identifier");
        }
@@ -604,6 +598,12 @@ public class RegistryAdminService {
        id = queryIvorn.replaceAll("[^\\w*]","_");
        id += ".xml";
        xdbRegistry.removeResource(id, collectionName);
-   }       
+   }
+   
+   public Document updateIndex(Document doc) throws XMLDBException, RegistryException {
+	   String collectionName = "system/config/db/astrogridv" + voResourceVersion.replace('.','_');
+	   xdbRegistry.storeXMLResource("astrogrid.xconf",collectionName,doc);
+	   return null;
+   }
     
 }

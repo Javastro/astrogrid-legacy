@@ -72,11 +72,11 @@ A default registry in AstroGrid is pre-set.
 
 <pre>
 <%
-RegistryAdminService serverAdmin = new RegistryAdminService();
+IAdmin serverAdmin = JSPHelper.getAdminService(request);
 out.write("<p>getregs: " + getregs + "</p><br />");
 out.write("<p>Attempt at grabbing registries from above url and updating the registry, any errors in the updating of this registry will be below.<br /></p>");
 Document doc = rs.getRegistries();
-Document resultDoc = serverAdmin.updateResource(doc);
+Document resultDoc = serverAdmin.updateInternal(doc);
 
 
 out.write("<p><br /><br />Here were the entries attempted to be updated into the registry (Remember only the Resource elements are placed into the registry):<br /></p>");

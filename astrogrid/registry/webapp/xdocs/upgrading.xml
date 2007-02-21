@@ -7,30 +7,36 @@
     <section name="Upgrading">
       <p>
          This page deals with upgrading your registry.
-		 <strong>If your upgrading from 1.1 to 1.2 (or higher ex 2006.2) and your using the standard embedded eXist, read the below section 'Upgrading from 1.1 for embedded eXist' first before following these steps.</strong><br /><br />
-         <strong>If you are a Full Registry (meaning you hold contents from all registries) and expect to have the Astrogrid Workbench connected please read section below 'External eXist for 2006.2 For Workbench'</strong><br /><br /><br />
-         <strong>
-          By default registry uses an xml database known as eXist embedded into its webapp and data is stored in the webapp.  
-          If you have not done so already it is STRONGLY RECOMMENDED to read the <a href='exist_reference.html'>eXist Reference Guide</a> 
-          on how to move the data out or at least know where the data is stored for coping back over if needed when your using the embedded eXist.  
-          </strong>
+         <strong><font color='red'>If your registry was installed before October 15 2006 then you must read the next section below 'Upgrading embedded eXist when binaries change' before you do any upgrade.</font></strong>         
          <ul>
-			<li>Not required but might be good to copy the current registry under webapps directory and possibly if using tomcat the tomcat/conf/Catalina/localhost directory as a reference for environment entry changes.</li>
             <li>First go into your Tomcat Manager.</li>
             <li>Find your registry context and click on "undeploy".  This should delete the war file and the directory.
                <i>*If it doesn't then shutdown tomcat and delete it war file and directory, then start tomcat back up.</i>
             </li>
             <li>Now deploy the new war file via tomcat manager or by simply dropping in the war file into the webapps directory (if using tomcat).</li>
-            <li>Now set the enviornment entries like you had before, typically only two or three properties is all that is changed.  This can be done using Tomcat Administration GUI, or other ways of changing environment entries see the "Installation" page on how enviornment entries work.</li>
+            <li>Now set the enviornment entries like you had before, typically only two or three properties is all that is changed.  This can be done by changing the web.xml or using Tomcat Administration GUI.  See 'Configure' page if you need to remember how to change properties and which properties to change.</li>
          </ul>       
+		<strong>
+          By default registry uses an xml database known as eXist embedded into its webapp and data is stored in the webapp.  
+          If you have not done so already it is RECOMMENDED to read the <a href='exist_reference.html'>eXist Reference Guide</a> 
+          on how to move the data out or at least know where the data is stored for coping back over if needed when your using the embedded eXist.  
+          </strong>         
       </p>
    </section>
-	<section name="Upgrading from 1.1 for embedded eXist">
+	<section name="Upgrading embedded eXist when binaries change">
 	  <p>
-		Version 1.2 of the registry comes with a new fault tolerant eXist xml database along with other fixes to the eXist xml database.  
-        See <a href='featues.html'>features</a> for more info.  Because of this new eXist the binaries ofr the database storage 
-        mechanism has changed.  There are two options you can choose, option one is by far the easiest.
-        <br />Option 1:<br />
+		Not often but at times eXist binaries are changed because improvements are made in the database.  When this happens the
+		current embedded binaries will not work after the upgrade so a backup of the actual xml contents of the database are needed then after the upgrade to restore.
+		<br />
+		There are several options you can choose and listed here are the various ways.
+		<br />Option 1:<br />
+		<ul>
+		   <li><i>Should note that Option 2 is probably the fastest and easiest.</i></li>
+		   <li>If you have a new registry after October 15 2006 then you have the luxury of doing backup and restores via the
+		   eXist webstart GUI or web dav.  See <a href='../dbclients.jsp'>DB Client</a></li>
+		   <li>With the Client GUI or Web Dav you can easily make a backup and then after you do your upgrade you can do a restore.</li>
+		</ul>
+        <br />Option 2 (Before Oct 15 2006):<br />
         <ul>
 			<li>Go ahead and follow the normal "Upgrading" section above and upgrade your registry to the newer version.
             </li>
@@ -41,22 +47,24 @@
                 It takes the form of xmldb_exist-{version}-{main reg authority}.zip ex: xmdb_exist-1.2-rvo.zip
 			</li>
 			<li>
-				<i>If you run a full registry then xmldb_exist-1.2-full.zip</i>
+				<i>If you run a full registry then xmldb_exist-2006.4-full.zip</i>
 			</li>
 			<li>
 				Now simply unzip this file over your other embedded eXist directory, restart your registry webapp.  And enverything is set.
 			</li>
 		</ul>
-		<br />Option 2:<br />
+		<br />Option 3:<br />
 		<ul>
-			<li>The other option is to do a backup and restore of your xml files.  The current 1.2 has shell/batch scripts to help do this, but 1.1 version
-                has the ability, but requires you to do a few more commands.</li>
-			<li>Copy your tomcat/webapps/{registry}/WEB-INF/lib directory to the same location as your conf.xml.  So you should have:
+			<li>The other option is to do a backup and restore of your xml files.  Check if you have a backupandresource.{sh/bat} in your tomcat/webapps/{registry}/WEB-INF directory if not then this is quite an old registry and may require a few more commands, but is detailed below.</li>
+			<li>If your data directory is outside your webapp: Copy your tomcat/webapps/{registry}/WEB-INF/lib directory to the same location as your conf.xml.  So you should have:
 				conf.xml, "data" directory, and "lib" directory previous instructions missed the note about lib directory needing to be copied.
 			</li>
 			<li>Create a backup directory on your system.</li>
+			<li>set a EXIST_HOME variable to the directory location of your conf.xml.</li>
+			<li>Now look the directions of how to do a backup of your data it is the located at the top of your backupandrestore.{sh/bat}			</li>
 			<li>
-				Run this command:<br />
+			    If you don't have a backupandresoure.{sh/bat}
+				Run this command from your WEB-INF directory:<br />
 				Windows:<br />
 				"java -Djava.endorsed.dirs=\lib -Dexist.home={directory of conf.xml} -jar start.jar backup -d {backupdirectory} -u admin -b /db  -ouri=xmldb:exist://"
 				<br />Unix:<br />
@@ -66,13 +74,17 @@
 			   Go through the normal upgrading steps and you will again need to move your embedded eXist data to a directory.
 			</li>
 			<li>
-				Now that you have the new 1.2 installed a restore is needed.
+				Now that you have the new registry installed a restore is needed.
 			</li>
 			<li>
+				You can either do the webstartable GUI detailed here <a href="../dbclients.jsp">here</a>
+			</li>
+			<li>
+				Or run the restore part of the backupandrestore.{sh/bat}.<br />
 				Go to your tomcat/webapps/{registry}/WEB-INF again
 			</li>
 			<li>
-				Set a EXIST_HOME variable to the location of your conf.xml
+				Set a EXIST_HOME variable to the directory location of your conf.xml
 			</li>
 			<li>
 				Now run "backupandrestore.{bat/sh} -r {backupdirectory}/db/__contents__.xml -u admin -ouri=xmldb:exist://"
@@ -83,23 +95,5 @@
 		</ul>
 	  </p>
 	</section>
-	<section name="External eXist for 2006.2 For Workbench">
-	  <p>
-		A bug is being investigated where by the 'App Launcher' query from the workbench which is a more complext type query to the
-        registry with several constraints is causing time-outs to occur and causing the query to take way to long both on embedded db's and several external
-        eXist instances.  This happens to <strong>Full</strong> Registries only.  For this it is best to download one of the known eXist instances that responds 
-        at a reasonable quick time for this query.  This bug is currently being worked on and hopes to be resolved in the next release of the registry.
-<br />  Follow these steps:<br />
-        <ul>
-		  <li>Download an external eXist here: <a href='http://www.astrogrid.org/maven/org.astrogrid/zips/exist-full.zip'>eXist-Full</a>.</li>
-          <li>Unzip it into a directory of your choosing.</li>
-          <li>Start by running going to the unzipped directory and running "./bin/existstartup.sh" (Unix) or ".\bin/existstartup.bat".</li>
-          <li>After upgrading the registry component. In your configuration for the registry change the property xmldb.uri to be "xmldb:exist://localhost:9088/exist/xmlrpc" (if it is on localhost or change to the proper hostname).</li>
-		  <li>You should now be connected to an external eXist, and go to your regular jsp pages like browse to confirm</li>
-          <li>There is a local9088_shutdown.sh availabe, which simply calls shutdown.sh --uri=xmldb:exist://localhost:9088/exist/xmlrpc for shutting down the database.</li>
-        </ul>
-	  </p>
-    </section>
-
    </body>
 </document>

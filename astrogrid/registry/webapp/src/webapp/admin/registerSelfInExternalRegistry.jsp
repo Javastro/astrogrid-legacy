@@ -1,12 +1,14 @@
 <%@ page import="org.astrogrid.registry.server.query.*,
                  org.astrogrid.registry.client.query.*,
                  org.astrogrid.registry.client.admin.*,
- 	  				  org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
+ 	  		     org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
                  org.astrogrid.registry.client.*,
-				     org.astrogrid.registry.server.*,
+				 org.astrogrid.registry.server.*,
                  org.astrogrid.store.Ivorn,
                  org.astrogrid.registry.common.RegistryDOMHelper,
                  org.w3c.dom.Document,
+                 org.w3c.dom.Element,
+				 org.w3c.dom.NodeList,
                  org.astrogrid.io.Piper,
                  org.astrogrid.util.DomHelper,
                  java.net.*,
@@ -54,19 +56,19 @@ machine <span style="font-style: italic;">Galahad</span>.<br>
 
 <h1>Adding Entry</h1>
 
-<p>Service returns:
+<p>Service returns: (If Empty or No message below then it was successfull)
 
 <pre>
 <%
-
 RegistryAdminService ras = RegistryDelegateFactory.createAdmin(new URL(regAddurl + "/services/RegistryUpdate"));
 ISearch server = JSPHelper.getQueryService(request);
-Document regDoc = server.getQueryHelper().loadMainRegistry();
-String regDocString = DomHelper.DocumentToString(regDoc);
-System.out.println("okay here is what should be sent = " + 
-regDocString.substring(regDocString.indexOf(">",regDocString.indexOf("SearchResponse"))+1,regDocString.indexOf("</SearchResponse")).trim());
-Document resultDoc = ras.updateFromString(regDocString.substring(regDocString.indexOf(">",regDocString.indexOf("SearchResponse"))+1,regDocString.indexOf("</SearchResponse")).trim());
-System.out.println("the resultDoc = " + DomHelper.DocumentToString(resultDoc));
+Document regDoc = DomHelper.newDocument(server.getQueryHelper().loadMainRegistry().getMembersAsResource().getContent().toString());
+NodeList nl = regDoc.getElementsByTagNameNS("*","Resource");
+if(nl.getLength() > 0) {
+	Document resultDoc = ras.updateFromString(DomHelper.ElementToString((Element)nl.item(0)));
+} else {
+	out.write("Could not find a Main Registry Type to submit, make sure you have done self register");
+}
 %>
 
 </pre>

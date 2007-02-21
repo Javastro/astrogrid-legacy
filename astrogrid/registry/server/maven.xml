@@ -11,9 +11,7 @@
     xmlns:log="jelly:log"
     xmlns:artifact="artifact"    
     xmlns:define="jelly:define"
-    xmlns:deploy="deploy"
-	default="astrogrid-install-snapshot"	
-    >
+    xmlns:deploy="deploy">
 
     <!--+
         | Primary goals are :
@@ -211,12 +209,13 @@
         <ant:property name="junit.template.data"   value="${maven.build.dir}/junit/xml"/>
         <!--+
             | Create our config directory.
-            +-->
-
+       
         <ant:echo message="Creating junit template area"/>
         <ant:mkdir dir="${junit.template.data}"/>
         <ant:echo message=""/>
         <ant:echo message="copy junit xml contents"/>        
         <ant:copy overwrite="true" file="${basedir}/config/junitcache/registry.xml" toDir="${junit.template.data}"/>
+             +-->
+	   
     </preGoal>
 </project>

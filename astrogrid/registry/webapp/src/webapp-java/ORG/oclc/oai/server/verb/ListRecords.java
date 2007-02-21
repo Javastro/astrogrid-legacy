@@ -101,22 +101,22 @@ public class ListRecords extends ServerVerb {
 	    sb.append(styleSheet);
 	    sb.append("\"?>");
 	}
-        sb.append("<OAI-PMH xmlns=\"http://www.openarchives.org/OAI/2.0/\"");
+        sb.append("<oai:OAI-PMH xmlns:oai=\"http://www.openarchives.org/OAI/2.0/\"");
         sb.append(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
         sb.append(" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/");
         sb.append(" http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd\">");
-        sb.append("<responseDate>");
+        sb.append("<oai:responseDate>");
         sb.append(createResponseDate(new Date()));
-        sb.append("</responseDate>");
+        sb.append("</oai:responseDate>");
 //         sb.append("<requestURL>");
 //         sb.append(getRequestURL(request));
 //         sb.append("</requestURL>");
 	
 	if (!abstractCatalog.isHarvestable()) {
-	    sb.append("<request verb=\"ListRecords\">");
+	    sb.append("<oai:request verb=\"ListRecords\">");
 	    sb.append(baseURL);
-	    sb.append("</request>");
-	    sb.append("<error code=\"badArgument\">Database is unavailable for harvesting</error>");
+	    sb.append("</oai:request>");
+	    sb.append("<oai:error code=\"badArgument\">Database is unavailable for harvesting</oai:error>");
 	} else {
 // 	    if (debug) {
 // 		System.gc();
@@ -182,9 +182,9 @@ public class ListRecords extends ServerVerb {
 	            sb.append(getRequestElement(request, validParamNames, baseURL, xmlEncodeSetSpec));
 	            sb.append(e.getMessage());
 	        } catch (BadArgumentException e) {
-	            sb.append("<request verb=\"ListRecords\">");
+	            sb.append("<oai:request verb=\"ListRecords\">");
 	            sb.append(baseURL);
-	            sb.append("</request>");
+	            sb.append("</oai:request>");
 	            sb.append(e.getMessage());
 // 		   } catch (BadGranularityException e) {
 // 		       sb.append(getRequestElement(request));
@@ -217,7 +217,7 @@ public class ListRecords extends ServerVerb {
 				    validParamNames)) {
 		    sb.append(new BadArgumentException().getMessage());
 		} else {
-		    sb.append("<ListRecords>\n");
+		    sb.append("<oai:ListRecords>\n");
 		    Iterator records = (Iterator)listRecordsMap.get("records");
 		    while (records.hasNext()) {
 			sb.append((String)records.next());
@@ -229,7 +229,7 @@ public class ListRecords extends ServerVerb {
 			String expirationDate = (String)newResumptionMap.get("expirationDate");
 			String completeListSize = (String)newResumptionMap.get("completeListSize");
 			String cursor = (String)newResumptionMap.get("cursor");
-			sb.append("<resumptionToken");
+			sb.append("<oai:resumptionToken");
 			if (expirationDate != null) {
 			    sb.append(" expirationDate=\"");
 			    sb.append(expirationDate);
@@ -247,15 +247,15 @@ public class ListRecords extends ServerVerb {
 			}
 			sb.append(">");
 			sb.append(newResumptionToken);
-			sb.append("</resumptionToken>");
+			sb.append("</oai:resumptionToken>");
 		    } else if (oldResumptionToken != null) {
-			sb.append("<resumptionToken />");
+			sb.append("<oai:resumptionToken />");
 		    }
-		    sb.append("</ListRecords>");
+		    sb.append("</oai:ListRecords>");
 		}
 	    }
 	}
-        sb.append("</OAI-PMH>");
+        sb.append("</oai:OAI-PMH>");
         if (debug) {
             System.out.println("ListRecords.constructListRecords: returning: " + sb.toString());
         }

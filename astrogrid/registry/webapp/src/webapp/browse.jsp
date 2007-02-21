@@ -1,10 +1,12 @@
 <%@ page import="org.astrogrid.registry.server.query.*,
-	  				  org.astrogrid.registry.server.*,
- 	  				  org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
-				 	  org.astrogrid.registry.common.RegistryDOMHelper,
+  			     org.astrogrid.registry.server.*,
+ 	  			 org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
+				 org.astrogrid.registry.common.RegistryDOMHelper,
                  org.astrogrid.store.Ivorn,
+                 org.xmldb.api.base.ResourceSet,
                  org.w3c.dom.Document,
                  org.w3c.dom.Element,
+                 org.w3c.dom.Node,
                  org.w3c.dom.NodeList,
                  org.astrogrid.io.Piper,
                  org.astrogrid.util.DomHelper,
@@ -42,21 +44,6 @@
 <h1>Registry Browser</h1>
 
 <!-- Navigation keys/controls -->
-<!--
-<table width="100%">
-<tr>
-<td align='left'>
-<%
-//   if (offset>0) {
-//      out.write("<a href='browse.jsp?Index="+(offset-25)+"'>Prev</a>");
-//   }
-%>
-</td>
-<td align='right'>
-<a href='browse.jsp?Index=<%= (offset+25) %>'>Next</a>
-</td>
-</table>
--->
 
 <form method='get'>
 <p>
@@ -79,13 +66,26 @@ Find IVORNs including: <input name="IvornPart" type="text" value='<%= ivornpart 
    //out.write("*"+ivornpart+"*:<br/");
    
    Document entries = null;   
+   ResourceSet resultSet;
    if ( (ivornpart != null) && (ivornpart.trim().length() > 0) ) {
-   		 entries = server.getQueryHelper().getResourcesByAnyIdentifier(ivornpart);
+   		resultSet = server.getQueryHelper().getResourcesByAnyIdentifier(ivornpart);
+   		if(resultSet.getSize() > 50) {
+   			do {
+   			  resultSet.removeResource(50);
+   			} while(resultSet.getSize() > 50);
+   		}
+   		 entries = DomHelper.newDocument(resultSet.getMembersAsResource().getContent().toString());
    }
    else {
-   		 entries = server.getQueryHelper().getAll();
+         resultSet = server.getQueryHelper().getAll();
+         if(resultSet.getSize() > 50) {
+   			do {
+   			  resultSet.removeResource(50);
+   			}while(resultSet.getSize() > 50);
+   		 }
+   		 entries = DomHelper.newDocument(resultSet.getMembersAsResource().getContent().toString());
    }
-   
+
    if (entries == null) {
       out.write("<p>No entries?!</p>");
    }
@@ -100,9 +100,10 @@ Find IVORNs including: <input name="IvornPart" type="text" value='<%= ivornpart 
          Element resourceElement = (Element) resources.item(n);
 	     	boolean deleted = false; 
 	     	boolean inactive = false;
-	     	if(resourceElement.getAttribute("status") != null)
-		  	deleted = resourceElement.getAttribute("status").toLowerCase().equals("deleted");         
-		  	inactive = resourceElement.getAttribute("status").toLowerCase().equals("inactive");
+	     	if(resourceElement.getAttribute("status").length() > 0) {
+		  		deleted = resourceElement.getAttribute("status").toLowerCase().equals("deleted");         
+		  		inactive = resourceElement.getAttribute("status").toLowerCase().equals("inactive");
+		  	}
          String bgColour = "#FFFFFF";
          String fgColour = "#000000";
          
@@ -149,8 +150,8 @@ Find IVORNs including: <input name="IvornPart" type="text" value='<%= ivornpart 
             out.write("<td>"+setFG+resourceElement.getAttribute("updated")+endFG+"</td>");
             out.write("<td>");
             out.write("<a href=viewResourceEntry.jsp?IVORN="+ivoStr+">XML,</a>  ");
-            out.write("<a href=admin/editEntry.jsp?IVORN="+ivoStr+">Edit,</a>");
-            out.write("<a href=admin/xforms/XFormsProcessor.jsp?mapType="+xsiType+"&IVORN="+ ivoStr + ">XEdit</a>");
+            out.write("<a href=admin/editEntry.jsp?IVORN="+ivoStr+">Edit</a>");
+//            out.write("<a href=admin/xforms/XFormsProcessor.jsp?mapType="+xsiType+"&IVORN="+ ivoStr + ">XEdit</a>");
 
 			/*
             if (!deleted) {

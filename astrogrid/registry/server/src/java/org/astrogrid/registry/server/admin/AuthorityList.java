@@ -47,7 +47,6 @@ public class AuthorityList {
     public AuthorityList(String authorityID, String versionNumber) {
         this.authorityID = authorityID.trim();
         this.versionNumber = versionNumber.trim();
-        this.owner = owner;        
     }    
     
     
@@ -126,7 +125,7 @@ public class AuthorityList {
            this.versionNumber.equals(al.getVersionNumber())) {
             if(this.owner == null && al.getOwner() == null)
                 return true;
-            else if(this.owner.equals(al.getOwner()))
+            else if(this.owner != null && this.owner.equals(al.getOwner()))
                 return true;
         }
         return false;

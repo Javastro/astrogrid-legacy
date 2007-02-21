@@ -107,8 +107,9 @@
 <%
    if(update) {
       Document result = null;
-      RegistryAdminService server = new RegistryAdminService();      
-      server.updateNoCheck(doc,RegistryDOMHelper.getRegistryVersionFromNode(doc.getDocumentElement().getFirstChild()));
+      RegistryHarvestAdmin server = new RegistryHarvestAdmin();      
+      
+      server.harvestingUpdate(doc,org.astrogrid.registry.server.http.servlets.helper.JSPHelper.getQueryService(request).getResourceVersion());
       out.write("<p>Attempt at updating Registry, if any errors occurred it will be printed below<br /></p>");
       if (result != null) {
         DomHelper.DocumentToWriter(result, out);

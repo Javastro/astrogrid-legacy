@@ -173,9 +173,11 @@ public class UpdateRegistry implements RegistryAdminService {
       Document doc = null;
       Document resultDoc = null;
           //Element root = doc.createElementNS(NAMESPACE_URI,"update");
+      	if(!update.getDocumentElement().getLocalName().trim().equals("Update")) {
           Element root = update.createElementNS(NAMESPACE_URI,"Update");
           root.appendChild(update.getDocumentElement());
           update.appendChild(root);
+      	}
           
       try {   
       //Get the CAll.  
