@@ -1,0 +1,22 @@
+The test cases here are closely linked to the mappings in
+../WEB-INF/rewrite-map.scm, and the tests in
+../../src/test/scm/utype-resolver/web-interface.scm 
+
+simple1: simple1.n3 is by itself
+
+simple2: simple2.rdf is derived from simple2.n3.  simple2.html is just
+a plain (X)HTML document.  The rewrite-map.scm includes a rewrite rule
+to take simple2->missing.html for the MIME type text/undefined: this
+file is deliberately missing (it should cause an `internal server
+error' when dereferenced).
+
+simple3: simple3.rdf is simple2.rdf with a different namespace.  It's
+served without rewriting.
+
+grddl: grddl{1,2,3,4}.html are variants of a valid XHTML GRDDL
+document, with all declarations in place.  There are no corresponding
+RDF documents, and no rewritings, though all are served as application/xhtml+xml
+
+grddl-malformed*.html are variously malformed (in XML terms) HTML
+documents.  grddl-malformed2.html is identical to
+grddl-malformed1.html, but is served (erroneously, as XHTML)

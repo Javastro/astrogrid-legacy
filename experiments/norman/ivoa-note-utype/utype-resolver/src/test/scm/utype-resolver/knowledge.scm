@@ -11,13 +11,17 @@
   (java-new <uri> (->jstring s)))
 (define u1 (mk-uri "http://example.org/a/b#f1"))
 
-(expect simple1 #t (first-sight-of-namespace u1))
-(expect simple2 #f (first-sight-of-namespace u1))
+(expect simple1 #f (namespace-seen? u1))
+(namespace-seen! u1)
+(expect simple2 #t (namespace-seen? u1))
 
 ;; try with a URI differing only in fragment -- same namespace
 (expect newfrag
+        #t
+        (namespace-seen? (mk-uri "http://example.org/a/b#f2")))
+(expect newns
         #f
-        (first-sight-of-namespace (mk-uri "http://example.org/a/b#f2")))
+        (namespace-seen? (mk-uri "http://example.org/x#f2")))
 
 ;; Should the following test expect true or false?
 ;; This URI is the same as u1 after normalisation: should it be the same ns?
@@ -25,9 +29,9 @@
 ;; The following test is commented out, because it doesn't work.  This
 ;; should be the first sight of this namespace, but the implementation
 ;; of the function doesn't get this right.  See discussion there.
-;; (expect denorm
-;;         #t
-;;         (first-sight-of-namespace (mk-uri "http://example.org/a/./b#f1")))
+(expect denorm
+        #f
+        (namespace-seen? (mk-uri "http://example.org/a/./b#f1")))
 
 
 

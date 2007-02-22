@@ -31,10 +31,12 @@
     <init-param>
       <param-name>main-script-initialiser</param-name>
       <param-value>initialise-resolver</param-value>
-    </init-param>    
+    </init-param>
+    <!-- NB: if you change these names, you must also change the
+         servlet mappings below -->
     <init-param>
       <param-name>resolver-context</param-name>
-      <param-value>/resolve</param-value>
+      <param-value>/superclasses</param-value>
     </init-param>
     <init-param>
       <param-name>test-server</param-name>
@@ -52,10 +54,11 @@
     </init-param>
   </servlet>
 
+
+  <!-- these must match the utype-resolver servlet parameters, above -->
   <servlet-mapping>
     <servlet-name>utype-resolver</servlet-name>
-    <!-- this must match the utype-resolver servlet parameters, above -->
-    <url-pattern>/resolve</url-pattern>
+    <url-pattern>/superclasses</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

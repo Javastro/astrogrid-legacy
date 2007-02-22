@@ -1,6 +1,7 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
-@prefix x: <http://@HOSTPORT@/utype-resolver/test/testcases/simple1#>.
+@prefix utype: <http://example.ivoa.org/utypes#>.
+@prefix : <http://@HOSTPORT@/utype-resolver/test/testcases/simple1#>.
 
-x:c1 a rdfs:Class.
-x:c2 a rdfs:Class;
-  rdfs:subClassOf x:c1.
+:c1 a utype:UType.
+:c2 a utype:UType;
+  rdfs:subClassOf :c1.

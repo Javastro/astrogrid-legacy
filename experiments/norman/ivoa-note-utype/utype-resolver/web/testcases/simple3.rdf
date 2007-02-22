@@ -1,6 +1,6 @@
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-    xml:base="http://@HOSTPORT@/utype-resolver/test/testcases/simple2">
+    xml:base="http://@HOSTPORT@/utype-resolver/test/testcases/simple3">
 
     <rdfs:Class rdf:ID="c1"/>
 

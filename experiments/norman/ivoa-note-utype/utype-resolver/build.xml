@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.3 2007/02/06 23:00:42 norman Exp $
+     $Id: build.xml,v 1.4 2007/02/22 19:00:22 norman Exp $
 -->
 
 
@@ -132,6 +132,7 @@
   <property name="scm.test.home" value="${src.tests}/scm"/>
   <property name="web.home"      value="${basedir}/web"/>
   <property name="quaestor.jar"  value="${basedir}/quaestor.jar"/>
+  <property name="tagsoup.jar"  value="${basedir}/tagsoup-1.0.1.jar"/>
 
   <!-- The following properties must be set in build.properties
    !
@@ -199,6 +200,11 @@
     <fail unless="quaestor.jar.present"
           message="Must have quaestor-lib jar, from quaestor tree"/>
 
+    <available property="tagsoup.present"
+               file="${tagsoup.jar}"/>
+    <fail unless="tagsoup.present"
+          message="Must have tagsoup.jar, from http://home.ccil.org/~cowan/XML/tagsoup/"/>
+
     <!-- Need JUnit for the src/test/org/... testcases: not essential -->
     <available property="junit.present"
                classname="junit.framework.TestCase"/>
@@ -229,6 +235,7 @@
 
     <!-- Include all JAR files that will be included in /WEB-INF/lib -->
     <pathelement location='${quaestor.jar}'/>
+    <pathelement location="${tagsoup.jar}"/>
 
     <!-- for the sisc.shp file -->
     <!--<path refid="sisc.classpath"/>-->
@@ -322,6 +329,12 @@
                includes="sisc.shp"/>
     </copy>
     -->
+
+    <!-- Copy the XSLT transform and utypes.n3 definitions -->
+    <copy todir="${build.classes}">
+      <fileset dir="${src.home}/etc"
+               includes="*"/>
+    </copy>
 
     <!-- Copy Scheme utility scripts into the classpath.
      !   Don't use a JAR: see the quaestor.jar target.
@@ -517,6 +530,7 @@
     <mkdir  dir="${build.lib}"/>
     <copy todir="${build.lib}">
       <fileset file="${quaestor.jar}"/>
+      <fileset file="${tagsoup.jar}"/>
     </copy>
     <!--
     <copy todir="${build.lib}">

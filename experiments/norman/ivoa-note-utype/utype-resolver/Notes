@@ -1,0 +1,43 @@
+
+What's here is mostly working (2007-02-22), but here are some ideas
+for what might happen next:
+
+* How strict should I be about the GRDDL header -- or use another
+  profile?
+
+* Only note that we've `seen' a namespace after it's successfully
+  loaded (done?)
+
+* Add translator/validator for HTML->RDF debugging
+
+* Add /description, to provide details about a namespace in HTML and
+  RDF forms
+
+* Add more REST methods: PUT and DELETE namespaces; HEAD to test
+  whether a definition has been changed; support If-Modified-Since and
+  Expires headers on queries of namespace documents
+
+* Tighter integration with Quaestor, to support SPARQL queries of
+  namespaces (ie, start to turn this into a guerilla UType registry),
+  and possibly have each namespace in a separate knowledgebase
+  submodel.
+
+* Set a timeout on how long things are cached (probably dependent on
+  any Expires headers returned from resources).
+
+* Add documentation
+
+DONE:
+
+* Read malformed XML/HTML.  Using John Cowan's tagsoup at
+  <http://home.ccil.org/~cowan/XML/tagsoup/>; could also use NekoHTML at
+  <http://people.apache.org/~andyc/neko/doc/html/>
+
+* Add UType class, subclassing rdfs:Class.  Why?  Because it's largely
+  cost-free, doesn't look weird, and opens the door to more
+  sophistication in the future.
+
+* Check appropriate behaviour on wrong input
+
+* Change /resolve to a noun: say /superclasses ?
+

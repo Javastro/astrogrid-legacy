@@ -1,0 +1,25 @@
+<?xml version='1.0'?>
+<html>
+  <head profile="http://www.w3.org/2003/g/data-view">
+    <title>Namespace description document</title>
+    <link rel="transformation"
+          href="http://www.ivoa.net/utypes/grok-utypes.xslt"/>
+  </head>
+  <body>
+    <h1>Dummy document</h1>
+
+    <div class='utype' id='c1'>
+    <p>The class c1 -- concept 1 -- is a class</p>
+    </div>
+
+    <h2>The class c2</h2>
+    <p>The class <span class='utype' id='c2'>c2 (concept 2) is a 
+    subclass of <a href='#c1' rel='subclassof'>c1</a></span></p>
+
+    <div class='utype' id='c3'>
+      <p>Class c3 is a subclass of
+      <a rel='subclassof' href='#c1'>c1</a></p>
+    </div>
+    
+  </body>
+</html>

@@ -1,0 +1,26 @@
+<?xml version='1.0'?>
+<h:html xmlns:h="http://www.w3.org/1999/xhtml">
+  <h:head profile="http://www.w3.org/2003/g/data-view">
+    <h:title>Namespace description document</h:title>
+    <h:base href="http://@HOSTPORT@/utype-resolver/test/testcases/grddl2"/>
+    <h:link rel="transformation"
+          href="http://www.ivoa.net/utypes/grok-utypes.xslt"/>
+  </h:head>
+  <h:body>
+    <h:h1>Dummy document</h:h1>
+
+    <h:div class='utype' id='c1'>
+    <h:p>The class c1 -- concept 1 -- is a class</h:p>
+    </h:div>
+
+    <h:h2>The class c2</h:h2>
+    <h:p>The class <h:span class='utype' id='c2'>c2 (concept 2) is a 
+    subclass of <h:a href='#c1' rel='subclassof'>c1</h:a></h:span></h:p>
+
+    <h:div class='utype' id='c3'>
+      <h:p>Class c3 is a subclass of
+      <h:a rel='subclassof' href='#c1'>c1</h:a></h:p>
+    </h:div>
+    
+  </h:body>
+</h:html>

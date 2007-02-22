@@ -23,7 +23,7 @@
   `((utype-resolver-version . "@VERSION@")
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (string
-     . "utype-resolver.scm @VERSION@ ($Id: utype-resolver.scm,v 1.4 2007/02/12 22:25:07 norman Exp $)")))
+     . "utype-resolver.scm @VERSION@ ($Id: utype-resolver.scm,v 1.5 2007/02/22 19:00:22 norman Exp $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -116,26 +116,32 @@
 ;; case of a successful resolution, text/html otherwise).
 (define (get-resolve path-info-list url request response)
   (chatter "get-resolve: path-info-list=~s, url=~s" path-info-list url)
-  (cond ((and (= (length path-info-list) 0)
-              url)                      ;normal case
-         (cond ((resolve-uri url)
-                => (lambda (superclass-strings)
-                     (set-response-status! response '|SC_OK| "text/plain")
-                     (apply string-append
-                            (map (lambda (s) (string-append s "\r\n"))
-                                 superclass-strings))))
-               (else
-                (set-response-status! response '|SC_BAD_REQUEST|)
-                (response-page request response
-                               "UType resolver: can't resolve URI"
-                               `((p ,(format #f "Unable to resolve URL ~a" url)))))))
-        ((= (length path-info-list) 0)  ;oops: for us, but query missing
-         (set-response-status! response '|SC_BAD_REQUEST|)
-         (response-page request response
-                        "UType resolver: bad request"
-                        `((p "Bad call to resolver service: no query"))))
-        (else
-         #f)))                          ;go to next handler
+  (with/fc
+      (make-fc request response '|SC_INTERNAL_SERVER_ERROR|)
+    (lambda ()
+      (cond ((and (= (length path-info-list) 0)
+                  url)                  ;normal case
+             (cond ((resolve-uri url)
+                    => (lambda (superclass-strings)
+                         (set-response-status! response '|SC_OK| "text/plain")
+                         (apply string-append
+                                (map (lambda (s) (string-append s "\r\n"))
+                                     superclass-strings))))
+                   (else
+                    (set-response-status! response '|SC_NO_CONTENT|))
+;;                    (else
+;;                     (set-response-status! response '|SC_BAD_REQUEST|)
+;;                     (response-page request response
+;;                                    "UType resolver: can't resolve URI"
+;;                                    `((p ,(format #f "Unable to resolve URL ~a" url)))))
+                   ))
+            ((= (length path-info-list) 0) ;oops: for us, but query missing
+             (set-response-status! response '|SC_BAD_REQUEST|)
+             (response-page request response
+                            "UType resolver: bad request"
+                            `((p "Bad call to resolver service: no query"))))
+            (else
+             #f)))))                    ;go to next handler
 
 (define get-handlers `(,get-resolve ,get-fallback))
 
@@ -168,7 +174,8 @@
 
 ;; RESOLVE-URI : string -> list-of-strings-or-false
 ;; Resolve the URI, and return a suitable response string
-;; This is the principal function of this application
+;; This is the principal function of this application.  Return all the
+;; superclasses as a list of strings, or return #f if there are no superclasses.
 (define (resolve-uri uri-string)
   (define-java-class <uri> |java.net.URI|)
   (define-generic-java-methods
@@ -183,7 +190,7 @@
                    (else
                     "<none>"))
              (->string (to-string uri)))
-    (if (first-sight-of-namespace uri)
+    (if (not (namespace-seen? uri))
         (ingest-utype-declaration-from-uri! uri))
     (query-utype-superclasses uri)))
 

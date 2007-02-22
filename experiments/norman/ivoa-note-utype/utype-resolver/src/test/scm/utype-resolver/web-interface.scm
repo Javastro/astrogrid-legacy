@@ -29,7 +29,7 @@
     get-error-stream
     connect)
   (let ((full-url (resolve-resolver-url relative-part)))
-    (format #t "Testing URL: ~a~%" full-url)
+    ;;(format #t "Testing URL: ~a~%" full-url)
     (with/fc (lambda (m e)
                (format #t "Error retrieving <~a>:~%  ~s~%"
                        full-url
@@ -188,6 +188,8 @@
 ;;
 ;; Start tests
 
+(show-test #t)
+
 (receive (status headers content)
     (get-url "." #f)
   (if (not status)
@@ -340,19 +342,108 @@
    (expect simple2-missingmime-headers #f
            (hh 'location))))
 
+;; grddl?.html are served as XHTML (application/xhtml+xml), but 
+;; grddl-malformed1.html is served as HTML (text/html).
+(call-and-expect-response
+ retrieve-xhtml
+ "test/testcases/grddl1.html"
+ 200
+ "application/xhtml+xml"
+ #f)
+(call-and-expect-response
+ retreive-html
+ "test/testcases/grddl-malformed1.html"
+ 200
+ "text/html"
+ #f)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Now, finally, the reasoning/resolver cases
 
+;; simple1 is served as simple1.n3, but rewritten by the server from .../simple1
 (let ((testcases-url (resolve-resolver-url "/utype-resolver/test/testcases/")))
   (format #t "testcases-url=~a~%" testcases-url)
   (call-and-expect-response
    resolve1
-   (string-append "resolve?" testcases-url "simple1%23c2")
+   (string-append "superclasses?" testcases-url "simple1%23c2")
    200
    "text/plain"
    (lambda (content)
      (expect resolve1-content
              (string-append testcases-url "simple1#c1\r\n")
-             content))))
+             content)))
+
+  ;; simple2 is just for testing the resolver/rewriter
+
+  ;; simple3 is served only as simple3.rdf, without any server-side rewriting
+  (call-and-expect-response
+   resolve3
+   (string-append "superclasses?" testcases-url "simple3%23c2")
+   200
+   "text/plain"
+   (lambda (content)
+     (expect resolve3-content
+             (string-append testcases-url "simple3#c1\r\n")
+             content)))
+
+  ;; A query to the same namespace, but querying for the superclasses of
+  ;; the top class, which should have no superclasses.
+  (call-and-expect-response
+   resolve3-top
+   (string-append "superclasses?" testcases-url "simple3%23c1")
+   204                                  ;204 No Content
+   #f                                   ;don't care about the type
+   (lambda (content)
+     (expect resolve3-top-content       ;content should be empty (status 204)
+             "" content)))
+
+  ;; The GRDDL tests are served only as grddl{1,2,3,4}.html, and so
+  ;; require transformation.
+  (let-syntax ((test (syntax-rules ()
+                       ((_ base)
+                          (call-and-expect-response
+                           base
+                           (string-append "superclasses?"
+                                          testcases-url
+                                          base
+                                          "%23c2")
+                           200
+                           "text/plain"
+                           (lambda (content)
+                             (expect ((quote base) content)
+                                     (string-append testcases-url
+                                                    base
+                                                    "#c1\r\n")
+                                     content)))))))
+    (test "grddl1")                     ;<code class="namespace">
+    (test "grddl2")                     ;<html:base>
+    (test "grddl3")                     ;<base>
+    (test "grddl4")                     ;nothing -- defaulted from location URL
+    )
+
+  ;; grddl-malformed1 is served only as .html, and so requires transformation,
+  ;; but it's hideously malformed
+  (call-and-expect-response
+   resolve-html1
+   (string-append "superclasses?" testcases-url "grddl-malformed1%23c2")
+   200
+   "text/plain"
+   (lambda (content)
+     (expect resolve5-content
+             (string-append testcases-url "grddl-malformed1#c1\r\n")
+             content)))
+
+  ;; grddl-malformed2.html is almost identical to grddl-malformed1,
+  ;; but is served (erroneously) as application/xhtml+xml.  We should
+  ;; fail gracefully, being sure (status 502 Bad Gateway) to blame the
+  ;; source of the HTML.
+  (call-and-expect-response
+   resolve-html2
+   (string-append "superclasses?" testcases-url "grddl-malformed2%23c2")
+   502                                  ;502 Bad Gateway
+   #f                                   ;don't care about the type
+   #f)                                  ;...or the content
+
+) ; end of LET for TESTCASES-URL
