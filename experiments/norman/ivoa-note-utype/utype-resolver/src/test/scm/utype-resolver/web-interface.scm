@@ -170,10 +170,13 @@
              (if check-headers
                  (check-headers headers))
              (if (failures-in-block?)
-                 (format #t "test ~a:~%  status=~a(~a)  type=~a(~a, req ~a)  content-length=~a~%  content=~a~%"
+                 (format #t "test ~a:~%  status=~a(~a)  type=~a(~a)~a  content-length=~a~%  content=~a~%"
                          (quote id)
                          status expected-status
-                         (headers 'content-type) expected-type accept-header
+                         (headers 'content-type) expected-type
+                         (if accept-header
+                             (format #f "(accept ~a)" accept-header)
+                             "")
                          (and content (string-length content))
                          (cond ((not content)
                                 "<none>")
