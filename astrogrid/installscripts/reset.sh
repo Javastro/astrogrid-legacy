@@ -67,3 +67,12 @@ then
     rm -rf ${ASTROGRID_HOME}/community
 fi
 
+if [ -d ${ASTROGRID_HOME}/example ]
+then
+    rm -rf ${ASTROGRID_HOME}/example
+fi
+
+if [ -d ${ASTROGRID_HOME}/dsa-first ]
+then
+    rm -rf ${ASTROGRID_HOME}/dsa-first
+fi

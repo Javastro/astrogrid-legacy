@@ -237,7 +237,7 @@ EOF
 #
 # Ask Tomcat to load the webapp.
 echo ""
-echo "Starting registry webapp"
+echo "Starting Registry webapp"
 echo "  URL : ${ASTROGRID_INTERNAL}/manager/html/deploy"
 echo "  CXT : /${REGISTRY_CONTEXT}"
 echo "  XML : file://${ASTROGRID_HOME}/registry/webapp/context.xml"
@@ -255,7 +255,7 @@ else
 fi
 
 #
-# Check the registry home page.
+# Check the Registry home page.
 echo ""
 echo "Checking registry home page"
 echo "  URL  : ${ASTROGRID_INTERNAL}/${REGISTRY_CONTEXT}/"
@@ -270,7 +270,7 @@ else
 fi
 
 #
-# Check the registry admin page
+# Check the Registry admin page
 echo ""
 echo "Checking registry admin page"
 echo "  URL  : ${ASTROGRID_INTERNAL}/${REGISTRY_CONTEXT}/admin/index.jsp"

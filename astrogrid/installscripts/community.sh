@@ -156,7 +156,7 @@ EOF
 #
 # Ask Tomcat to load the webapp.
 echo ""
-echo "Starting registry webapp"
+echo "Starting Community webapp"
 echo "  URL : ${ASTROGRID_INTERNAL}/manager/html/deploy"
 echo "  CXT : /${COMMUNITY_CONTEXT}"
 echo "  XML : file://${ASTROGRID_HOME}/community/webapp/context.xml"
@@ -345,6 +345,55 @@ then
 else
 	echo "  ERROR : Failed to register the service"
     exit 1
+fi
+
+#
+# Add test user account.
+echo ""
+echo "Add test user (Y/n) ?"
+read RESPONSE
+if [ ${RESPONSE:-y} = "y" ]
+then
+    TEST_NAME=frog
+    TEST_PASS=qwerty
+    #
+    # Create the user account
+    echo ""
+    echo "Adding test account"
+    echo "  URL  : ${ASTROGRID_INTERNAL}/${COMMUNITY_CONTEXT}/admin/AccountAdmin.jsp"
+    echo "  Name : ${TEST_NAME}"
+    echo "  Pass : ${TEST_PASS}"
+    #
+    # Create the user account
+    if [ `curl -s -i \
+        --url  ${ASTROGRID_INTERNAL}/${COMMUNITY_CONTEXT}/admin/AccountAdmin.jsp \
+        --user ${ASTROGRID_USER}:${ASTROGRID_PASS} \
+        --data "userLoginName=${TEST_NAME}" \
+        --data "userCommonName=Test account" \
+        --data "userPassword=${TEST_PASS}" \
+        --data "description=Test account" \
+        --data "email=${TEST_NAME}@test.astrogrid.org" \
+        --data "AddAccount=true" \
+        --data "AddAccountSubmit=Add" \
+         | grep -c "ivo://${ASTROGRID_AUTH}/${TEST_NAME}"` -ge 1 ]
+    then
+    	echo "  PASS"
+    else
+    	echo "  ERROR : Failed to allocate user account"
+        #exit 1
+    fi
+    #
+    # Check the user homespace
+    if [ `curl -s -i \
+        --url  ${ASTROGRID_INTERNAL}/${COMMUNITY_CONTEXT}/admin/AccountAdmin.jsp \
+        --user ${ASTROGRID_USER}:${ASTROGRID_PASS} \
+         | grep -c "ivo://${ASTROGRID_AUTH}/filemanager"` -ge 1 ]
+    then
+    	echo "  PASS"
+    else
+    	echo "  ERROR : Failed to allocate user homespace"
+        #exit 1
+    fi
 fi
 
 

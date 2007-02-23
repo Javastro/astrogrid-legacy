@@ -114,8 +114,9 @@ cat > astrogrid-settings << EOF
     ASTROGRID_ADMIN="${ASTROGRID_ADMIN:?"undefined"}"
     ASTROGRID_INTERNAL=${ASTROGRID_INTERNAL:?"undefined"}
     ASTROGRID_EXTERNAL=${ASTROGRID_EXTERNAL:?"undefined"}
+
 EOF
-    
+
 #
 # Check system tools already installed
 echo ""
@@ -133,18 +134,18 @@ read RESPONSE
 if [ ${RESPONSE:-y} = "y" ]
 then
     . ${SCRIPT_PATH}/tomcat.sh
-    if [ -f astrogrid-settings ]
-    then
+fi
+#
+# Update the Tomcat settings.
+export CATALINA_HOME=${CATALINA_HOME:?undefined}
+if [ -f astrogrid-settings ]
+then
 cat >> astrogrid-settings << EOF
     #
     # Tomcat settings
     CATALINA_HOME=${CATALINA_HOME:?"undefined"}
 EOF
-    fi
 fi
-#
-# Export the Tomcat settings.
-export CATALINA_HOME=${CATALINA_HOME:?undefined}
 
 #
 # Install Registry.
@@ -154,8 +155,14 @@ read RESPONSE
 if [ ${RESPONSE:-y} = "y" ]
 then
     . ${SCRIPT_PATH}/registry.sh
-    if [ -f astrogrid-settings ]
-    then
+fi
+#
+# Update the Registry settings.
+export REGISTRY_ADMIN=${REGISTRY_ADMIN:?undefined}
+export REGISTRY_QUERY=${REGISTRY_QUERY:?undefined}
+export REGISTRY_ENTRY=${REGISTRY_ENTRY:?undefined}
+if [ -f astrogrid-settings ]
+then
 cat >> astrogrid-settings << EOF
     #
     # Registry settings
@@ -163,13 +170,7 @@ cat >> astrogrid-settings << EOF
     REGISTRY_QUERY=${REGISTRY_QUERY:?"undefined"}
     REGISTRY_ENTRY=${REGISTRY_ENTRY:?"undefined"}
 EOF
-    fi
 fi
-#
-# Export the Registry settings.
-export REGISTRY_ADMIN=${REGISTRY_ADMIN:?undefined}
-export REGISTRY_QUERY=${REGISTRY_QUERY:?undefined}
-export REGISTRY_ENTRY=${REGISTRY_ENTRY:?undefined}
 
 #
 # Install FileStore.
@@ -199,11 +200,21 @@ then
     . ${SCRIPT_PATH}/community.sh
 fi
 #
-# Install Example application.
+# Install FIRST DSA.
 echo ""
-echo "Install Example (Y/n) ?"
+echo "Install FIRST DSA (Y/n) ?"
 read RESPONSE
 if [ ${RESPONSE:-y} = "y" ]
 then
-    . ${SCRIPT_PATH}/example.sh
+    . ${SCRIPT_PATH}/first-dsa.sh
 fi
+#
+# Install Example application.
+#echo ""
+#echo "Install Example (Y/n) ?"
+#read RESPONSE
+#if [ ${RESPONSE:-y} = "y" ]
+#then
+#    . ${SCRIPT_PATH}/example.sh
+#fi
+

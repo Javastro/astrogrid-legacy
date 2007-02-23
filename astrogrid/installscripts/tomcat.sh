@@ -9,16 +9,17 @@
 
 #
 # Set the Tomcat version.
-${TOMCAT_VERSION:=5.5.20}
+TOMCAT_VERSION=${TOMCAT_VERSION:=5.5.20}
 #
 # Set the Tomcat zipfile.
-${TOMCAT_COREZIP:=apache-tomcat-${TOMCAT_VERSION}.zip}
+TOMCAT_COREZIP=${TOMCAT_COREZIP:=apache-tomcat-${TOMCAT_VERSION}.zip}
 #
 # Set the Tomcat-admin zipfile.
-${TOMCAT_ADMINZIP:=apache-tomcat-${TOMCAT_VERSION}-admin.zip}
+TOMCAT_ADMINZIP=${TOMCAT_ADMINZIP:=apache-tomcat-${TOMCAT_VERSION}-admin.zip}
 #
 # Set the Tomcat download site.
-${TOMCAT_MIRROR:=http://www.mirrorservice.org/sites/ftp.apache.org/tomcat/tomcat-5/v${TOMCAT_VERSION}/bin}
+#TOMCAT_MIRROR=${TOMCAT_MIRROR:=http://www.mirrorservice.org/sites/ftp.apache.org/tomcat/tomcat-5/v${TOMCAT_VERSION}/bin}
+TOMCAT_MIRROR=${TOMCAT_MIRROR:=ftp://ftp.mirror.ac.uk/sites/ftp.apache.org/tomcat/tomcat-5/v${TOMCAT_VERSION}/bin}
 
 #
 # Set the CATALINA_HOME
