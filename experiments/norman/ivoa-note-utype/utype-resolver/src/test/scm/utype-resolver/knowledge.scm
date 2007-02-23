@@ -9,31 +9,6 @@
 
 (define (mk-uri s)
   (java-new <uri> (->jstring s)))
-(define u1 (mk-uri "http://example.org/a/b#f1"))
-
-(expect simple1 #f (namespace-seen? u1))
-(namespace-seen! u1)
-(expect simple2 #t (namespace-seen? u1))
-
-;; try with a URI differing only in fragment -- same namespace
-(expect newfrag
-        #t
-        (namespace-seen? (mk-uri "http://example.org/a/b#f2")))
-(expect newns
-        #f
-        (namespace-seen? (mk-uri "http://example.org/x#f2")))
-
-;; Should the following test expect true or false?
-;; This URI is the same as u1 after normalisation: should it be the same ns?
-
-;; The following test is commented out, because it doesn't work.  This
-;; should be the first sight of this namespace, but the implementation
-;; of the function doesn't get this right.  See discussion there.
-(expect denorm
-        #f
-        (namespace-seen? (mk-uri "http://example.org/a/./b#f1")))
-
-
 
 (define (string->input-stream s)
   (define-java-class <java.io.byte-array-input-stream>)
@@ -47,36 +22,68 @@
 
 myns:sharpBounds a rdfs:Class; 
     rdfs:subClassOf 
-        ivoa:characterizationAxis-coverage-bounds . ")
-(define char-bounds-n3 "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
-@prefix ivoa: <http://www.ivoa.net/ut/characterization#>.
+        ivoa:coverage-bounds . 
+myns:verySharpBounds a rdfs:Class;
+    rdfs:subClassOf
+        myns:sharpBounds .")
 
-ivoa:characterizationAxis-coverage-bounds a rdfs:Class; 
-    rdfs:subClassOf 
-        ivoa:characterizationAxis-info . ")
+(expect seen-no
+        #f
+        (namespace-seen?
+         (mk-uri "http://example.org/utypes/1.0#anything")))
+(expect seen-no
+        #f
+        (namespace-seen?
+         (mk-uri "http://www.ivoa.net/ut/characterization#anything")))
 
 ;; We haven't told the reasoner anything, yet -- no superclasses
 (expect superclasses1
         #f
-        (query-utype-superclasses "http://example.org/utypes/1.0#sharpBounds"))
+        (query-utype-superclasses
+         (mk-uri "http://example.org/utypes/1.0#sharpBounds")))
 
-;; Add the first lot of assertions
-(ingest-utype-declaration-from-stream! (string->input-stream sharp-bounds-n3))
+;; Add the assertions
+(ingest-utype-declaration-from-stream! "http://example.org/utypes/1.0"
+                                       (string->input-stream sharp-bounds-n3))
 
-(expect superclasses2
-        '("http://www.ivoa.net/ut/characterization#characterizationAxis-coverage-bounds")
+;; Now check whether we know we've seen this namespace
+;; First, check we have logged this namespace
+(expect seen-1
+        #t
+        (and (namespace-seen? (mk-uri "http://example.org/utypes/1.0#stuff"))
+             #t))
+;; we still haven't 'seen' this namespace -- only mentioned incidentally
+;; to our ingesting the http://example.org/utypes/1.0 ns
+(expect seen-no-2
+        #f
+        (namespace-seen?
+         (mk-uri "http://www.ivoa.net/ut/characterization#anything")))
 
-        (query-utype-superclasses "http://example.org/utypes/1.0#sharpBounds"))
+;; Normalisation
+;;
+;; This URI is the same as the seen one after normalisation, but the 
+;; RDF spec says that namespaces should be compared as strings, and not
+;; in their normalised forms.
+(expect seen-3
+        #f
+        (namespace-seen?
+         (mk-uri "http://example.org/utypes/./1.0")))
+(expect seen-4
+        #f
+        (namespace-seen?
+         (mk-uri "http://example.org//utypes/1.0")))
 
-;; more assertions
-(ingest-utype-declaration-from-stream! (string->input-stream char-bounds-n3))
 
 ;; The order of the returned superclasses is not specified below: this
-;; happens to be correct (always?)
-(expect superclasses3
-        '("http://www.ivoa.net/ut/characterization#characterizationAxis-coverage-bounds"
-          "http://www.ivoa.net/ut/characterization#characterizationAxis-info")
+;; happens to be correct (always?).  This also tests that the transitivity
+;; reasoning is working.
+(expect superclasses2
+        '("http://example.org/utypes/1.0#sharpBounds"
+          "http://www.ivoa.net/ut/characterization#coverage-bounds")
 
         (sort-list
-         (query-utype-superclasses "http://example.org/utypes/1.0#sharpBounds")
+         (query-utype-superclasses "http://example.org/utypes/1.0#verySharpBounds")
          string<=?))
+
+(if (failures-in-block?)
+    (format #t "Errors in knowledge.scm~%"))
