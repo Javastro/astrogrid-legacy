@@ -49,10 +49,7 @@
                "wibble")))
 
 ;; Given a string containing N3, return the Jena model corresponding to it
-(define (n3->model n3)
-  (define-java-class <java.io.string-reader>)
-  (rdf:ingest-from-stream (java-new <java.io.string-reader> (->jstring n3))
-                          "text/rdf+n3"))
+(define n3->model rdf:ingest-from-string/n3)
 
 (define (print-model-statements model)
   (let ((pu (java-null (java-class '|com.hp.hpl.jena.util.PrintUtil|))))

@@ -14,12 +14,8 @@
 
 (require-library 'quaestor/utils)
 (import* utils
-         ;report-exception
-         ;format-error-record
          is-java-type?
-         iterator->list
-         ;chatter
-         )
+         iterator->list)
 
 (require-library 'util/lambda-contract)
 
@@ -27,6 +23,7 @@
 ( rdf:new-empty-model
   rdf:ingest-from-stream
   rdf:ingest-from-stream/language
+  rdf:ingest-from-string/n3
   rdf:merge-models
   rdf:mime-type->language
   rdf:language->mime-type
@@ -45,6 +42,8 @@
   <com.hp.hpl.jena.rdf.model.property>
   (<rdfnode> |com.hp.hpl.jena.rdf.model.RDFNode|))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; contract assertions
 
 ;; is something a java stream or a java reader
@@ -69,6 +68,10 @@
   (is-java-type? x <com.hp.hpl.jena.rdf.model.property>))
 (define (jena-rdfnode? x)
   (is-java-type? x <rdfnode>))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Start the implementation
 
 ;; Return a new empty model
 (define/contract (rdf:new-empty-model -> jena-model?)
@@ -107,6 +110,8 @@
 ;;                                      uri
 ;;                                      (get-content-type conn))))
 
+;; RDF:MERGE-MODELS : list -> model
+;;
 ;; Given a list of RDF models, merge them into a single one, and return it
 (define/contract (rdf:merge-models (models list?) -> jena-model?)
   (define-generic-java-method add)
@@ -172,8 +177,8 @@
 (define (rdf:mime-type-list)
   (map car (cdr mime-lang-mappings)))
 
-;; RDF:INGEST-FROM-STREAM java-stream string -> java-model
-;; RDF:INGEST-FROM-STREAM java-reader string -> java-model
+;; RDF:INGEST-FROM-STREAM : java-stream string -> java-model
+;; RDF:INGEST-FROM-STREAM : java-reader string -> java-model
 ;;
 ;; Given a Java STREAM or Java Reader, this reads in the RDF within it,
 ;; and returns the resulting model.
@@ -211,8 +216,8 @@
     ;; just add it to the logger
     (logger "Warning parsing RDF at ~a: ~a" uri (->string (get-message ex)))))
 
-;; RDF:INGEST-FROM-STREAM/LANGUAGE jinput-stream string (j)string -> model
-;; RDF:INGEST-FROM-STREAM/LANGUAGE jreader       string (j)string -> model
+;; RDF:INGEST-FROM-STREAM/LANGUAGE : jinput-stream string (j)string -> model
+;; RDF:INGEST-FROM-STREAM/LANGUAGE : jreader       string (j)string -> model
 ;;
 ;; This is the function which ingests RDF from an InputStream or Reader,
 ;; which is expected to be in the named LANGUAGE.  The RDF is read using the
@@ -238,7 +243,8 @@
     (let ((errlist '()))
       (lambda args
         (if (null? args)
-            (reverse errlist)
+            (and (not (null? errlist)) ;return non-null or #f
+                 (reverse errlist))
             (set! errlist
                   (cons (apply format `(#f ,(string-append (car args) "~%")
                                            . ,(cdr args)))
@@ -257,33 +263,54 @@
 
     (with/fc
         (lambda (m e)
-          (report-exception 'ingest-from-stream
-                            '|SC_BAD_REQUEST|
-                            "Error reading ~a (~a)~%~a"
-                            (as-scheme-string base-uri)
-                            (format-error-record m)
-                            (if (null? (logger))
-                                ""
-                                (format #f "Other warnings:~%~a~%"
-                                        (apply string-append (logger))))))
+          (let ((logger-msgs (cond ((logger)
+                                    => (lambda (l)
+                                         (format #f "Other warnings:~%~a~%"
+                                                 (apply string-append l))))
+                                   (else ""))))
+            (chatter "rdf:ingest-from-stream/language: error reading ~a (~a):~a"
+                     (as-scheme-string base-uri)
+                     (format-error-record m)
+                     logger-msgs)
+            (close stream)              ;might help...
+            (report-exception 'ingest-from-stream
+                              '|SC_BAD_REQUEST|
+                              "Error reading ~a (~a)~%~a"
+                              (as-scheme-string base-uri)
+                              (format-error-record m)
+                              logger-msgs)))
       (lambda ()
         (chatter "rdf:ingest-from-stream/language: base=~a language=~s -> ~s"
                  (as-scheme-string base-uri)
                  language ser-lang)
         (let ((reader (and model (get-reader model ser-lang))))
-
           (or reader
               (error "Failed to get reader!"))
-
           (set-error-handler reader
                              (rdf-error-handler (as-scheme-string base-uri)
                                                 logger))
-
           (read reader model stream (as-java-string base-uri))
-          (close stream))))
+          (close stream))
+        (chatter "rdf:ingest-from-stream/language: read stream OK")))
     ;; we might as well add any logger warnings to the (chatter)
-    (chatter (apply string-append (cons "Logger warnings: " (logger))))
+    (cond ((logger)
+           => (lambda (l)
+                (chatter (apply string-append (cons "Logger warnings: " l))))))
     model))
+
+;; RDF:INGEST-FROM-STRING/N3 : string -> model
+;;
+;; Convenience method, which takes a string containing Notation3,
+;; and ingests it.  The language is fixed as N3, and the base URI as "".
+;;
+;; Either succeeds, or throws an exception.
+(define/contract (rdf:ingest-from-string/n3 (string string?)
+                  -> jena-model?)
+  (define-java-class <java.io.string-reader>)
+  (rdf:ingest-from-stream/language (java-new <java.io.string-reader>
+                                             (->jstring string))
+                                   ""
+                                   (->jstring "N3")))
 
 ;; Return the object S, which should be either a Java or Scheme string,
 ;; as a Scheme string.
@@ -302,7 +329,7 @@
         (else
          #f)))
 
-;; RDF:GET-PROPERTY-ON-RESOURCE resource property-or-string -> rdfnode-or-false
+;; RDF:GET-PROPERTY-ON-RESOURCE : resource property-or-string -> rdfnode-or-false
 ;;
 ;; Return a single object (RDFNode), or #f if there is no such property
 ;; Equivalent to (car (RDF:GET-PROPERTIES-ON-RESOURCE resource property)),
@@ -313,7 +340,7 @@
           #f
           (car l))))
 
-;; RDF:GET-PROPERTIES-ON-RESOURCE resource property-or-string -> list-of-objects
+;; RDF:GET-PROPERTIES-ON-RESOURCE : resource property-or-string -> list-of-objects
 ;;
 ;; Return list of objects corresponding to the given property, on the given
 ;; resource.  The property may be a Java Property or a (scheme) string.
@@ -332,7 +359,7 @@
                property
                (create-property model (->jstring property))))))))
 
-;; RDF:SELECT-STATEMENTS model subject predicate object -> list-of-rdfnode
+;; RDF:SELECT-STATEMENTS : model subject predicate object -> list-of-rdfnode
 ;;
 ;; Query a model, matching the specified patterns.
 ;;
@@ -404,6 +431,8 @@
                                            (cut create-typed-literal
                                                 model <>)))))))
 
+;; RDF:GET-REASONER : [string] -> reasoner
+;;
 ;; Return a new Reasoner object, or #f on error
 ;; The optional KEY parameter is one of the strings transitive,
 ;; simpleRDFS, defaultRDFS, 
