@@ -35,6 +35,7 @@ Your settings have been copied to <i><%=contextFilePath%></i>.
 <p>
 <strong>The web application should now be restarting itself.</strong>
 It may become unavailable for a minute or so.
+(Tomcat 5.5 has been known not to pick up changes requiring a restart of tomcat, See the 'fingerprint' link in the menu to verify properties.)
 </p>
 </div>
 

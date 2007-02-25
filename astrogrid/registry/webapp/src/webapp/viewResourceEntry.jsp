@@ -15,13 +15,21 @@
    session="false" %>
 <%
    ISearch server = JSPHelper.getQueryService(request);
-   Document entry = server.getQueryHelper().getResourceByIdentifier(request.getParameter("IVORN"));
-   NodeList nl = entry.getElementsByTagNameNS("*","Resource");
-   
-   if (entry == null || nl.getLength() == 0) {
-       out.write("<Error>No entry returned</Error>");
-   } else {
-      XMLUtils.ElementToWriter((Element)nl.item(0),out);
+   Document entry;   try {   entry = server.getQueryHelper().getResourceByIdentifier(request.getParameter("IVORN"));
+   }catch(Exception e) {
+    entry = null;
    }
+
+   if(entry == null) {
+       out.write("<Error>No entry returned</Error>");
+   }else {
+	   NodeList nl = entry.getElementsByTagNameNS("*","Resource");
+	   if (nl.getLength() == 0) {
+	       out.write("<Error>No entry returned</Error>");
+	   } else {
+	      XMLUtils.ElementToWriter((Element)nl.item(0),out);
+	   }
+ 	}
+
    
 %>

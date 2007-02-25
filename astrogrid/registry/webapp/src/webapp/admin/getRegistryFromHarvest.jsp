@@ -37,12 +37,12 @@ Registry of Registries (RofR).  But occasionally on private registries not known
 a registry to not be in the RofR.  You may use this JSP to add the Registry Type Resource to 'this' Registry.  Once that
 is done then you may go and harvest it via the harvestResource page on the menu or let the automatic harvest pick it up. 
 A default url of the current RofR is below just click Submit to pick up the RofR.  For other registries put in the OAI harvest url below.<br /><br />
-For astrogrid registries this is typcially:<br /> http://{server}:{port}/{context}/OAIHandlerv{contractversion ex:1.0}?verb=Identify  this will 
+For astrogrid registries this is typcially:<br /> http://{server}:{port}/{context}/OAIHandlerv{contractversion ex:1_0}?verb=Identify  this will 
 get the 1 (and only 1) Registry type entry to be harvested.  To get all Registries then '?verb=ListRecords&set=ivo_Registry&metadataPrefix=ivo_vor'
 <br />
 <p>
 If you are trying to harvest 0.10 entries then suggest this:
-http://galahad.star.le.ac.uk:8080/astrogrid-registry/OAIHandlerv0_10?verb=ListRecords&set=ivo_Registry&metadataPrefix=ivo_vor
+http://galahad.star.le.ac.uk:8080/astrogrid-registry/OAIHandlerv0_1?verb=ListRecords&set=ivo_Registry&metadataPrefix=ivo_vor
 <br />
 This will get all the Registry types that the full registry galahad has and allow you to start harvesting those 
 registries.  Alterntatively you can do verb=Identify to get just the singly Registry type Resource to harvest that particular registry.

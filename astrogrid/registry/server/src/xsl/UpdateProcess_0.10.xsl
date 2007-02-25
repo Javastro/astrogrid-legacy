@@ -20,19 +20,41 @@
 
     <xsl:template match="vr:Resource">
         <xsl:element name="vor:VOResources">
-	        <xsl:element name="vor:Resource">
+		<vor:Resource  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10"
+    xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3" 
+    xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" 
+        xmlns:sia="http://www.ivoa.net/xml/SIA/v0.7"
+        xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2"
+        xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.3" 
+        xmlns:sn="http://www.ivoa.net/xml/OpenSkyNode/v0.1"
+        xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3"
+        xmlns="http://www.ivoa.net/xml/VOResource/v0.10"
+    xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1">
 		        <xsl:call-template name="setResourceAttrs"/>
       			<xsl:apply-templates/>
-		    </xsl:element>
+			</vor:Resource>
         </xsl:element>
     </xsl:template>
 
 
     <xsl:template match="vor:Resource">
-	        <xsl:element name="vor:Resource">
+<vor:Resource  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10"
+    xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3" 
+    xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" 
+        xmlns:sia="http://www.ivoa.net/xml/SIA/v0.7"
+        xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2"
+        xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.3" 
+        xmlns:sn="http://www.ivoa.net/xml/OpenSkyNode/v0.1"
+        xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3"
+        xmlns="http://www.ivoa.net/xml/VOResource/v0.10"
+    xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1">
 		        <xsl:call-template name="setResourceAttrs"/>
       			<xsl:apply-templates/>
-		    </xsl:element>
+        </vor:Resource>
 	</xsl:template>
 
 

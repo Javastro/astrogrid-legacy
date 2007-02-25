@@ -257,8 +257,7 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
           xsDoc = update;
        }
        
-
-       if(validateResourceXML) {
+       if(validateResourceXML && !collectionName.equals("astrogridv0_10")) {
            try {
                //validate the xml, the xsl should have made it into a well-formed xml doc with a 
         	   //wrapper(root element) valid to schema, as far as the rest of the xml the validator

@@ -215,7 +215,6 @@ public abstract class RegistryAdminService {
          xsDoc = update;
       }
       
-
       //Get all the Resource nodes.
       nl = xsDoc.getElementsByTagNameNS("*","Resource");
       if(nl.getLength() == 0) {

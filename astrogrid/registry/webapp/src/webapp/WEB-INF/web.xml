@@ -471,7 +471,7 @@
 	</env-entry>
 
 	<env-entry>
-		<description>The maximum number of results to return from queries.</description>
+		<description>The maximum number of results to return from queries for ADQL and Keyword Search only.</description>
 		<env-entry-name>reg.amend.returncount</env-entry-name>
 		<env-entry-value>200</env-entry-value>
 		<env-entry-type>java.lang.String</env-entry-type>
