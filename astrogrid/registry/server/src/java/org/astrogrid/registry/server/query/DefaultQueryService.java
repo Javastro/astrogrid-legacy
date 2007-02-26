@@ -237,7 +237,7 @@ public abstract class DefaultQueryService {
               * slower style of where clause with variable and wildcards
               * :( bummer i have to do this. 
               */
-             if(xql.indexOf("&=") != -1 || xql.indexOf("&amp;=") != -1) {
+             if(xql.indexOf("where") != -1 && (xql.indexOf("&=") != -1 || xql.indexOf("&amp;=") != -1)) {
             	 //ok using older eXist style functions lets to a relaceAll on $r/ and
             	 //hoopefully will be good after that.
             	 xql = xql.replaceAll("\\$r/", "");

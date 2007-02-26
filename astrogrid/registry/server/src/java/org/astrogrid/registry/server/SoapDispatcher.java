@@ -76,6 +76,8 @@ public class SoapDispatcher {
 		    	 responseReader = query.KeywordSearch(inputDoc);	    		 
 	    	 }else if(interfaceName == "GetResource".intern()) {
 	    		 responseReader = query.GetResource(inputDoc);	    		 
+	    	 }else if(interfaceName == "GetResourceByIdentifier".intern()) {
+	    		 responseReader = query.GetResource(inputDoc);	    		 
 	    	 }else if(interfaceName == "GetRegistries".intern()) {
 	    		 responseReader = query.GetRegistries(inputDoc);	    		 
 	    	 }else if(interfaceName == "GetIdentity".intern()) {
