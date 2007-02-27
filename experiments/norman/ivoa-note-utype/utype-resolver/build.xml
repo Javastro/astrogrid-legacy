@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.4 2007/02/22 19:00:22 norman Exp $
+     $Id: build.xml,v 1.5 2007/02/27 19:18:06 norman Exp $
 -->
 
 
@@ -592,6 +592,11 @@
           classpathref="sisc.test.classpath"
           failonerror="true">
       <sysproperty key="sisc.home" value="${build.lib}"/>
+      <!-- following doesn't seem to have any effect
+       !   (note, if it did have an effect, it would apparently slow things
+       !   down, so it should probably be removed for production releases).
+       ! -->
+      <!--sysproperty key="sisc.maxStackTraceDepth" value="16"/-->
       <arg value="-h"/>
       <arg value="${build.classes}/sisc.shp"/>
       <arg value="${scm.test.home}/run-tests.scm"/>
