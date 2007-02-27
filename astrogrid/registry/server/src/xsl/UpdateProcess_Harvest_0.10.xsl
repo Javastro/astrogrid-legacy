@@ -151,7 +151,7 @@
 				<xsl:text>sia:SimpleImageAccess</xsl:text>
 			</xsl:when>
 	        <xsl:when test="contains(string(@xsi:type),':CeaService')">
-				<xsl:text>cea:CeaService</xsl:text>
+				<xsl:text>cea:CeaServiceType</xsl:text>
 			</xsl:when>
 	        <xsl:when test="contains(string(@xsi:type),':CeaApplicationType')">
 				<xsl:text>cea:CeaApplicationType</xsl:text>
