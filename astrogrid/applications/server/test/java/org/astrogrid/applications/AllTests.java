@@ -1,4 +1,8 @@
 /*
+ * $Id: AllTests.java,v 1.6 2007/02/27 16:07:41 gtr Exp $
+ * 
+ * Created on 23-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
+ *
  * Copyright 2004 AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 

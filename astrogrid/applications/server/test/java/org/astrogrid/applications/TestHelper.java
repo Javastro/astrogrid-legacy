@@ -1,5 +1,5 @@
 /*
- * $Id: TestHelper.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * $Id: TestHelper.java,v 1.3 2007/02/27 16:07:41 gtr Exp $
  * 
  * Created on 17-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
