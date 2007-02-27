@@ -23,6 +23,7 @@
   reader->jstring
   input-stream->jstring
   parse-http-accept-header
+  acceptable-mime
   parse-query-string
 
   ;; Transaction support functions.  Should these perhaps be moved
@@ -306,6 +307,54 @@
 ;;                       (sort-list pairs
 ;;                                  (lambda (a b)
 ;;                                    (> (cdr a) (cdr b))))))))))
+
+;; ACCEPTABLE-MIME : string list-of-string -> string-or-#f
+;; ACCEPTABLE-MIME : list-of-string list-of-string -> string-or-#f
+;;
+;; Test whether a given MIME type is acceptable.  Given a single
+;; AVAILABLE MIME type,
+;; return a MIME type which is present in the ACCEPTABLE (which may
+;; include "*/*"), or #f if there is none such.  The return value will
+;; typically be the same as the input MIME argument, unless this is
+;; not acceptable. A non-#f return will be different from the input if
+;; the input includes a wildcard as above.
+;;
+;; If AVAILABLE is a list of MIME types, then return the first element in
+;; the ACCEPTABLE list (which should be in preference order, as returned
+;; by PARSE-HTTP-ACCEPT-HEADER) which is present in the AVAILABLE list,
+;; or #f if there are none.
+;;
+;; At present, */* is the only wildcard interpreted, so text/* for example
+;; won't work.
+(define/contract (acceptable-mime (available (or (string? available)
+                                                 (list? available)))
+                                  (acceptable list?)
+                                  -> (lambda (ret)
+                                       (or (string? ret)
+                                           (not ret))))
+  (define (one-mime-in-list available acceptable)
+    (cond ((null? acceptable)
+         #f)
+        ((member "*/*" acceptable)
+         available)
+        ((member available acceptable)
+         available)
+        (else
+         #f)))
+  (define (first-in-list-in-list available acceptable)
+    (let loop ((l acceptable))
+      (cond ((null? l)
+             #f)
+            ((string=? (car l) "*/*")
+             (car available))
+            ((member (car l) available)
+             => car)
+            (else
+             (loop (cdr l))))))
+  (chatter "acceptable-mime: available=~s  acceptable=~s" available acceptable)
+  (if (list? available)
+      (first-in-list-in-list available acceptable)
+      (one-mime-in-list available acceptable)))
 
  ;; Simple implementation of heapsort (?).  Probably not massively efficient
  ;; but there isn't a SRFI for sorting yet.  Sort the given list L with

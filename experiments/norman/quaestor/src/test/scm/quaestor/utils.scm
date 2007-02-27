@@ -79,6 +79,41 @@
                "text/*, text/html, text/html;level=1, */*"
                )))
 
+(expect acceptable-mime-1
+        "text/html"
+        (acceptable-mime "text/html" '("text/plain" "text/html")))
+(expect acceptable-mime-2
+        #f
+        (acceptable-mime "text/html" '("text/plain" "text/nothing")))
+(expect acceptable-mime-3
+        "text/html"
+        (acceptable-mime "text/html" '("text/plain" "text/nothing" "*/*")))
+;; (expect acceptable-mime-4 ; doesn't work yet
+;;         "text/html"
+;;         (acceptable-mime "text/html" '("text/plain" "text/nothing" "text/*")))
+(expect acceptable-mime-5
+        "text/html"
+        (acceptable-mime '("text/plain" "text/html")
+                         '("text/html" "text/plain")))
+(expect acceptable-mime-6
+        "text/nothing1"
+        (acceptable-mime '("text/nothing1" "text/nothing2")
+                         '("text/html" "text/plain" "*/*")))
+(expect acceptable-mime-7
+        #f
+        (acceptable-mime '("text/nothing1" "text/nothing2")
+                         '("text/html" "text/plain")))
+;; (expect acceptable-mime-8               ;doesn't work yet
+;;         "text/nothing1"
+;;         (acceptable-mime '("text/nothing1" "text/nothing2")
+;;                          '("text/html" "text/plain" "text/*")))
+
+(expect acceptable-mime1
+        '()
+        (map ACCEPTABLE-MIME
+             '()
+             '()))
+
 (expect parse-query-string
         '((#f . #f)
           (#f . #f)
