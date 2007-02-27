@@ -24,12 +24,11 @@
   (import jena)
   (import* utils
            is-java-type?
-           ;;chatter
-           )
+           collection->list)
 
   (define (jena-model? x)
     (is-java-type? x '|com.hp.hpl.jena.rdf.model.Model|))
-  (define (is-alist? x)
+  (define (alist? x)
     (and (list? x)
          (let loop ((l x))
            (if (null? l)
@@ -54,69 +53,63 @@
   ;; a lock.
   (define _model-list-lock-object (->jstring ""))
 
-  ;; Given a string or symbol, return a symbol.  If it's neither a
-  ;; string nor a symbol, return #f
-  (define (as-symbol s)
-    (cond ((symbol? s)
-           s)
-          ((string? s)
-           (string->symbol s))
+  ;; KB:GET : string -> knowledgebase or false
+  ;; Retrieve the knowledgebase with the given name, which is
+  ;; a symbol or string.  Return #f if there is no KB with this name.
+  (define/contract (kb:get (kb-name string?)
+                           -> (lambda (x)
+                                (or (not x)
+                                    (kb:knowledgebase? x))))
+    (or kb-name
+        (error 'kb:get "bad call to kb:get with object ~s" kb-name))
+    (cond ((assoc kb-name _model-list)
+           => cdr)
           (else
            #f)))
 
-  ;; Retrieve the knowledgebase with the given name, which is
-  ;; a symbol or string.  Return #f if there is no KB with this name.
-  (define (kb:get kb-name-param)
-    (let ((kb-name (as-symbol kb-name-param)))
-      (or kb-name
-          (error 'kb:get "bad call to kb:get with object ~s" kb-name-param))
-      (cond ((assq kb-name _model-list)
-             => cdr)
-            (else
-             #f))))
-
-  ;; kb:new string -> knowledgebase
+  ;; KB:NEW string : -> knowledgebase
   ;;
   ;; Create a new knowledgebase from scratch, registering it with the given
-  ;; KB-NAME-PARAM (a string).  It must not already exist.
+  ;; KB-NAME (a string).  It must not already exist.
   ;; Return the new knowledgebase.  Either succeeds or throws an error.
-  (define (kb:new kb-name-param)
-    (let ((kb-name (as-symbol kb-name-param)))
-      (or kb-name
-          (error 'kb:new "bad call to kb:new with object ~s" kb-name-param))
-      (if (kb:get kb-name)
-          (error 'kb:new
-                 "bad call to kb:new: knowledgebase ~a already exists"
-                 kb-name))
-      (let ((kb (make-kb kb-name)))
-        (java-synchronized _model-list-lock-object
-          (lambda ()
-            (set! _model-list
-                  (cons (cons kb-name kb)
-                        _model-list))))
-        kb)))
+  (define/contract (kb:new (kb-name string?) -> kb:knowledgebase?)
+    (or kb-name
+        (error 'kb:new "bad call to kb:new with object ~s" kb-name))
+    (if (kb:get kb-name)
+        (error 'kb:new
+               "bad call to kb:new: knowledgebase ~a already exists"
+               kb-name))
+    (let ((kb (make-kb kb-name)))
+      (java-synchronized _model-list-lock-object
+        (lambda ()
+          (set! _model-list
+                (cons (cons kb-name kb)
+                      _model-list))))
+      kb))
 
-  ;; kb:get-names -> list
+  ;; KB:GET-NAMES : -> list
   ;;
   ;; Returns a list of available knowledgebases.  Returns the names
-  ;; as symbols, or a null list if there are none.
+  ;; as strings, or a null list if there are none.
   (define (kb:get-names)
     (map car _model-list))
 
-  ;; kb:discard knowledgebase -> knowledgebase/#f
+  ;; KB:DISCARD : string -> knowledgebase/#f
   ;;
   ;; Remove a given knowledgebase from the list.  Returns it, or
   ;; returns #f if no such knowledgebase existed
-  (define (kb:discard kb-name-string)
-    (let ((kb-name (as-symbol kb-name-string))
-          (ret #f))
+  (define/contract (kb:discard (kb-name string?)
+                               -> (lambda (x)
+                                    (or (not x)
+                                        (kb:knowledgebase? x))))
+    (let ((ret #f))
       (java-synchronized _model-list-lock-object
         (lambda ()
           (let loop ((new-list '())
                      (l _model-list))
             (cond ((null? l)
                    (set! _model-list new-list))
-                  ((eq? kb-name (caar l)) ;found it
+                  ((string=? kb-name (caar l)) ;found it
                    (set! ret (cdar l))
                    (loop new-list (cdr l)))
                   (else
@@ -124,24 +117,26 @@
                          (cdr l))))
             ret)))))
 
-  ;; add-submodel list symbol jena-model boolean -> list
+  ;; add-submodel : list symbol jena-model boolean -> list
   ;; Add a new submodel to the model.  Returns the original or an updated
   ;; submodel list, or #f on any errors (there's nothing which triggers #f
   ;; at present, but it's documented to do this just in case)
   (define/contract (add-submodel (submodel-list      list?)
-                                 (new-submodel-name  symbol?)
+                                 (new-submodel-name  string?)
                                  (new-submodel-model jena-model?)
                                  (tbox?              boolean?)
                                  -> list?)
-    (cond ((assq new-submodel-name submodel-list)
-           => (lambda (sm-list)         ;already exists
-                (set-cdr! sm-list
-                          (cons tbox? new-submodel-model))
-                submodel-list))
-          (else                         ;create a new one by consing
+    (java-synchronized _model-list-lock-object
+      (lambda ()
+        (cond ((assoc new-submodel-name submodel-list)
+               => (lambda (sm-list)     ;already exists
+                    (set-cdr! sm-list
+                              (cons tbox? new-submodel-model))
+                    submodel-list))
+              (else                     ;create a new one by consing
                                         ;an entry to the front
-           (cons `(,new-submodel-name ,tbox? . ,new-submodel-model)
-                 submodel-list))))
+               (cons `(,new-submodel-name ,tbox? . ,new-submodel-model)
+                     submodel-list))))))
   
 
   ;; make-kb symbol -> knowledgebase
@@ -165,9 +160,6 @@
   ;;        Return the merged abox/tbox submodels, or #f if there are none.
   ;;    (kb 'get-metadata)
   ;;        Return the model's metadata, as a Jena Model.
-  ;;    ;(kb 'get-metadata-as-string)
-  ;;    ;(kb 'get-metadata-as-jstring)
-  ;;    ;    Return the model's metadata, if any, as a Scheme or Java string
   ;;    (kb 'get-name)
   ;;        Return the knowledgebase's name, as a symbol
   ;;    (kb 'has-model [SUBMODEL-NAME])
@@ -188,32 +180,87 @@
           (inferencing-model #f)
           (sync-object (->jstring "")))
 
+      (define-syntax kb-synchronized
+        (syntax-rules ()
+          ((_ form . forms)
+           (java-synchronized sync-object
+             (lambda ()
+               form . forms)))))
+
       (define (clear-memos)
         (set! merged-model #f)
         (set! merged-abox #f)
         (set! merged-tbox #f)
         (set! inferencing-model #f))
 
-      ;; Return the abox or tbox.  Caches result in merged-abox/tbox.
-      (define (get-abox-or-tbox tbox?)
-        (java-synchronized sync-object
-          (lambda ()
-            (let ((models (filter (if tbox?
-                                      (lambda (x) (cadr x))
-                                      (lambda (x) (not (cadr x))))
-                                  submodels)))
-              (cond ((null? models)
-                     #f)
-                    ((and tbox? merged-tbox))
-                    ((and (not tbox?) merged-abox))
-                    (tbox?
-                     (set! merged-tbox
-                           (rdf:merge-models (map cddr models)))
-                     merged-tbox)
-                    (else
-                     (set! merged-abox
-                           (rdf:merge-models (map cddr models)))
-                     merged-abox))))))
+      ;; Return the abox or tbox: BOXNAME is either 'tbox or 'abox.
+      ;; Caches result in merged-abox/tbox.
+      (define (get-box boxname)
+        (kb-synchronized
+         (let* ((tbox? (eq? boxname 'tbox))
+                (models (filter (if tbox?
+                                    (lambda (x) (cadr x))
+                                    (lambda (x) (not (cadr x))))
+                                submodels)))
+           (cond ((null? models)
+                  #f)
+                 (tbox?
+                  (or merged-tbox
+                      (set! merged-tbox
+                            (rdf:merge-models (map cddr models))))
+                  merged-tbox)
+                 (else
+                  (or merged-abox
+                      (set! merged-abox
+                            (rdf:merge-models (map cddr models))))
+                  merged-abox)))))
+
+      ;; Add the given submodel to the model.  BOXNAME is either 'tbox or 'abox.
+      (define (add-box name submodel boxname)
+        (kb-synchronized
+         (set! submodels
+               (add-submodel submodels
+                             name
+                             submodel
+                             (eq? boxname 'tbox)))
+         (clear-memos)))
+
+      ;; Return a new inferencing model, using the settings in METADATA.
+      ;; Return false on errors
+      (define (create-inferencing-model)
+        (let ((tbox (get-box 'tbox))
+              (abox (get-box 'abox)))
+          (define-java-classes
+            (<factory> |com.hp.hpl.jena.rdf.model.ModelFactory|))
+          (define-generic-java-methods
+            create-inf-model to-string)
+          (let* ((levelres
+                  (and metadata
+                       myuri
+                       (rdf:select-statements
+                        metadata
+                        myuri
+                        "http://ns.nxg.me.uk/quaestor#requiredReasoner"
+                        #f)))
+                 (levelp (and levelres
+                              (not (null? levelres))
+                              (rdf:get-property-on-resource
+                               (car levelres)
+                               "http://ns.nxg.me.uk/quaestor#level")))
+                 (level (and levelp
+                             (->string (to-string levelp)))))
+            (chatter "Level for ~s is ~s" myuri level)
+            (cond ((and tbox abox)
+                   (create-inf-model (java-null <factory>)
+                                     (rdf:get-reasoner level)
+                                     tbox
+                                     abox))
+                  (tbox
+                   (create-inf-model (java-null <factory>)
+                                     (rdf:get-reasoner level)
+                                     tbox))
+                  (else
+                   #f)))))
 
       (lambda (cmd . args)
         (case cmd
@@ -223,18 +270,16 @@
           
           ((add-abox add-tbox)
            ;; (kb 'add-abox/tbox SUBMODEL-NAME SUBMODEL)
-           (if (not (= (length args) 2))
+           (if (not (and (= (length args) 2)
+                         (string? (car args))))
                (error 'make-kb
-                      "Bad call to add-abox/tbox: wrong number of args in ~s"
+                      "Bad call to add-abox/tbox: wrong number or type of args in ~s"
                       args))
-           (java-synchronized sync-object
-             (lambda ()
-               (set! submodels
-                     (add-submodel submodels
-                                   (as-symbol (car args))
-                                   (cadr args)
-                                   (eq? cmd 'add-tbox)))
-               (clear-memos)))
+           (add-box (car args)
+                    (cadr args)
+                    (if (eq? cmd 'add-tbox)
+                        'tbox
+                        'abox))
            #t)
 
           ((set-metadata)
@@ -251,10 +296,9 @@
                  (base-uri (cadr args))
                  (content-type (caddr args)))
              (let ((m (get-metadata-from-source input base-uri content-type)))
-               (java-synchronized sync-object
-                 (lambda ()
-                   (set! myuri base-uri)
-                   (set! metadata m))))))
+               (kb-synchronized
+                (set! myuri base-uri)
+                (set! metadata m)))))
 
           ;;;;;;;;;;
           ;; Commands which implicitly mutate the knowledgebase, via memoisation
@@ -264,18 +308,16 @@
            ;; Return newly-merged model or #f if no models exist
            (case (length args)
              ((0)
-              (cond ((null? submodels)
-                     #f)
-                    (merged-model)
-                    (else
-                     (java-synchronized sync-object
-                       (lambda ()
-                         (set! merged-model
-                               (rdf:merge-models (map cddr submodels)))
-                         merged-model)))))
+              (kb-synchronized
+               (cond ((null? submodels)
+                      #f)
+                     (merged-model)      ;already merged/memoized
+                     (else
+                      (set! merged-model
+                            (rdf:merge-models (map cddr submodels)))
+                      merged-model))))
              ((1)
-              (let ((sm (assq (as-symbol (car args))
-                              submodels)))
+              (let ((sm (assoc (car args) submodels)))
                 (and sm (cddr sm))))
              (else
               (error 'make-kb
@@ -284,42 +326,10 @@
 
           ((get-inferencing-model)
            ;; return #f on error
-           (java-synchronized sync-object
-             (lambda ()
-               (if (not inferencing-model)
-                   (let ((tbox (get-abox-or-tbox #t))
-                         (abox (get-abox-or-tbox #f)))
-                     (define-java-classes
-                       (<factory> |com.hp.hpl.jena.rdf.model.ModelFactory|))
-                     (define-generic-java-methods
-                       create-inf-model to-string)
-                     (let* ((levelres
-                             (and metadata
-                                  myuri
-                                  (rdf:select-statements metadata
-                                                         myuri
-                                                         "http://ns.nxg.me.uk/quaestor#requiredReasoner"
-                                                         #f)))
-                            (levelp (and levelres
-                                         (not (null? levelres))
-                                         (rdf:get-property-on-resource
-                                          (car levelres)
-                                          "http://ns.nxg.me.uk/quaestor#level")))
-                            (level (and levelp
-                                        (->string (to-string levelp)))))
-                       (chatter "Level for ~s is ~s" myuri level)
-                       (set! inferencing-model
-                             (cond ((and tbox abox)
-                                    (create-inf-model (java-null <factory>)
-                                                      (rdf:get-reasoner level)
-                                                      tbox
-                                                      abox))
-                                   (tbox
-                                    (create-inf-model (java-null <factory>)
-                                                      (rdf:get-reasoner level)
-                                                      tbox))
-                                   (else
-                                    #f))))))))
+           (kb-synchronized
+            (if (not inferencing-model)
+                (set! inferencing-model
+                      (create-inferencing-model))))
            inferencing-model)
 
           ((get-model-tbox get-model-abox)
@@ -328,7 +338,9 @@
            (or (null? args)
                (error 'make-kb
                       "Bad call to get-model-tbox/abox: wrong no args ~s" args))
-           (get-abox-or-tbox (eq? cmd 'get-model-tbox)))
+           (get-box (if (eq? cmd 'get-model-tbox)
+                        'tbox
+                        'abox)))
 
           ;;;;;;;;;;
           ;; Commands which do not mutate the knowledgebase
@@ -336,34 +348,19 @@
           ((has-model)
            ;; (kb 'has-model [SUBMODEL-NAME])
            ;; With an argument, this is redundant with
-           ;; (kb 'get-model SUBMODEL-NAME), but without, it saves the
-           ;; redundant merging of the models, as well as being more
-           ;; intelligible
+           ;; (kb 'get-model SUBMODEL-NAME); but without an argument,
+           ;; it saves the redundant merging of the models,
+           ;; as well as being more intelligible.
            (cond ((= (length args) 0)
                   (not (null? submodels)))
                  ((= (length args) 1)
-                  (assq (as-symbol (car args)) submodels))
+                  (assoc (car args) submodels))
                  (else
                   (error 'make-kb
                          "Bad call to has-model: wrong no. args ~s" args))))
 
           ((get-metadata)
            metadata)
-;;           ((get-metadata-as-string)
-;;            (cond ((is-java-type? metadata '|java.lang.String|)
-;;                   (->string metadata))
-;;                  ((string? metadata)
-;;                   metadata)
-;;                  (else
-;;                   (error "Impossible -- kb metadata isn't a string"))))
-
-;;           ((get-metadata-as-jstring)
-;;            (cond ((is-java-type? metadata '|java.lang.String|)
-;;                   metadata)
-;;                  ((string? metadata)
-;;                   (->jstring metadata))
-;;                  (else
-;;                   (error "Impossible -- kb metadata isn't a string"))))
 
           ((get-name)
            myname)
@@ -380,7 +377,7 @@
           (else
            (error 'make-kb "impossible command for knowledgebase: ~s" cmd))))))
 
-  ;; kb:knowledgebase? object -> boolean
+  ;; KB:KNOWLEDGEBASE? : object -> boolean
   ;;
   ;; Returns true if the object is a knowledgebase
   (define (kb:knowledgebase? object)
@@ -388,8 +385,7 @@
          (with/fc
              (lambda (m e) #f)
            (lambda ()
-             (let ((name (object 'get-name)))
-               (symbol? name))))))
+             (string? (object 'get-name))))))
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;;
@@ -427,7 +423,7 @@
   ;; Return an alist consisting of (prefix . namespace) mappings for
   ;; the given model.
   (define/contract (get-model-namespaces (model jena-model?)
-                                         -> is-alist?)
+                                         -> alist?)
     (define-generic-java-methods
       get-ns-prefix-map
       entry-set
