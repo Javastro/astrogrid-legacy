@@ -7,31 +7,59 @@
 ;; do import quaestor-support
 (require-library 'org/eurovotech/quaestor/scheme-wrapper-support)
 
-(define nfails 0)
+
+(define failures-in-block?
+  (let ((failures? #f))
+    (lambda arg
+      (cond ((null? arg)
+             (let ((t failures?))
+               (set! failures? #f)
+               t))
+            ((boolean? (car arg))
+             (set! failures? (car arg)))
+            (else
+             (error "Bad call to FAILURES-IN-BLOCK?"))))))
+(define failures
+  (let ((n 0))
+    (lambda arg
+      (cond ((null? arg)
+             n)
+            ((number? (car arg))
+             (set! n (+ n (car arg)))
+             (failures-in-block? #t))
+            (else
+             (error "Bad call to FAILURES"))))))
+
+(define (test-fc id expected)
+  (lambda (m e)
+    (format #t "Test ~a~%    produced error~a: ~a~%    expected ~s~%"
+            id
+            (if (error-location m)
+                (format #f " in ~a" (error-location m))
+                "")
+            (or (error-message m)
+                (error-message (error-parent-error m))
+                (error-message
+                 (error-parent-error
+                  (error-parent-error m)))
+                m)
+            expected)
+    (failures 1)))
+
+;; Expect the body to evaluate to the value EXPECTED
 (define-syntax expect
   (syntax-rules ()
     ((_ id expected body ...)
-     (with/fc (lambda (m e)
-                (format #t "Test ~a~%    produced error~a: ~a~%    expected ~s~%"
-                          (quote id)
-                          (if (error-location m)
-                              (format #f " in ~a" (error-location m))
-                              "")
-                          (or (error-message m)
-                              (error-message (error-parent-error m))
-                              (error-message
-                               (error-parent-error
-                                (error-parent-error m)))
-                              m)
-                          expected)
-                (set! nfails (+ nfails 1)))
+     (with/fc (test-fc (quote id) expected)
        (lambda ()
          (let ((test ((lambda ()
                         body ...))))
            (if (not (equal? expected test))
                (begin (format #t "Test ~a~%    produced ~s~%    expected ~s~%"
                               (quote id) test expected)
-                      (set! nfails (+ nfails 1))))))))))
+                      (failures 1)))))))))
+
+;; Expect the body to throw an error
 (define-syntax expect-failure
   (syntax-rules ()
     ((_ id body ...)
@@ -42,7 +70,18 @@
           (let ((test ((lambda () body ...))))
             (format #t "Test ~a~%    produced ~s~%    expected ERROR~%"
                     (quote id) test)
-            (set! nfails (+ nfails 1))))))))
+            (failures 1)))))))
+
+;; Expect the body to evaluate to some non-#f result
+(define-syntax expect-true
+  (syntax-rules ()
+    ((_ id body ...)
+     (with/fc (test-fc (quote id) #t)
+       (lambda ()
+         (or ((lambda () body ...))
+             (begin (format #t "Test ~a: expected true, was false~%"
+                            (quote id))
+                    (failures 1))))))))
 
 (define files-to-test '("quaestor/utils.scm"
                         "quaestor/knowledgebase.scm"
@@ -60,9 +99,9 @@
      (lambda ()
        (for-each run-test-file
                  files-to-test)))
-  (if (> nfails 0)
-      (format #t "Number of fails=~a~%" nfails))
-  (exit (java-null <java.lang.system>) (->jint nfails)))
+  (if (> (failures) 0)
+      (format #t "Number of fails=~a~%" (failures)))
+  (exit (java-null <java.lang.system>) (->jint (failures))))
 
 (define (run-test-file file-name)
   (let ((url (normalize-url (current-url) file-name)))
