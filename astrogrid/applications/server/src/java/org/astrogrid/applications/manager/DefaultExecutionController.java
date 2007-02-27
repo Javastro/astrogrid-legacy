@@ -1,5 +1,4 @@
 /*
- * $Id: DefaultExecutionController.java,v 1.11 2007/02/19 16:20:33 gtr Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.

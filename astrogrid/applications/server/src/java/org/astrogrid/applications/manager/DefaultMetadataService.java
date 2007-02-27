@@ -1,13 +1,11 @@
-/*$Id: DefaultMetadataService.java,v 1.15 2007/02/19 16:20:33 gtr Exp $
- * Created on 21-May-2004
- *
+/*
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
  * Software License version 1.2, a copy of which has been included 
  * with this distribution in the LICENSE.txt file.  
  *
- **/
+ */
 package org.astrogrid.applications.manager;
 
 import org.astrogrid.applications.CeaException;
@@ -486,89 +484,3 @@ public class DefaultMetadataService implements MetadataService,
 
    }
 }
-
-/*
- * $Log: DefaultMetadataService.java,v $
- * Revision 1.15  2007/02/19 16:20:33  gtr
- * Branch apps-gtr-1061 is merged.
- *
- * Revision 1.14.2.2  2007/01/18 14:17:18  gtr
- * I fixed a string test that relied on a feature from Java 5. It now works on Java 1.4.2.
- *
- * Revision 1.14.2.1  2007/01/18 13:57:23  gtr
- * Applications in the org.astrogrid.unregistered namespace are not registered.
- *
- * Revision 1.14  2007/01/16 09:57:37  gtr
- * I replaced org.astrogrid.comon.test.SchemaMap with org.astrogrid.contracts.SchemaMap. This is part of the fix for BZ2051.
- *
- * Revision 1.13  2006/03/17 17:50:58  clq2
- * gtr_1489_cea correted version
- *
- * Revision 1.11  2006/03/07 21:45:26  clq2
- * gtr_1489_cea
- *
- * Revision 1.8.38.5  2006/01/26 13:19:04  gtr
- * Refactored.
- *
- * Revision 1.8.38.4  2006/01/26 11:03:10  gtr
- * The URLs for configuring the metadata services are now supplied by the configuration service.
- *
- * Revision 1.8.38.3  2005/12/22 10:13:26  gtr
- * I removed unused methods.
- *
- * Revision 1.8.38.2  2005/12/21 17:45:42  gtr
- * I changed the dataflow so that the template document is reloaded each time a registration document is produced.
- *
- * Revision 1.8.38.1  2005/12/21 14:44:35  gtr
- * Changed to make the registration template available through the InitServlet.
- *
- * Revision 1.8  2005/07/05 08:27:00  clq2
- * paul's 559b and 559c for wo/apps and jes
- *
- * Revision 1.7.84.2  2005/06/14 09:49:32  pah
- * make the http cec only register itself as a ceaservice - do not try to reregister any cea applications that it finds
- *
- * Revision 1.7.84.1  2005/06/09 08:47:32  pah
- * result of merging branch cea_pah_559b into HEAD
- *
- * Revision 1.7.70.4  2005/06/08 22:10:45  pah
- * make http applications v10 compliant
- *
- * Revision 1.7.70.3  2005/06/03 16:01:48  pah
- * first try at getting commandline execution log bz#1058
- *
- * Revision 1.7.70.2  2005/06/02 14:57:28  pah
- * merge the ProvidesVODescription interface into the MetadataService interface
- * Revision 1.7.70.1 2005/05/31 12:58:24
- * pah moved to v10 schema interpretation - this means that the authorityID is
- * read directly with the applicaion "name"
- * 
- * Revision 1.7 2004/10/08 20:01:51 pah make the registry entry more "registry
- * ready" - make sure namespaces are ok
- * 
- * Revision 1.6 2004/09/07 13:29:46 pah made sure that the vr namespace is
- * declared
- * 
- * Revision 1.5 2004/08/28 07:17:34 pah commandline parameter passing - unit
- * tests ok
- * 
- * Revision 1.4 2004/08/17 15:09:20 nw minor improvement on logging
- * 
- * Revision 1.3 2004/07/26 12:07:38 nw renamed indirect package to protocol,
- * renamed classes and methods within protocol package javadocs
- * 
- * Revision 1.2 2004/07/01 11:16:22 nw merged in branch
- * nww-itn06-componentization
- * 
- * Revision 1.1.2.2 2004/07/01 01:42:46 nw final version, before merge
- * 
- * Revision 1.1.2.1 2004/06/17 09:21:23 nw finished all major functionality
- * additions to core
- * 
- * Revision 1.1.2.1 2004/06/14 08:56:58 nw factored applications into
- * sub-projects, got packaging of wars to work again
- * 
- * Revision 1.1.2.1 2004/05/28 10:23:10 nw checked in early, broken version -
- * but it builds and tests (fail)
- *  
- */

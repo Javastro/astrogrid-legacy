@@ -1,5 +1,4 @@
-/*$Id: CEAComponentManagerFactory.java,v 1.5 2007/02/19 16:20:32 gtr Exp $
- * Created on 04-May-2004
+/*
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -95,40 +94,3 @@ public class CEAComponentManagerFactory {
         }
 
 }
-
-
-/* 
-$Log: CEAComponentManagerFactory.java,v $
-Revision 1.5  2007/02/19 16:20:32  gtr
-Branch apps-gtr-1061 is merged.
-
-Revision 1.4.226.2  2007/01/18 18:03:28  gtr
-A BaseApplicationDescriptionLibrary is the default instead of a JavaClassApplicationDescriptionLibrary.
-
-Revision 1.4.226.1  2007/01/18 17:37:12  gtr
-It now longer defaults to JavaClassCEAComponentManager if the manager is not configured.
-
-Revision 1.4  2004/08/17 15:07:55  nw
-tried to improve behaviour on webapp stop
-
-Revision 1.3  2004/07/23 13:21:21  nw
-Javadocs
-
-Revision 1.2  2004/07/01 11:16:22  nw
-merged in branch
-nww-itn06-componentization
-
-Revision 1.1.2.2  2004/07/01 01:42:46  nw
-final version, before merge
-
-Revision 1.1.2.1  2004/06/14 08:56:58  nw
-factored applications into sub-projects,
-got packaging of wars to work again
-
-Revision 1.1.2.2  2004/05/28 10:23:11  nw
-checked in early, broken version - but it builds and tests (fail)
-
-Revision 1.1.2.1  2004/05/21 12:00:22  nw
-merged in latest changes from HEAD. start of refactoring effort
- 
-*/

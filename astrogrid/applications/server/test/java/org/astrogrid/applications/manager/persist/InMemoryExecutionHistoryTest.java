@@ -1,13 +1,11 @@
-/*$Id: InMemoryExecutionHistoryTest.java,v 1.7 2007/02/19 16:20:33 gtr Exp $
- * Created on 16-Jun-2004
- *
+/*
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
  * Software License version 1.2, a copy of which has been included 
  * with this distribution in the LICENSE.txt file.  
  *
-**/
+ */
 package org.astrogrid.applications.manager.persist;
 
 import org.astrogrid.applications.Application;
@@ -93,39 +91,3 @@ public class InMemoryExecutionHistoryTest extends TestCase {
         }        
     }
 }
-
-
-/* 
-$Log: InMemoryExecutionHistoryTest.java,v $
-Revision 1.7  2007/02/19 16:20:33  gtr
-Branch apps-gtr-1061 is merged.
-
-Revision 1.6.32.1  2007/01/18 17:50:59  gtr
-A BaseApplicationDescriptionLibrary is used instead of a JavaClassApplicationDescriptionLibrary.
-
-Revision 1.6  2006/03/17 17:50:58  clq2
-gtr_1489_cea correted version
-
-Revision 1.4  2006/03/07 21:45:26  clq2
-gtr_1489_cea
-
-Revision 1.3.118.1  2006/02/01 12:09:54  gtr
-Refactored and fixed to allow the tests to work with the new configuration.
-
-Revision 1.3  2004/11/27 13:20:02  pah
-result of merge of pah_cea_bz561 branch
-
-Revision 1.2.90.1  2004/11/09 09:21:16  pah
-initial attempt to rationalise authorityID use & self registering
-
-Revision 1.2  2004/07/01 11:16:22  nw
-merged in branch
-nww-itn06-componentization
-
-Revision 1.1.2.2  2004/07/01 01:42:47  nw
-final version, before merge
-
-Revision 1.1.2.1  2004/06/17 09:21:23  nw
-finished all major functionality additions to core
- 
-*/

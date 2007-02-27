@@ -29,10 +29,6 @@
             <packages>org.astrogrid.applications.parameter*</packages>
         </packageGroup>
         <packageGroup>
-            <title>JavaClass CEA Provider</title>
-            <packages>org.astrogrid.applications.javaclass</packages>
-        </packageGroup>
-        <packageGroup>
             <title>CEA Server</title>
             <packages>org.astrogrid.applications.manager*, org.astrogrid.applications.service*,
 				org.astrogrid.applications.component</packages>

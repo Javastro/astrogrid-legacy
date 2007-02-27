@@ -1,13 +1,11 @@
-/*$Id: BaseApplicationDescriptionLibrary.java,v 1.16 2007/02/19 16:20:32 gtr Exp $
- * Created on 17-Jun-2004
- *
+/*
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
  * Software License version 1.2, a copy of which has been included 
  * with this distribution in the LICENSE.txt file.  
  *
-**/
+ */
 package org.astrogrid.applications.description;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
@@ -132,74 +130,3 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
     
    protected final ApplicationDescriptionEnvironment env;    
 }
-
-
-/* 
-$Log: BaseApplicationDescriptionLibrary.java,v $
-Revision 1.16  2007/02/19 16:20:32  gtr
-Branch apps-gtr-1061 is merged.
-
-Revision 1.15.32.1  2007/01/18 13:38:06  gtr
-A built-in application is provided for testing.
-
-Revision 1.15  2006/03/17 17:50:58  clq2
-gtr_1489_cea correted version
-
-Revision 1.13  2006/03/07 21:45:26  clq2
-gtr_1489_cea
-
-Revision 1.10.38.1  2005/12/18 14:48:24  gtr
-Refactored to allow the component managers to pass their unit tests and the fingerprint JSP to work. See BZ1492.
-
-Revision 1.10  2005/07/05 08:27:02  clq2
-paul's 559b and 559c for wo/apps and jes
-
-Revision 1.9.66.1  2005/06/09 08:47:33  pah
-result of merging branch cea_pah_559b into HEAD
-
-Revision 1.9.52.3  2005/06/08 22:10:46  pah
-make http applications v10 compliant
-
-Revision 1.9.52.2  2005/06/03 16:01:48  pah
-first try at getting commandline execution log bz#1058
-
-Revision 1.9.52.1  2005/06/02 14:57:29  pah
-merge the ProvidesVODescription interface into the MetadataService interface
-
-Revision 1.9  2004/12/03 15:37:05  jdt
-restored it how it was....change PAL instead.
-
-Revision 1.8  2004/12/03 15:33:39  jdt
-restored the default ctor, otherwise PAL breaks.
-
-Revision 1.7  2004/11/27 13:20:02  pah
-result of merge of pah_cea_bz561 branch
-
-Revision 1.6.28.1  2004/11/09 09:21:16  pah
-initial attempt to rationalise authorityID use & self registering
-
-Revision 1.6  2004/09/07 08:06:39  pah
-todo added - need to remove confusion between community and authorityid
-
-Revision 1.5  2004/09/01 15:42:26  jdt
-Merged in Case 3
-
-Revision 1.4.2.1  2004/08/09 16:36:25  jdt
-pulled up an interface so I can use it in http apps
-
-Revision 1.4  2004/07/26 12:07:38  nw
-renamed indirect package to protocol,
-renamed classes and methods within protocol package
-javadocs
-
-Revision 1.3  2004/07/26 00:57:46  nw
-javadoc
-
-Revision 1.2  2004/07/01 11:16:22  nw
-merged in branch
-nww-itn06-componentization
-
-Revision 1.1.2.1  2004/07/01 01:42:46  nw
-final version, before merge
- 
-*/

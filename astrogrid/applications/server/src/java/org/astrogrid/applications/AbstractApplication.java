@@ -1,7 +1,4 @@
 /*
- * $Id: AbstractApplication.java,v 1.12 2007/02/19 16:20:32 gtr Exp $
- *
- * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid

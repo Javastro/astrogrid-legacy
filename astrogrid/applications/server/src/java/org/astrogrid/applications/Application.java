@@ -1,5 +1,4 @@
 /*
- * $Id: Application.java,v 1.7 2007/02/19 16:20:32 gtr Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
