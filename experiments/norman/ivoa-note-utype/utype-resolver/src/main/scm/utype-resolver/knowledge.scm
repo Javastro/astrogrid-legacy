@@ -14,6 +14,8 @@
     (namespace-seen?
      ingest-utype-declaration-from-uri!
      query-utype-superclasses
+     get-namespace-description
+     get-namespace-list
      ;; The following should be used only sparingly; they're
      ;; really only to be used for debugging and testing this module.
      show-utypes-as-n3
@@ -48,6 +50,14 @@
 (define (java-stream? x)
   (is-java-type? x <java.io.input-stream>))
 
+;; convert model to string -- DEBUGGING only
+;; (define (model->string m)
+;;   (define-java-class <java.io.string-writer>)
+;;   (define-generic-java-methods write to-string)
+;;   (let ((sw (java-new <java.io.string-writer>)))
+;;     (write m sw (->jstring "N3"))
+;;     (->string (to-string sw))))
+
 ;; uri->namespace : uri-or-string -> string
 (define (uri->namespace uri)
   (define-generic-java-methods to-string)
@@ -60,11 +70,14 @@
             (else
              (loop (+ i 1)))))))
 
-;; KNOWLEDGEBASE-METADATA-STREAM : -> java-stream
-;; Return a stream from which can be read appropriate configuration metadata
-;; for the knowledgebase.
-(define (knowledgebase-metadata-stream)
-  (define metadata "
+;; KNOWLEDGEBASE : -> quaestor-knowledgebase
+;; Return the Quaestor knowledgebase for this application, creating
+;; it if necessary.
+(define knowledgebase
+  (let ((kb #f))
+    (define-java-class <java.io.byte-array-input-stream>)
+    (define-generic-java-method get-bytes)
+    (define knowledgebase-metadata "
 @prefix dc: <http://purl.org/dc/elements/1.1/>.
 @prefix quaestor: <http://ns.nxg.me.uk/quaestor#>.
 
@@ -73,23 +86,16 @@
     quaestor:requiredReasoner [
         quaestor:level \"simpleRDFS\"
     ].")
-  (define-java-class <java.io.byte-array-input-stream>)
-  (define-generic-java-method get-bytes)
-  (java-new <java.io.byte-array-input-stream>
-            (get-bytes (->jstring metadata))))
-
-;; KNOWLEDGEBASE : -> quaestor-knowledgebase
-;; Return the Quaestor knowledgebase for this application, creating
-;; it if necessary.
-(define knowledgebase
-  (let ((kb #f))
     (lambda ()
       (if (not kb)
-          (begin (set! kb (kb:new "namespaces"))
-                 (kb 'set-metadata
-                     (knowledgebase-metadata-stream)
-                     "urn:dummy"        ;dummy non-null base URI
-                     "text/rdf+n3")))
+          (let ((knowledgebase-metadata-stream
+                 (java-new <java.io.byte-array-input-stream>
+                           (get-bytes (->jstring knowledgebase-metadata)))))
+            (set! kb (kb:new "namespaces"))
+            (kb 'set-metadata
+                knowledgebase-metadata-stream
+                "urn:dummy"             ;dummy non-null base URI
+                "text/rdf+n3")))
       kb)))
 
 ;; namespace-seen? : uri -> object
@@ -117,6 +123,39 @@
 
 (define (jena-model? x)
   (is-java-type? x '|com.hp.hpl.jena.rdf.model.Model|))
+
+;; GET-NAMESPACE-DESCRIPTION : string -> model-or-#f
+;; GET-NAMESPACE-DESCRIPTION : -> model
+(define (get-namespace-description . arg)
+  (case (length arg)
+    ((0)
+     (*get-all-description))
+    ((1)
+     (*get-namespace-description (car arg)))
+    (else
+     (error "Bad call to GET-NAMESPACE-DESCRIPTION with args ~s" arg))))
+(define/contract (*get-namespace-description (ns string?)
+                                            -> (lambda (o)
+                                                 (or (not o)
+                                                     (jena-model? o))))
+  ((knowledgebase) 'get-model (uri->namespace ns)))
+(define/contract (*get-all-description -> jena-model?)
+  ((knowledgebase) 'get-model))
+
+;; GET-NAMESPACE-LIST : -> list of strings
+;;
+;; Return a list of strings representing the namespaces
+;; the knowledgebase knows about.
+(define/contract (get-namespace-list -> list?)
+  (let ((submodel-pair (assq 'submodels ((knowledgebase) 'info))))
+    (with/fc
+        (lambda (m e)
+          (error 'get-namespace-list
+                 "Ooops: can't get submodel list from knowledgebase (this really shouldn't happen!) [~s]" m))
+      (lambda ()
+        (map (lambda (alist)
+               (cdr (assq 'name alist)))
+             (cdr submodel-pair))))))
 
 ;; RETRIEVE-URI : string string-or-false -> integer string stream
 ;;

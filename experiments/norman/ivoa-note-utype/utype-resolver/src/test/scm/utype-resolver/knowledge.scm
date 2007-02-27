@@ -85,5 +85,62 @@ myns:verySharpBounds a rdfs:Class;
          (query-utype-superclasses "http://example.org/utypes/1.0#verySharpBounds")
          string<=?))
 
+;; Now add assertions concerning a completely different namespace.
+;; The descriptions of these two namespaces should end up completely disjoint.
+(ingest-utype-declaration-from-stream!
+ "http://example.org/test"
+ (string->input-stream "
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix : <http://example.org/test#>.
+:c1 a rdfs:Class.
+:c2 a rdfs:Class;
+    rdfs:subClassOf :c1.
+"))
+
+;; utilities
+(define (show-model-as-triples model)
+  (define-java-classes
+    <java.io.string-writer>)
+  (define-generic-java-methods
+    write to-string)
+  (let ((sw (java-new <java.io.string-writer>)))
+    (write model sw (->jstring "N-TRIPLE"))
+    (->string (to-string sw))))
+(define (make-regexp-pattern regexp)
+  (define-java-classes <java.util.regex.pattern>)
+  (define-generic-java-methods compile)
+  (compile (java-null <java.util.regex.pattern>)
+           (->jstring regexp)))
+(define (count-matches pattern string)
+  (define-generic-java-methods matcher find end)
+  (let ((m (matcher pattern (->jstring string))))
+    (let loop ((n 0)
+               (start (->jint 0)))
+      (if (->boolean (find m start))
+          (loop (+ n 1) (end m))
+          n))))
+
+
+(let ((utypes-pattern (make-regexp-pattern "(http://example.org/utypes/1.0)"))
+      (test-pattern   (make-regexp-pattern "(http://example.org/test)"))
+      (utypes-triples (show-model-as-triples
+                       (get-namespace-description
+                        "http://example.org/utypes/1.0")))
+      (test-triples   (show-model-as-triples
+                       (get-namespace-description
+                        "http://example.org/test"))))
+  (expect crossover-11
+          5
+          (count-matches utypes-pattern  utypes-triples))
+  (expect crossover-12
+          0
+          (count-matches test-pattern utypes-triples))
+  (expect crossover-21
+          4
+          (count-matches test-pattern test-triples))
+  (expect crossover-22
+          0
+          (count-matches utypes-pattern  test-triples)))
+
 (if (failures-in-block?)
     (format #t "Errors in knowledge.scm~%"))
