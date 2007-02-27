@@ -88,7 +88,7 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
     public String getDescription() {
         return this.toString();
     }
-     
+
    public String toString() {     
         StringBuffer appList = new StringBuffer();
         for (Iterator i = descMap.values().iterator(); i.hasNext(); ) {
@@ -125,8 +125,7 @@ public class BaseApplicationDescriptionLibrary implements ApplicationDescription
             fail("there are no applications defined in this Library");
          }
       }
-      
-}
+    }
     
-   protected final ApplicationDescriptionEnvironment env;    
+   protected final ApplicationDescriptionEnvironment env;
 }

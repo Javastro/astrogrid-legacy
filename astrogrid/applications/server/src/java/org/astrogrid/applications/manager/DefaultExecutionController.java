@@ -1,5 +1,4 @@
 /*
- *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
  *
