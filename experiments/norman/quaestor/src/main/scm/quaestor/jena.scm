@@ -6,16 +6,11 @@
 (import quaestor-support)
 
 (require-library 'sisc/libs/srfi/srfi-1)
-(import* srfi-1
-         reduce)
-(require-library 'sisc/libs/srfi/srfi-26)
-(import* srfi-26
-         cut cute)
+(require-library 'sisc/libs/srfi/srfi-13)
+;(require-library 'sisc/libs/srfi/srfi-26)
 
 (require-library 'quaestor/utils)
-(import* utils
-         is-java-type?
-         iterator->list)
+
 
 (require-library 'util/lambda-contract)
 
@@ -32,6 +27,16 @@
   rdf:get-property-on-resource
   rdf:get-properties-on-resource
   rdf:select-statements)
+
+(import* srfi-1
+         fold)
+(import* srfi-13
+         string-prefix?)
+;; (import* srfi-26
+;;          cut cute)
+(import* utils
+         is-java-type?
+         iterator->list)
 
 ;; heavily used classes
 (define-java-classes
@@ -115,10 +120,10 @@
 ;; Given a list of RDF models, merge them into a single one, and return it
 (define/contract (rdf:merge-models (models list?) -> jena-model?)
   (define-generic-java-method add)
-  (reduce (lambda (new result)
-            (add result new))
-          (rdf:new-empty-model)
-          models))
+  (fold (lambda (new result)
+          (add result new))
+        (rdf:new-empty-model)
+        models))
 
 ;; Given a language LANG, which may be a Jstring, scheme string or #f,
 ;; return true if it is one of the allowed RDF languages, "RDF/XML[-ABBREV]",
@@ -367,9 +372,17 @@
 ;; Resource and Property respectively.  In the former cases, they are
 ;; transformed into the appropriate Java objects.
 ;;
-;; OBJECT may be either an RDFNode or a _Java_ object.  In the latter case,
-;; it is transformed to an RDF literal of the appropriate Datatype, based on
-;; its Java type.
+;; As a special case, PREDICATE may be the scheme string "a", in which
+;; case it is transformed into the Property
+;; <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>.
+;;
+;; OBJECT may be either an RDFNode or a Java object or a scheme
+;; string.  If it's an RDFNode, then that is what is used.  If it's a
+;; Java object, it is transformed to an RDF literal of the appropriate
+;; Datatype, based on its Java type.  If it's a scheme string which
+;; starts "http://", then it is transformed into a Resource with that
+;; URL; otherwise (it's a scheme string), it's transformed into an RDF
+;; literal of string type.
 ;;
 ;; Precisely one of SUBJECT, PREDICATE and OBJECT must be #f: we return a list
 ;; of RDFNode objects, one for each of the statements which matches the pattern.
@@ -384,7 +397,8 @@
                                                        (jstring? predicate)))
                                         (object    (or (not object)
                                                        (jena-rdfnode? object)
-                                                       (java-object? object)))
+                                                       (java-object? object)
+                                                       (string? object)))
                                         -> list?)
     (define-generic-java-methods
       list-statements
@@ -394,42 +408,58 @@
       get-subject
       get-predicate
       get-object)
-    (define (jobj-or-null x class constructor)
-      (cond ((is-java-type? x class)
-             x)
-            (x
-             (constructor x))
-            (else                       ;#f
-             (java-null class))))
     (define-java-classes
-      <com.hp.hpl.jena.rdf.model.resource>
-      <com.hp.hpl.jena.rdf.model.property>
+      (<resource> |com.hp.hpl.jena.rdf.model.Resource|)
+      (<property> |com.hp.hpl.jena.rdf.model.Property|)
       (<rdf-node> |com.hp.hpl.jena.rdf.model.RDFNode|))
     (let ((accessor (cond ((not subject)   get-subject)
                           ((not predicate) get-predicate)
                           ((not object)    get-object)
                           (else
-                           (error "Bad call to rdf:select-statements")))))
+                           (error "Bad call to rdf:select-statements"))))
+          (qsubject (cond ((not subject)
+                           (java-null <resource>))
+                          ((is-java-type? subject <resource>)
+                           subject)
+                          (else         ;string
+                           (create-resource model
+                                            (as-java-string subject)))))
+          (qpredicate (cond ((not predicate)
+                             (java-null <property>))
+                            ((is-java-type? predicate <property>)
+                             predicate)
+                            ((and (string? predicate)
+                                  (string=? predicate "a"))
+                             (create-property
+                              model
+                              (->jstring "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
+                              (->jstring "")))
+                            (else       ; string
+                             (create-property
+                              model
+                              (as-java-string predicate)
+                              (->jstring "")))))
+          (qobject (cond ((not object)  ;#f
+                          (java-null <rdf-node>))
+                         ((is-java-type? object <rdf-node>)
+                                        ;already a RDFNode
+                          object)
+                         ((java-object? object)
+                                        ;some other Java obj
+                          (create-typed-literal model
+                                                object))
+                         ((string-prefix? "http://" object)
+                                        ;string naming resource
+                          (create-resource model
+                                           (->jstring object)))
+                         (else          ;literal string
+                          (create-typed-literal model
+                                                (->jstring object))))))
       (map accessor
-           (iterator->list
-            (list-statements model
-                             (jobj-or-null subject
-                                           <com.hp.hpl.jena.rdf.model.resource>
-                                           (lambda (subj)
-                                             (create-resource
-                                              model
-                                              (as-java-string subj))))
-                             (jobj-or-null predicate
-                                           <com.hp.hpl.jena.rdf.model.property>
-                                           (lambda (pred)
-                                             (create-property
-                                              model
-                                              (as-java-string pred)
-                                              (->jstring ""))))
-                             (jobj-or-null object ;presume it's a literal
-                                           <rdf-node>
-                                           (cut create-typed-literal
-                                                model <>)))))))
+           (iterator->list (list-statements model
+                                            qsubject
+                                            qpredicate
+                                            qobject)))))
 
 ;; RDF:GET-REASONER : [string] -> reasoner
 ;;
