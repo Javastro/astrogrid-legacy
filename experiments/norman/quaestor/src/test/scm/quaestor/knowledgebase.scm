@@ -181,4 +181,27 @@
             (count-matches example2-pattern example2-string))
     (expect model-mix-22-bis
             0
-            (count-matches example1-pattern example2-string))))
+            (count-matches example1-pattern example2-string)))
+
+  ;; drop models
+  (expect drop-no-model
+          #f
+          (multimodel 'drop-submodel "bad-model"))
+  (expect-true drop-1
+               (and (multimodel 'has-model "model1")
+                    (multimodel 'has-model "model2")))
+  (expect drop-model1
+          #t
+          (multimodel 'drop-submodel "model1"))
+  (expect drop-2
+          #f
+          (multimodel 'has-model "model1"))
+  (expect-true drop-3
+               (multimodel 'has-model "model2"))
+  (expect drop-model2
+          #t
+          (multimodel 'drop-submodel "model2"))
+  (expect drop-4
+          #f
+          (multimodel 'has-model "model2"))
+  )

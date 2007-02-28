@@ -124,6 +124,11 @@ the server has been configured to permit it.</dd>
 if it successfully removed the knowledgebase, or a 4xx response if
 there was no such knowledgebase to remove.</dd>
 
+<dt><code>DELETE http://hostport/quaestor/kb/<em>kb-name</em>/<em>submodel</em></code></dt>
+<dd>Remove the named submodel.  Returns status 204 (No Content)
+if it successfully removed the submodel, or a 4xx response if
+there was no such knowledgebase, or no such submodel.</dd>
+
 </dl>
 
 <h3><a name='config-metadata' >Knowledgebase metadata</a></h3>

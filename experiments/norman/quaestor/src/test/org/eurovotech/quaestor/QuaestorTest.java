@@ -474,7 +474,27 @@ public class QuaestorTest
 
     public void testDeleteKnowledgebase()
             throws Exception {
-        HttpResult r = QuaestorConnection.httpDelete(makeKbUrl());
+        HttpResult r;
+
+        // first add a new submodel, which we will momently delete
+        r = QuaestorConnection.httpPut
+                (makeKbUrl("tempsubmodel"),
+                 "<urn:example#test1> a <urn:example#testclass1>.",
+                 "text/rdf+n3");
+        assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
+        assertNull(r.getContentAsString());
+
+        // now delete it with the wrong namd
+        r = QuaestorConnection.httpDelete(makeKbUrl("tempxx"));
+        assertStatus(r, HttpURLConnection.HTTP_BAD_REQUEST);
+
+        // ...and with the correct name
+        r = QuaestorConnection.httpDelete(makeKbUrl("tempsubmodel"));
+        assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
+        assertNull(r.getContentAsString());
+
+        // Now delete the whole knowledgebase
+        r = QuaestorConnection.httpDelete(makeKbUrl());
         assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
         assertNull(r.getContentAsString());
 

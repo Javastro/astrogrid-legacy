@@ -33,7 +33,7 @@
   `((quaestor.version . "@VERSION@")
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.40 $ $Date: 2007/02/06 23:07:52 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.41 $ $Date: 2007/02/28 14:58:17 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -608,16 +608,33 @@
       (make-fc request response '|SC_INTERNAL_SERVER_ERROR|)
     (lambda ()
       (let ((path-list (request->path-list request)))
-        (if (= (length path-list) 1)
-            (if (kb:discard (car path-list))
-                (set-response-status! response '|SC_NO_CONTENT|)
-                (no-can-do request response
-                           '|SC_NOT_FOUND| ;correct?
-                           "There was no knowledgebase ~a to delete"
-                           (car path-list)))
-            (no-can-do request response
-                       '|SC_BAD_REQUEST|
-                       "The request path has too many elements"))))))
+        (cond ((= (length path-list) 1)
+               (if (kb:discard (car path-list))
+                   (set-response-status! response '|SC_NO_CONTENT|)
+                   (no-can-do request response
+                              '|SC_NOT_FOUND| ;correct?
+                              "There was no knowledgebase ~a to delete"
+                              (car path-list))))
+              ((= (length path-list) 2)
+               (let ((kb-name (car path-list))
+                     (submodel (cadr path-list)))
+                 (cond ((kb:get kb-name)
+                        => (lambda (kb)
+                             (if (kb 'drop-submodel submodel)
+                                 (set-response-status! response '|SC_NO_CONTENT|)
+                                   (no-can-do request response
+                                              '|SC_BAD_REQUEST|
+                                              "No such submodel ~a"
+                                              submodel))))
+                       (else
+                        (no-can-do request response
+                                   '|SC_BAD_REQUEST|
+                                   "No such knowledgebase ~a" kb-name)))))
+              (else
+               (no-can-do request response
+                          '|SC_BAD_REQUEST|
+                          "The request path has too many elements ~s"
+                          path-list)))))))
 
 ;; Small module to wrap a hashtable, which stores functions
 ;; (and possibly, later, continuations) in exchange for a token

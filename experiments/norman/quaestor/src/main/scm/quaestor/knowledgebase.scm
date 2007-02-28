@@ -12,7 +12,8 @@
 
 (require-library 'sisc/libs/srfi/srfi-1)
 (import* srfi-1
-         filter)
+         filter
+         remove!)
 
 (module knowledgebase
   (kb:new
@@ -137,7 +138,7 @@
                                         ;an entry to the front
                (cons `(,new-submodel-name ,tbox? . ,new-submodel-model)
                      submodel-list))))))
-  
+
 
   ;; make-kb symbol -> knowledgebase
   ;;
@@ -165,6 +166,8 @@
   ;;    (kb 'has-model [SUBMODEL-NAME])
   ;;        Return true if the named (sub)model exists, that is, if
   ;;        (kb 'get-model [SUBMODEL-NAME]) would succeed.  Return #f otherwise.
+  ;;    (kb 'drop-submodel SUBMODEL-NAME)
+  ;;        Forget about the named submodel
   ;;    (kb 'set-metadata jstream base-uri content-type)
   ;;        Set the metadata to the arbitrary string INFO.
   ;;    (kb 'info)
@@ -187,7 +190,7 @@
              (lambda ()
                form . forms)))))
 
-      (define (clear-memos)
+      (define (clear-memos!)
         (set! merged-model #f)
         (set! merged-abox #f)
         (set! merged-tbox #f)
@@ -223,7 +226,7 @@
                              name
                              submodel
                              (eq? boxname 'tbox)))
-         (clear-memos)))
+         (clear-memos!)))
 
       ;; Return a new inferencing model, using the settings in METADATA.
       ;; Return false on errors
@@ -281,6 +284,24 @@
                         'tbox
                         'abox))
            #t)
+
+          ((drop-submodel)
+           ;; (kb 'drop-submodel SUBMODEL-NAME) -> boolean
+           (if (not (and (= (length args) 1)
+                         (string? (car args))))
+               (error 'make-kb
+                      "bad call to drop-submodel: wrong number or type of args"
+                      args))
+           (cond ((assoc (car args) submodels)
+                  (kb-synchronized
+                   (set! submodels
+                         (remove! (lambda (sm)
+                                    (string=? (car args) (car sm)))
+                                  submodels))
+                   (clear-memos!))
+                  #t)
+                 (else
+                  #f)))
 
           ((set-metadata)
            ;; (kb 'set-metadata jinput-stream base-uri content-type-string)
