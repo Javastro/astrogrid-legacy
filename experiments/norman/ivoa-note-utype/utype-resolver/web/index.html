@@ -14,7 +14,59 @@
 
 <p>This is utype-resolver version @VERSION@</p>
 
-<p>'Baint nuttin' more exciting here yet.</p>
+<p>This is an implementation of the UType resolver described in
+Norman's <a href='note.html' >IVOA draft Note</a>.</p>
+
+<p>The proposal in that Note is that UTypes should be identified by
+URIs, and that organisations should be able to create new UTypes
+fairly promiscuously, <em>as long as</em> those new UTypes'
+relationships with other more general, and better known, UTypes are
+described in a machine-readable fashion.  This resolver makes it easy
+to use these relationships.</p>
+
+<p>If an application were presented with some data labelled by a UType
+<code>http://example.org/utype#new-utype</code>, then it can
+immediately discover which better-known UTypes this is a subclass of,
+by dereferencing the URL
+<code>http://hostport/utype-resolver/superclasses?http://example.org/utype%23new-utype</code>,
+where the <code>hostport</code> is the location of this or any other
+UType resolver, and the <code>#</code> character has been replaced by
+the escape sequence <code>%23</code>.  This returns a plain list of
+superclasses of that UType: if the application recognises any of
+these, it can process the labelled data as that type.</p>
+
+<p>The resolver does <em>not</em> have to be preloaded with
+information about all the UTypes in the world, or even any of them.
+Since part of the proposal in the Note is that UType namespaces be
+dereferenceable, the resolver can simply retrieve the
+machine-processable representation of the UType when it is first asked
+about it, and cache it more-or-less permanently thereafter.</p>
+
+<p>Elsewhere on this site are:</p>
+<ul>
+<li>... the definition of the RESTful <a href='interface.html'
+>interface</a> to the resolver;</li>
+
+<li>... a <a href='tutorial.html' >tutorial</a>, on <em>How to declare namespaces</em>;</li>
+
+<li>... a few <a href='examples.html' >examples</a> for you to
+look at.</li>
+</ul>
+
+<p>The namespaces this resolver knows about currently are listed on the 
+<a href="description" >descriptions page</a>.</p>
+
+<p>The resolver is implemented as a Tomcat servlet at present, but if
+there's sufficient interest, I plan to create a standalone version of
+it as well.  If you want to play with the resolver locally, get in
+touch with me.</p>
+
+<p>Norman Gray,
+<a href='http://nxg.me.uk' ><code>http://nxg.me.uk</code></a>.</p>
+
+<div class='trailer'>
+<p>utype-resolver @VERSION@</p>
+</div>
 
 </body>
 </html>

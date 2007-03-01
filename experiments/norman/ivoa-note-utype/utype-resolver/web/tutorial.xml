@@ -1,0 +1,265 @@
+<?xml version="1.0"?>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Declaring UTypes: a tutorial</title>
+<link rel="stylesheet"
+      type="text/css"
+      href="base.css"/>
+</head>
+
+<body>
+<h1>Declaring UTypes: a tutorial</h1>
+
+<p>Contents:</p>
+<?toc?>
+<!--
+<ul>
+<li><a href='#creating'>Creating and documenting UTypes</a></li>
+<li><a href='#relationships'>Declaring UType relationships</a></li>
+<li><a href='#embedding'>Embedding declarations in HTML</a></li>
+</ul>
+-->
+
+<p>The <a href='note.html' >draft IVOA Note</a> covering UTypes
+describes a three-step process for declaring and describing
+UTypes:</p>
+
+<ol>
+<li>Determine a namespace URI, creating a URI in a DNS domain that you
+control; then identify individual UType names respecting the syntax
+described in <a href='note.html#utype-uris' >section 2, UTypes as
+URIs</a>.</li>
+
+<li>Create documentation for the namespace, as described in <a
+href='note.html#utype-docs' >section 3, Documentation</a>.</li>
+
+<li>Create a simple RDF document expressing how the new UTypes relate
+to other standardised or well-known UTypes, as described in <a
+href='note.html#utype-rdf' >section 4, Shared semantics</a>.</li>
+</ol>
+
+<p>The first two steps are straightforward, and basically consist of
+creating an HTML page which includes <code>&lt;a name="xxx"
+&gt;...&lt;/a&gt;</code> fragments which correspond to the UTypes you
+want to name.  The third step is probably less familiar to you.</p>
+
+<p>This current document makes this process more concrete, describing
+three mechanisms for making the third step straightforward.</p>
+
+<p><em>The following description assumes, for the sake of illustration,
+that the <code>http://www.ivoa.net/ut/characterization</code>
+namespace has been standardized for the Characterisation model's
+UTypes, and that the <code>http://example.ivoa.net/utypes</code>
+namespace has been standardized for UTypes themselves.  Neither of
+these is yet true.</em></p>
+
+<div class='section' id='creating'>
+<p class='title'>Creating and documenting UTypes</p>
+
+<p>Let's suppose that you control the (DNS) domain
+<code>example.org</code>, and you want to create UTypes based on that
+name, in a namespace such as <code>http://example.org/my-utypes</code> (a
+real example would probably include version numbers).
+Let's further suppose that you want to create a UType in this
+namespace called <code>sharpBounds</code>, which is a more specific
+version of the (presumed standardised) IVOA Characterization
+<code>coverage-bounds</code> concept, the full URI version of whose UType
+is
+<code>http://www.ivoa.net/ut/characterization#coverage-bounds</code>.</p>
+
+<p>The first thing to do is to create a web page at
+<code>http://example.org/my-utypes.html</code>, which includes, somewhere
+within it, text like:</p>
+<pre>
+&lt;h2&gt;&lt;a name='sharpBounds'&gt;Accurate bounds&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;In our data, &lt;code&gt;#sharpBounds&lt;/code&gt; are the
+bounds on a bandpass where the transmission goes from 0% to 100%
+within 10nm.  This is more specific than the IVOA
+&lt;code&gt;coverage-bounds&lt;/code&gt; UType.
+</pre>
+
+<p>The only required feature here is that there is a link anchor,
+<code>&lt;a name="sharpBounds"&gt;</code>, containing the name of the
+new UType.</p>
+
+<p>So you've created and documented your UType.  The next step is to
+explain this UType's relationship to the well-known
+<code>coverage-bounds</code> UType, in a machine-processable form.</p>
+</div>
+
+<div class='section' id='relationships'>
+<p class='title'>Declaring UType relationships</p>
+
+<p>You make the machine-readable declarations of UType relationships
+using RDF, creating a file <code>my-utypes.n3</code> containing:</p>
+<pre>
+@prefix rdfs:   &lt;http://www.w3.org/2000/01/rdf-schema#&gt;.
+@prefix myns:   &lt;http://example.org/my-utypes#&gt;.
+@prefix ivoa:   &lt;http://www.ivoa.net/ut/characterization#&gt;.
+@prefix utypes: &lt;http://example.ivoa.net/utypes#&gt;.
+
+myns:sharpBounds a utypes:UType; 
+    rdfs:subClassOf ivoa:coverage-bounds .
+</pre>
+
+<p>This uses the (not yet standardised)
+<code>http://example.ivoa.net/utypes#UType</code> class to identify
+the <code>sharpBounds</code> concept as a UType.</p>
+
+<p>The required feature here is that the new <code>sharpBounds</code>
+is declared as a <code>utypes:UType</code>, in a namespace which
+matches the location of the <code>my-utypes.n3</code> file.</p>
+
+<div class='section'>
+<p class='title'>Configuring the web server</p>
+
+<p>The draft IVOA Note <a href='note.html#web-recipes' >suggests</a>
+configuring your web server so that
+retrieving the URL <code>http://example.org/my-utypes</code> (note the
+absence of an `extension') will return either the HTML or the RDF
+depending on the value of the <code>Accept</code> header in the HTTP
+GET transaction.  This is not hard, and the Note includes a recipe for
+configuring Apache to do this; but there is a second method.  The
+resolver abides by the convention that if it tries and fails to
+retrieve the unadorned namespace name, then it will try to retrieve
+the namespace name followed by first <code>.n3</code> and then
+<code>.rdf</code>, as described in the <a
+href='interface.html#discovery' >interface description</a>.</p>
+
+<p>And that's all there is to it.</p>
+</div>
+
+<div class='section'>
+<p class='title'>Trying it yourself</p>
+
+<p>If you've followed these instructions with a real URL you control,
+rather than the <code>example.org</code> one, then you can immediately
+retrieve the list of superclasses of your new UType using this
+resolver.  Retrieve the equivalent of <a
+href='/utype-resolver/superclasses?http://example.org/my-utypes%23sharpBounds'
+><code>.../utype-resolver/superclasses?http://example.org/my-utypes%23sharpBounds</code></a>,
+either in a browser, or at the command-line using
+<code>curl</code>:</p>
+<pre>
+% curl 'http://hostport/utype-resolver/superclasses?http://example.org/my-utypes%23sharpBounds'
+http://www.ivoa.net/ut/characterization#coverage-bounds
+%
+</pre>
+<p>Note that we escaped the <code>#</code> character by replacing it
+with the sequence <code>%23</code>, and we put the whole thing in
+quotes to protect the <code>?</code> character from the shell.  Note
+that the resolver did not have to be pre-loaded with information about
+the UType, nor did it have to look it up in a registry (and you didn't
+have to go through an elaborate registration process); when called
+upon to explain about the new UType, the resolver was able to retrieve
+your new declaration of the new UType's relationships, and immediately
+provide you with the results.  The resolver caches the declarations,
+so that it does not have to re-retrieve the declarations, the next
+time it is asked about this namespace.</p>
+
+<p>This means that any software called upon to process data annotated
+as having UType <code>http://example.org/my-utypes#sharpBounds</code>,
+which the application does not initially understand, can retrieve this
+quickly-constructed URL by any means at its disposal, discover that it
+is intended to be a more specific version of
+<code>http://www.ivoa.net/ut/characterization#coverage-bounds</code>
+(which it presumably does understand), and proceed accordingly.</p>
+</div>
+</div>
+
+<div class='section' id='embedding'>
+<p class='title'>Embedding declarations in HTML</p>
+
+<p>The above example has shown how to declare UType relationships
+using a pair of files, one containing HTML and the other RDF.  It is
+also possible to encode the RDF declarations within the HTML, as
+described in <a href='interface.html#discovery-html' >the interface
+specification</a>.</p>
+
+<p>This allows us to write the following (X)HTML document:</p>
+<pre>
+&lt;?xml version='1.0'?&gt;
+
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+&lt;title&gt;My sharp bounds UType&lt;/title&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+&lt;h1&gt;My sharp bounds definition&lt;/h1&gt;
+&lt;p&gt;The namespace is
+&lt;code class='namespace'
+      &gt;http://example.org/my-utypes&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class='utype' id='bound1'&gt;
+The class &lt;code&gt;bound1&lt;/code&gt; is a UType
+&lt;/div&gt;
+
+&lt;h2&gt;The class bound2&lt;/h2&gt;
+&lt;p&gt;The class &lt;span class='utype' id='bound2'&gt;bound2 is a 
+subclass of &lt;a href='#bound1' rel='subclassof'&gt;bound1&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;div class='utype' id='sharpBounds'&gt;
+Class c3 is a subclass of
+&lt;a rel='subclassof'
+    href='http://www.ivoa.net/ut/characterization#coverage-bounds'
+    &gt;the standard characterization bounds UType&lt;/a&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>The <a href='grok-utypes.xslt' ><code>grok-utypes.xslt</code></a>
+XSLT transform turns this into:</p>
+<pre>
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;.
+@prefix u: &lt;http://example.ivoa.net/utypes#&gt;.
+@prefix : &lt;http://example.org/my-utypes#&gt;.
+
+:bound1 a u:UType;
+  rdfs:comment "The class bound1 is a UType".
+:bound2 a u:UType;
+  rdfs:comment "bound2 is a subclass of bound1".
+:sharpBounds a u:UType;
+  rdfs:comment
+    "Class c3 is a subclass of the standard characterization bounds UType".
+:bound2 rdfs:subClassOf :bound1.
+:sharpBounds rdfs:subClassOf
+     &lt;http://www.ivoa.net/ut/characterization#coverage-bounds&gt;.
+</pre>
+
+<p>In fact, the fault-tolerant *ML parser within the resolver would
+even allow us to write the following (hideously malformed) HTML document:</p>
+<pre>
+&lt;title&gt;My sharp bounds UType&lt;/title&gt;
+
+&lt;h1&gt;My sharp bounds definition&lt;/h1&gt;
+
+The namespace is
+&lt;code class='namespace'
+      &gt;http://example.org/my-utypes&lt;/code&gt;
+
+&lt;div class='utype' id='bound1'&gt;
+The class &lt;code&gt;bound1&lt;/code&gt; is a UType
+&lt;/div&gt;
+
+&lt;h2&gt;The class bound2&lt;/h2&gt;
+The class &lt;span class='utype' id='bound2'&gt;bound2 is a 
+subclass of &lt;a href='#bound1' rel='subclassof'&gt;bound1&lt;/a&gt;&lt;/span&gt;
+
+&lt;div class='utype' id='sharpBounds'&gt;
+Class c3 is a subclass of
+&lt;a rel='subclassof'
+    href='http://www.ivoa.net/ut/characterization#coverage-bounds'
+    &gt;the standard characterization bounds UType&lt;/a&gt;
+</pre>
+
+<p>...but that <em>really</em> oughtn't to be encouraged.</p>
+</div>
+
+<div class='trailer'>
+<p><a href='index.html' >utype-resolver</a> @VERSION@</p>
+</div>
+
+</body>
+</html>

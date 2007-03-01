@@ -1,0 +1,176 @@
+<?xml version="1.0"?>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>UType Resolver: The RESTful HTTP interface</title>
+<link rel="stylesheet"
+      type="text/css"
+      href="base.css"/>
+</head>
+
+<body>
+<h1>UType resolver: The RESTful HTTP interface</h1>
+
+<p><a href='index.html' >UType-resolver</a> has a simple RESTful HTTP
+interface.  You use the various HTTP verbs as follows.</p>
+
+<p>In the documentation below, <code>hostport</code> refers to the
+machine and port number hosting the Quaestor service, such as
+<code>localhost:8080</code>.</p>
+
+<p>Contents</p>
+<?toc?>
+
+<div class='section' id='verbs'>
+<p class='title'>The HTTP verbs</p>
+
+<p>UTypes (according to the proposal in the IVOA Note) are URIs, which
+most typically include a URI giving a namespace for the UType and a
+fragment identifying the specific UType within that namespace.  For
+example, one might have the UType
+<code>http://example.org/utype#concept1</code>, comprised of the
+namespace <code>http://example.org/utype#</code> and the specific
+concept <code>concept1</code>.  When sending such a URI to the
+resolver, the fragment identifier <code>#</code> must be encoded in
+the URI, with the sequence <code>%23</code>, so that in the
+`superclasses' example below, one would actually retrieve the URI
+<code>http://hostport/utype-resolver/superclasses?http://example.org/utype%23concept1</code>.</p>
+
+<dl>
+<dt><code>GET http://hostport/utype-resolver/superclasses?<em>&lt;uri&gt;</em></code></dt>
+<dd>Return all the superclasses of the given <em>&lt;uri&gt;</em>, as
+a <code>text/plain</code> list.  If the UType has no superclasses,
+then the service returns the 204 (No Content) status.  If the resolver
+does not already know about the namespace in question, then it tries
+to find out about it as discussed <a href='#discovery'
+>below</a>, and caches the result indefinitely.</dd>
+
+<dt><code>GET http://hostport/utype-resolver/description</code></dt>
+<dd>Return a description of all the UTypes the resolver currently
+knows about.  The resolver can produce its results in any of the MIME types
+<code>text/html</code>, <code>text/rdf+n3</code>,
+<code>application/rdf+xml</code> or <code>text/plain</code>
+(representing the `triples' format mostly used for debugging), so
+which one it returns depends on the Accept header in the HTTP
+request.  If you dereference this URL using a web browser, you will
+see HTML, since browsers usually include an <code>Accept:
+text/html</code> header in their request.</dd>
+
+<dt><code>GET http://hostport/utype-resolver/description?<em>&lt;uri&gt;</em></code></dt>
+<dd>Return a description of the given namespace.  The URI in the query
+may include a fragment -- this is ignored.  The return types are as
+above.  Asking for a description of a namespace does not cause the
+resolver to retrieve or search for the namespace's description.</dd>
+
+<dt><code>DELETE http://hostport/utype-resolver/description?<em>&lt;uri&gt;</em></code></dt>
+<dd>This causes the resolver to discard its knowledge of the given
+namespace.</dd>
+
+</dl>
+</div>
+
+<div class='section' id='discovery'>
+<p class='title'>How UType-resolver discovers UTypes</p>
+
+<p>If the resolver does not already know about the namespace in
+question, then it tries to find out about it by dereferencing the
+namespace in a variety of ways (see <a href='tutorial.html' >how
+to declare UTypes</a> for examples):</p>
+
+<ol>
+<li>It tries to retrieve <em>&lt;uri&gt;</em> directly, using the HTTP Accept
+header to request <code>text/rdf+n3</code> or
+<code>application/rdf+xml</code>; this will work if the web server has
+been configured to serve different representations of the
+<em>&lt;uri&gt;</em> resource, depending on the Accept header.</li>
+
+<li>If that fails, it tries to retrieve in turn
+<em>&lt;uri&gt;</em><code>.n3</code>, <em>&lt;uri&gt;</em><code>.rdf</code>, and
+<em>&lt;uri&gt;</em><code>.html</code>, with appropriate Accept headers.</li>
+</ol>
+
+<p>Once the resolver has retrieved the description of the UTypes in
+the given namespace, it caches them indefinitely.</p>
+
+<div class='section' id='discovery-rdf' >
+<p class='title'>Finding RDF</p>
+
+<p>The <code>.n3</code> file is expected to contain RDF written using
+<a href='http://www.w3.org/DesignIssues/Notation3.html' >Notation3</a>
+as illustrated <a href='tutorial.html' >elsewhere</a>; the
+<code>.rdf</code> file must contain RDF written using the less
+readable RDF/XML notation.</p>
+
+<p>This is the most straightforward method of providing RDF, but the
+following method might be more convenient for experiments.</p>
+</div>
+
+<div class='section' id='discovery-html' >
+<p class='title'>Extracting RDF from HTML</p>
+
+<p>You may also declare UTypes by using certain structured features of
+HTML.  This is potentially slightly fragile, but may be preferable.</p>
+
+<p>When retrieving HTML, the application will accept any of the MIME
+types <code>text/html</code>, <code>application/xhtml+xml</code>,
+<code>application/xml</code> and <code>text/xml</code>.  In the first
+case, the resolver treats the content as potentially sloppy HTML, and
+in the latter three cases, it expects well-formed XHTML (see <a
+href='http://www.w3.org/TR/xhtml-media-types/'
+><code>http://www.w3.org/TR/xhtml-media-types/</code></a> for
+discussion of XHTML media types).  The only difference is that for
+XHTML, the resolver expects to find well-formed XML, while for HTML,
+it will tolerate some ill-formedness, and will try to parse the HTML
+using the <a href='http://home.ccil.org/%7Ecowan/XML/tagsoup/'
+>TagSoup</a> fault-tolerant parser, which will mask the majority of
+HTML problems; this is fairly robust, but probably shouldn't be
+abused.  In either case, the resolver transforms the (X)HTML using
+XSLT (using the stylesheet <a href='grok-utypes.xslt'
+><code>grok-utypes.xslt</code></a>) and ingests the resulting RDF.</p>
+
+<p>The <code>grok-utypes.xslt</code> transform will extract
+information from HTML as follows:</p>
+<dl>
+<dt>Namespace</dt>
+<dd>The UType namespace is taken from the first of the following found:
+<ol>
+<li>an element in the document with class "namespace"</li>
+<li>a <code>&lt;base&gt;</code> element in the <code>&lt;head&gt;</code></li>
+<li>a <code>&lt;html:base&gt;</code> element in the <code>&lt;html:head&gt;</code></li>
+<li>or else the namespace is the URI of the HTML document</li>
+</ol>
+</dd>
+
+<dt>Declaring UTypes</dt>
+<dd>Any element start-tag which includes both an attribute
+<code>class='utype'</code> and an <code>id</code> attribute declares a
+UType named by the <code>id</code> attribute.  Thus <code>&lt;div
+class='utype' id='type1'&gt;...</code> declares a UType
+<code>type1</code> in the namespace specified as described above.  The
+name of the element doesn't matter, but the text contents of the
+element are used as an RDF description of the UType (this latter
+feature is provisional, and may be changed in future).</dd>
+
+<dt>Declaring subclass relationships</dt>
+<dd>If an element which declares a UType includes within it a link
+with the attribute <code>rel='subclassof'</code>, which refers to
+another UType element, then the including UType is declared as a
+subclass of the pointed-to UType.  Thus in <code>&lt;foo class='utype'
+id='u2'&gt;...&lt;a rel='subclassof'
+href='#u1'&gt;...&lt;/a&gt;&lt;/foo&gt;</code>, the UType
+<code>u2</code> is declared to be a subclass of the UType <code>u1</code>.</dd>
+
+</dl>
+
+<p>Each of these features is illustrated in the <a
+href='tutorial.html#embedding' >tutorial</a>.</p>
+</div>
+
+</div>
+
+<div class='trailer'>
+<p><a href='index.html' >utype-resolver</a> @VERSION@</p>
+</div>
+
+</body>
+</html>

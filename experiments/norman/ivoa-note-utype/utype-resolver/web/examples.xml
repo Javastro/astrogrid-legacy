@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>UType Resolver: Examples</title>
+<link rel="stylesheet"
+      type="text/css"
+      href="base.css"/>
+</head>
+
+<body>
+<h1>UType resolver: Examples</h1>
+
+<p>Contents</p>
+<?toc?>
+
+<p>In the examples below, the string <code>hostport</code> should be
+replaced by the actual host and port of this server.</p>
+
+<div class='section'>
+<p class='title'>A simple case</p>
+
+<p><a href='/utype-resolver/test/testcases/simple1.n3'
+      ><code>simple1</code></a> is a very simple case, with a single
+RDF file being served.</p>
+</div>
+
+<div class='section'>
+<p class='title'>An example of redirection</p>
+
+<p><code>simple2</code> is a declaration of a simple pair of UTypes,
+in the namespace
+<code>http://hostport/utype-resolver/test/testcases/simple2</code>,
+and the self-test web server within the UType-resolver application is
+configured to serve this resource in a variety of representations.  If
+you retrieve the <a href='/utype-resolver/test/testcases/simple2'
+>namespace URL</a> within a browser, you will retrieve an HTML
+document.  If you retrieve the same URL using curl, and say that you
+will accept <code>text/rdf+n3</code> (the MIME type for the
+`Notation3' representation of RDF), you will get that:</p>
+<pre>
+% curl -H accept:text/rdf+n3 -L \
+    http://hostport/utype-resolver/test/testcases/simple2
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;.
+@prefix utype: &lt;http://example.ivoa.net/utypes#&gt;.
+@prefix x: &lt;http://hostport/utype-resolver/test/testcases/simple2#&gt;.
+
+x:c1 a utype:UType;
+  rdfs:comment "This is a simple UType".
+x:c2 a utype:UType;
+  rdfs:subClassOf x:c1;
+  rdfs:comment "This is a more specific UType".
+</pre>
+<p>And if you do the same, accepting only the MIME type
+<code>application/rdf+xml</code> you will get RDF/XML notation
+(the <code>-L</code> option tells <code>curl</code> to follow the
+redirection which the server actually sends back; include the
+<code>-i</code> option to curl to see more HTTP chatter).</p>
+</div>
+
+<div class='trailer'>
+<p><a href='index.html' >utype-resolver</a> @VERSION@</p>
+</div>
+
+</body>
+</html>
