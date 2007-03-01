@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineDescriptionsLoader.java,v 1.15 2007/03/01 18:28:27 gtr Exp $
+ * $Id: CommandLineDescriptionsLoader.java,v 1.16 2007/03/01 18:34:22 gtr Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -200,8 +200,8 @@ public class CommandLineDescriptionsLoader extends BaseApplicationDescriptionLib
 
     public Object createObject(Attributes arg0) throws Exception {
         String name = "**unknown";
-        if (arg0.getValue(CommandLineApplicationDescriptionsConstants.NAME_ATTR) != null) {
-            name = arg0.getValue(CommandLineApplicationDescriptionsConstants.NAME_ATTR);
+        if (arg0.getValue(NAME_ATTR) != null) {
+            name = arg0.getValue(NAME_ATTR);
         }
         ApplicationDescription appDescription = (ApplicationDescription)this.digester.peek(); // i.e. the description we want is at the top of the stack.
         return new CommandLineApplicationInterface(name,appDescription);

@@ -1,4 +1,4 @@
-/*$Id: CommandLineApplicationDescriptionFactory.java,v 1.5 2006/06/15 15:26:03 clq2 Exp $
+/*$Id: CommandLineApplicationDescriptionFactory.java,v 1.6 2007/03/01 18:34:12 gtr Exp $
  * Created on 02-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,6 +29,8 @@ public class CommandLineApplicationDescriptionFactory extends AbstractObjectCrea
      */
     private static final Log logger = LogFactory.getLog(CommandLineApplicationDescriptionFactory.class);
 
+    private static final String NAME_ATTR = "name";
+    
     /** Construct a new CommandLineApplicationDescriptionFactory
      * 
      */
@@ -45,8 +47,8 @@ public class CommandLineApplicationDescriptionFactory extends AbstractObjectCrea
      */
     public Object createObject(Attributes arg0) throws Exception {
         String id = "unknown";
-        if (arg0.getValue(CommandLineApplicationDescriptionsConstants.NAME_ATTR) != null) {
-            id = arg0.getValue(CommandLineApplicationDescriptionsConstants.NAME_ATTR);
+        if (arg0.getValue(NAME_ATTR) != null) {
+            id = arg0.getValue(NAME_ATTR);
         }
         if (id.startsWith("ivo://")) {
           id = id.substring(6);
@@ -63,6 +65,9 @@ public class CommandLineApplicationDescriptionFactory extends AbstractObjectCrea
 
 /* 
 $Log: CommandLineApplicationDescriptionFactory.java,v $
+Revision 1.6  2007/03/01 18:34:12  gtr
+The constants describing XML structure are now local to this class.
+
 Revision 1.5  2006/06/15 15:26:03  clq2
 ea-gtr-1648
 
