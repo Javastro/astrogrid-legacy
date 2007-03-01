@@ -234,13 +234,23 @@ public abstract class DefaultQueryService {
              
              /*
               * Hack for older clients there is a bug with eXist with a particular query using the older
-              * slower style of where clause with variable and wildcards
-              * :( bummer i have to do this. 
+              * slower style of where clause with variable and wildcards and lots of constraints.
+              * Very odd kind of bug hard to really see what is wrong.  You can use the 
+              * variable just fine on smaller type queries but bigger queries really seem to have a problem
+              * with it in the where clause.  So change all of them if there is a where caluse.
+              * Only one that is different is the full-text search workbench sometimes does that needs
+              * to stay as $r//*
+              * :( bummer i have to do this.
+              * When more updated workbenches come alive then we need to remove this hack. 
               */
              if(xql.indexOf("where") != -1 && (xql.indexOf("&=") != -1 || xql.indexOf("&amp;=") != -1)) {
             	 //ok using older eXist style functions lets to a relaceAll on $r/ and
-            	 //hoopefully will be good after that.
-            	 xql = xql.replaceAll("\\$r/", "");
+            	 //hoopefully will be good after that. With the exception of $r//* it needs to stay.
+            	 if(xql.indexOf("$r//*") == -1) {
+            		 xql = xql.replaceAll("\\$r/", "");
+            	 }else {
+            		 xql = xql.replaceAll("\\$r/", "./");
+            	 }
              }
              
              //log.info("Query to be ran = " + xql);

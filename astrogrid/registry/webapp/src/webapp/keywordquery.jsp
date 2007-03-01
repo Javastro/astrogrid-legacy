@@ -75,13 +75,16 @@ Require all words: <input type="checkbox" name="orValues" value="true">All words
       Document entry = null;
    	  ISearch server = JSPHelper.getQueryService(request);      
    	  ResourceSet resultSet = server.getQueryHelper().keywordQuery(keywords,!orValue);
-   	  if(resultSet.getSize() > 50) {
-   			do {
-   			  resultSet.removeResource(50);
-   			}while(resultSet.getSize() > 50);
-   		 }
-      entry = DomHelper.newDocument(resultSet.getMembersAsResource().getContent().toString());
-      
+	  if(resultSet == null || resultSet.getSize() == 0) {
+                   entry = null;
+	  } else {
+	   	  if(resultSet.getSize() > 50) {
+	   			do {
+	   			  resultSet.removeResource(50);
+	   			}while(resultSet.getSize() > 50);
+	   		 }
+	      entry = DomHelper.newDocument(resultSet.getMembersAsResource().getContent().toString());
+      }
       if (entry == null) {
         out.write("<p>No entry returned</p>");
       }

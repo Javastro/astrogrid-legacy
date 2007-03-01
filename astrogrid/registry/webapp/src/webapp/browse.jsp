@@ -69,25 +69,33 @@ Find IVORNs including: <input name="IvornPart" type="text" value='<%= ivornpart 
    ResourceSet resultSet;
    if ( (ivornpart != null) && (ivornpart.trim().length() > 0) ) {
    		resultSet = server.getQueryHelper().getResourcesByAnyIdentifier(ivornpart);
-   		if(resultSet.getSize() > 50) {
-   			do {
-   			  resultSet.removeResource(50);
-   			} while(resultSet.getSize() > 50);
-   		}
-   		 entries = DomHelper.newDocument(resultSet.getMembersAsResource().getContent().toString());
+        if(resultSet == null || resultSet.getSize() == 0) {
+	        entries = null;
+        } else {   		
+	   		if(resultSet.getSize() > 50) {
+	   			do {
+	   			  resultSet.removeResource(50);
+	   			} while(resultSet.getSize() > 50);
+	   		}
+		 	entries = DomHelper.newDocument(resultSet.getMembersAsResource().getContent().toString());
+   		 }
    }
    else {
          resultSet = server.getQueryHelper().getAll();
-         if(resultSet.getSize() > 50) {
-   			do {
-   			  resultSet.removeResource(50);
-   			}while(resultSet.getSize() > 50);
+         if(resultSet == null || resultSet.getSize() == 0) {
+                   entries = null;
+         } else {         
+	         if(resultSet.getSize() > 50) {
+	   			do {
+	   			  resultSet.removeResource(50);
+	   			}while(resultSet.getSize() > 50);
+	   		 }
+	   		 entries = DomHelper.newDocument(resultSet.getMembersAsResource().getContent().toString());
    		 }
-   		 entries = DomHelper.newDocument(resultSet.getMembersAsResource().getContent().toString());
    }
 
    if (entries == null) {
-      out.write("<p>No entries?!</p>");
+      out.write("<p>No entries!</p>");
    }
    else {
 
