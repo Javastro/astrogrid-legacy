@@ -216,13 +216,38 @@
             <artifactId>astrogrid-pal-oldquery</artifactId>
             <version>${astrogrid.pal.version}</version>
             <type>jar</type>
-        </dependency>     
+        </dependency>    
     	
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-xml</artifactId>
+            <version>${astrogrid.xml.stable}</version>
+            <type>jar</type>
+        </dependency>    
+
         <dependency>
              <artifactId>astrogrid-utils</artifactId>
              <groupId>org.astrogrid</groupId>
              <version>${astrogrid.utils.stable}</version>
       </dependency>
+
+        <!--
+        <dependency>
+        	<id>xerces</id>
+            <version>2.4.0</version>
+            <properties>
+            	<war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        
+        <dependency>
+       		<id>xml-apis</id>
+          	<version>1.0.b2</version>
+          	<properties>
+          		<war.bundle>true</war.bundle>
+          	</properties>
+        </dependency>
+        	-->
     	
     	<!-- axis, and the jars it relies upon -->
     	<dependency>
