@@ -1,6 +1,6 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
-@prefix : <http://example.ivoa.org/utypes#>.
+@prefix : <http://example.ivoa.net/utypes#>.
 
 # The definition of the UType class.  Very simple, so far.
 :UType a rdfs:Class;
-        rdfs:comment """A UType, defined by XXX""".
+        rdfs:comment """A UType, defined by TBD XXX""".
