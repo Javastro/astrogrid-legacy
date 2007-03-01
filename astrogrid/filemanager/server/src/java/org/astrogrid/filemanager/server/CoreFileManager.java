@@ -1,4 +1,4 @@
-/*$Id: CoreFileManager.java,v 1.7 2005/11/04 17:31:05 clq2 Exp $
+/*$Id: CoreFileManager.java,v 1.8 2007/03/01 15:50:56 clq2 Exp $
  * Created on 16-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -548,7 +548,7 @@ public class CoreFileManager implements FileManagerPortType {
      * @see org.astrogrid.filemanager.common.FileManagerPortType#addNode(org.astrogrid.filemanager.common.NodeIvorn,
      org.astrogrid.filemanager.common.NodeName, org.astrogrid.filemanager.common.NodeTypes)
      */
-    public Node[] addNode(NodeIvorn parentIvorn, NodeName newNodeName, NodeTypes nodeType)
+    public synchronized Node[] addNode(NodeIvorn parentIvorn, NodeName newNodeName, NodeTypes nodeType)
             throws RemoteException, DuplicateNodeFault, FileManagerFault, NodeNotFoundFault {
         NodeStore.Transaction t = store.createTransaction();
         try {
@@ -587,6 +587,12 @@ public class CoreFileManager implements FileManagerPortType {
 
 /*
 $Log: CoreFileManager.java,v $
+Revision 1.8  2007/03/01 15:50:56  clq2
+update filemanger
+
+Revision 1.7.32.1  2007/03/01 14:20:35  kea
+FIx for bug 2136.
+
 Revision 1.7  2005/11/04 17:31:05  clq2
 axis_gtr_1046
 
