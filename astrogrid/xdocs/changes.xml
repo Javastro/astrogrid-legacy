@@ -5,6 +5,16 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
+          
+      <action dev="gtr" type="fix">
+        Branch apps-gtr-2232-2 fixes BZ2132 in the CEA core server-library only.
+        It builds astrogrid-cea-server-2007.1.2.jar; none of the WAR projects
+        have yet been updated to use this jar, although it has been tested in
+        DSA/catalogue. Only the project astrogrid/applications/server needs to
+        be rebuilt to deploy this change. There are no changes to the CEA
+        delegates or to the CEA contracts, so no changes are needed in
+        astrogrid/maven-base/project.properties.
+      </action>
     	
     	<action dev="kmb" type="fix">
     	    <em>Branch Reg_KMB_ErrorMessageFix2.</em> Fixed server messages due to a problem: when
