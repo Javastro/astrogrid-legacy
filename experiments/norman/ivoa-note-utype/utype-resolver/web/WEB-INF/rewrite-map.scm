@@ -4,11 +4,11 @@
  ("/testcases/simple1"
   ("text/rdf+n3" . "/testcases/simple1.n3"))         ;one mapping
  ("/testcases/simple2"                             ;multiple mappings
+  ("text/html" . "/testcases/simple2.html")
   ("text/rdf+n3" . "/testcases/simple2.n3")
   ("application/rdf+xml" . "/testcases/simple2.rdf")
   ;; following is bogus MIME type mapping (that's OK) to non-existent file
-  ("text/undefined" . "/testcases/missing.html")     ;erroneous mapping
-  ("text/html" . "/testcases/simple2.html"))
+  ("text/undefined" . "/testcases/missing.html")) ;erroneous mapping
  ("/testcases/grddl1.html" "application/xhtml+xml")
  ("/testcases/grddl2.html" "application/xhtml+xml")
  ("/testcases/grddl3.html" "application/xhtml+xml")
