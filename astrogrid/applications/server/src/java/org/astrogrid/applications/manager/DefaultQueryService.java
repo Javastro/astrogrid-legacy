@@ -1,4 +1,4 @@
-/*$Id: DefaultQueryService.java,v 1.7 2005/07/05 08:27:00 clq2 Exp $
+/*$Id: DefaultQueryService.java,v 1.8 2007/03/01 11:53:11 clq2 Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -79,9 +79,9 @@ public class DefaultQueryService implements QueryService, ComponentDescriptor {
            retval = new MessageType();           
            retval.setContent("The application is no longer running" + summary.getStatus().toString());
            retval.setLevel(LogLevel.INFO);
-           retval.setPhase(ExecutionPhase.COMPLETED);
+           retval.setPhase(summary.getStatus());
            retval.setSource(summary.getApplicationName() + "\nid" + summary.getExecutionId());
-            retval.setTimestamp(new Date());            
+           retval.setTimestamp(new Date());            
         }        
         return retval;
 
@@ -184,6 +184,12 @@ public class DefaultQueryService implements QueryService, ComponentDescriptor {
 
 /* 
 $Log: DefaultQueryService.java,v $
+Revision 1.8  2007/03/01 11:53:11  clq2
+apps-gtr-2132-2
+
+Revision 1.7.86.1  2007/02/27 17:45:29  gtr
+The execution phase reported for an archived job is taken from the execution history instead of being forced to COMPLETED. This fixes BZ2132.
+
 Revision 1.7  2005/07/05 08:27:00  clq2
 paul's 559b and 559c for wo/apps and jes
 

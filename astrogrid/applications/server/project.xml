@@ -2,7 +2,7 @@
 <project>
     <extend>${basedir}/../project.xml</extend>
     <id>astrogrid-cea-server</id>
-    <currentVersion>2007.1.1</currentVersion>
+    <currentVersion>2007.1.2</currentVersion>
     <name>CEA server-framework</name>
     <description>This project builds a class library from which CEA services may be made.</description>
     <shortDescription>CEA framework for services</shortDescription>
@@ -160,15 +160,6 @@
             <version>${astrogrid.workflowobjects.version}</version>
             <properties>
                 <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-cea-client</artifactId>
-            <version>${pom.currentVersion}</version>
-            <type>zip</type>
-            <properties>
-                <war.target.path>client</war.target.path>
             </properties>
         </dependency>
         <dependency>
