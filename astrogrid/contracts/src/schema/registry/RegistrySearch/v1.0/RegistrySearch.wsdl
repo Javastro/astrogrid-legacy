@@ -6,7 +6,7 @@
              xmlns:ris="http://www.ivoa.net/wsdl/RegistrySearch/v1.0"
              targetNamespace="http://www.ivoa.net/wsdl/RegistrySearch">             
    <import namespace="http://www.ivoa.net/wsdl/RegistrySearch/v1.0"
-           location="Search.wsdl"/>   <xs:import namespace="http://www.ivoa.net/xml/VOResource/v1.0"
+           location="Search.wsdl"/>              <xs:import namespace="http://www.ivoa.net/xml/RegistryInterface/v1.0"             schemaLocation="../../../registry/RegistryInterface/v1.0/RegistryInterface.xsd"/>              <xs:import namespace="http://www.ivoa.net/xml/VOResource/v1.0"
               schemaLocation="../../../vo-resource-types/VOResource/v1.0/VOResource.xsd"/>                <xs:import namespace="http://www.ivoa.net/xml/ADQL/v1.0"               schemaLocation="../../../adql/ADQL/v1.0/ADQL.xsd" />                            
    <xs:import namespace="http://www.ivoa.net/xml/VORegistry/v1.0" 
               schemaLocation="../../../vo-resource-types/VORegistry/v1.0/VORegistry.xsd"  />
@@ -15,8 +15,8 @@
    <xs:import namespace="http://www.ivoa.net/xml/SIA/v1.0" 
               schemaLocation="../../../vo-resource-types/SIA/v1.0/SIA.xsd"  />
    <xs:import namespace="http://www.ivoa.net/xml/VODataService/v1.0" 
-              schemaLocation="../../../vo-resource-types/VODataService/v1.0/VODataService.xsd"  />              
-	<xs:import namespace="http://www.ivoa.net/xml/CEA/v1.0"               schemaLocation="../../../vo-resource-types/CEAService/v1.0/VOCEA.xsd"  />              
+              schemaLocation="../../../vo-resource-types/VODataService/v1.0/VODataService.xsd"  />          <!--            SchemaMap.java and targetNamepspace of schema do not match. Guy Rixon will sort this out    soon.
+	<xs:import namespace="http://www.ivoa.net/xml/CEA/v0.3"               schemaLocation="../../../vo-resource-types/CEAService/v0.3/CEAService.xsd"  />    -->          
 	<xs:import namespace="http://www.ivoa.net/schema/Application/v1.0"               schemaLocation="../../../vo-resource-types/VOApplication/v1.0/VOApplication.xsd"  />              	<xs:import namespace="http://www.ivoa.net/xml/VOStandard/v0.1"               schemaLocation="../../../vo-resource-types/VOStandard/v0.1/VOStandard.xsd"  />                 <service name="RegistryInterfaceService">
       <port name="RegistrySearchPort" binding="ris:RegistrySearchSOAP">
          <soap:address 
