@@ -22,7 +22,7 @@
 
   <servlet>
     <servlet-name>utype-resolver</servlet-name>
-    <description>Main servlet -- nothing exciting so far</description>
+    <description>Main servlet</description>
     <servlet-class>org.eurovotech.quaestor.SchemeServlet</servlet-class>
     <init-param>
       <param-name>main-script</param-name>
@@ -37,6 +37,10 @@
     <init-param>
       <param-name>resolver-context</param-name>
       <param-value>/superclasses</param-value>
+    </init-param>
+    <init-param>
+      <param-name>description-context</param-name>
+      <param-value>/description</param-value>
     </init-param>
     <init-param>
       <param-name>test-server</param-name>
@@ -54,18 +58,21 @@
     </init-param>
   </servlet>
 
-
-  <!-- these must match the utype-resolver servlet parameters, above -->
+  <!-- Multiple URL patterns map to the utype-resolver servler -->
   <servlet-mapping>
     <servlet-name>utype-resolver</servlet-name>
     <url-pattern>/superclasses</url-pattern>
   </servlet-mapping>
-
+  <servlet-mapping>
+    <servlet-name>utype-resolver</servlet-name>
+    <url-pattern>/description</url-pattern>
+  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>utype-resolver</servlet-name>
     <url-pattern>/test/*</url-pattern>
   </servlet-mapping>
 
+  <!-- ...plus one to the codemanager servlet -->
   <servlet-mapping>
     <servlet-name>codemanager</servlet-name>
     <url-pattern>/code</url-pattern>
