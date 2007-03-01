@@ -1,5 +1,5 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
-@prefix utype: <http://example.ivoa.org/utypes#>.
+@prefix utype: <http://example.ivoa.net/utypes#>.
 @prefix : <http://@HOSTPORT@/utype-resolver/test/testcases/simple1#>.
 
 :c1 a utype:UType.

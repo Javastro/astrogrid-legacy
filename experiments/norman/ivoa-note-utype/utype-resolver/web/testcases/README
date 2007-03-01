@@ -20,3 +20,8 @@ RDF documents, and no rewritings, though all are served as application/xhtml+xml
 grddl-malformed*.html are variously malformed (in XML terms) HTML
 documents.  grddl-malformed2.html is identical to
 grddl-malformed1.html, but is served (erroneously, as XHTML)
+
+error1.n3: non-N3 text
+error2.n3: Invalid Notation3
+error3.rdf: not XML
+error4.rdf: XML, but not RDF

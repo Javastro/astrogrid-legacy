@@ -16,12 +16,13 @@
 (define (resolve-resolver-url url)
   (normalize-url (current-url) url))
 
-;; get-url : string string-or-false -> number procedure string
-(define (get-url relative-part mime-types)
+;; get-url : string string-or-false string-or-false -> number procedure string
+(define (get-url relative-part mime-types method)
   (define-java-classes
     (<url> |java.net.URL|))
   (define-generic-java-methods
     open-connection
+    set-request-method
     set-request-property
     set-follow-redirects
     get-response-code
@@ -33,18 +34,11 @@
     (with/fc (lambda (m e)
                (format #t "Error retrieving <~a>:~%  ~s~%"
                        full-url
-                       ;(error-message m)
-                       (print-exception (make-exception m e))
-                       )
+                       (print-exception (make-exception m e)))
                (values #f #f #f))
       (lambda ()
         (let ((c (open-connection (java-new <url> (->jstring full-url))))
               (hh (header-handler)))
-;;           (define-generic-java-methods
-;;             to-string
-;;             (get-url-from-connection |getURL|))
-;;           (format #t "get-url: opened connection to ~a~%"
-;;                   (->string (to-string (get-url-from-connection c))))
           (if mime-types
               (set-request-property c
                                     (->jstring "Accept")
@@ -55,6 +49,8 @@
                                     (->jstring "Accept")
                                     (->jstring "*/*")))
           (set-follow-redirects c (->jboolean #f))
+          (if method
+              (set-request-method c (->jstring method)))
           (connect c)
           (hh c)
           (let ((status (->number (get-response-code c))))
@@ -142,25 +138,25 @@
 ;; may be #f to omit the corresponding check.
 (define-syntax call-and-expect-response
   (syntax-rules ()
-    ((_ id relurl expected-status expected-type check-content)
-     (call-and-expect-response id relurl (#f)
+    ((_ id relurl
+        expected-status expected-type
+        check-content)
+     (call-and-expect-response id (#f) relurl (#f)
                                expected-status expected-type
                                check-content #f))
     ((_ id relurl (accept-header)
         expected-status expected-type
         check-content check-headers)
+     (call-and-expect-response id (#f) relurl (accept-header)
+                               expected-status expected-type
+                               check-content check-headers))
+    ((_ id (method) relurl (accept-header)
+        expected-status expected-type
+        check-content check-headers)
      (receive (status headers content)
-         (get-url relurl accept-header)
+         (get-url relurl accept-header method)
        (if status
            (let ()
-;;              (format #t "test ~a:~%  status=~a(~a)  type=~a(~a, req ~a)  content-length=~a~%  content=~a~%"
-;;                      id
-;;                      status expected-status
-;;                      (headers 'content-type) expected-type accept-header
-;;                      (and content (string-length content))
-;;                      (if (= status expected-status)
-;;                          "<suppressed>"
-;;                          content))
              (if expected-status
                  (expect (id status) expected-status status))
              (if expected-type
@@ -171,7 +167,7 @@
                  (check-headers headers))
              (if (failures-in-block?)
                  (format #t "test ~a:~%  status=~a(~a)  type=~a(~a)~a  content-length=~a~%  content=~a~%"
-                         (quote id)
+                         (quasiquote id)
                          status expected-status
                          (headers 'content-type) expected-type
                          (if accept-header
@@ -194,7 +190,7 @@
 (show-test #t)
 
 (receive (status headers content)
-    (get-url "." #f)
+    (get-url "." #f #f)
   (if (not status)
       (error "server is not running -- web-interface tests skipped")))
 
@@ -269,27 +265,52 @@
  #f
  (lambda (hh)
    (expect simple2-headers
-           (resolve-resolver-url "test/testcases/simple2.n3")
+           (resolve-resolver-url "test/testcases/simple2.html")
            (hh 'location))))
 ;; simple calls, with single accept headers
-(call-and-expect-response
- simple2-n3 "test/testcases/simple2" ("text/rdf+n3")
- 303
- #f
- #f
- (lambda (hh)
-   (expect simple2-n3-headers
-           (resolve-resolver-url "test/testcases/simple2.n3")
-           (hh 'location))))
-(call-and-expect-response
- simple2-rdf "test/testcases/simple2" ("application/rdf+xml")
- 303
- #f
- #f
- (lambda (hh)
-   (expect simple2-rdf-headers
-           (resolve-resolver-url "test/testcases/simple2.rdf")
-           (hh 'location))))
+(for-each (lambda (p)
+            (let ((mime (car p))
+                  (ext  (cdr p)))
+              (call-and-expect-response
+               (simple2 ,ext) "test/testcases/simple2" (mime)
+               303
+               #f
+               #f
+               (lambda (hh)
+                 (expect (simple2-headers ,ext)
+                         (resolve-resolver-url
+                          (string-append "test/testcases/simple2" ext))
+                         (hh 'location))))))
+          '(("text/rdf+n3" . ".n3")
+            ("application/rdf+xml" . ".rdf")
+            ("text/html" . ".html")))
+;; (call-and-expect-response
+;;  simple2-n3 "test/testcases/simple2" ("text/rdf+n3")
+;;  303
+;;  #f
+;;  #f
+;;  (lambda (hh)
+;;    (expect simple2-n3-headers
+;;            (resolve-resolver-url "test/testcases/simple2.n3")
+;;            (hh 'location))))
+;; (call-and-expect-response
+;;  simple2-rdf "test/testcases/simple2" ("application/rdf+xml")
+;;  303
+;;  #f
+;;  #f
+;;  (lambda (hh)
+;;    (expect simple2-rdf-headers
+;;            (resolve-resolver-url "test/testcases/simple2.rdf")
+;;            (hh 'location))))
+;; (call-and-expect-response
+;;  simple2-html "test/testcases/simple2" ("text/html")
+;;  303
+;;  #f
+;;  #f
+;;  (lambda (hh)
+;;    (expect simple2-html-headers
+;;            (resolve-resolver-url "test/testcases/simple2.html")
+;;            (hh 'location))))
 
 ;; The same two calls, but with both MIME types in the Accept header
 (call-and-expect-response
@@ -354,7 +375,7 @@
  "application/xhtml+xml"
  #f)
 (call-and-expect-response
- retreive-html
+ retrieve-html
  "test/testcases/grddl-malformed1.html"
  200
  "text/html"
@@ -368,6 +389,23 @@
 ;; simple1 is served as simple1.n3, but rewritten by the server from .../simple1
 (let ((testcases-url (resolve-resolver-url "/utype-resolver/test/testcases/")))
   (format #t "testcases-url=~a~%" testcases-url)
+
+  ;; Call /superclasses without any query
+  (call-and-expect-response
+   superclasses-no-query
+   "superclasses"
+   400 ; bad request
+   #f
+   #f)
+
+  ;; ...and with null query
+  (call-and-expect-response
+   superclasses-null-query
+   "superclasses?"
+   400 ; bad request
+   #f
+   #f)
+
   (call-and-expect-response
    resolve1
    (string-append "superclasses?" testcases-url "simple1%23c2")
@@ -415,7 +453,7 @@
                            200
                            "text/plain"
                            (lambda (content)
-                             (expect ((quote base) content)
+                             (expect (base content)
                                      (string-append testcases-url
                                                     base
                                                     "#c1\r\n")
@@ -449,4 +487,153 @@
    #f                                   ;don't care about the type
    #f)                                  ;...or the content
 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;;
+  ;; Descriptions
+
+  ;; no query/namespace
+  (call-and-expect-response
+   description-no-query
+   "description"
+   200
+   "text/html"
+   #f)
+
+  (call-and-expect-response
+   description-null-query
+   "description?"
+   200
+   "text/html"
+   #f)
+
+  (call-and-expect-response
+   description-no-query-n3
+   "description"
+   ("text/rdf+n3")
+   200
+   "text/rdf+n3"
+   #f
+   #f)
+
+  (call-and-expect-response
+   description-no-query-unacceptable
+   "description"
+   ("text/wibble")
+   406
+   #f
+   #f
+   #f)
+
+  ;; normal case -- a namespace we know about.  Defaults to text/html
+  (call-and-expect-response
+   description-n3
+   (string-append "description?" testcases-url "grddl-malformed1%23c2")
+   200
+   "text/html"
+   #f)
+
+  ;; same, but requiring N-TRIPLES
+  (call-and-expect-response
+   description-triples
+   (string-append "description?" testcases-url "grddl-malformed1%23c2")
+   ("text/plain")
+   200
+   "text/plain"
+   (lambda (content)
+     ;; check that the string starts with an angle bracket
+     ;; (ideally, we'd check that every line starts with that, or
+     ;; match a suitable regexp on every line)
+     (expect description-triples-angle-bracket
+             #\<
+             (string-ref content 0)))
+   #f)
+
+  ;; same, but requiring N3
+  (call-and-expect-response
+   description-unknown
+   (string-append "description?" testcases-url "grddl-malformed1%23c2")
+   ("text/rdf+n3")
+   200
+   "text/rdf+n3"
+   #f
+   #f)
+
+  ;; same, but requiring a bad type
+  (call-and-expect-response
+   description-triples
+   (string-append "description?" testcases-url "grddl-malformed1%23c2")
+   ("text/wibble")
+   406
+   #f
+   #f
+   #f)
+
+  ;; unknown namespace
+  (call-and-expect-response
+   description-unknown
+   (string-append "description?" testcases-url "wibble%23c2")
+   404
+   #f
+   #f)
+
+  ;; forgetting namespaces...
+
+  ;; first, deleting an unknown namespace
+  (call-and-expect-response
+   delete-unknown ("DELETE")
+   (string-append "description?" testcases-url "wibble")
+   ("*/*")
+   400                                  ;400 Bad Request
+   #f
+   #f #f)
+
+  ;; forget a known namespace
+
+  ;; first, just double-check that it is there beforehand
+  (call-and-expect-response
+   pre-delete-simple1
+   (string-append "description?" testcases-url "simple1")
+   200
+   "text/html"
+   #f)
+
+  (call-and-expect-response
+   delete-simple1 ("DELETE")
+   (string-append "description?" testcases-url "simple1%23anything")
+   ("*/*")
+   204                                  ;204 No Content
+   #f
+   (lambda (content)
+     (expect delete-simple1-content ;content should be empty (status 204)
+             "" content))
+   #f)
+
+  ;; ...and check that it's gone, and that other stuff hasn't
+  (call-and-expect-response
+   post-delete-simple1
+   (string-append "description?" testcases-url "simple1")
+   404
+   "text/html"
+   #f)
+  ;; simple2 wasn't dropped
+  (call-and-expect-response
+   post-delete-simple3
+   (string-append "description?" testcases-url "simple3")
+   200
+   "text/html"
+   #f)
+
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;;
+  ;; Error cases
+  (for-each (lambda (f)
+              (call-and-expect-response
+               (invalid-rdf ,f)
+               (string-append "superclasses?" testcases-url f)
+               400 ; Bad Request
+               #f
+               #f))
+            '("error1.n3" "error2.n3" "error3.rdf" "error4.rdf"))
+
 ) ; end of LET for TESTCASES-URL
+
