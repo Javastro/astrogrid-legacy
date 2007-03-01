@@ -1,31 +1,27 @@
 
-What's here is mostly working (2007-02-22), but here are some ideas
-for what might happen next:
+What's here is largely working (2007-03-01), but here are some ideas
+for what might happen next.
 
-* How strict should I be about the GRDDL header -- or use another
-  profile?
+The following features are probably not terribly important, and I
+don't plan to do anything with them immediately.
 
-* Only note that we've `seen' a namespace after it's successfully
-  loaded (done?)
+* Add translator/validator for HTML->RDF debugging.  Should this just
+  do HTML->RDF translation, or create and dump an RDF model?
 
-* Add translator/validator for HTML->RDF debugging
-
-* Add /description, to provide details about a namespace in HTML and
-  RDF forms
-
-* Add more REST methods: PUT and DELETE namespaces; HEAD to test
+* Add more REST methods: PUT namespaces (?); HEAD to test
   whether a definition has been changed; support If-Modified-Since and
   Expires headers on queries of namespace documents
 
+* Namespace lifecycle methods: support expiry of namespaces (probably
+  dependent on any Expires headers returned from resources).
+
 * Tighter integration with Quaestor, to support SPARQL queries of
-  namespaces (ie, start to turn this into a guerilla UType registry),
-  and possibly have each namespace in a separate knowledgebase
-  submodel.
+  namespaces (ie, start to turn this into a guerilla UType registry).
 
-* Set a timeout on how long things are cached (probably dependent on
-  any Expires headers returned from resources).
-
-* Add documentation
+* Make a version of the resolver, or of Quaestor, which is standalone,
+  rather than relying on Tomcat.  Use restlets.org, or some standalone
+  HTTP server library, perhaps?  Jetty?  John Taylor said he had a
+  tiny standalone Java server implementation somewhere.
 
 DONE:
 
@@ -40,4 +36,29 @@ DONE:
 * Check appropriate behaviour on wrong input
 
 * Change /resolve to a noun: say /superclasses ?
+
+* Only note that we've `seen' a namespace after it's successfully
+  loaded.
+
+* How strict should I be about the GRDDL header -- or use another
+  profile?  Decided: make it appear like GRDDL, for future
+  extensibility, but document that it doesn't actually pay attention
+  to the GRDDL attributes,
+
+* Integration with Quaestor: have each namespace in a separate
+  knowledgebase submodel.
+
+* Add /description, to provide details about a namespace in HTML and
+  RDF forms
+
+* Description: include information such as rdfs:comment and subclass
+  relations in HTML output.  Don't overdo this -- the point of this
+  UType proposal is that most of this explanation is at the UType
+  namespace URL.
+
+* Support explicit namespace expiry with DELETE method.
+
+* Extract other RDF from HTML, such as rdfs:comment.
+
+* Add documentation
 
