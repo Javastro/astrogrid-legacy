@@ -6,6 +6,12 @@
     <body>
     	<release version="(Pending Integration)">
           
+    	<action dev="kea" type="fix">
+        <em>Branch FM_KEA_2136.</em> One-line change to fix critical
+        race in creating new nodes in same parent node.  See
+        bugzilla ticket 2136.
+      </action>    	  
+
       <action dev="gtr" type="fix">
         Branch apps-gtr-2232-2 fixes BZ2132 in the CEA core server-library only.
         It builds astrogrid-cea-server-2007.1.2.jar; none of the WAR projects
