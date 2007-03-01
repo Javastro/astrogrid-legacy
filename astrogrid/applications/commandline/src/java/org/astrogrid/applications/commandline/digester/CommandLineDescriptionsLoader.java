@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineDescriptionsLoader.java,v 1.13 2006/03/17 17:50:58 clq2 Exp $
+ * $Id: CommandLineDescriptionsLoader.java,v 1.14 2007/03/01 18:03:55 gtr Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -23,6 +23,7 @@ import org.apache.commons.digester.NodeCreateRule;
 import org.apache.commons.digester.RegexRules;
 import org.apache.commons.digester.SimpleRegexMatcher;
 import org.astrogrid.applications.beans.v1.ParameterRef;
+import org.astrogrid.applications.beans.v1.parameters.OptionList;
 import org.astrogrid.applications.commandline.CommandLineConfiguration;
 import org.astrogrid.applications.commandline.CommandLineParameterDescription;
 import org.astrogrid.applications.description.ApplicationDescription;
@@ -35,8 +36,9 @@ import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
 
 /** ApplicationDescrptions Library for use with commandline apps.
- * Loads the application descriptions from the description file into a set of {@link ApplicationDescription} objects. It uses the {@link org.apache.commons.digester.Digester} to parse the XML file. 
- * The schema for these definitions is located at <a href="http://www.astrogrid.org/viewcvs/%2Acheckout%2A/astrogrid/applications/schema/AGParameterDefinition.xsd?rev=HEAD&content-type=text/plain">schema</a>
+ * Loads the application descriptions from the description file into a 
+ * set of {@link ApplicationDescription} objects. It uses the 
+ * {@link org.apache.commons.digester.Digester} to parse the XML file. 
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
@@ -71,23 +73,31 @@ public class CommandLineDescriptionsLoader extends BaseApplicationDescriptionLib
    protected URL configFile;
    protected CommandLineApplicationDescriptionFactory appDescFactory; 
    
-   public final void loadDescription() throws ApplicationDescriptionNotLoadedException {
-      logger.info( "loading application descriptions from " + configFile.toString());
+  /**
+   * Loads the application descriptions from file.
+   * Runs the pre-configurured digester on the input stream of the 
+   * app-description.xml file.
+   */
+  public final void loadDescription() 
+      throws ApplicationDescriptionNotLoadedException {
+    logger.info("Loading application descriptions from " + configFile.toString());
 
-      try {
-         Digester digester = createDigester();         
-         digester.parse(configFile.openStream());              
-         if(getApplicationNames().length == 0 ) {
-            throw new ApplicationDescriptionNotLoadedException("0 descriptions loaded from "+configFile.toString());          
-         } 
-      }
-      catch (Exception e) {
-         throw new ApplicationDescriptionNotLoadedException("failed to load descriptions from "+configFile.toString(),e);
-      }
-      
-   }
+    try {
+      Digester digester = createDigester();         
+      digester.parse(configFile.openStream());
+    }
+    catch (Exception e) {
+      throw new ApplicationDescriptionNotLoadedException("failed to load descriptions from "+configFile.toString(),e);
+    }
+                    
+    if (getApplicationNames().length == 0 ) {
+      throw new ApplicationDescriptionNotLoadedException("0 descriptions loaded from "+configFile.toString());          
+    } 
+  }
+  
    /**
-    * Creates the digester suitable for reading the application description file. The correct funtioning ot this method is highly dependent on the details of the schema.
+    * Creates the digester suitable for reading the application description file. 
+    * The correct funtioning of this method is highly dependent on the details of the schema.
     * @return
     */
    private Digester createDigester() throws ParserConfigurationException {
@@ -120,6 +130,11 @@ public class CommandLineDescriptionsLoader extends BaseApplicationDescriptionLib
       digester.addCallMethod(CommandLineApplicationDescriptionsConstants.UCD_ELEMENT, "setUcd", 0);
       digester.addCallMethod(CommandLineApplicationDescriptionsConstants.DEFVAL_ELEMENT, "setDefaultValue", 0);
       digester.addCallMethod(CommandLineApplicationDescriptionsConstants.UNITSL_ELEMENT, "setUnits", 0);
+      
+      // Add the option list to the parameter.
+      digester.setRuleNamespaceURI(Namespaces.CEAPD);
+      digester.addObjectCreate(CommandLineApplicationDescriptionsConstants.OPTIONLIST_ELEMENT, OptionList.class);
+      digester.addCallMethod(CommandLineApplicationDescriptionsConstants.OPTIONVAL_ELEMENT, "addOptionVal", 0);
       
            
       // add the parameter to the list of paramters  (could perhaps be put above)

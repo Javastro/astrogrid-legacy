@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationDescriptionsConstants.java,v 1.5 2005/07/05 08:27:01 clq2 Exp $
+ * $Id: CommandLineApplicationDescriptionsConstants.java,v 1.6 2007/03/01 18:03:55 gtr Exp $
  * 
  * Created on 04-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -14,7 +14,8 @@
 package org.astrogrid.applications.commandline.digester;
 
 /**
- * Defines the various "xpath" like elements that are used in digester. This is the rather fragile to namespace changes - digester does not do them very well....
+ * Defines the various "xpath" like elements that are used in digester. 
+ * This is the rather fragile to namespace changes - digester does not do them very well....
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
@@ -40,5 +41,6 @@ final class CommandLineApplicationDescriptionsConstants {
    public static final String INTERFACE_ELEMENT= APPLICATION_ELEMENT + "/Interfaces/Interface";
    public static final String INPUT_PREFS = INTERFACE_ELEMENT + "/input/pref";
    public static final String OUTPUT_PREFS = INTERFACE_ELEMENT + "/output/pref";
-
+   public static final String OPTIONLIST_ELEMENT = PARAMETER_ELEMENT + "/OptionList";
+   public static final String OPTIONVAL_ELEMENT = OPTIONLIST_ELEMENT + "/OptionVal";
 }
