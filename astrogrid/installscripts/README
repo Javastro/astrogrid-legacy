@@ -1,0 +1,47 @@
+2007 03 01
+
+To install AstroGrid services on a RedHat Linux system, execute as root:
+
+setup.sh
+
+This will download and install java for you.
+
+
+Then execute, as the user you have designated to run AstroGrid services:
+
+setup.sh
+
+You will be prompted to enter local settings or keep the defaults. These are saved so that you can re-run the script at a later date and amend these settings if you wish.
+
+
+
+If at any point you wish to remove the services you have installed completely, then execute:
+
+reset.sh
+
+This will uninstall all the AstroGrid services, but will _not_ uninstall java
+
+
+Filelist
+
+README		- this file
+setup.sh	- installs java, must be run as root
+
+install.sh	- installs services, calls the scripts below 
+system.sh 	- system tools check
+tomcat.sh	- installs tomcat
+registry.sh	- installs registry
+filestore.sh	- installes filestore
+filemanager.sh	- installs filemanager
+community.sh	- installs community
+first-dsa.sh	- installs dsa
+
+example.sh	- example install
+first-mysql.sh	- installs and sets up mysql
+
+
+reset.sh	- removes all AstroGrid services installed by setup.sh
+
+httpd.conf	- Apache proxy setup example
+S99tomcat	- start / stop script example
+tomcat		- init script example
