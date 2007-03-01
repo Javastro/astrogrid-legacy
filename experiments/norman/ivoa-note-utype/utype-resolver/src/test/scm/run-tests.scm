@@ -45,7 +45,7 @@
     ((_ id expected expr)
      (with/fc (lambda (m e)
                 (format #t "Test ~a~%    produced error~a: ~a~%    expected ~s~%"
-                          (quote id)
+                          (quasiquote id)
                           (if (error-location m)
                               (format #f " in ~a" (error-location m))
                               "")
@@ -58,11 +58,11 @@
                           expected)
                 (failures 1))
        (lambda ()
-         (show-test (quote id))
+         (show-test (quasiquote id))
          (let ((test ((lambda () expr))))
            (if (not (equal? expected test))
                (begin (format #t "Test ~a~%    produced ~s~%    expected ~s~%"
-                              (quote id) test expected)
+                              (quasiquote id) test expected)
                       (failures 1)))))))))
 (define-syntax expect-failure
   (syntax-rules ()
@@ -73,10 +73,10 @@
                 ;;failed -- OK
                 #t)
         (lambda ()
-          (show-test (quote id))
+          (show-test (quasiquote id))
           (let ((test ((lambda () expr))))
             (format #t "Test ~a~%    produced ~s~%    expected ERROR~%"
-                    (quote id) test)
+                    (quasiquote id) test)
             (failures 1)))))))
 
 ;; files to test, as an explicit list
