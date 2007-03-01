@@ -2,7 +2,7 @@
 <!--
     Support a mildly enhanced HTML.
 
-    <div class='section' id='foo'><p>Title</p> ...</div>
+    <div class='section' id='foo'><p class='title'>Title</p> ...</div>
         Support sectioning and cross references.  These <div> elements
         can be nested to give subsections.
 
@@ -33,14 +33,23 @@
 -->
 
 <x:stylesheet xmlns:x="http://www.w3.org/1999/XSL/Transform"
-                version="1.0"
-                exclude-result-prefixes="h"
-                xmlns:h="http://www.w3.org/1999/xhtml">
+              version="1.0"
+              exclude-result-prefixes="h"
+              xmlns:h="http://www.w3.org/1999/xhtml"
+              xmlns="http://www.w3.org/1999/xhtml">
 
   <x:output method="xml"
             encoding="UTF-8"
             version="1.0"
             omit-xml-declaration="yes"/>
+
+  <!-- The following is redundant in general, but if it's not here, then
+   !   the XSLT processor within the JDK (versions?), which is what is
+   !   used by Ant, can end up generating excess xmlns:h declarations within
+   !   some output elements (specifically the h:ul of the <?toc?>),
+   !   which obviously confuse HTML browsers. -->
+  <x:namespace-alias stylesheet-prefix="h" result-prefix="#default"/>
+
 <!--
     The following aren't terribly useful, so might as well be skipped.
     Also, they cause xsltproc to produce a not-as-helpful-as-it-thinks
@@ -89,7 +98,6 @@
       </x:choose>
     </x:variable>
     <x:element name="{$level}">
-      <!--<a name="{$id}"><x:call-template name='make-section-name'/></a>-->
       <a name="{$id}">
         <x:apply-templates select='.'
                            mode='make-section-name'/>
@@ -98,9 +106,9 @@
     <x:apply-templates/>
   </x:template>
 
-  <!-- The first paragraph under a section division is the title.  That's
-       handled above, so we must skip it here. -->
-  <x:template match="h:div[@class='section' or @class='section-nonum']/h:p[1]"/>
+  <!-- Title paragraphs are handled in make-section-name mode, and must
+   !   be skipped when we come across them normally. -->
+  <x:template match="h:p[@class='title']"/>
 
   <x:template match="h:div[@class='appendices']">
     <h:hr/>
@@ -116,7 +124,6 @@
       <x:call-template name='make-section-id'/>
     </x:variable>
     <h:li>
-      <!--<h:a href="#{$id}"><x:call-template name='make-section-name'/></h:a>-->
       <h:a href="#{$id}"><x:apply-templates select='.' mode='make-section-name'/></h:a>
       <x:if test="h:div[@class='section' or @class='section-nonum']">
         <h:ul>
@@ -148,7 +155,6 @@
   </x:template>
 
   <!-- named template to extract the numbered section name -->
-  <!--<x:template name='make-section-name'>-->
   <x:template match='h:div' mode='make-section-name'>
     <x:choose>
       <x:when test="ancestor-or-self::h:div[@class='section-nonum']">
@@ -167,7 +173,8 @@
         <x:text>–</x:text>
       </x:otherwise>
     </x:choose>
-    <x:apply-templates select="h:p[1]/text()"/>
+    <x:apply-templates select="h:p[@class='title']/text()"/>
+    <!--<x:apply-templates select="h:p[1]/text()"/>-->
   </x:template>
 
   <!--
