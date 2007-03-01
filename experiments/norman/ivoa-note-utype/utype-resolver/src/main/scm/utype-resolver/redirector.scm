@@ -41,25 +41,6 @@
           (else
            #f))))
 
-;; ACCEPTABLE-MIME : string list-of-strings -> string-or-#f
-;;
-;; Test whether a given MIME type is acceptable.  Given a MIME type,
-;; return a MIME type which is present in the MIME-LIST (which may
-;; include "*/*"), or #f if there is none such.  The return value will
-;; typically be the same as the input MIME argument, unless this is
-;; not acceptable. A non-#f return will be different from the input if
-;; the input includes a wildcard as above.
-(define (acceptable-mime mime mime-list)
-  (chatter "acceptable-mime: mime=~s  mime-list=~s" mime mime-list)
-  (cond ((null? mime-list)
-         #f)
-        ((member "*/*" mime-list)
-         mime)
-        ((member mime mime-list)
-         mime)
-        (else
-         #f)))
-
 ;; LOOKUP-REWRITES : string list-of-strings-or-#f -> various
 ;;
 ;; Given a NAME and list of strings containing acceptable MIME types,
