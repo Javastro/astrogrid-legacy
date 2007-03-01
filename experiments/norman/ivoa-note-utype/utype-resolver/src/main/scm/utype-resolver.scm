@@ -16,6 +16,8 @@
 
 (require-library 'quaestor/utils)
 (import utils)
+(require-library 'quaestor/jena)
+(import* jena rdf:select-statements)
 
 (define (ident)
   (define-java-class <sisc.util.version>)
@@ -23,7 +25,7 @@
   `((utype-resolver-version . "@VERSION@")
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (string
-     . "utype-resolver.scm @VERSION@ ($Id: utype-resolver.scm,v 1.5 2007/02/22 19:00:22 norman Exp $)")))
+     . "utype-resolver.scm @VERSION@ ($Id: utype-resolver.scm,v 1.6 2007/03/01 18:36:41 norman Exp $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -47,14 +49,7 @@
 
 (define (initialise-resolver scheme-servlet)
   (define-generic-java-methods
-    register-handler
-;    get-servlet-context
-;    to-string
-;    get-resource
-    ;get-init-parameter
-    )
-;;   (define (get-param s)
-;;     (get-init-parameter scheme-servlet (->jstring s)))
+    register-handler)
   (define (reg method context proc)
     (register-handler scheme-servlet
                       (->jstring method)
@@ -64,86 +59,185 @@
   (servlet 'set scheme-servlet)
 
   (reg "GET"
-       (servlet 'parameter "resolver-context") ;(get-param "resolver-context")
-       http-get)
+       (servlet 'parameter "resolver-context")
+       get-resolve)
   (reg "GET"
-       (servlet 'parameter "test-server") ;(get-param "test-server")
+       (servlet 'parameter "description-context")
+       get-description)
+  (reg "DELETE"
+       (servlet 'parameter "description-context")
+       delete-namespace)
+  (reg "GET"
+       (servlet 'parameter "test-server")
        test-redirector))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Implementation
 
-(define/contract (http-get (request  request?)
-                           (response response?)
-                           -> string-or-true?)
-  (with/fc
-      (make-fc request response '|SC_INTERNAL_SERVER_ERROR|)
-    (lambda ()
-      (let ((path-list    (request->path-list request))
-            (query-string (request->query-string request)))
-        (servlet 'log "utype-resolver/http-get: path=~s  query=~s"
-                 path-list query-string)
-        (set-response-status! response '|SC_OK| "text/html") ;sensible default
-        (let loop ((h get-handlers))
-          (if (null? h)
-              (error 'get "No applicable GET handlers found!") ;shouldn't happen
-              (or ((car h) path-list query-string request response)
-                  (loop (cdr h)))))))))
-
-;; GET-HANDLERS is a list of procedures which take four arguments:
-;;     a list of strings representing the path-info
-;;     a query-string
-;;     a HTTP Request
-;;     a HTTP Response
-;; Each procedure should decide whether it can handle this query, and if it
-;; does, it should do so and return either a string or #t; otherwise
-;; it should do nothing and return #f.  If the procedure returns a
-;; string, then that should be printed out as the response.
-
-;; Fallback get handler.  Matches everything, and returns a string.
-(define (get-fallback path-info-list query-string request response)
-  (set-response-status! response '|SC_NOT_FOUND| "text/html")
-  (response-page request response
-                 "Utype resolver"
-                 `((p "I don't recognise that URL.")
-                   (p "The details of the request follow:")
-                   ,@(tabulate-request-information request))))
-
 ;; GET-RESOLVE : list-of-strings string http-request http-response -> string-or-false
 ;; The main handler.  If the PATH-INFO-LIST is null and the URL is non-false,
 ;; then resolve the URL and return an appropriate page (text/plain in the
 ;; case of a successful resolution, text/html otherwise).
-(define (get-resolve path-info-list url request response)
-  (chatter "get-resolve: path-info-list=~s, url=~s" path-info-list url)
+(define (get-resolve request response)
   (with/fc
       (make-fc request response '|SC_INTERNAL_SERVER_ERROR|)
     (lambda ()
-      (cond ((and (= (length path-info-list) 0)
-                  url)                  ;normal case
-             (cond ((resolve-uri url)
-                    => (lambda (superclass-strings)
-                         (set-response-status! response '|SC_OK| "text/plain")
-                         (apply string-append
-                                (map (lambda (s) (string-append s "\r\n"))
-                                     superclass-strings))))
-                   (else
-                    (set-response-status! response '|SC_NO_CONTENT|))
-;;                    (else
-;;                     (set-response-status! response '|SC_BAD_REQUEST|)
-;;                     (response-page request response
-;;                                    "UType resolver: can't resolve URI"
-;;                                    `((p ,(format #f "Unable to resolve URL ~a" url)))))
-                   ))
-            ((= (length path-info-list) 0) ;oops: for us, but query missing
-             (set-response-status! response '|SC_BAD_REQUEST|)
-             (response-page request response
-                            "UType resolver: bad request"
-                            `((p "Bad call to resolver service: no query"))))
-            (else
-             #f)))))                    ;go to next handler
+      (let ((query-url (cond ((request->query-string request)
+                              => decode-uri)
+                             (else #f))))
+        (cond ((not query-url)
+               (set-response-status! response '|SC_BAD_REQUEST| "text/html")
+               (response-page request response
+                              "UType resolver: bad request"
+                              '((p "Bad request: no query"))))
+              ((resolve-uri query-url)
+               => (lambda (superclass-strings)
+                    (set-response-status! response '|SC_OK| "text/plain")
+                    (apply string-append
+                           (map (lambda (s) (string-append s "\r\n"))
+                                superclass-strings))))
+              (else               ;no superclasses -- respond with 204
+               (set-response-status! response '|SC_NO_CONTENT|)))))))
 
-(define get-handlers `(,get-resolve ,get-fallback))
+(define (get-description request response)
+  (let ((query-url (cond ((request->query-string request)
+                          => decode-uri)
+                         (else
+                          #f)))
+        (acceptable (request->accept-mime-types request)))
+    (define (model->string model lang mime)
+      (define-java-class <java.io.string-writer>)
+      (define-generic-java-methods write to-string)
+      (let ((sw (java-new <java.io.string-writer>)))
+        (write model
+               sw
+               (->jstring lang))
+        (set-response-status! response '|SC_OK| mime)
+        (->string (to-string sw))))
+    (define (display-namespace-list-as-html)
+      (let ((base-uri (webapp-base-from-request request #f)))
+      (set-response-status! response '|SC_OK| "text/html")
+      (response-page request response
+                       "List of known namespaces"
+                       `((p "The following namespaces are known")
+                         (ul
+                          ,@(map (lambda (s)
+                                   `(li (a (@ (href ,(format #f "~a/description?~a"
+                                                             base-uri s)))
+                                       (code ,s))))
+                                 (get-namespace-list)))))))
+    (define (display-namespace-model-as-html ns model)
+      (set-response-status! response '|SC_OK| "text/html")
+      (response-page request response
+                     (format #f "Namespace ~a" ns)
+                     `((p ,(format #f
+                                   "Namespace ~a defines the following UTypes:"
+                                   ns))
+                       (ul
+                        ,@(let ((rdf-nodes
+                                 (rdf:select-statements
+                                  model
+                                  #f
+                                  "a"
+                                  "http://example.ivoa.net/utypes#UType")))
+                            (define-generic-java-methods to-string)
+                            (map (lambda (node)
+                                   (let ((url (->string (to-string node)))
+                                         (comments (rdf:select-statements
+                                                    model
+                                                    node
+                                                    "http://www.w3.org/2000/01/rdf-schema#comment"
+                                                    #f)))
+                                     `(li (a (@ (href ,url))
+                                             ,url)
+                                          ": "
+                                          ,(if (null? comments)
+                                               "[No description available]"
+                                               (apply string-append
+                                                      (map (lambda (n)
+                                                             (->string
+                                                              (to-string n)))
+                                                           comments))))))
+                                 rdf-nodes))))))
+
+    (cond ((not query-url)
+           (cond ((acceptable-mime '("text/html" "text/rdf+n3" "application/rdf+xml" "text/plain")
+                                   acceptable)
+                  => (lambda (mime)
+                       (cond ((string=? mime "text/html")
+                              (display-namespace-list-as-html))
+                             ((string=? mime "text/rdf+n3")
+                              (model->string (get-namespace-description)
+                                             "N3" mime))
+                             ((string=? mime "text/plain")
+                              (model->string (get-namespace-description)
+                                             "N-TRIPLE" mime))
+                             ((string=? mime "application/rdf+xml")
+                              (model->string (get-namespace-description)
+                                             "RDF/XML" mime))
+                             (else
+                              (error "get-description: Unhandled mime type ~a"
+                                     mime)))))
+                 (else
+                  (set-response-status! response
+                                        '|SC_NOT_ACCEPTABLE|
+                                        "text/html")
+                  (response-page
+                   request response
+                   "No acceptable representations"
+                   `((p ,(format #f "No representation for the description is available, in one of the requested representations ~s"
+                                 acceptable)))))))
+
+          ((get-namespace-description query-url)
+           => (lambda (model)
+                (cond ((acceptable-mime '("text/html" "text/rdf+n3" "application/rdf+xml" "text/plain")
+                                        acceptable)
+                       => (lambda (mime)
+                            (cond ((string=? mime "text/html")
+                                   (display-namespace-model-as-html query-url
+                                                                    model))
+                                  ((string=? mime "text/rdf+n3")
+                                   (model->string model "N3" mime))
+                                  ((string=? mime "text/plain")
+                                   (model->string model "N-TRIPLE" mime))
+                                  ((string=? mime "application/rdf+xml")
+                                   (model->string model "RDF/XML" mime))
+                                  (else
+                                   (error "get-description: error processing MIME type (~s)"
+                                          mime)))))
+                      (else
+                       (set-response-status! response
+                                             '|SC_NOT_ACCEPTABLE|
+                                             "text/html")
+                       (response-page
+                        request response
+                        "No acceptable representations"
+                        `((p "I know about the namespace "
+                             (code ,query-url)
+                             
+                             ,(format #f ", but can't describe it in any of the acceptable MIME types ~s"
+                                      acceptable))))))))
+          (else
+           (set-response-status! response '|SC_NOT_FOUND| "text/html")
+           (response-page request response
+                          "Unknown namespace"
+                          `((p ,(format #f "I don't know anything about ~a"
+                                        query-url))))))))
+
+;; DELETE-NAMESPACE : request response -> string
+;; Delete the namespace given in the query string (possibly after removing
+;; a fragment).
+(define (delete-namespace request response)
+  (let ((query-url (cond ((request->query-string request)
+                          => decode-uri)
+                         (else
+                          #f))))
+    (if (forget-namespace! query-url)
+        (set-response-status! response '|SC_NO_CONTENT|)
+        (no-can-do request response '|SC_BAD_REQUEST|
+                   "I don't know anything about namespace ~s" query-url))))
+
 
 ;; DECODE-URI : string -> string
 ;; Given a URI as a string, return a string with this %-decoded.
@@ -182,7 +276,7 @@
     get-fragment
     (to-url |toURL|)
     to-string)
-  (let ((uri (java-new <uri> (->jstring (decode-uri uri-string)))))
+  (let ((uri (java-new <uri> (->jstring uri-string))))
     (chatter "resolve-uri: ~a -> frag ~a, URL ~a"
              uri-string
              (cond ((non-null (get-fragment uri))
