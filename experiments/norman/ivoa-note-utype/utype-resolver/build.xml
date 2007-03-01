@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.5 2007/02/27 19:18:06 norman Exp $
+     $Id: build.xml,v 1.6 2007/03/01 18:46:44 norman Exp $
 -->
 
 
@@ -557,9 +557,17 @@
            compression='gzip'/>
     -->
 
+    <xslt basedir="${web.home}"
+          destdir="${build.war}"
+          style="../structure.xslt"
+          includes="*.xml"/>
+
     <!-- Copy static content of this web application -->
     <copy todir="${build.war}">
-      <fileset dir="${web.home}"/>
+      <fileset file="${web.home}/*.html"/>  <!--web pages-->
+      <fileset file="${web.home}/*.css"/>  <!--web pages-->
+      <fileset dir="src/main/etc"/> <!-- grok-utypes.xslt, utypes.n3 -->
+      <fileset file="../note.html"/>
       <!--<fileset dir="${web.home}" excludes="generate/**"/>-->
       <filterset>
         <filter token="VERSION" value="${app.version}"/>
