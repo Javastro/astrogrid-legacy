@@ -16,6 +16,7 @@
      query-utype-superclasses
      get-namespace-description
      get-namespace-list
+     forget-namespace!
      ;; The following should be used only sparingly; they're
      ;; really only to be used for debugging and testing this module.
      show-utypes-as-n3
@@ -103,6 +104,10 @@
 (define/contract (namespace-seen? (uri uri?))
   (let ((ns (uri->namespace uri)))
     ((knowledgebase) 'has-model ns)))
+
+(define/contract (forget-namespace! (uri string?) -> boolean?)
+  (let ((ns (uri->namespace uri)))
+    ((knowledgebase) 'drop-submodel ns)))
 
 ;; INGEST-UTYPE-DECLARATION-FROM-URI! : uri -> unspecified
 ;; 
@@ -260,7 +265,7 @@
                  (rdf:ingest-from-stream/language stream
                                                   uri-string
                                                   content-type)
-                 ;;XXX here or elsewhere: add assertions that the namespace
+                 ;; XXX here or elsewhere: add assertions that the namespace
                  ;; URI is a 'namespace', and perhaps the time, such that
                  ;; first-sight-of-namespace can query for this.
                  ;; Use new rdf:ingest-from-string/n3
