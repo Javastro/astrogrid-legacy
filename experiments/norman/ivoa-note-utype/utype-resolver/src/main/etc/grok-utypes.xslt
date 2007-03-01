@@ -34,7 +34,8 @@
 ! The structures which this recognises are as follows:
 !
 ! <foo class='utype' id='u1'>...</foo>
-!     Declare a UType class 'u1' (element and contents don't matter)
+!     Declare a UType class 'u1' (the element doesn't matter, and the 
+!     contents are used as an rdfs:comment)
 ! 
 ! <foo class='utype' id='u2'>...<a rel='subclassof' href='#u1'>...</a></foo>
 !     Declare Utype 'u2' to be a subclass of 'u1'.
@@ -49,7 +50,7 @@
 
   <x:template match='/'>
     <x:text>@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;.
-@prefix u: &lt;http://example.ivoa.org/utypes#&gt;.
+@prefix u: &lt;http://example.ivoa.net/utypes#&gt;.
 </x:text>
     <x:choose>
       <x:when test='//*[@class="namespace"]'>
@@ -97,7 +98,16 @@
   <!-- class declaration -->
   <x:template match='*[@class="utype"]'>
     <x:apply-templates select='.' mode='genref'/>
-    <x:text> a u:UType.
+    <x:text> a u:UType</x:text>
+    <x:if test="text()">
+      <x:text>;
+      rdfs:comment "</x:text>
+      <!-- Normalise the string value of the current node, and remove
+       !   any quote characters in it (ASCII 34). -->
+      <x:copy-of select="translate(normalize-space(.),'&#34;','')"/>
+      <x:text>"</x:text>
+    </x:if>
+    <x:text>.
 </x:text>
     <!--
     <x:text> a rdfs:Class.
