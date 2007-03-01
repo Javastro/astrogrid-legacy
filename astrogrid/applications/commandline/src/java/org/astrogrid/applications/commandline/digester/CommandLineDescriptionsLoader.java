@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineDescriptionsLoader.java,v 1.14 2007/03/01 18:03:55 gtr Exp $
+ * $Id: CommandLineDescriptionsLoader.java,v 1.15 2007/03/01 18:28:27 gtr Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -49,7 +49,29 @@ import org.xml.sax.Attributes;
 public class CommandLineDescriptionsLoader extends BaseApplicationDescriptionLibrary {
    static private org.apache.commons.logging.Log logger =
       org.apache.commons.logging.LogFactory.getLog(CommandLineDescriptionsLoader.class);
-   private Exception waserror = null;
+  
+  // Paths in the XML structure of the application-description file.
+  private static final String NAME_ATTR = "name";
+  private static final String APPLICATIONCONTROLLER_ELEMENT = "CommandLineExecutionControllerConfig";
+  private static final String APPLICATION_ELEMENT = APPLICATIONCONTROLLER_ELEMENT + "/Application";
+  private static final String EXPATH_ELEMENT = APPLICATION_ELEMENT + "/ExecutionPath";
+  private static final String LONGNAME_ELEMENT = APPLICATION_ELEMENT + "/LongName";
+  private static final String DESCRIPTION_ELEMENT = APPLICATION_ELEMENT + "/Description";
+  private static final String URL_ELEMENT = APPLICATION_ELEMENT + "/ReferenceURL";
+  private static final String PARAMETER_ELEMENT = APPLICATION_ELEMENT+"/Parameters/CmdLineParameterDefn";
+  private static final String UI_NAME_ELEMENT = PARAMETER_ELEMENT + "/UI_Name";
+  private static final String UI_DESC_ELEMENT = PARAMETER_ELEMENT + "/UI_Description";
+  private static final String UI_DESC_CHILDREN = PARAMETER_ELEMENT + "/UI_Description/*";
+  private static final String UCD_ELEMENT = PARAMETER_ELEMENT + "/UCD";
+  private static final String DEFVAL_ELEMENT = PARAMETER_ELEMENT + "/DefaultValue";
+  private static final String UNITSL_ELEMENT = PARAMETER_ELEMENT + "/Units";
+  private static final String INTERFACE_ELEMENT= APPLICATION_ELEMENT + "/Interfaces/Interface";
+  private static final String INPUT_PREFS = INTERFACE_ELEMENT + "/input/pref";
+  private static final String OUTPUT_PREFS = INTERFACE_ELEMENT + "/output/pref";
+  private static final String OPTIONLIST_ELEMENT = PARAMETER_ELEMENT + "/OptionList";
+  private static final String OPTIONVAL_ELEMENT = OPTIONLIST_ELEMENT + "/OptionVal";
+   
+  private Exception waserror = null;
 
     public interface DescriptionURL {
         URL getURL();
@@ -95,77 +117,78 @@ public class CommandLineDescriptionsLoader extends BaseApplicationDescriptionLib
     } 
   }
   
-   /**
-    * Creates the digester suitable for reading the application description file. 
-    * The correct funtioning of this method is highly dependent on the details of the schema.
-    * @return
-    */
-   private Digester createDigester() throws ParserConfigurationException {
+  /**
+   * Creates the digester suitable for reading the application description file. 
+   * The correct funtioning of this method is highly dependent on the details of the schema.
+   * @return
+   */
+  private Digester createDigester() throws ParserConfigurationException {
 
-      Digester digester = new Digester();
-      digester.setValidating(false); //TODO would be better to make this validate...validation does get done later though...
-      digester.setNamespaceAware(true);
-//      digester.setRules(new RegexRules(new SimpleRegexMatcher())); // to allow matches on any children....
+    Digester digester = new Digester();
+    digester.setValidating(false); //TODO would be better to make this validate...validation does get done later though...
+    digester.setNamespaceAware(true);
 
+    // At the outermost level, objects created by the digester are added to
+    // this current object.
     digester.push(this);
     digester.setRuleNamespaceURI(Namespaces.CEAIMPL);
-      //digester.addObjectCreate(ApplicationDescriptionConstants.APPLICATION_ELEMENT, CommandLineApplicationDescription.class);
-      digester.addFactoryCreate(CommandLineApplicationDescriptionsConstants.APPLICATION_ELEMENT,appDescFactory);
-      // set the appropriate attributes
-      digester.addSetProperties(CommandLineApplicationDescriptionsConstants.APPLICATION_ELEMENT);
-      digester.addCallMethod(CommandLineApplicationDescriptionsConstants.EXPATH_ELEMENT, "setExecutionPath", 0);
-      digester.addCallMethod(CommandLineApplicationDescriptionsConstants.LONGNAME_ELEMENT, "setUIName", 0);      
-      digester.addCallMethod(CommandLineApplicationDescriptionsConstants.DESCRIPTION_ELEMENT, "setAppDescription", 0);
-      digester.addCallMethod(CommandLineApplicationDescriptionsConstants.URL_ELEMENT, "setReferenceURL", 0);
+    digester.addFactoryCreate(APPLICATION_ELEMENT,appDescFactory);
+    
+    // set the appropriate attributes
+    digester.addSetProperties(APPLICATION_ELEMENT);
+    digester.addCallMethod(EXPATH_ELEMENT,      "setExecutionPath",  0);
+    digester.addCallMethod(LONGNAME_ELEMENT,    "setUIName",         0);      
+    digester.addCallMethod(DESCRIPTION_ELEMENT, "setAppDescription", 0);
+    digester.addCallMethod(URL_ELEMENT,         "setReferenceURL",   0);
 
-      // add the appropriate paramter element and set its properties
-      digester.addObjectCreate(CommandLineApplicationDescriptionsConstants.PARAMETER_ELEMENT,CommandLineParameterDescription.class);
-      digester.addSetProperties(CommandLineApplicationDescriptionsConstants.PARAMETER_ELEMENT,"type","typeString");
+    // add the appropriate paramter element and set its properties
+    digester.addObjectCreate(PARAMETER_ELEMENT,CommandLineParameterDescription.class);
+    digester.addSetProperties(PARAMETER_ELEMENT,"type","typeString");
       
-      //set some extra property values from the body elements of children
-      digester.setRuleNamespaceURI(Namespaces.CEAPD);
-      digester.addCallMethod(CommandLineApplicationDescriptionsConstants.UI_NAME_ELEMENT, "setDisplayName", 0);
-      digester.addRule(CommandLineApplicationDescriptionsConstants.UI_DESC_ELEMENT, new NonPoppingNodeCreateRule(Node.ELEMENT_NODE));
-      digester.addRule(CommandLineApplicationDescriptionsConstants.UI_DESC_ELEMENT, new AllBodyIncElementsRule("displayDescription", true));
-      digester.addCallMethod(CommandLineApplicationDescriptionsConstants.UCD_ELEMENT, "setUcd", 0);
-      digester.addCallMethod(CommandLineApplicationDescriptionsConstants.DEFVAL_ELEMENT, "setDefaultValue", 0);
-      digester.addCallMethod(CommandLineApplicationDescriptionsConstants.UNITSL_ELEMENT, "setUnits", 0);
+    //set some extra property values from the body elements of children
+    digester.setRuleNamespaceURI(Namespaces.CEAPD);
+    digester.addCallMethod(UI_NAME_ELEMENT, "setDisplayName", 0);
+    digester.addRule(UI_DESC_ELEMENT, new NonPoppingNodeCreateRule(Node.ELEMENT_NODE));
+    digester.addRule(UI_DESC_ELEMENT, new AllBodyIncElementsRule("displayDescription", true));
+    digester.addCallMethod(UCD_ELEMENT,    "setUcd",          0);
+    digester.addCallMethod(DEFVAL_ELEMENT, "setDefaultValue", 0);
+    digester.addCallMethod(UNITSL_ELEMENT, "setUnits",        0);
       
-      // Add the option list to the parameter.
-      digester.setRuleNamespaceURI(Namespaces.CEAPD);
-      digester.addObjectCreate(CommandLineApplicationDescriptionsConstants.OPTIONLIST_ELEMENT, OptionList.class);
-      digester.addCallMethod(CommandLineApplicationDescriptionsConstants.OPTIONVAL_ELEMENT, "addOptionVal", 0);
+    // Add the option list to the parameter.
+    digester.setRuleNamespaceURI(Namespaces.CEAPD);
+    digester.addObjectCreate(OPTIONLIST_ELEMENT, OptionList.class);
+    digester.addCallMethod(OPTIONVAL_ELEMENT, "addOptionVal", 0);
       
            
-      // add the parameter to the list of paramters  (could perhaps be put above)
-      digester.setRuleNamespaceURI(Namespaces.CEAIMPL);
-      digester.addSetNext(CommandLineApplicationDescriptionsConstants.PARAMETER_ELEMENT, "addParameterDescription");
+    // add the parameter to the list of paramters  (could perhaps be put above)
+    digester.setRuleNamespaceURI(Namespaces.CEAIMPL);
+    digester.addSetNext(PARAMETER_ELEMENT, "addParameterDescription");
 
-      digester.setRuleNamespaceURI(Namespaces.CEAB);           
-      digester.addFactoryCreate(CommandLineApplicationDescriptionsConstants.INTERFACE_ELEMENT,new BaseApplicationInterfaceFactory());
+    digester.setRuleNamespaceURI(Namespaces.CEAB);           
+    digester.addFactoryCreate(INTERFACE_ELEMENT,new BaseApplicationInterfaceFactory());
 
-      digester.addSetProperties(CommandLineApplicationDescriptionsConstants.INTERFACE_ELEMENT);      
-      //input and output parameter references
-      digester.addCallMethod(CommandLineApplicationDescriptionsConstants.INPUT_PREFS, "addInputParameterAsPref", 1, new Class[]{ParameterRef.class});
-      digester.addObjectCreate(CommandLineApplicationDescriptionsConstants.INPUT_PREFS, ParameterRef.class);
-      digester.addSetProperties(CommandLineApplicationDescriptionsConstants.INPUT_PREFS);
-      digester.addCallParam(CommandLineApplicationDescriptionsConstants.INPUT_PREFS, 0, true);
+    digester.addSetProperties(INTERFACE_ELEMENT);      
+      
+    //input and output parameter references
+    digester.addCallMethod(INPUT_PREFS, "addInputParameterAsPref", 1, new Class[]{ParameterRef.class});
+    digester.addObjectCreate(INPUT_PREFS, ParameterRef.class);
+    digester.addSetProperties(INPUT_PREFS);
+    digester.addCallParam(INPUT_PREFS, 0, true);
       
       
-      //input and output parameter references
-      digester.addCallMethod(CommandLineApplicationDescriptionsConstants.OUTPUT_PREFS, "addOutputParameterAsPref", 1, new Class[]{ParameterRef.class});
-      digester.addObjectCreate(CommandLineApplicationDescriptionsConstants.OUTPUT_PREFS, ParameterRef.class);
-      digester.addSetProperties(CommandLineApplicationDescriptionsConstants.OUTPUT_PREFS);
-      digester.addCallParam(CommandLineApplicationDescriptionsConstants.OUTPUT_PREFS, 0, true);
-     
-      
-      
-      digester.addSetNext(CommandLineApplicationDescriptionsConstants.INTERFACE_ELEMENT, "addInterface");
+    //input and output parameter references
+    digester.addCallMethod(OUTPUT_PREFS, "addOutputParameterAsPref", 1, new Class[]{ParameterRef.class});
+    digester.addObjectCreate(OUTPUT_PREFS, ParameterRef.class);
+    digester.addSetProperties(OUTPUT_PREFS);
+    digester.addCallParam(OUTPUT_PREFS, 0, true);
 
-      // finally add the application description to the list
-     digester.setRuleNamespaceURI(Namespaces.CEAIMPL);
-     digester.addSetNext(CommandLineApplicationDescriptionsConstants.APPLICATION_ELEMENT, "addApplicationDescription");
-      return digester;
+    digester.addSetNext(INTERFACE_ELEMENT, "addInterface");
+
+    // finally add the application description to the list
+    digester.setRuleNamespaceURI(Namespaces.CEAIMPL);
+    digester.addSetNext(APPLICATION_ELEMENT, "addApplicationDescription");
+      
+    return digester;
  
      
    }
