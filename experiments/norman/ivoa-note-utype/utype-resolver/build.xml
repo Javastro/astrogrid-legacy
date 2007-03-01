@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.6 2007/03/01 18:46:44 norman Exp $
+     $Id: build.xml,v 1.7 2007/03/01 23:01:32 norman Exp $
 -->
 
 
@@ -225,20 +225,11 @@
 
   -->
 
-  <!--
-  <path id="sisc.classpath">
-    <fileset refid="sisc.support"/>
-  </path>
-  -->
-
   <path id="compile.classpath">
 
     <!-- Include all JAR files that will be included in /WEB-INF/lib -->
     <pathelement location='${quaestor.jar}'/>
     <pathelement location="${tagsoup.jar}"/>
-
-    <!-- for the sisc.shp file -->
-    <!--<path refid="sisc.classpath"/>-->
 
     <!-- Include all elements that Tomcat exposes to applications -->
     <pathelement location="${catalina.home}/common/classes"/>
@@ -319,17 +310,6 @@
       <classpath refid="compile.classpath"/>
     </javac>
 
-    <!-- Copy the SISC heap into WEB-INF/classes, where it is findable
-     !   as a resource.  No, don't do this: we have SchemeWrapper.java rely
-     !   on findHeap finding the heap inside a separately installed .jar file.
-     !-->
-    <!--
-    <copy todir="${build.classes}">
-      <fileset dir="${sisc.lib}"
-               includes="sisc.shp"/>
-    </copy>
-    -->
-
     <!-- Copy the XSLT transform and utypes.n3 definitions -->
     <copy todir="${build.classes}">
       <fileset dir="${src.home}/etc"
@@ -345,33 +325,7 @@
                includes="*.scm"/>
     </copy>
 
-    <!--
-    <mkdir  dir="${build.classes}/util"/>
-    <copy todir="${build.classes}/util">
-      <fileset dir="${scm.src.home}/util"
-               includes="*.scm"/>
-    </copy>
-    -->
-
   </target>
-
-  <!-- Compile the SISC .scm files under ${scm.src.home}/quaestor,
-   !   putting them in a jar file in WEB-INF.
-   !
-   !   Using this is a bad idea.  When undeploying, Tomcat 5.5 will
-   !   not release resources obtained from JAR files.  We therefore
-   !   must not distribute this extra code in a JAR file, at least
-   !   not at develoment time.
-   ! -->
-<!--
-  <target name="quaestor.jar" depends="prepare"
-          description="Compile SISC library modules">
-    <jar basedir="${scm.src.home}"
-         destfile="${build.lib}/quaestor.jar"
-         includes="quaestor/*.scm"
-         />
-  </target>
--->
 
 <!-- ==================== Dist Target ===================================== -->
 
@@ -380,16 +334,15 @@
 
   The "dist" target creates a binary distribution of your application
   in a directory structure ready to be archived in a tar.gz or zip file.
-  Note that this target depends on two others:
+  Note that this target depends on one other:
 
   * "compile" so that the entire web application (including external
     dependencies) will have been assembled
 
-  * "javadoc" so that the application Javadocs will have been created
-
+  Any javadoc target, for example, would be a natural dependency here.
 -->
 
-  <target name="dist" depends="compile,javadoc"
+  <target name="dist" depends="compile"
    description="Create binary distribution">
 
     <!-- Copy documentation subdirectories -->
@@ -403,20 +356,6 @@
          basedir="${build.war}"/> <!-- XXX: this scoops up .../scc/, too -->
 
     <!-- Copy additional files to ${dist.home} as necessary -->
-
-    <!-- Client-side useful things -->
-    <!--
-    <mkdir dir="${build.client}"/>
-    <copy todir="${build.client}">
-      <fileset dir="${dist.home}/docs"/>
-    </copy>
-    <jar jarfile="${build.client}/${app.name}-client-${app.version}.jar"
-         basedir="${build.war}/WEB-INF/classes"
-         includes="org/eurovotech/quaestor/**"/>
-    <zip destfile="${dist.home}/${app.name}-client-${app.version}.zip">
-      <fileset dir="${build.client}"/>
-    </zip>
-    -->
 
   </target>
 
@@ -466,23 +405,13 @@
 
 -->
 
+<!--
   <target name="javadoc" depends="compile"
    description="Create Javadoc API documentation">
 
     <mkdir          dir="${dist.home}/docs/api"/>
-    <!--
-    <javadoc sourcepath="${src.home}"
-                destdir="${dist.home}/docs/api"
-           packagenames="*"
-               overview="${src.home}/org/eurovotech/quaestor/overview.html"
-                 source="${compile.source}"
-               >
-      <classpath refid="compile.classpath"/>
-    </javadoc>
-    -->
-
   </target>
-
+-->
 
 
 <!-- ====================== List Target =================================== -->
@@ -532,12 +461,6 @@
       <fileset file="${quaestor.jar}"/>
       <fileset file="${tagsoup.jar}"/>
     </copy>
-    <!--
-    <copy todir="${build.lib}">
-      <fileset refid="sisc.support"/>
-      <fileset refid="jena.support"/>
-    </copy>
-    -->
     <copy todir="${build.war}/WEB-INF">
       <fileset file="${scm.src.home}/utype-resolver.scm"/>
       <filterset>
@@ -549,14 +472,6 @@
 
   <target name='prepare-static'
           description='Prepare the static content of the webapp'>
-    <!-- This demo.tar.gz comes from Norman's repository, in the 
-         directory votech/access-control -->
-    <!--
-    <untar src='web/demo.tar.gz'
-           dest='web'
-           compression='gzip'/>
-    -->
-
     <xslt basedir="${web.home}"
           destdir="${build.war}"
           style="../structure.xslt"
@@ -564,11 +479,10 @@
 
     <!-- Copy static content of this web application -->
     <copy todir="${build.war}">
-      <fileset file="${web.home}/*.html"/>  <!--web pages-->
-      <fileset file="${web.home}/*.css"/>  <!--web pages-->
+      <fileset dir="${web.home}"
+               excludes="*.xml"/>              <!-- web pages, etc -->
       <fileset dir="src/main/etc"/> <!-- grok-utypes.xslt, utypes.n3 -->
       <fileset file="../note.html"/>
-      <!--<fileset dir="${web.home}" excludes="generate/**"/>-->
       <filterset>
         <filter token="VERSION" value="${app.version}"/>
         <filter token="HOSTPORT" value="${host.port}"/>
@@ -580,10 +494,11 @@
   <!-- ========= Test targets ========= -->
   <!-- Run regression tests -->
 
+  <!-- There are only scm-tests; for JUnit style tests, 
+       see the Quaestor build.xml -->
   <target name="test"
           depends="scm-tests"
           description="Run all tests"/>
-          <!--depends="scm-tests, junit-tests"-->
 
   <path id="sisc.test.classpath">
     <pathelement location="${build.classes}"/>
@@ -592,6 +507,7 @@
       <include name="*.jar"/>
     </fileset>
   </path>
+
   <target name="scm-tests"
           depends="compile"
           description="Run regression tests">
@@ -618,6 +534,7 @@
   </target>
   <!-- The following target works with the self-test structure currently
        commented out of the run-tests.scm file. -->
+  <!--
   <target name="scm-tests-experimental"
           depends="compile"
           description="Run regression tests">
@@ -629,89 +546,15 @@
       <arg value="-h"/>
       <arg value="${build.classes}/sisc.shp"/>
       <arg value="${scm.test.home}/run-self-tests.scm"/>
-      <arg value="--no-repl"/>
-      <arg value="--call-with-args"/>
+      <arg value="-x-no-repl"/>
+      <arg value="-x-call-with-args"/>
       <arg value="main"/>
-      <arg value="--"/>
+      <arg value="-x-"/>
       <arg value="${scm.src.home}/"/>
     </java>
   </target>
+  -->
   
-  <target name="compile-junit-tests"
-          depends="compile"
-          if="junit.present">
-    <mkdir dir="${build.tests}"/>
-    <javac srcdir="${src.tests}"
-           destdir="${build.tests}"
-           deprecation="${compile.deprecation}"
-           debug="${compile.debug}"
-           source="${compile.source}"
-           >
-      <classpath refid="tests.classpath"/>
-    </javac>
-  </target>
-
-  <!--
-   ! JUnit tests.
-   !
-   ! This includes a protocol test, for which Tomcat must be running.
-   ! The URL of the service can be overridden by setting the quaestor.url
-   ! property when invoking ant:
-   !   % ant -Dquaestor.url=http://ptolemy.astro.gla.ac.uk:8080/quaestor \
-   !         -Dtestcase=org.eurovotech.quaestor.QuaestorTest \
-   !         run-single-test
-   !-->
-  <!-- THERE ARE NO CURRENT TESTS FOR UTYPE-RESOLVER -->
-  <target name="junit-tests"
-          depends="compile-junit-tests"
-          if="junit.present"
-          description="runs all of the JUnit tests">
-    <junit printsummary="${junit.summary}"
-           haltonfailure="yes"
-           filtertrace="${junit.filtertrace}"
-           fork="${junit.fork}">
-
-      <jvmarg value="-enableassertions"/>
-      <classpath refid="tests.classpath"/>
-
-      <sysproperty key="build.tests" value="${build.tests}"/>
-      <sysproperty key="quaestor.url" value="${quaestor.url}"/>
-
-      <formatter type="brief" usefile="false"/>
-
-      <batchtest>
-        <fileset dir="${src.tests}">
-          <include name="**/*Test.java"/>
-        </fileset>
-      </batchtest>
-
-    </junit>
-    
-  </target>
-
-  <!-- THERE ARE NO CURRENT TESTS FOR UTYPE-RESOLVER -->
-  <target name="run-single-test"
-          depends="compile-junit-tests"
-          if="junit.present"
-          description="runs the single test defined in the testcase property">
-    
-    <junit printsummary="${junit.summary}"
-           haltonfailure="yes"
-           filtertrace="${junit.filtertrace}"
-           fork="${junit.fork}">
-
-      <jvmarg value="-enableassertions"/>
-      <classpath refid="tests.classpath"/>
-
-      <sysproperty key="build.tests" value="${build.tests}"/>
-      <sysproperty key="quaestor.url" value="${quaestor.url}"/>
-
-      <formatter type="brief" usefile="false"/>
-
-      <test name="${testcase}"/>
-    </junit>
-  </target>
-
 <!-- ==================== Reload Target =================================== -->
 
 <!--
