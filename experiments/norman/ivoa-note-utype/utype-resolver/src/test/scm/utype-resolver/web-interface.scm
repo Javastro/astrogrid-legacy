@@ -416,6 +416,16 @@
              (string-append testcases-url "simple1#c1\r\n")
              content)))
 
+  ;; the same, but requesting an unsupported type in the response
+  (call-and-expect-response
+   resolve1-badmime
+   (string-append "superclasses?" testcases-url "simple1%23c2")
+   ("text/rdf+n3")                      ;only text/plain is supported
+   406                                  ;406 Not Acceptable
+   #f
+   #f
+   #f)
+
   ;; simple2 is just for testing the resolver/rewriter
 
   ;; simple3 is served only as simple3.rdf, without any server-side rewriting

@@ -25,7 +25,7 @@
   `((utype-resolver-version . "@VERSION@")
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (string
-     . "utype-resolver.scm @VERSION@ ($Id: utype-resolver.scm,v 1.6 2007/03/01 18:36:41 norman Exp $)")))
+     . "utype-resolver.scm @VERSION@ ($Id: utype-resolver.scm,v 1.7 2007/03/01 23:03:19 norman Exp $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -85,12 +85,19 @@
     (lambda ()
       (let ((query-url (cond ((request->query-string request)
                               => decode-uri)
-                             (else #f))))
+                             (else #f)))
+            (acceptable (request->accept-mime-types request)))
         (cond ((not query-url)
                (set-response-status! response '|SC_BAD_REQUEST| "text/html")
                (response-page request response
                               "UType resolver: bad request"
                               '((p "Bad request: no query"))))
+
+              ((not (acceptable-mime "text/plain" acceptable))
+               (no-can-do request response '|SC_NOT_ACCEPTABLE|
+                          "There is no representation of the set of superclasses, in one of the requested representations ~s"
+                          acceptable))
+
               ((resolve-uri query-url)
                => (lambda (superclass-strings)
                     (set-response-status! response '|SC_OK| "text/plain")
