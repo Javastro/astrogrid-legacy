@@ -1,3 +1,5 @@
+### @GENERATED@
+
 ####################################################################
 ###
 ### Configuration file for RHESSI-DSA server
@@ -280,10 +282,10 @@ datacenter.implements.conesearch=false
 # conesearch interfaces to be set up for >1 table in your database.
 #
 # The RHESSI table doesn't have any RA/Dec columns, so these are dummy values.
-conesearch.table=nosuchtable
-conesearch.ra.column=dummy
-conesearch.dec.column=dummy
-conesearch.columns.units=rad
+#conesearch.table=nosuchtable
+#conesearch.ra.column=dummy
+#conesearch.dec.column=dummy
+#conesearch.columns.units=rad
 
 
 # ==================================================================
@@ -319,7 +321,7 @@ datacenter.description=RHESSI first-look light-curve image and flag database
 # e.g. USNOB_DSA.  Your Authority ID must have be no other resources with 
 # this name;  the Authority ID / Resource Key pair must be globally unique.
 
-datacenter.authorityId=norman.gray.test
+datacenter.authorityId=org.astrogrid
 datacenter.resourceKey=rhessi-dsa
 
 # These settings provide helpful information to human users of the VO.
@@ -328,6 +330,7 @@ datacenter.contact.name=Norman Gray
 datacenter.contact.email=norman@astro.gla.ac.uk
 # Scientific contact: Eduard Kontar, eduard@astro.gla.ac.uk
 # Data creators: NASA and RHESSI Team, <http://hesperia.gsfc.nasa.gov/hessi/>
+datacenter.data.creator.name=RHESSI Team
 
 # ----------
 # The DSA/catalog server has a pluggable architecture for VOResource
