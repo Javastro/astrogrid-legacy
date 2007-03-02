@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineDescriptionsLoaderTest.java,v 1.14 2007/03/02 09:11:04 gtr Exp $
+ * $Id: CommandLineDescriptionsLoaderTest.java,v 1.15 2007/03/02 09:20:08 gtr Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -149,7 +149,10 @@ public class CommandLineDescriptionsLoaderTest extends DescriptionBaseTestCase {
                         .getSwitchTypeType());
                 OptionList optionList = inp1.getOptionList();
                 assertNotNull("P4 should have an options list", optionList);
-
+                assertTrue("P4 should have 3 OptionVal.", optionList.getOptionValCount() == 3);
+                assertEquals("HTML", optionList.getOptionVal(0));
+                assertEquals("VOTable", optionList.getOptionVal(1));
+                assertEquals("ASCII", optionList.getOptionVal(2));
             }
             catch (ParameterNotInInterfaceException e4) {
                 fail("paramter not found");
