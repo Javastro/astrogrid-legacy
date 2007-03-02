@@ -2,7 +2,7 @@
 prefix=/no/such/directory
 
 # distribution details
-SOURCEWAR=astrogrid-dsa-catalog-2006.3.05pl
+SOURCEWAR=astrogrid-dsa-catalog-2007.1.01pl
 DISTBASE=http://www.astrogrid.org/maven/org.astrogrid/wars/
 MYSQL_JDBC=mysql-connector-java-5.0.4-bin.jar
 # Download connector by hand from <http://dev.mysql.com/downloads>
@@ -12,7 +12,7 @@ MYSQL_JDBC=mysql-connector-java-5.0.4-bin.jar
 # to be worth trying automatically.
 
 # configuration details
-DSASERVERBASE=http://www.astro.gla.ac.uk:8080
+DSASERVERBASE=http://www.astro.gla.ac.uk
 WEBAPP_NAME=rhessi-dsa
 DBUSER=dsaaccess
 DBPASS=
@@ -50,7 +50,8 @@ $(WEBAPP_NAME): $(SOURCEWAR).war $(MYSQL_JDBC) \
 
 rhessi-dsa.properties: rhessi-dsa.properties.in Makefile
 	rm -f $@ $@.tmp
-	$(edit) $< >$@.tmp && mv $@.tmp $@
+	$(edit) -e 's,@GENERATED@,DO NOT EDIT -- Generated from rhessi-dsa.properties.in,' \
+	  $< >$@.tmp && mv $@.tmp $@
 
 install: $(WEBAPP_NAME).war
 	test -d $(prefix) || { echo "No directory $(prefix)"; false; }
