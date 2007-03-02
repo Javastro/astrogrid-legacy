@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescriptionLibraryTest.java,v 1.5 2006/03/17 17:56:58 clq2 Exp $
+/*$Id: DatacenterApplicationDescriptionLibraryTest.java,v 1.6 2007/03/02 14:50:50 kea Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -64,13 +64,16 @@ public class DatacenterApplicationDescriptionLibraryTest extends TestCase {
 
     public void testContents() throws ApplicationDescriptionNotFoundException {
         String[] names = lib.getApplicationNames();
-        assertEquals(1,names.length);
+        assertEquals(2,names.length);
         ApplicationDescription appDesc = lib.getDescription(names[0]);
         assertNotNull(appDesc);
     }
 }
 /*
 $Log: DatacenterApplicationDescriptionLibraryTest.java,v $
+Revision 1.6  2007/03/02 14:50:50  kea
+Updated to match change in CEA.
+
 Revision 1.5  2006/03/17 17:56:58  clq2
 gtr_1489_cea correted version
 
