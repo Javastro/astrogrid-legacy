@@ -99,6 +99,15 @@
             <version>1.0</version>
             <type>plugin</type>
         </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-contracts</artifactId>
+            <version>2007.1.1</version>
+            <type>jar</type>
+            <properties>
+              <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
     </dependencies>
     <build>
         <sourceDirectory>src/java</sourceDirectory>
