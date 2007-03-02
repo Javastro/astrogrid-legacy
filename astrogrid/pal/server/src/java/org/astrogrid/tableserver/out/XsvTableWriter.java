@@ -1,5 +1,5 @@
 /*
- * $Id: XsvTableWriter.java,v 1.8 2005/05/27 16:21:02 clq2 Exp $
+ * $Id: XsvTableWriter.java,v 1.9 2007/03/02 13:43:45 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -30,6 +30,11 @@ public class XsvTableWriter extends AsciiTableSupport {
    PrintWriter printOut = null;
    
    String separator = ",";
+
+   protected int rowsWritten = 0;
+
+   // How many rows to write before we check that the output stream is OK
+   protected static final int CHECKFREQUENCY = 1000;
    
    /**
     * Construct this wrapping the given stream.  Values on a line will be separated with the given string
@@ -117,6 +122,9 @@ public class XsvTableWriter extends AsciiTableSupport {
       }
       
       printOut.println();//new line
+
+      // Make sure stream is still ok
+      checkErrors();
    }
    
    
@@ -134,11 +142,17 @@ public class XsvTableWriter extends AsciiTableSupport {
       }
       printOut.println();
       
+      rowsWritten = rowsWritten + 1;
+      if (rowsWritten % CHECKFREQUENCY == 0) {
+         // Make sure stream is still ok
+         checkErrors();
+      }
    }
 
    /** Does nothing */
-   public void endTable() {
-      
+   public void endTable() throws IOException {
+     // Make sure stream is still ok
+     checkErrors();
    }
    
    /** Abort writes out a line to show the table is incomplete */
@@ -147,11 +161,29 @@ public class XsvTableWriter extends AsciiTableSupport {
       close();
    }
    
+
+   /** Method to check status of output stream - PrintWriters do NOT
+      throw exceptions on write errors! */
+   protected void checkErrors() throws IOException
+   {
+      boolean gotError = printOut.checkError();
+      if (gotError) {
+        // Unfortunately, no way to get at the cause of the error :-/
+        log.error("Transfer of results to output stream failed");
+        printOut.close();
+        throw new IOException("Transfer of XSVTable results failed to complete successfully");
+      }
+   }
    
 }
 
 /*
  $Log: XsvTableWriter.java,v $
+ Revision 1.9  2007/03/02 13:43:45  kea
+ Added proper error checking to PrintWriter output stream writers in these
+ classes;  failures were going undetected as PrintWriters do not throw
+ exceptions.  See bugzilla bug 2139.
+
  Revision 1.8  2005/05/27 16:21:02  clq2
  mchv_1
 

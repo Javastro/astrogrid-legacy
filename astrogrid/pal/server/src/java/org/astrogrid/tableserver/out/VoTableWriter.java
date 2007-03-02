@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableWriter.java,v 1.10 2007/02/20 12:22:15 clq2 Exp $
+ * $Id: VoTableWriter.java,v 1.11 2007/03/02 13:43:45 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -36,10 +36,16 @@ import org.astrogrid.ucd.UcdException;
 public class VoTableWriter implements TableWriter {
    
    protected static final Log log = org.apache.commons.logging.LogFactory.getLog(VoTableWriter.class);
+   //protected Log log = org.apache.commons.logging.LogFactory.getLog(VoTableWriter.class);
 
    protected PrintWriter printOut = null;
    
    protected ColumnInfo[] cols = null;
+
+   protected int rowsWritten = 0;
+
+   // How many rows to write before we check that the output stream is OK
+   protected static final int CHECKFREQUENCY = 1000;
    
    /**
     * Construct this wrapping the given stream.
@@ -56,7 +62,7 @@ public class VoTableWriter implements TableWriter {
           new BufferedWriter( new OutputStreamWriter (out)));
    }
    
-   public void open() {
+   public void open() throws IOException {
       printOut.println("<?xml version='1.0' encoding='UTF-8'?>");
       printOut.println("<VOTABLE " 
          +"xmlns='http://www.ivoa.net/xml/VOTable/v1.1'  "
@@ -79,8 +85,9 @@ public class VoTableWriter implements TableWriter {
           <PARAM ID="PositionalError" datatype="E" value="0.1"/>
           <PARAM ID="Credit" datatype="A" arraysize="*" value="Charles Messier, Richard Gelderman"/>
           */
-      
-      
+
+      // Make sure stream is still ok
+      checkErrors();
    }
    
    
@@ -155,6 +162,8 @@ public class VoTableWriter implements TableWriter {
       printOut.println("<DATA>");
       printOut.println("<TABLEDATA>");
       
+      // Make sure stream is still ok
+      checkErrors();
    }
    
    /** Writes the given array of values out */
@@ -180,31 +189,40 @@ public class VoTableWriter implements TableWriter {
          }
       }
       printOut.println("</TR>");
-      
+
+      rowsWritten = rowsWritten + 1;
+      if (rowsWritten % CHECKFREQUENCY == 0) {
+         // Make sure stream is still ok
+         checkErrors();
+      }
    }
 
-   public void endTable() {
+   public void endTable() throws IOException {
             //close row body
          printOut.println("</TABLEDATA>");
          printOut.println("</DATA>");
 
       //close document
       printOut.println("</TABLE>");
+
+      // Make sure stream is still ok
+      checkErrors();
    }
    
    /** Closes writer - writes out the closing tags and closes wrapped stream
     */
-   public void close() {
+   public void close() throws IOException {
       
       printOut.println("</RESOURCE>");
-      
       printOut.println("</VOTABLE>");
       
+      checkErrors();
       printOut.close();
+      //throw new IOException("THROWING TEST EXCEPTION");
    }
    
    /** Abort writes out a line to show the table is incomplete */
-   public void abort() {
+   public void abort() throws IOException {
       printOut.println("<tr><td> ------------------ Writing Aborted -----------------</td></tr> ");
       close();
    }
@@ -214,10 +232,27 @@ public class VoTableWriter implements TableWriter {
       return printOut;
    }
    
+   /** Method to check status of output stream - PrintWriters do NOT
+      throw exceptions on write errors! */
+   protected void checkErrors() throws IOException
+   {
+      boolean gotError = printOut.checkError();
+      if (gotError) {
+        // Unfortunately, no way to get at the cause of the error :-/
+        log.error("Transfer of results to output stream failed");
+        printOut.close();
+        throw new IOException("Transfer of VOTable results failed to complete successfully");
+      }
+   }
 }
 
 /*
  $Log: VoTableWriter.java,v $
+ Revision 1.11  2007/03/02 13:43:45  kea
+ Added proper error checking to PrintWriter output stream writers in these
+ classes;  failures were going undetected as PrintWriters do not throw
+ exceptions.  See bugzilla bug 2139.
+
  Revision 1.10  2007/02/20 12:22:15  clq2
  PAL_KEA_2062
 

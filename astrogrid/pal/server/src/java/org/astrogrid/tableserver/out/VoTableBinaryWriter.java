@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableBinaryWriter.java,v 1.2 2007/02/20 12:22:15 clq2 Exp $
+ * $Id: VoTableBinaryWriter.java,v 1.3 2007/03/02 13:43:45 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -73,7 +73,7 @@ public class VoTableBinaryWriter implements TableWriter {
       voTableWriter = new VoTableWriter(tempOutputStream, title, user);
    }
 
-   public void open() {
+   public void open() throws IOException {
      voTableWriter.open();
    }
    
@@ -92,7 +92,7 @@ public class VoTableBinaryWriter implements TableWriter {
       voTableWriter.writeRow(colValues);
    }
 
-   public void endTable() {
+   public void endTable() throws IOException {
       voTableWriter.endTable();
       /*
       log.debug("Ending table");
@@ -124,12 +124,12 @@ public class VoTableBinaryWriter implements TableWriter {
    
    /** Closes writer - writes out the closing tags and closes wrapped stream
     */
-   public void close() {
+   public void close() throws IOException {
       voTableWriter.close();
    }
    
    /** Abort writes out a line to show the table is incomplete */
-   public void abort() {
+   public void abort() throws IOException {
       voTableWriter.close();
       close();
    }

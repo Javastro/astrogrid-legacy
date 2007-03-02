@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlTableWriter.java,v 1.7 2005/05/27 16:21:02 clq2 Exp $
+ * $Id: HtmlTableWriter.java,v 1.8 2007/03/02 13:43:45 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -33,6 +33,11 @@ public class HtmlTableWriter extends AsciiTableSupport {
    
    String title = null;
    String comment = null;
+
+   protected int rowsWritten = 0;
+
+   // How many rows to write before we check that the output stream is OK
+   protected static final int CHECKFREQUENCY = 1000;
    
    /**
     * Construct this wrapping the given stream.  Writes out the first few tags
@@ -47,7 +52,7 @@ public class HtmlTableWriter extends AsciiTableSupport {
       this.comment = aComment;
    }
    
-   public void open() {
+   public void open() throws IOException {
       printOut.println("<HTML>");
       
       printOut.println("<HEAD>");
@@ -59,6 +64,8 @@ public class HtmlTableWriter extends AsciiTableSupport {
       if (comment != null) {
          printOut.println("<P>"+comment+"</P>");
       }
+      // Make sure stream is still ok
+      checkErrors();
    }
    
    /** Produces text/html */
@@ -128,6 +135,8 @@ public class HtmlTableWriter extends AsciiTableSupport {
 
       rows = 0;
 
+      // Make sure stream is still ok
+      checkErrors();
    }
    
    
@@ -164,35 +173,63 @@ public class HtmlTableWriter extends AsciiTableSupport {
       }
       printOut.println("</TR>");
       
+      rowsWritten = rowsWritten + 1;
+      if (rowsWritten % CHECKFREQUENCY == 0) {
+         // Make sure stream is still ok
+         checkErrors();
+      }
    }
 
-   public void endTable() {
+   public void endTable() throws IOException {
       printOut.println("</TABLE>");
       printOut.println("<p>"+rows+" Rows</p>");
+
+      // Make sure stream is still ok
+      checkErrors();
    }
 
    /** Closes writer - writes out the closing tags and closes wrapped stream
     */
-   public void close() {
+   public void close() throws IOException {
       
       printOut.println("</BODY>");
       
       printOut.println("</HTML>");
+
+      // Make sure stream is still ok
+      checkErrors();
+
       printOut.close();
    }
    
    
    /** Abort writes out a line to show the table is incomplete */
-   public void abort() {
+   public void abort() throws IOException {
       printOut.println("<tr><td> ------------------ Writing Aborted -----------------</td></tr> ");
       close();
    }
    
-   
+   /** Method to check status of output stream - PrintWriters do NOT
+      throw exceptions on write errors! */
+   protected void checkErrors() throws IOException
+   {
+      boolean gotError = printOut.checkError();
+      if (gotError) {
+        // Unfortunately, no way to get at the cause of the error :-/
+        log.error("Transfer of results to output stream failed");
+        printOut.close();
+        throw new IOException("Transfer of HTMLTable results failed to complete successfully");
+      }
+   }
 }
 
 /*
  $Log: HtmlTableWriter.java,v $
+ Revision 1.8  2007/03/02 13:43:45  kea
+ Added proper error checking to PrintWriter output stream writers in these
+ classes;  failures were going undetected as PrintWriters do not throw
+ exceptions.  See bugzilla bug 2139.
+
  Revision 1.7  2005/05/27 16:21:02  clq2
  mchv_1
 
