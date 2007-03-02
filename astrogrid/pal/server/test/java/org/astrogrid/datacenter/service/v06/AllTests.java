@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+/*$Id: AllTests.java,v 1.2 2007/03/02 13:31:45 kea Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,15 +25,18 @@ public class AllTests {
         suite.addTest(new TestSuite(DatacenterApplicationTest.class));
         suite.addTest(new TestSuite(DatacenterApplicationDescriptionTest.class));
         suite.addTest(new TestSuite(DatacenterApplicationDescriptionLibraryTest.class));
-        suite.addTest(new TestSuite(DatacenterCEAComponentManagerTest.class));
+        //suite.addTest(new TestSuite(DatacenterCEAComponentManagerTest.class));
         //$JUnit-END$
         return suite;
     }
 }
 /* 
 $Log: AllTests.java,v $
-Revision 1.1  2005/02/17 18:37:35  mch
-*** empty log message ***
+Revision 1.2  2007/03/02 13:31:45  kea
+Removing test no longer valid after CEA codebase changes.
+
+Revision 1.1.1.1  2005/02/17 18:37:35  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:25  mch
 Initial checkin
