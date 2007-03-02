@@ -19,3 +19,6 @@ install: all
 	  rm -f $(bindir)/$$f; \
 	  $(edit) $$f >$(bindir)/$$f; \
 	done
+
+clean:
+	@echo "Nothing to clean in scripts/"
