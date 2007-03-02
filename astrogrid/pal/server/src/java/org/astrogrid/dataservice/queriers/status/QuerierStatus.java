@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierStatus.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: QuerierStatus.java,v 1.2 2007/03/02 13:49:41 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -28,6 +28,7 @@ public abstract class QuerierStatus extends DefaultTaskStatus
          id = querier.getId();
       }
    }
+   */
 
    /** Initial constructor - should only be called by subclasses that form
     * the beginning of the task status chain (see 'previous')*/
@@ -80,8 +81,11 @@ public abstract class QuerierStatus extends DefaultTaskStatus
 
 /*
 $Log: QuerierStatus.java,v $
-Revision 1.1  2005/02/17 18:37:35  mch
-*** empty log message ***
+Revision 1.2  2007/03/02 13:49:41  kea
+Clarified comment location.
+
+Revision 1.1.1.1  2005/02/17 18:37:35  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:24  mch
 Initial checkin
