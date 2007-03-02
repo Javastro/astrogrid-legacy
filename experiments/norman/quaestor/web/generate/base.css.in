@@ -1,12 +1,12 @@
 body {
   color: TEXT;
   background: BACKGROUND;
-  margin-left: +10%;
-  margin-right: +10%;
+  margin-left: +30%;
+  margin-right: +5%;
 }
 
 a:link { color: LINK; }
-a:visited { color: LINK; }
+a:visited { color: VISITEDLINK; }
 a[href]:hover {
   background: LINKBACKGROUND;
   font-style: oblique;
@@ -14,24 +14,52 @@ a[href]:hover {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: Optima, "Gill Sans", gill, sans-serif;
-  background: HEADINGBACKGROUND;
   color: HEADINGFOREGROUND;
-  text-align: right;
+  font-weight: 500;
 }
 h1 {
-  margin-left: -10%;
-  margin-right: -10%;
-  padding: 0.5em;
-}
-h2 {
-  margin-left: -5%;
+  margin-left: -40%;
   margin-right: -5%;
   padding: 0.5em;
+  border: solid COL1;
+  text-align: right;
+}
+h2 {
+  margin-left: -40%;
+  margin-right: -5%;
+  padding: 0.2em;
+  border-top: solid COL1;
+}
+h3 {
+  color: COL1;
+  margin-left: -30%;
+  float: left;
+  width: 25%;
+  display: block;
+  text-align: right;
+  vertical-align: bottom;
+  padding-top: 0pt;
+  padding-right: 0.5em;
+  margin-top: 0pt;
+}
+
+pre {
+  background: TABLEBACKGROUND;
+  padding: 0.3em;
 }
 
 table {
   background: TABLEBACKGROUND;
+  font-size: smaller;
 }
 td {
   padding: 0.5ex;
+}
+
+div.trailer {
+  margin-left: -40%;
+  margin-right: -5%;
+  text-align: right;
+  border: solid COL1;
+  padding: 0.3em;
 }
