@@ -54,7 +54,7 @@
     <servlet-class>org.eurovotech.quaestor.CodeManager</servlet-class>
     <init-param>
       <param-name>status</param-name>
-      <param-value>enabled</param-value>
+      <param-value>disabled</param-value>      <!--enabled/disabled-->
     </init-param>
   </servlet>
 
