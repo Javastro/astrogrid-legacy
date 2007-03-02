@@ -3,10 +3,11 @@
 
 # check tools needed for install scripts are there
 # setup only: rpm, useradd
-# which curl, wget, mkdir, echo, patch, unzip, cat, sleep, rm, chmod
+# which, cat, cp, chmod, curl, echo, grep, mkdir, patch, rm, sleep, unzip, wget
+
 # built in bash commands - pushd popd 
 
-for i in which wget mkdir echo patch unzip cat sleep rm chmod curl
+for i in which cat cp chmod curl echo grep mkdir patch rm sleep unzip wget
 do
     if [ `which $i` ]
     then
