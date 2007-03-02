@@ -1,5 +1,5 @@
 /*
- * $Id: RdbmsQueryValidator.java,v 1.4 2006/08/21 15:39:30 clq2 Exp $
+ * $Id: RdbmsQueryValidator.java,v 1.5 2007/03/02 13:46:30 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -36,10 +36,15 @@ public class RdbmsQueryValidator
          if (catalogNames.length == 0) {
             throw new IllegalArgumentException("Server error: no catalog or table metadata are defined for this DSA/catalog installation;  please check your metadoc file and/or configuration!");
          }
-         if (interpreter.getTable(
-               catalogNames[0], tableRefs[i]) ==null) {
-            throw new IllegalArgumentException( "Table '"+tableRefs[i]+
-                "' is not available in this DSA/catalog installation.");
+         try {
+           if (interpreter.getTable(
+                 catalogNames[0], tableRefs[i]) ==null) {
+              throw new IllegalArgumentException( "Table '"+tableRefs[i]+
+                  "' is not available in this DSA/catalog installation.");
+           }
+         }
+         catch (MetadataException e) {
+            throw new IllegalArgumentException("Server error: metadata is invalid: " + e.toString());
          }
          String[] columnRefs = query.getColumnReferences(tableRefs[i]);
          for (int j = 0; j < columnRefs.length; j++) {

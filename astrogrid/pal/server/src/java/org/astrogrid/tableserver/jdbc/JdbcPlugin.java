@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.7 2006/09/26 15:34:42 clq2 Exp $
+ * $Id: JdbcPlugin.java,v 1.8 2007/03/02 13:46:30 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -55,7 +55,7 @@ public class JdbcPlugin extends DefaultPlugin {
     * in sql form and retiirning the results as a SqlResults wrapper arond the JDBC result set.
     * @param o a string
     */
-   public void askQuery(Principal user, Query query, Querier querier) throws IOException, QueryException {
+   public void askQuery(Principal user, Query query, Querier querier) throws QueryException, DatabaseAccessException {
 
       validateQuery(query);
       
@@ -151,12 +151,17 @@ public class JdbcPlugin extends DefaultPlugin {
             
             //sort out results
             TableResults qResults = makeSqlResults(querier, results);
-            qResults.send(query.getResultsDef(), querier.getUser());
-            
+            try {
+               qResults.send(query.getResultsDef(), querier.getUser());
+            }
+            catch (IOException ioe) {
+               log.error("IOException when writing out table results for query  " + sql + "\n:Exception is :" + ioe.toString());
+               throw new QueryException("Failed to write query results to specified destination");
+            }
+            log.debug("Results transfer completed successfully for query "+sql);
          }
          //don't do this as some dbs seem to want to cycle through the lot. Let the garbage collector handle it
          //results.close();
-         
       }
       catch (SQLException e) {
          log.error("SQLException when querying database with query  " + sql);
@@ -165,11 +170,18 @@ public class JdbcPlugin extends DefaultPlugin {
          //we don't really need to store stack info for the SQL exception, which saves logging...
          throw new DatabaseAccessException(e+" using '" + sql + "': ",e);
       }
+      catch (IOException ioe) {
+         log.error("IOException occurred when querying database with query  " + sql);
+         log.error("Exception is :" + ioe.toString());
+         querier.setStatus(new QuerierError(querier.getStatus(), "JDBC Query I/O Failed",ioe));
+         throw new DatabaseAccessException(ioe+" using '" + sql + "': ",ioe);
+      }
       finally {
          //try to tidy up now
          try {
             if (jdbcConnection != null) { jdbcConnection.close(); }
-         } catch (SQLException e) { } //ignore
+         } 
+         catch (SQLException e) { } //ignore
       }
 
    }
