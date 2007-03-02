@@ -25,7 +25,7 @@
   `((utype-resolver-version . "@VERSION@")
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (string
-     . "utype-resolver.scm @VERSION@ ($Id: utype-resolver.scm,v 1.7 2007/03/01 23:03:19 norman Exp $)")))
+     . "utype-resolver.scm @VERSION@ ($Id: utype-resolver.scm,v 1.8 2007/03/02 11:41:00 norman Exp $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -242,7 +242,7 @@
                           #f))))
     (if (forget-namespace! query-url)
         (set-response-status! response '|SC_NO_CONTENT|)
-        (no-can-do request response '|SC_BAD_REQUEST|
+        (no-can-do request response '|SC_NOT_FOUND|
                    "I don't know anything about namespace ~s" query-url))))
 
 
