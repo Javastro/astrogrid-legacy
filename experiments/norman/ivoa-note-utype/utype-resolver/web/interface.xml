@@ -36,17 +36,33 @@ the URI, with the sequence <code>%23</code>, so that in the
 `superclasses' example below, one would actually retrieve the URI
 <code>http://hostport/utype-resolver/superclasses?http://example.org/utype%23concept1</code>.</p>
 
-<dl>
-<dt><code>GET http://hostport/utype-resolver/superclasses?<em>&lt;uri&gt;</em></code></dt>
-<dd>Return all the superclasses of the given <em>&lt;uri&gt;</em>, as
-a <code>text/plain</code> list.  If the UType has no superclasses,
-then the service returns the 204 (No Content) status.  If the resolver
-does not already know about the namespace in question, then it tries
-to find out about it as discussed <a href='#discovery'
->below</a>, and caches the result indefinitely.</dd>
+<div class='section'>
+<p class='title'>GET superclasses</p>
 
-<dt><code>GET http://hostport/utype-resolver/description</code></dt>
-<dd>Return a description of all the UTypes the resolver currently
+<p><code>GET http://hostport/utype-resolver/superclasses?<em>&lt;uri&gt;</em></code></p>
+
+<p>Return all the superclasses of the given <em>&lt;uri&gt;</em>, as
+a <code>text/plain</code> list, with the status 200 (OK).  If the
+UType has no superclasses, then the service returns the 204 (No
+Content) status.  If there is an <code>Accept</code> header in the
+request, then it must be compatible with a <code>text/plain</code>
+response, or else the resolver returns status 406 (Not Acceptable).</p>
+
+<p>If the resolver does not already know about the
+<em>&lt;uri&gt;</em>'s namespace, then it tries to find out about it
+as discussed below in <span class='xref' >discovery</span>, and caches
+the result indefinitely.  If it is unable to process the response from
+the UType server -- either because it retrieves malformed RDF or
+because it is unable to parse returned HTML -- then it fails with a
+`not my fault' status 502 (Bad Gateway).</p>
+</div>
+
+<div class='section'>
+<p class='title'>GET description</p>
+
+<p><code>GET http://hostport/utype-resolver/description</code></p>
+
+<p>Return a description of all the UTypes the resolver currently
 knows about.  The resolver can produce its results in any of the MIME types
 <code>text/html</code>, <code>text/rdf+n3</code>,
 <code>application/rdf+xml</code> or <code>text/plain</code>
@@ -54,19 +70,44 @@ knows about.  The resolver can produce its results in any of the MIME types
 which one it returns depends on the Accept header in the HTTP
 request.  If you dereference this URL using a web browser, you will
 see HTML, since browsers usually include an <code>Accept:
-text/html</code> header in their request.</dd>
+text/html</code> header in their request.</p>
 
-<dt><code>GET http://hostport/utype-resolver/description?<em>&lt;uri&gt;</em></code></dt>
-<dd>Return a description of the given namespace.  The URI in the query
-may include a fragment -- this is ignored.  The return types are as
-above.  Asking for a description of a namespace does not cause the
-resolver to retrieve or search for the namespace's description.</dd>
+<p>This normally returns a 200 (OK) status, but will return 406 (Not
+Acceptable) if the request included <code>Accept</code> headers which
+the resolver could not satisfy.</p>
+</div>
 
-<dt><code>DELETE http://hostport/utype-resolver/description?<em>&lt;uri&gt;</em></code></dt>
-<dd>This causes the resolver to discard its knowledge of the given
-namespace.</dd>
+<div class='section'>
+<p class='title'>GET description of namespace</p>
 
-</dl>
+<p><code>GET http://hostport/utype-resolver/description?<em>&lt;uri&gt;</em></code></p>
+
+<p>Return a description of the given namespace.  The URI in the query
+may include a fragment -- this is ignored.  The returned MIME types are as
+above.</p>
+
+<p>Asking for a description of a namespace does not cause the
+resolver to retrieve or search for the namespace's description.</p>
+
+<p>This normally returns a 200 (OK) status, but will return 406 (Not
+Acceptable) if the request included <code>Accept</code> headers which
+the resolver could not satisfy, or 404 (Not Found) if the namespace is
+not one the resolver currently knows about.</p>
+</div>
+
+<div class='section'>
+<p class='title'>DELETE namespace</p>
+
+<p><code>DELETE http://hostport/utype-resolver/description?<em>&lt;uri&gt;</em></code></p>
+
+<p>This causes the resolver to discard its knowledge of the given
+namespace.</p>
+
+<p>This returns status 204 (No Content) if the action succeeded, and
+status 404 (Not Found) if the namespace is not one the resolver
+currently knows about.</p>
+</div>
+
 </div>
 
 <div class='section' id='discovery'>
@@ -109,7 +150,8 @@ following method might be more convenient for experiments.</p>
 <p class='title'>Extracting RDF from HTML</p>
 
 <p>You may also declare UTypes by using certain structured features of
-HTML.  This is potentially slightly fragile, but may be preferable.</p>
+HTML.  This is potentially slightly fragile, and is ultimately less
+flexible, but may be preferable in some circumstances.</p>
 
 <p>When retrieving HTML, the application will accept any of the MIME
 types <code>text/html</code>, <code>application/xhtml+xml</code>,
