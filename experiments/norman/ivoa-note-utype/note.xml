@@ -35,16 +35,21 @@ q:after  { content: "”"; }
            border="0"/></a></td></tr>
 </table>
 
-<h1>UTypes and URIs<br/>Draft version $Revision: 1.6 $</h1>
-<!-- <span class='rcsinfo' >$Revision: 1.6 $</span></h1> -->
-<h2>IVOA Draft Note, $Date: 2007/03/01 17:35:21 $</h2>
-<!-- <span class='rcsinfo' >$Date: 2007/03/01 17:35:21 $</span></h2> -->
+<!-- $Id: note.xml,v 1.7 2007/03/02 12:51:16 norman Exp $ -->
+
+<h1>UTypes and URIs</h1>
+<h2>IVOA Note (v0.1, 2007 March 2)</h2> <!-- XXX version/date -->
 <dl>
+<dt>Interest/Working Group</dt>
+<dd><em>Not applicable</em></dd>
+
+<!--
 <dt>This version</dt>
-<dd>XXX to appear</dd>
+<dd>XXX No URL available</dd>
 
 <dt>Latest version</dt>
-<dd>XXX to appear</dd>
+<dd>XXX No URL available</dd>
+-->
 
 <dt>Author</dt>
 <dd><a href="http://nxg.me.uk" >Norman Gray</a>,
@@ -62,6 +67,11 @@ and
 VOTables, which helps document UType meanings, and makes it easy to
 relate UTypes to each other, supporting interoperability while
 requiring minimal standardisation.</p>
+
+<p>This makes possible simple but powerful reasoning capabilities, and
+we illustrate this with a resolver which makes the necessary
+capabilities available to applications with minimal cost.</p>
+
 </div>
 
 <div class='section-nonum' id='status'>
@@ -70,8 +80,9 @@ requiring minimal standardisation.</p>
 <p>This is an IVOA Note.</p>
 
 <p>This document is an IVOA Note expressing suggestions from and opinions of
-the authors.  The first release of this document was YYYY
-Month DD.</p>
+the authors.  The first release of this document was 
+<!-- XXX Date -->
+2007 March 2.</p>
 
 <p>It is intended to share best practices, possible approaches, or
 other perspectives on interoperability with the Virtual Observatory.
@@ -85,7 +96,7 @@ documents can be found at
 
 <h3>Acknowledgments</h3>
 
-<p>None, yet</p>
+<p>Thanks to Mark Taylor for comments on an early draft of this Note.</p>
 
 </div>
 
@@ -377,7 +388,7 @@ vocabularies.</p>
 
 <p>We wish to assert that our new <code>#sharpBounds</code> UType is a
 more specific version of a concept
-<code>#characterizationAxis-coverage-bounds</code>,
+<code>#coverage-bounds</code>,
 which we presume has already defined by the IVOA in the namespace
 <code>http://www.ivoa.net/ut/characterization#</code>, and which we
 can reasonably 
@@ -390,7 +401,7 @@ written in Notation3 syntax <span class='cite' >std:n3</span>):</p>
 
 myns:sharpBounds a rdfs:Class; 
     rdfs:subClassOf 
-        ivoa:characterizationAxis-coverage-bounds .
+        ivoa:coverage-bounds .
 </pre>
 <p>This asserts that
 <code>http://example.org/utypes/1.0#sharpBounds</code> is a concept --
@@ -428,15 +439,12 @@ previously-unknown UType
 <code>http://example.org/utypes/1.0#sharpBounds</code> can resolve it
 in a single URL dereference (shown using <code>curl</code> here):</p>
 <pre>
-% <span class='userinput'>curl http://localhost/resolver?q=http://example.org/utypes/1.0%23sharpBounds</span>
-http://www.w3.org/2000/01/rdf-schema#Class
-http://www.ivoa.net/ut/#characterization.characterizationAxis.coverage.bounds
-http://example.org/utypes/1.0#sharpBounds
+% <span class='userinput'>curl http://localhost/superclasses?http://example.org/utypes/1.0%23sharpBounds</span>
+http://www.ivoa.net/ut/characterization#coverage-bounds
 </pre>
 <p>This returns the list of superclasses of the
-<code>#sharpBounds</code> concept (which includes the
-<code>#sharpBounds</code> class itself,
-and the technical RDFS class), and so the application can simply work
+<code>#sharpBounds</code> concept (in this case it has only one superclass),
+and so the application can simply work
 through this list until it finds a UType it recognises, and then
 proceed exactly as if that UType had been the one found in the input data
 stream, instead of the previously unknown <code>#sharpBounds</code>
@@ -455,6 +463,9 @@ might include bugfixes and updates in practice).  Thus this proposal
 requires no infrastructure beyond the dereferenceable URIs described
 above, and the commitment of the authors of those UTypes to maintain
 the URIs into the future.</p>
+
+<p>The author has successfully implemented a resolver which behaves in
+this way.</p>
 
 </div>
 
@@ -695,6 +706,10 @@ specific interest groups, working independently.</p>
 <p class='title'>Bibliography</p>
 <?bibliography?>
 </div>
+
+<p style="text-align: right; text-size: small">
+$Id: note.xml,v 1.7 2007/03/02 12:51:16 norman Exp $
+</p>
 
 </div>
 
