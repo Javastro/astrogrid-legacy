@@ -593,7 +593,7 @@
    delete-unknown ("DELETE")
    (string-append "description?" testcases-url "wibble")
    ("*/*")
-   400                                  ;400 Bad Request
+   404                                  ;404 Not Found
    #f
    #f #f)
 
@@ -640,7 +640,7 @@
               (call-and-expect-response
                (invalid-rdf ,f)
                (string-append "superclasses?" testcases-url f)
-               400 ; Bad Request
+               502                      ;502 Bad Gateway
                #f
                #f))
             '("error1.n3" "error2.n3" "error3.rdf" "error4.rdf"))

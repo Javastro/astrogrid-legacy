@@ -264,7 +264,10 @@
                 ((2)                    ;bingo!
                  (rdf:ingest-from-stream/language stream
                                                   uri-string
-                                                  content-type)
+                                                  content-type
+                                                  ;; report failures as
+                                                  ;; `not my fault'
+                                                  '|SC_BAD_GATEWAY|)
                  ;; XXX here or elsewhere: add assertions that the namespace
                  ;; URI is a 'namespace', and perhaps the time, such that
                  ;; first-sight-of-namespace can query for this.
