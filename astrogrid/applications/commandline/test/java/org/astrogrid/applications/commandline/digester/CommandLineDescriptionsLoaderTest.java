@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineDescriptionsLoaderTest.java,v 1.13 2007/02/19 16:18:47 gtr Exp $
+ * $Id: CommandLineDescriptionsLoaderTest.java,v 1.14 2007/03/02 09:11:04 gtr Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -15,6 +15,7 @@ package org.astrogrid.applications.commandline.digester;
 
 
 import org.astrogrid.applications.beans.v1.types.SwitchTypes;
+import org.astrogrid.applications.beans.v1.parameters.OptionList;
 import org.astrogrid.applications.commandline.CommandLineApplicationDescription;
 import org.astrogrid.applications.commandline.CommandLineParameterDescription;
 import org.astrogrid.applications.commandline.DescriptionBaseTestCase;
@@ -75,6 +76,7 @@ public class CommandLineDescriptionsLoaderTest extends DescriptionBaseTestCase {
         try {
             assertEquals("Wrong numbr of apps defined", 5, dl
                     .getApplicationNames().length);
+            System.out.println("Test application is called " + TESTAPPNAME);
             ApplicationDescription x = dl.getDescription(TESTAPPNAME);
             assertTrue(x instanceof CommandLineApplicationDescription);
             CommandLineApplicationDescription ad = (CommandLineApplicationDescription)x;
@@ -145,6 +147,8 @@ public class CommandLineDescriptionsLoaderTest extends DescriptionBaseTestCase {
                         .getInputParameter("P4");
                 assertEquals("P4 should be KEYWORD", SwitchTypes.KEYWORD, inp1
                         .getSwitchTypeType());
+                OptionList optionList = inp1.getOptionList();
+                assertNotNull("P4 should have an options list", optionList);
 
             }
             catch (ParameterNotInInterfaceException e4) {
