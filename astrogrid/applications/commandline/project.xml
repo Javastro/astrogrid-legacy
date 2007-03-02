@@ -4,32 +4,30 @@
     - in this way we inhierit all the dependencies -->
     <extend>${basedir}/../server/project.xml</extend>
     <id>astrogrid-cea-commandline</id>
-    <currentVersion>2007.1.1</currentVersion>
+    <currentVersion>2007.1.02</currentVersion>
     <name>CEA command-line-application server</name>
-    <description>
-      A CEA application-server for running command-line applications.
+    <description>A CEA application-server for running command-line applications.
       The service provides CEA's standard SOAP interface, "CEC".
       
-      This Maven project extends astrogrid/applications/server
-    </description>
+      This Maven project extends astrogrid/applications/server</description>
     <shortDescription>CEA server for command-line applications</shortDescription>
     <reports>
-      <report>download</report>
-      <report>maven-changelog-plugin</report>
-      <report>maven-changes-plugin</report>
-      <report>maven-javadoc-plugin</report>
-      <report>maven-junit-report-plugin</report>
-      <report>maven-license-plugin</report>
-      <report>maven-pmd-plugin</report>
+        <report>download</report>
+        <report>maven-changelog-plugin</report>
+        <report>maven-changes-plugin</report>
+        <report>maven-javadoc-plugin</report>
+        <report>maven-junit-report-plugin</report>
+        <report>maven-license-plugin</report>
+        <report>maven-pmd-plugin</report>
     </reports>
     <dependencies>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-cea-server</artifactId>
-            <version>2007.1.1</version>
+            <version>2007.1.03</version>
             <type>jar</type>
             <properties>
-              <war.bundle>true</war.bundle>
+                <war.bundle>true</war.bundle>
             </properties>
         </dependency>
         <dependency>
