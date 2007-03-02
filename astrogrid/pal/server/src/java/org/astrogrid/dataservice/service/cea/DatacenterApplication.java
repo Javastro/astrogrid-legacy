@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.5 2007/02/20 12:22:14 clq2 Exp $
+/*$Id: DatacenterApplication.java,v 1.6 2007/03/02 13:49:09 kea Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -267,22 +267,27 @@ public class DatacenterApplication extends AbstractApplication implements Querie
       if (state.equals(QueryState.CONSTRUCTED) || state.equals(QueryState.QUEUED)) {
          this.setStatus(Status.INITIALIZED);
          
-      } else if (state.equals(QueryState.STARTING) || state.equals(QueryState.RUNNING_QUERY)) {
+      } 
+      else if (state.equals(QueryState.STARTING) || state.equals(QueryState.RUNNING_QUERY)) {
          this.setStatus(Status.RUNNING);
          
-      } else if (state.equals(QueryState.QUERY_COMPLETE)) {
+      } 
+      else if (state.equals(QueryState.QUERY_COMPLETE)) {
          this.reportMessage(qs.toString());
-         
-      } else if (state.equals(QueryState.RUNNING_RESULTS)) {
+      } 
+      else if (state.equals(QueryState.RUNNING_RESULTS)) {
          this.setStatus(Status.WRITINGBACK);
-      } else if (state.equals(QueryState.ABORTED)) {
+      } 
+      else if (state.equals(QueryState.ABORTED)) {
          this.reportMessage(qs.toString());
          this.setStatus(Status.ERROR); // this is the convention.
-         
-      } else if (state.equals(QueryState.ERROR)) {
-         this.reportError(qs.toString()); // sets us in error state.
-         
-      } else if (state.equals(QueryState.FINISHED)) {
+      } 
+      else if (state.equals(QueryState.ERROR)) {
+         /*this.reportError(qs.toString()); // sets us in error state.*/
+         this.reportMessage(qs.toString());
+         this.setStatus(Status.ERROR);
+      } 
+      else if (state.equals(QueryState.FINISHED)) {
          ParameterValue result = findOutputParameter(DatacenterApplicationDescription.RESULT);
          if (result.getIndirect() != true) {
             //if the results were to be directed to CEA, they will be stored in a StringWriter in
@@ -295,7 +300,8 @@ public class DatacenterApplication extends AbstractApplication implements Querie
          this.setStatus(Status.COMPLETED);
          this.reportMessage(qs.toString());
          
-      } else if (state.equals(QueryState.UNKNOWN)) {
+      } 
+      else if (state.equals(QueryState.UNKNOWN)) {
          this.setStatus(Status.UNKNOWN);
          this.reportMessage(qs.toString());
          
@@ -322,6 +328,9 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
  $Log: DatacenterApplication.java,v $
+ Revision 1.6  2007/03/02 13:49:09  kea
+ Syntactic changes only.
+
  Revision 1.5  2007/02/20 12:22:14  clq2
  PAL_KEA_2062
 
