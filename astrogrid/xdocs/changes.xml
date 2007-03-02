@@ -5,6 +5,17 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
+     
+          <action dev="gtr" type="fix" issue="2056">
+            Branch apps-gtr-2056. This fixes BZ2056 such that Optionlist element
+            in the application-description are propgated to the application
+            registration. I have also added a contracts jar such that the
+            installation tests work. The changed components are
+            astrogrid-cea-server-2007.1.03.jar and
+            astrogrid-cea-commandline-2007.1.02.war. The app-servers for
+            HTTP and Java-class applications haven't been changed. There are
+            no changes to the CEA client.
+          </action>
           
     	<action dev="kea" type="fix">
         <em>Branch FM_KEA_2136.</em> One-line change to fix critical
