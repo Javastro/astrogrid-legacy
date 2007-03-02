@@ -1,4 +1,4 @@
-/*$Id: CommandLineApplicationTest.java,v 1.13 2007/02/19 16:18:48 gtr Exp $
+/*$Id: CommandLineApplicationTest.java,v 1.14 2007/03/02 11:43:24 gtr Exp $
  * Created on 27-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -292,24 +292,20 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
            assertTrue(app instanceof CommandLineApplication);
            // and now run it.
            MockMonitor monitor = new MockMonitor();
-   //        app.addObserver(controller);
            app.addObserver(monitor);
            this.execute(app);
            monitor.waitFor(WAIT_SECONDS);
            assertNotNull(monitor.sawApp);
            assertTrue(monitor.sawError);
-           // check it failed error, etc.
+           
+           // There seems to be some race condition here. Sometimes it
+           // sees 3 warnings, sometimes it sees none. I suspect it to be
+           // to do with MockMonitor using a separate thread; it probably
+           // needs some explicit synchronization.
            assertEquals("should have seen 3 warnings before final error status",3, monitor.nwarn);
+           
            assertEquals("application should have ended with error status",
                    Status.ERROR, app.getStatus());
-   
-           // ok, either timed out, or the application finished..
-           // check behaviour of monitor.
-    
-           
-           
-           
-                
            }
            catch (Exception e1) {
                    fail("unexpected exception " + e1);
@@ -383,6 +379,9 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
 
 /*
  * $Log: CommandLineApplicationTest.java,v $
+ * Revision 1.14  2007/03/02 11:43:24  gtr
+ * Extra comment: I note a possible race condition with the monitor thread. No code changes.
+ *
  * Revision 1.13  2007/02/19 16:18:48  gtr
  * Branch apps-gtr-1061 is merged.
  *
