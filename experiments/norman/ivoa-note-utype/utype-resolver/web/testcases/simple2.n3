@@ -1,6 +1,10 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix utype: <http://example.ivoa.net/utypes#>.
-@prefix x: <http://@HOSTPORT@/utype-resolver/test/testcases/simple2#>.
+# THE FOLLOWING IS POOR STYLE
+# @prefix declarations should have a full URI here.
+# We are using a relative URI here (relative to the location of this
+# file) in order to make the regression tests portable.
+@prefix x: <simple2#>.
 
 x:c1 a utype:UType;
   rdfs:comment "This is a simple UType".

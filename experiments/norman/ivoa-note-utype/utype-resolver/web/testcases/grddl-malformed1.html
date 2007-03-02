@@ -6,8 +6,12 @@
 <h1>Dummy malformed document</h1>
 
 The namespace is
-<code class='namespace'
-     >http://@HOSTPORT@/utype-resolver/test/testcases/grddl-malformed1</code>
+<code class='namespace' >grddl-malformed1</code>
+    <!-- THE ABOVE IS POOR STYLE
+     ! Namespace declarations should have a full URI here.
+     ! We are using a relative URI here
+     ! (relative to the location of this file)
+     ! in order to make the regression tests portable. -->
 
 <div class='utype' id='c1'>
 The class c1 -- concept 1 -- is a class

@@ -9,8 +9,13 @@
     <h1>Dummy document</h1>
 
     <p>The namespace is
-    <code class='namespace'
-          >http://@HOSTPORT@/utype-resolver/test/testcases/grddl1</code></p> 
+    <code class='namespace' >grddl1</code></p>
+    <!-- THE ABOVE IS POOR STYLE
+     ! Namespace declarations should have a full URI here.
+     ! We are using a relative URI here
+     ! (relative to the location of this file) 
+     ! in order to make the regression tests portable. -->
+    <!--<p><code class='namespace'>http://@HOSTPORT@/utype-resolver/test/testcases/grddl1</code></p>-->
 
     <div class='utype' id='c1'>
       <p>The class c1 -- concept 1 -- is a class</p>

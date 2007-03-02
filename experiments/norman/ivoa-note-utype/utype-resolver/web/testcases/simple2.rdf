@@ -1,6 +1,11 @@
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-    xml:base="http://@HOSTPORT@/utype-resolver/test/testcases/simple2">
+    xml:base="simple2">
+  <!-- THE ABOVE IS POOR STYLE
+   ! Namespace declarations should have a full URI here.
+   ! We are using a relative URI here (relative to the location of this
+   ! file) in order to make the regression tests portable.
+   !-->
 
     <rdfs:Class rdf:ID="c1"/>
 

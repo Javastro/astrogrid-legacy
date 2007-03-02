@@ -2,9 +2,14 @@
 <h:html xmlns:h="http://www.w3.org/1999/xhtml">
   <h:head profile="http://www.w3.org/2003/g/data-view">
     <h:title>Namespace description document</h:title>
-    <h:base href="http://@HOSTPORT@/utype-resolver/test/testcases/grddl2"/>
     <h:link rel="transformation"
           href="http://www.ivoa.net/utypes/grok-utypes.xslt"/>
+    <h:base href="grddl2"/>
+    <!-- THE ABOVE IS POOR STYLE
+     ! The namespace declaration should have a full URI here.
+     ! We are using a relative URI here
+     ! (relative to the location of this file)
+     ! in order to make the regression tests portable. -->
   </h:head>
   <h:body>
     <h:h1>Dummy document</h:h1>
