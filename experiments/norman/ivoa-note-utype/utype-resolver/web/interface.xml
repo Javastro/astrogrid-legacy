@@ -15,7 +15,7 @@
 interface.  You use the various HTTP verbs as follows.</p>
 
 <p>In the documentation below, <code>hostport</code> refers to the
-machine and port number hosting the Quaestor service, such as
+machine and port number hosting the resolver service, such as
 <code>localhost:8080</code>.</p>
 
 <p>Contents</p>
@@ -211,7 +211,7 @@ href='tutorial.html#embedding' >tutorial</a>.</p>
 </div>
 
 <div class='trailer'>
-<p><a href='index.html' >utype-resolver</a> @VERSION@</p>
+<p><a href='index.html' >utype-resolver</a></p>
 </div>
 
 </body>
