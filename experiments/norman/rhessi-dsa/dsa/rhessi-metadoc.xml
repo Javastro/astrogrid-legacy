@@ -7,7 +7,7 @@
    <Catalog>
       <Name>RHESSI</Name>
       <Description>RHESSI solar data at University of Glasgow</Description>
-      <Table ID='rhessi_observing_summary'>
+      <Table ID='rhessi'>
          <Name>rhessi</Name>
          <Description>RHESSI first-look observing summary. Provides
          count-rates pre-binned to coarse energy and time resolution,
@@ -16,8 +16,8 @@
          (e.g. hsi_obssumm_20030224_040.fits) to allow immediate
          visualisation of the summary data. For a detailed description
          of observing summary data see: http://hesperia.gsfc.nasa.gov/ssw/hessi/doc/hessi_data_access.htm </Description>
-         <Column ID='rhessi.time_start' indexed='false'>
-            <Name>time_start</Name>
+         <Column ID='rhessi.starttime' indexed='false'>
+            <Name>starttime</Name>
             <Datatype>dateTime</Datatype>
             <Description>start time of 4 second time interval (ISO 8601 format)</Description>
             <Units>iso8601</Units>
