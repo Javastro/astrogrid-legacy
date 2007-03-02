@@ -35,10 +35,10 @@ q:after  { content: "”"; }
            border="0"/></a></td></tr>
 </table>
 
-<!-- $Id: note.xml,v 1.7 2007/03/02 12:51:16 norman Exp $ -->
+<!-- $Id: note.xml,v 1.8 2007/03/02 14:11:16 norman Exp $ -->
 
 <h1>UTypes and URIs</h1>
-<h2>IVOA Note (v0.1, 2007 March 2)</h2> <!-- XXX version/date -->
+<h2>IVOA Note (v1.0, 2007 March 2)</h2> <!-- XXX version/date -->
 <dl>
 <dt>Interest/Working Group</dt>
 <dd><em>Not applicable</em></dd>
@@ -707,8 +707,8 @@ specific interest groups, working independently.</p>
 <?bibliography?>
 </div>
 
-<p style="text-align: right; text-size: small">
-$Id: note.xml,v 1.7 2007/03/02 12:51:16 norman Exp $
+<p style="text-align: right; font-size: x-small; color: #888;">
+$Revision: 1.8 $ $Date: 2007/03/02 14:11:16 $
 </p>
 
 </div>
