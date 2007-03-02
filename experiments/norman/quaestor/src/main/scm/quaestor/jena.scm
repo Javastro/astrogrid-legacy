@@ -221,8 +221,8 @@
     ;; just add it to the logger
     (logger "Warning parsing RDF at ~a: ~a" uri (->string (get-message ex)))))
 
-;; RDF:INGEST-FROM-STREAM/LANGUAGE : jinput-stream string (j)string -> model
-;; RDF:INGEST-FROM-STREAM/LANGUAGE : jreader       string (j)string -> model
+;; RDF:INGEST-FROM-STREAM/LANGUAGE : jinput-stream string (j)string [symbol] -> model
+;; RDF:INGEST-FROM-STREAM/LANGUAGE : jreader       string (j)string [symbol] -> model
 ;;
 ;; This is the function which ingests RDF from an InputStream or Reader,
 ;; which is expected to be in the named LANGUAGE.  The RDF is read using the
@@ -233,11 +233,28 @@
 ;; may not be null (ie, we don't fall back on the default Jena behaviour).
 ;;
 ;; Either succeeds, or throws an exception using REPORT-EXCEPTION (of the 
-;; type expected by MAKE-FC)
-(define/contract (rdf:ingest-from-stream/language
+;; type expected by MAKE-FC).  The optional EXCEPTION argument must contain
+;; a symbol which is one of the symbols acceptable to SET-RESPONSE-STATUS!,
+;; namely one of the SC_* fields in javax.servlet.http.HttpServletResponse.
+;; In this case, this indicates the HTTP status which should be used when
+;; reporting any error, instead of the default SC_BAD_REQUEST.
+(define (rdf:ingest-from-stream/language stream base-uri language . exception)
+  (cond ((null? exception)
+         (*rdf:ingest-from-stream/language stream base-uri language #f))
+        ((and (= (length exception) 1)
+              (symbol? (car exception)))
+         (*rdf:ingest-from-stream/language stream base-uri language
+                                           (car exception)))
+        (else
+         (error 'rdf:ingest-from-stream/language
+                "Bad call: wrong number or type of arguments ~s" exception))))
+
+;; ...and the actual procedure
+(define/contract (*rdf:ingest-from-stream/language
                   (stream java-input?)
                   (base-uri (or (jstring? base-uri) (string? base-uri)))
                   (language (or (jstring? language) (string? language)))
+                  (exception (or (not exception) (symbol? exception)))
                   -> jena-model?)
   (define-generic-java-methods
     read
@@ -279,7 +296,8 @@
                      logger-msgs)
             (close stream)              ;might help...
             (report-exception 'ingest-from-stream
-                              '|SC_BAD_REQUEST|
+                              (or exception
+                                  '|SC_BAD_REQUEST|)
                               "Error reading ~a (~a)~%~a"
                               (as-scheme-string base-uri)
                               (format-error-record m)
