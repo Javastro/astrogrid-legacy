@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineDescriptionsLoader.java,v 1.16 2007/03/01 18:34:22 gtr Exp $
+ * $Id: CommandLineDescriptionsLoader.java,v 1.17 2007/03/02 09:11:41 gtr Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -158,7 +158,7 @@ public class CommandLineDescriptionsLoader extends BaseApplicationDescriptionLib
     digester.setRuleNamespaceURI(Namespaces.CEAPD);
     digester.addObjectCreate(OPTIONLIST_ELEMENT, OptionList.class);
     digester.addCallMethod(OPTIONVAL_ELEMENT, "addOptionVal", 0);
-      
+    digester.addSetNext(OPTIONLIST_ELEMENT, "setOptionList");
            
     // add the parameter to the list of paramters  (could perhaps be put above)
     digester.setRuleNamespaceURI(Namespaces.CEAIMPL);
