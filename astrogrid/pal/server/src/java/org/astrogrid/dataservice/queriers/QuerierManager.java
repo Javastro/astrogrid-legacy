@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.2 2005/05/27 16:21:02 clq2 Exp $
+/*$Id: QuerierManager.java,v 1.3 2007/03/02 14:59:33 kea Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,9 +45,12 @@ public class QuerierManager implements QuerierListener {
     */
    private Hashtable heldQueriers = new Hashtable();
    
+   // WRITE ACCESS TO THE QUEUE VARIABLES IS SYNCHRONIZED, in methods
+   // checkQueue and addQuerierToQueues
+   //
    /** lookup table of queued queriers.  These are queriers that are waiting on
-    a 'free' spot on the running queriers - ie when the running queriers have hit
-    * the maximum limit and the */
+    a 'free' spot on the running queriers - ie when the running queriers have 
+    hit the maximum limit and the */
    private Hashtable queuedQueriers = new Hashtable();
    
    /** priority index of queued queriers */
@@ -241,12 +244,17 @@ public class QuerierManager implements QuerierListener {
          throw new IllegalArgumentException("Handle " + querier.getId() + "already in use");
       }
       querier.setStatus(new QuerierQueued(querier.getStatus()));
-      queuedQueriers.put(querier.getId(), querier);
-      queuedPriorities.add(querier);
+      // Add to queuedPriorities before queuedQueriers, as the checkQueue()
+      // method expects the querier to be in queuedPriorities if it is
+      // in queuedQueriers;  previously we had a race condition here between
+      // threads.
+      addQuerierToQueues(querier);
+      //queuedPriorities.add(querier);
+      //queuedQueriers.put(querier.getId(), querier);
       querier.addListener(this);
-      
       checkQueue();
    }
+
 
    /**
     * Adds the given querier to this manager, runs it, and returns the status;
@@ -309,7 +317,6 @@ public class QuerierManager implements QuerierListener {
 
       while ((queuedQueriers.size()>0) &&
                 ( (maxQueriers==-1) || (runningQueriers.size()<=maxQueriers))) {
-         
          Querier first = (Querier) queuedPriorities.first();
          queuedPriorities.remove(first);
          queuedQueriers.remove(first.getId());
@@ -318,6 +325,13 @@ public class QuerierManager implements QuerierListener {
          Thread qth = new Thread(first);
          qth.start();
       }
+   }
+
+   /** Adds a querier to the Queued queue, and sets its priority */
+   protected synchronized void addQuerierToQueues(Querier querier)
+   {
+      queuedPriorities.add(querier);
+      queuedQueriers.put(querier.getId(), querier);
    }
    
    
@@ -346,6 +360,10 @@ public class QuerierManager implements QuerierListener {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.3  2007/03/02 14:59:33  kea
+ Fixed (I hope) a critical race bug (inadequate synchronization), leading
+ to errors accessing jobs in the jobs queue - see bugzilla bug 2126.
+
  Revision 1.2  2005/05/27 16:21:02  clq2
  mchv_1
 
