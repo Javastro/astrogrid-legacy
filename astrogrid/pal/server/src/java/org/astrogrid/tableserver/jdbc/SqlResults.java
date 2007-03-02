@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.12 2007/02/20 12:22:16 clq2 Exp $
+ * $Id: SqlResults.java,v 1.13 2007/03/02 13:44:56 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -185,7 +185,7 @@ public class SqlResults extends TableResults {
                        // an exception in this case?  
                   }
                   catch (TooManyColumnsException me) {
-                       log.error(me+" guessing which column "+
+                       log.warn(me+" guessing which column "+
                              columnName+" belongs to which table");
                        //but carry on with a dummy table name
                        cols[i-1] = new ColumnInfo();
@@ -194,7 +194,10 @@ public class SqlResults extends TableResults {
                        tableName = null; // Just in case
                   }
                   if (cols[i-1] == null) {  // Didn't find a column of that name
-                     log.error(" Didn't find column with name '"+
+                     // Make this an info level log - this is not an 
+                     // uncommon occurrence, numerical expression columns
+                     // won't have matches in the metadoc
+                     log.info(" Didn't find column with name '"+
                            columnName+"' in any table");
 
                      cols[i-1] = new ColumnInfo();
@@ -260,7 +263,7 @@ public class SqlResults extends TableResults {
                      metadata.getColumnClassName(i))); 
             }
             catch (ClassNotFoundException cnfe) {
-               log.error(cnfe+" for column "+columnName,cnfe);
+               log.warn(cnfe+" for column "+columnName,cnfe);
             }
             catch (SQLException se) {
                //log but carry on; eg postgres drivers don't seem to 
@@ -288,11 +291,11 @@ public class SqlResults extends TableResults {
                      colValues[i-1] = sqlResults.getString(i);
                   }
                   catch (SQLException se) {
-                     log.error(se+" reading value of column "+i+" row "+row,se);
+                     log.warn(se+" reading value of column "+i+" row "+row,se);
                      colValues[i-1] = se.toString();
                   }
                   catch (Exception se) {
-                     log.error(se+" reading value of column "+i+" row "+row,se);
+                     log.warn(se+" reading value of column "+i+" row "+row,se);
                      colValues[i-1] = se.toString();
                   }
                }
@@ -347,6 +350,9 @@ public class SqlResults extends TableResults {
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.13  2007/03/02 13:44:56  kea
+ Tweaked logging to be less annoying.
+
  Revision 1.12  2007/02/20 12:22:16  clq2
  PAL_KEA_2062
 

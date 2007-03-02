@@ -1,5 +1,5 @@
 /*
- * $Id: TableMetaDocInterpreter.java,v 1.14 2007/02/20 12:22:15 clq2 Exp $
+ * $Id: TableMetaDocInterpreter.java,v 1.15 2007/03/02 13:44:38 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -124,14 +124,21 @@ public class TableMetaDocInterpreter
     * Looks through all the elements so that it can check case insensitively. If
     * null is given, assumes the first one.
     */
-   public Element getCatalogElement(String catalogName) {
+   public Element getCatalogElement(String catalogName) throws MetadataException {
 
       Element[] cats = DomHelper.getChildrenByTagName(metadoc, "Catalog");
 
       //assertions
+      if (cats.length == 0) {
+        // NB: Schema validation should catch this error earlier
+         log.error("No catalog elements found in metadoc file;  metadoc is invalid, please add at least one catalog");
+         throw new MetadataException("No catalog elements found in metadoc file;  metadoc is invalid, please add at least one catalog");
+      }
       if ((catalogName == null) || ("".equals(catalogName.trim()))) {
          //for now, if no catalog name is given we just take the first one...
-         log.warn("Requested catalog name is null or empty: defaulting to first catalog specified in metadoc");
+         //KEA: Disable this annoying warning until we have multiple catalogs 
+         // working
+         //log.warn("Requested catalog name is null or empty: defaulting to first catalog specified in metadoc");
          return cats[0];
       }
       for (int i = 0; i < cats.length; i++) {
@@ -154,6 +161,7 @@ public class TableMetaDocInterpreter
 
       //assertions
       if (table == null) { throw new IllegalArgumentException("No table specified"); }
+      if (catalog == null) { throw new IllegalArgumentException("Null catalog element supplied"); }
       
       Element[] tables = DomHelper.getChildrenByTagName(catalog, "Table");
       for (int i = 0; i < tables.length; i++) {
@@ -169,13 +177,13 @@ public class TableMetaDocInterpreter
    }
 
    /** Return table info on the column with the given ID/name */
-   public TableInfo getTable(String catalog, String table) {
+   public TableInfo getTable(String catalog, String table) throws MetadataException {
       return makeTableInfo(getTableElement(getCatalogElement(catalog), table));
    }
 
    /** Return column info with the given name/id in the given table name/id.  Ignores
     * the catalog for now */
-   public Element getColumnElement(String catalog, String table, String column)  {
+   public Element getColumnElement(String catalog, String table, String column) throws MetadataException  {
       
       //assertions
       if (column == null) { throw new IllegalArgumentException("No column specified"); }
@@ -280,7 +288,7 @@ public class TableMetaDocInterpreter
       return catDescs;
    }
 
-   public TableInfo[] getTables(String catalog)  {
+   public TableInfo[] getTables(String catalog) throws MetadataException {
       Element[] elements = DomHelper.getChildrenByTagName(getCatalogElement(catalog), "Table");
       TableInfo[] infos = new TableInfo[elements.length];
       for (int i = 0; i < elements.length; i++)
