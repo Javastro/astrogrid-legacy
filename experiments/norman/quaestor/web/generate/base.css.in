@@ -45,7 +45,7 @@ h3 {
 
 pre {
   background: TABLEBACKGROUND;
-  padding: 0.3em;
+  padding: 1em;
 }
 
 table {
