@@ -271,42 +271,6 @@
                                   ((string=? stb "*")
                                    #t)
                                   (else #t))))))))))
-;;  (define parse-http-accept-header
-;;    (let ((commas #f)
-;;          (parameters #f))
-;;      (define-generic-java-methods
-;;        split
-;;        compile
-;;        matcher
-;;        matches
-;;        group
-;;        parse-float)
-;;      (define-java-classes
-;;        <java.util.regex.pattern>
-;;        <java.lang.float>)
-;;      (lambda (jheader)
-;;        (if (not commas)
-;;            (begin (set! commas
-;;                         (compile (java-null <java.util.regex.pattern>)
-;;                                  (->jstring " *, *")))
-;;                   (set! parameters
-;;                         (compile (java-null <java.util.regex.pattern>)
-;;                                  (->jstring "\([^;]*\); *q=\([0-9.]+\).*")))))
-;;        (let ((pairs (map (lambda (js)
-;;                            (let ((js-matcher (matcher parameters js)))
-;;                              (if (->boolean (matches js-matcher))
-;;                                  (cons (->string
-;;                                         (group js-matcher (->jint 1)))
-;;                                        (string->number
-;;                                         (->string
-;;                                          (group js-matcher (->jint 2)))))
-;;                                  (cons (->string js) 1))))
-;;                          (->list (split commas jheader)))))
-;;          (remove (lambda (s) (= (string-length s) 0))
-;;                  (map car
-;;                       (sort-list pairs
-;;                                  (lambda (a b)
-;;                                    (> (cdr a) (cdr b))))))))))
 
 ;; ACCEPTABLE-MIME : string list-of-string -> string-or-#f
 ;; ACCEPTABLE-MIME : list-of-string list-of-string -> string-or-#f
@@ -565,18 +529,21 @@
   (define-generic-java-methods
     get-headers
     append)
-  (parse-http-accept-header
-   ;; merge all the "accept" headers into a single comma-separated Java string
-   (let loop ((headers
-               (enumeration->list (get-headers request (->jstring "accept"))))
-              (res #f))
-     (if (null? headers)
-         res
-         (loop (cdr headers)
-               (if res
-                   (append (append res (->jstring ", "))
-                           (car headers))
-                   (car headers)))))))
+  ;; merge all the "accept" headers into a single comma-separated Java string
+  (cond
+   ((let loop ((headers
+                (enumeration->list (get-headers request (->jstring "accept"))))
+               (res #f))
+      (if (null? headers)
+          res
+          (loop (cdr headers)
+                (if res
+                    (append (append res (->jstring ", "))
+                            (car headers))
+                    (car headers)))))
+    => parse-http-accept-header)
+   (else
+    #f)))
 
 ;; response->lazy-output-stream http-response -> java-output-stream
 ;;
