@@ -1,15 +1,18 @@
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:utype="http://example.ivoa.net/utypes#"
     xml:base="simple3">
   <!-- THE ABOVE IS POOR STYLE
    ! Namespace declarations should have a full URI here.
-   ! We are using a relative URI here (relative to the location of this
-   ! file) in order to make the regression tests portable.
+   ! We are using a relative URI here
+   ! (relative to the location of this file)
+   ! in order to make the regression tests portable.
    !-->
 
-    <rdfs:Class rdf:ID="c1"/>
+    <utype:UType rdf:ID="c1"/>
 
-    <rdfs:Class rdf:ID="c2">
+    <utype:UType rdf:ID="c2">
         <rdfs:subClassOf rdf:resource="#c1"/>
-    </rdfs:Class>
+        <rdfs:comment>Class c2 is a subclass of c1</rdfs:comment>
+    </utype:UType>
 </rdf:RDF>
