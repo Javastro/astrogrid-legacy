@@ -11,16 +11,14 @@
 
 
 (module knowledge
-    (namespace-seen?
-     ingest-utype-declaration-from-uri!
-     query-utype-superclasses
+    (query-utype-superclasses
      get-namespace-description
      get-namespace-list
      forget-namespace!
      ;; The following should be used only sparingly; they're
      ;; really only to be used for debugging and testing this module.
      show-utypes-as-n3
-     ingest-utype-declaration-from-stream!)
+     *ingest-utype-declaration/stream!)
 
 (import s2j)
 (import threading)
@@ -29,7 +27,8 @@
 (import* srfi-1 remove)
 (import srfi-8)                         ;receive
 (import* srfi-13
-         string-suffix?)
+         string-suffix?
+         string-index)
 (import* quaestor-support
          report-exception
          chatter)
@@ -50,26 +49,54 @@
   (is-java-type? x <uri>))
 (define (java-stream? x)
   (is-java-type? x <java.io.input-stream>))
+(define (jstring? x)
+  (is-java-type? x <jstring>))
 
-;; convert model to string -- DEBUGGING only
-;; (define (model->string m)
-;;   (define-java-class <java.io.string-writer>)
-;;   (define-generic-java-methods write to-string)
-;;   (let ((sw (java-new <java.io.string-writer>)))
-;;     (write m sw (->jstring "N3"))
-;;     (->string (to-string sw))))
+;; Simple assert macro
+;;   (assert [id] (test ...))
+;;   (assert [id] (test ...) var ...)
+;; See eg <http://okmij.org/ftp/Scheme/util.html#assert> for 
+;;    a more sophisticated version
+(define-syntax assert
+  (syntax-rules ()
+    ((_ (test ...))
+     (assert assertion-failure (test ...)))
+    ((_ id (test ...))
+     (if (not (test ...))
+         (error (quote id) "Assertion ~s failed"
+                (quote (test ...)))))
+    ((_ id (test ...) (reports ...))
+     (if (not (test ...))
+          (let ((reps (map (lambda (p)
+                             (format #f "  ~a=~s~%" (car p) (cdr p)))
+                           `(reports ...))))
+            (error (quote id)
+                   (apply string-append
+                          (cons (format #f "Assertion ~s failed.~%Bindings:~%"
+                                        (quote (test ...)))
+                                reps))))))
+    ((_ id (test ...) (reports ...) report . more-reports)
+     (assert id (test ...) ((report . ,report) . (reports ...)) . more-reports))
+    ;; interface
+    ((_  (test ...) report . more-reports)
+     (assert assertion-failure (test ...) ((report . ,report)) . more-reports))
+    ((_ id (test ...) report . more-reports)
+     (assert id (test ...) ((report . ,report)) . more-reports))))
 
-;; uri->namespace : uri-or-string -> string
+;; uri->namespace : uri/string/jstring -> string
+;; (ripe for memoization???)
 (define (uri->namespace uri)
-  (define-generic-java-methods to-string)
-  (let ((uri-string (if (string? uri) uri (->string (to-string uri)))))
-    (let loop ((i 0))
-      (cond ((= i (string-length uri-string))
-             uri-string)
-            ((char=? (string-ref uri-string i) #\#)
-             (substring uri-string 0 i))
-            (else
-             (loop (+ i 1)))))))
+  (define-generic-java-method to-string)
+  (let ((s (cond ((string? uri) uri)
+                 ((jstring? uri)
+                  (->string uri))
+                 (else
+                  (->string (to-string uri))))))
+    (cond ((string-index s #\#)
+           => (lambda (index)
+                (substring s 0 index)))
+          (else
+           s))))
 
 ;; KNOWLEDGEBASE : -> quaestor-knowledgebase
 ;; Return the Quaestor knowledgebase for this application, creating
@@ -99,9 +126,9 @@
                 "text/rdf+n3")))
       kb)))
 
-;; namespace-seen? : uri -> object
+;; namespace-seen? : uri/string/jstring -> object
 ;; Return true (non-#f) if we've seen this namespace already
-(define/contract (namespace-seen? (uri uri?))
+(define (namespace-seen? uri)
   (let ((ns (uri->namespace uri)))
     ((knowledgebase) 'has-model ns)))
 
@@ -109,21 +136,21 @@
   (let ((ns (uri->namespace uri)))
     ((knowledgebase) 'drop-submodel ns)))
 
-;; INGEST-UTYPE-DECLARATION-FROM-URI! : uri -> unspecified
+;; INGEST-UTYPE-DECLARATION/URI! : uri/string/jstring -> unspecified
 ;; 
 ;; Given a URI, ingest it as RDF.  Either succeeds or throws an error,
 ;; of the type expected by MAKE-FC
-(define/contract (ingest-utype-declaration-from-uri! (uri uri?))
+(define (ingest-utype-declaration/uri! uri)
   (let ((ns (uri->namespace uri)))
     (chatter "ingest-utype-declaration-from-uri! ~s" uri)
     ((knowledgebase) 'add-tbox ns (rdf:ingest-from-uri ns))))
 
-;; INGEST-UTYPE-DECLARATION-FROM-STREAM! : string stream -> unspecified
+;; *INGEST-UTYPE-DECLARATION/STREAM! : string stream -> unspecified
 ;;
 ;; Ingest N3 from the given stream, in the context of the given namespace.
-;; For debugging/testing only.
-(define/contract (ingest-utype-declaration-from-stream! (ns string?)
-                                                        (s java-stream?))
+;; For debugging/testing only -- include the * at the beginning to mark this.
+(define/contract (*ingest-utype-declaration/stream! (ns string?)
+                                                    (s java-stream?))
   ((knowledgebase) 'add-tbox ns (rdf:ingest-from-stream/language s ns "N3")))
 
 (define (jena-model? x)
@@ -294,49 +321,87 @@
                                    "Impossible HTTP status in rdf:ingest-from-uri: ~s"
                                    status)))))))))
 
-;; QUERY-UTYPE-SUPERCLASSES : string-or-uri -> list-of-strings or false
+;; QUERY-UTYPE-SUPERCLASSES : string/jstring/uri -> list-of-strings or false
 ;;
 ;; Given a string representing a subject, find all the classes of
 ;; which it is a subclass, returning them as a list of strings if there are some,
 ;; or #f if there are none.
-(define/contract (query-utype-superclasses (utype (or (string? utype)
-                                                      (uri? utype)))
+;;
+;; If we haven't seen the namespace before, then load it and re-call ourselves.
+;; If one or more of the superclasses is in a namespace we haven't seen before,
+;; then load them and re-call ourselves.
+(define/contract (query-utype-superclasses (utype-a (or (jstring? utype-a)
+                                                        (string? utype-a)
+                                                        (uri? utype-a)))
                                            -> (lambda (res)
                                                 (or (not res)
                                                     (and (list? res)
                                                          (not (null? res))
                                                          (string? (car res))))))
-  (define-generic-java-methods resource? to-string equals starts-with)
-  (let ((utype-jstring (if (string? utype)
-                           (->jstring utype)
-                           (to-string utype)))
-        (rdfs-ns (->jstring "http://www.w3.org/2000/01/rdf-schema#"))
-        (model ((knowledgebase) 'get-inferencing-model)))
-    (chatter "query-utype-superclasses: utype ~s..." utype-jstring)
-    (and model
-         (let ((results
-                (map ->string
-                     (remove (lambda (js)
-                               ;; remove this URI, and any RDFS classes
-                               ;; (typically rdfs:Resource)
-                               (or (->boolean (equals js utype-jstring))
-                                   (->boolean (starts-with js
-                                                           rdfs-ns))))
-                             (map (lambda (node)
-                                    (if (resource? node)
-                                        (to-string node)
-                                        (report-exception 'query-utype-superclasses
-                                                          |SC_INTERNAL_SERVER_ERROR|
-                                                          "Class ~a has 'superclass' ~s, which is not a resource!"
-                                                          utype (to-string node))))
-                                  (rdf:select-statements model
-                                                         utype-jstring
-                                                         "http://www.w3.org/2000/01/rdf-schema#subClassOf"
-                                                         #f))))))
-           (chatter "query-utype-superclasses: ~s -> ~s" utype-jstring results)
-           (if (null? results)
-               #f
-               results)))))
+  (let ((rdfs-ns (->jstring "http://www.w3.org/2000/01/rdf-schema#")))
+    (define-generic-java-methods to-string)
+    (define wrapped-ingest-utype-declaration/uri!
+      (let ((fc (lambda (m k)
+               (let ((msg (error-message m)))
+                 ;; this is probably a (symbol . string)
+                 ;; pair thrown by report-exception, because
+                 ;; the namespace document couldn't be
+                 ;; retrieved...
+                 (report-exception
+                  'query-utype-superclasses
+                  '|SC_BAD_GATEWAY|     ;not our fault
+                  "Unable to determine superclasses (unretrievable namespace?):~%~s~%"
+                  (if (and (pair? msg)
+                           (symbol? (car msg))) ;yup!
+                      (format #f "~s: ~a" (car msg) (cdr msg))
+                      msg))))))
+        (lambda (uri)
+          (with/fc
+              fc
+            (lambda ()
+              (ingest-utype-declaration/uri! uri))))))
+    (define (get-known-superclasses model utype) ;utype is jstring
+      (define-generic-java-methods resource? equals starts-with)
+      (remove (lambda (js)
+                ;; remove this URI, and any RDFS classes
+                ;; (typically rdfs:Resource)
+                (or (->boolean (equals js utype))
+                    (->boolean (starts-with js rdfs-ns))))
+              (map (lambda (node)
+                     (assert query-utype-superclasses
+                             (resource? node)
+                             node utype)
+                     (to-string node))
+                   (rdf:select-statements model
+                                          utype
+                                          "http://www.w3.org/2000/01/rdf-schema#subClassOf"
+                                          #f))))
+    (let ((utype (cond ((jstring? utype-a)
+                        utype-a)
+                       ((string? utype-a)
+                        (->jstring utype-a))
+                       (else
+                        (to-string utype-a))))
+          (model ((knowledgebase) 'get-inferencing-model)))
+      ;; the model will be #f if the reasoner knows nothing at all (first time)
+      (if (and model
+               (namespace-seen? utype))
+          (let ((results (map ->string (get-known-superclasses model utype))))
+            (chatter "query-utype-superclasses: ~s -> ~s" utype results)
+            (if (null? results)
+                #f                      ;definitely no superclasses
+                (let ((unknown-namespaces (remove namespace-seen? results)))
+                  (if (null? unknown-namespaces)
+                      results           ;all's well
+                      (begin (for-each wrapped-ingest-utype-declaration/uri!
+                                       unknown-namespaces)
+                             ;; ...and re-call
+                             (query-utype-superclasses utype))))))
+          (begin (wrapped-ingest-utype-declaration/uri! utype)
+                 (assert query-utype-superclasses
+                         ((knowledgebase) 'get-inferencing-model))
+                 ;; ...and re-call
+                 (query-utype-superclasses utype))))))
 
 ;; Given a scheme string naming a resource (an .xslt file to be found on
 ;; the classpath), return a transformer which implements that transformation

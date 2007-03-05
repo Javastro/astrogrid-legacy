@@ -25,7 +25,7 @@
   `((utype-resolver-version . "@VERSION@")
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (string
-     . "utype-resolver.scm @VERSION@ ($Id: utype-resolver.scm,v 1.8 2007/03/02 11:41:00 norman Exp $)")))
+     . "utype-resolver.scm @VERSION@ ($Id: utype-resolver.scm,v 1.9 2007/03/05 22:39:29 norman Exp $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -104,6 +104,7 @@
                     (apply string-append
                            (map (lambda (s) (string-append s "\r\n"))
                                 superclass-strings))))
+
               (else               ;no superclasses -- respond with 204
                (set-response-status! response '|SC_NO_CONTENT|)))))))
 
@@ -123,50 +124,51 @@
         (set-response-status! response '|SC_OK| mime)
         (->string (to-string sw))))
     (define (display-namespace-list-as-html)
-      (let ((base-uri (webapp-base-from-request request #f)))
       (set-response-status! response '|SC_OK| "text/html")
       (response-page request response
-                       "List of known namespaces"
-                       `((p "The following namespaces are known")
-                         (ul
-                          ,@(map (lambda (s)
-                                   `(li (a (@ (href ,(format #f "~a/description?~a"
-                                                             base-uri s)))
-                                       (code ,s))))
-                                 (get-namespace-list)))))))
+                     "List of known namespaces"
+                     `((p "The following namespaces are known:")
+                       (ul
+                        ,@(map (lambda (s)
+                                 `(li (a (@ (href
+                                             ,(string-append "description?" s)))
+                                         (code ,s))))
+                               (get-namespace-list))))))
     (define (display-namespace-model-as-html ns model)
       (set-response-status! response '|SC_OK| "text/html")
       (response-page request response
-                     (format #f "Namespace ~a" ns)
-                     `((p ,(format #f
-                                   "Namespace ~a defines the following UTypes:"
-                                   ns))
-                       (ul
-                        ,@(let ((rdf-nodes
-                                 (rdf:select-statements
-                                  model
-                                  #f
-                                  "a"
-                                  "http://example.ivoa.net/utypes#UType")))
-                            (define-generic-java-methods to-string)
-                            (map (lambda (node)
-                                   (let ((url (->string (to-string node)))
-                                         (comments (rdf:select-statements
-                                                    model
-                                                    node
-                                                    "http://www.w3.org/2000/01/rdf-schema#comment"
-                                                    #f)))
-                                     `(li (a (@ (href ,url))
-                                             ,url)
-                                          ": "
-                                          ,(if (null? comments)
-                                               "[No description available]"
-                                               (apply string-append
-                                                      (map (lambda (n)
-                                                             (->string
-                                                              (to-string n)))
-                                                           comments))))))
-                                 rdf-nodes))))))
+                     "Namespace description"
+                     `((p "Namespace: "
+                          (a (@ (href ,ns))
+                             (strong ,ns)))
+                       (p "The following types are defined:")
+                       (dl
+                        ,@(apply append
+                                 (let ((rdf-nodes
+                                        (rdf:select-statements
+                                         model
+                                         #f
+                                         "a"
+                                         "http://example.ivoa.net/utypes#UType")))
+                                   (define-generic-java-methods to-string)
+                                   (map (lambda (node)
+                                          (let ((url (->string (to-string node)))
+                                                (comments (rdf:select-statements
+                                                           model
+                                                           node
+                                                           "http://www.w3.org/2000/01/rdf-schema#comment"
+                                                           #f)))
+                                            `((dt (a (@ (href ,url))
+                                                     ,url))
+                                              (dd
+                                               ,(if (null? comments)
+                                                    "[No description available]"
+                                                    (apply string-append
+                                                           (map (lambda (n)
+                                                                  (->string
+                                                                   (to-string n)))
+                                                                comments)))))))
+                                        rdf-nodes)))))))
 
     (cond ((not query-url)
            (cond ((acceptable-mime '("text/html" "text/rdf+n3" "application/rdf+xml" "text/plain")
@@ -278,22 +280,22 @@
 ;; This is the principal function of this application.  Return all the
 ;; superclasses as a list of strings, or return #f if there are no superclasses.
 (define (resolve-uri uri-string)
-  (define-java-class <uri> |java.net.URI|)
-  (define-generic-java-methods
-    get-fragment
-    (to-url |toURL|)
-    to-string)
-  (let ((uri (java-new <uri> (->jstring uri-string))))
-    (chatter "resolve-uri: ~a -> frag ~a, URL ~a"
-             uri-string
-             (cond ((non-null (get-fragment uri))
-                    => ->string)
-                   (else
-                    "<none>"))
-             (->string (to-string uri)))
-    (if (not (namespace-seen? uri))
-        (ingest-utype-declaration-from-uri! uri))
-    (query-utype-superclasses uri)))
+  (query-utype-superclasses uri-string))
+;; (define (resolve-uri uri-string)
+;;   (define-java-class <uri> |java.net.URI|)
+;;   (define-generic-java-methods
+;;     get-fragment
+;;     (to-url |toURL|)
+;;     to-string)
+;;   (let ((uri (java-new <uri> (->jstring uri-string))))
+;;     (chatter "resolve-uri: ~a -> frag ~a, URL ~a"
+;;              uri-string
+;;              (cond ((non-null (get-fragment uri))
+;;                     => ->string)
+;;                    (else
+;;                     "<none>"))
+;;              (->string (to-string uri)))
+;;     (query-utype-superclasses uri)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

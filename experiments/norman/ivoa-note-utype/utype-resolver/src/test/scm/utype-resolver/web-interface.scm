@@ -56,7 +56,7 @@
           (let ((status (->number (get-response-code c))))
             (values status
                     hh
-                    (stream->string
+                    (stream->list-of-strings ;stream->string
                      ;; stupid HttpURLConnection throws an exception if you
                      ;; call get-input-stream on statuses >=400
                      (if (< status 400)
@@ -107,24 +107,42 @@
             (else
              (error (format #f "Bad call to header-handler proc with arg ~s" arg)))))))
 
-(define (stream->string input-stream)
-  (let ((cp (open-character-input-port
-             (->binary-input-port input-stream)))
-        (len 1024))
-    (let loop ((strings '()))
-      (let* ((b (make-string len))
-             (n (read-string b 0 len cp)))
-        (cond ((> n len)
-               (error "Can't happen: n>len in stream->string"))
-              ((< n 0)                  ;EOF
-               (apply string-append (reverse strings)))
-              ((= n len)                ;full buffer
-               (loop (cons b strings)))
-              ((= n 0)                  ;can this happen?
-               (loop strings))
-              (else                     ;0 < n < len -- partial buffer
-               (loop (cons (substring b 0 n)
-                           strings))))))))
+(define (stream->list-of-strings input-stream)
+  (define-java-classes
+    <java.io.line-number-reader>
+    <java.io.input-stream-reader>)
+  (define-generic-java-methods
+    read-line)
+  (let ((lsr (java-new <java.io.line-number-reader>
+                       (java-new <java.io.input-stream-reader>
+                                 input-stream))))
+    (let loop ((line (read-line lsr))
+               (res '()))
+      (if (java-null? line)
+          (if (null? res)
+              #f
+              (reverse res))
+          (loop (read-line lsr)
+                (cons (->string line)
+                      res))))))
+;; (define (stream->string input-stream)
+;;   (let ((cp (open-character-input-port
+;;              (->binary-input-port input-stream)))
+;;         (len 1024))
+;;     (let loop ((strings '()))
+;;       (let* ((b (make-string len))
+;;              (n (read-string b 0 len cp)))
+;;         (cond ((> n len)
+;;                (error "Can't happen: n>len in stream->string"))
+;;               ((< n 0)                  ;EOF
+;;                (apply string-append (reverse strings)))
+;;               ((= n len)                ;full buffer
+;;                (loop (cons b strings)))
+;;               ((= n 0)                  ;can this happen?
+;;                (loop strings))
+;;               (else                     ;0 < n < len -- partial buffer
+;;                (loop (cons (substring b 0 n)
+;;                            strings))))))))
 
 
 ;; CALL-AND-EXPECT-RESPONSE : symbol string number string proc -> void
@@ -166,14 +184,14 @@
              (if check-headers
                  (check-headers headers))
              (if (failures-in-block?)
-                 (format #t "test ~a:~%  status=~a(~a)  type=~a(~a)~a  content-length=~a~%  content=~a~%"
+                 (format #t "test ~a:~%  status=~a(~a)  type=~a(~a)~a  content-length=~a lines~%  content=~s~%"
                          (quasiquote id)
                          status expected-status
                          (headers 'content-type) expected-type
                          (if accept-header
                              (format #f "(accept ~a)" accept-header)
                              "")
-                         (and content (string-length content))
+                         (and content (length content))
                          (cond ((not content)
                                 "<none>")
                                ((= status expected-status)
@@ -198,8 +216,8 @@
  top "."
  200
  "text/html"
- (lambda (content-string)
-   (expect (top content) #t (> (string-length content-string) 0))))
+ (lambda (content)
+   (expect (top is-content) #t (> (length content) 0))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -386,8 +404,7 @@
 ;;
 ;; Now, finally, the reasoning/resolver cases
 
-;; simple1 is served as simple1.n3, but rewritten by the server from .../simple1
-(let ((testcases-url (resolve-resolver-url "/utype-resolver/test/testcases/")))
+(let ((testcases-url (resolve-resolver-url "test/testcases/")))
   (format #t "testcases-url=~a~%" testcases-url)
 
   ;; Call /superclasses without any query
@@ -406,6 +423,15 @@
    #f
    #f)
 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;;
+  ;; In this first bloc of tests -- down to `indirect' below -- the
+  ;; superclass relations are entirely internal to each namespace,
+  ;; so that this first block of tests is primarily testing retrieval
+  ;; and ingestion.
+
+  ;; simple1 is served as simple1.n3, but rewritten by the server from
+  ;; .../simple1
   (call-and-expect-response
    resolve1
    (string-append "superclasses?" testcases-url "simple1%23c2")
@@ -413,7 +439,7 @@
    "text/plain"
    (lambda (content)
      (expect resolve1-content
-             (string-append testcases-url "simple1#c1\r\n")
+             (list (string-append testcases-url "simple1#c1"))
              content)))
 
   ;; the same, but requesting an unsupported type in the response
@@ -436,7 +462,7 @@
    "text/plain"
    (lambda (content)
      (expect resolve3-content
-             (string-append testcases-url "simple3#c1\r\n")
+             (list (string-append testcases-url "simple3#c1"))
              content)))
 
   ;; A query to the same namespace, but querying for the superclasses of
@@ -448,7 +474,9 @@
    #f                                   ;don't care about the type
    (lambda (content)
      (expect resolve3-top-content       ;content should be empty (status 204)
-             "" content)))
+             #f content
+;;          "" content
+             )))
 
   ;; The GRDDL tests are served only as grddl{1,2,3,4}.html, and so
   ;; require transformation.
@@ -464,9 +492,9 @@
                            "text/plain"
                            (lambda (content)
                              (expect (base content)
-                                     (string-append testcases-url
+                                     (list (string-append testcases-url
                                                     base
-                                                    "#c1\r\n")
+                                                    "#c1"))
                                      content)))))))
     (test "grddl1")                     ;<code class="namespace">
     (test "grddl2")                     ;<html:base>
@@ -483,7 +511,7 @@
    "text/plain"
    (lambda (content)
      (expect resolve5-content
-             (string-append testcases-url "grddl-malformed1#c1\r\n")
+             (list (string-append testcases-url "grddl-malformed1#c1"))
              content)))
 
   ;; grddl-malformed2.html is almost identical to grddl-malformed1,
@@ -496,6 +524,39 @@
    502                                  ;502 Bad Gateway
    #f                                   ;don't care about the type
    #f)                                  ;...or the content
+
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;;
+  ;; Indirect cases -- referring to UTypes in other namespaces
+
+  ;; indirect: indirect1a:c1 < indirect1b:c1 < simple1:c1, but
+  ;; we load indirect1a first, and so the resolver must load indirect1b
+  ;; implicitly
+  (call-and-expect-response
+   indirect1
+   (string-append "superclasses?" testcases-url "indirect1a%23c1")
+   200
+   "text/plain"
+   (lambda (content)
+     (expect indirect1-content
+             (map (lambda (s)
+                    (string-append testcases-url s))
+                  '("indirect1b#c1" "simple1#c1"))
+             (sort-list content string<=?))))
+
+  ;; Circular case -- perfectly reasonable in RDF terms, but the resolver
+  ;; has to avoid getting into a loop.
+  (call-and-expect-response
+   circular1
+   (string-append "superclasses?" testcases-url "circular1a%23c1")
+   200
+   "text/plain"
+   (lambda (content)
+     (expect circular1-content
+             (map (lambda (s)
+                    (string-append testcases-url s))
+                  '("circular1b#c1" "circular1c#c1"))
+             (sort-list content string<=?))))
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;;
@@ -550,12 +611,17 @@
    200
    "text/plain"
    (lambda (content)
-     ;; check that the string starts with an angle bracket
-     ;; (ideally, we'd check that every line starts with that, or
-     ;; match a suitable regexp on every line)
+     ;; check that each line starts with an angle bracket
      (expect description-triples-angle-bracket
-             #\<
-             (string-ref content 0)))
+             #t
+             (let loop ((c content))
+               (cond ((not c)           ;can only happen first time
+                      #f)
+                     ((null? c)         ;finished!
+                      #t)
+                     (else
+                      (and (char=? #\< (string-ref (car c) 0))
+                           (loop (cdr c))))))))
    #f)
 
   ;; same, but requiring N3
@@ -615,7 +681,8 @@
    #f
    (lambda (content)
      (expect delete-simple1-content ;content should be empty (status 204)
-             "" content))
+             #f
+             content))
    #f)
 
   ;; ...and check that it's gone, and that other stuff hasn't
@@ -636,6 +703,9 @@
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;;
   ;; Error cases
+  ;;
+  ;; These are invalid namespace documents -- that is, we blame
+  ;; the authors of these documents, and it's not our fault.
   (for-each (lambda (f)
               (call-and-expect-response
                (invalid-rdf ,f)
@@ -643,7 +713,12 @@
                502                      ;502 Bad Gateway
                #f
                #f))
-            '("error1.n3" "error2.n3" "error3.rdf" "error4.rdf"))
+            '(;; first four are malformed RDF files, and so should produce
+              ;; parsing errors
+              "error1.n3" "error2.n3" "error3.rdf" "error4.rdf"
+              ;; error5 is syntactically OK, but points to an unretrievable
+              ;; namespace
+              "error5%23c1"))
 
 ) ; end of LET for TESTCASES-URL
 
