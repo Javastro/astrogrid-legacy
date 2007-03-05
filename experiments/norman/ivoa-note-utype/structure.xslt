@@ -164,7 +164,7 @@
         <x:number count="h:div[@class='section']"
                   level='multiple'
                   format='A.1'/>
-        <x:text>–</x:text>
+        <x:text>. </x:text>
       </x:when>
       <x:otherwise>
         <x:number count="h:div[@class='section']"
