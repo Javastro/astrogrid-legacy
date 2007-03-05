@@ -52,9 +52,10 @@ response, or else the resolver returns status 406 (Not Acceptable).</p>
 <em>&lt;uri&gt;</em>'s namespace, then it tries to find out about it
 as discussed below in <span class='xref' >discovery</span>, and caches
 the result indefinitely.  If it is unable to process the response from
-the UType server -- either because it retrieves malformed RDF or
-because it is unable to parse returned HTML -- then it fails with a
-`not my fault' status 502 (Bad Gateway).</p>
+the UType server -- because it retrieves malformed RDF, because it is
+unable to parse returned HTML, or because it comes across a namespace
+which cannot be retrieved  -- then it fails with a `not my fault'
+status 502 (Bad Gateway).</p>
 </div>
 
 <div class='section'>
@@ -132,6 +133,14 @@ been configured to serve different representations of the
 
 <p>Once the resolver has retrieved the description of the UTypes in
 the given namespace, it caches them indefinitely.</p>
+
+<p>If the resolver cannot retrieve a namespace, that is a user error,
+since (a) no-one should create UTypes unless their namespace is
+retrievable as described here, and (b) even if they do, no-one should
+refer to such a namespace.  The resolver typically reports this error
+with an error status 502 Bad Gateway, which basically means that it
+failed while being a gateway, so the underlying problem is not the
+resolver's fault!</p>
 
 <div class='section' id='discovery-rdf' >
 <p class='title'>Finding RDF</p>

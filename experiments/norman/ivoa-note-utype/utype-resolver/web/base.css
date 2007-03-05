@@ -48,6 +48,8 @@ pre {
   padding: 1em;
 }
 
+span.userinput { font-weight: bold; }
+
 table {
   background: #DDE;
   font-size: smaller;

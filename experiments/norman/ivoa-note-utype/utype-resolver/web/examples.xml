@@ -20,7 +20,7 @@ replaced by the actual host and port of this server.</p>
 <div class='section'>
 <p class='title'>A simple case</p>
 
-<p><a href='/utype-resolver/test/testcases/simple1.n3'
+<p><a href='test/testcases/simple1.n3'
       ><code>simple1</code></a> is a very simple case, with a single
 RDF file being served.</p>
 </div>
@@ -28,19 +28,19 @@ RDF file being served.</p>
 <div class='section'>
 <p class='title'>An example of redirection</p>
 
-<p><code>simple2</code> is a declaration of a simple pair of UTypes,
-in the namespace
+<p><a href='test/testcases/simple2' ><code>simple2</code></a> is a
+declaration of a simple pair of UTypes, in the namespace
 <code>http://hostport/utype-resolver/test/testcases/simple2</code>,
 and the self-test web server within the UType-resolver application is
 configured to serve this resource in a variety of representations.  If
-you retrieve the <a href='/utype-resolver/test/testcases/simple2'
+you retrieve the <a href='test/testcases/simple2'
 >namespace URL</a> within a browser, you will retrieve an HTML
 document.  If you retrieve the same URL using curl, and say that you
 will accept <code>text/rdf+n3</code> (the MIME type for the
 `Notation3' representation of RDF), you will get that:</p>
 <pre>
 % curl -H accept:text/rdf+n3 -L \
-    http://hostport/utype-resolver/test/testcases/simple2
+    <a href="test/testcases/simple2" >http://hostport/utype-resolver/test/testcases/simple2</a>
 @prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;.
 @prefix utype: &lt;http://example.ivoa.net/utypes#&gt;.
 @prefix x: &lt;http://hostport/utype-resolver/test/testcases/simple2#&gt;.

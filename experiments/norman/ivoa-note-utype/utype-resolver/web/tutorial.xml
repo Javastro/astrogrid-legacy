@@ -13,13 +13,6 @@
 
 <p>Contents:</p>
 <?toc?>
-<!--
-<ul>
-<li><a href='#creating'>Creating and documenting UTypes</a></li>
-<li><a href='#relationships'>Declaring UType relationships</a></li>
-<li><a href='#embedding'>Embedding declarations in HTML</a></li>
-</ul>
--->
 
 <p>The <a href='note.html' >draft IVOA Note</a> covering UTypes
 describes a three-step process for declaring and describing
@@ -57,16 +50,16 @@ these is yet true.</em></p>
 <div class='section' id='creating'>
 <p class='title'>Creating and documenting UTypes</p>
 
-<p>Let's suppose that you control the (DNS) domain
-<code>example.org</code>, and you want to create UTypes based on that
-name, in a namespace such as <code>http://example.org/my-utypes</code> (a
-real example would probably include version numbers).
-Let's further suppose that you want to create a UType in this
-namespace called <code>sharpBounds</code>, which is a more specific
-version of the (presumed standardised) IVOA Characterization
-<code>coverage-bounds</code> concept, the full URI version of whose UType
-is
-<code>http://www.ivoa.net/ut/characterization#coverage-bounds</code>.</p>
+<p>Let's suppose that you want to create a new UType
+<code>sharpBounds</code>, which is a more specific version of the
+(presumed standardised) IVOA Characterization
+<code>coverage-bounds</code> concept, the full URI version of whose
+UType is
+<code>http://www.ivoa.net/ut/characterization#coverage-bounds</code>.
+You control the (DNS) domain <code>example.org</code>, and can commit
+to long-term maintainance of URLs in that domain.  Thus you decide to
+create your <code>sharpBounds</code> UType in the namespace
+<code>http://example.org/my-utypes</code>.</p>
 
 <p>The first thing to do is to create a web page at
 <code>http://example.org/my-utypes.html</code>, which includes, somewhere
@@ -81,10 +74,10 @@ within 10nm.  This is more specific than the IVOA
 
 <p>The only required feature here is that there is a link anchor,
 <code>&lt;a name="sharpBounds"&gt;</code>, containing the name of the
-new UType.</p>
+new UType.  This documents the UType.</p>
 
 <p>So you've created and documented your UType.  The next step is to
-explain this UType's relationship to the well-known
+explain this UType's relationship to the (by assumption) well-known
 <code>coverage-bounds</code> UType, in a machine-processable form.</p>
 </div>
 
@@ -105,7 +98,9 @@ myns:sharpBounds a utypes:UType;
 
 <p>This uses the (not yet standardised)
 <code>http://example.ivoa.net/utypes#UType</code> class to identify
-the <code>sharpBounds</code> concept as a UType.</p>
+the <code>sharpBounds</code> concept as a UType.  You can
+alternatively use the RDF/XML notation for RDF if you wish, but that
+notation is harder to write, and offers few advantages.</p>
 
 <p>The required feature here is that the new <code>sharpBounds</code>
 is declared as a <code>utypes:UType</code>, in a namespace which
@@ -137,8 +132,8 @@ href='interface.html#discovery' >interface description</a>.</p>
 rather than the <code>example.org</code> one, then you can immediately
 retrieve the list of superclasses of your new UType using this
 resolver.  Retrieve the equivalent of <a
-href='/utype-resolver/superclasses?http://example.org/my-utypes%23sharpBounds'
-><code>.../utype-resolver/superclasses?http://example.org/my-utypes%23sharpBounds</code></a>,
+href='superclasses?http://example.org/my-utypes%23sharpBounds'
+><code>http://hostport/utype-resolver/superclasses?http://example.org/my-utypes%23sharpBounds</code></a>,
 either in a browser, or at the command-line using
 <code>curl</code>:</p>
 <pre>
@@ -255,6 +250,57 @@ Class c3 is a subclass of
 </pre>
 
 <p>...but that <em>really</em> oughtn't to be encouraged.</p>
+</div>
+
+<div class='section'>
+<p class='title'>Maintaining your UType</p>
+
+<p>Once you've publicised your UType, you are committed to maintaining
+the URL which describes it indefinitely, so choose the namespace domain
+carefully with that in mind.</p>
+
+<p>If you find bugs in your UType declarations, you should fix them,
+but you shouldn't change the meaning of UTypes once you've publicised
+them.  If you find you want to do that, you should create a new set of
+UTypes (version numbers in the namespace are obviously a good idea),
+and declare your new UTypes as subclasses of the UTypes in the older
+version.</p>
+
+</div>
+
+<div class='section'>
+<p class='title'>Deleting UTypes from the resolver</p>
+
+<p>You can't delete UTypes from the world, but you might need to tell
+a resolver to forget what it knows about a namespace, while you are in
+the process of developing it.  You can't do this with
+<code>curl</code>, so you have to do it by hand.  Supposing you have a
+resolver at <code>localhost</code> port 8080, and want
+to delete its knowledge of the namespace
+<code>http://localhost:8080/utype-resolver/test/testcases/simple1</code>,
+you can perform the HTTP transaction `by hand' as follows:</p>
+<pre>
+% <span class='userinput' >telnet localhost 8080</span>
+Trying ::1...
+Connected to localhost.
+Escape character is '^]'.
+<span class='userinput' >DELETE /utype-resolver/description?http://localhost:8080/utype-resolver/test/testcases/simple1 HTTP/1.0</span>
+               <em>&lt;-- add this second newline to terminate the request</em>
+HTTP/1.1 204 No Content
+Server: Apache-Coyote/1.1
+Date: Sat, 03 Mar 2007 18:43:11 GMT
+Connection: close
+
+Connection closed by foreign host.
+%
+</pre>
+
+<p>Try doing that with some of the namespaces on this server (listed
+<a href="description" >here</a>).  It's OK to do this, since the next
+time you or anyone else asks this resolver for the superclasses of a
+UType in that namespace, the resolver will simply re-retrieve the
+definition.</p>
+
 </div>
 
 <div class='trailer'>

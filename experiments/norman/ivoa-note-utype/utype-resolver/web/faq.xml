@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>UType Resolver: Probably Asked Questions</title>
+<link rel="stylesheet"
+      type="text/css"
+      href="base.css"/>
+</head>
+
+<body>
+<h1>UType resolver: probably asked questions</h1>
+
+<p>I can't say these are literally <em>Frequently</em> Asked
+Questions, because few folk have had the change to ask any so far.
+However the catechetic style is usefully compact.</p>
+
+<div class='section'>
+<p class='title'>Questions</p>
+
+<div class='section'>
+<p class='title'>How do I register UTypes with the resolver?</p>
+
+<p>You don't.</p>
+
+<p>The resolver isn't intended to be a central service, but a local
+one, and when you start it up (currently within some local Tomcat), it
+doesn't know about any UTypes at all.  The requirement that all UTypes
+have a namespace which is resolvable means that the resolver can
+retrieve the details for a namespace only when it's first asked about
+that namespace.</p>
+</div>
+
+<div class='section'>
+<p class='title'>Wouldn't a registry be a longer-term solution?</p>
+
+<p>Because URLs break?  If you don't want your UType URLs to break,
+then don't break them -- the URL's on your server after all.  It's a
+myth that URLs are somehow more fragile than registry entries: do you
+think that <code>loc.gov</code> is going away any time soon?  Or
+<code>parliament.uk</code>?</p>
+
+<p>The other things a registry arguably gives you are documentation
+standards, and the assurance that there has been some sort of review
+process.  Documentation standards are taken care of here because if
+your UType isn't documented by RDF, then it simply won't work.</p>
+
+<p>Part of the point of this approach to UType definition is that it
+permits a range of different processes, from fairly informal UTypes,
+to semi-formal agreements, all the way up to fully thrashed-out
+definitions for the class of UTypes defined at an
+<code>ivoa.net</code> URL.</p>
+</div>
+
+<div class='section'>
+<p class='title'>Is this flexible enough?</p>
+
+<p>Very probably.</p>
+
+<p>The `machine-readable documentation' of the UType definition is in
+RDF, and a very simple application of RDF at that, using nothing more
+than RDF's subclassing relation.  There's plenty more you could
+potentially do, here.</p>
+</div>
+
+<div class='section'>
+<p class='title'>Do I need Tomcat?</p>
+<p>Right now, yes.</p>
+<p>The resolver is implemented as a Tomcat servlet at present, but if
+there's sufficient interest, I plan to create a standalone version of
+it as well.  If you want to play with the resolver locally, get in
+touch with me.</p>
+</div>
+
+<div class='section'>
+<p class='title'>How do I get a local resover?</p>
+<p>Currently, you ask <a href='http://nxg.me.uk' >me</a>, and I'll be
+delighted to point you towards the <code>.war</code> file, or the
+source.  When a couple more folk have played with the server, I'll
+make it more trivially available.</p>
+</div>
+
+</div>
+
+<div class='trailer'>
+<p><a href='index.html' >utype-resolver</a></p>
+</div>
+
+</body>
+</html>
