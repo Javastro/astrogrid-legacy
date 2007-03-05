@@ -170,7 +170,7 @@
         <x:number count="h:div[@class='section']"
                   level='multiple'
                   format='1.1'/>
-        <x:text>–</x:text>
+        <x:text>. </x:text>
       </x:otherwise>
     </x:choose>
     <x:apply-templates select="h:p[@class='title']/text()"/>
