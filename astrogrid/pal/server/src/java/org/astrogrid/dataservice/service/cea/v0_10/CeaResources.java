@@ -1,10 +1,10 @@
 /*
- * $Id: CeaResources.java,v 1.14 2007/02/20 12:22:15 clq2 Exp $
+ * $Id: CeaResources.java,v 1.1 2007/03/06 11:37:21 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.dataservice.service.cea;
+package org.astrogrid.dataservice.service.cea.v0_10;
 
 import java.io.IOException;
 import org.apache.commons.logging.Log;
