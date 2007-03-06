@@ -136,7 +136,7 @@ public abstract class DefaultOAIService {
     public XMLStreamReader ListMetadataFormats(Document query) {
        String oaiServlet = oaiServletURL + "?verb=ListMetadataFormats";       
        NodeList nl = null;
-       if( (nl = query.getElementsByTagName("identifier")).getLength() > 0  )
+       if( (nl = query.getElementsByTagNameNS("*","identifier")).getLength() > 0  )
             oaiServlet += "&identifier=" + nl.item(0).getFirstChild().getNodeValue(); 
        Document resultDoc = queryOAI(oaiServlet);
        return addWrapperElement("ListMetadataFormatsResponse",resultDoc);
@@ -179,13 +179,13 @@ public abstract class DefaultOAIService {
         String oaiServlet = oaiServletURL + "?verb=GetRecord";       
         NodeList nl = null;
         Document resultDoc;
-        if( (nl = query.getElementsByTagName("identifier")).getLength() > 0  ) 
+        if( (nl = query.getElementsByTagNameNS("*","identifier")).getLength() > 0  ) 
            oaiServlet += "&identifier=" + nl.item(0).getFirstChild().getNodeValue();
         else {
         	 resultDoc = (new SOAPFaultException("Server Error: " + "No Identifier given","No Identifier given",oaiWSDLNS, SOAPFaultException.HARVESTSOAP_TYPE)).getFaultDocument();
              return STAXUtils.createXMLStreamReader(new StringReader(DomHelper.DocumentToString(resultDoc)));        	 
         }
-        if( (nl = query.getElementsByTagName("metadataPrefix")).getLength() > 0  )
+        if( (nl = query.getElementsByTagNameNS("*","metadataPrefix")).getLength() > 0  )
          oaiServlet += "&metadataPrefix=" + nl.item(0).getFirstChild().getNodeValue();
         else
          oaiServlet += "&metadataPrefix=ivo_vor";
@@ -203,17 +203,17 @@ public abstract class DefaultOAIService {
     public XMLStreamReader ListIdentifiers(Document query) {
        String oaiServlet = oaiServletURL + "?verb=ListIdentifiers";
        NodeList nl = null;      
-       if( (nl = query.getElementsByTagName("metadataPrefix")).getLength() > 0  )
+       if( (nl = query.getElementsByTagNameNS("*","metadataPrefix")).getLength() > 0  )
         oaiServlet += "&metadataPrefix=" + nl.item(0).getFirstChild().getNodeValue();
        else 
          oaiServlet += "&metadataPrefix=ivo_vor";        
-       if( (nl = query.getElementsByTagName("from")).getLength() > 0  ) 
+       if( (nl = query.getElementsByTagNameNS("*","from")).getLength() > 0  ) 
          oaiServlet += "&from=" + nl.item(0).getFirstChild().getNodeValue();
-       if( (nl = query.getElementsByTagName("until")).getLength() > 0  )
+       if( (nl = query.getElementsByTagNameNS("*","until")).getLength() > 0  )
          oaiServlet += "&until=" + nl.item(0).getFirstChild().getNodeValue();
-       if( (nl = query.getElementsByTagName("set")).getLength() > 0  )
+       if( (nl = query.getElementsByTagNameNS("*","set")).getLength() > 0  )
            oaiServlet += "&set=" + nl.item(0).getFirstChild().getNodeValue();       
-       if( (nl = query.getElementsByTagName("resumtptionToken")).getLength() > 0  )
+       if( (nl = query.getElementsByTagNameNS("*","resumtptionToken")).getLength() > 0  )
            oaiServlet += "&resumptionToken=" + nl.item(0).getFirstChild().getNodeValue();       
        Document resultDoc = queryOAI(oaiServlet);
        return addWrapperElement("ListIdentifiersResponse",resultDoc);
@@ -231,17 +231,17 @@ public abstract class DefaultOAIService {
     public XMLStreamReader ListRecords(Document query) {
          String oaiServlet = oaiServletURL + "?verb=ListRecords";
          NodeList nl = null;        
-         if( (nl = query.getElementsByTagName("metadataPrefix")).getLength() > 0  )
+         if( (nl = query.getElementsByTagNameNS("*","metadataPrefix")).getLength() > 0  )
           oaiServlet += "&metadataPrefix=" + nl.item(0).getFirstChild().getNodeValue();
          else
           oaiServlet += "&metadataPrefix=ivo_vor";
-         if( (nl = query.getElementsByTagName("from")).getLength() > 0  ) 
+         if( (nl = query.getElementsByTagNameNS("*","from")).getLength() > 0  ) 
            oaiServlet += "&from=" + nl.item(0).getFirstChild().getNodeValue();
-         if( (nl = query.getElementsByTagName("until")).getLength() > 0  )
+         if( (nl = query.getElementsByTagNameNS("*","until")).getLength() > 0  )
            oaiServlet += "&until=" + nl.item(0).getFirstChild().getNodeValue();
-         if( (nl = query.getElementsByTagName("set")).getLength() > 0  )
+         if( (nl = query.getElementsByTagNameNS("*","set")).getLength() > 0  )
              oaiServlet += "&set=" + nl.item(0).getFirstChild().getNodeValue();         
-         if( (nl = query.getElementsByTagName("resumtptionToken")).getLength() > 0  )
+         if( (nl = query.getElementsByTagNameNS("*","resumtptionToken")).getLength() > 0  )
              oaiServlet += "&resumptionToken=" + nl.item(0).getFirstChild().getNodeValue();                
          Document resultDoc = queryOAI(oaiServlet);
          return addWrapperElement("ListRecordsResponse",resultDoc);

@@ -335,7 +335,7 @@ public abstract class DefaultHarvestService {
            
            NodeList moreTokens = null;
            //if there are more paging(next) then keep calling them.
-           if( doc != null && (moreTokens = doc.getElementsByTagName("resumptionToken")).
+           if( doc != null && (moreTokens = doc.getElementsByTagNameNS("*","resumptionToken")).
                                     getLength() > 0 && moreTokens.item(0).hasChildNodes()) {
               Node nd = moreTokens.item(0);
               /*
