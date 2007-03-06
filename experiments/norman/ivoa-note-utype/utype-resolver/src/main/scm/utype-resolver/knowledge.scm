@@ -295,10 +295,8 @@
                                                   ;; report failures as
                                                   ;; `not my fault'
                                                   '|SC_BAD_GATEWAY|)
-                 ;; XXX here or elsewhere: add assertions that the namespace
-                 ;; URI is a 'namespace', and perhaps the time, such that
-                 ;; first-sight-of-namespace can query for this.
-                 ;; Use new rdf:ingest-from-string/n3
+                 ;; XXX This is a point at which we could usefully add
+                 ;; annotations such as the time, for expiry purposes.
                  )
                 ((4)
                  ;; not necessarily a problem -- loop
@@ -330,6 +328,11 @@
 ;; If we haven't seen the namespace before, then load it and re-call ourselves.
 ;; If one or more of the superclasses is in a namespace we haven't seen before,
 ;; then load them and re-call ourselves.
+;;
+;; XXX This function is probably full of race conditions, connected with
+;; namespace-seen and ingest-utype-declaration/uri!  Does this simply require
+;; wrapping the whole body in a synchronisation block?  Synchronising on what,
+;; though?  And would the procedure's re-calling itself mess that up?
 (define/contract (query-utype-superclasses (utype-a (or (jstring? utype-a)
                                                         (string? utype-a)
                                                         (uri? utype-a)))
@@ -350,7 +353,7 @@
                  (report-exception
                   'query-utype-superclasses
                   '|SC_BAD_GATEWAY|     ;not our fault
-                  "Unable to determine superclasses (unretrievable namespace?):~%~s~%"
+                  "Unable to determine superclasses (unretrievable namespace?):~%~s~%~%~%(I don't believe this is my fault, by the way...)"
                   (if (and (pair? msg)
                            (symbol? (car msg))) ;yup!
                       (format #f "~s: ~a" (car msg) (cdr msg))
@@ -387,7 +390,6 @@
       (if (and model
                (namespace-seen? utype))
           (let ((results (map ->string (get-known-superclasses model utype))))
-            (chatter "query-utype-superclasses: ~s -> ~s" utype results)
             (if (null? results)
                 #f                      ;definitely no superclasses
                 (let ((unknown-namespaces (remove namespace-seen? results)))
