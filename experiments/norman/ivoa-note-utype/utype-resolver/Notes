@@ -1,12 +1,21 @@
 
-What's here is largely working (2007-03-01), but here are some ideas
-for what might happen next.
+Building: It needs tagsoup and quaestorlib, in the versions noted in
+build.xml
+
+
+
+What's here is largely working (2007-03-06, tagged v0-1-7), but here
+are some ideas for what might happen next.
 
 The following features are probably not terribly important, and I
 don't plan to do anything with them immediately.
 
 * Add translator/validator for HTML->RDF debugging.  Should this just
   do HTML->RDF translation, or create and dump an RDF model?
+
+* Have a think about the potential race condition within
+  knowledge.scm:query-utype-superclases.  Shouldn't be too hard to
+  solve, but it's not trivial.
 
 * Add more REST methods: PUT namespaces (?); HEAD to test
   whether a definition has been changed; support If-Modified-Since and
@@ -17,6 +26,11 @@ don't plan to do anything with them immediately.
 
 * Tighter integration with Quaestor, to support SPARQL queries of
   namespaces (ie, start to turn this into a guerilla UType registry).
+
+* Do I have to worry about making it aware of (outgoing) HTTP
+  proxies.  I don't think so, but it shouldn't be a massive challenge
+  if so (tweak to knowledge.scm:retrieve-uri, plus something in the
+  knowledgebase metadata).
 
 * Make a version of the resolver, or of Quaestor, which is standalone,
   rather than relying on Tomcat.  Use restlets.org, or some standalone
