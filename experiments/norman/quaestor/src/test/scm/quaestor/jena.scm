@@ -10,22 +10,19 @@
 (import* misc sort-list)
 
 
-(expect mime-type-1
-        '("N3"
-          "N3"
-          "RDF/XML"
-          "N3"
-          "N3"
-          "N-TRIPLE"
-          #f)
-        (map rdf:mime-type->language
-             '("application/n3"
-               "text/rdf+n3"
-               "application/rdf+xml"
-               "*/*"
-               #f
-               "text/plain"
-               "wibble")))
+(let ((maps '(("application/n3"                      . "N3")      
+              ("text/rdf+n3"                         . "N3")      
+              ("text/rdf+n3; charset=utf-8"          . "N3")      
+              ("application/rdf+xml"                 . "RDF/XML") 
+              ("application/rdf+xml; charset=wibble" . "RDF/XML") 
+              ("*/*"                                 . "N3")      
+              (#f                                    . "N3")
+              ("text/plain"                          . "N-TRIPLE")
+              ("wibble"                              . #f))))
+  (expect mime-type-1
+          (map cdr maps)
+          (map rdf:mime-type->language
+               (map car maps))))
 
 ;; Remove this -- rdf:language-ok? is not currently exported from jena.scm
 ;; (expect mime-type-2
@@ -37,16 +34,14 @@
 ;;                "OWL"                    ;for example -- shouldn't be recognised
 ;;                #f)))
 
-(expect mime-type-3
-        '("application/rdf+xml"
-          "text/rdf+n3"
-          "text/plain"
-          #f)
-        (map rdf:language->mime-type
-             '("RDF/XML"
-               "N3"
-               "N-TRIPLE"
-               "wibble")))
+(let ((maps '(("RDF/XML"  . "application/rdf+xml")
+              ("N3"       . "text/rdf+n3")
+              ("N-TRIPLE" . "text/plain")
+              ("wibble"   . #f))))
+  (expect mime-type-3
+          (map cdr maps)
+          (map rdf:language->mime-type
+               (map car maps))))
 
 ;; Given a string containing N3, return the Jena model corresponding to it
 (define n3->model rdf:ingest-from-string/n3)

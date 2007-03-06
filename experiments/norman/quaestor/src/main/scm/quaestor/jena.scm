@@ -7,7 +7,7 @@
 
 (require-library 'sisc/libs/srfi/srfi-1)
 (require-library 'sisc/libs/srfi/srfi-13)
-;(require-library 'sisc/libs/srfi/srfi-26)
+(require-library 'sisc/libs/srfi/srfi-26)
 
 (require-library 'quaestor/utils)
 
@@ -31,9 +31,10 @@
 (import* srfi-1
          fold)
 (import* srfi-13
-         string-prefix?)
-;; (import* srfi-26
-;;          cut cute)
+         string-prefix?
+         string-index)
+(import* srfi-26
+         cut)
 (import* utils
          is-java-type?
          iterator->list)
@@ -157,13 +158,18 @@
 ;; one of the strings accepted by RDF:LANGUAGE-OK?.
 ;; As a convenience, the `string' may be passed as #f,
 ;; to retrieve the default language.
+;; Any parameters on the MIME type are ignored.
 ;; If the MIME type isn't recognised, return #f.
 (define/contract (rdf:mime-type->language (s string-or-false?)
                                           -> string-or-false?)
-  (if s
-      (let ((p (assoc s mime-lang-mappings)))
-        (and p (cdr p)))
-      (rdf:mime-type->language "*/*")))
+  (let ((p (assoc (cond ((not s)
+                         "*/*")
+                        ((string-index s #\;)
+                         => (cut substring s 0 <>))
+                        (else
+                         s))
+                  mime-lang-mappings)))
+    (and p (cdr p))))
 
 ;; RDF:LANGUAGE->MIME-TYPE : string -> string-or-false
 ;;
@@ -238,6 +244,13 @@
 ;; namely one of the SC_* fields in javax.servlet.http.HttpServletResponse.
 ;; In this case, this indicates the HTTP status which should be used when
 ;; reporting any error, instead of the default SC_BAD_REQUEST.
+;;
+;; Is there an issue about encodings, here?  Interface
+;; com.hp.hpl.jena.rdf.model.RDFReader suggests that it handles encodings,
+;; but it's not transparently clear to me quite how.  RDF/XML should be OK,
+;; since XML should have the encoding declared in the XML declaration,
+;; but can the same be said for Notation3 -- is that always UTF-8,
+;; for example?
 (define (rdf:ingest-from-stream/language stream base-uri language . exception)
   (cond ((null? exception)
          (*rdf:ingest-from-stream/language stream base-uri language #f))
