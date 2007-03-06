@@ -1,4 +1,4 @@
-/*$Id: ConeResources.java,v 1.11 2006/10/17 10:11:41 clq2 Exp $
+/*$Id: ConeResources.java,v 1.1 2007/03/06 11:35:31 kea Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.
  *
  **/
-package org.astrogrid.dataservice.service.cone;
+package org.astrogrid.dataservice.service.cone.v0_10;
 
 import java.io.IOException;
 import org.astrogrid.cfg.ConfigFactory;
@@ -61,6 +61,9 @@ public class ConeResources extends VoResourceSupport implements VoResourcePlugin
 
 /*
  $Log: ConeResources.java,v $
+ Revision 1.1  2007/03/06 11:35:31  kea
+ Moved ConeResources.java into version-specific subdir.
+
  Revision 1.11  2006/10/17 10:11:41  clq2
  PAL_KEA_1869
 
