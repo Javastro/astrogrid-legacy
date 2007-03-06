@@ -148,11 +148,29 @@ resolver's fault!</p>
 <p>The <code>.n3</code> file is expected to contain RDF written using
 <a href='http://www.w3.org/DesignIssues/Notation3.html' >Notation3</a>
 as illustrated <a href='tutorial.html' >elsewhere</a>; the
-<code>.rdf</code> file must contain RDF written using the less
-readable RDF/XML notation.</p>
+<code>.rdf</code> file must contain RDF written using the much less
+readable <a href='http://www.w3.org/TR/rdf-syntax-grammar/'
+>RDF/XML</a> notation.</p>
 
 <p>This is the most straightforward method of providing RDF, but the
-following method might be more convenient for experiments.</p>
+method described in <span class='xref' >discovery-html</span> might be
+more convenient for experiments.</p>
+</div>
+
+<div class='section'>
+<p class='title'>MIME types</p>
+<p>Any <code>.n3</code> and <code>.rdf</code> files must be served
+with the correct MIME types, which are
+<code>text/rdf+n3</code> and <code>application/rdf+xml</code>
+respectively.</p>
+
+<p>As illustrated in the Note, you may set the MIME type for served
+files in Apache using a per-directory <code>.htaccess</code> file:</p>
+<pre>
+AddType application/rdf+xml .rdf
+AddType text/rdf+n3 .n3
+AddCharset UTF-8 .n3
+</pre>
 </div>
 
 <div class='section' id='discovery-html' >
