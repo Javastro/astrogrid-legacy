@@ -14,22 +14,23 @@
 <p>Contents:</p>
 <?toc?>
 
-<p>The <a href='note.html' >draft IVOA Note</a> covering UTypes
-describes a three-step process for declaring and describing
-UTypes:</p>
+<p>The 
+<a href='http://www.ivoa.net/Documents/latest/utype-uri.html' >IVOA Note</a>
+(<a href='note.html' >local copy</a>) covering UTypes
+describes a three-step process for declaring and describing them:</p>
 
 <ol>
 <li>Determine a namespace URI, creating a URI in a DNS domain that you
 control; then identify individual UType names respecting the syntax
-described in <a href='note.html#utype-uris' >section 2, UTypes as
+described in <a href='http://www.ivoa.net/Documents/latest/utype-uri.html#utype-uris' >section 2, UTypes as
 URIs</a>.</li>
 
 <li>Create documentation for the namespace, as described in <a
-href='note.html#utype-docs' >section 3, Documentation</a>.</li>
+href='http://www.ivoa.net/Documents/latest/utype-uri.html#utype-docs' >section 3, Documentation</a>.</li>
 
 <li>Create a simple RDF document expressing how the new UTypes relate
 to other standardised or well-known UTypes, as described in <a
-href='note.html#utype-rdf' >section 4, Shared semantics</a>.</li>
+href='http://www.ivoa.net/Documents/latest/utype-uri.html#utype-rdf' >section 4, Shared semantics</a>.</li>
 </ol>
 
 <p>The first two steps are straightforward, and basically consist of
@@ -45,7 +46,7 @@ that the <code>http://www.ivoa.net/ut/characterization</code>
 namespace has been standardized for the Characterisation model's
 UTypes, and that the <code>http://example.ivoa.net/utypes</code>
 namespace has been standardized for UTypes themselves.  Neither of
-these is yet true.</em></p>
+these is (yet) true.</em></p>
 
 <div class='section' id='creating'>
 <p class='title'>Creating and documenting UTypes</p>
@@ -109,18 +110,17 @@ matches the location of the <code>my-utypes.n3</code> file.</p>
 <div class='section'>
 <p class='title'>Configuring the web server</p>
 
-<p>The draft IVOA Note <a href='note.html#web-recipes' >suggests</a>
+<p>The IVOA Note <a href='http://www.ivoa.net/Documents/latest/utype-uri.html#web-recipes' >suggests</a>
 configuring your web server so that
 retrieving the URL <code>http://example.org/my-utypes</code> (note the
 absence of an `extension') will return either the HTML or the RDF
 depending on the value of the <code>Accept</code> header in the HTTP
 GET transaction.  This is not hard, and the Note includes a recipe for
 configuring Apache to do this; but there is a second method.  The
-resolver abides by the convention that if it tries and fails to
-retrieve the unadorned namespace name, then it will try to retrieve
-the namespace name followed by first <code>.n3</code> and then
-<code>.rdf</code>, as described in the <a
-href='interface.html#discovery' >interface description</a>.</p>
+resolver tries to retrieve the unadorned namespace name, but if it
+fails, it will then try to retrieve the namespace name followed by
+first <code>.n3</code> and then <code>.rdf</code>, as described in the
+<a href='interface.html#discovery' >interface description</a>.</p>
 
 <p>And that's all there is to it.</p>
 </div>
