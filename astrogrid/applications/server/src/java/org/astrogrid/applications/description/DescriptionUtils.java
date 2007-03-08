@@ -1,4 +1,4 @@
-/*$Id: DescriptionUtils.java,v 1.7 2004/09/22 10:52:50 pah Exp $
+/*$Id: DescriptionUtils.java,v 1.8 2007/03/08 14:35:25 clq2 Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import org.astrogrid.applications.beans.v1.InterfacesType;
 import org.astrogrid.applications.beans.v1.Output;
 import org.astrogrid.applications.beans.v1.ParameterRef;
 import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
+import org.astrogrid.applications.beans.v1.parameters.OptionList;
 import org.astrogrid.applications.beans.v1.parameters.XhtmlDocumentation;
 import org.astrogrid.applications.description.exception.ParameterNotInInterfaceException;
 
@@ -108,6 +109,7 @@ public class DescriptionUtils {
           paramDef.setDefaultValue(paramDesc.getDefaultValue());
           paramDef.setUnits(paramDesc.getUnits());
           paramDef.setAcceptEncodings(paramDesc.getAcceptEncodings());
+          paramDef.setOptionList(paramDesc.getOptionList());
          parameters.addParameter(paramDef);
       }
     
@@ -120,6 +122,12 @@ public class DescriptionUtils {
 
 /* 
 $Log: DescriptionUtils.java,v $
+Revision 1.8  2007/03/08 14:35:25  clq2
+gtr_apps_2056
+
+Revision 1.7.192.1  2007/03/01 17:35:16  gtr
+The OptionList is now transcribed with the other properties.
+
 Revision 1.7  2004/09/22 10:52:50  pah
 getting rid of some unused imports
 

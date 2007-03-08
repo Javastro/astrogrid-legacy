@@ -1,4 +1,4 @@
-/*$Id: ParameterDescription.java,v 1.4 2004/08/28 07:17:34 pah Exp $
+/*$Id: ParameterDescription.java,v 1.5 2007/03/08 14:35:25 clq2 Exp $
  * Created on 25-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.applications.description;
  
+import org.astrogrid.applications.beans.v1.parameters.OptionList;
 import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
 
 /** Description of a parameter to an application
@@ -37,12 +38,20 @@ public interface ParameterDescription {
     public abstract String getAcceptEncodings();
     /** default value for this parameter */
     public abstract String getDefaultValue();
+    /** Allowed values for this parameter */
+    public abstract OptionList getOptionList();
     
 
 
 }
 /* 
 $Log: ParameterDescription.java,v $
+Revision 1.5  2007/03/08 14:35:25  clq2
+gtr_apps_2056
+
+Revision 1.4.220.1  2007/03/01 17:34:56  gtr
+I added getOptionList().
+
 Revision 1.4  2004/08/28 07:17:34  pah
 commandline parameter passing - unit tests ok
 

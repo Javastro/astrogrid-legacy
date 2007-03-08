@@ -2,19 +2,17 @@
 <project>
     <extend>${basedir}/../project.xml</extend>
     <id>astrogrid-cea-server</id>
-    <currentVersion>2007.1.2</currentVersion>
+    <currentVersion>2007.1.03</currentVersion>
     <name>CEA server-framework</name>
     <description>This project builds a class library from which CEA services may be made.</description>
     <shortDescription>CEA framework for services</shortDescription>
-    
-  <reports>
-    <report>maven-changes-plugin</report>
-    <report>maven-javadoc-plugin</report>
-    <report>maven-junit-report-plugin</report>
-    <report>maven-pmd-plugin</report>
-    <report>maven-license-plugin</report>
-  </reports>
-  
+    <reports>
+        <report>maven-changes-plugin</report>
+        <report>maven-javadoc-plugin</report>
+        <report>maven-junit-report-plugin</report>
+        <report>maven-pmd-plugin</report>
+        <report>maven-license-plugin</report>
+    </reports>
     <packageGroups>
         <packageGroup>
             <title>Application Execution</title>
@@ -456,7 +454,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-contracts</artifactId>
-            <version>2006.3.05con</version>
+            <version>2007.1.1</version>
             <type>jar</type>
         </dependency>
         <!-- concurrency lib - for thread pools, factories, queues, etc. -->

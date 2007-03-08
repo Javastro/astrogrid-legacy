@@ -1,5 +1,5 @@
 /*
- * $Id: BaseParameterDescription.java,v 1.4 2005/07/05 08:27:01 clq2 Exp $
+ * $Id: BaseParameterDescription.java,v 1.5 2007/03/08 14:35:25 clq2 Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 
 package org.astrogrid.applications.description.base;
 
+import org.astrogrid.applications.beans.v1.parameters.OptionList;
 import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
 import org.astrogrid.applications.description.ParameterDescription;
 /**
@@ -48,6 +49,8 @@ public class BaseParameterDescription implements ParameterDescription {
    protected String subtype = "";
    protected String defaultValue = "";
    protected String units = "";
+   protected OptionList optionList;
+   
    public String getAcceptEncodings() {return acceptEncodings;}
    public void setAcceptEncodings(String a) {this.acceptEncodings = a;}
    public String getSubType() {return subtype;}
@@ -61,6 +64,9 @@ public class BaseParameterDescription implements ParameterDescription {
    
    public ParameterTypes getType() { return type;}
    public void setType(ParameterTypes type) {this.type= type;}
+   
+   public OptionList getOptionList() {return this.optionList;}
+   public void setOptionList(OptionList optionList) {this.optionList = optionList;}
    
   
     /**
