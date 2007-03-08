@@ -1,4 +1,4 @@
-/*$Id: ToolEditor.java,v 1.7 2007/01/24 14:04:44 nw Exp $
+/*$Id: ToolEditor.java,v 1.8 2007/03/08 17:47:12 nw Exp $
  * Created on 16-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,13 +10,11 @@
 **/
 package org.astrogrid.acr.dialogs;
 
+import java.net.URI;
+
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
-
 import org.w3c.dom.Document;
-
-import java.net.URI;
 
 /** Display the remote invocation document editor as a dialogue.
  * 
@@ -70,6 +68,9 @@ public interface ToolEditor {
 
 /* 
 $Log: ToolEditor.java,v $
+Revision 1.8  2007/03/08 17:47:12  nw
+updated interfaces.
+
 Revision 1.7  2007/01/24 14:04:44  nw
 updated my email address
 
