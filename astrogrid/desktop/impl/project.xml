@@ -102,18 +102,15 @@
 			    <strip>true</strip>    	                  
 	</properties>
 </dependency>  	
-	
-	<!-- groovy -->
 	<dependency>
-	 <groupId>groovy</groupId>
-	 <artifactId>groovy-all</artifactId>
-	 <version>1.0-jsr-06</version>
-	 <type>jar</type>
-	 <properties>
-		 <dist.bundle>true</dist.bundle>
-		 		    <strip>true</strip>    
-	 </properties>
-    </dependency>
+		<artifactId>l2fprod-common-outlookbar</artifactId>
+		<groupId>l2fprod</groupId>
+		<version>6.11</version>
+		<properties>
+			<dist.bundle>true</dist.bundle>
+			<strip>true</strip>
+		</properties>
+	</dependency>
 
     </dependencies>
 </project>
