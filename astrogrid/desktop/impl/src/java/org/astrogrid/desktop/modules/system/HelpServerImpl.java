@@ -1,4 +1,4 @@
-/*$Id: HelpServerImpl.java,v 1.12 2007/01/29 11:11:37 nw Exp $
+/*$Id: HelpServerImpl.java,v 1.13 2007/03/08 17:44:02 nw Exp $
  * Created on 17-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -202,7 +202,7 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
 	}
 
 	public JButton createHelpButton(String id) {
-		JButton b = new JButton(IconHelper.loadIcon("help.gif"));
+		JButton b = new JButton(IconHelper.loadIcon("help16.png"));
 		b.setToolTipText("Show help");
 		this.enableHelpOnButton(b, id);
 		return b;
@@ -215,6 +215,9 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
 
 /* 
 $Log: HelpServerImpl.java,v $
+Revision 1.13  2007/03/08 17:44:02  nw
+first draft of voexplorer
+
 Revision 1.12  2007/01/29 11:11:37  nw
 updated contact details.
 

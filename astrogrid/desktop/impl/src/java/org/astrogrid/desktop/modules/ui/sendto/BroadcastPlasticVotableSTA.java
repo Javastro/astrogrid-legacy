@@ -11,6 +11,8 @@ import java.util.List;
 import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.dnd.PreferredTransferable;
+import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.io.Piper;
 import org.votech.plastic.CommonMessageConstants;
 
@@ -35,6 +37,7 @@ public class BroadcastPlasticVotableSTA extends AbstractSTA {
 	public void actionPerformed(ActionEvent e) {
 		(new BackgroundWorker(getParent(),"Sending as VOTable") {
 			protected Object construct() throws Exception {
+				/* sends a votable inline - not much point, really
             	 if (getAtom().isDataFlavorSupported(VoDataFlavour.VOTABLE_STRING)) { // if is string, must be local...
             		 String vot;
              		if (getAtom().isDataFlavorSupported(VoDataFlavour.VOTABLE_STRING)) {
@@ -52,12 +55,12 @@ public class BroadcastPlasticVotableSTA extends AbstractSTA {
              		l.add(new URI("workbench:votable" + ++count));
              		sendLoadMessage(l);
                   		            		 
-            	 } else { 
+            	 } else { */
             		URL url = (URL)getAtom().getTransferData(VoDataFlavour.URL);
             		List l = new ArrayList();
             		l.add(url.toString()); //JDT plastic message arguments need to be xml-rpc types
             		sendLoadURLMessage(l);
-            	} 
+            	//} 
             	return null;
 			}
 		}).start();
@@ -66,8 +69,7 @@ public class BroadcastPlasticVotableSTA extends AbstractSTA {
 	
 	private static int count = 0;
 	protected boolean checkApplicability(PreferredTransferable atom) {
-		return (atom.isDataFlavorSupported(VoDataFlavour.VOTABLE)
-			|| atom.isDataFlavorSupported(VoDataFlavour.VOTABLE_STRING))
+		return (atom.isDataFlavorSupported(VoDataFlavour.VOTABLE))
 			&&  ( 
 					tupp.somethingAccepts(CommonMessageConstants.VOTABLE_LOAD_FROM_URL)
 					|| tupp.somethingAccepts(CommonMessageConstants.VOTABLE_LOAD)

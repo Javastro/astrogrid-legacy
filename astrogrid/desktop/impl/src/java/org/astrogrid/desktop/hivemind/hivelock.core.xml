@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+
+<module id="hivelock.core" version="1.0.0">
+
+	<dependency module-id="hiveutils"/>
+
+	<!--
+		Service that checks current user's permission.
+		Actual implementation depends on the specific Principal of the application
+	-->
+	<service-point	id="SecurityService"
+					interface="net.sourceforge.hivelock.SecurityService"
+					parameters-occurs="none">
+		<invoke-factory model="primitive">
+			<construct 	class="net.sourceforge.hivelock.SecurityServiceImpl"
+						autowire-services="false">
+				<log/>
+				<service>hivemind.ThreadLocalStorage</service>
+				<long>${auto-disconnect-timeout}</long>
+				<long>${scavenger-period}</long>
+				<event-listener service-id="hivemind.ShutdownCoordinator"/>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<contribution configuration-id="hivemind.FactoryDefaults">
+		<default symbol="auto-disconnect-timeout" value="3600"/>
+		<default symbol="scavenger-period" value="300"/>
+	</contribution>
+
+	<service-point	id="PrincipalHelper"
+					interface="net.sourceforge.hivelock.PrincipalHelperService"
+					parameters-occurs="none">
+	</service-point>
+
+	<service-point	id="UserContextStorage"
+					interface="net.sourceforge.hivelock.UserContextStorage"
+					parameters-occurs="none">
+		<invoke-factory model="primitive">
+			<construct 	class="net.sourceforge.hivelock.UserContextStorageImpl"
+						autowire-services="false">
+				<log/>
+				<service>SecurityService</service>
+				<event-listener service-id="SecurityService"/>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<!-- Factory for AuthorizationInterceptor -->
+	<service-point	id="AuthorizationInterceptor"
+					interface="org.apache.hivemind.ServiceInterceptorFactory"
+					parameters-occurs="0..n">
+		<invoke-factory	model="primitive">
+			<construct class="net.sourceforge.hivelock.AuthorizationInterceptorFactory">
+				<service>SecurityService</service>
+				<service>PrincipalHelper</service>
+			</construct>
+		</invoke-factory>
+
+		<parameters-schema>
+			<element name="method">
+				Defines the roles that are allowed to call methods matching the
+				given pattern. The roles are defined as a comma separated list 
+				of roles or * to mean that anybody is allowed, whatever her role.
+				
+				<attribute	name="pattern" required="true"/>
+				<attribute	name="roles" required="true"/>
+
+				<rules>
+					<create-object class="net.sourceforge.hivelock.AuthorizationContribution"/>
+					<read-attribute attribute="pattern" property="pattern"/>
+					<read-attribute attribute="roles" property="role"/>
+					<invoke-parent method="addElement"/>
+				</rules>
+			</element>
+		</parameters-schema>
+	</service-point>
+
+	<!--
+		Specific "user" ServiceModel.
+		This model creates an instance for each connected user.
+	-->
+	<contribution configuration-id="hivemind.ServiceModels">
+		<service-model	name="user" 
+						class="net.sourceforge.hivelock.UserServiceModelFactory"/> 
+	</contribution>
+</module>

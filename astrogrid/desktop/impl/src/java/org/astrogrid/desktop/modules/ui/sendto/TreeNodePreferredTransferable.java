@@ -10,6 +10,8 @@ import java.net.URL;
 import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.astrogrid.desktop.modules.ui.dnd.PreferredTransferable;
+import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.ui.scope.Retriever;
 import org.astrogrid.desktop.modules.ui.scope.SiapRetrieval;
 import org.astrogrid.desktop.modules.ui.scope.SsapRetrieval;

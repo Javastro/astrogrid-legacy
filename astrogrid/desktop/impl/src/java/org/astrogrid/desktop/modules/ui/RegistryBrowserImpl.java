@@ -1,4 +1,4 @@
-/*$Id: RegistryBrowserImpl.java,v 1.14 2007/01/29 10:44:37 nw Exp $
+/*$Id: RegistryBrowserImpl.java,v 1.15 2007/03/08 17:43:58 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,6 +32,7 @@ import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.votech.VoMon;
 /** Implementation of the registry browser component.
+ * just plonks a regGooglePanel in a main frame.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 30-Mar-2005
  *
  */
@@ -39,54 +40,30 @@ public class RegistryBrowserImpl extends UIComponentImpl implements  RegistryBro
 {
    
 
-    public RegistryBrowserImpl(RegistryInternal reg, HelpServerInternal hs,UIInternal ui,
-    		Configuration conf, BrowserControl browser, RegistryBrowser factory, 
-    		Ehcache cache1, Ehcache cache2
-    		, VoMon vomon, Preference pref) {
+    public RegistryBrowserImpl(HelpServerInternal hs,UIInternal ui, Configuration conf, 
+    		RegistryGooglePanel regChooser) {
         super(conf,hs,ui);
-        this.reg=reg;
-        this.browser =browser;
-        this.factory = factory;
-        this.cache1 = cache1;
-        this.cache2 = cache2;
-        this.vomon = vomon;
-        this.pref = pref;
-        initialize();        
-    }
-    protected final RegistryInternal reg;
-    protected final BrowserControl browser;
-    protected final RegistryBrowser factory;
-    protected final Ehcache cache1;
-    protected final Ehcache cache2;
-    protected final VoMon vomon;
-    protected final Preference pref;
-	private void initialize() {
-		this.setSize(425, 600); // same proportions as A4, etc., and 600 high.   
+        this.regChooser = regChooser;
+        this.regChooser.parent.set(this);
+		this.setSize(500, 800); // same proportions as A4, etc., and 600 high.   
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.registryBrowser");        
         JPanel pane = getMainPanel();
-        pane.add(getRegistryChooser(),BorderLayout.CENTER); 
+        pane.add(regChooser,BorderLayout.CENTER); 
         setJMenuBar(getJJMenuBar());
 		this.setContentPane(pane);
-		this.setTitle("Registry Browser");
-        setIconImage(IconHelper.loadIcon("java_lib_obj.gif").getImage());        
+		this.setTitle("Resource Browser");
+        setIconImage(IconHelper.loadIcon("search16.png").getImage());   
+        
 	}
     
-    private RegistryGooglePanel regChooser;
-    private RegistryGooglePanel getRegistryChooser() {
-        if (regChooser == null) {
-            regChooser = new RegistryGooglePanel(this,reg,browser,factory,cache1,cache2,vomon, pref,false);
-         
-        }
-        return regChooser;
-    }
+    private final RegistryGooglePanel regChooser;
+
 	public void search(String arg0) {
-		RegistryGooglePanel panel = getRegistryChooser();
-		panel.doSearch(arg0);
+		regChooser.doSearch(arg0);
 	}
 	
 	public void open(final URI ivorn) {
-		RegistryGooglePanel panel = getRegistryChooser();
-		panel.doOpen(ivorn);
+		regChooser.doOpen(ivorn);
 	}
 	
     private JMenuBar jJMenuBar;
@@ -127,11 +104,14 @@ public class RegistryBrowserImpl extends UIComponentImpl implements  RegistryBro
 		return menu;
 	}    
 
-}  //  @jve:decl-index=0:visual-constraint="10,10"
+} 
 
 
 /* 
 $Log: RegistryBrowserImpl.java,v $
+Revision 1.15  2007/03/08 17:43:58  nw
+first draft of voexplorer
+
 Revision 1.14  2007/01/29 10:44:37  nw
 updated to new cache system.
 

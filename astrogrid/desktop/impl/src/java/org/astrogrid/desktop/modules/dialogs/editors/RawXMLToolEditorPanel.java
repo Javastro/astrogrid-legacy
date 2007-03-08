@@ -1,4 +1,4 @@
-/*$Id: RawXMLToolEditorPanel.java,v 1.4 2007/01/29 11:11:37 nw Exp $
+/*$Id: RawXMLToolEditorPanel.java,v 1.5 2007/03/08 17:44:04 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -86,7 +86,7 @@ public class RawXMLToolEditorPanel extends AbstractToolEditorPanel {
         jedit = new JEditTextArea();
         jedit.setDocument(new SyntaxDocument()); // necessary to prevent aliasing between jeditors.        
         jedit.setTokenMarker(new XMLTokenMarker());
-        jedit.setFont(Font.decode("Helvetica 10"));
+        jedit.getPainter().setFont(Font.decode("Helvetica 10"));
        
        jedit.setEditable(false);
         this.setLayout(new BorderLayout());
@@ -180,6 +180,9 @@ public class RawXMLToolEditorPanel extends AbstractToolEditorPanel {
 
 /* 
 $Log: RawXMLToolEditorPanel.java,v $
+Revision 1.5  2007/03/08 17:44:04  nw
+first draft of voexplorer
+
 Revision 1.4  2007/01/29 11:11:37  nw
 updated contact details.
 

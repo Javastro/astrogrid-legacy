@@ -1,4 +1,4 @@
-/*$Id: ApplicationsRpcTransportTest.java,v 1.3 2007/01/29 10:42:48 nw Exp $
+/*$Id: ApplicationsRpcTransportTest.java,v 1.4 2007/03/08 17:44:01 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,10 +12,8 @@ package org.astrogrid.desktop.modules.ag;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -32,14 +30,12 @@ import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.InterfaceBean;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.ARTestSetup;
@@ -88,27 +84,7 @@ public class ApplicationsRpcTransportTest extends ApplicationsSystemTest impleme
     }
 
 
-    
-    private ApplicationInformation create(Map m) throws ServiceException {
-        try {
-            Map parameters = createParameters((Map)m.get("parameters"));
-            InterfaceBean[] interfaces = createInterfaces((List)m.get("interfaces"));
-            URL logo = m.containsKey("logoURL") ? new URL((String)m.get("logoURL")): null;            
-            return new ApplicationInformation (
-                    new URI((String)m.get("id"))
-                    ,(String)m.get("name")
-                    ,(String)m.get("description")
-                    ,parameters
-                    ,interfaces
-                    ,null
-                    ,logo
-                    );
-        } catch (URISyntaxException e) {
-            throw new ServiceException(e);
-        } catch (MalformedURLException e) {
-            throw new ServiceException(e);            
-        }        
-        }
+   
     private Map createParameters(Map m)  {
         Map result = new HashMap();
         for (Iterator i = result.entrySet().iterator(); i.hasNext(); ) {
@@ -167,23 +143,6 @@ public class ApplicationsRpcTransportTest extends ApplicationsSystemTest impleme
                 );
     }
 
-    
-    
-    /**
-     * @see org.astrogrid.acr.astrogrid.Applications#getApplicationInformation(java.net.URI)
-     */
-    public ApplicationInformation getApplicationInformation(URI applicationName)
-            throws ServiceException, NotFoundException, InvalidArgumentException {
-        v.clear();
-        v.add(applicationName.toString());
-        try {
-            Map m = (Map)client.execute("astrogrid.applications.getApplicationInformation",v);
-            return create(m);
-        } catch (Exception e) {
-            throw new ServiceException(e);
-        }   
-    }
-    
 	public CeaApplication getCeaApplication(URI arg0) throws ServiceException, NotFoundException, InvalidArgumentException {
 		throw new ServiceException("Not implemented - can't be arsed");
 	}
@@ -289,31 +248,6 @@ public class ApplicationsRpcTransportTest extends ApplicationsSystemTest impleme
         }            
     }
 
-    /**
-     * @see org.astrogrid.acr.astrogrid.Applications#listProvidersOf(java.net.URI)
-     */
-    public ResourceInformation[] listProvidersOf(URI applicationId) throws ServiceException,
-            NotFoundException, InvalidArgumentException {
-        v.clear();
-        v.add(applicationId.toString());
-        try {
-            List l = (List)client.execute("astrogrid.applications.listProvidersOf",v);
-            ResourceInformation[] result = new ResourceInformation[l.size()];
-            for (int i = 0; i < l.size(); i++) {
-                Map m = ((Map)l.get(i));
-                URL logo = m.containsKey("logoURL") ? new URL((String)m.get("logoURL")): null;                
-                result[i] =  new ResourceInformation(new URI((String)m.get("id"))
-                        ,(String)m.get("title")
-                        ,(String)m.get("description")
-                        ,new URL((String)m.get("accessURL"))        
-                        ,logo
-                        );
-            }
-            return result;
-        } catch (Exception e) {
-            throw new ServiceException(e);
-        }   
-    }
     
 	public Service[] listServersProviding(URI arg0) throws ServiceException, NotFoundException, InvalidArgumentException {
 		throw new ServiceException("Can't be bothered to implemnt");
@@ -485,6 +419,9 @@ public class ApplicationsRpcTransportTest extends ApplicationsSystemTest impleme
 
 /* 
 $Log: ApplicationsRpcTransportTest.java,v $
+Revision 1.4  2007/03/08 17:44:01  nw
+first draft of voexplorer
+
 Revision 1.3  2007/01/29 10:42:48  nw
 tidied.
 

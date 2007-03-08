@@ -25,7 +25,7 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  * @author Noel Winstanley
  * @since Sep 14, 200611:42:44 AM
  */
-public class SpectrumLoadPlasticButton extends PlasticButton {
+public class SpectrumLoadPlasticButton extends PlasticScopeButton {
 
 	public static final URI SPECTRA_LOAD_FROM_URL;
 	static {

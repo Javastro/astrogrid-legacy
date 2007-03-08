@@ -14,6 +14,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.ui.AbstractVospaceBrowser;
+import org.astrogrid.desktop.modules.ui.dnd.PreferredTransferable;
+import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.filemanager.client.FileManagerNode;
 
 
@@ -25,13 +27,14 @@ public class FileManagerNodePreferredTransferable implements PreferredTransferab
 
 	
 	static final DataFlavor[] anyFile = new DataFlavor[] {
-		VoDataFlavour.IVORN
+		VoDataFlavour.LOCAL_URI
 		,VoDataFlavour.URL
+		,VoDataFlavour.STRING
 		,VoDataFlavour.PLAIN
 	};
 	
 	static final DataFlavor[] votableFile = new DataFlavor[]{
-		VoDataFlavour.IVORN
+		VoDataFlavour.LOCAL_URI
 		,VoDataFlavour.URL
 		,VoDataFlavour.VOTABLE
 		,VoDataFlavour.XML
@@ -39,7 +42,7 @@ public class FileManagerNodePreferredTransferable implements PreferredTransferab
 	};
 	
 	static final DataFlavor[] fitsFile = new DataFlavor[] {
-		VoDataFlavour.IVORN
+		VoDataFlavour.LOCAL_URI
 		,VoDataFlavour.URL
 		,VoDataFlavour.FITS_IMAGE
 		,VoDataFlavour.FITS_TABLE
@@ -47,7 +50,7 @@ public class FileManagerNodePreferredTransferable implements PreferredTransferab
 	};
 	
 	static final DataFlavor[] workflowFile = new DataFlavor[] {
-		VoDataFlavour.IVORN
+		VoDataFlavour.LOCAL_URI
 		,VoDataFlavour.URL
 		,VoDataFlavour.WORKFLOW
 		,VoDataFlavour.XML
@@ -55,7 +58,7 @@ public class FileManagerNodePreferredTransferable implements PreferredTransferab
 	};
 	
 	static final DataFlavor[] toolFile = new DataFlavor[] {
-		VoDataFlavour.IVORN
+		VoDataFlavour.LOCAL_URI
 		,VoDataFlavour.URL
 		,VoDataFlavour.CEA_TOOL
 		,VoDataFlavour.XML
@@ -63,7 +66,7 @@ public class FileManagerNodePreferredTransferable implements PreferredTransferab
 	};
 	
 	static final DataFlavor[] adqlFile = new DataFlavor[] {
-		VoDataFlavour.IVORN
+		VoDataFlavour.LOCAL_URI
 		,VoDataFlavour.URL
 		,VoDataFlavour.ADQLX
 		,VoDataFlavour.XML
@@ -71,35 +74,35 @@ public class FileManagerNodePreferredTransferable implements PreferredTransferab
 	};
 	
 	static final DataFlavor[] xmlFile = new DataFlavor[] {
-		VoDataFlavour.IVORN
+		VoDataFlavour.LOCAL_URI
 		,VoDataFlavour.URL
 		,VoDataFlavour.XML
 		,VoDataFlavour.PLAIN			
 	};
 	
 	static final DataFlavor[] htmlFile = new DataFlavor[] {
-		VoDataFlavour.IVORN
+		VoDataFlavour.LOCAL_URI
 		,VoDataFlavour.URL
 		,VoDataFlavour.HTML
 		,VoDataFlavour.PLAIN			
 	};
 	
 	static final DataFlavor[] pngFile = new DataFlavor[] {
-		VoDataFlavour.IVORN
+		VoDataFlavour.LOCAL_URI
 		,VoDataFlavour.URL
 		,VoDataFlavour.PNG
 		,VoDataFlavour.PLAIN			
 	};
 	
 	static final DataFlavor[] jpgFile = new DataFlavor[] {
-		VoDataFlavour.IVORN
+		VoDataFlavour.LOCAL_URI
 		,VoDataFlavour.URL
 		,VoDataFlavour.JPEG
 		,VoDataFlavour.PLAIN			
 	};
 	
 	static final DataFlavor[] gifFile = new DataFlavor[] {
-		VoDataFlavour.IVORN
+		VoDataFlavour.LOCAL_URI
 		,VoDataFlavour.URL
 		,VoDataFlavour.GIF
 		,VoDataFlavour.PLAIN			
@@ -142,7 +145,7 @@ public class FileManagerNodePreferredTransferable implements PreferredTransferab
 	private AbstractVospaceBrowser.CurrentNodeManager nodeManager;
 	
 	public DataFlavor getPreferredDataFlavor() {
-		return VoDataFlavour.IVORN; // simple - always remote.
+		return VoDataFlavour.LOCAL_URI; // simple - always remote.
 	}
 
 	public Object getTransferData(DataFlavor arg0) throws UnsupportedFlavorException, IOException {
@@ -151,7 +154,7 @@ public class FileManagerNodePreferredTransferable implements PreferredTransferab
 		}
 		try {
 		URI ivorn =  new URI(nodeManager.getCurrent().getIvorn().toString());
-		if (arg0.equals(VoDataFlavour.IVORN)) {
+		if (arg0.equals(VoDataFlavour.LOCAL_URI)) {
 			return ivorn;
 		} 
 		

@@ -16,6 +16,7 @@ import javax.swing.JSeparator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.dnd.PreferredTransferable;
 
 /** Implementation of a shared 'send-to' menu component - used to pass data to other 
  * uitilies for vieing.

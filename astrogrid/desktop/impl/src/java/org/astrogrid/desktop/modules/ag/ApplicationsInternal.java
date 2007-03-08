@@ -1,4 +1,4 @@
-/*$Id: ApplicationsInternal.java,v 1.6 2007/01/29 11:11:35 nw Exp $
+/*$Id: ApplicationsInternal.java,v 1.7 2007/03/08 17:44:04 nw Exp $
  * Created on 04-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ package org.astrogrid.desktop.modules.ag;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -27,11 +26,7 @@ import org.astrogrid.workflow.beans.v1.Tool;
  */
 public interface ApplicationsInternal extends Applications {
 
-/** hook specially for the parametweized workflow launcher
- * @deprecated do not use in any other circumstance. */
-    public Tool createTemplateTool(String interfaceName, ApplicationInformation descr) throws IllegalArgumentException;
-    
-    
+
     public Tool createTemplateTool(String interfaceName, CeaApplication descr) throws IllegalArgumentException;
     
     
@@ -53,6 +48,9 @@ public interface ApplicationsInternal extends Applications {
 
 /* 
 $Log: ApplicationsInternal.java,v $
+Revision 1.7  2007/03/08 17:44:04  nw
+first draft of voexplorer
+
 Revision 1.6  2007/01/29 11:11:35  nw
 updated contact details.
 

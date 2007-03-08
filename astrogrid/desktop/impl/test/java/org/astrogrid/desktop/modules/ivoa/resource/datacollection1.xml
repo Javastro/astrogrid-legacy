@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vor:Resource xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1" created="2003-07-13T21:48:33Z" status="active" updated="2006-06-21T20:15:54Z" xmlns="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.3" xmlns:sia="http://www.ivoa.net/xml/SIA/v0.7" xmlns:sn="http://www.ivoa.net/xml/OpenSkyNode/v0.1" xmlns:vc="http://www.ivoa.net/xml/VOCommunity/v0.2" xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" xsi:schemaLocation="http://www.ivoa.net/xml/VODataService/v0.5 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v0.5/VODataService.xsd http://www.ivoa.net/xml/VOTable/v1.0 http://software.astrogrid.org/schema/vo-formats/VOTable/v1.0/VOTable.xsd " xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="vs:DataCollection">
+        <vr:title xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">NCSA Astronomy Digital Image Library</vr:title>
+        <vr:shortName xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">ADIL</vr:shortName>
+        <vr:identifier xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">ivo://adil.ncsa/adil</vr:identifier>
+        <vr:curation xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">
+            <vr:publisher>NCSA Astronomy Digital Image Library</vr:publisher>
+            <vr:creator>
+                <vr:name>Dr. Raymond Plante</vr:name>
+                <vr:logo>http://adil.ncsa.uiuc.edu/gifs/adilfooter.gif</vr:logo>
+            </vr:creator>
+            <vr:contributor>Raymond Plante</vr:contributor>
+            <vr:contact>
+                <vr:name>Dr. Raymond Plante</vr:name>
+                <vr:email>adil@ncsa.uiuc.edu</vr:email>
+            </vr:contact>
+        </vr:curation>
+        <vr:content xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">
+            <vr:subject>radio astronomy</vr:subject>
+            <vr:subject>data repositories</vr:subject>
+            <vr:subject>digital libraries</vr:subject>
+            <vr:description>The ADIL collects published image data in FITS format from a variety of 
+telescopes and wavebands and makes them available to the astronomical
+community.  Users can search, browse, and download images as well as upload their own published images.</vr:description>
+            <vr:referenceURL>http://adil.ncsa.uiuc.edu/</vr:referenceURL>
+            <vr:type>Archive</vr:type>
+            <vr:contentLevel>University</vr:contentLevel>
+            <vr:contentLevel>Research</vr:contentLevel>
+        </vr:content>
+        <vs:coverage xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+            <vs:spatial>
+                <vs:region xsi:schemaLocation="" xsi:type="vs:AllSky"/>
+            </vs:spatial>
+            <vs:spectral>
+                <vs:waveband>Radio</vs:waveband>
+                <vs:waveband>Millimeter</vs:waveband>
+                <vs:waveband>Infrared</vs:waveband>
+                <vs:waveband>Optical</vs:waveband>
+                <vs:waveband>UV</vs:waveband>
+            </vs:spectral>
+        </vs:coverage>
+        <vs:format>FITS</vs:format>
+        <vs:format>GIF</vs:format>
+        <vs:format>HTML</vs:format>
+        <vs:rights>public</vs:rights>
+    </vor:Resource>

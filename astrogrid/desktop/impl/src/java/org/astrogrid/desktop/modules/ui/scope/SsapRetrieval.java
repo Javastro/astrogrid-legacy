@@ -1,4 +1,4 @@
-/*$Id: SsapRetrieval.java,v 1.7 2007/02/06 18:56:10 nw Exp $
+/*$Id: SsapRetrieval.java,v 1.8 2007/03/08 17:43:56 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,8 +26,8 @@ import uk.ac.starlink.table.ColumnInfo;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 public class SsapRetrieval extends Retriever {
-    public SsapRetrieval(UIComponent comp,Service information,TreeNode primaryNode,VizModel model,Ssap ssap,double ra,double dec,double raSize, double decSize) {
-        super(comp,information,primaryNode,model,ra,dec);
+    public SsapRetrieval(UIComponent comp,Service service,TreeNode primaryNode,VizModel model,Ssap ssap,double ra,double dec,double raSize, double decSize) {
+        super(comp,service,primaryNode,model,ra,dec);
         this.ssap = ssap;
         this.raSize= raSize;
         this.decSize = decSize;
@@ -36,14 +36,14 @@ public class SsapRetrieval extends Retriever {
     protected final double raSize;
     protected final double decSize;
     protected Object construct() throws Exception {
-        URL ssapURL =  ssap.constructQueryS(new URI(getFirstEndpoint(information).toString()),ra,dec,raSize,decSize);
+        URL ssapURL =  ssap.constructQueryS(service.getId(),ra,dec,raSize,decSize);
         StringBuffer sb = new StringBuffer();
-        sb.append("<html>Title: ").append(information.getTitle())
-            .append("<br>ID: ").append(information.getId());
-                if (information.getContent() != null) {
+        sb.append("<html>Title: ").append(service.getTitle())
+            .append("<br>ID: ").append(service.getId());
+                if (service.getContent() != null) {
                sb.append("<br>Description: <p>")
-                .append(information.getContent().getDescription()!= null 
-                			?   WordUtils.wrap(information.getContent().getDescription(),AstroScopeLauncherImpl.TOOLTIP_WRAP_LENGTH,"<br>",false) : "");
+                .append(service.getContent().getDescription()!= null 
+                			?   WordUtils.wrap(service.getContent().getDescription(),AstroScopeLauncherImpl.TOOLTIP_WRAP_LENGTH,"<br>",false) : "");
             }
                 sb.append("</html>");        TreeNode serviceNode = createServiceNode(ssapURL,sb.toString());
         // build subtree for this service
@@ -181,6 +181,9 @@ public class SsapRetrieval extends Retriever {
 
 /* 
 $Log: SsapRetrieval.java,v $
+Revision 1.8  2007/03/08 17:43:56  nw
+first draft of voexplorer
+
 Revision 1.7  2007/02/06 18:56:10  nw
 made response parsing resilient to whitespace in columns.
 

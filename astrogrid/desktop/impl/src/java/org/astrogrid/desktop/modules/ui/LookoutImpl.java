@@ -1,4 +1,4 @@
-/*$Id: LookoutImpl.java,v 1.20 2007/01/29 11:11:37 nw Exp $
+/*$Id: LookoutImpl.java,v 1.21 2007/03/08 17:43:59 nw Exp $
  * Created on 26-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,7 +46,6 @@ import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.acr.astrogrid.RemoteProcessManager;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.Lookout;
-import org.astrogrid.acr.ui.WorkflowBuilder;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MessageRecorderImpl;
 import org.astrogrid.desktop.modules.ag.MessageRecorderInternal;
@@ -61,8 +60,6 @@ import org.astrogrid.desktop.modules.ui.lookout.MessageDisplayPane;
 import org.astrogrid.desktop.modules.ui.lookout.MessageTable;
 import org.astrogrid.desktop.modules.ui.lookout.ResultsList;
 import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
-import org.astrogrid.util.DomHelper;
-import org.w3c.dom.Document;
 
 /**
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 26-Oct-2005
@@ -70,30 +67,7 @@ import org.w3c.dom.Document;
  *
  */
 public class LookoutImpl extends UIComponentImpl implements  Lookout{
-	
-	/** display a workflow transceript */
 
-    private final class ViewTranscriptAction extends AbstractAction {
-        private final Jobs jobs;
-        private final WorkflowBuilder transcriptViewer;
-        public ViewTranscriptAction(Jobs jobs, WorkflowBuilder transcriptViewer) {
-            super("View Transcript",IconHelper.loadIcon("tree.gif"));
-            this.jobs = jobs;
-            this.transcriptViewer = transcriptViewer;
-            this.putValue(SHORT_DESCRIPTION,"View transcript of selected workflow");
-            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_V));
-            this.setEnabled(false);
-        }
-        public void actionPerformed(ActionEvent e) {
-            (new BackgroundOperation("Launching transcript viewer") {
-                protected Object construct() throws Exception {
-                	Document doc = jobs.getJobTranscript(getCurrentFolder().getInformation().getId());
-                		transcriptViewer.showTranscript(DomHelper.DocumentToString(doc));     	                	
-                    return null;
-                }
-            }).start();
-        }
-    }
     
     /** delete an alert message, or a task folder
      * listens to both tree and list to work out whether enabled or not.
@@ -105,7 +79,7 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
         private boolean folderMode = true;
         
         public DeleteAction() {
-            super("Delete", IconHelper.loadIcon("delete_obj.gif"));
+            super("Delete", IconHelper.loadIcon("editdelete16.png"));
             this.putValue(SHORT_DESCRIPTION,"Delete this task record");
             this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_D));
             this.setEnabled(false);            
@@ -163,7 +137,7 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
     /** action for halting something. listens to current tree selection to determine whether enabled or not */
     private final class HaltAction extends AbstractAction implements TreeSelectionListener{
         public HaltAction() {
-            super("Halt", IconHelper.loadIcon("stop.gif"));
+            super("Halt", IconHelper.loadIcon("stop16.png"));
             this.putValue(SHORT_DESCRIPTION,"Halt the execution of a task or job");
             this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_H));
             this.setEnabled(false);
@@ -188,7 +162,7 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
     
     private final class MarkAllReadAction extends AbstractAction implements TreeSelectionListener {
         public MarkAllReadAction() {
-            super("Mark all Read", IconHelper.loadIcon("complete_status.gif"));
+            super("Mark all Read", IconHelper.loadIcon("tick16.png"));
             this.putValue(SHORT_DESCRIPTION,"Mark all messages from this process as read");
             this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_M));
             this.setEnabled(false);
@@ -222,7 +196,7 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
     private final class RefreshAction extends AbstractAction {
     	private final List strategies;
         public RefreshAction(List strategies) {
-            super("Refresh",IconHelper.loadIcon("update.gif"));
+            super("Refresh",IconHelper.loadIcon("reload16.png"));
             this.strategies = strategies;
             this.putValue(SHORT_DESCRIPTION,"Check for new events and messages now");
             this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_R));
@@ -257,7 +231,6 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
     
     private MessageTable messageTable;
     private final RefreshAction refreshAction;
-    private final ViewTranscriptAction transcriptAction;
     private final ResultsList results;
 
     private JToolBar toolbar;
@@ -280,7 +253,6 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
             ,List strategies
 			,SendToMenu sendTo
 			,Jobs jobs
-			,WorkflowBuilder transcriptViewer
 			
     )
     throws HeadlessException {
@@ -295,7 +267,6 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
         deleteAction = new DeleteAction();
         haltAction = new HaltAction();
         markAllReadAction= new MarkAllReadAction();
-        transcriptAction = new ViewTranscriptAction(jobs,transcriptViewer);
         initialize();
     }
    
@@ -347,7 +318,6 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
             manageMenu.setText("Manage");
             manageMenu.setMnemonic(KeyEvent.VK_M);
             manageMenu.add(refreshAction);
-            manageMenu.add(transcriptAction);
             manageMenu.add(haltAction);
             manageMenu.add(deleteAction);   
             manageMenu.add(new JSeparator());                        
@@ -369,7 +339,6 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
             toolbar.setFloatable(false);
             toolbar.setRollover(true);
             toolbar.add(refreshAction);
-            toolbar.add(transcriptAction);
             toolbar.add(haltAction);
             toolbar.add(deleteAction);
             toolbar.add(new JToolBar.Separator());
@@ -401,7 +370,7 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
         pane.add(leftRight,BorderLayout.CENTER);
         this.setContentPane(pane);
         this.setSize(565,800);
-        setIconImage(IconHelper.loadIcon("thread_and_monitor_view.gif").getImage()); 
+        setIconImage(IconHelper.loadIcon("run16.png").getImage()); 
     }
     
     private void setCurrentFolder(Folder f) {
@@ -428,7 +397,6 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
                             recorder.displayMessages(f);
                             int last = getMessageTable().getRowCount() -1;
                             getMessageTable().getSelectionModel().setSelectionInterval(last,last);
-                            transcriptAction.setEnabled(f.getInformation().getId().getScheme().equals("jes"));
                               } catch (IOException e1) {
                             showError("Failed to display folder",e1);
                         }
@@ -523,6 +491,9 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
 /* 
  
 $Log: LookoutImpl.java,v $
+Revision 1.21  2007/03/08 17:43:59  nw
+first draft of voexplorer
+
 Revision 1.20  2007/01/29 11:11:37  nw
 updated contact details.
 

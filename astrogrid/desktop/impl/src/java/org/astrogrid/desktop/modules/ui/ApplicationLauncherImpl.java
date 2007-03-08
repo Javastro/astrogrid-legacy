@@ -1,4 +1,4 @@
-/*$Id: ApplicationLauncherImpl.java,v 1.19 2007/01/31 11:26:19 nw Exp $
+/*$Id: ApplicationLauncherImpl.java,v 1.20 2007/03/08 17:43:58 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -54,7 +54,7 @@ public class ApplicationLauncherImpl extends UIComponentImpl  implements Applica
             editor.setLookout(lookout);
             this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
             this.setSize(600,425); // same proportions as A4, etc., and 600 high.   
-            final Image defaultImage = IconHelper.loadIcon("thread_view.gif").getImage();
+            final Image defaultImage = IconHelper.loadIcon("applaunch16.png").getImage();
 			setIconImage(defaultImage);                
             JPanel pane = getMainPanel();
              pane.add(editor, java.awt.BorderLayout.CENTER);
@@ -114,6 +114,9 @@ public class ApplicationLauncherImpl extends UIComponentImpl  implements Applica
 
 /* 
 $Log: ApplicationLauncherImpl.java,v $
+Revision 1.20  2007/03/08 17:43:58  nw
+first draft of voexplorer
+
 Revision 1.19  2007/01/31 11:26:19  nw
 fixed bug caused by getLogo throwing.
 

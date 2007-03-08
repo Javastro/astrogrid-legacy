@@ -1,0 +1,18 @@
+<html>
+<body>
+<h1> Tests for resource parser and formatter.</h1>
+
+Tests for the resource parser (converts xml reg entries to data structures) and formatter
+(converts data structure to html), where the inputs are real-world registry entries, warts and all,
+chosen from the AG main registry. I've tried to choose some complete, and some poorly
+formed, to check that the code works on all, and doesn't choke on semi-legal data.
+<p>
+When resources are found in the wild that cause the parser or formatter to fail, they
+should be added to this test suite. The commonest form of failure is a nullPointerException
+in the formatter, when a field which is expected to be there does not occur in an entry,
+or contains some kind of invalid value.
+<p>
+The tests are arranged in a hierarchy that mirrors the inheritance hierarchy of Resource - 
+in this way much test code and assertions can be reused.
+</body>
+</html>

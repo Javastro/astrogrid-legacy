@@ -8,6 +8,8 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.astrogrid.desktop.modules.dialogs.file.AllFileDialogUnitTests;
+import org.astrogrid.desktop.modules.ui.comp.AllUIComponentUnitTests;
+import org.astrogrid.desktop.modules.ui.dnd.AllDndUnitTests;
 import org.astrogrid.desktop.modules.votech.AllVotechUnitTests;
 
 /** Runs all unit tests - handy hook for within eclipse
@@ -34,10 +36,12 @@ public class AbsolutelyAllUnitTests {
 		suite.addTest(org.astrogrid.desktop.modules.plastic.AllPlasticUnitTests.suite());
 		suite.addTest(org.astrogrid.desktop.modules.ui.sendto.AllSendtoUnitTests.suite());
 		suite.addTest(org.astrogrid.desktop.modules.util.AllUtilUnitTests.suite());
-		suite.addTest(org.astrogrid.desktop.modules.dialogs.registry.AllRegistryDialogUnitTests.suite());
+		suite.addTest(org.astrogrid.desktop.modules.dialogs.registry.srql.AllSRQLUnitTests.suite());
 		suite.addTest(org.astrogrid.desktop.protocol.AllProtocolUnitTests.suite());
 		suite.addTest(AllVotechUnitTests.suite());
 		suite.addTest(AllFileDialogUnitTests.suite());
+		suite.addTest(AllUIComponentUnitTests.suite());
+		suite.addTest(AllDndUnitTests.suite());
 		return suite;
 	}
 

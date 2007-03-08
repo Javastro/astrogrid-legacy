@@ -43,8 +43,7 @@ public class HeadlessAstroRuntime {
     	l.addModuleByName("plastic");
     	l.addModuleByName("ivoa");
     	l.addModuleByName("voevent");   
-    	l.addModuleByName("votech");    	
-    	l.addModuleByName("nvo");
+    	l.addModuleByName("votech");    
     	l.addModuleByName("cds");
     	l.addModuleByName("astrogrid");
     	l.addModuleByName("system");

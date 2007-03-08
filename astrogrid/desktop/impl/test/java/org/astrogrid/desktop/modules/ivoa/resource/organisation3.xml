@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vor:Resource xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1" created="2006-01-17T18:46:59Z" status="active" updated="2006-01-17T18:46:59Z" xmlns="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.3" xmlns:sia="http://www.ivoa.net/xml/SIA/v0.7" xmlns:sn="http://www.ivoa.net/xml/OpenSkyNode/v0.1" xmlns:vc="http://www.ivoa.net/xml/VOCommunity/v0.2" xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" xsi:schemaLocation="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="vr:Organisation">
+        <vr:title xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">ST-ECF group</vr:title>
+        <vr:shortName xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">ST-ECF</vr:shortName>
+        <vr:identifier xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">ivo://stecf.euro-vo/ST-ECF</vr:identifier>
+        <vr:curation xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">
+            <vr:publisher>ST-ECF</vr:publisher>
+            <vr:contact>
+                <vr:name>Diego Sforna</vr:name>
+                <vr:email>dsforna@eso.org</vr:email>
+            </vr:contact>
+        </vr:curation>
+        <vr:content xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">
+            <vr:description>ST-ECF Organisation</vr:description>
+            <vr:referenceURL>http://www.stecf.org</vr:referenceURL>
+            <vr:type>Archive</vr:type>
+            <vr:type>Organisation</vr:type>
+        </vr:content>
+        <vs:facility ivo-id="ivo://stecf.euro-vo/">Space Telescope European Coordinating Facility</vs:facility>
+    </vor:Resource>

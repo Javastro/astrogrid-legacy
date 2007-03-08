@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.12 2007/02/05 18:50:45 nw Exp $
+/*$Id: Launcher.java,v 1.13 2007/03/08 17:44:02 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -136,6 +136,11 @@ public class Launcher implements Runnable {
         // add the preliminary resources.
         addModuleByName("hivemind");
         addModuleByName("hivemind-lib");
+        addModuleByName("hiveutils");
+  // enable these later.
+//        addModuleByName("hivelock.core");
+ //       addModuleByName("hivelock.default");
+        
         addModuleByName("framework");        
         addModuleByName("builtin");
         addModuleByName("test");
@@ -195,6 +200,9 @@ public class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.13  2007/03/08 17:44:02  nw
+first draft of voexplorer
+
 Revision 1.12  2007/02/05 18:50:45  nw
 worked-around jnlp bug.
 

@@ -25,24 +25,30 @@ import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.CeaServerCapability;
 import org.astrogrid.acr.astrogrid.CeaService;
 import org.astrogrid.acr.astrogrid.ColumnBean;
+import org.astrogrid.acr.astrogrid.DatabaseBean;
 import org.astrogrid.acr.astrogrid.InterfaceBean;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
 import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.ivoa.resource.AccessURL;
+import org.astrogrid.acr.ivoa.resource.Authority;
 import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.Catalog;
 import org.astrogrid.acr.ivoa.resource.ConeCapability;
 import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.Contact;
 import org.astrogrid.acr.ivoa.resource.Content;
+import org.astrogrid.acr.ivoa.resource.Coverage;
 import org.astrogrid.acr.ivoa.resource.Creator;
 import org.astrogrid.acr.ivoa.resource.Curation;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
 import org.astrogrid.acr.ivoa.resource.Date;
+import org.astrogrid.acr.ivoa.resource.Format;
 import org.astrogrid.acr.ivoa.resource.Handler;
 import org.astrogrid.acr.ivoa.resource.HarvestCapability;
+import org.astrogrid.acr.ivoa.resource.HasCoverage;
 import org.astrogrid.acr.ivoa.resource.Interface;
+import org.astrogrid.acr.ivoa.resource.Organisation;
 import org.astrogrid.acr.ivoa.resource.Relationship;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.ResourceName;
@@ -52,11 +58,45 @@ import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.SiapCapability;
 import org.astrogrid.acr.ivoa.resource.SiapService;
 import org.astrogrid.acr.ivoa.resource.Source;
+import org.astrogrid.acr.ivoa.resource.TabularDB;
 import org.astrogrid.acr.ivoa.resource.Validation;
 
 /** Streaming parser of vo resource objects.
  * 
  * implements the iterator interface to return parsed objects - which will be instances of {@link Resource}
+ * 
+ * the code structure here is quite procedural and in-line. It would be possible to structure
+ * it using more OO principles, but this is a tight inner loop - vital to voexplorer appearing
+ * responsive, so effort has been made to remove unneeded inefficiency (without over-optimising)
+ * 
+ * The parser uses some nifty voodoo. As registry documents aren't very well typed,
+ * and all kinds of fields are optional, plus other kinds of fields can be provided on a whim,
+ * I've implemented a kind of 'duck-typing' - i.e. if a resource provides all the information for 
+ * a particular schema type, even if it doesn't declare that it is that type in 'xsi:type', it becomes that 
+ * type.
+ * 
+ * Obviously, to do this required multiple inheritance, which is only possible with 
+ * interfaces in Java - so each registry schema is represented by an interface, which 
+ * defines access methods for the components of the schema. 
+ * 
+ *  And as the number of java classes required to implement all possible
+ * combinations of registry schema quickly becomes unmanageable, I use a dynamic
+ * object-creaction technique instead. The parsed content of the registry entry is 
+ * stuffed into a single map, with keys matching method names. So the 'content' object
+ * is stoed under a key called 'getContent'. This allows any arbitrary elements, from other
+ * schemata to be added (mixed-in if you like) during the parse.
+ * 
+ * Also during the parse, a list of the schema-types that this resource implements is built up.
+ * This includes the xsi:types and capabilitirs it declares, plus other things deduced from duck-typing.
+ * This list is implemented as a list of interfaces. At the end of the parse, java.lang.reflect code
+ * is called to generate a proxy object which implements all the interfaces in the list, whose methods
+ * are implemented by querying the internal map.
+ * 
+ * Result - a resource object, which may implement additional interfaces - this can be worked with
+ * using instanceof, etc, and to the client, it's not apparent that this is an object rolled-on-the-fly.
+ * 
+ * It also serializes, and transports via xmlrpc / rmi just as a normal bean would be expected to do.
+ * 
  * @author Noel Winstanley
  * @since Aug 1, 20064:54:11 PM
  */
@@ -134,14 +174,33 @@ public final class ResourceStreamParser implements Iterator {
 		m.put("getUpdated",in.getAttributeValue(null,"updated"));
 		final String xsiType = in.getAttributeValue(XSI_NS,"type");  // xsi:type
 		m.put("getType",xsiType);
-		if (xsiType != null && xsiType.indexOf("Service") != -1) {
-			ifaces.add(Service.class);
+		// add interfaces for the type this registry entry claims to be.
+		if (xsiType != null) {
+			if (StringUtils.contains(xsiType,"Service")) {
+				ifaces.add(Service.class);
+			} else if (StringUtils.contains(xsiType,"Authority")) {
+				ifaces.add(Authority.class);
+			} else if (StringUtils.contains(xsiType,"Organisation")) {
+				ifaces.add(Organisation.class);                               
+			} else if (StringUtils.contains(xsiType,"DataCollection")) {
+				ifaces.add(DataCollection.class);
+				// coverage cannot be null.
+				m.put("getCoverage",new Coverage());
+			}
 		}
 	
 		final List validations = new ArrayList();
 		final List rights = new ArrayList();
 		final List capabilities = new ArrayList();
-
+		// used in organization, and data collection
+		final List facilities = new ArrayList();
+		final List instruments = new ArrayList();
+		// used in data collection
+		final List catalogues = new ArrayList();
+		final List formats = new ArrayList();
+		
+		// case for each top-level element.
+		// if onlyu java had a decent switch statement...
 		for (in.next(); ! (in.isEndElement() && in.getLocalName().equals("Resource")); in.next()){
 			if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
 				try {
@@ -158,16 +217,24 @@ public final class ResourceStreamParser implements Iterator {
 					m.put("getCuration",parseCuration());
 				} else if (elementName.equals("content")) {
 					m.put("getContent",parseContent());
-					
+				} else if (elementName.equals("managingOrg")) { // authority
+					ifaces.add(Authority.class);
+					m.put("getManagingOrg",parseResourceName());
+				} else if (elementName.equals("facility")) { //can't deduce type -  organisation, or datacollection
+					facilities.add(parseResourceName());
+				} else if (elementName.equals("instrument")) { //can't deduce type - either organisation, or datacollection
+					instruments.add(parseResourceName());
+				} else if (elementName.equals("rights")) {
+					rights.add(in.getElementText().trim().toLowerCase());
 					// service interface
-			//enable for v1.0	} else if (elementName.equals("rights")) {//v1.0
-			//			rights.add(in.getElementText().trim());
-			//			ifaces.add(Service.class); // it's a service, no matter what xsi says.
 			//enable for v1.0	} else if (elementName.equals("capability")) {//v1.0
 			//		capabilities.add(parseCapability());
 			//		ifaces.add(Service.class); // it's a service
 				} else if (elementName.equals("interface")) { //v0.10 legacy stuff.
-					if (StringUtils.contains(xsiType,"ConeSearch")) {
+					if (StringUtils.contains(xsiType,"ConeSearch")
+							|| (StringUtils.contains(xsiType,"TabularSkyService") // make these look like cones too.
+									&& m.get("getId").toString().indexOf("CDS") != -1) 
+					) {
 						final ConeCapability coneCapability = parseV10ConeSearch();
 						capabilities.add(coneCapability);
 						m.put("findConeCapability",coneCapability);
@@ -186,7 +253,7 @@ public final class ResourceStreamParser implements Iterator {
 							ifaces.add(CeaApplication.class);
 							m.put("getParameters", SiapProtocolKnowledge.parameters);
 							m.put("getInterfaces",SiapProtocolKnowledge.ifaces);		
-						}						
+						}
 					} else if (StringUtils.contains(xsiType,"CeaServiceType")) {
 						CeaServerCapability ceaCapability = parseV10CeaServer();
 						capabilities.add(ceaCapability);
@@ -208,11 +275,17 @@ public final class ResourceStreamParser implements Iterator {
 					parseV10CeaApplication(m);
 					ifaces.add(CeaApplication.class);
 				} else if (elementName.equals("coverage")) { // coverage info - used in various ifaces.
-					// omitting coverage for now. - unused in current ar, and will change.
+					ifaces.add(HasCoverage.class);	
+					Coverage c = parseCoverage();
+					m.put("getCoverage",c);
+				} else if (elementName.equals("format")) { // used in datacollection. anywhere else?
+					formats.add(parseFormat());
 				} else if (elementName.equals("db")) { // v0.10 database / catalog descripiont.
 					Catalog cat = parseV10TabularDatabase();
-					m.put("getCatalog",cat);
+					catalogues.add(cat);
 					ifaces.add(DataCollection.class);
+					m.put("getDatabase",cat); // support legacy interface
+					ifaces.add(TabularDB.class);
 				} else {
 					logger.debug("Unknown element" + elementName);
 				}
@@ -228,9 +301,20 @@ public final class ResourceStreamParser implements Iterator {
 		
 		if (ifaces.contains(Service.class)) {// if xsi or data thinks this is a service, add in those fields
 			m.put("getCapabilities",capabilities.toArray(new Capability[capabilities.size()]));
+		}
+		if (ifaces.contains(Service.class) || ifaces.contains(DataCollection.class)) {// if xsi or data thinks this is a service, add in those fields
 			m.put("getRights",rights.toArray(new String[rights.size()]));
 		}
 		
+		if (ifaces.contains(Organisation.class) || ifaces.contains(DataCollection.class)) {// add in required elements for this.
+			m.put("getFacilities",facilities.toArray(new ResourceName[facilities.size()]));
+			m.put("getInstruments",instruments.toArray(new ResourceName[instruments.size()]));
+		}
+		
+		if (ifaces.contains(DataCollection.class)) {
+			m.put("getFormats",formats.toArray(new Format[formats.size()]));
+			m.put("getCatalogues",catalogues.toArray(new Catalog[catalogues.size()]));
+		}
 		Object o =  Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), (Class[])ifaces.toArray(new Class[ifaces.size()]), new Handler(m));
 		logger.debug("Returning");
 		logger.debug(o);
@@ -247,9 +331,35 @@ public final class ResourceStreamParser implements Iterator {
 	}
 
 
-	/**
-	 * @return
-	 */
+
+	protected Coverage parseCoverage() {
+		final Coverage c = new Coverage();
+		final List wavebands = new ArrayList();
+		//@todo add some kind of parsing for regions. ugh.
+		try {
+			for (in.next(); !( in.isEndElement() && in.getLocalName().equals("coverage")); in.next()){
+				if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
+					try {
+					final String elementName = in.getLocalName();
+					if (elementName.equals("waveband")) {
+						wavebands.add(in.getElementText().trim().toLowerCase());
+					} else if (elementName.equals("footprint")) {
+						c.setFootprint(parseResourceName());
+					} else {
+						logger.debug("Unknown element" + elementName);
+					}
+					} catch (XMLStreamException e) {
+						logger.debug("Content ",e);
+					}							
+				}
+			}
+		} catch (XMLStreamException x) {
+			logger.debug("Coverage - XMLStreamException",x);
+		} // end Curation;
+		c.setWavebands((String[])wavebands.toArray(new String[wavebands.size()]));
+		return c;
+	}
+	
 	protected Content parseContent() {
 		final Content c = new Content();
 		final List subject = new ArrayList();
@@ -262,7 +372,7 @@ public final class ResourceStreamParser implements Iterator {
 					try {
 					final String elementName = in.getLocalName();
 					if (elementName.equals("subject")) {	
-						subject.add(in.getElementText().trim());							
+						subject.add(in.getElementText().trim().toLowerCase());							
 					} else if (elementName.equals("description")) {
 							c.setDescription(in.getElementText().trim());					
 					} else if (elementName.equals("source")) {
@@ -274,9 +384,9 @@ public final class ResourceStreamParser implements Iterator {
 							logger.debug("Content - Description",e);
 						}							
 					} else if (elementName.equals("type")) {
-							type.add(in.getElementText().trim());
+							type.add(in.getElementText().trim().toLowerCase());
 					} else if (elementName.equals("contentLevel")) {
-							contentLevel.add(in.getElementText().trim());
+							contentLevel.add(in.getElementText().trim().toLowerCase());
 					} else if (elementName.equals("relationship")) {
 						relationship.add(parseRelationship());					
 					} else {
@@ -588,7 +698,7 @@ public final class ResourceStreamParser implements Iterator {
 	/**
 	 * @return
 	 */
-	private Catalog parseV10TabularDatabase() {
+	private DatabaseBean parseV10TabularDatabase() {
 		Catalog c = new Catalog();
 		
 		final List tables = new ArrayList();
@@ -615,7 +725,9 @@ public final class ResourceStreamParser implements Iterator {
 			logger.debug("db - XMLStreamException",x);
 		}
 		c.setTables((TableBean[])tables.toArray(new TableBean[tables.size()]));
-		return c;	
+		//return c;	
+		// convert to the legacy type.
+		return new DatabaseBean(c.getName(),c.getDescription(),c.getTables());
 	}
 	
 	private TableBean parseTable() {
@@ -666,7 +778,7 @@ public final class ResourceStreamParser implements Iterator {
 					description = in.getElementText().trim();
 				} else 	if (elementName.equals("ucd")) {	
 					ucd = in.getElementText().trim();
-				} else 	if (elementName.equals("datatype")) {	
+				} else 	if (elementName.equalsIgnoreCase("datatype")) {	
 					datatype = in.getElementText().trim();
 				} else 	if (elementName.equals("unit")) {	
 					unit = in.getElementText().trim();					
@@ -920,6 +1032,25 @@ public final class ResourceStreamParser implements Iterator {
 			logger.debug("invalid access URL",e);
 		}
 		return url;
+	}
+
+	private Format parseFormat() {
+		Format f = new Format();
+		String s= in.getAttributeValue(null,"isMIMEType");
+		if (s != null) {
+			try {
+				boolean b = Boolean.valueOf(s).booleanValue();
+				f.setMimeType(b);
+			} catch (RuntimeException x) {
+				logger.debug("Failed to parse boolean",x);
+			}
+		}
+		try {
+			f.setValue(in.getElementText().trim().toLowerCase());
+		} catch (XMLStreamException x) {
+			logger.error("XMLStreamException",x);
+		}
+		return f;
 	}
 	
 	protected SecurityMethod parseSecurityMethod() {

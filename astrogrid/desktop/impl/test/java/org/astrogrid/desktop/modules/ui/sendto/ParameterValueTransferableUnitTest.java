@@ -20,6 +20,7 @@ import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.easymock.MockControl;
 
 /**
@@ -164,7 +165,7 @@ public class ParameterValueTransferableUnitTest extends TestCase {
 		for (int i = 0; i < flavs.length; i++) {
 			Object o = trans.getTransferData(flavs[i]);
 			assertNotNull(o);
-			if (flavs[i] == VoDataFlavour.IVORN) {
+			if (flavs[i] == VoDataFlavour.LOCAL_URI) {
 				assertTrue(o instanceof URI);
 				assertEquals(ivo.getValue(),o.toString());
 			} else if (flavs[i] == VoDataFlavour.URL) {

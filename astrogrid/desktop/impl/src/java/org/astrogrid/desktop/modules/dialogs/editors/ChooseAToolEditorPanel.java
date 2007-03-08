@@ -1,4 +1,4 @@
-/*$Id: ChooseAToolEditorPanel.java,v 1.16 2007/01/29 10:52:43 nw Exp $
+/*$Id: ChooseAToolEditorPanel.java,v 1.17 2007/03/08 17:44:04 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.desktop.modules.dialogs.editors;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -37,6 +38,8 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.votech.VoMon;
 
+import ca.odell.glazedlists.ListSelection;
+
 /** Tool Editor Panel that prompts the user to search for and select a tool.
  * <p>
  * just a wrapper of some event listeners around the registry chooser panel - nice!
@@ -45,16 +48,16 @@ import org.votech.VoMon;
  */
 public class ChooseAToolEditorPanel extends AbstractToolEditorPanel implements PropertyChangeListener {
 
-	RegistryGooglePanel rcp;
+	private final RegistryGooglePanel rcp;
 
 
-	public ChooseAToolEditorPanel(ToolModel tm,final UIComponent parent, RegistryInternal reg, final ApplicationsInternal apps, BrowserControl browser, RegistryBrowser regBrowser,  
-			Ehcache cache1, Ehcache cache2,VoMon vomon, Preference pref) {
+	public ChooseAToolEditorPanel(ToolModel tm,final UIComponent parent,RegistryGooglePanel registryGooglePanel, final ApplicationsInternal apps) {
 		super(tm);
 
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 		add(new JLabel("Select an Application:"));
-		rcp = new RegistryGooglePanel( parent,reg,browser,regBrowser,cache1,cache2,vomon, pref);
+		this.rcp = registryGooglePanel;
+		rcp.parent.set(parent);
 		rcp.setMultipleResources(false);
 		setChooseCEAOnly(false);
 		toolModel.addToolEditListener(new ToolEditAdapter() {
@@ -62,53 +65,46 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel implements P
 				rcp.clear();
 			}            
 		});
-		rcp.getSelectedResourcesModel().addListDataListener(new ListDataListener() {
+		//@TODO watch that this is working under glazed lists.
+		rcp.getListSelection().addSelectionListener(new ListSelection.Listener() {
 
-			public void intervalAdded(ListDataEvent e) {
-				Resource[] ri = rcp.getSelectedResources();
-				if (ri.length > e.getIndex0()) {
-					Resource resource = ri[e.getIndex0()];
-
-					if (resource != null) {
-						if (toolModel.getTool() != null) { // already got some data on the go..
-							int result = JOptionPane.showConfirmDialog(ChooseAToolEditorPanel.this,"Discard the tool currently being edited?","Replace the current tool?",JOptionPane.OK_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE);
-							if (result != JOptionPane.OK_OPTION) {
+			public void selectionChanged(int arg0, int arg1) {
+				List l = rcp.getListSelection().getSelected();
+				if (l.isEmpty()) {
+					return;
+				}
+				Resource resource = (Resource)l.get(0);
+				if (resource != null) {
+					if (toolModel.getTool() != null) { // already got some data on the go..
+						int result = JOptionPane.showConfirmDialog(ChooseAToolEditorPanel.this,"Discard the tool currently being edited?","Replace the current tool?",JOptionPane.OK_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE);
+						if (result != JOptionPane.OK_OPTION) {
+							return;
+						}
+					}
+					try {
+						// @todo move this query off the main thread.
+						CeaApplication app = apps.getCeaApplication(resource.getId());
+						String ifaceName = app.getInterfaces()[0].getName();
+						if (app.getInterfaces().length > 1) {
+							String[] names = new String[app.getInterfaces().length];
+							for (int i = 0; i < names.length; i++) {
+								names[i] = app.getInterfaces()[i].getName();
+							}
+							ifaceName =(String) JOptionPane.showInputDialog(ChooseAToolEditorPanel.this,"Select an interface","Which Interface?"
+									, JOptionPane.QUESTION_MESSAGE,null,names,names[0]);
+							if (ifaceName == null) { // user hit cancel.
 								return;
 							}
 						}
-						try {
-							// @todo move this query off the main thread.
-							CeaApplication app = apps.getCeaApplication(resource.getId());
-							String ifaceName = app.getInterfaces()[0].getName();
-							if (app.getInterfaces().length > 1) {
-								String[] names = new String[app.getInterfaces().length];
-								for (int i = 0; i < names.length; i++) {
-									names[i] = app.getInterfaces()[i].getName();
-								}
-								ifaceName =(String) JOptionPane.showInputDialog(ChooseAToolEditorPanel.this,"Select an interface","Which Interface?"
-										, JOptionPane.QUESTION_MESSAGE,null,names,names[0]);
-								if (ifaceName == null) { // user hit cancel.
-									return;
-								}
-							}
-							
-							Tool t = apps.createTemplateTool(ifaceName,app);
-							toolModel.populate(t,app); // fires notification, etc - lets anything else grab this.
-						} catch (ACRException ex) {
-							ex.printStackTrace();
-						}
-					} else {
-							parent.setStatusMessage("NULL!!");
+
+						Tool t = apps.createTemplateTool(ifaceName,app);
+						toolModel.populate(t,app); // fires notification, etc - lets anything else grab this.
+					} catch (ACRException ex) {
+						ex.printStackTrace();
 					}
+				} else {
+					parent.setStatusMessage("NULL!!");
 				}
-			}
-
-			public void intervalRemoved(ListDataEvent e) {
-				// intentionally empty
-			}
-
-			public void contentsChanged(ListDataEvent e) {
-				// intentionally empty.
 			}
 		});
 		add(rcp);        
@@ -116,7 +112,7 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel implements P
 
 	private void setChooseCEAOnly(boolean ceaOnly) {
 
-		rcp.setFilter("@xsi:type &= '*CeaApplicationType' " +
+		rcp.applyFilter("@xsi:type &= '*CeaApplicationType' " +
 				" or @xsi:type &= '*CeaHttpApplicationType' " + 
 				( ! ceaOnly ? " or @xsi:type &= '*ConeSearch' " + 
 						" or @xsi:type &= '*SimpleImageAccess' "  + 
@@ -150,6 +146,9 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel implements P
 
 /* 
 $Log: ChooseAToolEditorPanel.java,v $
+Revision 1.17  2007/03/08 17:44:04  nw
+first draft of voexplorer
+
 Revision 1.16  2007/01/29 10:52:43  nw
 moved cache configuration into hivemind.
 

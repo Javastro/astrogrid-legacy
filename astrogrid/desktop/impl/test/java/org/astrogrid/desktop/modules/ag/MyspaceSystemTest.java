@@ -1,4 +1,4 @@
-/*$Id: MyspaceSystemTest.java,v 1.9 2007/01/29 10:42:48 nw Exp $
+/*$Id: MyspaceSystemTest.java,v 1.10 2007/03/08 17:44:01 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,7 +30,6 @@ import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.acr.astrogrid.NodeInformation;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.filestore.common.FileStoreInputStream;
@@ -294,18 +293,7 @@ public class MyspaceSystemTest extends TestCase {
         myspace.refresh(testDir); // nothing we can observe really - just verify it doesn't throw.
     }
 
-    public void testListAvailableStores() throws Exception{
-        ResourceInformation[] arr = myspace.listAvailableStores();
-        assertNotNull(arr);
-        assertTrue(arr.length > 0);
-        // check structure of first one.
-    }
-    
-    public void testChangeStore() throws Exception{
-        ResourceInformation[] arr = myspace.listAvailableStores();
-        assertTrue(arr.length > 1);
-        myspace.changeStore(testFile, arr[1].getId());// am assuming that files are created by default in the store in arr[0].
-    }
+
 
     public void testCopy()throws Exception {
         URI copy = myspace.copy(testFile, testDir, "anotherNewFile");
@@ -350,6 +338,9 @@ public class MyspaceSystemTest extends TestCase {
 
 /* 
 $Log: MyspaceSystemTest.java,v $
+Revision 1.10  2007/03/08 17:44:01  nw
+first draft of voexplorer
+
 Revision 1.9  2007/01/29 10:42:48  nw
 tidied.
 

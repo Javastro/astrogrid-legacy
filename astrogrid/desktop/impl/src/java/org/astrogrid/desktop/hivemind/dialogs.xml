@@ -16,7 +16,6 @@
 	<contribution configuration-id="framework.acrServices">
 			<acrService id="resourceChooser" interface="ResourceChooser"/>
 			<acrService id="toolEditor" interface="ToolEditor" />
-			<acrService id="registryChooser" interface="RegistryChooser" />
 			<acrService id="registryGoogle" interface="RegistryGoogle" />
 	</contribution>
 
@@ -135,6 +134,17 @@ TOOL EDITOR
 		<object>service:securityPanel</object>
 	</contribution>
 	
+	<configuration-point id="regScopeToolEditors" schema-id="system.objects">
+		List of tool editors to use for the registryScope app Launcher
+	</configuration-point>
+	<contribution configuration-id="regScopeToolEditors">
+<!--TODO  being a pain at the moment - no time to test		<object>service:adqlPanel</object>-->
+		<object>service:basicPanel</object>
+		<object>service:xmlPanel</object>
+		<object>service:informationPanel</object>
+		<object>service:securityPanel</object>
+	</contribution>
+	
 		<contribution configuration-id="system.uiStructure">
 		<action parentName="debug" onEventDispatchThread="true" name="driveToolEditor" text="Launch ToolEditor"
 			object="service:toolEditor" methodName="selectAndBuild" />
@@ -176,17 +186,30 @@ REGISTRY GOOGLE
 				<service>system.configuration</service>
 				<service>system.help</service>
 				<service>system.ui</service>
-				<service>ivoa.registry</service>
-				<service>system.browser</service>
-				<service>ui.registryBrowser</service>
-				<object>cache:resources</object>
-				<object>cache:bulk</object>
-				<service>votech.vomon</service>
-				<object>preference:acr.advanced</object>				
+				<object>object:registryGooglePanel</object>
 			</construct>
 		</invoke-factory>	
 	</service-point>
 
+	
+	<contribution configuration-id="hiveutils.ObjectBuilderObjects">
+		Describes how to build a new registry google panel.
+		It's a complex thing to construct - using an object builder
+		means we only need to describe the construction in one place,
+		and then pass an instancoe of the ObjectBuilder factory
+		into wherever a googlePanel is needed.
+		<object name="registryGooglePanel" class="org.astrogrid.desktop.modules.dialogs.registry.RegistryGooglePanel">
+			<inject object="service:ivoa.registry" />
+			<inject object="service:system.browser" />
+			<inject object="service:ui.registryBrowser" />
+			<inject object="cache:resources" />
+			<inject object="cache:bulk" />
+			<inject object="service:votech.vomon" />
+			<inject object="preference:acr.advanced" />
+			<inject object="literal:boolean:false" /> <!-- remove this later -->
+		</object>
+	</contribution>
+	
 	<implementation service-id="registryGoogle" if="property dialogs.registryGoogle.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>		
@@ -211,25 +234,7 @@ REGISTRY GOOGLE
 		<item id="reg.xml" url="http://wiki.astrogrid.org/bin/view/Astrogrid/RegistryExplorer#Resource_XML" />
 		
 	</contribution>
-	
-	
-	
-	<!-- obsolete version - only present for backwards compat. -->
-<service-point id="registryChooser" interface="RegistryChooser">
-		Select a registry resource (obsolete)
-		<interceptor service-id="system.deprecation"/>
-		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.dialogs.RegistryChooserImpl" >
-				<service>dialogs.registryGoogle</service>
-				<service>astrogrid.registry</service>
-			</construct>
-		</invoke-factory>	
-	</service-point>
 
-	<implementation service-id="registryChooser" if="property dialogs.registryChooser.disabled">
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
-	</implementation>		
-	
 	
 	<!-- =================
 	TOOL EDITOR PANES
@@ -256,14 +261,8 @@ REGISTRY GOOGLE
 		registry-browsing panel
 		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.dialogs.editors.ChooseToolEditorPanelFactory">
-				<service>ivoa.registry</service>
 				<service>astrogrid.applications</service>
-				<service>system.browser</service>
-				<service>ui.registryBrowser</service>
-				<object>cache:resources</object>
-				<object>cache:bulk</object>
-				<service>votech.vomon</service>
-				<object>preference:acr.advanced</object>				
+				<service>hiveutils.ObjectBuilder</service>		
 			</construct>
 		</invoke-factory>
 	</service-point>	

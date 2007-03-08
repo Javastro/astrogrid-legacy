@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowserImpl.java,v 1.20 2007/01/29 11:11:37 nw Exp $
+/*$Id: VospaceBrowserImpl.java,v 1.21 2007/03/08 17:43:59 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,8 +40,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
 
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.MyspaceBrowser;
@@ -70,7 +70,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
     protected final class CopyAction extends AbstractAction implements FileAction /*, FolderAction @todo not supported on folders at the moment*/ {
         public CopyAction() {
-            super("Copy", IconHelper.loadIcon("copy.gif"));
+            super("Copy", IconHelper.loadIcon("editcopy16.png"));
             this.putValue(SHORT_DESCRIPTION, "Copy node");
             this.setEnabled(false);
         }
@@ -89,7 +89,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
     
     protected final class CutAction extends AbstractAction implements FileAction/*, FolderAction@todo not supported on folders a the moment */ {
         public CutAction() {
-            super("Cut", IconHelper.loadIcon("cut_edit.gif"));
+            super("Cut", IconHelper.loadIcon("editcut16.png"));
             this.putValue(SHORT_DESCRIPTION, "Cut node");
             this.setEnabled(false);
         }
@@ -115,7 +115,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
     
     protected final class PasteAction extends AbstractAction implements FolderAction {
         public PasteAction() {
-            super("Paste", IconHelper.loadIcon("paste_edit.gif"));
+            super("Paste", IconHelper.loadIcon("editpaste16.png"));
             this.putValue(SHORT_DESCRIPTION, "Paste node");
             this.setEnabled(false);
         }
@@ -166,7 +166,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
   
     protected final class DeleteAction extends AbstractAction implements FileAction, FolderAction {
         public DeleteAction() {
-            super("Delete", IconHelper.loadIcon("delete_obj.gif"));
+            super("Delete", IconHelper.loadIcon("editdelete16.png"));
             this.putValue(SHORT_DESCRIPTION, "Delete node");
             this.setEnabled(false);
         }
@@ -243,7 +243,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 */
     protected final class RelocateAction extends AbstractAction implements FileAction {
         public RelocateAction() {
-            super("Relocate",IconHelper.loadIcon("repo_rep.gif"));
+            super("Relocate",IconHelper.loadIcon("db16.png"));
             this.putValue(SHORT_DESCRIPTION,"Relocate content to another filestore");
             this.setEnabled(false);
         }
@@ -266,7 +266,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
                     ,"Relocate " + n.getName(),JOptionPane.QUESTION_MESSAGE);
                     */
             try {
-            ResourceInformation[] rds = getVospace().listAvailableStores();
+            Service[] rds = getVospace().listStores();
             int currentPos = 0;
             URI[] stores = new URI[rds.length];
             for (int i = 0;  i < stores.length; i++) {
@@ -303,7 +303,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
     protected final class CreateContentAction extends AbstractAction implements FileAction, FolderAction {
 
         public CreateContentAction() {
-            super("Import data", IconHelper.loadIcon("import_log.gif"));
+            super("Import data", IconHelper.loadIcon("fileimport16.png"));
             this.putValue(SHORT_DESCRIPTION,
                     "Store data (from URL or local file) into a vospace file");
             this.setEnabled(false);
@@ -362,7 +362,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
     protected final class RefreshAction extends AbstractAction implements FileAction, FolderAction {
         public RefreshAction() {
-            super("Refresh", IconHelper.loadIcon("update.gif"));
+            super("Refresh", IconHelper.loadIcon("reload16.png"));
             this.putValue(SHORT_DESCRIPTION, "Refresh node with server");
             this.setEnabled(false);
         }
@@ -399,7 +399,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
     protected final class RenameAction extends AbstractAction implements FileAction, FolderAction {
         public RenameAction() {
-            super("Rename", IconHelper.loadIcon("text_obj.gif"));
+            super("Rename", IconHelper.loadIcon("rename16.png"));
             this.putValue(SHORT_DESCRIPTION, "Rename node");
             this.setEnabled(false);
         }
@@ -439,7 +439,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
     protected final class SendToAction extends AbstractAction implements FileAction {
 
         public SendToAction() {
-            super("Send To", IconHelper.loadIcon("read_obj.gif"));
+            super("Send To", IconHelper.loadIcon("sendto16.png"));
             this.putValue(SHORT_DESCRIPTION, "Send file contents somewhere");
             this.setEnabled(false);
         }
@@ -466,12 +466,11 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
         {
             JTaskPaneGroup infoGroup = new JTaskPaneGroup();
             infoGroup.setText("Properties");
-            infoGroup.setIcon(IconHelper.loadIcon("info_obj.gif"));
+            infoGroup.setIcon(IconHelper.loadIcon("info16.png"));
             infoGroup.setSpecial(true);
 
             furtherGroup = new JTaskPaneGroup();
             furtherGroup.setText("Advanced");
-            furtherGroup.setIcon(IconHelper.loadIcon("read_obj.gif"));
             furtherGroup.setExpanded(false);
             
 
@@ -736,7 +735,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
         this.setName("MyspaceBrowser");
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.myspaceBrowser");          
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setIconImage(IconHelper.loadIcon("filenav_nav.gif").getImage());         
+        setIconImage(IconHelper.loadIcon("myspace16.png").getImage());         
         JPanel pane = getMainPanel();
         pane.add(getJSplitPane(), java.awt.BorderLayout.CENTER);
         JToolBar toolBar = getToolBar();
@@ -758,6 +757,9 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
 /*
  * $Log: VospaceBrowserImpl.java,v $
+ * Revision 1.21  2007/03/08 17:43:59  nw
+ * first draft of voexplorer
+ *
  * Revision 1.20  2007/01/29 11:11:37  nw
  * updated contact details.
  *

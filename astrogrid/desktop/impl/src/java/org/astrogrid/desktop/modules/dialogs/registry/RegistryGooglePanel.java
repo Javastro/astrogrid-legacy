@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.8 2007/01/29 10:51:49 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.9 2007/03/08 17:43:59 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -7,74 +7,100 @@
  * Software License version 1.2, a copy of which has been included 
  * with this distribution in the LICENSE.txt file.  
  *
-**/
+ **/
 package org.astrogrid.desktop.modules.dialogs.registry;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.AbstractAction;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
-import javax.swing.DefaultListSelectionModel;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComponent;
-import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.xml.stream.XMLStreamReader;
 
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 
-import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.astrogrid.CeaApplication;
+import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.dialogs.registry.FilterPipelineFactory.PipelineStrategy;
+import org.astrogrid.desktop.modules.dialogs.registry.srql.BasicRegistrySRQLVisitor;
+import org.astrogrid.desktop.modules.dialogs.registry.srql.Builder;
+import org.astrogrid.desktop.modules.dialogs.registry.srql.KeywordSRQLVisitor;
+import org.astrogrid.desktop.modules.dialogs.registry.srql.SRQL;
+import org.astrogrid.desktop.modules.dialogs.registry.srql.SRQLParser;
+import org.astrogrid.desktop.modules.dialogs.registry.srql.SRQLVisitor;
+import org.astrogrid.desktop.modules.dialogs.registry.strategy.AuthorityStrategy;
+import org.astrogrid.desktop.modules.dialogs.registry.strategy.CapabilityStrategy;
+import org.astrogrid.desktop.modules.dialogs.registry.strategy.ContentLevelStrategy;
+import org.astrogrid.desktop.modules.dialogs.registry.strategy.CreatorStrategy;
+import org.astrogrid.desktop.modules.dialogs.registry.strategy.PublisherStrategy;
+import org.astrogrid.desktop.modules.dialogs.registry.strategy.SubjectsStrategy;
+import org.astrogrid.desktop.modules.dialogs.registry.strategy.TypeStrategy;
+import org.astrogrid.desktop.modules.dialogs.registry.strategy.TypesStrategy;
+import org.astrogrid.desktop.modules.dialogs.registry.strategy.UcdStrategy;
+import org.astrogrid.desktop.modules.dialogs.registry.strategy.WavebandStrategy;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal.StreamProcessor;
-import org.astrogrid.desktop.modules.ivoa.resource.ResourceFormatter;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParser;
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.ExternalViewerHyperlinkListener;
-import org.astrogrid.desktop.modules.ui.RegistryBrowserImpl;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
+import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
 import org.votech.VoMon;
-import org.votech.VoMonBean;
-import org.w3c.dom.Document;
+
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.ListSelection;
+import ca.odell.glazedlists.SortedList;
+import ca.odell.glazedlists.event.ListEvent;
+import ca.odell.glazedlists.event.ListEventListener;
+import ca.odell.glazedlists.swing.EventSelectionModel;
+import ca.odell.glazedlists.swing.EventTableModel;
+import ca.odell.glazedlists.swing.GlazedListsSwing;
+import ca.odell.glazedlists.swing.TableComparatorChooser;
+
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
 
 /**
  * Implementation of the registry-google chooser.
@@ -82,674 +108,642 @@ import org.w3c.dom.Document;
  * @todo optimize query - no //vor:resouc
  * @todo understand why this component manages it's own cache - doesn't the registry client do all the 
  * caching that's necessary? not a bug, just not time to understand this yet.
+ * 		     //@todo add search-in-results.
+		     //@todo add grouping / subsetting ??
  */
-public class RegistryGooglePanel extends JPanel implements ActionListener, PropertyChangeListener {
-    
-    /** worker class that does the search.
+public class RegistryGooglePanel extends JPanel
+implements ActionListener, PropertyChangeListener, ListEventListener, ListSelectionListener, ChangeListener, TableModelListener {
+
+	private static final Log logger = LogFactory
+			.getLog(RegistryGooglePanel.class);
+
+	
+	/** an asbtract background worker that provides machinery for processing the results of a streaming parse
+	 * and caching the result */
+	private abstract class Worker extends BackgroundWorker implements StreamProcessor {
+		protected final Log logger = LogFactory.getLog(Worker.class);
+		
+		public Worker(UIComponent parent, String message) {
+			super(parent,message);
+		}
+
+		// callback from the xml stream reader.
+		public void process(XMLStreamReader reader) throws Exception {
+			ResourceStreamParser p = new ResourceStreamParser(reader);
+			load(p);	
+		}
+		/**
+		 * @param p
+		 */
+		protected void load(ResourceStreamParser p) {
+			while (p.hasNext()) {
+				final Resource r = (Resource)p.next();
+				try {
+					items.getReadWriteLock().writeLock().lock();
+					items.add(r);
+				} finally {
+					items.getReadWriteLock().writeLock().unlock();
+				}
+			}
+		}
+		protected void load(Resource[] arr) {
+			for (int i = 0; i < arr.length; i++) {
+				try {
+					items.getReadWriteLock().writeLock().lock();
+					items.add(arr[i]);
+				} finally {
+					items.getReadWriteLock().writeLock().unlock();
+				}
+			}			
+		}
+		
+		protected void cacheResult( final String key) {
+			Resource[] arr = (Resource[]) items.toArray(new Resource[items.size()]);
+			Element el = new Element(key,arr);
+			bulk.put(el);
+			for (int i = 0; i < arr.length; i++) {
+				if (resources.get(arr[i].getId()) == null) {
+					resources.put(new Element(arr[i].getId(),  arr[i]));
+				}
+			}									
+		}
+	
+		protected void runQuery(String xq) throws ServiceException {
+			// check bulk cache.
+			Element el = bulk.get(xq);
+			if (el != null) {
+				load((Resource[])el.getValue()); 
+				return;// found a cached result - halt here.
+			}
+			reg.xquerySearchStream(xq,this);
+			// no need to lock - as we know we're the thread that was doing the modifying. and it's finished now.
+			if (items.size() > 0) {
+				cacheResult(xq);
+			}
+		}
+		protected void doAlways() {
+			goButton.enableA();
+		}
+	}
+	
+	/** worker class that does a SRQL search
 	 * @author Noel Winstanley
 	 * @since Aug 15, 20062:00:41 AM
 	 */
-	private final class SearchWorker extends BackgroundWorker implements StreamProcessor{
-		/**
-		 * 
-		 */
-		private final AbstractQuery q;
-	    private final Builder briefXQueryBuilder = new SummaryXQueryVisitor();
-	    private final Builder fullTextXQueryBuilder = new FullTextXQueryVisitor();
-		/**
-		 * @param parent
-		 * @param msg
-		 * @param q
-		 */
-		public SearchWorker(UIComponent parent, String msg, AbstractQuery q) {
+	private final class SearchWorker extends Worker{
+
+		private final SRQL q;
+
+		public SearchWorker(UIComponent parent, String msg, SRQL q) {
 			super(parent, msg);
 			this.q = q;	
 		}
 
-		public void process(XMLStreamReader reader) throws Exception {
-			ResourceStreamParser p = new ResourceStreamParser(reader);
-			while (p.hasNext()) {
-				final Resource r = (Resource)p.next();
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						selectTableModel.addResource(r);
-					    parent.setStatusMessage("Found " + selectTableModel.getRowCount() + " resources");             
-					}
-				});
-			}	
-		}
-		protected Object construct() throws Exception {        
-			if (! exhaustiveCheck.isSelected()) {
+		protected Object construct() throws Exception {   
 				// produce a query from the search parse tree.
 				String briefXQuery = briefXQueryBuilder.build(this.q,filter);
-				// check bulk cache.
-				Element el = bulk.get(briefXQuery);
-				if (el != null) {
-					return el.getValue();
-				}
-				reg.xquerySearchStream(briefXQuery,this);
-				if (selectTableModel.getRowCount() > 0) {
-					cacheResult(briefXQuery);
-					return null; // halt the search here.
-				}
+				runQuery(briefXQuery);
+				return null;
+		}
+	}
+	
+	/** worker class that does a query */
+	private final class QueryWorker extends Worker{
 
-				SwingUtilities.invokeLater(new Runnable() { // put ui-updating code back on the ui thread..
-					public void run() {
-						exhaustiveCheck.setSelected(true);
-						parent.setStatusMessage("Quick search gave no results - trying exhaustive search");
-					}
-				});
+		private final String q;
 
-			} // end brief search.
+		public QueryWorker(UIComponent parent, String query) {
+			super(parent,"Loading query");
+			this.q = query;	
+		}
 
-			// do an exhaustive search
-			// produce a query from the search parse tree.
-			String fullXQuery = fullTextXQueryBuilder.build(this.q,filter);
-			// check bulk cache.
-			Element el = bulk.get(fullXQuery);
-			if (el != null) {
-				return el.getValue();
-			}
-			reg.xquerySearchStream(fullXQuery,this);
-			if (selectTableModel.getRowCount() > 0) {
-				cacheResult(fullXQuery);
-			}
-
+		protected Object construct() throws Exception {   
+			runQuery(q);
 			return null;
 		}
+	}
+	
+	/** worker class that lists results of filtering the registry
+	 * @author Noel Winstanley
+	 * @since Aug 15, 20062:00:41 AM
+	 */
+	private final class FilterWorker extends Worker{
 
+		public FilterWorker(UIComponent parent, String filter) {
+			super(parent, "Listing contents");
+			this.filter = filter;
+		}
+		private final String filter;
+
+		protected Object construct() throws Exception {   
+				String xq =makeXQueryFromFilter(filter);
+				runQuery(xq);
+				return null;
+		}
 		protected void doFinished(Object result) {
-			if (result != null) {// cached results passed in here for processing.
-				Resource[] arr =  (Resource[]) result;
-				for (int i = 0; i< arr.length; i++) {// bit inefficient - but will do for now.
-					selectTableModel.addResource(arr[i]);
-				}
-			} 
+			selectTable.selectAll();
+			
 		}
 
-		//caching takes place on the main ui thread. which is a bit of a nusciance, but otherwise might not 
-		// end up caching the full set of results - as there's a race condition.
-		private void cacheResult( final String key) {
-			SwingUtilities.invokeLater(
-			new Runnable() {
-				public void run() {
-					List resultList = selectTableModel.getRows();
-					Resource[] arr = (Resource[]) resultList.toArray(new Resource[resultList.size()]);
-					Element el = new Element(key,arr);
-					bulk.put(el);
-					for (int i = 0; i < arr.length; i++) {
-						if (resources.get(arr[i].getId()) == null) {
-							resources.put(new Element(arr[i].getId(),  arr[i]));
-						}
-					}
-				}
-			});									
-		}
+	}	
+	
+	/** worker class that retrieves records for a list of ids.
+	 * @author Noel Winstanley
+	 * @since Aug 15, 20062:00:41 AM
+	 */
+	private final class ListWorker extends Worker{
 
-		protected void doAlways() {     
-		    // display first result.
-		    if (selectTableModel.getRowCount() > 0) {
-		    	// rest of this should be done automatically.
-		    //	detailsPane.setText(ResourceFormatter.renderResourceAsHTML(selectTableModel.getRow(0)));
-		   // 	detailsPane.setCaretPosition(0);
-		    	selectTable.changeSelection(0,1,false,false);
-		    }               
-		    parent.setStatusMessage("Found " + selectTableModel.getRowCount() + " resources");             
-		    selectTable.requestFocusInWindow();
+		public ListWorker(UIComponent parent, Collection ids) {
+			super(parent, "Loading List");
+			this.ids = ids;
+		}
+		private final Collection ids;
+		
+		protected Object construct() throws Exception {   
+				String xq = makeXQueryFromIdSet(ids);
+				runQuery(xq);
+				return null;
+		}
+		protected void doFinished(Object result) {
+			selectTable.selectAll();
+			
+		}
+	}
+	// no state - so can be reused between instances.
+	static final SRQLVisitor feedbackVisitor = new KeywordSRQLVisitor();	
+	static final Builder briefXQueryBuilder = new BasicRegistrySRQLVisitor();
+	
+	// member variables.
+	protected String filter = null;
+	private final BiStateButton goButton ;
+	private final JLabel searchCount;
+	private final AutoCompleteHistoryField keywordField;
+	protected final ResourceTable selectTable;
+	protected final EventList  items ;
+	private final EventList edtItems; // a view of the items event list, on the Event dispatch thread.
+    protected final EventTableModel selectTableModel;
+	// tracks the currently clicked on registry entry - i.e. the one to display in viewer
+	private final EventSelectionModel currentResourceInView;
+	// tracks the entries currently 'checked'
+	protected final ListSelection selectedResources;
+	protected final JTabbedPane tabPane;
+	protected final RegistryInternal reg;
+	protected final Ehcache resources ;
+	protected final Ehcache bulk;
+	protected final Preference advancedPreference;
+	protected final ResourceViewer  xmlPane;
+	protected final ResourceViewer detailsPane;
+	private final JLabel keywordFieldLabel;
+	
+	public final UIComponentBodyguard parent;
+	
+	
+	public JPopupMenu getPopup() {
+		return selectTable.getPopup();
+	}
+	
+	/** Construct a new RegistryChooserPanel
+	 * 
+	 * @param uiParent parent component
+	 * @param reg used to perform the query
+	 * @param browser used to display external resources
+	 * @param regBrowser used to display related registry entires.
+	 * @param fac caches resources.
+	 * @param vomon used to annotate registry entries with availability information
+	 * @param pref controls whether to display 'advanced' features of the ui.
+	 */
+	public RegistryGooglePanel(final RegistryInternal reg, final BrowserControl browser, final RegistryBrowser regBrowser,
+			final Ehcache resources, final Ehcache bulk,
+			final VoMon vomon, Preference pref) {
+		this(reg,browser,regBrowser,resources, bulk,vomon,pref,true);
+	}
+
+	/** Construct a new RegistryChooserPanel
+	 * 
+	 * @param uiParent parent component
+	 * @param reg used to perform the query
+	 * @param browser used to display external resources
+	 * @param regBrowser used to display related registry entires.
+	 * @param fac caches resources.
+	 * @param vomon used to annotate registry entries with availability information
+	 * @param pref controls whether to display 'advanced' features of the ui.
+	 * @param showCheckBox if false, hides the first column of the registry entries list.
+	 */
+	public RegistryGooglePanel(final RegistryInternal reg, final BrowserControl browser, final RegistryBrowser regBrowser, 
+			final Ehcache resources, final Ehcache bulk
+			, final VoMon vomon, Preference pref, boolean showCheckBox) {
+
+		super();    
+				
+		this.parent = new UIComponentBodyguard();
+		this.reg = reg;
+		this.resources = resources;
+		this.bulk = bulk;
+		this.advancedPreference = pref;
+
+		// prelims
+		this.setSize(new Dimension(500,800));
+		setLayout(new BorderLayout());
+		CSH.setHelpIDString(this, "reg.general");
+		
+	//DATAPIPELINE
+		// create datamodel.
+		items= new BasicEventList();
+		
+		//listen to changes to items list - define a view that always fires events on the EDT
+		edtItems = GlazedListsSwing.swingThreadProxyList(items);
+		edtItems.addListEventListener(this);
+		
+		// sorted view of this model . all ui component should attach to this.
+		SortedList sortedItems = new SortedList(items,new ResourceTitleComparator());
+		
+
+		PipelineStrategy[] pStrategies = new PipelineStrategy[] {
+				new TypeStrategy()
+				,new SubjectsStrategy()
+				, new TypesStrategy()
+				, new CapabilityStrategy()
+				, new WavebandStrategy()
+				, new ContentLevelStrategy()
+				,new AuthorityStrategy()
+				,new PublisherStrategy()
+				,new CreatorStrategy()
+				,new UcdStrategy()
+				//@todo move strategies out to hivemind? probably necessary for more advanced ones.
+				// @future add strategies for meta-metadata - last used, recently added, tags, etc.
+				};
+		FilterPipelineFactory mPipeline = new FilterPipelineFactory(sortedItems,pStrategies);
+		EventList filteredItems = mPipeline.getFilteredItems();
+
+				
+		// list of currently 'ticked' resources
+		selectedResources = new ListSelection (filteredItems); 
+		selectedResources.setSelectionMode(ListSelection.MULTIPLE_INTERVAL_SELECTION_DEFENSIVE);
+   		
+		// item currenlty selected in table list.
+		currentResourceInView = new EventSelectionModel(filteredItems);
+		currentResourceInView.setSelectionMode(ListSelection.MULTIPLE_INTERVAL_SELECTION_DEFENSIVE);
+		currentResourceInView.addListSelectionListener(this); // assume this happens on EDT?
+		
+		// top panel. am using jforms to lay this out.
+		FormLayout form = new FormLayout(
+				"4dlu, right:pref, 4dlu, 50dlu:grow,4dlu,pref,4dlu,left:40dlu,4dlu" // cols
+				,"pref, 3dlu, pref, 3dlu, pref" // rows
+				);
+		PanelBuilder builder = new PanelBuilder(form);
+		CellConstraints cc = new CellConstraints();
+		keywordFieldLabel = builder.addLabel("Search", cc.xy(2,1));
+		final KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
+		final Action searchAction = new AbstractAction() {
+			{
+				putValue(Action.SMALL_ICON,IconHelper.loadIcon("search16.png"));
+				putValue(Action.MNEMONIC_KEY,new Integer(KeyEvent.VK_S)); // think this is how to do it.
+				putValue(Action.SHORT_DESCRIPTION,"Retrieve matching resources from the registry");		
+			}
+			public void actionPerformed(final ActionEvent e) {
+						RegistryGooglePanel.this.actionPerformed(e);
+				}
+		};
+		final Action haltAction = new AbstractAction() {
+			{
+				putValue(Action.SMALL_ICON,IconHelper.loadIcon("stop16.png"));
+				putValue(Action.MNEMONIC_KEY,new Integer(KeyEvent.VK_H)); // think this is how to do it.
+				putValue(Action.SHORT_DESCRIPTION,"Halt search");		
+			}
+			public void actionPerformed(ActionEvent e) {
+				goButton.enableA();
+				RegistryGooglePanel.this.parent.get().haltAll();			
+			}
+		};
+		keywordField = new AutoCompleteHistoryField(this);
+		//keywordField.addActionListener(this);
+		CSH.setHelpIDString(keywordField, "reg.search");
+		keywordField.setToolTipText("<html>Enter keywords to search for,<br>a phrase in quotes<br> logical operators - AND, OR, NOT,(,),<br> or see help for further details</html>");
+		builder.add(keywordField, cc.xy(4, 1));
+				
+		goButton = new BiStateButton(searchAction,haltAction);
+		CSH.setHelpIDString(goButton, "reg.search");
+		builder.add(goButton, cc.xy(6, 1));
+		
+		this.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(enter,"search");
+		this.getActionMap().put("search",searchAction);
+		
+		searchCount = new JLabel();
+		builder.add(searchCount,cc.xy(8,1));
+
+		builder.addLabel("Filter",cc.xy(2, 3));
+		final JTextField filterField = mPipeline.getTextField();
+		CSH.setHelpIDString(filterField, "reg.filter");
+		builder.add(filterField,cc.xy(4, 3));
+		builder.add(mPipeline.getExpandButton(),cc.xy(6, 3));
+		final JComponent filters = mPipeline.getFilters();
+		CSH.setHelpIDString(filters, "reg.filters");
+		builder.add(filters,cc.xyw(2, 5,7));
+	
+		add(builder.getPanel(),BorderLayout.NORTH);
+
+		// middle pane
+		
+		// model for the table.
+		selectTableModel= new EventTableModel(filteredItems,new ResourceTableFomat(vomon,selectedResources,showCheckBox));          		
+		selectTableModel.addTableModelListener(this);
+		selectTable = new ResourceTable(selectTableModel,showCheckBox,filteredItems,vomon);
+		CSH.setHelpIDString(selectTable, "reg.table");
+		selectTable.setSelectionModel(currentResourceInView);
+		// surprising - this is all that's needed tp add sorting to columns in the table.
+		new TableComparatorChooser(selectTable,sortedItems,true);
+		JComponent centerPanel = new JScrollPane(selectTable);
+		selectTable.setPreferredScrollableViewportSize(new Dimension(300,300));
+		centerPanel.setBorder(BorderFactory.createEmptyBorder());
+		centerPanel.setPreferredSize(new Dimension(300,300));
+		
+
+		// bottom pane.
+		tabPane = new JTabbedPane();    
+		tabPane.setBorder(BorderFactory.createEmptyBorder());
+		tabPane.addChangeListener(this);
+		tabPane.setPreferredSize(new Dimension(200,200));
+		detailsPane = new FormattedResourceViewer(browser,regBrowser);
+		CSH.setHelpIDString(detailsPane.getComponent(), "reg.details");
+		
+		xmlPane = new XMLResourceViewer(parent,reg);
+		CSH.setHelpIDString(xmlPane.getComponent(), "reg.xml");
+		final JScrollPane scrollPane = new JScrollPane((Component)detailsPane,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setBorder(BorderFactory.createEmptyBorder());
+		tabPane.addTab("Details", IconHelper.loadIcon("info16.png")
+				, scrollPane
+				, "Details of chosen resource");
+		// xml pane not added to tabs in same way - as is an 'advanced' view.
+		// will be added / removed in the property change listener, when initialized from preferneces.
+		
+		// stitch middle and bottom together.
+		JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,centerPanel,tabPane);
+		split.setPreferredSize(new Dimension(300,500));
+	//	split.setSize(new Dimension(300,200));
+		split.setDividerSize(5);
+		split.setDividerLocation(300);
+		split.setOneTouchExpandable(true);
+		split.setBorder(BorderFactory.createEmptyBorder());
+		add(split,BorderLayout.CENTER);
+		
+		advancedPreference.addPropertyChangeListener(this);
+		advancedPreference.initializeThroughListener(this);
+
+	}
+	/** triggered when value of preference changes. - shows / hides xml representation. */
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getSource() == this.advancedPreference ) {
+			if (advancedPreference.asBoolean()) {
+				tabPane.addTab("XML entry", IconHelper.loadIcon("xml.gif"), xmlPane.getComponent(), "View the XML as entered in the registry");       			
+			} else {
+				int ix = tabPane.indexOfComponent(xmlPane.getComponent());
+				if (ix != -1) {
+					tabPane.removeTabAt(ix);
+				}
+			}
+
 		}
 	}
 	
-	/** listens to changes to gui, and fetches and displays XML documents as needed.
-     * Also displays the formatted record.
-	 * @author Noel Winstanley
-	 * @since Aug 5, 20062:57:44 AM
-	 */
-	final class XMLDisplayer implements ListSelectionListener, ChangeListener {
-		protected int currentRow = -1;
-		protected int currentTab = 0;
+// view updating methods	
 
-		// tracks change in tabs.
-		public void stateChanged(ChangeEvent e) {
-			
-			if (tabPane.getSelectedIndex() != 0 && currentTab == 0) { // only catch transitions between 0 and others
-				retrieveAndDisplayXML(currentRow);
+	/** triggered when resource list contents change - glazeed lists will always call this on the EDT*/
+	public void listChanged(ListEvent arg0) {
+		while(arg0.next()) { // I assume this is the correct pattern
+			if (arg0.getType() == ListEvent.DELETE) {// delete is only ever a clear.
+				detailsPane.clear();
+				xmlPane.clear();
+				tabPane.setSelectedIndex(0);
 			}
-			currentTab = tabPane.getSelectedIndex();
 		}
-		/** tracks currently selected row.
-		 * if different from currend, display
-		 */
-		public void valueChanged(ListSelectionEvent e) {
-		     ListSelectionModel lsm = (ListSelectionModel)e.getSource();
-		     if (lsm.isSelectionEmpty()) {
-		         if(selectTableModel.getRowCount() > 0) {
-		             xmlPane.setText("");
-		             currentRow = -1;
-		         }
-		     } else if (selectTable.getSelectedColumn() <= 1 && lsm.getMinSelectionIndex() != currentRow) {                                          
-		         currentRow = lsm.getMinSelectionIndex();
-		         if (currentRow < 0) {
-		        	 return;
-		         }
-		    	detailsPane.setText(ResourceFormatter.renderResourceAsHTML(selectTableModel.getRow(currentRow)));
-		    	detailsPane.setCaretPosition(0);
-		    	if (tabPane.getSelectedIndex() > 0) { // i.e any but the first tab
-		    		retrieveAndDisplayXML( currentRow);                     
-		    	}
-		     }
-		 }
-
-		void retrieveAndDisplayXML( final int row) {
-			final Resource res = selectTableModel.getRow(row);
-			if (res == null) { // traps out-of-bounds row indexes.
-				return;
-			}
-		(new BackgroundWorker(parent,"Fetching Record") {
-		
-		    protected Object construct() throws Exception {
-				Document doc = reg.getResourceXML(res.getId());
-		        xmlPane.setText(XMLUtils.DocumentToString(doc));                                  
-		        return null;
-		    }
-		    protected void doFinished(Object o) {
-		        xmlPane.setCaretPosition(0); 
-		    }
-		 }).start();
+		// update total size count.
+		int sz = edtItems.size();
+		switch (sz) {
+		case 0:
+			searchCount.setText("");
+			break;
+		case 1:
+			searchCount.setText("1 result");
+			break;
+		default:
+			searchCount.setText(sz + " results");
 		}
 	}
-    /**
-     * @author Noel Winstanley noel.winstanley@manchester.ac.uk 07-Sep-2005
-     *
-     */
-    public class ResourceTableModel extends AbstractTableModel {
-        private int COLUMN_COUNT = 2;
-        final DefaultListModel listModel;
-        private List ri = new ArrayList();
-        final ListSelectionModel selectionModel;
-        public ResourceTableModel() {
-            listModel = new DefaultListModel() ;
-            selectionModel = new DefaultListSelectionModel();
-            selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            selectionModel.addListSelectionListener(new ListSelectionListener() { // notify the table model when selection changes.
-                public void valueChanged(ListSelectionEvent e) {
-                    for (int i = e.getFirstIndex(); i < e.getLastIndex() + 1 && i < getRowCount(); i++) {
-                            fireTableCellUpdated(i,0);                            
-                            Resource changed = getRow(i);
-                            if (selectionModel.isSelectedIndex(i) && !listModel.contains(changed)) {
-                                listModel.addElement(changed);
-                            } else if (! selectionModel.isSelectedIndex(i) && listModel.contains(changed)) {
-                                listModel.removeElement(changed);
-                            }
-                        }
-                    }                                    
-            });
-        }
-        /** set the resouce infroatmion to display */
-
-        public void addResource(Resource r) {
-        	ri.add(r);
-        	fireTableRowsInserted(ri.size()-1,ri.size()-1);
-        }
-        /** clear the resource information */
-        public void clear() {
-            ri.clear();
-            selectionModel.clearSelection();
-            listModel.clear();
-            detailsPane.setText("<html><body></body></html>");
-            xmlPane.setText("No entry selected");
-            tabPane.setSelectedIndex(0);
-          //  keywordField.setText("");      
-            fireTableDataChanged();
-        }
-        // makes a checkbox appear in col 1 if parent is application launcher or workflow builder, not registry browser
-        public Class getColumnClass(int columnIndex) {
-            if (columnIndex == 0 && 
-            	!(parent.getClass().equals(RegistryBrowserImpl.class))) {
-                return Boolean.class;
-            } else {
-            return super.getColumnClass(columnIndex);
-            }            
-        }
-        public int getColumnCount() {
-            return COLUMN_COUNT;
-        }
-        public String getColumnName(int column) {
-            switch(column) {
-                case 0: return "Select";
-                case 1: return "Title";
-                default: return "";
-            }
-        }
-        /** models the list of selected objects*/
-        public ListModel getListModel() {
-            return listModel;
-        }
-        public Resource getRow(int i) {
-        	if (i < 0 || i >= ri.size()) {
-        		return null;
-        	}
-        	return (Resource)ri.get(i);
-        }
-
-        public int getRowCount() {
-            return ri.size();
-        }
-
-        /** get the resource information */
-        public List getRows() {
-            return ri;
-        }
-        /** get a model of the currently selected rowss */
-        public ListSelectionModel getSelectionModel() {
-            return selectionModel;
-        }
-
-        public Object getValueAt(int rowIndex, int columnIndex) {
-            switch(columnIndex) {
-                case 0:
-                    return  Boolean.valueOf(selectionModel.isSelectedIndex(rowIndex));
-                case 1:
-                    
-                    return createTitle(rowIndex);
-                default:
-                       return "";
-            }
-        }
-        
-        private String createTitle(int rowIndex) {
-        	Resource r = (Resource)ri.get(rowIndex);
-        	if (r == null) {
-        		return "";
-        	}
-        	String title = r.getTitle();
-        	if (r instanceof Service) {
-        		VoMonBean b = vomon.checkAvailability(r.getId());
-        		if (b == null) {// unknown
-        			return "<html><font color='#666666'>" + title;
-        		} else if ( b.getCode() != VoMonBean.UP_CODE) { // service down
-        			return "<html><font color='#AAAAAA'>" + title;
-        		} else {
-        			return title;
-        		}
-        	} else if (r instanceof CeaApplication) {
-        		VoMonBean[] providers = vomon.checkCeaAvailability(r.getId());
-        		if (providers == null ) { 
-        			 // unknown application.
-        			return "<html><font color='#666666'>" + title;
-        		} else {
-        			for (int i = 0; i < providers.length; i++) {
-        				if (providers[i].getCode() == VoMonBean.UP_CODE) {
-        					return title; // at least one available server
-        				}
-        			}
-        			// all servers unavailable.
-        			return "<html><font color='#AAAAAA'>" + title;
-        		}
-
-        	}
-        	// default - pass thru
-        	return title;
-        }
-        
-        // make the first cell editable
-        public boolean isCellEditable(int rowIndex, int columnIndex) {
-            return (columnIndex == 0 && !(parent.getClass().equals(RegistryBrowserImpl.class)));
-        }
-        
-        public void setValueAt(Object aValue,int rowIndex,int columnIndex) {
-            switch(columnIndex) {
-                case 0:
-                    if ( ! selectionModel.isSelectedIndex(rowIndex)) {
-                        selectionModel.addSelectionInterval(rowIndex,rowIndex);
-                    } else {
-                        selectionModel.removeSelectionInterval(rowIndex,rowIndex);
-                    }
-                default:
-                    return;
-            }
-        }
-    } // end resource information table model. 
-
-    JEditorPane detailsPane ;
-    JCheckBox exhaustiveCheck = new JCheckBox("Full-text Search");
-   
-    String filter = null;
-    private JButton goButton = null;
-    private JTextField keywordField = null;
-    JTable selectTable = null;
-    ResourceTableModel selectTableModel= new ResourceTableModel();
-    private JSplitPane split = null;
-    JTabbedPane tabPane;
-    private final XMLDisplayer xmlDisplayer = new XMLDisplayer();
-    JTextArea xmlPane = new JTextArea();
-    
-
-    
-    public ResourceTableModel getResourceTableModel() {
-    	return selectTableModel;
-    }
-    
-    /** parent ui window - used to display progress of background threads, etc 
-     * 
-     * pass this reference to any {@link org.astrogrid.desktop.modules.ui.BackgroundWorker} objects created
-     * */
-    protected final UIComponent parent;
-
-	/** registry component - use for queries */
-    protected final RegistryInternal reg;
-    protected final BrowserControl browser;
-    protected final RegistryBrowser regBrowser;
-    protected final Ehcache resources ;
-    protected final Ehcache bulk;
-    protected final VoMon vomon;
-    protected final Preference advancedPreference;
-    protected final boolean showCheckBox;
-    /** Construct a new RegistryChooserPanel
-     * 
-     * @param parent parent component
-     * @param reg used to perform the query
-     * @param browser used to display external resources
-     * @param regBrowser used to display related registry entires.
-     * @param fac caches resources.
-     * @param vomon used to annotate registry entries with availability information
-     * @param pref controls whether to display 'advanced' features of the ui.
-     */
-    public RegistryGooglePanel(final UIComponent parent,final RegistryInternal reg, final BrowserControl browser, final RegistryBrowser regBrowser,
-    		final Ehcache resources, final Ehcache bulk,
-    		final VoMon vomon, Preference pref) {
-    	this(parent,reg,browser,regBrowser,resources, bulk,vomon,pref,true);
-    }
-    
-    /** Construct a new RegistryChooserPanel
-     * 
-     * @param parent parent component
-     * @param reg used to perform the query
-     * @param browser used to display external resources
-     * @param regBrowser used to display related registry entires.
-     * @param fac caches resources.
-     * @param vomon used to annotate registry entries with availability information
-     * @param pref controls whether to display 'advanced' features of the ui.
-     * @param showCheckBox if false, hides the first column of the registry entries list.
-     */
-    public RegistryGooglePanel(final UIComponent parent,final RegistryInternal reg, final BrowserControl browser, final RegistryBrowser regBrowser, 
-    		final Ehcache resources, final Ehcache bulk
-    		, final VoMon vomon, Preference pref, boolean showCheckBox) {
-   
-    	super();    
-        this.parent = parent;
-        this.reg = reg;
-        this.browser = browser;
-        this.regBrowser = regBrowser;
-        this.resources = resources;
-        this.bulk = bulk;
-        this.vomon = vomon;
-        this.advancedPreference = pref;
-        this.showCheckBox = showCheckBox;
-        advancedPreference.addPropertyChangeListener(this);
-        
-        initialize();
-        advancedPreference.initializeThroughListener(this);
-   }
-    
-    public void doSearch(String s) {
-    	getKeywordField().setText(s);
-    	getGoButton().doClick();
-    }
-    
-    public void doOpen(final URI ivorn) {
-		(new BackgroundWorker(parent,"Opening " + ivorn) {
-			protected Object construct() throws Exception {
-				return  reg.getResource(ivorn);
+	/** triggered when contents of table change */
+	public void tableChanged(TableModelEvent e) {
+		if (e.getType() != TableModelEvent.UPDATE) { // only interested in add or delete events.
+			int resultSize = edtItems.size();
+			int viewSize = selectTableModel.getRowCount();
+			if (viewSize != resultSize) {
+				parent.get().setStatusMessage("Filtering - showing " + viewSize + " results");
+			} else {
+				parent.get().setStatusMessage("Showing all results");
 			}
-			protected void doFinished(Object result) {
-				final ResourceTableModel model = getResourceTableModel();
-				model.addResource((Resource)result);
-            	selectTable.changeSelection(0,1,false,false);			
-			}
-		}).start();    	
-    }
+			// on every change, if nothing is selcted, and there are some results,, select (display) first record.
+			if (viewSize > 0 && selectTable.getSelectedRow() == -1) {
+					selectTable.changeSelection(0, 1, false, false);			
+			}  			
+		}
+	}
+	
+	/** trigger when which reosurce is selected changes */
+	public void valueChanged(ListSelectionEvent e) {
+		if (e.getValueIsAdjusting()) {
+			return;
+		}
+		updateViewers();
+	}
+	/** triggered when selected tab changes */
+	public void stateChanged(ChangeEvent ignored) {
+		previous = null; // view has changed, so need to re-render.
+		updateViewers();
+	}
+	private Resource previous;// tries to make things idempotent.
+	/** controller that takes care of displayng the current resource in the currently visible viewer */
+	private void updateViewers() {
+		List l  = currentResourceInView.getSelected();
+		if (l.isEmpty()) {
+			return;
+		}
+		Resource res = (Resource)l.get(0); //@todo make this work nicely when I've got a multiple selection going on - want to show latest selection.
+		if (res == previous) { // list has changed, but selected item is the same.
+			return;
+		}
+		previous = res;
+		switch (tabPane.getSelectedIndex()) {
+		case 0:
+			detailsPane.display(res);
+			break;
+		case 1:
+			xmlPane.display(res);
+		default:
+			break;
+		}
+	}
+	
+//	action methods
+	public void doSearch(String s) {
+		keywordField.setValue(s);
+		goButton.doClick();
+	}
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        final String searchTerm = keywordField.getText();
-        selectTableModel.clear();
-        QueryParser qp = new QueryParser(searchTerm);
-        AbstractQuery q;
+	public void doOpen(final URI ivorn) {
+		Collection c= new ArrayList();
+		c.add(ivorn);
+		displayIdSet(c);
+	}
+	/**
+	 * called when 'search' button is pressed., or return hit in search field.
+	 */
+	public void actionPerformed(ActionEvent e) {
+		goButton.enableB();
+		String searchTerm =  keywordField.getValue();
+		clear();
+		SRQLParser qp = new SRQLParser(searchTerm);
+		SRQL q;
 		try {
 			q = qp.parse();
-        String summary =(String) q.accept(feedbackVisitor);
-        (new SearchWorker(parent, "Searching for: " + summary, q)).start();
+			if (q == null) {
+				return; // nothing to parse.
+			}
+			String summary =(String) q.accept(feedbackVisitor);
+			(new SearchWorker(parent.get(), "Searching for: " + summary, q)).start();
 		} catch (InvalidArgumentException x) {
-			parent.showError("Failed to parse search expression",x);
+			parent.get().showError("Failed to parse search expression",x);
 		}
-    }
-    
-
-    private final QueryVisitor feedbackVisitor = new KeywordQueryVisitor();
-    /** access the resources selected by the user
-	    * @return an array of resources. - maybe an empty array, but never null;
-	    */
-	   public Resource[] getSelectedResources() {
-	       ListModel m = getSelectedResourcesModel();
-	       Resource[] results = new Resource[m.getSize()];
-	       for (int i = 0; i < results.length; i++) {
-	           results[i] = (Resource)m.getElementAt(i);
-	       }
-	       return results;                
-	   }
-    
-    // tracks selected row of the table;
-    
-
-    /** expose this as a public method - so then interested clients can register listeners on the selection model */
-	   public ListModel getSelectedResourcesModel() {
-	       return selectTableModel.getListModel();
-	   }
-
-	public boolean isMultipleResources() {
-	       return selectTableModel.getSelectionModel().getSelectionMode() == ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
-	   }
-	
-    /** set an additional result filter
-     * @param filter an adql-like where clause, null indicates 'no filter'
-     */
-   public void setFilter(String filter) {
-       this.filter = filter;       
-   }
-    
-    /** set whether user is permitted to select multiple resources 
-	    * @param multiple if true, multiple selection is permitted.*/
-	   public void setMultipleResources(boolean multiple) {
-	       selectTableModel.getSelectionModel().setSelectionMode(multiple ? ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);     
-	   }
-
-    
-    private JComponent getBottomPanel() {
-        xmlPane.setEditable(false);
-        xmlPane.setText("No entry selected");
-        //Put the editor pane in a scroll pane.
-        JScrollPane editorScrollPane = new JScrollPane(xmlPane);
-        editorScrollPane.setVerticalScrollBarPolicy(
-                        JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        editorScrollPane.setPreferredSize(new Dimension(300,200));
-        return editorScrollPane;
-    }
-    
-    private JPanel getCenterPanel() {         
-         JPanel centerPanel = new JPanel();
-         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
-         
-         //set all the tables to 0 rows we want them to be added later after grabbing things from the 
-         //registry and selecting things from the "From" table.
-         selectTable = new JTable(selectTableModel) { //Implement table cell tool tips.
-             public String getToolTipText(MouseEvent e) {
-                 String tip = null;
-                 java.awt.Point p = e.getPoint();
-                 int rowIndex = rowAtPoint(p);
-                 int colIndex = columnAtPoint(p);
-                 int realColumnIndex = convertColumnIndexToModel(colIndex);               
-                 if (realColumnIndex == 1) { //Namecolumn..
-                     Resource ri = selectTableModel.getRow(rowIndex);
-                    StringBuffer result = new StringBuffer();
-                     result.append("<html>");
-                     result.append("<b>").append(ri.getTitle()).append("</b><br>");
-                     result.append("<i>");
-                     result.append(ri.getId());
-                     result.append("</i>");
-                     if (ri instanceof Service) {
-                    	 VoMonBean b = vomon.checkAvailability(ri.getId());
-                    	 if (b == null) {
-                    		 result.append("<br>The Monitoring service knows nothing about this service");
-                    	 } else {
-                    		 result.append("<br>Status at ")
-                    		 .append(b.getTimestamp())
-                    		 	.append(" - <b>" )
-                    		 	.append(b.getStatus())
-                    		 	.append("</b>");
-                    	 }
-                     } else if (ri instanceof CeaApplication) {
-                    	 VoMonBean[] arr = vomon.checkCeaAvailability(ri.getId());
-                    	 if (arr == null || arr.length == 0) {
-                    		 result.append("<br>the monitoring service knows of no providers of this application");
-                    	 } else {
-                    		 result.append("<br>Provided by<ul>");
-                    		 for (int i =0; i < arr.length; i++) {
-                    			 VoMonBean b = arr[i];
-                    			 result.append("<li>")
-                    			 	.append(b.getId())
-                    			 	.append(" - status at ")
-                    			 	.append(b.getTimestamp())
-                    			 	.append(" - <b>")
-                    			 	.append(b.getStatus())
-                    			 	.append("</b>");
-                    		 }
-                    		 result.append("</ul>");
-                    	 }
-                     }
-                     result.append("</html>");                                          
-                     tip= result.toString(); 
-                 } else { 
-                     tip = super.getToolTipText(e);
-                 }
-                 return tip;
-             }             
-         };
-         
-         selectTable.getColumnModel().getColumn(0).setPreferredWidth(8);
-         selectTable.getColumnModel().getColumn(0).setMaxWidth(10);
-         selectTable.setToolTipText("Click an entry to display details, click checkbox to select it");
-         TableColumn column = selectTable.getColumnModel().getColumn(0);
-         if(! showCheckBox) { // remove display of first column.
-        	 column.setHeaderValue(null);
-        	 column.setCellRenderer(new TableCellRenderer() {
-        		 JLabel lab = new JLabel();
-        		 public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        			 return lab;
-        		 }
-        	 });
-         }
-         selectTable.getSelectionModel().addListSelectionListener(xmlDisplayer);
-         centerPanel.add(new JScrollPane(selectTable));
-         centerPanel.setPreferredSize(new Dimension(300,200));
-         return centerPanel;
-    }
-   
-   /**
- * This method initializes jButton  
- *  
- * @return javax.swing.JButton  
- */    
-private JButton getGoButton() {
-    if (goButton == null) {
-        goButton = new JButton("Search");
-        goButton.setMnemonic(KeyEvent.VK_S);
-        goButton.setToolTipText("Retrieve matching resources from the registry");
-        goButton.addActionListener(this);
-        //parent.setDefaultButton(goButton);
-        KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
-        this.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(enter,"search");
-        this.getActionMap().put("search",new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-                RegistryGooglePanel.this.actionPerformed(e);
-            }
-        });
-    }
-    return goButton;
-}
-                    
-    /**
-     * This method initializes jTextField   
-     *  
-     * @return javax.swing.JTextField   
-     */    
-    private JTextField getKeywordField() {
-        if (keywordField == null) {
-            keywordField = new JTextField();
-            keywordField.setToolTipText("<html>Enter keywords to search for,<br>a phrase in quotes<br> logical operators - AND, OR, NOT,(,),<br> or the key of a resource - e.g <tt>ivo://org.astrogrid/Galaxev</tt></html>");            
-        }
-        return keywordField;
-    }
-
-
-   
-   /** assemble the ui */
-private void initialize() {    	
-    this.setSize(new Dimension(300,500));
-    
-    setLayout(new BorderLayout());
-	JPanel topPanel = new JPanel();
-	topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
-	topPanel.add(new JLabel("Find: "), null);
-	topPanel.add(getKeywordField(), null);
-	topPanel.add(getGoButton(), null);
-	exhaustiveCheck.setToolTipText("Search all text in the registry resources");
-	topPanel.add(exhaustiveCheck,null);
-	exhaustiveCheck.setEnabled(true); 
-	add(topPanel,BorderLayout.NORTH);
-    
-    tabPane = new JTabbedPane();    
-    detailsPane= new JEditorPane();
-    detailsPane.setContentType("text/html");
-    detailsPane.setEditable(false);
-    detailsPane.setText("<html><body></body></html>");
-    detailsPane.addHyperlinkListener(new ExternalViewerHyperlinkListener(browser, regBrowser));
-    tabPane.addTab("Details", null, new JScrollPane(detailsPane), "Details of chosen entry");
-   
-    tabPane.addChangeListener(xmlDisplayer);
-    split = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,getCenterPanel(),tabPane);
-    split.setPreferredSize(new Dimension(300,200));
-    split.setSize(new Dimension(300,200));
-    split.setDividerSize(5);
-    split.setDividerLocation(100);       
-    add(split,BorderLayout.CENTER);
-} 
-
-
-public void clear() {
-	selectTableModel.clear();
-}
-// triggered when value of preference changes. - shows / hides xml representation.
-public void propertyChange(PropertyChangeEvent evt) {
-	if (evt.getSource() == this.advancedPreference ) {
-
-				if (advancedPreference.asBoolean()) {
-					 tabPane.addTab("XML entry", IconHelper.loadIcon("document.gif"), getBottomPanel(), "View the XML as entered in the registry");       			
-				} else {
-					int ix = tabPane.indexOfTab("XML entry");
-					if (ix != -1) {
-						tabPane.removeTabAt(ix);
-					}
-				}
-	
 	}
-}
+
+
+// access the current selection, in various ways.
+	/** access the resources selected by the user
+	 * @return an array of resources. - maybe an empty array, but never null;
+	 */
+	public Resource[] getSelectedResources() {
+		List l = selectedResources.getSelected();
+		Resource[] results = new Resource[l.size()];
+		results = (Resource[])l.toArray(results);
+		return results;                
+	}
+
+	/** expose this as a public method - so then interested clients can register listeners on the selection model */
+	public ListSelection getListSelection() {
+		return this.selectedResources;
+	}
+	
+	/** expose the currently viewed resource */
+	public EventSelectionModel getCurrentResourceModel() {
+		return this.currentResourceInView;
+	}
+	
+	/* clear the search results */
+	public void clear() {
+			// wonderwhether I should lock here?? - or need to clear somethig else at least.
+		try {
+		items.getReadWriteLock().writeLock().lock();
+		items.clear();
+		} finally {
+			items.getReadWriteLock().writeLock().unlock();
+		}
+	}
+// configure the behaviour of htis component.
+	public boolean isMultipleResources() {
+		return selectedResources.getSelectionMode() == ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
+	}
+
+	/** set an additional result filter
+	 * @param filter an xquery where clause, null indicates 'no filter'
+	 */
+	public void applyFilter(String filter) {
+		clear(); 
+		this.filter = filter;  
+		setSearchVisible(true);
+	}
+	
+	/** set scope to display the results of applying this filter to registry
+	 * 
+	 * @param filter an xquery where clause. Needs to filter to < 500 resouces to 
+	 * be sensible.
+	 */
+	public void displayFilter(String filter) {
+		clear();
+		setSearchVisible(false);
+		(new FilterWorker(parent.get(),filter)).start();
+	}
+	
+	/** set scope to just display this list of resources */
+	public void displayIdSet(Collection idList) {
+		clear();
+		this.filter = null;
+		setSearchVisible(false);
+		(new ListWorker(parent.get(),idList)).start();		
+	}
+	
+	/** set scope to display results of this query
+	 * @param query
+	 */
+	public void displayQuery(String query) {
+		clear();
+		this.filter = null;
+		setSearchVisible(false);
+		(new QueryWorker(parent.get(),query)).start();
+	}
+	
+	/** build an xquery that will retrieve all items in a list */
+	public static String makeXQueryFromIdSet(Collection l) {
+		//@later investigae whether some kind of ' vr:identifier in idset' form is more efficient
+		StringBuffer sb = new StringBuffer("for $r in //vor:Resource[not (@status = 'inactive' or @status= 'deleted')]\nwhere (");
+		for (Iterator i = l.iterator(); i.hasNext();) {
+			URI id = (URI) i.next();
+			sb.append("$r/vr:identifier = '").append(id.toString()).append("'"); // @todo - am doing straight match here, not 'like' - hope it ignores whitespace - need to test this.
+			if (i.hasNext()) {
+				sb.append(" or ");
+			}
+		}
+		sb.append(")\nreturn $r");
+		return sb.toString();	
+	}
+	
+	/** buld an xquery that will retrive all items passed by a filter */
+	public static String makeXQueryFromFilter(String filter) {
+		if (filter == null || filter.trim().length() ==0) {
+			throw new IllegalArgumentException("Bang! - just downloaded the registry");
+		}
+		StringBuffer sb = new StringBuffer("for $r in //vor:Resource[not (@status = 'inactive' or @status= 'deleted')]\nwhere (");
+		sb.append(filter);
+		sb.append(")\nreturn $r");
+		return sb.toString();		
+	}
+
+	/** set whether user is permitted to select multiple resources 
+	 * @param multiple if true, multiple selection is permitted.*/
+	public void setMultipleResources(boolean multiple) {
+		selectedResources.setSelectionMode(multiple ? ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);     
+	}
+	/** whether the search field is visible or not. */
+	public boolean isSearchVisible() {
+		return this.keywordField.isVisible();
+	}
+	public void setSearchVisible(boolean b) {
+		this.keywordField.setVisible(b);
+		this.goButton.setVisible(b);
+		this.keywordFieldLabel.setVisible(b);
+		this.searchCount.setVisible(b);
+	}
+
+	/**
+	 * @return
+	 */
+	public Transferable getSelectionTransferable() {
+		return selectTable.getSelectionTransferable();
+	}
 
 }
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.9  2007/03/08 17:43:59  nw
+first draft of voexplorer
+
 Revision 1.8  2007/01/29 10:51:49  nw
 moved cache configuration into hivemind.
 
@@ -814,13 +808,13 @@ Revision 1.22  2006/01/23 14:38:52  KevinBenson
 reverting back to 1.20 version
 
 Revision 1.20  2005/12/16 12:30:01  pjn3
-*** empty log message ***
+ *** empty log message ***
 
 Revision 1.19  2005/12/16 12:03:12  pjn3
 render immediately if only 1 match
 
 Revision 1.18  2005/12/16 10:35:00  pjn3
-*** empty log message ***
+ *** empty log message ***
 
 Revision 1.17  2005/12/15 15:19:07  pjn3
 corrected when checkbox appear
@@ -879,5 +873,5 @@ changes to reg chooser to use jtable and jeditorpane.
 
 Revision 1.1  2005/09/05 11:08:39  nw
 added skeletons for registry and query dialogs
- 
-*/
+
+ */

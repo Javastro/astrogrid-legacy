@@ -9,8 +9,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -99,17 +102,35 @@ public class VoMonImpl implements VoMonInternal {
 							bean.setTimestamp(in.getAttributeValue(null,"timestamp"));
 						}
 					}
-					else if ( localName.equals("parameter") 
-							&& bean != null
-							&& in.getAttributeValue(null,"name").equals("provides")) {
-						// found a bit of metadata about the applications this service provides - add it to the multimap
+					// check for 2 different variants on how apps are represented
+					else if ( localName.equals("parameter") && "provides".equals(in.getAttributeValue(null,"name"))
+							&& bean != null ) {
 						try {
-							URI appId = new URI(in.getElementText().trim());
-							apps.put(appId,bean);
+							final String str = in.getElementText().trim();
+							if (str.length() > 0) { // else it's probably using the other representation.
+								URI appId = new URI(str);
+								apps.put(appId,bean);
+							}
 						} catch (URISyntaxException x) {
 							// oh well.
 						} 
-					}
+					} 	
+					else if ( localName.equals("parameter") && "provides-list".equals(in.getAttributeValue(null,"name"))
+							&& bean != null ) {
+						try {
+							final String str = in.getElementText().trim();
+							if (str.length() > 0) {
+								StringTokenizer st = new StringTokenizer(str);
+								while (st.hasMoreTokens()) {
+									URI appId = new URI(st.nextToken());
+									apps.put(appId,bean);
+								}
+							}
+						} catch (URISyntaxException x) {
+							// oh well.
+						} 
+					} 						
+				
 				}
 				if (in.isEndElement() && in.getLocalName().equals("host")) { // cache the info.
 					if (bean != null) {
@@ -120,11 +141,14 @@ public class VoMonImpl implements VoMonInternal {
 				}
 			}
 			// save apps into cache too.
+			final Set s = new HashSet();
 			for (Iterator i = apps.entrySet().iterator(); i.hasNext(); ) {
 				Map.Entry e = (Map.Entry)i.next();
 				final Object appId = e.getKey();
-				final Collection serviceCollection = (Collection)e.getValue();
-					VoMonBean[] serviceArr = (VoMonBean[])  serviceCollection.toArray(new VoMonBean[serviceCollection.size()]);
+				final Collection serviceCollection = (Collection)e.getValue(); 
+				s.clear();
+				s.addAll(serviceCollection);// remove duplicates from the collection
+					VoMonBean[] serviceArr = (VoMonBean[])  s.toArray(new VoMonBean[s.size()]);
 					Element el = new Element(appId,serviceArr);
 					cache.put(el);
 			}

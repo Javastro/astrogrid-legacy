@@ -21,6 +21,8 @@ import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.desktop.modules.ui.dnd.PreferredTransferable;
+import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 
 /** transferable for a parameter value (i.e. result from lookout)*/
 public class ParameterValueTransferable  implements PreferredTransferable {
@@ -29,7 +31,7 @@ public class ParameterValueTransferable  implements PreferredTransferable {
 	
 	/** don't know what type this result is - so cover all bases */
 	static final DataFlavor[] myspaceRemoteResult =new DataFlavor[]{
-		VoDataFlavour.IVORN
+		VoDataFlavour.LOCAL_URI
 		,VoDataFlavour.URL
 		,VoDataFlavour.VOTABLE
 		,VoDataFlavour.FITS_IMAGE
@@ -49,19 +51,21 @@ public class ParameterValueTransferable  implements PreferredTransferable {
 	};
 	/** string variants - for local results */ 
 	static final DataFlavor[] localResult =new DataFlavor[]{
-		VoDataFlavour.VOTABLE_STRING
+		VoDataFlavour.VOTABLE
 		,VoDataFlavour.FITS_IMAGE
 		,VoDataFlavour.FITS_TABLE
-		,VoDataFlavour.XML_STRING
-		,VoDataFlavour.PLAIN_STRING
+		,VoDataFlavour.XML
+		,VoDataFlavour.STRING
+		,VoDataFlavour.PLAIN
 		,VoDataFlavour.URL
 	};
 	
 	/** local transcript */
 	static final DataFlavor[] transcript = new DataFlavor[]{
-		VoDataFlavour.WORKFLOW_TRANSCRIPT_STRING
-		,VoDataFlavour.XML_STRING
-		,VoDataFlavour.PLAIN_STRING
+		VoDataFlavour.WORKFLOW_TRANSCRIPT
+		,VoDataFlavour.XML
+		,VoDataFlavour.STRING
+		,VoDataFlavour.PLAIN
 		,VoDataFlavour.URL		
 	};
 	
@@ -168,7 +172,7 @@ public class ParameterValueTransferable  implements PreferredTransferable {
 	 * @throws IOException 
 	 */
 	private Object processMyspaceRemote(DataFlavor arg0) throws URISyntaxException, NotFoundException, InvalidArgumentException, ServiceException, SecurityException, NotApplicableException, IOException {
-		if (arg0.equals(VoDataFlavour.IVORN)) {
+		if (arg0.equals(VoDataFlavour.LOCAL_URI)) {
 			return new URI(val.getValue());
 		}
 		URI u = new URI(val.getValue());

@@ -1,4 +1,4 @@
-/*$Id: ApiHelpRmiTransportTest.java,v 1.4 2007/01/29 10:42:48 nw Exp $
+/*$Id: ApiHelpRmiTransportTest.java,v 1.5 2007/03/08 17:44:04 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,8 @@ import org.astrogrid.desktop.TestingFinder;
  */
 public class ApiHelpRmiTransportTest extends ApiHelpIntegrationTest {
     protected ACR getACR() throws Exception{
-        return (new TestingFinder()).find();
+       return (new TestingFinder()).find();
+    //	return (new Finder()).find();
     }
     public static Test suite() {
         return new ARTestSetup(new TestSuite(ApiHelpRmiTransportTest.class));
@@ -34,6 +35,9 @@ public class ApiHelpRmiTransportTest extends ApiHelpIntegrationTest {
 
 /* 
 $Log: ApiHelpRmiTransportTest.java,v $
+Revision 1.5  2007/03/08 17:44:04  nw
+first draft of voexplorer
+
 Revision 1.4  2007/01/29 10:42:48  nw
 tidied.
 

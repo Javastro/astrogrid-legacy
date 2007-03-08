@@ -23,7 +23,6 @@ public class AllIvoaSystemTests {
 
 		suite.addTestSuite(SkyNodeSystemTest.class);
 
-		suite.addTestSuite(Adql074SystemTest.class);
 		suite.addTestSuite(ExternalRegistryBasicsSystemTest.class);
 		suite.addTestSuite(ExternalRegistryKeywordSystemTest.class);
 		suite.addTestSuite(ExternalRegistryADQLSystemTest.class);

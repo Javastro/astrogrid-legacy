@@ -1,4 +1,4 @@
-/*$Id: JobsRmiTransportTest.java,v 1.4 2007/01/29 10:42:48 nw Exp $
+/*$Id: JobsRmiTransportTest.java,v 1.5 2007/03/08 17:44:01 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ package org.astrogrid.desktop.modules.ag;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.TestingFinder;
@@ -36,6 +35,9 @@ public class JobsRmiTransportTest extends JobsSystemTest {
 
 /* 
 $Log: JobsRmiTransportTest.java,v $
+Revision 1.5  2007/03/08 17:44:01  nw
+first draft of voexplorer
+
 Revision 1.4  2007/01/29 10:42:48  nw
 tidied.
 

@@ -1,4 +1,4 @@
-/*$Id: UIComponentImpl.java,v 1.10 2007/01/29 11:11:37 nw Exp $
+/*$Id: UIComponentImpl.java,v 1.11 2007/03/08 17:43:59 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -102,7 +102,7 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
      /** generic close window action */
      protected final class CloseAction extends AbstractAction {
          public CloseAction() {
-             super("Close",IconHelper.loadIcon("exit_small.png"));
+             super("Close",IconHelper.loadIcon("exit16.png"));
              this.putValue(SHORT_DESCRIPTION,"Close");
              this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
          }
@@ -305,8 +305,8 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
             bottomPanel.setBorder(EMPTY_BORDER);
             bottomPanel.setZoneBorder(EMPTY_BORDER);            
             bottomPanel.addZone("status",getBottomLabel(),"*");
-            bottomPanel.addZone("background tasks",getTasksButton(),"20");
             bottomPanel.addZone("help",getContextSensitiveHelpButton(),"20");
+            bottomPanel.addZone("background tasks",getTasksButton(),"20");
             bottomPanel.addZone("progress",getProgressBar(),"60");
     	}
     	return bottomPanel;
@@ -328,7 +328,7 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
     
     private JButton getTasksButton() {
         if (tasksButton == null) {
-            tasksButton = new JButton(IconHelper.loadIcon("stop.gif"));
+            tasksButton = new JButton(IconHelper.loadIcon("tasks16.png"));
             tasksButton.setEnabled(false);
             tasksButton.putClientProperty("is3DEnabled",Boolean.TRUE);
             tasksButton.setBorder(BorderFactory.createEtchedBorder());
@@ -345,7 +345,7 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
     private JButton tasksButton;
     private JButton getContextSensitiveHelpButton() {
         if (helpButton == null) {
-            helpButton = new JButton(IconHelper.loadIcon("help.gif"));
+            helpButton = new JButton(IconHelper.loadIcon("contexthelp18.png"));
             helpButton.putClientProperty("is3DEnabled",Boolean.TRUE);
             helpButton.setBorder(BorderFactory.createEtchedBorder());            
             helpButton.setToolTipText("<html><b>Click</b> for context-sensitive help,<br> or press <b>'F1'</b> for overview help</html>");
@@ -365,9 +365,9 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
             final JList list = new JList(getTasksModel());
             list.setToolTipText("Click task to cancel it");
             list.setCellRenderer(new DefaultListCellRenderer() {
-                Icon pending = IconHelper.loadIcon("sleeping.gif");
-                Icon running = IconHelper.loadIcon("flashpoint.gif");
-                Icon completed = IconHelper.loadIcon("complete_status.gif");
+                Icon pending = IconHelper.loadIcon("idle16.png");
+                Icon running = IconHelper.loadIcon("running16.png");
+                Icon completed = IconHelper.loadIcon("tick16.png");
                 public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                     JLabel label = (JLabel) super.getListCellRendererComponent(list,value,index,isSelected,cellHasFocus);
                     BackgroundWorker bw = (BackgroundWorker)value;
@@ -430,6 +430,11 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
     		
     	}
     	return haltAllButton;
+    }
+    
+    public void haltAll() {
+    	getHaltAllButton().doClick();
+		setStatusMessage("Halted");    	
     }
     
     
@@ -573,6 +578,9 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
 
 /* 
 $Log: UIComponentImpl.java,v $
+Revision 1.11  2007/03/08 17:43:59  nw
+first draft of voexplorer
+
 Revision 1.10  2007/01/29 11:11:37  nw
 updated contact details.
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Resource status="active" updated="2006-07-06T18:33:26Z" xmlns="http://www.ivoa.net/xml/RegistryInterface/v0.1" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" xsi:schemaLocation="http://www.ivoa.net/xml/VODataService/v0.5 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v0.5/VODataService.xsd http://www.ivoa.net/xml/VOTable/v1.0 http://software.astrogrid.org/schema/vo-formats/VOTable/v1.0/VOTable.xsd http://www.ivoa.net/xml/CEAService/v0.2 http://software.astrogrid.org/schema/vo-resource-types/CEAService/v0.2/CEAService.xsd " xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cea:CeaApplicationType">
-        <vr:title xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">Pegase</vr:title>
+        <vr:title xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">Pegase App</vr:title>
         <vr:shortName xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">Pegase</vr:shortName>
         <vr:identifier xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">ivo://org.astrogrid/Pegase</vr:identifier>
         <vr:curation xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">

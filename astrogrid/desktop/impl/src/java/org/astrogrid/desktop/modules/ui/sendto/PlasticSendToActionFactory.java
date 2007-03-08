@@ -5,6 +5,7 @@ package org.astrogrid.desktop.modules.ui.sendto;
 
 import java.awt.Component;
 import java.awt.Image;
+import java.util.List;
 
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -24,6 +25,8 @@ import org.astrogrid.desktop.modules.system.ReportingListModel.ReportingListData
 import org.astrogrid.desktop.modules.ui.scope.SpectrumLoadPlasticButton;
 import org.votech.plastic.CommonMessageConstants;
 
+import ca.odell.glazedlists.swing.EventListModel;
+
 /** Factory for actions based on plastic applications.
  * @author Noel Winstanley
  * 
@@ -41,13 +44,14 @@ public class PlasticSendToActionFactory implements SendToActionFactory, Reportin
 	protected final Myspace vos;
 	protected JPopupMenu m;
 	protected JSeparator startingPoint; // position may vary.
-	
+	protected ListModel model;
 	/** this method needs to be called to fully configure the factory. */
 	public void setMenu(JPopupMenu m, JSeparator startingPoint) {
 		this.m = m;
 		this.startingPoint = startingPoint;
 		// start listening now.
-		tupp.getRegisteredApplicationsModel().addListDataListener(this);
+		model =new EventListModel(tupp.getRegisteredApplications()); // @todo listen directly to the event list later.
+		model.addListDataListener(this);
 		// fire an 'all change' message to get things started.
 		this.contentsChanged(null);
 	}
@@ -79,9 +83,9 @@ public class PlasticSendToActionFactory implements SendToActionFactory, Reportin
 	public void contentsChanged(ListDataEvent ignored) {
 		// clear and rebuild.
 		clearMyObjects();
-		ListModel lm = tupp.getRegisteredApplicationsModel();
-		for (int i = 0; i < lm.getSize(); i++) {
-			PlasticApplicationDescription plas = (PlasticApplicationDescription)lm.getElementAt(i);
+		List lm = tupp.getRegisteredApplications();
+		for (int i = 0; i < lm.size(); i++) {
+			PlasticApplicationDescription plas = (PlasticApplicationDescription)lm.get(i);
 			addPlasticApp(plas);
 		}
 	}
@@ -96,9 +100,9 @@ public class PlasticSendToActionFactory implements SendToActionFactory, Reportin
 	}
 
 	public void intervalAdded(ListDataEvent e) {
-		ListModel lm = tupp.getRegisteredApplicationsModel();
+		List lm = tupp.getRegisteredApplications();
 		for (int i = e.getIndex0(); i<= e.getIndex1(); i++) {
-			PlasticApplicationDescription plas = (PlasticApplicationDescription)lm.getElementAt(i);
+			PlasticApplicationDescription plas = (PlasticApplicationDescription)lm.get(i);
 			addPlasticApp(plas);
 		}		
 	}

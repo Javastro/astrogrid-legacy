@@ -1,4 +1,4 @@
-/*$Id: ApplicationsSystemTest.java,v 1.7 2007/01/29 10:42:48 nw Exp $
+/*$Id: ApplicationsSystemTest.java,v 1.8 2007/03/08 17:44:01 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,11 +23,8 @@ import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
-import org.astrogrid.acr.astrogrid.Registry;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.ARTestSetup;
@@ -48,17 +45,14 @@ public class ApplicationsSystemTest extends InARTestCase {
         ACR reg = getACR();
         apps = (Applications)reg.getService(Applications.class);
         assertNotNull(apps);
-        registry = (Registry)reg.getService(Registry.class);
     }
     
     protected void tearDown() throws Exception {
     	super.tearDown();
     	apps = null;
-    	registry = null;
     }
     
     protected Applications apps;
-    protected Registry registry;
    
     
     public static Test suite() {
@@ -73,17 +67,7 @@ public class ApplicationsSystemTest extends InARTestCase {
         }
     }
 
-    public void testRegistryAdqlQueryOldReg() throws Exception {
-    	String q= apps.getRegistryAdqlQuery();
-    	assertNotNull(q);
-    	ResourceInformation[] ri = registry.adqlSearchRI(q);
-    	assertNotNull(ri);
-    	assertTrue(ri.length > 0);
-    	for (int i = 0; i < ri.length; i++) {
-    		assertNotNull(ri[i]);
-    		assertTrue(ri[i] instanceof ApplicationInformation);
-    	}
-    }
+ 
 
 	public void testGetAdqlRegistryQueryNewReg() throws InvalidArgumentException, NotFoundException, ACRException, Exception {
 		String q = apps.getRegistryAdqlQuery();
@@ -119,16 +103,7 @@ public class ApplicationsSystemTest extends InARTestCase {
    
 
 
-    public void testGetApplicationInformation()  throws Exception {
-        URI[] a = apps.list();
-            ApplicationInformation other = apps.getApplicationInformation(a[0]);
-            assertEquals(a[0],other.getId());
-            assertNotNull(other.getName());
-            assertNotNull(other.getDescription());
-            assertNotNull(other.getInterfaces());
-            assertNotNull(other.getParameters());
-            System.out.println(other); 
-    }
+
 
     
     public void testGetDocumentation()  throws Exception {
@@ -152,15 +127,6 @@ public class ApplicationsSystemTest extends InARTestCase {
    
 
 
-
-    public void testListProvidersOf()  throws Exception {
-        URI[] u = apps.list();
-            ResourceInformation[] a = apps.listProvidersOf(u[0]);
-            assertNotNull(a);
-            for (int j = 0; j < a.length; j++) {
-                assertNotNull(a[j].getAccessURL());
-            }
-    }
         
         public static final String TOOL_DOC = "tool.xml";
         public static final String SERVER_ID = "ivo://uk.ac.cam.ast/INT-WFS/images/CEC";
@@ -248,6 +214,9 @@ public class ApplicationsSystemTest extends InARTestCase {
 
 /* 
 $Log: ApplicationsSystemTest.java,v $
+Revision 1.8  2007/03/08 17:44:01  nw
+first draft of voexplorer
+
 Revision 1.7  2007/01/29 10:42:48  nw
 tidied.
 

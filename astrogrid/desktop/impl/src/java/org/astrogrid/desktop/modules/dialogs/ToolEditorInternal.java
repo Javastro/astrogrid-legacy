@@ -1,4 +1,4 @@
-/*$Id: ToolEditorInternal.java,v 1.6 2007/01/29 11:11:37 nw Exp $
+/*$Id: ToolEditorInternal.java,v 1.7 2007/03/08 17:44:01 nw Exp $
  * Created on 24-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -61,7 +61,7 @@ public interface ToolEditorInternal extends ToolEditor {
     
     
     /** 
-     * variant of {@link ToolEditor#selectAndBuildTool()}, restited to cea apps.
+     * variant of {@link ToolEditor#selectAndBuildTool()}, restricted to cea apps.
      * @return a new tool document
      * @param comp ui component to center this dialog on.     
      * @throws ServiceException if any exception occurs during editng.
@@ -82,6 +82,9 @@ public interface ToolEditorInternal extends ToolEditor {
 
 /* 
 $Log: ToolEditorInternal.java,v $
+Revision 1.7  2007/03/08 17:44:01  nw
+first draft of voexplorer
+
 Revision 1.6  2007/01/29 11:11:37  nw
 updated contact details.
 

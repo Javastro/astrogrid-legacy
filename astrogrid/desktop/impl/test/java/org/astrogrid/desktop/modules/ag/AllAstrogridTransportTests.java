@@ -1,4 +1,4 @@
-/*$Id: AllAstrogridTransportTests.java,v 1.3 2007/01/29 10:42:48 nw Exp $
+/*$Id: AllAstrogridTransportTests.java,v 1.4 2007/03/08 17:44:01 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,8 +31,6 @@ public class AllAstrogridTransportTests {
     public static Test suite() {
         TestSuite suite = new TestSuite("Transport Tests for AstroGrid Module");
 
-        suite.addTestSuite(RegistryRmiTransportTest.class);
-        suite.addTestSuite(RegistryRpcTransportTest.class);
         suite.addTestSuite(MyspaceRmiTransportTest.class);
         suite.addTestSuite(MyspaceRpcTransportTest.class);  
         suite.addTestSuite(ApplicationsRmiTransportTest.class);
@@ -47,6 +45,9 @@ public class AllAstrogridTransportTests {
 
 /* 
 $Log: AllAstrogridTransportTests.java,v $
+Revision 1.4  2007/03/08 17:44:01  nw
+first draft of voexplorer
+
 Revision 1.3  2007/01/29 10:42:48  nw
 tidied.
 

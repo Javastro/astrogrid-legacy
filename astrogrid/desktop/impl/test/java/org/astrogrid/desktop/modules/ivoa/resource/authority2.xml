@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vor:Resource xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1" status="active" updated="2006-03-20T09:37:23Z" xmlns="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.3" xmlns:sia="http://www.ivoa.net/xml/SIA/v0.7" xmlns:sn="http://www.ivoa.net/xml/OpenSkyNode/v0.1" xmlns:vc="http://www.ivoa.net/xml/VOCommunity/v0.2" xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" xsi:schemaLocation=" http://www.ivoa.net/xml/VORegistry/v0.3 http://software.astrogrid.org/schema/vo-resource-types/VORegistry/v0.3/VORegistry.xsd " xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="vg:Authority">
+        <vr:title xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3" xmlns:vc="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">Community Authority</vr:title>
+        <vr:identifier xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3" xmlns:vc="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">ivo://apl.ucl.ac.uk</vr:identifier>
+        <vr:curation xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3" xmlns:vc="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">
+            <vr:publisher>Community Publisher</vr:publisher>
+            <vr:contact>
+                <vr:name>Kevin Benson</vr:name>
+                <vr:email>kmb@mssl.ucl.ac.uk</vr:email>
+            </vr:contact>
+        </vr:curation>
+        <vr:content xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3" xmlns:vc="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">
+            <vr:subject>The community authority for astrogrid.org</vr:subject>
+            <vr:description>This authority ID will be used to identify generic resources related to the Astrogrid consortium</vr:description>
+            <vr:referenceURL>http://www.astrogrid.org/</vr:referenceURL>
+            <vr:type>Archive</vr:type>
+        </vr:content>
+    </vor:Resource>

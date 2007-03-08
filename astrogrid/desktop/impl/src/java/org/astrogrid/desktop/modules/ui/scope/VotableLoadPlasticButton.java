@@ -1,4 +1,4 @@
-/*$Id: VotableLoadPlasticButton.java,v 1.7 2007/01/29 10:43:49 nw Exp $
+/*$Id: VotableLoadPlasticButton.java,v 1.8 2007/03/08 17:43:56 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,7 +36,7 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 22-Feb-2006
  *
  */
-public class VotableLoadPlasticButton extends PlasticButton {
+public class VotableLoadPlasticButton extends PlasticScopeButton {
     /**
      * Logger for this class
      */
@@ -83,6 +83,9 @@ public class VotableLoadPlasticButton extends PlasticButton {
 
 /* 
 $Log: VotableLoadPlasticButton.java,v $
+Revision 1.8  2007/03/08 17:43:56  nw
+first draft of voexplorer
+
 Revision 1.7  2007/01/29 10:43:49  nw
 documentation fixes.
 

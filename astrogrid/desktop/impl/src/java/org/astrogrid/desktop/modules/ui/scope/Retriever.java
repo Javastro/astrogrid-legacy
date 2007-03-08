@@ -1,5 +1,8 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -36,6 +39,11 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  *
  */
 public abstract class Retriever extends BackgroundWorker {
+	/**
+	 * Logger for this class
+	 */
+	private static final Log logger = LogFactory.getLog(Retriever.class);
+
     /** attribute pointing to the logo image for this service */
     public static final String SERVICE_LOGO_ATTRIBUTE = "img";
     /** attribute containing the url used to query the service */
@@ -61,7 +69,7 @@ public abstract class Retriever extends BackgroundWorker {
   //  private static final int MAX_INLINE_IMAGE_SIZE = 100000;
     protected final double ra;
     protected final double dec;
-    protected final Service information;
+    protected final Service service;
     protected final VizModel model;
     protected final TreeNode primaryNode;
     
@@ -72,7 +80,7 @@ public abstract class Retriever extends BackgroundWorker {
         super(comp,information.getTitle(),1000*60L,Thread.MIN_PRIORITY+3); // make low priority, timeout after 1 min.
         this.ra = ra;
         this.dec = dec;
-        this.information = information;
+        this.service = information;
         this.model = model;
         this.primaryNode = primaryNode;
     }
@@ -113,6 +121,10 @@ public abstract class Retriever extends BackgroundWorker {
      * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Dec-2005
      */
    public class BasicTableHandler implements SummarizingTableHandler {
+		/**
+		 * Logger for this class
+		 */
+		private final Log logger = LogFactory.getLog(BasicTableHandler.class);
 
 
 	    /** utility method - converts an object using toString(), and then trims it if not null */
@@ -193,8 +205,11 @@ public abstract class Retriever extends BackgroundWorker {
        
        protected String chopValue(String doubleValue, int scale) {
      	   // @todo would it be more efficient to use a NumberFormatter here? - this has Round_half_up behaviour too.
+    	   try {
     	   return new BigDecimal(doubleValue).setScale(scale,BigDecimal.ROUND_HALF_UP).toString();
-
+    	   } catch (NumberFormatException e) {
+    		   return "unknown";
+    	   }
        }
        
     /** called once for each row in the table
@@ -222,9 +237,11 @@ public abstract class Retriever extends BackgroundWorker {
         
         StringBuffer tooltip = new StringBuffer();
         tooltip.append("<html><p>").append(rowRa).append(", ").append(rowDec);
+        try {
         tooltip.append("<br>")
         .append(PositionUtils.getRASexagesimal((String.valueOf(rowRa) + "," + String.valueOf(rowDec))))
         .append(",").append(PositionUtils.getDECSexagesimal((String.valueOf(rowRa) + "," + String.valueOf(rowDec))));
+
         for (int v = 0; v < row.length; v++) {
             Object o = row[v];
             if (o == null) {
@@ -249,6 +266,7 @@ public abstract class Retriever extends BackgroundWorker {
             serviceNode.addChild(new DefaultEdge(serviceNode,offsetNode));
             model.getNodeSizingMap().addOffset(offsetVal);
         }
+
         // now have found or created the offsetNode, find the pointNode within it.
         TreeNode pointNode = model.findNode(positionString,offsetNode);
         if (pointNode == null) {
@@ -260,7 +278,11 @@ public abstract class Retriever extends BackgroundWorker {
         // now have found or created point node. add new result to this.
         
        pointNode.addChild(new DefaultEdge(pointNode,valNode));
-                   
+        } catch (NumberFormatException e) {
+       	 logger.warn("Failed to parse",e);
+        } catch (ArrayIndexOutOfBoundsException e) {
+          	 logger.warn("Failed to parse",e);
+          }          
     }
     /** extension point for subclasses to add more row parsing here. */
     protected void rowDataExtensionPoint(Object[] row, TreeNode valNode) {
@@ -287,8 +309,9 @@ public abstract class Retriever extends BackgroundWorker {
 
 
     protected void doError(Throwable ex) {
-        parent.setStatusMessage(information.getTitle() + " - failed; " + ex.getMessage());
-        model.getProtocols().addQueryResult(information,QueryResultSummarizer.ERROR,fmt(ex));
+    	ex.printStackTrace();
+        parent.setStatusMessage(service.getTitle() + " - failed; " + ex.getMessage());
+        model.getProtocols().addQueryResult(service,QueryResultSummarizer.ERROR,fmt(ex));
     }
     
     private String fmt(Throwable ex) {
@@ -311,13 +334,13 @@ public abstract class Retriever extends BackgroundWorker {
         // concurrent modification exceptions
         SummarizingTableHandler th = (SummarizingTableHandler)result;
         TreeNode serviceNode = th.getServiceNode();
-        model.getProtocols().addQueryResult(information,th.getResultCount(),th.getMessage());
+        model.getProtocols().addQueryResult(service,th.getResultCount(),th.getMessage());
         if (th.getResultCount() > 0) {
             DefaultEdge edge = new DefaultEdge(primaryNode,serviceNode);
             edge.setAttribute(WEIGHT_ATTRIBUTE,"2");              
             model.getTree().addChild(edge);   
         }                                       
-        parent.setStatusMessage(information.getTitle() + " - " + th.getResultCount() + " results");
+        parent.setStatusMessage(service.getTitle() + " - " + th.getResultCount() + " results");
     }
 
 
@@ -328,26 +351,16 @@ public abstract class Retriever extends BackgroundWorker {
      */
     protected TreeNode createServiceNode(URL serviceURL, String tooltip) {
         TreeNode serviceNode = new DefaultTreeNode();
-        serviceNode.setAttribute(LABEL_ATTRIBUTE,information.getTitle());
+        serviceNode.setAttribute(LABEL_ATTRIBUTE,service.getTitle());
         serviceNode.setAttribute(WEIGHT_ATTRIBUTE,"2");
-        serviceNode.setAttribute(SERVICE_ID_ATTRIBUTE, information.getId().toString());
+        serviceNode.setAttribute(SERVICE_ID_ATTRIBUTE, service.getId().toString());
         serviceNode.setAttribute(SERVICE_URL_ATTRIBUTE,serviceURL.toString());
         serviceNode.setAttribute(TOOLTIP_ATTRIBUTE,tooltip);        
-        if (information.getCuration() != null && information.getCuration().getCreators().length != 0 && information.getCuration().getCreators()[0].getLogoURI() != null) {
+        if (service.getCuration() != null && service.getCuration().getCreators().length != 0 && service.getCuration().getCreators()[0].getLogoURI() != null) {
            // @todo getLogo liable to throw a wobbly - need to trap exceptions / malformatted data
-        	serviceNode.setAttribute(SERVICE_LOGO_ATTRIBUTE,information.getCuration().getCreators()[0].getLogo().toString());                    
+        	serviceNode.setAttribute(SERVICE_LOGO_ATTRIBUTE,service.getCuration().getCreators()[0].getLogo().toString());                    
         }
         return serviceNode;
-    }
-    
-    protected URL getFirstEndpoint(Service s) throws NotFoundException {
-    	if (s.getCapabilities().length != 0 
-    			&& s.getCapabilities()[0].getInterfaces().length != 0
-    			&& s.getCapabilities()[0].getInterfaces()[0].getAccessUrls().length != 0) {
-    		//@todo make error tolerant of problems with getValue()
-    		return s.getCapabilities()[0].getInterfaces()[0].getAccessUrls()[0].getValue();
-    	}
-    	throw new NotFoundException(s.getId() + " has no access URL");
     }
     
 }

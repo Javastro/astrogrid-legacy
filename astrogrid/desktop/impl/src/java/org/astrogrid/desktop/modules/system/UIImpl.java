@@ -1,4 +1,4 @@
-/*$Id: UIImpl.java,v 1.21 2007/01/29 16:45:07 nw Exp $
+/*$Id: UIImpl.java,v 1.22 2007/03/08 17:44:02 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved. 
@@ -65,6 +65,9 @@ import org.astrogrid.desktop.modules.system.contributions.UIStructureContributio
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.swing.EventListModel;
+
 import com.l2fprod.common.swing.StatusBar;
 /**Implementation of the UI component
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 01-Feb-2005
@@ -129,7 +132,7 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
     protected final ACRInternal reg;   
 	protected final Shutdown shutdown;  
     protected final Transformer trans;  
-    private final ListModel plasticListModel;
+    private final EventList  plasticListModel;
     private JMenuBar appMenuBar;
 	private JLabel loginLabel;  
     
@@ -145,7 +148,7 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
     
     private JLabel throbberLabel;
     /** this is the production constructor */
-    public UIImpl(BrowserControl browser,ACRInternal reg, Shutdown sh, ConfigurationInternal conf, HelpServerInternal help, BackgroundExecutor executor,Converter conv,Transformer trans, Map structures,ErrorHandler err, ListModel model) {     
+    public UIImpl(BrowserControl browser,ACRInternal reg, Shutdown sh, ConfigurationInternal conf, HelpServerInternal help, BackgroundExecutor executor,Converter conv,Transformer trans, Map structures,ErrorHandler err, EventList model) {     
         super(conf,help,null);
         this.confInternal = conf;
         this.browser = browser;
@@ -165,7 +168,7 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
         main.add(getTabbedPane(), java.awt.BorderLayout.CENTER);    
         this.setContentPane(main);
         getHelpServer().enableHelpKey(this.getRootPane(),"top");   
-        setIconImage(IconHelper.loadIcon("server.png").getImage());          
+        setIconImage(IconHelper.loadIcon("server16.png").getImage());          
         //this.setSize(425, ); // same proportions as A4, etc., and 600 high.   
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(new WindowAdapter(){
@@ -280,7 +283,7 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
 	private JList plasticApps;
 	protected JList getPlasticApps() {
 		if (plasticApps == null) {
-			plasticApps = new JList(plasticListModel);
+			plasticApps = new JList(new EventListModel(plasticListModel));
 			//plasticApps.setToolTipText("Connected Vizualization Tools");
 			plasticApps.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 			plasticApps.setVisibleRowCount(1);
@@ -432,8 +435,8 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
 		if (loginLabel == null) {
 			loginLabel = new JLabel();
 			loginLabel.setText("");
-            loginLabel.setDisabledIcon(IconHelper.loadIcon("connect_no.png"));
-            loginLabel.setIcon(IconHelper.loadIcon("connect_established.png"));
+            loginLabel.setDisabledIcon(IconHelper.loadIcon("connect_no16.png"));
+            loginLabel.setIcon(IconHelper.loadIcon("connect_established16.png"));
             loginLabel.setEnabled(false);
             loginLabel.setToolTipText("Indicates login status");
 		}
@@ -456,8 +459,8 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
         if (throbberLabel == null) {
             throbberLabel = new JLabel();
             throbberLabel.setText("");
-            throbberLabel.setIcon(IconHelper.loadIcon("flashpoint.gif"));
-            throbberLabel.setDisabledIcon(IconHelper.loadIcon("sleeping.gif"));            
+            throbberLabel.setIcon(IconHelper.loadIcon("running16.png"));
+            throbberLabel.setDisabledIcon(IconHelper.loadIcon("idle16.png"));            
             throbberLabel.setEnabled(false);            
             throbberLabel.setToolTipText("When active, something is communicating with VO services");
         }
@@ -492,6 +495,9 @@ public class UIImpl extends UIComponentImpl implements UIInternal {
 
 /* 
 $Log: UIImpl.java,v $
+Revision 1.22  2007/03/08 17:44:02  nw
+first draft of voexplorer
+
 Revision 1.21  2007/01/29 16:45:07  nw
 cleaned up imports.
 

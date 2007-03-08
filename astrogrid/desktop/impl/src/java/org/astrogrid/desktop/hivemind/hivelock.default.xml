@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<module id="hivelock.default" version="1.0.0">
+
+	<dependency module-id="hivelock.core"/>
+
+	<!--
+		Service that checks current user's permission.
+		Actual implementation depends on the specific Principal of the application
+	-->
+	<implementation service-id="hivelock.core.PrincipalHelper">
+		<create-instance	class="net.sourceforge.hivelock.DefaultPrincipalHelperImpl" 
+							model="primitive"/>
+	</implementation>
+</module>

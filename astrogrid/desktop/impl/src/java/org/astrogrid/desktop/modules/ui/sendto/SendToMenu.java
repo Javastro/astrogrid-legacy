@@ -6,6 +6,7 @@ package org.astrogrid.desktop.modules.ui.sendto;
 import java.awt.Component;
 
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.dnd.PreferredTransferable;
 
 
 /** interface to a a shared 'send-to' menu component - used to pass data to other 

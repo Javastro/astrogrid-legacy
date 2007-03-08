@@ -112,7 +112,7 @@ public class SystemModuleIntegrationTest extends InARTestCase {
 	}
 public void testTupperware() throws Exception {
 	TupperwareInternal tupp = (TupperwareInternal)assertComponentExists(TupperwareInternal.class, "system.tupperware");
-	tupp.getRegisteredApplicationsModel();
+	tupp.getRegisteredApplications();
 }	
 
 public void testUI() throws Exception {

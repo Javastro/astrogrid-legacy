@@ -59,4 +59,7 @@ public interface UIComponent {
 	 * in Headless mode, wil return null */
 	
 	JFrame getFrame();
+	
+	/** process management - halt all background tasks in this window */
+	  public void haltAll() ;
 }

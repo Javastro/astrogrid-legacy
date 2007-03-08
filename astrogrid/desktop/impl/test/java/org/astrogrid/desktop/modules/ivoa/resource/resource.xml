@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vor:Resource created="2005-08-10" status="active" updated="2005-08-10" xmlns="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.3" xmlns:sia="http://www.ivoa.net/xml/SIA/v0.7" xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3" xmlns:vc="http://www.ivoa.net/xml/VOCommunity/v0.2" xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1" xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/VODataService/v0.5 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v0.5/VODataService.xsd http://www.ivoa.net/xml/VOTable/v1.0 http://software.astrogrid.org/schema/vo-formats/VOTable/v1.0/VOTable.xsd" xsi:type="vr:Resource">
+        <vr:title xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">AGN central masses and broad-line region sizes (Peterson+, 2004) - Adopted Virial Products and Derived Black Hole Masses</vr:title>
+        <vr:shortName xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">J/ApJ/613/682/ta</vr:shortName>
+        <vr:identifier xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">ivo://CDS/VizieR/J/ApJ/613/682/table8</vr:identifier>
+        <vr:curation xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">
+            <vr:publisher>CDS</vr:publisher>
+        </vr:curation>
+        <vr:content xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">
+            <vr:subject>AGN</vr:subject>
+            <vr:subject>Spectroscopy</vr:subject>
+            <vr:subject>Redshifts</vr:subject>
+            <vr:description>We present improved black hole masses for 35 active galactic nuclei (AGNs) based on a complete and consistent reanalysis of broad emission-line reverberation-mapping data. From objects with multiple line measurements, we find that the highest precision measure of the virial product c{tau}{Delta}V^2^/G, where {tau} is the emission-line lag relative to continuum variations and {Delta}V is the emission-line width, is obtained by using the cross-correlation function centroid (as opposed to the cross-correlation function peak) for the time delay and the line dispersion (as opposed to FWHM) for the line width and by measuring the line width in the variable part of the spectrum.</vr:description>
+            <vr:referenceURL>http://vizier.u-strasbg.fr/cgi-bin/Cat?J/ApJ/613/682/table8</vr:referenceURL>
+            <vr:contentLevel>Research</vr:contentLevel>
+        </vr:content>
+    </vor:Resource>

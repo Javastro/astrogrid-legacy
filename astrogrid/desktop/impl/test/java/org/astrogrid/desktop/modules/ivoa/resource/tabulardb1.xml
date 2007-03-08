@@ -1,0 +1,953 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vor:Resource xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1" status="active" updated="2006-11-15T17:20:18Z" xmlns="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.3" xmlns:sia="http://www.ivoa.net/xml/SIA/v0.7" xmlns:sn="http://www.ivoa.net/xml/OpenSkyNode/v0.1" xmlns:vc="http://www.ivoa.net/xml/VOCommunity/v0.2" xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" xsi:schemaLocation="http://www.ivoa.net/xml/VODataService/v0.5 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v0.5/VODataService.xsd http://www.ivoa.net/xml/VOTable/v1.0 http://software.astrogrid.org/schema/vo-formats/VOTable/v1.0/VOTable.xsd urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3 http://software.astrogrid.org/schema/vo-resource-types/TabularDB/v0.3/TabularDB.xsd " xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="tdb:TabularDB">
+        <vrx:title xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3" xmlns:vc="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vod="http://www.ivoa.net/xml/VODataService/v0.5" xmlns:vrx="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">Datacenter for Solar Event Catalogue</vrx:title>
+        <vrx:identifier xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3" xmlns:vc="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vod="http://www.ivoa.net/xml/VODataService/v0.5" xmlns:vrx="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">ivo://mssl.ucl.ac.uk/solar_events_dsa/TDB</vrx:identifier>
+        <vrx:curation xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3" xmlns:vc="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vod="http://www.ivoa.net/xml/VODataService/v0.5" xmlns:vrx="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">
+            <vrx:publisher>Mullard Space Science Laboratory</vrx:publisher>
+            <vrx:creator>
+                <vrx:name>Kevin Benson</vrx:name>
+                <vrx:logo>http://msslxv.mssl.ucl.ac.uk:8080/astrogrid-dsa-sec/logo.gif</vrx:logo>
+            </vrx:creator>
+            <vrx:contact>
+                <vrx:name>Kevin Benson</vrx:name>
+                <vrx:email>kmb@mssl.ucl.ac.uk</vrx:email>
+            </vrx:contact>
+        </vrx:curation>
+        <vrx:content xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3" xmlns:vc="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vod="http://www.ivoa.net/xml/VODataService/v0.5" xmlns:vrx="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">
+            <vrx:description/>
+            <vrx:referenceURL>http://msslxv.mssl.ucl.ac.uk:8080/astrogrid-dsa-sec</vrx:referenceURL>
+            <vrx:type>Catalog</vrx:type>
+        </vrx:content>
+        <tdb:db xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3" xmlns:vc="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vod="http://www.ivoa.net/xml/VODataService/v0.5" xmlns:vrx="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">
+            <tdb:name>Solar Event Catalogue</tdb:name>
+            <tdb:description/>
+            <tdb:table xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+                <vod:name>bas_magnetic_storms</vod:name>
+                <vod:description>List of geomagnetic storms maintained by BAS (British Antarctic Survey), Cambridge</vod:description>
+                <vod:column>
+                    <vod:name>bms_id</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_start</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                    <vod:unit>iso8601</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_peak</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                    <vod:unit>iso8601</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_end</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                    <vod:unit>iso8601</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>dst</vod:name>
+                    <vod:description>DST index</vod:description>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>hduration</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+            </tdb:table>
+            <tdb:table xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+                <vod:name>drao_10cm_flux</vod:name>
+                <vod:description>Solar 10.7cm radio flux provider by DRAO, Canada. Description at: http://www.drao-ofr.hia-iha.nrc-cnrc.gc.ca/icarus/www/sol_home.shtml</vod:description>
+                <vod:column>
+                    <vod:name>sfm_id</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_start</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                    <vod:unit>iso8601</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_end</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                    <vod:unit>iso8601</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>sfu_observed</vod:name>
+                    <vod:description>Observed solar radio flux</vod:description>
+                    <vod:dataType>double</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>sfu_adjusted</vod:name>
+                    <vod:description>Adjusted solar radio flux</vod:description>
+                    <vod:dataType>double</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>sfu_series_d</vod:name>
+                    <vod:description/>
+                    <vod:dataType>double</vod:dataType>
+                </vod:column>
+            </tdb:table>
+            <tdb:table xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+                <vod:name>dsd_list</vod:name>
+                <vod:description/>
+                <vod:column>
+                    <vod:name>dsd_id</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_start</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>radio_10cm</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>sesc_ssn</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>ss_area</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>new_regions</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>stan_smf</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>xray_bkg</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>c_flares</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>m_flares</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>x_flares</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>opts_flares</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>opt1_flares</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>opt2_flares</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>opt3_flares</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+            </tdb:table>
+            <tdb:table xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+                <vod:name>goes_xray_flare</vod:name>
+                <vod:description>Catalogue of solar X-ray flares detected by GOES satellites, compiled by NOAA.</vod:description>
+                <vod:column>
+                    <vod:name>goes_id</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>ntime_start</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_start</vod:name>
+                    <vod:description>Flare start time</vod:description>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                    <vod:unit>iso8601</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_peak</vod:name>
+                    <vod:description>Time of peak flux</vod:description>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                    <vod:unit>iso8601</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_end</vod:name>
+                    <vod:description>Flare end time</vod:description>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                    <vod:unit>iso8601</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>ntime_end</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>nar</vod:name>
+                    <vod:description>NOAA Active Region number</vod:description>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>latitude</vod:name>
+                    <vod:description>Flare latitude</vod:description>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>deg</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>longitude</vod:name>
+                    <vod:description>Flare longitude</vod:description>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>deg</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>long_carr</vod:name>
+                    <vod:description>Carrington longitude</vod:description>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>deg</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>xray_class</vod:name>
+                    <vod:description>X-ray class</vod:description>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>optical_class</vod:name>
+                    <vod:description>Optical class</vod:description>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+            </tdb:table>
+            <tdb:table xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+                <vod:name>hessi_flare</vod:name>
+                <vod:description>Catalogue of solar flares observed by the RHESSI spacecraft.</vod:description>
+                <vod:column>
+                    <vod:name>hef_id</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_start</vod:name>
+                    <vod:description>Start time of flare</vod:description>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                    <vod:unit>iso8601</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_peak</vod:name>
+                    <vod:description>Time of peak flux</vod:description>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                    <vod:unit>iso8601</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_end</vod:name>
+                    <vod:description>End time of flare</vod:description>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                    <vod:unit>iso8601</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>nar</vod:name>
+                    <vod:description>NOAA Active Region number of associated region</vod:description>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>x_arcsec</vod:name>
+                    <vod:description>Solar-x coordinate of flare</vod:description>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>arcsec</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>y_arcsec</vod:name>
+                    <vod:description>Solar-y coordinate of flare</vod:description>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>arcsec</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>radial_arcsec</vod:name>
+                    <vod:description>Distance from Sun center</vod:description>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>arcsec</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>duration</vod:name>
+                    <vod:description>Flare duration</vod:description>
+                    <vod:dataType>int</vod:dataType>
+                    <vod:unit>s</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>count_sec_peak</vod:name>
+                    <vod:description>Peak counts/second in energy range 12-25 keV, including background</vod:description>
+                    <vod:dataType>int</vod:dataType>
+                    <vod:unit>counts/s</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>total_count</vod:name>
+                    <vod:description>Counts in energy range 12-25 keV integrated over duration
+of flare, including background</vod:description>
+                    <vod:dataType>int</vod:dataType>
+                    <vod:unit>counts</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>energy_kev</vod:name>
+                    <vod:description>Highest energy band in which the flare was observed</vod:description>
+                    <vod:dataType>int</vod:dataType>
+                    <vod:unit>keV</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>flare_number</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+            </tdb:table>
+            <tdb:table xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+                <vod:name>kso_flare</vod:name>
+                <vod:description>Kanzelhoehe Flare List. See: http://www.kso.ac.at/</vod:description>
+                <vod:column>
+                    <vod:name>kso_id</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_start</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                    <vod:unit>iso8601</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_start_m</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_peak</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                    <vod:unit>iso8601</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_peak_m</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_end</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                    <vod:unit>iso8601</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_end_m</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>latitude</vod:name>
+                    <vod:description>Flare latitude</vod:description>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>deg</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>longitude</vod:name>
+                    <vod:description>Flare longitude</vod:description>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>deg</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>long_carr</vod:name>
+                    <vod:description>Carrington longitude</vod:description>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>deg</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>optical_class</vod:name>
+                    <vod:description>Optical class</vod:description>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+            </tdb:table>
+            <tdb:table xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+                <vod:name>lasco_cme_cat</vod:name>
+                <vod:description>Catalogue of Coronal Mass Ejections (CMEs) detected by the LASCO instrument on board SOHO. Full documentation at: http://cdaw.gsfc.nasa.gov/CME_list/</vod:description>
+                <vod:column>
+                    <vod:name>lcc_id</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_start</vod:name>
+                    <vod:description>Time of first C2 appearance</vod:description>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                    <vod:unit>iso8601</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>pa_central</vod:name>
+                    <vod:description>Central Position Angle</vod:description>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>deg</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>pa_measure</vod:name>
+                    <vod:description/>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>deg</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>pa_width</vod:name>
+                    <vod:description/>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>deg</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>linear_speed</vod:name>
+                    <vod:description/>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>km/s</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>speed2_init</vod:name>
+                    <vod:description/>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>km/s</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>speed2_final</vod:name>
+                    <vod:description/>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>km/s</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>speed2_20r</vod:name>
+                    <vod:description/>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>km/s</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>acceleration</vod:name>
+                    <vod:description/>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>m/s^2</vod:unit>
+                </vod:column>
+            </tdb:table>
+            <tdb:table xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+                <vod:name>lasco_cme_list</vod:name>
+                <vod:description>Preliminary list of Coronal Mass Ejections (CMEs) observed by SOHO LASCO.  See: ftp://lasco6.nascom.nasa.gov/pub/lasco/status</vod:description>
+                <vod:column>
+                    <vod:name>lcl_id</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_start</vod:name>
+                    <vod:description>Time of first C2 appearance</vod:description>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                    <vod:unit>iso8601</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>pa_central</vod:name>
+                    <vod:description>Central Position Angle</vod:description>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>deg</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>description</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+            </tdb:table>
+            <tdb:table xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+                <vod:name>noaa_proton_event</vod:name>
+                <vod:description>List of solar proton events compiled by NOAA SEC. Details at: http://umbra.nascom.nasa.gov/SEP/seps.html</vod:description>
+                <vod:column>
+                    <vod:name>npe_id</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_start</vod:name>
+                    <vod:description>Start time of proton event</vod:description>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                    <vod:unit>iso8601</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_peak</vod:name>
+                    <vod:description>Time of peak proton flux</vod:description>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                    <vod:unit>iso8601</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>nar</vod:name>
+                    <vod:description>NOAA Active Region number of associated region</vod:description>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>latitude</vod:name>
+                    <vod:description>Latitude of associated flare</vod:description>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>deg</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>longitude</vod:name>
+                    <vod:description>Longitude of associated flare</vod:description>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>deg</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>proton_flux</vod:name>
+                    <vod:description>Peak proton flux</vod:description>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>pfu</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>assoc_cme</vod:name>
+                    <vod:description>Information on associated CME</vod:description>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>assoc_flare_pk</vod:name>
+                    <vod:description>Peak time of associated flare</vod:description>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                    <vod:unit>iso8601</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>xray_class</vod:name>
+                    <vod:description>X-ray class of associated flare</vod:description>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>optical_class</vod:name>
+                    <vod:description>Optical class of associated flare</vod:description>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+            </tdb:table>
+            <tdb:table xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+                <vod:name>sec_attribute</vod:name>
+                <vod:description/>
+                <vod:column>
+                    <vod:name>attr_id</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>name</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>description</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>type</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+            </tdb:table>
+            <tdb:table xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+                <vod:name>sec_cat_attr</vod:name>
+                <vod:description/>
+                <vod:column>
+                    <vod:name>cat_id</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>attr_id</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+            </tdb:table>
+            <tdb:table xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+                <vod:name>sec_catalogue</vod:name>
+                <vod:description/>
+                <vod:column>
+                    <vod:name>cat_id</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>name</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>description</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>type</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>status</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>url</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+            </tdb:table>
+            <tdb:table xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+                <vod:name>sgas_event</vod:name>
+                <vod:description/>
+                <vod:column>
+                    <vod:name>sgs_id</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>ntime_start</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_start</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_peak</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_end</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>ntime_end</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>nar</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>latitude</vod:name>
+                    <vod:description/>
+                    <vod:dataType>double</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>longitude</vod:name>
+                    <vod:description/>
+                    <vod:dataType>double</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>long_carr</vod:name>
+                    <vod:description/>
+                    <vod:dataType>double</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>xray_class</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>optical_class</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>radio_245mhz</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>radio_10cm</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>radio_sweep_ii</vod:name>
+                    <vod:description/>
+                    <vod:dataType>short</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>radio_sweep_iv</vod:name>
+                    <vod:description/>
+                    <vod:dataType>short</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>swf</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+            </tdb:table>
+            <tdb:table xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+                <vod:name>sidc_sunspot_number</vod:name>
+                <vod:description>Monthly sunspot number from SIDC, Royal Observatory of Belgium. See: http://sidc.oma.be/</vod:description>
+                <vod:column>
+                    <vod:name>ssn_id</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_start</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                    <vod:unit>iso8601</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_end</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                    <vod:unit>iso8601</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>ssn</vod:name>
+                    <vod:description>Sunspot number</vod:description>
+                    <vod:dataType>double</vod:dataType>
+                </vod:column>
+            </tdb:table>
+            <tdb:table xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+                <vod:name>soho_camp</vod:name>
+                <vod:description>SOHO Campaign catalogue. See: http://sohowww.nascom.nasa.gov/data/summary/asplanned/campaign/soho_campaign.dat</vod:description>
+                <vod:column>
+                    <vod:name>soho_id</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_start</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                    <vod:unit>iso8601</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_end</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                    <vod:unit>iso8601</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>sohoc_num</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>sohoc_name</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>sohoc_type</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>sohoc_obj</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>sohoc_coord</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>sohoc_part</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>sohoc_comm</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+            </tdb:table>
+            <tdb:table xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+                <vod:name>srs_list</vod:name>
+                <vod:description>NOAA Solar Region Summary: a daily report of solar active regions observed during the preceding day. See: ftp://solar.sec.noaa.gov/pub/forecasts/SRS/README</vod:description>
+                <vod:column>
+                    <vod:name>srs_id</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_start</vod:name>
+                    <vod:description>Time at which report was issued</vod:description>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                    <vod:unit>iso8601</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>nar</vod:name>
+                    <vod:description>NOAA Active Region number</vod:description>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>latitude</vod:name>
+                    <vod:description>Latitude of solar region</vod:description>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>deg</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>longitude</vod:name>
+                    <vod:description>Longitude of solar region</vod:description>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>deg</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>long_carr</vod:name>
+                    <vod:description>Carrington longitude of solar region</vod:description>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>deg</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>area</vod:name>
+                    <vod:description>Corrected region area</vod:description>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>millionths of solar emisphere</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>zurich_class</vod:name>
+                    <vod:description>Modified Zurich classification of the group</vod:description>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>p_value</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>c_value</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>long_extent</vod:name>
+                    <vod:description>Longitudinal extent of region</vod:description>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>deg</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>n_spots</vod:name>
+                    <vod:description>Total number of visible sunspots in the group</vod:description>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>mag_class</vod:name>
+                    <vod:description>Magnetic classification (Mt Wilson)</vod:description>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>region_type</vod:name>
+                    <vod:description>Region type</vod:description>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+            </tdb:table>
+            <tdb:table xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+                <vod:name>yohkoh_flare_list</vod:name>
+                <vod:description>Yohkoh SXT flare list. See: http://www.lmsal.com/nitta/sxt_trace_flares/list.html</vod:description>
+                <vod:column>
+                    <vod:name>yfc_id</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_start</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                    <vod:unit>iso8601</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_peak</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                    <vod:unit>iso8601</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>time_end</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                    <vod:unit>iso8601</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>nar</vod:name>
+                    <vod:description>NOAA Active Region number</vod:description>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>latitude</vod:name>
+                    <vod:description>Flare latitude</vod:description>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>deg</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>longitude</vod:name>
+                    <vod:description>Flare longitude</vod:description>
+                    <vod:dataType>double</vod:dataType>
+                    <vod:unit>deg</vod:unit>
+                </vod:column>
+                <vod:column>
+                    <vod:name>xray_class</vod:name>
+                    <vod:description>X-ray class</vod:description>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>optical_class</vod:name>
+                    <vod:description>Optical class</vod:description>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>hxt_lo</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>hxt_m1</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>hxt_m2</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>hxt_hi</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>rem</vod:name>
+                    <vod:description/>
+                    <vod:dataType arraysize="*">char</vod:dataType>
+                </vod:column>
+                <vod:column>
+                    <vod:name>yoh_event</vod:name>
+                    <vod:description/>
+                    <vod:dataType>int</vod:dataType>
+                </vod:column>
+            </tdb:table>
+        </tdb:db>
+    </vor:Resource>

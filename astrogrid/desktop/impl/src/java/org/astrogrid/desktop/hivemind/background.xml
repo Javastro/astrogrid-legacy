@@ -94,7 +94,7 @@ CEA Server components --><service-point id="tasks" interface="TasksInternal">
  these are 'apps' that are lodged within the embedded cea server.
   -->				<service-point id="siapAppDesc" visibility="private" interface="org.astrogrid.applications.description.ApplicationDescription">		An application that invokes a remote siap service
 		<invoke-factory model="primitive">			<construct class="SiapApplicationDescription">				  <object>service-property:envFactory:instance</object>								<service>ivoa.siap</service>				<service>astrogrid.myspace</service>			</construct>		</invoke-factory>	</service-point>		<service-point id="coneAppDesc" visibility="private" interface="org.astrogrid.applications.description.ApplicationDescription">
-		An application that invokes a remote cone service		<invoke-factory model="primitive">			<construct class="ConeApplicationDescription">				  <object>service-property:envFactory:instance</object>								<service>nvo.cone</service>				<service>astrogrid.myspace</service>			</construct>		</invoke-factory>	</service-point>								
+		An application that invokes a remote cone service		<invoke-factory model="primitive">			<construct class="ConeApplicationDescription">				  <object>service-property:envFactory:instance</object>								<service>ivoa.cone</service>				<service>astrogrid.myspace</service>			</construct>		</invoke-factory>	</service-point>								
 	<!--  registers this apps with the cea server -->	<contribution configuration-id="applicationDescriptions">		
 		<object>service:siapAppDesc</object>
 		<object>service:coneAppDesc</object>			

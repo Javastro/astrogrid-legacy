@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.17 2007/01/29 10:56:03 nw Exp $
+/*$Id: VospaceImpl.java,v 1.18 2007/03/08 17:44:04 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,9 +46,9 @@ import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.NodeInformation;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
+import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.desktop.modules.system.UIInternal;
@@ -64,8 +64,6 @@ import org.astrogrid.filemanager.common.NodeNotFoundFault;
 import org.astrogrid.filemanager.common.TransferInfo;
 import org.astrogrid.io.Piper;
 import org.astrogrid.registry.RegistryException;
-import org.astrogrid.registry.client.RegistryDelegateFactory;
-import org.astrogrid.registry.client.query.ResourceData;
 import org.astrogrid.store.Ivorn;
 
 /** implementation of the vospace componet.
@@ -83,14 +81,16 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
     /** Construct a new Vospace
      * 
      */
-    public VospaceImpl(Community community, BundlePreferences preferences, UIInternal ui) {
+    public VospaceImpl(Community community, Registry reg, BundlePreferences preferences, UIInternal ui) {
         super();
         this.community = community;
         this.prefs = preferences;
         this.ui = ui;
+        this.reg = reg;
     }
     protected final UIInternal ui;
    protected final Community community;
+   protected final Registry reg;
    protected final BundlePreferences prefs;
     protected URI home;
     protected FileManagerClient client;
@@ -793,26 +793,7 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
         }        
     }
 
-
-  public ResourceInformation[] listAvailableStores() throws ServiceException {
-      //@todo edit to only select active stores 
-      ResourceData[] arr;
-    try {
-        arr =RegistryDelegateFactory.createQuery().getResourceDataByRelationship("ivo://org.astrogrid/FileStoreKind");
-        ResourceInformation[] result = new ResourceInformation[arr.length];
-        for (int i = 0; i < arr.length; i++) {
-            result[i] = new ResourceInformation(new URI(arr[i].getIvorn().toString()),arr[i].getTitle(),arr[i].getDescription(),arr[i].getAccessURL(),null);//@todo add in logo here.
-        }
-        return result;        
-    } catch (RegistryException e) {
-        throw new ServiceException(e);
-    } catch (URISyntaxException e) {
-        throw new ServiceException(e);
-    }
-
-  }
-    
-    
+       
     /**
      * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogin(org.astrogrid.desktop.modules.ag.UserLoginEvent)
      */
@@ -911,10 +892,23 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
            }
     }
 
-	public Service listStores() throws ServiceException {
-		return null;
-		//@implement this as part of the myspace makeover.
-		//@todo should return Service[]
+	public Service[] listStores() throws ServiceException {
+		return new Service[]{};
+		//@FIXME implement
+		/*
+	      ResourceData[] arr;
+	      try {
+	          arr =RegistryDelegateFactory.createQuery().getResourceDataByRelationship("ivo://org.astrogrid/FileStoreKind");
+	          ResourceInformation[] result = new ResourceInformation[arr.length];
+	          for (int i = 0; i < arr.length; i++) {
+	              result[i] = new ResourceInformation(new URI(arr[i].getIvorn().toString()),arr[i].getTitle(),arr[i].getDescription(),arr[i].getAccessURL(),null);//@todo add in logo here.
+	          }
+	          return result;        
+	      } catch (RegistryException e) {
+	          throw new ServiceException(e);
+	      } catch (URISyntaxException e) {
+	          throw new ServiceException(e);
+	      }*/
 	}    
 
 
@@ -926,6 +920,9 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.18  2007/03/08 17:44:04  nw
+first draft of voexplorer
+
 Revision 1.17  2007/01/29 10:56:03  nw
 prefetches myspace root on login.
 

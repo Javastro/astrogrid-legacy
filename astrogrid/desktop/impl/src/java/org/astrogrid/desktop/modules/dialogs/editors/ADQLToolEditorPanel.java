@@ -1235,7 +1235,7 @@ public class ADQLToolEditorPanel
         String title = null ;
         String description = null ;
         if( tabbedMetadataPane.getTabCount() == 1 ) {
-            Catalog dbs = catalogueResource.getCatalog();           
+            Catalog dbs = catalogueResource.getCatalogues()[0];           
             if( dbs != null ) {
                 title = dbs.getName() ; 
                 if( title == null || title.trim().length() == 0 ); {
@@ -1313,7 +1313,7 @@ public class ADQLToolEditorPanel
         // For each table ...
         while( it.hasNext() ) {
             if( cicForTable == null ) {
-                cic.setArchive( adqlTree.getCatalogueResource().getCatalog() ) ;
+                cic.setArchive( adqlTree.getCatalogueResource().getCatalogues()[0] ) ;
                 cicForTable = cic ;
                 insertMenu.setEnabled( true ) ;
             }
@@ -1345,7 +1345,7 @@ public class ADQLToolEditorPanel
         JMenu insertMenu = new JMenu( command.getChildDisplayName() ) ;
         DataCollection tdb = adqlTree.getCatalogueResource() ;
         if( tdb != null ) {
-            Catalog db = tdb.getCatalog();
+            Catalog db = tdb.getCatalogues()[0];
             tic.setDatabase( db ) ;
             TableBean[] tables = db.getTables() ;
             for( int i=0; i<tables.length; i++ ){            
@@ -1360,7 +1360,7 @@ public class ADQLToolEditorPanel
         JMenu insertMenu = new JMenu( command.getChildDisplayName() ) ;
         DataCollection tdb = adqlTree.getCatalogueResource() ;
         if( tdb != null ) {
-            Catalog db = tdb.getCatalog();
+            Catalog db = tdb.getCatalogues()[0];
             tic.setDatabase( db ) ;
             TableBean[] tables = db.getTables() ;
             for( int i=0; i<tables.length; i++ ){            
@@ -1765,11 +1765,13 @@ public class ADQLToolEditorPanel
             for( int i=0; i<mc; i++ ) {
                 JMenu menu = mb.getMenu(i) ;
                 String name = menu.getName() ;
+                if (name != null) {
                 if( name.equals("Edit") ) {
                     menu.setEnabled( false ) ;
                 }
                 else if( name.equals( "Options" ) ) {
                     menu.setEnabled( false ) ;
+                }
                 }
             }
         }

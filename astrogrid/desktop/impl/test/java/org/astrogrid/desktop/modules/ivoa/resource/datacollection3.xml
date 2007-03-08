@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vor:Resource xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1" created="2005-01-27T22:13:28Z" status="active" updated="2005-02-04T17:21:10Z" xmlns="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.3" xmlns:sia="http://www.ivoa.net/xml/SIA/v0.7" xmlns:sn="http://www.ivoa.net/xml/OpenSkyNode/v0.1" xmlns:vc="http://www.ivoa.net/xml/VOCommunity/v0.2" xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" xsi:schemaLocation="http://www.ivoa.net/xml/VODataService/v0.5 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v0.5/VODataService.xsd http://www.ivoa.net/xml/VOTable/v1.0 http://software.astrogrid.org/schema/vo-formats/VOTable/v1.0/VOTable.xsd " xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="vs:DataCollection">
+        <vr:title xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">WFPC2 Associations Project</vr:title>
+        <vr:shortName xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">WFPC2 Assoc</vr:shortName>
+        <vr:identifier xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">ivo://cadc.nrc.ca/archive/hst/wfpc2</vr:identifier>
+        <vr:curation xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">
+            <vr:publisher ivo-id="ivo://cadc.nrc.ca/org">Canadian Astronomy Data Centre</vr:publisher>
+            <vr:contact>
+                <vr:name>Daniel Durand</vr:name>
+                <vr:address>5071 West Saanich Rd
+Victoria, BC, Canada
+V9E 2E7</vr:address>
+                <vr:email>daniel.durand@nrc-cnrc.gc.ca</vr:email>
+            </vr:contact>
+        </vr:curation>
+        <vr:content xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">
+            <vr:description>WFPC2 Associations web site</vr:description>
+            <vr:referenceURL>http://cadcwww.hia.nrc.ca/wfpc2/</vr:referenceURL>
+            <vr:type>Archive</vr:type>
+            <vr:type>Project</vr:type>
+            <vr:contentLevel>Research</vr:contentLevel>
+        </vr:content>
+        <vs:coverage xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+            <vs:spatial>
+                <vs:region xsi:schemaLocation="" xsi:type="vs:AllSky"/>
+            </vs:spatial>
+            <vs:spectral>
+                <vs:waveband>Optical</vs:waveband>
+                <vs:waveband>UV</vs:waveband>
+            </vs:spectral>
+        </vs:coverage>
+    </vor:Resource>

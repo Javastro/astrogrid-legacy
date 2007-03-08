@@ -4,7 +4,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Calendar;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -62,7 +61,7 @@ public class StapRetrieval extends Retriever {
     private final Stap stap;
     protected Object construct() throws Exception{
             URL stapURL = null;
-            final URI endpoint = new URI(getFirstEndpoint(information).toString());
+            final URI endpoint = service.getId();
 			//check if there is a ra,dec and construct a stap query accordingly.
             if(Double.isNaN(ra) || Double.isNaN(dec)) {
                 if(format != null)
@@ -78,12 +77,12 @@ public class StapRetrieval extends Retriever {
             }
             
             StringBuffer sb = new StringBuffer();
-            sb.append("<html>Title: ").append(information.getTitle())
-                .append("<br>ID: ").append(information.getId());
-            if (information.getContent() != null) {
+            sb.append("<html>Title: ").append(service.getTitle())
+                .append("<br>ID: ").append(service.getId());
+            if (service.getContent() != null) {
                sb.append("<br>Description: <p>")
-                .append(information.getContent().getDescription()!= null 
-                			?   WordUtils.wrap(information.getContent().getDescription(),AstroScopeLauncherImpl.TOOLTIP_WRAP_LENGTH,"<br>",false) : "");
+                .append(service.getContent().getDescription()!= null 
+                			?   WordUtils.wrap(service.getContent().getDescription(),AstroScopeLauncherImpl.TOOLTIP_WRAP_LENGTH,"<br>",false) : "");
             }
                 sb.append("</html>");
                 //.append("</p><br>Service Type: ").append(((StapInformation)information).getImageServiceType())

@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.dnd.PreferredTransferable;
+import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.votech.plastic.CommonMessageConstants;
 
 

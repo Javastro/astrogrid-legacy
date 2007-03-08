@@ -1,4 +1,4 @@
-/*$Id: MyspaceRpcTransportTest.java,v 1.3 2007/01/29 10:42:48 nw Exp $
+/*$Id: MyspaceRpcTransportTest.java,v 1.4 2007/03/08 17:44:01 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,7 +30,6 @@ import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.acr.astrogrid.NodeInformation;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.system.WebServer;
@@ -324,28 +323,7 @@ public class MyspaceRpcTransportTest extends MyspaceSystemTest implements Myspac
         }    
     }
 
-    public ResourceInformation[] listAvailableStores() throws ServiceException {
-        v.clear();
-        try {
-           List l = (List)client.execute("astrogrid.myspace.listAvailableStores",v);
-           ResourceInformation[] result = new ResourceInformation[l.size()];
-           for (int i = 0; i < l.size(); i++) {
-               Map m = (Map)l.get(i);
-               URL logo = m.containsKey("logoURL") ? new URL((String)m.get("logoURL")): null;             
-               result[i] =new ResourceInformation(new URI((String)m.get("id"))
-                       ,(String)m.get("title")
-                       ,(String)m.get("description")
-                       ,new URL((String)m.get("accessURL"))
-                       ,logo
-                       );
-           }
-           return result;
-        } catch (Exception e) {
-            throw new ServiceException(e);
-        } 
-    }
-    
-	public Service listStores() throws ServiceException {
+	public Service[] listStores() throws ServiceException {
 		throw new ServiceException("Realy can't be bothered to pass this through xmlrpc");
 	}
 
@@ -425,6 +403,9 @@ public class MyspaceRpcTransportTest extends MyspaceSystemTest implements Myspac
 
 /* 
 $Log: MyspaceRpcTransportTest.java,v $
+Revision 1.4  2007/03/08 17:44:01  nw
+first draft of voexplorer
+
 Revision 1.3  2007/01/29 10:42:48  nw
 tidied.
 

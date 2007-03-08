@@ -50,6 +50,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 import java.util.WeakHashMap;
 
+import javax.swing.Action;
 import javax.swing.CellRendererPane;
 import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
@@ -196,7 +197,9 @@ public class CSH {
             
             // For JComponents just use client property
             ((JComponent)comp).putClientProperty("HelpID", helpID);
-            
+        } else if ((comp instanceof Action)) {
+        	//@todo need to check that this gets propagated to it's components.
+        	((Action)comp).putValue("HelpID",helpID);
         } else if ((comp instanceof Component) || (comp instanceof MenuItem)) {
             // For MenuItems and Components we have an internal Hashtable of
             // components and their properties.
@@ -244,6 +247,10 @@ public class CSH {
         _setHelpIDString(comp, helpID);
     }
     
+    
+    public static void setHelpIDString(Action act, String helpID) {
+        _setHelpIDString(act, helpID);
+    }
     /**
      * Sets the helpID for a MenuItem.
      * If helpID is null, this method removes the helpID from the component.

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vor:Resource xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1" created="2006-07-06T20:41:27Z" status="active" updated="2006-07-06T20:41:38Z" xmlns="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.3" xmlns:sia="http://www.ivoa.net/xml/SIA/v0.7" xmlns:sn="http://www.ivoa.net/xml/OpenSkyNode/v0.1" xmlns:vc="http://www.ivoa.net/xml/VOCommunity/v0.2" xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" xsi:schemaLocation="http://www.ivoa.net/xml/VODataService/v0.5 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v0.5/VODataService.xsd http://www.ivoa.net/xml/VOTable/v1.0 http://software.astrogrid.org/schema/vo-formats/VOTable/v1.0/VOTable.xsd " xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Service">
+        <vr:title xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">Octet: CVO Observation Catalog Exploration Tool</vr:title>
+        <vr:shortName xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">Octet</vr:shortName>
+        <vr:identifier xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">ivo://cadc.nrc.ca/cvo/octet</vr:identifier>
+        <vr:curation xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">
+            <vr:publisher ivo-id="ivo://cadc.nrc.ca/org">Canadian Astronomy Data Centre</vr:publisher>
+            <vr:creator>
+                <vr:logo>http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/cvo/images/cvo.png</vr:logo>
+            </vr:creator>
+            <vr:contact>
+                <vr:name>Patrick Dowler</vr:name>
+                <vr:address>5071 West Saanich Rd
+Victoria, BC, Canada
+V9E 2E7</vr:address>
+                <vr:email>patrick.dowler@nrc-cnrc.gc.ca</vr:email>
+            </vr:contact>
+        </vr:curation>
+        <vr:content xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">
+            <vr:description>Octet is a rich client application for exploring the content of the CVO Observation Catalog. The CVO Observation Catalog contains content from selected CADC imaging archives (CFHT, JCMT, and HST) and external data services which cover other parts of the spectrum.
+
+Octet is written in Java and deployed via Java Webstart and has been tested on Linux, Mac OS X, and Windows 2000/XP.</vr:description>
+            <vr:referenceURL>http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/cvoProto/</vr:referenceURL>
+            <vr:type>Other</vr:type>
+            <vr:contentLevel>Research</vr:contentLevel>
+            <vr:relationship>
+                <vr:relationshipType>service-for</vr:relationshipType>
+                <vr:relatedResource ivo-id="ivo://cadc.nrc.ca/cvo">Canadian Virtual Observatory</vr:relatedResource>
+            </vr:relationship>
+        </vr:content>
+        <vr:interface xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" xmlns="http://www.ivoa.net/xml/VODataService/v0.5" xsi:schemaLocation="http://www.ivoa.net/xml/VODataService/v0.5 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v0.5/VODataService.xsd http://www.ivoa.net/xml/VOTable/v1.0 http://software.astrogrid.org/schema/vo-formats/VOTable/v1.0/VOTable.xsd " xsi:type="vs:WebService">
+            <vr:accessURL use="base">http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/cvoProto/launch.jsp</vr:accessURL>
+        </vr:interface>
+    </vor:Resource>

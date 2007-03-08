@@ -1,4 +1,4 @@
-/*$Id: AllAstrogridSystemTests.java,v 1.3 2007/01/29 10:42:48 nw Exp $
+/*$Id: AllAstrogridSystemTests.java,v 1.4 2007/03/08 17:44:01 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,7 +30,6 @@ public class AllAstrogridSystemTests {
 
     public static Test suite() {
         TestSuite suite = new TestSuite("System Tests for AstroGrid Module");
-        suite.addTestSuite(RegistrySystemTest.class);
         suite.addTestSuite(MyspaceSystemTest.class);     
        suite.addTestSuite(ApplicationsSystemTest.class); 
         suite.addTestSuite(JobsSystemTest.class);
@@ -42,6 +41,9 @@ public class AllAstrogridSystemTests {
 
 /* 
 $Log: AllAstrogridSystemTests.java,v $
+Revision 1.4  2007/03/08 17:44:01  nw
+first draft of voexplorer
+
 Revision 1.3  2007/01/29 10:42:48  nw
 tidied.
 

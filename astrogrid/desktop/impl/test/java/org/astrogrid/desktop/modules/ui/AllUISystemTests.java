@@ -24,8 +24,6 @@ public class AllUISystemTests {
 		suite.addTestSuite(AstroscopeUISystemTest.class);
 		suite.addTestSuite(HelioscopeUISystemTest.class);
 		suite.addTestSuite(ApplicationLauncherUISystemTest.class);
-		suite.addTestSuite(WorkflowBuilderUISystemTest.class);
-		suite.addTestSuite(ParameterizedWorkflowLauncherUISystemTest.class);
 		suite.addTestSuite(VospaceBrowserUISystemTest.class);
 		suite.addTestSuite(RegistryBrowserUISystemTest.class);
 		//$JUnit-END$

@@ -61,15 +61,15 @@ public class FolderTreeCellRenderer extends DefaultTreeCellRenderer {
 	    setText(sb.toString());
 	    // finally set the icon.
 	    if (info.getId().equals(MessageRecorderImpl.JOBS)) {
-	        setIcon(IconHelper.loadIcon("tree.gif"));
+	        setIcon(IconHelper.loadIcon("workflow16.png"));
 	    } else if (info.getId().equals(MessageRecorderImpl.QUERIES)) {
-	        setIcon(IconHelper.loadIcon("search.gif"));
+	        setIcon(IconHelper.loadIcon("search16.png"));
 	    } else if (info.getId().equals(MessageRecorderImpl.TASKS)) {
-	        setIcon(IconHelper.loadIcon("exec.png"));    
+	        setIcon(IconHelper.loadIcon("exec16.png"));    
 	    } else if (info.getId().equals(MessageRecorderImpl.ROOT)) {
-	        setIcon(IconHelper.loadIcon("package_network.png"));
+	        setIcon(IconHelper.loadIcon("run16.png"));
 	    } else {
-	        setIcon(IconHelper.loadIcon("thread_view.gif"));
+	        setIcon(IconHelper.loadIcon("idle16.png")); // todo - replace this with a representation of running status.
 	    }
 	    return this;
 	}

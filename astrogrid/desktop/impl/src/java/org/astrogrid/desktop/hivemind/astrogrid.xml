@@ -9,7 +9,6 @@
 	<!--  PREAMBLE -->
 
 		<contribution configuration-id="framework.acrServices">
-			<acrService id="registry" interface="Registry" />
 			<acrService id="myspace" interface="Myspace" />
 			<acrService id="community" interface="Community" />
 			<acrService id="applications" interface="Applications" />
@@ -37,11 +36,11 @@ UI CONFIGURATION -->
 	<!-- NEW ACTIONS -->
 	<!-- add login and logout actions -->
 	<contribution configuration-id="system.uiStructure">
-		<action text="Login" name="login"  parentName="file" iconName="connect_creating.png"
+		<action text="Login" name="login"  parentName="file" iconName="connect_creating16.png"
 			object="service:community" methodName="guiLogin" before="close,exit,logout">
 			<tooltip>Log in to AstroGrid</tooltip>
 		</action>
-		<action text="Logout" name="logout" parentName="file" iconName="connect_no.png"
+		<action text="Logout" name="logout" parentName="file" iconName="connect_no16.png"
 			object="service:community" methodName="logout" after="login" before="close,exit">
 			<tooltip>Log out of AstroGrid</tooltip>
 		</action>
@@ -49,13 +48,13 @@ UI CONFIGURATION -->
 	
 	<!--  buttons, help links, etc to use when runnin as 'ACR' -->
 	<contribution configuration-id="system.uiStructure" if="not (property system.help.disabled) and (property acr.mode)">
-		<action text="Introduction" name="acrHelp"  parentName="help" iconName="help.gif"
+		<action text="Introduction" name="acrHelp"  parentName="help" iconName="help16.png"
 			object="service:system.help" methodName="showHelpForTarget" 
 			before="*">
 					<tooltip>Introduction to Astro Runtime</tooltip>
 			<parameter>acr.overview</parameter>
 		</action>		
-		<action text="API Reference" name="acrApi"  parentName="help" iconName="java_lib_obj.gif"
+		<action text="API Reference" name="acrApi"  parentName="help" iconName="reference16.png"
 			object="service:system.help" methodName="showHelpForTarget" 
 			after="acrHelp" before="projects">
 					<tooltip>Lists available functions, gives examples of their use</tooltip>
@@ -65,13 +64,13 @@ UI CONFIGURATION -->
 	
 	<!--  equivalent to use with running as 'workbench'  - basically just make these 'advanced'-->
 	<contribution configuration-id="system.uiStructure" if="not (property system.help.disabled) and (property workbench.mode)">
-		<action text="Astro Runtime - Introduction" name="acrHelp"  parentName="help" iconName="help.gif"
+		<action text="Astro Runtime - Introduction" name="acrHelp"  parentName="help" iconName="help16.png"
 			object="service:system.help" methodName="showHelpForTarget" 
 			after="contents" before="projects" visibleCondition="preference:acr.advanced">
 					<tooltip>Introduction to Astro Runtime</tooltip>
 			<parameter>acr.overview</parameter>
 		</action>		
-		<action text="Astro Runtime - API Reference" name="acrApi"  parentName="help" iconName="java_lib_obj.gif"
+		<action text="Astro Runtime - API Reference" name="acrApi"  parentName="help" iconName="reference16.png"
 			object="service:system.help" methodName="showHelpForTarget" 
 			after="acrHelp" before="projects" visibleCondition="preference:acr.advanced">
 					<tooltip>Lists available functions, gives examples of their use</tooltip>
@@ -82,7 +81,7 @@ UI CONFIGURATION -->
 	<!--  always added to 'advanced' tab - depends on particular ar variant whther this tab is visible or not. -->
 	<contribution configuration-id="system.uiStructure" if="((not (property system.webserver.disabled)) and (not (property system.html.disabled))) and (not (property system.browser.disabled))">
 		<action parentName="advanced" name="htmlACR" text="AR web interface"
-			iconName="overview48.gif" 
+			iconName="browser48.png" 
 			object="service:system.browser" methodName="openRelative" before="*"
 			help-id="acr.overview"
 			 >
@@ -93,7 +92,7 @@ UI CONFIGURATION -->
 	<!--  show a download link only if we're in webstart - otherwise people will have downloaded dev kit through teh installer -->
 	<contribution configuration-id="system.uiStructure" if="not (property system.browser.disabled) and (class javax.jnlp.ServiceManager) ">
 		<action parentName="advanced" name="downloadAR" text="Download AR development kit"
-		iconName="package_utilities.png"
+		iconName="downloadAR48.png"
 			object="service:system.browser" methodName="openURL" after="*"
 			help-id="acr.overview"
 			 >
@@ -110,7 +109,7 @@ UI CONFIGURATION -->
 	
 	<contribution configuration-id="system.uiStructure" if="(property acr.mode) or (property asr.mode)">
 	<action parentName="help" name="about" text="About Astro Runtime.." onEventDispatchThread="true"
-			object="instance:java.lang.String" methodName="concat" iconName="info_obj.gif"
+			object="instance:java.lang.String" methodName="concat" iconName="info16.png"
 			after="*" > 
 			<parameter><![CDATA[
 			<html>
@@ -129,21 +128,6 @@ UI CONFIGURATION -->
 		</action>		
 	</contribution>	
 	
-<!-- 
-==========================
-REGISTRY
- -->
-	
-	<service-point id="registry" interface="Registry">
-		Registry
-		<interceptor service-id="system.deprecation" />
-		<interceptor service-id="system.throbber" />
-		<create-instance class="org.astrogrid.desktop.modules.ag.RegistryImpl" />
-	</service-point>
-
-	<implementation service-id="registry" if="property astrogrid.registry.disabled">
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
-	</implementation>		
 
 <!-- 
 ===========================
@@ -156,6 +140,7 @@ MYSPACE
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ag.VospaceImpl" >
 				<service>community</service>
+				<service>ivoa.registry</service>
 				<service>bundlePrefs</service>
 				<service>system.ui</service>
 				<event-listener service-id="community" />	
@@ -284,8 +269,7 @@ APPLICATIONS
 				<service>processManager</service>
 				<service>myspace</service>
 				<service>ivoa.registry</service>
-				<service>registry</service>
-				<service>ivoa.adql074</service>
+				<service>ivoa.adql</service>
 				<object>cache:applicationResources</object>
 			</construct>
 		</invoke-factory>	

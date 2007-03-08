@@ -5,13 +5,11 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -36,10 +34,7 @@ import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
-import javax.swing.ListModel;
-import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.ListDataEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -61,17 +56,14 @@ import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
-import org.astrogrid.desktop.modules.system.ReportingListModel.ReportingListDataListener;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
-import org.astrogrid.desktop.modules.ui.comp.TableSorter;
+import org.astrogrid.desktop.modules.ui.comp.PlasticButtons;
 import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 import org.votech.plastic.CommonMessageConstants;
 
-import com.l2fprod.common.swing.JButtonBar;
-import com.l2fprod.common.swing.plaf.blue.BlueishButtonBarUI;
-
+import ca.odell.glazedlists.swing.JEventListPanel;
 import edu.berkeley.guir.prefuse.event.FocusEvent;
 import edu.berkeley.guir.prefuse.event.FocusListener;
 import edu.berkeley.guir.prefuse.focus.FocusSet;
@@ -86,7 +78,7 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  * @author Noel Winstanley
  * @since May 14, 20066:51:20 AM
  */
-public abstract class AbstractScope extends UIComponentImpl implements ReportingListDataListener{
+public abstract class AbstractScope extends UIComponentImpl implements PlasticButtons.ButtonBuilder{
 	/** action to clear history menu */
     protected class ClearHistoryAction extends AbstractAction {
 
@@ -107,7 +99,7 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 	/** clear selection action */
     protected class ClearSelectionAction extends AbstractAction {
         public ClearSelectionAction() {
-            super("Clear selection",IconHelper.loadIcon("editclear.png"));
+            super("Clear selection",IconHelper.loadIcon("editclear32.png"));
             this.putValue(SHORT_DESCRIPTION,"Clear selected nodes");
             this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
             this.setEnabled(false);           
@@ -131,7 +123,7 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
     /** halt seartch action */
     protected class HaltAction extends AbstractAction {
         public HaltAction() {
-            super("Halt",IconHelper.loadIcon("fileclose32.png"));
+            super("Halt",IconHelper.loadIcon("stop32.png"));
             this.putValue(SHORT_DESCRIPTION,"Halt the search");
         }
 
@@ -144,7 +136,7 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
     /** search action */
     protected class SearchAction extends AbstractAction {
         public SearchAction() {
-            super("Search",IconHelper.loadIcon("find.png"));
+            super("Search",IconHelper.loadIcon("search32.png"));
             this.putValue(SHORT_DESCRIPTION,"Find resources for this Position");
         }
 
@@ -158,16 +150,11 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
     }
 
 
-    
-
-    
-    
-    
     /** goto top button */
     
     protected class TopAction extends AbstractAction {
         public TopAction() {
-            super("Go To Top",IconHelper.loadIcon("top.png"));
+            super("Go To Top",IconHelper.loadIcon("top32.png"));
             this.putValue(SHORT_DESCRIPTION,"Focus display to 'Search Results'");
             this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_G));
             this.setEnabled(false);
@@ -213,11 +200,6 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 	protected Action clearAction = new ClearSelectionAction();
 
 	/** bar of buttons dynamically built for available plastic apps */
-	protected JButtonBar dynamicButtons = new JButtonBar(JButtonBar.VERTICAL);
-	{//@todo need to check this makes things look better on all platforms.
-		dynamicButtons.setUI(new BlueishButtonBarUI());
-	}
-
 	protected Action haltAction = new HaltAction();
 
 	protected final DalProtocolManager protocols;
@@ -242,7 +224,13 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 	 * @param p list of dal protocols to query.
 	 * @param browser todo
 	 * @throws HeadlessException
+	 * 
+	 * @todo build the ui with JForms, and use the glazed lists integration to 
+	 * hande a shrinking-growing lilst.
 	 */
+	
+	private final ResourceChooserInternal chooser;
+	private final MyspaceInternal myspace;
 	public AbstractScope(Configuration conf, HelpServerInternal hs,
 			UIInternal ui, MyspaceInternal myspace,
 			ResourceChooserInternal chooser, TupperwareInternal tupp, SendToMenu sendTo, 
@@ -255,6 +243,8 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 		this.snitch = snitch;
 		this.tupperware = tupp;
 		this.protocols = new DalProtocolManager();
+		this.chooser = chooser;
+		this.myspace = myspace;
 		for (int i = 0; i < p.length; i++) {
 			this.protocols.add(p[i]);
 		}
@@ -266,12 +256,10 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 		vizualizations.add(new WindowedRadialVizualization(vizualizations,sendTo,this));
 		vizualizations.add(new HyperbolicVizualization(vizualizations,sendTo,this));
 
-		dynamicButtons.add(new SaveNodesButton(vizModel.getSelectionFocusSet(),
-				this, chooser, myspace));
-
 		// build the ui.
 		this.setSize(1000, 707); // same proportions as A4,
-
+        final Image defaultImage = IconHelper.loadIcon("scope16.png").getImage();
+		setIconImage(defaultImage);   
 		// this.setSize(700, 700);
 		JPanel pane = getMainPanel();
 		JPanel searchPanel = createLeftPanel();
@@ -281,11 +269,7 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 		this.setContentPane(pane);
 		this.setTitle(scopeName);
 		this.setJMenuBar(getJJMenuBar());
-		
-		this.tupperware.getRegisteredApplicationsModel().addListDataListener(this);
-		// refresh current list of apps.
-		this.contentsChanged(null);
-		
+
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				// halt all my background processes.
@@ -352,23 +336,46 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 		submitButton.setMaximumSize(clearButton.getPreferredSize());
 		reFocusTopButton.setMaximumSize(clearButton.getPreferredSize());
 
-		// start of consumer buttons.
-		JScrollPane sp = new JScrollPane(dynamicButtons);
+
+		// creates a list of buttons dynamically generated from plastic apps
+		PlasticButtons plasticButtons = new PlasticButtons(this.tupperware.getRegisteredApplications(),this);
+		// add in custom static buttons.
+		plasticButtons.getStaticList().add(new SaveNodesButton(vizModel.getSelectionFocusSet(),this,chooser,myspace));		
+		JEventListPanel buttonPanel = plasticButtons.getPanel();
+		buttonPanel.setElementColumns(1);
+		
+		
+		// start of consumer buttons - remove whiteness from this later.
 		tb = new TitledBorder("3. Process");
 		tb.setTitleColor(java.awt.Color.BLUE);
+		JScrollPane sp = new JScrollPane(buttonPanel);
 		sp.setBorder(tb);
-		searchPanel.setMaximumSize(sp.getMaximumSize());
-		navPanel.setMaximumSize(sp.getMaximumSize());
-
 		// assemble it all together.
 		JPanel bothTop = new JPanel();
 		bothTop.setLayout(new BoxLayout(bothTop, BoxLayout.Y_AXIS));
 		bothTop.add(searchPanel);
 		bothTop.add(navPanel);
-		bothTop.setMaximumSize(sp.getMaximumSize());
 		scopeMain.add(bothTop, BorderLayout.NORTH);
-		scopeMain.add(sp, BorderLayout.CENTER);
+		scopeMain.add(sp,BorderLayout.CENTER);
 		return scopeMain;
+	}
+	
+	/** Builds VOTABLE and FITS load plastic buttons for applications that support this.
+	 * Override this method to add further button types.
+	 * @param plas
+	 * @return
+	 */
+	public JButton[] buildPlasticButtons(final PlasticApplicationDescription plas) {
+		List results = new ArrayList();
+		if (plas.understandsMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL)) {
+			results.add(new VotableLoadPlasticButton(plas, vizModel.getSelectionFocusSet(),
+					AbstractScope.this,tupperware));
+		}
+		if (plas.understandsMessage(CommonMessageConstants.FITS_LOAD_FROM_URL)) {
+			results.add(new ImageLoadPlasticButton(plas, vizModel.getSelectionFocusSet(),
+					AbstractScope.this, tupperware));
+		}
+		return (JButton[]) results.toArray(new JButton[results.size()]);
 	}
 	
 	protected JMenu getFileMenu() {
@@ -385,7 +392,7 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 		}
 		return fileMenu;
 	}
-
+	
 	/** @todo implement the history menu using xml serialization of the SesamePositionBeans */
 	protected JMenu getHistoryMenu() {
 		if (historyMenu == null) {
@@ -436,33 +443,8 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 	/** panel containing summary of search results */
 	private JPanel makeServicesPanel() {
 		JPanel servicesPanel = new JPanel();
-		final TableSorter sorter = new TableSorter(protocols.getQueryResultTable());
-		final JTable table = new JTable(sorter);
-		table.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent e) {
-				int column = table.convertColumnIndexToModel(table.columnAtPoint(e.getPoint()));
-				if (column == 0) {
-					table.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));					
-				} else {
-					table.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-				}
-			}
-			public void mouseExited(MouseEvent e) {
-				int column = table.convertColumnIndexToModel(table.columnAtPoint(e.getPoint()));
-				if (column == 0) {
-					table.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-				}
-			}
-			public void mouseClicked(MouseEvent e) {
-				int column = table.convertColumnIndexToModel(table.columnAtPoint(e.getPoint()));
-				int row = sorter.modelIndex(table.rowAtPoint(e.getPoint()));
-				if (column == 0 && row > -1 && row < sorter.getRowCount()) {
-					Resource ri = (Resource)sorter.getTableModel().getValueAt(row,column);
-					browser.open(ri.getId());
-				}
-			}
-		});
-		sorter.setTableHeader(table.getTableHeader()); 
+		final JTable table = new JTable(protocols.getQueryResultTable());
+	
 		table.setPreferredScrollableViewportSize(new Dimension(700, 550));
 		TableColumnModel tcm = table.getColumnModel();
 		final TableColumn riColumn = tcm.getColumn(0);
@@ -559,8 +541,7 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 	protected abstract String grabHistoryItem();
 
 	protected void haltQuery() {
-		super.getHaltAllButton().doClick();
-		setStatusMessage("Halted");
+		haltAll();
 		setProgressValue(getProgressMax());
 	}
 
@@ -611,100 +592,5 @@ public abstract class AbstractScope extends UIComponentImpl implements Reporting
 		}
 	}
 	
-	// plastic integration
-	
-	
-	public void contentsChanged(ListDataEvent e) {
-		// clear, and rebuild.
-		componentMap.clear();
-		dynamicButtons.removeAll();
-		ListModel lm = tupperware.getRegisteredApplicationsModel();
-		for (int i = 0; i < lm.getSize(); i++) {
-			PlasticApplicationDescription plas= (PlasticApplicationDescription)lm.getElementAt(i);
-			addPlasticApp(plas); // nice- loads all in parallel in background thread..
-		}
-	}
-	public void intervalAdded(ListDataEvent e) {
-		ListModel lm = tupperware.getRegisteredApplicationsModel();
-		for (int i = e.getIndex0(); i<= e.getIndex1(); i++) {
-			PlasticApplicationDescription plas = (PlasticApplicationDescription)lm.getElementAt(i);
-			addPlasticApp(plas);
-		}
-	}
-	public void intervalRemoved(ListDataEvent e) {
-// do nothing 
-	}
-	
-	public void objectsRemoved(Object[] obj) {
-	
-		for (int i = 0; i < obj.length; i++) {
-			removePlasticApp((PlasticApplicationDescription)obj[i]);
-		}
-	}
-	
-	/** used to keep track of the buttons we've got present */
-    private final Map componentMap = new HashMap();
 
-    
-    private void addPlasticApp(final PlasticApplicationDescription plas) {
-    	// runs in a background thread, as involved fetching icons from urls.
-    	(new BackgroundOperation("Building Buttons for  "+ plas.getName()) {                     
-    	        protected Object construct() throws Exception {
-    	    		return buildPlasticButtons(plas);
-    	        }
-    	                
-    	        protected void doFinished(Object result) {
-    	            // add the freshly created button to the UI
-    	            Component[] components = (Component[])result;
-    	            if (components == null || components.length == 0) {
-    	                return;
-    	            }
-    	            for (int i = 0; i < components.length; i++) {
-    	                dynamicButtons.add(components[i]);
-    	            }
-    	                	           
-    	            // record what components pertain to this application.
-    	            componentMap.put(plas,components);     
-    	            dynamicButtons.revalidate(); // fixes bz 1777
-    	            dynamicButtons.repaint();
-    	        }
-    	    }).start(); 	
-    }
-    
-    private void removePlasticApp(PlasticApplicationDescription id) {
-        if (! componentMap.containsKey(id)) {
-            return;
-        }
-        final Component[] components = (Component[]) componentMap.get(id);
-        if (components == null || components.length ==0) {
-            return;
-        }
-         SwingUtilities.invokeLater(new Runnable() {
-            public void run() {           
-                for (int i = 0; i < components.length; i++) {
-                    dynamicButtons.remove(components[i]);
-                }
-                dynamicButtons.revalidate(); // fixes bz 1777
-                dynamicButtons.repaint();
-            }
-         });
-    }
-	
-	/** Builds VOTABLE and FITS load plastic buttons for applications that support this.
-	 * Override this method to add further button types.
-	 * @param plas
-	 * @return
-	 */
-	protected Component[] buildPlasticButtons(final PlasticApplicationDescription plas) {
-		List results = new ArrayList();
-		if (plas.understandsMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL)) {
-			results.add(new VotableLoadPlasticButton(plas, vizModel.getSelectionFocusSet(),
-					AbstractScope.this,tupperware));
-		}
-		if (plas.understandsMessage(CommonMessageConstants.FITS_LOAD_FROM_URL)) {
-			results.add(new ImageLoadPlasticButton(plas, vizModel.getSelectionFocusSet(),
-					AbstractScope.this, tupperware));
-		}
-		return (Component[]) results.toArray(new Component[results.size()]);
-	}
 }

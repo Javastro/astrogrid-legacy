@@ -1,4 +1,4 @@
-/*$Id: RegistryGoogleDialog.java,v 1.6 2007/01/29 10:53:21 nw Exp $
+/*$Id: RegistryGoogleDialog.java,v 1.7 2007/03/08 17:44:01 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -54,11 +54,11 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
      * @param pref 
      * @throws java.awt.HeadlessException
      */
-    public RegistryGoogleDialog(  Configuration conf, HelpServerInternal help, UIInternal ui,RegistryInternal reg,BrowserControl browser, RegistryBrowser regBrowser
-    		, Ehcache cache1, Ehcache cache2,VoMon vomon, Preference pref) throws HeadlessException {
+    public RegistryGoogleDialog(  Configuration conf, HelpServerInternal help, UIInternal ui, RegistryGooglePanel chooserPanel) throws HeadlessException {
         super();
         this.parent = new UIComponentImpl(conf,help,ui);
-        this.chooserPanel = new RegistryGooglePanel(parent,reg,browser,regBrowser,cache1,cache2,vomon, pref);
+        this.chooserPanel = chooserPanel;
+        chooserPanel.parent.set(parent);
         this.setContentPane(getJOptionPane());           
      
         this.setTitle("Resource Chooser");
@@ -77,15 +77,13 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
         this.setSize(425,600);        
     }
     
-    public RegistryGoogleDialog(Component parentComponent, Configuration conf, HelpServerInternal help, UIInternal ui,RegistryInternal reg, BrowserControl browser, RegistryBrowser regBrowser
-    		,Ehcache cache1, Ehcache cache2,
-    		VoMon vomon, Preference pref) throws HeadlessException {
-    	this(conf,help,ui,reg,browser, regBrowser,cache1,cache2,vomon,pref);
+    public RegistryGoogleDialog(Component parentComponent, Configuration conf, HelpServerInternal help, UIInternal ui,RegistryGooglePanel reg) throws HeadlessException {
+    	this(conf,help,ui,reg);
         setLocationRelativeTo(parentComponent);
     }
     
     public void setFilter(String filter) {
-        chooserPanel.setFilter(filter);
+        chooserPanel.applyFilter(filter);
     }
 
     public void setMultipleResources(boolean multiple) {
@@ -176,6 +174,9 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
 
 /* 
 $Log: RegistryGoogleDialog.java,v $
+Revision 1.7  2007/03/08 17:44:01  nw
+first draft of voexplorer
+
 Revision 1.6  2007/01/29 10:53:21  nw
 moved cache configuration into hivemind.
 

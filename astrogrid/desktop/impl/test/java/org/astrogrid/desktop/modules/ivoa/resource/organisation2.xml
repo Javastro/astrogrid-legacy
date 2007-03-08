@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vor:Resource xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1" status="active" updated="2006-08-18T16:17:30Z" xmlns="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.3" xmlns:sia="http://www.ivoa.net/xml/SIA/v0.7" xmlns:sn="http://www.ivoa.net/xml/OpenSkyNode/v0.1" xmlns:vc="http://www.ivoa.net/xml/VOCommunity/v0.2" xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" xsi:schemaLocation="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="vr:Organisation">
+        <vrx:title xmlns:ns2="http://www.openarchives.org/OAI/2.0/" xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vrx="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">Wide Field Astronomy Unit, Institute for Astronomy, Edinburgh</vrx:title>
+        <vrx:shortName xmlns:ns2="http://www.openarchives.org/OAI/2.0/" xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vrx="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">WFAU</vrx:shortName>
+        <vrx:identifier xmlns:ns2="http://www.openarchives.org/OAI/2.0/" xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vrx="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">ivo://wfau.roe.ac.uk/WFAU</vrx:identifier>
+        <vrx:curation xmlns:ns2="http://www.openarchives.org/OAI/2.0/" xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vrx="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">
+            <vrx:publisher ivo-id="ivo://wfau.roe.ac.uk/WFAU">Wide Field Astronomy Unit</vrx:publisher>
+            <vrx:creator>
+                <vrx:name>Dr. John Taylor</vrx:name>
+                <vrx:logo>http://surveys.roe.ac.uk/wsa/wsa_bottom.gif</vrx:logo>
+            </vrx:creator>
+            <vrx:contact>
+                <vrx:name>Dr. Peredur Williams</vrx:name>
+                <vrx:email>pmw@roe.ac.uk</vrx:email>
+            </vrx:contact>
+        </vrx:curation>
+        <vrx:content xmlns:ns2="http://www.openarchives.org/OAI/2.0/" xmlns:tdb="urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vrx="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1">
+            <vrx:subject>data repositories</vrx:subject>
+            <vrx:subject>digital libraries</vrx:subject>
+            <vrx:subject>grid-based processing</vrx:subject>
+            <vrx:description>The Wide Field Astronomy Unit at the IfA provides astronomical surveys and infrastructure through a range of activities:
+    * Currently working on the Science Archives for the UKIRT Wide-Field Camera, WFCAM (WSA early data release Feb 2006) and the VISTA Survey Telescope (to be commissioned in 2006).
+    * It has developed, and now operates, TByte-scale on-line sky surveys derived from scanning photographic plates observed with the UK Schmidt telescope in Australia. These include flat-file databases from the broad-band and H-alpha surveys, and a relational database Catalogue, the SuperCosmos Science Archive (SSA), built as the prototype of the WFCAM/VISTA science archive.
+    * It operates the SuperCOSMOS plate measuring machine which is digitising photographic plates observed with the UK and Palomar Schmidt telescopes.
+    * It is part of the AstroGrid consortium, an e-science project working towards integrated astronomical database access and advanced data-mining tools, as part of an international initiative towards the &quot;Virtual Observatory&quot;.
+    * It has developed, and now operates, on-line Science Archives for the 6dF galaxy redshift and RAVE stellar radial velocity surveys being observed by the AAO with the UK Schmidt Telescope.
+    * It maintains an archive of original photographic plates observed with the UK Schmidt Telescope and copies of photographic sky atlases produced from the UK, Palomar and ESO Schmidt telescopes.</vrx:description>
+            <vrx:referenceURL>http://www.roe.ac.uk/ifa/wfau/</vrx:referenceURL>
+            <vrx:type>Organisation</vrx:type>
+            <vrx:contentLevel>University</vrx:contentLevel>
+            <vrx:contentLevel>Research</vrx:contentLevel>
+        </vrx:content>
+    </vor:Resource>

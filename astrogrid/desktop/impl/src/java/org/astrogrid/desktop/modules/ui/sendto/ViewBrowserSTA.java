@@ -6,6 +6,8 @@ import java.net.URL;
 import org.apache.commons.collections.Transformer;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.dnd.PreferredTransferable;
+import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 
 
 /** consumer that displays result in a browser */
@@ -14,7 +16,7 @@ public class ViewBrowserSTA extends AbstractSTA {
 	 * 
 	 */
 	public ViewBrowserSTA(BrowserControl browser, Transformer trans) {
-		super("View in Browser","View in your system web browser","Resource.gif");
+		super("View in Browser","View in your system web browser","browser16.png");
 		this.browser = browser;
 		this.trans = trans;
 	}

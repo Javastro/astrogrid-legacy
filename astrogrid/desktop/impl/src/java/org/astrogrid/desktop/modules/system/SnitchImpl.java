@@ -19,6 +19,10 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.event.ListEvent;
+import ca.odell.glazedlists.event.ListEventListener;
+
 /** Implementation of the snitcher.
  * @author Noel Winstanley
  * @since May 19, 200612:08:33 AM
@@ -34,7 +38,7 @@ public class SnitchImpl implements SnitchInternal {
 	private final boolean snitchDisabled;
 
 	
-	public SnitchImpl( UIInternal ui,String version, String appMode, final ReportingListModel plasticList, Preference doSnitch) {
+	public SnitchImpl( UIInternal ui,String version, String appMode, final EventList plasticList, Preference doSnitch) {
 		super();
 		this.ui = ui;
 		this.snitchDisabled = (! doSnitch.asBoolean()) 
@@ -42,25 +46,21 @@ public class SnitchImpl implements SnitchInternal {
 		// this key isn't availahble when running in eclipse - so won't snitch if we're in development mode - as will give meaningless results.
 
 		if (! snitchDisabled) {
-			plasticList.addListDataListener(new ListDataListener() {
+			plasticList.addListEventListener(new ListEventListener() {
 
-				public void contentsChanged(ListDataEvent e) {
-				}
-
-				public void intervalAdded(ListDataEvent e) {
-					for (int i = e.getIndex0(); i <= e.getIndex1(); i++) {
-						PlasticApplicationDescription plas = (PlasticApplicationDescription)plasticList.getElementAt(i);
-						Map m = new HashMap();
-						m.put("name",plas.getName());
-						m.put("ops",Arrays.asList(plas.getUnderstoodMessages()));
-						snitch("PLASTIC",m);	
+				public void listChanged(ListEvent arg0) {
+					while(arg0.next()) {
+						if (arg0.getType() == ListEvent.INSERT) {
+							PlasticApplicationDescription plas = (PlasticApplicationDescription)plasticList.get(arg0.getIndex());
+							Map m = new HashMap();
+							m.put("name",plas.getName());
+							m.put("ops",Arrays.asList(plas.getUnderstoodMessages()));
+							snitch("PLASTIC",m);								
+						}
 					}
 				}
-
-				public void intervalRemoved(ListDataEvent e) {
-				}
-				
-			});
+			}
+			);
 		}
 		Map m = new HashMap();
 		m.put("app", version +  " | "

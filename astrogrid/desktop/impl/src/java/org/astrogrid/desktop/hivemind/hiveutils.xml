@@ -1,0 +1,826 @@
+<?xml version="1.0"?>
+
+<module id="hiveutils" version="1.0.0">
+	Module containing various general utilities.
+<!--  Don't want preferences system.
+	<configuration-point id="Preferences" occurs="0..n">
+		Configuration point defining beans that can be stored/loaded into/from the
+		Java 1.4 preferences store through the PreferencesManager service.
+
+		<schema>
+			<element name="entry" key-attribute="name">
+				One entry defines one node in the preferences store. One such 
+				node is mapped to/from a java bean and will have subnodes based
+				on the properties names of this bean.
+
+				<attribute name="name" required="true" unique="true">
+					Node name (must be unique). It is advised to add the 
+					application name (or code) as prefix of the name (to avoid
+					conflicts with other java-based applications). For this you
+					can use '/' to separate the application name from the node 
+					name.
+				</attribute>
+
+				<attribute name="bean-class" required="true" translator="class">
+					Class of the bean that contains the preferences information
+					to be mapped to/from the preferenes store.
+				</attribute>
+
+				<attribute name="type" translator="enumeration,net.sourceforge.hiveutils.util.PrefType,system=SYSTEM,user=USER">
+					Indicates whether the bean must be stored under user-related 
+					preferences, or under system-related. Default is user.
+				</attribute>
+
+				<attribute name="event-channel" translator="object">
+					Optionnally provide a net.sourceforge.hiveevents.Consumer 
+					(generally an Event Channel) to which the latest preference
+					bean will be sent each time it is written back to the 
+					preferences store.
+				</attribute>
+
+				<conversion	class="net.sourceforge.hiveutils.service.impl.PreferenceContribution"/>
+			</element>
+		</schema>
+	</configuration-point>
+
+	<configuration-point id="PrefsMappers" occurs="0..n">
+		Configuration point to provide extended mapping capability to 
+		PreferencesManager.	Each contribution defines a special way to map a 
+		preference entry to/from a given class in the target/source bean.
+
+		<schema>
+			<element name="mapper" key-attribute="target-class">
+				One mapper entry defines an object implementing PrefsMapper, to
+				be used by the PreferencesManager service whenever it encounters
+				a bean's property of type target-class.
+				
+				<attribute name="target-class" unique="true" required="true" translator="class">
+					Type of bean proeprties for which this mapper must be used.
+				</attribute>
+
+				<attribute name="handler" required="true" translator="object">
+					Actual mapper object (must implement net.sourceforge.hiveutils.util.PrefsMapper).
+				</attribute>
+
+				<rules>
+					<push-attribute attribute="handler"/>
+					<invoke-parent method="addElement"/>
+				</rules>
+			</element>
+		</schema>
+	</configuration-point>
+
+	<service-point	id="PreferencesManager"
+					interface="net.sourceforge.hiveutils.service.PreferencesManager">
+		This service allows read and write of preferences (through Java 1.4 
+		preferences store API). The service will automatically map java beans to
+		nodes in the preferences store.
+
+		<invoke-factory model="singleton">
+			<construct class="net.sourceforge.hiveutils.service.impl.PreferencesManagerImpl">
+				<log/>
+				<configuration>Preferences</configuration>
+				<configuration>PrefsMappers</configuration>
+				<boolean>${prefs-auto-write}</boolean>
+				<event-listener service-id="hivemind.ShutdownCoordinator"/>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<contribution configuration-id="hivemind.FactoryDefaults">
+		<default symbol="prefs-auto-write" value="false"/>
+	</contribution>
+
+	<service-point	id="PreferencesObjectProvider"
+					interface="org.apache.hivemind.service.ObjectProvider">
+		ObjectProvider that can load POJOs instances from the preferences store.
+		Mapped to the pref: prefix ("pref:&lt;name&gt;").
+		If the preferences store does not have any node under this name, the node 
+		is created and a default bean instance is created.
+
+		<invoke-factory model="singleton">
+			<construct class="net.sourceforge.hiveutils.service.impl.PreferencesObjectProvider">
+				<service>PreferencesManager</service>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<contribution configuration-id="hivemind.ObjectProviders">
+		<provider prefix="pref" service-id="PreferencesObjectProvider"/>
+	</contribution>
+-->
+	<!--
+		Configuration of versions for different parts of the system.
+	-->
+	<!--  not required 
+	<configuration-point id="Version" occurs="0..n">
+		Utility configuration point enabling to define versions of the system or
+		subsystems.
+		Very useful to get and put into an about box.
+		You can have several sub-systems, hence several versions contributions.
+		
+		<schema>
+			<element name="app-module" key-attribute="code">
+				Defines the version (and other information) for one module of the
+				system (or the overall system).
+				
+				<attribute name="code" required="true" unique="true">
+					Unique code of this sub module
+				</attribute>
+
+				<attribute name="name" required="true">
+					Name of this sub module
+				</attribute>
+
+				<attribute name="version" required="true">
+					Version of this sub module
+				</attribute>
+
+				<attribute name="date" required="false">
+					Release date of this sub module
+				</attribute>
+
+				<attribute name="copyright" required="false">
+					Copyright string for this sub module
+				</attribute>
+
+				<attribute name="authors" required="false">
+					Authors of this sub module
+				</attribute>
+
+				<attribute name="url" required="false">
+					URL to the site of this sub module
+				</attribute>
+
+				<conversion	class="net.sourceforge.hiveutils.util.Version"/>
+			</element>
+		</schema>
+	</configuration-point>
+-->
+	<!--
+		ObjectBuilder
+	-->
+	<contribution configuration-id="hivemind.Translators">
+		<translator	name="hiveutils-deferred-object"
+					class="net.sourceforge.hiveutils.service.impl.DeferredObjectTranslator"/>
+	</contribution>
+
+	<schema id="ObjectBuilderSchema">
+			<element name="object" key-attribute="name">
+				<attribute name="name" required="true" unique="true">
+					Unique name of the object to created. This name is used as an
+					object identifier when calling the ObjectBuilder service.
+					Note that object names are NOT module-scoped, so you must be 
+					very careful not to define duplicate names.
+				</attribute>
+
+				<attribute name="cached" required="false" translator="boolean">
+					true indicates that each call to get this object from the 
+					ObjectBuilder will always return the same object.
+					false means that each call creates a new object.
+					Default is false.
+				</attribute>
+
+				<attribute name="eager-load" required="false" translator="boolean">
+					true means that the ObjectBuilder should instantiate this object
+					eagerly (ie, at ObjectBuilder construction time). If true, then
+					the object will be cached whatever the value of "cache"
+					attribute.
+					false means the object will be created only when required.
+					Default is false.
+					Important Note: As of versions 0.4, this attribute has in fact
+					no effect at all and should be considered as being always false.
+				</attribute>
+
+				<attribute name="class" required="true" translator="class">
+					The class of the object to instantiate.
+				</attribute>
+
+				<element name="inject">
+					Defines one dependency to inject for this object. If "name"
+					is provided, then setter-injection will be used, else 
+					constructor injection will be used.
+					
+					<attribute name="name" required="false"/>
+					<attribute name="object" required="true" translator="hiveutils-deferred-object"/>
+					<conversion	class="net.sourceforge.hiveutils.service.impl.InjectContribution"
+								parent-method="addInjection"/>
+				</element>
+				<element name="listener">
+					Defines one EventListener to add to this object.
+					
+					<attribute name="event" required="true"/>
+					<attribute name="object" required="true" translator="hiveutils-deferred-object"/>
+					<conversion	class="net.sourceforge.hiveutils.service.impl.ListenerContribution"
+								parent-method="addListener"/>
+				</element>
+				<element name="inject-arg">
+					Defines one dependency that needs to be passed by the ObjectBuilder
+					caller (in create() method) that will be injected "as is" to the
+					constructor of the built object, at the same position as the tag
+					
+					<conversion	class="net.sourceforge.hiveutils.service.impl.InjectContribution"
+								parent-method="addInjection"/>
+				</element>
+				<conversion	class="net.sourceforge.hiveutils.service.impl.ObjectContribution">
+					<map attribute="class" property="objectClass"/>
+				</conversion>
+			</element>
+		</schema>
+
+	<configuration-point id="ObjectBuilderObjects"  schema-id="ObjectBuilderSchema">
+		Extension point that defines "objects" to be created by the ObjectBuilder
+		service. Each object can be injected with various dependencies (almost
+		the same as for a HiveMind service).
+		Each contribution defines exactly one such kind of object.
+	
+	</configuration-point>
+
+	<!-- Necessary because hivemind does not expose this service -->
+	<service-point	id="EventLinker"
+					interface="org.apache.hivemind.service.EventLinker"
+					visibility="public">
+		<invoke-factory model="singleton">
+			<construct class="org.apache.hivemind.service.impl.EventLinkerImpl">
+				<error-log/>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<!-- Necessary because hivemind 1.1 makes this service private -->
+	<service-point	id="ObjectTranslator" 
+					interface="org.apache.hivemind.schema.Translator"
+					visibility="public">
+		<invoke-factory>
+			<construct class="org.apache.hivemind.service.impl.ObjectTranslator">
+				<set-configuration	configuration-id="hivemind.ObjectProviders" 
+									property="contributions"/>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<service-point	id="ObjectBuilder"
+					interface="net.sourceforge.hiveutils.service.ObjectBuilder">
+		Utility service to build (and optionnally cache) POJO instances while
+		injecting dependencies into them (both constructor and setter injections
+		are supported).
+		The configuration of each POJO to be created is defined as a contribution
+		to the ObjectBuilderObjects configuration point.
+		Most often, you will not need to directly access this service sicne you can
+		also inject POJOs that have been built by ObjectBuilder into other POJOs
+		or service points, configuration points through the "object:" object provider.
+		<invoke-factory model="singleton">
+			<construct class="net.sourceforge.hiveutils.service.impl.ObjectBuilderImpl">
+				<log/>
+				<configuration>ObjectBuilderObjects</configuration>
+				<service>ObjectTranslator</service>
+				<service>EventLinker</service>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<service-point	id="ObjectBuilderObjectProvider"
+					interface="org.apache.hivemind.service.ObjectProvider"
+					visibility="private">
+		ObjectProvider that can find (or create) POJOs instances (built by the ObjectBuilder service).
+		Mapped to the object: prefix ("object:&lt;name&gt;").
+		<invoke-factory model="singleton">
+			<construct class="net.sourceforge.hiveutils.service.impl.ObjectBuilderObjectProvider">
+				<service>ObjectBuilder</service>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<contribution configuration-id="hivemind.ObjectProviders">
+		<provider prefix="object" service-id="ObjectBuilderObjectProvider"/>
+	</contribution>
+
+
+	<!--
+		Utility to inject a contribution
+	-->
+	<!--  
+	<service-point	id="ContributionObjectProvider"
+					interface="org.apache.hivemind.service.ObjectProvider"
+					visibility="private">
+		ObjectProvider that can find a contribution out of a configuration point.
+		Mapped to the contribution: prefix ("contribution:&lt;config-point&gt;:&lt;id&gt;" or
+		"contribution:&lt;config-point&gt;:&lt;idProperty&gt;:&lt;id&gt;").
+		<create-instance model="singleton"
+			class="net.sourceforge.hiveutils.service.impl.ContributionObjectProvider"/>
+	</service-point>
+
+	<contribution configuration-id="hivemind.ObjectProviders">
+		<provider prefix="contribution" service-id="ContributionObjectProvider"/>
+	</contribution>
+-->
+	<!--
+		Utility to inject a ServicePoint for a service
+	-->
+	<!--  
+	<service-point	id="ServicePointObjectProvider"
+					interface="org.apache.hivemind.service.ObjectProvider"
+					visibility="private">
+		ObjectProvider that provides the org.apache.hivemind.internal.ServicePoint 
+		of a service, given its id.
+		Mapped to the service-point: prefix ("service-point:&lt;id&gt;").
+		<create-instance model="singleton"
+			class="net.sourceforge.hiveutils.service.impl.ServicePointObjectProvider"/>
+	</service-point>
+
+	<contribution configuration-id="hivemind.ObjectProviders">
+		<provider prefix="service-point" service-id="ServicePointObjectProvider"/>
+	</contribution>
+-->
+	<!--
+		Utility to inject a literal
+	-->
+	<service-point	id="LiteralObjectProvider"
+					interface="org.apache.hivemind.service.ObjectProvider"
+					visibility="private">
+		ObjectProvider that can inject a literal (string, boolean or integral).
+		Mapped to the literal: prefix ("literal:&lt;type&gt;:&lt;value&gt;").
+		<invoke-factory model="singleton">
+			<construct class="net.sourceforge.hiveutils.service.impl.LiteralObjectProvider">
+				<log/>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<contribution configuration-id="hivemind.ObjectProviders">
+		<provider prefix="literal" service-id="LiteralObjectProvider"/>
+	</contribution>
+
+	<!--
+		SymbolSource that takes data from externalized property file(s)
+	-->
+	<!--  
+	<configuration-point id="PropertyFileSources" occurs="0..n">
+		Extension point for defining a list of property files (internal or
+		external) that will be used as sources of substitutions symbols.
+
+		<schema>
+			<element name="property-source">
+				Adds a properties file as a source of symbols substitution.
+				Either "file" or "property" must be specified.
+				<attribute name="file" required="false">
+					Specify a path to the properties file. The path may be either 
+					absolute or relative, if relative, it will be considered a 
+					path to a file in the classpath.
+				</attribute>
+
+				<attribute name="property" required="false">
+					Specify the name of a system property which value will provide
+					the path to the properties file.
+				</attribute>
+
+				<conversion	class="net.sourceforge.hiveutils.service.impl.PropertyFileContribution"/>
+			</element>
+		</schema>
+	</configuration-point>
+
+	<service-point	id="PropertyFileSymbolSource"
+					interface="org.apache.hivemind.SymbolSource"
+					visibility="public">
+		SymbolSource implementation driven by property files (possibly external).
+		The list of property files is defined by the configuration-point
+		PropertyFileSources.
+		
+		<invoke-factory model="primitive">
+			<construct class="net.sourceforge.hiveutils.service.impl.PropertyFileSymbolSource">
+				<log/>
+				<configuration>PropertyFileSources</configuration>
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+	<contribution configuration-id="hivemind.SymbolSources">
+		<source name="PropertyFiles" before="*" service-id="PropertyFileSymbolSource"/>
+	</contribution>
+-->
+	<!--
+		Simple service to perform deferred tasks.
+	-->
+	<!-- 
+	<service-point	id="TaskPerformer"
+					interface="net.sourceforge.hiveutils.service.AsynchronousTaskPerformer">
+		Utility service that performs asynchroneous execution of tasks.
+		Tasks are Runnable implementations. They are queued and executed asynchroneously
+		when one of the following events happen: HiveMind Registry is shutdown, there is 
+		a certain number (configurable) of tasks in the queue, or after a certain amount
+		of time (configurable) has elapsed since last execution.
+		<invoke-factory model="singleton">
+			<construct class="net.sourceforge.hiveutils.service.impl.AsynchronousTaskPerformerImpl">
+				<log/>
+				<long>${async-task-flush-wait-time}</long>
+				<int>${async-task-flush-min-tasks}</int>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<contribution configuration-id="hivemind.FactoryDefaults">
+		<default symbol="async-task-flush-wait-time" value="10000"/>
+		<default symbol="async-task-flush-min-tasks" value="1"/>
+	</contribution>
+-->
+	<!--
+		Simple service to work on Objects (serialization, compression).
+	-->
+	<!--  
+	<service-point	id="ObjectTools"
+					interface="net.sourceforge.hiveutils.service.ObjectTools">
+		Utility service that performs Objects serialization/deserialization (to byte
+		arrays) and compression/uncompression of byte arrays.
+		<invoke-factory model="singleton">
+			<construct class="net.sourceforge.hiveutils.service.impl.ObjectToolsImpl">
+				<log/>
+				<int>${object-tools-uncompress-buffer-size}</int>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<contribution configuration-id="hivemind.FactoryDefaults">
+		<default symbol="object-tools-uncompress-buffer-size" value="100000"/>
+	</contribution>
+-->
+
+	<!-- 
+		Factory to create interceptors that allow to map all thrown exceptions.
+	-->
+	<!--  
+	<service-point	id="ExceptionMappingInterceptor"
+					interface="org.apache.hivemind.ServiceInterceptorFactory"
+					parameters-occurs="1..n">
+		Interceptor factory that adds customized Exception mapping at the service-point level.
+		
+		<create-instance
+			model="primitive"
+			class="net.sourceforge.hiveutils.service.impl.ExceptionMappingInterceptorFactory"/>
+
+		<parameters-schema>
+			<element name="exception-mapping">
+				Each exception-mapping element defines how an exception thrown by
+				the built service shall be mapped to another one.
+				The order in which exception-mapping elements appear is important
+				(just like the order of catch clauses in Java).
+			
+				<attribute name="from" required="true" translator="class"/>
+				<attribute name="to" required="true" translator="class"/>
+	
+				<conversion	class="net.sourceforge.hiveutils.service.impl.ExceptionMappingContribution"/>
+			</element>
+	
+			<element name="exception-mapper">
+				Directly defines an object implementing ExceptionMapper to do specific
+				mappings that are not one-to-one.
+				This is allowed only once and it is exclusive with any use of
+				the exception-mapping tag.
+			
+				<attribute name="mapper" required="true" translator="object"/>
+	
+				<conversion	class="net.sourceforge.hiveutils.service.impl.ExceptionMapperContribution"/>
+			</element>
+		</parameters-schema>
+	</service-point>
+-->
+	<!--
+		BuilderFactory that can create HiveMind service from a class with no
+		interface. It also allows to map exceptions.
+	-->
+	<!-- 
+  <service-point	id="AdapterBuilderFactory"
+  					interface="org.apache.hivemind.ServiceImplementationFactory"
+  					parameters-occurs="1..n">
+    
+    Used to construct a service from a class name and optional constructor parameters and properties.
+      
+    <parameters-schema>
+		<element name="exception-mapping">
+			Each exception-mapping element defines how an exception thrown by
+			the built service shall be mapped to another one.
+			The order in which exception-mapping elements appear is important
+			(just like the order of catch clauses in Java).
+		
+			<attribute name="from" required="true" translator="class"/>
+			<attribute name="to" required="true" translator="class"/>
+
+			<conversion	class="net.sourceforge.hiveutils.service.impl.ExceptionMappingContribution"/>
+		</element>
+
+		<element name="exception-mapper">
+			Directly defines an object implementing ExceptionMapper to do specific
+			mappings that are not one-to-one.
+			This is allowed only once and it is exclusive with any use of
+			the exception-mapping tag.
+		
+			<attribute name="mapper" required="true" translator="object"/>
+
+			<conversion	class="net.sourceforge.hiveutils.service.impl.ExceptionMapperContribution"/>
+		</element>
+
+      <element name="construct">
+        A single construct element identifies the class to instantiate.
+       
+        <attribute name="class" required="true">The name of the class to instantiate.</attribute>
+        <attribute name="messages-property">The name of a property to assign invoking module's messages to.</attribute>
+        <attribute name="log-property">The name of a property to assign the Log instance for the service to. The Log instance is built from the service configuration point id.</attribute>
+        <attribute name="service-id-property">The name of a property to assign the configuration point id of the service to.</attribute>
+        <attribute name="initialize-method">The name of a public instance method (taking no parameters) to be invoked after the service is constructed.</attribute>
+        <attribute name="error-handler-property">The name of a property to assign the module's ErrorHandler to.</attribute>
+        <attribute name="class-resolver-property">The name of a property to assign the module's ClassResolver to.</attribute>
+        <attribute name="autowire-services" translator="boolean,default=true">If true (the default), the BuilderFactory will attempt to connect unclaimed properties to services.</attribute>
+        <attribute name="error-log-property">The name of a property to assign the service's ErrorLog to.</attribute>
+        
+        <rules>
+          <create-object class="org.apache.hivemind.service.impl.BuilderParameter"/>
+          <read-attribute attribute="class" property="className"/>
+          <read-attribute attribute="initialize-method" property="initializeMethod"/>
+          <read-attribute attribute="autowire-services" property="autowireServices" skip-if-null="false"/>
+          <invoke-parent method="addElement"/>
+          
+          <create-object class="org.apache.hivemind.service.impl.BuilderMessagesFacet"/>
+          <read-attribute attribute="messages-property" property="propertyName"/>
+          <invoke-parent depth="1" method="addProperty"/>
+          
+          <create-object class="org.apache.hivemind.service.impl.BuilderLogFacet"/>
+          <read-attribute attribute="log-property" property="propertyName"/>
+          <invoke-parent depth="2" method="addProperty"/>
+          
+          <create-object class="org.apache.hivemind.service.impl.BuilderServiceIdFacet"/>
+          <read-attribute attribute="service-id-property" property="propertyName"/>
+          <invoke-parent depth="3" method="addProperty"/>
+          
+          <create-object class="org.apache.hivemind.service.impl.BuilderErrorHandlerFacet"/>
+          <read-attribute attribute="error-handler-property" property="propertyName"/>
+          <invoke-parent depth="4" method="addProperty"/>
+          
+          <create-object class="org.apache.hivemind.service.impl.BuilderClassResolverFacet"/>
+          <read-attribute attribute="class-resolver-property" property="propertyName"/>
+          <invoke-parent depth="5" method="addProperty"/>
+          
+          <create-object class="org.apache.hivemind.service.impl.BuilderErrorLogFacet"/>
+          <read-attribute attribute="error-log-property" property="propertyName"/>
+          <invoke-parent depth="6" method="addProperty"/>          
+        </rules>
+        <element name="string">
+          
+          A string value constructor parameter.
+          
+          <rules>
+            <create-object class="org.apache.hivemind.service.impl.BuilderPropertyFacet"/>
+            <set-property property="translator" value="null"/>
+            <read-content property="value"/>
+            <invoke-parent depth="7" method="addParameter"/>
+          </rules>
+        </element>
+        
+        <element name="int">
+          
+          An integer value constructor parameter.
+          
+          <rules>
+            <create-object class="org.apache.hivemind.service.impl.BuilderPropertyFacet"/>
+            <set-property property="translator" value="int"/>
+            <read-content property="value"/>
+            <invoke-parent depth="7" method="addParameter"/>
+          </rules>
+        </element>
+        
+        <element name="long">
+          
+          A long (64-bit) integer value constructor parameter.
+            
+          <rules>
+            <create-object class="org.apache.hivemind.service.impl.BuilderPropertyFacet"/>
+            <set-property property="translator" value="long"/>
+            <read-content property="value"/>
+            <invoke-parent depth="7" method="addParameter"/>
+          </rules>
+        </element>
+        
+        <element name="boolean">
+          
+          A boolean value constructor parameter.
+            
+          <rules>
+            <create-object class="org.apache.hivemind.service.impl.BuilderPropertyFacet"/>
+            <set-property property="translator" value="enumeration,java.lang.Boolean,true=TRUE,false=FALSE"/>
+            <read-content property="value"/>
+            <invoke-parent depth="7" method="addParameter"/>
+          </rules>
+        </element>
+        
+        <element name="service">
+          
+          A constructor parameter providing the identified HiveMind service.
+          
+         <rules>
+            <create-object class="org.apache.hivemind.service.impl.BuilderPropertyFacet"/>
+            <set-property property="translator" value="service"/>
+            <read-content property="value"/>
+            <invoke-parent depth="7" method="addParameter"/>
+          </rules>
+        </element>
+        
+        <element name="configuration">
+          
+          A constructor parameter providing a HiveMind configuration point (as a List).
+            
+          <rules>
+            <create-object class="org.apache.hivemind.service.impl.BuilderPropertyFacet"/>
+            <set-property property="translator" value="configuration"/>
+            <read-content property="value"/>
+            <invoke-parent depth="7" method="addParameter"/>
+          </rules>
+        </element>
+        
+        <element name="resource">
+          
+          A Resource constructor parameter.
+            
+          <rules>
+            <create-object class="org.apache.hivemind.service.impl.BuilderPropertyFacet"/>
+            <set-property property="translator" value="resource"/>
+            <read-content property="value"/>
+            <invoke-parent depth="7" method="addParameter"/>
+          </rules>
+        </element>
+        
+        <element name="log">
+          
+          Placeholder for a Log instance for the constructed service as constructor parameter.
+          
+          <rules>
+            <create-object class="org.apache.hivemind.service.impl.BuilderLogFacet"/>
+            <invoke-parent depth="7" method="addParameter"/>
+          </rules>
+        </element>
+        
+        <element name="error-handler">
+          
+          Placeholder for the module's ErrorHandler instance passed in as a constructor parameter.
+            
+          <rules>
+            <create-object class="org.apache.hivemind.service.impl.BuilderErrorHandlerFacet"/>
+            <invoke-parent depth="7" method="addParameter"/>
+          </rules>
+        </element>
+        
+        <element name="error-log">
+          
+          Placeholder for the service's ErrorLog instance passed in as a constructor parameter.
+            
+          <rules>
+            <create-object class="org.apache.hivemind.service.impl.BuilderErrorLogFacet"/>
+            <invoke-parent depth="7" method="addParameter"/>
+          </rules>
+        </element>
+                
+        <element name="class-resolver">
+          
+          Placeholder for the module's ClassResolver instance passed in as a constructor parameter.
+            
+          <rules>
+            <create-object class="org.apache.hivemind.service.impl.BuilderClassResolverFacet"/>
+            <invoke-parent depth="7" method="addParameter"/>
+          </rules>
+        </element>
+        
+        <element name="messages">
+          
+          Placeholder for a Messages object (from the invoking module) as constructor parameter.
+            
+          <rules>
+            <create-object class="org.apache.hivemind.service.impl.BuilderMessagesFacet"/>
+            <invoke-parent depth="7" method="addParameter"/>
+          </rules>
+        </element>
+        
+        <element name="service-id">
+          
+          Placeholder for the service id (of the constructed service) as constructor parameter.
+            
+          <rules>
+            <create-object class="org.apache.hivemind.service.impl.BuilderServiceIdFacet"/>
+            <invoke-parent depth="7" method="addParameter"/>
+          </rules>
+        </element>
+        
+        <element name="object">
+          
+          Placeholder for an object provided by the object translator as a constructor parameter.
+            
+          <rules>
+            <create-object class="org.apache.hivemind.service.impl.BuilderPropertyFacet"/>
+            <set-property property="translator" value="object"/>
+            <read-content property="value"/>
+            <invoke-parent depth="7" method="addParameter"/>
+          </rules>
+        </element>
+        
+        <element name="null">
+          
+          Placeholder for a null object provided by the object translator as a constructor parameter.
+            
+          <rules>
+            <create-object class="org.apache.hivemind.service.impl.BuilderPropertyFacet"/>
+            <set-property property="translator" value="object"/>
+            <invoke-parent depth="7" method="addParameter"/>
+          </rules>
+        </element>
+        
+        <element name="set">
+          
+          Configures a property of the service instance.
+            
+          <attribute name="property" required="true">The name of a property of the service instance to configure.</attribute>
+          <attribute name="value" required="true">The value to set the property to. The value will be converted to the type of the property.</attribute>
+          <rules>
+            <create-object class="org.apache.hivemind.service.impl.BuilderPropertyFacet"/>
+            <set-property property="translator" value="smart"/>
+            <read-attribute attribute="property" property="propertyName"/>
+            <read-attribute attribute="value" property="value"/>
+            <invoke-parent depth="7" method="addProperty"/>
+          </rules>
+        </element>
+        
+        <element name="set-object">
+          
+          Configures a property of the service instance using an object.
+          
+          <attribute name="property" required="true">The name of a property of the service instance to configure.</attribute>
+          <attribute name="value" required="true">The value to set the property to, in the form of a prefix and a locator for that prefix. Prefixes are defined by the ObjectProviders configuration point. Each prefix provides a different interpretation for the locator, such as a service id or class name.</attribute>
+          <rules>
+            <create-object class="org.apache.hivemind.service.impl.BuilderPropertyFacet"/>
+            <set-property property="translator" value="object"/>
+            <read-attribute attribute="property" property="propertyName"/>
+            <read-attribute attribute="value" property="value"/>
+            <invoke-parent depth="7" method="addProperty"/>
+          </rules>
+        </element>
+        
+        <element name="set-service">
+          
+          Configures a property of the service instance to another service.
+            
+          <attribute name="property" required="true">The name of the property of the service instance to configure.</attribute>
+          <attribute name="service-id" required="true">The id of the service.</attribute>
+          <rules>
+            <create-object class="org.apache.hivemind.service.impl.BuilderPropertyFacet"/>
+            <set-property property="translator" value="service"/>
+            <read-attribute attribute="property" property="propertyName"/>
+            <read-attribute attribute="service-id" property="value"/>
+            <invoke-parent depth="7" method="addProperty"/>
+          </rules>
+        </element>
+        
+        <element name="set-configuration">
+          
+          Configures a property of the service instance to the elements contributed to an configuration point.
+          
+          <attribute name="property" required="true">The name of the property of the service instance to configure.</attribute>
+          <attribute name="configuration-id" required="true">The id of the configuration point to access.</attribute>
+          <rules>
+            <create-object class="org.apache.hivemind.service.impl.BuilderPropertyFacet"/>
+            <set-property property="translator" value="configuration"/>
+            <read-attribute attribute="property" property="propertyName"/>
+            <read-attribute attribute="configuration-id" property="value"/>
+            <invoke-parent depth="7" method="addProperty"/>
+          </rules>
+        </element>
+        
+        <element name="set-resource">
+          
+          Configures a property of the service instance to a resource.
+            
+          <attribute name="property" required="true">The name of the property of the service instance to configure.</attribute>
+          <attribute name="path" required="true">The path, relative to the module's deployment descriptor, of the resource.</attribute>
+          <rules>
+            <create-object class="org.apache.hivemind.service.impl.BuilderPropertyFacet"/>
+            <set-property property="translator" value="resource"/>
+            <read-attribute attribute="property" property="propertyName"/>
+            <read-attribute attribute="path" property="value"/>
+            <invoke-parent depth="7" method="addProperty"/>
+          </rules>
+        </element>
+        
+        <element name="event-listener">
+          
+          Registers the new services as an event listener for events produced by the specified service.
+            
+          <attribute name="service-id" required="true" translator="service">The service which will produce events.</attribute>
+          <attribute name="event-set">If given, the name of an event set for which the service will be registered. If omitted, the service will be registered for all events sets for which it implements the necessary listener interfaces.</attribute>
+          <rules>
+            <create-object class="org.apache.hivemind.service.impl.EventRegistration"/>
+            <read-attribute attribute="service-id" property="producer"/>
+            <read-attribute attribute="event-set" property="eventSetName"/>
+            <invoke-parent depth="7" method="addEventRegistration"/>
+          </rules>
+        </element>
+      </element>      
+    </parameters-schema>
+    
+    <create-instance class="net.sourceforge.hiveutils.service.impl.AdapterBuilderFactory" model="primitive"/>
+  </service-point>
+  -->
+</module>

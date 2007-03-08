@@ -57,7 +57,7 @@
 
 	<contribution configuration-id="system.uiStructure" if="((not (property system.webserver.disabled)) and (not (property system.html.disabled))) and (not (property system.browser.disabled)) and (property hub.mode)">
 		<action parentName="advanced" name="htmlPLASTIC" text="PLASTIC web interface"
-			iconName="overview48.gif" after="listPlastic" 
+			iconName="browser48.png" after="listPlastic" 
 			object="service:system.browser" methodName="openRelative"  >
 			<parameter></parameter> <!-- intentionally blank -->
 			<tooltip>Browse and execute Plastic functions in a webbrowser</tooltip>
@@ -66,7 +66,7 @@
 	
 	<!--  documentation links for plastic -->
 	<contribution configuration-id="system.uiStructure" if="not (property system.help.disabled) and (property hub.mode)">
-		<action text="Introduction" name="plasticHelp" parentName="help" iconName="help.gif"
+		<action text="Introduction" name="plasticHelp" parentName="help" iconName="help16.png"
 		object="service:system.help" methodName="showHelpForTarget" before="*">
 			<tooltip>Introduction to Plastic</tooltip>
 			<parameter>plastic.overview</parameter>
@@ -76,7 +76,7 @@
 	
 	<!--  documentaiton links for plastic in non-hub mode. -->
 	<contribution configuration-id="system.uiStructure" if="not (property system.help.disabled) and not(property hub.mode)">
-		<action text="Plastic - Introduction" name="plasticHelp" parentName="help" iconName="help.gif"
+		<action text="Plastic - Introduction" name="plasticHelp" parentName="help" iconName="help16.png"
 		object="service:system.help" methodName="showHelpForTarget" after="acrApi" before="projects">
 			<tooltip>Introduction to Plastic</tooltip>
 			<parameter>plastic.overview</parameter>

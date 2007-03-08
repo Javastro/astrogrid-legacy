@@ -21,6 +21,8 @@ public abstract class SpatialDalProtocol extends DalProtocol {
 
 	public abstract Retriever createRetriever(UIComponent parent,
 			Service i, double ra, double dec, double raSize, double decSize);
+
+
 	
 
 

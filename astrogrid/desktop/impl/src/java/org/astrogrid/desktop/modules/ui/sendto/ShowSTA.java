@@ -6,6 +6,8 @@ import java.io.InputStream;
 
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.dnd.PreferredTransferable;
+import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.io.Piper;
 
 
@@ -14,12 +16,12 @@ import org.astrogrid.io.Piper;
  * .*/
 public class ShowSTA extends AbstractSTA {
 	public ShowSTA() {
-		super("Show","Display value","read_obj.gif");
+		super("Show","Display value","show16.png");
 	}
 	public void actionPerformed(ActionEvent e) {
-		if (getAtom().isDataFlavorSupported(VoDataFlavour.PLAIN_STRING)) {
+		if (getAtom().isDataFlavorSupported(VoDataFlavour.STRING)) {
 			try { // in thread
-			String data = (String)getAtom().getTransferData(VoDataFlavour.PLAIN_STRING);
+			String data = (String)getAtom().getTransferData(VoDataFlavour.STRING);
 			ResultDialog d = new ResultDialog(getParent().getFrame(),data);
 			d.show();
 			} catch (Exception ex) {
@@ -49,7 +51,7 @@ public class ShowSTA extends AbstractSTA {
 	protected boolean checkApplicability(PreferredTransferable atom) {
 		return
 			 atom.isDataFlavorSupported(VoDataFlavour.PLAIN)
-			|| atom.isDataFlavorSupported(VoDataFlavour.PLAIN_STRING);
+			|| atom.isDataFlavorSupported(VoDataFlavour.STRING);
 			
 	}
 }

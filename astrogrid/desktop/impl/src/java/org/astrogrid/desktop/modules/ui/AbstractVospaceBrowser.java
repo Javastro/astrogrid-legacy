@@ -1,4 +1,4 @@
-/*$Id: AbstractVospaceBrowser.java,v 1.11 2007/01/29 11:11:37 nw Exp $
+/*$Id: AbstractVospaceBrowser.java,v 1.12 2007/03/08 17:43:58 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,8 +46,9 @@ import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.ui.comp.GlassPane;
+import org.astrogrid.desktop.modules.ui.dnd.PreferredTransferable;
 import org.astrogrid.desktop.modules.ui.sendto.FileManagerNodePreferredTransferable;
-import org.astrogrid.desktop.modules.ui.sendto.PreferredTransferable;
 import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 import org.astrogrid.filemanager.client.FileManagerNode;
 
@@ -161,7 +162,7 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
 
     protected final class CreateFolderAction extends AbstractAction implements FolderAction {
         public CreateFolderAction() {
-            super("Create Folder", IconHelper.loadIcon("newfolder_wiz.gif"));
+            super("Create Folder", IconHelper.loadIcon("foldernew16.png"));
             this.putValue(SHORT_DESCRIPTION, "Create a new folder within the selected folder");
             this.setEnabled(false);
         }
@@ -233,7 +234,7 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
     
     protected final class CreateFileAction extends AbstractAction implements FolderAction {
         public CreateFileAction() {
-            super("Create File", IconHelper.loadIcon("newfile_wiz.gif"));
+            super("New File", IconHelper.loadIcon("filenew16.png"));
             this.putValue(SHORT_DESCRIPTION, "Create a new file within the selected folder");
             this.setEnabled(false);
         }
@@ -424,7 +425,7 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
     }
 
     private static final class FileNodeCellRenderer extends DefaultListCellRenderer {
-        Icon i = (IconHelper.loadIcon("file_obj.gif"));
+        Icon i = (IconHelper.loadIcon("ascii16.png"));
 
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
             FileManagerNode n = (FileManagerNode) value;
@@ -641,6 +642,9 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
 
 /*
  * $Log: AbstractVospaceBrowser.java,v $
+ * Revision 1.12  2007/03/08 17:43:58  nw
+ * first draft of voexplorer
+ *
  * Revision 1.11  2007/01/29 11:11:37  nw
  * updated contact details.
  *

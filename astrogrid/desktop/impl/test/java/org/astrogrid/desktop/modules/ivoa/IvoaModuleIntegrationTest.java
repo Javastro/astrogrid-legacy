@@ -7,7 +7,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.acr.ivoa.Adql074;
+import org.astrogrid.acr.ivoa.Adql;
 import org.astrogrid.acr.ivoa.CacheFactory;
 import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.ExternalRegistry;
@@ -17,6 +17,8 @@ import org.astrogrid.acr.ivoa.SkyNode;
 import org.astrogrid.acr.ivoa.Ssap;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
+import org.astrogrid.util.DomHelper;
+import org.w3c.dom.Document;
 
 /** Integration test that verifies all components in ivoa module are at least instantiable
  *  - by fetching each in turn, and callinig trivial methods on them
@@ -53,12 +55,7 @@ public class IvoaModuleIntegrationTest extends InARTestCase {
 		assertNotNull(r.getSystemRegistryEndpoint());
 	}
 	
-	public void testAdql074() throws Exception {
-		Adql074 qd = (Adql074) assertServiceExists(Adql074.class, "ivoa.adql074");
-		qd.toString(); //@todo doesn't test fully.
-	}
 
-	
 	public void testSKyNode() throws Exception {
 		SkyNode sn  = (SkyNode)assertServiceExists(SkyNode.class,"ivoa.skyNode");
 		sn.getRegistryXQuery(); // forces service instantiation.
@@ -84,6 +81,14 @@ public class IvoaModuleIntegrationTest extends InARTestCase {
 		//@todo find something non-descrutive to do here.
 	}
 	
+	
+	public void testAdql() throws Exception {
+		Adql adql = (Adql)assertComponentExists(Adql.class,"ivoa.adql");
+		Document d= adql.s2x("select * from x as a");
+		assertNotNull(d);
+		String string = DomHelper.DocumentToString(d);
+		assertTrue(string.indexOf("Select") != -1);
+	}
 
     public static Test suite() {
         return new ARTestSetup(new TestSuite(IvoaModuleIntegrationTest.class));

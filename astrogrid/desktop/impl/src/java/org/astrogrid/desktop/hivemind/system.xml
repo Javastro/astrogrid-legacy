@@ -78,7 +78,7 @@ System module.
 			object="service:ui" methodName="hide" before="exit" onEventDispatchThread="true">		
 			<tooltip>Close this window, but keep the service running</tooltip>
 			</action>
-		<action parentName="file" name="exit" text="Exit" iconName="exit_small.png" onEventDispatchThread="true"
+		<action parentName="file" name="exit" text="Exit" iconName="exit16.png" onEventDispatchThread="true"
 			object="service:builtin.shutdown" methodName="halt" after="*">
 			<tooltip>Close this window, and halt the service</tooltip>
 			<confirmMessage>Exit: are you sure?</confirmMessage>
@@ -158,7 +158,7 @@ System module.
 			<tooltip>Euro-VO VOTech Project Home Page</tooltip>			
 			<parameter>http://eurovotech.org/</parameter>
 		</action>
-		<action parentName="projects" name="agProject" text="AstroGrid" iconName="logo1.gif"
+		<action parentName="projects" name="agProject" text="AstroGrid" iconName="logo48x48.png"
 			object="service:browser" methodName="openURL" before="*">
 			<parameter>http://www.astrogrid.org</parameter>
 		</action>	
@@ -336,14 +336,14 @@ System module.
 
 		<action parentName="help" name="started" text="Getting Started"
 			object="service:help" methodName="showHelpForTarget" 
-			after="intro"  before="contents" iconName="help.gif" >
+			after="intro"  before="contents" iconName="help16.png" >
 			<parameter>gettingStarted</parameter>
 		</action>		
 		
 		<action parentName="help" name="contents" text="Help Contents"
 			object="service:help" methodName="showHelpForTarget" 
 			after="started" before="tutorials" 
-			iconName="java_lib_obj.gif" >
+			iconName="contents16.png" >
 			<parameter>contents</parameter>
 		</action>
 		
@@ -1152,12 +1152,11 @@ MAC SETUP
 
 <!--  ======================
 PLASTIC LIST MODEL -->
- <service-point id="plasticList" visibility="private"
- 	interface="org.astrogrid.desktop.modules.system.ReportingListModel" >
- 	 shared data model, to remove cycle between UIImpl andTupperwareImpl	
- 	<create-instance class="org.astrogrid.desktop.modules.system.ReportingListModel" model="primitive" />
- </service-point>
 
+	<service-point id="plasticList"
+		interface="ca.odell.glazedlists.EventList">
+		<create-instance class="ca.odell.glazedlists.BasicEventList" />
+	</service-point>
 
 <!-- 
 ================================

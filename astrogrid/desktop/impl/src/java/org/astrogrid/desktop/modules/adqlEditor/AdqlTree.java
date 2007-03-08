@@ -454,7 +454,7 @@ public final class AdqlTree extends JTree
                         if( cursor.getTextValue().trim().equals( "none") ) {
                             piValue = catalogueResource.getId().getSchemeSpecificPart().substring( 2 ) 
                             + '!' 
-                            + catalogueResource.getCatalog().getTables()[0].getName() ;
+                            + catalogueResource.getCatalogues()[0].getTables()[0].getName() ;
                             cursor.setTextValue( piValue ) ;
                         }
                     }
@@ -467,7 +467,7 @@ public final class AdqlTree extends JTree
                     // (I've simply chosen the first table to align it with the portal)
                     piValue = catalogueResource.getId().getSchemeSpecificPart().substring( 2 ) 
                             + '!' 
-                            + catalogueResource.getCatalog().getTables()[0].getName() ;
+                            + catalogueResource.getCatalogues()[0].getTables()[0].getName() ;
                     if( log.isDebugEnabled() ) {
                         buffer.append( "\nNew PI Text: " +piValue ) ;
                     }
@@ -490,7 +490,7 @@ public final class AdqlTree extends JTree
         XmlString xTableName = null ;
         XmlString xAlias = null ;
         String alias = null ;
-        Catalog db = catalogueResource.getCatalog() ;
+        Catalog db = catalogueResource.getCatalogues()[0] ;
         //
         // Loop through the whole of the query looking for table types....
         XmlCursor cursor = getRoot().newCursor() ;

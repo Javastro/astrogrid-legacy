@@ -32,6 +32,8 @@ import org.votech.plastic.incoming.handlers.AbstractMessageHandler;
 import org.votech.plastic.incoming.handlers.MessageHandler;
 import org.votech.plastic.incoming.handlers.StandardHandler;
 
+import ca.odell.glazedlists.EventList;
+
 /** Implementation of the tupperware container.
  * @author Noel Winstanley
  * @since Jun 16, 20061:52:12 PM
@@ -53,10 +55,10 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener {
 	 * @param description variable description of this workbench.
 	 * @param handlers contribution list of handlers to register. 
 	 */
-	public TupperwareImpl(UIComponent parent, PlasticHubListenerInternal hub, String applicationName, String description, List handlers, ReportingListModel model) {
+	public TupperwareImpl(UIComponent parent, PlasticHubListenerInternal hub, String applicationName, String description, List handlers, EventList appList) {
 		super();
 		this.parent = parent;
-		this.model = model;
+		this.model = appList;
 		this.hub = hub;
 		Set supportedMessages = new HashSet();
 		// add default handlers to the list.. - contribution list is immutable, so need to take a copy
@@ -97,11 +99,11 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener {
 	}
 	private final UIComponent parent;
 	private final URI myPlasticId;
-	private final ReportingListModel model;
+	private final EventList  model;
 	private final PlasticHubListener hub;
 	private final MessageHandler plasticHandler;
 
-	public ReportingListModel getRegisteredApplicationsModel() {
+	public EventList getRegisteredApplications() {
 		return model;
 	}
 
@@ -193,13 +195,16 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
             }
 			
 		    List appMsgList = hub.getUnderstoodMessages(this.id);
-		    return new PlasticApplicationDescription(this.id,name,description,appMsgList,version,icon,iconUrl,ivorn);
-		}
-		
-		protected void doFinished(Object result) {
+		     PlasticApplicationDescription result = new PlasticApplicationDescription(this.id,name,description,appMsgList,version,icon,iconUrl,ivorn);
+		     try {
+		    	 model.getReadWriteLock().writeLock().lock();
 			if (result != null && ! model.contains(result)) {  // would be odd if it did already contain it.
-				model.addElement(result); // this should fire notifications, etc.
+				model.add(result); // this should fire notifications, etc.
 			}          
+		     } finally {
+		    	 model.getReadWriteLock().writeLock().unlock();
+		     }
+			return null;
 		}
 	}
     
@@ -244,6 +249,9 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
     	if (!enabled || id.equals(myPlasticId) || id.equals(hub.getHubId())) {
     		return;
     	}
+    	// we're on a background thread at the moment, but still, 
+    	// do this on a background thread, as the inspection of app (e.g. fetching it's icon) may take some time.
+    	// meanwhile this thread can return.
         (new PlasticInterrogatorWorker(parent, "Inspecting Plastic Application " + id, id)).start();
     }
 
@@ -251,17 +259,13 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
      * 
      * @param id plastic id of the application to remove 
      */
-    public void removePlasticApp(final URI id) {
-         SwingUtilities.invokeLater(new Runnable() {
-            public void run() {        
+    public void removePlasticApp(final URI id) {      
             	for (int i = 0; i < model.size(); i++) {
             		PlasticApplicationDescription pad = (PlasticApplicationDescription)model.get(i);
             		if (pad.getId().equals(id)) {
             			model.remove(i);
             		}
             	}
-            }
-         });
     }
 } // end inner class
 

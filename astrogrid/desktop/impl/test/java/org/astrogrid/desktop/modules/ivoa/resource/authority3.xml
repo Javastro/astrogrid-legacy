@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vor:Resource xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1" d1p1:schemaLocation=" http://www.ivoa.net/xml/VORegistry/v0.3 http://software.astrogrid.org/schema/vo-resource-types/VORegistry/v0.3/VORegistry.xsd " d1p1:type="q1:Authority" status="active" updated="2005-04-18" xmlns="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:d1p1="http://www.w3.org/2001/XMLSchema-instance" xmlns:q1="http://www.ivoa.net/xml/VORegistry/v0.3">
+        <vr:title xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">Space Telescope Science Institute Archive</vr:title>
+        <vr:shortName xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">STScI ARC</vr:shortName>
+        <vr:identifier xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">ivo://archive.stsci.edu</vr:identifier>
+        <vr:curation xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">
+            <vr:publisher ivo-id="NOT PROVIDED">Space Telescope Science Institute</vr:publisher>
+            <vr:creator/>
+            <vr:contributor/>
+            <vr:version/>
+        </vr:curation>
+        <vr:content xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">
+            <vr:subject>Hubble Space Telescope</vr:subject>
+            <vr:subject>HST Archive</vr:subject>
+            <vr:description>The naming authority for resources managed within the archive at Space Telescope Science Institute.</vr:description>
+            <vr:referenceURL>http://www.stsci.edu/</vr:referenceURL>
+            <vr:contentLevel>General</vr:contentLevel>
+        </vr:content>
+    </vor:Resource>

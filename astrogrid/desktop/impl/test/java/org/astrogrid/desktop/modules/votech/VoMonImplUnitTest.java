@@ -119,7 +119,7 @@ public class VoMonImplUnitTest extends TestCase {
 		assertNotNull(beans);
 		assertEquals(3,beans.length);
 		VoMonBean bean = beans[0];
-		assertEquals(new URI("ivo://uk.ac.cam.ast/SIAP-CEC-3"),bean.getId());
+		assertEquals(new URI("ivo://uk.ac.le.star/SIAP-CEC-2"),bean.getId());
 		assertEquals(5,bean.getCode());
 		assertEquals("up",bean.getStatus());
 		assertNotNull(bean.getTimestamp());

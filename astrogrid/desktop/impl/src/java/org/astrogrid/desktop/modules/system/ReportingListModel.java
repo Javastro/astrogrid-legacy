@@ -10,6 +10,7 @@ import javax.swing.event.ListDataListener;
 
 /** list model that provides more information.
  * @author Noel Winstanley
+ * @todo unused  - delete.
  * @since Jun 16, 20065:53:23 PM
  */
 public class ReportingListModel extends DefaultListModel {

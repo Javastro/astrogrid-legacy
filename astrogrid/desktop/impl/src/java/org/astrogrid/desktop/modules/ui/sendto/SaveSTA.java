@@ -14,6 +14,8 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.dnd.PreferredTransferable;
+import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.io.Piper;
 
 
@@ -25,7 +27,7 @@ public class SaveSTA extends AbstractSTA {
 	private static final Log logger = LogFactory.getLog(SaveSTA.class);
 
 	public SaveSTA(ResourceChooserInternal chooser, MyspaceInternal vos) {
-		super("Save","Save to local or remote storage","fileexport.png");
+		super("Save","Save to local or remote storage","filesave16.png");
 		this.chooser = chooser;
 		this.vos = vos;
 	}
@@ -50,8 +52,8 @@ public class SaveSTA extends AbstractSTA {
                 	OutputStream w=  null;
                 	InputStream r = null;
                 	try {
-                	if (preferred.equals(VoDataFlavour.IVORN)) { // origianl is in myspace
-                		URI source = (URI)getAtom().getTransferData(VoDataFlavour.IVORN);
+                	if (preferred.equals(VoDataFlavour.LOCAL_URI)) { // origianl is in myspace
+                		URI source = (URI)getAtom().getTransferData(VoDataFlavour.LOCAL_URI);
                 		if (target.getScheme().equals("ivo")) {
                 			vos.copyURLToContent(vos.getReadContentURL(source),target);
                 		} else {
@@ -66,8 +68,8 @@ public class SaveSTA extends AbstractSTA {
                 			r = source.openStream();
                 		}
                 	} else { // original is local.
-                		if (getAtom().isDataFlavorSupported(VoDataFlavour.PLAIN_STRING)) {
-                			String s= (String)getAtom().getTransferData(VoDataFlavour.PLAIN_STRING);
+                		if (getAtom().isDataFlavorSupported(VoDataFlavour.STRING)) {
+                			String s= (String)getAtom().getTransferData(VoDataFlavour.STRING);
                 			r = new ByteArrayInputStream(s.getBytes());
                 		} else {
                 			r = (InputStream)getAtom().getTransferData(VoDataFlavour.PLAIN);

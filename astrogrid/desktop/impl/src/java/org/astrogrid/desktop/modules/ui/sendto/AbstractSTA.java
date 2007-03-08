@@ -4,6 +4,7 @@ import javax.swing.AbstractAction;
 
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.dnd.PreferredTransferable;
 
 /** abstract base class for send-to-actions (STA's)*/
 public abstract class AbstractSTA extends AbstractAction implements SendToAction {

@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.34 2007/02/13 09:55:47 jl99 Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.35 2007/03/08 17:44:04 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,9 +43,7 @@ import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
-
 import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
@@ -68,6 +66,7 @@ import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.ui.ApplicationLauncherImpl;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.SimplifiedAppLauncherImpl;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.exolab.castor.xml.Marshaller;
@@ -161,13 +160,13 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel implements
     protected final class ExecuteAction extends AbstractAction {
 
         public ExecuteAction() {
-            super("Execute !", IconHelper.loadIcon("run_tool.gif"));
+            super("Execute !", IconHelper.loadIcon("run16.png"));
             this.putValue(SHORT_DESCRIPTION,"Execute this application");
             this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_E));
             this.setEnabled(toolModel.getTool() != null);
             toolModel.addToolEditListener(new ToolEditAdapter() {
                 public void toolSet(ToolEditEvent te) {
-                    setEnabled(toolModel.getTool() != null && parent instanceof ApplicationLauncherImpl);
+                    setEnabled(toolModel.getTool() != null && (parent instanceof ApplicationLauncherImpl || parent instanceof SimplifiedAppLauncherImpl));
                 }
                 public void toolCleared(ToolEditEvent te) {
                     setEnabled(false);
@@ -240,7 +239,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel implements
     
     protected final class NewAction extends AbstractAction {
         public NewAction() {
-            super("New",IconHelper.loadIcon("newfile_wiz.gif"));
+            super("New",IconHelper.loadIcon("filenew16.png"));
             this.putValue(SHORT_DESCRIPTION,"Create a new task");
             this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_N));
             this.setEnabled(true);
@@ -255,7 +254,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel implements
     protected final class OpenAction extends AbstractAction {
 
         public OpenAction() {
-            super("Open",IconHelper.loadIcon("fileopen.gif"));
+            super("Open",IconHelper.loadIcon("fileopen16.png"));
             this.putValue(SHORT_DESCRIPTION,"Load task document from storage");
             this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_O));
         }        
@@ -312,7 +311,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel implements
     protected final class SaveAction extends AbstractAction {
  
         public SaveAction() {
-            super("Save",IconHelper.loadIcon("fileexport.png"));
+            super("Save",IconHelper.loadIcon("filesave16.png"));
             this.putValue(SHORT_DESCRIPTION,"Save task document");
             this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));
             this.setEnabled(toolModel.getTool() != null);
@@ -357,7 +356,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel implements
     /** close action */
     protected final class CloseAction extends AbstractAction {
         public CloseAction() {
-            super("Close",IconHelper.loadIcon("exit_small.png"));
+            super("Close",IconHelper.loadIcon("exit16.png"));
             this.putValue(SHORT_DESCRIPTION,"Close");
             this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
         }
@@ -396,15 +395,16 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel implements
                
         
         private void enableApplicable(Tool t, CeaApplication info) {
-        	int firstApplicable = 0;
-        	for (int i = 1; i < views.length; i++ ) { 
+        	int firstApplicable = -1;
+        	int startIx = parent instanceof SimplifiedAppLauncherImpl ? 0 : 1;
+        	// start at 1, as 0 is hte chooser - always applicable, but other applicable should take precedence
+        	for (int i = startIx; i < views.length; i++ ) { 
         		final AbstractToolEditorPanel panel = views[i];
-        		// start at 1, as 0 is hte chooser - always applicable, but other applicable should take precedence
         		int pos = tabPane.indexOfComponent(panel);
         		if (pos != -1) { // else it's an advanced one, not visible at the moment.
         			if (panel.isApplicable(t, info)) {
         				tabPane.setEnabledAt(pos,true);
-        				if (firstApplicable == 0) {
+        				if (firstApplicable == -1) {
         					firstApplicable = pos;
         				}                    
         			} else {
@@ -653,8 +653,8 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel implements
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
-Revision 1.34  2007/02/13 09:55:47  jl99
-Merge of branch workbench-jl-2032-a
+Revision 1.35  2007/03/08 17:44:04  nw
+first draft of voexplorer
 
 Revision 1.33  2007/01/31 11:26:19  nw
 fixed bug caused by getLogo throwing.

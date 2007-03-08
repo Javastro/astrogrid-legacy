@@ -1,4 +1,4 @@
-/*$Id: IvoaXmlRpcTransportIntegrationTest.java,v 1.2 2007/01/29 10:42:28 nw Exp $
+/*$Id: IvoaXmlRpcTransportIntegrationTest.java,v 1.3 2007/03/08 17:43:50 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,21 +10,17 @@
 **/
 package org.astrogrid.desktop.modules.ivoa;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Vector;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.xmlrpc.XmlRpcClient;
-import org.apache.xmlrpc.XmlRpcException;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.ARTestSetup;
@@ -86,6 +82,9 @@ public class IvoaXmlRpcTransportIntegrationTest extends InARTestCase {
 
 /* 
 $Log: IvoaXmlRpcTransportIntegrationTest.java,v $
+Revision 1.3  2007/03/08 17:43:50  nw
+first draft of voexplorer
+
 Revision 1.2  2007/01/29 10:42:28  nw
 tidied.
 

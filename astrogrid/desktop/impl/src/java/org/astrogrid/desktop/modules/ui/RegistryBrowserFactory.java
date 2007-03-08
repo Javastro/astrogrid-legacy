@@ -9,10 +9,12 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 
 import net.sf.ehcache.Ehcache;
+import net.sourceforge.hiveutils.service.ObjectBuilder;
 
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.RegistryBrowser;
+import org.astrogrid.desktop.modules.dialogs.registry.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.Preference;
@@ -25,55 +27,40 @@ import org.votech.VoMon;
  */
 public class RegistryBrowserFactory implements RegistryBrowser {
 
-	/**
-	 * @param reg
-	 * @param hs
-	 * @param ui
-	 * @param conf
-	 * @param pref 
-	 * @throws TransformerConfigurationException
-	 * @throws TransformerFactoryConfigurationError
-	 */
-	public RegistryBrowserFactory(RegistryInternal reg, HelpServerInternal hs,
-			UIInternal ui, Configuration conf, BrowserControl browser,
-			Ehcache cache1, Ehcache cache2,VoMon vomon, Preference pref) 
+	public RegistryBrowserFactory( HelpServerInternal hs,
+			UIInternal ui, Configuration conf, ObjectBuilder regPanelBuilder) 
 	throws TransformerConfigurationException, TransformerFactoryConfigurationError {
 		this.ui = ui;
 		this.conf = conf;
 		this.hs = hs;
-		this.reg = reg;
-		this.browser = browser;
-		this.cache1 = cache1;
-		this.cache2 = cache2;
-		this.vomon = vomon;
-		this.pref = pref;
+		this.builder = regPanelBuilder;
 	}
-	private final Preference pref;
-	private final BrowserControl browser;
+
 	private final UIInternal ui;
 	private final Configuration conf;
 	private final HelpServerInternal hs;
-	private final RegistryInternal reg;
-	private final Ehcache cache1;
-	private final Ehcache cache2;
-	private final VoMon vomon;
+	private final ObjectBuilder builder;
 	public void hide() {
 		// ignore.
 	}
 	public void show() {
-		RegistryBrowser r = new RegistryBrowserImpl(reg,hs,ui,conf,browser,this,cache1,cache2,vomon,pref);
+		RegistryBrowser r = new RegistryBrowserImpl(hs,ui,conf,createPanel());
 		r.show();
 	}
 	public void search(String arg0) {
-		RegistryBrowser r = new RegistryBrowserImpl(reg,hs,ui,conf,browser,this,cache1,cache2,vomon,pref);
+		RegistryBrowser r = new RegistryBrowserImpl(hs,ui,conf,createPanel());
 		r.search(arg0);
 		r.show();
 	}
 	
 	public void open(URI arg0) {
-		RegistryBrowser r = new RegistryBrowserImpl(reg,hs,ui,conf,browser,this,cache1,cache2,vomon,pref);
+		RegistryBrowser r = new RegistryBrowserImpl(hs,ui,conf,createPanel());
 		r.open(arg0);
 		r.show();
+	}
+	
+	private RegistryGooglePanel createPanel() {
+		return (RegistryGooglePanel)builder.create("registryGooglePanel");
 	}
 
 }

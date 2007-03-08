@@ -1,4 +1,4 @@
-/*$Id: IvoaRmiTransportIntegrationTest.java,v 1.2 2007/01/29 10:42:28 nw Exp $
+/*$Id: IvoaRmiTransportIntegrationTest.java,v 1.3 2007/03/08 17:43:50 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,23 +11,17 @@
 package org.astrogrid.desktop.modules.ivoa;
 
 import java.io.InputStream;
-import java.util.Arrays;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.Finder;
-import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.CeaService;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.ivoa.ExternalRegistry;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.WebServer;
-import org.astrogrid.acr.test.TransportTest;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.TestingFinder;
 import org.astrogrid.desktop.modules.system.RmiTransportIntegrationTest;
@@ -83,6 +77,9 @@ public class IvoaRmiTransportIntegrationTest extends TestCase {
 
 /* 
 $Log: IvoaRmiTransportIntegrationTest.java,v $
+Revision 1.3  2007/03/08 17:43:50  nw
+first draft of voexplorer
+
 Revision 1.2  2007/01/29 10:42:28  nw
 tidied.
 

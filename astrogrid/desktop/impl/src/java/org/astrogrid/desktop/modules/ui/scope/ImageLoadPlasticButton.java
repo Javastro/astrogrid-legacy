@@ -1,4 +1,4 @@
-/*$Id: ImageLoadPlasticButton.java,v 1.8 2006/09/14 13:52:59 nw Exp $
+/*$Id: ImageLoadPlasticButton.java,v 1.9 2007/03/08 17:43:56 nw Exp $
  * Created on 23-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,7 +29,7 @@ import edu.berkeley.guir.prefuse.event.FocusEvent;
 import edu.berkeley.guir.prefuse.focus.FocusSet;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 /** button that loads an image over plastic */
-public class ImageLoadPlasticButton extends PlasticButton {
+public class ImageLoadPlasticButton extends PlasticScopeButton {
     /**
      * Logger for this class
      */
@@ -77,6 +77,9 @@ public class ImageLoadPlasticButton extends PlasticButton {
 
 /* 
 $Log: ImageLoadPlasticButton.java,v $
+Revision 1.9  2007/03/08 17:43:56  nw
+first draft of voexplorer
+
 Revision 1.8  2006/09/14 13:52:59  nw
 implemented plastic spectrum messaging.
 

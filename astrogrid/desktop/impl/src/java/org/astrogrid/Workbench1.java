@@ -37,7 +37,6 @@ public class Workbench1 {
     	l.addModuleByName("ivoa");
     	l.addModuleByName("voevent");  
     	l.addModuleByName("votech");    	
-    	l.addModuleByName("nvo");
     	l.addModuleByName("cds");
     	l.addModuleByName("astrogrid");
     	l.addModuleByName("system");

@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import junit.framework.TestCase;
 
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.dnd.PreferredTransferable;
 import org.easymock.MockControl;
 
 /** unit test for the functionality in the consumer base class

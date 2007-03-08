@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vor:Resource xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1" created="2006-06-02T15:05:18Z" status="active" updated="2006-06-21T04:34:12Z" xmlns="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.3" xmlns:sia="http://www.ivoa.net/xml/SIA/v0.7" xmlns:sn="http://www.ivoa.net/xml/OpenSkyNode/v0.1" xmlns:vc="http://www.ivoa.net/xml/VOCommunity/v0.2" xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" xsi:schemaLocation="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="vr:Organisation">
+        <vr:title xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">German Astrophysical Virtual Observatory</vr:title>
+        <vr:shortName xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">GAVO</vr:shortName>
+        <vr:identifier xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">ivo://www.g-vo.org/GAVO</vr:identifier>
+        <vr:curation xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">
+            <vr:publisher>German Astrophysical Virtual Observatory</vr:publisher>
+            <vr:creator>
+                <vr:name>Gerard Lemson</vr:name>
+            </vr:creator>
+            <vr:date>2006-06-02</vr:date>
+            <vr:contact>
+                <vr:name>Gerard Lemson</vr:name>
+                <vr:email>gerard.lemson@mpe.mpg.de</vr:email>
+                <vr:telephone>+49-(0)89-300003316</vr:telephone>
+            </vr:contact>
+        </vr:curation>
+        <vr:content xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">
+            <vr:subject>Virtual Observatory</vr:subject>
+            <vr:description>German virtual observatory project</vr:description>
+            <vr:referenceURL>http://www.g-vo.org</vr:referenceURL>
+            <vr:type>Organisation</vr:type>
+            <vr:contentLevel>Research</vr:contentLevel>
+        </vr:content>
+    </vor:Resource>

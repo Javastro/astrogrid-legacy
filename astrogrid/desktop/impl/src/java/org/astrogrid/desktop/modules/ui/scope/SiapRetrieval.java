@@ -25,8 +25,8 @@ public class SiapRetrieval extends Retriever {
      */
     static final Log logger = LogFactory.getLog(SiapRetrieval.class);
 
-    public SiapRetrieval(UIComponent comp,Service information,TreeNode primaryNode,VizModel model, Siap siap,double ra, double dec, double raSize,double decSize)  {
-        super(comp,information,primaryNode,model,ra,dec);
+    public SiapRetrieval(UIComponent comp,Service service,TreeNode primaryNode,VizModel model, Siap siap,double ra, double dec, double raSize,double decSize)  {
+        super(comp,service,primaryNode,model,ra,dec);
         this.raSize = raSize;
         this.decSize = decSize;
         this.siap = siap;
@@ -35,14 +35,14 @@ public class SiapRetrieval extends Retriever {
     private final double decSize;
     private final Siap siap;
     protected Object construct() throws Exception{
-            URL siapURL = siap.constructQueryS(new URI(getFirstEndpoint(information).toString()),ra, dec,raSize,decSize);
+            URL siapURL = siap.constructQueryS(service.getId(),ra, dec,raSize,decSize);
             StringBuffer sb = new StringBuffer();
-            sb.append("<html>Title: ").append(information.getTitle())
-                .append("<br>ID: ").append(information.getId());
-            if (information.getContent() != null) {
+            sb.append("<html>Title: ").append(service.getTitle())
+                .append("<br>ID: ").append(service.getId());
+            if (service.getContent() != null) {
                sb.append("<br>Description: <p>")
-                .append(information.getContent().getDescription()!= null 
-                			?   WordUtils.wrap(information.getContent().getDescription(),AstroScopeLauncherImpl.TOOLTIP_WRAP_LENGTH,"<br>",false) : "");
+                .append(service.getContent().getDescription()!= null 
+                			?   WordUtils.wrap(service.getContent().getDescription(),AstroScopeLauncherImpl.TOOLTIP_WRAP_LENGTH,"<br>",false) : "");
             }
                 sb.append("</html>");
                 //@todo when we get more metadata parsed in new model.

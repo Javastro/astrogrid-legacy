@@ -1,4 +1,4 @@
-/*$Id: HelioScopeLauncherImpl.java,v 1.20 2007/01/11 18:15:49 nw Exp $
+/*$Id: HelioScopeLauncherImpl.java,v 1.21 2007/03/08 17:43:58 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,7 @@ import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
@@ -50,7 +51,7 @@ import org.freixas.jcalendar.JCalendarCombo;
 /** Implementation of HelioScope
  */
 public class HelioScopeLauncherImpl extends AbstractScope  
-    implements HelioScope{
+    implements HelioScopeInternal{
 
     //Various gui components.
     private JCalendarCombo startCal;
@@ -96,7 +97,8 @@ public class HelioScopeLauncherImpl extends AbstractScope
 
         
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.helioscopeLauncher");
-        dynamicButtons.add(new SaveNodesButton(vizModel.getSelectionFocusSet(),this,chooser,myspace));
+        // declared in parent class.
+        //        dynamicButtons.add(new SaveNodesButton(vizModel.getSelectionFocusSet(),this,chooser,myspace));
         
         setIconImage(IconHelper.loadIcon("helioscope.png").getImage());
     }
@@ -232,7 +234,11 @@ public class HelioScopeLauncherImpl extends AbstractScope
 //                    if (p.getCheckBox().isSelected()) {
                         (new BackgroundOperation("Searching for " + p.getName() + " Services") {
                             protected Object construct() throws Exception {
-                                return p.listServices();
+	                        	if (resourceList == null) {
+	                        		return p.listServices();
+	                        	} else {
+	                        		return p.filterServices(resourceList);
+	                        	}
                             }
                             protected void doFinished(Object result) {
                                 Service[] services = (Service[])result;
@@ -267,12 +273,21 @@ public class HelioScopeLauncherImpl extends AbstractScope
 
     }
 
+private List resourceList;
+	public void runSubset(List resources) {
+		this.resourceList = resources;
+		setTitle("Helioscope : on subset");		
+	}
+
 
   
 }
 
 /* 
 $Log: HelioScopeLauncherImpl.java,v $
+Revision 1.21  2007/03/08 17:43:58  nw
+first draft of voexplorer
+
 Revision 1.20  2007/01/11 18:15:49  nw
 fixed help system to point to ag site.
 

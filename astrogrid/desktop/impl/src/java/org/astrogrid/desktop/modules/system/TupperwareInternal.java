@@ -9,6 +9,8 @@ import java.util.Map;
 
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 
+import ca.odell.glazedlists.EventList;
+
 /**
  * Tupperware is a plastic container that keeps things fresh.
  * 
@@ -26,9 +28,9 @@ public interface TupperwareInternal {
 	public Object singleTargetPlasticMessage(URI message, List args, URI target) ;
 	
 	
-	/** access a list model that contains {@link PlasticApplicationDescription} objects
+	/** access an event list that contains {@link PlasticApplicationDescription} objects
 	 * for each registered application. */
-	public ReportingListModel getRegisteredApplicationsModel();
+	public EventList getRegisteredApplications();
 
 	
 	public Map broadcastPlasticMessage(URI message, List args) ;

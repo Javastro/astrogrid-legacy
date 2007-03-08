@@ -1,4 +1,4 @@
-/*$Id: ConeProtocol.java,v 1.10 2007/01/29 10:43:49 nw Exp $
+/*$Id: ConeProtocol.java,v 1.11 2007/03/08 17:43:56 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,15 @@
 **/
 package org.astrogrid.desktop.modules.ui.scope;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.acr.nvo.Cone;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
 /**
@@ -49,6 +54,19 @@ public class ConeProtocol extends SpatialDalProtocol {
     public Retriever createRetriever(UIComponent parent,Service i,double ra, double dec, double raSize, double decSize) {
         return new ConeRetrieval(parent,i,getPrimaryNode(),getVizModel(),cone,ra,dec,raSize);
     }
+
+	public Service[] filterServices(List resourceList) {
+		List result = new ArrayList();
+		for (Iterator i = resourceList.iterator(); i.hasNext();) {
+			Resource r = (Resource) i.next();
+			if (r instanceof ConeService
+					// special case for CDS.
+					|| (r instanceof Service && r.getType().indexOf("TabularSkyService") != -1)) {
+				result.add(r);
+			}
+		}
+		return (Service[])result.toArray(new Service[result.size()]);
+	}
     
 
     
@@ -58,6 +76,9 @@ public class ConeProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: ConeProtocol.java,v $
+Revision 1.11  2007/03/08 17:43:56  nw
+first draft of voexplorer
+
 Revision 1.10  2007/01/29 10:43:49  nw
 documentation fixes.
 

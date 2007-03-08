@@ -1,4 +1,4 @@
-/*$Id: DalProtocol.java,v 1.8 2007/01/29 10:43:49 nw Exp $
+/*$Id: DalProtocol.java,v 1.9 2007/03/08 17:43:56 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,8 @@
  *
 **/
 package org.astrogrid.desktop.modules.ui.scope;
+
+import java.util.List;
 
 import javax.swing.JCheckBox;
 
@@ -76,12 +78,21 @@ public abstract class DalProtocol {
      */
     public abstract Service[] listServices() throws Exception;
     
+    
+	/** produce a list of all services suitable to this protocol
+	 * @param resourceList input list to filter
+	 * @return the subset that this protocol can query
+	 */
+	public abstract Service[] filterServices(List resourceList) ;
    
 }
 
 
 /* 
 $Log: DalProtocol.java,v $
+Revision 1.9  2007/03/08 17:43:56  nw
+first draft of voexplorer
+
 Revision 1.8  2007/01/29 10:43:49  nw
 documentation fixes.
 

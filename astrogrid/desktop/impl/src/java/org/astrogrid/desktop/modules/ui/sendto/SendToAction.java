@@ -3,6 +3,7 @@ package org.astrogrid.desktop.modules.ui.sendto;
 import javax.swing.Action;
 
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.dnd.PreferredTransferable;
 
 
 /** interface to an action customizd to a preferredTransferable */

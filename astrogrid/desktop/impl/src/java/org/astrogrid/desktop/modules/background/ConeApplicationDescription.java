@@ -1,4 +1,4 @@
-/*$Id: ConeApplicationDescription.java,v 1.7 2007/01/29 11:11:36 nw Exp $
+/*$Id: ConeApplicationDescription.java,v 1.8 2007/03/08 17:43:58 nw Exp $
  * Created on 19-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.resource.ConeService;
-import org.astrogrid.acr.nvo.Cone;
 import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.CeaException;
@@ -147,7 +147,7 @@ public class ConeApplicationDescription extends AbstractApplicationDescription {
                         getResult().addResult(out);
                         setStatus(Status.COMPLETED);
                     } catch (Exception e) {
-                        reportError("Failed to query siap service",e);
+                        reportError("Failed to query cone  service",e);
                     } finally {
                         if (os != null) {
                             try {
@@ -168,6 +168,9 @@ public class ConeApplicationDescription extends AbstractApplicationDescription {
 
 /* 
 $Log: ConeApplicationDescription.java,v $
+Revision 1.8  2007/03/08 17:43:58  nw
+first draft of voexplorer
+
 Revision 1.7  2007/01/29 11:11:36  nw
 updated contact details.
 

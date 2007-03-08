@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.55 2007/01/11 18:15:50 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.56 2007/03/08 17:43:59 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,10 +21,12 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.EventObject;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -32,13 +34,12 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import org.astrogrid.acr.cds.Sesame;
+import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.acr.ivoa.Ssap;
 import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.acr.nvo.Cone;
 import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.ui.AstroScope;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
@@ -72,7 +73,7 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  * 
  */
 public class AstroScopeLauncherImpl extends AbstractScope 
-    implements AstroScope, DecSexListener {
+    implements AstroScopeInternal, DecSexListener {
    
 	protected DecSexToggle dsToggle;
 	protected DimensionTextField regionText;
@@ -101,26 +102,25 @@ public class AstroScopeLauncherImpl extends AbstractScope
         		new DalProtocol[]{
         			new SiapProtocol(reg,siap)
         			, new SsapProtocol(reg,ssap)
-        			,new ConeProtocol(reg,cone)        		
+        			,new ConeProtocol(reg,cone)   
+        			,new AllVizierProtocol(cone)
         }, browser);
         // work-around for architectural glitch - posText is created by super constructore
         // before we can populate member variables - so need to pass in 'ses' later.
         posText.setSesame(ses);   
         this.ses = ses;
-  // replaced by plasticized version.
- //       dynamicButtons.add(new VOSpecButton(vizModel.getSelectionFocusSet(),this));
-        dynamicButtons.add(new SaveNodesButton(vizModel.getSelectionFocusSet(),this,chooser,myspace));
+    
         getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.astroscopeLauncher");
         setIconImage(IconHelper.loadIcon("astroscope.png").getImage());
       
     }
     // overridden to add a spectrum button - don't think this is general enough to add to the baseclass, so it's available in helipscope too.
-   protected Component[] buildPlasticButtons(PlasticApplicationDescription plas) {
+   public JButton[] buildPlasticButtons(PlasticApplicationDescription plas) {
 	   if (! plas.understandsMessage(SpectrumLoadPlasticButton.SPECTRA_LOAD_FROM_URL)) {
 		   return super.buildPlasticButtons(plas);
 	   } else {
-		   Component[] parent =  super.buildPlasticButtons(plas);
-		   Component[] result = new Component[parent.length + 1];
+		   JButton[] parent =  super.buildPlasticButtons(plas);
+		   JButton[] result = new JButton[parent.length + 1];
 		   System.arraycopy(parent,0,result,0,parent.length);
 		   result[parent.length] = new SpectrumLoadPlasticButton(plas,vizModel.getSelectionFocusSet(), this, tupperware);
 		   return result;
@@ -442,7 +442,11 @@ public class AstroScopeLauncherImpl extends AbstractScope
 	                if (p.getCheckBox().isSelected()) {
 	                    (new BackgroundOperation("Searching for " + p.getName() + " Services") {
 	                        protected Object construct() throws Exception {
-	                            return p.listServices();
+	                        	if (resourceList == null) {
+	                        		return p.listServices();
+	                        	} else {
+	                        		return p.filterServices(resourceList);
+	                        	}
 	                        }
 	                        protected void doFinished(Object result) {
 	                            Service[] services = (Service[])result;
@@ -456,7 +460,7 @@ public class AstroScopeLauncherImpl extends AbstractScope
 	                }
 	            }
 	}
-	
+	private List resourceList;
 	// another listener to the decSex toggle - convert node display
 	public void degreesSelected(EventObject e) {
         toggleAndConvertNodes(vizModel.getRootNode(),false);
@@ -466,12 +470,20 @@ public class AstroScopeLauncherImpl extends AbstractScope
         toggleAndConvertNodes(vizModel.getRootNode(),true);
         vizualizations.reDrawGraphs();		
 	}
+	// configure to run against this list of services.
+	public void runSubset(List resources) {
+		this.resourceList = resources;
+		setTitle("Astroscope : on subset");
+	}
 
   
 }
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.56  2007/03/08 17:43:59  nw
+first draft of voexplorer
+
 Revision 1.55  2007/01/11 18:15:50  nw
 fixed help system to point to ag site.
 

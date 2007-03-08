@@ -17,7 +17,7 @@
 			<acrService id="siap" interface="Siap" />
 			<acrService id="cone" interface="Cone" />
 			<acrService id="skyNode" interface="SkyNode"/>
-			<acrService id="adql074" interface="Adql074" />
+			<acrService id="adql" interface="Adql" />
 			<acrService id="registry" interface="Registry" />
 			<acrService id="externalRegistry" interface="ExternalRegistry" />
 			<acrService id="cache" interface="CacheFactory" />
@@ -34,7 +34,14 @@
 		</action>		
 	</contribution>		
 	
-
+	<!--  =====================
+	ADQL
+	 -->
+	<service-point id="adql" interface="Adql">
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.ivoa.AdqlImpl" />
+		</invoke-factory>
+	</service-point>
 	
 	<!-- =====================
 	REGISTRY
@@ -97,6 +104,9 @@
 			default-value="http://galahad.star.le.ac.uk:8080/galahad-registry/services/RegistryQuery">
 				<ui-name>Registry endpoint</ui-name>
 				<description>http url of the main registry service</description>
+				<alternative>http://msslxv.mssl.ucl.ac.uk:8080/mssl-registry/services/RegistryQuery</alternative>
+				<alternative>http://twmbarlwm.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQuery</alternative>
+				<alternative>http://cass123.ast.cam.ac.uk/astrogrid-registry/services/RegistryQuery</alternative>
 				<units>url</units>
 		</preference>
 		<preference name="org.astrogrid.registry.query.altendpoint"
@@ -104,6 +114,9 @@
 			default-value="http://cass123.ast.cam.ac.uk/astrogrid-registry/services/RegistryQuery" >
 				<ui-name>Fallback Registry endpoint</ui-name>
 				<description>http url of the main registry service</description>
+				<alternative>http://msslxv.mssl.ucl.ac.uk:8080/mssl-registry/services/RegistryQuery</alternative>
+				<alternative>http://twmbarlwm.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQuery</alternative>
+				<alternative>http://galahad.star.le.ac.uk:8080/galahad-registry/services/RegistryQuery</alternative>				
 				<units>url</units>
 		</preference>
 		<preference name="ivo.registry.cacheLife" requires-restart="true"
@@ -205,29 +218,7 @@ SIAP
 	<implementation service-id="cone" if="property ivoa.cone.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>	
-	<!-- 
-	============================
-	DEPRECATED ADQL CONVERTOR
-	
-	TODO - add deprecation interceptor to this
-	 -->
-	<service-point id="adql074" interface="Adql074">
-		ADQL convertor
-		<interceptor service-id="system.throbber" />		
-		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.ivoa.Adql074DynamicImpl">
-				<set property="endpoint" value="${ivoa.adql074.endpoint}" />
-			</construct>
-		</invoke-factory>			
-	</service-point>
-	
-	<implementation service-id="adql074" if="property ivoa.adql074.disabled">
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
-	</implementation>	
-		<!-- leaving this as-is - not upgrading to new system, as is deprecated -->
-	<contribution configuration-id="hivemind.FactoryDefaults">
-		<default symbol="ivoa.adql074.endpoint" value="http://openskyquery.net/AdqlTranslator/ADQLTrans.asmx"/>			
-	</contribution>		
+
 <!--  
 =======================
 RESULT CACHE 

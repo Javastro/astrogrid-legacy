@@ -4,12 +4,13 @@
 package org.astrogrid.desktop.modules.ui;
 
 import java.net.URISyntaxException;
+import java.util.List;
 
 import org.astrogrid.acr.cds.Sesame;
+import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.acr.ivoa.Ssap;
-import org.astrogrid.acr.nvo.Cone;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.AstroScope;
 import org.astrogrid.acr.ui.RegistryBrowser;
@@ -29,7 +30,7 @@ import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
  * @author Noel Winstanley
  * @since Jun 21, 20066:49:30 PM
  */
-public class AstroScopeFactory implements AstroScope {
+public class AstroScopeFactory implements AstroScopeInternal{
 
 	/**
 	 * @param ui
@@ -80,6 +81,12 @@ public class AstroScopeFactory implements AstroScope {
 		AstroScope	i = new AstroScopeLauncherImpl(ui, conf, hs, myspace, chooser, reg, siap, cone, ssap, ses, tupp, sendTo,snitch, browser);
 		i.show();
 
+	}
+
+	public void runSubset(List resources) {
+		AstroScopeInternal	i = new AstroScopeLauncherImpl(ui, conf, hs, myspace, chooser, reg, siap, cone, ssap, ses, tupp, sendTo,snitch, browser);
+		i.runSubset(resources) ;
+		i.show();
 	}
 
 }

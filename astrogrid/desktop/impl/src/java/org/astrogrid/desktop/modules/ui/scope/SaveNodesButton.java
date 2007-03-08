@@ -1,4 +1,4 @@
-/*$Id: SaveNodesButton.java,v 1.5 2007/01/29 10:43:49 nw Exp $
+/*$Id: SaveNodesButton.java,v 1.6 2007/03/08 17:43:56 nw Exp $
  * Created on 03-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -56,7 +56,7 @@ public class SaveNodesButton extends NodeConsumerButton {
     
     public SaveNodesButton( FocusSet selection, UIComponent ui, ResourceChooserInternal chooser, MyspaceInternal myspace ) {
         super("Save", "Save the selected nodes to Myspace or local disk",selection);
-        this.setIcon(IconHelper.loadIcon("filesave.png"));
+        this.setIcon(IconHelper.loadIcon("filesave32.png"));
         this.chooser = chooser;
         this.ui = ui;
         this.myspace = myspace;
@@ -273,6 +273,9 @@ public class SaveNodesButton extends NodeConsumerButton {
 
 /* 
  $Log: SaveNodesButton.java,v $
+ Revision 1.6  2007/03/08 17:43:56  nw
+ first draft of voexplorer
+
  Revision 1.5  2007/01/29 10:43:49  nw
  documentation fixes.
 

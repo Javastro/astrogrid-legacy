@@ -24,8 +24,8 @@ import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.recorder.ResultsExecutionMessage;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.dnd.PreferredTransferable;
 import org.astrogrid.desktop.modules.ui.sendto.ParameterValueTransferable;
-import org.astrogrid.desktop.modules.ui.sendto.PreferredTransferable;
 import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.exolab.castor.xml.CastorException;
@@ -56,7 +56,7 @@ public class ResultsList extends JList {
 			final JLabel theComponent;
 			{
 				theComponent = new JLabel();
-				theComponent.setIcon(IconHelper.loadIcon("read_obj.gif"));
+				theComponent.setIcon(IconHelper.loadIcon("sendto16.png"));
 				theComponent.setBorder(BorderFactory.createEtchedBorder());
 			}
 			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {

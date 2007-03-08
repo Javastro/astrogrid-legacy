@@ -4,6 +4,7 @@
 package org.astrogrid.desktop.modules.ui;
 
 import java.net.URISyntaxException;
+import java.util.List;
 
 import org.astrogrid.acr.astrogrid.Stap;
 import org.astrogrid.acr.ivoa.Registry;
@@ -22,7 +23,7 @@ import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
  * @author Noel Winstanley
  * @since Jun 21, 20067:16:58 PM
  */
-public class HelioScopeFactory implements HelioScope {
+public class HelioScopeFactory implements HelioScopeInternal {
 
 	/**
 	 * @param ui
@@ -64,6 +65,11 @@ public class HelioScopeFactory implements HelioScope {
 		HelioScope i = new HelioScopeLauncherImpl(ui, conf, hs, myspace, chooser, reg, stap, tupp, sendTo,snitch, browser);
 
 		i.show();		
+	}
+	public void runSubset(List resources) {
+		HelioScopeInternal i = new HelioScopeLauncherImpl(ui, conf, hs, myspace, chooser, reg, stap, tupp, sendTo,snitch, browser);
+		i.runSubset(resources); 
+		i.show();			
 	}
 
 }

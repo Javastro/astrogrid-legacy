@@ -10,6 +10,8 @@ import java.util.List;
 
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.dnd.PreferredTransferable;
+import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.ui.scope.SpectrumLoadPlasticButton;
 import org.astrogrid.desktop.modules.ui.scope.SsapRetrieval;
 
@@ -73,7 +75,6 @@ public class BroadcastPlasticSpectrumSTA extends AbstractSTA {
 		(atom.isDataFlavorSupported(VoDataFlavour.FITS_IMAGE)
 			|| atom.isDataFlavorSupported(VoDataFlavour.FITS_TABLE)
 			|| atom.isDataFlavorSupported(VoDataFlavour.VOTABLE)
-			|| atom.isDataFlavorSupported(VoDataFlavour.VOTABLE_STRING)
 		)
 			&&  tupp.somethingAccepts(SpectrumLoadPlasticButton.SPECTRA_LOAD_FROM_URL);
 	}

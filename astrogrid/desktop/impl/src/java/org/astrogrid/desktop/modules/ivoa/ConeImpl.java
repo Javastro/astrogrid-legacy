@@ -1,4 +1,4 @@
-/*$Id: ConeImpl.java,v 1.2 2007/01/29 11:11:36 nw Exp $
+/*$Id: ConeImpl.java,v 1.3 2007/03/08 17:44:03 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,13 +10,23 @@
 **/
 package org.astrogrid.desktop.modules.ivoa;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.resource.Capability;
+import org.astrogrid.acr.ivoa.resource.ConeCapability;
+import org.astrogrid.acr.ivoa.resource.ConeService;
+import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 
 /**
@@ -24,6 +34,10 @@ import org.astrogrid.desktop.modules.ag.MyspaceInternal;
  *
  */
 public class ConeImpl extends DALImpl implements Cone {
+	/**
+	 * Logger for this class
+	 */
+	private static final Log logger = LogFactory.getLog(ConeImpl.class);
 
 
     /** Construct a new ConeImpl
@@ -39,13 +53,66 @@ public class ConeImpl extends DALImpl implements Cone {
     public URL constructQuery(URI arg0, double arg1, double arg2, double arg3)
             throws InvalidArgumentException, NotFoundException {
         URL endpoint = resolveEndpoint(arg0);
+        if (endpoint.toString().indexOf("vizier") != -1) { // dirty hack, for now.
+        	//@fixme add more reliable detection of vizier resources here.
+        	endpoint = addOption(
+        			addOption(
+        			addOption(
+        			addOption(
+        					addOption(endpoint,"-c",Double.toString(arg1) + " " + Double.toString(arg2))
+        					, "-c.r",Double.toString(arg3))
+        					,"-c.u","deg")
+        					,"-oc.form","dec")
+        					,"-oc","deg");
+        				//@todo work out what other params I need here.
+        } else {
         endpoint = addOption(
         					addOption( 
         							addOption(endpoint,"RA",Double.toString(arg1))
         						,"DEC",Double.toString(arg2))
         					,"SR",Double.toString(arg3));
+        }
         return endpoint;
       
+    }
+    
+    // overridden to find the right kind of capability.
+    protected final URL resolveEndpoint(URI arg0) throws InvalidArgumentException, NotFoundException {
+    	 
+        if (arg0.getScheme().equals("http")) {
+            try {
+                return arg0.toURL();
+            } catch (MalformedURLException e) {
+                throw new InvalidArgumentException(e);
+            }
+        } else if (arg0.getScheme().equals("ivo")) {
+                try {
+                    Resource r=  reg.getResource(arg0);
+                    // hope for now we've only got one service capability.
+                    if (! (r instanceof Service)) {
+                    	throw new InvalidArgumentException(arg0 + " is not a known type of service");
+                    }
+                    Service s = (Service)r;
+                    if (s instanceof ConeService) {
+                    	ConeCapability cap = ((ConeService)s).findConeCapability();
+                    	return cap.getInterfaces()[0].getAccessUrls()[0].getValue();
+                    } else { // find an interface of ParamHttp
+                    	Capability[] caps = s.getCapabilities();
+                    	for (int i = 0; i < caps.length; i++) {
+                    		if (caps[i].getType().indexOf("ParamHTTP") != -1) {
+                    			return caps[i].getInterfaces()[0].getAccessUrls()[0].getValue();
+                    		}
+                    	}
+                    	
+                    	throw new InvalidArgumentException(arg0 + " does not provide an access URL");
+                    	
+                    }
+                } catch (ServiceException e) {
+                    throw new NotFoundException(e);
+                }
+        } else {
+            throw new InvalidArgumentException("Don't know what to do with this: " + arg0);
+        }    	
     }
 
 
@@ -70,8 +137,7 @@ public class ConeImpl extends DALImpl implements Cone {
 		return "//vor:Resource[" +
 				"(" +
 				"@xsi:type &= '*ConeSearch' " +
-				// @future - find out how to add CDS in.
-				//" or (@xsi:type &= '*TabularSkyService'  and vods:table/vods:column/vods:ucd = 'POS_EQ_RA_MAIN' and vr:identifier &= 'ivo://CDS/*')" + 
+			//ised in astroscope - not good.	" or (@xsi:type &= '*TabularSkyService'  and vods:table/vods:column/vods:ucd = 'POS_EQ_RA_MAIN' and vr:identifier &= 'ivo://CDS/*')" + 
 				") " +
 				"and ( not ( @status = 'inactive' or @status='deleted'))]";
 	}
@@ -81,6 +147,9 @@ public class ConeImpl extends DALImpl implements Cone {
 
 /* 
 $Log: ConeImpl.java,v $
+Revision 1.3  2007/03/08 17:44:03  nw
+first draft of voexplorer
+
 Revision 1.2  2007/01/29 11:11:36  nw
 updated contact details.
 

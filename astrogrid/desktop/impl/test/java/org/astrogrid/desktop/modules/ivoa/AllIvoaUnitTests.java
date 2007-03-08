@@ -20,6 +20,7 @@ public class AllIvoaUnitTests {
 		suite.addTestSuite(SiapUnitTest.class);
 		suite.addTestSuite(SsapUnitTest.class);
 		suite.addTestSuite(ConeUnitTest.class);
+		suite.addTestSuite(AdqlUnitTest.class);
 		//$JUnit-END$
 		return suite;
 	}

@@ -123,5 +123,9 @@ public class HeadlessUI implements UIInternal {
 		public void showPreferencesDialog() {
 			// do nothing
 		}
+
+		public void haltAll() {
+			// does nothing , unfortunatly. @todo try to implemnt this maybe.
+		}
 }
 

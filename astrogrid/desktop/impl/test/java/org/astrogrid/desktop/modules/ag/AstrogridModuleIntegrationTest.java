@@ -10,7 +10,6 @@ import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.astrogrid.Jobs;
 import org.astrogrid.acr.astrogrid.Myspace;
-import org.astrogrid.acr.astrogrid.Registry;
 import org.astrogrid.acr.astrogrid.RemoteProcessManager;
 import org.astrogrid.acr.astrogrid.Stap;
 import org.astrogrid.desktop.ARTestSetup;
@@ -34,15 +33,10 @@ public class AstrogridModuleIntegrationTest extends InARTestCase {
 		super.tearDown();
 	}
 	
-	public void testRegistry() throws Exception {
-		Registry r = (Registry) assertServiceExists(Registry.class, "astrogrid.registry");
-		r.listNamespaces();
-		
-	}
 	// forces login - need to fix this first.
 	public void testMyspace() throws Exception {
 		Myspace m = (Myspace) assertServiceExists(Myspace.class,"astrogrid.myspace");
-		m.listAvailableStores(); // forces into existence.
+		m.listStores();
 	}
 	
 	public void testCommunity() throws Exception {

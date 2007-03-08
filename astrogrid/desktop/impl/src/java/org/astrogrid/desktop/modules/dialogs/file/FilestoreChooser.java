@@ -123,7 +123,7 @@ public abstract class FilestoreChooser extends JPanel {
         add( branchBox, BorderLayout.NORTH );
 
         /* Define and add a button for moving up a directory. */
-        Icon upIcon =  IconHelper.loadIcon("up.png");
+        Icon upIcon =  IconHelper.loadIcon("up16.png");
         		// found on mac to look same as 'new folder' - "FileChooser.upFolderIcon" );
         upAction_ = new AbstractAction( null, upIcon ) {
         	{
@@ -141,7 +141,8 @@ public abstract class FilestoreChooser extends JPanel {
         branchBox.add( upButton );
 
         /* Define and add a button for moving to home directory. */
-        Icon homeIcon = UIManager.getIcon( "FileChooser.homeFolderIcon" );
+      //  Icon homeIcon = UIManager.getIcon( "FileChooser.homeFolderIcon" );
+        Icon homeIcon = IconHelper.loadIcon("gohome16.png");
         final Branch homedir = getHomeBranch();
         Action homeAction = new AbstractAction( null, homeIcon ) {
         	{
@@ -159,7 +160,7 @@ public abstract class FilestoreChooser extends JPanel {
         branchBox.add( Box.createHorizontalStrut( 5 ) );
         branchBox.add( homeButton );
 
-        Icon newIcon = UIManager.getIcon("FileChooser.newFolderIcon");
+        Icon newIcon = IconHelper.loadIcon("foldernew16.png");//UIManager.getIcon("FileChooser.newFolderIcon");
         Action newAction = new AbstractAction(null, newIcon) {
         	{
         		putValue(Action.SHORT_DESCRIPTION,"Create a new directory");
@@ -606,9 +607,11 @@ public abstract class FilestoreChooser extends JPanel {
      * Renderer for list items.
      */
     static class NodeRenderer extends DefaultListCellRenderer {
-        private Icon branchIcon = UIManager.getIcon("FileView.directoryIcon"); //UIManager.getIcon( "Tree.closedIcon" );
-        private Icon leafIcon = UIManager.getIcon("FileView.fileIcon");//UIManager.getIcon( "Tree.leafIcon" );
-        public Component getListCellRendererComponent( JList list, Object value,
+         private Icon branchIcon = UIManager.getIcon("FileView.directoryIcon"); //UIManager.getIcon( "Tree.closedIcon" );
+         private Icon leafIcon = UIManager.getIcon("FileView.fileIcon");//UIManager.getIcon( "Tree.leafIcon" );
+        //private Icon branchIcon = IconHelper.loadIcon("folder16.png");
+        //private Icon leafIcon = IconHelper.loadIcon("ascii16.png");
+    	public Component getListCellRendererComponent( JList list, Object value,
                                                        int index, 
                                                        boolean isSelected,
                                                        boolean hasFocus ) {

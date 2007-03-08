@@ -1,4 +1,4 @@
-/*$Id: DALImpl.java,v 1.10 2007/01/29 16:45:08 nw Exp $
+/*$Id: DALImpl.java,v 1.11 2007/03/08 17:44:03 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -78,13 +78,13 @@ public abstract class DALImpl implements Dal{
 
 
     /** utility method for subclasses to use to resolve an abstract service id to url endpoint
-     * 
+     * @fixme replace this general class with protocol-specific methods.
      * @param arg0 service id (ivo://) or endpoint (http://)
      * @return resolved, or pass-thru service endpoint.
      * @throws InvalidArgumentException if arg0 is an unknown scheme of URI.
      * @throws NotFoundException if service cannot be resolved
      */
-    protected final URL resolveEndpoint(URI arg0) throws InvalidArgumentException, NotFoundException {
+    protected URL resolveEndpoint(URI arg0) throws InvalidArgumentException, NotFoundException {
  
         if (arg0.getScheme().equals("http")) {
             try {
@@ -433,6 +433,9 @@ public abstract class DALImpl implements Dal{
 
 /* 
 $Log: DALImpl.java,v $
+Revision 1.11  2007/03/08 17:44:03  nw
+first draft of voexplorer
+
 Revision 1.10  2007/01/29 16:45:08  nw
 cleaned up imports.
 
