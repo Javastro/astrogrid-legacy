@@ -31,7 +31,7 @@ public class CeaServerCapability extends Capability {
 		return result;
 	}
 
-	private URI[] managedApplications;
+	private URI[] managedApplications = new URI[0];
 
 	public int hashCode() {
 		final int PRIME = 31;

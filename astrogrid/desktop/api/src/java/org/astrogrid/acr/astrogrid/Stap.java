@@ -1,4 +1,4 @@
-/*$Id: Stap.java,v 1.5 2006/10/10 14:07:56 nw Exp $
+/*$Id: Stap.java,v 1.6 2007/03/08 17:46:56 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,18 +10,13 @@
 **/
 package org.astrogrid.acr.astrogrid;
 
-import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.SecurityException;
-import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.ivoa.Dal;
-
-import org.w3c.dom.Document;
-
 import java.net.URI;
 import java.net.URL;
-
 import java.util.Calendar;
+
+import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.ivoa.Dal;
 
 /**Query for Images from Simple Time Access Protocol (STAP) services
  * @see http://software.astrogrid.org/schema/vo-resource-types/Stap/v0.1/Stap.xsd
@@ -109,6 +104,9 @@ public interface Stap extends Dal  {
 
 /* 
 $Log: Stap.java,v $
+Revision 1.6  2007/03/08 17:46:56  nw
+removed deprecated interfaces.
+
 Revision 1.5  2006/10/10 14:07:56  nw
 upgraded the dal interfaces.
 

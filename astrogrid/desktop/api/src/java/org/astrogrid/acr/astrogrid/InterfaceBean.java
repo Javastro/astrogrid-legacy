@@ -1,4 +1,4 @@
-/*$Id: InterfaceBean.java,v 1.5 2007/01/24 14:04:44 nw Exp $
+/*$Id: InterfaceBean.java,v 1.6 2007/03/08 17:46:56 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,8 +42,8 @@ public class InterfaceBean implements Serializable {
     
     static final long serialVersionUID = -7711917087192288451L;
     protected final String name;
-    protected ParameterReferenceBean[] inputs;
-    protected ParameterReferenceBean[] outputs;
+    protected ParameterReferenceBean[] inputs = new ParameterReferenceBean[0];
+    protected ParameterReferenceBean[] outputs = new ParameterReferenceBean[0];
     
 
     /**  list of input parameters */
@@ -110,6 +110,9 @@ public class InterfaceBean implements Serializable {
 
 /* 
 $Log: InterfaceBean.java,v $
+Revision 1.6  2007/03/08 17:46:56  nw
+removed deprecated interfaces.
+
 Revision 1.5  2007/01/24 14:04:44  nw
 updated my email address
 

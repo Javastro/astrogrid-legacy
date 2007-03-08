@@ -1,4 +1,4 @@
-/*$Id: TableBean.java,v 1.5 2007/01/24 14:04:44 nw Exp $
+/*$Id: TableBean.java,v 1.6 2007/03/08 17:46:56 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,13 +13,18 @@ package org.astrogrid.acr.astrogrid;
 import java.io.Serializable;
 import java.util.Arrays;
 
-/** descripition of a  single table in a TablularDB registry entry
+/** descripition of a  single table in a  registry entry
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 12-Sep-2005
  * @since 1.2
  */
 public class TableBean implements Serializable {
 
-    private static int hashCode(Object[] array) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -1832939805430971943L;
+
+	private static int hashCode(Object[] array) {
 		final int PRIME = 31;
 		if (array == null)
 			return 0;
@@ -29,53 +34,13 @@ public class TableBean implements Serializable {
 		}
 		return result;
 	}
-	/** Construct a new TableInformation
-     * 
-     */
-    public TableBean(String name,String description, ColumnBean[] columns) {
-        super();
-        this.name = name;
-        this.description = description;
-        this.columns  = columns;
-    }
-    static final long serialVersionUID = 6606414688098836079L;
-    protected final String name;
-    protected final String description;
-    protected final ColumnBean[] columns;
-
-    /** list descriptions of the columns in this table */
-    public ColumnBean[] getColumns() {
-        return this.columns;
-    }
-    /** human redable description for this table */
-    public String getDescription() {
-        return this.description;
-    }
-    /** the name of this table */
-    public String getName() {
-        return this.name;
-    }
-    
-    public String toString() {
-        StringBuffer sb = new StringBuffer("TableBean[");
-        sb.append("name: ");
-        sb.append(name);
-        sb.append(" description: ");
-        sb.append(description);
-        sb.append(" columns[");
-        for (int i = 0; i < columns.length; i++) {
-            sb.append(columns[i]);
-            sb.append(" ");
-        }
-        sb.append("]]");
-        return sb.toString();
-    }
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
 		result = PRIME * result + TableBean.hashCode(this.columns);
 		result = PRIME * result + ((this.description == null) ? 0 : this.description.hashCode());
 		result = PRIME * result + ((this.name == null) ? 0 : this.name.hashCode());
+		result = PRIME * result + ((this.role == null) ? 0 : this.role.hashCode());
 		return result;
 	}
 	public boolean equals(Object obj) {
@@ -98,13 +63,74 @@ public class TableBean implements Serializable {
 				return false;
 		} else if (!this.name.equals(other.name))
 			return false;
+		if (this.role == null) {
+			if (other.role != null)
+				return false;
+		} else if (!this.role.equals(other.role))
+			return false;
 		return true;
 	}
+	public TableBean(String name,String description, ColumnBean[] columns) {
+        super();
+        this.name = name;
+        this.description = description;
+        this.columns  = columns;
+        this.role = "";
+    }
+    public TableBean(String name,String description, ColumnBean[] columns, String role) {
+        super();
+        this.name = name;
+        this.description = description;
+        this.columns  = columns;
+        this.role = role;
+    }    
+    protected final String role;
+    protected final String name;
+    protected final String description;
+    protected final ColumnBean[] columns;
+
+    /** list descriptions of the columns in this table */
+    public ColumnBean[] getColumns() {
+        return this.columns;
+    }
+    /** human redable description for this table */
+    public String getDescription() {
+        return this.description;
+    }
+    /** the name of this table */
+    public String getName() {
+        return this.name;
+    }
+	/**
+		 * toString methode: creates a String representation of the object
+		 * @return the String representation
+		 * @author info.vancauwenberge.tostring plugin
+	
+		 */
+		public String toString() {
+			StringBuffer buffer = new StringBuffer();
+			buffer.append("TableBean[");
+			buffer.append("role = ").append(role);
+			buffer.append(", name = ").append(name);
+			buffer.append(", description = ").append(description);
+			if (columns == null) {
+				buffer.append(", columns = ").append("null");
+			} else {
+				buffer.append(", columns = ").append(
+					Arrays.asList(columns).toString());
+			}
+			buffer.append("]");
+			return buffer.toString();
+		}
+    
 }
 
 
 /* 
 $Log: TableBean.java,v $
+Revision 1.6  2007/03/08 17:46:56  nw
+removed deprecated interfaces.
+
 Revision 1.5  2007/01/24 14:04:44  nw
 updated my email address
 

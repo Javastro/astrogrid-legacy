@@ -1,4 +1,4 @@
-/*$Id: NodeInformation.java,v 1.7 2007/01/24 14:04:44 nw Exp $
+/*$Id: NodeInformation.java,v 1.8 2007/03/08 17:46:56 nw Exp $
  * Created on 02-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.acr.astrogrid;
 
-import java.io.Serializable;
 import java.net.URI;
 import java.util.Calendar;
 import java.util.Collections;
@@ -165,6 +164,9 @@ public class NodeInformation extends AbstractInformation {
 
 /* 
 $Log: NodeInformation.java,v $
+Revision 1.8  2007/03/08 17:46:56  nw
+removed deprecated interfaces.
+
 Revision 1.7  2007/01/24 14:04:44  nw
 updated my email address
 

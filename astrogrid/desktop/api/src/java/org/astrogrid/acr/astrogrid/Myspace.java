@@ -1,4 +1,4 @@
-/*$Id: Myspace.java,v 1.11 2007/01/24 14:04:44 nw Exp $
+/*$Id: Myspace.java,v 1.12 2007/03/08 17:46:56 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,17 +10,15 @@
  **/
 package org.astrogrid.acr.astrogrid;
 
+import java.net.URI;
+import java.net.URL;
+
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.resource.Service;
-
-import java.net.URI;
-import java.net.URL;
-
-import java.io.InputStream;
 
 /** Work with  Myspace - a distributed storage system, AstroGrid's implementation of VOSpace.
  * 
@@ -428,30 +426,21 @@ URI copy(URI srcIvorn, URI newParentIvorn, String newName) throws NotFoundExcept
     void copyURLToContent(URL src, URI ivorn) throws NotFoundException, InvalidArgumentException, ServiceException, SecurityException, NotApplicableException;
 
  
-
-
-    /** 
-     * List the available filestores
-     * @return an array of resource information
-     * @throws ServiceException if an error occurs while retreiveing the list of stores
-     * @see #changeStore
-     * @deprecated use listStores();
-     */
-    ResourceInformation[] listAvailableStores() throws ServiceException;
-
     /** 
      * List the available filestores
      * @return an array of service descriptions.
      * @throws ServiceException if an error occurs while retreiveing the list of stores
      * @see #changeStore
-     * @todo maybe refine type to a subclass of capability?
      */
-    Service listStores()  throws ServiceException;
+    Service[] listStores()  throws ServiceException;
 
 }
 
 /* 
  $Log: Myspace.java,v $
+ Revision 1.12  2007/03/08 17:46:56  nw
+ removed deprecated interfaces.
+
  Revision 1.11  2007/01/24 14:04:44  nw
  updated my email address
 

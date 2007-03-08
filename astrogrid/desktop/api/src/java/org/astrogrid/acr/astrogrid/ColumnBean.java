@@ -1,4 +1,4 @@
-/*$Id: ColumnBean.java,v 1.6 2007/01/24 14:04:44 nw Exp $
+/*$Id: ColumnBean.java,v 1.7 2007/03/08 17:46:56 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import java.io.Serializable;
 /** describes a single column in a tabular database.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 12-Sep-2005
  * @since 1.2
+ * @todo may need to model shape, as well as type, at this level.
  */
 public class ColumnBean implements Serializable{
 
@@ -128,6 +129,9 @@ public class ColumnBean implements Serializable{
 
 /* 
 $Log: ColumnBean.java,v $
+Revision 1.7  2007/03/08 17:46:56  nw
+removed deprecated interfaces.
+
 Revision 1.6  2007/01/24 14:04:44  nw
 updated my email address
 

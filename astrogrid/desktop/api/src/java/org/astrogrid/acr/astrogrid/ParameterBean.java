@@ -1,4 +1,4 @@
-/*$Id: ParameterBean.java,v 1.4 2007/01/24 14:04:44 nw Exp $
+/*$Id: ParameterBean.java,v 1.5 2007/03/08 17:46:56 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.acr.astrogrid;
 
 import java.io.Serializable;
-import java.net.URI;
 
 /** description of a single parameter for a remote application.
  * 
@@ -47,7 +46,7 @@ public class ParameterBean  implements Serializable{
     protected final String units;
     protected final String type;
     protected final String subType;
-    protected final String[] options;
+    protected final String[] options; // should I initialize this to an array?.
     
 
     /** default value for the parameter */
@@ -135,6 +134,9 @@ public class ParameterBean  implements Serializable{
 
 /* 
 $Log: ParameterBean.java,v $
+Revision 1.5  2007/03/08 17:46:56  nw
+removed deprecated interfaces.
+
 Revision 1.4  2007/01/24 14:04:44  nw
 updated my email address
 

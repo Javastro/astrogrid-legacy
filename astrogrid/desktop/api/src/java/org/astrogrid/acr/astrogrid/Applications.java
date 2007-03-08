@@ -1,4 +1,4 @@
-/*$Id: Applications.java,v 1.9 2007/01/24 14:04:44 nw Exp $
+/*$Id: Applications.java,v 1.10 2007/03/08 17:46:56 nw Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -102,17 +102,6 @@ public interface Applications {
      */ 
     String getRegistryXQuery();       
        
-    /** get information for a specific application from the registry. 
-     * @param applicationName name of the application to hunt for
-     * @return details of this application
-     * @throws ServiceException if error occurs when talking to the sever
-     * @throws NotFoundException if this application could not be found
-     * @throws InvalidArgumentException if the application name is malformed
-     * @xmlrpc returns a structure containing attributes of {@link ApplicationInformation}
-     * @deprecated use getCeaApplication()
-     * */
-    ApplicationInformation getApplicationInformation(URI applicationName) throws ServiceException, NotFoundException, InvalidArgumentException;
-   
     
     /** get information for a specific application from the registry. 
      * @param applicationName name of the application to hunt for
@@ -210,18 +199,7 @@ public interface Applications {
     void validateStored(URI documentLocation)
             throws ServiceException, InvalidArgumentException, NotFoundException;
     
-    /** list the remote servers that provides a particular application.
-     * 
-     *  (It's possible, for CEA especially, that an application may be provided by multiple servers)
-     * @param applicationId registry identifier of the application to search servers for.
-     * @return list of registry summaries of cea servers that support this application
-     * @throws ServiceException if fail to communicate with server
-     * @throws NotFoundException if this application cannot be found
-     * @throws InvalidArgumentException if the appication id is malformed in some way.
-     * @deprecated old reg model.*/
-    ResourceInformation[] listProvidersOf(URI applicationId) throws ServiceException, NotFoundException, InvalidArgumentException;
-     
-    
+
     /** list the remote servers that provides a particular application.
      * 
      *  (It's possible, for CEA especially, that an application may be provided by multiple servers)
@@ -317,6 +295,9 @@ public interface Applications {
 
 /* 
  $Log: Applications.java,v $
+ Revision 1.10  2007/03/08 17:46:56  nw
+ removed deprecated interfaces.
+
  Revision 1.9  2007/01/24 14:04:44  nw
  updated my email address
 

@@ -1,4 +1,4 @@
-/*$Id: DatabaseBean.java,v 1.5 2007/01/24 14:04:44 nw Exp $
+/*$Id: DatabaseBean.java,v 1.6 2007/03/08 17:46:56 nw Exp $
  * Created on 12-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,28 +10,15 @@
 **/
 package org.astrogrid.acr.astrogrid;
 
-import java.io.Serializable;
-import java.util.Arrays;
+import org.astrogrid.acr.ivoa.resource.Catalog;
 
 /** describes a  single database in a TablularDB registry entry
+ * @deprecated prefer the 'Catalog' type instead.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 12-Sep-2005
  *@since 1.2
  */
-public class DatabaseBean implements Serializable{
+public class DatabaseBean extends Catalog{
 
-    private static int hashCode(Object[] array) {
-		final int PRIME = 31;
-		if (array == null)
-			return 0;
-		int result = 1;
-		for (int index = 0; index < array.length; index++) {
-			result = PRIME * result + (array[index] == null ? 0 : array[index].hashCode());
-		}
-		return result;
-	}
-	/** Construct a new DatabaseBean
-     * 
-     */
     public DatabaseBean(String name,String description, TableBean[] tables) {
         super();
         this.name = name;
@@ -40,72 +27,15 @@ public class DatabaseBean implements Serializable{
     }
     
     static final long serialVersionUID = -3221050086290430194L;
-    private final String name;
-    private final String description;
-    private final TableBean[] tables;
-    
-/** human-readable description of the database */
-    public String getDescription() {
-        return this.description;
-    }
-    /** name of the database */
-    public String getName() {
-        return this.name;
-    }
-    /** list of descriptions of the tables in this database */
-    public TableBean[] getTables() {
-        return this.tables;
-    }
-    
-    public String toString() {
-        StringBuffer sb = new StringBuffer("DatabaseBean[");
-        sb.append("name: ");
-        sb.append(name);
-        sb.append(" description: ");
-        sb.append(description);
-        sb.append(" tables:[");
-        for (int i =0; i < tables.length; i++) {
-            sb.append(tables[i]);
-            sb.append(" ");
-        }
-        sb.append("]]");
-        return sb.toString();
-    }
-	public int hashCode() {
-		final int PRIME = 31;
-		int result = 1;
-		result = PRIME * result + ((this.description == null) ? 0 : this.description.hashCode());
-		result = PRIME * result + ((this.name == null) ? 0 : this.name.hashCode());
-		result = PRIME * result + DatabaseBean.hashCode(this.tables);
-		return result;
-	}
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final DatabaseBean other = (DatabaseBean) obj;
-		if (this.description == null) {
-			if (other.description != null)
-				return false;
-		} else if (!this.description.equals(other.description))
-			return false;
-		if (this.name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!this.name.equals(other.name))
-			return false;
-		if (!Arrays.equals(this.tables, other.tables))
-			return false;
-		return true;
-	}
+  
 }
 
 
 /* 
 $Log: DatabaseBean.java,v $
+Revision 1.6  2007/03/08 17:46:56  nw
+removed deprecated interfaces.
+
 Revision 1.5  2007/01/24 14:04:44  nw
 updated my email address
 

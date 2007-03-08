@@ -1,4 +1,4 @@
-/*$Id: Jobs.java,v 1.8 2007/01/24 14:04:44 nw Exp $
+/*$Id: Jobs.java,v 1.9 2007/03/08 17:46:56 nw Exp $
  * Created on 18-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,14 +10,13 @@
  **/
 package org.astrogrid.acr.astrogrid;
 
+import java.net.URI;
+
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
-
 import org.w3c.dom.Document;
-
-import java.net.URI;
 
 /** Execute and control workflows on remote job servers.
  *
@@ -49,6 +48,7 @@ import java.net.URI;
  * @see org.astrogrid.acr.astrogrid.ExecutionInformation
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 18-Mar-2005
  * @service astrogrid.jobs
+ * @deprecated JES is no longer supported.
  */
 public interface Jobs {
     /**
@@ -156,6 +156,9 @@ public interface Jobs {
 
 /* 
  $Log: Jobs.java,v $
+ Revision 1.9  2007/03/08 17:46:56  nw
+ removed deprecated interfaces.
+
  Revision 1.8  2007/01/24 14:04:44  nw
  updated my email address
 

@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManager.java,v 1.6 2007/01/24 14:04:44 nw Exp $
+/*$Id: RemoteProcessManager.java,v 1.7 2007/03/08 17:46:56 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,15 +10,14 @@
 **/
 package org.astrogrid.acr.astrogrid;
 
+import java.net.URI;
+import java.util.Map;
+
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
-
 import org.w3c.dom.Document;
-
-import java.net.URI;
-import java.util.Map;
 
 /** a general manager for the execution , monitoring, and control of all remote processes.
  *
@@ -166,6 +165,9 @@ public interface RemoteProcessManager {
 
 /* 
 $Log: RemoteProcessManager.java,v $
+Revision 1.7  2007/03/08 17:46:56  nw
+removed deprecated interfaces.
+
 Revision 1.6  2007/01/24 14:04:44  nw
 updated my email address
 
