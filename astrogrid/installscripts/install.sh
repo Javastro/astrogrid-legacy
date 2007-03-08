@@ -200,20 +200,20 @@ then
 fi
 #
 # Install FIRST DSA.
-echo ""
-echo "Install FIRST DSA (Y/n) ?"
-read RESPONSE
-if [ ${RESPONSE:-y} = "y" ]
-then
-    . ${SCRIPT_PATH}/first-dsa.sh
-fi
-#
-# Install Example application.
 #echo ""
-#echo "Install Example (Y/n) ?"
+#echo "Install FIRST DSA (Y/n) ?"
 #read RESPONSE
 #if [ ${RESPONSE:-y} = "y" ]
 #then
-#    . ${SCRIPT_PATH}/example.sh
+#    . ${SCRIPT_PATH}/first-dsa.sh
 #fi
+#
+# Install CDSClient application.
+echo ""
+echo "Install CDSClient (Y/n) ?"
+read RESPONSE
+if [ ${RESPONSE:-y} = "y" ]
+then
+    . ${SCRIPT_PATH}/cdsclient.sh
+fi
 
