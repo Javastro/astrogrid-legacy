@@ -4,14 +4,10 @@
 package org.astrogrid.acr.ivoa;
 
 import java.net.URI;
-import java.net.URL;
 
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
-import org.astrogrid.acr.astrogrid.ResourceInformation;
-import org.astrogrid.acr.astrogrid.TabularDatabaseInformation;
 import org.astrogrid.acr.ivoa.resource.RegistryService;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.w3c.dom.Document;

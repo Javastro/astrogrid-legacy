@@ -1,4 +1,4 @@
-/*$Id: AvailabilityBean.java,v 1.5 2007/01/24 14:04:45 nw Exp $
+/*$Id: AvailabilityBean.java,v 1.6 2007/03/08 17:48:06 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.acr.ivoa;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * Description of the availability of a server
@@ -145,6 +144,9 @@ public class AvailabilityBean implements Serializable {
 
 /* 
 $Log: AvailabilityBean.java,v $
+Revision 1.6  2007/03/08 17:48:06  nw
+tidied.
+
 Revision 1.5  2007/01/24 14:04:45  nw
 updated my email address
 

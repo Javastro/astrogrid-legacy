@@ -1,4 +1,4 @@
-/*$Id: Siap.java,v 1.6 2007/01/24 14:04:45 nw Exp $
+/*$Id: Siap.java,v 1.7 2007/03/08 17:48:06 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,16 +10,13 @@
 **/
 package org.astrogrid.acr.ivoa;
 
-import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.SecurityException;
-import org.astrogrid.acr.ServiceException;
-
-import org.w3c.dom.Document;
-
 import java.net.URI;
 import java.net.URL;
 import java.util.Map;
+
+import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.ServiceException;
 
 /**Query for Images from Simple Image Access Protocol (SIAP) services
  * @see http://www.ivoa.net/Documents/latest/SIA.html 
@@ -87,6 +84,9 @@ public Map[] execute(URL query) throws ServiceException;
 
 /* 
 $Log: Siap.java,v $
+Revision 1.7  2007/03/08 17:48:06  nw
+tidied.
+
 Revision 1.6  2007/01/24 14:04:45  nw
 updated my email address
 

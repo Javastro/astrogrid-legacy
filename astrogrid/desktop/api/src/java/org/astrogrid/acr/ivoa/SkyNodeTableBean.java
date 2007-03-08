@@ -1,4 +1,4 @@
-/*$Id: SkyNodeTableBean.java,v 1.3 2007/01/24 14:04:45 nw Exp $
+/*$Id: SkyNodeTableBean.java,v 1.4 2007/03/08 17:48:06 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,9 @@
 **/
 package org.astrogrid.acr.ivoa;
 
-import org.astrogrid.acr.astrogrid.ColumnBean;
-import org.astrogrid.acr.astrogrid.TableBean;
-
 import java.util.Map;
+
+import org.astrogrid.acr.astrogrid.TableBean;
 /** extension of table bean for Sky Node services, which return further metadata 
  * 
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 22-Feb-2006
@@ -86,6 +85,9 @@ public class SkyNodeTableBean extends TableBean {
 
 /* 
 $Log: SkyNodeTableBean.java,v $
+Revision 1.4  2007/03/08 17:48:06  nw
+tidied.
+
 Revision 1.3  2007/01/24 14:04:45  nw
 updated my email address
 

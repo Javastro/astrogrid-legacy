@@ -1,4 +1,4 @@
-/*$Id: FunctionBean.java,v 1.4 2007/01/24 14:04:45 nw Exp $
+/*$Id: FunctionBean.java,v 1.5 2007/03/08 17:48:06 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,10 @@
 **/
 package org.astrogrid.acr.ivoa;
 
-import org.astrogrid.acr.astrogrid.ParameterBean;
-
 import java.io.Serializable;
 import java.util.Arrays;
+
+import org.astrogrid.acr.astrogrid.ParameterBean;
 
 /**
  * description of one ADQL function
@@ -114,6 +114,9 @@ public class FunctionBean implements Serializable{
 
 /* 
 $Log: FunctionBean.java,v $
+Revision 1.5  2007/03/08 17:48:06  nw
+tidied.
+
 Revision 1.4  2007/01/24 14:04:45  nw
 updated my email address
 

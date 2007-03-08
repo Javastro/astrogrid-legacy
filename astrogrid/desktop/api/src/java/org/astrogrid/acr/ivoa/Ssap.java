@@ -1,4 +1,4 @@
-/*$Id: Ssap.java,v 1.5 2007/01/24 14:04:45 nw Exp $
+/*$Id: Ssap.java,v 1.6 2007/03/08 17:48:06 nw Exp $
  * Created on 26-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,15 +10,11 @@
 **/
 package org.astrogrid.acr.ivoa;
 
-import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.SecurityException;
-import org.astrogrid.acr.ServiceException;
-
-import org.w3c.dom.Document;
-
 import java.net.URI;
 import java.net.URL;
+
+import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotFoundException;
 
 /** Querying for Spectra from Simple Spectral Access Protool (SSAP) Services.
  * <b>NB:</b> working, but based on unfinished IVOA specification - interface may need to change to follow specificaiton.
@@ -55,6 +51,9 @@ public interface Ssap extends Dal {
 
 /* 
 $Log: Ssap.java,v $
+Revision 1.6  2007/03/08 17:48:06  nw
+tidied.
+
 Revision 1.5  2007/01/24 14:04:45  nw
 updated my email address
 

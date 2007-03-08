@@ -1,4 +1,4 @@
-/*$Id: SkyNode.java,v 1.5 2007/01/24 14:04:45 nw Exp $
+/*$Id: SkyNode.java,v 1.6 2007/03/08 17:48:06 nw Exp $
  * Created on 21-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,16 +10,13 @@
 **/
 package org.astrogrid.acr.ivoa;
 
+import java.net.URI;
+
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.astrogrid.DatabaseBean;
-import org.astrogrid.acr.astrogrid.TabularDatabaseInformation;
-
 import org.w3c.dom.Document;
-
-import java.net.URI;
 
 /** Query for data from SkyNode services 
  * @see http://www.ivoa.net/Documents/latest/SkyNodeInterface.html
@@ -166,6 +163,9 @@ public interface SkyNode {
 
 /* 
 $Log: SkyNode.java,v $
+Revision 1.6  2007/03/08 17:48:06  nw
+tidied.
+
 Revision 1.5  2007/01/24 14:04:45  nw
 updated my email address
 
