@@ -3,7 +3,7 @@
  */
 package org.astrogrid.acr.ivoa.resource;
 
-/**   a resource that can be invoked by a client to perform some action
+/**   a resource that can be invoked by a user to perform some action
            on its behalf.  
  * @author Noel Winstanley
  * @since Jul 31, 20064:23:05 PM

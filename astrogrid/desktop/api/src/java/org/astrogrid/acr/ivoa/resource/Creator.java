@@ -63,7 +63,7 @@ public class Creator implements Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (! (obj instanceof Creator))
 			return false;
 		final Creator other = (Creator) obj;
 		if (this.logo == null) {

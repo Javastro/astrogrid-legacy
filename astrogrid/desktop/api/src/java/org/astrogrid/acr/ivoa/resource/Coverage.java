@@ -8,18 +8,19 @@ import java.util.Arrays;
 
 import org.w3c.dom.Document;
 
-/** Description of the coverage of a data collection
- * <p/> 
- * Only partially formed at present - will probably become more detailed later.
+/**  A description of how a resource's contents or behavior maps
+           to the sky, to time, and to frequency space, including
+           coverage and resolution. 
  * @author Noel Winstanley
  * @since Aug 5, 20069:38:43 PM
  *@todo parse more of the coverage thing, if I can understand it.
  */
 public class Coverage implements Serializable {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8701318183058506916L;
+	private static final long serialVersionUID = 8489946252117775819L;
 	private static int hashCode(Object[] array) {
 		final int PRIME = 31;
 		if (array == null)
@@ -30,19 +31,24 @@ public class Coverage implements Serializable {
 		}
 		return result;
 	}
-	private String[] wavebands;
-	private ResourceName[] footprint;
+	private String[] wavebands = new String[0];
+	private ResourceName footprint;
 	private Document stcResourceProfile;
-	/** @todo document */
-	public ResourceName[] getFootprint() {
+	/**  a reference to a footprint service for retrieving 
+                  precise and up-to-date description of coverage.   */
+	public ResourceName getFootprint() {
 		return this.footprint;
 	}
-	public void setFootprint(ResourceName[] footprint) {
+	public void setFootprint(ResourceName footprint) {
 		this.footprint = footprint;
 	}
-	/** return this as a document, as it's so complex.
+	/** The STC description of the location of the resource's 
+                 data (or behavior on data) on the sky, in time, and in 
+                 frequency space, including resolution.  
+	 * 
+	 * return this as a document, as it's so complex.
 	 * it's up to the client to parse and consume this, if they can.
-	 * @return
+	 *
 	 */
 	public Document getStcResourceProfile() {
 		return this.stcResourceProfile;
@@ -50,35 +56,20 @@ public class Coverage implements Serializable {
 	public void setStcResourceProfile(Document stcResourceProfile) {
 		this.stcResourceProfile = stcResourceProfile;
 	}
-	/** list the wavebands that this collection covers */
+	/** list the named spectral regions of the electro-magnetic spectrum 
+                  that the resource's spectral coverage overlaps with. */
 	public String[] getWavebands() {
 		return this.wavebands;
 	}
 	public void setWavebands(String[] wavebands) {
 		this.wavebands = wavebands;
 	}
-	public int hashCode() {
-		final int PRIME = 31;
-		int result = 1;
-		result = PRIME * result + Coverage.hashCode(this.footprint);
-		result = PRIME * result + Coverage.hashCode(this.wavebands);
-		return result;
-	}
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final Coverage other = (Coverage) obj;
-		if (!Arrays.equals(this.footprint, other.footprint))
-			return false;
-		if (!Arrays.equals(this.wavebands, other.wavebands))
-			return false;
-		return true;
-	}
-
+	/**
+		 * toString methode: creates a String representation of the object
+		 * @return the String representation
+		 * @author info.vancauwenberge.tostring plugin
+	
+		 */
 		public String toString() {
 			StringBuffer buffer = new StringBuffer();
 			buffer.append("Coverage[");
@@ -88,14 +79,34 @@ public class Coverage implements Serializable {
 				buffer.append("wavebands = ").append(
 					Arrays.asList(wavebands).toString());
 			}
-			if (footprint == null) {
-				buffer.append(", footprint = ").append("null");
-			} else {
-				buffer.append(", footprint = ").append(
-					Arrays.asList(footprint).toString());
-			}
+			buffer.append(", footprint = ").append(footprint);
 			buffer.append(", stcResourceProfile = ").append(stcResourceProfile);
 			buffer.append("]");
 			return buffer.toString();
 		}
+	public int hashCode() {
+		final int PRIME = 31;
+		int result = 1;
+		result = PRIME * result + ((this.footprint == null) ? 0 : this.footprint.hashCode());
+		result = PRIME * result + Coverage.hashCode(this.wavebands);
+		return result;
+	}
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (! (obj instanceof Coverage))
+			return false;
+		final Coverage other = (Coverage) obj;
+		if (this.footprint == null) {
+			if (other.footprint != null)
+				return false;
+		} else if (!this.footprint.equals(other.footprint))
+			return false;
+		if (!Arrays.equals(this.wavebands, other.wavebands))
+			return false;
+		return true;
+	}
+	
 }

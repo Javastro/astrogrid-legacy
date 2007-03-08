@@ -47,7 +47,7 @@ public class ResourceName implements Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (! (obj instanceof ResourceName))
 			return false;
 		final ResourceName other = (ResourceName) obj;
 		if (this.id == null) {

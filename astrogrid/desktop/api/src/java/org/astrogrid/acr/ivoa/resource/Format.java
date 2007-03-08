@@ -42,7 +42,7 @@ public class Format implements Serializable{
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (! (obj instanceof Format))
 			return false;
 		final Format other = (Format) obj;
 		if (this.mimeType != other.mimeType)

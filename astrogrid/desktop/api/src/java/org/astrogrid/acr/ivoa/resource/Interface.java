@@ -28,7 +28,7 @@ public class Interface implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -1615855805795573431L;
-	private  String version;
+	private  String version = "1.0";
 	private  String role;
 	private AccessURL[] accessUrls;
 	private  SecurityMethod[] securityMethods;
@@ -98,7 +98,7 @@ public class Interface implements Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (! (obj instanceof Interface))
 			return false;
 		final Interface other = (Interface) obj;
 		if (!Arrays.equals(this.accessUrls, other.accessUrls))

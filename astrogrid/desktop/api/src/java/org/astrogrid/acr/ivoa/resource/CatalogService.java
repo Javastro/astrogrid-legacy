@@ -3,14 +3,16 @@
  */
 package org.astrogrid.acr.ivoa.resource;
 
-/**
- * Resource object for a vs:CatalogService.
- * @todo find schema documentation
- * @author Noel Winstanley
- * @since Aug 5, 20069:37:58 PM
- */
-public interface CatalogService extends Service {
+import org.astrogrid.acr.astrogrid.TableBean;
 
-	/** access the coverage information for this service */
-	public Coverage getCoverage();
+/**  A service that interacts with one or more specified tables
+            having some coverage of the sky, time, and/or frequency.
+           
+           Previously Named TabularSkyService
+ * @author Noel.Winstanley@manchester.ac.uk
+ * @since Feb 20, 20075:00:10 PM
+ */
+public interface CatalogService extends DataService , HasTables{
+	/** description of the tables provided by this service */
+ TableBean[] getTables();
 }

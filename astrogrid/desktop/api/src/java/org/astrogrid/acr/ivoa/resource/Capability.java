@@ -33,11 +33,11 @@ public class Capability implements Serializable {
 	/**
 	 * 
 	 */
-	protected Validation[] validationLevel;
+	protected Validation[] validationLevel = new Validation[0];
 	protected URI standardID;
 	protected String description;
-	protected Interface[] interfaces;
-	protected String type; 
+	protected Interface[] interfaces = new Interface[0];
+	protected String type;  
 	/** 
                   A human-readable description of what this capability 
                   provides as part of the over-all service  */
@@ -99,7 +99,7 @@ public class Capability implements Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof Capability))
 			return false;
 		final Capability other = (Capability) obj;
 		if (this.description == null) {

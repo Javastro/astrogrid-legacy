@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.Arrays;
 
 /**    Information regarding the general content of a resource
+ * @see http://www.ivoa.net/Documents/PR/ResMetadata/RM-20061212.html
  * @author Noel Winstanley
  * @since Jul 31, 20064:04:51 PM
  */
@@ -34,12 +35,12 @@ public class Content implements Serializable {
 	 * 
 	 */
 	private  Source source;
-	private  String[] subject;
+	private  String[] subject = new String[0];
 	private  String description;
 	private  URI referenceURI;
-	private  String[] type;
-	private  String[] contentLevel;
-	private  Relationship[] relationships;
+	private  String[] type = new String[0];
+	private  String[] contentLevel = new String[0];
+	private  Relationship[] relationships = new Relationship[0];
 	
 	/**     Description of the content level or intended audience */
 	public String[] getContentLevel() {
@@ -52,7 +53,7 @@ public class Content implements Serializable {
 	/**               URL pointing to a human-readable document describing this 
                 resource.  
                 	 * warning: will return null for an url with an unknown scheme, or
-	 * which is invalid. To access the value then, use {@link getValueURI}
+	 * which is invalid. To access the value then, use {@link getReferenceURI}
 	 * @deprecated use {@link #getReferenceURI}
                   *
                   */
@@ -130,7 +131,7 @@ public boolean equals(Object obj) {
 		return true;
 	if (obj == null)
 		return false;
-	if (getClass() != obj.getClass())
+	if (! (obj instanceof Content))
 		return false;
 	final Content other = (Content) obj;
 	if (!Arrays.equals(this.contentLevel, other.contentLevel))

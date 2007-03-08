@@ -30,7 +30,7 @@ public class Date implements Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (! (obj instanceof Date))
 			return false;
 		final Date other = (Date) obj;
 		if (this.role == null) {

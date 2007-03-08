@@ -35,7 +35,7 @@ public class HarvestCapability extends Capability {
 			return true;
 		if (!super.equals(obj))
 			return false;
-		if (getClass() != obj.getClass())
+		if (! (obj instanceof HarvestCapability))
 			return false;
 		final HarvestCapability other = (HarvestCapability) obj;
 		if (this.maxRecords != other.maxRecords)

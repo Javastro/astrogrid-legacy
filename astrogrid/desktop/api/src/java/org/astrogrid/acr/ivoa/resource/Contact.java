@@ -60,7 +60,7 @@ public class Contact implements Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof Contact))
 			return false;
 		final Contact other = (Contact) obj;
 		if (this.address == null) {

@@ -18,7 +18,7 @@ public class Validation implements Serializable {
 	 */
 	private static final long serialVersionUID = 7087731844708485379L;
 	private URI validatedBy;
-	private  int validationLevel;
+	private  int validationLevel = 0;
 	/** the name of the authority that has validated this record */
 	public URI getValidatedBy() {
 		return this.validatedBy;
@@ -45,7 +45,7 @@ public class Validation implements Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (! (obj instanceof Validation))
 			return false;
 		final Validation other = (Validation) obj;
 		if (this.validatedBy == null) {

@@ -47,7 +47,7 @@ public class Source implements Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (! (obj instanceof Source))
 			return false;
 		final Source other = (Source) obj;
 		if (this.format == null) {

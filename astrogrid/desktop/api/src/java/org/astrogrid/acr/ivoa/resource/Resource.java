@@ -8,6 +8,7 @@ import java.net.URI;
 
 /**    Any entity or component of a VO application that is
            describable and identifiable by a IVOA Identifier. 
+  * @see http://www.ivoa.net/Documents/PR/ResMetadata/RM-20061212.html         
  * @author Noel Winstanley
  * @since Jul 31, 20063:43:25 PM
  */

@@ -27,7 +27,7 @@ public class Catalog implements Serializable {
 		}
 		return result;
 	}
-	protected TableBean[] tables;
+	protected TableBean[] tables = new TableBean[0];
 	protected String description;
 	protected String name;
 	public int hashCode() {
@@ -43,7 +43,7 @@ public class Catalog implements Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!( obj instanceof Catalog))
 			return false;
 		final Catalog other = (Catalog) obj;
 		if (this.description == null) {

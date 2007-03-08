@@ -59,7 +59,7 @@ public class AccessURL implements Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (! (obj instanceof AccessURL))
 			return false;
 		final AccessURL other = (AccessURL) obj;
 		if (this.value == null) {

@@ -27,7 +27,7 @@ public class Relationship implements Serializable {
 	 */
 	private static final long serialVersionUID = 5440894019888381310L;
 	private String relationshipType;
-	private ResourceName[] relatedResources;
+	private ResourceName[] relatedResources = new ResourceName[0];
 	/** the name of resource that this resource is related to.*/
 	public ResourceName[] getRelatedResources() {
 		return this.relatedResources;
@@ -54,7 +54,7 @@ public class Relationship implements Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (! (obj instanceof Relationship))
 			return false;
 		final Relationship other = (Relationship) obj;
 		if (!Arrays.equals(this.relatedResources, other.relatedResources))

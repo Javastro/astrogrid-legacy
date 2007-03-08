@@ -40,7 +40,7 @@ public class SecurityMethod implements Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (! (obj instanceof SecurityMethod))
 			return false;
 		final SecurityMethod other = (SecurityMethod) obj;
 		if (this.standardID == null) {

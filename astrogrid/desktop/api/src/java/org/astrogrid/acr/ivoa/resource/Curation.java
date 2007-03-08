@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 /**     Information regarding the general curation of a resource
+ * @see http://www.ivoa.net/Documents/PR/ResMetadata/RM-20061212.html
  * @author Noel Winstanley
  * @since Jul 31, 20063:51:47 PM
  */
@@ -27,11 +28,11 @@ public class Curation implements Serializable {
 	 */
 	private static final long serialVersionUID = -2940273155884927702L;
 	private  ResourceName publisher;
-	private  Creator[] creators;
-	private  ResourceName[] contributors;
+	private  Creator[] creators = new Creator[0];
+	private  ResourceName[] contributors= new ResourceName[0];
 	private  String version;
-	private  Contact[] contacts;
-	private Date[] dates;
+	private  Contact[] contacts = new Contact[0];
+	private Date[] dates = new Date[0];
 	
 	/**  
                Information that can be used for contacting someone with
@@ -103,7 +104,7 @@ public class Curation implements Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (! (obj instanceof Curation))
 			return false;
 		final Curation other = (Curation) obj;
 		if (!Arrays.equals(this.contacts, other.contacts))

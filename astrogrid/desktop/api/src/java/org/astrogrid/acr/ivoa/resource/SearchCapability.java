@@ -27,7 +27,7 @@ public class SearchCapability extends Capability {
 	}
 	private int maxRecords;
 	private String extensionSearchSupport;
-	private String[] optionalProtocol;
+	private String[] optionalProtocol = new String[0];
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = super.hashCode();
@@ -41,7 +41,7 @@ public class SearchCapability extends Capability {
 			return true;
 		if (!super.equals(obj))
 			return false;
-		if (getClass() != obj.getClass())
+		if (! (obj instanceof SearchCapability))
 			return false;
 		final SearchCapability other = (SearchCapability) obj;
 		if (this.extensionSearchSupport == null) {
@@ -55,7 +55,8 @@ public class SearchCapability extends Capability {
 			return false;
 		return true;
 	}
-	/** dont know what this is */
+	/** the level of support provided for searching against
+                       metadata defined in a legal VOResource extension schema.*/
 	public String getExtensionSearchSupport() {
 		return this.extensionSearchSupport;
 	}
