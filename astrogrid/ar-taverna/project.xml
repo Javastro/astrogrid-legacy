@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: project.xml,v 1.1 2006/06/02 00:10:21 nw Exp $ -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<!-- $Id: project.xml,v 1.2 2007/03/08 21:26:33 KevinBenson Exp $ -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
   <extend>../maven-base/project.xml</extend>
-  <artifactId>ar-taverna</artifactId>
+  <artifactId>ar-taverna-cea</artifactId>
   <currentVersion>${taverna.version}</currentVersion>
   <name>Taverna Binding to AR</name>
   <description>Taverna classes to access AR and VO Functionality.</description>
@@ -40,38 +40,58 @@
   
   	<dependency>
   		<groupId>uk.org.mygrid</groupId>
-  		<artifactId>taverna</artifactId>
+  		<artifactId>scufl-model</artifactId>
   		<type>jar</type>
   		<version>${taverna.version}</version>
   	</dependency>
   	
   	<dependency>
   		<groupId>uk.org.mygrid</groupId>
-  		<artifactId>freefluo</artifactId>
+  		<artifactId>scufl-ui-api</artifactId>
   		<type>jar</type>
-  		<version>1.0</version>
-  		<jar>freefluo.jar</jar>
-  	</dependency>
-  
+  		<version>${taverna.version}</version>
+  	</dependency>  
+  	
+  	<dependency>
+  		<groupId>uk.org.mygrid</groupId>
+  		<artifactId>taverna-core</artifactId>
+  		<type>jar</type>
+  		<version>${taverna.version}</version>
+  	</dependency>    	
+  	
+  	<dependency>
+  		<groupId>uk.org.mygrid</groupId>
+  		<artifactId>baclava-core</artifactId>
+  		<type>jar</type>
+  		<version>${taverna.version}</version>
+  	</dependency>  
+  	
+  	<dependency>
+  		<groupId>uk.org.mygrid</groupId>
+  		<artifactId>taverna-enactor</artifactId>
+  		<type>jar</type>
+  		<version>${taverna.version}</version>
+  	</dependency>     	 		
+  	
+  	<dependency>
+  		<groupId>uk.org.mygrid</groupId>
+  		<artifactId>taverna-scavenger</artifactId>
+  		<type>jar</type>
+  		<version>${taverna.version}</version>
+  	</dependency>    	
+  	
   	<dependency>
   		<groupId>jdom</groupId>
   		<artifactId>jdom</artifactId>
   		<type>jar</type>
   		<version>1.0</version>
   	</dependency>
-  <!-- the host application
-  	<dependency>
-  		<groupId>uk.org.mygrid</groupId>
-  		<artifactId>taverna-workbench</artifactId>
-  		<type>zip</type>
-  		<version>${taverna.version}</version>
-  	</dependency>  	
-  -->
+
     <dependency>
       <groupId>org.astrogrid</groupId>
     	<type>jar</type>
     	<artifactId>acr-interface</artifactId>
-      <version>${astrogrid.desktop.version}</version>
+      <version>2007.1.rc1</version>
 	<properties>
 		<dist.bundle>true</dist.bundle>
 	</properties>      

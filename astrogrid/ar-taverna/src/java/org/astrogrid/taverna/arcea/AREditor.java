@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.astrogrid.taverna.ar;
+package org.astrogrid.taverna.arcea;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

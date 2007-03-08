@@ -1,17 +1,25 @@
 <?xml version="1.0"?>
 <!-- extension maven script -->
-<project xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:deploy="deploy" xmlns:artifact="artifact"
-default="astrogrid-build-artifact">
+<project xmlns:j="jelly:core" 
+    xmlns:ant="jelly:ant"
+	xmlns:maven="jelly:maven" 
+	xmlns:deploy="deploy" 
+	xmlns:artifact="artifact"
+    default="astrogrid-build-artifact">
 
 <!-- standard astrogrid goals -->
-  <goal name="astrogrid-build-artifact" prereqs="dist:build-bin" />
-
+  <!--
+  <goal name="astrogrid-build-artifact" prereqs="taverna-bin-filesystem" />
+  <goal name="astrogrid-build-artifact" />  
+  -->
+  <goal name="astrogrid-build-artifact" prereqs="jar:jar" />
+	
   <goal name="astrogrid-install-artifact" prereqs="install-package" />
   <goal name="astrogrid-deploy-artifact" prereqs="deploy-package" />
   <!-- hooks into existing goals -->
 
+	<!--
 	<postGoal name="dist:prepare-bin-filesystem">
-		<!-- now copy in deps -->
 		<j:forEach var="lib" items="${pom.artifacts}">
                         <j:set var="dep" value="${lib.dependency}"/>
                                 <j:if test="${dep.getProperty('dist.bundle')=='true'}">
@@ -19,33 +27,61 @@ default="astrogrid-build-artifact">
                                 </j:if>
 		</j:forEach>
 	</postGoal>
-
-
+	-->
+	
+	
+	<postGoal name="jar:jar">
+		<ant:echo message="The dist dir" />
+        <ant:echo message="${maven.build.dir}"/>
+		<j:forEach var="lib" items="${pom.artifacts}">
+	        <j:set var="dep" value="${lib.dependency}"/>
+            <j:if test="${dep.getProperty('dist.bundle')=='true'}">
+    	        <copy todir="${maven.build.dir}" file="${lib.path}"/>
+            </j:if>
+		</j:forEach>
+		<!--
+		<zip destfile="${maven.build.dir}/${pom.artifactId}-${pom.currentVersion}.zip"
+		       		basedir="${maven.build.dest}/xmldb_exist"
+		       		update="true"
+		       		includes="**"
+		  		/>
+		  		-->
+		<zip destfile="${maven.build.dir}/${maven.final.name}.zip"
+				       		basedir="${maven.build.dir}"
+				       		update="true"
+				       		includes="*.jar"
+				  		/>
+	</postGoal>
+	
     <goal name="install-package" prereqs="astrogrid-build-artifact">
-             <artifact:install
-        artifact="${maven.dist.dir}/${maven.final.name}.zip"
-        type="zip"
-        project="${pom}"
-        /> 
-        </goal>
+        <artifact:install artifact="${maven.dist.dir}/${maven.final.name}.zip" type="zip" project="${pom}"/> 
+    </goal>
 
 	<goal name="deploy-package" prereqs="astrogrid-build-artifact">
-		<artifact:deploy
-			artifact="${maven.dist.dir}/${maven.final.name}.zip"
-			type="zip"
-			project="${pom}"
-		/>
+		<artifact:deploy artifact="${maven.dist.dir}/${maven.final.name}.zip" type="zip" project="${pom}" />
 	</goal>
 	
 	<goal name="install-into-taverna" prereqs="astrogrid-build-artifact"
 	description="build plugin jar and copy to ${taverna.lib.dir} - set this propertiy to your taverna installation in build.properties"	
 	>
+	    <ant:echo message="Now copying to taverna.lib.dir: ${taverna.lib.dir}"/>
 		<copy todir="${taverna.lib.dir}">
-			<fileset dir="${maven.dist.bin.assembly.dir}">
+			<fileset dir="${maven.build.dir}">
 				<include name="*.jar" />
 			</fileset>
 		</copy>
 	</goal>
-  
+	
+    <!--+
+        | Generate a clover report for our project.
+        | (required as a target goal for the reactor)
+       +-->
+    <goal name="clover-report">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Generating clover report ...."/>
+        <attainGoal name="maven-clover-plugin:report"/>
+    </goal>
 
 </project>
