@@ -82,6 +82,55 @@
 	 </properties>	 
  </dependency>
  
+ <!--  supplemental hivemind utilities -->
+ <dependency>
+ 	<groupId>hiveutils</groupId>
+ 	<artifactId>hiveutils</artifactId>
+ 	<url>http://hivetranse.sourceforge.net/web/index.html</url>
+ 	<type>jar</type>
+ 	<version>0.6.2</version>
+ 	<properties>
+ 		<strip>false</strip> <!-- TODO fix this now -->
+ 		<dist.bundle>true</dist.bundle>
+ 	</properties>
+ </dependency>
+ 
+ <dependency>
+ 	<groupId>hiveutils</groupId>
+ 	<artifactId>hivelock.core</artifactId>
+ 	<url>http://hivetranse.sourceforge.net/web/index.html</url>
+ 	<type>jar</type>
+	<version>0.6.2</version>
+ 	<properties>
+ 		<strip>false</strip> <!-- TODO fix this now -->
+ 		<dist.bundle>true</dist.bundle>
+ 	</properties>
+ </dependency>
+ 
+  <dependency>
+ 	<groupId>hiveutils</groupId>
+ 	<artifactId>hivelock.default</artifactId> <!-- (if suitable Principal, else replace with your own) 	 -->
+ 	<url>http://hivetranse.sourceforge.net/web/index.html</url>
+ 	<type>jar</type>
+ 	<version>0.6.2</version>
+ 	<properties>
+ 		<strip>false</strip> <!-- TODO fix this now -->
+ 		<dist.bundle>true</dist.bundle>
+ 	</properties>
+ </dependency> 
+ 
+   <dependency>
+ 	<groupId>hiveutils</groupId>
+ 	<artifactId>hivelock.shared</artifactId>
+ 	<url>http://hivetranse.sourceforge.net/web/index.html</url>
+ 	<type>jar</type>
+ 	<version>0.6.2</version>
+ 	<properties>
+ 		<strip>false</strip> <!-- TODO fix this now -->
+ 		<dist.bundle>true</dist.bundle>
+ 	</properties>
+ </dependency> 
+ 
  <!-- jetty webserver -->
  <dependency> 
 	 <groupId>jetty</groupId>
@@ -166,7 +215,7 @@
        <dependency>
                 <artifactId>commons-collections</artifactId>            
                 <groupId>commons-collections</groupId>          
-                <version>3.1</version>          
+                <version>3.2</version> <!--  was 3.1 but 3.2 is a binary compatible bug fix release -->          
                 <url>http://jakarta.apache.org/commons/</url>           
                 <properties>                                   
                         <dist.bundle>true</dist.bundle>                     
@@ -188,7 +237,7 @@
  <dependency>
 	 <artifactId>commons-lang</artifactId>
 	 <groupId>commons-lang</groupId>
-	 <version>2.0</version>
+	 <version>2.2</version>  <!-- nww was 2.0. upgraded to get string builder. -->
 	 <type>jar</type>
 	 <properties>		 
 		 <dist.bundle>true</dist.bundle>		 
@@ -442,18 +491,7 @@
 		            	</properties>  		
  	</dependency>
  	
- <!-- swing testing - todo verify whether this is actually useful. -->
- <dependency>
- 	<groupId>uispec4j</groupId>
- 	<artifactId>uispec4j</artifactId>
- 	<version>1.1</version>
- 	<url>http://www.uispec4j.org/</url>
-           	            <properties>
-           	            	<testing.jar>true</testing.jar>
-		            		<uberjar.bundle>false</uberjar.bundle>
-		            	</properties>  	
- </dependency>
- 
+
 <!-- testing html interface  -->
  <dependency>
                         <groupId>httpunit</groupId>
