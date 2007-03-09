@@ -13,7 +13,6 @@
 
 #
 # CDSClient settings.
-#APPLICATION_VERSION=2007.1a
 APPLICATION_VERSION=2007.1.02
 APPLICATION_WARFILE=astrogrid-cea-commandline-${APPLICATION_VERSION}.war
 APPLICATION_CONTEXT=astrogrid-cdsclient
@@ -74,23 +73,6 @@ mkdir ${CDSCLIENT_HOME}/config
 
 mkdir ${CDSCLIENT_HOME}/webapp
 mkdir ${CDSCLIENT_HOME}/build
-
-#
-# Needs gcc installed
-# yum install gcc
-
-#
-# Install the vizquery program
-#pushd ${CDSCLIENT_HOME}/build
-#    wget http://vizier.u-strasbg.fr/viz-bin/ftp-index?/ftp/pub/sw/cdsclient.tar.gz
-#    tar -xvf cdsclient.tar 
-#    pushd cdsclient-2.86
-#    ./configure
-#    make
-# Need to be root to do this
-#    make install
-#    popd
-#popd
 
 #
 # Create the invocation script.
