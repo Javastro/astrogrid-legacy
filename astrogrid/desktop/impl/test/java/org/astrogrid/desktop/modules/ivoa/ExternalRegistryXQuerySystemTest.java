@@ -38,14 +38,14 @@ public class ExternalRegistryXQuerySystemTest extends InARTestCase {
 	/**
 	 * query that returns a single resource
 	 */
-	private static final String SINGLE_RESOURCE_XQUERY = "//vor:Resource[vr:identifier='" + SINGLE_RESOURCE_XQUERY_ID + "']";
+	private static final String SINGLE_RESOURCE_XQUERY = "//RootResource[vr:identifier='" + SINGLE_RESOURCE_XQUERY_ID + "']";
 	/**
 	 * query that returns multiople resources.
 	 */
-	private static final String MULTIPLE_RESOURCE_XQUERY = "//vor:Resource[@xsi:type &= '*:Authority']";
+	private static final String MULTIPLE_RESOURCE_XQUERY = "//RootResource[@xsi:type &= '*:Authority']";
 
 	/** an xpath query containing an unknown function */
-	private static final String INVALID_RESOURCE_XQUERY = "//vor:Resource[fred() != 32]";
+	private static final String INVALID_RESOURCE_XQUERY = "//RootResource[fred() != 32]";
 	/** an xpath query contining malformed xml */
 	private static final String MALFORMED_RESOURCE_XQUERY = "<foo>{" + SINGLE_RESOURCE_XQUERY + "}<bar></foo>";
 	/** causes a more subtle error - which causes problems elsewhere in the code */
@@ -205,7 +205,7 @@ public class ExternalRegistryXQuerySystemTest extends InARTestCase {
 	// let seems to be broken.
 	public void testAdvancedXPath() throws Exception {
 		Document d = ex.xquerySearchXML(endpoint,
-				"<result>{for $r in //vor:Resource[not (@status = 'inactive' or @status = 'deleted')]" +
+				"<result>{for $r in //RootResource[not (@status = 'inactive' or @status = 'deleted')]" +
 			//	" let $els := $r/(vr:title  | (: vr:content/vr:description |:) vr:identifier | vr:shortName | vr:content/vr:subject )"+
 			//	" let $match := for $i in $els return contains($i,'6df')" + 
 			//	" let $match := contains($r/vr:title,'6df')" +
