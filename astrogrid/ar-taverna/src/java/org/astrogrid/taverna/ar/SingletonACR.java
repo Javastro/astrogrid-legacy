@@ -1,15 +1,13 @@
 /**
  * 
  */
-package org.astrogrid.taverna.arvohttp;
+package org.astrogrid.taverna.ar;
 
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.acr.NotFoundException;
-import java.util.Hashtable;
-import java.util.ArrayList;
-import java.net.URI;
+import org.astrogrid.acr.builtin.ModuleDescriptor;
+import org.astrogrid.acr.system.ApiHelp;
 
 /** Singleton static that contains a reference to ACR.
  * seems only way to share context object between processor / factory / etc.
@@ -24,7 +22,7 @@ public class SingletonACR {
 	}
 	
 	private static ACR theInstance;
-	private static Hashtable appInfo;
+	private static ModuleDescriptor[] modules;
 	public static synchronized ACR getACR() throws ACRException {
 		if (theInstance== null) {
 			Finder f = new Finder();
@@ -32,5 +30,14 @@ public class SingletonACR {
 		}
 		return theInstance;
 	}
-		
+	
+	public static synchronized ModuleDescriptor[] listModules() throws ACRException {
+		if (modules == null) {
+			ACR acr = getACR();
+			ApiHelp api = (ApiHelp)acr.getService(ApiHelp.class);
+			modules = api.listModuleDescriptors();
+		}
+		return modules;
+	}
+	
 }

@@ -1,8 +1,6 @@
-package org.astrogrid.taverna.arvohttp;
+package org.astrogrid.taverna.ar;
 
 import org.embl.ebi.escience.scuflworkers.ProcessorInfoBeanHelper;
-
-import org.apache.log4j.Logger;
 
 /**
  * Provides information about the Biomoby Processor plugin, using taverna.properties, identified by the
@@ -12,12 +10,9 @@ import org.apache.log4j.Logger;
  */
 
 public class ARProcessorInfoBean extends ProcessorInfoBeanHelper {
-	
-	private static Logger logger = Logger.getLogger(ARScavenger.class);
-	
+
 	public ARProcessorInfoBean() {
-		super("astroruntimevohttp");
-		logger.warn("just done constructor of ARProcessorInfoBean");
+		super("astroruntime");
 	}
 
 }

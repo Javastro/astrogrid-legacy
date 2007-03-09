@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.astrogrid.taverna.arvohttp;
+package org.astrogrid.taverna.ar;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;

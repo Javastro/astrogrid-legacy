@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: project.xml,v 1.5 2007/03/09 09:17:52 KevinBenson Exp $ -->
+<!-- $Id: project.xml,v 1.6 2007/03/09 14:47:32 KevinBenson Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
   <extend>../maven-base/project.xml</extend>
-  <artifactId>ar-taverna-vohttp</artifactId>
+  <artifactId>ar-taverna</artifactId>
   <currentVersion>${taverna.version}</currentVersion>
   <name>Taverna Binding to AR</name>
   <description>Taverna classes to access AR and VO Functionality.</description>
@@ -37,6 +37,15 @@
     </resources>
   </build>
   <dependencies>
+  
+  <!--coming from projecttemplate.xml of the workbench -->
+  
+    	 <dependency>
+            <groupId>org.votech.ds6.plastic</groupId>
+            <artifactId>plastic</artifactId>
+            <version>0.6.1</version>
+            <type>jar</type>
+        </dependency>
   
   	<dependency>
   		<groupId>uk.org.mygrid</groupId>
@@ -129,13 +138,5 @@
 	      <dist.bundle>true</dist.bundle>
 	</properties>      
     </dependency>
-    
-      	    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.12</version>
-    </dependency>
-
-
   </dependencies>  
 </project>
