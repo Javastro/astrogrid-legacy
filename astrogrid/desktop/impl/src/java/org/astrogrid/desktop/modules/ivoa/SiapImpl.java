@@ -1,4 +1,4 @@
-/*$Id: SiapImpl.java,v 1.10 2007/01/29 16:45:08 nw Exp $
+/*$Id: SiapImpl.java,v 1.11 2007/03/09 15:07:03 KevinBenson Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -93,7 +93,7 @@ public class SiapImpl extends DALImpl implements Siap {
 	}
 
 	public String getRegistryXQuery() {
-		return "//vor:Resource[@xsi:type &= '*SimpleImageAccess' and ( not ( @status = 'inactive' or @status='deleted'))]";
+		return "//RootResource[matches(@xsi:type,'SimpleImageAccess') and  ( @status = 'active')]";
 
 	}
 	
@@ -120,6 +120,9 @@ public class SiapImpl extends DALImpl implements Siap {
 
 /* 
 $Log: SiapImpl.java,v $
+Revision 1.11  2007/03/09 15:07:03  KevinBenson
+Changees to use RootResource to signal root node of registry query and to use standard xquery matches method.
+
 Revision 1.10  2007/01/29 16:45:08  nw
 cleaned up imports.
 

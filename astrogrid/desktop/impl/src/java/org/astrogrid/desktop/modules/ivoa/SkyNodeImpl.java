@@ -1,4 +1,4 @@
-/*$Id: SkyNodeImpl.java,v 1.6 2007/01/29 16:45:08 nw Exp $
+/*$Id: SkyNodeImpl.java,v 1.7 2007/03/09 15:07:02 KevinBenson Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -363,7 +363,7 @@ public class SkyNodeImpl implements SkyNode {
 
 
 	public String getRegistryXQuery() {
-		return "//vor:Resource[@xsi:type &= '*OpenSkyNode' and ( not ( @status = 'inactive' or @status='deleted'))]";
+		return "//RootResource[matches(@xsi:type,'OpenSkyNode') and ( @status = 'active')]";
 
 	}
 
@@ -641,6 +641,9 @@ private URL resolveService(URI id) throws InvalidArgumentException {
 
 /* 
 $Log: SkyNodeImpl.java,v $
+Revision 1.7  2007/03/09 15:07:02  KevinBenson
+Changees to use RootResource to signal root node of registry query and to use standard xquery matches method.
+
 Revision 1.6  2007/01/29 16:45:08  nw
 cleaned up imports.
 
