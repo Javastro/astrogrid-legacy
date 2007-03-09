@@ -1203,7 +1203,7 @@ public class ADQLToolEditorPanel
                    Resource[] selection = regChooser.selectResourcesXQueryFilter( "Select Catalogue description for " 
                                                                    + toolModel.getInfo().getTitle()
                                                                    ,false
-                                                                   , "(@xsi:type &= '*TabularDB')"
+                                                                   , "(matches(@xsi:type,'.*:TabularDB'))"
                                                                    ) ;
                    if( selection != null && selection.length > 0 ) {
                        if( log.isDebugEnabled() ) log.debug( "regChooser.chooseResourceWithFilter() returned object of type: " + selection[0].getClass().getName() ) ; 
