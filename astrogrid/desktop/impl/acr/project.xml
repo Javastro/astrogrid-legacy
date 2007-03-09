@@ -102,18 +102,6 @@
 	 </properties>
 	</dependency>
  
- <!-- glazed lists -->
-    <dependency>
-    	<groupId>glazedlists</groupId>
-    	<artifactId>glazedlists</artifactId>
-    	<version>1.7.0_java14</version>
-    	<type>jar</type>
-	 <properties>	 
-		 <dist.bundle>true</dist.bundle>
-		 <strip>true</strip>
-	 </properties>    	
-    </dependency>
-    
  <!-- compiler and xmlbeans for adql -->
   <dependency>
   <!-- This is the Adql/s to Adql/x compiler  -->

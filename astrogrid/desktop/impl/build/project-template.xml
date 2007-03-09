@@ -301,7 +301,18 @@
 		<strip>true</strip>	
 	 </properties>	 	
     </dependency>  
-      
+    
+	<dependency>
+		<artifactId>l2fprod-common-outlookbar</artifactId>
+		<groupId>l2fprod</groupId>
+		<version>6.11</version>
+		<properties>
+		<dist.bundle>${ifBuildingASR.getValue() != 'true'}</dist.bundle>
+		<uberjar.bundle>${ifBuildingASR.getValue() != 'true'}</uberjar.bundle>
+			<strip>true</strip>
+		</properties>
+	</dependency>  
+	    
 	<dependency>
 		<artifactId>forms</artifactId>
 		<groupId>jgoodies</groupId>
@@ -312,7 +323,20 @@
 		<uberjar.bundle>${ifBuildingASR.getValue() != 'true'}</uberjar.bundle>
 			<strip>true</strip>
 		</properties>
-	</dependency>      
+	</dependency>     
+	
+<!-- glazed lists -->
+    <dependency>
+    	<groupId>glazedlists</groupId>
+    	<artifactId>glazedlists</artifactId>
+    	<version>1.7.0_java14</version>
+    	<type>jar</type>
+	 <properties>	 <!--  this list type is use internally - so don't think I can keep it out of asr. -->
+		 <dist.bundle>true</dist.bundle>
+		 <strip>true</strip>
+	 </properties>    	
+    </dependency>
+    	 
  <!-- concurrent stuff-->
     <dependency>
 	    <artifactId>concurrent</artifactId>
@@ -331,7 +355,7 @@
  	<dependency>
  		<artifactId>BrowserLauncher2</artifactId>
  		<groupId>BrowserLauncher2</groupId>
- 		<version>10rc4</version>
+ 		<version>10</version>
  		<url>http://browserlaunch2.sourceforge.net/</url>
  		<properties>
  			<dist.bundle>true</dist.bundle>
