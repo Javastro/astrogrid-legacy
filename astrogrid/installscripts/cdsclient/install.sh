@@ -103,16 +103,15 @@ cat > ${CDSCLIENT_HOME}/config/invoke.sh << EOF
 cat <<! > infile
 -source=\$1
 -c=\$2
--c.rm=1
+-c.rm=\$3
 -out.max=9999
--out.add=_1
 -out.add=_r
 -out.form=mini
 -sort=_r
 !
 #
 # Run the application.
-vizquery -mime=$4 infile  > \$3
+vizquery -mime=\$5 infile  > \$4
 EOF
 #
 # Make it executable.
@@ -135,7 +134,7 @@ cat > ${CDSCLIENT_HOME}/config/app-description.xml << EOF
     <!--+
         | The name here defines how the application is registered.
         +-->
-    <Application name="ivo://${ASTROGRID_AUTH}/cdsclient-application">
+    <Application name="${ASTROGRID_AUTH}/cdsclient-application">
     <!--+
         | Define the parameters.
         +-->
@@ -157,16 +156,24 @@ cat > ${CDSCLIENT_HOME}/config/app-description.xml << EOF
             <agpd:DefaultValue>3C 273</agpd:DefaultValue>
         </CmdLineParameterDefn>
         <!--+
+            | The radius.
+            +-->
+        <CmdLineParameterDefn name="radius" fileRef="false" type="text" commandPosition="3">
+            <agpd:UI_Name>radius</agpd:UI_Name>
+            <agpd:UI_Description>The radius around the target in arcminutes</agpd:UI_Description>
+            <agpd:DefaultValue>1</agpd:DefaultValue>
+        </CmdLineParameterDefn>
+        <!--+
             | Results destination.
             +-->
-        <CmdLineParameterDefn name="results" fileRef="true" type="text" commandPosition="3">
+        <CmdLineParameterDefn name="results" fileRef="true" type="text" commandPosition="4">
             <agpd:UI_Name>results</agpd:UI_Name>
             <agpd:UI_Description>Where to send the results</agpd:UI_Description>
         </CmdLineParameterDefn>
         <!--+
             | Output format.
             +-->
-        <CmdLineParameterDefn name="format" fileRef="false" type="text" commandPosition="4">
+        <CmdLineParameterDefn name="format" fileRef="false" type="text" commandPosition="5">
             <agpd:UI_Name>format</agpd:UI_Name>
             <agpd:UI_Description>The output format</agpd:UI_Description>
             <agpd:DefaultValue>votable</agpd:DefaultValue>
@@ -190,6 +197,7 @@ cat > ${CDSCLIENT_HOME}/config/app-description.xml << EOF
             <input>
                 <pref ref="source"/>
                 <pref ref="target"/>
+                <pref ref="radius"/>
                 <pref ref="format"/>
             </input>
             <output>
@@ -255,7 +263,7 @@ cat > ${CDSCLIENT_HOME}/config/registration-template.xml << EOF
 		<cea:ApplicationDefinition>
 			<cea:Parameters/>
 			<cea:Interfaces>
-			   <ceab:Interface name="albert">
+			   <ceab:Interface name="">
     			   <ceab:input/>
     			   <ceab:output/>
 			   </ceab:Interface>
