@@ -6,26 +6,34 @@
 ;; imposing a consistent ordering on it (by predicate, then subject,
 ;; then object, with blank nodes being ordered after everything), and
 ;; then renumbering the blank nodes.
+;;
+;; If the option --suppress-blank-nodes is given, then all blank nodes
+;; are replaced with _:? -- this makes the output completely independent
+;; of the serialisation details of the input.
 
 (define (main args)
-  (let ((triples (sort-list (if (< (length args) 2)
-                                (read-triples (current-input-port))
-                                (call-with-input-file (cadr args)
-                                  read-triples))
-                            triple<=?)))
-    (for-each (lambda (t)
-                (let ((subj (car t))
-                      (pred (cadr t))
-                      (obj  (caddr t)))
-                  (format #t "~a ~a ~a .~%"
-                          (if (symbol? subj)
-                              (get-new-blank-node subj)
-                              subj)
-                          pred
-                          (if (symbol? obj)
-                              (get-new-blank-node obj)
-                              obj))))
-              triples)))
+  (let ((reduced-args (reduce-options (cdr args))))
+    (let ((triples (sort-list (if (< (length reduced-args) 1)
+                                  (read-triples (current-input-port))
+                                  (call-with-input-file (car reduced-args)
+                                    read-triples))
+                              (option-order-predicate))))
+      (for-each (lambda (t)
+                  (let ((subj (car t))
+                        (pred (cadr t))
+                        (obj  (caddr t)))
+                    (format #t "~a	~a	~a	.~%"
+                            subj
+;;                             (if (symbol? subj)
+;;                                 (get-new-blank-node subj)
+;;                                 subj)
+                            pred
+                            obj
+;;                             (if (symbol? obj)
+;;                                 (get-new-blank-node obj)
+;;                                 obj)
+                            )))
+                triples))))
 
 ;; READ-TRIPLES port -> list
 ;; Read triples from a port, parsing them to three-element lists, with
@@ -48,70 +56,132 @@
                                                (: #\" (* (~ #\")) #\")))))
                           line)
            => (lambda (m)
-                (let ((subj (match:substring m 1))
-                      (obj  (match:substring m 3)))
+                (let ((subj (compress-file-urls (match:substring m 1)))
+                      (obj  (compress-file-urls (match:substring m 3))))
                 (cons (list (if (eq? (string-ref subj 0) #\_)
-                                (string->symbol subj)
+                                (get-new-blank-node subj); (string->symbol subj)
                                 subj)
                             (match:substring m 2)
                             (if (eq? (string-ref obj 0) #\_)
-                                (string->symbol obj)
+                                (get-new-blank-node obj); (string->symbol obj)
                                 obj))
                       triples))))
           (else
            (format #t "Unmatched line: ~a~%" line))))
   (port-fold port read-line parse-line '()))
 
-;; GET-NEW-BLANK-NODE symbol -> string
+;; Strip any directory (specifically $PWD) from file URLs
+(define (compress-file-urls f)
+  (cond ((regexp-search (rx (: bos
+                               "<file:"
+                               (* any)
+                               #\/
+                               (submatch (+ (~ #\/)))
+                               #\>
+                               eos))
+                        f)
+         => (lambda (m)
+              (string-append "<file:" (match:substring m 1) ">")))
+        (else
+         f)))
+
+;; GET-NEW-BLANK-NODE symbol -> symbol
 ;; Given a symbol, return a new blank-node string (ie, "_:nnn") for
 ;; it; but if we've seen this symbol before, return the same string as before.
+;;
+;; If (option-suppress-bn) is true, however, then always return exactly
+;; the same _:? symbol
 (define get-new-blank-node
   (let ((known-nodes '()))
     (lambda (bnode-name)
-      (cond ((assv bnode-name known-nodes)
-             => cdr)
-            (else
-             (let ((new-node-name (format #f "_:~a" (length known-nodes))))
-               (set! known-nodes (cons (cons bnode-name new-node-name)
-                                       known-nodes))
-               new-node-name))))))
+      (if (option-suppress-bn)
+          '_:?
+          (cond ((assoc bnode-name known-nodes)
+                 => cdr)
+                (else
+                 (let ((new-node-name
+                        (string->symbol
+                         ;; make pretty/short names which order nicely
+                         (let ((l (length known-nodes)))
+                           (cond ((< l 10)
+                                  (format #f "_:~a" l))
+                                 (else
+                                  (format #f "_:~a~a"
+                                          (ascii->char (+ 96 (quotient l 10)))
+                                          (remainder l 10))))))))
+                   (set! known-nodes (cons (cons bnode-name new-node-name)
+                                           known-nodes))
+                   new-node-name)))))))
 
-;; TRIPLE<=? triple triple -> boolean
-;; Given two triples, return #t if the first is <= the second.  The
-;; ordering is by predicate, then subject, then object, with a symbol
-;; in any position ordering after all strings.
-(define (triple<=? a b)
-  ;; CMP: return -1/0/+1 if a </=/> b.  Order symbols later than all
-  ;; strings, and equal to each other.
-  (define (cmp a b)
+;; CMP-STRING-OR-SYMBOL: return -1/0/+1 if a </=/> b.
+;; Order symbols later than all strings, and equal to each other.
+(define (cmp-string-or-symbol a b)
     (cond ((and (symbol? a) (symbol? b))
            0)
           ((symbol? a)
-           -1)
-          ((symbol? b)
            +1)
-          ((string<=? a b)
+          ((symbol? b)
            -1)
+          ((string<? a b)
+           -1)
+          ((string=? a b)
+           0)
           (else
            +1)))
-  (let ((propa (cadr a))
-        (propb (cadr b)))
-    (if (string=? propa propb)
-        (let ((subja (car a))           ;same property
-              (obja  (caddr a))
-              (subjb (car b))
-              (objb  (caddr b)))
-          (case (cmp subja subjb)
-            ((-1) #t)
-            ((+1) #f)
-            ((0)
-             (case (cmp obja objb)
-               ((-1) #t)
-               ((+1) #f)
-               ((0)
-                (string<=? (symbol->string obja)
-                           (symbol->string objb)))))))
-        (string<=? propa propb))))
+(define (cmp-strings a b)
+  (cond ((and (symbol? a) (symbol? b))
+         (let ((sa (symbol->string a))
+               (sb (symbol->string b)))
+           (cond ((string<? sa sb)
+                  -1)
+                 ((string=? sa sb)
+                  0)
+                 (else
+                  +1))))
+        ((symbol? a)
+         +1)
+        ((symbol? b)
+         -1)
+        ((string<? a b)
+         -1)
+        ((string=? a b)
+         0)
+        (else
+         +1)))
+
+;; Use cmp
+(define-syntax <=3?
+  (syntax-rules ()
+    ((_ cmp v1 v2 next)
+     (case (cmp v1 v2)
+       ((-1) #t)
+       ((+1) #f)
+       (else
+        next)))))
+
+;; TRIPLE-BY-SUBJECT<=? triple triple -> boolean
+;; Given two triples, return #t if the first is <= the second.  The
+;; ordering is by subject, then predicate, then object, with a symbol
+;; in any position ordering after all strings.
+(define (triple-by-subject<=? a b)
+  (<=3? cmp-strings
+        (car a) (car b)                 ;subject
+        (<=3? cmp-strings
+              (cadr a) (cadr b)         ;predicate
+              (<=3? cmp-strings
+                    (caddr a) (caddr b) ;object
+                    #t))))              ;equal
+
+;; TRIPLE-BY-PREDICATE<=? triple triple -> boolean
+;; The same, but predicate-subject-object
+(define (triple-by-predicate<=? a b)
+  (<=3? cmp-strings
+        (cadr a) (cadr b)
+        (<=3? cmp-string-or-symbol
+              (car a) (car b)
+              (<=3? cmp-string-or-symbol
+                    (caddr a) (caddr b)
+                    #f))))
 
 (define (sort-list l <=)
   (define (merge-lists ina inb)
@@ -153,3 +223,29 @@
            (lambda () (partition-list pe (cdr l)))
          (lambda (left right)
            (merge-lists (sort-list left <=) (cons pe (sort-list right <=)))))))))
+
+(define (make-option default)
+  (let ((v default))
+    (lambda a
+      (if (null? a)
+          v
+          (set! v (car a))))))
+(define option-suppress-bn (make-option #f))
+(define option-order-predicate (make-option triple-by-predicate<=?))
+(define (reduce-options option-list)
+  (cond ((null? option-list)
+         option-list)
+        ((regexp-search (rx (: bos #\- #\-
+                               (submatch (* any))))
+                        (car option-list))
+         => (lambda (m)
+              (case (string->symbol (match:substring m 1))
+                ((suppress-blank-nodes)
+                 (option-suppress-bn #t))
+                ((order-by-subject)
+                 (option-order-predicate triple-by-subject<=?))
+                (else
+                 (error "Unrecognised option ~s" (car option-list))))
+              (reduce-options (cdr option-list))))
+        (else
+         option-list)))
