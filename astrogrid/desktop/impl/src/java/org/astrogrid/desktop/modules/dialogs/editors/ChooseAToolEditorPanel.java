@@ -1,4 +1,4 @@
-/*$Id: ChooseAToolEditorPanel.java,v 1.18 2007/03/09 15:24:31 KevinBenson Exp $
+/*$Id: ChooseAToolEditorPanel.java,v 1.19 2007/03/09 15:52:13 KevinBenson Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -112,7 +112,7 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel implements P
 
 	private void setChooseCEAOnly(boolean ceaOnly) {
 
-		rcp.setFilter("matches(@xsi:type,'.*:CeaApplicationType') " +
+		rcp.applyFilter("matches(@xsi:type,'.*:CeaApplicationType') " +
 				" or matches(@xsi:type,'.*:CeaHttpApplicationType') " + 
 				( ! ceaOnly ? " or matches(@xsi:type,'.*:ConeSearch') " + 
 						" or matches(@xsi:type,'.*:SimpleImageAccess') "  + 
@@ -148,6 +148,9 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel implements P
 
 /* 
 $Log: ChooseAToolEditorPanel.java,v $
+Revision 1.19  2007/03/09 15:52:13  KevinBenson
+whoops copy mistake need to use applyFilter not setFilter now.
+
 Revision 1.18  2007/03/09 15:24:31  KevinBenson
 Try to use standard xquery matches()
 
