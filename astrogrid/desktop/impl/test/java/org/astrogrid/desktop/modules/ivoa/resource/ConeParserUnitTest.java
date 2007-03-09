@@ -18,7 +18,9 @@ import org.astrogrid.acr.ivoa.resource.ConeCapability;
 import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.Contact;
 import org.astrogrid.acr.ivoa.resource.Creator;
+import org.astrogrid.acr.ivoa.resource.DataService;
 import org.astrogrid.acr.ivoa.resource.Date;
+import org.astrogrid.acr.ivoa.resource.HasCoverage;
 import org.astrogrid.acr.ivoa.resource.Interface;
 import org.astrogrid.acr.ivoa.resource.Relationship;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -94,8 +96,10 @@ public class ConeParserUnitTest extends AbstractTestForParser{
 		assertNull(i.getVersion());
 		assertEmpty(i.getSecurityMethods());
 		
-		//@todo this entry also has fields for facility, instrucment and coverage.
-		// need to work out what kind of service this makes it.
+		assertTrue(r instanceof DataService); // has coverage, a facility and instrument
+		DataService ds = (DataService)r;
+		assertNotNull(ds.getCoverage());
+		// @todo test the resul of the data service stuff here.
 		
 		assertTrue(cap instanceof ConeCapability);
 		assertSame(cap,((ConeService)s).findConeCapability());
@@ -171,12 +175,14 @@ public class ConeParserUnitTest extends AbstractTestForParser{
 		assertNull(i.getVersion());
 		assertEmpty(i.getSecurityMethods());
 
+		assertFalse(r instanceof DataService); 
+		
 		assertTrue(cap instanceof ConeCapability);
 		assertSame(cap,((ConeService)s).findConeCapability());
 		
 		ConeCapability cc = (ConeCapability)cap;
 		assertEquals(180.0,cc.getMaxSR(),0.1);
-		assertEquals(10000,cc.getMaxRecords());
+		assertEquals(50000,cc.getMaxRecords());
 		assertFalse(cc.isVerbosity());
 		assertNull(cc.getTestQuery());
 
@@ -256,9 +262,13 @@ public class ConeParserUnitTest extends AbstractTestForParser{
 		assertNull(cc.getTestQuery());
 
 		// this entry also has a coverage block.
+		assertTrue(r instanceof DataService); // has coverage,
+		DataService ds = (DataService)r;
+		assertNotNull(ds.getCoverage());
+		// @todo test the resul of the data service stuff here.
+			
 
 		WebTester wt = basicResourceRendererTests(s);
-		wt.assertTextPresent("Cone");
 		wt.assertTextPresent("nofs.navy");		
 	}
 	
@@ -336,9 +346,13 @@ public class ConeParserUnitTest extends AbstractTestForParser{
 		assertNull(cc.getTestQuery());
 
 		// this entry also has a coverage block.
+		assertTrue(r instanceof DataService); // has coverage,
+		DataService ds = (DataService)r;
+		assertNotNull(ds.getCoverage());
+		// @todo test the resul of the data service stuff here.
+			
 
 		WebTester wt = basicResourceRendererTests(s);
-		wt.assertTextPresent("Cone");
 		wt.assertTextPresent("ipac.caltech");		
 	}
 
@@ -403,19 +417,21 @@ public class ConeParserUnitTest extends AbstractTestForParser{
 		assertNull(i.getVersion());
 		assertEmpty(i.getSecurityMethods());
 		
+		assertFalse(r instanceof DataService);
+			
 		assertTrue(cap instanceof ConeCapability);
 		assertSame(cap,((ConeService)s).findConeCapability());
 		
 		ConeCapability cc = (ConeCapability)cap;
 		assertEquals(1.0,cc.getMaxSR(),0.1);
-		assertEquals(3000,cc.getMaxRecords());
+		assertEquals(5000,cc.getMaxRecords());
 		assertFalse(cc.isVerbosity());
 		assertNull(cc.getTestQuery());
 
 
 		WebTester wt = basicResourceRendererTests(s);
-		wt.assertTextPresent("Cone");
-		wt.assertTextPresent("ipac.caltech");		
+		wt.assertTextPresent("casjobs.sdss");	
+		wt.assertTextPresent("5000"); //@todo get this output.
 	}
 	
 	public void testConeService6() throws Exception {
@@ -480,6 +496,8 @@ public class ConeParserUnitTest extends AbstractTestForParser{
 		assertEmpty(i.getSecurityMethods());
 		// this interface also has qtype and resultType
 		
+		assertFalse(r instanceof DataService);
+		
 		assertTrue(cap instanceof ConeCapability);
 		assertSame(cap,((ConeService)s).findConeCapability());
 		
@@ -492,8 +510,8 @@ public class ConeParserUnitTest extends AbstractTestForParser{
 		// this entry also has a coverage block.
 
 		WebTester wt = basicResourceRendererTests(s);
-		wt.assertTextPresent("Cone");
-		wt.assertTextPresent("ipac.caltech");		
+		wt.assertTextPresent("180.0"); //@todo output this.
+		wt.assertTextPresent("archive.stsci");
 	}
 
 }

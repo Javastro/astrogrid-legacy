@@ -10,7 +10,8 @@ import junit.framework.TestCase;
 /** Tests parsing of data service resources, and the subclass Catalog Service resources
  * 
  * DataService - covers resourcews previously called SkyService.
- * CatalogService - covers resources prevously called TabularSkyService
+ * 		- although many cone services evolve into this too.
+ * CatalogService - covers resources prevously called TabularSkyService - vizier stuff.
  * @todo implement
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 20, 200711:51:20 PM

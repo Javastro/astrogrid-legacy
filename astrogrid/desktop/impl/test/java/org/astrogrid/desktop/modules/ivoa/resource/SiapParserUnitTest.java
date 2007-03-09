@@ -18,6 +18,7 @@ import org.astrogrid.acr.ivoa.resource.SiapService;
 import junit.framework.TestCase;
 
 /** test parsing of siap resources.
+ * @todo implement parsing like for other classes of resource.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 20, 20079:19:31 PM
  */
@@ -26,7 +27,7 @@ public class SiapParserUnitTest extends AbstractTestForParser {
 
 	
 	public void testSiapService() throws Exception {
-		InputStream is = this.getClass().getResourceAsStream("siap.xml");
+		InputStream is = this.getClass().getResourceAsStream("siap1.xml");
 		assertNotNull(is);
 		XMLStreamReader in = fac.createXMLStreamReader(is);
 		ResourceStreamParser p = new ResourceStreamParser(in);

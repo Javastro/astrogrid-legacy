@@ -84,9 +84,9 @@ public class CeaParserUnitTest extends AbstractTestForParser {
 //dunno if ui relies on this being null at the oment.		assertEmpty(pb.getOptions());
 		assertNull(pb.getSubType());
 		assertEquals("double",pb.getType());
-		assertNull(pb.getUcd());
+		assertNotNull(pb.getUcd());
 		assertEquals("SubStellar fraction",pb.getUiName());
-		assertNull(pb.getUnits());
+		assertNotNull(pb.getUnits());
 	}
 
 

@@ -30,7 +30,6 @@ public class AllResourceUnitTests {
 		suite.addTestSuite(CeaParserUnitTest.class);  // ok for now.
 		suite.addTestSuite(DataServiceParserUnitTest.class);
 		suite.addTestSuite(RegistryServiceParserUnitTest.class);
-		suite.addTestSuite(TableServiceParserUnitTest.class);
 		return suite;
 	}
 

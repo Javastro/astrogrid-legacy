@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vor:Resource xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1" created="2004-09-30T21:20:48Z" status="active" updated="2006-02-08T18:54:26Z" xmlns="http://www.ivoa.net/xml/VOResource/v0.10" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.3" xmlns:sia="http://www.ivoa.net/xml/SIA/v0.7" xmlns:sn="http://www.ivoa.net/xml/OpenSkyNode/v0.1" xmlns:vc="http://www.ivoa.net/xml/VOCommunity/v0.2" xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" xsi:schemaLocation="http://www.ivoa.net/xml/VODataService/v0.5 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v0.5/VODataService.xsd  http://www.ivoa.net/xml/VOTable/v1.0 http://software.astrogrid.org/schema/vo-formats/VOTable/v1.0/VOTable.xsd  http://www.ivoa.net/xml/ConeSearch/v0.3 http://software.astrogrid.org/schema/vo-resource-types/ConeSearch/v0.3/ConeSearch.xsd " xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cs:ConeSearch">
+        <vr:title xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">The NASA/IPAC Extragalactic Database</vr:title>
+        <vr:shortName xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">NED(sources)</vr:shortName>
+        <vr:identifier xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">ivo://ned.ipac/Basic_Data_Near_Position</vr:identifier>
+        <vr:curation xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">
+            <vr:publisher>The NASA/IPAC Extragalactic Database</vr:publisher>
+            <vr:contact>
+                <vr:name>Olga Pevunova</vr:name>
+                <vr:email>olga@ipac.caltech.edu</vr:email>
+            </vr:contact>
+        </vr:curation>
+        <vr:content xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10">
+            <vr:description>NED is built around a master list of extragalactic objects for which cross-identifications of names have been established, accurate positions and redshifts entered to the extent possible, and some basic data collected. Bibliographic references relevant to individual objects have been compiled, and abstracts of extragalactic interest are kept on line. Detailed and referenced photometry, position, and redshift data, have been taken from large compilations and from the literature. NED also includes images for over 773,000 extragalactic objects from 2MASS, from the literature, and from the Digitized Sky Survey. NED's data and references are being continually updated, with revised versions being put on-line every 2-3 months.</vr:description>
+            <vr:referenceURL>http://nedwww.ipac.caltech.edu/help/object_help.html#nrpos</vr:referenceURL>
+            <vr:type>Archive</vr:type>
+            <vr:type>Bibliography</vr:type>
+            <vr:type>Catalog</vr:type>
+            <vr:type>Journal</vr:type>
+            <vr:type>Survey</vr:type>
+            <vr:type>Education</vr:type>
+            <vr:type>Outreach</vr:type>
+            <vr:type>EPOResource</vr:type>
+            <vr:type>BasicData</vr:type>
+            <vr:type>Historical</vr:type>
+            <vr:contentLevel>Elementary Education</vr:contentLevel>
+            <vr:contentLevel>Middle School Education</vr:contentLevel>
+            <vr:contentLevel>Secondary Education</vr:contentLevel>
+            <vr:contentLevel>Community College</vr:contentLevel>
+            <vr:contentLevel>University</vr:contentLevel>
+            <vr:contentLevel>Research</vr:contentLevel>
+            <vr:contentLevel>Amateur</vr:contentLevel>
+        </vr:content>
+        <vr:interface xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" qtype="GET" xsi:schemaLocation="" xsi:type="vs:ParamHTTP">
+            <vr:accessURL use="base">http://nedwww.ipac.caltech.edu/cgi-bin/nph-NEDobjsearch?search_type=Near+Position+Search&amp;of=xml_main&amp;</vr:accessURL>
+            <vs:resultType>application/xml+votable</vs:resultType>
+        </vr:interface>
+        <vs:coverage xmlns="http://www.ivoa.net/xml/VODataService/v0.5">
+            <vs:spatial>
+                <vs:region xsi:schemaLocation="" xsi:type="vs:AllSky"/>
+            </vs:spatial>
+            <vs:spectral>
+                <vs:waveband>Radio</vs:waveband>
+                <vs:waveband>Millimeter</vs:waveband>
+                <vs:waveband>Infrared</vs:waveband>
+                <vs:waveband>Optical</vs:waveband>
+                <vs:waveband>UV</vs:waveband>
+                <vs:waveband>EUV</vs:waveband>
+                <vs:waveband>X-ray</vs:waveband>
+                <vs:waveband>Gamma-ray</vs:waveband>
+            </vs:spectral>
+            <vs:temporal>
+                <vs:startTime>1936-01-01</vs:startTime>
+            </vs:temporal>
+        </vs:coverage>
+        <cs:capability>
+            <cs:maxSR>5</cs:maxSR>
+            <cs:maxRecords>3000</cs:maxRecords>
+            <cs:verbosity>false</cs:verbosity>
+        </cs:capability>
+    </vor:Resource>
