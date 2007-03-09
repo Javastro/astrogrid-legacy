@@ -1,4 +1,4 @@
-/*$Id: StapImpl.java,v 1.7 2007/01/29 11:11:35 nw Exp $
+/*$Id: StapImpl.java,v 1.8 2007/03/09 15:14:56 KevinBenson Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -127,7 +127,10 @@ public class StapImpl extends DALImpl implements Stap {
 	}
 
 	public String getRegistryXQuery() {
+		return "//RootResource[matches(@xsi:type,'SimpleTimeAccess') and ( @status = 'active')]";
+		/*
 		return "//vor:Resource[@xsi:type &= '*SimpleTimeAccess' and ( not ( @status = 'inactive' or @status='deleted'))]";
+		*/
 
 	}
 
@@ -140,6 +143,9 @@ public class StapImpl extends DALImpl implements Stap {
 
 /* 
 $Log: StapImpl.java,v $
+Revision 1.8  2007/03/09 15:14:56  KevinBenson
+Now uses RootResource to signal root node of Registry and tries to use matches instead of &=
+
 Revision 1.7  2007/01/29 11:11:35  nw
 updated contact details.
 

@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.8 2007/01/29 16:45:08 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.9 2007/03/09 15:14:56 KevinBenson Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -77,8 +77,16 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
     public SwingLoginDialogue(final VoMon monitor,final BrowserControl browser, Registry reg, String registerLink, String defaultCommunity) throws MalformedURLException, ServiceException {
     	this.defaultCommunity = defaultCommunity;
     	// this query blocks - but I think that's acceptable.
+    	Resource[] knownCommunities = reg.xquerySearch(    		        	
+    	 "for $r in //RootResource[(@status='active') and matches(vr:identifier,'PolicyManager')] order by $r/vr:identifier return $r");
+    	
+    	/*
+    	Resource[] knownCommunities = reg.xquerySearch(
+    			"for $r in //vor:Resource[(@status='active') and matches(vr:identifier,'PolicyManager')] order by $r/vr:identifier return $r");
+ 
     	Resource[] knownCommunities = reg.xquerySearch(
     			"for $r in //vor:Resource[not (@status='deleted' or @status='inactive') and vr:identifier &= '*PolicyManager'] order by $r/vr:identifier return $r");
+    	*/
         /* Create query components. */
         commField_ = new JComboBox(knownCommunities);
         userField_ = new JTextField();
@@ -312,6 +320,9 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.9  2007/03/09 15:14:56  KevinBenson
+Now uses RootResource to signal root node of Registry and tries to use matches instead of &=
+
 Revision 1.8  2007/01/29 16:45:08  nw
 cleaned up imports.
 
@@ -340,7 +351,8 @@ Revision 1.4  2006/04/18 23:25:44  nw
 merged asr development.
 
 Revision 1.3.30.1  2006/04/14 02:45:01  nw
-finished code.extruded plastic hub.
+finished code.
+extruded plastic hub.
 
 Revision 1.3  2005/11/24 01:13:24  nw
 merged in final changes from release branch.
