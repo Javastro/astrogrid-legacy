@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" > 
     <extend>${basedir}/acr/project.xml</extend>
-        <artifactId>workbench</artifactId>
-        <name>Workbench</name>
+        <artifactId>voexplorer</artifactId>
+        <name>VOExplorer</name>
         <description>
-			Astro Grid Workbench
+			AstroGrid VOExplorer
 	</description>
-	<shortDescription>Workbench - Explore the Virtual Observatory</shortDescription>
+	<shortDescription>VOExplorer - Explore the Virtual Observatory</shortDescription>
 	
 	<!-- groups the implementation javadoc -->
   <packageGroups>
@@ -102,15 +102,7 @@
 			    <strip>true</strip>    	                  
 	</properties>
 </dependency>  	
-	<dependency>
-		<artifactId>l2fprod-common-outlookbar</artifactId>
-		<groupId>l2fprod</groupId>
-		<version>6.11</version>
-		<properties>
-			<dist.bundle>true</dist.bundle>
-			<strip>true</strip>
-		</properties>
-	</dependency>
+
 
     </dependencies>
 </project>
