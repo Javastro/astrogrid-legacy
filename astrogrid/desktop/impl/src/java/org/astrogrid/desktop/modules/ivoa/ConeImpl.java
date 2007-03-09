@@ -1,4 +1,4 @@
-/*$Id: ConeImpl.java,v 1.3 2007/03/08 17:44:03 nw Exp $
+/*$Id: ConeImpl.java,v 1.4 2007/03/09 15:08:27 KevinBenson Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -134,12 +134,13 @@ public class ConeImpl extends DALImpl implements Cone {
 	}
 	
 	public String getRegistryXQuery() {
-		return "//vor:Resource[" +
-				"(" +
-				"@xsi:type &= '*ConeSearch' " +
-			//ised in astroscope - not good.	" or (@xsi:type &= '*TabularSkyService'  and vods:table/vods:column/vods:ucd = 'POS_EQ_RA_MAIN' and vr:identifier &= 'ivo://CDS/*')" + 
-				") " +
-				"and ( not ( @status = 'inactive' or @status='deleted'))]";
+		return "//RootResource[" +
+		"(" +
+		"matches(@xsi:type,'ConeSearch') " +
+		// @future - find out how to add CDS in.
+		//" or (@xsi:type &= '*TabularSkyService'  and vods:table/vods:column/vods:ucd = 'POS_EQ_RA_MAIN' and vr:identifier &= 'ivo://CDS/*')" + 
+		") " +
+		"and ( @status = 'active')]";
 	}
 
 }
@@ -147,6 +148,9 @@ public class ConeImpl extends DALImpl implements Cone {
 
 /* 
 $Log: ConeImpl.java,v $
+Revision 1.4  2007/03/09 15:08:27  KevinBenson
+small change to use RootResource and standard xquery matches method
+
 Revision 1.3  2007/03/08 17:44:03  nw
 first draft of voexplorer
 
