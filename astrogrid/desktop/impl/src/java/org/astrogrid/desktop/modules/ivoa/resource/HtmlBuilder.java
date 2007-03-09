@@ -3,6 +3,8 @@
  */
 package org.astrogrid.desktop.modules.ivoa.resource;
 
+import java.net.URI;
+
 import org.apache.commons.lang.text.StrBuilder;
 import org.astrogrid.acr.ivoa.resource.ResourceName;
 
@@ -119,6 +121,38 @@ public class HtmlBuilder extends StrBuilder {
 		} 
 		return this;
 	}	
+
+	public HtmlBuilder appendTitledURIs(String title, URI[] list) {
+		if (list != null && list.length > 0) {
+			append(title);
+			append(": ");
+			for (int i = 0; i < list.length; i++) {
+				appendURI(list[i]);
+				append(" ");
+			}
+			append("<br>");
+		} 
+		return this;
+	}	
+	
+	
+	/** Write out a url/uri -if it's a well known scheme - http / ftp / ivo, add a hyperlink around it.
+	 * @param sb
+	 * @param url
+	 */
+	public  HtmlBuilder appendURI( final URI url) {
+		if (url != null) {
+		String scheme = url.getScheme();
+		// fix for BZ 1970 - odd scheme types.
+		if (scheme != null && (scheme.equals("http") || scheme.equals("ftp") || scheme.equals("ivo"))) {
+			append("<a href='").append(url).append("'>");
+			append(url).append("</a>");
+		} else {
+				append(url);
+		}
+		}
+		return this;
+	}
 	
 	
 	/** append o if pred is true, following with a hr */

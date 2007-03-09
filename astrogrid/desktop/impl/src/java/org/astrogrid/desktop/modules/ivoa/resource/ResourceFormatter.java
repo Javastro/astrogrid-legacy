@@ -5,8 +5,11 @@ package org.astrogrid.desktop.modules.ivoa.resource;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
 import org.astrogrid.acr.astrogrid.CeaApplication;
@@ -62,6 +65,12 @@ public final class ResourceFormatter {
 		}
 		sb.append(r.getId()).append("</i>");
 		sb.br();
+		// debugging
+//		List ifaces = ClassUtils.getAllInterfaces(r.getClass());
+//		for (Iterator i = ifaces.iterator(); i.hasNext();) {
+//			Class c = (Class) i.next();
+//			sb.append(c.getName());
+//		}
 		//@future add some indication of validation level.
 		sb.append(formatTypeHTML(r.getType()));
 		sb.hr();
@@ -148,16 +157,11 @@ public final class ResourceFormatter {
 			formatCuration(sb, curation);
 		}
 		
-		//@todo some description of coverage, column metadata, etc.
-		// requires that we parse this stuff up first.
-		
 		// footer
 		sb.br();
 		sb.h3("Record Information");
 		sb.appendTitledObject("Created",r.getCreated());
-
 		sb.appendTitledObject("Last updated",r.getUpdated());
-
 		sb.appendTitledObject("Status",r.getStatus());
 		sb.append("</body></html>");
 		return sb.toString();
@@ -214,7 +218,6 @@ public final class ResourceFormatter {
 				sb.append("<img align='right'  border='1' alt='").append(creator.getLogoURI()).append("' src='").append(creator.getLogoURI()).append("'>").append("<br>");
 			}
 			
-			
 		}
 		sb.appendTitledResourceName("Published by",curation.getPublisher());
 
@@ -249,27 +252,64 @@ public final class ResourceFormatter {
 	 */
 	public static void formatService(HtmlBuilder sb, Service s) {
 		final Capability[] capabilities = s.getCapabilities();
+		sb.append("<table><tr bgcolor='#dddddd'><th>Capability</th><th>Details</th></tr>");
 		for (int i = 0; i < capabilities.length; i++) {
+			sb.append("<tr bgcolor='#eeeeee'>");
 			Capability c = capabilities[i];
 			String title;
 			if (c.getStandardID() != null) {
 				title = c.getStandardID().toString();
-			} else if (c.getType() != null) {
-				title = c.getType();
 			} else {
-				title = StringUtils.substringAfterLast(c.getClass().getName(),".");
+				final String type = c.getType();
+				if (type != null) {
+					if (StringUtils.contains(type,":")) {
+						title = StringUtils.substringAfterLast(type,":");
+					} else {
+						title = type;
+					}
+				} else {
+					title = StringUtils.substringAfterLast(c.getClass().getName(),".");
+				}
 			}
-			sb.h3("Service Capability",title);
+			sb.td(title);
+			sb.append("<td>");
+			for (int j = 0 ; j < c.getInterfaces().length; j++) {
+				Interface iface = c.getInterfaces()[j];
+			//	sb.append("<tr><td></td><td>");
+			// not helpful in v0.10 schema	
+			//	sb.appendTitledObject("Type",iface.getType());
+				sb.appendTitledObject("Role",iface.getRole());
+				sb.appendTitledObject("Version",iface.getVersion());
+				final AccessURL[] accessUrls = iface.getAccessUrls();
+				for (int k = 0; k < accessUrls.length; k++) {
+					AccessURL u = accessUrls[k];
+					if (u.getUse() != null) {
+						sb.append(u.getUse()).append(": ");
+					}
+					sb.appendURI(u.getValueURI());
+					sb.br();
+				}
+				final SecurityMethod[] securityMethods = iface.getSecurityMethods();
+				if (securityMethods.length > 0) {
+					sb.append("Security: ");
+					for (int k = 0; k < securityMethods.length; k++) {
+						SecurityMethod sm = securityMethods[k];
+						sb.append(sm.getStandardID());
+						sb.append(" ");
+					}
+				}
+			}			
+			sb.append("</td></tr><tr><td></td><td>");	
 			//@todo validation level
-			if (c.getDescription() != null) {
-				sb.append("<p>").append(c.getDescription()).append("</p>");
-			}
+			sb.append("<p>");
+			sb.td(c.getDescription());
+			sb.append("</p>");
 			if (c instanceof CeaServerCapability) {
-				sb.appendTitledSequence("Provdes Tasks",(((CeaServerCapability)c).getManagedApplications()));
+				sb.appendTitledURIs("Provdes Tasks",(((CeaServerCapability)c).getManagedApplications()));
 			} else
 			if (c instanceof HarvestCapability) {
 				sb.append("Maximum records harvested ");
-				sb.append(((HarvestCapability)c).getMaxRecords());
+				sb.append(((HarvestCapability)c).getMaxRecords());			
 			} else 
 			if (c instanceof SearchCapability) {
 				SearchCapability sc = (SearchCapability)c;
@@ -277,10 +317,9 @@ public final class ResourceFormatter {
 				sb.append(sc.getExtensionSearchSupport());
 				sb.append("<br>Maximum records a query will return: ");
 				sb.append(sc.getMaxRecords());
-				sb.appendTitledSequence("Supports additional protocols",sc.getOptionalProtocol());
-			} else 
-				//temporarily out, as vizier stuff messes it up.
-	/*		if (c instanceof ConeCapability) {
+				sb.appendTitledSequence("<br>Supports additional protocols",sc.getOptionalProtocol());
+			} else 	if (c instanceof ConeCapability) {
+				/* taken out - not working right at the moment
 				ConeCapability cc = (ConeCapability)c;
 				sb.append("Supports VERB parameter? ");
 				sb.append(cc.isVerbosity());
@@ -288,8 +327,8 @@ public final class ResourceFormatter {
 				sb.append(cc.getMaxSR());
 				sb.append("<br>Maximum results a query will return: ");
 				sb.append(cc.getMaxRecords());
-			} else*/
-			if (c instanceof SiapCapability) {
+				*/
+			} else		if (c instanceof SiapCapability) {
 				SiapCapability cc = (SiapCapability)c;
 				sb.appendTitledObject("Service Type: ",cc.getImageServiceType());
 				/* FIXME temporarily removed
@@ -305,60 +344,13 @@ public final class ResourceFormatter {
 				sb.append(cc.getMaxImageSizeRa()).append(", ").append(cc.getMaxImageSizeDec());
 			*/
 			}
-			sb.append("<ul>");
-			for (int j = 0 ; j < c.getInterfaces().length; j++) {
-				Interface iface = c.getInterfaces()[j];
-				sb.append("<li>Interface");
-				if (iface.getType() != null) {
-					sb.append(" type - ").append(iface.getType());
-				}
-				if (iface.getRole() != null) {
-					sb.append(" role - ").append(iface.getRole());
-				}
-				if (iface.getVersion() != null) {
-					sb.append(" version - ").append(iface.getVersion());
-				}
-				sb.append("<ul>");
-				for (int k = 0; k < iface.getAccessUrls().length; k++) {
-					sb.append("<li>");
-					AccessURL u = iface.getAccessUrls()[k];
-					if (u.getUse() != null) {
-						sb.append(u.getUse()).append(" - ");
-					}
-					final URI url = u.getValueURI();
-					formatURI(sb, url);
-				}
-				if (iface.getSecurityMethods().length > 0) {
-					sb.append("<li>Security - ");
-					for (int k = 0; k < iface.getSecurityMethods().length; k++) {
-						SecurityMethod sm = iface.getSecurityMethods()[k];
-						sb.append(sm.getStandardID());
-						sb.append("<br>");
-					}
-				}
-				sb.append("</ul>");	
-			}
-			sb.append("</ul>");
-			sb.appendTitledSequence("Service Rights",s.getRights());
+			sb.append("</td></tr>");
 		}
+			sb.append("</table>");
+			sb.appendTitledSequence("Service Rights",s.getRights());
 	}
 
-	/** Write out a url/uri -if it's a well known scheme - http / ftp / ivo, add a hyperlink around it.
-	 * @param sb
-	 * @param url
-	 */
-	private static void formatURI(StrBuilder sb, final URI url) {
-		if (url != null) {
-		String scheme = url.getScheme();
-		// fix for BZ 1970 - odd scheme types.
-		if (scheme != null && (scheme.equals("http") || scheme.equals("ftp") || scheme.equals("ivo"))) {
-			sb.append("<a href='").append(url).append("'>");
-			sb.append(url).append("</a>");
-		} else {
-				sb.append(url);
-		}
-		}
-	}
+	
 
 	/**
 	 * @param r
@@ -367,26 +359,31 @@ public final class ResourceFormatter {
 	public static void formatCeaApplication(CeaApplication cea, HtmlBuilder sb) {
 
 		ParameterBean[] params = cea.getParameters();
-		InterfaceBean[] ifaces = cea.getInterfaces();
-		sb.append("<h3>Interfaces</h3>");
-		sb.append("<ul>");
+		InterfaceBean[] ifaces =cea.getInterfaces();
+		sb.h3("Task Interfaces");
+		sb.append("<table><tr bgcolor='#dddddd'><th>Name</th><th>Inputs</th><th>Outputs</th></tr>");
 		for (int i = 0; i < ifaces.length; i++ ) {
 			InterfaceBean ib = ifaces[i];
-			sb.append("<li><b>").append(ib.getName()).append("</b>");
-			sb.append("<br>Inputs - ");
+			sb.append("<tr>");
+			sb.td(ib.getName());
+			sb.append("<td>");
 			fmtParameterList(sb,ib.getInputs());
-			sb.append("<br>Outputs - ");
-			fmtParameterList(sb,ib.getOutputs());	
+			sb.append("</td><td>");
+			fmtParameterList(sb,ib.getOutputs());
+			sb.append("</td></tr>");
 		}
-		sb.append("</ul>");
+		sb.append("</table>");
 		sb.h3("Parameter Details");
-		sb.append("<table><tr><th>Name</th><th>Type</th><th>Description</th></tr>");
+		sb.append("<table><tr bgcolor='#dddddd'><th>Name</th><th>Type</th><th>Units</th><th>Description</th></tr>");
 		for (int i = 0; i < params.length; i++) {
 			ParameterBean p = params[i];
 			sb.append("<tr>");
 			sb.td(p.getUiName())
-				.td(p.getType())			
-				.td(p.getDescription())
+				.td(p.getType())		
+				.append("<td>")
+				.append(p.getUcd()).append( " ").append(p.getUnits())
+				.append("</td>");
+			sb.td(p.getDescription())
 				.append("</tr>");
 		}
 		sb.append("</table>");
@@ -397,34 +394,50 @@ public final class ResourceFormatter {
 	 * @param sb
 	 */
 	public static void formatCatalog(Catalog c, HtmlBuilder sb) {
-		sb.h3("Catalog",c.getName());
+		sb.h3(c.getName());
 		if (c.getDescription() != null && c.getDescription().trim().length() > 0) {
 			sb.append("<p>").append(c.getDescription()).append("</p>");
 		}
 			formatTables(c.getTables(),sb);
-	
 	}
+	
 	public static void formatTables(TableBean[] ts, HtmlBuilder sb) {
-		sb.append("<table><tr bgcolor='#eeeeee'><th>Table name</th><th>Description</th></tr>");
-		for (int i = 0; i < ts.length; i++) {
-			TableBean tb = ts[i];
-			sb.td(tb.getName())
-				.td(tb.getDescription())				
-				.append("</tr>");
-			/* too costly for ukidss, takes generation time from 20ms to almost a minute.
-			 * surpisingly, generation time is much more expensive than the time it taks to display it.
-			for (int j = 0; j < tb.getColumns().length; j++) {
-				ColumnBean cb = tb.getColumns()[j];
-				sb.append("<tr>");
-				sb.td("")
+		//too costly for ukidss, takes generation time from 20ms to almost a minute.
+		// surpisingly, generation time is much more expensive than the time it taks to display it.
+		if (ts.length < DISPLAY_FULL_TABLE_THRESHOLD) {
+			sb.append("<table><tr bgcolor='#dddddd'><th>Table name</th><th>Column name</th><th>Description</th></tr>");
+			for (int i = 0; i < ts.length; i++) {
+				TableBean tb = ts[i];
+				sb.append("<tr bgcolor='#eeeeee'>");
+				sb.td(tb.getName())
+					.td("")
+					.td(tb.getDescription())				
+					.append("</tr>");
+				final ColumnBean[] cols = tb.getColumns();
+				for (int j = 0; j < cols.length; j++) {
+					ColumnBean cb = cols[j];
+					sb.append("<tr>");
+					sb.td("")
 					.td(cb.getName())
 					.td(cb.getDescription())						
 					.append("</tr>");
-			}*/
-
+				}
+			}
+			sb.append("</table>");
+		} else { // just summarize the tables
+			sb.append("<table><tr bgcolor='#dddddd'><th>Table name</th><th>Description</th></tr>");
+			for (int i = 0; i < ts.length; i++) {
+				TableBean tb = ts[i];
+				sb.append("<tr>");
+				sb.td(tb.getName())
+				.td(tb.getDescription())				
+				.append("</tr>");
+			}
+			sb.append("</table>");
 		}
-		sb.append("</table>");	
-}
+		sb.br();
+	}
+	public static final int DISPLAY_FULL_TABLE_THRESHOLD = 6;
 	
 	public static void formatCoverage(Coverage c,HtmlBuilder sb) {
 		sb.h3("Coverage");
@@ -434,7 +447,7 @@ public final class ResourceFormatter {
 		//@todo handle Stc in some way.
 		sb.conditionalAppend(c.getStcResourceProfile() != null,
 				"STC Present - See XML  viewfor details");
-		sb.hr();
+		sb.br();
 	}
 	
 	/**
@@ -443,7 +456,7 @@ public final class ResourceFormatter {
 	 */
 	private static void formatFormat(Format[] format, HtmlBuilder sb) {
 		if (format != null && format.length > 0) {
-			sb.append("Format :");
+			sb.append("Format: ");
 			for (int i = 0; i < format.length; i++) {
 				sb.append(format[i].getValue());
 				sb.append(" ");
@@ -463,23 +476,24 @@ public final class ResourceFormatter {
 		}
 		final URI referenceURI = content.getReferenceURI();
 		if (referenceURI != null) {
-			sb.append("<br>Further information - ");
-			formatURI(sb, referenceURI);
+			sb.append("Further information: ");
+			sb.appendURI(referenceURI);
 			sb.br();
 		}
 		final Source source = content.getSource();
 		if (source != null) {
-			sb.append("Source reference - ").append(source.getValue());
+			sb.append("Source reference: ").append(source.getValue());
 			if (source.getFormat() != null && source.getFormat().trim().length() > 0) {
 				sb.append(" (").append(source.getFormat()).append(")");
 			}
 			sb.br();
 		}
 		
-		if (content.getRelationships().length != 0) {
-			sb.append("<table><tr><th>Relationship</th><th>Resource</th></tr>");
-			for (int i = 0; i < content.getRelationships().length; i++) {
-				Relationship rel = content.getRelationships()[i];
+		final Relationship[] rels = content.getRelationships();
+		if (rels.length != 0) {
+			sb.append("<table><tr bgcolor='#dddddd'><th>Relationship</th><th>Resource</th></tr>");
+			for (int i = 0; i < rels.length; i++) {
+				Relationship rel = rels[i];
 				sb.append("<tr>");
 				sb.td(rel.getRelationshipType());
 				sb.append("<td>");
@@ -487,13 +501,16 @@ public final class ResourceFormatter {
 					sb.appendResourceName(rel.getRelatedResources()[j]);
 					sb.br();
 				}
+				sb.append("</td></tr>");
 			}
-			sb.append("</td></tr></table>");
+			sb.append("</table>");
 		}
 		
 		sb.appendTitledSequence("Type",content.getType());
 		sb.appendTitledSequence("Subject",content.getSubject());		
 		sb.appendTitledSequence("Level",content.getContentLevel());
+		
+		sb.br();
 		}
 	}
 

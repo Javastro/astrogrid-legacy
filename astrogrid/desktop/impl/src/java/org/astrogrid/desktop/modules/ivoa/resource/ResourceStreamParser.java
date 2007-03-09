@@ -34,6 +34,7 @@ import org.astrogrid.acr.ivoa.resource.AccessURL;
 import org.astrogrid.acr.ivoa.resource.Authority;
 import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.Catalog;
+import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.ConeCapability;
 import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.Contact;
@@ -42,6 +43,7 @@ import org.astrogrid.acr.ivoa.resource.Coverage;
 import org.astrogrid.acr.ivoa.resource.Creator;
 import org.astrogrid.acr.ivoa.resource.Curation;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
+import org.astrogrid.acr.ivoa.resource.DataService;
 import org.astrogrid.acr.ivoa.resource.Date;
 import org.astrogrid.acr.ivoa.resource.Format;
 import org.astrogrid.acr.ivoa.resource.Handler;
@@ -178,14 +180,27 @@ public final class ResourceStreamParser implements Iterator {
 		if (xsiType != null) {
 			if (StringUtils.contains(xsiType,"Service")) {
 				ifaces.add(Service.class);
+			} else if (StringUtils.contains(xsiType,"ConeSearch")
+					//|| StringUtils.contains(xsiType,"TabularSkyService") // make these look like cones too.
+						) {
+				ifaces.add(ConeService.class);
+
 			} else if (StringUtils.contains(xsiType,"Authority")) {
 				ifaces.add(Authority.class);
 			} else if (StringUtils.contains(xsiType,"Organisation")) {
 				ifaces.add(Organisation.class);                               
 			} else if (StringUtils.contains(xsiType,"DataCollection")) {
 				ifaces.add(DataCollection.class);
-				// coverage cannot be null.
-				m.put("getCoverage",new Coverage());
+				m.put("getCoverage",new Coverage());// coverage cannot be null.
+			} else if (StringUtils.contains(xsiType,"TabularSkyService")) {
+				ifaces.add(Service.class);
+				ifaces.add(CatalogService.class);
+				ifaces.add(DataService.class);
+				m.put("getCoverage",new Coverage());					// coverage cannot be null.
+			} else if (StringUtils.contains(xsiType,"SkyService")){
+				ifaces.add(Service.class);
+				ifaces.add(DataService.class);
+				m.put("getCoverage",new Coverage());		// coverage cannot be null.	
 			}
 		}
 	
@@ -198,6 +213,8 @@ public final class ResourceStreamParser implements Iterator {
 		// used in data collection
 		final List catalogues = new ArrayList();
 		final List formats = new ArrayList();
+		// used in catalogue service.
+		final List tables = new ArrayList();
 		
 		// case for each top-level element.
 		// if onlyu java had a decent switch statement...
@@ -231,37 +248,42 @@ public final class ResourceStreamParser implements Iterator {
 			//		capabilities.add(parseCapability());
 			//		ifaces.add(Service.class); // it's a service
 				} else if (elementName.equals("interface")) { //v0.10 legacy stuff.
-					if (StringUtils.contains(xsiType,"ConeSearch")
-							|| (StringUtils.contains(xsiType,"TabularSkyService") // make these look like cones too.
-									&& m.get("getId").toString().indexOf("CDS") != -1) 
-					) {
-						final ConeCapability coneCapability = parseV10ConeSearch();
-						capabilities.add(coneCapability);
-						m.put("findConeCapability",coneCapability);
-						ifaces.add(ConeService.class);
-						if (addProtocolKnowledge) {
-							ifaces.add(CeaApplication.class);
-							m.put("getParameters", ConeProtocolKnowledge.parameters);
-							m.put("getInterfaces",ConeProtocolKnowledge.ifaces);		
+					String type = in.getAttributeValue(null,"type");
+				//	if (StringUtils.contains(type,"ParamHTTP")){
+						if (StringUtils.contains(xsiType,"ConeSearch")
+								|| (StringUtils.contains(xsiType,"TabularSkyService") // make these look like cones too.
+										&& m.get("getId").toString().indexOf("CDS") != -1) ) {
+						
+								final ConeCapability coneCapability = parseV10ConeSearch();
+							capabilities.add(coneCapability);
+							m.put("findConeCapability",coneCapability);
+							ifaces.add(ConeService.class);
+							if (addProtocolKnowledge) {
+								ifaces.add(CeaApplication.class);
+								m.put("getParameters", ConeProtocolKnowledge.parameters);
+								m.put("getInterfaces",ConeProtocolKnowledge.ifaces);		
+							}
+						} else if (StringUtils.contains(xsiType,"SimpleImageAccess")) {
+							final SiapCapability siapCapability = parseV10Siap();
+							capabilities.add(siapCapability);
+							m.put("findSiapCapability",siapCapability);
+							ifaces.add(SiapService.class);
+							if (addProtocolKnowledge) {
+								ifaces.add(CeaApplication.class);
+								m.put("getParameters", SiapProtocolKnowledge.parameters);
+								m.put("getInterfaces",SiapProtocolKnowledge.ifaces);		
+							}
+						} else if (StringUtils.contains(xsiType,"CeaServiceType")) {
+							CeaServerCapability ceaCapability = parseV10CeaServer();
+							capabilities.add(ceaCapability);
+							m.put("findCeaServerCapability",ceaCapability);
+							ifaces.add(CeaService.class);
+						} else {
+							capabilities.add(parseV10InterfaceAsCapability());
 						}
-					} else if (StringUtils.contains(xsiType,"SimpleImageAccess")) {
-						final SiapCapability siapCapability = parseV10Siap();
-						capabilities.add(siapCapability);
-						m.put("findSiapCapability",siapCapability);
-						ifaces.add(SiapService.class);
-						if (addProtocolKnowledge) {
-							ifaces.add(CeaApplication.class);
-							m.put("getParameters", SiapProtocolKnowledge.parameters);
-							m.put("getInterfaces",SiapProtocolKnowledge.ifaces);		
-						}
-					} else if (StringUtils.contains(xsiType,"CeaServiceType")) {
-						CeaServerCapability ceaCapability = parseV10CeaServer();
-						capabilities.add(ceaCapability);
-						m.put("findCeaServerCapability",ceaCapability);
-						ifaces.add(CeaService.class);
-					} else {
-						capabilities.add(parseV10InterfaceAsCapability());
-					}
+				//	} else {
+				//		capabilities.add(parseV10InterfaceAsCapability());						
+				//	}
 					ifaces.add(Service.class); // it's a service too.
 				} else if (elementName.equals("ManagedApplications")) {//v0.10 cea sever legacy stuff.
 					URI[] managedApps = parseManagedApplications();
@@ -274,6 +296,8 @@ public final class ResourceStreamParser implements Iterator {
 				} else if (elementName.equals("ApplicationDefinition")) { //v0.10 cea application
 					parseV10CeaApplication(m);
 					ifaces.add(CeaApplication.class);
+				} else if (elementName.equals("capability")) {//v0.10 capablity - used for cone search..
+					parseV10Capability(m);
 				} else if (elementName.equals("coverage")) { // coverage info - used in various ifaces.
 					ifaces.add(HasCoverage.class);	
 					Coverage c = parseCoverage();
@@ -286,6 +310,8 @@ public final class ResourceStreamParser implements Iterator {
 					ifaces.add(DataCollection.class);
 					m.put("getDatabase",cat); // support legacy interface
 					ifaces.add(TabularDB.class);
+				} else if (elementName.equals("table")) { // TabularSkyService
+					tables.add( parseTable());
 				} else {
 					logger.debug("Unknown element" + elementName);
 				}
@@ -295,20 +321,35 @@ public final class ResourceStreamParser implements Iterator {
 			}
 		} // end Resource.
 		
-		// add in repeated slements.
 		
-		m.put("getValidationLevel",validations.toArray(new Validation[validations.size()]));
-		
+		// duck-typing.
 		if (ifaces.contains(Service.class)) {// if xsi or data thinks this is a service, add in those fields
 			m.put("getCapabilities",capabilities.toArray(new Capability[capabilities.size()]));
+			
+			// special duck-typing rules for services.
+			if (m.containsKey("getCoverage") || facilities.size() > 0 || instruments.size() > 0) {
+				ifaces.add(DataService.class);
+			}
+			
+			if(tables.size() > 0) {
+				ifaces.add(CatalogService.class);
+				ifaces.add(DataService.class);
+			}
 		}
+		// add in repeated slements.
+
+		m.put("getValidationLevel",validations.toArray(new Validation[validations.size()]));
 		if (ifaces.contains(Service.class) || ifaces.contains(DataCollection.class)) {// if xsi or data thinks this is a service, add in those fields
 			m.put("getRights",rights.toArray(new String[rights.size()]));
 		}
 		
-		if (ifaces.contains(Organisation.class) || ifaces.contains(DataCollection.class)) {// add in required elements for this.
+		if (ifaces.contains(Organisation.class) || ifaces.contains(DataCollection.class) || ifaces.contains(DataService.class)) {// add in required elements for this.
 			m.put("getFacilities",facilities.toArray(new ResourceName[facilities.size()]));
 			m.put("getInstruments",instruments.toArray(new ResourceName[instruments.size()]));
+		}
+		
+		if (ifaces.contains(CatalogService.class)) {
+			m.put("getTables",tables.toArray(new TableBean[tables.size()]));
 		}
 		
 		if (ifaces.contains(DataCollection.class)) {
@@ -332,6 +373,52 @@ public final class ResourceStreamParser implements Iterator {
 
 
 
+	/** hacky way of adding on the bits of missing capability info.
+	 * will be better to do in 1.0
+	 * @param m
+	 */
+	private void parseV10Capability(HashMap m) {
+		try {
+			for (in.next(); !( in.isEndElement() && in.getLocalName().equals("capability")); in.next()){
+				if (in.isStartElement()) { //otherwise it's just a parse remainder from one of the children.
+					try {
+					final String elementName = in.getLocalName();
+					if (elementName.equals("verbosity")) {
+							ConeCapability cap = (ConeCapability)m.get("findConeCapability");
+							if (cap != null) {
+								try {
+									cap.setVerbosity(Boolean.valueOf(in.getElementText()).booleanValue());
+								} catch (RuntimeException e) { // oh well
+							}
+							}
+					} else if (elementName.equals("maxSR")) {
+						ConeCapability cap = (ConeCapability)m.get("findConeCapability");
+						if (cap != null) {
+							try {
+								cap.setMaxSR(Float.valueOf(in.getElementText()).floatValue());
+							} catch (RuntimeException e) { // oh well
+						}
+						}
+					} else if (elementName.equals("maxRecords")) {
+						ConeCapability cap = (ConeCapability)m.get("findConeCapability");
+						if (cap != null) {
+							try {
+								cap.setMaxRecords(Integer.valueOf(in.getElementText()).intValue());
+							} catch (RuntimeException e) { // oh well
+						}
+						}						
+					} else {
+						logger.debug("Unknown element" + elementName);
+					}
+					} catch (XMLStreamException e) {
+						logger.debug("Content ",e);
+					}							
+				}
+			}
+		} catch (XMLStreamException x) {
+			logger.debug("Coverage - XMLStreamException",x);
+		} // end Curation;		
+	}
 	protected Coverage parseCoverage() {
 		final Coverage c = new Coverage();
 		final List wavebands = new ArrayList();

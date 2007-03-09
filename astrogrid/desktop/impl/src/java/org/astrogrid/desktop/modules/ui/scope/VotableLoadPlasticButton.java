@@ -1,4 +1,4 @@
-/*$Id: VotableLoadPlasticButton.java,v 1.8 2007/03/08 17:43:56 nw Exp $
+/*$Id: VotableLoadPlasticButton.java,v 1.9 2007/03/09 15:34:24 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -64,7 +64,7 @@ public class VotableLoadPlasticButton extends PlasticScopeButton {
                     TreeNode service = tn.getParent().getParent().getParent();
                     if (! processedServices.contains(service)) {
                         processedServices.add(service);                       
-                        URL url = new URL(service.getAttribute(Retriever.SERVICE_URL_ATTRIBUTE));
+						URL url = new URL(service.getAttribute(Retriever.SERVICE_URL_ATTRIBUTE));
                         List args = new ArrayList();  
                         args.add(url.toString()); // plastic spec expects parameter types that are strings - but still parse into a url first, to check it's valid.
                         args.add(url.toString()); // identifier.
@@ -83,6 +83,9 @@ public class VotableLoadPlasticButton extends PlasticScopeButton {
 
 /* 
 $Log: VotableLoadPlasticButton.java,v $
+Revision 1.9  2007/03/09 15:34:24  nw
+vizier and voexplorer
+
 Revision 1.8  2007/03/08 17:43:56  nw
 first draft of voexplorer
 

@@ -10,6 +10,7 @@ import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.ivoa.resource.Catalog;
 import org.astrogrid.acr.ivoa.resource.Content;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
+import org.astrogrid.acr.ivoa.resource.HasTables;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.dialogs.registry.FilterPipelineFactory.PipelineStrategy;
 
@@ -42,6 +43,17 @@ public final class UcdStrategy extends PipelineStrategy {
 							}
 						}
 					} 
+				} else if (r instanceof HasTables) {
+					TableBean[] t = ((HasTables)r).getTables();
+					for (int j = 0; j < t.length; j++) {
+						ColumnBean[] cs = t[j].getColumns();
+						for (int k = 0; k < cs.length; k++) {
+							String u = cs[k].getUCD();
+							if (u != null && selected.contains(u)) {
+								return true;
+							}
+						}
+					}					
 				}
 				return false;
 			}					
@@ -68,7 +80,18 @@ public final class UcdStrategy extends PipelineStrategy {
 								}
 							}
 						}
-					} 
+					}
+				} else if (r instanceof HasTables) {
+					TableBean[] t = ((HasTables)r).getTables();
+					for (int j = 0; j < t.length; j++) {
+						ColumnBean[] cs = t[j].getColumns();
+						for (int k = 0; k < cs.length; k++) {
+							String u = cs[k].getUCD();
+							if (u != null) {
+								l.add(u);
+							}
+						}
+					}							
 				}
 				return l;
 			}
@@ -76,6 +99,6 @@ public final class UcdStrategy extends PipelineStrategy {
 	}
 
 	public String getName() {
-		return "Column UCD";
+		return "UCD";
 	}
 }

@@ -31,7 +31,7 @@ public class ConeRetrieval extends Retriever {
         final URL prelimURL = cone.addOption(coneURL,"VERB","1"); // least verbose.
         final URL fullURL = cone.addOption(coneURL,"VERB","3"); // most verbose
         StringBuffer sb = new StringBuffer();
-        sb.append("<html>Title: ").append(service.getTitle())
+        sb.append("<html>").append(service.getTitle())
             .append("<br>ID: ").append(service.getId());
             if (service.getContent() != null) {
                sb.append("<br>Description: <p>")

@@ -13,6 +13,7 @@ import org.astrogrid.acr.ivoa.resource.SiapService;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.AstroScopeInternal;
+import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
 
 /** invoke astroscope.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -41,12 +42,10 @@ private final AstroScopeInternal ai;
 	protected boolean invokable(Resource r) {
 		boolean b =  r instanceof SiapService 
 				|| r instanceof ConeService
-				|| r instanceof Service && (
+				|| ConeProtocol.isCdsCatalogService(r)
+				|| r instanceof Service && 
 						r.getType().indexOf("Spectrum") != -1 
-						||
-						( r.getType().indexOf("TabularSkyService") != -1
-								&& r.getId().toString().indexOf("CDS") != -1)
-								);
+					;
 		return b;
 	}
 public void actionPerformed(ActionEvent e) {

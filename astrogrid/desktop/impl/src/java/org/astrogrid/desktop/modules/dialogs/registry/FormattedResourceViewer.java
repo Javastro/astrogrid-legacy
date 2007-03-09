@@ -40,15 +40,15 @@ public class FormattedResourceViewer extends JEditorPane implements ResourceView
 	}
 	
 	public void display(Resource res) {
-		StopWatch st = new StopWatch();
-		st.start();
+		//StopWatch st = new StopWatch();
+	//	st.start();
 		final String html = ResourceFormatter.renderResourceAsHTML(res);
-		st.split();
-		String split = st.toSplitString();
+	//	st.split();
+	//	String split = st.toSplitString();
 		setText(html);
-		st.stop();
-		System.out.println(split);
-		System.out.println(st.toString());
+	//	st.stop();
+	//	System.out.println(split);
+	//	System.out.println(st.toString());
 		setCaretPosition(0);		
 	}
 

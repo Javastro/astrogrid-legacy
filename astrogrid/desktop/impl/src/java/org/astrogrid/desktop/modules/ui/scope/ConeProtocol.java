@@ -1,4 +1,4 @@
-/*$Id: ConeProtocol.java,v 1.11 2007/03/08 17:43:56 nw Exp $
+/*$Id: ConeProtocol.java,v 1.12 2007/03/09 15:34:24 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,8 +14,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.astrogrid.acr.astrogrid.ColumnBean;
+import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
@@ -61,14 +64,34 @@ public class ConeProtocol extends SpatialDalProtocol {
 			Resource r = (Resource) i.next();
 			if (r instanceof ConeService
 					// special case for CDS.
-					|| (r instanceof Service && r.getType().indexOf("TabularSkyService") != -1)) {
+					|| isCdsCatalogService(r)) { 
 				result.add(r);
 			}
 		}
 		return (Service[])result.toArray(new Service[result.size()]);
 	}
     
+	public static boolean isCdsCatalogService(Resource r) {
+		if (! (r instanceof CatalogService)) {
+			return false;
+		}
+		if (r.getId().toString().indexOf("CDS") == -1) {
+			return false;
+		}
+		CatalogService c = (CatalogService)r;
+		TableBean[] tables = c.getTables();
+		for (int i = 0; i < tables.length; i++) {
+			ColumnBean[] columns = tables[i].getColumns();
+			for (int j = 0; j < columns.length; j++) {
+				if (POSITION_UCD.equals(columns[i].getUCD())) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
+	public static final String POSITION_UCD = "POS_EQ_RA_MAIN";
     
 
 }
@@ -76,6 +99,9 @@ public class ConeProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: ConeProtocol.java,v $
+Revision 1.12  2007/03/09 15:34:24  nw
+vizier and voexplorer
+
 Revision 1.11  2007/03/08 17:43:56  nw
 first draft of voexplorer
 

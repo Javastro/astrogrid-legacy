@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.56 2007/03/08 17:43:59 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.57 2007/03/09 15:34:24 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -367,13 +367,19 @@ public class AstroScopeLauncherImpl extends AbstractScope
                 BorderFactory.createLineBorder(Color.red),
                 dsToggle.getSexaRadio().getBorder()));        
         searchPanel.add(coords);
+        protocolsPanel = new JPanel();
+        protocolsPanel.setLayout(new BoxLayout(protocolsPanel,BoxLayout.Y_AXIS));
+        
         for (Iterator i = protocols.iterator(); i.hasNext(); ) {
             DalProtocol p = (DalProtocol)i.next();
-            searchPanel.add(p.getCheckBox());
+            protocolsPanel.add(p.getCheckBox());
         }
+        searchPanel.add(protocolsPanel);
       
 		return searchPanel;
 	}
+	// defined here, so we can control it's visibiliity.
+	private  JPanel protocolsPanel;
 
 	/** perform a query */
 	protected void query() {
@@ -474,6 +480,7 @@ public class AstroScopeLauncherImpl extends AbstractScope
 	public void runSubset(List resources) {
 		this.resourceList = resources;
 		setTitle("Astroscope : on subset");
+		protocolsPanel.setVisible(false);
 	}
 
   
@@ -481,6 +488,9 @@ public class AstroScopeLauncherImpl extends AbstractScope
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.57  2007/03/09 15:34:24  nw
+vizier and voexplorer
+
 Revision 1.56  2007/03/08 17:43:59  nw
 first draft of voexplorer
 

@@ -146,7 +146,7 @@ public abstract class Retriever extends BackgroundWorker {
     public BasicTableHandler(TreeNode serviceNode) {
            this.serviceNode = serviceNode;
        }
-       protected final TreeNode serviceNode;
+       protected TreeNode serviceNode;
        protected int resultCount = 0;
        protected String message = null;
        protected int raCol = -1;
@@ -167,7 +167,7 @@ public abstract class Retriever extends BackgroundWorker {
      * @see uk.ac.starlink.votable.TableHandler#startTable(uk.ac.starlink.table.StarTable)
      */
     public void startTable(StarTable starTable) throws SAXException {
-
+    	newTableExtensionPoint(starTable);
         titles = new String[starTable.getColumnCount()];
         for (int col = 0; col < starTable.getColumnCount(); col++) {
             ColumnInfo columnInfo = starTable.getColumnInfo(col);
@@ -188,6 +188,9 @@ public abstract class Retriever extends BackgroundWorker {
    protected void startTableExtensionPoint(int col,ColumnInfo columnInfo) {
    }
 
+   // exention point for suibclasses. override this to be passed in each new table object
+   protected void newTableExtensionPoint(StarTable st) {
+   }
 
        /**
         * Method getOffset

@@ -15,6 +15,7 @@ import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.TaskInvoker;
+import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
 
 /** Invoke a cone search;
  * @author Noel.Winstanley@manchester.ac.uk
@@ -38,10 +39,8 @@ public void someSelected(List l) {
 }
 	protected boolean invokable(Resource r) {
 		return r instanceof ConeService
-			|| r instanceof Service 
-				&& r.getType().indexOf("TabularSkyService") != -1
-				&& r.getId().toString().indexOf("CDS") != -1
-		;
+			|| ConeProtocol.isCdsCatalogService(r)
+			;
 	}
 	
 	public void actionPerformed(ActionEvent e) {
