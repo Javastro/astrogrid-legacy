@@ -1,4 +1,4 @@
-/*$Id: ChooseAToolEditorPanel.java,v 1.17 2007/03/08 17:44:04 nw Exp $
+/*$Id: ChooseAToolEditorPanel.java,v 1.18 2007/03/09 15:24:31 KevinBenson Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -112,14 +112,16 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel implements P
 
 	private void setChooseCEAOnly(boolean ceaOnly) {
 
-		rcp.applyFilter("@xsi:type &= '*CeaApplicationType' " +
-				" or @xsi:type &= '*CeaHttpApplicationType' " + 
-				( ! ceaOnly ? " or @xsi:type &= '*ConeSearch' " + 
-						" or @xsi:type &= '*SimpleImageAccess' "  + 
-						" or @xsi:type &= '*SimpleSpectrumAccess' " 
+		rcp.setFilter("matches(@xsi:type,'.*:CeaApplicationType') " +
+				" or matches(@xsi:type,'.*:CeaHttpApplicationType') " + 
+				( ! ceaOnly ? " or matches(@xsi:type,'.*:ConeSearch') " + 
+						" or matches(@xsi:type,'.*:SimpleImageAccess') "  + 
+						" or matches(@xsi:type,'.*:SimpleSpectrumAccess') " 	
 						// @todo add this in - but need a faster registry service, or some other way of registering CDS
 						// also, ned to have a ceaApplication handler that knows to treat these as a tabular sky service
 						//" or (@xsi:type &= '*TabularSkyService' and vr:identifier &= 'ivo://CDS/*' and vods:table/vods:column/vods:ucd = 'POS_EQ_RA_MAIN')"
+						//registry service now faster but still a little slow on matches() astrogrid registries will
+						//switch to its own specefic function now to make the query faster.
 
 						: ""))  ;    	
 	}
@@ -146,6 +148,9 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel implements P
 
 /* 
 $Log: ChooseAToolEditorPanel.java,v $
+Revision 1.18  2007/03/09 15:24:31  KevinBenson
+Try to use standard xquery matches()
+
 Revision 1.17  2007/03/08 17:44:04  nw
 first draft of voexplorer
 
