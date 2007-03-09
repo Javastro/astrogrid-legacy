@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id: project.xml,v 1.1 2007/03/09 14:28:16 KevinBenson Exp $ -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
+  <extend>../maven-base/project.xml</extend>
+  <artifactId>ar-taverna-vohttp</artifactId>
+  <currentVersion>${taverna.version}</currentVersion>
+  <name>Taverna Binding to AR</name>
+  <description>Taverna classes to access AR and VO Functionality.</description>
+  <shortDescription>Taverna accessing AR</shortDescription>
+  <build>
+    <sourceDirectory>src/java</sourceDirectory>
+    <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+    <unitTest>
+      <includes>
+        <include>**/*Test.java</include>
+      </includes>
+      <resources>
+        <resource>
+          <directory>${basedir}/test/java</directory>
+          <includes>
+            <include>**/*.xml</include>
+            <include>**/*.properties</include>
+          </includes>
+        </resource>
+      </resources>
+    </unitTest>
+    <resources>
+      <resource>
+        <directory>${basedir}/src/java</directory>
+        <includes>
+          <include>**/*.xml</include>
+          <include>**/*.properties</include>
+          <include>**/*.png</include>
+          <include>META-INF/**</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
+  <dependencies>
+  
+  	<dependency>
+  		<groupId>uk.org.mygrid</groupId>
+  		<artifactId>scufl-model</artifactId>
+  		<type>jar</type>
+  		<version>${taverna.version}</version>
+  	</dependency>
+  	
+  	<dependency>
+  		<groupId>uk.org.mygrid</groupId>
+  		<artifactId>scufl-ui-api</artifactId>
+  		<type>jar</type>
+  		<version>${taverna.version}</version>
+  	</dependency>  
+  	
+  	<dependency>
+  		<groupId>uk.org.mygrid</groupId>
+  		<artifactId>taverna-core</artifactId>
+  		<type>jar</type>
+  		<version>${taverna.version}</version>
+  	</dependency>    	
+  	
+  	<dependency>
+  		<groupId>uk.org.mygrid</groupId>
+  		<artifactId>baclava-core</artifactId>
+  		<type>jar</type>
+  		<version>${taverna.version}</version>
+  	</dependency>  
+  	
+  	<dependency>
+  		<groupId>uk.org.mygrid</groupId>
+  		<artifactId>taverna-enactor</artifactId>
+  		<type>jar</type>
+  		<version>${taverna.version}</version>
+  	</dependency>     	 		
+  	
+  	<dependency>
+  		<groupId>uk.org.mygrid</groupId>
+  		<artifactId>taverna-scavenger</artifactId>
+  		<type>jar</type>
+  		<version>${taverna.version}</version>
+  	</dependency>    	
+  	
+  	<dependency>
+  		<groupId>jdom</groupId>
+  		<artifactId>jdom</artifactId>
+  		<type>jar</type>
+  		<version>1.0</version>
+  	</dependency>
+
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+    	<type>jar</type>
+    	<artifactId>acr-interface</artifactId>
+      <version>2007.1.rc1</version>
+	<properties>
+		<dist.bundle>true</dist.bundle>
+	</properties>      
+    </dependency>
+    
+
+<!-- stuff required by acr-interface -->
+ 
+ <dependency>
+	<artifactId>rmi-lite</artifactId>
+	<groupId>rmilite</groupId>
+	<version>1.0</version>
+	<properties>
+		<dist.bundle>true</dist.bundle>
+	</properties>
+</dependency>
+
+<dependency>
+	<artifactId>commons-logging</artifactId>	
+	<groupId>commons-logging</groupId>	
+	<version>1.0.3</version>	
+	<url>http://jakarta.apache.org/commons/</url>	
+	<properties>
+		<dist.bundle>true</dist.bundle>
+	</properties>	
+    </dependency>
+
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xerces</artifactId>
+      <version>2.4.0</version>
+      <type>jar</type>
+      <url>http://xml.apache.org/</url>
+      <properties>
+	      <dist.bundle>true</dist.bundle>
+	</properties>      
+    </dependency>
+    
+      	    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.12</version>
+    </dependency>
+
+
+  </dependencies>  
+</project>
