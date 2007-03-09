@@ -10,8 +10,12 @@
 #
 # FileManager settings.
 #FILEMANAGER_VERSION=2006.3.01fm
-FILEMANAGER_VERSION=2007.1fm
-FILEMANAGER_WARFILE=astrogrid-filemanager-${FILEMANAGER_VERSION}.war
+#FILEMANAGER_VERSION=2007.1fm
+#FILEMANAGER_WARFILE=astrogrid-filemanager-${FILEMANAGER_VERSION}.war
+
+FILEMANAGER_VERSION=frog
+FILEMANAGER_WARFILE=astrogrid-filemanager.war
+
 FILEMANAGER_CONTEXT=astrogrid-filemanager
 #
 # Set the install date (used in registration documents).
@@ -65,12 +69,31 @@ mkdir ${ASTROGRID_HOME}/filemanager/data
 mkdir ${ASTROGRID_HOME}/filemanager/webapp
 
 #
-# Get the filemanager war file.
+# Check temp directory
+if [ ! -d ${ASTROGRID_TEMP} ]
+then
+	echo ""
+    echo "Creating AstroGrid temp directory"
+    echo "  Path : ${ASTROGRID_TEMP}"
+    mkdir ${ASTROGRID_TEMP}
+    chmod a+rwx ${ASTROGRID_TEMP}
+fi
+
+#
+# Get the FileManager war file.
+if [ ! -f ${ASTROGRID_TEMP}/${FILEMANAGER_WARFILE} ]
+then
+	echo ""
+	echo "Downloading FileManager war file"
+	#wget -P ${ASTROGRID_TEMP} ${ASTROGRID_MAVEN}/org.astrogrid/wars/${FILEMANAGER_WARFILE}
+    wget -P ${ASTROGRID_TEMP} http://ag03.ast.cam.ac.uk:8080/download/${FILEMANAGER_WARFILE}
+fi
+
+#
+# Install the FileManager war file.
 echo ""
-echo "Downloading FileManager war file"
-pushd ${ASTROGRID_HOME}/filemanager/webapp
-	wget ${ASTROGRID_MAVEN}/org.astrogrid/wars/${FILEMANAGER_WARFILE}
-popd
+echo "Installing FileManager war file"
+cp ${ASTROGRID_TEMP}/${FILEMANAGER_WARFILE} ${ASTROGRID_HOME}/filemanager/webapp/
 
 #
 # Generate the webapp context.

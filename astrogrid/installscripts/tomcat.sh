@@ -61,44 +61,38 @@ then
     echo "  ASTROGRID_HOME : ${ASTROGRID_HOME:?"undefined"}"
     exit 1
 fi
-
 #
-# Create downloads directory
-if [ ! -d ${ASTROGRID_HOME}/downloads ]
+# Create temp directory
+if [ ! -d ${ASTROGRID_TEMP} ]
 then
 	echo ""
-    echo "Creating AstroGrid downloads directory"
-    echo "  Path : ${ASTROGRID_HOME}/downloads"
-    mkdir ${ASTROGRID_HOME}/downloads
-    chmod a+rwx ${ASTROGRID_HOME}/downloads
+    echo "Creating AstroGrid temp directory"
+    echo "  Path : ${ASTROGRID_TEMP}"
+    mkdir ${ASTROGRID_TEMP}
+    chmod a+rwx ${ASTROGRID_TEMP}
 fi
-
 #
 # Get the current Tomcat distro.
-if [ ! -f ${ASTROGRID_HOME}/downloads/${TOMCAT_COREZIP} ]
+if [ ! -f ${ASTROGRID_TEMP}/${TOMCAT_COREZIP} ]
 then
 	echo ""
 	echo "Downloading Tomcat zipfile"
-	pushd ${ASTROGRID_HOME}/downloads
-    	wget ${TOMCAT_MIRROR}/${TOMCAT_COREZIP}
-    	wget ${TOMCAT_MIRROR}/${TOMCAT_ADMINZIP}
-	popd
+	wget -P ${ASTROGRID_TEMP} ${TOMCAT_MIRROR}/${TOMCAT_COREZIP}
 fi
 
 #
 # Unpack the Tomcat distro.
-if [ ! -f ${ASTROGRID_HOME}/downloads/${TOMCAT_COREZIP} ]
+if [ ! -f ${ASTROGRID_TEMP}/${TOMCAT_COREZIP} ]
 then
     echo "ERROR : Unable to locate Tomcat zip file"
-	echo "  ${ASTROGRID_HOME}/downloads/${TOMCAT_COREZIP}"
+	echo "  ${ASTROGRID_TEMP}/${TOMCAT_COREZIP}"
     exit 1
 else
     pushd ${ASTROGRID_HOME}
 		echo ""
         echo "Unpacking Tomcat zip file"
-        unzip -o ${ASTROGRID_HOME}/downloads/${TOMCAT_COREZIP}
+        unzip -o ${ASTROGRID_TEMP}/${TOMCAT_COREZIP}
         echo "Unpacking Tomcat-admin zip file"
-        unzip -o ${ASTROGRID_HOME}/downloads/${TOMCAT_ADMINZIP}
     popd
 fi
 
@@ -150,11 +144,19 @@ EOF
 popd
 
 #
-# Install the HSQLDB jar for Community.
+# Get the HSQLDB driver jar.
+HSQLDB_JAR=hsqldb-1.7.1.jar
+if [ ! -f ${ASTROGRID_TEMP}/${HSQLDB_JAR} ]
+then
+	echo ""
+	echo "Downloading HSQLDB driver jar"
+    wget -P ${ASTROGRID_TEMP} ${ASTROGRID_MAVEN}/hsqldb/jars/${HSQLDB_JAR}
+fi
+#
+# Install the HSQLDB driver jar.
 echo ""
-echo "Installing HSQLBD driver"
-wget -P ${CATALINA_HOME}/common/lib ${ASTROGRID_MAVEN}/hsqldb/jars/hsqldb-1.7.1.jar
-
+echo "Installing HSQLBD driver jar"
+cp ${ASTROGRID_TEMP}/${HSQLDB_JAR} ${CATALINA_HOME}/common/lib/
 #
 # Start Tomcat.
 echo ""

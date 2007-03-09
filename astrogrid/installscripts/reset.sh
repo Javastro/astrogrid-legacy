@@ -76,3 +76,8 @@ if [ -d ${ASTROGRID_HOME}/dsa-first ]
 then
     rm -rf ${ASTROGRID_HOME}/dsa-first
 fi
+
+if [ -d ${ASTROGRID_HOME}/cdsclient ]
+then
+    rm -rf ${ASTROGRID_HOME}/cdsclient
+fi

@@ -92,13 +92,30 @@ mkdir ${ASTROGRID_HOME}/community
 mkdir ${ASTROGRID_HOME}/community/data
 mkdir ${ASTROGRID_HOME}/community/webapp
 
+
+#
+# Check temp directory
+if [ ! -d ${ASTROGRID_TEMP} ]
+then
+	echo ""
+    echo "Creating AstroGrid temp directory"
+    echo "  Path : ${ASTROGRID_TEMP}"
+    mkdir ${ASTROGRID_TEMP}
+    chmod a+rwx ${ASTROGRID_TEMP}
+fi
 #
 # Get the Community war file.
+if [ ! -f ${ASTROGRID_TEMP}/${COMMUNITY_WARFILE} ]
+then
+	echo ""
+	echo "Downloading Community war file"
+    wget -P ${ASTROGRID_TEMP} ${ASTROGRID_MAVEN}/org.astrogrid/wars/${COMMUNITY_WARFILE}
+fi
+#
+# Install the Community war file.
 echo ""
-echo "Downloading Community war file"
-pushd ${ASTROGRID_HOME}/community/webapp
-	wget ${ASTROGRID_MAVEN}/org.astrogrid/wars/${COMMUNITY_WARFILE}
-popd
+echo "Installing Community war file"
+cp ${ASTROGRID_TEMP}/${COMMUNITY_WARFILE} ${ASTROGRID_HOME}/community/webapp/
 
 #
 # Generate the webapp context.

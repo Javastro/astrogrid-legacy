@@ -10,8 +10,12 @@
 #
 # DSA settings.
 # astrogrid-dsa-catalog-2007.1.01pl.war
-DSAFIRST_VERSION=2007.1.01pl
-DSAFIRST_WARFILE=astrogrid-dsa-catalog-${DSAFIRST_VERSION}.war
+#DSAFIRST_VERSION=2007.1.01pl
+#DSAFIRST_WARFILE=astrogrid-dsa-catalog-${DSAFIRST_VERSION}.war
+
+DSAFIRST_VERSION=200702281028
+DSAFIRST_WARFILE=dsa-test-${DSAFIRST_VERSION}.war
+
 DSAFIRST_CONTEXT=astrogrid-first
 DSAFIRST_RESOURCE=first-catalogue
 
@@ -130,7 +134,8 @@ popd
 echo ""
 echo "Downloading DSA war file"
 pushd ${ASTROGRID_HOME}/dsa-first/webapp
-	wget ${ASTROGRID_MAVEN}/org.astrogrid/wars/${DSAFIRST_WARFILE}
+	#wget ${ASTROGRID_MAVEN}/org.astrogrid/wars/${DSAFIRST_WARFILE}
+    wget http://ag03.ast.cam.ac.uk:8080/download/${DSAFIRST_WARFILE}
 popd
 
 #

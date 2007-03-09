@@ -135,12 +135,30 @@ mkdir ${ASTROGRID_HOME}/registry/exist
 mkdir ${ASTROGRID_HOME}/registry/webapp
 
 #
-# Get the registry war file.
+# Check temp directory
+if [ ! -d ${ASTROGRID_TEMP} ]
+then
+	echo ""
+    echo "Creating AstroGrid temp directory"
+    echo "  Path : ${ASTROGRID_TEMP}"
+    mkdir ${ASTROGRID_TEMP}
+    chmod a+rwx ${ASTROGRID_TEMP}
+fi
+
+#
+# Get the Registry war file.
+if [ ! -f ${ASTROGRID_TEMP}/${REGISTRY_WARFILE} ]
+then
+	echo ""
+	echo "Downloading Registry war file"
+	wget -P ${ASTROGRID_TEMP} ${ASTROGRID_MAVEN}/org.astrogrid/wars/${REGISTRY_WARFILE}
+fi
+
+#
+# Install the Registry war file.
 echo ""
-echo "Downloading registry war file"
-pushd ${ASTROGRID_HOME}/registry/webapp
-	wget ${ASTROGRID_MAVEN}/org.astrogrid/wars/${REGISTRY_WARFILE}
-popd
+echo "Installing Registry war file"
+cp ${ASTROGRID_TEMP}/${REGISTRY_WARFILE} ${ASTROGRID_HOME}/registry/webapp/
 
 #
 # Extract the default registry config.

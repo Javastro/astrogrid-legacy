@@ -54,10 +54,11 @@ fi
 done
 
 export ASTROGRID_HOME=${ASTROGRID_HOME:-"/home/${ASTROGRID_USER}"}
+export ASTROGRID_TEMP=${ASTROGRID_TEMP:-"${ASTROGRID_HOME}/temp"}
 export ASTROGRID_INTERNAL=http://${ASTROGRID_HOST}:${ASTROGRID_PORT}
 export ASTROGRID_EXTERNAL=${ASTROGRID_EXTERNAL:-${ASTROGRID_INTERNAL}}
 
-for SETTING in ASTROGRID_HOME ASTROGRID_INTERNAL ASTROGRID_EXTERNAL
+for SETTING in ASTROGRID_HOME ASTROGRID_TEMP ASTROGRID_INTERNAL ASTROGRID_EXTERNAL
 do
 echo "$SETTING setting: ${!SETTING} - return for OK or enter new value"
 read SETTING_NEW
@@ -72,6 +73,7 @@ done
 echo "Installing AstroGrid services"
 echo "  JAVA_HOME       : ${JAVA_HOME:?"undefined"}"
 echo "  ASTROGRID_HOME  : ${ASTROGRID_HOME:?"undefined"}"
+echo "  ASTROGRID_TEMP  : ${ASTROGRID_TEMP:?"undefined"}"
 echo "  ASTROGRID_USER  : ${ASTROGRID_USER:?"undefined"}"
 echo "  ASTROGRID_PASS  : ${ASTROGRID_PASS:?"undefined"}"
 
@@ -103,6 +105,7 @@ cat > astrogrid-settings << EOF
     #
     # AstroGrid install settings
     ASTROGRID_HOME=${ASTROGRID_HOME:?"undefined"}
+    ASTROGRID_TEMP=${ASTROGRID_TEMP:?"undefined"}
     ASTROGRID_USER=${ASTROGRID_USER:?"undefined"}
     ASTROGRID_PASS=${ASTROGRID_PASS:?"undefined"}
     ASTROGRID_HOST=${ASTROGRID_HOST:?"undefined"}
@@ -116,6 +119,24 @@ cat > astrogrid-settings << EOF
 
 EOF
 
+#
+# Check our home directory.
+if [ ! -d ${ASTROGRID_HOME} ]
+then
+    echo ""
+    echo "Can't find ASTROGRID_HOME directory"
+    echo "  Path : ${ASTROGRID_HOME}"
+	exit 1
+fi
+#
+# Create our temp directory.
+#if [ ! -d ${ASTROGRID_TEMP} ]
+#then
+#    echo ""
+#    echo "Creating ASTROGRID_TEMP"
+#    echo "  Path : ${ASTROGRID_TEMP}"
+#    mkdir ${ASTROGRID_TEMP}
+#fi
 #
 # Check system tools already installed
 echo ""
@@ -214,6 +235,6 @@ echo "Install CDSClient (Y/n) ?"
 read RESPONSE
 if [ ${RESPONSE:-y} = "y" ]
 then
-    . ${SCRIPT_PATH}/cdsclient.sh
+    . ${SCRIPT_PATH}/cdsclient/install.sh
 fi
 

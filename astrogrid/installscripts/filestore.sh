@@ -65,12 +65,28 @@ mkdir ${ASTROGRID_HOME}/filestore/data
 mkdir ${ASTROGRID_HOME}/filestore/webapp
 
 #
-# Get the filestore war file.
+# Check temp directory
+if [ ! -d ${ASTROGRID_TEMP} ]
+then
+	echo ""
+    echo "Creating AstroGrid temp directory"
+    echo "  Path : ${ASTROGRID_TEMP}"
+    mkdir ${ASTROGRID_TEMP}
+    chmod a+rwx ${ASTROGRID_TEMP}
+fi
+#
+# Get the FileStore war file.
+if [ ! -f ${ASTROGRID_TEMP}/${FILESTORE_WARFILE} ]
+then
+	echo ""
+	echo "Downloading FileStore war file"
+	wget -P ${ASTROGRID_TEMP} ${ASTROGRID_MAVEN}/org.astrogrid/wars/${FILESTORE_WARFILE}
+fi
+#
+# Install the FileStore war file.
 echo ""
-echo "Downloading FileStore war file"
-pushd ${ASTROGRID_HOME}/filestore/webapp
-	wget ${ASTROGRID_MAVEN}/org.astrogrid/wars/${FILESTORE_WARFILE}
-popd
+echo "Installing FileStore war file"
+cp ${ASTROGRID_TEMP}/${FILESTORE_WARFILE} ${ASTROGRID_HOME}/filestore/webapp/
 
 #
 # Generate the webapp context.
