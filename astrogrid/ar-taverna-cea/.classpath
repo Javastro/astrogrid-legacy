@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<classpath>
+  <classpathentry excluding="" kind="src" path="src/java">
+  </classpathentry>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/uk.org.mygrid/jars/scufl-model-1.5.1.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/uk.org.mygrid/jars/scufl-ui-api-1.5.1.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/uk.org.mygrid/jars/taverna-core-1.5.1.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/uk.org.mygrid/jars/baclava-core-1.5.1.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/uk.org.mygrid/jars/taverna-enactor-1.5.1.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/uk.org.mygrid/jars/taverna-scavenger-1.5.1.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/jdom/jars/jdom-1.0.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/acr-interface-2007.1.rc1.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/rmilite/jars/rmi-lite-1.0.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.3.jar">
+  </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/xerces/jars/xerces-2.4.0.jar">
+  </classpathentry>
+  <classpathentry kind="output" path="target/classes">
+  </classpathentry>
+</classpath>
