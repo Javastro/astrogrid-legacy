@@ -5,14 +5,18 @@
      precedence than anything else that's imported, or is present
      in that script. -->
 <stylesheet xmlns="http://www.w3.org/1999/XSL/Transform"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xmlns:x2s="http://ns.eurovotech.org/registry-metadata"
             version="1.0">
   <template match="*">
-<!--
     <x2s:UNKNOWN>
-      <attribute name='x2s:name'><value-of select='name(.)'/></attribute>
+      <variable name="p" select="substring-before(name(),':')"/>
+      <attribute name='x2s:name'><value-of select='name()'/></attribute>
+      <attribute name="x2s:namespace">
+        <value-of select="namespace::*[name()=$p]"/>
+      </attribute>
       <apply-templates/>
     </x2s:UNKNOWN>
--->
   </template>
+
 </stylesheet>

@@ -1,0 +1,116 @@
+;; Convert an instance of VORegistry-1.0 to RDF statements
+;; (as striped RDF/XML) using the
+;; http://ns.eurovotech.org/VORegistry-1.0.rdfs#" ontology.
+
+(lx:let ((namespace (#f   "http://www.w3.org/1999/XSL/Transform")
+                    (x2s  "http://ns.eurovotech.org/registry-metadata#")
+                    ;(ri   "http://www.ivoa.net/xml/RegistryInterface/v1.0")
+                    (vores  "http://www.ivoa.net/xml/VOResource/v1.0")
+                    ;("rmo" "http://ns.eurovotech.org/VOResource-1.0.owl#")
+                    (voro "http://www.ivoa.net/xml/VOResource/v1.0#")
+                    (voreg   "http://www.ivoa.net/xml/VORegistry/v1.0")
+                    (vorego  "http://www.ivoa.net/xml/VORegistry/v1.0#")
+
+                    ;(vs "http://www.ivoa.net/xml/VODataService/v0.5")
+                    (xsi "http://www.w3.org/2001/XMLSchema-instance")
+
+                    (rdf  "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+                    (rdfs "http://www.w3.org/2000/01/rdf-schema#"))
+         (feature "http://ns.nxg.me.uk/lx/attributes-in-no-namespace")
+         (dtd (template (match #t) mode name)
+              (element (name #t))
+              (attribute (name #t))
+              (value-of (select #t))
+              (when (test #t))
+              (if (test #t))
+              (for-each (select #t))
+              (with-param (name #t) select)))
+
+(stylesheet version: 1.0 exclude-result-prefixes: "voreg"
+  (output method: xml
+          version: 1.0
+          indent: yes)
+
+  (variable name: voreg-ns http://www.ivoa.net/xml/VORegistry/v1.0#)
+
+  ;; default template
+;;   (template *
+;;     (element name: "vorego:{local-name()}"
+;;              (apply-templates)))
+
+  (template identifier
+    (call-template name: make-identifier-uri
+                   (with-param id (apply-templates))))
+
+  (template managingOrg
+    (vorego:managingOrg 
+     (call-template name: voro:resource-name
+                   (with-param type vorego:Authority))))
+
+  ;; Named templates
+  (lx:dtd ((template (name #t)))
+    (template voreg:Authority
+      (rdf:type rdf:resource: {$voreg-ns}Authority)
+      (call-template name: vores:Resource))
+    (template voreg:Registry
+      (rdf:type rdf:resource: {$voreg-ns}Registry)
+      (call-template name: vores:Service))
+    (template voreg:OAISOAP
+      (rdf:type rdf:resource: {$voreg-ns}OAISOAP)
+      (call-template name: vores:WebService))
+    (template voreg:OAIHTTP
+      (rdf:type rdf:resource: {$voreg-ns}OAIHTTP)
+      (call-template name: vores:Interface))
+    (template voreg:Harvest
+      (rdf:type rdf:resource: {$voreg-ns}Harvest)
+      (call-template name: vores:Capability))
+    (template voreg:Search
+      (rdf:type rdf:resource: {$voreg-ns}Search)
+      (call-template name: vores:Capability))
+
+    ;; the magic xsi:type template
+    (template voreg:resolve-xsitype
+      (param name: type)
+      ;(vorego:type (value-of $type))
+      (choose
+       (when "$type='Authority'"
+         (call-template name: voreg:Authority))
+       (when "$type='Registry'"
+         (call-template name: voreg:Registry))
+       (when "$type='OAISOAP'"
+         (call-template name: voreg:OAISOAP))
+       (when "$type='OAIHTTP'"
+         (call-template name: voreg:OAIHTTP))
+       (when "$type='Harvest'"
+         (call-template name: voreg:Harvest))
+       (when "$type='Search'"
+         (call-template name: voreg:Search)))))
+
+;;   (lx:dtd ((template (name #t)))
+;;     (template voreg:Registry
+;;       (rdf:type rdf:resource: {$voreg-ns}Registry)
+;;       (call-template vores:Service))
+;;     (template voreg:RegCapRestriction
+;;       (rdf:type rdf:resource: {$voreg-ns}RegCapRestriction)
+;;       (call-template vores:Capability))
+;;     (template voreg:Harvest
+;;       (rdf:type rdf:resource: {$voreg-ns}Harvest)
+;;       (call-template voreg:RegCapRestriction))
+;;     (template voreg:Search
+;;       (rdf:type rdf:resource: {$voreg-ns}Search)
+;;       (call-template voreg:RegCapRestriction))
+;;     (template voreg:OAIHTTP
+;;       (rdf:type rdf:resource: {$voreg-ns}OAIHTTP)
+;;       (call-template vores:Interface))
+;;     (template voreg:OAISOAP
+;;       (rdf:type rdf:resource: {$voreg-ns}OAISOAP)
+;;       (call-template vores:WebService))
+
+;;     ;; the magic xsi:type template
+;;     (template voreg:resolve-xsitype
+;;       (param name: type)
+;;       (choose
+;;        (when "$type='Registry"
+;;          (call-template voreg:Registry)))))
+
+))

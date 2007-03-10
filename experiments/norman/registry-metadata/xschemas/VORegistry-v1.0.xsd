@@ -4,7 +4,7 @@
            xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" 
            xmlns:vg="http://www.ivoa.net/xml/VORegistry/v1.0" 
            xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1"
-           xmlns:x2s="http://ns.eurovotech.org/registry-metadata"
+           xmlns:x2s="http://ns.eurovotech.org/registry-metadata#"
            elementFormDefault="unqualified" attributeFormDefault="unqualified"
            version="1.0wd">
 

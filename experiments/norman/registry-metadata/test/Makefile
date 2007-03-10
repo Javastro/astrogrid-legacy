@@ -1,35 +1,70 @@
 CWM=PYTHONPATH=/Volumes/Lagrange/Data/tools/cwm-cvs/lib/python2.3/site-packages /Volumes/Lagrange/Data/tools/cwm-cvs/bin/cwm
+JENA=$T/Jena-2.3
+#CP=`ls $(JENA)/lib/*.jar|sed -n '1,$$H;$${g;s/\n/:/gp;}'`
+CP=/Volumes/Lagrange/Data/tools/Jena-2.3/lib/antlr-2.7.5.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/arq.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/commons-logging.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/concurrent.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/icu4j_3_4.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/jakarta-oro-2.0.8.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/jena.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/jenatest.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/junit.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/log4j-1.2.12.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/stax-1.1.1-dev.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/stax-api-1.0.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/xercesImpl.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/xml-apis.jar
 
-TESTCASES=siap-results
+TESTCASES=sia-0.7 sia-1.0 mssl-reg-authority mssl-reg-registry \
+	organisation-ivoa organisation-mssl
 
 %.rdf: %.xml
 	rm -f $@
 	xsltproc --path ../code rdf-all.xslt $< >$@.tmp && mv $@.tmp $@
 
-# Create a normalised ntriples representation.
-%.ntriples: %.rdf
+# Create a ntriples representation.
+%.nt: %.rdf
 	rm -f $@
-	$(CWM) -pipe -rdf $< -ntriples | ./normalise-ntriples >$@
+#	CLASSPATH=`ls $(JENA)/lib/*.jar|sed -n '1,$$H;$${g;s/\n/:/gp;}'` 
+	java -cp $(CP) jena.rdfcopy $< RDF/XML N-TRIPLE \
+	  | ./normalise-ntriples >$@
+#	$(CWM) -pipe -rdf $< -ntriples | ./normalise-ntriples >$@
+
+# ... and a normalised version, ready for diffing
+#%.nnt: %.nt
+#	./normalise-ntriples --suppress-blank-nodes $< >$@
+
+# Create .n3 representation (just for debugging)
+%.n3: %.rdf
+	rm -f $@
+	CLASSPATH=`ls $(JENA)/lib/*.jar|sed -n '1,$$H;$${g;s/\n/:/gp;}'` \
+	  java jena.rdfcopy $< RDF/XML N3 >$@
+#	$(CWM) -pipe -rdf $< -n3 >$@
 
 # Run the RDF through Eyeball.  Exclude the URI check, which objects
 # to ivo:... URIs (as indeed it should, grumble, grumble)
 %.eyeballed: %.rdf
 	rm -f $@
-	../code/eyeball.sh -check $< \
+	../code/eyeball.sh \
+	  -assume owl \
 	  -assume ../rdfschemas/VOResource-1.0.owl \
-	  -exclude URI >$@.tmp && mv $@.tmp $@
+	  -assume ../xschemas/VODataService-v1.0.rdfs \
+	  -assume ../xschemas/SIA-v1.0.rdfs \
+	  -assume ../xschemas/TabularDB-v0.3.rdfs \
+	  -exclude URI \
+	  -check $< \
+	  >$@.tmp 2>&1 && mv $@.tmp $@
 
-check: $(TESTCASES:=.ntriples) $(TESTCASES:=.eyeballed)
-	@for f in *.eyeballed; do echo "### $$f..."; cat $$f; done
+# cat all the eyeballed problems, and diff the ntriples files against
+# correct values.  If there's a problem with the latter, then leave the .diff
+# file, and also create a .diffx file, which is the diff of the .ntriples files
+# with the anonymous nodes all given the same identifier, which is easier
+# to read.
+check: $(TESTCASES:=.nt) # $(TESTCASES:=.eyeballed)
+#	@for f in *.eyeballed; do echo "### $$f..."; cat $$f; done
 	@rm -f *.diff
 	@for f in $(TESTCASES); do \
-	  if diff $$f.ntriples-correct $$f.ntriples >$$f.diff; then \
+	  if diff $$f.nt-correct $$f.nt >$$f.diff; then \
 	    echo "$$f: ok"; \
 	    rm $$f.diff; \
 	  else \
-	    echo "$$f: failed -- see $$f.diff"; \
+	    echo "$$f: failed"; \
 	  fi; \
 	done
+# 	  else \
+# 	    echo "$$f: failed -- see $$f.diff & $$f.diffx"; \
+# 	    sed 's/_:[0-9]*/_:X/g' $$f.ntriples >t.ntriples; \
+# 	    sed 's/_:[0-9]*/_:X/g' $$f.ntriples-correct >t.ntriples-correct; \
+# 	    diff t.ntriples-correct t.ntriples >$$f.diffx; \
+# 	    rm t.ntriples t.ntriples-correct; \
 
 clean:
-	rm -f *.ntriples *.rdf *.diff *.eyeballed
+	rm -f *.nt *.rdf *.diff *.diffx *.eyeballed

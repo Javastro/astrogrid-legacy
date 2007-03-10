@@ -1,21 +1,22 @@
-;; Convert an instance of VOResource-0.10 to RDF statements (as
+;; Convert an instance of VOResource-1.0 to RDF statements (as
 ;; striped RDF/XML) using the
 ;; http://ns.eurovotech.org/VOResource-1.0.owl#" ontology.
 
 (lx:let ((namespace (#f   "http://www.w3.org/1999/XSL/Transform")
                     (x2s  "http://ns.eurovotech.org/registry-metadata#")
-                    (ri   "http://www.ivoa.net/xml/RegistryInterface/v0.1")
-                    (vor  "http://www.ivoa.net/xml/VOResource/v0.10")
+                    (ri   "http://www.ivoa.net/xml/RegistryInterface/v1.0")
+                    (vor  "http://www.ivoa.net/xml/VOResource/v1.0")
                     ;("rmo" "http://ns.eurovotech.org/VOResource-1.0.owl#")
                     (voro "http://www.ivoa.net/xml/VOResource/v1.0#")
+                    (vorego  "http://www.ivoa.net/xml/VORegistry/v1.0#")
 
-                    (vs "http://www.ivoa.net/xml/VODataService/v0.5")
+                    ;(vs "http://www.ivoa.net/xml/VODataService/v0.5")
                     (xsi "http://www.w3.org/2001/XMLSchema-instance")
 
                     (rdf  "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
                     (rdfs "http://www.w3.org/2000/01/rdf-schema#"))
          (feature "http://ns.nxg.me.uk/lx/attributes-in-no-namespace")
-         (dtd (template (match #t) mode name)
+         (dtd (template (match #t) mode name priority)
               (element (name #t))
               (attribute (name #t))
               (value-of (select #t))
@@ -24,7 +25,7 @@
               (for-each (select #t))
               (with-param (name #t) select)))
 
-(stylesheet version: 1.0 exclude-result-prefixes: "ri vor vs xsi"
+(stylesheet version: 1.0 exclude-result-prefixes: "ri vor xsi"
   (output method: xml
           version: 1.0
           indent: yes)
@@ -33,8 +34,13 @@
 
   (template "ri:Resource"
     (element name: "voro:Resource"
-             (attribute rdf:about
-                        (apply-templates select: "vor:identifier/text()"))
+             (choose
+              (when vor:identifier
+                (attribute rdf:about
+                           (apply-templates select: "vor:identifier/text()")))
+              (when identifier
+                (attribute rdf:about
+                           (apply-templates select: "identifier/text()"))))
              (choose
               (when @xsi:type
                 (call-template name: resolve-xsitype))
@@ -62,80 +68,84 @@
            (x2s:UNKNOWN)))))
     (apply-templates))
 
-  ;; elements for which we can use the default template:
-  ;; vor:title
-  ;; vor:date
-  ;; vor:version
-  ;; Creator and contact have similar but not identical contents in the
-  ;; XSchema, but identical allowed properties in the Ontology.
-  ;; Handle them the same way.
-  ;; vor:logo
-  ;; vor:address
-  ;; vor:telephone
-  ;; vor:subject
-  ;; vor:description
-  (template vor:*
+  ;; elements with simple content -- easy to handle
+  (template "date|logo|shortName|subject|version"
       (element name: "voro:{local-name()}"
                (apply-templates)))
+  (template "address|email|title"
+    (element name: "voro:{local-name()}"
+             (value-of "normalize-space()")))
 
-  (template vor:shortName
-      (voro:shortname (apply-templates)))
+  ;; elements with 'simple' complex content -- no attributes, and nothing
+  ;; funky needing done with the content.  These just need parseType=Resource.
+  ;; (only one such element in this schema)
+  (template curation
+    (element "voro:{local-name()}"
+             (attribute name: rdf:parseType Resource)
+             (apply-templates)))
 
-  (template vor:identifier
+  (template identifier
     ;; handled here as well as in rdf:about attribute on containing element
     (call-template name: make-identifier-uri
                    (with-param id (apply-templates))))
 
   ;; various things which map to Actor
-  (template vor:publisher
+  (template publisher
       (voro:publisher
        (call-template name: voro:resource-name)))
 
-  (template vor:contributor
+  (template contributor
       (voro:contributor
        (call-template name: voro:resource-name)))
 
   ;; Creator and contact have similar but not identical contents in the
   ;; XSchema, but identical allowed properties in the Ontology.
   ;; Handle them the same way.
-  (template vor:creator
+  (template creator
       (voro:creator
        (voro:Creator
         (apply-templates))))
 
   ;; Contact
-  (template vor:contact
+  (template contact
       (voro:contact
        (voro:Contact
         (apply-templates))))
 
-  (template vor:curation
-      (voro:curation rdf:parseType: Resource
-        (apply-templates)))
+  (template capability
+    (voro:capability rdf:parseType: Resource
+       (choose
+        (when "@standardID and starts-with(@standardID,'ivo://')"
+          (call-template name: make-identifier-uri
+                         (with-param id (value-of @standardID))
+                         (with-param propname voro:standardID)))
+        (when "@standardID"
+          (voro:standardID (value-of @standardID))))
+       (apply-templates)))
 
-  (template vor:name
-      (voro:name (apply-templates))
+  (template name
+    (voro:name (apply-templates))
     (if @ivo-id
         (voro:identifier (value-of @ivo-id))))
 
   ;; Content
-  (template vor:content
+  (template content
       (voro:content
        (element voro:ContentDescription
                 (apply-templates))))
 
-  (template vor:source
+  (template source
       (voro:source rdf:parseType: Resource
        (if @format
            (voro:format (value-of @format)))
        (voro:value (apply-templates))))
 
-  (template vor:referenceURL
+  (template referenceURL
       (voro:referenceURL
        (voro:FullAccessURL
         (attribute voro:uri (apply-templates)))))
 
-  (template vor:accessURL
+  (template accessURL name: vor:accessURL
       (variable name: access-url-type
                 (choose
                  (when "@use = 'base'"
@@ -150,70 +160,63 @@
        (element "{$access-url-type}"
                 (attribute voro:uri (apply-templates)))))
 
-  (template vor:wsdlURL
+  (template wsdlURL
     (voro:wsdlURL
      (voro:FullAccessURL
-      (attribute voro:uri (apply-templates)) )))
+      (attribute voro:uri (apply-templates)))))
 
-  (template vor:type
-                ;; do mild normalisation on the given string
-                (variable name: type
-                          (value-of "translate(text(),
-                                               'ABCDEFGHIJKLMNOPQRSTUVWXYZ ',
-                                               'abcdefghijklmnopqrstuvwxyz')"))
-                ;;(attribute rdf:type
-                (variable name: propertyname
-                           (choose
-                            ;; this list of types is taken from the document
-                            ;; Resource Metadata for the Virtual Observatory,
-                            ;; v1.1, WD 2005 June 21
-                            (when "$type = 'archive'"
-                              voro:ArchiveType)
-                            (when "$type = 'bibliography'"
-                              voro:BibliographyType)
-                            (when "$type = 'catalog'"
-                              voro:CatalogType)
-                            (when "$type = 'journal'"
-                              voro:JournalType)
-                            (when "$type = 'library'"
-                              voro:LibraryType)
-                            (when "$type = 'simulation'"
-                              voro:SimulationType)
-                            (when "$type = 'survey'"
-                              voro:SurveyType)
-                            (when "$type = 'education'"
-                              voro:EducationType)
-                            (when "$type = 'outreach'"
-                              voro:OutreachType)
-                            (when "$type = 'eporesource'"
-                              voro:EPOResourceType)
-                            (when "$type = 'animation'"
-                              voro:AnimationType)
-                            (when "$type = 'artwork'"
-                              voro:ArtworkType)
-                            (when "$type = 'background'"
-                              voro:BackgroundType)
-                            (when "$type = 'basicdata'"
-                              voro:BasicDataType)
-                            (when "$type = 'historical'"
-                              voro:HistoricalType)
-                            (when "$type = 'photographic'"
-                              voro:PhotographicType)
-                            (when "$type = 'press'"
-                              voro:PressType)
-                            (when "$type = 'organisation'"
-                              voro:OrganisationType)
-                            (when "$type = 'project'"
-                              voro:ProjectType)
-                            (when "$type = 'registry'"
-                              voro:RegistryType)
-                            (otherwise ;; including matching type 'other'
-                             voro:OtherType))
-                           )
-       (voro:type
-        (element {$propertyname})))
+  (template rights name: vor:rights
+    (variable name: rights-type
+              (value-of "normalize-space()"))
+    (variable name: propertyname
+              (choose
+               (when "$rights-type = 'public'"		voro:PublicRights)
+               (when "$rights-type = 'proprietary'"	voro:ProperietaryRights)
+               (when "$rights-type = 'secure'"		voro:SecureRights)
+               (otherwise
+                x2s:ERROR-RIGHTS)))
+    (voro:rights
+     (element {$propertyname})))
 
-  (template vor:contentLevel
+  (template type
+    ;; do mild normalisation on the given string
+    (variable name: type
+              (value-of "translate(text(),
+                                   'ABCDEFGHIJKLMNOPQRSTUVWXYZ ',
+                                   'abcdefghijklmnopqrstuvwxyz')"))
+    ;;(attribute rdf:type
+    (variable name: propertyname
+              (choose
+               ;; this list of types is taken from the document
+               ;; Resource Metadata for the Virtual Observatory,
+               ;; v1.1, WD 2005 June 21
+               (when "$type = 'archive'"	voro:ArchiveType)
+               (when "$type = 'bibliography'"	voro:BibliographyType)
+               (when "$type = 'catalog'"	voro:CatalogType)
+               (when "$type = 'journal'"	voro:JournalType)
+               (when "$type = 'library'"	voro:LibraryType)
+               (when "$type = 'simulation'"	voro:SimulationType)
+               (when "$type = 'survey'"		voro:SurveyType)
+               (when "$type = 'education'"	voro:EducationType)
+               (when "$type = 'outreach'"	voro:OutreachType)
+               (when "$type = 'eporesource'"	voro:EPOResourceType)
+               (when "$type = 'animation'"	voro:AnimationType)
+               (when "$type = 'artwork'"	voro:ArtworkType)
+               (when "$type = 'background'"	voro:BackgroundType)
+               (when "$type = 'basicdata'"	voro:BasicDataType)
+               (when "$type = 'historical'"	voro:HistoricalType)
+               (when "$type = 'photographic'"	voro:PhotographicType)
+               (when "$type = 'press'"		voro:PressType)
+               (when "$type = 'organisation'"	voro:OrganisationType)
+               (when "$type = 'project'"	voro:ProjectType)
+               (when "$type = 'registry'"	voro:RegistryType)
+               (otherwise ;; including matching type 'other'
+                voro:OtherType))
+              )
+    (voro:type
+     (element {$propertyname})))
+
+  (template contentLevel
       ;; do mild normalisation on the given string
       (variable name: cl
                 (value-of "translate(text(),
@@ -245,12 +248,12 @@
     (voro:contentLevel
      (element "{$cltype}")))
 
-  (template vor:relationship
+  (template relationship
       (variable name: type
-                (value-of "translate(vor:relationshipType,
+                (value-of "translate(relationshipType,
                                      'ABCDEFGHIJKLMNOPQRSTUVWXYZ- ',
                                      'abcdefghijklmnopqrstuvwxyz')"))
-    (apply-templates select: vor:relatedResource
+    (apply-templates select: relatedResource
                      (with-param rel
                                  (choose
                                   (when "$type = 'mirrorof'"    voro:mirrorOf)
@@ -275,7 +278,7 @@
     ;;       (apply-templates vor:relatedResource)))
     )
 
-  (template vor:relatedResource
+  (template relatedResource
       (param name: rel voro:relatedResource)
     (element {$rel}
              (element voro:Actor
@@ -285,12 +288,12 @@
                                                      (value-of @ivo-id))))
                       (voro:name (apply-templates)))))
 
-  ;; If vor:interface is present here, then we're actually processing
-  ;; a subtype of vor:Resource.  Since interface is `abstract' in XSchema terms,
+  ;; If interface is present here, then we're actually processing
+  ;; a subtype of Resource.  Since interface is `abstract' in XSchema terms,
   ;; there should be an xsi:type attribute.
   ;; Since this is a type which is extended, it must have a 'name' which
   ;; matches the element name.
-  (template vor:interface
+  (template interface
     (voro:interface
      (voro:Interface
       (choose
@@ -299,32 +302,48 @@
        (otherwise
         (call-template name: vor:Interface))))))
 
-  (template vor:securityMethod
+  (template securityMethod
       (voro:securityMethod rdf:parseType: Resource
                            (voro:standardID (apply-templates))))
+
+  (template validationLevel
+    (variable name: level select: "normalize-space()")
+    (element "voro:{concat('validationLevel',$level)}"
+             (attribute name: rdf:parseType Resource)
+             (choose
+              (when @validatedBy
+                (call-template name: make-identifier-uri
+                               (with-param id (value-of @validatedBy))))
+              (otherwise
+               (call-template name: make-identifier-uri ;FIXME bad default
+                              (with-param id "ivo://ERROR/unknown"))))))
 
   ;; Named templates
   (lx:dtd ((template (name #t)))
     ;; Handle ResourceName elements, which map to Actor or one of its subtypes,
     ;; optionally given in the 'type' parameter.
-    ;; resource-name is now in rdf-VOResource-1.0.lx
-;;     (template resource-name
-;;       (param name: type voro:Actor)
-;;       (element "{$type}"
-;;                (element voro:name
-;;                         (apply-templates))
-;;                (if @ivo-id
-;;                    (call-template name: make-identifier-uri
-;;                                   (with-param id (value-of @ivo-id)))
-;; ;;                    (element voro:identifier
-;; ;;                             (attribute voro:uri (value-of @ivo-id)))
-;;                  )))
+    (template voro:resource-name
+      (param name: type voro:Actor)
+      (variable name: content (value-of "normalize-space(.)"))
+      (element "{$type}"
+               (if "string-length($content) > 0"
+                   (element voro:name (value-of $content)))
+               (if @ivo-id
+                   (call-template name: make-identifier-uri
+                                  (with-param id (value-of @ivo-id)))
+;;                    (element voro:identifier
+;;                             (attribute voro:uri (value-of @ivo-id)))
+                 )))
 
-    ;; vor:Interface is a `base type'
+    ;; Here are `base types'
     (template vor:Interface
+      (if @role
+          (voro:interfaceRole (value-of @role)))
+      (apply-templates))
+    (template vor:Capability
       (apply-templates))
 
-    ;; vor:Service is a `base type', and an extended type
+    ;; The following can be both `base types' and extended ones
     (template vor:Service
       (rdf:type rdf:resource: {$vor-ns}Service)
       (call-template name: vor:Resource))
@@ -337,32 +356,36 @@
       (rdf:type rdf:resource: {$vor-ns}WebBrowser)
       (call-template name: vor:Interface))
 
+    (template vor:Organisation
+      (rdf:type rdf:resource: {$vor-ns}Organisation)
+      (call-template name: vor:Resource))
+
     (template vor:resolve-xsitype
       (param name: type)
       (choose
        (when "$type='WebService'"
          (call-template name: vor:WebService))
        (when "$type='WebBrowser'"
-         (call-template name: vor:WebBrowser))))
-
-;;     (template process-xsi-type
-;;       (variable name: prefix select: "substring-before(@xsi:type, ':')")
-;;       (rdf:type
-;;        (attribute name: rdf:resource
-;;                   (value-of select: "namespace::*[name()=$prefix]")
-;;                   "#"
-;;                   (value-of select: "substring-after(@xsi:type,':')"))))
+         (call-template name: vor:WebBrowser))
+       (when "$type='Organisation'"
+         (call-template name: vor:Organisation))))
 
     ;; Given an 'id' (and IVOID), create an identifier resource with range
     ;; IdentifierURI, containing the broken-down components of the 'id'.
     (template make-identifier-uri
       (param name: id)
-      (voro:identifier
-       rdf:parseType: Resource
+      (param name: propname voro:identifier)
+      (element "{$propname}"
+       (attribute rdf:parseType Resource)
        (voro:uri (value-of $id))
+                                        ;(voro:uri {$id})
        (variable name: id-and-key select: "substring-after($id,'ivo://')")
-       (voro:authorityID (value-of "substring-before($id-and-key,'/')"))
-       (voro:resourceKey (value-of "substring-after($id-and-key,'/')"))))
+       (choose
+        (when "contains($id-and-key,'/')"
+          (voro:authorityID (value-of "substring-before($id-and-key,'/')"))
+          (voro:resourceKey (value-of "substring-after($id-and-key,'/')")))
+        (otherwise
+         (voro:authorityID (value-of $id-and-key))))))
 
     )
 

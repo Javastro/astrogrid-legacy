@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agr:AstrogridResource xmlns:agr="urn:astrogrid:schema:RegistryStoreResource:v1">
+  <ri:Resource xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0"
+               xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+               xmlns:vg="http://www.ivoa.net/xml/VORegistry/v1.0"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               created="2007-01-24T16:06:38"
+               status="active"
+               updated="2007-01-24T16:06:38"
+               xsi:type="vg:Registry">
+    <title>MSSL Full Registry</title>
+    <identifier>ivo://mssl.ucl.ac.uk_full/org.astrogrid.registry.RegistryService</identifier>
+    <curation>
+      <publisher>MSSL</publisher>
+      <contact>
+        <name>Kevin Benson</name>
+        <email>kmb@mssl.ucl.ac.uk</email>
+      </contact>
+    </curation>
+    <content>
+      <subject>registry</subject>
+      <description>Astrogrid Registry</description>
+      <referenceURL>http://msslxv.mssl.ucl.ac.uk:8080/mssl-registry</referenceURL>
+      <type>Registry</type>
+    </content>
+    <capability standardID="ivo://ivoa.net/std/Registry" xsi:type="vg:Harvest">
+      <interface role="std" xsi:type="vg:OAIHTTP">
+        <accessURL>http://msslxv.mssl.ucl.ac.uk:8080/mssl-registry/OAIHandlerv1_0</accessURL>
+      </interface>
+      <interface role="std" xsi:type="vg:OAISOAP">
+        <accessURL>http://msslxv.mssl.ucl.ac.uk:8080/mssl-registry/services/RegistryHarvestv1_0</accessURL>
+      </interface>
+      <!-- Max Records for OAI resources being returned
+           a resumptionToken is given to the client if there are more
+           whereby the client may page through all the OAI resources -->
+      <maxRecords>200</maxRecords>
+    </capability>
+    <capability standardID="ivo://ivoa.net/std/Registry"
+                xsi:type="vg:Search">
+      <interface role="std" xsi:type="vr:WebService">
+        <accessURL>http://msslxv.mssl.ucl.ac.uk:8080/mssl-registry/services/RegistryQueryv1_0</accessURL>
+      </interface>
+      <!-- Max Records if only for Search and KeywordSearch will return
+           a max of this many records, but the client may still
+           constrain things with a from and to parameters to page
+           through all records.  XQuery has no constraints. -->
+      <maxRecords>200</maxRecords>
+      <extensionSearchSupport>full</extensionSearchSupport>
+      <optionalProtocol>XQuery</optionalProtocol>
+    </capability>
+    <full>false</full>
+    <managedAuthority>mssl.ucl.ac.uk_full</managedAuthority>
+  </ri:Resource>
+</agr:AstrogridResource>

@@ -41,7 +41,7 @@
       ;; when we handle that by putting in the corresponding property,
       ;; this will in fact be (in this example) a voro:Service object.
       ;; I think this is OK -- any reasoner will be happy with that, won't it?
-      (element name: rdf:Description
+      (element name: rdf:DescriptionXX
                (attribute rdf:about
                           (apply-templates select: "vor:identifier/text()"))
                (attribute rdf:type
@@ -62,7 +62,7 @@
                (if @updated
                    (voro:updated (value-of @created)))
                (if @status
-                   (voro:status
+                   (voro:statusx
                     (element rdf:Description
                              (attribute rdf:type
                                         (choose
@@ -71,7 +71,9 @@
                                          (when "@status = 'inactive'"
                                            voro:InactiveStatus)
                                          (when "@status = 'deleted'"
-                                           voro:DeletedStatus))))))
+                                           voro:DeletedStatus)
+                                         (otherwise
+                                          voro:UNKNOWN))))))
                (apply-templates)
                ))
 

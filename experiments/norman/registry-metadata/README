@@ -1,4 +1,4 @@
-
+* Overview
 I was initially rather indecisive about this, and unable to decide whether to
 stick to RDFS for the RM ontology, or to go with OWL.  Presumably the
 former would give me more flexibility as regards reasoners.  I suppose
@@ -127,6 +127,7 @@ where it's not known.
 Content -> ContentDescription
 Curation -> CurationDescription
 Date -> DateTime
+ivo-id -> identifier
 
 Date:role property -> Date:dateRole
 Interface:role property -> Interface:interfaceRole
@@ -211,3 +212,78 @@ then it objects to fewer things, but these are things I've
 renamed in the VOResource schema: ResourceName has changed; the range
 of SIA/v1.0#validationLevel is no longer VOResource/v1.0#Validation;
 and I seem to have removed AuthorityID.  So I'll need to rethink those.
+* Journal
+** August 06
+    Some progress.  More on the VOResource-v1.0 conversion, trying to
+    sort out ways of handling bloody xsi:type.  I think the best thing
+    is indeed to preprocess this so that these turn into normal
+    element names; or perhaps I should after all use the complicated
+    namespace pattern thing indicated by
+    <http://www.biglist.com/lists/xsl-list/archives/200412/msg00043.html>.
+
+Mon 21 August
+
+    Progress.  I decided that the first thing to do was to create an
+    XSLT script to generate .rdfs from .xsd, working with the SIA
+    XSchema in particular.  I've made decent progress.  Things to do
+    tomorrow: pass namespaces through to the output (makes Protégé
+    happier), annotate the .xsd file to specify property names for
+    selected element/attribute names, since there are two lat/long
+    elements defined with different ranges.
+
+Wed 23 August
+
+    I thought I just needed to tidy things up here, but no.  The
+    conversion script has grown and grown, and got more and more
+    sophisticated.  Anyway, I've got myself back to the place where I
+    was yesterday, when I thought there was just tidying-up left to
+    do, inasmuch as all of the problems reported by eyeball when it
+    looks at the merger of SIA-v1.0.rdfs, VORegistry-v1.0.rdfs and
+    VODataService-v1.0.rdfs, are to do with reference to the
+    VOResource-v1.0 ontology (do 'make all-schemas.eyeballed').  The
+    difference is that today I've sorted out the existence and
+    handling of the various datatype properties.  Committed as of
+    today, 23:00.
+
+Thu 24 August
+
+    I got the xschema stuff sorted out, so it's all working, as far as
+    all-schemas.eyeballed is concerned.  So now for the actual
+    conversion script...!
+
+    Oddly enough, the ~/Projects/utype-reasoning/usnob_psc.rdf file
+    was rejected as ill-formed, though I can't see anything wrong with
+    it (but it's very late).
+
+Fri 25 August
+
+    Started on, and made headway with, the conversions to RDF.  Wrote
+    votech/registry-metadata/code/ExtractNamespaces.java, though I'm
+    now having second thoughts about whether it's actually needed.
+
+Sat 26 August
+
+    Good progress: got the SIAP test case converted, and set up a test
+    harness in .../test.
+
+Sun 27 August
+
+    More progress, I think.  I've started on the VODataService-v0.5
+    transformer and made respectable progress.  In particular, I think
+    I've sorted out a suitable framework for handling xsi:type
+    attributes reasonably sanely, though I'd better document it before
+    its exoticism becomes too much and I forget how it works.  The
+    VODataService stuff looks complicated, however, because it and
+    VODataServiceCoverage have merged, and the VODataService-v1.0 now
+    seems to refer to STC.
+
+    The siap-results.xml file now mostly converts, though Eyeballing
+    it shows there are still a few errors.
+
+Mon 28 August
+
+    Some progress on the conversions.  Most things work, but I'm a bit
+    stalled because TabularSkyService and SkyService have been removed
+    from SIA between 0.7 and 1.0, and I don't have the .xsd file
+    they've been moved to, if indeed they haven't just been deleted.
+    And I don't have a network connection.

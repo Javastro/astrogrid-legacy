@@ -1,0 +1,118 @@
+The conversion stylesheets in here are structured as follows:
+
+* There's a different stylesheet for each source namespace, so that,
+  for example, SIA-0.7.xsd and SIA-v1.0.xsd will be in separate
+  scripts.  They'll obviously be similar, but not identical, not least
+  in having distinct namespaces.  They will both, however, map to the
+  same RDFS schema.
+
+* They handle xsi:type `subclassing' as described below.
+
+* The master stylesheet is rdf-all.xslt.  This imports all the other
+  ones, and has a few common templates in it.
+
+* The first stylesheet imported, and thus the one with the lowest
+  import precedence, is fallback.xslt, which includes a default
+  template which matches everything, which generates a x2s:UNKNOWN element.
+
+
+How the stylesheets handle elements
+-----------------------------------
+
+Scrappy notes:
+
+Handlers for complexTypes should handle any attributes explicitly,
+then call (apply-templates)
+
+Handlers for extending types should (call-template name: <base-type>)
+
+Handlers which can handle a property with type IdentifierURI can call
+    (call-template name: make-identifier-uri
+                   (with-param id (apply-templates)))
+or include (with-param problems voro:standardID) (for example) if the
+property name is not voro:identifier.
+
+Properties which map to `interesting' types, such as enumerations,
+have to be handled specially.  See for example sia:imageServiceType.
+
+xsi:type subclassing
+--------------------
+
+The template for any XSD element which is extended (ie, which is a
+`base class' in OO terms, and so which might appear in an xsi:type
+attribute), should be prepared to handle the appearance of that
+xsi:type on an element.  To handle it, it has to do two things.
+
+First, it should create a named template whose QName is the same as
+the _class_, including a namespace.  This template does all the actual
+processing of the element contents, and must either include an
+(apply-templates), or a call-template to a ComplexType which it in
+turn extends.
+
+Secondly, it should create a template which actually handles the
+element.  It should look like this, for example:
+
+  (template "ri:Resource"
+    (element name: "voro:Resource"
+             (attribute rdf:about
+                        (apply-templates select: "vor:identifier/text()"))
+             (choose
+              (when @xsi:type
+                (call-template name: resolve-xsitype))
+              (otherwise
+               (call-template name: vor:Resource)))))
+
+That is, it does any processing which would generate attributes on the
+output RDF element, then invokes the 'resolve-xsitype' named template
+if @xsi:type is present, or invokes the class-named named template if
+not.
+
+Any class which _extends_ another, must fit in to this scheme as
+follows.
+
+The transformation for the extending class must include a named
+template, whose name is the name of the extending class.  That
+template should emit an rdf:type element which declares an additional
+type for the enclosing RDF/XML element, then does any processing of
+the element contents which wouldn't be picked up by the subsequent
+(apply-templates) provided by the named template for the base class.
+Then it should call the named template which is named after the class
+which it extends.  For example:
+
+    (template ds:ParamHTTP
+      (rdf:type rdf:resource: {$dso-ns}ParamHTTP)
+      (dso:queryType
+       (variable name: qtype
+                 (choose
+                  (when "@qtype='GET'" dso:HTTPQueryTypeGET)
+                  (when "@qtype='POST'" dso:HTTPQueryTypePOST)))
+       (element {$qtype}))
+      (call-template vor:Interface))
+
+
+
+The way that this named template is invoked is via the resolve-xsitype
+named template in rdf-all.xslt, with an extra bit of indirection.
+What that resolve-xsitype template actually does is call the
+ns:resolve-xsitype named template corresponding to the ns: of the
+@xsi:type on the element on which the resolve-xsitype was called,
+passing as its $type parameter the localname of the @xsi:type class.
+The extending stylesheet should be able to handle this.  For example:
+
+    (template ds:resolve-xsitype
+      (param name: type)
+      (choose
+       (when "$type='DataCollection'"
+         (call-template ds:DataCollection))
+       (when "$type='GLUService'"
+         (call-template ds:GLUService))
+       (when "$type='ParamHTTP'"
+         (call-template ds:ParamHTTP))
+       (when "$type='SkyService'"
+         (call-template ds:SkyService))
+       (when "$type='TabularSkyService'"
+         (call-template ds:TabularSkyService))
+       (when "$type='WebService'"
+         (call-template ds:WebService))
+       ))
+

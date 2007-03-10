@@ -9,7 +9,7 @@
 ;;
 ;; 1. The set of triples is ordered in a way which is independent of the 
 ;;    blank nodes' ID (by subject, then predicate, then object, with
-;;    blank nodes ordering after everything, and all equal to each other).
+;;    blank nodes ordering after everything, but dependent on the nodes' values).
 ;;
 ;; 2. We work through this list in order, replacing all the blank
 ;;    nodes with new ones with prettier names.
@@ -24,99 +24,23 @@
 ;; blank-predicate-object triple, where the non-blank slots are the
 ;; same.  In that desperate situation, we can give the
 ;; --suppress-blank-nodes option.
+;;
+;; This has got more and more complicated, and I'm still not convinced
+;; that it's actually independent of the input triple's bnode names....
 
 (define (main args)
   (let ((reduced-args (reduce-options (cdr args))))
-    (let ((triples (sort-list (if (< (length reduced-args) 1)
-                                  (read-triples (current-input-port))
-                                  (call-with-input-file (car reduced-args)
-                                    read-triples))
-                              triple<=?-no-symbols)))
+    (let ((triples (sort-triples-using-bnode-values
+                    (if (< (length reduced-args) 1)
+                        (read-triples (current-input-port))
+                        (call-with-input-file (car reduced-args)
+                          read-triples)))))
       (for-each (lambda (t)
                   (let ((subj (car t))
                         (pred (cadr t))
                         (obj  (caddr t)))
-                    (format #t "~a	~a	~a	.~%"
-                            subj
-;;                             (if (symbol? subj)
-;;                                 (get-new-blank-node subj)
-;;                                 subj)
-                            pred
-                            obj
-;;                             (if (symbol? obj)
-;;                                 (get-new-blank-node obj)
-;;                                 obj)
-                            )))
-                (sort-list (replace-symbols triples)
-                           triple<=?-with-symbols)))))
-
-;; REPLACE-SYMBOLS : list of lists -> list of lists
-;; Replace each symbol in the list with a new one from GET-NEW-BLANK-NODE
-(define (replace-symbols l)
-  (cond ((null? l)
-         '())
-        ((list? (car l))
-         (cons (replace-symbols (car l))
-               (replace-symbols (cdr l))))
-        ((symbol? (car l))
-         (cons (get-new-blank-node (car l))
-               (replace-symbols (cdr l))))
-        (else
-         (cons (car l)
-               (replace-symbols (cdr l))))))
-
-;; READ-TRIPLES port -> list
-;; Read triples from a port, parsing them to three-element lists, with
-;; all blank nodes represented by symbols.
-(define (read-triples port)
-  (define (parse-line line triples)
-    (cond ((regexp-search? (rx (: bos
-                                  (* whitespace)
-                                  (? #\# (* any))
-                                  eos))
-                           line)
-           triples)
-          ((regexp-search (rx (: (submatch (or (: #\< (* (~ #\>)) #\>)
-                                               (: #\_ #\: (* alphanumeric))))
-                                 (+ whitespace)
-                                 (submatch (: #\< (* (~ #\>)) #\>))
-                                 (+ whitespace)
-                                 (submatch (or (: #\< (* (~ #\>)) #\>)
-                                               (: #\_ #\: (* alphanumeric))
-                                               (: #\" (* (~ #\")) #\")))))
-                          line)
-           => (lambda (m)
-                (let ((subj (compress-file-urls (match:substring m 1)))
-                      (obj  (compress-file-urls (match:substring m 3))))
-                (cons (list (if (eq? (string-ref subj 0) #\_)
-                                ;(get-new-blank-node subj)
-                                (string->symbol subj)
-                                subj)
-                            (match:substring m 2)
-                            (if (eq? (string-ref obj 0) #\_)
-                                ;(get-new-blank-node obj)
-                                (string->symbol obj)
-                                obj))
-                      triples))))
-          (else
-           (format (current-error-port) "Unmatched line: ~a~%" line)
-           triples)))
-  (port-fold port read-line parse-line '()))
-
-;; Strip any directory (specifically $PWD) from file URLs
-(define (compress-file-urls f)
-  (cond ((regexp-search (rx (: bos
-                               "<file:"
-                               (* any)
-                               #\/
-                               (submatch (+ (~ #\/)))
-                               #\>
-                               eos))
-                        f)
-         => (lambda (m)
-              (string-append "<file:" (match:substring m 1) ">")))
-        (else
-         f)))
+                    (format #t "~a	~a	~a	.~%" subj pred obj)))
+                (sort-triples-using-bnode-names (replace-bnodes triples))))))
 
 ;; GET-NEW-BLANK-NODE symbol -> symbol
 ;; Given a symbol, return a new blank-node string (ie, "_:nnn") for
@@ -146,41 +70,71 @@
                                            known-nodes))
                    new-node-name)))))))
 
-;; CMP-STRING-OR-SYMBOL: return -1/0/+1 if a </=/> b.
-;; Order symbols later than all strings, and equal to each other.
-(define (cmp-string-or-symbol a b)
-    (cond ((and (symbol? a) (symbol? b))
-           0)
-          ((symbol? a)
-           +1)
-          ((symbol? b)
-           -1)
-          ((string<? a b)
-           -1)
-          ((string=? a b)
-           0)
-          (else
-           +1)))
-(define (cmp-strings a b)
-  (cond ((and (symbol? a) (symbol? b))
-         (let ((sa (symbol->string a))
-               (sb (symbol->string b)))
-           (cond ((string<? sa sb)
-                  -1)
-                 ((string=? sa sb)
-                  0)
-                 (else
-                  +1))))
-        ((symbol? a)
-         +1)
-        ((symbol? b)
-         -1)
-        ((string<? a b)
-         -1)
-        ((string=? a b)
-         0)
+;; REPLACE-BNODES : list of lists -> list of lists
+;; Replace each symbol in the list with a new one from GET-NEW-BLANK-NODE
+(define (replace-bnodes l)
+  (cond ((null? l)
+         '())
+        ((list? (car l))
+         (cons (replace-bnodes (car l))
+               (replace-bnodes (cdr l))))
+        ((symbol? (car l))
+         (cons (get-new-blank-node (car l))
+               (replace-bnodes (cdr l))))
         (else
-         +1)))
+         (cons (car l)
+               (replace-bnodes (cdr l))))))
+
+;; READ-TRIPLES port -> list
+;; Read triples from a port, parsing them to three-element lists, with
+;; all blank nodes represented by symbols.
+(define (read-triples port)
+  (define (parse-line line triples)
+    (cond ((regexp-search? (rx (: bos
+                                  (* whitespace)
+                                  (? #\# (* any))
+                                  eos))
+                           line)
+           triples)
+          ((regexp-search (rx (: (submatch (or (: #\< (* (~ #\>)) #\>)
+                                               (: #\_ #\: (* alphanumeric))))
+                                 (+ whitespace)
+                                 (submatch (: #\< (* (~ #\>)) #\>))
+                                 (+ whitespace)
+                                 (submatch (or (: #\< (* (~ #\>)) #\>)
+                                               (: #\_ #\: (* alphanumeric))
+                                               (: #\" (* (~ #\")) #\")))))
+                          line)
+           => (lambda (m)
+                (let ((subj (compress-file-urls (match:substring m 1)))
+                      (obj  (compress-file-urls (match:substring m 3))))
+                  (cons (new-triple subj (match:substring m 2) obj)
+                        triples))))
+          (else
+           (format (current-error-port) "Unmatched line: ~a~%" line)
+           triples)))
+  (port-fold port read-line parse-line '()))
+
+;; Strip any directory (specifically $PWD) from file URLs
+(define (compress-file-urls f)
+  (cond ((regexp-search (rx (: bos
+                               "<file:"
+                               (* any)
+                               #\/
+                               (submatch (+ (~ #\/)))
+                               #\>
+                               eos))
+                        f)
+         => (lambda (m)
+              (string-append "<file:" (match:substring m 1) ">")))
+        (else
+         f)))
+
+(define bnode? symbol?)
+(define (new-triple s p o)
+  (let ((subj (if (char=? (string-ref s 0) #\_) (string->symbol s) s))
+        (obj  (if (char=? (string-ref o 0) #\_) (string->symbol o) o)))
+    (list subj p obj)))
 
 ;; Use cmp
 (define-syntax <=3?
@@ -192,23 +146,161 @@
        (else
         next)))))
 
-(define (triple<=?-no-symbols a b)
-  (<=3? cmp-string-or-symbol
-        (car a) (car b)
-        (<=3? cmp-string-or-symbol
-              (cadr a) (cadr b)
-              (<=3? cmp-string-or-symbol
-                    (caddr a) (caddr b)
-                    #t))))
+(define (sort-triples-using-bnode-values triples)
+  ;; create a sort string for each bnode, using only the strings associated
+  ;; with it in the set TRIPLES
+  (define get-bnode-sort-string
+    (let ((bnode-cache '()))
+      (define (filter pred l)
+        (cond ((null? l)
+               '())
+              ((pred (car l))
+               (cons (car l) (filter pred (cdr l))))
+              (else
+               (filter pred (cdr l)))))
+      (lambda (b)
+        (if (not (bnode? b))
+            (error (format #f "get-bnode-sort-string: not bnode: ~s" b)))
+        (cond ((assq b bnode-cache)
+               => cdr)
+              (else
+               (let ((ss (apply string-append
+                                (filter string?
+                                        (apply append
+                                               (filter (lambda (t)
+                                                         (eq? (car t) b))
+                                                       triples))))))
+                 (set! bnode-cache `((,b . ,ss) . ,bnode-cache))
+                 ss))))))
+  ;; CMP-STRING-OR-BNODE: return -1/0/+1 if a </=/> b.
+  ;; Order bnodes later than all strings, and equal to each other.
+  (define (cmp-string-or-bnode a b)
+    (cond ((and (bnode? a) (bnode? b))
+           (let ((sa (get-bnode-sort-string a))
+                 (sb (get-bnode-sort-string b)))
+             (cond ((string<? sa sb)
+                    -1)
+                   ((string=? sa sb)
+                    0)
+                   (else
+                    +1))))
+          ((bnode? a)
+           +1)
+          ((bnode? b)
+           -1)
+          ((string<? a b)
+           -1)
+          ((string=? a b)
+           0)
+          (else
+           +1)))
+  (define (triple<=?-no-bnodes a b)
+    (<=3? cmp-string-or-bnode
+          (car a) (car b)
+          (<=3? cmp-string-or-bnode
+                (cadr a) (cadr b)
+                (<=3? cmp-string-or-bnode
+                      (caddr a) (caddr b)
+                      #t
+                      ;; or is this an error?
+;;                       (error (format #f
+;;                                      "two completely identical triples: ~s ~s"
+;;                                      a b))
+                      ))))
+  (sort-list triples triple<=?-no-bnodes))
 
-(define (triple<=?-with-symbols a b)
-  (<=3? cmp-strings
-        (car a) (car b)
-        (<=3? cmp-strings
-              (cadr a) (cadr b)
-              (<=3? cmp-strings
-                    (caddr a) (caddr b)
-                    #t))))
+;; sort the triples, including the (new) bnode names
+(define (sort-triples-using-bnode-names triples)
+  ;; CMP-STRINGS
+  ;; Order bnodes later than all strings, but including an order for them
+  (define (cmp-strings a b)
+    (cond ((and (bnode? a) (bnode? b))
+           (let ((sa (symbol->string a))
+                 (sb (symbol->string b)))
+             (cond ((string<? sa sb)
+                    -1)
+                   ((string=? sa sb)
+                    0)
+                   (else
+                    +1))))
+          ((bnode? a)
+           +1)
+          ((bnode? b)
+           -1)
+          ((string<? a b)
+           -1)
+          ((string=? a b)
+           0)
+          (else
+           +1)))
+  (define (triple<=?-with-bnodes a b)
+    (<=3? cmp-strings
+          (car a) (car b)
+          (<=3? cmp-strings
+                (cadr a) (cadr b)
+                (<=3? cmp-strings
+                      (caddr a) (caddr b)
+                      #t))))
+
+  (sort-list triples triple<=?-with-bnodes))
+
+;; (define new-triple #f)
+;; (define get-bnode-sort-string #f)
+;; (let ((triples '())
+;;       (triples-sorts '()))
+;;   (define (filter pred l)
+;;     (cond ((null? l)
+;;            '())
+;;           ((pred (car l))
+;;            (cons (car l) (filter pred (cdr l))))
+;;           (else
+;;            (filter pred (cdr l)))))
+;;   (define (*new-triple s p o)
+;;     (let ((subj (if (char=? (string-ref s 0) #\_) (string->symbol s) s))
+;;           (obj  (if (char=? (string-ref o 0) #\_) (string->symbol o) o)))
+;;       (if (symbol? subj)
+;;         (cond ((assq subj triples)
+;;                => (lambda (triplist)
+;;                     (set-cdr! triplist
+;;                               (cons (list p obj)
+;;                                     (cdr triplist)))))
+;;               (else
+;;                (set! triples
+;;                      (cons `(,subj (,p ,obj))
+;;                            triples)))))
+;;       (list subj p obj)))
+;;   (define (*get-bnode-sort-string b)
+;;     ;; we can make the following more sophisticated if necessary
+;;     ;; by recursing on any symbols we find in the list of pairs associated
+;;     ;; with a particular b
+;;     (if (not (bnode? b))
+;;         (error "get-bnode-sort-string: not bnode: ~s" b))
+;;     (cond ((assq b triples-sorts)
+;;            => (lambda (p)
+;;                 (let ((s (cdr p)))
+;;                   (if (not s)
+;;                       (error "get-bnode-sort-string: loop detected!"))
+;;                   s)))
+;;           ((assq b triples)
+;;            => (lambda (p)
+;;                 ;;(set! triples-sorts `((,b . #f) . ,triples-sorts)) ; loop guard
+;;                 (let ((ss (apply string-append
+;;                                  (filter string?
+;;                                          (apply append (cdr p))))))
+;;                   (set! triples-sorts `((,b . ,ss) . ,triples-sorts))
+;;                   ss)))
+;;           (else
+;;            (error "get-bnode-sort-string: requested string for unknown ~s" b))))
+
+;;   (set! new-triple *new-triple)
+;;   (set! get-bnode-sort-string *get-bnode-sort-string))
+
+
+
+
+
+
+
 
 ;; TRIPLE-BY-SUBJECT<=? triple triple -> boolean
 ;; Given two triples, return #t if the first is <= the second.  The

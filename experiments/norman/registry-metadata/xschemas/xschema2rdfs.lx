@@ -10,7 +10,7 @@
 ;;     <x2s:propertyName>[name]</x2s:propertyName>
 ;;         Indicates that the property name generated for this
 ;;         element/attribute should be the given <name>, and not
-;;         simply the same as the element/attribute name -- this is
+;;         simply the same as the element/attribute name: this is
 ;;         for the case where there are multiple element/attributes
 ;;         with the same name but different meanings.
 ;;
@@ -61,7 +61,7 @@
 
 (lx:let ((namespace (#f   "http://www.w3.org/1999/XSL/Transform")
                     (xs "http://www.w3.org/2001/XMLSchema")
-                    (x2s "http://ns.eurovotech.org/registry-metadata")
+                    (x2s "http://ns.eurovotech.org/registry-metadata#")
 
                     ;;(dc "http://purl.org/dc/elements/1.1/")
 
@@ -111,10 +111,10 @@
       (choose
        (when descendant::xs:complexType
          (x2s:ERROR "complexType " (value-of @name)
-                       " contains anonymous complexType"))
+                    " contains anonymous complexType"))
        (when descendant::xs:simpleType
          (x2s:ERROR "complexType " (value-of @name)
-                       " contains anonymous simpleType"))
+                    " contains anonymous simpleType"))
        (when xs:simpleContent
          (apply-templates select: xs:simpleContent))
        (otherwise
@@ -195,7 +195,8 @@
                                             (apply-templates select: ".//x2s:superclass"))
                                           (otherwise
                                            (value-of @base))))
-                             (apply-templates select: xs:annotation)))))
+;;                              (apply-templates select: xs:annotation)
+                             ))))
 
   (template "xs:extension" mode: simple-content
       (rdfs:comment "Extension of " (value-of @base)))
@@ -314,7 +315,8 @@
       (rdfs:comment (apply-templates select: xs:documentation)))
 
   (template xs:documentation
-      (apply-templates))
+    (value-of "normalize-space(.)")
+    (text "\n\n"))
 
   ;; I don't think the following is necessary, since the relevant types will
   ;; be declared in the .rdfs files generated from the target .xsd file,

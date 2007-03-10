@@ -1,0 +1,74 @@
+<ivo://irsa.ipac.caltech.edu/IGA>	<http://www.ivoa.net/xml/SIA/v1.0#imageServiceType>	_:0	.
+<ivo://irsa.ipac.caltech.edu/IGA>	<http://www.ivoa.net/xml/SIA/v1.0#maxFileSize>	"1500000"	.
+<ivo://irsa.ipac.caltech.edu/IGA>	<http://www.ivoa.net/xml/SIA/v1.0#maxImageExtent>	_:1	.
+<ivo://irsa.ipac.caltech.edu/IGA>	<http://www.ivoa.net/xml/SIA/v1.0#maxImageSize>	_:2	.
+<ivo://irsa.ipac.caltech.edu/IGA>	<http://www.ivoa.net/xml/SIA/v1.0#maxQueryRegionSize>	_:3	.
+<ivo://irsa.ipac.caltech.edu/IGA>	<http://www.ivoa.net/xml/SIA/v1.0#maxRecords>	"3000"	.
+<ivo://irsa.ipac.caltech.edu/IGA>	<http://www.ivoa.net/xml/VODataService/v1.0#facility>	_:4	.
+<ivo://irsa.ipac.caltech.edu/IGA>	<http://www.ivoa.net/xml/VODataService/v1.0#waveband>	_:5	.
+<ivo://irsa.ipac.caltech.edu/IGA>	<http://www.ivoa.net/xml/VOResource/v1.0#content>	_:6	.
+<ivo://irsa.ipac.caltech.edu/IGA>	<http://www.ivoa.net/xml/VOResource/v1.0#created>	"2004-01-06T18:55:10Z"	.
+<ivo://irsa.ipac.caltech.edu/IGA>	<http://www.ivoa.net/xml/VOResource/v1.0#curation>	_:7	.
+<ivo://irsa.ipac.caltech.edu/IGA>	<http://www.ivoa.net/xml/VOResource/v1.0#identifier>	_:8	.
+<ivo://irsa.ipac.caltech.edu/IGA>	<http://www.ivoa.net/xml/VOResource/v1.0#interface>	_:9	.
+<ivo://irsa.ipac.caltech.edu/IGA>	<http://www.ivoa.net/xml/VOResource/v1.0#shortname>	"IGA"	.
+<ivo://irsa.ipac.caltech.edu/IGA>	<http://www.ivoa.net/xml/VOResource/v1.0#status>	_:a0	.
+<ivo://irsa.ipac.caltech.edu/IGA>	<http://www.ivoa.net/xml/VOResource/v1.0#title>	"The IRAS Galaxy Atlas"	.
+<ivo://irsa.ipac.caltech.edu/IGA>	<http://www.ivoa.net/xml/VOResource/v1.0#updated>	"2004-01-06T18:55:10Z"	.
+<ivo://irsa.ipac.caltech.edu/IGA>	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/SIA/v1.0#SimpleImageAccess>	.
+<ivo://irsa.ipac.caltech.edu/IGA>	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#CatalogService>	.
+<ivo://irsa.ipac.caltech.edu/IGA>	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#DataService>	.
+<ivo://irsa.ipac.caltech.edu/IGA>	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Resource>	.
+<ivo://irsa.ipac.caltech.edu/IGA>	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Service>	.
+_:0	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/SIA/v1.0#ImageServiceTypeAtlas>	.
+_:1	<http://www.ivoa.net/xml/SIA/v1.0#lat>	"12.5"	.
+_:1	<http://www.ivoa.net/xml/SIA/v1.0#long>	"12.5"	.
+_:2	<http://www.ivoa.net/xml/SIA/v1.0#pixelLatitude>	"1000"	.
+_:2	<http://www.ivoa.net/xml/SIA/v1.0#pixelLongitude>	"1000"	.
+_:3	<http://www.ivoa.net/xml/SIA/v1.0#lat>	"12.5"	.
+_:3	<http://www.ivoa.net/xml/SIA/v1.0#long>	"12.5"	.
+_:4	<http://www.ivoa.net/xml/VOResource/v1.0#name>	"Infrared Astronomical Satellite  (IRAS)"	.
+_:4	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Actor>	.
+_:5	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#WavebandInfrared>	.
+_:6	<http://www.ivoa.net/xml/VOResource/v1.0#contentLevel>	_:a5	.
+_:6	<http://www.ivoa.net/xml/VOResource/v1.0#description>	"The IRAS Galaxy Atlas (IGA) is a high resolution image atlas of the Galactic plane at 60 and 100 microns, it has been produced using the IRAS satellite data. The HIRES program was developed by the Infrared Processing and Analysis Center (IPAC) to produce high resolution (~ 1 arcmin) images from IRAS data using the Maximum Correlation Method (H.H. Aumann, J.W. Fowler and M. Melnyk, 1990,  Astronomical Journal, 99, 1674)."	.
+_:6	<http://www.ivoa.net/xml/VOResource/v1.0#referenceURL>	_:b0	.
+_:6	<http://www.ivoa.net/xml/VOResource/v1.0#serviceFor>	_:a7	.
+_:6	<http://www.ivoa.net/xml/VOResource/v1.0#type>	_:b2	.
+_:6	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#ContentDescription>	.
+_:7	<http://www.ivoa.net/xml/VOResource/v1.0#contact>	_:a4	.
+_:7	<http://www.ivoa.net/xml/VOResource/v1.0#creator>	_:a6	.
+_:7	<http://www.ivoa.net/xml/VOResource/v1.0#publisher>	_:a8	.
+_:8	<http://www.ivoa.net/xml/VOResource/v1.0#authorityID>	"irsa.ipac.caltech.edu"	.
+_:8	<http://www.ivoa.net/xml/VOResource/v1.0#resourceKey>	"IGA"	.
+_:8	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"ivo://irsa.ipac.caltech.edu/IGA"	.
+_:9	<http://www.ivoa.net/xml/VODataService/v1.0#queryType>	_:a1	.
+_:9	<http://www.ivoa.net/xml/VODataService/v1.0#resultType>	"application/xml+votable"	.
+_:9	<http://www.ivoa.net/xml/VOResource/v1.0#accessURL>	_:a2	.
+_:9	<http://www.ivoa.net/xml/VOResource/v1.0#securityMethod>	_:b1	.
+_:9	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#ParamHTTP>	.
+_:9	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Interface>	.
+_:a0	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#DeletedStatus>	.
+_:a1	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#HTTPQueryTypeGET>	.
+_:a2	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"http://irsa.ipac.caltech.edu/cgi-bin/Atlas/nph-atlas?mission=IGA&hdr_location=%5CIGADataPath%5C&SIAP_ACTIVE=1&collection_desc=The+IRAS+Galaxy+Atlas+%28IGA%29&"	.
+_:a2	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#BaseAccessURL>	.
+_:a3	<http://www.ivoa.net/xml/VOResource/v1.0#authorityID>	"cadc.nrc.ca"	.
+_:a3	<http://www.ivoa.net/xml/VOResource/v1.0#resourceKey>	"archive/jcmt"	.
+_:a3	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"ivo://cadc.nrc.ca/archive/jcmt"	.
+_:a4	<http://www.ivoa.net/xml/VOResource/v1.0#email>	"aalexov@ipac.caltech.edu"	.
+_:a4	<http://www.ivoa.net/xml/VOResource/v1.0#name>	"Anastasia Alexov"	.
+_:a4	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Contact>	.
+_:a5	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#ResearchContentLevel>	.
+_:a6	<http://www.ivoa.net/xml/VOResource/v1.0#name>	"HIRES Project at IRSA"	.
+_:a6	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Creator>	.
+_:a7	<http://www.ivoa.net/xml/VOResource/v1.0#identifier>	_:a3	.
+_:a7	<http://www.ivoa.net/xml/VOResource/v1.0#name>	"James Clerk Maxwell Telescope Archive at CADC"	.
+_:a7	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Actor>	.
+_:a8	<http://www.ivoa.net/xml/VOResource/v1.0#identifier>	_:a9	.
+_:a8	<http://www.ivoa.net/xml/VOResource/v1.0#name>	"NASA/IPAC Infrared Science Archive"	.
+_:a8	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Actor>	.
+_:a9	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"ivo://irsa.ipac/IRSA"	.
+_:b0	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"http://irsa.ipac.caltech.edu/data/IGA"	.
+_:b0	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#FullAccessURL>	.
+_:b1	<http://www.ivoa.net/xml/VOResource/v1.0#standardID>	"dummy-none"	.
+_:b2	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#ArchiveType>	.

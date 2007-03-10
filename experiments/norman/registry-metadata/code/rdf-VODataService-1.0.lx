@@ -1,0 +1,197 @@
+;; Convert an instance of VODataService-v1.0 to RDF statements
+;; (as striped RDF/XML) using the ontology
+;; http://www.ivoa.net/xml/VODataService/v1.0
+
+(lx:let ((namespace (#f   "http://www.w3.org/1999/XSL/Transform")
+                    (x2s  "http://ns.eurovotech.org/registry-metadata#")
+                    (ds   "http://www.ivoa.net/xml/VODataService/v1.0")
+                    (dso  "http://www.ivoa.net/xml/VODataService/v1.0#")
+
+                    (vor  "http://www.ivoa.net/xml/VOResource/v1.0")
+                    (voro "http://www.ivoa.net/xml/VOResource/v1.0#")
+
+                    (xsi "http://www.w3.org/2001/XMLSchema-instance")
+
+                    (rdf  "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+                    ;(rdfs "http://www.w3.org/2000/01/rdf-schema#")
+                    )
+         (feature "http://ns.nxg.me.uk/lx/attributes-in-no-namespace")
+         (dtd (template (match #t) mode name)
+              (element (name #t))
+              (attribute (name #t))
+              (value-of (select #t))
+              (when (test #t))
+              (if (test #t))
+              (for-each (select #t))
+              (call-template (name #t))
+              (with-param (name #t) select)))
+
+(stylesheet version: 1.0 exclude-result-prefixes: "ds xsi"
+  (output method: xml
+          version: 1.0
+          indent: yes)
+
+  (variable name: dso-ns http://www.ivoa.net/xml/VODataService/v1.0#)
+
+  ;; elements with simple content -- easy to handle
+  (template "facility|instrument|format|facility|instrument|coverage|resultType|table|facility|instrument|table|name|description|column|name|description|unit|ucd"
+    (element name: "dso:{local-name()}"
+             (apply-templates)))
+
+  ;; elements with 'simple' complex content -- no attributes, and nothing
+  ;; funky needing done with the content.  These just need parseType=Resource.
+  (template "column|param|queryType|coverage|catalog"
+    (element "dso:{local-name()}"
+             (attribute name: rdf:parseType Resource)
+             (apply-templates)))
+
+  ;; elements which have attributes
+
+  (template table
+    (dso:table rdf:parseType: Resource
+               (if @role
+                   (dso:role (value-of @role)))
+               (apply-templates)))
+
+  (template footprint
+    (dso:footprint rdf:parseType: Resource
+                   (if @ivo-id
+                       (call-template name: make-identifier-uri
+                                      (with-param id (value-of @ivo-id))))))
+
+  ;; enumerations
+
+  (template waveband
+    (variable name: wb (apply-templates))
+    (variable name: type
+              (choose
+               (when "$wb='Radio'" WavebandRadio)
+               (when "$wb='Millimeter'" WavebandMillimeter)
+               (when "$wb='Infrared'" WavebandInfrared)
+               (when "$wb='Optical'" WavebandOptical)
+               (when "$wb='UV'" WavebandUV)
+               (when "$wb='EUV'" WavebandEUV)
+               (when "$wb='X-ray'" WavebandX-ray)
+               (when "$wb='Gamma-ray'" WavebandGamma-ray)
+               ))
+    (element name: dso:waveband
+             (rdf:Description rdf:type: "{$dso-ns}{$type}")))
+
+  ;; dataType here covers both 
+  ;; VODataService-v1.0.xsd has two elements named dataType:
+  ;; (1) Within TableParam, the target type of the <column> element,
+  ;; the element dataType has type TableDataType
+  ;; which is an extension of VOTScalarDataType;
+  ;; (2) Within InputParam, the target type of the <param> element,
+  ;; element dataType has type SimpleDataType,
+  ;; which is an extension of SimpleScalarDataType (including
+  ;; @arraysize), which covers just integer, real, complex, boolean,
+  ;; char and string.
+  (template dataType
+    (variable name: name (apply-templates))
+    (variable name: rdf-type
+              (choose
+               (when parent::column
+                 (choose
+                  ;; these target types are those in VODataService-v1.0.rdfs
+                  (when "$name='boolean'" dso:VOTScalarDataTypeBoolean)
+                  (when "$name='bit'" dso:VOTScalarDataTypeBit)
+                  (when "$name='unsignedByte'" dso:VOTScalarDataTypeUnsignedByte)
+                  (when "$name='short'" dso:VOTScalarDataTypeShort)
+                  (when "$name='int'" dso:VOTScalarDataTypeInt)
+                  (when "$name='long'" dso:VOTScalarDataTypeLong)
+                  (when "$name='char'" dso:VOTScalarDataTypeChar)
+                  (when "$name='unicodeChar'" dso:VOTScalarDataTypeUnicodeChar)
+                  (when "$name='float'" dso:VOTScalarDataTypeFloat)
+                  (when "$name='double'" dso:VOTScalarDataTypeDouble)
+                  (when "$name='floatComplex'" dso:VOTScalarDataTypeFloatComplex)
+                  (when "$name='doubleComplex'" dso:VOTScalarDataTypeDoubleComplex)
+                  (otherwise x2s:ERROR-COLUMN)))
+               (when parent::param
+                 (choose
+                  (when "$name='integer'" dso:SimpleScalarDataTypeInteger)
+                  (when "$name='real'" dso:SimpleScalarDataTypeReal)
+                  (when "$name='complex'" dso:SimpleScalarDataTypeComplex)
+                  (when "$name='boolean'" dso:SimpleScalarDataTypeBoolean)
+                  (when "$name='char'" dso:SimpleScalarDataTypeChar)
+                  (when "$name='string'" dso:SimpleScalarDataTypeString)
+                  (otherwise x2s:ERROR-PARAM)
+                  ))
+               (otherwise
+                x2s:ERROR-PARENT)))
+    (dso:dataType
+     (element {$rdf-type}
+              (dso:arraysize
+               (choose
+                (when @arraysize (value-of @arraysize))
+                (otherwise 1))))))
+
+  (template rights
+    (call-template vor:rights))
+  (template accessURL
+    (call-template vor:accessURL))
+
+  ;; Named templates
+  (lx:dtd ((template (name #t)))
+
+    (template ds:DataCollection
+      (rdf:type rdf:resource: {$dso-ns}DataCollection)
+      (call-template vor:Resource))
+
+    (template ds:DataService
+      (rdf:type rdf:resource: {$dso-ns}DataService)
+      (call-template vor:Service))
+
+    (template ds:ParamHTTP
+      (rdf:type rdf:resource: {$dso-ns}ParamHTTP)
+      (if @qtype
+          (dso:queryType
+           (variable name: qtype
+                     (choose
+                      (when "@qtype='GET'" dso:HTTPQueryTypeGET)
+                      (when "@qtype='POST'" dso:HTTPQueryTypePOST)))
+           (element {$qtype})))
+      (call-template vor:Interface))
+
+    (template ds:CatalogService
+      (rdf:type rdf:resource: {$dso-ns}CatalogService)
+      (call-template ds:DataService))
+
+    (template ds:TableService
+      (rdf:type rdf:resource: {$dso-ns}TableService)
+      (call-template ds:Service))
+
+    (template ds:TableParam
+      (rdf:type rdf:resource: {$dso-ns}TableParam)
+      (if @std
+          (dso:std (value-of @std))))
+
+    (template ds:InputParam
+      (rdf:type rdf:resource: {$dso-ns}InputParam)
+      (if @std
+          (dso:std (value-of @std)))
+      (if @use
+          (dso:use (choose
+                    (when "@use='optional'" dso:ParamUseOptional)
+                    (when "@use='required'" dso:ParamUseRequired)
+                    (when "@use='ignored'" dso:ParamUseIgnored)
+                    (otherwise x2s:UNKNOWN))))
+      (apply-templates))
+
+    (template ds:resolve-xsitype
+      (param name: type)
+      (choose
+       (when "$type='DataCollection'"
+         (call-template ds:DataCollection))
+       (when "$type='DataService'"
+         (call-template ds:DataService))
+       (when "$type='ParamHTTP'"
+         (call-template ds:ParamHTTP))
+       (when "$type='CatalogService'"
+         (call-template ds:CatalogService))
+       (when "$type='TableService'"
+         (call-template ds:TableService))
+       (when "$type='TableParam'"
+         (call-template ds:TableParam))
+       )))
+))
