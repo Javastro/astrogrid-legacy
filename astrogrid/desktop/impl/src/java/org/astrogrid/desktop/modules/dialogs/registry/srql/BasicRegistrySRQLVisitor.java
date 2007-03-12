@@ -20,7 +20,8 @@ public class BasicRegistrySRQLVisitor implements Builder{
 	private static final Log logger = LogFactory
 			.getLog(BasicRegistrySRQLVisitor.class);
 	/** list of elements searched by default */
-	private static  final String[] defaultTarget = new String[]{"$r/vr:title","$r/vr:identifier","$r/vr:shortName","$r/vr:content/vr:subject","$r/vr:content/vr:description"};
+	//private static  final String[] defaultTarget = new String[]{"$r/vr:title","$r/vr:identifier","$r/vr:shortName","$r/vr:content/vr:subject","$r/vr:content/vr:description"};
+	private static  final String[] defaultTarget = new String[]{"vr:title","vr:identifier","vr:shortName","vr:content/vr:subject","vr:content/vr:description"};
 	/** a map of other alternate targets */
 	private static Map targets = new HashMap();
 	static {
@@ -48,12 +49,12 @@ public class BasicRegistrySRQLVisitor implements Builder{
 	public String build(SRQL q, String filter) {
 		Object o = q.accept(this);
 		StringBuffer sb = new StringBuffer();
-		sb.append("for $r in //vor:Resource[not (@status = 'inactive' or @status = 'deleted')]\nwhere (");
+		sb.append("//RootResource[(@status = 'active') and (");
     	if (filter != null) { // apply the filter first - as should restrict faster.
     		sb.append(filter).append(") and (");
     	}	
     	sb.append(o);
-		sb.append(")\nreturn $r");
+		sb.append(") ]");
 		logger.debug(sb);
 		return sb.toString();
 	}
@@ -111,7 +112,8 @@ public class BasicRegistrySRQLVisitor implements Builder{
 	protected String buildClause(String kw) {
 		StringBuffer sb = new StringBuffer();
 		for (int el = 0; el < currentTarget.length; el++) {
-			sb.append(currentTarget[el]).append(" &= '*").append(kw).append( "*'" );
+			//sb.append(currentTarget[el]).append(" &= '*").append(kw).append( "*'" );
+			sb.append("matches(").append(currentTarget[el]).append(",'").append(kw).append( "','i')" );			
 			if (el != currentTarget.length -1) {
 				sb.append(" or ");
 			}
