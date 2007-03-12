@@ -42,8 +42,9 @@ fi
 #
 # Install the vizquery program
 pushd ${ASTROGRID_TEMP}
+# BUG!
     wget http://vizier.u-strasbg.fr/viz-bin/ftp-index?/ftp/pub/sw/cdsclient.tar.gz
-    tar -xvf cdsclient.tar 
+    tar -xvf cdsclient.tar.gz 
     pushd cdsclient-2.86
         ./configure
         make
@@ -55,3 +56,14 @@ popd
 # Repair any permissions
 chown -R astrogrid.users ${ASTROGRID_TEMP}
 chmod -R a+rw ${ASTROGRID_TEMP}
+
+for i in which vizquery
+do
+    if [ `which $i` ]
+    then
+        echo "  $i already installed"
+    else
+        echo "  ERROR : $i not installed"
+        exit 1
+    fi
+done
