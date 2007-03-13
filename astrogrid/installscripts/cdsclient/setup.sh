@@ -42,7 +42,7 @@ fi
 #
 # Install the vizquery program
 pushd ${ASTROGRID_TEMP}
-    wget http://vizier.u-strasbg.fr/viz-bin/ftp-index%63/ftp/pub/sw/cdsclient.tar.gz -O cdsclient.tar.gz
+    wget http://vizier.u-strasbg.fr/viz-bin/ftp-index?/ftp/pub/sw/cdsclient.tar.gz -O cdsclient.tar.gz
     tar -xvf cdsclient.tar.gz 
     pushd cdsclient-2.86
         ./configure
