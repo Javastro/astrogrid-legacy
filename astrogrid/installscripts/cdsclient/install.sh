@@ -86,7 +86,7 @@ cat <<! > infile
 -source=\$1
 -c=\$2
 -c.rm=\$3
--out.max=\$5
+-out.max=\$6
 -out.add=_r
 -out.form=mini
 -sort=_r
@@ -173,7 +173,7 @@ cat > ${CDSCLIENT_HOME}/config/app-description.xml << EOF
         <!--+
             | The maximum number of rows.
             +-->
-        <CmdLineParameterDefn name="limit" fileRef="false" type="text" commandPosition="5">
+        <CmdLineParameterDefn name="limit" fileRef="false" type="text" commandPosition="6">
             <agpd:UI_Name>limit</agpd:UI_Name>
             <agpd:UI_Description>The maximum number of rows</agpd:UI_Description>
             <agpd:DefaultValue>10000</agpd:DefaultValue>
