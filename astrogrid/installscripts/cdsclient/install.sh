@@ -15,7 +15,7 @@
 # CDSClient settings.
 APPLICATION_VERSION=2007.1.02
 APPLICATION_WARFILE=astrogrid-cea-commandline-${APPLICATION_VERSION}.war
-APPLICATION_CONTEXT=astrogrid-cdsclient
+APPLICATION_CONTEXT=astrogrid-vizquery
 APPLICATION_DATE=`date "+%Y-%m-%d"`
 #
 # Set the install date (used in registration documents).
@@ -86,7 +86,7 @@ cat <<! > infile
 -source=\$1
 -c=\$2
 -c.rm=\$3
--out.max=9999
+-out.max=\$5
 -out.add=_r
 -out.form=mini
 -sort=_r
@@ -170,6 +170,15 @@ cat > ${CDSCLIENT_HOME}/config/app-description.xml << EOF
                 <agpd:OptionVal>astrores</agpd:OptionVal>
             </agpd:OptionList>
         </CmdLineParameterDefn>
+        <!--+
+            | The maximum number of rows.
+            +-->
+        <CmdLineParameterDefn name="limit" fileRef="false" type="text" commandPosition="5">
+            <agpd:UI_Name>limit</agpd:UI_Name>
+            <agpd:UI_Description>The maximum number of rows</agpd:UI_Description>
+            <agpd:DefaultValue>10000</agpd:DefaultValue>
+        </CmdLineParameterDefn>
+
     </ceab:Parameters>
     <!--+
         | Define the interface.
@@ -181,6 +190,7 @@ cat > ${CDSCLIENT_HOME}/config/app-description.xml << EOF
                 <pref ref="target"/>
                 <pref ref="radius"/>
                 <pref ref="format"/>
+                <pref ref="limit"/>
             </input>
             <output>
                 <pref ref="results"/>
