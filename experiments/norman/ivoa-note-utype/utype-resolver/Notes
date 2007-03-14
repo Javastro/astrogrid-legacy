@@ -10,6 +10,9 @@ are some ideas for what might happen next.
 The following features are probably not terribly important, and I
 don't plan to do anything with them immediately.
 
+* Sort out the Quaestor webapp-base-from-request niggle -- can 
+  I just delete this procedure?
+
 * Add translator/validator for HTML->RDF debugging.  Should this just
   do HTML->RDF translation, or create and dump an RDF model?
 
