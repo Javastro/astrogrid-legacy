@@ -176,7 +176,7 @@ cat > ${CDSCLIENT_HOME}/config/app-description.xml << EOF
         <CmdLineParameterDefn name="limit" fileRef="false" type="text" commandPosition="6">
             <agpd:UI_Name>limit</agpd:UI_Name>
             <agpd:UI_Description>The maximum number of rows</agpd:UI_Description>
-            <agpd:DefaultValue>10000</agpd:DefaultValue>
+            <agpd:DefaultValue>1000</agpd:DefaultValue>
         </CmdLineParameterDefn>
 
     </ceab:Parameters>
