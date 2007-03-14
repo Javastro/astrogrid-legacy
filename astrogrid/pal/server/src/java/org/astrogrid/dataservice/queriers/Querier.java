@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.6 2006/06/15 16:50:08 clq2 Exp $
+ * $Id: Querier.java,v 1.7 2007/03/14 16:26:49 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -45,7 +45,8 @@ public class Querier implements Runnable, PluginListener {
    protected static final Log log = org.apache.commons.logging.LogFactory.getLog(Querier.class);
        
    /** query to perform */
-   private final Query query;
+   // KEA: Made this non-final so it could be garbage-collected once query has been run.
+   private Query query;
    
    /** A handle is used to identify a particular query.  It is also used as the
     * basis for any temporary storage. */
@@ -238,6 +239,7 @@ public class Querier implements Runnable, PluginListener {
       }
       getStatus().setProgressMax(resultsSize);
       plugin = null;  //release plugin reference (-> can be garbage collected)
+      query = null;   // release query reference too (can get quite big)
    }
    
    /**
@@ -280,6 +282,9 @@ public class Querier implements Runnable, PluginListener {
       }
          
       aborted = true;
+      // Free up for garbage collection
+      plugin = null;
+      query = null;
       
       return getStatus();
          

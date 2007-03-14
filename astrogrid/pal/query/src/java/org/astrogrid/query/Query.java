@@ -1,5 +1,5 @@
 /*
- * $Id: Query.java,v 1.8 2007/02/20 12:22:16 clq2 Exp $
+ * $Id: Query.java,v 1.9 2007/03/14 16:26:48 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -100,8 +100,6 @@ public class Query  {
    /** For xmlbeans validation against schema */
    private static XmlOptions xmlOptions;
 
-   /** For converting from ADQL/sql strings to XML Beans */
-   private AdqlStoX compiler;
 
 
    /** Constructs a Query from a string containing ADQL/xml. 
@@ -112,12 +110,7 @@ public class Query  {
         throw new QueryException("ReturnSpec may not be null");
       }
       setSelectDocument(adqlString);   
-      if (returnSpec == null) {
-         this.results = new ReturnTable(new WriterTarget(new StringWriter()));
-      }
-      else {
-         this.results = returnSpec;
-      }
+      this.results = returnSpec;
    }
 
    /** Constructs a Query from a pre-initialised SelectDocument.
@@ -899,6 +892,8 @@ public class Query  {
     * a given ADQL/sql fragment.  */ 
    private AdqlStoX getCompiler(StringReader source) 
    {
+     return new AdqlStoX(source);
+     /*
       if (compiler == null) {
          compiler = new AdqlStoX(source);
       }
@@ -906,5 +901,6 @@ public class Query  {
          compiler.ReInit(source);
       }
       return compiler;
+      */
    }
 }

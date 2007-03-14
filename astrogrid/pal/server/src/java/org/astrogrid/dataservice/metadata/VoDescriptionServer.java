@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.19 2007/02/20 12:22:16 clq2 Exp $
+ * $Id: VoDescriptionServer.java,v 1.20 2007/03/14 16:26:49 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,9 +14,17 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.cfg.PropertyNotFoundException;
 import org.astrogrid.dataservice.metadata.queryable.QueryableResourceReader;
+
+// v0.10 resources
 import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
-import org.astrogrid.dataservice.service.cea.CeaResources;
-import org.astrogrid.dataservice.service.cone.ConeResources;
+import org.astrogrid.dataservice.service.cea.v0_10.CeaResources;
+import org.astrogrid.dataservice.service.cone.v0_10.ConeResources;
+
+// v1.0 resources
+//import org.astrogrid.dataservice.metadata.v1_0.VoResourceSupport;
+//import org.astrogrid.dataservice.service.cea.v1_0.CeaResources;
+//import org.astrogrid.dataservice.service.cone.v1_0.ConeResources;
+
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 //import org.astrogrid.registry.client.DelegateProperties;

@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitCone.java,v 1.9 2007/02/20 12:22:16 clq2 Exp $
+ * $Id: SubmitCone.java,v 1.10 2007/03/14 16:26:49 kea Exp $
  */
 
 package org.astrogrid.dataservice.service.cone;
@@ -71,16 +71,18 @@ public class SubmitCone extends DefaultServlet {
          Query coneQuery = new Query(ra, dec, radius, returnSpec);
 
          if (returnSpec.getTarget() == null) {
-            //if a target is not given, we do an asynchronous (ask) Query 
+            //if a target is not given, we do an (ask) Query 
             // to the response stream.
             returnSpec.setTarget(new WriterTarget(response.getWriter(), false));
             
             if (ServletHelper.isCountReq(request)) {
+               // This one is a blocking request
                long count = server.askCount(ServletHelper.getUser(request), coneQuery, request.getRemoteHost()+" ("+request.getRemoteAddr()+") via SubmitCone servlet");
                response.setContentType(MimeTypes.PLAINTEXT);
                response.getWriter().write(""+count);
             }
             else {
+               // This one is a blocking request
                server.askQuery(ServletHelper.getUser(request), coneQuery, request.getRemoteHost()+" ("+request.getRemoteAddr()+") via SubmitCone servlet");
             }
          }
@@ -95,6 +97,7 @@ public class SubmitCone extends DefaultServlet {
                "<p>Submitting, please wait...</p>");
             response.getWriter().flush();
 
+            // This one is a non-blocking request
             String id = server.submitQuery(ServletHelper.getUser(request), coneQuery, request.getRemoteHost()+" ("+request.getRemoteAddr()+") via SubmitCone servlet");
       
             URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/queryStatus.jsp");

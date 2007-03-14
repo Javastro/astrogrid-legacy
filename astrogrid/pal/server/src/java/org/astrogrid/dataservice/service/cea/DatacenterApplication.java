@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.6 2007/03/02 13:49:09 kea Exp $
+/*$Id: DatacenterApplication.java,v 1.7 2007/03/14 16:26:49 kea Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -97,8 +97,10 @@ public class DatacenterApplication extends AbstractApplication implements Querie
     * @return
     */
    protected final Query buildQuery(ApplicationInterface interf)  throws IOException, CeaException, QueryException {
+     //logger.debug("GOT INTO BUILDQUERY");
 
       if (interf.getName().equals(DatacenterApplicationDescription.CONE_IFACE)) {
+         //logger.debug("GOT INTO BUILDQUERY CONE");
         /*
          return SimpleQueryMaker.makeConeQuery(
             Double.parseDouble((String)findInputParameterAdapter(DatacenterApplicationDescription.RA).process())
@@ -110,16 +112,19 @@ public class DatacenterApplication extends AbstractApplication implements Querie
             Double.parseDouble((String)findInputParameterAdapter(DatacenterApplicationDescription.RA).process()),
             Double.parseDouble((String)findInputParameterAdapter(DatacenterApplicationDescription.DEC).process()),
             Double.parseDouble((String)findInputParameterAdapter(DatacenterApplicationDescription.RADIUS).process()),
-            new ReturnTable(new WriterTarget(new StringWriter()))
+            // Close the stringwriter stream when you have finished writing to it.
+            // Is this a potential source of out-of-memory problems?
+            new ReturnTable(new WriterTarget(new StringWriter(),true))
          );
       }
       else if (interf.getName().equals(DatacenterApplicationDescription.ADQL_IFACE)) {
+         //logger.debug("GOT INTO BUILDQUERY ADQL");
          String querySource = findInputParameter(DatacenterApplicationDescription.QUERY).getValue();
          String queryString = (String)findInputParameterAdapter(DatacenterApplicationDescription.QUERY).process();
          if ((queryString == null) || (queryString.trim().length() == 0)) {
             throw new IOException("Read empty string at "+querySource);
          }
-         logger.debug("Query will be " + queryString);
+         //logger.debug("Query will be " + queryString);
          return new Query(queryString);
       }
       else
@@ -142,6 +147,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
     * 
     */
    public void run() {
+      logger.debug("Starting to run CEA task with querier id " + getQuerierId());
       try {
          createAdapters();
          ParameterValue resultTarget = findOutputParameter(DatacenterApplicationDescription.RESULT);
@@ -169,6 +175,9 @@ public class DatacenterApplication extends AbstractApplication implements Querie
          String resultsFormat = MimeNames.getMimeType( findInputParameterAdapter(DatacenterApplicationDescription.FORMAT).process().toString());
          logger.debug("Selected results format is " + resultsFormat);
          
+         /*
+         ReturnTable returnTable = new ReturnTable(ti,resultsFormat);
+         */
          Query query = buildQuery(getApplicationInterface());
          query.getResultsDef().setTarget(ti);
          query.getResultsDef().setFormat(resultsFormat);
@@ -328,6 +337,12 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
  $Log: DatacenterApplication.java,v $
+ Revision 1.7  2007/03/14 16:26:49  kea
+ Work in progress re VOResource v1.0 registrations, and re out-of-memory
+ error (now cleaning up Query inside Querier once query has been run to
+ conserve memory - but need to do something more sensible with the
+ completed jobs queue too).
+
  Revision 1.6  2007/03/02 13:49:09  kea
  Syntactic changes only.
 
