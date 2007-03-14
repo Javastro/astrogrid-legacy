@@ -53,7 +53,7 @@ echo "  EXTERNAL_URL    : ${ASTROGRID_EXTERNAL:?"undefined"}/${APPLICATION_CONTE
 
 #
 # Create CDSClient directories.
-CDSCLIENT_HOME=${ASTROGRID_HOME}/cdsclient
+CDSCLIENT_HOME=${ASTROGRID_HOME}/vizquery
 if [ -d ${CDSCLIENT_HOME} ]
 then
     echo ""
@@ -116,7 +116,7 @@ cat > ${CDSCLIENT_HOME}/config/app-description.xml << EOF
     <!--+
         | The name here defines how the application is registered.
         +-->
-    <Application name="${ASTROGRID_AUTH}/cdsclient-application">
+    <Application name="${ASTROGRID_AUTH}/vizquery-application">
     <!--+
         | Define the parameters.
         +-->
@@ -230,7 +230,7 @@ cat > ${CDSCLIENT_HOME}/config/registration-template.xml << EOF
 	<vor:Resource xsi:type="cea:CeaApplicationType" xmlns="http://www.ivoa.net/xml/VOResource/v0.10">
 		<title>VizieR query tool</title>
 		<shortName>vizquery</shortName>
-		<identifier>ivo://${ASTROGRID_AUTH}/cdsclient-application</identifier>
+		<identifier>ivo://${ASTROGRID_AUTH}/vizquery-application</identifier>
 		<curation>
 			<publisher>Astrogrid</publisher>
 			<creator>
@@ -265,7 +265,7 @@ cat > ${CDSCLIENT_HOME}/config/registration-template.xml << EOF
 	<vor:Resource xsi:type="cea:CeaServiceType" xmlns="http://www.ivoa.net/xml/VOResource/v0.10">
 		<title>VizieR query tool</title>
 		<shortName>vizquery</shortName>
-		<identifier>ivo://${ASTROGRID_AUTH}/cdsclient-service</identifier>
+		<identifier>ivo://${ASTROGRID_AUTH}/vizquery-service</identifier>
 		<curation>
 			<publisher>AstroGrid</publisher>
 			<creator>
@@ -291,7 +291,7 @@ cat > ${CDSCLIENT_HOME}/config/registration-template.xml << EOF
 			<vr:accessURL use="base">TemplateEntry</vr:accessURL>
 		</interface>
 		<cea:ManagedApplications>
-			<cea:ApplicationReference>ivo://${ASTROGRID_AUTH}/cdsclient-application</cea:ApplicationReference>
+			<cea:ApplicationReference>ivo://${ASTROGRID_AUTH}/vizquery-application</cea:ApplicationReference>
 		</cea:ManagedApplications>
 	</vor:Resource>
 </vor:VOResources>
