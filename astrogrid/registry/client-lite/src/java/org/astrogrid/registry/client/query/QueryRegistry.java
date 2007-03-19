@@ -914,8 +914,7 @@ public class QueryRegistry implements RegistryService {
       String returnVal, invocation = null;
       Document doc = getResourceByIdentifier(ident);
       try {
-         returnVal = DomHelper.getNodeTextValue(doc, "AccessURL", "vr");
-         if(returnVal == null) returnVal = DomHelper.getNodeTextValue(doc, "accessURL", "vr");
+         returnVal = DomHelper.getNodeTextValue(doc, "accessURL", "*");
       } catch (IOException ioe) {
           logger.error(ioe);          
           throw new RegistryException("Could not parse xml to get AcessURL or Invocation");
