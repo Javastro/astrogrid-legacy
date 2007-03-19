@@ -1,10 +1,10 @@
 /*
- * $Id: TabularDbResources.java,v 1.13 2007/02/20 12:22:15 clq2 Exp $
+ * $Id: TabularDbResources.java,v 1.1 2007/03/19 15:11:43 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.tableserver.metadata;
+package org.astrogrid.tableserver.metadata.v0_10;
 
 import java.io.IOException;
 import org.astrogrid.dataservice.metadata.MetadataException;
