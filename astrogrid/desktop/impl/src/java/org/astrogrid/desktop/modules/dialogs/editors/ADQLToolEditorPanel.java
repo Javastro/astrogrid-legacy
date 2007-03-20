@@ -1203,7 +1203,7 @@ public class ADQLToolEditorPanel
                    Resource[] selection = regChooser.selectResourcesXQueryFilter( "Select Catalogue description for " 
                                                                    + toolModel.getInfo().getTitle()
                                                                    ,false
-                                                                   , "(matches(@xsi:type,'.*:TabularDB'))"
+                                                                   , "(@xsi:type &= '*TabularDB')"
                                                                    ) ;
                    if( selection != null && selection.length > 0 ) {
                        if( log.isDebugEnabled() ) log.debug( "regChooser.chooseResourceWithFilter() returned object of type: " + selection[0].getClass().getName() ) ; 
@@ -1755,7 +1755,9 @@ public class ADQLToolEditorPanel
                 editMenu.setEnabled( true ) ;
             }
             else {
-                buildEditMenu( menu, (AdqlNode)adqlTree.getLastSelectedPathComponent() ) ;
+            	// NW - temporarily edited out - causes a NPE on startup.
+            	//
+            	//     buildEditMenu( menu, (AdqlNode)adqlTree.getLastSelectedPathComponent() ) ;
             }
         }
         else {
