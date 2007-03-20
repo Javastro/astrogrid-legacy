@@ -135,13 +135,22 @@ TOOL EDITOR
 	</contribution>
 	
 	<configuration-point id="regScopeToolEditors" schema-id="system.objects">
-		List of tool editors to use for the registryScope app Launcher
+		List of tool editors to use for the registryScope app Launcher - temporary fix until something better is written.
 	</configuration-point>
 	<contribution configuration-id="regScopeToolEditors">
 <!--TODO  being a pain at the moment - no time to test		<object>service:adqlPanel</object>-->
 		<object>service:basicPanel</object>
-		<object>service:xmlPanel</object>
-		<object>service:informationPanel</object>
+<!--  		<object>service:xmlPanel</object>
+		<object>service:informationPanel</object>-->
+		<object>service:securityPanel</object>
+	</contribution>
+
+	<configuration-point id="regScopeQueryEditors" schema-id="system.objects">
+		List of tool editors to use for the registryScope query editor - temporary fix until something better is written
+	</configuration-point>
+	<contribution configuration-id="regScopeQueryEditors">
+		<object>service:adqlPanel</object>
+		<object>service:basicPanel</object>
 		<object>service:securityPanel</object>
 	</contribution>
 	

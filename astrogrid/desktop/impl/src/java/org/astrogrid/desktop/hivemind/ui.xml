@@ -294,13 +294,33 @@ ASTROSCOPE
 	
 	<!-- -
 	====================================
-	SIMPLIFIED APP LAUNCHER	
+	SIMPLIFIED APP LAUNCHER	 - both will be removed later.
 	 -->
 	<service-point id="simpleApplicationLauncher" interface="org.astrogrid.desktop.modules.ui.TaskInvoker">
 		<interceptor service-id="system.snitchInterceptor" />
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ui.SimplifiedAppLauncherFactory">
 				<configuration>dialogs.regScopeToolEditors</configuration>
+				<service>dialogs.resourceChooser</service>
+				<service>astrogrid.applications</service>
+				<service>astrogrid.myspace</service>
+				<service>lookout</service>		
+				<service>system.configuration</service>
+				<service>system.help</service>
+				<service>system.ui</service>
+				<service>system.browser</service>
+				<object>preference:acr.advanced</object>
+<!--				<event-listener service-id="builtin.shutdown" />						-->
+			</construct>
+		</invoke-factory>	
+	</service-point>
+
+
+	<service-point id="simpleQueryLauncher" interface="org.astrogrid.desktop.modules.ui.TaskInvoker">
+		<interceptor service-id="system.snitchInterceptor" />
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.ui.QueryBuilderImpl">
+				<configuration>dialogs.regScopeQueryEditors</configuration>
 				<service>dialogs.resourceChooser</service>
 				<service>astrogrid.applications</service>
 				<service>astrogrid.myspace</service>
@@ -613,7 +633,9 @@ ASTROSCOPE
 		<object name="helioscope" class="org.astrogrid.desktop.modules.ui.voexplorer.tasks.HelioscopeTask">
 			<inject object="service:helioscope" />
 		</object>		
-		<object name="query" class="org.astrogrid.desktop.modules.ui.voexplorer.tasks.BuildQueryTask" />
+		<object name="query" class="org.astrogrid.desktop.modules.ui.voexplorer.tasks.BuildQueryTask">
+			<inject object="service:simpleQueryLauncher"/>
+		</object>		
 		<object name="cone" class="org.astrogrid.desktop.modules.ui.voexplorer.tasks.ConeSearchTask">
 			<inject object="service:simpleApplicationLauncher"/>
 		</object>
