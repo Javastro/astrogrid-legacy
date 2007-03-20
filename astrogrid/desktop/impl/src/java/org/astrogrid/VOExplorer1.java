@@ -37,7 +37,8 @@ public class VOExplorer1 {
     	l.addModuleByName("plastic");
     	l.addModuleByName("ivoa");
     	l.addModuleByName("voevent");  
-    	l.addModuleByName("votech");    	
+    	l.addModuleByName("votech");    
+    	l.addModuleByName("nvo");	
     	l.addModuleByName("cds");
     	l.addModuleByName("astrogrid");
     	l.addModuleByName("system");
