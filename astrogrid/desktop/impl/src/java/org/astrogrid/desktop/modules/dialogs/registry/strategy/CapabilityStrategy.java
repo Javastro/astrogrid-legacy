@@ -28,7 +28,7 @@ public class CapabilityStrategy extends PipelineStrategy {
 			public boolean matches(Object arg0) {
 				final Capability[] c = getCapabilities(arg0);
 				if (c == null) {
-					return false; // obvioousluy nt a service.
+					return selected.contains(NONE_PROVIDED.get(0)); // obvioousluy nt a service.
 				}				
 				for (int i = 0; i < c.length; i++) {
 					String subj = ResourceFormatter.formatType(c[i].getType());
@@ -52,8 +52,8 @@ public class CapabilityStrategy extends PipelineStrategy {
 			new CollectionList.Model() {
 		public List getChildren(Object arg0) {
 			final Capability[] c = getCapabilities(arg0);
-			if (c == null) {
-				return ListUtils.EMPTY_LIST;
+			if (c == null || c.length == 0) {
+				return NONE_PROVIDED;
 			}			
 			final List result = new ArrayList(c.length);
 			for (int i = 0; i < c.length; i++) {

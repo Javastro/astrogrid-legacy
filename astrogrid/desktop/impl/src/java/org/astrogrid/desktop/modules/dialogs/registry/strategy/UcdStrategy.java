@@ -3,15 +3,11 @@ package org.astrogrid.desktop.modules.dialogs.registry.strategy;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.ListUtils;
 import org.astrogrid.acr.astrogrid.ColumnBean;
 import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.ivoa.resource.Catalog;
-import org.astrogrid.acr.ivoa.resource.Content;
+import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
-import org.astrogrid.acr.ivoa.resource.HasTables;
-import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.dialogs.registry.FilterPipelineFactory.PipelineStrategy;
 
 import ca.odell.glazedlists.CollectionList;
@@ -43,8 +39,8 @@ public final class UcdStrategy extends PipelineStrategy {
 							}
 						}
 					} 
-				} else if (r instanceof HasTables) {
-					TableBean[] t = ((HasTables)r).getTables();
+				} else if (r instanceof CatalogService) {
+					TableBean[] t = ((CatalogService)r).getTables();
 					for (int j = 0; j < t.length; j++) {
 						ColumnBean[] cs = t[j].getColumns();
 						for (int k = 0; k < cs.length; k++) {
@@ -81,8 +77,8 @@ public final class UcdStrategy extends PipelineStrategy {
 							}
 						}
 					}
-				} else if (r instanceof HasTables) {
-					TableBean[] t = ((HasTables)r).getTables();
+				} else if (r instanceof CatalogService) {
+					TableBean[] t = ((CatalogService)r).getTables();
 					for (int j = 0; j < t.length; j++) {
 						ColumnBean[] cs = t[j].getColumns();
 						for (int k = 0; k < cs.length; k++) {

@@ -25,8 +25,8 @@ public final class SubjectsStrategy extends PipelineStrategy {
 			public boolean matches(Object arg0) {
 				Resource r = (Resource)arg0;
 				final Content content = r.getContent();
-				if (content == null) {
-					return false;
+				if (content == null || content.getSubject() == null || content.getSubject().length == 0) {
+					return selected.contains(NONE_PROVIDED.get(0));
 				}
 				String[] subjects = content.getSubject();
 				for (int i = 0; i < subjects.length; i++) {
@@ -46,8 +46,8 @@ public final class SubjectsStrategy extends PipelineStrategy {
 							public List getChildren(Object arg0) {
 								final Resource r = (Resource)arg0;
 								final Content content = r.getContent();
-								if (content == null) {
-									return ListUtils.EMPTY_LIST;
+								if (content == null || content.getSubject() == null || content.getSubject().length == 0) {
+									return NONE_PROVIDED;
 								}
 								final String[] subs =  content.getSubject();
 								final List result = new ArrayList(subs.length);

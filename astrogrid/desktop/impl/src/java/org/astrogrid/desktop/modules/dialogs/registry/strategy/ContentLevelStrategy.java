@@ -27,8 +27,8 @@ public class ContentLevelStrategy extends PipelineStrategy {
 			public boolean matches(Object arg0) {
 				Resource r = (Resource)arg0;
 				final Content content = r.getContent();
-				if (content == null) {
-					return false;
+				if (content == null || content.getSubject() == null || content.getSubject().length == 0) {
+					return selected.contains(NONE_PROVIDED.get(0));
 				}
 				String[] subjects = content.getContentLevel();
 				for (int i = 0; i < subjects.length; i++) {
@@ -48,8 +48,8 @@ public class ContentLevelStrategy extends PipelineStrategy {
 		public List getChildren(Object arg0) {
 			final Resource r = (Resource)arg0;
 			final Content content = r.getContent();
-			if (content == null) {
-				return ListUtils.EMPTY_LIST;
+			if (content == null || content.getContentLevel() == null || content.getContentLevel().length == 0) {
+				return NONE_PROVIDED;
 			}
 			final String[] level =  content.getContentLevel();
 			final List result = new ArrayList(level.length);

@@ -14,6 +14,7 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeListenerProxy;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.Action;
@@ -142,6 +143,9 @@ public class FilterPipelineFactory   {
 		public final String toString() {
 			return getName();
 		}
+		
+		/** static value used to represent 'no information provided' */
+		public static List NONE_PROVIDED = Collections.singletonList("<html><font color='#555555'>&nbsp;unknown");
 
 	}
 

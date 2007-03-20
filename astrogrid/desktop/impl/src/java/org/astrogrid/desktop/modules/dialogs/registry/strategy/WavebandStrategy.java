@@ -29,11 +29,11 @@ public class WavebandStrategy extends PipelineStrategy {
 		return new Matcher() {
 			public boolean matches(Object arg0) {
 				if (! (arg0 instanceof HasCoverage)) {
-					return false;
+					return selected.contains(NONE_PROVIDED.get(0));
 				}
 				final Coverage c = ((HasCoverage)arg0).getCoverage();
-				if (c == null) {
-					return false; // no coverage provided
+				if (c == null || c.getWavebands() == null || c.getWavebands().length == 0) {
+					return  selected.contains(NONE_PROVIDED.get(0));
 				}				
 				String[] bands = c.getWavebands();
 				for (int i = 0; i < bands.length; i++) {
@@ -54,11 +54,11 @@ public class WavebandStrategy extends PipelineStrategy {
 			new CollectionList.Model() {
 		public List getChildren(Object arg0) {
 			if (! ( arg0 instanceof HasCoverage) ) {
-				return ListUtils.EMPTY_LIST;
+				return NONE_PROVIDED;
 			}
 			final Coverage c = ((HasCoverage)arg0).getCoverage();
-			if (c == null) {
-				return ListUtils.EMPTY_LIST;
+			if (c == null || c.getWavebands().length == 0) {
+				return NONE_PROVIDED;
 			}			
 			final String[] bands = c.getWavebands();
 			final List result = new ArrayList(bands.length);

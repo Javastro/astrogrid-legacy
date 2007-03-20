@@ -25,7 +25,7 @@ public final class PublisherStrategy extends PipelineStrategy {
 				if (publisher != null) {
 					return selected.contains(publisher.getValue());
 				}
-				return false;
+				return selected.contains(NONE_PROVIDED.get(0));
 			}
 		};
 	}
@@ -38,7 +38,7 @@ public final class PublisherStrategy extends PipelineStrategy {
 						Resource r = (Resource)arg0;
 						final ResourceName publisher = r.getCuration().getPublisher();
 						if (publisher == null) { // ouch
-							return ""; 
+							return NONE_PROVIDED.get(0); 
 						}
 						return publisher.getValue();
 					}
