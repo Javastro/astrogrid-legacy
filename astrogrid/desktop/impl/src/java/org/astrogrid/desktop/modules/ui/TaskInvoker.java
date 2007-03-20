@@ -5,7 +5,7 @@ package org.astrogrid.desktop.modules.ui;
 
 import org.astrogrid.acr.ivoa.resource.Resource;
 
-/** Interface to a simplified application launcher etc.
+/** Interface to some kind of action that operates on a resource.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 27, 20072:32:30 PM
  */
