@@ -12,7 +12,7 @@ import org.astrogrid.acr.astrogrid.TableBean;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 20, 20075:00:10 PM
  */
-public interface CatalogService extends DataService , HasTables{
+public interface CatalogService extends DataService {
 	/** description of the tables provided by this service */
  TableBean[] getTables();
 }
