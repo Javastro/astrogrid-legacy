@@ -20,8 +20,7 @@ public class BasicRegistrySRQLVisitor implements Builder{
 	private static final Log logger = LogFactory
 			.getLog(BasicRegistrySRQLVisitor.class);
 	/** list of elements searched by default */
-	//private static  final String[] defaultTarget = new String[]{"$r/vr:title","$r/vr:identifier","$r/vr:shortName","$r/vr:content/vr:subject","$r/vr:content/vr:description"};
-	private static  final String[] defaultTarget = new String[]{"vr:title","vr:identifier","vr:shortName","vr:content/vr:subject","vr:content/vr:description"};
+	private static  final String[] defaultTarget = new String[]{"$r/vr:title","$r/vr:identifier","$r/vr:shortName","$r/vr:content/vr:subject","$r/vr:content/vr:description"};
 	/** a map of other alternate targets */
 	private static Map targets = new HashMap();
 	static {
@@ -38,23 +37,24 @@ public class BasicRegistrySRQLVisitor implements Builder{
 		targets.put("curation",new String[] {"$r/vr:curation//*"});
 		targets.put("type", new String[] {"@xsi:type","$r/vr:content/vr:type"});
 		targets.put("level", new String[] {"$r/vr:content/vr:contentLevel"});
-		targets.put("waveband",new String[] {"$r/vs:coverage/vs:spectral/vs:waveband"}); 
-		targets.put("col",new String[]{"$r//vods:column/vods:name"});
-				// combines - "$r/vods:table/vods:column/vods:name", "$r/tdb:db/tdb:table/vods:column/vods:name});
-		targets.put("ucd",new String[]{"$r//vods:column/vods:ucd"});
+		targets.put("waveband",new String[] {"$r/vods:coverage/vods:spectral/vods:waveband"}); 
+		targets.put("col",//new String[]{"$r//vods:column/vods:name"}); // '//' doesn't seem to work in this context.
+				 new String[]{"$r/vods:table/vods:column/vods:name", "$r/tdb:db/tdb:table/vods:column/vods:name"});
+		targets.put("ucd",//new String[]{"$r//*:column/*:ucd"});
 				// likewise, search for both"$r/vods:table/vods:column/vods:ucd"});
+		 new String[]{"$r/vods:table/vods:column/vods:ucd", "$r/tdb:db/tdb:table/vods:column/vods:ucd"});		
 		//
 	}	
    
 	public String build(SRQL q, String filter) {
 		Object o = q.accept(this);
 		StringBuffer sb = new StringBuffer();
-		sb.append("//RootResource[(@status = 'active') and (");
+		sb.append("for $r in //vor:Resource[not (@status = 'inactive' or @status = 'deleted')]\nwhere (");
     	if (filter != null) { // apply the filter first - as should restrict faster.
     		sb.append(filter).append(") and (");
     	}	
     	sb.append(o);
-		sb.append(") ]");
+		sb.append(")\nreturn $r");
 		logger.debug(sb);
 		return sb.toString();
 	}
@@ -112,8 +112,7 @@ public class BasicRegistrySRQLVisitor implements Builder{
 	protected String buildClause(String kw) {
 		StringBuffer sb = new StringBuffer();
 		for (int el = 0; el < currentTarget.length; el++) {
-			//sb.append(currentTarget[el]).append(" &= '*").append(kw).append( "*'" );
-			sb.append("matches(").append(currentTarget[el]).append(",'").append(kw).append( "','i')" );			
+			sb.append(currentTarget[el]).append(" &= '*").append(kw).append( "*'" );
 			if (el != currentTarget.length -1) {
 				sb.append(" or ");
 			}
