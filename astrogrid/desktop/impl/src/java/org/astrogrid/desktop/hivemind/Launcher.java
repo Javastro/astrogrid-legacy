@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.13 2007/03/08 17:44:02 nw Exp $
+/*$Id: Launcher.java,v 1.14 2007/03/20 10:19:00 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -63,6 +63,7 @@ public class Launcher implements Runnable {
         // l & f
         String lafName = UIManager.getSystemLookAndFeelClassName();
         // for linux... see if we can do better than the Motif..
+      //@FIXME - problems with LAF on linux in newest build.
         if (lafName.equals("com.sun.java.swing.plaf.motif.MotifLookAndFeel")) {// yo mamma's so ugly.
         	try {
         		// see if GTK  is available.. java 1.4+
@@ -73,7 +74,7 @@ public class Launcher implements Runnable {
         	}
         } 
 //        lafName = UIManager.getCrossPlatformLookAndFeelClassName();
-        setProperty("swing.defaultlaf",lafName);
+     //   setProperty("swing.defaultlaf",lafName);
         // properties for apple - ignored in other contexts.
         // under java 1.4 on macs, I keep getting odd 3 > 2 errors.
         setProperty("apple.laf.useScreenMenuBar",Boolean.toString(
@@ -200,6 +201,9 @@ public class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.14  2007/03/20 10:19:00  nw
+possible fix to laf problems on linux.
+
 Revision 1.13  2007/03/08 17:44:02  nw
 first draft of voexplorer
 
