@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.8 2007/02/20 12:22:16 clq2 Exp $
+/*$Id: InstallationSelfCheck.java,v 1.9 2007/03/21 18:59:41 kea Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -225,7 +225,9 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
 
    /**
     * Checks Metadoc file is schema-valid
+    * KEA: Test below does nothing of the sort!
     */
+   /*
    public void testMetadocValidity() throws IOException, SAXException, ParserConfigurationException {
       String vodesc = VoDescriptionServer.makeVoDescription();
       Document doc = DomHelper.newDocument(vodesc);
@@ -235,19 +237,33 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
       }
       AstrogridAssert.assertSchemaValid(doc,rootElement,SchemaMap.ALL);
    }
+   */
    /**
     * Checks metadata is OK.
     * NB This test will not pick up empty metadata 
     */
-   public void testMetadata() throws IOException, SAXException, ParserConfigurationException {
-      String vodesc = VoDescriptionServer.makeVoDescription();
-      Document doc = DomHelper.newDocument(vodesc);
+   public void testMetadata_v0_10() throws IOException, SAXException, ParserConfigurationException {
+      Document doc = 
+         VoDescriptionServer.getVoDescription(VoDescriptionServer.V0_10);
       String rootElement = doc.getDocumentElement().getLocalName();
       if(rootElement == null) {
          rootElement = doc.getDocumentElement().getNodeName();
       }
       AstrogridAssert.assertSchemaValid(doc,rootElement,SchemaMap.ALL);
    }
+
+   // TOFIX ENABLE LATER WHEN V1.0 RESOURCES ARE ACTIVE
+   /*
+   public void testMetadata_v1_0() throws IOException, SAXException, ParserConfigurationException {
+      Document doc =
+         VoDescriptionServer.getVoDescription(VoDescriptionServer.V1_0);
+      String rootElement = doc.getDocumentElement().getLocalName();
+      if(rootElement == null) {
+         rootElement = doc.getDocumentElement().getNodeName();
+      }
+      AstrogridAssert.assertSchemaValid(doc,rootElement,SchemaMap.ALL);
+   }
+   */
    
    /** For running standalone, so it can be used from an IDE for quick tests against services 
     * @TOFIX Put some kind of runtime test here? */

@@ -1,5 +1,5 @@
 /*
- * $Id: SoapDataServer.java,v 1.2 2005/03/21 18:45:55 mch Exp $
+ * $Id: SoapDataServer.java,v 1.3 2007/03/21 18:59:41 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -43,9 +43,10 @@ public abstract class SoapDataServer    {
    /**
     * Returns the metadata file as a string
     */
-   public String getMetadata() throws SOAPFaultException {
+   public String getMetadata(String version) throws SOAPFaultException {
       try  {
-         return DomHelper.DocumentToString(VoDescriptionServer.getVoDescription());
+         return DomHelper.DocumentToString(
+               VoDescriptionServer.getVoDescription(version));
       }
       catch (Throwable e)  {
          throw makeSoapFault("Server", "Could not access metadata", e);
@@ -152,6 +153,10 @@ public abstract class SoapDataServer    {
 
 /*
 $Log: SoapDataServer.java,v $
+Revision 1.3  2007/03/21 18:59:41  kea
+Preparatory work for v1.0 resources (not yet supported);  and also
+cleaning up details of completed jobs to save memory.
+
 Revision 1.2  2005/03/21 18:45:55  mch
 Naughty big lump of changes
 

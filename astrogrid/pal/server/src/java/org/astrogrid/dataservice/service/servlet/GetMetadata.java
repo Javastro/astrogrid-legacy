@@ -1,5 +1,5 @@
 /*
- * $Id: GetMetadata.java,v 1.6 2006/09/26 15:34:42 clq2 Exp $
+ * $Id: GetMetadata.java,v 1.7 2007/03/21 18:59:41 kea Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;
@@ -36,10 +36,18 @@ public class GetMetadata extends DefaultServlet {
 
          //see if a particular resource type has bee requested
          String resourceType = request.getParameter("Resource");
+
+         // Get version
+         String version = request.getParameter("Version");
+         if (version == null) {
+            // TOFIX - for now, default to v0.10
+            version = VoDescriptionServer.V0_10;
+            //throw new IOException("Please specify which version of metadata you require ('v0.10', 'v1.0' etc)");
+         }
          
          //nothing - all
          if (resourceType == null) {
-            response.getWriter().write(VoDescriptionServer.makeVoDescription());
+            response.getWriter().write(DomHelper.DocumentToString(org.astrogrid.dataservice.metadata.VoDescriptionServer.getVoDescription(version)));
          }
          //CEA resources
          else if (resourceType.toUpperCase().equals("CEA")) {
@@ -55,10 +63,7 @@ public class GetMetadata extends DefaultServlet {
          }
          //look for the one with the same name
          else  {
-            //we still need to wrap it in a VoDescription so that it's a valid document
-            response.getWriter().write(VoDescriptionServer.VODESCRIPTION_ELEMENT);
-            response.getWriter().write(DomHelper.ElementToString(VoDescriptionServer.getResource(resourceType)));
-            response.getWriter().write(VoDescriptionServer.VODESCRIPTION_ELEMENT_END);
+            response.getWriter().write(DomHelper.DocumentToString(VoDescriptionServer.getWrappedResource(version, resourceType)));
          }
       }
       catch (Throwable th) {

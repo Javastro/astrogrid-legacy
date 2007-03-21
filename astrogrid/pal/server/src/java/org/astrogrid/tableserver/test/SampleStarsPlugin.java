@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.9 2007/02/20 12:22:16 clq2 Exp $
+ * $Id: SampleStarsPlugin.java,v 1.10 2007/03/21 18:59:41 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -21,8 +21,6 @@ import org.astrogrid.tableserver.jdbc.JdbcConnections;
 import org.astrogrid.tableserver.jdbc.JdbcPlugin;
 import org.astrogrid.tableserver.jdbc.AdqlSqlMaker;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
-import org.astrogrid.tableserver.metadata.TabularDbResources;
-import org.astrogrid.tableserver.metadata.TabularSkyServiceResources;
 
 /**
  * This plugin works with a 'fixed' set of values in an HSQL database.  So
@@ -102,11 +100,10 @@ public class SampleStarsPlugin extends JdbcPlugin
       ConfigFactory.getCommonConfig().setProperty(TableMetaDocInterpreter.TABLE_METADOC_URL_KEY, url.toString());
 
       //configure which resources to produce
-      ConfigFactory.getCommonConfig().setProperties(VoDescriptionServer.RESOURCE_PLUGIN_KEY, new Object[] {
-               //TabularSkyServiceResources.class.getName(),
-               TabularDbResources.class.getName()
-            });
-
+      ConfigFactory.getCommonConfig().setProperty("datacenter.resource.register.v0_10","enabled");
+      ConfigFactory.getCommonConfig().setProperty("datacenter.resource.register.v1_0","disabled");
+      // AUTH ID PLUGIN CURRENTLY NOT PROVIDED!
+      //ConfigFactory.getCommonConfig().setProperty("datacenter.resource.register.authID","false");
 
       //set up the properties for the authority bit
       ConfigFactory.getCommonConfig().setProperty("datacenter.name", "Default Astrogrid DSA/Catalog running test database");

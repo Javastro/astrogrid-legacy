@@ -1,4 +1,4 @@
-/*$Id: InstallationPropertiesCheck.java,v 1.7 2007/02/20 12:22:16 clq2 Exp $
+/*$Id: InstallationPropertiesCheck.java,v 1.8 2007/03/21 18:59:41 kea Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -87,9 +87,31 @@ public class InstallationPropertiesCheck extends TestCase {
       if (!checkSet("datacenter.contact.email", accum)) { bad = bad+1; }
       if (!checkSet("datacenter.data.creator.name", accum)) { bad = bad+1; }
 
-      // Assume we need at least one resource (something to publish)
-      if (!checkSet("datacenter.resource.plugin.1", accum)) { bad = bad+1; }
+      // Catch old resource plugin settings (shouldn't be more than 3)
+      if (!checkUnset("datacenter.resource.plugin.1", accum)) { bad = bad+1; }
+      if (!checkUnset("datacenter.resource.plugin.2", accum)) { bad = bad+1; }
+      if (!checkUnset("datacenter.resource.plugin.3", accum)) { bad = bad+1; }
 
+      // Check resource version settings
+      if (!checkSet("datacenter.resource.register.v0_10", accum)) { 
+         bad = bad+1; 
+      }
+      else {
+         if (!checkValue("datacenter.resource.register.v0_10", "enabled", "Property 'datacenter.resource.register.v0_10' MUST be enabled for now", accum)) { bad = bad+1; }
+      }
+      if (!checkSet("datacenter.resource.register.v1_0", accum)) { 
+         bad = bad+1;
+      }
+      else {
+         if (!checkValue("datacenter.resource.register.v1_0", "disabled", "Property 'datacenter.resource.register.v1_0' MUST be disabled for now", accum)) { bad = bad+1; }
+      }
+      /*
+      // CURRENTLY DON'T HAVE AN AUTHORITY ID PLUGIN!
+      // Check for authority ID setting
+      if (!checkSet("datacenter.resource.register.authID", accum)) { bad = bad+1; }
+      */
+
+      // Check registry and other compulsory settings
       if (!checkSet("org.astrogrid.registry.admin.endpoint", accum)) { bad = bad+1; }
       if (!checkSet("org.astrogrid.registry.query.endpoint", accum)) { bad = bad+1; }
       if (!checkSet("org.astrogrid.registry.query.altendpoint", accum)) { bad = bad+1; }
@@ -119,6 +141,10 @@ public class InstallationPropertiesCheck extends TestCase {
       assertTrue("SOME PROPERTIES ARE NOT SET!<br/>\n" + accumString,allOK);
    }
 
+   /**
+    * Checks that the specified property is set, returning false if it isn't
+    * and adding an error message to the accumulation vector. 
+    */
    protected boolean checkSet(String name, Vector accum)
    {
       String property;
@@ -129,17 +155,61 @@ public class InstallationPropertiesCheck extends TestCase {
         // Ignore this one so we can report it to the user later
         property = null;
       }
-      if (property == null) {
+      if ((property == null) || ("".equals(property)) ) {
         accum.add(
           "<br/>\nProperty '" + name + "' is not set, please set it!"); 
 
         return false;
       }
-      if (property.equals("")) {
+      return true;
+   }
+   /**
+    * Checks that the specified property is set to the specified value, 
+    * returning false if it isn't and adding an error message to the 
+    * accumulation vector. 
+    */
+   protected boolean checkValue(String name, String value, String error, Vector accum)
+   {
+      String property;
+      try {
+         property = ConfigFactory.getCommonConfig().getString(name);
+      } 
+      catch (PropertyNotFoundException e) {
+        // Ignore this one so we can report it to the user later
+        property = null;
+      }
+      if ((property == null) || ("".equals(property)) ) {
         accum.add(
           "<br/>\nProperty '" + name + "' is not set, please set it!"); 
         return false;
       }
+      else if (!value.equals(property)) {
+         accum.add("<br/>\n"+error);
+         return false;
+      }
       return true;
+   }
+
+   /**
+    * Checks that the specified property is unset, returning false if it isn't
+    * and adding an error message to the accumulation vector. 
+    */
+   protected boolean checkUnset(String name, Vector accum)
+   {
+      String property;
+      try {
+         property = ConfigFactory.getCommonConfig().getString(name);
+      } 
+      catch (PropertyNotFoundException e) {
+        property = null;   // This is fine
+      }
+      if ( (property == null) || ("".equals(property)) ) {
+         return true;
+      }
+      else {
+        accum.add(
+          "<br/>\nProperty '" + name + "' is no longer in use, please remove it from your configuration."); 
+        return false;
+      }
    }
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierClosed.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: QuerierClosed.java,v 1.2 2007/03/21 18:59:41 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,13 +13,16 @@ package org.astrogrid.dataservice.queriers.status;
 
 public interface QuerierClosed
 {
-   
 }
 
 /*
 $Log: QuerierClosed.java,v $
-Revision 1.1  2005/02/17 18:37:35  mch
-*** empty log message ***
+Revision 1.2  2007/03/21 18:59:41  kea
+Preparatory work for v1.0 resources (not yet supported);  and also
+cleaning up details of completed jobs to save memory.
+
+Revision 1.1.1.1  2005/02/17 18:37:35  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:24  mch
 Initial checkin

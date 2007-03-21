@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.3 2007/03/02 14:59:33 kea Exp $
+/*$Id: QuerierManager.java,v 1.4 2007/03/21 18:59:40 kea Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -249,8 +249,6 @@ public class QuerierManager implements QuerierListener {
       // in queuedQueriers;  previously we had a race condition here between
       // threads.
       addQuerierToQueues(querier);
-      //queuedPriorities.add(querier);
-      //queuedQueriers.put(querier.getId(), querier);
       querier.addListener(this);
       checkQueue();
    }
@@ -297,11 +295,12 @@ public class QuerierManager implements QuerierListener {
       if (querier.getStatus().isFinished()) {
          runningQueriers.remove(querier.getId()); //remove if it's in running
          queuedQueriers.remove(querier.getId()); //remove if it's queued
+         querier.clearStatusHistory(); // Clean up unneeded detail
          closedQueriers.put(querier.getId(), querier); //make sure it's in closed
          checkQueue(); //see if, if having removed it from running, we ought to start another
       }
    }
-   
+
    /** Checks the queue - if there are queued queriers and not too many
     * running, moves a queued one and starts it
     */
@@ -334,6 +333,18 @@ public class QuerierManager implements QuerierListener {
       queuedQueriers.put(querier.getId(), querier);
    }
    
+   /*
+    * Might choose to use this later, for admins to clear out closed queue.
+   protected void cleanupClosedQueue() 
+   {
+      System.out.println("KONA GOT INTO CLEANUPCLOSEDQUEUE");
+      Querier[] closed = (Querier[]) closedQueriers.values().toArray(new Querier[] {} );
+      for (int i = 0; i < closed.length; i++) {
+         System.out.println("KONA GOT INTO CLEANUPCLOSEDQUEUE");
+         closed[i].getStatus().cleanupTaskDetails();
+      }
+   }
+   */
    
    /** Shut down - abort all running queries */
    public void shutDown() {
@@ -360,6 +371,10 @@ public class QuerierManager implements QuerierListener {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.4  2007/03/21 18:59:40  kea
+ Preparatory work for v1.0 resources (not yet supported);  and also
+ cleaning up details of completed jobs to save memory.
+
  Revision 1.3  2007/03/02 14:59:33  kea
  Fixed (I hope) a critical race bug (inadequate synchronization), leading
  to errors accessing jobs in the jobs queue - see bugzilla bug 2126.

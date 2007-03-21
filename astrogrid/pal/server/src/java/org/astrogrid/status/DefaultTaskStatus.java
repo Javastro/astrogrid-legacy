@@ -1,5 +1,5 @@
 /*
- * $Id: DefaultTaskStatus.java,v 1.1 2006/06/16 14:50:06 kea Exp $
+ * $Id: DefaultTaskStatus.java,v 1.2 2007/03/21 18:59:41 kea Exp $
  */
 
 package org.astrogrid.status;
@@ -35,6 +35,7 @@ public class DefaultTaskStatus implements TaskStatus
    public DefaultTaskStatus() {
    }
    
+
    /** Constructs new task with given one as previous, and copies in owner, source, etc */
    public DefaultTaskStatus(TaskStatus existing, String newStage) {
       this.id = existing.getId();
@@ -143,5 +144,17 @@ public class DefaultTaskStatus implements TaskStatus
    
    public String toString() {
       return "Status ["+getId()+"] "+getStage()+" @"+getTimestamp()+" from "+getSource()+" by "+getOwner(); //+" (prev="+getPrevious()+")";
+   }
+
+
+   /** Cleans up fine-scale detail of status (to be used once query has 
+    * completed to save memory).
+    */
+   public void clearHistory() {
+      this.details = new Vector();
+      this.previous = null;
+      this.message = "";
+      this.source = null;
+      this.progressText = "";
    }
 }

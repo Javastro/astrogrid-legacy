@@ -1,5 +1,5 @@
 /*
- * $Id: Register.java,v 1.6 2006/10/17 10:11:41 clq2 Exp $
+ * $Id: Register.java,v 1.7 2007/03/21 18:59:41 kea Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;
@@ -66,12 +66,17 @@ public class Register extends DefaultServlet {
          System.out.println(DomHelper.DocumentToString(registration));
          */
          
-         VoDescriptionServer.pushToRegistry(new URL(regParam));
-         
-         //submit query - and return just the query ID
-         response.setContentType("text/plain");
-         Writer w = response.getWriter();
-         w.write(regParam);
+         for (int i = 0; i < VoDescriptionServer.VERSIONS.length; i++) {
+            if (VoDescriptionServer.isEnabled(
+                  VoDescriptionServer.VERSIONS[i])) {
+                VoDescriptionServer.pushToRegistry(
+                    VoDescriptionServer.VERSIONS[i], new URL(regParam));
+              //submit query - and return just the query ID
+                response.setContentType("text/plain");
+                Writer w = response.getWriter();
+                w.write(regParam);
+            }
+         }
       }
       catch (Throwable th) {
          LogFactory.getLog(request.getContextPath()).error(th+" Registering",th);

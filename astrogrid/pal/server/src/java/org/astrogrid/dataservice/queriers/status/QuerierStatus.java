@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierStatus.java,v 1.2 2007/03/02 13:49:41 kea Exp $
+ * $Id: QuerierStatus.java,v 1.3 2007/03/21 18:59:41 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -75,12 +75,14 @@ public abstract class QuerierStatus extends DefaultTaskStatus
    public void clearProgress() {
       newProgress("", -1);
    }
-
-   
 }
 
 /*
 $Log: QuerierStatus.java,v $
+Revision 1.3  2007/03/21 18:59:41  kea
+Preparatory work for v1.0 resources (not yet supported);  and also
+cleaning up details of completed jobs to save memory.
+
 Revision 1.2  2007/03/02 13:49:41  kea
 Clarified comment location.
 

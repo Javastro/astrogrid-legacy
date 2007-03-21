@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.5 2006/09/27 13:08:55 kea Exp $
+ * $Id: DataServer.java,v 1.6 2007/03/21 18:59:41 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -271,8 +271,8 @@ public class DataServer
    /**
     * Returns the metadata file as a string
     */
-   public String getMetadata() throws IOException {
-      return DomHelper.DocumentToString(VoDescriptionServer.getVoDescription());
+   public String getMetadata(String version) throws IOException {
+      return DomHelper.DocumentToString(VoDescriptionServer.getVoDescription(version));
    }
    
    /** Returns the valid formats for this service as an array of strings */
