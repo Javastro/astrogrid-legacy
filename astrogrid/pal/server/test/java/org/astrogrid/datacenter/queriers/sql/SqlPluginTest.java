@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.7 2006/06/15 16:50:08 clq2 Exp $
+/*$Id: SqlPluginTest.java,v 1.8 2007/03/21 19:00:34 kea Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -178,11 +178,11 @@ public class SqlPluginTest extends TestCase {
       
    }
    
-   public void testDescriptionMaker() throws Exception {
+   public void testDescriptionMaker_v0_10() throws Exception {
       setUp();
       
       //generate metadata
-      Document metaDoc = VoDescriptionServer.getVoDescription();
+      Document metaDoc = VoDescriptionServer.getVoDescription(VoDescriptionServer.V0_10);
       
       //debug
       DomHelper.DocumentToStream(metaDoc, System.out);
@@ -191,6 +191,26 @@ public class SqlPluginTest extends TestCase {
       long numTables = metaDoc.getElementsByTagNameNS("*","table").getLength();
       assertEquals("Should be three tables (plates, stars, galaxies) in metadata", 3, numTables);
       
+   }
+   public void testDescriptionMaker_v1_0() throws Exception {
+      setUp();
+      
+      try {
+         //generate metadata
+         Document metaDoc = VoDescriptionServer.getVoDescription(VoDescriptionServer.V1_0);
+         
+         //debug
+         DomHelper.DocumentToStream(metaDoc, System.out);
+         
+         //check results
+         long numTables = metaDoc.getElementsByTagNameNS("*","table").getLength();
+         assertEquals("Should be three tables (plates, stars, galaxies) in metadata", 3, numTables);
+      }
+      // Temporary until v1.0 resources enabled
+      catch (Exception e) {
+         return;
+      }
+      fail("VoResource v1.0 registrations should not be enabled yet!");
    }
    
    /** Test harness - runs tests

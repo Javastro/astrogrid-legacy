@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPluginTest.java,v 1.8 2006/06/15 16:50:09 clq2 Exp $
+ * $Id: SampleStarsPluginTest.java,v 1.9 2007/03/21 19:00:34 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -109,11 +109,26 @@ public class SampleStarsPluginTest extends TestCase {
    }
    
    /** Tests the served data plugin */
-   public void testMetadataServer() throws Exception {
-      Document metadata = VoDescriptionServer.getVoDescription();
+   public void testMetadataServer_v0_10() throws Exception {
+      Document metadata = VoDescriptionServer.getVoDescription(VoDescriptionServer.V0_10);
       
       //debug
       DomHelper.DocumentToStream(metadata, System.out);
+   }
+
+   /** Tests the served data plugin */
+   public void testMetadataServer_v1_0() throws Exception {
+      try {
+         Document metadata = VoDescriptionServer.getVoDescription(VoDescriptionServer.V1_0);
+         
+         //debug
+         DomHelper.DocumentToStream(metadata, System.out);
+      }
+      // Temporary, until v1.0 resources enabled
+      catch (Exception e) {
+         return;
+      }
+      fail("VoResources v1.0 should not be enabled yet!");
    }
    
    /**

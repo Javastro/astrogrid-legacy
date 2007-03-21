@@ -1,4 +1,4 @@
-/*$Id: MetadataTest.java,v 1.2 2005/05/27 16:21:02 clq2 Exp $
+/*$Id: MetadataTest.java,v 1.3 2007/03/21 19:00:34 kea Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -113,8 +113,8 @@ public class MetadataTest extends TestCase {
    }
    
    
-   public void testServer() throws Exception {
-      Document metadata = VoDescriptionServer.getVoDescription();
+   public void testServer_v0_10() throws Exception {
+      Document metadata = VoDescriptionServer.getVoDescription(VoDescriptionServer.V0_10);
       //debug
       DomHelper.DocumentToStream(metadata, System.out);
       
@@ -125,6 +125,27 @@ public class MetadataTest extends TestCase {
       String s = DomHelper.DocumentToString(metadata);
       
       DomHelper.newDocument(s);
+   }
+
+   public void testServer_v1_0() throws Exception {
+      try {
+         Document metadata = VoDescriptionServer.getVoDescription(VoDescriptionServer.V1_0);
+         //debug
+         DomHelper.DocumentToStream(metadata, System.out);
+         
+         assertNotNull(metadata);
+         assertIdentifiersOK(metadata);
+         
+         //make sure its well-formed - strange idea given it's already an object model, but there may be some namespace bugs
+         String s = DomHelper.DocumentToString(metadata);
+         
+         DomHelper.newDocument(s);
+      }
+      // Temporary until V1.0 resources enabled
+      catch (Exception e) {
+         return;
+      }
+      fail("Version 1.0 resources should not be enabled yet!");
    }
    
    /** Tests the resource generator */
@@ -142,6 +163,7 @@ public class MetadataTest extends TestCase {
       DomHelper.DocumentToStream(metaDoc, System.out);
     }
 
+   /*
    public void testMetadataFileServer() throws Throwable{
       
       ConfigFactory.getCommonConfig().setProperty(VoDescriptionServer.RESOURCE_PLUGIN_KEY, FileResourcePlugin.class.getName());
@@ -161,7 +183,9 @@ public class MetadataTest extends TestCase {
       assertNotNull(metadata);
       assertIdentifiersOK(metadata);
    }
+   */
    
+   /*
    public void testMetatdataUrlServer() throws Throwable{
       ConfigFactory.getCommonConfig().setProperty(VoDescriptionServer.RESOURCE_PLUGIN_KEY, UrlResourcePlugin.class.getName());
 
@@ -170,6 +194,7 @@ public class MetadataTest extends TestCase {
       assertNotNull(metadata);
       assertIdentifiersOK(metadata);
    }
+   */
 
    public void testRegistryDates() {
       Calendar ukcal = new GregorianCalendar(Locale.UK);
