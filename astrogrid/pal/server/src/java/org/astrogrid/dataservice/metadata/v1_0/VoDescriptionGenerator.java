@@ -41,9 +41,9 @@ public class VoDescriptionGenerator extends VoDescriptionGeneratorBase {
    protected static Log log = LogFactory.getLog(VoDescriptionGenerator.class);
    
    public final static String VODESCRIPTION_ELEMENT=
-         "<vor:VOResources xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"  xmlns:vor=\"http://www.ivoa.net/xml/RegistryInterface/v0.1\" xsi:schemaLocation=\"http://www.ivoa.net/xml/RegistryInterface/v0.1 http://software.astrogrid.org/schema/registry/RegistryInterface/v0.1/RegistryInterface.xsd\">\n";
+         "<ri:VOResources xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"  xmlns:ri=\"http://www.ivoa.net/xml/RegistryInterface/v1.0\" xsi:schemaLocation=\"http://www.ivoa.net/xml/RegistryInterface/v1.0 http://software.astrogrid.org/schema/registry/RegistryInterface/v1.0/RegistryInterface.xsd\">\n";
 
-   public final static String VODESCRIPTION_ELEMENT_END= "</vor:VOResources>";
+   public final static String VODESCRIPTION_ELEMENT_END= "</ri:VOResources>";
 
    /**
     * Returns the whole metadata file as a DOM document 
