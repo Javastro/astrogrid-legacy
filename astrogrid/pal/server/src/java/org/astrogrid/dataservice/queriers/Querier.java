@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.7 2007/03/14 16:26:49 kea Exp $
+ * $Id: Querier.java,v 1.8 2007/03/21 18:58:15 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -240,6 +240,7 @@ public class Querier implements Runnable, PluginListener {
       getStatus().setProgressMax(resultsSize);
       plugin = null;  //release plugin reference (-> can be garbage collected)
       query = null;   // release query reference too (can get quite big)
+      clearStatusHistory();  // clean up some details of the status too
    }
    
    /**
@@ -358,7 +359,15 @@ public class Querier implements Runnable, PluginListener {
    public QuerierStatus getStatus() {
       return status;
    }
-   
+
+   /**
+    * Cleans up most of the status detail to save memory once a query
+    * is complete.
+    */
+   public void clearStatusHistory() {
+     status.clearHistory();
+   }
+
    /**
     * Register a status listener.  This will be informed of changes in status
     * to the service - IF the service supports such info.  Otherwise it will
