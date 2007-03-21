@@ -1,29 +1,22 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.20 2007/03/14 16:26:49 kea Exp $
- *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.dataservice.metadata;
 import java.io.IOException;
+import java.util.Vector;
 import java.lang.reflect.Constructor;
 import java.net.URISyntaxException;
 import java.net.URL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigFactory;
-import org.astrogrid.cfg.PropertyNotFoundException;
-import org.astrogrid.dataservice.metadata.queryable.QueryableResourceReader;
 
-// v0.10 resources
-import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
-import org.astrogrid.dataservice.service.cea.v0_10.CeaResources;
-import org.astrogrid.dataservice.service.cone.v0_10.ConeResources;
-
-// v1.0 resources
-//import org.astrogrid.dataservice.metadata.v1_0.VoResourceSupport;
-//import org.astrogrid.dataservice.service.cea.v1_0.CeaResources;
-//import org.astrogrid.dataservice.service.cone.v1_0.ConeResources;
+// Can't import the VoDescriptionGenerator classes by name here,
+// or the compiler gets confused (even if they are referred to
+// by fully qualified name as below), so import by *
+import org.astrogrid.dataservice.metadata.v0_10.*;
+import org.astrogrid.dataservice.metadata.v1_0.*;
 
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
@@ -42,6 +35,7 @@ import org.astrogrid.contracts.SchemaMap;
 /**
  * Assembles the various VoResource elements provided by the plugins, and
  * serves them all up wrapped in a VoDescription element for submitting to registries
+ *
  * @see VoResourceSupport for how resource elements are generated
  * @see package documentation
  * <p>
@@ -51,319 +45,202 @@ import org.astrogrid.contracts.SchemaMap;
 public class VoDescriptionServer {
 
    protected static Log log = LogFactory.getLog(VoDescriptionServer.class);
-   
-   private static Document cache = null;
-   
-   public static final String QUERYABLE_PLUGIN = "datacenter.queryable.plugin";
-   public final static String RESOURCE_PLUGIN_KEY = "datacenter.resource.plugin";
 
-/*   
-   public final static String VODESCRIPTION_ELEMENT =
-               "<VOResources " +
-                   "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' " +
-                   "xmlns:vor='http://www.ivoa.net/xml/VOResource/v0.10' " +
-                   "xmlns='http://www.ivoa.net/xml/VOResource/v0.10' " + //default namespace
-                   ">";
- */
-   public final static String VODESCRIPTION_ELEMENT =
-         "<vor:VOResources xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"  xmlns:vor=\"http://www.ivoa.net/xml/RegistryInterface/v0.1\" xsi:schemaLocation=\"http://www.ivoa.net/xml/RegistryInterface/v0.1 http://software.astrogrid.org/schema/registry/RegistryInterface/v0.1/RegistryInterface.xsd\">\n";
+   // Versioned description generators
+   protected static org.astrogrid.dataservice.metadata.v0_10.VoDescriptionGenerator generator_v0_10 = new org.astrogrid.dataservice.metadata.v0_10.VoDescriptionGenerator();
 
-   public final static String VODESCRIPTION_ELEMENT_END = "</vor:VOResources>";
+   protected static org.astrogrid.dataservice.metadata.v1_0.VoDescriptionGenerator generator_v1_0 = new org.astrogrid.dataservice.metadata.v1_0.VoDescriptionGenerator();
+
+   // Caches for document versions
+   protected static Document cache_v0_10 = null;
+   protected static Document cache_v1_0 = null;
+
+   //These are the VOResource versions that the DSA knows about.
+   public final static String V0_10        = "v0_10";   
+   public final static String V1_0         = "v1_0";
+   public final static String VERSIONS[] = { V0_10, V1_0 };
 
    /**
-    * Returns the whole metadata file as a DOM document
+    * Returns true if the specified version is supported by DSA, 
+    * false otherwise.
+    *
     */
-   public synchronized static Document getVoDescription() throws IOException {
-      if (cache == null) {
-         try {
-            cache = DomHelper.newDocument(makeVoDescription());
-            
-         }
-         catch (SAXException e) {
-            throw new MetadataException("XML error with Metadata: "+e,e);
-         }
+   public static boolean isSupported(String version) 
+   {
+      if (V0_10.equals(version)) {
+         return true;
       }
-      return cache;
-   }
-   
-   /** Checks that the given document is a valid vodescription, throwing an
-    * exception if not */
-   public static void validateDescription(String vod) throws SAXException, MetadataException {
-      Element root = null;
-      try {
-         root = DomHelper.newDocument(vod).getDocumentElement();
+      else if (V1_0.equals(version)) {
+         return true;
       }
-      catch (IOException e) {
-         throw new RuntimeException(e);
-      }
-      
-      // Added by KEA: validate the VODescription against schema
-      String rootElement = root.getLocalName();
-      if(rootElement == null) {
-         rootElement = root.getNodeName();
-      }
-      try {
-         AstrogridAssert.assertSchemaValid(root,rootElement,SchemaMap.ALL);
-      }
-      catch (Throwable th) {
-         throw new MetadataException("Resource VODescription does not validate against its schema: "+th.getMessage(), th);
-      }
-
-      // Perform some manual checks (KEA: remove these?)
-      NodeList children = root.getChildNodes();
-      
-      for (int i = 0; i < children.getLength(); i++) {
-         if (children.item(i) instanceof Element) {
-            Element resource = (Element) children.item(i);
-            
-            if (!resource.getLocalName().equals("Resource")) {
-               throw new MetadataException("VODescription Child "+i+" ("+resource.getNodeName()+") is not a Resource element");
-            }
-            
-            Element idNode = DomHelper.getSingleChildByTagName(resource, "identifier");
-            if (idNode == null) {
-               //no identifier - could add one but we don't know what resource key to give it
-               throw new MetadataException("Resource "+i+" (xsi:type="+resource.getAttribute("xsi:type")+") has no <identifier>");
-            }
-            
-            String configAuth = ConfigFactory.getCommonConfig().getString(VoResourceSupport.AUTHID_KEY);
-            String rawId = DomHelper.getValueOf(idNode).trim();
-            IVORN id = null;
-            try {
-               id = new IVORN(rawId);
-            }
-            catch (URISyntaxException e) {
-               throw new MetadataException("<identifier> '"+rawId+"' is not a valid IVORN: "+e);
-            }
-            
-            if (!id.getAuthority().startsWith(configAuth)) {
-               throw new MetadataException("<identifier> '"+id+"' does not start with configured authority "+configAuth);
-            }
-         }
-      }
+      return false;
    }
 
-   /** Instantiates the class with the given name.  This is useful for things
-    * such as 'plugins', where a class name might be given in a configuration file.
-    * Rather messily throws Throwable because anything might have
-    * gone wrong in the constructor.
-    */
-   public static VoResourcePlugin createVoResourcePlugin(String pluginClassName) {
-      
-      Object plugin = null;
-      
-      try {
-         log.debug("Creating VoResourcePlugin '"+pluginClassName+"'");
-         
-         Class qClass = Class.forName(pluginClassName);
-       
-         /* NWW - interesting bug here.
-          original code used class.newInstance(); this method doesn't declare it throws InvocationTargetException,
-          however, this exception _is_ thrown if an exception is thrown by the constructor (as is often the case at the moment)
-          worse, as InvocatioinTargetException is a checked exception, the compiler rejects code with a catch clause for
-          invocationTargetExcetpion - as it thinks it cannot be thrown.
-          this means the exception boils out of the code, and is unstoppable - dodgy
-          work-around - use the equivalent methods on java.lang.reflect.Constructor - which do throw the correct exceptions */
-         
-         Constructor constr = qClass.getConstructor(new Class[] { });
-         plugin = constr.newInstance(new Object[] { } );
-         
-      }
-      catch (ClassNotFoundException cnfe) {
-         throw new RuntimeException("Could not find metadata plugin class "+pluginClassName);
-      }
-      catch (NoSuchMethodException nsme) {
-         throw new RuntimeException("Bad metadata plugin specified ("+pluginClassName+") - has no zero-argument constructor");
-      }
-      catch (Throwable th) {
-         throw new RuntimeException("Bad metadata plugin specified ("+pluginClassName+")",th);
-      }
-      
-      if (!(plugin instanceof VoResourcePlugin)) {
-         throw new RuntimeException("Bad metadata plugin specified ("+pluginClassName+") - does not implement VoResourcePlugin");
-      }
-      
-      return (VoResourcePlugin) plugin;
-      
-   }
-   
-   /** Instantiates the class with the given name.  This is useful for things
-    * such as 'plugins', where a class name might be given in a configuration file.
-    * Rather messily throws Throwable because anything might have
-    * gone wrong in the constructor.
-    */
-   public static QueryableResourceReader createQueryablePlugin(String pluginClassName) {
-      
-      Object plugin = null;
-      
-      try {
-         log.debug("Creating Queryable Plugin '"+pluginClassName+"'");
-         
-         Class qClass = Class.forName(pluginClassName);
-       
-         /* NWW - interesting bug here.
-          original code used class.newInstance(); this method doesn't declare it throws InvocationTargetException,
-          however, this exception _is_ thrown if an exception is thrown by the constructor (as is often the case at the moment)
-          worse, as InvocatioinTargetException is a checked exception, the compiler rejects code with a catch clause for
-          invocationTargetExcetpion - as it thinks it cannot be thrown.
-          this means the exception boils out of the code, and is unstoppable - dodgy
-          work-around - use the equivalent methods on java.lang.reflect.Constructor - which do throw the correct exceptions */
-         
-         Constructor constr = qClass.getConstructor(new Class[] { });
-         plugin = constr.newInstance(new Object[] { } );
-         
-      }
-      catch (ClassNotFoundException cnfe) {
-         throw new RuntimeException("Could not find metadata plugin class "+pluginClassName);
-      }
-      catch (NoSuchMethodException nsme) {
-         throw new RuntimeException("Bad metadata plugin specified ("+pluginClassName+") - has no zero-argument constructor");
-      }
-      catch (Throwable th) {
-         throw new RuntimeException("Bad metadata plugin specified ("+pluginClassName+")",th);
-      }
-      
-      if (!(plugin instanceof VoResourcePlugin)) {
-         throw new RuntimeException("Bad metadata plugin specified ("+pluginClassName+") - does not implement VoResourcePlugin");
-      }
-      
-      return (QueryableResourceReader) plugin;
-      
-   }
    /**
-    * Clears the cache - useful to call before doing a set of operations, forces
-    * metadata to be refreshed from disk.  Not threadsafe...
+    * Returns true if the specified version is supported by DSA AND 
+    * enabled in the DSA configuration, false otherwise.
+    *
     */
-   public static void clearCache() {
-      cache = null;
+   public static boolean isEnabled(String version) 
+   {
+      if (V0_10.equals(version)) {
+         // Check whether v0.10 resources are required
+         String s = ConfigFactory.getCommonConfig().getString(
+              "datacenter.resource.register.v0_10",null);
+         if ( (s != null) && ( s.toLowerCase().equals("enabled") ) ) {
+           return true; // v0.10 resources are enabled
+         }
+      }
+      else if (V1_0.equals(version)) {
+         // Check whether v0.10 resources are required
+         String s = ConfigFactory.getCommonConfig().getString(
+              "datacenter.resource.register.v1_0",null);
+         if ( (s != null) && ( s.toLowerCase().equals("enabled") ) ) {
+           return true; // v1.0 resources are enabled
+         }
+      }
+      return false;
    }
    
    /**
-    * Make a VODescription document out of all the voResourcePlugins, returning an
-    * unvalidated string.  This means we can view the made (finsihed) docuemnt
-    * separate from the validating process. */
-   public static String makeVoDescription() throws IOException, MetadataException {
-
-      //get plugin list from config - need to add a default to the common method...
-      Object[] plugins  = null;
-      try {
-         plugins = ConfigFactory.getCommonConfig().getProperties(RESOURCE_PLUGIN_KEY);
-      } catch (PropertyNotFoundException pnfe)
-      {
-         log.warn("No config found for resource plugins, key="+RESOURCE_PLUGIN_KEY);
-         
-         //for backwards compatibility, look for old datacenter.metadata.plugin
-         String s = ConfigFactory.getCommonConfig().getString("datacenter.metadata.plugin",null);
-         if (s != null) {
-            plugins = new String[] { s };
-         }
-      }
-
-      //start the vodescription document
-      StringBuffer vod = new StringBuffer();
-      vod.append(VODESCRIPTION_ELEMENT+"\n");
-      boolean ceaDone = false; //backwards compatiblity marker to see if CeaResource has been done
-      
-      //loop through plugins adding each one's list of resources
-      if (plugins != null) {
-         for (int p = 0; p < plugins.length; p++) {
-            log.debug("Including Resource plugin "+plugins[p].toString());
-
-            //make plugin
-            VoResourcePlugin plugin = createVoResourcePlugin(plugins[p].toString());
-            
-            checkAndAppendResource(vod, plugin);
-            
-            if (plugin instanceof CeaResources) { ceaDone = true; }
-         }
-      }
-
-      //add the standard ones - cea, cone etc
-      if (!ceaDone)
-          {
-          checkAndAppendResource(vod, new CeaResources());
+    * Returns an appropriately-versioned VOResources document describing
+    * the resources in this DSA.
+    *
+    */
+   public synchronized static Document getVoDescription(String version) 
+            throws IOException, MetadataException 
+   {
+      // Deal with v0.10 resources
+      if (V0_10.equals(version)) {
+        if (isEnabled(version)) {
+          if (cache_v0_10 == null) {
+            cache_v0_10 = generator_v0_10.getVoDescription();
           }
-
-      // Only add conesearch if the configuration file says to do so.
-      //
-      String s = ConfigFactory.getCommonConfig().getString(
-          "datacenter.implements.conesearch",null);
-      if ( (s != null) && ( s.equals("true") || s.equals("TRUE") ) ) {
-         checkAndAppendResource(vod, new ConeResources());
+          return cache_v0_10;
+        }
+        else {
+            throw new MetadataException("Support for v0.10 resources is disabled in DSA configuration file.");
+        }
+      } 
+      // Deal with v1.0 resources
+      else if (V1_0.equals(version)) {
+        if (isEnabled(version)) {
+          if (cache_v1_0 == null) {
+            cache_v1_0 = generator_v1_0.getVoDescription();
+          }
+          return cache_v1_0;
+        }
+        else {
+            throw new MetadataException("Support for v1.0 resources is disabled in DSA configuration file.");
+        }
       }
-
-//    addResources(vod, new SkyNodeResourceServer());
-      
-      //finish vod element
-      vod.append(VODESCRIPTION_ELEMENT_END);
-
-      return vod.toString();
-   }
-
-   public static void checkAndAppendResource(StringBuffer vod, VoResourcePlugin plugin) throws MetadataException, IOException {
-
-      //get resources from plugin
-      String resources = plugin.getVoResource();
-
-      try {
-         validateDescription(VODESCRIPTION_ELEMENT+resources+VODESCRIPTION_ELEMENT_END);
-      
-         vod.append(resources+"\n\n");
-      }
-      catch (SAXException e) {
-  //       throw new MetadataException("Plugin "+plugin.getClass()+" generated invalid XML ",e);
-    
-         log.error("Plugin "+plugin.getClass()+" generated invalid XML ",e);
-         vod.append(resources+"\n\n");
+      // Deal with unrecognized resources
+      else {
+         throw new MetadataException("Unknown resources version '" +
+                version + "' requested.");
       }
    }
 
-   
    /**
-    * Returns the resource element of the given type eg 'AuthorityID'.
-    * Matches the given string against the attribute 'xsi:type' of the elements
-    * named 'Resource'
+    * Clears the caches.
     */
-   public static Element getResource(String type) throws IOException {
-      NodeList resources = getVoDescription().getElementsByTagName("Resource");
-      
-      for (int i = 0; i < resources.getLength(); i++) {
-         Element resource = (Element) resources.item(i);
-         if (resource.getAttribute("xsi:type").equals(type)) {
-            return resource;
-         }
+   public synchronized static void clearCaches()
+   {
+      cache_v0_10 = null;
+      cache_v1_0 = null;
+   }
+
+   /**
+    * Returns an appropriately-versioned VOResources document describing
+    * the requested resource in this DSA.
+    */
+   public static Document getWrappedResource(String version, String resourceType) throws IOException, MetadataException 
+   {
+      // Deal with v0.10 resources
+      if (V0_10.equals(version)) {
+        if (isEnabled(version)) {
+          return generator_v0_10.getWrappedResource(resourceType);
+        }
+        else {
+            throw new MetadataException("Support for v0.10 resources is disabled in DSA configuration file.");
+        }
+      } 
+      // Deal with v1.0 resources
+      else if (V1_0.equals(version)) {
+        if (isEnabled(version)) {
+          return generator_v1_0.getWrappedResource(resourceType);
+        }
+        else {
+            throw new MetadataException("Support for v1.0 resources is disabled in DSA configuration file.");
+        }
       }
-      return null; //not found
+      // Deal with unrecognized resources
+      else {
+         throw new MetadataException("Unknown resources version '" +
+                version + "' requested.");
+      }
    }
 
    /**
     * Sends the voDescription to the registry, returning list of Registries that
     * it was sent to
     */
-   public static String[] pushToRegistry() throws IOException, RegistryException {
-      RegistryAdminService service = RegistryDelegateFactory.createAdmin();
-      service.update(getVoDescription());
-      //return new String[] { ConfigFactory.getCommonConfig().getString(DelegateProperties.ADMIN_URL_PROPERTY) };
-      return new String[] { ConfigFactory.getCommonConfig().getString(RegistryDelegateFactory.ADMIN_URL_PROPERTY) };
+   public static String[] pushToRegistry(String version) 
+            throws IOException, RegistryException 
+   {
+      // Deal with v0.10 resources
+      if (V0_10.equals(version)) {
+        if (isEnabled(version)) {
+          return generator_v0_10.pushToRegistry();
+        }
+        else {
+            throw new MetadataException("Support for v0.10 resources is disabled in DSA configuration file.");
+        }
+      } 
+      // Deal with v1.0 resources
+      else if (V1_0.equals(version)) {
+        if (isEnabled(version)) {
+          return generator_v1_0.pushToRegistry();
+        }
+        else {
+            throw new MetadataException("Support for v1.0 resources is disabled in DSA configuration file.");
+        }
+      }
+      // Deal with unrecognized resources
+      else {
+         throw new MetadataException("Unknown resources version '" +
+                version + "' requested.");
+      }
    }
 
    /**
     * Sends the voDescription to the given registry URL, returning list of Registries that
     * it was sent to
     */
-   public static void pushToRegistry(URL targetRegistry) throws IOException, RegistryException {
-      RegistryAdminService service = RegistryDelegateFactory.createAdmin(targetRegistry);
-      service.update(getVoDescription());
-   }
-
-   /**
-    * for quick tests etc
-    */
-   public static void main(String[] args) throws RegistryException, IOException
-   {
-      SampleStarsPlugin.initConfig();
-//    ConfigFactory.getCommonConfig().setProperty("datacenter.url","http://localhost:8080");
-      VoDescriptionServer.pushToRegistry(new URL("http://galahad.star.le.ac.uk:8080/galahad-registry/services/AdminService"));
+   public static void pushToRegistry(String version, URL targetRegistry) 
+         throws IOException, RegistryException {
+      // Deal with v0.10 resources
+      if (V0_10.equals(version)) {
+        if (isEnabled(version)) {
+          generator_v0_10.pushToRegistry(targetRegistry);
+        }
+        else {
+            throw new MetadataException("Support for v0.10 resources is disabled in DSA configuration file.");
+        }
+      } 
+      // Deal with v1.0 resources
+      else if (V1_0.equals(version)) {
+        if (isEnabled(version)) {
+          generator_v1_0.pushToRegistry(targetRegistry);
+        }
+        else {
+            throw new MetadataException("Support for v1.0 resources is disabled in DSA configuration file.");
+        }
+      }
+      // Deal with unrecognized resources
+      else {
+         throw new MetadataException("Unknown resources version '" +
+                version + "' requested.");
+      }
    }
 }
-
