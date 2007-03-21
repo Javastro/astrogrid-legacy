@@ -31,7 +31,7 @@
 
 <h1>MetaDoc for <%=DataServer.getDatacenterName() %></h1>
 <%
-   VoDescriptionServer.clearCache(); //force refresh
+   VoDescriptionServer.clearCaches(); //force refresh
    //Document voDescription = VoDescriptionServer.getVoDescription();
 %>
 

@@ -206,9 +206,13 @@
 %>
 </pre>
 
+<!--
 <hr />
 <h2>VoResource/Metadata Plugin Configuration</h2>
+-->
 <%
+/*
+   // NO LONGER IN USE
    Object[] resourcePluginClasses =  ConfigFactory.getCommonConfig().getProperties(org.astrogrid.dataservice.metadata.VoDescriptionServer.RESOURCE_PLUGIN_KEY);
 
    for (int i = 0; i < resourcePluginClasses.length; i++) {
@@ -227,6 +231,7 @@
         }
      }
   }
+  */
 %>
 
 <hr />
