@@ -6,6 +6,15 @@
     <body>
     	<release version="(Pending Integration)">
      
+          <action dev="kea" type="fix">
+             Branch PAL-KEA-2119.  This reduces the memory used by 
+             storing records of completed queries (by slashing the amount
+             of detail stored once queries are actually complete).
+             Also contains preliminary architecture work for supporting 
+             v1.0 VOResources as well as v0.10 (though the v1.0 resources
+             are not active/available yet).
+          </action>
+
           <action dev="gtr" type="fix" issue="2056">
             Branch apps-gtr-2056. This fixes BZ2056 such that Optionlist element
             in the application-description are propgated to the application
