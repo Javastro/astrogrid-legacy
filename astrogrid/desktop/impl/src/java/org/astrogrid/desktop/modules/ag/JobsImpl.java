@@ -1,4 +1,4 @@
-/*$Id: JobsImpl.java,v 1.7 2006/06/27 10:23:51 nw Exp $
+/*$Id: JobsImpl.java,v 1.8 2007/03/22 19:00:45 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -66,7 +66,7 @@ public class JobsImpl implements JobsInternal, UserLoginListener {
     protected final Community community;
    private WorkflowManagerFactory fac;
    private Account acc;  
-
+ 
     private synchronized WorkflowManagerFactory getFactory() {
         if (fac == null) {
             fac = new WorkflowManagerFactory();
@@ -238,6 +238,9 @@ public class JobsImpl implements JobsInternal, UserLoginListener {
 
 /* 
 $Log: JobsImpl.java,v $
+Revision 1.8  2007/03/22 19:00:45  nw
+moved all auth components into separate folder, to keep separate from ag stuff.
+
 Revision 1.7  2006/06/27 10:23:51  nw
 findbugs tweaks
 

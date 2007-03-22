@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.18 2007/03/08 17:44:04 nw Exp $
+/*$Id: VospaceImpl.java,v 1.19 2007/03/22 19:00:45 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -805,7 +805,6 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
     			return null;
     		}
     	}).start();
-    	
     }
 
 
@@ -920,6 +919,9 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.19  2007/03/22 19:00:45  nw
+moved all auth components into separate folder, to keep separate from ag stuff.
+
 Revision 1.18  2007/03/08 17:44:04  nw
 first draft of voexplorer
 
