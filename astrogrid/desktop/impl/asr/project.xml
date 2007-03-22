@@ -375,7 +375,7 @@
       </properties>
     </dependency>
 
-<!-- 3rd party libs - all defined in their own extension-->
+<!-- 3rd party libs-->
 <dependency> 
      <!-- jaxp will be native for java 1.5. Until then this is required -->
 	 <artifactId>jaxp</artifactId>
@@ -505,9 +505,6 @@
 	    </properties>
     </dependency>    
 
-    
-      
-      <!--  Even more stuff, above that provided by CDK--> 
         <!-- storage -->
 <dependency>
 	<artifactId>jdbm</artifactId>
@@ -529,7 +526,41 @@
 					    <strip>true</strip>    
 		</properties>
 	</dependency>
-	 
+
+<!-- VFS -->
+	<dependency>
+		<groupId>commons-vfs</groupId>
+		<artifactId>commons-vfs</artifactId>
+		<version>1.0</version>
+		<properties>
+				<dist.bundle>true</dist.bundle>
+			    <strip>true</strip>    
+		</properties>
+	</dependency>	
+
+	<dependency>
+		<groupId>commons-net</groupId>
+		<artifactId>commons-net</artifactId>
+		<version>1.4.1</version>
+		<properties>
+				<dist.bundle>true</dist.bundle>
+			    <strip>true</strip>    
+		</properties>
+	</dependency>	 
+	
+	<dependency>
+		<groupId>jsch</groupId>
+		<artifactId>jsch</artifactId>
+		<version>0.1.32</version>
+		<url>http://www.jcraft.com/jsch/</url>
+		<properties>
+				<dist.bundle>true</dist.bundle>
+			    <strip>true</strip>    
+		</properties>
+	</dependency>			
+	
+	
+<!-- security -->
 	<dependency>
         		<groupId>org.astrogrid</groupId>
         		<artifactId>astrogrid-security</artifactId>
@@ -542,7 +573,6 @@
  		</properties>        		
         	</dependency>
         		 
-<!-- security -->
  <!-- Dependencies introduced by use of MyProxy. -->
  <dependency>
  	<groupId>globus</groupId>
