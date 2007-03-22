@@ -8,6 +8,7 @@ Components for self-testing
 	<!-- PREAMBLE-->
 	<contribution configuration-id="framework.acrServices">
 			<acrService id="transporttest" interface="TransportTest" />
+			<acrService id="sessiontest" interface="SessionTest" />
 	</contribution>
 		
 	<contribution configuration-id="framework.descriptors">
@@ -25,6 +26,11 @@ Components for self-testing
 		<create-instance class="org.astrogrid.desktop.modules.test.TestTransportComponentImpl" />	
 	</service-point>
 	
+	<service-point id="sessiontest" interface="SessionTest">
+		Service to test sessioning.
+		<create-instance model="session"
+		class="org.astrogrid.desktop.modules.test.SessionTestImpl" />	
+	</service-point>
 
  </module>
  

@@ -183,8 +183,7 @@ ASTROSCOPE
 	 -->		
 	<service-point id="lookout" interface="Lookout">
 		<interceptor service-id="system.snitchInterceptor" />
-		<interceptor service-id="astrogrid.login" />	
-		<invoke-factory>
+		<invoke-factory model="session">
 			<construct class="org.astrogrid.desktop.modules.ui.LookoutImpl" >
 				<service>system.configuration</service>
 				<service>system.help</service>
@@ -341,8 +340,7 @@ ASTROSCOPE
 	 -->
 	<service-point id="myspaceBrowser" interface="MyspaceBrowser">
 		<interceptor service-id="system.snitchInterceptor" />
-		<interceptor service-id="astrogrid.login" />
-		<invoke-factory>
+		<invoke-factory model="session">
 			<construct class="org.astrogrid.desktop.modules.ui.VospaceBrowserImpl" > 
 <!--don't think it's safe to run multiple myspace browser yet
 		<construct class="org.astrogrid.desktop.modules.ui.VoSpaceBrowserFactory"> -->

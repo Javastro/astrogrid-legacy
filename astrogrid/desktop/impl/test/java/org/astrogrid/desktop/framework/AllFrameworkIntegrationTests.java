@@ -1,4 +1,4 @@
-/*$Id: AllFrameworkIntegrationTests.java,v 1.2 2007/01/23 11:53:38 nw Exp $
+/*$Id: AllFrameworkIntegrationTests.java,v 1.3 2007/03/22 19:03:48 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,9 @@ public class AllFrameworkIntegrationTests {
 
 	public static Test suite() {
 		TestSuite suite = new TestSuite("Integration tests for Framework");
+		suite.addTest(BuiltinModuleIntegrationTest.suite());
 		suite.addTest(ShutdownImplIntegrationTest.suite());
+		suite.addTest(SessionManagerIntegrationTest.suite());
 		return new ARTestSetup(suite);
 	}
 
@@ -32,6 +34,9 @@ public class AllFrameworkIntegrationTests {
 
 /* 
  $Log: AllFrameworkIntegrationTests.java,v $
+ Revision 1.3  2007/03/22 19:03:48  nw
+ added support for sessions and multi-user ar.
+
  Revision 1.2  2007/01/23 11:53:38  nw
  cleaned up tests, organized imports, commented out or fixed failing tests.
 

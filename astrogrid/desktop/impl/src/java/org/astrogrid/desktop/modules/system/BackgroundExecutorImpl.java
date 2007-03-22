@@ -1,4 +1,4 @@
-/*$Id: BackgroundExecutorImpl.java,v 1.8 2007/01/29 11:11:36 nw Exp $
+/*$Id: BackgroundExecutorImpl.java,v 1.9 2007/03/22 19:03:48 nw Exp $
  * Created on 30-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,11 +10,15 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+import java.security.Principal;
 import java.util.Iterator;
+
+import net.sourceforge.hivelock.SecurityService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.builtin.ShutdownListener;
+import org.astrogrid.desktop.framework.SessionManagerInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 
 import EDU.oswego.cs.dl.util.concurrent.BoundedPriorityQueue;
@@ -43,13 +47,15 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
     
     
     static class TimeoutPooledExecutor extends PooledExecutor {
-        TimeoutPooledExecutor(Channel arg0,int maxThreads,int startThreads) {
-            super(arg0,maxThreads); 
+        TimeoutPooledExecutor(Channel arg0,int maxThreads,int startThreads, SessionManagerInternal ss) {
+            super(arg0,maxThreads);
+            this.ss = ss;
             setMinimumPoolSize(startThreads);
             createThreads(startThreads); // start with 20 threads. keep-alive is a minute by default.
             discardOldestWhenBlocked(); // when queue is full, on new request discard oldest unfulfilled request.                            
         }
-
+        private final SessionManagerInternal ss;
+        
         public void interrupt(Runnable r) {
             // need to find thread that's processing this task.
             for (Iterator i = threads_.keySet().iterator(); i.hasNext(); ) {
@@ -122,15 +128,22 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
             public void run() {
                 try {
                     this.executionThread = Thread.currentThread();
-                    long timeout;
                     do {
                         if (firstTask_ != null) {                         
-                            if (firstTask_ instanceof BackgroundWorker && (timeout = ((BackgroundWorker)firstTask_).getTimeout()) > 0L ) {
-                                c.put(new Long(timeout));
+                            if (firstTask_ instanceof BackgroundWorker) {
+                            	BackgroundWorker bw = (BackgroundWorker)firstTask_;
+                            	long timeout = bw.getTimeout();
+                            	if (timeout  > 0L ) {
+                            		c.put(new Long(timeout));
+                            	}
+                            	ss.adoptSession(bw.getPrincipal());
                                 firstTask_.run();
-                                c.put(firstTask_); //throw anything handy at it.
-                            } else {
-                                firstTask_.run();
+                                ss.clearSession();
+                                if (timeout > 0L ) {
+                                	c.put(firstTask_); //throw anything handy at it.
+                                }
+                            } else { // it's just a runnable. unlikely.
+                            	firstTask_.run(); 
                             }
                             firstTask_ = null;
                         }
@@ -145,8 +158,9 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
         }
     }
     
-    public BackgroundExecutorImpl(UIInternal ui) {
+    public BackgroundExecutorImpl(UIInternal ui, SessionManagerInternal ss) {
         this.ui = ui;        
+        this.ss = ss;
     }
     
     /** separate initialize method, to start service after it's been configured using setters.
@@ -156,16 +170,24 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
      */
     public void init() {
         this.chan = new BoundedPriorityQueue(queueSize);
-        this.exec = new TimeoutPooledExecutor(chan,maxThreads,startThreads);
+        this.exec = new TimeoutPooledExecutor(chan,maxThreads,startThreads,ss);
     }
     private BoundedPriorityQueue chan;
     private TimeoutPooledExecutor exec;
     private final UIInternal ui;
+    private final SessionManagerInternal ss;
     
     
     
     public void executeWorker(BackgroundWorker worker) {
         try {
+        	// this is called by Thread.start(), and any other ways to execute this worker
+        	// so we've waited till the last moment, and now capture the permissions / session
+        	// of the calling thread, so it'll be passed into the background thread.
+        	if (worker.getPrincipal() == null) { // if a principal has already been set, that's fine
+        		Principal p = ss.currentSession();
+        		worker.setPrincipal(p);
+        	}
             exec.execute(worker);
         } catch (InterruptedException e) {
             logger.warn("Didn't expect to be interrupted",e);
@@ -218,6 +240,9 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
 
 /* 
 $Log: BackgroundExecutorImpl.java,v $
+Revision 1.9  2007/03/22 19:03:48  nw
+added support for sessions and multi-user ar.
+
 Revision 1.8  2007/01/29 11:11:36  nw
 updated contact details.
 

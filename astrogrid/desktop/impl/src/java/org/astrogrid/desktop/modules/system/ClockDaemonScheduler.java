@@ -1,4 +1,4 @@
-/*$Id: ClockDaemonScheduler.java,v 1.7 2007/01/29 16:45:07 nw Exp $
+/*$Id: ClockDaemonScheduler.java,v 1.8 2007/03/22 19:03:48 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,17 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+import java.security.Principal;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.builtin.SessionManager;
 import org.astrogrid.acr.builtin.ShutdownListener;
+import org.astrogrid.desktop.framework.SessionManagerInternal;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 
 import EDU.oswego.cs.dl.util.concurrent.ClockDaemon;
 import EDU.oswego.cs.dl.util.concurrent.ThreadFactory;
@@ -36,8 +41,9 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
     /** 
      * 
      */
-    public ClockDaemonScheduler(final List tasks) {
+    public ClockDaemonScheduler(final List tasks, SessionManagerInternal session) {
         super();
+        this.defaultSession = session.findSessionForKey(session.getDefaultSessionId());
         this.daemon = new ClockDaemon();
         // make shceduled tasks run at low priority, but above the backgound executor tasks.
         this.daemon.setThreadFactory(new ThreadFactory() {
@@ -69,17 +75,28 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
     }
     // the implementation of the clock.
     final ClockDaemon daemon;
-
+    final Principal defaultSession;
     public void executePeriodically(final ScheduledTask task) {
         daemon.executePeriodically(task.getPeriod(),
         		new Runnable() {
         	public void run() {
-        		task.createWorker().start();
+        		BackgroundWorker worker = task.createWorker();
+        		if (worker.getPrincipal() == null) {
+        			worker.setPrincipal(defaultSession);
+        		}
+        		worker.start();
         	}
         }
         		,false);
     }
 
+    public void executeAfterDelay(long delay, Runnable task) {
+    	daemon.executeAfterDelay(delay,task);
+    }
+    
+    public void executeAt(Date d, Runnable task) {
+    	daemon.executeAt(d,task);
+    }
  
 
     public void halting() {
@@ -90,11 +107,17 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
         return null; // don't care.
     }
 
+
+
+
 }
 
 
 /* 
 $Log: ClockDaemonScheduler.java,v $
+Revision 1.8  2007/03/22 19:03:48  nw
+added support for sessions and multi-user ar.
+
 Revision 1.7  2007/01/29 16:45:07  nw
 cleaned up imports.
 

@@ -1,11 +1,10 @@
 /**
  * 
  */
-package org.astrogrid.desktop.alternatives;
+package org.astrogrid.desktop.modules.auth;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.desktop.modules.ag.LoginDialogue;
 
 
 /** a do-nothing stub - for when running in headless mode.

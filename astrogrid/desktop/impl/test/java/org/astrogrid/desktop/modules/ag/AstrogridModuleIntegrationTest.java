@@ -89,6 +89,8 @@ public class AstrogridModuleIntegrationTest extends InARTestCase {
 		assertNotNull(st.getManager());
 	}
 	
+	// astrogrid also provides the s
+	
 	
     public static Test suite() {
         return new ARTestSetup(new TestSuite(AstrogridModuleIntegrationTest.class),true);

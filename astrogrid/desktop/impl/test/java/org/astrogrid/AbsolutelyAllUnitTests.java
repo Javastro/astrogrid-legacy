@@ -7,6 +7,7 @@ package org.astrogrid;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.astrogrid.desktop.modules.auth.AllAuthUnitTests;
 import org.astrogrid.desktop.modules.dialogs.file.AllFileDialogUnitTests;
 import org.astrogrid.desktop.modules.ui.comp.AllUIComponentUnitTests;
 import org.astrogrid.desktop.modules.ui.dnd.AllDndUnitTests;
@@ -42,6 +43,7 @@ public class AbsolutelyAllUnitTests {
 		suite.addTest(AllFileDialogUnitTests.suite());
 		suite.addTest(AllUIComponentUnitTests.suite());
 		suite.addTest(AllDndUnitTests.suite());
+		suite.addTest(AllAuthUnitTests.suite());
 		return suite;
 	}
 

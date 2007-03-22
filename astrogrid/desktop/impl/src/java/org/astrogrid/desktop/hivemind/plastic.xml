@@ -158,7 +158,28 @@
 		</invoke-factory>	
 	</service-point>	
 	
+	<!--  
+	
+	implementations required only when in hub mode
+	================================
 
-		
+-->
+	
+	<!-- simple session manager, which doesn't use AG machinery, or single sign on. -->
+	<implementation service-id="builtin.sessionManager" if="property hub.mode">
+		<invoke-factory>
+			<construct	class="org.astrogrid.desktop.alternatives.SingleSessionManager" >
+				<service>hivelock.core.SecurityService</service>
+				<service>system.webserver</service>
+			</construct>
+		</invoke-factory>
+	</implementation>		
+	
+	<!-- just stub this one out - not needed in hub mode. -->
+	<implementation service-id="hivelock.core.PrincipalHelper" if="property hub.mode">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
+	</implementation>		
+	
+	
  </module>
  

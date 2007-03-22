@@ -1,4 +1,4 @@
-/*$Id: HtmlServlet.java,v 1.8 2007/01/29 11:11:36 nw Exp $
+/*$Id: HtmlServlet.java,v 1.9 2007/03/22 19:03:48 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,6 +25,7 @@ import org.apache.commons.lang.StringUtils;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -296,6 +297,9 @@ public class HtmlServlet extends AbstractReflectionServlet {
 
 /* 
 $Log: HtmlServlet.java,v $
+Revision 1.9  2007/03/22 19:03:48  nw
+added support for sessions and multi-user ar.
+
 Revision 1.8  2007/01/29 11:11:36  nw
 updated contact details.
 

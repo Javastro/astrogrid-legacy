@@ -41,7 +41,6 @@ public class SystemModuleIntegrationTest extends InARTestCase {
 		BrowserControl b = (BrowserControl) assertServiceExists(BrowserControl.class, "system.browser");
 		b.openRelative("");
 	}
-	//@todo why this not working??
 	public void testConfiguration() throws Exception {
 		Configuration c  = (Configuration)assertServiceExists(Configuration.class,"system.configuration");
 		c.list();
@@ -125,6 +124,9 @@ public void testWebserver() throws Exception {
 	assertNotNull(ws.getKey());
 	
 }
+
+	
+
     public static Test suite() {
         return new ARTestSetup(new TestSuite(SystemModuleIntegrationTest.class));
     }

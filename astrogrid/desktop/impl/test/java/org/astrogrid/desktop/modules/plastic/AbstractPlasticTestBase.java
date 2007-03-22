@@ -3,7 +3,9 @@
  */
 package org.astrogrid.desktop.modules.plastic;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 
 import junit.framework.TestCase;
 
@@ -74,6 +76,14 @@ public class AbstractPlasticTestBase extends TestCase {
 
 			public String getUrlRoot() {
 				return "http://127.0.0.1:" + getPort() + "/" + getKey() + "/";
+			}
+			
+			public URL getRoot() {
+				try {
+					return new URL(getUrlRoot());
+				} catch (MalformedURLException x) {
+					throw new RuntimeException(x);
+				}
 			}
 
 			public String getKey() {

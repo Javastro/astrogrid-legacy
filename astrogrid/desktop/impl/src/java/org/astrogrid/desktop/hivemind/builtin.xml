@@ -7,6 +7,7 @@ Builtin Components
 	
 	<!--PREAMBLE -->
 	<contribution configuration-id="framework.acrServices">
+			<acrService id="sessionManager" interface="SessionManager" />
 			<acrService id="shutdown" interface="Shutdown" />
 	</contribution>
 		
@@ -34,6 +35,20 @@ ACR itself
 			</construct>
 		</invoke-factory>
 	</service-point>
+	
+<!--
+ ========================
+SESSION MANAGER
+	 -->
+<service-point id="sessionManager" 
+interface="org.astrogrid.desktop.framework.SessionManagerInternal">
+ Manages user sessions. Implementation provided elsewhere, depending on which flavour we're running as.
+</service-point>
+
+	<contribution configuration-id="system.servletContext">
+		<attribute name="session-manager" object="service:sessionManager"/>
+	</contribution>
+	
 	
 <!-- 
 =========================

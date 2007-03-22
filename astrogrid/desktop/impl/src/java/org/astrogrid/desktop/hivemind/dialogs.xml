@@ -26,7 +26,7 @@ RESOURCE (FILE) CHOOSER
  	<!--  todo - make non-singleton -->
 	<service-point id="resourceChooser" interface="org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal">
 		Select a local or myspace file
-		<invoke-factory>
+		<invoke-factory model="session">
 			<construct class="org.astrogrid.desktop.modules.dialogs.ResourceChooserImpl" >
 			    <service>astrogrid.myspace</service>
 			    <service>ui.sendTo</service>
@@ -101,7 +101,7 @@ TOOL EDITOR
 	<!-- todo: make non-singleton? -->			
 	<service-point id="toolEditor" interface="org.astrogrid.desktop.modules.dialogs.ToolEditorInternal">
 		Edit a remote application invocation.
-		<invoke-factory>
+		<invoke-factory model="session">
 			<construct class="org.astrogrid.desktop.modules.dialogs.ToolEditorImpl" >
 				<configuration>toolEditors</configuration>
 				<service>resourceChooser</service>
@@ -167,7 +167,7 @@ SIMPLIFIED TOOL EDITOR
  -->	
 	<service-point id="simpleToolEditor" interface="org.astrogrid.desktop.modules.dialogs.ToolEditorInternal">
 		Edit a remote application invocation in a very simple tool editor
-		<invoke-factory>
+		<invoke-factory model="session">
 			<construct class="org.astrogrid.desktop.modules.dialogs.ToolEditorImpl" >
 				<service>basicPanel</service>
 				<service>system.configuration</service>
@@ -190,7 +190,7 @@ REGISTRY GOOGLE
 		<!-- todo: make non-singleton -->
 	<service-point id="registryGoogle" interface="RegistryGoogle">
 		Select a registry resource
-		<invoke-factory>
+		<invoke-factory model="session">
 			<construct class="org.astrogrid.desktop.modules.dialogs.RegistryGoogleImpl" >
 				<service>system.configuration</service>
 				<service>system.help</service>
@@ -300,7 +300,7 @@ REGISTRY GOOGLE
 	
 	<service-point id="securityPanel" visibility="private" interface="org.astrogrid.desktop.modules.dialogs.editors.ToolEditorPanelFactory">
 		Allows user to provide credentials to the service
-		<invoke-factory model="primitive">
+		<invoke-factory model="session">
 			<construct class="org.astrogrid.desktop.modules.dialogs.editors.SecurityToolEditorPanelFactory">
 				<service>astrogrid.community</service>
 			</construct>

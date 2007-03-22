@@ -1,4 +1,4 @@
-/*$Id: SchedulerInternal.java,v 1.6 2007/01/29 16:45:07 nw Exp $
+/*$Id: SchedulerInternal.java,v 1.7 2007/03/22 19:03:48 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,8 @@
  *
 **/
 package org.astrogrid.desktop.modules.system;
+
+import java.util.Date;
 
 
 /** Internal interface to a low-level scheduler.
@@ -21,12 +23,23 @@ package org.astrogrid.desktop.modules.system;
 public interface SchedulerInternal {
     /** execute a task periodically */
     public void executePeriodically(ScheduledTask task);
+    
+    /** execute a simple task after a delay - the task is executed on the timer
+     * thread, and should be a simple task */
+    public void executeAfterDelay(long delay, Runnable task);
+    
+    /** execute a simple task some time in the future - the task is executed on
+     * the timer thread and should be a simple task. */
+    public void executeAt(Date d, Runnable task);
 
 }
 
 
 /* 
 $Log: SchedulerInternal.java,v $
+Revision 1.7  2007/03/22 19:03:48  nw
+added support for sessions and multi-user ar.
+
 Revision 1.6  2007/01/29 16:45:07  nw
 cleaned up imports.
 

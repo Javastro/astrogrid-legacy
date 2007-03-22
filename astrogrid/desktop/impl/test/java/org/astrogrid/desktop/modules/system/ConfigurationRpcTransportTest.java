@@ -1,4 +1,4 @@
-/*$Id: ConfigurationRpcTransportTest.java,v 1.3 2007/01/29 10:42:48 nw Exp $
+/*$Id: ConfigurationRpcTransportTest.java,v 1.4 2007/03/22 19:03:48 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,8 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Map;
 import java.util.Vector;
 
@@ -26,26 +28,34 @@ import org.astrogrid.desktop.ARTestSetup;
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 03-Aug-2005
  *
  */
-public class ConfigurationRpcTransportTest extends ConfigurationIntegrationTest implements Configuration {
+public class ConfigurationRpcTransportTest extends ConfigurationIntegrationTest{
     protected void setUp() throws Exception {
         super.setUp();
         WebServer serv = (WebServer)getACR().getService(WebServer.class);
         assertNotNull(serv);
-        client = new XmlRpcClient(serv.getUrlRoot() + "xmlrpc");
-        v = new Vector();
-        super.conf = this;
-    }
-    protected XmlRpcClient client;
-    protected Vector v ;
+        client = new ConfigurationXmlRpcClient(serv.getUrlRoot() + "xmlrpc");
+        super.conf = client;
+    } 
+    protected ConfigurationXmlRpcClient client;
     protected void tearDown() throws Exception {
     	super.tearDown();
     	client = null;
-    	v = null;
     }
     public static Test suite() {
         return new ARTestSetup(new TestSuite(ConfigurationRpcTransportTest.class));
     }
-
+    /** naive unthreadsafe xmlrpc-based stub for the configuraiton service */
+public static class ConfigurationXmlRpcClient implements Configuration {
+	
+	public ConfigurationXmlRpcClient(String rpcUrl) throws MalformedURLException {
+		client = new XmlRpcClient(rpcUrl);
+	}
+	public ConfigurationXmlRpcClient(URL rpcUrl) {
+		client = new XmlRpcClient(rpcUrl);
+		v = new Vector();
+	}	
+	protected Vector v = new Vector();
+	public final XmlRpcClient client;
 	public String getKey(String arg0) {
 		v.clear();
 		v.add(arg0);
@@ -99,13 +109,16 @@ public class ConfigurationRpcTransportTest extends ConfigurationIntegrationTest 
 			throw new RuntimeException("never reached");			
 		}
 	}
-    
+}
   
 }
 
 
 /* 
 $Log: ConfigurationRpcTransportTest.java,v $
+Revision 1.4  2007/03/22 19:03:48  nw
+added support for sessions and multi-user ar.
+
 Revision 1.3  2007/01/29 10:42:48  nw
 tidied.
 

@@ -82,7 +82,7 @@
 			timeToLiveSeconds="${ivo.registry.cacheLife}"
 			timeToIdleSeconds="345600"
 		/>
-		cache for buld searches, etc, of registry documents.
+		cache for bulk searches, etc, of registry documents.
 		smallest amount in memory, enough on disk to store astroscope queries.
 		<cache name="bulk"
 			maxElementsInMemory="1"

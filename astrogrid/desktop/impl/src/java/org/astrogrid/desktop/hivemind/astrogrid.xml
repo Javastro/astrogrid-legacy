@@ -136,8 +136,10 @@ MYSPACE
 	<service-point id="myspace" interface="org.astrogrid.desktop.modules.ag.MyspaceInternal">
 		Myspace client
 		<interceptor service-id="system.throbber" />	
-		<interceptor service-id="login" />			
-		<invoke-factory>
+		<interceptor service-id="hivelock.core.authorization">
+			<method pattern="*" roles="loggedin" />
+		</interceptor>
+		<invoke-factory model="session">
 			<construct class="org.astrogrid.desktop.modules.ag.VospaceImpl" >
 				<service>community</service>
 				<service>ivoa.registry</service>
@@ -172,10 +174,17 @@ MYSPACE
 	
 	<!-- 
 ==========================
-COMMUNITY -->	<service-point id="community" interface="org.astrogrid.desktop.modules.ag.CommunityInternal">		Community and login.	
+COMMUNITY -->	<service-point id="community" interface="org.astrogrid.desktop.modules.auth.CommunityInternal">		Community and login.	
 		<interceptor service-id="system.throbber" />		
-		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.ag.CommunityImpl" >
+		<interceptor service-id="hivelock.core.authorization">
+			<!--   can't protect this - need it as part of upgrading credentials.
+			it's an internal method anyhow.
+			<method pattern="getSecurityGuard" roles="loggedin" />-->
+			<method pattern="getUserInformation" roles="loggedin" />
+			<method pattern="*" roles="*" />
+		</interceptor>
+		<invoke-factory model="session">
+			<construct class="org.astrogrid.desktop.modules.auth.CommunityImpl" >
 				<service>system.ui</service>
 				<service>loginDialogue</service>
 				<service>system.snitch</service>
@@ -198,23 +207,44 @@ COMMUNITY -->	<service-point id="community" interface="org.astrogrid.desktop.mo
 		<default symbol="astrogrid.community.register" value="mailto:astrogrid_signup@star.le.ac.uk?subject=New%20Account%20Request&amp;body=Name:%0D%0AInstitute:"/>
 		<default symbol="astrogrid.community.defaultCommunity" value="uk.ac.le.star" />
 	</contribution>	
-	<!--  removed - use .workdir instead - makes it simpler to configure
-	<contribution configuration-id="framework.preferences">
-		<preference name="trusted.cert.dir"  requires-restart="true"
-			default-value="${user.home}${file.separator}.workbench${file.separator}trusted-certificates">
-			<ui-name>Certificates Directory</ui-name>
-			<description>Location of community certificates</description>
-			<units>directory</units>
-		</preference>
-	</contribution>
+
+	<!--
+		Link between community service and hivemind user system.
 	-->
+	<implementation service-id="hivelock.core.PrincipalHelper">
+		<invoke-factory model="primitive">
+			<construct	class="org.astrogrid.desktop.modules.auth.PrincipalHelperImpl" >
+				<service>builtin.sessionManager</service>
+			</construct>
+		</invoke-factory>
+	</implementation>
+	
+	<!--  the session manager -->
+	<implementation service-id="builtin.sessionManager">
+		<invoke-factory>
+			<construct	class="org.astrogrid.desktop.modules.auth.SessionManagerImpl" >
+				<service>hivelock.core.SecurityService</service>
+				<service>system.webserver</service>
+				<service>community</service>
+				<service>system.scheduler</service>
+				<!--  this is a little tricksy. sessionManager is shared (not sessioned), but listens
+				to callbacks from community (which is sessioned). it's listening to the instance in the default session to start with. -->
+				<event-listener service-id="community" />
+			</construct>
+		</invoke-factory>
+	</implementation>
+	
+		<contribution configuration-id="hivemind.EagerLoad">
+		<load service-id="builtin.sessionManager" /> 
+		</contribution>
+
 <!-- 
 ===========================
 LOGIN DIALOGUE -->
 
-	<service-point id="loginDialogue" visibility="private" interface="org.astrogrid.desktop.modules.ag.LoginDialogue">
-		<invoke-factory>
-			<construct  class="org.astrogrid.desktop.modules.ag.SwingLoginDialogue">
+	<service-point id="loginDialogue" visibility="private" interface="org.astrogrid.desktop.modules.auth.LoginDialogue">
+		<invoke-factory model="session"><!--  privacy fix - else values are shared. -->
+			<construct  class="org.astrogrid.desktop.modules.auth.SwingLoginDialogue">
 				<service>votech.vomon</service>
 				<service>system.browser</service>
 				<service>ivoa.registry</service>
@@ -227,7 +257,7 @@ LOGIN DIALOGUE -->
 	<!-- alternative implementation of the login dialogue, when running in headless mode -->
 	<implementation service-id="loginDialogue" if="property astrogrid.loginDialogue.disabled">
 		<invoke-factory>
-			<construct class="org.astrogrid.desktop.alternatives.HeadlessLoginDialogue">
+			<construct class="org.astrogrid.desktop.modules.auth.HeadlessLoginDialogue">
 				<string>LOGIN</string>
 			</construct>
 		</invoke-factory>
@@ -300,8 +330,10 @@ JOBS
 	<service-point id="jobs" interface="org.astrogrid.desktop.modules.ag.JobsInternal">
 		Workflow client
 		<interceptor service-id="system.throbber" />		
-		<interceptor service-id="login" />		
-		<invoke-factory>
+		<interceptor service-id="hivelock.core.authorization">
+			<method pattern="*" roles="loggedin" />
+		</interceptor>
+		<invoke-factory model="session">
 			<construct class="org.astrogrid.desktop.modules.ag.JobsImpl" >
 				<service>community</service>
 				<service>processManager</service>
@@ -329,7 +361,7 @@ REMOTE PROCESS MANAGER
 	<service-point id="processManager" interface="RemoteProcessManager">
 		Manages and monitors execution of remote processes. Consumes the processStrategies configuration
 		<interceptor service-id="system.throbber" />		
-		<invoke-factory>
+		<invoke-factory >
 			<construct class="org.astrogrid.desktop.modules.ag.RemoteProcessManagerImpl" >
 				<service>recorder</service>
 				<configuration>processStrategies</configuration>
@@ -361,8 +393,10 @@ RECORDER
  -->
 	<service-point id="recorder" interface="org.astrogrid.desktop.modules.ag.MessageRecorderInternal">
 		Recorder of messages
-		<interceptor service-id="login" />
-		<invoke-factory>
+		<interceptor service-id="hivelock.core.authorization">
+			<method pattern="*" roles="loggedin" />
+		</interceptor>
+		<invoke-factory model="session">
 			<construct class="org.astrogrid.desktop.modules.ag.MessageRecorderImpl" >
 				<service>messaging</service>
 				<service>store</service>
@@ -382,7 +416,8 @@ MESSAGING
  -->
 	<service-point id="messaging" interface="org.astrogrid.desktop.modules.ag.MessagingInternal">
 		Internal component - messaging system.
-		<create-instance class="org.astrogrid.desktop.modules.ag.MessagingImpl"/>
+		<create-instance class="org.astrogrid.desktop.modules.ag.MessagingImpl"
+			model="session"/>
 	</service-point>
 	
 	<implementation service-id="messaging" if="property astrogrid.messaging.disabled">
@@ -394,8 +429,10 @@ STORE
  -->
 	<service-point id="store" interface="org.astrogrid.desktop.modules.ag.StoreInternal">
 		Store for remote process execution information.
-		<interceptor service-id="login" />		
- 	<invoke-factory>
+		<interceptor service-id="hivelock.core.authorization">
+			<method pattern="*" roles="loggedin" />
+		</interceptor>
+		<invoke-factory model="session">
 			<construct class="org.astrogrid.desktop.modules.ag.StoreImpl" >
 				<event-listener service-id="builtin.shutdown" />
 				<service>community</service>
@@ -432,22 +469,7 @@ REMOTE PROCESS LISTENER
 		<load service-id="trayRemoteProcessListener"/>
 	</contribution>
 	
-		
-	
-<!-- 
-==========================
-LOGIN INTERCEPTOR
- -->
-	<service-point id="login" interface="org.apache.hivemind.ServiceInterceptorFactory">
-		Causes login before accessing intercepted services.
-		Keeps service code cleaner, as no need for 'forceLogin' calls.
-		<invoke-factory model="primitive">>
-			<construct class="org.astrogrid.desktop.modules.ag.LoginInterceptor">
-				<service>community</service>
-				<service>hivemind.ClassFactory</service>
-			</construct>
-		</invoke-factory>		
-	</service-point>
+
 <!-- 
 ==========================
 CERTIFICATE INSTALLER
@@ -455,7 +477,7 @@ CERTIFICATE INSTALLER
 	<service-point id="installCertificates" interface="java.lang.Runnable" visibility="private">
 		Download and install any missing certificates.
 		<invoke-factory model="primitive">
-			<construct class="org.astrogrid.desktop.modules.ag.InstallCertificates">
+			<construct class="org.astrogrid.desktop.modules.auth.InstallCertificates">
 				<service>system.ui</service>
 				<string>${astrogrid.workdir}${file.separator}trusted-certificates</string> <!-- must match with the dir passed into the community component -->
 				<configuration>trustAnchors</configuration>

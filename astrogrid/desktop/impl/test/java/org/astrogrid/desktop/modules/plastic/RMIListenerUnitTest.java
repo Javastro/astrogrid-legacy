@@ -1,6 +1,8 @@
 package org.astrogrid.desktop.modules.plastic;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +70,14 @@ public class RMIListenerUnitTest extends AbstractPlasticBaseNotDeaf {
             public int getPort() {
                 return 8001;
             }
-
+            
+			public URL getRoot() {
+				try {
+					return new URL(getUrlRoot());
+				} catch (MalformedURLException x) {
+					throw new RuntimeException(x);
+				}
+			}
         };
         RmiServer rmi = new RmiServer() {
 

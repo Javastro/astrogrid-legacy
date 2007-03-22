@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.14 2007/03/20 10:19:00 nw Exp $
+/*$Id: Launcher.java,v 1.15 2007/03/22 19:03:48 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -60,21 +60,7 @@ public class Launcher implements Runnable {
         setProperty("ivoa.skynode.disabled","true");
         // log4j
         setProperty("log4j.configuration","default-log4j.properties");
-        // l & f
-        String lafName = UIManager.getSystemLookAndFeelClassName();
-        // for linux... see if we can do better than the Motif..
-      //@FIXME - problems with LAF on linux in newest build.
-        if (lafName.equals("com.sun.java.swing.plaf.motif.MotifLookAndFeel")) {// yo mamma's so ugly.
-        	try {
-        		// see if GTK  is available.. java 1.4+
-        		Class.forName("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-        		lafName = "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
-        	} catch (Exception noMatter) {
-        		// don't care.
-        	}
-        } 
-//        lafName = UIManager.getCrossPlatformLookAndFeelClassName();
-     //   setProperty("swing.defaultlaf",lafName);
+        // l & f - @todo look at what configuration of fonts, etc takes place in topcat.
         // properties for apple - ignored in other contexts.
         // under java 1.4 on macs, I keep getting odd 3 > 2 errors.
         setProperty("apple.laf.useScreenMenuBar",Boolean.toString(
@@ -138,9 +124,8 @@ public class Launcher implements Runnable {
         addModuleByName("hivemind");
         addModuleByName("hivemind-lib");
         addModuleByName("hiveutils");
-  // enable these later.
-//        addModuleByName("hivelock.core");
- //       addModuleByName("hivelock.default");
+        //@todo move these to just the AR variants - not plastic hub.
+        addModuleByName("hivelock.core");
         
         addModuleByName("framework");        
         addModuleByName("builtin");
@@ -201,6 +186,9 @@ public class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.15  2007/03/22 19:03:48  nw
+added support for sessions and multi-user ar.
+
 Revision 1.14  2007/03/20 10:19:00  nw
 possible fix to laf problems on linux.
 

@@ -1,4 +1,4 @@
-/*$Id: AbstractReflectionServlet.java,v 1.7 2007/01/29 11:11:36 nw Exp $
+/*$Id: AbstractReflectionServlet.java,v 1.8 2007/03/22 19:03:48 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.desktop.modules.system;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.security.Principal;
 import java.util.StringTokenizer;
 
 import javax.servlet.ServletConfig;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.builtin.ComponentDescriptor;
 import org.astrogrid.acr.builtin.MethodDescriptor;
@@ -28,6 +30,7 @@ import org.astrogrid.acr.builtin.ModuleDescriptor;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.framework.ACRInternal;
 import org.astrogrid.desktop.framework.Module;
+import org.astrogrid.desktop.framework.SessionManagerInternal;
 
 /** Abstract servlet class for exposing services.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 31-Jan-2005
@@ -38,9 +41,11 @@ public abstract class AbstractReflectionServlet extends HttpServlet {
     public void init(ServletConfig conf) throws ServletException {
         super.init(conf);
         reg = (ACRInternal)conf.getServletContext().getAttribute(WebServer.ACR_CONTEXT_KEY);
+        session = (SessionManagerInternal)conf.getServletContext().getAttribute("session-manager");        
     }
 
     protected ACRInternal reg;
+    protected SessionManagerInternal session;
 
     /** parse the request path, calling a different abstract method to process each level 
      * @throws IOException */
@@ -90,6 +95,9 @@ public abstract class AbstractReflectionServlet extends HttpServlet {
             if (component == null) {
                 reportError("component not found '" + requestedComponent + "'",request,response);
             }
+            // put this thread into the correct session, if any
+            Principal sess = session.findSessionForKey(StringUtils.substringBetween(request.getRequestURI(),"/","/"));
+            session.adoptSession(sess);            
             callMethod(methodD,resultType,component,request,response);
        } catch (ACRException t) {
             reportError("Failed to access component",t, request, response);
@@ -99,6 +107,8 @@ public abstract class AbstractReflectionServlet extends HttpServlet {
         	reportError(e,request,response);
         } catch (ServletException e) {
         	reportError(e,request,response);
+        } finally {
+        	session.clearSession();
         }
     }
 
@@ -177,6 +187,9 @@ public abstract class AbstractReflectionServlet extends HttpServlet {
 
 /*
  * $Log: AbstractReflectionServlet.java,v $
+ * Revision 1.8  2007/03/22 19:03:48  nw
+ * added support for sessions and multi-user ar.
+ *
  * Revision 1.7  2007/01/29 11:11:36  nw
  * updated contact details.
  *

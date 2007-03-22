@@ -1,4 +1,4 @@
-/*$Id: ScheduledTask.java,v 1.5 2007/01/29 11:11:36 nw Exp $
+/*$Id: ScheduledTask.java,v 1.6 2007/03/22 19:03:48 nw Exp $
  * Created on 05-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,8 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+import java.security.Principal;
+
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 
 /** interface to a schedulable task.
@@ -19,8 +21,13 @@ import org.astrogrid.desktop.modules.ui.BackgroundWorker;
  *
  */
 public interface ScheduledTask{
-	/** create a new worker task - single-user object */
+	/** create a new worker task - single-use object
+	 * if the worker is to be executed in a particular session, the principal property it should be populated with the principal for that session.
+	 * Else it will be executed in the default session.
+	 *  
+	 *  */
 	public BackgroundWorker createWorker();
+	/** period after which to repeat this task */
    public long getPeriod();
    
 }
@@ -28,6 +35,9 @@ public interface ScheduledTask{
 
 /* 
 $Log: ScheduledTask.java,v $
+Revision 1.6  2007/03/22 19:03:48  nw
+added support for sessions and multi-user ar.
+
 Revision 1.5  2007/01/29 11:11:36  nw
 updated contact details.
 

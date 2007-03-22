@@ -671,7 +671,7 @@ System module.
 	====================
 	WEBSERVER
 	 -->
-	<service-point id="webserver" interface="WebServer">
+	<service-point id="webserver" interface="org.astrogrid.desktop.modules.system.WebServerInternal">
 		Web server - consumes servlets and servletContext configurations.
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.system.JettyWebServer"
@@ -686,6 +686,7 @@ System module.
 				<set property="connectionFile" value="${system.webserver.connectionFile}" />
 				<set property="disableConnectionFile" value="${system.webserver.disableConnectionFile}" />
 				<set property="inetAddress" value="${system.webserver.inetAddress}" />
+				<set-object property="contextName" value="service-property:builtin.sessionManager:defaultSessionId" />
 			</construct>
 		</invoke-factory>
 	</service-point>	
@@ -843,6 +844,7 @@ SYSTEM TRAY
 				>
 				<service>builtin.acr</service>
 				<configuration>rmiListenerInterfaces</configuration>
+				<service>builtin.sessionManager</service>
 				<event-listener service-id="builtin.shutdown" />						
 				<set property="port" value="${system.rmi.port}" />
 				<set property="scanStartPort" value="${system.rmi.startScanPort}" />
@@ -924,6 +926,7 @@ SYSTEM TRAY
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.system.ClockDaemonScheduler">
 				<configuration>scheduledTasks</configuration>
+				<service>builtin.sessionManager</service>
 				<event-listener service-id="builtin.shutdown" />
 			</construct>
 		</invoke-factory>
@@ -945,6 +948,8 @@ SYSTEM TRAY
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.system.BackgroundExecutorImpl"
 				initialize-method="init">
+				<service>ui</service>
+				<service>builtin.sessionManager</service>
 				<set property="queueSize" value="${system.executor.queueSize}" />
 				<set property="startThreads" value="${system.executor.startThreads}" />
 				<set property="maxThreads" value="${system.executor.maxThreads}" />
@@ -962,6 +967,7 @@ SYSTEM TRAY
 		<default symbol="system.executor.startThreads" value="15" />
 		<default symbol="system.executor.maxThreads" value="30" />
 	</contribution>		
+	
 
 <!-- ==========================
 SINGLE INSTANCE LISTENER

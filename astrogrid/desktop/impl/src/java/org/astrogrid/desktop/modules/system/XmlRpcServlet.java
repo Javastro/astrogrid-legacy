@@ -1,4 +1,4 @@
-/*$Id: XmlRpcServlet.java,v 1.8 2007/01/29 16:45:07 nw Exp $
+/*$Id: XmlRpcServlet.java,v 1.9 2007/03/22 19:03:48 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Vector;
@@ -29,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.collections.Transformer;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xmlrpc.XmlRpcException;
@@ -44,6 +46,7 @@ import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.framework.ACRInternal;
 import org.astrogrid.desktop.framework.Module;
 import org.astrogrid.desktop.framework.ReflectionHelper;
+import org.astrogrid.desktop.framework.SessionManagerInternal;
 /** Implementation of full-featured XMLRPC server that exposes the ACR functions
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 31-Jan-2005
  *
@@ -51,6 +54,7 @@ import org.astrogrid.desktop.framework.ReflectionHelper;
 public class XmlRpcServlet extends HttpServlet {
     protected Converter conv;
     protected Transformer trans;    
+    protected SessionManagerInternal session;
     /** class that exposes one of our annotated services as a xml service */
     public class ComponentXmlRpcHandler implements XmlRpcHandler {
         protected final ComponentDescriptor cd;
@@ -94,7 +98,7 @@ public class XmlRpcServlet extends HttpServlet {
                     args[i] = conv.convert(parameterTypes[i],inputArgs.get(i));
                 }
                 // call method
-
+         
                 logger.debug("Calling method...");
                 Object result = MethodUtils.invokeMethod(service,method,args);
                 if (m.getReturnType().equals(Void.TYPE)) { // i.e. it's not returning anything
@@ -161,7 +165,9 @@ public class XmlRpcServlet extends HttpServlet {
         final ServletContext servletContext = conf.getServletContext();
         ACRInternal reg = (ACRInternal) servletContext.getAttribute(WebServer.ACR_CONTEXT_KEY);
         conv = (Converter)servletContext.getAttribute("converter");
-        trans = (Transformer)servletContext.getAttribute("rpcResultTransformer");   
+        trans = (Transformer)servletContext.getAttribute("rpcResultTransformer");  
+        session = (SessionManagerInternal)conf.getServletContext().getAttribute("session-manager");        
+
        for (Iterator i = reg.moduleIterator(); i.hasNext(); ) {
            Module m = (Module)i.next();
            ModuleDescriptor md = m.getDescriptor();
@@ -195,14 +201,19 @@ public class XmlRpcServlet extends HttpServlet {
         if (logger.isDebugEnabled()) {
             logger.debug("doPost(request = " + request + ", response = " + response + ") - start");
         }
-        
+        // put this thread into the correct session, if any
+        Principal sess = session.findSessionForKey(StringUtils.substringBetween(request.getRequestURI(),"/","/"));
+        session.adoptSession(sess);           
+        try {
         byte[] result = xmlrpc.execute (request.getInputStream ());
         response.setContentType ("text/xml");
         response.setContentLength (result.length);
         OutputStream out = response.getOutputStream();
         out.write (result);
         out.flush ();        
-
+        } finally {
+        	session.clearSession();
+        }
         if (logger.isDebugEnabled()) {
             logger.debug("doPost() - end");
         }
@@ -216,6 +227,9 @@ public class XmlRpcServlet extends HttpServlet {
 
 /* 
 $Log: XmlRpcServlet.java,v $
+Revision 1.9  2007/03/22 19:03:48  nw
+added support for sessions and multi-user ar.
+
 Revision 1.8  2007/01/29 16:45:07  nw
 cleaned up imports.
 

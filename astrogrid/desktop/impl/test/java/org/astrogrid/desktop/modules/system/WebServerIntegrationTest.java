@@ -1,4 +1,4 @@
-/*$Id: WebServerIntegrationTest.java,v 1.4 2007/01/29 10:42:48 nw Exp $
+/*$Id: WebServerIntegrationTest.java,v 1.5 2007/03/22 19:03:48 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -58,6 +58,11 @@ public class WebServerIntegrationTest extends InARTestCase {
         new URL(serv.getUrlRoot()); // will throw a malformed thingie if not a url.
     }
     
+
+    public void testGetRoot(){
+        assertNotNull(serv.getRoot());
+    }
+    
     
     public static Test suite() {
         return new ARTestSetup(new TestSuite(WebServerIntegrationTest.class));
@@ -68,6 +73,9 @@ public class WebServerIntegrationTest extends InARTestCase {
 
 /* 
 $Log: WebServerIntegrationTest.java,v $
+Revision 1.5  2007/03/22 19:03:48  nw
+added support for sessions and multi-user ar.
+
 Revision 1.4  2007/01/29 10:42:48  nw
 tidied.
 

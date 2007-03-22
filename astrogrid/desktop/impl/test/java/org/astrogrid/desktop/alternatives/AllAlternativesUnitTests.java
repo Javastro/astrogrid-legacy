@@ -20,6 +20,7 @@ public class AllAlternativesUnitTests {
 		suite.addTestSuite(HeadlessLoginDialogueUnitTest.class);
 		suite.addTestSuite(InThreadExecutorUnitTest.class);
 		suite.addTestSuite(LoggingSystemTrayUnitTest.class);
+		suite.addTestSuite(SingleSessionManagerUnitTest.class);
 		//$JUnit-END$
 		return suite;
 	}

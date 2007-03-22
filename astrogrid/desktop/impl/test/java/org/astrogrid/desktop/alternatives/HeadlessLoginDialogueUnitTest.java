@@ -3,6 +3,8 @@
  */
 package org.astrogrid.desktop.alternatives;
 
+import org.astrogrid.desktop.modules.auth.HeadlessLoginDialogue;
+
 import junit.framework.TestCase;
 
 /**

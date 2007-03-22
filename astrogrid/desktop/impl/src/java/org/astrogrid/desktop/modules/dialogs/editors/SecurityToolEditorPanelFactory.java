@@ -3,7 +3,7 @@
  */
 package org.astrogrid.desktop.modules.dialogs.editors;
 
-import org.astrogrid.desktop.modules.ag.CommunityInternal;
+import org.astrogrid.desktop.modules.auth.CommunityInternal;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 

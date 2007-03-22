@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.13 2007/01/29 11:11:36 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.14 2007/03/22 19:03:48 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.desktop.modules.background;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -47,7 +48,6 @@ import org.astrogrid.applications.delegate.CEADelegateException;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.CeaHelper;
-import org.astrogrid.desktop.modules.ag.CommunityInternal;
 import org.astrogrid.desktop.modules.ag.MessageRecorderInternal;
 import org.astrogrid.desktop.modules.ag.MessagingInternal;
 import org.astrogrid.desktop.modules.ag.RemoteProcessStrategy;
@@ -55,6 +55,7 @@ import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.Folder;
 import org.astrogrid.desktop.modules.ag.MessagingInternal.SourcedExecutionMessage;
 import org.astrogrid.desktop.modules.ag.recorder.ResultsExecutionMessage;
 import org.astrogrid.desktop.modules.ag.recorder.StatusChangeExecutionMessage;
+import org.astrogrid.desktop.modules.auth.CommunityInternal;
 import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
@@ -515,13 +516,20 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
     	} catch (CEADelegateException e) {
     		throw new ServiceException(e);
     	} 
-    }  
+    }
+
+	public Principal getSession() {
+		return null;
+	}  
     
 }
 
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.14  2007/03/22 19:03:48  nw
+added support for sessions and multi-user ar.
+
 Revision 1.13  2007/01/29 11:11:36  nw
 updated contact details.
 

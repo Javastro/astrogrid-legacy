@@ -24,8 +24,8 @@
 	</service-point>
 
 	<contribution configuration-id="hivemind.FactoryDefaults">
-		<default symbol="auto-disconnect-timeout" value="3600"/>
-		<default symbol="scavenger-period" value="300"/>
+		<default symbol="auto-disconnect-timeout" value="172800"/> <!--  two days -->
+		<default symbol="scavenger-period" value="3600"/>
 	</contribution>
 
 	<service-point	id="PrincipalHelper"
@@ -47,7 +47,7 @@
 	</service-point>
 
 	<!-- Factory for AuthorizationInterceptor -->
-	<service-point	id="AuthorizationInterceptor"
+	<service-point	id="authorization"
 					interface="org.apache.hivemind.ServiceInterceptorFactory"
 					parameters-occurs="0..n">
 		<invoke-factory	model="primitive">
@@ -77,11 +77,12 @@
 	</service-point>
 
 	<!--
-		Specific "user" ServiceModel.
-		This model creates an instance for each connected user.
+		Specific "session" ServiceModel.
+		This model creates an instance for each connected session.
+		NW: renamed from 'user' - as a session may not have yet authenticated
 	-->
 	<contribution configuration-id="hivemind.ServiceModels">
-		<service-model	name="user" 
+		<service-model	name="session" 
 						class="net.sourceforge.hivelock.UserServiceModelFactory"/> 
 	</contribution>
 </module>

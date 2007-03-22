@@ -1,4 +1,4 @@
-/*$Id: WebServerRpcTransportTest.java,v 1.3 2007/01/29 10:42:48 nw Exp $
+/*$Id: WebServerRpcTransportTest.java,v 1.4 2007/03/22 19:03:48 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+import java.net.URL;
 import java.util.Vector;
 
 import junit.framework.Test;
@@ -73,12 +74,25 @@ public class WebServerRpcTransportTest extends WebServerIntegrationTest implemen
 			throw new RuntimeException("never reached");			
 		}
 	}
+	
+	public URL getRoot() {
+		v.clear();
+		try {
+			return new URL((String)client.execute("system.webserver.getRoot",v));
+		} catch (Exception e) {
+			fail(e.getMessage());
+			throw new RuntimeException("never reached");			
+		}
+	}
     
 }
 
 
 /* 
 $Log: WebServerRpcTransportTest.java,v $
+Revision 1.4  2007/03/22 19:03:48  nw
+added support for sessions and multi-user ar.
+
 Revision 1.3  2007/01/29 10:42:48  nw
 tidied.
 

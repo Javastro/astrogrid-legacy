@@ -1,4 +1,4 @@
-/*$Id: BackgroundWorker.java,v 1.8 2007/01/29 11:11:37 nw Exp $
+/*$Id: BackgroundWorker.java,v 1.9 2007/03/22 19:03:48 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.desktop.modules.ui;
 
 import java.lang.reflect.InvocationTargetException;
+import java.security.Principal;
 import java.util.Observable;
 
 import javax.swing.SwingUtilities;
@@ -61,6 +62,16 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
             this(parent,msg,DEFAULT_TIMEOUT,priority);
         }
        
+        // container for the principal - that is the session / user whose privileges to use to execute this task.
+        private Principal principal;
+        public Principal getPrincipal() {
+        	return principal;
+        }
+        public void setPrincipal(Principal p) {
+        	this.principal = p;
+        }
+        
+        
         /**
          *  Construct a new BackgroundOperation
          * @param parent - UICOmponent to report progress in.
@@ -171,6 +182,7 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
 
         /**
          * Stops the worker . haven't got a handle on the thread, so can't easily interrupt it.
+         * @todo find a way to really halt the thread.
          */
         public synchronized void interrupt() {
             run = false; // will halt a task if it hasn't already been executed.
@@ -276,6 +288,9 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
 
 /* 
 $Log: BackgroundWorker.java,v $
+Revision 1.9  2007/03/22 19:03:48  nw
+added support for sessions and multi-user ar.
+
 Revision 1.8  2007/01/29 11:11:37  nw
 updated contact details.
 
