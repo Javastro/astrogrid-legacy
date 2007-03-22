@@ -1,4 +1,4 @@
-/*$Id: Finder.java,v 1.14 2007/01/24 14:04:45 nw Exp $
+/*$Id: Finder.java,v 1.15 2007/03/22 18:54:10 nw Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.acr;
 import net.ladypleaser.rmilite.Client;
 
 import org.astrogrid.acr.builtin.ACR;
+import org.astrogrid.acr.builtin.SessionManager;
 import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.acr.builtin.ShutdownListener;
 import org.astrogrid.acr.system.ApiHelp;
@@ -56,7 +57,83 @@ import javax.swing.JOptionPane;
  *@see org.astrogrid.acr.builtin.ACR How to retrieve services from the ACR interface
  */
 public class Finder {
-    /**Internal Class. 
+    /** rmi stub that connects to a remote acr inteance.
+	 * @author Noel.Winstanley@manchester.ac.uk
+	 * @since Mar 21, 20071:41:34 PM
+	 */
+	public static final class RmiAcr implements ACR {
+		// used to connect to the remote acr
+		final SessionAwareClient client;
+		// used to map names to classes. - lazily initialized.
+		private  ApiHelp api;
+		
+		private synchronized ApiHelp getApiHelp() throws RemoteException, NotBoundException {
+			if (api == null) {
+				api = (ApiHelp)client.lookup(ApiHelp.class);
+			} 
+			return api;
+		}
+
+		private RmiAcr(SessionAwareClient client) {
+			this.client = client;
+		}
+		
+		public Object getService(Class interfaceClass) throws ACRException, NotFoundException {
+			if (interfaceClass.equals(ACR.class)) {
+				return this;
+			}
+			try {
+				registerListeners(interfaceClass);
+				return this.client.lookup(interfaceClass);
+			} catch (RemoteException e) {
+				throw new ACRException(e);
+			} catch (NotBoundException e) {
+				throw new NotFoundException(e);
+			}
+		}
+
+		private void registerListeners(Class c) {
+			Method[] arr = c.getMethods();
+			for (int i = 0; i < arr.length; i++) {
+				Method m = arr[i];
+				Class[] ps = m.getParameterTypes();
+				for (int j = 0; j < ps.length; j++) {
+					maybeRegister(ps[j]);
+				}
+				Class ret = m.getReturnType();
+				maybeRegister(ret);
+			}
+		}
+
+		private void maybeRegister(Class c) {
+			if (c.isInterface() &&   c.getName().endsWith("Listener")) {
+				logger.debug("Exporting interface " + c.getName());
+				this.client.exportInterface(c);
+			}
+		}
+
+		public Object getService(String componentName) throws ACRException, NotFoundException {
+			Class clazz = null;
+			try {
+				clazz = Class.forName(componentName); // makes the interface more user friendly - can take either a short name of fully-qualified name.
+			} catch (ClassNotFoundException e) {
+				// try to resolve o
+				try {
+					String className = getApiHelp().interfaceClassName(componentName);
+					clazz = Class.forName(className);
+				} catch (ClassNotFoundException e1) {
+					throw new NotFoundException(e1);
+				} catch (RemoteException x) {
+					throw new ACRException(x);
+				} catch (NotBoundException x) {
+					throw new ACRException(x);
+				}
+			}
+			return getService(clazz);
+		}
+	}
+
+	/**Internal Class. 
      * 
      * Refactored as an static public class - previously was an anonymous class, and RmiLite seemed to be unable to call it
      *  - producing a nice stack trace on shutdown. Same code, but as a named public static class works fine.
@@ -107,6 +184,47 @@ public class Finder {
          
         return find(tryToStartIfNotRunning, warnUserBeforeStarting);
 
+    }
+    
+    /** find an acr instance for a specific session 
+     * 
+     * unlike {@link find()} this method will not start an ACR instance if one is 
+     * not already running - as an ACR must be running to be able to connect 
+     * create a new session using the SessionManager.
+     * 
+     * @param sessionId the identifier of a current session
+     * @return an acr instance that is connected to the specified session
+	 * @throws InvalidArgumentException if the sessionId is invalid.
+	 * @throws NotApplicableException if a connection has not already been made to an ACR instance, or ACR is an older version without session support
+	 * @throws ServiceException if there is an error connecting to this session.
+	 * @see org.astrogrid.acr.builtin.SessionManager
+     */
+    public ACR findSession(String sessionId) throws InvalidArgumentException, NotApplicableException, ServiceException{
+    	if (this.acr == null) {
+    		throw new NotApplicableException("You must previously connect to an ACR before retrieving a session");
+    	}
+    	SessionManager sess;
+		try {
+			sess = (SessionManager)acr.getService(SessionManager.class);
+		} catch (NotFoundException x) {
+			throw new NotApplicableException("This ACR does not support sessions");
+		} catch (ACRException x) {
+			throw new ServiceException(x);
+		}
+    	if (! sess.exists(sessionId)) {
+    		throw new InvalidArgumentException("Not a current session " + sessionId);
+    	}
+    	if (acr instanceof RmiAcr) { // we're in remote mode.
+    		
+    		try {
+				return connectExternalSession(sessionId);
+			} catch (Exception x) {
+				throw new ServiceException(x);
+			}
+    	} else { // we've got a direct connection - dunno what to do here.
+    		//@fixme work out how to sessionify a direct connection
+    		throw new ServiceException("Not implemented for direct method connections");
+    	}
     }
 
     /**
@@ -243,64 +361,20 @@ public class Finder {
      */
     protected ACR connectExternal() throws FileNotFoundException, NumberFormatException, IOException, RemoteException, NotBoundException {
     	int port = parseConfigFile();
-    	final Client client = new Client("localhost",port);
-    	final ApiHelp api = (ApiHelp)client.lookup(ApiHelp.class);
-    	ACR newAcr = new ACR() {
-    		
-    		public Object getService(Class interfaceClass) throws ACRException, NotFoundException {
-    			if (interfaceClass.equals(ACR.class)) {
-    				return this;
-    			}
-    			try {
-    				registerListeners(interfaceClass);
-    				return client.lookup(interfaceClass);
-    			} catch (RemoteException e) {
-    				throw new ACRException(e);
-    			} catch (NotBoundException e) {
-    				throw new NotFoundException(e);
-    			}
-    		}
-    		
-    		private void registerListeners(Class c) {
-    			Method[] arr = c.getMethods();
-    			for (int i = 0; i < arr.length; i++) {
-    				Method m = arr[i];
-    				Class[] ps = m.getParameterTypes();
-    				for (int j = 0; j < ps.length; j++) {
-    					maybeRegister(ps[j]);
-    				}
-    				Class ret = m.getReturnType();
-    				maybeRegister(ret);
-    			}
-    		}
-    		private void maybeRegister(Class c) {
-    			if (c.isInterface() &&   c.getName().endsWith("Listener")) {
-    				logger.debug("Exporting interface " + c.getName());
-    				client.exportInterface(c);
-    			}
-    		}
-    		
-    		
-    		public Object getService(String componentName) throws ACRException, NotFoundException {
-    			Class clazz = null;
-    			try {
-    				clazz = Class.forName(componentName); // makes the interface more user friendly - can take either a short name of fully-qualified name.
-    			} catch (ClassNotFoundException e) {
-    				// try to resolve o
-    				try {
-    					String className = api.interfaceClassName(componentName);
-    					clazz = Class.forName(className);
-    				} catch (ClassNotFoundException e1) {
-    					throw new NotFoundException(e1);
-    				}
-    			}
-    			return getService(clazz);
-    		}
-    	};
+    	final SessionAwareClient client = new SessionAwareClient("localhost",port);
+
+    	ACR newAcr = new RmiAcr(client);
     	//TODO check that the ACR is booted?  Sometimes the config file is present before the ACR is ready.
-    	
     	return newAcr;           
-    	
+    }
+    
+    protected ACR connectExternalSession(String sessionId) throws FileNotFoundException, NumberFormatException, IOException, RemoteException, NotBoundException {
+    	int port = parseConfigFile();
+    	final SessionAwareClient client = new SessionAwareClient("localhost",port,sessionId);
+
+    	ACR newAcr = new RmiAcr(client);
+    	//TODO check that the ACR is booted?  Sometimes the config file is present before the ACR is ready.
+    	return newAcr;           
     }
 
 	/**
@@ -403,12 +477,14 @@ public class Finder {
         } 
         return null;
     }
-
 }
 
 
 /* 
 $Log: Finder.java,v $
+Revision 1.15  2007/03/22 18:54:10  nw
+added support for sessions.
+
 Revision 1.14  2007/01/24 14:04:45  nw
 updated my email address
 

@@ -1,4 +1,4 @@
-/*$Id: WebServer.java,v 1.4 2007/01/24 14:04:44 nw Exp $
+/*$Id: WebServer.java,v 1.5 2007/03/22 18:54:10 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,8 @@
  *
  **/
 package org.astrogrid.acr.system;
+
+import java.net.URL;
 
 
 /** Access information about he web-server component of ACR.
@@ -30,6 +32,9 @@ public interface WebServer  {
      * 
      * Append <tt>xmlrpc</tt> to this root url to access the XMLRPC interface 
      * @return a url of form <tt>http://<i>machine</i>:<i>getPort()</i>/<i>getKey</i>/</tt>*/
+    public URL getRoot();
+    
+    /** @deprecated usee {@link #getRoot} */
     public abstract String getUrlRoot();   
     /** @see #getUrlRoot */
     public abstract String getKey();
@@ -42,6 +47,9 @@ public interface WebServer  {
 
 /* 
  $Log: WebServer.java,v $
+ Revision 1.5  2007/03/22 18:54:10  nw
+ added support for sessions.
+
  Revision 1.4  2007/01/24 14:04:44  nw
  updated my email address
 

@@ -5,8 +5,12 @@ import org.astrogrid.acr.NotFoundException;
  * 
  */
 
-/** Contains methods with interesting parameters and return types.
+/**Not for normal use. 
+ * 
+ * Contains methods with interesting parameters and return types.
  * Used to test correctness of the transport between client and AR.
+ * 
+ * 
  * @author Noel Winstanley
  * @since Jun 15, 20061:26:38 AM
  * @service test.transporttest

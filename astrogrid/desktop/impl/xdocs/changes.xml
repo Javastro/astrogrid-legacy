@@ -16,6 +16,9 @@
 <body>
 <release version="2007.2.pre3" date="unreleased">
 <action dev="nw" type="add">
+	Session support - AR is now multi-user.
+</action>
+<action dev="nw" type="add">
    First draft of voexplorer
 </action>
 <action dev="nw" type="remove">
