@@ -128,7 +128,7 @@ public class XMLBuilder {
          */
         public Node newSibling(String name, Node newNodes) {
             Node n = new Node(name);
-            n.e.appendChild(newNode.e.cloneNode(true));
+            n.e.appendChild(newNodes.e.cloneNode(true));
             this.e.getParentNode().appendChild(n.e);
             return n;
         }
