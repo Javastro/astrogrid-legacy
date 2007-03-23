@@ -21,7 +21,8 @@ public class XMLBuilder {
                     .createDocument(null, null, null);
         } catch (Exception e) {
             // There's a variety of distinct exceptions can appear here.
-            // I don't care about the difference between any of them.
+            // I don't care about the difference between any of them,
+            // and all of them are `can't happen'.
             // So turn them all into assertion errors!
             throw new AssertionError
                     ("Failed to create XML DOM (this shouldn't happen!)");
@@ -51,7 +52,7 @@ public class XMLBuilder {
         }
 
         /**
-         * Create a new child of this element, with text content
+         * Create a new child of this element
          * @param name the name of the new element
          * @return the newly created node
          */
@@ -78,7 +79,7 @@ public class XMLBuilder {
         /**
          * Create a new child of this element, whose children are
          * obtained by copying one or more nodes from
-         * the nodeset created using {@link XMLBuilder#newNodeSet}.
+         * the nodeset created using {@link XMLBuilder.Doc#newNodeSet}.
          * @param name the name of the new element
          * @param newNodes the node content of the new node
          * @return the newly created node
@@ -94,7 +95,6 @@ public class XMLBuilder {
          * Create a new sibling of this element.
          * The new node is appended as the last sibling of this node
          * @param name the name of the new element
-         * @param content the text content of the node
          * @return the newly created node
          */
         public Node newSibling(String name) {
@@ -120,13 +120,13 @@ public class XMLBuilder {
         /**
          * Create a new sibling of this element, copying one or more
          * nodes from the nodeset created using
-         * {@link XMLBuilder#newNodeSet}.
+         * {@link XMLBuilder.Doc#newNodeSet}.
          * The new node is appended as the last sibling of this node
          * @param name the name of the new element
-         * @param newNode the node content of the new node
+         * @param newNodes the node content of the new node
          * @return the newly created node
          */
-        public Node newSibling(String name, Node newNode) {
+        public Node newSibling(String name, Node newNodes) {
             Node n = new Node(name);
             n.e.appendChild(newNode.e.cloneNode(true));
             this.e.getParentNode().appendChild(n.e);
@@ -156,13 +156,16 @@ public class XMLBuilder {
         }
     }
 
+    /**
+     * A document which can be built up then serialised
+     */
     public class Doc extends Node {
 
         /**
          * Create a new XML builder document, which will produce an XML document
          * with the given document element
          */
-        public Doc(String documentElementName) {
+        private Doc(String documentElementName) {
             e = d.createElement(documentElementName);
             d.appendChild(e);
         }
