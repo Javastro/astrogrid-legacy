@@ -29,6 +29,9 @@ public class ExtractNamespaces {
     private static java.util.Map<String,NSInfo> nsinfo;
     static {
         nsinfo = new java.util.HashMap<String,NSInfo>();
+        // Add dummy namespaces
+        nsinfo.put("http://www.w3.org/2001/XMLSchema-instance", new NSInfo());
+        nsinfo.put("http://www.w3.org/1999/xlink", new NSInfo());
         // @ExtractNamespaces.content@
     }
 
@@ -125,7 +128,7 @@ public class ExtractNamespaces {
             NSInfo h = nsinfo.get(s);
             if (h == null && verbosity >= VERBOSITY_NORMAL)
                 System.err.println("Unmatched namespace: " + s);
-            if (h != null) {
+            if (h != null && !h.ignoredNamespace()) {
                 xb.newChild("import")
                         .addAttribute("href", h.getHandler());
                 // declare namespaces here, so they'll appear on
@@ -199,68 +202,6 @@ public class ExtractNamespaces {
         xb.serialise(stream);
     }
 
-    private static void oldXgenerateXSLT(Set<String> namespaces,
-                                     java.io.OutputStream stream)
-            throws Exception {
-        Document d = javax.xml.parsers.DocumentBuilderFactory
-                .newInstance()
-                .newDocumentBuilder()
-                .newDocument();
-        Element de = d.createElement("stylesheet");
-        de.setAttribute("version", "1.0");
-        de.setAttribute("xmlns", "http://www.w3.org/1999/XSL/Transform");
-        de.setAttribute("xmlns:rdf",
-                        "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-        de.setAttribute("xmlns:rdfs",
-                        "http://www.w3.org/2000/01/rdf-schema#");
-        d.appendChild(de);
-
-        // Import the fallback script, which matches "*".  If we did this
-        // in the script itself, it would have a higher import precedence
-        // than anything else, and so match absolutely everything.
-        Element rootTemplate = d.createElement("template");
-        rootTemplate.setAttribute("match", "/");
-
-        Element rdfRDF = d.createElement("rdf:RDF");
-        rootTemplate.appendChild(rdfRDF);
-        rdfRDF.appendChild(d.createElement("apply-templates"));
-        rdfRDF.setAttribute("xmlns:x2s",
-                            "http://ns.eurovotech.org/registry-metadata");
-
-        Element fallbackImport = d.createElement("import");
-        fallbackImport.setAttribute("href", "fallback.xslt");
-        de.appendChild(fallbackImport);
-
-
-
-        for (String s : namespaces) {
-            NSInfo h = nsinfo.get(s);
-            if (h == null && verbosity >= VERBOSITY_NORMAL)
-                System.err.println("Unmatched namespace: " + s);
-            if (h != null) {
-                Element importElement = d.createElement("import");
-                importElement.setAttribute("href", h.getHandler());
-                // declare namespaces here, so they'll appear on RDF element
-                // in output
-                de.setAttribute("xmlns:"+h.getPrefix(), s);
-                rdfRDF.setAttribute("xmlns:"+h.getOntologyPrefix(),
-                                    h.getOntologyURI());
-                de.appendChild(importElement);
-            }
-        }
-
-        de.appendChild(rootTemplate);
-
-        // serialise it
-        javax.xml.transform.Transformer t =
-                javax.xml.transform.TransformerFactory
-                .newInstance()
-                .newTransformer();
-        t.setOutputProperty("indent", "yes"); // marginally prettier
-        t.transform(new javax.xml.transform.dom.DOMSource(d),
-                    new javax.xml.transform.stream.StreamResult(stream));
-    }
-
     private static void Usage() {
         String[] doc = new String[] {
             "Usage: ExtractNamespaces [options] registry-entry.xml",
@@ -299,6 +240,11 @@ public class ExtractNamespaces {
         String xsdprefix;
         String ontologyprefix;
         String ontologyURI;
+        boolean isDummy;
+
+        public NSInfo() {
+            isDummy = true;
+        }
         
         public NSInfo(String handler,
                       String xsdprefix,
@@ -308,6 +254,10 @@ public class ExtractNamespaces {
             this.xsdprefix = xsdprefix;
             this.ontologyprefix = ontologyprefix;
             this.ontologyURI = ontologyURI;
+            isDummy = false;
+        }
+        public boolean ignoredNamespace() {
+            return isDummy;
         }
         public String getHandler() {
             return handler;
