@@ -9,11 +9,11 @@ import sys
 import os
 prefix = file(os.path.expanduser("~/.astrogrid-desktop")).next().rstrip()
 s = x.Server(prefix + "xmlrpc")
-arr = s.astrogrid.applications.listProvidersOf(sys.argv[len(sys.argv)-1])
+arr = s.astrogrid.applications.listServersProviding(sys.argv[len(sys.argv)-1])
 if len(sys.argv) > 2 and (sys.argv[1] == "--full" or sys.argv[1] == "-f"):
-	for i in arr :
-		print i['title'], ":", i['id'] , ":", i['description'], ":", i['accessURL']
-else :
+    for i in arr :
+        print i['title'], ":", i['id'] 
+else:
 	for i in arr :
 		print i['id']
 

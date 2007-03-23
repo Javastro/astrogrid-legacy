@@ -14,7 +14,6 @@ from optparse import OptionParser
 
 parser = OptionParser(usage="usage: %prog [options] <document-uri> [server]")
 parser.add_option("-w","--wait",action="store_true", default=False, help="wait until application completes")
-parser.add_option("-m","--monitor",action="store_true", default=False, help="add application to job monitor UI")	
 parser.add_option("-f","--fetch",action="store_true",default=False,help="Fetch results (implies --wait)")	
 
 (options, args) = parser.parse_args()
@@ -34,10 +33,7 @@ if len(args) == 2:
 	execId = s.astrogrid.applications.submitStoredTo(documentUri,args[1])
 else :
 	execId = s.astrogrid.applications.submitStored(documentUri)
-	
-if options.monitor:
-	s.userInterface.jobMonitor.addApplication("application",execId)
-	
+
 if options.wait or options.fetch:
 	execInfo = s.astrogrid.applications.getExecutionInformation(execId)		 
 	while execInfo['status'] == "RUNNING" :
