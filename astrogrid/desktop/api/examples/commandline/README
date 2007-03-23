@@ -44,16 +44,18 @@ vorm.py - delete a myspace file
 
 CEA Remote Tasks
 ----------------------
-app-info.py - shows formatted information about a remote application (CEA)
-app-submit.py - submit a new application invocation
-misc/lsapps.py - list details of all remote applications known to the registry
+apps - run remote tasks using commandline args
+
 misc/app-list-providers.py - lists the servers that provide a particular remote application
+misc/app-submit.py - submit a new application invocation
 misc/app-tool-template.py - build a template invocation document for a particular application
+obsolete/app-info.py - shows formatted information about a remote application (CEA)
 
 
 Registry
 ---------
 xquery.py - run an xquery (from a file) against the registry.
+
 misc/reg.py - retrieve a registry entry by name.
 misc/reg-resolve.py - resolve a service IVOID to endpoint
 obsolete/reg-search.py - perform an ADQL / XQuery search of the registry
@@ -63,7 +65,8 @@ Utility
 ------
 login.py - login to AstroGrid
 logout.py - logout of AstroGrid
-openURL.py - display a URL in the system webbrowser
+
+misc/openURL.py - display a URL in the system webbrowser
 misc/config-get.py - shows the value of an AR configuration key
 misc/config-list.py - lists the AR configuration key
 misc/config-set.py - change the value of an AR configuration key

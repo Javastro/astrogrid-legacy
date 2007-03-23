@@ -70,7 +70,7 @@ adql.py --service=ivo://org.astrogrid/IoA/FIRST/object-catalogue/ceaApplication 
    --- query against the FIRST object catalogue, load query from a file.
 adql.py -myspace=/results/temp/adql1.vot -fplastic
    --- stage results in the myspace location '/results/temp/adql1.vot' within the user's homespace
-       Display result to a plastic application
+       Display result in a plastic viewer
 """    
     sys.exit()
     
@@ -124,7 +124,7 @@ if progress['status'] == "ERROR":
     sys.exit("Query ended in error")
 
 #lovely. lets do something with the results
-if (opts.format == 'plastic') : #broadcast the file to plastic viewers
+if opts.format == 'plastic' : #broadcast the file to plastic viewers
     myId = plastic.registerNoCallBack('adql.py')
     if opts.myspace: # we staged to myspace.
         url = myspace.getReadContentURL(opts.myspace)
@@ -135,7 +135,7 @@ if (opts.format == 'plastic') : #broadcast the file to plastic viewers
         data = results.values()[0] # we're only expecting a single result        
         plastic.requestAsynch(myId,'ivo://votech.org/votable/load'
                                           ,[data,'adql-query'])
-    plastic.unregister(myId)
+    plastic.unregister(myId)    
 else : #splurge data to screen
     if opts.myspace: # we staged to myspace - fetch results from ther.
         url = myspace.getReadContentURL(opts.myspace)

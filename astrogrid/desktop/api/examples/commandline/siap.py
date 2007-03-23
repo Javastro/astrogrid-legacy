@@ -33,6 +33,7 @@ parser = optparse.OptionParser(usage='%prog [options] <radius> {<ra> <dec>| <obj
                                description="""
  Perform an image search and display results in a  variety of ways, download images to local directoy.                            
 """)
+parser.disable_interspersed_args()
 parser.add_option('-f','--format', default=format, choices=['votable','csv','plastic','browser']
                   ,help='format to return results in:  votable, csv, plastic, browser (default: %s)' % format)
 parser.add_option('-s','--service',metavar="ID", default=service
