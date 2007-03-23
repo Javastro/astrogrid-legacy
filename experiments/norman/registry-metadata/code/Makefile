@@ -19,12 +19,26 @@ TRANSFORMERS=rdf-RegistryInterface-0.1.xslt rdf-RegistryInterface-1.0.xslt \
 	java -cp $(LXCP) uk.me.nxg.lx.helpers.Transformer \
 	  http://ns.nxg.me.uk/lx/generated-prefix=x --indent $< >$@
 
+%.class: %.java
+	javac $<
+
 all: $(TRANSFORMERS) ExtractNamespaces.jar
 
-ExtractNamespaces.jar: ExtractNamespaces.java
-	javac $<
-	jar cf $@ ExtractNamespaces*.class
-	rm ExtractNamespaces*.class
+ExtractNamespaces.jar: ExtractNamespaces.class XMLBuilder.class
+	echo "Main-Class: ExtractNamespaces" >temp-manifest
+	jar cfm $@ temp-manifest *.class
+	rm -f temp-manifest
+
+ExtractNamespaces.java: ExtractNamespaces.java.in ExtractNamespaces.content
+	rm -f $@
+	echo "// GENERATED from ExtractNamespaces.java.in -- DO NOT EDIT" >$@
+	sed -e '/@ExtractNamespaces.content@/r ExtractNamespaces.content' ExtractNamespaces.java.in >>$@
+
+ExtractNamespaces.content: handler-registry.xml
+	rm -f $@
+	xsltproc make-ExtractNamespaces-content.xslt handler-registry.xml >$@.tmp \
+	  && mv $@.tmp $@
 
 clean:
 	rm -f $(TRANSFORMERS) *.class
+	rm -f ExtractNamespaces.content ExtractNamespaces.java ExtractNamespaces.jar

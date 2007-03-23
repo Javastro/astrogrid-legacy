@@ -21,21 +21,15 @@ public class ExtractNamespaces {
     private static final int EXTRACT_NAMESPACES = 111;
     private static final int GENERATE_XSLT = 222;
 
-    private static boolean verbose = false;
+    private static final int VERBOSITY_SILENT = 0;
+    private static final int VERBOSITY_NORMAL = 1;
+    private static final int VERBOSITY_CHATTER = 2;
+    private static int verbosity = VERBOSITY_NORMAL;
 
     private static java.util.Map<String,NSInfo> nsinfo;
     static {
         nsinfo = new java.util.HashMap<String,NSInfo>();
-        nsinfo.put("http://www.ivoa.net/xml/VOResource/v0.10",
-                   new NSInfo("rdf-VOResource-0.10.xslt",
-                              "vor",
-                              "voro",
-                              "http://www.ivoa.net/xml/VOResource/v1.0#"));
-        nsinfo.put("http://www.ivoa.net/xml/RegistryInterface/v0.1",
-                   new NSInfo("rdf-RegistryInterface-0.1.xslt",
-                              "ri",
-                              "rio",
-                              "urn:example.org/DUMMY"));
+        // @ExtractNamespaces.content@
     }
 
     public static void main(String[] args) {
@@ -52,9 +46,9 @@ public class ExtractNamespaces {
             else if (a.equals("--generate-xslt"))
                 action = GENERATE_XSLT;
             else if (a.equals("--verbose"))
-                verbose = true;
-            else if (a.startsWith("--"))
-                Usage();
+                verbosity = VERBOSITY_CHATTER;
+            else if (a.equals("--quiet"))
+                verbosity = VERBOSITY_SILENT;
             else if (infile != null)
                 Usage();
             else
@@ -62,6 +56,8 @@ public class ExtractNamespaces {
         }
 
         assert infile != null;
+
+        int exitstatus = 1;     // failure, unless reset
 
         try {
             // Extract the list of namespaces
@@ -84,14 +80,126 @@ public class ExtractNamespaces {
                 generateXSLT(nsh.getNamespaces(), System.out);
             }
 
-        } catch (Exception e) {
-            System.err.println("Exception: " + e);
-            e.printStackTrace(System.err);
-            System.exit(1);
+            // all OK
+            exitstatus = 0;
+
+        } catch (org.xml.sax.SAXException e) {
+            System.err.println("Error parsing XML: " + e);
+        } catch (javax.xml.parsers.ParserConfigurationException e) {
+            System.err.println("Error setting up parser: " + e);
+        } catch (java.io.FileNotFoundException e) {
+            System.err.println("Can't find file to read: " + e);
+        } catch (java.io.IOException e) {
+            System.err.println("Unable to generate XSLT: " + e);
         }
+        System.exit(exitstatus);
     }
 
     private static void generateXSLT(Set<String> namespaces,
+                                     java.io.PrintStream stream)
+            throws java.io.IOException {
+        XMLBuilder.Doc xb = new XMLBuilder().newDocument("stylesheet");
+        xb.addAttribute("version", "1.0")
+                .addAttribute("xmlns", "http://www.w3.org/1999/XSL/Transform")
+                .addAttribute("xmlns:rdf",
+                              "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+                .addAttribute("xmlns:rdfs",
+                              "http://www.w3.org/2000/01/rdf-schema#")
+                .addAttribute("xmlns:xsi",
+                              "http://www.w3.org/2001/XMLSchema-instance")
+                .addAttribute("xmlns:x2s",
+                              "http://ns.eurovotech.org/registry-metadata");
+
+        xb.newChild("import")
+                .addAttribute("href", "fallback.xslt");
+
+        XMLBuilder.Node namespaceChoose = xb.newNodeSet();
+        XMLBuilder.Node rdfnodeset = xb.newNodeSet();
+        XMLBuilder.Node rdfnode = rdfnodeset.newChild("rdf:RDF");
+        rdfnode.addAttribute("xmlns:ri",
+                              "http://www.ivoa.net/xml/RegistryInterface/v1.0");
+        rdfnode.newChild("apply-templates")
+                .addAttribute("select", "//ri:Resource");
+
+        for (String s : namespaces) {
+            NSInfo h = nsinfo.get(s);
+            if (h == null && verbosity >= VERBOSITY_NORMAL)
+                System.err.println("Unmatched namespace: " + s);
+            if (h != null) {
+                xb.newChild("import")
+                        .addAttribute("href", h.getHandler());
+                // declare namespaces here, so they'll appear on
+                // the RDF element in the output
+                xb.addAttribute("xmlns:" + h.getPrefix(), s);
+                rdfnode.addAttribute("xmlns:" + h.getOntologyPrefix(),
+                                     h.getOntologyURI());
+
+                namespaceChoose.newChild("when")
+                        .addAttribute("test",
+                                      "$n='" + s + "'")
+                        .newChild("call-template")
+                        .addAttribute("name",
+                                      h.getPrefix() + ":resolve-xsitype")
+                        .newChild("with-param")
+                        .addAttribute("name", "type")
+                        .newChild("value-of")
+                        .addAttribute("select", "$l");
+            }
+        }
+        namespaceChoose
+                .newChild("otherwise")
+                .newChild("x2s:UNKNOWN")
+                .newChild("text", "rdf-all.xslt: Unable to resolve xsi:type=")
+                .newSibling("value-of").addAttribute("select", "$n")
+                .newSibling("text", "#")
+                .newSibling("value-of").addAttribute("select", "$l");
+
+
+        xb.newChild("template", rdfnodeset).addAttribute("match", "/");
+
+        XMLBuilder.Node templateChoose = xb.newNodeSet();
+        templateChoose        
+                .newChild("when")
+                .addAttribute("test", "contains(@xsi:type,':')")
+                .newChild("value-of")
+                .addAttribute("select", "substring-after(@xsi:type,':')");
+        templateChoose
+                .newChild("otherwise")
+                .newChild("value-of")
+                .addAttribute("select", "@xsi:type");
+
+        
+        /*
+         * This template is basically <call-template name='@xsi:type'/>,
+         * but the name attribute there can only be a QName, hence this mess.
+         * Yuk.
+         */
+        xb.newComment("This template is basically <call-template name='@xsi:type'/>,")
+                .newComment("but the name attribute there can only be a QName, hence this mess.")
+                .newComment("Yuk.");
+        XMLBuilder.Node xsiTemplate = xb.newChild("template")
+                .addAttribute("name", "resolve-xsitype");
+
+        xsiTemplate
+                .newChild("variable")
+                .addAttribute("name", "l")
+                .newChild("choose", templateChoose);
+        xsiTemplate
+                .newChild("variable")
+                .addAttribute("name", "p")
+                .addAttribute("select", "substring-before(@xsi:type,':')");
+        xsiTemplate
+                .newChild("variable")
+                .addAttribute("name", "n")
+                .addAttribute("select", "namespace::*[name()=$p]");
+
+        xsiTemplate
+                .newChild("choose", namespaceChoose);
+
+        xb.serialise(stream);
+    }
+
+    private static void oldXgenerateXSLT(Set<String> namespaces,
                                      java.io.OutputStream stream)
             throws Exception {
         Document d = javax.xml.parsers.DocumentBuilderFactory
@@ -127,7 +235,7 @@ public class ExtractNamespaces {
 
         for (String s : namespaces) {
             NSInfo h = nsinfo.get(s);
-            if (h == null && verbose)
+            if (h == null && verbosity >= VERBOSITY_NORMAL)
                 System.err.println("Unmatched namespace: " + s);
             if (h != null) {
                 Element importElement = d.createElement("import");
@@ -154,7 +262,15 @@ public class ExtractNamespaces {
     }
 
     private static void Usage() {
-        System.err.println("Usage: ExtractNamespaces [--extract|--generate-xslt] file");
+        String[] doc = new String[] {
+            "Usage: ExtractNamespaces [options] registry-entry.xml",
+            "Options:",
+            "  --extract           extract the list of namespaces",
+            "  --generate-xslt     generate an xslt script",
+            "  --verbose/--quiet   regulate chatter",
+        };
+        for (int i=0; i<doc.length; i++)
+            System.err.println(doc[i]);
         System.exit(1);
     }
 
@@ -172,7 +288,7 @@ public class ExtractNamespaces {
         }
 
         public void startPrefixMapping(String prefix, String uri) {
-            if (verbose)
+            if (verbosity > VERBOSITY_NORMAL)
                 System.err.println("Mapping " + prefix + " -> " + uri);
             namespaces.add(uri);
         }

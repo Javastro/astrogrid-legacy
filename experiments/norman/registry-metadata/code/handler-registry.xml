@@ -1,0 +1,71 @@
+<?xml version='1.0'?>
+<handler-registry>
+  <!-- here and below, the IDs aren't of huge significance, but
+       are only mnemonic -->
+  <xml-ns id='ri01'
+          >http://www.ivoa.net/xml/RegistryInterface/v0.1</xml-ns>
+  <xml-ns id='ri'
+          >http://www.ivoa.net/xml/RegistryInterface/v1.0</xml-ns>
+  <xml-ns id='sia07'
+          >http://www.ivoa.net/xml/SIA/v0.7</xml-ns>
+  <xml-ns id='sia'
+          >http://www.ivoa.net/xml/SIA/v1.0</xml-ns>
+  <xml-ns id='ds05'
+          >http://www.ivoa.net/xml/VODataService/v0.5</xml-ns>
+  <xml-ns id='ds'
+          >http://www.ivoa.net/xml/VODataService/v1.0</xml-ns>
+  <xml-ns id='reg03'
+          >http://www.ivoa.net/xml/VORegistry/v0.3</xml-ns>
+  <xml-ns id='reg'
+          >http://www.ivoa.net/xml/VORegistry/v1.0</xml-ns>
+  <xml-ns id='vor010'
+          >http://www.ivoa.net/xml/VOResource/v0.10</xml-ns>
+  <xml-ns id='vor'
+          >http://www.ivoa.net/xml/VOResource/v1.0</xml-ns>
+  <xml-ns id='tdb03'
+          >urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3</xml-ns>
+
+  <!-- the following namespaces should include the trailing # -->
+  <ontology-ns id='siao'
+               >http://www.ivoa.net/xml/SIA/v1.0#</ontology-ns>
+  <ontology-ns id='tdbo'
+               >urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3#</ontology-ns>
+  <ontology-ns id='dso'
+               >http://www.ivoa.net/xml/VODataService/v1.0#</ontology-ns>
+  <ontology-ns id='rego'
+               >http://www.ivoa.net/xml/VORegistry/v1.0#</ontology-ns>
+  <ontology-ns id='voro'
+               >http://www.ivoa.net/xml/VOResource/v1.0#</ontology-ns>
+
+  <handler from='ri01' to='voro'>
+    <xslt>rdf-RegistryInterface-0.1.xslt</xslt>
+  </handler>
+  <handler from='ri' to='voro'>
+    <xslt>rdf-RegistryInterface-1.0.xslt</xslt>
+  </handler>
+  <handler from='sia07' to='siao'>
+    <xslt>rdf-SIA-0.7.xslt</xslt>
+  </handler>
+  <handler from='sia' to='siao'>
+    <xslt>rdf-SIA-1.0.xslt</xslt>
+  </handler>
+  <handler from='tdb03' to='tdbo'>
+    <xslt>rdf-TabularDB-v0.3.xslt</xslt>
+  </handler>
+  <handler from='ds' to='dso'>
+    <xslt>rdf-VODataService-1.0.xslt</xslt>
+  </handler>
+  <handler from='ds05' to='dso'>
+    <xslt>rdf-VODataService-v0.5.xslt</xslt>
+  </handler>
+  <handler from='reg' to='rego'>
+    <xslt>rdf-VORegistry-1.0.xslt</xslt>
+  </handler>
+  <handler from='vor010' to='voro'>
+    <xslt>rdf-VOResource-0.10.xslt</xslt>
+  </handler>
+  <handler from='vor' to='voro'>
+    <xslt>rdf-VOResource-1.0.xslt</xslt>
+  </handler>
+
+</handler-registry>
