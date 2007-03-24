@@ -1,21 +1,12 @@
 /*
  * Thrown-together program to extract all the namespaces declared in a
  * given XML file.  It includes a --generate-xslt option which
- * purportedly spits out useful XSLT, but that's a line I've
- * more-or-less abandoned.
- *
- * This isn't currently much use, but I'm not convinced it's useless
- * enough to throw away....
+ * spits out XSLT which should be able to process the input file.
  */
 
 import java.io.File;
 import java.util.Set;
 
-import javax.xml.parsers.SAXParser;
-import org.w3c.dom.*;
-
-import org.xml.sax.ContentHandler;
-//import org.xml.sax.XMLReader;
 
 public class ExtractNamespaces {
     private static final int EXTRACT_NAMESPACES = 111;
@@ -29,10 +20,10 @@ public class ExtractNamespaces {
     private static java.util.Map<String,NSInfo> nsinfo;
     static {
         nsinfo = new java.util.HashMap<String,NSInfo>();
-        // Add dummy namespaces
+        // Add dummy namespaces, so they're not logged as `unknown'
         nsinfo.put("http://www.w3.org/2001/XMLSchema-instance", new NSInfo());
         nsinfo.put("http://www.w3.org/1999/xlink", new NSInfo());
-        // @ExtractNamespaces.content@
+        // @ExtractNamespaces.content@ -- insert generated content
     }
 
     public static void main(String[] args) {
@@ -64,7 +55,8 @@ public class ExtractNamespaces {
 
         try {
             // Extract the list of namespaces
-            SAXParser saxparser = javax.xml.parsers.SAXParserFactory
+            javax.xml.parsers.SAXParser saxparser
+                    = javax.xml.parsers.SAXParserFactory
                     .newInstance()
                     .newSAXParser();
             saxparser.setProperty
@@ -180,6 +172,7 @@ public class ExtractNamespaces {
         xb.newComment("This template is basically <call-template name='@xsi:type'/>,")
                 .newComment("but the name attribute there can only be a QName, hence this mess.")
                 .newComment("Yuk.");
+
         XMLBuilder.Node xsiTemplate = xb.newChild("template")
                 .addAttribute("name", "resolve-xsitype");
 
@@ -218,7 +211,7 @@ public class ExtractNamespaces {
     private static class NamespaceHandler
             extends org.xml.sax.helpers.DefaultHandler {
 
-        java.util.Set<String> namespaces;
+        Set<String> namespaces;
 
         public NamespaceHandler() {
             namespaces = new java.util.TreeSet<String>();
@@ -246,10 +239,10 @@ public class ExtractNamespaces {
             isDummy = true;
         }
         
-        public NSInfo(String handler,
-                      String xsdprefix,
+        public NSInfo(String xsdprefix,
                       String ontologyprefix,
-                      String ontologyURI) {
+                      String ontologyURI,
+                      String handler) {
             this.handler = handler;
             this.xsdprefix = xsdprefix;
             this.ontologyprefix = ontologyprefix;
@@ -260,15 +253,23 @@ public class ExtractNamespaces {
             return isDummy;
         }
         public String getHandler() {
+            if (isDummy)
+                throw new IllegalStateException("bad call to getHandler");
             return handler;
         }
         public String getPrefix() {
+            if (isDummy)
+                throw new IllegalStateException("bad call to getPrefix");
             return xsdprefix;
         }
         public String getOntologyPrefix() {
+            if (isDummy)
+                throw new IllegalStateException("bad call to getOntologyPrefix");
             return ontologyprefix;
         }
         public String getOntologyURI() {
+            if (isDummy)
+                throw new IllegalStateException("bad call to getOntologyURI");
             return ontologyURI;
         }
     }
