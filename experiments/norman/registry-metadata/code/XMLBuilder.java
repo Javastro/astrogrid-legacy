@@ -11,6 +11,7 @@ import org.w3c.dom.Element;
  */
 public class XMLBuilder {
     Document d;
+    boolean indentOutput = false;
 
     public XMLBuilder() {
         try {
@@ -36,6 +37,17 @@ public class XMLBuilder {
      */
     public Doc newDocument(String documentElementName) {
         return new Doc(documentElementName);
+    }
+
+    /**
+     * Indicate whether the generated XML should be 'indented' (which
+     * actually means 'line-broken')
+     * @param flag true if the output should be indented
+     * @return this object
+     */
+    public XMLBuilder setIndent(boolean flag) {
+        indentOutput = flag;
+        return this;
     }
 
     /**
@@ -207,7 +219,8 @@ public class XMLBuilder {
                             .newInstance()
                             .newTransformer();
                     // set the transformer to indent -- marginally prettier
-                    identity.setOutputProperty("indent", "yes");
+                    if (indentOutput)
+                        identity.setOutputProperty("indent", "yes");
                 }
                 identity.transform(new javax.xml.transform.dom.DOMSource(d),
                                    res);
