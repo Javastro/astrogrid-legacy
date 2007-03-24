@@ -24,10 +24,10 @@
 
   <x:template match='handler'>
         nsinfo.put("<x:apply-templates select='key("xns", @from)'/>",
-                   new NSInfo("<x:apply-templates select='xslt'/>",
-                              "<x:value-of select='@from'/>",
+                   new NSInfo("<x:value-of select='@from'/>",
                               "<x:value-of select='@to'/>",
-                              "<x:apply-templates select='key("ons", @to)'/>"));
+                              "<x:apply-templates select='key("ons", @to)'/>",
+                              "<x:apply-templates select='xslt'/>"));
 </x:template>
 
   <x:template match='xml-ns'>
