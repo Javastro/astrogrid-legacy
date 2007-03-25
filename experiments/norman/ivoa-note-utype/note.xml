@@ -35,10 +35,13 @@ q:after  { content: "”"; }
            border="0"/></a></td></tr>
 </table>
 
-<!-- $Id: note.xml,v 1.9 2007/03/12 15:49:18 norman Exp $ -->
+<!-- $Id: note.xml,v 1.10 2007/03/25 13:45:42 norman Exp $ -->
 
 <h1>UTypes and URIs</h1>
-<h2>IVOA Note (v1.0, 2007 March 2)</h2> <!-- XXX version/date -->
+<h2>IVOA Note 
+<!--(v1.0, 2007 March 2)-->
+(working version $Revision: 1.10 $ $Date: 2007/03/25 13:45:42 $)
+</h2> <!-- XXX version/date -->
 <dl>
 <dt>Interest/Working Group</dt>
 <dd><em>Not applicable</em></dd>
@@ -134,28 +137,32 @@ of <code>datamodel_identifier</code> to an xml-type attribute is
 recommended, but not required.</p>
 </blockquote>
 
-<p>At the time, this was addressing an anticipated, but not yet
-actual, need, and so this terse definition sensibly neither greatly constrains
-UType syntax, nor defines any specific instances.</p>
+<p>At the time, this was addressing a newly-identified need for a means to
+refer to a data model more precisely than was possible with UCDs.
+There were few examples of putative UTypes, and few applications
+using them, and so this terse definition sensibly neither greatly
+constrains UType syntax, nor defines any specific instances.</p>
 
-<p>Our situation is now different.  The SIA protocol <span
-class='cite'>std:sia</span> has acquired a number of UTypes
-(informally introduced in <a
-href='http://www.ivoa.net/forum/dm/0404/0408.htm' >a mail message from
-J C McDowell</a>), and the on-going Dataset Characterisation effort
-<span class='cite'>std:characterisation</span> includes a list of
-UTypes in at least <a
+<p>Our situation is now different.  The SSA protocol <span
+class='cite' >std:ssa</span> specifies a large number of UTypes in its
+Working Draft document; the SIA protocol <span class='cite'
+>std:sia</span> has acquired a number of UTypes (informally introduced
+in <a href='http://www.ivoa.net/forum/dm/0404/0408.htm' >a mail
+message from J C McDowell</a>); and the on-going Dataset
+Characterisation effort <span class='cite'>std:characterisation</span>
+includes a list of UTypes in at least <a
 href='http://www.ivoa.net/Documents/Notes/DMAstroDS/DMAstroDS-20060228.pdf'
 >one version of its draft note</a>.  None of these have yet been
-formally standardised, so that now, with examples in mind and
-standardisation in prospect, is a good moment to refine the UType
-definition.</p>
+formally standardised (as of March 2007), so that now, with examples
+in mind and standardisation in prospect, is a good moment to refine
+the UType definition.</p>
 
 <p>We make three suggestions, which we can summarise as follows.</p>
 <ol>
 <li>Regard the <code>datamodel_identifier</code> prefix above as an
 XML namespace, with the syntactic requirements that implies, and
-interpret the UType as a URI naming a concept.</li>
+interpret the UType as a URI naming a concept.  That is the namespace
+mapping of the prefix should be required, rather than merely recommended.</li>
 <li>Require that each UType URI be resolvable, on the web, to
 human-readable documentation for the concept thus named.</li>
 <li>Require that each UType URI be resolvable, separately, to a
@@ -225,8 +232,8 @@ reference to documentation.</p>
 
 <p>We suggest slightly expanding the UType definition by interpreting this
 <code>datamodel_identifier</code> prefix as precisely an XML namespace
-identifier (which must therefore be defined using an
-<code>xmlns</code> attribute if it is used), and
+identifier (thus the <code>xmlns</code> mapping of this
+prefix is now a requirement rather than merely a recommendataion), and
 identifying the UType as the string concatenation of the <em>namespace
 name</em> and the <em>local name</em> as given in the <code>utype</code>
 attribute, using the terminology of <span class='cite'
@@ -740,7 +747,7 @@ specific interest groups, working independently.</p>
 </div>
 
 <p style="text-align: right; font-size: x-small; color: #888;">
-$Revision: 1.9 $ $Date: 2007/03/12 15:49:18 $
+$Revision: 1.10 $ $Date: 2007/03/25 13:45:42 $
 </p>
 
 </div>
