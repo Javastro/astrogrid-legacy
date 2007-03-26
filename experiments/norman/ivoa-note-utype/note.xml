@@ -35,12 +35,12 @@ q:after  { content: "”"; }
            border="0"/></a></td></tr>
 </table>
 
-<!-- $Id: note.xml,v 1.10 2007/03/25 13:45:42 norman Exp $ -->
+<!-- $Id: note.xml,v 1.11 2007/03/26 10:16:22 norman Exp $ -->
 
 <h1>UTypes and URIs</h1>
 <h2>IVOA Note 
 <!--(v1.0, 2007 March 2)-->
-(working version $Revision: 1.10 $ $Date: 2007/03/25 13:45:42 $)
+(working version $Revision: 1.11 $ $Date: 2007/03/26 10:16:22 $)
 </h2> <!-- XXX version/date -->
 <dl>
 <dt>Interest/Working Group</dt>
@@ -148,11 +148,12 @@ class='cite' >std:ssa</span> specifies a large number of UTypes in its
 Working Draft document; the SIA protocol <span class='cite'
 >std:sia</span> has acquired a number of UTypes (informally introduced
 in <a href='http://www.ivoa.net/forum/dm/0404/0408.htm' >a mail
-message from J C McDowell</a>); and the on-going Dataset
+message from Jonathan McDowell</a>); and the on-going Dataset
 Characterisation effort <span class='cite'>std:characterisation</span>
 includes a list of UTypes in at least <a
 href='http://www.ivoa.net/Documents/Notes/DMAstroDS/DMAstroDS-20060228.pdf'
->one version of its draft note</a>.  None of these have yet been
+>one version of its draft note</a>.  In addition, there are various
+DAL interfaces using these UTypes.  None of these have yet been
 formally standardised (as of March 2007), so that now, with examples
 in mind and standardisation in prospect, is a good moment to refine
 the UType definition.</p>
@@ -747,7 +748,7 @@ specific interest groups, working independently.</p>
 </div>
 
 <p style="text-align: right; font-size: x-small; color: #888;">
-$Revision: 1.10 $ $Date: 2007/03/25 13:45:42 $
+$Revision: 1.11 $ $Date: 2007/03/26 10:16:22 $
 </p>
 
 </div>
