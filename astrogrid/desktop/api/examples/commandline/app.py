@@ -6,7 +6,8 @@
 
 # future - allow user to select which server to run task on, if more than one.
 # add support for viewing the results?
-# add support for repeated and enumeration parameters.
+# add support for enumeration parameters.
+# add support for repeated parameters.
 
 import xmlrpclib
 import sys
@@ -95,6 +96,7 @@ if application:
                                           x['ref']==name
                                           ,i['inputs'] + i['outputs'])) > 0
                                   , interfaces)
+                # we treat all args as repeatable - i.e. list typed, by default.
                 parser.add_option('--' + name,metavar=p['type'],
                                   help=doc(p) +  " (required in interfaces %s)" % map (lambda i:i['name'], required))
             else : # straightforward info.
