@@ -28,11 +28,26 @@ plastic = ar.plastic.hub
 #default cea app to query
 service = 'ivo://mssl.ucl.ac.uk/solar_events_dsa/ceaApplication'
 #default output format
-format = "csv"
+format = "vot"
 #dictionary mapping from short keywords to full CEA parameter values.
 formatDict = {'vot':'VOTABLE','votbin':'VOTABLE-BINARY','csv':'COMMA-SEPARATED','plastic':'VOTABLE'}
 # default query
-query = "Select Top 100 * From yohkoh_flare_list as a"
+query = "select top 100 * from yohkoh_flare_list as a"
+
+#earlier releases of workbench / AR have a broken adql/s parser - so will only work with adql/x a the moment.
+# for this version, uncomment the following statement.
+#query ="""
+#<Select xsi:type="selectType" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.ivoa.net/xml/ADQL/v1.0">
+#    <?ag-adql-schema-version v1.0a1?>
+#    <Restrict Top="100"/>
+#    <SelectionList xsi:type="selectionListType">
+#        <Item xsi:type="allSelectionItemType"/>
+#    </SelectionList>
+#    <From xsi:type="fromType">
+#        <Table xsi:type="tableType" Alias="a" Name="yohkoh_flare_list"/>
+#    </From>
+#</Select>
+#"""
 
 #build an option parser.
 parser = optparse.OptionParser(usage="%prog [options] <adql/s-query> | <query-file>",
@@ -105,6 +120,10 @@ if opts.myspace:
     
 # convert the structure to an xml document. could save it at this point
 toolDoc = apps.convertStructToDocument(tool)
+#print toolDoc
+
+#toolDoc = open("/Users/noel/yohkoh.tool").read()
+#print toolDoc
 #submit the query to the server
 execId = apps.submit(toolDoc)
 # take a nap while things kick off. if we don't, we may not find it's there yet.
