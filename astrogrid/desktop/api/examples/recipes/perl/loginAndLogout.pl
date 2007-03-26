@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use File::Spec;
-use Config::User;
 use Carp;
 use Getopt::Long;
 use Data::Dumper;
@@ -19,7 +18,7 @@ unless( scalar @ARGV >= 2 ) {
 }
 my ( $user, $pass, $community );
 my $option_status = GetOptions( 
-       "user=s" => \$user, "pass=s" => \$pass, "community=s" => $community );  
+       "user=s" => \$user, "pass=s" => \$pass, "community=s" => \$community );  
 
 unless ( defined $user && defined $pass ) {
    croak( "You must enter a valid username and password" );
@@ -33,7 +32,7 @@ unless ( defined $community ) {
 # R P C -------------------------------------------------------------------
 
 # Grab an RPC endpoint for the ACR
-my $file = File::Spec->catfile( Config::User->Home(), ".astrogrid-desktop" );
+my $file = File::Spec->catfile( "$ENV{HOME}", ".astrogrid-desktop" );
 croak( "Unable to open file $file" ) unless open(PREFIX, "<$file" );
 
 my $prefix = <PREFIX>;
