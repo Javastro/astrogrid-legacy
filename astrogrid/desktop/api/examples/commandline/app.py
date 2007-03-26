@@ -4,8 +4,9 @@
 # for invoking this application
 # options: run with  --help flag
 
-# future - allow user to select which server to run task on, if mor than one.
+# future - allow user to select which server to run task on, if more than one.
 # add support for viewing the results?
+# add support for repeated and enumeration parameters.
 
 import xmlrpclib
 import sys
@@ -60,7 +61,8 @@ parser.disable_interspersed_args()
 
 #if an application has been provided, add additional arguments specific to it.
 if application:
-    parser.set_usage('%prog ' + application['id'] + ' [options]')
+    
+    parser.set_usage('%prog ' + application['id'] + ' [interface-name] [options]')
     parser.set_description("Invoke " + application['title'])
     if len(interfaces) > 1: # if we've got more than one interface, add an option for the user to select which
         inames = map(lambda i:i['name'],interfaces)
@@ -101,7 +103,7 @@ if application:
     parser.add_option('-a','--about',action='store_true',default=False
                   ,help='Display help for an application and exit')
 else: # no application provided.
-    parser.set_usage('%prog <application-id> [options]')
+    parser.set_usage('%prog <application-id> [interface-name] [options]')
     parser.set_description("Invoke an application (which must be specified as first parameter)")
   
 #thse options are always available.
@@ -116,7 +118,16 @@ parser.add_option('-e','--examples', action='store_true', default=False
 #handle the big options first.
 if opts.examples:
     print '''
-    examples
+app.py -l
+    --- list all possible tasks
+app.py ivo://org.astrogrid/Galaxev --help
+    --- display help on how to invoke the Galaxev task
+app.py ivo://org.astrogrid/SExtractor --about
+    --- display fuller information about the SExtractor task
+app.py ivo://org.astrogrid/SExtractor  simple --help
+    --- display help on how to invoke the 'simple' interface of the SExtractor task
+app.py ivo://org.astrogrid/MERLINImager --RA=83.633208  --Dec=22.014472
+    --- invoke MerlinImager task with these parameters (note, parameter names are case-sensitive)
     '''
     sys.exit()
 elif opts.list:
@@ -127,8 +138,11 @@ elif opts.list:
             print l
         print "-" * 80
     sys.exit()
-elif opts.about:
+elif application and opts.about:
     print apps.getDocumentation(appId)
+    sys.exit()
+elif not application:
+    parser.print_help()
     sys.exit()
 
 # ok, so we want to run an app.
