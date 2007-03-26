@@ -8,18 +8,29 @@
         Workbench and AR requires the astrogrid/maven-base projects to be checked out adjacent to this folder.
         (NB: previous versions also required the aggregate project - this is no longer necessary)
       	---
+        BOOTSTRAPPING
+        On a fresh download, you need to run a few goals to get things started - 
+        otherwise event things like 'maven astrogrid-clean' will fail.
+        -1. run % maven create-keystore
+        0. run % maven install-materials
+
         You may wish to increase the memory maven runs with. create a '~/.mavenrc' which contains the line 
         	MAVEN_OPTS="-Xmx1024m"
+        	
+        This build requires Java 1.4 - it will fail under 1.5. You might need to do a 
+        export JAVA_VERSION=1.4.2 to cause the correct version of java to be run
         ---
+        PUBLISHING
 		Publisher should just run the goals listed in this project - no need to run goals in individual sub-projects.
 		E.g. to build and publish new suite of AR:
-		1. % maven astrogrid-clean
-		2. Edit astrogrid.destop.version in impl/build/project.properties
+		1. % maven astrogrid-clean 
+		2. Edit astrogrid.destop.version in ${basedir}/template/project.properties
 		3. % maven astrogrid-build-artifact
-		---
+		
 		Build products are then left in ${basedir}/target/artifacts directory, from where they 
 		(for now) have to be uploaded to the plone site by hand.
 		---
+		ECLIPSE
 		To setup workbench for development in eclipse:
 		run steps 1-2 above.
 		3. % maven install-materials
@@ -29,10 +40,8 @@
 		---
 		If you need to edit the public api, repeast steps 5,6 for the 'api' directory
 		---
-		For instructions on testing and building project documentation, run 
-		% cd impl; maven -u
-		---
-        (see also http://www.astrogrid.org/desktop/contributing/using-eclipe )		
+		For for development instruction, run 
+		% cd impl; maven -u		
 		 </description>
         <shortDescription>Astro Runtimes</shortDescription>
 
