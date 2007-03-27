@@ -297,7 +297,7 @@
             Possible values: "yes", "no", "auto". "auto" will leave validation 
             to the parser.        
     -->
-    <indexer caseSensitive="no" index-depth="1" preserve-whitespace-mixed-content="no" stemming="no" suppress-whitespace="both" tokenizer="org.exist.storage.analysis.SimpleTokenizer" track-term-freq="yes" validation="auto">
+    <indexer caseSensitive="yes" index-depth="5" preserve-whitespace-mixed-content="no" stemming="no" suppress-whitespace="both" tokenizer="org.exist.storage.analysis.SimpleTokenizer" track-term-freq="yes" validation="auto">
         
         <!-- 
             The file for this element points to a file containing a list of 
