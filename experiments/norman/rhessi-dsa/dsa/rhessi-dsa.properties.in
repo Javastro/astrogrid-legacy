@@ -4,6 +4,8 @@
 ###
 ### Configuration file for RHESSI-DSA server
 ###
+### Version: @VERSION_STRING@
+###
 ####################################################################
 #
 # Modified from distribution default.properties by Norman, 2007-01-15

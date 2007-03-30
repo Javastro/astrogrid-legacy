@@ -46,6 +46,9 @@
 ;
 ; HISTORY:
 ;        written, eduard@astro.gla.ac.uk, 10-July-2006
+;
+; VERSION:
+;        @VERSION_STRING@
 ;-
 
 pro rhessi2dbase, time_interval=time_interval, outfn=outfn

@@ -1,12 +1,13 @@
 prefix=$(HOME)/rhessi-dsa
+VERSION_STRING=rhessi-dsa v1.0
 
 all:
 	cd dsa; make
 	cd scripts; make
 
 install:
-	cd dsa; make prefix=$(prefix) install
-	cd scripts; make prefix=$(prefix) install
+	cd dsa; make prefix=$(prefix) "VERSION_STRING=$(VERSION_STRING)" install
+	cd scripts; make prefix=$(prefix) "VERSION_STRING=$(VERSION_STRING)" install
 
 clean:
 	cd dsa; make clean
