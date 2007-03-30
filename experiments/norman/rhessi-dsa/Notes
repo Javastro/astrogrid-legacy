@@ -14,7 +14,8 @@ Accounts and machines:
         On bern.astro
         norman:sitrepdentist and dsaaccess:<no password>
     tomcat
-        On www.astro.gla.ac.uk:8080
+        On terranova.astro.gla.ac.uk:8080
+        Locally, see /etc/tomcat5, and /usr/share/tomcat5
         manager:dentist4Feets, and norman:norman has the dsaadmin role
 
 
@@ -47,6 +48,12 @@ Unfortunately, the extraction script turns out to be quadratic in the
 length of the time interval.  On malmquist, 2/3/5/7/10/31 days took
 25/38/71/147/287/3565s.  I therefore do the upload in (by default)
 5-day chunks.
+
+The cron job line is:
+00 04 * * * RHESSI_DSA_HOME=/home/norman/rhessi-dsa; export RHESSI_DSA_HOME; $RHESSI_DSA_HOME/bin/upload.sh
+
+To recreate the whole thing from scratch:
+  % time nice bin/upload.sh --all
 
 
 Within old-stuff/
@@ -97,4 +104,4 @@ and load with
 
 Thus the following works:
 
-    mysql> select starttime,rate0,rate2,rate4 from rhessi where starttime < '2005-01-01T00:03';
+    mysql> select time_start,rate0,rate2,rate4 from rhessi where time_start < '2005-01-01T00:03';

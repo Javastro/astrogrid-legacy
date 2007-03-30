@@ -9,11 +9,20 @@ mysql: dsaaccess:<nothing>
 www.astro Tomcat: manager:dentist4Feets
 
 TODO:
+Re-register it.
+Get Silvia/Kona to prod it.
+Check to see if the nightly updates can be persuaded to send me mail.
+Sort out the cron job for the monthly global update.
+
+DONE:
+Change the 'elipse' column to 'eclipse' (!).  Changes needed in
+  dsa-create.mysql and rhessi-metadoc.xml, and then I have to reload
+  the entire database (probably).
+Same for starttime->time_start, as suggested by Silvia.
 Integrate into crontab
 Change name from rhessi-dsa-0.1 to, say, just rhessi-dsa, and...
 Choose a suitable AuthorityID and publish the resource to the registry
-
-
+  (done, with org.astrogrid)
 
 
 
