@@ -1,8 +1,9 @@
 -- For some further discussion of the values in the following columns, see
 -- http://hesperia.gsfc.nasa.gov/ssw/hessi/doc/faq_hessi_analysis.htm
 -- http://hesperia.gsfc.nasa.gov/ssw/hessi/doc/faq.html
+-- Version: @VERSION_STRING@
 create table rhessi (
-  starttime     datetime
+  time_start     datetime
     not null
     primary key
     comment 'start time of 4 second time interval',
@@ -56,7 +57,7 @@ create table rhessi (
     not null
     comment 'Attenuator state (0= open,1=thin,3=thin+thick)',
 
-  elipse        boolean
+  eclipse        boolean
     not null
     comment 'Eclipse flag (1=night)',
 

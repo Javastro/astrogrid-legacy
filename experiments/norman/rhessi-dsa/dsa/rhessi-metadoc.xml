@@ -16,8 +16,8 @@
          (e.g. hsi_obssumm_20030224_040.fits) to allow immediate
          visualisation of the summary data. For a detailed description
          of observing summary data see: http://hesperia.gsfc.nasa.gov/ssw/hessi/doc/hessi_data_access.htm </Description>
-         <Column ID='rhessi.starttime' indexed='false'>
-            <Name>starttime</Name>
+         <Column ID='rhessi.time_start' indexed='false'>
+            <Name>time_start</Name>
             <Datatype>dateTime</Datatype>
             <Description>start time of 4 second time interval (ISO 8601 format)</Description>
             <Units>iso8601</Units>
@@ -126,8 +126,8 @@
             <UCD version='1'>CODE_MISC</UCD>
             <UCD version='1+'>meta.code</UCD>
          </Column>
-         <Column ID='rhessi.elipse' indexed='false'>
-            <Name>elipse</Name>
+         <Column ID='rhessi.eclipse' indexed='false'>
+            <Name>eclipse</Name>
             <Datatype>short</Datatype>
             <Description>Eclipse flag (1=night)</Description>
             <UCD version='1'>CODE_QUALITY</UCD>
