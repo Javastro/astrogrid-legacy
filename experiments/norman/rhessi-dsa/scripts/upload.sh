@@ -26,7 +26,9 @@
 # 2007-01-01 and 2007-01-01T00:00:00 differently!), so be rather careful
 # about dates below, in general leaving times out of anything passed to `date`.
 #
-# $Id: upload.sh,v 1.4 2007/02/16 12:49:01 norman Exp $
+# Version: @VERSION_STRING@
+#
+# $Id: upload.sh,v 1.5 2007/03/30 15:34:13 norman Exp $
 
 
 progname=`basename $0`
@@ -93,6 +95,13 @@ process_dates() {
       echo ".com $scriptdir/rhessi2dbase"
       echo "rhessi2dbase,time_interval=['$start','$finish'],outfn='$uploadfile'"
     } | $scriptdir/ssw-for-rhessi >ssw-$start.log 2>&1
+
+    # Have a brief nap.  It appears that the "test -f $uploadfile" below
+    # sometimes goes wrong, so that the script concludes that the file
+    # is missing, when a subsequent look shows it to be there.  Could
+    # this be something to do with IDL being sluggish about closing a file?
+    # I don't have a complete explanation.
+    sleep 2
 
     if test -f rhessi2dbase.err; then
         # send error message to (original) stdout
