@@ -1,5 +1,5 @@
 prefix=$(HOME)/rhessi-dsa
-VERSION_STRING=rhessi-dsa v1.0
+VERSION_STRING=rhessi-dsa-1.0
 
 all:
 	cd dsa; make
