@@ -4,7 +4,7 @@ prefix=/no/such/directory
 # distribution details
 SOURCEWAR=astrogrid-dsa-catalog-2007.1.01pl
 DISTBASE=http://www.astrogrid.org/maven/org.astrogrid/wars/
-MYSQL_JDBC=mysql-connector-java-5.0.4-bin.jar
+MYSQL_JDBC=mysql-connector-java-5.0.5-bin.jar
 # Download connector by hand from <http://dev.mysql.com/downloads>
 # It can also be obtained from
 # <http://www.mirrorservice.org/sites/ftp.mysql.com>, but extracting the 
@@ -19,6 +19,8 @@ DBPASS=
 DBHOST=bern.astro.gla.ac.uk
 DBNAME=dsa
 METADOC=rhessi-metadoc.xml
+# version string should be overridden by the parent makefile
+VERSION_STRING=$Id: Makefile,v 1.4 2007/03/30 15:32:39 norman Exp $
 
 edit=sed \
 	-e 's,@BASEURI\@,$(DSASERVERBASE)/$(WEBAPP_NAME)/,' \
@@ -26,7 +28,8 @@ edit=sed \
 	-e 's,@DBNAME\@,$(DBNAME),' \
 	-e 's,@DBUSER\@,$(DBUSER),' \
 	-e 's,@DBPASS\@,$(DBPASS),' \
-	-e 's,@METADOC\@,$(METADOC),'
+	-e 's,@METADOC\@,$(METADOC),' \
+	-e 's,@VERSION_STRING\@,$(VERSION_STRING),'
 
 all: $(WEBAPP_NAME).war
 
