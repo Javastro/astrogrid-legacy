@@ -20,7 +20,7 @@ DBHOST=bern.astro.gla.ac.uk
 DBNAME=dsa
 METADOC=rhessi-metadoc.xml
 # version string should be overridden by the parent makefile
-VERSION_STRING=$Id: Makefile,v 1.4 2007/03/30 15:32:39 norman Exp $
+VERSION_STRING=rhessi-dsa-vxxx
 
 edit=sed \
 	-e 's,@BASEURI\@,$(DSASERVERBASE)/$(WEBAPP_NAME)/,' \
