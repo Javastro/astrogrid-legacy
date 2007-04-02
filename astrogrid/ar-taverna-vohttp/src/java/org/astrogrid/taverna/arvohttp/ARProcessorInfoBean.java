@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 
 public class ARProcessorInfoBean extends ProcessorInfoBeanHelper {
 	
-	private static Logger logger = Logger.getLogger(ARScavenger.class);
+	private static Logger logger = Logger.getLogger(ARProcessorInfoBean.class);
 	
 	public ARProcessorInfoBean() {
 		super("astroruntimevohttp");

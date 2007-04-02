@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  */
 public class ARProcessorFactory extends ProcessorFactory {
 	
-	private static Logger logger = Logger.getLogger(ARProcessor.class);
+	private static Logger logger = Logger.getLogger(ARProcessorFactory.class);
 	
 	/**
 	 * 

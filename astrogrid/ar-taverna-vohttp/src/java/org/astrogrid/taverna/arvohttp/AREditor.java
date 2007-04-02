@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
  * @since May 24, 20065:28:54 PM
  */
 public class AREditor implements ProcessorEditor {
-	private static Logger logger = Logger.getLogger(ARXmlHandler.class);
+	private static Logger logger = Logger.getLogger(AREditor.class);
 
 	public String getEditorDescription() {
 		logger.warn("AREDITOR");

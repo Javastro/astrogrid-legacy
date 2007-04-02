@@ -7,13 +7,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.ArrayList;
+import java.net.URL;
 
 import org.apache.log4j.Logger;
 
-import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import java.io.StringWriter;
+import java.io.IOException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerConfigurationException;
 import org.astrogrid.acr.ServiceException;
@@ -27,6 +30,7 @@ import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.*;
 import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.Siap;
+import org.astrogrid.acr.ivoa.Ssap;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.InvalidArgumentException;
 
@@ -56,7 +60,7 @@ import uk.ac.soton.itinnovation.taverna.enactor.entities.TaskExecutionException;
  */
 public class ARTask implements ProcessorTaskWorker {
 	
-	private static Logger logger = Logger.getLogger(ARProcessor.class);
+	private static Logger logger = Logger.getLogger(ARTask.class);
 
 	// seems like we get a constructor which passes a reference to the processor.
 	public ARTask(Processor p) {
@@ -83,13 +87,19 @@ public class ARTask implements ProcessorTaskWorker {
 			}
 		}else if(paramValue.startsWith("ivo://")) {
 			logger.warn("looking for single resoruce");
-			Resource res = reg.getResource(new URI(paramValue));
-			if(serviceType.equals("CONE") && res.getType().indexOf("Cone") == -1) {
-				resources = new Resource[1];
-				resources[0] = res;				
-			}else if(serviceType.equals("SIAP") && res.getType().indexOf("SimpleImage") == -1) {
-				resources = new Resource[1];
-				resources[0] = res;				
+			String []ivorns = paramValue.split(",");
+			resources = new Resource[ivorns.length];
+			for(int k = 0;k < ivorns.length;k++) {
+				Resource res = reg.getResource(new URI(ivorns[k]));
+				if(serviceType.equals("CONE") && res.getType().indexOf("Cone") != -1) {
+					logger.warn("yes cone");
+					resources[k] = res;				
+				}else if(serviceType.equals("SIAP") && res.getType().indexOf("SimpleImage") != -1) {
+					logger.warn("yes siap");
+					resources[k] = res;				
+				}else {
+					resources[k] = null;
+				}
 			}
 		}else {
 			logger.warn("doing a keyword search");
@@ -117,38 +127,66 @@ public class ARTask implements ProcessorTaskWorker {
 		return resources;
 	}
 	
-	private String processSiap(Siap siap,Resource res, double ra, double dec, double size /*, String outputLoc*/) throws InvalidArgumentException, NotFoundException, ServiceException, TransformerException, TransformerConfigurationException {
+	private URL getSiapURL(Siap siap,Resource res, double ra, double dec, double size /*, String outputLoc*/) throws InvalidArgumentException, NotFoundException, ServiceException, TransformerException, java.net.MalformedURLException, TransformerConfigurationException {
+		logger.warn("getSiapURL");
 		URI resURI = getResourceAccessURI(res);
-		/*
-		if(outputLoc != null && outputLoc.trim().length() > 0) {
-			siap.executeAndSave(siap.constructQuery(resURI,ra,dec,size), new URI(outputLoc));
-			return outputLoc;
-			//resultMap.put("result0", outputLoc);
-		}
-		*/
-		logger.warn("processingsiap for " + res.getId());
-		Document resultDoc = siap.executeVotable(siap.constructQuery(resURI,ra,dec,size));
+
+		logger.warn("processingsiap for " + res.getId() + " and uri = " + resURI);
+		URL siapURL = siap.constructQuery(resURI,ra,dec,size);
+		logger.warn("url for siapURL to call  = " + siapURL);
+		urlMap.put(res.getId().toString(), siapURL.toString());		
+		return siapURL;
+	}
+			
+	private String processSiap(Siap siap,Resource res, double ra, double dec, double size /*, String outputLoc*/) throws InvalidArgumentException, NotFoundException, ServiceException, TransformerException, java.net.MalformedURLException, TransformerConfigurationException, IOException {
+		logger.warn("processSiap");
+		
+		//Document resultDoc = siap.executeVotable(getSiapURL(siap,res,ra,dec,size));
 	    StringWriter output = new StringWriter();
-	    TransformerFactory.newInstance().newTransformer().transform(new DOMSource(resultDoc), new StreamResult(output));
+	    logger.warn("done with executeVotable");
+	    //TransformerFactory.newInstance().newTransformer().transform(new DOMSource(resultDoc), new StreamResult(output));
+	    TransformerFactory.newInstance().newTransformer().transform(new StreamSource(getSiapURL(siap,res,ra,dec,size).openStream()), new StreamResult(output));	    
+	    logger.warn("done return output");
 		return output.toString();
 	}
 	
-	private String processCone(Cone cone,Resource res, double ra, double dec, double size /*, String outputLoc*/) throws InvalidArgumentException, NotFoundException, ServiceException,  TransformerException, TransformerConfigurationException {
+	private URL getConeURL(Cone cone,Resource res, double ra, double dec, double size /*, String outputLoc*/) throws InvalidArgumentException, NotFoundException, ServiceException,  TransformerException, TransformerConfigurationException {
 		URI resURI = getResourceAccessURI(res);
-		/*
-		if(outputLoc != null && outputLoc.trim().length() > 0) {
-			cone.executeAndSave(cone.constructQuery(resURI,ra,dec,size), new URI(outputLoc));
-			return outputLoc;
-			//resultMap.put("result0", outputLoc);
-		}
-		*/
+		URL coneURL = cone.constructQuery(resURI,ra,dec,size);
+		logger.warn("url for coneURL to call = " + coneURL);
+		urlMap.put(res.getId().toString(), coneURL.toString());
+		return coneURL;
+	}
+	
+	
+	private String processCone(Cone cone,Resource res, double ra, double dec, double size /*, String outputLoc*/) throws InvalidArgumentException, NotFoundException, ServiceException,  TransformerException, TransformerConfigurationException, IOException {
 		logger.warn("processing cone for " + res.getId());
-		Document resultDoc = cone.executeVotable(cone.constructQuery(resURI,ra,dec,size));
+		//Document resultDoc = cone.executeVotable(getConeURL(cone,res,ra,dec,size));
 	    StringWriter output = new StringWriter();
-	    TransformerFactory.newInstance().newTransformer().transform(new DOMSource(resultDoc), new StreamResult(output));
+	    //TransformerFactory.newInstance().newTransformer().transform(new DOMSource(resultDoc), new StreamResult(output));
+	    TransformerFactory.newInstance().newTransformer().transform(new StreamSource(getConeURL(cone,res,ra,dec,size).openStream()), new StreamResult(output));	    
 		return output.toString();
 	}	
 	
+	private URL getSSAPURL(Ssap ssap,Resource res, double ra, double dec, double size /*, String outputLoc*/) throws InvalidArgumentException, NotFoundException, ServiceException,  TransformerException, TransformerConfigurationException {
+		URI resURI = getResourceAccessURI(res);
+		URL ssapURL = ssap.constructQuery(resURI,ra,dec,size);
+		logger.warn("url for coneURL to call = " + ssapURL);
+		urlMap.put(res.getId().toString(), ssapURL.toString());
+		return ssapURL;
+	}
+	
+	private Map urlMap;
+	
+	
+	private String processSSAP(Ssap ssap,Resource res, double ra, double dec, double size /*, String outputLoc*/) throws InvalidArgumentException, NotFoundException, ServiceException,  TransformerException, TransformerConfigurationException, IOException {
+		logger.warn("processing cone for " + res.getId());
+		//Document resultDoc = ssap.executeVotable(getSSAPURL(ssap,res,ra,dec,size));
+	    StringWriter output = new StringWriter();
+	    //TransformerFactory.newInstance().newTransformer().transform(new DOMSource(resultDoc), new StreamResult(output));
+	    TransformerFactory.newInstance().newTransformer().transform(new StreamSource(getSSAPURL(ssap,res,ra,dec,size).openStream()), new StreamResult(output));	    
+		return output.toString();
+	}		
 	
 	
 	/**
@@ -160,7 +198,7 @@ public class ARTask implements ProcessorTaskWorker {
 	 */
 	public Map execute(Map arg0, IProcessorTask arg1) throws TaskExecutionException {
 		// unpackage inputs.
-		logger.info("start execute in ARTask");
+		logger.warn("start execute in ARTask");
 
 		String name = processor.getName();
 	    Map outputMap = new HashMap();
@@ -169,12 +207,35 @@ public class ARTask implements ProcessorTaskWorker {
 	    String outputLoc;
 	    URI resURI;
 	    Cone cone = null;
-	    Siap siap = null;		    
-		
+	    Siap siap = null;
+	    Ssap ssap = null;
+	    urlMap = new HashMap();
+		logger.warn("Name = " + name);
 		try {
 		    ACR acr = SingletonACR.getACR();
-		    DataThing parameterThing = (DataThing)arg0.get("Ivorn or Registry Keyword");
+		    logger.warn("got acr in ARTask now get DataThing");
+		    DataThing parameterThing = (DataThing)arg0.get("Ivorn or Registry Keywords");
+		    Object []mapArr = arg0.keySet().toArray();
+		    for(int l = 0;l < mapArr.length;l++) {
+		    	logger.warn("mapArr index = " + l + " and val = " + mapArr[l]);
+		    }
+		    logger.warn("have datathing so get the paramValue of it3");
+		    if(parameterThing == null) {
+		    	logger.warn("parameterThing is null");
+		    }
+		    
+		    Object test = parameterThing.getDataObject();
+		    if(test == null) {
+		    	logger.warn("test object was null :(");
+		    }
+		    logger.warn("object test tostring = " + test.toString());
+		    if(test instanceof String){
+		    	logger.warn("yes it is a string");
+		    }else {
+		    	logger.warn("no it is not a string");
+		    }
 		    String paramValue = (String)parameterThing.getDataObject();
+		    logger.warn("paramValue = " + paramValue);
 		    Registry reg = (Registry)acr.getService(Registry.class);
 		    Resource []res = getResources(paramValue,name);
 		    boolean allNulls = true;
@@ -190,9 +251,22 @@ public class ARTask implements ProcessorTaskWorker {
 		    if(allNulls) {
 		    	throw new TaskExecutionException("No Resources Found that corresponded to type = " + name);		    	
 		    }
-		    ra = (Double)((DataThing)arg0.get("RA")).getDataObject();
-    		dec = (Double)((DataThing)arg0.get("DEC")).getDataObject();
-    		size = (Double)((DataThing)arg0.get("SIZE")).getDataObject();		    
+		    logger.warn("grab RA object and analyze");
+		    test = ((DataThing)arg0.get("RA")).getDataObject();
+		    if(test instanceof String) {
+		    	logger.warn("RA dataobject is a string :(");
+		    }else if(test instanceof Double) {
+		    	logger.warn("RA is a instanceof Double");
+		    }else {
+		    	logger.warn("darn RA not sure what insanceof it is");
+		    }
+		    
+		    ra = Double.parseDouble((String)((DataThing)arg0.get("RA")).getDataObject());
+    		dec = Double.parseDouble((String)((DataThing)arg0.get("DEC")).getDataObject());
+    		size = Double.parseDouble((String)((DataThing)arg0.get("SIZE")).getDataObject());
+    		String saveURLS = (String)((DataThing)arg0.get("Only URLS Needed")).getDataObject();
+    		
+    		logger.warn("ok process things ra = " + ra + " dec = " + dec + " size = " + size);
     		//outputLoc = (String)((DataThing)arg0.get("OutputLocation")).getDataObject();
     		String result;
 		    for(int j = 0;j < res.length;j++) {
@@ -201,25 +275,54 @@ public class ARTask implements ProcessorTaskWorker {
 			    		if(siap == null) {
 			    			siap = (Siap)acr.getService(Siap.class);
 			    		}
-			    		result =  processSiap(siap,res[j],ra.doubleValue(),dec.doubleValue(),size.doubleValue()/*,outputLoc*/);
-			    		resultMap.put("SiapResult" + res[j].getId().toString(), result);			    		
+			    		logger.warn("rpcess the siap");
+			    		if(saveURLS != null && saveURLS.equals("true") ) {
+			    			result = getSiapURL(siap,res[j], ra, dec, size).toString();
+			    		}else {
+				    		result =  processSiap(siap,res[j], ra, dec, size/*,outputLoc*/);
+				    		logger.warn("ok got a result getId = " + res[j].getId() + " and string result = " + result);
+				    		resultMap.put("SiapResult_" + res[j].getId().toString().replaceAll("[^\\w*]","_"), result);
+			    		}
 			    	}else if(name.equals("CONE")) {
 			    		if(cone == null) {
 			    			cone = (Cone)acr.getService(Cone.class);
 			    		}
-			    		result = processCone(cone,res[j],ra.doubleValue(),dec.doubleValue(),size.doubleValue()/*,outputLoc*/);
-			    		resultMap.put("ConeResult_" + res[j].getId().toString(), result);
+			    		if(saveURLS != null && saveURLS.equals("true") ) {
+			    			result = getConeURL(cone,res[j], ra, dec, size).toString();
+			    		}else {
+				    		result = processCone(cone,res[j], ra, dec, size/*,outputLoc*/);
+				    		resultMap.put("ConeResult_" + res[j].getId().toString().replaceAll("[^\\w*]","_"), result);			    			
+			    		}
+			    		
 			    	}//else
+			    	else if(name.equals("SSAP")) {
+			    		if(ssap == null) {
+			    			ssap = (Ssap)acr.getService(Ssap.class);
+			    		}
+			    		if(saveURLS != null && saveURLS.equals("true") ) {
+			    			result = getSSAPURL(ssap,res[j], ra, dec, size).toString();
+			    		}else {			    		
+				    		result = processSSAP(ssap,res[j], ra, dec, size/*,outputLoc*/);
+				    		resultMap.put("SsapResult_" + res[j].getId().toString().replaceAll("[^\\w*]","_"), result);
+			    		}
+			    	}//else			    	
 		    	}//if
 		    }//for
 		    logger.warn("finised AR task placing things in output map.  the result map size = " + resultMap.size());
 		    outputMap.put("result",DataThingFactory.bake(resultMap));
-		    logger.info("end execute in ARTask");
+		    logger.warn("lets make the Ivorns and URLs list the size = " + urlMap.size());
+		    outputMap.put("Ivorns",DataThingFactory.bake(new ArrayList(urlMap.keySet())));
+		    outputMap.put("URLs",DataThingFactory.bake(new ArrayList(urlMap.values())));
+    		if(saveURLS == null || !saveURLS.equals("true") ) {
+    		    outputMap.put("ResultList",DataThingFactory.bake(new ArrayList(resultMap.values())));    			
+    		}
+		    logger.warn("end execute in ARTask");
 		    return outputMap;
 		} catch (Throwable x) {
-			TaskExecutionException tee =  new TaskExecutionException("Failed to execute: " + processor.getName(),x);
-			tee.initCause(x);
-			throw tee;
+			logger.warn("error do the stacktrace");
+			x.printStackTrace();
+			logger.warn("throw the taskexecutionexception");
+			throw new TaskExecutionException("Failed to execute: " + processor.getName(),x);
 		} 
 	}
 	

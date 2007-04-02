@@ -46,9 +46,12 @@ public class ARScavenger extends Scavenger {
 				new DefaultMutableTreeNode(new ARProcessorFactory("STAP"));
 			DefaultMutableTreeNode coneNode = 
 				new DefaultMutableTreeNode(new ARProcessorFactory("CONE"));
+			DefaultMutableTreeNode ssapNode = 
+				new DefaultMutableTreeNode(new ARProcessorFactory("SSAP"));			
 			root.add(siapNode);
 			root.add(coneNode);
-			root.add(stapNode);			
+			root.add(stapNode);	
+			root.add(ssapNode);	
 			add(root);
 			logger.warn("end listVOHTTPS successful ARScavenger");
 		/*} catch (ACRException x) {

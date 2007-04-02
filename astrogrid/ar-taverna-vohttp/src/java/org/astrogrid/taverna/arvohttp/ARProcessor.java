@@ -46,8 +46,7 @@ public class ARProcessor extends Processor implements Serializable {
 		logger.warn("in ARProcessor constructor and doing setDescription");
 		this.name = name;
 		try {
-			ACR acr = SingletonACR.getACR();			
-			if(name.equals("SIAP") || name.equals("CONE")) {
+			if(name.equals("SIAP") || name.equals("CONE") || name.equals("STAP")) {
 				describeSearchPort();
 				describeRADECPort();
 				describeSizePort();
@@ -62,23 +61,20 @@ public class ARProcessor extends Processor implements Serializable {
 				//describeExecutionPort();
 				//describeOutputPort();
 			}
+			describeSavePort();
 			
 			OutputPort resultMap= new OutputPort(this,"result");
 			describeMapPort(resultMap);
 			this.addPort(resultMap);
-				
+			describeIvornList();
+			describeURLList();
+			describeResultList();
 			setDescription("VOHTTP");
 			logger.warn("finished describing ports");
-		}catch(NotFoundException e) {
-			e.printStackTrace();
-			throw new ProcessorCreationException(e);
 		}catch (PortCreationException e) {
 			e.printStackTrace();
 			throw new ProcessorCreationException(e);
 		}catch (DuplicatePortNameException e) {
-			e.printStackTrace();
-			throw new ProcessorCreationException(e);
-		}catch(ACRException e) {
 			e.printStackTrace();
 			throw new ProcessorCreationException(e);
 		}
@@ -99,6 +95,38 @@ public class ARProcessor extends Processor implements Serializable {
 		this.addPort(output);
 	}
 	
+	private void describeIvornList() throws PortCreationException, DuplicatePortNameException {
+		OutputPort ivornList= new OutputPort(this,"Ivorns");
+		ivornList.getMetadata().setDescription("Seperate Ivorn List");
+		List mimes = new ArrayList();
+		mimes.add("java/"+java.util.List.class.getName());
+		ivornList.getMetadata().setMIMETypes(mimes); 
+		ivornList.setSyntacticType(computeType(java.util.List.class,mimes));
+		this.addPort(ivornList);
+	}
+	
+	private void describeURLList() throws PortCreationException, DuplicatePortNameException {
+		OutputPort urlList= new OutputPort(this,"URLs");
+		urlList.getMetadata().setDescription("URLS called ordered same as IvornList");
+		List mimes = new ArrayList();
+		mimes.add("java/"+java.util.List.class.getName());
+		urlList.getMetadata().setMIMETypes(mimes); 
+		urlList.setSyntacticType(computeType(java.util.List.class,mimes));
+		this.addPort(urlList);
+	}
+	
+	private void describeResultList() throws PortCreationException, DuplicatePortNameException {
+		OutputPort resList = new OutputPort(this,"ResultList");
+		resList.getMetadata().setDescription("XML Content as a List");
+		List mimes = new ArrayList();
+		mimes.add("java/"+java.util.List.class.getName());
+		resList.getMetadata().setMIMETypes(mimes); 
+		resList.setSyntacticType(computeType(java.util.List.class,mimes));
+		this.addPort(resList);
+	}	
+	
+	
+	
 	private void describeSearchPort() throws PortCreationException, DuplicatePortNameException {
 		InputPort input = new InputPort(this,"Ivorn or Registry Keywords");
 		List mimes = new ArrayList();
@@ -107,6 +135,15 @@ public class ARProcessor extends Processor implements Serializable {
 		input.setSyntacticType(computeType(java.lang.String.class,mimes));
 		this.addPort(input);
 	}
+	
+	private void describeSavePort() throws PortCreationException, DuplicatePortNameException {
+		InputPort input = new InputPort(this,"Only URLS Needed");
+		List mimes = new ArrayList();
+		mimes.add("text/plain");
+		input.getMetadata().setMIMETypes(mimes);
+		input.setSyntacticType(computeType(java.lang.String.class,mimes));
+		this.addPort(input);
+	}	
 		
 	private void describeOutputAsInputPort() throws PortCreationException, DuplicatePortNameException {
 		InputPort input = new InputPort(this,"OutputLocation");
@@ -140,8 +177,8 @@ public class ARProcessor extends Processor implements Serializable {
 		List mimesdec = new ArrayList();
 		mimesdec.add("text/plain");
 		mimesdec.add("java/java.lang.Double");
-		input.getMetadata().setMIMETypes(mimes);
-		input.setSyntacticType(computeType(java.lang.Double.class,mimes));
+		inputdec.getMetadata().setMIMETypes(mimes);
+		inputdec.setSyntacticType(computeType(java.lang.Double.class,mimesdec));
 		this.addPort(inputdec);
 	}
 	
