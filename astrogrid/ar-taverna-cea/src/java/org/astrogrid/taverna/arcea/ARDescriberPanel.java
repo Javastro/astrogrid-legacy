@@ -6,9 +6,6 @@ package org.astrogrid.taverna.arcea;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.embl.ebi.escience.scufl.Processor;
 //import org.embl.ebi.escience.scuflui.processoractions.AbstractProcessorAction;
 import org.embl.ebi.escience.scuflui.actions.AbstractProcessorAction;

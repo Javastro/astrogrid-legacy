@@ -9,12 +9,13 @@ import java.util.Enumeration;
 import java.util.ArrayList;
 
 import javax.swing.tree.DefaultMutableTreeNode;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.InterfaceBean;
+import org.astrogrid.acr.astrogrid.ParameterBean;
+import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
 import org.embl.ebi.escience.scuflui.workbench.Scavenger;
 import org.embl.ebi.escience.scuflui.workbench.ScavengerCreationException;
 
@@ -26,56 +27,33 @@ import org.embl.ebi.escience.scuflui.workbench.ScavengerCreationException;
  */
 public class ARScavenger extends Scavenger {
 
-	private static final Log logger = LogFactory.getLog(ARScavenger.class);
+	private static Logger logger = Logger.getLogger(ARScavenger.class);
+
 	/**
 	 * @param arg0
 	 * @throws ScavengerCreationException 
 	 */
 	public ARScavenger() throws ScavengerCreationException {
-		super("Astro Runtime");
+		super("Astro Runtime CEA");
 		logger.info("start constructor in ARScavenger");
-		listApps();
+		makeCEAAppTree();
 	}
 	
 	
 	/** alternate implementation of listApi */
-	private void listApps() throws ScavengerCreationException {
+	private void makeCEAAppTree() throws ScavengerCreationException {
 		try {
-			logger.info("start listApi in ARScavenger");
-			Hashtable apps= SingletonACR.listApps();
+			logger.warn("start makeCEAAppTree in ARScavenger");
+			Hashtable apps = SingletonACR.listApps();
+			logger.warn("done with SingletonACR.listApps");
 			DefaultMutableTreeNode moduleNode = new DefaultMutableTreeNode("CEA Tree");
-			DefaultMutableTreeNode serviceNode = new DefaultMutableTreeNode("Specific Service");
-			DefaultMutableTreeNode allNode = new DefaultMutableTreeNode("All Apps");
-			moduleNode.add(serviceNode);			
-			moduleNode.add(allNode);
-			add(moduleNode);
-			String serviceId;
-			ArrayList ceaList;
-		    for (Enumeration e = apps.keys() ; e.hasMoreElements() ;) {
-		    	serviceId = (String)e.nextElement();
-		    	DefaultMutableTreeNode ceaServiceNode = new DefaultMutableTreeNode(serviceId.substring(6));
-		    	ceaList = (ArrayList)apps.get(serviceId);
-		    	Iterator appIterator = ceaList.iterator();
-		    	while(appIterator.hasNext()) {
-		    		CeaApplication cea = (CeaApplication)appIterator.next();
-		    		InterfaceBean []ib = cea.getInterfaces();
-		    		for(int j = 0;j < ib.length;j++) {
-		    			//DefaultMutableTreeNode ceaNode = new DefaultMutableTreeNode();
-						DefaultMutableTreeNode ceaNodeForService = 
-							new DefaultMutableTreeNode(
-								new ARProcessorFactory(cea.getId().toString(),serviceId,ib[j].getName())
-									);			    			
-		    			
-						DefaultMutableTreeNode ceaNode = 
-							new DefaultMutableTreeNode(
-								new ARProcessorFactory(cea.getId().toString(),null, ib[j].getName())
-									);
-						serviceNode.add(ceaNodeForService);						
-		    			allNode.add(ceaNode);
-		    		}//for
-		    	}//while
-		    }//for
-			logger.info("end listApi successful ARScavenger");
+			DefaultMutableTreeNode serviceNode = new DefaultMutableTreeNode("CEA");
+			add(serviceNode);
+			
+			DefaultMutableTreeNode ceaNodeForDSA = 
+				new DefaultMutableTreeNode(new ARProcessorFactory("DSA"));
+			serviceNode.add(ceaNodeForDSA);
+			logger.warn("end makeCEAAppTree successful ARScavenger");
 		} catch (ACRException x) {
 			throw new ScavengerCreationException("Failed to list components of AR" + x.getMessage());
 		}	

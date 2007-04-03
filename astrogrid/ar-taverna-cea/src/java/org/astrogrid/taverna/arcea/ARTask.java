@@ -8,11 +8,9 @@ import java.util.Map;
 import java.util.Hashtable;
 import java.util.Iterator;
 
+import org.apache.log4j.Logger;
 
 import org.w3c.dom.Document;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.builtin.ACR;
@@ -47,11 +45,11 @@ import uk.ac.soton.itinnovation.taverna.enactor.entities.TaskExecutionException;
  */
 public class ARTask implements ProcessorTaskWorker {
 	
-	private static final Log logger = LogFactory.getLog(ARTask.class);
+	private static Logger logger = Logger.getLogger(ARTask.class);
 
 	// seems like we get a constructor which passes a reference to the processor.
 	public ARTask(Processor p) {
-		logger.info("start constructor in ARTask");
+		logger.warn("start constructor in ARTask");
 		this.processor = (ARProcessor)p;
 	}
 	private final ARProcessor processor;
@@ -69,7 +67,7 @@ public class ARTask implements ProcessorTaskWorker {
 	 */
 	public Map execute(Map arg0, IProcessorTask arg1) throws TaskExecutionException {
 		// unpackage inputs.
-		logger.info("start execute in ARTask");
+		logger.warn("start execute in ARTask");
 
 		this.ceaServiceIvorn = processor.getCeaServiceIvorn();
 		this.ceaAppIvorn = processor.getCeaAppIvorn();
@@ -114,7 +112,7 @@ public class ARTask implements ProcessorTaskWorker {
 		    Map outputMap = new HashMap();
 		    outputMap.put("resultMap",DataThingFactory.bake(finalResultMap));
 		    outputMap.put("executionID",DataThingFactory.bake(executionID.toString()));
-		    logger.info("end execute in ARTask");
+		    logger.warn("end execute in ARTask");
 		    return outputMap;
 		} catch (Throwable x) {
 			TaskExecutionException tee =  new TaskExecutionException("Failed to execute: " + processor.getMethodName(),x);
@@ -132,7 +130,7 @@ public class ARTask implements ProcessorTaskWorker {
 		
 	private Map createCEAToolMap(Map input) throws TaskExecutionException, ACRException {
 
-		logger.info("start inputObjects in ARTask");
+		logger.warn("start inputObjects in ARTask");
 
 	    ACR acr = SingletonACR.getACR();
 		Applications apps = (Applications)acr.getService(Applications.class);
@@ -146,7 +144,7 @@ public class ARTask implements ProcessorTaskWorker {
 	    	if(input.containsKey(paramName)) {
 	    		//found great
 	    		 DataThing parameterThing = (DataThing)input.get(paramName);
-	    		 logger.info("the parameterThing toString = " + parameterThing.toString());
+	    		 logger.warn("the parameterThing toString = " + parameterThing.toString());
 	    		 Hashtable inputVals = (Hashtable)inputFromCEATemplate.get(paramName);
 	    		 //change value and indirect now.
 	    		 paramValue = (String)parameterThing.getDataObject();

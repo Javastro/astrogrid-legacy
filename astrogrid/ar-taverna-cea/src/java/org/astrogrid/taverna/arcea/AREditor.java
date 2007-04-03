@@ -16,7 +16,7 @@ import org.embl.ebi.escience.scuflworkers.ProcessorEditor;
 public class AREditor implements ProcessorEditor {
 
 	public String getEditorDescription() {
-		return "Configure AR..";
+		return "Configure AR_CEA..";
 	}
 
 	public ActionListener getListener(Processor arg0) {

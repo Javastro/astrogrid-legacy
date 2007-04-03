@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.apache.log4j.Logger;
 
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ACRException;
@@ -44,85 +44,17 @@ import org.w3c.dom.Document;
  */
 public class ARProcessor extends Processor implements Serializable {
 
-	private static final Log logger = LogFactory.getLog(ARProcessor.class);	
-	
-	private String methodName;
-	private URI ceaServiceIvorn;
-	private URI ceaAppIvorn;
-	private String ceaInterface;
-	
-	public ARProcessor(ScuflModel model, String ceaAppIvorn, String ceaServiceIvorn, String ceaInterface) throws ProcessorCreationException, DuplicateProcessorNameException {
-		super(model,(ceaAppIvorn.substring(6) + "!!!!"  + ceaInterface + "!!!!" + ceaServiceIvorn));
-		logger.info("in ARProcessor constructor and doing setDescription");
-		this.methodName = (ceaAppIvorn.substring(6) + "-"  + ceaInterface);
+	private static Logger logger = Logger.getLogger(ARProcessor.class);
+		
+	public ARProcessor(ScuflModel model, String name) throws ProcessorCreationException, DuplicateProcessorNameException {
+		super(model,name);
+		logger.warn("in ARProcessor constructor and doing setDescription");
 		try {
-			if(ceaServiceIvorn != null) {
-				this.ceaServiceIvorn = new URI(ceaServiceIvorn);
+
+			if(name.equals("DSA")) {
+				describeDSAInputs();
+				describeDSAOutputs();
 			}
-			
-			this.ceaAppIvorn = new URI(ceaAppIvorn);
-			this.ceaInterface = ceaInterface;
-			ACR acr = SingletonACR.getACR();			
-			Applications apps = (Applications)acr.getService(Applications.class);
-			CeaApplication cea = apps.getCeaApplication(this.ceaAppIvorn);
-			InterfaceBean []ib = cea.getInterfaces();
-			InterfaceBean ceaInterfaceBean = null;
-			for(int i = 0;i < ib.length;i++) {
-				if(ib[i].getName().equals(ceaInterface)) {
-					ceaInterfaceBean = ib[i];
-					i = ib.length;
-				}//if
-			}//for
-			if(ceaInterfaceBean == null) {
-				throw new NotFoundException("Canoot find Interface for cea app");
-			}
-			
-			ParameterReferenceBean []prb = ceaInterfaceBean.getOutputs();
-			ParameterBean []pb = cea.getParameters();
-			for(int i = 0;i < prb.length;i++) {
-				for(int j = 0;j < pb.length ;j++) {
-					if(prb[i].getRef().equals(pb[j].getName())) {
-						//OutputPort result = new OutputPort(this,pb[j].getUiName());
-						InputPort resultO = new InputPort(this,pb[j].getUiName());
-						
-						describePort(resultO,pb[j]);
-						this.addPort(resultO);
-					}
-				}//for
-			}//for
-	
-			OutputPort resultMap= new OutputPort(this,"resultMap");
-			describeMapPort(resultMap);
-			this.addPort(resultMap);
-			
-			ParameterBean executionBean = new ParameterBean("executionID","Execution ID","ID number given for the execution and can be used in the AR for lookups or other tasks",
-					null,null,null,"integer",null,null);
-			OutputPort result = new OutputPort(this,executionBean.getUiName());
-			describePort(result,executionBean);
-			this.addPort(result);
-			
-			ParameterReferenceBean []prbInputs = ceaInterfaceBean.getInputs();
-			ParameterBean []pbInputs = cea.getParameters();
-			for(int i = 0;i < prbInputs.length;i++) {
-				for(int j = 0;j < pbInputs.length ;j++) {
-					if(prb[i].getRef().equals(pbInputs[j].getName())) {
-						InputPort input = new InputPort(this,pb[j].getUiName());
-						describePort(input,pb[j]);
-						this.addPort(input);
-					}
-				}//for
-			}//for
-			ParameterBean processBean = new ParameterBean("processUntilFinished","ProcessUntilFinished","Default True waits till the application is done and returns outputs, setting to false will have all outputs as null except Execution ID and requires the user to deal with everything via the ID",
-					null,"true",null,"boolean",null,null);
-			InputPort input = new InputPort(this,processBean.getUiName());
-			describePort(input,processBean);
-			this.addPort(input);	
-			
-			ParameterBean processBean = new ParameterBean("OutputLocation","OutputLocation","Optional Outputlocation you can place in typically an ivo:// myspace location.",
-					null,"",null,"string",null,null);
-			InputPort input = new InputPort(this,processBean.getUiName());
-			describePort(input,processBean);
-			this.addPort(input);	
 			
 			setDescription("Cea");
 		}catch(NotFoundException e) {
@@ -144,39 +76,39 @@ public class ARProcessor extends Processor implements Serializable {
 		logger.info("done with constructor of ARProcessor");
 	}
 	
-	public URI getCeaServiceIvorn() {
-		return this.ceaServiceIvorn;
+	private void describeDSAOutputs() throws PortCreationException, DuplicatePortNameException {
+		OutputPort resList = new OutputPort(this,"ResultListName");
+		resList.getMetadata().setDescription("XML Content as a List");
+		List mimes = new ArrayList();
+		mimes.add("java/"+java.util.List.class.getName());
+		resList.getMetadata().setMIMETypes(mimes); 
+		resList.setSyntacticType(computeType(java.util.List.class,mimes));
+		this.addPort(resList);
+	}	
+	
+	
+	private void describeDSAInputs() throws PortCreationException, DuplicatePortNameException {
+		List mimesText = new ArrayList();
+		mimesText.add("text/plain");
+		InputPort inputIvorn = new InputPort(this,"Ivorn");
+		inputIvorn.getMetadata().setMIMETypes(mimesText);
+		inputIvorn.setSyntacticType(computeType(java.lang.String.class,mimesText));
+		this.addPort(inputIvorn);
+		
+		
+		InputPort input = new InputPort(this,"ADQL Queries");
+		List mimes = new ArrayList();
+		mimes.add("java/"+java.util.List.class.getName());
+		input.getMetadata().setMIMETypes(mimes);
+		input.setSyntacticType(computeType(java.util.List.class,mimes));
+		this.addPort(input);
+
+		InputPort inputFormat = new InputPort(this,"Format");
+		inputFormat.getMetadata().setMIMETypes(mimesText);
+		inputFormat.setSyntacticType(computeType(java.lang.String.class,mimesText));
+		this.addPort(inputFormat);
 	}
 	
-	public URI getCeaAppIvorn() {
-		return this.ceaAppIvorn;
-	}
-	
-	public String getCeaInterface() {
-		return this.ceaInterface;
-	}
-	
-	public String getMethodName() {
-		return this.methodName;
-	}
-	
-	private void describePort(Port p,ParameterBean pb) {
-		logger.info("start describePort in ARProcessor");
-		p.getMetadata().setDescription((pb.getName() + ":" + pb.getDescription() + " --Units: " + pb.getUnits()));
-		List mimes = computeMimes(pb);
-		p.getMetadata().setMIMETypes(mimes); 
-		p.setSyntacticType(computeType(pb,mimes));
-		logger.info("end describePort in ARProcessor");
-	}
-	
-	private void describeMapPort(Port p) {
-		logger.info("start describeMapPort in ARProcessor");
-		p.getMetadata().setDescription("Result Map");
-		List mimes = computeMimes(java.util.Map.class);
-		p.getMetadata().setMIMETypes(mimes); 
-		p.setSyntacticType(computeType(java.util.Map.class,mimes));
-		logger.info("end describeMapPort in ARProcessor");
-	}
 	
 	/**
 	 * computes the correct type denotation for taverna.

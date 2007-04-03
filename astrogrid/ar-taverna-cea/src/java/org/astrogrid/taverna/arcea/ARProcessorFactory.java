@@ -8,8 +8,7 @@ import org.embl.ebi.escience.scuflworkers.ProcessorFactory;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  * 
@@ -25,62 +24,22 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ARProcessorFactory extends ProcessorFactory {
 	
-	private static final Log logger = LogFactory.getLog(ARProcessorFactory.class);
-	
-	private final String methodName;
-	private  URI ceaServiceIvorn;
-	private  URI ceaAppIvorn;
-	private final String ceaInterface;
-	
+	private static Logger logger = Logger.getLogger(ARProcessorFactory.class);	
 	
 	/**
 	 * 
 	 */
-	public ARProcessorFactory(String ceaAppIvorn, String ceaServiceIvorn, String ceaInterface) {
-		logger.info("start constructor in ARProcessorFactory");
-		this.methodName = (ceaAppIvorn.substring(6) + "-" + ceaInterface);
-		//this.ceaAppIvorn = ceaAppIvornStr != null ? new URI(ceaAppIvornStr) : null;
-		try {
-			this.ceaAppIvorn = new URI(ceaAppIvorn);
-		}catch(URISyntaxException use) {
-			use.printStackTrace();
-			logger.error(use.getMessage());
-			this.ceaAppIvorn = null;
-		}
-		try {
-			this.ceaServiceIvorn = new URI(ceaServiceIvorn);
-		}catch(URISyntaxException use) {
-			use.printStackTrace();
-			logger.error(use.getMessage());
-			this.ceaServiceIvorn = null;
-		}		
-		this.ceaInterface = ceaInterface;
-		setName(methodName);
+	public ARProcessorFactory(String ceaType) {
+		logger.warn("start constructor in ARProcessorFactory");
+		setName(ceaType);
+		logger.warn("done with arprocessorfactory");
 	}
-	
-	public String getMethodName() {
-		return this.methodName;
-	}
-
-	public String getCeaInterface() {
-		return this.ceaInterface;
-	}
-	
-	
-	public URI getCeaAppIvorn() {
-		return this.ceaAppIvorn;
-	}
-
-	public URI getCeaServiceIvorn() {
-		return this.ceaServiceIvorn;
-	}
-
-	
+		
 	public Class getProcessorClass() {
 		return ARProcessor.class;
 	}
  
 	public String getProcessorDescription() {
-		return "A processor that executes the CeaApplication " + getMethodName();
+		return "A processor that executes the CeaApplication " + getName();
 	}
 }

@@ -3,8 +3,7 @@
  */
 package org.astrogrid.taverna.arcea;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import org.astrogrid.acr.ACRException;
 
@@ -27,13 +26,14 @@ import java.net.URI;
  */
 public class ARXmlHandler implements XMLHandler {
 	
-	private static final Log logger = LogFactory.getLog(ARXmlHandler.class);
+	private static Logger logger = Logger.getLogger(ARXmlHandler.class);
 	/**
 	 * Return the spec element, that is to say the processor specific portion of
 	 * the processor element. For example, the soaplab implementation of this
 	 * method returns the element rooted at the 'soaplabwsdl' element.
 	 */
 	public Element elementForFactory(ProcessorFactory arg0) {
+		logger.warn("elementForFactory");
 		ARProcessorFactory arpf = (ARProcessorFactory)arg0;		
 		return getElement(arpf.getCeaAppIvorn(),arpf.getCeaServiceIvorn(),arpf.getCeaInterface());
 	}
@@ -45,7 +45,7 @@ public class ARXmlHandler implements XMLHandler {
 	 * implementation straight off to get factory specific data out.
 	 */
 	public Element elementForProcessor(Processor arg0) {
-		logger.info("start elementForProcessor in ARXmlHandler");
+		logger.warn("start elementForProcessor in ARXmlHandler");
 		ARProcessor arp = (ARProcessor)arg0;
 		return getElement(arp.getCeaAppIvorn(),arp.getCeaServiceIvorn(),arp.getCeaInterface());
 	}
@@ -55,11 +55,13 @@ public class ARXmlHandler implements XMLHandler {
      * 
      */
     private Element getElement(URI ceaAppIvorn, URI ceaServiceIvorn, String ceaInterface) {
+    	logger.warn("getElement uris");
     	return getElement(ceaAppIvorn.toString(), ceaServiceIvorn.toString(),ceaInterface);
     	
     }
     
     private Element getElement(String ceaAppIvorn, String ceaServiceIvorn, String ceaInterface) {
+    	logger.warn("getEleent strings");
         Element spec = new Element("astroruntimecea", XScufl.XScuflNS);
         
         /*
@@ -93,7 +95,7 @@ public class ARXmlHandler implements XMLHandler {
 	 * when it's invoked
 	 */
 	public ProcessorFactory getFactory(Element specElement) {
-		logger.info("start getFactory in ARXmlHandler");
+		logger.warn("start getFactory in ARXmlHandler");
 		Element astroElement = specElement.getChild("astroruntimecea",
                 XScufl.XScuflNS);
 		
@@ -126,7 +128,7 @@ public class ARXmlHandler implements XMLHandler {
 	 */
 	public Processor loadProcessorFromXML(Element specElement
 				, ScuflModel model, String name) throws ProcessorCreationException, DuplicateProcessorNameException, XScuflFormatException {
-		logger.info("start loadProcessorFromXML in ARXmlHandler the name = " + name);
+		logger.warn("start loadProcessorFromXML in ARXmlHandler the name = " + name);
 
 		//hmmm I wonder can I just take the name and split it
 		//because I know it is unique with token '!!!!' seperating out the
