@@ -95,7 +95,7 @@ public class SaveToMyspace implements ResultMapSaveSPI {
 		    int returnVal = jfc.showSaveDialog(parentComponent);
 		    */
 			try {			
-			    URI chosenURI = SingletonACR.getURI();
+			    URI chosenURI = SingletonACR.getURI("Save to Myspace");
 			    Myspace ms = SingletonACR.getMyspace();
 			    NodeInformation ni = ms.getNodeInformation(chosenURI);
 			    if(!ni.isFolder()) {

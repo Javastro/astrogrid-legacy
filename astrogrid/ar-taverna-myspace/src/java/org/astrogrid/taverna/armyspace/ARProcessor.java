@@ -53,27 +53,24 @@ public class ARProcessor extends Processor implements Serializable {
 			if(myspace == null) {
 				myspace = (Myspace)acr.getService(Myspace.class);
 			}
-		
+			describeDirectoryPort();
+
 			if(name.equals("Save")) {
 				describeMainListPort();
-				describeDirectoryPort();
 				describeSaveOutput();
 			}else if(name.equals("Save_For_VOTables")) {
 				describeMainListPort();
-				describeDirectoryPort();
 				describeVOTableGrabForURLS();
 				describeVOTableGrab();
 				describeSaveOutput();
 				describeSaveVOTableOutput();
 			}else if(name.equals("Fetch")) {
-				describeDirectoryPort();
 				describeRecurseDirectories();
 				describeVOTableFetch();
 				describeMapPort();
 				describeResultList();
 				describeResultListValue();
 			}else if(name.equals("Fetch_String_Content")) {
-				describeDirectoryPort();
 				describeRecurseDirectories();
 				describeVOTableFetch();
 				describeMapPort();
@@ -102,6 +99,23 @@ public class ARProcessor extends Processor implements Serializable {
 		return this.name;
 	}
 	
+	private String chosenDirectoryURI = null;
+	
+	public String getChosenDirectoryURI() {
+		return this.chosenDirectoryURI;
+	}
+	
+	public void setChosenDirectoryURI(String dirURI) {
+		this.chosenDirectoryURI = dirURI;
+		InputPort []ips =  this.getInputPorts();
+		for(int j = 0;j < ips.length;j++) {
+			if(ips[j].getName().equals("Myspace Directory or File")) {
+				logger.warn("try setting the new defaultvalue for input port");
+				ips[j].setDefaultValue(chosenDirectoryURI);
+				j = ips.length;
+			}
+		}
+	}
 	
 	private void describeMainListPort() throws PortCreationException, DuplicatePortNameException {
 		InputPort input = new InputPort(this,"Object or List");
@@ -119,7 +133,6 @@ public class ARProcessor extends Processor implements Serializable {
 		mimes.add("text/plain");
 		input.getMetadata().setMIMETypes(mimes);
 		input.setSyntacticType(computeType(java.lang.String.class,mimes));
-		input.setDefaultValue(myspace.getHome().toString());
 		this.addPort(input);
 	}
 	
@@ -129,7 +142,6 @@ public class ARProcessor extends Processor implements Serializable {
 		mimes.add("text/plain");
 		input.getMetadata().setMIMETypes(mimes);
 		input.setSyntacticType(computeType(java.lang.String.class,mimes));
-		input.setDefaultValue(myspace.getHome().toString());
 		this.addPort(input);
 	}	
 	

@@ -37,10 +37,10 @@ public class SingletonACR {
 		return theInstance;
 	}
 	
-	public static synchronized URI getURI() throws ACRException {
+	public static synchronized URI getURI(String title) throws ACRException {
 		ACR acr = getACR();
 		ResourceChooser rc = (ResourceChooser)acr.getService(ResourceChooser.class);
-		URI chosenRes = rc.chooseResource("Save to Myspace",true);
+		URI chosenRes = rc.chooseResource(title,true);
 		return chosenRes;
 	}
 	

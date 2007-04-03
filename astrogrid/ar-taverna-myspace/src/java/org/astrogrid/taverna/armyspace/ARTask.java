@@ -90,7 +90,11 @@ public class ARTask implements ProcessorTaskWorker {
 		try {
 		    ACR acr = SingletonACR.getACR();
 		    Myspace myspace = (Myspace)acr.getService(Myspace.class);
-		    String myspaceDirectory = (String)((DataThing)arg0.get("Myspace Directory or File")).getDataObject();
+		    //String myspaceDirectory = (String)((DataThing)arg0.get("Myspace Directory or File")).getDataObject();
+		    String myspaceDirectory = processor.getChosenDirectoryURI();
+		    if(myspaceDirectory == null) {
+		    	myspaceDirectory = (String)((DataThing)arg0.get("Myspace Directory or File")).getDataObject();
+		    }
 		    Object mainInputObj;	
 		    String recurseDir, votableOnly;
 		    if(name.equals("Save")) {
