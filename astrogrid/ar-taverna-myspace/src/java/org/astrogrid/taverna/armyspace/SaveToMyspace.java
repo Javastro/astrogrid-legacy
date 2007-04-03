@@ -85,89 +85,6 @@ public class SaveToMyspace implements ResultMapSaveSPI {
 	final JComponent parentComponent = parent;
 	return new ActionListener() {
 		
-		private void processObjectToWrite(Object resultValue,URI parentDirectoryURI, Myspace ms, String resultName) 
-		    throws NotFoundException, InvalidArgumentException, 
-		           ServiceException, SecurityException, NotApplicableException {
-			URL checkURL;
-			URI fileURI;
-			Object  o;
-			Collection coll;
-			Object []collArray;
-			
-			logger.warn("Inside processObjectToWrite"); 
-			//SemanticMarkup markup = resultValue.getMetadataForObject(resultValue, false);
-			
-			
-			
-			if(resultValue instanceof String) {
-				logger.warn("seems to be a string check for url just in case");
-				try {
-					checkURL = new URL((String)resultValue);
-					fileURI = ms.createChildFile(parentDirectoryURI, resultName + "_" + String.valueOf(System.currentTimeMillis()));
-					ms.copyURLToContent(checkURL, fileURI);
-				}catch(MalformedURLException me) {
-					//doesn't matter.
-				}
-				fileURI = ms.createChildFile(parentDirectoryURI, resultName + "_" + String.valueOf(System.currentTimeMillis()));
-				ms.write(fileURI, (String)resultValue);
-			}else if(resultValue instanceof URL) {
-				logger.warn("seems to be a URL");
-
-				fileURI = ms.createChildFile(parentDirectoryURI, resultName + "_" + String.valueOf(System.currentTimeMillis()));
-				ms.copyURLToContent((URL)resultValue, fileURI);
-			}else if(resultValue instanceof File) {
-				logger.warn("seems to be a File");
-
-				fileURI = ms.createChildFile(parentDirectoryURI, resultName + "_" + String.valueOf(System.currentTimeMillis()));
-				try {
-					ms.copyURLToContent((URL)((File)resultValue).toURL(), fileURI);
-				}catch(MalformedURLException me ) {}
-			}else if(resultValue instanceof Map) {
-				logger.warn("seems to be a Map");
-
-				//some kind of map just keys and values.
-				for (Iterator j = ((Map)resultValue).keySet().iterator(); j.hasNext();) {
-				   Object resultValueKey = j.next();
-				   logger.warn("key for the map = " + resultValueKey.toString());
-				   if(resultValueKey instanceof String) {
-					   o = ((Map)resultValue).get(resultValueKey);
-					   processObjectToWrite(o,parentDirectoryURI,ms,resultName + "_" + (String)resultValueKey);
-				   }else {
-					   //oh darn even the key is not a string lets just get values and
-					   //save it and that is all we can do.
-					   coll = ((Map)resultValue).values();
-					   collArray = coll.toArray();
-					   for(int k = 0;k < collArray.length;k++) {
-						   o = collArray[k];						   
-						   processObjectToWrite(o,parentDirectoryURI,ms,resultName + "_" + String.valueOf(k));
-					   }//for
-					   //this will break out of the iterator of the map
-					   break;
-				   }//else
-				}//for
-			}//else if map
-			
-			else if(resultValue instanceof byte[]) {
-				logger.warn("it is a byte array try writing binary");
-				fileURI = ms.createChildFile(parentDirectoryURI, resultName + "_" + String.valueOf(System.currentTimeMillis()));
-				ms.writeBinary(fileURI,(byte[])resultValue);
-			}
-			else if(resultValue instanceof Collection) {
-				logger.warn("seems to be a Collection");
-
-				   coll = ((Collection)resultValue);
-				   collArray = coll.toArray();
-				   logger.warn("size of collection = " + collArray.length);
-				   for(int k = 0;k < collArray.length;k++) {
-					   o = collArray[k];						   
-					   processObjectToWrite(o,parentDirectoryURI,ms,resultName + "_" + String.valueOf(k));						   
-				   }//for				
-			}else {
-				logger.warn("can't find class instance lets do a tostring see what happens");
-				logger.warn(resultValue.toString());
-			}
-			//what else might I need to save.
-		}
 		
 		public void actionPerformed(ActionEvent e) {
 			logger.warn("Inside actionPerformed in SaveToMyspace calling the resource chooser");
@@ -197,21 +114,28 @@ public class SaveToMyspace implements ResultMapSaveSPI {
 						logger.warn("mimetype k = " + k + " val = " + mimeTypes[k]);
 						System.out.println("println mimetype k = " + k + " val = " + mimeTypes[k]);
 					}					
-						processObjectToWrite(resultValue.getDataObject(),chosenURI, ms, resultName);
+					MyspaceWriter mw = new MyspaceWriter(ms);
+					mw.writeObject(resultValue.getDataObject(),chosenURI, resultName);
 				}//for
 			}catch(NotFoundException ne) {
+				logger.warn("NotFoundException " + ne.toString());
 				ne.printStackTrace();
 			}catch(ServiceException se) {
+				logger.warn("ServiceException " + se.toString());				
 				se.printStackTrace();
 			}catch(InvalidArgumentException ia) {
+				logger.warn("InvalidArgumentException " + ia.toString());		
 				ia.printStackTrace();
 			}catch(SecurityException se) {
+				logger.warn("SecurityException " + se.toString());	
 				se.printStackTrace();
 			}catch(ACRException ae) {
+				logger.warn("ACRException " + ae.toString());	
 				ae.printStackTrace();
+			}catch(IOException ioe) {
+				ioe.printStackTrace();
+				logger.warn("IOException " + ioe.toString());
 			}
-				
-			
 		}
 	    };//new ActionListener
     }//getListener
