@@ -27,7 +27,7 @@
          <Column ID='rhessi.rate0' indexed='false'>
             <Name>rate0</Name>
             <Datatype>int</Datatype>
-            <Description>Corrected count rate in 3-6 keV</Description>
+            <Description>Uncorrected count rate in 3-6 keV</Description>
             <Units>count/sec</Units>
             <UCD version='1'>PHOT_COUNT-RATE_X</UCD>
             <UCD version='1+'>phot.count;em.X-ray</UCD>
@@ -36,7 +36,7 @@
          <Column ID='rhessi.rate1' indexed='false'>
             <Name>rate1</Name>
             <Datatype>int</Datatype>
-            <Description>Corrected count rate in 6-12 keV</Description>
+            <Description>Uncorrected count rate in 6-12 keV</Description>
             <Units>count/sec</Units>
             <UCD version='1'>PHOT_COUNT-RATE_X</UCD>
             <UCD version='1+'>phot.count;em.X-ray</UCD>
@@ -45,7 +45,7 @@
          <Column ID='rhessi.rate2' indexed='false'>
             <Name>rate2</Name>
             <Datatype>int</Datatype>
-            <Description>Corrected count rate in 12-25 keV</Description>
+            <Description>Uncorrected count rate in 12-25 keV</Description>
             <Units>count/sec</Units>
             <UCD version='1'>PHOT_COUNT-RATE_X</UCD>
             <UCD version='1+'>phot.count;em.X-ray</UCD>
@@ -54,7 +54,7 @@
          <Column ID='rhessi.rate3' indexed='false'>
             <Name>rate3</Name>
             <Datatype>int</Datatype>
-            <Description>Corrected count rate in 25-50 keV</Description>
+            <Description>Uncorrected count rate in 25-50 keV</Description>
             <Units>count/sec</Units>
             <UCD version='1'>PHOT_COUNT-RATE_X</UCD>
             <UCD version='1+'>phot.count;em.X-ray</UCD>
@@ -63,7 +63,7 @@
          <Column ID='rhessi.rate4' indexed='false'>
             <Name>rate4</Name>
             <Datatype>int</Datatype>
-            <Description>Corrected count rate in 50-100 keV</Description>
+            <Description>Uncorrected count rate in 50-100 keV</Description>
             <Units>count/sec</Units>
             <UCD version='1'>PHOT_COUNT-RATE_X</UCD>
             <UCD version='1+'>phot.count;em.X-ray</UCD>
@@ -72,7 +72,7 @@
          <Column ID='rhessi.rate5' indexed='false'>
             <Name>rate5</Name>
             <Datatype>int</Datatype>
-            <Description>Corrected count rate in 100-300 keV</Description>
+            <Description>Uncorrected count rate in 100-300 keV</Description>
             <Units>count/sec</Units>
             <UCD version='1'>PHOT_COUNT-RATE_X</UCD>
             <UCD version='1+'>phot.count;em.X-ray</UCD>
@@ -81,7 +81,7 @@
          <Column ID='rhessi.rate6' indexed='false'>
             <Name>rate6</Name>
             <Datatype>int</Datatype>
-            <Description>Corrected count rate in 300-800 keV</Description>
+            <Description>Uncorrected count rate in 300-800 keV</Description>
             <Units>count/sec</Units>
             <UCD version='1'>PHOT_COUNT-RATE_X</UCD>
             <UCD version='1+'>phot.count;em.X-ray</UCD>
@@ -90,7 +90,7 @@
          <Column ID='rhessi.rate7' indexed='false'>
             <Name>rate7</Name>
             <Datatype>int</Datatype>
-            <Description>Corrected count rate in 800-7000 keV</Description>
+            <Description>Uncorrected count rate in 800-7000 keV</Description>
             <Units>count/sec</Units>
             <UCD version='1'>PHOT_COUNT-RATE_X</UCD>
             <UCD version='1+'>phot.count;em.X-ray</UCD>
@@ -99,7 +99,7 @@
          <Column ID='rhessi.rate8' indexed='false'>
             <Name>rate8</Name>
             <Datatype>int</Datatype>
-            <Description>Corrected count rate in 7000-20000 keV</Description>
+            <Description>Uncorrected count rate in 7000-20000 keV</Description>
             <Units>count/sec</Units>
             <UCD version='1'>PHOT_COUNT-RATE_X</UCD>
             <UCD version='1+'>phot.count;em.X-ray</UCD>

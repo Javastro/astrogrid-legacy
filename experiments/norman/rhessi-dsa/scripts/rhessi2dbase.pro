@@ -15,15 +15,15 @@
 ; OUTPUTS:
 ;        text file where colomns are:
 ;        1) start time of 4 second time interval (time in ISO 8601 format)
-;        2) Corrected count rate in 3-6 keV range (integer)
-;        3)                        6-12 keV
-;        4)                        12-25 keV
-;        5)                        25-50 keV
-;        6)                        50-100 keV
-;        7)                        100-300 keV
-;        8)                        300-800 keV
-;        9)                        800-7000 keV
-;        10)                       7000-20000 keV
+;        2) Uncorrected count rate in 3-6 keV range (integer)
+;        3)                           6-12 keV
+;        4)                           12-25 keV
+;        5)                           25-50 keV
+;        6)                           50-100 keV
+;        7)                           100-300 keV
+;        8)                           300-800 keV
+;        9)                           800-7000 keV
+;        10)                          7000-20000 keV
 ;        11) URL to (not corrected) count rate picture (string)
 ;        12) URL to corrected count rate picture       (string)
 ;        13) Attenuator state (0= open,1=thin,3=thin+thick)
@@ -54,8 +54,10 @@
 pro rhessi2dbase, time_interval=time_interval, outfn=outfn
 ;time_interval=['20-Jul-2002 01:31:00','25-Jul-2002 00:00:00']
 
+print, "rhessi2dbase: time_interval=", time_interval
+
 ; First, set up an error handler which reports any error to a file
-; rhesse2dbase.err and then bombs out.  We exit with an error status,
+; rhessi2dbase.err and then bombs out.  We exit with an error status,
 ; but in fact this is pointless, because stupid sswidl doesn't pass
 ; on the exit status.
 catch, error_status
@@ -74,7 +76,7 @@ IF (anytim(time_interval(0)) LT anytim('12-Feb-2002 01:32:00')) THEN $
 print,'WARNING: start time set: 12-Feb-2002 01:32:00'
 
 o= hsi_obs_summary(obs_time_interval=time_interval)
-counts =o -> getdata(/corrected)
+counts =o -> getdata()
 
 ; check that we've got some data, and fail if not
 counts_ok = size(counts,/type)
