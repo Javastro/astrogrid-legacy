@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/resolver/FileManagerEndpointResolverImpl.java,v $</cvs:source>
- * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/03/11 13:37:05 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: nw $</cvs:author>
+ * <cvs:date>$Date: 2007/04/04 10:19:12 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: FileManagerEndpointResolverImpl.java,v $
+ *   Revision 1.5  2007/04/04 10:19:12  nw
+ *   loosened up visibility
+ *
  *   Revision 1.4  2005/03/11 13:37:05  clq2
  *   new filemanager merged with filemanager-nww-jdt-903-943
  *
@@ -74,7 +77,7 @@ import java.net.URL;
  * @modified nww inverted conditionals to make logic shorted
  *  
  */
-class FileManagerEndpointResolverImpl implements FileManagerEndpointResolver {
+public class FileManagerEndpointResolverImpl implements FileManagerEndpointResolver {
     /**
      * Our debug logger.
      *  
