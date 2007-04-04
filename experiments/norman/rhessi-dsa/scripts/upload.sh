@@ -7,6 +7,7 @@
 # Options:
 #     --dry-run      : don't do anything, just show what would be done
 #     --inc='spec'   : use given increment, eg --inc="5 day"
+#     --debug        : don't delete intermediate files
 #
 # The first invocation is intended for the cron job, and will do all
 # the updates in the time interval between the last time this script
@@ -28,7 +29,7 @@
 #
 # Version: @VERSION_STRING@
 #
-# $Id: upload.sh,v 1.5 2007/03/30 15:34:13 norman Exp $
+# $Id: upload.sh,v 1.6 2007/04/04 17:04:14 norman Exp $
 
 
 progname=`basename $0`
@@ -77,6 +78,7 @@ Usage: $progname [options]                    # perform incremental update
 Options:
     --dry-run      : don't do anything, just show what would be done
     --inc='spec'   : use given increment, eg --inc="5 day"
+    --debug        : don't delete temporary files
 EOF
     exit 1
 }
@@ -85,6 +87,9 @@ process_dates() {
     start=$1
     finish=$2
 
+    # unconditionally delete files we're about to write
+    # (these files shouldn't exist -- they must be lying around from
+    # some earlier run)
     echo "$progname: process_dates $start -- $finish"
     rm -f rhessi2dbase.err
 
@@ -109,14 +114,22 @@ process_dates() {
         echo "$progname: rhessi2dbase failed in directory $PWD" >&3
         cat rhessi2dbase.err >&3
         exit 1                                     # JUMP OUT
-    elif ! test -f $uploadfile; then
-        echo "$progname: rhessi2dbase appears to have failed: no file $PWD/$uploadfile"
-        echo "$progname: rhessi2dbase appears to have failed: no file $PWD/$uploadfile" >&3
-        exit 1                                     # JUMP OUT
-    else
-        # all OK!
-        rm -f ssw-$start.log
     fi
+    tries=0
+    while ! test -f $uploadfile; do
+        tries=`expr $tries + 1`
+        if test $tries -gt 3; then
+            echo "$progname: can't find $PWD/$uploadfile : giving up"
+            echo "$progname: can't find $PWD/$uploadfile : giving up" >&3
+            exit 1              # JUMP OUT
+        fi
+        echo "$progname: rhessi2dbase appears to have failed: no file $PWD/$uploadfile : retrying ($tries)"
+        echo "$progname: rhessi2dbase appears to have failed: no file $PWD/$uploadfile : retrying ($tries)" >&3
+        sleep 2
+    done
+
+    # all OK!
+    $debug || rm -f ssw-$start.log
 
     # Upload this $uploadfile in a separate process
     # A call to 'exit' in this process won't abort the parent process,
@@ -133,8 +146,10 @@ process_dates() {
         status=$?
         if test $status = 0; then
             echo "$progname: successfully uploaded $uploadfile"
-            echo "$progname: NOT removing $uploadfile"
-            #rm -f $uploadfile mysql-$start.log
+            if ! $debug; then
+                echo "$progname: removing $uploadfile and mysql-$start.log"
+                rm -f $uploadfile mysql-$start.log
+            fi
         else
             echo "$progname: mysql upload failed for file $PWD/$uploadfile" >&3
             {
@@ -159,6 +174,7 @@ process_dates() {
 dryrun=false
 doall=false
 daylist=false
+debug=false
 
 workdir=X # dummy
 
@@ -191,6 +207,8 @@ while test $# -ge 1; do
     if expr "x$1" : 'x-' >/dev/null; then
         if test "x$1" = x--all; then
             doall=:
+        elif test "x$1" = x--debug; then
+            debug=:
         elif test "x$1" = x--dry-run; then
             dryrun=:
         elif expr "x$1" : x--inc= >/dev/null; then
@@ -314,10 +332,14 @@ else
             exit 1                              # JUMP OUT
         fi
 
-        if test -z "$inc"; then
+#        if test -z "$inc"; then
+#            endperiod=$enddate
+#        else
+#            endperiod=`date --utc --iso-8601 -d"$startdate + $inc"`
+#        fi
+        endperiod=`date --utc --iso-8601 -d"$startdate + $inc"`
+        if test `date --utc -d$endperiod +%s` -gt $endseconds; then
             endperiod=$enddate
-        else
-            endperiod=`date --utc --iso-8601 -d"$startdate + $inc"`
         fi
 
         # The business...
