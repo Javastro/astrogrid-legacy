@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/resolver/NodeDelegateResolverImpl.java,v $</cvs:source>
- * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/03/11 13:37:05 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:author>$Author: nw $</cvs:author>
+ * <cvs:date>$Date: 2007/04/04 08:58:38 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: NodeDelegateResolverImpl.java,v $
+ *   Revision 1.3  2007/04/04 08:58:38  nw
+ *   altered visibliltiy of some components, to make them easier to extend.
+ *
  *   Revision 1.2  2005/03/11 13:37:05  clq2
  *   new filemanager merged with filemanager-nww-jdt-903-943
  *
@@ -92,9 +95,9 @@ public class NodeDelegateResolverImpl implements NodeDelegateResolver {
 
     /**
      * Our endpoint resolver.
-     *  
+     *  NWW - made protected so that this class is open to extension.
      */
-    private final FileManagerEndpointResolver resolver;
+    protected final FileManagerEndpointResolver resolver;
 
     /**
      * Resolve an Ivorn into a delegate.

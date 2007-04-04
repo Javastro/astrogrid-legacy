@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/resolver/FileManagerEndpointResolver.java,v $</cvs:source>
- * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/03/11 13:37:05 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: nw $</cvs:author>
+ * <cvs:date>$Date: 2007/04/04 08:58:38 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: FileManagerEndpointResolver.java,v $
+ *   Revision 1.5  2007/04/04 08:58:38  nw
+ *   altered visibliltiy of some components, to make them easier to extend.
+ *
  *   Revision 1.4  2005/03/11 13:37:05  clq2
  *   new filemanager merged with filemanager-nww-jdt-903-943
  *
@@ -47,9 +50,9 @@ import java.net.URL;
 /**
  * Public interface for a helper class to resolve an Ivron into a service
  * endpoint.
- *  
+ *  NWW - made public.
  */
-interface FileManagerEndpointResolver {
+public interface FileManagerEndpointResolver {
 
     /**
      * Resolve an Ivorn into a service endpoint.

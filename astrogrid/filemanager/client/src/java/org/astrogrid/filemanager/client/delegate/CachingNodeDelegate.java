@@ -1,4 +1,4 @@
-/*$Id: CachingNodeDelegate.java,v 1.5 2005/05/04 08:37:04 clq2 Exp $
+/*$Id: CachingNodeDelegate.java,v 1.6 2007/04/04 08:58:38 nw Exp $
  * Created on 16-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -99,11 +99,18 @@ public class CachingNodeDelegate extends VanillaNodeDelegate {
      */
     public CachingNodeDelegate(FileManagerPortType fm, BundlePreferences hints) {
         super(fm, hints);
+        cache =createCache();
     }
+
+    protected final Map cache;
+    
+    // override to provide a different cache implementation.
+    protected Map createCache() {
     /** cache for nodes - hard references for keys, weak references for values. 
      * @modified nww - corrected from WEAK to SOFT - otherwise it doesn't cache.*/
-    protected final Map cache = new ReferenceMap(ReferenceMap.HARD,ReferenceMap.SOFT);
+    	return new ReferenceMap(ReferenceMap.HARD,ReferenceMap.SOFT);
 
+    }
     public void clearCache() {
         this.cache.clear();
     }
@@ -133,6 +140,9 @@ public class CachingNodeDelegate extends VanillaNodeDelegate {
 
 /*
  * $Log: CachingNodeDelegate.java,v $
+ * Revision 1.6  2007/04/04 08:58:38  nw
+ * altered visibliltiy of some components, to make them easier to extend.
+ *
  * Revision 1.5  2005/05/04 08:37:04  clq2
  * fixed deleting from portal
  *
