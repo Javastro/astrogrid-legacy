@@ -32,6 +32,7 @@ public class ExtractNamespaces {
 
         File infile = null;
         int action = EXTRACT_NAMESPACES;
+        boolean indentOutput = false;
 
         for (int i=0; i<args.length; i++) {
             String a = args[i];
@@ -39,6 +40,8 @@ public class ExtractNamespaces {
                 action = EXTRACT_NAMESPACES;
             else if (a.equals("--generate-xslt"))
                 action = GENERATE_XSLT;
+            else if (a.equals("--indent"))
+                indentOutput = true;
             else if (a.equals("--verbose"))
                 verbosity = VERBOSITY_CHATTER;
             else if (a.equals("--quiet"))
@@ -72,7 +75,7 @@ public class ExtractNamespaces {
                     System.out.println(s);
             } else {
                 assert action == GENERATE_XSLT;
-                generateXSLT(nsh.getNamespaces(), System.out);
+                generateXSLT(nsh.getNamespaces(), System.out, indentOutput);
             }
 
             // all OK
@@ -91,9 +94,12 @@ public class ExtractNamespaces {
     }
 
     private static void generateXSLT(Set<String> namespaces,
-                                     java.io.PrintStream stream)
+                                     java.io.PrintStream stream,
+                                     boolean indented)
             throws java.io.IOException {
-        XMLBuilder.Doc xb = new XMLBuilder().newDocument("stylesheet");
+        XMLBuilder.Doc xb = new XMLBuilder()
+                .setIndent(indented)
+                .newDocument("stylesheet");
         xb.addAttribute("version", "1.0")
                 .addAttribute("xmlns", "http://www.w3.org/1999/XSL/Transform")
                 .addAttribute("xmlns:rdf",
@@ -201,6 +207,7 @@ public class ExtractNamespaces {
             "Options:",
             "  --extract           extract the list of namespaces",
             "  --generate-xslt     generate an xslt script",
+            "  --indent            indent the output (when generating scripts)"
             "  --verbose/--quiet   regulate chatter",
         };
         for (int i=0; i<doc.length; i++)
