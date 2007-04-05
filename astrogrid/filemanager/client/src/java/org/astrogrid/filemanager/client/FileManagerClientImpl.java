@@ -1,10 +1,13 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/FileManagerClientImpl.java,v $</cvs:source>
- * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/03/11 13:37:06 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: nw $</cvs:author>
+ * <cvs:date>$Date: 2007/04/05 00:03:55 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerClientImpl.java,v $
+ *   Revision 1.5  2007/04/05 00:03:55  nw
+ *   if resolving fails, cache this exception as a result too - saves expensive re-accessing of services each time.
+ *
  *   Revision 1.4  2005/03/11 13:37:06  clq2
  *   new filemanager merged with filemanager-nww-jdt-903-943
  *
@@ -175,7 +178,7 @@ class FileManagerClientImpl implements FileManagerClient {
     }
     
     /** select the correct delegate for this ivorn */
-    private NodeDelegate resolveDelegate(Ivorn ivorn) throws URISyntaxException {
+    protected NodeDelegate resolveDelegate(Ivorn ivorn) throws URISyntaxException {
         // Parse the ivorn as a FileManager ivorn.
         IvornParser parser = new IvornParser(ivorn);
         log.debug("  Ident : " + parser.getServiceIdent());
@@ -191,6 +194,8 @@ class FileManagerClientImpl implements FileManagerClient {
                 return delegate;
             } catch (Exception ouch) { //we failed to resolve the ivorn to a FileManager.
                 log.debug("FileManager resolver failed", ouch);
+                //NWW - cache the result that we've found nothing - can reuse this information next time
+                delegates.put(parser.getServiceIdent(),null);
                 return null;
             }            
         }          
@@ -211,7 +216,7 @@ class FileManagerClientImpl implements FileManagerClient {
      *                     If unable to resolve the ivorn into a community account.
      *  
      */
-    private Ivorn resolveHome(Ivorn ivorn) throws CommunityException, RegistryException, URISyntaxException  {
+    protected Ivorn resolveHome(Ivorn ivorn) throws CommunityException, RegistryException, URISyntaxException  {
         log.debug("FileManagerClientImpl.resolveHome(" + ivorn +")");
             CommunityIvornParser parser = new CommunityIvornParser(ivorn);
             log.debug("  Account : " + parser.getAccountIdent());
