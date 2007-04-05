@@ -1,10 +1,13 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/FileManagerClientFactory.java,v $</cvs:source>
- * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/03/11 13:37:06 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: nw $</cvs:author>
+ * <cvs:date>$Date: 2007/04/05 00:03:08 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerClientFactory.java,v $
+ *   Revision 1.5  2007/04/05 00:03:08  nw
+ *   added a constructor to make it possible to specify which implementation of the community resolver to use.
+ *
  *   Revision 1.4  2005/03/11 13:37:06  clq2
  *   new filemanager merged with filemanager-nww-jdt-903-943
  *
@@ -109,12 +112,16 @@ public class FileManagerClientFactory {
      *  
      */
     public FileManagerClientFactory(NodeDelegateResolver resolver) {
+    	this(resolver,new CommunityAccountSpaceResolver());
+    }
+    public FileManagerClientFactory(NodeDelegateResolver resolver
+    		,CommunityAccountSpaceResolver accountResolver) {
         this.managerResolver = resolver;
         //
         // Create our resolvers.
         tokenResolver = new CommunityTokenResolver();
         loginResolver = new CommunityPasswordResolver();
-        accountResolver = new CommunityAccountSpaceResolver();
+        this.accountResolver = accountResolver;
     }
 
     /**
