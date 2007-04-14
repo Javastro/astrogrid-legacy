@@ -49,6 +49,7 @@ $(WEBAPP_NAME): $(SOURCEWAR).war $(MYSQL_JDBC) \
 	cd $(WEBAPP_NAME); jar xf ../$(SOURCEWAR).war
 	cp $(MYSQL_JDBC) $(WEBAPP_NAME)/WEB-INF/lib
 	cp rhessi-dsa.properties $(WEBAPP_NAME)/WEB-INF/classes/default.properties
+	cp gu-logo-tiny.gif $(WEBAPP_NAME)/logo.gif
 	cp $(METADOC) $(WEBAPP_NAME)/WEB-INF/classes
 
 rhessi-dsa.properties: rhessi-dsa.properties.in Makefile
