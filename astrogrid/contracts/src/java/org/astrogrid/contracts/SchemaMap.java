@@ -44,11 +44,8 @@ public class SchemaMap {
         //CEA schemas
         ALL.put("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", SchemaMap.class.getResource("/schema/cea/CommonExecutionArchitectureBase/v1.0/CommonExecutionArchitectureBase.xsd"));        
         ALL.put("http://www.astrogrid.org/schema/CEATypes/v1",SchemaMap.class.getResource("/schema/cea/CEATypes/v1.0/CEATypes.xsd"));
-        
-        
-        	
-        ALL.put("http://www.ivoa.net/xml/CEA/base/v1.0", SchemaMap.class.getResource("/schema/cea/CEABase/v1.0/CEABase.xsd"));
-        ALL.put("http://www.ivoa.net/xml/CEA/types/v1.0", SchemaMap.class.getResource("/schema/cea/CEABase/v1.0/CEATypes.xsd"));        
+        ALL.put("http://www.astrogrid.org/schema/CEAImplementation/v1",SchemaMap.class.getResource("/schema/cea/CEAImplementation/v1.0/CEAImplementation.xsd"));
+        ALL.put("http://www.astrogrid.org/schema/CEAImplementation/v2.0rc1",SchemaMap.class.getResource("/schema/cea/CEAImplementation/v2.0rc1/CEAImplementation.xsd"));
 
         //Contract schemas
         ALL.put("urn:astrogrid:schema:architecture:Contract:v0.1",SchemaMap.class.getResource("/schema/architecture/Contract/v0.1/Contract.xsd"));
@@ -92,7 +89,7 @@ public class SchemaMap {
 
         //vo-resource-types
         ALL.put("http://www.ivoa.net/xml/CEAService/v0.2",SchemaMap.class.getResource("/schema/vo-resource-types/CEAService/v0.2/CEAService.xsd"));
-        ALL.put("http://www.ivoa.net/xml/CEAService/v0.3",SchemaMap.class.getResource("/schema/vo-resource-types/CEAService/v0.3/CEAService.xsd"));
+        ALL.put("http://www.ivoa.net/xml/CEA/v1.0rc1",SchemaMap.class.getResource("/schema/vo-resource-types/CEAService/v1.0rc1/CEAService.xsd"));
         
         ALL.put("http://www.ivoa.net/xml/ConeSearch/v1.0",SchemaMap.class.getResource("/schema/vo-resource-types/ConeSearch/v1.0/ConeSearch.xsd"));
         ALL.put("http://www.ivoa.net/xml/ConeSearch/v0.3",SchemaMap.class.getResource("/schema/vo-resource-types/ConeSearch/v0.3/ConeSearch.xsd"));
@@ -111,9 +108,10 @@ public class SchemaMap {
         ALL.put("http://www.ivoa.net/xml/VOResource/v0.10",SchemaMap.class.getResource("/schema/vo-resource-types/VOResource/v0.10/VOResource.xsd"));
         ALL.put("http://www.ivoa.net/xml/VOResource/v1.0",SchemaMap.class.getResource("/schema/vo-resource-types/VOResource/v1.0/VOResource.xsd"));
         
-      	ALL.put("http://www.ivoa.net/schema/Application/v1.0",SchemaMap.class.getResource("/schema/vo-resource-types/VOApplication/v1.0/VOApplication.xsd"));
+      	ALL.put("http://www.ivoa.net/xml/VOApplication/v1.0rc1",SchemaMap.class.getResource("/schema/vo-resource-types/VOApplication/v1.0rc1/VOApplication.xsd"));
         // likewise, omitted VOResourceRelType-*        
-        ALL.put("http://www.ivoa.net/xml/VOStandard/v0.1",SchemaMap.class.getResource("/schema/vo-resource-types/VOStandard/v0.1/VOStandard.xsd"));        
+        ALL.put("http://www.ivoa.net/xml/VOStandard/v0.1",SchemaMap.class.getResource("/schema/vo-resource-types/VOStandard/v0.1/VOStandard.xsd"));
+        ALL.put("http://www.ivoa.net/xml/VOStandard/v0.2beta1",SchemaMap.class.getResource("/schema/vo-resource-types/VOStandard/v0.2beta1/VOStandard.xsd"));        
         
         //This is an aid to instantiating resource documents with oXygen et al.; it provides a global element for each resource type.
         ALL.put("urn:astrogrid:schema:vo-resource-types:AllResourceTypes:v0.2",SchemaMap.class.getResource("/schema/vo-resource-types/AllResourceTypes/v0.2/AllResourceTypes.xsd"));        
@@ -126,6 +124,12 @@ public class SchemaMap {
 
 /* 
 $Log: SchemaMap.java,v $
+Revision 1.8  2007/04/16 11:31:50  gtr
+Branch apps-gtr-2172 is merged.
+
+Revision 1.7.4.1  2007/04/05 14:17:57  gtr
+The new CEA schemata have been added;  the obsolete ones removed.
+
 Revision 1.7  2007/02/21 21:28:18  gtr
 Changes in support of the move to VOResource 1.0.
 

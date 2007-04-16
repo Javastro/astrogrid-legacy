@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
-  <extend>../maven-base/project.xml</extend>
+  <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-contracts</artifactId>
-  <currentVersion>2007.1.2</currentVersion>
+  <currentVersion>2007.2.01</currentVersion>
   <name>Astrogrid sub-system contracts</name>
+  <shortDescription>Interface contracts for AstroGrid components.</shortDescription>
   <description><![CDATA[
         Contracts for interfaces to major components of AstroGrid.
         </p><p>
@@ -11,6 +12,66 @@
         textual descriptions of the semantics.
         ]]>
   </description>
+  <url>http://www.astrogrid.org/maven/docs/HEAD/astrogrid-contracts/index.html</url>
+  <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
+  <siteAddress>www.astrogrid.org</siteAddress>
+  <siteDirectory>${astrogrid.docs.root}/astrogrid-contracts</siteDirectory>
+  <inceptionYear>2002</inceptionYear>
+  
+  <developers>
+    <developer>
+      <name>Guy Rixon</name>
+      <id>gtr</id>
+      <email>gtr@ast.cam.ac.uk</email>
+      <organization>IoA, Cambridge</organization>
+    </developer>
+    <developer>
+      <name>Catherine Qin</name>
+      <id>clq2</id>
+      <email>clq2@star.le.ac.uk</email>
+      <organization>University of Leicester</organization>
+    </developer>
+    <developer>
+      <name>Kevin Benson</name>
+      <id>KevinBenson</id>
+      <email>kmb@mssl.ucl.ac.uk</email>
+      <organization> MSSL </organization>
+    </developer>
+    <developer>
+      <name>Noel Winstanley</name>
+      <id>nw</id>
+      <email>nw@jb.man.ac.uk</email>
+      <organization> Jodrell </organization>
+    </developer>
+    <developer>
+      <name>Paul Harrison</name>
+      <id>pah</id>
+      <email>pah@jb.man.ac.uk</email>
+      <organization> Jodrell </organization>
+    </developer>
+  </developers>
+ 
+  <organization>
+    <name>AstroGrid</name>
+    <url>http://www.astrogrid.org</url>
+    <logo>http://www.astrogrid.org/images/AGlogo</logo>
+  </organization>
+  
+  
+  <reports>
+    <report>maven-license-plugin</report>
+    <report>maven-javadoc-plugin</report>
+    <report>maven-checkstyle-plugin</report>
+    <report>maven-junit-report-plugin</report>
+    <report>maven-linkcheck-plugin </report>
+    <report>maven-pmd-plugin</report>
+  </reports>
+  
+  <repository>
+    <connection>scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/contracts</connection>
+    <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/contracts</developerConnection>
+    <url>http://www.astrogrid.org/viewcvs/astrogrid/contracts/</url>
+  </repository> 
     
   <build>
     <sourceDirectory>src/java</sourceDirectory>
@@ -18,15 +79,6 @@
     <!-- This section controls the set of files other than Java classes that 
          are built into the jar artefact (Java classes are included automatically). -->
     <resources>
-
-      <!-- Assorted junk mixed in with the Java source. @TODO clean this up. -->
-      <resource>
-        <directory>${basedir}/src/java</directory>
-        <includes>
-          <include>**/*.xml</include>
-          <include>**/*.properties</include>
-        </includes>
-      </resource>
       
       <!-- The schemata collection. This includes a directory tree rooted at
            "schema", as required for publication on the AstroGrid software site. -->
@@ -37,6 +89,7 @@
           <include>schema/**/*</include>
         </includes>
       </resource>
+      
     </resources>
     
     <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>

@@ -7,15 +7,11 @@
 
 <!-- goals for nightly build -->
 <goal name="astrogrid-clean" prereqs="clean"/>
-
-<goal name="astrogrid-build-site"  prereqs="schema-doc,site" />        
-<goal name="astrogrid-deploy-site" prereqs="schema-doc,site,site:deploy" />
-
+<goal name="astrogrid-build-site"  prereqs="site" />        
+<goal name="astrogrid-deploy-site" prereqs="site,site:deploy" />
 <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot"/>
-
 <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy" />
 <goal name="astrogrid-install-artifact" prereqs="jar:install" />
-
 <goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot"/>
 
 
@@ -26,6 +22,10 @@
      <mkdir dir="${basedir}/target/classes" />     <!-- Clover fails if this dir is not present -->
 
   </preGoal>
+  
+  <postGoal name="site">
+    <attainGoal name="schema-doc"/>
+  </postGoal>
 
 <!-- new goals -->
 <!-- re-run all code generation -->
