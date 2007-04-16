@@ -2,11 +2,17 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid-software-site/Attic/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2007/01/19 18:50:45 $</cvs:date>
-    | <cvs:version>$Revision: 1.27 $</cvs:version>
+    | <cvs:author>$Author: gtr $</cvs:author>
+    | <cvs:date>$Date: 2007/04/16 12:31:55 $</cvs:date>
+    | <cvs:version>$Revision: 1.28 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.28  2007/04/16 12:31:55  gtr
+    |   Branch apps-gtr-2172 is merged.
+    |
+    |   Revision 1.27.2.1  2007/04/05 15:24:50  gtr
+    |   I included the changes to CEA schemata.
+    |
     |   Revision 1.27  2007/01/19 18:50:45  clq2
     |   2007.1
     |
@@ -117,7 +123,7 @@ todo - move thisfunction into othe aggregate project - commented out here for no
     		<artifactId>astrogrid-contracts</artifactId>
     		<groupId>org.astrogrid</groupId>
     		<type>jar</type>
-    		<version>${astrogrid.contracts.version}</version>
+    		<version>2007.2.01</version>
     		<properties>
     			<jar-with-schema>true</jar-with-schema>
     		</properties>
