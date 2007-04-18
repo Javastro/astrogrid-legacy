@@ -14,10 +14,21 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="2007.2.pre3" date="unreleased">
+<release version="2007.2.pre7" date="unreleased">
+<action dev="nw" type="add">
+Made a start on an activities framework.
+</action>
+<action dev="nw" type="remove">
+Removed old main window
+</action>
+<action dev="nw" type="add">
+	Implementing File Explorer
+</action>
 <action dev="nw" type="add">
 	Session support - AR is now multi-user.
 </action>
+</release>
+<release version="2007.2.pre5" date="unreleased">
 <action dev="nw" type="add">
    First draft of voexplorer
 </action>
