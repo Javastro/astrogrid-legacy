@@ -15,7 +15,7 @@
 	<goal name="create-keystore"
 		description="create a keystore that can then be used to sign builds">
 		<echo>Creating a key named ${astrogrid.signature.alias}</echo>
-		<genkey alias="${astrogrid.signature.alias"} storepass="${astrogrid.signature.storepass}">
+		<genkey alias="${astrogrid.signature.alias}" storepass="${astrogrid.signature.storepass}">
 			<dname>
 				<param name="C" value="UK" />
 				<param name="O" value="Astrogrid.org" />

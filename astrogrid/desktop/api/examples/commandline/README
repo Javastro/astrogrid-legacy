@@ -44,7 +44,7 @@ vorm.py - delete a myspace file
 
 CEA Remote Tasks
 ----------------------
-apps - run remote tasks using commandline args
+app.py - run remote tasks using commandline args
 
 misc/app-list-providers.py - lists the servers that provide a particular remote application
 misc/app-submit.py - submit a new application invocation
