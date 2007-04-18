@@ -353,8 +353,8 @@
       </properties>
     </dependency>
 
+<!-- dunno if this one is required 
     <dependency>
-<!-- dunno if this one is required -->
       <artifactId>astrogrid-slinger-api</artifactId>
       <groupId>org.astrogrid</groupId>
       <version>${astrogrid.slinger.version}</version>
@@ -363,7 +363,7 @@
         <strip>true</strip>        
       </properties>
     </dependency>
-
+-->
     <dependency>
 <!-- more crap? -->
       <artifactId>astrogrid-utils</artifactId>
@@ -555,7 +555,7 @@
 		<url>http://www.jcraft.com/jsch/</url>
 		<properties>
 				<dist.bundle>true</dist.bundle>
-			    <strip>true</strip>    
+			    <strip>false</strip>    <!-- TODO fix - complains about missing 'Random' class -->
 		</properties>
 	</dependency>			
 	
