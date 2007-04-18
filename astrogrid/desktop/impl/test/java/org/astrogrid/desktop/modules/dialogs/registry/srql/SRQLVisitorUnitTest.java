@@ -3,16 +3,6 @@
  */
 package org.astrogrid.desktop.modules.dialogs.registry.srql;
 
-import org.astrogrid.desktop.modules.dialogs.registry.srql.SRQL;
-import org.astrogrid.desktop.modules.dialogs.registry.srql.AndSRQL;
-import org.astrogrid.desktop.modules.dialogs.registry.srql.NotSRQL;
-import org.astrogrid.desktop.modules.dialogs.registry.srql.OrSRQL;
-import org.astrogrid.desktop.modules.dialogs.registry.srql.PhraseSRQL;
-import org.astrogrid.desktop.modules.dialogs.registry.srql.SRQLVisitor;
-import org.astrogrid.desktop.modules.dialogs.registry.srql.SRQLParser;
-import org.astrogrid.desktop.modules.dialogs.registry.srql.TargettedSRQL;
-import org.astrogrid.desktop.modules.dialogs.registry.srql.TermSRQL;
-
 import junit.framework.TestCase;
 
 /** unit test to check the visitor code.

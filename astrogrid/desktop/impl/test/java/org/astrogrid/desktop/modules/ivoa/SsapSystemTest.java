@@ -3,13 +3,19 @@
  */
 package org.astrogrid.desktop.modules.ivoa;
 
+import java.net.URI;
+import java.net.URL;
+import java.util.Map;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.builtin.ACR;
+import org.astrogrid.acr.cds.Sesame;
+import org.astrogrid.acr.cds.SesamePositionBean;
+import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Ssap;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
@@ -23,22 +29,38 @@ import org.astrogrid.desktop.InARTestCase;
 public class SsapSystemTest extends InARTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
-		ACR reg = getACR();
-		assertNotNull(reg);
-		ssap = (Ssap)reg.getService(Ssap.class);
-		assertNotNull(ssap);		
+		ssap = (Ssap)assertServiceExists(Ssap.class,"ivoa.ssap");
+		reg = (Registry)assertServiceExists(Registry.class,"ivoa.registry");
+		ses = (Sesame)assertServiceExists(Sesame.class,"cds.sesame");	
 	}
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		ssap = null;
+		reg = null;
+		ses = null;		
 	}
 	protected Ssap ssap;
+	protected Registry reg;
+	protected Sesame ses;	
+    public static final String SSAP_TEST_SERVICE = "ivo://stecf.euro-vo/SSA/HST/FOS";
 
 	    public static Test suite() {
 	        return new ARTestSetup(new TestSuite(SsapSystemTest.class));
 	    }    
 
-
+		public void testQuery() throws Exception {
+			Resource r = reg.getResource(new URI(SSAP_TEST_SERVICE));
+			SesamePositionBean pos = ses.resolve("crab");
+			assertNotNull(pos);
+			URL u = ssap.constructQuery(r.getId(),pos.getRa(),pos.getDec(),0.01);
+			Map[] rows = ssap.execute(u);
+			assertNotNull(rows);
+			assertTrue(rows.length > 0);
+			for (int i = 0; i < rows.length; i++) {
+				assertNotNull(rows[i].get("DATA_LINK"));
+			}
+		}
+	    
 	
 	public void testGetAdqlRegistryQueryNewReg() throws InvalidArgumentException, NotFoundException, ACRException, Exception {
 		String q = ssap.getRegistryAdqlQuery();

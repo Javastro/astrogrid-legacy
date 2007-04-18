@@ -11,15 +11,13 @@ import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.acr.ivoa.Ssap;
-import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.AstroScope;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 
 /** Factory that builds instances of astroscope.
@@ -46,10 +44,8 @@ public class AstroScopeFactory implements AstroScopeInternal{
 	 * @param tupp
 	 * @throws URISyntaxException
 	 */
-	public AstroScopeFactory(UIInternal ui, Configuration conf, HelpServerInternal hs, MyspaceInternal myspace, ResourceChooserInternal chooser, Registry reg, Siap siap, Cone cone, Ssap ssap, Sesame ses, TupperwareInternal tupp, SendToMenu sendTo, SnitchInternal snitch, RegistryBrowser browser) throws URISyntaxException {
-		this.ui = ui;
-		this.conf = conf;
-		this.hs = hs;
+	public AstroScopeFactory(UIContext context,  MyspaceInternal myspace, ResourceChooserInternal chooser, Registry reg, Siap siap, Cone cone, Ssap ssap, Sesame ses, TupperwareInternal tupp, SendToMenu sendTo, SnitchInternal snitch, RegistryBrowser browser) throws URISyntaxException {
+		this.context = context;
 		this.myspace = myspace;
 		this.chooser= chooser;
 		this.reg = reg;
@@ -62,9 +58,7 @@ public class AstroScopeFactory implements AstroScopeInternal{
 		this.snitch = snitch;
 		this.browser = browser;
 	}
-	private final UIInternal ui;
-	private final Configuration conf;
-	private final HelpServerInternal hs;
+	private final UIContext context;
 	private final MyspaceInternal myspace;
 	private final ResourceChooserInternal chooser;
 	private final Registry reg;
@@ -78,13 +72,13 @@ public class AstroScopeFactory implements AstroScopeInternal{
 	private final RegistryBrowser browser;
 	
 	public void show() {
-		AstroScope	i = new AstroScopeLauncherImpl(ui, conf, hs, myspace, chooser, reg, siap, cone, ssap, ses, tupp, sendTo,snitch, browser);
+		AstroScope	i = new AstroScopeLauncherImpl(context,myspace, chooser, reg, siap, cone, ssap, ses, tupp, sendTo,snitch, browser);
 		i.show();
 
 	}
 
 	public void runSubset(List resources) {
-		AstroScopeInternal	i = new AstroScopeLauncherImpl(ui, conf, hs, myspace, chooser, reg, siap, cone, ssap, ses, tupp, sendTo,snitch, browser);
+		AstroScopeInternal	i = new AstroScopeLauncherImpl(context, myspace, chooser, reg, siap, cone, ssap, ses, tupp, sendTo,snitch, browser);
 		i.runSubset(resources) ;
 		i.show();
 	}

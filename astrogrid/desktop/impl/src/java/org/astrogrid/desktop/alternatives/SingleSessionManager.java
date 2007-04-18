@@ -19,11 +19,8 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.SecurityException;
-import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.framework.SessionManagerInternal;
 import org.astrogrid.desktop.modules.auth.MutablePrincipal;
-import org.astrogrid.desktop.modules.auth.SessionManagerImpl;
 import org.astrogrid.desktop.modules.system.WebServerInternal;
 
 /** Session manager that doesn't allow more than a single default session.

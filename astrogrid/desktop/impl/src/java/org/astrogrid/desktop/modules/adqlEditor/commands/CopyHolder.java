@@ -1,4 +1,4 @@
-/*$Id: CopyHolder.java,v 1.2 2007/02/13 09:55:47 jl99 Exp $
+/*$Id: CopyHolder.java,v 1.3 2007/04/18 15:47:09 nw Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -8,11 +8,13 @@
 **/
 package org.astrogrid.desktop.modules.adqlEditor.commands;
 
-import org.astrogrid.desktop.modules.adqlEditor.nodes.*;
-import org.apache.xmlbeans.XmlObject;
 import java.util.Enumeration;
-import java.util.HashMap ;
-import javax.swing.tree.TreePath ;
+import java.util.HashMap;
+
+import javax.swing.tree.TreePath;
+
+import org.apache.xmlbeans.XmlObject;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 
 /**
  * CopyHolder
@@ -178,6 +180,9 @@ public class CopyHolder {
 
 /*
 $Log: CopyHolder.java,v $
+Revision 1.3  2007/04/18 15:47:09  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.2  2007/02/13 09:55:47  jl99
 Merge of branch workbench-jl-2032-a
 

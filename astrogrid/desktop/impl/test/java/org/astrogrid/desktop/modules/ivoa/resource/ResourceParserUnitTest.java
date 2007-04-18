@@ -3,27 +3,14 @@
  */
 package org.astrogrid.desktop.modules.ivoa.resource;
 
-import java.io.InputStream;
 import java.net.URI;
-import java.util.Arrays;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-import junit.framework.TestCase;
-
-import net.sourceforge.jwebunit.WebTester;
 
 import org.astrogrid.acr.ivoa.resource.Contact;
-import org.astrogrid.acr.ivoa.resource.Content;
 import org.astrogrid.acr.ivoa.resource.Creator;
-import org.astrogrid.acr.ivoa.resource.Curation;
 import org.astrogrid.acr.ivoa.resource.Date;
 import org.astrogrid.acr.ivoa.resource.Relationship;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.ResourceName;
-import org.astrogrid.acr.ivoa.resource.Validation;
 
 /** tests for basic resource type.
  * @author Noel.Winstanley@manchester.ac.uk

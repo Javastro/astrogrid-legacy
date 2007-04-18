@@ -6,7 +6,6 @@ package org.astrogrid.desktop.modules.cds;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.TestingFinder;

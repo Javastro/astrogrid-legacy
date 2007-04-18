@@ -37,11 +37,11 @@ UI CONFIGURATION -->
 	<!-- add login and logout actions -->
 	<contribution configuration-id="system.uiStructure">
 		<action text="Login" name="login"  parentName="file" iconName="connect_creating16.png"
-			object="service:community" methodName="guiLogin" before="close,exit,logout">
+			object="service:community" methodName="guiLogin" before="exit,logout">
 			<tooltip>Log in to AstroGrid</tooltip>
 		</action>
 		<action text="Logout" name="logout" parentName="file" iconName="connect_no16.png"
-			object="service:community" methodName="logout" after="login" before="close,exit">
+			object="service:community" methodName="logout" after="login" before="exit">
 			<tooltip>Log out of AstroGrid</tooltip>
 		</action>
 	</contribution>
@@ -161,7 +161,6 @@ MYSPACE
 		</invoke-factory>
 	</service-point>
 	
-	
 <contribution configuration-id="hivemind.FactoryDefaults">
 		<default symbol="astrogrid.myspace.fetchParents" value="true" />
 		<default symbol="astrogrid.myspace.maxExtraNodes" value="200" />
@@ -172,7 +171,30 @@ MYSPACE
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>	
 	
-	<!-- 
+	<!--  myspace vfs provider 	-->
+	<service-point id="myspacevfs" interface="org.astrogrid.desktop.modules.ag.vfs.VfsFileProvider" >
+		<invoke-factory model="session">
+			<construct class="org.astrogrid.desktop.modules.ag.vfs.MyspaceProvider">
+				<service>bundlePrefs</service>
+				<service>myspace</service>
+				<event-listener service-id="community" />
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+	<service-point id="workspacevfs" interface="org.astrogrid.desktop.modules.ag.vfs.VfsFileProvider" >
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.ag.vfs.WorkspaceProvider">
+				<service>community</service>
+			</construct>
+		</invoke-factory>
+	</service-point>	
+	<contribution configuration-id="system.vfsProviders">
+		<provider scheme="ivo"
+			implementation="service:myspacevfs" />
+		<provider scheme="workspace"
+			implementation="service:workspacevfs" />
+	</contribution><!-- 
 ==========================
 COMMUNITY -->	<service-point id="community" interface="org.astrogrid.desktop.modules.auth.CommunityInternal">		Community and login.	
 		<interceptor service-id="system.throbber" />		

@@ -3,10 +3,10 @@
  */
 package org.astrogrid.desktop.modules.ui.comp;
 
+import junit.framework.TestCase;
+
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.easymock.MockControl;
-
-import junit.framework.TestCase;
 
 /**
  * @author Noel.Winstanley@manchester.ac.uk

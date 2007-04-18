@@ -6,11 +6,11 @@ package org.astrogrid.desktop.modules.system;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.apache.commons.vfs.FileSystemManager;
 import org.apache.hivemind.ServiceInterceptorFactory;
 import org.astrogrid.acr.system.ApiHelp;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.system.HelpServer;
 import org.astrogrid.acr.system.RmiServer;
 import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.acr.system.UI;
@@ -65,8 +65,8 @@ public class SystemModuleIntegrationTest extends InARTestCase {
 	}
 	// 
 	public void testHelp() throws Exception {
-		HelpServer hsi = (HelpServer) assertServiceExists(HelpServer.class, "system.help");
-		hsi.showHelp();
+		HelpServerInternal hsi = (HelpServerInternal) assertComponentExists(HelpServerInternal.class, "system.help");
+		hsi.createContextSensitiveHelpListener();
 	}
 	public void testRmi() throws Exception {
 		RmiServer s = (RmiServer)assertServiceExists(RmiServer.class, "system.rmi");
@@ -86,6 +86,11 @@ public class SystemModuleIntegrationTest extends InARTestCase {
 		SnitchInternal s = (SnitchInternal)assertComponentExists(SnitchInternal.class,"system.snitch");
 		s.snitch("hi");
 		 
+	}
+	
+	public void testVFS() throws Exception {
+		FileSystemManager vfs = (FileSystemManager)assertComponentExists(FileSystemManager.class,"system.vfs");
+		vfs.getSchemes();
 	}
 	
 	public void testSnitchInterceptor() throws Exception {

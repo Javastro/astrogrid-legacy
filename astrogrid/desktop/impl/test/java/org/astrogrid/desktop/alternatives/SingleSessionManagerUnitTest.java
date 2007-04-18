@@ -6,6 +6,7 @@ package org.astrogrid.desktop.alternatives;
 import java.net.URL;
 import java.security.Principal;
 
+import junit.framework.TestCase;
 import net.sourceforge.hivelock.SecurityService;
 
 import org.apache.commons.lang.StringUtils;
@@ -13,8 +14,6 @@ import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.desktop.framework.SessionManagerInternal;
 import org.astrogrid.desktop.modules.system.WebServerInternal;
 import org.easymock.MockControl;
-
-import junit.framework.TestCase;
 
 /** unit test for the single session manager.
  * @author Noel.Winstanley@manchester.ac.uk

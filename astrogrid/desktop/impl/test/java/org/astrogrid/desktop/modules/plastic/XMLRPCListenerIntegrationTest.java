@@ -3,7 +3,6 @@ package org.astrogrid.desktop.modules.plastic;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.desktop.TestingFinder;
 import org.votech.plastic.PlasticHubListener;

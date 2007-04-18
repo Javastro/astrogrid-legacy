@@ -23,7 +23,7 @@ import uk.ac.starlink.connect.FileNode;
 import uk.ac.starlink.connect.Node;
 
 /** @future enabble dialogue to be positioned at a particular folder / resource.
- * @todo implement enablement options.
+ * @todo replace with VFS based solution.
  * @author Noel Winstanley
  * @since Nov 6, 20063:37:22 PM 
  */

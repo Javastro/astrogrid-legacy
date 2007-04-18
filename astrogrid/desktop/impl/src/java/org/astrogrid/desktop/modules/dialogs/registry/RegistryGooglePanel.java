@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.9 2007/03/08 17:43:59 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.10 2007/04/18 15:47:08 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,6 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -36,7 +35,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
@@ -59,6 +57,7 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.adqlEditor.TableMetadataPanel;
 import org.astrogrid.desktop.modules.dialogs.registry.FilterPipelineFactory.PipelineStrategy;
 import org.astrogrid.desktop.modules.dialogs.registry.srql.BasicRegistrySRQLVisitor;
 import org.astrogrid.desktop.modules.dialogs.registry.srql.Builder;
@@ -80,7 +79,7 @@ import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal.StreamProcessor;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParser;
 import org.astrogrid.desktop.modules.system.CSH;
-import org.astrogrid.desktop.modules.system.Preference;
+import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
@@ -277,6 +276,7 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 	protected String filter = null;
 	private final BiStateButton goButton ;
 	private final JLabel searchCount;
+	private final JLabel filterCount;
 	private final AutoCompleteHistoryField keywordField;
 	protected final ResourceTable selectTable;
 	protected final EventList  items ;
@@ -293,13 +293,14 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 	protected final Preference advancedPreference;
 	protected final ResourceViewer  xmlPane;
 	protected final ResourceViewer detailsPane;
-	private final JLabel keywordFieldLabel;
+	protected final ResourceViewer tableMetadataPane;
+	protected final JComponent toolbar;
 	
 	public final UIComponentBodyguard parent;
 	
 	
-	public JPopupMenu getPopup() {
-		return selectTable.getPopup();
+	public void setPopup(JPopupMenu popup) {
+		selectTable.setPopup(popup);
 	}
 	
 	/** Construct a new RegistryChooserPanel
@@ -377,6 +378,7 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 
 				
 		// list of currently 'ticked' resources
+		//@todo remove this.
 		selectedResources = new ListSelection (filteredItems); 
 		selectedResources.setSelectionMode(ListSelection.MULTIPLE_INTERVAL_SELECTION_DEFENSIVE);
    		
@@ -385,20 +387,28 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 		currentResourceInView.setSelectionMode(ListSelection.MULTIPLE_INTERVAL_SELECTION_DEFENSIVE);
 		currentResourceInView.addListSelectionListener(this); // assume this happens on EDT?
 		
-		// top panel. am using jforms to lay this out.
+		
 		FormLayout form = new FormLayout(
-				"4dlu, right:pref, 4dlu, 50dlu:grow,4dlu,pref,4dlu,left:40dlu,4dlu" // cols
-				,"pref, 3dlu, pref, 3dlu, pref" // rows
+				        // label              search             stop,        filter count   count           filter        expand
+				"2dlu, right:pref,2dlu,80dlu:grow,1dlu,pref,4dlu,right:30dlu,left:40dlu,6dlu,50dlu,1dlu,pref,1dlu" // cols
+				,"pref" // rows
 				);
 		PanelBuilder builder = new PanelBuilder(form);
 		CellConstraints cc = new CellConstraints();
-		keywordFieldLabel = builder.addLabel("Search", cc.xy(2,1));
+		builder.addLabel("Search", cc.xy(2,1));
+		
+		keywordField = new AutoCompleteHistoryField(this);
+		keywordField.requestFocusInWindow();
+		//keywordField.addActionListener(this);
+		CSH.setHelpIDString(keywordField, "reg.search");
+		keywordField.setToolTipText("<html>Enter keywords to search for,<br>a phrase in quotes<br> logical operators - AND, OR, NOT,(,),<br> or see help for further details</html>");
+		builder.add(keywordField, cc.xy(4, 1));
 		final KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
 		final Action searchAction = new AbstractAction() {
 			{
-				putValue(Action.SMALL_ICON,IconHelper.loadIcon("search16.png"));
+				putValue(Action.SMALL_ICON,IconHelper.loadIcon("go22.png"));
 				putValue(Action.MNEMONIC_KEY,new Integer(KeyEvent.VK_S)); // think this is how to do it.
-				putValue(Action.SHORT_DESCRIPTION,"Retrieve matching resources from the registry");		
+				putValue(Action.SHORT_DESCRIPTION,"Go: Retrieve matching resources from the registry");		
 			}
 			public void actionPerformed(final ActionEvent e) {
 						RegistryGooglePanel.this.actionPerformed(e);
@@ -406,42 +416,43 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 		};
 		final Action haltAction = new AbstractAction() {
 			{
-				putValue(Action.SMALL_ICON,IconHelper.loadIcon("stop16.png"));
+				putValue(Action.SMALL_ICON,IconHelper.loadIcon("stop22.png"));
 				putValue(Action.MNEMONIC_KEY,new Integer(KeyEvent.VK_H)); // think this is how to do it.
-				putValue(Action.SHORT_DESCRIPTION,"Halt search");		
+				putValue(Action.SHORT_DESCRIPTION,"Stop: halt search");		
 			}
 			public void actionPerformed(ActionEvent e) {
 				goButton.enableA();
-				RegistryGooglePanel.this.parent.get().haltAll();			
+				RegistryGooglePanel.this.parent.get().haltMyTasks();			
 			}
 		};
-		keywordField = new AutoCompleteHistoryField(this);
-		//keywordField.addActionListener(this);
-		CSH.setHelpIDString(keywordField, "reg.search");
-		keywordField.setToolTipText("<html>Enter keywords to search for,<br>a phrase in quotes<br> logical operators - AND, OR, NOT,(,),<br> or see help for further details</html>");
-		builder.add(keywordField, cc.xy(4, 1));
-				
-		goButton = new BiStateButton(searchAction,haltAction);
+		
+		
+		goButton = new BiStateButton(searchAction,haltAction, true);
+		goButton.setBorderPainted(false);
+		goButton.setRolloverEnabled(true);
+		goButton.setFocusPainted(true);
 		CSH.setHelpIDString(goButton, "reg.search");
 		builder.add(goButton, cc.xy(6, 1));
 		
-		this.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(enter,"search");
-		this.getActionMap().put("search",searchAction);
 		
+		filterCount = new JLabel();
+		builder.add(filterCount,cc.xy(8,1));
 		searchCount = new JLabel();
-		builder.add(searchCount,cc.xy(8,1));
+		builder.add(searchCount,cc.xy(9,1));
 
-		builder.addLabel("Filter",cc.xy(2, 3));
 		final JTextField filterField = mPipeline.getTextField();
 		CSH.setHelpIDString(filterField, "reg.filter");
-		builder.add(filterField,cc.xy(4, 3));
-		builder.add(mPipeline.getExpandButton(),cc.xy(6, 3));
+		builder.add(filterField,cc.xy(11, 1));
+		builder.add(mPipeline.getExpandButton(),cc.xy(13, 1));
+		toolbar = builder.getPanel();
+
+		toolbar.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(enter,"search");
+		toolbar.getActionMap().put("search",searchAction);
+
 		final JComponent filters = mPipeline.getFilters();
 		CSH.setHelpIDString(filters, "reg.filters");
-		builder.add(filters,cc.xyw(2, 5,7));
+		add(filters,BorderLayout.NORTH);
 	
-		add(builder.getPanel(),BorderLayout.NORTH);
-
 		// middle pane
 		
 		// model for the table.
@@ -468,13 +479,20 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 		
 		xmlPane = new XMLResourceViewer(parent,reg);
 		CSH.setHelpIDString(xmlPane.getComponent(), "reg.xml");
-		final JScrollPane scrollPane = new JScrollPane((Component)detailsPane,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		
+		tableMetadataPane = new TabularMetadataViewer();
+		CSH.setHelpIDString(tableMetadataPane.getComponent(),"rex.table");
+		
+		final JScrollPane scrollPane = new JScrollPane(detailsPane.getComponent(),JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setBorder(BorderFactory.createEmptyBorder());
 		tabPane.addTab("Details", IconHelper.loadIcon("info16.png")
-				, scrollPane
-				, "Details of chosen resource");
+				, scrollPane, "Details of chosen resource");
+	
+		tabPane.addTab("Tables",IconHelper.loadIcon("table16.png")
+				,tableMetadataPane.getComponent(),"Tabular schema for this resource");
 		// xml pane not added to tabs in same way - as is an 'advanced' view.
 		// will be added / removed in the property change listener, when initialized from preferneces.
+		
 		
 		// stitch middle and bottom together.
 		JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,centerPanel,tabPane);
@@ -535,9 +553,9 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 			int resultSize = edtItems.size();
 			int viewSize = selectTableModel.getRowCount();
 			if (viewSize != resultSize) {
-				parent.get().setStatusMessage("Filtering - showing " + viewSize + " results");
+				filterCount.setText(viewSize + " of ");
 			} else {
-				parent.get().setStatusMessage("Showing all results");
+				filterCount.setText(null);
 			}
 			// on every change, if nothing is selcted, and there are some results,, select (display) first record.
 			if (viewSize > 0 && selectTable.getSelectedRow() == -1) {
@@ -575,7 +593,12 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 			detailsPane.display(res);
 			break;
 		case 1:
+			//@todo should I move to another tab when this isn't a tabular resouce?
+			tableMetadataPane.display(res);
+			break;
+		case 2:
 			xmlPane.display(res);
+			break;
 		default:
 			break;
 		}
@@ -656,7 +679,7 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 	public void applyFilter(String filter) {
 		clear(); 
 		this.filter = filter;  
-		setSearchVisible(true);
+		enableSearchField(true);
 	}
 	
 	/** set scope to display the results of applying this filter to registry
@@ -666,7 +689,7 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 	 */
 	public void displayFilter(String filter) {
 		clear();
-		setSearchVisible(false);
+		enableSearchField(false);
 		(new FilterWorker(parent.get(),filter)).start();
 	}
 	
@@ -674,7 +697,7 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 	public void displayIdSet(Collection idList) {
 		clear();
 		this.filter = null;
-		setSearchVisible(false);
+		enableSearchField(false);
 		(new ListWorker(parent.get(),idList)).start();		
 	}
 	
@@ -684,7 +707,7 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 	public void displayQuery(String query) {
 		clear();
 		this.filter = null;
-		setSearchVisible(false);
+		enableSearchField(false);
 		(new QueryWorker(parent.get(),query)).start();
 	}
 	
@@ -720,16 +743,21 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 		selectedResources.setSelectionMode(multiple ? ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);     
 	}
 	/** whether the search field is visible or not. */
-	public boolean isSearchVisible() {
-		return this.keywordField.isVisible();
+	public boolean isSearchEnabled() {
+		return this.keywordField.isEnabled();
 	}
-	public void setSearchVisible(boolean b) {
-		this.keywordField.setVisible(b);
-		this.goButton.setVisible(b);
-		this.keywordFieldLabel.setVisible(b);
-		this.searchCount.setVisible(b);
+	public void enableSearchField(boolean b) {
+		this.keywordField.setEnabled(b);
+		this.goButton.setEnabled(b);
 	}
-
+	/** access the 'toolbar' for this component - it's up to the hosting
+	 * application to display this in some appropriate place.
+	 * @return
+	 */
+	public JComponent getToolbar() {
+		return toolbar;
+	}
+	
 	/**
 	 * @return
 	 */
@@ -741,6 +769,9 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.10  2007/04/18 15:47:08  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.9  2007/03/08 17:43:59  nw
 first draft of voexplorer
 

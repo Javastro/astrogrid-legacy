@@ -3,15 +3,10 @@
  */
 package org.astrogrid.desktop.modules.ivoa.resource;
 
-import java.io.InputStream;
 import java.net.URI;
-import java.util.Arrays;
-
-import javax.xml.stream.XMLStreamReader;
 
 import net.sourceforge.jwebunit.WebTester;
 
-import org.apache.commons.collections.IteratorUtils;
 import org.astrogrid.acr.astrogrid.ColumnBean;
 import org.astrogrid.acr.astrogrid.DatabaseBean;
 import org.astrogrid.acr.astrogrid.TableBean;

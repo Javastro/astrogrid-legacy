@@ -8,6 +8,7 @@ import junit.framework.TestSuite;
 
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.easymock.MockControl;
@@ -30,7 +31,7 @@ public class BackgroundExecutorIntegrationTest extends InARTestCase {
 		 * @param msg
 		 * @param msecs
 		 */
-		public TestWorker(UIComponent parent, long msecs) {
+		public TestWorker(UIContext parent, long msecs) {
 			super(parent, "test worker", msecs);
 		}
 		public int construct;
@@ -69,13 +70,12 @@ public class BackgroundExecutorIntegrationTest extends InARTestCase {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		exec = (BackgroundExecutor)getHivemindRegistry().getService("system.executor",BackgroundExecutor.class);
-		assertNotNull(exec);
-		ui = (UIInternal)getHivemindRegistry().getService(UIInternal.class);
+		exec = (BackgroundExecutor)assertComponentExists(BackgroundExecutor.class,"system.executor");
+		ui = (UIContext)assertComponentExists(UIContext.class,"system.ui");
 		assertNotNull(ui);
 	}
 	protected BackgroundExecutor exec;
-	protected UIInternal ui;
+	protected UIContext ui;
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		exec = null;

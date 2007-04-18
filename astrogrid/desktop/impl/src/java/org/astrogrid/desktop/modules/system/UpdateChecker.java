@@ -15,6 +15,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.system.BrowserControl;
+import org.astrogrid.desktop.modules.system.pref.Preference;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 
 /** checks for updates to the software.
@@ -29,7 +31,7 @@ public class UpdateChecker implements Runnable {
 
 	private static final String versionURLString = "http://www.astrogrid.org/desktop/download/version.txt";
 	private static final String downloadURLString = "http://www.astrogrid.org/desktop/download";
-	public UpdateChecker(UIInternal ui, BrowserControl browser, String currentVersion,Preference check) throws MalformedURLException {
+	public UpdateChecker(UIContext ui, BrowserControl browser, String currentVersion,Preference check) throws MalformedURLException {
 		versionURL = new URL(versionURLString);
 		downloadURL = new URL(downloadURLString);
 		this.ui = ui;
@@ -41,7 +43,7 @@ public class UpdateChecker implements Runnable {
 	protected final String currentVersion;
 	protected final URL versionURL;
 	protected final URL downloadURL;
-	protected final UIInternal ui;
+	protected final UIContext ui;
 	protected final BrowserControl browser;
 	public void run() {
 		if (!check.asBoolean()) {
@@ -74,7 +76,7 @@ public class UpdateChecker implements Runnable {
 				}
 				protected void doFinished(Object result) {
 					if (result != null) {
-					int code = JOptionPane.showConfirmDialog(ui.getComponent(),
+					int code = JOptionPane.showConfirmDialog(ui.findMainWindow().getFrame(),
 							"<html>Latest version is " + result + "<br>Open download site?" 
 							,"A new version is available",JOptionPane.YES_NO_OPTION);
 					if (code == JOptionPane.YES_OPTION) {

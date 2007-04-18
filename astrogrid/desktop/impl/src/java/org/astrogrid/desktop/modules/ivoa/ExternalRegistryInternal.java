@@ -6,6 +6,7 @@ package org.astrogrid.desktop.modules.ivoa;
 import java.net.URI;
 
 import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.ExternalRegistry;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal.StreamProcessor;
@@ -28,7 +29,7 @@ public interface ExternalRegistryInternal extends ExternalRegistry {
 			throws ServiceException;
 
 	void getResourceStream(URI endpoint, URI ivorn, StreamProcessor processor)
-			throws ServiceException;
+			throws ServiceException, NotFoundException;
 
 	void keywordSearchStream(URI endpoint, String keywords, boolean orValues,
 			StreamProcessor proc) throws ServiceException;

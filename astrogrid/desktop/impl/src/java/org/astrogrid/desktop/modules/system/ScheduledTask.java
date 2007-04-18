@@ -1,4 +1,4 @@
-/*$Id: ScheduledTask.java,v 1.6 2007/03/22 19:03:48 nw Exp $
+/*$Id: ScheduledTask.java,v 1.7 2007/04/18 15:47:06 nw Exp $
  * Created on 05-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,8 +9,6 @@
  *
 **/
 package org.astrogrid.desktop.modules.system;
-
-import java.security.Principal;
 
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 
@@ -35,6 +33,9 @@ public interface ScheduledTask{
 
 /* 
 $Log: ScheduledTask.java,v $
+Revision 1.7  2007/04/18 15:47:06  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.6  2007/03/22 19:03:48  nw
 added support for sessions and multi-user ar.
 

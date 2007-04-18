@@ -3,7 +3,6 @@
  */
 package org.astrogrid.desktop.modules.dialogs.registry;
 
-import org.apache.commons.collections.Factory;
 
 /**
  * @author Noel.Winstanley@manchester.ac.uk

@@ -1,4 +1,4 @@
-/*$Id: UIStructureContribution.java,v 1.5 2007/01/29 11:11:37 nw Exp $
+/*$Id: UIStructureContribution.java,v 1.6 2007/04/18 15:47:09 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import javax.swing.Icon;
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Mar-2006
  *
  */ 
-public interface UIStructureContribution {
+public interface UIStructureContribution extends Cloneable{
 	/** returns comma separated list of names of ui components that
 	 * this component occurs 'after'
 	 * @return
@@ -40,12 +40,18 @@ public interface UIStructureContribution {
     
     /** display icon fopr this component */
     public Icon getIcon();
+    
+    /** take a deep copy of this contribution object */
+    public UIStructureContribution cloneStructure();
 
     
 }
 
 /* 
  $Log: UIStructureContribution.java,v $
+ Revision 1.6  2007/04/18 15:47:09  nw
+ tidied up voexplorer, removed front pane.
+
  Revision 1.5  2007/01/29 11:11:37  nw
  updated contact details.
 

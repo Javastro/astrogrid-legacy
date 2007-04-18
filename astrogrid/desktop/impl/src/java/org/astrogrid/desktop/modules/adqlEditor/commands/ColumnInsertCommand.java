@@ -22,7 +22,6 @@ import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
-import org.astrogrid.desktop.modules.adqlEditor.nodes.NodeFactory;
 
 /**
  * @author jl99@star.le.ac.uk

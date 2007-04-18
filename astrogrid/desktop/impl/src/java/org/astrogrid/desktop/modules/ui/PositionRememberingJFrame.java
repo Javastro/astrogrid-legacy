@@ -1,4 +1,4 @@
-/*$Id: PositionRememberingJFrame.java,v 1.10 2007/01/29 11:11:37 nw Exp $
+/*$Id: PositionRememberingJFrame.java,v 1.11 2007/04/18 15:47:05 nw Exp $
  * Created on 04-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,12 +14,13 @@ import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.IllegalComponentStateException;
 import java.awt.Point;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 
 import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 
 /** Extended jFrame baseclass that remembers positioning of the window.
  * <p>
@@ -35,47 +36,35 @@ import org.astrogrid.desktop.modules.system.UIInternal;
  */
 public class PositionRememberingJFrame extends JFrame {
 
-    /** Construct a new PositionRememberingJFrame, that won't persist or restore position
-     * @throws java.awt.HeadlessException
-     */
-    public PositionRememberingJFrame() throws HeadlessException {
-        super();
-        this.configuration = null;
-        this.ui = null;
-        this.help = null;
-    }
-    /** Conostruct a new PositionRememberingJFrame that will persist window position */
-    public PositionRememberingJFrame(Configuration conf,HelpServerInternal help,UIInternal ui) throws HeadlessException {
-        this.configuration = conf;
-        this.ui = ui;
-        this.help = help;
-        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+    /** Conostruct a new PositionRememberingJFrame that will persist window position 
+     * @param context @todo*/
+    public PositionRememberingJFrame(UIContext context) throws HeadlessException {
+    	if (context == null) {
+    		throw new IllegalArgumentException("UIContext must not be null");
+    	}
+        this.context = context;
+        addWindowListener(new WindowAdapter() {
+        	public void windowOpened(WindowEvent e) {
+        		loadConfiguration();
+        	}
+        	public void windowClosing(WindowEvent e) {
+        		saveConfiguration();
+        	}
+        });
     }
  
-    
-    private final Configuration configuration;
-    private final UIInternal ui;
-    private final HelpServerInternal help;
 
-    /** convenience method - access the configuraiton componoent */
-    public Configuration getConfiguration() {
-        return configuration;
+    private final UIContext context;
+    
+    public final UIContext getContext() {
+    	return context;
     }
-    /** convenience mehtod - access the help server component */
-    public HelpServerInternal getHelpServer() {
-        return help;
-    }
-    /** convenience method - access the main ui component */
-    public UIInternal getUI() {
-        return ui;
-    }
+	    
     
     /** load position from configuration */
     private void loadConfiguration() {
-        if (ui != null) { // as a starting point.
-            this.setLocationRelativeTo(ui.getComponent());
-        }        
-        if (configuration != null) { // reposition, if we have the information
+        Configuration configuration = context.getConfiguration();
             String xString = configuration.getKey(this.getClass().getName()+".x");
             String yString = configuration.getKey(this.getClass().getName()+".y");
             Dimension dim = getToolkit().getScreenSize();            
@@ -92,15 +81,13 @@ public class PositionRememberingJFrame extends JFrame {
                     // oh well, fall back then..
                 }
             }
-        }
+       
 
     }
         
    /** save position to configuration */
    private void saveConfiguration() {
-        if (configuration == null) {
-            return;
-        }
+       Configuration configuration = context.getConfiguration();
         Point p = null;
         try {
             p = getLocationOnScreen();
@@ -115,38 +102,42 @@ public class PositionRememberingJFrame extends JFrame {
     }
     
     
-    
     public void setVisible(boolean b) {
         if(this.isVisible() != b) {
+        	if (b) {
+            	loadConfiguration();         
+        	}  else {
+        		saveConfiguration();
+        	}
+        }
+        super.setVisible(b);
         if (b) {
-            loadConfiguration();
-            super.setVisible(b);            
-        } else {
-            saveConfiguration();
-            super.setVisible(b);
-            this.dispose();
+            toFront();
+            requestFocus();        	
         }
+    }
 
-        }
-    }
-    public void hide() {
-        if (this.isVisible()) {
-            saveConfiguration();
-            super.hide();
-            this.dispose();
-        }
-    }
     public void show() {
         if (!this.isVisible()) {
             loadConfiguration();
-            super.show();
         }
+        super.show();
+        toFront();
+        requestFocus();
+    }
+    
+    public void hide() {
+    	saveConfiguration();
+    	super.hide();
     }
 }
 
 
 /* 
 $Log: PositionRememberingJFrame.java,v $
+Revision 1.11  2007/04/18 15:47:05  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.10  2007/01/29 11:11:37  nw
 updated contact details.
 

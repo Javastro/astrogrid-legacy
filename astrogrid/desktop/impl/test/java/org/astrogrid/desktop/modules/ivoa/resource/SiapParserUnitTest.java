@@ -5,7 +5,6 @@ package org.astrogrid.desktop.modules.ivoa.resource;
 
 import java.io.InputStream;
 
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.collections.IteratorUtils;
@@ -14,8 +13,6 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.SiapCapability;
 import org.astrogrid.acr.ivoa.resource.SiapService;
-
-import junit.framework.TestCase;
 
 /** test parsing of siap resources.
  * @todo implement parsing like for other classes of resource.

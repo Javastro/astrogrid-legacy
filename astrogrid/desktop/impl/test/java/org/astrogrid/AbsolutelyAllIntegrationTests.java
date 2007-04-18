@@ -13,6 +13,7 @@ import org.astrogrid.desktop.modules.cds.AllCdsIntegrationTests;
 import org.astrogrid.desktop.modules.ivoa.AllIvoaIntegrationTests;
 import org.astrogrid.desktop.modules.plastic.AllPlasticIntegrationTests;
 import org.astrogrid.desktop.modules.system.contributions.AllSystemContributionIntegrationTests;
+import org.astrogrid.desktop.modules.system.pref.AllPreferenceIntegrationTests;
 import org.astrogrid.desktop.modules.votech.AllVotechIntegrationTests;
 
 /**All integration tests, run inside a single instance of AR
@@ -27,6 +28,7 @@ public class AbsolutelyAllIntegrationTests {
 		inar.addTest(org.astrogrid.acr.AllAcrIntegrationTests.suite());
 		inar.addTest(org.astrogrid.desktop.modules.ag.AllAstrogridIntegrationTests.suite());
 		inar.addTest(org.astrogrid.desktop.modules.system.AllSystemIntegrationTests.suite());
+		inar.addTest(AllPreferenceIntegrationTests.suite());
 		inar.addTest(AllSystemContributionIntegrationTests.suite());
         inar.addTest(AllIvoaIntegrationTests.suite());
         inar.addTest(AllFrameworkIntegrationTests.suite());

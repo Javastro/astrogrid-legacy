@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.14 2007/03/22 19:03:48 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.15 2007/04/18 15:47:11 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.desktop.modules.background;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.Principal;
@@ -56,12 +57,14 @@ import org.astrogrid.desktop.modules.ag.MessagingInternal.SourcedExecutionMessag
 import org.astrogrid.desktop.modules.ag.recorder.ResultsExecutionMessage;
 import org.astrogrid.desktop.modules.ag.recorder.StatusChangeExecutionMessage;
 import org.astrogrid.desktop.modules.auth.CommunityInternal;
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.security.SecurityGuard;
 import org.astrogrid.workflow.beans.v1.Tool;
+import org.exolab.castor.xml.CastorException;
 import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.mortbay.util.MultiException;
@@ -102,7 +105,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
             , TasksInternal ceaInternal
             , Registry reg
             , ApplicationsInternal apps
-            , UIInternal ui
+            , UIContext ui
             , CommunityInternal community) {
         super();         
         this.apps = apps;
@@ -135,7 +138,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
         return "ivo".equals(execId.getScheme()) || "local".equals(execId.getScheme());
     }
 
-    private final UIInternal ui;
+    private final UIContext ui;
     
     /** creates a worker that will refresh status of all apps */
     public BackgroundWorker createWorker() {
@@ -330,6 +333,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
       Set securityActions;
         try {
         tool = (Tool)Unmarshaller.unmarshal(Tool.class, doc);
+
         securityActions = this.extractSecurityInstructions(doc);
         
         // The application name is supposed to be an IVOID without the
@@ -351,14 +355,17 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
         Service target = null;
         switch(arr.length) {            
             case 0:
+            	logger.debug("No providers");
                 throw new NotFoundException(info.getTitle() +" has no registered providers");
             case 1:
                 target = arr[0];
+                logger.debug("One provider " + target.getId()); 
                 break;
             default:
                 List l =  Arrays.asList(arr);
                 Collections.shuffle(l);
                 target = (Service)l.get(0);
+                logger.debug("Multiple providers, selected " + target.getId());
         }
         return invoke(info, tool, target, securityActions);            
     }
@@ -462,17 +469,28 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
      * @throws ServiceException
      */
     private URI invoke(CeaApplication application, 
-    		Tool document, 
+    		Tool tool, 
     		Service server,
     		Set securityActions)
     throws ServiceException {
-    	apps.translateQueries(application, document); //@todo - maybe move this into manager too???
+    	apps.translateQueries(application, tool); //@todo - maybe move this into manager too???
     	try {
+    		if (logger.isDebugEnabled()) {
+	        	try {
+	        		StringWriter sw = new StringWriter();
+					Marshaller.marshal(tool,sw);
+					logger.debug(sw.toString());
+				} catch (CastorException x) {
+					logger.debug("MarshalException",x);
+				} 
+		}
     		//fudge some kind of job id type. hope this will do.
     		JobIdentifierType jid = new JobIdentifierType(server.getId().toString());
+    		logger.debug("Id will be " + jid);
     		//try local invocation.
-    		if (ceaInternal.getAppLibrary().hasMatch(application)) {           
-    			String primId = ceaInternal.getExecutionController().init(document,jid.toString());
+    		if (ceaInternal.getAppLibrary().hasMatch(application)) {
+    			String primId = ceaInternal.getExecutionController().init(tool,jid.toString());
+    			logger.debug("Using local invocation, id=" + primId);
     			if (!ceaInternal.getExecutionController().execute(primId)) {
     				throw new ServiceException("Failed to start application, for unknown reason");
     			}
@@ -484,6 +502,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
     		}
     		// try remote invocation.
     		CeaService ceaService = (CeaService)server;
+    		logger.debug("Using remote invocation to" + ceaService.getId());
     		CommonExecutionConnectorClient del = ceaHelper.createCEADelegate(ceaService);
     		Iterator i = securityActions.iterator();
     		while (i.hasNext()) {
@@ -492,7 +511,10 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
     			SecurityGuard guard = this.community.getSecurityGuard();
     			del.setCredentials(guard);
     		}
-    		String primId = del.init(document,jid);
+    		logger.info("Initializing document on server" );
+
+    		String primId = del.init(tool,jid);
+    		logger.info("Server returned taskID " + primId);
     		del.execute(primId);
     		URI id = ceaHelper.mkRemoteTaskURI(primId,ceaService);
     		// notifyy recorder of new remote cea.
@@ -503,7 +525,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
     		);
     		SourcedExecutionMessage sem = new SourcedExecutionMessage(
     				id
-    				,document.getName()
+    				,tool.getName()
     				,em
     				,new Date()
     				,null
@@ -527,6 +549,9 @@ public class CeaStrategyImpl implements RemoteProcessStrategy, UserLoginListener
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.15  2007/04/18 15:47:11  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.14  2007/03/22 19:03:48  nw
 added support for sessions and multi-user ar.
 

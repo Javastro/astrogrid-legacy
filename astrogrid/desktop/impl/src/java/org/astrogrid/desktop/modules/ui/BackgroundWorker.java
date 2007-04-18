@@ -1,4 +1,4 @@
-/*$Id: BackgroundWorker.java,v 1.9 2007/03/22 19:03:48 nw Exp $
+/*$Id: BackgroundWorker.java,v 1.10 2007/04/18 15:47:05 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,8 @@ import java.security.Principal;
 import java.util.Observable;
 
 import javax.swing.SwingUtilities;
+
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 
 import EDU.oswego.cs.dl.util.concurrent.Callable;
 import EDU.oswego.cs.dl.util.concurrent.FutureResult;
@@ -42,6 +44,8 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
         protected final String msg;
         /** ui component that this operation is displaying progress in */
         protected final UIComponent parent;
+        /** flag to indicate that this is a 'special' task - only used within UI */
+        protected boolean special;
         
         /** Holds the value to be returned by the <code>get</code> method. */
         private final FutureResult result = new FutureResult();
@@ -52,6 +56,14 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
         private static long timestampGen = 0L;
         /** priority for this tasks */
         private int priority;
+        public BackgroundWorker(UIContext context, String msg) {
+        	this(context.findMainWindow(),msg);
+        	special = true;
+        }
+        public BackgroundWorker(UIContext context, String msg, long msecs) {
+        	this(context.findMainWindow(),msg,msecs);
+        	special = true;
+        }        
         public BackgroundWorker(UIComponent parent,String msg) {
             this(parent,msg,DEFAULT_TIMEOUT,Thread.NORM_PRIORITY);
         }
@@ -156,7 +168,7 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
                             doError(ex);
                         }
                     } finally {
-                        parent.removeBackgroundWorker(BackgroundWorker.this);
+                        parent.getContext().getTasksList().remove(BackgroundWorker.this);
                         doAlways();
                         setStatus(COMPLETED);
                     }
@@ -168,16 +180,18 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
          * Starts the worker thread.
          */
         public synchronized void start() {
-            if (SwingUtilities.isEventDispatchThread()) {
-                parent.addBackgroundWorker(this);
-            } else {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        parent.addBackgroundWorker(BackgroundWorker.this);                        
-                    }
-                });
-            }
-            parent.getUI().getExecutor().executeWorker(this);
+        	if (! SwingUtilities.isEventDispatchThread()) {
+        		SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						start();
+					}
+        		});
+        	} else {
+        		parent.getContext().getTasksList().add(this);
+        		//@todo think when's best to set the status message...
+        		parent.setStatusMessage(this.getMessage());
+        		parent.getContext().getExecutor().executeWorker(this);
+        	}
         }
 
         /**
@@ -186,11 +200,11 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
          */
         public synchronized void interrupt() {
             run = false; // will halt a task if it hasn't already been executed.
-            parent.getUI().getExecutor().interrupt(this); // will try to halt a running task
+            parent.getContext().getExecutor().interrupt(this); // will try to halt a running task
             result.setException(new InterruptedException());
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-            parent.removeBackgroundWorker(BackgroundWorker.this);
+            parent.getContext().getTasksList().remove(BackgroundWorker.this);
                 }
             });
             
@@ -288,6 +302,9 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
 
 /* 
 $Log: BackgroundWorker.java,v $
+Revision 1.10  2007/04/18 15:47:05  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.9  2007/03/22 19:03:48  nw
 added support for sessions and multi-user ar.
 

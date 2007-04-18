@@ -6,13 +6,6 @@ package org.astrogrid.desktop.modules.dialogs.registry.srql;
 import junit.framework.TestCase;
 
 import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.desktop.modules.dialogs.registry.srql.SRQL;
-import org.astrogrid.desktop.modules.dialogs.registry.srql.AndSRQL;
-import org.astrogrid.desktop.modules.dialogs.registry.srql.NotSRQL;
-import org.astrogrid.desktop.modules.dialogs.registry.srql.OrSRQL;
-import org.astrogrid.desktop.modules.dialogs.registry.srql.PhraseSRQL;
-import org.astrogrid.desktop.modules.dialogs.registry.srql.SRQLParser;
-import org.astrogrid.desktop.modules.dialogs.registry.srql.TermSRQL;
 
 /**
  * @author Noel Winstanley

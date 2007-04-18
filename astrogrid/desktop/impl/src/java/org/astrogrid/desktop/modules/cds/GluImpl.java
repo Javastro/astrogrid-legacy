@@ -1,4 +1,4 @@
-/*$Id: GluImpl.java,v 1.6 2007/01/29 11:11:37 nw Exp $
+/*$Id: GluImpl.java,v 1.7 2007/04/18 15:47:06 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,7 @@ import org.astrogrid.acr.cds.Glu;
 import org.astrogrid.desktop.modules.cds.jglu.Jglu;
 import org.astrogrid.desktop.modules.cds.jglu.JgluService;
 import org.astrogrid.desktop.modules.cds.jglu.JgluServiceLocator;
-import org.astrogrid.desktop.modules.system.Preference;
+import org.astrogrid.desktop.modules.system.pref.Preference;
 
 /** Implementation of the GLU service
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 16-Aug-2005
@@ -67,6 +67,9 @@ public class GluImpl implements Glu {
 
 /* 
 $Log: GluImpl.java,v $
+Revision 1.7  2007/04/18 15:47:06  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.6  2007/01/29 11:11:37  nw
 updated contact details.
 

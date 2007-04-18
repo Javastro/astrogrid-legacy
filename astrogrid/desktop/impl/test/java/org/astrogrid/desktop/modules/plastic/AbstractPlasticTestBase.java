@@ -16,9 +16,14 @@ import org.astrogrid.acr.system.RmiServer;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.common.namegen.InMemoryNameGen;
 import org.astrogrid.common.namegen.NameGen;
-import org.astrogrid.desktop.alternatives.HeadlessUIFactory;
-import org.astrogrid.desktop.modules.system.Preference;
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.alternatives.HeadlessUIComponent;
+import org.astrogrid.desktop.alternatives.InThreadExecutor;
+import org.astrogrid.desktop.modules.system.BackgroundExecutor;
+import org.astrogrid.desktop.modules.system.pref.Preference;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.system.ui.UIContextImpl;
+import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.easymock.MockControl;
 
 import EDU.oswego.cs.dl.util.concurrent.DirectExecutor;
 import EDU.oswego.cs.dl.util.concurrent.Executor;
@@ -31,7 +36,7 @@ public class AbstractPlasticTestBase extends TestCase {
 	protected static final URI SENDER_ID = URI.create("ivo://junit");
 
 
-    protected UIInternal ui; 
+    protected UIContext ui; 
     
     protected String version = "test";
     
@@ -68,8 +73,8 @@ public class AbstractPlasticTestBase extends TestCase {
 		notifyEvents = new Preference();
 		notifyEvents.setDefaultValue("true");
 		notifyEvents.setName("notifyEvents");
-		HeadlessUIFactory fac = new HeadlessUIFactory();
-		ui = fac.getUI();
+		BackgroundExecutor be = new InThreadExecutor();			
+		ui = new UIContextImpl(null,be,null,null);
 		executor = new DirectExecutor();
 		idGenerator = new InMemoryNameGen();
 		web = new WebServer() {

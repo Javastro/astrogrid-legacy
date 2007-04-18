@@ -3,7 +3,6 @@
  */
 package org.astrogrid.desktop.modules.dialogs.registry;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
@@ -22,24 +21,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
 import javax.swing.JComponent;
-import javax.swing.JTextPane;
 
 import jedit.JEditTextArea;
 import jedit.SyntaxDocument;
-import jedit.SyntaxStyle;
-import jedit.Token;
 import jedit.XMLTokenMarker;
 
-import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
-import org.astrogrid.desktop.modules.ui.dnd.ResourceListTransferable;
 import org.astrogrid.desktop.modules.ui.dnd.XmlTransferable;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;

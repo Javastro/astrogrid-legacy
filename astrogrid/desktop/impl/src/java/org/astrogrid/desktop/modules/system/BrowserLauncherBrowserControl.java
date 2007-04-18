@@ -13,6 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.alternatives.FallbackBrowserControl;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 
 import edu.stanford.ejalbert.BrowserLauncher;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
@@ -27,7 +28,7 @@ import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 public class BrowserLauncherBrowserControl extends FallbackBrowserControl {
     private static final Log logger = LogFactory
     	.getLog(BrowserLauncherBrowserControl.class);
-	public BrowserLauncherBrowserControl(WebServer root,UIInternal ui) {
+	public BrowserLauncherBrowserControl(WebServer root,UIContext ui) {
 		super(root);
 		this.ui = ui;
 		browserLogger = new WorkbenchLogger();
@@ -39,7 +40,7 @@ public class BrowserLauncherBrowserControl extends FallbackBrowserControl {
 			logger.error("UnsupportedOperatingSystemException",x);
 		}
 	}
-	protected final UIInternal ui;
+	protected final UIContext ui;
 	private BrowserLauncher launcher;
 	private final AbstractLogger browserLogger;
 
@@ -62,7 +63,7 @@ public class BrowserLauncherBrowserControl extends FallbackBrowserControl {
 			setLevel(Level.ERROR);
 		}
 		protected void reallyLog(int arg0, String arg1, Throwable arg2) throws Exception {
-			ui.showError(arg1,arg2);
+			ui.findMainWindow().showError(arg1,arg2);
 		}
 	}
 

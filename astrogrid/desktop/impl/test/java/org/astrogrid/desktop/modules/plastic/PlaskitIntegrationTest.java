@@ -2,7 +2,6 @@ package org.astrogrid.desktop.modules.plastic;
 
 import junit.framework.TestCase;
 
-import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.desktop.TestingFinder;
 import org.votech.plastic.PlasticHubListener;

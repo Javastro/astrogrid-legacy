@@ -29,12 +29,7 @@ RESOURCE (FILE) CHOOSER
 		<invoke-factory model="session">
 			<construct class="org.astrogrid.desktop.modules.dialogs.ResourceChooserImpl" >
 			    <service>astrogrid.myspace</service>
-			    <service>ui.sendTo</service>
-				<service>system.configuration</service>
-				<service>system.help</service>
-				<service>system.ui</service>
-				<service>astrogrid.community</service>		
-				<boolean>${dialogs.resourceChooser.useNewDialog}</boolean>		
+				<service>astrogrid.community</service>			
 			</construct>
 		</invoke-factory>	
 	</service-point>
@@ -43,16 +38,6 @@ RESOURCE (FILE) CHOOSER
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>
 	
-	<contribution configuration-id="framework.preferences">
-		<preference name="dialogs.resourceChooser.useNewDialog" 
-			advanced="true"
-			requires-restart="true"
-			default-value="true" >
-			<ui-name>Use new filechooser dialog (recommended)</ui-name>
-			<description>select new or old filechooser dialogue implementation</description>
-			<units>boolean</units>
-			</preference>
-	</contribution>	
 
 	<contribution configuration-id="system.uiStructure" >
 		<action parentName="debug"  onEventDispatchThread="true"  before="*"
@@ -106,12 +91,9 @@ TOOL EDITOR
 				<configuration>toolEditors</configuration>
 				<service>resourceChooser</service>
 				<service>ivoa.registry</service>
-				<service>system.configuration</service>
-				<service>system.help</service>
 				<service>system.ui</service>
 				<service>astrogrid.applications</service>
 				<service>astrogrid.myspace</service>	
-				<service>system.browser</service>
 				<object>preference:acr.advanced</object>							
 			</construct>
 		</invoke-factory>	
@@ -192,8 +174,6 @@ REGISTRY GOOGLE
 		Select a registry resource
 		<invoke-factory model="session">
 			<construct class="org.astrogrid.desktop.modules.dialogs.RegistryGoogleImpl" >
-				<service>system.configuration</service>
-				<service>system.help</service>
 				<service>system.ui</service>
 				<object>object:registryGooglePanel</object>
 			</construct>
@@ -288,7 +268,7 @@ REGISTRY GOOGLE
 	<service-point id="adqlPanel" visibility="private" interface="org.astrogrid.desktop.modules.dialogs.editors.ToolEditorPanelFactory">
 		Allows user to build adql queries
 		<invoke-factory model="primitive">
-			<construct class="org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanelFactory">
+			<construct class="org.astrogrid.desktop.modules.adqlEditor.ADQLToolEditorPanelFactory">
 				<service>resourceChooser</service>
 				<service>registryGoogle</service>
 				<service>astrogrid.myspace</service>

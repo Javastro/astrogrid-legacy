@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowserImpl.java,v 1.21 2007/03/08 17:43:59 nw Exp $
+/*$Id: VospaceBrowserImpl.java,v 1.22 2007/04/18 15:47:05 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,15 +42,12 @@ import javax.swing.JToolBar;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.acr.system.BrowserControl;
-import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.MyspaceBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.Preference;
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.system.pref.Preference;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.filemanager.client.NodeMetadata;
@@ -551,7 +548,6 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 		}
     }
 
-    protected final BrowserControl browser;
     protected final ResourceChooserInternal chooser;
     private Actions actions = null;
 
@@ -567,9 +563,8 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
      * This is the default constructor
 
      */
-    public VospaceBrowserImpl(Configuration conf, HelpServerInternal hs,UIInternal ui, MyspaceInternal vos, SendToMenu sendTo,BrowserControl browser,ResourceChooserInternal chooser, Preference pref) {
-        super(conf, hs,ui,vos, sendTo);       
-        this.browser = browser;
+    public VospaceBrowserImpl(UIContext context,MyspaceInternal vos, SendToMenu sendTo,ResourceChooserInternal chooser, Preference pref) {
+        super(context,vos, sendTo);   
         this.chooser =chooser;
         this.advancedPreference = pref;
         initialize();
@@ -695,7 +690,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 		menu.insert(ref,0);
 		*/
 		JMenuItem sci = new JMenuItem("Myspace Help");
-		getHelpServer().enableHelpOnButton(sci, "myspaceBrowser.menu.science");
+		getContext().getHelpServer().enableHelpOnButton(sci, "myspaceBrowser.menu.science");
 		menu.insert(sci,0);
 		return menu;
 	}    
@@ -733,7 +728,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
     private void initialize() {
         this.setJMenuBar(getJJMenuBar());
         this.setName("MyspaceBrowser");
-        getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.myspaceBrowser");          
+        getContext().getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.myspaceBrowser");          
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setIconImage(IconHelper.loadIcon("myspace16.png").getImage());         
         JPanel pane = getMainPanel();
@@ -757,6 +752,9 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
 /*
  * $Log: VospaceBrowserImpl.java,v $
+ * Revision 1.22  2007/04/18 15:47:05  nw
+ * tidied up voexplorer, removed front pane.
+ *
  * Revision 1.21  2007/03/08 17:43:59  nw
  * first draft of voexplorer
  *

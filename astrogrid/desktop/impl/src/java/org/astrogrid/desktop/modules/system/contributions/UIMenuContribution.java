@@ -1,4 +1,4 @@
-/*$Id: UIMenuContribution.java,v 1.7 2007/01/23 11:50:49 nw Exp $
+/*$Id: UIMenuContribution.java,v 1.8 2007/04/18 15:47:09 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,20 +16,37 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JMenu;
 
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.system.Preference;
+import org.astrogrid.desktop.modules.system.pref.Preference;
 
 /** bean modelling a menu in the user interface.*/
-public class UIMenuContribution extends JMenu implements UIStructureContribution, PropertyChangeListener {
+public class UIMenuContribution extends JMenu implements UIStructureContribution, PropertyChangeListener{
 
     public UIMenuContribution() {
         super();
     }
-    
+	public UIStructureContribution cloneStructure() {
+// clone doesn't work well with menus, it seems. dunno why. 
+		// use a copy constructor instead.
+		return new UIMenuContribution(this);
+	}
 
+	
+	protected UIMenuContribution(UIMenuContribution copy) {
+		this.after = copy.after;
+		this.before = copy.before;
+		this.parentName= copy.parentName;
+		this.visiblePreference = copy.visiblePreference;
+		// now copy some fields from JMenu too - the ones accessible through the contribution.
+		this.setText(copy.getText());
+		this.setName(copy.getName());
+		this.setToolTipText(copy.getToolTipText());
+		this.setIcon(copy.getIcon());
+	}
+	
+	
     private String after;
     private String before;
     private String parentName;
-    
     
     private Preference visiblePreference;
     
@@ -105,6 +122,9 @@ public class UIMenuContribution extends JMenu implements UIStructureContribution
 
 /* 
 $Log: UIMenuContribution.java,v $
+Revision 1.8  2007/04/18 15:47:09  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.7  2007/01/23 11:50:49  nw
 preferences integration.
 

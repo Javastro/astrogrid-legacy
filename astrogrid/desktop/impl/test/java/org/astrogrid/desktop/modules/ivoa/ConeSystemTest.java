@@ -5,10 +5,6 @@ package org.astrogrid.desktop.modules.ivoa;
 
 import java.net.URI;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import junit.framework.Test;
@@ -17,7 +13,6 @@ import junit.framework.TestSuite;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.cds.Sesame;
 import org.astrogrid.acr.cds.SesamePositionBean;
 import org.astrogrid.acr.ivoa.Cone;
@@ -27,7 +22,6 @@ import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
 import org.votech.VoMon;
-import org.votech.VoMonBean;
 
 /** System test for the cone search interface.
  * @author Noel Winstanley
@@ -40,13 +34,11 @@ public class ConeSystemTest extends InARTestCase {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		ACR acr = getACR();
-		assertNotNull(acr);
-		cone = (Cone)acr.getService(Cone.class);
-		reg = (Registry)acr.getService(Registry.class);
-		ses = (Sesame)acr.getService(Sesame.class);		
-		vomon = (VoMon)acr.getService(VoMon.class);
-		assertNotNull(cone);
+
+		cone = (Cone)assertServiceExists(Cone.class,"ivoa.cone");
+		reg = (Registry)assertServiceExists(Registry.class,"ivoa.registry");
+		ses = (Sesame)assertServiceExists(Sesame.class,"cds.sesame");
+		vomon = (VoMon)assertServiceExists(VoMon.class,"votech.vomon");
 	}
 	protected void tearDown() throws Exception {
 		super.tearDown();
@@ -63,42 +55,20 @@ public class ConeSystemTest extends InARTestCase {
     public static Test suite() {
         return new ARTestSetup(new TestSuite(ConeSystemTest.class));
     }    
-
+    public static final String CONE_TEST_SERVICE ="ivo://nasa.heasarc/swiftmastr";
 	/*
 	 * Test method for 'org.astrogrid.desktop.modules.nvo.ConeImpl.constructQuery(URI, double, double, double)'
 	 */
 	public void testQuery() throws Exception{
-		String xq = cone.getRegistryXQuery();
-		Resource[] res = reg.xquerySearch(xq);
-		assertNotNull(res);
-		assertTrue(res.length > 0);
-		List l = Arrays.asList(res);
-		Collections.shuffle(l);
-		Resource r = null;
-		// find a service that is up.
-		for (Iterator i = l.iterator(); i.hasNext();) {
-			Resource x = (Resource)i.next();
-			URI id = x.getId();
-			VoMonBean bean = vomon.checkAvailability(id);
-			if (bean != null && bean.getStatus().equals("up")) {
-				r = x;
-				break;
-			}
-		}
-		assertNotNull("no available service found",r);
-		System.out.println(r.getId());
-		SesamePositionBean pos = ses.resolve("crab");
-		assertNotNull(pos);
-		System.out.println(pos);
-		URL u = cone.constructQuery(r.getId(),pos.getRa(),pos.getDec(),1.0);
+		Resource r = reg.getResource(new URI(CONE_TEST_SERVICE));
+		SesamePositionBean pos = ses.resolve("crab");		
+		URL u = cone.constructQuery(r.getId(),pos.getRa(),pos.getDec(),0.001);
 		Map[] rows = cone.execute(u);
 		assertNotNull(rows);
 		assertTrue("no results returned",rows.length > 0);
 
 	}
 	
-
-
 
 	public void testGetAdqlRegistryQueryNewReg() throws InvalidArgumentException, NotFoundException, ACRException, Exception {
 		String q = cone.getRegistryAdqlQuery();

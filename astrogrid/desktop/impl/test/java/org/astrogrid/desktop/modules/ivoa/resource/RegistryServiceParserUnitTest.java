@@ -8,7 +8,7 @@ import javax.xml.stream.XMLInputFactory;
 import junit.framework.TestCase;
 
 /** Tests parsing of  registry service resources.
- * @todo implement
+ * FIXME implement
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 20, 200711:51:20 PM
  */
@@ -25,5 +25,8 @@ public class RegistryServiceParserUnitTest extends TestCase {
 		fac = null;
 	}
 	XMLInputFactory fac ;
-
+	public void testDummy() throws Exception {
+		System.err.println("implement some tsts in " + this.getClass().getName());
+		
+	}
 }

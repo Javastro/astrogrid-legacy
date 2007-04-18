@@ -16,8 +16,12 @@ public class AllDndUnitTests {
 		TestSuite suite = new TestSuite(
 				"Unit Tests for drag n drop components.");
 		//$JUnit-BEGIN$
+
 		suite.addTestSuite(ResourceTransferableUnitTest.class);
 		suite.addTestSuite(ResourceListTransferableUnitTest.class);
+		suite.addTestSuite(VoDataFlavourUnitTest.class);
+		suite.addTestSuite(FileObjectListTransferableUnitTest.class);
+		suite.addTestSuite(FileObjectTransferableUnitTest.class);
 		//$JUnit-END$
 		return suite;
 	}

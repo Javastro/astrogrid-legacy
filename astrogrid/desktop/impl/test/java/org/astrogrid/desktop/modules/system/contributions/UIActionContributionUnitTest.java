@@ -11,9 +11,9 @@ import javax.swing.JButton;
 
 import junit.framework.TestCase;
 
-import org.astrogrid.desktop.alternatives.HeadlessUIFactory;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.system.Preference;
+import org.astrogrid.desktop.modules.system.pref.Preference;
+import org.astrogrid.desktop.modules.system.ui.ContributionInvoker;
 import org.easymock.MockControl;
 
 /** unit tests for the ui action contribution.
@@ -35,22 +35,36 @@ public class UIActionContributionUnitTest extends TestCase implements PropertyCh
 	}
 	protected UIActionContribution act;
 
-	/* too hard to test - means I need to get an instance of UIImpl - which drages everything else in.
-	 * @todo provide interface around UIImpl - then can mock successfully.
-	 * Test method for 'org.astrogrid.desktop.modules.system.contributions.UIActionContribution.actionPerformed(ActionEvent)'
-	 */
-	public void dontTestActionPerformed() {
+	// expect it to throw - fail fast as a contributionInvoker has not been provided.
+	public void testActionPerformedUninitialized() {
 		MockControl rControl = MockControl.createControl(Runnable.class);
 		Runnable r = (Runnable)rControl.getMock();
+		rControl.replay();
+		
+		act.setObject(r);
+		act.setMethodName("run");
+		try {
+			act.actionPerformed(null);
+			fail("expected to barf");
+		} catch (Exception e) {
+			// ok
+		}
+		rControl.verify();
+
+	}	
+	// unsure what, if anything, this test is exercising. still, will leave it in.
+	public void testActionPerformed() {
+		MockControl rControl = MockControl.createControl(Runnable.class);
+		final Runnable r = (Runnable)rControl.getMock();
 		r.run();
 		rControl.replay();
 		act.setObject(r);
 		act.setMethodName("run");
-		HeadlessUIFactory fac = new HeadlessUIFactory();
-		//act.setUIImpl(fac.getUI());
-	//	UIImpl ui = new UIImpl(
-	//	MockControl uiControl = MockControl.createControl(UII
-		
+		act.setContributionInvoker(new ContributionInvoker() {
+			public void invoke(UIActionContribution action) {
+				r.run();
+			}
+		});
 		act.actionPerformed(null);
 		rControl.verify();
 

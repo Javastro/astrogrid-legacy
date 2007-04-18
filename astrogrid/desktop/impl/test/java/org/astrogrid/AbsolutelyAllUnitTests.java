@@ -9,8 +9,11 @@ import junit.framework.TestSuite;
 
 import org.astrogrid.desktop.modules.auth.AllAuthUnitTests;
 import org.astrogrid.desktop.modules.dialogs.file.AllFileDialogUnitTests;
+import org.astrogrid.desktop.modules.system.ui.AllSystemUiUnitTests;
 import org.astrogrid.desktop.modules.ui.comp.AllUIComponentUnitTests;
 import org.astrogrid.desktop.modules.ui.dnd.AllDndUnitTests;
+import org.astrogrid.desktop.modules.ui.voexplorer.folders.AllVoExplorerFoldersUnitTests;
+import org.astrogrid.desktop.modules.ui.voexplorer.storage.AllVOExplorerStorageUnitTests;
 import org.astrogrid.desktop.modules.votech.AllVotechUnitTests;
 
 /** Runs all unit tests - handy hook for within eclipse
@@ -26,7 +29,7 @@ public class AbsolutelyAllUnitTests {
 		suite.addTest(org.astrogrid.desktop.alternatives.AllAlternativesUnitTests.suite());
 		suite.addTest(org.astrogrid.desktop.framework.AllFrameworkUnitTests.suite());
 		suite.addTest(org.astrogrid.desktop.hivemind.AllHivemindUnitTests.suite());
-		suite.addTest(org.astrogrid.desktop.modules.system.AllSystemUnitTests.suite());
+		suite.addTest(org.astrogrid.desktop.modules.system.pref.AllPreferenceUnitTests.suite());
 		suite.addTest(org.astrogrid.desktop.modules.system.contributions.AllSystemContributionUnitTests.suite());
 		suite.addTest(org.astrogrid.desktop.modules.system.converters.AllSystemConverterUnitTests.suite());
 		suite.addTest(org.astrogrid.desktop.modules.system.transformers.AllSystemTransformerUnitTests.suite());
@@ -44,6 +47,9 @@ public class AbsolutelyAllUnitTests {
 		suite.addTest(AllUIComponentUnitTests.suite());
 		suite.addTest(AllDndUnitTests.suite());
 		suite.addTest(AllAuthUnitTests.suite());
+		suite.addTest(AllVoExplorerFoldersUnitTests.suite());
+		suite.addTest(AllVOExplorerStorageUnitTests.suite());
+		suite.addTest(AllSystemUiUnitTests.suite());
 		return suite;
 	}
 

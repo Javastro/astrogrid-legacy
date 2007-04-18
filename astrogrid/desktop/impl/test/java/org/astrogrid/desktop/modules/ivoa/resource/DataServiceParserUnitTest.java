@@ -12,7 +12,7 @@ import junit.framework.TestCase;
  * DataService - covers resourcews previously called SkyService.
  * 		- although many cone services evolve into this too.
  * CatalogService - covers resources prevously called TabularSkyService - vizier stuff.
- * @todo implement
+ * FIXME implement
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 20, 200711:51:20 PM
  */
@@ -29,5 +29,9 @@ public class DataServiceParserUnitTest extends TestCase {
 		fac = null;
 	}
 	XMLInputFactory fac ;
+	public void testDummy() throws Exception {
+		System.err.println("implement some tsts in " + this.getClass().getName());
+		
+	}
 
 }

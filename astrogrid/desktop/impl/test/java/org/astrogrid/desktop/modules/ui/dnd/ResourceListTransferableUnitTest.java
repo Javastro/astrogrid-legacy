@@ -8,12 +8,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import junit.framework.TestCase;
+
+import org.apache.commons.lang.ArrayUtils;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.easymock.MockControl;
-
-import junit.framework.TestCase;
 
 /** test for resource lists.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -64,15 +66,17 @@ public class ResourceListTransferableUnitTest extends TestCase {
 		Object o = t.getTransferData(VoDataFlavour.LOCAL_RESOURCE_LIST);
 		assertFalse(VoDataFlavour.LOCAL_RESOURCE_LIST.isFlavorSerializedObjectType());
 		assertNotNull(o);
-		assertSame(l,o);
+		assertTrue(o instanceof Resource[]);
+		assertEquals(l,Arrays.asList((Resource[])o));
 	}
 	
 	public void testResourceListFlavor() throws Exception {
 		assertTrue(t.isDataFlavorSupported(VoDataFlavour.RESOURCE_LIST));
 		Object o = t.getTransferData(VoDataFlavour.RESOURCE_LIST);
-	// wierd - not true.	assertTrue(VoDataFlavour.RESOURCE_LIST.isFlavorSerializedObjectType());
+		assertTrue(VoDataFlavour.RESOURCE_LIST.isFlavorSerializedObjectType());
 		assertNotNull(o);
-		assertSame(l,o);
+		assertTrue(o instanceof Resource[]);
+		assertEquals(l,Arrays.asList((Resource[])o));
 	}
 	
 	public void testLocalURIFlavor() throws Exception {

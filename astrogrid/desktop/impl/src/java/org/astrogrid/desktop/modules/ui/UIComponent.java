@@ -5,7 +5,7 @@ package org.astrogrid.desktop.modules.ui;
 
 import javax.swing.JFrame;
 
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 
 
 /** Interface to all ui components in workbench.
@@ -13,12 +13,11 @@ import org.astrogrid.desktop.modules.system.UIInternal;
  * @since Apr 10, 20064:37:36 PM
  */
 public interface UIComponent {
+	
+	public String getTitle();
+	public void setVisible(boolean b);
+	
 
-	/** indicate execution of a background process.
-	 * 
-	 * @param b if if true, activity indicator will start throbbing. If false, activity indicator will stop.
-	 */
-	void setBusy(boolean b);
 
 	/** set the status message at the bottom of this pane
 	 * 
@@ -46,20 +45,16 @@ public interface UIComponent {
 	/** get the maximum value for the progress bar */
 	int getProgressMax();
 
-	/** called by a {@link BackgroundWorker} to notify the UI that it's started executing */
-	void addBackgroundWorker(final BackgroundWorker w);
-
-	/** called by {@link BackgroundWorker} to notify the UI it's finished running */
-	void removeBackgroundWorker(BackgroundWorker w);
-
-	/** access the central ui component */
-	UIInternal getUI() ;
-	
-	/** access the Swing frame this UIComponentImpl is associated with
+	/** access the Swing frame this UIComponent is associated with.
+	 * used to centering new windows, etc.
 	 * in Headless mode, wil return null */
 	
 	JFrame getFrame();
-	
-	/** process management - halt all background tasks in this window */
-	  public void haltAll() ;
+    /** halt all tasks owned by this component (and not special) */
+	public void haltMyTasks() ;
+
+	/** access the singleton ui context object.
+	 * @return
+	 */
+	UIContext getContext();
 }

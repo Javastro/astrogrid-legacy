@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.19 2007/03/22 19:00:45 nw Exp $
+/*$Id: VospaceImpl.java,v 1.20 2007/04/18 15:47:10 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -51,8 +51,11 @@ import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.community.common.exception.CommunityException;
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.ag.vfs.MemoizingCommunityAccountSpaceResolver;
+import org.astrogrid.desktop.modules.ag.vfs.MemoizingNodeDelegateResolver;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.filemanager.client.FileManagerClient;
 import org.astrogrid.filemanager.client.FileManagerClientFactory;
 import org.astrogrid.filemanager.client.FileManagerNode;
@@ -81,14 +84,14 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
     /** Construct a new Vospace
      * 
      */
-    public VospaceImpl(Community community, Registry reg, BundlePreferences preferences, UIInternal ui) {
+    public VospaceImpl(Community community, Registry reg, BundlePreferences preferences, UIContext ui) {
         super();
         this.community = community;
         this.prefs = preferences;
         this.ui = ui;
         this.reg = reg;
     }
-    protected final UIInternal ui;
+    protected final UIContext ui;
    protected final Community community;
    protected final Registry reg;
    protected final BundlePreferences prefs;
@@ -97,7 +100,11 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
     
     public synchronized FileManagerClient getClient() throws CommunityException, RegistryException, URISyntaxException {
         if (client == null) {
-            FileManagerClientFactory fac = new FileManagerClientFactory(prefs); 
+     //       FileManagerClientFactory fac = new FileManagerClientFactory(prefs);
+       //NWW - replaced with a version that uses memoization for speedup.
+    	FileManagerClientFactory fac = new FileManagerClientFactory(
+    				new MemoizingNodeDelegateResolver(prefs)
+    				,new MemoizingCommunityAccountSpaceResolver());        	
             client = fac.login(new Ivorn(community.getUserInformation().getId().toString()),community.getUserInformation().getPassword());
         } 
         return client;
@@ -919,6 +926,9 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.20  2007/04/18 15:47:10  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.19  2007/03/22 19:00:45  nw
 moved all auth components into separate folder, to keep separate from ag stuff.
 

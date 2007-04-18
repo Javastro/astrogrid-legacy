@@ -1,4 +1,4 @@
-/*$Id: VizieRImpl.java,v 1.6 2007/01/29 11:11:37 nw Exp $
+/*$Id: VizieRImpl.java,v 1.7 2007/04/18 15:47:05 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.cds.VizieR;
 import org.astrogrid.desktop.modules.cds.vizier.VizieRService;
 import org.astrogrid.desktop.modules.cds.vizier.VizieRServiceLocator;
-import org.astrogrid.desktop.modules.system.Preference;
+import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.w3c.dom.Document;
 
 /** Implementation of the vizier service
@@ -127,6 +127,9 @@ public class VizieRImpl implements VizieR {
 
 /* 
 $Log: VizieRImpl.java,v $
+Revision 1.7  2007/04/18 15:47:05  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.6  2007/01/29 11:11:37  nw
 updated contact details.
 

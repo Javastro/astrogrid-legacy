@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.35 2007/03/08 17:44:04 nw Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.36 2007/04/18 15:47:11 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -63,7 +63,7 @@ import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditAdapter;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditListener;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.Preference;
+import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.ApplicationLauncherImpl;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.SimplifiedAppLauncherImpl;
@@ -77,6 +77,8 @@ import com.l2fprod.common.swing.JLinkButton;
 
 /** Tool Editor Panel that composites together a bunch of other ones, and determines which
  * to show.
+ * 
+ *
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 08-Sep-2005
  *
  */
@@ -396,8 +398,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel implements
         
         private void enableApplicable(Tool t, CeaApplication info) {
         	int firstApplicable = -1;
-        	int startIx = parent instanceof SimplifiedAppLauncherImpl ? 0 : 1;
+        	//int startIx = parent instanceof SimplifiedAppLauncherImpl ? 0 : 1;
         	// start at 1, as 0 is hte chooser - always applicable, but other applicable should take precedence
+        	int startIx = 0;
         	for (int i = startIx; i < views.length; i++ ) { 
         		final AbstractToolEditorPanel panel = views[i];
         		int pos = tabPane.indexOfComponent(panel);
@@ -653,6 +656,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel implements
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.36  2007/04/18 15:47:11  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.35  2007/03/08 17:44:04  nw
 first draft of voexplorer
 

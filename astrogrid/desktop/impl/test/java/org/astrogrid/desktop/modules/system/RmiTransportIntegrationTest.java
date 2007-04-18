@@ -1,4 +1,4 @@
-/*$Id: RmiTransportIntegrationTest.java,v 1.7 2007/01/29 10:42:48 nw Exp $
+/*$Id: RmiTransportIntegrationTest.java,v 1.8 2007/04/18 15:47:04 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import java.io.InputStream;
 import java.util.Arrays;
 
 import junit.framework.Test;
@@ -18,20 +17,13 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.astrogrid.CeaApplication;
-import org.astrogrid.acr.astrogrid.CeaService;
 import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.acr.ivoa.ExternalRegistry;
-import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.acr.test.TransportTest;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.TestingFinder;
-import org.astrogrid.util.DomHelper;
-import org.w3c.dom.Document;
 
 /** tests rmi transport - whether certain classes are serializable etc.
  * 
@@ -113,6 +105,9 @@ public class RmiTransportIntegrationTest extends TestCase {
 
 /* 
 $Log: RmiTransportIntegrationTest.java,v $
+Revision 1.8  2007/04/18 15:47:04  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.7  2007/01/29 10:42:48  nw
 tidied.
 

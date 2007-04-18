@@ -8,13 +8,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import net.sourceforge.hiveutils.service.impl.ObjectBuilderImpl;
+
 import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.logging.Log;
 import org.apache.hivemind.schema.Translator;
 import org.apache.hivemind.service.EventLinker;
-
-import net.sourceforge.hiveutils.service.impl.ObjectBuilderImpl;
 
 /** implementaiton of the extended object builder.
  * 

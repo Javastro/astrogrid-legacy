@@ -10,31 +10,17 @@
 **/
 package org.astrogrid.desktop.modules.adqlEditor.commands;
 
-import java.io.StringReader;
-
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xmlbeans.SchemaProperty;
-import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.SimpleValue;
 import org.apache.xmlbeans.XmlObject;
-import org.apache.xmlbeans.XmlString;
-// import org.astrogrid.desktop.modules.adqlEditor.AdqlCommand;
-import org.astrogrid.adql.AdqlStoX;
-import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode ;
-import org.astrogrid.desktop.modules.adqlEditor.nodes.NodeFactory ;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
+import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlTree ;
-import org.astrogrid.desktop.modules.adqlEditor.commands.CommandExec.Result;
-import org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanel;
-import org.astrogrid.adql.AdqlStoX;
-import org.astrogrid.adql.ParseException ;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 /**
  * @author jl99@star.le.ac.uk
  *

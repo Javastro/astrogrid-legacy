@@ -4,18 +4,14 @@
 package org.astrogrid.desktop.modules.ui.dnd;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
 import java.net.URI;
 
-import org.astrogrid.acr.ivoa.resource.Resource;
-import org.custommonkey.xmlunit.XMLAssert;
-import org.easymock.MockControl;
-
 import junit.framework.TestCase;
+
+import org.astrogrid.acr.ivoa.resource.Resource;
+import org.easymock.MockControl;
 
 /** test behaviour of resource transfewrable.
  * @author Noel.Winstanley@manchester.ac.uk

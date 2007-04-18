@@ -16,7 +16,6 @@ public class AllAlternativesUnitTests {
 		TestSuite suite = new TestSuite(
 				"Unit Tests for Alternative implementations");
 		//$JUnit-BEGIN$
-		suite.addTestSuite(HeadlessUIUnitTest.class);
 		suite.addTestSuite(HeadlessLoginDialogueUnitTest.class);
 		suite.addTestSuite(InThreadExecutorUnitTest.class);
 		suite.addTestSuite(LoggingSystemTrayUnitTest.class);

@@ -11,14 +11,19 @@ import javax.swing.JButton;
 public class BiStateButton extends JButton {
 	
 	public BiStateButton(Action a, Action b){
+		this(a,b,false);
+	}
+	
+	public BiStateButton(Action a, Action b, boolean iconOnly){
 		this.a = a;
 		this.b = b;
 		enableA();
+		this.iconOnly = iconOnly;
 	}
 	
 	protected final Action a;
 	protected final Action b;
-
+	protected final boolean iconOnly;
 	private boolean aLastPressed;
 
 	public boolean wasALastPressed() {
@@ -30,6 +35,9 @@ public class BiStateButton extends JButton {
 		b.setEnabled(false);
 		a.setEnabled(true);
 		setAction(a);
+		if (iconOnly) {
+			setText(null);
+		}
 		aLastPressed = false;
 		
 	}
@@ -38,6 +46,9 @@ public class BiStateButton extends JButton {
 		a.setEnabled(false);
 		b.setEnabled(true);
 		setAction(b);
+		if (iconOnly) {
+			setText(null);
+		}
 		aLastPressed=true;
 	}
 

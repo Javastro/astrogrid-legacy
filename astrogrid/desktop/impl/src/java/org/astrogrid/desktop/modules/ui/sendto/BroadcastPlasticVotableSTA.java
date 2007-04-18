@@ -1,9 +1,6 @@
 package org.astrogrid.desktop.modules.ui.sendto;
 
 import java.awt.event.ActionEvent;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +10,6 @@ import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.dnd.PreferredTransferable;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
-import org.astrogrid.io.Piper;
 import org.votech.plastic.CommonMessageConstants;
 
 

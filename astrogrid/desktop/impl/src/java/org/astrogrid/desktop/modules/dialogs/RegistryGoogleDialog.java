@@ -1,4 +1,4 @@
-/*$Id: RegistryGoogleDialog.java,v 1.7 2007/03/08 17:44:01 nw Exp $
+/*$Id: RegistryGoogleDialog.java,v 1.8 2007/04/18 15:47:10 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,19 +27,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
-import net.sf.ehcache.Ehcache;
-
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.acr.system.BrowserControl;
-import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.modules.dialogs.registry.RegistryGooglePanel;
-import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.Preference;
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
-import org.votech.VoMon;
 
 /** wraps a dialogue around a registry chooser pane.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Sep-2005
@@ -54,9 +46,9 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
      * @param pref 
      * @throws java.awt.HeadlessException
      */
-    public RegistryGoogleDialog(  Configuration conf, HelpServerInternal help, UIInternal ui, RegistryGooglePanel chooserPanel) throws HeadlessException {
+    public RegistryGoogleDialog( UIContext context, RegistryGooglePanel chooserPanel) throws HeadlessException {
         super();
-        this.parent = new UIComponentImpl(conf,help,ui);
+        this.parent = new UIComponentImpl(context);
         this.chooserPanel = chooserPanel;
         chooserPanel.parent.set(parent);
         this.setContentPane(getJOptionPane());           
@@ -77,8 +69,8 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
         this.setSize(425,600);        
     }
     
-    public RegistryGoogleDialog(Component parentComponent, Configuration conf, HelpServerInternal help, UIInternal ui,RegistryGooglePanel reg) throws HeadlessException {
-    	this(conf,help,ui,reg);
+    public RegistryGoogleDialog(Component parentComponent,UIContext context,RegistryGooglePanel reg) throws HeadlessException {
+    	this(context,reg);
         setLocationRelativeTo(parentComponent);
     }
     
@@ -148,8 +140,10 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
        if (jOptionPane == null) {
            JPanel main = parent.getMainPanel();
            parent.remove(main); // remove from this ui;
-           
-           main.add(getTopLabel(),BorderLayout.NORTH);
+           JPanel topPanel = new JPanel(new BorderLayout());
+           topPanel.add(getTopLabel(),BorderLayout.CENTER);
+           topPanel.add(chooserPanel.getToolbar(),BorderLayout.SOUTH);
+           main.add(topPanel,BorderLayout.NORTH);
            main.add(chooserPanel,BorderLayout.CENTER);
            jOptionPane = new JOptionPane(main,JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
            jOptionPane.addPropertyChangeListener(this);
@@ -174,6 +168,9 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
 
 /* 
 $Log: RegistryGoogleDialog.java,v $
+Revision 1.8  2007/04/18 15:47:10  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.7  2007/03/08 17:44:01  nw
 first draft of voexplorer
 

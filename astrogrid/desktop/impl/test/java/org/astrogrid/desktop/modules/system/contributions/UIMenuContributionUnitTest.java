@@ -9,7 +9,7 @@ import java.awt.event.ComponentListener;
 import junit.framework.TestCase;
 
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.system.Preference;
+import org.astrogrid.desktop.modules.system.pref.Preference;
 
 /** test ofr a ui menu contribution.
  * @author Noel Winstanley

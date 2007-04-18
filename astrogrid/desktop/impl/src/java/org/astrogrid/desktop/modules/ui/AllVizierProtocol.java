@@ -3,17 +3,15 @@
  */
 package org.astrogrid.desktop.modules.ui;
 
-import org.apache.commons.lang.WordUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.lang.WordUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ivoa.Cone;
@@ -22,17 +20,13 @@ import org.astrogrid.acr.ivoa.resource.Content;
 import org.astrogrid.acr.ivoa.resource.Curation;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.Validation;
-import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.Retriever;
 import org.astrogrid.desktop.modules.ui.scope.SpatialDalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.VizModel;
-import org.astrogrid.desktop.modules.ui.scope.Retriever.SummarizingTableHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.StarTable;
-
 import edu.berkeley.guir.prefuse.graph.DefaultEdge;
 import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
@@ -57,12 +51,7 @@ public class AllVizierProtocol extends SpatialDalProtocol {
 		getPrimaryNode().setAttribute(Retriever.SERVICE_LOGO_ATTRIBUTE,"http://vizier.u-strasbg.fr/vizier_tiny.gif");
 		//@todo factor this out into somewhere more logical - like config, or the vizier ar component.
 		// maybe that should be http-get based too? yep. most probably.
-		URI u = null;
-		try {
-			u = new URI("http://vizier.u-strasbg.fr/viz-bin/votable/-dtd/-A");
-		} catch (URISyntaxException x) {
-			logger.error("URISyntaxException",x);
-		}
+		URI u = URI.create("http://vizier.u-strasbg.fr/viz-bin/votable/-dtd/-A");
 		vizierEndpoint = u;
 	}
 	private final Cone cone;

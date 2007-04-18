@@ -36,8 +36,8 @@ import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.common.namegen.NameGen;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.system.Preference;
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.system.pref.Preference;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.votech.plastic.CommonMessageConstants;
 import org.votech.plastic.HubMessageConstants;
 import org.votech.plastic.PlasticHubListener;
@@ -73,7 +73,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
 	private Executor sequentialExecutor = new DirectExecutor();
 
-    private final UIInternal ui;
+    private final UIContext ui;
 
     private final String arVersion;
 
@@ -87,14 +87,14 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 
 
     /** constructor selected by acrFactory when systemtray is not available */
-    public PlasticHubImpl(String arVersion, UIInternal ui,Executor executor, NameGen idGenerator,
+    public PlasticHubImpl(String arVersion, UIContext ui,Executor executor, NameGen idGenerator,
             RmiServer rmi,  WebServer web, PrettyPrinterInternal prettyPrinter, Preference p) {
         this(arVersion, ui,executor,idGenerator,rmi, web,null, prettyPrinter, p);
     }
     
     /** constructor selected by acrFactory when systemtray is available 
      * @param prettyPrinter */
-    public PlasticHubImpl(String arVersion, UIInternal ui,Executor executor, NameGen idGenerator,
+    public PlasticHubImpl(String arVersion, UIContext ui,Executor executor, NameGen idGenerator,
             RmiServer rmi, WebServer web,SystemTray tray, PrettyPrinterInternal prettyPrinter, Preference p) {
         this.tray = tray;
         this.rmiServer= rmi;
@@ -457,7 +457,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
                 if (alreadyPresent.containsKey(ACR_VERSION)) runningHubName="the Astro Runtime";
                 
                 
-                JOptionPane.showMessageDialog(ui.getComponent(),
+                JOptionPane.showMessageDialog(ui.findMainWindow().getFrame(),
                         "<html>It appears that a Plastic Hub is already running on your system inside "+runningHubName+
                         ".<br>We <em>will not</em> start our Plastic Hub.  If you are sure that there is no other Hub" +
                         " <br>actually running on your machine, then delete your .plastic file and restart this application.</html>" 

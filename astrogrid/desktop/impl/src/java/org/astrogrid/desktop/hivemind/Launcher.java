@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.15 2007/03/22 19:03:48 nw Exp $
+/*$Id: Launcher.java,v 1.16 2007/04/18 15:47:10 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-
-import javax.swing.UIManager;
 
 import org.apache.hivemind.ClassResolver;
 import org.apache.hivemind.ModuleDescriptorProvider;
@@ -186,6 +184,9 @@ public class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.16  2007/04/18 15:47:10  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.15  2007/03/22 19:03:48  nw
 added support for sessions and multi-user ar.
 

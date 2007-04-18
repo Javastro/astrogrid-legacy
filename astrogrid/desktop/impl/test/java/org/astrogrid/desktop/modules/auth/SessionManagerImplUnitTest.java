@@ -3,13 +3,10 @@
  */
 package org.astrogrid.desktop.modules.auth;
 
-import org.astrogrid.desktop.alternatives.SingleSessionManager;
 import org.astrogrid.desktop.alternatives.SingleSessionManagerUnitTest;
 import org.astrogrid.desktop.framework.SessionManagerInternal;
 import org.astrogrid.desktop.modules.system.SchedulerInternal;
 import org.easymock.MockControl;
-
-import junit.framework.TestCase;
 
 /**
  * @author Noel.Winstanley@manchester.ac.uk

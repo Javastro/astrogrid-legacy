@@ -3,18 +3,12 @@
  */
 package org.astrogrid.desktop.modules.dialogs.editors;
 
-import net.sf.ehcache.Ehcache;
 import net.sourceforge.hiveutils.service.ObjectBuilder;
 
-import org.astrogrid.acr.system.BrowserControl;
-import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
 import org.astrogrid.desktop.modules.dialogs.registry.RegistryGooglePanel;
-import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
-import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.votech.VoMon;
 
 /**
  * @author Noel Winstanley

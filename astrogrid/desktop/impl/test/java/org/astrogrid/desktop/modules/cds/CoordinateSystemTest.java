@@ -7,7 +7,6 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.cds.Coordinate;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
@@ -26,10 +25,7 @@ public class CoordinateSystemTest extends InARTestCase {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		ACR reg = getACR();
-		assertNotNull(reg);
-		coord = (Coordinate)reg.getService(Coordinate.class);
-		assertNotNull(coord);
+		coord = (Coordinate)assertServiceExists(Coordinate.class,"cds.coordinate");
 	}
 	
 	protected void tearDown() throws Exception {

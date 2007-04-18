@@ -3,9 +3,7 @@ package org.astrogrid.desktop.modules.dialogs.registry;
 import java.util.Comparator;
 
 import javax.swing.Icon;
-import javax.swing.JLabel;
 
-import org.apache.commons.collections.ComparatorUtils;
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -19,7 +17,6 @@ import ca.odell.glazedlists.ListSelection;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import ca.odell.glazedlists.gui.CheckableTableFormat;
 import ca.odell.glazedlists.gui.WritableTableFormat;
-import ca.odell.glazedlists.swing.EventSelectionModel;
 
 /** Glazed Lists format for a table of registry entries
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 07-Sep-2005
@@ -40,7 +37,7 @@ public  class ResourceTableFomat implements AdvancedTableFormat, WritableTableFo
 	private final Icon downLabel;
 	private final Icon unknownLabel;
 	private final boolean showCheckBox;
-	private int COLUMN_COUNT = 4;
+	private static final int COLUMN_COUNT = 4;
 	private final ListSelection selectedResources;
 	private final VoMon vomon;
 	// unsure whether  this is used iin glazed lists.

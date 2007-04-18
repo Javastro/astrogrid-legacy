@@ -37,6 +37,28 @@ public class InARTestCase extends TestCase {
     	return hivemindRegistry2;
     }
     
+    /** quite hacky way of getting at the test user
+     * will only be valid if run in an ARTestSetup where login has been requested
+     * @return
+     */
+    protected String getUsername() {
+    	assertTrue("No ag.test.username defined", System.getProperties().containsKey(ARTestSetup.AG_TEST_USERNAME));
+    	String s =  System.getProperty(ARTestSetup.AG_TEST_USERNAME,null);
+    	return s;
+    }
+    
+    // access the test user's community.
+    protected String getCommunity() {
+    	assertTrue("No ag.test.community defined",System.getProperties().containsKey(ARTestSetup.AG_TEST_COMMUNITY));
+    	String s =  System.getProperty(ARTestSetup.AG_TEST_COMMUNITY);
+    	return s;
+    }
+
+    protected String getPassord() {
+    	assertTrue("No ag.test.password defined",System.getProperties().containsKey(ARTestSetup.AG_TEST_PASSWORD));
+    	String s =  System.getProperty(ARTestSetup.AG_TEST_PASSWORD);
+    	return s;
+    }
 
 	
 // assertions.

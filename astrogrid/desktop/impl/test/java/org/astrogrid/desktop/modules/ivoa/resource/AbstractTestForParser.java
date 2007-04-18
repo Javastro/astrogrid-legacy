@@ -13,6 +13,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import junit.framework.TestCase;
 import net.sourceforge.jwebunit.TestContext;
 import net.sourceforge.jwebunit.WebTester;
 
@@ -29,8 +30,6 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.ResourceName;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.Validation;
-
-import junit.framework.TestCase;
 
 /** abstract base class for parser tests.
  * @author Noel.Winstanley@manchester.ac.uk

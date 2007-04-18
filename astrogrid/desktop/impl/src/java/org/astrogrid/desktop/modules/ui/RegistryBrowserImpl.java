@@ -1,4 +1,4 @@
-/*$Id: RegistryBrowserImpl.java,v 1.15 2007/03/08 17:43:58 nw Exp $
+/*$Id: RegistryBrowserImpl.java,v 1.16 2007/04/18 15:47:05 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,18 +19,10 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
-import net.sf.ehcache.Ehcache;
-
-import org.astrogrid.acr.system.BrowserControl;
-import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.registry.RegistryGooglePanel;
-import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.Preference;
-import org.astrogrid.desktop.modules.system.UIInternal;
-import org.votech.VoMon;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 /** Implementation of the registry browser component.
  * just plonks a regGooglePanel in a main frame.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 30-Mar-2005
@@ -40,15 +32,16 @@ public class RegistryBrowserImpl extends UIComponentImpl implements  RegistryBro
 {
    
 
-    public RegistryBrowserImpl(HelpServerInternal hs,UIInternal ui, Configuration conf, 
+    public RegistryBrowserImpl(UIContext context,
     		RegistryGooglePanel regChooser) {
-        super(conf,hs,ui);
+        super(context);
         this.regChooser = regChooser;
         this.regChooser.parent.set(this);
-		this.setSize(500, 800); // same proportions as A4, etc., and 600 high.   
-        getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.registryBrowser");        
+		this.setSize(550, 800); // same proportions as A4, etc., and 600 high.   
+        getContext().getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.registryBrowser");        
         JPanel pane = getMainPanel();
         pane.add(regChooser,BorderLayout.CENTER); 
+        pane.add(regChooser.getToolbar(),BorderLayout.NORTH);
         setJMenuBar(getJJMenuBar());
 		this.setContentPane(pane);
 		this.setTitle("Resource Browser");
@@ -99,7 +92,7 @@ public class RegistryBrowserImpl extends UIComponentImpl implements  RegistryBro
 		menu.insert(ref,0);
 		*/
 		JMenuItem sci = new JMenuItem("Registry Browser Help");
-		getHelpServer().enableHelpOnButton(sci, "registryBrowser.menu.science");
+		getContext().getHelpServer().enableHelpOnButton(sci, "registryBrowser.menu.science");
 		menu.insert(sci,0);
 		return menu;
 	}    
@@ -109,6 +102,9 @@ public class RegistryBrowserImpl extends UIComponentImpl implements  RegistryBro
 
 /* 
 $Log: RegistryBrowserImpl.java,v $
+Revision 1.16  2007/04/18 15:47:05  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.15  2007/03/08 17:43:58  nw
 first draft of voexplorer
 

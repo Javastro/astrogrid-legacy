@@ -99,7 +99,7 @@ public class NameResolvingPositionTextField extends PositionTextField {
      * */
     private void resolveNameToPosition(final String inputPos) throws ParseException {
     	objectName = inputPos;
-    	(new BackgroundWorker(parent,"Resolving " + inputPos + " using Sesame",5000) {
+    	(new BackgroundWorker(parent,"Resolving " + inputPos + " using Sesame",Thread.MAX_PRIORITY) {
 			protected Object construct() throws Exception {
 				return ses.resolve(inputPos.trim());   
 			}

@@ -8,9 +8,9 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.apache.commons.lang.ArrayUtils;
-import java.util.Arrays;
 
 /** transferable for xml.
  * @author Noel.Winstanley@manchester.ac.uk

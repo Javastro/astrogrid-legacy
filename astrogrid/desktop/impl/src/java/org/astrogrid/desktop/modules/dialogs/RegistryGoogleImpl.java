@@ -3,19 +3,11 @@
  */
 package org.astrogrid.desktop.modules.dialogs;
 
-import net.sf.ehcache.Ehcache;
-
 import org.astrogrid.acr.dialogs.RegistryGoogle;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.acr.system.BrowserControl;
-import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.modules.dialogs.registry.RegistryGooglePanel;
-import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.Preference;
-import org.astrogrid.desktop.modules.system.UIInternal;
-import org.votech.VoMon;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 
 /**
  * @author Noel Winstanley
@@ -23,9 +15,9 @@ import org.votech.VoMon;
  */
 public class RegistryGoogleImpl implements RegistryGoogle {
 	
-	public RegistryGoogleImpl( Configuration conf, HelpServerInternal help, UIInternal ui,RegistryGooglePanel regPanel) {
+	public RegistryGoogleImpl( UIContext context,RegistryGooglePanel regPanel) {
         super();
-        dialog = new RegistryGoogleDialog(conf,help,ui,regPanel);
+        dialog = new RegistryGoogleDialog(context,regPanel);
         dialog.pack();
         // set size..
     }

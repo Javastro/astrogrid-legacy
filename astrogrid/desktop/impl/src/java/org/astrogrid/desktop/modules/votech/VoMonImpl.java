@@ -27,7 +27,7 @@ import org.apache.commons.collections.MultiMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.votech.VoMonBean;
 
@@ -44,7 +44,7 @@ public class VoMonImpl implements VoMonInternal {
 	private final URL voMonEndpoint;
 	private final int refreshSeconds;
 	private final Ehcache cache;
-	private final UIInternal ui;
+	private final UIContext ui;
 
 
 	public VoMonBean checkAvailability(URI arg0) {
@@ -166,7 +166,7 @@ public class VoMonImpl implements VoMonInternal {
 		}
 	}
 
-	public VoMonImpl(final String endpoint, final int refreshSeconds, Ehcache cache ,final UIInternal ui)  {
+	public VoMonImpl(final String endpoint, final int refreshSeconds, Ehcache cache ,final UIContext ui)  {
 		super();
 		URL u; 
 		try {

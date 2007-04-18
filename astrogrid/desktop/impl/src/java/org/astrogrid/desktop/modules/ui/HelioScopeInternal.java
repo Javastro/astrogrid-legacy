@@ -5,7 +5,6 @@ package org.astrogrid.desktop.modules.ui;
 
 import java.util.List;
 
-import org.astrogrid.acr.ui.AstroScope;
 import org.astrogrid.acr.ui.HelioScope;
 
 /** Internal interface to additional funcitonality for helioscope

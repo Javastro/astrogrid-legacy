@@ -5,11 +5,8 @@ package org.astrogrid.desktop.modules.ivoa.resource;
 
 import java.net.URI;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
 import org.astrogrid.acr.astrogrid.CeaApplication;

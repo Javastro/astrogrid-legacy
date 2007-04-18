@@ -16,6 +16,8 @@ public class AllRepeatableTests {
 		TestSuite suite = new TestSuite("Repeatable Tests");
 		suite.addTest(AbsolutelyAllUnitTests.suite());
 		suite.addTest(AbsolutelyAllIntegrationTests.suite());
+		// runs in a new ar instance.
+		suite.addTest(BestSystemTests.suite());
 		return suite;
 	}
 

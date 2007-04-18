@@ -1,4 +1,4 @@
-/*$Id: RmiLiteRmiServerImpl.java,v 1.11 2007/03/22 19:03:48 nw Exp $
+/*$Id: RmiLiteRmiServerImpl.java,v 1.12 2007/04/18 15:47:07 nw Exp $
  * Created on 27-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,7 +30,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.builtin.ComponentDescriptor;
-import org.astrogrid.acr.builtin.SessionManager;
 import org.astrogrid.acr.builtin.ShutdownListener;
 import org.astrogrid.desktop.framework.ACRInternal;
 import org.astrogrid.desktop.framework.Module;
@@ -190,6 +189,9 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
 
 /* 
 $Log: RmiLiteRmiServerImpl.java,v $
+Revision 1.12  2007/04/18 15:47:07  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.11  2007/03/22 19:03:48  nw
 added support for sessions and multi-user ar.
 

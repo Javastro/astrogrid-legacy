@@ -46,17 +46,16 @@ import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
 import org.astrogrid.desktop.modules.ui.comp.PlasticButtons;
@@ -88,7 +87,7 @@ public abstract class AbstractScope extends UIComponentImpl implements PlasticBu
     		this.setEnabled(true);
     	}
     	public void actionPerformed(ActionEvent arg0) {
-			getConfiguration().setKey(historyKey,"");
+			getContext().getConfiguration().setKey(historyKey,"");
 			while (! historyBuffer.isEmpty()){
 				historyBuffer.remove();
 				historyMenu.remove(0);
@@ -231,13 +230,13 @@ public abstract class AbstractScope extends UIComponentImpl implements PlasticBu
 	
 	private final ResourceChooserInternal chooser;
 	private final MyspaceInternal myspace;
-	public AbstractScope(Configuration conf, HelpServerInternal hs,
-			UIInternal ui, MyspaceInternal myspace,
+	public AbstractScope(UIContext context,
+			MyspaceInternal myspace,
 			ResourceChooserInternal chooser, TupperwareInternal tupp, SendToMenu sendTo, 
 			SnitchInternal snitch,
 			String scopeName,
 			DalProtocol[] p, RegistryBrowser browser) throws HeadlessException {
-		super(conf, hs, ui);
+		super(context);
 		this.scopeName = scopeName;
 		this.historyKey = scopeName + ".history";
 		this.snitch = snitch;
@@ -401,7 +400,7 @@ public abstract class AbstractScope extends UIComponentImpl implements PlasticBu
 			historyMenu.setMnemonic(KeyEvent.VK_H);	
 			
 			// load defns from preferences.
-			String hist = getConfiguration().getKey(historyKey);
+			String hist = getContext().getConfiguration().getKey(historyKey);
 			if (hist != null) {
 				StringTokenizer tok = new StringTokenizer(hist,HISTORY_ITEM_SEPARATOR); // use '@@' as item delimiter - very unlikely this will be used within the seartch term
 				int i = 0;
@@ -541,7 +540,7 @@ public abstract class AbstractScope extends UIComponentImpl implements PlasticBu
 	protected abstract String grabHistoryItem();
 
 	protected void haltQuery() {
-		haltAll();
+		haltMyTasks();
 		setProgressValue(getProgressMax());
 	}
 
@@ -588,7 +587,7 @@ public abstract class AbstractScope extends UIComponentImpl implements PlasticBu
 			getHistoryMenu().insert(a,0);
 			historyBuffer.add(historyItem);
 			String items = StringUtils.join(historyBuffer.iterator(),HISTORY_ITEM_SEPARATOR);
-			getConfiguration().setKey(historyKey,items);					
+			getContext().getConfiguration().setKey(historyKey,items);					
 		}
 	}
 	

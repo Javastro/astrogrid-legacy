@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserImpl.java,v 1.11 2007/01/29 11:11:37 nw Exp $
+/*$Id: ResourceChooserImpl.java,v 1.12 2007/04/18 15:47:10 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,12 +14,11 @@ import java.awt.Component;
 import java.net.URI;
 
 import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.file.FileStoreChooserResourceChooserDialog;
 import org.astrogrid.desktop.modules.dialogs.file.VospaceResourceChooserDialog;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 
 /** Implementation of the ResourceChooser component
@@ -28,22 +27,9 @@ import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
  */
 public class ResourceChooserImpl implements ResourceChooserInternal {
  
-	/**
-	 * @todo remove old vospace resource chooser.
-	 * @param vos myspace component 
-	 * @param sendTo list of send-to actions.
-	 * @param conf configurationn object - only required by old vospace
-	 * @param help help server
-	 * @param ui main ui component - only required by old vospace.
-	 * @param comm community
-	 * @param useStil if true, use new stil-based dialogue (the default)
-	 */
-    public ResourceChooserImpl(MyspaceInternal vos,SendToMenu sendTo,Configuration conf,HelpServerInternal help,UIInternal ui, Community comm, boolean useStil) {
-    	if (useStil) {
+
+    public ResourceChooserImpl(MyspaceInternal vos,Community comm) {
     		dialog = new FileStoreChooserResourceChooserDialog(vos,comm);
-    	} else {
-    		dialog = new VospaceResourceChooserDialog(vos,sendTo,conf,help,ui, comm) ;
-    	}
         getDialog().pack();
     }
     private final AbstractResourceChooserDialog dialog;
@@ -96,6 +82,9 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
 
 /* 
 $Log: ResourceChooserImpl.java,v $
+Revision 1.12  2007/04/18 15:47:10  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.11  2007/01/29 11:11:37  nw
 updated contact details.
 

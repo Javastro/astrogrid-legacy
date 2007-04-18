@@ -9,8 +9,8 @@ import java.awt.event.ComponentListener;
 import junit.framework.TestCase;
 
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.system.Preference;
-import org.astrogrid.desktop.modules.system.UIImpl;
+import org.astrogrid.desktop.modules.system.pref.Preference;
+import org.astrogrid.desktop.modules.system.ui.ArMainWindow;
 
 /** test for a ui tab contribution.
  * just works oout getter and setter methods.
@@ -87,7 +87,7 @@ public class UITabContributionUnitTest extends TestCase implements ComponentList
 	 * Test method for 'org.astrogrid.desktop.modules.system.contributions.UITabContribution.getParentName()'
 	 */
 	public void testGetParentName() {
-		assertEquals(UIImpl.TABS_NAME,t.getParentName());
+		assertEquals(ArMainWindow.TABS_NAME,t.getParentName());
 	}
 	
 	public void testVisibleCondition() throws Exception {

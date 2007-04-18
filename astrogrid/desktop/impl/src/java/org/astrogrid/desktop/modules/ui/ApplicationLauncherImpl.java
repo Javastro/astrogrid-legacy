@@ -1,4 +1,4 @@
-/*$Id: ApplicationLauncherImpl.java,v 1.20 2007/03/08 17:43:58 nw Exp $
+/*$Id: ApplicationLauncherImpl.java,v 1.21 2007/04/18 15:47:05 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,8 +18,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
 import org.astrogrid.acr.astrogrid.CeaApplication;
-import org.astrogrid.acr.system.BrowserControl;
-import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.ApplicationLauncher;
 import org.astrogrid.acr.ui.Lookout;
 import org.astrogrid.desktop.icons.IconHelper;
@@ -29,9 +27,8 @@ import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.dialogs.editors.CompositeToolEditorPanel;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditAdapter;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.Preference;
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.system.pref.Preference;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 /** Implementation of the Application Launcher component
  * <p>
  * not just a thin wrapper around the composite tool editor;
@@ -47,10 +44,10 @@ public class ApplicationLauncherImpl extends UIComponentImpl  implements Applica
             ,ApplicationsInternal apps
             ,MyspaceInternal myspace
             ,Lookout lookout                                  
-            ,Configuration conf, HelpServerInternal help, UIInternal ui, BrowserControl browser, Preference pref) {
-            super(conf, help, ui);
+            ,UIContext context,Preference pref) {
+            super(context);
             editor =  new CompositeToolEditorPanel(
-                    panelFactories,rChooser,apps,myspace,this,help,browser,pref);
+                    panelFactories,rChooser,apps,myspace,this,context.getHelpServer(),context.getBrowser(),pref);
             editor.setLookout(lookout);
             this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
             this.setSize(600,425); // same proportions as A4, etc., and 600 high.   
@@ -61,9 +58,9 @@ public class ApplicationLauncherImpl extends UIComponentImpl  implements Applica
             this.setContentPane(pane);
             this.setTitle("Task Launcher");
             getJMenuBar().add(createHelpMenu());
-            getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.applicationLauncher");
+            getContext().getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.applicationLauncher");
             // belt and braces.
-            getHelpServer().enableHelpKey(editor,"userInterface.applicationLauncher");             
+            getContext().getHelpServer().enableHelpKey(editor,"userInterface.applicationLauncher");             
             editor.getToolModel().addToolEditListener(new ToolEditAdapter() {
 
                 public void toolSet(ToolEditEvent te) {
@@ -103,7 +100,7 @@ public class ApplicationLauncherImpl extends UIComponentImpl  implements Applica
  	menu.insert(ref,0);
  	*/
  	JMenuItem sci = new JMenuItem("Task Launcher Help");
- 	getHelpServer().enableHelpOnButton(sci, "applicationLauncher.menu.science");
+ 	getContext().getHelpServer().enableHelpOnButton(sci, "applicationLauncher.menu.science");
  	menu.insert(sci,0);
  	return menu;
     }
@@ -114,6 +111,9 @@ public class ApplicationLauncherImpl extends UIComponentImpl  implements Applica
 
 /* 
 $Log: ApplicationLauncherImpl.java,v $
+Revision 1.21  2007/04/18 15:47:05  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.20  2007/03/08 17:43:58  nw
 first draft of voexplorer
 

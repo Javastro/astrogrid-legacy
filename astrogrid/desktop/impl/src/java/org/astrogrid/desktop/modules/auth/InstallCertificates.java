@@ -13,7 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.io.Piper;
 
@@ -26,8 +26,8 @@ public class InstallCertificates implements Runnable {
 
 	private final File certDir;
 	private final List certList;
-	private final UIInternal ui;
-	public InstallCertificates(final UIInternal ui, final String certDir, final List certList) {
+	private final UIContext ui;
+	public InstallCertificates(final UIContext ui, final String certDir, final List certList) {
 		super();
 		this.certDir = new File(certDir);
 		this.certList = certList;

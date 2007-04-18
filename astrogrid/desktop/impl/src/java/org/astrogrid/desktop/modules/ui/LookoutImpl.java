@@ -1,4 +1,4 @@
-/*$Id: LookoutImpl.java,v 1.21 2007/03/08 17:43:59 nw Exp $
+/*$Id: LookoutImpl.java,v 1.22 2007/04/18 15:47:05 nw Exp $
  * Created on 26-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,7 +44,6 @@ import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.Jobs;
 import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.acr.astrogrid.RemoteProcessManager;
-import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.Lookout;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MessageRecorderImpl;
@@ -53,8 +52,7 @@ import org.astrogrid.desktop.modules.ag.RemoteProcessStrategy;
 import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.Folder;
 import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.MessageContainer;
 import org.astrogrid.desktop.modules.ag.recorder.ResultsExecutionMessage;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.lookout.FolderTreeCellRenderer;
 import org.astrogrid.desktop.modules.ui.lookout.MessageDisplayPane;
 import org.astrogrid.desktop.modules.ui.lookout.MessageTable;
@@ -246,7 +244,7 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
      * @param ui
      * @throws HeadlessException
      */
-    public LookoutImpl(Configuration conf, HelpServerInternal hs, UIInternal ui
+    public LookoutImpl(UIContext context
             , MessageRecorderInternal recorder
             , RemoteProcessManager manager
             ,Myspace vos
@@ -256,12 +254,12 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
 			
     )
     throws HeadlessException {
-        super(conf, hs, ui);
+        super(context);
         this.manager = manager;
         this.recorder = recorder;
         
         results = new ResultsList(sendTo,vos,this);
-        getHelpServer().enableHelp(results,"lookout.resultsTable");
+        getContext().getHelpServer().enableHelp(results,"lookout.resultsTable");
         refreshAction = new RefreshAction(strategies);
         closeAction = new CloseAction();
         deleteAction = new DeleteAction();
@@ -297,7 +295,7 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
  	menu.insert(ref,0);
  	*/
  	JMenuItem sci = new JMenuItem("Lookout Help");
- 	getHelpServer().enableHelpOnButton(sci, "lookout.menu.science");
+ 	getContext().getHelpServer().enableHelpOnButton(sci, "lookout.menu.science");
  	menu.insert(sci,0);
  	return menu;
  }    
@@ -347,7 +345,7 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
         return toolbar;
     }
     private void initialize() {
-        getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.lookout");
+        getContext().getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.lookout");
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         this.setJMenuBar(getJJMenuBar());
         JPanel pane = getMainPanel();   
@@ -381,7 +379,7 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
         if (folderTree == null) {                        
             folderTree = new JTree(recorder.getFolderList());
             ToolTipManager.sharedInstance().registerComponent(folderTree);
-            getHelpServer().enableHelp(folderTree,"lo.folderTree");
+            getContext().getHelpServer().enableHelp(folderTree,"lo.folderTree");
             folderTree.putClientProperty("JTree.lineStyle", "None");            
             folderTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
             folderTree.setShowsRootHandles(false);
@@ -431,7 +429,7 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
     MessageTable getMessageTable() {
         if (messageTable == null) {
             messageTable = new MessageTable(recorder);       
-            getHelpServer().enableHelp(messageTable,"lo.messageTable");       
+            getContext().getHelpServer().enableHelp(messageTable,"lo.messageTable");       
             messageTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {            	
                 public void valueChanged(ListSelectionEvent e) {
                     int index = messageTable.getSelectedRow();
@@ -491,6 +489,9 @@ public class LookoutImpl extends UIComponentImpl implements  Lookout{
 /* 
  
 $Log: LookoutImpl.java,v $
+Revision 1.22  2007/04/18 15:47:05  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.21  2007/03/08 17:43:59  nw
 first draft of voexplorer
 

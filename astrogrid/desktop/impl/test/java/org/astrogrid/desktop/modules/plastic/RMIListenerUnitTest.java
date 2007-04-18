@@ -13,9 +13,10 @@ import org.astrogrid.acr.builtin.ShutdownListener;
 import org.astrogrid.acr.system.RmiServer;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.common.namegen.InMemoryNameGen;
-import org.astrogrid.desktop.alternatives.HeadlessUIFactory;
-import org.astrogrid.desktop.modules.system.Preference;
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.system.pref.Preference;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.easymock.MockControl;
 import org.votech.plastic.CommonMessageConstants;
 import org.votech.plastic.HubMessageConstants;
 import org.votech.plastic.PlasticHubListener;
@@ -53,7 +54,7 @@ public class RMIListenerUnitTest extends AbstractPlasticBaseNotDeaf {
     // TODO stick this somewhere else
     private PlasticHubListener createHubWithMocks() {
 
-    	HeadlessUIFactory fac = new HeadlessUIFactory();
+  
     	
         DirectExecutor executor = new DirectExecutor();
         InMemoryNameGen idGenerator = new InMemoryNameGen();
@@ -111,11 +112,13 @@ public class RMIListenerUnitTest extends AbstractPlasticBaseNotDeaf {
             
         };
         
-        UIInternal ui = fac.getUI(); 
+		MockControl m = MockControl.createNiceControl(UIContext.class);
+		UIContext cxt= (UIContext)m.getMock();
+		m.replay();		
         String version = "test";
         
         Preference notifyPreference = new Preference();
-        PlasticHubImpl impl = new PlasticHubImpl(version, ui, executor , idGenerator,   rmi, web, new PrettyPrinterImpl(null), notifyPreference);
+        PlasticHubImpl impl = new PlasticHubImpl(version, cxt, executor , idGenerator,   rmi, web, new PrettyPrinterImpl(null), notifyPreference);
         final MessageHandler internalhandler = new StandardHandler("Astro Runtime","description","ivo://foo","http://news.bbc.co.uk",PlasticListener.CURRENT_VERSION);
         impl.registerSelf("Astro Runtime", internalhandler.getHandledMessages(), new PlasticListener() {
            public Object perform(URI arg0, URI arg1, List arg2) {

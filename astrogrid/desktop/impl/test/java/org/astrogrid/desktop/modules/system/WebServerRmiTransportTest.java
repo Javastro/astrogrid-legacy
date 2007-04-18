@@ -1,4 +1,4 @@
-/*$Id: WebServerRmiTransportTest.java,v 1.4 2007/01/29 10:42:48 nw Exp $
+/*$Id: WebServerRmiTransportTest.java,v 1.5 2007/04/18 15:47:04 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ package org.astrogrid.desktop.modules.system;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.TestingFinder;
@@ -34,6 +33,9 @@ public class WebServerRmiTransportTest extends WebServerIntegrationTest {
 
 /* 
 $Log: WebServerRmiTransportTest.java,v $
+Revision 1.5  2007/04/18 15:47:04  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.4  2007/01/29 10:42:48  nw
 tidied.
 

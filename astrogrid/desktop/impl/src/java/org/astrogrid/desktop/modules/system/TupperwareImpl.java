@@ -15,15 +15,14 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.ImageIcon;
-import javax.swing.SwingUtilities;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.plastic.PlasticHubListenerInternal;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.votech.plastic.CommonMessageConstants;
 import org.votech.plastic.HubMessageConstants;
 import org.votech.plastic.PlasticHubListener;
@@ -55,7 +54,7 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener {
 	 * @param description variable description of this workbench.
 	 * @param handlers contribution list of handlers to register. 
 	 */
-	public TupperwareImpl(UIComponent parent, PlasticHubListenerInternal hub, String applicationName, String description, List handlers, EventList appList) {
+	public TupperwareImpl(UIContext parent, PlasticHubListenerInternal hub, String applicationName, String description, List handlers, EventList appList) {
 		super();
 		this.parent = parent;
 		this.model = appList;
@@ -97,7 +96,7 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener {
 			applicationRegisteredMessageHandler.interrogatePlasticApp(uri);
 		}
 	}
-	private final UIComponent parent;
+	private final UIContext parent;
 	private final URI myPlasticId;
 	private final EventList  model;
 	private final PlasticHubListener hub;
@@ -168,7 +167,7 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
 		 * @param msg
 		 * @param id
 		 */
-		private PlasticInterrogatorWorker(UIComponent parent, String msg, URI id) {
+		private PlasticInterrogatorWorker(UIContext parent, String msg, URI id) {
 			super(parent, msg);
 			this.id = id;
 		}

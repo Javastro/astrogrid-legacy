@@ -1,4 +1,4 @@
-/*$Id: SsapImpl.java,v 1.9 2007/03/09 15:07:03 KevinBenson Exp $
+/*$Id: SsapImpl.java,v 1.10 2007/04/18 15:47:05 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,8 +41,9 @@ public class SsapImpl extends SiapImpl implements Ssap {
     }
     
     public String getRegistryXQuery() {
-		return "//RootResource[matches(@xsi:type,'SimpleSpectrumAccess') and ( @status = 'active')]";
-    	
+		return "//vor:Resource[@xsi:type &= '*SimpleSpectrumAccess' and ( not ( @status = 'inactive' or @status='deleted'))]";
+    	//KMB 	return "//RootResource[matches(@xsi:type,'SimpleSpectrumAccess') and ( @status = 'active')]";
+  
     }
 
   
@@ -52,8 +53,8 @@ public class SsapImpl extends SiapImpl implements Ssap {
 
 /* 
 $Log: SsapImpl.java,v $
-Revision 1.9  2007/03/09 15:07:03  KevinBenson
-Changees to use RootResource to signal root node of registry query and to use standard xquery matches method.
+Revision 1.10  2007/04/18 15:47:05  nw
+tidied up voexplorer, removed front pane.
 
 Revision 1.8  2007/01/29 11:11:36  nw
 updated contact details.

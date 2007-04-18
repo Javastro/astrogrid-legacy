@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.22 2007/03/09 15:14:56 KevinBenson Exp $
+/*$Id: ApplicationsImpl.java,v 1.23 2007/04/18 15:47:10 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -118,8 +118,12 @@ public class ApplicationsImpl implements ApplicationsInternal {
 	}
 	
 	public String getRegistryXQuery() {
+		return "//vor:Resource[(@xsi:type &= '*CeaApplicationType' or @xsi:type &= '*CeaHttpApplicationType')" +
+				" and ( not ( @status = 'inactive' or @status='deleted'))]";
+/* KMB
 		return "//RootResource[(matches(@xsi:type,'.*:CeaApplicationType') or matches(@xsi:type,'.*:CeaHttpApplicationType'))" +
 		" and (@status = 'active')]";
+*/
 	}
 
 
@@ -492,7 +496,9 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
 			return new Service[]{(Service)c};
 		}
 			
-		Resource[] res =  nuReg.xquerySearch("//RootResource[@status='active' " +
+		Resource[] res =  nuReg.xquerySearch("//vor:Resource[not (@status='inactive' or @status='deleted') " +
+		//KMB 	Resource[] res =  nuReg.xquerySearch("//RootResource[@status='active' " +
+	
 				"and cea:ManagedApplications/cea:ApplicationReference='"+ arg0 +"']");
 		List result = new ArrayList();
 		// check ttypes.
@@ -610,8 +616,8 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
 
 /* 
 $Log: ApplicationsImpl.java,v $
-Revision 1.22  2007/03/09 15:14:56  KevinBenson
-Now uses RootResource to signal root node of Registry and tries to use matches instead of &=
+Revision 1.23  2007/04/18 15:47:10  nw
+tidied up voexplorer, removed front pane.
 
 Revision 1.21  2007/03/08 17:44:04  nw
 first draft of voexplorer

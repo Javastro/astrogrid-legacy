@@ -1,4 +1,4 @@
-/*$Id: SsapRetrieval.java,v 1.8 2007/03/08 17:43:56 nw Exp $
+/*$Id: SsapRetrieval.java,v 1.9 2007/04/18 15:47:08 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.desktop.modules.ui.scope;
 
-import java.net.URI;
 import java.net.URL;
 
 import org.apache.commons.lang.StringUtils;
@@ -181,6 +180,9 @@ public class SsapRetrieval extends Retriever {
 
 /* 
 $Log: SsapRetrieval.java,v $
+Revision 1.9  2007/04/18 15:47:08  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.8  2007/03/08 17:43:56  nw
 first draft of voexplorer
 

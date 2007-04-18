@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.desktop.framework.ReflectionHelper;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 
 /** Configuraiton and UI enhancements only available on mac platform.
  * 
@@ -31,7 +32,7 @@ public class MacSetup implements InvocationHandler {
 	 */
 	private static final Log logger = LogFactory.getLog(MacSetup.class);
 	
-	public MacSetup(UIInternal ui, Shutdown shutdown, Runnable config) throws ClassNotFoundException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+	public MacSetup(UIContext ui, Shutdown shutdown, Runnable config) throws ClassNotFoundException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		this.ui = ui;
 		this.shutdown = shutdown;
 		this.config = config;
@@ -58,6 +59,7 @@ public class MacSetup implements InvocationHandler {
 		aboutMethod = ReflectionHelper.getMethodByName(listenerClass,"handleAbout");
 		preferencesMethod = ReflectionHelper.getMethodByName(listenerClass,"handlePreferences");
 		quitMethod = ReflectionHelper.getMethodByName(listenerClass,"handleQuit");
+		reopenMethod = ReflectionHelper.getMethodByName(listenerClass,"handleReOpenApplication");
 		logger.info("Configured for OSX");
 	}
 	
@@ -65,7 +67,8 @@ public class MacSetup implements InvocationHandler {
 	protected final Method aboutMethod;
 	protected final Method preferencesMethod;
 	protected final Method quitMethod;
-	protected final UIInternal ui;
+	protected final Method reopenMethod;
+	protected final UIContext ui;
 	protected final Shutdown shutdown;
 	protected final Method handledMethod;
 	protected final Runnable config;
@@ -80,6 +83,9 @@ public class MacSetup implements InvocationHandler {
 			handledMethod.invoke(args[0],new Object[]{Boolean.TRUE});			
 		} else if (method.equals(quitMethod)) {
 			shutdown.reallyHalt(); // no way of stopping it, but at least we can notify folk.
+			handledMethod.invoke(args[0],new Object[]{Boolean.TRUE});
+		} else if (method.equals(reopenMethod)) {
+			ui.show(); // opens all ui.
 			handledMethod.invoke(args[0],new Object[]{Boolean.TRUE});
 		}
 		return null;		

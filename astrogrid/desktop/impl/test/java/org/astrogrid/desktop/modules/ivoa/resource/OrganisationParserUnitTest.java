@@ -5,11 +5,8 @@ package org.astrogrid.desktop.modules.ivoa.resource;
 
 import java.net.URI;
 
-import javax.xml.stream.XMLInputFactory;
-
 import net.sourceforge.jwebunit.WebTester;
 
-import org.astrogrid.acr.ivoa.resource.Authority;
 import org.astrogrid.acr.ivoa.resource.Contact;
 import org.astrogrid.acr.ivoa.resource.Creator;
 import org.astrogrid.acr.ivoa.resource.Date;
@@ -17,8 +14,6 @@ import org.astrogrid.acr.ivoa.resource.Organisation;
 import org.astrogrid.acr.ivoa.resource.Relationship;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.ResourceName;
-
-import junit.framework.TestCase;
 
 /** Tests parsing of organisation resources.
  * @author Noel.Winstanley@manchester.ac.uk

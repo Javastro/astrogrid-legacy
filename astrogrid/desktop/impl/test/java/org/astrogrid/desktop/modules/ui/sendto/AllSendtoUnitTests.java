@@ -17,8 +17,7 @@ public class AllSendtoUnitTests {
 				"Unit Tests for SendTo");
 		//$JUnit-BEGIN$
 		suite.addTestSuite(AbstractPreferredTransferableConsumerUnitTest.class);
-		suite.addTestSuite(VoDataFlavourUnitTest.class);
-		suite.addTestSuite(ParameterValueTransferableUnitTest.class);
+		suite.addTestSuite(ParameterValueTransferableUnitTest.class);		
 		//$JUnit-END$
 		return suite;
 	}

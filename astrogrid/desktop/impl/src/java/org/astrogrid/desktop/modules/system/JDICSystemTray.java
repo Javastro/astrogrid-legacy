@@ -1,4 +1,4 @@
-/*$Id: JDICSystemTray.java,v 1.6 2007/03/08 17:44:02 nw Exp $
+/*$Id: JDICSystemTray.java,v 1.7 2007/04/18 15:47:07 nw Exp $
  * Created on 21-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,6 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.acr.builtin.ShutdownListener;
+import org.astrogrid.acr.system.UI;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.jdesktop.jdic.tray.SystemTray;
 import org.jdesktop.jdic.tray.TrayIcon;
@@ -37,7 +38,7 @@ public class JDICSystemTray implements org.astrogrid.acr.system.SystemTray,Shutd
     /** Construct a new JDICSystemTray
      * 
      */
-    public JDICSystemTray(final UIInternal ui, final Shutdown shutdown) {
+    public JDICSystemTray(final UI ui,  final Shutdown shutdown) {
         super();
         this.ui = ui;
         this.shutdown = shutdown;
@@ -55,7 +56,7 @@ public class JDICSystemTray implements org.astrogrid.acr.system.SystemTray,Shutd
 
     }
     protected final SystemTray st;
-    protected final UIInternal ui;
+    protected final UI ui;
     protected final Shutdown shutdown;
     protected TrayIcon ti;
     protected final Icon idleIcon;
@@ -69,12 +70,12 @@ public class JDICSystemTray implements org.astrogrid.acr.system.SystemTray,Shutd
         if (st != null) {
             ti = new TrayIcon(idleIcon,"AstroGrid");
             ti.setIconAutoSize(true);
-            if (ui.getComponent() != null ) { // otherwise, ui is disabled
+            if (true) { //fixme ui.getFrame() != null ) { // otherwise, ui is disabled
             ti.setToolTip("Left-click to show / hide User Interface");   
             ti.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                if (ui.getComponent().isVisible()) {
+                if (true ) {//fixme //ui.getFrame().isVisible()) {
                     ui.hide();
                 } else {
                     ui.show();
@@ -168,6 +169,9 @@ public class JDICSystemTray implements org.astrogrid.acr.system.SystemTray,Shutd
 
 /* 
 $Log: JDICSystemTray.java,v $
+Revision 1.7  2007/04/18 15:47:07  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.6  2007/03/08 17:44:02  nw
 first draft of voexplorer
 

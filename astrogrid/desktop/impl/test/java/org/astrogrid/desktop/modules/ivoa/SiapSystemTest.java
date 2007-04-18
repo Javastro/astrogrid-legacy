@@ -3,6 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ivoa;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.Map;
 
@@ -12,8 +13,6 @@ import junit.framework.TestSuite;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.cds.Sesame;
 import org.astrogrid.acr.cds.SesamePositionBean;
 import org.astrogrid.acr.ivoa.Registry;
@@ -35,12 +34,10 @@ public class SiapSystemTest extends InARTestCase {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		ACR acr = getACR();
-		assertNotNull(acr);
-		siap = (Siap)acr.getService(Siap.class);
-		assertNotNull(siap);		
-		reg = (Registry)acr.getService(Registry.class);
-		ses = (Sesame)acr.getService(Sesame.class);
+
+		siap = (Siap)assertServiceExists(Siap.class,"ivoa.siap");
+		reg = (Registry)assertServiceExists(Registry.class,"ivoa.registry");
+		ses = (Sesame)assertServiceExists(Sesame.class,"cds.sesame");
 	}
 	protected void tearDown() throws Exception {
 		super.tearDown();
@@ -56,24 +53,20 @@ public class SiapSystemTest extends InARTestCase {
 	        return new ARTestSetup(new TestSuite(SiapSystemTest.class));
 	    }    
 
+	    public static final String SIAP_TEST_SERVICE = "ivo://irsa.ipac/MAST-Scrapbook";
 	/*
 	 * Test method for 'org.astrogrid.desktop.modules.ivoa.SiapImpl.constructQuery(URI, double, double, double)'
 	 */
-	public void testQuery() throws ServiceException, NotFoundException, InvalidArgumentException {
-		String xq = siap.getRegistryXQuery();
-		Resource[] res = reg.xquerySearch(xq);
-		assertNotNull(res);
-		assertTrue(res.length > 0);
-		Resource r = res[0];
+	public void testQuery() throws Exception {
+		Resource r = reg.getResource(new URI(SIAP_TEST_SERVICE));
 		SesamePositionBean pos = ses.resolve("crab");
 		assertNotNull(pos);
-		URL u = siap.constructQuery(r.getId(),pos.getRa(),pos.getDec(),1.0);
+		URL u = siap.constructQuery(r.getId(),pos.getRa(),pos.getDec(),0.001);
 		Map[] rows = siap.execute(u);
 		assertNotNull(rows);
 		assertTrue(rows.length > 0);
 		for (int i = 0; i < rows.length; i++) {
 			assertNotNull(rows[i].get("AccessReference"));
-			System.out.println(rows[i]);
 		}
 	}
 

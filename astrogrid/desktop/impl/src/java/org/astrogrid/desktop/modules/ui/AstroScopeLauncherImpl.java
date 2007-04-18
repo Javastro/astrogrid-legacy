@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.57 2007/03/09 15:34:24 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.58 2007/04/18 15:47:05 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.desktop.modules.ui;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Dimension2D;
@@ -39,16 +38,14 @@ import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.acr.ivoa.Ssap;
 import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle;
 import org.astrogrid.desktop.modules.ui.comp.DimensionTextField;
 import org.astrogrid.desktop.modules.ui.comp.NameResolvingPositionTextField;
@@ -58,7 +55,6 @@ import org.astrogrid.desktop.modules.ui.scope.AbstractScope;
 import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.Retriever;
-import org.astrogrid.desktop.modules.ui.scope.SaveNodesButton;
 import org.astrogrid.desktop.modules.ui.scope.SiapProtocol;
 import org.astrogrid.desktop.modules.ui.scope.SpatialDalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.SpectrumLoadPlasticButton;
@@ -94,11 +90,11 @@ public class AstroScopeLauncherImpl extends AbstractScope
      * @param rci
      * @throws URISyntaxException 
      */
-    public AstroScopeLauncherImpl(UIInternal ui, Configuration conf, HelpServerInternal hs,  
+    public AstroScopeLauncherImpl(UIContext context, 
                                   MyspaceInternal myspace, ResourceChooserInternal chooser, Registry reg, 
                                   Siap siap, Cone cone, Ssap ssap,Sesame ses, TupperwareInternal tupp, SendToMenu sendTo,
                                   SnitchInternal snitch, RegistryBrowser browser)  {
-        super(conf,hs,ui,myspace,chooser,tupp,sendTo,snitch,"AstroScope",
+        super(context,myspace,chooser,tupp,sendTo,snitch,"AstroScope",
         		new DalProtocol[]{
         			new SiapProtocol(reg,siap)
         			, new SsapProtocol(reg,ssap)
@@ -110,7 +106,7 @@ public class AstroScopeLauncherImpl extends AbstractScope
         posText.setSesame(ses);   
         this.ses = ses;
     
-        getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.astroscopeLauncher");
+        getContext().getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.astroscopeLauncher");
         setIconImage(IconHelper.loadIcon("astroscope.png").getImage());
       
     }
@@ -149,7 +145,7 @@ public class AstroScopeLauncherImpl extends AbstractScope
 	menu.insert(ref,0);
 	*/
 	JMenuItem sci = new JMenuItem("Astroscope Help");
-	getHelpServer().enableHelpOnButton(sci, "astroscope.menu.science");
+	getContext().getHelpServer().enableHelpOnButton(sci, "astroscope.menu.science");
 	menu.insert(sci,0);
 	return menu;
 }
@@ -488,6 +484,9 @@ public class AstroScopeLauncherImpl extends AbstractScope
 
 /* 
 $Log: AstroScopeLauncherImpl.java,v $
+Revision 1.58  2007/04/18 15:47:05  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.57  2007/03/09 15:34:24  nw
 vizier and voexplorer
 

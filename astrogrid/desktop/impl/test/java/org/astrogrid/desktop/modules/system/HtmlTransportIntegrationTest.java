@@ -1,4 +1,4 @@
-/*$Id: HtmlTransportIntegrationTest.java,v 1.5 2007/03/22 19:03:48 nw Exp $
+/*$Id: HtmlTransportIntegrationTest.java,v 1.6 2007/04/18 15:47:04 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,22 +11,17 @@
 package org.astrogrid.desktop.modules.system;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import net.sourceforge.jwebunit.HttpUnitDialog;
 import net.sourceforge.jwebunit.WebTestCase;
-import net.sourceforge.jwebunit.WebTester;
 
-import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.ARTestSetup;
 
-import com.meterware.httpunit.HttpException;
 import com.meterware.httpunit.WebClient;
 
 /** tests the html interface;
@@ -222,6 +217,9 @@ public class HtmlTransportIntegrationTest extends WebTestCase {
 
 /* 
 $Log: HtmlTransportIntegrationTest.java,v $
+Revision 1.6  2007/04/18 15:47:04  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.5  2007/03/22 19:03:48  nw
 added support for sessions and multi-user ar.
 

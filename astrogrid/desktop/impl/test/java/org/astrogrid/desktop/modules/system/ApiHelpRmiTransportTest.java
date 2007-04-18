@@ -1,4 +1,4 @@
-/*$Id: ApiHelpRmiTransportTest.java,v 1.5 2007/03/08 17:44:04 nw Exp $
+/*$Id: ApiHelpRmiTransportTest.java,v 1.6 2007/04/18 15:47:05 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ package org.astrogrid.desktop.modules.system;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.TestingFinder;
@@ -35,6 +34,9 @@ public class ApiHelpRmiTransportTest extends ApiHelpIntegrationTest {
 
 /* 
 $Log: ApiHelpRmiTransportTest.java,v $
+Revision 1.6  2007/04/18 15:47:05  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.5  2007/03/08 17:44:04  nw
 first draft of voexplorer
 

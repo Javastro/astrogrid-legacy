@@ -4,29 +4,10 @@ import java.io.InputStream;
 import java.lang.reflect.Proxy;
 import java.util.NoSuchElementException;
 
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
-import junit.framework.TestCase;
-
 import org.apache.commons.collections.IteratorUtils;
-import org.astrogrid.acr.astrogrid.CeaApplication;
-import org.astrogrid.acr.astrogrid.CeaServerCapability;
-import org.astrogrid.acr.astrogrid.CeaService;
-import org.astrogrid.acr.astrogrid.TableBean;
-import org.astrogrid.acr.ivoa.resource.Capability;
-import org.astrogrid.acr.ivoa.resource.Catalog;
-import org.astrogrid.acr.ivoa.resource.ConeCapability;
-import org.astrogrid.acr.ivoa.resource.ConeService;
-import org.astrogrid.acr.ivoa.resource.Contact;
-import org.astrogrid.acr.ivoa.resource.Content;
-import org.astrogrid.acr.ivoa.resource.Curation;
-import org.astrogrid.acr.ivoa.resource.DataCollection;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.acr.ivoa.resource.ResourceName;
-import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.acr.ivoa.resource.SiapCapability;
-import org.astrogrid.acr.ivoa.resource.SiapService;
 
 /** unit test for the resource stream parser.  - tests the behaviour of the 
  * parser. Other test suites in this package test the results produced by the parser

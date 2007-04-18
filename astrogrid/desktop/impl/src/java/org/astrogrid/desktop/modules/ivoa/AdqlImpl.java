@@ -14,7 +14,6 @@ import org.astrogrid.adql.AdqlStoX;
 import org.astrogrid.adql.ParseException;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 /** Implementation of the adql interface using jeff's Adql compiler.

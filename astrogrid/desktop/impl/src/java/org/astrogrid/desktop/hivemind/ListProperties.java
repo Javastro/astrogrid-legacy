@@ -13,7 +13,7 @@ import org.apache.hivemind.impl.DefaultErrorHandler;
 import org.apache.hivemind.impl.RegistryBuilder;
 import org.apache.hivemind.service.impl.FactoryDefault;
 import org.astrogrid.acr.builtin.Shutdown;
-import org.astrogrid.desktop.modules.system.Preference;
+import org.astrogrid.desktop.modules.system.pref.Preference;
 
 /** Just lists all configuration properties, and exits.
  * @author Noel Winstanley

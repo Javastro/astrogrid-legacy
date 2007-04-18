@@ -14,10 +14,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.ListUtils;
-import org.apache.commons.collections.Transformer;
-import org.apache.commons.collections.TransformerUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.astrogrid.acr.ivoa.resource.Resource;
 
@@ -41,7 +37,7 @@ public class ResourceListTransferable implements Transferable {
 			throws UnsupportedFlavorException, IOException {
 		if (VoDataFlavour.LOCAL_RESOURCE_LIST.equals(flavor)
 				|| VoDataFlavour.RESOURCE_LIST.equals(flavor)) {
-			return l;
+			return l.toArray(new Resource[l.size()]);
 		} else if (VoDataFlavour.LOCAL_URI_ARRAY.equals(flavor)){
 			List u = new ArrayList();
 			for (Iterator i = l.iterator(); i.hasNext();) {

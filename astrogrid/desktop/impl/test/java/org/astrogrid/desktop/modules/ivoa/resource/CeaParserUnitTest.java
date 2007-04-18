@@ -3,11 +3,6 @@
  */
 package org.astrogrid.desktop.modules.ivoa.resource;
 
-import java.io.InputStream;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
-
 import org.apache.commons.collections.IteratorUtils;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.CeaServerCapability;
@@ -18,8 +13,6 @@ import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
 import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
-
-import junit.framework.TestCase;
 
 /** unit tests for cea application and server resources.
  * @author Noel.Winstanley@manchester.ac.uk

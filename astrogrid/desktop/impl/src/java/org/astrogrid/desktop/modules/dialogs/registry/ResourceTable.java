@@ -19,7 +19,6 @@ import java.awt.event.MouseListener;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
@@ -31,7 +30,6 @@ import javax.swing.table.TableModel;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.acr.ivoa.resource.Validation;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.dnd.ResourceListTransferable;
 import org.astrogrid.desktop.modules.ui.dnd.ResourceTransferable;
@@ -64,7 +62,8 @@ public class ResourceTable extends JTable implements DragGestureListener, DragSo
 		this.items = items;
 		this.vomon = vomon;
 		setAutoResizeMode(AUTO_RESIZE_NEXT_COLUMN);
-		setBorder(BorderFactory.createEmptyBorder());		
+		setBorder(BorderFactory.createEmptyBorder());	
+		setShowGrid(false);
 		final TableColumnModel cm = getColumnModel();
 
 		final TableColumn c0 = cm.getColumn(0);
@@ -90,7 +89,6 @@ public class ResourceTable extends JTable implements DragGestureListener, DragSo
 		
 		// drag and drop. gulp.
 		resourceImage = IconHelper.loadIcon("doc16.png").getImage();
-		resoucesImage = IconHelper.loadIcon("multiplefile16.png").getImage();
 		this.dragSource = DragSource.getDefaultDragSource();
 		dragSource.createDefaultDragGestureRecognizer(this,DnDConstants.ACTION_LINK,this);
 		setDragEnabled(true);
@@ -159,19 +157,19 @@ public class ResourceTable extends JTable implements DragGestureListener, DragSo
 		}
 		return tip;
 	}
-	private final JPopupMenu popup;
+	private JPopupMenu popup;
 	
-	public JPopupMenu getPopup() {
-		return popup;
+	public void setPopup(JPopupMenu p) {
+		this.popup = p;
 	}
-	private final Point offset = new Point(8,8);
-	private final Image resoucesImage;
+	public static final Point OFFSET = new Point(8,8);
+	public static  final Image RESOURCES_IMAGE = IconHelper.loadIcon("multiplefile16.png").getImage();
 	private final Image resourceImage;
 	// listen for drag gestures.
 	public void dragGestureRecognized(DragGestureEvent dge) {
 		Transferable trans = getSelectionTransferable();
 		try {
-			dge.startDrag(DragSource.DefaultLinkDrop,trans instanceof ResourceListTransferable ? resoucesImage : resourceImage,offset,trans,this); 
+			dge.startDrag(DragSource.DefaultLinkDrop,trans instanceof ResourceListTransferable ? RESOURCES_IMAGE : resourceImage,OFFSET,trans,this); 
 		} catch (InvalidDnDOperationException e) {
 			}
 	}

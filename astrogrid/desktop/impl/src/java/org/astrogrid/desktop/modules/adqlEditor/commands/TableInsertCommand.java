@@ -12,21 +12,18 @@ package org.astrogrid.desktop.modules.adqlEditor.commands;
 
 import javax.swing.undo.UndoManager;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.SchemaProperty;
 import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlString;
-import org.astrogrid.acr.astrogrid.DatabaseBean;
 import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.ivoa.resource.Catalog;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
-import org.astrogrid.desktop.modules.adqlEditor.nodes.NodeFactory;
-import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
-import org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanel;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 
 /**
  * @author jl99@star.le.ac.uk

@@ -50,22 +50,15 @@ System module.
 		<tab name="links" text="Links" after="advanced" help-id="tab.links"  />			
 	</contribution>
 	<contribution configuration-id="uiStructure" if="property workbench.mode">
-		<tab name="discovery" text="Data Discovery" before="*"  help-id="tab.discovery"/>		
-		<tab name="workflow" text="Data Analysis" after="discovery" before="services" help-id="tab.workflow" />
-		
-		<tab name="services" text="System Services" after="workflow" help-id="tab.services" />
-		<tab name="links" text="Helper Applications" after="services" help-id="tab.links" />		
+		<menu name="links" text="Helper Applications" parentName="help" before="projects" />		
 		<tab name="advanced" text="Advanced" after="*" visibleCondition="preference:acr.advanced" help-id="tab.advanced"/>
 	</contribution>
 
 	<!--  help for these structures. -->
 	<contribution configuration-id="helpmap">
-		<item id="tab.discovery" url="http://www2.astrogrid.org/science/documentation/data-explore" />
 		<item id="tab.advanced" url="http://www2.astrogrid.org/desktop/astro-runtime" /> <!-- todo  -->
 		<item id="tab.plastic" url="http://plastic.sourceforge.net" />
 		<item id="tab.links" url="http://www2.astrogrid.org/science/documentation/workbench-helper-applications" />
-		<item id="tab.services" url="http://www2.astrogrid.org/science/documentation/workbench-system-services" />
-		<item id="tab.workflow" url="http://www2.astrogrid.org/science/documentation/workbench-data-analysis"/>
 	</contribution>
 	
 	<contribution configuration-id="uiStructure">
@@ -74,10 +67,6 @@ System module.
 		<menu name="help" text="Help" parentName="menubar" after="*" />
 		<menu name="projects" text="About Projects" parentName="help" before="about" />
 
-		<action parentName="file" name="close" text="Close" visibleCondition="preference:acr.advanced"
-			object="service:ui" methodName="hide" before="exit" onEventDispatchThread="true">		
-			<tooltip>Close this window, but keep the service running</tooltip>
-			</action>
 		<action parentName="file" name="exit" text="Exit" iconName="exit16.png" onEventDispatchThread="true"
 			object="service:builtin.shutdown" methodName="halt" after="*">
 			<tooltip>Close this window, and halt the service</tooltip>
@@ -249,12 +238,10 @@ System module.
 	</contribution>	
 	<!-- add a link to the workbench if we're not running in workbench mode. -->
 	<contribution configuration-id="uiStructure" if="not (property system.browser.disabled) and ((property hub.mode) or (property acr.mode))">
-		<action parentName="links" name="workbench" text="Workbench" iconName="logo48x48.png"
+		<action parentName="links" name="voexplorer" text="VO Explorer" iconName="logo48x48.png"
 			before="aladin" object="service:browser" methodName="openURL" >
 			<tooltip><![CDATA[
-			<html><b>AstroGrid Workbench</b> is a suite of programs for working with the AstroGrid system<br>
-			and the VO in general. Notable featues include <b>AstroScope</b>, <b>HelioScope</b> <br>
-			<b>Task Launcher</b> and <b>Workflow Editor</b>
+			<html><b>VO Explorer</b> needs a description.
 			]]></tooltip>
 			<parameter>http://www2.astrogrid.org/desktop</parameter>
 		</action>
@@ -418,7 +405,7 @@ System module.
 	<service-point id="configuration" interface="org.astrogrid.desktop.modules.system.ConfigurationInternal">
 		Provides and persists preferences objects
 		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.system.PreferenceManagerImpl">
+			<construct class="org.astrogrid.desktop.modules.system.pref.PreferenceManagerImpl">
 				<configuration>framework.preferences</configuration>
 				<configuration>framework.preferenceClass</configuration>
 				<service>framework.sysproperties</service>
@@ -458,7 +445,7 @@ System module.
 	<!--  preference editing servlet -->
 	<contribution configuration-id="servlets" if="not (property system.preference.servlet.disabled)">
 		<servlet name="preferences" path="/preferences" 
-			servletClass="org.astrogrid.desktop.modules.system.PreferenceEditorServlet" />
+			servletClass="org.astrogrid.desktop.modules.system.pref.PreferenceEditorServlet" />
 	</contribution>
 	
 	<contribution configuration-id="servletContext">
@@ -470,21 +457,27 @@ System module.
 	=============================
 	UI
 	 -->
-	<service-point id="ui" interface="org.astrogrid.desktop.modules.system.UIInternal"> <!-- subclass of UI -->
-		Main user interface - consumes the uiStructure configuration
+	 
+	 <service-point id="ui" interface="org.astrogrid.desktop.modules.system.ui.UIContext">
+	 	The User Interface central model.
+	 	<invoke-factory>
+	 		<construct class="org.astrogrid.desktop.modules.system.ui.UIContextImpl">
+	 			<service>configuration</service>
+	 			<service>executor</service>
+	 			<service>help</service>
+	 			<service>browser</service>
+	 			<service>plasticList</service>
+	 		</construct>
+	 	</invoke-factory>
+	 </service-point>
+	 
+	<service-point id="uiView" interface="org.astrogrid.desktop.modules.ui.UIComponent"> 
+		Main user interface view, used in AR and PLastic versions.
 		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.system.UIImpl"> 
-				<service>system.browser</service>
-				<service>builtin.acr</service>
+			<construct class="org.astrogrid.desktop.modules.system.ui.ArMainWindow"> 
 				<service>builtin.shutdown</service>
-				<service>configuration</service>
-				<service>help</service>
-				<service>executor</service>
-				<service>framework.converter</service>
-				<service>framework.htmlResultTransformer</service>
-				<configuration>uiStructure</configuration>
-				<error-handler/>
-				<service>plasticList</service>
+				<service>ui</service>
+				<service>uiBuilder</service>
 				<event-listener service-id="builtin.shutdown" />				
 				<set property="visible" value="${system.ui.visible}" /> 
 				<set property="title"	value="${system.ui.title}" />
@@ -492,14 +485,10 @@ System module.
 		</invoke-factory>		
 	</service-point>
 	
-	<implementation service-id="ui"  if="property system.ui.disabled">
-	<invoke-factory>
-		<construct class="org.astrogrid.desktop.alternatives.HeadlessUI">
-			<string>UI</string>
-			<service>system.executor</service>
-	 </construct>
-	</invoke-factory>
+	<implementation service-id="uiView"  if="(property system.ui.disabled) or (property workbench.mode)">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />
 	</implementation>
+	
 		<!--  need to add some extra logic here - so that it's possible to get it back after hide. -->
 	<contribution configuration-id="framework.preferences" if="not (property asr.mode)">
 		<preference name="system.ui.visible" advanced="true"
@@ -514,8 +503,20 @@ System module.
 	<!-- start this  eager as we want to display a UI 
 		need to determine whether system.ui.visble takes effect as wanted-->
 	<contribution configuration-id="hivemind.EagerLoad">
-		<load service-id="ui"/>
+		<load service-id="uiView"/>
 	</contribution>
+	
+	<service-point id="uiBuilder" interface="org.astrogrid.desktop.modules.system.ui.UIContributionBuilder">
+		Consumes the UI Contribution, and builds a UI from it.
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.system.ui.UIContributionBuilderImpl">
+				<configuration>uiStructure</configuration>
+				<service>framework.htmlResultTransformer</service>
+				<service>framework.converter</service>
+				<error-handler/>			
+			</construct>
+		</invoke-factory>
+	</service-point>	
 	
 	<configuration-point id="uiStructure">
 		Defines menus, tabs, and entries of the user interface.
@@ -918,6 +919,160 @@ SYSTEM TRAY
 	INTERNALS - not visible as acr services 
 	 -->	
 	
+	<!--  ===========================
+	VFS
+	 -->
+	<service-point id="vfs" interface="org.apache.commons.vfs.FileSystemManager">
+		Uniform access to all filesystems.
+		<invoke-factory model="session">
+			<construct 
+			class="org.astrogrid.desktop.modules.system.HivemindFileSystemManager"
+			initialize-method="init"
+			log-property="logger">
+				<configuration>vfsProviders</configuration>
+				<configuration>vfsOperations</configuration>
+				<configuration>vfsExtensions</configuration>
+				<configuration>vfsMimes</configuration>
+				<set-object property="filesCache" 
+					value="instance:org.apache.commons.vfs.cache.SoftRefFilesCache" />
+				<set-object property="defaultProvider"
+				 value="instance:org.apache.commons.vfs.provider.url.UrlFileProvider" />
+				 <set-object property="replicator" value="service:replicator" />
+				 <set-object property="temporaryFileStore" value="service:tmpFileStore" />
+				 <set property="baseFileString" value="${vfs.basefile}" />
+				 <set-object property="fileContentInfoFactory" value="instance:org.astrogrid.desktop.modules.system.AugmentedFileContentInfoFilenameFactory" />
+				<event-listener service-id="builtin.shutdown" />
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+		<!-- ikkle services that vfs depends upon.	-->
+		
+	<service-point id="replicator" visibility="private"
+		interface="org.apache.commons.vfs.provider.FileReplicator">
+		<invoke-factory model="primitive">
+			<construct class="org.apache.commons.vfs.impl.PrivilegedFileReplicator">
+				<service>tmpFileStore</service>
+			</construct>
+		</invoke-factory>	
+	</service-point>		
+	<service-point id="tmpFileStore" visibility="private"
+		interface="org.apache.commons.vfs.impl.DefaultFileReplicator">
+		<create-instance model="primitive" 
+			class="org.apache.commons.vfs.impl.DefaultFileReplicator" />
+	</service-point>
+	
+	<configuration-point id="vfsProviders">
+		List of file system types that vfs knows how to access.
+	  <schema>
+    	<element name="provider" key-attribute="scheme">
+      		<attribute name="scheme"/>
+      		<attribute name="implementation" required="true" translator="object"/>
+	      <rules>
+    	    <push-attribute attribute="implementation"/>
+        	<invoke-parent method="addElement"/>
+	      </rules>
+   	 </element>
+	  </schema>	
+	</configuration-point>
+	
+		<configuration-point id="vfsOperations">
+		List of objects that provide additional vfs operations
+	  <schema>
+    	<element name="operation" key-attribute="scheme">
+      		<attribute name="scheme"/>
+      		<attribute name="implementation" required="true" translator="object"/>
+	      <rules>
+    	    <push-attribute attribute="implementation"/>
+        	<invoke-parent method="addElement"/>
+	      </rules>
+   	 </element>
+	  </schema>	
+	</configuration-point>
+		
+	<configuration-point id="vfsExtensions">
+	List of mappings between file extension and scheme
+	  <schema>
+    	<element name="extension" key-attribute="name">
+      		<attribute name="name"/>
+      		<attribute name="scheme" required="true"/>
+	      <rules>
+    	    <push-attribute attribute="scheme"/>
+        	<invoke-parent method="addElement"/>
+	      </rules>
+   	 </element>
+	  </schema>
+	</configuration-point>	
+	
+	<configuration-point id="vfsMimes">
+	List of mappings between mimetype and scheme.
+	  <schema>
+    	<element name="mime" key-attribute="name">
+      		<attribute name="name"/>
+      		<attribute name="scheme" required="true"/>
+	      <rules>
+    	    <push-attribute attribute="scheme"/>
+        	<invoke-parent method="addElement"/>
+	      </rules>
+   	 </element>
+	  </schema>
+	</configuration-point>	
+	
+	<!--  and now some default contributions. -->	
+	<contribution configuration-id="vfsProviders">
+		<provider scheme="file" 
+			implementation="instance:org.apache.commons.vfs.provider.local.DefaultLocalFileProvider" />
+		<provider scheme="zip"
+			implementation="instance:org.apache.commons.vfs.provider.zip.ZipFileProvider" />
+		<provider scheme="gz"
+			implementation="instance:org.apache.commons.vfs.provider.gzip.GzipFileProvider" />
+			<!--  required external libs 
+		<provider scheme="tar"
+			implementation="instance:org.apache.commons.vfs.provider.tar.TarFileProvider" />
+		<provider scheme="bz2"
+			implementation="instance:org.apache.commons.vfs.provider.bzip2.Bzip2FileProvider" />
+		<provider scheme="tgz"
+			implementation="instance:org.apache.commons.vfs.provider.tar.TarFileProvider" />
+		<provider scheme="tbz2"
+			implementation="instance:org.apache.commons.vfs.provider.tar.TarFileProvider" />			
+		-->
+		<provider scheme="tmp"
+			implementation="instance:org.apache.commons.vfs.provider.temp.TemporaryFileProvider" />
+		<provider scheme="ftp"
+			implementation="instance:org.apache.commons.vfs.provider.ftp.FtpFileProvider" />
+		<provider scheme="http"
+			implementation="instance:org.apache.commons.vfs.provider.http.HttpFileProvider" />
+		<provider scheme="https"
+			implementation="instance:org.apache.commons.vfs.provider.https.HttpsFileProvider" />
+		<provider scheme="sftp"
+			implementation="instance:org.apache.commons.vfs.provider.sftp.SftpFileProvider" />
+		<provider scheme="res"
+			implementation="instance:org.apache.commons.vfs.provider.res.ResourceFileProvider" />
+		<provider scheme="ram"
+			implementation="instance:org.apache.commons.vfs.provider.ram.RamFileProvider" />
+	</contribution>
+	
+	<contribution configuration-id="vfsExtensions">
+		<extension name="zip" scheme="zip"/>
+		<extension name="gz" scheme="gz"/>
+<!-- 		<extension name="tar" scheme="tar"/>
+		<extension name="bz2" scheme="bz2"/>
+		<extension name="tgz" scheme="tar"/>
+		<extension name="tbz2" scheme="tar"/> -->		
+	</contribution>
+	
+	<contribution configuration-id="vfsMimes">
+		<mime name="application/zip" scheme="zip" />
+		<mime name="application/x-gzip" scheme="gz" />
+		<mime name="application/x-tar" scheme="tar" />
+	</contribution>
+		
+	<contribution configuration-id="hivemind.FactoryDefaults">			
+	    <default symbol="vfs.basefile" value="${user.home}" />
+	</contribution>
+
+
+	
 	<!--  ===================
 	SCHEDULER
 	 -->
@@ -1134,20 +1289,18 @@ MAC SETUP
  	<service-point id="configDialogue" visibility="private" interface="java.lang.Runnable">
  		A configuration dialogue
  		<invoke-factory>
- 			<construct class="org.astrogrid.desktop.modules.system.PreferenceEditorDialogue">
+ 			<construct class="org.astrogrid.desktop.modules.system.pref.PreferenceEditorDialogue">
  				<service>preferencesArranger</service>
  				<object>preference:acr.advanced</object>
- 				<object>service-property:ui:component</object>
- 				<service>browser</service>
- 				<service>help</service>
+ 				<service>system.ui</service>
  			</construct>
  		</invoke-factory>
  	</service-point>
  	
- 	<service-point id="preferencesArranger" interface="org.astrogrid.desktop.modules.system.PreferencesArranger">
+ 	<service-point id="preferencesArranger" interface="org.astrogrid.desktop.modules.system.pref.PreferencesArranger">
  		Helper component that sorts preferences into structures for ui work.
  		<invoke-factory>
- 			<construct class="org.astrogrid.desktop.modules.system.PreferencesArrangerImpl">
+ 			<construct class="org.astrogrid.desktop.modules.system.pref.PreferencesArrangerImpl">
  				<configuration>framework.preferences</configuration>
  			</construct>
  		</invoke-factory>

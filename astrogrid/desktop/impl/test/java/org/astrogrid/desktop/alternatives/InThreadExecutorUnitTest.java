@@ -6,8 +6,9 @@ package org.astrogrid.desktop.alternatives;
 import junit.framework.TestCase;
 
 import org.astrogrid.desktop.modules.system.BackgroundExecutor;
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.easymock.MockControl;
 
 /** test for the in thread executor.
@@ -37,8 +38,19 @@ public class InThreadExecutorUnitTest extends TestCase {
 	public void testExecuteWorker() {
 		r.run();
 		rControl.replay();
-		UIInternal parent = new HeadlessUI("testing",be);
-		BackgroundWorker bw = parent.wrap(r);
+		MockControl m = MockControl.createNiceControl(UIContext.class);
+		UIContext cxt= (UIContext)m.getMock();
+		cxt.getExecutor();
+		m.setDefaultReturnValue(be);
+		m.replay();				
+		UIComponent parent = new HeadlessUIComponent("testing",cxt);
+		BackgroundWorker bw = new BackgroundWorker(parent,"test") {
+
+			protected Object construct() throws Exception {
+				r.run();
+				return null;
+			}
+		};
 		be.executeWorker(bw);
 		rControl.verify();
 	}

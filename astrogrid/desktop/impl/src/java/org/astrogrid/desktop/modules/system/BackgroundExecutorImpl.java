@@ -1,4 +1,4 @@
-/*$Id: BackgroundExecutorImpl.java,v 1.9 2007/03/22 19:03:48 nw Exp $
+/*$Id: BackgroundExecutorImpl.java,v 1.10 2007/04/18 15:47:07 nw Exp $
  * Created on 30-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,12 +13,11 @@ package org.astrogrid.desktop.modules.system;
 import java.security.Principal;
 import java.util.Iterator;
 
-import net.sourceforge.hivelock.SecurityService;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.builtin.ShutdownListener;
 import org.astrogrid.desktop.framework.SessionManagerInternal;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 
 import EDU.oswego.cs.dl.util.concurrent.BoundedPriorityQueue;
@@ -158,7 +157,7 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
         }
     }
     
-    public BackgroundExecutorImpl(UIInternal ui, SessionManagerInternal ss) {
+    public BackgroundExecutorImpl(UIContext ui, SessionManagerInternal ss) {
         this.ui = ui;        
         this.ss = ss;
     }
@@ -174,7 +173,7 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
     }
     private BoundedPriorityQueue chan;
     private TimeoutPooledExecutor exec;
-    private final UIInternal ui;
+    private final UIContext ui;
     private final SessionManagerInternal ss;
     
     
@@ -195,8 +194,13 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
     }
 
     /** first converts from a runnable to a BackgroundWorker, attached to the parent ui */
-    public void execute(Runnable arg0) throws InterruptedException {
-        this.executeWorker(ui.wrap(arg0));
+    public void execute(final Runnable arg0) throws InterruptedException {
+        this.executeWorker(new BackgroundWorker(ui,"Background Task"){
+            protected Object construct() throws Exception {
+                arg0.run();
+                return null;
+            }        	
+        });
     }
 
     /**
@@ -240,6 +244,9 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
 
 /* 
 $Log: BackgroundExecutorImpl.java,v $
+Revision 1.10  2007/04/18 15:47:07  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.9  2007/03/22 19:03:48  nw
 added support for sessions and multi-user ar.
 

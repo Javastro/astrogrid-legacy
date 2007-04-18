@@ -9,16 +9,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.system.ui.UIContributionBuilder;
 import org.votech.plastic.incoming.handlers.AbstractMessageHandler;
 
 /** Factory for voexplorers - also handles some messages.
@@ -27,10 +25,11 @@ import org.votech.plastic.incoming.handlers.AbstractMessageHandler;
  */
 public class VOExplorerFactoryImpl  extends AbstractMessageHandler implements VOExplorerFactoryInternal {
 	
-	public final Configuration conf;
-	public final HelpServerInternal help;
-	public final UIInternal ui; // @todo change this later.
+	public final UIContext context;
+	public final UIComponent ui;
 	public final IterableObjectBuilder views;
+	public final UIContributionBuilder builder;
+	public final IterableObjectBuilder activities;
 	
 	
 	/**
@@ -42,8 +41,7 @@ public class VOExplorerFactoryImpl  extends AbstractMessageHandler implements VO
 
 	// create a new voexplorer
 	public Object create() {
-		
-		VOExplorerImpl vo = new VOExplorerImpl(help,ui,conf,views);
+		VOExplorerImpl vo = new VOExplorerImpl(context,views,activities, builder);
 		vo.setVisible(true);
 		return vo;
 	}
@@ -51,12 +49,8 @@ public class VOExplorerFactoryImpl  extends AbstractMessageHandler implements VO
 
 	
 	public static final List REGISTRY_MESSAGES = new ArrayList() {{
-		try {
-			add(new URI("ivo://votech.org/voresource/load"));
-			add(new URI("ivo://votech.org/voresource/loadList"));
-		} catch (Exception e) {
-			logger.error("Failed to define plastic messages for voexplorer",e);
-		}
+			add(URI.create("ivo://votech.org/voresource/load"));
+			add(URI.create("ivo://votech.org/voresource/loadList"));
 	}};
 	
 	public static final URI VORESOURCE_LOAD = (URI)REGISTRY_MESSAGES.get(0);
@@ -116,12 +110,13 @@ public class VOExplorerFactoryImpl  extends AbstractMessageHandler implements VO
 			}
 		}
 	}
-	public VOExplorerFactoryImpl(final Configuration conf, final HelpServerInternal help, final UIInternal ui, final IterableObjectBuilder views) {
+	public VOExplorerFactoryImpl(UIContext context,final IterableObjectBuilder views, final IterableObjectBuilder activitiesBuilder,UIContributionBuilder builder) {
 		super();
-		this.conf = conf;
-		this.help = help;
-		this.ui = ui;
+		this.context = context;
 		this.views = views;
+		this.builder = builder;
+		this.activities = activitiesBuilder;
+		this.ui = null; //@todo work out what to do here.. - sometimes will want to provide a parent (maybe never throught eh factory though??)
 		create();
 	}
 

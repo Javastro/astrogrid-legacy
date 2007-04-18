@@ -1,4 +1,4 @@
-/*$Id: AllSystemIntegrationTests.java,v 1.5 2007/01/29 10:42:48 nw Exp $
+/*$Id: AllSystemIntegrationTests.java,v 1.6 2007/04/18 15:47:04 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,8 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.modules.system.pref.PreferenceEditorServletIntegrationTest;
+import org.astrogrid.desktop.modules.system.pref.PreferencesIntegrationTest;
 
 /** Tests the system components.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 25-Jul-2005
@@ -26,12 +28,9 @@ public class AllSystemIntegrationTests {
     public static Test suite() {
         TestSuite suite = new TestSuite("Integration tests for System Module");
         suite.addTest(ConfigurationIntegrationTest.suite());
-        suite.addTest(PreferencesIntegrationTest.suite());
         suite.addTest(WebServerIntegrationTest.suite());
         suite.addTest(ApiHelpIntegrationTest.suite());   
         suite.addTest(BackgroundExecutorIntegrationTest.suite());
-        suite.addTest(UIInternalIntegrationTest.suite());
-        suite.addTest(PreferenceEditorServletIntegrationTest.suite());
         // tests the fundamentals of each trasnport.
         suite.addTest(HtmlTransportIntegrationTest.suite());
         suite.addTest(XmlRpcTransportIntegrationTest.suite());    
@@ -45,6 +44,9 @@ public class AllSystemIntegrationTests {
 
 /* 
 $Log: AllSystemIntegrationTests.java,v $
+Revision 1.6  2007/04/18 15:47:04  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.5  2007/01/29 10:42:48  nw
 tidied.
 

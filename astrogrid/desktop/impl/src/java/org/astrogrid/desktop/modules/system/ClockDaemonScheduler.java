@@ -1,4 +1,4 @@
-/*$Id: ClockDaemonScheduler.java,v 1.8 2007/03/22 19:03:48 nw Exp $
+/*$Id: ClockDaemonScheduler.java,v 1.9 2007/04/18 15:47:07 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.acr.builtin.SessionManager;
 import org.astrogrid.acr.builtin.ShutdownListener;
 import org.astrogrid.desktop.framework.SessionManagerInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
@@ -115,6 +114,9 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
 
 /* 
 $Log: ClockDaemonScheduler.java,v $
+Revision 1.9  2007/04/18 15:47:07  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.8  2007/03/22 19:03:48  nw
 added support for sessions and multi-user ar.
 

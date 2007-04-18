@@ -316,7 +316,7 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 	}
 	
 
-	public void getResourceStream(URI endpoint,URI ivorn, StreamProcessor processor) throws ServiceException{
+	public void getResourceStream(URI endpoint,URI ivorn, StreamProcessor processor) throws ServiceException, NotFoundException{
 		Client c = createClient(endpoint);
 		c.addInHandler(new StreamProcessorHandler(processor));
 		try {
@@ -330,7 +330,11 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 					new DOMSource(doc));
 			c.invoke("GetResourceByIdentifier",new Object[]{inStream});
 		} catch (XFireFault f) {
-			throw new ServiceException("Registry Service Response:" + f.getMessage());			
+			if (f.getMessage().toLowerCase().indexOf("not found") != -1) {
+				throw new NotFoundException(ivorn.toString());
+			} else {
+				throw new ServiceException("Registry Service Response:" + f.getMessage());
+			}
 		} catch (Exception x) {
 				throw new ServiceException("Failed to query registry",x);
 		}

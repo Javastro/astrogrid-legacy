@@ -12,8 +12,12 @@ import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.config.Configuration;
 
-import org.astrogrid.desktop.alternatives.HeadlessUIFactory;
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.alternatives.HeadlessUIComponent;
+import org.astrogrid.desktop.alternatives.InThreadExecutor;
+import org.astrogrid.desktop.modules.system.BackgroundExecutorImpl;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.system.ui.UIContextImpl;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.votech.VoMon;
 import org.votech.VoMonBean;
 
@@ -45,9 +49,7 @@ public class VoMonImplUnitTest extends TestCase {
 			}};			
 			manager = new CacheManager(conf);
 
-		HeadlessUIFactory fac = new HeadlessUIFactory();
-		ui = fac.getUI();
-		
+		ui = new UIContextImpl(null,new InThreadExecutor(),null,null);		
 		cache = manager.getEhcache("test-vomon");
 		
 		assertNotNull("cache is null",cache);
@@ -55,7 +57,7 @@ public class VoMonImplUnitTest extends TestCase {
 	
 	final static int refresh = 30;
 	URL endpoint;
-	UIInternal ui;
+	UIContext ui;
 	CacheManager manager;
 	Ehcache cache;
 	

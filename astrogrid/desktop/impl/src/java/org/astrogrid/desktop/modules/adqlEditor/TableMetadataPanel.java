@@ -47,7 +47,6 @@ import org.astrogrid.desktop.modules.adqlEditor.commands.CommandExec;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CommandFactory;
 import org.astrogrid.desktop.modules.adqlEditor.commands.MultipleColumnInsertCommand;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
-import org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanel;
 
 /**
  * @author jl99

@@ -52,23 +52,21 @@ public class UIContributionIntegrationTest extends InARTestCase {
 	
 	public void testTab() throws Exception {
 		if (! Boolean.getBoolean("asr.mode")) { // no tabs present in asr mode
-		UITabContribution m = (UITabContribution) contrib.get("links");
+		UIStructureContribution m = (UIStructureContribution) contrib.get("links");
 		assertNotNull(m);
 		assertEquals("links",m.getName());
 // varies according to variant.
 //		assertEquals("Data Discovery",m.getText());
 //		assertEquals("*",m.getBefore());
-		assertNull(m.getVisibleCondition());
 		}else {
 			assertNull(contrib.get("links"));
 		}
 	}
 
 	public void testAction() throws Exception {
-		UIActionContribution m = (UIActionContribution) contrib.get("close");
+		UIActionContribution m = (UIActionContribution) contrib.get("exit");
 		assertNotNull(m);
-		assertEquals("close",m.getName());
-		assertEquals("Close",m.getText());
-		assertNotNull(m.getVisibleCondition());
+		assertEquals("exit",m.getName());
+		assertEquals("Exit",m.getText());
 	}
 }

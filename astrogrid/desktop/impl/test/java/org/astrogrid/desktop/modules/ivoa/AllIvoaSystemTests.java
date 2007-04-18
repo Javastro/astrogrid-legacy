@@ -21,13 +21,12 @@ public class AllIvoaSystemTests {
 		suite.addTestSuite(SsapSystemTest.class);
 		suite.addTestSuite(ConeSystemTest.class);
 
-		suite.addTestSuite(SkyNodeSystemTest.class);
+		//suite.addTestSuite(SkyNodeSystemTest.class);
 
 		suite.addTestSuite(ExternalRegistryBasicsSystemTest.class);
 		suite.addTestSuite(ExternalRegistryKeywordSystemTest.class);
 		suite.addTestSuite(ExternalRegistryADQLSystemTest.class);
-		//@todo debug - seems to be too expensive at the moment.
-		//suite.addTestSuite(ExternalRegistryXQuerySystemTest.class);		
+		suite.addTestSuite(ExternalRegistryXQuerySystemTest.class);		
 		return new ARTestSetup(suite,true);
 	}
 

@@ -2,27 +2,15 @@
 package org.astrogrid.desktop.modules.adqlEditor.nodes ;
 
 
-import java.util.Enumeration;
 import java.util.Hashtable;
-import java.lang.Integer;
+
+import javax.swing.tree.DefaultTreeModel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
-import org.apache.xmlbeans.XmlOptions;
-import org.apache.xmlbeans.SchemaProperty; 
-import org.apache.xmlbeans.SchemaType; 
-import org.apache.xmlbeans.SimpleValue; 
-import org.apache.xmlbeans.XmlString;
-import org.apache.xmlbeans.XmlLong ;
-import org.apache.xmlbeans.XmlDouble ;
-
-
-import javax.swing.tree.DefaultTreeModel ;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.DefaultMutableTreeNode ;
-import org.astrogrid.desktop.modules.adqlEditor.*;
+import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 
 /**
  * . 

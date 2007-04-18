@@ -1,4 +1,4 @@
-/*$Id: UIActionContribution.java,v 1.9 2007/01/29 10:46:28 nw Exp $
+/*$Id: UIActionContribution.java,v 1.10 2007/04/18 15:47:09 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,13 +19,11 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Icon;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.system.Preference;
-import org.astrogrid.desktop.modules.system.UIImpl;
-import org.astrogrid.desktop.modules.system.UIImpl.InvokerWorker;
+import org.astrogrid.desktop.modules.system.pref.Preference;
+import org.astrogrid.desktop.modules.system.ui.ContributionInvoker;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 
 /** contribution to ui that represents a button.
  * Extends AbstractAction with methods to control display,
@@ -46,7 +44,7 @@ public class UIActionContribution extends AbstractAction implements UIStructureC
     private String name;
     private Object object;
     private List parameters= new ArrayList();
-    private UIImpl parentImpl;
+    private UIComponent uiComponent;
     private String parentName;
     private Component parentComponent;
     private String helpId;
@@ -58,7 +56,7 @@ public class UIActionContribution extends AbstractAction implements UIStructureC
     private boolean visible = true;
     
     /** register a 'parent component' with this action.
-     * then, when a watche preference goes 'true', the visible 
+     * then, when a watched preference goes 'true', the visible 
      * property of the parent component is altered accordingly.
      * @param c
      */
@@ -110,25 +108,19 @@ public class UIActionContribution extends AbstractAction implements UIStructureC
 		return visible;
 	}
 	
-	public UIActionContribution() {
-        super();
-    }
     
     /** invoke the specified method on the object */
     public void actionPerformed(ActionEvent e) {
-        int result = JOptionPane.YES_OPTION;
-        if (confirmMessage != null  && confirmMessage.trim().length() > 0) {
-            result = JOptionPane.showConfirmDialog(parentImpl,confirmMessage,"Confirmation",JOptionPane.YES_NO_OPTION);
-        }
-        if (result == JOptionPane.YES_OPTION) {
-        	InvokerWorker op = parentImpl.new InvokerWorker(this);
-        	if (onEventDispatchThread) { //run direct on swing thread.
-        		SwingUtilities.invokeLater(op);
-        	} else {
-        		op.start(); // run in background.
-        	}
-        }
+    	if (invoker == null) {
+    		throw new IllegalStateException("Cannot run this action - no invoker provided");
+    	}
+    	invoker.invoke(this);
     }
+    /** provides the mechanism for invoking this contributioon */
+    public void setContributionInvoker(ContributionInvoker invoker) {
+    	this.invoker = invoker;
+    }
+    private ContributionInvoker invoker;
     
     /** adds a parameter to the method call */
     public void addParameter(Object v) {
@@ -221,10 +213,6 @@ public class UIActionContribution extends AbstractAction implements UIStructureC
     	return (String)getValue(SHORT_DESCRIPTION);
     }
 
-    /** the 'parent' ui of this action - used for event notification when this action is triggered. */
-    public void setUIImpl(UIImpl p){
-        this.parentImpl= p;
-    }
 
 	/** an optional HelpID to link to for further help */
 	public String getHelpId() {
@@ -246,11 +234,38 @@ public class UIActionContribution extends AbstractAction implements UIStructureC
 	public void setOnEventDispatchThread(boolean onEventDispatchThread) {
 		this.onEventDispatchThread = onEventDispatchThread;
 	}
+
+	public UIStructureContribution cloneStructure() {
+		// use clone - as parent class is cloneable, and all other copy-time attribs in this 
+		// class are primitive, or are fine being shared as a shallow-copy.
+		try {
+			return (UIStructureContribution)clone();
+		} catch (CloneNotSupportedException x) {
+			throw new RuntimeException("Unexpected - we implement clone",x);
+		}
+	}
+
+	/**
+	 * @return the uiComponent
+	 */
+	public UIComponent getUiComponent() {
+		return this.uiComponent;
+	}
+
+	/**
+	 * @param uiComponent the uiComponent to set
+	 */
+	public void setUiComponent(UIComponent uiComponent) {
+		this.uiComponent = uiComponent;
+	}
 }
 
 
 /* 
 $Log: UIActionContribution.java,v $
+Revision 1.10  2007/04/18 15:47:09  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.9  2007/01/29 10:46:28  nw
 allow to execute actions on EDT in some cases.
 

@@ -1,4 +1,4 @@
-/*$Id: JettyWebServer.java,v 1.11 2007/03/22 19:03:47 nw Exp $
+/*$Id: JettyWebServer.java,v 1.12 2007/04/18 15:47:07 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,20 +14,18 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Writer;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.builtin.ShutdownListener;
-import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.modules.system.contributions.ServletContextContribution;
 import org.astrogrid.desktop.modules.system.contributions.ServletsContribution;
 import org.mortbay.http.HttpContext;
@@ -37,11 +35,6 @@ import org.mortbay.http.HttpResponse;
 import org.mortbay.http.HttpServer;
 import org.mortbay.http.SocketListener;
 import org.mortbay.http.handler.AbstractHttpHandler;
-import org.mortbay.http.handler.DumpHandler;
-import org.mortbay.http.handler.ErrorPageHandler;
-import org.mortbay.http.handler.ForwardHandler;
-import org.mortbay.http.handler.NotFoundHandler;
-import org.mortbay.http.handler.NullHandler;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.ServletHttpContext;
 import org.mortbay.util.InetAddrPort;
@@ -320,7 +313,7 @@ public URL getContextBase(String sessionId) {
 	private HttpContext findContext (String sessionId) {
 		HttpContext[] contexts = server.getContexts();
 		if (logger.isDebugEnabled()) {
-			logger.debug(Arrays.toString(contexts));
+			logger.debug(ArrayUtils.toString(contexts));
 		}
 		String cxtPath = "/" + sessionId; // workaround for oddness
 		for (int i = 0; i < contexts.length; i++) {			
@@ -336,6 +329,9 @@ public URL getContextBase(String sessionId) {
 
 /* 
 $Log: JettyWebServer.java,v $
+Revision 1.12  2007/04/18 15:47:07  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.11  2007/03/22 19:03:47  nw
 added support for sessions and multi-user ar.
 

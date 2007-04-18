@@ -1,4 +1,4 @@
-/*$Id: VospaceResourceChooserDialog.java,v 1.2 2007/01/29 10:52:19 nw Exp $
+/*$Id: VospaceResourceChooserDialog.java,v 1.3 2007/04/18 15:47:11 nw Exp $
  * Created on 15-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,12 +37,11 @@ import javax.swing.event.DocumentListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.AbstractResourceChooserDialog;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.AbstractVospaceBrowser;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 import org.astrogrid.filemanager.client.FileManagerNode;
 /** Dialog that allows the user to choose a resource in file:// or ivo:// space.
@@ -55,7 +54,7 @@ public class VospaceResourceChooserDialog extends AbstractResourceChooserDialog 
     class VospaceChooser extends AbstractVospaceBrowser {
 
         public VospaceChooser() throws HeadlessException {
-            super(conf, VospaceResourceChooserDialog.this.help, VospaceResourceChooserDialog.this.ui, vos,sendToMenu); 
+            super(context, vos,sendToMenu); 
             // need to disambiguate help and ui, as vospace chooser's parent class has fields of this name too - and it won't compile otherwise
             comm.addUserLoginListener(this);
         }
@@ -114,18 +113,16 @@ public class VospaceResourceChooserDialog extends AbstractResourceChooserDialog 
     private JTextField urlPanelField = null;
     private final MyspaceInternal vos;  
     private final SendToMenu sendToMenu;
-    private final Configuration conf;
-    private final HelpServerInternal help;
-    private final UIInternal ui;
+    private final UIContext context;
+    private final UIComponent ui;
     private final Community comm;
     
     
-    public VospaceResourceChooserDialog(MyspaceInternal vos,SendToMenu sendTo,Configuration conf,HelpServerInternal help,UIInternal ui, Community comm) {
+    public VospaceResourceChooserDialog(MyspaceInternal vos,SendToMenu sendTo,UIContext context,UIComponent ui, Community comm) {
         super();
         this.vos = vos;
         this.sendToMenu = sendTo;
-        this.conf=conf;
-        this.help = help;
+        this.context = context;
         this.ui = ui;
         this.comm = comm;
         initialize();
@@ -400,6 +397,9 @@ public class VospaceResourceChooserDialog extends AbstractResourceChooserDialog 
 
 /* 
 $Log: VospaceResourceChooserDialog.java,v $
+Revision 1.3  2007/04/18 15:47:11  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.2  2007/01/29 10:52:19  nw
 completed and debugged implementation of new filestore chooser.
 

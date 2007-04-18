@@ -3,9 +3,6 @@
  */
 package org.astrogrid.desktop.modules.ivoa.resource;
 
-import javax.xml.stream.XMLInputFactory;
-
-import junit.framework.TestCase;
 
 /** Tests parsing of Table Service resources.
  * @todo implement later

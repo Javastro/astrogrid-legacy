@@ -1,4 +1,4 @@
-/*$Id: HelioScopeLauncherImpl.java,v 1.21 2007/03/08 17:43:58 nw Exp $
+/*$Id: HelioScopeLauncherImpl.java,v 1.22 2007/04/18 15:47:05 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,19 +29,15 @@ import javax.swing.JPanel;
 import org.astrogrid.acr.astrogrid.Stap;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.ui.HelioScope;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.scope.AbstractScope;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
-import org.astrogrid.desktop.modules.ui.scope.SaveNodesButton;
 import org.astrogrid.desktop.modules.ui.scope.StapProtocol;
 import org.astrogrid.desktop.modules.ui.scope.TemporalDalProtocol;
 import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
@@ -68,7 +64,7 @@ public class HelioScopeLauncherImpl extends AbstractScope
  	menu.insert(ref,0);
  	*/
  	JMenuItem sci = new JMenuItem("Helioscope Help");
- 	getHelpServer().enableHelpOnButton(sci, "helioscope.menu.science");
+ 	getContext().getHelpServer().enableHelpOnButton(sci, "helioscope.menu.science");
  	menu.insert(sci,0);
  	return menu;
  }
@@ -88,15 +84,15 @@ public class HelioScopeLauncherImpl extends AbstractScope
      * @param cone
      * @throws URISyntaxException 
      */
-    public HelioScopeLauncherImpl(UIInternal ui, Configuration conf, HelpServerInternal hs,  
+    public HelioScopeLauncherImpl(UIContext context,
                                   MyspaceInternal myspace, ResourceChooserInternal chooser, Registry reg, 
                                   Stap stap,TupperwareInternal tupp, SendToMenu sendTo, SnitchInternal snitch, RegistryBrowser browser) {
-        super(conf,hs,ui,myspace,chooser,tupp, sendTo, snitch,"HelioScope",new DalProtocol[]{
+        super(context,myspace,chooser,tupp, sendTo, snitch,"HelioScope",new DalProtocol[]{
         		new StapProtocol(reg,stap)
         }, browser);
 
         
-        getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.helioscopeLauncher");
+        getContext().getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.helioscopeLauncher");
         // declared in parent class.
         //        dynamicButtons.add(new SaveNodesButton(vizModel.getSelectionFocusSet(),this,chooser,myspace));
         
@@ -285,6 +281,9 @@ private List resourceList;
 
 /* 
 $Log: HelioScopeLauncherImpl.java,v $
+Revision 1.22  2007/04/18 15:47:05  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.21  2007/03/08 17:43:58  nw
 first draft of voexplorer
 

@@ -1,4 +1,4 @@
-/*$Id: ConfigurationInternal.java,v 1.4 2007/01/29 11:11:36 nw Exp $
+/*$Id: ConfigurationInternal.java,v 1.5 2007/04/18 15:47:07 nw Exp $
  * Created on 23-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,8 @@ import org.apache.hivemind.SymbolSource;
 import org.apache.hivemind.service.ObjectProvider;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.system.Configuration;
+import org.astrogrid.desktop.modules.system.pref.Preference;
+import org.astrogrid.desktop.modules.system.pref.PreferenceManagerImpl;
 
 /** An OO self-describing interface to the configuration system.
  * The methods in this class are Preferred, for internal use, to the Configuration interface.
@@ -40,6 +42,9 @@ public interface ConfigurationInternal extends Configuration, ObjectProvider, Sy
 
 /* 
 $Log: ConfigurationInternal.java,v $
+Revision 1.5  2007/04/18 15:47:07  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.4  2007/01/29 11:11:36  nw
 updated contact details.
 

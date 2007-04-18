@@ -1,4 +1,4 @@
-/*$Id: UITabContribution.java,v 1.8 2007/01/29 11:11:37 nw Exp $
+/*$Id: UITabContribution.java,v 1.9 2007/04/18 15:47:09 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,8 +18,8 @@ import javax.swing.Icon;
 
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.CSH;
-import org.astrogrid.desktop.modules.system.Preference;
-import org.astrogrid.desktop.modules.system.UIImpl;
+import org.astrogrid.desktop.modules.system.pref.Preference;
+import org.astrogrid.desktop.modules.system.ui.ArMainWindow;
 
 import com.l2fprod.common.swing.JButtonBar;
 import com.l2fprod.common.swing.plaf.blue.BlueishButtonBarUI;
@@ -43,6 +43,25 @@ public class UITabContribution extends JButtonBar implements UIStructureContribu
     private String toolTipText;
     private Icon icon;
     
+	public UIStructureContribution cloneStructure() {
+		// use a copy constructor to achieve this.
+		return new UITabContribution(this);
+	}
+	
+	protected UITabContribution(UITabContribution copy) {
+		this();
+		this.before = copy.before;
+		this.after = copy.after;
+		this.text = copy.text;
+		this.toolTipText = copy.toolTipText;
+		this.icon = copy.icon;
+		this.visiblePreference = copy.visiblePreference;
+		CSH.setHelpIDString(this,(String)copy.getClientProperty("HelpID"));
+		// and fields from superclass too
+		this.setName(copy.getName());
+	}
+	
+	
     public void setHelpId(String s) {
     	CSH.setHelpIDString(this, s);
     }
@@ -130,7 +149,7 @@ public class UITabContribution extends JButtonBar implements UIStructureContribu
 
 
     public String getParentName() {
-        return UIImpl.TABS_NAME;
+        return ArMainWindow.TABS_NAME;
     }
 
 
@@ -140,6 +159,9 @@ public class UITabContribution extends JButtonBar implements UIStructureContribu
 
 /* 
 $Log: UITabContribution.java,v $
+Revision 1.9  2007/04/18 15:47:09  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.8  2007/01/29 11:11:37  nw
 updated contact details.
 

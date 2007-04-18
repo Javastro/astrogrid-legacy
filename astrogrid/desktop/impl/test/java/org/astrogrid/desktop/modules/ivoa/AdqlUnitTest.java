@@ -3,11 +3,11 @@
  */
 package org.astrogrid.desktop.modules.ivoa;
 
+import junit.framework.TestCase;
+
 import org.astrogrid.acr.ivoa.Adql;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
-
-import junit.framework.TestCase;
 
 /** unit test for the ar's adql parser.
  * @author Noel.Winstanley@manchester.ac.uk

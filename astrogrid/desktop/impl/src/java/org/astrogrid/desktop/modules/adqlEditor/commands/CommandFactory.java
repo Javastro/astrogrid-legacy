@@ -11,20 +11,21 @@
 package org.astrogrid.desktop.modules.adqlEditor.commands;
 
 import java.io.StringReader;
-import java.util.List ;
-import java.util.ArrayList ;
+import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Random;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.SchemaProperty;
-import org.astrogrid.desktop.modules.adqlEditor.* ;
-import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode ;
+import org.apache.xmlbeans.SchemaType;
 import org.astrogrid.adql.AdqlStoX;
+import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
+import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
+import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 
 /**
  * @author jl99

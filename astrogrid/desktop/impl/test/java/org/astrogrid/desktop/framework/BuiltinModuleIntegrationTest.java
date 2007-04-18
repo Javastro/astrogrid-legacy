@@ -6,17 +6,8 @@ package org.astrogrid.desktop.framework;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.hivemind.ServiceInterceptorFactory;
 import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.acr.builtin.ShutdownListener;
-import org.astrogrid.acr.system.ApiHelp;
-import org.astrogrid.acr.system.BrowserControl;
-import org.astrogrid.acr.system.Configuration;
-import org.astrogrid.acr.system.HelpServer;
-import org.astrogrid.acr.system.RmiServer;
-import org.astrogrid.acr.system.SystemTray;
-import org.astrogrid.acr.system.UI;
-import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
 

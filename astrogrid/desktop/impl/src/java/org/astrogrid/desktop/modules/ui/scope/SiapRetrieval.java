@@ -1,6 +1,5 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
-import java.net.URI;
 import java.net.URL;
 
 import org.apache.commons.lang.StringUtils;

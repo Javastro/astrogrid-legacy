@@ -1,4 +1,4 @@
-/*$Id: ChooseAToolEditorPanel.java,v 1.19 2007/03/09 15:52:13 KevinBenson Exp $
+/*$Id: ChooseAToolEditorPanel.java,v 1.20 2007/04/18 15:47:11 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,26 +17,17 @@ import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
-
-import net.sf.ehcache.Ehcache;
 
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.acr.system.BrowserControl;
-import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditAdapter;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
 import org.astrogrid.desktop.modules.dialogs.registry.RegistryGooglePanel;
-import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
-import org.astrogrid.desktop.modules.system.Preference;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.workflow.beans.v1.Tool;
-import org.votech.VoMon;
 
 import ca.odell.glazedlists.ListSelection;
 
@@ -107,21 +98,27 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel implements P
 				}
 			}
 		});
+		add(rcp.getToolbar());
 		add(rcp);        
 	}
 
 	private void setChooseCEAOnly(boolean ceaOnly) {
 
+		rcp.applyFilter("@xsi:type &= '*CeaApplicationType' " +
+				" or @xsi:type &= '*CeaHttpApplicationType' " + 
+				( ! ceaOnly ? " or @xsi:type &= '*ConeSearch' " + 
+						" or @xsi:type &= '*SimpleImageAccess' "  + 
+						" or @xsi:type &= '*SimpleSpectrumAccess' " 
+		/* KMB suggested improvement
 		rcp.applyFilter("matches(@xsi:type,'.*:CeaApplicationType') " +
 				" or matches(@xsi:type,'.*:CeaHttpApplicationType') " + 
 				( ! ceaOnly ? " or matches(@xsi:type,'.*:ConeSearch') " + 
 						" or matches(@xsi:type,'.*:SimpleImageAccess') "  + 
 						" or matches(@xsi:type,'.*:SimpleSpectrumAccess') " 	
+*/				
 						// @todo add this in - but need a faster registry service, or some other way of registering CDS
 						// also, ned to have a ceaApplication handler that knows to treat these as a tabular sky service
 						//" or (@xsi:type &= '*TabularSkyService' and vr:identifier &= 'ivo://CDS/*' and vods:table/vods:column/vods:ucd = 'POS_EQ_RA_MAIN')"
-						//registry service now faster but still a little slow on matches() astrogrid registries will
-						//switch to its own specefic function now to make the query faster.
 
 						: ""))  ;    	
 	}
@@ -148,11 +145,8 @@ public class ChooseAToolEditorPanel extends AbstractToolEditorPanel implements P
 
 /* 
 $Log: ChooseAToolEditorPanel.java,v $
-Revision 1.19  2007/03/09 15:52:13  KevinBenson
-whoops copy mistake need to use applyFilter not setFilter now.
-
-Revision 1.18  2007/03/09 15:24:31  KevinBenson
-Try to use standard xquery matches()
+Revision 1.20  2007/04/18 15:47:11  nw
+tidied up voexplorer, removed front pane.
 
 Revision 1.17  2007/03/08 17:44:04  nw
 first draft of voexplorer

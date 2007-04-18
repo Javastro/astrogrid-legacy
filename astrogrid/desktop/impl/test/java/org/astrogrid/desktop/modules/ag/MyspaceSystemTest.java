@@ -1,4 +1,4 @@
-/*$Id: MyspaceSystemTest.java,v 1.10 2007/03/08 17:44:01 nw Exp $
+/*$Id: MyspaceSystemTest.java,v 1.11 2007/04/18 15:47:10 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,6 @@ import java.net.URL;
 import java.util.Arrays;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.commons.logging.Log;
@@ -30,8 +29,8 @@ import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.acr.astrogrid.NodeInformation;
-import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.desktop.ARTestSetup;
+import org.astrogrid.desktop.InARTestCase;
 import org.astrogrid.filestore.common.FileStoreInputStream;
 import org.astrogrid.filestore.common.FileStoreOutputStream;
 import org.astrogrid.io.Piper;
@@ -41,7 +40,7 @@ import org.astrogrid.io.Piper;
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 03-Aug-2005
  *
  */
-public class MyspaceSystemTest extends TestCase {
+public class MyspaceSystemTest extends InARTestCase {
     /**
      * Commons Logger for this class
      */
@@ -52,9 +51,8 @@ public class MyspaceSystemTest extends TestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        ACR reg = getACR();
-        myspace = (Myspace)reg.getService(Myspace.class);
-        assertNotNull(myspace);
+        myspace = (Myspace)assertServiceExists(Myspace.class,"astrogrid.myspace");
+        
 
     }
     protected void tearDown() throws Exception {
@@ -67,11 +65,7 @@ public class MyspaceSystemTest extends TestCase {
     protected Myspace myspace;
     public static final String TEST_DATA = "some test data";
     protected static File tempFile; 
-   
-    
-    protected ACR getACR() throws Exception {
-        return ARTestSetup.fixture.getACR();
-    }
+
     
     public static Test suite() {
         return new ARTestSetup(new TestSuite(MyspaceSystemTest.class),true); // login.
@@ -338,6 +332,9 @@ public class MyspaceSystemTest extends TestCase {
 
 /* 
 $Log: MyspaceSystemTest.java,v $
+Revision 1.11  2007/04/18 15:47:10  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.10  2007/03/08 17:44:01  nw
 first draft of voexplorer
 

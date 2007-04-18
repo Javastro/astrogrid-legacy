@@ -47,7 +47,7 @@ import javax.swing.event.ListSelectionListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.system.UIImpl;
+import org.astrogrid.desktop.modules.system.ui.ArMainWindow;
 
 import uk.ac.starlink.connect.Branch;
 import uk.ac.starlink.connect.BranchComboBox;
@@ -123,7 +123,7 @@ public abstract class FilestoreChooser extends JPanel {
         add( branchBox, BorderLayout.NORTH );
 
         /* Define and add a button for moving up a directory. */
-        Icon upIcon =  IconHelper.loadIcon("up16.png");
+        Icon upIcon =  IconHelper.loadIcon("up22.png"); // incorrect size - will do for now.
         		// found on mac to look same as 'new folder' - "FileChooser.upFolderIcon" );
         upAction_ = new AbstractAction( null, upIcon ) {
         	{
@@ -195,7 +195,7 @@ public abstract class FilestoreChooser extends JPanel {
         					// not so good - happens on event thread. can't think of a meaningful alternative at the moment.
 							mb.getNode().addFolder(name);
 						} catch (IOException x) {
-							UIImpl.showError(FilestoreChooser.this, "Failed to create: '" + name, x);
+							ArMainWindow.showError(FilestoreChooser.this, "Failed to create: '" + name, x);
 						} 
         			}
     				//   refresh the list.

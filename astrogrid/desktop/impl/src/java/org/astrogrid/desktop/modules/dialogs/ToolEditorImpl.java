@@ -1,4 +1,4 @@
-/*$Id: ToolEditorImpl.java,v 1.13 2007/01/29 11:11:37 nw Exp $
+/*$Id: ToolEditorImpl.java,v 1.14 2007/04/18 15:47:10 nw Exp $
  * Created on 16-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,14 +24,12 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.Registry;
-import org.astrogrid.acr.system.BrowserControl;
-import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.editors.ToolEditorPanelFactory;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.Preference;
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.system.pref.Preference;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.exolab.castor.xml.Marshaller;
@@ -53,10 +51,10 @@ public class ToolEditorImpl implements ToolEditorInternal {
     		List panelFactories
             ,ResourceChooserInternal rChooser
             ,Registry reg           
-            , Configuration conf, HelpServerInternal help, UIInternal ui
-            , ApplicationsInternal apps, MyspaceInternal myspace, BrowserControl browser, Preference pref) {
+            , UIContext context
+            , ApplicationsInternal apps, MyspaceInternal myspace, Preference pref) {
         super(); 
-        dialog = new ToolEditorDialog(panelFactories,rChooser,apps,myspace,reg,conf,help,ui,browser,pref);
+        dialog = new ToolEditorDialog(panelFactories,rChooser,apps,myspace,reg,context,pref);
         //dialog.setSize(600,425);
         dialog.pack();      
         
@@ -65,10 +63,10 @@ public class ToolEditorImpl implements ToolEditorInternal {
     }
     
     public ToolEditorImpl(ToolEditorPanelFactory panelFactory         
-            , Configuration conf, HelpServerInternal help, UIInternal ui
+            , UIContext context, UIComponent ui
             , ApplicationsInternal apps, MyspaceInternal myspace) {
         super(); 
-        dialog = new ToolEditorDialog(panelFactory,conf,help,ui);
+        dialog = new ToolEditorDialog(panelFactory,context,ui);
         //dialog.setSize(600,425);
         dialog.pack();      
         
@@ -199,6 +197,9 @@ public class ToolEditorImpl implements ToolEditorInternal {
 
 /* 
 $Log: ToolEditorImpl.java,v $
+Revision 1.14  2007/04/18 15:47:10  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.13  2007/01/29 11:11:37  nw
 updated contact details.
 

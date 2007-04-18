@@ -10,13 +10,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
-
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
+import org.astrogrid.desktop.modules.system.pref.Preference;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 
 import ca.odell.glazedlists.EventList;
@@ -34,11 +33,11 @@ public class SnitchImpl implements SnitchInternal {
 	private static final Log logger = LogFactory.getLog(SnitchImpl.class);
 
 	private final static String base = "http://software.astrogrid.org/snitch/";
-	private final UIInternal ui;
+	private final UIContext ui;
 	private final boolean snitchDisabled;
 
 	
-	public SnitchImpl( UIInternal ui,String version, String appMode, final EventList plasticList, Preference doSnitch) {
+	public SnitchImpl( UIContext ui,String version, String appMode, final EventList plasticList, Preference doSnitch) {
 		super();
 		this.ui = ui;
 		this.snitchDisabled = (! doSnitch.asBoolean()) 

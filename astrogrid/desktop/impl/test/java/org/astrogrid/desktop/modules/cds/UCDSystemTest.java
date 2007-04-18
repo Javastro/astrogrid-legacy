@@ -7,7 +7,6 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.cds.UCD;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
@@ -32,9 +31,7 @@ public class UCDSystemTest extends InARTestCase {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		ACR reg = getACR();
-		assertNotNull(reg);	
-		ucd = (UCD)reg.getService(UCD.class);
+		ucd = (UCD)assertServiceExists(UCD.class,"cds.ucd");
 	
 	}
 	protected void tearDown() throws Exception {

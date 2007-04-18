@@ -1,4 +1,4 @@
-/*$Id: UIComponentImpl.java,v 1.11 2007/03/08 17:43:59 nw Exp $
+/*$Id: UIComponentImpl.java,v 1.12 2007/04/18 15:47:05 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,53 +13,62 @@ package org.astrogrid.desktop.modules.ui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.HeadlessException;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Date;
-import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Properties;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.DefaultListModel;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
+import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.border.Border;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.builtin.ShutdownListener;
-import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.comp.EventListPopupMenuManager;
+import org.astrogrid.desktop.modules.ui.comp.MessageTimerProgressBar;
+
+import ca.odell.glazedlists.FilterList;
+import ca.odell.glazedlists.FunctionList;
+import ca.odell.glazedlists.RangeList;
+import ca.odell.glazedlists.matchers.Matcher;
+import ca.odell.glazedlists.swing.EventListModel;
 
 import com.l2fprod.common.swing.StatusBar;
 
@@ -77,47 +86,14 @@ import com.l2fprod.common.swing.StatusBar;
  */ 
 public class UIComponentImpl extends PositionRememberingJFrame implements UIComponent, ShutdownListener {
 /** convenience constant for the empty border - using this declutters the ui somewhat.*/
-    protected static final Border EMPTY_BORDER = BorderFactory.createEmptyBorder();
+    public static final Border EMPTY_BORDER = BorderFactory.createEmptyBorder();
 
-    /** Convenience class - a local subclass of {@link BackgroundWorker} that ties
-     * into the enclosing UIComponentImpl instance.
-     * Prefer {@link BackgroundWorker} if there's any chance that operations may be resuable.
-     * */
-     protected abstract class BackgroundOperation extends BackgroundWorker {
-         public BackgroundOperation(String msg) {
-             super(UIComponentImpl.this,msg);
-         }
-         
-         public BackgroundOperation(String msg,long timeout) {
-             super(UIComponentImpl.this,msg,timeout);
-         }
-         public BackgroundOperation(String msg,int priority) {
-             super(UIComponentImpl.this,msg,priority);
-         }
-         public BackgroundOperation(String msg,long timeout, int priority) {
-             super(UIComponentImpl.this,msg,timeout,priority);
-         }
-     }
-
-     /** generic close window action */
-     protected final class CloseAction extends AbstractAction {
-         public CloseAction() {
-             super("Close",IconHelper.loadIcon("exit16.png"));
-             this.putValue(SHORT_DESCRIPTION,"Close");
-             this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
-         }
-
-         public void actionPerformed(ActionEvent e) {
-             hide();
-             dispose();
-         }
-     }
-     /**
+    /**
      * Commons Logger for this class - can be used by subclasses too.
      */
     protected static final Log logger = LogFactory.getLog(UIComponentImpl.class);
 
-    /** static helper method - show a well-formatted error in a popup dialogue
+	/** static helper method - show a well-formatted error in a popup dialogue
      * <p/>
      * classes that extend this class should call {@link #showError(String, Throwable)} instead
      */
@@ -162,9 +138,9 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
 
             if (parent != null && parent instanceof UIComponentImpl) {            
                 pw.println();
-                UIComponentImpl u = (UIComponentImpl)parent;
+                UIComponent u = (UIComponent)parent;
                 try {
-                    Map m = u.getConfiguration().list();
+                    Map m = u.getContext().getConfiguration().list();
                     Properties props = new Properties();
                     props.putAll(m);
                     // nggg. clunky.
@@ -198,29 +174,51 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
             rd.requestFocus();
         }
     }
-    private JProgressBar bottomLabel = null;
-    
 
-
-    private StatusBar bottomPanel = null;
-    
-    private JPanel jContentPane;
-    private JProgressBar progressBar = null;
-
-
-    /** Construct a new UIComponentImpl
-     * @param conf
+     /** Construct a new UIComponentImpl
+     * @param context
      * @param ui
      * @throws HeadlessException
      */
-    public UIComponentImpl(Configuration conf,HelpServerInternal hs, UIInternal ui) throws HeadlessException {
-        super(conf,hs, ui);
+    public UIComponentImpl(UIContext context) throws HeadlessException {
+        super(context);
+        context.registerWindow(this);
+        tasksList = new FilterList(context.getTasksList(),new Matcher() {
+			public boolean matches(Object arg0) {
+				BackgroundWorker w = (BackgroundWorker)arg0;
+				return w.special || w.parent == UIComponentImpl.this;
+			}
+        });
+        this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        this.addWindowListener(new WindowAdapter(){
+            public void windowClosing(WindowEvent e) {
+            	getContext().unregisterWindow(UIComponentImpl.this);
+            	setVisible(false);
+            	// detach myself from the context.
+            	//should I do any further cleanup - listeners, etc?
+            	throbber.setModel(null);
+            	tasksList.dispose();
+            	((EventListModel)plasticList.getModel()).dispose();
+            	login.setModel(null);
+            	dispose();
+            }
+        });        
     }
+     private JProgressBar progressBar;
+    private StatusBar bottomPanel;
+    private JButton helpButton;
+    private JPanel jContentPane;
+    private JButton login;
+    private JList plasticList;
+    private JButton tasksButton;
+    private final FilterList tasksList;
+    private JButton throbber;
     
-    /** for gui builder use only
-    @deprecated - don't use in own code
-    */
     
+    public JFrame getFrame() {
+		return this;
+	}
+    // default implementation of Shutdown listener - just ensure this window gets closed.
     /** access the main panel, where other components can be added..
      * @return a JPane with {@link BorderLayout}. The southern segment is already taken by the activity indicator & status message.
      */ 
@@ -233,19 +231,38 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
         }
         return jContentPane;
     }
+    /** get the maximum value for the progress bar */
+    public int getProgressMax() {
+        return getProgressBar().getMaximum();
+    }
+
+    /** get the current progress value - between <tt>0</tt> and <tt>getProgressMax()</tt> */
+    public int getProgressValue() {
+        return getProgressBar().getValue();
+    }
+
+    public void halting() {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                setVisible(false);
+                dispose();
+            }
+        });
+    }
+    public String lastChance() {
+        return null;
+    }
+
     
-    /** @deprecated - use {@link #getMainPanel()} instead */
-    protected JPanel getJContentPane() {
-        return getMainPanel();
+    /** set maximum value for progress bar */
+    public void setProgressMax(int i) {
+        getProgressBar().setMaximum(i);
+        getProgressBar().setString("");
     }
     
-    /** indicate execution of a background process.
-     * 
-     * @param b if if true, activity indicator will start throbbing. If false, activity indicator will stop.
-     */
-    public void setBusy(boolean b) {
-        getProgressBar().setIndeterminate(b);
-        getTasksButton().setEnabled(b);
+    /** set current value in progress bar - between <tt>0</tt> and <tt>getProgressMax()</tt> */
+    public void setProgressValue(int i) {
+        getProgressBar().setValue(i);
     }
     
     /** set the status message at the bottom of this pane
@@ -253,269 +270,184 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
      * @param s a message ("" to clear a previous message");
      */
     public void setStatusMessage(String s) {
-        getBottomLabel().setString(s);
+        getProgressBar().setString(s);
     }
-
+    
+    
     /** display a well-formatted error message in a popup dialogue.
      * 
      * @param msg message
      * @param e the exception that is the cause.
      */
       
-     
     public void showError(String msg, Throwable e) {
         showError(this,msg,e);
     }
-    
-    private JProgressBar getBottomLabel() {
-        if (bottomLabel == null) {
-            bottomLabel = new JProgressBar(0,100);
-            bottomLabel.setStringPainted(true);     
-            bottomLabel.setString("");
-            bottomLabel.setBorder(EMPTY_BORDER);
+    private JProgressBar getProgressBar() {
+        if (progressBar == null) {
+            progressBar = new MessageTimerProgressBar(0,100);
+            progressBar.setBorder(EMPTY_BORDER);
         }
-        return bottomLabel;
+        return progressBar;
     }
     
-    /** set maximum value for progress bar */
-    public void setProgressMax(int i) {
-        getBottomLabel().setMaximum(i);
-        getBottomLabel().setString("");
+    /** halt all tasks owned by this component (and not special) */
+    public void haltMyTasks() {
+    	for (Iterator i = tasksList.iterator(); i.hasNext();) {
+			BackgroundWorker w = (BackgroundWorker) i.next();
+			if (!w.special) {
+				w.interrupt();
+			}
+		}
     }
-    /** set current value in progress bar - between <tt>0</tt> and <tt>getProgressMax()</tt> */
-    public void setProgressValue(int i) {
-        getBottomLabel().setValue(i);
-    }
-    /** get the current progress value - between <tt>0</tt> and <tt>getProgressMax()</tt> */
-    public int getProgressValue() {
-        return getBottomLabel().getValue();
-    }
-    /** get the maximum value for the progress bar */
-    public int getProgressMax() {
-        return getBottomLabel().getMaximum();
-    }
-
-    /**
-     * Access the bottom panel - status bar, messages, progress ticker, that sort of thing.
-     * @return javax.swing.JPanel	
-     */
-    protected StatusBar getBottomPanel() {
+    
+    private StatusBar getBottomPanel() {
     	if (bottomPanel == null) {
     		bottomPanel = new StatusBar();
             bottomPanel.setBorder(EMPTY_BORDER);
-            bottomPanel.setZoneBorder(EMPTY_BORDER);            
-            bottomPanel.addZone("status",getBottomLabel(),"*");
-            bottomPanel.addZone("help",getContextSensitiveHelpButton(),"20");
+            bottomPanel.setZoneBorder(EMPTY_BORDER);   
+            
+            bottomPanel.addZone("throbber",getThrobber(),"20");
             bottomPanel.addZone("background tasks",getTasksButton(),"20");
-            bottomPanel.addZone("progress",getProgressBar(),"60");
+
+            bottomPanel.addZone("status",getProgressBar(),"*");
+            bottomPanel.addZone("help",getContextSensitiveHelpButton(),"20");
+            bottomPanel.addZone("login",getLogin(),"18");
+            bottomPanel.addZone("plasticApps",getPlasticList(),"100");            
     	}
     	return bottomPanel;
     }
-
-    /**
-     * This method initializes jProgressBar	
-     * 	
-     * @return javax.swing.JProgressBar	
-     */
-    private JProgressBar getProgressBar() {
-    	if (progressBar == null) {
-    		progressBar = new JProgressBar();
-    		progressBar.setToolTipText("Activity Indicator");
-            progressBar.setBorder(EMPTY_BORDER);
-    	}
-    	return progressBar;
-    }
     
-    private JButton getTasksButton() {
-        if (tasksButton == null) {
-            tasksButton = new JButton(IconHelper.loadIcon("tasks16.png"));
-            tasksButton.setEnabled(false);
-            tasksButton.putClientProperty("is3DEnabled",Boolean.TRUE);
-            tasksButton.setBorder(BorderFactory.createEtchedBorder());
-            tasksButton.setToolTipText("<html>List background tasks.<br> Click a task to halt and cancel it.");
-            tasksButton.addMouseListener(new MouseAdapter() {
-                public void mousePressed(MouseEvent e) {
-                    getTasksMenu().show(tasksButton,e.getX(),e.getY());
-                }
-            });
-
-        }
-        return tasksButton;
-    }
-    private JButton tasksButton;
     private JButton getContextSensitiveHelpButton() {
         if (helpButton == null) {
             helpButton = new JButton(IconHelper.loadIcon("contexthelp18.png"));
             helpButton.putClientProperty("is3DEnabled",Boolean.TRUE);
             helpButton.setBorder(BorderFactory.createEtchedBorder());            
             helpButton.setToolTipText("<html><b>Click</b> for context-sensitive help,<br> or press <b>'F1'</b> for overview help</html>");
-            helpButton.addActionListener(getHelpServer().createContextSensitiveHelpListener());
+            helpButton.addActionListener(getContext().getHelpServer().createContextSensitiveHelpListener());
         }
         return helpButton;
     }
-    private JButton helpButton;
     
-    private JPopupMenu tasksMenu;
+
+	private JComponent getLogin() {
+		if (login == null) {
+			login = new JButton();
+			login.setModel(getContext().getLoggedInModel());
+			login.setText("");
+	        login.setDisabledIcon(IconHelper.loadIcon("connect_no16.png"));
+	        login.setIcon(IconHelper.loadIcon("connect_established16.png"));
+	        login.setToolTipText("Indicates login status");
+		}
+		return login;
+	}
+    private JList getPlasticList() {
+		if (plasticList == null) {
+			plasticList = new JList(new EventListModel(getContext().getPlasticList()));
+			//plasticApps.setToolTipText("Connected Vizualization Tools");
+			plasticList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+			plasticList.setVisibleRowCount(1);
+			plasticList.setFocusable(false);
+			plasticList.setBorder(BorderFactory.createEtchedBorder());
+			plasticList.setCellRenderer(new ListCellRenderer() {
+				JLabel l = new JLabel();
+				{
+					l.setMaximumSize(new Dimension(16,16));
+					l.setFont(new Font("Dialog",Font.PLAIN,8));
+				}
+				public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+					PlasticApplicationDescription plas = (PlasticApplicationDescription)value;
+					if (plas.getIcon() != null) {
+						ImageIcon scaled = new ImageIcon((plas.getIcon()).getImage().getScaledInstance(-1,16,Image.SCALE_SMOOTH));
+						l.setIcon(scaled);
+					} else {
+						l.setIcon(IconHelper.loadIcon("plasticeye.gif"));
+					}
+					l.setToolTipText(StringUtils.capitalize(plas.getName() + " is connected"));
+					return l;
+				}
+			});
+
+		}
+		return plasticList;
+	}
     
-    private JPopupMenu getTasksMenu() {
-        if (tasksMenu == null) {
-            tasksMenu = new JPopupMenu();
-            tasksMenu.setPopupSize(200,600);
-            JPanel p = new JPanel(new BorderLayout());
-            final JList list = new JList(getTasksModel());
-            list.setToolTipText("Click task to cancel it");
-            list.setCellRenderer(new DefaultListCellRenderer() {
-                Icon pending = IconHelper.loadIcon("idle16.png");
-                Icon running = IconHelper.loadIcon("running16.png");
-                Icon completed = IconHelper.loadIcon("tick16.png");
-                public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                    JLabel label = (JLabel) super.getListCellRendererComponent(list,value,index,isSelected,cellHasFocus);
-                    BackgroundWorker bw = (BackgroundWorker)value;
-                    label.setText(bw.getMessage());
-                    switch (bw.getStatus()) {
-                        case BackgroundWorker.PENDING:
-                            label.setIcon(pending);
-                            break;
-                        case BackgroundWorker.RUNNING:
-                            label.setIcon(running);
-                            break;
-                         case BackgroundWorker.COMPLETED:
-                             label.setIcon(completed);
-                        defaut:
-                            break;                           
-                    }
-                    return label;
+    private JButton getTasksButton() {
+        if (tasksButton == null) {
+            tasksButton = new JButton(IconHelper.loadIcon("loader.gif"));
+            tasksButton.putClientProperty("is3DEnabled",Boolean.TRUE);
+            tasksButton.setBorder(BorderFactory.createEtchedBorder());
+            tasksButton.setToolTipText("<html>List background tasks.<br> Click a task to halt and cancel it.");
+            final JPopupMenu tasksMenu = new JPopupMenu();
+            tasksButton.addMouseListener(new MouseAdapter() {
+                public void mousePressed(MouseEvent e) {
+                    tasksMenu.show(tasksButton,e.getX(),e.getY());
                 }
             });
-            list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            list.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-
-                public void valueChanged(ListSelectionEvent e) {
-                    Object o = list.getSelectedValue();
-                    if (o == null) {
-                        return;
-                    }
-                    ((BackgroundWorker)o).interrupt();                                        
-                }
+            RangeList rangeList = new RangeList(tasksList);
+            rangeList.setHeadRange(0,30); // only display 30 items.
+            final ActionListener l  = new ActionListener() {// handler for menu items.
+				public void actionPerformed(ActionEvent e) {
+					// retrive the worker for this item.
+					BackgroundWorker w = (BackgroundWorker) ((JComponent)e.getSource()).getClientProperty(BackgroundWorker.class);
+					w.interrupt();
+					//@todo display a fuller management dialogue here instead.
+				}
+            };
+            final FunctionList jcomponentList = new FunctionList(rangeList,new FunctionList.Function() {
+            	Icon completed = IconHelper.loadIcon("tick16.png");
+            	Icon pending = IconHelper.loadIcon("idle16.png");
+            	Icon running = IconHelper.loadIcon("loader.gif");
+            	public Object evaluate(Object arg0) {
+            		BackgroundWorker w = (BackgroundWorker)arg0;
+            		JMenuItem mi = new JMenuItem(w.getMessage());
+            		mi.putClientProperty(BackgroundWorker.class,w); // store the worker for this menu item.
+            		mi.addActionListener(l);
+            		switch (w.getStatus()) {
+            		case BackgroundWorker.PENDING:
+            			mi.setIcon(pending);
+            			break;
+            		case BackgroundWorker.RUNNING:
+            			mi.setIcon(running);
+            			break;
+            		case BackgroundWorker.COMPLETED:
+            			mi.setIcon(completed);
+            			break;                         
+            		}
+            		return mi;    
+            	}
             });
-            JScrollPane sp = new JScrollPane(list);
-            p.add(sp,BorderLayout.CENTER);
+			// utility class that manages populating the popup.
+            new EventListPopupMenuManager(jcomponentList,tasksButton,tasksMenu,false);
+        }
+        return tasksButton;
+    }
 
-            p.setPreferredSize(new Dimension(200,600));            
-            tasksMenu.add(p);
-            tasksMenu.setLabel("Running tasks");
-            
-            tasksMenu.add(getHaltAllButton());
-        }
-        return tasksMenu;
-    }
     
-    
-    private JButton haltAllButton;
-    protected JButton getHaltAllButton() {
-    	if (haltAllButton == null) {
-    		haltAllButton = new JButton();
-    		haltAllButton.setText("Halt all tasks");
-    		haltAllButton.addActionListener(new ActionListener() {
-    			public void actionPerformed(ActionEvent e) {
-    				for (Enumeration i = getTasksModel().elements(); i.hasMoreElements(); ) {
-    					Object o = i.nextElement();
-    					if (o != null) {
-    						((BackgroundWorker)o).interrupt();
-    					}
-    				}
-    			}
-    		});
-    		
-    		
-    	}
-    	return haltAllButton;
-    }
-    
-    public void haltAll() {
-    	getHaltAllButton().doClick();
-		setStatusMessage("Halted");    	
-    }
-    
-    
-    private ObservingListModel tasksModel;
-    private ObservingListModel getTasksModel() {
-        if (tasksModel == null) {
-            tasksModel = new ObservingListModel();
-        }
-        return tasksModel;
-    }
-    
-    /** list model that spots when the contents of the model 'change' in some way, and fires a notification on this 
-     * constaint - items in the model must be observables.
-     * */
-    static class ObservingListModel extends DefaultListModel implements Observer {
-        
-        public void add(int index, Object element) {
-            super.add(index, element);
-            ((Observable)element).addObserver(this);
-        }
-        public void addElement(Object obj) {
-            super.addElement(obj);
-            ((Observable)obj).addObserver(this);            
-        }
-        public void clear() {
-            for (Enumeration e = elements(); e.hasMoreElements(); ) {
-                ((Observable)e.nextElement()).deleteObserver(this);
-            }
-            super.clear();
-        }
-        public Object remove(int index) {
-            Object o =  super.remove(index);
-            ((Observable)o).deleteObserver(this);
-            return o;
-        }
-        public void removeAllElements() {
-            for (Enumeration e = elements(); e.hasMoreElements(); ) {
-                ((Observable)e.nextElement()).deleteObserver(this);
-            }            
-            super.removeAllElements();
-        }
-        public boolean removeElement(Object obj) {
-            boolean c =  super.removeElement(obj);
-            ((Observable)obj).deleteObserver(this);
-            return c;         
-        }
-        public void removeElementAt(int index) {
-            Object o = getElementAt(index);
-            ((Observable)o).deleteObserver(this);
-            super.removeElementAt(index);
-        }
+    private JComponent getThrobber() {
+	    if (throbber == null) {
+	        throbber = new JButton();
+	        throbber.setModel(getContext().getThrobbingModel());
+	        throbber.setText("");
+	        throbber.setIcon(IconHelper.loadIcon("running16.png"));
+	       // throbber.setIcon(IconHelper.loadIcon("circle-ball-dark-antialiased.gif"));
+	       // throbber.setIcon(IconHelper.loadIcon("loader.gif"));
+	        throbber.setDisabledIcon(IconHelper.loadIcon("idle16.png"));   
+	        throbber.setToolTipText("When active, something is communicating with VO services");
+	    }
+	    return throbber;
+	}
 
-        public Object set(int index, Object element) {
-            Object o  =super.set(index, element);
-            ((Observable)o).deleteObserver(this);
-            ((Observable)element).addObserver(this);
-            return o;
-        }
-        public void setElementAt(Object obj, int index) {
-            Object o = getElementAt(index);
-            ((Observable)o).deleteObserver(this);
-            super.setElementAt(obj, index);
-            ((Observable)obj).addObserver(this);
-        }
-        public void update(Observable o, Object arg) {
-            int ix;
-            if (o != null && (ix = indexOf(o)) != -1) {
-                fireContentsChanged(o,ix,ix);
-            }
-        }
-    }
-   
     /** create an action that will display the help viewer */
     protected Action createHelpAction() {
     	return new AbstractAction("Help Contents") {
     		public void actionPerformed(ActionEvent e) {
-    			getHelpServer().showHelpForTarget("contents");
+    			getContext().getHelpServer().showHelpForTarget("contents");
     		}
     	};
     }
-    /** create a help menu, containing a single action */
+
+	/** create a help menu, containing a single action */
     protected JMenu createHelpMenu() {
     		JMenu helpMenu = new JMenu();
     		helpMenu.setText("Help");
@@ -524,22 +456,11 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
     		return helpMenu;
     }
     
-    /** called by a {@link BackgroundWorker} to notify the UI that it's started executing */ 
-    public void addBackgroundWorker(final BackgroundWorker w) {        
-        getTasksModel().addElement(w);
-        setStatusMessage(w.getMessage());   
-        setBusy(true);
-  
+    /** @deprecated - use {@link #getMainPanel()} instead */
+    protected JPanel getJContentPane() {
+        return getMainPanel();
     }
-    
-    /** called by {@link BackgroundWorker} to notify the UI it's finished running */
-    public void removeBackgroundWorker(BackgroundWorker w) {
-        getTasksModel().removeElement(w);   
-        if (getTasksModel().size() == 0) {
-            setBusy(false);
-            setStatusMessage("");
-        }
-    }
+
 
     /**
      * @param s
@@ -549,35 +470,58 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
         JOptionPane.showMessageDialog(this,s,"Error",JOptionPane.ERROR_MESSAGE);
     }
 
-	
-	public JFrame getFrame() {
-		return this;
-	}
-    // default implementation of Shutdown listener - just ensure this window gets closed.
-    
-    public void halting() {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                setVisible(false);
-                dispose();
-            }
-        });
-    }
+	/** Convenience class - a local subclass of {@link BackgroundWorker} that ties
+     * into the enclosing UIComponentImpl instance.
+     * Prefer {@link BackgroundWorker} if there's any chance that operations may be resuable.
+     * */
+     protected abstract class BackgroundOperation extends BackgroundWorker {
+         public BackgroundOperation(String msg) {
+             super(UIComponentImpl.this,msg);
+         }
+         
+         public BackgroundOperation(String msg,int priority) {
+             super(UIComponentImpl.this,msg,priority);
+         }
+         public BackgroundOperation(String msg,long timeout) {
+             super(UIComponentImpl.this,msg,timeout);
+         }
+         public BackgroundOperation(String msg,long timeout, int priority) {
+             super(UIComponentImpl.this,msg,timeout,priority);
+         }
+     }
 
-
-    public String lastChance() {
-        return null;
-    }
-
-    
-   
-
-    
+	/** generic close window action */
+     protected final class CloseAction extends AbstractAction {
+         public CloseAction() {
+             super("Close");
+             this.putValue(SHORT_DESCRIPTION,"Close");
+             this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
+         }
+         public void actionPerformed(ActionEvent e) {
+             hide();
+             getContext().unregisterWindow(UIComponentImpl.this);
+             dispose();
+         }
+     }
+     //@todo add a preference on acr.advanced to only enable this at certain times.
+     protected final class HideAllAction extends AbstractAction {
+         public HideAllAction() {
+             super("Hide All Windows");
+             this.putValue(SHORT_DESCRIPTION,"Hide All Windows");
+         }
+         public void actionPerformed(ActionEvent e) {
+        	 getContext().hide();
+         }
+     }     
+     
 }
 
 
 /* 
 $Log: UIComponentImpl.java,v $
+Revision 1.12  2007/04/18 15:47:05  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.11  2007/03/08 17:43:59  nw
 first draft of voexplorer
 

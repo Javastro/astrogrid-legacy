@@ -5,11 +5,9 @@ package org.astrogrid.desktop.modules.auth;
 
 import java.security.Principal;
 
-import org.astrogrid.desktop.framework.SessionManagerInternal;
-
-
-
 import net.sourceforge.hivelock.PrincipalHelperService;
+
+import org.astrogrid.desktop.framework.SessionManagerInternal;
 
 /** Plugin to hivemind user management system.
  * Bridges the gap between hivemind and ar.

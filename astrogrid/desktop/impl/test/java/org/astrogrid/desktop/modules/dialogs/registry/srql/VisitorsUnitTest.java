@@ -3,13 +3,9 @@
  */
 package org.astrogrid.desktop.modules.dialogs.registry.srql;
 
-import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.desktop.modules.dialogs.registry.srql.SRQL;
-import org.astrogrid.desktop.modules.dialogs.registry.srql.BasicRegistrySRQLVisitor;
-import org.astrogrid.desktop.modules.dialogs.registry.srql.KeywordSRQLVisitor;
-import org.astrogrid.desktop.modules.dialogs.registry.srql.SRQLParser;
-
 import junit.framework.TestCase;
+
+import org.astrogrid.acr.InvalidArgumentException;
 
 /** Exercise the various visitors.
  * @author Noel.Winstanley@manchester.ac.uk

@@ -16,9 +16,8 @@ import javax.swing.undo.UndoManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode ;
-import org.astrogrid.desktop.modules.adqlEditor.AdqlTree ;
+import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 
 /**
  * @author jl99@star.le.ac.uk

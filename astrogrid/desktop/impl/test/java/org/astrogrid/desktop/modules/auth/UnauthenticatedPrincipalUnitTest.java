@@ -3,8 +3,6 @@
  */
 package org.astrogrid.desktop.modules.auth;
 
-import java.security.Principal;
-
 import junit.framework.TestCase;
 
 /** unit test for unauthenticated principle.

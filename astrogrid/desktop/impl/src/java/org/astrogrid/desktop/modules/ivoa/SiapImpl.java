@@ -1,4 +1,4 @@
-/*$Id: SiapImpl.java,v 1.11 2007/03/09 15:07:03 KevinBenson Exp $
+/*$Id: SiapImpl.java,v 1.12 2007/04/18 15:47:05 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -93,8 +93,9 @@ public class SiapImpl extends DALImpl implements Siap {
 	}
 
 	public String getRegistryXQuery() {
-		return "//RootResource[matches(@xsi:type,'SimpleImageAccess') and  ( @status = 'active')]";
-
+		return "//vor:Resource[@xsi:type &= '*SimpleImageAccess' and ( not ( @status = 'inactive' or @status='deleted'))]";
+	//KMB 	return "//RootResource[matches(@xsi:type,'SimpleImageAccess') and  ( @status = 'active')]";
+	
 	}
 	
 	// override the table parser to use siap datamodel.
@@ -120,8 +121,8 @@ public class SiapImpl extends DALImpl implements Siap {
 
 /* 
 $Log: SiapImpl.java,v $
-Revision 1.11  2007/03/09 15:07:03  KevinBenson
-Changees to use RootResource to signal root node of registry query and to use standard xquery matches method.
+Revision 1.12  2007/04/18 15:47:05  nw
+tidied up voexplorer, removed front pane.
 
 Revision 1.10  2007/01/29 16:45:08  nw
 cleaned up imports.

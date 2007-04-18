@@ -3,9 +3,6 @@
  */
 package org.astrogrid.desktop.modules.ui;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 

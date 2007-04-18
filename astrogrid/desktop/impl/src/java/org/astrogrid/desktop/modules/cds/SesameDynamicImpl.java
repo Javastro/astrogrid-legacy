@@ -1,4 +1,4 @@
-/*$Id: SesameDynamicImpl.java,v 1.7 2007/01/29 11:11:37 nw Exp $
+/*$Id: SesameDynamicImpl.java,v 1.8 2007/04/18 15:47:05 nw Exp $
  * Created on 28-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,7 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.cds.Sesame;
 import org.astrogrid.acr.cds.SesamePositionBean;
-import org.astrogrid.desktop.modules.system.Preference;
+import org.astrogrid.desktop.modules.system.pref.Preference;
 /**
  * implementaiton of the sesame client, using dynamic webservice invocation - i.e.
  * without using marshalling beans
@@ -158,6 +158,9 @@ public class SesameDynamicImpl implements Sesame {
 
 /* 
 $Log: SesameDynamicImpl.java,v $
+Revision 1.8  2007/04/18 15:47:05  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.7  2007/01/29 11:11:37  nw
 updated contact details.
 

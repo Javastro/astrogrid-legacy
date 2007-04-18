@@ -1,4 +1,4 @@
-/*$Id: ToolEditorDialog.java,v 1.11 2007/01/29 16:45:09 nw Exp $
+/*$Id: ToolEditorDialog.java,v 1.12 2007/04/18 15:47:10 nw Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,17 +27,15 @@ import javax.swing.ScrollPaneConstants;
 
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.Registry;
-import org.astrogrid.acr.system.BrowserControl;
-import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.editors.AbstractToolEditorPanel;
 import org.astrogrid.desktop.modules.dialogs.editors.CompositeToolEditorPanel;
 import org.astrogrid.desktop.modules.dialogs.editors.ToolEditorPanelFactory;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.Preference;
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.system.pref.Preference;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.workflow.beans.v1.Tool;
 /** dialog that allows the user to edit a tool document - i.e. a set of parameters.
@@ -64,18 +62,18 @@ public class ToolEditorDialog extends JDialog implements PropertyChangeListener 
             ,ApplicationsInternal apps
             ,MyspaceInternal myspace
             ,Registry reg
-            ,Configuration conf, HelpServerInternal help, UIInternal ui
-            ,BrowserControl browser, Preference pref) throws HeadlessException {
+            ,UIContext context,Preference pref) throws HeadlessException {
         super();          
-        this.parent = new UIComponentImpl(conf,help,ui);        
-        parametersPanel = new CompositeToolEditorPanel(panelFactories,rChooser,apps,myspace,parent,help,browser,pref);
+        this.parent = new UIComponentImpl(context);        
+        parametersPanel = new CompositeToolEditorPanel(panelFactories,rChooser,apps,myspace,parent
+        		,context.getHelpServer(),context.getBrowser(),pref);
         init();
     }
     
    	public ToolEditorDialog(ToolEditorPanelFactory panelFactory
-            ,Configuration conf, HelpServerInternal help, UIInternal ui) throws HeadlessException {
+            ,UIContext context, UIComponent ui) throws HeadlessException {
         super();          
-        this.parent = new UIComponentImpl(conf,help,ui);        
+        this.parent = new UIComponentImpl(context);        
         parametersPanel =panelFactory.create(new ToolModel(),parent);
         init();   
     }
@@ -199,6 +197,9 @@ public class ToolEditorDialog extends JDialog implements PropertyChangeListener 
 
 /* 
 $Log: ToolEditorDialog.java,v $
+Revision 1.12  2007/04/18 15:47:10  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.11  2007/01/29 16:45:09  nw
 cleaned up imports.
 

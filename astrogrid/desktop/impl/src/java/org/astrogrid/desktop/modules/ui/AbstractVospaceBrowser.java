@@ -1,4 +1,4 @@
-/*$Id: AbstractVospaceBrowser.java,v 1.12 2007/03/08 17:43:58 nw Exp $
+/*$Id: AbstractVospaceBrowser.java,v 1.13 2007/04/18 15:47:05 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,11 +41,9 @@ import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.iterators.FilterIterator;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
-import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.comp.GlassPane;
 import org.astrogrid.desktop.modules.ui.dnd.PreferredTransferable;
 import org.astrogrid.desktop.modules.ui.sendto.FileManagerNodePreferredTransferable;
@@ -484,8 +482,8 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
      * @param ui
      * @throws HeadlessException
      */
-    public AbstractVospaceBrowser(Configuration conf, HelpServerInternal hs,UIInternal ui, MyspaceInternal vos, SendToMenu sendTo) throws HeadlessException {
-        super(conf, hs,ui);
+    public AbstractVospaceBrowser(UIContext context,MyspaceInternal vos, SendToMenu sendTo) throws HeadlessException {
+        super(context);
         this.vos = vos;
         this.sendTo = sendTo;
 
@@ -642,6 +640,9 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
 
 /*
  * $Log: AbstractVospaceBrowser.java,v $
+ * Revision 1.13  2007/04/18 15:47:05  nw
+ * tidied up voexplorer, removed front pane.
+ *
  * Revision 1.12  2007/03/08 17:43:58  nw
  * first draft of voexplorer
  *

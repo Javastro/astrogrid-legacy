@@ -1,4 +1,4 @@
-/*$Id: ARTestSetup.java,v 1.4 2007/01/29 16:45:10 nw Exp $
+/*$Id: ARTestSetup.java,v 1.5 2007/04/18 15:47:06 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,6 @@ import junit.framework.Test;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.config.SimpleConfig;
 
 /** sets up a fixture of a running in-process workbench,
  *
@@ -34,6 +33,18 @@ import org.astrogrid.config.SimpleConfig;
  */
 public class ARTestSetup extends TestSetup{
     /**
+	 * 
+	 */
+	public static final String AG_TEST_COMMUNITY = "ag.test.community";
+	/**
+	 * 
+	 */
+	public static final String AG_TEST_PASSWORD = "ag.test.password";
+	/**
+	 * 
+	 */
+	public static final String AG_TEST_USERNAME = "ag.test.username";
+	/**
      * Commons Logger for this class
      */
     private static final Log logger = LogFactory.getLog(ARTestSetup.class);
@@ -78,6 +89,7 @@ public class ARTestSetup extends TestSetup{
         super.tearDown();
     }   
 
+
     /**
      * 
      */
@@ -90,9 +102,12 @@ public class ARTestSetup extends TestSetup{
     				Properties props = new Properties();
     				InputStream is = ARTestSetup.class.getResourceAsStream("test-user.properties");
     				props.load(is);
-    				String username = props.getProperty("ag.test.username");
-    				String password = props.getProperty("ag.test.password");
-    				String community = props.getProperty("ag.test.community");
+    				String username = props.getProperty(AG_TEST_USERNAME);
+    				System.setProperty(AG_TEST_USERNAME,username);
+    				String password = props.getProperty(AG_TEST_PASSWORD);
+    				System.setProperty(AG_TEST_PASSWORD,password);
+    				String community = props.getProperty(AG_TEST_COMMUNITY);
+    				System.setProperty(AG_TEST_COMMUNITY,community);
     				comm.login(username,password,community);
     				logger.info("Logged in as " + username + " / " + community);
     			} catch (Throwable e) { // try ui login.
@@ -134,6 +149,9 @@ public class ARTestSetup extends TestSetup{
 
 /* 
 $Log: ARTestSetup.java,v $
+Revision 1.5  2007/04/18 15:47:06  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.4  2007/01/29 16:45:10  nw
 cleaned up imports.
 

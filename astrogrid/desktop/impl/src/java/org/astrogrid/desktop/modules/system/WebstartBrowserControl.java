@@ -1,4 +1,4 @@
-/*$Id: WebstartBrowserControl.java,v 1.5 2007/01/29 16:45:07 nw Exp $
+/*$Id: WebstartBrowserControl.java,v 1.6 2007/04/18 15:47:07 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,6 +20,7 @@ import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.framework.ReflectionHelper;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 
 /** Implementation of browsercontrol using the webstart additional APIs.
  * if it fails to get a service, will fallback to BrowserLauncherBrowserControl.
@@ -37,7 +38,7 @@ public class WebstartBrowserControl extends BrowserLauncherBrowserControl implem
     /** Construct a new WebstartBrowserControl
      * 
      */
-    public WebstartBrowserControl(WebServer root, UIInternal ui)  {
+    public WebstartBrowserControl(WebServer root, UIContext ui)  {
         super(root,ui);
         try {
         Class managerClass = Class.forName("javax.jnlp.ServiceManager");
@@ -80,6 +81,9 @@ public class WebstartBrowserControl extends BrowserLauncherBrowserControl implem
 
 /* 
 $Log: WebstartBrowserControl.java,v $
+Revision 1.6  2007/04/18 15:47:07  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.5  2007/01/29 16:45:07  nw
 cleaned up imports.
 

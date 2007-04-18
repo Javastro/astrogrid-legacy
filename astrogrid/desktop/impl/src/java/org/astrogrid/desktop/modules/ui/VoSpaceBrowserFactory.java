@@ -4,14 +4,11 @@
 package org.astrogrid.desktop.modules.ui;
 
 import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.acr.system.BrowserControl;
-import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.ui.MyspaceBrowser;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
-import org.astrogrid.desktop.modules.system.Preference;
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.system.pref.Preference;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 
 /**
@@ -29,32 +26,26 @@ public class VoSpaceBrowserFactory implements	MyspaceBrowser {
 	 * @param chooser
 	 * @param pref 
 	 */
-	public VoSpaceBrowserFactory(Configuration conf, HelpServerInternal hs, UIInternal ui, MyspaceInternal vos,SendToMenu sendTo, BrowserControl browser, ResourceChooserInternal chooser, Community comm, Preference pref) {
-		this.ui = ui;
-		this.conf = conf;
-		this.hs = hs;
+	public VoSpaceBrowserFactory(UIContext context, MyspaceInternal vos,SendToMenu sendTo,ResourceChooserInternal chooser, Community comm, Preference pref) {
+		this.context = context;
 		this.myspace = vos;
 		this.chooser= chooser;
-		this.browser = browser;
 		this.comm = comm;
 		this.sendTo = sendTo;
 		this.pref = pref;
 	}
 
 	private final SendToMenu sendTo;
-	private final UIInternal ui;
-	private final Configuration conf;
-	private final HelpServerInternal hs;
+	private final UIContext context;
 	private final MyspaceInternal myspace;
 	private final ResourceChooserInternal chooser;
-	private final BrowserControl browser;
 	private final Community comm;
 	private final Preference pref;
 	public void hide() {
 		// ignored.
 	}
 	public void show() {
-		VospaceBrowserImpl mb = new VospaceBrowserImpl(conf, hs, ui, myspace, sendTo,browser, chooser,pref);
+		VospaceBrowserImpl mb = new VospaceBrowserImpl(context, myspace, sendTo,chooser,pref);
 		comm.addUserLoginListener(mb); // @todo - should this be a weak refernece?
 		mb.show();
 	}

@@ -4,14 +4,12 @@
 package org.astrogrid.desktop.framework;
 
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.Principal;
 import java.util.Vector;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import net.ladypleaser.rmilite.RemoteInvocationException;
 import net.sourceforge.jwebunit.WebTester;
 
@@ -21,8 +19,6 @@ import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.Finder.RmiAcr;
 import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.acr.builtin.Shutdown;
-import org.astrogrid.acr.builtin.ShutdownListener;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.acr.test.SessionTest;

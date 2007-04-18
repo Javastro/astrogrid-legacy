@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.1 2007/03/22 19:01:18 nw Exp $
+/*$Id: CommunityImpl.java,v 1.2 2007/04/18 15:47:08 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,15 +12,11 @@ package org.astrogrid.desktop.modules.auth;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import net.sourceforge.hivelock.SecurityService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,12 +25,12 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.UserInformation;
 import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
+import org.astrogrid.acr.system.UI;
 import org.astrogrid.community.common.exception.CommunityIdentifierException;
 import org.astrogrid.community.common.exception.CommunitySecurityException;
 import org.astrogrid.community.common.exception.CommunityServiceException;
 import org.astrogrid.community.resolver.exception.CommunityResolverException;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
-import org.astrogrid.desktop.modules.system.UIInternal;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.security.SecurityGuard;
@@ -51,7 +47,7 @@ public class CommunityImpl implements CommunityInternal {
     /** Construct a new Community
      * 
      */
-    public CommunityImpl(UIInternal ui,LoginDialogue loginDialogue, SnitchInternal snitch, String trustedCertificates) {       
+    public CommunityImpl(UI ui,LoginDialogue loginDialogue, SnitchInternal snitch, String trustedCertificates) {       
         this.ui = ui;
         this.loginDialogue = loginDialogue;
         this.snitch = snitch;
@@ -59,7 +55,7 @@ public class CommunityImpl implements CommunityInternal {
         logger.info("Trusted certificates directory set to: '" + trustedCertificates + "'");
         LoginFactory.declareTrustedCertificates(trustedCertificates);
     }
-    protected final UIInternal ui;
+    protected final UI ui;
     protected final SnitchInternal snitch;
     protected final LoginDialogue loginDialogue;
     private UserInformation userInformation;
@@ -196,7 +192,6 @@ public class CommunityImpl implements CommunityInternal {
      * @see org.astrogrid.acr.astrogrid.Community#addUserLoginListener(org.astrogrid.desktop.modules.ag.UserLoginListener)
      */
     public void addUserLoginListener(UserLoginListener l) {
-    	System.err.println(this);
         listeners.add(l);
     }
 
@@ -225,6 +220,9 @@ public class CommunityImpl implements CommunityInternal {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.2  2007/04/18 15:47:08  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.1  2007/03/22 19:01:18  nw
 added support for sessions and multi-user ar.
 

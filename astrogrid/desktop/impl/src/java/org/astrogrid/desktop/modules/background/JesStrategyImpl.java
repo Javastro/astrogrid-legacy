@@ -1,4 +1,4 @@
-/*$Id: JesStrategyImpl.java,v 1.11 2007/01/29 11:11:36 nw Exp $
+/*$Id: JesStrategyImpl.java,v 1.12 2007/04/18 15:47:11 nw Exp $
  * Created on 05-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,7 +45,7 @@ import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.Folder;
 import org.astrogrid.desktop.modules.ag.MessagingInternal.SourcedExecutionMessage;
 import org.astrogrid.desktop.modules.ag.recorder.ResultsExecutionMessage;
 import org.astrogrid.desktop.modules.ag.recorder.StatusChangeExecutionMessage;
-import org.astrogrid.desktop.modules.system.UIInternal;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.jes.delegate.JesDelegateException;
 import org.astrogrid.jes.delegate.JesDelegateFactory;
@@ -80,7 +80,7 @@ public class JesStrategyImpl implements RemoteProcessStrategy, UserLoginListener
             , MessageRecorderInternal recorder
             , Community comm
             , ApplicationsInternal apps
-            , UIInternal ui
+            , UIContext ui
             ) {
         super();
         this.messaging = messaging;
@@ -93,7 +93,7 @@ public class JesStrategyImpl implements RemoteProcessStrategy, UserLoginListener
     final MessagingInternal messaging;
     final MessageRecorderInternal recorder;
     final ApplicationsInternal apps;
-    final UIInternal ui;
+    final UIContext ui;
     private Account acc;      
     boolean poll = false;
     
@@ -386,6 +386,9 @@ public class JesStrategyImpl implements RemoteProcessStrategy, UserLoginListener
 
 /* 
 $Log: JesStrategyImpl.java,v $
+Revision 1.12  2007/04/18 15:47:11  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.11  2007/01/29 11:11:36  nw
 updated contact details.
 

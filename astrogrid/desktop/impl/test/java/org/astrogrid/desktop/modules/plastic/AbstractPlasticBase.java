@@ -1,7 +1,6 @@
 package org.astrogrid.desktop.modules.plastic;
 
 import java.net.URI;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;

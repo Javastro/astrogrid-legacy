@@ -1,4 +1,4 @@
-/*$Id: XmlRpcTransportIntegrationTest.java,v 1.7 2007/01/29 10:42:48 nw Exp $
+/*$Id: XmlRpcTransportIntegrationTest.java,v 1.8 2007/04/18 15:47:04 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,12 +11,8 @@
 package org.astrogrid.desktop.modules.system;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
 
@@ -29,7 +25,6 @@ import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
-import org.astrogrid.io.Piper;
 
 /** tests xmlrpc transport
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 25-Jul-2005
@@ -193,6 +188,9 @@ public class XmlRpcTransportIntegrationTest extends InARTestCase {
 
 /* 
 $Log: XmlRpcTransportIntegrationTest.java,v $
+Revision 1.8  2007/04/18 15:47:04  nw
+tidied up voexplorer, removed front pane.
+
 Revision 1.7  2007/01/29 10:42:48  nw
 tidied.
 

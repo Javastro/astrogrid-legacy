@@ -5,7 +5,6 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 import java.awt.event.ActionEvent;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,11 +28,7 @@ public class SpectrumLoadPlasticButton extends PlasticScopeButton {
 
 	public static final URI SPECTRA_LOAD_FROM_URL;
 	static {
-		try {
-			SPECTRA_LOAD_FROM_URL= new URI("ivo://votech.org/spectrum/loadFromURL");
-		} catch (URISyntaxException x) {
-			throw new RuntimeException("Failed to construct URI",x);
-		}
+			SPECTRA_LOAD_FROM_URL= URI.create("ivo://votech.org/spectrum/loadFromURL");
 	}
 
 	/**

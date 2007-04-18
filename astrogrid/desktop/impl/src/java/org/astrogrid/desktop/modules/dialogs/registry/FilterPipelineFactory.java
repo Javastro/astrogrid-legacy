@@ -4,26 +4,18 @@
 package org.astrogrid.desktop.modules.dialogs.registry;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeListenerProxy;
 import java.util.Collections;
 import java.util.List;
 
 import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -34,8 +26,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.astrogrid.desktop.icons.IconHelper;
-
-import com.l2fprod.common.swing.JCollapsiblePane;
+import org.astrogrid.desktop.modules.ui.comp.IconField;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
@@ -43,8 +34,6 @@ import ca.odell.glazedlists.FilterList;
 import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.TransformedList;
 import ca.odell.glazedlists.UniqueList;
-import ca.odell.glazedlists.event.ListEvent;
-import ca.odell.glazedlists.event.ListEventListener;
 import ca.odell.glazedlists.matchers.AbstractMatcherEditor;
 import ca.odell.glazedlists.matchers.Matcher;
 import ca.odell.glazedlists.matchers.MatcherEditor;
@@ -52,6 +41,8 @@ import ca.odell.glazedlists.swing.EventListModel;
 import ca.odell.glazedlists.swing.EventSelectionModel;
 import ca.odell.glazedlists.swing.JEventListPanel;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
+
+import com.l2fprod.common.swing.JCollapsiblePane;
 
 /** Factory that builds a pipeline of filters, and the UI components to support them.
  * 
@@ -63,8 +54,8 @@ public class FilterPipelineFactory   {
 		int pipelineSize = 3;
 		
 		// incremental text field..
-		textField = new JTextField(10);
-		textField.setToolTipText("Enter a phrase to filter results with");
+		textField = new IconField(10);
+		textField.setToolTipText("Filter box: type a word to filter with");
 		FilterList filteredItems = new FilterList(items
 				, new TextComponentMatcherEditor(textField, new ResourceTextFilterator()));
 		
@@ -83,23 +74,23 @@ public class FilterPipelineFactory   {
 		JEventListPanel pipelineDisplay = new JEventListPanel(pipeline, new PipelineFormat());
 		pipelineDisplay.setElementColumns(3);
 		filterPane.add(pipelineDisplay);
-		//@todo clear filters when collapsed.
 		
 		// create a toggle button to show / hide the collapsed pane.
 		final Action toggleAction = filterPane.getActionMap().get(JCollapsiblePane.TOGGLE_ACTION);
-		toggleAction.putValue(JCollapsiblePane.EXPAND_ICON, IconHelper.loadIcon("expand16.png"));
-		toggleAction.putValue(JCollapsiblePane.COLLAPSE_ICON, IconHelper.loadIcon("contract16.png"));
+		toggleAction.putValue(JCollapsiblePane.EXPAND_ICON, IconHelper.loadIcon("expand22.png"));
+		toggleAction.putValue(JCollapsiblePane.COLLAPSE_ICON, IconHelper.loadIcon("contract22.png"));
 		
 		toggleButton = new JButton(toggleAction);
 		toggleButton.setText("");
 		toggleButton.putClientProperty("is3DEnabled", Boolean.FALSE);
-		toggleButton.setBorder(BorderFactory.createEmptyBorder());
+		toggleButton.setBorderPainted(false);
 		toggleButton.setToolTipText("Expand for further filters");
 	}
 	private final EventList totallyFilteredItems;
 	private final JTextField textField;
 	private final JCollapsiblePane filterPane;
 	private final JButton toggleButton;
+	
 	/**
  	a text field for incremental searching.
 	 */
