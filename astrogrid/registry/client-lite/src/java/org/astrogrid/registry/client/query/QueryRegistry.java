@@ -241,26 +241,26 @@ public class QueryRegistry implements RegistryService {
       try {
           return callService(adql,"Search","Search");
       } catch (RemoteException re) {
-         URL backupEndpoint = conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.ALTQUERY_URL_PROPERTY,null);
-         if(backupEndpoint != null) {
-             QueryRegistry qr = new QueryRegistry(backupEndpoint);
-             try {
-                 return qr.callService(adql,"Search","Search");
-             }catch(RemoteException re2) {
-                 logger.error(re2);                 
-                 throw new RegistryException(re2);    
-             }catch(ServiceException se2) {
-                 logger.error(se2);                 
-                 throw new RegistryException(se2);
-             }catch(Exception e2) {
-                 logger.error(e2);                 
-                 throw new RegistryException(e2);
-             }
-         }//if
          re.printStackTrace();
          logger.error(re);         
          throw new RegistryException(re);
       } catch(ServiceException se) {
+          URL backupEndpoint = conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.ALTQUERY_URL_PROPERTY,null);
+          if(backupEndpoint != null) {
+              QueryRegistry qr = new QueryRegistry(backupEndpoint);
+              try {
+                  return qr.callService(adql,"Search","Search");
+              }catch(RemoteException re2) {
+                  logger.error(re2);                 
+                  throw new RegistryException(re2);    
+              }catch(ServiceException se2) {
+                  logger.error(se2);                 
+                  throw new RegistryException(se2);
+              }catch(Exception e2) {
+                  logger.error(e2);                 
+                  throw new RegistryException(e2);
+              }
+          }//if    	  
           logger.error(se);   
           se.printStackTrace();
           throw new RegistryException(se);
@@ -529,8 +529,11 @@ public class QueryRegistry implements RegistryService {
                   cache.put(xquery,resultDoc);
               return resultDoc;
           } catch (RemoteException re) {
-              URL backupEndpoint = conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.ALTQUERY_URL_PROPERTY,null);
-              if(backupEndpoint != null) {
+              logger.error(re);              
+              throw new RegistryException(re);
+          } catch (ServiceException se) {
+             URL backupEndpoint = conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.ALTQUERY_URL_PROPERTY,null);
+             if(backupEndpoint != null) {
                   QueryRegistry qr = new QueryRegistry(backupEndpoint);              
                   try {
                       resultDoc = qr.callService(doc,"XQuerySearch","XQuerySearch");
@@ -546,10 +549,7 @@ public class QueryRegistry implements RegistryService {
                       logger.error(e2);                      
                       throw new RegistryException(e2);
                   }
-              }
-              logger.error(re);              
-              throw new RegistryException(re);
-          } catch (ServiceException se) {
+             }        	  
              logger.error(se);              
              throw new RegistryException(se);
           } catch (Exception e) {
