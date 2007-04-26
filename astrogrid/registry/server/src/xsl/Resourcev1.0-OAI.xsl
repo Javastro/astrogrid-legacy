@@ -42,10 +42,10 @@
 				<oai:datestamp>
                   <xsl:choose>
                      <xsl:when test="string-length($dtVar) &gt;= 19">
-                        <xsl:value-of select="concat(substring($dtVar,1,19),'')" />
+                        <xsl:value-of select="concat(substring($dtVar,1,19),'Z')" />
                      </xsl:when>
                      <xsl:when test="string-length($dtVar) = 10">
-                        <xsl:value-of select="concat(substring($dtVar,1,10),'T00:00:00')" />
+                        <xsl:value-of select="concat(substring($dtVar,1,10),'T00:00:00Z')" />
                      </xsl:when>
                      <xsl:otherwise>
                         <xsl:value-of select="$dtVar" />
