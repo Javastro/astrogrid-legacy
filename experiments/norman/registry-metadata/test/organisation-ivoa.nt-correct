@@ -2,13 +2,13 @@
 <ivo://org.astrogrid.regtest/IVOA>	<http://www.ivoa.net/xml/VOResource/v1.0#created>	"2006-11-21T11:07:24"	.
 <ivo://org.astrogrid.regtest/IVOA>	<http://www.ivoa.net/xml/VOResource/v1.0#curation>	_:1	.
 <ivo://org.astrogrid.regtest/IVOA>	<http://www.ivoa.net/xml/VOResource/v1.0#identifier>	_:2	.
-<ivo://org.astrogrid.regtest/IVOA>	<http://www.ivoa.net/xml/VOResource/v1.0#shortname>	"IVOA"	.
+<ivo://org.astrogrid.regtest/IVOA>	<http://www.ivoa.net/xml/VOResource/v1.0#shortName>	"IVOA"	.
 <ivo://org.astrogrid.regtest/IVOA>	<http://www.ivoa.net/xml/VOResource/v1.0#status>	_:3	.
 <ivo://org.astrogrid.regtest/IVOA>	<http://www.ivoa.net/xml/VOResource/v1.0#title>	"International Virtual Observatory Alliance"	.
 <ivo://org.astrogrid.regtest/IVOA>	<http://www.ivoa.net/xml/VOResource/v1.0#updated>	"2006-11-21T11:07:24"	.
 <ivo://org.astrogrid.regtest/IVOA>	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Organisation>	.
 <ivo://org.astrogrid.regtest/IVOA>	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Resource>	.
-_:0	<http://www.ivoa.net/xml/VOResource/v1.0#description>	"The International Virtual Observatory Alliance (IVOA) was\n      formed in June 2002 with a mission to facilitate the\n      international coordination and collaboration necessary for the\n      development and deployment of the tools, systems and\n      organizational structures necessary to enable the\n      international utilization of astronomical archives as an\n      integrated and interoperating virtual observatory. By January\n      2005, the IVOA has grown to include 15 funded VO projects from\n      Australia, Canada, China, Europe, France, Germany, Hungary,\n      India, Italy, Japan, Korea, Russia, Spain, the United Kingdom,\n      and the United States. This membership is now being expanded\n      to include representation from projects constructing and\n      planning new observatories and astronomical facilities, as\n      well as emerging astronomical communities that seek to benefit\n      from the global availability of VO facilities and\n      technologies."	.
+_:0	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"The International Virtual Observatory Alliance (IVOA) was formed in June 2002 with a mission to facilitate the international coordination and collaboration necessary for the development and deployment of the tools, systems and organizational structures necessary to enable the international utilization of astronomical archives as an integrated and interoperating virtual observatory. By January 2005, the IVOA has grown to include 15 funded VO projects from Australia, Canada, China, Europe, France, Germany, Hungary, India, Italy, Japan, Korea, Russia, Spain, the United Kingdom, and the United States. This membership is now being expanded to include representation from projects constructing and planning new observatories and astronomical facilities, as well as emerging astronomical communities that seek to benefit from the global availability of VO facilities and technologies."	.
 _:0	<http://www.ivoa.net/xml/VOResource/v1.0#referenceURL>	_:b5	.
 _:0	<http://www.ivoa.net/xml/VOResource/v1.0#subject>	"standards"	.
 _:0	<http://www.ivoa.net/xml/VOResource/v1.0#subject>	"virtual observatory"	.
@@ -40,11 +40,11 @@ _:2	<http://www.ivoa.net/xml/VOResource/v1.0#authorityID>	"org.astrogrid.regtest
 _:2	<http://www.ivoa.net/xml/VOResource/v1.0#resourceKey>	"IVOA"	.
 _:2	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"ivo://org.astrogrid.regtest/IVOA"	.
 _:3	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#ActiveStatus>	.
+_:4	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"IVOA Community"	.
 _:4	<http://www.ivoa.net/xml/VOResource/v1.0#email>	"interop@ivoa.net"	.
-_:4	<http://www.ivoa.net/xml/VOResource/v1.0#name>	"IVOA Community"	.
 _:4	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Contact>	.
+_:5	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"IVOA Executive Committee"	.
 _:5	<http://www.ivoa.net/xml/VOResource/v1.0#email>	"ivoa@ivoa.net"	.
-_:5	<http://www.ivoa.net/xml/VOResource/v1.0#name>	"IVOA Executive Committee"	.
 _:5	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Contact>	.
 _:6	<http://www.ivoa.net/xml/VOResource/v1.0#name>	"Armenian Virtual Observatory"	.
 _:6	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Actor>	.
@@ -80,8 +80,8 @@ _:b1	<http://www.ivoa.net/xml/VOResource/v1.0#name>	"VO-France"	.
 _:b1	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Actor>	.
 _:b2	<http://www.ivoa.net/xml/VOResource/v1.0#name>	"Virtual Observatory India"	.
 _:b2	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Actor>	.
+_:b3	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"VO community"	.
 _:b3	<http://www.ivoa.net/xml/VOResource/v1.0#logo>	"http://www.ivoa.net/icons/ivoa_logo_small.jpg"	.
-_:b3	<http://www.ivoa.net/xml/VOResource/v1.0#name>	"VO community"	.
 _:b3	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Creator>	.
 _:b4	<http://www.ivoa.net/xml/VOResource/v1.0#name>	"International Virtual Observatory Alliance"	.
 _:b4	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Actor>	.

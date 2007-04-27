@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ri:Resource xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0"
+             xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:test="http://example.org/test"
+             created='2007-04-22'
+             status='active'
+             xsi:type='test:TestSchema'>
+  <title>Test document</title>
+  <identifier>ivo://norman.org/test-resource</identifier>
+  
+  <test-TSimple>11</test-TSimple>
+  <test-TSimpleEnum>value2</test-TSimpleEnum>
+  <test-TCSimple ivo-id='ivo://norman.org/resource'
+                 tcsimple-simpleatt='22'
+                 tcsimple-enum='value1'
+                 >tcsimple-content</test-TCSimple>
+  <test-TCSeq>
+    <tcseq-simple>33</tcseq-simple>
+    <tcseq-oddrange validatedBy='ivo://dummy.auth/dummy/res'
+                    >3</tcseq-oddrange>
+  </test-TCSeq>
+  <test-TCC tcsimple-simpleatt='66'>
+    <!-- type TCC extends TCSeq -->
+    <tcseq-simple>44</tcseq-simple>
+    <tcseq-oddrange validatedBy='ivo://second.dummy.auth/second/dummy/res'
+                    >0</tcseq-oddrange>
+    <tcc-simple>55</tcc-simple>
+    <tcc-facility ivo-id='ivo://dummy.org/rhessi'>RHESSI</tcc-facility>
+  </test-TCC>
+  <test-TCSeq tcsimple-simpleatt='77' xsi:type='test:TCC'>
+    <!-- type TCC extends TCSeq, specified in instance -->
+    <tcseq-simple>88</tcseq-simple>
+    <tcseq-oddrange validatedBy='ivo://third.dummy.auth/third/dummy/res'
+                    >1</tcseq-oddrange>
+    <tcc-simple>99</tcc-simple>
+  </test-TCSeq>
+</ri:Resource>
+

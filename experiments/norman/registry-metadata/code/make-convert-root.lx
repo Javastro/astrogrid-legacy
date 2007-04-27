@@ -1,0 +1,113 @@
+;; Generate the main converter script, which imports all of the scripts
+;; listed in handler-registry.xml which do not have the status=disabled
+;; attribute.  It is the handler-registry.xml file which should be given
+;; as input to this script.
+;;
+;; This script overlaps in functionality with
+;; "ExtractNamespaces.java --generate-xslt", but whereas this emits a
+;; script which includes all the non-disabled scripts, that emits a
+;; very similar script which handles all and only those namespaces
+;; which are present in a given XML document.  The two should probably
+;; be merged, and I'd prefer the ExtractNamespaces functionality to be
+;; merged into here, but it's not _completely_ obvious how to do it,
+;; since the XPath expressions to match up the namespaces are slightly
+;; funkier than I can get right off the top of my head.
+;;
+;; Why would you need that other script?  If you need to convert from
+;; an XSchema which is not one of the ones listed in
+;; handler-registry.xml, for example being a different version.
+
+(lx:let ((namespace (#f "http://www.w3.org/1999/XSL/Transform")
+                    (xsl "http://www.w3.org/1999/XSL/Transform")
+                    (a "http://www.w3.org/1999/XSL/TransformAlias")
+                    (xsi "http://www.w3.org/2001/XMLSchema-instance")
+
+                    ;(xs "http://www.w3.org/2001/XMLSchema")
+                    (x2s "http://ns.eurovotech.org/registry-metadata#")
+                    ;;(dc "http://purl.org/dc/elements/1.1/")
+
+                    ;(voro "http://www.ivoa.net/xml/VOResource/v1.0")
+                    (ri "http://www.ivoa.net/xml/RegistryInterface/v1.0")
+                    (rdf  "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+                    ;(rdfs "http://www.w3.org/2000/01/rdf-schema#")
+                    ;(owl  "http://www.w3.org/2002/07/owl#")
+                    )
+         (feature "http://ns.nxg.me.uk/lx/attributes-in-no-namespace")
+         (dtd (template (match #t) mode)
+              (element (name #t))
+              (attribute (name #t))
+              (value-of (select #t))
+              (when (test #t))
+              (if (test #t))
+              (with-param (name #t) select)))
+
+(stylesheet version: 1.0 ;exclude-result-prefixes: "x2s"
+  (output method: xml
+          version: 1.0
+          indent: yes)
+
+  ;; We're generating an XSLT stylesheet, so we need to use the namespace-alias
+  ;; trick to distinguish the XSL elements in this stylesheet from the
+  ;; XSL elements in the result.
+  (namespace-alias stylesheet-prefix: a result-prefix: xsl)
+
+  (key name: xns
+       match: xml-ns
+       use: @id)
+  (key name: ons
+       match: ontology-ns
+       use: @id)
+
+  (template /
+    (apply-templates select: handler-registry))
+
+  (template handler-registry
+    (a:stylesheet
+     version: 1.0
+     (a:import href: fallback.xslt)
+     (apply-templates select: "handler[xslt and not(@status='disabled')]"
+                      mode: generate-import)
+     (a:template match: /
+                 (rdf:RDF ;; copy missing namespace nodes
+                  (a:apply-templates select: //ri:Resource)))
+     (a:template name: resolve-xsitype
+                 (a:variable name: l
+                             (a:choose
+                              (a:when test: "contains(@xsi:type,':')"
+                                      (a:value-of select:
+                                                  "substring-after(@xsi:type,':')"))
+                              (a:otherwise
+                               (a:value-of select: "@xsi:type"))))
+                 (a:variable name: p
+                             select: "substring-before(@xsi:type,':')")
+                 (a:variable name: n
+                             select: "namespace::*[name()=$p]")
+                 (a:choose
+                  (apply-templates select: "handler[xslt and not(@status='disabled')]"
+                                   mode: generate-choices)
+                  (a:otherwise
+                   (x2s:UNKNOWN
+                    "convert-root: unable to resolve xsi:type="
+                    (a:value-of select: $n)
+                    "#"
+                    (a:value-of select: $l)))))))
+
+  (template handler
+    mode: generate-import
+    (a:import
+     (attribute href
+                (apply-templates select: xslt))))
+
+  (template handler
+    mode: generate-choices
+    (variable name: source-ns
+              (apply-templates select: "key('xns',@from)"))
+    (a:when test: "$n='{$source-ns}'"
+     (a:call-template (attribute name: name
+                                 (value-of @from)
+                                 ":resolve-xsitype")
+                      (copy-of select: "document('namespace-nodes.xml')/namespace-nodes/namespace::*[.=$source-ns]")
+                      (a:with-param name: type
+                                    (a:value-of select: $l)))))
+
+))

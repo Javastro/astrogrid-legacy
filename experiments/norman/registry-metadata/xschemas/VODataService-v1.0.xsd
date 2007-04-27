@@ -48,7 +48,7 @@
                 <xs:annotation>
                    <xs:appinfo>
                      <vm:dcterm>Subject</vm:dcterm>
-                     <x2s:multipleDomains/>
+                     <x2s:multipleDomains equivalentProperty='vr:facility'/>
                    </xs:appinfo>
                    <xs:documentation>
                      the observatory or facility used to collect the data 
@@ -63,7 +63,7 @@
                    <xs:appinfo>
                      <vm:dcterm>Subject</vm:dcterm>
                      <vm:dcterm>Subject.Instrument</vm:dcterm>
-                     <x2s:multipleDomains/>
+                     <x2s:multipleDomains equivalentProperty='vr:instrument'/>
                    </xs:appinfo>
                    <xs:documentation>
                      the Instrument used to collect the data contain or 
@@ -77,6 +77,7 @@
                  <xs:annotation>
                     <xs:appinfo>
                       <vm:dcterm>Rights</vm:dcterm>
+                      <x2s:multipleDomains equivalentProperty='vr:rights'/>
                     </xs:appinfo>           
                     <xs:documentation>
                       Information about rights held in and over the resource.
@@ -141,6 +142,9 @@
                      The URL that can be used to download the data contained in 
                      this data collection.
                    </xs:documentation>
+                   <xs:appinfo>
+                     <x2s:multipleDomains equivalentProperty='vr:accessURL'/>
+                   </xs:appinfo>
                  </xs:annotation>
               </xs:element>
 
@@ -562,7 +566,7 @@
                   the name of the table 
                </xs:documentation>
                <xs:appinfo>
-                 <x2s:multipleDomains/>
+                 <x2s:multipleDomains equivalentProperty='vr:name'/>
                </xs:appinfo>
             </xs:annotation>
          </xs:element>
@@ -573,7 +577,7 @@
                   a description of the tables contents
                </xs:documentation>
                <xs:appinfo>
-                 <x2s:multipleDomains/>
+                 <x2s:multipleDomains equivalentProperty='vr:description'/>
                </xs:appinfo>
             </xs:annotation>
          </xs:element>
@@ -630,7 +634,7 @@
                   a description of the column's contents
                </xs:documentation>
                <xs:appinfo>
-                 <x2s:multipleDomains/>
+                 <x2s:multipleDomains equivalentProperty='vr:description'/>
                </xs:appinfo>
             </xs:annotation>
          </xs:element>

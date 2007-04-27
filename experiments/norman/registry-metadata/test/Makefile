@@ -3,12 +3,26 @@ JENA=$T/Jena-2.3
 #CP=`ls $(JENA)/lib/*.jar|sed -n '1,$$H;$${g;s/\n/:/gp;}'`
 CP=/Volumes/Lagrange/Data/tools/Jena-2.3/lib/antlr-2.7.5.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/arq.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/commons-logging.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/concurrent.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/icu4j_3_4.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/jakarta-oro-2.0.8.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/jena.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/jenatest.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/junit.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/log4j-1.2.12.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/stax-1.1.1-dev.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/stax-api-1.0.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/xercesImpl.jar:/Volumes/Lagrange/Data/tools/Jena-2.3/lib/xml-apis.jar
 
-TESTCASES=sia-0.7 sia-1.0 mssl-reg-authority mssl-reg-registry \
-	organisation-ivoa organisation-mssl
+TESTCASES=test-instance \
+	sia-1.0 mssl-reg-authority mssl-reg-registry \
+	organisation-ivoa organisation-mssl data-collection-1.0
 
-%.rdf: %.xml
+# Don't reap intermediate files -- handy for debugging
+.PRECIOUS: %.rdf %.xslt
+
+%.rdf: %.xml ../code/STAMP
 	rm -f $@
-	xsltproc --path ../code rdf-all.xslt $< >$@.tmp && mv $@.tmp $@
+	xsltproc --path ../code convert-root.xslt $< >$@.tmp
+	if grep 'UNKNOWN' $@.tmp; then echo "ERRORs in $@!!"; false; else :; fi
+	mv $@.tmp $@
+# %.rdf: %.xml %.xslt
+# 	rm -f $@
+# 	xsltproc --path ../code ${<:.xml=.xslt} $< >$@.tmp && mv $@.tmp $@
+# 	if grep 'UNKNOWN' $@; then echo "UNKNOWN in $@!!"; false; else :; fi
+
+%.xslt: %.xml
+	rm -f $@
+	java -jar ../code/ExtractNamespaces.jar --generate-xslt --indent $< >$@
 
 # Create a ntriples representation.
 %.nt: %.rdf
@@ -19,6 +33,8 @@ TESTCASES=sia-0.7 sia-1.0 mssl-reg-authority mssl-reg-registry \
 #	$(CWM) -pipe -rdf $< -ntriples | ./normalise-ntriples >$@
 
 # ... and a normalised version, ready for diffing
+%.nnt: %.nt
+	sed 's/_:[0-9a-f]*/_:b/g' $< >$@
 #%.nnt: %.nt
 #	./normalise-ntriples --suppress-blank-nodes $< >$@
 
@@ -31,11 +47,12 @@ TESTCASES=sia-0.7 sia-1.0 mssl-reg-authority mssl-reg-registry \
 
 # Run the RDF through Eyeball.  Exclude the URI check, which objects
 # to ivo:... URIs (as indeed it should, grumble, grumble)
+#	  -assume $(T)/eyeball-2.0/mirror/owl.rdf 
 %.eyeballed: %.rdf
 	rm -f $@
 	../code/eyeball.sh \
-	  -assume owl \
 	  -assume ../rdfschemas/VOResource-1.0.owl \
+	  -assume ../xschemas/VORegistry-v1.0.rdfs \
 	  -assume ../xschemas/VODataService-v1.0.rdfs \
 	  -assume ../xschemas/SIA-v1.0.rdfs \
 	  -assume ../xschemas/TabularDB-v0.3.rdfs \
@@ -56,15 +73,17 @@ check: $(TESTCASES:=.nt) # $(TESTCASES:=.eyeballed)
 	    echo "$$f: ok"; \
 	    rm $$f.diff; \
 	  else \
-	    echo "$$f: failed"; \
+	    echo "$$f: failed -- see $$f.diff & $$f.diffx"; \
+	    sed 's/_:[0-9a-f]*/_:X/g' $$f.nt >t.nt; \
+	    sed 's/_:[0-9a-f]*/_:X/g' $$f.nt-correct >t.nt-correct; \
+	    diff t.nt-correct t.nt >$$f.diffx; \
+	    rm t.nt t.nt-correct; \
 	  fi; \
 	done
-# 	  else \
-# 	    echo "$$f: failed -- see $$f.diff & $$f.diffx"; \
-# 	    sed 's/_:[0-9]*/_:X/g' $$f.ntriples >t.ntriples; \
-# 	    sed 's/_:[0-9]*/_:X/g' $$f.ntriples-correct >t.ntriples-correct; \
-# 	    diff t.ntriples-correct t.ntriples >$$f.diffx; \
-# 	    rm t.ntriples t.ntriples-correct; \
+
+#test.xslt: test.xsd
+#	cd ../code; make test.xslt
+#	ln -sf ../code/test.xslt
 
 clean:
 	rm -f *.nt *.rdf *.diff *.diffx *.eyeballed

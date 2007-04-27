@@ -30,6 +30,7 @@
           version: 1.0
           indent: yes)
 
+  ;; the namespace bound to prefix voro, as a string
   (variable name: vor-ns http://www.ivoa.net/xml/VOResource/v1.0#)
 
   (template "ri:Resource"
@@ -69,7 +70,7 @@
     (apply-templates))
 
   ;; elements with simple content -- easy to handle
-  (template "date|logo|shortName|subject|version"
+  (template "date|description|logo|shortName|subject|version"
       (element name: "voro:{local-name()}"
                (apply-templates)))
   (template "address|email|title"
@@ -90,13 +91,16 @@
                    (with-param id (apply-templates))))
 
   ;; various things which map to Actor
-  (template publisher
-      (voro:publisher
-       (call-template name: voro:resource-name)))
+  (template "publisher|contributor"
+    (element "voro:{local-name()}"
+             (call-template name: voro:resource-name)))
+;;   (template publisher
+;;       (voro:publisher
+;;        (call-template name: voro:resource-name)))
 
-  (template contributor
-      (voro:contributor
-       (call-template name: voro:resource-name)))
+;;   (template contributor
+;;       (voro:contributor
+;;        (call-template name: voro:resource-name)))
 
   ;; Creator and contact have similar but not identical contents in the
   ;; XSchema, but identical allowed properties in the Ontology.
@@ -114,14 +118,20 @@
 
   (template capability
     (voro:capability rdf:parseType: Resource
+;;        (choose
+;;         (when "@standardID and starts-with(@standardID,'ivo://')"
+;;           (call-template name: make-identifier-uri
+;;                          (with-param id (value-of @standardID))
+;;                          (with-param propname voro:standardID)))
+;;         (when "@standardID"
+;;           (voro:standardID (value-of @standardID))))
        (choose
-        (when "@standardID and starts-with(@standardID,'ivo://')"
-          (call-template name: make-identifier-uri
-                         (with-param id (value-of @standardID))
-                         (with-param propname voro:standardID)))
-        (when "@standardID"
-          (voro:standardID (value-of @standardID))))
-       (apply-templates)))
+        (when @xsi:type
+          (call-template name: resolve-xsitype))
+        (otherwise
+         (call-template name: vor:Capability)))
+       ;; (apply-templates)
+       ))
 
   (template name
     (voro:name (apply-templates))
@@ -145,38 +155,44 @@
        (voro:FullAccessURL
         (attribute voro:uri (apply-templates)))))
 
-  (template accessURL name: vor:accessURL
-      (variable name: access-url-type
-                (choose
-                 (when "@use = 'base'"
-                   voro:BaseAccessURL)
-                 (when "@use = 'full'"
-                   voro:FullAccessURL)
-                 (when "@use = 'dir'"
-                   voro:DirectoryAccessURL)
-                 (otherwise ;; eh?
-                  voro:AccessURL)))
-      (voro:accessURL
-       (element "{$access-url-type}"
-                (attribute voro:uri (apply-templates)))))
+  (template accessURL
+    (voro:accessURL
+     (call-template name: vor:AccessURL)))
+;;   (template accessURL name: vor:AccessURL
+;;       (variable name: access-url-type
+;;                 (choose
+;;                  (when "@use = 'base'"
+;;                    voro:BaseAccessURL)
+;;                  (when "@use = 'full'"
+;;                    voro:FullAccessURL)
+;;                  (when "@use = 'dir'"
+;;                    voro:DirectoryAccessURL)
+;;                  (otherwise ;; eh?
+;;                   voro:AccessURL)))
+;;       (voro:accessURL
+;;        (element "{$access-url-type}"
+;;                 (attribute voro:uri (apply-templates)))))
 
   (template wsdlURL
     (voro:wsdlURL
      (voro:FullAccessURL
       (attribute voro:uri (apply-templates)))))
 
-  (template rights name: vor:rights
-    (variable name: rights-type
-              (value-of "normalize-space()"))
-    (variable name: propertyname
-              (choose
-               (when "$rights-type = 'public'"		voro:PublicRights)
-               (when "$rights-type = 'proprietary'"	voro:ProperietaryRights)
-               (when "$rights-type = 'secure'"		voro:SecureRights)
-               (otherwise
-                x2s:ERROR-RIGHTS)))
+  (template rights
     (voro:rights
-     (element {$propertyname})))
+     (call-template name: vor:Rights)))
+;;   (template rights name: vor:Rights
+;;     (variable name: rights-type
+;;               (value-of "normalize-space()"))
+;;     (variable name: propertyname
+;;               (choose
+;;                (when "$rights-type = 'public'"		voro:PublicRights)
+;;                (when "$rights-type = 'proprietary'"	voro:ProperietaryRights)
+;;                (when "$rights-type = 'secure'"		voro:SecureRights)
+;;                (otherwise
+;;                 x2s:ERROR-RIGHTS)))
+;;     (voro:rights
+;;      (element {$propertyname})))
 
   (template type
     ;; do mild normalisation on the given string
@@ -286,7 +302,9 @@
                           (call-template name: make-identifier-uri
                                          (with-param id
                                                      (value-of @ivo-id))))
-                      (voro:name (apply-templates)))))
+                      (voro:name (value-of "normalize-space()")
+                                 ;; (apply-templates)
+                                 ))))
 
   ;; If interface is present here, then we're actually processing
   ;; a subtype of Resource.  Since interface is `abstract' in XSchema terms,
@@ -307,41 +325,102 @@
                            (voro:standardID (apply-templates))))
 
   (template validationLevel
-    (variable name: level select: "normalize-space()")
-    (element "voro:{concat('validationLevel',$level)}"
-             (attribute name: rdf:parseType Resource)
-             (choose
-              (when @validatedBy
-                (call-template name: make-identifier-uri
-                               (with-param id (value-of @validatedBy))))
-              (otherwise
-               (call-template name: make-identifier-uri ;FIXME bad default
-                              (with-param id "ivo://ERROR/unknown"))))))
+    (call-template name: vor:Validation))
+;;   (template validationLevel
+;;     (variable name: level select: "normalize-space()") ;content is an integer
+;;     (element "voro:{concat('validationLevel',$level)}"
+;;              (attribute name: rdf:parseType Resource)
+;;              (choose
+;;               (when @validatedBy
+;;                 (call-template name: make-identifier-uri
+;;                                (with-param id (value-of @validatedBy))))
+;;               (otherwise
+;;                (call-template name: make-identifier-uri ;FIXME bad default
+;;                               (with-param id "ivo://ERROR/unknown"))))))
 
   ;; Named templates
-  (lx:dtd ((template (name #t)))
+  (lx:dtd ((template (name #t))
+           (element (name #t) namespace))
     ;; Handle ResourceName elements, which map to Actor or one of its subtypes,
     ;; optionally given in the 'type' parameter.
+    ;; If the namespace of the 'type' element name is not voro, then the
+    ;; appropriate namespace should be given as the 'ns' parameter.  In this
+    ;; case, the 'type' name may, but need not, have a prefix.
     (template voro:resource-name
       (param name: type voro:Actor)
-      (variable name: content (value-of "normalize-space(.)"))
-      (element "{$type}"
-               (if "string-length($content) > 0"
-                   (element voro:name (value-of $content)))
-               (if @ivo-id
-                   (call-template name: make-identifier-uri
-                                  (with-param id (value-of @ivo-id)))
-;;                    (element voro:identifier
-;;                             (attribute voro:uri (value-of @ivo-id)))
-                 )))
+      (param name: ns (value-of $vor-ns))
+      (variable name: content (value-of "normalize-space()"))
+      (element "{$type}" namespace: {$ns}
+                  (if "string-length($content) > 0"
+                      (element voro:name (value-of $content)))
+                  (if @ivo-id
+                      (call-template name: make-identifier-uri
+                                     (with-param id (value-of @ivo-id))))))
+  
+    (template vor:Validation
+      (variable name: level select: "normalize-space()") ;content is an integer
+      (element "voro:{concat('validationLevel',$level)}"
+               (attribute name: rdf:parseType Resource)
+               (choose
+                (when @validatedBy
+                  (call-template name: make-identifier-uri
+                                 (with-param id (value-of @validatedBy))))
+                (otherwise
+                 (call-template name: make-identifier-uri ;FIXME bad default
+                                (with-param id "ivo://ERROR/unknown"))))))
 
     ;; Here are `base types'
     (template vor:Interface
       (if @role
           (voro:interfaceRole (value-of @role)))
+      (if @version
+          (voro:version (value-of @version)))
       (apply-templates))
+
     (template vor:Capability
+      (choose
+       (when "@standardID and starts-with(@standardID,'ivo://')"
+         (call-template name: make-identifier-uri
+                        (with-param id (value-of @standardID))
+                        (with-param propname voro:standardID)))
+       (when "@standardID"
+         (voro:standardID (value-of @standardID))))
       (apply-templates))
+
+    ;; the following aren't extended, but the template is referred to
+    ;; by other stylesheets (this isn't a complete list of types defined
+    ;; in this XSchema -- ought it to be?)
+    (template vor:AuthorityID
+      ;; model this as an IdentifierURI with no resource key
+      (variable name: authid (apply-templates))
+      (voro:authorityID (value-of $authid))
+      (voro:uri "ivo://" (value-of $authid)))
+
+    (template vor:Rights
+      (variable name: rights-type
+                (value-of "normalize-space()"))
+      (variable name: propertyname
+                (choose
+                 (when "$rights-type = 'public'"	PublicRights)
+                 (when "$rights-type = 'proprietary'"	ProperietaryRights)
+                 (when "$rights-type = 'secure'"	SecureRights)
+                 (otherwise
+                  ERROR-RIGHTS)))
+      (rdf:type rdf:resource: "{$vor-ns}{$propertyname}"))
+
+    (template vor:AccessURL
+      (variable name: access-url-type
+                (choose
+                 (when "@use = 'base'"
+                   BaseAccessURL)
+                 (when "@use = 'full'"
+                   FullAccessURL)
+                 (when "@use = 'dir'"
+                   DirectoryAccessURL)
+                 (otherwise ;; eh?
+                  AccessURL)))
+      (rdf:type rdf:resource: "{$vor-ns}{$access-url-type}")
+      (element voro:uri (apply-templates)))
 
     ;; The following can be both `base types' and extended ones
     (template vor:Service
@@ -360,6 +439,7 @@
       (rdf:type rdf:resource: {$vor-ns}Organisation)
       (call-template name: vor:Resource))
 
+    ;; This handler's magic resolve-xsitype template
     (template vor:resolve-xsitype
       (param name: type)
       (choose
@@ -375,17 +455,22 @@
     (template make-identifier-uri
       (param name: id)
       (param name: propname voro:identifier)
+      ;;(param name: ns "http://www.ivoa.net/xml/VOResource/v1.0#")
+;      (element "{name(namespace::*[.=$ns])}{$propname}"
       (element "{$propname}"
        (attribute rdf:parseType Resource)
-       (voro:uri (value-of $id))
-                                        ;(voro:uri {$id})
-       (variable name: id-and-key select: "substring-after($id,'ivo://')")
-       (choose
-        (when "contains($id-and-key,'/')"
-          (voro:authorityID (value-of "substring-before($id-and-key,'/')"))
-          (voro:resourceKey (value-of "substring-after($id-and-key,'/')")))
-        (otherwise
-         (voro:authorityID (value-of $id-and-key))))))
+       (call-template name: make-identifier-uri-body
+                      (with-param id (value-of $id)))))
+    (template make-identifier-uri-body
+      (param name: id)
+      (voro:uri (value-of $id))
+      (variable name: id-and-key select: "substring-after($id,'ivo://')")
+      (choose
+       (when "contains($id-and-key,'/')"
+         (voro:authorityID (value-of "substring-before($id-and-key,'/')"))
+         (voro:resourceKey (value-of "substring-after($id-and-key,'/')")))
+       (otherwise
+        (voro:authorityID (value-of $id-and-key)))))
 
     )
 

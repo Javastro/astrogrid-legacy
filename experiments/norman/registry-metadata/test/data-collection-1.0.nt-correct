@@ -1,123 +1,156 @@
 <ivo://org.astrogrid.regtest/CDS/VizieR/I/134/data>	<http://www.ivoa.net/xml/VODataService/v1.0#catalog>	_:0	.
 <ivo://org.astrogrid.regtest/CDS/VizieR/I/134/data>	<http://www.ivoa.net/xml/VODataService/v1.0#coverage>	_:1	.
-<ivo://org.astrogrid.regtest/CDS/VizieR/I/134/data>	<http://www.ivoa.net/xml/VODataService/v1.0#format>	"text/plain+csv"	.
-<ivo://org.astrogrid.regtest/CDS/VizieR/I/134/data>	<http://www.ivoa.net/xml/VODataService/v1.0#format>	"text/xml+votable"	.
-<ivo://org.astrogrid.regtest/CDS/VizieR/I/134/data>	<http://www.ivoa.net/xml/VOResource/v1.0#content>	_:2	.
+<ivo://org.astrogrid.regtest/CDS/VizieR/I/134/data>	<http://www.ivoa.net/xml/VODataService/v1.0#format>	_:2	.
+<ivo://org.astrogrid.regtest/CDS/VizieR/I/134/data>	<http://www.ivoa.net/xml/VODataService/v1.0#format>	_:3	.
+<ivo://org.astrogrid.regtest/CDS/VizieR/I/134/data>	<http://www.ivoa.net/xml/VODataService/v1.0#rights>	_:4	.
+<ivo://org.astrogrid.regtest/CDS/VizieR/I/134/data>	<http://www.ivoa.net/xml/VOResource/v1.0#content>	_:5	.
 <ivo://org.astrogrid.regtest/CDS/VizieR/I/134/data>	<http://www.ivoa.net/xml/VOResource/v1.0#created>	"2006-11-21T11:07:24"	.
-<ivo://org.astrogrid.regtest/CDS/VizieR/I/134/data>	<http://www.ivoa.net/xml/VOResource/v1.0#curation>	_:3	.
-<ivo://org.astrogrid.regtest/CDS/VizieR/I/134/data>	<http://www.ivoa.net/xml/VOResource/v1.0#identifier>	_:4	.
-<ivo://org.astrogrid.regtest/CDS/VizieR/I/134/data>	<http://www.ivoa.net/xml/VOResource/v1.0#rights>	_:5	.
+<ivo://org.astrogrid.regtest/CDS/VizieR/I/134/data>	<http://www.ivoa.net/xml/VOResource/v1.0#curation>	_:6	.
+<ivo://org.astrogrid.regtest/CDS/VizieR/I/134/data>	<http://www.ivoa.net/xml/VOResource/v1.0#identifier>	_:7	.
 <ivo://org.astrogrid.regtest/CDS/VizieR/I/134/data>	<http://www.ivoa.net/xml/VOResource/v1.0#shortName>	"I/134/data"	.
-<ivo://org.astrogrid.regtest/CDS/VizieR/I/134/data>	<http://www.ivoa.net/xml/VOResource/v1.0#status>	_:6	.
+<ivo://org.astrogrid.regtest/CDS/VizieR/I/134/data>	<http://www.ivoa.net/xml/VOResource/v1.0#status>	_:8	.
 <ivo://org.astrogrid.regtest/CDS/VizieR/I/134/data>	<http://www.ivoa.net/xml/VOResource/v1.0#title>	"Trapezium Multiple Systems (Salukvadze, 1978) - The Catalogue of Trapezium Multiple Systems"	.
 <ivo://org.astrogrid.regtest/CDS/VizieR/I/134/data>	<http://www.ivoa.net/xml/VOResource/v1.0#updated>	"2006-11-21T11:07:24"	.
 <ivo://org.astrogrid.regtest/CDS/VizieR/I/134/data>	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#DataCollection>	.
 <ivo://org.astrogrid.regtest/CDS/VizieR/I/134/data>	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Resource>	.
-_:0	<http://www.ivoa.net/xml/VODataService/v1.0#table>	_:7	.
-_:1	<http://www.ivoa.net/xml/VODataService/v1.0#waveband>	_:b2	.
-_:2	<http://www.ivoa.net/xml/VODataService/v1.0#description>	"The present catalogue of Trapezium-type Multiple Systems was\n      compiled on the basis of the Index Catalogue of Visual Binary\n      Stars (IDS, Jeffers et al., 1963). At the period of compilation\n      of the Abastumani catalogue, IDS was the most complete catalogue\n      concerning not only stars, but also the data on double\n      stars. Besides giving relative positions, IDS presents the\n      coordinates at 1900 and 2000 epochs, as well as in most cases\n      magnitudes, spectral classes and proper motions. IDS contains\n      all double and multiple stars from the North to the South poles\n      with relative positions published up to the end of 1960, their\n      total number being 64247. In order to select optimum value of K\n      (ratio of the largest to the smallest distances among the\n      components), which is the main criterion for relating a multiple\n      star to the trapezium type, the dependence of the observed\n      trapezia number on the K value has been analysed, and the value\n      2.6 adopted for it. To exclude optical components, upper limits\n      for the distances of faint components to the main star have been\n      introduced, and the components fainter than 12.5mag were\n      excluded altogether (Salukvadze, 1978). The catalogue of\n      Trapezium-type Multiple Systems contains 412 trapezia, for\n      which, after examining all main spectral catalogues (Jaschek et\n      al., 1964; Kennedy et al., 1974; Houck et al., 1975;\n      Cruz-Gonzales et al., 1974; Lindsey et al., 1968), spectral\n      classes in the MK system have been specified. This was done for\n      100 systems, including 65 stars of O and B spectral classes. The\n      following data on trapezia are given in the catalogue:\n      positional angles and distances, magnitudes and spectral classes\n      according to HD as well as MK, the ADS and BD identification\n      number of the main star. On the basis of the probability,\n      deduced by Ambartsumian (1954), the number of pseudo-trapezia\n      was estimated, that is, the number of multiple stars, which in\n      fact have no trapezium-type configurations, but are observed as\n      trapezia as a result of their projection on the celestial\n      sphere. The number of estimated pseudo-trapezia is 167. It\n      should be mentioned that among 59 trapezia, the main components\n      of which are of the O-B2 spectral class, there are only 5\n      pseudo-trapezia. This enables us to maintain that there is a\n      considerable percent of real trapezia among the ones of\n      mentioned spectral classes. Evaluation of the number of optical\n      systems, formed as a result of the appearance of background\n      stars in circles, which are determined by the upper limits of\n      components' distances, led to their insignificant number 9."	.
-_:2	<http://www.ivoa.net/xml/VOResource/v1.0#contentLevel>	_:b6	.
-_:2	<http://www.ivoa.net/xml/VOResource/v1.0#referenceURL>	_:b7	.
-_:2	<http://www.ivoa.net/xml/VOResource/v1.0#source>	_:b8	.
-_:2	<http://www.ivoa.net/xml/VOResource/v1.0#subject>	"Multiple_Stars"	.
-_:2	<http://www.ivoa.net/xml/VOResource/v1.0#type>	_:b9	.
-_:2	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#ContentDescription>	.
-_:3	<http://www.ivoa.net/xml/VOResource/v1.0#contact>	_:b3	.
-_:3	<http://www.ivoa.net/xml/VOResource/v1.0#contributor>	_:b4	.
-_:3	<http://www.ivoa.net/xml/VOResource/v1.0#creator>	_:b1	.
-_:3	<http://www.ivoa.net/xml/VOResource/v1.0#date>	"1997-12-09"	.
-_:3	<http://www.ivoa.net/xml/VOResource/v1.0#publisher>	_:b5	.
-_:3	<http://www.ivoa.net/xml/VOResource/v1.0#version>	"11-Feb-1997"	.
-_:4	<http://www.ivoa.net/xml/VOResource/v1.0#authorityID>	"org.astrogrid.regtest"	.
-_:4	<http://www.ivoa.net/xml/VOResource/v1.0#resourceKey>	"CDS/VizieR/I/134/data"	.
-_:4	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"ivo://org.astrogrid.regtest/CDS/VizieR/I/134/data"	.
-_:5	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0PublicRights>	.
-_:6	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#ActiveStatus>	.
-_:7	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:8	.
-_:7	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:9	.
-_:7	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:a0	.
-_:7	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:a1	.
-_:7	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:a2	.
-_:7	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:a3	.
-_:7	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:a4	.
-_:7	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:a5	.
-_:7	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:a6	.
-_:7	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:a7	.
-_:7	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:a8	.
-_:7	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:a9	.
-_:7	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:b0	.
-_:7	<http://www.ivoa.net/xml/VODataService/v1.0#description>	"The Catalogue of Trapezium Multiple Systems"	.
-_:7	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"I/134/data"	.
-_:8	<http://www.ivoa.net/xml/VODataService/v1.0#description>	"? ADS number (1)"	.
-_:8	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"ADS"	.
-_:8	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"ID_ALTERNATIVE"	.
-_:8	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	""	.
-_:9	<http://www.ivoa.net/xml/VODataService/v1.0#description>	"Designation in \"	.
-_:9	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"IDS"	.
-_:9	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"ID_ALTERNATIVE"	.
-_:9	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	""	.
-_:a0	<http://www.ivoa.net/xml/VODataService/v1.0#description>	"Designation of components"	.
-_:a0	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Comp"	.
+_:0	<http://www.ivoa.net/xml/VODataService/v1.0#table>	_:9	.
+_:0	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#Catalog>	.
+_:1	<http://www.ivoa.net/xml/VODataService/v1.0#waveband>	_:b4	.
+_:1	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#Coverage>	.
+_:2	<http://www.ivoa.net/xml/VODataService/v1.0#FormatValue>	"text/plain+csv"	.
+_:2	<http://www.ivoa.net/xml/VODataService/v1.0#isMIMEType>	"true"	.
+_:3	<http://www.ivoa.net/xml/VODataService/v1.0#FormatValue>	"text/xml+votable"	.
+_:3	<http://www.ivoa.net/xml/VODataService/v1.0#isMIMEType>	"true"	.
+_:4	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#PublicRights>	.
+_:5	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"The present catalogue of Trapezium-type Multiple Systems was compiled on the basis of the Index Catalogue of Visual Binary Stars (IDS, Jeffers et al., 1963). At the period of compilation of the Abastumani catalogue, IDS was the most complete catalogue concerning not only stars, but also the data on double stars. Besides giving relative positions, IDS presents the coordinates at 1900 and 2000 epochs, as well as in most cases magnitudes, spectral classes and proper motions. IDS contains all double and multiple stars from the North to the South poles with relative positions published up to the end of 1960, their total number being 64247. In order to select optimum value of K (ratio of the largest to the smallest distances among the components), which is the main criterion for relating a multiple star to the trapezium type, the dependence of the observed trapezia number on the K value has been analysed, and the value 2.6 adopted for it. To exclude optical components, upper limits for the distances of faint components to the main star have been introduced, and the components fainter than 12.5mag were excluded altogether (Salukvadze, 1978). The catalogue of Trapezium-type Multiple Systems contains 412 trapezia, for which, after examining all main spectral catalogues (Jaschek et al., 1964; Kennedy et al., 1974; Houck et al., 1975; Cruz-Gonzales et al., 1974; Lindsey et al., 1968), spectral classes in the MK system have been specified. This was done for 100 systems, including 65 stars of O and B spectral classes. The following data on trapezia are given in the catalogue: positional angles and distances, magnitudes and spectral classes according to HD as well as MK, the ADS and BD identification number of the main star. On the basis of the probability, deduced by Ambartsumian (1954), the number of pseudo-trapezia was estimated, that is, the number of multiple stars, which in fact have no trapezium-type configurations, but are observed as trapezia as a result of their projection on the celestial sphere. The number of estimated pseudo-trapezia is 167. It should be mentioned that among 59 trapezia, the main components of which are of the O-B2 spectral class, there are only 5 pseudo-trapezia. This enables us to maintain that there is a considerable percent of real trapezia among the ones of mentioned spectral classes. Evaluation of the number of optical systems, formed as a result of the appearance of background stars in circles, which are determined by the upper limits of components' distances, led to their insignificant number 9."	.
+_:5	<http://www.ivoa.net/xml/VOResource/v1.0#contentLevel>	_:b8	.
+_:5	<http://www.ivoa.net/xml/VOResource/v1.0#referenceURL>	_:b9	.
+_:5	<http://www.ivoa.net/xml/VOResource/v1.0#source>	_:c0	.
+_:5	<http://www.ivoa.net/xml/VOResource/v1.0#subject>	"Multiple_Stars"	.
+_:5	<http://www.ivoa.net/xml/VOResource/v1.0#type>	_:c1	.
+_:5	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#ContentDescription>	.
+_:6	<http://www.ivoa.net/xml/VOResource/v1.0#contact>	_:b5	.
+_:6	<http://www.ivoa.net/xml/VOResource/v1.0#contributor>	_:b6	.
+_:6	<http://www.ivoa.net/xml/VOResource/v1.0#creator>	_:b3	.
+_:6	<http://www.ivoa.net/xml/VOResource/v1.0#date>	"1997-12-09"	.
+_:6	<http://www.ivoa.net/xml/VOResource/v1.0#publisher>	_:b7	.
+_:6	<http://www.ivoa.net/xml/VOResource/v1.0#version>	"11-Feb-1997"	.
+_:7	<http://www.ivoa.net/xml/VOResource/v1.0#authorityID>	"org.astrogrid.regtest"	.
+_:7	<http://www.ivoa.net/xml/VOResource/v1.0#resourceKey>	"CDS/VizieR/I/134/data"	.
+_:7	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"ivo://org.astrogrid.regtest/CDS/VizieR/I/134/data"	.
+_:8	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#ActiveStatus>	.
+_:9	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:a0	.
+_:9	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:a1	.
+_:9	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:a2	.
+_:9	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:a3	.
+_:9	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:a4	.
+_:9	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:a5	.
+_:9	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:a6	.
+_:9	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:a7	.
+_:9	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:a8	.
+_:9	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:a9	.
+_:9	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:b0	.
+_:9	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:b1	.
+_:9	<http://www.ivoa.net/xml/VODataService/v1.0#column>	_:b2	.
+_:9	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"I/134/data"	.
+_:9	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"The Catalogue of Trapezium Multiple Systems"	.
+_:9	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#Table>	.
+_:a0	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"ADS"	.
 _:a0	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"ID_ALTERNATIVE"	.
 _:a0	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	""	.
-_:a1	<http://www.ivoa.net/xml/VODataService/v1.0#description>	"Durchmusterung number (1)"	.
-_:a1	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"DM"	.
+_:a0	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"? ADS number (1)"	.
+_:a0	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
+_:a0	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
+_:a1	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"IDS"	.
 _:a1	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"ID_ALTERNATIVE"	.
 _:a1	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	""	.
-_:a2	<http://www.ivoa.net/xml/VODataService/v1.0#description>	"Ordinal number"	.
-_:a2	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Seq"	.
-_:a2	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"ID_MAIN"	.
+_:a1	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Designation in \"	.
+_:a1	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
+_:a1	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
+_:a2	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Comp"	.
+_:a2	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"ID_ALTERNATIVE"	.
 _:a2	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	""	.
-_:a3	<http://www.ivoa.net/xml/VODataService/v1.0#description>	"Distance of a component to the main star"	.
-_:a3	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"rho"	.
-_:a3	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"ORBIT_SEPARATION"	.
-_:a3	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	"arcsec"	.
-_:a4	<http://www.ivoa.net/xml/VODataService/v1.0#description>	"? Magnitudes of trapezium component"	.
-_:a4	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Vmag2"	.
-_:a4	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"PHOT_JHN_V"	.
-_:a4	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	"mag"	.
-_:a5	<http://www.ivoa.net/xml/VODataService/v1.0#description>	"? Magnitude of the main star (1)"	.
-_:a5	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Vmag1"	.
-_:a5	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"PHOT_MAG_UNDEF"	.
-_:a5	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	"mag"	.
-_:a6	<http://www.ivoa.net/xml/VODataService/v1.0#description>	"[0/360] Positional angle of a component relative to the main star"	.
-_:a6	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"theta"	.
-_:a6	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"POS_POS-ANG"	.
-_:a6	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	"deg"	.
-_:a7	<http://www.ivoa.net/xml/VODataService/v1.0#description>	"Record number within the original table (starting from 1)"	.
-_:a7	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"recno"	.
-_:a7	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"RECORD"	.
-_:a7	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	""	.
-_:a8	<http://www.ivoa.net/xml/VODataService/v1.0#description>	"[*] The asterisk indicates the main star of a trapezium system"	.
-_:a8	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"MainFlag"	.
-_:a8	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"REMARKS"	.
-_:a8	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	""	.
-_:a9	<http://www.ivoa.net/xml/VODataService/v1.0#description>	"IDS Spectral class of the main star (1)"	.
-_:a9	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Sp1"	.
-_:a9	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"SPECT_TYPE_GENERAL"	.
+_:a2	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Designation of components"	.
+_:a2	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
+_:a2	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
+_:a3	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"DM"	.
+_:a3	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"ID_ALTERNATIVE"	.
+_:a3	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	""	.
+_:a3	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Durchmusterung number (1)"	.
+_:a3	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
+_:a3	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
+_:a4	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Seq"	.
+_:a4	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"ID_MAIN"	.
+_:a4	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	""	.
+_:a4	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Ordinal number"	.
+_:a4	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
+_:a4	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
+_:a5	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"rho"	.
+_:a5	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"ORBIT_SEPARATION"	.
+_:a5	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	"arcsec"	.
+_:a5	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Distance of a component to the main star"	.
+_:a5	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
+_:a5	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
+_:a6	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Vmag2"	.
+_:a6	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"PHOT_JHN_V"	.
+_:a6	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	"mag"	.
+_:a6	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"? Magnitudes of trapezium component"	.
+_:a6	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
+_:a6	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
+_:a7	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Vmag1"	.
+_:a7	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"PHOT_MAG_UNDEF"	.
+_:a7	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	"mag"	.
+_:a7	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"? Magnitude of the main star (1)"	.
+_:a7	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
+_:a7	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
+_:a8	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"theta"	.
+_:a8	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"POS_POS-ANG"	.
+_:a8	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	"deg"	.
+_:a8	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"[0/360] Positional angle of a component relative to the main star"	.
+_:a8	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
+_:a8	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
+_:a9	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"recno"	.
+_:a9	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"RECORD"	.
 _:a9	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	""	.
-_:b0	<http://www.ivoa.net/xml/VODataService/v1.0#description>	"Spectral class of the main star in the MK system (1)"	.
-_:b0	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"SpType1"	.
-_:b0	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"SPECT_TYPE_GENERAL"	.
+_:a9	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Record number within the original table (starting from 1)"	.
+_:a9	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
+_:a9	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
+_:b0	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"MainFlag"	.
+_:b0	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"REMARKS"	.
 _:b0	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	""	.
-_:b1	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Salukvadze G.N."	.
-_:b1	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Creator>	.
-_:b2	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#WavebandOptical>	.
-_:b3	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"CDS support team"	.
-_:b3	<http://www.ivoa.net/xml/VOResource/v1.0#address>	"CDS, Observatoire de Strasbourg, 11 rue de l'Universite, F-67000 Strasbourg, France"	.
-_:b3	<http://www.ivoa.net/xml/VOResource/v1.0#email>	"question@simbad.u-strasbg.fr"	.
-_:b3	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Contact>	.
-_:b4	<http://www.ivoa.net/xml/VOResource/v1.0#name>	"Francois Ochsenbein [CDS]"	.
-_:b4	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Actor>	.
-_:b5	<http://www.ivoa.net/xml/VOResource/v1.0#identifier>	_:c0	.
-_:b5	<http://www.ivoa.net/xml/VOResource/v1.0#name>	"VizieR"	.
-_:b5	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Actor>	.
-_:b6	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#ResearchContentLevel>	.
-_:b7	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"http://vizier.u-strasbg.fr/cgi-bin/Cat?I/134/data"	.
-_:b7	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#FullAccessURL>	.
-_:b8	<http://www.ivoa.net/xml/VOResource/v1.0#format>	"bibcode"	.
-_:b8	<http://www.ivoa.net/xml/VOResource/v1.0#value>	"1978AbaOB..49...39S"	.
-_:b9	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#CatalogType>	.
-_:c0	<http://www.ivoa.net/xml/VOResource/v1.0#authorityID>	"CDS"	.
-_:c0	<http://www.ivoa.net/xml/VOResource/v1.0#resourceKey>	"VizieR"	.
-_:c0	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"ivo://CDS/VizieR"	.
+_:b0	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"[*] The asterisk indicates the main star of a trapezium system"	.
+_:b0	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
+_:b0	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
+_:b1	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Sp1"	.
+_:b1	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"SPECT_TYPE_GENERAL"	.
+_:b1	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	""	.
+_:b1	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"IDS Spectral class of the main star (1)"	.
+_:b1	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
+_:b1	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
+_:b2	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"SpType1"	.
+_:b2	<http://www.ivoa.net/xml/VODataService/v1.0#ucd>	"SPECT_TYPE_GENERAL"	.
+_:b2	<http://www.ivoa.net/xml/VODataService/v1.0#unit>	""	.
+_:b2	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"Spectral class of the main star in the MK system (1)"	.
+_:b2	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#BaseParam>	.
+_:b2	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#TableParam>	.
+_:b3	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Salukvadze G.N."	.
+_:b3	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Creator>	.
+_:b4	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VODataService/v1.0#WavebandOptical>	.
+_:b5	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"CDS support team"	.
+_:b5	<http://www.ivoa.net/xml/VOResource/v1.0#address>	"CDS, Observatoire de Strasbourg, 11 rue de l'Universite, F-67000 Strasbourg, France"	.
+_:b5	<http://www.ivoa.net/xml/VOResource/v1.0#email>	"question@simbad.u-strasbg.fr"	.
+_:b5	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Contact>	.
+_:b6	<http://www.ivoa.net/xml/VOResource/v1.0#name>	"Francois Ochsenbein [CDS]"	.
+_:b6	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Actor>	.
+_:b7	<http://www.ivoa.net/xml/VOResource/v1.0#identifier>	_:c2	.
+_:b7	<http://www.ivoa.net/xml/VOResource/v1.0#name>	"VizieR"	.
+_:b7	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Actor>	.
+_:b8	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#ResearchContentLevel>	.
+_:b9	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"http://vizier.u-strasbg.fr/cgi-bin/Cat?I/134/data"	.
+_:b9	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#FullAccessURL>	.
+_:c0	<http://www.ivoa.net/xml/VOResource/v1.0#format>	"bibcode"	.
+_:c0	<http://www.ivoa.net/xml/VOResource/v1.0#value>	"1978AbaOB..49...39S"	.
+_:c1	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#CatalogType>	.
+_:c2	<http://www.ivoa.net/xml/VOResource/v1.0#authorityID>	"CDS"	.
+_:c2	<http://www.ivoa.net/xml/VOResource/v1.0#resourceKey>	"VizieR"	.
+_:c2	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"ivo://CDS/VizieR"	.

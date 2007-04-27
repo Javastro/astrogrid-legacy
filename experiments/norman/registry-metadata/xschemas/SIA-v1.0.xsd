@@ -38,14 +38,31 @@
                            minOccurs="0" maxOccurs="unbounded">
                  <xs:annotation>
                    <xs:appinfo>
+                     <!-- This property is modelled by various subproperties
+                             of the vr:validationLevel property -->
+                     <x2s:propertyName>vr:validationLevel</x2s:propertyName>
+                     <x2s:multipleDomains
+                         equivalentProperty='vr:validationLevel'/>
                      <x2s:propertyRange>vr:Organization</x2s:propertyRange>
                    </xs:appinfo>
                  </xs:annotation>
                </xs:element>
                <xs:element name="description" type="xs:token" 
-                           minOccurs="0"/>
+                           minOccurs="0">
+                 <xs:annotation>
+                   <xs:appinfo>
+                     <x2s:multipleDomains equivalentProperty='vr:description'/>
+                   </xs:appinfo>
+                 </xs:annotation>
+               </xs:element>
                <xs:element name="interface" type="vr:Interface" 
-                           minOccurs="0" maxOccurs="unbounded"/>
+                           minOccurs="0" maxOccurs="unbounded">
+                 <xs:annotation>
+                   <xs:appinfo>
+                     <x2s:multipleDomains equivalentProperty='vr:interface'/>
+                   </xs:appinfo>
+                 </xs:annotation>
+               </xs:element>
             </xs:sequence>
             <xs:attribute name="standardID" type="vr:IdentifierURI"
                           use="required" fixed="ivo://ivoa.net/std/SIA">
@@ -129,6 +146,11 @@
                         The largest number of records that the Image Query web
                         method will return. 
                      </xs:documentation>
+                     <xs:appinfo>
+                       <x2s:multipleDomains
+                           equivalentProperty='reg:maxRecords'
+                           xmlns:reg="http://www.ivoa.net/xml/VORegistry/v1.0"/>
+                     </xs:appinfo>
                   </xs:annotation>
                </xs:element>
 
@@ -156,7 +178,8 @@
                  The maximum size in the longitude (R.A.) direction 
               </xs:documentation>
               <xs:appinfo>
-                <x2s:propertyName>skySizeLongitude</x2s:propertyName>
+                <x2s:multipleDomains/>
+                <!--<x2s:propertyName>skySizeLongitude</x2s:propertyName>-->
               </xs:appinfo>
            </xs:annotation>
          </xs:element>
@@ -166,7 +189,8 @@
                  The maximum size in the latitdude (Dec.) direction 
               </xs:documentation>
               <xs:appinfo>
-                <x2s:propertyName>skySizeLatitude</x2s:propertyName>
+                <x2s:multipleDomains/>
+                <!--<x2s:propertyName>skySizeLatitude</x2s:propertyName>-->
               </xs:appinfo>
            </xs:annotation>
          </xs:element>
@@ -174,12 +198,15 @@
    </xs:complexType>
 
    <xs:complexType name="SkyPos">
-      <xs:sequence>
+     <xs:sequence>
          <xs:element name="long" type="xs:double">
            <xs:annotation>
               <xs:documentation>
                  The sky position in the longitude (R.A.) direction 
               </xs:documentation>
+              <xs:appinfo>
+                <x2s:multipleDomains/>
+              </xs:appinfo>
            </xs:annotation>
          </xs:element>
          <xs:element name="lat" type="xs:double">
@@ -187,6 +214,9 @@
               <xs:documentation>
                  The sky position in the latitdude (Dec.) direction 
               </xs:documentation>
+              <xs:appinfo>
+                <x2s:multipleDomains/>
+              </xs:appinfo>
            </xs:annotation>
          </xs:element>
       </xs:sequence>
@@ -200,7 +230,8 @@
                  The image size in the longitude (R.A.) direction in pixels
               </xs:documentation>
               <xs:appinfo>
-                <x2s:propertyName>pixelLongitude</x2s:propertyName>
+                <x2s:multipleDomains/>
+                <!--<x2s:propertyName>pixelLongitude</x2s:propertyName>-->
               </xs:appinfo>
            </xs:annotation>
          </xs:element>
@@ -210,7 +241,8 @@
                  The image size in the latitdude (Dec.) direction in pixels
               </xs:documentation>
               <xs:appinfo>
-                <x2s:propertyName>pixelLatitude</x2s:propertyName>
+                <x2s:multipleDomains/>
+                <!--<x2s:propertyName>pixelLatitude</x2s:propertyName>-->
               </xs:appinfo>
            </xs:annotation>
          </xs:element>

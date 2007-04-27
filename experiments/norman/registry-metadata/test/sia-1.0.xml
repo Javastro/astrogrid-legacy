@@ -47,6 +47,7 @@
       NCSA Astronomy Digital Image Library
       </relatedResource></relationship>
     </content>
+    <rights>public</rights> <!-- added by hand: I _think_ this is the correct place -->
     <capability standardID="ivo://ivoa.net/std/SIA" xsi:type="sia:SimpleImageAccess">
       <validationLevel validatedBy="ivo://nvo.ncsa/registry">2</validationLevel>
       <interface role="std" xsi:type="vs:ParamHTTP">

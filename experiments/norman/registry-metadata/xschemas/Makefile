@@ -1,4 +1,5 @@
-LX=../../../code/lx/build/classes
+LX=$(CT)/code/lx/build/classes
+#LX=../../../code/lx/build/classes
 CWM=PYTHONPATH=/Volumes/Lagrange/Data/tools/cwm-cvs/lib/python2.3/site-packages /Volumes/Lagrange/Data/tools/cwm-cvs/bin/cwm
 JENA=$T/Jena-2.3
 
@@ -41,7 +42,7 @@ all: $(AUTOCONVERTIBLE:=.rdfs)
 %.eyeballed: %.rdfs
 	rm -f $@
 	../code/eyeball.sh \
-	  -assume owl ../rdfschemas/VOResource-1.0.owl VODataService-v1.0.rdfs \
+	  -assume $(T)/eyeball-2.0/mirror/owl.rdf ../rdfschemas/VOResource-1.0.owl VODataService-v1.0.rdfs \
 	  -check $< \
 	  >$@.tmp 2>&1 && mv $@.tmp $@
 #%.eyeballed: %.rdfs
@@ -56,6 +57,26 @@ all: $(AUTOCONVERTIBLE:=.rdfs)
 all-schemas.rdfs: $(AUTOCONVERTIBLE:=.rdfs)
 	rm -f $@
 	$(CWM) -pipe -rdf $(AUTOCONVERTIBLE:=.rdfs) >$@.tmp && mv $@.tmp $@
+
+# Produce a normalised test.nt from ../test/test.xsd.
+#test.xsd:
+#	ln -s ../test/test.xsd
+
+# Actually, only the first couple of elements in this pipeline are strictly
+# necessary, but I got a bit carried away converting it to N3....
+# It doesn't work in the presence of blank nodes.
+test-schema.n3: test-schema.rdfs
+	rm -f $@ $@.temp
+	CLASSPATH=`ls $(JENA)/lib/*.jar|sed -n '1,$$H;$${g;s/\n/:/gp;}'` \
+	  java jena.rdfcopy $< RDF/XML N-TRIPLE | \
+	  grep -v 'rdf-schema#comment' | \
+	  sed 's/  */	/g; s,<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>,a,; s,<http://www.w3.org/2000/01/rdf-schema#\([A-Za-z]*\)>,rdfs:\1,; s,<http://www.w3.org/1999/02/22-rdf-syntax-ns#\([A-Za-z]*\)>,rdf:\1,'| \
+	  sort | \
+	  awk 'BEGIN {printf "# Converted from $<"} {if ($$1 == PREV) {printf " ;\n\t%s\t%s", $$2, $$3;} else { printf " .\n\n%s\n\t%s\t%s", $$1, $$2, $$3; PREV=$$1; }} END {print " ."}' \
+	  >$@.temp && mv $@.temp $@
+
+check: test-schema.n3
+	diff test-schema.n3-correct test-schema.n3
 
 clean:
 	rm -f $(AUTOCONVERTIBLE:=.rdfs) all-schemas.*

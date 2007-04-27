@@ -80,14 +80,31 @@
                            minOccurs="0" maxOccurs="unbounded">
                  <xs:annotation>
                    <xs:appinfo>
+                     <!-- This property is modelled by various subproperties
+                             of the vr:validationLevel property -->
+                     <x2s:propertyName>vr:validationLevel</x2s:propertyName>
+                     <x2s:multipleDomains
+                         equivalentProperty='vr:validationLevel'/>
                      <x2s:propertyRange>vr:Organization</x2s:propertyRange>
                    </xs:appinfo>
                  </xs:annotation>
                </xs:element>
                <xs:element name="description" type="xs:token" 
-                           minOccurs="0"/>
+                           minOccurs="0">
+                 <xs:annotation>
+                   <xs:appinfo>
+                     <x2s:multipleDomains equivalentProperty='vr:description'/>
+                   </xs:appinfo>
+                 </xs:annotation>
+               </xs:element>
                <xs:element name="interface" type="vr:Interface" 
-                           minOccurs="0" maxOccurs="unbounded"/>
+                           minOccurs="0" maxOccurs="unbounded">
+                 <xs:annotation>
+                   <xs:appinfo>
+                     <x2s:multipleDomains equivalentProperty='vr:interface'/>
+                   </xs:appinfo>
+                 </xs:annotation>
+               </xs:element>
             </xs:sequence>
             <xs:attribute name="standardID" type="vr:IdentifierURI"
                           use="required" fixed="ivo://ivoa.net/std/Registry">
@@ -122,6 +139,11 @@
                         indicates that there is no explicit limit and
                         thus, continuation tokens are not supported.
                      </xs:documentation>
+                     <xs:appinfo>
+                       <x2s:multipleDomains
+                           equivalentProperty='sia:maxRecords'
+                           xmlns:sia="http://www.ivoa.net/xml/SIA/v1.0"/>
+                     </xs:appinfo>
                   </xs:annotation>
                </xs:element>
 
@@ -148,6 +170,11 @@
                         method will return.  A value of zero or less indicates
                         that there is no explicit limit.  
                      </xs:documentation>
+                     <xs:appinfo>
+                       <x2s:multipleDomains
+                           equivalentProperty='sia:maxRecords'
+                           xmlns:sia="http://www.ivoa.net/xml/SIA/v1.0"/>
+                     </xs:appinfo>
                   </xs:annotation>
                </xs:element>
 

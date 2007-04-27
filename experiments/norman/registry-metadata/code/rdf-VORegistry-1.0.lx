@@ -33,10 +33,15 @@
 
   (variable name: voreg-ns http://www.ivoa.net/xml/VORegistry/v1.0#)
 
-  ;; default template
-;;   (template *
-;;     (element name: "vorego:{local-name()}"
-;;              (apply-templates)))
+
+  ;; elements with simple content -- easy to handle
+  ;; ... but currently not needed
+;;   (template "date|description|logo|shortName|subject|version"
+;;       (element name: "voro:{local-name()}"
+;;                (apply-templates)))
+  (template "full|maxRecords"        ;simple content, to be normalised
+    (element name: "voro:{local-name()}"
+             (value-of "normalize-space()")))
 
   (template identifier
     (call-template name: make-identifier-uri
@@ -52,18 +57,18 @@
     (template voreg:Authority
       (rdf:type rdf:resource: {$voreg-ns}Authority)
       (call-template name: vores:Resource))
-    (template voreg:Registry
-      (rdf:type rdf:resource: {$voreg-ns}Registry)
-      (call-template name: vores:Service))
-    (template voreg:OAISOAP
-      (rdf:type rdf:resource: {$voreg-ns}OAISOAP)
-      (call-template name: vores:WebService))
-    (template voreg:OAIHTTP
-      (rdf:type rdf:resource: {$voreg-ns}OAIHTTP)
-      (call-template name: vores:Interface))
     (template voreg:Harvest
       (rdf:type rdf:resource: {$voreg-ns}Harvest)
       (call-template name: vores:Capability))
+    (template voreg:OAIHTTP
+      (rdf:type rdf:resource: {$voreg-ns}OAIHTTP)
+      (call-template name: vores:Interface))
+    (template voreg:OAISOAP
+      (rdf:type rdf:resource: {$voreg-ns}OAISOAP)
+      (call-template name: vores:WebService))
+    (template voreg:Registry
+      (rdf:type rdf:resource: {$voreg-ns}Registry)
+      (call-template name: vores:Service))
     (template voreg:Search
       (rdf:type rdf:resource: {$voreg-ns}Search)
       (call-template name: vores:Capability))
@@ -75,14 +80,14 @@
       (choose
        (when "$type='Authority'"
          (call-template name: voreg:Authority))
-       (when "$type='Registry'"
-         (call-template name: voreg:Registry))
+       (when "$type='Harvest'"
+         (call-template name: voreg:Harvest))
        (when "$type='OAISOAP'"
          (call-template name: voreg:OAISOAP))
        (when "$type='OAIHTTP'"
          (call-template name: voreg:OAIHTTP))
-       (when "$type='Harvest'"
-         (call-template name: voreg:Harvest))
+       (when "$type='Registry'"
+         (call-template name: voreg:Registry))
        (when "$type='Search'"
          (call-template name: voreg:Search)))))
 

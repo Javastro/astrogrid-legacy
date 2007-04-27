@@ -1,0 +1,190 @@
+<?xml version='1.0'?>
+<schema targetNamespace='http://example.org/test'
+        xmlns:me='http://example.org/test'
+        xmlns='http://www.w3.org/2001/XMLSchema'
+        xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" 
+        xmlns:x2s="http://ns.eurovotech.org/registry-metadata#"
+        elementFormDefault='unqualified'
+        attributeFormDefault='unqualified'
+        >
+
+  <annotation>
+    <documentation>
+      Test schema, which is intended to exemplify all the structures
+      present in the RM XSchemas which I aim/claim to support.
+      Examples are taken from VODataService-v1.0 (vods:).
+    </documentation>
+    <documentation>
+      We define the vr namespace above, because we refer to a couple
+      of elements in this namespace.
+    </documentation>
+  </annotation>
+
+  <import namespace="http://www.ivoa.net/xml/VOResource/v1.0"/>
+
+  <complexType name='TestSchema'>
+    <complexContent>
+      <extension base='vr:Resource'>
+        <sequence>
+          <element name='test-TSimple' type='me:TSimple'/>
+          <element name='test-TSimpleEnum' type='me:TSimpleEnum'/>
+          <element name='test-TCSimple' type='me:TCSimple'/>
+          <element name='test-TCSeq' type='me:TCSeq'/>
+          <element name='test-TCC' type='me:TCC'/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <simpleType name='TSimple'>
+    <annotation>
+      <documentation>As simple as it gets.
+      Eg: vods:ArrayShape
+      </documentation>
+    </annotation>
+    <restriction base='positiveInteger'/>
+  </simpleType>
+
+  <simpleType name='TSimpleEnum'>
+    <annotation>
+      <documentation>An enumeration.
+      Eg: vods:Waveband
+      </documentation>
+    </annotation>
+    <restriction base='string'>
+      <enumeration value='value1'/>
+      <enumeration value='value2'/>
+    </restriction>
+  </simpleType>
+
+  <complexType name='TCSimple'>
+    <annotation>
+      <documentation>Complex type with simple content.
+      Eg: vods:ServiceReference
+      </documentation>
+    </annotation>
+    <simpleContent>
+      <extension base='anyURI'>
+        <attribute name='ivo-id' type='vr:IdentifierURI'>
+          <annotation>
+            <documentation>
+              Special-cased type.
+              Eg: vods:ServiceReference/@ivo-id
+            </documentation>
+            <appinfo>
+              <x2s:objectRange/>
+            </appinfo>
+          </annotation>
+        </attribute>
+        <attribute name='tcsimple-simpleatt' type='me:TSimple'>
+          <annotation>
+            <documentation>
+              Attribute with simple type value.
+              Eg: vods:SimpleDataType/@arraysize
+            </documentation>
+            <appinfo>
+              <x2s:multipleDomains
+                  equivalentProperty='vr:accessURL'
+                  >See type TCC</x2s:multipleDomains>
+            </appinfo>
+          </annotation>
+        </attribute>
+        <attribute name='tcsimple-enum' type='me:TSimpleEnum'>
+          <annotation>
+            <documentation>
+              Attribute with enumeration.
+              Eg: vods:InputParam/@use
+            </documentation>
+          </annotation>
+        </attribute>
+      </extension>
+    </simpleContent>
+  </complexType>
+
+  <complexType name='TCSeq'>
+    <annotation>
+      <documentation>
+        Complex type with sequence content
+        Eg: vods:Coverage
+      </documentation>
+    </annotation>
+    <sequence>
+      <element name='tcseq-simple' type='me:TSimple'>
+        <annotation>
+          <documentation>
+            A simple type, and an explicit reference to this namespace 'me'.
+            Eg: vods:Coverage/@footprint
+          </documentation>
+        </annotation>
+      </element>
+      <!--
+      <element name='tcseq-csimple' type='TCSimple'>
+        <annotation>
+          <documentation>
+            A complex type, with no explicit namespace.
+          </documentation>
+        </annotation>
+      </element>
+      -->
+      <element name='tcseq-oddrange' type='vr:Validation'>
+        <annotation>
+          <documentation>
+            Element with non-default range.
+            Eg: sia:SIACapRestriction/@validationLevel
+          </documentation>
+          <appinfo>
+            <x2s:propertyRange>vr:Organization</x2s:propertyRange>
+          </appinfo>
+        </annotation>
+      </element>
+      <element ref='vr:DataCollection'>
+        <annotation>
+          <documentation>
+            A reference to an element in another namespace.
+            Eg: vods:Coverage/@stc:STCResourceProfile
+          </documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+
+  <complexType name='TCC'>
+    <annotation>
+      <documentation>
+        Complex type with complexContent, extending a type in this namespace.
+        Eg: vods:DataCollection
+      </documentation>
+    </annotation>
+    <complexContent>
+      <extension base='me:TCSeq'>
+        <sequence>
+          <attribute name='tcsimple-simpleatt' type='me:TSimple'>
+            <annotation>
+              <documentation>
+                An element with multiple domains: see TCSimple.
+                Eg: vods:DataCollection/instrument
+              </documentation>
+              <appinfo>
+                <x2s:multipleDomains/>
+              </appinfo>
+            </annotation>
+          </attribute>
+          <element name='tcc-simple' type='me:TSimple'/>
+          <element name='tcc-facility' type='vr:ResourceName'>
+            <annotation>
+              <appinfo>
+                <x2s:multipleDomains equivalentProperty='vr:facility'/>
+              </appinfo>
+            </annotation>
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <!--
+  <element name='eSimple' type='TSimple'/>
+  <element name='eCSimple' type='TCSimple'/>
+  -->
+
+</schema>

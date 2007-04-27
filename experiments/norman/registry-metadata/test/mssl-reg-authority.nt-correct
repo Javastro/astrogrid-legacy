@@ -1,5 +1,4 @@
 <ivo://mssl.ucl.ac.uk>	<http://www.ivoa.net/xml/VORegistry/v1.0#managingOrg>	_:0	.
-<ivo://mssl.ucl.ac.uk>	<http://www.ivoa.net/xml/VORegistry/v1.0#type>	"Authority"	.
 <ivo://mssl.ucl.ac.uk>	<http://www.ivoa.net/xml/VOResource/v1.0#content>	_:1	.
 <ivo://mssl.ucl.ac.uk>	<http://www.ivoa.net/xml/VOResource/v1.0#created>	"2007-01-24T15:02:29"	.
 <ivo://mssl.ucl.ac.uk>	<http://www.ivoa.net/xml/VOResource/v1.0#curation>	_:2	.
@@ -9,24 +8,24 @@
 <ivo://mssl.ucl.ac.uk>	<http://www.ivoa.net/xml/VOResource/v1.0#updated>	"2007-01-24T15:02:29"	.
 <ivo://mssl.ucl.ac.uk>	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VORegistry/v1.0#Authority>	.
 <ivo://mssl.ucl.ac.uk>	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Resource>	.
-_:0	<http://www.ivoa.net/xml/VOResource/v1.0#identifier>	_:5	.
-_:0	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VORegistry/v1.0#Authority>	.
-_:1	<http://www.ivoa.net/xml/VOResource/v1.0#description>	"mssl publishing registry"	.
+_:0	<http://www.ivoa.net/xml/VOResource/v1.0#identifier>	_:7	.
+_:0	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VORegistry/v1.0#Resource>	.
+_:1	<http://www.ivoa.net/xml/VORegistry/v1.0#description>	"mssl publishing registry"	.
 _:1	<http://www.ivoa.net/xml/VOResource/v1.0#referenceURL>	_:8	.
 _:1	<http://www.ivoa.net/xml/VOResource/v1.0#subject>	"Authority"	.
 _:1	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#ContentDescription>	.
-_:2	<http://www.ivoa.net/xml/VOResource/v1.0#contact>	_:6	.
-_:2	<http://www.ivoa.net/xml/VOResource/v1.0#publisher>	_:7	.
+_:2	<http://www.ivoa.net/xml/VOResource/v1.0#contact>	_:5	.
+_:2	<http://www.ivoa.net/xml/VOResource/v1.0#publisher>	_:6	.
 _:3	<http://www.ivoa.net/xml/VOResource/v1.0#authorityID>	"mssl.ucl.ac.uk"	.
 _:3	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"ivo://mssl.ucl.ac.uk"	.
 _:4	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#ActiveStatus>	.
-_:5	<http://www.ivoa.net/xml/VOResource/v1.0#authorityID>	"mssl.ucl.ac.uk"	.
-_:5	<http://www.ivoa.net/xml/VOResource/v1.0#resourceKey>	"organisation"	.
-_:5	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"ivo://mssl.ucl.ac.uk/organisation"	.
-_:6	<http://www.ivoa.net/xml/VOResource/v1.0#email>	"kmb@mssl.ucl.ac.uk"	.
-_:6	<http://www.ivoa.net/xml/VOResource/v1.0#name>	"Kevin Benson"	.
-_:6	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Contact>	.
-_:7	<http://www.ivoa.net/xml/VOResource/v1.0#name>	"MSSL"	.
-_:7	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Actor>	.
+_:5	<http://www.ivoa.net/xml/VODataService/v1.0#name>	"Kevin Benson"	.
+_:5	<http://www.ivoa.net/xml/VOResource/v1.0#email>	"kmb@mssl.ucl.ac.uk"	.
+_:5	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Contact>	.
+_:6	<http://www.ivoa.net/xml/VOResource/v1.0#name>	"MSSL"	.
+_:6	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#Actor>	.
+_:7	<http://www.ivoa.net/xml/VOResource/v1.0#authorityID>	"mssl.ucl.ac.uk"	.
+_:7	<http://www.ivoa.net/xml/VOResource/v1.0#resourceKey>	"organisation"	.
+_:7	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"ivo://mssl.ucl.ac.uk/organisation"	.
 _:8	<http://www.ivoa.net/xml/VOResource/v1.0#uri>	"http://mssl.ucl.ac.uk"	.
 _:8	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://www.ivoa.net/xml/VOResource/v1.0#FullAccessURL>	.

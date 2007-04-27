@@ -4,6 +4,7 @@
            xmlns="http://www.w3.org/2001/XMLSchema" 
            xmlns:xs="http://www.w3.org/2001/XMLSchema" 
            xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" 
+           xmlns:x2s="http://ns.eurovotech.org/registry-metadata#"
            elementFormDefault="qualified"
            version="1.0">
            
@@ -28,7 +29,13 @@
                <xs:element ref="ri:Resource"
                            minOccurs="0" maxOccurs="unbounded"/>
                <xs:element name="identifier" type="vr:IdentifierURI" 
-                           minOccurs="0" maxOccurs="unbounded"/>
+                           minOccurs="0" maxOccurs="unbounded">
+                 <xs:annotation>
+                   <xs:appinfo>
+                     <x2s:multipleDomains equivalentProperty='vr:identifier'/>
+                   </xs:appinfo>
+                 </xs:annotation>
+               </xs:element>
              </xs:choice>
          </xs:sequence>
          <xs:attribute name="from" type="xs:positiveInteger" use="required" />
