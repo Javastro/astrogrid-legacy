@@ -22,9 +22,12 @@
 4	2	http://www.ivoa.net/xml/VORegistry/v1.0					http://www.ivoa.net/xml/VORegistry/VORegistry-v1.0.xsd															VORegistry-v1.0.xsd
 4	0	http://www.ivoa.net/xml/VOResource/v0.10					http://software.astrogrid.org/schema/vo-resource-types/VOResource/v0.10/VOResource.xsd								VOResource-v0.10.xsd
 4	1	http://www.ivoa.net/xml/VOResource/v1.0					http://www.ivoa.net/xml/VOResource/VOResource-v1.0.xsd														VOResource-v1.0.xsd
+		http://www.ivoa.net/xml/STC/stc-v1.30.xsd				http://www.ivoa.net/xml/STC/stc-v1.30.xsd																	stc-v1.30.xsd
 		urn:astrogrid:schema:TableMetaDoc:v1						http://software.astrogrid.org/schema/dsa/DSAMetadoc/v1.0/TableMetaDoc.xsd										TableMetaDoc-1.0.xsd
 		urn:astrogrid:schema:dsa:TableMetaDoc:v0.2					http://software.astrogrid.org/schema/dsa/DSAMetadoc/v0.2/TableMetaDoc.xsd										TableMetaDoc-0.2.xsd
 4	2	urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3		http://www.astrogrid.org/viewcvs/astrogrid/contracts/src/schema/vo-resource-types/TabularDB/v0.3/TabularDB.xsd
+		urn:astrogrid:schema:RegistryStoreResource:v1				???
+		urn:astrogrid:schema:StoreResources:v1					???
 
 | 0 I won't produce anything for these (superseded versions, which aren't the target of a conversion)
 | 1 Done by hand, in rdfschemas/VOResource-1.0.owl
