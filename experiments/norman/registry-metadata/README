@@ -78,15 +78,14 @@ Substantial hierarchical structure added.
 
 ** Capability
 
-I've just removed this, and added standardID property to the Service
-class.  The .xsd comment says `this type is usually extended and added
-as a child of the specific Service subclass', so I might as well
-support that directly.  The v1.0 VOResource spec has more to say on
-capabilities and Service in Section 2.2.2, so I should examine that
-carefully.
-
-I've made the 'standardID' property have a domain of FullAccessURL,
-rather than be a AnyURI datatype property.
+Following is FALSE (I think, unless I'm missing something)
+# I've just removed this, and added standardID property to the Service
+# class.  The .xsd comment says `this type is usually extended and added
+# as a child of the specific Service subclass', so I might as well
+# support that directly.  The v1.0 VOResource spec has more to say on
+# capabilities and Service in Section 2.2.2, so I should examine that
+# carefully.  I've made the 'standardID' property have a domain of
+# FullAccessURL, rather than be a AnyURI datatype property.
 
 ** Identifier
 
