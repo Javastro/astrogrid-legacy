@@ -2,6 +2,10 @@
  * Thrown-together program to extract all the namespaces declared in a
  * given XML file.  It includes a --generate-xslt option which
  * spits out XSLT which should be able to process the input file.
+ *
+ * In fact, this program should probably be abandoned, in favour of
+ * extensions to make-convert-root.lx (see notes at the top of that).
+ * If so, then make-ExtractNamespaces-content.xslt should go as well.
  */
 
 import java.io.File;
@@ -207,7 +211,7 @@ public class ExtractNamespaces {
             "Options:",
             "  --extract           extract the list of namespaces",
             "  --generate-xslt     generate an xslt script",
-            "  --indent            indent the output (when generating scripts)"
+            "  --indent            indent the output (when generating scripts)",
             "  --verbose/--quiet   regulate chatter",
         };
         for (int i=0; i<doc.length; i++)
