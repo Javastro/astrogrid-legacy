@@ -75,16 +75,17 @@ public class MyspaceWriter {
 	StarTable starTable;
 	TableInfo []tabInfo;
 	
-	logger.warn("Inside processObjectToWrite"); 
+	logger.warn("Inside processObjectToWrite parentdirectoryURI = " + parentDirectoryURI.toString() + " and resultName = " + resultName); 
 	//SemanticMarkup markup = resultValue.getMetadataForObject(resultValue, false);
 	if(resultValue instanceof String) {
 		logger.warn("seems to be a string check for url just in case");
 		try {
 			checkURL = new URL((String)resultValue);
-			logger.warn("it is a url so write the url to myspace");
+			logger.warn("it is a url so write the url to myspace url = " + checkURL.toString());
 			fileURI = myspace.createChildFile(parentDirectoryURI, resultName + "_" + String.valueOf(System.currentTimeMillis()));
 			logger.warn("url to copy = " + checkURL.toString() + " to URI in myspace = " + fileURI.toString());
 			myspace.copyURLToContent(checkURL, fileURI);
+			logger.warn("checking processvotables = " + processVOTables);
 			if(processVOTables) {
 				savedVOTableURIs.add(fileURI);
 				starTable = getStarTable(checkURL);
@@ -96,8 +97,10 @@ public class MyspaceWriter {
 					}//for
 				}//for
 			}else {
-				savedURIs.add(fileURI);
+				logger.warn("adding to vector savedURI the uri = " + fileURI.toString());
+				savedURIs.add(fileURI.toString());
 			}
+			logger.warn("doing a return");
 			return;
 		}catch(MalformedURLException me) {
 			//doesn't matter.

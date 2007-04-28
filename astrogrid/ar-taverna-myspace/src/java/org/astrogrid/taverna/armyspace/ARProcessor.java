@@ -67,13 +67,13 @@ public class ARProcessor extends Processor implements Serializable {
 			}else if(name.equals("Fetch")) {
 				describeRecurseDirectories();
 				describeVOTableFetch();
-				describeMapPort();
+				//describeMapPort();
 				describeResultList();
 				describeResultListValue();
 			}else if(name.equals("Fetch_String_Content")) {
 				describeRecurseDirectories();
 				describeVOTableFetch();
-				describeMapPort();
+				//describeMapPort();
 				describeResultList();
 				describeResultListValue();
 			}
@@ -131,6 +131,7 @@ public class ARProcessor extends Processor implements Serializable {
 		InputPort input = new InputPort(this,"Recurse Directories");
 		List mimes = new ArrayList();
 		mimes.add("text/plain");
+		input.setDefaultValue("false");
 		input.getMetadata().setMIMETypes(mimes);
 		input.setSyntacticType(computeType(java.lang.String.class,mimes));
 		this.addPort(input);
@@ -140,6 +141,7 @@ public class ARProcessor extends Processor implements Serializable {
 		InputPort input = new InputPort(this,"Only VOTables");
 		List mimes = new ArrayList();
 		mimes.add("text/plain");
+		input.setDefaultValue("false");
 		input.getMetadata().setMIMETypes(mimes);
 		input.setSyntacticType(computeType(java.lang.String.class,mimes));
 		this.addPort(input);

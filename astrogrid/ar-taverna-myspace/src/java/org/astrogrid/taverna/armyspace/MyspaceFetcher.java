@@ -69,11 +69,12 @@ public class MyspaceFetcher {
 				if(!discoverStringsOnly && !discoverVOTableOnly) {
 					//great user just wants to read everything found as binary.
 					resultMap.put(nodeInfo.getName() + "-" + nodeInfo.getId().toString(), myspace.readBinary(nodeInfo.getId()));	
-				}else if(!discoverStringsOnly && !discoverVOTableOnly) {
+				}else if(!discoverStringsOnly && discoverVOTableOnly) {
 					byte []binContents = myspace.readBinary(nodeInfo.getId());
 					temp = new String(binContents,0,300);
 					if(temp.indexOf("VOTABLE") != -1) {
-						resultMap.put(nodeInfo.getName() + "-" + nodeInfo.getId(),binContents);
+						//resultMap.put(nodeInfo.getName() + "-" + nodeInfo.getId(),binContents);
+						resultMap.put(nodeInfo.getName() + "-" + nodeInfo.getId(),new String(binContents));
 					}
 				}else if(discoverStringsOnly && !discoverVOTableOnly) {
 					attrIter = nodeInfo.getAttributes().keySet().iterator();

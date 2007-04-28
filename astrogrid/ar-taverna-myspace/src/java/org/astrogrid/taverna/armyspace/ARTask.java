@@ -102,6 +102,7 @@ public class ARTask implements ProcessorTaskWorker {
 				MyspaceWriter mw = new MyspaceWriter(myspace);
 				savedOutput = mw.writeObject(mainInputObj,new URI(myspaceDirectory),"FromTaverna");
 				uriVector = (Vector)savedOutput.get(0);
+				logger.warn("urivector size = " + uriVector.size());
 				outputMap.put("Myspace URI List",DataThingFactory.bake(uriVector));				
 		    }else if(name.equals("Save_For_VOTables")) {
 			    mainInputObj = ((DataThing)arg0.get("Object or List")).getDataObject();		    	
@@ -124,7 +125,11 @@ public class ARTask implements ProcessorTaskWorker {
 		    	MyspaceFetcher mf = new MyspaceFetcher(myspace);
 		    	resultMap = mf.fetchObjects(myspaceDirectory,Boolean.parseBoolean(recurseDir),false,Boolean.parseBoolean(votableOnly));
 		    	//Outputport name = ""Map of Results"
-		    	outputMap.put("Map of Results", DataThingFactory.bake(resultMap));
+		    	//outputMap.put("Map of Results", DataThingFactory.bake(resultMap));
+		    	logger.warn("fetched everything bake the outputmap = " + resultMap.size());
+		    	if(resultMap.size() > 0) {
+		    		//logger.warn()
+		    	}
 		    	outputMap.put("ResultListName", DataThingFactory.bake(new ArrayList(resultMap.keySet())));
 		    	outputMap.put("ResultListValue",DataThingFactory.bake(new ArrayList(resultMap.values())));
 		    	
@@ -133,7 +138,7 @@ public class ARTask implements ProcessorTaskWorker {
 		    	votableOnly = (String)((DataThing)arg0.get("Only VOTables")).getDataObject();
 		    	MyspaceFetcher mf = new MyspaceFetcher(myspace);
 		    	resultMap = mf.fetchObjects(myspaceDirectory,Boolean.parseBoolean(recurseDir),true,Boolean.parseBoolean(votableOnly));
-		    	outputMap.put("Map of Results", resultMap);
+		    	//outputMap.put("Map of Results", resultMap);
 		    	outputMap.put("ResultListName", new ArrayList(resultMap.keySet()));
 		    	outputMap.put("ResultListValue", new ArrayList(resultMap.values()));
 		    }
