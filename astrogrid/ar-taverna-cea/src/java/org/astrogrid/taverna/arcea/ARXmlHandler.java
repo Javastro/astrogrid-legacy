@@ -33,9 +33,9 @@ public class ARXmlHandler implements XMLHandler {
 	 * method returns the element rooted at the 'soaplabwsdl' element.
 	 */
 	public Element elementForFactory(ProcessorFactory arg0) {
-		logger.warn("elementForFactory");
+		logger.warn("cea elementForFactory");
 		ARProcessorFactory arpf = (ARProcessorFactory)arg0;		
-		return getElement(arpf.getCeaAppIvorn(),arpf.getCeaServiceIvorn(),arpf.getCeaInterface());
+		return getElement(arpf.getName());
 	}
 	
 	/**
@@ -45,23 +45,34 @@ public class ARXmlHandler implements XMLHandler {
 	 * implementation straight off to get factory specific data out.
 	 */
 	public Element elementForProcessor(Processor arg0) {
-		logger.warn("start elementForProcessor in ARXmlHandler");
+		logger.warn("cea start elementForProcessor in ARXmlHandler");
 		ARProcessor arp = (ARProcessor)arg0;
-		return getElement(arp.getCeaAppIvorn(),arp.getCeaServiceIvorn(),arp.getCeaInterface());
+		return getElement(arp.getName());
 	}
+	
+    private Element getElement(String name) {
+		logger.warn("cea ARXmlHandler.getElement name = " + name);
+
+        Element spec = new Element("astroruntimecea", XScufl.XScuflNS);
+        Element arNameElement = new Element("ceaname",
+                XScufl.XScuflNS);
+        arNameElement.setText(name);
+        spec.addContent(arNameElement);
+        return spec;
+    }	
 	
 	
     /*
      * 
      */
     private Element getElement(URI ceaAppIvorn, URI ceaServiceIvorn, String ceaInterface) {
-    	logger.warn("getElement uris");
+    	logger.warn("cea getElement uris");
     	return getElement(ceaAppIvorn.toString(), ceaServiceIvorn.toString(),ceaInterface);
     	
     }
     
     private Element getElement(String ceaAppIvorn, String ceaServiceIvorn, String ceaInterface) {
-    	logger.warn("getEleent strings");
+    	logger.warn("cea getEleent strings");
         Element spec = new Element("astroruntimecea", XScufl.XScuflNS);
         
         /*
@@ -69,7 +80,6 @@ public class ARXmlHandler implements XMLHandler {
                 XScufl.XScuflNS);
         ceaMethodName.setText(ceaMethodName);
         spec.addContent(ceaMethodName);
-        */
 
         Element ceaAppIvornElement = new Element("ceaAppIvorn",
                 XScufl.XScuflNS);
@@ -85,6 +95,7 @@ public class ARXmlHandler implements XMLHandler {
                 XScufl.XScuflNS);
         ceaInterfaceElement.setText(ceaInterface);
         spec.addContent(ceaInterfaceElement);  
+        */
 
         return spec;
     }
@@ -95,7 +106,8 @@ public class ARXmlHandler implements XMLHandler {
 	 * when it's invoked
 	 */
 	public ProcessorFactory getFactory(Element specElement) {
-		logger.warn("start getFactory in ARXmlHandler");
+		logger.warn("cea start getFactory in ARXmlHandler");
+		/*
 		Element astroElement = specElement.getChild("astroruntimecea",
                 XScufl.XScuflNS);
 		
@@ -108,35 +120,27 @@ public class ARXmlHandler implements XMLHandler {
 		String ceaServiceIvorn = ceaServiceElement.getTextTrim();		
 		Element ceaInterfaceElement = astroElement.getChild("ceaInterface",
                 XScufl.XScuflNS);
-		String ceaInterface = ceaInterfaceElement.getTextTrim();		
-		//@todo add array bounds checking.
-		try {
-			//hmm I suspect i could just call getACR() I just want to make sure
-			//acr is running (I think)
-			//or should I actually below really check it is still there and did not become
-			//inactive or deleted
-			SingletonACR.listApps();
-		} catch (ACRException x) {
-			// all goes tits up.
-			return null;
-		}
-		
-		return new ARProcessorFactory(ceaAppIvorn,ceaServiceIvorn,ceaInterface);
+		String ceaInterface = ceaInterfaceElement.getTextTrim();
+		*/		
+		//@todo add array bounds checking.		
+		return new ARProcessorFactory("DSA");
 	}
 	/**
 	 * Create a new processor from the given chunk of XML
 	 */
 	public Processor loadProcessorFromXML(Element specElement
 				, ScuflModel model, String name) throws ProcessorCreationException, DuplicateProcessorNameException, XScuflFormatException {
-		logger.warn("start loadProcessorFromXML in ARXmlHandler the name = " + name);
+		logger.warn("cea start loadProcessorFromXML in ARXmlHandler the name = " + name);
 
 		//hmmm I wonder can I just take the name and split it
 		//because I know it is unique with token '!!!!' seperating out the
 		//appviorn||||interface||||serviceivorn oh well 
 		//lets just get it from the processorNode should be more certain
 		//check the logs later that will tell me the answer.
+		/*
 		Element astroElement = specElement.getChild("astroruntimecea",
                 XScufl.XScuflNS);
+		
 		Element ceaAppIvornElement = astroElement.getChild("ceaAppIvorn",
 	                XScufl.XScuflNS);
 	    String ceaAppIvorn = ceaAppIvornElement.getTextTrim();
@@ -148,8 +152,8 @@ public class ARXmlHandler implements XMLHandler {
 		Element ceaInterfaceElement = astroElement.getChild("ceaInterface",
 	            XScufl.XScuflNS);
 		String ceaInterface = ceaInterfaceElement.getTextTrim();		
-			
-		ARProcessor theProcessor = new ARProcessor(model, ceaAppIvorn, ceaServiceIvorn, ceaInterface);
+			*/
+		ARProcessor theProcessor = new ARProcessor(model, "DSA");
 		logger.info("end loadProcessorFromXML in ARXmlHandler");
 		return theProcessor;
 	}

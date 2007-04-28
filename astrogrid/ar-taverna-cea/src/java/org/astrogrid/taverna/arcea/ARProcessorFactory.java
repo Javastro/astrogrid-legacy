@@ -30,7 +30,7 @@ public class ARProcessorFactory extends ProcessorFactory {
 	 * 
 	 */
 	public ARProcessorFactory(String ceaType) {
-		logger.warn("start constructor in ARProcessorFactory");
+		logger.warn("cea start constructor in ARProcessorFactory");
 		setName(ceaType);
 		logger.warn("done with arprocessorfactory");
 	}

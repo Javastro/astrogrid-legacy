@@ -48,7 +48,7 @@ public class ARProcessor extends Processor implements Serializable {
 		
 	public ARProcessor(ScuflModel model, String name) throws ProcessorCreationException, DuplicateProcessorNameException {
 		super(model,name);
-		logger.warn("in ARProcessor constructor and doing setDescription");
+		logger.warn("cea in ARProcessor constructor and doing setDescription");
 		try {
 
 			if(name.equals("DSA")) {
@@ -56,57 +56,106 @@ public class ARProcessor extends Processor implements Serializable {
 				describeDSAOutputs();
 			}
 			
-			setDescription("Cea");
-		}catch(NotFoundException e) {
+			setDescription("DSA");
+		}/*catch(NotFoundException e) {
 			e.printStackTrace();
 			throw new ProcessorCreationException(e);
-		}catch (PortCreationException e) {
+		}*/catch (PortCreationException e) {
 			e.printStackTrace();
 			throw new ProcessorCreationException(e);
 		}catch (DuplicatePortNameException e) {
 			e.printStackTrace();
 			throw new ProcessorCreationException(e);
-		}catch (java.net.URISyntaxException e) {
+		}/*catch (java.net.URISyntaxException e) {
 			e.printStackTrace();
 			throw new ProcessorCreationException(e);
 		}catch(ACRException e) {
 			e.printStackTrace();
 			throw new ProcessorCreationException(e);
-		}
+		}*/
 		logger.info("done with constructor of ARProcessor");
 	}
 	
+	
+	public void setChosenDirectoryURIADQL(String dirURI) {
+		InputPort []ips =  this.getInputPorts();
+		for(int j = 0;j < ips.length;j++) {
+			if(ips[j].getName().equals("Query")) {
+				logger.warn("try setting the new defaultvalue for input port");
+				ips[j].setDefaultValue(dirURI);
+				j = ips.length;
+			}
+		}
+	}
+	
+	public void setChosenDirectoryURIResult(String dirURI) {
+		InputPort []ips =  this.getInputPorts();
+		for(int j = 0;j < ips.length;j++) {
+			if(ips[j].getName().equals("Optional Result Saved")) {
+				logger.warn("try setting the new defaultvalue for input port");
+				ips[j].setDefaultValue(dirURI);
+				j = ips.length;
+			}
+		}
+	}	
+	
 	private void describeDSAOutputs() throws PortCreationException, DuplicatePortNameException {
-		OutputPort resList = new OutputPort(this,"ResultListName");
+		OutputPort resList = new OutputPort(this,"ResultList");
 		resList.getMetadata().setDescription("XML Content as a List");
 		List mimes = new ArrayList();
 		mimes.add("java/"+java.util.List.class.getName());
 		resList.getMetadata().setMIMETypes(mimes); 
 		resList.setSyntacticType(computeType(java.util.List.class,mimes));
 		this.addPort(resList);
+		
+		OutputPort resListID = new OutputPort(this,"ExecutionID");
+		resListID.getMetadata().setDescription("Execution ID");
+		List mimeID = new ArrayList();
+		mimeID.add("text/plain");
+		resListID.getMetadata().setMIMETypes(mimeID);
+		resListID.setSyntacticType(computeType(java.lang.String.class,mimeID));
+		this.addPort(resListID);
 	}	
 	
 	
 	private void describeDSAInputs() throws PortCreationException, DuplicatePortNameException {
 		List mimesText = new ArrayList();
 		mimesText.add("text/plain");
-		InputPort inputIvorn = new InputPort(this,"Ivorn");
+		InputPort inputIvorn = new InputPort(this,"CeaApp Ivorn");
 		inputIvorn.getMetadata().setMIMETypes(mimesText);
 		inputIvorn.setSyntacticType(computeType(java.lang.String.class,mimesText));
 		this.addPort(inputIvorn);
 		
+		InputPort inputIvornCeaService = new InputPort(this,"Optional CeaService Ivorn");
+		inputIvornCeaService.setOptional(true);
+		inputIvornCeaService.getMetadata().setMIMETypes(mimesText);
+		inputIvornCeaService.setSyntacticType(computeType(java.lang.String.class,mimesText));
+		this.addPort(inputIvornCeaService);
 		
-		InputPort input = new InputPort(this,"ADQL Queries");
-		List mimes = new ArrayList();
-		mimes.add("java/"+java.util.List.class.getName());
-		input.getMetadata().setMIMETypes(mimes);
-		input.setSyntacticType(computeType(java.util.List.class,mimes));
+
+		InputPort inputInterface = new InputPort(this,"Interface Name");
+		inputInterface.setOptional(true);
+		inputInterface.getMetadata().setMIMETypes(mimesText);
+		inputInterface.setSyntacticType(computeType(java.lang.String.class,mimesText));
+		inputInterface.setDefaultValue("adql");
+		this.addPort(inputInterface);		
+		
+		InputPort input = new InputPort(this,"Query");
+		input.getMetadata().setMIMETypes(mimesText);
+		input.setSyntacticType(computeType(java.lang.String.class,mimesText));
 		this.addPort(input);
 
 		InputPort inputFormat = new InputPort(this,"Format");
 		inputFormat.getMetadata().setMIMETypes(mimesText);
+		inputFormat.setDefaultValue("VOTABLE");
 		inputFormat.setSyntacticType(computeType(java.lang.String.class,mimesText));
 		this.addPort(inputFormat);
+		
+		InputPort inputCeaResult = new InputPort(this,"Optional Result Saved");
+		inputCeaResult.setOptional(true);
+		inputCeaResult.getMetadata().setMIMETypes(mimesText);
+		inputCeaResult.setSyntacticType(computeType(java.lang.String.class,mimesText));
+		this.addPort(inputCeaResult);		
 	}
 	
 	
@@ -117,7 +166,7 @@ public class ARProcessor extends Processor implements Serializable {
 	 * luckily, the number of different return types is quite limited.
 	 * @param vd
 	 * @return
-	 */
+	
 	private String computeType(ParameterBean pb, List mimes) {
 		//Class type = pb.getType();
 		String type = pb.getType();
@@ -134,6 +183,7 @@ public class ARProcessor extends Processor implements Serializable {
 		sb.append("'");		
 		return sb.toString();
 	}
+	 */
 	
 	/**
 	 * computes the correct type denotation for taverna.
@@ -196,6 +246,7 @@ public class ARProcessor extends Processor implements Serializable {
 	    }
 
 	
+	/*
 	private List computeMimes(ParameterBean pb) {
 		// Primitive types are all single strings as far as we're concerned...
 		List mimes = new ArrayList();
@@ -216,11 +267,7 @@ public class ARProcessor extends Processor implements Serializable {
 		    	mimes.add("text/votable"); // probably.		   
 		}else if(javaType.equals("fits")) {
 			mimes.add("image/fits");
-			/*
-			 * else if(javaType.equals("binary")) {
-			
-				}
-			 */
+		
 		}
 		else {
 			 mimes.add("text/plain");
@@ -229,15 +276,16 @@ public class ARProcessor extends Processor implements Serializable {
 		}
 		return mimes;
 	    }
+	    */
 	
 	public Properties getProperties() {
 		Properties props = new Properties();
-		props.put("Method name",getMethodName());
+		props.put("Method name",getName());
 		return props;
 	}
 	
 	public String toString() {
-		return getMethodName();
+		return getName();
 	}
 	
 	// allows up to 10 concurrent threads.

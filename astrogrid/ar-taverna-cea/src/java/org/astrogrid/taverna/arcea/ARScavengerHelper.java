@@ -34,7 +34,7 @@ public class ARScavengerHelper implements ScavengerHelper {
 					s.addScavenger(new ARScavenger());
 				} catch (ScavengerCreationException x) {
 					JOptionPane.showMessageDialog(null,
-							"Unable to connect to AR!\n" + x.getMessage()
+							"Unable to connect to AR-DSA!\n" + x.getMessage()
 							, "Failure"
 							,JOptionPane.ERROR_MESSAGE);
 				}
@@ -44,7 +44,7 @@ public class ARScavengerHelper implements ScavengerHelper {
 	}
 
 	public String getScavengerDescription() {
-		return "Connect to AR-CEA";
+		return "Connect to AR-DSA";
 	}
 	
 	/**
@@ -54,18 +54,16 @@ public class ARScavengerHelper implements ScavengerHelper {
 		return new ARProcessorInfoBean().icon();
 	}	
 	
-	
     public Set<Scavenger> getDefaults() {
 		Set<Scavenger> result = new HashSet<Scavenger>();
 		try {
 			result.add(new ARScavenger());
 		} catch (ScavengerCreationException x) {
 			JOptionPane.showMessageDialog(null,
-					"Unable to connect to AR!\n" + x.getMessage()
+					"Unable to connect to AR-DSA!\n" + x.getMessage()
 					, "Failure"
 					,JOptionPane.ERROR_MESSAGE);
 		}
-			
 		return result;
 	}	
     

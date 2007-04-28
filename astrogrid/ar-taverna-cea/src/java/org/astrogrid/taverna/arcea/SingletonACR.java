@@ -6,8 +6,10 @@ package org.astrogrid.taverna.arcea;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.builtin.ACR;
+import org.astrogrid.acr.dialogs.ResourceChooser;
 import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.CeaApplication;
+import org.astrogrid.acr.astrogrid.Myspace;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.NotFoundException;
 import java.util.Hashtable;
@@ -41,5 +43,19 @@ public class SingletonACR {
 			theInstance = f.find();
 		}
 		return theInstance;
-	}	
+	}
+	
+	public static synchronized URI getURI(String title) throws ACRException {
+		ACR acr = getACR();
+		ResourceChooser rc = (ResourceChooser)acr.getService(ResourceChooser.class);
+		URI chosenRes = rc.chooseResource(title,true);
+		return chosenRes;
+	}
+	
+	public static synchronized Myspace getMyspace() throws ACRException {
+		ACR acr = getACR();
+		Myspace myspace = (Myspace)acr.getService(Myspace.class);
+		return myspace;
+	}
+	
 }

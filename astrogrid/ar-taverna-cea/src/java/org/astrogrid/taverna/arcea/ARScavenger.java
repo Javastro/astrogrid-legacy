@@ -34,29 +34,27 @@ public class ARScavenger extends Scavenger {
 	 * @throws ScavengerCreationException 
 	 */
 	public ARScavenger() throws ScavengerCreationException {
-		super("Astro Runtime CEA");
+		super("Astro Runtime DSA");
 		logger.info("start constructor in ARScavenger");
-		makeCEAAppTree();
+		makeDSAAppTree();
 	}
 	
 	
 	/** alternate implementation of listApi */
-	private void makeCEAAppTree() throws ScavengerCreationException {
-		try {
-			logger.warn("start makeCEAAppTree in ARScavenger");
-			Hashtable apps = SingletonACR.listApps();
-			logger.warn("done with SingletonACR.listApps");
-			DefaultMutableTreeNode moduleNode = new DefaultMutableTreeNode("CEA Tree");
-			DefaultMutableTreeNode serviceNode = new DefaultMutableTreeNode("CEA");
-			add(serviceNode);
+	private void makeDSAAppTree() throws ScavengerCreationException {
+		//try {
+			logger.warn("start makeDSAAppTree in ARScavenger");
+			//DefaultMutableTreeNode moduleNode = new DefaultMutableTreeNode("CEA Tree");
+			DefaultMutableTreeNode serviceNode = new DefaultMutableTreeNode("DSA");
 			
 			DefaultMutableTreeNode ceaNodeForDSA = 
 				new DefaultMutableTreeNode(new ARProcessorFactory("DSA"));
 			serviceNode.add(ceaNodeForDSA);
-			logger.warn("end makeCEAAppTree successful ARScavenger");
-		} catch (ACRException x) {
+			add(serviceNode);			
+			logger.warn("end makeDSAAppTree successful ARScavenger");
+		/*} catch (ACRException x) {
 			throw new ScavengerCreationException("Failed to list components of AR" + x.getMessage());
-		}	
+		}*/	
 	}
 
 }
