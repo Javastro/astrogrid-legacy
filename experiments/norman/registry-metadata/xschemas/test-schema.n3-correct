@@ -1,101 +1,116 @@
 # Converted from test-schema.rdfs .
 
 <http://example.org/test#TCC>
-	a	rdf:Class ;
-	rdf:subClassOf	<http://example.org/test#TCSeq> .
+	a	rdfs:Class ;
+	rdfs:subClassOf	<http://example.org/test#TCSeq> .
 
 <http://example.org/test#TCSeq>
-	a	rdf:Class .
+	a	rdfs:Class .
 
 <http://example.org/test#TCSimple>
-	a	rdf:Class .
+	a	rdfs:Class .
 
 <http://example.org/test#TSimpleEnum>
-	a	rdf:Class .
+	a	rdfs:Class .
 
 <http://example.org/test#TSimpleEnumValue1>
 	<http://www.w3.org/2002/07/owl#disjointWith>	<http://example.org/test#TSimpleEnumValue2> ;
-	a	rdf:Class ;
-	rdf:subClassOf	<http://example.org/test#TSimpleEnum> .
+	a	rdfs:Class ;
+	rdfs:subClassOf	<http://example.org/test#TSimpleEnum> .
 
 <http://example.org/test#TSimpleEnumValue2>
 	<http://www.w3.org/2002/07/owl#disjointWith>	<http://example.org/test#TSimpleEnumValue1> ;
-	a	rdf:Class ;
-	rdf:subClassOf	<http://example.org/test#TSimpleEnum> .
+	a	rdfs:Class ;
+	rdfs:subClassOf	<http://example.org/test#TSimpleEnum> .
 
 <http://example.org/test#TestSchema>
-	a	rdf:Class ;
-	rdf:subClassOf	<http://www.ivoa.net/xml/VOResource/v1.0#Resource> .
+	a	rdfs:Class ;
+	rdfs:subClassOf	<http://www.ivoa.net/xml/VOResource/v1.0#Resource> .
 
 <http://example.org/test#ivo-id>
-	a	rdfs:Property ;
-	rdf:domain	<http://example.org/test#TCSimple> ;
-	rdf:range	<http://www.ivoa.net/xml/VOResource/v1.0#IdentifierURI> .
+	a	rdf:Property ;
+	rdfs:domain	<http://example.org/test#TCSimple> ;
+	rdfs:range	<http://www.ivoa.net/xml/VOResource/v1.0#IdentifierURI> .
 
 <http://example.org/test#tCSimpleValue>
-	a	rdfs:Property ;
-	rdf:domain	<http://example.org/test#TCSimple> ;
-	rdf:range	<http://www.w3.org/2000/01/rdf-schema#Datatype> .
+	a	rdf:Property ;
+	rdfs:domain	<http://example.org/test#TCSimple> ;
+	rdfs:range	<http://www.w3.org/2000/01/rdf-schema#Datatype> .
+
+<http://example.org/test#tcc-facility>
+	<http://www.w3.org/2002/07/owl#equivalentProperty>	<http://www.ivoa.net/xml/VOResource/v1.0#facility> ;
+	a	rdf:Property ;
+	rdfs:domain	<http://example.org/test#TCC> ;
+	rdfs:range	<http://www.ivoa.net/xml/VOResource/v1.0#ResourceName> ;
+	rdfs:subPropertyOf	<http://www.ivoa.net/xml/VOResource/v1.0#facility> .
 
 <http://example.org/test#tcc-simple>
-	a	rdfs:Property ;
-	rdf:domain	<http://example.org/test#TCC> ;
-	rdf:range	<http://example.org/test#xscd(/type::TSimple)> .
+	a	rdf:Property ;
+	rdfs:domain	<http://example.org/test#TCC> ;
+	rdfs:range	<http://example.org/test#xscd(/type::TSimple)> .
 
 <http://example.org/test#tcseq-oddrange>
-	a	rdfs:Property ;
-	rdf:domain	<http://example.org/test#TCSeq> ;
-	rdf:range	<http://www.ivoa.net/xml/VOResource/v1.0#Organization> .
+	a	rdf:Property ;
+	rdfs:domain	<http://example.org/test#TCSeq> ;
+	rdfs:range	<http://www.ivoa.net/xml/VOResource/v1.0#Organization> .
 
 <http://example.org/test#tcseq-simple>
-	a	rdfs:Property ;
-	rdf:domain	<http://example.org/test#TCSeq> ;
-	rdf:range	<http://example.org/test#xscd(/type::TSimple)> .
+	a	rdf:Property ;
+	rdfs:domain	<http://example.org/test#TCSeq> ;
+	rdfs:range	<http://example.org/test#xscd(/type::TSimple)> .
 
 <http://example.org/test#tcsimple-enum>
-	a	rdfs:Property ;
-	rdf:domain	<http://example.org/test#TCSimple> ;
-	rdf:range	<http://example.org/test#TSimpleEnum> .
+	a	rdf:Property ;
+	rdfs:domain	<http://example.org/test#TCSimple> ;
+	rdfs:range	<http://example.org/test#TSimpleEnum> .
 
 <http://example.org/test#tcsimple-simpleatt>
-	a	rdfs:Property ;
-	rdf:domain	<http://example.org/test#TCC> ;
-	rdf:domain	<http://example.org/test#TCSimple> ;
-	rdf:range	<http://example.org/test#xscd(/type::TSimple)> .
+	<http://www.w3.org/2002/07/owl#equivalentProperty>	<http://www.ivoa.net/xml/VOResource/v1.0#accessURL> ;
+	a	rdf:Property ;
+	rdfs:domain	<http://example.org/test#TCC> ;
+	rdfs:domain	<http://example.org/test#TCSimple> ;
+	rdfs:range	<http://example.org/test#xscd(/type::TSimple)> ;
+	rdfs:subPropertyOf	<http://www.ivoa.net/xml/VOResource/v1.0#accessURL> .
 
 <http://example.org/test#test-TCC>
-	a	rdfs:Property ;
-	rdf:domain	<http://example.org/test#TestSchema> ;
-	rdf:range	<http://example.org/test#TCC> .
+	a	rdf:Property ;
+	rdfs:domain	<http://example.org/test#TestSchema> ;
+	rdfs:range	<http://example.org/test#TCC> .
 
 <http://example.org/test#test-TCSeq>
-	a	rdfs:Property ;
-	rdf:domain	<http://example.org/test#TestSchema> ;
-	rdf:range	<http://example.org/test#TCSeq> .
+	a	rdf:Property ;
+	rdfs:domain	<http://example.org/test#TestSchema> ;
+	rdfs:range	<http://example.org/test#TCSeq> .
 
 <http://example.org/test#test-TCSimple>
-	a	rdfs:Property ;
-	rdf:domain	<http://example.org/test#TestSchema> ;
-	rdf:range	<http://example.org/test#TCSimple> .
+	a	rdf:Property ;
+	rdfs:domain	<http://example.org/test#TestSchema> ;
+	rdfs:range	<http://example.org/test#TCSimple> .
 
 <http://example.org/test#test-TSimple>
-	a	rdfs:Property ;
-	rdf:domain	<http://example.org/test#TestSchema> ;
-	rdf:range	<http://example.org/test#xscd(/type::TSimple)> .
+	a	rdf:Property ;
+	rdfs:domain	<http://example.org/test#TestSchema> ;
+	rdfs:range	<http://example.org/test#xscd(/type::TSimple)> .
 
 <http://example.org/test#test-TSimpleEnum>
-	a	rdfs:Property ;
-	rdf:domain	<http://example.org/test#TestSchema> ;
-	rdf:range	<http://example.org/test#TSimpleEnum> .
+	a	rdf:Property ;
+	rdfs:domain	<http://example.org/test#TestSchema> ;
+	rdfs:range	<http://example.org/test#TSimpleEnum> .
 
 <http://example.org/test#xscd(/type::TSimple)>
-	a	rdf:Class ;
-	rdf:subClassOf	<http://www.w3.org/2000/01/rdf-schema#Datatype> .
+	a	rdfs:Class ;
+	rdfs:subClassOf	<http://www.w3.org/2000/01/rdf-schema#Datatype> .
 
 <http://example.org/test>
 	<http://www.w3.org/2002/07/owl#imports>	<http://www.ivoa.net/xml/VOResource/v1.0> ;
 	a	<http://www.w3.org/2002/07/owl#Ontology> .
 
 <http://www.ivoa.net/xml/VOResource/v1.0#DataCollection>
-	a	rdfs:Property ;
-	rdf:domain	<http://example.org/test#TCSeq>.
+	a	rdf:Property ;
+	rdfs:domain	<http://example.org/test#TCSeq> .
+
+<http://www.ivoa.net/xml/VOResource/v1.0#accessURL>
+	rdfs:subPropertyOf	<http://example.org/test#tcsimple-simpleatt> .
+
+<http://www.ivoa.net/xml/VOResource/v1.0#facility>
+	rdfs:subPropertyOf	<http://example.org/test#tcc-facility> .
