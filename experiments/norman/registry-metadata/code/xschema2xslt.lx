@@ -5,19 +5,14 @@
 ;;
 ;; Notes:
 ;;
-;; x2s:propertyName : there's partial support here, and I won't add
-;; more, since I'm not sure that this annotation is actually
-;; valuable.  The support here is incomplete, and partially commented
-;; out, since it doesn't handle the case where there are multiple
-;; elements with the same XSchema name, requiring some fancy footwork
-;; with apply-templates with modes.
-;;
-;; No: propertyName is used for validationLevel in SIA, which is annotated
-;; in the XSchema with the x2s:propertyName being vor:validationLevel.
-;; When propertyName is present, we should not generate any property-name
-;; element, but leave that to the type handler.
-;;
-;; multipleDomains : ???
+;; x2s:propertyName : When propertyName is present, we should not generate
+;; any property-name element, but leave that to the type handler.
+;; This handler will have to be hand-written (ie, it will be in the 
+;; VOResource handler); that means that there's no corresponding support
+;; for this in xschema2rdfs.lx.
+;; The propertyName annotation is used (for example) for validationLevel in
+;; SIA, which is annotated in the XSchema with the x2s:propertyName
+;; being vor:validationLevel.
 ;;
 ;;
 ;;
@@ -48,7 +43,7 @@
               (if (test #t))
               (with-param (name #t) select)))
 
-(stylesheet version: 1.0 ;exclude-result-prefixes: "x2s"
+(stylesheet version: 1.0
   (output method: xml
               version: 1.0
               indent: yes)
@@ -107,11 +102,6 @@
       ;; Copy over the namespace declaration for the target RDFS namespace
       ;; (see the discussion about namespaces above).
       (copy-of select: "document('namespace-nodes.xml')/namespace-nodes/namespace::*[.=$targetnamespaceo]")
-      ;; (that is, the namespace given in the @targetNamespace attribute).
-      ;; This will go wrong if there isn't a prefix assigned to that,
-      ;; but I think that can't happen in practice (famous last words).
-      ;(copy-of select: "/*/namespace::*[.=/xs:schema/@targetNamespace]")
-;;       (copy-of select: "document('namespace-nodes.xml')/namespace-nodes/namespace::*[.=concat(/xs:schema/@targetNamespace,'#')]")
 
       (comment "Generated from XSchema by xschema2xslt.lx")
 
@@ -122,8 +112,6 @@
       (xt:output method: xml
                  version: 1.0
                  indent: yes)
-
-      ;(xt:variable name: nso select: "{$targetnamespaceo}")
 
       (apply-templates select: "xs:simpleType")
       (apply-templates select: "xs:complexType")
@@ -182,18 +170,10 @@
                       ;; next case and) call apply-templates.
                       )
                     (when xs:sequence   ;sequence content
-                     (xt:apply-templates)
-;;                      (if .//x2s:propertyName
-;;                          (xt:apply-templates
-;;                           mode: "within-{@name}"))
-                     )
+                     (xt:apply-templates))
                     (otherwise
                      (x2s:ERROR "complexType " (value-of @name)
-                                " has unexpected content")))
-;;                    (xt:call-template
-;;                     (attribute name: name
-;;                                (value-of "xs:complexContent/xs:extension/@base|xs:complexContent/xs:restriction/@base")))
-                   )
+                                " has unexpected content"))))
       (apply-templates select: .//xs:element)
       )))
 
@@ -227,10 +207,6 @@
       (x2s:ERROR "simpleType " (value-of @name)
                  " contains no xs:restriction or xs:extension"))))
 
-;;   (template xs:simpleContent                   ;[simplecontent]
-;;     (apply-templates select: .//xs:attribute))
-                                        ;only attributes inside this: easy
-
   (template "xs:extension|xs:restriction" ;[complexrestriction]
     mode: complex-content
     (xt:call-template
@@ -245,7 +221,7 @@
        (attribute name: name
                   (value-of @base))))))
 
-  ;; no need? for simple-content variant of extension|restriction template
+  ;; no need (yes?) for simple-content variant of extension|restriction template
 
   (template xs:enumeration              ;[enumeration]
     (xt:when test: "$val='{@value}'"
@@ -298,42 +274,18 @@
           ;; In this case, let the type handler template handle this completely.
           ;; That is, we do not emit any (RDF) property element.
           (variable name: propnameprefix
-                    (value-of "substring-before(.//x2s:propertyName,':')")
-;;                     (if ".//x2s:propertyName and contains(.//x2s:propertyName,':')"
-;;                         (value-of "substring-before(.//x2s:propertyName,':')"))
-                    )
-;;           (variable name: propname
-;;                     (choose
-;;                      (when "$propnameprefix != ''"
-;;                        (value-of .//x2s:propertyName))
-;;                      (otherwise;when .//x2s:propertyName
-;;                        (value-of "concat($targetprefixo,':',.//x2s:propertyName)"))
-;; ;;                      (otherwise
-;; ;;                       ;; normal case -- no x2s:propertyName annotation
-;; ;;                       (value-of "concat($targetprefixo,':',@name)"))
-;;                      ))
+                    (value-of "substring-before(.//x2s:propertyName,':')"))
           (xt:template match: "{@name}"
                        (if "$propnameprefix != ''"
                            (copy-of select: ".//x2s:propertyName/namespace::*[name()=$propnameprefix]"))
                        (xt:call-template name: {@type})))
         (otherwise
-         ;; [propertyname] This may be redundant -- I'm not sure that any
-         ;; of the .xsd files actually use this annotation
+         ;; there is no x2s:propertyName annotation
 
          (xt:template
           match: "{@name}"
-          ;;         (if .//x2s:propertyName
-          ;;             ;; The presence of this annotation implies that there's
-          ;;             ;; more than one element with this name in the XSchema.
-          ;;             ;; Thus the template we're generating should have a mode.
-          ;;             ;; See the complexType handler for the way this is called.
-          ;;             (attribute name: mode
-          ;;                        (text "within-")
-          ;;                        (value-of ancestor::xs:complexType/@name)))
           (xt:element
            name: "{concat($targetprefixo,':',@name)}" ;"{$propname}"
-;;            (if "$propnameprefix != ''"
-;;                (copy-of select: ".//x2s:propertyName/namespace::*[name()=$propnameprefix]"))
            (call-template name: handle-type
                           (with-param type (value-of @type))))))))
 
@@ -359,28 +311,16 @@
       (variable name: type-ln select: "substring-after($type,':')")
       (variable name: type-ns select: "namespace::*[name()=$type-pfx]")
       (choose
-       ;; Work through various special cases. [propertyrange]
+       ;; Work through various special cases.
        (when "$type-ns=$vor-ns and $type-ln='IdentifierURI'"
          (xt:attribute name: rdf:parseType Resource)
-;;          (comment "handle-type: " (value-of $targetprefixo)
-;;                   ":::" (value-of @name))
-;;          (xt:comment "handle-type(2): " (value-of $targetprefixo)
-;;                   ":::" (value-of @name))
          ;; add a breadcrumb, mostly for debugging
          (xt:comment "IdentifierURI, type=" (value-of $type)
                      ", from " (value-of $use-node))
          (xt:call-template name: make-identifier-uri-body
-                           (xt:with-param
-                            name: id (xt:apply-templates select: "{$use-node}"))
-;;                            (xt:with-param
-;;                             name: propname
-;;                             ;(value-of "$targetprefixo")
-;;                             ;(text ":")
-;;                             (value-of "@name"))
-;;                            (xt:with-param
-;;                             name: ns
-;;                             (value-of select: $targetnamespaceo))
-                           ))
+                           (xt:with-param name: id
+                                          (xt:apply-templates
+                                           select: "{$use-node}"))))
        (when "$type-ns=$vor-ns and $type-ln='ResourceName'"
          ;; add a breadcrumb, mostly for debugging
          (xt:comment "ResourceName, type=" (value-of $type)
@@ -392,22 +332,13 @@
                            (xt:with-param name: type
                                           voro:Resource)
                            (xt:with-param name: ns
-                                          (value-of $targetnamespaceo)))
-;;          (xt:call-template name: voro:resource-name
-;;                            (xt:with-param
-;;                             name: type
-;;                             (value-of "$targetprefixo")
-;;                             (text ":")
-;;                             (value-of ancestor::xs:complexType/@name)))
-         )
+                                          (value-of $targetnamespaceo))))
        (when "$type-ns='http://www.w3.org/2001/XMLSchema'"
          ;; simple content
          ;; (no rdf:parseType=Resource)
          (xt:value-of select: "normalize-space({$use-node})"))
        (when "$type-ns=/xs:schema/@targetNamespace and //xs:simpleType[@name=$type-ln] and not(//xs:simpleType[@name=$type-ln]//xs:enumeration)"
          ;; this type is a non-enumeration simpleType: value is just the content
-;;          (x2s:logging "attribute for name=" (value-of @name) "="
-;;                       (value-of "local-name()"))
          (xt:value-of select: "normalize-space({$use-node})"))
        (when "$type-ns=/xs:schema/@targetNamespace and //xs:simpleType[@name=$type-ln]//xs:enumeration"
          ;; This is an enumeration -- simply call the template.
@@ -454,128 +385,5 @@
                     (xt:call-template name: resolve-xsitype))
            (xt:otherwise
             (xt:call-template name: "{$type}")))))))))
-
-;; (template "xs:element|xs:attribute"
-;;     (variable name: type-pfx select: "substring-before(@type,':')")
-;;     (variable name: type-ln select: "substring-after(@type,':')")
-;;     (variable name: type-ns select: "namespace::*[name()=$type-pfx]")
-;;     ;(variable name: avt "{$targetprefixo}:{local-name()}")
-;;     (choose
-
-;;      (when "@name and @type"            ;[elementtype]
-;;        ;; If the current element/attribute has already been seen, then
-;;        ;; produce a warning, unless the x2s:multipleDomains annotation
-;;        ;; is present.
-;;        (variable name: pn select: "@name")
-;;        (choose
-;;         (when "preceding::xs:element[@name=$pn] or preceding::xs:attribute[@name=$pn]"
-;;           (choose
-;;            (when .//x2s:multipleDomains
-;;              (comment "Spotted multiple domains for element "
-;;                       (value-of @name)))
-;;            (otherwise
-;;             (x2s:ERROR "Multiple templates for name " (value-of @name)))))
-;;         (otherwise
-;;          (variable name: propnameprefix
-;;                    (if ".//x2s:propertyName and contains(.//x2s:propertyName,':')"
-;;                        (value-of "substring-before(.//x2s:propertyName,':')")))
-;;          (variable name: propname
-;;                    (choose
-;;                     (when "$propnameprefix != ''"
-;;                       (value-of .//x2s:propertyName))
-;;                     (when .//x2s:propertyName
-;;                       (value-of "concat($targetprefixo,':',.//x2s:propertyName)"))
-;;                     (otherwise
-;;                      (value-of "concat($targetprefixo,':',@name)"))))
-;;          (xt:template
-;;           match: "{@name}"
-;;           ;;         (if .//x2s:propertyName
-;;           ;;             ;; The presence of this annotation implies that there's
-;;           ;;             ;; more than one element with this name in the XSchema.
-;;           ;;             ;; Thus the template we're generating should have a mode.
-;;           ;;             ;; See the complexType handler for the way this is called.
-;;           ;;             (attribute name: mode
-;;           ;;                        (text "within-")
-;;           ;;                        (value-of ancestor::xs:complexType/@name)))
-;;           (xt:element
-;;            name: "{$propname}"
-;;            (if "$propnameprefix != ''"
-;;                (copy-of select: ".//x2s:propertyName/namespace::*[name()=$propnameprefix]"))
-;;            (choose
-;;             ;; Work through various special cases. [propertyrange]
-;;             (when "$type-ns=$vor-ns and $type-ln='IdentifierURI'"
-;;               (xt:call-template name: make-identifier-uri
-;;                                 (xt:with-param
-;;                                  name: id (xt:apply-templates))
-;;                                 (xt:with-param
-;;                                  name: propname
-;;                                  (value-of "$targetprefixo")
-;;                                  (text ":")
-;;                                  (value-of "@name"))))
-;;             (when "$type-ns=$vor-ns and $type-ln='ResourceName'"
-;;               (xt:call-template name: voro:resource-name
-;;                                 (xt:with-param
-;;                                  name: type
-;;                                  (value-of select: "$targetprefixo")
-;;                                  (text ":")
-;;                                  (value-of ancestor::xs:complexType/@name))))
-;; ;;             (when .//x2s:objectRange
-;; ;;               (x2s:ERROR "The property "
-;; ;;                          (value-of $propname)
-;; ;;                          " is of type "
-;; ;;                          (value-of @type)
-;; ;;                          ": this should be handled specially within xschema2xslt, but is not"))
-;;             (when "$type-ns='http://www.w3.org/2001/XMLSchema'"
-;;               ;; simple content
-;;               (xt:value-of select: "normalize-space()"))
-;;             (otherwise
-;;              (xt:call-template name: "{@type}"))))))))
-
-;;      (when @ref                         ;[elementref]
-;;        ;; For the moment, skip elements declared with 'ref'.  They're
-;;        ;; generally stc:STCResourceProfile as far as I can see, and thus
-;;        ;; not something I plan on handling anyway.
-;;        ;; FIXME -- do something cleverer, here.
-;;        (comment "Skipping element ref=" (value-of @ref)
-;;                 " within " (value-of "ancestor::*/@name")))
-
-;;      (otherwise
-;;       (x2s:ERROR "Element within "
-;;                  (value-of "ancestor::*/@name") " doesn't have @name+@type or @ref"))))
-
-
-
-
-;;   (template "xs:element|xs:attribute[@name and @type]"
-;;     (variable name: p select: "substring-before(@type,':')")
-;;     (variable name: l select: "substring-after(@type,':')")
-;;     (variable name: n select: "namespace::*[name()=$p]")
-;;     (variable name: avt "{$targetprefixo}:{local-name()}")
-;;     (choose
-;;      (when "$n=$vor-ns and $l='ResourceName'"
-;;        )
-;;      (otherwise ;when @name
-;;        (xt:template match: "{@name}"
-;;          (xt:element name: {$avt}
-;;             (choose
-;;              (when "$n='http://www.w3.org/2001/XMLSchema'"
-;;                (xt:value-of select: "normalize-space()"))
-;;              (otherwise
-;;               (xt:call-template name: "{@type}"))))))
-;; ;;      (when @ref
-;; ;;        ;; For the moment, skip elements declared with 'ref'.  They're
-;; ;;        ;; generally stc:STCResourceProfile as far as I can see, and thus
-;; ;;        ;; not something I plan on handling anyway.
-;; ;;        (comment "Skipping element ref=" (value-of @ref)
-;; ;;                 " within " (value-of "ancestor::*/@name")))
-;; ;;      (otherwise
-;; ;;       (x2s:ERROR "Element within "
-;; ;;                  (value-of "ancestor::*/@name") " doesn't have @name or @ref"))
-;;      ))
-
-;XXX Need to add by-hand support for VOResource, which includes a
-;XXX vor:ResourceName handler which doesn't take a parameter,
-;XXX but which instead grubs around in the complexType to find what Resource
-;XXX subtype it is.
 
 ))

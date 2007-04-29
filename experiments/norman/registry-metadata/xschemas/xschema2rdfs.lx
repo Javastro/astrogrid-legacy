@@ -135,9 +135,6 @@
 (lx:let ((namespace (#f   "http://www.w3.org/1999/XSL/Transform")
                     (xs "http://www.w3.org/2001/XMLSchema")
                     (x2s "http://ns.eurovotech.org/registry-metadata#")
-
-                    ;;(dc "http://purl.org/dc/elements/1.1/")
-
                     (rdf  "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
                     (rdfs "http://www.w3.org/2000/01/rdf-schema#")
                     (owl  "http://www.w3.org/2002/07/owl#"))
@@ -175,12 +172,7 @@
                      (apply-templates select: xs:annotation)
                      (apply-templates select: xs:import))
        (apply-templates select: "xs:complexType|xs:simpleType")
-;;         The following isn't necessary -- see comments before
-;;         x2s:datatypeRange below
-;;        ;; don't _really_ need the following to have a mode, but it helps
-;;        ;; document that we don't call it in the normal processing order
-;;        (apply-templates select: "//x2s:datatypeRange"
-;;                         mode: declare-datatypes)
+       ;; we don't have to process x2s:datatypeRange here.
        ))
 
   ;; [import]
@@ -236,11 +228,7 @@
            "Literal XSchema datatype property: see http://www.w3.org/TR/swbp-xsch-datatypes/")
           (apply-templates select: xs:annotation)
           (apply-templates select: "xs:restriction|xs:extension"
-                           mode: simple-content))
-;;          (rdfs:Class (attribute rdf:ID (value-of @name))
-;;                      (apply-templates select: xs:annotation)
-;;                      (apply-templates select: xs:restriction))
-         )
+                           mode: simple-content)))
        (otherwise
         (x2s:ERROR "simpleType " (value-of @name)
                       " contains no xs:restriction or xs:extension"))))
@@ -261,8 +249,7 @@
                               "http://www.w3.org/2000/01/rdf-schema#Datatype"))
                   (apply-templates select: "xs:extension|xs:restriction"
                                    mode: simple-content))
-    (apply-templates select: .//xs:attribute)   ;only attributes below
-    )
+    (apply-templates select: .//xs:attribute))   ;only attributes below
 
   (template "xs:extension|xs:restriction" ;[complexrestriction]
     mode: complex-content
@@ -361,19 +348,19 @@
                          ;; forced to be a datatype range, in a context
                          ;; where we'd guess otherwise
                          (call-template
-                          name: create-type-reference;expand-xscd-namespace
+                          name: create-type-reference
                           (with-param name: type
                                       (value-of @type))))
                        (when xs:annotation/xs:appinfo/x2s:objectRange
                          ;; forced to be an object range, in a context
                          ;; where we'd guess otherwise
                          (call-template
-                          name: create-type-reference;expand-namespace
+                          name: create-type-reference
                           (with-param type
                                       (value-of @type))))
                        (when xs:annotation/xs:appinfo/x2s:propertyRange
                          (call-template
-                          name: create-type-reference;expand-namespace
+                          name: create-type-reference
                           (with-param type
                                       (value-of xs:annotation/xs:appinfo/x2s:propertyRange))))
                        (when self::xs:attribute
@@ -382,23 +369,17 @@
                                    select: "key('classes',@type)")
                          (choose
                           (when "$typenode//xs:enumeration"
-                            (call-template name: create-type-reference;expand-namespace
+                            (call-template name: create-type-reference
                                            (with-param type
                                                        (value-of @type))))
                           (otherwise
                            ;; datatype range
-                           (call-template name: create-type-reference;expand-xscd-namespace
+                           (call-template name: create-type-reference
                                           (with-param type
                                                       (value-of @type))))))
-;;                        (when self::xs:attribute
-;;                          ;; this can only be a datatype range
-;;                          (call-template
-;;                           name: expand-xscd-namespace
-;;                           (with-param name: type
-;;                                       (value-of @type))))
                        (otherwise
                         (call-template
-                         name: create-type-reference;expand-namespace
+                         name: create-type-reference
                          (with-param name: type
                                      (value-of @type)))))))
           (apply-templates select: xs:annotation))
@@ -442,7 +423,7 @@
   (template x2s:datatypeRange mode: declare-datatypes
       (rdfs:Class
        (attribute rdf:about
-                  (call-template name: create-type-reference;expand-xscd-namespace
+                  (call-template name: create-type-reference
                                  (with-param name: type
                                              (value-of "ancestor::xs:element/@type|ancestor::xs:attribute/@type"))))
        (rdfs:subClassOf
@@ -455,7 +436,9 @@
   (lx:dtd ((template (name #t)))
     (template create-type-reference
       (param name: type)
-      ;; determine the namespace and local name of this type
+      ;; Determine the namespace and local name of this type.
+      ;; This handles both the expansion of namespaces, and the generation
+      ;; of XSCD namespaces.
       (variable name: prefix select: "substring-before($type,':')")
       (variable name: ns
                 (if "$prefix != ''"
@@ -498,40 +481,7 @@
          (otherwise
           (value-of select: "substring-after($type,':')"))))))
 
-;;     (template expand-namespace
-;;         (param name: type)
-;;       (variable name: prefix select: "substring-before($type,':')")
-;;       (value-of select: "namespace::*[name()=$prefix]")
-;;       "#"
-;;       (choose
-;;        (when "$prefix=''"
-;;          (value-of select: "$type"))
-;;        (otherwise
-;;         (value-of select: "substring-after($type,':')"))))
-
-;;     ;; Expand a datatype class reference, into an XSCD type reference.
-;;     ;; Special-case the xsd: namespace
-;;     (template expand-xscd-namespace
-;;       (param name: type)
-;;       (variable name: prefix
-;;                 select: "substring-before($type,':')") ; => '' if no colon
-;;       (variable name: ns
-;;                 (if "$prefix != ''"
-;;                     (value-of "namespace::*[name()=$prefix]")))
-;;       (choose
-;;        (when "$ns = 'http://www.w3.org/2001/XMLSchema'"
-;;          "http://www.w3.org/2001/XMLSchema#"
-;;          (value-of select: "substring-after($type,':')"))
-;;        (otherwise
-;;         (value-of select: "$ns")
-;;         "#xscd(/type::"
-;;         (choose
-;;          (when "$prefix != ''"
-;;            (value-of select: "substring-after($type,':')"))
-;;          (otherwise
-;;           (value-of select: "$type")))
-;;         ")"
-;;         )))
-    )
+    ) ;; end of named templates
+  
 
 ))
