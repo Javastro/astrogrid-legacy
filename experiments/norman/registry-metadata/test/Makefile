@@ -51,11 +51,12 @@ TESTCASES=test-instance \
 %.eyeballed: %.rdf
 	rm -f $@
 	../code/eyeball.sh \
+	  -assume $(T)/eyeball-2.0/mirror/owl.rdf \
 	  -assume ../rdfschemas/VOResource-1.0.owl \
-	  -assume ../xschemas/VORegistry-v1.0.rdfs \
-	  -assume ../xschemas/VODataService-v1.0.rdfs \
 	  -assume ../xschemas/SIA-v1.0.rdfs \
 	  -assume ../xschemas/TabularDB-v0.3.rdfs \
+	  -assume ../xschemas/VODataService-v1.0.rdfs \
+	  -assume ../xschemas/VORegistry-v1.0.rdfs \
 	  -exclude URI \
 	  -check $< \
 	  >$@.tmp 2>&1 && mv $@.tmp $@
