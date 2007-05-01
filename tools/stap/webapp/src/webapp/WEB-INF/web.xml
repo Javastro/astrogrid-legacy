@@ -48,14 +48,11 @@
    		<url-pattern>/SolarFetch</url-pattern>
 	</servlet-mapping>
 	
-	<!--
-	
-	<env-entry>
-      <description>Sample env entry of pointing to another properties file.  Usefull if setting up several STAP's for tables.</description>
-      <env-entry-name>org.astrogrid.config.filename</env-entry-name>
-      <env-entry-value>/disk/astrogrid.properties</env-entry-value>
+   <env-entry>
+      <description>Property file location for registry metadata.</description>
+      <env-entry-name>regproperties.file.location</env-entry-name>
+      <env-entry-value>regmetadata.properties</env-entry-value>
       <env-entry-type>java.lang.String</env-entry-type>
-   </env-entry>  	
-   -->
+   </env-entry> 
 
 </web-app>

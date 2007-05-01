@@ -109,8 +109,8 @@
   }
  
 %>
-<ri:Resource  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-   xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" xsi:type="vr:Service" status="active"  created="2000-01-01T09:00:00" updated="2000-01-01T09:00:00">          
+<ri:Resource  xmlns:sta="urn:astrogrid:schema:vo-resource-types:SimpleTimeAccess:v0.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+   xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0" xsi:type="sta:SimpleTimeAccess" status="active"  created="2000-01-01T09:00:00" updated="2000-01-01T09:00:00">          
  <title><%=title%></title>
  <shortName><%=shortName%></shortName>
  <identifier><%=ident%></identifier>
@@ -169,12 +169,7 @@
   %>
   	<contentLevel><%=contentLevel.elementAt(j)%></contentLevel>
   <%}%>  
-  
- <relationship>
-    <relationshipType>derived-from</relationshipType>
-        <relatedResource ivo-id="ivo://org.astrogrid/FileStoreKind">Filestore Kind</relatedResource>
-  </relationship>  
- </content>
+   </content>
  <%for(int j = 0;j < rights.size();j++) {
  %>
    <rights><%=rights.elementAt(j)%></rights>
@@ -183,6 +178,7 @@
     <description>Stap capability</description>
     <interface xsi:type="vs:ParamHTTP" version="1.0">
 		<accessURL use="full"><%=accessURL%></accessURL>
+		<resultType>text/xml</resultType>
 		<!--
 		  Security Method area there can be many of these.
 		  Are they needed?

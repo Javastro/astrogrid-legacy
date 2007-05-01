@@ -1,4 +1,4 @@
-package org.astrogrid.stapsearch.impl.astrogrid_dsa;
+package org.astrogrid.stapsearch.impl.astrogrid_stap;
 
 import org.astrogrid.stapsearch.IStapSearch;
 import java.util.Date;
