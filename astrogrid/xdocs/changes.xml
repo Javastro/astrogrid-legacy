@@ -66,6 +66,16 @@
         </release>
         
         <release version="(Undertest)">
+        	<action dev="gtr" type="fix">
+    	    <em>Branch security-gtr-2191.</em> The SSL implementation is the reason for the new release. 
+    	    It allows RFC3820 proxy-certificates to be used for HTTPS requests handled by Tomcat, 
+    	    in accordance with IVOA standards. We can use this, e.g., to restrict access to 
+    	    Cone search services in DSA/catalogue.the POM is made independent of maven-base;
+    	    Changes: 
+    	    <li>the POM is made independent of maven-base</li>
+			<li>the unit tests work;</li>
+ 			<li>there is a new implementation of SSL for Tomcat</li>
+    	  </action>  
 
         </release>
 		
