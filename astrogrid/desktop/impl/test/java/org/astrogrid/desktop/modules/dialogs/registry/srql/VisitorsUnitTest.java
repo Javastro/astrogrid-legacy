@@ -6,6 +6,10 @@ package org.astrogrid.desktop.modules.dialogs.registry.srql;
 import junit.framework.TestCase;
 
 import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.desktop.modules.ui.voexplorer.srql.BasicRegistrySRQLVisitor;
+import org.astrogrid.desktop.modules.ui.voexplorer.srql.KeywordSRQLVisitor;
+import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQL;
+import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQLParser;
 
 /** Exercise the various visitors.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -51,7 +55,7 @@ public class VisitorsUnitTest extends TestCase {
 		SRQL q = mkQuery("\"fred bloggs\" and (foo or not shortname=Bar) and `/foo/nar/choo`");
 		Object  keywords = q.accept(k);
 		assertNotNull(keywords);
-		assertEquals("('fred bloggs') AND (((foo) OR (NOT (shortname=(bar)))) AND (`/foo/nar/choo`))",keywords);
+		assertEquals("('fred bloggs') AND (((foo) OR (NOT (shortname = bar))) AND (`/foo/nar/choo`))",keywords);
 	}
 
 	public void testComplexXQuery() throws Exception {

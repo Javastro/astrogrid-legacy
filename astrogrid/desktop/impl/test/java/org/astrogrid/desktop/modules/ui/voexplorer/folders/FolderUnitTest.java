@@ -3,6 +3,8 @@
  */
 package org.astrogrid.desktop.modules.ui.voexplorer.folders;
 
+import org.astrogrid.desktop.modules.ui.folders.Folder;
+
 import junit.framework.TestCase;
 
 /** basic unit test for the folder class.
@@ -34,7 +36,7 @@ public class FolderUnitTest extends TestCase {
 	}
 	
 	/**
-	 * Test method for {@link org.astrogrid.desktop.modules.ui.voexplorer.folders.Folder#Folder(java.lang.String, java.lang.String)}.
+	 * Test method for {@link org.astrogrid.desktop.modules.ui.folders.Folder#Folder(java.lang.String, java.lang.String)}.
 	 */
 	public void testFolderStringString() {
 		assertEquals(name,f.getName());
@@ -43,7 +45,7 @@ public class FolderUnitTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link org.astrogrid.desktop.modules.ui.voexplorer.folders.Folder#getIconName()}.
+	 * Test method for {@link org.astrogrid.desktop.modules.ui.folders.Folder#getIconName()}.
 	 */
 	public void testGetIconName() {
 		f.setIconName("unknownIcon");
@@ -56,7 +58,7 @@ public class FolderUnitTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link org.astrogrid.desktop.modules.ui.voexplorer.folders.Folder#getName()}.
+	 * Test method for {@link org.astrogrid.desktop.modules.ui.folders.Folder#getName()}.
 	 */
 	public void testGetName() {
 		f.setName("foo");

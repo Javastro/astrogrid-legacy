@@ -7,8 +7,9 @@ import java.util.EmptyStackException;
 
 import junit.framework.TestCase;
 
-import org.astrogrid.desktop.modules.ui.voexplorer.storage.History.BoundedUniqueEventStack;
-import org.astrogrid.desktop.modules.ui.voexplorer.storage.History.HistoryListener;
+import org.astrogrid.desktop.modules.ui.fileexplorer.History;
+import org.astrogrid.desktop.modules.ui.fileexplorer.History.BoundedUniqueEventStack;
+import org.astrogrid.desktop.modules.ui.fileexplorer.History.HistoryListener;
 import org.easymock.MockControl;
 
 import ca.odell.glazedlists.EventList;

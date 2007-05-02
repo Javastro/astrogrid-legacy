@@ -62,25 +62,25 @@ public class ResourceListTransferableUnitTest extends TestCase {
 	}
 	
 	public void testLocalResourceListFlavor() throws Exception {
-		assertTrue(t.isDataFlavorSupported(VoDataFlavour.LOCAL_RESOURCE_LIST));
-		Object o = t.getTransferData(VoDataFlavour.LOCAL_RESOURCE_LIST);
-		assertFalse(VoDataFlavour.LOCAL_RESOURCE_LIST.isFlavorSerializedObjectType());
+		assertTrue(t.isDataFlavorSupported(VoDataFlavour.LOCAL_RESOURCE_ARRAY));
+		Object o = t.getTransferData(VoDataFlavour.LOCAL_RESOURCE_ARRAY);
+		assertFalse(VoDataFlavour.LOCAL_RESOURCE_ARRAY.isFlavorSerializedObjectType());
 		assertNotNull(o);
 		assertTrue(o instanceof Resource[]);
 		assertEquals(l,Arrays.asList((Resource[])o));
 	}
 	
 	public void testResourceListFlavor() throws Exception {
-		assertTrue(t.isDataFlavorSupported(VoDataFlavour.RESOURCE_LIST));
-		Object o = t.getTransferData(VoDataFlavour.RESOURCE_LIST);
-		assertTrue(VoDataFlavour.RESOURCE_LIST.isFlavorSerializedObjectType());
+		assertTrue(t.isDataFlavorSupported(VoDataFlavour.RESOURCE_ARRAY));
+		Object o = t.getTransferData(VoDataFlavour.RESOURCE_ARRAY);
+		assertTrue(VoDataFlavour.RESOURCE_ARRAY.isFlavorSerializedObjectType());
 		assertNotNull(o);
 		assertTrue(o instanceof Resource[]);
 		assertEquals(l,Arrays.asList((Resource[])o));
 	}
 	
 	public void testLocalURIFlavor() throws Exception {
-		assertFalse("2 data flavours can't be the same",VoDataFlavour.LOCAL_RESOURCE_LIST.equals(VoDataFlavour.LOCAL_URI_ARRAY));
+		assertFalse("2 data flavours can't be the same",VoDataFlavour.LOCAL_RESOURCE_ARRAY.equals(VoDataFlavour.LOCAL_URI_ARRAY));
 		assertTrue(t.isDataFlavorSupported(VoDataFlavour.LOCAL_URI_ARRAY));
 		Object o = t.getTransferData(VoDataFlavour.LOCAL_URI_ARRAY);
 		assertNotNull(o);

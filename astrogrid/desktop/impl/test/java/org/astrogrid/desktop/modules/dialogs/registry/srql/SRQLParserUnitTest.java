@@ -6,6 +6,15 @@ package org.astrogrid.desktop.modules.dialogs.registry.srql;
 import junit.framework.TestCase;
 
 import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.desktop.modules.ui.voexplorer.srql.AndSRQL;
+import org.astrogrid.desktop.modules.ui.voexplorer.srql.NotSRQL;
+import org.astrogrid.desktop.modules.ui.voexplorer.srql.OrSRQL;
+import org.astrogrid.desktop.modules.ui.voexplorer.srql.PhraseSRQL;
+import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQL;
+import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQLParser;
+import org.astrogrid.desktop.modules.ui.voexplorer.srql.TargettedSRQL;
+import org.astrogrid.desktop.modules.ui.voexplorer.srql.TermSRQL;
+import org.astrogrid.desktop.modules.ui.voexplorer.srql.XPathSRQL;
 
 /**
  * @author Noel Winstanley

@@ -6,6 +6,8 @@ package org.astrogrid.desktop.modules.ui.voexplorer.folders;
 import java.net.URI;
 
 import org.apache.commons.vfs.FileObject;
+import org.astrogrid.desktop.modules.ui.folders.Folder;
+import org.astrogrid.desktop.modules.ui.folders.StorageFolder;
 import org.easymock.MockControl;
 
 /** unit test for storage folder.
@@ -28,7 +30,7 @@ public class StorageFolderUnitTest extends FolderUnitTest {
 	}
 
 	/**
-	 * Test method for {@link org.astrogrid.desktop.modules.ui.voexplorer.folders.StorageFolder#setUriString(java.lang.String)}.
+	 * Test method for {@link org.astrogrid.desktop.modules.ui.folders.StorageFolder#setUriString(java.lang.String)}.
 	 */
 	public void testSetUriString() throws Exception {
 		StorageFolder s = (StorageFolder)f;
@@ -43,7 +45,7 @@ public class StorageFolderUnitTest extends FolderUnitTest {
 	}
 
 	/**
-	 * Test method for {@link org.astrogrid.desktop.modules.ui.voexplorer.folders.StorageFolder#setFile(org.apache.commons.vfs.FileObject)}.
+	 * Test method for {@link org.astrogrid.desktop.modules.ui.folders.StorageFolder#setFile(org.apache.commons.vfs.FileObject)}.
 	 */
 	public void testSetFile() {
 		StorageFolder s = (StorageFolder)f;

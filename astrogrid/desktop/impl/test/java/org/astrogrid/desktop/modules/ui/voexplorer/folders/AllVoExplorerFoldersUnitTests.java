@@ -16,9 +16,9 @@ public class AllVoExplorerFoldersUnitTests {
 		TestSuite suite = new TestSuite(
 				"Test for org.astrogrid.desktop.modules.ui.voexplorer.folders");
 		//$JUnit-BEGIN$
-		suite.addTestSuite(DumbResourceFolderUnitTest.class);
-		suite.addTestSuite(QueryResourceFolderUnitTest.class);
-		suite.addTestSuite(FilterResourceFolderUnitTest.class);
+		suite.addTestSuite(StaticListUnitTest.class);
+		suite.addTestSuite(XQueryListUnitTest.class);
+		suite.addTestSuite(SmartListUnitTest.class);
 		suite.addTestSuite(FolderUnitTest.class);
 		suite.addTestSuite(StorageFolderUnitTest.class);
 		suite.addTestSuite(AbstractFoldersProviderUnitTest.class);
