@@ -1,4 +1,4 @@
-/*$Id: UIComponentImpl.java,v 1.12 2007/04/18 15:47:05 nw Exp $
+/*$Id: UIComponentImpl.java,v 1.13 2007/05/02 15:38:29 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -491,7 +491,7 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
      }
 
 	/** generic close window action */
-     protected final class CloseAction extends AbstractAction {
+     public final class CloseAction extends AbstractAction {
          public CloseAction() {
              super("Close");
              this.putValue(SHORT_DESCRIPTION,"Close");
@@ -503,22 +503,17 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
              dispose();
          }
      }
-     //@todo add a preference on acr.advanced to only enable this at certain times.
-     protected final class HideAllAction extends AbstractAction {
-         public HideAllAction() {
-             super("Hide All Windows");
-             this.putValue(SHORT_DESCRIPTION,"Hide All Windows");
-         }
-         public void actionPerformed(ActionEvent e) {
-        	 getContext().hide();
-         }
-     }     
+
+    
      
 }
 
 
 /* 
 $Log: UIComponentImpl.java,v $
+Revision 1.13  2007/05/02 15:38:29  nw
+changes for 2007.3.alpha1
+
 Revision 1.12  2007/04/18 15:47:05  nw
 tidied up voexplorer, removed front pane.
 

@@ -211,7 +211,7 @@ public abstract class AbstractScope extends UIComponentImpl implements PlasticBu
 	protected final VizualizationManager vizualizations;
 	private final SnitchInternal snitch;
 	private final String scopeName;
-	private final RegistryBrowser browser;
+	//private final RegistryBrowser browser;
 
 	private BiStateButton submitButton;
 	
@@ -234,8 +234,7 @@ public abstract class AbstractScope extends UIComponentImpl implements PlasticBu
 			MyspaceInternal myspace,
 			ResourceChooserInternal chooser, TupperwareInternal tupp, SendToMenu sendTo, 
 			SnitchInternal snitch,
-			String scopeName,
-			DalProtocol[] p, RegistryBrowser browser) throws HeadlessException {
+			String scopeName,DalProtocol[] ps) throws HeadlessException {
 		super(context);
 		this.scopeName = scopeName;
 		this.historyKey = scopeName + ".history";
@@ -244,10 +243,9 @@ public abstract class AbstractScope extends UIComponentImpl implements PlasticBu
 		this.protocols = new DalProtocolManager();
 		this.chooser = chooser;
 		this.myspace = myspace;
-		for (int i = 0; i < p.length; i++) {
-			this.protocols.add(p[i]);
+		for (int i = 0; i < ps.length; i++) {
+			protocols.add(ps[i]);
 		}
-		this.browser = browser;
 		// create the shared model
 		vizModel = new VizModel(protocols);
 		// create the vizualizations
@@ -277,7 +275,6 @@ public abstract class AbstractScope extends UIComponentImpl implements PlasticBu
 		});
 	}
 
-	
 	
 	/**
 	 * Creates the left/WEST side of the GUI. By creating a small search panel

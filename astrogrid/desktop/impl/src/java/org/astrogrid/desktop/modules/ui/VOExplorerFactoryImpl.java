@@ -12,12 +12,18 @@ import java.util.List;
 
 import javax.swing.SwingUtilities;
 
+import net.sourceforge.hiveutils.service.ObjectBuilder;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
+import org.astrogrid.desktop.modules.system.ui.ActionContributionBuilder;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.system.ui.UIContributionBuilder;
+import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
 import org.votech.plastic.incoming.handlers.AbstractMessageHandler;
+
+import ca.odell.glazedlists.EventList;
 
 /** Factory for voexplorers - also handles some messages.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -25,29 +31,43 @@ import org.votech.plastic.incoming.handlers.AbstractMessageHandler;
  */
 public class VOExplorerFactoryImpl  extends AbstractMessageHandler implements VOExplorerFactoryInternal {
 	
-	public final UIContext context;
-	public final UIComponent ui;
-	public final IterableObjectBuilder views;
-	public final UIContributionBuilder builder;
-	public final IterableObjectBuilder activities;
-	
-	
-	/**
-	 * Logger for this class
-	 */
-	private static final Log logger = LogFactory
-			.getLog(VOExplorerFactoryImpl.class);
+	public final ObjectBuilder builder;
 
-
-	// create a new voexplorer
-	public Object create() {
-		VOExplorerImpl vo = new VOExplorerImpl(context,views,activities, builder);
+	private static final Log logger = LogFactory.getLog(VOExplorerFactoryImpl.class);
+	
+	public VOExplorerFactoryImpl(ObjectBuilder builder) {
+		this.builder = builder;
+		create(); //@todo  auto-displayed at the moment - alter this later. 
+	}	
+	private VOExplorerImpl newWindow() {
+		VOExplorerImpl vo = (VOExplorerImpl)builder.create("voexplorer");
 		vo.setVisible(true);
 		return vo;
 	}
 
-
+//Factory Interface
+	// create a new voexplorer
+	public Object create() {
+		return newWindow();
+	}
 	
+//RegistryBrowser interface.
+	public void show() {
+		newWindow();
+	}
+	public void hide() {
+		// not implemented.
+	}
+	public void open(URI arg0) {
+		VOExplorerImpl impl = newWindow();
+		impl.doOpen(arg0);
+	}
+	public void search(String arg0) {
+		VOExplorerImpl impl = newWindow();
+		impl.doQuery(arg0);
+	}
+
+	// Message Handling Interface
 	public static final List REGISTRY_MESSAGES = new ArrayList() {{
 			add(URI.create("ivo://votech.org/voresource/load"));
 			add(URI.create("ivo://votech.org/voresource/loadList"));
@@ -92,7 +112,7 @@ public class VOExplorerFactoryImpl  extends AbstractMessageHandler implements VO
 				// got all the info we need. display the ui on the EDT.
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						VOExplorerImpl ve = (VOExplorerImpl) create();
+						VOExplorerImpl ve = newWindow();
 						ve.displayResources(resList);
 					}
 				});				
@@ -110,14 +130,5 @@ public class VOExplorerFactoryImpl  extends AbstractMessageHandler implements VO
 			}
 		}
 	}
-	public VOExplorerFactoryImpl(UIContext context,final IterableObjectBuilder views, final IterableObjectBuilder activitiesBuilder,UIContributionBuilder builder) {
-		super();
-		this.context = context;
-		this.views = views;
-		this.builder = builder;
-		this.activities = activitiesBuilder;
-		this.ui = null; //@todo work out what to do here.. - sometimes will want to provide a parent (maybe never throught eh factory though??)
-		create();
-	}
-
+	
 }

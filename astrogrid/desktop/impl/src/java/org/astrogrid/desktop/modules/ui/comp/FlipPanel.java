@@ -13,5 +13,12 @@ public class FlipPanel extends JPanel{
 	private final CardLayout card;
 	public void show(String viewName) {
 		card.show(this,viewName);
+		current = viewName;
+	}
+	
+	private String current;
+	
+	public String currentlyShowing() {
+		return current;
 	}
 }

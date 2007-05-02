@@ -1,4 +1,4 @@
-/*$Id: CompositeToolEditorPanel.java,v 1.36 2007/04/18 15:47:11 nw Exp $
+/*$Id: CompositeToolEditorPanel.java,v 1.37 2007/05/02 15:38:30 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -64,7 +64,6 @@ import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
 import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditListener;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.pref.Preference;
-import org.astrogrid.desktop.modules.ui.ApplicationLauncherImpl;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.SimplifiedAppLauncherImpl;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
@@ -168,7 +167,7 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel implements
             this.setEnabled(toolModel.getTool() != null);
             toolModel.addToolEditListener(new ToolEditAdapter() {
                 public void toolSet(ToolEditEvent te) {
-                    setEnabled(toolModel.getTool() != null && (parent instanceof ApplicationLauncherImpl || parent instanceof SimplifiedAppLauncherImpl));
+                    setEnabled(toolModel.getTool() != null && (  parent instanceof SimplifiedAppLauncherImpl));
                 }
                 public void toolCleared(ToolEditEvent te) {
                     setEnabled(false);
@@ -656,6 +655,9 @@ public class CompositeToolEditorPanel extends AbstractToolEditorPanel implements
 
 /* 
 $Log: CompositeToolEditorPanel.java,v $
+Revision 1.37  2007/05/02 15:38:30  nw
+changes for 2007.3.alpha1
+
 Revision 1.36  2007/04/18 15:47:11  nw
 tidied up voexplorer, removed front pane.
 

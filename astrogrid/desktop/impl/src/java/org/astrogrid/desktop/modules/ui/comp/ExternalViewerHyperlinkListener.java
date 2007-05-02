@@ -3,10 +3,17 @@
  */
 package org.astrogrid.desktop.modules.ui.comp;
 
+import java.net.URI;
 import java.net.URL;
+import java.util.Enumeration;
+import java.util.Iterator;
 
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.Element;
+import javax.swing.text.AbstractDocument.LeafElement;
+import javax.swing.text.html.HTML;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -38,10 +45,23 @@ public class ExternalViewerHyperlinkListener implements HyperlinkListener {
 		try {
 		if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
 			URL u = e.getURL();
-			if (u.getProtocol().equals("ivo")) {
-				registry.search(StringUtils.substringBefore(u.toString(),"#"));
-			} else {
-				browser.openURL(u);
+			if (u != null) { // it's a url the system knows about - so hand it off to the browser.
+				if (u.getProtocol().equals("ivo")) { // double check - incase somehow a URL is produced from a ivo://
+					//registry.search(StringUtils.substringBefore(u.toString(),"#"));
+					registry.open(new URI(u.toString()));
+				} else {
+					browser.openURL(u);
+				}
+			} else { // most probably an ivo:// reference. now need to go digging for it.
+				Element el = e.getSourceElement();
+				AttributeSet attr = el.getAttributes();
+				AttributeSet a = (AttributeSet)attr.getAttribute(HTML.Tag.A);
+				if (a != null) {
+					String ivoid= (String)a.getAttribute(HTML.Attribute.HREF);
+					if (ivoid != null) {
+						registry.open(new URI(ivoid));
+					}
+				}
 			}
 		}
 		} catch (Exception ex) {

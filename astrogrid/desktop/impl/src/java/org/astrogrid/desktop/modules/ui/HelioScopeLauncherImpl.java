@@ -1,4 +1,4 @@
-/*$Id: HelioScopeLauncherImpl.java,v 1.22 2007/04/18 15:47:05 nw Exp $
+/*$Id: HelioScopeLauncherImpl.java,v 1.23 2007/05/02 15:38:28 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -89,7 +89,7 @@ public class HelioScopeLauncherImpl extends AbstractScope
                                   Stap stap,TupperwareInternal tupp, SendToMenu sendTo, SnitchInternal snitch, RegistryBrowser browser) {
         super(context,myspace,chooser,tupp, sendTo, snitch,"HelioScope",new DalProtocol[]{
         		new StapProtocol(reg,stap)
-        }, browser);
+        });
 
         
         getContext().getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.helioscopeLauncher");
@@ -281,6 +281,9 @@ private List resourceList;
 
 /* 
 $Log: HelioScopeLauncherImpl.java,v $
+Revision 1.23  2007/05/02 15:38:28  nw
+changes for 2007.3.alpha1
+
 Revision 1.22  2007/04/18 15:47:05  nw
 tidied up voexplorer, removed front pane.
 

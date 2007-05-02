@@ -6,6 +6,8 @@ package org.astrogrid.desktop.modules.ui;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import net.sourceforge.hiveutils.service.ObjectBuilder;
+
 import org.astrogrid.acr.cds.Sesame;
 import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.Registry;
@@ -30,57 +32,28 @@ import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
  */
 public class AstroScopeFactory implements AstroScopeInternal{
 
-	/**
-	 * @param ui
-	 * @param conf
-	 * @param hs
-	 * @param myspace
-	 * @param chooser
-	 * @param reg
-	 * @param siap
-	 * @param cone
-	 * @param ssap
-	 * @param ses
-	 * @param tupp
-	 * @throws URISyntaxException
-	 */
-	public AstroScopeFactory(UIContext context,  MyspaceInternal myspace, ResourceChooserInternal chooser, Registry reg, Siap siap, Cone cone, Ssap ssap, Sesame ses, TupperwareInternal tupp, SendToMenu sendTo, SnitchInternal snitch, RegistryBrowser browser) throws URISyntaxException {
-		this.context = context;
-		this.myspace = myspace;
-		this.chooser= chooser;
-		this.reg = reg;
-		this.siap = siap;
-		this.cone = cone;
-		this.ssap = ssap;
-		this.ses = ses;
-		this.tupp = tupp;
-		this.sendTo = sendTo;
-		this.snitch = snitch;
-		this.browser = browser;
+	public AstroScopeFactory(ObjectBuilder builder) {
+		this.builder = builder;
 	}
-	private final UIContext context;
-	private final MyspaceInternal myspace;
-	private final ResourceChooserInternal chooser;
-	private final Registry reg;
-	private final Siap siap;
-	private final Cone cone;
-	private final Ssap ssap;
-	private final Sesame ses;
-	private final TupperwareInternal tupp;
-	private final SendToMenu sendTo;
-	private final SnitchInternal snitch;
-	private final RegistryBrowser browser;
-	
+	private final ObjectBuilder builder;
 	public void show() {
-		AstroScope	i = new AstroScopeLauncherImpl(context,myspace, chooser, reg, siap, cone, ssap, ses, tupp, sendTo,snitch, browser);
-		i.show();
-
+		newWindow();
 	}
-
+// astrscope intetnal interface.
 	public void runSubset(List resources) {
-		AstroScopeInternal	i = new AstroScopeLauncherImpl(context, myspace, chooser, reg, siap, cone, ssap, ses, tupp, sendTo,snitch, browser);
+		AstroScopeInternal	i = newWindow();
 		i.runSubset(resources) ;
+		//i.show();
+	}
+// factory interface
+	public Object create() {
+		return newWindow();
+	}
+	
+	private AstroScopeLauncherImpl newWindow() {
+		AstroScopeLauncherImpl	i = (AstroScopeLauncherImpl)builder.create("astroscope");
 		i.show();
+		return i;
 	}
 
 }

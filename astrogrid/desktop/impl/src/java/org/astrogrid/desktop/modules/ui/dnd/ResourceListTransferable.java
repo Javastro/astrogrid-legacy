@@ -35,8 +35,8 @@ public class ResourceListTransferable implements Transferable {
 	
 	public Object getTransferData(DataFlavor flavor)
 			throws UnsupportedFlavorException, IOException {
-		if (VoDataFlavour.LOCAL_RESOURCE_LIST.equals(flavor)
-				|| VoDataFlavour.RESOURCE_LIST.equals(flavor)) {
+		if (VoDataFlavour.LOCAL_RESOURCE_ARRAY.equals(flavor)
+				|| VoDataFlavour.RESOURCE_ARRAY.equals(flavor)) {
 			return l.toArray(new Resource[l.size()]);
 		} else if (VoDataFlavour.LOCAL_URI_ARRAY.equals(flavor)){
 			List u = new ArrayList();
@@ -68,8 +68,8 @@ public class ResourceListTransferable implements Transferable {
 		return ArrayUtils.contains(supportedDataFlavors,flavor);
 	}
 	private static final DataFlavor[] supportedDataFlavors = new DataFlavor[] {
-		VoDataFlavour.LOCAL_RESOURCE_LIST
-		, VoDataFlavour.RESOURCE_LIST
+		VoDataFlavour.LOCAL_RESOURCE_ARRAY
+		, VoDataFlavour.RESOURCE_ARRAY
 		,VoDataFlavour.LOCAL_URI_ARRAY
 		,VoDataFlavour.URI_LIST
 		,VoDataFlavour.PLAIN

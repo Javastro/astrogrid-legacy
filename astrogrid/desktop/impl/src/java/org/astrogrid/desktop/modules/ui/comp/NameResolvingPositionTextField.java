@@ -31,29 +31,26 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 public class NameResolvingPositionTextField extends PositionTextField {
 
 	/** Construct a new resolving component */
-    public NameResolvingPositionTextField(UIComponent parent) {
+    public NameResolvingPositionTextField(UIComponent parent, Sesame ses) {
         super();
+        this.ses = ses;
         this.parent = parent;
         // stick an 'adapter' in front of existing formatters.
         super.decimal = new SesameResolver(decimal);
         super.sexa = new SesameResolver(sexa);        
     }
     
-    public NameResolvingPositionTextField(UIComponent parent, Point2D p) {
+    public NameResolvingPositionTextField(UIComponent parent, Sesame ses,Point2D p) {
         super(p);
+        this.ses = ses;
         this.parent = parent;
         // stick an 'adapter' in front of existing formatters.
         super.decimal = new SesameResolver(decimal);
         super.sexa = new SesameResolver(sexa);        
-    }
-    
-    // setter - necessary to work-around an architectural glitch.
-    public void setSesame(Sesame ses) {
-    	this.ses = ses;
     }
     
     //name resolver.
-    private  Sesame ses;
+    private  final Sesame ses;
     // need a reference to this, as all calls to sesame need to run in background threads.
     private final UIComponent parent;
 
@@ -67,7 +64,12 @@ public class NameResolvingPositionTextField extends PositionTextField {
 			// try the coordinate parser first
 			objectName=null;
 			try {
-				return orig.stringToValue(arg0);
+				Point2D.Double p = (Point2D.Double)orig.stringToValue(arg0);
+				// construct a fake sesame bean from this..
+				pos = new SesamePositionBean();
+				pos.setRa(p.getX());
+				pos.setDec(p.getY());
+				return p;
 			} catch (ParseException e) {
 			}
 			// if not returned yet, try name resolving..
@@ -99,6 +101,7 @@ public class NameResolvingPositionTextField extends PositionTextField {
      * */
     private void resolveNameToPosition(final String inputPos) throws ParseException {
     	objectName = inputPos;
+    	pos = new SesamePositionBean(); // temporary placehoder
     	(new BackgroundWorker(parent,"Resolving " + inputPos + " using Sesame",Thread.MAX_PRIORITY) {
 			protected Object construct() throws Exception {
 				return ses.resolve(inputPos.trim());   
@@ -110,11 +113,19 @@ public class NameResolvingPositionTextField extends PositionTextField {
 				setText(inputPos); // put things back as they were.
 			}
 			protected void doFinished(Object result) {				
-				SesamePositionBean pos = (SesamePositionBean)result;
+				pos = (SesamePositionBean)result;
 				setPosition(new Point2D.Double(pos.getRa(),pos.getDec()));
-	          
 			}
     	}).start();
 
     }
+    
+    private SesamePositionBean pos = new SesamePositionBean();
+
+	/**
+	 * @return
+	 */
+	public SesamePositionBean getPositionAsSesameBean() {
+		return pos;
+	}
 }

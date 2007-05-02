@@ -3,24 +3,40 @@
  */
 package org.astrogrid.desktop.modules.system.ui;
 
+import java.awt.MenuItem;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.EventListener;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.AbstractAction;
 import javax.swing.ButtonModel;
 import javax.swing.DefaultButtonModel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.collections.Factory;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.alternatives.HeadlessUIComponent;
 import org.astrogrid.desktop.modules.system.BackgroundExecutor;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.UIComponentImpl;
+import org.astrogrid.desktop.modules.ui.comp.EventListMenuManager;
+import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.FunctionList;
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.ObservableElementList;
 
@@ -50,18 +66,19 @@ public class UIContextImpl implements UIContext{
 	public BrowserControl getBrowser() {
 		return browser;
 	}
-	//convenience constructor
+	//convenience constructor used while testing.
 	public UIContextImpl(final Configuration configuration,  BackgroundExecutor executor,final HelpServerInternal help, final BrowserControl browser) {
-		this(configuration,executor,help,browser, new BasicEventList());
+		this(configuration,executor,help,browser, new BasicEventList(),new HashMap());
 	}
 	
-	public UIContextImpl(final Configuration configuration,  BackgroundExecutor executor,final HelpServerInternal help, final BrowserControl browser, EventList plastic) {
+	public UIContextImpl(final Configuration configuration,  BackgroundExecutor executor,final HelpServerInternal help, final BrowserControl browser, EventList plastic, Map windowFactories) {
 		super();
 		this.configuration = configuration;
 		this.help = help;
 		this.executor = executor;
 		this.browser = browser;
 		this.plastic = plastic;
+		this.windowFactories = windowFactories;
 
 		windows = new BasicEventList();
 		windowsView = GlazedLists.readOnlyList(windows);
@@ -78,7 +95,7 @@ public class UIContextImpl implements UIContext{
     			new ObservableConnector());
 				
 	}
-	
+	private final Map windowFactories;
 	private final BrowserControl browser;
 	private final BackgroundExecutor executor;
 	private final Configuration configuration;
@@ -214,9 +231,7 @@ public class UIContextImpl implements UIContext{
 	}
 	//@todo add in command to show the preference dialogue too.
 
-
-	
-	//@todo , add in this..
+	//@todo , add in the equivalent of this
 	/*
 	 *    this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(new WindowAdapter(){
@@ -236,7 +251,64 @@ public class UIContextImpl implements UIContext{
         });        
 	 */
 	
+	public JMenu createWindowMenu( UIComponentImpl owner) {
+		JMenu windowMenu = new JMenu();
+		windowMenu.setText("Window");
+		windowMenu.setMnemonic(KeyEvent.VK_W);
+		windowMenu.add(owner.new CloseAction());		
+		windowMenu.addSeparator();
+		// splice in the new window factories.
+		for (Iterator facs = windowFactories.entrySet().iterator(); facs.hasNext();) {
+			final Map.Entry entry = (Map.Entry) facs.next();
+			JMenuItem mi = new JMenuItem("New " + entry.getKey());
+			mi.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Factory fac = (Factory)entry.getValue();
+					fac.create(); //@todo do I need to set location, or anything??
+				}
+			});
+			windowMenu.add(mi);
+		}
 
+		windowMenu.addSeparator();
+		// add window list here
+		JMenu windowListMenu = new JMenu("Windows");
+		windowMenu.add(windowListMenu); // would like to display this in-line really.
+		EventList w = new FunctionList(this.getWindowList(),new FunctionList.Function() {
+
+			public Object evaluate(Object arg0) {
+				final UIComponent c = (UIComponent)arg0;
+				final JMenuItem mi = new JMenuItem(c.getTitle());
+				c.getFrame().addPropertyChangeListener("title",new PropertyChangeListener() {
+					public void propertyChange(PropertyChangeEvent evt) {
+						mi.setText(c.getTitle());
+					}
+				});
+				mi.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						c.setVisible(true);
+					}
+				});
+				return mi;
+			}
+		});
+		new EventListMenuManager(w,windowListMenu,false);
+
+		windowMenu.add(new HideAllAction());
+		return windowMenu;
+	}
+	
+    //@todo add a preference on acr.advanced to only enable this at certain times.
+    private final class HideAllAction extends AbstractAction {
+        public HideAllAction() {
+            super("Hide All Windows");
+            this.putValue(SHORT_DESCRIPTION,"Hide All Windows");
+        }
+        public void actionPerformed(ActionEvent e) {
+        	hide();
+        }
+    } 
+	
 	/** a connector that listens to changes to observable objects and bridges these 
      * events into the ObservableElementList. Used to display a list of running background tasks.
  * @author Noel.Winstanley@manchester.ac.uk

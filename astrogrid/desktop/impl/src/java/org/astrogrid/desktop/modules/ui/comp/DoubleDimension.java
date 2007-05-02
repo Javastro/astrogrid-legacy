@@ -20,9 +20,23 @@ public class DoubleDimension extends Dimension2D {
 	public double getHeight() {
 		return height;
 	}
+	
+	/**
+	 * @param height the height to set
+	 */
+	public void setHeight(double height) {
+		this.height = height;
+	}
 
 	public double getWidth() {
 		return width;
+	}
+	
+	/**
+	 * @param width the width to set
+	 */
+	public void setWidth(double width) {
+		this.width = width;
 	}
 
 	public void setSize(double width, double height) {
@@ -30,9 +44,43 @@ public class DoubleDimension extends Dimension2D {
 		this.height = height;
 	}
 
+	// for serialization.
+	public DoubleDimension() {
+	}
+	
 	public DoubleDimension(double width, double height) {
 		super();
 		this.height = height;
 		this.width = width;
+	}
+
+	public int hashCode() {
+		final int PRIME = 31;
+		int result = 1;
+		long temp;
+		temp = Double.doubleToLongBits(this.height);
+		result = PRIME * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(this.width);
+		result = PRIME * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final DoubleDimension other = (DoubleDimension) obj;
+		if (Double.doubleToLongBits(this.height) != Double.doubleToLongBits(other.height))
+			return false;
+		if (Double.doubleToLongBits(this.width) != Double.doubleToLongBits(other.width))
+			return false;
+		return true;
+	}
+	
+	public String toString() {
+		return width + ", " + height;
 	}
 }

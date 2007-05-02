@@ -1,4 +1,4 @@
-/*$Id: DalProtocolManager.java,v 1.6 2007/01/29 10:43:49 nw Exp $
+/*$Id: DalProtocolManager.java,v 1.7 2007/05/02 15:38:32 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import org.apache.commons.collections.iterators.UnmodifiableIterator;
+
 import org.astrogrid.acr.ivoa.resource.Service;
 
 /**
@@ -71,7 +72,20 @@ public class DalProtocolManager implements QueryResultSummarizer {
         return l.size();
     }
 
-    
+    /** helper method for working with forms layout 
+     * returns enough row specs to display the protocols.(2 per column)
+     */
+    public String getRowspec() {
+    	int num= size() / 2;
+    	if (size() % 2 == 1) {
+    		num++;
+    	}
+    	StringBuffer sb = new StringBuffer("d");
+    	for (int i = 1; i < num; i++) {
+    		sb.append(",d");
+    	}
+    	return sb.toString();
+    }
     
        
 
@@ -80,6 +94,9 @@ public class DalProtocolManager implements QueryResultSummarizer {
 
 /* 
 $Log: DalProtocolManager.java,v $
+Revision 1.7  2007/05/02 15:38:32  nw
+changes for 2007.3.alpha1
+
 Revision 1.6  2007/01/29 10:43:49  nw
 documentation fixes.
 

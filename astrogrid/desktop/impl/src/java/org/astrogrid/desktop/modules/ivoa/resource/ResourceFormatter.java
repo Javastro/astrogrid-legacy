@@ -195,8 +195,8 @@ public final class ResourceFormatter {
 		typeMapper.put("ConeSearch","Catalog service");
 		typeMapper.put("SimpleImageAccess", "Image service");
 		typeMapper.put("SimpleSpectrumAccess","Spectrum Service");
-		typeMapper.put("CeaApplicationType","Long-running Task");//@todo find a better characterization of cea.
-		typeMapper.put("CeaHttpApplicationType", "Long-running Task");
+		typeMapper.put("CeaApplicationType","Offline Application");//@todo find a better characterization of cea.
+		typeMapper.put("CeaHttpApplicationType", "Offline Application");
 	//	typeMapper.put("
 	}
 	

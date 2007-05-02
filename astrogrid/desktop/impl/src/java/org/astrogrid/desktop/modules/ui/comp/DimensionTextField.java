@@ -106,7 +106,7 @@ public class DimensionTextField extends JFormattedTextField implements DecSexLis
 	 * width - ra size
 	 * height - dec size.
 	 */
-	public Dimension2D getDimension() {
+	public DoubleDimension getDimension() {
 		DoubleDimension d = (DoubleDimension)((DoubleDimension)getValue()).clone();
 		if (Double.isNaN(d.getHeight())) {
 			d.setSize(d.getWidth(),d.getWidth());

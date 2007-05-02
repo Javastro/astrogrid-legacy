@@ -3,7 +3,10 @@
  */
 package org.astrogrid.desktop.modules.system.ui;
 
+import java.awt.event.ActionListener;
+
 import javax.swing.ButtonModel;
+import javax.swing.JMenu;
 
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
@@ -11,6 +14,7 @@ import org.astrogrid.acr.system.UI;
 import org.astrogrid.desktop.modules.system.BackgroundExecutor;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 
 import ca.odell.glazedlists.EventList;
 
@@ -38,7 +42,7 @@ public interface UIContext  extends UI{
 	
 	
 	// assistance for UI.
-	// irritating. but need to put it somewhere.
+	// irritating. but need to put it somewhere. 
 	  public void showAboutDialog();   
 	
 	/** button model that indicates logged in status using 'enabled' property
@@ -65,4 +69,10 @@ public interface UIContext  extends UI{
 	public UIComponent findMainWindow();
 	//@todo some way to iinform which window is uppermost.. or can this be deduced?
 
+	// helper methods for constructing UI.
+	/**
+	 *  create a new menu, which shows the window list, and has operations
+	 *  to hide 'owner', hide all, and create new windows of various UI types (if available)
+	 */
+	public JMenu createWindowMenu( UIComponentImpl owner) ;
 }

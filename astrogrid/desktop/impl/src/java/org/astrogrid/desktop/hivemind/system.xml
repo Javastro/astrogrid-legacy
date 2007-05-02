@@ -467,9 +467,29 @@ System module.
 	 			<service>help</service>
 	 			<service>browser</service>
 	 			<service>plasticList</service>
+	 			<configuration>windowFactories</configuration>
 	 		</construct>
 	 	</invoke-factory>
 	 </service-point>
+	 
+	 <configuration-point id="windowFactories">
+	 	Defines factories that can create different kinds of top level UI windows.
+	 	ui module contributes to these - so will only be present in full version of Workbench.
+	 	<schema>
+			<element name="window" key-attribute="name" content-translator="object">
+	 				Reference to a service, or somesuch that acts as a factory.
+	 				must implemeent org.apache.commons.collections.Factory
+	 			<attribute name="name" required="true" unique="true">
+	 				Name of the window factory - used in UI.
+	 			</attribute>
+				<rules>
+					<push-content />
+					<invoke-parent method="addElement" />
+				</rules>
+			</element>	
+	 	</schema>
+	 </configuration-point>
+	 
 	 
 	<service-point id="uiView" interface="org.astrogrid.desktop.modules.ui.UIComponent"> 
 		Main user interface view, used in AR and PLastic versions.

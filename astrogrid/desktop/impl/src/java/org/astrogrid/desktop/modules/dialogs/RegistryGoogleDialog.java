@@ -1,4 +1,4 @@
-/*$Id: RegistryGoogleDialog.java,v 1.8 2007/04/18 15:47:10 nw Exp $
+/*$Id: RegistryGoogleDialog.java,v 1.9 2007/05/02 15:38:32 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,10 +28,10 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.desktop.modules.dialogs.registry.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
+import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 
 /** wraps a dialogue around a registry chooser pane.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Sep-2005
@@ -75,7 +75,13 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
     }
     
     public void setFilter(String filter) {
-        chooserPanel.applyFilter(filter);
+     //@todo implement or reexamine..
+    	//@fixme - either re-introduce filtering (although doesn't work with stored playlists)
+    	// or need some way to express a filter on resource objects. 
+    	// which means another string-based expressiion language...
+    	// - script interpreter? bean constraint and update language?
+    	// maybe this is a general requirement  anyhow - re brian's wishlist
+    	// 
     }
 
     public void setMultipleResources(boolean multiple) {
@@ -114,7 +120,8 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
                     JOptionPane.UNINITIALIZED_VALUE);
 
             if (JOptionPane.OK_OPTION == ((Integer)value).intValue()) {
-                selectedResources = chooserPanel.getSelectedResources();
+              //  selectedResources = chooserPanel.getSelectedResources();
+            	//@fixme implement against current selection.
                     resetAndHide();                
             } else { //user closed dialog or clicked cancel           
                 selectedResources = null;
@@ -168,6 +175,9 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
 
 /* 
 $Log: RegistryGoogleDialog.java,v $
+Revision 1.9  2007/05/02 15:38:32  nw
+changes for 2007.3.alpha1
+
 Revision 1.8  2007/04/18 15:47:10  nw
 tidied up voexplorer, removed front pane.
 

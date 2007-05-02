@@ -22,10 +22,7 @@
 	<contribution configuration-id="framework.acrServices">
 			<acrService id="astroscope" interface="AstroScope"/>
 			<acrService id="helioscope" interface="HelioScope"/>
-			<acrService id="lookout" interface="Lookout" />
-			<acrService id="applicationLauncher" interface="ApplicationLauncher" />
 			<acrService id="myspaceBrowser" interface="MyspaceBrowser" />
-			<acrService id="jobMonitor" interface="JobMonitor" />
 			<acrService id="registryBrowser" interface="RegistryBrowser" />
 	</contribution>
 
@@ -92,7 +89,16 @@ ASTROSCOPE
 			<interceptor service-id="system.snitchInterceptor" />
 		<invoke-factory> 
 		<construct class="org.astrogrid.desktop.modules.ui.AstroScopeFactory" >
-				<service>system.ui</service> 
+						<service>hiveutils.ObjectBuilder</service>
+		</construct>
+		</invoke-factory>	
+	</service-point>
+
+	<contribution configuration-id="system.windowFactories">
+		<window name="All-VO AstroScope">service:astroscope</window>
+	</contribution>
+
+<!--  				<service>system.ui</service> 
 				<service>astrogrid.myspace</service>
 				<service>dialogs.resourceChooser</service>
 				<service>ivoa.registry</service>
@@ -103,15 +109,77 @@ ASTROSCOPE
 				<service>system.tupperware</service>	
 				<service>ui.sendTo</service>
 				<service>system.snitch</service>
-				<service>ui.registryBrowser</service>
-<!--				<event-listener service-id="builtin.shutdown" />		-->																															
+				<service>ui.registryBrowser</service>-->																													
+	<contribution configuration-id="hiveutils.ObjectBuilderObjects">
+		Describes how to build a new astroscope window.
+		<object name="astroscope" class="org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl" >
+			<inject object="service:system.ui"/>
+			<inject object="service:protocolsBuilder" />
+			<inject object="service-property:scopeHistory:list" />
+			<!-- later<inject object="service:actionsBuilder" /> -->
+			<!--  refactor some of these out into object builder later too. -->
+			<inject object="service:astrogrid.myspace" />
+			<inject object="service:dialogs.resourceChooser" />
+			<inject object="service:cds.sesame" />
+			<inject object="service:system.tupperware" />
+			<inject object="service:sendTo"/><!-- to remove -->
+			<inject object="service:system.snitch" />
+		</object>
+	</contribution>
+	
+	<service-point id="scopeHistory" visibility="private" interface="org.astrogrid.desktop.modules.ui.folders.FoldersProvider">
+		Loads / saves the astroscope search history.
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.ui.scope.ScopeHistoryProvider">
+				<service>system.ui</service>
+				<object>preference:astrogrid.workdir</object>
 			</construct>
-		</invoke-factory>	
-	</service-point>
-
-	<implementation service-id="astroscope" if="property ui.astroscope.disabled">
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
-	</implementation>
+		</invoke-factory>
+	</service-point>	
+		
+	<service-point id="protocolsBuilder" interface="org.astrogrid.desktop.hivemind.IterableObjectBuilder"
+		visibility="private">
+		Object builder for astroscope protocols
+		<invoke-factory model="singleton">
+			<construct class="org.astrogrid.desktop.hivemind.IterableObjectBuilderImpl">
+				<log />
+				<configuration>protocols</configuration>
+				<service>hiveutils.ObjectTranslator</service>
+				<service>hiveutils.EventLinker</service>
+			</construct>
+		</invoke-factory>
+	</service-point>	
+		
+	<configuration-point id="protocols" schema-id="hiveutils.ObjectBuilderSchema">
+		Configuration point for the list of 'protocols' - kinds of service that astroscope knows how to invoke.
+		All should be an instance of DalProtocol
+	</configuration-point>
+		
+	<!--  lists of protocols  -->
+	<contribution configuration-id="protocols">
+		<object name="siap" class="org.astrogrid.desktop.modules.ui.scope.SiapProtocol">
+			<inject object="service:ivoa.registry" />
+			<inject object="service:ivoa.siap" />
+		</object>
+		<object name="ssap" class="org.astrogrid.desktop.modules.ui.scope.SsapProtocol">
+			<inject object="service:ivoa.registry" />
+			<inject object="service:ivoa.ssap" />
+		</object>
+		<object name="cone" class="org.astrogrid.desktop.modules.ui.scope.ConeProtocol">
+			<inject object="service:ivoa.registry" />
+			<inject object="service:ivoa.cone" />
+		</object>
+		<object name="vizier" class="org.astrogrid.desktop.modules.ui.scope.AllVizierProtocol">
+			<inject object="service:ivoa.cone" />
+		</object>
+		<!--  		
+		<object name="stap" class="org.astrogrid.desktop.modules.ui.scope.StapProtocol">
+			<inject object="service:ivoa.registry" />
+			<inject object="service:astrogrid.stap" />
+		</object>		
+		-->
+		<!-- add in the helio-scope protocols here afterwards. -->
+	</contribution>
 
 		<contribution configuration-id="system.helpmap">
 		<item id="userInterface.astroscopeLauncher" url="http://www2.astrogrid.org/science/documentation/data-explore/astroscope" />
@@ -155,52 +223,7 @@ ASTROSCOPE
 		
 	</contribution>	
 	
-	<!--  
-	====================================
-	LOOKOUT
-	 -->		
-	<service-point id="lookout" interface="Lookout">
-		<interceptor service-id="system.snitchInterceptor" />
-		<invoke-factory model="session">
-			<construct class="org.astrogrid.desktop.modules.ui.LookoutImpl" >
-				<service>system.configuration</service>
-				<service>system.help</service>
-				<service>system.ui</service>
-				<service>astrogrid.recorder</service>
-				<service>astrogrid.processManager</service>
-				<service>astrogrid.myspace</service>
-				<configuration>astrogrid.processStrategies</configuration>
-				<service>ui.sendTo</service>
-				<service>astrogrid.jobs</service>
-				<event-listener service-id="builtin.shutdown" />						
-			</construct>
-		</invoke-factory>	
-	</service-point>
-
-	<implementation service-id="lookout" if="property ui.lookout.disabled">
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
-	</implementation>	
-
-	<contribution configuration-id="system.helpmap">
-		<item id="userInterface.lookout" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/lookout" />
-		<item id="lo.folderTree" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/lookout" />
-		<item id="lo.messageTable" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/lookout" />		
-		<item id="lookout.resultsTable" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/lookout" />
-		<item id="lookout.menu.science" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/lookout" />
-
-	</contribution>	
 	
-	<!-- for backwards compatabiltiy - delegates to lookout -->		
-	<service-point id="jobMonitor" interface="JobMonitor">
-		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.ui.LegacyJobMonitor" />
-		</invoke-factory>	
-	</service-point>
-
-	<implementation service-id="jobMonitor" if="property ui.lookout.disabled"> <!-- disable this if lookout is disabled -->
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
-	</implementation>	
-
 	<!-- -
 	====================================
 	SIMPLIFIED APP LAUNCHER
@@ -247,207 +270,170 @@ Stand-alone Query Builder
 		<item id="queryBuilder.menu.science" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/resources/resources/" />
 	</contribution>	
 	
-
-	<!-- 
-	==================================
-	REGISTRY BROWSER
-	 -->
-	<service-point id="registryBrowser" interface="RegistryBrowser">
-			<interceptor service-id="system.snitchInterceptor" />
-		<invoke-factory>
-		<construct class="org.astrogrid.desktop.modules.ui.RegistryBrowserFactory" >
-				<service>system.help</service>
-				<service>system.ui</service>
-				<service>system.configuration</service>
-				<service>hiveutils.ObjectBuilder</service>
-				<!--<event-listener service-id="builtin.shutdown" />						-->
-			</construct>
-		</invoke-factory>	
-	</service-point>
-
-	<implementation service-id="registryBrowser" if="property ui.registryBrowser.disabled">
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
-	</implementation>	
-
-	<contribution configuration-id="system.helpmap">
-		<item id="userInterface.registryBrowser" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/resources/resources/" />
-		<item id="registryBrowser.menu.science" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/resources/resources/" />
-	</contribution>	
-	
 	<!-- 
 	==================================
 	VOEXPLORER
 	 -->
-	
-	<service-point id="voexplorer" interface="org.astrogrid.desktop.modules.ui.VOExplorerFactoryInternal">
+	<service-point id="registryBrowser" interface="org.astrogrid.desktop.modules.ui.VOExplorerFactoryInternal">
 			<interceptor service-id="system.snitchInterceptor" />
 		<invoke-factory>
-		<construct class="org.astrogrid.desktop.modules.ui.VOExplorerFactoryImpl" >
-				<service>system.ui</service>
-				<service>viewsBuilder</service>
-				<service>activitiesBuilder</service>
-				<service>system.uiBuilder</service>
-				<!--<event-listener service-id="builtin.shutdown" />						-->
+			<construct class="org.astrogrid.desktop.modules.ui.VOExplorerFactoryImpl" >
+				<service>hiveutils.ObjectBuilder</service>
 			</construct>
 		</invoke-factory>	
 	</service-point>
-
-	<contribution configuration-id="hivemind.EagerLoad">
-		<load service-id="voexplorer" />
+	
+	<contribution configuration-id="system.windowFactories">
+		<window name="VO Explorer">service:registryBrowser</window>
 	</contribution>
 	
 	<contribution configuration-id="system.plasticMessageHandlers">
-		<object>service:voexplorer</object>
+		<object>service:registryBrowser</object>
 	</contribution>
 	
-	<service-point id="viewsBuilder" interface="org.astrogrid.desktop.hivemind.IterableObjectBuilder">
-		Object builder for the set of views in voexplorer.
-		<invoke-factory model="singleton">
-			<construct class="org.astrogrid.desktop.hivemind.IterableObjectBuilderImpl">
-				<log />
-				<configuration>voviews</configuration>
-				<service>hiveutils.ObjectTranslator</service>
-				<service>hiveutils.EventLinker</service>
-			</construct>
-		</invoke-factory>
-	</service-point>
-	
-	<configuration-point id="voviews" schema-id="hiveutils.ObjectBuilderSchema">
-		Configuration point for the list of views available in voexplorer
-	</configuration-point>
-	
-	<!--  
-	**************************************************
-	STORAGE VIEW
-	-->
-	<contribution configuration-id="voviews">
-		<object name="storage" class="org.astrogrid.desktop.modules.ui.voexplorer.StorageView">
-			<inject-arg />	
-			<inject object="service-property:storageFolders:list" />	
-			<inject object="service:system.vfs" />
+	<contribution configuration-id="hiveutils.ObjectBuilderObjects">
+		Describes how to build a new voexplorer window.
+		<object name="voexplorer" class="org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl">
+			<inject object="service:system.ui"/>
+			<inject object="service:actionsBuilder" />
+			<inject object="service:system.uiBuilder" />
+			<inject object="service-property:resourceFolders:list" />
+			<inject object="object:registryGooglePanel" />
+			<inject object="service:querySize" /> 
 		</object>
 	</contribution>
-		<service-point id="storageFolders" visibility="private" interface="org.astrogrid.desktop.modules.ui.voexplorer.folders.FoldersProvider">
-		Loads / saves the list of resource folders.
+
+	<service-point id="resourceFolders" visibility="private" interface="org.astrogrid.desktop.modules.ui.folders.FoldersProvider">
+		Loads / saves the list of resource folders. shared between multiple instances of voexplorer.
 		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.ui.voexplorer.folders.StorageFoldersProvider">
+			<construct class="org.astrogrid.desktop.modules.ui.folders.ResourceListsProvider">
 				<service>system.ui</service>
 				<object>preference:astrogrid.workdir</object>
 			</construct>
 		</invoke-factory>
 	</service-point>
 
-	<!--  
-	**************************************************
-	RESOURCE VIEW
-	-->
-	<contribution configuration-id="voviews">
-		<object name="resource" class="org.astrogrid.desktop.modules.ui.voexplorer.RegistryView">
-			<inject-arg />
-			<inject object="service-property:resourceFolders:list" />
-			<inject object="object:registryGooglePanel" />
-		</object>
-	</contribution>		
+	<!--  makes the registryBrowser dsplay on startup. -->
+	<contribution configuration-id="hivemind.EagerLoad">
+		<load service-id="registryBrowser" />
+	</contribution>
+
+<!-- 
+=====================================
+FILE EXPLORER
+ -->
+ 	<service-point id="fileExplorer" interface="org.astrogrid.desktop.modules.ui.FileExplorerFactoryInternal">
+ 		<interceptor service-id="system.snitchInterceptor" />
+ 		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.ui.FileExplorerFactoryImpl" >
+				<service>hiveutils.ObjectBuilder</service>
+			</construct>
+		</invoke-factory>	
+ 	</service-point>
+
+	<contribution configuration-id="system.windowFactories">
+		<window name="File Explorer">service:fileExplorer</window>
+	</contribution>
 	
-	<service-point id="resourceFolders" visibility="private" interface="org.astrogrid.desktop.modules.ui.voexplorer.folders.FoldersProvider">
+	<contribution configuration-id="system.plasticMessageHandlers">
+		<object>service:fileExplorer</object>
+	</contribution>	
+	
+	<contribution configuration-id="hiveutils.ObjectBuilderObjects">
+		Describes how to build a new fileexplorer window.
+		<object name="fileExplorer" class="org.astrogrid.desktop.modules.ui.fileexplorer.FileExplorerImpl">
+			<inject object="service:system.ui"/>
+			<inject object="service:actionsBuilder" />
+			<inject object="service:system.uiBuilder" />
+			<inject object="service-property:storageFolders:list" />
+			<inject object="service:system.vfs" />
+		</object>
+	</contribution>
+
+	<service-point id="storageFolders" visibility="private" interface="org.astrogrid.desktop.modules.ui.folders.FoldersProvider">
 		Loads / saves the list of resource folders.
 		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.ui.voexplorer.folders.ResourceFoldersProvider">
+			<construct class="org.astrogrid.desktop.modules.ui.folders.StorageFoldersProvider">
 				<service>system.ui</service>
 				<object>preference:astrogrid.workdir</object>
 			</construct>
 		</invoke-factory>
 	</service-point>
-	<!-- -
-	******************************************************
-	Spatial View
-	 
-	 <contribution configuration-id="voviews">
-	 	<object name="space" class="org.astrogrid.desktop.modules.ui.voexplorer.ScopeView">
-	 		<inject-arg />
-	 	</object>
-	 </contribution>-->
+
 <!--  
 ********************************************
-Activities 
+ACTIONS
 -->
 	
-	<service-point id="activitiesBuilder" interface="org.astrogrid.desktop.hivemind.IterableObjectBuilder">
-		Object builder for activities
+	<service-point id="actionsBuilder" interface="org.astrogrid.desktop.modules.system.ui.ActionContributionBuilder">
+		Assembles actions menus from the contributed actions.
+		<invoke-factory model="singleton">
+			<construct class="org.astrogrid.desktop.modules.system.ui.ActionContributionBuilderImpl">
+				<service>actionsFactory</service>
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+	<service-point id="actionsFactory" interface="org.astrogrid.desktop.hivemind.IterableObjectBuilder"
+		visibility="private">
+		Object builder for actions
 		<invoke-factory model="singleton">
 			<construct class="org.astrogrid.desktop.hivemind.IterableObjectBuilderImpl">
 				<log />
-				<configuration>activities</configuration>
+				<configuration>actions</configuration>
 				<service>hiveutils.ObjectTranslator</service>
 				<service>hiveutils.EventLinker</service>
 			</construct>
 		</invoke-factory>
 	</service-point>	
 		
-	<configuration-point id="activities" schema-id="hiveutils.ObjectBuilderSchema">
+	<configuration-point id="actions" schema-id="hiveutils.ObjectBuilderSchema">
 		Configuration point for the list of 'invoke' tasks.
 	</configuration-point>
 		
-	<!--  lists of tasks  -->
-	<contribution configuration-id="activities">
-		<object name="astroscope" class="org.astrogrid.desktop.modules.ui.voexplorer.tasks.AstroscopeActivity">
+	<!--  lists of Actions  -->
+	<contribution configuration-id="actions">
+		<object name="queryscope" class="org.astrogrid.desktop.modules.ui.actions.QueryScopeActivity">
 			<inject object="service:astroscope" />
 			<inject name="section" object="literal:string:use" />
-		</object>
-		<object name="helioscope" class="org.astrogrid.desktop.modules.ui.voexplorer.tasks.HelioscopeActivity">
-			<inject object="service:helioscope" />
-			<inject name="section" object="literal:string:use" />			
 		</object>		
-		<object name="query" class="org.astrogrid.desktop.modules.ui.voexplorer.tasks.BuildQueryActivity">
+		<object name="query" class="org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity">
 			<inject object="service:queryBuilder"/>
 			<inject name="section" object="literal:string:use" />			
 		</object>		
-		<object name="cone" class="org.astrogrid.desktop.modules.ui.voexplorer.tasks.ConeSearchActivity">
+		<object name="cea" class="org.astrogrid.desktop.modules.ui.actions.CeaActivity">
 			<inject object="service:simpleApplicationLauncher"/>
 			<inject name="section" object="literal:string:use" />			
 		</object>
-		<object name="cea" class="org.astrogrid.desktop.modules.ui.voexplorer.tasks.CeaActivity">
-			<inject object="service:simpleApplicationLauncher"/>
-			<inject name="section" object="literal:string:use" />			
-		</object>
-		<object name="siap" class="org.astrogrid.desktop.modules.ui.voexplorer.tasks.SiapActivity">
-			<inject object="service:simpleApplicationLauncher"/>
-			<inject name="section" object="literal:string:use" />			
-		</object>
-		<object name="ssap" class="org.astrogrid.desktop.modules.ui.voexplorer.tasks.SsapActivity">
-			<inject object="service:simpleApplicationLauncher"/>
-			<inject name="section" object="literal:string:use" />			
-		</object>		
-		<object name="stap" class="org.astrogrid.desktop.modules.ui.voexplorer.tasks.StapActivity">
-			<inject object="service:simpleApplicationLauncher"/>
-			<inject name="section" object="literal:string:use" />			
-		</object>				
-		<object name="web" class="org.astrogrid.desktop.modules.ui.voexplorer.tasks.WebInterfaceActivity">
+		<object name="web" class="org.astrogrid.desktop.modules.ui.actions.WebInterfaceActivity">
 			<inject object="service:system.browser" />
 			<inject name="section" object="literal:string:use" />			
 		</object>				
-		<object name="script" class="org.astrogrid.desktop.modules.ui.voexplorer.tasks.GenerateScriptActivity">
+		<object name="plastic" class="org.astrogrid.desktop.modules.ui.actions.PlasticActivities">
+			<inject object="service:system.tupperware" />
+			<inject name="section" object="literal:string:use" />
+		</object>
+		<object name="script" class="org.astrogrid.desktop.modules.ui.actions.GenerateScriptActivity">
 			<inject name="section" object="literal:string:advanced" />		
 		</object>
-		<object name="0selection" class="org.astrogrid.desktop.modules.ui.voexplorer.tasks.InfoActivity">
+		<object name="0selection" class="org.astrogrid.desktop.modules.ui.actions.InfoActivity">
 			<inject name="section" object="literal:string:info" />	
 		</object>
-		<object name="1further" class="org.astrogrid.desktop.modules.ui.voexplorer.tasks.FurtherInfoActivity">
+		<object name="1further" class="org.astrogrid.desktop.modules.ui.actions.FurtherInfoActivity">
 			<inject object="service:system.browser"/>
 			<inject name="section" object="literal:string:info" />			
 		</object>
-		<object name="2contact" class="org.astrogrid.desktop.modules.ui.voexplorer.tasks.ContactActivity">
+		<object name="2contact" class="org.astrogrid.desktop.modules.ui.actions.ContactActivity">
 			<inject object="service:system.browser"/>
 			<inject name="section" object="literal:string:info" />			
 		</object>	
-
-		<object name="save" class="org.astrogrid.desktop.modules.ui.voexplorer.tasks.SaveResourceActivity" >
+		<object name="save" class="org.astrogrid.desktop.modules.ui.actions.SaveResourceActivity" >
 			<inject object="service:dialogs.resourceChooser" />
 			<inject object="service:ivoa.registry" />
 			<inject object="service:astrogrid.myspace" />
 			<inject name="section" object="literal:string:export" />			
 		</object>
-		<object name="saveIds" class="org.astrogrid.desktop.modules.ui.voexplorer.tasks.SaveIdListActivity" >
+		<object name="saveIds" class="org.astrogrid.desktop.modules.ui.actions.SaveIdListActivity" >
 			<inject object="service:dialogs.resourceChooser" />
 			<inject object="service:astrogrid.myspace" />
 			<inject name="section" object="literal:string:export" />			
@@ -566,6 +552,32 @@ Activities
 			</construct>
 		</invoke-factory>
 	</service-point>		
+	
+	<!--  =====================================
+	Query size estimation
+	 -->
+	 <service-point id="querySize" visibility="private" interface="org.astrogrid.desktop.modules.ui.voexplorer.QuerySizer">
+	 	Computes sizes of queries.
+	 	<interceptor service-id="system.throbber" />
+	 	<invoke-factory>
+	 		<construct class="org.astrogrid.desktop.modules.ui.voexplorer.QuerySizerImpl">
+	 			<service>ivoa.registry</service>
+	 			<object>cache:querySizes</object>
+	 		</construct>
+	 	</invoke-factory>
+	 </service-point>
+	 
+	 <contribution configuration-id="ivoa.caches">
+	 	Cache for query sizes
+	 	<cache name="querySizes"
+	 		maxElementsInMemory="3"
+	 		maxElementsOnDisk="300"
+	 		overflowToDisk="true"
+	 		diskPersistent="true"
+	 		timeToLiveSeconds="${ivo.registry.cacheLife}"
+	 		timeToIdleSeconds="${ivo.registry.cacheLife}"
+	 		/>
+	 	</contribution>
 
  </module>
  

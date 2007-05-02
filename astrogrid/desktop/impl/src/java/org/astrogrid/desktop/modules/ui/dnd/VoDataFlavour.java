@@ -24,8 +24,8 @@ public class VoDataFlavour {
 	public static final DataFlavor LOCAL_RESOURCE = localDataFlavor(Resource.class,"VO Resource");
 	public static final DataFlavor RESOURCE = new DataFlavor(Resource.class,"VO Resource");
 	/** list of registry entry objects */
-	public static final DataFlavor LOCAL_RESOURCE_LIST = localDataFlavor(Resource[].class,"List of resources");
-	public static final DataFlavor RESOURCE_LIST = new DataFlavor(Resource[].class,"List of resources");
+	public static final DataFlavor LOCAL_RESOURCE_ARRAY = localDataFlavor(Resource[].class,"List of resources");
+	public static final DataFlavor RESOURCE_ARRAY = new DataFlavor(Resource[].class,"List of resources");
 	
 	/** registry Entry accessible as input stream. */
 	public static final DataFlavor VORESOURCE = new DataFlavor("application/x-voresource+xml","VO Registry Record");
