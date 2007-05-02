@@ -63,7 +63,8 @@
                         		<include>**/*.xsl</include>
                         		<include>**/*.gif</include> 
                         		<include>**/*.dtd</include>
-                                <include>**/*.xsd</include>                        		
+                                <include>**/*.xsd</include>        
+                                <include>**/*.list</include><!--  ucd list -->                		
                         	</includes>
                         </resource>
 
