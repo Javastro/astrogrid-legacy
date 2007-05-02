@@ -14,6 +14,12 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="2007.3.alpha1" date="unreleased">
+	<action dev="nw" type="add">
+		Added search builder, split voexplorer and fileexplorer into separate windows,
+		and other suggestions from Andy.
+	</action>
+</release>
 <release version="2007.2.pre7" date="unreleased">
 <action dev="nw" type="add">
 Made a start on an activities framework.
