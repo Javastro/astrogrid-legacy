@@ -22,6 +22,8 @@ import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.Validation;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.scope.AllVizierProtocol.VizierRetriever.VizierTableHandler;
+import org.astrogrid.desktop.modules.ui.scope.Retriever.SummarizingTableHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -45,7 +47,7 @@ public class AllVizierProtocol extends SpatialDalProtocol {
 	 * @param name
 	 */
 	public AllVizierProtocol(Cone cone) {
-		super("VizieR");
+		super("VizieR Tables");
 		this.cone = cone;
 		getPrimaryNode().setAttribute(Retriever.SERVICE_LOGO_ATTRIBUTE,"http://vizier.u-strasbg.fr/vizier_tiny.gif");
 		//@todo factor this out into somewhere more logical - like config, or the vizier ar component.
@@ -65,8 +67,41 @@ public class AllVizierProtocol extends SpatialDalProtocol {
 	
 
 	public Retriever createRetriever(UIComponent parent, Service i, double ra, double dec, double raSize, double decSize) {
-		return new VizierRetriever(parent,i,getPrimaryNode(),getVizModel(),ra,dec,raSize,decSize);
+//		return new VizierRetriever(parent,i,getPrimaryNode(),getVizModel(),ra,dec,raSize,decSize);
+		return new CatalogTerminalVizierRetriever(parent,i,getPrimaryNode(),getVizModel(),ra,dec,raSize,decSize);
+
 	}	
+	
+	/** variant of vizier retriever that stops at the 'catalog' node - as for catalog terminal cone retrieever */
+	public class CatalogTerminalVizierRetriever extends VizierRetriever {
+
+		public CatalogTerminalVizierRetriever(UIComponent comp, Service information, TreeNode primaryNode, VizModel model, double ra, double dec, double raSize, double decSize) {
+			super(comp, information, primaryNode, model, ra, dec, raSize, decSize);
+		}
+		protected SummarizingTableHandler createTableHandler() {
+			return new CatalogTerminalVizierTableHandler();
+		}
+		public class CatalogTerminalVizierTableHandler extends VizierTableHandler {
+			/** overridden - don't care about data - just want to count the rows */
+			
+			public void rowData(Object[] row) throws SAXException {
+		        if (!isWorthProceeding()) { // no point, not enough metadata - sadly, get called for each row of the table - no way to bail out.
+		            resultCount = QueryResultSummarizer.ERROR;
+		            message = "Insufficient table metadata";
+		            return;
+		        }
+		        resultCount++;
+		        tableRowCount++;
+			}
+			
+			public void endTable() throws SAXException {
+				serviceNode.setAttribute(RESULT_COUNT,Integer.toString(tableRowCount));
+				super.endTable();
+			}
+		}
+	}
+
+// full-data variant.	
 	
 	/** a different sort of retriever - as it fetches results for multiple 'tables'/ 'services' */
 	public class VizierRetriever extends Retriever {
@@ -85,7 +120,7 @@ public class AllVizierProtocol extends SpatialDalProtocol {
 		}
 		//@todo work out how to use this too.
 		private double raSize;
-		
+			
 		public String getServiceType() {
 			return VIZIER;
 		}
@@ -95,28 +130,35 @@ public class AllVizierProtocol extends SpatialDalProtocol {
 		protected Object construct() throws Exception {
 			URL q = cone.constructQuery(vizierEndpoint,ra,dec,raSize);
 			InputSource source = new InputSource(q.openStream());
-			SummarizingTableHandler th = new VizierTableHandler();
+			SummarizingTableHandler th = createTableHandler();
 			parseTable(source,th);
 			return th;
+		}
+
+		protected SummarizingTableHandler createTableHandler() {
+			return new VizierTableHandler();
 		}
 		
 		protected void doFinished(Object result) {
 			// add summary of search results to table view.
 	       SummarizingTableHandler th = (SummarizingTableHandler)result;
-	        model.getProtocols().addQueryResult(service,th.getResultCount(),th.getMessage());                                   
+	        model.addQueryResult(service,th.getResultCount(),th.getMessage());                                   
 	        parent.setStatusMessage(service.getTitle() + " - " + th.getResultCount() + " results");
 	    
 		}
 		
 		/** parser for the multi-table vizier response */
 		public class VizierTableHandler extends BasicTableHandler {
-
+			// count per table - different to per-service resultCount as vizier returns more than one table.
+			protected int tableRowCount; 
+			
 			public VizierTableHandler() {
 				super(null);// we don't pass in a service node. instead, we create one every time we find a new table.
 			}		
 			
 			// create a new service node for each table encountered.
 			protected void newTableExtensionPoint(StarTable st) {
+				tableRowCount =0;
 		        serviceNode = new DefaultTreeNode();
 		        String title = st.getParameterByName("Description").getValue().toString();
 		        String wrapped = WordUtils.wrap(title,AstroScopeLauncherImpl.TOOLTIP_WRAP_LENGTH,"<br>",false);
@@ -142,10 +184,15 @@ public class AllVizierProtocol extends SpatialDalProtocol {
      
 		    }
 			
+			public void rowData(Object[] row) throws SAXException {
+				tableRowCount++;
+				super.rowData(row);
+			}
+			
 			// add new result into tree
 			public void endTable() throws SAXException {
 				super.endTable();
-				if  (serviceNode.getChildCount() > 0) { //otherwise don't bother
+				if  (tableRowCount > 0) { //otherwise don't bother
 					final TreeNode nodeToAdd = serviceNode; // take a copy of this, otherwise we get a race condition.
 				SwingUtilities.invokeLater(new Runnable() {
 					// splice new result in.
@@ -164,20 +211,21 @@ public class AllVizierProtocol extends SpatialDalProtocol {
 	
 	/** rudimentarty service descirption for vizier - just enough to get by the 
 	 * astroscope mechanisms. a mock really.
+	 * @fixme - provide enough to get this into regBrowser.
 	 */
 	private final static Service[] vizierService = new Service[] {
 		new Service() {
 
 			public Capability[] getCapabilities() {
-				return null;
+				return new Capability[]{};
 			}
 
 			public String[] getRights() {
-				return null;
+				return new String[]{};
 			}
 
 			public Content getContent() {
-				return null;
+				return new Content();
 			}
 
 			public String getCreated() {
@@ -185,18 +233,10 @@ public class AllVizierProtocol extends SpatialDalProtocol {
 			}
 
 			public Curation getCuration() {
-				return null;
+				return new Curation();
 			}
-			final URI id;
-			{ 
-				URI i = null;
-				try {
-					i = new URI("ivo://CDS/Vizier");
-				} catch (Exception e) {
-				}
-				id = i; // sheesh. wot a palava.
-			}
-			
+			final URI id = URI.create("ivo://CDS/Vizier");
+		
 			public URI getId() {
 				return id;
 			}
@@ -206,7 +246,7 @@ public class AllVizierProtocol extends SpatialDalProtocol {
 			}
 
 			public String getStatus() {
-				return null;
+				return "active";
 			}
 
 			public String getTitle() {
@@ -222,7 +262,7 @@ public class AllVizierProtocol extends SpatialDalProtocol {
 			}
 
 			public Validation[] getValidationLevel() {
-				return null;
+				return new Validation[]{};
 			}
 		}
 	};

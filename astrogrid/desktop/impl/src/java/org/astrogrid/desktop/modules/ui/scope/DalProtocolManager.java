@@ -1,4 +1,4 @@
-/*$Id: DalProtocolManager.java,v 1.7 2007/05/02 15:38:32 nw Exp $
+/*$Id: DalProtocolManager.java,v 1.8 2007/05/03 19:20:43 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,16 +10,25 @@
 **/
 package org.astrogrid.desktop.modules.ui.scope;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.JCheckBox;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import org.apache.commons.collections.iterators.UnmodifiableIterator;
 
 import org.astrogrid.acr.ivoa.resource.Service;
+
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.GlazedLists;
+import ca.odell.glazedlists.ObservableElementList;
 
 /**
  * aggregates a set of retreivers together - so they can be operated as a whole.
@@ -28,44 +37,25 @@ import org.astrogrid.acr.ivoa.resource.Service;
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jan-2006
  *
  */
-public class DalProtocolManager implements QueryResultSummarizer {
+public class DalProtocolManager {
 
     public DalProtocolManager() {
-        this.l = new ArrayList();
+    	l = new ObservableElementList(new BasicEventList(),new ProtocolListener());
     }
-    private final List l;
-    private final DefaultTableModel table = new DefaultTableModel(
-            new Object[]{"Service","Results","Message"}
-            ,0) {
-    	public boolean isCellEditable(int i,int j) {
-    		return false;
-    	}
-    };
-    
+    private final EventList l;
+
     /** add a protocol to the manager */
     public void add(DalProtocol r) {
         l.add(r);
+    }
+    /** access a list where events are triggered when checkboxes are clicked */
+    public EventList getList() {
+    	return l;
     }
     
     /** return an iterator over all the protocols in the manager */
     public Iterator iterator() {
         return UnmodifiableIterator.decorate(l.iterator());
-    }
-    
-    /** return a table model containing query summaries for each retriever in the 
-     * protocols
-     * @return
-     */
-    public TableModel getQueryResultTable() {
-        return table;
-    }
-    
-    /**
-     * @see org.astrogrid.desktop.modules.ui.scope.QueryResultSummarizer#addQueryResult(org.astrogrid.acr.astrogrid.ResourceInformation, java.lang.String, int, java.lang.String)
-     */
-    public void addQueryResult(Service ri,int result, String message) {
-
-       table.addRow(new Object[]{ri, new Integer(result),message == null ? "" : message});
     }
 
     public int size() {
@@ -87,13 +77,42 @@ public class DalProtocolManager implements QueryResultSummarizer {
     	return sb.toString();
     }
     
-       
+    private static class ProtocolListener 
+    	implements ObservableElementList.Connector, ItemListener {
+
+		public EventListener installListener(Object arg0) {
+			DalProtocol p = (DalProtocol)arg0;
+			p.getCheckBox().addItemListener(this);
+			return this;
+		}
+
+		public void setObservableElementList(ObservableElementList arg0) {
+			this.l = arg0;
+		}
+		private ObservableElementList l;
+		public void uninstallListener(Object arg0, EventListener arg1) {
+			if ( arg1 != this) {
+				return;
+			}
+			DalProtocol p = (DalProtocol)arg0;
+			p.getCheckBox().removeItemListener(this);
+		}
+
+		public void itemStateChanged(ItemEvent e) {
+			JCheckBox cb = (JCheckBox)e.getSource();
+			Object o = cb.getClientProperty(DalProtocol.OWNER);
+			l.elementChanged(o);
+		}
+    }
 
 }
 
 
 /* 
 $Log: DalProtocolManager.java,v $
+Revision 1.8  2007/05/03 19:20:43  nw
+removed helioscope.merged into uberscope.
+
 Revision 1.7  2007/05/02 15:38:32  nw
 changes for 2007.3.alpha1
 

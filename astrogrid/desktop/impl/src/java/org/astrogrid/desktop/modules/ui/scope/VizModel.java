@@ -5,6 +5,8 @@ import java.util.Iterator;
 
 import javax.swing.table.DefaultTableModel;
 
+import org.astrogrid.acr.ivoa.resource.Service;
+
 import edu.berkeley.guir.prefuse.focus.DefaultFocusSet;
 import edu.berkeley.guir.prefuse.focus.FocusSet;
 import edu.berkeley.guir.prefuse.graph.DefaultEdge;
@@ -19,17 +21,18 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 26-Jan-2006
  *
  */
-public  class VizModel {
+public  class VizModel implements QueryResultSummarizer {
 	public static final String NOMENU_ATTRIBUTE = "nomenu";
     private final TreeNode rootNode;
     
     private final FocusSet selectionFocusSet;
     private final NodeSizingMap nodeSizingMap;
-
+    private final QueryResultSummarizer summarizer;
     private final Tree tree;
     private final DalProtocolManager protocols;
-    public VizModel(DalProtocolManager protocols) {
+    public VizModel(DalProtocolManager protocols, QueryResultSummarizer summarizer) {
         this.protocols = protocols;        
+        this.summarizer = summarizer;
         this.nodeSizingMap = new NodeSizingMap();
         this.selectionFocusSet = new DefaultFocusSet();       
         rootNode = new DefaultTreeNode();
@@ -57,7 +60,7 @@ public  class VizModel {
     public void clear() {
         getNodeSizingMap().clear();
         getSelectionFocusSet().clear();
-        ((DefaultTableModel)protocols.getQueryResultTable()).setNumRows(0); // clear the service list table.
+        summarizer.clear();
         for (Iterator i = protocols.iterator(); i.hasNext(); ) {
             DalProtocol p = (DalProtocol)i.next();
             p.getPrimaryNode().removeAllChildren();
@@ -129,5 +132,9 @@ public  class VizModel {
         }
         return null;
     }
+    /** just delegates to the true summarizer */
+	public void addQueryResult(Service ri, int resultCount, String message) {
+		summarizer.addQueryResult(ri,resultCount,message);
+	}
 
 }

@@ -1,4 +1,4 @@
-/*$Id: QueryResultSummarizer.java,v 1.2 2006/08/15 10:01:12 nw Exp $
+/*$Id: QueryResultSummarizer.java,v 1.3 2007/05/03 19:20:43 nw Exp $
  * Created on 30-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,6 +23,8 @@ public interface QueryResultSummarizer {
      */
     public void addQueryResult(Service ri, int resultCount, String message);
 
+    /** clear all previous summaries */
+    public void clear();
     
 /** resultCount constant indicating 'error' */
     public static int ERROR = -1;
@@ -30,6 +32,9 @@ public interface QueryResultSummarizer {
 
 /* 
  $Log: QueryResultSummarizer.java,v $
+ Revision 1.3  2007/05/03 19:20:43  nw
+ removed helioscope.merged into uberscope.
+
  Revision 1.2  2006/08/15 10:01:12  nw
  migrated from old to new registry models.
 

@@ -1,4 +1,4 @@
-/*$Id: DalProtocol.java,v 1.9 2007/03/08 17:43:56 nw Exp $
+/*$Id: DalProtocol.java,v 1.10 2007/05/03 19:20:42 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,7 +33,9 @@ public abstract class DalProtocol {
         this.primaryNode = new DefaultTreeNode();
         this.checkBox = new JCheckBox(name);
         this.checkBox.setSelected(true);
+        this.checkBox.putClientProperty(OWNER,this);
     }
+    public static final Class OWNER = DalProtocol.class;
     private final String name;
     private final TreeNode primaryNode;
     private final JCheckBox checkBox;
@@ -90,6 +92,9 @@ public abstract class DalProtocol {
 
 /* 
 $Log: DalProtocol.java,v $
+Revision 1.10  2007/05/03 19:20:42  nw
+removed helioscope.merged into uberscope.
+
 Revision 1.9  2007/03/08 17:43:56  nw
 first draft of voexplorer
 

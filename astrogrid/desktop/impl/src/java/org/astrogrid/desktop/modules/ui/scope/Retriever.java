@@ -55,7 +55,9 @@ public abstract class Retriever extends BackgroundWorker {
     /** attribute describing what kind of service - provided by {@link #getServiceType()} in subclasses */
     public static final String SERVICE_TYPE_ATTRIBUTE = "service-type";
     /** attribute providing the text label to be displayed for this node */
-    public static final String LABEL_ATTRIBUTE = "label";   
+    public static final String LABEL_ATTRIBUTE = "label";  
+    /** attribute providing the number of results */
+    public static final String RESULT_COUNT = "result-count";
     /** attribute giving the ra of the result */ 
     public static final String RA_ATTRIBUTE = "ra";
     /** attribute giving the dec of the result */
@@ -312,7 +314,7 @@ public abstract class Retriever extends BackgroundWorker {
     protected void doError(Throwable ex) {
     	ex.printStackTrace();
         parent.setStatusMessage(service.getTitle() + " - failed; " + ex.getMessage());
-        model.getProtocols().addQueryResult(service,QueryResultSummarizer.ERROR,fmt(ex));
+        model.addQueryResult(service,QueryResultSummarizer.ERROR,fmt(ex));
     }
     
     private String fmt(Throwable ex) {
@@ -335,7 +337,7 @@ public abstract class Retriever extends BackgroundWorker {
         // concurrent modification exceptions
         SummarizingTableHandler th = (SummarizingTableHandler)result;
         TreeNode serviceNode = th.getServiceNode();
-        model.getProtocols().addQueryResult(service,th.getResultCount(),th.getMessage());
+        model.addQueryResult(service,th.getResultCount(),th.getMessage());
         if (th.getResultCount() > 0) {
             DefaultEdge edge = new DefaultEdge(primaryNode,serviceNode);
             edge.setAttribute(WEIGHT_ATTRIBUTE,"2");              

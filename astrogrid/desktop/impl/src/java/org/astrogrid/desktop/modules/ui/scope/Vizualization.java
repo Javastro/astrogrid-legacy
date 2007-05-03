@@ -1,4 +1,4 @@
-/*$Id: Vizualization.java,v 1.5 2006/08/31 21:31:37 nw Exp $
+/*$Id: Vizualization.java,v 1.6 2007/05/03 19:20:42 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,10 +40,12 @@ public abstract class Vizualization extends GraphEventAdapter {
             nodeRenderer.setMaxTextWidth(150);
             nodeRenderer.setRoundedCorner(8,8);
             nodeRenderer.setTextAttributeName(Retriever.LABEL_ATTRIBUTE);
+            nodeRenderer.setSizeAttributeName(Retriever.RESULT_COUNT);
             nodeRenderer.setImageAttributeName(Retriever.SERVICE_LOGO_ATTRIBUTE);
             nodeRenderer.setMaxImageDimensions(20,20);//@fixme doesn;'t seem to make any difference.
             nodeRenderer.setAbbrevType(StringAbbreviator.TRUNCATE);
             nodeRenderer.setImageFactory(vizs.getImageFactory());
+
         }
         return nodeRenderer;
     }
@@ -70,6 +72,9 @@ public abstract class Vizualization extends GraphEventAdapter {
 
 /* 
 $Log: Vizualization.java,v $
+Revision 1.6  2007/05/03 19:20:42  nw
+removed helioscope.merged into uberscope.
+
 Revision 1.5  2006/08/31 21:31:37  nw
 minor tweaks and doc fixes.
 

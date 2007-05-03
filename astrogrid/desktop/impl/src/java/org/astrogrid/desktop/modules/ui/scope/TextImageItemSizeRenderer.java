@@ -1,4 +1,4 @@
-/*$Id: TextImageItemSizeRenderer.java,v 1.6 2007/01/29 10:43:49 nw Exp $
+/*$Id: TextImageItemSizeRenderer.java,v 1.7 2007/05/03 19:20:42 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -59,10 +59,37 @@ public class TextImageItemSizeRenderer extends TextImageItemRenderer {
             }
         return m_imageBox;            
     }
+    
+    private String sizeAttributeName;
+
+	public void setSizeAttributeName(String sizeAttributeName) {
+		this.sizeAttributeName = sizeAttributeName;
+	}
+	
+
+	public String getSizeAttributeName() {
+		return this.sizeAttributeName;
+	}
+	
+	protected String getText(VisualItem arg0) {
+		String orig = super.getText(arg0);
+		if (sizeAttributeName == null) {
+			return orig;
+		}
+		String sz = arg0.getAttribute(sizeAttributeName);
+		if (sz == null) {
+			return orig;
+		} else {
+			return orig + " - " + sz + " results";
+		}
+	}
 }
 
 /* 
 $Log: TextImageItemSizeRenderer.java,v $
+Revision 1.7  2007/05/03 19:20:42  nw
+removed helioscope.merged into uberscope.
+
 Revision 1.6  2007/01/29 10:43:49  nw
 documentation fixes.
 

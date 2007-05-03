@@ -21,7 +21,6 @@
 		
 	<contribution configuration-id="framework.acrServices">
 			<acrService id="astroscope" interface="AstroScope"/>
-			<acrService id="helioscope" interface="HelioScope"/>
 			<acrService id="myspaceBrowser" interface="MyspaceBrowser" />
 			<acrService id="registryBrowser" interface="RegistryBrowser" />
 	</contribution>
@@ -95,27 +94,16 @@ ASTROSCOPE
 	</service-point>
 
 	<contribution configuration-id="system.windowFactories">
-		<window name="All-VO AstroScope">service:astroscope</window>
+		<window name="All-VO Scope">service:astroscope</window>
 	</contribution>
-
-<!--  				<service>system.ui</service> 
-				<service>astrogrid.myspace</service>
-				<service>dialogs.resourceChooser</service>
-				<service>ivoa.registry</service>
-				<service>ivoa.siap</service>
-				<service>ivoa.cone</service>
-				<service>ivoa.ssap</service>
-				<service>cds.sesame</service>
-				<service>system.tupperware</service>	
-				<service>ui.sendTo</service>
-				<service>system.snitch</service>
-				<service>ui.registryBrowser</service>-->																													
+							
 	<contribution configuration-id="hiveutils.ObjectBuilderObjects">
-		Describes how to build a new astroscope window.
 		<object name="astroscope" class="org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl" >
+		Describes how to build a new astroscope window.
 			<inject object="service:system.ui"/>
 			<inject object="service:protocolsBuilder" />
 			<inject object="service-property:scopeHistory:list" />
+			<inject object="object:scopeServiceList" />
 			<!-- later<inject object="service:actionsBuilder" /> -->
 			<!--  refactor some of these out into object builder later too. -->
 			<inject object="service:astrogrid.myspace" />
@@ -124,6 +112,18 @@ ASTROSCOPE
 			<inject object="service:system.tupperware" />
 			<inject object="service:sendTo"/><!-- to remove -->
 			<inject object="service:system.snitch" />
+		</object>
+		<object name="scopeServiceList" 
+		class="org.astrogrid.desktop.modules.ui.scope.ScopeServicesList">
+		Describes how to builld a subclass of registry google, specialized for
+		displaying summaries in astroscope.
+			<inject object="service:ivoa.registry" />
+			<inject object="service:system.browser" />
+			<inject object="service:ui.registryBrowser" />
+			<inject object="cache:resources" />
+			<inject object="cache:bulk" />
+			<inject object="service:votech.vomon" />
+			<inject object="preference:acr.advanced" />
 		</object>
 	</contribution>
 	
@@ -172,13 +172,10 @@ ASTROSCOPE
 		<object name="vizier" class="org.astrogrid.desktop.modules.ui.scope.AllVizierProtocol">
 			<inject object="service:ivoa.cone" />
 		</object>
-		<!--  		
 		<object name="stap" class="org.astrogrid.desktop.modules.ui.scope.StapProtocol">
 			<inject object="service:ivoa.registry" />
 			<inject object="service:astrogrid.stap" />
 		</object>		
-		-->
-		<!-- add in the helio-scope protocols here afterwards. -->
 	</contribution>
 
 		<contribution configuration-id="system.helpmap">
@@ -187,43 +184,7 @@ ASTROSCOPE
 		<item id="astroscope.menu.reference" url="http://www2.astrogrid.org/science" />
 
 	</contribution>
-	
-	<!-- 
-	=================================
-	HELIOSCOPE
-	 -->
-	<service-point id="helioscope" interface="org.astrogrid.desktop.modules.ui.HelioScopeInternal">
-				<interceptor service-id="system.snitchInterceptor" />
-		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.ui.HelioScopeFactory">
-				<service>system.ui</service> 
-				<service>system.configuration</service>
-				<service>system.help</service>
-				<service>astrogrid.myspace</service>
-				<service>dialogs.resourceChooser</service>
-				<service>ivoa.registry</service>
-				<service>astrogrid.stap</service>
-				<service>system.tupperware</service>
-				<service>ui.sendTo</service>	
-				<service>system.snitch</service>			
-				<service>ui.registryBrowser</service>									
-<!--				<event-listener service-id="builtin.shutdown" />		-->																									
-			</construct>
-		</invoke-factory>	
-	</service-point>
 
-	<implementation service-id="helioscope" if="property ui.helioscope.disabled">
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
-	</implementation>	
-
-	<contribution configuration-id="system.helpmap">
-		<item id="userInterface.helioscopeLauncher" url="http://www2.astrogrid.org/science/documentation/data-explore/helioscope" />
-		<item id="helioscope.menu.science" url="http://www2.astrogrid.org/science/documentation/data-explore/helioscope" />
-		<item id="helioscope.menu.reference" url="http://www2.astrogrid.org/science" />
-		
-	</contribution>	
-	
-	
 	<!-- -
 	====================================
 	SIMPLIFIED APP LAUNCHER

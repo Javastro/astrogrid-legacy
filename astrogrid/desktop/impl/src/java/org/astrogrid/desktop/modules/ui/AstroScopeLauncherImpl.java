@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.59 2007/05/02 15:38:29 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.60 2007/05/03 19:19:47 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -22,8 +24,11 @@ import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Calendar;
+import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,6 +39,8 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -54,6 +61,7 @@ import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.cds.Sesame;
+import org.astrogrid.acr.cds.SesamePositionBean;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
@@ -79,8 +87,10 @@ import org.astrogrid.desktop.modules.ui.scope.ImageLoadPlasticButton;
 import org.astrogrid.desktop.modules.ui.scope.QueryResultSummarizer;
 import org.astrogrid.desktop.modules.ui.scope.Retriever;
 import org.astrogrid.desktop.modules.ui.scope.SaveNodesButton;
+import org.astrogrid.desktop.modules.ui.scope.ScopeServicesList;
 import org.astrogrid.desktop.modules.ui.scope.SpatialDalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.SpectrumLoadPlasticButton;
+import org.astrogrid.desktop.modules.ui.scope.TemporalDalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.VizModel;
 import org.astrogrid.desktop.modules.ui.scope.Vizualization;
 import org.astrogrid.desktop.modules.ui.scope.VizualizationManager;
@@ -88,10 +98,15 @@ import org.astrogrid.desktop.modules.ui.scope.VotableLoadPlasticButton;
 import org.astrogrid.desktop.modules.ui.scope.WindowedRadialVizualization;
 import org.astrogrid.desktop.modules.ui.scope.ScopeHistoryProvider.SearchHistoryItem;
 import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
+import org.freixas.jcalendar.JCalendarCombo;
 import org.votech.plastic.CommonMessageConstants;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FunctionList;
+import ca.odell.glazedlists.GlazedLists;
+import ca.odell.glazedlists.ObservableElementList;
+import ca.odell.glazedlists.event.ListEvent;
+import ca.odell.glazedlists.event.ListEventListener;
 import ca.odell.glazedlists.swing.JEventListPanel;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -107,7 +122,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
 , AstroScopeInternal, DecSexListener, FocusListener {
 
 
-	private static final String SCOPE_NAME = "AstroScope";         
+	private static final String SCOPE_NAME = "VO Scope";         
 	/** point at which to wrap tooltips
 	 * @todo - make a workbench-wide constant 
 	 */
@@ -124,7 +139,8 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
 
 	protected static final Log logger = LogFactory.getLog(AstroScopeLauncherImpl.class);
 
-	public AstroScopeLauncherImpl(UIContext context, IterableObjectBuilder protocolsBuilder, EventList history
+	public AstroScopeLauncherImpl(UIContext context, IterableObjectBuilder protocolsBuilder
+			, EventList history, ScopeServicesList summary
 			,MyspaceInternal myspace, ResourceChooserInternal chooser,
 			Sesame ses, TupperwareInternal tupp, SendToMenu sendTo,
 			SnitchInternal snitch)  {
@@ -139,7 +155,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
 			protocols.add((DalProtocol)i.next());
 		}
 		// create the shared model
-		vizModel = new VizModel(protocols);
+		vizModel = new VizModel(protocols,summary);
 		// create the vizualizations
 		vizualizations = new VizualizationManager(vizModel);
 		vizualizations.add(new WindowedRadialVizualization(vizualizations,sendTo,this));
@@ -149,17 +165,45 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
 		this.setSize(1000, 707); // same proportions as A4,
 		setIconImage(IconHelper.loadIcon("scope16.png").getImage());   
 		FormLayout layout = new FormLayout(
-				"2dlu,d,4dlu,d,2dlu"
-				,"p,p,p,p,p,p," + protocols.getRowspec() 
-				+ ",bottom:max(20dlu;p),m,m"
-				+ ",bottom:max(20dlu;p),top:p:grow");
+				"1dlu,m,1dlu,m,1dlu"
+				,"p," + protocols.getRowspec() 
+				+ ",bottom:max(20dlu;p),p,p,p,p,p" // spatial
+				+ ",p,bottom:max(20dlu;p),p,p,p,p" // temporal
+				+ ",bottom:max(20dlu;p),m,m" // navigate
+				+ ",bottom:max(20dlu;p),top:p:grow" //process
+				);
 		layout.setColumnGroups(new int[][]{ {2, 4} });		
 		CellConstraints cc = new CellConstraints();
 		PanelBuilder builder = new PanelBuilder(layout);
 		
 		int row = 1;
-		builder.addSeparator("Search",cc.xyw(2,row,4));
+// services
+		builder.addSeparator("Search for",cc.xyw(2,row,4));
 		
+		row++;
+		// display in 2 columns
+		TemporalDalProtocol tempStap = null;;
+		boolean leftCol = true;
+		for (Iterator i = protocols.iterator(); i.hasNext(); leftCol = ! leftCol ) {
+			DalProtocol p = (DalProtocol)i.next();
+			builder.add(p.getCheckBox(),cc.xy(leftCol ? 2 : 4,row));
+			// while we're iterating through, look out for the stap protocol - we want to add extra logic here.
+			if (p instanceof TemporalDalProtocol) {
+				tempStap = (TemporalDalProtocol)p; // will need to treat this differently if there's more temporal protocols later..
+			}
+			if (!leftCol) {
+				row++;
+			}			
+		}
+		final TemporalDalProtocol stap = tempStap; // pesky final variables..			
+		// move onto a final row if we've got an odd nummber of protocols..
+		// bearing in mind the loop iterator above will have hit again at this point.
+		if (!leftCol) {
+			row++;
+		}		
+	
+// spatial
+		builder.addSeparator("At",cc.xyw(2,row,4));
 		row++;
 		builder.addLabel("Position or Object Name",cc.xyw(2,row,3));
 
@@ -187,22 +231,96 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
 		dsToggle.addListener(this);
 		builder.add(dsToggle.getDegreesRadio(),cc.xy(2,row));
 		builder.add(dsToggle.getSexaRadio(),cc.xy(4,row));
-       
+
+// temporal
 		row++;
-		// display in 2 columns
-		boolean leftCol = true;
-		for (Iterator i = protocols.iterator(); i.hasNext(); leftCol = ! leftCol ) {
-			DalProtocol p = (DalProtocol)i.next();
-			builder.add(p.getCheckBox(),cc.xy(leftCol ? 2 : 4,row));
-			if (!leftCol) {
-				row++;
+		noPosition = new JCheckBox("No Position");
+		noPosition.setToolTipText("To query with no postion, only 'Timed Data' can be selected");
+		noPosition.setSelected(false);
+		noPosition.addItemListener(new ItemListener() { // disables other fields when selected.
+			public void itemStateChanged(ItemEvent e) {
+				boolean b = e.getStateChange() == ItemEvent.DESELECTED;
+				posText.setEnabled(b);
+				regionText.setEnabled(b);
+				dsToggle.getDegreesRadio().setEnabled(b);
+				dsToggle.getSexaRadio().setEnabled(b);
 			}
-		}
-		// move onto a final row if we've got an odd nummber of protocols..
-		// bearing in mind the loop iterator above will have hit again at this point.
-		if (!leftCol) {
-			row++;
-		}
+    	});
+		// listen to what other protocols are enabled - and if they're selected, disable this control.
+		protocols.getList().addListEventListener(new ListEventListener() {
+			public void listChanged(ListEvent arg0) {
+				while (arg0.hasNext()) {
+					arg0.next();
+					// don't care about the event - just need to check all other protocols.
+					for (Iterator i = protocols.iterator(); i.hasNext();) {
+						DalProtocol p = (DalProtocol) i.next();
+						if (p != stap && p.getCheckBox().isSelected()) {
+							noPosition.setSelected(false);
+							noPosition.setEnabled(false);
+							return;
+						}
+					}// end for
+					// only got here if nothing else selected.
+					noPosition.setSelected(true);
+					noPosition.setEnabled(true);					
+				}// end while.
+			}
+		});
+		builder.add(noPosition,cc.xyw(2,row,3));
+		
+		row++;
+		final JComponent temporalTitle = builder.addSeparator("Between",cc.xyw(2,row,4));
+		
+		row++;
+		final JLabel temporalLabel1 = builder.addLabel("Start date && time",cc.xyw(2,row,3));
+		
+		row++;
+        startCal = new JCalendarCombo(JCalendarCombo.DISPLAY_DATE|JCalendarCombo.DISPLAY_TIME,true);
+		startCal.setNullAllowed(false);
+        startCal.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
+        startCal.setEditable(true);
+        startCal.setMaximumSize(new Dimension(50,50));
+       // startCal.setAlignmentX(LEFT_ALIGNMENT);
+        Calendar setStartCal = startCal.getCalendar();
+        setStartCal.set(2000,0,1,0,0,0);
+        startCal.setDate(setStartCal.getTime());
+        builder.add(startCal,cc.xyw(2,row,3));
+        
+        row++;
+		final JLabel temporalLabel2 = builder.addLabel("End date && time",cc.xyw(2,row,3));
+		
+		row++;
+        endCal = new JCalendarCombo(JCalendarCombo.DISPLAY_DATE|JCalendarCombo.DISPLAY_TIME,true);
+		endCal.setNullAllowed(false);
+        endCal.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
+        endCal.setEditable(true);
+        endCal.setMaximumSize(new Dimension(50,50));
+       // endCal.setAlignmentX(LEFT_ALIGNMENT);
+        Calendar setEndCal = endCal.getCalendar();
+        setEndCal.set(2000,0,2,0,0,0);
+        endCal.setDate(setEndCal.getTime());
+        builder.add(endCal,cc.xyw(2,row,3));
+		
+        // configure all this as hidable when stap isn't in use.
+        if (stap != null) {
+        	JCheckBox checkBox = stap.getCheckBox();
+        	checkBox.addItemListener(new ItemListener() {
+				public void itemStateChanged(ItemEvent e) {
+					boolean b = e.getStateChange() == ItemEvent.SELECTED;
+					noPosition.setVisible(b);
+					temporalTitle.setVisible(b);
+					temporalLabel1.setVisible(b);
+					startCal.setVisible(b);
+					temporalLabel2.setVisible(b);
+					endCal.setVisible(b);
+				}
+        	});
+        	checkBox.setSelected(false);
+        }
+        
+        
+// navigation   
+		row++;
 		// start of tree navigation buttons - maybe add more here later.
 		builder.addSeparator("Navigate",cc.xyw(2,row,4));
 		
@@ -250,11 +368,17 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
 		
 		// main part of the window
 		JTabbedPane tabs = new JTabbedPane();
+		// spidergrams
 		for (Iterator i = vizualizations.iterator(); i.hasNext();) {
 			Vizualization v = (Vizualization) i.next();
 			tabs.addTab(v.getName(), v.getDisplay());
 		}
-		tabs.addTab("Services", makeServicesPanel());
+		// tablular view
+		summary.parent.set(this);
+		JPanel summaryPanel = new JPanel(new BorderLayout());
+		summaryPanel.add(summary, BorderLayout.CENTER);
+		summaryPanel.add(summary.getToolbar(),BorderLayout.NORTH);
+		tabs.addTab("Services", summaryPanel);
 
 		pane.add(tabs, BorderLayout.CENTER);
 		this.setContentPane(pane);
@@ -296,73 +420,6 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
 		getContext().getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.astroscopeLauncher");
 	}
 
-/** panel containing summary of search results */
-	private JPanel makeServicesPanel() {
-		JPanel servicesPanel = new JPanel();
-		final JTable table = new JTable(protocols.getQueryResultTable());
-
-		table.setPreferredScrollableViewportSize(new Dimension(700, 550));
-		TableColumnModel tcm = table.getColumnModel();
-		final TableColumn riColumn = tcm.getColumn(0);
-		riColumn.setPreferredWidth(150);
-
-		riColumn.setCellRenderer(new DefaultTableCellRenderer() {
-			protected void setValue(Object value) {
-				Resource ri = (Resource)value;
-				String link= "<html><a href='" + ri.getId() + "'>" + ri.getTitle() + "</a>";
-				setText(link);
-				putClientProperty(KEY_LINK,ri.getId());
-			}
-
-		});
-
-		final TableColumn countColumn = tcm.getColumn(1);
-		countColumn.setPreferredWidth(60);
-		countColumn.setMaxWidth(60);
-		servicesPanel.add(new JScrollPane(table));
-		// decorate the default renderer for integers to display something
-		// special for -1
-		countColumn.setCellRenderer(new TableCellRenderer() {
-			private final TableCellRenderer original = table
-			.getDefaultRenderer(Integer.class);
-
-			public Component getTableCellRendererComponent(JTable table,
-					Object value, boolean isSelected, boolean hasFocus,
-					int row, int column) {
-				JLabel c = (JLabel) original.getTableCellRendererComponent(
-						table, value, isSelected, hasFocus, row, column);
-				if (value instanceof Integer
-						&& ((Integer) value).intValue() == QueryResultSummarizer.ERROR) {
-					c.setText("<html><font color='red'>ERROR</font></html>");
-				}
-				return c;
-			}
-		});
-		TableColumn msgColumn = tcm.getColumn(2);
-		msgColumn.setPreferredWidth(50);
-		msgColumn.setCellRenderer(new TableCellRenderer() {
-			private final TableCellRenderer original = table
-			.getDefaultRenderer(String.class);
-
-			public Component getTableCellRendererComponent(JTable table,
-					Object value, boolean isSelected, boolean hasFocus,
-					int row, int column) {
-				JLabel c = (JLabel) original.getTableCellRendererComponent(
-						table, value, isSelected, hasFocus, row, column);
-				String s = value.toString();
-				if (s != null && s.length() > 0) {
-					c.setToolTipText("<html>"
-							+ WordUtils.wrap(s, 50, "<br>", false) + "</html>");
-				} else {
-					c.setToolTipText("");
-				}
-				return c;
-			}
-		});
-		return servicesPanel;
-	}
-	
-
 	/** override:  create a help menu with additional entries */
 	protected JMenu createHelpMenu() {
 		JMenu menu = super.createHelpMenu();
@@ -393,6 +450,9 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
 	protected final TupperwareInternal tupperware;
 	protected final VizModel vizModel;
 	protected final VizualizationManager vizualizations;
+	private final JCalendarCombo startCal;
+	private final JCalendarCombo endCal;
+	private final JCheckBox noPosition;
 
 // Plastic button builder interface.
 	public JButton[] buildPlasticButtons(final PlasticApplicationDescription plas) {
@@ -460,6 +520,8 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
 //Astroscope internal interface.
 	// configure to run against this list of services.
 	public void runSubset(List resources) {
+		//@fixme in this case, all check boxes must alway be +
+		// or just ignored altogether.
 		this.resourceList = resources;
 		setTitle("Astroscope : on subset");
 		for (Iterator i = protocols.iterator(); i.hasNext(); ) {
@@ -483,22 +545,14 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
 			if (positionString != null) {
 				(new BackgroundOperation("Resolving object " + positionString) {
 					protected Object construct() throws Exception {
-						return ses.sesame(positionString.trim(),"x");
+						return ses.resolve(positionString.trim());
 					}
 					protected void doError(Throwable ex) {
 						showError("Simbad failed to resolve " + positionString);
 					}
 					protected void doFinished(Object result) {
-						String temp = (String) result;
-						Point2D pos;
-						try {
-							double ra = Double.parseDouble( temp.substring(temp.indexOf("<jradeg>")+ 8, temp.indexOf("</jradeg>")));
-							double dec = Double.parseDouble( temp.substring(temp.indexOf("<jdedeg>")+ 8, temp.indexOf("</jdedeg>")));
-							pos = new Point2D.Double(ra,dec);
-						} catch (Throwable t) {
-							doError(t);
-							return;
-						}
+						SesamePositionBean pb = (SesamePositionBean)result;
+						Point2D pos = new Point2D.Double(pb.getRa(),pb.getDec());
 						// now on with the query
 						queryBody(pos);
 					}
@@ -517,6 +571,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
 		setStatusMessage("" + position.getX() + ',' + position.getY());
 		clearTree();
 		topAction.setEnabled(true);
+		setProgressMax(0);
 		// ok. everything looks valid. add a task to later on storee the history item
 		// make this a later task, so that resolver thread has chance to return.
 		SwingUtilities.invokeLater(new Runnable(){
@@ -533,7 +588,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
 		final double decSize = dim.getHeight();
 
 		for (Iterator i = protocols.iterator(); i.hasNext(); ) {
-			final SpatialDalProtocol p =(SpatialDalProtocol)i.next();
+			final DalProtocol p =(DalProtocol)i.next();
 			if (p.getCheckBox().isSelected()) {
 				(new BackgroundOperation("Searching for " + p.getName() + " Services") {
 					protected Object construct() throws Exception {
@@ -545,11 +600,25 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
 					}
 					protected void doFinished(Object result) {
 						Service[] services = (Service[])result;
-						logger.info(services.length + " " + p.getName() + " services found");
-						for (int i = 0; i < services.length; i++) {
-							setProgressMax(getProgressMax()+1); // should give a nice visual effect.
-							p.createRetriever(AstroScopeLauncherImpl.this,services[i],ra,dec,raSize,decSize).start();
-						}                            
+						logger.info(services.length + " " + p.getName() + " services to query");
+						setProgressMax(getProgressMax() + services.length);
+						if (p instanceof SpatialDalProtocol) {
+							SpatialDalProtocol spatial = (SpatialDalProtocol)p;
+							for (int i = 0; i < services.length; i++) {
+								spatial.createRetriever(AstroScopeLauncherImpl.this,services[i],ra,dec,raSize,decSize).start();
+							}                            
+						} else if (p instanceof TemporalDalProtocol) {
+							TemporalDalProtocol temporal = (TemporalDalProtocol)p;
+							Calendar start = startCal.getCalendar();
+							Calendar end = endCal.getCalendar();
+							for (int i = 0; i < services.length; i++) {
+								if (noPosition.isSelected()) { // zero out the positional fields.
+									temporal.createRetriever(AstroScopeLauncherImpl.this,services[i],start,end,Double.NaN,Double.NaN,Double.NaN,Double.NaN).start();
+								} else {
+									temporal.createRetriever(AstroScopeLauncherImpl.this,services[i],start,end,ra,dec,raSize,decSize).start();
+								}
+							}      							
+						}
 					}                            
 				}).start();
 			}
@@ -577,13 +646,6 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
 		// blank out aliases - as long, and unneeded. - for storage efficiency.
 		shi.getPosition().setAliases(null);
 		shi.setRadius(regionText.getDimension());
-		boolean[] bits = new boolean[protocols.size()];
-		int i = 0;
-		for (Iterator p = protocols.iterator(); p.hasNext();i++) {
-			DalProtocol protocol = (DalProtocol) p.next();
-			bits[i] = protocol.getCheckBox().isSelected();
-		}
-		shi.setProtocols(bits);
 		history.add(0,shi); // insert at top of list.
 	}
 
@@ -594,8 +656,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
 	 * @author Noel Winstanley
 	 * @since May 17, 20067:34:18 PM
 	 */
-	private class HistoryMenuItem extends JMenuItem
-	implements ActionListener, DecSexListener{
+	private class HistoryMenuItem extends JMenuItem implements ActionListener, DecSexListener{
 
 		/**
 		 * @param i
@@ -615,13 +676,6 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
 		public void actionPerformed(ActionEvent e) {
 					posText.setPosition(shi.getPosition().getRa(),shi.getPosition().getDec());
 					regionText.setDimension(shi.getRadius());
-					boolean[] bits = shi.getProtocols();
-					int ix = 0; 
-					for (Iterator i = protocols.iterator(); i.hasNext(); ix++) {
-						DalProtocol p = (DalProtocol) i.next();
-						p.getCheckBox().setSelected(bits[ix]);
-						
-					}
 		}
 
 		public void degreesSelected(EventObject ignored) {

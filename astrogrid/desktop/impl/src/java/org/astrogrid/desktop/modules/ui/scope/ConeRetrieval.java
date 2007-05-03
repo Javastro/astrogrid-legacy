@@ -7,12 +7,13 @@ import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.scope.Retriever.BasicTableHandler;
 import org.xml.sax.InputSource;
 
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 /** taks that retreives, parses and adds to the display the results of one cone service 
- * 
+ *  
  * */
 public class ConeRetrieval extends Retriever {
     
@@ -42,10 +43,14 @@ public class ConeRetrieval extends Retriever {
         TreeNode serviceNode = createServiceNode(fullURL, sb.toString());
         
         InputSource source = new InputSource(prelimURL.openStream());
-        SummarizingTableHandler th = new BasicTableHandler(serviceNode);
+        SummarizingTableHandler th = createTableHandler(serviceNode);
         parseTable(source, th);
         return th;
     }
+    /** can be overridden to provide an alternat table handler */
+	protected BasicTableHandler createTableHandler(TreeNode serviceNode) {
+		return new BasicTableHandler(serviceNode);
+	}
     public String getServiceType() {
         return CONE;
     }

@@ -161,17 +161,9 @@ public class ScopeHistoryProvider
 	}
 	
 	public static class SearchHistoryItem implements Comparable{
-		private boolean[] protocols;
 		private DoubleDimension radius;
 		private SesamePositionBean position;
 
-		public boolean[] getProtocols() {
-			return this.protocols;
-		}
-
-		public void setProtocols(boolean[] protocols) {
-			this.protocols = protocols;
-		}
 
 		public DoubleDimension getRadius() {
 			return this.radius;
@@ -192,7 +184,6 @@ public class ScopeHistoryProvider
 			final int PRIME = 31;
 			int result = 1;
 			result = PRIME * result + ((this.position == null) ? 0 : this.position.hashCode());
-			result = PRIME * result + ((this.protocols == null) ? 0 : this.protocols.hashCode());
 			result = PRIME * result + ((this.radius == null) ? 0 : this.radius.hashCode());
 			return result;
 		}
@@ -209,11 +200,7 @@ public class ScopeHistoryProvider
 					return false;
 			} else if (!this.position.equals(other.position))
 				return false;
-			if (this.protocols == null) {
-				if (other.protocols != null)
-					return false;
-			} else if (!this.protocols.equals(other.protocols))
-				return false;
+
 			if (this.radius == null) {
 				if (other.radius != null)
 					return false;
