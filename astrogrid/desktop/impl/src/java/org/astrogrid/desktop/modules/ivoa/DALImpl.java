@@ -1,4 +1,4 @@
-/*$Id: DALImpl.java,v 1.11 2007/03/08 17:44:03 nw Exp $
+/*$Id: DALImpl.java,v 1.12 2007/05/03 19:17:29 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -85,7 +85,9 @@ public abstract class DALImpl implements Dal{
      * @throws NotFoundException if service cannot be resolved
      */
     protected URL resolveEndpoint(URI arg0) throws InvalidArgumentException, NotFoundException {
- 
+    	if (arg0 == null || arg0.getScheme() == null) {
+    		throw new InvalidArgumentException("No endpoint provided");
+    	}
         if (arg0.getScheme().equals("http")) {
             try {
                 return arg0.toURL();
@@ -433,6 +435,9 @@ public abstract class DALImpl implements Dal{
 
 /* 
 $Log: DALImpl.java,v $
+Revision 1.12  2007/05/03 19:17:29  nw
+made more error tolerant.
+
 Revision 1.11  2007/03/08 17:44:03  nw
 first draft of voexplorer
 
