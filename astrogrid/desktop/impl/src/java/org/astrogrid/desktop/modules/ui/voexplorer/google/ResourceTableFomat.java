@@ -127,7 +127,7 @@ public  class ResourceTableFomat implements AdvancedTableFormat, WritableTableFo
 	//@todo find some way to prevent item display from screwing up on fast scroll
 	// think this is related to using html. If I used a cell renderer instead, I don't think this would be a problem.
 	// preferred - 3rd column, with icon indicating vomon status.
-	private String createTitle(Resource r) {
+	public static String createTitle(Resource r) {
 		if (r == null) {
 			return "";
 		}

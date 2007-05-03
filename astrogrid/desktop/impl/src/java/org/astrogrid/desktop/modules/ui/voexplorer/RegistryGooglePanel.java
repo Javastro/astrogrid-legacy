@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.1 2007/05/02 15:38:27 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.2 2007/05/03 19:18:38 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,6 +33,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -92,6 +93,7 @@ import ca.odell.glazedlists.ListSelection;
 import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.event.ListEvent;
 import ca.odell.glazedlists.event.ListEventListener;
+import ca.odell.glazedlists.gui.TableFormat;
 import ca.odell.glazedlists.swing.EventSelectionModel;
 import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
@@ -178,7 +180,7 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 			}
 		}
 		protected void doFinished(Object result) {
-			selectTable.selectAll();
+			resourceTable.selectAll();
 			
 		}		
 		protected void doAlways() {
@@ -263,16 +265,17 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 	private final JLabel searchCount;
 	private final JLabel filterCount;
 	private final JLabel searchTitle;
-	protected final ResourceTable selectTable;
+	protected final ResourceTable resourceTable;
 	protected final EventList  items ;
 	private final EventList edtItems; // a view of the items event list, on the Event dispatch thread.
-    protected final EventTableModel selectTableModel;
+    protected final EventTableModel resourceTableModel;
 	// tracks the currently clicked on registry entry - i.e. the one to display in viewer
 	private final EventSelectionModel currentResourceInView;
 
 	protected final JTabbedPane tabPane;
 	protected final RegistryInternal reg;
 	protected final Ehcache resources ;
+	protected final VoMon vomon;
 	protected final Ehcache bulk;
 	protected final Preference advancedPreference;
 	protected final ResourceViewer  xmlPane;
@@ -283,12 +286,15 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 	public final UIComponentBodyguard parent;
 	
 	public void setPopup(JPopupMenu popup) {
-		selectTable.setPopup(popup);
+		resourceTable.setPopup(popup);
 	}
 	
 	/** access the new search button - so a handler can be attached to it */
 	public JButton getNewSearchButton() {
 		return newButton;
+	}
+	public JButton getHaltSearchButton() {
+		return haltButton;
 	}
 	
 	/** access the search title label */
@@ -308,13 +314,14 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 	 */
 	public RegistryGooglePanel(final RegistryInternal reg, final BrowserControl browser, final RegistryBrowser regBrowser, 
 			final Ehcache resources, final Ehcache bulk
-			, final VoMon vomon, Preference pref) {
+			, final VoMon vm, Preference pref) {
 		super();    
 		this.parent = new UIComponentBodyguard();
 		this.reg = reg;
 		this.resources = resources;
 		this.bulk = bulk;
 		this.advancedPreference = pref;
+		this.vomon = vm;
 
 		// prelims
 		//this.setSize(new Dimension(500,800));
@@ -392,14 +399,14 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 		// middle pane
 		
 		// model for the table.
-		selectTableModel= new EventTableModel(filteredItems,new ResourceTableFomat(vomon));          		
-		selectTableModel.addTableModelListener(this);
-		selectTable = new ResourceTable(selectTableModel,filteredItems,vomon);
-		CSH.setHelpIDString(selectTable, "reg.table");
-		selectTable.setSelectionModel(currentResourceInView);
+		resourceTableModel= new EventTableModel(filteredItems,createTableFormat());          		
+		resourceTableModel.addTableModelListener(this);
+		resourceTable = createTable(resourceTableModel,filteredItems);
+		CSH.setHelpIDString(resourceTable, "reg.table");
+		resourceTable.setSelectionModel(currentResourceInView);
 		// surprising - this is all that's needed tp add sorting to columns in the table.
-		new TableComparatorChooser(selectTable,sortedItems,true);
-		JComponent centerPanel = new JScrollPane(selectTable);
+		new TableComparatorChooser(resourceTable,sortedItems,true);
+		JComponent centerPanel = new JScrollPane(resourceTable);
 		centerPanel.setBorder(BorderFactory.createEmptyBorder());
 		centerPanel.setMinimumSize(new Dimension(100,200));  // ensure we always get to keep some display, even when the filter wheels appear.
 		
@@ -440,6 +447,17 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 		advancedPreference.initializeThroughListener(this);
 
 	}
+	/** called to create the format definition of the central table - maybe overridden by subclasses */
+	protected TableFormat createTableFormat() {
+		return new ResourceTableFomat(vomon);
+	}
+	
+	/** called to create the central table - may be overridden by subclasses */
+	protected ResourceTable createTable(EventTableModel model,EventList list) {
+		return new ResourceTable(model,list,vomon);
+	}
+
+
 	/** triggered when value of preference changes. - shows / hides xml representation. */
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getSource() == this.advancedPreference ) {
@@ -483,15 +501,15 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 	public void tableChanged(TableModelEvent e) {
 		if (e.getType() != TableModelEvent.UPDATE) { // only interested in add or delete events.
 			int resultSize = edtItems.size();
-			int viewSize = selectTableModel.getRowCount();
+			int viewSize = resourceTableModel.getRowCount();
 			if (viewSize != resultSize) {
 				filterCount.setText(viewSize + " of ");
 			} else {
 				filterCount.setText(null);
 			}
 			// on every change, if nothing is selcted, and there are some results,, select (display) first record.
-			if (viewSize > 0 && selectTable.getSelectedRow() == -1) {
-					selectTable.changeSelection(0, 1, false, false);			
+			if (viewSize > 0 && resourceTable.getSelectedRow() == -1) {
+					resourceTable.changeSelection(0, 1, false, false);			
 			}  			
 		}
 	}
@@ -635,7 +653,7 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 	 * @return
 	 */
 	public Transferable getSelectionTransferable() {
-		return selectTable.getSelectionTransferable();
+		return resourceTable.getSelectionTransferable();
 	}
 
 	// event notification for loading.
@@ -696,6 +714,9 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.2  2007/05/03 19:18:38  nw
+refactored to make more extensible.
+
 Revision 1.1  2007/05/02 15:38:27  nw
 changes for 2007.3.alpha1
 

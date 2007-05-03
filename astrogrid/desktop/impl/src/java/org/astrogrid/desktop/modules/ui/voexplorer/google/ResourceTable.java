@@ -69,10 +69,6 @@ public class ResourceTable extends JTable implements DragGestureListener, DragSo
 		setShowGrid(false);
 		final TableColumnModel cm = getColumnModel();
 
-		final TableColumn c0 = cm.getColumn(0);
-		c0.setPreferredWidth(8);
-		c0.setMaxWidth(10);
-
 		cm.getColumn(0).setPreferredWidth(40);
 		cm.getColumn(0).setMaxWidth(40);
 		
@@ -98,6 +94,7 @@ public class ResourceTable extends JTable implements DragGestureListener, DragSo
 		int rowIndex = rowAtPoint(p);
 		int colIndex = columnAtPoint(p);
 		int realColumnIndex = convertColumnIndexToModel(colIndex);
+		
 		if (rowIndex > -1) { //availability column
 			Resource ri =(Resource) items.get(rowIndex);  // weakness - possiblility of getting the wrong tooltip if the list is rapidly updating. not the end of the world.
 			StringBuffer result = new StringBuffer();
@@ -107,9 +104,9 @@ public class ResourceTable extends JTable implements DragGestureListener, DragSo
 				if (ri instanceof Service) {
 					VoMonBean b = vomon.checkAvailability(ri.getId());
 					if (b == null) {
-						result.append("<br>The Monitoring service knows nothing about this service");
+						result.append("The Monitoring service knows nothing about this service");
 					} else {
-						result.append("<br>Status at ")
+						result.append("Status at ")
 						.append(b.getTimestamp())
 						.append(" - <b>" )
 						.append(b.getStatus())
@@ -118,7 +115,7 @@ public class ResourceTable extends JTable implements DragGestureListener, DragSo
 				} else if (ri instanceof CeaApplication) {
 					VoMonBean[] arr = vomon.checkCeaAvailability(ri.getId());
 					if (arr == null || arr.length == 0) {
-						result.append("<br>the monitoring service knows of no providers of this application");
+						result.append("The monitoring service knows of no providers of this application");
 					} else {
 						result.append("<br>Provided by<ul>");
 						for (int i =0; i < arr.length; i++) {
@@ -139,7 +136,9 @@ public class ResourceTable extends JTable implements DragGestureListener, DragSo
 				result.append("<b>").append(ri.getTitle()).append("</b>");
 				result.append("<br><i>").append(ri.getShortName()).append("</i>");
 				result.append("<br><i>").append(ri.getId()).append("</i>");
+				break;
 			default:
+				createTooltipFor(realColumnIndex,ri,result);
 				break;
 			}
 			result.append("</html>");                                          
@@ -149,6 +148,11 @@ public class ResourceTable extends JTable implements DragGestureListener, DragSo
 		}
 		return tip;
 	}
+	
+	/** extensionPoint */
+	protected void createTooltipFor(int ix,Resource r,StringBuffer sb) {
+	}
+	
 	private JPopupMenu popup;
 	
 	public void setPopup(JPopupMenu p) {
