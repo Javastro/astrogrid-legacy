@@ -94,9 +94,10 @@
 
   (template handler
     mode: generate-import
-    (a:import
-     (attribute href
-                (apply-templates select: xslt))))
+    (apply-templates select: xslt))
+
+  (template xslt
+    (a:import href: "{normalize-space()}"))
 
   (template handler
     mode: generate-choices
