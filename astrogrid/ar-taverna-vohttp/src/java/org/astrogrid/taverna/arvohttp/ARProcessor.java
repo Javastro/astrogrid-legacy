@@ -47,28 +47,41 @@ public class ARProcessor extends Processor implements Serializable {
 		this.name = name;
 		try {
 			if(name.equals("SIAP") || name.equals("CONE") || name.equals("STAP")) {
-				describeSearchPort();
+				describeSearchPortList();
 				describeRADECPort();
 				describeSizePort();
+				describeSavePort();
+				describeIvornList();
+				describeURLList();
+				describeResultList();
+				describeErrorList();
+				
 				//describeOutputAsInputPort();
 				//describeExecutionPort();
 				//describeOutputPort();
 				
-			} else if(name.equals("STAP")) {
-				describeSearchPort();
+			}else if(name.equals("STAP")) {
+				describeSearchPortList();
 				describeDatePort();
+				describeSavePort();
+				describeIvornList();
+				describeURLList();
+				describeResultList();
+				describeErrorList();
+
 				//describeOutputAsInputPort();
 				//describeExecutionPort();
 				//describeOutputPort();
+			}else if(name.indexOf("RegQuery") != -1) {
+				describeSearchPort();
+				describeIvornList();
+
 			}
-			describeSavePort();
-			
+			/*
 			OutputPort resultMap= new OutputPort(this,"result");
 			describeMapPort(resultMap);
 			this.addPort(resultMap);
-			describeIvornList();
-			describeURLList();
-			describeResultList();
+			*/
 			setDescription("VOHTTP");
 			logger.warn("finished describing ports");
 		}catch (PortCreationException e) {
@@ -115,6 +128,16 @@ public class ARProcessor extends Processor implements Serializable {
 		this.addPort(urlList);
 	}
 	
+	private void describeErrorList() throws PortCreationException, DuplicatePortNameException {
+		OutputPort errorList= new OutputPort(this,"ErrorList");
+		errorList.getMetadata().setDescription("List of Errors that occurred trying to call a service");
+		List mimes = new ArrayList();
+		mimes.add("java/"+java.util.List.class.getName());
+		errorList.getMetadata().setMIMETypes(mimes); 
+		errorList.setSyntacticType(computeType(java.util.List.class,mimes));
+		this.addPort(errorList);
+	}	
+	
 	private void describeResultList() throws PortCreationException, DuplicatePortNameException {
 		OutputPort resList = new OutputPort(this,"ResultList");
 		resList.getMetadata().setDescription("XML Content as a List");
@@ -126,6 +149,17 @@ public class ARProcessor extends Processor implements Serializable {
 	}	
 	
 	
+	
+	private void describeSearchPortList() throws PortCreationException, DuplicatePortNameException {
+		InputPort input = new InputPort(this,"Ivorns");
+		List mimes = new ArrayList();
+		//mimes.add("text/plain");
+		mimes.add("java/"+java.util.List.class.getName());		
+		input.getMetadata().setMIMETypes(mimes);
+		//input.setSyntacticType(computeType(java.lang.String.class,mimes));
+		input.setSyntacticType(computeType(java.util.List.class,mimes));
+		this.addPort(input);
+	}
 	
 	private void describeSearchPort() throws PortCreationException, DuplicatePortNameException {
 		InputPort input = new InputPort(this,"Ivorn or Registry Keywords");
@@ -230,10 +264,11 @@ public class ARProcessor extends Processor implements Serializable {
 	 */
 	private String computeType(Class type, List mimes) {
 		StringBuffer sb = new StringBuffer();
-		if (type.isArray()) {
+		if (type.isArray() || type.equals(java.util.List.class)) {
 			sb.append("l(");
 		}
-		sb.append("'");
+		sb.append("'text/plain");
+		/*
 		for (Iterator i = mimes.iterator(); i.hasNext(); ) {
 			String m = (String)i.next();
 			sb.append(m);
@@ -241,8 +276,9 @@ public class ARProcessor extends Processor implements Serializable {
 				sb.append(',');
 			}
 		}
+		*/
 		sb.append("'");
-		if (type.isArray()) {
+		if (type.isArray() || type.equals(java.util.List.class)) {
 			sb.append(")");
 		}
 		return sb.toString();

@@ -3,14 +3,20 @@
  */
 package org.astrogrid.taverna.arvohttp;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.TimeZone;
 import java.net.URL;
+import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.astrogrid.taverna.arvohttp.registry.ARRegistrySearch;
 
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.TransformerFactory;
@@ -31,6 +37,7 @@ import org.astrogrid.acr.ivoa.resource.*;
 import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.acr.ivoa.Ssap;
+import org.astrogrid.acr.astrogrid.Stap;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.InvalidArgumentException;
 
@@ -69,6 +76,22 @@ public class ARTask implements ProcessorTaskWorker {
 	}
 	private final ARProcessor processor;
 	
+	private Resource[] getResources(List ivorns, String serviceType) throws ACRException, ServiceException, NotFoundException, URISyntaxException {
+		Iterator iter = ivorns.iterator();
+		String ivorn;
+		Resource []res = new Resource[ivorns.size()];
+		int i = 0;
+		while(iter.hasNext()) {
+			ivorn = (String)iter.next();
+			if(ivorn.startsWith("ivo://")) {
+				logger.warn("in getResources(list..) ivorn = " + ivorn);
+				res[i] = getResources(ivorn,serviceType)[0];
+				i++;
+			}//if
+		}//while
+		return res;
+	}
+	
 	private Resource[] getResources(String paramValue, String serviceType) throws ACRException, ServiceException, NotFoundException, URISyntaxException {
 		logger.warn("finding Resource(s) serviceType = " + serviceType);
 		Resource []resources = null;
@@ -76,14 +99,18 @@ public class ARTask implements ProcessorTaskWorker {
 		Registry reg = (Registry)acr.getService(Registry.class);
 		if(paramValue == null || paramValue.trim().length() == 0) {
 			logger.warn("grabbing all resources");
-			if(serviceType.equals("CONE")) {
+			if(serviceType.startsWith("CONE")) {
 				Cone cone = (Cone)acr.getService(Cone.class);				
 				String xqueryCone = cone.getRegistryXQuery();
 				resources = reg.xquerySearch(xqueryCone);
-			}else if(serviceType.equals("SIAP")) {
+			}else if(serviceType.startsWith("SIAP")) {
 				Siap siap = (Siap)acr.getService(Siap.class);				
 				String xquerySiap = siap.getRegistryXQuery();
 				resources = reg.xquerySearch(xquerySiap);				
+			}else if(serviceType.startsWith("STAP")) {
+				Stap stap = (Stap)acr.getService(Stap.class);				
+				String xqueryStap = stap.getRegistryXQuery();
+				resources = reg.xquerySearch(xqueryStap);				
 			}
 		}else if(paramValue.startsWith("ivo://")) {
 			logger.warn("looking for single resoruce");
@@ -97,27 +124,25 @@ public class ARTask implements ProcessorTaskWorker {
 				}else if(serviceType.equals("SIAP") && res.getType().indexOf("SimpleImage") != -1) {
 					logger.warn("yes siap");
 					resources[k] = res;				
+				}else if(serviceType.equals("STAP") && res.getType().indexOf("SimmpleTimeAccess") != -1) {
+					logger.warn("yes siap");
+					resources[k] = res;				
 				}else {
 					resources[k] = null;
 				}
 			}
 		}else {
 			logger.warn("doing a keyword search");
-
-			if(paramValue.indexOf(" and ") != -1) {
-				resources = reg.keywordSearch(paramValue, false);
-			}else {
-				resources = reg.keywordSearch(paramValue, true);
+			if(serviceType.startsWith("CONE")) {
+				resources = ARRegistrySearch.search(reg, paramValue,"near(@xsi:type,'*ConeSearch')");
+			}else if(serviceType.startsWith("SIAP")) {
+				resources = ARRegistrySearch.search(reg, paramValue,"near(@xsi:type,'*SimpleImageAccess')");
+			}else if(serviceType.startsWith("STAP")) {
+				resources = ARRegistrySearch.search(reg, paramValue,"near(@xsi:type,'*SimpleTimeAccess')");
+			}else if(serviceType.startsWith("SSAP")) {
+				resources = ARRegistrySearch.search(reg, paramValue,"near(@xsi:type,'*Spectral')");
 			}
-			if(resources != null) {
-				for(int j = 0;j < resources.length;j++) {
-					if(serviceType.equals("CONE") && resources[j].getType().indexOf("Cone") == -1) {
-						resources[j] = null;
-					}else if(serviceType.equals("SIAP") && resources[j].getType().indexOf("SimpleImage") == -1) {
-						resources[j] = null;
-					}//else
-				}//for
-			}//if
+			//resources = (Resource [])resultVector.toArray();					
 		}//else
 		if(resources != null && resources.length > 0)
 			logger.warn("done number of resources returned = " + resources.length);
@@ -137,6 +162,17 @@ public class ARTask implements ProcessorTaskWorker {
 		urlMap.put(res.getId().toString(), siapURL.toString());		
 		return siapURL;
 	}
+	
+	private URL getStapURL(Stap stap,Resource res, Calendar start, Calendar end) throws InvalidArgumentException, NotFoundException, ServiceException, TransformerException, java.net.MalformedURLException, TransformerConfigurationException {
+		logger.warn("getSiapURL");
+		URI resURI = getResourceAccessURI(res);
+
+		logger.warn("processingstap for " + res.getId() + " and uri = " + resURI);
+		URL stapURL = stap.constructQuery(resURI,start, end);
+		logger.warn("url for stapURL to call  = " + stapURL);
+		urlMap.put(res.getId().toString(), stapURL.toString());		
+		return stapURL;
+	}	
 			
 	private String processSiap(Siap siap,Resource res, double ra, double dec, double size /*, String outputLoc*/) throws InvalidArgumentException, NotFoundException, ServiceException, TransformerException, java.net.MalformedURLException, TransformerConfigurationException, IOException {
 		logger.warn("processSiap");
@@ -145,10 +181,23 @@ public class ARTask implements ProcessorTaskWorker {
 	    StringWriter output = new StringWriter();
 	    logger.warn("done with executeVotable");
 	    //TransformerFactory.newInstance().newTransformer().transform(new DOMSource(resultDoc), new StreamResult(output));
-	    TransformerFactory.newInstance().newTransformer().transform(new StreamSource(getSiapURL(siap,res,ra,dec,size).openStream()), new StreamResult(output));	    
+	    TransformerFactory.newInstance().newTransformer().transform(new StreamSource(getSiapURL(siap,res,ra,dec,size).openStream()), new StreamResult(output));
+	  
 	    logger.warn("done return output");
 		return output.toString();
 	}
+	
+	private String processStap(Stap stap,Resource res, Calendar start, Calendar end) throws InvalidArgumentException, NotFoundException, ServiceException, TransformerException, java.net.MalformedURLException, TransformerConfigurationException, IOException {
+		logger.warn("processSiap");
+		
+		//Document resultDoc = siap.executeVotable(getSiapURL(siap,res,ra,dec,size));
+	    StringWriter output = new StringWriter();
+	    logger.warn("done with executeVotable");
+	    //TransformerFactory.newInstance().newTransformer().transform(new DOMSource(resultDoc), new StreamResult(output));
+	    TransformerFactory.newInstance().newTransformer().transform(new StreamSource(getStapURL(stap,res,start, end).openStream()), new StreamResult(output));	    
+	    logger.warn("done return output");
+		return output.toString();
+	}	
 	
 	private URL getConeURL(Cone cone,Resource res, double ra, double dec, double size /*, String outputLoc*/) throws InvalidArgumentException, NotFoundException, ServiceException,  TransformerException, TransformerConfigurationException {
 		URI resURI = getResourceAccessURI(res);
@@ -203,41 +252,57 @@ public class ARTask implements ProcessorTaskWorker {
 		String name = processor.getName();
 	    Map outputMap = new HashMap();
 	    Map resultMap = new HashMap();
-	    Double ra, dec, size;
+	    ArrayList errorList = new ArrayList();
+	    double ra = Double.NaN;
+	    double dec = Double.NaN;
+	    double size = Double.NaN;
+	    
+	    Calendar start = Calendar.getInstance();
+	    Calendar end = Calendar.getInstance();
 	    String outputLoc;
 	    URI resURI;
 	    Cone cone = null;
 	    Siap siap = null;
 	    Ssap ssap = null;
+	    Stap stap = null;
 	    urlMap = new HashMap();
 		logger.warn("Name = " + name);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+        "yyyy-MM-dd'T'HH:mm:ss");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
 		try {
 		    ACR acr = SingletonACR.getACR();
 		    logger.warn("got acr in ARTask now get DataThing");
-		    DataThing parameterThing = (DataThing)arg0.get("Ivorn or Registry Keywords");
+		    
 		    Object []mapArr = arg0.keySet().toArray();
 		    for(int l = 0;l < mapArr.length;l++) {
 		    	logger.warn("mapArr index = " + l + " and val = " + mapArr[l]);
 		    }
-		    logger.warn("have datathing so get the paramValue of it3");
-		    if(parameterThing == null) {
-		    	logger.warn("parameterThing is null");
+
+		    
+		  
+		    Registry reg = (Registry)acr.getService(Registry.class);
+		    Resource []res = null;
+		    if(name.indexOf("RegQuery") != -1) {
+		    	DataThing parameterThing = (DataThing)arg0.get("Ivorn or Registry Keywords");
+			    String paramValue = (String)parameterThing.getDataObject();
+			    logger.warn("paramValue = " + paramValue);
+		    	res = getResources(paramValue,name);
+		    	ArrayList ivornList = new ArrayList();
+		    	for(int i = 0;i < res.length;i++) {
+		    		ivornList.add(res[i].getId().toString());
+		    	}
+		    	outputMap.put("Ivorns",DataThingFactory.bake(ivornList));
+		    	return outputMap;
+		    }else {
+		    	DataThing parameterThingList = (DataThing)arg0.get("Ivorns");
+		    	//String whatisit = (String)parameterThingList.getDataObject();
+		    	//logger.warn("string from what = " + whatisit);
+			    List paramValueList = (List)parameterThingList.getDataObject();
+			    logger.warn("paramValueList size = " + paramValueList.size());		    	
+		    	res = getResources(paramValueList,name);
 		    }
 		    
-		    Object test = parameterThing.getDataObject();
-		    if(test == null) {
-		    	logger.warn("test object was null :(");
-		    }
-		    logger.warn("object test tostring = " + test.toString());
-		    if(test instanceof String){
-		    	logger.warn("yes it is a string");
-		    }else {
-		    	logger.warn("no it is not a string");
-		    }
-		    String paramValue = (String)parameterThing.getDataObject();
-		    logger.warn("paramValue = " + paramValue);
-		    Registry reg = (Registry)acr.getService(Registry.class);
-		    Resource []res = getResources(paramValue,name);
 		    boolean allNulls = true;
 		    if(res == null || res.length == 0) {
 		    	throw new TaskExecutionException("No Resources Found that corresponded to type = " + name);
@@ -252,7 +317,7 @@ public class ARTask implements ProcessorTaskWorker {
 		    	throw new TaskExecutionException("No Resources Found that corresponded to type = " + name);		    	
 		    }
 		    logger.warn("grab RA object and analyze");
-		    test = ((DataThing)arg0.get("RA")).getDataObject();
+		    Object test = ((DataThing)arg0.get("RA")).getDataObject();
 		    if(test instanceof String) {
 		    	logger.warn("RA dataobject is a string :(");
 		    }else if(test instanceof Double) {
@@ -261,11 +326,20 @@ public class ARTask implements ProcessorTaskWorker {
 		    	logger.warn("darn RA not sure what insanceof it is");
 		    }
 		    
-		    ra = Double.parseDouble((String)((DataThing)arg0.get("RA")).getDataObject());
-    		dec = Double.parseDouble((String)((DataThing)arg0.get("DEC")).getDataObject());
-    		size = Double.parseDouble((String)((DataThing)arg0.get("SIZE")).getDataObject());
+		    if(arg0.containsKey("RA"))
+		    	ra = Double.parseDouble((String)((DataThing)arg0.get("RA")).getDataObject());
+		    if(arg0.containsKey("DEC"))
+		    	dec = Double.parseDouble((String)((DataThing)arg0.get("DEC")).getDataObject());
+		    if(arg0.containsKey("SIZE"))
+		    	size = Double.parseDouble((String)((DataThing)arg0.get("SIZE")).getDataObject());
+		    if(arg0.containsKey("START")) {
+		    	start.setTime(dateFormat.parse((String)((DataThing)arg0.get("START")).getDataObject()));
+		    }
+		    if(arg0.containsKey("END")) {
+		    	end.setTime(dateFormat.parse((String)((DataThing)arg0.get("END")).getDataObject()));
+		    }
+		    
     		String saveURLS = (String)((DataThing)arg0.get("Only URLS Needed")).getDataObject();
-    		
     		logger.warn("ok process things ra = " + ra + " dec = " + dec + " size = " + size);
     		//outputLoc = (String)((DataThing)arg0.get("OutputLocation")).getDataObject();
     		String result;
@@ -279,9 +353,17 @@ public class ARTask implements ProcessorTaskWorker {
 			    		if(saveURLS != null && saveURLS.equals("true") ) {
 			    			result = getSiapURL(siap,res[j], ra, dec, size).toString();
 			    		}else {
-				    		result =  processSiap(siap,res[j], ra, dec, size/*,outputLoc*/);
-				    		logger.warn("ok got a result getId = " + res[j].getId() + " and string result = " + result);
-				    		resultMap.put("SiapResult_" + res[j].getId().toString().replaceAll("[^\\w*]","_"), result);
+			    			try {
+					    		result =  processSiap(siap,res[j], ra, dec, size/*,outputLoc*/);
+					    		logger.warn("ok got a result getId = " + res[j].getId() + " and string result = " + result);
+					    		resultMap.put("SiapResult_" + res[j].getId().toString().replaceAll("[^\\w*]","_"), result);
+			    			}catch(TransformerException te) {
+			    				errorList.add(res[j].getId().toString() + " - " + te.getMessage());
+			    		    }catch(java.net.MalformedURLException me) {
+			    				errorList.add(res[j].getId().toString() + " - " + me.getMessage());
+			    		    }catch(IOException ioe) {
+			    				errorList.add(res[j].getId().toString() + " - " + ioe.getMessage());			    		    	
+			    		    }
 			    		}
 			    	}else if(name.equals("CONE")) {
 			    		if(cone == null) {
@@ -290,29 +372,63 @@ public class ARTask implements ProcessorTaskWorker {
 			    		if(saveURLS != null && saveURLS.equals("true") ) {
 			    			result = getConeURL(cone,res[j], ra, dec, size).toString();
 			    		}else {
-				    		result = processCone(cone,res[j], ra, dec, size/*,outputLoc*/);
-				    		resultMap.put("ConeResult_" + res[j].getId().toString().replaceAll("[^\\w*]","_"), result);			    			
+			    			try {
+			    				result = processCone(cone,res[j], ra, dec, size/*,outputLoc*/);
+			    				resultMap.put("ConeResult_" + res[j].getId().toString().replaceAll("[^\\w*]","_"), result);
+			    			}catch(TransformerException te) {
+			    				errorList.add(res[j].getId().toString() + " - " + te.getMessage());
+			    		    }catch(java.net.MalformedURLException me) {
+			    				errorList.add(res[j].getId().toString() + " - " + me.getMessage());
+			    		    }catch(IOException ioe) {
+			    				errorList.add(res[j].getId().toString() + " - " + ioe.getMessage());			    		    	
+			    		    }
 			    		}
 			    		
-			    	}//else
-			    	else if(name.equals("SSAP")) {
+			    	}else if(name.equals("SSAP")) {
 			    		if(ssap == null) {
 			    			ssap = (Ssap)acr.getService(Ssap.class);
 			    		}
 			    		if(saveURLS != null && saveURLS.equals("true") ) {
 			    			result = getSSAPURL(ssap,res[j], ra, dec, size).toString();
-			    		}else {			    		
-				    		result = processSSAP(ssap,res[j], ra, dec, size/*,outputLoc*/);
-				    		resultMap.put("SsapResult_" + res[j].getId().toString().replaceAll("[^\\w*]","_"), result);
+			    		}else {		
+			    			try {
+					    		result = processSSAP(ssap,res[j], ra, dec, size/*,outputLoc*/);
+					    		resultMap.put("SsapResult_" + res[j].getId().toString().replaceAll("[^\\w*]","_"), result);
+			    			}catch(TransformerException te) {
+			    				errorList.add(res[j].getId().toString() + " - " + te.getMessage());
+			    		    }catch(java.net.MalformedURLException me) {
+			    				errorList.add(res[j].getId().toString() + " - " + me.getMessage());
+			    		    }catch(IOException ioe) {
+			    				errorList.add(res[j].getId().toString() + " - " + ioe.getMessage());			    		    	
+			    		    }					    		
+			    		}
+			    	}else if(name.equals("STAP")) {
+			    		if(ssap == null) {
+			    			stap = (Stap)acr.getService(Stap.class);
+			    		}
+			    		if(saveURLS != null && saveURLS.equals("true") ) {
+			    			result = getStapURL(stap,res[j], start, end).toString();
+			    		}else {	
+			    			try {
+			    				result = processStap(stap,res[j], start, end/*,outputLoc*/);
+			    				resultMap.put("StapResult_" + res[j].getId().toString().replaceAll("[^\\w*]","_"), result);
+			    			}catch(TransformerException te) {
+			    				errorList.add(res[j].getId().toString() + " - " + te.getMessage());
+			    		    }catch(java.net.MalformedURLException me) {
+			    				errorList.add(res[j].getId().toString() + " - " + me.getMessage());
+			    		    }catch(IOException ioe) {
+			    				errorList.add(res[j].getId().toString() + " - " + ioe.getMessage());			    		    	
+			    		    }			    				
 			    		}
 			    	}//else			    	
 		    	}//if
 		    }//for
 		    logger.warn("finised AR task placing things in output map.  the result map size = " + resultMap.size());
-		    outputMap.put("result",DataThingFactory.bake(resultMap));
+		    //outputMap.put("result",DataThingFactory.bake(resultMap));
 		    logger.warn("lets make the Ivorns and URLs list the size = " + urlMap.size());
 		    outputMap.put("Ivorns",DataThingFactory.bake(new ArrayList(urlMap.keySet())));
 		    outputMap.put("URLs",DataThingFactory.bake(new ArrayList(urlMap.values())));
+		    outputMap.put("ErrorList", DataThingFactory.bake(errorList));
     		if(saveURLS == null || !saveURLS.equals("true") ) {
     		    outputMap.put("ResultList",DataThingFactory.bake(new ArrayList(resultMap.values())));    			
     		}

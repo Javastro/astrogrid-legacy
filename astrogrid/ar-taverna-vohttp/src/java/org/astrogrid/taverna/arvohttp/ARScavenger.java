@@ -47,11 +47,25 @@ public class ARScavenger extends Scavenger {
 			DefaultMutableTreeNode coneNode = 
 				new DefaultMutableTreeNode(new ARProcessorFactory("CONE"));
 			DefaultMutableTreeNode ssapNode = 
-				new DefaultMutableTreeNode(new ARProcessorFactory("SSAP"));			
+				new DefaultMutableTreeNode(new ARProcessorFactory("SSAP"));
+
+			DefaultMutableTreeNode siapRegNode = 
+				new DefaultMutableTreeNode(new ARProcessorFactory("SIAP_RegQuery"));
+			DefaultMutableTreeNode coneRegNode = 
+				new DefaultMutableTreeNode(new ARProcessorFactory("Cone_RegQuery"));
+			DefaultMutableTreeNode ssapRegNode = 
+				new DefaultMutableTreeNode(new ARProcessorFactory("SSAP_RegQuery"));
+			DefaultMutableTreeNode stapRegNode = 
+				new DefaultMutableTreeNode(new ARProcessorFactory("STAP_RegQuery"));
+			
 			root.add(siapNode);
 			root.add(coneNode);
 			root.add(stapNode);	
 			root.add(ssapNode);	
+			root.add(siapRegNode);
+			root.add(coneRegNode);	
+			root.add(ssapRegNode);	
+			root.add(stapRegNode);	
 			add(root);
 			logger.warn("end listVOHTTPS successful ARScavenger");
 		/*} catch (ACRException x) {
