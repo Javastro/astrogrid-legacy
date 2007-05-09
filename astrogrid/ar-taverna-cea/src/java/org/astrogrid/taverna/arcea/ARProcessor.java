@@ -88,6 +88,18 @@ public class ARProcessor extends Processor implements Serializable {
 		}
 	}
 	
+	public void setRegId(String id) {
+		logger.warn("inside setRegId the id = " + id);
+		InputPort []ips =  this.getInputPorts();
+		for(int j = 0;j < ips.length;j++) {
+			if(ips[j].getName().equals("CeaApp Ivorn")) {
+				logger.warn("try setting the new defaultvalue for input port");
+				ips[j].setDefaultValue(id);
+				j = ips.length;
+			}//if
+		}//for
+	}
+	
 	public void setChosenDirectoryURIResult(String dirURI) {
 		InputPort []ips =  this.getInputPorts();
 		for(int j = 0;j < ips.length;j++) {
@@ -98,6 +110,7 @@ public class ARProcessor extends Processor implements Serializable {
 			}
 		}
 	}	
+	
 	
 	private void describeDSAOutputs() throws PortCreationException, DuplicatePortNameException {
 		OutputPort resList = new OutputPort(this,"ResultList");
@@ -195,10 +208,11 @@ public class ARProcessor extends Processor implements Serializable {
 	 */
 	private String computeType(Class type, List mimes) {
 		StringBuffer sb = new StringBuffer();
-		if (type.isArray()) {
+		if (type.isArray() || type.equals(java.util.List.class)) {
 			sb.append("l(");
 		}
-		sb.append("'");
+		sb.append("'text/plain");
+		/*
 		for (Iterator i = mimes.iterator(); i.hasNext(); ) {
 			String m = (String)i.next();
 			sb.append(m);
@@ -206,8 +220,9 @@ public class ARProcessor extends Processor implements Serializable {
 				sb.append(',');
 			}
 		}
+		*/
 		sb.append("'");
-		if (type.isArray()) {
+		if (type.isArray() || type.equals(java.util.List.class)) {
 			sb.append(")");
 		}
 		return sb.toString();

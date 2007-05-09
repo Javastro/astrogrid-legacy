@@ -50,7 +50,11 @@ public class ARScavenger extends Scavenger {
 			DefaultMutableTreeNode ceaNodeForDSA = 
 				new DefaultMutableTreeNode(new ARProcessorFactory("DSA"));
 			serviceNode.add(ceaNodeForDSA);
-			add(serviceNode);			
+			//DefaultMutableTreeNode regNodeForDSA = 
+			//	new DefaultMutableTreeNode(new ARProcessorFactory("DSA-RegQuery"));
+			//serviceNode.add(regNodeForDSA);			
+			add(serviceNode);	
+			//add(regNodeForDSA);
 			logger.warn("end makeDSAAppTree successful ARScavenger");
 		/*} catch (ACRException x) {
 			throw new ScavengerCreationException("Failed to list components of AR" + x.getMessage());
