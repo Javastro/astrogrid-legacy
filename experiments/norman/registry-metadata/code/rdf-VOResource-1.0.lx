@@ -73,7 +73,8 @@
   (template "date|description|logo|shortName|subject|version"
       (element name: "voro:{local-name()}"
                (apply-templates)))
-  (template "address|email|title"
+  ;; elements with normalised simple content
+  (template "address|email|telephone|title"
     (element name: "voro:{local-name()}"
              (value-of "normalize-space()")))
 
@@ -91,16 +92,9 @@
                    (with-param id (apply-templates))))
 
   ;; various things which map to Actor
-  (template "publisher|contributor"
+  (template "contributor|facility|instrument|name|publisher"
     (element "voro:{local-name()}"
              (call-template name: voro:resource-name)))
-;;   (template publisher
-;;       (voro:publisher
-;;        (call-template name: voro:resource-name)))
-
-;;   (template contributor
-;;       (voro:contributor
-;;        (call-template name: voro:resource-name)))
 
   ;; Creator and contact have similar but not identical contents in the
   ;; XSchema, but identical allowed properties in the Ontology.
@@ -118,13 +112,6 @@
 
   (template capability
     (voro:capability rdf:parseType: Resource
-;;        (choose
-;;         (when "@standardID and starts-with(@standardID,'ivo://')"
-;;           (call-template name: make-identifier-uri
-;;                          (with-param id (value-of @standardID))
-;;                          (with-param propname voro:standardID)))
-;;         (when "@standardID"
-;;           (voro:standardID (value-of @standardID))))
        (choose
         (when @xsi:type
           (call-template name: resolve-xsitype))
@@ -132,11 +119,6 @@
          (call-template name: vor:Capability)))
        ;; (apply-templates)
        ))
-
-  (template name
-    (voro:name (apply-templates))
-    (if @ivo-id
-        (voro:identifier (value-of @ivo-id))))
 
   ;; Content
   (template content
@@ -158,20 +140,6 @@
   (template accessURL
     (voro:accessURL
      (call-template name: vor:AccessURL)))
-;;   (template accessURL name: vor:AccessURL
-;;       (variable name: access-url-type
-;;                 (choose
-;;                  (when "@use = 'base'"
-;;                    voro:BaseAccessURL)
-;;                  (when "@use = 'full'"
-;;                    voro:FullAccessURL)
-;;                  (when "@use = 'dir'"
-;;                    voro:DirectoryAccessURL)
-;;                  (otherwise ;; eh?
-;;                   voro:AccessURL)))
-;;       (voro:accessURL
-;;        (element "{$access-url-type}"
-;;                 (attribute voro:uri (apply-templates)))))
 
   (template wsdlURL
     (voro:wsdlURL
@@ -181,18 +149,6 @@
   (template rights
     (voro:rights
      (call-template name: vor:Rights)))
-;;   (template rights name: vor:Rights
-;;     (variable name: rights-type
-;;               (value-of "normalize-space()"))
-;;     (variable name: propertyname
-;;               (choose
-;;                (when "$rights-type = 'public'"		voro:PublicRights)
-;;                (when "$rights-type = 'proprietary'"	voro:ProperietaryRights)
-;;                (when "$rights-type = 'secure'"		voro:SecureRights)
-;;                (otherwise
-;;                 x2s:ERROR-RIGHTS)))
-;;     (voro:rights
-;;      (element {$propertyname})))
 
   (template type
     ;; do mild normalisation on the given string
@@ -264,35 +220,22 @@
     (voro:contentLevel
      (element "{$cltype}")))
 
+  ;; There is no 'template relationshipType', since this is handled
+  ;; internally to 'relationship'
   (template relationship
       (variable name: type
                 (value-of "translate(relationshipType,
                                      'ABCDEFGHIJKLMNOPQRSTUVWXYZ- ',
                                      'abcdefghijklmnopqrstuvwxyz')"))
     (apply-templates select: relatedResource
-                     (with-param rel
-                                 (choose
-                                  (when "$type = 'mirrorof'"    voro:mirrorOf)
-                                  (when "$type = 'servicefor'"  voro:serviceFor)
-                                  (when "$type = 'servedby'"    voro:servedBy)
-                                  (when "$type = 'derivedfrom'" voro:derivedFrom)
-                                  (otherwise voro:relatedResource))))
-    ;;     (choose
-    ;;      (when "$type = 'mirrorof'"
-    ;;        (apply-templates vor:relatedResource
-    ;;                         (with-param rel voro:mirrorOf)))
-    ;;      (when "$type = 'servicefor'"
-    ;;        (apply-templates vor:relatedResource
-    ;;                         (with-param rel voro:serviceFor)))
-    ;;      (when "$type = 'servedby'"
-    ;;        (apply-templates vor:relatedResource
-    ;;                         (with-param rel voro:servedBy)))
-    ;;      (when "$type = 'derivedfrom'"
-    ;;        (apply-templates vor:relatedResource
-    ;;                         (with-param rel voro:derivedFrom)))
-    ;;      (otherwise
-    ;;       (apply-templates vor:relatedResource)))
-    )
+                     (with-param
+                      rel
+                      (choose
+                       (when "$type = 'mirrorof'"    voro:mirrorOf)
+                       (when "$type = 'servicefor'"  voro:serviceFor)
+                       (when "$type = 'servedby'"    voro:servedBy)
+                       (when "$type = 'derivedfrom'" voro:derivedFrom)
+                       (otherwise voro:relatedResource)))))
 
   (template relatedResource
       (param name: rel voro:relatedResource)
@@ -302,9 +245,7 @@
                           (call-template name: make-identifier-uri
                                          (with-param id
                                                      (value-of @ivo-id))))
-                      (voro:name (value-of "normalize-space()")
-                                 ;; (apply-templates)
-                                 ))))
+                      (voro:name (value-of "normalize-space()")))))
 
   ;; If interface is present here, then we're actually processing
   ;; a subtype of Resource.  Since interface is `abstract' in XSchema terms,
@@ -326,23 +267,13 @@
 
   (template validationLevel
     (call-template name: vor:Validation))
-;;   (template validationLevel
-;;     (variable name: level select: "normalize-space()") ;content is an integer
-;;     (element "voro:{concat('validationLevel',$level)}"
-;;              (attribute name: rdf:parseType Resource)
-;;              (choose
-;;               (when @validatedBy
-;;                 (call-template name: make-identifier-uri
-;;                                (with-param id (value-of @validatedBy))))
-;;               (otherwise
-;;                (call-template name: make-identifier-uri ;FIXME bad default
-;;                               (with-param id "ivo://ERROR/unknown"))))))
 
   ;; Named templates
   (lx:dtd ((template (name #t))
            (element (name #t) namespace))
-    ;; Handle ResourceName elements, which map to Actor or one of its subtypes,
-    ;; optionally given in the 'type' parameter.
+
+    ;; Handle ResourceName elements, which map to Actor or one of its
+    ;; subtypes, optionally given in the 'type' parameter.
     ;; If the namespace of the 'type' element name is not voro, then the
     ;; appropriate namespace should be given as the 'ns' parameter.  In this
     ;; case, the 'type' name may, but need not, have a prefix.
