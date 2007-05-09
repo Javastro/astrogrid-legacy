@@ -34,7 +34,7 @@ public class ExtractNamespaces {
         if (args.length < 1)
             Usage();
 
-        File infile = null;
+        java.util.List<File> infiles = new java.util.ArrayList<File>();
         int action = EXTRACT_NAMESPACES;
         boolean indentOutput = false;
 
@@ -50,13 +50,11 @@ public class ExtractNamespaces {
                 verbosity = VERBOSITY_CHATTER;
             else if (a.equals("--quiet"))
                 verbosity = VERBOSITY_SILENT;
-            else if (infile != null)
-                Usage();
+            else if (a.equals("-"))
+                infiles.add(null);
             else
-                infile = new File(a);
+                infiles.add(new File(a));
         }
-
-        assert infile != null;
 
         int exitstatus = 1;     // failure, unless reset
 
@@ -72,7 +70,20 @@ public class ExtractNamespaces {
                     ("http://xml.org/sax/features/namespace-prefixes", true);
 
             NamespaceHandler nsh = new NamespaceHandler();
-            saxparser.parse(infile, nsh);
+            for (File f : infiles) {
+                if (f == null) {
+                    java.io.LineNumberReader filelist
+                            = new java.io.LineNumberReader
+                             (new java.io.FileReader
+                              (java.io.FileDescriptor.in));
+                    String line;
+                    while ((line = filelist.readLine()) != null) {
+                        saxparser.parse(new File(line), nsh);
+                    }
+                } else {
+                    saxparser.parse(f, nsh);
+                }
+            }
 
             if (action == EXTRACT_NAMESPACES) {
                 for (String s : nsh.getNamespaces())
