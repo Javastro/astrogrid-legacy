@@ -66,13 +66,13 @@ UI CONFIGURATION -->
 	<contribution configuration-id="system.uiStructure" if="not (property system.help.disabled) and (property workbench.mode)">
 		<action text="Astro Runtime - Introduction" name="acrHelp"  parentName="help" iconName="help16.png"
 			object="service:system.help" methodName="showHelpForTarget" 
-			after="contents" before="projects" visibleCondition="preference:acr.advanced">
+			after="div1" before="acrApi" visibleCondition="preference:acr.advanced">
 					<tooltip>Introduction to Astro Runtime</tooltip>
 			<parameter>acr.overview</parameter>
 		</action>		
 		<action text="Astro Runtime - API Reference" name="acrApi"  parentName="help" iconName="reference16.png"
 			object="service:system.help" methodName="showHelpForTarget" 
-			after="acrHelp" before="projects" visibleCondition="preference:acr.advanced">
+			 after="acrHelp" before="div2" visibleCondition="preference:acr.advanced">
 					<tooltip>Lists available functions, gives examples of their use</tooltip>
 			<parameter>acr.api</parameter>
 		</action>		

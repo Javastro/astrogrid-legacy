@@ -21,6 +21,7 @@ import com.l2fprod.common.swing.JTaskPaneGroup;
 
 /** information about the selection - a special kind of activity
  * @todo provide more metadata here.
+ * @todo display a minimal icon, and make this a dragsource for the selection.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 26, 20071:29:37 PM
  */
@@ -49,6 +50,7 @@ private final Bag types = new TreeBag();
 		for (int i = 0; i < l.length; i++) {
 				try {
 					types.add(l[i].getType().getName());
+					//@todo use content-type here instead?
 				} catch (FileSystemException x) {
 					logger.error("FileSystemException",x);
 				}

@@ -70,8 +70,8 @@ import com.l2fprod.common.swing.JTaskPane;
  * @since Mar 3, 200712:17:50 AM
  */
 public class StorageView implements ListSelectionListener, HistoryListener{
-	private final ExplorerWindow parent;
-	public ExplorerWindow getParent() {
+	private final FileExplorerImpl parent;
+	public FileExplorerImpl getParent() {
 		return parent;
 	}
 	/** background worker that opens a directory */
@@ -238,7 +238,7 @@ public class StorageView implements ListSelectionListener, HistoryListener{
 	
 	private static final String STORAGE_VIEW = "Storage";
 
-	public StorageView(ExplorerWindow parent, EventList foldersList, FileSystemManager vfs) {
+	public StorageView(FileExplorerImpl parent, EventList foldersList, FileSystemManager vfs) {
 		this.parent = parent;
 		this.vfs = vfs;
 		this.foldersList = foldersList;

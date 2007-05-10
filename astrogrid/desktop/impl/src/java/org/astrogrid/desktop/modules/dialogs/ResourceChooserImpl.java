@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserImpl.java,v 1.12 2007/04/18 15:47:10 nw Exp $
+/*$Id: ResourceChooserImpl.java,v 1.13 2007/05/10 19:35:27 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,10 +16,6 @@ import java.net.URI;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.file.FileStoreChooserResourceChooserDialog;
-import org.astrogrid.desktop.modules.dialogs.file.VospaceResourceChooserDialog;
-import org.astrogrid.desktop.modules.system.ui.UIContext;
-import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 
 /** Implementation of the ResourceChooser component
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Apr-2005
@@ -82,6 +78,9 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
 
 /* 
 $Log: ResourceChooserImpl.java,v $
+Revision 1.13  2007/05/10 19:35:27  nw
+reqwork
+
 Revision 1.12  2007/04/18 15:47:10  nw
 tidied up voexplorer, removed front pane.
 

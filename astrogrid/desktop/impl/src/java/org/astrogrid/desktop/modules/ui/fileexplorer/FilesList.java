@@ -101,7 +101,7 @@ public class FilesList extends JList implements MouseListener{
 		    	 return;
 		     }
 		     try {
-		     if (item.getType().hasContent()) {
+		     if (item.getType().hasChildren()) {
 		    	 view.move(item);
 		     }
 		     } catch (FileSystemException ex) {

@@ -1,4 +1,4 @@
-/*$Id: QueryResultSummarizer.java,v 1.3 2007/05/03 19:20:43 nw Exp $
+/*$Id: QueryResultSummarizer.java,v 1.4 2007/05/10 19:35:22 nw Exp $
  * Created on 30-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,16 +12,20 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 import org.astrogrid.acr.ivoa.resource.Service;
 
+import edu.berkeley.guir.prefuse.graph.TreeNode;
+
 
 public interface QueryResultSummarizer {
 
     /** called by a retriever to add a result to the table.
+     * also used to maintain the mapping between resource object and service node
+     *  - which are the primary data items in the glazed lists and prefuse worlds.
      * 
      * @param ri description of the service
      * @param resultCount number of result returned (-1 indicates error)
      * @param message optional message
      */
-    public void addQueryResult(Service ri, int resultCount, String message);
+    public void addQueryResult(Service ri,TreeNode serviceNode, int resultCount, String message);
 
     /** clear all previous summaries */
     public void clear();
@@ -32,6 +36,9 @@ public interface QueryResultSummarizer {
 
 /* 
  $Log: QueryResultSummarizer.java,v $
+ Revision 1.4  2007/05/10 19:35:22  nw
+ reqwork
+
  Revision 1.3  2007/05/03 19:20:43  nw
  removed helioscope.merged into uberscope.
 

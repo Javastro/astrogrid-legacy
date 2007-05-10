@@ -1,10 +1,12 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
 import java.awt.Font;
+import java.awt.datatransfer.Transferable;
 import java.util.Iterator;
 
 import javax.swing.table.DefaultTableModel;
 
+import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.ivoa.resource.Service;
 
 import edu.berkeley.guir.prefuse.focus.DefaultFocusSet;
@@ -24,15 +26,17 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
 public  class VizModel implements QueryResultSummarizer {
 	public static final String NOMENU_ATTRIBUTE = "nomenu";
     private final TreeNode rootNode;
-    
+    private final ScopeTransferableFactory transferableFactory;
     private final FocusSet selectionFocusSet;
     private final NodeSizingMap nodeSizingMap;
     private final QueryResultSummarizer summarizer;
     private final Tree tree;
     private final DalProtocolManager protocols;
-    public VizModel(DalProtocolManager protocols, QueryResultSummarizer summarizer) {
+    public VizModel(DalProtocolManager protocols, QueryResultSummarizer summarizer
+    		, FileSystemManager vfs) {
         this.protocols = protocols;        
         this.summarizer = summarizer;
+        this.transferableFactory = new ScopeTransferableFactory(vfs);
         this.nodeSizingMap = new NodeSizingMap();
         this.selectionFocusSet = new DefaultFocusSet();       
         rootNode = new DefaultTreeNode();
@@ -133,8 +137,18 @@ public  class VizModel implements QueryResultSummarizer {
         return null;
     }
     /** just delegates to the true summarizer */
-	public void addQueryResult(Service ri, int resultCount, String message) {
-		summarizer.addQueryResult(ri,resultCount,message);
+	public void addQueryResult(Service ri, TreeNode n,int resultCount, String message) {
+		summarizer.addQueryResult(ri,n,resultCount,message);
+	}
+
+	/** Build a transferable that represents the interesting parts of the selection
+	 * as file objects.
+	 * @future reimplement so this is a single object, repopulated on each selection change.
+	 * @return
+	 */
+	public Transferable getSelectionTransferable() {
+		return transferableFactory.create(getSelectionFocusSet());
+		
 	}
 
 }

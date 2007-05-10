@@ -45,7 +45,7 @@ private final QueryBuilderInternal t;
 // something to pass to the task invoker.
 private Object current;
 
-	boolean hasAdqlParameter(CeaApplication a) {
+	public static boolean hasAdqlParameter(CeaApplication a) {
 		ParameterBean[] parameters = a.getParameters();	
 		for (int i = 0; i < parameters.length; i++) {
 			if (parameters[i].getType().equalsIgnoreCase("adql")) {

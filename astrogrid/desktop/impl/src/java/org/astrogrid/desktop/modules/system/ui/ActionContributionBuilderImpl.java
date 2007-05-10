@@ -3,15 +3,10 @@
  */
 package org.astrogrid.desktop.modules.system.ui;
 
-import java.awt.Component;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.swing.Action;
 import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.MenuElement;
 
@@ -22,6 +17,7 @@ import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.actions.Activity;
+import org.astrogrid.desktop.modules.ui.comp.SelfEnablingMenu;
 import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
 
 import com.l2fprod.common.swing.JTaskPane;
@@ -33,9 +29,9 @@ import com.l2fprod.common.swing.JTaskPaneGroup;
  */
 public class ActionContributionBuilderImpl implements ActionContributionBuilder {
 
+	//@todo unsure why this subclass of JTaskPaneGroup is needed now..
 	private static class MyTaskPaneGroup extends JTaskPaneGroup{
-		protected Activity[] activities = new Activity[0];
-		
+
 		public void setHelpId(String s) {
 			CSH.setHelpIDString(this,s);
 		}
@@ -54,50 +50,6 @@ public class ActionContributionBuilderImpl implements ActionContributionBuilder 
 		}	
 	}
 	
-	/** listens to children, and adjusts it's own enable / disable status accordingly */
-	public static class SelfEnablingMenu extends JMenu implements PropertyChangeListener {
-
-		public SelfEnablingMenu() {
-			super();
-		}
-
-		public SelfEnablingMenu(Action a) {
-			super(a);
-		}
-
-		public SelfEnablingMenu(String s, boolean b) {
-			super(s, b);
-		}
-
-		public SelfEnablingMenu(String s) {
-			super(s);
-		}
-
-		public void propertyChange(PropertyChangeEvent evt) {
-			// someone's visibility has changed. loop through all children, and see 
-			// if anything is visible.
-			Component[] components = getMenuComponents();
-			for (int i = 0; i < components.length; i++) {
-				if (components[i].isEnabled()) {
-					setEnabled(true);
-					return;
-				}
-			}
-			setEnabled(false);
-		}
-		
-		public JMenuItem add(JMenuItem menuItem) {
-			 JMenuItem item = super.add(menuItem);
-			 item.addPropertyChangeListener("enabled",this);
-			 return item;
-		}
-		public JMenuItem add(Action a) {
-			 JMenuItem item = super.add(a);
-			 item.addPropertyChangeListener("enabled",this);
-			 return item;
-		}
-	}
-	
 	private final IterableObjectBuilder activityBuilder;
 
 	public Activity[] buildActions(UIComponent parent, JPopupMenu popup, JTaskPane actionsPanel, JMenu actions) {
@@ -106,18 +58,29 @@ public class ActionContributionBuilderImpl implements ActionContributionBuilder 
 		CSH.setHelpIDString(actionsPanel, "voexplorer.actions");
 	    // create the groups for this pane.
 		actsMap.put(Activity.USE_SECTION,new MyTaskPaneGroup() {{
-			setTitle("Utilize");
+			setTitle("Actions");
 			setIconName("run16.png");
 			setHelpId("resourceActions.invoke");
 			setSpecial(true);
 		}});
+		actsMap.put(Activity.PLASTIC_SECTION,new MyTaskPaneGroup() {{
+			setTitle("Plastic");
+			setIconName("plasticeye.gif");
+			setHelpId("resourceActions.plastid");
+			setSpecial(true);
+		}});		
 		actsMap.put(Activity.INFO_SECTION, new MyTaskPaneGroup() {{
-			setTitle("Details");
+			setTitle("About");
+			//setTitle("Further Information");
 			setIconName("info16.png");
 			setHelpId("resourceActions.info");
 			setSpecial(true);
 		}});
-		actsMap.put(Activity.EXPORT_SECTION, new MyTaskPaneGroup() {{//@todo move additional stuff 'export' does into activity.
+		actsMap.put(Activity.SCRIPT_SECTION, new MyTaskPaneGroup() {{
+			setTitle("Automation");
+			setExpanded(false);
+		}});		
+		actsMap.put(Activity.EXPORT_SECTION, new MyTaskPaneGroup() {{
 			setTitle("Export");
 			setExpanded(false);
 		}});
@@ -140,8 +103,6 @@ public class ActionContributionBuilderImpl implements ActionContributionBuilder 
 		JMenu actionsInfo = new SelfEnablingMenu("About");
 		JMenu popupExport = new SelfEnablingMenu("Export");
 		JMenu actionsExport = new SelfEnablingMenu("Export");
-		JMenu popupAdvanced = new SelfEnablingMenu("Advanced");
-		JMenu actionsAdvanced =new SelfEnablingMenu("Advanced");
 		// now build the activities.
 		Activity[] activities = (Activity[]) IteratorUtils.toArray(activityBuilder.creationIterator(),Activity.class);
 	    for (int i = 0; i < activities.length; i++) {
@@ -153,10 +114,7 @@ public class ActionContributionBuilderImpl implements ActionContributionBuilder 
 				a.addTo(t);
 			}
 			// assemble the menus.
-			if (sectname.equals(Activity.ADVANCED_SECTION)) {
-				a.addTo(popupAdvanced);
-				a.addTo(actionsAdvanced);
-			} else if (sectname.equals(Activity.NEW_SECTION)) {
+			if (sectname.equals(Activity.NEW_SECTION)) {
 				a.addTo(popupNew);
 				a.addTo(actionsNew);
 			} else if (sectname.equals(Activity.INFO_SECTION)) {
@@ -173,11 +131,9 @@ public class ActionContributionBuilderImpl implements ActionContributionBuilder 
 	    // add hte advanced submenu.
 	    popup.addSeparator();
 	    popup.add(popupExport);
-	    popup.add(popupAdvanced);
 	    popup.add(popupInfo);
 	    actions.addSeparator();
 	    actions.add(actionsExport);
-	    actions.add(actionsAdvanced);
 	    actions.add(actionsInfo);
 	    
 	    actionsPanel.revalidate();

@@ -77,22 +77,24 @@ public abstract class AbstractActivity extends AbstractAction implements Activit
 	private static final Log logger = LogFactory.getLog(AbstractActivity.class);
 
 	
-	protected JLinkButton createLinkButton() {
-		return new JLinkButton(this) {
+	public JLinkButton createLinkButton() {
+		JLinkButton l =  new JLinkButton(this) {
 			public void setEnabled(boolean b) {
 				super.setEnabled(b);
 				setVisible(b);
 			}			
 		};
+		return l;
 	}
 	
-	protected JMenuItem createMenuItem() {
-		return new JMenuItem(this) {
+	public JMenuItem createMenuItem() {
+		JMenuItem m =  new JMenuItem(this) {
 			public void setEnabled(boolean b) {
 				super.setEnabled(b);
 				setVisible(b);
 			}
 		};
+		return m;
 		
 	}
 	

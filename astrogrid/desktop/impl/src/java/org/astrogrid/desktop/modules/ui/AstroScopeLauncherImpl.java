@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.60 2007/05/03 19:19:47 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.61 2007/05/10 19:35:26 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,8 +11,8 @@
 package org.astrogrid.desktop.modules.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -23,12 +23,8 @@ import java.awt.event.WindowEvent;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.text.NumberFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.Calendar;
-import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -37,6 +33,7 @@ import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -46,80 +43,67 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 
-import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.cds.Sesame;
 import org.astrogrid.acr.cds.SesamePositionBean;
-import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
-import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
+import org.astrogrid.desktop.modules.system.ui.ActionContributionBuilder;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.actions.Activity;
 import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle;
 import org.astrogrid.desktop.modules.ui.comp.DimensionTextField;
 import org.astrogrid.desktop.modules.ui.comp.EventListMenuManager;
 import org.astrogrid.desktop.modules.ui.comp.NameResolvingPositionTextField;
-import org.astrogrid.desktop.modules.ui.comp.PlasticButtons;
 import org.astrogrid.desktop.modules.ui.comp.PositionUtils;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle.DecSexListener;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocolManager;
 import org.astrogrid.desktop.modules.ui.scope.HyperbolicVizualization;
-import org.astrogrid.desktop.modules.ui.scope.ImageLoadPlasticButton;
-import org.astrogrid.desktop.modules.ui.scope.QueryResultSummarizer;
+import org.astrogrid.desktop.modules.ui.scope.PrefuseGlazedListsBridge;
 import org.astrogrid.desktop.modules.ui.scope.Retriever;
-import org.astrogrid.desktop.modules.ui.scope.SaveNodesButton;
 import org.astrogrid.desktop.modules.ui.scope.ScopeServicesList;
 import org.astrogrid.desktop.modules.ui.scope.SpatialDalProtocol;
-import org.astrogrid.desktop.modules.ui.scope.SpectrumLoadPlasticButton;
 import org.astrogrid.desktop.modules.ui.scope.TemporalDalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.VizModel;
 import org.astrogrid.desktop.modules.ui.scope.Vizualization;
 import org.astrogrid.desktop.modules.ui.scope.VizualizationManager;
-import org.astrogrid.desktop.modules.ui.scope.VotableLoadPlasticButton;
 import org.astrogrid.desktop.modules.ui.scope.WindowedRadialVizualization;
 import org.astrogrid.desktop.modules.ui.scope.ScopeHistoryProvider.SearchHistoryItem;
-import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
+
 import org.freixas.jcalendar.JCalendarCombo;
-import org.votech.plastic.CommonMessageConstants;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FunctionList;
-import ca.odell.glazedlists.GlazedLists;
-import ca.odell.glazedlists.ObservableElementList;
 import ca.odell.glazedlists.event.ListEvent;
 import ca.odell.glazedlists.event.ListEventListener;
-import ca.odell.glazedlists.swing.JEventListPanel;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import com.l2fprod.common.swing.JTaskPane;
 
 import edu.berkeley.guir.prefuse.event.FocusEvent;
 import edu.berkeley.guir.prefuse.event.FocusListener;
 import edu.berkeley.guir.prefuse.focus.FocusSet;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
-public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticButtons.ButtonBuilder
-, AstroScopeInternal, DecSexListener, FocusListener {
+public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroScopeInternal, DecSexListener, FocusListener {
 
 
 	private static final String SCOPE_NAME = "VO Scope";         
@@ -139,27 +123,31 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
 
 	protected static final Log logger = LogFactory.getLog(AstroScopeLauncherImpl.class);
 
-	public AstroScopeLauncherImpl(UIContext context, IterableObjectBuilder protocolsBuilder
-			, EventList history, ScopeServicesList summary
-			,MyspaceInternal myspace, ResourceChooserInternal chooser,
-			Sesame ses, TupperwareInternal tupp, SendToMenu sendTo,
-			SnitchInternal snitch)  {
+	public AstroScopeLauncherImpl(UIContext context
+			, IterableObjectBuilder protocolsBuilder
+			,  final ActionContributionBuilder activityBuilder
+			, EventList history
+			, ScopeServicesList summary
+			,FileSystemManager vfs
+			,Sesame ses
+			,SnitchInternal snitch)  {
 		super(context);
 		this.history = history;
 		this.snitch = snitch;
-		this.tupperware = tupp;
 		this.protocols = new DalProtocolManager();
 		this.ses = ses;
+		this.summary = summary;
 
 		for (Iterator i = protocolsBuilder.creationIterator(); i.hasNext(); ) {
 			protocols.add((DalProtocol)i.next());
 		}
 		// create the shared model
-		vizModel = new VizModel(protocols,summary);
+		vizModel = new VizModel(protocols,summary,vfs);
 		// create the vizualizations
+		JPopupMenu popup = new JPopupMenu(); 		
 		vizualizations = new VizualizationManager(vizModel);
-		vizualizations.add(new WindowedRadialVizualization(vizualizations,sendTo,this));
-		vizualizations.add(new HyperbolicVizualization(vizualizations,sendTo,this));
+		vizualizations.add(new WindowedRadialVizualization(vizualizations,popup,this));
+		vizualizations.add(new HyperbolicVizualization(vizualizations,popup,this));
 
 		// build the ui.
 		this.setSize(1000, 707); // same proportions as A4,
@@ -317,8 +305,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
         	});
         	checkBox.setSelected(false);
         }
-        
-        
+                
 // navigation   
 		row++;
 		// start of tree navigation buttons - maybe add more here later.
@@ -332,7 +319,6 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
 		
 		row++;
 		JButton reFocusTopButton = new JButton(topAction);		
-		//@todo inline this listener.
 		final FocusSet sel = vizModel.getSelectionFocusSet();
 		sel.addFocusListener(this);
 		
@@ -340,19 +326,19 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
 		builder.add(reFocusTopButton,cc.xy(2,row));
 		builder.add(clearButton,cc.xy(4,row));
 
-		// start of consumer buttons 
+		// start of activities panel.
 		row++;
 		builder.addSeparator("Process",cc.xyw(2,row,4));		
 		
-		row++;
-		// creates a list of buttons dynamically generated from plastic apps
-		PlasticButtons plasticButtons = new PlasticButtons(this.tupperware.getRegisteredApplications(),this);
-		// add in custom static buttons.
-		plasticButtons.getStaticList().add(new SaveNodesButton(vizModel.getSelectionFocusSet(),this,chooser,myspace));		
-		JEventListPanel buttonPanel = plasticButtons.getPanel();
-		buttonPanel.setElementColumns(1);
-		builder.add(buttonPanel,cc.xyw(2,row,4));
-
+		row++; 
+		actionsPanel = new JTaskPane();
+		JMenu actions = new JMenu("Actions");
+		activities = activityBuilder.buildActions(this,popup,actionsPanel,actions);
+		final JScrollPane actionsScroll = new JScrollPane(actionsPanel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		actionsScroll.setBorder(BorderFactory.createEmptyBorder());
+		actionsScroll.setMinimumSize(new Dimension(200,200));			
+		builder.add(actionsScroll,cc.xyw(2,row,4));
+		
 		// done building the left side.
 		final JPanel searchPanel = builder.getPanel();
 		//@fixme this doesn't work on my mac. dunno if it doesn't work elsewhere too.
@@ -366,24 +352,26 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
 		JPanel pane = getMainPanel();
 		pane.add(searchPanel,BorderLayout.WEST);
 		
-		// main part of the window
+	// main part of the window
 		JTabbedPane tabs = new JTabbedPane();
 		// spidergrams
 		for (Iterator i = vizualizations.iterator(); i.hasNext();) {
 			Vizualization v = (Vizualization) i.next();
 			tabs.addTab(v.getName(), v.getDisplay());
 		}
-		// tablular view
+	// tablular view 
 		summary.parent.set(this);
+		// keeps the selection models of prefuse and the summary view in-sunch..
+		//@fixme new PrefuseGlazedListsBridge(vizualizations,summary);
 		JPanel summaryPanel = new JPanel(new BorderLayout());
 		summaryPanel.add(summary, BorderLayout.CENTER);
 		summaryPanel.add(summary.getToolbar(),BorderLayout.NORTH);
 		tabs.addTab("Services", summaryPanel);
-
+		
 		pane.add(tabs, BorderLayout.CENTER);
 		this.setContentPane(pane);
 		this.setTitle(SCOPE_NAME);
-		// menu bar
+	// menu bar
 		JMenuBar mb = new JMenuBar();
 		JMenu fileMenu = new JMenu();
 		fileMenu.setText("File");
@@ -394,7 +382,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
 		fileMenu.add(new JSeparator());
 		fileMenu.add( new CloseAction());
 		mb.add(fileMenu);
-		
+				
 		JMenu historyMenu = new JMenu();
 		historyMenu.setText("History");
 		historyMenu.setMnemonic(KeyEvent.VK_H);
@@ -406,6 +394,10 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
 			}
 		}),historyMenu,false);
 		mb.add(historyMenu);
+		
+		mb.add(actions);
+		mb.add(getContext().createWindowMenu(this));		
+		
 		mb.add(Box.createHorizontalGlue());
 		mb.add(createHelpMenu());
 		this.setJMenuBar(mb);
@@ -440,6 +432,8 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
 	private List resourceList;
 	private final SnitchInternal snitch;
 	private BiStateButton submitButton;
+	private final Activity[] activities;	
+	private final JTaskPane actionsPanel;	
 	protected final Action clearAction = new ClearSelectionAction();
 	protected final DecSexToggle dsToggle;
 	protected final NameResolvingPositionTextField posText;
@@ -447,30 +441,12 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
 	protected final DimensionTextField regionText;
 	protected final Sesame ses;
 	protected final Action topAction = new TopAction();
-	protected final TupperwareInternal tupperware;
 	protected final VizModel vizModel;
 	protected final VizualizationManager vizualizations;
 	private final JCalendarCombo startCal;
 	private final JCalendarCombo endCal;
 	private final JCheckBox noPosition;
-
-// Plastic button builder interface.
-	public JButton[] buildPlasticButtons(final PlasticApplicationDescription plas) {
-		List results = new ArrayList();
-		if (plas.understandsMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL)) {
-			results.add(new VotableLoadPlasticButton(plas, vizModel.getSelectionFocusSet(),
-					this,tupperware));
-		}
-		if (plas.understandsMessage(CommonMessageConstants.FITS_LOAD_FROM_URL)) {
-			results.add(new ImageLoadPlasticButton(plas, vizModel.getSelectionFocusSet(),
-					this, tupperware));
-		}
-		if  (plas.understandsMessage(SpectrumLoadPlasticButton.SPECTRA_LOAD_FROM_URL)) {
-			results.add(new SpectrumLoadPlasticButton(plas,vizModel.getSelectionFocusSet(), this, tupperware));
-		}		
-		return (JButton[]) results.toArray(new JButton[results.size()]);
-	}
-
+	private final ScopeServicesList summary;	
 
 // DecSexListener interface
 	// another listener to the decSex toggle - convert node display
@@ -514,7 +490,6 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
 			if(!foundOffset)
 				toggleAndConvertNodes(nd.getChild(i), fromDegrees);
 		}
-
 	}	
 	
 //Astroscope internal interface.
@@ -722,10 +697,35 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
 		}
 	}
 	
-// focus listener interface.
+// focus listener interface - links in the activities, etc.
 	public void focusChanged(FocusEvent arg0) {
-		clearAction.setEnabled(vizModel.getSelectionFocusSet().size() > 0);
+		final boolean somethingSelected = vizModel.getSelectionFocusSet().size() > 0;
+		clearAction.setEnabled(somethingSelected);
+		if (somethingSelected) {
+			Transferable tran = vizModel.getSelectionTransferable();
+			if (tran == null) { // unlikely
+				clearActivities();
+			} else {
+				enableActivities(tran);
+			}
+		} else {
+			clearActivities();			
+		}
 	}
+
+	private void enableActivities(Transferable tran) {
+		for (int i = 0; i < activities.length; i++) {
+			activities[i].selected(tran);
+		}		
+	}
+
+	private void clearActivities() {
+		for (int i = 0; i < activities.length; i++) {
+			activities[i].noneSelected();
+		}
+	}
+	
+	// activities management
 	
 // action classes
 	/** clear selection action */
@@ -745,6 +745,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements PlasticBu
 				n.setAttribute("selected", "false");
 			}
 			set.clear();
+			summary.getCurrentResourceModel().clearSelection();
 			vizualizations.reDrawGraphs();
 			this.setEnabled(false);
 		}    	

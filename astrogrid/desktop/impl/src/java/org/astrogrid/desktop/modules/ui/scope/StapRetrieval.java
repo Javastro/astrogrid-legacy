@@ -4,13 +4,19 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Calendar;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.astrogrid.Stap;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
+import org.astrogrid.desktop.modules.ui.scope.Retriever.FileProducingTreeNode;
+import org.astrogrid.desktop.modules.ui.scope.ScopeTransferableFactory.AstroscopeFileObject;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -148,7 +154,7 @@ public class StapRetrieval extends Retriever {
             //String rowRa = row[raCol].toString();
             //String rowDec = row[decCol].toString();
             
-            DefaultTreeNode valNode = new DefaultTreeNode();
+            DefaultTreeNode valNode = createValueNode();
             //String positionString = chopValue(String.valueOf(rowRa),2) + "," + chopValue(String.valueOf(rowDec),2) ;
             valNode.setAttribute(LABEL_ATTRIBUTE,"*");
             valNode.setAttribute(SERVICE_TYPE_ATTRIBUTE,getServiceType());
@@ -218,6 +224,21 @@ public class StapRetrieval extends Retriever {
         }
         valNode.setAttribute(LABEL_ATTRIBUTE,details);
     }
+   
+	public DefaultTreeNode createValueNode() {
+		 return new FileProducingTreeNode() {
+	        	// create a service node.
+				protected FileObject createFileObject(ScopeTransferableFactory factory) throws FileSystemException {
+					String type =getAttribute(IMAGE_TYPE_ATTRIBUTE);
+					String url = getAttribute(IMAGE_URL_ATTRIBUTE);
+					return factory.new AstroscopeFileObject(
+							StringUtils.containsIgnoreCase(type,"fits")
+								? VoDataFlavour.MIME_FITS_IMAGE
+								: type
+							,this,url);
+				}
+	        };
+	}
         
     protected boolean isWorthProceeding() {
         return accessCol >= 0;

@@ -1,4 +1,4 @@
-/*$Id: VospaceBrowserImpl.java,v 1.22 2007/04/18 15:47:05 nw Exp $
+/*$Id: VospaceBrowserImpl.java,v 1.23 2007/05/10 19:35:26 nw Exp $
  * Created on 22-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,7 +48,6 @@ import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
-import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.filemanager.client.NodeMetadata;
 import org.astrogrid.store.Ivorn;
@@ -443,11 +442,7 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
 
         public void actionPerformed(ActionEvent e) {
-        	try{
-        		sendTo.show(getPreferredTransferable(),VospaceBrowserImpl.this,(Component)e.getSource(),1,1);
-        	} catch(Exception ex) {
-        		sendTo.show(getPreferredTransferable(),VospaceBrowserImpl.this,VospaceBrowserImpl.this,1,1);
-        	}
+        
         }
     }
 
@@ -563,8 +558,8 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
      * This is the default constructor
 
      */
-    public VospaceBrowserImpl(UIContext context,MyspaceInternal vos, SendToMenu sendTo,ResourceChooserInternal chooser, Preference pref) {
-        super(context,vos, sendTo);   
+    public VospaceBrowserImpl(UIContext context,MyspaceInternal vos,ResourceChooserInternal chooser, Preference pref) {
+        super(context,vos,null);   
         this.chooser =chooser;
         this.advancedPreference = pref;
         initialize();
@@ -752,6 +747,9 @@ public class VospaceBrowserImpl extends AbstractVospaceBrowser implements Myspac
 
 /*
  * $Log: VospaceBrowserImpl.java,v $
+ * Revision 1.23  2007/05/10 19:35:26  nw
+ * reqwork
+ *
  * Revision 1.22  2007/04/18 15:47:05  nw
  * tidied up voexplorer, removed front pane.
  *

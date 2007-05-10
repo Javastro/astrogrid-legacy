@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.2 2007/05/03 19:18:38 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.3 2007/05/10 19:35:27 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -369,6 +369,7 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 		CellConstraints cc = new CellConstraints();
 		
 		newButton = new JButton("New Search");
+		newButton.setToolTipText("Create a new Smart list by searching the Registry");
 		newButton.setEnabled(true);
 		builder.add(newButton,cc.xy(2,1));
 		
@@ -714,6 +715,9 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.3  2007/05/10 19:35:27  nw
+reqwork
+
 Revision 1.2  2007/05/03 19:18:38  nw
 refactored to make more extensible.
 

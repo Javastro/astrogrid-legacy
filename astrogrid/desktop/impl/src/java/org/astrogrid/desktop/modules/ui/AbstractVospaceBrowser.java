@@ -1,4 +1,4 @@
-/*$Id: AbstractVospaceBrowser.java,v 1.13 2007/04/18 15:47:05 nw Exp $
+/*$Id: AbstractVospaceBrowser.java,v 1.14 2007/05/10 19:35:26 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,9 +45,6 @@ import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.comp.GlassPane;
-import org.astrogrid.desktop.modules.ui.dnd.PreferredTransferable;
-import org.astrogrid.desktop.modules.ui.sendto.FileManagerNodePreferredTransferable;
-import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 import org.astrogrid.filemanager.client.FileManagerNode;
 
 /** Abstract class for displays of myspace - in file chooser dialogues and myspace browser.
@@ -461,20 +458,11 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
 
     private GlassPane glassPane = null;
     
-    protected final SendToMenu sendTo;
+  //  protected final SendToMenu sendTo;
 
-	private  FileManagerNodePreferredTransferable atom ;
+	//private  FileManagerNodePreferredTransferable atom ;
 
-	/** access a transferable item representing the currently selected file node.
-	 * will not be valid if a folder, or nothing at all, is selected.
-	 * @return
-	 */
-	public PreferredTransferable getPreferredTransferable() {
-		if (atom == null) {
-			atom = new FileManagerNodePreferredTransferable(getCurrentNodeManager(),vos);
-		}
-		return atom;
-	}
+
     /**
      * Construct a new AbstractVospaceBrowser
      *  - sutable for long-lived windows.
@@ -482,10 +470,10 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
      * @param ui
      * @throws HeadlessException
      */
-    public AbstractVospaceBrowser(UIContext context,MyspaceInternal vos, SendToMenu sendTo) throws HeadlessException {
+    public AbstractVospaceBrowser(UIContext context,MyspaceInternal vos, Object sendTo) throws HeadlessException {
         super(context);
         this.vos = vos;
-        this.sendTo = sendTo;
+    //    this.sendTo = sendTo;
 
     }
 
@@ -529,7 +517,7 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
             		// we want right-clicks to select an item too.
             		int selectedIndex = fileList.locationToIndex(e.getPoint());
             		fileList.setSelectedIndex(selectedIndex);
-            		sendTo.show(getPreferredTransferable(),AbstractVospaceBrowser.this,fileList,e.getX(),e.getY());
+            	//	sendTo.show(getPreferredTransferable(),AbstractVospaceBrowser.this,fileList,e.getX(),e.getY());
             	}
             });
             
@@ -640,6 +628,9 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
 
 /*
  * $Log: AbstractVospaceBrowser.java,v $
+ * Revision 1.14  2007/05/10 19:35:26  nw
+ * reqwork
+ *
  * Revision 1.13  2007/04/18 15:47:05  nw
  * tidied up voexplorer, removed front pane.
  *

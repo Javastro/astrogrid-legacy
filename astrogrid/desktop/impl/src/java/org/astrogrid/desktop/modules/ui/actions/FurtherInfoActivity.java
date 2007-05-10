@@ -40,8 +40,9 @@ public class FurtherInfoActivity extends AbstractResourceActivity {
 	public FurtherInfoActivity(BrowserControl browser) {
 		this.browser = browser;
 		setIcon(IconHelper.loadIcon("help16.png"));
+		//setText("Publisher's web page"); 
 		setText("Further information");
-	    setToolTipText("Display a webpage of further information");		
+	    setToolTipText("Display further information provided by the publisher");		
 	}
 
 }

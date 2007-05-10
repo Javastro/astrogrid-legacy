@@ -67,8 +67,6 @@ public class StorageFoldersList extends JList implements DropTargetListener, Lis
 	private static final Log logger = LogFactory
 			.getLog(StorageFoldersList.class);
 
-	
-	
 	public StorageFoldersList(EventList folderList, UIComponent parent,FileSystemManager vfs) {
 		this.parent = parent;
 		CSH.setHelpIDString(this,"storageFolders");
@@ -117,9 +115,6 @@ public class StorageFoldersList extends JList implements DropTargetListener, Lis
 	private final JPopupMenu popup;
 	private final EventList folderList;
 	private final UIComponent parent;
-	
-
-	
 
 	private final static DataFlavor[] inputFlavors = new DataFlavor[]{
 		VoDataFlavour.LOCAL_FILEOBJECT

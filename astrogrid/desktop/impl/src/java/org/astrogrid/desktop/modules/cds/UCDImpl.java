@@ -1,4 +1,4 @@
-/*$Id: UCDImpl.java,v 1.7 2007/04/18 15:47:05 nw Exp $
+/*$Id: UCDImpl.java,v 1.8 2007/05/10 19:35:27 nw Exp $
  * Created on 16-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -133,7 +133,7 @@ public class UCDImpl implements UCD {
     }
 
 	/**
-	 * @return the ucd
+	 * @return the value
 	 * @throws javax.xml.rpc.ServiceException 
 	 * @throws MalformedURLException 
 	 */
@@ -146,6 +146,9 @@ public class UCDImpl implements UCD {
 
 /* 
 $Log: UCDImpl.java,v $
+Revision 1.8  2007/05/10 19:35:27  nw
+reqwork
+
 Revision 1.7  2007/04/18 15:47:05  nw
 tidied up voexplorer, removed front pane.
 

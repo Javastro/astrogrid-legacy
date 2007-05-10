@@ -83,7 +83,7 @@ public abstract class AbstractFileActivity extends AbstractActivity implements P
 
 	public void manySelected(FileObject[] list) {
 		for (int i = 0; i < list.length; i++) {
-			if(evaluate(list[i])) {
+			if(evaluate(list[i])) { // lazy - only goes as far as the first 'yes'
 				setEnabled(true);
 				current = list;
 				return;

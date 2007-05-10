@@ -1,50 +1,81 @@
 /**
  * 
  */
-package org.astrogrid.desktop.modules.ui.scope;
+package org.astrogrid.desktop.modules.ui.actions;
 
+import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
+import org.astrogrid.desktop.modules.ui.scope.SsapRetrieval;
+import org.votech.plastic.CommonMessageConstants;
 
 import edu.berkeley.guir.prefuse.event.FocusEvent;
-import edu.berkeley.guir.prefuse.focus.FocusSet;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
-/** Button that loads a spectrum over plastic.
- * @author Noel Winstanley
- * @since Sep 14, 200611:42:44 AM
+/**
+ * @author Noel.Winstanley@manchester.ac.uk
+ * @since May 9, 20074:42:56 PM
  */
-public class SpectrumLoadPlasticButton extends PlasticScopeButton {
-
-	public static final URI SPECTRA_LOAD_FROM_URL;
-	static {
-			SPECTRA_LOAD_FROM_URL= URI.create("ivo://votech.org/spectrum/loadFromURL");
-	}
-
+public class PlasticSpectrumActivity extends AbstractFileActivity {
+	private final PlasticApplicationDescription plas;
+	private final TupperwareInternal tupp;
 	/**
-	 * @param descr
-	 * @param name
-	 * @param description
-	 * @param selectedNodes
-	 * @param ui
+	 * @param plas
 	 * @param tupp
 	 */
-	public SpectrumLoadPlasticButton(PlasticApplicationDescription descr,  FocusSet selectedNodes, UIComponent ui, TupperwareInternal tupp) {
-		super(descr, "View Spectra in " + StringUtils.capitalize(descr.getName()), 
-				descr.getDescription(), selectedNodes, ui, tupp);
+	public PlasticSpectrumActivity(PlasticApplicationDescription plas, TupperwareInternal tupp) {
+		super();
+		this.plas = plas;
+		this.tupp = tupp;
+		PlasticScavenger.configureActivity("spectra",this,plas);
+	}
+	protected boolean invokable(FileObject f) {
+		try {
+			return VoDataFlavour.MIME_FITS_SPECTRUM.equals(f.getContent().getContentInfo().getContentType());
+		} catch (FileSystemException x) {
+			return false;
+		}
+	}
+	
+	public void actionPerformed(ActionEvent e) {
+		List l = computeInvokable();		
+		for (Iterator i = l.iterator(); i.hasNext();) {
+			FileObject f = (FileObject) i.next();
+			sendLoadSpectrumMessage(f);
+		}	
 	}
 
-
+	private void sendLoadSpectrumMessage(final FileObject f) {
+		(new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName()) {
+			protected Object construct() throws Exception {
+				List l = new ArrayList();
+				URL url = f.getURL();
+				l.add(url.toString());// url
+				l.add(url.toString()); // identifier - have nothing else to use really.
+				Hashtable t = new Hashtable(f.getContent().getAttributes());
+				l.add(t);// some kind of map here.
+				tupp.singleTargetPlasticMessage(PlasticScavenger.SPECTRA_LOAD_FROM_URL,l,plas.getId());
+				return null;
+			}
+			protected void doFinished(Object result) {
+				parent.setStatusMessage("Message sent to " + plas.getName());
+			}			
+		}).start();		
+	}
+	
+	/**
+	 * 
     public void focusChanged(FocusEvent arg0) {
         for (Iterator i = selectedNodes.iterator(); i.hasNext(); ) {
             TreeNode t= (TreeNode)i.next();
@@ -79,4 +110,5 @@ public class SpectrumLoadPlasticButton extends PlasticScopeButton {
 	        }).start();		
 	}
 
+	 */
 }

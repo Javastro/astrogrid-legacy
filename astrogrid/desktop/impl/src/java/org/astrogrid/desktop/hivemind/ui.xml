@@ -100,17 +100,13 @@ ASTROSCOPE
 	<contribution configuration-id="hiveutils.ObjectBuilderObjects">
 		<object name="astroscope" class="org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl" >
 		Describes how to build a new astroscope window.
-			<inject object="service:system.ui"/>
+			<inject object="service:system.ui"/>			
 			<inject object="service:protocolsBuilder" />
+			<inject object="service:actionsBuilder" />			
 			<inject object="service-property:scopeHistory:list" />
 			<inject object="object:scopeServiceList" />
-			<!-- later<inject object="service:actionsBuilder" /> -->
-			<!--  refactor some of these out into object builder later too. -->
-			<inject object="service:astrogrid.myspace" />
-			<inject object="service:dialogs.resourceChooser" />
+			<inject object="service:system.vfs" />
 			<inject object="service:cds.sesame" />
-			<inject object="service:system.tupperware" />
-			<inject object="service:sendTo"/><!-- to remove -->
 			<inject object="service:system.snitch" />
 		</object>
 		<object name="scopeServiceList" 
@@ -369,13 +365,16 @@ ACTIONS
 		<object name="web" class="org.astrogrid.desktop.modules.ui.actions.WebInterfaceActivity">
 			<inject object="service:system.browser" />
 			<inject name="section" object="literal:string:use" />			
-		</object>				
-		<object name="plastic" class="org.astrogrid.desktop.modules.ui.actions.PlasticActivities">
+		</object>	
+		<object name="plastic" class="org.astrogrid.desktop.modules.ui.actions.PlasticScavenger">
+			<inject object="service:system.plasticList" />
 			<inject object="service:system.tupperware" />
-			<inject name="section" object="literal:string:use" />
+			<inject name="section" object="literal:string:plastic" />
 		</object>
-		<object name="script" class="org.astrogrid.desktop.modules.ui.actions.GenerateScriptActivity">
-			<inject name="section" object="literal:string:advanced" />		
+		<object name="script" class="org.astrogrid.desktop.modules.ui.actions.GenerateScriptScavenger">
+			<inject object="service:dialogs.resourceChooser" />
+			<inject object="service:astrogrid.myspace" />
+			<inject name="section" object="literal:string:script" />		
 		</object>
 		<object name="0selection" class="org.astrogrid.desktop.modules.ui.actions.InfoActivity">
 			<inject name="section" object="literal:string:info" />	
@@ -388,7 +387,7 @@ ACTIONS
 			<inject object="service:system.browser"/>
 			<inject name="section" object="literal:string:info" />			
 		</object>	
-		<object name="save" class="org.astrogrid.desktop.modules.ui.actions.SaveResourceActivity" >
+		<object name="saveResource" class="org.astrogrid.desktop.modules.ui.actions.SaveResourceActivity" >
 			<inject object="service:dialogs.resourceChooser" />
 			<inject object="service:ivoa.registry" />
 			<inject object="service:astrogrid.myspace" />
@@ -399,10 +398,26 @@ ACTIONS
 			<inject object="service:astrogrid.myspace" />
 			<inject name="section" object="literal:string:export" />			
 		</object>
+		<object name="saveXoXo" class="org.astrogrid.desktop.modules.ui.actions.SaveXoXoListActivity" >
+			<inject object="service:dialogs.resourceChooser" />
+			<inject object="service:astrogrid.myspace" />
+			<inject name="section" object="literal:string:export" />			
+		</object>	
+		<object name="viewBrowser" class="org.astrogrid.desktop.modules.ui.actions.ViewInBrowserActivity">
+			<inject object="service:system.browser"/>
+			<inject name="section" object="literal:string:use" />
+		</object>	
+		<object name="saveFile" class="org.astrogrid.desktop.modules.ui.actions.SaveActivity">
+			<inject object="service:dialogs.resourceChooser" />
+			<inject object="service:astrogrid.myspace" />
+			<inject name="section" object="literal:string:use" />
+		</object>
+		<!--  possibly - add 'broadcast' operations - see code in PlasticVotableActivity -->
 	</contribution>
 		
 	<!--  help links -->
 		<contribution configuration-id="system.helpmap">
+		<item id="voexplorer.intro" url="http://wiki.astrogrid.org/pub/Astrogrid/VOExpDesignMeeting/registry-intro.pdf" />
 		<item id="userInterface.voexplorer" url="http://wiki.astrogrid.org/bin/view/Astrogrid/VoExplorer#Overview" />
 		<item id="voexplorer.hierarchies" url="http://wiki.astrogrid.org/bin/view/Astrogrid/VoExplorer#Folders"/>
 
@@ -425,94 +440,7 @@ ACTIONS
 		<item id="resouceFolders.buttons" url="http://wiki.astrogrid.org/bin/view/Astrogrid/VoExplorer#Buttons" />
 	</contribution>	
 	
-	
-	<!--
-	================================
-	SEND-TO MENU
-	 -->
-	<service-point id="sendTo" interface="org.astrogrid.desktop.modules.ui.sendto.SendToMenu">
-	<invoke-factory model="primitive">
-		<construct class="org.astrogrid.desktop.modules.ui.sendto.SendToMenuImpl">
-			<configuration>sendToItems</configuration>
-		</construct>
-	</invoke-factory>
-	</service-point>
-	
-	<configuration-point id="sendToItems" schema-id="system.objects">
-		List of SendToActions and SendToActionFactories used to populate the send-to menu.
-	</configuration-point>
 
-	<contribution configuration-id="sendToItems">
-		<!-- too likely to fail (large data, or poor job of displaying) so will comment out
-		<object>instance:org.astrogrid.desktop.modules.ui.sendto.ShowSTA</object>
-		-->
-		<object>service:saveSTA</object>
-		<object>service:viewBrowserSTA</object>
-		<object>service:plasticSTF</object>
-		<object>service:votableBroadcastSTA</object>
-		<object>service:fitsBroadcastSTA</object>
-		<object>service:spectrumBroadcastSTA</object>
-	</contribution>	
-	
-	<!-- actions for the menu -->
-	<service-point id="saveSTA" visibility="private"
-		interface="org.astrogrid.desktop.modules.ui.sendto.SendToAction">
-		<invoke-factory model="primitive">
-			<construct class="org.astrogrid.desktop.modules.ui.sendto.SaveSTA">
-				<service>dialogs.resourceChooser</service>
-				<service>astrogrid.myspace</service>
-			</construct>
-		</invoke-factory>
-	</service-point>
-
-	<service-point id="viewBrowserSTA" visibility="private"
-		interface="org.astrogrid.desktop.modules.ui.sendto.SendToAction">
-		<invoke-factory model="primitive">
-			<construct class="org.astrogrid.desktop.modules.ui.sendto.ViewBrowserSTA">
-				<service>system.browser</service>
-				<service>framework.htmlResultTransformer</service>
-			</construct>
-		</invoke-factory>
-	</service-point>	
-
-	
-		<service-point id="votableBroadcastSTA" visibility="private"
-		interface="org.astrogrid.desktop.modules.ui.sendto.SendToAction">
-		<invoke-factory model="primitive">
-			<construct class="org.astrogrid.desktop.modules.ui.sendto.BroadcastPlasticVotableSTA">
-				<service>astrogrid.myspace</service>
-				<service>system.tupperware</service>
-			</construct>
-		</invoke-factory>
-	</service-point>	
-	
-		<service-point id="fitsBroadcastSTA" visibility="private"
-		interface="org.astrogrid.desktop.modules.ui.sendto.SendToAction">
-		<invoke-factory model="primitive">
-			<construct class="org.astrogrid.desktop.modules.ui.sendto.BroadcastPlasticFitsSTA">
-				<service>system.tupperware</service>
-			</construct>
-		</invoke-factory>
-	</service-point>	
-	
-			<service-point id="spectrumBroadcastSTA" visibility="private"
-		interface="org.astrogrid.desktop.modules.ui.sendto.SendToAction">
-		<invoke-factory model="primitive">
-			<construct class="org.astrogrid.desktop.modules.ui.sendto.BroadcastPlasticSpectrumSTA">
-				<service>system.tupperware</service>
-			</construct>
-		</invoke-factory>
-	</service-point>	
-	
-			<service-point id="plasticSTF" visibility="private"
-		interface="org.astrogrid.desktop.modules.ui.sendto.SendToActionFactory">
-		<invoke-factory model="primitive">
-			<construct class="org.astrogrid.desktop.modules.ui.sendto.PlasticSendToActionFactory">
-				<service>astrogrid.myspace</service>
-				<service>system.tupperware</service>
-			</construct>
-		</invoke-factory>
-	</service-point>		
 	
 	<!--  =====================================
 	Query size estimation

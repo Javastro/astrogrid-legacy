@@ -15,7 +15,7 @@ public class SiapProtocolKnowledge {
 	 public static ParameterBean[] parameters;
 	    public static InterfaceBean[] ifaces;
 	    static { // build static info for a siap applicaiton - doesn't mention optional parameters.
-	        // missing paramers are ucd, default value, units, type, subtype,options
+	        // missing paramers are value, default value, units, type, subtype,options
 	        ParameterBean pos = new ParameterBean("POS","Position",
 	                "The position of the region of interest, expressed as the right-ascension and declination of the field center, in decimal degrees" +
 	                " using the ICRS coordinate system. A comma should delimit the two values; embedded whitespace is not permitted." +

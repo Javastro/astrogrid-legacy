@@ -50,7 +50,7 @@ System module.
 		<tab name="links" text="Links" after="advanced" help-id="tab.links"  />			
 	</contribution>
 	<contribution configuration-id="uiStructure" if="property workbench.mode">
-		<menu name="links" text="Helper Applications" parentName="help" before="projects" />		
+		<menu name="links" text="Other VO-Enabled Applications" parentName="help" before="projects" after="div2"/>		
 		<tab name="advanced" text="Advanced" after="*" visibleCondition="preference:acr.advanced" help-id="tab.advanced"/>
 	</contribution>
 
@@ -65,7 +65,11 @@ System module.
 		<menu name="file" text="File" parentName="menubar" before="*" />
 		<menu name="edit" text="Edit" parentName="menubar" after="file" />
 		<menu name="help" text="Help" parentName="menubar" after="*" />
-		<menu name="projects" text="About Projects" parentName="help" before="about" />
+			<divider parentName="help" name="div1"
+				before="div2" />
+			<divider parentName="help" name="div2"
+			after="div1"  />					
+		<menu name="projects" text="About Projects" parentName="help" before="about" after="div2"/>
 
 		<action parentName="file" name="exit" text="Exit" iconName="exit16.png" onEventDispatchThread="true"
 			object="service:builtin.shutdown" methodName="halt" after="*">
@@ -318,7 +322,7 @@ System module.
 	
 	<!--  only display this set of help in workbench mode. later maybe add an equivalent set of buttons for plastic. -->
 	<contribution configuration-id="uiStructure" if="not (property system.help.disabled) and (property workbench.mode)">
-		<action parentName="help" name="intro" text="Introduction"
+		<action parentName="help" name="intro" text="AstroGrid: Science Introduction"
 			object="service:help" methodName="showHelp" before="*" />
 
 		<action parentName="help" name="started" text="Getting Started"
@@ -334,7 +338,8 @@ System module.
 			<parameter>contents</parameter>
 		</action>
 		
-	<menu name="tutorials" text="Tutorials" parentName="help" before="projects" />
+		
+	<menu name="tutorials" text="Tutorials" parentName="help" after="contents" before="div1" />
 
  	<action parentName="tutorials" name="access" text="Data Access"
  		object="service:help" methodName="showHelpForTarget" before="*">
@@ -356,7 +361,7 @@ System module.
  		object="service:help" methodName="showHelpForTarget" after="*">
  			<parameter>tutorial.solar</parameter>
  	</action>
-	
+
 	</contribution>
 	<!--  
 	================================
@@ -574,7 +579,26 @@ System module.
 					list of names of items that this menu should appear after. Use '*' to indicate all.
 				</attribute>
 				<conversion class="org.astrogrid.desktop.modules.system.contributions.UIMenuContribution" />
-			</element>		
+			</element>	
+		<element name="divider" key-attribute="name">
+			A divider / menu separtor
+				<attribute name="parentName"  required="true">
+					Names the parent tab or menu this divider belongs to
+				</attribute>
+				<attribute name="name" required="true" unique="true" >					
+					name of this divider
+				</attribute>	
+				<attribute name="before" >
+					list of names of items that this divider should appear before.
+					Use '*' to indicate all.					
+				</attribute>
+				<attribute name="after" >
+					list of names of items that this divider should appear after.
+					Use '*' to indicate all.					
+				</attribute>		
+				<conversion class="org.astrogrid.desktop.modules.system.contributions.UIDividerContribution" />				
+		</element>	
+		
 		<element name="action" key-attribute="name">	
 			A new action - materializes as a button or menu entry.
 				<attribute name="onEventDispatchThread" translator="boolean">
@@ -1070,6 +1094,11 @@ SYSTEM TRAY
 			implementation="instance:org.apache.commons.vfs.provider.res.ResourceFileProvider" />
 		<provider scheme="ram"
 			implementation="instance:org.apache.commons.vfs.provider.ram.RamFileProvider" />
+	
+		<!-- move into ivoa module later. -->
+		<provider scheme="dal"
+			implementation="instance:org.astrogrid.desktop.modules.ivoa.vfs.DalResponseProvider" />
+			
 	</contribution>
 	
 	<contribution configuration-id="vfsExtensions">

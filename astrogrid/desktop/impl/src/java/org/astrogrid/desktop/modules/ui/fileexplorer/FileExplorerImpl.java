@@ -1,4 +1,4 @@
-/*$Id: FileExplorerImpl.java,v 1.1 2007/05/02 15:38:28 nw Exp $
+/*$Id: FileExplorerImpl.java,v 1.2 2007/05/10 19:35:21 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -52,8 +52,7 @@ import com.l2fprod.common.swing.JTaskPane;
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 30-Mar-2005
  *
  */
-public class FileExplorerImpl extends UIComponentImpl implements  ExplorerWindow
-{
+public class FileExplorerImpl extends UIComponentImpl {
 
 	public FileExplorerImpl( final UIContext context,  final ActionContributionBuilder activityBuilder
 			,final UIContributionBuilder menuBuilder, EventList folders, FileSystemManager vfs) {
@@ -130,20 +129,7 @@ public class FileExplorerImpl extends UIComponentImpl implements  ExplorerWindow
 		menu.insert(sci,0);
 		return menu;
 	}
-		// listens to clicks on resource Folders and registry google.
-//		public void valueChanged(ListSelectionEvent e) {
-//			if (e.getSource() == resourcesFolders) {
-//				ResourceFolder f =  (ResourceFolder)resourcesFolders.getSelectedValue();
-//				if (f != null) { 
-//					clearSelection();
-//					setTitle("VO Explorer - " + f.getName());
-//					f.display(google);
-//				}
-//			} else if (! e.getValueIsAdjusting()) {
-//				// from the table - ignore if it's adjusting.
-//				notifyResourceTasks();
-//			}
-//		}
+
 	public void clearSelection() {
 		for (int i = 0; i < activities.length; i++) {
 			activities[i].noneSelected();

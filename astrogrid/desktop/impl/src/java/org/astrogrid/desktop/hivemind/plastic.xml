@@ -77,7 +77,7 @@
 	<!--  documentaiton links for plastic in non-hub mode. -->
 	<contribution configuration-id="system.uiStructure" if="not (property system.help.disabled) and not(property hub.mode)">
 		<action text="Plastic - Introduction" name="plasticHelp" parentName="help" iconName="help16.png"
-		object="service:system.help" methodName="showHelpForTarget" after="acrApi" before="projects">
+		object="service:system.help" methodName="showHelpForTarget"  after="div1" before="div2">
 			<tooltip>Introduction to Plastic</tooltip>
 			<parameter>plastic.overview</parameter>
 		</action>

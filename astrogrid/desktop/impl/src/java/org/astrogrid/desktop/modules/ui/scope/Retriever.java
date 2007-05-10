@@ -12,10 +12,13 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.PositionUtils;
+import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -26,6 +29,7 @@ import uk.ac.starlink.votable.TableContentHandler;
 import uk.ac.starlink.votable.TableHandler;
 import edu.berkeley.guir.prefuse.graph.DefaultEdge;
 import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
+import edu.berkeley.guir.prefuse.graph.Edge;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 /** base class for something that fetches a resource
@@ -227,7 +231,7 @@ public abstract class Retriever extends BackgroundWorker {
         resultCount++;
         String rowRa = safeTrim(row[raCol]);
         String rowDec = safeTrim(row[decCol]);                                 
-        DefaultTreeNode valNode = new DefaultTreeNode();
+        DefaultTreeNode valNode = createValueNode();
         String positionString = chopValue(String.valueOf(rowRa),6) + "," + chopValue(String.valueOf(rowDec),6);
         valNode.setAttribute(LABEL_ATTRIBUTE,"*");
         valNode.setAttribute(SERVICE_TYPE_ATTRIBUTE,getServiceType());
@@ -287,6 +291,11 @@ public abstract class Retriever extends BackgroundWorker {
           	 logger.warn("Failed to parse",e);
           }          
     }
+
+    /** can be extended by subclasses to provide extra functionalitiy */
+	public DefaultTreeNode createValueNode() {
+		return new DefaultTreeNode();
+	}
     /** extension point for subclasses to add more row parsing here. */
     protected void rowDataExtensionPoint(Object[] row, TreeNode valNode) {
     }
@@ -314,7 +323,7 @@ public abstract class Retriever extends BackgroundWorker {
     protected void doError(Throwable ex) {
     	ex.printStackTrace();
         parent.setStatusMessage(service.getTitle() + " - failed; " + ex.getMessage());
-        model.addQueryResult(service,QueryResultSummarizer.ERROR,fmt(ex));
+        model.addQueryResult(service,null,QueryResultSummarizer.ERROR,fmt(ex));
     }
     
     private String fmt(Throwable ex) {
@@ -337,7 +346,7 @@ public abstract class Retriever extends BackgroundWorker {
         // concurrent modification exceptions
         SummarizingTableHandler th = (SummarizingTableHandler)result;
         TreeNode serviceNode = th.getServiceNode();
-        model.addQueryResult(service,th.getResultCount(),th.getMessage());
+        model.addQueryResult(service,serviceNode,th.getResultCount(),th.getMessage());
         if (th.getResultCount() > 0) {
             DefaultEdge edge = new DefaultEdge(primaryNode,serviceNode);
             edge.setAttribute(WEIGHT_ATTRIBUTE,"2");              
@@ -352,8 +361,14 @@ public abstract class Retriever extends BackgroundWorker {
      * @param serviceURL
      * @return a new tree node.
      */
-    protected TreeNode createServiceNode(URL serviceURL, String tooltip) {
-        TreeNode serviceNode = new DefaultTreeNode();
+    protected TreeNode createServiceNode(final URL serviceURL, String tooltip) {
+        TreeNode serviceNode = new FileProducingTreeNode() {
+        	// create a service node.
+			protected FileObject createFileObject(ScopeTransferableFactory factory) throws FileSystemException {
+				return factory.new AstroscopeFileObject(VoDataFlavour.MIME_VOTABLE
+						,this,serviceURL.toString());
+			}
+        };
         serviceNode.setAttribute(LABEL_ATTRIBUTE,service.getTitle());
         serviceNode.setAttribute(WEIGHT_ATTRIBUTE,"2");
         serviceNode.setAttribute(SERVICE_ID_ATTRIBUTE, service.getId().toString());
@@ -364,6 +379,31 @@ public abstract class Retriever extends BackgroundWorker {
         	serviceNode.setAttribute(SERVICE_LOGO_ATTRIBUTE,service.getCuration().getCreators()[0].getLogo().toString());                    
         }
         return serviceNode;
+    }
+    
+    /** subclass of a treenode that knows how to produce a file node for it's selection. */
+    public static abstract class FileProducingTreeNode extends DefaultTreeNode implements ScopeTransferableFactory.HasFileObject {
+
+		public FileProducingTreeNode() {
+			super();
+		}
+
+		public FileProducingTreeNode(Edge arg0) {
+			super(arg0);
+		}
+		private FileObject fo;
+		public FileObject fileObject(ScopeTransferableFactory factory) {
+			if (fo == null) {
+				try {
+					fo = createFileObject(factory);
+				} catch (FileSystemException x) {
+					logger.error("FileSystemException",x);
+					fo = null;
+				}
+			} 
+			return fo;
+		}
+		protected abstract FileObject createFileObject(ScopeTransferableFactory factory) throws FileSystemException;
     }
     
 }

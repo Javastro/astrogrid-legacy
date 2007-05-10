@@ -11,6 +11,8 @@ import javax.swing.table.TableColumnModel;
 
 import net.sf.ehcache.Ehcache;
 
+import org.apache.commons.collections.BidiMap;
+import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.system.BrowserControl;
@@ -28,6 +30,7 @@ import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import ca.odell.glazedlists.gui.TableFormat;
 import ca.odell.glazedlists.gui.WritableTableFormat;
 import ca.odell.glazedlists.swing.EventTableModel;
+import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 /** specialized subtype of registrygooglepanel that displays summary
  * of queries services.
@@ -57,6 +60,8 @@ public class ScopeServicesList extends RegistryGooglePanel
  * value - an Integer (number of results), or String (err message);
  */
 	final Map results = new HashMap();
+	/** bidirectional map between Resource objects and TreeNodes */
+	final BidiMap services = new DualHashBidiMap();
 
 	
 	protected TableFormat createTableFormat() {
@@ -90,34 +95,36 @@ public class ScopeServicesList extends RegistryGooglePanel
 	public void clear() {
 		super.clear();
 		results.clear();
+		services.clear();
 	}
-	/** add a query summary to the services list*/
-	public void reportServiceResult(Service ri,int resultCount) {
+	public void addQueryResult(Service ri,TreeNode node, int resultCount, String message) {
+		if( node != null) {
+			services.put(ri,node);
+		}
+		items.getReadWriteLock().writeLock().lock();
 		try {
-			items.getReadWriteLock().writeLock().lock();
-			results.put(ri,new Integer(resultCount));
-			super.items.add(ri);
+			if (resultCount == QueryResultSummarizer.ERROR) {
+				results.put(ri,message);
+				super.items.add(ri);
+			} else {
+				results.put(ri,new Integer(resultCount));
+				super.items.add(ri);
+			}
 		} finally {
 			items.getReadWriteLock().writeLock().unlock();
 		}
 	}
 	
-	public void reportServiceError(Service ri,String message) {
-
-		try {
-			items.getReadWriteLock().writeLock().lock();
-			results.put(ri,message);
-			super.items.add(ri);
-		} finally {
-			items.getReadWriteLock().writeLock().unlock();
-		}
+	public TreeNode findTreeNode(Service s) {
+		return (TreeNode)services.get(s);
 	}
-	public void addQueryResult(Service ri, int resultCount, String message) {
-		if (resultCount == QueryResultSummarizer.ERROR) {
-			reportServiceError(ri,message);
-		} else {
-			reportServiceResult(ri,resultCount);
-		}
+	
+	public Service findService(TreeNode t) {
+		return (Service)services.getKey(t);
+	}
+	
+	public EventList getList() {
+		return items;
 	}
 	
 	private class ServicesListTableFormat implements AdvancedTableFormat{

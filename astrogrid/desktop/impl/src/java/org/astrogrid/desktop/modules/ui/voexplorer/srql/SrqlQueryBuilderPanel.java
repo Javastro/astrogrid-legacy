@@ -4,6 +4,7 @@
 package org.astrogrid.desktop.modules.ui.voexplorer.srql;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,16 +19,19 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.EventListener;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -321,7 +325,9 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 
 	/** list of all the things possible to filter on */
 	private static ClauseTemplate[] clauseTemplates = new ClauseTemplate[]{
-		new TextMatchTemplate("Any main field","default")
+		new TextMatchTemplate("Any main field","default") {{
+			setTooltip("Search in  Title, Subject, Identifier, Shortname and Description fields" );
+		}}
 		, new TextMatchTemplate("title")
 		, new TextMatchTemplate("subject")
 		, new TextMatchTemplate("description")
@@ -329,9 +335,24 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 
 		// I've not put in the whole list of types - andy doesn't want them all.
 		// this is a mix of stuff in subject/type and @xsi:type - shortest distinct prefixes.
-		, new EnumerationTemplate("type",new String[]{"Archive","Catalog","Survey","Simulation","BasicData"
-					, "Cone","Image","Spectrum","Time","Cea","Registry","Service"}) //@future - replace these with capabilities - and translate into user-friendly.
-		// also required by andy - sky coverage?? - no idea how.
+		, new DescribedEnumerationTemplate("Type","type"){{
+			setTooltip("Search in 'Resource Type' and 'Content - Type'");			
+		}
+		protected void populate(List vals) {
+			vals.add(new DescribedValue("Archive",""));
+			vals.add(new DescribedValue("Catalog",""));
+			vals.add(new DescribedValue("Survey",""));
+			vals.add(new DescribedValue("Simulation",""));
+			vals.add(new DescribedValue("BasicData",""));
+			vals.add(new DescribedValue("Cone","Catalog cone search service"));
+			vals.add(new DescribedValue("Image","Image access service (SIAP)"));
+			vals.add(new DescribedValue("Spectrum","Spectrum access service (SSAP)"));
+			vals.add(new DescribedValue("Time","Time Series access service (STAP)"));
+			vals.add(new DescribedValue("CeaApplication","Offline application (CEA service)"));
+			vals.add(new DescribedValue("Registry",""));
+			vals.add(new DescribedValue("Service","Other services"));			
+		}}
+		//@future - replace these with capabilities -
 		//   @future capability - tricky. - don't know how to do this yet. - mix of capability and capabilitty type.
 		// will come out with registry 1.0
 		// @future also to add - validation-level 
@@ -362,7 +383,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 			setEditable(false);
 			setSelectedIndex(0);
 			setCurrentTemplate((ClauseTemplate)getSelectedItem());
-	
+			setRenderer(new ToolTipComboBoxRenderer());
 			// control buttons.
 			 add = new JButton(IconHelper.loadIcon("editadd16.png"));
 			 add.setToolTipText("Add a new clause to this query");
@@ -372,6 +393,26 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 			 remove.addActionListener(this);
 
 		}
+		// adds tooltips
+		private class ToolTipComboBoxRenderer extends BasicComboBoxRenderer {
+		    public Component getListCellRendererComponent( JList list, 
+		           Object value, int index, boolean isSelected, boolean cellHasFocus) {
+		      if (isSelected) {
+		        setBackground(list.getSelectionBackground());
+		        setForeground(list.getSelectionForeground());      
+		        if (-1 < index) {
+		        	String s = ((ClauseTemplate)value).getTooltip();
+		        	list.setToolTipText(s);
+		        }
+		      } else {
+		        setBackground(list.getBackground());
+		        setForeground(list.getForeground());
+		      } 
+		      setFont(list.getFont());
+		      setText((value == null) ? "" : value.toString());     
+		      return this;
+		    }  
+		  }		
 		// access a component that allows a predicate on the currently selected clause
 		public JComponent getPredicateField() {
 			return predicateField;
@@ -473,6 +514,15 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 		}
 		public final String name;
 		public final String target;
+		private String tooltip;
+
+		public final String getTooltip() {
+			return this.tooltip;
+		}
+
+		public final void setTooltip(String tooltip) {
+			this.tooltip = tooltip;
+		}
 		/** create the SRQL expression represented by this clause.
 		 */
 		abstract SRQL constructClause(JComponent valueField, JComponent predicateField) ;
@@ -485,6 +535,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 		public String toString() {
 			return StringUtils.capitalize(name);
 		}
+		
 	}
 	
 	/** a clause that matches a value from an enumeration */

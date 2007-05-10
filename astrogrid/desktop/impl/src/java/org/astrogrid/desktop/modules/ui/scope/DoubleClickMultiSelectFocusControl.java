@@ -30,30 +30,36 @@ public class DoubleClickMultiSelectFocusControl extends ControlAdapter {
             TreeNode node = (TreeNode)item.getEntity();
             
             if (set.contains(node)) {// do a remove of this, and all children, and any parents.
-                for (Iterator i = new BreadthFirstTreeIterator(node); i.hasNext(); ) {
-                    TreeNode n = (TreeNode)i.next();
-                    set.remove(n);
-                    n.setAttribute("selected","false"); // attribute used to speed up coloring function.
-                }
-                while (node.getParent() != null) {
-                    node = node.getParent();
-                    if (set.contains(node)) {
-                        node.setAttribute("selected","false");
-                        set.remove(node);
-                    }
-                }
+                deselectSubtree(node,set);
             } else { // an add of this, and all children
-                for (Iterator i = new BreadthFirstTreeIterator(node); i.hasNext(); ) {
-                    
-                    TreeNode n = (TreeNode)i.next();
-                    n.setAttribute("selected","true"); // yechh.
-                    if (! set.contains(n)) {
-                        set.add(n);
-                    }
-                }
+                selectSubtree(node,set);
             }
             viz.reDrawGraphs();
            
         }//if
     }
+	public static void selectSubtree(TreeNode node, FocusSet set) {
+		for (Iterator i = new BreadthFirstTreeIterator(node); i.hasNext(); ) {
+		    
+		    TreeNode n = (TreeNode)i.next();
+		    n.setAttribute("selected","true"); // yechh.
+		    if (! set.contains(n)) {
+		        set.add(n);
+		    }
+		}
+	}
+	public static void deselectSubtree(TreeNode node, FocusSet set) {
+		for (Iterator i = new BreadthFirstTreeIterator(node); i.hasNext(); ) {
+		    TreeNode n = (TreeNode)i.next();
+		    set.remove(n);
+		    n.setAttribute("selected","false"); // attribute used to speed up coloring function.
+		}
+		while (node.getParent() != null) {
+		    node = node.getParent();
+		    if (set.contains(node)) {
+		        node.setAttribute("selected","false");
+		        set.remove(node);
+		    }
+		}
+	}
 }

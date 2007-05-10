@@ -30,15 +30,15 @@ public class FileObjectTransferable implements Transferable {
 
 	
 	
-	public FileObjectTransferable(FileObject fo) throws ClassNotFoundException, FileSystemException {
+	public FileObjectTransferable(FileObject fo){
 		this.fo = fo;
-		String mime = fo.getContent().getContentInfo().getContentType();
-		if (mime == null) {
+		//String mime = null; //not a good idea..= fo.getContent().getContentInfo().getContentType();
+	//	if (mime == null) {
 			flavs = alwaysSupportedDataFlavors;
-		} else {
-			DataFlavor mimeFlavor = new DataFlavor(mime);
-			flavs = (DataFlavor[])ArrayUtils.add(alwaysSupportedDataFlavors,mimeFlavor);
-		}
+		//} else {
+			//DataFlavor mimeFlavor = new DataFlavor(mime);
+			//flavs = (DataFlavor[])ArrayUtils.add(alwaysSupportedDataFlavors,mimeFlavor);
+	//	}
 	}
 		private final DataFlavor[] flavs;
 	

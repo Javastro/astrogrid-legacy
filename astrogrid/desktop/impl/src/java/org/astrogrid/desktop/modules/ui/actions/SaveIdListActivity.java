@@ -45,7 +45,7 @@ public class SaveIdListActivity extends AbstractActivity {
 	public SaveIdListActivity(ResourceChooserInternal chooser, MyspaceInternal ms) {
 		this.chooser = chooser;
 		this.ms = ms;
-		setText("Save list");
+		setText("Save ID List");
 		setToolTipText("Save the resource ids of the current selection to a textfile");
 		setIcon(IconHelper.loadIcon("ascii16.png"));
 	}
@@ -59,7 +59,9 @@ public void actionPerformed(ActionEvent e) {
 	}	
 	final Transferable t = current;
 		final URI u = chooser.chooseResourceWithParent("Save resource list",true,true,true,comp);
-		
+		if (u == null) {
+			return;
+		}
 		(new BackgroundWorker(uiParent.get(),"Saving resource list") {
 			protected Object construct() throws Exception {
 				OutputStream os = null;

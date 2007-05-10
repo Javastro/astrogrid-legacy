@@ -31,6 +31,11 @@ public class SaveResourceActivity extends AbstractResourceActivity {
 		return true;
 	}
 
+	public void someSelected(Resource[] list) {
+		// temporarily removed functio to export a set of resources - as filenames don't work.
+		//@todo sort out filename generation, and re-enabled this.
+		noneSelected();
+	}
 	/**
 	 * 
 	 */

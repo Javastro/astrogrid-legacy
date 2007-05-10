@@ -44,6 +44,8 @@ public class VoDataFlavour {
 	public static final DataFlavor LOCAL_URI_ARRAY = localDataFlavor(URI[].class,"List of URI references");
 	public static final DataFlavor URI_LIST = new DataFlavor("text/uri-list","List of URI references");
 	
+// types specific to astroscope.
+	
 	
 	// other common-or garden votable types - 
 	public static final DataFlavor STRING = DataFlavor.stringFlavor;
@@ -71,9 +73,14 @@ public class VoDataFlavour {
 	public static final DataFlavor FITS_TABLE = new DataFlavor(MIME_FITS_TABLE,"FITS Table");
 	
 	/** FITS Image */
-	public static final DataFlavor FITS_IMAGE = new DataFlavor("image/fits","FITS Image");
+	public static final String MIME_FITS_IMAGE = "image/fits";
+	public static final DataFlavor FITS_IMAGE = new DataFlavor(MIME_FITS_IMAGE,"FITS Image");
 
+	/** FITS Spectrum */
+	public static final String MIME_FITS_SPECTRUM = "spectrum/fits";
+	public static final DataFlavor FITS_SPECTRUM = new DataFlavor(MIME_FITS_SPECTRUM,"FITS Spectrum");
 
+	
 	/** adql query */
 	public static final String MIME_ADQL = "application/x-adql";
 	public static final DataFlavor ADQL = new DataFlavor(MIME_ADQL,"ADQL");

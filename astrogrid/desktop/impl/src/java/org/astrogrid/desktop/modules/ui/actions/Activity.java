@@ -55,7 +55,8 @@ public interface Activity {
 	public final static String USE_SECTION = "use";
 	public final static String NEW_SECTION = "new";
 	public final static String INFO_SECTION = "info";
-	public final static String ADVANCED_SECTION = "advanced";
+	public final static String PLASTIC_SECTION = "plastic";
+	public final static String SCRIPT_SECTION = "script";
 	public final static String EXPORT_SECTION = "export";
 	
 }

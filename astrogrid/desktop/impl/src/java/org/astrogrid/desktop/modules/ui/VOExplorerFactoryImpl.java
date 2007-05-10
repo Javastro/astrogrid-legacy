@@ -25,7 +25,7 @@ import org.votech.plastic.incoming.handlers.AbstractMessageHandler;
 
 import ca.odell.glazedlists.EventList;
 
-/** Factory for voexplorers - also handles some messages.
+/** Factory for voexplorers - also handles some messages. 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 6, 20076:44:32 PM
  */

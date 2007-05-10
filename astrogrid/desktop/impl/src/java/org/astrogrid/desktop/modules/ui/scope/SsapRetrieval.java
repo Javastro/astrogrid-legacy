@@ -1,4 +1,4 @@
-/*$Id: SsapRetrieval.java,v 1.9 2007/04/18 15:47:08 nw Exp $
+/*$Id: SsapRetrieval.java,v 1.10 2007/05/10 19:35:22 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,14 +14,20 @@ import java.net.URL;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
+import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.Ssap;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
+import org.astrogrid.desktop.modules.ui.scope.Retriever.FileProducingTreeNode;
+import org.astrogrid.desktop.modules.ui.scope.ScopeTransferableFactory.AstroscopeFileObject;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import uk.ac.starlink.table.ColumnInfo;
+import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 public class SsapRetrieval extends Retriever {
@@ -147,7 +153,20 @@ public class SsapRetrieval extends Retriever {
             	valNode.setAttribute(SPECTRA_UNITS_ATTRIBUTE,safeTrim(row[spectrumUnitsCol]));
             }
         }
-        
+    	public DefaultTreeNode createValueNode() {
+   		 return new FileProducingTreeNode() {
+   	        	// create a service node.
+   				protected FileObject createFileObject(ScopeTransferableFactory factory) throws FileSystemException {
+   					String type =getAttribute(SPECTRA_FORMAT_ATTRIBUTE);
+   					String url = getAttribute(SPECTRA_URL_ATTRIBUTE);
+   					return factory.new AstroscopeFileObject(
+   							StringUtils.containsIgnoreCase(type,"fits")
+   								? VoDataFlavour.MIME_FITS_SPECTRUM
+   								: type
+   							,this,url);
+   				}
+   	        };
+   	}        
         /*
         protected boolean isWorthProceeding() {
             return super.isWorthProceeding() && urlCol >= 0; // minimal subset of stuff.
@@ -180,6 +199,9 @@ public class SsapRetrieval extends Retriever {
 
 /* 
 $Log: SsapRetrieval.java,v $
+Revision 1.10  2007/05/10 19:35:22  nw
+reqwork
+
 Revision 1.9  2007/04/18 15:47:08  nw
 tidied up voexplorer, removed front pane.
 

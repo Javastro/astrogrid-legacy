@@ -20,7 +20,6 @@ import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
-import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 
 /** Factory that builds instances of astroscope.
  * used to enable more than one instance under hivemind.

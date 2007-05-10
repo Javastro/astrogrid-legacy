@@ -10,8 +10,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 
+import javax.swing.JPopupMenu;
+
 import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.astrogrid.desktop.modules.ui.sendto.SendToMenu;
 
 import edu.berkeley.guir.prefuse.AggregateItem;
 import edu.berkeley.guir.prefuse.Display;
@@ -51,14 +52,14 @@ import edu.berkeley.guir.prefusex.controls.ZoomControl;
  * */
 public class HyperbolicVizualization extends Vizualization {
         
-    public HyperbolicVizualization(VizualizationManager vizs, SendToMenu sendTo, UIComponent parent) {
+    public HyperbolicVizualization(VizualizationManager vizs, JPopupMenu popup, UIComponent parent) {
             super("Hyperbolic", vizs);    
             this.parent = parent;
-            this.sendTo = sendTo;
+            this.menu = popup;
     }
     private Display display;
     private final UIComponent parent;
-    private SendToMenu sendTo;
+    private JPopupMenu menu;
     private ActivityMap actmap; 
     private HyperbolicTranslation translation;   
     
@@ -112,7 +113,7 @@ public class HyperbolicVizualization extends Vizualization {
            display.addControlListener(new ZoomControl());
            display.addControlListener(new DoubleClickMultiSelectFocusControl(vizs));
            display.addControlListener(new ToolTipControl(Retriever.TOOLTIP_ATTRIBUTE));
-           display.addControlListener(new SendToMenuControl(sendTo,parent));
+           display.addControlListener(new SendToMenuControl(menu,parent));
             
            // initialize repaint list
            ActionList repaint = new ActionList(registry);

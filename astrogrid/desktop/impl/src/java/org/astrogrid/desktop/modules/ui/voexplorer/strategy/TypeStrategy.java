@@ -40,6 +40,6 @@ public final class TypeStrategy extends PipelineStrategy {
 	}
 
 	public String getName() {
-		return "Type";
+		return "Resource Type";
 	}
 }

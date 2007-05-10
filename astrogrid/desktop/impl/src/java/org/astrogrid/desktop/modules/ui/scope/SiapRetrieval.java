@@ -6,14 +6,20 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
+import org.astrogrid.desktop.modules.ui.scope.Retriever.FileProducingTreeNode;
+import org.astrogrid.desktop.modules.ui.scope.ScopeTransferableFactory.AstroscopeFileObject;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import uk.ac.starlink.table.ColumnInfo;
+import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 /** task that retrives, parses and adds to the display results of one siap service 
@@ -108,6 +114,21 @@ protected void rowDataExtensionPoint(Object[] row, TreeNode valNode) {
 
         valNode.setAttribute(LABEL_ATTRIBUTE,title + ", " + StringUtils.substringAfterLast(type,"/") + ", " + size + "k");   
         }        
+
+	public DefaultTreeNode createValueNode() {
+		 return new FileProducingTreeNode() {
+	        	// create a service node.
+				protected FileObject createFileObject(ScopeTransferableFactory factory) throws FileSystemException {
+					String type =getAttribute(IMAGE_TYPE_ATTRIBUTE);
+					String url = getAttribute(IMAGE_URL_ATTRIBUTE);
+					return factory.new AstroscopeFileObject(
+							StringUtils.containsIgnoreCase(type,"fits")
+								? VoDataFlavour.MIME_FITS_IMAGE
+								: type
+							,this,url);
+				}
+	        };
+	}
         
     protected boolean isWorthProceeding() {
     	if (imgCol == -1) {// maybe it's a non-standard service - give it a second chance.

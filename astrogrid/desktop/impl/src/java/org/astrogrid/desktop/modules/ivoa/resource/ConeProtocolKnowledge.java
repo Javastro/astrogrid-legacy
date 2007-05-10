@@ -15,7 +15,7 @@ public class ConeProtocolKnowledge {
 	  public static ParameterBean[] parameters;
 	    public static InterfaceBean[] ifaces;
 	    static { // build static info for a cone applicaiton.
-	        // missing paramers are ucd, default value, units, type, subtype,options
+	        // missing paramers are value, default value, units, type, subtype,options
 	        ParameterBean ra = new ParameterBean("ra","Right Ascension","right ascension of the position",null,null,null,"float",null,null); // @todo improve the metadata
 	        ParameterBean dec = new ParameterBean("dec","Declination","declination of the position",null,null,null,"float",null,null);
 	        ParameterBean sz = new ParameterBean("sz","Size","size of search radius",null,"1.0",null,"float",null,null);

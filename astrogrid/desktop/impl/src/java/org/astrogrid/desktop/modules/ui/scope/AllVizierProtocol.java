@@ -12,6 +12,8 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ivoa.Cone;
@@ -22,8 +24,11 @@ import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.Validation;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.ui.scope.AllVizierProtocol.VizierRetriever.VizierTableHandler;
+import org.astrogrid.desktop.modules.ui.scope.Retriever.FileProducingTreeNode;
 import org.astrogrid.desktop.modules.ui.scope.Retriever.SummarizingTableHandler;
+import org.astrogrid.desktop.modules.ui.scope.ScopeTransferableFactory.AstroscopeFileObject;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -50,6 +55,7 @@ public class AllVizierProtocol extends SpatialDalProtocol {
 		super("VizieR Tables");
 		this.cone = cone;
 		getPrimaryNode().setAttribute(Retriever.SERVICE_LOGO_ATTRIBUTE,"http://vizier.u-strasbg.fr/vizier_tiny.gif");
+		getPrimaryNode().setAttribute(Retriever.SERVICE_ID_ATTRIBUTE,"ivo://CDS/Vizier");
 		//@todo factor this out into somewhere more logical - like config, or the vizier ar component.
 		// maybe that should be http-get based too? yep. most probably.
 		URI u = URI.create("http://vizier.u-strasbg.fr/viz-bin/votable/-dtd/-A");
@@ -126,7 +132,15 @@ public class AllVizierProtocol extends SpatialDalProtocol {
 		}
 		
 		public static final String VIZIER = "vizier";
-
+		
+// override - don't want to return an augmented TreeNode from this one.		
+protected TreeNode createServiceNode(URL serviceURL, String tooltip) {
+	TreeNode augmented =  super.createServiceNode(serviceURL, tooltip);
+	// lazy - just copy the bits we want inro an un-augmented treenode..
+	TreeNode plain = new DefaultTreeNode();
+	plain.setAttributes(augmented.getAttributes());
+	return plain;
+}
 		protected Object construct() throws Exception {
 			URL q = cone.constructQuery(vizierEndpoint,ra,dec,raSize);
 			InputSource source = new InputSource(q.openStream());
@@ -142,7 +156,7 @@ public class AllVizierProtocol extends SpatialDalProtocol {
 		protected void doFinished(Object result) {
 			// add summary of search results to table view.
 	       SummarizingTableHandler th = (SummarizingTableHandler)result;
-	        model.addQueryResult(service,th.getResultCount(),th.getMessage());                                   
+	        model.addQueryResult(service,getPrimaryNode(),th.getResultCount(),th.getMessage());                                   
 	        parent.setStatusMessage(service.getTitle() + " - " + th.getResultCount() + " results");
 	    
 		}
@@ -159,7 +173,26 @@ public class AllVizierProtocol extends SpatialDalProtocol {
 			// create a new service node for each table encountered.
 			protected void newTableExtensionPoint(StarTable st) {
 				tableRowCount =0;
-		        serviceNode = new DefaultTreeNode();
+				// phew, lucky they're logical.
+				URI serviceURI = vizierEndpoint.resolve("?-source=" + st.getName());
+				String s = null;
+				try {
+					s = cone.constructQuery(serviceURI,ra,dec,raSize).toString();
+				} catch (InvalidArgumentException x) { // unlikely.
+					logger.error("InvalidArgumentException",x);
+				} catch (NotFoundException x) {
+					logger.error("NotFoundException",x);
+				}
+				// pesky finals.
+				final String serviceURL = s;
+		        serviceNode =  new FileProducingTreeNode() {
+		        	// create a service node.
+					protected FileObject createFileObject(ScopeTransferableFactory factory) throws FileSystemException {
+						return factory.new AstroscopeFileObject(VoDataFlavour.MIME_VOTABLE
+								,this,serviceURL);
+					}
+		        };
+		        serviceNode.setAttribute(SERVICE_URL_ATTRIBUTE,serviceURL);
 		        String title = st.getParameterByName("Description").getValue().toString();
 		        String wrapped = WordUtils.wrap(title,AstroScopeLauncherImpl.TOOLTIP_WRAP_LENGTH,"<br>",false);
 		        StringBuffer sb = new StringBuffer("<html>");
@@ -171,16 +204,6 @@ public class AllVizierProtocol extends SpatialDalProtocol {
 		        serviceNode.setAttribute(SERVICE_ID_ATTRIBUTE,st.getName());
 		        serviceNode.setAttribute(TOOLTIP_ATTRIBUTE,sb.toString());
 		        
-		        // phew, lucky they're logical.
-		        URI serviceURI = vizierEndpoint.resolve("?-source=" + st.getName());
-				try {
-					URL serviceURL = cone.constructQuery(serviceURI,ra,dec,raSize);
-					serviceNode.setAttribute(SERVICE_URL_ATTRIBUTE,serviceURL.toString());
-				} catch (InvalidArgumentException x) { // unlikely.
-					logger.error("InvalidArgumentException",x);
-				} catch (NotFoundException x) {
-					logger.error("NotFoundException",x);
-				}
      
 		    }
 			

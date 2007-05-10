@@ -1,4 +1,4 @@
-/*$Id: VOExplorerImpl.java,v 1.1 2007/05/02 15:38:27 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.2 2007/05/10 19:35:27 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -73,8 +73,17 @@ public class VOExplorerImpl extends UIComponentImpl
 		// build the rest of the menuing system.
 		JMenuBar menuBar = new JMenuBar();
 		menuBuilder.populateWidget(menuBar,this,ArMainWindow.MENUBAR_NAME);
-		//	menuBar.add(createHelpMenu());
 		int sz = menuBar.getComponentCount();
+		
+		// splice additional things into help menu.
+		JMenu help = menuBar.getMenu(sz-1);
+		help.insertSeparator(0);
+		JMenuItem sci = new JMenuItem("VOExplorer: Introduction");
+		getContext().getHelpServer().enableHelpOnButton(sci,"voexplorer.intro");
+			//	"userInterface.voexplorer");
+		help.insert(sci,0);		
+		
+		// add other menus.
 		menuBar.add(actions,sz-2); // insert before help.
 		menuBar.add(getContext().createWindowMenu(this),sz-1); // insert before the help menu.
 		setJMenuBar(menuBar);
@@ -168,6 +177,7 @@ public class VOExplorerImpl extends UIComponentImpl
 
 	/** override:  create a help menu with additional entries */
 	protected JMenu createHelpMenu() {
+		System.out.println("called");
 		JMenu menu = super.createHelpMenu();
 		menu.insertSeparator(0);
 		/*
@@ -175,8 +185,9 @@ public class VOExplorerImpl extends UIComponentImpl
 		getHelpServer().enableHelpOnButton(ref, "astroscope.menu.reference");
 		menu.insert(ref,0);
 		 */
-		JMenuItem sci = new JMenuItem("VOExplorer Help");
-		getContext().getHelpServer().enableHelpOnButton(sci, "userInterface.voexplorer");
+		JMenuItem sci = new JMenuItem("VOExplorer: Introduction");
+		getContext().getHelpServer().enableHelpOnButton(sci,"voexplorer.intro");
+			//	"userInterface.voexplorer");
 		menu.insert(sci,0);
 		return menu;
 	}

@@ -129,7 +129,7 @@ public class FilesTable extends JTable implements MouseListener{
 		     // I thought I'd need to convert index scehems first
 		     // seems not
 		     try {
-		    	 if (item.getType().hasContent()) {
+		    	 if (item.getType().hasChildren()) {
 		    		 view.move(item);
 		    	 }
 		     } catch (FileSystemException ex) {
