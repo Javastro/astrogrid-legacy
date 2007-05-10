@@ -64,7 +64,8 @@
                         		<include>**/*.gif</include> 
                         		<include>**/*.dtd</include>
                                 <include>**/*.xsd</include>        
-                                <include>**/*.list</include><!--  ucd list -->                		
+                                <include>**/*.list</include><!--  ucd list -->    
+                                <include>**/*.py</include><!-- script templates -->            		
                         	</includes>
                         </resource>
 
@@ -104,6 +105,15 @@
 	</properties>
 </dependency>  	
 
-
+<!--  for templating -->
+<dependency>
+	<artifactId>groovy-all</artifactId>
+	<groupId>groovy</groupId>
+	<version>1.0-beta-10</version><!--  FIXME : update this version. -->
+	<properties>		
+		<dist.bundle>true</dist.bundle>
+			    <strip>false</strip>    	                  
+	</properties>	
+</dependency>
     </dependencies>
 </project>
