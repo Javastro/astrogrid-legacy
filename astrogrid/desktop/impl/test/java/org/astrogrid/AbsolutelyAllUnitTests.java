@@ -38,7 +38,6 @@ public class AbsolutelyAllUnitTests {
 		suite.addTest(org.astrogrid.desktop.modules.ag.recorder.AllRecorderUnitTests.suite());
 		suite.addTest(org.astrogrid.desktop.modules.ag.AllAstrogridUnitTests.suite());
 		suite.addTest(org.astrogrid.desktop.modules.plastic.AllPlasticUnitTests.suite());
-		suite.addTest(org.astrogrid.desktop.modules.ui.sendto.AllSendtoUnitTests.suite());
 		suite.addTest(org.astrogrid.desktop.modules.util.AllUtilUnitTests.suite());
 		suite.addTest(org.astrogrid.desktop.modules.dialogs.registry.srql.AllSRQLUnitTests.suite());
 		suite.addTest(org.astrogrid.desktop.protocol.AllProtocolUnitTests.suite());
