@@ -14,6 +14,20 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="2007.3.alpha2" date="unreleased">
+	<action dev="nw" type="add">
+		Implemented script frameworks.
+	</action>
+	<action dev="nw" type="update">
+		Merged astroscope and helioscope, integrated with action system.
+		Added support for space + time STAP queries.
+		Implemented tabular result display in astroscope
+	</action>
+	<action dev="nw" type="fix">
+		Various fixes and relabelling suggested by Andy
+		Reworked menus.
+	</action>
+</release>
 <release version="2007.3.alpha1" date="unreleased">
 	<action dev="nw" type="add">
 		Added search builder, split voexplorer and fileexplorer into separate windows,
