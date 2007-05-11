@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2007 (http://www.altova.com) by Arnold Rots (Smithsonian Astrophysical Observatory) -->
-<!--$Id: stc-v1.30.xsd,v 1.1 2007/04/27 22:10:38 norman Exp $-->
+<!--$Id: stc-v1.30.xsd,v 1.2 2007/05/11 14:06:00 norman Exp $-->
 <!-- Schema definition for the SpaceTimeCoords -->
 <!--Change Log:
 $Log: stc-v1.30.xsd,v $
+Revision 1.2  2007/05/11 14:06:00  norman
+Remove blank enumeration values (yes, really, enumeration values
+consisting of an empty string!)
+
 Revision 1.1  2007/04/27 22:10:38  norman
 Added
 
@@ -111,7 +115,17 @@ Completed new astronTimeType and proper handling of units.
 Revision 1.1  2003/04/28 16:25:34  arots
 Initial revision
 -->
-<xs:schema xmlns="http://www.ivoa.net/xml/STC/stc-v1.30.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink" targetNamespace="http://www.ivoa.net/xml/STC/stc-v1.30.xsd" elementFormDefault="qualified">
+<xs:schema xmlns="http://www.ivoa.net/xml/STC/stc-v1.30.xsd"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:xlink="http://www.w3.org/1999/xlink"
+           xmlns:x2s="http://ns.eurovotech.org/registry-metadata#"
+           targetNamespace="http://www.ivoa.net/xml/STC/stc-v1.30.xsd"
+           elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo>
+      <x2s:multipleDomains all='all'/> <!--NG: add multipleDomains marker for all properties -->
+    </xs:appinfo>
+  </xs:annotation>
   <!-- xlink.xsd needs to be imported; here are a few options that may
   be useful for development -->
   <!--<xs:import namespace="http://www.w3.org/1999/xlink" schemaLocation="http://hea-www.harvard.edu/~arots/nvometa/v1.30/xlink.xsd"/>-->
@@ -231,9 +245,10 @@ Initial revision
       <xs:documentation>The spherical-to-cartesian or cartesian-to-cartesian projection to be used; c-to-c projections are marked as such, all others are to be interpreted as s-to-c</xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:enumeration value="">
+      <xs:enumeration value="PLANAR"> <!-- NG: the original XSchema deliberately has this as just blank! -->
         <xs:annotation>
           <xs:documentation>Planar (i.e., linear cartesian-to-cartesian) projection</xs:documentation>
+          <xs:documentation>RDF: Note that this enumeration value is 'PLANAR', rather than the blank value in the original XSchema</xs:documentation><!-- NG: added -->
         </xs:annotation>
       </xs:enumeration>
       <xs:enumeration value="LOG">
@@ -1143,6 +1158,7 @@ Initial revision
   <xs:simpleType name="timeUnitType">
     <xs:annotation>
       <xs:documentation>Time units may be second (s), hour (h: 3600 s), day (d: 86400 s), Julian year (a, yr: 365.25 d), Julian century (cy: 36525 d), or empty (i.e., dimensionless) for ISO-8601 format</xs:documentation>
+      <xs:documentation>RDF: enumeration value 'ISO8601' replaces XSchema 'blank' enumeration value</xs:documentation><!-- NG: added -->
     </xs:annotation>
     <xs:restriction base="unitType">
       <xs:enumeration value="s"/>
@@ -1151,12 +1167,13 @@ Initial revision
       <xs:enumeration value="a"/>
       <xs:enumeration value="yr"/>
       <xs:enumeration value="cy"/>
-      <xs:enumeration value=""/>
+      <xs:enumeration value="ISO8601"/><!-- NG: replaces original 'blank' value -->
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="posUnitType">
     <xs:annotation>
       <xs:documentation>Spatial coordinate units may be angular (degrees, radians, hours, arcmins, arcsecs), linear (meters, km, mm, AUs, parsecs, kpc, Mpc, lightyears), or empty (i.e., dimensionless).  The three-units strings are for special 3-D vectors where the components do not share the same unit; one may prefer to give each component its own unit, instead.</xs:documentation>
+      <xs:documentation>RDF: enumeration value 'Dimensionless' replaces XSchema 'blank' enumeration value</xs:documentation><!-- NG: added -->
     </xs:annotation>
     <xs:restriction base="unitType">
       <xs:enumeration value="deg"/>
@@ -1174,7 +1191,7 @@ Initial revision
       <xs:enumeration value="kpc"/>
       <xs:enumeration value="Mpc"/>
       <xs:enumeration value="lyr"/>
-      <xs:enumeration value=""/>
+      <xs:enumeration value="Dimensionless"/><!-- NG: replaces original 'blank' enumeration value -->
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="angleUnitType">
