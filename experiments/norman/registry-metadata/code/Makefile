@@ -13,11 +13,11 @@ TRANSFORMERS=rdf-VOResource-1.0.xslt rdf-RegistryInterface-1.0.xslt
 
 SCHEMAS=../xschemas
 # List of schemas which have been verified to convert sanely with
-# xschema2xslt.lx.  Well..., reasonably sanely, modulo a few glitches.
+# xschema2xslt.lx.
 # Nothing will actually break if this doesn't match the corresponding list
 # in ../xschemas/Makefile, but I'd expect them to be the same.
 AUTOCONVERTIBLE=SIA-v1.0 VODataService-v1.0 VORegistry-v1.0 \
-	TabularDB-v0.3 test-schema
+	TabularDB-v0.3 ConeSearch-v1.0 stc-v1.30 test-schema
 
 PRODUCTS=ExtractNamespaces.jar convert-root.xslt
 
