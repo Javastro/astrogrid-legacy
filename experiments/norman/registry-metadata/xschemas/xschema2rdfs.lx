@@ -7,6 +7,9 @@
 ;; namespace.  These are expected to be children of an <xs:appinfo>
 ;; element within the element/attribute declaration to which they refer.
 ;;
+;; FIXME: it would probably be neater to replace these all with attributes on a
+;; single x2s:generate element.
+;;
 ;;     <x2s:propertyName>[name]</x2s:propertyName>
 ;;         Indicates that the property name generated for this
 ;;         element/attribute should be the given <name>, and not
@@ -15,13 +18,14 @@
 ;;         with the same name but different meanings.  If the given
 ;;         property name has no prefix, it is taken to be in the
 ;;         current namespace; if it has a prefix, it must be within
-;;         the scope of a namespace declaration for that prefix.  In
-;;         fact, I think this might be redundant, since the meaning
+;;         the scope of a namespace declaration for that prefix, and the
+;;         namespace in question must be the ontology namespace.  In
+;;         fact, this is more-or-less redundant, since the meaning
 ;;         of the property will always be deducible from context
 ;;         (ie, the domain of the property).
 ;;
-;;         This is used for validationLevel elements, which are
-;;         modelled by multiple subclasses of the property
+;;         However, this is also used for validationLevel elements,
+;;         which are modelled by multiple subclasses of the property
 ;;         listed here.
 ;;
 ;;     <x2s:superclass>[name]</x2s:superclass>
@@ -40,6 +44,10 @@
 ;;         once in the generated RDFS.  Thus it should not be declared
 ;;         using rdf:ID.  Any content is ignored, but is useful for
 ;;         noting where the other domain is.
+;;
+;;         If the path /schema/annotation/appinfo/x2s:multipleDomains/@all
+;;         is present, then _no_ property should be declared using rdf:ID,
+;;         since too many of them have multiple domains (eg, STC)
 ;;
 ;;         If this has the same name as a property in another schema,
 ;;         then we need to declare this using an attribute of the form
@@ -173,7 +181,8 @@
                      (apply-templates select: xs:import))
        (apply-templates select: "xs:complexType|xs:simpleType")
        ;; we don't have to process x2s:datatypeRange here.
-       ))
+
+       (apply-templates select: xs:element)))
 
   ;; [import]
   (template xs:import
@@ -186,10 +195,7 @@
        (when descendant::xs:complexType
          (x2s:ERROR "complexType " (value-of @name)
                     " contains anonymous complexType"))
-       (when descendant::xs:simpleType
-         (x2s:ERROR "complexType " (value-of @name)
-                    " contains anonymous simpleType"))
-       (when xs:simpleContent
+       (when xs:simpleContent ; [simplecontent]
          (apply-templates select: xs:simpleContent))
        (when "xs:complexContent or xs:sequence"
         (rdfs:Class (attribute rdf:ID (value-of @name))
@@ -198,6 +204,18 @@
                                      mode: complex-content))
         (apply-templates select: .//xs:element)
         (apply-templates select: .//xs:attribute))
+       (when xs:attribute
+         ;; This type has no content -- it just declares an attribute.
+         ;; It will (possibly?, definitely?) enclose a simpleType
+         (rdfs:Class rdf:ID: {@name}
+                     (apply-templates select: xs:annotation))
+         (apply-templates select: .//xs:attribute))
+       (when "@abstract='true'" ; [abstracttype]
+         ;; I believe this is the only other possibility.
+         ;; This type has no other content: the condition on @abstract
+         ;; is just a sanity-check
+         (rdfs:Class rdf:ID: "{@name}"
+                     (apply-templates select: xs:annotation)))
        (otherwise
         (x2s:ERROR "complexType " (value-of @name)
                    " contains unrecognised structure"))))
@@ -205,9 +223,12 @@
   (template xs:simpleType
       (choose
        (when .//xs:enumeration          ;OK [simpleenum]
-         (rdfs:Class (attribute rdf:ID (value-of @name))
-                     (apply-templates select: xs:annotation)
-                     (rdfs:comment "Enumeration"))
+         (rdfs:Class
+          (attribute rdf:ID
+                     (apply-templates select: .
+                                      mode: generate-simpletype-name))
+          (apply-templates select: xs:annotation)
+          (rdfs:comment "Enumeration"))
          ;; If and when I decide to generate OWL here, then produce
          ;; something like the following:
          ;;   <owl:Class rdf:ID="ResourceType">
@@ -256,7 +277,7 @@
     (rdfs:subClassOf
      (attribute
       rdf:resource
-      (call-template name: create-type-reference;expand-namespace
+      (call-template name: create-type-reference
                      (with-param name: type
                                  (choose
                                   (when ".//x2s:superclass"
@@ -278,7 +299,8 @@
                   (rdfs:subClassOf
                    (attribute rdf:resource
                               "#"
-                              (value-of ancestor::xs:simpleType/@name)))
+                              (apply-templates select: .
+                                               mode: generate-simpletype-name)))
                   (for-each select: "preceding-sibling::*|following-sibling::*"
                             (owl:disjointWith
                              (attribute rdf:resource
@@ -286,11 +308,30 @@
                                         (apply-templates select: .
                                                          mode: generate-name))))
                   (apply-templates select: xs:annotation)))
+  (template *
+    mode: generate-simpletype-name
+    ;; This should be called on something which is, or which is inside,
+    ;; a simpleType.  If that simpleType has a @name, then it's just that
+    ;; @name; otherwise, the name is based on the element/attribute
+    ;; which encloses the simpleType.  I'm not sure this is complete,
+    ;; or hugely robust: the only time we have the more complicated case
+    ;; is within STC (surprise!) when we have attributes with
+    ;; enumerations.
+    (variable name: typenode
+              select: ancestor-or-self::xs:simpleType)
+    (choose
+     (when $typenode/@name
+       (value-of $typenode/@name))
+     (when $typenode/../@name
+       (value-of $typenode/../@name) "Type")
+     (otherwise
+      "ERROR-no-@name")))
   (template xs:enumeration mode: generate-name
             ;; Create an enumeration class name from the parent type plus
             ;; the @value, with the first letter uppercased.
-            (variable name: v select: @value)
-            (value-of ancestor::xs:simpleType/@name)
+            (variable name: v select: "translate(@value,' ','')")
+            (apply-templates select: .
+                             mode: generate-simpletype-name)
             (value-of "translate(substring($v,1,1),'abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ')")
             (value-of "substring($v,2)"))
 
@@ -301,7 +342,7 @@
                                    ;an additional domain of the named property
          (rdf:Property
           (attribute rdf:about
-                     (call-template name: create-type-reference;expand-namespace
+                     (call-template name: create-type-reference
                                     (with-param type
                                                 (value-of @ref))))
           (choose
@@ -311,36 +352,79 @@
                          "#"
                          (value-of ancestor::xs:complexType/@name))))
            (otherwise
-            (x2s:ERROR "ref=" (value-of @ref) " not in complexType!")))))
+            (x2s:ERROR "ref=" (value-of @ref) " not in complexType!")))
+          (apply-templates select: xs:annotation)))
 
        (when @type                      ;[elementtype]
          (rdf:Property
+          (variable name: propname
+                    (choose             ;[propertyname]
+                     (when xs:annotation/xs:appinfo/x2s:propertyName
+                       ;; this isn't a type, but the create-type-reference
+                       ;; template expands namespaces in the correct way
+                       (call-template name: create-type-reference
+                                      (with-param name: type
+                                                  (value-of xs:annotation/xs:appinfo/x2s:propertyName))))
+                     (otherwise
+                      (value-of @name))))
           (choose
-           (when xs:annotation/xs:appinfo/x2s:multipleDomains
+           (when "contains($propname,'#')"
+             (attribute rdf:about (value-of $propname)))
+           (when "xs:annotation/xs:appinfo/x2s:multipleDomains or /xs:schema/xs:annotation/xs:appinfo/x2s:multipleDomains/@all"
              (attribute rdf:about
-                        (choose         ;[propertyname]
-                         (when xs:annotation/xs:appinfo/x2s:propertyName
-                           (if "not(contains(.//x2s:propertyName,':'))"
-                               "#")
-                           (value-of xs:annotation/xs:appinfo/x2s:propertyName))
-                         (otherwise
-                          "#" (value-of @name)))))
-           (otherwise
+                        "#" (value-of $propname)))
+           (otherwise                   ;normal case, with no annotations
             (attribute rdf:ID
-                       (choose
-                        (when xs:annotation/xs:appinfo/x2s:propertyName
-                          (value-of xs:annotation/xs:appinfo/x2s:propertyName))
-                        (otherwise
-                         (value-of @name))))))
-          (choose
-           (when ancestor::xs:complexType/@name
-             (rdfs:domain
-              (attribute rdf:resource
-                         "#"
-                         (value-of ancestor::xs:complexType/@name))))
-           (otherwise
-            (x2s:ERROR
-             "type=" (value-of @type) " not within complexType")))
+                       (value-of $propname))))
+;;           (choose
+;;            (when "xs:annotation/xs:appinfo/x2s:multipleDomains or /xs:schema/xs:annotation/xs:appinfo/x2s:multipleDomains/@all"
+;;              (attribute rdf:about
+;;                         (choose         ;[propertyname]
+;;                          (when xs:annotation/xs:appinfo/x2s:propertyName
+;;                            (variable name: pn
+;;                                      select: xs:annotation/xs:appinfo/x2s:propertyName)
+;;                            (choose
+;;                             (when "contains(.//x2s:propertyName,':')"
+;;                               (call-template
+;;                                name: create-type-reference
+;;                                (with-param name: type
+;;                                            (value-of $pn))))
+;;                             (otherwise
+;;                              "#" (value-of $pn)))
+;; ;;                            (if "not(contains(.//x2s:propertyName,':'))"
+;; ;;                                "#")
+;; ;;                            (value-of xs:annotation/xs:appinfo/x2s:propertyName)
+;;                            )
+;;                          (otherwise
+;;                           "#" (value-of @name)))))
+;;            (otherwise
+;;             (attribute rdf:ID
+;;                        (choose
+;;                         (when xs:annotation/xs:appinfo/x2s:propertyName
+;;                           (value-of xs:annotation/xs:appinfo/x2s:propertyName))
+;;                         (otherwise
+;;                          (value-of @name))))))
+
+          ;; If we're in a complexType, then declare a domain.
+          ;; We won't be in this situation if this is a global element
+          ;; (eg, in STC)
+
+          (if ancestor::xs:complexType/@name
+              (rdfs:domain
+               (attribute rdf:resource
+                          "#"
+                          (value-of ancestor::xs:complexType/@name))))
+;;           (choose
+;;            (when ancestor::xs:complexType/@name
+;;              (rdfs:domain
+;;               (attribute rdf:resource
+;;                          "#"
+;;                          (value-of ancestor::xs:complexType/@name))))
+;;            (otherwise
+;;             (x2s:ERROR
+;;              "type=" (value-of @type) " not within complexType when processing element "
+;;              (choose (when @name "@name=" (value-of @name))
+;;                      (when @ref  "@ref="  (value-of @ref))))))
           (rdfs:range                   ;[propertyrange]
            (attribute rdf:resource
                       (choose
@@ -382,7 +466,16 @@
                          name: create-type-reference
                          (with-param name: type
                                      (value-of @type)))))))
-          (apply-templates select: xs:annotation))
+          (apply-templates select: xs:annotation)
+
+          ;; Emit an RDF comment, just to track why this is called what it is,
+          ;; and where it came from.
+          (if "$propname != @name"
+              (rdfs:comment
+               "This RDF property corresponds to XSchema object " (value-of @name)
+               (if xs:annotation/xs:appinfo/x2s:propertyRange
+                   "; range forced by x2s:propertyRange"))))
+         
          (if xs:annotation/xs:appinfo/x2s:multipleDomains/@equivalentProperty
              ;; declare the equivalence of this property to the other one
              (variable name: e-pfx
@@ -393,29 +486,56 @@
                      (value-of "namespace::*[name()=$e-pfx]"))
            (rdf:Description rdf:about: "#{@name}"
                             (rdfs:subPropertyOf
-                             rdf:resource: "{$e-ns}#{$e-ln}")
+                             rdf:resource: "{$e-ns}{$e-ln}")
                             ;; use owl:equivalentProperty.  We actually mean
                             ;; owl:sameAs, since we want to declare that the
                             ;; two properties have the same semantics,
                             ;; rather than just the same extension,
                             ;; but owl:sameAs implies OWL-Full.
                             (owl:equivalentProperty
-                             rdf:resource: "{$e-ns}#{$e-ln}"))
-           (rdf:Description rdf:about: "{$e-ns}#{$e-ln}"
+                             rdf:resource: "{$e-ns}{$e-ln}"))
+           (rdf:Description rdf:about: "{$e-ns}{$e-ln}"
                             (rdfs:subPropertyOf rdf:resource: "#{@name}"))))
+
+       (when xs:simpleType ; [anonsimpletype]
+         ;; See, for example, types such as STC coordFlavorType
+         (rdf:Property
+          rdf:ID: {@name}
+          (rdfs:comment "simpletype without @type")
+          (choose
+           (when ancestor::xs:complexType/@name
+             (rdfs:domain
+              (attribute rdf:resource
+                         "#"
+                         (value-of ancestor::xs:complexType/@name))))
+           (otherwise
+            (x2s:ERROR
+             "type=" (value-of @type) " not within complexType when handling anonymous simpleType")))
+          (rdfs:range
+           (apply-templates select: xs:simpleType
+                            mode: generate-simpletype-name)))
+         (apply-templates select: "xs:simpleType"))
 
        (otherwise
         (x2s:ERROR
          "Element " (value-of @name) " declared without type or ref"))))
 
   (template xs:annotation
-      ;; Skip xs:appinfo for now, though there's been some experimentation
-      ;; with vm:dcterm, so that might be worth tying in in the future.
-      (rdfs:comment (apply-templates select: xs:documentation)))
-
+    ;; Skip xs:appinfo for now, though there's been some experimentation
+    ;; with vm:dcterm, so that might be worth playing with in the future.
+    (apply-templates select: xs:documentation))
   (template xs:documentation
-    (value-of "normalize-space(.)")
-    (text "\n\n"))
+    (rdfs:comment (value-of "normalize-space()")))
+;;   (template xs:annotation
+;;       ;; Skip xs:appinfo for now, though there's been some experimentation
+;;       ;; with vm:dcterm, so that might be worth playing with in the future.
+;;       (if xs:documentation
+;;           (rdfs:comment (apply-templates select: xs:documentation))))
+
+;;   (template xs:documentation
+;;     (value-of "normalize-space(.)")
+;;     (text "\n")
+;;     )
 
   ;; I don't think the following is necessary, since the relevant types will
   ;; be declared in the .rdfs files generated from the target .xsd file,
@@ -436,6 +556,8 @@
   (lx:dtd ((template (name #t)))
     (template create-type-reference
       (param name: type)
+      ;; Evaluates to a full & valid reference to the given type
+
       ;; Determine the namespace and local name of this type.
       ;; This handles both the expansion of namespaces, and the generation
       ;; of XSCD namespaces.
@@ -473,8 +595,15 @@
            (value-of select: "$type")))
          ")")
        (otherwise                       ;complexType or simpleType+enumeration
+        ;; Form here a reference to a class in the ontology corresponding
+        ;; to this XSchema type.  We add the hash here, because we know
+        ;; that the ontology namespace is the same as the XSchema namespace
+        ;; with a '#' appended.  Because we also use this named template
+        ;; to handle ontology namespace references, we avoid adding the
+        ;; '#' if there's one at the end of the namespace already.
         (value-of select: "$ns")
-        "#"
+        (if "substring($ns,string-length($ns)) != '#'"
+            "#")
         (choose
          (when "$prefix=''"
            (value-of select: "$type"))
