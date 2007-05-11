@@ -1,12 +1,11 @@
 LX=$(CT)/code/lx/build/classes
-#LX=../../../code/lx/build/classes
 CWM=PYTHONPATH=/Volumes/Lagrange/Data/tools/cwm-cvs/lib/python2.3/site-packages /Volumes/Lagrange/Data/tools/cwm-cvs/bin/cwm
 JENA=$T/Jena-2.3
 
 # List of schemas which have been verified to convert sanely with
-# xschema2rdfs.lx.  Well..., reasonably sanely, modulo a few glitches.
+# xschema2rdfs.lx.
 AUTOCONVERTIBLE=SIA-v1.0 VODataService-v1.0 VORegistry-v1.0 \
-	TabularDB-v0.3
+	TabularDB-v0.3 ConeSearch-v1.0 stc-v1.30
 # The XSchemas SIA-0.7, VODataService-v0.5 and VORegistry-v0.3 also work, but
 # I'm no longer working with those, so they're unverified, and untweaked.
 # TabularDB-v0.3 appears to be the most recent version of that series --
@@ -42,7 +41,9 @@ all: $(AUTOCONVERTIBLE:=.rdfs)
 %.eyeballed: %.rdfs
 	rm -f $@
 	../code/eyeball.sh \
-	  -assume $(T)/eyeball-2.0/mirror/owl.rdf ../rdfschemas/VOResource-1.0.owl VODataService-v1.0.rdfs \
+	  -assume $(T)/eyeball-2.0/mirror/owl.rdf \
+	    ../rdfschemas/VOResource-1.0.owl \
+	    VODataService-v1.0.rdfs \
 	  -check $< \
 	  >$@.tmp 2>&1 && mv $@.tmp $@
 #%.eyeballed: %.rdfs
@@ -62,6 +63,7 @@ all-schemas.rdfs: $(AUTOCONVERTIBLE:=.rdfs)
 #test.xsd:
 #	ln -s ../test/test.xsd
 
+# Create normalised N3 from RDFS (in alpha order, and without comments).
 # Actually, only the first couple of elements in this pipeline are strictly
 # necessary, but I got a bit carried away converting it to N3....
 # It doesn't work in the presence of blank nodes.
