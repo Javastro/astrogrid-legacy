@@ -28,7 +28,7 @@ TESTCASES=test-instance \
 %.nt: %.rdf
 	rm -f $@
 #	CLASSPATH=`ls $(JENA)/lib/*.jar|sed -n '1,$$H;$${g;s/\n/:/gp;}'` 
-	java -cp $(CP) jena.rdfcopy $< RDF/XML N-TRIPLE \
+	@java -cp $(CP) jena.rdfcopy $< RDF/XML N-TRIPLE \
 	  | ./normalise-ntriples >$@
 #	$(CWM) -pipe -rdf $< -ntriples | ./normalise-ntriples >$@
 
