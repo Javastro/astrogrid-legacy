@@ -128,6 +128,19 @@ public class StapSearch implements IStapSearch {
             formatReq = ((String [])info.get("FORMAT"))[0];
         }
         
+        String ra = null;
+        String dec = null;
+        String size = null;
+        String pos = null;
+        if(info.containsKey("POS")) {
+            pos = ((String [])info.get("POS"))[0];
+            ra = pos.split(",")[0];
+            dec = pos.split(",")[1];
+        }
+        if(info.containsKey("SIZE")) {
+            size = ((String [])info.get("SIZE"))[0];
+        }
+        
         String convertFormat = conf.getString("convert.time.format","yyyy-MM-dd HH:mm:ss");
         String endTimeSQL = null;
         String startTimeSQL = null;
@@ -199,8 +212,19 @@ public class StapSearch implements IStapSearch {
         }  
         try {
         Statement stmt = conn.createStatement();
-        String query = conf.getString("full.sql.syntax");
-        String sql = query.replaceAll("__start__", startTimeSQL).replaceAll("__end__", endTimeSQL);        
+        //String query = conf.getString("full.sql.syntax");
+        //String sql = query.replaceAll("__start__", startTimeSQL).replaceAll("__end__", endTimeSQL);  
+        
+        String query = null;
+        String sql = null;
+        if(ra != null && size != null) {
+           query = conf.getString("full.sql.syntax.pos");
+           sql = query.replaceAll("__ra__", ra).replaceAll("__dec__", dec).replaceAll("__size__", size).replaceAll("__start__",
+        startTimeSQL).replaceAll("__end__", endTimeSQL);
+        } else {
+           query = conf.getString("full.sql.syntax");
+           sql = query.replaceAll("__start__", startTimeSQL).replaceAll("__end__", endTimeSQL);       }
+        
         System.out.println("Query to be Executed by Stap -- " + sql);
         ResultSet rs = stmt.executeQuery(sql);
        
