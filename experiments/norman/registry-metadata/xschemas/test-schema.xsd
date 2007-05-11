@@ -3,6 +3,7 @@
         xmlns:me='http://example.org/test'
         xmlns='http://www.w3.org/2001/XMLSchema'
         xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" 
+        xmlns:vro="http://www.ivoa.net/xml/VOResource/v1.0#" 
         xmlns:x2s="http://ns.eurovotech.org/registry-metadata#"
         elementFormDefault='unqualified'
         attributeFormDefault='unqualified'
@@ -84,7 +85,7 @@
             </documentation>
             <appinfo>
               <x2s:multipleDomains
-                  equivalentProperty='vr:accessURL'
+                  equivalentProperty='vro:accessURL'
                   >See type TCC</x2s:multipleDomains>
             </appinfo>
           </annotation>
@@ -133,7 +134,19 @@
             Eg: sia:SIACapRestriction/@validationLevel
           </documentation>
           <appinfo>
-            <x2s:propertyRange>vr:Organization</x2s:propertyRange>
+            <x2s:propertyRange>vro:Organization</x2s:propertyRange>
+          </appinfo>
+        </annotation>
+      </element>
+      <element name='tcseq-oddrange2' type='vr:Validation'>
+        <annotation>
+          <documentation>
+            Element with non-default range, and non-default property name.
+            Eg: sia:SIACapRestriction/@validationLevel
+          </documentation>
+          <appinfo>
+            <x2s:propertyName>vro:tcseq-oddrange-ii</x2s:propertyName>
+            <x2s:propertyRange>vro:Organization</x2s:propertyRange>
           </appinfo>
         </annotation>
       </element>
@@ -173,7 +186,7 @@
           <element name='tcc-facility' type='vr:ResourceName'>
             <annotation>
               <appinfo>
-                <x2s:multipleDomains equivalentProperty='vr:facility'/>
+                <x2s:multipleDomains equivalentProperty='vro:facility'/>
               </appinfo>
             </annotation>
           </element>

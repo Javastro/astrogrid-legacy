@@ -114,3 +114,8 @@
 
 <http://www.ivoa.net/xml/VOResource/v1.0#facility>
 	rdfs:subPropertyOf	<http://example.org/test#tcc-facility> .
+
+<http://www.ivoa.net/xml/VOResource/v1.0#tcseq-oddrange-ii>
+	a	rdf:Property ;
+	rdfs:domain	<http://example.org/test#TCSeq> ;
+	rdfs:range	<http://www.ivoa.net/xml/VOResource/v1.0#Organization> .
