@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!--
+    The Resource Profile for the Chandra archive
+    This is copied from the example in Appendix B.1 of the STC 1.30 spec.
+  -->
+<ri:Resource xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0">
+
+  <identifier>ivo://norman.test/test-stc-resource</identifier>
+<STCResourceProfile xmlns="http://www.ivoa.net/xml/STC/stc-v1.30.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/STC/stc-v1.30.xsd http://hea-www.harvard.edu/~arots/nvometa/v1.30/stc-v1.30.xsd">
+    <!--
+      The native coordinate systes: TT, ICRS, and energy.
+    -->
+  <AstroCoordSystem id="TT-ICRS-CXO">
+    <TimeFrame>
+      <Name>Time</Name>
+      <TimeScale>TT</TimeScale>
+      <TOPOCENTER/>
+    </TimeFrame>
+    <SpaceFrame>
+      <Name>Space</Name>
+      <ICRS/>
+      <TOPOCENTER/>
+      <HEALPIX coord_naxes="2"/>
+      <!-- <SPHERICAL coord_naxes="2"/> -->
+    </SpaceFrame>
+    <SpectralFrame>
+      <Name>Energy</Name>
+      <TOPOCENTER/>
+    </SpectralFrame>
+  </AstroCoordSystem>
+    <!--
+      The characteristics of the data in the archive along the
+      coordinate axes.
+    -->
+  <AstroCoords coord_system_id="TT-ICRS-CXO">
+      <!--
+        Absolute timing error ranges between 5 and 100 microsec, time
+        resolution between 16 microsec and 3 s, length of observation
+        between 1 and 170 ks.
+      -->
+    <Time unit="s">
+      <Name>Time</Name>
+      <Error>0.000005</Error>
+      <Error>0.0001</Error>
+      <Resolution>0.000016</Resolution>
+      <Resolution>3.0</Resolution>
+      <Size>1000</Size>
+      <Size>170000</Size>
+    </Time>
+      <!--
+        Absolute spatial accuracy is 1 arcsec, resolution 0.5 arcsec;
+        FOV ranges between 1000 and 4000 arcsec.
+      -->
+    <Position2D unit="arcsec">
+      <Name>Position</Name>
+      <Error2Radius>1.0</Error2Radius>
+      <Resolution2Radius>0.5</Resolution2Radius>
+      <Size2>
+        <C1>1000</C1>
+        <C2>1000</C2>
+      </Size2>
+      <Size2>
+        <C1>4000</C1>
+        <C2>4000</C2>
+      </Size2>
+    </Position2D>
+      <!--
+        Spectral information is expressed in keV, uncertainty of 0.1
+        keV, resolution ranging from 0.02 to 2 keV, total bandwidth
+        from 2 to 10 keV
+      -->
+    <Spectral unit="keV">
+      <Name>Energy</Name>
+      <Error>0.1</Error>
+      <Resolution>0.02</Resolution>
+      <Resolution>2.0</Resolution>
+      <Size>2</Size>
+      <Size>10</Size>
+    </Spectral>
+  </AstroCoords>
+    <!--
+      The volume in coordinate space that is occupied by the Chandra
+          archive's data.
+    -->
+  <AstroCoordArea id="AllSky-CXO" coord_system_id="TT-ICRS-CXO">
+      <!--
+        The mission started in July 1999 and is still ongoing
+      -->
+    <TimeInterval>
+      <StartTime>
+        <Timescale>TT</Timescale>
+        <ISOTime>1999-07-23T16:00:00</ISOTime>
+      </StartTime>
+    </TimeInterval>
+      <!--
+        Pointings are all over the sky, but the fill factor is only 2%.
+      -->
+    <AllSky fill_factor="0.02"/>
+      <!--
+        The spectral band covered ranges from 0.12 to 10.0 keV.
+      -->
+    <SpectralInterval unit="keV">
+      <LoLimit>0.12</LoLimit>
+      <HiLimit>10.0</HiLimit>
+    </SpectralInterval>
+  </AstroCoordArea>
+</STCResourceProfile>
+
+</ri:Resource>
