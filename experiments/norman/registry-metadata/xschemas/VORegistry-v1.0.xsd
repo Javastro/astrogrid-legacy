@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema targetNamespace="http://www.ivoa.net/xml/VORegistry/v1.0" 
-           xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-           xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" 
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+           xmlns:vro="http://www.ivoa.net/xml/VOResource/v1.0#"
            xmlns:vg="http://www.ivoa.net/xml/VORegistry/v1.0" 
            xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1"
            xmlns:x2s="http://ns.eurovotech.org/registry-metadata#"
@@ -82,10 +83,10 @@
                    <xs:appinfo>
                      <!-- This property is modelled by various subproperties
                              of the vr:validationLevel property -->
-                     <x2s:propertyName>vr:validationLevel</x2s:propertyName>
+                     <x2s:propertyName>vro:validationLevel</x2s:propertyName>
                      <x2s:multipleDomains
-                         equivalentProperty='vr:validationLevel'/>
-                     <x2s:propertyRange>vr:Organization</x2s:propertyRange>
+                         equivalentProperty='vro:validationLevel'/>
+                     <x2s:propertyRange>vro:Organization</x2s:propertyRange>
                    </xs:appinfo>
                  </xs:annotation>
                </xs:element>
