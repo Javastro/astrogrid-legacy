@@ -82,7 +82,7 @@ public class UIContributionBuilderImpl implements ContributionInvoker, UIContrib
                 final UIActionContribution a = (UIActionContribution)m;
                 a.setContributionInvoker(this); // pass reference to self into the component.
                 a.setUiComponent(comp);
-           //@FIXME
+           //@todo sort whether we want to get a reference to 'about' menu
                 //if (a.getName().equals("about")) {
                 //	aboutAction = a;
                 //}

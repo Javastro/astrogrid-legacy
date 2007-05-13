@@ -234,7 +234,6 @@ protected TreeNode createServiceNode(URL serviceURL, String tooltip) {
 	
 	/** rudimentarty service descirption for vizier - just enough to get by the 
 	 * astroscope mechanisms. a mock really.
-	 * @fixme - provide enough to get this into regBrowser.
 	 */
 	private final static Service[] vizierService = new Service[] {
 		new Service() {

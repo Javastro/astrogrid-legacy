@@ -18,6 +18,7 @@ import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.actions.Activity;
 import org.astrogrid.desktop.modules.ui.comp.SelfEnablingMenu;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileExplorerImpl;
 import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
 
 import com.l2fprod.common.swing.JTaskPane;
@@ -28,8 +29,7 @@ import com.l2fprod.common.swing.JTaskPaneGroup;
  * @since Apr 26, 20073:18:32 PM
  */
 public class ActionContributionBuilderImpl implements ActionContributionBuilder {
-
-	//@todo unsure why this subclass of JTaskPaneGroup is needed now..
+	/** task pane with a few additional functions */
 	private static class MyTaskPaneGroup extends JTaskPaneGroup{
 
 		public void setHelpId(String s) {
@@ -40,14 +40,6 @@ public class ActionContributionBuilderImpl implements ActionContributionBuilder 
 			setIcon(IconHelper.loadIcon(s));
 		}
 
-		/** subclasses should call this to cause component to redraw after 
-		 * alterations have been completed.
-		 *
-		 */
-		protected void done() {
-			revalidate();
-			repaint();
-		}	
 	}
 	
 	private final IterableObjectBuilder activityBuilder;
@@ -56,19 +48,23 @@ public class ActionContributionBuilderImpl implements ActionContributionBuilder 
 		Map actsMap = new ListOrderedMap();
 		
 		CSH.setHelpIDString(actionsPanel, "voexplorer.actions");
-	    // create the groups for this pane.
-		actsMap.put(Activity.USE_SECTION,new MyTaskPaneGroup() {{
-			setTitle("Actions");
-			setIconName("run16.png");
-			setHelpId("resourceActions.invoke");
-			setSpecial(true);
-		}});
+	    final MyTaskPaneGroup usePane = new MyTaskPaneGroup() {{
+					setTitle("Actions");
+					setIconName("run16.png");
+					setHelpId("resourceActions.invoke");
+					setSpecial(true);
+				}};
+		// create the groups for this pane.
+		actsMap.put(Activity.USE_SECTION,usePane);
+		/*
 		actsMap.put(Activity.PLASTIC_SECTION,new MyTaskPaneGroup() {{
 			setTitle("Plastic");
 			setIconName("plasticeye.gif");
 			setHelpId("resourceActions.plastid");
 			setSpecial(true);
-		}});		
+		}});
+		*/		
+		actsMap.put(Activity.PLASTIC_SECTION,usePane); // fold plastic in with actions
 		actsMap.put(Activity.INFO_SECTION, new MyTaskPaneGroup() {{
 			setTitle("About");
 			//setTitle("Further Information");
@@ -76,10 +72,13 @@ public class ActionContributionBuilderImpl implements ActionContributionBuilder 
 			setHelpId("resourceActions.info");
 			setSpecial(true);
 		}});
+		/*
 		actsMap.put(Activity.SCRIPT_SECTION, new MyTaskPaneGroup() {{
 			setTitle("Automation");
 			setExpanded(false);
-		}});		
+		}});
+		*/		
+		actsMap.put(Activity.SCRIPT_SECTION,usePane); // combine this with plastic and other actions.
 		actsMap.put(Activity.EXPORT_SECTION, new MyTaskPaneGroup() {{
 			setTitle("Export");
 			setExpanded(false);
@@ -92,8 +91,8 @@ public class ActionContributionBuilderImpl implements ActionContributionBuilder 
 		// assemble the menus.
 		JMenu popupNew = new SelfEnablingMenu("New");
 		JMenu actionsNew = new SelfEnablingMenu("New");
-		// no new menus fro VOExplorer - bit of a hack, while we're prototyping.
-		if (! (parent instanceof VOExplorerImpl)) {
+		// only add new menu in file explorer
+		if (parent instanceof FileExplorerImpl) {
 			popup.add(popupNew);
 			popup.addSeparator();
 			actions.add(actionsNew);

@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.61 2007/05/10 19:35:26 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.62 2007/05/13 12:00:49 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -107,9 +107,8 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 
 
 	private static final String SCOPE_NAME = "VO Scope";         
-	/** point at which to wrap tooltips
-	 * @todo - make a workbench-wide constant 
-	 */
+
+	//@future add a application-wide tooltip formatter class - code seems to be repeated in different places at the moment.
 	public static final int TOOLTIP_WRAP_LENGTH = 50;
 	private static final String KEY_LINK = "KEY_LINK";
 
@@ -501,11 +500,13 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		setTitle("Astroscope : on subset");
 		for (Iterator i = protocols.iterator(); i.hasNext(); ) {
 			DalProtocol p = (DalProtocol)i.next();
-			p.getCheckBox().setVisible(false);
+			p.getCheckBox().setEnabled(false); // no point showing these - there's no option.
+			Service[] services = p.filterServices(resources);
+			p.getCheckBox().setSelected(services != null && services.length > 0 ); // select this protocol if some of the subset belong to this protocol. 
 		}		
 	}
 	public Object create() {
-		return null; // not implemented - will refactor this away later.
+		return null; // @todo will refactor this away later.
 	}
 // innards of the scope itself.
 

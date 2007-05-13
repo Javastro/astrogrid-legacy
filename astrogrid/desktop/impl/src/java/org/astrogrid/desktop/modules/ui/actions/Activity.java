@@ -40,6 +40,10 @@ public interface Activity {
 	// methods to add to UI components
 	/** add this activity to a task pane */
 	public void addTo(JTaskPaneGroup grp);
+	
+	/** add this activity to a task pane in the specified position */
+	public void addTo(JTaskPaneGroup grp, int pos);
+	
 	/** add this activity to a menu */
 	public void addTo(JMenu menu);
 	/** add this activity to a popup menu */

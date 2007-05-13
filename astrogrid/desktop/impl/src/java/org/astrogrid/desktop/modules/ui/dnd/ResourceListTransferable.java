@@ -55,8 +55,7 @@ public class ResourceListTransferable implements Transferable {
 			return new ByteArrayInputStream( s.toString().getBytes());
 			
 		} else {
-			throw new UnsupportedFlavorException(flavor);
-			//@fixme implement conversions to other supported types.			
+			throw new UnsupportedFlavorException(flavor);		
 		}
 	}
 

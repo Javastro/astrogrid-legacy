@@ -107,6 +107,7 @@
 				<alternative>http://msslxv.mssl.ucl.ac.uk:8080/mssl-registry/services/RegistryQuery</alternative>
 				<alternative>http://twmbarlwm.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQuery</alternative>
 				<alternative>http://cass123.ast.cam.ac.uk/astrogrid-registry/services/RegistryQuery</alternative>
+				<alternative>http://archive.lamost.org/astrogrid-registry/services/RegistryQuery</alternative>
 				<units>url</units>
 		</preference>
 		<preference name="org.astrogrid.registry.query.altendpoint"
@@ -117,6 +118,7 @@
 				<alternative>http://msslxv.mssl.ucl.ac.uk:8080/mssl-registry/services/RegistryQuery</alternative>
 				<alternative>http://twmbarlwm.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQuery</alternative>
 				<alternative>http://galahad.star.le.ac.uk:8080/galahad-registry/services/RegistryQuery</alternative>				
+				<alternative>http://archive.lamost.org/astrogrid-registry/services/RegistryQuery</alternative>
 				<units>url</units>
 		</preference>
 		<preference name="ivo.registry.cacheLife" requires-restart="true"

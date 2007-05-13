@@ -54,6 +54,8 @@ public class ScopeServicesList extends RegistryGooglePanel
 		getSearchTitleLabel().setText("Query Results");
 		getNewSearchButton().setVisible(false);
 		getHaltSearchButton().setVisible(false);
+		
+	//	tabPane.insertTab("Results",null,,"Results retruns from this service",0);
 	}
 /** map of additional informaiton for each service resource
  * key - the resource object

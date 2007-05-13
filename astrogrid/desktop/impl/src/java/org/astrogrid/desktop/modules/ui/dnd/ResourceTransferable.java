@@ -44,7 +44,6 @@ public class ResourceTransferable implements Transferable {
 			return new ByteArrayInputStream(s.getBytes());
 		} else {
 			throw new UnsupportedFlavorException(flavor);
-			//@fixme implement conversions to other supported types.
 		}
 	}
 
@@ -60,10 +59,6 @@ public class ResourceTransferable implements Transferable {
 		, VoDataFlavour.RESOURCE
 		,VoDataFlavour.LOCAL_URI
 		,VoDataFlavour.URI_LIST
-		// decided not to provide these data-carrying flavours.
-		//	,VoDataFlavour.VORESOURCE
-		//,VoDataFlavour.XML
-	//	,VoDataFlavour.HTML
 		,VoDataFlavour.PLAIN
 		
 	};

@@ -1094,11 +1094,6 @@ SYSTEM TRAY
 			implementation="instance:org.apache.commons.vfs.provider.res.ResourceFileProvider" />
 		<provider scheme="ram"
 			implementation="instance:org.apache.commons.vfs.provider.ram.RamFileProvider" />
-	
-		<!-- move into ivoa module later. -->
-		<provider scheme="dal"
-			implementation="instance:org.astrogrid.desktop.modules.ivoa.vfs.DalResponseProvider" />
-			
 	</contribution>
 	
 	<contribution configuration-id="vfsExtensions">

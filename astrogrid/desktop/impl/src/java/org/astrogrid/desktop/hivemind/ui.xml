@@ -350,32 +350,42 @@ ACTIONS
 		
 	<!--  lists of Actions  -->
 	<contribution configuration-id="actions">
-		<object name="queryscope" class="org.astrogrid.desktop.modules.ui.actions.QueryScopeActivity">
+		<object name="0queryscope" class="org.astrogrid.desktop.modules.ui.actions.QueryScopeActivity">
 			<inject object="service:astroscope" />
 			<inject name="section" object="literal:string:use" />
 		</object>		
-		<object name="query" class="org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity">
+		<object name="0query" class="org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity">
 			<inject object="service:queryBuilder"/>
 			<inject name="section" object="literal:string:use" />			
 		</object>		
-		<object name="cea" class="org.astrogrid.desktop.modules.ui.actions.CeaActivity">
+		<object name="0cea" class="org.astrogrid.desktop.modules.ui.actions.CeaActivity">
 			<inject object="service:simpleApplicationLauncher"/>
 			<inject name="section" object="literal:string:use" />			
 		</object>
-		<object name="web" class="org.astrogrid.desktop.modules.ui.actions.WebInterfaceActivity">
+		<object name="1viewBrowser" class="org.astrogrid.desktop.modules.ui.actions.ViewInBrowserActivity">
+			<inject object="service:system.browser"/>
+			<inject name="section" object="literal:string:use" />
+		</object>	
+		<object name="1saveFile" class="org.astrogrid.desktop.modules.ui.actions.SaveActivity">
+			<inject object="service:dialogs.resourceChooser" />
+			<inject object="service:astrogrid.myspace" />
+			<inject name="section" object="literal:string:use" />
+		</object>		
+		<object name="1web" class="org.astrogrid.desktop.modules.ui.actions.WebInterfaceActivity">
 			<inject object="service:system.browser" />
 			<inject name="section" object="literal:string:use" />			
 		</object>	
-		<object name="plastic" class="org.astrogrid.desktop.modules.ui.actions.PlasticScavenger">
+		<object name="2plastic" class="org.astrogrid.desktop.modules.ui.actions.PlasticScavenger">
 			<inject object="service:system.plasticList" />
 			<inject object="service:system.tupperware" />
 			<inject name="section" object="literal:string:plastic" />
 		</object>
-		<object name="script" class="org.astrogrid.desktop.modules.ui.actions.GenerateScriptScavenger">
+		<object name="3script" class="org.astrogrid.desktop.modules.ui.actions.GenerateScriptScavenger">
 			<inject object="service:dialogs.resourceChooser" />
 			<inject object="service:astrogrid.myspace" />
 			<inject name="section" object="literal:string:script" />		
 		</object>
+		
 		<object name="0selection" class="org.astrogrid.desktop.modules.ui.actions.InfoActivity">
 			<inject name="section" object="literal:string:info" />	
 		</object>
@@ -387,6 +397,7 @@ ACTIONS
 			<inject object="service:system.browser"/>
 			<inject name="section" object="literal:string:info" />			
 		</object>	
+		
 		<object name="saveResource" class="org.astrogrid.desktop.modules.ui.actions.SaveResourceActivity" >
 			<inject object="service:dialogs.resourceChooser" />
 			<inject object="service:ivoa.registry" />
@@ -403,15 +414,6 @@ ACTIONS
 			<inject object="service:astrogrid.myspace" />
 			<inject name="section" object="literal:string:export" />			
 		</object>	
-		<object name="viewBrowser" class="org.astrogrid.desktop.modules.ui.actions.ViewInBrowserActivity">
-			<inject object="service:system.browser"/>
-			<inject name="section" object="literal:string:use" />
-		</object>	
-		<object name="saveFile" class="org.astrogrid.desktop.modules.ui.actions.SaveActivity">
-			<inject object="service:dialogs.resourceChooser" />
-			<inject object="service:astrogrid.myspace" />
-			<inject name="section" object="literal:string:use" />
-		</object>
 		<!--  possibly - add 'broadcast' operations - see code in PlasticVotableActivity -->
 	</contribution>
 		

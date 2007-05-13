@@ -16,6 +16,7 @@ import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceFormatter;
+import org.astrogrid.desktop.modules.ui.scope.ScopeTransferableFactory.AstroscopeFileObject;
 
 import com.l2fprod.common.swing.JTaskPaneGroup;
 
@@ -49,8 +50,11 @@ private final Bag types = new TreeBag();
 		types.clear();
 		for (int i = 0; i < l.length; i++) {
 				try {
-					types.add(l[i].getType().getName());
-					//@todo use content-type here instead?
+					if (l[i] instanceof AstroscopeFileObject) { // content type is inexpensive to access
+						types.add(l[i].getContent().getContentInfo().getContentType());
+					} else { // just use type
+						types.add(l[i].getType().getName());
+					}
 				} catch (FileSystemException x) {
 					logger.error("FileSystemException",x);
 				}
@@ -86,7 +90,11 @@ private final Bag types = new TreeBag();
 	}
 	public void oneSelected(FileObject fo) {
 		try {
-			typeField.setText("Selection: " + fo.getType().getName());
+			if (fo instanceof AstroscopeFileObject) {
+				typeField.setText("Selection: " + fo.getContent().getContentInfo().getContentType());				
+			} else {
+				typeField.setText("Selection: " + fo.getType().getName());
+			}
 			typeField.setVisible(true);
 		} catch (FileSystemException x) {
 			logger.error("FileSystemException",x);

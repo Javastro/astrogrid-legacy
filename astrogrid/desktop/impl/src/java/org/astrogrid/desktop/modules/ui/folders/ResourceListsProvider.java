@@ -28,8 +28,9 @@ public class ResourceListsProvider extends AbstractFoldersProvider implements Li
 		try {
 		ResourceFolder[] folders = new ResourceFolder[] {
 
-				new SmartList("Abell clusters","abell")
-				,new SmartList("ROE Holdings","id=roe.ac.uk and type=(not service)")
+				//new SmartList("Abell clusters","abell")
+				new SmartList("Radio & X-ray","(waveband = Radio) AND (waveband = X-ray)")
+				,new SmartList("IR Redshift","(ucd = REDSHIFT) AND (waveband = Infrared)")
 				/*
 				new SmartList("All Resources","world16.png",null)
 				, new SmartList("Catalogues","search16.png","@xsi:type &= '*ConeSearch' or @xsi:type &= '*TabularSkyService'")  //@todo find a better icon.
@@ -50,6 +51,9 @@ public class ResourceListsProvider extends AbstractFoldersProvider implements Li
 					) //@todo need to find a way to avoid caching - or to control the caching period of this entry.
 					// I suppose default cache is 3 days - that's not too bad.
 				//@future add recently used, most used, tagged.
+				,new SmartList("Solar","subject=solar")
+				,new SmartList("VOEvent","default=voevent")
+				,new SmartList("ROE Holdings","id=roe.ac.uk and type=(not service)")
 		};
 		for (int i = 0; i < folders.length; i++) {
 			ResourceFolder f = folders[i];

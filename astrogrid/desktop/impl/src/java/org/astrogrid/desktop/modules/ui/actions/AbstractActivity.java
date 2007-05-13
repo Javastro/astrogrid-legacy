@@ -132,6 +132,10 @@ public abstract class AbstractActivity extends AbstractAction implements Activit
 		grp.add(createLinkButton());
 	}
 
+	public void addTo(JTaskPaneGroup grp, int pos) {
+		grp.add(createLinkButton(),pos);
+	}
+	
 	public void addTo(JMenu menu) {
 		menu.add(createMenuItem());
 	}
