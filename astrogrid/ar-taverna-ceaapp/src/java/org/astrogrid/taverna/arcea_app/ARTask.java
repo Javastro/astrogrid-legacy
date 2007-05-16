@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 
 import javax.xml.transform.dom.DOMSource;
@@ -142,23 +143,27 @@ public class ARTask implements ProcessorTaskWorker {
 
 		String name = processor.getName();
 		Object temp;		
-		//Class returnClass = processor.getMethodDescriptor().getReturnValue().getType();
-		/*
-		ACR acr = getACR();
-		//Registry reg = (Registry)acr.getService(Registry.class);
-		Applications apps = (Applications)acr.getService(Applications.class);
-		CeaApplication cea = apps.getCeaApplication();
-		InterfaceBean []ib = cea.getInterfaces();
-		InterfaceBean ceaInterfaceBean;
-		*/
+	
 		try {
-			ACR acr = SingletonACR.getACR();
-			Applications apps = (Applications)acr.getService(Applications.class);
-			Lookout lookout;
-			Map toolStruct;
+				String ivorn = processor.getName();
+				String ceaInterfaceName = processor.getInterfaceName();
+				URI ceaAppIvorn = new URI(ivorn);
+				URI ceaServiceIvorn;
+				Object temp;
+				if(input.containsKey("Optional CeaService Ivorn")) {
+					temp = ((DataThing)input.get("Optional CeaService Ivorn")).getDataObject();
+					if(temp != null && ((String)temp).trim().length() > 0) {
+						ceaServiceIvorn = new URI(new String(((String)temp)));
+					}
+				}
+	
+			    ACR acr = SingletonACR.getACR();
+				Applications apps = (Applications)acr.getService(Applications.class);
+				
+				Map toolStruct = apps.createTemplateStruct(ceaAppIvorn,ceaInterfaceName);			Lookout lookout;
 			//if(name.equals("DSA")) {				
-				toolStruct = createCEAToolMap(arg0);
-				Document toolDoc = createToolDocument(toolStruct);
+				Document toolDoc =  = createCEAToolDocument(arg0, toolStruct);
+				//Document toolDoc = createToolDocument(toolStruct);
 				StringWriter outputToolDoc = new StringWriter();
 				logger.warn("transform the tooldoc to a string for debugging");
 				TransformerFactory.newInstance().newTransformer().transform(new DOMSource(toolDoc), new StreamResult(outputToolDoc));
@@ -229,7 +234,15 @@ public class ARTask implements ProcessorTaskWorker {
 				
 			logger.warn("setting outputmap finalresultmap size again = " + finalResultMap.size() + "and executionID = " + executionID.toString());
 			logger.warn("here is result of 0 in the final map = " + finalResultMap.values().toArray()[0].toString());
-		    Map outputMap = new HashMap();		    
+		    Map outputMap = new HashMap();	
+		    /*
+		    Hashtable outputFromCEATemplate = (Hashtable)toolStruct.get("output");
+			
+		    Iterator keyIter = outputFromCEATemplate.keySet().iterator();
+		    while(keyIter.hasNext()) {
+		    	outputMap.put("ExecutionID",DataThingFactory.bake(executionID.toString()));
+		    }
+		    */
 		    outputMap.put("ResultList",DataThingFactory.bake(new ArrayList(finalResultMap.values())));
 		    outputMap.put("ExecutionID",DataThingFactory.bake(executionID.toString()));
 		    logger.warn("end cea execute in ARTask");
@@ -247,32 +260,20 @@ public class ARTask implements ProcessorTaskWorker {
 		&& (n.endsWith("Information") || n.endsWith("Descriptor") || n.endsWith("Bean"));
 	}
 		
-	private Map createCEAToolMap(Map input) throws TaskExecutionException, ACRException, URISyntaxException {
+	private Document createCEAToolDocument(Map input, Map toolStruct) throws TaskExecutionException, ACRException, URISyntaxException {
 
 		logger.warn("start inputObjects in ARTask");
+		//use processor to get app name and interface
 		
-		URI ceaAppIvorn = new URI((String)((DataThing)input.get("CeaApp Ivorn")).getDataObject());
-		URI ceaServiceIvorn;
-		Object temp;
-		if(input.containsKey("Optional CeaService Ivorn")) {
-			temp = ((DataThing)input.get("Optional CeaService Ivorn")).getDataObject();
-			if(temp != null && ((String)temp).trim().length() > 0) {
-				ceaServiceIvorn = new URI(new String(((String)temp)));
-			}
-		}
-		String ceaInterfaceName = (String)((DataThing)input.get("Interface Name")).getDataObject();
-
-	    ACR acr = SingletonACR.getACR();
-		Applications apps = (Applications)acr.getService(Applications.class);
-		
-		Map toolStruct = apps.createTemplateStruct(ceaAppIvorn,ceaInterfaceName);
 		
 		Hashtable inputFromCEATemplate = (Hashtable)toolStruct.get("input");
 		
 	    Iterator keyIter = inputFromCEATemplate.keySet().iterator();
 	    String paramName;
-	    String paramValue;
+	    Object paramValue;
 	    DataThing parameterThing;
+	    Hashtable inputListTable = new Hashtable();
+	    Hashtable outputListTable = new Hashtable();
 	    while(keyIter.hasNext()) {
 	    	paramName = (String)keyIter.next();
 	    	if(input.containsKey(paramName)) {
@@ -281,35 +282,83 @@ public class ARTask implements ProcessorTaskWorker {
 	    		 logger.warn("the parameterThing toString = " + parameterThing.toString());
 	    		 Hashtable inputVals = (Hashtable)inputFromCEATemplate.get(paramName);
 	    		 //change value and indirect now.
-	    		 paramValue = (String)parameterThing.getDataObject();
-	    		 if(paramValue.startsWith("http://") || paramValue.startsWith("ftp://") ||
-	    		    paramValue.startsWith("ivo://")) {
-	    			inputVals.put("indirect",new Boolean(true));
+	    		 paramValue = parameterThing.getDataObject();
+	    		 if(paramValue instanceof String) {
+		    		 if((String)paramValue.startsWith("http://") || (String)paramValue.startsWith("ftp://") ||
+		    		    (String)paramValue.startsWith("ivo://")) {
+		    			inputVals.put("indirect",new Boolean(true));
+		    		 }else {
+		    			inputVals.put("indirect",new Boolean(false));
+		    		 }
+		    		 inputVals.put("value",(String)paramValue);
+	    		 }else if(paramValue instanceof List) {
+	    			 int listSize = ((List)paramValue).size();
+	    			
+	    			 if(listSize > 0) {
+			    		 if((String)((List)paramValue).get(0).startsWith("http://") || (String)((List)paramValue).get(0).startsWith("ftp://") ||
+					    		    (String)((List)paramValue).get(0).startsWith("ivo://")) {
+					    		inputVals.put("indirect",new Boolean(true));
+			    		 }else {
+					    			inputVals.put("indirect",new Boolean(false));
+					     }	    				 
+	    				 inputVals.put("value",  ((List)paramValue).get(0));
+	    				 inputListTable.put(paramName, ((List)paramValue));
+		    			 //will need to do the rest later.
+	    				 
+	    			 }
+	    			 
 	    		 }else {
-	    			inputVals.put("indirect",new Boolean(false));
+	    			 logger.warn("Not a String or List value will try to use toString(). paramValue = " + paramValue);
+	    			 if(paramValue.toString().startsWith("http://") || paramValue.toString().startsWith("ftp://") ||
+	 		    		    paramValue.toString().startsWith("ivo://")) {
+	 		    			inputVals.put("indirect",new Boolean(true));
+	 		    		 }else {
+	 		    			inputVals.put("indirect",new Boolean(false));
+	 		    		 }
+	 		    		 inputVals.put("value",paramValue.toString());	    			 
 	    		 }
-	    		 inputVals.put("value",paramValue);
 	    	}else {
 	    		//not found assume an optional param, but probably good to
 	    		//check and throw an exceptin if minOccurs is not 0.
 	    		inputFromCEATemplate.remove(paramName);
 	    	}
 	    }
-	    if(input.containsKey("Optional Result Saved")) {
-	    	parameterThing = (DataThing)input.get("Optional Result Saved");
-	    	paramValue = (String)parameterThing.getDataObject();
-	    	if(paramValue != null && paramValue.trim().length() > 0) {
-	    		 if(paramValue.startsWith("http://") || paramValue.startsWith("ftp://") ||
-	 	    		    paramValue.startsWith("ivo://")) {
-	    			 Hashtable outputFromCEATemplate = (Hashtable)toolStruct.get("output");
-	    			 //Hashtable outputVals = (Hashtable)outputFromCEATemplate.get((String)outputFromCEATemplate.get("Result"));
-	    			 Hashtable outputVals = (Hashtable)outputFromCEATemplate.get("Result");
-	    			 outputVals.put("indirect",new Boolean(true));
-	    			 outputVals.put("value",paramValue);
-	    		 }
+	    
+	    Hashtable outputFromCEATemplate = (Hashtable)toolStruct.get("output");
+		
+	    keyIter = outputFromCEATemplate.keySet().iterator();
+	    Hashtable outputVals;
+	    while(keyIter.hasNext()) {
+	    	if(input.containsKey("Optional Output Ref - " + paramName)) {
+		    	parameterThing = (DataThing)input.get("Optional Output Ref - " + paramName);
+		    	paramValue = (String)parameterThing.getDataObject();
+		    	if(paramValue != null && paramValue.trim().length() > 0) {
+		    		outputVals = (Hashtable)outputFromCEATemplate.get(paramName);
+		    		outputVals.put("indirect",new Boolean(true));
+	   			 	outputVals.put("value",paramValue);
+		    	}
 	    	}
 	    }
-	    return toolStruct;
+	    Document doc = createToolDocument(toolStruct);
+	    keyIter = inputListTable.keySet().iterator();
+	    Iterator listIter;
+	    while(keyIter.hasNext()) {
+	    	paramName = (String)keyIter.next();
+	    	List paramList = (List)inputListTable.get(paramName);
+	    	listIter = paramList.iterator()
+	    	listIter.next();//skip the first one
+	    	while(listIter.hasNext()) {
+	    		org.w3c.dom.Element paramElem = doc.getElementsByTagNameNS("*","parameter");
+	    		if(paramName.equals(paramElem.getAttribute("name")) {
+	    			org.w3c.dom.Node cloneParam = paramElem.cloneNode(true);
+	    			org.w3c.dom.Node childNode = cloneParam.getFirstChild();
+	    			childNode.getFirstChild().setNodeValue((String)listIter.next());
+	    			paramElem.getParentNode().appendChild(cloneParam);
+	    		}
+	    		//doc.cloneNode(true)
+	    	}//while
+	    }//while
+	    return doc;
 	}
 	
 
