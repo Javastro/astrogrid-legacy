@@ -11,8 +11,8 @@ public class FullTextXQueryVisitor extends SummaryXQueryVisitor {
 
 protected String buildClause(String kw) {
 	//return "$r//* &= '*" + kw + "*'";
-	System.out.println("returning in buildClause fulltextxqueryvistor = " + "matches('//*','" + kw + "')");
-	return "matches(.//*,'" + kw + "')";
+	System.out.println("returning in buildClause fulltextxqueryvistor = " + "near('//*','" + kw + "')");
+	return "near(.//*,'" + kw + "')";
 }
 
 }

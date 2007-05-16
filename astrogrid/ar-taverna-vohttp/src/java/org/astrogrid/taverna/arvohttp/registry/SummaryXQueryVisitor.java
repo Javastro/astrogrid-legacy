@@ -67,7 +67,7 @@ class SummaryXQueryVisitor implements Builder{
 		StringBuffer sb = new StringBuffer();
 		for (int el = 0; el < elements.length; el++) {
 			//sb.append(elements[el]).append(" &= '*").append(kw).append( "*'" );
-			sb.append("matches(").append(elements[el]).append(",'").append(kw).append( "','i')" );
+			sb.append("near(").append(elements[el]).append(",'").append(kw).append( "')" );
 			if (el != elements.length -1) {
 				sb.append(" or ");
 			}
