@@ -64,14 +64,7 @@ public class ActionContributionBuilderImpl implements ActionContributionBuilder 
 			setSpecial(true);
 		}});
 		*/		
-		actsMap.put(Activity.PLASTIC_SECTION,usePane); // fold plastic in with actions
-		actsMap.put(Activity.INFO_SECTION, new MyTaskPaneGroup() {{
-			setTitle("About");
-			//setTitle("Further Information");
-			setIconName("info16.png");
-			setHelpId("resourceActions.info");
-			setSpecial(true);
-		}});
+
 		/*
 		actsMap.put(Activity.SCRIPT_SECTION, new MyTaskPaneGroup() {{
 			setTitle("Automation");
@@ -79,9 +72,18 @@ public class ActionContributionBuilderImpl implements ActionContributionBuilder 
 		}});
 		*/		
 		actsMap.put(Activity.SCRIPT_SECTION,usePane); // combine this with plastic and other actions.
+
+		actsMap.put(Activity.PLASTIC_SECTION,usePane); // fold plastic in with actions
+		actsMap.put(Activity.INFO_SECTION, new MyTaskPaneGroup() {{
+			setTitle("About");
+			//setTitle("Further Information");
+			setIconName("info16.png");
+			setHelpId("resourceActions.info");
+			//setSpecial(true);
+		}});		
 		actsMap.put(Activity.EXPORT_SECTION, new MyTaskPaneGroup() {{
 			setTitle("Export");
-			setExpanded(false);
+			//setExpanded(false);
 		}});
 		// compose these tasks.
 		for (Iterator i = actsMap.values().iterator(); i.hasNext();) {
