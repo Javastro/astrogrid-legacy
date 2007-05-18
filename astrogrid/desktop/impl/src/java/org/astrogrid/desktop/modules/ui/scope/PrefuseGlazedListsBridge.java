@@ -5,6 +5,9 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 import java.util.Iterator;
 
+import javax.swing.JTabbedPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -22,13 +25,14 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 4, 20071:11:29 AM
  */
-public final class PrefuseGlazedListsBridge implements FocusListener,  ListSelectionListener {
+public final class PrefuseGlazedListsBridge implements FocusListener,  ListSelectionListener, ChangeListener {
 	
 	private final FocusSet prefuse;
 	private final ScopeServicesList glazed;
 	private final EventList glazedSelected;
 	private final VizualizationManager viz;
-	public PrefuseGlazedListsBridge(VizualizationManager viz, ScopeServicesList glazed) {
+	private final JTabbedPane tabs;
+	public PrefuseGlazedListsBridge(VizualizationManager viz, ScopeServicesList glazed,JTabbedPane tabs) {
 		super();
 		this.viz = viz;
 		this.prefuse = viz.getVizModel().getSelectionFocusSet();
@@ -36,18 +40,25 @@ public final class PrefuseGlazedListsBridge implements FocusListener,  ListSelec
 		prefuse.addFocusListener(this);
 		glazedSelected = glazed.getCurrentResourceModel().getTogglingSelected();
 		glazed.getCurrentResourceModel().addListSelectionListener(this);
+		// just listen to the tabbed pane.
+		this.tabs = tabs;
+		tabs.addChangeListener(this);
 	}
-	boolean listeningToGlazed = true;
-	boolean listeningToPrefuse = true;
+
+	private boolean servicesHasPrecedence = false;
+	
+// ldecide which events to respond to.
+	
+	public void stateChanged(ChangeEvent e) {
+		servicesHasPrecedence = tabs.getSelectedIndex() == tabs.getTabCount() -1; // it's the last tab  so it/s the services list.
+	}
+	
 	
 // prefuse listener interface
 	public void focusChanged(FocusEvent arg0) {
-		if (! listeningToPrefuse) {
-			return;
-		}
-		//temporarily stop listening, to avoid infinite loops.
-		listeningToGlazed = false;
-		try {
+			if (servicesHasPrecedence) {//services tab is driving.
+				return; // ignore in this case.
+			}
 			switch(arg0.getEventType()) {
 			case FocusEvent.FOCUS_ADDED:
 				Entity[] added = arg0.getAddedFoci();
@@ -86,39 +97,34 @@ public final class PrefuseGlazedListsBridge implements FocusListener,  ListSelec
 					}
 				}				
 			}
-		}finally {
-			listeningToGlazed = true;
-		}
 	}
 
 	// glazed lists listener interface
-//@fixme still no quite right - the selection is instantly deselected again. by another event.
-	// valueIsAdjusting doesn't help either.
 	public void valueChanged(ListSelectionEvent e) {
-		if (! listeningToGlazed ) {
+		if (!servicesHasPrecedence) {// prefuse is driving
 			return;
 		}
-		listeningToPrefuse = false;
+
 		try {
 			for (int i = e.getFirstIndex(); i <= e.getLastIndex(); i++) {
 				Service s = (Service)glazed.getList().get(i);
 				if (s != null) {
 					TreeNode t = glazed.findTreeNode(s);	
 					if (t != null) {
-					if (glazed.getCurrentResourceModel().isSelectedIndex(i) && ! prefuse.contains(t)) {
-							DoubleClickMultiSelectFocusControl.selectSubtree(t,prefuse);
-					} else if (prefuse.contains(t)) {
+						if (glazed.getCurrentResourceModel().isSelectedIndex(i)) {
+							if (! prefuse.contains(t)) {
+								DoubleClickMultiSelectFocusControl.selectSubtree(t,prefuse);
+							}
+						} else if (prefuse.contains(t)) {
 							DoubleClickMultiSelectFocusControl.deselectSubtree(t,prefuse);
 						}					
 					}
 				}
 			}
 		} finally {
-			listeningToPrefuse = true;
-            viz.reDrawGraphs();
+			viz.reDrawGraphs();
 		}		
 	}
-
 
 	
 }

@@ -3,6 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ui.scope;
 
+import java.awt.Component;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +20,7 @@ import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.system.pref.Preference;
+import org.astrogrid.desktop.modules.ui.actions.DevSymbols;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTable;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTableFomat;
@@ -54,6 +56,10 @@ public class ScopeServicesList extends RegistryGooglePanel
 		getSearchTitleLabel().setText("Query Results");
 		getNewSearchButton().setVisible(false);
 		getHaltSearchButton().setVisible(false);
+		// replace the second pane..
+		Component c = tabPane.getComponentAt(1);
+		tabPane.remove(c);
+		tabPane.insertTab(DevSymbols.PROBLEM + " Results",null,new ResultsResourceViewer(),"Shows results from selected service",1);
 		
 	//	tabPane.insertTab("Results",null,,"Results retruns from this service",0);
 	}
@@ -126,7 +132,7 @@ public class ScopeServicesList extends RegistryGooglePanel
 	}
 	
 	public EventList getList() {
-		return items;
+		return edtItems;
 	}
 	
 	private class ServicesListTableFormat implements AdvancedTableFormat{

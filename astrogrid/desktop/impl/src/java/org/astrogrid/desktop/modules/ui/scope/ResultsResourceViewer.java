@@ -4,6 +4,8 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
 import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileViewDnDManager;
@@ -21,7 +23,7 @@ import ca.odell.glazedlists.swing.EventSelectionModel;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 11, 20072:05:19 AM
  */
-public class ResultsResourceViewer extends FilesList implements ResourceViewer {
+public class ResultsResourceViewer extends JPanel implements ResourceViewer {
 
 	/**
 	 * @param files
@@ -30,19 +32,24 @@ public class ResultsResourceViewer extends FilesList implements ResourceViewer {
 	 * @param icons
 	 * @param dnd
 	 */
-	public ResultsResourceViewer( EventSelectionModel currentSelection, StorageView view, IconFinder icons, FileViewDnDManager dnd) {
-		super(new BasicEventList() ,currentSelection, view, icons, dnd);
+	public ResultsResourceViewer( ) {
+		label = new JLabel();
+		add(label);
+		label.setText("Will display results returned from the selected service\nand enable selection, actions and Drag-n-drop");
 	}
+	private final JLabel label;
 
 	public void clear() {
+		label.setText("");
 	}
 
 	public void display(Resource res) {
-		// get files associated with this resource, 
+		label.setText("Will display results returned from service\n" + res.getTitle());
+		
 	}
 
 	public JComponent getComponent() {
-		return null;
+		return this;
 	}
 
 }
