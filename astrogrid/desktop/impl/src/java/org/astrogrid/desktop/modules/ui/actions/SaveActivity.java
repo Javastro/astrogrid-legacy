@@ -54,7 +54,7 @@ public class SaveActivity extends AbstractFileActivity {
 		super();
 		this.chooser = chooser;
 		this.myspace = ms;
-		setText("Save");
+		setText(DevSymbols.PROBLEM + " Save");
 		setToolTipText("Save the selected objects");
 		setIcon(IconHelper.loadIcon("filesave16.png"));		
 	}
@@ -63,7 +63,9 @@ public class SaveActivity extends AbstractFileActivity {
 		return true;
 	}
 	
-	public void actionPerformed(ActionEvent e) {
+	// unimplemented for now.
+	
+	public void actionPerformed1(ActionEvent e) {
 		Component comp = null;
 		if (e.getSource() instanceof Component) {
 			comp = (Component)e.getSource();

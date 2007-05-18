@@ -6,6 +6,8 @@ package org.astrogrid.desktop.modules.ui.actions;
 import java.awt.Component;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,11 +16,16 @@ import java.net.URI;
 import java.util.Iterator;
 import java.util.List;
 
+import org.astrogrid.acr.ivoa.resource.AccessURL;
+import org.astrogrid.acr.ivoa.resource.Capability;
+import org.astrogrid.acr.ivoa.resource.Interface;
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.comp.ShowOnceDialogue;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.io.Piper;
 
@@ -44,61 +51,84 @@ public class SaveXoXoListActivity extends AbstractResourceActivity {
 		setIcon(IconHelper.loadIcon("ascii16.png"));
 	}
 
-private final ResourceChooserInternal chooser;
-private final MyspaceInternal ms;
-public void actionPerformed(ActionEvent e) {
-	final List rs = computeInvokable();
-	Component comp = null;
-	if (e.getSource() instanceof Component) {
-		comp = (Component)e.getSource();
-	}	
-	final URI u = chooser.chooseResourceWithParent("Save resource list",true,true,true,comp);
-	if (u == null) {
-		return;
-	}
-	(new BackgroundWorker(uiParent.get(),"Saving resource list") {
-		protected Object construct() throws Exception {
-			PrintWriter out = null;
-			try {
-				out = new PrintWriter(ms.getOutputStream(u));
-				out.print("<ul class='xoxo'>");
-				out.println("<!-- See http://microformats.org/wiki/xoxo for details of XoXo format -->");
-				for (Iterator i = rs.iterator(); i.hasNext();) {
-					Resource r = (Resource) i.next();
-					String name = r.getShortName();
-					if (name == null || name.trim().length() == 0) {
-						name = r.getTitle();
-					}
-					out.println("  <li>");
-					if (r.getContent().getReferenceURI() != null) {
-						out.println("      <a href='" + r.getContent().getReferenceURI() + "'");
-						out.println("             >" + name + "</a>" );
-					}	else {
-						out.println("      " + name);
-					}
-					out.println("       <dl>");
-					out.println("         <dt>identifier</dt>");
-					out.println("         <dd>" + r.getId() + "</dd>");
-					out.println("         <dt>title</dt>");
-					out.println("         <dd>" + r.getTitle() + "</dd>");
-					out.println("         <dt>type</dt>");
-					out.println("         <dd>" + r.getType() + "</dd>");					
-					out.println("         <dt>description</dt>");
-					out.println("         <dd>");
-					out.println(r.getContent().getDescription());
-					out.println("         </dd>");
-					out.println("      </dl>");
-					out.println("  </li>");
-				}
-				out.println("</ul>");
-			} finally {
-				if (out != null) {
-					out.close();
-				}
-			}
-			return null;
+	private final ResourceChooserInternal chooser;
+	private final MyspaceInternal ms;
+	public void actionPerformed(ActionEvent e) {
+		final List rs = computeInvokable();
+		Component comp = null;
+		if (e.getSource() instanceof Component) {
+			comp = (Component)e.getSource();
+		}	
+		final URI u = chooser.chooseResourceWithParent("Save resource list",true,true,true,comp);
+		if (u == null) {
+			return;
 		}
-	}).start();
-}
+		(new BackgroundWorker(uiParent.get(),"Saving resource list") {
+			protected Object construct() throws Exception {
+				PrintWriter out = null;
+				try {
+					if (u.getScheme().equals("file")) { //@todo tidy this up - temporary work around to avoid login when writing to local
+						out = new PrintWriter(new FileOutputStream(new File(u)));
+					} else {
+						out = new PrintWriter(ms.getOutputStream(u));
+					}
+					out.print("<ul class='xoxo'>");
+					out.println("<!-- See http://microformats.org/wiki/xoxo for details of XoXo format -->");
+					for (Iterator i = rs.iterator(); i.hasNext();) {
+						Resource r = (Resource) i.next();
+						String name = r.getShortName();
+						if (name == null || name.trim().length() == 0) {
+							name = r.getTitle();
+						}
+						out.println("  <li>");
+						if (r.getContent().getReferenceURI() != null) {
+							out.println("      <a href='" + r.getContent().getReferenceURI() + "'");
+							out.println("             >" + name + "</a>" );
+						}	else {
+							out.println("      " + name);
+						}
+						out.println("       <dl>");
+						out.println("         <dt>identifier</dt>");
+						out.println("         <dd>" + r.getId() + "</dd>");
+						out.println("         <dt>title</dt>");
+						out.println("         <dd>" + r.getTitle() + "</dd>");
+						out.println("         <dt>type</dt>");
+						out.println("         <dd>" + r.getType() + "</dd>");	
+						if (r instanceof Service) { // for roy.
+							Capability[] capabilities = ((Service)r).getCapabilities();
+							out.println("         <ul>");
+							for (int j = 0; j < capabilities.length; j++) {
+								Capability cap = capabilities[j];
+								Interface[] interfaces = cap.getInterfaces();
+								for (int k = 0; k < interfaces.length; k++) {
+									Interface it = interfaces[k];
+									out.println("          <li>" + it.getType() + "<ul>");
+									AccessURL[] accessUrls = it.getAccessUrls();
+									for (int index = 0; index < accessUrls.length; index++) {
+										AccessURL accessURL = accessUrls[index];
+										out.println("                  <li><a href='" + accessURL.getValueURI() + "'>" +accessURL.getUse()+ "</a></li>");
+									}
+									out.println("          </ul></li>");
+								}
+							}
+							out.println("         </ul>");
+						}
+			//			out.println("         <dt>description</dt>");
+			//			out.println("         <dd>");
+			//			out.println(r.getContent().getDescription());
+			//			out.println("         </dd>");
+						out.println("      </dl>");
+						out.println("  </li>");
+					}
+					out.println("</ul>");
+				} finally {
+					if (out != null) {
+						out.close();
+					}
+				}
+				return null;
+			}
+		}).start();
+	}
 
 }

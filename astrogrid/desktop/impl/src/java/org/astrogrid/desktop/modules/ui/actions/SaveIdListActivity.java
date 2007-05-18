@@ -6,6 +6,8 @@ package org.astrogrid.desktop.modules.ui.actions;
 import java.awt.Component;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -68,7 +70,11 @@ public void actionPerformed(ActionEvent e) {
 				InputStream is = null;
 				try {
 					is = (InputStream)t.getTransferData(VoDataFlavour.URI_LIST);
-					os = ms.getOutputStream(u);
+					if (u.getScheme().equals("file")) {
+						os = new FileOutputStream(new File(u));
+					} else {
+						os = ms.getOutputStream(u);
+					}
 					Piper.pipe(is,os);
 				} finally {
 					if (os != null) {

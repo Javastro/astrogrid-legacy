@@ -28,7 +28,7 @@ public class CeaActivity extends AbstractFileOrResourceActivity {
 public CeaActivity(TaskInvoker t) {
 	CSH.setHelpIDString(this, "resourceTask.cea");		
 	this.t = t;
-	setText("Execute Task");
+	setText(DevSymbols.PROBLEM + " Execute Task");
 	setIcon(IconHelper.loadIcon("exec16.png"));
 	setToolTipText("Invoke the selected long running task");
 }
@@ -41,6 +41,7 @@ public void noneSelected() {
 	currentFile = null;
 	super.noneSelected();
 }
+
 	public void actionPerformed(ActionEvent e) {
 		if (currentResource != null) {
 		(new BackgroundWorker(uiParent.get(),"Opening task launcher") {

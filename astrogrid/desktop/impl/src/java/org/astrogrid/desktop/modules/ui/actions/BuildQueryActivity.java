@@ -35,7 +35,7 @@ public final class BuildQueryActivity extends AbstractFileOrResourceActivity {
 public BuildQueryActivity(QueryBuilderInternal t) {
 	this.t = t;
 	CSH.setHelpIDString(this, "resourceTask.buildQuery");		
-	setText("Build query");
+	setText(DevSymbols.PROBLEM + " Build ADQL");
 	setIcon(IconHelper.loadIcon("table16.png"));
 	setToolTipText("Construct an ADQL query against the selected table descriptions");
 	
@@ -115,8 +115,8 @@ private Object current;
 	// accept a single database schema, or a single queriable service.
 	public void oneSelected(Resource resource) {
 		current = null;
-		setEnabled( (isDbSchema(resource)
-				|| (resource instanceof CeaApplication && hasAdqlParameter((CeaApplication)resource))));
+		setEnabled( //@fixme(isDbSchema(resource) ||
+				 resource instanceof CeaApplication && hasAdqlParameter((CeaApplication)resource));
 			// @future add a rule for tap services, when they emrge too.
 		if (isEnabled()) {
 			current = resource;
@@ -125,6 +125,8 @@ private Object current;
 
 	// accept if any in selection are database schema.
 	public void manyResourcesSelected(Resource[] l) {
+		noneSelected();
+		/* @todo support multi-query later
 		current = null;
 		for (int i = 0; i < l.length; i++) {
 			Resource r = l[i];
@@ -135,6 +137,7 @@ private Object current;
 			}
 		}
 		setEnabled(false);
+		*/
 	}
 	private boolean isDbSchema(Object r) {
 		return r instanceof DataCollection || r instanceof CatalogService;

@@ -38,7 +38,7 @@ public class GenerateScriptScavenger extends AbstractActivityScavenger {
 			.getLog(GenerateScriptScavenger.class);
 
 	public GenerateScriptScavenger(ResourceChooserInternal chooser, MyspaceInternal ms) {
-		super("Automation",IconHelper.loadIcon("wizard16.png"));
+		super(DevSymbols.ALPHA + " Automation",IconHelper.loadIcon("wizard16.png"));
 		this.chooser = chooser;
 		this.ms = ms;
 		//@future - load these lists dynamically - at moment are hard-coded		
@@ -87,7 +87,7 @@ public class GenerateScriptScavenger extends AbstractActivityScavenger {
 					shell.evaluate(header.toString());
 					Object o = shell.getVariable("name");
 					if (o != null) {
-						a.setText(o.toString());
+						a.setText(DevSymbols.ALPHA + " " + o.toString());
 						shell.setVariable("name",null);
 					}
 					o = shell.getVariable("tooltip");
