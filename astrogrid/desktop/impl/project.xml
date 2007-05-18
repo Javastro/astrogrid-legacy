@@ -105,6 +105,17 @@
 	</properties>
 </dependency>  	
 
+<!-- wizards -->
+<dependency>
+	<artifactId>wizard</artifactId>
+	<groupId>wizard</groupId>
+	<url>https://wizard.dev.java.net/</url>
+	<version>1.0</version>
+	<properties>		
+		<dist.bundle>true</dist.bundle>
+			    <strip>true</strip>    	                  
+	</properties>	
+</dependency>
 <!--  for templating -->
 <dependency>
 	<artifactId>groovy-all</artifactId>

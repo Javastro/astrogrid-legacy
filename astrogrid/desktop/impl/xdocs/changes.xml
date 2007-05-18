@@ -14,6 +14,11 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="2007.3.alpha3" date="unreleased">
+	<action dev="nw" type="add">
+	Denoted which features of the UI are alpha / beta / unimproed quality.
+	</action>
+</release>
 <release version="2007.3.alpha2" date="unreleased">
 	<action dev="nw" type="add">
 		Implemented script frameworks.
