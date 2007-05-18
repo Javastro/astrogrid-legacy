@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.3 2007/05/10 19:35:27 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.4 2007/05/18 06:18:10 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -60,9 +60,11 @@ import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.actions.DevSymbols;
 import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.FilterPipelineFactory;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.FormattedResourceViewer;
+import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceFormViewer;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTable;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTableFomat;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTitleComparator;
@@ -114,7 +116,6 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 	private static final Log logger = LogFactory
 			.getLog(RegistryGooglePanel.class);
 
-	
 	/** an asbtract background worker that provides machinery for processing the results of a streaming parse
 	 * and caching the result */
 	private abstract class Worker extends BackgroundWorker implements StreamProcessor {
@@ -267,7 +268,7 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 	private final JLabel searchTitle;
 	protected final ResourceTable resourceTable;
 	protected final EventList  items ;
-	private final EventList edtItems; // a view of the items event list, on the Event dispatch thread.
+	protected final EventList edtItems; // a view of the items event list, on the Event dispatch thread.
     protected final EventTableModel resourceTableModel;
 	// tracks the currently clicked on registry entry - i.e. the one to display in viewer
 	private final EventSelectionModel currentResourceInView;
@@ -429,9 +430,11 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 		scrollPane.setBorder(BorderFactory.createEmptyBorder());
 		tabPane.addTab("Details", IconHelper.loadIcon("info16.png")
 				, scrollPane, "Details of chosen resource");
-	
+		tabPane.addTab(DevSymbols.PROBLEM + " " + "Form"
+				,new ResourceFormViewer());
 		tabPane.addTab("Tables",IconHelper.loadIcon("table16.png")
 				,tableMetadataPane.getComponent(),"Tabular schema for this resource");
+		
 		tabPane.setMinimumSize(new Dimension(100,100));
 		// xml pane not added to tabs in same way - as is an 'advanced' view.
 		// will be added / removed in the property change listener, when initialized from preferneces.
@@ -545,10 +548,12 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 			detailsPane.display(res);
 			break;
 		case 1:
+			break; //@todo
+		case 2:
 			//@todo should I move to another tab when this isn't a tabular resouce?
 			tableMetadataPane.display(res);
 			break;
-		case 2:
+		case 3:
 			xmlPane.display(res);
 			break;
 		default:
@@ -715,6 +720,9 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.4  2007/05/18 06:18:10  nw
+placeholder for form-layout of registry fields.
+
 Revision 1.3  2007/05/10 19:35:27  nw
 reqwork
 
