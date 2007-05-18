@@ -1,4 +1,4 @@
-/*$Id: UIMenuContribution.java,v 1.8 2007/04/18 15:47:09 nw Exp $
+/*$Id: UIMenuContribution.java,v 1.9 2007/05/18 06:13:13 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,12 +35,13 @@ public class UIMenuContribution extends JMenu implements UIStructureContribution
 		this.after = copy.after;
 		this.before = copy.before;
 		this.parentName= copy.parentName;
-		this.visiblePreference = copy.visiblePreference;
+		this.setVisibleCondition(copy.visiblePreference);
 		// now copy some fields from JMenu too - the ones accessible through the contribution.
 		this.setText(copy.getText());
 		this.setName(copy.getName());
 		this.setToolTipText(copy.getToolTipText());
 		this.setIcon(copy.getIcon());
+		
 	}
 	
 	
@@ -57,6 +58,9 @@ public class UIMenuContribution extends JMenu implements UIStructureContribution
      * @param p
      */    
     public void setVisibleCondition(Preference p) {
+    	if (p == null) {
+    		return;
+    	}
     	// remove any previous listeners.
     	if (visiblePreference != null) {
     		visiblePreference.removePropertyChangeListener(this);
@@ -64,6 +68,7 @@ public class UIMenuContribution extends JMenu implements UIStructureContribution
     	visiblePreference = p;
     	visiblePreference.addPropertyChangeListener(this);
     	visiblePreference.initializeThroughListener(this);
+    	
     }
     
     // package-private method, for testing only.
@@ -122,6 +127,9 @@ public class UIMenuContribution extends JMenu implements UIStructureContribution
 
 /* 
 $Log: UIMenuContribution.java,v $
+Revision 1.9  2007/05/18 06:13:13  nw
+fixed menu visibility bug.
+
 Revision 1.8  2007/04/18 15:47:09  nw
 tidied up voexplorer, removed front pane.
 
