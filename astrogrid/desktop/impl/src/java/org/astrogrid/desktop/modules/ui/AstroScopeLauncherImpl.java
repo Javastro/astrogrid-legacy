@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.62 2007/05/13 12:00:49 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.63 2007/05/18 06:15:36 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -71,6 +71,7 @@ import org.astrogrid.desktop.modules.ui.comp.DimensionTextField;
 import org.astrogrid.desktop.modules.ui.comp.EventListMenuManager;
 import org.astrogrid.desktop.modules.ui.comp.NameResolvingPositionTextField;
 import org.astrogrid.desktop.modules.ui.comp.PositionUtils;
+import org.astrogrid.desktop.modules.ui.comp.ShowOnceDialogue;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle.DecSexListener;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocolManager;
@@ -221,7 +222,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 
 // temporal
 		row++;
-		noPosition = new JCheckBox("No Position");
+		noPosition = new JCheckBox("Any Position");
 		noPosition.setToolTipText("To query with no postion, only 'Timed Data' can be selected");
 		noPosition.setSelected(false);
 		noPosition.addItemListener(new ItemListener() { // disables other fields when selected.
@@ -300,6 +301,14 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 					startCal.setVisible(b);
 					temporalLabel2.setVisible(b);
 					endCal.setVisible(b);
+					/* @fixme find a nicer way to do this
+					if (b) { // showing
+						(new ShowOnceDialogue(AstroScopeLauncherImpl.this,
+								"The time criteria are only applicable to STAP services. "
+								+"\nThe other service types only accept the positional criteria."
+								){}).show();
+					}
+					*/
 				}
         	});
         	checkBox.setSelected(false);
@@ -361,7 +370,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	// tablular view 
 		summary.parent.set(this);
 		// keeps the selection models of prefuse and the summary view in-sunch..
-		//@fixme new PrefuseGlazedListsBridge(vizualizations,summary);
+		new PrefuseGlazedListsBridge(vizualizations,summary,tabs);
 		JPanel summaryPanel = new JPanel(new BorderLayout());
 		summaryPanel.add(summary, BorderLayout.CENTER);
 		summaryPanel.add(summary.getToolbar(),BorderLayout.NORTH);
@@ -494,8 +503,6 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 //Astroscope internal interface.
 	// configure to run against this list of services.
 	public void runSubset(List resources) {
-		//@fixme in this case, all check boxes must alway be +
-		// or just ignored altogether.
 		this.resourceList = resources;
 		setTitle("Astroscope : on subset");
 		for (Iterator i = protocols.iterator(); i.hasNext(); ) {
