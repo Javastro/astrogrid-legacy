@@ -20,6 +20,20 @@ public class IconField extends JTextField{
 	public IconField(int columns) {
 		this(columns,IconHelper.loadIcon("search16.png"));
 	}
+	/*
+	public IconField(int columns,ImageIcon icon) {
+		super(columns);
+		image= icon;
+		x0 = getBorder().getBorderInsets(this).right;
+		setMargin(new Insets(0,0,0,x0 - image.getIconWidth()));	
+	}
+	protected void paintComponent(Graphics g) {
+		
+		super.paintComponent(g);
+	      int y = (getHeight() - image.getIconHeight())/2;
+          g.drawImage(image.getImage(), x0 - image.getIconWidth(), y, this);			
+	}*/
+	
 	
 	public IconField(int columns,ImageIcon icon) {
 		super(columns);
@@ -33,6 +47,8 @@ public class IconField extends JTextField{
 	      int y = (getHeight() - image.getIconHeight())/2;
           g.drawImage(image.getImage(), x0, y, this);			
 	}
+	
+	
 	final ImageIcon image;
 	final int x0;
 }
