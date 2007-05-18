@@ -3,6 +3,8 @@
 	<!ENTITY descriptors SYSTEM "classpath:/org/astrogrid/desktop/hivemind/astrogrid-descriptors.xml">
 	<!ENTITY anchors SYSTEM "fallback:httpclient://wiki.astrogrid.org/pub/Astrogrid/TrustAnchorList/trust-anchor-list.xml,classpath:/org/astrogrid/desktop/hivemind/fallback-anchorlist.xml">
 	]>
+<!--  	<!ENTITY anchors SYSTEM "fallback:httpclient://wiki.astrogrid.org/pub/Astrogrid/TrustAnchorList/trust-anchor-list.xml,classpath:/org/astrogrid/desktop/hivemind/fallback-anchorlist.xml">
+-->
 <module id="astrogrid" version="1.0.0" package="org.astrogrid.acr.astrogrid">
 	<dependency module-id="system"/>
 	AstroGrid Services

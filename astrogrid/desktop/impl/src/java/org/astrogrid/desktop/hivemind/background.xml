@@ -7,7 +7,7 @@ JES EXECUTION STRATEGY
 	<!-- would be nice to have this one update immediately, but can't do that easily. pity -->
 	<contribution configuration-id="framework.preferences">
 		<preference name="background.jesStrategy.refreshSeconds" 
-		requires-restart="true"
+		requires-restart="true" advanced="true"
 		default-value="240" >
 			<ui-name>Refresh workflows every</ui-name>
 			<units>seconds</units>
