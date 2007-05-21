@@ -46,33 +46,56 @@ import org.w3c.dom.Document;
 public class ARProcessor extends Processor implements Serializable {
 
 	private static Logger logger = Logger.getLogger(ARProcessor.class);
+	
+	private String interfaceName;
+	private String ivorn;
+	
+	public String getInterfaceName() {
+		return this.interfaceName;
+	}
+	
+	public String getIvorn() {
+		return this.ivorn;
+	}
 		
-	public ARProcessor(ScuflModel model, String ivornName, String interfaceName) throws ProcessorCreationException, DuplicateProcessorNameException {
-		super(model,name);
-		logger.warn("cea_app in ARProcessor constructor and doing setDescription");
+	public ARProcessor(ScuflModel model, String ivorn, String interfaceName) throws ProcessorCreationException, DuplicateProcessorNameException {
+		super(model,interfaceName);
+		this.interfaceName = interfaceName;
+		this.ivorn = ivorn;
+		logger.warn("cea_app2 in ARProcessor constructor and doing setDescription");
 		try {
 			ACR acr = SingletonACR.getACR();
 			Applications apps = (Applications)acr.getService(Applications.class);
-			
+			logger.warn("got acr and Applications ready lets get the CeaApplication.");
 			List mimesText = new ArrayList();
 			mimesText.add("text/plain");
 			
 			List mimes = new ArrayList();
 			mimes.add("java/"+java.util.List.class.getName());			
 			
-			ApplicationInformation ai = apps.getCeaApplication("ivorn");
-			Map params = ai.getParameters();
-			
+			CeaApplication ai = apps.getCeaApplication(new URI(ivorn));
+			logger.warn("Got it lets start filling out parameters.");
+			ParameterBean []params = ai.getParameters();
+		    ParameterBean pb = params[0];
 			InterfaceBean []interfaceBean = ai.getInterfaces();
 			for(int i = 0;i < interfaceBean.length;i++ ) {
+				logger.warn("Trying ot find right interface bean = " + interfaceBean[i].getName());
 				if(interfaceBean[i].getName().equals(interfaceName)) {
-					i = interfaceBean.length;
+					logger.warn("found");
 					ParameterReferenceBean []pbi = interfaceBean[i].getInputs();
 					ParameterReferenceBean []pbo = interfaceBean[i].getOutputs();
+					i = interfaceBean.length;
+					logger.warn("found it now get ParameterReferenceBeans and try to add inputs that are used for this interface.");
 					for(int j = 0; j < pbi.length; j++) {
-						ParameterBean pb = params.get(pbi[j].getRef());
+						for(int m = 0;m < params.length;m++) {
+							if(params[m].getName().equals(pbi[j].getRef())) {
+								pb = params[m];
+							}
+						}//for
 						InputPort paramInput = new InputPort(this,pb.getName());
+						logger.warn("the pbi getMax = " + pbi[j].getMax());
 						if(pbi[j].getMax() == 0 || pbi[j].getMax() > 1) {
+							logger.warn("yes put it as a list");
 							//lists
 							paramInput.getMetadata().setMIMETypes(mimes);
 							paramInput.setSyntacticType(computeType(java.util.List.class,mimes));
@@ -88,17 +111,22 @@ public class ARProcessor extends Processor implements Serializable {
 						}
 						this.addPort(paramInput);
 					}//for
+					logger.warn("add optional CeaService ivorn");
 					InputPort inputIvornCeaService = new InputPort(this,"Optional CeaService Ivorn");
 					inputIvornCeaService.setOptional(true);
 					inputIvornCeaService.getMetadata().setMIMETypes(mimesText);
 					inputIvornCeaService.setSyntacticType(computeType(java.lang.String.class,mimesText));
-					this.addPort(inputIvornCeaService);					
+					this.addPort(inputIvornCeaService);		
+					logger.warn("each output has the option of being saved to myspace or somewhere else so describe each output as a input reference");
 					for(int j = 0; j < pbo.length; j++) {
-						ParameterBean pb = params.get(pbo[j].getRef());
-						InputPort paramInput = new InputPort(this,"Optional Output Ref - " + pb.getName());						
-							paramInput.getMetadata().setMIMETypes(mimesText);
-							paramInput.setSyntacticType(computeType(java.lang.String.class,mimesText));
-						}
+						for(int m = 0;m < params.length;m++) {
+							if(params[m].getName().equals(pbo[j].getRef())) {
+								pb = params[m];
+							}
+						}//for
+						InputPort paramInput = new InputPort(this,pb.getName() + " - Output Ref");						
+						paramInput.getMetadata().setMIMETypes(mimesText);
+						paramInput.setSyntacticType(computeType(java.lang.String.class,mimesText));
 						paramInput.setOptional(true);
 						this.addPort(paramInput);
 						/*
@@ -122,9 +150,10 @@ public class ARProcessor extends Processor implements Serializable {
 						this.addPort(paramOutput);		
 						*/				
 					}//for
-				}//for
+				}//if
 			}//for
 		
+			logger.warn("Done with all inputs just put ResultList and ExecutionID for outputs");
 			OutputPort resList = new OutputPort(this,"ResultList");
 			resList.getMetadata().setDescription("Output as a List");
 			resList.getMetadata().setMIMETypes(mimes); 
@@ -136,8 +165,7 @@ public class ARProcessor extends Processor implements Serializable {
 			resListID.getMetadata().setMIMETypes(mimesText);
 			resListID.setSyntacticType(computeType(java.lang.String.class,mimesText));
 			this.addPort(resListID);
-		
-			
+
 			setDescription("CEA Application");
 		}/*catch(NotFoundException e) {
 			e.printStackTrace();
@@ -148,13 +176,13 @@ public class ARProcessor extends Processor implements Serializable {
 		}catch (DuplicatePortNameException e) {
 			e.printStackTrace();
 			throw new ProcessorCreationException(e);
-		}/*catch (java.net.URISyntaxException e) {
+		}catch (java.net.URISyntaxException e) {
 			e.printStackTrace();
 			throw new ProcessorCreationException(e);
 		}catch(ACRException e) {
 			e.printStackTrace();
 			throw new ProcessorCreationException(e);
-		}*/
+		}
 		logger.info("done with constructor of ARProcessor");
 	}
 	

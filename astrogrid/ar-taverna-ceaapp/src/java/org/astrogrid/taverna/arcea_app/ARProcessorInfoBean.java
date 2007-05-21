@@ -16,7 +16,7 @@ public class ARProcessorInfoBean extends ProcessorInfoBeanHelper {
 	private static Logger logger = Logger.getLogger(ARProcessorInfoBean.class);
 
 	public ARProcessorInfoBean() {
-		super("astroruntimecea");
+		super("astroruntimecea_app");
 		logger.warn("done with const of arcea.ARProcessorInfoBean");
 		
 	}

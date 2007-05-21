@@ -33,9 +33,9 @@ public class ARXmlHandler implements XMLHandler {
 	 * method returns the element rooted at the 'soaplabwsdl' element.
 	 */
 	public Element elementForFactory(ProcessorFactory arg0) {
-		logger.warn("cea elementForFactory");
+		logger.warn("cea_app elementForFactory");
 		ARProcessorFactory arpf = (ARProcessorFactory)arg0;		
-		return getElement(arpf.getName());
+		return getElement(arpf.getIvorn(),arpf.getInterfaceName());
 	}
 	
 	/**
@@ -45,19 +45,24 @@ public class ARXmlHandler implements XMLHandler {
 	 * implementation straight off to get factory specific data out.
 	 */
 	public Element elementForProcessor(Processor arg0) {
-		logger.warn("cea start elementForProcessor in ARXmlHandler");
+		logger.warn("cea_app start elementForProcessor in ARXmlHandler");
 		ARProcessor arp = (ARProcessor)arg0;
-		return getElement(arp.getName());
+		return getElement(arp.getIvorn(),arp.getInterfaceName());
 	}
 	
-    private Element getElement(String name) {
-		logger.warn("cea ARXmlHandler.getElement name = " + name);
+    private Element getElement(String name,String interfaceName) {
+		logger.warn("cea_app ARXmlHandler.getElement name = " + name + " interfaceName = " + interfaceName);
 
-        Element spec = new Element("astroruntimecea", XScufl.XScuflNS);
-        Element arNameElement = new Element("ceaname",
+        Element spec = new Element("astroruntimecea_app", XScufl.XScuflNS);
+        Element arNameElement = new Element("ceaivorn",
                 XScufl.XScuflNS);
         arNameElement.setText(name);
         spec.addContent(arNameElement);
+        Element arInterfaceElement = new Element("ceaInterface",
+                XScufl.XScuflNS);
+        arInterfaceElement.setText(interfaceName);
+        spec.addContent(arInterfaceElement);
+        
         return spec;
     }	
 	
@@ -65,65 +70,31 @@ public class ARXmlHandler implements XMLHandler {
     /*
      * 
      */
-    private Element getElement(URI ceaAppIvorn, URI ceaServiceIvorn, String ceaInterface) {
-    	logger.warn("cea getElement uris");
-    	return getElement(ceaAppIvorn.toString(), ceaServiceIvorn.toString(),ceaInterface);
+    private Element getElement(URI ceaAppIvorn, String ceaInterface) {
+    	logger.warn("cea_app getElement uris");
+    	return getElement(ceaAppIvorn.toString(), ceaInterface);
     	
-    }
-    
-    private Element getElement(String ceaAppIvorn, String ceaServiceIvorn, String ceaInterface) {
-    	logger.warn("cea getEleent strings");
-        Element spec = new Element("astroruntimecea", XScufl.XScuflNS);
-        
-        /*
-        Element ceaMethodName = new Element("ceaMethodName,
-                XScufl.XScuflNS);
-        ceaMethodName.setText(ceaMethodName);
-        spec.addContent(ceaMethodName);
-
-        Element ceaAppIvornElement = new Element("ceaAppIvorn",
-                XScufl.XScuflNS);
-        ceaAppIvornElement.setText(ceaAppIvorn);
-        spec.addContent(ceaAppIvornElement);
-        
-        Element ceaServiceIvornElement = new Element("ceaServiceIvorn",
-                XScufl.XScuflNS);
-        ceaServiceIvornElement.setText(ceaServiceIvorn);
-        spec.addContent(ceaServiceIvornElement); 
-        
-        Element ceaInterfaceElement = new Element("ceaInterface",
-                XScufl.XScuflNS);
-        ceaInterfaceElement.setText(ceaInterface);
-        spec.addContent(ceaInterfaceElement);  
-        */
-
-        return spec;
-    }
-	
+    }	
 	
 	/**
 	 * Create a new factory that will produces processors of the supplied spec
 	 * when it's invoked
 	 */
 	public ProcessorFactory getFactory(Element specElement) {
-		logger.warn("cea start getFactory in ARXmlHandler");
-		/*
-		Element astroElement = specElement.getChild("astroruntimecea",
+		logger.warn("cea_app start getFactory in ARXmlHandler");
+		Element astroElement = specElement.getChild("astroruntimecea_app",
                 XScufl.XScuflNS);
 		
-		Element ceaAppIvornElement = astroElement.getChild("ceaAppIvorn",
+		Element ceaAppIvornElement = astroElement.getChild("ceaivorn",
 	                XScufl.XScuflNS);
 	    String ceaAppIvorn = ceaAppIvornElement.getTextTrim();
 	    
-		Element ceaServiceElement = astroElement.getChild("ceaServiceIvorn",
-                XScufl.XScuflNS);
-		String ceaServiceIvorn = ceaServiceElement.getTextTrim();		
 		Element ceaInterfaceElement = astroElement.getChild("ceaInterface",
                 XScufl.XScuflNS);
 		String ceaInterface = ceaInterfaceElement.getTextTrim();
-		*/		
+		logger.warn("ivorn found = " + ceaAppIvorn + " interface = " + ceaInterface);
 		//@todo add array bounds checking.		
-		return new ARProcessorFactory("DSA");
+		return new ARProcessorFactory(ceaAppIvorn,ceaInterface);
 	}
 	/**
 	 * Create a new processor from the given chunk of XML
@@ -132,28 +103,19 @@ public class ARXmlHandler implements XMLHandler {
 				, ScuflModel model, String name) throws ProcessorCreationException, DuplicateProcessorNameException, XScuflFormatException {
 		logger.warn("cea start loadProcessorFromXML in ARXmlHandler the name = " + name);
 
-		//hmmm I wonder can I just take the name and split it
-		//because I know it is unique with token '!!!!' seperating out the
-		//appviorn||||interface||||serviceivorn oh well 
-		//lets just get it from the processorNode should be more certain
-		//check the logs later that will tell me the answer.
-		/*
-		Element astroElement = specElement.getChild("astroruntimecea",
+		Element astroElement = specElement.getChild("astroruntimecea_app",
                 XScufl.XScuflNS);
 		
-		Element ceaAppIvornElement = astroElement.getChild("ceaAppIvorn",
+		Element ceaAppIvornElement = astroElement.getChild("ceaivorn",
 	                XScufl.XScuflNS);
 	    String ceaAppIvorn = ceaAppIvornElement.getTextTrim();
+	    logger.warn("appivorn in loadprocessorfromxml = " + ceaAppIvorn);
 	    
-		Element ceaServiceElement = astroElement.getChild("ceaServiceIvorn",
-	            XScufl.XScuflNS);
-		String ceaServiceIvorn = ceaServiceElement.getTextTrim();
-		
 		Element ceaInterfaceElement = astroElement.getChild("ceaInterface",
-	            XScufl.XScuflNS);
-		String ceaInterface = ceaInterfaceElement.getTextTrim();		
-			*/
-		ARProcessor theProcessor = new ARProcessor(model, "DSA");
+                XScufl.XScuflNS);
+		String ceaInterface = ceaInterfaceElement.getTextTrim();
+		logger.warn("instantiating ARProcessor from loadProcessorFromXML appivorn = " + ceaAppIvorn + " interface = " + ceaInterface);
+		ARProcessor theProcessor = new ARProcessor(model, ceaAppIvorn, ceaInterface);
 		logger.info("end loadProcessorFromXML in ARXmlHandler");
 		return theProcessor;
 	}

@@ -25,21 +25,32 @@ import org.apache.log4j.Logger;
 public class ARProcessorFactory extends ProcessorFactory {
 	
 	private static Logger logger = Logger.getLogger(ARProcessorFactory.class);	
-	
+	private String interfaceName;
+	private String ivorn;
 	/**
 	 * 
 	 */
-	public ARProcessorFactory(String ivorn) {
+	public ARProcessorFactory(String ivorn, String interfaceName) {
 		logger.warn("cea start constructor in ARProcessorFactory");
-		setName(ivorn);
+		setName(interfaceName);  //should probably be interfacename
+		this.interfaceName = interfaceName;
+		this.ivorn = ivorn;
 		logger.warn("done with arprocessorfactory");
 	}
 		
 	public Class getProcessorClass() {
 		return ARProcessor.class;
 	}
+	
+	public String getInterfaceName() {
+		return this.interfaceName;
+	}
+	
+	public String getIvorn() {
+		return this.ivorn;
+	}
  
 	public String getProcessorDescription() {
-		return "A processor that executes the CeaApplication " + getName();
+		return "A processor that executes the CeaApplication " + getIvorn();
 	}
 }

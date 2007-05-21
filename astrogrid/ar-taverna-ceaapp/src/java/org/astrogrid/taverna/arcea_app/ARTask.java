@@ -22,6 +22,10 @@ import java.net.URISyntaxException;
 import org.apache.log4j.Logger;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
+
 
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
@@ -116,7 +120,8 @@ public class ARTask implements ProcessorTaskWorker {
 
         try {
         	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        	DocumentBuilder db = dbf.newDocumentBuilder();        	
+        	dbf.setNamespaceAware(true);
+        	DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.newDocument();
             Marshaller.marshal(t,doc);
             return doc;
@@ -141,17 +146,15 @@ public class ARTask implements ProcessorTaskWorker {
 		// unpackage inputs.
 		logger.warn("start execute in ARTask");
 
-		String name = processor.getName();
-		Object temp;		
-	
+		//String name = processor.getName();
 		try {
-				String ivorn = processor.getName();
+				String ivorn = processor.getIvorn();
 				String ceaInterfaceName = processor.getInterfaceName();
 				URI ceaAppIvorn = new URI(ivorn);
 				URI ceaServiceIvorn;
 				Object temp;
-				if(input.containsKey("Optional CeaService Ivorn")) {
-					temp = ((DataThing)input.get("Optional CeaService Ivorn")).getDataObject();
+				if(arg0.containsKey("Optional CeaService Ivorn")) {
+					temp = ((DataThing)arg0.get("Optional CeaService Ivorn")).getDataObject();
 					if(temp != null && ((String)temp).trim().length() > 0) {
 						ceaServiceIvorn = new URI(new String(((String)temp)));
 					}
@@ -159,10 +162,12 @@ public class ARTask implements ProcessorTaskWorker {
 	
 			    ACR acr = SingletonACR.getACR();
 				Applications apps = (Applications)acr.getService(Applications.class);
-				
-				Map toolStruct = apps.createTemplateStruct(ceaAppIvorn,ceaInterfaceName);			Lookout lookout;
+				logger.warn("try to create the template struct");
+				Map toolStruct = apps.createTemplateStruct(ceaAppIvorn,ceaInterfaceName);
+				logger.warn("created and toolstruct size = " + toolStruct.size());
+				Lookout lookout;
 			//if(name.equals("DSA")) {				
-				Document toolDoc =  = createCEAToolDocument(arg0, toolStruct);
+				Document toolDoc  = createCEAToolDocument(arg0, toolStruct);
 				//Document toolDoc = createToolDocument(toolStruct);
 				StringWriter outputToolDoc = new StringWriter();
 				logger.warn("transform the tooldoc to a string for debugging");
@@ -177,7 +182,7 @@ public class ARTask implements ProcessorTaskWorker {
 				URI executionID;
 				if(arg0.containsKey("Optional CeaService Ivorn")) {
 					temp = ((DataThing)arg0.get("Optional CeaService Ivorn")).getDataObject();
-					URI ceaServiceIvorn = new URI(new String(((String)temp)));
+					ceaServiceIvorn = new URI(new String(((String)temp)));
 					logger.warn("try to do a submit");
 					if(ceaServiceIvorn == null) {
 						executionID = apps.submitStored(toolFile.toURI());
@@ -185,10 +190,11 @@ public class ARTask implements ProcessorTaskWorker {
 						executionID = apps.submitStoredTo(toolFile.toURI(),ceaServiceIvorn);
 					}				
 				}else {
+					logger.warn("submitting file uri = " + toolFile.toURI().toString());
 					executionID = apps.submitStored(toolFile.toURI());
 				}
 			//}
-			
+				logger.warn("executed and execute id = " + executionID);
 			
 			
 			//Document toolDoc = apps.convertStructToDocument(toolStruct);
@@ -199,7 +205,7 @@ public class ARTask implements ProcessorTaskWorker {
 			//if(parameterThing.getDataObject().equals("false")) {
 			int tempCounter = 0;
 			boolean discovered = false;
-			logger.warn("about to try and execute id = " + executionID);
+			
 			while(!discovered && tempCounter < 5) {
 				try {
 					logger.warn("firing off exectuion");
@@ -208,9 +214,10 @@ public class ARTask implements ProcessorTaskWorker {
 					discovered = true;
 					while(execInfo.getStatus().equals(ExecutionInformation.INITIALIZING) ||
 						  execInfo.getStatus().equals(ExecutionInformation.RUNNING) ||
+						  execInfo.getStatus().equals(ExecutionInformation.UNKNOWN) ||
 						  execInfo.getStatus().equals(ExecutionInformation.PENDING)) {
 						logger.warn("need to sleep hasn't completed, status = " + execInfo.getStatus());
-						Thread.sleep(1500);
+						Thread.sleep(5000);
 						lookout.refresh();
 						execInfo = apps.getExecutionInformation(executionID);
 					}//while
@@ -249,7 +256,7 @@ public class ARTask implements ProcessorTaskWorker {
 		    return outputMap;
 		} catch (Throwable x) {
 			x.printStackTrace();
-			throw  new TaskExecutionException("Failed to execute: " + processor.getName(),x);
+			throw  new TaskExecutionException("Failed to execute: " + processor.getIvorn(),x);
 		} 
 	}
 	//returns true if c is some kind of AR bean - various heuristics used.
@@ -284,19 +291,23 @@ public class ARTask implements ProcessorTaskWorker {
 	    		 //change value and indirect now.
 	    		 paramValue = parameterThing.getDataObject();
 	    		 if(paramValue instanceof String) {
-		    		 if((String)paramValue.startsWith("http://") || (String)paramValue.startsWith("ftp://") ||
-		    		    (String)paramValue.startsWith("ivo://")) {
+	    			 logger.warn("parameter instance a string");
+		    		 if(((String)paramValue).startsWith("http://") || 
+		    			((String)paramValue).startsWith("ftp://") ||
+		    		    ((String)paramValue).startsWith("ivo://")) {
 		    			inputVals.put("indirect",new Boolean(true));
 		    		 }else {
 		    			inputVals.put("indirect",new Boolean(false));
 		    		 }
 		    		 inputVals.put("value",(String)paramValue);
 	    		 }else if(paramValue instanceof List) {
+	    			 logger.warn("parameter instance a List");
 	    			 int listSize = ((List)paramValue).size();
 	    			
 	    			 if(listSize > 0) {
-			    		 if((String)((List)paramValue).get(0).startsWith("http://") || (String)((List)paramValue).get(0).startsWith("ftp://") ||
-					    		    (String)((List)paramValue).get(0).startsWith("ivo://")) {
+			    		 if(((String)(((List)paramValue).get(0))).startsWith("http://") || 
+			    		    ((String)(((List)paramValue).get(0))).startsWith("ftp://") ||
+					        ((String)(((List)paramValue).get(0))).startsWith("ivo://")) {
 					    		inputVals.put("indirect",new Boolean(true));
 			    		 }else {
 					    			inputVals.put("indirect",new Boolean(false));
@@ -318,48 +329,79 @@ public class ARTask implements ProcessorTaskWorker {
 	 		    		 inputVals.put("value",paramValue.toString());	    			 
 	    		 }
 	    	}else {
+	    		logger.warn("need to remove from template paramName = " + paramName);
 	    		//not found assume an optional param, but probably good to
 	    		//check and throw an exceptin if minOccurs is not 0.
 	    		inputFromCEATemplate.remove(paramName);
 	    	}
 	    }
 	    
+	    logger.warn("lets do output");
 	    Hashtable outputFromCEATemplate = (Hashtable)toolStruct.get("output");
 		
 	    keyIter = outputFromCEATemplate.keySet().iterator();
 	    Hashtable outputVals;
 	    while(keyIter.hasNext()) {
-	    	if(input.containsKey("Optional Output Ref - " + paramName)) {
+	    	paramName = (String)keyIter.next();
+	    	if(input.containsKey(paramName + " - Output Ref")) {
 		    	parameterThing = (DataThing)input.get("Optional Output Ref - " + paramName);
 		    	paramValue = (String)parameterThing.getDataObject();
-		    	if(paramValue != null && paramValue.trim().length() > 0) {
+		    	if(paramValue != null && ((String)paramValue).trim().length() > 0) {
 		    		outputVals = (Hashtable)outputFromCEATemplate.get(paramName);
 		    		outputVals.put("indirect",new Boolean(true));
-	   			 	outputVals.put("value",paramValue);
+	   			 	outputVals.put("value",(String)paramValue);
 		    	}
 	    	}
 	    }
 	    Document doc = createToolDocument(toolStruct);
+
 	    keyIter = inputListTable.keySet().iterator();
 	    Iterator listIter;
+	    logger.warn("ok we have to do some digging in the dom to fix lists");
 	    while(keyIter.hasNext()) {
 	    	paramName = (String)keyIter.next();
 	    	List paramList = (List)inputListTable.get(paramName);
-	    	listIter = paramList.iterator()
+	    	listIter = paramList.iterator();
 	    	listIter.next();//skip the first one
+	    	logger.warn("paramName for list fix = " + paramName + " the List size = " + paramList.size());
 	    	while(listIter.hasNext()) {
-	    		org.w3c.dom.Element paramElem = doc.getElementsByTagNameNS("*","parameter");
-	    		if(paramName.equals(paramElem.getAttribute("name")) {
-	    			org.w3c.dom.Node cloneParam = paramElem.cloneNode(true);
-	    			org.w3c.dom.Node childNode = cloneParam.getFirstChild();
-	    			childNode.getFirstChild().setNodeValue((String)listIter.next());
-	    			paramElem.getParentNode().appendChild(cloneParam);
+	    		//NodeList paramElem = doc.getElementsByTagNameNS("*","parameter");
+	    		NodeList paramElem = doc.getElementsByTagName("parameter");
+	    		logger.warn("paramElem nodelize size = " + paramElem.getLength());
+	    		if(paramElem.getLength() == 0) {
+	    			logger.warn("darn it is not finding a parameter element lets do a break");
+	    			break;
 	    		}
+	    		for(int k = 0;k < paramElem.getLength();k++) {
+		    		if(paramName.equals( ((Element)paramElem.item(k)).getAttribute("name"))) {
+		    			logger.warn("ok great the paramElem name attribute matched paramName");
+		    			Node cloneParam = ((Element)paramElem.item(k)).cloneNode(true);
+		    			Node childNode = cloneParam.getFirstChild();
+		    			childNode.getFirstChild().setNodeValue((String)listIter.next());
+		    			((Element)paramElem.item(k)).getParentNode().appendChild(cloneParam);
+		    			k = paramElem.getLength()+2;
+		    		}else if(k == (paramElem.getLength() - 1)) {
+		    			//hmmm went through all the parameter name attribues and not a match
+		    			//:(  need to do somethin so do a listIter.next for now and log it
+		    			logger.warn("DARN NO MATCH ON PARAMETER NAME ATTRIBUTE");
+		    			listIter.next();
+		    		}
+	    		}//for
 	    		//doc.cloneNode(true)
 	    	}//while
 	    }//while
+
+	    try {
+		StringWriter outputToolDoc = new StringWriter();
+		logger.warn("transform the tooldoc to a string for debugging in the createCeaToolDoc");
+		TransformerFactory.newInstance().newTransformer().transform(new DOMSource(doc), new StreamResult(outputToolDoc));
+		logger.warn("tooldoc to be written to file and submitted: = " + outputToolDoc);
+	    }catch(Exception e) {
+	    	e.printStackTrace();
+	    }
+
+	    logger.warn("ok were done lets return the doc");
+	    
 	    return doc;
 	}
-	
-
 }
