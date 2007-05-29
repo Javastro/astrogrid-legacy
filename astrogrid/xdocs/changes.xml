@@ -80,6 +80,11 @@
         </release>
 		
         <release version="HEAD">
+          <action dev="kmb" type="fix">
+            Fix to fallback to backup registry appropriately for registry clients.  Change was in
+            registry/client-lite jar only.  Does require a build of other components so it gets the new 
+            registry client jar.
+          </action>        
           <action dev="gtr" type="update">
             Branch Contracts_KMB_RegStoreValidate. Various changes and additions
             to schemata in support of the move to VOResource 1.0.
