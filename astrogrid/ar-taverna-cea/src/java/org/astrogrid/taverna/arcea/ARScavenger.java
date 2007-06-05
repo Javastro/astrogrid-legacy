@@ -45,15 +45,17 @@ public class ARScavenger extends Scavenger {
 		//try {
 			logger.warn("start makeDSAAppTree in ARScavenger");
 			//DefaultMutableTreeNode moduleNode = new DefaultMutableTreeNode("CEA Tree");
-			DefaultMutableTreeNode serviceNode = new DefaultMutableTreeNode("DSA");
+			//DefaultMutableTreeNode serviceNode = new DefaultMutableTreeNode("DSA");
 			
 			DefaultMutableTreeNode ceaNodeForDSA = 
-				new DefaultMutableTreeNode(new ARProcessorFactory("DSA"));
-			serviceNode.add(ceaNodeForDSA);
-			//DefaultMutableTreeNode regNodeForDSA = 
-			//	new DefaultMutableTreeNode(new ARProcessorFactory("DSA-RegQuery"));
-			//serviceNode.add(regNodeForDSA);			
-			add(serviceNode);	
+				new DefaultMutableTreeNode(new ARProcessorFactory("DSA","DSA"));
+			//serviceNode.add(ceaNodeForDSA);
+			DefaultMutableTreeNode votableNode = 
+				new DefaultMutableTreeNode(new ARProcessorFactory("VOTABLE_Fetch_Field", "VOTABLE_Fetch_Field"));
+			//serviceNode.add(votableNode);
+			
+			add(ceaNodeForDSA);
+			add(votableNode);
 			//add(regNodeForDSA);
 			logger.warn("end makeDSAAppTree successful ARScavenger");
 		/*} catch (ACRException x) {

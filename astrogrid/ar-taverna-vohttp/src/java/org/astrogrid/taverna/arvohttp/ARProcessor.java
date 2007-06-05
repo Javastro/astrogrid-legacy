@@ -40,13 +40,15 @@ public class ARProcessor extends Processor implements Serializable {
 	private static Logger logger = Logger.getLogger(ARProcessor.class);
 	
 	private String name;
+	private String commonName;
 	
-	public ARProcessor(ScuflModel model, String name) throws ProcessorCreationException, DuplicateProcessorNameException {
+	public ARProcessor(ScuflModel model, String name, String commonName) throws ProcessorCreationException, DuplicateProcessorNameException {
 		super(model,name);
-		logger.warn("in ARProcessor constructor and doing setDescription");
-		this.name = name;
+		logger.warn("in ARProcessor name = " + name + " commonName = " + commonName);
+		this.commonName = commonName;
+		//this.name = name;
 		try {
-			if(name.equals("SIAP") || name.equals("CONE") || name.equals("STAP")) {
+			if(commonName.equals("SIAP") || commonName.equals("CONE") || commonName.equals("STAP")) {
 				describeSearchPortList();
 				describeRADECPort();
 				describeSizePort();
@@ -60,7 +62,7 @@ public class ARProcessor extends Processor implements Serializable {
 				//describeExecutionPort();
 				//describeOutputPort();
 				
-			}else if(name.equals("STAP")) {
+			}else if(commonName.equals("STAP")) {
 				describeSearchPortList();
 				describeDatePort();
 				describeSavePort();
@@ -72,7 +74,7 @@ public class ARProcessor extends Processor implements Serializable {
 				//describeOutputAsInputPort();
 				//describeExecutionPort();
 				//describeOutputPort();
-			}else if(name.indexOf("RegQuery") != -1) {
+			}else if(commonName.indexOf("RegQuery") != -1) {
 				describeSearchPort();
 				describeIvornList();
 
@@ -94,8 +96,8 @@ public class ARProcessor extends Processor implements Serializable {
 		logger.info("done with constructor of ARProcessor");
 	}
 	
-	public String getName() {
-		return this.name;
+	public String getCommonName() {
+		return this.commonName;
 	}
 	
 	private void describeOutputPort() throws PortCreationException, DuplicatePortNameException {

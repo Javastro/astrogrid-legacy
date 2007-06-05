@@ -39,34 +39,34 @@ public class ARScavenger extends Scavenger {
 	private void listVOHTTPS() throws ScavengerCreationException {
 		//try {
 			logger.warn("start listApi in ARScavenger");
-			DefaultMutableTreeNode root = new DefaultMutableTreeNode("VO HTTP Services");
+			//DefaultMutableTreeNode root = new DefaultMutableTreeNode("VO HTTP Services");
 			DefaultMutableTreeNode siapNode = 
-				new DefaultMutableTreeNode(new ARProcessorFactory("SIAP"));
+				new DefaultMutableTreeNode(new ARProcessorFactory("SIAP","SIAP"));
 			DefaultMutableTreeNode stapNode = 
-				new DefaultMutableTreeNode(new ARProcessorFactory("STAP"));
+				new DefaultMutableTreeNode(new ARProcessorFactory("STAP","STAP"));
 			DefaultMutableTreeNode coneNode = 
-				new DefaultMutableTreeNode(new ARProcessorFactory("CONE"));
+				new DefaultMutableTreeNode(new ARProcessorFactory("CONE","CONE"));
 			DefaultMutableTreeNode ssapNode = 
-				new DefaultMutableTreeNode(new ARProcessorFactory("SSAP"));
+				new DefaultMutableTreeNode(new ARProcessorFactory("SSAP","SSAP"));
 
 			DefaultMutableTreeNode siapRegNode = 
-				new DefaultMutableTreeNode(new ARProcessorFactory("SIAP_RegQuery"));
+				new DefaultMutableTreeNode(new ARProcessorFactory("SIAP_RegQuery","SIAP_RegQuery"));
 			DefaultMutableTreeNode coneRegNode = 
-				new DefaultMutableTreeNode(new ARProcessorFactory("Cone_RegQuery"));
+				new DefaultMutableTreeNode(new ARProcessorFactory("Cone_RegQuery","Cone_RegQuery"));
 			DefaultMutableTreeNode ssapRegNode = 
-				new DefaultMutableTreeNode(new ARProcessorFactory("SSAP_RegQuery"));
+				new DefaultMutableTreeNode(new ARProcessorFactory("SSAP_RegQuery","SSAP_RegQuery"));
 			DefaultMutableTreeNode stapRegNode = 
-				new DefaultMutableTreeNode(new ARProcessorFactory("STAP_RegQuery"));
+				new DefaultMutableTreeNode(new ARProcessorFactory("STAP_RegQuery","STAP_RegQuery"));
 			
-			root.add(siapNode);
-			root.add(coneNode);
-			root.add(stapNode);	
-			root.add(ssapNode);	
-			root.add(siapRegNode);
-			root.add(coneRegNode);	
-			root.add(ssapRegNode);	
-			root.add(stapRegNode);	
-			add(root);
+			add(siapNode);
+			add(coneNode);
+			add(stapNode);	
+			add(ssapNode);	
+			add(siapRegNode);
+			add(coneRegNode);	
+			add(ssapRegNode);	
+			add(stapRegNode);	
+			//add(root);
 			logger.warn("end listVOHTTPS successful ARScavenger");
 		/*} catch (ACRException x) {
 			throw new ScavengerCreationException("Failed to list components of AR" + x.getMessage());

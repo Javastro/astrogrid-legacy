@@ -41,13 +41,13 @@ public class ARProcessor extends Processor implements Serializable {
 
 	private static Logger logger = Logger.getLogger(ARProcessor.class);
 	
-	private String name;
+	private String commonName;
 	private Myspace myspace;
 	
-	public ARProcessor(ScuflModel model, String name) throws ProcessorCreationException, DuplicateProcessorNameException {
+	public ARProcessor(ScuflModel model, String name, String commonName) throws ProcessorCreationException, DuplicateProcessorNameException {
 		super(model,name);
 		logger.warn("in ARProcessor constructor and doing setDescription");
-		this.name = name;
+		this.commonName = commonName;
 		try {
 			ACR acr = SingletonACR.getACR();
 			if(myspace == null) {
@@ -55,22 +55,22 @@ public class ARProcessor extends Processor implements Serializable {
 			}
 			describeDirectoryPort();
 
-			if(name.equals("Save")) {
+			if(commonName.equals("Save")) {
 				describeMainListPort();
 				describeSaveOutput();
-			}else if(name.equals("Save_For_VOTables")) {
+			}else if(commonName.equals("Save_For_VOTables")) {
 				describeMainListPort();
 				describeVOTableGrabForURLS();
 				describeVOTableGrab();
 				describeSaveOutput();
 				describeSaveVOTableOutput();
-			}else if(name.equals("Fetch")) {
+			}else if(commonName.equals("Fetch")) {
 				describeRecurseDirectories();
 				describeVOTableFetch();
 				//describeMapPort();
 				describeResultList();
 				describeResultListValue();
-			}else if(name.equals("Fetch_String_Content")) {
+			}else if(commonName.equals("Fetch_String_Content")) {
 				describeRecurseDirectories();
 				describeVOTableFetch();
 				//describeMapPort();
@@ -95,8 +95,8 @@ public class ARProcessor extends Processor implements Serializable {
 		logger.info("done with constructor of ARProcessor");
 	}
 	
-	public String getName() {
-		return this.name;
+	public String getCommonName() {
+		return this.commonName;
 	}
 	
 	private String chosenDirectoryURI = null;

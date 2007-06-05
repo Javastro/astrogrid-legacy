@@ -281,8 +281,11 @@ public class ARTask implements ProcessorTaskWorker {
 	    DataThing parameterThing;
 	    Hashtable inputListTable = new Hashtable();
 	    Hashtable outputListTable = new Hashtable();
+	    //logger.warn("the inputFromCeaTemplate size = " + inputFromCEATemplate.size());
 	    while(keyIter.hasNext()) {
+	    	//logger.warn("ok there is more keyIter");
 	    	paramName = (String)keyIter.next();
+	    	//logger.warn("the paramName = " + paramName);
 	    	if(input.containsKey(paramName)) {
 	    		//found great
 	    		 parameterThing = (DataThing)input.get(paramName);
@@ -332,7 +335,8 @@ public class ARTask implements ProcessorTaskWorker {
 	    		logger.warn("need to remove from template paramName = " + paramName);
 	    		//not found assume an optional param, but probably good to
 	    		//check and throw an exceptin if minOccurs is not 0.
-	    		inputFromCEATemplate.remove(paramName);
+	    		//inputFromCEATemplate.remove(paramName);
+	    		keyIter.remove();
 	    	}
 	    }
 	    
@@ -343,8 +347,8 @@ public class ARTask implements ProcessorTaskWorker {
 	    Hashtable outputVals;
 	    while(keyIter.hasNext()) {
 	    	paramName = (String)keyIter.next();
-	    	if(input.containsKey(paramName + " - Output Ref")) {
-		    	parameterThing = (DataThing)input.get("Optional Output Ref - " + paramName);
+	    	if(input.containsKey(paramName + " - Ref")) {
+		    	parameterThing = (DataThing)input.get(paramName + " - Ref");
 		    	paramValue = (String)parameterThing.getDataObject();
 		    	if(paramValue != null && ((String)paramValue).trim().length() > 0) {
 		    		outputVals = (Hashtable)outputFromCEATemplate.get(paramName);

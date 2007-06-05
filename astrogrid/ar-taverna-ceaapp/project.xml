@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: project.xml,v 1.4 2007/06/05 13:51:26 KevinBenson Exp $ -->
+<!-- $Id: project.xml,v 1.1 2007/06/05 13:52:13 KevinBenson Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
   <extend>../maven-base/project.xml</extend>
-  <artifactId>ar-taverna-cea</artifactId>
+  <artifactId>ar-taverna-ceaapp</artifactId>
   <currentVersion>${taverna.version}</currentVersion>
   <name>Taverna Binding to AR</name>
   <description>Taverna classes to access AR and VO Functionality.</description>
@@ -76,19 +76,7 @@
       <artifactId>astrogrid-common</artifactId>
       <version>2007.1c</version>
       <url>http://www.astrogrid.org/</url>
-    </dependency>  
-    
-        
-	 <dependency>
-                <groupId>starlink</groupId>
-                <artifactId>stil</artifactId>
-               <version>2.6</version>
-                <url>http://www.star.bristol.ac.uk/~mbt/stil/</url>
-                <properties>
-		    <dist.bundle>true</dist.bundle>		    
-		    <strip>true</strip>
-                </properties>
-        </dependency>    
+    </dependency>    
       	
   	<dependency>
   		<groupId>uk.org.mygrid</groupId>

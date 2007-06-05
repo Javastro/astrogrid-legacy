@@ -58,8 +58,8 @@ public class ARProcessor extends Processor implements Serializable {
 		return this.ivorn;
 	}
 		
-	public ARProcessor(ScuflModel model, String ivorn, String interfaceName) throws ProcessorCreationException, DuplicateProcessorNameException {
-		super(model,interfaceName);
+	public ARProcessor(ScuflModel model,String name, String ivorn, String interfaceName) throws ProcessorCreationException, DuplicateProcessorNameException {
+		super(model,name);
 		this.interfaceName = interfaceName;
 		this.ivorn = ivorn;
 		logger.warn("cea_app2 in ARProcessor constructor and doing setDescription");
@@ -124,10 +124,9 @@ public class ARProcessor extends Processor implements Serializable {
 								pb = params[m];
 							}
 						}//for
-						InputPort paramInput = new InputPort(this,pb.getName() + " - Output Ref");						
+						InputPort paramInput = new InputPort(this,pb.getName() + " - Ref");						
 						paramInput.getMetadata().setMIMETypes(mimesText);
 						paramInput.setSyntacticType(computeType(java.lang.String.class,mimesText));
-						paramInput.setOptional(true);
 						this.addPort(paramInput);
 						/*
 						OutputPort paramOutput = new OutputPort(this,pb.getName());

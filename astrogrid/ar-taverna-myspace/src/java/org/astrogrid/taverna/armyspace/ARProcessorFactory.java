@@ -25,13 +25,19 @@ import org.apache.log4j.Logger;
 public class ARProcessorFactory extends ProcessorFactory {
 	
 	private static Logger logger = Logger.getLogger(ARProcessorFactory.class);
+	private String commonName;
 	
 	/**
 	 * 
 	 */
-	public ARProcessorFactory(String name) {
+	public ARProcessorFactory(String name, String commonName) {
 		logger.warn("start constructor in ARProcessorFactory name = " + name);
 		setName(name);
+		this.commonName = commonName;
+	}
+	
+	public String getCommonName() {
+		return this.commonName;
 	}
 		
 	public Class getProcessorClass() {

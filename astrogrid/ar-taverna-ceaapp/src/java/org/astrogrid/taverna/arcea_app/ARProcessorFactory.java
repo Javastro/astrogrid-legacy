@@ -30,9 +30,9 @@ public class ARProcessorFactory extends ProcessorFactory {
 	/**
 	 * 
 	 */
-	public ARProcessorFactory(String ivorn, String interfaceName) {
+	public ARProcessorFactory(String name, String ivorn, String interfaceName) {
 		logger.warn("cea start constructor in ARProcessorFactory");
-		setName(interfaceName);  //should probably be interfacename
+		setName(name);  //should probably be interfacename
 		this.interfaceName = interfaceName;
 		this.ivorn = ivorn;
 		logger.warn("done with arprocessorfactory");

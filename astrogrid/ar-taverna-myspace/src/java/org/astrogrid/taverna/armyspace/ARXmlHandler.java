@@ -40,7 +40,7 @@ public class ARXmlHandler implements XMLHandler {
 	public Element elementForFactory(ProcessorFactory arg0) {
 		logger.warn("ARXmlHandler.elementForFactory");
 		ARProcessorFactory arpf = (ARProcessorFactory)arg0;		
-		return getElement(arpf.getName());
+		return getElement(arpf.getName(),arpf.getCommonName());
 	}
 	
 	/**
@@ -52,20 +52,25 @@ public class ARXmlHandler implements XMLHandler {
 	public Element elementForProcessor(Processor arg0) {
 		logger.warn("start elementForProcessor in ARXmlHandler");
 		ARProcessor arp = (ARProcessor)arg0;
-		return getElement(arp.getName());
+		return getElement(arp.getName(),arp.getCommonName());
 	}
 	
 	    
-    private Element getElement(String name) {
-		logger.warn("ARXmlHandler.getElement name = " + name);
+    private Element getElement(String procName, String commonName ) {
+		logger.warn("ARXmlHandler.getElement name = " + procName + " commonName = " + commonName);
 
         Element spec = new Element("astroruntimemyspace", XScufl.XScuflNS);
        
 
         Element arNameElement = new Element("myspaceName",
                 XScufl.XScuflNS);
-        arNameElement.setText(name);
+        arNameElement.setText(commonName);
         spec.addContent(arNameElement);
+        
+        Element arProcNameElement = new Element("myspaceProcName",
+                XScufl.XScuflNS);
+        arProcNameElement.setText(procName);
+        spec.addContent(arProcNameElement);
         
         return spec;
     }
@@ -82,7 +87,10 @@ public class ARXmlHandler implements XMLHandler {
 		Element arNameElement = astroElem.getChild("myspaceName",
 	                XScufl.XScuflNS);
 	    String name = arNameElement.getTextTrim();
-		return new ARProcessorFactory(name);
+		Element arProcNameElement = astroElem.getChild("myspaceProcName",
+                XScufl.XScuflNS);
+		String procName = arProcNameElement.getTextTrim();
+		return new ARProcessorFactory(procName, name);
 	}
 	/**
 	 * Create a new processor from the given chunk of XML
@@ -104,7 +112,7 @@ public class ARXmlHandler implements XMLHandler {
 		
 		String myspaceName = arNameElement.getTextTrim();
 		logger.warn("the myspaceName in loadprocessorxml = " + myspaceName);
-		ARProcessor theProcessor = new ARProcessor(model, myspaceName);
+		ARProcessor theProcessor = new ARProcessor(model, name, myspaceName);
 		logger.warn("end loadProcessorFromXML in ARXmlHandler");
 		return theProcessor;
 	}

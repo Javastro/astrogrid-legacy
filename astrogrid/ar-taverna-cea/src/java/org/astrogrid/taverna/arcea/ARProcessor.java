@@ -45,18 +45,31 @@ import org.w3c.dom.Document;
 public class ARProcessor extends Processor implements Serializable {
 
 	private static Logger logger = Logger.getLogger(ARProcessor.class);
+	
+	public String commonName;
+	
+	public String getCommonName() {
+		return this.commonName;
+	}
 		
-	public ARProcessor(ScuflModel model, String name) throws ProcessorCreationException, DuplicateProcessorNameException {
+	public ARProcessor(ScuflModel model, String name, String commonName) throws ProcessorCreationException, DuplicateProcessorNameException {
 		super(model,name);
+		this.commonName = commonName;
 		logger.warn("cea in ARProcessor constructor and doing setDescription");
 		try {
 
-			if(name.equals("DSA")) {
+			if(commonName.equals("DSA")) {
 				describeDSAInputs();
+				describeResultOutput();
 				describeDSAOutputs();
+				setDescription("DSA");
+			}else if(commonName.equals("VOTABLE_Fetch_Field")) {
+				describeVotableInputs();
+				describeResultOutput();
+				setDescription("Fetch a List of Values from a particular Field gien a column or UCD");
 			}
 			
-			setDescription("DSA");
+			
 		}/*catch(NotFoundException e) {
 			e.printStackTrace();
 			throw new ProcessorCreationException(e);
@@ -111,8 +124,8 @@ public class ARProcessor extends Processor implements Serializable {
 		}
 	}	
 	
-	
-	private void describeDSAOutputs() throws PortCreationException, DuplicatePortNameException {
+
+	private void describeResultOutput() throws PortCreationException, DuplicatePortNameException {
 		OutputPort resList = new OutputPort(this,"ResultList");
 		resList.getMetadata().setDescription("XML Content as a List");
 		List mimes = new ArrayList();
@@ -120,7 +133,9 @@ public class ARProcessor extends Processor implements Serializable {
 		resList.getMetadata().setMIMETypes(mimes); 
 		resList.setSyntacticType(computeType(java.util.List.class,mimes));
 		this.addPort(resList);
-		
+	}
+	
+	private void describeDSAOutputs() throws PortCreationException, DuplicatePortNameException {		
 		OutputPort resListID = new OutputPort(this,"ExecutionID");
 		resListID.getMetadata().setDescription("Execution ID");
 		List mimeID = new ArrayList();
@@ -128,6 +143,21 @@ public class ARProcessor extends Processor implements Serializable {
 		resListID.getMetadata().setMIMETypes(mimeID);
 		resListID.setSyntacticType(computeType(java.lang.String.class,mimeID));
 		this.addPort(resListID);
+	}
+	
+	private void describeVotableInputs() throws PortCreationException, DuplicatePortNameException {
+		List mimesText = new ArrayList();
+		mimesText.add("text/plain");
+		InputPort votableInput = new InputPort(this,"VOTABLE");
+		votableInput.getMetadata().setMIMETypes(mimesText);
+		votableInput.setSyntacticType(computeType(java.lang.String.class,mimesText));
+		this.addPort(votableInput);
+		
+		InputPort colInput = new InputPort(this,"Column or UCD");
+		colInput.getMetadata().setMIMETypes(mimesText);
+		colInput.setSyntacticType(computeType(java.lang.String.class,mimesText));
+		this.addPort(colInput);
+		
 	}	
 	
 	

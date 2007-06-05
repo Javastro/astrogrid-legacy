@@ -5,6 +5,7 @@ package org.astrogrid.taverna.arcea;
 
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -14,9 +15,14 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.StringWriter;
 
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 import org.apache.log4j.Logger;
 
@@ -40,6 +46,12 @@ import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.ui.Lookout;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 
+import uk.ac.starlink.table.StarTable;
+import uk.ac.starlink.table.StarTableFactory;
+import uk.ac.starlink.table.ColumnInfo;
+import uk.ac.starlink.table.RowSequence;
+import uk.ac.starlink.votable.VOTableBuilder;
+
 import java.net.URI;
 
 import org.embl.ebi.escience.baclava.DataThing;
@@ -51,6 +63,7 @@ import org.embl.ebi.escience.scuflworkers.ProcessorTaskWorker;
 //import uk.ac.soton.itinnovation.taverna.enactor.entities.ProcessorTask;
 import org.embl.ebi.escience.scufl.IProcessorTask;
 import uk.ac.soton.itinnovation.taverna.enactor.entities.TaskExecutionException;
+
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -79,6 +92,55 @@ public class ARTask implements ProcessorTaskWorker {
 		this.processor = (ARProcessor)p;
 	}
 	private final ARProcessor processor;
+	
+	  private StarTable getStarTable(String votableXML) {
+	    	try {
+		    	ByteArrayInputStream bai = new ByteArrayInputStream(votableXML.getBytes());
+		    	StarTable table = (new StarTableFactory()).makeStarTable(bai, new VOTableBuilder());
+		    	return table;
+	    	}catch(IOException ioe) {
+	    		ioe.printStackTrace();
+	    	}
+	    	return null;
+	    }
+	        
+	    private StarTable getStarTable(URL url) {
+	    	try {
+	    		return ((new StarTableFactory()).makeStarTable(url));
+	    	}catch(IOException ioe) {
+	    		ioe.printStackTrace();
+	    	}
+	    	return null;
+	    }
+	    
+	    private List getData(StarTable table, String nameCol) throws IOException {
+	    	int rowCount = (int)table.getRowCount();
+	    	int j = 0;
+	    	int nameColSeq = 0;
+		    	for(int i = 0;i < table.getColumnCount();i++) {
+		    		if(table.getColumnInfo(i).getUCD().equals(nameCol) ||
+		    		   table.getColumnInfo(i).getName().equals(nameCol)) {
+		    			nameColSeq = i;
+		    		    j++;
+		    		    i = table.getColumnCount();
+		    		}//if
+		    	}//for
+	    	j = 0;
+	    	
+	    	RowSequence rseq = table.getRowSequence();
+	    	ArrayList resultArray = new ArrayList();
+	    	Object val;
+		     try {
+		         while ( rseq.next() ) {
+		        	 val = rseq.getCell(nameColSeq);
+		        	 resultArray.add((String)val);
+		         }//while
+		     }finally {
+		         rseq.close();
+		     }//finally
+		     return resultArray;
+	    }
+	    
 	
     private ParameterValue[] convertParams(Map inputHash) {
         ParameterValue[] arr = new ParameterValue[inputHash.size()];
@@ -140,8 +202,11 @@ public class ARTask implements ProcessorTaskWorker {
 		// unpackage inputs.
 		logger.warn("start execute in ARTask");
 
-		String name = processor.getName();
-		Object temp;		
+		//String name = processor.getName();
+		String name = processor.getCommonName();
+		Object temp;
+	    Map outputMap = new HashMap();		    
+
 		//Class returnClass = processor.getMethodDescriptor().getReturnValue().getType();
 		/*
 		ACR acr = getACR();
@@ -152,6 +217,27 @@ public class ARTask implements ProcessorTaskWorker {
 		InterfaceBean ceaInterfaceBean;
 		*/
 		try {
+			if(name.equals("VOTABLE_Fetch_Field")) {
+				String votable = (String)((DataThing)arg0.get("VOTABLE")).getDataObject();
+				String column = (String)((DataThing)arg0.get("Column or UCD")).getDataObject();
+				StarTable st;
+				if(votable.startsWith("http")) {
+					try {
+						URL testURL = new URL(votable);
+						st = getStarTable(testURL);
+						outputMap.put("ResultList",DataThingFactory.bake(getData(st,column)));						
+					}catch(Exception e) {
+						st = null;
+					}
+				}else {
+					st = getStarTable(votable);
+					outputMap.put("ResultList",DataThingFactory.bake(getData(st,column)));
+				}
+				return outputMap;				
+			}
+
+			
+			
 			ACR acr = SingletonACR.getACR();
 			Applications apps = (Applications)acr.getService(Applications.class);
 			Lookout lookout;
@@ -229,7 +315,6 @@ public class ARTask implements ProcessorTaskWorker {
 				
 			logger.warn("setting outputmap finalresultmap size again = " + finalResultMap.size() + "and executionID = " + executionID.toString());
 			logger.warn("here is result of 0 in the final map = " + finalResultMap.values().toArray()[0].toString());
-		    Map outputMap = new HashMap();		    
 		    outputMap.put("ResultList",DataThingFactory.bake(new ArrayList(finalResultMap.values())));
 		    outputMap.put("ExecutionID",DataThingFactory.bake(executionID.toString()));
 		    logger.warn("end cea execute in ARTask");

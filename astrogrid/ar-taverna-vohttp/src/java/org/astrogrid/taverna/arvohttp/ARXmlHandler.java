@@ -40,7 +40,7 @@ public class ARXmlHandler implements XMLHandler {
 	public Element elementForFactory(ProcessorFactory arg0) {
 		logger.warn("ARXmlHandler.elementForFactory");
 		ARProcessorFactory arpf = (ARProcessorFactory)arg0;		
-		return getElement(arpf.getName());
+		return getElement(arpf.getName(),arpf.getCommonName());
 	}
 	
 	/**
@@ -52,20 +52,25 @@ public class ARXmlHandler implements XMLHandler {
 	public Element elementForProcessor(Processor arg0) {
 		logger.warn("start elementForProcessor in ARXmlHandler");
 		ARProcessor arp = (ARProcessor)arg0;
-		return getElement(arp.getName());
+		return getElement(arp.getName(),arp.getCommonName());
 	}
 	
 	    
-    private Element getElement(String name) {
-		logger.warn("ARXmlHandler.getElement name = " + name);
+    private Element getElement(String procName, String commonName) {
+		logger.warn("ARXmlHandler.getElement procname = " + procName + " commonName = " + commonName);
 
         Element spec = new Element("astroruntimevohttp", XScufl.XScuflNS);
        
 
         Element arNameElement = new Element("vohttpName",
                 XScufl.XScuflNS);
-        arNameElement.setText(name);
+        arNameElement.setText(commonName);
         spec.addContent(arNameElement);
+
+        Element arProcNameElement = new Element("vohttpProcName",
+                XScufl.XScuflNS);
+        arProcNameElement.setText(procName);
+        spec.addContent(arProcNameElement);        
         
         return spec;
     }
@@ -82,7 +87,11 @@ public class ARXmlHandler implements XMLHandler {
 		Element arNameElement = astroElem.getChild("vohttpName",
 	                XScufl.XScuflNS);
 	    String name = arNameElement.getTextTrim();
-		return new ARProcessorFactory(name);
+	    
+		Element arProcNameElement = astroElem.getChild("vohttpProcName",
+                XScufl.XScuflNS);
+		String procname = arProcNameElement.getTextTrim();
+		return new ARProcessorFactory(procname,name);
 	}
 	/**
 	 * Create a new processor from the given chunk of XML
@@ -99,12 +108,16 @@ public class ARXmlHandler implements XMLHandler {
 		
 		Element astroElem = specElement.getChild("astroruntimevohttp",
                 XScufl.XScuflNS);
+		
 		Element arNameElement = astroElem.getChild("vohttpName",
                 XScufl.XScuflNS);
+		Element arProcNameElement = astroElem.getChild("vohttpProcName",
+                XScufl.XScuflNS);		
 		
 		String vohttpName = arNameElement.getTextTrim();
-		logger.warn("the vohttpname in loadprocessorxml = " + vohttpName);
-		ARProcessor theProcessor = new ARProcessor(model, vohttpName);
+		String vohttpProcName = arProcNameElement.getTextTrim();
+		logger.warn("the vohttpname in loadprocessorxml procName = " + vohttpProcName + " and httpName = " + vohttpName);
+		ARProcessor theProcessor = new ARProcessor(model, name, vohttpName);
 		logger.warn("end loadProcessorFromXML in ARXmlHandler");
 		return theProcessor;
 	}

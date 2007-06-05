@@ -35,7 +35,7 @@ public class ARXmlHandler implements XMLHandler {
 	public Element elementForFactory(ProcessorFactory arg0) {
 		logger.warn("cea_app elementForFactory");
 		ARProcessorFactory arpf = (ARProcessorFactory)arg0;		
-		return getElement(arpf.getIvorn(),arpf.getInterfaceName());
+		return getElement(arpf.getName(), arpf.getIvorn(),arpf.getInterfaceName());
 	}
 	
 	/**
@@ -47,21 +47,27 @@ public class ARXmlHandler implements XMLHandler {
 	public Element elementForProcessor(Processor arg0) {
 		logger.warn("cea_app start elementForProcessor in ARXmlHandler");
 		ARProcessor arp = (ARProcessor)arg0;
-		return getElement(arp.getIvorn(),arp.getInterfaceName());
+		return getElement(arp.getName(), arp.getIvorn(),arp.getInterfaceName());
 	}
 	
-    private Element getElement(String name,String interfaceName) {
+    private Element getElement(String name, String ivorn,String interfaceName) {
 		logger.warn("cea_app ARXmlHandler.getElement name = " + name + " interfaceName = " + interfaceName);
 
         Element spec = new Element("astroruntimecea_app", XScufl.XScuflNS);
         Element arNameElement = new Element("ceaivorn",
                 XScufl.XScuflNS);
-        arNameElement.setText(name);
+        arNameElement.setText(ivorn);
         spec.addContent(arNameElement);
+        
         Element arInterfaceElement = new Element("ceaInterface",
                 XScufl.XScuflNS);
         arInterfaceElement.setText(interfaceName);
         spec.addContent(arInterfaceElement);
+        
+        Element arProcNameElem = new Element("name",
+                XScufl.XScuflNS);
+        arProcNameElem.setText(name);
+        spec.addContent(arProcNameElem);        
         
         return spec;
     }	
@@ -69,12 +75,13 @@ public class ARXmlHandler implements XMLHandler {
 	
     /*
      * 
-     */
+    
     private Element getElement(URI ceaAppIvorn, String ceaInterface) {
     	logger.warn("cea_app getElement uris");
     	return getElement(ceaAppIvorn.toString(), ceaInterface);
     	
     }	
+     */
 	
 	/**
 	 * Create a new factory that will produces processors of the supplied spec
@@ -92,9 +99,14 @@ public class ARXmlHandler implements XMLHandler {
 		Element ceaInterfaceElement = astroElement.getChild("ceaInterface",
                 XScufl.XScuflNS);
 		String ceaInterface = ceaInterfaceElement.getTextTrim();
-		logger.warn("ivorn found = " + ceaAppIvorn + " interface = " + ceaInterface);
+		
+		Element nameElement = astroElement.getChild("name",
+                XScufl.XScuflNS);
+		String name = nameElement.getTextTrim();
+		
+		logger.warn("ivorn found = " + ceaAppIvorn + " interface = " + ceaInterface + " name = " + name);
 		//@todo add array bounds checking.		
-		return new ARProcessorFactory(ceaAppIvorn,ceaInterface);
+		return new ARProcessorFactory(name, ceaAppIvorn,ceaInterface);
 	}
 	/**
 	 * Create a new processor from the given chunk of XML
@@ -115,7 +127,7 @@ public class ARXmlHandler implements XMLHandler {
                 XScufl.XScuflNS);
 		String ceaInterface = ceaInterfaceElement.getTextTrim();
 		logger.warn("instantiating ARProcessor from loadProcessorFromXML appivorn = " + ceaAppIvorn + " interface = " + ceaInterface);
-		ARProcessor theProcessor = new ARProcessor(model, ceaAppIvorn, ceaInterface);
+		ARProcessor theProcessor = new ARProcessor(model, name, ceaAppIvorn, ceaInterface);
 		logger.info("end loadProcessorFromXML in ARXmlHandler");
 		return theProcessor;
 	}

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 import java.io.File;
+import java.io.FileOutputStream;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import org.apache.log4j.Logger;
@@ -50,15 +51,30 @@ public class ARScavenger extends Scavenger {
 		super("Astro Runtime CEA");
 		logger.info("start constructor in ARScavenger");
 		makeCEAAppTree();
+		//ceaProp = new Properties();
 	}
 	
+	private static Properties ceaProp = new Properties();
 	public  static final String PROPERTY_FILE = "my_cealist.properties";
+	
+	public static void saveProperties(String []ivorns) throws java.io.IOException {
+		File confDir = MyGridConfiguration.getUserDir(MyGridConfiguration.CONFIGURATION_DIRECTORY);
+		File propertyFile = new File(confDir, PROPERTY_FILE);
+		int size = ceaProp.size();
+		size++;
+		for(int i = 0;i < ivorns.length;i++) {
+			ceaProp.setProperty("my.cea_app." + (size + i), ivorns[i]);
+		}
+		FileOutputStream fs = new FileOutputStream(propertyFile,false);
+		ceaProp.store(fs, null);
+	}
+	
 	/** alternate implementation of listApi */
 	private void makeCEAAppTree() throws ScavengerCreationException {
 		//try {
 			logger.warn("start makeCEAAppTree in ARScavenger");
 			//DefaultMutableTreeNode moduleNode = new DefaultMutableTreeNode("CEA Tree");
-			DefaultMutableTreeNode serviceNode = new DefaultMutableTreeNode("CEA");
+			//DefaultMutableTreeNode serviceNode = new DefaultMutableTreeNode("CEA");
 			
 			
 			//Read the internal properties file first looking at conf then in the jar itself.
@@ -67,26 +83,27 @@ public class ARScavenger extends Scavenger {
 			//possibly think about it more as authid/reskey=title
 			//http://www.astrogrid.org/maven/taverna_plugins/plugins/my_cealist.properties
 			//MyGridConfigurationgetUserDir("conf"); //could be handy to add&remove apps.
-			Properties prop = new Properties();//MyGridConfiguration.loadUserProperties("my_cealist.properties");
+			//Properties prop = new Properties();//MyGridConfiguration.loadUserProperties("my_cealist.properties");
 			try {
 				File confDir = MyGridConfiguration.getUserDir(MyGridConfiguration.CONFIGURATION_DIRECTORY);
 				File propertyFile = new File(confDir, PROPERTY_FILE);
+				logger.warn("try to load ceaProp");
 				if(propertyFile.exists() && propertyFile.isFile()) {
-					prop.load(propertyFile.toURL().openStream());
+					ceaProp.load(propertyFile.toURL().openStream());
 				}else {
-					prop.setProperty("my.cea_app.1", "ivo://org.astrogrid/SExtractor");
-					prop.setProperty("my.cea_app.2", "ivo://mssl.ucl.ac.uk/SolarMovieMaker");
-					/*
-					prop.setProperty("my.cea_app.3", "ivo://org.astrogrid/HyperZ");
-					prop.setProperty("my.cea_app.4", "ivo://org.astrogrid/CrossMatcher");
-					prop.setProperty("my.cea_app.5", "ivo://org.astrogrid/MERLINImager");
-					*/
+					logger.warn("setting base properties");
+					ceaProp.setProperty("my.cea_app.1", "ivo://org.astrogrid/SExtractor");
+					ceaProp.setProperty("my.cea_app.2", "ivo://mssl.ucl.ac.uk/SolarMovieMaker");
+					ceaProp.setProperty("my.cea_app.3", "ivo://org.astrogrid/HyperZ");
+					ceaProp.setProperty("my.cea_app.4", "ivo://org.astrogrid/CrossMatcher");
+					ceaProp.setProperty("my.cea_app.5", "ivo://org.astrogrid/MERLINImager");
+					ceaProp.setProperty("my.cea_app.6", "ivo://starlink.ac.uk/stilts1.3");					
 				}
-				
+				logger.warn("ceaProp size = " + ceaProp.size());
 				ACR acr = SingletonACR.getACR();
 				//do some looping through all the apps and interface beans.
 				Applications apps = (Applications)acr.getService(Applications.class);
-				Object []ivornArr = prop.values().toArray();
+				Object []ivornArr = ceaProp.values().toArray();
 				logger.warn("property array size = " + ivornArr.length);
 				for(int k = 0;k < ivornArr.length;k++) {
 					logger.warn("looking up CeaApplication");
@@ -98,12 +115,13 @@ public class ARScavenger extends Scavenger {
 					for(int m = 0;m < ib.length;m++) {
 						logger.warn("calling ARProcessorFactory from Arscavenger with ivorn = " + (String)ivornArr[k] + " and interface name = " + ib[m].getName());
 						DefaultMutableTreeNode ceaNodeForDSA = 
-							new DefaultMutableTreeNode(new ARProcessorFactory((String)ivornArr[k],ib[m].getName()));
+							new DefaultMutableTreeNode(new ARProcessorFactory(ib[m].getName(), (String)ivornArr[k],ib[m].getName()));
 						appNode.add(ceaNodeForDSA);
 					}
-					serviceNode.add(appNode);
+					//serviceNode.add(appNode);
+					add(appNode);
 				}
-				add(serviceNode);			
+				//add(serviceNode);			
 				logger.warn("end makeCEAAppTree successful ARScavenger");
 		}catch (java.net.URISyntaxException e) {
 			e.printStackTrace();

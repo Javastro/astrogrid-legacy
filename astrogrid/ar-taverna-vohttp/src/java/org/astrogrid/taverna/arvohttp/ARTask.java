@@ -249,7 +249,8 @@ public class ARTask implements ProcessorTaskWorker {
 		// unpackage inputs.
 		logger.warn("start execute in ARTask");
 
-		String name = processor.getName();
+		//String name = processor.getName();
+		String name = processor.getCommonName();
 	    Map outputMap = new HashMap();
 	    Map resultMap = new HashMap();
 	    ArrayList errorList = new ArrayList();

@@ -39,20 +39,20 @@ public class ARScavenger extends Scavenger {
 	private void listMyspaceProcessors() throws ScavengerCreationException {
 		//try {
 			logger.warn("start listMyspaceProcessors in ARScavenger");
-			DefaultMutableTreeNode root = new DefaultMutableTreeNode("Myspace");
+			//DefaultMutableTreeNode root = new DefaultMutableTreeNode("Myspace");
 			DefaultMutableTreeNode myspaceSave = 
-				new DefaultMutableTreeNode(new ARProcessorFactory("Save"));
+				new DefaultMutableTreeNode(new ARProcessorFactory("Save","Save"));
 			DefaultMutableTreeNode myspaceVotableSave = 
-				new DefaultMutableTreeNode(new ARProcessorFactory("Save_For_VOTables"));
+				new DefaultMutableTreeNode(new ARProcessorFactory("Save_For_VOTables","Save_For_VOTables"));
 			DefaultMutableTreeNode myspaceFetch = 
-				new DefaultMutableTreeNode(new ARProcessorFactory("Fetch"));
+				new DefaultMutableTreeNode(new ARProcessorFactory("Fetch","Fetch"));
 			//DefaultMutableTreeNode myspaceFetchString = 
 			//	new DefaultMutableTreeNode(new ARProcessorFactory("Fetch_String_Content"));			
-			root.add(myspaceSave);
-			root.add(myspaceVotableSave);
-			root.add(myspaceFetch);
+			add(myspaceSave);
+			add(myspaceVotableSave);
+			add(myspaceFetch);
 			//root.add(myspaceFetchString);			
-			add(root);
+			//add(root);
 			logger.warn("end listMyspaceProcessors successful ARScavenger");
 		/*} catch (ACRException x) {
 			throw new ScavengerCreationException("Failed to list components of AR" + x.getMessage());
