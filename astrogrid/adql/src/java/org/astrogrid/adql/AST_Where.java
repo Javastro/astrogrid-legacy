@@ -3,17 +3,26 @@
 package org.astrogrid.adql;
 
 import org.astrogrid.adql.v1_0.beans.WhereType;
-import org.astrogrid.adql.v1_0.beans.SearchType;
+import org.apache.xmlbeans.XmlObject ;
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 public class AST_Where extends SimpleNode {
+    
+    private static Log log = LogFactory.getLog( AST_Where.class ) ;
     
     public AST_Where(AdqlStoX p, int id) {
         super(p, id);
     }
 
-    public void jjtClose() {
-        WhereType whereType = WhereType.Factory.newInstance() ;
-        whereType.setCondition( (SearchType)children[0].getGeneratedObject() ) ;
-        setGeneratedObject( whereType ) ;
+    public void buildXmlTree( XmlObject xo ) {
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_Where.buildXmlTree()" ) ;  
+        WhereType whereType = (WhereType)xo.changeType( WhereType.type ) ;
+        this.generatedObject = whereType ;
+        if( jjtGetNumChildren() > 0 ) {
+            children[0].buildXmlTree( whereType.addNewCondition() ) ;
+        }
+        super.buildXmlTree(whereType) ;
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_Where.buildXmlTree()" ) ; 
     }
 }

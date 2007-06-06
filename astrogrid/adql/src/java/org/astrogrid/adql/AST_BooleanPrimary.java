@@ -4,8 +4,14 @@ package org.astrogrid.adql;
 
 import org.astrogrid.adql.v1_0.beans.SearchType ;
 import org.astrogrid.adql.v1_0.beans.ClosedSearchType ;
+import org.apache.xmlbeans.XmlObject ;
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+
 
 public class AST_BooleanPrimary extends SimpleNode {
+    
+    private static Log log = LogFactory.getLog( AST_BooleanPrimary.class ) ;
     
     private boolean parenthesized = false ;
    
@@ -16,16 +22,40 @@ public class AST_BooleanPrimary extends SimpleNode {
     public void setParenthesized() {
         parenthesized = true ;
     }
+    
+    public boolean isParenthesized() {
+        return parenthesized ;
+    }
 
     public void jjtClose() {   
+//        if( parenthesized ) {
+//            ClosedSearchType cs = ClosedSearchType.Factory.newInstance() ;
+//            if( jjtGetNumChildren() > 0 ) {
+//                cs.setCondition( (SearchType)children[0].getGeneratedObject() ) ;
+//                children[0].exchangeGeneratedObject( cs.getCondition() ) ;
+//            }
+//            setGeneratedObject( cs ) ;   
+//        }
+//        else {
+//            setGeneratedObject( children[0].getGeneratedObject() ) ;
+//        }
+    }
+    
+    public void buildXmlTree( XmlObject xo ) {   
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_BooleanPrimary.buildXmlTree()" ) ; 
         if( parenthesized ) {
-            ClosedSearchType cs = ClosedSearchType.Factory.newInstance() ;
-            cs.setCondition( (SearchType)children[0].getGeneratedObject() ) ;
-            setGeneratedObject( cs ) ;   
+            ClosedSearchType cs = (ClosedSearchType)xo.changeType( ClosedSearchType.type ) ;
+            if( jjtGetNumChildren() > 0 ) {
+                children[0].buildXmlTree( cs.addNewCondition() ) ;
+            }
+            this.generatedObject = cs ;   
         }
         else {
-            setGeneratedObject( children[0].getGeneratedObject() ) ;
+            children[0].buildXmlTree( xo ) ;
+            this.generatedObject = children[0].getGeneratedObject() ;
         }
+        super.buildXmlTree(xo) ;
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_BooleanPrimary.buildXmlTree()" ) ; 
     }
   
 }

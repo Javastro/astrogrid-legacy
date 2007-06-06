@@ -3,26 +3,35 @@
 package org.astrogrid.adql;
 
 import org.astrogrid.adql.v1_0.beans.UnionSearchType;
-import org.astrogrid.adql.v1_0.beans.SearchType;
+import org.apache.xmlbeans.XmlObject; 
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 public class AST_SearchCondition extends SimpleNode {
+    
+    private static Log log = LogFactory.getLog( AST_SearchCondition.class ) ;
 
     public AST_SearchCondition(AdqlStoX p, int id) {
         super(p, id);
     }
 
-    public void jjtClose() {
-        if( jjtGetNumChildren() == 1 ) {
+    public void buildXmlTree( XmlObject xo ) {
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_SearchCondition.buildXmlTree()" ) ; 
+        int numberOfChildren = jjtGetNumChildren() ;
+        if( numberOfChildren == 0 ) {
+            return ;
+        }
+        else if( numberOfChildren == 1 ) {
+            children[0].buildXmlTree( xo ) ;
             setGeneratedObject( children[0].getGeneratedObject() ) ;
         }
         else {
-            SearchType[] conditionArray = new SearchType[2] ;
-            UnionSearchType orConstruct = UnionSearchType.Factory.newInstance() ;
-            conditionArray[0] = (SearchType)children[0].getGeneratedObject() ;
-            conditionArray[1] =  (SearchType)children[1].getGeneratedObject() ;
-            orConstruct.setConditionArray( conditionArray ) ;
+            UnionSearchType orConstruct = (UnionSearchType)xo.changeType( UnionSearchType.type ) ;
+            children[0].buildXmlTree( orConstruct.addNewCondition() ) ;
+            children[1].buildXmlTree( orConstruct.addNewCondition() ) ;
             setGeneratedObject( orConstruct ) ;
         }
+        super.buildXmlTree( (XmlObject)this.generatedObject ) ;
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_SearchCondition.buildXmlTree()" ) ; 
     }
-
 }

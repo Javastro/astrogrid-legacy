@@ -2,22 +2,31 @@
 
 package org.astrogrid.adql;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.xmlbeans.XmlObject;
 import org.astrogrid.adql.v1_0.beans.ArrayOfFromTableType;
 import org.astrogrid.adql.v1_0.beans.FromTableType;
 
 public class AST_TableArrayFragment extends SimpleNode {
+    
+    private static Log log = LogFactory.getLog( AST_TableArrayFragment.class ) ;
  
     public AST_TableArrayFragment(AdqlStoX p, int id) {
         super(p, id);
     }
 
-    public void jjtClose() {
+    public void buildXmlTree( XmlObject xo ) {
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_TableArrayFragment.buildXmlTree()" ) ;
+        ArrayOfFromTableType tableArray = (ArrayOfFromTableType)xo.changeType( ArrayOfFromTableType.type ) ;
         FromTableType[] fttArray = new FromTableType[2] ;
+        children[0].buildXmlTree( tableArray.addNewFromTableType() ) ;
+        children[1].buildXmlTree( tableArray.addNewFromTableType() ) ;
         fttArray[0] = (FromTableType)children[0].getGeneratedObject() ;
-        fttArray[1] = (FromTableType)children[1].getGeneratedObject() ;   
-        ArrayOfFromTableType tableArray = ArrayOfFromTableType.Factory.newInstance() ;
-        tableArray.setFromTableTypeArray( fttArray ) ;
+        fttArray[1] = (FromTableType)children[1].getGeneratedObject() ;          
+        tableArray.setFromTableTypeArray( fttArray ) ;      
         setGeneratedObject( tableArray ) ;
+        super.buildXmlTree( tableArray ) ;
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_TableArrayFragment.buildXmlTree()" ) ;
     }
-  
 }

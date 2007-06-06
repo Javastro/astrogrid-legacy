@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<v1:Condition xsi:type="v1:intersectionSearchType" xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <v1:Condition xsi:type="v1:closedSearchType">
+        <v1:Condition Comparison="&lt;" xsi:type="v1:comparisonPredType">
+            <v1:Arg Table="a" Name="POS_EQ_DEC" xsi:type="v1:columnReferenceType"/>
+            <v1:Arg xsi:type="v1:atomType">
+                <v1:Literal Value="5.01" xsi:type="v1:realType"/>
+            </v1:Arg>
+        </v1:Condition>
+    </v1:Condition>
+    <v1:Condition xsi:type="v1:closedSearchType">
+        <v1:Condition xsi:type="v1:intersectionSearchType">
+            <v1:Condition xsi:type="v1:closedSearchType">
+                <v1:Condition Comparison=">" xsi:type="v1:comparisonPredType">
+                    <v1:Arg Table="a" Name="POS_EQ_DEC" xsi:type="v1:columnReferenceType"/>
+                    <v1:Arg xsi:type="v1:atomType">
+                        <v1:Literal Value="4.99" xsi:type="v1:realType"/>
+                    </v1:Arg>
+                </v1:Condition>
+            </v1:Condition>
+            <v1:Condition xsi:type="v1:closedSearchType">
+                <v1:Condition Comparison="&lt;" xsi:type="v1:comparisonPredType">
+                    <v1:Arg xsi:type="v1:closedExprType">
+                        <v1:Arg Oper="*" xsi:type="v1:binaryExprType">
+                            <v1:Arg xsi:type="v1:atomType">
+                                <v1:Literal Value="2.0" xsi:type="v1:realType"/>
+                            </v1:Arg>
+                            <v1:Arg Name="ASIN" xsi:type="v1:trigonometricFunctionType">
+                                <v1:Arg Name="SQRT" xsi:type="v1:mathFunctionType">
+                                    <v1:Arg xsi:type="v1:closedExprType">
+                                        <v1:Arg Oper="+" xsi:type="v1:binaryExprType">
+                                            <v1:Arg Name="POWER" xsi:type="v1:mathFunctionType">
+                                                <v1:Arg Name="SIN" xsi:type="v1:trigonometricFunctionType">
+                                                    <v1:Arg xsi:type="v1:closedExprType">
+                                                        <v1:Arg Oper="/" xsi:type="v1:binaryExprType">
+                                                            <v1:Arg xsi:type="v1:closedExprType">
+                                                                <v1:Arg Oper="-" xsi:type="v1:binaryExprType">
+                                                                    <v1:Arg Name="RADIANS" xsi:type="v1:mathFunctionType">
+                                                                        <v1:Arg Table="a" Name="POS_EQ_DEC" xsi:type="v1:columnReferenceType"/>
+                                                                    </v1:Arg>
+                                                                    <v1:Arg xsi:type="v1:atomType">
+                                                                        <v1:Literal Value="0.08726646259971647" xsi:type="v1:realType"/>
+                                                                    </v1:Arg>
+                                                                </v1:Arg>
+                                                            </v1:Arg>
+                                                            <v1:Arg xsi:type="v1:atomType">
+                                                                <v1:Literal Value="2.0" xsi:type="v1:realType"/>
+                                                            </v1:Arg>
+                                                        </v1:Arg>
+                                                    </v1:Arg>
+                                                </v1:Arg>
+                                                <v1:Arg xsi:type="v1:atomType">
+                                                    <v1:Literal Value="2" xsi:type="v1:integerType"/>
+                                                </v1:Arg>
+                                            </v1:Arg>
+                                            <v1:Arg xsi:type="v1:closedExprType">
+                                                <v1:Arg xsi:type="v1:closedExprType">
+                                                    <v1:Arg Oper="*" xsi:type="v1:binaryExprType">
+                                                        <v1:Arg Name="COS" xsi:type="v1:trigonometricFunctionType">
+                                                            <v1:Arg Name="RADIANS" xsi:type="v1:mathFunctionType">
+                                                                <v1:Arg Table="a" Name="POS_EQ_DEC" xsi:type="v1:columnReferenceType"/>
+                                                            </v1:Arg>
+                                                        </v1:Arg>
+                                                        <v1:Arg xsi:type="v1:closedExprType">
+                                                            <v1:Arg Oper="*" xsi:type="v1:binaryExprType">
+                                                                <v1:Arg Name="COS" xsi:type="v1:trigonometricFunctionType">
+                                                                    <v1:Arg xsi:type="v1:atomType">
+                                                                        <v1:Literal Value="0.08726646259971647" xsi:type="v1:realType"/>
+                                                                    </v1:Arg>
+                                                                </v1:Arg>
+                                                                <v1:Arg Name="POWER" xsi:type="v1:mathFunctionType">
+                                                                    <v1:Arg Name="SIN" xsi:type="v1:trigonometricFunctionType">
+                                                                        <v1:Arg xsi:type="v1:closedExprType">
+                                                                            <v1:Arg Oper="/" xsi:type="v1:binaryExprType">
+                                                                                <v1:Arg xsi:type="v1:closedExprType">
+                                                                                    <v1:Arg Oper="-" xsi:type="v1:binaryExprType">
+                                                                                        <v1:Arg Name="RADIANS" xsi:type="v1:mathFunctionType">
+                                                                                            <v1:Arg Table="a" Name="POS_EQ_RA" xsi:type="v1:columnReferenceType"/>
+                                                                                        </v1:Arg>
+                                                                                        <v1:Arg xsi:type="v1:atomType">
+                                                                                            <v1:Literal Value="0.08726646259971647" xsi:type="v1:realType"/>
+                                                                                        </v1:Arg>
+                                                                                    </v1:Arg>
+                                                                                </v1:Arg>
+                                                                                <v1:Arg xsi:type="v1:atomType">
+                                                                                    <v1:Literal Value="2.0" xsi:type="v1:realType"/>
+                                                                                </v1:Arg>
+                                                                            </v1:Arg>
+                                                                        </v1:Arg>
+                                                                    </v1:Arg>
+                                                                    <v1:Arg xsi:type="v1:atomType">
+                                                                        <v1:Literal Value="2" xsi:type="v1:integerType"/>
+                                                                    </v1:Arg>
+                                                                </v1:Arg>
+                                                            </v1:Arg>
+                                                        </v1:Arg>
+                                                    </v1:Arg>
+                                                </v1:Arg>
+                                            </v1:Arg>
+                                        </v1:Arg>
+                                    </v1:Arg>
+                                </v1:Arg>
+                            </v1:Arg>
+                        </v1:Arg>
+                    </v1:Arg>
+                    <v1:Arg xsi:type="v1:atomType">
+                        <v1:Literal Value="1745.3292519943295" xsi:type="v1:realType"/>
+                    </v1:Arg>
+                </v1:Condition>
+            </v1:Condition>
+        </v1:Condition>
+    </v1:Condition>
+</v1:Condition>

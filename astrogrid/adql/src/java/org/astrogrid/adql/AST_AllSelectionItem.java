@@ -3,15 +3,24 @@
 package org.astrogrid.adql;
 
 import org.astrogrid.adql.v1_0.beans.AllSelectionItemType;
+import org.astrogrid.adql.v1_0.beans.SelectionItemType ;
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+import org.apache.xmlbeans.XmlObject;
 
 public class AST_AllSelectionItem extends SimpleNode {
 
+    private static Log log = LogFactory.getLog( AST_AllSelectionItem.class ) ;
+    
     public AST_AllSelectionItem(AdqlStoX p, int id) {
         super(p, id);
     }
 
-    public void jjtClose() {
-        setGeneratedObject( AllSelectionItemType.Factory.newInstance() ) ; 
+    public void buildXmlTree( XmlObject xo ) {
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_AllSelectionItem.buildXmlTree()" ) ; 
+        AllSelectionItemType allSelection = (AllSelectionItemType)xo.changeType( AllSelectionItemType.type ) ;
+        setGeneratedObject( allSelection ) ;
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_AllSelectionItem.buildXmlTree()" ) ; 
     }
 
 }

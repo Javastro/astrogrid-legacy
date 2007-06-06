@@ -4,19 +4,26 @@ package org.astrogrid.adql;
 
 import org.astrogrid.adql.v1_0.beans.OrderOptionType;
 import org.astrogrid.adql.v1_0.beans.OrderDirectionType;
+import org.apache.xmlbeans.XmlObject; 
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 public class AST_OrderingSpecification extends SimpleNode {
+    
+    private static Log log = LogFactory.getLog( AST_OrderingSpecification.class ) ;
 
     public AST_OrderingSpecification(AdqlStoX p, int id) {
         super(p, id);
     }
 
-    public void jjtClose() {
-        OrderOptionType optionType = OrderOptionType.Factory.newInstance() ;
+    public void buildXmlTree( XmlObject xo ) {
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_OrderingSpecification.buildXmlTree()" ) ; 
+        OrderOptionType optionType = (OrderOptionType)xo.changeType( OrderOptionType.type ) ;
         OrderDirectionType.Enum 
-           direction = OrderDirectionType.Enum.forString( parser.token.image.toUpperCase() ) ;
+           direction = OrderDirectionType.Enum.forString( firstToken.image.toUpperCase() ) ;
         optionType.setDirection( direction ) ;  
         setGeneratedObject( optionType ) ;
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_OrderingSpecification.buildXmlTree()" ) ; 
     }
   
 }

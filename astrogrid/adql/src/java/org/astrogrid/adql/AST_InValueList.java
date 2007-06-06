@@ -3,22 +3,28 @@
 package org.astrogrid.adql;
 
 import org.astrogrid.adql.v1_0.beans.ConstantListSet;
-import org.astrogrid.adql.v1_0.beans.LiteralType;
+import org.apache.xmlbeans.XmlObject ;
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 public class AST_InValueList extends SimpleNode {
+    
+    private static Log log = LogFactory.getLog( AST_InValueList.class ) ;
  
     public AST_InValueList(AdqlStoX p, int id) {
         super(p, id);
     }
-
-    public void jjtClose() {
-        ConstantListSet constantListSet = ConstantListSet.Factory.newInstance() ;
-        LiteralType[] literalArray = new LiteralType[ jjtGetNumChildren() ] ;
-        for( int i=0; i<literalArray.length; i++ ) {
-            literalArray[i] = (LiteralType)children[i].getGeneratedObject() ;
+    
+    public void buildXmlTree( XmlObject xo ) {
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_InValueList.buildXmlTree()" ) ;
+        ConstantListSet constantListSet = (ConstantListSet)xo.changeType( ConstantListSet.type ) ;
+        int childCount = jjtGetNumChildren() ;
+        for( int i=0; i<childCount; i++ ) {
+            children[i].buildXmlTree( constantListSet.addNewItem() ) ;
         }
-        constantListSet.setItemArray( literalArray ) ;
         setGeneratedObject( constantListSet ) ;
+        super.buildXmlTree( constantListSet ) ;
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_InValueList.buildXmlTree()" ) ;
     }  
 
 }

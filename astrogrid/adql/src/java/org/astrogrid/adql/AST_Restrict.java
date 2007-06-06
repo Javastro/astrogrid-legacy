@@ -3,17 +3,33 @@
 package org.astrogrid.adql;
 
 import org.astrogrid.adql.v1_0.beans.SelectionLimitType;
+import org.apache.xmlbeans.XmlObject ;
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 public class AST_Restrict extends SimpleNode {
+    
+    private static Log log = LogFactory.getLog( AST_Restrict.class ) ;
+    private int limit ;
     
     public AST_Restrict(AdqlStoX p, int id) {
         super(p, id);
     }
+    
+    public void setLimit( int value ) {
+        if( log.isDebugEnabled() ) {
+            log.debug( "Setting limit value to " + value ) ;
+        }
+        this.limit = value ;
+    }
 
-    public void jjtClose() {
-        SelectionLimitType sl = SelectionLimitType.Factory.newInstance() ;
-        sl.setTop( ( new Integer( parser.token.image )).intValue() ) ;
-        setGeneratedObject( sl ) ;
+    public void buildXmlTree( XmlObject xo ) {
+        SelectionLimitType sl = (SelectionLimitType)xo ;
+        if( log.isDebugEnabled() ) {
+            log.debug( "buildXmlTree() setting limit value to " + limit ) ;
+        }
+        sl.setTop( this.limit ) ;
+        this.generatedObject = sl ;
     }
 
 }

@@ -4,7 +4,7 @@ package org.astrogrid.adql;
 
 import org.astrogrid.adql.v1_0.beans.BinaryExprType;
 import org.astrogrid.adql.v1_0.beans.BinaryOperatorType;
-import org.astrogrid.adql.v1_0.beans.ScalarExpressionType;
+import org.apache.xmlbeans.XmlObject ;
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 
@@ -12,37 +12,70 @@ public class AST_NumericValueExpression extends SimpleNode {
  
     private static Log log = LogFactory.getLog( AST_NumericValueExpression.class ) ;
    
-    Token binaryOpToken ; 
+    Token binaryOpToken = null ; 
 
     public AST_NumericValueExpression(AdqlStoX p, int id) {
         super(p, id);
     }
 
-    public void setBinaryOp( Token t ) {
+    public void setOperator( Token t ) {
         binaryOpToken = t ;
+        getTracker().setType( BinaryExprType.type ) ;
+        getTracker().push( AdqlCompiler.ARG_ELEMENT ) ;
     }
-
-    public void jjtClose() {   
+    
+    public boolean isSetOperator() {
+        return binaryOpToken != null ;
+    }
+    
+    public void jjtClose() { 
+        // JL Note: I'm not sure this is correct...
+       if( isSetOperator() ) {
+           getTracker().pop() ;
+       }       
+    }
+    
+    public void buildXmlTree( XmlObject xo ) {   
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_NumericValueExpression.buildXmlTree()" ) ; 
         int childCount = jjtGetNumChildren() ;
-        if( log.isDebugEnabled() ) {       
-            log.debug( "childCount: " + childCount ) ;
+        StringBuffer buffer = null ;
+        if( log.isDebugEnabled() ) {
+            buffer = new StringBuffer() ;
+            buffer
+                .append( "childCount: ") 
+                .append( childCount ) ;         
         }
         
-        if( childCount == 1 ) {
-            setGeneratedObject( children[0].getGeneratedObject() ) ;
+        if( isSetOperator() == false ) {
+            children[0].buildXmlTree( xo ) ;
+            this.generatedObject = children[0].getGeneratedObject() ;
         }
         else {
-            BinaryExprType beType = BinaryExprType.Factory.newInstance() ;
+            BinaryExprType beType = (BinaryExprType)xo.changeType( BinaryExprType.type ) ;
             beType.setOper( BinaryOperatorType.Enum.forString( binaryOpToken.image ) ) ;
-            log.debug( "binaryOpToken: " + binaryOpToken.image ) ;
-            ScalarExpressionType[] args = new ScalarExpressionType[2] ;      
+            if( log.isDebugEnabled() ) {
+                buffer
+                    .append( "\nbinaryOpToken: " )
+                    .append( binaryOpToken.image ) ;
+            }     
             for( int i=0; i<childCount; i++ ) {
-                args[i] = (ScalarExpressionType)children[i].getGeneratedObject() ;
-                log.debug( "arg" +i + ": \n" + args[i] ) ;
+                children[i].buildXmlTree( beType.addNewArg() ) ;
+                if( log.isDebugEnabled() ) {
+                    buffer
+                        .append( "\narg" ) 
+                        .append( i )
+                        .append( ": \n" )
+                        .append( beType.getArgArray(i) ) ;
+                }
             }
-            beType.setArgArray( args ) ;
-            setGeneratedObject( beType ) ;
+            this.generatedObject = beType ;
         }
+        super.buildXmlTree( (XmlObject)this.generatedObject ) ;
+//        if( log.isDebugEnabled() ) {
+//            log.debug( buffer.toString() ) ;
+//        }
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_NumericValueExpression.buildXmlTree()" ) ; 
+        
     }
 
 }

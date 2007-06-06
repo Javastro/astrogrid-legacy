@@ -3,7 +3,7 @@
 package org.astrogrid.adql;
 
 import org.astrogrid.adql.v1_0.beans.ComparisonType ;
-
+import org.apache.xmlbeans.XmlObject ;
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 
@@ -16,9 +16,28 @@ public class AST_Comparison extends SimpleNode {
     }
 
     public void jjtClose() {
-        String image = parser.token.image ;
-        ComparisonType c = ComparisonType.Factory.newInstance() ;
+//        String image = firstToken.image ;
+//        ComparisonType c = ComparisonType.Factory.newInstance() ;
+//
+//        //  
+//        // The != comparison is a convenience. It is not a valid enum within
+//        // the schema. So we substitute the official value instead...
+//        if( parser.token.kind == AdqlStoXConstants.NOT_EQUALS_OPERATOR ) {
+//            image = "<>" ;
+//        }
+//        if( log.isDebugEnabled() ) {
+//            log.debug("comp: " + image ) ;
+//        }
+//        c.set( ComparisonType.Enum.forString( image ) ) ;  
+//        this.setGeneratedObject( c ) ;
 
+    }
+    
+    public void buildXmlTree( XmlObject xo ) {
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_Comparison.buildXmlTree()" ) ; 
+        String image = firstToken.image ;
+        ComparisonType c = (ComparisonType)xo.changeType( ComparisonType.type ) ;
+        this.generatedObject = c ;
         //  
         // The != comparison is a convenience. It is not a valid enum within
         // the schema. So we substitute the official value instead...
@@ -29,8 +48,8 @@ public class AST_Comparison extends SimpleNode {
             log.debug("comp: " + image ) ;
         }
         c.set( ComparisonType.Enum.forString( image ) ) ;  
-        this.setGeneratedObject( c ) ;
-
+        super.buildXmlTree(xo) ;
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_Comparison.buildXmlTree()" ) ; 
     }
 
 }

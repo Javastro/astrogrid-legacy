@@ -2,18 +2,13 @@
 
 package org.astrogrid.adql;
 
-import org.apache.commons.logging.Log ;
-import org.apache.commons.logging.LogFactory ;
-//import org.astrogrid.adql.v1_0.beans.SelectionListType;
-import org.apache.xmlbeans.SchemaType;
-import org.apache.xmlbeans.SimpleValue;
-import org.apache.xmlbeans.XmlAnySimpleType;
-import org.apache.xmlbeans.XmlException;
-import org.apache.xmlbeans.XmlObject;
-import org.apache.xmlbeans.XmlString;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.XmlCursor;
+import org.apache.xmlbeans.XmlObject;
+import org.astrogrid.adql.v1_0.beans.SelectionListType;
 
-public class SimpleNode implements Node {
+public abstract class SimpleNode implements Node {
     
   private static Log log = LogFactory.getLog( SimpleNode.class ) ;
       
@@ -21,18 +16,16 @@ public class SimpleNode implements Node {
   protected Node[] children;
   protected int id;
   protected AdqlStoX parser;
-  protected Object generatedObject ;
+  protected Object generatedObject = null ;
   
   protected Token firstToken, lastToken;
-
+  
   public SimpleNode( AdqlStoX p, int i ) {
     this.id = i ;
     parser = p;
   }
 
-  public void jjtOpen() {
-      getTracker() ;     
-  }
+  public void jjtOpen() {}
 
   public void jjtClose() {}
   
@@ -70,15 +63,15 @@ public class SimpleNode implements Node {
   /* Override this method if you want to customize how the node dumps
      out its children. */
 
-  public void dump(String prefix) {
-    System.out.println(toString(prefix));
+  public void dump( String prefix ) {
+    log.debug( toString( prefix ) ) ;
     if (children != null) {
-      for (int i = 0; i < children.length; ++i) {
-	SimpleNode n = (SimpleNode)children[i];
-	if (n != null) {
-	  n.dump(prefix + " ");
-	}
-      }
+        for (int i = 0; i < children.length; ++i) {
+            SimpleNode n = (SimpleNode)children[i];
+            if (n != null) {
+                n.dump(prefix + " ");
+            }
+        }
     }
   }
 
@@ -86,12 +79,14 @@ public class SimpleNode implements Node {
     return generatedObject;
 }
 
+
 public void setGeneratedObject( Object generatedObject ) {
     this.generatedObject = generatedObject ;
-    if( isCommentPresent() == true ) {
-        getTracker().setComment( firstToken.specialToken.image ) ;
-    }
 }
+
+public void buildXmlTree( XmlObject xo ) {
+    writeCommentsForChildren() ;
+};
 
 public Token getFirstToken() {
     return firstToken;
@@ -109,55 +104,106 @@ public void setLastToken(Token lastToken) {
     this.lastToken = lastToken;
 }
 
-private boolean isCommentPresent() {
-    if( generatedObject instanceof XmlObject 
-        &&
-        firstToken.specialToken != null 
-        &&
-        firstToken.specialToken.kind == AdqlStoXConstants.COMMENT ) {
-        return true ;
-    }
-    return false ;
-}
-
-public void writeComment() {
-    if( log.isTraceEnabled() ) { log.trace("writeComment() - enter"); }
+public boolean isCommentPresent() {
     // It has to be an XmlObject to be relevant (it could be a String!)
     // The special token may not exist and if it does it must be of
     // kind COMMENT (otherwise why are we trying to write a comment?).
     if( generatedObject instanceof XmlObject 
         &&
-        firstToken.specialToken != null 
-        &&
-        firstToken.specialToken.kind == AdqlStoXConstants.COMMENT
-            ) {
-        XmlCursor cursor = null ;
-        try {
-            XmlObject xo = (XmlObject)generatedObject ;
-            cursor = xo.newCursor() ;
-            boolean moved = cursor.toChild(0) ;
-            String comment = firstToken.specialToken.image ;
-            if( log.isDebugEnabled() ) {
-                log.debug( "xo.schemaType: " + xo.schemaType().getName() ) ;
-                log.debug( "cursor.getName(): " + cursor.getName() ) ;
-                log.debug( "moved: " + moved ) ;
-                log.debug( "Writing comment: " + comment ) ;
+        firstToken.specialToken != null ) {
+              
+        if( firstToken.specialToken.kind == AdqlStoXConstants.COMMENT ) {
+            // There is at least one exception where it would be nonsensical
+            // to record the presence of a comment. The only one at 
+            // present is the SelectionListType, since it has no visual
+            // cue in Adql/s...
+            if( generatedObject instanceof SelectionListType )
+                return false ;
+            
+            return true ;
+        }
+        
+    }
+    return false ;
+}
+
+public void writeCommentsForChildren() {
+    //
+    // Attempt to write comments for this node's children...
+    if( children != null ) {
+        SimpleNode node = null ;
+        for( int i=0; i<children.length; i++ ) {
+            node = (SimpleNode)children[i] ;
+            if( node.isCommentPresent() ) {
+                if( this.isCommentPresent() ) {
+                    //
+                    // Check to see that they are not the same comment...
+                    if( node.firstToken.specialToken == this.firstToken.specialToken )
+                        continue ;
+                }
+                //
+                // OK. We have a genuine comment to write for this child...
+                node.writeComment( (XmlObject)this.generatedObject ) ;
             }
-            cursor.insertComment( comment ) ;          
-        }
-        catch( Exception ex ) {
-            log.debug( ex ) ;
-        }
-        finally {
-            if( cursor != null )
-                cursor.dispose();
         }
     }
-    if( log.isTraceEnabled() ) { log.trace( "writeComment() - exit" ) ; }   
+}
+
+public void writeComment( XmlObject parent ) {
+    if( log.isTraceEnabled() ) { enterTrace( log, "writeComment()"); }
+   
+    XmlCursor cursor = null ;
+    try {
+        XmlObject xo = null ;
+        XmlObject go = (XmlObject)this.generatedObject ;
+        cursor = parent.newCursor() ;
+        String comment = firstToken.specialToken.image ;
+        parser.lastCommentWritten = firstToken ;
+        if( log.isDebugEnabled() ) {
+            log.debug( "go.schemaType: " + go.schemaType().getName() ) ;
+            log.debug( "Writing comment: " + comment ) ;
+            log.debug( go.toString() ) ;
+        }    
+        
+        do {
+            if( cursor.isStart() ) {
+                xo = cursor.getObject() ; 
+                log.debug( xo.schemaType().getName().getLocalPart() + ": " + xo.toString() ) ;
+                if( xo == go ) {
+                    cursor.insertComment( SimpleNode.prepareComment( comment ) ) ; 
+                    break ;
+                } 
+            }
+        } while( cursor.toNextToken() != XmlCursor.TokenType.NONE ) ; 
+    
+    }
+    catch( Exception ex ) {
+        log.debug( "Problem encountered whilst writing a comment.", ex ) ;
+    }
+    finally {
+        if( cursor != null )
+            cursor.dispose();
+    }
+
+    if( log.isTraceEnabled() ) { exitTrace( log, "writeComment()" ) ; }   
+}
+
+public static String prepareComment( String comment ) {
+    return "+" + comment.replaceAll( "--", "" ) + "+" ;
 }
 
 public Tracker getTracker() {
-    return parser.getTracker() ;
+    return parser.tracker ;
+}
+
+public void enterTrace( Log log, String entry ) {
+    log.trace( parser.compiler.getIndent().toString() + "enter: " + entry ) ;
+    parser.compiler.indentPlus() ;
+}
+
+public void exitTrace( Log log, String entry ) {
+    parser.compiler.indentMinus() ;
+    log.trace( parser.compiler.getIndent().toString() + "exit : " + entry ) ;
 }
   
 } // end of class SimpleNode

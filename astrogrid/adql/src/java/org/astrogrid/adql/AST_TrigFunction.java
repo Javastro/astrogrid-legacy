@@ -2,33 +2,34 @@
 
 package org.astrogrid.adql;
 
-import org.astrogrid.adql.v1_0.beans.TrigonometricFunctionType;
-import org.astrogrid.adql.v1_0.beans.ScalarExpressionType;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.xmlbeans.XmlObject;
 import org.astrogrid.adql.v1_0.beans.TrigonometricFunctionNameType;
-import org.astrogrid.adql.v1_0.beans.SelectionItemType;
+import org.astrogrid.adql.v1_0.beans.TrigonometricFunctionType;
 
 public class AST_TrigFunction extends SimpleNode {
+    
+    private static Log log = LogFactory.getLog( AST_TrigFunction.class ) ;
   
     public AST_TrigFunction(AdqlStoX p, int id) {
         super(p, id);
     }
 
-    public void jjtClose() {
-        TrigonometricFunctionType tfType = TrigonometricFunctionType.Factory.newInstance() ;
+    public void buildXmlTree( XmlObject xo ) {
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_TrigFunction.buildXmlTree()" ) ; 
+        TrigonometricFunctionType tfType = (TrigonometricFunctionType)xo.changeType( TrigonometricFunctionType.type ) ;
         tfType.setName( TrigonometricFunctionNameType.Enum.forString( firstToken.image.toUpperCase() ) ) ;
-        SelectionItemType[] argArray ;
-
         if( firstToken.kind == AdqlStoXConstants.ATAN2 ) {
-            argArray = new SelectionItemType[2] ;
-            argArray[0] = (ScalarExpressionType)children[0].getGeneratedObject() ;
-            argArray[1] = (ScalarExpressionType)children[1].getGeneratedObject() ;
+            children[0].buildXmlTree( tfType.addNewArg() ) ;
+            children[1].buildXmlTree( tfType.addNewArg() ) ;
         }
         else {
-            argArray = new SelectionItemType[1] ;
-            argArray[0] = (ScalarExpressionType)children[0].getGeneratedObject() ;
+            children[0].buildXmlTree( tfType.addNewArg() ) ;
         }
-        tfType.setArgArray( argArray ) ;
+       
         setGeneratedObject( tfType ) ;
+        super.buildXmlTree( tfType ) ;
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_TrigFunction.buildXmlTree()" ) ; 
     }
-
 }

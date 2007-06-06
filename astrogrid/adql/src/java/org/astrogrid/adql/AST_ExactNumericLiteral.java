@@ -5,9 +5,14 @@ package org.astrogrid.adql;
 import org.astrogrid.adql.v1_0.beans.AtomType ;
 import org.astrogrid.adql.v1_0.beans.IntegerType ;
 import org.astrogrid.adql.v1_0.beans.RealType ;
+import org.apache.xmlbeans.XmlObject ;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory ;
+
 
 public class AST_ExactNumericLiteral extends SimpleNode {
   
+    private static Log log = LogFactory.getLog( AST_ExactNumericLiteral.class ) ;
     private int possibleSignChange ;
 
     public AST_ExactNumericLiteral(AdqlStoX p, int id) {
@@ -17,23 +22,24 @@ public class AST_ExactNumericLiteral extends SimpleNode {
     public void setPossibleSignChange( int possibleSignChange ) {
         this.possibleSignChange = possibleSignChange ;
     }
+    
+    public void buildXmlTree( XmlObject xo ) {
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_ExactNumericLiteral.buildXmlTree()" ) ; 
+        AtomType atomType = (AtomType)xo.changeType( AtomType.type ) ; 
 
-    public void jjtClose() {
-        AtomType atomType = AtomType.Factory.newInstance() ; 
-        String image = this.parser.token.image ;
-
-        if( image.indexOf( '.' ) == -1 ) {           
+        if( firstToken.image.indexOf( '.' ) == -1 ) {           
             IntegerType intType = IntegerType.Factory.newInstance() ;
-            intType.setValue( new Long( image ).longValue() * possibleSignChange ) ;
+            intType.setValue( new Long( firstToken.image ).longValue() * possibleSignChange ) ;
             atomType.setLiteral( intType ) ;
         }
         else {
             RealType realType = RealType.Factory.newInstance() ;
-            realType.setValue( new Double( image ).doubleValue() * possibleSignChange ) ;
+            realType.setValue( new Double( firstToken.image ).doubleValue() * possibleSignChange ) ;
             atomType.setLiteral( realType ) ;
         }
-        setGeneratedObject( atomType ) ;
-
+        this.generatedObject = atomType ;
+        super.buildXmlTree( atomType ) ;
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_ExactNumericLiteral.buildXmlTree()" ) ; 
     }
   
 }

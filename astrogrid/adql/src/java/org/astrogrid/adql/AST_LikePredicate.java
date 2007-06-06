@@ -4,10 +4,13 @@ package org.astrogrid.adql;
 
 import org.astrogrid.adql.v1_0.beans.LikePredType ;
 import org.astrogrid.adql.v1_0.beans.NotLikePredType ;
-import org.astrogrid.adql.v1_0.beans.AtomType ;
-import org.astrogrid.adql.v1_0.beans.ScalarExpressionType ;
+import org.apache.xmlbeans.XmlObject ;
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 public class AST_LikePredicate extends SimpleNode {
+    
+    private static Log log = LogFactory.getLog( AST_LikePredicate.class ) ;
     
     private boolean like = true ;
 
@@ -19,24 +22,22 @@ public class AST_LikePredicate extends SimpleNode {
         this.like = like ;
     }
 
-    public void jjtClose() {
-
-        ScalarExpressionType matchValue = (ScalarExpressionType)children[0].getGeneratedObject() ;
-        AtomType pattern = (AtomType)children[1].getGeneratedObject() ; 
-
+    public void buildXmlTree( XmlObject xo ) {
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_LikePredicate.buildXmlTree()" ) ; 
         if( like ) {
-            LikePredType lpt = LikePredType.Factory.newInstance() ;
-            lpt.setArg( matchValue ) ;
-            lpt.setPattern( pattern ) ;
+            LikePredType lpt = (LikePredType)xo.changeType( LikePredType.type ) ;
+            children[0].buildXmlTree( lpt.addNewArg() ) ;
+            children[1].buildXmlTree( lpt.addNewPattern() ) ;
             setGeneratedObject( lpt ) ;
         }
         else {
-            NotLikePredType nlpt = NotLikePredType.Factory.newInstance() ;
-            nlpt.setArg( matchValue ) ;
-            nlpt.setPattern( pattern ) ;
+            NotLikePredType nlpt = (NotLikePredType)xo.changeType( NotLikePredType.type ) ;
+            children[0].buildXmlTree( nlpt.addNewArg() ) ;
+            children[1].buildXmlTree( nlpt.addNewPattern() ) ;
             setGeneratedObject( nlpt ) ;
         }
-
+        super.buildXmlTree( (XmlObject)this.generatedObject ) ;
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_LikePredicate.buildXmlTree()" ) ; 
     } 
 }
 

@@ -4,22 +4,59 @@ package org.astrogrid.adql;
 
 import org.astrogrid.adql.v1_0.beans.FromType;
 import org.astrogrid.adql.v1_0.beans.FromTableType;
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+import org.apache.xmlbeans.XmlObject;
 
 public class AST_From extends SimpleNode {
+    
+    private static Log log = LogFactory.getLog( AST_From.class ) ;
 
     public AST_From(AdqlStoX p, int id) {
         super(p, id);
     }
 
     public void jjtClose() {
-        FromType fromType = FromType.Factory.newInstance() ;
+//        if( log.isTraceEnabled() ) enterTrace( log, "AST_From.jjtClose()" ) ; 
+//        FromType fromType = FromType.Factory.newInstance() ;
+//        int childCount = jjtGetNumChildren() ;
+//        FromTableType[] tableArray = new FromTableType[ childCount ] ;
+//        for( int i=0; i<childCount; i++ ) {
+//            tableArray[i] = ( (FromTableType)children[i].getGeneratedObject() ) ;
+//        }
+//        fromType.setTableArray( tableArray ) ; 
+//        tableArray = fromType.getTableArray() ;
+//        for( int i=0; i<childCount; i++ ) {
+//            children[i].exchangeGeneratedObject( tableArray[i] ) ;
+//        }
+//        setGeneratedObject( fromType ) ;
+//        if( log.isTraceEnabled() ) exitTrace( log, "AST_From.jjtClose()" ) ; 
+    }
+    
+//    public Object generateObject() {
+//        if( log.isTraceEnabled() ) enterTrace( log, "AST_From.generateObject()" ) ; 
+//        FromType fromType = FromType.Factory.newInstance() ;
+//        int childCount = jjtGetNumChildren() ;
+//        FromTableType[] tableArray = new FromTableType[ childCount ] ;
+//        for( int i=0; i<childCount; i++ ) {
+//            tableArray[i] = ( (FromTableType)children[i].generateObject() ) ;
+//        }
+//        fromType.setTableArray( tableArray ) ; 
+//        this.generatedObject = fromType ;
+//        super.generateObject() ;
+//        if( log.isTraceEnabled() ) exitTrace( log, "AST_From.generateObject()" ) ; 
+//        return this.generatedObject ;
+//    }
+    
+    public void buildXmlTree( XmlObject fromType ) {
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_From.buildXmlTree()" ) ; 
         int childCount = jjtGetNumChildren() ;
-        FromTableType[] tableArray = new FromTableType[ childCount ] ;
         for( int i=0; i<childCount; i++ ) {
-            tableArray[i] = ( (FromTableType)children[i].getGeneratedObject() ) ;
+            children[i].buildXmlTree( ((FromType)fromType).addNewTable() ) ;
         }
-        fromType.setTableArray( tableArray ) ;  
-        setGeneratedObject( fromType ) ;
+        this.generatedObject = fromType ;
+        super.buildXmlTree(fromType) ;
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_From.buildXmlTree()" ) ; 
     }
 
 }

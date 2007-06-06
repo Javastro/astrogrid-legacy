@@ -1,0 +1,2 @@
+--Select/GroupBy 
+Group By a.POS_EQ_RA, a.POS_EQ_DEC

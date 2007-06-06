@@ -1,4 +1,4 @@
-/*$Id: BnfExtractor.java,v 1.8 2006/11/12 20:06:44 jl99 Exp $
+/*$Id: BnfExtractor.java,v 1.9 2007/06/06 18:20:19 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -35,14 +35,7 @@ public class BnfExtractor {
     
 private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
     
-    private static final boolean TRACE_ENABLED = false ;
-    private static final boolean DEBUG_ENABLED = false ;
-    private static StringBuffer logIndent ;
-    static {
-        if( TRACE_ENABLED | DEBUG_ENABLED ) {
-            logIndent = new StringBuffer() ;
-        }
-    }
+    private static StringBuffer logIndent = new StringBuffer() ;
     
     private static final String USAGE =
         "Usage: BnfExtractor {Options} input=file-path output=file-path \n" +       
@@ -66,8 +59,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         "\n" +
         "The definition represents the equivalent ADQL/s version of ADQL/x v1.01a\n" +
         "as supported by Astrogrid. This is an evolving document.\n\n" +
-        "The select statement is found under <query_specification>\n" +
-        "Footnotes are to be found at the bottom.\n\n" ;
+        "The select statement is found under <query_specification>\n\n" ;
      
     private static final String TEXT_FOOTINGS =
         "" ;
@@ -87,7 +79,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         "The definition represents the equivalent ADQL/s version of ADQL/x v1.01a\n" +
         "as supported by Astrogrid. This is an evolving document.\n\n" +
         "The select statement is found at <a href=\"#query_specification\">&lt;query_specification&gt;</a>\n" +
-        "See <a href=\"http://sqlzoo.net/sql92.html\">SQL92</a> for a similar page describing SQL92 in full.\n\n" ;
+        "See <a href=\"http://savage.net.au/SQL/sql-92.bnf.html\">SQL92</a> for a similar page describing SQL92 in full.\n\n" ;
   
     private static final String HTML_FOOTINGS =
         "\n" +
@@ -127,7 +119,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
      * @param args
      */
     public static void main( String[] args ) {
-        if( TRACE_ENABLED ) enterTrace ( "BnfExtractor.main" ) ;
+        if( log.isTraceEnabled() ) enterTrace ( "BnfExtractor.main" ) ;
         
         if( retrieveArgs( args ) == false ) {
             System.out.println() ;
@@ -163,7 +155,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         
         extractor.exec() ;
         System.out.println( "BNF extraction complete." ) ;
-        if( TRACE_ENABLED ) exitTrace ( "BnfExtractor.main" ) ;
+        if( log.isTraceEnabled() ) exitTrace ( "BnfExtractor.main" ) ;
     }
     
     private static boolean retrieveArgs( String[] args ) {
@@ -198,7 +190,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
     }
     
     public BnfExtractor( File inputFile, File outputFile, String format ) {
-        if( TRACE_ENABLED ) enterTrace ( "BnfExtractor(File, File, String)" ) ;
+        if( log.isTraceEnabled() ) enterTrace ( "BnfExtractor(File, File, String)" ) ;
         this.inputFile = inputFile ;
         this.outputFile = outputFile ;
         if( this.outputFile != null ) {
@@ -213,7 +205,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
             this.outputStream = System.out ;
         }   
         this.iOption = format ;
-        if( TRACE_ENABLED ) exitTrace ( "BnfExtractor(File, File, String)" ) ;
+        if( log.isTraceEnabled() ) exitTrace ( "BnfExtractor(File, File, String)" ) ;
     }
     
     public BnfExtractor( File inputFile, String format ) {
@@ -221,15 +213,15 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
     }
    
     public void exec() {
-        if( TRACE_ENABLED ) enterTrace ( "BnfExtractor.exec()" ) ;
+        if( log.isTraceEnabled() ) enterTrace ( "BnfExtractor.exec()" ) ;
         openFiles() ;
         consumeInputFile() ; 
         produceOutput() ;
-        if( TRACE_ENABLED ) exitTrace ( "BnfExtractor.exec()" ) ;
+        if( log.isTraceEnabled() ) exitTrace ( "BnfExtractor.exec()" ) ;
     }
     
     private void openFiles() {
-        if( TRACE_ENABLED ) enterTrace ( "BnfExtractor.openFiles()" ) ;
+        if( log.isTraceEnabled() ) enterTrace ( "BnfExtractor.openFiles()" ) ;
         try {
             reader = new FileReader( inputFile ) ;
         }
@@ -237,12 +229,12 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
             System.out.println( iox.getLocalizedMessage() ) ;
         }
         finally {
-            if( TRACE_ENABLED ) exitTrace ( "BnfExtractor.openFiles()" ) ;
+            if( log.isTraceEnabled() ) exitTrace ( "BnfExtractor.openFiles()" ) ;
         }
     }
     
     private void consumeInputFile() {
-        if( TRACE_ENABLED ) enterTrace ( "BnfExtractor.consumeInputFile()" ) ;
+        if( log.isTraceEnabled() ) enterTrace ( "BnfExtractor.consumeInputFile()" ) ;
         while( isInputEOF() == false ) { 
             processOneStatement() ;
         }
@@ -253,7 +245,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
 //                System.out.println( sArray[i].toString() ) ;
 //            }
 //        }
-        if( TRACE_ENABLED ) exitTrace ( "BnfExtractor.consumeInputFile()" ) ;
+        if( log.isTraceEnabled() ) exitTrace ( "BnfExtractor.consumeInputFile()" ) ;
     }
     
     private void validateInputFile() {
@@ -304,7 +296,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
     }
     
     private void processOneStatement() {
-        if( TRACE_ENABLED ) enterTrace ( "BnfExtractor.processOneStatement()" ) ;
+        if( log.isTraceEnabled() ) enterTrace ( "BnfExtractor.processOneStatement()" ) ;
         String line = readAheadToStatement() ;
         try {
             if( isBnfSingle( line ) ) {
@@ -326,22 +318,22 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
             System.out.println( ibsex.getLocalizedMessage() ) ;
         }
         finally {
-            if( TRACE_ENABLED ) exitTrace ( "BnfExtractor.processOneStatement()" ) ;
+            if( log.isTraceEnabled() ) exitTrace ( "BnfExtractor.processOneStatement()" ) ;
         }
     }
     
     private String readAheadToStatement() {
-        if( TRACE_ENABLED ) enterTrace ( "BnfExtractor.readAheadToStatement()" ) ;
+        if( log.isTraceEnabled() ) enterTrace ( "BnfExtractor.readAheadToStatement()" ) ;
         String line = readLine() ;
         while( !isInputEOF() && ( line.indexOf( BNF_TRIGGER ) == -1 ) ) {
             line = readLine() ;
         }
-        if( TRACE_ENABLED ) exitTrace ( "BnfExtractor.readAheadToStatement()" ) ;
+        if( log.isTraceEnabled() ) exitTrace ( "BnfExtractor.readAheadToStatement()" ) ;
         return line ;
     }
     
     private String readLine() {
-//        if( TRACE_ENABLED ) enterTrace ( "BnfExtractor.readLine()" ) ;
+//        if( log.isTraceEnabled() ) enterTrace ( "BnfExtractor.readLine()" ) ;
         emptyLineBuffer() ;
         try {
             int ch = reader.read() ;
@@ -365,7 +357,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
 //                    System.out.print( lineBuffer.toString() ) ;
 //                }
 //            }
-//            if( TRACE_ENABLED ) exitTrace ( "BnfExtractor.readLine()" ) ;
+//            if( log.isTraceEnabled() ) exitTrace ( "BnfExtractor.readLine()" ) ;
         }
         return lineBuffer.toString() ;
     }
@@ -440,7 +432,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         String key ;
         
         BnfStatement( String[] statements, String key ) {
-            if( DEBUG_ENABLED ) {
+            if( log.isDebugEnabled() ) {
                 log.debug( "BnfStatement.key: " + key ) ;
             }
             this.key = key ;
@@ -553,7 +545,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
             // which may include comments with < and > embedded in them...
             if( current != s.length() ) {
                 String remainder = s.substring( current ) ;
-                if( DEBUG_ENABLED ) {
+                if( log.isDebugEnabled() ) {
                     log.debug( "Remainder: " + remainder ) ;
                 }
                 remainder = remainder.replaceAll( "<", "&lt;" ) ;
@@ -684,6 +676,12 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
 
 /*
 $Log: BnfExtractor.java,v $
+Revision 1.9  2007/06/06 18:20:19  jl99
+Merge of branch adql-jl-2135
+
+Revision 1.8.8.1  2007/06/06 10:53:59  jl99
+Code tidy just prior to merge of branch adql-jl-2135
+
 Revision 1.8  2006/11/12 20:06:44  jl99
 Slight change to heading.
 

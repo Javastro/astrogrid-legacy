@@ -9,12 +9,12 @@ public class AST_ActualIdentifier extends SimpleNode {
     }
 
     public void jjtClose() {
-        String identifier = this.parser.token.image ; 
+        String identifier = getFirstToken().image ; 
         if( identifier.startsWith( "\"" ) ) {
             identifier = identifier.substring( 1, identifier.lastIndexOf( "\"" ) ) ;
         }
-        setGeneratedObject( identifier ) ;
+        this.generatedObject = identifier ;
     }
-  
+    
 }
  

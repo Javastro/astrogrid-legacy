@@ -1,4 +1,4 @@
-/*$Id: ContextPath.java,v 1.2 2007/01/26 09:45:54 jl99 Exp $
+/*$Id: ContextPath.java,v 1.3 2007/06/06 18:19:28 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -36,6 +36,10 @@ public class ContextPath {
             // int iType = elementDescriptor.indexOf( "@type=" ) ;
             int iFirstSpeech = elementDescriptor.indexOf( '\'' ) ;
             int iLastSpeech = elementDescriptor.lastIndexOf( '\'' ) ;
+            if( iFirstSpeech == -1 ) {
+                iFirstSpeech = elementDescriptor.indexOf( '\"' ) ; 
+                iLastSpeech = elementDescriptor.lastIndexOf( '\"' ) ;
+            }           
             try {
                 name = elementDescriptor.substring( 0, iFirstBracket ) ;
                 type = elementDescriptor.substring( iFirstSpeech+1, iLastSpeech ) ;
@@ -107,6 +111,12 @@ public class ContextPath {
 
 /*
 $Log: ContextPath.java,v $
+Revision 1.3  2007/06/06 18:19:28  jl99
+Merge of branch adql-jl-2135
+
+Revision 1.2.2.1  2007/04/17 15:45:29  jl99
+Rationalizing multiple error reporting
+
 Revision 1.2  2007/01/26 09:45:54  jl99
 Merge of adql-jl-2031-a into HEAD
 

@@ -13,7 +13,7 @@ public class AST_JoinType extends SimpleNode {
     public void jjtClose() {
         JointTableQualifierType jType = JointTableQualifierType.Factory.newInstance() ;
 
-        switch ( getFirstToken().kind ) {
+        switch ( firstToken.kind ) {
         case AdqlStoXConstants.INNER :
             jType.set( JointTableQualifierType.INNER );
             break;

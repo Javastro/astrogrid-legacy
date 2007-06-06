@@ -4,6 +4,7 @@ package org.astrogrid.adql;
 
 import org.astrogrid.adql.v1_0.beans.SelectionOptionType;
 import org.astrogrid.adql.v1_0.beans.AllOrDistinctType;
+import org.apache.xmlbeans.XmlObject;
 
 public class AST_Allow extends SimpleNode {
     
@@ -11,15 +12,14 @@ public class AST_Allow extends SimpleNode {
         super(p, id);
     }
 
-    public void jjtClose() {
-        SelectionOptionType sot = SelectionOptionType.Factory.newInstance() ;
-        if( parser.token.kind == AdqlStoXConstants.ALL ) {
-            sot.setOption( AllOrDistinctType.ALL ) ;
+    public void buildXmlTree( XmlObject sot ) {
+        if( getFirstToken().kind == AdqlStoXConstants.ALL ) {
+            ((SelectionOptionType)sot).setOption( AllOrDistinctType.ALL ) ;
         }
         else {
-            sot.setOption( AllOrDistinctType.DISTINCT ) ;
+            ((SelectionOptionType)sot).setOption( AllOrDistinctType.DISTINCT ) ;
         }
-        setGeneratedObject( sot ) ;
+        this.generatedObject = sot ;
     }
 
 }

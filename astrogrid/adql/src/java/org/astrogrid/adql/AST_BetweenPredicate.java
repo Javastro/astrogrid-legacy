@@ -2,43 +2,38 @@
 
 package org.astrogrid.adql;
 
-import org.astrogrid.adql.v1_0.beans.ScalarExpressionType ;
-import org.astrogrid.adql.v1_0.beans.BetweenPredType ;
-import org.astrogrid.adql.v1_0.beans.NotBetweenPredType ; 
-import org.astrogrid.adql.v1_0.beans.SearchType ; 
+import org.apache.xmlbeans.XmlObject;
+import org.astrogrid.adql.v1_0.beans.BetweenPredType;
+import org.astrogrid.adql.v1_0.beans.NotBetweenPredType;
 
 public class AST_BetweenPredicate extends SimpleNode {
     
     // This will end up as false if the construct is a NOT BETWEEN
     boolean between = true ;
 
-  public AST_BetweenPredicate(AdqlStoX p, int id) {
-    super(p, id);
-  }
-  
-  public void setBetween( boolean between ) {
-      this.between = between ;
-  }
-
-public void jjtClose() {
-    SearchType betweenConstruct ;
-    ScalarExpressionType[] args = new ScalarExpressionType[3] ;
-    args[0] = (ScalarExpressionType)children[0].getGeneratedObject() ;
-    args[1] = (ScalarExpressionType)children[1].getGeneratedObject() ;
-    args[2] = (ScalarExpressionType)children[2].getGeneratedObject() ;
-    if( between ) {
-        BetweenPredType bp = BetweenPredType.Factory.newInstance() ;
-        bp.setArgArray( args ) ;
-        betweenConstruct = bp ;           
+    public AST_BetweenPredicate(AdqlStoX p, int id) {
+        super(p, id);
     }
-    else {
-        NotBetweenPredType nbp = NotBetweenPredType.Factory.newInstance() ;
-        nbp.setArgArray( args ) ;
-        betweenConstruct = nbp ;      
-    }
-    setGeneratedObject( betweenConstruct ) ;
-}
-  
-  
 
+    public void setBetween( boolean between ) {
+        this.between = between ;
+    }
+
+    public void buildXmlTree( XmlObject xo ) {
+        if( between ) {
+            BetweenPredType bp = (BetweenPredType)xo.changeType( BetweenPredType.type ) ;
+            children[0].buildXmlTree( bp.addNewArg() ) ; 
+            children[1].buildXmlTree( bp.addNewArg() ) ;
+            children[2].buildXmlTree( bp.addNewArg() ) ;
+            this.generatedObject = bp ;
+        } 
+        else {
+            NotBetweenPredType nbp = (NotBetweenPredType)xo.changeType( NotBetweenPredType.type ) ;
+            children[0].buildXmlTree( nbp.addNewArg() ) ; 
+            children[1].buildXmlTree( nbp.addNewArg() ) ;
+            children[2].buildXmlTree( nbp.addNewArg() ) ;
+            this.generatedObject = nbp ;
+        }
+        super.buildXmlTree( (XmlObject)this.generatedObject ) ;
+    }
 }

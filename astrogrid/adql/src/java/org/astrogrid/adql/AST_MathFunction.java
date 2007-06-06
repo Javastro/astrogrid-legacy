@@ -2,17 +2,18 @@
 
 package org.astrogrid.adql;
 
-import org.astrogrid.adql.v1_0.beans.MathFunctionType;
-import org.astrogrid.adql.v1_0.beans.ScalarExpressionType;
-import org.astrogrid.adql.v1_0.beans.MathFunctionNameType;
-import org.astrogrid.adql.v1_0.beans.SelectionItemType;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.xmlbeans.XmlObject;
 import org.astrogrid.adql.v1_0.beans.AtomType;
 import org.astrogrid.adql.v1_0.beans.IntegerType;
-
-import java.lang.Long;
+import org.astrogrid.adql.v1_0.beans.MathFunctionNameType;
+import org.astrogrid.adql.v1_0.beans.MathFunctionType;
 
 
 public class AST_MathFunction extends SimpleNode {
+    
+    private static Log log = LogFactory.getLog( AST_MathFunction.class ) ;
     
     private Object arg2 ;
 
@@ -24,30 +25,47 @@ public class AST_MathFunction extends SimpleNode {
         this.arg2 = arg2 ;
     }
 
-    public void jjtClose() {
-        MathFunctionType mfType = MathFunctionType.Factory.newInstance() ;
-        mfType.setName( MathFunctionNameType.Enum.forString( firstToken.image.toUpperCase() ) ) ;
-        SelectionItemType[] argArray ;
 
+    public void buildXmlTree( XmlObject xo ) {
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_MathFunction.buildXmlTree()" ) ; 
+        MathFunctionType mfType = (MathFunctionType)xo.changeType( MathFunctionType.type ) ;
+        mfType.setName( MathFunctionNameType.Enum.forString( firstToken.image.toUpperCase() ) ) ;
+      
+        //
+        // JL: The following would be better reorganized into a loop to process child nodes.
+        // The problem revolves arounding typing the children, so a more virtualized
+        // buildXmlTree() should accomplish this. I believe the best way of achieving it
+        // is for all constructs within AdqlStoX.jjt to be held within their own generated
+        // structures. Thus 
+        // arg2=<UNSIGNED_INTEGER> {jjtThis.setArg2(new Long(arg2.image));} 
+        // should really be something like
+        // unsignedInteger()
+        // This is an important lesson.
+
+        //
+        // PI is the only function with no arguments...
+        // (JL: but is this also true of RANDOM?)
         if( firstToken.kind == AdqlStoXConstants.PI ) {
-            argArray = new SelectionItemType[0] ;
+            // do nothing
         }
+        //
+        // POWER is the only function with two arguments...
         else if( firstToken.kind == AdqlStoXConstants.POWER ) {
-            argArray = new SelectionItemType[2] ;
-            argArray[0] = (ScalarExpressionType)children[0].getGeneratedObject() ;
-            AtomType atomType = AtomType.Factory.newInstance() ;
+            children[0].buildXmlTree( mfType.addNewArg() ) ;
+            AtomType atomType = (AtomType)mfType.addNewArg().changeType( AtomType.type ) ;
             IntegerType intType = IntegerType.Factory.newInstance() ;
             intType.setValue( ((Long)arg2).longValue() ) ;
             atomType.setLiteral( intType ) ;
-            argArray[1] = atomType ;
         }
+        //
+        // And all the rest have only one argument...
         else {
-            argArray = new SelectionItemType[1] ;
-            argArray[0] = (ScalarExpressionType)children[0].getGeneratedObject() ;    
+           children[0].buildXmlTree( mfType.addNewArg() ) ;
         }
-        mfType.setArgArray( argArray ) ;
+       
         setGeneratedObject( mfType ) ;
+        super.buildXmlTree( mfType ) ;
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_MathFunction.buildXmlTree()" ) ; 
     }
-     
 }
   

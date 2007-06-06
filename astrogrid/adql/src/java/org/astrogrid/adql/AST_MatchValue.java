@@ -2,14 +2,24 @@
 
 package org.astrogrid.adql;
 
+import org.apache.xmlbeans.XmlObject ;
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+
 public class AST_MatchValue extends SimpleNode {
+    
+    private static Log log = LogFactory.getLog( AST_MatchValue.class ) ;
 
     public AST_MatchValue(AdqlStoX p, int id) {
         super(p, id);
     }
 
-    public void jjtClose() {
-        setGeneratedObject( children[0].getGeneratedObject() ) ;
+    public void buildXmlTree( XmlObject xo ) {
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_MatchValue.buildXmlTree()" ) ; 
+        children[0].buildXmlTree( xo ) ;
+        this.generatedObject = children[0].getGeneratedObject() ;
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_MatchValue.buildXmlTree()" ) ; 
     }
+    
   
 }

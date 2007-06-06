@@ -2,14 +2,25 @@
 
 package org.astrogrid.adql;
 
+import org.apache.xmlbeans.XmlObject ;
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+
+
 public class AST_InPredicateValue extends SimpleNode {
+    
+    private static Log log = LogFactory.getLog( AST_InPredicateValue.class ) ;
 
     public AST_InPredicateValue(AdqlStoX p, int id) {
         super(p, id);
     }
 
-    public void jjtClose() {
-        setGeneratedObject( children[0].getGeneratedObject() ) ;
+    public void buildXmlTree( XmlObject xo ) {
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_InPredicateValue.buildXmlTree()" ) ;
+        children[0].buildXmlTree( xo ) ;
+        this.generatedObject = children[0].getGeneratedObject() ;
+        super.buildXmlTree( (XmlObject)this.generatedObject ) ;
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_InPredicateValue.buildXmlTree()" ) ;
     }
-
+    
 }

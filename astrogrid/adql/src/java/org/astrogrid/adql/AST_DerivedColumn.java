@@ -4,32 +4,88 @@ package org.astrogrid.adql;
 
 import org.astrogrid.adql.v1_0.beans.ScalarExpressionType ;
 import org.astrogrid.adql.v1_0.beans.AliasSelectionItemType ;
+import org.astrogrid.adql.v1_0.beans.SelectionItemType ;
+import org.apache.xmlbeans.XmlObject ;
+import org.apache.xmlbeans.XmlString ;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory ;
 
 public class AST_DerivedColumn extends SimpleNode {
+    
+    private static Log log = LogFactory.getLog( AST_DerivedColumn.class ) ;
 
     public AST_DerivedColumn(AdqlStoX p, int id) {
         super(p, id);
     }
 
     public void jjtClose() {
+//        int childCount = jjtGetNumChildren() ;
+//        if( childCount == 2 ) {
+//            Object child = null ;
+//            AliasSelectionItemType asiType = AliasSelectionItemType.Factory.newInstance() ;
+//            for( int i=0; i<childCount; i++ ) {
+//                child = children[i].getGeneratedObject() ;
+//                if( child instanceof String ) {
+//                    asiType.setAs( (String)child ) ;
+//                }
+//                else {
+//                    asiType.setExpression( (ScalarExpressionType)child ) ;
+//                    children[i].exchangeGeneratedObject(asiType.getExpression()) ;
+//                }
+//            }  
+//            setGeneratedObject( asiType ) ;
+//        }
+//        else if( childCount > 0 ){
+//            setGeneratedObject( children[0].getGeneratedObject() ) ;
+//        }
+    }
+    
+//    public Object generateObject() {
+//        int childCount = jjtGetNumChildren() ;
+//        if( childCount == 2 ) {
+//            Object child = null ;
+//            AliasSelectionItemType asiType = AliasSelectionItemType.Factory.newInstance() ;
+//            for( int i=0; i<childCount; i++ ) {
+//                child = children[i].generateObject() ;
+//                if( child instanceof String ) {
+//                    asiType.setAs( (String)child ) ;
+//                }
+//                else {
+//                    asiType.setExpression( (ScalarExpressionType)child ) ;
+//                }
+//            }  
+//            this.generatedObject = asiType ;
+//        }
+//        else if( childCount > 0 ){
+//            this.generatedObject = children[0].getGeneratedObject() ;
+//        }
+//        return super.generateObject() ;
+//    }
+    
+    public void buildXmlTree( XmlObject xo ) {
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_DerivedColumn.buildXmlTree()" ) ; 
+        SelectionItemType sit = (SelectionItemType)xo ;
         int childCount = jjtGetNumChildren() ;
         if( childCount == 2 ) {
-            Object child = null ;
-            AliasSelectionItemType asiType = AliasSelectionItemType.Factory.newInstance() ;
+            AliasSelectionItemType asiType = (AliasSelectionItemType)sit.changeType( AliasSelectionItemType.type ) ;
+            this.generatedObject = asiType ;
             for( int i=0; i<childCount; i++ ) {
-                child = children[i].getGeneratedObject() ;
-                if( child instanceof String ) {
-                    asiType.setAs( (String)child ) ;
+                if( children[i] instanceof AST_ColumnName ) {
+                    asiType.setAs( (String)children[i].getGeneratedObject() ) ;
                 }
-                else {
-                    asiType.setExpression( (ScalarExpressionType)child ) ;
+                else if( children[i] instanceof AST_ValueExpression ) {
+                    children[i].buildXmlTree( asiType.addNewExpression() ) ;
                 }
             }  
-            setGeneratedObject( asiType ) ;
+            this.generatedObject = asiType ;
         }
-        else {
-            setGeneratedObject( children[0].getGeneratedObject() ) ;
+        else if( childCount > 0 ){
+            children[0].buildXmlTree( sit ) ;
+            this.generatedObject = children[0].getGeneratedObject() ;
         }
+        super.buildXmlTree(xo) ;
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_DerivedColumn.buildXmlTree()" ) ; 
+        
     }
 
 }

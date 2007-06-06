@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-fragment>
+    <v1:Item xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0">
+        <v1:Expression Table="a" Name="col1" xsi:type="v1:columnReferenceType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <v1:Order Direction="ASC"/>
+    </v1:Item>
+    <v1:Item xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0">
+        <v1:Expression Table="a" Name="col2" xsi:type="v1:columnReferenceType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <v1:Order Direction="DESC"/>
+    </v1:Item>
+    <v1:Item xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0">
+        <v1:Expression Table="a" Name="col3" xsi:type="v1:columnReferenceType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <v1:Order Direction="ASC"/>
+    </v1:Item>
+</xml-fragment>

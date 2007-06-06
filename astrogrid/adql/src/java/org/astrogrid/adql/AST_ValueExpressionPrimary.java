@@ -4,9 +4,8 @@ package org.astrogrid.adql;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
+import org.apache.xmlbeans.XmlObject;
 import org.astrogrid.adql.v1_0.beans.ClosedExprType ;
-import org.astrogrid.adql.v1_0.beans.ScalarExpressionType ;
 
 public class AST_ValueExpressionPrimary extends SimpleNode {
     /**
@@ -24,19 +23,22 @@ public class AST_ValueExpressionPrimary extends SimpleNode {
         this.parenthesized = true ;
     }
 
-    public void jjtClose() {
-        if( log.isTraceEnabled() ) { log.trace( "jjtClose() - enter" ) ; }
+ 
+    public void buildXmlTree( XmlObject xo ) {
+        if( log.isTraceEnabled() ) { enterTrace( log, "AST_ValueExpressionPrimary.buildXmlTree()" ) ; }
 
         if( parenthesized ) {
-            ClosedExprType ceType = ClosedExprType.Factory.newInstance() ;
-            ceType.setArg( (ScalarExpressionType)children[0].getGeneratedObject() ) ;   
-            setGeneratedObject( ceType ) ;           
+            ClosedExprType ceType = (ClosedExprType)xo.changeType( ClosedExprType.type ) ;
+            children[0].buildXmlTree( ceType.addNewArg() ) ;
+            setGeneratedObject( ceType ) ;  
         }
         else {
-            setGeneratedObject( children[0].getGeneratedObject() ) ;
+            children[0].buildXmlTree( xo ) ;
+            setGeneratedObject( children[0].getGeneratedObject() ) ;  
         }
-        
-        if( log.isTraceEnabled() ) { log.trace( "jjtClose() - exit" ) ; }
+        super.buildXmlTree( (XmlObject)this.generatedObject ) ;
+        if( log.isTraceEnabled() ) { exitTrace( log, "AST_ValueExpressionPrimary.buildXmlTree()" ) ; }
+ 
     }
   
 }

@@ -2,14 +2,19 @@
 
 package org.astrogrid.adql;
 
+import org.apache.xmlbeans.XmlObject;
+
 public class AST_OrderByClause extends SimpleNode {
 
     public AST_OrderByClause(AdqlStoX p, int id) {
         super(p, id);
     }
 
-    public void jjtClose() {
+    public void buildXmlTree(XmlObject xo) {
+        children[0].buildXmlTree(xo) ;
         setGeneratedObject( children[0].getGeneratedObject() ) ;
     }
+    
+    
 
 }

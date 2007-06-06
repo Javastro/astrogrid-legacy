@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+
+ Find all galaxies with blue surface brightness between 23 and 25
+ mag per square arcseconds, and -10 < supergalactic latitude (sgb) < 10, and
+ declination less than zero. Currently, we have to live with ra/dec until we
+ get galactic coordinates. To calculate surface brightness per sq. arcsec,
+ we use (g + rho), where g is the blue magnitude, and rho= 5*log(r). This
+ query now has three requirements, one involving simple math.
++-->
+<v1:Select xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <v1:SelectionList>
+        <v1:Item xsi:type="v1:columnReferenceType" Table="gl" Name="objID"/>
+    </v1:SelectionList>
+    <v1:From>
+        <v1:Table xsi:type="v1:tableType" Name="Galaxy" Alias="gl"/>
+    </v1:From>
+    <v1:Where>
+        <v1:Condition xsi:type="v1:intersectionSearchType">
+            <v1:Condition xsi:type="v1:closedSearchType">
+                <v1:Condition xsi:type="v1:betweenPredType">
+                    <v1:Arg xsi:type="v1:columnReferenceType" Table="gl" Name="ra"/>
+                    <v1:Arg xsi:type="v1:atomType">
+                        <v1:Literal Value="250" xsi:type="v1:integerType"/>
+                    </v1:Arg>
+                    <v1:Arg xsi:type="v1:atomType">
+                        <v1:Literal Value="270" xsi:type="v1:integerType"/>
+                    </v1:Arg>
+                </v1:Condition>
+            </v1:Condition>
+            <v1:Condition xsi:type="v1:intersectionSearchType">
+                <v1:Condition xsi:type="v1:closedSearchType">
+                    <v1:Condition xsi:type="v1:comparisonPredType" Comparison=">">
+                        <v1:Arg xsi:type="v1:columnReferenceType" Table="gl" Name="dec"/>
+                        <v1:Arg xsi:type="v1:atomType">
+                            <v1:Literal Value="50" xsi:type="v1:integerType"/>
+                        </v1:Arg>
+                    </v1:Condition>
+                </v1:Condition>
+                <v1:Condition xsi:type="v1:closedSearchType">
+                    <v1:Condition xsi:type="v1:betweenPredType">
+                        <v1:Arg xsi:type="v1:binaryExprType" Oper="+">
+                            <v1:Arg xsi:type="v1:columnReferenceType" Table="gl" Name="g"/>
+                            <v1:Arg xsi:type="v1:columnReferenceType" Table="gl" Name="gho"/>
+                        </v1:Arg>
+                        <v1:Arg xsi:type="v1:atomType">
+                            <v1:Literal Value="23" xsi:type="v1:integerType"/>
+                        </v1:Arg>
+                        <v1:Arg xsi:type="v1:atomType">
+                            <v1:Literal Value="25" xsi:type="v1:integerType"/>
+                        </v1:Arg>
+                    </v1:Condition>
+                </v1:Condition>
+            </v1:Condition>
+        </v1:Condition>
+    </v1:Where>
+</v1:Select>

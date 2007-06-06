@@ -3,22 +3,28 @@
 package org.astrogrid.adql;
 
 import org.astrogrid.adql.v1_0.beans.OrderExpressionType ;
-import org.astrogrid.adql.v1_0.beans.OrderType ;
+import org.apache.xmlbeans.XmlObject; 
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 public class AST_SortSpecificationList extends SimpleNode {
+    
+    private static Log log = LogFactory.getLog( AST_SortSpecificationList.class ) ;
  
     public AST_SortSpecificationList(AdqlStoX p, int id) {
         super(p, id);
     }
 
-    public void jjtClose() {
-        OrderExpressionType oeType = OrderExpressionType.Factory.newInstance() ;
-        OrderType[] orderArray = new OrderType[ jjtGetNumChildren() ] ;
-        for( int i=0; i<orderArray.length; i++ ) {
-            orderArray[i] = (OrderType)children[i].getGeneratedObject() ;
+    public void buildXmlTree( XmlObject xo ) {
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_SortSpecificationList.buildXmlTree()" ) ;
+        OrderExpressionType oeType = (OrderExpressionType)xo.changeType( OrderExpressionType.type ) ;
+        int childCount = jjtGetNumChildren() ;
+        for( int i=0; i<childCount; i++ ) {
+            children[i].buildXmlTree( oeType.addNewItem() ) ;
         }
-        oeType.setItemArray( orderArray ) ;
         setGeneratedObject( oeType ) ;
+        super.buildXmlTree( oeType ) ;
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_SortSpecificationList.buildXmlTree()" ) ;
     }
 
 }

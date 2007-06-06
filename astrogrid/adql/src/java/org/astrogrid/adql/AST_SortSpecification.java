@@ -5,29 +5,34 @@ package org.astrogrid.adql;
 import org.astrogrid.adql.v1_0.beans.OrderOptionType;
 import org.astrogrid.adql.v1_0.beans.OrderDirectionType;
 import org.astrogrid.adql.v1_0.beans.OrderType;
-import org.astrogrid.adql.v1_0.beans.ScalarExpressionType;
+import org.apache.xmlbeans.XmlObject; 
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 public class AST_SortSpecification extends SimpleNode {
+    
+    private static Log log = LogFactory.getLog( AST_SortSpecification.class ) ;
 
     public AST_SortSpecification(AdqlStoX p, int id) {
         super(p, id);
     }
-
-    public void jjtClose() {
-        OrderType orderType = OrderType.Factory.newInstance() ;
-        ScalarExpressionType se = (ScalarExpressionType)children[0].getGeneratedObject() ; ;
+  
+    public void buildXmlTree( XmlObject xo ) {
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_SortSpecification.buildXmlTree()" ) ; 
+        OrderType orderType = (OrderType)xo.changeType( OrderType.type ) ;
+        children[0].buildXmlTree( orderType.addNewExpression() ) ;
         OrderOptionType optionType = null ;
 
         if( jjtGetNumChildren() == 1 ) {
             optionType = OrderOptionType.Factory.newInstance() ;
             optionType.setDirection( OrderDirectionType.ASC ) ; 
+            orderType.setOrder( optionType ) ;
         }
         else {
-            optionType = (OrderOptionType)children[1].getGeneratedObject() ;
+            children[1].buildXmlTree( orderType.addNewOrder() ) ;  
         }
-        orderType.setExpression( se ) ;
-        orderType.setOrder( optionType ) ;
         setGeneratedObject( orderType ) ;
+        super.buildXmlTree( orderType ) ;
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_SortSpecification.buildXmlTree()" ) ; 
     }
-  
 }

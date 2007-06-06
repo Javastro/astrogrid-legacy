@@ -1,0 +1,31 @@
+-- Another useful query is to see if the errors on moving (or
+-- apparently moving) objects are correct. For example, it used to be that
+-- some known QSOs were being flagged as moving objects. One way to look for
+-- such objects is to compare the velocity to the error in velocity and see if
+-- the "OBJECT1_MOVED" or "OBJECT2_BAD_MOVING_FIT" is set.
+-- This query introduces bitwise logic for flags, and uses the 'as' syntax to
+-- make the query more readable. Note that if a flag is not set, the value
+-- will be zero. If you want to ensure multiple flags are not set, you can
+-- either check that each individually is zero, or their sum is zero.
+-- (From Gordon Richards)
+
+-- NOTE: This query takes a long time to run without the "TOP 1000".
+
+SELECT TOP 1000
+    G.run, 
+    G.rerun, 
+    G.camcol, 
+    G.field, 
+    G.objID, 
+    G.ra, G."dec", 
+    G.rowv, G.colv, 
+    G.rowvErr, G.colvErr, 
+    G.i, 
+    (G.flags & fPhotoFlags('MOVED')) as MOVED, 
+    (G.flags & fPhotoFlags('BAD_MOVING_FIT')) as BAD_MOVING_FIT 
+FROM Galaxy as G
+WHERE
+    (G.flags & (fPhotoFlags('MOVED') + fPhotoFlags('BAD_MOVING_FIT'))) > 0 
+    and (G.rowv * G.rowv + G.colv * G.colv) >= 
+    (G.rowvErr * G.rowvErr + G.colvErr * G.colvErr)
+    ;

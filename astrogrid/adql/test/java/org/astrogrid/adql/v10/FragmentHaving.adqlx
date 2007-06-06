@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<v1:Condition Comparison=">=" xsi:type="v1:comparisonPredType" xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <v1:Arg Name="COUNT" xsi:type="v1:aggregateFunctionType">
+        <v1:Arg xsi:type="v1:allSelectionItemType"/>
+    </v1:Arg>
+    <v1:Arg xsi:type="v1:atomType">
+        <v1:Literal Value="23" xsi:type="v1:integerType"/>
+    </v1:Arg>
+</v1:Condition>

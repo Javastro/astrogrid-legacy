@@ -8,8 +8,8 @@
 **/
 package org.astrogrid.adql;
 
-import org.astrogrid.adql.v1_0.beans.* ;
-import org.apache.xmlbeans.XmlOptions ;
+import org.apache.xmlbeans.*;
+
 import java.io.IOException;
 import java.io.StringReader;
 import org.apache.commons.logging.Log ;
@@ -24,6 +24,18 @@ import org.apache.commons.logging.LogFactory ;
  *  USAGE: Type an ADQL query and press the ENTER key.
  *         Ensure the query ends with a semicolon.
  *         Type "bye" to exit.
+ *         
+ *         To compile fragments of ADQL, switch to fragment mode by typing "compile_fragment" 
+ *         and pressing the ENTER key. Once in fragment mode, compile a fragment of ADQL by
+ *         prefixing any ADQL string with the fragment name or an XPath like statement followed 
+ *         by a colon. Examples:
+ *         
+ *         from: from catalogA as a inner join catalogB as b on a.col1 = b.col1 ;
+ *         Select/Column: a.ra
+ *         Select/Item[@type="aggregateFunctionType"]/Arg: * ;
+ *         
+ *         To return to compiling full queries, switch mode by typing "compile_full" 
+ *         and pressing the ENTER key.
  *
  * @author Jeff Lusted jl99@star.le.ac.uk
  * Sep 18, 2006
@@ -41,31 +53,30 @@ public class Interactive {
     
     class ModeSwitchException extends Exception {
         
-        int mode ;
+        String mode ;
         
-        ModeSwitchException( int mode ) {
+        ModeSwitchException( String mode ) {
             this.mode = mode ;
         } ;
         
-        int getMode() {
+        String getMode() {
             return mode ;
         }
     }
     
     private static Log log = LogFactory.getLog( Interactive.class ) ;
 
-    private static final boolean TRACE_ENABLED = true ;
-    private static final boolean DEBUG_ENABLED = true ;
+//    private static final boolean TRACE_ENABLED = true ;
+//    private static final boolean DEBUG_ENABLED = true ;
     
     public static final String BYE_TRIGGER = "Encountered \"bye\"" ;
     public static final String BYE = "BYE" ;
-    public static final String FULL_MODE_TRIGGER = "compile_full" ;
-    public static final String FRAGMENT_MODE_TRIGGER = "compile_fragment" ;
-    public static final int FULL_MODE = 1 ;
-    public static final int FRAGMENT_MODE = 2 ;
-    public static int mode = FULL_MODE ;
-    
-    private static AdqlStoX COMPILER ;
+    public static final String FULL_MODE = "compile_full" ;
+    public static final String FRAGMENT_MODE = "compile_fragment" ;
+   
+    public static boolean bFullMode = true ;
+ 
+    private static AdqlCompiler COMPILER ;
     private static StringBuffer queryBuffer ;
     private static Interactive interactive ;
     private static String fragmentName ;
@@ -77,8 +88,10 @@ public class Interactive {
         "        Ensure the query ends with a semicolon.\n" +
         "        Type \"bye\" to exit.\n\n" +
         "        To compile fragments of ADQL, switch to fragment mode by typing \"compile_fragment\".\n" +
-        "        Then prefix any ADQL string with the fragment name. For example:\n" +
-        "        from: from catalogA as a inner join catalogB as b on a.col1 = b.col1;\n\n" +
+        "        Then prefix any ADQL string with the fragment name. Examples:\n\n" +
+        "        from: from catalogA as a inner join catalogB as b on a.col1 = b.col1;\n" +
+        "        Select/Column: a.ra;\n" +
+        "        Select/Item[@type=\"aggregateFunctionType\"]/Arg: * ; \n\n" +
         "        To return to compiling full queries, switch by typing \"compile_full\"." ;
     
     public Interactive() {
@@ -96,33 +109,55 @@ public class Interactive {
              print("\nEnter an SQL-like expression :");	
 
              try {
-                 StringReader source = getQuerySource() ;;
-                 if( mode == FULL_MODE ) {
+                 StringReader source = getQuerySource() ;
+                 if( bFullMode == true ) {
                      queryXml = getCompiler( source ).compileToXmlText() ; 
+                     print( "\nCompilation produced:" ) ;
+                     print( "\n" + queryXml ) ;         
                  }
                  else {
                      print( "\nfragment name: " + fragmentName ) ;
-                     queryXml = getCompiler( source ).compileFragmentToXmlText( fragmentName ) ;          
+//                     queryXml = getCompiler( source ).compileFragmentToXmlText( fragmentName ) ;
+                     String[] comments = new String[2] ;
+                     XmlObject xo = getCompiler( source ).execFragment( fragmentName, comments ) ;
+                     XmlOptions opts = new XmlOptions();
+                     opts.setSaveOuter() ;                    
+                     opts.setSaveAggressiveNamespaces() ;
+                     opts.setSavePrettyPrint() ;
+                     opts.setSavePrettyPrintIndent(4) ;
+                     queryXml = xo.xmlText( opts ) ;
+                     print( "\nCompilation produced:" ) ;
+                     if( comments[0] != null ) {
+                         print( "header comment: \n" + SimpleNode.prepareComment( comments[0] ) ) ;
+                     }
+                     print( "\n" + queryXml ) ;
+                     if( comments[1] != null ) {
+                         print( "trailer comment: \n" + SimpleNode.prepareComment( comments[1] ) ) ;
+                     }
                  }
-                 print( "\nCompilation produced:" ) ;
-                 print( "\n" + queryXml ) ;				
+                 	
              }
              catch( ExitException eof ) {
                  print( "Goodbye!" ) ;
                  System.exit(0) ;
              }
              catch( ModeSwitchException mse ) {
-                 mode = mse.getMode() ;
-                 if( mode == FULL_MODE ) {
+                 String mseMode = mse.getMode() ;
+                 if( mseMode.equalsIgnoreCase( FULL_MODE ) ) {
                      print( "Switching to compiling full queries..." ) ;
+                     bFullMode = true ;
                  }
-                 else if( mode == FRAGMENT_MODE ) {
+                 else if( mseMode.equalsIgnoreCase( FRAGMENT_MODE ) ) {
                      print( "Switching to compiling fragments..." ) ;
+                     bFullMode = false ;
                  }
              }
-             catch( ParseException pex ) {
+             catch( AdqlException adlqException ) {
                  print( "\nCompilation failed:" ) ;
-                 print( pex.getMessage() ) ;
+                 String[] messages = adlqException.getMessages() ;
+                 for( int i=0; i<messages.length; i++ ) {
+                     print( messages[i] ) ;
+                 }
              }
              catch( IOException iox ) {
                  print( iox.getMessage() ) ; 
@@ -158,21 +193,23 @@ public class Interactive {
              lineBuffer.append( c ) ;
              if( c == '\n' ) {
                  line = lineBuffer.toString().trim() ;
-                 if( line.endsWith( ";" ) ) {
+                 if( line.endsWith( ";" ) && !line.startsWith( "--" ) ) {
                      queryBuffer.append( line.substring( 0, line.length()-1 ) ) ;
                      break ;
                  }
-                 else if( line.startsWith( FRAGMENT_MODE_TRIGGER ) ) {
+                 else if( line.startsWith( FRAGMENT_MODE ) ) {
                      throw interactive.new ModeSwitchException( FRAGMENT_MODE ) ;
                  }
-                 else if( line.startsWith( FULL_MODE_TRIGGER ) ) {
+                 else if( line.startsWith( FULL_MODE ) ) {
                      throw interactive.new ModeSwitchException( FULL_MODE ) ;
                  }
                  else if( line.startsWith( BYE ) || line.startsWith( BYE.toLowerCase() ) ) {
                      throw interactive.new ExitException() ;
-                 }               
+                 }
+                 queryBuffer.append( lineBuffer ) ;
+                 lineBuffer.delete( 0, lineBuffer.length() ) ;
              }
-             else if( mode == FRAGMENT_MODE && c == ':' ) {
+             else if( bFullMode == false && c == ':' ) {
                  fragmentName = lineBuffer.toString().substring(0,lineBuffer.length()-1).trim() ;
                  lineBuffer.delete( 0, lineBuffer.length() ) ;
              }
@@ -186,9 +223,9 @@ public class Interactive {
          return source ;
      }
      
-     private static AdqlStoX getCompiler( StringReader source) {
+     private static AdqlCompiler getCompiler( StringReader source) {
          if( COMPILER == null ) {
-             COMPILER = new AdqlStoX( source ); 
+             COMPILER = new AdqlCompiler( source ); 
          }
          else {
              COMPILER.ReInit( source ) ;
@@ -196,37 +233,8 @@ public class Interactive {
          return COMPILER ;
      }
 	 
-//     private static boolean exitRequested( String message ) {
-//         String firstLine = message ;
-//         int i = message.indexOf('\n') ;
-//         if( i != -1 ) {
-//             firstLine = message.substring( 0, i ) ;          
-//         }
-//         if( firstLine.indexOf( BYE_TRIGGER ) != -1 )
-//             return true ;
-//         return false ;       
-//     }
-     
-//     private static boolean modeRequest( String message ) {
-//         boolean retVal = false ;
-//         String firstLine = message ;
-//         int i = message.indexOf('\n') ;
-//         if( i != -1 ) {
-//             firstLine = message.substring( 0, i ) ;          
-//         }
-//         if( firstLine.indexOf( FRAGMENT_MODE_TRIGGER ) != -1 )  {
-//             mode = FRAGMENT_MODE ;             
-//             retVal = true ;
-//         }
-//         else if(firstLine.indexOf( FULL_MODE_TRIGGER ) != -1 )  {
-//             mode = FULL_MODE ; 
-//             retVal = true ;
-//         }
-//         return retVal ;      
-//     }
-     
      private static void print( String message ) {
-         if( DEBUG_ENABLED ) {
+         if( log.isDebugEnabled() ) {
              log.debug( message ) ;
          }
          else {
@@ -235,7 +243,7 @@ public class Interactive {
      }
      
      private static void print( String message, Exception ex ) {
-         if( DEBUG_ENABLED ) {
+         if( log.isDebugEnabled() ) {
              log.debug( message, ex ) ;
          }
          else {
@@ -244,31 +252,4 @@ public class Interactive {
          }
      }
      
-//     private static String getFragmentName() throws ParseException, IOException {
-//         StringBuffer buffer = new StringBuffer() ;
-//         String line = null ;
-//         boolean triggerFound = false ;
-//         int lineCount = 0 ;  
-//         char c = (char)System.in.read() ;
-//         while( true) {   
-//             if( c == ':' ) {
-//                 triggerFound = true ;
-//                 break ;
-//             }
-//             if( c == '\n' ) {
-//                 lineCount ++ ;
-//                 if( lineCount >= 100 ) {
-//                     break ;
-//                 }
-//                 continue ;
-//             }
-//             buffer.append( c ) ;
-//             c = (char)System.in.read() ;
-//         }       
-//         if( triggerFound == false ) {
-//             throw new ParseException( "Incorrect trigger for Fragment Mode." ) ;
-//         }    
-//         line = buffer.toString().trim() ;
-//         return line ;
-//     }
 }

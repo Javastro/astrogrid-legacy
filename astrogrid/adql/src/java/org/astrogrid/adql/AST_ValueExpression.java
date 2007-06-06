@@ -2,14 +2,18 @@
 
 package org.astrogrid.adql;
 
+import org.apache.xmlbeans.XmlObject ;
+
 public class AST_ValueExpression extends SimpleNode {
  
     public AST_ValueExpression(AdqlStoX p, int id) {
         super(p, id);
     }
 
-    public void jjtClose() {
-        setGeneratedObject( children[0].getGeneratedObject() ) ;
+    public void buildXmlTree( XmlObject xo ) {
+        children[0].buildXmlTree( xo ) ;
+        this.generatedObject = children[0].getGeneratedObject() ;
+        super.buildXmlTree( (XmlObject)this.generatedObject ) ;
     }
 
 }

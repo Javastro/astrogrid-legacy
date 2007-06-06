@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+ Find galaxies with an isophotal surface brightness (SB) larger
+ than 24 in the red band, and with an ellipticity > 0.5, and with the major
+ axis of the ellipse having a declination between 30" and 60" arc seconds.
+ This is also a simple query that uses a WHERE clause with three conditions
+ that must be met. We introduce the syntax 'between' to do a range search.
++-->
+<v1:Select xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <v1:SelectionList>
+        <v1:Item xsi:type="v1:columnReferenceType" Table="gal" Name="ObjID"/>
+    </v1:SelectionList>
+    <v1:From>
+        <v1:Table xsi:type="v1:tableType" Name="Galaxy" Alias="gal"/>
+    </v1:From>
+    <v1:Where>
+        <v1:Condition xsi:type="v1:intersectionSearchType">
+            <v1:Condition xsi:type="v1:comparisonPredType" Comparison="&lt;">
+                <v1:Arg xsi:type="v1:binaryExprType" Oper="+">
+                    <v1:Arg xsi:type="v1:columnReferenceType" Table="gal" Name="r"/>
+                    <v1:Arg xsi:type="v1:columnReferenceType" Table="gal" Name="rho"/>
+                </v1:Arg>
+                <v1:Arg xsi:type="v1:atomType">
+                    <v1:Literal Value="24" xsi:type="v1:integerType"/>
+                </v1:Arg>
+            </v1:Condition>
+            <v1:Condition xsi:type="v1:intersectionSearchType">
+                <v1:Condition xsi:type="v1:betweenPredType">
+                    <v1:Arg xsi:type="v1:columnReferenceType" Table="gal" Name="isoA_r"/>
+                    <v1:Arg xsi:type="v1:atomType">
+                        <v1:Literal Value="30" xsi:type="v1:integerType"/>
+                    </v1:Arg>
+                    <v1:Arg xsi:type="v1:atomType">
+                        <v1:Literal Value="60" xsi:type="v1:integerType"/>
+                    </v1:Arg>
+                </v1:Condition>
+                <v1:Condition xsi:type="v1:comparisonPredType" Comparison=">">
+                    <v1:Arg xsi:type="v1:closedExprType">
+                        <v1:Arg xsi:type="v1:binaryExprType" Oper="+">
+                            <v1:Arg xsi:type="v1:mathFunctionType" Name="POWER">
+                                <v1:Arg xsi:type="v1:columnReferenceType" Table="gal" Name="q_r"/>
+                                <v1:Arg xsi:type="v1:atomType">
+                                    <v1:Literal Value="2" xsi:type="v1:integerType"/>
+                                </v1:Arg>
+                            </v1:Arg>
+                            <v1:Arg xsi:type="v1:mathFunctionType" Name="POWER">
+                                <v1:Arg xsi:type="v1:columnReferenceType" Table="gal" Name="u_r"/>
+                                <v1:Arg xsi:type="v1:atomType">
+                                    <v1:Literal Value="2" xsi:type="v1:integerType"/>
+                                </v1:Arg>
+                            </v1:Arg>
+                        </v1:Arg>
+                    </v1:Arg>
+                    <v1:Arg xsi:type="v1:atomType">
+                        <v1:Literal Value="0.25" xsi:type="v1:realType"/>
+                    </v1:Arg>
+                </v1:Condition>
+            </v1:Condition>
+        </v1:Condition>
+    </v1:Where>
+</v1:Select>
+<!--+   square of ellipticity > 0.5 squared
++-->

@@ -2,16 +2,22 @@
 
 package org.astrogrid.adql;
 
+import org.apache.xmlbeans.XmlObject;
 import org.astrogrid.adql.v1_0.beans.AtomType ;
 import org.astrogrid.adql.v1_0.beans.StringType ;
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 public class AST_ASCIIStringLiteral extends SimpleNode {
+    
+    private static Log log = LogFactory.getLog( AST_ASCIIStringLiteral.class ) ;
 
     public AST_ASCIIStringLiteral(AdqlStoX p, int id) {
         super(p, id);
     }
 
-    public void jjtClose() {
+    public void buildXmlTree( XmlObject xo ) {
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_ASCIIStringLiteral.buildXmlTree()" ) ;
         int childCount = jjtGetNumChildren() ;
         String value = null ;
         if( childCount == 1 ) {
@@ -24,11 +30,15 @@ public class AST_ASCIIStringLiteral extends SimpleNode {
             }
             value = buffer.toString() ;
         }
-        AtomType at = AtomType.Factory.newInstance() ;
-        StringType st = StringType.Factory.newInstance() ;
+        if( log.isDebugEnabled() ) {
+            log.debug( "xo type: " + xo.getClass() ) ;
+        }
+        
+        StringType st = (StringType)xo.changeType( StringType.type ) ;
         st.setValue( value ) ;
-        at.setLiteral( st ) ;   
-        setGeneratedObject( at ) ;   
+        this.generatedObject = st ; 
+        super.buildXmlTree(st) ;
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_ASCIIStringLiteral.buildXmlTree()" ) ;
     }
-  
+    
 }

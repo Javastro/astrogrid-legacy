@@ -1,0 +1,48 @@
+-- This is a query from Robert Lupton that finds selected neighbors in a given run and
+-- camera column. It contains a nested query containing a join, and a join with the
+-- results of the nested query to select only those neighbors from the list that meet
+-- certain criteria. The nested queries are required because the Neighbors table does
+-- not contain all the parameters for the neighbor objects. This query also contains
+-- examples of setting the output precision of columns with STR.
+
+-- JL Note. This has been edited by hand and will need rebuilding completely
+-- when all constructs are supported!
+-- I also think there may be errors within the original. Study the aliases!
+
+select
+    obj.run, obj.camCol, str(obj.field, 3) as field, 
+    str(obj.rowc, 6, 1) as rowc, str(obj.colc, 6, 1) as colc, 
+    str(fObj(obj.objId), 4) as id, 
+    str(obj.psfMag_g - 0*obj.extinction_g, 6, 3) as g, 
+    str(obj.psfMag_r - 0*obj.extinction_r, 6, 3) as r, 
+    str(obj.psfMag_i - 0*obj.extinction_i, 6, 3) as i, 
+    str(obj.psfMag_z - 0*obj.extinction_z, 6, 3) as z, 
+    str(60*obj.distance, 3, 1) as D, 
+    fField(obj.neighborObjId) as nfield, 
+    str(fObj(obj.neighborObjId), 4) as nid,'new' 
+    from 
+    (select obj.objId, 
+    obj.run, obj.camCol, obj.field, obj.rowc, obj.colc, 
+    obj.psfMag_u, obj.extinction_u, 
+    obj.psfMag_g, obj.extinction_g, 
+    obj.psfMag_r, obj.extinction_r, 
+    obj.psfMag_i, obj.extinction_i, 
+    obj.psfMag_z, obj.extinction_z, 
+    NN.neighborObjId, NN.distance 
+    from photoObj as obj 
+    join neighbors as NN on obj.objId = NN.objId 
+    where 
+    60*NN.distance between 0 and 15 and 
+    NN.mode = 1 and NN.neighborMode = 1 and 
+    obj.run = 756 and obj.camCol = 5 and 
+    obj.type = 6 and (obj.flags & 0x40006) = 0 and 
+    obj.nchild = 0 and obj.psfMag_i < 20 and 
+    (obj.g - obj.r between 0.3 and 1.1 and obj.r - obj.i between -0.1 and 0.6) 
+    ) as obj
+    join photoObj as nobj on nobj.objId = obj.neighborObjId
+    where 
+    nobj.run = obj.run and 
+    (abs(obj.psfMag_g - nobj.psfMag_g) < 0.5 or 
+    abs(obj.psfMag_r - nobj.psfMag_r) < 0.5 or 
+    abs(obj.psfMag_i - nobj.psfMag_i) < 0.5)
+    order by obj.run, obj.camCol, obj.field ;

@@ -6,21 +6,37 @@ import org.astrogrid.adql.v1_0.beans.AggregateFunctionType;
 import org.astrogrid.adql.v1_0.beans.AggregateFunctionNameType;
 import org.astrogrid.adql.v1_0.beans.ScalarExpressionType;
 import org.astrogrid.adql.v1_0.beans.SelectionItemType;
+import org.apache.xmlbeans.XmlObject; 
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 public class AST_GeneralSetFunction extends SimpleNode {
+    
+    private static Log log = LogFactory.getLog( AST_GeneralSetFunction.class ) ;
   
     public AST_GeneralSetFunction(AdqlStoX p, int id) {
         super(p, id);
     }
 
     public void jjtClose() {
-        AggregateFunctionType afType = AggregateFunctionType.Factory.newInstance() ;
-        ScalarExpressionType seType = (ScalarExpressionType)children[0].getGeneratedObject() ;
-        afType.setName( AggregateFunctionNameType.Enum.forString( getFirstToken().image.toUpperCase() ) ) ;
-        SelectionItemType[] argArray = new SelectionItemType[1] ;
-        argArray[0] = seType ;
-        afType.setArgArray( argArray ) ;
-        setGeneratedObject( afType ) ;
+//        AggregateFunctionType afType = AggregateFunctionType.Factory.newInstance() ;
+//        ScalarExpressionType seType = (ScalarExpressionType)children[0].getGeneratedObject() ;
+//        afType.setName( AggregateFunctionNameType.Enum.forString( firstToken.image.toUpperCase() ) ) ;
+//        SelectionItemType[] argArray = new SelectionItemType[1] ;
+//        argArray[0] = seType ;
+//        afType.setArgArray( argArray ) ;
+//        children[0].exchangeGeneratedObject( afType.getArgArray()[0] ) ;
+//        setGeneratedObject( afType ) ;
+    }
+    
+    public void buildXmlTree( XmlObject xo ) {
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_GeneralSetFunction.buildXmlTree()" ) ; 
+        AggregateFunctionType afType = (AggregateFunctionType)xo.changeType( AggregateFunctionType.type ) ;
+        afType.setName( AggregateFunctionNameType.Enum.forString( firstToken.image.toUpperCase() ) ) ;
+        children[0].buildXmlTree( afType.addNewArg() ) ;
+        this.generatedObject = afType ;
+        super.buildXmlTree(afType) ;
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_GeneralSetFunction.buildXmlTree()" ) ; 
     }
  
 }

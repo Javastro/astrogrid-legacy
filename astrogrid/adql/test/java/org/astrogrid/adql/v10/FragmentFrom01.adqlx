@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-fragment>
+    <v1:Table Name="users" Alias="u" xsi:type="v1:tableType" xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    <v1:Table Name="classified_ads" Alias="c" xsi:type="v1:tableType" xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+</xml-fragment>

@@ -38,6 +38,7 @@ public interface Node {
   public Object getGeneratedObject() ;
   
   /** Sets the generated object. */
-  public void setGeneratedObject( Object generatedObject ) ;
+  // public void setGeneratedObject( Object generatedObject ) ;
+  public void buildXmlTree( XmlObject xo ) ;
   
 }

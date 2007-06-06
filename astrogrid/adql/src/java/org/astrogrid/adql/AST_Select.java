@@ -3,48 +3,56 @@
 package org.astrogrid.adql;
 
 import org.astrogrid.adql.v1_0.beans.* ;
+import org.apache.xmlbeans.XmlObject ;
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 public class AST_Select extends SimpleNode {
+    
+    private static Log log = LogFactory.getLog( AST_Select.class ) ;
     
     public AST_Select(AdqlStoX p, int id) {
         super(p, id);
     }
-
-    public void jjtClose() {
-        SelectType st = SelectType.Factory.newInstance() ;
-        Object xo = null ;
+    
+    public void buildXmlTree( XmlObject xo ) {
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_Select.buildXmlTree()" ) ; 
+        SelectType st = (SelectType)xo ;
+        this.generatedObject = st ;
         int childCount = jjtGetNumChildren() ;
         for( int i=0; i<childCount; i++ ) {
-            xo = children[i].getGeneratedObject() ;
-            if( xo instanceof SelectionOptionType ) {
-                st.setAllow( (SelectionOptionType)xo ) ;
+            if( children[i] instanceof AST_Allow ) {
+                children[i].buildXmlTree( st.addNewAllow() ) ;
             }
-            else if( xo instanceof SelectionLimitType ) {
-                st.setRestrict( (SelectionLimitType)xo ) ;
+            else if( children[i] instanceof AST_Restrict ) {
+                children[i].buildXmlTree( st.addNewRestrict() ) ;
             }
-            else if( xo instanceof SelectionListType ) {
-                st.setSelectionList( (SelectionListType)xo ) ;
+            else if( children[i] instanceof AST_SelectionList ) {
+                children[i].buildXmlTree( st.addNewSelectionList() ) ;
             }
-            else if( xo instanceof FromType ) {
-                st.setFrom( (FromType)xo ) ;
+            else if( children[i] instanceof AST_From ) {
+                children[i].buildXmlTree( st.addNewFrom() ) ;
             }
-            else if( xo instanceof WhereType ) {
-                st.setWhere( (WhereType)xo ) ;
+            else if( children[i] instanceof AST_Where ) {
+                children[i].buildXmlTree( st.addNewWhere() ) ;
             }
-            else if( xo instanceof GroupByType ) {
-                st.setGroupBy( (GroupByType)xo ) ;
+            else if( children[i] instanceof AST_GroupBy ) {
+                children[i].buildXmlTree( st.addNewGroupBy() ) ;
             }
-            else if( xo instanceof HavingType ) {
-                st.setHaving( (HavingType)xo ) ;
+            else if( children[i] instanceof AST_Having ) {
+                children[i].buildXmlTree( st.addNewHaving() ) ;
             }
-            else if( xo instanceof OrderExpressionType ) {
-                st.setOrderBy( (OrderExpressionType)xo ) ;
+            else if( children[i] instanceof AST_OrderByClause ) {
+                children[i].buildXmlTree( st.addNewOrderBy() ) ;
             }
             else {
-                ; //?
+                if( log.isDebugEnabled() ) {
+                    log.warn( "Select has an invalid sub clause attached of class " + children[1].getClass() ) ; 
+                }
             }
         }
-        setGeneratedObject( st ) ;
+        super.buildXmlTree(xo) ;
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_Select.buildXmlTree()" ) ; 
     }
 
 }

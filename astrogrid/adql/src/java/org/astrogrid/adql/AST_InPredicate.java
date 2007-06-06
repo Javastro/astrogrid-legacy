@@ -6,8 +6,15 @@ import org.astrogrid.adql.v1_0.beans.InclusionSetType;
 import org.astrogrid.adql.v1_0.beans.InclusiveSearchType;
 import org.astrogrid.adql.v1_0.beans.ExclusiveSearchType;
 import org.astrogrid.adql.v1_0.beans.ScalarExpressionType;
+import org.astrogrid.adql.v1_0.beans.SelectType;
+import org.astrogrid.adql.v1_0.beans.SearchType;
+import org.apache.xmlbeans.XmlObject ;
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 public class AST_InPredicate extends SimpleNode {
+    
+    private static Log log = LogFactory.getLog( AST_Having.class ) ;
  
     private boolean in = true ;
 
@@ -18,25 +25,23 @@ public class AST_InPredicate extends SimpleNode {
     public void setIn( boolean in ) {
         this.in = in ;
     }
-
-    public void jjtClose() {
-
-        ScalarExpressionType seType = (ScalarExpressionType)children[0].getGeneratedObject() ;
-        InclusionSetType isType = (InclusionSetType)children[1].getGeneratedObject() ;
-
+    
+    public void buildXmlTree( XmlObject xo ) {
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_InPredicate.buildXmlTree()" ) ;
         if( in ) {
-            InclusiveSearchType iSearch = InclusiveSearchType.Factory.newInstance()  ;
-            iSearch.setExpression( seType ) ;
-            iSearch.setSet( isType ) ;
-            setGeneratedObject( iSearch ) ;
+            InclusiveSearchType iSearch = (InclusiveSearchType)xo.changeType( InclusiveSearchType.type ) ;
+            children[0].buildXmlTree( iSearch.addNewExpression() ) ;
+            children[1].buildXmlTree( iSearch.addNewSet() ) ;
+            this.generatedObject = iSearch ;
         }
         else {
-            ExclusiveSearchType xSearch = ExclusiveSearchType.Factory.newInstance()  ;
-            xSearch.setExpression( seType ) ;
-            xSearch.setSet( isType ) ; 
-            setGeneratedObject( xSearch ) ;
+            ExclusiveSearchType xSearch = (ExclusiveSearchType)xo.changeType( ExclusiveSearchType.type ) ;
+            children[0].buildXmlTree( xSearch.addNewExpression() ) ;
+            children[1].buildXmlTree( xSearch.addNewSet() ) ;
+            this.generatedObject = xSearch ;
         }
-
+        super.buildXmlTree( (XmlObject)this.generatedObject ) ;
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_InPredicate.buildXmlTree()" ) ;
     }
   
 }

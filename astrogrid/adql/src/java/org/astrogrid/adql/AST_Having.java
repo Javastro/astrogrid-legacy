@@ -4,17 +4,25 @@ package org.astrogrid.adql;
 
 import org.astrogrid.adql.v1_0.beans.HavingType;
 import org.astrogrid.adql.v1_0.beans.SearchType;
+import org.apache.xmlbeans.XmlObject ;
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 public class AST_Having extends SimpleNode {
+    
+    private static Log log = LogFactory.getLog( AST_Having.class ) ;
     
     public AST_Having(AdqlStoX p, int id) {
         super(p, id);
     }
-
-    public void jjtClose() {
-        HavingType havingType = HavingType.Factory.newInstance() ;
-        havingType.setCondition( (SearchType)children[0].getGeneratedObject() ) ;
-        setGeneratedObject( havingType ) ;
+    
+    public void buildXmlTree( XmlObject xo ) {
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_Having.buildXmlTree()" ) ;
+        HavingType havingType = (HavingType)xo.changeType( HavingType.type ) ;
+        this.generatedObject = havingType ;
+        children[0].buildXmlTree( havingType.addNewCondition() ) ;
+        super.buildXmlTree( havingType ) ;
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_Having.buildXmlTree()" ) ;
     }
 
 }

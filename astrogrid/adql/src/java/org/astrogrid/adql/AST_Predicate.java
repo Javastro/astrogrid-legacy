@@ -2,14 +2,13 @@
 
 package org.astrogrid.adql;
 
+//
+// Class should be removed
+
 public class AST_Predicate extends SimpleNode {
  
     public AST_Predicate(AdqlStoX p, int id) {
         super(p, id);
-    }
-
-    public void jjtClose() {
-        setGeneratedObject( children[0].getGeneratedObject() ) ;
     }
 
 }

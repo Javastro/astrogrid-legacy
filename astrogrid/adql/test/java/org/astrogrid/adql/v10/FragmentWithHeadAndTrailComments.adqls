@@ -1,0 +1,8 @@
+--Select
+-- Header Comment 1
+-- Header Comment 2
+-- Header Comment 3
+Select * from cata as a where a.id between 10000 and 20000
+-- Trailer Comment 1
+-- Trailer Comment 2
+-- Trailer Comment 3

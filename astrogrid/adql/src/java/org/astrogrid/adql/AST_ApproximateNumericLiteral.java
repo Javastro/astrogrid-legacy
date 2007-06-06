@@ -4,6 +4,7 @@ package org.astrogrid.adql;
 
 import org.astrogrid.adql.v1_0.beans.AtomType ;
 import org.astrogrid.adql.v1_0.beans.RealType ;
+import org.apache.xmlbeans.XmlObject;
 
 public class AST_ApproximateNumericLiteral extends SimpleNode {
 
@@ -11,12 +12,13 @@ public class AST_ApproximateNumericLiteral extends SimpleNode {
         super(p, id);
     }
 
-    public void jjtClose() {
-        AtomType atomType = AtomType.Factory.newInstance() ; 
+    public void buildXmlTree( XmlObject xo ) {
+        AtomType atomType = (AtomType)xo.changeType( AtomType.type ) ; 
         RealType realType = RealType.Factory.newInstance() ;
-        realType.setValue( new Double( this.parser.token.image ).doubleValue() ) ;
+        realType.setValue( new Double( getFirstToken().image ).doubleValue() ) ;
         atomType.setLiteral( realType ) ;
-        setGeneratedObject( atomType ) ;
+        this.generatedObject = atomType ;
+        super.buildXmlTree( atomType ) ;
     }
   
 }

@@ -4,19 +4,48 @@ package org.astrogrid.adql;
 
 import org.astrogrid.adql.v1_0.beans.GroupByType;
 import org.astrogrid.adql.v1_0.beans.ColumnReferenceType ;
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+import org.apache.xmlbeans.XmlObject ;
 
 public class AST_GroupBy extends SimpleNode {
+    
+    private static Log log = LogFactory.getLog( AST_GroupBy.class ) ;
     
     public AST_GroupBy(AdqlStoX p, int id) {
         super(p, id);
     }
 
-    public void jjtClose() {      
-        GroupByType gbt = GroupByType.Factory.newInstance() ;
-        ColumnReferenceType[] 
-           crtArray = (ColumnReferenceType[])children[0].getGeneratedObject() ;
-        gbt.setColumnArray( crtArray ) ;
-        setGeneratedObject( gbt ) ;
+    public void jjtClose() { 
+//        if( log.isTraceEnabled() ) enterTrace( log, "AST_GroupBy.jjtClose()" ) ;
+//        GroupByType gbt = GroupByType.Factory.newInstance() ;
+//        ColumnReferenceType[] 
+//           crtArray = (ColumnReferenceType[])children[0].getGeneratedObject() ;
+//        gbt.setColumnArray( crtArray ) ;
+//        children[0].exchangeGeneratedObject( gbt.getColumnArray() ) ;
+//        setGeneratedObject( gbt ) ;
+//        if( log.isTraceEnabled() ) exitTrace( log, "AST_GroupBy.jjtClose()" ) ;
+    }
+    
+//    public Object generateObject() { 
+//        if( log.isTraceEnabled() ) enterTrace( log, "AST_GroupBy.generateObject()" ) ;
+//        GroupByType gbt = GroupByType.Factory.newInstance() ;
+//        ColumnReferenceType[] 
+//           crtArray = (ColumnReferenceType[])children[0].generateObject() ;
+//        gbt.setColumnArray( crtArray ) ;
+//        this.generatedObject = gbt  ;
+//        super.generateObject() ;
+//        if( log.isTraceEnabled() ) exitTrace( log, "AST_GroupBy.generateObject()" ) ;
+//        return this.generatedObject ;
+//    }
+     
+    //
+    // Basically a pass through...
+    public void buildXmlTree( XmlObject xo ) { 
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_GroupBy.buildXmlTree()" ) ;
+        children[0].buildXmlTree( xo ) ;
+        this.generatedObject = children[0].getGeneratedObject() ;
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_GroupBy.buildXmlTree()" ) ;
     }
 
 }

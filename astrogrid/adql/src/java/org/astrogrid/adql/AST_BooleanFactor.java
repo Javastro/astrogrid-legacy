@@ -4,9 +4,15 @@ package org.astrogrid.adql;
 
 import org.astrogrid.adql.v1_0.beans.SearchType ;
 import org.astrogrid.adql.v1_0.beans.InverseSearchType ;
+import org.apache.xmlbeans.XmlObject ;
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+
 
 public class AST_BooleanFactor extends SimpleNode {
 
+    private static Log log = LogFactory.getLog( AST_Select.class ) ;
+    
     private boolean inverse = false ;
 
     public AST_BooleanFactor(AdqlStoX p, int id) {
@@ -19,13 +25,23 @@ public class AST_BooleanFactor extends SimpleNode {
 
     public void jjtClose() {
         if( inverse ) {
-            InverseSearchType is = InverseSearchType.Factory.newInstance() ;
-            is.setCondition( (SearchType)children[0].getGeneratedObject() ) ;
-            setGeneratedObject( is ) ;
+            getTracker().pop();
+        }
+    }
+    
+    public void buildXmlTree( XmlObject xo ) {
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_BooleanFactor.buildXmlTree()" ) ; 
+        if( inverse ) {
+            InverseSearchType is = (InverseSearchType)xo.changeType( InverseSearchType.type ) ;
+            children[0].buildXmlTree( is.addNewCondition() ) ;
+            this.generatedObject = is ;
         }
         else {
-            setGeneratedObject( children[0].getGeneratedObject() ) ; 
+            children[0].buildXmlTree( xo ) ;
+            this.generatedObject = children[0].getGeneratedObject() ; 
         }
+        super.buildXmlTree( (XmlObject)this.generatedObject ) ;
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_BooleanFactor.buildXmlTree()" ) ; 
     }
 
 }
