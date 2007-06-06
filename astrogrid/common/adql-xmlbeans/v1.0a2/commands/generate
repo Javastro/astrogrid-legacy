@@ -1,0 +1,1 @@
+scomp -d ../target/classes -src ../target/src/java -out ../target/lib/astrogrid-adql_v1_0a2-1.2-b000xmlbeans.jar ../../../../contracts/src/schema/adql/ADQL/v1.0a2/ ../config/adql.xsdconfig
