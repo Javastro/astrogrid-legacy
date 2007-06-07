@@ -380,11 +380,14 @@ ACTIONS
 			<inject object="service:system.tupperware" />
 			<inject name="section" object="literal:string:plastic" />
 		</object>
+		<!-- seems to cause some kind of threading / race condition on linux.
+		FIXME: find out what this is. 
 		<object name="3script" class="org.astrogrid.desktop.modules.ui.actions.GenerateScriptScavenger">
 			<inject object="service:dialogs.resourceChooser" />
 			<inject object="service:astrogrid.myspace" />
 			<inject name="section" object="literal:string:script" />		
 		</object>
+		-->
 		<object name="0selection" class="org.astrogrid.desktop.modules.ui.actions.InfoActivity">
 			<inject name="section" object="literal:string:info" />	
 		</object>
