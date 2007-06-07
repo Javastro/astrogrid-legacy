@@ -126,22 +126,22 @@ public class QueryHelper {
         //Resource element.
         String xqlString = "//" + QueryConfigExtractor.getRootNodeName(voResourceVersion) + "[(@status = 'active') and (";
         //go through all the xpaths and buildup a keyword string.
-        for(int i = 0;i < xqlPath.length;i++) {
-            xqlString += " (";
-            for(int j = 0;j < keyword.length;j++) {
-              xqlString += " match-all(" + xqlPath[i].trim() + ",'" + keyword[j] + "')";
-              if(j != (keyword.length - 1)) {
-                  if(orKeywords) { 
-                      xqlString += " or ";
-                  }else {
-                      xqlString += " and ";
-                  }
-              }//if
-            }//for
-            xqlString += ") ";
-            if(i != (xqlPath.length-1)) {
-                xqlString += " or ";
-            }
+        for(int j = 0;j < keyword.length;j++) {
+            xqlString += " (";        	
+	        for(int i = 0;i < xqlPath.length;i++) {
+	        	xqlString += " near(" + xqlPath[i].trim() + ",'" + keyword[j] + "')";
+	            if(i != (xqlPath.length - 1)) {
+                    xqlString += " or ";	            	
+	            }//if
+	         }//for
+	         xqlString += ") ";
+	         if(j != (keyword.length-1)) {
+	        	 if(orKeywords) {
+	        		 xqlString += " or ";	                	  
+	             }else {
+	            	 xqlString += " and ";
+	             }
+	         }//if
         }//for
         xqlString += ")] ";
         

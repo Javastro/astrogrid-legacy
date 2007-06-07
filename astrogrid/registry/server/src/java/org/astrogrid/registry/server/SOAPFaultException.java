@@ -22,8 +22,10 @@ public class SOAPFaultException extends Exception {
 	public static final int NOTFOUNDSOAP_TYPE = 4;
 	
 	private Document excDoc = null;
+	private int soapFaultType = -1;
 	
    public SOAPFaultException(String faultString, String errorString, String faultNamespace, int soapType) {
+	   this.soapFaultType = soapType;
 	   if(soapType == QUERYSOAP_TYPE) {
 		   this.excDoc = createQuerySOAPFaultException(faultString, errorString,faultNamespace);
 	   }else if(soapType == ADMINSOAP_TYPE) {
@@ -36,6 +38,8 @@ public class SOAPFaultException extends Exception {
    }
    
    public SOAPFaultException(String faultString, Exception errorException, String faultNamespace, int soapType) {
+	   this.soapFaultType = soapType;
+	   
 	   if(soapType == QUERYSOAP_TYPE) {
 		   this.excDoc = createQuerySOAPFaultException(faultString, errorException,faultNamespace);
 	   }else if(soapType == ADMINSOAP_TYPE) {
@@ -49,6 +53,10 @@ public class SOAPFaultException extends Exception {
    
    public Document getFaultDocument() {
 	   return this.excDoc;
+   }
+   
+   public int getSoapFaultType() {
+	   return this.soapFaultType;
    }
 	
    
