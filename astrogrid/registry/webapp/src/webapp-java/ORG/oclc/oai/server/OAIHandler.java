@@ -116,6 +116,11 @@ public class OAIHandler extends HttpServlet {
 	    FileInputStream in = new FileInputStream(fileName);
 	    Properties properties = new Properties();
 	    properties.load(in);
+	    System.out.println("is there a externalURL in the properties = " + properties.containsKey("OAIHandler.externalURL"));
+	    if(properties.containsKey("OAIHandler.externalURL")) {
+	    	System.out.println("setting baseURL property to = " + properties.getProperty("OAIHandler.externalURL") + "/OAIHandlerv" + versionNumberTemp.replaceAll(".", "_"));
+	    	properties.setProperty("OAIHandler.baseURL", properties.getProperty("OAIHandler.externalURL") + "/OAIHandlerv" + versionNumberTemp.replaceAll(".", "_"));
+	    }
 	    attributes.put("OAIHandler.properties", properties);
             String temp = properties.getProperty("OAIHandler.debug");
             if ("true".equals(temp)) debug = true;

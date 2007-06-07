@@ -176,6 +176,13 @@ public class XMLExistOAICatalog extends AbstractCatalog {
            //saxParser.parse(new File(sourceFile), rsh);
            saxParser.parse(bas, rsh);
            nativeMap = rsh.getNativeRecords();
+      }catch(SOAPFaultException e) {
+    	  e.printStackTrace();
+    	  System.out.println("exc message for soapfaultexc = " + e.getMessage());
+    	  if(e.getSoapFaultType() == SOAPFaultException.NOTFOUNDSOAP_TYPE)
+    		  throw new IdDoesNotExistException(oaiIdentifier);
+    	  else
+    		  throw new OAIInternalServerError(e.getMessage());
       }catch (SAXException e) {
           e.printStackTrace();
           throw new OAIInternalServerError(e.getMessage());
@@ -191,9 +198,6 @@ public class XMLExistOAICatalog extends AbstractCatalog {
       }catch(RegistryException re) {
           re.printStackTrace();
           throw new OAIInternalServerError(re.getMessage());
-      }catch(SOAPFaultException e) {
-    	  e.printStackTrace();
-    	  throw new OAIInternalServerError(e.getMessage());
       }
        
    }
@@ -272,7 +276,11 @@ public class XMLExistOAICatalog extends AbstractCatalog {
         	   else
         		   xqlQuery += " exists($x/vr:identifier) ";
            }else {
-               xqlQuery += " $x/@xsi:type &= '*" + set.substring(4) + "' ";
+        	   if(set.startsWith("ivo_")) {
+        		   xqlQuery += " matches(@xsi:type,'" + set.substring(4) + "') ";
+        	   }else {
+        		   xqlQuery += " matches(@xsi:type,'" + set + "') ";
+        	   }
            }
            
            if(from != null && from.trim().length() > 0) {

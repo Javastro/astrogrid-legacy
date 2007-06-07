@@ -137,6 +137,11 @@ public class OAIHandler extends HttpServlet {
        properties.load(configUrl.openStream());
        properties.setProperty("registry_contract_version",contractVersion);
        properties.setProperty("registry_version",versionNumber);
+       
+	    if(properties.containsKey("OAIHandler.externalURL")) {
+	    	properties.setProperty("OAIHandler.baseURL", properties.getProperty("OAIHandler.externalURL") + "/OAIHandlerv" + contractVersion.replaceAll("\\.", "_"));
+	    }       
+       
 	    attributes.put("OAIHandler.properties", properties);
        
             String temp = properties.getProperty("OAIHandler.debug");
