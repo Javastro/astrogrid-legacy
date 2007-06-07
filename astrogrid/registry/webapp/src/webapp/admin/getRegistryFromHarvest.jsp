@@ -42,7 +42,7 @@ get the 1 (and only 1) Registry type entry to be harvested.  To get all Registri
 <br />
 <p>
 If you are trying to harvest 0.10 entries then suggest this:
-http://galahad.star.le.ac.uk:8080/astrogrid-registry/OAIHandlerv0_1?verb=ListRecords&set=ivo_Registry&metadataPrefix=ivo_vor
+http://galahad.star.le.ac.uk:8080/astrogrid-registry/OAIHandlerv0_1?verb=ListRecords&set=Registry&metadataPrefix=ivo_vor
 <br />
 This will get all the Registry types that the full registry galahad has and allow you to start harvesting those 
 registries.  Alterntatively you can do verb=Identify to get just the singly Registry type Resource to harvest that particular registry.
