@@ -1,4 +1,4 @@
-/*$Id: InstallationSyntaxCheck.java,v 1.7 2007/06/08 13:16:11 clq2 Exp $
+/*$Id: InstallationSyntaxCheck.java,v 1.8 2007/06/08 14:54:22 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -341,10 +341,13 @@ public class InstallationSyntaxCheck {
       String colDecID = ConfigFactory.getCommonConfig().getString(
           "datacenter.self-test.column2", null);
       // Perform some checks
+      // KONA PUT BACK LATER?
+      /*
       if (defaultCatalogID == null) {
          throw new QueryException(
             "DataCentre is misconfigured - datacenter.self-test.catalog property is null");
       }
+      */
       if (defaultTableID == null) {
          throw new QueryException(
             "DataCentre is misconfigured - datacenter.self-test.table property is null");
