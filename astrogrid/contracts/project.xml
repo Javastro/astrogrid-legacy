@@ -2,7 +2,7 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-contracts</artifactId>
-  <currentVersion>2007.2.01</currentVersion>
+  <currentVersion>2007.2.03</currentVersion>
   <name>Astrogrid sub-system contracts</name>
   <shortDescription>Interface contracts for AstroGrid components.</shortDescription>
   <description><![CDATA[
