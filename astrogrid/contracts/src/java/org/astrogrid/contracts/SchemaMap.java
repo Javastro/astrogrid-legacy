@@ -69,7 +69,7 @@ public class SchemaMap {
         // (this one's namespace ought to have included *:dsa:*, but it
         //  was originally defined as shown below so I'm not changing it now)
         ALL.put("urn:astrogrid:schema:TableMetaDoc:v1",SchemaMap.class.getResource("/schema/dsa/DSAMetadoc/v1.0/TableMetaDoc.xsd"));
-        
+        ALL.put("urn:astrogrid:schema:dsa:TableMetaDoc:v1.1",SchemaMap.class.getResource("/schema/dsa/DSAMetadoc/v1.1/TableMetaDoc.xsd"));
         
         //stc schemas (go with adql imports usually)
         
@@ -124,6 +124,9 @@ public class SchemaMap {
 
 /* 
 $Log: SchemaMap.java,v $
+Revision 1.9  2007/06/08 12:49:58  clq2
+*** empty log message ***
+
 Revision 1.8  2007/04/16 11:31:50  gtr
 Branch apps-gtr-2172 is merged.
 
