@@ -11,7 +11,7 @@ package org.astrogrid.acr.ivoa;
  */
 public interface RegistryQueryBuilder {
 
-	/** query that returns all active recrods in the registry */
+	/** query that returns all active records in the registry */
 	String allRecords();
 	
 	/** build a full text search 
