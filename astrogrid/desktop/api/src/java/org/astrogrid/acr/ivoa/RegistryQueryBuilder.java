@@ -20,7 +20,7 @@ public interface RegistryQueryBuilder {
 	
 	/** build a summary text search 
 	 * 
-	 * seaqrches on identifier, shortName, title and content/description
+	 * searches on identifier, shortName, title and content/description
 	 * */
 	String summaryTextSearch(String recordSet, String searchTerm);
 	
