@@ -1,5 +1,5 @@
 /*
- * $Id: SearchField.java,v 1.5 2005/03/31 16:09:40 mch Exp $
+ * $Id: SearchField.java,v 1.6 2007/06/08 13:16:11 clq2 Exp $
  */
 package org.astrogrid.dataservice.metadata.queryable;
 
@@ -17,6 +17,7 @@ public class SearchField {
    private String id;
    private String name;
    private String groupName;
+   private String groupID;
    private String description;
    
    /** interoperating type - presented to the outside world */
@@ -45,9 +46,13 @@ public class SearchField {
    
    public String getDescription()      {        return description;   }
    
-   public void setGroup(String group)  {        this.groupName = group;   }
+   public void setGroup(String groupName, String groupID)  {        
+      this.groupName = groupName;   
+      this.groupID = groupID;   
+   }
    
-   public String getGroup()            {        return groupName;   }
+   public String getGroupName()          {        return groupName;   }
+   public String getGroupID()            {        return groupID;     }
    
    public void setJavaType(Class javaType) {    this.javaType = javaType;   }
    

@@ -1,5 +1,5 @@
 /*
- * $Id: RdbmsTableMetaDocGenerator.java,v 1.9 2007/02/20 12:22:16 clq2 Exp $
+ * $Id: RdbmsTableMetaDocGenerator.java,v 1.10 2007/06/08 13:16:12 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,6 +9,7 @@ package org.astrogrid.tableserver.jdbc;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Vector;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -22,7 +23,6 @@ import org.astrogrid.dataservice.queriers.DatabaseAccessException;
 import org.astrogrid.io.xml.XmlAsciiWriter;
 import org.astrogrid.io.xml.XmlPrinter;
 import org.astrogrid.webapp.DefaultServlet;
-//import org.astrogrid.dataservice.metadata.XmlTypes;
 import org.astrogrid.dataservice.metadata.StdDataTypes;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.cfg.ConfigFactory;
@@ -36,20 +36,6 @@ import org.astrogrid.cfg.ConfigFactory;
 public class RdbmsTableMetaDocGenerator extends DefaultServlet {
    
    protected static Log log = LogFactory.getLog(RdbmsTableMetaDocGenerator.class);
-   
-   /*
-   //should match the xml schema types
-   //public static String INT = XmlTypes.INT;
-   //public static String FLOAT = XmlTypes.FLOAT;
-   //public static String BOOLEAN = XmlTypes.BOOLEAN;
-   //public static String STRING = XmlTypes.STRING;
-   //public static String DATE = XmlTypes.DATE;
-   public static String INT = StdDataTypes.INT;
-   public static String FLOAT = StdDataTypes.FLOAT;
-   public static String BOOLEAN = StdDataTypes.BOOLEAN;
-   public static String STRING = StdDataTypes.STRING;
-   public static String DATE = StdDataTypes.DATE;
-   */
    
    /** Convenience routine for finding the value of a column in a result set row,
     * but ignoring
@@ -124,17 +110,69 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
       }
    }
    
+   public String[] getAvailableCatalogs() throws IOException, DatabaseAccessException 
+   {
+      // Initialise SampleStars plugin if required (may not be initialised
+      // if admin has not run the self-tests)
+      String plugin = ConfigFactory.getCommonConfig().getString(
+            "datacenter.querier.plugin");
+      if (plugin.equals("org.astrogrid.tableserver.test.SampleStarsPlugin")) {
+         // This has no effect if the plugin is already initialised
+         SampleStarsPlugin.initialise();  // Just in case
+      }
+      Connection connection = null;
+      Vector catIDs = new Vector();
+      try {
+         connection = JdbcPlugin.getJdbcConnection();
+         DatabaseMetaData metadata = connection.getMetaData();
+         ResultSet catalogs = metadata.getCatalogs();
+         while (catalogs.next()) {
+            String catID = getColumnValue(catalogs, "TABLE_CAT");
+            if (!"".equals(catID)) {
+               catIDs.add(catID);
+            }
+         }
+         connection.close();
+      }
+      catch (SQLException e) {
+         throw new DatabaseAccessException("Could not get available catalogs from database: "+e,e);
+      }
+      String[] catIDString = new String[catIDs.size()];
+      return (String[])catIDs.toArray(catIDString);
+   }
+
    /** Returns the metadata as a string */
-   public String getMetaDoc() throws IOException {
+   public String getMetaDoc(String[] catalogIDs) throws IOException {
       StringWriter sw = new StringWriter();
-      writeTableMetaDoc(sw);
+      writeTableMetaDoc(catalogIDs, sw);
       return sw.toString();
    }
    
    
    /**
-    * Writes the metadata to the given stream.  Writes just one catalog for now */
-   public void writeTableMetaDoc(Writer out) throws IOException {
+    * Writes the metadata to the given stream, for the catalog(s) (database(s)
+    * specified in the catalogIDs array. */
+   public void writeTableMetaDoc(String[] catalogIDs, Writer out) 
+      throws IOException {
+
+      boolean ignoreCatID = false;
+      boolean doOnce = false;
+      int numCats = 1;     // Default is one (maybe default) catalog
+
+      /* FOR TESTING
+      String cats[] = {"AWOPER"};
+      catalogIDs = cats;
+      */
+
+      if (catalogIDs == null) {
+         ignoreCatID = true;  // Use default catalog
+      }
+      else if (catalogIDs.length == 0) {
+         ignoreCatID = true; // Use default catalog
+      }
+      else {
+         numCats = catalogIDs.length;  
+      }
 
       // Initialise SampleStars plugin if required (may not be initialised
       // if admin has not run the self-tests)
@@ -144,102 +182,123 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
          // This has no effect if the plugin is already initialised
          SampleStarsPlugin.initialise();  // Just in case
       }
-//
-// ZRQ
-// Moved this to an XML tag.      
-//    out.write("<DatasetDescription xmlns='urn:astrogrid:schema:TableMetaDoc:v1'>\n");
+
       Connection connection = null;
       try {
          connection = JdbcPlugin.getJdbcConnection();
-         
+
          DatabaseMetaData metadata = connection.getMetaData();
 
          XmlAsciiWriter xw = new XmlAsciiWriter(out, false);
-//
-// ZRQ
-// Added the root tag to the XML writer. 
          XmlPrinter rootTag = xw.newTag("DatasetDescription", 
              new String[] {
                "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
-               "xmlns='urn:astrogrid:schema:TableMetaDoc:v1'",
-               "xsi:schemaLocation='urn:astrogrid:schema:TableMetaDoc:v1 http://software.astrogrid.org/schema/dsa/DSAMetadoc/v1.0/TableMetaDoc.xsd'"
+               "xmlns='urn:astrogrid:schema:dsa:TableMetaDoc:v1.1'",
+               "xsi:schemaLocation='urn:astrogrid:schema:dsa:TableMetaDoc:v1.1 http://software.astrogrid.org/schema/dsa/DSAMetadoc/v1.1/TableMetaDoc.xsd'"
              });
-         XmlPrinter catTag = rootTag.newTag("Catalog");
-         // Below gives proper Name and Description tag pairs
-         XmlPrinter catNameTag = catTag.newTag("Name");
-         catNameTag.close();
-         XmlPrinter catDescTag = catTag.newTag("Description");
-         catDescTag.close();
 
-         //get all tables
-         ResultSet tables = metadata.getTables(null, null, "%", null);
+         // First extract the catalogs
+         for (int i = 0; i < numCats; i++) {
+            String catalogID = "INSERT_CATALOG_NAME";
+            if (ignoreCatID == false) {
+               catalogID = catalogIDs[i];
+            }
+            String catalogName = catalogID;
+            String catalogDescription = "Insert catalog description here";
+            XmlPrinter catTag = rootTag.newTag(
+                  "Catalog", new String[] { "ID='" + catalogID+"'"});
+            // Below gives proper Name and Description tag pairs
+            catTag.writeTag("Name", catalogName);
+            catTag.writeTag("Description", catalogDescription);
+            /*
+            XmlPrinter catNameTag = catTag.newTag("Name");
+            catNameTag.close();
+            XmlPrinter catDescTag = catTag.newTag("Description");
+            catDescTag.close();
+            */
+            //get all tables
+            String catFilter = null;
+            if (!ignoreCatID) {
+               catFilter = catalogName;
+            }
+            ResultSet tables = metadata.getTables(catFilter, null, "%", null);
+            while (tables.next()) {
+               //ignore all tables beginning with 'sys' as these are 
+               //standard system tables and we don't want to make these 
+               // public. 
+               // KEA: HSQLDB 8.0 uses SYSTEM_XXX for sys table names
+               if (
+                   (!getColumnValue(tables, "TABLE_NAME").startsWith("sys")) &&
+                   (!getColumnValue(tables, "TABLE_NAME").startsWith("SYSTEM"))
+               ) {
+                  String tableName = getColumnValue(tables, "TABLE_NAME");
+                  XmlPrinter tableTag = catTag.newTag(
+                        "Table", new String[] { "ID='"+tableName+"'"} );
+                  tableTag.writeTag("Name", tableName );
+                  tableTag.writeTag("Description", getColumnValue(tables, "REMARKS")+" "); //add space so we don't get an empty tag <Description/> which is a pain to fill in
+                  //tableTag.writeComment("schema='"+getColumnValue(tables, "TABLE_SCHEM")+"'");
+                  // Now add sample (commented-out) conesearch settings as a
+                  // template
+                  tableTag.writeLine("<!--");
+                  XmlPrinter coneTag = tableTag.newTag("ConeSettings");
+                  coneTag.writeTag("RAColName","NAME_OF_RA_COLUMN");
+                  coneTag.writeTag("DecColName","NAME_OF_DEC_COLUMN");
+                  coneTag.close();
+                  tableTag.writeLine("-->");
 
-         while (tables.next()) {
-            //ignore all tables beginning with 'sys' as these are standard system tables
-            //and we don't want to make these public.  I believe
-            // KEA: HSQLDB 8.0 uses SYSTEM_XXX for sys table names
-            if (
-                (!getColumnValue(tables, "TABLE_NAME").startsWith("sys")) &&
-                (!getColumnValue(tables, "TABLE_NAME").startsWith("SYSTEM"))
-            ) {
-               String tableName = getColumnValue(tables, "TABLE_NAME");
-               XmlPrinter tableTag = catTag.newTag("Table", new String[] { "ID='"+tableName+"'"} );
-               tableTag.writeTag("Name", tableName );
-               tableTag.writeTag("Description", getColumnValue(tables, "REMARKS")+" "); //add space so we don't get an empty tag <Description/> which is a pain to fill in
-               //tableTag.writeComment("schema='"+getColumnValue(tables, "TABLE_SCHEM")+"'");
-               
-               ResultSet columns = metadata.getColumns(null, null, tables.getString("TABLE_NAME"), "%");
-               
-               while (columns.next()) {
-                  // This is the actual data type of the column
-                  int sqlType = Integer.parseInt(getColumnValue(columns, "DATA_TYPE"));
+                  ResultSet columns = metadata.getColumns(null, null, tables.getString("TABLE_NAME"), "%");
+                  
+                  while (columns.next()) {
+                     // This is the actual data type of the column
+                     int sqlType = Integer.parseInt(getColumnValue(columns, "DATA_TYPE"));
 
-                  // The size of the column: max width for char and date types,
-                  // precision for other types
-                  // NB We only use typesize value for char columns at 
-                  // the moment (to decide if they're really strings)
-                  int typeSize;
-                  try {
-                     typeSize = Integer.parseInt(getColumnValue(columns, "COLUMN_SIZE"));
-                  }
-                  catch (java.lang.NumberFormatException e) {
-                    typeSize = 1;   // A sane default if unspecified?
-                  }
-                  String colName = getColumnValue(columns, "COLUMN_NAME");
-                  XmlPrinter colTag = tableTag.newTag(
-                     "Column",
-                     new String[] { "ID='"+tableName+"."+colName+"'",
-                                    "indexed='false'" }
-                  );
-                  colTag.writeTag("Name", colName);
-                  colTag.writeTag("Datatype", getType(sqlType, typeSize));  //duplicate of attribute above, which includes width where nec,
-                  colTag.writeTag("Description", getColumnValue(columns, "REMARKS")+" "); //add space so we don't get an empty tag <Description/> which is a pain to fill in
-//                  colTag.writeTag("Link", new String[] { "text=''" }, " ");
-                  colTag.writeTag("Units", " "); //for humans
-                  colTag.writeTag("DimEq", " "); //Dimension Equation
-                  colTag.writeTag("Scale", " "); //Scaling Factor for dimension equation
-//                colTag.writeTag("UCD", " ");
-//                colTag.writeTag("UcdPlus", " ");
-// ZRQ Needs version="..."
-                  colTag.writeTag("UCD", new String[] {"version='1'"} ," ");
-                  colTag.writeTag("UCD", new String[] {"version='1+'"} ," ");
+                     // The size of the column: max width for char and date types,
+                     // precision for other types
+                     // NB We only use typesize value for char columns at 
+                     // the moment (to decide if they're really strings)
+                     int typeSize;
+                     try {
+                        typeSize = Integer.parseInt(getColumnValue(columns, "COLUMN_SIZE"));
+                     }
+                     catch (java.lang.NumberFormatException e) {
+                       typeSize = 1;   // A sane default if unspecified?
+                     }
+                     String colName = getColumnValue(columns, "COLUMN_NAME");
+                     XmlPrinter colTag = tableTag.newTag(
+                        "Column",
+                        new String[] { "ID='"+colName+"'",
+                                       "indexed='false'" }
+                     );
+                     colTag.writeTag("Name", colName);
+                     colTag.writeTag("Datatype", getType(sqlType, typeSize));  //duplicate of attribute above, which includes width where nec,
+                     colTag.writeTag("Description", getColumnValue(columns, "REMARKS")+" "); //add space so we don't get an empty tag <Description/> which is a pain to fill in
+   //                  colTag.writeTag("Link", new String[] { "text=''" }, " ");
+                     colTag.writeTag("Units", " "); //for humans
+                     colTag.writeTag("DimEq", " "); //Dimension Equation
+                     colTag.writeTag("Scale", " "); //Scaling Factor for dimension equation
+   //                colTag.writeTag("UCD", " ");
+   //                colTag.writeTag("UcdPlus", " ");
+   // ZRQ Needs version="..."
+                     colTag.writeTag("UCD", new String[] {"version='1'"} ," ");
+                     colTag.writeTag("UCD", new String[] {"version='1+'"} ," ");
 
-                  colTag.writeTag("ErrorColumn", " ");
-                  //botch look for spatial coordinates
-                  if (colName.toLowerCase().equals("ra")) {
-                     colTag.writeTag("SkyPolarCoord", "RA");
-                  }
-                  if (colName.toLowerCase().equals("dec")) {
-                     colTag.writeTag("SkyPolarCoord", "DEC");
+                     colTag.writeTag("ErrorColumn", " ");
+                     //botch look for spatial coordinates
+                     if (colName.toLowerCase().equals("ra")) {
+                        colTag.writeTag("SkyPolarCoord", "RA");
+                     }
+                     if (colName.toLowerCase().equals("dec")) {
+                        colTag.writeTag("SkyPolarCoord", "DEC");
+                     }
+                     
+                     colTag.close();
                   }
                   
-                  colTag.close();
+                  tableTag.close();
                }
-               
-               tableTag.close();
             }
+            catTag.close();
          }
-         catTag.close();
          rootTag.close();
          xw.close();
          
@@ -262,8 +321,47 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
 
       try {
          response.setContentType("text/xml");
+         // Use default catalog for now
+         writeTableMetaDoc(null, response.getWriter());
+         /*
+         String[] cats = new String[1];
+         cats[0] = "AWOPER.\"LVCatalog+\"";
+         writeTableMetaDoc(cats, response.getWriter());
+         */
 
-         writeTableMetaDoc(response.getWriter());
+         /*  KONA PUT ALL THIS STUFF BACK LATER 
+         String manCat = request.getParameter("DSACAT_MANUAL");
+         if ((manCat == null) || ("".equals(manCat))) {
+            Vector vector = new Vector();
+            java.util.Enumeration enumeration = request.getParameterNames();
+            while (enumeration.hasMoreElements()) {
+               String name = (String)enumeration.nextElement();
+               if ((name != null) && (!"".equals(name))) {
+                  if (name.indexOf("DSACAT_") == 0) {
+                     // Found a catalog name
+                     // TOFIX CHECK IF THIS ONE IS SWITCHED ON!!
+                     vector.add(name.substring(7));
+                  }
+               }
+            }
+            if (vector.size() == 0) {
+               // Didn't find cat names, use default
+               writeTableMetaDoc(null, response.getWriter());
+            }
+            else {
+               String[] cats = new String[vector.size()];
+               // Found cat names, use them
+               writeTableMetaDoc(
+                     (String[])vector.toArray(cats), response.getWriter());
+            }
+
+         }
+         else {
+            String[] cats = new String[1];
+            cats[0] = manCat;
+            writeTableMetaDoc(cats, response.getWriter());
+         }
+         */
       }
       catch (Throwable th) {
          doError(response, "Generating Resource Metadata",th);
@@ -272,10 +370,6 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
 
    /** for testing/debugging etc */
    public static void main(String[] args) {
-            
-      
    }
    
 }
-
-

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: project.xml,v 1.13 2007/02/20 12:22:15 clq2 Exp $ -->
+<!-- $Id: project.xml,v 1.14 2007/06/08 13:16:12 clq2 Exp $ -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
@@ -42,7 +42,7 @@
       <dependency>
          <artifactId>astrogrid-adqlstox</artifactId>
          <groupId>org.astrogrid</groupId>
-         <version>2007.1.01sx</version>
+         <version>${astrogrid.adqlstox.version}</version>
       </dependency>
 
       <dependency>
@@ -168,9 +168,9 @@
 	 </dependency>
 	  <dependency>
 	     <!-- These are the generated beans for adql -->
-		 <artifactId>astrogrid-adql_v1_0a1</artifactId>
+		 <artifactId>astrogrid-adql_v1_0a2</artifactId>
 		 <groupId>org.astrogrid</groupId>
-		 <version>${astrogrid.adql_v1_0.version}</version>
+		 <version>${astrogrid.adql_v1_0a2.version}</version>
 		 <type>jar</type>
 	 </dependency>
 	 <!-- end beans for adql -->

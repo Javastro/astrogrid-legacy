@@ -1,4 +1,4 @@
-/*$Id: ConeResources.java,v 1.1 2007/03/06 11:35:31 kea Exp $
+/*$Id: ConeResources.java,v 1.2 2007/06/08 13:16:11 clq2 Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,9 @@ import org.astrogrid.dataservice.metadata.VoResourcePlugin;
 import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
 import org.astrogrid.dataservice.service.ServletHelper;
 import org.astrogrid.query.Query;
+import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
+import org.astrogrid.tableserver.metadata.TableInfo;
+     
 
 /** Returns Registry resources for a service type that indicates that this
  * service can provide cone searches
@@ -26,7 +29,19 @@ public class ConeResources extends VoResourceSupport implements VoResourcePlugin
     * Returns ServiceType for cone search
     */
    public String getVoResource() throws IOException {
+      String coneList = "";
+      TableInfo[] coneTables = 
+         TableMetaDocInterpreter.getConesearchableTables();
+      for (int i = 0; i < coneTables.length; i++) {
+         coneList = coneList + makeVoResource(
+               coneTables[i].getCatalogName(),
+               coneTables[i].getName());
+      }
+      return coneList;
+   }
 
+
+   protected String makeVoResource(String catName, String tabName) throws IOException {
       String cone =
          makeVoResourceElement(
              //"ServiceType",
@@ -36,12 +51,13 @@ public class ConeResources extends VoResourceSupport implements VoResourcePlugin
              // Schema locations
             "http://www.ivoa.net/xml/ConeSearch/v0.3 http://www.ivoa.net/xml/ConeSearch/v0.3" 
         )+
-         makeCore("cone")+
+         makeCore(catName+"/"+tabName+"/cone", "Searching catalog " + catName +
+               ", table " + tabName)+
       
         //"<Subject>Stars</Subject>"+ //etc
         //"<ContentLevel>Research</ContentLevel>"+ //etc
          "<vr:interface qtype=\"GET\" xmlns:vs=\"http://www.ivoa.net/xml/VODataService/v0.5\" xsi:schemaLocation=\"http://www.ivoa.net/xml/VODataService/v0.5 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v0.5/VODataService.xsd\" xsi:type=\"vs:ParamHTTP\">\n"+
-         "  <vr:accessURL use=\"base\">"+ServletHelper.getUrlStem()+"SubmitCone?</vr:accessURL>\n"+
+         "  <vr:accessURL use=\"base\">"+ServletHelper.getUrlStem()+"SubmitCone?DSACAT="+catName+"&amp;DSATAB="+tabName+"&amp;</vr:accessURL>\n"+
          "  <vs:resultType/>\n"+
          "</vr:interface>\n"+
          "<cs:capability>\n" +
@@ -61,6 +77,21 @@ public class ConeResources extends VoResourceSupport implements VoResourcePlugin
 
 /*
  $Log: ConeResources.java,v $
+ Revision 1.2  2007/06/08 13:16:11  clq2
+ KEA-PAL-2169
+
+ Revision 1.1.2.4  2007/06/08 13:06:40  kea
+ Ready for trial merge.
+
+ Revision 1.1.2.3  2007/06/01 16:54:32  kea
+ Nearly there.
+
+ Revision 1.1.2.2  2007/05/18 16:34:12  kea
+ Still working on new metadoc / multi conesearch.
+
+ Revision 1.1.2.1  2007/05/16 11:03:52  kea
+ Removing siap stuff, not in use.
+
  Revision 1.1  2007/03/06 11:35:31  kea
  Moved ConeResources.java into version-specific subdir.
 

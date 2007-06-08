@@ -1,5 +1,5 @@
 /*
- * $Id: SearchGroup.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: SearchGroup.java,v 1.2 2007/06/08 13:16:11 clq2 Exp $
  */
 package org.astrogrid.dataservice.metadata.queryable;
 
@@ -11,28 +11,35 @@ public class SearchGroup {
    
    private String id;
    private String name;
-   private String group;
+   private String groupName;
+   private String groupID;
    private String description;
    
    public SearchGroup() {
    }
 
-   public SearchGroup(String anId, String aName, String parentGroup, String aDesc) {
+   public SearchGroup(String anId, String aName, String parentGroupName, String parentGroupID, String aDesc) {
       this.id = anId;
       this.name = aName;
-      this.group = parentGroup;
+      this.groupName = parentGroupName;
+      this.groupID = parentGroupID;
       this.description = aDesc;
    }
    
    
-   public void setGroup(String group)
+   public void setGroup(String groupName, String groupID)
    {
-      this.group = group;
+      this.groupName = groupName;
+      this.groupID = groupID;
    }
    
-   public String getGroup()
+   public String getGroupName()
    {
-      return group;
+      return groupName;
+   }
+   public String getGroupID()
+   {
+      return groupID;
    }
    
    public void setName(String name)

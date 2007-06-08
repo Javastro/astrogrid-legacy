@@ -1,15 +1,17 @@
 /*
- * $Id: AdqlTest.java,v 1.6 2006/08/21 15:39:30 clq2 Exp $
+ * $Id: AdqlTest.java,v 1.7 2007/06/08 13:16:11 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.query.adql;
 
+import java.io.InputStream;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.query.Query;
+import org.astrogrid.query.QueryException;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Element;
@@ -182,6 +184,12 @@ public class AdqlTest extends XMLTestCase   {
    public void testSelectFromNoAlias() throws Exception {
      suiteTest("selectFromNoAlias", "v1_0", false);
    }
+   public void testSelectAllArchive() throws Exception {
+      suiteTest("selectAllArchive", "v1_0", true);
+   }
+   public void testSelectTwoTablesFourColsArchive() throws Exception {
+      suiteTest("selectTwoTablesFourColsArchive", "v1_0", true);
+   }
 
    //----------------------------------------------------------------------
    /* Utility functions */
@@ -216,6 +224,7 @@ public class AdqlTest extends XMLTestCase   {
          compareAdql = helper.getSuiteAdqlStringExpected(name, "v1_0");
       }
       roundParse(adql, compareAdql);
+
    }
 
    protected void printHelpfulStuff(String filename) {
@@ -241,5 +250,4 @@ public class AdqlTest extends XMLTestCase   {
    public static void main(String args[]) {
       junit.textui.TestRunner.run(suite());
    }
-   
 }

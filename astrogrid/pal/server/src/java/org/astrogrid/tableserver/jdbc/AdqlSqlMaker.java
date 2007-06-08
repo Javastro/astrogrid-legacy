@@ -1,4 +1,4 @@
-/*$Id: AdqlSqlMaker.java,v 1.3 2006/06/15 16:50:09 clq2 Exp $
+/*$Id: AdqlSqlMaker.java,v 1.4 2007/06/08 13:16:12 clq2 Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.Vector;
+import java.util.ArrayList;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -27,12 +29,24 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigFactory;
+
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+import org.astrogrid.xml.DomHelper;
+
+// Query stuff
 import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryException;
-import org.astrogrid.xml.DomHelper;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
+import org.astrogrid.query.XmlBeanUtilities;
+
+// XMLBeans stuff
+import org.apache.xmlbeans.* ;
+import org.astrogrid.adql.v1_0.beans.*;
+
+import org.astrogrid.dataservice.metadata.MetadataException;
+import org.astrogrid.tableserver.metadata.NameTranslator;
+import org.astrogrid.tableserver.metadata.MetadocNameTranslator;
+
 
 /**
  * A translator that extracts SQL from a query. 
@@ -144,8 +158,12 @@ public class AdqlSqlMaker implements SqlMaker {
       */
 
       // Now get the query to convert itself with the stylesheet
-      return query.convertWithXslt(xsltIn);
+      //return query.convertWithXslt(xsltIn);
+      //SelectDocument selectDocument = query.getSelectDocument();
+      return convertWithXslt(query.getSelectDocument(), xsltIn);
+
    }
+
 
    /**
     * Constructs an SQL count statement for the given Query.
@@ -196,4 +214,202 @@ public class AdqlSqlMaker implements SqlMaker {
       return countSql;
    }
    */
+
+
+   /** Allows an XSLT stylesheet to be applied against the adql query,
+    * for example to transform it to sql. 
+    * The sql produced reflects the lower of the query row limit and
+    * the local datacenter row limit.
+    *
+    */
+   protected String convertWithXslt(SelectDocument selectDocument, InputStream xsltIn) 
+         throws QueryException
+   {
+      if (selectDocument == null) {
+         throw new QueryException("Input SelectDocument may not be null!");
+      }
+      if (xsltIn == null) {
+         throw new QueryException("Input XSLT InputStream may not be null!");
+      }
+
+      SelectDocument queryClone = (SelectDocument)selectDocument.copy(); 
+      // Tweak the limit value in the cloned query to reflect 
+      // the lower of the query and datacenter limit.
+      
+      long queryLimit = XmlBeanUtilities.getLimit(selectDocument);
+      long localLimit = XmlBeanUtilities.getLocalLimit(selectDocument);
+      if (queryLimit == Query.LIMIT_NOLIMIT) {  // Don't have a query limit
+         if (localLimit != Query.LIMIT_NOLIMIT) { // But do have a datacenter limit
+            XmlBeanUtilities.setLimit(queryClone, localLimit);
+         }
+      }
+      else {   // Do have a local limit
+         if ((localLimit != Query.LIMIT_NOLIMIT) && (localLimit < queryLimit)) {
+            XmlBeanUtilities.setLimit(queryClone, localLimit); // Datacenter limit is smaller
+         }
+      }
+      queryClone = applyNameTransformations(queryClone);
+
+   	TransformerFactory tFactory = TransformerFactory.newInstance();
+      try {
+         tFactory.setAttribute("UseNamespaces", Boolean.FALSE);
+      }
+      catch (IllegalArgumentException iae) {
+         // From MCH:  Ignore - if UseNamespaces is unsupported, 
+         // it will chuck an exception, and we don't want 
+         // to use namespaces anyway so that's fine
+      }
+      try {
+        Transformer transformer = 
+          tFactory.newTransformer(new StreamSource(xsltIn));
+        StringWriter sw = new StringWriter();
+
+        // Extract the query as a Dom document
+        Document beanDom = DomHelper.newDocument(queryClone.toString());
+
+        // NOTE: Seem to require a DOMSource rather than a StreamSource
+        // here or the transformer barfs - no idea why
+        // StreamSource source = new StreamSource(adqlBeanDoc.toString());
+        DOMSource source = new DOMSource(beanDom);
+
+        // Actually transform the document
+        transformer.transform(source, new StreamResult(sw));
+        String sql = sw.toString();
+        log.debug("Result of ADQL->SQL transformation is:\n" + sql);
+        return sql;
+      }
+      catch (SAXException se) {
+         throw new QueryException(
+             "Couldn't apply stylesheet to query: "+se, se);
+      }
+      catch (TransformerConfigurationException tce) {
+         throw new QueryException(
+             "Couldn't apply stylesheet to query: "+tce, tce);
+      }
+      catch (TransformerException te) {
+         throw new QueryException(
+             "Couldn't apply stylesheet to query: "+te, te);
+      }
+      catch (IOException ioe) {
+         throw new QueryException(
+             "Couldn't apply stylesheet to query: "+ioe, ioe);
+      }
+   }
+   /** foo */
+   protected SelectDocument applyNameTransformations(SelectDocument selectDocument) 
+      throws QueryException
+   {
+      if (selectDocument == null) {
+         throw new QueryException("Input SelectDocument may not be null!");
+      }
+
+      log.debug("TRANSFORMING NAMES...\nINITIAL QUERY IS: \n" 
+            + selectDocument.toString());
+
+      // KONA TOFIX LATER: SHOULD CHECK CONFIG PARAM FOR WHAT TO USE
+      NameTranslator translator = new MetadocNameTranslator();
+
+      // Make sure a FROM clause is present - add a default one
+      // if none is present and "default.table" property is set,
+      // otherwise reject query.
+      SelectType selectType = selectDocument.getSelect();
+      if (!selectType.isSetFrom()) {
+         throw new QueryException("Input SelectDocument must have a FROM clause!");
+      }
+      FromType from = selectType.getFrom();
+      int numTables = from.sizeOfTableArray();
+      try {
+         for (int i = 0; i < numTables; i++) {
+            TableType tableType = (TableType)(from.getTableArray(i));
+            String tableName = tableType.getName(); 
+            // Check for catalog name prefix - may be null
+            String catalogName = XmlBeanUtilities.getParentCatalog(tableType);
+            String tableAlias = XmlBeanUtilities.getTableAlias(
+                  selectDocument,tableName); // May come back null
+            tableType.setName(
+                  translator.getTableRealname(catalogName,tableName));
+            if (tableType.isSetArchive()) {
+               // First check if we need to remove the archive to hide
+               // it from the sql backend
+               String hideCat = "true";
+               try {
+                  hideCat = ConfigFactory.getCommonConfig().getString(
+                       "datacenter.plugin.jdbc.hidecatalog","true");
+               }
+               catch (Exception e) {
+                 // Ignore if not found
+               }
+               if ("true".equals(hideCat) || "TRUE".equals(hideCat)) {
+                  //Don't want to expose the catalog (schema) name
+                  tableType.unsetArchive(); 
+               }
+               else {
+                  String archiveName = tableType.getArchive(); 
+                  tableType.setArchive(
+                    translator.getCatalogRealname(catalogName));
+               }
+            }
+            // Now to find all SelectionList Items of type columnReferenceType,
+            // and extract the Name attributes for any columns coming from the 
+            // specified table.
+            SelectionListType selectionList = selectType.getSelectionList();
+            if (selectionList == null) { // CAN THIS BE NULL??
+               throw new QueryException(
+                     "Input SelectionList must not be NULL!");
+            }
+            ColumnReferenceType[] columnNames = 
+                     getColumnReferences(selectDocument);
+            for (int j = 0; j < columnNames.length; j++)
+            {
+               String columnName = columnNames[j].getName();
+               // Column table might be an alias
+               if (
+                  (columnNames[j].getTable().equals(tableName)) ||
+                  (columnNames[j].getTable().equals(tableAlias))
+               ) {
+                  columnNames[j].setName(translator.getColumnRealname(
+                           catalogName,tableName,columnName));
+               }
+               else if (tableAlias != null) {
+                 if (tableAlias.equals(columnNames[j].getTable())) {
+                     columnNames[j].setName(translator.getColumnRealname(
+                              catalogName,tableName,columnName));
+                  }
+               }
+            }
+         }
+      }
+      catch (MetadataException me) {
+         throw new QueryException(
+               "Couldn't perform query name transformations: " + 
+               me.getMessage(), me);
+      }
+      log.debug("FINAL QUERY IS: \n" + selectDocument.toString());
+      return selectDocument;
+   }
+
+   protected ColumnReferenceType[] getColumnReferences(SelectDocument doc) 
+         throws QueryException {
+      ArrayList colRefs = new ArrayList() ;
+      //
+      // Loop through the whole of the query looking for 
+      // ColumnReferenceType(s)....
+      XmlCursor cursor = doc.newCursor() ;
+      try {
+        while( !cursor.toNextToken().isNone() ) {
+           if( cursor.isStart()  && 
+              (cursor.getObject().schemaType() == ColumnReferenceType.type )){
+              colRefs.add( cursor.getObject() ) ;
+           }
+        } // end while
+      }
+      catch( Exception ex ) {
+         log.error("Warning:  Failed to get all column references from SelectDocument;  error was " + ex.toString());
+         throw new QueryException("Failed to get column references from SelectDocument", ex);
+      }
+      finally {
+          cursor.dispose() ;
+      }
+      return (ColumnReferenceType[])colRefs.toArray( new ColumnReferenceType[ colRefs.size() ] ) ;
+  }
 }

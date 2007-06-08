@@ -32,7 +32,7 @@
         </Item>
     </SelectionList>
     <From xsi:type="fromType">
-         <Table xsi:type="tableType" Alias="a" Name="INSERT_TABLE"/>
+         <Table xsi:type="tableType" Alias="a" Name="INSERT_TABLE" INSERT_CATALOG/>
     </From>
     <Where>
        <Condition xsi:type="comparisonPredType" Comparison="&gt;">

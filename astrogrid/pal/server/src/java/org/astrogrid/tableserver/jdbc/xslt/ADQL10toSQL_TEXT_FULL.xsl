@@ -91,6 +91,10 @@
 		</xsl:if>
 	</xsl:template>
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'tableType'] | *[@xsi:type = 'tableType']">
+      <xsl:if test="@Archive">
+         <xsl:value-of select="@Archive"/>
+         <xsl:text>.</xsl:text>
+      </xsl:if>
 		<xsl:value-of select="@Name"/>
 		<xsl:if test="@Alias">
 			<xsl:text> as </xsl:text>

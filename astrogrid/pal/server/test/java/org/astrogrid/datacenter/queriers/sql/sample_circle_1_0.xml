@@ -2,12 +2,12 @@
 <Select xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.ivoa.net/xml/ADQL/v1.0"> 
   <SelectionList> 
     <Item
-      xsi:type="columnReferenceType" Table="a" Name="RA" /> 
+      xsi:type="columnReferenceType" Table="a" Name="ColName_RA" /> 
     <Item
-      xsi:type="columnReferenceType" Table="a" Name="DEC" /> 
+      xsi:type="columnReferenceType" Table="a" Name="ColName_DEC" /> 
   </SelectionList> 
   <From>
-    <Table xsi:type="tableType" Name="SampleStars" Alias="a" /> 
+    <Table xsi:type="tableType" Name="TabName_SampleStars" Alias="a" /> 
   </From> 
   <Where> 
     <Condition xsi:type="regionSearchType"> 

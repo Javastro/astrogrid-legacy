@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescription.java,v 1.3 2007/02/20 12:22:14 clq2 Exp $
+/*$Id: DatacenterApplicationDescription.java,v 1.4 2007/06/08 13:16:08 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,6 +48,10 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
     public static final String QUERY = "Query";
     /** name of the 'format' parameter */
     public static final String FORMAT = "Format";
+    /** name of the 'catalog' parameter */
+    public static final String CATALOG = "Catalog";
+    /** name of the 'table' parameter */
+    public static final String TABLE = "Table";
     /**
      * Commons Logger for this class
      */
@@ -112,6 +116,22 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
         format.setDefaultValue("VOTABLE");
         format.setType(ParameterTypes.TEXT);
         this.addParameterDescription(format);
+
+        BaseParameterDescription catalog = new BaseParameterDescription();
+        catalog.setDisplayDescription("The parent catalog containing the table to be searched");
+        catalog.setDisplayName(CATALOG);
+        catalog.setName(CATALOG);
+        catalog.setDefaultValue("");
+        catalog.setType(ParameterTypes.TEXT);
+        this.addParameterDescription(catalog);
+
+        BaseParameterDescription table = new BaseParameterDescription();
+        table.setDisplayDescription("The table to be searched");
+        table.setDisplayName(TABLE);
+        table.setName(TABLE);
+        table.setDefaultValue("");
+        table.setType(ParameterTypes.TEXT);
+        this.addParameterDescription(table);
         
         BaseParameterDescription result = new BaseParameterDescription();
         result.setDisplayDescription("Query results");
@@ -128,6 +148,7 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
    
         BaseApplicationInterface cone = new BaseApplicationInterface(CONE_IFACE,this);
         this.addInterface(cone);
+        cone.addInputParameter(TABLE);
         cone.addInputParameter(FORMAT);
         cone.addInputParameter(RA);
         cone.addInputParameter(DEC);
@@ -153,6 +174,15 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
 
 /*
 $Log: DatacenterApplicationDescription.java,v $
+Revision 1.4  2007/06/08 13:16:08  clq2
+KEA-PAL-2169
+
+Revision 1.3.4.2  2007/05/18 16:34:12  kea
+Still working on new metadoc / multi conesearch.
+
+Revision 1.3.4.1  2007/05/16 11:03:52  kea
+Removing siap stuff, not in use.
+
 Revision 1.3  2007/02/20 12:22:14  clq2
 PAL_KEA_2062
 

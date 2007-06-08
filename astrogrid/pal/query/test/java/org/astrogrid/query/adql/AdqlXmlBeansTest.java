@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlXmlBeansTest.java,v 1.2 2006/06/15 16:50:09 clq2 Exp $
+ * $Id: AdqlXmlBeansTest.java,v 1.3 2007/06/08 13:16:11 clq2 Exp $
  * (C) Copyright Astrogrid...
  */
 
@@ -175,6 +175,12 @@ public class AdqlXmlBeansTest extends XMLTestCase   {
    }
    public void testSelectExprMixed1_0_7_4() throws Exception {
      suiteTest("selectExprMixed1", "v074", true);
+   }
+   public void testSelectAllArchive() throws Exception {
+     suiteTest("selectAllArchive", "v1_0", true);
+   }
+   public void testSelectTwoTablesFourColsArchive() throws Exception {
+     suiteTest("selectTwoTablesFourColsArchive", "v1_0", true);
    }
 
    public static Test suite() {

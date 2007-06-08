@@ -1,5 +1,5 @@
 /*
- * $Id: ColumnInfo.java,v 1.2 2005/05/27 16:21:14 clq2 Exp $
+ * $Id: ColumnInfo.java,v 1.3 2007/06/08 13:16:09 clq2 Exp $
  */
 package org.astrogrid.tableserver.metadata;
 
@@ -18,10 +18,10 @@ public class ColumnInfo extends SearchField {
    }
    
    /** Convenience constructor for tests etc */
-   public ColumnInfo(String name, String group, String description, String type, String ucd, String units) {
+   public ColumnInfo(String name, String ID, String groupName, String groupID, String description, String type, String ucd, String units) {
       setName(name);
-      setGroup(group);
-      setId(group+"."+name);
+      setGroup(groupName, groupID);
+      setId(ID);
       setDescription(description);
       setJavaType(StdDataTypes.getJavaType(type));
       setPublicType(type);
@@ -30,10 +30,10 @@ public class ColumnInfo extends SearchField {
    }
    
    /** Convenience constructor for tests etc */
-   public ColumnInfo(String name, String group, String description, Class javatype, String ucd, String units) {
+   public ColumnInfo(String name, String ID, String groupName, String groupID, String description, Class javatype, String ucd, String units) {
       setName(name);
-      setGroup(group);
-      setId(group+"."+name);
+      setGroup(groupName, groupID);
+      setId(ID);
       setDescription(description);
       setJavaType(javatype);
       setPublicType(StdDataTypes.getStdType(javatype));

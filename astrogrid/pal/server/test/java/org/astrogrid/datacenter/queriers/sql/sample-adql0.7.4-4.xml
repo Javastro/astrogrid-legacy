@@ -3,17 +3,17 @@
  -->
 <Select xmlns='http://www.ivoa.net/xml/ADQL/v0.7.4'  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'  xmlns:xsd='http://www.w3.org/2001/XMLSchema' >
    <SelectionList>
-      <Item xsi:type='columnReferenceType' Table='t' Name='b' ></Item>
-      <Item xsi:type='columnReferenceType' Table='b' Name='d' ></Item>
+      <Item xsi:type='columnReferenceType' Table='s' Name='ColName_RA' ></Item>
+      <Item xsi:type='columnReferenceType' Table='p' Name='ColName_CENTERRA' ></Item>
    </SelectionList>
    <From>
-      <Table xsi:type='tableType' Name='Tab' Alias='t' ></Table>
-      <Table xsi:type='tableType' Name='Bob' Alias='b' ></Table>
+      <Table xsi:type='tableType' Name='TabName_SampleStars' Alias='s' ></Table>
+      <Table xsi:type='tableType' Name='TabName_Plates' Alias='p' ></Table>
    </From>
    <Where>
       <Condition xsi:type='comparisonPredType' Comparison='&lt;>' >
-         <Arg xsi:type='columnReferenceType'  Table='t'  Name='b' ></Arg>
-         <Arg xsi:type='columnReferenceType'  Table='b'  Name='b' ></Arg>
+         <Arg xsi:type='columnReferenceType'  Table='s'  Name='ColName_RA' ></Arg>
+         <Arg xsi:type='columnReferenceType'  Table='p'  Name='ColName_CENTERRA' ></Arg>
       </Condition>
    </Where>
 </Select>

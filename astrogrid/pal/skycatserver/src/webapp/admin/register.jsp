@@ -74,7 +74,10 @@
    URL registerUrl = ConfigFactory.getCommonConfig().getUrl(RegistryDelegateFactory.ADMIN_URL_PROPERTY, null);
    if (( registerUrl != null)) {
       String context = registerUrl.getPath().substring(1);
-      context = context.substring(0, context.indexOf("/"));
+      int endindex = context.indexOf("/");
+      if (endindex != -1) {   // Prevent page crashing for erroneous config URL
+         context = context.substring(0, endindex);
+      }
       //I think the port gets shortcut because it's the same as the hosts....
       //URL indexUrl = new URL(registerUrl.getProtocol(), registerUrl.getHost(), registerUrl.getPort(), context);
       //URL entryFormUrl = new URL(registerUrl.getProtocol(), registerUrl.getHost(), registerUrl.getPort(), context+"/admin/entryForm.html");

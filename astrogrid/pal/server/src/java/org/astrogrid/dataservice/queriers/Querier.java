@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.8 2007/03/21 18:58:15 kea Exp $
+ * $Id: Querier.java,v 1.9 2007/06/08 13:16:12 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -240,7 +240,12 @@ public class Querier implements Runnable, PluginListener {
       getStatus().setProgressMax(resultsSize);
       plugin = null;  //release plugin reference (-> can be garbage collected)
       query = null;   // release query reference too (can get quite big)
-      clearStatusHistory();  // clean up some details of the status too
+      /*
+      // This was to save memory - but flushing old jobs is better
+      if (!getStatus().isError()) {
+         clearStatusHistory();  // clean up some details of the status too
+      }
+      */
    }
    
    /**

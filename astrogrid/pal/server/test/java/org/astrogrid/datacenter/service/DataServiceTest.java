@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.7 2007/03/02 13:33:07 kea Exp $
+/*$Id: DataServiceTest.java,v 1.8 2007/06/08 13:16:12 clq2 Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import java.security.Principal;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.queriers.status.QuerierAborted;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
 import org.astrogrid.dataservice.service.DataServer;
@@ -27,6 +28,7 @@ import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.status.TaskStatus;
 import org.astrogrid.tableserver.VoTableTestHelper;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
+import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -41,12 +43,18 @@ public class DataServiceTest extends TestCase {
    protected DataServer server;
 
    protected Query query1;
+   protected Query query1c;
    protected Query query2;
+   protected Query query2c;
    protected Query query3;
+   protected Query query3c;
    
    protected StringWriter sw1 = new StringWriter();
+   protected StringWriter sw1c = new StringWriter();
    protected StringWriter sw2 = new StringWriter();
+   protected StringWriter sw2c = new StringWriter();
    protected StringWriter sw3 = new StringWriter();
+   protected StringWriter sw3c = new StringWriter();
 
    public Principal TESTPrincipal = new LoginAccount("UnitTester", "test.org");
    
@@ -60,31 +68,44 @@ public class DataServiceTest extends TestCase {
        SampleStarsPlugin.initConfig();
        
        server = new DataServer();
+       String catalogID = ConfigFactory.getCommonConfig().getString(
+             "datacenter.self-test.catalog", null);
+       String tableID = ConfigFactory.getCommonConfig().getString(
+             "datacenter.self-test.table", null);
+       String catalogName = TableMetaDocInterpreter.getCatalogNameForID(
+             catalogID);
+       String tableName = TableMetaDocInterpreter.getTableNameForID(
+             catalogID,tableID);
+
        
-//       query1 = AdqlQueryMaker.makeQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-1.xml"));
-      //query1 = SimpleQueryMaker.makeConeQuery(0, 89, 5);
-      query1 = SimpleQueryMaker.makeTestQuery(
+      query1 = SimpleQueryMaker.makeTestQuery(tableName,
          new ReturnTable(new WriterTarget(sw1), ReturnTable.VOTABLE));
+
+      query1c = SimpleQueryMaker.makeTestQuery(catalogName, tableName,
+         new ReturnTable(new WriterTarget(sw1c), ReturnTable.VOTABLE));
        
-       //this one needs to be small enough that it does not hit the return-limit
-       //query2 = SimpleQueryMaker.makeConeQuery(30,30,3);
-       //
-      query2 = SimpleQueryMaker.makeTestQuery(
+      query2 = SimpleQueryMaker.makeTestQuery(tableName,
          new ReturnTable(new WriterTarget(sw2), ReturnTable.VOTABLE));
 
-      //query1 = SimpleQueryMaker.makeConeQuery(90, -90, 5);
-       //query2 = AdqlQueryMaker.makeQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-3.xml"));
+      query2c = SimpleQueryMaker.makeTestQuery(catalogName, tableName,
+         new ReturnTable(new WriterTarget(sw2c), ReturnTable.VOTABLE));
       
-      query3 = SimpleQueryMaker.makeTestQuery(
+      query3 = SimpleQueryMaker.makeTestQuery(tableName,
          new ReturnTable(new WriterTarget(sw3), ReturnTable.VOTABLE));
+
+      query3c = SimpleQueryMaker.makeTestQuery(catalogName, tableName,
+         new ReturnTable(new WriterTarget(sw3c), ReturnTable.VOTABLE));
     }
 
     public void testConeSearch1() throws Throwable 
     {
       // This tests a small-radius conesearch
        StringWriter sw = new StringWriter();
-       Query coneQuery = SimpleQueryMaker.makeConeQuery(50.0, 50.0, 0.1,
-         new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE));
+       Query coneQuery = new Query(
+             "CatName_SampleStarsCat", "TabName_SampleStars", "deg",
+             "ColName_RA", "ColName_Dec",
+             50.0, 50.0, 0.1,
+             new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE));
        server.askQuery(TESTPrincipal, coneQuery, this);
        String results = sw.toString();
        VoTableTestHelper.assertIsVotable(results);
@@ -93,8 +114,11 @@ public class DataServiceTest extends TestCase {
     {
       // This tests a larger-radius conesearch
        StringWriter sw = new StringWriter();
-       Query coneQuery = SimpleQueryMaker.makeConeQuery(50.0, 50.0, 0.6,
-         new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE));
+       Query coneQuery = new Query(
+             "CatName_SampleStarsCat", "TabName_SampleStars", "deg",
+             "ColName_RA", "ColName_Dec",
+             50.0, 50.0, 0.6,
+             new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE));
        server.askQuery(TESTPrincipal, coneQuery, this);
        String results = sw.toString();
        VoTableTestHelper.assertIsVotable(results);
@@ -111,21 +135,53 @@ public class DataServiceTest extends TestCase {
       //query1.setResultsDef(new ReturnTable(new WriterTarget(sw), "VOTABLE"));
       server.askQuery(TESTPrincipal, query1, this);
       String result = sw1.toString();
-       
       assertNotNull(result);
       VoTableTestHelper.assertIsVotable(result);
       
+   }
+   public void testQueryServiceAll() throws Throwable
+   {
+      server.askQuery(TESTPrincipal, query1, this);
+      server.askQuery(TESTPrincipal, query2, this);
+      server.askQuery(TESTPrincipal, query3, this);
+      server.askQuery(TESTPrincipal, query1c, this);
+      server.askQuery(TESTPrincipal, query2c, this);
+      server.askQuery(TESTPrincipal, query3c, this);
+
+      String result1 = sw1.toString();
+      assertNotNull(result1);
+      VoTableTestHelper.assertIsVotable(result1);
+      String result1c = sw1c.toString();
+      assertNotNull(result1c);
+      VoTableTestHelper.assertIsVotable(result1c);
+
+      String result2 = sw2.toString();
+      assertNotNull(result2);
+      VoTableTestHelper.assertIsVotable(result2);
+      String result2c = sw2c.toString();
+      assertNotNull(result2c);
+      VoTableTestHelper.assertIsVotable(result2c);
+      
+      String result3 = sw3.toString();
+      assertNotNull(result3);
+      VoTableTestHelper.assertIsVotable(result3);
+      String result3c = sw3c.toString();
+      assertNotNull(result3c);
+      VoTableTestHelper.assertIsVotable(result3c);
    }
 
    /**
     * Tests the status */
    public void testStatus() throws Throwable {
       //submit queries
+      query1.setResultsDef(new ReturnTable(new NullTarget(), "VOTABLE"));
+      server.submitQuery(TESTPrincipal, query1, this);
+
       query2.setResultsDef(new ReturnTable(new NullTarget(), "VOTABLE"));
       server.submitQuery(TESTPrincipal, query2, this);
 
-      query1.setResultsDef(new ReturnTable(new NullTarget(), "VOTABLE"));
-      server.submitQuery(TESTPrincipal, query1, this);
+      query3.setResultsDef(new ReturnTable(new NullTarget(), "VOTABLE"));
+      server.submitQuery(TESTPrincipal, query3, this);
 
       DataServiceStatus status = DataServer.getStatus();
       TaskStatus[] tasks = status.getTasks();
@@ -153,7 +209,6 @@ public class DataServiceTest extends TestCase {
       assertTrue("askQuery returns different result ("+rows.getLength()+") to askCount ("+count+")", rows.getLength() == count);
       */
    }
-   
     
    // KEA: THIS TEST IS TIME-SENSITIVE AND SOMETIMES FAILS SPURIOUSLY - 
    // DISABLING IT FOR THE TIME BEING
@@ -193,6 +248,15 @@ public class DataServiceTest extends TestCase {
 
 /*
 $Log: DataServiceTest.java,v $
+Revision 1.8  2007/06/08 13:16:12  clq2
+KEA-PAL-2169
+
+Revision 1.7.2.2  2007/05/29 13:54:39  kea
+Still working on new metadoc stuff.
+
+Revision 1.7.2.1  2007/05/18 16:34:13  kea
+Still working on new metadoc / multi conesearch.
+
 Revision 1.7  2007/03/02 13:33:07  kea
 Disabling flaky test.
 

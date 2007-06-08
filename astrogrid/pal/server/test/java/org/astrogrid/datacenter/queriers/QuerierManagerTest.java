@@ -8,12 +8,14 @@
  **/
 package org.astrogrid.datacenter.queriers;
 import junit.framework.TestCase;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.NullTarget;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
+import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 
 /**
  * test behaviours the querier manager.
@@ -43,14 +45,23 @@ public class QuerierManagerTest extends TestCase {
       
    }
    public void testHandleUniqueness() throws Exception {
-      
+       String catalogID = ConfigFactory.getCommonConfig().getString(
+             "datacenter.self-test.catalog", null);
+       String tableID = ConfigFactory.getCommonConfig().getString(
+             "datacenter.self-test.table", null);
+       String catalogName = TableMetaDocInterpreter.getCatalogNameForID(
+             catalogID);
+       String tableName = TableMetaDocInterpreter.getTableNameForID(
+             catalogID,tableID);
+       String fullName = catalogName + "." + tableName;
+
       s1 = Querier.makeQuerier(LoginAccount.ANONYMOUS, 
-          SimpleQueryMaker.makeTestQuery(
+          SimpleQueryMaker.makeTestQuery(fullName,
             new ReturnTable(new NullTarget(), ReturnTable.VOTABLE)),
           this);
       assertNotNull(s1);
       s2 = Querier.makeQuerier(LoginAccount.ANONYMOUS, 
-          SimpleQueryMaker.makeTestQuery(
+          SimpleQueryMaker.makeTestQuery(fullName,
             new ReturnTable(new NullTarget(), ReturnTable.VOTABLE)),
           this);
       assertNotNull(s2);

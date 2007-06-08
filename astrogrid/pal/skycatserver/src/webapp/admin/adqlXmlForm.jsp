@@ -33,9 +33,8 @@
         <% 
             String adql = request.getParameter("AdqlXml");
             if ((adql == null) || adql.trim().equals("")) {
-              //adql = InstallationSyntaxCheck.getTestSuiteAdql(
-               //   "selectAllLimit.xml");
-               adql = SimpleQueryMaker.makeTestQueryString();
+              adql = InstallationSyntaxCheck.getTestSuiteAdql(
+                  "selectAllLimit.xml");
             }
         %>
         <!-- Don't get whitespace in the textbox! -->

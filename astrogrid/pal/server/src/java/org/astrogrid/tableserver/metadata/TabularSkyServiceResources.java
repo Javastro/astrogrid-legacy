@@ -1,5 +1,5 @@
 /*
- * $Id: TabularSkyServiceResources.java,v 1.4 2006/02/09 09:54:09 clq2 Exp $
+ * $Id: TabularSkyServiceResources.java,v 1.5 2007/06/08 13:16:09 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,7 +10,6 @@ import java.io.IOException;
 import org.astrogrid.dataservice.metadata.VoResourcePlugin;
 import org.astrogrid.tableserver.metadata.ColumnInfo;
 import org.astrogrid.tableserver.metadata.TableInfo;
-import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
 
 /**
@@ -24,11 +23,9 @@ public class TabularSkyServiceResources extends VoResourceSupport implements VoR
     *  */
    public String getVoResource() throws IOException {
 
-      TableMetaDocInterpreter reader = new TableMetaDocInterpreter();
-
       StringBuffer tabularDb = new StringBuffer(
          makeVoResourceElement("vor:TabularSkyService", "", "")+
-         makeCore("SkyService")
+         makeCore("SkyService","")
       );
       
       tabularDb.append(

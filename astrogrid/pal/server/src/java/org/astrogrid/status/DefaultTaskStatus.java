@@ -1,5 +1,5 @@
 /*
- * $Id: DefaultTaskStatus.java,v 1.2 2007/03/21 18:59:41 kea Exp $
+ * $Id: DefaultTaskStatus.java,v 1.3 2007/06/08 13:16:12 clq2 Exp $
  */
 
 package org.astrogrid.status;
@@ -83,6 +83,10 @@ public class DefaultTaskStatus implements TaskStatus
       return (stage.toUpperCase().equals(COMPLETE.toUpperCase()) ||
               stage.toUpperCase().equals(ABORTED.toUpperCase()) ||
               stage.toUpperCase().equals(ERROR.toUpperCase()));
+   }
+   public boolean isError()
+   {
+      return (stage.toUpperCase().equals(ERROR.toUpperCase())); 
    }
    
    public void setTimestamp(Date timestamp)  {     this.timestamp = timestamp;   }

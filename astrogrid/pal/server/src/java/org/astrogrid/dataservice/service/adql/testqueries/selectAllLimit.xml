@@ -5,6 +5,6 @@
         <Item xsi:type="allSelectionItemType"/>
     </SelectionList>
     <From>
-        <Table xsi:type="tableType" Alias="a" Name="INSERT_TABLE"/>
+        <Table xsi:type="tableType" Alias="a" Name="INSERT_TABLE" INSERT_CATALOG/>
     </From>
 </Select>

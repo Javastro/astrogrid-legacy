@@ -30,9 +30,9 @@
         </Item>
     </SelectionList>
     <From xsi:type="fromType">
-        <Table xsi:type="tableType" Alias="a" Name="INSERT_TABLE"/>
-        <Table xsi:type="tableType" Alias="b" Name="INSERT_TABLE"/>
-        <Table xsi:type="tableType" Alias="c" Name="INSERT_TABLE"/>
-        <Table xsi:type="tableType" Alias="d" Name="INSERT_TABLE"/>
+        <Table xsi:type="tableType" Alias="a" Name="INSERT_TABLE" INSERT_CATALOG/>
+        <Table xsi:type="tableType" Alias="b" Name="INSERT_TABLE" INSERT_CATALOG/>
+        <Table xsi:type="tableType" Alias="c" Name="INSERT_TABLE" INSERT_CATALOG/>
+        <Table xsi:type="tableType" Alias="d" Name="INSERT_TABLE" INSERT_CATALOG/>
     </From>
 </Select>

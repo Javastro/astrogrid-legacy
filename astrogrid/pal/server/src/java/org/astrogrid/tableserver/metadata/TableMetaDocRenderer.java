@@ -1,5 +1,5 @@
 /*
- * $Id: TableMetaDocRenderer.java,v 1.7 2006/09/26 15:34:42 clq2 Exp $
+ * $Id: TableMetaDocRenderer.java,v 1.8 2007/06/08 13:16:09 clq2 Exp $
  */
 package org.astrogrid.tableserver.metadata;
 
@@ -22,6 +22,9 @@ import org.astrogrid.dataservice.queriers.DatabaseAccessException;
  * Renders an RdbmsMetadata resource document in HTML suitable for including
  * within the body element.  We could probably use
  * an XSL sheet for this, but I can't be bothered as this is easier for me :-)
+ *
+ * KEA NOTE:  This uses the Name (user-friendly) tags to render the metadoc,
+ * and does not display the ID attributes.
  */
 
 public class TableMetaDocRenderer {
@@ -48,18 +51,16 @@ public class TableMetaDocRenderer {
 
       Element metadoc = null;
       try {
-         TableMetaDocInterpreter interpreter = new TableMetaDocInterpreter();
-
-         String[] catalogs = interpreter.getCatalogs();
+         String[] catalogNames = TableMetaDocInterpreter.getCatalogNames();
          
-         if (catalogs.length == 0) {
+         if (catalogNames.length == 0) {
            html.append(ServletHelper.exceptionAsHtml("Server error: no catalog or table metadata are defined for this DSA/catalog installation;  please check your metadoc file and/or configuration!", new MetadataException("Metadata configuration error"), null));
             return html.toString();
          }
-         for (int cat = 0; cat < catalogs.length; cat++) {
-            TableInfo[] tables = interpreter.getTables(catalogs[cat]);
+         for (int cat = 0; cat < catalogNames.length; cat++) {
+            TableInfo[] tables = TableMetaDocInterpreter.getTablesInfoByName(catalogNames[cat]);
             for (int table=0;table<tables.length;table++) {
-               renderTable(html, interpreter, tables[table]);
+               renderTable(html, tables[table]);
             }
          }
          return html.toString();
@@ -70,7 +71,9 @@ public class TableMetaDocRenderer {
       }
    }
 
-   public void renderTable(StringBuffer html, TableMetaDocInterpreter interpreter, TableInfo table) throws MetadataException {
+   public void renderTable(StringBuffer html, TableInfo table) 
+            throws MetadataException 
+   {
       html.append(
          "<h3>Table '"+table.getName()+"'</h3>"+
             "<p>"+emptyIfNull(table.getDescription()) +"</p>"+
@@ -89,7 +92,9 @@ public class TableMetaDocRenderer {
                   "<th>Links</th>"+
                "</tr>");
 
-      ColumnInfo[] columns = interpreter.getColumns(table.getDataset(), table.getName());
+      ColumnInfo[] columns = 
+         TableMetaDocInterpreter.getColumnsInfoByName(
+               table.getCatalogName(), table.getName());
    
       for (int col=0;col<columns.length;col++) {
 

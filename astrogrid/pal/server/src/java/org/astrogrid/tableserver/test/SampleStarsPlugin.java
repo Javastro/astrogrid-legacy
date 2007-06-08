@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.10 2007/03/21 18:59:41 kea Exp $
+ * $Id: SampleStarsPlugin.java,v 1.11 2007/06/08 13:16:10 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,7 +14,6 @@ import java.util.Date;
 import org.astrogrid.cfg.ConfigReader;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
-import org.astrogrid.dataservice.metadata.queryable.ConeConfigQueryableResource;
 import org.astrogrid.dataservice.queriers.DatabaseAccessException;
 import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
 import org.astrogrid.tableserver.jdbc.JdbcConnections;
@@ -50,11 +49,6 @@ public class SampleStarsPlugin extends JdbcPlugin
 
       ConfigFactory.getCommonConfig().setProperty(JdbcPlugin.SQL_TRANSLATOR, AdqlSqlMaker.class.getName());
 
-      ConfigFactory.getCommonConfig().setProperty(ConeConfigQueryableResource.CONE_SEARCH_RA_COL_KEY, "RA");
-      ConfigFactory.getCommonConfig().setProperty(ConeConfigQueryableResource.CONE_SEARCH_DEC_COL_KEY,"DEC");
-      ConfigFactory.getCommonConfig().setProperty(ConeConfigQueryableResource.CONE_SEARCH_TABLE_KEY,  "SampleStars");
-
-      ConfigFactory.getCommonConfig().setProperty(ConeConfigQueryableResource.CONE_SEARCH_COL_UNITS_KEY, "deg");
       ConfigFactory.getCommonConfig().setProperty(
           "db.trigfuncs.in.radians","true");
       ConfigFactory.getCommonConfig().setProperty(
@@ -112,16 +106,12 @@ public class SampleStarsPlugin extends JdbcPlugin
       ConfigFactory.getCommonConfig().setProperty("datacenter.contact.name", "The AstroGrid Team");
       ConfigFactory.getCommonConfig().setProperty("datacenter.contact.email", "astrogrid_dsa@star.le.ac.uk");
 
-      ConfigFactory.getCommonConfig().setProperty("default.table","SampleStars");
+      ConfigFactory.getCommonConfig().setProperty("default.table","TabName_SampleStars");
       // Conesearch and self-test properties
+      ConfigFactory.getCommonConfig().setProperty("datacenter.self-test.catalog","SampleStarsCat");
       ConfigFactory.getCommonConfig().setProperty("datacenter.self-test.table","SampleStars");
       ConfigFactory.getCommonConfig().setProperty("datacenter.self-test.column1","RA");
       ConfigFactory.getCommonConfig().setProperty("datacenter.self-test.column2","DEC");
-
-      ConfigFactory.getCommonConfig().setProperty("conesearch.table","SampleStars");
-      ConfigFactory.getCommonConfig().setProperty("conesearch.ra.column","RA");
-      ConfigFactory.getCommonConfig().setProperty("conesearch.dec.column","DEC");
-      ConfigFactory.getCommonConfig().setProperty("conesearch.column.units","deg");
 
       //
       ConfigFactory.getCommonConfig().setProperty("datacenter.authorityId", "astrogrid.org");
@@ -154,6 +144,7 @@ public class SampleStarsPlugin extends JdbcPlugin
       //first remove in case there in memory still from previous test
       try {
          connection.createStatement().execute("DROP TABLE SampleStars"  );
+         connection.createStatement().execute("DROP TABLE SampleStars2"  );
          connection.createStatement().execute("DROP TABLE SampleGalaxies"  );
          connection.createStatement().execute("DROP TABLE Plates"  );
       }
@@ -163,9 +154,11 @@ public class SampleStarsPlugin extends JdbcPlugin
       
       log.info("Populating Database");
 
-   
       try {
          //populate stars
+         createStarTable(connection, "SampleStars");
+         createStarTable(connection, "SampleStars2");
+         /*
          //create table
          connection.createStatement().execute(
             "CREATE TABLE SampleStars (Id INTEGER IDENTITY,  Name VARCHAR(30), Ra DOUBLE,  Dec DOUBLE,  Mag DOUBLE, Flag BOOLEAN)  "
@@ -218,6 +211,7 @@ public class SampleStarsPlugin extends JdbcPlugin
 //           connection.createStatement().execute(sql.toString());
             System.out.print(".");
          }
+         */
          
          //populate galaxies
          //create table
@@ -268,6 +262,67 @@ public class SampleStarsPlugin extends JdbcPlugin
       }
        */
    }
+
+
+   public static void createStarTable(Connection connection, String tableName) 
+            throws SQLException, DatabaseAccessException 
+   {
+      //populate stars
+      //create table
+      connection.createStatement().execute(
+         "CREATE TABLE " + tableName + " (Id INTEGER IDENTITY,  Name VARCHAR(30), Ra DOUBLE,  Dec DOUBLE,  Mag DOUBLE, Flag BOOLEAN)  "
+      );
+
+      //create index on table
+      connection.createStatement().execute(
+         "CREATE INDEX "+tableName+"_ssIndex ON " + tableName + " (Ra, Dec)  "
+      );
+      
+      
+      //add some stars
+      for (int i=0;i<20;i++) {
+         String flag;
+         if (i/2 == 0) {
+            flag="true";
+         }
+         else {
+            flag="false";
+         }
+         connection.createStatement().execute(
+            "INSERT INTO " + tableName + " VALUES ("+i+", 'A star', "+(30+i*2)+", "+(30-i*2)+", "+i+","+flag+")"
+         );
+      }
+
+      //add false pleidies.  These are stars grouped < 0.3 degree across on ra=56.75, dec=23.867
+      int id=21;
+      connection.createStatement().execute("INSERT INTO " + tableName + " VALUES ("+id+", 'Pleidies LE', 56.6, 23.65, 10, false)"); id++;
+      connection.createStatement().execute("INSERT INTO " + tableName + " VALUES ("+id+", 'Pleidies RE', 56.9, 23.65, 10, true)"); id++;
+      connection.createStatement().execute("INSERT INTO " + tableName + " VALUES ("+id+", 'Pleidies Nose', 56.75, 23.87, 8, false)"); id++;
+      connection.createStatement().execute("INSERT INTO " + tableName + " VALUES ("+id+", 'Pleidies Grin', 56.5, 23.9, 12, true)"); id++;
+      connection.createStatement().execute("INSERT INTO " + tableName + " VALUES ("+id+", 'Pleidies Grin', 56.7, 24.0, 12, false)"); id++;
+      connection.createStatement().execute("INSERT INTO " + tableName + " VALUES ("+id+", 'Pleidies Grin', 56.8, 24.0, 12, true)"); id++;
+      connection.createStatement().execute("INSERT INTO " + tableName + " VALUES ("+id+", 'Pleidies Grin', 57.0, 23.9, 12, false)"); id++;
+
+      //add stars that are outside the above group but nearby
+      connection.createStatement().execute("INSERT INTO " + tableName + " VALUES ("+id+", 'Not Pleidies', 56.6, 23.6, 10, true)"); id++;
+      connection.createStatement().execute("INSERT INTO " + tableName + " VALUES ("+id+", 'Not Pleidies', 56, 23, 5, false)"); id++;
+      connection.createStatement().execute("INSERT INTO " + tableName + " VALUES ("+id+", 'Not Pleidies', 58, 24.5, 5, true)"); id++;
+      connection.createStatement().execute("INSERT INTO " + tableName + " VALUES ("+id+", 'Not Pleidies', 56, 24.5, 5, false)"); id++;
+      connection.createStatement().execute("INSERT INTO " + tableName + " VALUES ("+id+", 'Not Pleidies', 58, 23, 5, true)"); id++;
+      
+      //add even spread (in coordinate space) of background stars
+      for (double ra=0;ra<360;ra=ra+2) {
+//            StringBuffer sql = new StringBuffer("INSERT INTO " + tableName + " VALUES ");
+         for (double dec=-90;dec<90;dec=dec+2) {
+//               sql.append(" ("+id+", 'Background', "+ra+", "+dec+", 20) "); id++;
+            connection.createStatement().execute("INSERT INTO " + tableName + " VALUES  ("+id+", 'Background', "+ra+", "+dec+", 20, false)"); id++;
+         }
+//           connection.createStatement().execute(sql.toString());
+         System.out.print(".");
+      }
+   }
+
+
 
    /* Sample SQL statemetns to help with above:
    

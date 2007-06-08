@@ -1,5 +1,5 @@
 /*
- * $Id: CeaResources.java,v 1.1 2007/03/06 11:37:21 kea Exp $
+ * $Id: CeaResources.java,v 1.2 2007/06/08 13:16:12 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -44,7 +44,7 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
              "http://www.ivoa.net/xml/VODataService/v0.5 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v0.5/VODataService.xsd" + " " +
              "http://www.ivoa.net/xml/CEAService/v0.2 http://software.astrogrid.org/schema/vo-resource-types/CEAService/v0.2/CEAService.xsd"
              ) +
-         makeCore("ceaService")+
+         makeCore("ceaService","")+
          "<interface xsi:type='vs:WebService'>"+
             "<accessURL use='full'>"+ endpoint + 
             "services/CommonExecutionConnectorService"+
@@ -71,7 +71,7 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
              "http://www.astrogrid.org/schema/AGParameterDefinition/v1 http://software.astrogrid.org/schema/jes/AGParameterDefinition/v1.0/AGParameterDefinition.xsd" + " " + 
              "http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1 http://software.astrogrid.org/schema/cea/CommonExecutionArchitectureBase/v1.0/CommonExecutionArchitectureBase.xsd"
              ) +
-         makeCore("ceaApplication")+
+         makeCore("ceaApplication","")+
          "<cea:ApplicationDefinition>\n"+
             "<cea:Parameters>\n"+
                "<cea:ParameterDefinition name='Query' type='ADQL'>\n"+
@@ -95,6 +95,15 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
                        "<ceapd:OptionVal>COMMA-SEPARATED</ceapd:OptionVal>\n"+
                   "</ceapd:OptionList>\n"+
                "</cea:ParameterDefinition>\n"+
+               /*
+               "<cea:ParameterDefinition name='Catalog' type='text'>\n"+
+                  "<ceapd:UI_Name>Catalog</ceapd:UI_Name>\n"+
+                  "<ceapd:UI_Description>Name of catalog containing table to be searched</ceapd:UI_Description>\n"+
+               "</cea:ParameterDefinition>\n"+
+               "<cea:ParameterDefinition name='Table' type='text'>\n"+
+                  "<ceapd:UI_Name>Table</ceapd:UI_Name>\n"+
+                  "<ceapd:UI_Description>Table to be searched</ceapd:UI_Description>\n"+
+               "</cea:ParameterDefinition>\n"+
                "<cea:ParameterDefinition name='RA' type='double'>\n"+
                   "<ceapd:UI_Name>RA</ceapd:UI_Name>\n"+
                   "<ceapd:UI_Description>Right-Ascension of cone</ceapd:UI_Description>\n"+
@@ -112,6 +121,7 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
                   "<ceapd:UI_Description>Radius of cone</ceapd:UI_Description>\n"+
                   "<ceapd:Units>deg</ceapd:Units>\n"+
                "</cea:ParameterDefinition>\n"+
+               */
             "</cea:Parameters>\n"+
             
             "<cea:Interfaces>\n"+
@@ -124,8 +134,11 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
                      "<ceab:pref maxoccurs='1' minoccurs='1' ref='Result'/>\n"+
                   "</ceab:output>\n"+
                "</ceab:Interface>\n"+
+               /*
                "<ceab:Interface name='cone'>\n"+
                   "<ceab:input>\n"+
+                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='Catalog'/>\n"+
+                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='Table'/>\n"+
                      "<ceab:pref maxoccurs='1' minoccurs='1' ref='RA'/>\n"+
                      "<ceab:pref maxoccurs='1' minoccurs='1' ref='DEC'/>\n"+
                      "<ceab:pref maxoccurs='1' minoccurs='1' ref='Radius'/>\n"+
@@ -135,6 +148,7 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
                      "<ceab:pref maxoccurs='1' minoccurs='1' ref='Result'/>\n"+
                   "</ceab:output>\n"+
                "</ceab:Interface>\n"+
+               */
             "</cea:Interfaces>\n"+
          "</cea:ApplicationDefinition>\n"+
          "</"+VORESOURCE_ELEMENT+">\n";

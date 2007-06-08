@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tool name="agtest.roe.ac.uk/srif112-mysql-first/ceaApplication" interface="adql" xmlns="http://www.astrogrid.org/schema/AGWorkflow/v1"><input><parameter name="Query">
+      
+      <ns1:value xmlns:ns1="http://www.astrogrid.org/schema/AGParameterDefinition/v1">&lt;Select xsi:type=&quot;selectType&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns=&quot;http://www.ivoa.net/xml/ADQL/v1.0&quot;>     &lt;?ag-adql-schema-version v1.0a1 ?>    &lt;Restrict Top=&quot;100&quot;/>&lt;SelectionList xsi:type=&quot;selectionListType&quot;>         &lt;Item xsi:type=&quot;allSelectionItemType&quot;/>     &lt;/SelectionList>     &lt;From xsi:type=&quot;fromType&quot;>              &lt;Table xsi:type=&quot;tableType&quot; Alias=&quot;a&quot; Name=&quot;catalogue&quot;/>&lt;/From> &lt;/Select></ns1:value>
+
+</parameter><parameter name="Format"><ns2:value xmlns:ns2="http://www.astrogrid.org/schema/AGParameterDefinition/v1">VOTABLE</ns2:value></parameter></input><output><parameter name="Result" indirect="true"><ns3:value xmlns:ns3="http://www.astrogrid.org/schema/AGParameterDefinition/v1">ivo://agtest.roe.ac.uk/KonaAndrews#new_file</ns3:value></parameter></output></tool>

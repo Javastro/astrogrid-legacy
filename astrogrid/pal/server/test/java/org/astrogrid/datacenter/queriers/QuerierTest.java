@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierTest.java,v 1.7 2006/06/15 16:50:09 clq2 Exp $
+ * $Id: QuerierTest.java,v 1.8 2007/06/08 13:16:10 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,6 +12,7 @@ import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierListener;
 import org.astrogrid.dataservice.queriers.status.QuerierComplete;
@@ -24,6 +25,7 @@ import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.tableserver.VoTableTestHelper;
+import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
@@ -48,11 +50,20 @@ public class QuerierTest extends TestCase {
       super.setUp();
       
       SampleStarsPlugin.initConfig();
-      
+
+      String catalogID = ConfigFactory.getCommonConfig().getString(
+            "datacenter.self-test.catalog", null);
+      String tableID = ConfigFactory.getCommonConfig().getString(
+            "datacenter.self-test.table", null);
+      String catalogName = TableMetaDocInterpreter.getCatalogNameForID(
+            catalogID);
+      String tableName = TableMetaDocInterpreter.getTableNameForID(
+            catalogID,tableID);
+
       sw = new StringWriter();
       //querier = Querier.makeQuerier(LoginAccount.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30,30,6, new WriterTarget(sw), ReturnTable.VOTABLE), this);
       querier = Querier.makeQuerier(LoginAccount.ANONYMOUS, 
-          SimpleQueryMaker.makeTestQuery(
+          SimpleQueryMaker.makeTestQuery(catalogName, tableName,
               new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE)), 
             this);
       listener = new MockListener();

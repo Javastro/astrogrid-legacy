@@ -1,4 +1,4 @@
-/*$Id: VoTableBinaryWriterTest.java,v 1.2 2007/02/20 12:22:17 clq2 Exp $
+/*$Id: VoTableBinaryWriterTest.java,v 1.3 2007/06/08 13:16:11 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,8 +38,8 @@ public class VoTableBinaryWriterTest extends TestCase  {
       votWriter.open();
       
       ColumnInfo[] cols = new ColumnInfo[] {
-         new ColumnInfo("RA", "TABLE", "Right Ascension", Double.class, "POS_EQ_RA_MAIN", "deg"),
-         new ColumnInfo("ID", "TABLE", "Object unique identifier", "string", "ID", null)
+         new ColumnInfo("RA", "RA_ID", "TABLE", "TABLE_ID", "Right Ascension", Double.class, "POS_EQ_RA_MAIN", "deg"),
+         new ColumnInfo("ID", "ID_ID", "TABLE", "TABLE_ID", "Object unique identifier", "string", "ID", null)
       };
       
       votWriter.startTable(cols);

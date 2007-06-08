@@ -1,4 +1,4 @@
-/*$Id: InstallationSyntaxCheck.java,v 1.6 2007/02/20 12:22:16 clq2 Exp $
+/*$Id: InstallationSyntaxCheck.java,v 1.7 2007/06/08 13:16:11 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,6 +24,8 @@ import org.astrogrid.query.QueryException;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.tableserver.jdbc.AdqlSqlMaker;
+import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
+import org.astrogrid.dataservice.metadata.MetadataException;
 
 import org.astrogrid.cfg.PropertyNotFoundException;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
@@ -93,6 +95,7 @@ public class InstallationSyntaxCheck {
       if ("org.astrogrid.tableserver.test.SampleStarsPlugin".equals(plugin)) {
          SampleStarsPlugin.initConfig();
       }
+
       StringBuffer failQueries = new StringBuffer();
       StringBuffer succeedQueries = new StringBuffer();
 
@@ -300,7 +303,6 @@ public class InstallationSyntaxCheck {
          queryIn = InstallationSyntaxCheck.class.getClassLoader().getResourceAsStream(path);
          System.out.println("Trying to load test query via classloader : " +path);
       }
-
       //Last ditch, look in class path.  However *assume* it's in classpath, 
       //as we don't know what the classpath is during unit tests.
       if (queryIn == null) {
@@ -329,28 +331,69 @@ public class InstallationSyntaxCheck {
             ": " + e.getMessage(), e);
       }
 
-      // Extract table, ra and dec names to use in test from config
-      String defaultTableName = ConfigFactory.getCommonConfig().getString(
+      // Extract catalog, table, ra and dec names to use in test from config
+      String defaultCatalogID = ConfigFactory.getCommonConfig().getString(
+          "datacenter.self-test.catalog", null);
+      String defaultTableID = ConfigFactory.getCommonConfig().getString(
           "datacenter.self-test.table", null);
-      String colRaName = ConfigFactory.getCommonConfig().getString(
+      String colRaID = ConfigFactory.getCommonConfig().getString(
           "datacenter.self-test.column1", null);
-      String colDecName = ConfigFactory.getCommonConfig().getString(
+      String colDecID = ConfigFactory.getCommonConfig().getString(
           "datacenter.self-test.column2", null);
-      if (defaultTableName == null) {
+      // Perform some checks
+      if (defaultCatalogID == null) {
+         throw new QueryException(
+            "DataCentre is misconfigured - datacenter.self-test.catalog property is null");
+      }
+      if (defaultTableID == null) {
          throw new QueryException(
             "DataCentre is misconfigured - datacenter.self-test.table property is null");
       }
-      if (colRaName == null) {
+      if (colRaID == null) {
          throw new QueryException("DataCentre is misconfigured - datacenter.self-test.column1 property is null");
       }
-      if (colDecName == null) {
+      if (colDecID == null) {
          throw new QueryException("DataCentre is misconfigured - datacenter.self-test.column2 property is null");
       }
+
+      // Metadoc "Name" can be different from metadoc "ID";  translate IDs
+      // into equivalent names so that ADQL query (which uses names) can be
+      // processed.
+      /*
+      boolean validMetadoc = false;
+      try {
+         validMetadoc = TableMetaDocInterpreter.isValid();
+      }
+      catch (Exception e) {
+         throw new QueryException(e.getMessage()+", while loading DSA metadoc", e);
+      }
+      if (!validMetadoc) {
+         /// Shouldn't actually get here - an exception will have been thrown
+         //by the TableMetaDocInterpreter earlier
+         throw new QueryException("DSA metadoc is not valid, please consult earlier error messages");
+      }
+      */
+      String defaultCatalogName, defaultTableName, colRaName, colDecName;
+      try {
+         defaultCatalogName = TableMetaDocInterpreter.getCatalogNameForID(
+               defaultCatalogID); 
+         defaultTableName = TableMetaDocInterpreter.getTableNameForID(
+               defaultCatalogID,defaultTableID); 
+         colRaName = TableMetaDocInterpreter.getColumnNameForID(
+               defaultCatalogID, defaultTableID, colRaID); 
+         colDecName = TableMetaDocInterpreter.getColumnNameForID(
+               defaultCatalogID, defaultTableID, colDecID); 
+      }
+      catch (MetadataException me) {
+         throw new QueryException(
+               me.getMessage()+", while searching in DSA metadoc", me);
+      }
       // Perform necessary substitutions
+      adqlString = adqlString.replaceAll("INSERT_CATALOG",
+         "Archive=\""+defaultCatalogName+"\"");
       adqlString = adqlString.replaceAll("INSERT_TABLE",defaultTableName);
       adqlString = adqlString.replaceAll("INSERT_RA",colRaName);
       adqlString = adqlString.replaceAll("INSERT_DEC",colDecName);
-
       return adqlString;
    }
 }

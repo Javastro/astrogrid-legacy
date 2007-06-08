@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslatorTest.java,v 1.6 2006/06/15 16:50:08 clq2 Exp $
+/*$Id: SqlQueryTranslatorTest.java,v 1.7 2007/06/08 13:16:09 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ import java.io.InputStream;
 import java.util.Properties;
 import junit.framework.TestCase;
 import org.astrogrid.cfg.ConfigFactory;
-import org.astrogrid.dataservice.metadata.queryable.ConeConfigQueryableResource;
 import org.astrogrid.query.Query;
 import org.astrogrid.tableserver.jdbc.SqlMaker;
 import org.astrogrid.tableserver.jdbc.AdqlSqlMaker;
@@ -37,8 +36,6 @@ public class SqlQueryTranslatorTest extends TestCase {
 
        SampleStarsPlugin.initConfig();
        
-       ConfigFactory.getCommonConfig().setProperty(ConeConfigQueryableResource.CONE_SEARCH_TABLE_KEY, "o");
-
        //read in sample sql out checks
        InputStream is = this.getClass().getResourceAsStream("samples-sqlout.properties");
        assertNotNull(is);
@@ -106,6 +103,12 @@ public class SqlQueryTranslatorTest extends TestCase {
 
 /*
 $Log: SqlQueryTranslatorTest.java,v $
+Revision 1.7  2007/06/08 13:16:09  clq2
+KEA-PAL-2169
+
+Revision 1.6.24.1  2007/05/18 16:34:13  kea
+Still working on new metadoc / multi conesearch.
+
 Revision 1.6  2006/06/15 16:50:08  clq2
 PAL_KEA_1612
 

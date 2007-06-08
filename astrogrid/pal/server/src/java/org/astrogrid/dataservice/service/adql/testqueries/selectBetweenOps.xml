@@ -5,7 +5,7 @@
         <Item xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>
     </SelectionList>
     <From xsi:type="fromType">
-        <Table xsi:type="tableType" Alias="a" Name="INSERT_TABLE"/>
+        <Table xsi:type="tableType" Alias="a" Name="INSERT_TABLE" INSERT_CATALOG/>
     </From>
     <Where>
         <Condition xsi:type="intersectionSearchType">

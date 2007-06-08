@@ -32,6 +32,7 @@
    ServerStatusHtmlRenderer renderer = new ServerStatusHtmlRenderer();
    
    TaskStatus[] persisted = null;
+   /*  //Don't show the old history, it's just confusing
       try {
          persisted = new StatusLogger().getPersistedLog();
       }
@@ -43,6 +44,7 @@
          out.write(ioe+" Reading status log");
          server.getLog().error("Reading Status Log", ioe);
       }
+   */
    
    renderer.writeHtmlStatus(out, server.getStatus().getServiceStatus(), persisted); 
    %>

@@ -1,5 +1,5 @@
 /*
- * $Id: ProxyResourceSupport.java,v 1.7 2006/08/21 15:39:30 clq2 Exp $
+ * $Id: ProxyResourceSupport.java,v 1.8 2007/06/08 13:16:11 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -102,7 +102,7 @@ public class ProxyResourceSupport extends VoResourceSupport {
          //make local core and parse
          Element localCore = DomHelper.newDocument(
              "<" + VORESOURCE_ELEMENT + " " +
-                 VORESOURCE_ELEMENT_NAMESPACES + ">" + makeCore("") 
+                 VORESOURCE_ELEMENT_NAMESPACES + ">" + makeCore("","") 
                  + "</" + VORESOURCE_ELEMENT + ">").getDocumentElement();
          
          //set id to local 'core' id + last /-seperated token of the remote id
@@ -140,7 +140,7 @@ public class ProxyResourceSupport extends VoResourceSupport {
          
       }
       catch (SAXException e) {
-         throw new MetadataException(e+" in Core Generated VoResource: "+makeCore(""),e);
+         throw new MetadataException(e+" in Core Generated VoResource: "+makeCore("",""),e);
       }
    }
    

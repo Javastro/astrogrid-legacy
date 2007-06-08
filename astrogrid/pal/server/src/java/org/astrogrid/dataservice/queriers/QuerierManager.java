@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.4 2007/03/21 18:59:40 kea Exp $
+/*$Id: QuerierManager.java,v 1.5 2007/06/08 13:16:12 clq2 Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,10 @@ import java.io.IOException;
 import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.TreeSet;
+import java.util.Iterator;
+import java.util.Vector;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.cfg.ConfigFactory;
@@ -47,24 +51,45 @@ public class QuerierManager implements QuerierListener {
    
    // WRITE ACCESS TO THE QUEUE VARIABLES IS SYNCHRONIZED, in methods
    // checkQueue and addQuerierToQueues
-   //
+   // Note that the Hashtable class itself is synchronized.
+   
    /** lookup table of queued queriers.  These are queriers that are waiting on
-    a 'free' spot on the running queriers - ie when the running queriers have 
-    hit the maximum limit and the */
+    a 'free' spot on the asynchronous queries queue (synchronous queries are
+    simply rejected if the synchronous queries queue is full..
+   */
    private Hashtable queuedQueriers = new Hashtable();
    
    /** priority index of queued queriers */
    private TreeSet queuedPriorities = new TreeSet(new QuerierStartTimeComparator());
 
-   /** lookup table of all the current queriers indexed by their handle*/
+   /** lookup table of all the current queriers indexed by their handle -
+    * including both synchronous and asynchronous queriers.*/
    private Hashtable runningQueriers = new Hashtable();
 
    /** lookup table of old queriers */
    private Hashtable closedQueriers = new Hashtable();
 
-   /** Maximum number of simultaneous queriers allowed */
-   private int maxQueriers = 5;
+   /** Maximum number of simultaneous asynchronous queriers allowed */
+   private int maxAsynchQueriers = 5;  // Default to 5
+
+   /** Maximum number of simultaneous blocking queriers allowed */
+   private int maxSynchQueriers = 5;  // Default to 5
+
+   /** We need to keep track of the number of synch and asynch 
+    * queriers because in practice they share the same active queriers
+    * queue and we don't want one to swamp the other in the queue 
+    */
+   /** How many asynchronous queriers are currently active */
+   private int numAsynchQueriers = 0;  
+   /** How many blocking queriers are currently active */
+   private int numSynchQueriers = 0;  
    
+   /** When was the old jobs queue last flushed?  (Only do it if it 
+    * hasn't been done for at least an hour.) */
+   private Date lastQueueFlush = new Date();
+
+   private int queueFlushInterval = 7;  // Default once a week
+
    /** Special ID used to create a test querier for testing getStatus,. etc */
    public final static String TEST_QUERIER_ID = "TestQuerier:";
    
@@ -135,9 +160,17 @@ public class QuerierManager implements QuerierListener {
    /** Constructor. Protected because we want to force people to use the factory method   */
    protected QuerierManager(String givenId) {
       this.managerId = givenId;
-      
-      maxQueriers = ConfigFactory.getCommonConfig().getInt("datacenter.max.queries",4);
-      
+
+      // Try the old property first 
+      maxAsynchQueriers = ConfigFactory.getCommonConfig().getInt("datacenter.max.queries",maxAsynchQueriers);  // Default is initialised setting
+
+      // Now replace with the new property if present 
+      maxAsynchQueriers = ConfigFactory.getCommonConfig().getInt("datacenter.max.async.queries",maxAsynchQueriers);  // Default is initialised setting
+
+      maxSynchQueriers = ConfigFactory.getCommonConfig().getInt("datacenter.max.sync.queries",maxAsynchQueriers);  // Default is initialised setting
+
+      queueFlushInterval = ConfigFactory.getCommonConfig().getInt("datacenter.flush.interval",queueFlushInterval);  // Default is initialised setting
+
    }
    
    /** Factory method - checks to see if the givenId already exists and returns that if so */
@@ -254,9 +287,40 @@ public class QuerierManager implements QuerierListener {
    }
 
 
+  /** 
+   * Checks how many running blocking queriers there are;  if this is less
+   * than the allowed limit, returns true, otherwise returns false.
+   * This method is for use by blocking (synchronous) queries;  
+   * if the queue is full, blocking queries such as conesearches 
+   * should be rejected.
+   */
+   protected synchronized boolean startBlockingQuerier() {
+      if (
+         (maxSynchQueriers == -1) || // No limit
+         (numSynchQueriers < maxSynchQueriers) // Below limit 
+      ) {
+         numSynchQueriers = numSynchQueriers + 1;
+         return true;
+      }
+      return false;
+   }
+
+   /**
+    * Decrements the number of running blocking queriers.
+    * Used by a blocking querier to indicate it has finished and free
+    * up a slot for a new blocking query.
+    */
+   protected synchronized void finishBlockingQuerier() {
+      // This should always be true, but just in case...
+      if (numSynchQueriers > 0) {
+         numSynchQueriers = numSynchQueriers - 1;
+      }
+   }
+
    /**
     * Adds the given querier to this manager, runs it, and returns the status;
-    * synchronous (blocking); not queued
+    * synchronous (blocking); not queued.  Excess synchronous jobs are
+    * rejected straight away.
     */
    public QuerierStatus askQuerier(Querier querier)  throws IOException {
       
@@ -265,10 +329,21 @@ public class QuerierManager implements QuerierListener {
          log.error( "Handle '" + querier.getId() + "' already in use");
          throw new IllegalArgumentException("Handle " + querier.getId() + "already in use");
       }
-      runningQueriers.put(querier.getId(), querier);
-      querier.addListener(this);
-      querier.ask();
-      return querier.getStatus();
+      if (startBlockingQuerier() == true) {
+         try {
+            runningQueriers.put(querier.getId(), querier);
+            querier.addListener(this);
+            querier.ask();
+            return querier.getStatus();
+         }
+         finally {
+            // Always decrement the queue
+            finishBlockingQuerier();
+         }
+      }
+      else {
+         throw new IOException("The server is too busy to handle your query, please try again later");
+      }
    }
 
    /** Adds the given querier to this manager, and asks the querier for the
@@ -286,16 +361,31 @@ public class QuerierManager implements QuerierListener {
       return querier.askCount();
    }
    
+   /** Decrement the number of active asynchronous queriers.
+    * In a separate function to minimize required synchronization.
+    */
+   protected synchronized void decrementAsynchQueriers()
+   {
+     numAsynchQueriers = numAsynchQueriers - 1;
+   }
    
-   /** A Querier manager must listen to it's queriers
+   /** A Querier manager must listen to its queriers
     */
    public void queryStatusChanged(Querier querier) {
 
       //if it's changed to closed, then move to closed list
       if (querier.getStatus().isFinished()) {
-         runningQueriers.remove(querier.getId()); //remove if it's in running
+         if (runningQueriers.containsKey(querier.getId())) {
+            runningQueriers.remove(querier.getId()); //remove if it's in running
+            decrementAsynchQueriers(); 
+         }
          queuedQueriers.remove(querier.getId()); //remove if it's queued
-         querier.clearStatusHistory(); // Clean up unneeded detail
+         /*
+          // This was to save memory - but flushing old jobs is better
+         if (!querier.getStatus().isError()) {
+            querier.clearStatusHistory(); // Clean up unneeded detail
+         }
+         */
          closedQueriers.put(querier.getId(), querier); //make sure it's in closed
          checkQueue(); //see if, if having removed it from running, we ought to start another
       }
@@ -306,20 +396,35 @@ public class QuerierManager implements QuerierListener {
     */
    protected synchronized void checkQueue() {
 
+      // Clean up jobs that finished > n days ago, to save memory
+      cleanupOldClosedJobs();
+
       System.gc(); //encourage garbage collection
 
       //have a look at the memory; if it's 'low' then reduce to one query
       //at a time
 //      if (Runtime.getRuntime().freeMemory()<500000) {
-//         maxQueriers = 1;
+//         maxAsynchQueriers = 1;
+//         maxSynchQueriers = 1;
 //      }
+      boolean haveRoom = false;
+      if (
+         (maxAsynchQueriers == -1) || // No limit
+         (numAsynchQueriers < maxAsynchQueriers) // Below limit 
+      ) {
+         haveRoom = true;
+      }
 
+      /*
       while ((queuedQueriers.size()>0) &&
                 ( (maxQueriers==-1) || (runningQueriers.size()<=maxQueriers))) {
+      */
+      while ((queuedQueriers.size()>0) && (haveRoom) ){
          Querier first = (Querier) queuedPriorities.first();
          queuedPriorities.remove(first);
          queuedQueriers.remove(first.getId());
          runningQueriers.put(first.getId(), first);
+         numAsynchQueriers = numAsynchQueriers + 1;
          
          Thread qth = new Thread(first);
          qth.start();
@@ -334,17 +439,53 @@ public class QuerierManager implements QuerierListener {
    }
    
    /*
-    * Might choose to use this later, for admins to clear out closed queue.
-   protected void cleanupClosedQueue() 
+      Clean up jobs that finished > n days ago, to save memory
+      NB This method is only called from a synchronized method.
+    */
+   protected void cleanupOldClosedJobs() 
    {
-      System.out.println("KONA GOT INTO CLEANUPCLOSEDQUEUE");
-      Querier[] closed = (Querier[]) closedQueriers.values().toArray(new Querier[] {} );
-      for (int i = 0; i < closed.length; i++) {
-         System.out.println("KONA GOT INTO CLEANUPCLOSEDQUEUE");
-         closed[i].getStatus().cleanupTaskDetails();
+      // Get current time
+       Date now = new Date();
+       GregorianCalendar nowCal = new GregorianCalendar();
+       nowCal.setTime(now);
+
+       // Work out time we last checked the old queue
+       GregorianCalendar lastCheck = new GregorianCalendar();
+       lastCheck.setTime(lastQueueFlush);
+
+       // Work out difference
+       long diffMillis = nowCal.getTimeInMillis()-lastCheck.getTimeInMillis();
+       double diffHours = (double)diffMillis/(3600000.0);
+       if (diffHours > 1.0) {  // Time to check it again?
+          // Yes!
+          lastQueueFlush = new Date(); // Reset last-time-checked to now
+
+          Vector toRemove = new Vector();
+          Iterator it = closedQueriers.keySet().iterator();
+          while (it.hasNext()) {
+
+             // Get the querier, and the time it completed
+             String qid = (String)it.next();
+             Querier querier = (Querier)closedQueriers.get(qid);
+             Date lastDate = querier.getStatus().getTimestamp();
+             GregorianCalendar lastCal = new GregorianCalendar();
+             lastCal.setTime(lastDate);
+
+             // Get difference in milliseconds
+             diffMillis = nowCal.getTimeInMillis()-lastCal.getTimeInMillis();
+             double diffDays = (double)diffMillis/(86400000.0);
+
+             if (diffDays > queueFlushInterval) { //Is it too old?
+                // Yes, delete it from the old jobs queue
+                toRemove.add(qid);
+             }
+         }
+         it = toRemove.iterator();
+         while (it.hasNext()) {
+            closedQueriers.remove((String)it.next());
+         }
       }
    }
-   */
    
    /** Shut down - abort all running queries */
    public void shutDown() {
@@ -371,6 +512,18 @@ public class QuerierManager implements QuerierListener {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.5  2007/06/08 13:16:12  clq2
+ KEA-PAL-2169
+
+ Revision 1.4.4.3  2007/06/08 13:06:40  kea
+ Ready for trial merge.
+
+ Revision 1.4.4.2  2007/06/07 09:16:11  kea
+ Working.
+
+ Revision 1.4.4.1  2007/04/10 15:16:02  kea
+ Working on revised metadoc handling.
+
  Revision 1.4  2007/03/21 18:59:40  kea
  Preparatory work for v1.0 resources (not yet supported);  and also
  cleaning up details of completed jobs to save memory.

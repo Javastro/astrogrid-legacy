@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPluginTest.java,v 1.9 2007/03/21 19:00:34 kea Exp $
+ * $Id: SampleStarsPluginTest.java,v 1.10 2007/06/08 13:16:11 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,6 +17,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierManager;
@@ -29,6 +30,7 @@ import org.astrogrid.slinger.targets.NullTarget;
 import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.tableserver.jdbc.JdbcConnections;
 import org.astrogrid.tableserver.jdbc.RdbmsTableMetaDocGenerator;
+import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.tableserver.out.VoTableWriter;
 import org.astrogrid.tableserver.test.PrecannedResults;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
@@ -61,7 +63,7 @@ public class SampleStarsPluginTest extends TestCase {
       
       Connection connection = JdbcConnections.makeFromConfig().createConnection();
       Statement s = connection.createStatement();
-      s.execute("SELECT * FROM SampleStars WHERE Ra<100");
+      s.execute("SELECT * FROM SampleStars WHERE RA<100");
       
       ResultSet sqlResults = s.getResultSet();
       assertNotNull(sqlResults);
@@ -78,12 +80,21 @@ public class SampleStarsPluginTest extends TestCase {
    /** Test that we can reach the dummy catalogue through the dummy plugin */
    public void testDummyPlugin() throws IOException, SQLException, SAXException, ParserConfigurationException, QueryException {
       
+      String catalogID = ConfigFactory.getCommonConfig().getString(
+            "datacenter.self-test.catalog", null);
+      String tableID = ConfigFactory.getCommonConfig().getString(
+            "datacenter.self-test.table", null);
+      String catalogName = TableMetaDocInterpreter.getCatalogNameForID(
+            catalogID);
+      String tableName = TableMetaDocInterpreter.getTableNameForID(
+            catalogID,tableID);
+
       QuerierManager manager = QuerierManager.getManager("DummyTest");
 
       StringWriter sw = new StringWriter();
       //Querier q = Querier.makeQuerier(LoginAccount.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30,30,6, new WriterTarget(sw), ReturnTable.VOTABLE), this);
       Querier q = Querier.makeQuerier(LoginAccount.ANONYMOUS, 
-          SimpleQueryMaker.makeTestQuery(
+          SimpleQueryMaker.makeTestQuery(catalogName, tableName,
             new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE)), 
           this);
       manager.askQuerier(q);
@@ -97,8 +108,8 @@ public class SampleStarsPluginTest extends TestCase {
       
       RdbmsTableMetaDocGenerator generator = new RdbmsTableMetaDocGenerator();
       
-      //generate metadata
-      String metadata = generator.getMetaDoc();
+      //generate metadata - use default catalog rather than specifying names
+      String metadata = generator.getMetaDoc(null);
       
       //debug
       System.out.println("AutoMetadata:");

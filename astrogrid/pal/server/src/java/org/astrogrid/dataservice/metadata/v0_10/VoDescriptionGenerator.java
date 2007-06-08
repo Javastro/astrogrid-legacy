@@ -119,7 +119,6 @@ public class VoDescriptionGenerator extends VoDescriptionGeneratorBase {
          }
       }
       vod.append(VODESCRIPTION_ELEMENT_END);
-
       return vod.toString();
    }
 

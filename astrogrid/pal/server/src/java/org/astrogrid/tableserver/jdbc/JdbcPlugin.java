@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.8 2007/03/02 13:46:30 kea Exp $
+ * $Id: JdbcPlugin.java,v 1.9 2007/06/08 13:16:12 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,7 +17,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
 import org.astrogrid.cfg.ConfigFactory;
-import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
+//import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.dataservice.queriers.status.QuerierComplete;
 import org.astrogrid.dataservice.queriers.status.QuerierError;
 import org.astrogrid.dataservice.queriers.status.QuerierQuerying;
@@ -84,10 +84,24 @@ public class JdbcPlugin extends DefaultPlugin {
              java.sql.ResultSet.TYPE_FORWARD_ONLY,
              java.sql.ResultSet.CONCUR_READ_ONLY);
 
-         // make sure autocommit is off
-         // Postgres seems to need this to stop it downloading the 
-         // whole ResultSet in one go.
-         jdbcConnection.setAutoCommit(false);
+         // make sure autocommit is off, unless explicitly prohibited
+         // by the config
+         String noauto = "true";
+         try {
+            noauto = ConfigFactory.getCommonConfig().getString(
+               "datacenter.plugin.jdbc.disableautocommit");
+         }
+         catch (Exception e) {
+            // Ignore if not found
+         }
+         if (! ("false".equals(noauto) || "FALSE".equals(noauto)) ) {
+            // Postgres seems to need this to stop it downloading the 
+            // whole ResultSet in one go.
+            jdbcConnection.setAutoCommit(false);
+         }
+         else {
+            jdbcConnection.setAutoCommit(true);
+         }
 
          //limit to number of rows returned
          // KEA says: This is the WRONG way to set the query limit - it 
@@ -156,7 +170,7 @@ public class JdbcPlugin extends DefaultPlugin {
             }
             catch (IOException ioe) {
                log.error("IOException when writing out table results for query  " + sql + "\n:Exception is :" + ioe.toString());
-               throw new QueryException("Failed to write query results to specified destination");
+               throw new QueryException("Failed to write query results to specified destination;  underlying cause is: '" + ioe.getMessage()+"'");
             }
             log.debug("Results transfer completed successfully for query "+sql);
          }
@@ -248,15 +262,20 @@ public class JdbcPlugin extends DefaultPlugin {
 
    /** Throws an IllegalArgumentException if the query is not appropriate to this site */
    public void validateQuery(Query query) {
+      /*
       try {
-         TableMetaDocInterpreter reader = new TableMetaDocInterpreter();
-         RdbmsQueryValidator validator = new RdbmsQueryValidator(reader);
+      */
+         //TableMetaDocInterpreter reader = new TableMetaDocInterpreter();
+         //RdbmsQueryValidator validator = new RdbmsQueryValidator(reader);
+         RdbmsQueryValidator validator = new RdbmsQueryValidator();
          //query.acceptVisitor(validator); //throws an IllegalArgumentException if there's something wrong
          validator.validateQuery(query);
+      /*
       }
       catch (IOException ioe) {
          log.warn("No RDBMS Resource found, not validating query");
       }
+      */
    }
    
    /** Returns the formats that this plugin can provide.  Asks the results class; override in subclasse if nec */

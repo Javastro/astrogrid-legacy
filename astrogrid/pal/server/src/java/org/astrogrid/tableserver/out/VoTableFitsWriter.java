@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableFitsWriter.java,v 1.5 2006/10/17 10:11:41 clq2 Exp $
+ * $Id: VoTableFitsWriter.java,v 1.6 2007/06/08 13:16:12 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -28,12 +28,12 @@ public class VoTableFitsWriter extends VoTableWriter {
    }
    
    /** Opens writer - starts the document with appropriate headers */
-   public void open() {
-      printOut.println("<?xml version='1.0' encoding='UTF-8'?>");
+   public void open() throws IOException {
+      println("<?xml version='1.0' encoding='UTF-8'?>");
             // The current astrogrid/xml validator wants this next
             // line, but then falls over at the xmlns:xsi stuff.  
             // printOut.println("<!DOCTYPE VOTABLE SYSTEM \"http://us-vo.org/xml/VOTable.dtd\">");
-             printOut.println("<VOTABLE "
+             println("<VOTABLE "
                 +"xmlns='http://www.ivoa.net/xml/VOTable/v1.1'  "
                 +"xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'  "
                 +"xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.1 http://software.astrogrid.org/schema/vo-formats/VOTable/v1.1/VOTable.xsd'  "
@@ -48,27 +48,33 @@ public class VoTableFitsWriter extends VoTableWriter {
     * that element being the fits url */
    public void writeRow(Object[] colValues) throws IOException {
       
-      printOut.println("<TABLE>");
-      printOut.println("<DATA><FITS>");
+      println("<TABLE>");
+      println("<DATA><FITS>");
       
-      printOut.println("   <STREAM href='"+colValues[0]+"' />");
+      println("   <STREAM href='"+colValues[0]+"' />");
       
-      printOut.println("</FITS></DATA>");
-      printOut.println("</TABLE>");
+      println("</FITS></DATA>");
+      println("</TABLE>");
       
    }
    
    public void endTable() {
       
    }
-   public void close() {
-      printOut.println("</VOTABLE>");
-      printOut.close();
+   public void close() throws IOException {
+      println("</VOTABLE>");
+      bufferedOut.close();
    }
 }
 
 /*
  $Log: VoTableFitsWriter.java,v $
+ Revision 1.6  2007/06/08 13:16:12  clq2
+ KEA-PAL-2169
+
+ Revision 1.5.8.1  2007/04/23 16:45:19  kea
+ Checkin of work in progress.
+
  Revision 1.5  2006/10/17 10:11:41  clq2
  PAL_KEA_1869
 

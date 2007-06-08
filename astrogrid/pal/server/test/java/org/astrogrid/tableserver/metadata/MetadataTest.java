@@ -1,4 +1,4 @@
-/*$Id: MetadataTest.java,v 1.3 2007/03/21 19:00:34 kea Exp $
+/*$Id: MetadataTest.java,v 1.4 2007/06/08 13:16:12 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,6 @@ import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.metadata.FileResourcePlugin;
 import org.astrogrid.dataservice.metadata.UrlResourcePlugin;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
-import org.astrogrid.dataservice.metadata.queryable.ConeConfigQueryableResource;
 import org.astrogrid.dataservice.metadata.queryable.SearchGroup;
 import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
 import org.astrogrid.tableserver.jdbc.RdbmsTableMetaDocGenerator;
@@ -109,9 +108,8 @@ public class MetadataTest extends TestCase {
    
    //checks that the metadoc is valid and reads OK
    public void testMetadoc() throws IOException {
-      TableMetaDocInterpreter reader = new TableMetaDocInterpreter();
+      assertTrue(TableMetaDocInterpreter.isValid());
    }
-   
    
    public void testServer_v0_10() throws Exception {
       Document metadata = VoDescriptionServer.getVoDescription(VoDescriptionServer.V0_10);
@@ -153,8 +151,8 @@ public class MetadataTest extends TestCase {
      
       RdbmsTableMetaDocGenerator generator = new RdbmsTableMetaDocGenerator();
 
-      //generate metadata
-      String metadoc = generator.getMetaDoc();
+      //generate metadata - use default catalog
+      String metadoc = generator.getMetaDoc(null);
 
       //check it's well formed
       Document metaDoc = DomHelper.newDocument(metadoc);
@@ -199,14 +197,6 @@ public class MetadataTest extends TestCase {
    public void testRegistryDates() {
       Calendar ukcal = new GregorianCalendar(Locale.UK);
       Calendar uscal = new GregorianCalendar(Locale.US);
-   }
-   
-   public void testSpatial() throws IOException {
-      ConeConfigQueryableResource conequeryable = new ConeConfigQueryableResource();
-      SearchGroup[] groups = conequeryable.getSpatialGroups();
-      for (int i = 0; i < groups.length; i++) {
-         conequeryable.getSpatialFields(groups[i]);
-      }
    }
    
    public static void main(String[] args) {

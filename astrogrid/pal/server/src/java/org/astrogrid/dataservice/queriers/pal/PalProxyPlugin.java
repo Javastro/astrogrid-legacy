@@ -1,5 +1,5 @@
 /*
- * $Id: PalProxyPlugin.java,v 1.6 2006/06/15 16:50:10 clq2 Exp $
+ * $Id: PalProxyPlugin.java,v 1.7 2007/06/08 13:16:11 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -22,6 +22,7 @@ import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.VotableInResults;
 import org.astrogrid.dataservice.queriers.status.QuerierQuerying;
 import org.astrogrid.query.Query;
+import org.astrogrid.query.QueryException;
 //import org.astrogrid.query.adql.Adql074Writer;
 import org.astrogrid.slinger.sourcetargets.UrlSourceTarget;
 
@@ -103,7 +104,16 @@ public class PalProxyPlugin extends DefaultPlugin implements VoResourcePlugin {
       DataOutputStream out = new DataOutputStream(connection.getOutputStream());
 //      out.writeBytes( "AdqlSql="+URLEncoder.encode(new StdSqlMaker().getSql(querier.getQuery()))+
       //out.writeBytes( "AdqlXml="+URLEncoder.encode(Adql074Writer.makeAdql(query), "UTF-8")+
-      out.writeBytes( "AdqlXml="+URLEncoder.encode(query.getAdqlString(), "UTF-8")+
+      String adqlString = "";
+      try {
+         adqlString = query.getAdqlString();
+      }
+      catch (QueryException qe) {
+         throw new IOException("Couldn't get ADQL string from Query: " + 
+               qe.getMessage());
+      }
+
+      out.writeBytes( "AdqlXml="+URLEncoder.encode(adqlString, "UTF-8")+
                       "&Format="+URLEncoder.encode("VOTABLE", "UTF-8")
                     );
 

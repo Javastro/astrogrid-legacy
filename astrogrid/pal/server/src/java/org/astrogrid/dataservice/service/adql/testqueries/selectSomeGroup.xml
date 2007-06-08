@@ -6,7 +6,7 @@
         <Item xsi:type="columnReferenceType" Table="a" Name="INSERT_DEC"/>
     </SelectionList>
     <From xsi:type="fromType">
-        <Table xsi:type="tableType" Alias="a" Name="INSERT_TABLE"/>
+        <Table xsi:type="tableType" Alias="a" Name="INSERT_TABLE" INSERT_CATALOG/>
     </From>
     <GroupBy xsi:type="groupByType">
         <Column xsi:type="columnReferenceType" Table="a" Name="INSERT_RA"/>

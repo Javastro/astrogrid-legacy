@@ -4,7 +4,7 @@
     <Item xsi:type="allSelectionItemType" />
   </SelectionList>
   <From>
-    <Table xsi:type="tableType" Name="SampleStars" Alias="s" />
+    <Table xsi:type="tableType" Name="TabName_SampleStars" Alias="s" />
   </From>
 </Select>
 

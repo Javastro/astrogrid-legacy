@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.9 2007/03/21 18:59:41 kea Exp $
+/*$Id: InstallationSelfCheck.java,v 1.10 2007/06/08 13:16:11 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,6 +25,9 @@ import org.astrogrid.dataservice.api.nvocone.NvoConeSearcher;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.queriers.QuerierPlugin;
 import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
+import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
+import org.astrogrid.tableserver.metadata.TableInfo;
+import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryException;
@@ -35,6 +38,7 @@ import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.xml.DomHelper;
 import org.xml.sax.SAXException;
+
 
 // For validation
 import org.w3c.dom.Document;
@@ -104,7 +108,14 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
       //return new Query(Double.parseDouble(ra), Double.parseDouble(dec), Double.parseDouble(radius), new ReturnTable(target, format));
       
       // Make a standard test query, that's what it's for.
-      return SimpleQueryMaker.makeTestQuery(new ReturnTable(target, format));
+      String catalogID = ConfigFactory.getCommonConfig().getString("datacenter.self-test.catalog", null);
+      String tableID = ConfigFactory.getCommonConfig().getString("datacenter.self-test.table", null);
+      String catalogName = TableMetaDocInterpreter.getCatalogNameForID(
+            catalogID);
+      String tableName = TableMetaDocInterpreter.getTableNameForID(
+            catalogID,tableID);
+      return SimpleQueryMaker.makeTestQuery(
+            catalogName, tableName, new ReturnTable(target, format));
    }
 
    /** Checks the querier/plugin operates - runs a test query that will exercise it
@@ -165,8 +176,19 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
         // Don't run conesearch test if conesearch switched off in config
          return;
       }
-
       // OK, conesearch is enabled.
+     
+      // Find a table to conesearch
+      TableInfo[] coneTables = 
+         TableMetaDocInterpreter.getConesearchableTables();
+      if (coneTables.length == 0) {
+         // No conesearchable tables
+         return;
+      }
+      // Use the first one
+      String catalogName = coneTables[0].getCatalogName(); 
+      String tableName = coneTables[0].getName(); 
+
       double minRad;
       String minRadString = ConfigFactory.getCommonConfig().getString(
         "conesearch.radius.limit","");
@@ -180,7 +202,8 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
       // Otherwise, use context configured in properties file.
       // this test is called as a servlet, so get url stem from 
       // servlet context
-      endpoint = ServletHelper.getUrlStem()+"/SubmitCone";
+      endpoint = ServletHelper.getUrlStem()+"/SubmitCone?DSACAT="
+         +catalogName+"&DSATAB=" +tableName;
 
       NvoConeSearcher searcher = new NvoConeSearcher(endpoint);
       
@@ -224,22 +247,15 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
     */
 
    /**
-    * Checks Metadoc file is schema-valid
-    * KEA: Test below does nothing of the sort!
+    * Checks Metadoc file is valid
     */
-   /*
-   public void testMetadocValidity() throws IOException, SAXException, ParserConfigurationException {
-      String vodesc = VoDescriptionServer.makeVoDescription();
-      Document doc = DomHelper.newDocument(vodesc);
-      String rootElement = doc.getDocumentElement().getLocalName();
-      if(rootElement == null) {
-         rootElement = doc.getDocumentElement().getNodeName();
-      }
-      AstrogridAssert.assertSchemaValid(doc,rootElement,SchemaMap.ALL);
+   public void testMetadocValidity() throws MetadataException, IOException {
+      // This will check the metadoc
+      TableMetaDocInterpreter.initialize(true);
    }
-   */
+
    /**
-    * Checks metadata is OK.
+    * Checks VOResource metadata is OK.
     * NB This test will not pick up empty metadata 
     */
    public void testMetadata_v0_10() throws IOException, SAXException, ParserConfigurationException {

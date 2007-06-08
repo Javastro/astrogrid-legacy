@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tool name="SUBS_IVORN" interface="Cone" xmlns="http://www.astrogrid.org/schema/AGWorkflow/v1">
+   <input>
+      <parameter name="ra">
+         <ns1:value xmlns:ns1="http://www.astrogrid.org/schema/AGParameterDefinition/v1">0</ns1:value>
+      </parameter>
+      <parameter name="dec">
+         <ns2:value xmlns:ns2="http://www.astrogrid.org/schema/AGParameterDefinition/v1">5</ns2:value>
+      </parameter>
+      <parameter name="sz">
+         <ns3:value xmlns:ns3="http://www.astrogrid.org/schema/AGParameterDefinition/v1">5</ns3:value>
+       </parameter>
+   </input>
+   <output>
+     <parameter name="result" indirect="true">
+       <ns4:value xmlns:ns4="http://www.astrogrid.org/schema/AGParameterDefinition/v1">SUBS_DEST</ns4:value>
+      </parameter>
+  </output>
+</tool>

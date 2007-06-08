@@ -1,5 +1,5 @@
 /*
- * $Id: ConeConverter.java,v 1.3 2007/02/20 12:22:16 clq2 Exp $
+ * $Id: ConeConverter.java,v 1.4 2007/06/08 13:16:11 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -31,6 +31,7 @@ public class ConeConverter  {
 
      protected static Log log = LogFactory.getLog(ConeConverter.class);
 
+     static final String CATALOG_NAME = "INSERT_NAME_CATALOG";
      static final String TABLE_NAME = "INSERT_NAME_TABLE";
      static final String RA_NAME = "INSERT_NAME_RA";
      static final String DEC_NAME = "INSERT_NAME_DEC";
@@ -53,7 +54,8 @@ public class ConeConverter  {
     * table and column names, and specified search RA, Dec and radius.
     * This function expects its numeric inputs in decimal degrees.
     */
-   public static String getAdql(String tableName, 
+   public static String getAdql(
+       String catalogName, String tableName, String colUnits,
        String raColName, String decColName,
        double coneRA, double coneDec, double coneRadius) throws QueryException 
    {
@@ -62,6 +64,14 @@ public class ConeConverter  {
       boolean colsInDegs;
 
       // Check all inputs thoroughly
+      if (colUnits == null || "".equals(colUnits)) {
+        throw new QueryException(
+            "Column units may not be empty, must be one of 'deg' or 'rad'");
+      }
+      if (!"deg".equals(colUnits) && !"rad".equals(colUnits)) {
+        throw new QueryException(
+            "Column units must be one of 'deg' or 'rad'");
+      }
       if ((coneRA < 0.0) || (coneRA > 360.0)) {
         throw new QueryException(
             "Illegal value for conesearch right ascension: " +
@@ -79,6 +89,10 @@ public class ConeConverter  {
             "Illegal value for conesearch radius (must be positive): " + 
             Double.toString(coneRadius)
         );
+      }
+      if ((catalogName == null) || (catalogName.equals(""))) {
+        throw new QueryException(
+            "Illegal null or empty string for conesearch catalog name");
       }
       if ((tableName == null) || (tableName.equals(""))) {
         throw new QueryException(
@@ -102,25 +116,17 @@ public class ConeConverter  {
             "DSA local property 'db.trigfuncs.in.radians' is not set, " +
             "please check your configuration");
       }
-      String colUnits;
-      try {
-         colUnits = ConfigFactory.getCommonConfig().getString("conesearch.columns.units");
-      }
-      catch (PropertyNotFoundException nfe) {
-         throw new QueryException(
-            "DSA local property 'conesearch.columns.units' is not set, " +
-            "please check your configuration");
-      }
-      if (colUnits.equals("deg") || colUnits.equals("degrees")) {
+      if (colUnits.equals("deg")) {
          colsInDegs = true;
       }
-      else if (colUnits.equals("rad") || colUnits.equals("radians")) {
+      else if (colUnits.equals("rad")) {
          colsInDegs = false;
       }
       else {
+         // Shouldn't get here
          throw new QueryException(
             "Unrecognised value " + colUnits + 
-            " for property 'conesearch.columns.units', " +
+            " for conesearch column units', " +
             "should be 'deg' or 'rad'");
       }
       // Now check for input radius limit
@@ -247,8 +253,7 @@ public class ConeConverter  {
       
       // First of all, insert RA clip condition
       adqlString = adqlString.replaceAll(RA_CLIP_CONDITION,raClipCondition);
-      
-      // Note that the ADQL trig assumes input values are in radians.
+      adqlString = adqlString.replaceAll(CATALOG_NAME,catalogName);
       adqlString = adqlString.replaceAll(TABLE_NAME,tableName);
       adqlString = adqlString.replaceAll(RA_NAME,raColName);
       adqlString = adqlString.replaceAll(DEC_NAME,decColName);
@@ -294,40 +299,6 @@ public class ConeConverter  {
 
       return adqlString;
    }
-
-    /** Creates an ADQL conesearch query string reflecting specified 
-    * search RA, Dec and radius, using local config's default 
-    * table and column names.
-    * This function expects its numeric inputs in decimal degrees.
-    */
-   public static String getAdql(double coneRA, double coneDec, double coneRadius) throws QueryException 
-   {
-      String coneTable = ConfigFactory.getCommonConfig().getString(
-            "conesearch.table", null);
-      if ((coneTable == null) || (coneTable.equals(""))) {
-         throw new QueryException(
-           "DSA local property 'conesearch.table' is not set, " +
-           "please check your configuration");
-      }
-      String raColName = ConfigFactory.getCommonConfig().getString(
-            "conesearch.ra.column", null);
-      if ((raColName == null) || (raColName.equals(""))) {
-         throw new QueryException(
-             "DSA local property 'conesearch.ra.column' is not set, " +
-             "please check your configuration");
-      }
-
-      String decColName = ConfigFactory.getCommonConfig().getString(
-            "conesearch.dec.column", null);
-      if ((decColName == null) || (decColName.equals(""))) {
-         throw new QueryException(
-             "DSA local property 'conesearch.dec.column' is not set, " +
-             "please check your configuration");
-      }
-      return getAdql(coneTable, raColName, decColName, 
-          coneRA, coneDec, coneRadius);
-   }
-
 
    /** 
     * Extracts the XML template file resources for use in constructing

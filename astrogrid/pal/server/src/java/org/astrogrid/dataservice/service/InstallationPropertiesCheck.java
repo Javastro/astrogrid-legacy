@@ -1,4 +1,4 @@
-/*$Id: InstallationPropertiesCheck.java,v 1.8 2007/03/21 18:59:41 kea Exp $
+/*$Id: InstallationPropertiesCheck.java,v 1.9 2007/06/08 13:16:11 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -59,9 +59,15 @@ public class InstallationPropertiesCheck extends TestCase {
       if (!checkSet("db.trigfuncs.in.radians", accum)) { bad = bad+1; }
 
       if (!checkSet("datacenter.max.return", accum)) { bad = bad+1; }
-      if (!checkSet("datacenter.max.queries", accum)) { bad = bad+1; }
       if (!checkSet("datacenter.sql.timeout", accum)) { bad = bad+1; }
 
+      //if (!checkSet("datacenter.max.queries", accum)) { bad = bad+1; }
+      if (!checkUnset("datacenter.max.queries", accum)) { bad = bad+1; }
+      if (!checkSet("datacenter.max.async.queries", accum)) { bad = bad+1; }
+      if (!checkSet("datacenter.max.sync.queries", accum)) { bad = bad+1; }
+
+      // KONA PUT BACK LATER FOR MULTICAT DSAs
+      //if (!checkSet("datacenter.self-test.catalog", accum)) { bad = bad+1; }
       if (!checkSet("datacenter.self-test.table", accum)) { bad = bad+1; }
       if (!checkSet("datacenter.self-test.column1", accum)) { bad = bad+1; }
       if (!checkSet("datacenter.self-test.column2", accum)) { bad = bad+1; }
@@ -70,12 +76,14 @@ public class InstallationPropertiesCheck extends TestCase {
       String cone = ConfigFactory.getCommonConfig().getString(
           "datacenter.implements.conesearch");
       if ((cone != null) && (cone.toLowerCase().equals("true")) ) {
-        if (!checkSet("conesearch.table", accum)) { bad = bad+1; }
-        if (!checkSet("conesearch.ra.column", accum)) { bad = bad+1; }
-        if (!checkSet("conesearch.dec.column", accum)) { bad = bad+1; }
-        if (!checkSet("conesearch.columns.units", accum)) { bad = bad+1; }
         if (!checkSet("conesearch.radius.limit", accum)) { bad = bad+1; }
       }
+      // Old conesearch settings - check not present
+      if (!checkUnset("conesearch.table", accum)) { bad = bad+1; }
+      if (!checkUnset("conesearch.ra.column", accum)) { bad = bad+1; }
+      if (!checkUnset("conesearch.dec.column", accum)) { bad = bad+1; }
+      if (!checkUnset("conesearch.columns.units", accum)) { bad = bad+1; }
+
       if (!checkSet("datacenter.name", accum)) { bad = bad+1; }
       if (!checkSet("datacenter.description", accum)) { bad = bad+1; }
 
@@ -138,7 +146,7 @@ public class InstallationPropertiesCheck extends TestCase {
       if (bad > 0) {
         allOK = false;
       }
-      assertTrue("SOME PROPERTIES ARE NOT SET!<br/>\n" + accumString,allOK);
+      assertTrue("SOME PROPERTIES ARE NOT CORRECT!<br/>\n" + accumString,allOK);
    }
 
    /**

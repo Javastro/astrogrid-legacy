@@ -37,6 +37,7 @@
            }
        %>
         <li><a href="./serverStatus.jsp">View server status</a></li>
+        <li><a href="./clearStatusLog.jsp">Clear old job history </a></li>
      </ul>
    </div>
 

@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.8 2007/03/21 19:00:34 kea Exp $
+/*$Id: SqlPluginTest.java,v 1.9 2007/06/08 13:16:09 clq2 Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,6 +29,7 @@ import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.tableserver.VoTableTestHelper;
 import org.astrogrid.tableserver.jdbc.JdbcPlugin;
 import org.astrogrid.tableserver.jdbc.RdbmsTableMetaDocGenerator;
+import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
 import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
@@ -64,8 +65,18 @@ public class SqlPluginTest extends TestCase {
    {   
       //make sure the configuration is correct for the plugin
       SampleStarsPlugin.initConfig();
+
+      String catalogID = ConfigFactory.getCommonConfig().getString(
+            "datacenter.self-test.catalog", null);
+      String tableID = ConfigFactory.getCommonConfig().getString(
+            "datacenter.self-test.table", null);
+      String catalogName = TableMetaDocInterpreter.getCatalogNameForID(
+            catalogID);
+      String tableName = TableMetaDocInterpreter.getTableNameForID(
+            catalogID,tableID);
+
       StringWriter sw = new StringWriter();
-      Query q = SimpleQueryMaker.makeTestQuery(
+      Query q = SimpleQueryMaker.makeTestQuery(catalogName, tableName,
           new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE));
       manager.askQuerier(Querier.makeQuerier(LoginAccount.ANONYMOUS, q, this));
       log.info("Checking results...");
@@ -102,7 +113,11 @@ public class SqlPluginTest extends TestCase {
       SampleStarsPlugin.initConfig();
       
       StringWriter sw = new StringWriter();
-      Query q = SimpleQueryMaker.makeConeQuery(ra,dec,r, new WriterTarget(sw), ReturnTable.VOTABLE);
+      Query q = new Query(
+            "CatName_SampleStarsCat", "TabName_SampleStars", "deg",
+            "ColName_RA", "ColName_Dec",
+            ra, dec, r, 
+            new ReturnTable(new WriterTarget(sw), ReturnTable.VOTABLE));
       manager.askQuerier(Querier.makeQuerier(LoginAccount.ANONYMOUS, q, this));
       log.info("Checking results...");
       System.out.println(sw.toString());
@@ -164,8 +179,9 @@ public class SqlPluginTest extends TestCase {
       
       RdbmsTableMetaDocGenerator generator = new RdbmsTableMetaDocGenerator();
       
-      //generate metadata
-      String resources = generator.getMetaDoc();
+      //generate metadata - use the default catalog rather than specifying
+      //catalog names.
+      String resources = generator.getMetaDoc(null);
       
       Document metaDoc = DomHelper.newDocument(resources.toString());
       
@@ -174,7 +190,7 @@ public class SqlPluginTest extends TestCase {
       
       //check results
       long numTables = metaDoc.getElementsByTagName("Table").getLength();
-      assertEquals("Should be three tables (plates, stars, galaxies) in metadata", 3, numTables);
+      assertEquals("Should be four tables (plates, stars, galaxies, stars2) in metadata", 4, numTables);
       
    }
    
@@ -189,7 +205,7 @@ public class SqlPluginTest extends TestCase {
       
       //check results
       long numTables = metaDoc.getElementsByTagNameNS("*","table").getLength();
-      assertEquals("Should be three tables (plates, stars, galaxies) in metadata", 3, numTables);
+      assertEquals("Should be four tables (plates, stars, galaxies, stars2) in metadata", 4, numTables);
       
    }
    public void testDescriptionMaker_v1_0() throws Exception {

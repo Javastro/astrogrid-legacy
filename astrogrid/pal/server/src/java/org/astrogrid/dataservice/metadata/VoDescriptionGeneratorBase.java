@@ -204,17 +204,21 @@ public class VoDescriptionGeneratorBase {
 
       //get resources from plugin
       String resources = plugin.getVoResource();
-
-      try {
-         validateDescription(vodescElementStart+resources+vodescElementEnd);
-      
-         vod.append(resources+"\n\n");
-      }
-      catch (SAXException e) {
-  //       throw new MetadataException("Plugin "+plugin.getClass()+" generated invalid XML ",e);
-    
-         log.error("Plugin "+plugin.getClass()+" generated invalid XML ",e);
-         vod.append(resources+"\n\n");
+      if ((resources != null) && !("".equals(resources)) ){
+         // Don't try validating empty resources (which might be returned by
+         // e.g. conesearch plugin if conesearch is enabled but no tables
+         // are configured as conesearchable)
+         try {
+            validateDescription(vodescElementStart+resources+vodescElementEnd);
+         
+            vod.append(resources+"\n\n");
+         }
+         catch (SAXException e) {
+     //       throw new MetadataException("Plugin "+plugin.getClass()+" generated invalid XML ",e);
+       
+            log.error("Plugin "+plugin.getClass()+" generated invalid XML ",e);
+            vod.append(resources+"\n\n");
+         }
       }
    }
 

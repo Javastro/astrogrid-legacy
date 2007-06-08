@@ -1,5 +1,5 @@
 /*
- * $Id: TabularDbResources.java,v 1.1 2007/03/19 15:11:43 kea Exp $
+ * $Id: TabularDbResources.java,v 1.2 2007/06/08 13:16:11 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -31,7 +31,7 @@ public class TabularDbResources extends VoResourceSupport implements VoResourceP
 
       String ucdVersion = UcdVersions.getUcdVersion();
 
-      TableMetaDocInterpreter reader = new TableMetaDocInterpreter();
+      //TableMetaDocInterpreter reader = new TableMetaDocInterpreter();
       StringBuffer tabularDb = new StringBuffer(
          makeVoResourceElement(
              "tdb:TabularDB",
@@ -42,36 +42,42 @@ public class TabularDbResources extends VoResourceSupport implements VoResourceP
              "http://www.ivoa.net/xml/VODataService/v0.5 http://www.ivoa.net/xml/VODataService/v0.5" + " " + 
              "urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3 http://software.astrogrid.org/schema/vo-resource-types/TabularDB/v0.3/TabularDB.xsd"
              ) +
-         makeCore("TDB") +
+         makeCore("TDB","") +
          "<tdb:db>\n"
       );
       
-      String[] catalogNames = reader.getCatalogs();
+      //String[] catalogNames = reader.getCatalogNames();
+      String[] catalogNames = TableMetaDocInterpreter.getCatalogNames();
       if (catalogNames.length == 0) {
          throw new MetadataException("Server error: no catalog or table metadata are defined for this DSA/catalog installation;  please check your metadoc file and/or configuration!");
       }
       // If we get here, have at least one catalog.  NB At present
       // there should be only one.
-      String catalog = catalogNames[0];
-      if (catalog == null) {
+      String catalogName = catalogNames[0];
+      if (catalogName == null) {
          throw new MetadataException("Server error: no catalog or table metadata are defined for this DSA/catalog installation;  please check your metadoc file and/or configuration!");
       }
-      String[] catalogDescs = reader.getCatalogDescriptions();
+      String[] catalogDescs = TableMetaDocInterpreter.getCatalogDescriptions();
       String desc = catalogDescs[0];
       tabularDb.append(
-         "<tdb:name>"+catalog+"</tdb:name>\n"+
+         "<tdb:name>"+catalogName+"</tdb:name>\n"+
          "<tdb:description>"+ 
             XmlPrinter.transformSpecials(desc) + "</tdb:description>\n");
       
-      TableInfo[] tables = reader.getTables(catalog);
+      TableInfo[] tables = 
+          TableMetaDocInterpreter.getTablesInfoByName(catalogName);
       for (int t = 0; t < tables.length; t++) {
          tabularDb.append(
             "<tdb:table xmlns='http://www.ivoa.net/xml/VODataService/v0.5' >\n"+ //default namnespace for table descriptions
                "<name>"+tables[t].getName()+"</name>\n"+
-               "<description>"+XmlPrinter.transformSpecials(tables[t].getDescription())+"</description>\n"
+               "<description>"+
+               XmlPrinter.transformSpecials(tables[t].getDescription())+
+               "</description>\n"
          );
          
-         ColumnInfo[] columns = reader.getColumns(catalog, tables[t].getName());
+         ColumnInfo[] columns = 
+            TableMetaDocInterpreter.getColumnsInfoByName(
+                  catalogName, tables[t].getName());
          
          for (int c = 0; c < columns.length; c++) {
             tabularDb.append(
@@ -131,5 +137,3 @@ public class TabularDbResources extends VoResourceSupport implements VoResourceP
    }
    
 }
-
-

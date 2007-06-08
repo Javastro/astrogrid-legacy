@@ -1,5 +1,5 @@
 /*
- * $Id: ServletHelper.java,v 1.5 2006/06/15 16:50:09 clq2 Exp $
+ * $Id: ServletHelper.java,v 1.6 2007/06/08 13:16:11 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -273,6 +273,68 @@ public class ServletHelper
    }
    */
    
+   /** Convenience routine for extracting the catalog name of a conesearch */
+   public static String getCatalogName(HttpServletRequest request)
+   {
+      String catName = "";
+      // First check for joint param DSACATTAB
+      String catTabName = request.getParameter("DSACATTAB");
+      if ((catTabName == null) || ("".equals(catTabName))) {
+         // If not present, look for individual params
+         catName = request.getParameter("DSACAT");
+         if ((catName == null) || ("".equals(catName))) {
+            throw new IllegalArgumentException(
+                  "DSACAT parameter (catalogue name) is missing or empty");
+         }
+      }
+      else {
+         int uIndex = catTabName.indexOf('.');
+         if (uIndex != -1) {   //Dot found
+            catName = catTabName.substring(0,uIndex);
+         }
+         else {
+            throw new IllegalArgumentException(
+               "DSACATTAB parameter does not contain expected '.' character");
+         }
+         if ((catName == null) || ("".equals(catName))) {
+            throw new IllegalArgumentException(
+                  "DSACATTAB parameter defines empty catalogue name");
+         }
+      }
+      return catName;
+   }
+
+   /** Convenience routine for extracting the table name of a conesearch */
+   public static String getTableName(HttpServletRequest request)
+   {
+      String tabName = "";
+      // First check for joint param DSACATTAB
+      String catTabName = request.getParameter("DSACATTAB");
+      if ((catTabName == null) || ("".equals(catTabName))) {
+         // If not present, look for individual params
+         tabName = request.getParameter("DSATAB");
+         if ((tabName == null) || ("".equals(tabName))) {
+            throw new IllegalArgumentException(
+                  "DSATAB parameter (table name) is missing or empty");
+         }
+      }
+      else {
+         int uIndex = catTabName.lastIndexOf('.');
+         if (uIndex != -1) {   //Dot found
+            tabName = catTabName.substring(uIndex+1);
+         }
+         else {
+            throw new IllegalArgumentException(
+               "DSACATTAB parameter does not contain expected '.' character");
+         }
+         if ((tabName == null) || ("".equals(tabName))) {
+            throw new IllegalArgumentException(
+                  "DSACATTAB parameter defines empty table name");
+         }
+      }
+      return tabName;
+   }
+
    /** Convenience routine for extracting the radius of a conesearch */
    public static double getRadius(HttpServletRequest request)
    {

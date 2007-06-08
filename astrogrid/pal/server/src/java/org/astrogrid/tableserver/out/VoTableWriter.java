@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableWriter.java,v 1.11 2007/03/02 13:43:45 kea Exp $
+ * $Id: VoTableWriter.java,v 1.12 2007/06/08 13:16:12 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -36,35 +36,43 @@ import org.astrogrid.ucd.UcdException;
 public class VoTableWriter implements TableWriter {
    
    protected static final Log log = org.apache.commons.logging.LogFactory.getLog(VoTableWriter.class);
-   //protected Log log = org.apache.commons.logging.LogFactory.getLog(VoTableWriter.class);
 
-   protected PrintWriter printOut = null;
+   protected BufferedWriter bufferedOut = null;
    
    protected ColumnInfo[] cols = null;
 
    protected int rowsWritten = 0;
 
-   // How many rows to write before we check that the output stream is OK
-   protected static final int CHECKFREQUENCY = 1000;
+   // How many rows to write before we do a flush
+   protected static final int FLUSHFREQUENCY = 1000;
    
    /**
     * Construct this wrapping the given stream.
     */
    public VoTableWriter(TargetIdentifier target, String title, Principal user) throws IOException {
       target.setMimeType(MimeTypes.VOTABLE);
-      printOut = new PrintWriter(new BufferedWriter(target.openWriter()));
+      bufferedOut = new BufferedWriter(target.openWriter());
    }
    /**
     * Construct this wrapping the given stream.
     */
    public VoTableWriter(OutputStream out, String title, Principal user) throws IOException {
-      printOut = new PrintWriter( 
-          new BufferedWriter( new OutputStreamWriter (out)));
+      bufferedOut = new BufferedWriter( new OutputStreamWriter (out));
    }
    
+   protected void printString(String toPrint) throws IOException
+   {
+      bufferedOut.write(toPrint, 0, toPrint.length());
+   }
+   protected void println(String toPrint) throws IOException
+   {
+      bufferedOut.write(toPrint, 0, toPrint.length());
+      bufferedOut.write("\n",0,1); //TOFIX USE SYSTEM-SPECIFIC EOLN?
+   }
+
    public void open() throws IOException {
-      printOut.println("<?xml version='1.0' encoding='UTF-8'?>");
-      printOut.println("<VOTABLE " 
+      println("<?xml version='1.0' encoding='UTF-8'?>");
+      println("<VOTABLE " 
          +"xmlns='http://www.ivoa.net/xml/VOTable/v1.1'  "
          +"xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'  "
          +"xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.1 http://software.astrogrid.org/schema/vo-formats/VOTable/v1.1/VOTable.xsd'  "
@@ -77,7 +85,7 @@ public class VoTableWriter implements TableWriter {
           </DEFINITIONS>
           */
          
-         printOut.println("<RESOURCE>");
+         println("<RESOURCE>");
          /* don't know where to find this info - in the netadata I expect
           <PARAM ID="RA" datatype="E" value="200.0"/>
           <PARAM ID="DE" datatype="E" value="40.0"/>
@@ -87,7 +95,7 @@ public class VoTableWriter implements TableWriter {
           */
 
       // Make sure stream is still ok
-      checkErrors();
+      doAFlush();
    }
    
    
@@ -104,14 +112,14 @@ public class VoTableWriter implements TableWriter {
 
       this.cols = colinfo;
       
-      printOut.println("<TABLE>");
+      println("<TABLE>");
 
       for (int i = 0; i < cols.length; i++) {
          if (cols[i] != null) { // null columns if it's not been found in the metadoc
          
-            printOut.print("<FIELD name='"+cols[i].getName()+"' ");
-            if (cols[i].getId() != null) printOut.print("ID='"+cols[i].getId()+"' ");
-            if (cols[i].getUcd(ucdVersion) != null) printOut.print(" ucd='"+cols[i].getUcd(ucdVersion)+"' ");
+            printString("<FIELD name='"+cols[i].getName()+"' ");
+            if (cols[i].getId() != null) printString("ID='"+cols[i].getId()+"' ");
+            if (cols[i].getUcd(ucdVersion) != null) printString(" ucd='"+cols[i].getUcd(ucdVersion)+"' ");
             
             //Create the votable type attributes from the metadoc type. 
             //Convert using java class as the medium
@@ -124,14 +132,14 @@ public class VoTableWriter implements TableWriter {
                log.debug("VOTable generator: coltype of column " +
                    cols[i].getName() + " is " + colType.toString());
 
-               printOut.print(VoTypes.getVoTableTypeAttributes(colType));
+               printString(VoTypes.getVoTableTypeAttributes(colType));
             }
             /*
             // KEA FUTURE: I added this, but not sure if it should
             // work or not, needs further investigation.
             // Try java type if no public type
             else if (cols[i].getJavaType() != null) { 
-               printOut.print(VoTypes.getVoTableTypeAttributes(
+               printString(VoTypes.getVoTableTypeAttributes(
                      cols[i].getJavaType()));
             }
             */
@@ -140,114 +148,120 @@ public class VoTableWriter implements TableWriter {
               // will be parsable as a string.  THis is not ideal; 
               // hopefully we can fix the problem of not knowing the
               // type in future.
-               printOut.print(VoTypes.getVoTableTypeAttributes(String.class));
+               printString(VoTypes.getVoTableTypeAttributes(String.class));
             }
    
             //units
             if (cols[i].getJavaType() == Date.class) {
-               printOut.print(" unit='s' ");
+               printString(" unit='s' ");
             }
             else {
                if ((cols[i].getUnits() != null) && (cols[i].getUnits().toString().trim().length()>0)) {
-                  printOut.print(" unit='"+cols[i].getUnits()+"' ");
+                  printString(" unit='"+cols[i].getUnits()+"' ");
                }
             }
-            printOut.println("/>");
+            println("/>");
          }
       }
 
-      printOut.flush(); //so something comes back to the browser quickly
+      bufferedOut.flush();
       
       //start body table
-      printOut.println("<DATA>");
-      printOut.println("<TABLEDATA>");
+      println("<DATA>");
+      println("<TABLEDATA>");
       
       // Make sure stream is still ok
-      checkErrors();
+      doAFlush();
    }
    
    /** Writes the given array of values out */
    public void writeRow(Object[] colValues) throws IOException {
       
-      printOut.print("<TR>");
+      printString("<TR>");
       for (int i=0;i<colValues.length;i++) {
          if (cols[i] != null) { //skip columns with no metadata
             if (colValues[i] instanceof Date) {
-               printOut.print("<TD>"+ (float) (((Date) colValues[i]).getTime()/1000) +"</TD>");
+               printString("<TD>"+ (float) (((Date) colValues[i]).getTime()/1000) +"</TD>");
             }
             else {
                if ( (colValues[i] == null) || (colValues[i].equals("null")) ){
                  //From VOTable spec: "In the TABLEDATA data representation, 
                  //the default representation of a ``null'' value is an 
                  //empty column (i.e. <TD></TD>)";
-                 printOut.print("<TD></TD>");
+                 printString("<TD></TD>");
                }
                else {
-                 printOut.print("<TD>"+colValues[i]+"</TD>");
+                  // Quick fix - replace &, < and ? to avoid breaking
+                  // xml
+                 String output = (String)colValues[i];
+                 output = output.replaceAll("&", "&amp;"); //Do this first!!
+                 output = output.replaceAll("<", "&lt;");
+                 output = output.replaceAll(">", "&gt;");
+                 printString("<TD>"+output+"</TD>");
                }
             }
          }
       }
-      printOut.println("</TR>");
+      println("</TR>");
 
       rowsWritten = rowsWritten + 1;
-      if (rowsWritten % CHECKFREQUENCY == 0) {
+      if (rowsWritten % FLUSHFREQUENCY == 0) {
          // Make sure stream is still ok
-         checkErrors();
+         doAFlush();
       }
    }
 
    public void endTable() throws IOException {
             //close row body
-         printOut.println("</TABLEDATA>");
-         printOut.println("</DATA>");
+         println("</TABLEDATA>");
+         println("</DATA>");
 
       //close document
-      printOut.println("</TABLE>");
+      println("</TABLE>");
 
       // Make sure stream is still ok
-      checkErrors();
+      doAFlush();
    }
    
    /** Closes writer - writes out the closing tags and closes wrapped stream
     */
    public void close() throws IOException {
       
-      printOut.println("</RESOURCE>");
-      printOut.println("</VOTABLE>");
+      println("</RESOURCE>");
+      println("</VOTABLE>");
       
-      checkErrors();
-      printOut.close();
-      //throw new IOException("THROWING TEST EXCEPTION");
+      doAFlush();
+      bufferedOut.close();
    }
    
    /** Abort writes out a line to show the table is incomplete */
    public void abort() throws IOException {
-      printOut.println("<tr><td> ------------------ Writing Aborted -----------------</td></tr> ");
+      println("<tr><td> ------------------ Writing Aborted -----------------</td></tr> ");
       close();
    }
    
    /** Convenience method to get direct access to the output stream, so that we can pipe votables direct */
    public Writer getOut() {
-      return printOut;
+      return bufferedOut;
    }
    
-   /** Method to check status of output stream - PrintWriters do NOT
-      throw exceptions on write errors! */
-   protected void checkErrors() throws IOException
+   protected void doAFlush() throws IOException
    {
-      boolean gotError = printOut.checkError();
-      if (gotError) {
-        // Unfortunately, no way to get at the cause of the error :-/
-        log.error("Transfer of results to output stream failed");
-        printOut.close();
-        throw new IOException("Transfer of VOTable results failed to complete successfully");
-      }
+     bufferedOut.flush();
    }
 }
 
 /*
  $Log: VoTableWriter.java,v $
+ Revision 1.12  2007/06/08 13:16:12  clq2
+ KEA-PAL-2169
+
+ Revision 1.11.2.2  2007/06/08 13:06:41  kea
+ Ready for trial merge.
+
+ Revision 1.11.2.1  2007/04/23 16:45:19  kea
+ Checkin of work in progress.
+
  Revision 1.11  2007/03/02 13:43:45  kea
  Added proper error checking to PrintWriter output stream writers in these
  classes;  failures were going undetected as PrintWriters do not throw

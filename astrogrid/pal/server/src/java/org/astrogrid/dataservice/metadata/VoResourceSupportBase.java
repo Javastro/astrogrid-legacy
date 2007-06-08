@@ -1,5 +1,5 @@
 /*
- * $Id: VoResourceSupportBase.java,v 1.1 2007/03/21 18:54:04 kea Exp $
+ * $Id: VoResourceSupportBase.java,v 1.2 2007/06/08 13:16:11 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -75,7 +75,7 @@ public class VoResourceSupportBase {
     * file exists and uses that (incl validation) if so, and if not uses settings
     * in the configuration file to create it.
     */
-   public String makeCore(String idEnd) throws IOException {
+   public String makeCore(String idEnd, String titleSuffix) throws IOException {
       String coreFile = ConfigFactory.getCommonConfig().getString("dataserver.metadata.core", null);
       if ( coreFile != null) {
          //use an on-disk resource file
@@ -99,12 +99,12 @@ public class VoResourceSupportBase {
 
       }
       else {
-         return makeConfigCore(idEnd);
+         return makeConfigCore(idEnd, titleSuffix);
       }
    }
 
    /** Constructs core VOResource elements from settings in the configuration file */
-   private String makeConfigCore(String idEnd) throws IOException {
+   private String makeConfigCore(String idEnd, String titleSuffix) throws IOException {
       
          String refUrl = 
            ConfigFactory.getCommonConfig().getString("datacenter.reference.url", "");
@@ -117,8 +117,12 @@ public class VoResourceSupportBase {
            creatorLogo = ConfigFactory.getCommonConfig().getString(
                "datacenter.url", "")+"/logo.gif";
          }
+         String name = DataServer.getDatacenterName();
+         if ((titleSuffix != null) && (!("".equals(titleSuffix)))) {
+            name = name + ": " + titleSuffix;
+         }
          return makeCore(
-            DataServer.getDatacenterName(),
+            name,
             makeId(idEnd),
             ConfigFactory.getCommonConfig().getString("datacenter.publisher",null),
             ConfigFactory.getCommonConfig().getString("datacenter.contact.name", ""),

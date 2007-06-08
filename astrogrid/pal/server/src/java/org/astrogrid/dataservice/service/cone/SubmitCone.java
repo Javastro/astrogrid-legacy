@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitCone.java,v 1.10 2007/03/14 16:26:49 kea Exp $
+ * $Id: SubmitCone.java,v 1.11 2007/06/08 13:16:12 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.cone;
@@ -9,7 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.dataservice.metadata.queryable.ConeConfigQueryableResource;
 import org.astrogrid.dataservice.metadata.queryable.SearchGroup;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.ServletHelper;
@@ -19,6 +18,7 @@ import org.astrogrid.query.returns.ReturnSpec;
 import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.webapp.DefaultServlet;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
+import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.queriers.DatabaseAccessException;
 
@@ -61,14 +61,27 @@ public class SubmitCone extends DefaultServlet {
       }
 
       // Extract the query parameters
-      double radius = ServletHelper.getRadius(request);
-      double ra = ServletHelper.getRa(request);
-      double dec = ServletHelper.getDec(request);
-      ReturnSpec returnSpec = ServletHelper.makeReturnSpec(request);
-
+      double ra=0, dec=0, radius=0;
+      String catalogName="", tableName="";
       try {
+         catalogName = ServletHelper.getCatalogName(request);
+         tableName = ServletHelper.getTableName(request);
+         radius = ServletHelper.getRadius(request);
+         ra = ServletHelper.getRa(request);
+         dec = ServletHelper.getDec(request);
+         ReturnSpec returnSpec = ServletHelper.makeReturnSpec(request);
+
+         String raColName = TableMetaDocInterpreter.getConeRAColumnByName(
+             catalogName, tableName);
+         String decColName = TableMetaDocInterpreter.getConeDecColumnByName(
+             catalogName, tableName);
+         String units = TableMetaDocInterpreter.getConeUnitsByName(
+             catalogName, tableName);
+
          // Create the query
-         Query coneQuery = new Query(ra, dec, radius, returnSpec);
+         Query coneQuery = new Query(
+               catalogName, tableName, units, raColName, decColName, 
+               ra, dec, radius, returnSpec);
 
          if (returnSpec.getTarget() == null) {
             //if a target is not given, we do an (ask) Query 
@@ -122,13 +135,15 @@ public class SubmitCone extends DefaultServlet {
       }
       catch (Throwable th) {
          LogFactory.getLog(request.getContextPath()).error(th+
-             "Searching Cone with RA= " + Double.toString(ra) + 
+             "conesearching table '" +tableName +"' in catalog '" +
+             catalogName +"' with RA= " + Double.toString(ra) + 
              ", Dec = " + Double.toString(dec) + 
              ", radius = " + Double.toString(radius),
              th);
 
          doError(response, 
-             "Searching Cone with RA= " + Double.toString(ra) + 
+             "conesearching table '" +tableName +"' in catalog '" +
+             catalogName +"' with RA = " + Double.toString(ra) + 
              ", Dec = " + Double.toString(dec) + 
              ", radius = " + Double.toString(radius),
              th);
@@ -141,10 +156,10 @@ public class SubmitCone extends DefaultServlet {
        Exception ex) throws IOException {
 
       String errorResponseString = 
-         "Searching Cone with RA= " + Double.toString(ra) + 
+         "Searching Cone with RA = " + Double.toString(ra) + 
          ", Dec = " + Double.toString(dec) + ", radius = " + Double.toString(radius) +"</p>" +
          "<p>An error has occurred (see below); this may be because this datacenter installation is misconfigured.\n" +
-         "<p>Please check that the properties 'conesearch.table', 'conesearch.ra.column', 'conesearch.dec.column' and 'conesearch.columns.units' are correctly configured in your properties file.\n";
+         "<p>Admin note: please check the datacenter metadoc file to see that your conesearchable tables are correctly configured.\n";
           
       LogFactory.getLog(request.getContextPath()).error( ex+errorResponseString,ex);
 

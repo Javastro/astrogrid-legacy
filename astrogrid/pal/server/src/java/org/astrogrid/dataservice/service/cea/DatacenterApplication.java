@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.7 2007/03/14 16:26:49 kea Exp $
+/*$Id: DatacenterApplication.java,v 1.8 2007/06/08 13:16:08 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,7 @@ import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.Principal;
+import java.util.StringTokenizer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.AbstractApplication;
@@ -29,6 +30,7 @@ import org.astrogrid.dataservice.queriers.QuerierListener;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
 import org.astrogrid.dataservice.service.AxisDataServer;
 import org.astrogrid.dataservice.service.DataServer;
+import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.io.mime.MimeNames;
 import org.astrogrid.query.Query;
@@ -108,7 +110,19 @@ public class DatacenterApplication extends AbstractApplication implements Querie
                , Double.parseDouble((String)findInputParameterAdapter(DatacenterApplicationDescription.RADIUS).process())
          );
          */
+         String catalogName = (String)findInputParameterAdapter(
+               DatacenterApplicationDescription.CATALOG).process();
+         String tableName = (String)findInputParameterAdapter(
+               DatacenterApplicationDescription.TABLE).process();
+         String raColName = TableMetaDocInterpreter.getConeRAColumnByName(
+               catalogName, tableName);
+         String decColName = TableMetaDocInterpreter.getConeDecColumnByName(
+               catalogName, tableName);
+         String units = TableMetaDocInterpreter.getConeUnitsByName(
+               catalogName, tableName);
+         
          return new Query(
+            catalogName, tableName, units, raColName, decColName,
             Double.parseDouble((String)findInputParameterAdapter(DatacenterApplicationDescription.RA).process()),
             Double.parseDouble((String)findInputParameterAdapter(DatacenterApplicationDescription.DEC).process()),
             Double.parseDouble((String)findInputParameterAdapter(DatacenterApplicationDescription.RADIUS).process()),
@@ -337,6 +351,15 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
  $Log: DatacenterApplication.java,v $
+ Revision 1.8  2007/06/08 13:16:08  clq2
+ KEA-PAL-2169
+
+ Revision 1.7.2.2  2007/05/18 16:34:12  kea
+ Still working on new metadoc / multi conesearch.
+
+ Revision 1.7.2.1  2007/05/16 11:03:52  kea
+ Removing siap stuff, not in use.
+
  Revision 1.7  2007/03/14 16:26:49  kea
  Work in progress re VOResource v1.0 registrations, and re out-of-memory
  error (now cleaning up Query inside Querier once query has been run to

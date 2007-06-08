@@ -5,7 +5,7 @@
         <Item xsi:type="allSelectionItemType"/>
     </SelectionList>
     <From>
-        <Table xsi:type="tableType" Alias="b" Name="INSERT_TABLE"/>
+        <Table xsi:type="tableType" Alias="b" Name="INSERT_TABLE" INSERT_CATALOG/>
     </From>
     <OrderBy>
         <Item>

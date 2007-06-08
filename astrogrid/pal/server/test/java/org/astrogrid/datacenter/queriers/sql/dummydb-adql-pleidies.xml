@@ -5,34 +5,34 @@
     <Item xsi:type="allSelectionItemType" />
   </SelectionList>
   <From>
-    <Table xsi:type="tableType" Name="SampleStars" Alias="s" />
+    <Table xsi:type="tableType" Name="TabName_SampleStars" Alias="s" />
   </From>
   <Where>
     <Condition xsi:type="intersectionSearchType">
       <Condition xsi:type="intersectionSearchType">
         <Condition xsi:type="intersectionSearchType">
           <Condition xsi:type="comparisonPredType" Comparison="&gt;">
-            <Arg xsi:type="columnReferenceType" Table="s" Name="ra" />
+            <Arg xsi:type="columnReferenceType" Table="s" Name="ColName_RA" />
             <Arg xsi:type="atomType">
               <Literal xsi:type="realType" Value="56.45" />
             </Arg>
           </Condition>
           <Condition xsi:type="comparisonPredType" Comparison="&lt;">
-            <Arg xsi:type="columnReferenceType" Table="s" Name="ra" />
+            <Arg xsi:type="columnReferenceType" Table="s" Name="ColName_RA" />
             <Arg xsi:type="atomType">
               <Literal xsi:type="realType" Value="57.05" />
             </Arg>
           </Condition>
         </Condition>
         <Condition xsi:type="comparisonPredType" Comparison="&gt;">
-          <Arg xsi:type="columnReferenceType" Table="s" Name="dec" />
+          <Arg xsi:type="columnReferenceType" Table="s" Name="ColName_DEC" />
           <Arg xsi:type="atomType">
             <Literal xsi:type="realType" Value="23.567" />
           </Arg>
         </Condition>
       </Condition>
       <Condition xsi:type="comparisonPredType" Comparison="&lt;">
-        <Arg xsi:type="columnReferenceType" Table="s" Name="dec" />
+        <Arg xsi:type="columnReferenceType" Table="s" Name="ColName_DEC" />
         <Arg xsi:type="atomType">
           <Literal xsi:type="realType" Value="24.167" />
         </Arg>
