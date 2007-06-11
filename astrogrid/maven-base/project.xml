@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: project.xml,v 1.35 2005/06/06 10:51:06 nw Exp $ -->
+<!-- $Id: project.xml,v 1.36 2007/06/11 11:18:35 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="xsd/maven-project.xsd">
     <pomVersion>3</pomVersion>
     <name>Astrogrid Master Maven POM</name>
@@ -131,7 +131,7 @@
    <organization> MSSL </organization>
    <roles>
     <role> Data WGL </role>
-    <roe> Registry Developer</roe>
+    <role> Registry Developer</role>
    </roles>
   </developer>
   <developer>
