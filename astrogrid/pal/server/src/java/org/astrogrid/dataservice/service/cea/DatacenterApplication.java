@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.8 2007/06/08 13:16:08 clq2 Exp $
+/*$Id: DatacenterApplication.java,v 1.9 2007/06/12 12:12:00 kea Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -110,10 +110,19 @@ public class DatacenterApplication extends AbstractApplication implements Querie
                , Double.parseDouble((String)findInputParameterAdapter(DatacenterApplicationDescription.RADIUS).process())
          );
          */
-         String catalogName = (String)findInputParameterAdapter(
-               DatacenterApplicationDescription.CATALOG).process();
-         String tableName = (String)findInputParameterAdapter(
-               DatacenterApplicationDescription.TABLE).process();
+         String catalogName = "", tableName = "";
+         String fullName = (String)findInputParameterAdapter(
+               DatacenterApplicationDescription.CATTABLE).process();
+         int dotIndex = fullName.lastIndexOf('.');
+         if (dotIndex == -1) {   //Not found
+            throw new QueryException(
+                "Expected table name of the form 'catalog.table', but got '"
+                + fullName + "'");
+         }
+         else {
+            catalogName = fullName.substring(0,dotIndex);
+            tableName = fullName.substring(dotIndex+1);
+         }
          String raColName = TableMetaDocInterpreter.getConeRAColumnByName(
                catalogName, tableName);
          String decColName = TableMetaDocInterpreter.getConeDecColumnByName(
@@ -351,8 +360,11 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
  $Log: DatacenterApplication.java,v $
- Revision 1.8  2007/06/08 13:16:08  clq2
- KEA-PAL-2169
+ Revision 1.9  2007/06/12 12:12:00  kea
+ Adding cone cea interface back.
+
+ Revision 1.7.2.3  2007/06/12 11:54:08  kea
+ Putting back CEA conesearch.
 
  Revision 1.7.2.2  2007/05/18 16:34:12  kea
  Still working on new metadoc / multi conesearch.

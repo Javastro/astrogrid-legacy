@@ -1,5 +1,5 @@
 /*
- * $Id: CeaResources.java,v 1.2 2007/06/08 13:16:12 clq2 Exp $
+ * $Id: CeaResources.java,v 1.3 2007/06/12 12:12:01 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,6 +13,8 @@ import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.metadata.VoResourcePlugin;
 import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
+import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
+import org.astrogrid.tableserver.metadata.TableInfo;
 
 /**
  * Serves the CEA resources.  Bit of a mangled fudge at the moment to get
@@ -58,6 +60,67 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
          "</cea:ManagedApplications>"+
          "</"+VORESOURCE_ELEMENT+">";
       
+      String coneParams = ""; 
+      String coneInters = ""; 
+      TableInfo[] tables =
+          TableMetaDocInterpreter.getConesearchableTables();
+      if (tables.length == 0) {
+         coneParams = "";
+         coneInters = "";
+      }
+      else {
+         coneParams = 
+         "<cea:ParameterDefinition name='CatTable' type='text'>\n"+
+            "<ceapd:UI_Name>Search Table</ceapd:UI_Name>\n"+
+            "<ceapd:UI_Description>Which table should be conesearched</ceapd:UI_Description>\n"+
+            /*
+            "<ceapd:DefaultValue>" + tables[0].getCatalogName() + 
+                     "." + tables[0].getName() + "</ceapd:DefaultValue>\n"+
+            */
+            "<ceapd:OptionList>\n";
+
+         for (int i = 0; i < tables.length; i++) {
+            String fullTable = tables[i].getCatalogName() + "." +
+               tables[i].getName();
+            coneParams = coneParams + "<ceapd:OptionVal>" +
+               fullTable + "</ceapd:OptionVal>\n";
+         }
+         coneParams = coneParams +
+            "</ceapd:OptionList>\n"+
+         "</cea:ParameterDefinition>\n"+
+         "<cea:ParameterDefinition name='RA' type='double'>\n"+
+            "<ceapd:UI_Name>RA</ceapd:UI_Name>\n"+
+            "<ceapd:UI_Description>Right-Ascension of cone</ceapd:UI_Description>\n"+
+            "<ceapd:UCD>POS_RA_MAIN</ceapd:UCD>\n"+
+            "<ceapd:Units>deg</ceapd:Units>\n"+
+         "</cea:ParameterDefinition>\n"+
+         "<cea:ParameterDefinition name='DEC' type='double'>\n"+
+            "<ceapd:UI_Name>DEC</ceapd:UI_Name>\n"+
+            "<ceapd:UI_Description>Declination of cone</ceapd:UI_Description>\n"+
+            "<ceapd:UCD>POS_DEC_MAIN</ceapd:UCD>\n"+
+            "<ceapd:Units>deg</ceapd:Units>\n"+
+         "</cea:ParameterDefinition>\n"+
+         "<cea:ParameterDefinition name='Radius' type='double'>\n"+
+            "<ceapd:UI_Name>Radius</ceapd:UI_Name>\n"+
+            "<ceapd:UI_Description>Radius of cone</ceapd:UI_Description>\n"+
+            "<ceapd:Units>deg</ceapd:Units>\n"+
+         "</cea:ParameterDefinition>\n";
+
+         coneInters = 
+         "<ceab:Interface name='cone'>\n"+
+            "<ceab:input>\n"+
+               "<ceab:pref maxoccurs='1' minoccurs='1' ref='CatTable'/>\n"+
+               "<ceab:pref maxoccurs='1' minoccurs='1' ref='RA'/>\n"+
+               "<ceab:pref maxoccurs='1' minoccurs='1' ref='DEC'/>\n"+
+               "<ceab:pref maxoccurs='1' minoccurs='1' ref='Radius'/>\n"+
+               "<ceab:pref maxoccurs='1' minoccurs='1' ref='Format'/>\n"+
+            "</ceab:input>\n"+
+            "<ceab:output>\n"+
+               "<ceab:pref maxoccurs='1' minoccurs='1' ref='Result'/>\n"+
+            "</ceab:output>\n"+
+         "</ceab:Interface>\n";
+      }
+
 
       String ceaApplication =
          makeVoResourceElement(
@@ -95,6 +158,8 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
                        "<ceapd:OptionVal>COMMA-SEPARATED</ceapd:OptionVal>\n"+
                   "</ceapd:OptionList>\n"+
                "</cea:ParameterDefinition>\n"+
+
+               coneParams +
                /*
                "<cea:ParameterDefinition name='Catalog' type='text'>\n"+
                   "<ceapd:UI_Name>Catalog</ceapd:UI_Name>\n"+
@@ -121,7 +186,7 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
                   "<ceapd:UI_Description>Radius of cone</ceapd:UI_Description>\n"+
                   "<ceapd:Units>deg</ceapd:Units>\n"+
                "</cea:ParameterDefinition>\n"+
-               */
+                  */
             "</cea:Parameters>\n"+
             
             "<cea:Interfaces>\n"+
@@ -134,6 +199,7 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
                      "<ceab:pref maxoccurs='1' minoccurs='1' ref='Result'/>\n"+
                   "</ceab:output>\n"+
                "</ceab:Interface>\n"+
+               coneInters +
                /*
                "<ceab:Interface name='cone'>\n"+
                   "<ceab:input>\n"+
