@@ -9,13 +9,7 @@
       <Description>RHESSI solar data at University of Glasgow</Description>
       <Table ID='rhessi'>
          <Name>rhessi</Name>
-         <Description>RHESSI first-look observing summary. Provides
-         count-rates pre-binned to coarse energy and time resolution,
-         and observing flags. This database was created by importing
-         information from the RHESSI observing summary files
-         (e.g. hsi_obssumm_20030224_040.fits) to allow immediate
-         visualisation of the summary data. For a detailed description
-         of observing summary data see: http://hesperia.gsfc.nasa.gov/ssw/hessi/doc/hessi_data_access.htm </Description>
+         <Description>RHESSI first-look observing summary. Provides count-rates pre-binned to coarse energy and time resolution, and observing flags. This database was created by importing information from the RHESSI observing summary files (e.g. hsi_obssumm_20030224_040.fits) to allow immediate visualisation of the summary data. For a detailed description of observing summary data see: http://hesperia.gsfc.nasa.gov/ssw/hessi/doc/hessi_data_access.htm </Description>
          <Column ID='rhessi.time_start' indexed='false'>
             <Name>time_start</Name>
             <Datatype>dateTime</Datatype>
