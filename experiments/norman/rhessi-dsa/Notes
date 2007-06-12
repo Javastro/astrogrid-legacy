@@ -1,25 +1,4 @@
 
-
-The database is (currently) on bern.astro, and the cron job runs on
-malmquist, which is local to the data.  There are two users of the
-database, 'norman', who has all access, and 'dsaaccess' who has
-read-only access from within 130.209.45.%.  The script has 'norman's
-MySQL password inside it, in clear.
-
-The scripts' home is /home/norman/rhessi-dsa, and this is currently
-parameterised in the upload script.  Adjust this?
-
-Accounts and machines:
-    mysql
-        On bern.astro
-        norman:sitrepdentist and dsaaccess:<no password>
-    tomcat
-        On terranova.astro.gla.ac.uk:8080
-        Locally, see /etc/tomcat5, and /usr/share/tomcat5
-        manager:dentist4Feets, and norman:norman has the dsaadmin role
-
-
-
 Things in this directory:
 
 Within scripts/
