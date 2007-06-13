@@ -63,7 +63,7 @@ public class MemoizingCommunityAccountSpaceResolver extends
 				return (Ivorn)o;
 			}
 		}
-		logger.debug("cahce miss " + arg0);
+		logger.debug("cache miss " + arg0);
 		// not got a memoized result - need to compute it.
 		try {
 			Ivorn result = super.resolve(arg0);

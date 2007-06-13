@@ -43,7 +43,7 @@ public class MemoizingEndpointResolver extends FileManagerEndpointResolverImpl
 				return (URL)o;
 			}
 		}
-		logger.debug("cahce miss " + arg0);
+		logger.debug("cache miss " + arg0);
 		// not got a memoized result - need to compute it.
 		try {
 			URL result = super.resolve(arg0);
