@@ -36,7 +36,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.basic.BasicTreeUI;
 import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeCellEditor;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -47,19 +49,23 @@ import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlString;
+import org.apache.xmlbeans.impl.values.XmlValueDisconnectedException ;
 import org.astrogrid.acr.astrogrid.TableBean;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Catalog;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
 import org.astrogrid.adql.v1_0.beans.SelectDocument;
+import org.astrogrid.adql.v1_0.beans.SelectType;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CommandExec;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CommandFactory;
+import org.astrogrid.desktop.modules.adqlEditor.commands.CommandInfo;
 import org.astrogrid.desktop.modules.adqlEditor.commands.EditEnumeratedAttributeCommand;
 import org.astrogrid.desktop.modules.adqlEditor.commands.EditEnumeratedElementCommand;
 import org.astrogrid.desktop.modules.adqlEditor.commands.EditSingletonTextCommand;
 import org.astrogrid.desktop.modules.adqlEditor.commands.EditTupleTextCommand;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CommandExec.Result;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
+import org.astrogrid.desktop.modules.adqlEditor.nodes.NestingNode;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.NodeFactory;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
@@ -75,8 +81,6 @@ public final class AdqlTree extends JTree
     private static final String EDIT_PROMPT_NAME = "Ctrl+Space" ;
     private static final String POPUP_PROMPT_NAME = "Ctrl+M/m" ;
     private static final char[] ALIAS_NAMES = "abcdefghijklmnopqrstuvwxyz".toCharArray();
-    
-    private boolean debug = false ;
     
     private Registry registry ;
     private URI toolIvorn ;
@@ -164,13 +168,13 @@ public final class AdqlTree extends JTree
                                     , boolean hasFocus) {
         if( value != null && value instanceof AdqlNode ) {
             
-            if( debug == true ) {
-                debug = false ;
-            }
-            
             String html = null ;
             try {
-                html = ((AdqlNode)value).toHtml( expanded, leaf, this ) ;
+                AdqlNode node = (AdqlNode)value ;
+                if( log.isDebugEnabled() && node.getParent() instanceof NestingNode ) {
+                    log.debug( "Index within parent: " + node.getParent().getIndex( node ) ) ;
+                }
+                html = node.toHtml( expanded, leaf, this ) ;
                 //
                 // The following code ensures we draw a tasteful border around any displays
                 // which are multi-lined. Dont like the way it is done, but hopefully this
@@ -185,21 +189,53 @@ public final class AdqlTree extends JTree
             }
             catch( Exception ex ) {
                 if( log.isDebugEnabled() ) {
-                    StringBuffer buffer = new StringBuffer() ;
-                    buffer
-                        .append( "convertValueToText(): ") 
-                        .append( "\nvalue: " + value.toString() ) 
-                        .append( "\nsel: " + sel ) 
-                        .append( "\nexpanded: " + expanded ) 
-                        .append( "\nleaf: " + leaf ) 
-                        .append( "\nrow: " + row ) 
-                        .append( "\nhasFocus: " + hasFocus ) ;                   
-                    log.debug( buffer, ex ) ;
+                   debugConvertValueToText( value, sel, expanded, leaf, row, hasFocus, ex ) ;
                 }               
-                value = "" ;
+                value = "ConvertValueToText error" ;
             }
         }
         return super.convertValueToText( value, sel, expanded, leaf, row, hasFocus ) ;
+    }
+    
+    private void debugConvertValueToText( Object value
+                                        , boolean sel
+                                        , boolean expanded
+                                        , boolean leaf
+                                        , int row
+                                        , boolean hasFocus
+                                        , Exception ex ) {
+        
+        StringBuffer buffer = new StringBuffer() ;
+        buffer
+          .append( "debugConvertValueToText(): ") 
+          .append( "\nsel: " + sel ) 
+          .append( "\nexpanded: " + expanded ) 
+          .append( "\nleaf: " + leaf ) 
+          .append( "\nrow: " + row ) 
+          .append( "\nhasFocus: " + hasFocus ) ;    
+                
+        AdqlNode node = (AdqlNode)value ;
+        String sValue = null ;
+        try {
+            sValue = node.toString() ;
+            buffer.append( "\nvalue: " + sValue ) ;
+        }
+        catch ( XmlValueDisconnectedException xvdex ) {
+            buffer.append( "\nXmlValueDisconnectedException thrown when " +
+                           "accessing the value for debug purposes..." ) ;
+            CommandFactory.EditStore editStore = this.commandFactory.getEditStore() ;
+            Integer token = editStore.get( node ) ;
+            if( token == null ) {
+                buffer.append( "\nToken for node not present in EditStore" ) ;
+            }
+            else {
+                buffer.append( "\nEditStore token for node: " + token ) ;
+            }
+            buffer.append( "Node type: " + node.getShortTypeName() ) ;
+        } 
+        buffer.append( "\nOriginal instigating exception was: " + ex.getClass() ) ;
+        buffer.append( "\nLocalized message: " + ex.getLocalizedMessage() ) ;
+        log.debug( buffer ) ;
     }
     
  
@@ -216,10 +252,9 @@ public final class AdqlTree extends JTree
         AdqlNode entry = null ;
         try {
             entry = getNodeFactory().newInstance( SelectDocument.Factory.parse( xmlFile ) ) ;
-        } catch (XmlException xmle) {
-            System.err.println(xmle.toString());
-        } catch (IOException ioe) {
-            System.err.println(ioe.toString());
+        }
+        catch( Exception ex ) {
+            log.warn( "AdqlTree incorrectly initialized.", ex ) ;
         }
         return entry ;
     }
@@ -229,10 +264,8 @@ public final class AdqlTree extends JTree
         AdqlNode entry = null ;
         try {
             entry = getNodeFactory().newInstance( SelectDocument.Factory.parse( xmlStream ) ) ;
-        } catch (XmlException xmle) {
-            System.err.println(xmle.toString());
-        } catch (IOException ioe) {
-            System.err.println(ioe.toString());
+        } catch( Exception ex ) {
+            log.warn( "AdqlTree incorrectly initialized.", ex ) ;
         }
         return entry ;
     }
@@ -243,8 +276,8 @@ public final class AdqlTree extends JTree
         AdqlNode entry = null ;
         try {
             entry = getNodeFactory().newInstance( SelectDocument.Factory.parse( xmlString ) ) ;
-        } catch (XmlException xmle) {
-            System.err.println(xmle.toString());
+        } catch( Exception ex ) {
+            log.warn( "AdqlTree incorrectly initialized.", ex ) ;
         }
         return entry ;
     }
@@ -254,8 +287,8 @@ public final class AdqlTree extends JTree
         AdqlNode entry = null ;
         try {
             entry = getNodeFactory().newInstance( SelectDocument.Factory.parse( xmlNode ) ) ;
-        } catch (XmlException xmle) {
-            System.err.println(xmle.toString());
+        } catch( Exception ex ) {
+            log.warn( "AdqlTree incorrectly initialized.", ex ) ;
         }
         return entry ;
     }
@@ -266,7 +299,6 @@ public final class AdqlTree extends JTree
      * 
      */
     private void initialize( AdqlNode rootEntry, Registry registry, URI toolIvorn ) {
-   
         this.commandFactory = new CommandFactory( this ) ;
         getSelectionModel().setSelectionMode( TreeSelectionModel.SINGLE_TREE_SELECTION ) ;
         this.registry = registry ;
@@ -291,7 +323,7 @@ public final class AdqlTree extends JTree
         	.put( KeyStroke.getKeyStroke( KeyEvent.VK_SPACE, InputEvent.CTRL_MASK ), EDIT_PROMPT_NAME ) ; 
         this.getInputMap( JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT )
     		.put( KeyStroke.getKeyStroke( KeyEvent.VK_SPACE, InputEvent.CTRL_MASK ), EDIT_PROMPT_NAME ) ;
-  
+      
     }
     
     private synchronized void resetCatalogueData() {
@@ -760,7 +792,6 @@ public final class AdqlTree extends JTree
             currentEditor.cancelCellEditing() ;
         }
         public Object getCellEditorValue() {
-            debug = true ;
             return currentEditor.getCellEditorValue() ; 
         }
         public boolean isCellEditable( EventObject anEvent ) {
@@ -1263,6 +1294,50 @@ public final class AdqlTree extends JTree
         }
     }
     
+    protected void ensureSomeNodeSelected( CommandInfo ci ) {
+      
+        if( this.isSelectionEmpty() ) {
+            
+            TreeNode[] nodes = null ;
+
+            for( int i=0; i<3; i++ ) {
+                try {
+                    switch(i) {
+                    case 0: // First try the last child node in an edit 
+                        nodes = ci.getChildEntry().getPath() ;
+                        break;
+                    case 1: // If that fails, try the parent node
+                        nodes = ci.getParentEntry().getPath();
+                        break;
+                    default: // And if that fails, try the top select node
+                        AdqlNode root = (AdqlNode)this.getModel().getRoot() ;
+                        Object[] childArray = root.getChildren() ;
+                        for( int j=0; i<childArray.length; i++ ) {
+                            XmlObject xo = ((AdqlNode)childArray[j]).getXmlObject() ;
+                            if( xo.schemaType() == SelectType.type ) {
+                                nodes = ((AdqlNode)childArray[j]).getPath() ;
+                                break ;
+                            }
+                        } // end  inner for
+                    } // end switch
+                    if( nodes != null ) {
+                        this.setSelectionPath( new TreePath( nodes ) ) ;
+                        if( this.isSelectionEmpty() == false ) {
+                            break ;
+                        }
+                        else {
+                            nodes = null ;
+                        }
+                    }
+                }
+                catch( Exception ex ) {
+                    ; // do nothing
+                }
+            } // end outer for
+          
+        } // end if
+
+    } // end of ensureSomeNodeSelected()
     
 } // end of class AdqlTree
 

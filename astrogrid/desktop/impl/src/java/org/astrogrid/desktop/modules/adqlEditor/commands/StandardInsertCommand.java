@@ -78,7 +78,10 @@ public class StandardInsertCommand extends AbstractCommand {
         }
         catch( Exception exception ) {
             result = CommandExec.FAILED ;
-            log.debug( "StandardInsertCommand._execute():", exception ) ;
+            log.debug( "StandardInsertCommand._execute() failed.", exception ) ;
+            if( log.isDebugEnabled() ) {
+                log.debug(  this.toString() ) ;
+            }
         }
         finally {
             if( TRACE_ENABLED ) log.debug( "StandardInsertCommand._execute() exit" ) ;
@@ -94,7 +97,10 @@ public class StandardInsertCommand extends AbstractCommand {
         }
         catch( Exception exception ) {
             result = CommandExec.FAILED ;
-            log.debug( exception ) ;
+            log.debug( "StandardInsertCommand._unexecute() failed.", exception ) ;
+            if( log.isDebugEnabled() ) {
+                log.debug(  this.toString() ) ;
+            }
         }
         finally {
             if( TRACE_ENABLED ) log.debug( "StandardInsertCommand._unexecute() exit" ) ;
@@ -123,6 +129,26 @@ public class StandardInsertCommand extends AbstractCommand {
      
     public String getPresentationName() {
         return "Insert into" ;
+    }
+    
+    public String toString() {
+        StringBuffer buffer = new StringBuffer( 512 ) ;
+        buffer.append( "\nStandardInsertCommand" ) ;
+        buffer.append( super.toString() ) ;
+        if( sourceObject == null ) {
+            buffer.append( "\nsourceObject: null" ) ;
+        }
+        else {
+            try {
+                buffer.append( "\nsourceObject: \n" ).append( sourceObject.toString() ) ;
+            }
+            catch( Throwable th ) {
+                buffer
+                    .append( "\nsourceObject toString() produced exception: " )
+                    .append(  th.getClass() ) ;
+            }
+        }
+        return buffer.toString() ; 
     }
    
 }

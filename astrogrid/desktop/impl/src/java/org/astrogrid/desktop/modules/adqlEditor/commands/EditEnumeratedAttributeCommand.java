@@ -32,8 +32,6 @@ import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 public class EditEnumeratedAttributeCommand extends AbstractCommand {
     
     private static final Log log = LogFactory.getLog( EditEnumeratedAttributeCommand.class ) ;
-    private static final boolean DEBUG_ENABLED = true ;
-    private static final boolean TRACE_ENABLED = true ;
     private String oldValue ;
     private String newValue ;
     private String attrName ;
@@ -83,6 +81,10 @@ public class EditEnumeratedAttributeCommand extends AbstractCommand {
         }
         catch( Exception exception ) {
             result = CommandExec.FAILED ;
+            log.error( "EditEnumeratedAttributeCommand._execute() failed: ", exception ) ;
+            if( log.isDebugEnabled() ) {
+                log.debug(  this.toString() ) ;
+            }
         }
         return result ;
     }
@@ -130,4 +132,21 @@ public class EditEnumeratedAttributeCommand extends AbstractCommand {
         return newValue;
     }
    
+    public String toString() {
+        StringBuffer buffer = new StringBuffer(512) ;
+        buffer.append( "\nEditEnumeratedAttributeCommand" ) ;
+        buffer.append( super.toString() ) ;
+        buffer.append( "\nattrName: " ).append( attrName ) ;
+            
+        if( attrSchemaType == null ) {
+            buffer.append( "\nattrSchemaType: null" ) ;
+        }
+        else {
+            buffer.append( "\nattrSchemaType: " ).append( attrSchemaType.getName().getLocalPart() ) ;
+        }
+        buffer
+             .append( "\nnewValue: " ).append( newValue )
+             .append( "\noldValue: " ).append( oldValue ) ;
+        return buffer.toString() ;
+    }
 }

@@ -72,6 +72,9 @@ public class CutCommand extends AbstractCommand {
         catch( Exception exception ) {
             result = CommandExec.FAILED ;
             log.debug( "CutCommand execution failed,", exception ) ;
+            if( log.isDebugEnabled() ) {
+                log.debug(  this.toString() ) ;
+            }
         }
         finally {
             if( log.isTraceEnabled() ) log.trace( "_execute() exit" ) ;
@@ -98,6 +101,9 @@ public class CutCommand extends AbstractCommand {
         catch( Exception exception ) {
             result = CommandExec.FAILED ;
             log.debug( "CutCommand _unexecute() failed.", exception ) ;
+            if( log.isDebugEnabled() ) {
+                log.debug(  this.toString() ) ;
+            }
         }
         finally {
             if( log.isTraceEnabled() ) log.trace( "_unexecute() exit " ) ;
@@ -129,4 +135,17 @@ public class CutCommand extends AbstractCommand {
         return "Cut" ;
     }
    
+    public String toString() {
+        StringBuffer buffer = new StringBuffer( 512 ) ;
+        buffer.append( "\nCutCommand" ) ;
+        buffer.append( super.toString() ) ;
+        buffer.append( "\narrayIndex: " ).append( arrayIndex ) ;
+        if( preserved == null ) {
+            buffer.append( "\npreserved: null" ) ;
+        }
+        else {
+            buffer.append( "\npreserved: " ).append( preserved.toString() ) ;
+        }
+        return buffer.toString() ; 
+    }
 }

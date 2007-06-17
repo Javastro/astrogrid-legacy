@@ -14,14 +14,18 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.Collections;
+import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.SchemaProperty;
 import org.apache.xmlbeans.SchemaType;
 import org.astrogrid.adql.AdqlStoX;
+import org.astrogrid.adql.AdqlCompiler ;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlData;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
@@ -40,7 +44,8 @@ public class CommandFactory {
     private AdqlTree adqlTree ;
     private UndoManager undoManager ;
     private EditStore editStore ;
-    private AdqlStoX adqlCompiler ;
+    //private AdqlStoX adqlCompiler ;
+    private AdqlCompiler adqlCompiler ;
 
     /**
      * 
@@ -156,12 +161,12 @@ public class CommandFactory {
     }
     
     public EditCommand newEditCommand( AdqlTree adqlTree, AdqlNode target, String source ) {
-        source = source.trim() ;
-        if( source.length() == 0 || source.charAt( source.length()-1 ) != ';' ) {
-            source += ';' ;
-        }
+//        source = source.trim() ;
+//        if( source.length() == 0 || source.charAt( source.length()-1 ) != ';' ) {
+//            source += ';' ;
+//        }
         if( adqlCompiler == null ) {
-            adqlCompiler = new AdqlStoX( new StringReader( source ) ) ;
+            adqlCompiler = new AdqlCompiler( new StringReader( source ) ) ;
         }
         else {
             adqlCompiler.ReInit( new StringReader( source ) ) ;
@@ -272,6 +277,27 @@ public class CommandFactory {
             return killed ;
         }
         
+        protected void logPrintOfUndoableEdits( AbstractCommand command ) {
+            StringBuffer buffer = new StringBuffer( 512 ) ;
+            buffer.append( "Log Print of Undoable Edits follows..." ) ;
+            Enumeration en = this.edits.elements() ;
+            AbstractCommand ac = null ;
+            int i = 0 ;
+            while( en.hasMoreElements() ) {
+                ac = (AbstractCommand)en.nextElement() ;
+                if( command != null ) {
+                    if( ac == command ) {
+                        buffer.append( "Relevant command follows..." ) ;
+                    }
+                }
+                buffer.append( "Edit at index " + i ) ;
+                buffer.append( ac.toString() ) ;
+                i++ ;
+            }
+            
+            editStore.logPrintOfEditStore() ;
+        }
+        
     } // end of class UndoManager
     
     public class EditStore {
@@ -280,8 +306,8 @@ public class CommandFactory {
 //        private Hashtable tokenToEntryStore = new Hashtable( 64 ) ;
 //        private Hashtable entryToTokenStore = new Hashtable( 64 ) ;
         
-        private HashMap tokenToEntryStore = new HashMap( 64 ) ;
-        private HashMap entryToTokenStore = new HashMap( 64 ) ;
+        private LinkedHashMap tokenToEntryStore = new LinkedHashMap( 64 ) ;
+        private LinkedHashMap entryToTokenStore = new LinkedHashMap( 64 ) ;
         
         private Integer newToken() {
             Integer token ;
@@ -332,6 +358,9 @@ public class CommandFactory {
                 tokenToEntryStore.remove( token ) ;
                 tokenToEntryStore.put( token, in ) ;
             }
+            else {
+                log.warn( "token not found in EditStore: " + token ) ;
+            }
             if( log.isDebugEnabled() ) log.debug("EditStore.exchange(Integer,AdqlNode):\n" +
                                           "   tokenToEntryStore.size(): " + tokenToEntryStore.size() +
                                           "   entryToTokenStore.size(): " + entryToTokenStore.size() ) ;
@@ -343,6 +372,22 @@ public class CommandFactory {
         
         public Integer get( AdqlNode node ) {
             return (Integer)entryToTokenStore.get( node ) ;
+        }
+        
+        protected void logPrintOfEditStore() {
+            StringBuffer buffer = new StringBuffer( 512 ) ;
+            buffer.append( "\ntokenToEntryStore:" ) ;
+            buffer.append( "\nsize: " ).append( tokenToEntryStore.size() ) ;
+            Iterator it = tokenToEntryStore.keySet().iterator() ;
+            while( it.hasNext() ) {
+                Integer token = (Integer)it.next() ;
+                buffer
+                    .append( "\ntoken: [" )
+                    .append( token )
+                    .append( "]  Adql did: [")
+                    .append( ((AdqlNode)tokenToEntryStore.get( token )).getDid() )
+                    .append( "]" ) ;
+            }
         }
         
     } // end of class EditStore 

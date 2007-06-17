@@ -17,6 +17,9 @@ import javax.swing.undo.UndoManager;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * @author jl99
  *
@@ -24,6 +27,8 @@ import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class PasteOverCommand extends AbstractCommand {
+    
+    private static final Log log = LogFactory.getLog( PasteOverCommand.class ) ;
     
     private CopyHolder source ;
     private CopyHolder previous ;
@@ -58,6 +63,10 @@ public class PasteOverCommand extends AbstractCommand {
         }
         catch( Exception exception ) {
             result = CommandExec.FAILED ;
+            log.error( "PasteOverCommand()._execute(): ", exception ) ;
+            if( log.isDebugEnabled() ) {
+                log.debug(  this.toString() ) ;
+            }
         }
         return result ;
     }
@@ -83,6 +92,26 @@ public class PasteOverCommand extends AbstractCommand {
      
     public String getPresentationName() {
         return "Paste over" ;
+    }
+    
+    public String toString() {
+        StringBuffer buffer = new StringBuffer( 512 ) ;
+        buffer.append( "\nPasteOverCommand" ) ;
+        buffer.append( super.toString() ) ;
+        if( previous == null ) {
+            buffer.append( "\nprevious: null" ) ;
+        }
+        else {
+            buffer.append( "\nprevious: " ).append( previous.toString() ) ;
+        }
+        if( source == null ) {
+            buffer.append( "\nsource: null" ) ;
+        }
+        else {
+            buffer.append( "\nsource: " ).append( source.toString() ) ;
+        }
+        
+        return buffer.toString() ; 
     }
    
 }

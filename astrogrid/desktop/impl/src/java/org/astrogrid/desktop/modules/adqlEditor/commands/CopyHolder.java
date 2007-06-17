@@ -1,4 +1,4 @@
-/*$Id: CopyHolder.java,v 1.3 2007/04/18 15:47:09 nw Exp $
+/*$Id: CopyHolder.java,v 1.4 2007/06/17 17:03:16 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -86,10 +86,17 @@ public class CopyHolder {
     private CopyHolder( AdqlNode target, boolean forEditPurposes ) {       
         this.source = target.getXmlObject().copy() ;
         this.forEditPurposes = forEditPurposes ;
-        tallyOpenBranches( new Position( "0", 0 ), target, target ) ;
+        if( forEditPurposes ) {
+            tallyOpenBranches( new Position( "0", 0 ), (AdqlNode)target.getParent(), (AdqlNode)target.getParent() ) ;
+        }
+        else {
+            tallyOpenBranches( new Position( "0", 0 ), target, target ) ;
+        }       
     }
     
     private void tallyOpenBranches( Position position, AdqlNode ancestor, AdqlNode target ) {
+        if( target == null )
+            return ;
         if( target.isExpanded() ) {
             position.setRelativeContextPath( target.getRelativeElementContextPath( ancestor ) ) ;
             put( position ) ;
@@ -158,6 +165,8 @@ public class CopyHolder {
     private void openBranches( Position position
                              , AdqlNode ancestor
                              , AdqlNode target ) {
+        if( target == null )
+            return ;
         String contextPath = target.getRelativeElementContextPath( ancestor ) ;
         position.setRelativeContextPath( contextPath ) ;
         if( this.isOpen(position) ) {
@@ -174,12 +183,43 @@ public class CopyHolder {
         }
     }
     
-
+    public String toString() {
+        StringBuffer buffer = new StringBuffer() ;
+        buffer.append( "\nCopyHolder" ) ;
+        buffer.append( "\nforEditPurposes: " ).append( forEditPurposes ) ;
+        if( source == null ) {
+            buffer.append( "\nsource: null" ) ;
+        }
+        else {
+            try {
+                buffer.append( "\nsource: \n" ).append( source.toString() ) ;
+            }
+            catch( Throwable th ) {
+                buffer
+                    .append( "\nsource toString() produced exception: " )
+                    .append(  th.getClass() ) ;
+            }
+        }
+        return buffer.toString() ;
+    }
 
 }
 
 /*
 $Log: CopyHolder.java,v $
+Revision 1.4  2007/06/17 17:03:16  jl99
+Merge of branch workbench-jl-2152b.
+First Query Builder bug fix after VOExplorer development.
+
+Revision 1.3.2.3  2007/06/15 17:04:46  jl99
+More logging for commands
+
+Revision 1.3.2.2  2007/06/13 16:09:47  jl99
+Some failsafe checks on edits where the child node can be removed and selection lost
+
+Revision 1.3.2.1  2007/06/13 11:20:43  jl99
+Refinement to preserving open branches after an edit.
+
 Revision 1.3  2007/04/18 15:47:09  nw
 tidied up voexplorer, removed front pane.
 

@@ -32,10 +32,8 @@ import org.astrogrid.desktop.modules.adqlEditor.nodes.NestingNode;
 
 
 /**
- * @author jl99
+ * @author Jeff Lusted jl99@star.le.ac.uk
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public abstract class AbstractCommand extends AbstractUndoableEdit implements CommandExec, CommandInfo {
 
@@ -53,8 +51,11 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
     protected int maxOccurs ;
     
     private String[] messages ;
+    private boolean initializedStatusGood = false ;
+    
+    
     /**
-     * @param undoManager TODO
+     * @param undoManager 
      * 
      */
     public AbstractCommand(  AdqlTree adqlTree, UndoManager undoManager, AdqlNode child ) {
@@ -113,7 +114,8 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
                 minOccurs = childElement.getMinOccurs().intValue() ;
                 BigInteger biMaxOccurs = childElement.getMaxOccurs() ;
                 maxOccurs = ( biMaxOccurs == null ? -1 : biMaxOccurs.intValue() ) ;
-            }          
+            } 
+            initializedStatusGood = true ;
         }
         catch( Exception ex ) {
             log.debug( "Failure to initialize element information.", ex );
@@ -180,17 +182,36 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
         return childType ;
     }
     
+//    public int getChildIndex() {          
+//        Enumeration e = getParentEntry().children() ;
+//        AdqlNode child = getChildEntry() ;
+//        int index = 0 ;
+//        while( e.hasMoreElements() ) {
+//            Object o = e.nextElement() ;
+//            if( o == child ) {
+//                return index ;
+//            }
+//        }
+//        return -1 ;
+//    }
+    
     public int getChildIndex() {          
         Enumeration e = getParentEntry().children() ;
         AdqlNode child = getChildEntry() ;
-        int index = 0 ;
+        int retIndex = -1 ;
+        int index = -1 ;
         while( e.hasMoreElements() ) {
             Object o = e.nextElement() ;
+            index++ ;
             if( o == child ) {
-                return index ;
+                retIndex = index ;
             }
         }
-        return -1 ;
+        if( log.isDebugEnabled() ) {
+            int i = getParentEntry().getIndex( getChildEntry() ) ;
+            log.debug( "getChildIndex(): " + retIndex + "and getIndex(childNode): " + i ) ;
+        }
+        return retIndex ;
     }
     
     public boolean isChildEnabled() {
@@ -366,5 +387,38 @@ public abstract class AbstractCommand extends AbstractUndoableEdit implements Co
     }
     public Integer getParentToken() {
         return parentToken;
+    }
+
+    public boolean isInitializedStatusGood() {
+        return initializedStatusGood;
+    }
+       
+    public String toString() {
+        StringBuffer buffer = new StringBuffer(512) ;
+        buffer
+            .append( "\nAbstractCommand part"  )
+            .append( "\ninitializedStatusGood: " ).append( initializedStatusGood )
+            .append( "\nparentToken: " ).append( parentToken ) 
+            .append( "\nchildToken: " ).append( childToken ) ;
+        if( childElement == null ) {
+            buffer.append( "\nchildElement: null" ) ;
+        }
+        else {
+            buffer.append( "\nchildElement: " ).append( childElement.getJavaPropertyName() ) ;
+        }
+        buffer
+             .append( "\nchildType: " ).append( childType.getName().getLocalPart() )
+             .append( "\nminOccurs: " ).append( minOccurs )
+             .append( "\nmaxOccurs: " ).append( maxOccurs ) ;
+        if( messages == null ) {
+            buffer.append( "\nmessages: null" ) ;
+        }
+        else {
+            buffer.append( "\nmessages: ");
+            for( int i=0; i<messages.length; i++ ) {
+                buffer.append(i).append( ' ' ).append( messages[i] ) ;
+            }
+        }       
+        return buffer.toString() ;
     }
 }

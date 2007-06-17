@@ -31,15 +31,34 @@ import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CommandInfo;
 
 /**
- * @author jl99
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
+ * Flattens a node branch that might otherwise be deeply nested.
+ * Only two contexts relevant at the moment: AND and OR
+ * Visually, a series of AND's is then shown as an array of siblings
+ * 
+ *      a
+ *      |
+ *      b
+ * AND--|
+ *      c
+ *      |
+ *      d
+ * 
+ * rather than as a logical hierarchy...
+ * 
+ *      a
+ *      |
+ * AND--|   b
+ *      |   |
+ *     AND--|   c
+ *          |   |
+ *         AND--|
+ *              |
+ *              d
+ *              
+ * @author Jeff Lusted jl99@star.le.ac.uk
  */
 public class NestingNode extends AdqlNode {
     
-    private static final boolean DEBUG_ENABLED = true ;
-    private static final boolean TRACE_ENABLED = true ;
     private static final Log log = LogFactory.getLog( NestingNode.class ) ;
     
     public static final Hashtable CHILDREN_NESTING ; 
@@ -240,13 +259,11 @@ public class NestingNode extends AdqlNode {
         
         nCursor.dispose() ;
         
-        if( DEBUG_ENABLED ) {
-            log.debug( "NestingNode.remove()..." ) ;
-            log.debug( "Pretty print: " ) ;
+        if( log.isDebugEnabled() ) {
             XmlOptions opts = new XmlOptions();
             opts.setSavePrettyPrint();
             opts.setSavePrettyPrintIndent(4);
-            log.debug( getXmlObject().toString() ) ;
+            log.debug( "NestingNode.remove()...\n" + getXmlObject().toString() ) ;
         }       
         
         // Free all moved nodes...
@@ -455,13 +472,14 @@ public class NestingNode extends AdqlNode {
             node = (AdqlNode)e.nextElement() ;
             if( node == targetNode ) {
                 found = true ;
+                nodeList.add( node ) ; // JL: experiment
             }
             else if( found ) {
                 nodeList.add( node ) ;
             }
         }
         children.removeAll( nodeList ) ;
-        children.remove( targetNode ) ;
+        //children.remove( targetNode ) ;
         
         // Then rebuild the moved nodes...
         rebuildMovedNodesAfterInsert( ci, newObject, nodeList ) ;

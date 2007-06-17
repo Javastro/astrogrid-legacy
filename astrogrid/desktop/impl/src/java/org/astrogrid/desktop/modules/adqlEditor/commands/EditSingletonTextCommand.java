@@ -33,8 +33,6 @@ import org.astrogrid.desktop.modules.adqlEditor.nodes.AtomNode;
 public class EditSingletonTextCommand extends AbstractCommand {
     
     private static final Log log = LogFactory.getLog( EditSingletonTextCommand.class ) ;
-    private static final boolean DEBUG_ENABLED = true ;
-    private static final boolean TRACE_ENABLED = true ;
     private String oldValue ;
     private String newValue ;
 
@@ -126,6 +124,10 @@ public class EditSingletonTextCommand extends AbstractCommand {
         }
         catch( Exception exception ) {
             result = CommandExec.FAILED ;
+            log.debug( "EditSingletonTextCommand._unexecute() failed.", exception ) ;
+            if( log.isDebugEnabled() ) {
+                log.debug(  this.toString() ) ;
+            }
         }
         return result ;    
     }
@@ -171,6 +173,16 @@ public class EditSingletonTextCommand extends AbstractCommand {
      */
     public String getNewValue() {
         return newValue;
+    }
+    
+    public String toString() {
+        StringBuffer buffer = new StringBuffer(512) ;
+        buffer.append( "\nEditSingletonTextCommand" ) ;
+        buffer.append( super.toString() ) ;
+        buffer
+             .append( "\nnewValue: " ).append( newValue )
+             .append( "\noldValue: " ).append( oldValue ) ;
+        return buffer.toString() ;
     }
    
 }

@@ -1,4 +1,4 @@
-/*$Id: AbstractRmiServerImpl.java,v 1.6 2007/01/29 11:11:36 nw Exp $
+/*$Id: AbstractRmiServerImpl.java,v 1.7 2007/06/17 17:03:17 jl99 Exp $
  * Created on 27-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,21 +37,21 @@ public abstract class AbstractRmiServerImpl implements RmiServer{
     
     
     public AbstractRmiServerImpl() throws UnknownHostException {
-    	inetAddress = InetAddress.getLocalHost();
+    	inetAddress = InetAddress.getLocalHost();  
     }
     
     
     /** actually start the service up 
      * @throws Exception */
-    public void init() throws Exception{
+    public void init() throws Exception {
         if (port < 1) { // not been set
             port = findSparePort(scanStartPort,scanEndPort,inetAddress);
-        }else {
+        } else {
             if (!checkPort(port,inetAddress)) {
                 throw new Exception("Cannot connect on specified port " + port);
             }
         }
-        logger.info("Rmi Server will listen on port " + port);  
+        logger.info("Rmi Server will listen on port " + port + " on address " + inetAddress.toString() );  
         if (! disableConnectionFile) {
         	recordDetails();
         }
@@ -69,7 +69,7 @@ public abstract class AbstractRmiServerImpl implements RmiServer{
     private int scanEndPort = SCAN_END_PORT_DEFAULT;
     private boolean disableConnectionFile = false;
 
-    static int findSparePort(int scanStartPort,int scanEndPort, InetAddress addr) throws Exception {
+    static int findSparePort(int scanStartPort,int scanEndPort, InetAddress addr) throws Exception { 
         if (scanEndPort < scanStartPort) {
             throw new Exception("scanEndPort (" + scanEndPort + ") is smaller than scanStartPort (" + scanStartPort + ")");
         }
@@ -79,16 +79,21 @@ public abstract class AbstractRmiServerImpl implements RmiServer{
                 return i;
             }            
         } 
-            throw new Exception("Could not find a free port between" + scanStartPort + " and " + scanEndPort);        
+        // JL Note. Added address to exception.
+        // It is possible to be looking at the wrong address!
+        throw new Exception( "Could not find a free port between " 
+                           + scanStartPort + " and " + scanEndPort
+                           + " for address " + addr.toString() ) ;        
     }
   
     /** will return true if this port can be connected to */
     static boolean checkPort(int i,InetAddress addr) {
         ServerSocket ss = null;
         try {
-            ss = new ServerSocket(i,50,addr);            
+            ss = new ServerSocket(i,50,addr);  
             return true;
-        } catch (IOException e) {    // oh well, that port is already taken. try another.
+        } catch (IOException e) { 
+            // oh well, that port is already taken. try another.
         } finally {
             if (ss != null) {
                 try {
@@ -160,6 +165,16 @@ public abstract class AbstractRmiServerImpl implements RmiServer{
 
 /* 
 $Log: AbstractRmiServerImpl.java,v $
+Revision 1.7  2007/06/17 17:03:17  jl99
+Merge of branch workbench-jl-2152b.
+First Query Builder bug fix after VOExplorer development.
+
+Revision 1.6.6.2  2007/06/08 18:09:13  jl99
+Further addition to logging the address on INFO level
+
+Revision 1.6.6.1  2007/06/05 07:53:20  jl99
+Enhanced exception thrown by findSparePort() to report address as well as start and end port.
+
 Revision 1.6  2007/01/29 11:11:36  nw
 updated contact details.
 

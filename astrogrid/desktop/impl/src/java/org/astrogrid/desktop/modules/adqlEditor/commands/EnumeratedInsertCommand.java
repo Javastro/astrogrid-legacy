@@ -20,6 +20,9 @@ import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlUtils;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * @author jl99@star.le.ac.uk
  *
@@ -27,6 +30,8 @@ import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class EnumeratedInsertCommand extends StandardInsertCommand {
+    
+    private static final Log log = LogFactory.getLog( EnumeratedInsertCommand.class ) ;
     
     private SchemaType attrType ;
     private String attrName ;
@@ -87,6 +92,7 @@ public class EnumeratedInsertCommand extends StandardInsertCommand {
             }
             catch( Exception exception ) {
                 result = CommandExec.FAILED ;
+                log.debug( "EnumeratedInsertCommand._execute() failed.", exception ) ;
             }
         }       
         return result ;
@@ -95,6 +101,21 @@ public class EnumeratedInsertCommand extends StandardInsertCommand {
     protected Result _unexecute() {
         Result result = super._unexecute() ;
         return result ;
+    }
+    
+    public String toString() {
+        StringBuffer buffer = new StringBuffer(512) ;
+        buffer.append( "\nEnumeratedInsertCommand" ) ;
+        buffer.append( super.toString() ) ;
+        buffer.append( "\nattrName: " ).append( attrName ) ;
+        buffer.append( "\nattrValue: " ).append( attrValue ) ;   
+        if( attrType == null ) {
+            buffer.append( "\nattrType: null" ) ;
+        }
+        else {
+            buffer.append( "\nattrType: " ).append( attrType.getName().getLocalPart() ) ;
+        }
+        return buffer.toString() ;
     }
            
 }

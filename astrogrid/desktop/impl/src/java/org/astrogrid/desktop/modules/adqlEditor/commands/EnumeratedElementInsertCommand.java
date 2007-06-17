@@ -31,8 +31,6 @@ import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 public class EnumeratedElementInsertCommand extends StandardInsertCommand {
    
     private static final Log log = LogFactory.getLog( EnumeratedElementInsertCommand.class ) ;
-    private static final boolean DEBUG_ENABLED = true ;
-    private static final boolean TRACE_ENABLED = true ;
     
     private String value ;
     
@@ -105,6 +103,7 @@ public class EnumeratedElementInsertCommand extends StandardInsertCommand {
             }
             catch( Exception exception ) {
                 result = CommandExec.FAILED ;
+                log.debug( "EnumeratedElementInsertCommand._execute() failed.", exception ) ;
             }
         }       
         return result ;
@@ -114,5 +113,12 @@ public class EnumeratedElementInsertCommand extends StandardInsertCommand {
         Result result = super._unexecute() ;
         return result ;
     }
-           
+        
+    public String toString() {
+        StringBuffer buffer = new StringBuffer(512) ;
+        buffer.append( "\nEnumeratedElementInsertCommand" ) ;
+        buffer.append( super.toString() ) ;
+        buffer.append( "\nvalue: " ).append( value ) ;
+        return buffer.toString() ;
+    }
 }

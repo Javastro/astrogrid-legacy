@@ -18,13 +18,16 @@ import org.apache.xmlbeans.SchemaType;
 import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * @author jl99@star.le.ac.uk
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class PasteIntoCommand extends AbstractCommand {
+    
+    private static final Log log = LogFactory.getLog( PasteIntoCommand.class ) ;
     
     private CopyHolder source ;
     
@@ -63,6 +66,10 @@ public class PasteIntoCommand extends AbstractCommand {
         }
         catch( Exception exception ) {
             result = CommandExec.FAILED ;
+            log.error( "PasteInToCommand()._execute(): ", exception ) ;
+            if( log.isDebugEnabled() ) {
+                log.debug(  this.toString() ) ;
+            }
         }
         return result ;
     }
@@ -75,6 +82,10 @@ public class PasteIntoCommand extends AbstractCommand {
         }
         catch( Exception exception ) {
             result = CommandExec.FAILED ;
+            log.error( "PasteInToCommand()._unexecute(): ", exception ) ;
+            if( log.isDebugEnabled() ) {
+                log.debug(  this.toString() ) ;
+            }
         }
         return result ;
     }
@@ -100,6 +111,19 @@ public class PasteIntoCommand extends AbstractCommand {
      
     public String getPresentationName() {
         return "Paste into" ;
+    }
+    
+    public String toString() {
+        StringBuffer buffer = new StringBuffer( 512 ) ;
+        buffer.append( "\nPasteIntoCommand" ) ;
+        buffer.append( super.toString() ) ;
+        if( source == null ) {
+            buffer.append( "\nsource: null" ) ;
+        }
+        else {
+            buffer.append( "\nsource: " ).append( source.toString() ) ;
+        }
+        return buffer.toString() ; 
     }
    
 }

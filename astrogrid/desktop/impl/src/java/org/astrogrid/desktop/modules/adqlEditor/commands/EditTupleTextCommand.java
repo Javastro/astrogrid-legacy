@@ -40,8 +40,6 @@ import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 public class EditTupleTextCommand extends AbstractCommand {
     
     private static final Log log = LogFactory.getLog( EditTupleTextCommand.class ) ;
-    private static final boolean DEBUG_ENABLED = true ;
-    private static final boolean TRACE_ENABLED = true ;
     private HashMap fromTables ;
     private String[] oldValues ;
     private String[] newValues ;
@@ -186,7 +184,10 @@ private class UpdateControls {
         }
         catch( Exception exception ) {
             result = CommandExec.FAILED ;
-            exception.printStackTrace() ;
+            log.debug( "EditTupleTextCommand._execute() failed.", exception ) ;
+            if( log.isDebugEnabled() ) {
+                log.debug(  this.toString() ) ;
+            }
         }
         finally {
             resetTypeList() ;
@@ -246,7 +247,10 @@ private class UpdateControls {
             }           
         }
         catch( Exception ex ) {
-            log.error( ex ) ;
+            log.debug( "EditTupleTextCommand.redo() failed.", ex ) ;
+            if( log.isDebugEnabled() ) {
+                log.debug(  this.toString() ) ;
+            }
             throw new CannotRedoException() ;
         }
     }
@@ -286,7 +290,10 @@ private class UpdateControls {
             }            
         }
         catch( Exception ex ) {
-            log.error( ex ) ;
+            log.debug( "EditTupleTextCommand.undo() failed.", ex ) ;
+            if( log.isDebugEnabled() ) {
+                log.debug(  this.toString() ) ;
+            }
             throw new CannotUndoException() ;
         }
     }
@@ -559,6 +566,31 @@ private class UpdateControls {
             typeList.clear() ;
             typeList = null ;
         }
+    }
+    
+    public String toString() {
+        StringBuffer buffer = new StringBuffer(512) ;
+        buffer.append( "\nEditTupleTextCommand" ) ;
+        buffer.append( super.toString() ) ;
+        if( newValues == null ) {
+            buffer.append( "\nnewValues: null" ) ;
+        }
+        else {
+            buffer.append( "\nnewValues:" ) ;
+            for( int i=0; i<newValues.length; i++ ) {
+                buffer.append('\n').append( i ).append( ": " ).append( newValues[i] ) ;
+            }
+        }
+        if( oldValues == null ) {
+            buffer.append( "\noldValues: null" ) ;
+        }
+        else {
+            buffer.append( "\noldValues:" ) ;
+            for( int i=0; i<oldValues.length; i++ ) {
+                buffer.append('\n').append( i ).append( ": " ).append( oldValues[i] ) ;
+            }
+        }
+        return buffer.toString() ;
     }
    
 }

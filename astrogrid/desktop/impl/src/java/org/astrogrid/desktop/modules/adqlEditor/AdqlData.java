@@ -36,7 +36,7 @@ public class AdqlData {
     public static String NAMESPACE_1_0 = "http://www.ivoa.net/xml/ADQL/v1.0" ;
     public static final String PI_QB_REGISTRY_RESOURCES = "qb-registry-resources" ;
     public static final String PI_ADQL_SCHEMA_VERSION_TAG = "ag-adql-schema-version" ;
-    public static final String PI_ADQL_SCHEMA_VERSION_VALUE = "v1.0a1" ;
+    public static final String PI_ADQL_SCHEMA_VERSION_VALUE = "v1.0a2" ;
     
     
     public static final String ELEMENT_FROM_TABLE_TYPE = "fromTableType" ;
@@ -456,6 +456,7 @@ public class AdqlData {
 //    public static final String DUMMY_TABLE_NAME = "\"Enter a table name here\"" ;
     
     public static final String NEW_QUERY =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
         "<Select xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" " +
         "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
         "        xmlns=\"http://www.ivoa.net/xml/ADQL/v1.0\"" +

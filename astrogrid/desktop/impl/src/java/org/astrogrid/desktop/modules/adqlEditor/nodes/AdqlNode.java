@@ -2,6 +2,8 @@ package org.astrogrid.desktop.modules.adqlEditor.nodes ;
 
 
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Random;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
@@ -30,11 +32,15 @@ public class AdqlNode extends DefaultMutableTreeNode {
     
     private static final Log log = LogFactory.getLog( AdqlNode.class ) ;
     
+    private static HashMap dMap = new HashMap(64) ;
+    private static Random dRandom = new Random() ;
+    
     private static AdqlTransformer transformer = new AdqlTransformer() ;
     
     protected NodeFactory nodeFactory ;
     private boolean expanded = false ;
     private int useableWidth = 0 ;
+    private Integer did = newDid() ; // debug identifier
     
     private AdqlNode() {}
     
@@ -72,6 +78,14 @@ public class AdqlNode extends DefaultMutableTreeNode {
             parent.maintainNodeIndex( parent, this, childNodeIndex ) ;
         if( allowsChildren )
             build( o ) ;
+    }
+    
+    private static synchronized Integer newDid() {
+        Integer did ;
+        do {
+            did = new Integer( dRandom.nextInt() ) ;
+        } while ( dMap.containsKey( did ) ) ;
+        return did ;
     }
     
     protected void maintainNodeIndex( AdqlNode parent, AdqlNode childNode ) {
@@ -238,23 +252,21 @@ public class AdqlNode extends DefaultMutableTreeNode {
         this.expanded = expanded ;
     }
     
-    public void debug_LogChildren() {
+    public StringBuffer debug_LogChildren( StringBuffer buffer ) {
         AdqlNode[] children = getChildren() ;
         if( children.length == 0 ) {
-            log.debug( "Has no children." ) ;
+            buffer.append( "\nHas no children." ) ;
         } 
         else {
-            StringBuffer buffer = new StringBuffer() ;
             for( int i=0; i<children.length; i++ ) {
                 buffer
-                    .append( "child as xmlobject " + i + ":\n" )
+                    .append( "\nchild " + i + " as xmlobject: " )
                     .append( children[i].getXmlObject().toString() ) 
-                    .append( "\nAdqlNode hashcode: " + children[i].hashCode() ) 
-                    .append( "\nxmlobject hashcode: " + children[i].getXmlObject().hashCode() ) ;
-                log.debug( buffer ) ;
-                buffer.delete( 0, buffer.length() ) ;
+                    .append( "\n   AdqlNode hashcode: " + children[i].hashCode() ) 
+                    .append( "\n   xmlobject hashcode: " + children[i].getXmlObject().hashCode() ) ;
             }
         }
+        return buffer ;
     }
     
 
@@ -488,4 +500,25 @@ public class AdqlNode extends DefaultMutableTreeNode {
     public NodeFactory getNodeFactory() {
         return nodeFactory;
     }
+
+    public Integer getDid() {
+        if( log.isDebugEnabled() )
+            return did;
+        else
+            return new Integer(-1) ;
+    }
+    
+    public String toDebugString() {
+        StringBuffer buffer = new StringBuffer() ;
+        buffer.append( "\nAdqlNode did: " ).append( did ) ;
+        try {
+            buffer.append( super.toString() ) ;
+        }
+        catch( Exception ex ) {
+            buffer.append( "Exception thrown" ).append( ex.getClass() ) ;
+        }
+        return buffer.toString() ;
+    }
+    
+    
 }

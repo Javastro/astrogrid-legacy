@@ -169,5 +169,15 @@ public class ColumnInsertCommand extends StandardInsertCommand {
         }
     }
    
-        
+    public String toString() {
+        StringBuffer buffer = new StringBuffer() ;
+        buffer.append( "\nColumnInsertCommand" ) ;
+        buffer.append( super.toString() ) ;
+        buffer
+            .append( "\ncolumnName: ").append( columnName )
+            .append( "\ntable: " ).append( table.getName() )
+            .append( "\ntableAlias: " ).append( tableAlias )
+            .append( "\narchive: " ).append( archive.getName() ) ;
+        return buffer.toString() ; 
+    }  
 }

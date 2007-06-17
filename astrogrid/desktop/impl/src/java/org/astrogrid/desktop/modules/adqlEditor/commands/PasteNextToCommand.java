@@ -22,14 +22,10 @@ import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 /**
  * @author jl99
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class PasteNextToCommand extends AbstractCommand {
     
     private static final Log log = LogFactory.getLog( PasteNextToCommand.class ) ;
-    private static final boolean DEBUG_ENABLED = false ;
-    private static final boolean TRACE_ENABLED = false ;
     
     private CopyHolder source ;
     private boolean before ;
@@ -55,10 +51,11 @@ public class PasteNextToCommand extends AbstractCommand {
     }
     
     
-    public Result execute() {      
+    public Result execute() {    
         Result result = _execute() ;
         if( result != CommandExec.FAILED ) {
             newInstanceToken = addToEditStore( newInstance ) ;
+            source.openBranchesOn( newInstance ) ;
             undoManager.addEdit( this ) ;
         }          
         return result ;
@@ -68,11 +65,14 @@ public class PasteNextToCommand extends AbstractCommand {
         Result result = CommandExec.OK ;
         try {          
            newInstance = getParentEntry().insert( this, source.getSource(), before ) ;
-           source.openBranchesOn( newInstance ) ;
+//           source.openBranchesOn( newInstance ) ;
         }
         catch( Exception exception ) {
             result = CommandExec.FAILED ;
-            log.error( "PasteNextToCommand():", exception ) ;
+            log.error( "PasteNextToCommand()._execute(): ", exception ) ;
+            if( log.isDebugEnabled() ) {
+                log.debug(  this.toString() ) ;
+            }
         }
         return result ;
     }
@@ -86,6 +86,10 @@ public class PasteNextToCommand extends AbstractCommand {
         }
         catch( Exception exception ) {
             result = CommandExec.FAILED ;
+            log.error( "PasteNextToCommand()._unexecute(): ", exception ) ;
+            if( log.isDebugEnabled() ) {
+                log.debug(  this.toString() ) ;
+            }
         }
         return result ;
     }
@@ -100,7 +104,10 @@ public class PasteNextToCommand extends AbstractCommand {
         if( _execute() == CommandExec.FAILED ) {
             throw new CannotRedoException() ;
         }
-        exchangeInEditStore( newInstanceToken, newInstance ) ;   
+        // Not sure why I need this...
+        // But it seems to work for normal nodes but not for NestedNodes.
+        exchangeInEditStore( newInstanceToken, newInstance ) ;  
+        source.openBranchesOn( newInstance ) ;
     }
     
     public void undo() throws CannotUndoException {
@@ -112,6 +119,33 @@ public class PasteNextToCommand extends AbstractCommand {
      
     public String getPresentationName() {
         return "Paste " + ( before == true ? "before" : "after" ) ;
+    }
+    
+    public String toString() {
+        StringBuffer buffer = new StringBuffer( 512 ) ;
+        buffer.append( "\nPasteNextToCommand" ) ;
+        buffer.append( super.toString() ) ;
+        if( source == null ) {
+            buffer.append( "\nsource: null" ) ;
+        }
+        else {
+            buffer.append( "\nsource: " ).append( source.toString() ) ;
+        }
+        buffer.append( "\nnewInstanceToken: " ).append( newInstanceToken ) ;
+        if( newInstance == null ) {
+            buffer.append( "\nnewInstance: null" ) ;
+        }
+        else {
+            try {
+                buffer.append( "\nnewInstance: \n" ).append( newInstance.toString() ) ;
+            }
+            catch( Throwable th ) {
+                buffer
+                    .append( "\nnewInstance toString() produced exception: " )
+                    .append(  th.getClass() ) ;
+            }
+        }
+        return buffer.toString() ; 
     }
    
 }

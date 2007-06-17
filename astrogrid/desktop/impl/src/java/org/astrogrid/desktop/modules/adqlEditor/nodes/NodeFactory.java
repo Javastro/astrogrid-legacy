@@ -17,8 +17,6 @@ import org.astrogrid.desktop.modules.adqlEditor.AdqlTree;
  */
 public final class NodeFactory {
     
-    private static final boolean DEBUG_ENABLED = true ;
-    private static final boolean TRACE_ENABLED = true ;
     private static final Log log = LogFactory.getLog( NodeFactory.class ) ;
     
     public static final String MISSING_VALUE = "{ missing }" ;
@@ -118,13 +116,15 @@ public final class NodeFactory {
             retValue = true ;
         }
         catch( Exception ex ) {
-            log.debug( "Failure to remove instance..." ) ;
-            log.debug( "Parent:" ) ;
-            parent.debug_LogChildren() ;
+            StringBuffer buffer = new StringBuffer() ;
+            buffer.append( "Failure to remove instance..." ) ;
+            buffer.append( "\nParent's children:" ) ;
+            parent.debug_LogChildren( buffer ) ;
                         
-            log.debug( "Child:" ) ;
-            log.debug( child.getXmlObject().toString() ) ;
-            log.debug( "hashCode: " + child.hashCode() ) ;
+            buffer.append( "\nChild which we attempted to remove:" ) ;
+            buffer.append( "\n   As XmlObject" + child.getXmlObject().toString() ) ;
+            buffer.append( "\n   AdqlNode hashCode: " + child.hashCode() ) ;
+            log.error( buffer.toString() ) ;
         } 
         finally {
             if( cursor != null )

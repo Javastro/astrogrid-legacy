@@ -31,16 +31,12 @@ import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 //import org.astrogrid.desktop.modules.dialogs.editors.ADQLToolEditorPanel.InsertTableAction;
 //import org.astrogrid.desktop.modules.adqlEditor.commands.CommandFactory.UndoManager ;
 /**
- * @author jl99@star.le.ac.uk
+ * @author Jeff Lusted jl99@star.le.ac.uk
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class MultipleColumnInsertCommand extends AbstractCommand {
     
     private static final Log logger = LogFactory.getLog( MultipleColumnInsertCommand.class ) ;
-    private static final boolean DEBUG_ENABLED = false ;
-    private static final boolean TRACE_ENABLED = false ;
     
     protected Catalog database ;
     protected TableBean table ;
@@ -439,5 +435,21 @@ public class MultipleColumnInsertCommand extends AbstractCommand {
         }
         
     }
+    
+    public String toString() {
+        StringBuffer buffer = new StringBuffer() ;
+        buffer.append( "\nMultipleColumnInsertCommand" ) ;
+        buffer.append( super.toString() ) ;
+        buffer
+            .append( "\ntableAlias: ").append( tableAlias )
+            .append( "\ntable: " ).append( table.getName() )
+            .append( "\ndatabase: " ).append( database.getName() ) ;
+        if( columns != null ) {
+            for( int i=0; i<columns.length; i++ ) {
+                buffer.append( "\ncolumn " ).append( i ).append( ": " ).append( columns[i].getName() ) ;
+            }
+        }
+        return buffer.toString() ; 
+    }  
     
 }

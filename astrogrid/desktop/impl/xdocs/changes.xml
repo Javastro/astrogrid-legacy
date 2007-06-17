@@ -14,6 +14,11 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<action dev="jl" type="fix" issue="2152">
+    First bug fixes for Query Builder after VOExplorer development.
+    Requires new version of AdqlStoX: astrogrid.adqlstox.version=2007.2sx
+    Requires new version of adql xmlbeans: astrogrid.adql_v1_0a2.version=1.2-b000xmlbeans 
+</action>
 <release version="2007.3.alpha3" date="unreleased">
 	<action dev="nw" type="add">
 	Denoted which features of the UI are alpha / beta / unimproed quality.

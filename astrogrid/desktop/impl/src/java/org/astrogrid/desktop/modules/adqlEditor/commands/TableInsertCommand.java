@@ -34,8 +34,6 @@ import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 public class TableInsertCommand extends StandardInsertCommand {
     
     private static final Log log = LogFactory.getLog( TableInsertCommand.class ) ;
-    private static final boolean DEBUG_ENABLED = false ;
-    private static final boolean TRACE_ENABLED = false ;
    
     protected Catalog database ;
     protected String tableName ;
@@ -133,6 +131,10 @@ public class TableInsertCommand extends StandardInsertCommand {
             }
             catch( Exception exception ) {
                 result = CommandExec.FAILED ;
+                log.error( "TableInsertCommand._execute() failed.", exception ) ;
+                if( log.isDebugEnabled() ) {
+                    log.debug(  this.toString() ) ;
+                }
             }
         }       
         return result ;
@@ -192,5 +194,16 @@ public class TableInsertCommand extends StandardInsertCommand {
             "  Probable cause: inappropriate context." ) ;
         }      
     }
+    
+    public String toString() {
+        StringBuffer buffer = new StringBuffer() ;
+        buffer.append( "\nTableInsertCommand" ) ;
+        buffer.append( super.toString() ) ;
+        buffer
+            .append( "\nallocatedAlias: ").append( allocatedAlias )
+            .append( "\ntableName: " ).append( tableName )
+            .append( "\ndatabase: " ).append( database ) ;
+        return buffer.toString() ; 
+    }  
         
 }

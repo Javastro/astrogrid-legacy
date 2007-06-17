@@ -30,8 +30,6 @@ import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 public class EditEnumeratedElementCommand extends AbstractCommand {
     
     private static final Log log = LogFactory.getLog( EditEnumeratedElementCommand.class ) ;
-    private static final boolean DEBUG_ENABLED = true ;
-    private static final boolean TRACE_ENABLED = true ;
     private String oldValue ;
     private String newValue ;
 
@@ -76,6 +74,10 @@ public class EditEnumeratedElementCommand extends AbstractCommand {
         }
         catch( Exception exception ) {
             result = CommandExec.FAILED ;
+            log.error( "EditEnumeratedElementCommand._execute() failed: ", exception ) ;
+            if( log.isDebugEnabled() ) {
+                log.debug(  this.toString() ) ;
+            }
         }
         return result ;
     }
@@ -121,6 +123,16 @@ public class EditEnumeratedElementCommand extends AbstractCommand {
      */
     public String getNewValue() {
         return newValue;
+    }
+    
+    public String toString() {
+        StringBuffer buffer = new StringBuffer(512) ;
+        buffer.append( "\nEditEnumeratedElementCommand" ) ;
+        buffer.append( super.toString() ) ;
+        buffer
+             .append( "\nnewValue: " ).append( newValue )
+             .append( "\noldValue: " ).append( oldValue ) ;
+        return buffer.toString() ;
     }
    
 }

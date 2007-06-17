@@ -69,6 +69,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -76,6 +77,7 @@ import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlError;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
+import org.astrogrid.adql.v1_0.beans.SelectType ;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.ColumnBean;
 import org.astrogrid.acr.astrogrid.TableBean;
@@ -89,6 +91,7 @@ import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.adqlEditor.commands.ColumnInsertCommand;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CommandExec;
+import org.astrogrid.desktop.modules.adqlEditor.commands.CommandInfo;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CommandFactory;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CopyHolder;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CutCommand;
@@ -971,10 +974,19 @@ public class ADQLToolEditorPanel
 	    }
 	    
 	    public void actionPerformed( ActionEvent e ) {
-            clipBoard.push( command.getCopy() ) ;    
-	        if( command.execute() != CommandExec.FAILED ) {
-    	        adqlTree.repaint() ;
-        	}
+	        if( log.isTraceEnabled() ) { enterTrace( "CutAction.actionPerformed()" ) ; }
+	        try {
+	            clipBoard.push( command.getCopy() ) ;    
+	            if( command.execute() != CommandExec.FAILED ) {
+	                DefaultTreeModel model =  (DefaultTreeModel)adqlTree.getModel() ;
+	                model.nodeStructureChanged( command.getParentEntry() ) ;
+	                adqlTree.ensureSomeNodeSelected( this.command ) ;
+	                adqlTree.repaint() ;
+	            }
+	        }
+	        finally {
+	            if( log.isTraceEnabled() ) { exitTrace( "CutAction.actionPerformed()" ) ; }
+	        }
 	    }
 	}
 	
@@ -1027,10 +1039,19 @@ public class ADQLToolEditorPanel
 	        setEnabled( command != null ) ;
 	    }
 	    
-	    public void actionPerformed( ActionEvent e ) {	        
-        	if( command.execute() != CommandExec.FAILED ) {
-    	        adqlTree.repaint() ;
-        	}
+	    public void actionPerformed( ActionEvent e ) {	
+            if( log.isTraceEnabled() ) { enterTrace( "PasteOverAction.actionPerformed()" ) ; }
+            try {
+                if( command.execute() != CommandExec.FAILED ) {
+                    DefaultTreeModel model =  (DefaultTreeModel)adqlTree.getModel() ;
+                    model.nodeStructureChanged( command.getParentEntry() ) ;
+                    adqlTree.ensureSomeNodeSelected( this.command ) ;
+                    adqlTree.repaint() ;
+                }               
+            }
+            finally {
+                if( log.isTraceEnabled() ) { exitTrace( "PasteOverAction.actionPerformed()" ) ; }
+            }
 	    }	    
 	}
 	
@@ -1052,9 +1073,18 @@ public class ADQLToolEditorPanel
 	    }
 	    	    
 	    public void actionPerformed( ActionEvent e ) {
-	        if( command.execute() != CommandExec.FAILED ) {
-	            adqlTree.repaint() ;
+            if( log.isTraceEnabled() ) { enterTrace( "PasteNextToAction.actionPerformed()" ) ; }
+	        try {
+            if( command.execute() != CommandExec.FAILED ) {
+                DefaultTreeModel model =  (DefaultTreeModel)adqlTree.getModel() ;
+                model.nodeStructureChanged( command.getParentEntry() ) ;
+                adqlTree.ensureSomeNodeSelected( this.command ) ;
+                adqlTree.repaint() ;
         	}
+            }
+            finally {
+                if( log.isTraceEnabled() ) { exitTrace( "PasteNextToAction.actionPerformed()" ) ; }
+            }
 	    }
 	    
 	}
@@ -1072,9 +1102,18 @@ public class ADQLToolEditorPanel
 	    }
 	    
 	    public void actionPerformed( ActionEvent e ) {
+            if( log.isTraceEnabled() ) { enterTrace( "PasteIntoAction.actionPerformed()" ) ; }
+            try {
 	        if( command.execute() != CommandExec.FAILED ) {
-    	        adqlTree.repaint() ;
+                DefaultTreeModel model =  (DefaultTreeModel)adqlTree.getModel() ;
+                model.nodeStructureChanged( command.getParentEntry() ) ;
+                adqlTree.ensureSomeNodeSelected( this.command ) ;
+                adqlTree.repaint() ;
         	}
+            }
+            finally {
+                if( log.isTraceEnabled() ) { exitTrace( "PasteIntoAction.actionPerformed()" ) ; }
+            }
 	    }
 	}
 	
@@ -1090,12 +1129,22 @@ public class ADQLToolEditorPanel
 	    }
 	    
 	    public void actionPerformed( ActionEvent e ) {
-	        undoManager.undo() ;	    
-	        adqlTree.repaint() ;
+            if( log.isTraceEnabled() ) { enterTrace( "UndoAction.actionPerformed()" ) ; }
+            try {
+                CommandInfo ci = (CommandInfo)undoManager.getCommandToBeUndone() ;           
+                undoManager.undo() ;
+                DefaultTreeModel model =  (DefaultTreeModel)adqlTree.getModel() ;
+                model.nodeStructureChanged( ci.getParentEntry() ) ;
+                adqlTree.ensureSomeNodeSelected( ci ) ;
+                adqlTree.repaint() ;
+            }
+            finally {
+                if( log.isTraceEnabled() ) { exitTrace( "UndoAction.actionPerformed()" ) ; }
+            }
 	    }
 	    
 	}
-	
+    	
 	private class RedoAction extends AbstractAction {
 	    
 	    CommandFactory.UndoManager undoManager ;
@@ -1108,8 +1157,18 @@ public class ADQLToolEditorPanel
 	    }
 	    
 	    public void actionPerformed( ActionEvent e ) {
+            if( log.isTraceEnabled() ) { enterTrace( "RedoAction.actionPerformed()" ) ; }
+            try {
+            CommandInfo ci = (CommandInfo)undoManager.getCommandToBeRedone() ;          
 	        undoManager.redo() ;
-	        adqlTree.repaint() ;	     
+            DefaultTreeModel model =  (DefaultTreeModel)adqlTree.getModel() ;
+            model.nodeStructureChanged( ci.getParentEntry() ) ;
+            adqlTree.ensureSomeNodeSelected( ci ) ;
+	        adqlTree.repaint() ;
+            }
+            finally {
+                if( log.isTraceEnabled() ) { exitTrace( "RedoAction.actionPerformed()" ) ; }
+            }
 	    }
 	    
 	}
@@ -1144,6 +1203,8 @@ public class ADQLToolEditorPanel
 	    }
 	    
         public void actionPerformed( ActionEvent e ) {
+            if( log.isTraceEnabled() ) { enterTrace( "InsertAction.actionPerformed()" ) ; }
+            try {
             TreePath path = adqlTree.getSelectionPath() ;
             if( path == null )
                 return ;
@@ -1168,6 +1229,7 @@ public class ADQLToolEditorPanel
     	        model.nodeStructureChanged( command.getParentEntry() ) ;
 //    	        path = path.pathByAddingChild( command.getChildEntry() ) ;
 //    	        adqlTree.scrollPathToVisible( path ) ;
+                adqlTree.ensureSomeNodeSelected( this.command ) ;
                 adqlTree.repaint() ;
                 
             }
@@ -1183,6 +1245,10 @@ public class ADQLToolEditorPanel
             
 
 //            setAdqlParameter() ;
+            }
+            finally {
+                if( log.isTraceEnabled() ) { exitTrace( "InsertAction.actionPerformed()" ) ; }
+            }
  
         } // end of actionPerformed() 
         
@@ -1409,7 +1475,7 @@ public class ADQLToolEditorPanel
     private class AdqlMainView extends JPanel {
         
         // AdqlNode selectedNode ;
-        Integer selectedNodeToken ;
+        // Integer selectedNodeToken = null ;
         JTabbedPane owner ;
         JTextPane textPane = new JTextPane() ;  
         JSplitPane splitEditor = new JSplitPane( JSplitPane.VERTICAL_SPLIT ) ;
@@ -1433,21 +1499,28 @@ public class ADQLToolEditorPanel
             adqlTree.addTreeSelectionListener( new TreeSelectionListener() {
                 public void valueChanged( TreeSelectionEvent e ) {
                     
-                    AdqlNode newSelectedNode = (AdqlNode)adqlTree.getLastSelectedPathComponent() ;
-                    if( newSelectedNode != null ) {
-                        // selectedNode = newSelectedNode ;
-                        selectedNodeToken = adqlTree.getCommandFactory().getEditStore().add( newSelectedNode ) ;
+//                    AdqlNode newSelectedNode = (AdqlNode)adqlTree.getLastSelectedPathComponent() ;
+//                    if( newSelectedNode != null ) {
+//                        selectedNodeToken = adqlTree.getCommandFactory().getEditStore().add( newSelectedNode ) ;
                         displayText() ; 
-                    }                  
+//                    } 
                 }
             } ) ;
             
             //
-            // On creation, default to root node...
-            // selectedNode = (AdqlNode)adqlTree.getModel().getRoot() ;
-            TreeNode[] nodes = ((AdqlNode)adqlTree.getModel().getRoot()).getPath() ;
-            adqlTree.setSelectionPath( new TreePath( nodes ) ) ;
-                       
+            // On creation, default to top Select node...
+            // (The root node contains the SelectDocumentType, not the SelectType!!!)
+            AdqlNode root = (AdqlNode)adqlTree.getModel().getRoot() ;
+            Object[] childArray = root.getChildren() ;
+            for( int i=0; i<childArray.length; i++ ) {
+                XmlObject xo = ((AdqlNode)childArray[i]).getXmlObject() ;
+                if( xo.schemaType() == SelectType.type ) {
+                    TreeNode[] nodes = ((AdqlNode)childArray[i]).getPath() ;
+                    adqlTree.setSelectionPath( new TreePath( nodes ) ) ;
+                    break ;
+                }
+            }
+                                
             scrTree.setViewportView( adqlTree ) ;           
             splitEditor.setTopComponent( scrTree ) ;
                                   
@@ -1546,7 +1619,8 @@ public class ADQLToolEditorPanel
                 maintainHistory( editWindowOldImage, textPane.getText() ) ;
                 bEditWindowUpdatedByFocusGained = false ;
             }
-            AdqlNode node = adqlTree.getCommandFactory().getEditStore().get( selectedNodeToken ) ;
+            // AdqlNode node = adqlTree.getCommandFactory().getEditStore().get( selectedNodeToken ) ;
+            AdqlNode node = (AdqlNode)adqlTree.getLastSelectedPathComponent() ;
             try {
                 if( node != null ) {
                     XmlObject userObject = node.getXmlObject() ;       
@@ -1588,6 +1662,11 @@ public class ADQLToolEditorPanel
                 textPane.getActionMap().put( "ValidateAdql", new AbstractAction (){
                     public void actionPerformed(ActionEvent e) {
                         if( log.isTraceEnabled() ) enterTrace( "AdqlMainView.VK_ENTER.actionPerformed()" ) ;
+//                        AdqlNode newSelectedNode = (AdqlNode)adqlTree.getLastSelectedPathComponent() ;
+//                        if( newSelectedNode != null ) {
+//                            selectedNodeToken = adqlTree.getCommandFactory().getEditStore().add( newSelectedNode ) ;
+//                            executeEditCommand( selectedNodeToken ) ;
+//                        } 
                         executeEditCommand() ;
                         action.actionPerformed( e ) ;
                         if( log.isTraceEnabled() ) exitTrace( "AdqlMainView.VK_ENTER.actionPerformed()" ) ;
@@ -1598,13 +1677,40 @@ public class ADQLToolEditorPanel
         }
         
         protected void executeEditCommand() {
-            AdqlNode node = adqlTree.getCommandFactory().getEditStore().get( selectedNodeToken ) ;
+            if( log.isTraceEnabled() ) { enterTrace( "AdqlMainView.executeEditCommand()" ) ; }
+            try {
+//            AdqlNode node = adqlTree.getCommandFactory().getEditStore().get( selectedNodeToken ) ;
             String image = textPane.getText() ;
-            EditCommand editCommand = adqlTree.getCommandFactory().newEditCommand( adqlTree, node, image ) ;
+            AdqlNode node = (AdqlNode)adqlTree.getLastSelectedPathComponent() ;
+            if( node == null ) {
+                maintainHistory( null, image ) ;
+                return ;
+            }
+           
+            EditCommand editCommand = null ;
+            
+            //
+            // There appears still to be an occasional problem of losing visual selection 
+            // yet having a selectedNodeToken. The situation is accompanied by having no parent node,
+            // which will produce a NullPointerException in initializing the command. This is caught 
+            // and logged when the AbstractCommand is initialized.
+            // So, safety first, maintain the edit history so no editing is lost, then return
+            // to give the user another try. 
+            editCommand = adqlTree.getCommandFactory().newEditCommand( adqlTree, node, image ) ;          
+            if( !editCommand.isInitializedStatusGood() ) {
+                maintainHistory( null, image ) ;
+                return ;
+            }
+            
             CommandExec.Result result = editCommand.execute() ;
             if( result == CommandExec.FAILED ) {
-                setDiagnosticsIcon( false ) ;
-                diagnostics.setText( editCommand.getMessages()[0] ) ;
+                setDiagnosticsIcon( false ) ;                
+                String[] messages = editCommand.getMessages() ; 
+                StringBuffer buffer = new StringBuffer( messages.length * 64 ) ;
+                for( int i=0; i<messages.length; i++ ) {
+                    buffer.append( "[" + (i+1) + "] " ).append( messages[i] ).append( '\n' ) ;
+                }
+                diagnostics.setText( buffer.toString() ) ;
             }
             else {       
                 setDiagnosticsIcon( true ) ;
@@ -1618,11 +1724,23 @@ public class ADQLToolEditorPanel
                 // open is called for.               
 //                ((DefaultTreeModel)adqlTree.getModel()).nodeStructureChanged( editCommand.getChildEntry() ) ;
                 ((DefaultTreeModel)adqlTree.getModel()).nodeStructureChanged( editCommand.getParentEntry() ) ;
+                
+                editCommand.adjustBranches() ;
+                        
+                //
+                // Highlight the edited node...
+//                TreeSelectionModel selectionModel =  (TreeSelectionModel)adqlTree.getSelectionModel() ; 
+//                selectionModel.setSelectionPath( new TreePath( editCommand.getChildEntry().getPath() ) ) ;
+                adqlTree.clearSelection() ;
+                adqlTree.ensureSomeNodeSelected( editCommand ) ;
                 adqlTree.repaint() ;
             }
             maintainHistory( null, image ) ;
-        }
-        
+            }
+            finally {
+                if( log.isTraceEnabled() ) { exitTrace( "AdqlMainView.executeEditCommand()" ) ; }
+            }
+        }       
     }
       
     private Point[]	elastic ;
