@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.35 2007/06/06 18:19:28 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.36 2007/06/17 15:17:20 jl99 Exp $*/
 /**
  * AdqlStoX JavaCC file          
  *
@@ -594,10 +594,14 @@ TOKEN : // <ADQL-reserved-word>
 |   < DEG : "deg" >
 |   < DEG_DEG_M : "deg deg m" >
 |   < RAD : "rad" >
-|   < H : "h" >
+// <H: "h"> causes severe problems with "h" appearing on its own, as this
+//          consumes the token. Eg: table alias h is not then workable
+|   < H : "_h_" >             
 |   < ARCMIN : "arcmin" > 
 |   < ARCSEC : "arcsec" >
-|   < M : "m" >
+// < M : "m" > causes severe problems with "m" appearing on its own, as this
+//          consumes the token. Eg: table alias m is not then workable
+|   < M : "_m_" >
 |   < KM : "km" >
 |   < MM : "mm" >
 |   < AU : "au" >
@@ -1276,7 +1280,10 @@ void comparison_predicate_A() #ComparisonPredicate :
  * bnf-single <correlation_name> ::= <identifier>
  *
  */
-void correlation_name_S() #CorrelationName : {}
+void correlation_name_S() #CorrelationName : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "correlation_name_S()" ) ;
+}
 {
 	//S:
 	// <correlation_name> ::= <identifier>
@@ -1286,6 +1293,8 @@ void correlation_name_S() #CorrelationName : {}
 	catch( ParseException pex ) {
 		compiler.errorSkipTo( new int[]{ token.kind }, pex ) ;	
 	}
+	
+	{ if( log.isTraceEnabled() ) exitTrace ( "correlation_name_S()" ) ; }
 }
 
 void datetime_factor_S() : {}
@@ -3605,7 +3614,7 @@ void table_reference_A() #Table :
 		LOOKAHEAD(6)
 	    joined_table_S()
 	    |
-	    ( ( LOOKAHEAD(5) schema_name_A() <PERIOD> )? table_name_A() [ [ <AS> ] correlation_name_S() ] )	
+	    ( ( LOOKAHEAD(6) schema_name_A() <PERIOD> )? table_name_A() ( [ <AS> ] correlation_name_S() )? )	
 	)
 	}
 	catch( ParseException pex ) {
@@ -3990,6 +3999,18 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.36  2007/06/17 15:17:20  jl99
+AdqlStoX.jtt alone...
+Minor correction to definitions that hide aliases H and M (upper or lower case).
+Passed all 134 unit tests, and thought it worth the risk to commit straight to head,
+for the sake of speed. The following documents the changes...
+// <H: "h"> causes severe problems with "h" appearing on its own, as this
+//          consumes the token. Eg: table alias h is not then workable. Changed to
+|   < H : "_h_" >
+// < M : "m" > causes severe problems with "m" appearing on its own, as this
+//          consumes the token. Eg: table alias m is not then workable. Changed to
+|   < M : "_m_" >
+
 Revision 1.35  2007/06/06 18:19:28  jl99
 Merge of branch adql-jl-2135
 
