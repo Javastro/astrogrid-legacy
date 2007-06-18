@@ -500,7 +500,7 @@
 	    <id>log4j</id>	    
 	    <version>1.2.8</version>	    
 	    <properties>		     
-	    		 <strip>false</strip>
+	    		 <strip>false</strip><!-- TODO - strip this later. -->
 		    <dist.bundle>true</dist.bundle>
 	    </properties>
     </dependency>    
