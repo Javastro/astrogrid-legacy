@@ -1,4 +1,4 @@
-/*$Id: AllSystemIntegrationTests.java,v 1.6 2007/04/18 15:47:04 nw Exp $
+/*$Id: AllSystemIntegrationTests.java,v 1.7 2007/06/18 16:15:26 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,7 +30,10 @@ public class AllSystemIntegrationTests {
         suite.addTest(ConfigurationIntegrationTest.suite());
         suite.addTest(WebServerIntegrationTest.suite());
         suite.addTest(ApiHelpIntegrationTest.suite());   
-        suite.addTest(BackgroundExecutorIntegrationTest.suite());
+        
+        //Too twitchy at the moment 
+        //suite.addTest(BackgroundExecutorTimeSensitiveTest.suite());
+
         // tests the fundamentals of each trasnport.
         suite.addTest(HtmlTransportIntegrationTest.suite());
         suite.addTest(XmlRpcTransportIntegrationTest.suite());    
@@ -44,6 +47,9 @@ public class AllSystemIntegrationTests {
 
 /* 
 $Log: AllSystemIntegrationTests.java,v $
+Revision 1.7  2007/06/18 16:15:26  nw
+isolated a twitch time-sensitive test.
+
 Revision 1.6  2007/04/18 15:47:04  nw
 tidied up voexplorer, removed front pane.
 

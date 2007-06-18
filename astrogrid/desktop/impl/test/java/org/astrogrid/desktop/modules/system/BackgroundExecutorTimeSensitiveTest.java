@@ -19,7 +19,7 @@ import org.easymock.MockControl;
  * @author Noel Winstanley
  * @since Jun 9, 20062:34:21 PM
  */
-public class BackgroundExecutorIntegrationTest extends InARTestCase {
+public class BackgroundExecutorTimeSensitiveTest extends InARTestCase {
 
 	/**
 	 * @author Noel Winstanley
@@ -93,11 +93,11 @@ public class BackgroundExecutorIntegrationTest extends InARTestCase {
 			}
 		};
 		exec.executeWorker(tw);
-		Thread.sleep(1000);
+		Thread.sleep(5000);
 		assertEquals(1,tw.construct);
 		assertEquals(0,tw.error);
-		assertEquals(1,tw.always);
 		assertEquals(1,tw.finished);
+		assertEquals(1,tw.always);
 		assertEquals(expectedResult,tw.result);
 	}
 
@@ -110,7 +110,7 @@ public class BackgroundExecutorIntegrationTest extends InARTestCase {
 			}
 		};
 		exec.executeWorker(tw);
-		Thread.sleep(1000);
+		Thread.sleep(5000);
 		assertEquals(1,tw.construct);
 		assertEquals(1,tw.error);
 		assertEquals(1,tw.always);
@@ -129,7 +129,7 @@ public class BackgroundExecutorIntegrationTest extends InARTestCase {
 		rControl.replay();
 		
 		exec.execute(r);
-		Thread.sleep(1000);
+		Thread.sleep(5000);
 		rControl.verify();
 
 	}
@@ -139,7 +139,7 @@ public class BackgroundExecutorIntegrationTest extends InARTestCase {
 		// timeout fails silently - no error, no result., but always is still run.
 		TestWorker tw = new TestWorker(ui, 1000L);
 		exec.executeWorker(tw);
-		Thread.sleep(2000);	
+		Thread.sleep(5000);	
 		assertEquals(1,tw.construct);
 		assertEquals(0,tw.error);
 		assertEquals(1,tw.always);
@@ -158,7 +158,7 @@ public class BackgroundExecutorIntegrationTest extends InARTestCase {
 		exec.executeWorker(tw);
 		Thread.sleep(2000);	
 		exec.interrupt(tw);
-		Thread.sleep(1000);
+		Thread.sleep(5000);
 		assertEquals(1,tw.construct);
 		assertEquals(0,tw.error);
 		assertEquals(1,tw.always);
@@ -171,7 +171,7 @@ public class BackgroundExecutorIntegrationTest extends InARTestCase {
 	
 	
 	public static Test suite() {
-		return new ARTestSetup(new TestSuite(BackgroundExecutorIntegrationTest.class));
+		return new ARTestSetup(new TestSuite(BackgroundExecutorTimeSensitiveTest.class));
 	}
 
 }
