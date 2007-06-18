@@ -19,6 +19,8 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.hivemind.GenerateHivedoc;
 import org.astrogrid.desktop.hivemind.Launcher;
 import org.astrogrid.desktop.hivemind.ListProperties;
@@ -39,6 +41,11 @@ import org.astrogrid.desktop.hivemind.ListProperties;
  * @since Apr 11, 200611:42:55 AM
  */
 class CmdLineParser {
+	/**
+	 * Logger for this class
+	 */
+	private static final Log logger = LogFactory.getLog("startup");
+
 	/** Custom subclass of Launcher that just displays the commandline help and exits.
 	 */
 	final class ShowHelp extends Launcher {
@@ -88,13 +95,14 @@ class CmdLineParser {
 		o.addOption(OptionBuilder.withDescription("Shows this help and exit").create("help"));
 		
 		// properties
+		/* Disabled - on advice from dave - use java's -D instead.
 		o.addOption(OptionBuilder.withArgName( "option=value" )
         						.hasArg()
         						.withValueSeparator()
         						.withDescription( "set a configuration option (see --list for available options). " +
         								"Don't forget a space between the -D and opt=value" )
         						.create( "D" ));
-		
+		*/
 		o.addOption(OptionBuilder.withArgName("properties file")
 						.hasArg()
 						.withDescription("file location of properties file")
@@ -149,7 +157,7 @@ class CmdLineParser {
 			} catch (ParseException xx) {
 				throw new RuntimeException("Unexpected",xx);
 			}
-			System.out.println(x.getMessage());
+			logger.error("Failed to parse",x);
 			return new ShowHelp(usage);
 		}
 	}
@@ -157,10 +165,10 @@ class CmdLineParser {
 	public void processCommandLine(Launcher l) {
 
 		// process -D first.
-		String[] props = commandLine.getOptionValues('D');
-		if (props != null) { // irritating that this returns null..
-			processPropertyKeys(props);
-		}
+	//	String[] props = commandLine.getOptionValues('D');
+	//	if (props != null) { // irritating that this returns null..
+	//		processPropertyKeys(props);
+	//	}
 		// now any properties files
 		String[] propsFiles = commandLine.getOptionValues("propertyFile");
 		if (propsFiles != null) {
@@ -193,7 +201,7 @@ class CmdLineParser {
 			try {
 				l.addModuleURL(new URL(moduleURLs[i]));
 			} catch (MalformedURLException x) {
-				System.err.println("Warning: Could not access module file " + moduleURLs[i]);
+				logger.warn("Could not access module file " + moduleURLs[i],x);
 			}
 		}
 	}
@@ -206,13 +214,13 @@ class CmdLineParser {
 			File f = new File(moduleFiles[i]); 
 			//@todo check that this takes care of expanding, relatives, etc
 			if (!f.exists()) {
-				System.err.println("Warning: Ignoring non-existent module file " + f);
+				logger.warn("Ignoring non-existent module file " + f);
 				continue;
 			}
 			try {
 				l.addModuleURL(f.toURI().toURL());
 			} catch (MalformedURLException x) {
-				System.err.println("Warning: Could not access module file " + f);
+				logger.warn("Could not access module file " + f,x);
 			}
 		}
 	}
@@ -229,8 +237,7 @@ class CmdLineParser {
 				is = u.openStream();
 				loadPropertiesFile(is);
 			} catch (IOException e) {
-				System.err.println("Warning: Failed to load properties file " + u);
-				e.printStackTrace(System.err);
+				logger.warn("Failed to load properties file " + u,e);
 			} finally {
 				if (is != null ) {
 					try {
@@ -250,16 +257,16 @@ class CmdLineParser {
 			File f = new File(propsFiles[i]); 
 			//@todo check that this takes care of expanding, relatives, etc
 			if (!f.exists()) {
-				System.err.println("Warning: Ignoring non-existent properties file " + f);
+				logger.warn("Ignoring non-existent properties file " + f);
 				continue;
 			}
 			InputStream is = null;
 			try {
+				logger.info("Loading properties from " + f);
 				is = new FileInputStream(f);
 				loadPropertiesFile(is);
 			} catch (IOException e) {
-				System.err.println("Warning: Failed to load properties file " + f);
-				e.printStackTrace(System.err);
+				logger.warn("Warning: Failed to load properties file " + f,e);
 			} finally {
 				if (is != null ) {
 					try {
@@ -278,9 +285,10 @@ class CmdLineParser {
 		for (int i = 0; i < props.length; i++) {
 			String[] pair = props[i].split("=");
 			if (pair.length != 2) {
-				System.err.println("Warning: Ignoring malformed property " + props[i]);
+				logger.warn("Warning: Ignoring malformed property " + props[i]);
 				continue;
 			}
+			logger.debug("'" + pair[0] + "' := '" + pair[1] + "'");
 			System.setProperty(pair[0],pair[1]);
 		}
 	}
@@ -293,6 +301,7 @@ class CmdLineParser {
 		p.load(is);
 		for (Iterator it = p.entrySet().iterator(); it.hasNext(); ) {
 			Map.Entry entry = (Map.Entry)it.next();
+			logger.debug("'" + entry.getKey().toString() + "' := '" + entry.getValue().toString() + "'"); 
 			System.setProperty(entry.getKey().toString(),entry.getValue().toString());
 		}
 	}
