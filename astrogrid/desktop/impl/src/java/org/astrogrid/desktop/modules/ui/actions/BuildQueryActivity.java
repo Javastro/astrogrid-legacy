@@ -36,7 +36,7 @@ public BuildQueryActivity(QueryBuilderInternal t) {
 	this.t = t;
 	CSH.setHelpIDString(this, "resourceTask.buildQuery");		
 	setText(DevSymbols.PROBLEM + " Build ADQL");
-	setIcon(IconHelper.loadIcon("table16.png"));
+	setIcon(IconHelper.loadIcon("db16.png"));
 	setToolTipText("Construct an ADQL query against the selected table descriptions");
 	
 }
