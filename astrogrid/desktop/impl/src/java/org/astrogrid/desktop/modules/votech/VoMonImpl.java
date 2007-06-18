@@ -21,6 +21,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
+import net.sf.ehcache.Status;
 
 import org.apache.commons.collections.MultiHashMap;
 import org.apache.commons.collections.MultiMap;
@@ -49,6 +50,9 @@ public class VoMonImpl implements VoMonInternal {
 
 	public VoMonBean checkAvailability(URI arg0) {
 		if (arg0 == null) {
+			return null;
+		}
+		if (! cache.getStatus().equals(Status.STATUS_ALIVE)) {
 			return null;
 		}
 		Element e = cache.get(arg0);
@@ -133,7 +137,7 @@ public class VoMonImpl implements VoMonInternal {
 				
 				}
 				if (in.isEndElement() && in.getLocalName().equals("host")) { // cache the info.
-					if (bean != null) {
+					if (bean != null && cache.getStatus().equals(Status.STATUS_ALIVE)) {
 						Element e = new Element(bean.getId(),bean);
 						cache.put(e);
 						bean = null;
