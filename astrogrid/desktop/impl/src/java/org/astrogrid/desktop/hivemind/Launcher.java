@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.16 2007/04/18 15:47:10 nw Exp $
+/*$Id: Launcher.java,v 1.17 2007/06/18 16:20:33 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,9 @@
  *
 **/
 package org.astrogrid.desktop.hivemind;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.net.URL;
 import java.net.URLStreamHandler;
@@ -46,10 +49,7 @@ import org.apache.hivemind.util.URLResource;
  *
  */
 public class Launcher implements Runnable {
-    private final ClassResolver cl;
-    private final List resources = new ArrayList();
-  
-    private Registry reg;
+
     // runtime defaults. - can be overridden by things in system properties
     public static final Properties defaults = new Properties(){{
     	setProperty("java.net.preferIPv4Stack","true");
@@ -69,6 +69,23 @@ public class Launcher implements Runnable {
         // disable this before release.
         //setProperty("acr.debug","true");
     }};    
+
+    //static initializer - ensures this gets done really early on
+    // important - as needs to happen before first logged message.
+    // must come before the declaration of the logger.
+    static {
+    	spliceInDefaults();    	
+    }    
+    
+	/**
+	 * Logger for this class
+	 */
+	private static final Log logger = LogFactory.getLog("startup");
+
+    private final ClassResolver cl;
+    private final List resources = new ArrayList();
+  
+    private Registry reg;
     
     /** access the hivemind registry. creates acr if necessary */
     public Registry getRegistry() {
@@ -77,8 +94,19 @@ public class Launcher implements Runnable {
         } 
         return reg;
     }
-        
+      
+    /** write out some initial properties to the log */
+    private void writeLogHeader() {
+    	logger.info("Java version: " + System.getProperty("java.version"));
+    	logger.info("Java vendor: " + System.getProperty("java.vendor"));
+    	logger.info("Java home: " + System.getProperty("java.home"));
+    	logger.info("Operating system: " + System.getProperty("os.name") + " " + System.getProperty("os.version") +  " " + System.getProperty("os.arch"));
+    }
+    
+
     public Launcher() {
+
+    	writeLogHeader();
         // try fixing class loading bugs under jnlp
     	// original, no-security method - fixes classloading bugs under jnlp
         System.setSecurityManager(null); 
@@ -100,6 +128,7 @@ public class Launcher implements Runnable {
         // I need to enumerate all custom url protocols here, and make sure it's only called once.
         synchronized (Launcher.class) {
         	if (!haveSetHandlerFactory) {
+        		logger.info("Programmatically setting url handlers");
         		haveSetHandlerFactory = true;
         		URL.setURLStreamHandlerFactory(new URLStreamHandlerFactory() {
 
@@ -138,6 +167,7 @@ public class Launcher implements Runnable {
   @param resourceURL url pointing to to a hivemind descriptor.
      *  */
     public void addModuleURL(URL resourceURL){
+    	logger.info("Adding moduleURL " + resourceURL);
     	this.resources.add(new URLResource(resourceURL));
     }
 
@@ -146,12 +176,13 @@ public class Launcher implements Runnable {
      * @param resourceName for <i>resourceName</i>, there must be a resource named on the classpath named <tt>/org/astrogrid/desktop/hivemind/<i>resourceName</i>.xml</tt>
 */
      public  void addModuleByName(String resourceName) {   
+    	 logger.info("Adding module " + resourceName);
        this.resources.add(new ClasspathResource(cl,"/org/astrogrid/desktop/hivemind/" + resourceName + ".xml"));
     }
 
     /** assemble the service and start it running */
     public void run() { 
-    	spliceInDefaults();
+    	logger.info("Running");
     	
         RegistryBuilder builder = new RegistryBuilder();
         builder.addModuleDescriptorProvider(createModuleDescriptorProvider()); // this one loads our own descriptors
@@ -161,7 +192,7 @@ public class Launcher implements Runnable {
 	/**
 	 * 
 	 */
-	protected void spliceInDefaults() {
+	protected static void spliceInDefaults() {
 		// splice our defaults _behind_ existing system properties
     	for (Iterator i = defaults.entrySet().iterator(); i.hasNext(); ) {
     		Map.Entry e = (Map.Entry)i.next();
@@ -184,6 +215,9 @@ public class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.17  2007/06/18 16:20:33  nw
+improved startup logging.
+
 Revision 1.16  2007/04/18 15:47:10  nw
 tidied up voexplorer, removed front pane.
 
