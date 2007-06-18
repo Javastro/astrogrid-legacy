@@ -1,10 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE module  [
 	<!ENTITY descriptors SYSTEM "classpath:/org/astrogrid/desktop/hivemind/astrogrid-descriptors.xml">
-	<!ENTITY anchors SYSTEM "fallback:httpclient://wiki.astrogrid.org/pub/Astrogrid/TrustAnchorList/trust-anchor-list.xml,classpath:/org/astrogrid/desktop/hivemind/fallback-anchorlist.xml">
 	]>
-<!--  	<!ENTITY anchors SYSTEM "fallback:httpclient://wiki.astrogrid.org/pub/Astrogrid/TrustAnchorList/trust-anchor-list.xml,classpath:/org/astrogrid/desktop/hivemind/fallback-anchorlist.xml">
--->
+
 <module id="astrogrid" version="1.0.0" package="org.astrogrid.acr.astrogrid">
 	<dependency module-id="system"/>
 	AstroGrid Services
@@ -500,11 +498,11 @@ CERTIFICATE INSTALLER
  -->
 	<service-point id="installCertificates" interface="java.lang.Runnable" visibility="private">
 		Download and install any missing certificates.
-		<invoke-factory model="primitive">
+		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.auth.InstallCertificates">
 				<service>system.ui</service>
 				<string>${astrogrid.workdir}${file.separator}trusted-certificates</string> <!-- must match with the dir passed into the community component -->
-				<configuration>trustAnchors</configuration>
+				<configuration>certificateLists</configuration>
 			</construct>
 		</invoke-factory>
 	</service-point>
@@ -515,8 +513,21 @@ CERTIFICATE INSTALLER
 	</contribution>		
 	
 <!--  list of anchors -->	
-<configuration-point id="trustAnchors">
-		List of urls to download and install in the user's certificate dir
+<configuration-point id="certificateLists">
+		List of urls to download and parse for a list of anchors.
+		<schema>
+			<element name="url">
+				the url of a certificate list
+				<rules>
+					<push-content />
+					<invoke-parent method="addElement" />
+				</rules>
+			</element>
+		</schema>
+	</configuration-point>	
+		
+		
+<!-- previous schema -  this is now the expected file content.
 		<schema>
 			<element name="index">
 				just a container - ignored
@@ -529,11 +540,14 @@ CERTIFICATE INSTALLER
 				</element>
 			</element>
 		</schema>
-	</configuration-point>	
+		-->
 	
 	<!-- contributions to existing configurations -->
-	<contribution configuration-id="trustAnchors">
-	  	&anchors; 
+	<contribution configuration-id="certificateLists">
+	  	<url>http://wiki.astrogrid.org/pub/Astrogrid/TrustAnchorList/trust-anchor-list.xml</url>
+	  	<!--  fallback list - unsure whether I should check this or not 
+	  	<url>classpath:/org/astrogrid/desktop/hivemind/fallback-anchorlist.xml</url>
+	  	-->
 	</contribution>	
 	
 <!-- 
