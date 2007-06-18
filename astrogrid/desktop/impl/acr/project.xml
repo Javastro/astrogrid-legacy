@@ -128,7 +128,7 @@
   </dependency>
   <dependency>
      <!-- These are the generated beans for adql -->
-	 <artifactId>astrogrid-adql_v1_0a1</artifactId>
+	 <artifactId>astrogrid-adql_v1_0a2</artifactId><!--  should the last fragment of this name be in the version instead? -->
 	 <groupId>org.astrogrid</groupId>
 	 <version>${astrogrid.adql_v1_0a2.version}</version>
 	 <type>jar</type>
