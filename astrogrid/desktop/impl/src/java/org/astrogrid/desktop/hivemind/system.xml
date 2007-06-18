@@ -77,7 +77,13 @@ System module.
 			<confirmMessage>Exit: are you sure?</confirmMessage>
 		</action>	
 		<action parentName="edit" name="prefs" text="Preferences.." onEventDispatchThread="true"
-			object="service:configDialogue" methodName="run" before="*" />			
+			object="service:configDialogue" methodName="run" before="*" />
+		<action parentName="edit" name="reset" text="Reset configuration"
+			object="service:configuration" methodName="reset" after="*">
+			<tooltip>Reset all configuration back to factory defaults</tooltip>
+			<confirmMessage>Reset: All user settings wil be lost. Continue?</confirmMessage>
+		</action>
+				
 	</contribution>
 	
 
@@ -973,6 +979,7 @@ SYSTEM TRAY
 			class="org.astrogrid.desktop.modules.system.HivemindFileSystemManager"
 			initialize-method="init"
 			log-property="logger">
+				<service>tmpFileStore</service>
 				<configuration>vfsProviders</configuration>
 				<configuration>vfsOperations</configuration>
 				<configuration>vfsExtensions</configuration>
@@ -982,7 +989,7 @@ SYSTEM TRAY
 				<set-object property="defaultProvider"
 				 value="instance:org.apache.commons.vfs.provider.url.UrlFileProvider" />
 				 <set-object property="replicator" value="service:replicator" />
-				 <set-object property="temporaryFileStore" value="service:tmpFileStore" />
+			<!-- 	 <set-object property="temporaryFileStore" value="service:tmpFileStore" /> -->
 				 <set property="baseFileString" value="${vfs.basefile}" />
 				 <set-object property="fileContentInfoFactory" value="instance:org.astrogrid.desktop.modules.system.AugmentedFileContentInfoFilenameFactory" />
 				<event-listener service-id="builtin.shutdown" />
@@ -1397,6 +1404,20 @@ UPDATE CHECKER
 		<startup object="service:update" />
 	</contribution>
 
+<!--  upgrade -->
+	<service-point id="upgrade" visibility="private" interface="java.lang.Runnable">
+		upgrade code - runs once for each new version, to fix bugs introduced in previous versions
+		<invoke-factory model="primitive">
+			<construct class="org.astrogrid.desktop.modules.system.Upgrade">
+				<string>${astrogrid.desktop.version}</string>
+				<service>configuration</service>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<contribution configuration-id="hivemind.Startup">
+		<startup object="service:upgrade" />
+	</contribution>
  </module> 
  
  
