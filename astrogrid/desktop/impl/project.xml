@@ -1,135 +1,133 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<extend>${basedir}/acr/project.xml</extend>
-	<artifactId>voexplorer</artifactId>
-	<name>VOExplorer</name>
-	<description>AstroGrid VOExplorer</description>
-	<shortDescription>
-		VOExplorer - Explore the Virtual Observatory
-	</shortDescription>
-
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" > 
+    <extend>${basedir}/acr/project.xml</extend>
+        <artifactId>voexplorer</artifactId>
+        <name>VOExplorer</name>
+        <description>
+			AstroGrid VOExplorer
+	</description>
+	<shortDescription>VOExplorer - Explore the Virtual Observatory</shortDescription>
+	
 	<!-- groups the implementation javadoc -->
-	<packageGroups>
-		<packageGroup>
-			<title>ACR Framework</title>
-			<packages>
-				org.astrogrid.desktop.framework*:org.astrogrid.desktop:org.astrogrid.acr.builtin
-			</packages>
-		</packageGroup>
-		<packageGroup>
-			<title>System Module</title>
-			<packages>org.astrogrid.desktop.modules.system*</packages>
-		</packageGroup>
-		<packageGroup>
-			<title>VO Modules</title>
-			<packages>
-				org.astrogrid.desktop.modules.ag*:org.astrogrid.desktop.modules.cds*:org.astrogrid.desktop.modules.ivoa*
-			</packages>
-		</packageGroup>
-		<packageGroup>
-			<title>UI Modules</title>
-			<packages>
-				org.astrogrid.desktop.modules.dialogs*:org.astrogrid.desktop.modules.ui:org.astrogrid.desktop.icons:org.astrogrid.desktop.modules.workflowBuilder*
-			</packages>
-		</packageGroup>
-	</packageGroups>
-	<build>
-		<sourceDirectory>src/java</sourceDirectory>
-		<unitTestSourceDirectory>test/java</unitTestSourceDirectory>
-		<unitTest>
-			<includes>
-				<include>**/*UnitTest.java</include>
-				<include>**/*IntegrationTest.java</include>
-			</includes>
+  <packageGroups>
+    <packageGroup>
+      <title>ACR Framework</title>
+      <packages>org.astrogrid.desktop.framework*:org.astrogrid.desktop:org.astrogrid.acr.builtin</packages>
+    </packageGroup>
+    <packageGroup>
+      <title>System Module</title>
+      <packages>org.astrogrid.desktop.modules.system*</packages>
+    </packageGroup>
+    <packageGroup>
+      <title>VO Modules</title>
+      <packages>org.astrogrid.desktop.modules.ag*:org.astrogrid.desktop.modules.cds*:org.astrogrid.desktop.modules.ivoa*:org.astrogrid.modules.vo*</packages>
+    </packageGroup>
+    <packageGroup>
+      <title>UI Modules</title>
+      <packages>org.astrogrid.desktop.modules.dialogs*:org.astrogrid.desktop.modules.ui*:org.astrogrid.desktop.icons:org.astrogrid.desktop.modules.adqlEditor*</packages>
+    </packageGroup>
+  </packageGroups>	
+        <build>
+                <sourceDirectory>src/java</sourceDirectory>
+                <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+                <unitTest>
+                        <includes>	
+                        <!--  
+                        	<include>**/*UnitTest.java</include>		
+                        	<include>**/*IntegrationTest.java</include>					
+                        -->
+                        	<include>**/AllRepeatableTests.java</include>
+                        </includes>
+			
+                        <resources>
+                                <resource>
+                                        <directory>${basedir}/test/java</directory>
+                                        <includes>
+                                                <include>**/*.properties</include>
+                                                <include>**/*.xml</include>
+                                                <include>**/*.xsl</include>
+                                                <include>**/*.dtd</include>
+                                                <include>**/*.xsd</include>
+                                                <include>**/*.vot</include>
+                                        </includes>
+                                </resource>								
+                        </resources>
+                </unitTest>
+                <resources>
+                        <resource>
+                        	<directory>${basedir}/src/java</directory>
+                        	<includes>
+                        		<include>*.properties</include>
+                        	    <include>**/hivedoc/*.*</include>                        		
+                        		<include>**/*.xml</include>
+                        		<include>**/*.png</include>
+                        		<include>**/*.jpg</include>
+                        		<include>**/*.html</include>
+                        		<include>**/*.xsl</include>
+                        		<include>**/*.gif</include> 
+                        		<include>**/*.dtd</include>
+                                <include>**/*.xsd</include>        
+                                <include>**/*.list</include><!--  ucd list -->    
+                                <include>**/*.py</include><!-- script templates -->            		
+                        	</includes>
+                        </resource>
 
-			<resources>
-				<resource>
-					<directory>${basedir}/test/java</directory>
-					<includes>
-						<include>**/*.properties</include>
-						<include>**/*.xml</include>
-						<include>**/*.xsl</include>
-						<include>**/*.dtd</include>
-						<include>**/*.xsd</include>
-						<include>**/*.vot</include>
-					</includes>
-				</resource>
-			</resources>
-		</unitTest>
-		<resources>
-			<resource>
-				<directory>${basedir}/src/java</directory>
-				<includes>
-					<include>*.properties</include>
-					<include>**/hivedoc/*.*</include>
-					<include>**/*.xml</include>
-					<include>**/*.png</include>
-					<include>**/*.jpg</include>
-					<include>**/*.html</include>
-					<include>**/*.xsl</include>
-					<include>**/*.gif</include>
-					<include>**/*.dtd</include>
-					<include>**/*.xsd</include>
-					<include>**/*.list</include><!--  ucd list -->
-					<include>**/*.py</include><!-- script templates -->
-				</includes>
-			</resource>
+                </resources>
+        </build>
 
-		</resources>
-	</build>
+		<!-- small set of reports to run when generating project docs
+			 -->
+		<reports>
+			<report>maven-changes-plugin</report>
+        <report>maven-javadoc-plugin</report>		
+        <report>maven-jxr-plugin</report>
+        <report>maven-license-plugin</report>        	
+		</reports>
 
-	<!-- small set of reports to run when generating project docs
-	-->
-	<reports>
-		<report>maven-changes-plugin</report>
-		<report>maven-javadoc-plugin</report>
-		<report>maven-jxr-plugin</report>
-		<report>maven-license-plugin</report>
-	</reports>
+        <dependencies>
 
-	<dependencies>
+  <!-- libraries needed for workbench gui -->
+ <dependency>
+	 <groupId>prefuse</groupId>
+	 <artifactId>prefuse</artifactId>
+	 <version>1.0-alpha</version>
+	 <type>jar</type>
+	 <properties>
+		 <dist.bundle>true</dist.bundle>		
+		 <strip>${strip.prefuse}</strip>  
+	 </properties>
+ </dependency>
+ 
+<dependency>
+	<artifactId>jcalendar</artifactId>
+	<groupId>flib</groupId>
+	<version>1.1.1</version>
+	<properties>		
+		<dist.bundle>true</dist.bundle>
+			    <strip>true</strip>    	                  
+	</properties>
+</dependency>  	
 
-		<!-- libraries needed for workbench gui -->
-		<dependency>
-			<groupId>prefuse</groupId>
-			<artifactId>prefuse</artifactId>
-			<version>1.0-alpha</version>
-			<type>jar</type>
-			<properties>
-				<dist.bundle>true</dist.bundle>
-				<strip>${strip.prefuse}</strip>
-			</properties>
-		</dependency>
-
-		<dependency>
-			<artifactId>jcalendar</artifactId>
-			<groupId>flib</groupId>
-			<version>1.1.1</version>
-			<properties>
-				<dist.bundle>true</dist.bundle>
-				<strip>true</strip>
-			</properties>
-		</dependency>
-		<!-- wizards -->
-		<dependency>
-			<artifactId>wizard</artifactId>
-			<groupId>wizard</groupId>
-			<url>https://wizard.dev.java.net/</url>
-			<version>1.0</version>
-			<properties>
-				<dist.bundle>true</dist.bundle>
-				<strip>true</strip>
-			</properties>
-		</dependency>
-		<!--  for templating -->
-		<dependency>
-			<artifactId>groovy-all</artifactId>
-			<groupId>groovy</groupId>
-			<version>1.0-beta-10</version><!--  FIXME : update this version. -->
-			<properties>
-				<dist.bundle>true</dist.bundle>
-				<strip>false</strip>
-			</properties>
-		</dependency>
-	</dependencies>
+<!-- wizards -->
+<dependency>
+	<artifactId>wizard</artifactId>
+	<groupId>wizard</groupId>
+	<url>https://wizard.dev.java.net/</url>
+	<version>1.0</version>
+	<properties>		
+		<dist.bundle>true</dist.bundle>
+			    <strip>true</strip>    	                  
+	</properties>	
+</dependency>
+<!--  for templating -->
+<dependency>
+	<artifactId>groovy-all</artifactId>
+	<groupId>groovy</groupId>
+	<version>1.0-beta-10</version><!--  FIXME : update this version. -->
+	<properties>		
+		<dist.bundle>true</dist.bundle>
+			    <strip>false</strip>    	                  
+	</properties>	
+</dependency>
+    </dependencies>
 </project>
