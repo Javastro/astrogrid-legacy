@@ -14,7 +14,7 @@ import org.astrogrid.acr.builtin.SessionManager;
  * @since Mar 20, 20076:40:12 PM
  */
 public interface SessionManagerInternal extends SessionManager{
-	/** attempt to login and authenticate. the principal currently associated with
+	/** attempt to login and authenticate the principal currently associated with
 	 * this thread.
 	 * if successful, will upgrade the principal
 	 * Else will leave it unchanged.

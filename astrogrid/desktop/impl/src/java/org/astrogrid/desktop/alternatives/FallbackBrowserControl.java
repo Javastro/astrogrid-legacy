@@ -1,4 +1,4 @@
-/*$Id: FallbackBrowserControl.java,v 1.3 2007/01/29 11:11:37 nw Exp $
+/*$Id: FallbackBrowserControl.java,v 1.4 2007/06/18 16:19:39 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,7 +40,6 @@ public class FallbackBrowserControl implements BrowserControl {
     /**
      * @throws MalformedURLException
      * @throws ACRException
-     * @see org.astrogrid.acr.system.BrowserControl#openURL(java.lang.String)
      */
     public void openURL(String stringUrl) throws MalformedURLException, ACRException {
         URL url = new URL(stringUrl);
@@ -75,6 +74,9 @@ public class FallbackBrowserControl implements BrowserControl {
 
 /* 
 $Log: FallbackBrowserControl.java,v $
+Revision 1.4  2007/06/18 16:19:39  nw
+javadoc fixes.
+
 Revision 1.3  2007/01/29 11:11:37  nw
 updated contact details.
 

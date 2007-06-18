@@ -1,4 +1,4 @@
-/*$Id: Module.java,v 1.4 2007/01/29 11:11:37 nw Exp $
+/*$Id: Module.java,v 1.5 2007/06/18 16:20:04 nw Exp $
  * Created on 09-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,11 +20,7 @@ import org.astrogrid.acr.builtin.ModuleDescriptor;
  */
 public interface Module  {
 
-    /**
-     * @param name
-     * @return
-     * @throws ACRException
-     */
+
     Object getComponent(String name) throws ACRException;
 
     Object getComponent(Class iface) throws ACRException;
@@ -36,6 +32,9 @@ public interface Module  {
 
 /* 
 $Log: Module.java,v $
+Revision 1.5  2007/06/18 16:20:04  nw
+javadoc fixes.
+
 Revision 1.4  2007/01/29 11:11:37  nw
 updated contact details.
 
