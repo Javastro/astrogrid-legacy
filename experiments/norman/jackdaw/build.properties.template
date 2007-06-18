@@ -1,0 +1,19 @@
+# Template build.properties file for Jackdaw.
+# Copy to build.properties, and substitute below the paths to Tomcat and SISC.
+
+# Context path
+app.path=/jackdaw
+
+# Tomcat installation directory.
+# This is the directory which should be assigned to the environment
+# variable CATALINA_HOME, that is, the directory containing bin/, webapps
+# and so on.
+catalina.home=<CATALINA_HOME>
+
+# Replace this with the host:port where your Tomcat lives
+#tomcat.hostport=localhost:8090
+tomcat.hostport=<HOSTPORT>
+
+# Manager username and password
+manager.username=manager
+manager.password=manager

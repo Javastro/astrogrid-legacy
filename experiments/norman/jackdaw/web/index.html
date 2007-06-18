@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Jackdaw</title>
+<link rel="stylesheet"
+      type="text/css"
+      href="base.css"/>
+</head>
+
+<body>
+
+<h1>Jackdaw -- find trinkets</h1>
+
+<p>This is Jackdaw version @VERSION@
+<img class='smallimage' src='jackdaw.jpg' alt='Image of jackdaw'/></p>
+
+<p>Given a URL, this helps you find more like it!</p>
+
+<p>That is, if you have one or more URLs you rather like, be they
+IVORN or plain HTTP URLs, this service will find you some more that it
+thinks might be similar.  It has a number of different definitions of
+`similar', but it gives you all of them, and lets you decide which
+one's useful.</p>
+
+<p>That's about all there is to it.</p>
+
+<p>Well, not really.  Right now, this is only a dummy service, and the
+only response it gives you is the same URLs you gave it.  But the
+interface shouldn't change....</p>
+
+<h2>Interface</h2>
+<p>The interface is dead simple.</p>
+
+<p>You can call the service either
+with an HTTP <code>GET</code> or an HTTP <code>POST</code>, giving it
+a single <code>url</code> parameter whose value is one or more URLs
+separated by commas.  That is, if you have an IVORN
+<code>ivo://example/wibble</code>, which you rather like the look of,
+then you can find similar ones by dereferencing</p>
+<blockquote>
+<code>@MYURL@/like?url=ivo://example/wibble</code>
+</blockquote>
+<p>or by posting <code>url=ivo://example/wibble</code> to the
+<code>@MYURL@/like</code> URL using MIME type
+<code>application/x-www-form-urlencoded</code> as usual.</p>
+
+<p>The response in either case is an XML document, which looks like this:</p>
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;suggestions&gt;
+&lt;group description="Identity suggestion"
+          type="http://ns.eurovotech.org/suggestor/group#identity"&gt;
+&lt;url&gt;ivo://wibble/res&lt;/url&gt;
+&lt;url&gt;ivo://buckle/my/shoe&lt;/url&gt;
+&lt;/group&gt;
+&lt;/suggestions&gt;
+</pre>
+<p>That arrives, as it damn well should, with a MIME type of
+<code>text/xml</code>.</p>
+
+<p>There can in principle be multiple <code>group</code> elements,
+each with their own <code>type</code> attribute.  Right now, though,
+there's only one, it always has type
+<code>http://ns.eurovotech.org/suggestor/group#identity</code>, and it
+contains exactly the URLs that were listed in the query.</p>
+
+<p>Any questions?</p>
+
+<div class='trailer'>
+<p><a href='http://nxg.me.uk' >Norman</a></p>
+</div>
+</body>
+</html>

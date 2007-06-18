@@ -1,0 +1,6 @@
+No docs to speak of as yet (this file is really just a stub, to keep
+the ant build tool happy).
+
+Build with 'ant build'
+Make a .war file with 'ant dist'
+Drop it in a Tomcat webapps dir...
