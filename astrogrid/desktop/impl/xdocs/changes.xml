@@ -14,11 +14,60 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="2007.3.alpha4" date="unreleased">
+<action dev="nw" type="add">
+	Added icons for types / capabilities of resources to voexplorer.
+</action>
+<action dev="nw" type="add">
+	Added filtering of boring system services from voexplorer
+</action>
+<action dev="nw" type="fix" due-to="dave@ast.cam.ac.uk">
+	Debugged -configFile and -configURL options. 
+	Updated -list to generate a configuration file that can be passed back to AR.
+</action>
+<action dev="nw" type="remove" due-to="dave@ast.cam.ac.uk">
+Removed confusing -D commandline option.
+</action>
+<action dev="nw" type="fix" due-to="dave@ast.cam.ac.uk">
+Fixed error reported as 
+org.astrogrid.desktop.modules.system.HivemindFileSystemManager does not contain a property named 'temporaryFileStore'.
+</action>
+<action dev="nw" type="add">
+  Added Configuration.reset() to the public AR interface. Provided access to this
+  from HTML and UI preferences interfaces.
+</action>
+<action dev="nw" type="fix">
+fixed system-properties-overriding-preferences bug. System properties now take precedence.
+</action>
+<action dev="nw" type="remove">
+	Removed scripting activities - performance was poor in the current approach.
+	Replace with a wizard-driven implementation.
+</action>
+<action dev="nw" type="fix">
+	Improved logging of startup process, and configured logging to a file.
+</action>
+<action dev="nw" type="fix">
+	Re-worked UI to remove use of popup modal dialogues where possible
+</action>
+<action dev="nw" type="fix">
+	Fixed behaviour of vomon on shutdown of cache.
+</action>
+<action dev="nw" type="fix">
+	Streamlined the startup process - parsing of CertificatesList, etc now
+	more on background threads.
+</action>
+<action dev="nw" type="fix">
+	Mended build process, added generation of javadoc, hivedoc, and configuration key docs.
+</action>
+<action dev="nw" type="fix">
+	Javadoc improvments
+</action>
 <action dev="jl" type="fix" issue="2152">
     First bug fixes for Query Builder after VOExplorer development.
     Requires new version of AdqlStoX: astrogrid.adqlstox.version=2007.2sx
     Requires new version of adql xmlbeans: astrogrid.adql_v1_0a2.version=1.2-b000xmlbeans 
 </action>
+</release>
 <release version="2007.3.alpha3" date="unreleased">
 	<action dev="nw" type="add">
 	Denoted which features of the UI are alpha / beta / unimproed quality.
