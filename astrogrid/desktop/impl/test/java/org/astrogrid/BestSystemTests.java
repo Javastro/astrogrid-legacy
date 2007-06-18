@@ -11,7 +11,7 @@ import org.astrogrid.desktop.modules.ag.vfs.AllVfsSystemTests;
 import org.astrogrid.desktop.modules.votech.AllVotechSystemTests;
 
 /** System tests that have been cleaned up, run in a sensible amount of time and
- * are fairly deterministic.
+ * are fairly deterministic. Useful to run occasionally during development.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 5, 20071:36:41 PM
  */
