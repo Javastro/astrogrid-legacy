@@ -1,4 +1,4 @@
-/*$Id: MessagingImpl.java,v 1.6 2007/01/29 16:45:08 nw Exp $
+/*$Id: MessagingImpl.java,v 1.7 2007/06/18 16:27:15 nw Exp $
  * Created on 28-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,9 +43,7 @@ public class MessagingImpl implements MessagingInternal{
     }
     private final Executor singleThread;
     private final Set listeners;
-    /**
-     * @see org.astrogrid.desktop.modules.ag.MessagingInternal#injectMessage(org.astrogrid.desktop.modules.ag.MessagingInternal.Message)
-     */
+
     public void injectMessage(final SourcedExecutionMessage m) {
     	if (m == null) {
     		logger.warn("null message injected - ignoring");
@@ -72,18 +70,14 @@ public class MessagingImpl implements MessagingInternal{
 			}
     }
 
-    /** 
-     * @see org.astrogrid.desktop.modules.ag.MessagingInternal#addEventProcessor(java.lang.String, org.astrogrid.desktop.modules.ag.MessagingInternal.MessageListener)
-     */
+
     public synchronized void addEventProcessor( MessageListener l) {
         if (! listeners.contains(l)) {
             listeners.add(l);
         }
     }
 
-    /**
-     * @see org.astrogrid.desktop.modules.ag.MessagingInternal#removeEventProcessor(org.astrogrid.desktop.modules.ag.MessagingInternal.MessageListener)
-     */
+
     public synchronized void removeEventProcessor(MessageListener l) {
         if (listeners.contains(l)) {
             listeners.remove(l);
@@ -96,6 +90,9 @@ public class MessagingImpl implements MessagingInternal{
 
 /* 
 $Log: MessagingImpl.java,v $
+Revision 1.7  2007/06/18 16:27:15  nw
+javadoc
+
 Revision 1.6  2007/01/29 16:45:08  nw
 cleaned up imports.
 

@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.20 2007/04/18 15:47:10 nw Exp $
+/*$Id: VospaceImpl.java,v 1.21 2007/06/18 16:27:15 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -174,14 +174,7 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
         }
     }
     
-    /**
-     * @param parentIvorn
-     * @return
-     * @throws InvalidArgumentException
-     * @throws NotFoundException
-     * @throws SecurityException
-     * @throws ServiceException
-     */
+
     public FileManagerNode node(URI ivorn) throws InvalidArgumentException, NotFoundException, SecurityException, ServiceException {
         try {
             Ivorn ivo = cvt(ivorn);
@@ -801,9 +794,7 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
     }
 
        
-    /**
-     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogin(org.astrogrid.desktop.modules.ag.UserLoginEvent)
-     */
+
     public void userLogin(UserLoginEvent e) {
     	// perceptual speedup.
     	(new BackgroundWorker(ui,"Prefetching Myspace root") {
@@ -815,10 +806,6 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
     }
 
 
-
-    /**
-     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogout(org.astrogrid.desktop.modules.ag.UserLoginEvent)
-     */
     public synchronized void userLogout(UserLoginEvent e) {
         this.client = null;
         this.home = null;
@@ -926,6 +913,9 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.21  2007/06/18 16:27:15  nw
+javadoc
+
 Revision 1.20  2007/04/18 15:47:10  nw
 tidied up voexplorer, removed front pane.
 

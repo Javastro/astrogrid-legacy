@@ -1,4 +1,4 @@
-/*$Id: StoreInternal.java,v 1.3 2007/01/29 11:11:35 nw Exp $
+/*$Id: StoreInternal.java,v 1.4 2007/06/18 16:27:15 nw Exp $
  * Created on 25-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,13 +19,16 @@ import jdbm.RecordManager;
 public interface StoreInternal {
     /**
      * access the configured JDBM manager
-     * @return
+     
      */
     RecordManager getManager();
 }
 
 /* 
  $Log: StoreInternal.java,v $
+ Revision 1.4  2007/06/18 16:27:15  nw
+ javadoc
+
  Revision 1.3  2007/01/29 11:11:35  nw
  updated contact details.
 

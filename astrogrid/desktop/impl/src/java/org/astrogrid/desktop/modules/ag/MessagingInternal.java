@@ -1,4 +1,4 @@
-/*$Id: MessagingInternal.java,v 1.4 2007/01/29 11:11:34 nw Exp $
+/*$Id: MessagingInternal.java,v 1.5 2007/06/18 16:27:15 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,7 +27,6 @@ public interface MessagingInternal {
      * */
     public void injectMessage(SourcedExecutionMessage m);
     /** add a consumer for messages
-     * @param condition a filter for events. may be null to indicate (all events)
      * @param l a listener 
      */
     void addEventProcessor(MessageListener l); 
@@ -85,6 +84,9 @@ public interface MessagingInternal {
 
 /* 
 $Log: MessagingInternal.java,v $
+Revision 1.5  2007/06/18 16:27:15  nw
+javadoc
+
 Revision 1.4  2007/01/29 11:11:34  nw
 updated contact details.
 

@@ -1,4 +1,4 @@
-/*$Id: MessageRecorderInternal.java,v 1.5 2007/01/29 11:11:35 nw Exp $
+/*$Id: MessageRecorderInternal.java,v 1.6 2007/06/18 16:27:15 nw Exp $
  * Created on 25-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,7 +37,7 @@ public interface MessageRecorderInternal {
     public void addRecorderListener(RecorderListener listener);
     public void removeRecorderListener(RecorderListener listener);
     
-    /** get a tree model of the message folders. nodes in the tree model will be {@link #Folder} objects */
+    /** get a tree model of the message folders. nodes in the tree model will be {@link Folder} objects */
     TreeModel getFolderList();
 
     /** get a table model that will display messages in a single folder */
@@ -97,6 +97,9 @@ public interface MessageRecorderInternal {
 
 /* 
  $Log: MessageRecorderInternal.java,v $
+ Revision 1.6  2007/06/18 16:27:15  nw
+ javadoc
+
  Revision 1.5  2007/01/29 11:11:35  nw
  updated contact details.
 

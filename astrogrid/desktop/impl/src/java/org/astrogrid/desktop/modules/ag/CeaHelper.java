@@ -1,4 +1,4 @@
-/*$Id: CeaHelper.java,v 1.5 2007/01/29 11:11:35 nw Exp $
+/*$Id: CeaHelper.java,v 1.6 2007/06/18 16:25:34 nw Exp $
  * Created on 20-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -92,7 +92,7 @@ public CommonExecutionConnectorClient createCEADelegate(URI executionId) throws 
 
     /** extract the appId from an execId 
      * @param executionId
-     * @return
+     * @return the application id portion of this execution id
      */
     public String getAppId(URI executionId) {
         return executionId.getFragment();
@@ -102,7 +102,7 @@ public CommonExecutionConnectorClient createCEADelegate(URI executionId) throws 
 
     /** returns true if this exec Id is local
      * @param executionId
-     * @return
+     * @return true if this execution id is local.
      */
     public boolean isLocal(URI executionId) {
         return executionId.getScheme().equals("local");
@@ -114,6 +114,9 @@ public CommonExecutionConnectorClient createCEADelegate(URI executionId) throws 
 
 /* 
 $Log: CeaHelper.java,v $
+Revision 1.6  2007/06/18 16:25:34  nw
+javadoc
+
 Revision 1.5  2007/01/29 11:11:35  nw
 updated contact details.
 

@@ -1,4 +1,4 @@
-/*$Id: JobsInternal.java,v 1.3 2007/01/29 11:11:35 nw Exp $
+/*$Id: JobsInternal.java,v 1.4 2007/06/18 16:27:15 nw Exp $
  * Created on 06-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ import org.astrogrid.workflow.beans.v1.Workflow;
 public interface JobsInternal extends Jobs {
     /** submit a workflow document for execution
      * 
-     * an internal variant of {@link Jobs#submitJob(org.w3c.dom.Document} 
+     * an internal variant of {@link Jobs#submitJob(org.w3c.dom.Document)} 
      * */
     public URI submitWorkflow(Workflow wf) throws InvalidArgumentException, ServiceException;
     /** create a new, initialized workflow document
@@ -37,6 +37,9 @@ public interface JobsInternal extends Jobs {
 
 /* 
 $Log: JobsInternal.java,v $
+Revision 1.4  2007/06/18 16:27:15  nw
+javadoc
+
 Revision 1.3  2007/01/29 11:11:35  nw
 updated contact details.
 

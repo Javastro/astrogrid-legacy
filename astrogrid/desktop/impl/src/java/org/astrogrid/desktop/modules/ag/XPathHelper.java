@@ -1,4 +1,4 @@
-/*$Id: XPathHelper.java,v 1.7 2007/01/29 11:11:35 nw Exp $
+/*$Id: XPathHelper.java,v 1.8 2007/06/18 16:27:15 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -71,7 +71,7 @@ public class XPathHelper {
     /** Create a namespace node for use in xpath. comes pre-initialized with the common registry namespaces - vr, vor, etc.
      * <p>
      * default namespace is the vr one.
-     * @return
+     * @return a namespace node
      * @throws FactoryConfigurationError
      * @throws ParserConfigurationException
      * @throws DOMException
@@ -104,6 +104,9 @@ public class XPathHelper {
 
 /* 
 $Log: XPathHelper.java,v $
+Revision 1.8  2007/06/18 16:27:15  nw
+javadoc
+
 Revision 1.7  2007/01/29 11:11:35  nw
 updated contact details.
 
