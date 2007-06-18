@@ -13,7 +13,7 @@ import org.astrogrid.desktop.modules.ui.voexplorer.srql.TermSRQL;
 import ca.odell.glazedlists.event.ListEventListener;
 
 /** takes care of persisting resource folders.
- * Provides a single model to which multople {@link RsourceFoldersView} can attach
+ * Provides a single model to which multople views can attach
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 5, 200712:24:41 PM
  */

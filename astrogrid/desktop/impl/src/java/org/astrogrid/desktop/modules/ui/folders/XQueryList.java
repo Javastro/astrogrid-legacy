@@ -3,10 +3,17 @@
  */
 package org.astrogrid.desktop.modules.ui.folders;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
 /** folder populated by a full xquery */
 public class XQueryList extends ResourceFolder {
+	/**
+	 * Logger for this class
+	 */
+	private static final Log logger = LogFactory.getLog(XQueryList.class);
 
 	public XQueryList() {
 		super("New XQuerylist",SmartList.defaultIcon);
@@ -23,6 +30,7 @@ public class XQueryList extends ResourceFolder {
 		this.query = query;
 	}
 	public void display(RegistryGooglePanel p) {
+		logger.info("Displaying " + getName());
 		p.displayQuery(getName(),query);
 	}
 

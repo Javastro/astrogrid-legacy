@@ -16,10 +16,7 @@ import org.astrogrid.desktop.modules.system.ui.UIContext;
  */
 public class StorageFoldersProvider extends AbstractFoldersProvider {
 
-	/**
-	 * @param parent
-	 * @param storage
-	 */
+
 	public StorageFoldersProvider(final UIContext parent, Preference workdirPreference) {
 		super(parent,new File(new File(workdirPreference.getValue()),"storageFolders.xml"));
 		logger.info("Reading/Writing storage folders to " + storage);

@@ -1,5 +1,8 @@
 package org.astrogrid.desktop.modules.ui.folders;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -13,6 +16,10 @@ import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
 
 /** represents a classical / static folder of resources */
 public class StaticList extends ResourceFolder  {
+	/**
+	 * Logger for this class
+	 */
+	private static final Log logger = LogFactory.getLog(StaticList.class);
 
 	public StaticList() {
 		super("New list",defaultIcon);
@@ -70,6 +77,7 @@ public class StaticList extends ResourceFolder  {
 		return resouceUris.size();
 	}
 	public void display(RegistryGooglePanel p) {
+		logger.info("Displaying " + getName());
 		p.displayIdSet(getName(),resouceUris);
 	}
 	public void edit(VOExplorerImpl voe) {
