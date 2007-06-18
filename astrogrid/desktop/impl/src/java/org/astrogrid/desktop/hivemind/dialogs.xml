@@ -188,9 +188,21 @@ REGISTRY GOOGLE
 			<inject object="cache:resources" />
 			<inject object="cache:bulk" />
 			<inject object="service:votech.vomon" />
+			<inject object="service:capabilityIconFactory" />
 			<inject object="preference:acr.advanced" />
 		</object>
 	</contribution>
+	
+		<!--  todo: refactor location of registryGooglePanel so that this icon factory
+		can be in ui module, and private to it. -->
+		<service-point id="capabilityIconFactory" 
+		interface="org.astrogrid.desktop.modules.ui.voexplorer.google.CapabilityIconFactory" >
+		Shared component that creates composite capability icons.
+		A service, as can be shared between all instances of voexplorer.
+		<create-instance model="primitive"
+			class="org.astrogrid.desktop.modules.ui.voexplorer.google.CapabilityIconFactoryImpl"
+			/>
+	</service-point>
 	
 	<implementation service-id="registryGoogle" if="property dialogs.registryGoogle.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
