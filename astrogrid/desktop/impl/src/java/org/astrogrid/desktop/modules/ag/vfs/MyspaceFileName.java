@@ -16,11 +16,7 @@ import org.astrogrid.store.Ivorn;
  */
 public class MyspaceFileName extends AbstractFileName {
 
-	/**
-	 * @param scheme
-	 * @param absPath
-	 * @param type
-	 */
+
 	public MyspaceFileName(String community, String user, String path, FileType type) {
 		super("ivo", path, type);
 		this.community = community;

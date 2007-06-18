@@ -1,4 +1,4 @@
-/*$Id: IBestMatchApplicationDescriptionLibrary.java,v 1.3 2006/08/15 10:15:34 nw Exp $
+/*$Id: IBestMatchApplicationDescriptionLibrary.java,v 1.4 2007/06/18 16:33:31 nw Exp $
  * Created on 24-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,9 +16,7 @@ import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 public interface IBestMatchApplicationDescriptionLibrary extends ApplicationDescriptionLibrary{
 
     /** returns true if this library contains an app matching the info objject
-     * 
-     * @param info
-     * @return
+
      */
     public boolean hasMatch(CeaApplication info);
 
@@ -26,6 +24,9 @@ public interface IBestMatchApplicationDescriptionLibrary extends ApplicationDesc
 
 /* 
  $Log: IBestMatchApplicationDescriptionLibrary.java,v $
+ Revision 1.4  2007/06/18 16:33:31  nw
+ javadoc fixes.
+
  Revision 1.3  2006/08/15 10:15:34  nw
  migrated from old to new registry models.
 

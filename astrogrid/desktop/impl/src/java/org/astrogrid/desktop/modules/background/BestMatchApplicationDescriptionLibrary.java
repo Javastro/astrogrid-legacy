@@ -1,4 +1,4 @@
-/*$Id: BestMatchApplicationDescriptionLibrary.java,v 1.6 2007/01/29 11:11:36 nw Exp $
+/*$Id: BestMatchApplicationDescriptionLibrary.java,v 1.7 2007/06/18 16:33:31 nw Exp $
  * Created on 20-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -50,9 +50,7 @@ public class BestMatchApplicationDescriptionLibrary extends BaseApplicationDescr
     private final Registry reg;
     
     
-    /**
-     * @see org.astrogrid.desktop.modules.background.IBestMatchApplicationDescriptionLibrary#hasMatch(org.astrogrid.acr.astrogrid.ApplicationInformation)
-     */
+
     public boolean hasMatch(CeaApplication info) {
     	return (info instanceof ConeService || info instanceof SiapService);
     } 
@@ -87,6 +85,9 @@ public class BestMatchApplicationDescriptionLibrary extends BaseApplicationDescr
 
 /* 
 $Log: BestMatchApplicationDescriptionLibrary.java,v $
+Revision 1.7  2007/06/18 16:33:31  nw
+javadoc fixes.
+
 Revision 1.6  2007/01/29 11:11:36  nw
 updated contact details.
 

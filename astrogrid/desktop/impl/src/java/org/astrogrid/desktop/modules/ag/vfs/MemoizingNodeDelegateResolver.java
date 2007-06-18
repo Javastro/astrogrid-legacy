@@ -27,9 +27,6 @@ import org.astrogrid.store.Ivorn;
  */
 public class MemoizingNodeDelegateResolver implements NodeDelegateResolver {
 
-    /**
-	 * @param prefs
-	 */
 	public MemoizingNodeDelegateResolver(BundlePreferences pref) {
 		this.pref = pref;
 	}

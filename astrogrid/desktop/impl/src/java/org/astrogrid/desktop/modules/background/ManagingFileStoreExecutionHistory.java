@@ -1,4 +1,4 @@
-/*$Id: ManagingFileStoreExecutionHistory.java,v 1.4 2007/01/29 11:11:36 nw Exp $
+/*$Id: ManagingFileStoreExecutionHistory.java,v 1.5 2007/06/18 16:33:31 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,9 +26,7 @@ import org.astrogrid.applications.manager.persist.FileStoreExecutionHistory;
  */
 public class ManagingFileStoreExecutionHistory extends FileStoreExecutionHistory {
 
-    /** Construct a new ManagingFileStoreExecutionHistory
-     * @param arg0
-     */
+  
     public ManagingFileStoreExecutionHistory(String dir) {
         super(new MyConf(dir));
         root = new File(dir);
@@ -79,6 +77,9 @@ public class ManagingFileStoreExecutionHistory extends FileStoreExecutionHistory
 
 /* 
 $Log: ManagingFileStoreExecutionHistory.java,v $
+Revision 1.5  2007/06/18 16:33:31  nw
+javadoc fixes.
+
 Revision 1.4  2007/01/29 11:11:36  nw
 updated contact details.
 

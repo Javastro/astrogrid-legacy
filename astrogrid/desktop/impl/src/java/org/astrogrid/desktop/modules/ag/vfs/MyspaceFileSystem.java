@@ -18,11 +18,7 @@ import org.astrogrid.filemanager.client.FileManagerClient;
  */
 public class MyspaceFileSystem extends AbstractFileSystem implements FileSystem {
 
-	/**
-	 * @param rootName
-	 * @param parentLayer
-	 * @param fileSystemOptions
-	 */
+
 	protected MyspaceFileSystem(MyspaceFileName rootName, FileManagerClient client, FileSystemOptions fileSystemOptions) {
 		super(rootName, null, fileSystemOptions);
 		this.client = client;
