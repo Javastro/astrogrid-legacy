@@ -1,4 +1,4 @@
-/*$Id: IconHelper.java,v 1.8 2007/01/29 10:56:50 nw Exp $
+/*$Id: IconHelper.java,v 1.9 2007/06/18 16:23:52 nw Exp $
  * Created on 06-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,7 +42,7 @@ public class IconHelper {
     
     /** load an icon from a url.
      * use this method in preference to <tt>new ImageIcon(url)</tt>, as this seems to cause security exceptions when running under webstart 
-     * @param url
+     * @param iconUrl url of the object to load
      * @return the icon object, or null if not found.
      */
     public static ImageIcon loadIcon(URL iconUrl) {
@@ -111,6 +111,9 @@ public class IconHelper {
 
 /* 
 $Log: IconHelper.java,v $
+Revision 1.9  2007/06/18 16:23:52  nw
+javadoc fix
+
 Revision 1.8  2007/01/29 10:56:50  nw
 added new icon for filechooser
 
