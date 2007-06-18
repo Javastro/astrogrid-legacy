@@ -7,6 +7,11 @@
     	<release version="(Pending Integration)">
      
           <action dev="kea" type="fix">
+             Branch PAL-KEA-2213.  Enhanced embedded installation 
+             documentation.
+          </action>
+     
+          <action dev="kea" type="fix">
              Branch PAL-KEA-2119.  This reduces the memory used by 
              storing records of completed queries (by slashing the amount
              of detail stored once queries are actually complete).
