@@ -38,6 +38,7 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -79,7 +80,7 @@ public class ResourceLists extends JList implements DropTargetListener,ActionLis
 
 /**
  * 
- * @param folderList an event list of {@link ResourceList}
+ * @param folderList an event list of {@link ResourceFolder}
  * @param parent the ui component to report background tasks to.
  */
 public ResourceLists(EventList folderList, VOExplorerImpl  parent) {
@@ -106,10 +107,18 @@ public ResourceLists(EventList folderList, VOExplorerImpl  parent) {
 			return l;
 		}
 	});
-	// build the button bar.
-	add = new JMenuItem("New",IconHelper.loadIcon("editadd16.png"));
-	add.setToolTipText("Create a new list or smartlist");
-	add.addActionListener(this);
+	// build the menu bar
+	addSmart = new JMenuItem("New Smart List",IconHelper.loadIcon("editadd16.png"));
+	addSmart.setToolTipText("Use rules to define a new list of resources");
+	addSmart.addActionListener(this);
+	
+	addStatic = new JMenuItem("New List",IconHelper.loadIcon("editadd16.png"));
+	addStatic.setToolTipText("Create a new list of resources");
+	addStatic.addActionListener(this);
+	
+	addXQuery = new JMenuItem("New XQuery List",IconHelper.loadIcon("editadd16.png"));
+	addXQuery.setToolTipText("Use a XQuery to define a new list of resources");
+	addXQuery.addActionListener(this);
 	
 	duplicate = new JMenuItem("Duplicate",IconHelper.loadIcon("editcopy16.png"));
 	duplicate.setToolTipText("Duplicate this list");
@@ -127,8 +136,12 @@ public ResourceLists(EventList folderList, VOExplorerImpl  parent) {
 	properties.addActionListener(this);
 	
 	popup = new JPopupMenu("Edit Lists");
-	popup.add(add);
-	popup.addSeparator();
+	JMenu nu = new JMenu("New");
+	nu.add(addSmart);
+	nu.add(addStatic);
+	nu.add(addXQuery);
+	popup.add(nu);
+//	popup.addSeparator();
 	popup.add(remove);
 	popup.add(properties);
 	popup.add(duplicate);
@@ -136,7 +149,9 @@ public ResourceLists(EventList folderList, VOExplorerImpl  parent) {
 	addMouseListener(this);
 }
 
-private final JMenuItem add;
+private final JMenuItem addStatic;
+private final JMenuItem addSmart;
+private final JMenuItem addXQuery;
 private final JMenuItem remove;
 private final JMenuItem properties;
 private final JMenuItem duplicate;
@@ -335,20 +350,14 @@ public void store(ResourceFolder f) {
 // called when button is pressed
 public void actionPerformed(ActionEvent e) {
 	ResourceFolder f = (ResourceFolder)getSelectedValue();	
-	int ix = getSelectedIndex();
-	if (e.getSource() == add) {
-		Object[] vals = new Object[]{"List","Smart list","XQuery list"};
-		Object v = JOptionPane.showInputDialog(this,"Which kind of list do you want to create?","New list",JOptionPane.QUESTION_MESSAGE,null,vals,vals[0]);
-		if (v == null) { 
-			return;
-		}
-		if ("Smart list".equals(v)) {
-			f = new SmartList();
-		} else if ("XQuery list".equals(v)) {
-			f = new XQueryList();
-		} else {
-			f =  new StaticList();
-		}
+	if (e.getSource() == addStatic) {
+		f =  new StaticList();
+		f.editAsNew(parent);
+	} else if (e.getSource() == addSmart) {
+		f = new SmartList();
+		f.editAsNew(parent);		
+	} else if (e.getSource() == addXQuery) {
+		f = new XQueryList();
 		f.editAsNew(parent);
 	} else if (e.getSource() == remove && f != null) {
 		if (f != null) {
