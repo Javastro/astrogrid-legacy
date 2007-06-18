@@ -1,4 +1,4 @@
-/*$Id: HtmlServlet.java,v 1.9 2007/03/22 19:03:48 nw Exp $
+/*$Id: HtmlServlet.java,v 1.10 2007/06/18 16:58:47 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -71,7 +71,8 @@ public class HtmlServlet extends AbstractReflectionServlet {
         }
         out.println("</dl>");
         out.println("<a href='./preferences'><h1>Preferences</h1></a>");
-        out.println("View and edit the configuration settings for this AR");
+        out.println("View and edit the configuration settings for this AR<p/>");
+        out.println("<a href='./system/configuration/reset'>Reset configuration to factory settings</a>");
         out.println("<a href='./xmlrpc'<h1>XML-RPC interface</h1></a>");
         out.println("Endpoint for the XML-RPC interface to this AR");
         footer(out);
@@ -79,7 +80,6 @@ public class HtmlServlet extends AbstractReflectionServlet {
     
     /**
      * @throws IOException
-     * @see org.astrogrid.desktop.modules.system.AbstractReflectionServlet#processModule(org.astrogrid.desktop.framework.Module, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     protected void processModule(ModuleDescriptor md, HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = response.getWriter();
@@ -95,9 +95,7 @@ public class HtmlServlet extends AbstractReflectionServlet {
 
 
 
-    /**
-     * @see org.astrogrid.desktop.modules.system.AbstractReflectionServlet#processComponent(Module, java.lang.Object, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
+
     protected void processComponent(ModuleDescriptor md,ComponentDescriptor cd, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = response.getWriter();
         header(out);
@@ -112,9 +110,7 @@ public class HtmlServlet extends AbstractReflectionServlet {
         footer(out);
     }
 
-    /**
-     * @see org.astrogrid.desktop.modules.system.AbstractReflectionServlet#processMethod(java.lang.String, java.lang.Object, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
+
     protected void processMethod(ModuleDescriptor md, ComponentDescriptor cd,MethodDescriptor methodDescriptor, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {        
         PrintWriter out = response.getWriter();
         header(out);
@@ -297,6 +293,9 @@ public class HtmlServlet extends AbstractReflectionServlet {
 
 /* 
 $Log: HtmlServlet.java,v $
+Revision 1.10  2007/06/18 16:58:47  nw
+Added link to 'Configuration.reset()'
+
 Revision 1.9  2007/03/22 19:03:48  nw
 added support for sessions and multi-user ar.
 
