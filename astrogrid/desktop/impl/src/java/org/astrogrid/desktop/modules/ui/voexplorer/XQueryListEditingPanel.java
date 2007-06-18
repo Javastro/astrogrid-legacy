@@ -110,9 +110,7 @@ public class XQueryListEditingPanel extends EditingPanel implements ActionListen
 	//@todo implement this by hand.
 public static class XQueryTokenMarker extends SQLTokenMarker {
 
-		/**
-		 * @param k
-		 */
+
 		public XQueryTokenMarker() {
 			super(getKeywordMap(),true);
 		}

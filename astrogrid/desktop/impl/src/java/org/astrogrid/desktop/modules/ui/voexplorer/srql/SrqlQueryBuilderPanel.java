@@ -139,7 +139,6 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 	/** check that we can display the supplied query in this panel.
 	 * any query constructed previously by this panel can be displayed in it.
 	 * @param query
-	 * @return
 	 */
 	public boolean canDisplayQuery(SRQL query) {
 		PanelVerifyingVisitor v = new PanelVerifyingVisitor();
@@ -348,7 +347,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 			vals.add(new DescribedValue("Image","Image access service (SIAP)"));
 			vals.add(new DescribedValue("Spectrum","Spectrum access service (SSAP)"));
 			vals.add(new DescribedValue("Time","Time Series access service (STAP)"));
-			vals.add(new DescribedValue("CeaApplication","Offline application (CEA service)"));
+			vals.add(new DescribedValue("CeaApplication","Offline application (CEA)"));
 			vals.add(new DescribedValue("Registry",""));
 			vals.add(new DescribedValue("Service","Other services"));			
 		}}

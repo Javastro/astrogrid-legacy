@@ -37,9 +37,7 @@ import ca.odell.glazedlists.swing.AutoCompleteSupport;
  * @since Apr 25, 20071:41:00 AM
  */
 public class UcdClauseTemplate extends DescribedEnumerationTemplate {
-	/**
-	 * @param name
-	 */
+
 	public UcdClauseTemplate() {
 		super("Any column UCD","ucd");
 	} 

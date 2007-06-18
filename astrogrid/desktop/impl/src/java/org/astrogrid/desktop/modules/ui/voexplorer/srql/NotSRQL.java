@@ -47,7 +47,6 @@ public class NotSRQL extends SRQL {
 	/**
 		 * toString methode: creates a String representation of the object
 		 * @return the String representation
-		 * @author info.vancauwenberge.tostring plugin
 	
 		 */
 		public String toString() {

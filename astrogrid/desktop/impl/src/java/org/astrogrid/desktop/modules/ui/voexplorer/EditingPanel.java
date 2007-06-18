@@ -45,7 +45,6 @@ public abstract class EditingPanel extends JPanel {
 
 	/** extend this to add in further validation - 
 	 * you'll have to add suitable event listeners to trigger it too 
-	 * @return
 	 */
 	protected boolean shouldOkBeEnabled() {
 		return isNameNonEmpty();
