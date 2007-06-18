@@ -11,6 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.CacheStrategy;
 import org.apache.commons.vfs.FileSystemException;
+import org.apache.commons.vfs.impl.DefaultFileReplicator;
 import org.apache.commons.vfs.impl.DefaultFileSystemManager;
 import org.apache.commons.vfs.operations.FileOperationProvider;
 import org.apache.commons.vfs.provider.FileProvider;
@@ -31,7 +32,8 @@ public class HivemindFileSystemManager extends DefaultFileSystemManager implemen
 	 * @throws FileSystemException 
 	 * 
 	 */
-	public HivemindFileSystemManager(Map providers, Map operations, Map extensions, Map mimetypes) throws FileSystemException {
+	public HivemindFileSystemManager(DefaultFileReplicator tmpFileStore,Map providers, Map operations, Map extensions, Map mimetypes) throws FileSystemException {
+		setTemporaryFileStore(tmpFileStore);
 		for (Iterator i = providers.entrySet().iterator(); i.hasNext();) {
 			Map.Entry e = (Map.Entry) i.next();
 			logger.info("Adding provider for " + e.getKey());					
