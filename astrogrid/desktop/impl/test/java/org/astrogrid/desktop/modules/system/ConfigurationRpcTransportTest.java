@@ -1,4 +1,4 @@
-/*$Id: ConfigurationRpcTransportTest.java,v 1.4 2007/03/22 19:03:48 nw Exp $
+/*$Id: ConfigurationRpcTransportTest.java,v 1.5 2007/06/18 17:45:03 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,6 +20,7 @@ import junit.framework.TestSuite;
 
 import org.apache.xmlrpc.XmlRpcClient;
 import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.ARTestSetup;
@@ -109,6 +110,9 @@ public static class ConfigurationXmlRpcClient implements Configuration {
 			throw new RuntimeException("never reached");			
 		}
 	}
+	public void reset() throws ServiceException {
+		throw new RuntimeException("Unimplemented");
+	}
 }
   
 }
@@ -116,6 +120,9 @@ public static class ConfigurationXmlRpcClient implements Configuration {
 
 /* 
 $Log: ConfigurationRpcTransportTest.java,v $
+Revision 1.5  2007/06/18 17:45:03  nw
+fixed test to work with interface change.
+
 Revision 1.4  2007/03/22 19:03:48  nw
 added support for sessions and multi-user ar.
 
