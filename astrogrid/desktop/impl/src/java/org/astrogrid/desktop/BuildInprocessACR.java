@@ -1,4 +1,4 @@
-/*$Id: BuildInprocessACR.java,v 1.7 2007/01/29 11:11:35 nw Exp $
+/*$Id: BuildInprocessACR.java,v 1.8 2007/06/18 16:19:14 nw Exp $
  * Created on 28-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.desktop;
 
 import java.lang.reflect.Method;
+import java.security.Principal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,6 +19,7 @@ import org.apache.hivemind.Registry;
 import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.desktop.framework.ACRInternal;
 import org.astrogrid.desktop.framework.ReflectionHelper;
+import org.astrogrid.desktop.framework.SessionManagerInternal;
 import org.astrogrid.desktop.hivemind.Launcher;
 
 /** class that assembles and creates a new in-process ACR.
@@ -103,6 +105,11 @@ public class BuildInprocessACR  {
     /** create ansd start the ACR instance */
     public void start() {
     	launcher.run();
+		// now associate the current thread with the default AR session
+    	//@fixme - document how to adopt a session when calling AR from new threads.
+		SessionManagerInternal s = (SessionManagerInternal)getHivemindRegistry().getService(SessionManagerInternal.class);
+		Principal principal = s.findSessionForKey(s.getDefaultSessionId());
+		s.adoptSession(principal);    	
     }
     /** stop the ACR */
     public void stop() {
