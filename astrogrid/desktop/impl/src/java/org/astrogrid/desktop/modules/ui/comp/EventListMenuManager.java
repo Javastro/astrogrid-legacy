@@ -29,7 +29,7 @@ public class EventListMenuManager implements ListEventListener {
 	/**
 	 * 
 	 * @param el the list to produce a view for.
-	 * @param popup the popup menu to display items in
+	 * @param menu the popup menu to display items in
 	 * @param reverse if true, display the items in reverse order.
 	 */
 	public EventListMenuManager(final EventList el, final JMenu menu, boolean reverse) {

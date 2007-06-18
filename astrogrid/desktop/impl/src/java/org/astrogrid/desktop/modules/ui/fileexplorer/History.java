@@ -150,7 +150,6 @@ public class History  {
 	
 	/** return how many items may be stored in the previous history before 
 	 * locations start to get dropped off.
-	 * @return
 	 */
 	public int getMaxHistorySize() {
 		return previousStack.sz;
@@ -165,7 +164,6 @@ public class History  {
 	 * can be used for event listening, and also for listing options.
 	 * last item of this list will be the current location.
 	 * Shouldn't be used to manipulate the history.
-	 * @return
 	 */
 	public EventList getPreviousList() {
 		return previousStack.getEventList();
@@ -173,7 +171,6 @@ public class History  {
 	/** access the event list used to store the next locations.
 	 * can be used for event listening, and also for displaying values.
 	 * Shooudn't be used to manipulate the history.
-	 * @return
 	 */
 	public EventList getNextList() {	
 		return nextStack.getEventList();

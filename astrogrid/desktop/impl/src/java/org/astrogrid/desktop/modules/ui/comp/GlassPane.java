@@ -1,4 +1,4 @@
-/*$Id: GlassPane.java,v 1.1 2007/03/08 17:44:02 nw Exp $
+/*$Id: GlassPane.java,v 1.2 2007/06/18 16:44:36 nw Exp $
  * Created on 14-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,7 +44,6 @@ public class GlassPane extends JComponent implements AWTEventListener
     private Component activeComponent;
 /**
  * GlassPane constructor comment.
- * @param Container a 
  */
 protected GlassPane(Component activeComponent)
 {
@@ -192,6 +191,9 @@ public void setVisible(boolean value)
 
 /* 
 $Log: GlassPane.java,v $
+Revision 1.2  2007/06/18 16:44:36  nw
+javadoc fixes.
+
 Revision 1.1  2007/03/08 17:44:02  nw
 first draft of voexplorer
 

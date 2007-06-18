@@ -1,4 +1,4 @@
-/*$Id: ConeProtocol.java,v 1.13 2007/05/03 19:20:43 nw Exp $
+/*$Id: ConeProtocol.java,v 1.14 2007/06/18 16:42:36 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,9 +30,7 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
  */
 public class ConeProtocol extends SpatialDalProtocol {
 
-    /** Construct a new ConeProtocol
-     * @param name
-     */
+
     public ConeProtocol(Registry reg, Cone cone) {
         super("Catalogues");
         this.reg = reg;
@@ -51,9 +49,6 @@ public class ConeProtocol extends SpatialDalProtocol {
         return result;
     }
 
-    /**
-     * @see org.astrogrid.desktop.modules.ui.scope.DalProtocol#createRetriever(org.astrogrid.acr.astrogrid.ResourceInformation, double, double, double, double)
-     */
     public Retriever createRetriever(UIComponent parent,Service i,double ra, double dec, double raSize, double decSize) {
  //Replaced with a simpler version       return new ConeRetrieval(parent,i,getPrimaryNode(),getVizModel(),cone,ra,dec,raSize);
         return new CatalogTerminalConeRetrieval(parent,i,getPrimaryNode(),getVizModel(),cone,ra,dec,raSize);
@@ -101,6 +96,9 @@ public class ConeProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: ConeProtocol.java,v $
+Revision 1.14  2007/06/18 16:42:36  nw
+javadoc fixes.
+
 Revision 1.13  2007/05/03 19:20:43  nw
 removed helioscope.merged into uberscope.
 

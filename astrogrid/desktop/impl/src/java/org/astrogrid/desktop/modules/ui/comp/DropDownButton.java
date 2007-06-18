@@ -179,7 +179,6 @@ public class DropDownButton extends JButton implements ActionListener {
 	/**
 	 * Adds a component to the popup
 	 * @param component
-	 * @return
 	 */
 	public Component addComponent(Component component) {
 		return popup.add(component);

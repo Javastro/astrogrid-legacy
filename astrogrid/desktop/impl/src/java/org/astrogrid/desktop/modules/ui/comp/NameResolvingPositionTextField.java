@@ -14,13 +14,11 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 /** Enhances standard posion text field by also accepting  object names - these are
  * resolved into positions using simbad.
  * <p/>
- * Usage. Construct. Then call {@link #setSesame(Sesame)}. Component is now configured.
- * <p/>
  * If the user enters an input into the field that the superclass parser fails to parse (i.e. not in the format ra,dec)
  * then this class contacts sesame in a background thread to attempt to resolve the name.
  * <p/>
  * While the connection to sesame is occurring, the internal model is set to a temporary 'duff' value
- * - at this point, calling {@link #getPosition()} will return a point containing {@link Double.NaN} for both
+ * - at this point, calling {@link #getPosition()} will return a point containing {@link java.lang.Double#NaN} for both
  * ra and dec. 
  * <p/>
  * Once the resolving process completes, the internal model is updated to the correct value,
@@ -88,7 +86,6 @@ public class NameResolvingPositionTextField extends PositionTextField {
      * 
      * Can be used in client code to resolve by hand if value is not resolved already and client
      * code is unable to wait.
-     * @return
      */
     public String getObjectName() {
     	return objectName;
@@ -122,9 +119,6 @@ public class NameResolvingPositionTextField extends PositionTextField {
     
     private SesamePositionBean pos = new SesamePositionBean();
 
-	/**
-	 * @return
-	 */
 	public SesamePositionBean getPositionAsSesameBean() {
 		return pos;
 	}

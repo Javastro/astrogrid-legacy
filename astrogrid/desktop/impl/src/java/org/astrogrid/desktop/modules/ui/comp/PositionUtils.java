@@ -124,7 +124,7 @@ private PositionUtils() {
    * @param unitType the type to be converted in currently only degrees and radians.
    * @param raPosition boolean to check if this is the "ra" part of the string. Makes a difference in conversions from
    * sexagesimal dealing with hms (hour-minuts-seconds) and dms (degrees-minutes-seconds) 
-   * @return
+   * 
    * @deprecated  am wary about this method - it does too much, depending what flags and values are passed into it.
    * I much prefer methods that do one thing well - then the client can select what is intended to happen by calling specific method names,
    * rather than relying on internal magic to 'do the right thing'

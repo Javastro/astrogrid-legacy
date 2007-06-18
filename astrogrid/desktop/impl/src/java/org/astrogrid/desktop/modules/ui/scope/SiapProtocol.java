@@ -1,4 +1,4 @@
-/*$Id: SiapProtocol.java,v 1.9 2007/03/08 17:43:56 nw Exp $
+/*$Id: SiapProtocol.java,v 1.10 2007/06/18 16:42:36 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,6 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 public class SiapProtocol extends SpatialDalProtocol {
 
     /** Construct a new SiapProtocol
-     * @param name
      */
     public SiapProtocol(Registry reg,Siap siap) {
         super("Images");
@@ -48,9 +47,7 @@ public class SiapProtocol extends SpatialDalProtocol {
         return result;        
     } 
 
-    /**
-     * @see org.astrogrid.desktop.modules.ui.scope.DalProtocol#createRetriever(org.astrogrid.acr.astrogrid.ResourceInformation, double, double, double, double)
-     */
+
     public Retriever createRetriever(UIComponent parent,Service i, double ra, double dec, double raSize, double decSize) {
         return new SiapRetrieval(parent,i,getPrimaryNode(),getVizModel(),siap,ra,dec,raSize,decSize);
     }
@@ -72,6 +69,9 @@ public class SiapProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: SiapProtocol.java,v $
+Revision 1.10  2007/06/18 16:42:36  nw
+javadoc fixes.
+
 Revision 1.9  2007/03/08 17:43:56  nw
 first draft of voexplorer
 

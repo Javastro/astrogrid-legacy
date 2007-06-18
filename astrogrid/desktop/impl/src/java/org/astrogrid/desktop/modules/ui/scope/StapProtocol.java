@@ -1,4 +1,4 @@
-/*$Id: StapProtocol.java,v 1.8 2007/05/03 19:20:43 nw Exp $
+/*$Id: StapProtocol.java,v 1.9 2007/06/18 16:42:36 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,8 +27,7 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
  */
 public class StapProtocol extends TemporalDalProtocol {
 
-    /** Construct a new StapProtocol
-     * @param name
+    /** Construct a new StapProtocols
      */
     public StapProtocol(     Registry reg,Stap stap) {
         super("Timed Data");
@@ -77,6 +76,9 @@ public class StapProtocol extends TemporalDalProtocol {
 
 /* 
 $Log: StapProtocol.java,v $
+Revision 1.9  2007/06/18 16:42:36  nw
+javadoc fixes.
+
 Revision 1.8  2007/05/03 19:20:43  nw
 removed helioscope.merged into uberscope.
 

@@ -17,7 +17,7 @@ import ca.odell.glazedlists.EventList;
 public class EventListDropDownButton extends DropDownButton {
 	/**
 	 * cnstruct a drop-down button list, 
-	 * @param ico the icon for the button
+	 * @param iconName the icon for the button
 	 * @param el the event list to show items for
 	 * @param reverse whether to display items in reverse order or not.
 	 */

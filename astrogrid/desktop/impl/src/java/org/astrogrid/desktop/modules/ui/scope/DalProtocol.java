@@ -1,4 +1,4 @@
-/*$Id: DalProtocol.java,v 1.10 2007/05/03 19:20:42 nw Exp $
+/*$Id: DalProtocol.java,v 1.11 2007/06/18 16:42:36 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -50,7 +50,6 @@ public abstract class DalProtocol {
     
     /** access the primary node - from where all other results from this protocol
      * will be rooted
-     * @return
      */
     public final TreeNode getPrimaryNode() {
         return primaryNode;
@@ -76,7 +75,6 @@ public abstract class DalProtocol {
     
     /** produce a list of all known services of this protocol
      *  -- typically by querying the registry
-     * @return
      */
     public abstract Service[] listServices() throws Exception;
     
@@ -92,6 +90,9 @@ public abstract class DalProtocol {
 
 /* 
 $Log: DalProtocol.java,v $
+Revision 1.11  2007/06/18 16:42:36  nw
+javadoc fixes.
+
 Revision 1.10  2007/05/03 19:20:42  nw
 removed helioscope.merged into uberscope.
 

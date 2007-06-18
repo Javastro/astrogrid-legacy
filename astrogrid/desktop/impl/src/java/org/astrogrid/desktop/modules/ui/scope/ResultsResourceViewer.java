@@ -25,13 +25,7 @@ import ca.odell.glazedlists.swing.EventSelectionModel;
  */
 public class ResultsResourceViewer extends JPanel implements ResourceViewer {
 
-	/**
-	 * @param files
-	 * @param currentSelection
-	 * @param view
-	 * @param icons
-	 * @param dnd
-	 */
+
 	public ResultsResourceViewer( ) {
 		label = new JLabel();
 		add(label);

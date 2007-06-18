@@ -78,7 +78,6 @@ public class ScopeTransferableFactory{
 
 	/** factory method - builds fileObjects from the selection, then
 	 * creates a FileObjectLisTransferable.
-	 * @return
 	 */
 	public Transferable create(FocusSet selection) {
 		List l = new ArrayList();

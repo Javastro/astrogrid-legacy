@@ -48,9 +48,7 @@ public class AllVizierProtocol extends SpatialDalProtocol {
 	private static final Log logger = LogFactory
 			.getLog(AllVizierProtocol.class);
 
-	/**
-	 * @param name
-	 */
+
 	public AllVizierProtocol(Cone cone) {
 		super("VizieR Tables");
 		this.cone = cone;

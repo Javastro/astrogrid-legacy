@@ -144,7 +144,6 @@ public  class VizModel implements QueryResultSummarizer {
 	/** Build a transferable that represents the interesting parts of the selection
 	 * as file objects.
 	 * @future reimplement so this is a single object, repopulated on each selection change.
-	 * @return
 	 */
 	public Transferable getSelectionTransferable() {
 		return transferableFactory.create(getSelectionFocusSet());

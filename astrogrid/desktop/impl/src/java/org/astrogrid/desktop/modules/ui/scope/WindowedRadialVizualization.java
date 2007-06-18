@@ -41,12 +41,10 @@ import edu.berkeley.guir.prefusex.layout.RadialTreeLayout;
  *windowing filter - displays nearer neighbours, not entire graph.
  *based on node type, adjusts the 'window' size - so we don't get an explosion of nodes on the display
  * based on edu.berkeley.guir.prefuse.demos.RadialGraphDemo
- * @return
  */
 
 public class WindowedRadialVizualization extends Vizualization {
 /** Construct a new Radial
-     * @param name
      */
     public WindowedRadialVizualization(VizualizationManager vizs, JPopupMenu menu, UIComponent parent) {
         super("Radial", vizs);
