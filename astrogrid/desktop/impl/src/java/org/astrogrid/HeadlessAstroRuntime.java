@@ -3,6 +3,8 @@
  */
 package org.astrogrid;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.hivemind.Launcher;
 
 /** variant of astro runtime in headless (non-ui) mode.<p>
@@ -12,11 +14,12 @@ import org.astrogrid.desktop.hivemind.Launcher;
  * @since Apr 11, 20062:49:32 AM
  */
 public class HeadlessAstroRuntime {
-
+	private static final Log logger = LogFactory.getLog("startup");
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		logger.info("Starting Headless AstroRuntime");
 		CmdLineParser parser = new CmdLineParser();
 		Launcher l = parser.parse(args,"asr");		
 
