@@ -1,4 +1,4 @@
-/*$Id: VOExplorerImpl.java,v 1.2 2007/05/10 19:35:27 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.3 2007/06/18 16:40:27 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,9 @@
  *
  **/
 package org.astrogrid.desktop.modules.ui.voexplorer;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -55,10 +58,15 @@ import com.l2fprod.common.swing.JTaskPane;
  */
 public class VOExplorerImpl extends UIComponentImpl 
 	implements ListSelectionListener, ActionListener, RegistryGooglePanel.LoadListener {
+	/**
+	 * Logger for this class
+	 */
+	private static final Log logger = LogFactory.getLog(VOExplorerImpl.class);
 
 	public VOExplorerImpl( final UIContext context, final ActionContributionBuilder activityBuilder
 			,final UIContributionBuilder menuBuilder, EventList folders, RegistryGooglePanel google, QuerySizer sizer) {
 		super(context);
+		logger.info("Constructing new VOExplorer");
 		this.setSize(800, 600);    
 		getContext().getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.voexplorer");        
 		JPanel pane = getMainPanel();
@@ -145,7 +153,7 @@ public class VOExplorerImpl extends UIComponentImpl
 		this.setContentPane(pane);
 		this.setTitle("VO Explorer");
 		setIconImage(IconHelper.loadIcon("search16.png").getImage());  
-		
+		logger.info("New VOExplorer - Completed");
 		// finally, display first folder.
 		resourcesFolders.setSelectedIndex(0);
 		((ResourceFolder)folders.get(0)).display(google);
