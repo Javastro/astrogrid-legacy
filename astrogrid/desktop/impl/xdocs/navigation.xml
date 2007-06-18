@@ -13,6 +13,9 @@
     <menu name="Navigation">
 	<item name="Home" href="/index.html" />
 	<item name="History" href="/changes-report.html" />
+	<item name="Hivedoc" href="/hivedoc/index.html" />
+	<item name="Javadoc" href="/apidocs/index.html" />
+	<item name="Config Doc" href="/config.txt" />
 		
     </menu>
 
