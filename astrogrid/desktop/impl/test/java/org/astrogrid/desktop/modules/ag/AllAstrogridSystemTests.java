@@ -1,4 +1,4 @@
-/*$Id: AllAstrogridSystemTests.java,v 1.5 2007/04/18 15:47:10 nw Exp $
+/*$Id: AllAstrogridSystemTests.java,v 1.6 2007/06/18 16:14:09 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,7 +30,8 @@ public class AllAstrogridSystemTests {
 
     public static Test suite() {
         TestSuite suite = new TestSuite("System Tests for AstroGrid Module");
-        suite.addTestSuite(MyspaceSystemTest.class);     
+        //deprecate myspace now - moving over to vfs.
+//        suite.addTestSuite(MyspaceSystemTest.class);     
        suite.addTestSuite(ApplicationsSystemTest.class); 
         // deprecated - don't care about it enoug anymore
        // riun the test by hand if important. 
@@ -43,6 +44,9 @@ public class AllAstrogridSystemTests {
 
 /* 
 $Log: AllAstrogridSystemTests.java,v $
+Revision 1.6  2007/06/18 16:14:09  nw
+commented out myspace system tests - too troublesome, and hopefully not long for this world.
+
 Revision 1.5  2007/04/18 15:47:10  nw
 tidied up voexplorer, removed front pane.
 
