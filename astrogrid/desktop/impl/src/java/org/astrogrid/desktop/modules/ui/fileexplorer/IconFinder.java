@@ -26,7 +26,7 @@ public class IconFinder {
 	public static final String FOLDER = "folder16.png";
 	public static final String FILE = "document16.png";
 	public static final String EMPTY_FILE = "fileempty16.png";
-	public static final String UNKNOWN = "filebroken6.png";
+	public static final String UNKNOWN = "filebroken16.png";
 	public static final Map typeMap = new HashMap();
 	static {
 		typeMap.put("application/pdf","filepdf16.png");
@@ -38,7 +38,7 @@ public class IconFinder {
 		typeMap.put("application/xml","filexml16.png");
 		typeMap.put("text/plain","filetext16.png");
 		typeMap.put("text/html","filehtml16.png");
-		typeMap.put("image/jpeg","fileimage16.ppng");
+		typeMap.put("image/jpeg","fileimage16.png");
 		typeMap.put("image/png","fileimage16.png");
 		typeMap.put("image/gif","fileimage16.png");
 		typeMap.put("image/tiff","fileimage16.png");
