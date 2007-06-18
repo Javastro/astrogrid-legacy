@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.4 2007/05/18 06:18:10 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.5 2007/06/18 16:41:43 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -62,6 +62,7 @@ import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.actions.DevSymbols;
 import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
+import org.astrogrid.desktop.modules.ui.voexplorer.google.CapabilityIconFactory;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.FilterPipelineFactory;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.FormattedResourceViewer;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceFormViewer;
@@ -277,6 +278,7 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 	protected final RegistryInternal reg;
 	protected final Ehcache resources ;
 	protected final VoMon vomon;
+	protected final CapabilityIconFactory iconFac;
 	protected final Ehcache bulk;
 	protected final Preference advancedPreference;
 	protected final ResourceViewer  xmlPane;
@@ -305,17 +307,16 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 
 	/** Construct a new RegistryChooserPanel
 	 * 
-	 * @param uiParent parent component
 	 * @param reg used to perform the query
 	 * @param browser used to display external resources
 	 * @param regBrowser used to display related registry entires.
-	 * @param fac caches resources.
-	 * @param vomon used to annotate registry entries with availability information
+	 * @param resources caches resources.
+	 * @param vm used to annotate registry entries with availability information
 	 * @param pref controls whether to display 'advanced' features of the ui.
 	 */
 	public RegistryGooglePanel(final RegistryInternal reg, final BrowserControl browser, final RegistryBrowser regBrowser, 
 			final Ehcache resources, final Ehcache bulk
-			, final VoMon vm, Preference pref) {
+			, final VoMon vm, final CapabilityIconFactory iconFac,Preference pref) {
 		super();    
 		this.parent = new UIComponentBodyguard();
 		this.reg = reg;
@@ -323,6 +324,7 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 		this.bulk = bulk;
 		this.advancedPreference = pref;
 		this.vomon = vm;
+		this.iconFac = iconFac;
 
 		// prelims
 		//this.setSize(new Dimension(500,800));
@@ -363,7 +365,7 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 		currentResourceInView.addListSelectionListener(this); // assume this happens on EDT?
 		
 		FormLayout form = new FormLayout(
-				"1dlu, pref,1dlu,pref,2dlu,left:pref:grow,2dlu,right:30dlu,left:60dlu,6dlu,70dlu,1dlu,pref,1dlu" // cols
+				"1dlu, pref,1dlu,pref,2dlu,left:pref:grow,2dlu,right:30dlu,left:60dlu,6dlu,70dlu,pref,pref,1dlu" // cols
 				,"pref" // rows
 				);
 		PanelBuilder builder = new PanelBuilder(form);
@@ -391,6 +393,7 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 		final JTextField filterField = mPipeline.getTextField();
 		CSH.setHelpIDString(filterField, "reg.filter");
 		builder.add(filterField,cc.xy(11, 1));
+		builder.add(mPipeline.getSystemToggleButton(),cc.xy(12,1));
 		builder.add(mPipeline.getExpandButton(),cc.xy(13, 1));
 		toolbar = builder.getPanel();
 		
@@ -453,12 +456,12 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 	}
 	/** called to create the format definition of the central table - maybe overridden by subclasses */
 	protected TableFormat createTableFormat() {
-		return new ResourceTableFomat(vomon);
+		return new ResourceTableFomat(vomon,iconFac);
 	}
 	
 	/** called to create the central table - may be overridden by subclasses */
 	protected ResourceTable createTable(EventTableModel model,EventList list) {
-		return new ResourceTable(model,list,vomon);
+		return new ResourceTable(model,list,vomon,iconFac);
 	}
 
 
@@ -649,15 +652,12 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 
 	/** access the 'toolbar' for this component - it's up to the hosting
 	 * application to display this in some appropriate place.
-	 * @return
 	 */
 	public JComponent getToolbar() {
 		return toolbar;
 	}
 	
-	/**
-	 * @return
-	 */
+
 	public Transferable getSelectionTransferable() {
 		return resourceTable.getSelectionTransferable();
 	}
@@ -720,6 +720,9 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.5  2007/06/18 16:41:43  nw
+added icons to voexplorer table to denote the 'capabilities' of each resource
+
 Revision 1.4  2007/05/18 06:18:10  nw
 placeholder for form-layout of registry fields.
 

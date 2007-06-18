@@ -8,11 +8,13 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.Icon;
 import javax.swing.table.TableColumnModel;
 
 import net.sf.ehcache.Ehcache;
 
 import org.apache.commons.collections.BidiMap;
+import org.apache.commons.collections.ComparatorUtils;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
@@ -22,6 +24,7 @@ import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.actions.DevSymbols;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
+import org.astrogrid.desktop.modules.ui.voexplorer.google.CapabilityIconFactory;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTable;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTableFomat;
 import org.votech.VoMon;
@@ -51,8 +54,8 @@ public class ScopeServicesList extends RegistryGooglePanel
 	 * @param vomon
 	 * @param pref
 	 */
-	public ScopeServicesList(RegistryInternal reg, BrowserControl browser, RegistryBrowser regBrowser, Ehcache resources, Ehcache bulk, VoMon vomon, Preference pref) {
-		super(reg, browser, regBrowser, resources, bulk, vomon, pref);
+	public ScopeServicesList(RegistryInternal reg, BrowserControl browser, RegistryBrowser regBrowser, Ehcache resources, Ehcache bulk, VoMon vomon, final CapabilityIconFactory iconFac,Preference pref) {
+		super(reg, browser, regBrowser, resources, bulk, vomon, iconFac,pref);
 		getSearchTitleLabel().setText("Query Results");
 		getNewSearchButton().setVisible(false);
 		getHaltSearchButton().setVisible(false);
@@ -76,10 +79,9 @@ public class ScopeServicesList extends RegistryGooglePanel
 		return new ServicesListTableFormat();
 	}
 	protected ResourceTable createTable(EventTableModel model, EventList list) {
-		//@todo work out why I'm getting the wrong row's tooltips here.
-		ResourceTable rt=  new ResourceTable(model,list,vomon) {
+		ResourceTable rt=  new ResourceTable(model,list,vomon,iconFac) {
 			protected void createTooltipFor(int col,Resource r, StringBuffer sb) {
-				if (col == 2 ) {
+				if (col == 23) {
 					Object o = results.get(r);
 					if (o != null && o instanceof String) {
 						sb.append(o);
@@ -88,14 +90,10 @@ public class ScopeServicesList extends RegistryGooglePanel
 			}
 		};
 		TableColumnModel cm = rt.getColumnModel();
-		cm.getColumn(0).setPreferredWidth(40);
-		cm.getColumn(0).setMaxWidth(40);
 		cm.getColumn(1).setPreferredWidth(350);
 		cm.getColumn(1).setMaxWidth(350);
-		cm.getColumn(1).setResizable(true);
-		cm.getColumn(2).setPreferredWidth(500);
-		cm.getColumn(2).setMaxWidth(1000);
-		cm.getColumn(2).setResizable(true);
+		cm.getColumn(3).setPreferredWidth(500);
+		cm.getColumn(3).setMaxWidth(1000);
 		return rt;
 	}
 	
@@ -142,8 +140,10 @@ public class ScopeServicesList extends RegistryGooglePanel
 			case 0:
 				return Integer.class;
 			case 1:
-			case 2:
+			case 3:
 				return Object.class;
+			case 2:
+				return Icon.class;
 			default:
 				throw new IndexOutOfBoundsException("Oversized column ix:" +arg0);					
 			}
@@ -156,21 +156,31 @@ public class ScopeServicesList extends RegistryGooglePanel
 			case 1:
 				return GlazedLists.caseInsensitiveComparator();
 			case 2:
+				return hashCodeComparator;
+			case 3:
 				return GlazedLists.caseInsensitiveComparator();
 			default:
 				throw new IndexOutOfBoundsException("Oversized column ix:" +arg0);
 			}
 		}
 
+		private final Comparator hashCodeComparator = new Comparator() {
+
+			public int compare(Object arg0, Object arg1) {
+				return arg0.hashCode() - arg1.hashCode();
+			}
+		};
+		
 		public int getColumnCount() {
-			return 3;
+			return 4;
 		}
 
 		public String getColumnName(int column) {
 			switch(column) {
 			case 0 :return "Results";
 			case 1: return "Title";
-			case 2: return "Error Message";
+			case 2: return "Capabilities";
+			case 3: return "Error Message";
 			default: 
 				throw new IndexOutOfBoundsException("Oversized column ix:" +column);
 			}
@@ -185,6 +195,8 @@ public class ScopeServicesList extends RegistryGooglePanel
 			case 1:
 				return ResourceTableFomat.createTitle(r);
 			case 2:
+				return iconFac.buildIcon(r);
+			case 3:
 				o = results.get(r);
 				return o != null && (o instanceof String) ? o : "";
 			default:
