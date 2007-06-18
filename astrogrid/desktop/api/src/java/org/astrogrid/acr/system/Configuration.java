@@ -1,4 +1,4 @@
-/*$Id: Configuration.java,v 1.6 2007/01/24 14:04:44 nw Exp $
+/*$Id: Configuration.java,v 1.7 2007/06/18 16:00:51 nw Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.acr.system;
 
 import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.ServiceException;
 
 import java.util.Map;
 
@@ -60,10 +61,18 @@ public interface Configuration {
      * @param string
      */
     public abstract void removeKey(String string);
+    
+    /** reset the configuration back to factory settings. 
+     * All user configuration will be lost 
+     * @throws ServiceException*/
+    public void reset() throws ServiceException;
 }
 
 /* 
  $Log: Configuration.java,v $
+ Revision 1.7  2007/06/18 16:00:51  nw
+ added 'resetConfioguraiton' to the public interface.
+
  Revision 1.6  2007/01/24 14:04:44  nw
  updated my email address
 
