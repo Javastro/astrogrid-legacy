@@ -1,4 +1,4 @@
-/*$Id: ARTestSetup.java,v 1.5 2007/04/18 15:47:06 nw Exp $
+/*$Id: ARTestSetup.java,v 1.6 2007/06/18 16:12:52 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.desktop;
 
 import java.io.InputStream;
+import java.security.Principal;
 import java.util.Properties;
 
 import junit.extensions.TestSetup;
@@ -19,6 +20,7 @@ import junit.framework.Test;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.desktop.framework.SessionManagerInternal;
 
 /** sets up a fixture of a running in-process workbench,
  *
@@ -73,7 +75,7 @@ public class ARTestSetup extends TestSetup{
     		createAR();
     		assertNotNull("Failed to create fixture",fixture);
     	}
-    	if (doLogin) {
+    	if (doLogin) { // login, even if someone else created this fixture.
     			login(); 
     	}
     }
@@ -111,7 +113,7 @@ public class ARTestSetup extends TestSetup{
     				comm.login(username,password,community);
     				logger.info("Logged in as " + username + " / " + community);
     			} catch (Throwable e) { // try ui login.
-    				logger.warn("Failed to read login settings from astrogrid.properties - prompting using GUI",e);
+    				logger.error("Failed to read login settings from astrogrid.properties - prompting using GUI",e);
     				comm.guiLogin();
     			}
     		}
@@ -149,6 +151,9 @@ public class ARTestSetup extends TestSetup{
 
 /* 
 $Log: ARTestSetup.java,v $
+Revision 1.6  2007/06/18 16:12:52  nw
+debugged operation of ARTestSetup
+
 Revision 1.5  2007/04/18 15:47:06  nw
 tidied up voexplorer, removed front pane.
 
