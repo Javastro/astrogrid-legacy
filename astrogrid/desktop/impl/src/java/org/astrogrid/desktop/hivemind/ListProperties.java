@@ -3,10 +3,13 @@
  */
 package org.astrogrid.desktop.hivemind;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.hivemind.ErrorHandler;
 import org.apache.hivemind.Registry;
 import org.apache.hivemind.impl.DefaultErrorHandler;
@@ -14,6 +17,8 @@ import org.apache.hivemind.impl.RegistryBuilder;
 import org.apache.hivemind.service.impl.FactoryDefault;
 import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.desktop.modules.system.pref.Preference;
+import org.astrogrid.desktop.modules.system.pref.PreferencesArranger;
+import org.astrogrid.desktop.modules.system.pref.PreferencesArrangerImpl;
 
 /** Just lists all configuration properties, and exits.
  * @author Noel Winstanley
@@ -22,46 +27,92 @@ import org.astrogrid.desktop.modules.system.pref.Preference;
 public class ListProperties extends Launcher {
 	public void run() {
 		spliceInDefaults();
-		ErrorHandler err = new DefaultErrorHandler();
+		//ErrorHandler err = new DefaultErrorHandler();
 		RegistryBuilder rb = new RegistryBuilder();
 		rb.addModuleDescriptorProvider(createModuleDescriptorProvider());
 		Registry registry = rb.constructRegistry(Locale.getDefault());
-		List l = registry.getConfiguration("framework.preferences");
+		PreferencesArranger arranger = new PreferencesArrangerImpl(registry.getConfiguration("framework.preferences"));
+
+		printHeader();
 		
-		System.out.println("Application Preferences");
-		System.out.println("===============");	
-		//@todo use the PreferencesArranger to get a more pleasing list here..
-		for (Iterator i = l.iterator(); i.hasNext();) {
-			Preference p = (Preference) i.next();
-			System.out.println(p.getUiName() + p.getDescription());
-			System.out.println( "     " + p.getName() +  " = " + p.getValue());
+		for (Iterator cats = arranger.listPreferenceCategories().iterator(); cats.hasNext(); ) {
+			String categoryName = (String)cats.next();
+			System.out.println();
+			System.out.println();
+			printCategoryHeader(categoryName);
+
+			for (Iterator i = arranger.listBasicPreferencesForCategory(categoryName).iterator(); i.hasNext();) {
+				System.out.println();
+				Preference p = (Preference) i.next();
+				printPreference(p);
+			}
+
+			for (Iterator i = arranger.listAdvancedPreferencesForCategory(categoryName).iterator(); i.hasNext();) {
+				System.out.println();
+				Preference p = (Preference) i.next();
+				printPreference(p);
+			}			
 		}
 		
 		System.out.println();
-		System.out.println("System Defaults");
-		System.out.println("==========");
-		Launcher.defaults.list(System.out);
-		
 		System.out.println();
-		System.out.println("Module Defaults");
-		System.out.println("==========");		
-		
-		l = registry.getConfiguration("hivemind.FactoryDefaults");
-		for (Iterator i = l.iterator(); i.hasNext();) {
+		printCategoryHeader("System defaults");
+		for (Iterator i = Launcher.defaults.entrySet().iterator(); i.hasNext();) {
+			Map.Entry e = (Map.Entry) i.next();
+			System.out.println("#" + e.getKey() +  "=" + e.getValue());
+		}
+
+		System.out.println();
+		System.out.println();
+		printCategoryHeader("Other configuration settings");			
+		for (Iterator i = registry.getConfiguration("hivemind.FactoryDefaults").iterator(); i.hasNext();) {
 			FactoryDefault element = (FactoryDefault) i.next();
 			if (element.getSymbol().startsWith("java") || element.getSymbol().startsWith("hivemind")) {
 				continue;
 			}
-			System.out.println(element.getSymbol() + " = " + element.getValue());
+			System.out.println("#" + element.getSymbol() + "=" + element.getValue());
 		}
-		
 		System.out.println();
-		System.out.println("Any of these opotions can be overridden on the commandline by using the -D name=value flag");
-		System.out.println("Furthermore, any component can be disabled by setting the property 'service.name.disabled");
-		System.out.println("For example, to disable rmi access to AR, set 'system.rmi.disabled'");
-			
+		
 		Shutdown sd = (Shutdown)registry.getService(Shutdown.class);
 		sd.reallyHalt();
 	}
 
+	/**
+	 * @param categoryName
+	 */
+	private void printCategoryHeader(String categoryName) {
+		System.out.println("###########################");
+		System.out.println("## " + categoryName);
+		System.out.println("###########################");
+		
+	}
+
+	private void printPreference(Preference p) {
+		System.out.println("## " + p.getUiName() + " ##");
+		System.out.println("## " +  p.getDescription());
+		System.out.println("## Default value: " + p.getDefaultValue());
+		String[] opts = p.getAlternatives();
+		if (opts != null && opts.length > 0) {
+			System.out.println("## Suggested alternatives: " + ArrayUtils.toString(opts));
+		}
+		System.out.println( "#" + p.getName() +  "=" + p.getValue());
+	}
+
+	private final void printHeader() {
+		printCategoryHeader("Listing Configuration");
+		System.out.println("#The description and default value for each configuration key are listed");
+		System.out.println("#followed by the configuration key name and current value");
+		System.out.println();
+		System.out.println("#Any of these keys can be temporarily overridden by passing a -Dname=value to the JVM");
+		System.out.println("#Alternately, save this output to a file, uncomment and edit properties,") ;
+		System.out.println("and then pass it to AR using the commandline options --propertiesFile or --propertiesURL");
+		System.out.println();
+		System.out.println("#Furthermore, many components can be disabled by setting the property '<service.name>.disabled");
+		System.out.println("#For example, to disable rmi access to AR, set system.rmi.disabled=true");
+		System.out.println();
+		System.out.println("#Many of these configuration keys can also be edited from within the UI (Preferences Dialogue)");
+		System.out.println("#or through the HTML interface (Preferences) link. Changes made using these interfaces persist");
+		System.out.println("#and take effect for subsequent AR runs");
+	}
 }
