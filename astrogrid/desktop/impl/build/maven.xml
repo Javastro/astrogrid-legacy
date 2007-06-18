@@ -9,26 +9,41 @@ common definitions and hooks used by the impl projects.
 	
 	<!--  record version infromation. -->
 	<postGoal name="java:jar-resources">
-	<echo>Setting Version Information</echo>	
-			<echo file="${maven.build.dir}/classes/org/astrogrid/desktop/hivemind/version.xml">
-	<default symbol="astrogrid.desktop.version" value="${astrogrid.desktop.version}" />
-	<default symbol="astrogrid.build.date" value="${maven.jar.manifest.attribute.BuildDate}" />
-	<default symbol="astrogrid.build.location" value="${maven.jar.manifest.attribute.BuildLocation}" />
-	<default symbol="astrogrid.build.by" value="${user.name}" />
-	<default symbol="astrogrid.build.jdk" value="${java.version}" />
-				</echo>	
-		
+		<attainGoal name="record-version" />
+	</postGoal>
+
+  <goal name="record-version">
+	<j:set var="versionFile" value="${maven.build.dir}/classes/org/astrogrid/desktop/hivemind/version.xml" />
+	<echo>Writing Version Information out to ${versionFile}...</echo>	
+	<echo file="${versionFile}">
+		<default symbol="astrogrid.desktop.version" value="${astrogrid.desktop.version}" />
+		<default symbol="astrogrid.build.date" value="${maven.jar.manifest.attribute.BuildDate}" />
+		<default symbol="astrogrid.build.location" value="${maven.jar.manifest.attribute.BuildLocation}" />
+		<default symbol="astrogrid.build.by" value="${user.name}" />
+		<default symbol="astrogrid.build.jdk" value="${java.version}" />
+	</echo>	
+</goal>
+	
+	<postGoal name="site:generate">
+			<!--  run AR app to produce more documentation.-->
+			<attainGoal name="hivedoc" />                
+			<attainGoal name="listConfig" />	
 	</postGoal>
 	
-	
     <postGoal name="dist:prepare-bin-filesystem">
-        	<echo>Copying dependencies into distro</echo>
-                <j:forEach var="lib" items="${pom.artifacts}">
-                        <j:set var="dep" value="${lib.dependency}"/>
-                                <j:if test="${dep.getProperty('dist.bundle')=='true'}">
-                                        <copy todir="${maven.dist.bin.assembly.dir}" file="${lib.path}"/>
-                                </j:if>
-                </j:forEach>
+        	<echo>Copying dependencies marked as 'dist.bundle' in project.xml into distribution</echo>
+			<j:new var="bundled" className="java.util.ArrayList" />
+                <copy todir="${maven.dist.bin.assembly.dir}" verbose="false">
+	          	      <j:forEach var="lib" items="${pom.artifacts}">
+    	                    <j:set var="dep" value="${lib.dependency}"/>
+        	                        <j:if test="${dep.getProperty('dist.bundle')=='true'}">
+            	                          <!--   <copy todir="${maven.dist.bin.assembly.dir}" file="${lib.path}" verbose="false"/> -->
+						            	<j:set var="ignored" value="${bundled.add(lib.name)}" /> <!--  IDIOM - just for side effects  -->
+            	                          <fileset file="${lib.path}" />
+                	                </j:if>
+            	  	</j:forEach>
+            	  	</copy>
+       <echo>Copied jars: ${bundled}</echo>            	
     </postGoal>		
 	
     <goal name="astrogrid-build-artifact" prereqs="setup,dist:build-bin"
@@ -44,6 +59,7 @@ common definitions and hooks used by the impl projects.
     	
 <!--  all the libs are now in maven.dist.bin.assembly.dir -here we list all the other things we're going to do with them-->
 <postGoal name="dist:build-bin">
+<echo>Built the distribution - now strip, sign and package it</echo>
 <!--  strip surplus classes -->
 	<attainGoal name="jar-strip" />
 <!--  package as a jar file -->
@@ -51,26 +67,54 @@ common definitions and hooks used by the impl projects.
 	<!--  sign this jar .-->	
 		<attainGoal name="sign" />
 	<!-- smoke-test -->
-		<attainGoal name="smoke-test" />
-
-
+	<attainGoal name="smoke-test" />
 <!--  package as an osx app -->
 	<j:set var="tmpVar" value="${os.name}" />
-   <j:if test="${tmpVar == 'Mac OS X'}">
-	<attainGoal name="osx" />
-	</j:if>	
+	<j:choose>
+	   <j:when test="${tmpVar == 'Mac OS X'}">
+		<attainGoal name="osx" />
+		</j:when>
+	<j:otherwise>
+		<echo>Not running on OSX - can't build mac bundle</echo>
+	</j:otherwise>	
+	</j:choose>
 	<!-- package as an installer -->
 	<attainGoal name="installer" />		
 	<j:if test="${! (ifBuildingASR.getValue().equals('true'))}">
 	<!--  package as a webstart app -->
 		<attainGoal name="webstart" />
 	</j:if>
+	<attainGoal name="generate-artifact-index" />
 </postGoal>
+
 
 	
   <!--==================================
   	Supporting goals
   	-->
+
+<goal name="generate-artifact-index">
+	<echo>writing a simple index.html to the build products - useful within testing.</echo>
+	<echo file="${maven.build.dir}/index.html">
+		<html>
+			<body>
+				<h1>${maven.final.name}</h1>
+				<dl>
+					<dt><a href="${maven.final.name}-app.jar" id="application">app jar</a></dt>
+					<dd>Executable standalone jar</dd>
+					<dt><a href="${maven.final.name}-installer.jar" id="installer">installer jar</a></dt>
+					<dd>Installer</dd>
+					<dt><a href="${maven.final.name}-jnlp.zip" id="jnlp">jnlp zip</a></dt>
+					<dd>Zip of resources to deploy a webstart website</dd>
+					<dt><a href="${maven.final.name}-osx.cpio" id="osx">osx cpio</a></dt>
+					<dd>Packaged up OSX application</dd>	
+					<dt><a href="${maven.final.name}-tests.jar" id="tests">tests jar</a></dt>
+					<dd>jar of tests - can be run with app jar</dd>																			
+				</dl>
+			</body>
+		</html>
+	</echo>
+</goal>
     
 <!--  
 	real packaging routine. - hangs off back of 'dist' goal-
@@ -81,6 +125,7 @@ common definitions and hooks used by the impl projects.
   description="build an all-in-one executable jar: depends on dist:build-bin">
   <echo>Building Application Jar: ${maven.final.name}-app.jar</echo>
   <!--  first extract the existing manifest -->
+	<echo>Extracting the existing manifest</echo>
 	<unjar src="${maven.dist.bin.assembly.dir}/${maven.final.name}.jar"
 		dest="${maven.dist.bin.assembly.dir}">
 		<patternset>
@@ -89,6 +134,7 @@ common definitions and hooks used by the impl projects.
 	</unjar>
 	<!-- then merge all jars together, splicing in the previously extracted manifest, 
 	and a main-class attribute. -->
+	<echo>Merging jars together</echo>
 	<jar destfile="${maven.build.dir}/${maven.final.name}-app.jar"
 	 	filesetmanifest="skip" update="false" duplicate="preserve"
 	 	manifest="${maven.dist.bin.assembly.dir}/META-INF/MANIFEST.MF">
@@ -110,6 +156,7 @@ common definitions and hooks used by the impl projects.
 todo see if we can include other things in the disk image too. -->
 	<goal name="osx"  
 	description="builds an osx-specific app. depends on app-jar, and only works on OSX">
+	<echo>Building OSX Application bundle for ${maven.final.name}</echo>
 	<!--  remove if already there - otherwise task won't proceed -->
 	<delete dir="${maven.build.dir}/osx" quiet ="true" />
 	<mkdir dir="${maven.build.dir}/osx"	/>
@@ -128,7 +175,6 @@ todo see if we can include other things in the disk image too. -->
     	jars="${maven.build.dir}/${maven.final.name}-app.jar">
     </jarbundler>
     <!--  remove the executable jar - so got a smaller package -->
-    <echo> removing app jar </echo>
     <delete file="${maven.build.dir}/osx/${pom.name}.app/Contents/Resources/Java/${maven.final.name}-app.jar" />
     <!--  package it up as a osx disk image.-->
 <!--    <exec executable="/usr/bin/hdiutil" dir="${maven.build.dir}" os="Mac OS X">-->
@@ -154,7 +200,7 @@ todo see if we can include other things in the disk image too. -->
 <goal name="run" 
 	description="run the application from within the dist/bin directory - useful as part of testing. Depends on dist:build-bin"
 	>
-	<echo>Running ${maven.javaapp.mainclass}</echo>
+	<echo>Running ${maven.javaapp.mainclass} from the dist/bin directory</echo>
 	<java classname="${maven.javaapp.mainclass}"
 		fork="true">
 		<classpath>
@@ -168,7 +214,7 @@ todo see if we can include other things in the disk image too. -->
 <goal name="run-app-jar"
 	description="run the (stripped) application jar- useful for testing stripping. Depends on app-jar"
 	>
-	<echo>Running ${maven.javaapp.mainclass}</echo>
+	<echo>Running ${maven.javaapp.mainclass} from the app.jar file</echo>
 	<java classname="${maven.javaapp.mainclass}"
 		fork="true">
 		<classpath>
@@ -177,16 +223,49 @@ todo see if we can include other things in the disk image too. -->
 	</java>
 </goal>
 
+<goal name="hivedoc"
+	description="generate hivemind documentation" >
+    		<echo>Generating Hivedoc</echo>
+	<java classname="${maven.javaapp.mainclass}" outputproperty="ignored"
+		fork="true" dir="${maven.build.dir}/docs" >
+		<classpath>
+			<path refid="maven.dependency.classpath" />
+			<pathelement path="${maven.build.dir}/classes" />
+		</classpath>
+    			<arg value="-hivedoc" />
+    		</java>
+    <echo>Hivedoc written to 	${maven.build.dir}/docs/hivedoc</echo>
+</goal>
+
+<goal name="listConfig"
+	description="generate documentation of available config keys" >
+    		<echo>Generating Configuration documentation</echo>
+	<java classname="${maven.javaapp.mainclass}"
+		fork="true" output="${maven.build.dir}/docs/config.txt" >
+		<classpath>
+			<path refid="maven.dependency.classpath" />
+			<pathelement path="${maven.build.dir}/classes" />
+		</classpath>
+    			<arg value="-list" />
+    		</java>	
+    <echo>Config documentation written to ${maven.build.dir}/docs/config.txt</echo>
+</goal>
+
+
 	<!--  helper goal - unpackage resource zips, so that they can be referenced by the installer builder -->
 	<goal name="unzipResources">
+		<echo>Unzipping dependencies that are marked with 'unzip' in the project.xml</echo>
 		<j:set scope="parent" var="resourceDir" value="${maven.build.dir}/resources" />
 		<mkdir dir="${resourceDir}" />
+		<j:new var="unzipped" className="java.util.ArrayList" />
         <j:forEach var="lib" items="${pom.artifacts}">
         	<j:set var="dep" value="${lib.dependency}"/>
             <j:if test="${dep.getProperty('unzip')}">
+            	<j:set var="ignored" value="${unzipped.add(lib.name)}" /><!--  IDIOM - just for side-effect -->
             	<unzip src="${lib.path}" dest="${resourceDir}" />
 	        </j:if>
        </j:forEach>		
+       <echo>Unzipped jars: ${unzipped}</echo>
 	</goal>
 
 	<goal name="installer"
@@ -199,6 +278,7 @@ todo see if we can include other things in the disk image too. -->
 		in folowing 3 files, ${ } refers to a maven variable (compile time),
 		while $FRED refers to a izpack variable (installtime)
 		 -->
+		 <echo>Writing out icon config files</echo>
 			<j:file name="${maven.build.dir}/windows_shortcuts.xml"		omitXmlDeclaration="false" xmlns="dummy">
 				<shortcuts>
 					<skipIfNotSupported />
@@ -222,7 +302,7 @@ todo see if we can include other things in the disk image too. -->
 						programGroup="yes" desktop="yes" type="Application" encoding="UTF-8" />
 				</shortcuts>
 			</j:file>						
-		<!--  write out installer config file -->
+		<echo>write out installer config file</echo>
 		<j:file name="${maven.build.dir}/izpack.xml" omitXmlDeclaration="false" trim="true" xmlns="dummy">
 				<installation version="1.0">
 					<info>
@@ -352,13 +432,6 @@ todo see if we can include other things in the disk image too. -->
 		  	<arg value="-b"/><arg file="${basedir}" />
 			<arg value="-k"/><arg value="standard" />   <!--  or web -->  
 		</java>
-<!--  dosn't work - so need to run directly. -->
-<!--			<izpack input="${maven.build.dir}/izpack.xml"-->
-<!--				output="${maven.build.dir}/${maven.final.name}-installer.jar"-->
-<!--				installerType="standard"-->
-<!--				basedir="${basedir}"-->
-<!--				izPackDir="${buildlib}"-->
-<!--			/>-->
 	</goal>
 
 	<goal name="webstart" 
@@ -370,7 +443,7 @@ todo see if we can include other things in the disk image too. -->
 		<fileset dir="${basedir}/src/webapp" />
 		<fileset dir="${maven.build.dir}" includes="${maven.final.name}-app.jar" />
 	</copy>
-<!-- write out jnlp file - from inline template. -->
+	<echo>writing out jnlp file</echo>
 	<j:file name="${maven.build.dir}/jnlp/${pom.artifactId}.jnlp" omitXmlDeclaration="false"  trim="true" xmlns="dummy">
 	<jnlp href="${pom.artifactId}.jnlp" spec="1.0+" 
 	codebase="http://software.astrogrid.org/jnlp/${pom.artifactId}">
@@ -391,12 +464,16 @@ todo see if we can include other things in the disk image too. -->
 	<resources>
 		<j2se version="${minimum.jvm.version}+" max-heap-size="512m" initial-heap-size="32m" />
 		<jar href="${maven.final.name}-app.jar" />
+		
+		<!-- keep this out now
 		<extension href="/jnlp/desktop-integration/desktop-integration.jnlp" name="Java Desktop Integration Components" />
+		-->
 		<property name="java.protocol.handler.pkgs" value="org.astrogrid.desktop.protocol"/><!-- should work, but doesn't -->
 	</resources>
 	<application-desc main-class="${maven.javaapp.mainclass}" />
 </jnlp>
 	</j:file>
+	<echo>building the jnlp zip</echo>
 	<zip destfile="${maven.build.dir}/${maven.final.name}-jnlp.zip" 
 		basedir="${maven.build.dir}/jnlp"
 		update="false"/>
@@ -406,16 +483,21 @@ todo see if we can include other things in the disk image too. -->
 		this result is left in a variable 'hivemindRequiredClasses' in the parent scope.
 	 -->
 	<goal name="scanDescriptors">
+		<echo>Scanning hivemind descriptors to extract a list of referenced classes</echo>
 			<!--  define a set of results. -->
 			<j:new var="classSet" className="java.util.HashSet" />
-			<!--  find a list of descriptors -->
+			<j:new var="descriptorList" className="java.util.ArrayList" />
+			<echo>computing the list of descriptors</echo>
 		 	<u:file var="d" name="${maven.build.dest}/org/astrogrid/desktop/hivemind" />
 	 		<j:forEach var="f" items="${d.listFiles()}"> 
 	 			<!--  a file called *.xml, but not hivemind*.xml or fallback*.xml -->
 	 			<j:set var="fname" value="${f.getName()}" />	
 	 			<j:if test="${fname.endsWith('.xml') &amp;&amp; ! fname.startsWith('hivemind') &amp;&amp; ! fname.startsWith('fallback') &amp;&amp; ! fname.startsWith('version')}">		
-	 				<echo>${fname}</echo>
-					<!-- load the file, and filter oout the entity references that maven can't handle-->
+	 				<j:set var="ignored" value="${descriptorList.add(fname)}" /><!--  idoom - just used for side effect. -->
+					<!-- load the file, and filter oout the entity references that maven can't handle
+					within the files included via entity references there's no references to classes that we don't already know about 
+					(as this is the AR api).
+					-->
 					<loadfile property="${fname}" srcFile="${f}"><!--  this ant task assigns to a write-once property - so need to use a new property each iteration. -->
 						<filterchain>
 							<linecontainsregexp >
@@ -456,11 +538,15 @@ todo see if we can include other things in the disk image too. -->
 				</j:if>
 			</j:forEach>
 			<j:set scope="parent" var="hivemindRequiredClasses" value="${classSet}" />
+			<echo>Scanned descriptors: ${descriptorList} </echo>
 	</goal>
 	
 	<!--  helper goal, that lists extracted descriptors -->
-	<goal name="listDescriptors" prereqs="scanDescriptors">
-		<echo>${hivemindRequiredClasses}</echo>
+	<goal name="listDescriptors" prereqs="scanDescriptors" description="Debugging goal - lists all classes referenced in hivemind descriptors">
+		<echo>The following classes are referenced in the hivemind descriptors</echo>
+		<j:forEach var="i" items="${hivemindRequiredClasses}">
+			<echo>${i}</echo>
+		</j:forEach>
 	</goal>
 	
 	
@@ -535,7 +621,7 @@ todo see if we can include other things in the disk image too. -->
     	-keep class * implements org.astrogrid.acr.** {
     		public protected *;
     	}
-    <!-- smoke-testing entry point -->
+    <!-- smoke-testing  entry point -->
     	-keep class org.astrogrid.desktop.BuildInprocessWorkbench {
     		public protected *;
     		}
@@ -608,8 +694,11 @@ todo see if we can include other things in the disk image too. -->
 	-keep class org.apache.commons.logging.impl.SimpleLog {
 		public *;
 	}
-	<!--  log4j code -->
+	<!--  log4j code- althrough we're not stripping log4j at the moment-->
 	-keep class org.apache.log4j.ConsoleAppender {
+		public *;
+		}
+	-keep class org.apache.log4j.RollingFileAppender {
 		public *;
 		}
 	-keep class org.apache.log4j.PatternLayout {
@@ -663,10 +752,6 @@ todo see if we can include other things in the disk image too. -->
 		}
 	<!--  jdbm -->
 	-keep class jdbm.recman.Provider {
-		public *;
-		}
-	<!--  groovy -->
-	-keep class groovyjarjarantlr.CommonToken {
 		public *;
 		}
 		<!--  adql beans - keep as is. -->		
@@ -743,6 +828,7 @@ todo see if we can include other things in the disk image too. -->
 		public *;
 	}
     </proguard>	
+	<echo>Stripping completed</echo>
 	</goal>
 	
 	<!-- smoke test: defintion from wikipedia (fount of all my knowledge ;)
@@ -761,7 +847,7 @@ todo see if we can include other things in the disk image too. -->
             name="junit"
             classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"
           />  
-         <!-- sign test classes - so that they can be run with the signed jar -->
+         <echo>signing test classes - so they can be run with the signed app jar</echo>
          <j:set var="testJar" value="${maven.build.dir}/${maven.final.name}-tests.jar" />
          <jar destfile="${testJar}" basedir="${maven.test.dest}" />
          <signjar jar="${testJar}" 
@@ -769,7 +855,7 @@ todo see if we can include other things in the disk image too. -->
          	lazy="true"/>
 	 	<!--  based on maven test plugin. -->
 	 	<mkdir dir="${maven.build.dir}/smoke-test-reports" />
-	 	<echo>Running Smoke Tests</echo>
+	 	<echo>Running Smoke Tests: ${smoke.tests}</echo>
 		<junit printsummary="${maven.junit.printSummary}"          failureProperty="maven.test.failure"
 			 fork="${maven.junit.fork}" dir="${maven.junit.dir}"
 			haltonerror="true" >
