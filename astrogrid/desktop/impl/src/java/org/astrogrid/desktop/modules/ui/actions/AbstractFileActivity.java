@@ -57,7 +57,6 @@ public abstract class AbstractFileActivity extends AbstractActivity implements P
 	/** to be implemented by subclasses - as a file filter which selects just
 	 * those files this activity can operate on.
 	 * @param f
-	 * @return
 	 */
 	protected abstract boolean invokable(FileObject f);
 	

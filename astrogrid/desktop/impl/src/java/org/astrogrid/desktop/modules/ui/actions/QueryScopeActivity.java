@@ -37,7 +37,6 @@ private final AstroScopeInternal ai;
 	/** Test whether it's something we can invoke.
 	 * @todo implement a SpectrumService type too.
 	 * @param r
-	 * @return
 	 */
 	protected boolean invokable(Resource r) {
 		boolean b =  r instanceof SiapService 

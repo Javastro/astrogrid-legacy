@@ -54,7 +54,7 @@ public interface UIComponent {
 	public void haltMyTasks() ;
 
 	/** access the singleton ui context object.
-	 * @return
+	 * @return the singleton context.
 	 */
 	UIContext getContext();
 }

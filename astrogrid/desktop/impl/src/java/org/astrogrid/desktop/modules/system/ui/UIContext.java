@@ -47,7 +47,6 @@ public interface UIContext  extends UI{
 	
 	/** button model that indicates logged in status using 'enabled' property
 	 * makes it simple to plug into a button and use it to flip between enabled / disabled icons
-	 * @return
 	 */
 	public ButtonModel getLoggedInModel() ;
 	/** indicates throbber status. same usage as {@link #getLoggedInModel} */

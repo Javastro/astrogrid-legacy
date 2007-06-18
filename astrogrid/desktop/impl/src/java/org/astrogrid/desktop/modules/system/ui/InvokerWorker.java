@@ -31,9 +31,7 @@ public class InvokerWorker extends BackgroundWorker {
     }
     protected final Converter conv;
     protected final Transformer trans;          
-      /**
-     * @see EDU.oswego.cs.dl.util.concurrent.misc.SwingWorker#construct()
-     */
+
     protected Object construct() throws Exception {
         Method method = ReflectionHelper.getMethodByName(action.getObject().getClass(),action.getMethodName());                        
         Class[] parameterTypes = method.getParameterTypes();

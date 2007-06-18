@@ -22,7 +22,6 @@ public interface ActionContributionBuilder {
 	 * @param popup a popup menu that will show these actions
 	 * @param actionsPanel a task pane that shows actions
 	 * @param actions a menu that shows actions.
-	 * @return
 	 */
 	public Activity[] buildActions(UIComponent parent, JPopupMenu popup, JTaskPane actionsPanel, JMenu actions);
 		

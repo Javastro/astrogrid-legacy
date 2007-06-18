@@ -99,7 +99,6 @@ public abstract class AbstractResourceActivity extends AbstractActivity implemen
 	/** to be implemented by subclasses - a filter
 	 * that selects just those resources this activity can operate on.
 	 * @param r
-	 * @return
 	 */
 	protected  abstract boolean invokable(Resource r);
 }

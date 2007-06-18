@@ -1,4 +1,4 @@
-/*$Id: AbstractVospaceBrowser.java,v 1.14 2007/05/10 19:35:26 nw Exp $
+/*$Id: AbstractVospaceBrowser.java,v 1.15 2007/06/18 16:47:58 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -466,8 +466,6 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
     /**
      * Construct a new AbstractVospaceBrowser
      *  - sutable for long-lived windows.
-     * @param conf
-     * @param ui
      * @throws HeadlessException
      */
     public AbstractVospaceBrowser(UIContext context,MyspaceInternal vos, Object sendTo) throws HeadlessException {
@@ -486,9 +484,7 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
         return glassPane;
     }
 
-    /**
-     * @return
-     */
+
     protected CurrentNodeManager getCurrentNodeManager() {
         if (currentNodeManager == null) {
             currentNodeManager = createCurrentNodeManager();
@@ -606,17 +602,12 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
         return jToolBar;
     }
 
-    /**
-     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogin(org.astrogrid.desktop.modules.ag.UserLoginEvent)
-     */
+
     public void userLogin(UserLoginEvent e) {
         readRoot();
         
     }
 
-    /**
-     * @see org.astrogrid.acr.astrogrid.UserLoginListener#userLogout(org.astrogrid.desktop.modules.ag.UserLoginEvent)
-     */
     public void userLogout(UserLoginEvent e) {
         getCurrentNodeManager().clear();
         getFolderTreeModel().setRoot(null);
@@ -628,6 +619,9 @@ public abstract class AbstractVospaceBrowser extends UIComponentImpl implements 
 
 /*
  * $Log: AbstractVospaceBrowser.java,v $
+ * Revision 1.15  2007/06/18 16:47:58  nw
+ * javadoc fixes.
+ *
  * Revision 1.14  2007/05/10 19:35:26  nw
  * reqwork
  *

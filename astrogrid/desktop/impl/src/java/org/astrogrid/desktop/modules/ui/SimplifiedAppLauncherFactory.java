@@ -19,17 +19,7 @@ import org.astrogrid.desktop.modules.system.ui.UIContext;
  */
 public class SimplifiedAppLauncherFactory implements TaskInvoker{
 
-	/**
-	 * @param panelFactories
-	 * @param rChooser
-	 * @param apps
-	 * @param myspace
-	 * @param lookout
-	 * @param conf
-	 * @param help
-	 * @param ui
-	 * @param preference 
-	 */
+
 	public SimplifiedAppLauncherFactory(UIContext context,List panelFactories, ResourceChooserInternal rChooser, ApplicationsInternal apps, MyspaceInternal myspace, Preference preference) {
 		this.panelFactories = panelFactories;
 		this.rChooser = rChooser;

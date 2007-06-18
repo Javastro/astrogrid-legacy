@@ -1,4 +1,4 @@
-/*$Id: BackgroundWorker.java,v 1.10 2007/04/18 15:47:05 nw Exp $
+/*$Id: BackgroundWorker.java,v 1.11 2007/06/18 16:47:58 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -261,7 +261,6 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
         
         /** implement this method to define the computation to execute on the background thread. 
          * @return some result, which is then passed to {@link #doFinished(Object)}. To return multiple results, use member variables in the subclass.
-         * @see EDU.oswego.cs.dl.util.concurrent.misc.SwingWorker#construct()
          */
         protected abstract Object construct() throws Exception;
         
@@ -302,6 +301,9 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
 
 /* 
 $Log: BackgroundWorker.java,v $
+Revision 1.11  2007/06/18 16:47:58  nw
+javadoc fixes.
+
 Revision 1.10  2007/04/18 15:47:05  nw
 tidied up voexplorer, removed front pane.
 

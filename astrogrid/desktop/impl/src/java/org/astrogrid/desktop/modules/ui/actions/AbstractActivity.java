@@ -111,7 +111,6 @@ public abstract class AbstractActivity extends AbstractAction implements Activit
 	 * it's also responsible for holding onto the resources that it's 
 	 * able to operate over (might be a subset of all the resources). 
 	 * so that these are available when actionPerformed() is called.
-	 * @param r
 	 */
 
 	

@@ -37,6 +37,9 @@ public WebInterfaceActivity(BrowserControl browser) {
 	setToolTipText("Open the web interface for this resource in the system browser");
 }
 	protected boolean invokable(Resource r) {
+		return hasWebBrowserInterface(r);
+	}
+	public static boolean hasWebBrowserInterface(Resource r) {
 		if (!( r instanceof Service)) {
 			return false;
 		}

@@ -57,6 +57,7 @@ public final class GenerateScriptActivity extends AbstractResourceActivity {
 
 
 	/** Test whether it's something we can invoke.
+	 * @fixme work out how to optimize this
 	 */
 	protected final boolean invokable(Resource r) {
 		if (! functional) {

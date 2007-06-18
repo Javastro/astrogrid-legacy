@@ -1,4 +1,4 @@
-/*$Id: UIComponentImpl.java,v 1.13 2007/05/02 15:38:29 nw Exp $
+/*$Id: UIComponentImpl.java,v 1.14 2007/06/18 16:47:58 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -177,7 +177,6 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
 
      /** Construct a new UIComponentImpl
      * @param context
-     * @param ui
      * @throws HeadlessException
      */
     public UIComponentImpl(UIContext context) throws HeadlessException {
@@ -511,6 +510,9 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
 
 /* 
 $Log: UIComponentImpl.java,v $
+Revision 1.14  2007/06/18 16:47:58  nw
+javadoc fixes.
+
 Revision 1.13  2007/05/02 15:38:29  nw
 changes for 2007.3.alpha1
 
