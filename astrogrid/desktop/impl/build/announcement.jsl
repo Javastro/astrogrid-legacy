@@ -42,7 +42,7 @@ Hacked by NWW to do something sensible for AstroGrid
       <j:useBean var="formatter" class="org.apache.maven.announcement.Formatter"/>
 
       <j:set var="header" trim="true">
-        The AstroGrid Team is pleased to announce the  ${versionVariable} release of Workbench and Astro Runtime.
+        The AstroGrid Team is pleased to announce the  ${versionVariable} release of Astro Runtime.
       </j:set>
 
       <j:forEach var="line" items="${formatter.format(header,78)}">
