@@ -1,4 +1,4 @@
-/*$Id: RmiListenerInterfacesContribution.java,v 1.3 2006/06/15 09:55:55 nw Exp $
+/*$Id: RmiListenerInterfacesContribution.java,v 1.4 2007/06/18 16:55:51 nw Exp $
  * Created on 20-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,6 @@ public class RmiListenerInterfacesContribution extends ArrayList {
 
     /** the id of a service that has listener interfaces that need to be registered
      * with the rmi machinery
-     * @return
      */
     public String getId() {
         return this.id;
@@ -37,6 +36,9 @@ public class RmiListenerInterfacesContribution extends ArrayList {
 
 /* 
 $Log: RmiListenerInterfacesContribution.java,v $
+Revision 1.4  2007/06/18 16:55:51  nw
+javadoc fixes.
+
 Revision 1.3  2006/06/15 09:55:55  nw
 doc fix
 

@@ -121,7 +121,7 @@ public class PreferencesArrangerImpl implements PreferencesArranger  {
 
 	/** return a list of preferences for a named category
 	 * 
-	 * @param moduleName
+	 * @param categoryName
 	 * @return never null. if an unknown category, or one with no preferences 
 	 * at this level, returns an empty list.
 	 */
@@ -133,7 +133,7 @@ public class PreferencesArrangerImpl implements PreferencesArranger  {
 
 	/** return a list of preferences for a named category.
 	 * 
-	 * @param moduleName
+	 * @param categoryName
 	 * @return never null. if an unknown category, or one with no preferences 
 	 * at this level, returns an empty list.
 	 */	

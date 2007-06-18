@@ -49,7 +49,7 @@ public class StylesheetsContribution {
 		this.pattern = Pattern.compile(regexp, Pattern.DOTALL);
 	}
 	
-	/** @see {@link #isApplicable(CharSequence)} */
+	/** @see #isApplicable(CharSequence) */
 	public boolean isApplicable(Document d) {
 		try {
 			return isApplicable(DomHelper.DocumentToString(d));

@@ -73,14 +73,7 @@ public class PreferenceEditorDialogue  extends JPanel implements Runnable, Prope
 	protected static final Log logger = LogFactory
 			.getLog(PreferenceEditorDialogue.class);
 
-	/**
-	 * 
-	 * @param preferences list of preferneces to build a form form
-	 * @param advancedPreference preference that controls visiblility of preferecnes marked 'advanced'
-	 * @param parent parent componet for dialogue.
-	 * @param browser used to display configurationn urls
-	 * @param help to display further help for settings.
-	 */
+
 		public PreferenceEditorDialogue(PreferencesArranger arranger, Preference advancedPreference, UIContext cxt) {
 
 			this.showAdvancedPreference = advancedPreference;

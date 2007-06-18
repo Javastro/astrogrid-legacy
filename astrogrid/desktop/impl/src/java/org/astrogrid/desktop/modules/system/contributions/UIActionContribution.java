@@ -1,4 +1,4 @@
-/*$Id: UIActionContribution.java,v 1.10 2007/04/18 15:47:09 nw Exp $
+/*$Id: UIActionContribution.java,v 1.11 2007/06/18 16:55:51 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -225,7 +225,6 @@ public class UIActionContribution extends AbstractAction implements UIStructureC
 
 	/** if true, this action should be executed on the EDT.
 	 * if false (the default) it should be executed on a background thread
-	 * @return
 	 */
 	public boolean isOnEventDispatchThread() {
 		return this.onEventDispatchThread;
@@ -263,6 +262,9 @@ public class UIActionContribution extends AbstractAction implements UIStructureC
 
 /* 
 $Log: UIActionContribution.java,v $
+Revision 1.11  2007/06/18 16:55:51  nw
+javadoc fixes.
+
 Revision 1.10  2007/04/18 15:47:09  nw
 tidied up voexplorer, removed front pane.
 

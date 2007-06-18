@@ -1,4 +1,4 @@
-/*$Id: UIMenuContribution.java,v 1.9 2007/05/18 06:13:13 nw Exp $
+/*$Id: UIMenuContribution.java,v 1.10 2007/06/18 16:55:51 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -95,9 +95,7 @@ public class UIMenuContribution extends JMenu implements UIStructureContribution
     public String getAfter() {
         return this.after;
     }
-    /**
-     * @see org.astrogrid.desktop.modules.system.contributions.UIStructureContribution#setAfter(java.lang.String)
-     */
+
     public void setAfter(String followingNames) {
         this.after = followingNames;
     }
@@ -127,6 +125,9 @@ public class UIMenuContribution extends JMenu implements UIStructureContribution
 
 /* 
 $Log: UIMenuContribution.java,v $
+Revision 1.10  2007/06/18 16:55:51  nw
+javadoc fixes.
+
 Revision 1.9  2007/05/18 06:13:13  nw
 fixed menu visibility bug.
 

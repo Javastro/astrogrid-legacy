@@ -1,4 +1,4 @@
-/*$Id: UIStructureContribution.java,v 1.6 2007/04/18 15:47:09 nw Exp $
+/*$Id: UIStructureContribution.java,v 1.7 2007/06/18 16:55:51 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,13 +19,11 @@ import javax.swing.Icon;
 public interface UIStructureContribution extends Cloneable{
 	/** returns comma separated list of names of ui components that
 	 * this component occurs 'after'
-	 * @return
 	 */
     public String getAfter();
 
     /** returns a comma separated list of names of ui components that
      * this component occurs 'before'
-     * @return
      */
     public String getBefore();
 
@@ -49,6 +47,9 @@ public interface UIStructureContribution extends Cloneable{
 
 /* 
  $Log: UIStructureContribution.java,v $
+ Revision 1.7  2007/06/18 16:55:51  nw
+ javadoc fixes.
+
  Revision 1.6  2007/04/18 15:47:09  nw
  tidied up voexplorer, removed front pane.
 
