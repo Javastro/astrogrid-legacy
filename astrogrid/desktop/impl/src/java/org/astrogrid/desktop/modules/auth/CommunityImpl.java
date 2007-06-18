@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.2 2007/04/18 15:47:08 nw Exp $
+/*$Id: CommunityImpl.java,v 1.3 2007/06/18 16:31:19 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -62,6 +62,10 @@ public class CommunityImpl implements CommunityInternal {
     protected SecurityGuard guard;
 
     public void login(String username,String password, String community) throws SecurityException, ServiceException {
+    	// Fix suggested by JDT.
+    	if (isLoggedIn()) { //already logged in.
+    		return;
+    	}
         loginDialogue.setUser(username);
         loginDialogue.setPassword(password);
         loginDialogue.setCommunity(community);
@@ -188,16 +192,11 @@ public class CommunityImpl implements CommunityInternal {
     }
     protected Set listeners = new HashSet();
     
-    /**
-     * @see org.astrogrid.acr.astrogrid.Community#addUserLoginListener(org.astrogrid.desktop.modules.ag.UserLoginListener)
-     */
+  
     public void addUserLoginListener(UserLoginListener l) {
         listeners.add(l);
     }
 
-    /**
-     * @see org.astrogrid.acr.astrogrid.Community#removeUserLoginListener(org.astrogrid.desktop.modules.ag.UserLoginListener)
-     */
     public void removeUserLoginListener(UserLoginListener l) {
         listeners.remove(l);
     }
@@ -209,7 +208,6 @@ public class CommunityImpl implements CommunityInternal {
      * credentials or principals; it will never be null.
      *
      * @return - The credentials and principals.
-     * @see org.astrogrid.acr.astrogrid.Community#getSecurityGuard()
      */
     public SecurityGuard getSecurityGuard() {
       return (this.guard == null)? new SecurityGuard() : this.guard;
@@ -220,6 +218,9 @@ public class CommunityImpl implements CommunityInternal {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.3  2007/06/18 16:31:19  nw
+check if we're logged in before logging in.
+
 Revision 1.2  2007/04/18 15:47:08  nw
 tidied up voexplorer, removed front pane.
 
