@@ -71,7 +71,6 @@ public class ActionContributionBuilderImpl implements ActionContributionBuilder 
 			setExpanded(false);
 		}});
 		*/		
-		actsMap.put(Activity.SCRIPT_SECTION,usePane); // combine this with plastic and other actions.
 
 		actsMap.put(Activity.PLASTIC_SECTION,usePane); // fold plastic in with actions
 		actsMap.put(Activity.INFO_SECTION, new MyTaskPaneGroup() {{
@@ -81,10 +80,12 @@ public class ActionContributionBuilderImpl implements ActionContributionBuilder 
 			setHelpId("resourceActions.info");
 			//setSpecial(true);
 		}});		
-		actsMap.put(Activity.EXPORT_SECTION, new MyTaskPaneGroup() {{
-			setTitle("Export");
-			//setExpanded(false);
-		}});
+		final MyTaskPaneGroup exportPane = new MyTaskPaneGroup() {{
+					setTitle("Export");
+					setExpanded(false);
+				}};
+		actsMap.put(Activity.EXPORT_SECTION, exportPane);
+		actsMap.put(Activity.SCRIPT_SECTION,exportPane); // combine this with export actions.
 		// compose these tasks.
 		for (Iterator i = actsMap.values().iterator(); i.hasNext();) {
 			MyTaskPaneGroup t = (MyTaskPaneGroup) i.next();
