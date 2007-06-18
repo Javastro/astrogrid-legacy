@@ -4,8 +4,10 @@ import java.util.Comparator;
 
 import javax.swing.Icon;
 
+import org.apache.commons.collections.ComparatorUtils;
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.astrogrid.CeaApplication;
+import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.icons.IconHelper;
@@ -20,31 +22,31 @@ import ca.odell.glazedlists.gui.WritableTableFormat;
 
 /** Glazed Lists format for a table of registry entries
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 07-Sep-2005
- * @todo add 'warning' level into this too.
  */
 
 public  class ResourceTableFomat implements AdvancedTableFormat, WritableTableFormat{
-	public ResourceTableFomat(final VoMon vomon) {
+	public ResourceTableFomat(final VoMon vomon,final CapabilityIconFactory capBuilder) {
 		super();
 		this.vomon = vomon;
+		this.capBuilder = capBuilder;
 		this.okLabel = IconHelper.loadIcon("greenled16.png");
 		this.downLabel = IconHelper.loadIcon("redled16.png");
 		this.unknownLabel = IconHelper.loadIcon("idle16.png");
 	}
+	private final CapabilityIconFactory capBuilder;
 	private final Icon okLabel;
 	private final Icon downLabel;
 	private final Icon unknownLabel;
-	private static final int COLUMN_COUNT = 3;
+	private static final int COLUMN_COUNT = 4;
 	private final VoMon vomon;
 
-
-	// makes a checkbox appear in col 1 if parent is application launcher or workflow builder, not registry browser
 	public Class getColumnClass(int columnIndex) {
 		switch(columnIndex) {
 		case 0:
+		case 2:
 			return Icon.class;
 		case 1:
-		case 2:
+		case 3:
 			return Object.class;
 		default:
 			throw new IndexOutOfBoundsException("Oversized column ix:" +columnIndex);			
@@ -54,10 +56,11 @@ public  class ResourceTableFomat implements AdvancedTableFormat, WritableTableFo
 	public Comparator getColumnComparator(int arg0) {
 		switch (arg0) {
 		case 0:
-			return labelComparator;
+		case 2:
+			return iconComparator;
 		case 1:
 			return GlazedLists.caseInsensitiveComparator();
-		case 2:
+		case 3:
 			return GlazedLists.comparableComparator();
 		default:
 			throw new IndexOutOfBoundsException("Oversized column ix:" +arg0);
@@ -65,7 +68,7 @@ public  class ResourceTableFomat implements AdvancedTableFormat, WritableTableFo
 	}
 
 	/** compare 2 icons. */
-	private final Comparator labelComparator = new Comparator() {
+	private final Comparator iconComparator = new Comparator() {
 		public int compare(Object arg0, Object arg1) {
 			Icon a = (Icon)arg0;
 			Icon b = (Icon)arg1;
@@ -85,7 +88,7 @@ public  class ResourceTableFomat implements AdvancedTableFormat, WritableTableFo
 			if (a == downLabel) {
 				return 1;
 			}
-			return 0; // don't expect this to happen
+			return a.hashCode(); // works for icons in capabilities list.
 		}
 	};
 	
@@ -96,7 +99,8 @@ public  class ResourceTableFomat implements AdvancedTableFormat, WritableTableFo
 		switch(column) {
 		case 0 :return "Status";
 		case 1: return "Title";
-		case 2: return "Date";
+		case 2: return "Capability";
+		case 3: return "Date";
 		default: 
 			throw new IndexOutOfBoundsException("Oversized column ix:" +column);
 		}
@@ -109,6 +113,8 @@ public  class ResourceTableFomat implements AdvancedTableFormat, WritableTableFo
 		case 1:
 			return createTitle(r);
 		case 2:
+			return capBuilder.buildIcon(r);
+		case 3:
 			return createDate(r);
 		default:
 			throw new IndexOutOfBoundsException("Oversized column ix:" +columnIndex);
@@ -124,16 +130,13 @@ public  class ResourceTableFomat implements AdvancedTableFormat, WritableTableFo
 
 			throw new IllegalArgumentException("This column is not editable");
 	}
-	//@todo find some way to prevent item display from screwing up on fast scroll
-	// think this is related to using html. If I used a cell renderer instead, I don't think this would be a problem.
-	// preferred - 3rd column, with icon indicating vomon status.
+
 	public static String createTitle(Resource r) {
 		if (r == null) {
 			return "";
 		}
 		String title = StringUtils.replace(r.getTitle(), "\n", " ") ;
 
-		// default - pass thru
 		return title;
 	}		
 
@@ -144,7 +147,6 @@ public  class ResourceTableFomat implements AdvancedTableFormat, WritableTableFo
 		}
 		return date == null ? "" : date.substring(0,10);
 	}
-
 	
 	private Icon getAvailability(Resource r) {
 

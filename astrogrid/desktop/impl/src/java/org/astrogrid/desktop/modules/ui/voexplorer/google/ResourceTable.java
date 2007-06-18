@@ -20,6 +20,7 @@ import java.awt.event.MouseListener;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
@@ -51,19 +52,20 @@ import ca.odell.glazedlists.swing.EventSelectionModel;
 public class ResourceTable extends JTable implements DragGestureListener, DragSourceListener, MouseListener {
 	private final List items;
 	private final VoMon vomon;
+	private final CapabilityIconFactory iconFac;
 	private final DragSource dragSource;
 
 	/**
 	 * 
 	 * @param dm the table model to show.
-	 * @param showCheckBox whether to show the check box in first column
 	 * @param items list (probablby a glazed list) of items that the table model is based upon.
 	 * @param vomon monitoring information.
 	 */
-	public ResourceTable(TableModel dm, List items, VoMon vomon) {
+	public ResourceTable(TableModel dm, List items, VoMon vomon,CapabilityIconFactory iconFac) {
 		super(dm);
 		this.items = items;
 		this.vomon = vomon;
+		this.iconFac = iconFac;
 		setAutoResizeMode(AUTO_RESIZE_NEXT_COLUMN);
 		setBorder(BorderFactory.createEmptyBorder());	
 		setShowGrid(false);
@@ -71,9 +73,17 @@ public class ResourceTable extends JTable implements DragGestureListener, DragSo
 
 		cm.getColumn(0).setPreferredWidth(40);
 		cm.getColumn(0).setMaxWidth(40);
+		cm.getColumn(0).setResizable(true);
 		
-		cm.getColumn(2).setPreferredWidth(90);
-		cm.getColumn(2).setMaxWidth(90);
+		cm.getColumn(1).setResizable(true);
+		
+		cm.getColumn(2).setPreferredWidth(80);
+		cm.getColumn(2).setMaxWidth(100);
+		cm.getColumn(2).setResizable(true);
+		
+		cm.getColumn(3).setPreferredWidth(90);
+		cm.getColumn(3).setMaxWidth(90);
+		cm.getColumn(3).setResizable(true);		
 		
 		// drag and drop.
 		resourceImage = IconHelper.loadIcon("doc16.png").getImage();
@@ -95,7 +105,7 @@ public class ResourceTable extends JTable implements DragGestureListener, DragSo
 		int colIndex = columnAtPoint(p);
 		int realColumnIndex = convertColumnIndexToModel(colIndex);
 		
-		if (rowIndex > -1) { //availability column
+		if (rowIndex > -1) { 
 			Resource ri =(Resource) items.get(rowIndex);  // weakness - possiblility of getting the wrong tooltip if the list is rapidly updating. not the end of the world.
 			StringBuffer result = new StringBuffer();
 			result.append("<html>");
@@ -137,6 +147,9 @@ public class ResourceTable extends JTable implements DragGestureListener, DragSo
 				result.append("<br><i>").append(ri.getShortName()).append("</i>");
 				result.append("<br><i>").append(ri.getId()).append("</i>");
 				break;
+			case 2: // capabilties.
+				Icon ic = (Icon)getModel().getValueAt(rowIndex,2);
+				result.append(iconFac.getTooltip(ic));
 			default:
 				createTooltipFor(realColumnIndex,ri,result);
 				break;
