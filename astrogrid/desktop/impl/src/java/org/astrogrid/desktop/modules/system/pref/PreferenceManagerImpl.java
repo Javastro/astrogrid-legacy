@@ -82,12 +82,15 @@ import org.astrogrid.desktop.modules.system.ConfigurationInternal;
  *  <h2>Defaults</h2>
  *  Values from hivemind.FactoryDefaults and hivemind.ApplicationDefailts are not
  *  available through the Configuration interface now. However, all user-servicable
- *  properties have moved to Preferences, so that there's little of interrest
- *  stored in these configurations now.
+ *  properties have moved to Preferences. The defaults configurations store more technical 
+ *  settings that generally shouldn't be fiddled with - however, these can be set via a properties file
+ *  or extension hivemind descriptor
  *  
  *  Another change from the old system was that any keys set in the hivemind.factoryDefaults
  *  and hivemind.ApplicationDefaults were also copied into the ag.common.Config system.
- *  This is not the case now - defaults should be specified using the defaultValue property
+ *  This is not the case now -  only some specified preferecnes are copied into the config system.
+ *  
+ *  defaults should be specified using the defaultValue property
  *  of a preference. 
  * 
  * 
@@ -133,13 +136,18 @@ public class PreferenceManagerImpl implements  ConfigurationInternal,  Preferenc
 	private void initialize(Preference p) {
 		String val = preferenceRegistry.get(p.getName(),null);
 		if (val == null) {// preference is unknown to store - copy default into store
-			preferenceRegistry.put(p.getName(), p.getDefaultValue());
+			val = p.getDefaultValue();
+			preferenceRegistry.put(p.getName(), val);
 		}
-		// set the value of the preference
-		// here system properties (anything passed in on commandline) take precedence
+		
+		// in all cases, val is non-null and now contains the same value as is in the store.
+		
+		// now system properties (anything passed in on commandline) take precedence
 		// but aren't persisted - as may only be there for this session.
 		//NB - this might be a problem when we do a configuration dialogue??
-		p.setValue(val != null ? val : getDefault(p));
+		String sysVal = systemProperties.valueForSymbol(p.getName());		
+		
+		p.setValue(sysVal != null ? sysVal : val);
 		// register synch - so any further changes to this property are managed.
 		p.addPropertyChangeListener(this);
 
@@ -152,16 +160,6 @@ public class PreferenceManagerImpl implements  ConfigurationInternal,  Preferenc
 	protected final Map preferenceObjectMap;
 	protected final Preferences preferenceRegistry;
 	protected final SymbolSource systemProperties;
-
-	/** computes default value for a preference - looks in system properties,
-	 *  then default value
-	 * @param p
-	 * @return default val.
-	 */
-	protected String getDefault(Preference p) {
-		String symValue = systemProperties.valueForSymbol(p.getName());
-		return symValue != null ? symValue : p.getDefaultValue();
-	}
 
 //	configurationInternalinterface
 	/** finds a named preference.
@@ -252,13 +250,12 @@ public class PreferenceManagerImpl implements  ConfigurationInternal,  Preferenc
 		return preferenceObjectMap.containsKey(name);
 	}
 
-//	symbol source interface.
+//	symbol source interface. - returns preferences, and other configuration keys.
 	public String valueForSymbol(String prefName) {
-		if (! isPreference(prefName) ) {
-			return null;
+		if ( isPreference(prefName) ) {
+			return find(prefName).toString();
 		}
-		String result = find(prefName).toString();
-		return result;
+		return preferenceRegistry.get(prefName,null);
 	}
 //	synch	 interfaces
 
