@@ -1,4 +1,4 @@
-/*$Id: ConfigurationInternal.java,v 1.5 2007/04/18 15:47:07 nw Exp $
+/*$Id: ConfigurationInternal.java,v 1.6 2007/06/18 16:56:19 nw Exp $
  * Created on 23-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,15 +33,14 @@ public interface ConfigurationInternal extends Configuration, ObjectProvider, Sy
 	 */
 	public Preference find(String name) throws IllegalArgumentException;
 
-	
-    /** reset the configuration back to factory settings. any user history or configuraiton will be lost 
-     * @throws ServiceException*/
-    public void reset() throws ServiceException;
 }
 
 
 /* 
 $Log: ConfigurationInternal.java,v $
+Revision 1.6  2007/06/18 16:56:19  nw
+made reset() method public
+
 Revision 1.5  2007/04/18 15:47:07  nw
 tidied up voexplorer, removed front pane.
 
