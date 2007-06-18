@@ -1,4 +1,4 @@
-/*$Id: StatusChangeExecutionMessage.java,v 1.4 2007/01/29 11:11:35 nw Exp $
+/*$Id: StatusChangeExecutionMessage.java,v 1.5 2007/06/18 16:28:28 nw Exp $
  * Created on 09-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,13 +20,7 @@ import org.astrogrid.acr.astrogrid.ExecutionMessage;
  */
 public class StatusChangeExecutionMessage extends ExecutionMessage {
     static final long serialVersionUID = 12345689123456789L;
-    /** Construct a new StatusChangeExecutionMessage
-     * @param arg0
-     * @param arg1
-     * @param arg2
-     * @param arg3
-     * @param arg4
-     */
+
     public StatusChangeExecutionMessage(String source, String phase, Date arg3) {
         super(source,"information",phase, arg3, "Status changed to " + phase);
     }
@@ -36,6 +30,9 @@ public class StatusChangeExecutionMessage extends ExecutionMessage {
 
 /* 
 $Log: StatusChangeExecutionMessage.java,v $
+Revision 1.5  2007/06/18 16:28:28  nw
+javadoc fixes.
+
 Revision 1.4  2007/01/29 11:11:35  nw
 updated contact details.
 

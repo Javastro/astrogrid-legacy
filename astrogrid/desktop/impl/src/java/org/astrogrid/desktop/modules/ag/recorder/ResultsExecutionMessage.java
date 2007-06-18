@@ -1,4 +1,4 @@
-/*$Id: ResultsExecutionMessage.java,v 1.5 2007/01/29 11:11:35 nw Exp $
+/*$Id: ResultsExecutionMessage.java,v 1.6 2007/06/18 16:28:28 nw Exp $
  * Created on 09-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,13 +23,7 @@ import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
  */
 public class ResultsExecutionMessage extends ExecutionMessage {
     static final long serialVersionUID = 12345689123456789L;
-    /** Construct a new ResultsExecutionMessage
-     * @param source
-     * @param arg1
-     * @param phase
-     * @param arg3
-     * @param arg4
-     */
+
     public ResultsExecutionMessage(String source,  Date arg3, ResultListType results) {
         super(source, "information", ExecutionInformation.COMPLETED, arg3, "Results");
         this.results =results;
@@ -42,6 +36,9 @@ public class ResultsExecutionMessage extends ExecutionMessage {
 
 /* 
 $Log: ResultsExecutionMessage.java,v $
+Revision 1.6  2007/06/18 16:28:28  nw
+javadoc fixes.
+
 Revision 1.5  2007/01/29 11:11:35  nw
 updated contact details.
 
