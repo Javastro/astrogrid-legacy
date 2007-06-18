@@ -137,7 +137,6 @@ public class HtmlBuilder extends StrBuilder {
 	
 	
 	/** Write out a url/uri -if it's a well known scheme - http / ftp / ivo, add a hyperlink around it.
-	 * @param sb
 	 * @param url
 	 */
 	public  HtmlBuilder appendURI( final URI url) {

@@ -17,20 +17,20 @@ public interface IterableObjectBuilder extends ObjectBuilder {
 	
 	/** iterate through all the objects this builder can create, instantiate
 	 *a new one of each
-	 * @return
+	 * @return an iterator that creates objects
 	 */
 	Iterator creationIterator();
 	
 	/** iterate through all the objects this builder can create, instantiating
 	 * a new one at each call
 	 * @param o constructor parameter to pass to each object to instantiate
-	 * @return
+	 * @return  an iterator that creates objects
 	 */
 	Iterator creationIterator(Object o);
 	/** iterate through all the objects this builder can create, instantiating
 	 * a new one at each call
 	 * @param o list of constructor parameters to pass to each object to instantiate
-	 * @return
+	 * @return  an iterator that creates objects
 	 */	
 	Iterator creationIterator(Object[] o);
 	

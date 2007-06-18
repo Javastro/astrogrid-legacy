@@ -712,12 +712,7 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         this(tm,resourceChooser,true);
     }
             
-        
-                    
-    /** Construct a new BasicToolEditorPanel
-     * @param toolModel
-     * @param resourceChooser2
-     */
+
     public BasicToolEditorPanel(ToolModel toolModel, ResourceChooserInternal resourceChooser, boolean useScrollBars) {
         super(toolModel);
         this.resourceChooser = resourceChooser;
@@ -735,9 +730,7 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
         return inputTable;
     }
     
-    /**
-     * @return
-     */
+
     protected ParameterTableModel getInputTableModel() {
        if (inputTableModel == null) {
            inputTableModel =  new ParameterTableModel(true);
@@ -813,6 +806,9 @@ public  class BasicToolEditorPanel extends AbstractToolEditorPanel  {
 
 /* 
 $Log: BasicToolEditorPanel.java,v $
+Revision 1.21  2007/06/18 17:02:44  nw
+javadoc fixes.
+
 Revision 1.20  2007/01/29 11:11:37  nw
 updated contact details.
 

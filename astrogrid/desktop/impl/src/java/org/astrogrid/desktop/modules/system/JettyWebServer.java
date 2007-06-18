@@ -1,4 +1,4 @@
-/*$Id: JettyWebServer.java,v 1.12 2007/04/18 15:47:07 nw Exp $
+/*$Id: JettyWebServer.java,v 1.13 2007/06/18 17:00:13 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -249,7 +249,6 @@ public void setDisableConnectionFile(boolean disableConnectionFile) {
  * 
  * @param netAddress dotted ip address or server name. null or empty strings are ignored.
  * 
- * @param inetAddress the inetAddress to set
  * @throws UnknownHostException 
  */
 public void setInetAddress(String netAddress) throws UnknownHostException {
@@ -329,6 +328,9 @@ public URL getContextBase(String sessionId) {
 
 /* 
 $Log: JettyWebServer.java,v $
+Revision 1.13  2007/06/18 17:00:13  nw
+javadoc fixes.
+
 Revision 1.12  2007/04/18 15:47:07  nw
 tidied up voexplorer, removed front pane.
 

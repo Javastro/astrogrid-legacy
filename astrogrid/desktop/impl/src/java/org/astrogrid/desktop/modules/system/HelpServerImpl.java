@@ -1,4 +1,4 @@
-/*$Id: HelpServerImpl.java,v 1.13 2007/03/08 17:44:02 nw Exp $
+/*$Id: HelpServerImpl.java,v 1.14 2007/06/18 17:00:13 nw Exp $
  * Created on 17-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -158,7 +158,7 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
     /**
      * Returns the default DisplayHelpFromFocus listener.
      *
-     * @see enableHelpKey
+     * @see #enableHelpKey(Component, String)
      */
     
     protected ActionListener getDisplayHelpFromFocus() {
@@ -171,7 +171,7 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
     /**
      * Returns the default DisplayHelpFromSource listener.
      *
-     * @see enableHelp
+     * @see #enableHelp(Component, String)
      */
     protected ActionListener getDisplayHelpFromSource() {
 	if (displayHelpFromSource==null) {
@@ -215,6 +215,9 @@ public class HelpServerImpl implements  HelpServerInternal, KeyListener{
 
 /* 
 $Log: HelpServerImpl.java,v $
+Revision 1.14  2007/06/18 17:00:13  nw
+javadoc fixes.
+
 Revision 1.13  2007/03/08 17:44:02  nw
 first draft of voexplorer
 

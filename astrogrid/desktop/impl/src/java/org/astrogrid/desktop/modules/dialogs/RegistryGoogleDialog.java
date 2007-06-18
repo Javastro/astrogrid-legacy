@@ -1,4 +1,4 @@
-/*$Id: RegistryGoogleDialog.java,v 1.9 2007/05/02 15:38:32 nw Exp $
+/*$Id: RegistryGoogleDialog.java,v 1.10 2007/06/18 17:03:12 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,7 +43,6 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
     final RegistryGooglePanel chooserPanel;
     private final UIComponentImpl parent;
     /** Construct a new RegistryChooserDialog
-     * @param pref 
      * @throws java.awt.HeadlessException
      */
     public RegistryGoogleDialog( UIContext context, RegistryGooglePanel chooserPanel) throws HeadlessException {
@@ -175,6 +174,9 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
 
 /* 
 $Log: RegistryGoogleDialog.java,v $
+Revision 1.10  2007/06/18 17:03:12  nw
+javadoc fixes.
+
 Revision 1.9  2007/05/02 15:38:32  nw
 changes for 2007.3.alpha1
 

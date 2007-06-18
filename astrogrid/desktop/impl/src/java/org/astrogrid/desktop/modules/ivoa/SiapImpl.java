@@ -1,4 +1,4 @@
-/*$Id: SiapImpl.java,v 1.12 2007/04/18 15:47:05 nw Exp $
+/*$Id: SiapImpl.java,v 1.13 2007/06/18 17:02:24 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -79,9 +79,7 @@ public class SiapImpl extends DALImpl implements Siap {
             return addOption(constructQueryS(service,ra,dec,ra_size,dec_size),"FORMAT",format);        
     }
 
-    /**
-     * @see org.astrogrid.acr.ivoa.Siap#getRegistryQueryToListSiap()
-     */
+
     public String getRegistryQuery() {
     	return getRegistryAdqlQuery();
     }
@@ -121,6 +119,9 @@ public class SiapImpl extends DALImpl implements Siap {
 
 /* 
 $Log: SiapImpl.java,v $
+Revision 1.13  2007/06/18 17:02:24  nw
+javadoc fixes.
+
 Revision 1.12  2007/04/18 15:47:05  nw
 tidied up voexplorer, removed front pane.
 

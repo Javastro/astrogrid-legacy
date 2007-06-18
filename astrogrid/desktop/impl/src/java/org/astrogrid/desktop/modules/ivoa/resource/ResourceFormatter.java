@@ -189,14 +189,14 @@ public final class ResourceFormatter {
 		
 	}	
 	
-	//@todo surely I've already got this information somewhere.
+	
 	public static final Map typeMapper = new HashMap();
 	static {
-		typeMapper.put("ConeSearch","Catalog service");
-		typeMapper.put("SimpleImageAccess", "Image service");
-		typeMapper.put("SimpleSpectrumAccess","Spectrum Service");
-		typeMapper.put("CeaApplicationType","Offline Application");//@todo find a better characterization of cea.
-		typeMapper.put("CeaHttpApplicationType", "Offline Application");
+		typeMapper.put("ConeSearch","Catalog cone search service");
+		typeMapper.put("SimpleImageAccess", "Image access service (SIAP)");
+		typeMapper.put("SimpleSpectrumAccess","Spectrum access service (SSAP)");
+		typeMapper.put("CeaApplicationType","Offline application (CEA)");//@todo find a better characterization of cea.
+		typeMapper.put("CeaHttpApplicationType", "Offline application (CEA)");
 	//	typeMapper.put("
 	}
 	
@@ -349,10 +349,6 @@ public final class ResourceFormatter {
 
 	
 
-	/**
-	 * @param r
-	 * @param sb
-	 */
 	public static void formatCeaApplication(CeaApplication cea, HtmlBuilder sb) {
 
 		ParameterBean[] params = cea.getParameters();
@@ -386,10 +382,6 @@ public final class ResourceFormatter {
 		sb.append("</table>");
 	}
 
-	/**
-	 * @param r
-	 * @param sb
-	 */
 	public static void formatCatalog(Catalog c, HtmlBuilder sb) {
 		sb.h3(c.getName());
 		if (c.getDescription() != null && c.getDescription().trim().length() > 0) {

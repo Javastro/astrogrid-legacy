@@ -1,4 +1,4 @@
-/*$Id: JDICSystemTray.java,v 1.7 2007/04/18 15:47:07 nw Exp $
+/*$Id: JDICSystemTray.java,v 1.8 2007/06/18 17:00:13 nw Exp $
  * Created on 21-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -63,9 +63,7 @@ public class JDICSystemTray implements org.astrogrid.acr.system.SystemTray,Shutd
     protected final Icon activeIcon;
     protected int throbberCallCount = 0;
 
-    /**
-     * @see org.picocontainer.Startable#start()
-     */
+
     public void start() {
         if (st != null) {
             ti = new TrayIcon(idleIcon,"AstroGrid");
@@ -169,6 +167,9 @@ public class JDICSystemTray implements org.astrogrid.acr.system.SystemTray,Shutd
 
 /* 
 $Log: JDICSystemTray.java,v $
+Revision 1.8  2007/06/18 17:00:13  nw
+javadoc fixes.
+
 Revision 1.7  2007/04/18 15:47:07  nw
 tidied up voexplorer, removed front pane.
 

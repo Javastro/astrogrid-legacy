@@ -1,4 +1,4 @@
-/*$Id: ToolEditAdapter.java,v 1.2 2007/01/29 11:11:37 nw Exp $
+/*$Id: ToolEditAdapter.java,v 1.3 2007/06/18 17:02:44 nw Exp $
  * Created on 08-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,39 +23,27 @@ public class ToolEditAdapter implements ToolEditListener {
         super();
     }
 
-    /**
-     * @see org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditListener#toolSet(org.astrogrid.desktop.modules.dialogs.editors.ToolEditEvent)
-     */
+
     public void toolSet(ToolEditEvent te) {
     }
 
-    /**
-     * @see org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditListener#parameterChanged(org.astrogrid.desktop.modules.dialogs.editors.ToolEditEvent)
-     */
+
     public void parameterChanged(ToolEditEvent te) {
     }
 
-    /**
-     * @see org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditListener#parameterAdded(org.astrogrid.desktop.modules.dialogs.editors.ToolEditEvent)
-     */
+
     public void parameterAdded(ToolEditEvent te) {
     }
 
-    /**
-     * @see org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditListener#parameterRemoved(org.astrogrid.desktop.modules.dialogs.editors.ToolEditEvent)
-     */
+
     public void parameterRemoved(ToolEditEvent te) {
     }
 
-    /**
-     * @see org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditListener#toolChanged(org.astrogrid.desktop.modules.dialogs.editors.ToolEditEvent)
-     */
+
     public void toolChanged(ToolEditEvent te) {
     }
 
-    /**
-     * @see org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditListener#toolCleared(org.astrogrid.desktop.modules.dialogs.editors.ToolEditEvent)
-     */
+
     public void toolCleared(ToolEditEvent te) {
     }
 
@@ -64,6 +52,9 @@ public class ToolEditAdapter implements ToolEditListener {
 
 /* 
 $Log: ToolEditAdapter.java,v $
+Revision 1.3  2007/06/18 17:02:44  nw
+javadoc fixes.
+
 Revision 1.2  2007/01/29 11:11:37  nw
 updated contact details.
 

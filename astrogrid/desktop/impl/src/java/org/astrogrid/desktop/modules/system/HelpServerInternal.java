@@ -1,4 +1,4 @@
-/*$Id: HelpServerInternal.java,v 1.6 2007/01/29 11:11:36 nw Exp $
+/*$Id: HelpServerInternal.java,v 1.7 2007/06/18 17:00:13 nw Exp $
  * Created on 11-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -71,7 +71,6 @@ public interface HelpServerInternal extends HelpServer{
     /** convenience funtion. - creates a small buttons iwth a '?' icon which will
      * take to the specified help location when clicked
      * @param helpId
-     * @return
      */
     
     public JButton createHelpButton(String helpId);
@@ -80,6 +79,9 @@ public interface HelpServerInternal extends HelpServer{
 
 /* 
 $Log: HelpServerInternal.java,v $
+Revision 1.7  2007/06/18 17:00:13  nw
+javadoc fixes.
+
 Revision 1.6  2007/01/29 11:11:36  nw
 updated contact details.
 

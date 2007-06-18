@@ -1,4 +1,4 @@
-/*$Id: ToolEditorImpl.java,v 1.14 2007/04/18 15:47:10 nw Exp $
+/*$Id: ToolEditorImpl.java,v 1.15 2007/06/18 17:03:12 nw Exp $
  * Created on 16-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -75,11 +75,7 @@ public class ToolEditorImpl implements ToolEditorInternal {
     }    
     
 
-    /**
-     * @throws InvalidArgumentException
-     * @throws WorkflowInterfaceException
-     * @see org.astrogrid.acr.dialogs.ToolEditor#editTool(org.astrogrid.workflow.beans.v1.Tool)
-     */
+
     public Document edit(Document doc) throws InvalidArgumentException {
         try {
         Tool t = (Tool)Unmarshaller.unmarshal(Tool.class,doc);        
@@ -124,14 +120,7 @@ public class ToolEditorImpl implements ToolEditorInternal {
         return editTool(t,comp);
     }
     
-    /**
-     * @param t
-     * @return
-     * @throws URISyntaxException
-     * @throws ServiceException
-     * @throws NotFoundException
-     * @throws InvalidArgumentException
-     */
+ 
     public Tool editTool(Tool t,Component comp) throws InvalidArgumentException {
         try {
         URI uri = new URI(t.getName().startsWith("ivo://") ? t.getName() : "ivo://" + t.getName());
@@ -197,6 +186,9 @@ public class ToolEditorImpl implements ToolEditorInternal {
 
 /* 
 $Log: ToolEditorImpl.java,v $
+Revision 1.15  2007/06/18 17:03:12  nw
+javadoc fixes.
+
 Revision 1.14  2007/04/18 15:47:10  nw
 tidied up voexplorer, removed front pane.
 

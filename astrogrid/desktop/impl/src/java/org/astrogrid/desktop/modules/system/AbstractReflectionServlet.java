@@ -1,4 +1,4 @@
-/*$Id: AbstractReflectionServlet.java,v 1.8 2007/03/22 19:03:48 nw Exp $
+/*$Id: AbstractReflectionServlet.java,v 1.9 2007/06/18 17:00:13 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -124,8 +124,7 @@ public abstract class AbstractReflectionServlet extends HttpServlet {
     protected abstract void processRoot(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException;
 
-    /** process a request to a service 
-     * @param module */
+    /** process a request to a service */
     protected abstract void processComponent(ModuleDescriptor m,ComponentDescriptor cd, HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException;
 
@@ -137,7 +136,7 @@ public abstract class AbstractReflectionServlet extends HttpServlet {
     /** process an invokation of a method in a service
      * 
      * @param resultType format to return result in (html/xml/plain)
-     * @param methodName name of method to invoke
+     * @param md name of method to invoke
      * @param service servie the method belongs to.
      * @param request
      * @param response
@@ -187,6 +186,9 @@ public abstract class AbstractReflectionServlet extends HttpServlet {
 
 /*
  * $Log: AbstractReflectionServlet.java,v $
+ * Revision 1.9  2007/06/18 17:00:13  nw
+ * javadoc fixes.
+ *
  * Revision 1.8  2007/03/22 19:03:48  nw
  * added support for sessions and multi-user ar.
  *

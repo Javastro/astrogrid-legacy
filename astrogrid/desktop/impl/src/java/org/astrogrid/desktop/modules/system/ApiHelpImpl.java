@@ -1,4 +1,4 @@
-/*$Id: ApiHelpImpl.java,v 1.8 2007/01/29 11:11:36 nw Exp $
+/*$Id: ApiHelpImpl.java,v 1.9 2007/06/18 17:00:13 nw Exp $
  * Created on 23-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -103,9 +103,6 @@ public class ApiHelpImpl implements ApiHelp {
         return (String[])components.toArray(new String[components.size()]);
     }
     
-    /**
-     * @see org.astrogrid.acr.system.ApiHelp#interfaceClassName(java.lang.String, java.lang.String)
-     */
     public String interfaceClassName(String arg0) throws NotFoundException {
     	if (arg0 == null) {
     		// should throw some other kind of exception really - but not permitted by the signature
@@ -378,6 +375,9 @@ public class ApiHelpImpl implements ApiHelp {
 
 /* 
 $Log: ApiHelpImpl.java,v $
+Revision 1.9  2007/06/18 17:00:13  nw
+javadoc fixes.
+
 Revision 1.8  2007/01/29 11:11:36  nw
 updated contact details.
 

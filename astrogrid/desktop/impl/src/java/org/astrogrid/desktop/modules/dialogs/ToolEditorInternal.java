@@ -1,4 +1,4 @@
-/*$Id: ToolEditorInternal.java,v 1.7 2007/03/08 17:44:01 nw Exp $
+/*$Id: ToolEditorInternal.java,v 1.8 2007/06/18 17:03:12 nw Exp $
  * Created on 24-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,9 +32,7 @@ public interface ToolEditorInternal extends ToolEditor {
      * @param comp ui component to center this dialog on.
      * @return edited copy of this document
      * @throws InvalidArgumentException if the parameter document is malformed - ie.is not a tool
-     * @throws ServiceException if any other exception occurs during editing (e.g. failure to communicate to registry)
      * 
-     * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Sep-2005
      *
      */
     public Tool editTool(Tool t,Component comp) throws  InvalidArgumentException;
@@ -61,7 +59,7 @@ public interface ToolEditorInternal extends ToolEditor {
     
     
     /** 
-     * variant of {@link ToolEditor#selectAndBuildTool()}, restricted to cea apps.
+     * variant of {@link #selectAndBuildTool(Component)}, restricted to cea apps.
      * @return a new tool document
      * @param comp ui component to center this dialog on.     
      * @throws ServiceException if any exception occurs during editng.
@@ -70,7 +68,7 @@ public interface ToolEditorInternal extends ToolEditor {
     
 
     /**
-     * Internal variant on {@link ToolEditor#editWithDescription(org.w3c.dom.Document, org.astrogrid.acr.astrogrid.ApplicationInformation)}
+     * Internal variant 
      * @param t
      * @param desc
      */
@@ -82,6 +80,9 @@ public interface ToolEditorInternal extends ToolEditor {
 
 /* 
 $Log: ToolEditorInternal.java,v $
+Revision 1.8  2007/06/18 17:03:12  nw
+javadoc fixes.
+
 Revision 1.7  2007/03/08 17:44:01  nw
 first draft of voexplorer
 

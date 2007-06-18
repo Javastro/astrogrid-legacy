@@ -532,9 +532,7 @@ public final class ResourceStreamParser implements Iterator {
 		return rel;
 	}
 	
-	/**
-	 * @return
-	 */
+
 	protected Curation parseCuration() {
 		final Curation c = new Curation();
 		final List creator = new ArrayList();
@@ -664,9 +662,7 @@ public final class ResourceStreamParser implements Iterator {
 		return c;
 	}
 	
-	/**
-	 * @return
-	 */
+
 	protected Validation parseValidationLevel() {
 		final Validation v = new Validation();
 		try {
@@ -707,7 +703,6 @@ public final class ResourceStreamParser implements Iterator {
 	// legacy stuff.
 	/**
 	 * parse up anold interfaces as a new capability.
-	 * @return
 	 */
 	protected Capability parseV10InterfaceAsCapability() {
 		final Capability c = new Capability();
@@ -1003,7 +998,6 @@ public final class ResourceStreamParser implements Iterator {
 	
 	// v1.0 stuff.
 	/** capability parsing - v1.0 verison.
-	 * @return
 	 */
 	protected Capability parseCapability() {
 		final String xsiType = in.getAttributeValue(XSI_NS,"type");

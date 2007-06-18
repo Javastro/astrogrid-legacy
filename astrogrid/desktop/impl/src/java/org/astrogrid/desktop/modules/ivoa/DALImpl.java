@@ -1,4 +1,4 @@
-/*$Id: DALImpl.java,v 1.12 2007/05/03 19:17:29 nw Exp $
+/*$Id: DALImpl.java,v 1.13 2007/06/18 17:02:24 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -298,7 +298,6 @@ public abstract class DALImpl implements Dal{
 
 	/** returns a stream for any non-myspace URI.
 	 * @param location
-	 * @return
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 * @throws MalformedURLException
@@ -435,6 +434,9 @@ public abstract class DALImpl implements Dal{
 
 /* 
 $Log: DALImpl.java,v $
+Revision 1.13  2007/06/18 17:02:24  nw
+javadoc fixes.
+
 Revision 1.12  2007/05/03 19:17:29  nw
 made more error tolerant.
 

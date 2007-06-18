@@ -17,7 +17,7 @@ import ca.odell.glazedlists.EventList;
  * The AR registeres as a single application with the Plastic Hub. This application
  * acts as a container for the remotely-available plastic apps (topcat, etc).
  * It maintains a store of currently available applications.
- * @see http://plastic.sourceforge.net
+ * @see <a href="http://plastic.sourceforge.net">Plastic Homepage</a> 
  * @author Noel Winstanley
  * @since Jun 5, 20063:11:05 PM
  */
