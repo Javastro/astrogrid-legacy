@@ -39,6 +39,7 @@ public class SnitchImpl implements SnitchInternal {
 	
 	public SnitchImpl( UIContext ui,String version, String appMode, final EventList plasticList, Preference doSnitch) {
 		super();
+    	logger.info("AstroRuntime version: " + version + ", " + appMode);
 		this.ui = ui;
 		this.snitchDisabled = (! doSnitch.asBoolean()) 
 						|| version.equals("${astrogrid.desktop.version}"); // if the key isn't available, the keyname is passed in instead.

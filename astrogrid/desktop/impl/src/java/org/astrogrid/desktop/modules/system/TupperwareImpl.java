@@ -73,7 +73,7 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener {
 			List messages = mh.getHandledMessages();
 			logger.debug(messages);
 			if (messages == null || messages.size() ==0) {
-				logger.error("Skipping - No messages registered for handler" + mh);
+				logger.warn("Skipping - No messages registered for handler" + mh);
 				continue;
 			} 
 			supportedMessages.addAll(mh.getHandledMessages());
