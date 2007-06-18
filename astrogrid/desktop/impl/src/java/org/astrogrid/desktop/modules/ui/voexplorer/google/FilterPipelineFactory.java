@@ -20,6 +20,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
@@ -37,6 +38,7 @@ import ca.odell.glazedlists.UniqueList;
 import ca.odell.glazedlists.matchers.AbstractMatcherEditor;
 import ca.odell.glazedlists.matchers.Matcher;
 import ca.odell.glazedlists.matchers.MatcherEditor;
+import ca.odell.glazedlists.matchers.Matchers;
 import ca.odell.glazedlists.swing.EventListModel;
 import ca.odell.glazedlists.swing.EventSelectionModel;
 import ca.odell.glazedlists.swing.JEventListPanel;
@@ -50,13 +52,20 @@ import com.l2fprod.common.swing.JCollapsiblePane;
  * @since Feb 14, 20074:14:06 PM
  */
 public class FilterPipelineFactory   {
+
+
 	public FilterPipelineFactory(SortedList items, PipelineStrategy[] strategies) {
 		int pipelineSize = 3;
 		
+		// system filters..
+		systemToggle = new JToggleButton(IconHelper.loadIcon("noserver16.png"),true); 
+		systemToggle.setToolTipText("Hide system resources");
+		FilterList systemFilteredItems = new FilterList(items
+				,new ToggleMatcherEditor(systemToggle,new SystemFilter()));
 		// incremental text field..
 		textField = new IconField(10);
 		textField.setToolTipText("Filter box: type a word to filter with");
-		FilterList filteredItems = new FilterList(items
+		FilterList filteredItems = new FilterList(systemFilteredItems
 				, new TextComponentMatcherEditor(textField, new ResourceTextFilterator()));
 		
 		filterPane = new JCollapsiblePane();
@@ -87,9 +96,16 @@ public class FilterPipelineFactory   {
 		toggleButton.setToolTipText("Expand for further filters");
 	}
 	private final EventList totallyFilteredItems;
+	private JToggleButton systemToggle;	
 	private final JTextField textField;
 	private final JCollapsiblePane filterPane;
 	private final JButton toggleButton;
+	
+	/** toggle button to control filtering of system resources */
+	public JToggleButton getSystemToggleButton() {
+		return systemToggle;
+	}
+	
 	
 	/**
  	a text field for incremental searching.
@@ -207,9 +223,7 @@ public class FilterPipelineFactory   {
 			this.items = items;
 			setStrategy(mf);
 		}
-		/**
-		 * @return
-		 */
+
 		public PipelineStrategy getCurrentStrategy() {
 			return strategy;
 		}
@@ -434,6 +448,35 @@ public class FilterPipelineFactory   {
 		public void dispose() {
 			this.esm.dispose();
 		}
+	}
+	
+	/** matcher editor which can be turned on/off by a toggle button */
+	private static class ToggleMatcherEditor extends AbstractMatcherEditor implements ItemListener{
+		/**
+		 * Construct a matcher editor which applies the supplied matcher only when the toggle is 'true'
+		 * @param control
+		 * @param matcher
+		 */
+		public ToggleMatcherEditor(JToggleButton control, Matcher matcher) {
+			control.addItemListener(this);
+			realMatcher = matcher;
+			if (control.isSelected()) {
+				fireConstrained(realMatcher);
+			} else {
+				fireMatchAll();
+			}
+		}
+
+		private final Matcher realMatcher;
+
+		public void itemStateChanged(ItemEvent e) {
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				fireConstrained(realMatcher);
+			} else {
+				fireMatchAll();
+			}
+		}
+		
 	}
 
 
