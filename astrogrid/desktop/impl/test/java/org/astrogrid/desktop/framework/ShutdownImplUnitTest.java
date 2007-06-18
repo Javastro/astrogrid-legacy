@@ -24,11 +24,11 @@ public class ShutdownImplUnitTest extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		coordControl = MockControl.createControl(ShutdownCoordinator.class);
+		coordControl = MockControl.createNiceControl(ShutdownCoordinator.class);
 		coord = (ShutdownCoordinator)coordControl.getMock();
 		shutdown = new ShutdownImpl(coord,false);
 		shutdown.setConfirmIfObjections(false);
-		listenerControl = MockControl.createControl(ShutdownListener.class);
+		listenerControl = MockControl.createNiceControl(ShutdownListener.class);
 		listener = (ShutdownListener)listenerControl.getMock();
 	}
 
@@ -54,6 +54,8 @@ public class ShutdownImplUnitTest extends TestCase {
 	public void testHalt() {
 		listener.lastChance();
 		listenerControl.setReturnValue(null);
+		listener.halting();
+		listenerControl.setDefaultVoidCallable();
 		listenerControl.replay();
 		coord.shutdown();
 		coordControl.replay();
@@ -69,6 +71,8 @@ public class ShutdownImplUnitTest extends TestCase {
 	public void testHaltObjection() {
 		listener.lastChance();
 		listenerControl.setReturnValue("I object!!");
+		listener.halting();
+		listenerControl.setDefaultVoidCallable();		
 		listenerControl.replay();
 		coord.shutdown();
 		coordControl.replay();
@@ -83,7 +87,9 @@ public class ShutdownImplUnitTest extends TestCase {
 	/** any listener that throws - shutdown isn't interrupted */
 	public void testHaltException() {
 		listener.lastChance();
-		listenerControl.setThrowable(new RuntimeException("Blerghh"));
+		listenerControl.setThrowable(new RuntimeException("Expected exception thrown during testing"));
+		listener.halting();
+		listenerControl.setDefaultVoidCallable();		
 		listenerControl.replay();
 		coord.shutdown();
 		coordControl.replay();
@@ -102,11 +108,12 @@ public class ShutdownImplUnitTest extends TestCase {
 	public void testReallyHalt() {
 		listener.halting();
 		listenerControl.replay();
+		
 		coord.shutdown();
 		coordControl.replay();
 		shutdown.addShutdownListener(listener);
 		shutdown.addShutdownListener(listener);
-		shutdown.halt();
+		shutdown.reallyHalt();
 		
 		listenerControl.verify();
 		coordControl.verify();		
@@ -114,13 +121,13 @@ public class ShutdownImplUnitTest extends TestCase {
 	
 	public void testReallyHaltException() {
 		listener.halting();
-		listenerControl.setThrowable(new RuntimeException("Blerghh"));		
+		listenerControl.setThrowable(new RuntimeException("Expected exception thrown during testing"));		
 		listenerControl.replay();
 		coord.shutdown();
 		coordControl.replay();
 		shutdown.addShutdownListener(listener);
 		shutdown.addShutdownListener(listener);
-		shutdown.halt();
+		shutdown.reallyHalt();
 		
 		listenerControl.verify();
 		coordControl.verify();			
