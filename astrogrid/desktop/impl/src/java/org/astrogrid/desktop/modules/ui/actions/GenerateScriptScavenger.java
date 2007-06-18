@@ -80,36 +80,42 @@ public class GenerateScriptScavenger extends AbstractActivityScavenger {
 				while ((line = br.readLine()) != null) {
 					template.append(line).append("\n");
 				}
-				GenerateScriptActivity a  =new GenerateScriptActivity(template.toString(),chooser,ms);
-				a.setUIParent(uiParent.get());
+
 				if (header.length() > 0) {
-					final GroovyShell shell = new GroovyShell();
+					shell = new GroovyShell();
 					shell.evaluate(header.toString());
-					Object o = shell.getVariable("name");
-					if (o != null) {
-						a.setText(DevSymbols.ALPHA + " " + o.toString());
-						shell.setVariable("name",null);
-					}
-					o = shell.getVariable("tooltip");
-					if (o != null) {
-						a.setToolTipText(o.toString());
-						shell.setVariable("tooltip",null);
-					}
-					o = shell.getVariable("condition");
-					if (o != null && o instanceof Closure) {
-						a.setCondition((Closure)o);
-						shell.setVariable("condition",null);
-					}
-					o = shell.getVariable("singleSelection");
-					if (o != null && o instanceof Boolean) {
-						a.setSingleSelection(((Boolean)o).booleanValue());
-						shell.setVariable("singleSelection",null);
-					}
 				}
-				return a;
+				return template.toString();
 			}
+			
+			protected GroovyShell shell;
+			
 			protected void doFinished(Object result) {
-				GenerateScriptActivity a = (GenerateScriptActivity)result;
+				String template = (String)result;
+				GenerateScriptActivity a  =new GenerateScriptActivity(template,chooser,ms);
+				a.setUIParent(uiParent.get());
+				// now, if we found a header, inspect the groovy script and initialize the generateScriptActivity from it.
+				Object o = shell.getVariable("name");
+				if (o != null) {
+					a.setText(DevSymbols.ALPHA + " " + o.toString());
+					shell.setVariable("name",null);
+				}
+				o = shell.getVariable("tooltip");
+				if (o != null) {
+					a.setToolTipText(o.toString());
+					shell.setVariable("tooltip",null);
+				}
+				o = shell.getVariable("condition");
+				if (o != null && o instanceof Closure) {
+					a.setCondition((Closure)o);
+					shell.setVariable("condition",null);
+				}
+				o = shell.getVariable("singleSelection");
+				if (o != null && o instanceof Boolean) {
+					a.setSingleSelection(((Boolean)o).booleanValue());
+					shell.setVariable("singleSelection",null);
+				}
+				shell = null;
 				getChildren().add(a);
 			}
 			protected void doError(Throwable ex) {
