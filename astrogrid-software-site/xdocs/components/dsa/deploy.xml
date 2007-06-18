@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE document SYSTEM "xdoc.dtd" >
-<!-- $Id: deploy.xml,v 1.4 2007/01/19 18:50:45 clq2 Exp $ -->
+<!-- $Id: deploy.xml,v 1.5 2007/06/18 14:34:51 clq2 Exp $ -->
 <document>
 	<properties>
      <title>Deploying the DSA/Catalog webapp</title>
@@ -30,7 +30,7 @@
 			</p>
 			<p>
             We recommend changing the name of the war file from something
-            version-specifig (e.g. <code>astrogrid-dsa-catalog-2007.1pl.war</code>) to something generic (e.g. <code>astrogrid-dsa-catalog.war</code>) to
+            version-specifig (e.g. <code>astrogrid-dsa-catalog-2006.3pl.war</code>) to something generic (e.g. <code>astrogrid-dsa-catalog.war</code>) to
             simplify future upgrading.
 			</p>
 			<p>
