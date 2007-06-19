@@ -35,13 +35,15 @@ interface shouldn't change....</p>
 <p>You can call the service either
 with an HTTP <code>GET</code> or an HTTP <code>POST</code>, giving it
 a single <code>url</code> parameter whose value is one or more URLs
-separated by commas.  That is, if you have an IVORN
-<code>ivo://example/wibble</code>, which you rather like the look of,
-then you can find similar ones by dereferencing</p>
+separated by commas.  That is, if you have a couple of IVORNs
+<code>ivo://example/wibble</code> and <code>ivo://wibble/res</code>
+which you rather like the look of, then you can find similar ones by
+dereferencing</p>
 <blockquote>
-<code>@MYURL@/like?url=ivo://example/wibble</code>
+<code>@MYURL@/like?url=ivo://example/wibble,ivo://wibble/res</code>
 </blockquote>
-<p>or by posting <code>url=ivo://example/wibble</code> to the
+<p>or by posting
+<code>url=ivo://example/wibble,ivo://wibble/res</code> to the
 <code>@MYURL@/like</code> URL using MIME type
 <code>application/x-www-form-urlencoded</code> as usual.</p>
 
@@ -52,7 +54,7 @@ then you can find similar ones by dereferencing</p>
 &lt;group description="Identity suggestion"
        type="http://ns.eurovotech.org/jackdaw/group#identity"&gt;
 &lt;url&gt;ivo://wibble/res&lt;/url&gt;
-&lt;url&gt;ivo://buckle/my/shoe&lt;/url&gt;
+&lt;url&gt;ivo://example/wibble&lt;/url&gt;
 &lt;/group&gt;
 &lt;/suggestions&gt;
 </pre>
