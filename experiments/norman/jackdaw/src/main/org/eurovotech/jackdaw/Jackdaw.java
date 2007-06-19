@@ -70,6 +70,7 @@ public class Jackdaw extends javax.servlet.http.HttpServlet {
             XMLBuilder.Doc xb = new XMLBuilder()
                     .setIndent(true)
                     .newDocument("suggestions");
+            xb.addAttribute("xmlns", "http://ns.eurovotech.org/jackdaw");
 
             XMLBuilder.Node oneSuggestion = xb.newChild("group");
             oneSuggestion
@@ -84,7 +85,8 @@ public class Jackdaw extends javax.servlet.http.HttpServlet {
             String s = sw.toString();
 
             res.setStatus(javax.servlet.http.HttpServletResponse.SC_OK);
-            res.setContentType("text/xml");
+            // for discussion of XML MIME types, see RFC 3023
+            res.setContentType("application/xml");
             res.setContentLength(s.length());
 
             res.setCharacterEncoding("UTF-8");

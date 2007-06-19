@@ -1,4 +1,5 @@
 package org.eurovotech.jackdaw;
+// Copied from Norman's .../code/misc/XMLBuilder.java
 
 import java.io.IOException;
 
@@ -9,7 +10,52 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Convenience class to create and serialise XML
+ * Convenience class to create and serialise XML.
+ *
+ * <p>This provides a convenient wrapper around the DOM interface,
+ * which makes it easier to put together XML output.  Specifically,
+ * most of the methods return an object of an appropriate type, making
+ * it easier to chain methods together.
+ *
+ * <p>This class defines two nested classes, <code>XMLBuilder.Node</code>
+ * and <code>XMLBuilder.Doc</code>, a subclass of it.
+ *
+ * <p>Create a document with document element "foo", by
+ * <pre>
+ * XMLBuilder.Doc xb = new XMLBuilder().newDocument("foo");
+ * </pre>
+ *
+ * <p>Add attributes and children to Nodes with the methods
+ * {@link XMLBuilder.Node#addAttribute}, {@link XMLBuilder.Node#newChild},
+ * and {@link XMLBuilder.Node#newSibling},
+ * which have multiple signatures.  You can create a set of Nodes,
+ * which can be manipulated and later inserted into a document as a
+ * tree, with the method {@link XMLBuilder.Doc#newNodeSet}.
+ *
+ * <p>For example, a program which builds up an XSLT stylesheet might
+ * include
+ * <pre>
+ * XMLBuilder.Node chooseElement = xb.newNodeSet();
+ * XMLBuilder.Node myTemplate = xb.newChild("template")
+ *                                .addAttribute("match", "/");
+ * // ...
+ * chooseElement
+ *        .newChild("otherwise")
+ *        .newChild("text", "Here is an error message: n=")
+ *        .newSibling("value-of").addAttribute("select", "$n");
+ * // ...
+ * myTemplate.newChild("choose", chooseElement);
+ * </pre>
+ * <p>That would produce XML corresponding to
+ * <pre>
+ * &lt;template match='/'&gt;
+ *   ...
+ *   &lt;otherwise&gt;
+ *     &lt;text&gt;Here is an error message: n=&lt;/text&gt;
+ *     &lt;value-of select="$n"/&gt;
+ *   &lt;/otherwise&gt;
+ * &lt;/template&gt;
+ * </pre>
  */
 public class XMLBuilder {
     Document d;

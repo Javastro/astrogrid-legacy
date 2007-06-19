@@ -48,21 +48,24 @@ then you can find similar ones by dereferencing</p>
 <p>The response in either case is an XML document, which looks like this:</p>
 <pre>
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;suggestions&gt;
+&lt;suggestions xmlns="http://ns.eurovotech.org/jackdaw"&gt;
 &lt;group description="Identity suggestion"
-          type="http://ns.eurovotech.org/suggestor/group#identity"&gt;
+       type="http://ns.eurovotech.org/jackdaw/group#identity"&gt;
 &lt;url&gt;ivo://wibble/res&lt;/url&gt;
 &lt;url&gt;ivo://buckle/my/shoe&lt;/url&gt;
 &lt;/group&gt;
 &lt;/suggestions&gt;
 </pre>
-<p>That arrives, as it damn well should, with a MIME type of
-<code>text/xml</code>.</p>
+<p>That arrives with a MIME type of <code>application/xml</code>.</p>
+
+<p>If there is not precisely one <code>url</code> parameter in the
+request, the service responds with status 400 (Bad Request) and a
+<code>text/plain</code> explanation.</p>
 
 <p>There can in principle be multiple <code>group</code> elements,
 each with their own <code>type</code> attribute.  Right now, though,
 there's only one, it always has type
-<code>http://ns.eurovotech.org/suggestor/group#identity</code>, and it
+<code>http://ns.eurovotech.org/jackdaw/group#identity</code>, and it
 contains exactly the URLs that were listed in the query.</p>
 
 <p>Any questions?</p>
