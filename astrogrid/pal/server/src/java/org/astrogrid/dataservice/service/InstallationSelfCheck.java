@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.10 2007/06/08 13:16:11 clq2 Exp $
+/*$Id: InstallationSelfCheck.java,v 1.11 2007/06/19 11:42:51 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -72,9 +72,10 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
       new SkyNodeService();
    }
    */
-   
+
    /** Checks the characteristics of the plugin */
    public void testPluginDefinition() throws Exception {
+      initConfig();
       String pluginClass = ConfigFactory.getCommonConfig().getString(QuerierPluginFactory.QUERIER_PLUGIN_KEY);
       assertNotNull(QuerierPluginFactory.QUERIER_PLUGIN_KEY + " is not defined",pluginClass);
       // try to load plugin class.
@@ -93,6 +94,7 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
     * Creates a test query from properties, defaulting to cone(30,-80,0.1)
     */
    public Query makeTestQuery(TargetIdentifier target, String format) throws QueryException, ParserConfigurationException, IOException, SAXException {
+      initConfig();
      /*
       * REMOVED BY KEA, WE DON'T PROVIDE SQL TRANSLATION ANYMORE
       String sql = ConfigFactory.getCommonConfig().getString("datacenter.testquery.sql", null);
@@ -123,7 +125,7 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
     * this will also test the connection to the backend database, but not any of the
     * public interfaces */
    public void testQueryDirect() throws Throwable {
-      
+      initConfig();
       StringWriter sw = new StringWriter(); //although we throw away the results
       DataServer server = new DataServer();
       server.askQuery(testPrincipal,makeTestQuery(new WriterTarget(sw), ReturnTable.VOTABLE), this);
@@ -149,7 +151,7 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
     * *doesn't* mean a successful search necessarily).
     */
    public void testCone() throws Throwable {
-      
+      initConfig(); 
       String endpoint;
       String querierPlugin = ConfigFactory.getCommonConfig().getString(
           "datacenter.querier.plugin","");
@@ -250,6 +252,7 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
     * Checks Metadoc file is valid
     */
    public void testMetadocValidity() throws MetadataException, IOException {
+      initConfig();
       // This will check the metadoc
       TableMetaDocInterpreter.initialize(true);
    }
@@ -259,6 +262,7 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
     * NB This test will not pick up empty metadata 
     */
    public void testMetadata_v0_10() throws IOException, SAXException, ParserConfigurationException {
+      initConfig();
       Document doc = 
          VoDescriptionServer.getVoDescription(VoDescriptionServer.V0_10);
       String rootElement = doc.getDocumentElement().getLocalName();

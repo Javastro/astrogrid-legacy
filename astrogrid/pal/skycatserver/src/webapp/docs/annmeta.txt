@@ -1,0 +1,97 @@
+<div class="greenback">
+<strong>&lt;DatasetDescription xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"<br/>
+    xmlns='urn:astrogrid:schema:dsa:TableMetaDoc:v1.1'<br/>
+    xsi:schemaLocation='urn:astrogrid:schema:dsa:TableMetaDoc:v1.1
+        http://software.astrogrid.org/schema/dsa/DSAMetadoc/v1.1/TableMetaDoc.xsd'<br/>
+&gt;</strong>
+</div>
+<br/>
+<div class="redback">
+  <strong>&lt;Catalog ID='INSERT_DBNAME'&gt;</strong><span class="bluecomment">&lt;-- REQUIRED:  Set ID to system name of your database--&gt;</span>
+</div>
+<br/>
+<div class="redback">
+    <strong>&lt;Name&gt;DATABASE_NAME&lt;/Name&gt;</strong><span class="bluecomment">&lt;-- REQUIRED: Set to publication name of your database --&gt;</span>
+</div>
+<br/>
+<div class="yellowback">
+    <strong>&lt;Description&gt;INSERT DESCRIPTION&lt;/Description&gt;</strong><span class="bluecomment">&lt;-- OPTIONAL, RECOMMENDED: Insert a description of the dataset, intended for human readers --&gt;</span>
+</div>
+<br/>
+<div class="greenback">
+    <strong>&lt;Table ID='SHOULD_BE_SET_ALREADY'&gt;</strong><span class="bluecomment">&lt;-- REQUIRED: ID = system name of table --&gt;</span>
+</div>
+<br/>
+<div class="yellowback">
+      <strong>&lt;Name&gt;SHOULD_BE_SET_ALREADY;/Name&gt;</strong><span class="bluecomment">&lt;-- REQUIRED: Publication name of table --&gt;</span>
+</div>
+<br/>
+<div class="yellowback">
+      <strong>&lt;Description&gt;INSERT DESCRIPTION&lt;/Description&gt;</strong><span class="bluecomment">&lt;-- OPTIONAL, RECOMMENDED: Insert a description of the table, intended for human readers --&gt;</span>
+</div>
+<br/>
+<div class="yellowback">
+      <strong>&lt;ConeSettings&gt;</strong><span class="bluecomment">&lt;-- OPTIONAL:  Required if this table is to be conesearchable--&gt;</span>
+      <br/>
+        <strong>&lt;RAColName&gt;INSERT_NAME_OF_RA_COLUMN&lt;/RAColName&gt;</strong><span class="bluecomment">&lt;-- REQUIRED if ConeSettings enabled: Publication name of RA column. --&gt;</span>
+        <br/>
+        <strong>&lt;DecColName&gt;INSERT_NAME_OF_DEC_COLUMN&lt;/DecColName&gt;</strong><span class="bluecomment">&lt;-- REQUIRED if ConeSettings enabled: Publication name of Dec column.--&gt;</span>
+        <br/>
+      <strong>&lt;/ConeSettings&gt;</strong><br/>
+</div>
+<br/>
+<div class="greenback">
+      <strong>&lt;Column ID='SHOULD_BE_SET_ALREADY' indexed='false'&gt;</strong><span class="bluecomment">&lt;-- REQUIRED: ID = System name of column. Set indexed to "true" if column is indexed. --&gt;</span>
+</div>
+<br/>
+<div class="yellowback">
+        <strong>&lt;Name&gt;SHOULD_BE_SET_ALREADY&lt;/Name&gt;</strong><span class="bluecomment">&lt;--REQUIRED: Publication name of column --&gt;</span>
+</div>
+<br/>
+<div class="greenback">
+        <strong>&lt;Datatype&gt;double&lt;/Datatype&gt;</strong><span class="bluecomment">&lt;--REQUIRED: Auto-generated data type should be ok--&gt;</span>
+</div>
+<br/>
+<div class="yellowback">
+        <strong>&lt;Description&gt;INSERT DESCRIPTION&lt;/Description&gt;</strong><span class="bluecomment">&lt;--  OPTIONAL, RECOMMENDED: Insert a description of the column, intended for human readers --&gt;</span></span>
+</div>
+<br/>
+<div class="yellowback">
+        <strong>&lt;Units&gt;INSERT_UNITS&lt;/Units&gt;</strong><span class="bluecomment">&lt;--OPTIONAL: Specify units where relevant.  MUST BE "deg" or "rad" if this column is used in ConeSettings; otherwise free choice (for now).--&gt;</span>
+</div>
+<br/>
+<div class="greenback">
+        <strong>&lt;DimEq&gt;LEAVE_BLANK&lt;/DimEq&gt;</strong><span class="bluecomment">&lt;--OPTIONAL: Reserved for future use --&gt;</span>
+</div>
+<br/>
+<div class="greenback">
+        <strong>&lt;Scale&gt;LEAVE_BLANK&lt;/Scale&gt;</strong><span class="bluecomment">&lt;--OPTIONAL: Reserved for future use --&gt;</span>
+</div>
+<br/>
+<div class="redback">
+        <strong>&lt;UCD version='1'&gt;INSERT_UCD_v1&lt;/UCD&gt;</strong><span class="bluecomment">&lt;--REQUIRED: At least one UCD required (either version); recommend supplying both.</span>
+</div>
+<br/>
+<div class="yellowback">
+        <strong>&lt;UCD version='1+'&gt;INSERT_UCD_v1+&lt;/UCD&gt;</strong><span class="bluecomment">&lt;--REQUIRED: At least one UCD required (either version); recommend supplying both.< --&gt;</span>
+</div>
+<br/>
+<div class="yellowback">
+        <strong>&lt;ErrorColumn&gt;INSERT_ERROR_COLUMN_NAME&lt;/ErrorColumn&gt;</strong><span class="bluecomment">&lt;--OPTIONAL: Set to Publication name of related error column if present --&gt;</span>
+</div>
+<br/>
+<div class="yellowback">
+        <strong>&lt;SkyPolarCoord&gt;INSERT_SKY_POLAR_COORD&lt;/SkyPolarCoord&gt;</strong><span class="bluecomment">&lt;--OPTIONAL: Set to "RA" or "DEC" if relevant --&gt;</span>
+</div>
+<br/>
+      <strong>&lt;/Column&gt;</strong>
+<br/>
+      <span class="bluecomment">&lt;-- More columns here, maybe --&gt;</span>
+<br/>
+    <strong>&lt;/Table&gt;</strong>
+<br/>
+   <span class="bluecomment">&lt;-- More tables here, maybe --&gt;</span>
+<br/>
+  <strong>&lt;/Catalog&gt;</strong>
+<br/>
+<strong>&lt;/DatasetDescription&gt;</strong>

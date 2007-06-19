@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.11 2007/06/08 13:16:10 clq2 Exp $
+ * $Id: SampleStarsPlugin.java,v 1.12 2007/06/19 11:42:51 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -48,6 +48,15 @@ public class SampleStarsPlugin extends JdbcPlugin
       ConfigFactory.getCommonConfig().setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, SampleStarsPlugin.class.getName());
 
       ConfigFactory.getCommonConfig().setProperty(JdbcPlugin.SQL_TRANSLATOR, AdqlSqlMaker.class.getName());
+
+      // Some important preliminaries
+      ConfigFactory.getCommonConfig().setProperty(
+          "datacenter.metadoc.file","samplestars.metadoc.xml");
+      ConfigFactory.getCommonConfig().setProperty(
+         "datacenter.authorityId","astrogrid.org");
+      ConfigFactory.getCommonConfig().setProperty(
+         "datacenter.resourceKey","test-dsa-catalog");
+
 
       ConfigFactory.getCommonConfig().setProperty(
           "db.trigfuncs.in.radians","true");

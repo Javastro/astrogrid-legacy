@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.5 2007/06/08 13:16:12 clq2 Exp $
+/*$Id: QuerierManager.java,v 1.6 2007/06/19 11:42:51 clq2 Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -425,7 +425,12 @@ public class QuerierManager implements QuerierListener {
          queuedQueriers.remove(first.getId());
          runningQueriers.put(first.getId(), first);
          numAsynchQueriers = numAsynchQueriers + 1;
-         
+         if (
+            (maxAsynchQueriers != -1) && 
+            (numAsynchQueriers >= maxAsynchQueriers) 
+         ) {
+            haveRoom = false;
+         }
          Thread qth = new Thread(first);
          qth.start();
       }
@@ -512,6 +517,12 @@ public class QuerierManager implements QuerierListener {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.6  2007/06/19 11:42:51  clq2
+ KEA_2213
+
+ Revision 1.5.2.1  2007/06/19 11:16:41  kea
+ Bugfix to queueing.
+
  Revision 1.5  2007/06/08 13:16:12  clq2
  KEA-PAL-2169
 

@@ -4,7 +4,6 @@
    isThreadSafe="false"
    session="false"
 %>
-
 <html>
 <head>
 <title>DSA/catalog Documentation</title>
@@ -95,44 +94,17 @@ RDBMS that provides a
    set up a lasting user ID and password on the database ODBC connection 
    so that DSA/catalog can connect to it using these settings.</p>
 
-   <p>The connection between the DSA/catalog installation and the database can 
-either be specified as a direct connection (simpler) or as a server connection 
-(more efficient and robust).</p>
-   
-   <h4>Direct Connection</h4>
-   <p>In this configuration, the DSA/catalog installation manages its own 
-   connections to the database.
-   </p>
-   <p>Sample direct-connection settings are given in the 
+   <p>For connecting the DSA/catalog installation to the RDBMS
+   via JDBC, sample connection settings are given in the 
    <tt>default.properties</tt> file in your installed webapp;  see 
    <a href="./configure_step4.jsp">the next configuration step</a> 
    for more about configuring your webapp properties.</p>
 
-   <h4>Server Connection</h4>
-   
-   <p>In this configuration, the DSA/catalog installation uses tomcat's
-   JNDI Resources mechanism to connect to the database.
-   </p>
-
-   <p> 
-   The DSA/catalog 
-   installation looks for a JNDI datasource named <tt>dsa-datasource</tt>
-   <font color="red">(note that in some previous installations this used to
-       be called <tt>pal-datasource</tt>, so you may need to check your
-      JNDI settings).</font>
-   If it finds one, it will use it in preference to any direct connection 
-   settings in its configuration file.
-   </p>
-
-   <p>To use a server connection, you will therefore need to create a 
-   JNDI datasource named <tt>dsa-datasource</tt> within your DSA/catalog
-   webapp's environment.  Please consult the following tomcat documentation 
-   for more information about setting up JNDI datasources:
-   </p>
-   <ul>
-   <li><a href="http://tomcat.apache.org/tomcat-5.0-doc/jndi-resources-howto.html">The Apache Jakarta Tomcat 5 Servlet/JSP Container JNDI Resources HOW-TO</a></li>
-   </ul>
-   
+   <p>Note that <strong>this DSA/catalog release</strong> can only 
+   wrap <strong>one single database</strong> in your RDBMS, and your 
+   JDBC connection URL should provide access directly to that one database.
+   See the <tt>default.properties</tt> for examples
+   of JDBC access URLs, and/or consult your database administrator.</p> 
 
 <h3>Known issues</h3>
 
@@ -147,7 +119,7 @@ either be specified as a direct connection (simpler) or as a server connection
 <h3>References</h3>
 <ul>
 <li><a href="http://java.sun.com/products/jdbc/">JDBC</a></li>
-<li><a href="http://servlet.java.sun.com/products/jdbc/drivers">List of known JDBC drivers</a></li>
+<li>Sun's database of <a href="http://developers.sun.com/product/jdbc/drivers">JDBC drivers and where to get them</a></li>
 <li><a href="http://tomcat.apache.org/tomcat-5.0-doc/">Tomcat 5 documentation</a></li>
 </ul>
 

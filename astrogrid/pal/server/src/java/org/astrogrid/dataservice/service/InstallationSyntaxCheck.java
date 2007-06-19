@@ -1,4 +1,4 @@
-/*$Id: InstallationSyntaxCheck.java,v 1.8 2007/06/08 14:54:22 clq2 Exp $
+/*$Id: InstallationSyntaxCheck.java,v 1.9 2007/06/19 11:42:51 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -277,6 +277,21 @@ public class InstallationSyntaxCheck {
     */
    public static String getTestSuiteAdql(String filename) throws QueryException
    {
+      /* Initialise plugin if required: the JSP pages make use of this
+       * function */
+      String plugin = "";
+      try {
+         plugin = ConfigFactory.getCommonConfig().getString(
+            "datacenter.querier.plugin");
+      }
+      catch (PropertyNotFoundException e) {
+        // Ignore this one in this context - just want to initialise
+        // samplestars if needed
+      } 
+      if ("org.astrogrid.tableserver.test.SampleStarsPlugin".equals(plugin)) {
+         SampleStarsPlugin.initConfig();
+      }
+
       InputStream queryIn = null;
       if ((filename == null) || (filename.trim().equals(""))) {
          throw new QueryException(

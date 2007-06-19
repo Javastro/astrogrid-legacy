@@ -4,7 +4,6 @@
    isThreadSafe="false"
    session="false"
 %>
-
 <html>
 <head>
 <title>DSA/catalog Documentation</title>
@@ -25,7 +24,7 @@
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr>
 <td align="left" width="33%">
-<h4><a href="./configure_step5.jsp">&nbsp;&nbsp;&lt;&lt; Previous step</a></h4>
+<h4><a href="./configure_step5b.jsp">&nbsp;&nbsp;&lt;&lt; Previous step</a></h4>
 </td>
 <td align="center" width="33%">
 <h4><a href="../configure.jsp">^Index^</a></h4>

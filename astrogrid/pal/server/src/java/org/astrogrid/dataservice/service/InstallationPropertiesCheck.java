@@ -1,4 +1,4 @@
-/*$Id: InstallationPropertiesCheck.java,v 1.9 2007/06/08 13:16:11 clq2 Exp $
+/*$Id: InstallationPropertiesCheck.java,v 1.10 2007/06/19 11:42:51 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,27 @@ import org.astrogrid.tableserver.test.SampleStarsPlugin;
  */
 public class InstallationPropertiesCheck extends TestCase {
    
+   // Which plugin to use
+   protected String plugin = null;
+
+   // Sets up initial configuration for samplestars if required
+   protected void initConfig()
+   {
+      try {
+         plugin = ConfigFactory.getCommonConfig().getString(
+            "datacenter.querier.plugin");
+      }
+      catch (PropertyNotFoundException e) {
+         // PropertiesCheck will catch this case
+         plugin = null;
+      }
+      // Catch any properties set by the sample plugin
+      if ("org.astrogrid.tableserver.test.SampleStarsPlugin".equals(plugin)) {
+         SampleStarsPlugin.initConfig();
+      }
+   }
    /** Checks that all expected properties are set */
+
    public void testAllPropertiesSet()
    {
       boolean allOK = true;
@@ -36,20 +56,7 @@ public class InstallationPropertiesCheck extends TestCase {
       String test;
       Vector accum = new Vector();
 
-      String plugin;
-      try {
-        plugin = ConfigFactory.getCommonConfig().getString(
-              "datacenter.querier.plugin");
-      }
-      catch (PropertyNotFoundException e) {
-        // Ignore this one so we can report it to the user later
-        plugin = null;
-      }
-
-      // Catch any properties set by the sample plugin
-      if ("org.astrogrid.tableserver.test.SampleStarsPlugin".equals(plugin)) {
-         SampleStarsPlugin.initConfig();
-      }
+      initConfig();
 
       // Check all properties are set
       if (!checkSet("datacenter.url", accum)) { bad = bad+1; }

@@ -4,7 +4,6 @@
    isThreadSafe="false"
    session="false"
 %>
-
 <html>
 <head>
 <title>DSA/catalog Documentation</title>

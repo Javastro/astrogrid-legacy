@@ -36,9 +36,10 @@ How to report bugs (BugZilla, content etc)
 <li>Standardised, tested JDBC access to at least the following RDBMSs:
   <ul>
     <li>HSQLDB (v. 1.8.0)</li>
-    <li>PostgreSQL (v. 7.2.3)</li>
+    <li>PostgreSQL (v. 8.1.4)</li>
     <li>MySQL (v. 4.1.16)</li>
     <li>Microsoft SQLServer (v. 8.00)</li>
+    <li>Sybase ASR (v.15.08.00)</li>
   </ul>
 </li>
 <li>Log views</li>

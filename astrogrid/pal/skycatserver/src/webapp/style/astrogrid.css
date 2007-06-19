@@ -239,3 +239,32 @@ div.boxedCode {
   background: #EEEEEE;
   border: 1px solid #999;
 }
+
+span.xmldarkgreen {
+  color: #003300;
+}
+span.xmldarkred {
+  color: #330000;
+}
+span.xmlorange {
+  color: #FF3300;
+}
+span.xmlpurple {
+  color: #990099;
+}
+span.xmlblue {
+  color: #0000FF;
+}
+span.bluecomment{
+  color: #0000FF;
+  font-style: italic;
+}
+div.greenback {
+   background: #CCFFCC;
+}
+div.redback {
+   background: #FFCCCC;
+}
+div.yellowback {
+   background: #FFFFCC;
+}
