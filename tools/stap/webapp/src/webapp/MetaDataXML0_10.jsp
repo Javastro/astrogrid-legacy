@@ -91,7 +91,7 @@
    xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" 
    xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" 
    xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3" xmlns="http://www.ivoa.net/xml/VOResource/v0.10">
-<vor:Resource xmlns:sta="urn:astrogrid:schema:vo-resource-types:SimpleTimeAccess:v0.1" xsi:type="sta:SimpleTimeAccess"  updated="2004-11-20T15:34:22Z" status="active">
+<vor:Resource xmlns:sta="urn:astrogrid:schema:vo-resource-types:SimpleTimeAccess:v0.1" xsi:type="sta:SimpleTimeAccess"  updated="2007-06-22" status="active" xsi:schemaLocation="urn:astrogrid:schema:vo-resource-types:SimpleTimeAccess:v0.1 http://msslxt.mssl.ucl.ac.uk:8080/misc_stuff/STAP.xsd">
  <title><%=title%></title>
  <shortName><%=shortName%></shortName>
  <identifier><%=ident%></identifier>
@@ -154,7 +154,7 @@
  </content>
     <interface xsi:type="vs:ParamHTTP" qtype="GET">
 		<accessURL use="full"><%=accessURL%></accessURL>
-		<resultType>text/xml</resultType>
+		<vs:resultType>text/xml</vs:resultType>
     </interface> 
 </vor:Resource>
 </vor:VOResources>
