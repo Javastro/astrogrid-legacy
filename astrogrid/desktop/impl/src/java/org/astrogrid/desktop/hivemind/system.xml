@@ -15,7 +15,7 @@ System module.
 		    <acrService id="webserver" interface="WebServer" />
 			<acrService id="apihelp" interface="ApiHelp" />
 			<acrService id="rmi" interface="RmiServer" />
-			<acrService id="" interface="SystemTray" />
+			<acrService id="systray" interface="SystemTray" />
 	</contribution>
 		
 	<contribution configuration-id="framework.descriptors">
@@ -843,8 +843,17 @@ SYSTEM TRAY
 	System Tray
 	</service-point>
 	
+	<implementation service-id="systray" if="class java.awt.SystemTray">
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.system.Java6SystemTray">
+				<service>system.ui</service>
+				<service>builtin.shutdown</service>
+				<service>configDialogue</service>
+			</construct>
+		</invoke-factory>
+	</implementation>
 	<!-- default implementation - will fallback if cannot load class - i.e. the native drivers aren't present -->	
-	<implementation service-id="systray" if="(class org.jdesktop.jdic.tray.SystemTray ) and ( not ( property system.systray.disabled))">
+	<!-- <implementation service-id="systray" if="(class org.jdesktop.jdic.tray.SystemTray ) and ( not ( property system.systray.disabled))">
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.system.JDICSystemTray">	
 				<service>system.ui</service>
@@ -853,8 +862,9 @@ SYSTEM TRAY
 		</construct>
 		</invoke-factory>		
 	</implementation>
-	
-	<implementation service-id="systray"  if="(property system.systray.disabled) or (not (class org.jdesktop.jdic.tray.SystemTray))">
+	-->
+	<implementation service-id="systray"  if="(property system.systray.disabled) or (not (class java.awt.SystemTray))">
+	<!--  todo - implement a minimal ui here instead. -->
 		<invoke-factory>
 			<construct class='org.astrogrid.desktop.alternatives.LoggingSystemTray'>
 				<string>SYSTRAY</string>
@@ -1337,7 +1347,7 @@ MAC SETUP
 <!-- ================================
 	CONFIGURATION DIALOGUE
  -->
- 	<service-point id="configDialogue" visibility="private" interface="java.lang.Runnable">
+ 	<service-point id="configDialogue"  interface="java.lang.Runnable">
  		A configuration dialogue
  		<invoke-factory>
  			<construct class="org.astrogrid.desktop.modules.system.pref.PreferenceEditorDialogue">
@@ -1357,7 +1367,9 @@ MAC SETUP
  		</invoke-factory>
  	</service-point>
  	
- 	
+ 
+ <!--  ===================
+ ABOUT Dialogue - TODO -->
  		
 
 <!--  ======================
