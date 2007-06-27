@@ -6,8 +6,11 @@ package org.astrogrid.desktop.modules.ui.scope;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.desktop.modules.ui.actions.DevSymbols;
+import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileViewDnDManager;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FilesList;
 import org.astrogrid.desktop.modules.ui.fileexplorer.IconFinder;
@@ -42,8 +45,9 @@ public class ResultsResourceViewer extends JPanel implements ResourceViewer {
 		
 	}
 
-	public JComponent getComponent() {
-		return this;
+
+	public void addTo(UIComponentBodyguard parent, JTabbedPane t) {
+		t.addTab(DevSymbols.PROBLEM + " Results",null/*@todo find icon*/,this,"Shows results from selected service");
 	}
 
 }

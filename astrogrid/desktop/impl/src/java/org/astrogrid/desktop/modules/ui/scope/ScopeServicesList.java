@@ -16,10 +16,13 @@ import net.sf.ehcache.Ehcache;
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.ComparatorUtils;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.RegistryBrowser;
+import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.actions.DevSymbols;
@@ -27,6 +30,7 @@ import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.CapabilityIconFactory;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTable;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTableFomat;
+import org.astrogrid.desktop.modules.votech.AnnotationService;
 import org.votech.VoMon;
 
 import ca.odell.glazedlists.EventList;
@@ -54,17 +58,15 @@ public class ScopeServicesList extends RegistryGooglePanel
 	 * @param vomon
 	 * @param pref
 	 */
-	public ScopeServicesList(RegistryInternal reg, BrowserControl browser, RegistryBrowser regBrowser, Ehcache resources, Ehcache bulk, VoMon vomon, final CapabilityIconFactory iconFac,Preference pref) {
-		super(reg, browser, regBrowser, resources, bulk, vomon, iconFac,pref);
+	public ScopeServicesList(RegistryInternal reg, Ehcache resources, Ehcache bulk, IterableObjectBuilder views,VoMon vomon, final CapabilityIconFactory iconFac,AnnotationService annServer) {
+		super(reg, resources, bulk, views,vomon, iconFac,annServer);
 		getSearchTitleLabel().setText("Query Results");
 		getNewSearchButton().setVisible(false);
 		getHaltSearchButton().setVisible(false);
-		// replace the second pane..
-		Component c = tabPane.getComponentAt(1);
-		tabPane.remove(c);
-		tabPane.insertTab(DevSymbols.PROBLEM + " Results",null,new ResultsResourceViewer(),"Shows results from selected service",1);
-		
-	//	tabPane.insertTab("Results",null,,"Results retruns from this service",0);
+	}
+	// overridden -- to return results too
+	protected String[] viewNames() {
+		return (String[])ArrayUtils.add(super.viewNames(),"results");
 	}
 /** map of additional informaiton for each service resource
  * key - the resource object
@@ -193,7 +195,7 @@ public class ScopeServicesList extends RegistryGooglePanel
 				Object o = results.get(r);
 				return o != null && (o instanceof Integer) ? o : null;
 			case 1:
-				return ResourceTableFomat.createTitle(r);
+				return createTitle(r);
 			case 2:
 				return iconFac.buildIcon(r);
 			case 3:
@@ -203,6 +205,15 @@ public class ScopeServicesList extends RegistryGooglePanel
 				throw new IndexOutOfBoundsException("Oversized column ix:" +columnIndex);
 			}
 		}
+		
+		public  String createTitle(Resource r) {
+			if (r == null) {
+				return "";
+			}
+			String title = StringUtils.replace(r.getTitle(), "\n", " ") ;
+
+			return title;
+		}		
 
 
 	}
