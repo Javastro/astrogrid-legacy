@@ -4,6 +4,7 @@
 package org.astrogrid.desktop.modules.system.ui;
 
 import java.awt.event.ActionListener;
+import java.util.Map;
 
 import javax.swing.ButtonModel;
 import javax.swing.JMenu;
@@ -38,13 +39,15 @@ public interface UIContext  extends UI{
 	/** control the system browser */
 	public BrowserControl getBrowser();
 	
-	
+	public Map getWindowFactories();
 	
 	
 	// assistance for UI.
-	// irritating. but need to put it somewhere. 
+	// irritating. but need to put it somewhere.
+
 	  public void showAboutDialog();   
-	
+
+	  
 	/** button model that indicates logged in status using 'enabled' property
 	 * makes it simple to plug into a button and use it to flip between enabled / disabled icons
 	 */

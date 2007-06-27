@@ -229,7 +229,11 @@ public class UIContextImpl implements UIContext{
 	public void showAboutDialog() {
 		//@todo implement
 	}
-	//@todo add in command to show the preference dialogue too.
+	public Map getWindowFactories() {
+		return windowFactories;
+	}
+	public void showPreferencesDialog() {
+	}
 
 	//@todo , add in the equivalent of this
 	/*
@@ -334,5 +338,7 @@ private static class ObservableConnector implements ObservableElementList.Connec
 		list.elementChanged(o);
 	}
 }
+
+
 
 }
