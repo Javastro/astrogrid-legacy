@@ -1,4 +1,4 @@
-/*$Id: ReflectionHelper.java,v 1.4 2007/01/29 11:11:37 nw Exp $
+/*$Id: ReflectionHelper.java,v 1.5 2007/06/27 11:10:30 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.desktop.framework;
 
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /** Helpler methods for working for working with java.lang.reflect;
@@ -37,15 +38,49 @@ public class ReflectionHelper {
         }
         throw new NoSuchMethodException("method " + name + " not found");
     }
+    
+	public static Object callStatic(Class c, String methodName) throws NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+		Method m = getMethodByName(c,methodName);
+		return m.invoke(null,null);
+	}
 
+	public static Object callStatic(Class c, String methodName,Object param) throws NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+		Method m = getMethodByName(c,methodName);
+		return m.invoke(null,new Object[]{param});
+	}
+	
+	public static Object callStatic(Class c, String methodName,Object param,Object param1) throws NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+		Method m = getMethodByName(c,methodName);
+		return m.invoke(null,new Object[]{param,param1});
+	}
 
+	
+	public static Object call(Object o, String methodName) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		Method m = ReflectionHelper.getMethodByName(o.getClass(),methodName);
+		return m.invoke(o,null);
+	}
 
+	public static Object call(Object o, String methodName,Object param) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		Method m = ReflectionHelper.getMethodByName(o.getClass(),methodName);
+		return m.invoke(o,new Object[]{param});
+	}
 
+	public static Object call(Object o, String methodName, Object param1, Object param2) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		Method m = ReflectionHelper.getMethodByName(o.getClass(),methodName);
+		return m.invoke(o,new Object[]{param1,param2});
+	}
+	public static Object call(Object o, String methodName, Object param1, Object param2,Object param3) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		Method m = ReflectionHelper.getMethodByName(o.getClass(),methodName);
+		return m.invoke(o,new Object[]{param1,param2,param3});
+	}
 }
 
 
 /* 
 $Log: ReflectionHelper.java,v $
+Revision 1.5  2007/06/27 11:10:30  nw
+additional reflection methods.
+
 Revision 1.4  2007/01/29 11:11:37  nw
 updated contact details.
 
