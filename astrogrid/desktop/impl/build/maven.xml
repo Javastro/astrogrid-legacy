@@ -24,8 +24,10 @@ common definitions and hooks used by the impl projects.
 	</echo>	
 </goal>
 	
-	<postGoal name="site:generate">
+	<postGoal name="site:run-reports">
 			<!--  run AR app to produce more documentation.-->
+			<attainGoal name="java:compile" />
+			<attainGoal name="java:jar-resources" />
 			<attainGoal name="hivedoc" />                
 			<attainGoal name="listConfig" />	
 	</postGoal>
