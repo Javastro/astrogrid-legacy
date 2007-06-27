@@ -1,4 +1,4 @@
-/*$Id: VOExplorerImpl.java,v 1.3 2007/06/18 16:40:27 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.4 2007/06/27 11:16:40 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -133,7 +133,7 @@ public class VOExplorerImpl extends UIComponentImpl
 		foldersScroll.setMinimumSize(new Dimension(200,100));
 		// assemble folders and tasks into LHS 
 		JSplitPane leftPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, foldersScroll	,actionsScroll);
-		leftPane.setDividerLocation(150);
+		leftPane.setDividerLocation(200);
 		leftPane.setDividerSize(7);
 		leftPane.setResizeWeight(0.5); // even allocate new space to folders and actions.
 	//	leftPane.setBorder(BorderFactory.createMatteBorder(0,0,0,1,Color.GRAY));
