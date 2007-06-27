@@ -3,11 +3,13 @@
  */
 package org.astrogrid.desktop.modules.adqlEditor;
 
+import org.apache.commons.collections.Factory;
 import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.ui.QueryBuilder;
 
 /** Interface to a query builder component. Methods on this interface are called by VOExplorer to create new query builder windows
  * for selected resources.
@@ -16,7 +18,7 @@ import org.astrogrid.acr.ivoa.resource.Resource;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 17, 20074:41:01 PM
  */
-public interface QueryBuilderInternal {
+public interface QueryBuilderInternal extends QueryBuilder, Factory {
 	
 	/** open the specified file for editing */
 	void edit(FileObject fo);

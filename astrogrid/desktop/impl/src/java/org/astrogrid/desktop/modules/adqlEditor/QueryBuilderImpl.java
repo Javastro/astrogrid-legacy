@@ -1,4 +1,4 @@
-/*$Id: QueryBuilderImpl.java,v 1.1 2007/04/18 15:47:04 nw Exp $
+/*$Id: QueryBuilderImpl.java,v 1.2 2007/06/27 11:12:20 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -185,6 +185,12 @@ public class QueryBuilderImpl extends UIComponentImpl  implements QueryBuilderIn
 //		} catch (Exception e) {
 //			showError("Failed to load query",e);
 //		}
+	}
+
+
+	// factory interface. ignore, and remove later.
+	public Object create() {
+		return null;
 	}
   
 }

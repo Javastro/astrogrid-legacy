@@ -75,4 +75,16 @@ public class QueryBuilderFactory implements QueryBuilderInternal {
 		internal.edit(fo);		
 	}
 
+
+	public void show() {
+		newInstance().show();
+	}
+
+
+	public Object create() {
+		QueryBuilderInternal internal = newInstance();
+		internal.show();
+		return internal;
+	}
+
 }

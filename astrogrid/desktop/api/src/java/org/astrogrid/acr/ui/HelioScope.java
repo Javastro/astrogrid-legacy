@@ -1,4 +1,4 @@
-/*$Id: HelioScope.java,v 1.2 2006/03/16 09:14:21 KevinBenson Exp $
+/*$Id: HelioScope.java,v 1.3 2007/06/27 11:08:35 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,9 @@
 **/
 package org.astrogrid.acr.ui;
 
-/**Control  AstroScope.
- * 
+/**Control  HelioScope.
+ *@deprecated
  * <img src="doc-files/astroscope.png"/>
- * @service userInterface.helioscope
  * @author Kevin Benson
  */
 public interface HelioScope {
@@ -24,6 +23,9 @@ public interface HelioScope {
 
 /* 
 $Log: HelioScope.java,v $
+Revision 1.3  2007/06/27 11:08:35  nw
+public apis for new ui components.
+
 Revision 1.2  2006/03/16 09:14:21  KevinBenson
 usually comment/clean up type changes such as siap to stap
 
