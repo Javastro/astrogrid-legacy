@@ -21,8 +21,10 @@
 		
 	<contribution configuration-id="framework.acrServices">
 			<acrService id="astroscope" interface="AstroScope"/>
-			<acrService id="myspaceBrowser" interface="MyspaceBrowser" />
+<!--  			<acrService id="myspaceBrowser" interface="FileManager" />-->
 			<acrService id="registryBrowser" interface="RegistryBrowser" />
+			<acrService id="fileManager" interface="FileManager" />
+			<acrService id="queryBuilder" interface="QueryBuilder" />
 	</contribution>
 
 	
@@ -114,13 +116,12 @@ ASTROSCOPE
 		Describes how to builld a subclass of registry google, specialized for
 		displaying summaries in astroscope.
 			<inject object="service:ivoa.registry" />
-			<inject object="service:system.browser" />
-			<inject object="service:ui.registryBrowser" />
 			<inject object="cache:resources" />
 			<inject object="cache:bulk" />
+			<inject object="service:dialogs.resourceViewersFactory" />			
 			<inject object="service:votech.vomon" />
-			<inject object="service:dialogs.capabilityIconFactory" />			
-			<inject object="preference:acr.advanced" />
+			<inject object="service:dialogs.capabilityIconFactory" />	
+			<inject object="service:votech.annotate" />
 		</object>
 	</contribution>
 	
@@ -222,6 +223,10 @@ Stand-alone Query Builder
 		</invoke-factory>	
 	</service-point>
 	
+		<contribution configuration-id="system.windowFactories">
+		<window name="Query Builder">service:queryBuilder</window>
+	</contribution>
+	
 		<contribution configuration-id="system.helpmap">
 		<!-- TODO: fix these urls. -->
 		<item id="userInterface.queryBuilder" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/resources/resources/" />
@@ -271,16 +276,16 @@ Stand-alone Query Builder
 		</invoke-factory>
 	</service-point>
 	
-	<!--  makes the registryBrowser dsplay on startup. -->
-	<contribution configuration-id="hivemind.EagerLoad">
-		<load service-id="registryBrowser" />
+	<!--  makes the registryBrowser dsplay on startup if we've not got a system tray -->
+	<contribution configuration-id="hivemind.Startup" if="not (class java.awt.SystemTray)">
+		<startup object="service:registryBrowser" />
 	</contribution>
 
 <!-- 
 =====================================
 FILE EXPLORER
  -->
- 	<service-point id="fileExplorer" interface="org.astrogrid.desktop.modules.ui.FileExplorerFactoryInternal">
+ 	<service-point id="fileManager" interface="org.astrogrid.desktop.modules.ui.FileExplorerFactoryInternal">
  		<interceptor service-id="system.snitchInterceptor" />
  		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ui.FileExplorerFactoryImpl" >
@@ -290,11 +295,11 @@ FILE EXPLORER
  	</service-point>
  	
 	<contribution configuration-id="system.windowFactories">
-		<window name="File Explorer &#x003B1; ">service:fileExplorer</window>
+		<window name="File Explorer &#x003B1; ">service:fileManager</window>
 	</contribution>
 	
 	<contribution configuration-id="system.plasticMessageHandlers">
-		<object>service:fileExplorer</object>
+		<object>service:fileManager</object>
 	</contribution>	
 	
 	<contribution configuration-id="hiveutils.ObjectBuilderObjects">

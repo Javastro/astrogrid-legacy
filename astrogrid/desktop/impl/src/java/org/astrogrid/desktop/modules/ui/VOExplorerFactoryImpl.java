@@ -37,14 +37,16 @@ public class VOExplorerFactoryImpl  extends AbstractMessageHandler implements VO
 	
 	public VOExplorerFactoryImpl(ObjectBuilder builder) {
 		this.builder = builder;
-		create(); //@todo  auto-displayed at the moment - alter this later. 
 	}	
 	private VOExplorerImpl newWindow() {
 		VOExplorerImpl vo = (VOExplorerImpl)builder.create("voexplorer");
 		vo.setVisible(true);
 		return vo;
 	}
-
+// runnable interface.
+	public void run() {
+		create();
+	}
 //Factory Interface
 	// create a new voexplorer
 	public Object create() {
@@ -130,5 +132,6 @@ public class VOExplorerFactoryImpl  extends AbstractMessageHandler implements VO
 			}
 		}
 	}
+
 	
 }

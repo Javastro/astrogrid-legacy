@@ -4,6 +4,7 @@
 package org.astrogrid.desktop.modules.ui;
 
 import org.apache.commons.collections.Factory;
+import org.astrogrid.acr.ui.FileManager;
 import org.astrogrid.acr.ui.MyspaceBrowser;
 import org.votech.plastic.incoming.handlers.MessageHandler;
 
@@ -12,6 +13,6 @@ import org.votech.plastic.incoming.handlers.MessageHandler;
  * @since May 1, 20071:46:30 AM
  */
 public interface FileExplorerFactoryInternal extends Factory, MessageHandler,
-		MyspaceBrowser {
+		MyspaceBrowser, FileManager {
 
 }

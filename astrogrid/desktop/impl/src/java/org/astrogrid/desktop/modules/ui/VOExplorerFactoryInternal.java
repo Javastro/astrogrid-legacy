@@ -12,6 +12,6 @@ import org.votech.plastic.incoming.handlers.MessageHandler;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 6, 20076:47:57 PM
  */
-public interface VOExplorerFactoryInternal extends  Factory,MessageHandler, RegistryBrowser {
+public interface VOExplorerFactoryInternal extends  Factory,MessageHandler, RegistryBrowser, Runnable {
 
 }
