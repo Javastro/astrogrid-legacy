@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.5 2007/06/18 16:41:43 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.6 2007/06/27 11:14:10 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.desktop.modules.ui.voexplorer;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
@@ -18,6 +19,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EventListener;
 import java.util.EventObject;
@@ -52,6 +54,7 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.RegistryBrowser;
+import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal.StreamProcessor;
@@ -84,10 +87,13 @@ import org.astrogrid.desktop.modules.ui.voexplorer.strategy.ContentLevelStrategy
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.CreatorStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.PublisherStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.SubjectsStrategy;
+import org.astrogrid.desktop.modules.ui.voexplorer.strategy.TagStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.TypeStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.TypesStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.UcdStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.WavebandStrategy;
+import org.astrogrid.desktop.modules.votech.Annotation;
+import org.astrogrid.desktop.modules.votech.AnnotationService;
 import org.votech.VoMon;
 
 import ca.odell.glazedlists.BasicEventList;
@@ -112,7 +118,7 @@ import com.jgoodies.forms.layout.FormLayout;
  * @todo optimize query - no //vor:resouc
  */
 public class RegistryGooglePanel extends JPanel
-implements ActionListener, PropertyChangeListener, ListEventListener, ListSelectionListener, ChangeListener, TableModelListener {
+implements ActionListener,ListEventListener, ListSelectionListener, ChangeListener, TableModelListener {
 
 	private static final Log logger = LogFactory
 			.getLog(RegistryGooglePanel.class);
@@ -280,11 +286,9 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 	protected final VoMon vomon;
 	protected final CapabilityIconFactory iconFac;
 	protected final Ehcache bulk;
-	protected final Preference advancedPreference;
-	protected final ResourceViewer  xmlPane;
-	protected final ResourceViewer detailsPane;
-	protected final ResourceViewer tableMetadataPane;
 	protected final JComponent toolbar;
+	private final ResourceViewer[] resourceViewers;
+	private final AnnotationService annServer;
 	// stuff that's accessed when composing this pane together in the UI.
 	public final UIComponentBodyguard parent;
 	
@@ -314,17 +318,17 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 	 * @param vm used to annotate registry entries with availability information
 	 * @param pref controls whether to display 'advanced' features of the ui.
 	 */
-	public RegistryGooglePanel(final RegistryInternal reg, final BrowserControl browser, final RegistryBrowser regBrowser, 
-			final Ehcache resources, final Ehcache bulk
-			, final VoMon vm, final CapabilityIconFactory iconFac,Preference pref) {
+	public RegistryGooglePanel(final RegistryInternal reg,
+			final Ehcache resources, final Ehcache bulk, IterableObjectBuilder viewFactory
+			, final VoMon vm, final CapabilityIconFactory iconFac, final AnnotationService annServer) {
 		super();    
 		this.parent = new UIComponentBodyguard();
 		this.reg = reg;
 		this.resources = resources;
 		this.bulk = bulk;
-		this.advancedPreference = pref;
 		this.vomon = vm;
 		this.iconFac = iconFac;
+		this.annServer = annServer;
 
 		// prelims
 		//this.setSize(new Dimension(500,800));
@@ -353,10 +357,11 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 				,new AuthorityStrategy()
 				,new CreatorStrategy()
 				, new CapabilityStrategy()
+				,new TagStrategy(annServer)
 				//@todo move strategies out to hivemind? probably necessary for more advanced ones.
 				// @future add strategies for meta-metadata - last used, recently added, tags, etc.
 				};
-		FilterPipelineFactory mPipeline = new FilterPipelineFactory(sortedItems,pStrategies);
+		FilterPipelineFactory mPipeline = new FilterPipelineFactory(sortedItems,pStrategies,annServer);
 		EventList filteredItems = mPipeline.getFilteredItems();
 
 		// item currenlty selected in table list.
@@ -413,50 +418,47 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 		new TableComparatorChooser(resourceTable,sortedItems,true);
 		JComponent centerPanel = new JScrollPane(resourceTable);
 		centerPanel.setBorder(BorderFactory.createEmptyBorder());
-		centerPanel.setMinimumSize(new Dimension(100,200));  // ensure we always get to keep some display, even when the filter wheels appear.
+		centerPanel.setMinimumSize(new Dimension(100,50)); 
 		
 		// bottom pane.
 		tabPane = new JTabbedPane();    
 		tabPane.setBorder(BorderFactory.createEmptyBorder());
 		tabPane.addChangeListener(this);
-	//	tabPane.setPreferredSize(new Dimension(200,200));
-		detailsPane = new FormattedResourceViewer(browser,regBrowser);
-		CSH.setHelpIDString(detailsPane.getComponent(), "reg.details");
+		tabPane.setMinimumSize(new Dimension(100,50));
+		tabPane.setPreferredSize(new Dimension(100,600));
+
+		String[] vns = viewNames();
+		resourceViewers = new ResourceViewer[vns.length];
+		for (int i = 0; i < vns.length; i++) {
+			ResourceViewer viewer= (ResourceViewer)viewFactory.create(vns[i]);
+			resourceViewers[i] = viewer;
+			viewer.addTo(parent,tabPane);
+		}
 		
-		xmlPane =  new XMLResourceViewer(parent,reg);
-		CSH.setHelpIDString(xmlPane.getComponent(), "reg.xml");
-		
-		tableMetadataPane =  new TabularMetadataViewer();
-		CSH.setHelpIDString(tableMetadataPane.getComponent(),"reg.table");
-		
-		final JScrollPane scrollPane = new JScrollPane(detailsPane.getComponent(),JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPane.setBorder(BorderFactory.createEmptyBorder());
-		tabPane.addTab("Details", IconHelper.loadIcon("info16.png")
-				, scrollPane, "Details of chosen resource");
-		tabPane.addTab(DevSymbols.PROBLEM + " " + "Form"
-				,new ResourceFormViewer());
-		tabPane.addTab("Tables",IconHelper.loadIcon("table16.png")
-				,tableMetadataPane.getComponent(),"Tabular schema for this resource");
-		
-		tabPane.setMinimumSize(new Dimension(100,100));
 		// xml pane not added to tabs in same way - as is an 'advanced' view.
 		// will be added / removed in the property change listener, when initialized from preferneces.
 		
 		// stitch middle and bottom together.
 		JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,centerPanel,tabPane);
-		split.setResizeWeight(1.0); // all goes to the top.
-		split.setDividerLocation(300);
+		split.setResizeWeight(1.0); // all goes to the top. necessary for appearing filterwheels to work correctly
+		
+		split.setDividerLocation(200);
 		split.setDividerSize(7);
 		split.setBorder(BorderFactory.createEmptyBorder());
 		add(split,BorderLayout.CENTER);
-		
-		advancedPreference.addPropertyChangeListener(this);
-		advancedPreference.initializeThroughListener(this);
-
+	
 	}
+	
+	/** lists the views to create - these names are passed to the objectBuilder
+	 * this method acts as an extensio point - subclasses can alter the
+	 * number andorder of the views. */
+	protected String[] viewNames() {
+		return new String[] {"annotated","table"/*,"form",*/,"xml"};
+	}
+	
 	/** called to create the format definition of the central table - maybe overridden by subclasses */
 	protected TableFormat createTableFormat() {
-		return new ResourceTableFomat(vomon,iconFac);
+		return new ResourceTableFomat(annServer,vomon,iconFac);
 	}
 	
 	/** called to create the central table - may be overridden by subclasses */
@@ -465,29 +467,15 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 	}
 
 
-	/** triggered when value of preference changes. - shows / hides xml representation. */
-	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getSource() == this.advancedPreference ) {
-			if (advancedPreference.asBoolean()) {
-				tabPane.addTab("XML entry", IconHelper.loadIcon("xml.gif"), xmlPane.getComponent(), "View the XML as entered in the registry");       			
-			} else {
-				int ix = tabPane.indexOfComponent(xmlPane.getComponent());
-				if (ix != -1) {
-					tabPane.removeTabAt(ix);
-				}
-			}
-
-		}
-	}
-	
 // view updating methods	
 
 	/** triggered when resource list contents change - glazeed lists will always call this on the EDT*/
 	public void listChanged(ListEvent arg0) {
 		while(arg0.next()) { // I assume this is the correct pattern
 			if (arg0.getType() == ListEvent.DELETE) {// delete is only ever a clear.
-				detailsPane.clear();
-				xmlPane.clear();
+				for (int i = 0; i < resourceViewers.length; i++) {
+					resourceViewers[i].clear();
+				}
 				tabPane.setSelectedIndex(0);
 			}
 		}
@@ -546,21 +534,9 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 			return;
 		}
 		previous = res;
-		switch (tabPane.getSelectedIndex()) {
-		case 0:
-			detailsPane.display(res);
-			break;
-		case 1:
-			break; //@todo
-		case 2:
-			//@todo should I move to another tab when this isn't a tabular resouce?
-			tableMetadataPane.display(res);
-			break;
-		case 3:
-			xmlPane.display(res);
-			break;
-		default:
-			break;
+		int ix = tabPane.getSelectedIndex();
+		if (ix > -1) {
+			resourceViewers[ix].display(res);
 		}
 	}
 	
@@ -720,6 +696,9 @@ implements ActionListener, PropertyChangeListener, ListEventListener, ListSelect
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.6  2007/06/27 11:14:10  nw
+added annotations view
+
 Revision 1.5  2007/06/18 16:41:43  nw
 added icons to voexplorer table to denote the 'capabilities' of each resource
 
