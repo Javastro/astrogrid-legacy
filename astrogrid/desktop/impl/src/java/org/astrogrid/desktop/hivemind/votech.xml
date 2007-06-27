@@ -16,6 +16,87 @@
 	
 	
 	<!-- services and implementations -->
+	
+<!-- 
+=============================================
+ANNOTATION SERVICE
+ -->	
+	<service-point id="annotate" interface="org.astrogrid.desktop.modules.votech.AnnotationService">
+	Annotation Service
+		<invoke-factory>
+			<construct class="org.astrogrid.desktop.modules.votech.AnnotationServiceImpl">
+				<object>cache:annotate</object>
+				<service>system.ui</service>
+				<service>annotationSourcesFactory</service>
+				<object>preference:astrogrid.workdir</object>
+			</construct>
+		</invoke-factory>
+	</service-point>	
+	
+	<contribution configuration-id="ivoa.caches">
+		cache of annotations
+		'unlimited' disk storage, lasts whole session, but is discarded at end of session.
+		
+		<cache name="annotate"
+			maxElementsInMemory="100"
+			maxElementsOnDisk="10000"
+			overflowToDisk="true"
+			diskPersistent="false"
+			timeToLiveSeconds="72000"
+			timeToIdleSeconds="72000"
+		/>
+	</contribution>
+
+	<implementation service-id="annotate" if="property votech.annotate.disabled">
+		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
+	</implementation>	
+	
+		<!--  load on startup -->
+	<contribution configuration-id="hivemind.EagerLoad">
+		<load service-id="annotate"/><!--  loads and processes the annotation files -->
+	</contribution>
+	
+	
+	<service-point id="annotationSourcesFactory" interface="org.astrogrid.desktop.hivemind.IterableObjectBuilder">
+		Object builder for annotationSources
+		<invoke-factory model="singleton">
+			<construct class="org.astrogrid.desktop.hivemind.IterableObjectBuilderImpl">
+				<log />
+				<configuration>annotationSources</configuration>
+				<service>hiveutils.ObjectTranslator</service>
+				<service>hiveutils.EventLinker</service>
+			</construct>
+		</invoke-factory>
+	</service-point>	
+
+<configuration-point id="annotationSources" schema-id="hiveutils.ObjectBuilderSchema">
+	Configuration point for the list of annotation sources
+</configuration-point>
+
+<contribution configuration-id="annotationSources">
+	<object name="ag" class="org.astrogrid.desktop.modules.votech.AnnotationSource">
+		<inject object="literal:string:http://wiki.astrogrid.org/pub/Astrogrid/VoExplorerAnnotations/sample-annotations.xml" />
+		<inject object="literal:string:AG Science Team" />
+	</object>
+	
+	<object name="vomon" class="org.astrogrid.desktop.modules.votech.VomonAnnotationSource">
+		<inject object="service:vomon" />
+	</object>
+	<object name="jackdaw" class="org.astrogrid.desktop.modules.votech.JackdawAnnotationSource">
+		<inject object="preference:votech.jackdaw.endpoint" />
+	</object>
+</contribution>
+	
+	<contribution configuration-id="framework.preferences">
+		<preference name="votech.jackdaw.endpoint" 
+			requires-restart="true" advanced="true"
+			default-value="http://thor.roe.ac.uk/jackdaw/like" >
+			<ui-name>Jackdaw suggestions service</ui-name>
+			<description>A http endpoint of a suggestions service</description>
+			<units>url</units>
+		</preference>
+	</contribution>	
+	
 <!-- 
 =============================================
 VOMON
