@@ -28,6 +28,7 @@ import javax.swing.event.ListSelectionListener;
 
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.comp.IconField;
+import org.astrogrid.desktop.modules.votech.AnnotationService;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
@@ -54,7 +55,7 @@ import com.l2fprod.common.swing.JCollapsiblePane;
 public class FilterPipelineFactory   {
 
 
-	public FilterPipelineFactory(SortedList items, PipelineStrategy[] strategies) {
+	public FilterPipelineFactory(SortedList items, PipelineStrategy[] strategies, AnnotationService annotationService) {
 		int pipelineSize = 3;
 		
 		// system filters..
@@ -66,7 +67,7 @@ public class FilterPipelineFactory   {
 		textField = new IconField(10);
 		textField.setToolTipText("Filter box: type a word to filter with");
 		FilterList filteredItems = new FilterList(systemFilteredItems
-				, new TextComponentMatcherEditor(textField, new ResourceTextFilterator()));
+				, new TextComponentMatcherEditor(textField, new ResourceTextFilterator(annotationService)));
 		
 		filterPane = new JCollapsiblePane();
 		// create the pipeline, plumbing together the various items.

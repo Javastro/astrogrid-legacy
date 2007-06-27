@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
 
@@ -25,7 +26,10 @@ import org.astrogrid.acr.ivoa.resource.Catalog;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.comp.TextAreaRenderer;
+import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
@@ -49,6 +53,8 @@ import com.jgoodies.forms.layout.FormLayout;
  */
 public class TabularMetadataViewer extends JTable implements ResourceViewer{
 	public TabularMetadataViewer() {
+
+		CSH.setHelpIDString(this,"reg.table");		
 		catalogues = new BasicEventList();
 		tables = new BasicEventList();
 		columns = new BasicEventList();
@@ -173,9 +179,6 @@ public class TabularMetadataViewer extends JTable implements ResourceViewer{
 		} 
 	}
 
-	public JComponent getComponent() {
-		return panel;
-	}
 
 	private static class MetadataTableFormat implements TableFormat {
 
@@ -217,6 +220,12 @@ public class TabularMetadataViewer extends JTable implements ResourceViewer{
 					return null;
 			}
 		}
+	}
+
+	public void addTo(UIComponentBodyguard parent, JTabbedPane t) {
+		t.addTab("Tables",IconHelper.loadIcon("table16.png")
+				,panel,"Tabular schema for this resource");
+				
 	}
 
 }

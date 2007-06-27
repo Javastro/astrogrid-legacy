@@ -8,8 +8,11 @@ import java.awt.BorderLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.desktop.modules.ui.actions.DevSymbols;
+import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
 
 /**Tabular display of a resource entry.
  *@fixme implement
@@ -42,5 +45,10 @@ public class ResourceFormViewer extends JPanel implements ResourceViewer {
 		label.setText("Will display Resource metadata in a form layout");
 	}
 	private final JLabel label;
+	
+	public void addTo(UIComponentBodyguard parent, JTabbedPane t) {
+		t.addTab(DevSymbols.PROBLEM + " " + "Form"
+				,this);
+	}
 	
 }

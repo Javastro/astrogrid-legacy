@@ -3,10 +3,14 @@
  */
 package org.astrogrid.desktop.modules.ui.voexplorer.google;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.astrogrid.acr.ivoa.resource.Content;
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.desktop.modules.votech.Annotation;
+import org.astrogrid.desktop.modules.votech.AnnotationService;
+import org.astrogrid.desktop.modules.votech.UserAnnotation;
 
 import ca.odell.glazedlists.Filterator;
 import ca.odell.glazedlists.TextFilterator;
@@ -16,6 +20,14 @@ import ca.odell.glazedlists.TextFilterator;
  * @since Feb 13, 20076:55:58 PM
  */
 public final class ResourceTextFilterator implements Filterator, TextFilterator {
+
+	private final AnnotationService annotationService;
+	
+	
+	public ResourceTextFilterator(final AnnotationService annotationService) {
+		super();
+		this.annotationService = annotationService;
+	}
 
 	public void getFilterValues(List l, Object arg1) {
 		final Resource res = (Resource)arg1;
@@ -38,6 +50,29 @@ public final class ResourceTextFilterator implements Filterator, TextFilterator 
 			}
 		// unsure whether to include this one..
 		l.add(content.getDescription());
+		
+		// check for annotations too.
+		for (Iterator i = annotationService.getLocalAnnotations(res); i.hasNext(); ) {
+			Annotation a = (Annotation)i.next();
+			String t = a.getAlternativeTitle();
+			String n = a.getNote();
+			if (t != null) {
+				l.add(t);
+			}
+			if (n != null) {
+				l.add(n);
+			}
+			String[] tags = a.getTags();
+			if (tags != null && tags.length > 0) {
+				for (int  j = 0; j < tags.length; j++) {
+					l.add(tags[j]);
+				}
+			}
+			if (a instanceof UserAnnotation 
+					&& ((UserAnnotation)a).isFlagged()) {
+				l.add("FLAGGED");
+			}			
+		}
 		}
 
 		//@todo add coverage later.

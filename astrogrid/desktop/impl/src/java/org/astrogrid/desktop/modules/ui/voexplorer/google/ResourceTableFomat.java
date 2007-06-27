@@ -1,16 +1,22 @@
 package org.astrogrid.desktop.modules.ui.voexplorer.google;
 
+import java.awt.Color;
 import java.util.Comparator;
+import java.util.Iterator;
 
 import javax.swing.Icon;
 
 import org.apache.commons.collections.ComparatorUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.text.StrBuilder;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.votech.Annotation;
+import org.astrogrid.desktop.modules.votech.AnnotationService;
+import org.astrogrid.desktop.modules.votech.UserAnnotation;
 import org.votech.VoMon;
 import org.votech.VoMonBean;
 
@@ -25,15 +31,17 @@ import ca.odell.glazedlists.gui.WritableTableFormat;
  */
 
 public  class ResourceTableFomat implements AdvancedTableFormat, WritableTableFormat{
-	public ResourceTableFomat(final VoMon vomon,final CapabilityIconFactory capBuilder) {
+	public ResourceTableFomat(AnnotationService annService,final VoMon vomon,final CapabilityIconFactory capBuilder) {
 		super();
 		this.vomon = vomon;
+		this.annService = annService;
 		this.capBuilder = capBuilder;
 		this.okLabel = IconHelper.loadIcon("greenled16.png");
 		this.downLabel = IconHelper.loadIcon("redled16.png");
 		this.unknownLabel = IconHelper.loadIcon("idle16.png");
 	}
 	private final CapabilityIconFactory capBuilder;
+	private final AnnotationService annService;
 	private final Icon okLabel;
 	private final Icon downLabel;
 	private final Icon unknownLabel;
@@ -131,13 +139,60 @@ public  class ResourceTableFomat implements AdvancedTableFormat, WritableTableFo
 			throw new IllegalArgumentException("This column is not editable");
 	}
 
-	public static String createTitle(Resource r) {
+	public  String createTitle(Resource r) {
 		if (r == null) {
 			return "";
 		}
-		String title = StringUtils.replace(r.getTitle(), "\n", " ") ;
+		String title = null;
+		int titleLevel = Integer.MAX_VALUE;
+		boolean flag = false;
+		Color highlight = null;
+		int highlightLevel = Integer.MAX_VALUE;
+		// check for overrides.
+		for (Iterator i = annService.getLocalAnnotations(r); i.hasNext(); ) {
+			Annotation a = (Annotation)i.next();
+			String t = StringUtils.trimToNull(a.getAlternativeTitle());
+			if (t != null && a.getSource().getSortOrder() <= titleLevel) {
+				title = t;
+				titleLevel = a.getSource().getSortOrder();
+			}
+			if (a instanceof UserAnnotation) {
+				UserAnnotation u = (UserAnnotation)a;
+				if (!flag && u.isFlagged()) {
+					flag = true;
+				}
+				if (u.getHighlight() != null && ! u.getHighlight().equals(Color.WHITE) 
+						&& u.getSource().getSortOrder() <= highlightLevel) {
+					highlight = u.getHighlight();
+					highlightLevel = u.getSource().getSortOrder();
+				}
+			}
+		}
 
-		return title;
+		// work out what we've found, and assemble all bits of data into a single formatted string.
+		StrBuilder result = new StrBuilder();
+		if (flag || title != null|| highlight != null) {
+			result.append("<html>");
+		}
+		
+		if (highlight != null) {
+			result.append("<body bgcolor='#");
+			int i = highlight.getRGB();
+			result.append(Integer.toHexString(i).substring(2,8));
+			result.append("'>");
+		}
+		
+		if (flag) { // nasty ascii art for now.
+			result.append("<b>*</b>");
+		}
+		
+		if (title != null) {
+			result.append("<i>").append(title);
+		} else {
+			result.append(StringUtils.replace(r.getTitle(), "\n", " ") );
+		}
+		
+		return result.toString();
 	}		
 
 	private String createDate(Resource r) {

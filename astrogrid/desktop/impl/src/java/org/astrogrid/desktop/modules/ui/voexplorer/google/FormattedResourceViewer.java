@@ -9,12 +9,17 @@ import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.RegistryBrowser;
+import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceFormatter;
+import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.comp.ExternalViewerHyperlinkListener;
+import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
 
 /** displays resource as formatted html.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -24,6 +29,7 @@ public class FormattedResourceViewer extends JEditorPane implements ResourceView
 
 	public FormattedResourceViewer(final BrowserControl browser, final RegistryBrowser regBrowser) {
 		super();
+		CSH.setHelpIDString(this, "reg.details");
 		setContentType("text/html");
 		setBorder(BorderFactory.createEmptyBorder());
 		setEditable(false);
@@ -51,8 +57,12 @@ public class FormattedResourceViewer extends JEditorPane implements ResourceView
 		setCaretPosition(0);		
 	}
 
-	public JComponent getComponent() {
-		return this;
+
+	public void addTo(UIComponentBodyguard ignored,JTabbedPane t) {
+		final JScrollPane scrollPane = new JScrollPane(this,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setBorder(BorderFactory.createEmptyBorder());
+		t.addTab("Details", IconHelper.loadIcon("info16.png")
+				, scrollPane, "Details of chosen resource");			
 	}
 
 }

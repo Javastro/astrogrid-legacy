@@ -4,8 +4,11 @@
 package org.astrogrid.desktop.modules.ui.voexplorer.google;
 
 import javax.swing.JComponent;
+import javax.swing.JTabbedPane;
 
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
 
 /** Inteface to a component that views resources.
  * 
@@ -19,8 +22,7 @@ public interface ResourceViewer {
 	/** show this resource in the display */
 	public void display(Resource res) ;
 	
-	/** return the swing component - expected to return 'this'
-	 * 
-	 */
-	public JComponent getComponent();
+	
+	public void addTo(UIComponentBodyguard parent,JTabbedPane t);
+
 }
