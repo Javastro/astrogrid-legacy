@@ -8,6 +8,18 @@
 	</description>
 	<shortDescription>VOExplorer - Explore the Virtual Observatory</shortDescription>
 	
+	<!--  simple hack to allow cvs report-generation to work  -->
+    <repository>
+    <!--  not available any longer.
+        <connection>scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/${astrogrid.name}</connection>
+     -->
+     <!--  a clone, doesn't seem to work
+        <connection>scm:cvs:pserver:anonymous@cvs2.astrogrid.org:/astrogrid:devel/astrogrid/${astrogrid.name}</connection> 
+      -->
+        <connection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/${astrogrid.name}</connection>
+        <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/${astrogrid.name}</developerConnection>
+        <url>http://www.astrogrid.org/viewcvs/astrogrid/${astrogrid.name}/</url>
+    </repository>	
 	<!-- groups the implementation javadoc -->
   <packageGroups>
     <packageGroup>
@@ -83,8 +95,7 @@
        <report>maven-developer-activity-plugin</report>
        <report>maven-file-activity-plugin</report>
         <report>maven-javadoc-plugin</report>		
-        <report>maven-jxr-plugin</report>
-        <report>maven-license-plugin</report>        	
+        <report>maven-jxr-plugin</report>     	
 		</reports>
 
         <dependencies>
