@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: project.xml,v 1.37 2007/06/28 11:57:34 nw Exp $ -->
+<!-- $Id: project.xml,v 1.38 2007/06/28 11:58:33 nw Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="xsd/maven-project.xsd">
     <pomVersion>3</pomVersion>
     <name>Astrogrid Master Maven POM</name>
@@ -33,11 +33,13 @@
     <versions/>
     <branches/>
     <mailingLists>
+    <!--  non-existent
   <mailingList>
    <name>Astrogrid Forum</name>
    <subscribe>http://forum.astrogrid.org</subscribe>
    <archive>http://forum.astrogrid.org</archive>
   </mailingList>
+  -->
  </mailingLists>
  <developers>
   <developer>
@@ -162,7 +164,7 @@
    <email>nw@jb.man.ac.uk</email>
    <organization> Jodrell </organization>
    <roles>
-	<role> Workbench/ACR Developer </role>
+	<role> Workbench/AR Developer </role>
     <role> Common Execution Architecture Developer </role>
     <role> JES/Workflow Developer </role>
     <role> MySpace Developer </role>
