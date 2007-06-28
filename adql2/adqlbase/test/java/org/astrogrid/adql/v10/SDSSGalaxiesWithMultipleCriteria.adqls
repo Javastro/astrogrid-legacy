@@ -1,0 +1,15 @@
+-- Find all galaxies with blue surface brightness between 23 and 25
+-- mag per square arcseconds, and -10 < supergalactic latitude (sgb) < 10, and
+-- declination less than zero. Currently, we have to live with ra/dec until we
+-- get galactic coordinates. To calculate surface brightness per sq. arcsec,
+-- we use (g + rho), where g is the blue magnitude, and rho= 5*log(r). This
+-- query now has three requirements, one involving simple math.
+
+SELECT gl.objID
+FROM Galaxy as gl
+WHERE 
+   (gl.ra between 250 and 270)
+   and 
+   (gl."dec" > 50) 
+   and 
+   (gl.g + gl.gho between 23 and 25) ;

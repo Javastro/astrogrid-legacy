@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-fragment xsi:type="v1:intersectionSearchType" 
+              xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <v1:Condition xsi:type="v1:comparisonPredType" Comparison=">=">
+        <v1:Arg xsi:type="v1:binaryExprType" Oper="+">
+            <v1:Arg xsi:type="v1:columnReferenceType" Table="a" Name="col1"/>
+            <v1:Arg xsi:type="v1:columnReferenceType" Table="a" Name="col2"/>
+        </v1:Arg>
+        <v1:Arg xsi:type="v1:atomType">
+            <v1:Literal Value="3.2875" xsi:type="v1:realType"/>
+        </v1:Arg>
+    </v1:Condition>
+    <v1:Condition xsi:type="v1:betweenPredType">
+        <v1:Arg xsi:type="v1:columnReferenceType" Table="a" Name="col3"/>
+        <v1:Arg xsi:type="v1:columnReferenceType" Table="a" Name="col4"/>
+        <v1:Arg xsi:type="v1:columnReferenceType" Table="a" Name="col5"/>
+    </v1:Condition>
+</xml-fragment>

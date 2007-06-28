@@ -1,0 +1,2 @@
+--Select/Item[@type="aggregateFunctionType"]/Arg
+sin(a.ra)

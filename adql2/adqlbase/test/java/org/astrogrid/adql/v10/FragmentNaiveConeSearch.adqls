@@ -1,0 +1,5 @@
+--Select
+SELECT * FROM RASS_PHOTONS as r
+WHERE 2 * ASIN( SQRT( SIN( (20-r."DEC")/2 ) 
+   * SIN((20-r."DEC")/2) + COS(20) * COS(r."DEC") 
+   * SIN((20 - r.RA)/2) * SIN((20 - r.RA)/2 ) ) ) <= 10 ;

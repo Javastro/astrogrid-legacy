@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<v1:Select xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <v1:SelectionList>
+        <v1:Item Table="las" Name="sourceID" xsi:type="v1:columnReferenceType"/>
+        <v1:Item Table="las" Name="ra" xsi:type="v1:columnReferenceType"/>
+        <v1:Item Table="las" Name="dec" xsi:type="v1:columnReferenceType"/>
+        <v1:Item Table="fsc" Name="seqNo" xsi:type="v1:columnReferenceType"/>
+        <v1:Item Table="fsc" Name="ra" xsi:type="v1:columnReferenceType"/>
+        <v1:Item Table="fsc" Name="dec" xsi:type="v1:columnReferenceType"/>
+    </v1:SelectionList>
+    <v1:From>
+        <v1:Table Name="lasSource" Alias="las" xsi:type="v1:tableType"/>
+        <v1:Table Name="rosat_fsc" Alias="fsc" xsi:type="v1:tableType"/>
+        <v1:Table Name="lasSourceXrosat_fsc" Alias="x" xsi:type="v1:tableType"/>
+    </v1:From>
+    <v1:Where>
+        <v1:Condition xsi:type="v1:intersectionSearchType">
+            <v1:Condition Comparison="=" xsi:type="v1:comparisonPredType">
+                <v1:Arg Table="x" Name="masterObjID" xsi:type="v1:columnReferenceType"/>
+                <v1:Arg Table="las" Name="sourceID" xsi:type="v1:columnReferenceType"/>
+            </v1:Condition>
+            <v1:Condition xsi:type="v1:intersectionSearchType">
+                <v1:Condition Comparison="=" xsi:type="v1:comparisonPredType">
+                    <v1:Arg Table="x" Name="slaveObjID" xsi:type="v1:columnReferenceType"/>
+                    <v1:Arg Table="fsc" Name="seqNo" xsi:type="v1:columnReferenceType"/>
+                </v1:Condition>
+                <v1:Condition Comparison="&lt;" xsi:type="v1:comparisonPredType">
+                    <v1:Arg Table="x" Name="distanceMins" xsi:type="v1:columnReferenceType"/>
+                    <v1:Arg xsi:type="v1:atomType">
+                        <v1:Literal Value="0.1" xsi:type="v1:realType"/>
+                    </v1:Arg>
+                </v1:Condition>
+            </v1:Condition>
+        </v1:Condition>
+    </v1:Where>
+</v1:Select>

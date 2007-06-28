@@ -1,0 +1,2 @@
+select * from catalogue as a where a.col1 = 12
+ 

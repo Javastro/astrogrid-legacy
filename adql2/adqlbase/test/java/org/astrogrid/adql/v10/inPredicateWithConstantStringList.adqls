@@ -1,0 +1,1 @@
+select * from personnel as p where p.city_name in ( 'New York', 'Chicago', 'Atlanta', 'Austin' ) ;

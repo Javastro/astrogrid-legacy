@@ -1,0 +1,9 @@
+Select Top 100 SIN(RADIANS(a.POS_EQ_RA) ) , 
+               COS(RADIANS(a.POS_EQ_RA) ) , 
+               TAN(RADIANS(a.POS_EQ_RA) ) , 
+               COT(RADIANS(a.POS_EQ_RA) ) , 
+               ASIN(RADIANS(a.POS_EQ_RA) ) , 
+               ACOS(RADIANS(a.POS_EQ_RA) ) , 
+               ATAN(RADIANS(a.POS_EQ_RA) ) , 
+               ATAN2(RADIANS(a.POS_EQ_RA), RADIANS(a.POS_EQ_DEC))  
+From catalogue as a 

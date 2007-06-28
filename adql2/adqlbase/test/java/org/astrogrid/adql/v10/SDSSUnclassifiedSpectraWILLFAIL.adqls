@@ -1,0 +1,6 @@
+-- Find all objects with unclassified spectra.
+-- A simple SELECT-FROM-WHERE query, using a function
+
+SELECT s.pecObjID
+FROM SpecObj s
+WHERE s.SpecClass = fSpecClass('UNKNOWN') ;

@@ -1,0 +1,1 @@
+Select SUM(a.POS_EQ_RA)  From catalogue as a ;

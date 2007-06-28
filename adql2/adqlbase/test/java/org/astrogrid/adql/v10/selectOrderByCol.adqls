@@ -1,0 +1,1 @@
+Select * From catalogue as b Order By b.POS_EQ_DEC ; 
