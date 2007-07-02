@@ -1,13 +1,13 @@
 /*
  * XML Type:  subQuerySet
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.SubQuerySet
  *
  * Automatically generated - do not modify.
  */
 package org.astrogrid.adql.beans.impl;
 /**
- * An XML subQuerySet(@urn:astrogrid:schema:ADQL:v2.0).
+ * An XML subQuerySet(@http://www.ivoa.net/xml/ADQL/v2.0/adql).
  *
  * This is a complex type.
  */
@@ -20,7 +20,7 @@ public class SubQuerySetImpl extends org.astrogrid.adql.beans.impl.InclusionSetT
     }
     
     private static final javax.xml.namespace.QName SELECTION$0 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "selection");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "selection");
     
     
     /**

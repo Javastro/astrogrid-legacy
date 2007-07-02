@@ -1,13 +1,13 @@
 /*
  * XML Type:  aliasSelectionItemType
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.AliasSelectionItemType
  *
  * Automatically generated - do not modify.
  */
 package org.astrogrid.adql.beans.impl;
 /**
- * An XML aliasSelectionItemType(@urn:astrogrid:schema:ADQL:v2.0).
+ * An XML aliasSelectionItemType(@http://www.ivoa.net/xml/ADQL/v2.0/adql).
  *
  * This is a complex type.
  */
@@ -20,7 +20,7 @@ public class AliasSelectionItemTypeImpl extends org.astrogrid.adql.beans.impl.Se
     }
     
     private static final javax.xml.namespace.QName EXPRESSION$0 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "Expression");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "Expression");
     private static final javax.xml.namespace.QName AS$2 = 
         new javax.xml.namespace.QName("", "As");
     

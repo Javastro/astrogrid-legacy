@@ -1,13 +1,13 @@
 /*
  * XML Type:  likePredType
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.LikePredType
  *
  * Automatically generated - do not modify.
  */
 package org.astrogrid.adql.beans.impl;
 /**
- * An XML likePredType(@urn:astrogrid:schema:ADQL:v2.0).
+ * An XML likePredType(@http://www.ivoa.net/xml/ADQL/v2.0/adql).
  *
  * This is a complex type.
  */
@@ -20,9 +20,9 @@ public class LikePredTypeImpl extends org.astrogrid.adql.beans.impl.SearchTypeIm
     }
     
     private static final javax.xml.namespace.QName ARG$0 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "Arg");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "Arg");
     private static final javax.xml.namespace.QName PATTERN$2 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "Pattern");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "Pattern");
     
     
     /**

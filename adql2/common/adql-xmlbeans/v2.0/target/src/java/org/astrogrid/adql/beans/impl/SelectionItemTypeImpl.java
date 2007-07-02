@@ -1,13 +1,13 @@
 /*
  * XML Type:  selectionItemType
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.SelectionItemType
  *
  * Automatically generated - do not modify.
  */
 package org.astrogrid.adql.beans.impl;
 /**
- * An XML selectionItemType(@urn:astrogrid:schema:ADQL:v2.0).
+ * An XML selectionItemType(@http://www.ivoa.net/xml/ADQL/v2.0/adql).
  *
  * This is a complex type.
  */

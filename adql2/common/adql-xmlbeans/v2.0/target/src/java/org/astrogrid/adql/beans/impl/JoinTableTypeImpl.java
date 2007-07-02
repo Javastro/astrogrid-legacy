@@ -1,13 +1,13 @@
 /*
  * XML Type:  joinTableType
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.JoinTableType
  *
  * Automatically generated - do not modify.
  */
 package org.astrogrid.adql.beans.impl;
 /**
- * An XML joinTableType(@urn:astrogrid:schema:ADQL:v2.0).
+ * An XML joinTableType(@http://www.ivoa.net/xml/ADQL/v2.0/adql).
  *
  * This is a complex type.
  */
@@ -20,11 +20,11 @@ public class JoinTableTypeImpl extends org.astrogrid.adql.beans.impl.FromTableTy
     }
     
     private static final javax.xml.namespace.QName QUALIFIER$0 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "Qualifier");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "Qualifier");
     private static final javax.xml.namespace.QName TABLES$2 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "Tables");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "Tables");
     private static final javax.xml.namespace.QName CONDITION$4 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "Condition");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "Condition");
     
     
     /**

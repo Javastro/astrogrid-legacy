@@ -1,15 +1,15 @@
 /*
  * XML Type:  aggregateFunctionNameType
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.AggregateFunctionNameType
  *
  * Automatically generated - do not modify.
  */
 package org.astrogrid.adql.beans.impl;
 /**
- * An XML aggregateFunctionNameType(@urn:astrogrid:schema:ADQL:v2.0).
+ * An XML aggregateFunctionNameType(@http://www.ivoa.net/xml/ADQL/v2.0/adql).
  *
- * This is an atomic type that is a restriction of org.apache.xmlbeans.XmlString.
+ * This is an atomic type that is a restriction of org.astrogrid.adql.beans.AggregateFunctionNameType.
  */
 public class AggregateFunctionNameTypeImpl extends org.apache.xmlbeans.impl.values.JavaStringEnumerationHolderEx implements org.astrogrid.adql.beans.AggregateFunctionNameType
 {

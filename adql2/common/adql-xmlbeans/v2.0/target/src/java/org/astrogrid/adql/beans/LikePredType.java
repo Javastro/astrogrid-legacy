@@ -1,6 +1,6 @@
 /*
  * XML Type:  likePredType
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.LikePredType
  *
  * Automatically generated - do not modify.
@@ -9,13 +9,14 @@ package org.astrogrid.adql.beans;
 
 
 /**
- * An XML likePredType(@urn:astrogrid:schema:ADQL:v2.0).
+ * An XML likePredType(@http://www.ivoa.net/xml/ADQL/v2.0/adql).
  *
  * This is a complex type.
  */
 public interface LikePredType extends org.astrogrid.adql.beans.SearchType
 {
-    public static final org.apache.xmlbeans.SchemaType type = (org.apache.xmlbeans.SchemaType)schemaorg_apache_xmlbeans.system.s00D95B496A788C4D65664035BC163E1A.TypeSystemHolder.typeSystem.resolveHandle("likepredtype0be4type");
+    public static final org.apache.xmlbeans.SchemaType type = (org.apache.xmlbeans.SchemaType)
+        org.apache.xmlbeans.XmlBeans.typeSystemForClassLoader(LikePredType.class.getClassLoader(), "schemaorg_apache_xmlbeans.system.s2359EC142DE5834D202372C3F9D3B794").resolveHandle("likepredtype2b33type");
     
     /**
      * Gets the "Arg" element
@@ -104,19 +105,19 @@ public interface LikePredType extends org.astrogrid.adql.beans.SearchType
         public static org.astrogrid.adql.beans.LikePredType parse(org.w3c.dom.Node node, org.apache.xmlbeans.XmlOptions options) throws org.apache.xmlbeans.XmlException {
           return (org.astrogrid.adql.beans.LikePredType) org.apache.xmlbeans.XmlBeans.getContextTypeLoader().parse( node, type, options ); }
         
-        /** @deprecated {@link XMLInputStream} */
+        /** @deprecated {@link org.apache.xmlbeans.xml.stream.XMLInputStream} */
         public static org.astrogrid.adql.beans.LikePredType parse(org.apache.xmlbeans.xml.stream.XMLInputStream xis) throws org.apache.xmlbeans.XmlException, org.apache.xmlbeans.xml.stream.XMLStreamException {
           return (org.astrogrid.adql.beans.LikePredType) org.apache.xmlbeans.XmlBeans.getContextTypeLoader().parse( xis, type, null ); }
         
-        /** @deprecated {@link XMLInputStream} */
+        /** @deprecated {@link org.apache.xmlbeans.xml.stream.XMLInputStream} */
         public static org.astrogrid.adql.beans.LikePredType parse(org.apache.xmlbeans.xml.stream.XMLInputStream xis, org.apache.xmlbeans.XmlOptions options) throws org.apache.xmlbeans.XmlException, org.apache.xmlbeans.xml.stream.XMLStreamException {
           return (org.astrogrid.adql.beans.LikePredType) org.apache.xmlbeans.XmlBeans.getContextTypeLoader().parse( xis, type, options ); }
         
-        /** @deprecated {@link XMLInputStream} */
+        /** @deprecated {@link org.apache.xmlbeans.xml.stream.XMLInputStream} */
         public static org.apache.xmlbeans.xml.stream.XMLInputStream newValidatingXMLInputStream(org.apache.xmlbeans.xml.stream.XMLInputStream xis) throws org.apache.xmlbeans.XmlException, org.apache.xmlbeans.xml.stream.XMLStreamException {
           return org.apache.xmlbeans.XmlBeans.getContextTypeLoader().newValidatingXMLInputStream( xis, type, null ); }
         
-        /** @deprecated {@link XMLInputStream} */
+        /** @deprecated {@link org.apache.xmlbeans.xml.stream.XMLInputStream} */
         public static org.apache.xmlbeans.xml.stream.XMLInputStream newValidatingXMLInputStream(org.apache.xmlbeans.xml.stream.XMLInputStream xis, org.apache.xmlbeans.XmlOptions options) throws org.apache.xmlbeans.XmlException, org.apache.xmlbeans.xml.stream.XMLStreamException {
           return org.apache.xmlbeans.XmlBeans.getContextTypeLoader().newValidatingXMLInputStream( xis, type, options ); }
         

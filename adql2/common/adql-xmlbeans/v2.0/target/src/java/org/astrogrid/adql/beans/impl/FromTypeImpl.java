@@ -1,13 +1,13 @@
 /*
  * XML Type:  fromType
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.FromType
  *
  * Automatically generated - do not modify.
  */
 package org.astrogrid.adql.beans.impl;
 /**
- * An XML fromType(@urn:astrogrid:schema:ADQL:v2.0).
+ * An XML fromType(@http://www.ivoa.net/xml/ADQL/v2.0/adql).
  *
  * This is a complex type.
  */
@@ -20,7 +20,7 @@ public class FromTypeImpl extends org.apache.xmlbeans.impl.values.XmlComplexCont
     }
     
     private static final javax.xml.namespace.QName TABLE$0 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "Table");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "Table");
     
     
     /**

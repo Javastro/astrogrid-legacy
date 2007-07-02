@@ -1,13 +1,13 @@
 /*
  * XML Type:  inclusiveSearchType
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.InclusiveSearchType
  *
  * Automatically generated - do not modify.
  */
 package org.astrogrid.adql.beans.impl;
 /**
- * An XML inclusiveSearchType(@urn:astrogrid:schema:ADQL:v2.0).
+ * An XML inclusiveSearchType(@http://www.ivoa.net/xml/ADQL/v2.0/adql).
  *
  * This is a complex type.
  */
@@ -20,9 +20,9 @@ public class InclusiveSearchTypeImpl extends org.astrogrid.adql.beans.impl.Searc
     }
     
     private static final javax.xml.namespace.QName EXPRESSION$0 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "Expression");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "Expression");
     private static final javax.xml.namespace.QName SET$2 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "Set");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "Set");
     
     
     /**

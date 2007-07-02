@@ -1,13 +1,13 @@
 /*
  * XML Type:  selectionLimitType
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.SelectionLimitType
  *
  * Automatically generated - do not modify.
  */
 package org.astrogrid.adql.beans.impl;
 /**
- * An XML selectionLimitType(@urn:astrogrid:schema:ADQL:v2.0).
+ * An XML selectionLimitType(@http://www.ivoa.net/xml/ADQL/v2.0/adql).
  *
  * This is a complex type.
  */

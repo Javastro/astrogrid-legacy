@@ -1,15 +1,15 @@
 /*
  * XML Type:  comparisonType
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.ComparisonType
  *
  * Automatically generated - do not modify.
  */
 package org.astrogrid.adql.beans.impl;
 /**
- * An XML comparisonType(@urn:astrogrid:schema:ADQL:v2.0).
+ * An XML comparisonType(@http://www.ivoa.net/xml/ADQL/v2.0/adql).
  *
- * This is an atomic type that is a restriction of org.apache.xmlbeans.XmlString.
+ * This is an atomic type that is a restriction of org.astrogrid.adql.beans.ComparisonType.
  */
 public class ComparisonTypeImpl extends org.apache.xmlbeans.impl.values.JavaStringEnumerationHolderEx implements org.astrogrid.adql.beans.ComparisonType
 {

@@ -1,13 +1,13 @@
 /*
  * XML Type:  columnReferenceType
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.ColumnReferenceType
  *
  * Automatically generated - do not modify.
  */
 package org.astrogrid.adql.beans.impl;
 /**
- * An XML columnReferenceType(@urn:astrogrid:schema:ADQL:v2.0).
+ * An XML columnReferenceType(@http://www.ivoa.net/xml/ADQL/v2.0/adql).
  *
  * This is a complex type.
  */

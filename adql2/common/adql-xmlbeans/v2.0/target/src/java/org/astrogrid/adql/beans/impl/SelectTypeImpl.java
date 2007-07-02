@@ -1,13 +1,13 @@
 /*
  * XML Type:  selectType
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.SelectType
  *
  * Automatically generated - do not modify.
  */
 package org.astrogrid.adql.beans.impl;
 /**
- * An XML selectType(@urn:astrogrid:schema:ADQL:v2.0).
+ * An XML selectType(@http://www.ivoa.net/xml/ADQL/v2.0/adql).
  *
  * This is a complex type.
  */
@@ -20,27 +20,27 @@ public class SelectTypeImpl extends org.apache.xmlbeans.impl.values.XmlComplexCo
     }
     
     private static final javax.xml.namespace.QName ALLOW$0 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "Allow");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "Allow");
     private static final javax.xml.namespace.QName RESTRICT$2 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "Restrict");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "Restrict");
     private static final javax.xml.namespace.QName SELECTIONLIST$4 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "SelectionList");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "SelectionList");
     private static final javax.xml.namespace.QName INTO$6 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "InTo");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "InTo");
     private static final javax.xml.namespace.QName FROM$8 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "From");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "From");
     private static final javax.xml.namespace.QName WHERE$10 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "Where");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "Where");
     private static final javax.xml.namespace.QName GROUPBY$12 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "GroupBy");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "GroupBy");
     private static final javax.xml.namespace.QName HAVING$14 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "Having");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "Having");
     private static final javax.xml.namespace.QName ORDERBY$16 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "OrderBy");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "OrderBy");
     private static final javax.xml.namespace.QName STARTCOMMENT$18 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "StartComment");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "StartComment");
     private static final javax.xml.namespace.QName ENDCOMMENT$20 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "EndComment");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "EndComment");
     
     
     /**

@@ -1,13 +1,13 @@
 /*
  * XML Type:  orderOptionType
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.OrderOptionType
  *
  * Automatically generated - do not modify.
  */
 package org.astrogrid.adql.beans.impl;
 /**
- * An XML orderOptionType(@urn:astrogrid:schema:ADQL:v2.0).
+ * An XML orderOptionType(@http://www.ivoa.net/xml/ADQL/v2.0/adql).
  *
  * This is a complex type.
  */

@@ -1,13 +1,13 @@
 /*
  * XML Type:  havingType
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.HavingType
  *
  * Automatically generated - do not modify.
  */
 package org.astrogrid.adql.beans.impl;
 /**
- * An XML havingType(@urn:astrogrid:schema:ADQL:v2.0).
+ * An XML havingType(@http://www.ivoa.net/xml/ADQL/v2.0/adql).
  *
  * This is a complex type.
  */
@@ -20,7 +20,7 @@ public class HavingTypeImpl extends org.apache.xmlbeans.impl.values.XmlComplexCo
     }
     
     private static final javax.xml.namespace.QName CONDITION$0 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "Condition");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "Condition");
     
     
     /**

@@ -1,13 +1,13 @@
 /*
  * XML Type:  selectionListType
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.SelectionListType
  *
  * Automatically generated - do not modify.
  */
 package org.astrogrid.adql.beans.impl;
 /**
- * An XML selectionListType(@urn:astrogrid:schema:ADQL:v2.0).
+ * An XML selectionListType(@http://www.ivoa.net/xml/ADQL/v2.0/adql).
  *
  * This is a complex type.
  */
@@ -20,7 +20,7 @@ public class SelectionListTypeImpl extends org.apache.xmlbeans.impl.values.XmlCo
     }
     
     private static final javax.xml.namespace.QName ITEM$0 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "Item");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "Item");
     
     
     /**

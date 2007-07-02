@@ -1,6 +1,6 @@
 /*
  * XML Type:  binaryOperatorType
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.BinaryOperatorType
  *
  * Automatically generated - do not modify.
@@ -9,13 +9,14 @@ package org.astrogrid.adql.beans;
 
 
 /**
- * An XML binaryOperatorType(@urn:astrogrid:schema:ADQL:v2.0).
+ * An XML binaryOperatorType(@http://www.ivoa.net/xml/ADQL/v2.0/adql).
  *
- * This is an atomic type that is a restriction of org.apache.xmlbeans.XmlString.
+ * This is an atomic type that is a restriction of org.astrogrid.adql.beans.BinaryOperatorType.
  */
 public interface BinaryOperatorType extends org.apache.xmlbeans.XmlString
 {
-    public static final org.apache.xmlbeans.SchemaType type = (org.apache.xmlbeans.SchemaType)schemaorg_apache_xmlbeans.system.s00D95B496A788C4D65664035BC163E1A.TypeSystemHolder.typeSystem.resolveHandle("binaryoperatortype7217type");
+    public static final org.apache.xmlbeans.SchemaType type = (org.apache.xmlbeans.SchemaType)
+        org.apache.xmlbeans.XmlBeans.typeSystemForClassLoader(BinaryOperatorType.class.getClassLoader(), "schemaorg_apache_xmlbeans.system.s2359EC142DE5834D202372C3F9D3B794").resolveHandle("binaryoperatortypeae66type");
     
     org.apache.xmlbeans.StringEnumAbstractBase enumValue();
     void set(org.apache.xmlbeans.StringEnumAbstractBase e);
@@ -141,19 +142,19 @@ public interface BinaryOperatorType extends org.apache.xmlbeans.XmlString
         public static org.astrogrid.adql.beans.BinaryOperatorType parse(org.w3c.dom.Node node, org.apache.xmlbeans.XmlOptions options) throws org.apache.xmlbeans.XmlException {
           return (org.astrogrid.adql.beans.BinaryOperatorType) org.apache.xmlbeans.XmlBeans.getContextTypeLoader().parse( node, type, options ); }
         
-        /** @deprecated {@link XMLInputStream} */
+        /** @deprecated {@link org.apache.xmlbeans.xml.stream.XMLInputStream} */
         public static org.astrogrid.adql.beans.BinaryOperatorType parse(org.apache.xmlbeans.xml.stream.XMLInputStream xis) throws org.apache.xmlbeans.XmlException, org.apache.xmlbeans.xml.stream.XMLStreamException {
           return (org.astrogrid.adql.beans.BinaryOperatorType) org.apache.xmlbeans.XmlBeans.getContextTypeLoader().parse( xis, type, null ); }
         
-        /** @deprecated {@link XMLInputStream} */
+        /** @deprecated {@link org.apache.xmlbeans.xml.stream.XMLInputStream} */
         public static org.astrogrid.adql.beans.BinaryOperatorType parse(org.apache.xmlbeans.xml.stream.XMLInputStream xis, org.apache.xmlbeans.XmlOptions options) throws org.apache.xmlbeans.XmlException, org.apache.xmlbeans.xml.stream.XMLStreamException {
           return (org.astrogrid.adql.beans.BinaryOperatorType) org.apache.xmlbeans.XmlBeans.getContextTypeLoader().parse( xis, type, options ); }
         
-        /** @deprecated {@link XMLInputStream} */
+        /** @deprecated {@link org.apache.xmlbeans.xml.stream.XMLInputStream} */
         public static org.apache.xmlbeans.xml.stream.XMLInputStream newValidatingXMLInputStream(org.apache.xmlbeans.xml.stream.XMLInputStream xis) throws org.apache.xmlbeans.XmlException, org.apache.xmlbeans.xml.stream.XMLStreamException {
           return org.apache.xmlbeans.XmlBeans.getContextTypeLoader().newValidatingXMLInputStream( xis, type, null ); }
         
-        /** @deprecated {@link XMLInputStream} */
+        /** @deprecated {@link org.apache.xmlbeans.xml.stream.XMLInputStream} */
         public static org.apache.xmlbeans.xml.stream.XMLInputStream newValidatingXMLInputStream(org.apache.xmlbeans.xml.stream.XMLInputStream xis, org.apache.xmlbeans.XmlOptions options) throws org.apache.xmlbeans.XmlException, org.apache.xmlbeans.xml.stream.XMLStreamException {
           return org.apache.xmlbeans.XmlBeans.getContextTypeLoader().newValidatingXMLInputStream( xis, type, options ); }
         

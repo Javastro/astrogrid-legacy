@@ -1,13 +1,13 @@
 /*
  * XML Type:  orderType
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.OrderType
  *
  * Automatically generated - do not modify.
  */
 package org.astrogrid.adql.beans.impl;
 /**
- * An XML orderType(@urn:astrogrid:schema:ADQL:v2.0).
+ * An XML orderType(@http://www.ivoa.net/xml/ADQL/v2.0/adql).
  *
  * This is a complex type.
  */
@@ -20,9 +20,9 @@ public class OrderTypeImpl extends org.apache.xmlbeans.impl.values.XmlComplexCon
     }
     
     private static final javax.xml.namespace.QName EXPRESSION$0 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "Expression");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "Expression");
     private static final javax.xml.namespace.QName ORDER$2 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "Order");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "Order");
     
     
     /**

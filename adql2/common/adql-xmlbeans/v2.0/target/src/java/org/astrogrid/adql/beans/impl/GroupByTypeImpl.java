@@ -1,13 +1,13 @@
 /*
  * XML Type:  groupByType
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.GroupByType
  *
  * Automatically generated - do not modify.
  */
 package org.astrogrid.adql.beans.impl;
 /**
- * An XML groupByType(@urn:astrogrid:schema:ADQL:v2.0).
+ * An XML groupByType(@http://www.ivoa.net/xml/ADQL/v2.0/adql).
  *
  * This is a complex type.
  */
@@ -20,7 +20,7 @@ public class GroupByTypeImpl extends org.apache.xmlbeans.impl.values.XmlComplexC
     }
     
     private static final javax.xml.namespace.QName COLUMN$0 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "Column");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "Column");
     
     
     /**

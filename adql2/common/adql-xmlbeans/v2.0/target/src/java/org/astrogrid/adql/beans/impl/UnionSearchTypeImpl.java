@@ -1,13 +1,13 @@
 /*
  * XML Type:  unionSearchType
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.UnionSearchType
  *
  * Automatically generated - do not modify.
  */
 package org.astrogrid.adql.beans.impl;
 /**
- * An XML unionSearchType(@urn:astrogrid:schema:ADQL:v2.0).
+ * An XML unionSearchType(@http://www.ivoa.net/xml/ADQL/v2.0/adql).
  *
  * This is a complex type.
  */
@@ -20,7 +20,7 @@ public class UnionSearchTypeImpl extends org.astrogrid.adql.beans.impl.SearchTyp
     }
     
     private static final javax.xml.namespace.QName CONDITION$0 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "Condition");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "Condition");
     
     
     /**

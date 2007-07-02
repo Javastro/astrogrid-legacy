@@ -1,14 +1,14 @@
 /*
  * An XML document type.
  * Localname: Select
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.SelectDocument
  *
  * Automatically generated - do not modify.
  */
 package org.astrogrid.adql.beans.impl;
 /**
- * A document containing one Select(@urn:astrogrid:schema:ADQL:v2.0) element.
+ * A document containing one Select(@http://www.ivoa.net/xml/ADQL/v2.0/adql) element.
  *
  * This is a complex type.
  */
@@ -21,7 +21,7 @@ public class SelectDocumentImpl extends org.apache.xmlbeans.impl.values.XmlCompl
     }
     
     private static final javax.xml.namespace.QName SELECT$0 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "Select");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "Select");
     
     
     /**

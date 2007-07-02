@@ -1,13 +1,13 @@
 /*
  * XML Type:  binaryExprType
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.BinaryExprType
  *
  * Automatically generated - do not modify.
  */
 package org.astrogrid.adql.beans.impl;
 /**
- * An XML binaryExprType(@urn:astrogrid:schema:ADQL:v2.0).
+ * An XML binaryExprType(@http://www.ivoa.net/xml/ADQL/v2.0/adql).
  *
  * This is a complex type.
  */
@@ -20,7 +20,7 @@ public class BinaryExprTypeImpl extends org.astrogrid.adql.beans.impl.ScalarExpr
     }
     
     private static final javax.xml.namespace.QName ARG$0 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "Arg");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "Arg");
     private static final javax.xml.namespace.QName OPER$2 = 
         new javax.xml.namespace.QName("", "Oper");
     

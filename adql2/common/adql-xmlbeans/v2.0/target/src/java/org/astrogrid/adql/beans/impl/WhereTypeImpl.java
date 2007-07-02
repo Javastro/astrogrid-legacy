@@ -1,13 +1,13 @@
 /*
  * XML Type:  whereType
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.WhereType
  *
  * Automatically generated - do not modify.
  */
 package org.astrogrid.adql.beans.impl;
 /**
- * An XML whereType(@urn:astrogrid:schema:ADQL:v2.0).
+ * An XML whereType(@http://www.ivoa.net/xml/ADQL/v2.0/adql).
  *
  * This is a complex type.
  */
@@ -20,7 +20,7 @@ public class WhereTypeImpl extends org.apache.xmlbeans.impl.values.XmlComplexCon
     }
     
     private static final javax.xml.namespace.QName CONDITION$0 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "Condition");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "Condition");
     
     
     /**

@@ -1,13 +1,13 @@
 /*
  * XML Type:  notBetweenPredType
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.NotBetweenPredType
  *
  * Automatically generated - do not modify.
  */
 package org.astrogrid.adql.beans.impl;
 /**
- * An XML notBetweenPredType(@urn:astrogrid:schema:ADQL:v2.0).
+ * An XML notBetweenPredType(@http://www.ivoa.net/xml/ADQL/v2.0/adql).
  *
  * This is a complex type.
  */

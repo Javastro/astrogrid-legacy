@@ -1,13 +1,13 @@
 /*
  * XML Type:  userDefinedFunctionType
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.UserDefinedFunctionType
  *
  * Automatically generated - do not modify.
  */
 package org.astrogrid.adql.beans.impl;
 /**
- * An XML userDefinedFunctionType(@urn:astrogrid:schema:ADQL:v2.0).
+ * An XML userDefinedFunctionType(@http://www.ivoa.net/xml/ADQL/v2.0/adql).
  *
  * This is a complex type.
  */
@@ -20,9 +20,9 @@ public class UserDefinedFunctionTypeImpl extends org.astrogrid.adql.beans.impl.S
     }
     
     private static final javax.xml.namespace.QName NAME$0 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "Name");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "Name");
     private static final javax.xml.namespace.QName PARAMS$2 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "Params");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "Params");
     
     
     /**

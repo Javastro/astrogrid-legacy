@@ -1,13 +1,13 @@
 /*
  * XML Type:  comparisonPredType
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.ComparisonPredType
  *
  * Automatically generated - do not modify.
  */
 package org.astrogrid.adql.beans.impl;
 /**
- * An XML comparisonPredType(@urn:astrogrid:schema:ADQL:v2.0).
+ * An XML comparisonPredType(@http://www.ivoa.net/xml/ADQL/v2.0/adql).
  *
  * This is a complex type.
  */
@@ -20,7 +20,7 @@ public class ComparisonPredTypeImpl extends org.astrogrid.adql.beans.impl.Search
     }
     
     private static final javax.xml.namespace.QName ARG$0 = 
-        new javax.xml.namespace.QName("urn:astrogrid:schema:ADQL:v2.0", "Arg");
+        new javax.xml.namespace.QName("http://www.ivoa.net/xml/ADQL/v2.0/adql", "Arg");
     private static final javax.xml.namespace.QName COMPARISON$2 = 
         new javax.xml.namespace.QName("", "Comparison");
     

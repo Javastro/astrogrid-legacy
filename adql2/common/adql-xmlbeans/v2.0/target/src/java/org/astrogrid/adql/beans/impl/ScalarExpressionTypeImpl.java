@@ -1,13 +1,13 @@
 /*
  * XML Type:  scalarExpressionType
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.ScalarExpressionType
  *
  * Automatically generated - do not modify.
  */
 package org.astrogrid.adql.beans.impl;
 /**
- * An XML scalarExpressionType(@urn:astrogrid:schema:ADQL:v2.0).
+ * An XML scalarExpressionType(@http://www.ivoa.net/xml/ADQL/v2.0/adql).
  *
  * This is a complex type.
  */

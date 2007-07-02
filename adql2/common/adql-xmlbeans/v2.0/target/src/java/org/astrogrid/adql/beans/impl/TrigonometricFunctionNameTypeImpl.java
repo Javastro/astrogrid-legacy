@@ -1,15 +1,15 @@
 /*
  * XML Type:  trigonometricFunctionNameType
- * Namespace: urn:astrogrid:schema:ADQL:v2.0
+ * Namespace: http://www.ivoa.net/xml/ADQL/v2.0/adql
  * Java type: org.astrogrid.adql.beans.TrigonometricFunctionNameType
  *
  * Automatically generated - do not modify.
  */
 package org.astrogrid.adql.beans.impl;
 /**
- * An XML trigonometricFunctionNameType(@urn:astrogrid:schema:ADQL:v2.0).
+ * An XML trigonometricFunctionNameType(@http://www.ivoa.net/xml/ADQL/v2.0/adql).
  *
- * This is an atomic type that is a restriction of org.apache.xmlbeans.XmlString.
+ * This is an atomic type that is a restriction of org.astrogrid.adql.beans.TrigonometricFunctionNameType.
  */
 public class TrigonometricFunctionNameTypeImpl extends org.apache.xmlbeans.impl.values.JavaStringEnumerationHolderEx implements org.astrogrid.adql.beans.TrigonometricFunctionNameType
 {

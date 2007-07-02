@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema targetNamespace="urn:astrogrid:schema:ADQL:v2.0" 
-	xmlns:tns="urn:astrogrid:schema:ADQL:v2.0" 
-           xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-           xmlns:reg="http://www.ivoa.net/xml/STC/stc-v1.30.xsd" 
-           elementFormDefault="qualified">
+<xs:schema 
+    targetNamespace="http://www.ivoa.net/xml/ADQL/v2.0/adql" 
+	xmlns:adql="http://www.ivoa.net/xml/ADQL/v2.0/adql" 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+    xmlns:reg="http://www.ivoa.net/xml/STC/stc-v1.30.xsd" 
+    elementFormDefault="qualified">
        
      <?ag-adql-schema-version v2.0?>    
      <!-- 
@@ -43,7 +44,7 @@
 			<xs:documentation>The base type for a scalar expression</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:selectionItemType"/>
+			<xs:extension base="adql:selectionItemType"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="closedExprType" mixed="false">
@@ -51,9 +52,9 @@
 			<xs:documentation>Represents an expression inside a bracket</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:scalarExpressionType">
+			<xs:extension base="adql:scalarExpressionType">
 				<xs:sequence>
-					<xs:element name="Arg" type="tns:scalarExpressionType"/>
+					<xs:element name="Arg" type="adql:scalarExpressionType"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -63,11 +64,11 @@
 			<xs:documentation>Represents a binary expression such as a+b</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:scalarExpressionType">
+			<xs:extension base="adql:scalarExpressionType">
 				<xs:sequence>
-					<xs:element name="Arg" type="tns:scalarExpressionType" minOccurs="2" maxOccurs="2"/>
+					<xs:element name="Arg" type="adql:scalarExpressionType" minOccurs="2" maxOccurs="2"/>
 				</xs:sequence>
-				<xs:attribute name="Oper" type="tns:binaryOperatorType" use="required"/>
+				<xs:attribute name="Oper" type="adql:binaryOperatorType" use="required"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -87,11 +88,11 @@
 			<xs:documentation>Represents an unary expression such as -(a.ra)</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:scalarExpressionType">
+			<xs:extension base="adql:scalarExpressionType">
 				<xs:sequence>
-					<xs:element name="Arg" type="tns:scalarExpressionType"/>
+					<xs:element name="Arg" type="adql:scalarExpressionType"/>
 				</xs:sequence>
-				<xs:attribute name="Oper" type="tns:unaryOperatorType" use="required"/>
+				<xs:attribute name="Oper" type="adql:unaryOperatorType" use="required"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -109,7 +110,7 @@
 			<xs:documentation>Represents a column</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:scalarExpressionType">
+			<xs:extension base="adql:scalarExpressionType">
 			    <xs:attribute name="Archive" type="xs:string"/>
 				<xs:attribute name="Table" type="xs:string" use="required"/>
 				<xs:attribute name="Name" type="xs:string" use="required"/>
@@ -122,9 +123,9 @@
 			<xs:documentation>Encapsulates basic literals such as Strings, Integers and Real numbers</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:scalarExpressionType">
+			<xs:extension base="adql:scalarExpressionType">
 				<xs:sequence>
-					<xs:element name="Literal" type="tns:literalType"/>
+					<xs:element name="Literal" type="adql:literalType"/>
 					<xs:element name="Unit" type="xs:string" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
@@ -140,7 +141,7 @@
 			<xs:documentation>The base type for all numbers</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:literalType"/>
+			<xs:extension base="adql:literalType"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="realType" mixed="false">
@@ -148,7 +149,7 @@
 			<xs:documentation>Represents a real number</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:numberType">
+			<xs:extension base="adql:numberType">
 				<xs:attribute name="Value" type="xs:double" use="required"/>
 			</xs:extension>
 		</xs:complexContent>
@@ -158,7 +159,7 @@
 			<xs:documentation>Represents an integer</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:numberType">
+			<xs:extension base="adql:numberType">
 				<xs:attribute name="Value" type="xs:long" use="required"/>
 			</xs:extension>
 		</xs:complexContent>
@@ -168,7 +169,7 @@
 			<xs:documentation>Represents a string literal</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:literalType">
+			<xs:extension base="adql:literalType">
 				<xs:attribute name="Value" type="xs:string" use="required"/>
 			</xs:extension>
 		</xs:complexContent>
@@ -178,10 +179,10 @@
 			<xs:documentation>The base type for a function</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:scalarExpressionType">
+			<xs:extension base="adql:scalarExpressionType">
 				<xs:sequence>
-					<xs:element name="Allow" type="tns:selectionOptionType" minOccurs="0"/>
-					<xs:element name="Arg" type="tns:selectionItemType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="Allow" type="adql:selectionOptionType" minOccurs="0"/>
+					<xs:element name="Arg" type="adql:selectionItemType" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -190,7 +191,7 @@
 		<xs:annotation>
 			<xs:documentation>Option of selecting all or distinct elements in a query</xs:documentation>
 		</xs:annotation>
-		<xs:attribute name="Option" type="tns:allOrDistinctType" use="required"/>
+		<xs:attribute name="Option" type="adql:allOrDistinctType" use="required"/>
 	</xs:complexType>
 	<xs:simpleType name="allOrDistinctType">
 		<xs:annotation>
@@ -206,8 +207,8 @@
 			<xs:documentation>Represents a trigonometric function</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:functionType">
-				<xs:attribute name="Name" type="tns:trigonometricFunctionNameType" use="required"/>
+			<xs:extension base="adql:functionType">
+				<xs:attribute name="Name" type="adql:trigonometricFunctionNameType" use="required"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -231,8 +232,8 @@
 			<xs:documentation>Represents a math function</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:functionType">
-				<xs:attribute name="Name" type="tns:mathFunctionNameType" use="required"/>
+			<xs:extension base="adql:functionType">
+				<xs:attribute name="Name" type="adql:mathFunctionNameType" use="required"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -263,8 +264,8 @@
 			<xs:documentation>Represents an aggregate function</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:functionType">
-				<xs:attribute name="Name" type="tns:aggregateFunctionNameType" use="required"/>
+			<xs:extension base="adql:functionType">
+				<xs:attribute name="Name" type="adql:aggregateFunctionNameType" use="required"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -285,9 +286,9 @@
 			<xs:documentation>Used to select an expression as a new alias column</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:selectionItemType">
+			<xs:extension base="adql:selectionItemType">
 				<xs:sequence>
-					<xs:element name="Expression" type="tns:scalarExpressionType"/>
+					<xs:element name="Expression" type="adql:scalarExpressionType"/>
 				</xs:sequence>
 				<xs:attribute name="As" type="xs:string" use="optional"/>
 			</xs:extension>
@@ -298,7 +299,7 @@
 			<xs:documentation>Represent all columns as in Select * query</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:selectionItemType"/>
+			<xs:extension base="adql:selectionItemType"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:simpleType name="comparisonType">
@@ -325,7 +326,7 @@
 			<xs:documentation>Same as a tableType with an additional archive name</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:fromTableType">
+			<xs:extension base="adql:fromTableType">
 				<xs:attribute name="Archive" type="xs:string" use="required"/>
 				<xs:attribute name="Name" type="xs:string" use="required"/>
 				<xs:attribute name="Alias" type="xs:string" use="optional"/>
@@ -338,7 +339,7 @@
 			<xs:documentation>Represents a table with its name and its alias name</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:fromTableType">
+			<xs:extension base="adql:fromTableType">
 			    <xs:attribute name="Archive" type="xs:string" use="optional"/>
 				<xs:attribute name="Name" type="xs:string" use="required"/>
 				<xs:attribute name="Alias" type="xs:string" use="optional"/>
@@ -346,6 +347,7 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+<!-- Removed by Jeff Lusted 28 June 2007
 	<xs:complexType name="xMatchTableAliasType" abstract="true">
 		<xs:annotation>
 			<xs:documentation>The base type for all table inclusion or drop types used in a cross match expression</xs:documentation>
@@ -356,7 +358,7 @@
 			<xs:documentation>Used for adding a table for the Xmatch operation</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:xMatchTableAliasType">
+			<xs:extension base="adql:xMatchTableAliasType">
 				<xs:attribute name="Name" type="xs:string" use="required"/>
 			</xs:extension>
 		</xs:complexContent>
@@ -366,11 +368,12 @@
 			<xs:documentation>Used for avoiding a table in Xmatch</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:xMatchTableAliasType">
+			<xs:extension base="adql:xMatchTableAliasType">
 				<xs:attribute name="Name" type="xs:string" use="required"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+-->
 	<xs:complexType name="searchType" abstract="true">
 		<xs:annotation>
 			<xs:documentation>The base type for searches in Where and Having clauses of the query</xs:documentation>
@@ -381,9 +384,9 @@
 			<xs:documentation>Represents expressions like A And B</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:searchType">
+			<xs:extension base="adql:searchType">
 				<xs:sequence>
-					<xs:element name="Condition" type="tns:searchType" minOccurs="2" maxOccurs="2"/>
+					<xs:element name="Condition" type="adql:searchType" minOccurs="2" maxOccurs="2"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -393,36 +396,38 @@
 			<xs:documentation>Represents expressions like A Or B</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:searchType">
+			<xs:extension base="adql:searchType">
 				<xs:sequence>
-					<xs:element name="Condition" type="tns:searchType" minOccurs="2" maxOccurs="2"/>
+					<xs:element name="Condition" type="adql:searchType" minOccurs="2" maxOccurs="2"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+<!-- Removed by Jeff Lusted 28 June 2007
 	<xs:complexType name="xMatchType" mixed="false">
 		<xs:annotation>
 			<xs:documentation>A cross match expression</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:searchType">
+			<xs:extension base="adql:searchType">
 				<xs:sequence>
-					<xs:element name="Table" type="tns:xMatchTableAliasType" minOccurs="2" maxOccurs="unbounded"/>
-					<xs:element name="Nature" type="tns:comparisonType"/>
-					<xs:element name="Sigma" type="tns:numberType"/>
+					<xs:element name="Table" type="adql:xMatchTableAliasType" minOccurs="2" maxOccurs="unbounded"/>
+					<xs:element name="Nature" type="adql:comparisonType"/>
+					<xs:element name="Sigma" type="adql:numberType"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+-->
 	<xs:complexType name="likePredType" mixed="false">
 		<xs:annotation>
 			<xs:documentation>The Like expression of a query</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:searchType">
+			<xs:extension base="adql:searchType">
 				<xs:sequence>
-					<xs:element name="Arg" type="tns:scalarExpressionType"/>
-					<xs:element name="Pattern" type="tns:atomType"/>
+					<xs:element name="Arg" type="adql:scalarExpressionType"/>
+					<xs:element name="Pattern" type="adql:atomType"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -432,7 +437,7 @@
 			<xs:documentation>The Not Like expression of a query</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:likePredType"/>
+			<xs:extension base="adql:likePredType"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="exclusiveSearchType" mixed="false">
@@ -440,10 +445,10 @@
 			<xs:documentation>Represents SQL NOT IN expression</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:searchType">
+			<xs:extension base="adql:searchType">
 				<xs:sequence>
-					<xs:element name="Expression" type="tns:scalarExpressionType"/>
-					<xs:element name="Set" type="tns:inclusionSetType"/>
+					<xs:element name="Expression" type="adql:scalarExpressionType"/>
+					<xs:element name="Set" type="adql:inclusionSetType"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -458,9 +463,9 @@
 			<xs:documentation>Represents the subquery in a SQL IN expression</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:inclusionSetType">
+			<xs:extension base="adql:inclusionSetType">
 				<xs:sequence>
-					<xs:element name="selection" type="tns:selectType"/>
+					<xs:element name="selection" type="adql:selectType"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -470,9 +475,9 @@
 			<xs:documentation>Represents expressions like (A)</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:searchType">
+			<xs:extension base="adql:searchType">
 				<xs:sequence>
-					<xs:element name="Condition" type="tns:searchType"/>
+					<xs:element name="Condition" type="adql:searchType"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -482,11 +487,11 @@
 			<xs:documentation>Represents the Comparison of two expressions</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:searchType">
+			<xs:extension base="adql:searchType">
 				<xs:sequence>
-					<xs:element name="Arg" type="tns:scalarExpressionType" minOccurs="2" maxOccurs="2"/>
+					<xs:element name="Arg" type="adql:scalarExpressionType" minOccurs="2" maxOccurs="2"/>
 				</xs:sequence>
-				<xs:attribute name="Comparison" type="tns:comparisonType" use="required"/>
+				<xs:attribute name="Comparison" type="adql:comparisonType" use="required"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -495,9 +500,9 @@
 			<xs:documentation>Represents the Between expression of a query</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:searchType">
+			<xs:extension base="adql:searchType">
 				<xs:sequence>
-					<xs:element name="Arg" type="tns:scalarExpressionType" minOccurs="3" maxOccurs="3"/>
+					<xs:element name="Arg" type="adql:scalarExpressionType" minOccurs="3" maxOccurs="3"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -507,7 +512,7 @@
 			<xs:documentation>Represents the Not Between expression of a query</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:betweenPredType"/>
+			<xs:extension base="adql:betweenPredType"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="inverseSearchType" mixed="false">
@@ -515,9 +520,9 @@
 			<xs:documentation>Represents expressions like Not A</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:searchType">
+			<xs:extension base="adql:searchType">
 				<xs:sequence>
-					<xs:element name="Condition" type="tns:searchType"/>
+					<xs:element name="Condition" type="adql:searchType"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -528,7 +533,7 @@
 			<xs:documentation>Represents the Regions such as circle in Where clause</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:searchType">
+			<xs:extension base="adql:searchType">
 				<xs:sequence>
 					<xs:element name="Region" type="reg:regionType"/>
 				</xs:sequence>
@@ -541,7 +546,7 @@
 			<xs:documentation>Represents the Having expression part of a query</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="Condition" type="tns:searchType"/>
+			<xs:element name="Condition" type="adql:searchType"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="groupByType">
@@ -549,7 +554,7 @@
 			<xs:documentation>Represents the Group By expression part of a query</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="Column" type="tns:columnReferenceType" maxOccurs="unbounded"/>
+			<xs:element name="Column" type="adql:columnReferenceType" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="whereType">
@@ -557,7 +562,7 @@
 			<xs:documentation>Represents the Where part of the query</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="Condition" type="tns:searchType"/>
+			<xs:element name="Condition" type="adql:searchType"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="fromType">
@@ -565,7 +570,7 @@
 			<xs:documentation>Represents the From part of the query</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="Table" type="tns:fromTableType" maxOccurs="unbounded"/>
+			<xs:element name="Table" type="adql:fromTableType" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="selectionListType">
@@ -573,7 +578,7 @@
 			<xs:documentation>List of items to be selected in the Query</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="Item" type="tns:selectionItemType" maxOccurs="unbounded"/>
+			<xs:element name="Item" type="adql:selectionItemType" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="selectionLimitType">
@@ -603,15 +608,15 @@
 		<xs:annotation>
 			<xs:documentation>Option for setting the direction for Order By </xs:documentation>
 		</xs:annotation>
-		<xs:attribute name="Direction" type="tns:orderDirectionType" use="required"/>
+		<xs:attribute name="Direction" type="adql:orderDirectionType" use="required"/>
 	</xs:complexType>
 	<xs:complexType name="orderType">
 		<xs:annotation>
 			<xs:documentation>Represents the ORDER BY part of a query</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="Expression" type="tns:scalarExpressionType"/>
-			<xs:element name="Order" type="tns:orderOptionType" minOccurs="0"/>
+			<xs:element name="Expression" type="adql:scalarExpressionType"/>
+			<xs:element name="Order" type="adql:orderOptionType" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="orderExpressionType">
@@ -619,7 +624,7 @@
 			<xs:documentation>List of expressions in which order the results should be provided</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="Item" type="tns:orderType" maxOccurs="unbounded"/>
+			<xs:element name="Item" type="adql:orderType" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="ConstantListSet" mixed="false">
@@ -627,9 +632,9 @@
 			<xs:documentation>Represents a list of constants provided for a SQL IN expression</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:inclusionSetType">
+			<xs:extension base="adql:inclusionSetType">
 				<xs:sequence>
-					<xs:element name="Item" type="tns:literalType" maxOccurs="unbounded"/>
+					<xs:element name="Item" type="adql:literalType" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -639,15 +644,15 @@
 			<xs:documentation>Represents SQL IN expression</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:searchType">
+			<xs:extension base="adql:searchType">
 				<xs:sequence>
-					<xs:element name="Expression" type="tns:scalarExpressionType"/>
-					<xs:element name="Set" type="tns:inclusionSetType"/>
+					<xs:element name="Expression" type="adql:scalarExpressionType"/>
+					<xs:element name="Set" type="adql:inclusionSetType"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:element name="Select" type="tns:selectType">
+	<xs:element name="Select" type="adql:selectType">
 		<xs:annotation>
 			<xs:documentation>The only permitted root element of a query, the SELECT element</xs:documentation>
 		</xs:annotation>
@@ -657,15 +662,15 @@
 			<xs:documentation>The SELECT part of a query</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="Allow" type="tns:selectionOptionType" minOccurs="0"/>
-			<xs:element name="Restrict" type="tns:selectionLimitType" minOccurs="0"/>
-			<xs:element name="SelectionList" type="tns:selectionListType"/>
-			<xs:element name="InTo" type="tns:intoType" minOccurs="0"/>
-			<xs:element name="From" type="tns:fromType" minOccurs="0"/>
-			<xs:element name="Where" type="tns:whereType" minOccurs="0"/>
-			<xs:element name="GroupBy" type="tns:groupByType" minOccurs="0"/>
-			<xs:element name="Having" type="tns:havingType" minOccurs="0"/>
-			<xs:element name="OrderBy" type="tns:orderExpressionType" minOccurs="0"/>
+			<xs:element name="Allow" type="adql:selectionOptionType" minOccurs="0"/>
+			<xs:element name="Restrict" type="adql:selectionLimitType" minOccurs="0"/>
+			<xs:element name="SelectionList" type="adql:selectionListType"/>
+			<xs:element name="InTo" type="adql:intoType" minOccurs="0"/>
+			<xs:element name="From" type="adql:fromType" minOccurs="0"/>
+			<xs:element name="Where" type="adql:whereType" minOccurs="0"/>
+			<xs:element name="GroupBy" type="adql:groupByType" minOccurs="0"/>
+			<xs:element name="Having" type="adql:havingType" minOccurs="0"/>
+			<xs:element name="OrderBy" type="adql:orderExpressionType" minOccurs="0"/>
 			<xs:element name="StartComment" type="xs:string" minOccurs="0"/>
 			<xs:element name="EndComment" type="xs:string" minOccurs="0"/>
 		</xs:sequence>
@@ -675,10 +680,10 @@
 			<xs:documentation>Represents user defined function expressions</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:scalarExpressionType">
+			<xs:extension base="adql:scalarExpressionType">
 				<xs:sequence>
 					<xs:element name="Name" type="xs:string"/>
-					<xs:element name="Params" type="tns:scalarExpressionType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="Params" type="adql:scalarExpressionType" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -700,11 +705,11 @@
 			<xs:documentation>Represents SQL JOIN expression</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="tns:fromTableType">
+			<xs:extension base="adql:fromTableType">
 				<xs:sequence>
-					<xs:element name="Qualifier" type="tns:jointTableQualifierType"/>
-					<xs:element name="Tables" type="tns:ArrayOfFromTableType"/>
-					<xs:element name="Condition" type="tns:comparisonPredType"/>
+					<xs:element name="Qualifier" type="adql:jointTableQualifierType"/>
+					<xs:element name="Tables" type="adql:ArrayOfFromTableType"/>
+					<xs:element name="Condition" type="adql:comparisonPredType"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -714,7 +719,43 @@
 			<xs:documentation>Represents an array of tables in the from expression</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="fromTableType" type="tns:fromTableType" nillable="true" maxOccurs="unbounded"/>
+			<xs:element name="fromTableType" type="adql:fromTableType" nillable="true" maxOccurs="unbounded"/>
 		</xs:sequence>
+	<!-- Inclusions made by Jeff Lusted -->
 	</xs:complexType>
+		<xs:complexType name="existsPredType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents SQL EXISTS expression</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:searchType">
+				<xs:sequence>
+					<xs:element name="Set" type="adql:subQuerySet"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="nullPredType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents the IS NULL predicate of a query</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:searchType">
+				<xs:sequence>
+					<xs:element name="Column" type="adql:columnReferenceType"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="notNullPredType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents the IS NOT NULL predicate of a query</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:nullPredType"/>
+		</xs:complexContent>
+	</xs:complexType>
+
 </xs:schema>
