@@ -3,11 +3,12 @@ package org.astrogrid.adql ;
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 import java.util.HashSet ;
+import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.ArrayList ;
 import java.util.ListIterator ;
 import org.apache.xmlbeans.XmlOptions ;
-import org.astrogrid.adql.beans.* ;
+import org.astrogrid.adql.beans.*; 
 import org.w3c.dom.Node ;
 import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlObject;
@@ -23,7 +24,6 @@ public class AdqlCompiler {
     
 	private StringBuffer logIndent = null ;
 	
-	// public static final String COLUMN_REFERENCE_TYPE = "columnReferenceType" ;
 	public static final String DUPLICATE_TABLE_ALIAS =
 	     "Query contains duplicated table alias: " ;
 	public static final String TABLE_ALIAS_CLASH =
@@ -70,6 +70,21 @@ public class AdqlCompiler {
 	public static final String JOIN_TABLE_TYPE = JoinTableType.type.getShortJavaName() ;
 	public static final String ARRAY_OF_FROM_TABLE_TYPE = ArrayOfFromTableType.type.getShortJavaName() ;
 	public static final String ALIAS_SELECTION_ITEM_TYPE = AliasSelectionItemType.type.getShortJavaName() ;
+    
+    public static HashMap SchemaPrefixes = new HashMap() ;
+    static {
+        SchemaPrefixes.put( "urn:astrogrid:schema:ADQL:v2.0", "adql" ) ;
+    }
+    public static HashMap ImplicitNamespaces = new HashMap() ;
+    static {
+        ImplicitNamespaces.put( "adql", "urn:astrogrid:schema:ADQL:v2.0" ) ;
+//        ImplicitNamespaces.put( "urn", "urn:astrogrid:schema:ADQL:v2.0" ) ;
+    }
+    
+    public static HashMap SubstituteNamespaces = new HashMap() ;
+    static {
+        SubstituteNamespaces.put( "urn:astrogrid:schema:ADQL:v2.0", "http://www.org.astrogrid/schema/adql" ) ;
+    }                              
 		      
     public static final int[] SELECTION_LIST_SKIP_TO = { 
     	AdqlStoXConstants.FROM,
@@ -164,14 +179,12 @@ public class AdqlCompiler {
 	private StringBuffer uBuffer = new StringBuffer() ;    
     
 	public SelectDocument exec() throws AdqlException {
-        if( log.isTraceEnabled() ) enterTrace( "exec()" ) ;
-        SelectDocument selectDoc = null ;
-        AST_Select selectNode = null ; 
-		try {
+        if( log.isTraceEnabled() ) enterTrace( "exec()" ) ; 
+        SelectDocument selectDoc = SelectDocument.Factory.newInstance() ; 
+		try {           
 			parser.query_specification_A() ;
 			checkForRemainingSource() ;	
-			selectDoc = SelectDocument.Factory.newInstance() ;
-            selectNode = (AST_Select)parser.jjtree.rootNode() ;
+            AST_Select selectNode = (AST_Select)parser.jjtree.rootNode() ;
             selectNode.buildXmlTree( selectDoc.addNewSelect() ) ;
             checkForTrailingComment( selectDoc ) ;     
             if( selectNode.isCommentPresent() ) {
@@ -183,7 +196,16 @@ public class AdqlCompiler {
 		        opts.setSaveAggressiveNamespaces() ;
 		        opts.setSavePrettyPrint() ;
 		        opts.setSavePrettyPrintIndent(4) ;
-				log.debug( "Compilation before cross validation produced...\n" 
+                              
+                // Create an error listener.
+                ArrayList errorList = new ArrayList() ;
+                opts.setErrorListener( errorList ) ;
+                
+                // Validate the XML.
+                boolean isValid = selectDoc.validate(opts);
+                
+                log.debug( "selectDoc validity is " + isValid 
+                         + "\nCompilation before cross validation produced...\n" 
 				         + selectDoc.xmlText(opts) ) ;
 			}
 			checkTableAliases( selectDoc ) ;
@@ -244,6 +266,8 @@ public class AdqlCompiler {
 	public String compileToXmlText( boolean prettyPrint ) throws AdqlException {
 		XmlOptions opts = new XmlOptions();
 		opts.setSaveOuter() ;
+//        opts.setSaveSuggestedPrefixes( SchemaPrefixes ) ;
+        opts.setSaveNamespacesFirst() ;
 		if( prettyPrint ) {		
 		   opts.setSaveAggressiveNamespaces() ;
 		   opts.setSavePrettyPrint() ;
@@ -264,6 +288,7 @@ public class AdqlCompiler {
 	                                      , boolean prettyPrint ) throws AdqlException {
 		XmlOptions opts = new XmlOptions();
 	    opts.setSaveOuter() ;
+        opts.setSaveSuggestedPrefixes( SchemaPrefixes ) ;
 		if( prettyPrint ) {
 		   opts.setSaveAggressiveNamespaces() ;
 		   opts.setSavePrettyPrint() ;
@@ -291,7 +316,7 @@ public class AdqlCompiler {
                 String trailingComment = getTrailingComment() ;
                 if( trailingComment != null ) 
                     headerAndTrailerComments[1] = trailingComment ;
-            }
+            } 
         }
         if( log.isTraceEnabled() ) exitTrace( "execFragment(String, String[] )" ) ;
         return xo ;       
@@ -482,17 +507,11 @@ public class AdqlCompiler {
 				  }
 				  // Unit test done.
 				  else if( parentName.equalsIgnoreCase( ORDERBY_ELEMENT ) ) {
-                      parser.sort_specification_A() ;	
-                      OrderExpressionType orderExpression = OrderExpressionType.Factory.newInstance() ;
-                      AST_SortSpecification sortSpecNode = (AST_SortSpecification)parser.jjtree.rootNode() ;
-                      sortSpecNode.buildXmlTree( orderExpression.addNewItem() ) ;
+                      fSortSpecification() ;
 				  }
 				  // Unit test done.
 				  else if( parentName.equalsIgnoreCase( SET_ELEMENT ) ) {
-                      parser.in_value_list_constant_A() ;
-                      ConstantListSet constantListSet = ConstantListSet.Factory.newInstance() ;
-                      AST_InValueListConstant inValueListConstantNode = (AST_InValueListConstant)parser.jjtree.rootNode() ;
-                      inValueListConstantNode.buildXmlTree( constantListSet.addNewItem() ) ;  
+                      fInValueListConstant() ;
 				  }
 			   }
 			   else if( childName.equalsIgnoreCase( CONDITION_ELEMENT ) ) {
@@ -500,17 +519,11 @@ public class AdqlCompiler {
 				  // Join table comparison ...
 				  // Unit test done.
 				  if( parentName.equalsIgnoreCase( TABLE_ELEMENT ) ) {
-                      parser.comparison_predicate_A() ;
-                      JoinTableType joinTable = JoinTableType.Factory.newInstance() ;
-                      AST_ComparisonPredicate comparisonPredicateNode = (AST_ComparisonPredicate)parser.jjtree.rootNode() ;
-                      comparisonPredicateNode.buildXmlTree( joinTable.addNewCondition() ) ; 
+                     fJoinTableCondition() ;
 				  }
 				  // Unit test done.
 				  else {
-                      parser.search_condition_S() ;	
-                      WhereType where = WhereType.Factory.newInstance() ;
-                      AST_SearchCondition searchConditionNode = (AST_SearchCondition)parser.jjtree.rootNode() ;
-                      searchConditionNode.buildXmlTree( where.addNewCondition() ) ; 
+                     fSearchCondition() ;
 				  }
 			   }
 			   else if( childName.equalsIgnoreCase( ARG_ELEMENT ) ) {
@@ -648,6 +661,26 @@ public class AdqlCompiler {
 
 	}
     
+    private void fSearchCondition() throws ParseException {
+        parser.search_condition_S() ;  
+        WhereType where = WhereType.Factory.newInstance() ;
+        AST_SearchCondition searchConditionNode = (AST_SearchCondition)parser.jjtree.rootNode() ;
+        searchConditionNode.buildXmlTree( where.addNewCondition() ) ;
+    }
+    
+    private void fJoinTableCondition() throws ParseException {
+        parser.comparison_predicate_A() ;
+        JoinTableType joinTable = JoinTableType.Factory.newInstance() ;
+        AST_ComparisonPredicate comparisonPredicateNode = (AST_ComparisonPredicate)parser.jjtree.rootNode() ;
+        comparisonPredicateNode.buildXmlTree( joinTable.addNewCondition() ) ; 
+    }
+    
+    private void fInValueListConstant() throws ParseException {
+        parser.in_value_list_constant_A() ;
+        ConstantListSet constantListSet = ConstantListSet.Factory.newInstance() ;
+        AST_InValueListConstant inValueListConstantNode = (AST_InValueListConstant)parser.jjtree.rootNode() ;
+        inValueListConstantNode.buildXmlTree( constantListSet.addNewItem() ) ;  
+    }
     
     private void fQuerySpecification() throws ParseException {
         parser.query_specification_A() ;
@@ -721,7 +754,14 @@ public class AdqlCompiler {
         parser.order_by_clause_S() ;
         SelectType select = SelectType.Factory.newInstance() ;
         AST_OrderByClause orderByNode = (AST_OrderByClause)parser.jjtree.rootNode() ;
-        orderByNode.buildXmlTree( select.addNewOrderBy() ) ;
+        orderByNode.buildXmlTree( select.addNewOrderBy() ) ;      
+    }
+    
+    private void fSortSpecification() throws ParseException {
+        parser.sort_specification_A() ; 
+        OrderExpressionType orderExpression = OrderExpressionType.Factory.newInstance() ;
+        AST_SortSpecification sortSpecNode = (AST_SortSpecification)parser.jjtree.rootNode() ;
+        sortSpecNode.buildXmlTree( orderExpression.addNewItem() ) ;
     }
     
     private void fColumnReference() throws ParseException {
