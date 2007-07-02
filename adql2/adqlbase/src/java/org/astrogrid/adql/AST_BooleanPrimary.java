@@ -25,20 +25,6 @@ public class AST_BooleanPrimary extends SimpleNode {
     public boolean isParenthesized() {
         return parenthesized ;
     }
-
-    public void jjtClose() {   
-//        if( parenthesized ) {
-//            ClosedSearchType cs = ClosedSearchType.Factory.newInstance() ;
-//            if( jjtGetNumChildren() > 0 ) {
-//                cs.setCondition( (SearchType)children[0].getGeneratedObject() ) ;
-//                children[0].exchangeGeneratedObject( cs.getCondition() ) ;
-//            }
-//            setGeneratedObject( cs ) ;   
-//        }
-//        else {
-//            setGeneratedObject( children[0].getGeneratedObject() ) ;
-//        }
-    }
     
     public void buildXmlTree( XmlObject xo ) {   
         if( log.isTraceEnabled() ) enterTrace( log, "AST_BooleanPrimary.buildXmlTree()" ) ; 
@@ -50,6 +36,9 @@ public class AST_BooleanPrimary extends SimpleNode {
             this.generatedObject = cs ;   
         }
         else {
+            if( log.isDebugEnabled() ) {
+                log.debug( "children[0].getClass().getName(): " + children[0].getClass().getName() ) ;
+            }
             children[0].buildXmlTree( xo ) ;
             this.generatedObject = children[0].getGeneratedObject() ;
         }
