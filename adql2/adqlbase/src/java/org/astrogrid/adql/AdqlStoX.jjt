@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.1 2007/06/28 09:07:45 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.2 2007/07/02 18:12:58 jl99 Exp $*/
 /**
  * AdqlStoX JavaCC file          
  *
@@ -901,8 +901,8 @@ void boolean_term_S() #BooleanTerm :
 /**
  * boolean_factor_S
  *
- * bnf-single <boolean_factor> ::= [ NOT ] <boolean_test>
- *
+ * bnf-single <boolean_factor> ::= [ NOT ] <boolean_primary>
+ * !! ADQL does not support <boolean_test>
  */
 void boolean_factor_S() #BooleanFactor :
 {
@@ -910,6 +910,11 @@ void boolean_factor_S() #BooleanFactor :
 	Token t = null ;
 }
 {
+	//S:
+	// <boolean factor> ::= [ NOT  ] <boolean test>
+    // <boolean test> ::= <boolean primary> [ IS  [ NOT  ] <truth value> ]
+	// <truth value> ::= TRUE | FALSE  | UNKNOWN
+	
 //	try {
 		( [ t=<NOT> ]
 		  { if( t != null ) {
@@ -917,36 +922,12 @@ void boolean_factor_S() #BooleanFactor :
 		  	   jjtThis.setInverse(true);
 		  	} 
 		  }
-		  boolean_test_A() 
+		  boolean_primary_S() 
 		)
 //	}//	catch( ParseException pex ) {//	    errorSkipTo( new int[]{ token.kind }, pex ) ;		//	}
 	{ if( log.isTraceEnabled() ) exitTrace ( "boolean_factor_S()" ) ; }
 }
 
-/**
- * boolean_test_A
- *
- * bnf-start
- *  <boolean_test> ::= <boolean_primary>
- *  !! There is no accommodation for <truth_value>
- * bnf-end
- *
- */
-void boolean_test_A() : 
-{
-	if( log.isTraceEnabled() ) enterTrace ( "boolean_test_A()" ) ;
-}
-{
-	//S:
-	// <boolean_test> ::=
-    //  <boolean_primary> [ IS [ NOT ] <truth_value> ]
-	
-	// NB: There is no accommodation of truth value in ADQL
-	boolean_primary_S() 
-	{ 
-		if( log.isTraceEnabled() ) exitTrace ( "boolean_test_A()" ) ; 
-	}
-}
 
 /**
  * like_predicate_A
@@ -2156,13 +2137,29 @@ void math_function_A() #MathFunction :
 	}
 }
 
-void null_predicate_S() : {}
+/**
+ * null_predicate_A
+ *
+ * bnf-start
+ *  <null_predicate> ::= <column_reference> IS [ NOT ] NULL	
+ *  !! SQL92 uses <row_value_constructor> rather than <column_reference>
+ * bnf-end
+ *
+ */
+void null_predicate_A() #NullPredicate : 
+{
+	   if( log.isTraceEnabled() ) enterTrace ( "null_predicate_A()" ) ;	   
+}
 {
 	//S:
 	// <null_predicate> ::= 
 	//   <row_value_constructor> IS [ NOT ] NULL
 
-	row_value_constructor_S() <IS> [ <NOT> ] <NULL>	
+	column_reference_A() <IS> [ <NOT> {jjtThis.setNullPredicate(false);} ] <NULL>	
+	
+	{
+	   if( log.isTraceEnabled() ) exitTrace ( "null_predicate_A()" ) ;
+	}
 }
 
 /**
@@ -2440,11 +2437,12 @@ void pattern_A() :
  *   | <between_predicate>
  *   | <in_predicate>
  *   | <like_predicate>
+ *   | <null_predicate>
+ *     <exists_predicate>
  *  !! Yet to be supported:
- *     <null_predicate>, <quantified_comparison_predicate>,
- *     <exists_predicate>, <unique_predicate>,
- *     <match_predicate>, <overlaps_predicate>,
- *     <region_predicate> 
+ *     <quantified_comparison_predicate>,
+ *     <unique_predicate>, <match_predicate>, 
+ *     <overlaps_predicate>, <region_predicate> 
  * bnf-end
  *
  */
@@ -2485,10 +2483,9 @@ void predicate_A() :
 		    LOOKAHEAD(2147483647) 
 		    like_predicate_A()
 		    | 
-	// adql does not support the null predicate!
-	//	    LOOKAHEAD(3)
-	//	    nullPredicate()
-	//	    | 
+		    LOOKAHEAD(2147483647)
+		    null_predicate_A()
+		    | 
 	// adql does not support quantified comparisons
 	//	    LOOKAHEAD(3)
 	//		quantifiedComparisonPredicate()
@@ -3704,6 +3701,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.2  2007/07/02 18:12:58  jl99
+Exists and Null predicates added
+
 Revision 1.1  2007/06/28 09:07:45  jl99
 Creation of temporary project adql2 to explore complexities of moving
 ADQL to conform to the draft spec of April 2007.
