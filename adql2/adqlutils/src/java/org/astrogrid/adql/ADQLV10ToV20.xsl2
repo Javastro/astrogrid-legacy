@@ -52,6 +52,10 @@
 	<xsl:template name="attribute-schema-instance">
 		<xsl:attribute name="{local-name()}" namespace="{$xsiNS}">
 			<xsl:choose>
+			    <xsl:when test="substring-after( . , ':' ) = 'jointTableQualifierType'">
+			 	    <xsl:value-of select="$v2Prefix" />
+			 	    <xsl:text>:joinTableQualifierType</xsl:text>
+			 	</xsl:when>
 			 	<xsl:when test="substring-before( . , ':' ) = $v1Prefix">
 			 	    <xsl:value-of select="$v2Prefix" />
 			 	    <xsl:text>:</xsl:text>
