@@ -39,7 +39,7 @@ import org.astrogrid.adql.beans.*;
 import org.apache.xmlbeans.*;
 
 /**
- * AdqlStoXTest
+ * CopyFiles
  * 
  * Usage: CopyFiles directory=file-path
  *     

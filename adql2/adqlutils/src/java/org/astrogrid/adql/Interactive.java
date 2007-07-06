@@ -96,9 +96,7 @@ public class Interactive {
     }
     
 	 public static void main(String args[]) {
-         interactive = new Interactive() ;
-		 // AdqlStoX compiler = new AdqlStoX(System.in);
-         String queryXml = null ;
+         interactive = new Interactive() ;     
             
          print( WELCOME );
          while( true ) {
@@ -107,6 +105,7 @@ public class Interactive {
 
              try {
                  StringReader source = getQuerySource() ;
+                 String queryXml ;
                  if( bFullMode == true ) {
                      queryXml = getCompiler( source ).compileToXmlText() ; 
                      print( "\nCompilation produced:" ) ;
@@ -114,7 +113,6 @@ public class Interactive {
                  }
                  else {
                      print( "\nfragment name: " + fragmentName ) ;
-//                     queryXml = getCompiler( source ).compileFragmentToXmlText( fragmentName ) ;
                      String[] comments = new String[2] ;
                      XmlObject xo = getCompiler( source ).execFragment( fragmentName, comments ) ;
                      XmlOptions opts = new XmlOptions();
