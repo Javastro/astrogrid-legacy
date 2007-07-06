@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0"
+		xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0"
+		xmlns:v2="http://www.ivoa.net/xml/ADQL/v2.0"
+		xmlns:stc="http://www.ivoa.net/xml/STC/STCregion/v1.10"
+		xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		exclude-result-prefixes="v1"  >
+	
+	<!-- 
+		Stylesheet to convert ADQL/x v1.0 to ADQL/x v2.0
+		Version 1.0 - first release - July 3, 2007
+		Jeff Lusted - University of Leicester
+		jl99@star.le.ac.uk
+	 -->
+	
+    <xsl:output method="xml" encoding="UTF-8" indent="yes"/>   	
+    
+  	<xsl:param name="v1Prefix" select="'v1'"/>
+    <xsl:param name="v2Prefix" select="'v2'"/>
+    
+    <xsl:param name="v1NS" select="'http://www.ivoa.net/xml/ADQL/v1.0'" />
+    <xsl:param name="v2NS" select="'http://www.ivoa.net/xml/ADQL/v2.0'" />
+    <xsl:param name="xsiNS" select="'http://www.w3.org/2001/XMLSchema-instance'"/>
+    
+	<!-- the root template -->
+	
+    <xsl:template match="/">
+	       <xsl:apply-templates select="*"/>
+	</xsl:template>
+	
+	<xsl:template match="node()">
+		<xsl:if test="namespace-uri() = $v1NS" >
+			<xsl:element name="{local-name()}" namespace="{$v2NS}">
+			   	<xsl:for-each select="@*">
+			   	    <xsl:choose>
+			   	    	<xsl:when test="namespace-uri() = $xsiNS">			   	    	   
+			   	    		<xsl:call-template name="attribute-schema-instance" />
+			   	    	</xsl:when>
+			   	    	<xsl:otherwise>
+			   	    		<xsl:attribute name="{local-name()}" namespace="{$v2NS}">
+			   	    			<xsl:value-of select="." />
+			   	    		</xsl:attribute>
+			   	    	</xsl:otherwise>
+			   	    </xsl:choose>
+			   	</xsl:for-each>									
+				<xsl:apply-templates select="*"/>
+			</xsl:element>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template name="attribute-schema-instance">
+		<xsl:attribute name="{local-name()}" namespace="{$xsiNS}">
+			<xsl:choose>
+			 	<xsl:when test="substring-before( . , ':' ) = $v1Prefix">
+			 	    <xsl:value-of select="$v2Prefix" />
+			 	    <xsl:text>:</xsl:text>
+			 		<xsl:value-of select="substring-after( . , ':' )" />
+			 	</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="." />
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:attribute>
+	</xsl:template>
+	
+</xsl:stylesheet>
+
