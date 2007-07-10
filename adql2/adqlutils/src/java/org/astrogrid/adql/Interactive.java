@@ -20,25 +20,24 @@ import org.apache.commons.logging.LogFactory ;
  * 
  * Conducts a console based conversation. A query is entered in string form.
  * The query will be compiled into adql/x or an error returned.
- * 
- *  USAGE: Type an ADQL query and press the ENTER key.
- *         Ensure the query ends with a semicolon.
- *         Type "bye" to exit.
- *         
- *         To compile fragments of ADQL, switch to fragment mode by typing "compile_fragment" 
- *         and pressing the ENTER key. Once in fragment mode, compile a fragment of ADQL by
- *         prefixing any ADQL string with the fragment name or an XPath like statement followed 
- *         by a colon. Examples:
- *         
- *         from: from catalogA as a inner join catalogB as b on a.col1 = b.col1 ;
- *         Select/Column: a.ra
- *         Select/Item[@type="aggregateFunctionType"]/Arg: * ;
- *         
- *         To return to compiling full queries, switch mode by typing "compile_full" 
- *         and pressing the ENTER key.
+ * <p>
+ * Type an ADQL query and press the ENTER key.<br/>
+ * Ensure the query ends with a semicolon.<br/>
+ * Type "bye" to exit.<br/>
+ * <p>
+ * To compile fragments of ADQL, switch to fragment mode by typing "compile_fragment" 
+ * and pressing the ENTER key. Once in fragment mode, compile a fragment of ADQL by
+ * prefixing any ADQL string with the fragment name or an XPath like statement followed 
+ * by a colon. Examples:
+ * <p>
+ * from: from catalogA as a inner join catalogB as b on a.col1 = b.col1 ;<br/>
+ * Select/Column: a.ra ;<br/>
+ * Select/Item[@type="aggregateFunctionType"]/Arg: * ;<br/>
+ * <p>
+ * To return to compiling full queries, switch mode by typing "compile_full" 
+ * and pressing the ENTER key.
  *
- * @author Jeff Lusted jl99@star.le.ac.uk
- * Sep 18, 2006
+ * @author Jeff Lusted jl99@star.le.ac.uk Sep 18, 2006
  */
 public class Interactive {
     
