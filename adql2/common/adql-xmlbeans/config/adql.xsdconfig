@@ -13,26 +13,18 @@
      limitations under the License. -->
 
 <xb:config xmlns:xb="http://xml.apache.org/xmlbeans/2004/02/xbean/config"
-           xmlns:adql="urn:astrogrid:schema:ADQL:v2.0">
+           xmlns:adql="http://www.ivoa.net/xml/v2.0/adql">
 
-  <xb:namespace uri="urn:astrogrid:schema:ADQL:v2.0">
+  <xb:namespace uri="http://www.ivoa.net/xml/v2.0/adql">
     <xb:package>org.astrogrid.adql.beans</xb:package>
   </xb:namespace>
-
-  <xb:namespace uri="http://www.ivoa.net/xml/STC/STCcoords/v1.10">
-    <xb:package>org.astrogrid.stc.coords.beans</xb:package>
-  </xb:namespace>
-
-  <xb:namespace uri="http://www.ivoa.net/xml/STC/STCregion/v1.10">
-    <xb:package>org.astrogrid.stc.region.beans</xb:package>
-  </xb:namespace>
-  
-  <xb:namespace uri="http://www.ivoa.net/xml/STC/stc-v1.30.xsd">
+ 
+  <xb:namespace uri="http://www.ivoa.net/xml/v1.0/stc">
     <xb:package>org.astrogrid.stc.beans</xb:package>
   </xb:namespace>
   
   <xb:namespace uri="http://www.w3.org/1999/xlink">
-    <xb:package>org.astrogrid.stc.xlink.beans</xb:package>
+    <xb:package>org.w3.xlink.beans</xb:package>
   </xb:namespace>
 
 </xb:config>
