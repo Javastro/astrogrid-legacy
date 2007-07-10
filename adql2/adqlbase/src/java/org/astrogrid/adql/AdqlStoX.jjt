@@ -1,67 +1,13 @@
-/*$Id: AdqlStoX.jjt,v 1.2 2007/07/02 18:12:58 jl99 Exp $*/
-/**
- * AdqlStoX JavaCC file          
- *
- * This version, with file extension of .jjt, produces a syntax tree.
- *
- * AdqlStoX takes text in the form of Adql/s and compiles it to xml Adql/x format.
- * Adql/s is based upon SQL/92 with astronomical extensions.
- *
- * There is a naming convention for methods, which is aimed at making the structure
- * as clear as possible...
- *
- * (1) All methods which are quoted bnf statements follow the bnf format, 
- *     with any embedded dashes (-) removed from the name.
- *     Thus the the statment <comparison_predicate> from the SQL/92 standard
- *     will have a corresponding method with a name similar to comparison_predicate().
- *     However, such methods are decorated in a particular way, for which see
- *     points (2) and (3) below. All methods which are tantamount to quoted
- *     bnf will have the standard syntax as a comment embedded within them.
- *     Thus: 
- *     //S: 
- *     // <row_value_constructor> <comp_op> <row_value_constructor>
- * (2) Methods which follow exactly the SQL/92 syntax at a shallow level are suffixed _S.
- *     Thus comparison_predicate_S() represents the SQL/92 standard syntax. Shallow implies
- *     that the syntax can still vary from the standard within statements quoted
- *     within the given construct. This is usually pretty obvious from the quoted statements
- *     (eg: quoted statement some_statement_A() means an ADQL variation, see next point), 
- *     but beware that it is possible for variations to be deeply embedded.
- *     NB: A statement that is just a synonym for another statement will take
- *         the quoted statement's decoration. This is the one exception.
- * (3) Methods which are varied for some reason within ADQL, or are simply
- *     specific to ADQL, are suffixed _A.
- *     Thus comparison_predicate_A() represents an ADQL deviation.
- * (4) Some methods are introduced as implementations of part of a syntax.
- *     This is just to make for a neater structure. These methods follow
- *     the standard Java OO naming convention and are not decorated, 
- *     eg: numericValueExpressionList().
- *
- * There is built-in documentation to help in supporting BNF syntax diagrams. This built-in
- * documentation consists of special comments throughout the code. It is separate from the
- * above four conventions and must be maintained by the developer to correspond to the working
- * of the compiler. Thus the resulting BNF documentation represents what the compiler does. 
- * This seems a little back-to-front but is reasonably thorough in its results. There are two 
- * sorts of comments: singletons and multiples, depending on whether the BNF definition is on 
- * one or more lines. Two examples are given below:
- *
- *     bnf-single <boolean_factor> ::= [ NOT ] <boolean_test>
- *     bnf-start
- *        <between_predicate> ::=
- *          <value_expression> [ NOT ] BETWEEN
- *          <value_expression> AND <value_expression>
- *     bnf-end
- *
- * (Real ones have to be positioned at the beginning of a line with each line prefixed by
- * the string " * " exactly. )
- * 
- * A utility programme BnfExtractor extracts these from the source and places them in 
- * suitable files (or to standard out). BnfExtractor produces output in two formats:
- * plain text and html. 
- *
- * @author Jeff Lusted jl99@star.le.ac.uk
- * Sep 2006
- */
- 
+/*$Id: AdqlStoX.jjt,v 1.3 2007/07/10 21:04:39 jl99 Exp $*/
+
+//
+// High-level JavaDoc comments are present in this file.
+// There is little point in placing any here. 
+// At this point they are ignored by the JavaCC processors.
+//
+// Jeff Lusted 
+//
+  
 options {
   JDK_VERSION="1.4";
   STATIC=false;
@@ -71,7 +17,7 @@ options {
   NODE_DEFAULT_VOID=true;
   NODE_PREFIX="AST_";
   IGNORE_CASE=true;
-  NODE_SCOPE_HOOK=true ;
+  NODE_SCOPE_HOOK=true ; 
 }
 
 PARSER_BEGIN(AdqlStoX)
@@ -84,6 +30,97 @@ import java.util.ArrayList ;
 import java.util.List ;
 import org.astrogrid.adql.beans.* ;
 
+/**
+ * AdqlStoX         
+ * <p>
+ * AdqlStoX is a generated class. It started life as a JavaCC file with a file extension of .jjt, 
+ * producing a syntax tree.
+ * All of the classes with a name prefix of "AST_" were emitted as part of this syntax tree.
+ * Other classes emitted as an adjunct of AdqlStoX are:
+ * <blockquote><pre>
+ * org.astrogrid.adql.AdqlStoXConstants
+ * org.astrogrid.adql.AdqlStoTokenManager 
+ * org.astrogrid.adql.AdqlStoXTreeConstants 
+ * org.astrogrid.adql.ParseException 
+ * org.astrogrid.adql.SimpleCharacterStream
+ * org.astrogrid.adql.SimpleNode
+ * org.astrogrid.adql.Token
+ * org.astrogrid.adql.TokenMgrError     
+ * </pre></blockquote>
+ * There is one emitted interface:
+ * org.astrogrid.adql.SimpleNode
+ * <p>
+ * AdqlStoX takes text in the form of Adql/s and parsers it into xml Adql/x format.
+ * Adql/s is based upon SQL/92 with astronomical extensions. However, AdqlStoX is wrapped
+ * by class org.astrogrid.adql.AdqlCompiler. All public and protected methods should
+ * be invoked only from AdqlCompiler!
+ * <p>
+ * For those who are interested, and have access to the source for AdqlStoX.jtt,
+ * the following details may be of use in reconciling the method names to the BNF
+ * specification of ADQL. The methods are not documented, and will probably remain
+ * undocumented, although some constructors are approximately mirrored within AdqlCompiler.  
+ * However, there is a naming convention for methods, which is aimed at making the match
+ * with the BNF diagrams as clear as possible...
+ * <p>
+ * (1) All methods which are quoted bnf statements follow the bnf format, 
+ *     with any embedded dashes (-) removed from the name.
+ *     Thus the statment &lt;comparison_predicate> from the SQL/92 standard
+ *     will have a corresponding method with a name similar to comparison_predicate().
+ *     However, such methods are decorated in a particular way, for which see
+ *     points (2) and (3) below. All methods which are tantamount to quoted
+ *     bnf will have the standard syntax as a comment embedded within the source. However,
+ *     this style of comment is private to the original .jjt file and is not emitted
+ *     into the java code. 
+ *     Thus:
+ * <blockquote><pre>
+ *     //S:
+ *     // &lt;row_value_constructor> &lt;comp_op> &lt;row_value_constructor>
+ * </pre></blockquote>
+ * <p>
+ * (2) Methods which follow exactly the SQL/92 syntax at a shallow level are suffixed _S.
+ *     Thus comparison_predicate_S() represents the SQL/92 standard syntax. Shallow implies
+ *     that the syntax can still vary from the standard within statements quoted
+ *     within the given construct. This is usually pretty obvious from the quoted statements
+ *     (eg: quoted statement some_statement_A() means an ADQL variation, see next point), 
+ *     but be aware that it is possible for variations to be deeply embedded.
+ *     NB: A statement that is just a synonym for another statement will take
+ *         the quoted statement's decoration. This is the one exception.
+ * <p>
+ * (3) Methods which are varied for some reason within ADQL, or are simply
+ *     specific to ADQL, are suffixed _A.
+ *     Thus comparison_predicate_A() represents an ADQL deviation.
+ * <p>
+ * (4) Some methods are introduced as implementations of part of a syntax.
+ *     This is just to make for a neater structure. These methods follow
+ *     the standard Java OO naming convention and are not decorated, 
+ *     eg: numericValueExpressionList().
+ * <p>
+ * There is built-in documentation to help in supporting BNF syntax diagrams. This built-in
+ * documentation consists of special comments throughout the code. It is separate from the
+ * above four conventions and must be maintained by the developer to correspond to the working
+ * of the compiler. Thus the resulting BNF documentation represents what the compiler does. 
+ * This seems a little back-to-front but is reasonably thorough in its results. There are two 
+ * sorts of comments: singletons and multiples, depending on whether the BNF definition is on 
+ * one or more lines. Two examples are given below:
+ * <p>
+ * <blockquote><pre>
+ *     bnf-single &lt;boolean_factor> ::= [ NOT ] &lt;boolean_test>
+ *     bnf-start
+ *        &lt;between_predicate> ::=
+ *          &lt;value_expression> [ NOT ] BETWEEN
+ *          &lt;value_expression> AND &lt;value_expression>
+ *     bnf-end
+ * </pre></blockquote>
+ * (Real ones have to be positioned at the beginning of a line with each line prefixed by
+ * the string " * " exactly. )
+ * <p>
+ * A utility programme BnfExtractor extracts these from the source and places them in 
+ * suitable files (or to standard out). BnfExtractor produces output in two formats:
+ * plain text and html. 
+ * <p>     
+ * @author Jeff Lusted jl99@star.le.ac.uk
+ * Sep 2006
+ */
 public class AdqlStoX {
 	
 	private static Log log = LogFactory.getLog( AdqlStoX.class ) ;
@@ -101,6 +138,7 @@ public class AdqlStoX {
 	
 }
 PARSER_END(AdqlStoX)
+
 
 SPECIAL_TOKEN : /* COMMENTS */
 { 
@@ -121,7 +159,7 @@ SKIP :
 }
 
 
-/**
+/*
  * TOKEN <SQL_special_character> 
  *
  * bnf-start
@@ -201,7 +239,7 @@ TOKEN : // <SQL_special_character>
 | < VERTICAL_BAR: "|" >
 }
 
-/**
+/*
  * TOKEN <SQL_embedded_language_character>
  *
  * bnf-start
@@ -219,7 +257,7 @@ TOKEN : // <SQL_embedded_language_character>
 | < RIGHT_BRACKET: "]" >	
 }
 
-/**
+/*
  * TOKEN <SQL_reserved_word>
  *
  * bnf-start
@@ -538,7 +576,7 @@ TOKEN : // <SQL_reserved_word>
 // Cannot be certain what to make of these yet
 //{ //  < ADA : "ada" >//| < C: "c" >//| < CATALOG_NAME: "catalog_name" >//| < CHARACTER_SET_CATALOG: "character_set_catalog" >//| < CHARACTER_SET_NAME: "character_set_name" >//| < CHARACTER_SET_SCHEMA: "character_set_schema" >//| < CLASS_ORIGIN: "class_origin" >//| < COBOL: "cobol" >//| < COLLATION_CATALOG: "collation_catalog" >//| < COLLATION_NAME: "collation_name" >//| < COLLATION_SCHEMA: "collation_schema" >//| < COLUMN_NAME: "column_name" >//| < COMMAND_FUNCTION: "command_function" >//| < COMMITTED: "committed" >//| < CONDITION_NUMBER: "condition_number" >//| < CONNECTION_NAME: "connection_name" >//| < CONSTRAINT_CATALOG: "constraint_catalog" >//| < CONSTRAINT_NAME: "constraint_name" >//| < CONSTRAINT_SCHEMA: "constraint_schema" >//| < CURSOR_NAME: "cursor_name" >//| < DATA: "data" >//| < DATETIME_INTERVAL_CODE: "datetime_interval_code" >//| < DATETIME_INTERVAL_PRECISION: "datetime_interval_precision" >//| < DYNAMIC_FUNCTION: "dynamic_function" >//| < FORTRAN: "fortran" >//| < LENGTH: "length" >//| < MESSAGE_LENGTH: "message_length" >//| < MESSAGE_OCTET_LENGTH: "message_octet_length" >//| < MESSAGE_TEXT: "message_text" >//| < SQL_MORE: "more" >//| < MUMPS: "mumps" >//| < NAME: "name" >//| < NULLABLE: "nullable" >//| < NUMBER: "number" >//| < PASCAL: "pascal" >//| < PLI: "pli" >//| < REPEATABLE: "repeatable" >//| < RETURNED_LENGTH: "returned_length" >//| < RETURNED_OCTET_LENGTH: "returned_octet_length" >//| < RETURNED_SQLSTATE: "returned_sqlstate" >//| < ROW_COUNT: "row_count" >//| < SCALE: "scale" >//| < SCHEMA_NAME: "schema_name" >//| < SERIALIZABLE: "serializable" >//| < SERVER_NAME: "server_name" >//| < SUBCLASS_ORIGIN: "subclass_origin" >//| < TABLE_NAME: "table_name" >//| < TYPE: "type" >//| < UNCOMMITTED: "uncommitted" >//| < UNNAMED: "unnamed" >//}
 
-/**
+/*
  * TOKEN <ADQL-reserved-word>
  * 
  * bnf-start
@@ -570,7 +608,7 @@ TOKEN : // <SQL_reserved_word>
  *    | TAN 
  *    | TRUNCATE
  * bnf-end
- 
+ *
  */
 TOKEN : // <ADQL_reserved_word>
 {
@@ -610,7 +648,7 @@ TOKEN : // <ADQL_reserved_word>
 
 }
 
-/**
+/*
  * TOKEN <ADQL_special_character>
  *
  * bnf-start
@@ -630,7 +668,7 @@ TOKEN : // <ADQL_special_character>
 |	< DOLLAR : "$" >		
 }
 
-/**
+/*
  * TOKEN miscellaneous SQL92 
  *
  * bnf-start 
@@ -712,7 +750,7 @@ TOKEN : // miscellaneous SQL92
 
 }
 
-/**
+/*
  * TOKEN The remainder men.
  *
  *
@@ -748,7 +786,7 @@ TOKEN : // The remainder
  */
 
 
-/**
+/*
  * actual_identifier_S
  *
  * bnf-single <identifier> ::= <regular_identifier> | <delimited_identifier>
@@ -772,7 +810,7 @@ void signed_integer_S() : {}
 	(<PLUS_SIGN> | <MINUS_SIGN>) <UNSIGNED_INTEGER> 
 }
 
-/**
+/*
  * between_predicate_A
  *
  * bnf-start
@@ -817,7 +855,7 @@ void between_predicate_A() #BetweenPredicate :
 	}
 }
 
-/**
+/*
  * boolean_primary_S
  *
  * bnf-start
@@ -860,7 +898,7 @@ void boolean_primary_S() #BooleanPrimary :
     }
 }
 
-/**
+/*
  * boolean_term_S
  *
  * bnf-start
@@ -898,7 +936,7 @@ void boolean_term_S() #BooleanTerm :
 	}
 }
 
-/**
+/*
  * boolean_factor_S
  *
  * bnf-single <boolean_factor> ::= [ NOT ] <boolean_primary>
@@ -929,7 +967,7 @@ void boolean_factor_S() #BooleanFactor :
 }
 
 
-/**
+/*
  * like_predicate_A
  *
  * bnf-start
@@ -964,7 +1002,7 @@ void castSpecification_S() : {}
 	"6-TBD castSpecification"
 }
 
-/**
+/*
  * character_factor_A
  *
  * bnf-start
@@ -980,7 +1018,7 @@ void character_factor_A() : {}
 	character_primary_A()
 }
 
-/**
+/*
  * character_primary_A
  *
  * bnf-start
@@ -1000,7 +1038,7 @@ void character_primary_A() : {}
 //    user_defined_function_A()
 }
 
-/**
+/*
  * character_string_literal_A
  *
  * bnf-start
@@ -1036,7 +1074,7 @@ void ASCIIStringLiteralPart() #ASCIIStringLiteralPart : {}
 	<ASCII_STRING_LITERAL>
 }
 
-/**
+/*
  * character_value_expression_A
  *
  * bnf-start
@@ -1071,7 +1109,7 @@ void collate_clause_S() : {}
 	<COLLATE> qualified_name_A()	
 }
 
-/**
+/*
  * column_name_S
  *
  * bnf-single <column_name> ::= <identifier>
@@ -1090,7 +1128,7 @@ void column_name_S() #ColumnName :
 	}
 }
 
-/**
+/*
  * column_name_list_S
  *
  * bnf-single <column_name_list> ::= <column_name> [ { <comma> <column_name> }... ]
@@ -1103,7 +1141,7 @@ void column_name_list_S() : {}
 	 column_name_S() ( <COMMA> column_name_S() )*	
 }
 
-/**
+/*
  * column_reference_A
  *
  * bnf-start
@@ -1118,9 +1156,9 @@ void column_reference_A() #ColumnReference : {	if( log.isTraceEnabled() ) ente
 	   |
 	   ( table_name_A() <PERIOD> column_name_S() )	)	{		if( log.isTraceEnabled() ) exitTrace ( "column_reference_A()" ) ;						}}
 
-///**// * aliased_expression_reference_A// *// *-bnf-start// *- <aliased_expression_reference> ::= <identifier>// *- !! ADQL specific. // *- NB. This is simply a reference to an aliased expression.// *-bnf-end// *// *///AliasSelectionItemType aliased_expression_reference_A() ://{//	if( log.isTraceEnabled() ) enterTrace ( "aliased_expression_reference_A()" ) ;//	AliasSelectionItemType asiType = null ;//	String name = null ;//}//{//	////	// Note especially that this is simply a reference to an//	// aliased expression defined elsewhere. At this point we//	// only have the name of the alias, not the content, so we//	// can only construct an empty AliasSelectionItemType.//	// Filling in these must wait until the whole query has//	// been assembled and is thought to be syntactically correct!!!//	name=identifier_A()//	{//		if( name != null ) {//		    asiType = AliasSelectionItemType.Factory.newInstance() ;//			asiType.setAs( name ) ;//		}//	    if( log.isTraceEnabled() ) exitTrace ( "aliased_expression_reference_A()" ) ;		//	    return asiType ;	//	}//}
+///*// * aliased_expression_reference_A// *// *-bnf-start// *- <aliased_expression_reference> ::= <identifier>// *- !! ADQL specific. // *- NB. This is simply a reference to an aliased expression.// *-bnf-end// *// *///AliasSelectionItemType aliased_expression_reference_A() ://{//	if( log.isTraceEnabled() ) enterTrace ( "aliased_expression_reference_A()" ) ;//	AliasSelectionItemType asiType = null ;//	String name = null ;//}//{//	////	// Note especially that this is simply a reference to an//	// aliased expression defined elsewhere. At this point we//	// only have the name of the alias, not the content, so we//	// can only construct an empty AliasSelectionItemType.//	// Filling in these must wait until the whole query has//	// been assembled and is thought to be syntactically correct!!!//	name=identifier_A()//	{//		if( name != null ) {//		    asiType = AliasSelectionItemType.Factory.newInstance() ;//			asiType.setAs( name ) ;//		}//	    if( log.isTraceEnabled() ) exitTrace ( "aliased_expression_reference_A()" ) ;		//	    return asiType ;	//	}//}
 
-/**
+/*
  * value_expression_primary_A
  *
  * NB: Referred in some sources as <common_primary>
@@ -1180,7 +1218,7 @@ void value_expression_primary_A() #ValueExpressionPrimary :
 	}
 }
 
-/**
+/*
  * comp_op_S
  *
  * bnf-start
@@ -1225,7 +1263,7 @@ void comp_op_S() #Comparison :
 	}
 }
 
-/**
+/*
  * comparison_predicate_A
  *
  * bnf-start
@@ -1258,7 +1296,7 @@ void comparison_predicate_A() #ComparisonPredicate :
 	}
 }
 
-/**
+/*
  * correlation_name_S
  *
  * bnf-single <correlation_name> ::= <identifier>
@@ -1340,7 +1378,7 @@ void datetime_value_function_S() : {}
 	<CURRENT_TIMESTAMP> [ <LEFT_PAREN> timestamp_precision_S() <RIGHT_PAREN> ]
 }
 
-/**
+/*
  * derived_column_list_S
  *
  * bnf-single <derived_column_list> ::= <column_name_list>
@@ -1376,7 +1414,7 @@ void escape_character_A() : {}
 	character_value_expression_A()	
 }
 
-/**
+/*
  * exact_numeric_literal_S
  *
  * bnf-start
@@ -1413,7 +1451,7 @@ void exact_numeric_literal_S( int possibleSignChange ) #ExactNumericLiteral :
 }
 
 
-/**
+/*
  * exists_predicate_A
  *
  * bnf-single <exists_predicate> ::= EXISTS <table_subquery>
@@ -1440,7 +1478,7 @@ void explicit_table_S() : {}
 	<TABLE> table_name_A()
 }
 
-/**
+/*
  * factor_S
  *
  * bnf-single <factor> ::= [ <sign> ] <numeric_primary> 
@@ -1469,7 +1507,7 @@ void factor_S() #Factor :
 	}
 }
 
-/**
+/*
  * sign
  *
  * bnf-single <sign> ::= <plus_sign> | <minus_sign>
@@ -1488,7 +1526,7 @@ Token sign_S() #Sign :
 	}
 }
 
-/**
+/*
  * from_clause_S
  *
  * bnf-start
@@ -1519,7 +1557,7 @@ void from_clause_S() #From :
 }
 
 
-/**
+/*
  * general_literal_A
  *
  * bnf-start
@@ -1543,7 +1581,7 @@ void general_literal_A() : {}
 	character_string_literal_A()	
 }
 
-/**
+/*
  * general_set_function_A
  *
  * bnf-start
@@ -1573,7 +1611,7 @@ void general_set_function_A() #GeneralSetFunction :
 	<RIGHT_PAREN>
 }
 
-/**
+/*
  * general_value_specification_A
  *
  * bnf-start
@@ -1604,7 +1642,7 @@ ScalarExpressionType general_value_specification_A() :
 	{ return seType ; }	
 }
 
-/**
+/*
  * group_by_clause_S
  *
  * bnf-start
@@ -1627,7 +1665,7 @@ void group_by_clause_S() #GroupBy :
 	}
 }
 
-/**
+/*
  * grouping_column_reference_list_S
  *
  * bnf-start
@@ -1650,7 +1688,7 @@ void grouping_column_reference_list_S() #GroupingColumnReferenceList :
 	}
 }
 
-/**
+/*
  * grouping_column_reference_A
  *
  * bnf-start
@@ -1673,7 +1711,7 @@ void grouping_column_reference_A() :
 	}	
 }
 
-/**
+/*
  * having_clause_S
  *
  * bnf-single <having_clause> ::= HAVING <search_condition>	
@@ -1694,7 +1732,7 @@ void having_clause_S() #Having :
 	}
 }
 
-/**
+/*
  * identifier_A
  *
  * bnf-start
@@ -1711,7 +1749,7 @@ void identifier_A() : {}
 	actual_identifier_S()
 } 
 
-/**
+/*
  * in_predicate_A
  *
  * bnf-start
@@ -1738,7 +1776,7 @@ void in_predicate_A() #InPredicate :
 	}
 }
 
-/**
+/*
  * in_predicate_value_S
  *
  * bnf-start
@@ -1841,7 +1879,7 @@ void interval_value_expression_S() : {}
     <LEFT_PAREN> datetime_value_expression_S() <MINUS_SIGN> datetime_term_S() <RIGHT_PAREN> interval_qualifier_S()
 }
 
-/**
+/*
  * in_value_list_A
  *
  * bnf-start
@@ -1859,7 +1897,7 @@ void in_value_list_A() #InValueList : {}
     ( in_value_list_constant_A() ( <COMMA> in_value_list_constant_A() )* )
 }
 
-/**
+/*
  * in_value_list_constant_A
  *
  * bnf-start
@@ -1889,7 +1927,7 @@ void in_value_list_constant_A() #InValueListConstant :
 	)
 }
 
-/**
+/*
  * join_specification_A
  *
  * bnf-start
@@ -1919,7 +1957,7 @@ void join_specification_A() : {}
 	<ON> comparison_predicate_A()
 }
 
-/**
+/*
  * joined_table_S
  *
  *-bnf-start
@@ -1962,7 +2000,7 @@ void joined_table_S() :
 	}
 }
 
-/**
+/*
  * join_type_A
  *
  * bnf-start
@@ -1994,7 +2032,7 @@ void join_type_A() #JoinType : {}
         )
 }
 
-/**
+/*
  * match_value_S
  *
  * bnf-single <match_value> ::= <character_value_expression>
@@ -2023,7 +2061,7 @@ void match_predicate_S() : {}
 	row_value_constructor_S() <MATCH> [ <UNIQUE> ] [ <PARTIAL> | <FULL> ] table_subquery_A() 
 }
 
-/**
+/*
  * math_function_A
  *
  * bnf-start
@@ -2137,7 +2175,7 @@ void math_function_A() #MathFunction :
 	}
 }
 
-/**
+/*
  * null_predicate_A
  *
  * bnf-start
@@ -2162,7 +2200,7 @@ void null_predicate_A() #NullPredicate :
 	}
 }
 
-/**
+/*
  * numeric_primary_S
  *
  * bnf-start
@@ -2195,7 +2233,7 @@ void numeric_primary_S() :
 	
 }
 
-/**
+/*
  * numeric_value_expression_S
  *
  * bnf-start
@@ -2236,7 +2274,7 @@ void numeric_value_expression_S() #NumericValueExpression :
 	}
 }
 
-/**
+/*
  * numeric_value_function_A
  *
  * bnf-start
@@ -2303,7 +2341,7 @@ void user_defined_function_A() #UserDefinedFunction :
 }
 
 
-/**
+/*
  * order_by_clause
  *
  * bnf-start
@@ -2328,7 +2366,7 @@ void order_by_clause_S() #OrderByClause :
 	}
 }
 
-/**
+/*
  * sort_specification_list
  *
  * bnf-start
@@ -2354,7 +2392,7 @@ void sort_specification_list() #SortSpecificationList :
 	}
 }
 
-/**
+/*
  * sort_specification_A
  *
  * bnf-start
@@ -2406,7 +2444,7 @@ void overlaps_predicate_S() : {}
 	row_value_constructor_S() <OVERLAPS> row_value_constructor_S()	
 }
 
-/**
+/*
  * pattern_A
  *
  * bnf-start
@@ -2428,7 +2466,7 @@ void pattern_A() :
 	}	
 }
 
-/**
+/*
  * predicate_A
  *
  * bnf-start
@@ -2511,7 +2549,7 @@ void predicate_A() :
     }
 }
 
-/**
+/*
  * qualified_join_S
  *
  * bnf-start
@@ -2562,7 +2600,7 @@ void table_array_fragment() #TableArrayFragment :
 }
 
 
-/**
+/*
  * qualified_name_A
  *  
  *  JL Note: Removed for the moment. Problems with semantic lookahead
@@ -2592,7 +2630,7 @@ void qualified_name_A() #QualifiedName :
 }
 
 
-/**
+/*
  * schema_name_A
  *
  * bnf-start
@@ -2615,7 +2653,7 @@ void schema_name_A() #SchemaName :
 	}
 }
 
-/**
+/*
  * 
  *
  * bnf-start
@@ -2641,7 +2679,7 @@ void qualifier_A() :
 	}
 }
 
-/**
+/*
  * 
  *
  * bnf-start
@@ -2783,7 +2821,7 @@ void scalar_subquery_S() : {}
 	subquery_S()
 }
 
-/**
+/*
  * 
  *
  * bnf-start
@@ -2822,7 +2860,7 @@ void search_condition_S() #SearchCondition :
 
 //SearchType booleanTermList() : //{//	if( log.isTraceEnabled() ) enterTrace ( "booleanTermList" ) ;//	Stack stack = null ;//	SearchType st = null ;//}//{//	( //	  LOOKAHEAD(3)//	  st=booleanTermSingleton() //	  { if( stack == null )//	  	   stack = new Stack() ;//	  	stack.push( st ) ;//	  } //	)*//	{ //		if( stack != null ) {//			UnionSearchType heldOr = null ;//			SearchType[] conditions = new SearchType[2] ;//			while( stack.empty() == false ) {//				st = (SearchType)stack.pop() ;//				if( heldOr != null ) {//					conditions[0] = st ;//					conditions[1] = heldOr ;//					UnionSearchType orType = UnionSearchType.Factory.newInstance() ;//					orType.setConditionArray( conditions ) ;//					heldOr = orType ;//				}//				else if( stack.empty() == false  ) {//					conditions[0] = (SearchType)stack.pop() ;//					conditions[1] = st ;//					UnionSearchType orType = UnionSearchType.Factory.newInstance() ;//					orType.setConditionArray( conditions ) ;//					heldOr = orType ;//				}//			}//			if( heldOr != null )//				st = heldOr ; //		}	//		if( log.isTraceEnabled() ) exitTrace ( "booleanTermList" ) ;	//		return st ;//	}//}////SearchType booleanTermSingleton() ://{//	if( log.isTraceEnabled() ) enterTrace ( "booleanTermSingleton" ) ;//	SearchType st = null ;//	Token t = null ;//}//{////	t=<OR>{if(t!=null){_lt(UnionSearchType.type);_lp(CONDITION_ELEMENT);}}  //	st=boolean_term_S() //	{ //		_lp() ;//		if( log.isTraceEnabled() ) exitTrace ( "booleanTermSingleton" ) ;//		return st ; //	}//}
 
-/**
+/*
  * select_list_S
  *
  * bnf-start
@@ -2864,7 +2902,7 @@ void allSelectionItem() #AllSelectionItem :
     { tracker.pop() ; }
 }
 
-/**
+/*
  * 
  *
  * bnf-start
@@ -2898,7 +2936,7 @@ void select_sublist_A( boolean first ) #SelectSublist :
 }
 
 
-/**
+/*
  * derived_column_S
  *
  * bnf-start
@@ -2922,7 +2960,7 @@ void derived_column_S() #DerivedColumn :
 	}	
 }
 
-/**
+/*
  * set_function_specification_S
  *
  * bnf-start
@@ -2959,7 +2997,7 @@ void set_function_specification_part_fragment() #SetFunctionSpecificationPartFra
 		}
 }
 
-/**
+/*
  * 
  *
  * bnf-start
@@ -2998,7 +3036,7 @@ void set_limit_A() #Restrict :
 	}
 }
 
-/**
+/*
  * set_quantifier_S
  *
  * bnf-single <set_quantifier> ::= DISTINCT | ALL
@@ -3036,7 +3074,7 @@ void start_field_S() : {}
     nonsecond_datetime_field_S() [ <LEFT_PAREN> interval_leading_field_precision_S() <RIGHT_PAREN> ]
 }
 
-/**
+/*
  * string_value_expression_A()
  *
  * bnf-start
@@ -3055,7 +3093,7 @@ void string_value_expression_A() : {}
 	character_value_expression_A()
 }
 
-/**
+/*
  * subquery_S
  *
  */
@@ -3146,7 +3184,7 @@ void corresponding_column_list_S() : {}
 	column_name_list_S()	
 }
 
-/**
+/*
  * cross_join_S
  *
  *-bnf-start
@@ -3248,10 +3286,10 @@ void simple_table_S() : {}
 	explicit_table_S()	
 }
 
-///**// * table_expression_A// *// *-bnf-start// *- <table_expression> ::=// *-     <from_clause>// *-     [ <where_clause> ]// *-     [ <group_by_clause> ]// *-     [ <having_clause> ]// *-     [ <order_by_clause> ]// *-!! ADQL adds <order_by_clause>// *-bnf-end// *// */
+///*// * table_expression_A// *// *-bnf-start// *- <table_expression> ::=// *-     <from_clause>// *-     [ <where_clause> ]// *-     [ <group_by_clause> ]// *-     [ <having_clause> ]// *-     [ <order_by_clause> ]// *-!! ADQL adds <order_by_clause>// *-bnf-end// *// */
 //void table_expression_A( SelectType st ) : //{//	if( log.isTraceEnabled() ) enterTrace ( "table_expression_A" ) ;//} //{//	//S://	// <table_expression> ::=//	// <from_clause>//    // [ <where_clause> ]//    // [ <group_by_clause> ]//    // [ <having_clause> ]//	(//		from_clause_S( st ) 		//		[ LOOKAHEAD(3) where_clause_S( st ) ] //		//		[ LOOKAHEAD(3) group_by_clause_S( st ) ] //		//		[ LOOKAHEAD(3) having_clause_S( st ) ] //		//		[ LOOKAHEAD(3) order_by_clause( st ) ]	//	)//	{ //		if( log.isTraceEnabled() ) exitTrace ( "table_expression_A" ) ;//	}//}
 
-/**
+/*
  * table_name_A
  *
  * bnf-start
@@ -3274,7 +3312,7 @@ void table_name_A() #TableName :
 	}
 }
 
-/** 
+/* 
  * table_reference_A
  *
  * bnf-start
@@ -3341,7 +3379,7 @@ void tableReferenceBarJoinedTable() #TableReferenceBarJoinedTable :
 }
 
 
-/**
+/*
  * table_subquery_A
  *
  * bnf-start
@@ -3382,7 +3420,7 @@ void table_value_constructor_list_S() : {}
 	row_value_constructor_S() ( <COMMA> row_value_constructor_S() )*	
 }
 
-/**
+/*
  * term_S
  *
  * bnf-start
@@ -3458,7 +3496,7 @@ void time_zone_S() : {}
     <AT> ( <LOCAL> | ( <TIME_ZONE> interval_value_expression_S() ) ) 
 }
 
-/**
+/*
  * 
  *
  * bnf-start
@@ -3528,7 +3566,7 @@ void unique_predicate_S() : {}
 	<UNIQUE> table_subquery_A()	
 }
 
-/**
+/*
  * unsigned_literal_S
  *
  * bnf-single <unsigned_literal> ::= <unsigned_numeric_literal> | <general_literal>
@@ -3545,7 +3583,7 @@ void unsigned_literal_S() : {}
     general_literal_A()
 }
 
-/**
+/*
  * unsigned_numeric_literal_S
  *
  * bnf-start
@@ -3568,7 +3606,7 @@ void unsigned_numeric_literal_S() : {}
 	approximate_numeric_literal_S() 
 }
 
-/**
+/*
  * approximate_numeric_literal_S
  *
  * bnf-start
@@ -3581,7 +3619,7 @@ void approximate_numeric_literal_S() #ApproximateNumericLiteral : {}
 	<APPROXIMATE_NUMERIC_LITERAL>	
 }
 
-/**
+/*
  * unsigned_value_specification_S
  *
  * bnf-start
@@ -3602,7 +3640,7 @@ void unsigned_value_specification_S() : {}
 	general_value_specification_A()
 }
 
-/**
+/*
  * value_expression_A
  *
  * bnf-start
@@ -3649,7 +3687,7 @@ void value_expression_A() #ValueExpression :
 	
 }
 
-/**
+/*
  * variable_specification_A
  *
  * bnf-start
@@ -3673,7 +3711,7 @@ ScalarExpressionType variable_specification_A() :
 	{ return seType ; }
 }
 
-/**
+/*
  * where_clause_S
  *
  * bnf-single <where_clause> ::= WHERE <search_condition>
@@ -3701,6 +3739,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.3  2007/07/10 21:04:39  jl99
+some javadoc added
+
 Revision 1.2  2007/07/02 18:12:58  jl99
 Exists and Null predicates added
 
