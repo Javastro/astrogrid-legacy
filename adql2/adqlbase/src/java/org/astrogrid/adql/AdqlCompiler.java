@@ -2,6 +2,11 @@ package org.astrogrid.adql ;
 
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.StringReader;
 import java.util.HashSet ;
 import java.util.HashMap ;
 import java.util.Iterator ;
@@ -115,6 +120,114 @@ public class AdqlCompiler {
     	AdqlStoXConstants.ORDERBY 
     } ;
      
+     
+     /**
+      * Enables the compiler to be run from the command line, though a script
+      * will probably make it easier. In this mode, you can...
+      * <p>
+      * (1) use a pipe to pass a complete query, or <br/>
+      * (2) pass a file path to a query as the first argument, or <br/>
+      * (3) pass a complete query as the first argument. <br/>
+      * <p>
+      * The input must be an ADQL/s query passed in one of the above ways.
+      * The output is either a query compiled in xml (ADQL/x) in pretty print
+      * to stdout or error messages to stderr.
+      * <p>
+      * A suitable script, which obeys the following pseudo code,
+      * should come with the distribution.
+      * <p>
+      * Establish CLASSPATH to resolve dependencies<br/>
+      * <blockquote>
+      * If number of args > 0
+      *    java org.astrogrid.adql.AdqlCompiler args
+      * Else
+      *    java org.astrogrid.adql.AdqlCompiler
+      * </blockquote>   
+      * This mode is not intended as an interactive conversation. If this is 
+      * desired, see org.astrogrid.adql.Interactive
+      * 
+      * org.astrogrid.adql.AdqlStoX
+      * 
+      */
+     public static void main( String args[] ) {
+                            
+         if( args.length > 1 ) {
+             System.err.print( "Too many input arguments." ) ;
+         }
+         else {
+             String query ;
+             AdqlCompiler compiler = null ;
+             if( args.length == 0 ) {
+                 System.err.print( "No input argument. Trying stdin." ) ;
+                 query = getQueryFromStdin() ;
+                 StringReader reader = new StringReader( query ) ;
+                 compiler = new AdqlCompiler( reader ) ;
+             } 
+             else {
+                 query = args[0].trim() ; 
+                 compiler = getFileBasedCompiler( query ) ; 
+                 if( compiler == null && query.substring(0,6).equalsIgnoreCase( "SELECT" ) ) {
+                     compiler = new AdqlCompiler( new StringReader( query ) ) ;
+                 }                
+             }
+             
+             if( compiler == null ) {
+                 System.err.print( "Cannot resolve input argument either to a file or a query." ) ;
+             }
+             else {
+                 try {
+                     System.out.print( compiler.compileToXmlText() + '\n' ) ;
+                 }
+                 catch( AdqlException aex ) {
+                     System.err.println( "Following errors reported: " ) ;
+                     String[] messages = aex.getMessages() ;
+                     for( int i=0; i<messages.length; i++ ) {
+                         System.err.println( messages[i] ) ;
+                     }
+                 }
+                 catch( Exception ex ) {
+                     System.err.println( "Possible internal compiler error: " ) ;
+                     ex.printStackTrace( System.err ) ;
+                 }
+             }
+                      
+         }
+         
+     } // end main( String[] )
+     
+     
+     private static AdqlCompiler getFileBasedCompiler( String path ) {
+         AdqlCompiler compiler = null ;
+         try {
+             compiler = new AdqlCompiler( new FileReader( new File( path ) ) ) ;
+         }
+         catch( FileNotFoundException fnfex ) {
+             ; 
+         }
+         return compiler ;
+     }
+     
+     private static String getQueryFromStdin() {
+         StringBuffer buffer = new StringBuffer( 1024 ) ;
+         try {
+             int ch = System.in.read() ;
+             while( ch != -1 ) {
+                 buffer.append( ch ) ;
+                 if( ch == ';' )
+                     break ;
+                 ch = System.in.read() ;
+             }
+             if( buffer.charAt(  buffer.length()-1 ) != ';' ) {
+                 buffer.append( ';' ) ;
+             }
+         }
+         catch( Exception iox ) {
+             System.err.println( "Error reading stdin: \n" + iox.getLocalizedMessage() ) ;
+         }        
+         return buffer.toString() ;
+     }
+     
+          
      public AdqlCompiler( java.io.InputStream stream ) {
          this.parser = new AdqlStoX( stream ) ;
          initParserFields() ;
