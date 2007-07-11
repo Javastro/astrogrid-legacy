@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <pomVersion>3</pomVersion>
+  <artifactId>cagenerator</artifactId>
+  <groupId>org.astrogrid</groupId>
+  <name>CA generator</name>
+  <shortDescription>Application to generate files for a certificate authority.</shortDescription>
+  <logo>http://www.astrogrid.org/images/AGlogo</logo>
+  <currentVersion>2007.2</currentVersion>
+  <developers>
+    <developer>
+      <name>Guy Rixon</name>
+      <id>gtr</id>
+      <email>gtr@ast.cam.ac.uk</email>
+      <organization>IoA Cambridge</organization>
+    </developer>
+  </developers>
+  <organization>
+    <name>AstroGrid</name>
+    <url>http://www.astrogrid.org</url>
+    <logo>http://www.astrogrid.org/images/AGlogo</logo>
+  </organization>
+  <dependencies>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.0.4</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.14</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-community-server</artifactId>
+      <version>2007.2ct</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.jdesktop</groupId>
+      <artifactId>swing-layout</artifactId>
+      <version>1.0</version>
+      <type>jar</type>
+    </dependency>
+  </dependencies>
+  <name>CA generator</name>
+  <package>org.astrogrid.community.server.ca</package>
+  <logo>/images/logo.gif</logo>
+  <inceptionYear>2005</inceptionYear>
+  <build>
+    <sourceDirectory>src/java</sourceDirectory>
+    <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
+    <unitTest>
+      <includes>
+        <include>**/*Test.java</include>
+      </includes>
+    </unitTest>
+  </build>
+</project>
+

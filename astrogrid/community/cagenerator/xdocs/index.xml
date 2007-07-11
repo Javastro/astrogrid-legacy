@@ -1,0 +1,114 @@
+<document>
+  <properties>
+    <author>Guy Rixon</author>
+    <title>Certificate-authority generator</title>
+  </properties>
+  <body>
+    <section name="Certificate-authority generator">
+          <p>The generator writes these three files:</p>
+    <ul>
+      <li>a root certificate that identifies the certificate authority;</li>
+      <li>a private key, use of which is protected by a password;</li>
+      <li>a file recording the serial number of the last certificate issued by
+      the CA (number 00 means the CA's own, self-signed certificate).</li>
+    </ul>
+    <p>
+      Using these files, you can add a <em>certificate authority</em> (CA) to your
+      installation of the AstroGrid community component. That is, you can set
+      up your community to issue its own identity certificates.
+    </p>
+    
+    <subsection name="What you have to do">
+    <ol>
+      <li>Set the formal name of the CA, using the form.</li>
+      <li>Choose the password for the private key (must be at least 8 characters long).</li>
+      <li>Press the <em>generate CA files</em> button.</li>
+      <li>Copy the three files into the appropriate places in your community service 
+      (see the separate documentation for the service to find the right places).</li>
+    </ol>
+    </subsection>
+    
+    <subsection name="Naming the CA">
+    <p>
+      The formal name of the CA has to be unique within the virtual observatory.
+    To achieve this, the name has a specific structure with several components.
+    Each of these components restricts the set of CAs that are peers of your new
+    CA and reduces the chance of a name clash.
+    </p>
+    <p>
+      The <em>country code</em> is drawn from a a standard set.
+    </p>
+    <p>
+      They community of users for which you're creating a CA is probably 
+      associated with a <em>virtual-observatory</em> project. If you know that
+      you are working in or with such a project, please select it here. If you
+      think your project is missing from the list, then please type in its name
+      (but please check for name clashes, especially if the name is an acronym).
+      If you don't want to be associated with any VO project, then you can enter
+      enter the name of some other organization or project.
+    </p>
+      <p>
+        <em>Institution</em> typically means the university department or laboratory
+        operating the CA.
+      </p>
+      <p>
+      Your institution is treated as a unit in a VO project for the purposes of
+      naming the CA. E.g. the Institute of Astronomy, Cambridge, UK, is treated
+      as a unit in AstroGrid. This nesting is just a way of managing the names;
+      it doesn't imply that the project is going to control your community or
+      interfere with your business.
+    </p>
+    <p>
+      You may want two or more communities at your institution, perhaps for
+      separate research groups. In this case, you should set the <em>group</em>
+      field which adds another element to the CA's name. If you only expect one
+      community with one CA, just leave this field blank.
+    </p>
+    <p>
+      Ultimately, it's your responsibility to make sure that the name is unique.
+      The generator tool helps as much as it can, but you need to check before
+      putting your CA into service.
+    </p>
+    </subsection>
+    
+    <subsection name="Naming the users">
+    <p>
+      The purpose of the CA is to give formal names to users, so how will they
+      look? Each member of the community, including the CA, has a formal name
+      that is the same apart from the "common name" part. The CA's common name
+      is just "CA" and you can see it in the generator: it's on the end of the 
+      CA's formal name, written as "/CN=CA". For any user, just replace "CA"
+      with their real name. The CA does this automatically when it is installed.
+    </p>
+    </subsection>
+    
+    <subsection name="The CA password">
+    <p>
+      You have to give a password when you generate the CA files. The password is
+      used to control access to the encrypted private-key file so that anybody
+      not knowing the password can't use the CA to sign certificates for users.
+      When you install the CA files in the community service and use them there,
+      you will have to tell the service the CA password each time you need to
+      generate user credentials. That is, only you know the password; the
+      system doesn't record it anywhere.
+    </p>
+    <p>
+      Please bear in mind that the password is <em>precious</em>
+      to your community. If the password becomes known to the wrong
+      people then your CA is <em>compromised</em> and you will have to
+      replace it. This means issuing new certificates to all your
+      users and then contacting everybody who trusts your old CA to
+      tell them to switch their trust to the new one. It is a hard
+      road and you don't want to go there. Therefore, treat your
+      CA password as more valuable than the root password on your servers.
+      It's less hassle to rebuild cracked servers than it is to rebuild
+      a cracked community.
+    </p>
+    <p>
+      The password must be at least eight characters long: this is a restriction
+      of the OpenSSL software on which the CA package is based.
+    </p>
+    </subsection>
+    </section>
+  </body>
+</document>
