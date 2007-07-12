@@ -1,4 +1,4 @@
-/*$Id: BnfExtractor.java,v 1.1 2007/06/28 09:07:48 jl99 Exp $
+/*$Id: BnfExtractor.java,v 1.2 2007/07/12 13:42:27 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -57,7 +57,8 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         "order. ADQL is based upon a subset of SQL92 with extensions for\n" +
         "astronomical usage.\n" +
         "\n" +
-        "The definition represents the draft ADQL spec as of 19/04/2007\n" +
+        "The definition represents a movement towards the draft ADQL spec as of v1.5-20070419\n" +
+        "Variations from the draft are commented.\n" +
         "The select statement is found under <query_specification>\n\n" ;
      
     private static final String TEXT_FOOTINGS =
@@ -75,7 +76,8 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         "order. ADQL is based upon a subset of SQL92 with extensions for\n" +
         "astronomical usage.\n" +
         "\n" +
-        "The definition represents the draft ADQL spec as of 19/04/2007\n" +
+        "The definition represents a movement towards the draft ADQL spec as of v1.5-20070419\n" +
+        "Variations from the draft are commented.\n" +
         "The select statement is found at <a href=\"#query_specification\">&lt;query_specification&gt;</a>\n" +
         "See <a href=\"http://savage.net.au/SQL/sql-92.bnf.html\">SQL92</a> for a similar page describing SQL92 in full.\n\n" ;
   
@@ -674,6 +676,9 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
 
 /*
 $Log: BnfExtractor.java,v $
+Revision 1.2  2007/07/12 13:42:27  jl99
+Changed top comments on emitted documentation.
+
 Revision 1.1  2007/06/28 09:07:48  jl99
 Creation of temporary project adql2 to explore complexities of moving
 ADQL to conform to the draft spec of April 2007.
