@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.6 2007/06/27 11:14:10 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.7 2007/07/12 10:13:31 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -371,7 +371,7 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 		
 		FormLayout form = new FormLayout(
 				"1dlu, pref,1dlu,pref,2dlu,left:pref:grow,2dlu,right:30dlu,left:60dlu,6dlu,70dlu,pref,pref,1dlu" // cols
-				,"pref" // rows
+				,"d" // rows
 				);
 		PanelBuilder builder = new PanelBuilder(form);
 		CellConstraints cc = new CellConstraints();
@@ -696,6 +696,9 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.7  2007/07/12 10:13:31  nw
+made layout more compact.
+
 Revision 1.6  2007/06/27 11:14:10  nw
 added annotations view
 
