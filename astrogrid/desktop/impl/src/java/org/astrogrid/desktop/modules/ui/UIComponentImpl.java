@@ -1,4 +1,4 @@
-/*$Id: UIComponentImpl.java,v 1.14 2007/06/18 16:47:58 nw Exp $
+/*$Id: UIComponentImpl.java,v 1.15 2007/07/12 10:15:42 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -492,8 +492,8 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
 	/** generic close window action */
      public final class CloseAction extends AbstractAction {
          public CloseAction() {
-             super("Close");
-             this.putValue(SHORT_DESCRIPTION,"Close");
+             super("Close",IconHelper.loadIcon("close16.png"));
+             this.putValue(SHORT_DESCRIPTION,"Close window");
              this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
          }
          public void actionPerformed(ActionEvent e) {
@@ -510,6 +510,9 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
 
 /* 
 $Log: UIComponentImpl.java,v $
+Revision 1.15  2007/07/12 10:15:42  nw
+added icon to close action
+
 Revision 1.14  2007/06/18 16:47:58  nw
 javadoc fixes.
 
