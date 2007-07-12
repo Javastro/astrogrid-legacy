@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:j="jelly:core">
-
-  <preGoal name="test">
-  	<!-- do something before test goal -->
-  </preGoal>
   
-	
-  <postGoal name="jar">
-  	<!-- do something after jar goal -->
-  </postGoal>
+  <goal name="astrogrid-install-artifact">
+    <attainGoal name="javaapp:install"/>
+  </goal>
+  <goal name="astrogrid-install-snapshot">
+    <attainGoal name="javaapp:install"/>
+  </goal>
 	  
 </project>
 
