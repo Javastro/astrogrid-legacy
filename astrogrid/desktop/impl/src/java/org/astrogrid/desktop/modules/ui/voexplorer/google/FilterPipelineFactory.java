@@ -153,7 +153,7 @@ public class FilterPipelineFactory   {
 		}
 		
 		/** static value used to represent 'no information provided' */
-		public static List NONE_PROVIDED = Collections.singletonList("<html><font color='#555555'>&nbsp;unknown");
+		public static List NONE_PROVIDED = Collections.singletonList("<html><FONT color='#555555'>&nbsp;unknown");
 
 	}
 
