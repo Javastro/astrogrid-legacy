@@ -436,7 +436,7 @@ public class PreferenceEditorDialogue  extends JPanel implements Runnable, Prope
 		}
 				
 		if (p.isRequiresRestart()) {
-			//JLabel l = new JLabel("<html><font color='red'>*");
+			//JLabel l = new JLabel("<html><FONT color='red'>*");
 			JLabel l = new JLabel("*");
 			l.setToolTipText("Requires restart to take effect");
 			allComponentList.add(l);

@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.1 2007/03/22 19:01:18 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.2 2007/07/12 10:12:00 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -129,10 +129,10 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
 					String s = mkCommunityString(r); //@future when registry moves to v1.0, add in more data display here.
 					VoMonBean b = monitor.checkAvailability(r.getId());
 					if (b == null) {
-						setText("<html><font color='#666666'>" + s);
+						setText("<html><FONT color='#666666'>" + s);
 						setToolTipText("This community is unknown to the monitoring appliction");
 					} else 	if (b.getCode() != VoMonBean.UP_CODE) {
-						setText("<html><font color='#AAAAAA'>" + s);
+						setText("<html><FONT color='#AAAAAA'>" + s);
 						setToolTipText("This community appears to be unavailable at the moment");
 					} else {
 						setText(s);
@@ -312,6 +312,9 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.2  2007/07/12 10:12:00  nw
+minor change
+
 Revision 1.1  2007/03/22 19:01:18  nw
 added support for sessions and multi-user ar.
 
