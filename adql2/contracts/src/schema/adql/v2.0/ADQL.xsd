@@ -512,7 +512,7 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-<!--
+
 	<xs:complexType name="regionSearchType" mixed="false">
 		<xs:annotation>
 			<xs:documentation>Represents the Regions such as circle in Where clause</xs:documentation>
@@ -525,7 +525,7 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
--->
+
 	<xs:complexType name="havingType">
 		<xs:annotation>
 			<xs:documentation>Represents the Having expression part of a query</xs:documentation>
@@ -663,8 +663,6 @@
 			<xs:element name="GroupBy" type="adql:groupByType" minOccurs="0"/>
 			<xs:element name="Having" type="adql:havingType" minOccurs="0"/>
 			<xs:element name="OrderBy" type="adql:orderExpressionType" minOccurs="0"/>
-			<xs:element name="StartComment" type="xs:string" minOccurs="0"/>
-			<xs:element name="EndComment" type="xs:string" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="userDefinedFunctionType" mixed="false">
@@ -680,7 +678,7 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:simpleType name="jointTableQualifierType">
+	<xs:simpleType name="joinTableQualifierType">
 		<xs:annotation>
 			<xs:documentation>Denotes the type of a Join operation</xs:documentation>
 		</xs:annotation>
@@ -699,9 +697,9 @@
 		<xs:complexContent mixed="false">
 			<xs:extension base="adql:fromTableType">
 				<xs:sequence>
-					<xs:element name="Qualifier" type="adql:jointTableQualifierType"/>
+					<xs:element name="Qualifier" type="adql:joinTableQualifierType"/>
 					<xs:element name="Tables" type="adql:ArrayOfFromTableType"/>
-					<xs:element name="Condition" type="adql:comparisonPredType"/>
+					<xs:element name="Condition" type="adql:searchType"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -713,9 +711,48 @@
 		<xs:sequence>
 			<xs:element name="fromTableType" type="adql:fromTableType" nillable="true" maxOccurs="unbounded"/>
 		</xs:sequence>
-	<!-- Inclusions made by Jeff Lusted -->
 	</xs:complexType>
-		<xs:complexType name="existsPredType" mixed="false">
+	
+    <xs:complexType name="joinSpecType" abstract="true">
+		<xs:annotation>
+			<xs:documentation>The base type for all join specification used in the From clause of a query</xs:documentation>
+		</xs:annotation>
+	</xs:complexType>	
+	
+	<xs:complexType name="joinConditionType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents join condition within join specification </xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:joinSpecType">
+				<xs:sequence>
+					<xs:element name="Condition" type="adql:searchType"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+    <xs:complexType name="joinColumnListType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents SQL column_names_list </xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:columnNameListType">
+			</xs:extension>
+		</xs:complexContent>		
+	</xs:complexType>		
+
+	<xs:complexType name="columnNameListType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents SQL column_names_list </xs:documentation>
+		</xs:annotation>		
+		<xs:sequence>
+		    <xs:element name="ColumnName" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+			
+	<!-- Inclusions made by Jeff Lusted -->
+	<xs:complexType name="existsPredType" mixed="false">
 		<xs:annotation>
 			<xs:documentation>Represents SQL EXISTS expression</xs:documentation>
 		</xs:annotation>
