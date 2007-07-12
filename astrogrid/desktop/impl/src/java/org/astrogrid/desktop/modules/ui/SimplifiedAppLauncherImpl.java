@@ -1,4 +1,4 @@
-/*$Id: SimplifiedAppLauncherImpl.java,v 1.2 2007/04/18 15:47:05 nw Exp $
+/*$Id: SimplifiedAppLauncherImpl.java,v 1.3 2007/07/12 10:15:16 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,9 +36,10 @@ import org.astrogrid.workflow.beans.v1.Tool;
  * <p>
  * not just a thin wrapper around the composite tool editor;
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 12-May-2005
+ * @fixme to remove
  *
  */
-public class SimplifiedAppLauncherImpl extends UIComponentImpl  implements TaskInvoker  {
+public class SimplifiedAppLauncherImpl extends UIComponentImpl  implements TaskRunnerInternal  {
 
 	private final ApplicationsInternal apps;
 	
@@ -133,6 +134,11 @@ public class SimplifiedAppLauncherImpl extends UIComponentImpl  implements TaskI
 		} catch (ACRException ex) {
 			ex.printStackTrace();
 		}		
+	}
+
+
+	public Object create() {
+		return null;
 	}
   
 }
