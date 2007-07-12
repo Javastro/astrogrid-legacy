@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.3 2007/07/10 21:04:39 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.4 2007/07/12 13:40:58 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -139,7 +139,22 @@ public class AdqlStoX {
 }
 PARSER_END(AdqlStoX)
 
-
+/*
+ * SPECIAL_TOKEN: COMMENTS
+ *
+ * bnf-single <comment> ::= <comment_introducer> [ <comment_character>... ] <newline>
+ * bnf-single <comment_character> ::= <nonquote_character> | <quote>
+ * bnf-single <comment_introducer> ::= <minus_sign><minus_sign> [<minus_sign>...]
+ * bnf-start
+ *  <newline> ::= 
+ *  !! Implementation defined end of line indicator
+ * bnf-end
+ * bnf-start
+ *  <nonquote_character> ::= 
+ *  !! One ASCII character
+ * bnf-end
+ *
+ */
 SPECIAL_TOKEN : /* COMMENTS */
 { 
 // There are shortcomings in this definition to do with
@@ -185,6 +200,9 @@ SKIP :
  *   | <question_mark>
  *   | <underscore>
  *   | <vertical_bar>
+ *  !! TODO:
+ *  !! ADQL draft spec omits <ampersand> <semicolon> <question_mark> and <vertical_bar>
+ *  !! I believe the spec is in error.
  * bnf-end
  * bnf-start
  *  <space> ::=
@@ -656,6 +674,10 @@ TOKEN : // <ADQL_reserved_word>
  *      <left_brace>
  *    | <right_brace>
  *    | <dollar>
+ *   !! TODO:
+ *   !! These are not present in the ADQL draft.
+ *   !! This is part of an experiment to see whether it is possible to accommodate
+ *   !! the presence of scripting variables in a query.
  * bnf-end
  * bnf-single <left_brace> ::= {
  * bnf-single <right_brace> ::= }
@@ -677,6 +699,8 @@ TOKEN : // <ADQL_special_character>
  *    | <digit>
  *    | <SQL_special_character>
  * bnf-end
+ *
+ * bnf-single <keyword> ::= <SQL_reserved_word> | <ADQL_reserved_word>
  *
  * bnf-single <not_equals_operator1> ::= <>
  * bnf-single <not_equals_operator2> ::= !=
@@ -703,11 +727,18 @@ TOKEN : // <ADQL_special_character>
  *  <regular_identifier> ::=
  *      <simple_Latin_letter>... 
  *      [ { <digit> | <simple_Latin_letter> | <dollar> | <underscore> }... ]
+ *  !! TODO:
+ *  !! The ADQL draft spec does not have <dollar>. Investigate.
  * bnf-end
  * bnf-start
  *  <delimited_identifier> ::=
+ *  !! TODO:
  *  !! Begins and ends with a double quote as delimiters
- *     but contains no double quotes or white space
+ *  !! but itself contains no double quotes or white space.
+ *  !! The ADQL draft spec needs correcting. It has
+ *  !! <delimited_identifier> ::= <double_quote> <regular_identifier> <double_quote> 
+ *  !! which cannot be correct. 
+ *  !! If this were the case, we could simply make do with <regular_identifier>
  * bnf-end
  * bnf-single <unsigned_integer> ::= <digit>...
  * bnf-single <sign> ::= <plus_sign> | <minus_sign>
@@ -767,7 +798,7 @@ TOKEN : // The remainder
  * of the BNF diagrams.
  *
  * bnf-start
- *  <delimiter token> ::=
+ *  <delimiter_token> ::=
  *        <character_string_literal>
  *    |   <delimited_identifier>
  *    |   <SQL_special_character>
@@ -778,8 +809,22 @@ TOKEN : // The remainder
  *    |   <double_period>
  *    |   <left_bracket>
  *    |   <right_bracket>
- *   !! The draft has <boolean_literal> and does not have <delimitied_identifier> 
+ *   !! TODO:
+ *   !! The ADQL draft has <boolean_literal> and does not have <delimitied_identifier> 
  *   !! Should it also have <ADQL_special_character> ? 
+ * bnf-end
+ * bnf-start
+ *  <nondelimiter_token> ::= 
+ *      <regular_identifier>
+ *    | <keyword>
+ *    | <unsigned_numeric_literal>
+ *   !! For information, SQL92 has some others. 
+ *   !! Not sure I understand how this is used.
+ * bnf-end
+ * bnf-start
+ *  <token> ::= 
+ *      <nondelimiter_token>
+ *    | <delimiter_token>
  * bnf-end
  * bnf-single <double_period> ::= ..
  *
@@ -939,8 +984,14 @@ void boolean_term_S() #BooleanTerm :
 /*
  * boolean_factor_S
  *
- * bnf-single <boolean_factor> ::= [ NOT ] <boolean_primary>
- * !! ADQL does not support <boolean_test>
+ * bnf-start
+ *   <boolean_factor> ::= [ NOT ] <boolean_primary>
+ *   !! TODO:
+ *   !! ADQL spec supports <boolean_test> and its adjunct <truth value>. 
+ *   !! There is some doubt as to whether we should or not.
+ *   !! <boolean_test> could be an unwarranted complication.
+ *   !! Change the spec.
+ * bnf-end
  */
 void boolean_factor_S() #BooleanFactor :
 {
@@ -973,7 +1024,12 @@ void boolean_factor_S() #BooleanFactor :
  * bnf-start
  *  <like_predicate> ::=
  *      <match_value> [ NOT ] LIKE <pattern>
- *  !! There is no accommodation for <escape_character>
+ *  !! TODO:
+ *  !! The ADQL draft spec has
+ *  !! <like_predicate> ::= 
+ *  !!   <character_value_expression> [ NOT ] LIKE <character_value_expression>
+ *  !! The main difference is with <pattern>.
+ *  !! Not quite sure of the ramifications of <character_value_expression>
  * bnf-end
  *
  */
@@ -1007,7 +1063,7 @@ void castSpecification_S() : {}
  *
  * bnf-start
  *  <character_factor> ::= <character_primary>
- *  !! There is no accommodation for <collate_clause>
+ *  !! For information only, SQL92 supports <collate_clause>
  * bnf-end
  *
  */
@@ -1023,7 +1079,7 @@ void character_factor_A() : {}
  *
  * bnf-start
  *  <character_primary> ::= <value_expression_primary>
- *  !! There is no accommodation for <string_value_function>
+ *  !! For information, SQL92 has support for <string_value_function>
  * bnf-end
  *
  */
@@ -1044,14 +1100,20 @@ void character_primary_A() : {}
  * bnf-start
  *  <character_string_literal> ::=
  *     <quote> [ <character_representation>... ] <quote>
- *     [ { <quote> [ <character_representation>... ] <quote> }... ]
- *  !! There is no accommodation for <character_set_specification>
+ *     [ { <separator>... <quote> [ <character_representation>... ] <quote> }... ]
  * bnf-end
  *
  * bnf-start
- *  <character_representation> ::=
- *  !! At present this is one ASCII character (but not a single quote).
+ *  <character_representation> ::= 
+ *  !! This is one ASCII character (but not a single quote).
+ *  !! The ADQL spec supports
+ *  !! <character_representation> ::= <nonquote_character> | <quote_symbol>
+ *  !! <quote_symbol> ::= <quote> <quote>
+ *  !! which follows SQL92.
+ *  !! Not sure I understand why the <quote_symbol> is here.
  * bnf-end
+ *
+ * bnf-single <separator> ::= { <comment> | <space> | <newline> }...
  *
  */
 void character_string_literal_A() #CharacterStringLiteral : {}
@@ -1079,7 +1141,11 @@ void ASCIIStringLiteralPart() #ASCIIStringLiteralPart : {}
  *
  * bnf-start
  *  <character_value_expression> ::= <character_factor>
- *  !! There is no accommodation for <concatenation>
+ *  !! TODO:
+ *  !! The ADQL spec has
+ *  !! <character_value_expression> ::= <concatenation> | <character_factor>
+ *  !! <concatenation> ::= <character_value_expression> <concatenation_operator> <character_factor>
+ *  !! <concatenation_operator> ::= ||
  * bnf-end
  *
  */
@@ -1147,7 +1213,14 @@ void column_name_list_S() : {}
  * bnf-start
  *  <column_reference> ::= 
  *     [ <schema_name> <period> ] <table_name> <period> <column_name>
- *  !! Enforces qualified column names.
+ *  !! TODO:
+ *  !! The ADQL spec has
+ *  !! <column_reference> ::= [ <qualifier> <period> ] <column_name>
+ *  !! <qualifier> ::= <table_name> | <correlation_name> 
+ *  !! Notes:
+ *  !! (1) The inclusion of <schema_name> is a temporary kludge 
+ *  !!     to get around some implementation problems.
+ *  !! (2) The spec is moving away from imposing qualified names.  
  * bnf-end
  *
  */
@@ -1169,8 +1242,8 @@ void column_reference_A() #ColumnReference : {	if( log.isTraceEnabled() ) ente
  *    | <column_reference>
  *    | <set_function_specification>
  *    | <left_paren> <value_expression> <right_paren>
- *  !! There is no accommodation for <scalar_subquery>,
- *     <case_expression> or <cast_specification>
+ *  !! For information, SQL92 supports <scalar_subquery>,
+ *  !! <case_expression> and <cast_specification>
  * bnf-end
  *
  */
@@ -1269,7 +1342,6 @@ void comp_op_S() #Comparison :
  * bnf-start
  *  <comparison_predicate> ::=
  *      <value_expression> <comp_op> <value_expression>
- *  !! There is no accommodation for <row_value_constructor>
  * bnf-end
  *
  */
@@ -1381,8 +1453,14 @@ void datetime_value_function_S() : {}
 /*
  * derived_column_list_S
  *
- * bnf-single <derived_column_list> ::= <column_name_list>
- *
+ * bnf-start
+ *  <derived_column_list> ::= <column_name_list>
+ *  !! TODO:
+ *  !! The ADQL draft spec does not have this. 
+ *  !! And it is not referenced anywhere yet within the implementation. 
+ *  !! Investigated whether it is required. 
+ * bnf-end
+ * 
  */
 void derived_column_list_S() : {}
 {
@@ -1562,9 +1640,14 @@ void from_clause_S() #From :
  *
  * bnf-start
  *  <general_literal> ::= <character_string_literal>
- *  !! There is no accommodation for <national_character_string_literal>,
- *     <bit_string_literal>, <hex_string_literal>, <datetime_literal>
- *     and <interval_literal>
+ *  !! TODO:
+ *  !! Not present in the ADQL draft.
+ *  !! SQL92 has <general_literal> where it also supports
+ *  !! <national_character_string_literal>, <bit_string_literal>, 
+ *  !! <hex_string_literal>, <datetime_literal> and <interval_literal>
+ *  !! Is it good to retain it as a place-holder, bearing in mind
+ *  !! that we might need <bit_string_literal> and <hex_string_literal>
+ *  !! at some point in the future?
  * bnf-end
  *
  */
@@ -1588,7 +1671,11 @@ void general_literal_A() : {}
  *  <general_set_function> ::=
  *     <set_function_type>
  *         <left_paren> <value_expression> <right_paren>
-    !! There is no accommodation for <set_quantifier>
+ *  !! TODO:
+ *  !! Include <set_quantifier>
+ *  !! The ADQL draft has 
+ *  !! <general_set_function> ::=
+ *  !!   <set_function_type> <left_paren> [ <set_quantifier> ] <value_expression> <right_paren>
  * bnf-end
  *
  * bnf-single <set_function_type> ::= AVG | MAX | MIN | SUM | COUNT
@@ -1616,8 +1703,12 @@ void general_set_function_A() #GeneralSetFunction :
  *
  * bnf-start
  *  <general_value_specification> ::= <variable_specification>
- *  !! There is no accommodation for <parameter_specification>, <dynamic_parameter_specification>,
-       USER, CURRENT_USER, SESSION_USER, SYSTEM_USER and VALUE
+ *  !! TODO:
+ *  !! Missing from the ADQL draft spec.
+ *  !! The above is an experiment to see if scripting variables can be accommodated.
+ *  !!
+ *  !! SQL92 also supports <parameter_specification>, <dynamic_parameter_specification>,
+ *  !! USER, CURRENT_USER, SESSION_USER, SYSTEM_USER and VALUE
  * bnf-end
  *
  */
@@ -1693,7 +1784,7 @@ void grouping_column_reference_list_S() #GroupingColumnReferenceList :
  *
  * bnf-start
  *  <grouping_column_reference> ::= <column_reference> 
- *  !! There is no accommodation for <collate_clause>
+ *  !! For information, SQL92 supports a <collate_clause>
  * bnf-end
  *
  */
@@ -1735,10 +1826,7 @@ void having_clause_S() #Having :
 /*
  * identifier_A
  *
- * bnf-start
- *  <identifier> ::= <actual_identifier>
- *  !! There is no accommodation for <character_set_specification> 
- * bnf-end
+ * For the moment, <identifier> is a synonym for <actual_identifier>
  *
  */
 void identifier_A() : {}
@@ -1885,7 +1973,10 @@ void interval_value_expression_S() : {}
  * bnf-start
  *  <in_value_list> ::=
  *      <in_value_list_constant> { <comma> <in_value_list_constant> }...
- *  !! There is no accommodation for <value_expression>
+ *  !! TODO:
+ *  !! The ADQL draft spec has 
+ *  !! <in_value_list> ::= 
+ *  !!   <value_expression> { <comma> <value_expression> } ...
  * bnf-end
  *
  */
@@ -1932,12 +2023,18 @@ void in_value_list_constant_A() #InValueListConstant :
  *
  * bnf-start
  *  <join_specification> ::= <join_condition>
- *  !! There is no accommodation for <named_columns_join>	
+ *  !! TODO:
+ *  !! The ADQL draft spec has 
+ *  !! <join_specification> ::= <join_condition> | <named_columns_join>	
+ *  !! <named_columns_join> ::= USING <left_paren> <join_column_list> <right_paren> 
+ *  !! <join_column_list> ::= <column_name_list>
  * bnf-end
  *
  * bnf-start
  *  <join_condition> ::= ON <comparison_predicate>
- *  !! There is no accommodation for <search_condition>
+ *  !! TODO:
+ *  !! The ADQL draft spec has
+ *  !! <join_condition> ::= ON <search_condition>
  * bnf-end
  *
  */
@@ -1960,20 +2057,10 @@ void join_specification_A() : {}
 /*
  * joined_table_S
  *
- *-bnf-start
- *- <joined_table> ::=
- *-     <cross_join>
- *-   | <qualified_join>
- *-   | <left_paren> <joined_table> <right_paren>
- *-bnf-end
- 
  * bnf-start
  *  <joined_table> ::=
  *      <qualified_join>
  *    | <left_paren> <joined_table> <right_paren>
- *  !! <cross_join> has been removed. The reason is the Adql/x schema has
- *     a mandatory join condition which is inapplicable to cross joins.
- *     Probably wise in any case. 
  * bnf-end
  *
  */
@@ -2007,7 +2094,7 @@ void joined_table_S() :
  *  <join_type> ::=
  *     INNER
  *   | <outer_join_type> [ OUTER ]
- *  !! There is no accommodatin for UNION
+ *  !! For information, SQL92 also supports UNION
  * bnf-end
  *
  * bnf-single <outer_join_type> ::= LEFT | RIGHT | FULL
@@ -2081,7 +2168,6 @@ void match_predicate_S() : {}
  *	  | RAND <left_paren> [ <numeric_value_expression> ] <right_paren> 
  *	  | ROUND <left_paren> <numeric_value_expression> <right_paren> 
  *	  | TRUNCATE <left_paren> <numeric_value_expression> <right_paren> 
- *  !! ADQL specific.
  * bnf-end
  *
  */
@@ -2179,8 +2265,10 @@ void math_function_A() #MathFunction :
  * null_predicate_A
  *
  * bnf-start
- *  <null_predicate> ::= <column_reference> IS [ NOT ] NULL	
- *  !! SQL92 uses <row_value_constructor> rather than <column_reference>
+ *  <null_predicate> ::= <column_reference> IS [ NOT ] NULL
+ *  !! TODO:
+ *  !! The ADQL draft spec is in error here. It has
+ *  !! <null_predicate> ::= IS [ NOT ] NULL	
  * bnf-end
  *
  */
@@ -2279,8 +2367,8 @@ void numeric_value_expression_S() #NumericValueExpression :
  *
  * bnf-start
  *  <numeric_value_function> ::= <trig_function> | <math_function>	
- *  !! There is no accommodation for <position_expression>,
- *     <extract_expression> or <length_expression>
+ *  !! For information, SQ92 also supports <position_expression>,
+ *  !! <extract_expression> and <length_expression>
  * bnf-end
  *
  */
@@ -2398,13 +2486,14 @@ void sort_specification_list() #SortSpecificationList :
  * bnf-start
  *  <sort_specification> ::=
  *      <sort_key> [ <ordering_specification> ]
- *  !! There is no accommodation for <collate_clause>
+ *  !! For information, SQL92 also supports <collate_clause>
  * bnf-end
  *
  * bnf-start
  *  <sort_key> ::= <value_expression>
- *  !! This is different from SQL92 which uses
- *     <column_name> | <unsigned_integer>
+ *  !! TODO:
+ *  !! The ADQL draft spec has
+ *  !! <sort_key> ::= <column_name> | <unsigned_integer> 
  * bnf-end 
  *
  * bnf-single <ordering_specification> ::= ASC | DESC
@@ -2449,7 +2538,8 @@ void overlaps_predicate_S() : {}
  *
  * bnf-start
  *  <pattern> ::= <character_string_literal>
- *  !! SQL92 uses <character_value_expression>
+ *  !! TODO:
+ *  !! The ADQL draft spec in effect uses <character_value_expression>
  * bnf-end
  *
  */
@@ -2477,10 +2567,22 @@ void pattern_A() :
  *   | <like_predicate>
  *   | <null_predicate>
  *     <exists_predicate>
- *  !! Yet to be supported:
- *     <quantified_comparison_predicate>,
- *     <unique_predicate>, <match_predicate>, 
- *     <overlaps_predicate>, <region_predicate> 
+ *  !! TODO:
+ *  !! The ADQL draft spec has <region_predicate> 
+ *  !! 
+ *  !! <region_predicate> ::= 
+ *  !!   <table_reference> <period> REGION 
+ *  !!   <left_paren> 
+ *  !!   <region_specification>
+ *  !!   [ <comma> <column_reference> [ { <comma> <column_reference> }... ] ]
+ *  !!   <right_paren>
+ *  !!
+ *  !! <region_specification> ::= 
+ *  !! Region definition from STC schema here
+ *  !!
+ *  !! SQL92 also supports the following predicates: 
+ *  !! <quantified_comparison_predicate>, <unique_predicate>, 
+ *  !! <match_predicate> and <overlaps_predicate>
  * bnf-end
  *
  */
@@ -2635,7 +2737,10 @@ void qualified_name_A() #QualifiedName :
  *
  * bnf-start
  *    <schema_name> ::= <identifier>
- *    !!SQL92 has <schema name> ::= [ <catalog name> <period> ] <unqualified schema name>
+ *    !! TODO:
+ *    !! The ADQL draft spec has
+ *    !! <schema_name> ::= [ <identifier> <period> ] <identifier>
+ *    !! The implementation definition represents a kludge at the moment. 
  * bnf-end
  *
  */
@@ -2655,10 +2760,9 @@ void schema_name_A() #SchemaName :
 
 /*
  * 
- *
  * bnf-start
  *  <qualifier> ::= <table_name> 
- *  !! SQL92 also has <correlation_name>
+ *  !! For information, SQL92 also has <correlation_name>
  * bnf-end
  *
  */
@@ -2694,7 +2798,6 @@ void qualifier_A() :
  *      [ <group_by_clause> ]
  *      [ <having_clause> ]
  *      [ <order_by_clause> ]
- * !! ADQL adds <order_by_clause>
  * bnf-end 
  *
  */
@@ -2908,7 +3011,9 @@ void allSelectionItem() #AllSelectionItem :
  * bnf-start
  *  <select_sublist> ::=
  *      <derived_column>
- *  !! SQL92 also has <qualifier> <period> <asterisk>
+ *  !! TODO:
+ *  !! The ADQL draft spec has
+ *  !! <select_sublist> ::= <derived_column> | <qualifier> <period> <asterisk>
  * bnf-end
  *
  */
@@ -3002,7 +3107,6 @@ void set_function_specification_part_fragment() #SetFunctionSpecificationPartFra
  *
  * bnf-start
  *  <set_limit> ::= TOP <unsigned_integer>
- *  !! SQL92 has no equivalent construct
  * bnf-end
  *
  */
@@ -3080,7 +3184,7 @@ void start_field_S() : {}
  * bnf-start
  *  <string_value_expression> ::=
  *      <character_value_expression>
- *  !! SQL92 also supports <bit_value_expression>
+ *  !! For information, SQL92 also supports <bit_value_expression>
  * bnf-end
  *
  */
@@ -3295,6 +3399,9 @@ void simple_table_S() : {}
  * bnf-start
  *  <table_name> ::=
  *      <identifier>
+ *  !! TODO:
+ *  !! The ADQL draft spec has
+ *  !! <table_name> ::= [ <schema_name> <period> ] <identifier>
  * bnf-end
  *
  */
@@ -3319,7 +3426,12 @@ void table_name_A() #TableName :
  *  <table_reference> ::=
  *      [ <schema_name> <period> ] <table_name> [ [ AS ] <correlation_name> ] 
  *    | <joined_table> 
- *  !! SQL92 also supports <derived_table> and <derived_column_list>
+ *  !! TODO:
+ *  !! The ADQL draft spec has
+ *  !! <table_reference> ::=
+ *  !!    <table_name> [ <correlation_specification> ]
+ *  !!  | <table_subquery> <correlation specification>
+ *  !!  | <joined_table>
  * bnf-end
  *
  */
@@ -3385,7 +3497,7 @@ void tableReferenceBarJoinedTable() #TableReferenceBarJoinedTable :
  * bnf-start
  *  <table_subquery> ::= 
  *      <left_paren> <query_specification> <right_paren>
- *  !! SQL92 uses <subquery>
+ *  !! SQL92 uses <subquery>. Not sure whether this is relevant.
  * bnf-end
  *
  */
@@ -3509,7 +3621,6 @@ void time_zone_S() : {}
  *    | COT <left_paren> <numeric_value_expression> <right_paren>
  *    | SIN <left_paren> <numeric_value_expression> <right_paren>
  *    | TAN <left_paren> <numeric_value_expression> <right_paren>
- *  !! Specific to ADQL
  * bnf-end
  *
  */
@@ -3626,6 +3737,9 @@ void approximate_numeric_literal_S() #ApproximateNumericLiteral : {}
  *  <unsigned_value_specification> ::=
  *      <unsigned_literal>
  *    | <general_value_specification>
+ *  !! TODO:
+ *  !! The ADQL draft does not have <general_value_specification>
+ *  !! Investigate.
  * bnf-end
  *
  */
@@ -3647,8 +3761,7 @@ void unsigned_value_specification_S() : {}
  *  <value_expression> ::=
  *	    <numeric_value_expression>
  *    | <string_value_expression>
- *  !! SQL92 also supports <datetime_value_expression>
- *     and <interval_value_expression>
+ *  !! For information only, SQL92 supports <datetime_value_expression> and <interval_value_expression>
  * bnf-end
  *
  */
@@ -3692,7 +3805,9 @@ void value_expression_A() #ValueExpression :
  *
  * bnf-start
  * <variable_specification> ::=
- *  !! Yet to be worked out.
+ *  !! TODO:
+ *  !! Not in the ADQL draft spec.
+ *  !! Part of an experiment. Yet to be worked out.
  * bnf-end
  *
  */
@@ -3739,6 +3854,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.4  2007/07/12 13:40:58  jl99
+Added extensive BNF comments which highlight differences from ADQL draft spec
+
 Revision 1.3  2007/07/10 21:04:39  jl99
 some javadoc added
 
