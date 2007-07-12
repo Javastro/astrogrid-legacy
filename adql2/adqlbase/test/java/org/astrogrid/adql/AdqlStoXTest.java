@@ -1,4 +1,4 @@
-/*$Id: AdqlStoXTest.java,v 1.1 2007/06/28 09:07:49 jl99 Exp $
+/*$Id: AdqlStoXTest.java,v 1.2 2007/07/12 13:45:07 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -27,6 +27,7 @@ import org.astrogrid.adql.beans.SelectType;
 import org.astrogrid.xml.DomHelper;
 import org.custommonkey.xmlunit.XMLTestCase;
 import org.w3c.dom.Document;
+import org.apache.xmlbeans.XmlCursor;
 
 import org.apache.log4j.Logger ;
 import org.apache.log4j.Level ;
@@ -231,7 +232,7 @@ public class AdqlStoXTest extends XMLTestCase {
     
     // JL note:
     // need to try the next two tests for memory on separate threading basis as well.
-    public void testMemoryUsageWithReinit() throws OutOfMemoryError {
+    public void _testMemoryUsageWithReinit() throws OutOfMemoryError {
         // NB: (JL) I've tried this with the setting set to 1000000 and it worked.
         //
         // Turn off all logging.
@@ -301,7 +302,7 @@ public class AdqlStoXTest extends XMLTestCase {
                
     }
     
-    public void testMemoryUsageWithoutReinit() throws OutOfMemoryError {
+    public void _testMemoryUsageWithoutReinit() throws OutOfMemoryError {
         //
         // Turn off all logging.
         // Precaution in case the log level is set inappropriately,
@@ -379,13 +380,18 @@ public class AdqlStoXTest extends XMLTestCase {
         String[] comments = new String[2] ;
         try {
             compiler = getCompiler( currentSFile ) ;
-            SelectType select = (SelectType)compiler.execFragment( fragmentContext, comments ) ;   
-            SelectDocument selectDoc = SelectDocument.Factory.newInstance() ;
+            //
+            // NB: This test currently applies only to a top level select...
+            SelectDocument selectDoc ;
+            SelectDocument.Select select = (SelectDocument.Select)compiler.execFragment( fragmentContext, comments ) ;   
+            XmlCursor cursor = select.newCursor() ;
+            cursor.toParent() ;
+            selectDoc = (SelectDocument)cursor.getObject() ;
             selectDoc.setSelect( select ) ;
             compiler.writeHeaderAndTrailerComments( selectDoc, selectDoc.getSelect(), comments ) ;
             printCompilation( selectDoc ) ;          
             assertTrue( currentSFile.getName() + ": Compilation succeeded when not expected.", currentXFile != null ) ; 
-            compareCompilations( selectDoc, currentXFile ) ;       
+            compareCompilations( selectDoc, currentXFile ) ;                  
         }
         catch( Exception ex ) {
             if( currentXFile != null ) {
@@ -509,7 +515,7 @@ public class AdqlStoXTest extends XMLTestCase {
 		// Normalize just to be sure 
 		compiledDom.normalize();
 		fileDom.normalize();
-
+        
 		// Using xmlunit to compare documents
 		setIgnoreWhitespace(true);
 		assertXMLEqual("Adql/s does not compile to what is expected!",compiledDom, fileDom);
@@ -692,10 +698,14 @@ public class AdqlStoXTest extends XMLTestCase {
 
 
 /* $Log: AdqlStoXTest.java,v $
- * Revision 1.1  2007/06/28 09:07:49  jl99
- * Creation of temporary project adql2 to explore complexities of moving
- * ADQL to conform to the draft spec of April 2007.
+ * Revision 1.2  2007/07/12 13:45:07  jl99
+ * Accommodating top Select element for fragmet processing.
+ * Explicit Select element required for version number.
  *
+/* Revision 1.1  2007/06/28 09:07:49  jl99
+/* Creation of temporary project adql2 to explore complexities of moving
+/* ADQL to conform to the draft spec of April 2007.
+/*
 /* Revision 1.14  2007/06/06 18:21:05  jl99
 /* Merge of branch adql-jl-2135
 /*
