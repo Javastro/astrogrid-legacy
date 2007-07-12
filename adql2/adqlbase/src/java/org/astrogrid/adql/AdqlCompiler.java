@@ -76,20 +76,22 @@ public class AdqlCompiler {
 	public static final String ARRAY_OF_FROM_TABLE_TYPE = ArrayOfFromTableType.type.getShortJavaName() ;
 	public static final String ALIAS_SELECTION_ITEM_TYPE = AliasSelectionItemType.type.getShortJavaName() ;
     
-    public static HashMap SchemaPrefixes = new HashMap() ;
-    static {
-        SchemaPrefixes.put( "urn:astrogrid:schema:ADQL:v2.0", "adql" ) ;
-    }
-    public static HashMap ImplicitNamespaces = new HashMap() ;
-    static {
-        ImplicitNamespaces.put( "adql", "urn:astrogrid:schema:ADQL:v2.0" ) ;
-//        ImplicitNamespaces.put( "urn", "urn:astrogrid:schema:ADQL:v2.0" ) ;
-    }
+    private int prettyPrintIndent = 2 ;
     
-    public static HashMap SubstituteNamespaces = new HashMap() ;
-    static {
-        SubstituteNamespaces.put( "urn:astrogrid:schema:ADQL:v2.0", "http://www.org.astrogrid/schema/adql" ) ;
-    }                              
+//    public static HashMap SchemaPrefixes = new HashMap() ;
+//    static {
+//        SchemaPrefixes.put( "urn:astrogrid:schema:ADQL:v2.0", "adql" ) ;
+//    }
+//    public static HashMap ImplicitNamespaces = new HashMap() ;
+//    static {
+//        ImplicitNamespaces.put( "adql", "urn:astrogrid:schema:ADQL:v2.0" ) ;
+////        ImplicitNamespaces.put( "urn", "urn:astrogrid:schema:ADQL:v2.0" ) ;
+//    }
+//    
+//    public static HashMap SubstituteNamespaces = new HashMap() ;
+//    static {
+//        SubstituteNamespaces.put( "urn:astrogrid:schema:ADQL:v2.0", "http://www.org.astrogrid/schema/adql" ) ;
+//    }                              
 		      
     public static final int[] SELECTION_LIST_SKIP_TO = { 
     	AdqlStoXConstants.FROM,
@@ -135,30 +137,28 @@ public class AdqlCompiler {
       * <p>
       * A suitable script, which obeys the following pseudo code,
       * should come with the distribution.
-      * <p>
+      * <blockquote><pre>
       * Establish CLASSPATH to resolve dependencies<br/>
-      * <blockquote>
+      * 
       * If number of args > 0
       *    java org.astrogrid.adql.AdqlCompiler args
       * Else
       *    java org.astrogrid.adql.AdqlCompiler
-      * </blockquote>   
+      * </pre></blockquote>   
       * This mode is not intended as an interactive conversation. If this is 
       * desired, see org.astrogrid.adql.Interactive
-      * 
-      * org.astrogrid.adql.AdqlStoX
       * 
       */
      public static void main( String args[] ) {
                             
          if( args.length > 1 ) {
-             System.err.print( "Too many input arguments." ) ;
+             System.err.println( "Too many input arguments." ) ;
          }
          else {
              String query ;
              AdqlCompiler compiler = null ;
              if( args.length == 0 ) {
-                 System.err.print( "No input argument. Trying stdin." ) ;
+                 System.err.println( "No input argument. Trying stdin." ) ;
                  query = getQueryFromStdin() ;
                  StringReader reader = new StringReader( query ) ;
                  compiler = new AdqlCompiler( reader ) ;
@@ -172,11 +172,11 @@ public class AdqlCompiler {
              }
              
              if( compiler == null ) {
-                 System.err.print( "Cannot resolve input argument either to a file or a query." ) ;
+                 System.err.println( "Cannot resolve input argument either to a file or a query." ) ;
              }
              else {
                  try {
-                     System.out.print( compiler.compileToXmlText() + '\n' ) ;
+                     System.out.println( compiler.compileToXmlText() + '\n' ) ;
                  }
                  catch( AdqlException aex ) {
                      System.err.println( "Following errors reported: " ) ;
@@ -212,7 +212,7 @@ public class AdqlCompiler {
          try {
              int ch = System.in.read() ;
              while( ch != -1 ) {
-                 buffer.append( ch ) ;
+                 buffer.append( (char)ch ) ;
                  if( ch == ';' )
                      break ;
                  ch = System.in.read() ;
@@ -308,7 +308,7 @@ public class AdqlCompiler {
 		        opts.setSaveOuter() ;
 		        opts.setSaveAggressiveNamespaces() ;
 		        opts.setSavePrettyPrint() ;
-		        opts.setSavePrettyPrintIndent(4) ;
+		        opts.setSavePrettyPrintIndent( prettyPrintIndent ) ;
                               
                 // Create an error listener.
                 ArrayList errorList = new ArrayList() ;
@@ -365,7 +365,7 @@ public class AdqlCompiler {
                 opts.setSaveOuter() ;
                 opts.setSaveAggressiveNamespaces() ;
                 opts.setSavePrettyPrint() ;
-                opts.setSavePrettyPrintIndent(4) ;
+                opts.setSavePrettyPrintIndent( prettyPrintIndent ) ;
                 log.debug( "Compilation produced: " 
                          + xmlObject.xmlText(opts) ) ;
          }
@@ -381,10 +381,10 @@ public class AdqlCompiler {
 		opts.setSaveOuter() ;
 //        opts.setSaveSuggestedPrefixes( SchemaPrefixes ) ;
         opts.setSaveNamespacesFirst() ;
+        opts.setSaveAggressiveNamespaces() ;
 		if( prettyPrint ) {		
-		   opts.setSaveAggressiveNamespaces() ;
 		   opts.setSavePrettyPrint() ;
-		   opts.setSavePrettyPrintIndent(4) ; 
+		   opts.setSavePrettyPrintIndent( prettyPrintIndent ) ; 
 		}
 		return exec().xmlText(opts) ; 
 	}
@@ -401,11 +401,11 @@ public class AdqlCompiler {
 	                                      , boolean prettyPrint ) throws AdqlException {
 		XmlOptions opts = new XmlOptions();
 	    opts.setSaveOuter() ;
-        opts.setSaveSuggestedPrefixes( SchemaPrefixes ) ;
+        opts.setSaveAggressiveNamespaces() ;
+//        opts.setSaveSuggestedPrefixes( SchemaPrefixes ) ;
 		if( prettyPrint ) {
-		   opts.setSaveAggressiveNamespaces() ;
 		   opts.setSavePrettyPrint() ;
-		   opts.setSavePrettyPrintIndent(4) ;
+		   opts.setSavePrettyPrintIndent( prettyPrintIndent ) ;
 		}
 		return execFragment( contextPath ).xmlText(opts) ; 
 	}
@@ -1376,6 +1376,22 @@ public class AdqlCompiler {
            if( log.isTraceEnabled() ) exitTrace ( "selectSublistEnsureCommaOrFrom()" ) ;
         } 
        
+    }
+
+
+    /**
+     * @return the prettyPrintIndent
+     */
+    public int getPrettyPrintIndent() {
+        return this.prettyPrintIndent ;
+    }
+
+
+    /**
+     * @param prettyPrintIndent 
+     */
+    public void setPrettyPrintIndent( int prettyPrintIndent ) {
+        this.prettyPrintIndent = prettyPrintIndent ;
     }
     
 }
