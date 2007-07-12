@@ -13,7 +13,7 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.TaskInvoker;
+import org.astrogrid.desktop.modules.ui.TaskRunnerInternal;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 
 /** invoke a cea task.
@@ -21,18 +21,18 @@ import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 26, 20075:25:43 PM
  */
-public class CeaActivity extends AbstractFileOrResourceActivity {
+public class TaskRunnerActivity extends AbstractFileOrResourceActivity {
 /**
  * 
  */
-public CeaActivity(TaskInvoker t) {
-	CSH.setHelpIDString(this, "resourceTask.cea");		
+public TaskRunnerActivity(TaskRunnerInternal t) {
+	CSH.setHelpIDString(this, "resourceActivity.taskRunner");		
 	this.t = t;
-	setText(DevSymbols.PROBLEM + " Execute Task");
+	setText("Execute Task");
 	setIcon(IconHelper.loadIcon("exec16.png"));
 	setToolTipText("Invoke the selected long running task");
 }
-private final TaskInvoker t;
+private final TaskRunnerInternal t;
 private Resource currentResource;
 private FileObject currentFile;
 
@@ -44,13 +44,13 @@ public void noneSelected() {
 
 	public void actionPerformed(ActionEvent e) {
 		if (currentResource != null) {
-		(new BackgroundWorker(uiParent.get(),"Opening task launcher") {
+	//	(new BackgroundWorker(uiParent.get(),"Opening task launcher") {
 
-			protected Object construct() throws Exception {
+			//protected Object construct() throws Exception {
 				t.invokeTask(currentResource);
-				return null;
-			}
-		}).start();
+			//	return null;
+		//	}
+		//}).start();
 		} else if (currentFile != null) {
 			//@todo implement.
 		}

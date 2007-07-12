@@ -110,25 +110,6 @@ TOOL EDITOR - TODO - reimplement using regExplorer.
 	<contribution configuration-id="toolEditors">
 		<object>service:adqlPanel</object>
 		<object>service:basicPanel</object>
-		<object>service:securityPanel</object>
-	</contribution>
-	
-	<!--  subsets used within main UI windows -->
-	<configuration-point id="regScopeToolEditors" schema-id="system.objects">
-		List of tool editors to use for the registryScope app Launcher - temporary fix until something better is written.
-	</configuration-point>
-	<contribution configuration-id="regScopeToolEditors">
-		<object>service:basicPanel</object>
-		<object>service:securityPanel</object>
-	</contribution>
-
-	<configuration-point id="regScopeQueryEditors" schema-id="system.objects">
-		List of tool editors to use for the registryScope query editor - temporary fix until something better is written
-	</configuration-point>
-	<contribution configuration-id="regScopeQueryEditors">
-		<object>service:adqlPanel</object>
-		<object>service:basicPanel</object>
-		<object>service:securityPanel</object>
 	</contribution>
 	
 		<contribution configuration-id="system.uiStructure">
@@ -286,15 +267,6 @@ which ones to display, and in which order, is specified in the program code.-->
 				<service>astrogrid.myspace</service>
 				<service>ivoa.registry</service>
 				<object>preference:acr.advanced</object>		
-			</construct>
-		</invoke-factory>
-	</service-point>	
-	
-	<service-point id="securityPanel" visibility="private" interface="org.astrogrid.desktop.modules.dialogs.editors.ToolEditorPanelFactory">
-		Allows user to provide credentials to the service
-		<invoke-factory model="session">
-			<construct class="org.astrogrid.desktop.modules.dialogs.editors.SecurityToolEditorPanelFactory">
-				<service>astrogrid.community</service>
 			</construct>
 		</invoke-factory>
 	</service-point>				

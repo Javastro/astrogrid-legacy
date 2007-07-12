@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.23 2007/04/18 15:47:10 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.24 2007/07/12 10:17:42 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -247,12 +247,7 @@ public class ApplicationsImpl implements ApplicationsInternal {
 public Tool createTemplateTool(String interfaceName, CeaApplication descr) throws IllegalArgumentException {
     if (interfaceName != null && (! interfaceName.equals("default"))) {
         InterfaceBean[] ifaces = descr.getInterfaces();
-        InterfaceBean iface = null;
-        for (int i = 0; i < ifaces.length; i++) {
-            if (ifaces[i].getName().equals(interfaceName)) {
-                iface =ifaces[i];
-            }
-        }
+        InterfaceBean iface = findInterface(interfaceName, ifaces);
         if (iface == null) {
             throw new IllegalArgumentException("Cannot find interface named " + interfaceName );
         }
@@ -260,6 +255,18 @@ public Tool createTemplateTool(String interfaceName, CeaApplication descr) throw
     } else {
         return createTool(descr,null);
     }
+}
+
+
+
+public static InterfaceBean findInterface(String interfaceName, InterfaceBean[] ifaces) {
+	InterfaceBean iface = null;
+	for (int i = 0; i < ifaces.length; i++) {
+	    if (ifaces[i].getName().equals(interfaceName)) {
+	        iface =ifaces[i];
+	    }
+	}
+	return iface;
 }
 
 private Tool createTool(CeaApplication descr,InterfaceBean iface) {
@@ -457,9 +464,10 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
             count++;
             results.next();
         }
-        if (count < bean.getMin() || count > bean.getMax()) {
+        //fix for bz2158
+        if (count < bean.getMin() || (bean.getMax() > 0 && count > bean.getMax())) {
             throw new InvalidArgumentException("Parameter " + bean.getRef() + " occurs " + count +". Should occur between " 
-                    + bean.getMin() + " and " + bean.getMax() + " times");
+                    + bean.getMin() + " and " + (bean.getMax() == 0 ? "unlimited" : Integer.toString(bean.getMax())) + " times");
         }
     }
         
@@ -616,6 +624,9 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.24  2007/07/12 10:17:42  nw
+task runner ui
+
 Revision 1.23  2007/04/18 15:47:10  nw
 tidied up voexplorer, removed front pane.
 

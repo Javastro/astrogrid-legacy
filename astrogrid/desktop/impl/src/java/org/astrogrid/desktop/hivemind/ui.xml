@@ -185,22 +185,28 @@ ASTROSCOPE
 
 	<!-- -
 	====================================
-	SIMPLIFIED APP LAUNCHER
+	TASK RUNNER
 	 -->
-	<service-point id="simpleApplicationLauncher" interface="org.astrogrid.desktop.modules.ui.TaskInvoker">
+	<service-point id="applicationLauncher" interface="org.astrogrid.desktop.modules.ui.TaskRunnerInternal">
 		<interceptor service-id="system.snitchInterceptor" />
 		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.ui.SimplifiedAppLauncherFactory">
+			<construct class="org.astrogrid.desktop.modules.ui.TaskRunnerFactory">
+			<!-- todo: simplify these deps - most aren't used. -->
 				<service>system.ui</service>
-				<configuration>dialogs.regScopeToolEditors</configuration>
 				<service>dialogs.resourceChooser</service>
 				<service>astrogrid.applications</service>
 				<service>astrogrid.myspace</service>
+				<service>dialogs.registryGoogle</service>
 				<object>preference:acr.advanced</object>
+				<service>astrogrid.processManager</service>
 <!--				<event-listener service-id="builtin.shutdown" />						-->
 			</construct>
 		</invoke-factory>	
 	</service-point>
+	
+	<contribution configuration-id="system.windowFactories">
+		<window name="Task Runner">service:applicationLauncher</window>
+	</contribution>
 
 
 <!--  
@@ -212,7 +218,7 @@ Stand-alone Query Builder
 		<interceptor service-id="system.snitchInterceptor" />
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.adqlEditor.QueryBuilderFactory">
-				<configuration>dialogs.regScopeQueryEditors</configuration>
+				<configuration>dialogs.toolEditors</configuration>
 				<service>dialogs.resourceChooser</service>
 				<service>astrogrid.applications</service>
 				<service>astrogrid.myspace</service>
@@ -364,8 +370,8 @@ ACTIONS
 			<inject object="service:queryBuilder"/>
 			<inject name="section" object="literal:string:use" />			
 		</object>		
-		<object name="0cea" class="org.astrogrid.desktop.modules.ui.actions.CeaActivity">
-			<inject object="service:simpleApplicationLauncher"/>
+		<object name="0cea" class="org.astrogrid.desktop.modules.ui.actions.TaskRunnerActivity">
+			<inject object="service:applicationLauncher"/>
 			<inject name="section" object="literal:string:use" />			
 		</object>
 		<object name="1viewBrowser" class="org.astrogrid.desktop.modules.ui.actions.ViewInBrowserActivity">
