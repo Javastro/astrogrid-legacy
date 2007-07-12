@@ -3,35 +3,17 @@
  */
 package org.astrogrid.desktop.modules.ui.voexplorer.google;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.text.StrBuilder;
-import org.apache.commons.lang.text.StrMatcher;
-import org.apache.commons.lang.text.StrTokenizer;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.geom.AffineTransform;
 import java.util.Comparator;
 
-import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.ComboBoxEditor;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
@@ -48,20 +30,24 @@ import javax.swing.Timer;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.EventListenerList;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.text.JTextComponent;
 
-import jedit.JEditTextArea;
-import jedit.SyntaxDocument;
-
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.text.StrBuilder;
+import org.apache.commons.lang.text.StrMatcher;
+import org.apache.commons.lang.text.StrTokenizer;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceFormatter;
 import org.astrogrid.desktop.modules.system.CSH;
-import org.astrogrid.desktop.modules.ui.comp.ExternalViewerHyperlinkListener;
+import org.astrogrid.desktop.modules.ui.comp.ResourceDisplayPane;
 import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
+import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.votech.Annotation;
 import org.astrogrid.desktop.modules.votech.AnnotationService;
 import org.astrogrid.desktop.modules.votech.AnnotationSource;
@@ -72,14 +58,12 @@ import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FunctionList;
 import ca.odell.glazedlists.SortedList;
-import ca.odell.glazedlists.TransformedList;
 import ca.odell.glazedlists.FunctionList.Function;
 import ca.odell.glazedlists.swing.JEventListPanel;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-import com.l2fprod.common.swing.JCollapsiblePane;
 
 /** displays resource as formatted html.
  * @fixme catch shutdown /window close and save last results if editor is dirty.
@@ -87,7 +71,7 @@ import com.l2fprod.common.swing.JCollapsiblePane;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 13, 20072:32:38 PM
  */
-public class AnnotatedResourceViewer extends JEditorPane implements ResourceViewer, AnnotationProcessor, ActionListener {
+public class AnnotatedResourceViewer extends ResourceDisplayPane implements ResourceViewer, AnnotationProcessor, ActionListener {
 	/**
 	 * Logger for this class
 	 */
@@ -95,7 +79,7 @@ public class AnnotatedResourceViewer extends JEditorPane implements ResourceView
 			.getLog(AnnotatedResourceViewer.class);
 
 	public AnnotatedResourceViewer(final BrowserControl browser, final RegistryBrowser regBrowser, AnnotationService annService) {
-		super();
+		super(browser, regBrowser);
 		this.annService = annService;
 		userSource = annService.getUserAnnotationSource();
 		
@@ -103,16 +87,9 @@ public class AnnotatedResourceViewer extends JEditorPane implements ResourceView
 		lingerTimer = new Timer(1000,this); //@todo make the linger time a peference.
 		lingerTimer.setCoalesce(true);
 		lingerTimer.setRepeats(false);
-		hyperLinkHandler = new ExternalViewerHyperlinkListener(browser, regBrowser);
-		
+		hyperLinkHandler = getHyperlinkListeners()[0];
+			
 		CSH.setHelpIDString(this, "reg.details");
-		setContentType("text/html");
-		setBorder(BorderFactory.createEmptyBorder());
-		setEditable(false);
-		putClientProperty("JEditorPane.honorDisplayProperties", Boolean.TRUE);		// this key is only defined on 1.5 - no effect on 1.4
-        setFont(font);
-		addHyperlinkListener(hyperLinkHandler);
-		clear();
 		
 		// sort the list, then map into JPanels.
 		FunctionList annotationsPanels = new FunctionList(new SortedList(annotations,new Comparator() {
@@ -182,7 +159,7 @@ public class AnnotatedResourceViewer extends JEditorPane implements ResourceView
 	private final JScrollPane scrollPane;
 	private final AnnotationService annService;
 	private final Timer lingerTimer;
-	private final ExternalViewerHyperlinkListener hyperLinkHandler;
+	private final HyperlinkListener hyperLinkHandler;
 	
 	public void clear() {
 		lingerTimer.stop();
@@ -274,10 +251,6 @@ public class AnnotatedResourceViewer extends JEditorPane implements ResourceView
 		}
 	}
 	
-	// shared resources for annotationPanel.
-	//@todo work out how to get ui font here instead.
-	private static final Font font = Font.decode("Helvetica")	;	
-	private static final Font smallfont = Font.decode("Dialog").deriveFont(AffineTransform.getScaleInstance(0.9,0.9));		
 	/** class that displays an 'external' annotation.
 	 * Only displays those fields which are set.
 	 * Uneditable, obviously.
@@ -298,11 +271,11 @@ public class AnnotatedResourceViewer extends JEditorPane implements ResourceView
 			String t = StringUtils.trimToNull(ann.getAlternativeTitle());
 			if (t != null) {
 				title = new JTextField();
-				title.setFont(smallfont);
+				title.setFont(UIConstants.SMALL_DIALOG_FONT);
 				title.setEditable(false);
 				title.setText(t);
 				title.setBorder(BorderFactory.createEmptyBorder());
-				builder.addLabel("Alternative title",cc.xy(2,1)).setFont(smallfont);
+				builder.addLabel("Alternative title",cc.xy(2,1)).setFont(UIConstants.SMALL_DIALOG_FONT);
 				builder.add(title,cc.xy(2,3));
 			} else {
 				title = null;
@@ -315,10 +288,10 @@ public class AnnotatedResourceViewer extends JEditorPane implements ResourceView
 				note.setBorder(BorderFactory.createEmptyBorder());
 				note.setEditable(false);
 				note.putClientProperty("JEditorPane.honorDisplayProperties", Boolean.TRUE);		// this key is only defined on 1.5 - no effect on 1.4
-		        note.setFont(font);
+		        note.setFont(UIConstants.SANS_FONT);
 				note.addHyperlinkListener(hyperLinkHandler);				
 				note.setText(n);
-			//	builder.addLabel("Notes",cc.xy(2,5)).setFont(smallfont);				
+			//	builder.addLabel("Notes",cc.xy(2,5)).setFont(SMALL_FONT);				
 				builder.add(note,cc.xy(2,5));
 			} else {
 				note = null;
@@ -327,13 +300,13 @@ public class AnnotatedResourceViewer extends JEditorPane implements ResourceView
 			String[] ta = ann.getTags();
 			if (ta != null && ta.length > 0) {
 				tags = new JTextField();
-				tags.setFont(smallfont);
+				tags.setFont(UIConstants.SMALL_DIALOG_FONT);
 				tags.setEditable(false);
 				StrBuilder sb = new StrBuilder();
 				sb.appendWithSeparators(ta,", ");
 				tags.setText(sb.toString());
 				tags.setBorder(BorderFactory.createEmptyBorder());
-				builder.addLabel("Tags",cc.xy(2,7)).setFont(smallfont);
+				builder.addLabel("Tags",cc.xy(2,7)).setFont(UIConstants.SMALL_DIALOG_FONT);
 				builder.add(tags,cc.xy(2,9));
 			} else {
 				tags = null;
@@ -344,7 +317,7 @@ public class AnnotatedResourceViewer extends JEditorPane implements ResourceView
 					,ann.getSource().getName()
 					,TitledBorder.LEFT
 					,TitledBorder.TOP
-					,smallfont
+					,UIConstants.SMALL_DIALOG_FONT
 					,Color.GRAY
 					));
 		}
@@ -375,7 +348,7 @@ public class AnnotatedResourceViewer extends JEditorPane implements ResourceView
 			int row = 1;
 
 			check = new JCheckBox("Flag");
-			check.setFont(smallfont);
+			check.setFont(UIConstants.SMALL_DIALOG_FONT);
 			check.setBackground(Color.white);
 			check.addItemListener(this);
 			builder.add(check,cc.xyw(2,row++,3));
@@ -401,17 +374,17 @@ public class AnnotatedResourceViewer extends JEditorPane implements ResourceView
 					 dirty= true;
 				}
 			});
-			builder.addLabel("Highlight",cc.xy(2,row,"right, center")).setFont(smallfont);
+			builder.addLabel("Highlight",cc.xy(2,row,"right, center")).setFont(UIConstants.SMALL_DIALOG_FONT);
 			builder.add(colours,cc.xy(4,row++));			
 
 			row++;
 
 			title = new JTextField();
 			title.setEditable(true);
-			title.setFont(smallfont);
+			title.setFont(UIConstants.SMALL_DIALOG_FONT);
 			title.getDocument().addDocumentListener(this);
 
-			builder.addLabel("Alternative title",cc.xyw(2,row++,3)).setFont(smallfont);
+			builder.addLabel("Alternative title",cc.xyw(2,row++,3)).setFont(UIConstants.SMALL_DIALOG_FONT);
 			row++;
 			builder.add(title,cc.xyw(2,row++,3));
 			row++;
@@ -422,19 +395,19 @@ public class AnnotatedResourceViewer extends JEditorPane implements ResourceView
 			note.setWrapStyleWord(true);
 			note.setEditable(true);
 			//note.putClientProperty("JEditorPane.honorDisplayProperties", Boolean.TRUE);		// this key is only defined on 1.5 - no effect on 1.4
-	        note.setFont(smallfont);	
+	        note.setFont(UIConstants.SMALL_DIALOG_FONT);	
 	        JScrollPane sp = new JScrollPane(note,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-			builder.addLabel("Notes",cc.xyw(2,row++,3)).setFont(smallfont);
+			builder.addLabel("Notes",cc.xyw(2,row++,3)).setFont(UIConstants.SMALL_DIALOG_FONT);
 			row++;			
 	        builder.add(sp,cc.xyw(2,row++,3));
 	        
 	        row++;
 			tags = new JTextField();
-			tags.setFont(smallfont);
+			tags.setFont(UIConstants.SMALL_DIALOG_FONT);
 			tags.setEditable(true);
 			tags.getDocument().addDocumentListener(this);
 
-			builder.addLabel("Tags",cc.xyw(2,row++,3)).setFont(smallfont);
+			builder.addLabel("Tags",cc.xyw(2,row++,3)).setFont(UIConstants.SMALL_DIALOG_FONT);
 			row++;
 			builder.add(tags,cc.xyw(2,row++,3));
 
@@ -444,7 +417,7 @@ public class AnnotatedResourceViewer extends JEditorPane implements ResourceView
 					,"Annotate"
 					,TitledBorder.LEFT
 					,TitledBorder.TOP
-					,smallfont
+					,UIConstants.SMALL_DIALOG_FONT
 					,Color.GRAY
 			));		
 		}
