@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.63 2007/05/18 06:15:36 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.64 2007/07/12 10:14:57 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -406,7 +406,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		mb.add(actions);
 		mb.add(getContext().createWindowMenu(this));		
 		
-		mb.add(Box.createHorizontalGlue());
+//		mb.add(Box.createHorizontalGlue());
 		mb.add(createHelpMenu());
 		this.setJMenuBar(mb);
 
