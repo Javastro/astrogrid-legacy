@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.8 2007/07/13 14:36:57 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.9 2007/07/13 15:17:02 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -2612,7 +2612,9 @@ void pattern_A() :
  *   | <in_predicate>
  *   | <like_predicate>
  *   | <null_predicate>
- *     <exists_predicate>
+ *   | <exists_predicate>
+ *   | <region_predicate>
+ * 
  *  !! TODO:
  *  !! The ADQL draft spec has <region_predicate> 
  *  !! 
@@ -2698,12 +2700,34 @@ void predicate_A() :
     }
 }
 
+
+/*
+ * region_predicate_A
+ *
+ * bnf-start
+ *  <region_predicate_J2000>
+ *	|
+ *	<region_predicate_latlon>
+ *	|
+ *	<region_predicate_cartesian>
+ * bnf-end
+ *
+ */
 void region_predicate_A() : {}
 {
 	region_predicate_J2000_A()
 //	|//	region_predicate_latlon_A()//	|//	region_predicate_cartesian_A()	
 }
 
+/*
+ * region_predicate_J2000_A
+ *
+ * bnf-start
+ *  <region_predicate_J2000> ::=
+ *     <point_J2000> [ NOT ] IN <region_specification_J2000>	
+ * bnf-end
+ *
+ */
 void region_predicate_J2000_A() : {}
 {
 	point_J2000_A() [ <NOT> ] <IN> region_specification_J2000_A()	
@@ -2711,7 +2735,25 @@ void region_predicate_J2000_A() : {}
 
 //void region_predicate_latlon_A() : {}//{//	point_latlon() [ <NOT> ] <IN> region_specification_latlon_A()	//}////void region_predicate_cartesian_A() : {}//{//	point_cartesian() [ <NOT> ] <IN> region_specification_cartesian_A()	//}
 
-
+/*
+ * point_J2000_A
+ *
+ * bnf-start
+ *  <point_J2000> ::= LEFT_PAREN <ra> COMMA <dec> RIGHT_PAREN
+ * bnf-end
+ *
+ * bnf-single <ra> ::= <numeric_value_expression>
+ * bnf-single <dec> ::= <numeric_value_expression>
+ *
+ * bnf-start
+ *  <direction> ::= <numeric_value_expression>
+ *  !! The distance along the normal vector where the constraint plane intersects that vector. 
+ *  !! If positive, the spherical sector on the far side (seen from the center) is selected.
+ *  !! If negative, the point of intersection is in the opposite direction of the vector, resulting in more than a hemisphere.
+ *  !! The valid range is -1.0 to +1.0
+ * bnf-end
+ *
+ */
 void point_J2000_A() : {}
 {
 	<LEFT_PAREN>
@@ -2719,20 +2761,46 @@ void point_J2000_A() : {}
 	<RIGHT_PAREN>
 }
 
+/*
+ * region_specification_J2000_A
+ *
+ * bnf-start
+ *  <convex_J2000>
+ *	|
+ *	<rectangle_J2000>
+ *	|
+ *	<circle_J2000>
+ *	|
+ *	<polygon_J2000>
+ *	|
+ *	<complex_hull_J2000>
+ * bnf-end
+ *
+ */
 void region_specification_J2000_A() : {}
 {
-	CONVEX_J2000_A()
+	convex_J2000_A()
 	|
-	RECT_J2000_A()
+	rectangle_J2000_A()
 	|
-	CIRCLE_J2000_A()
+	circle_J2000_A()
 	|
-	POLY_J2000_A()
+	polygon_J2000_A()
 	|
-	CHULL_J2000_A()
+	complex_hull_J2000_A()
 }
 
-void CONVEX_J2000_A() : {}
+/*
+ * convex_J2000_A
+ *
+ * bnf-start
+ *   CONVEX J2000 
+ *    <left_paren> <ra> <comma> <dec> <comma> <direction> <right_paren>
+ *    { <left_paren> <ra> <comma> <dec> <comma> <direction> <right_paren> }...
+ *
+ * bnf-end
+ */
+void convex_J2000_A() : {}
 {
 	<CONVEX> <J2000> 
 	  ( LOOKAHEAD(2)
@@ -2743,7 +2811,17 @@ void CONVEX_J2000_A() : {}
 		<RIGHT_PAREN> )+
 }
 
-void RECT_J2000_A() : {}
+/*
+ * rectangle_J2000_A
+ *
+ * bnf-start
+ *   CONVEX J2000 
+ *    <left_paren> <ra> <comma> <dec> <right_paren>
+ *    <left_paren> <ra> <comma> <dec> <right_paren> 
+ *
+ * bnf-end
+ */
+void rectangle_J2000_A() : {}
 {
 	<RECT> <J2000> 
 	  <LEFT_PAREN>
@@ -2756,7 +2834,15 @@ void RECT_J2000_A() : {}
 	  <RIGHT_PAREN> 
 }
 
-void CIRCLE_J2000_A() : {}
+/*
+ * circle_J2000_A
+ *
+ * bnf-start
+ *   CONVEX J2000 
+ *    <left_paren> <ra> <comma> <dec> <right_paren>
+ * bnf-end
+ */
+void circle_J2000_A() : {}
 {
 	<CIRCLE> <J2000> 
 	  <LEFT_PAREN>
@@ -2765,7 +2851,17 @@ void CIRCLE_J2000_A() : {}
 	  <RIGHT_PAREN> 
 }
 
-void POLY_J2000_A() : {}
+/*
+ * polygon_J2000_A
+ *
+ * bnf-start
+ *   POLY J2000 
+ *    <left_paren> <ra> <comma> <dec> <right_paren>
+ *    <left_paren> <ra> <comma> <dec> <right_paren>
+ *    { <left_paren> <ra> <comma> <dec> <right_paren> }...
+ * bnf-end
+ */
+void polygon_J2000_A() : {}
 {
 	<POLY> <J2000> 
 	  <LEFT_PAREN>
@@ -2783,7 +2879,17 @@ void POLY_J2000_A() : {}
 	  <RIGHT_PAREN> )+ 
 }
 
-void CHULL_J2000_A() : {}
+/*
+ * complex_hull_J2000_A
+ *
+ * bnf-start
+ *   CHULL J2000 
+ *    <left_paren> <ra> <comma> <dec> <right_paren>
+ *    <left_paren> <ra> <comma> <dec> <right_paren>
+ *    { <left_paren> <ra> <comma> <dec> <right_paren> }...
+ * bnf-end
+ */
+void complex_hull_J2000_A() : {}
 {
 	<CHULL> <J2000> 
 	  <LEFT_PAREN>
@@ -4005,6 +4111,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.9  2007/07/13 15:17:02  jl99
+Region
+
 Revision 1.8  2007/07/13 14:36:57  jl99
 Region
 
