@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.9 2007/07/13 15:17:02 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.10 2007/07/13 15:56:02 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -2705,11 +2705,10 @@ void predicate_A() :
  * region_predicate_A
  *
  * bnf-start
- *  <region_predicate_J2000>
- *	|
- *	<region_predicate_latlon>
- *	|
- *	<region_predicate_cartesian>
+ *  <region_predicate> ::=
+ *     <region_predicate_J2000>
+ *   | <region_predicate_latlon>
+ *   | <region_predicate_cartesian>
  * bnf-end
  *
  */
@@ -2739,41 +2738,25 @@ void region_predicate_J2000_A() : {}
  * point_J2000_A
  *
  * bnf-start
- *  <point_J2000> ::= LEFT_PAREN <ra> COMMA <dec> RIGHT_PAREN
- * bnf-end
- *
- * bnf-single <ra> ::= <numeric_value_expression>
- * bnf-single <dec> ::= <numeric_value_expression>
- *
- * bnf-start
- *  <direction> ::= <numeric_value_expression>
- *  !! The distance along the normal vector where the constraint plane intersects that vector. 
- *  !! If positive, the spherical sector on the far side (seen from the center) is selected.
- *  !! If negative, the point of intersection is in the opposite direction of the vector, resulting in more than a hemisphere.
- *  !! The valid range is -1.0 to +1.0
+ *  <point_J2000> ::= <left_paren> <ra> <comma> <dec> <right_paren>
  * bnf-end
  *
  */
 void point_J2000_A() : {}
 {
-	<LEFT_PAREN>
-		numeric_value_expression_S() <COMMA> numeric_value_expression_S()		
-	<RIGHT_PAREN>
+	<LEFT_PAREN> ra_A() <COMMA> dec_A() <RIGHT_PAREN>
 }
 
 /*
  * region_specification_J2000_A
  *
  * bnf-start
- *  <convex_J2000>
- *	|
- *	<rectangle_J2000>
- *	|
- *	<circle_J2000>
- *	|
- *	<polygon_J2000>
- *	|
- *	<complex_hull_J2000>
+ *  <region_specification_J2000> ::=
+ *     <convex_J2000>
+ *   | <rectangle_J2000>
+ *   | <circle_J2000>
+ *   | <polygon_J2000>
+ *   | <complex_hull_J2000>
  * bnf-end
  *
  */
@@ -2794,70 +2777,105 @@ void region_specification_J2000_A() : {}
  * convex_J2000_A
  *
  * bnf-start
- *   CONVEX J2000 
- *    <left_paren> <ra> <comma> <dec> <comma> <direction> <right_paren>
+ *   <convex_J2000> ::= CONVEX J2000 
+ *      <left_paren> <ra> <comma> <dec> <comma> <direction> <right_paren>
  *    { <left_paren> <ra> <comma> <dec> <comma> <direction> <right_paren> }...
- *
  * bnf-end
  */
 void convex_J2000_A() : {}
 {
 	<CONVEX> <J2000> 
 	  ( LOOKAHEAD(2)
-	    <LEFT_PAREN>
-			numeric_value_expression_S() <COMMA>
-			numeric_value_expression_S() <COMMA>
-			numeric_value_expression_S() 
-		<RIGHT_PAREN> )+
+	    <LEFT_PAREN> ra_A() <COMMA>	dec_A() <COMMA>	direction_A() <RIGHT_PAREN> )+
 }
 
 /*
  * rectangle_J2000_A
  *
  * bnf-start
- *   CONVEX J2000 
- *    <left_paren> <ra> <comma> <dec> <right_paren>
- *    <left_paren> <ra> <comma> <dec> <right_paren> 
- *
+ *   <rectangle_J2000> ::= CONVEX J2000 
+ *      <left_paren> <ra> <comma> <dec> <right_paren>
+ *      <left_paren> <ra> <comma> <dec> <right_paren> 
  * bnf-end
  */
 void rectangle_J2000_A() : {}
 {
 	<RECT> <J2000> 
-	  <LEFT_PAREN>
-		 numeric_value_expression_S() <COMMA>
-		 numeric_value_expression_S() 
-	  <RIGHT_PAREN> 
-	  <LEFT_PAREN>
-		 numeric_value_expression_S() <COMMA>
-		 numeric_value_expression_S() 
-	  <RIGHT_PAREN> 
+	  <LEFT_PAREN> ra_A() <COMMA> dec_A() <RIGHT_PAREN> 
+	  <LEFT_PAREN> ra_A() <COMMA> dec_A() <RIGHT_PAREN> 
 }
 
 /*
  * circle_J2000_A
  *
  * bnf-start
- *   CONVEX J2000 
- *    <left_paren> <ra> <comma> <dec> <right_paren>
+ *   <circle_J2000> ::= CONVEX J2000 
+ *      <left_paren> <ra> <comma> <dec> <comma> <radius> <right_paren>
  * bnf-end
  */
 void circle_J2000_A() : {}
 {
 	<CIRCLE> <J2000> 
-	  <LEFT_PAREN>
-		 numeric_value_expression_S() <COMMA>
-		 numeric_value_expression_S() 
-	  <RIGHT_PAREN> 
+	  <LEFT_PAREN> ra_A() <COMMA> dec_A() <COMMA> radius_A() <RIGHT_PAREN> 
+}
+
+/*
+ * ra_A
+ *
+ * bnf-single <ra> ::= <numeric_value_expression>
+ *
+ */
+void ra_A() : {}
+{
+	numeric_value_expression_S()	
+}
+
+/*
+ * dec_A
+ *
+ * bnf-single <dec> ::= <numeric_value_expression>
+ *
+ */
+void dec_A() : {}
+{
+	numeric_value_expression_S()	
+}
+
+/*
+ * direction_A
+ *
+ * bnf-start
+ *  <direction> ::= <numeric_value_expression>
+ *  !! The distance along the normal vector where the constraint plane intersects that vector. 
+ *  !! If positive, the spherical sector on the far side (seen from the center) is selected.
+ *  !! If negative, the point of intersection is in the opposite direction of the vector, resulting in more than a hemisphere.
+ *  !! The valid range is -1.0 to +1.0
+ * bnf-end
+ *
+ */
+void direction_A() : {}
+{
+	numeric_value_expression_S()
+}
+
+/*
+ * radius_A
+ *
+ * bnf-single <radius> ::= <numeric_value_expression>
+ *
+ */
+void radius_A() : {}
+{
+	numeric_value_expression_S()	
 }
 
 /*
  * polygon_J2000_A
  *
  * bnf-start
- *   POLY J2000 
- *    <left_paren> <ra> <comma> <dec> <right_paren>
- *    <left_paren> <ra> <comma> <dec> <right_paren>
+ *   <polygon_J2000> ::= POLY J2000 
+ *      <left_paren> <ra> <comma> <dec> <right_paren>
+ *      <left_paren> <ra> <comma> <dec> <right_paren>
  *    { <left_paren> <ra> <comma> <dec> <right_paren> }...
  * bnf-end
  */
@@ -2883,9 +2901,9 @@ void polygon_J2000_A() : {}
  * complex_hull_J2000_A
  *
  * bnf-start
- *   CHULL J2000 
- *    <left_paren> <ra> <comma> <dec> <right_paren>
- *    <left_paren> <ra> <comma> <dec> <right_paren>
+ *   <complex_hull_J2000> ::= CHULL J2000 
+ *      <left_paren> <ra> <comma> <dec> <right_paren>
+ *      <left_paren> <ra> <comma> <dec> <right_paren>
  *    { <left_paren> <ra> <comma> <dec> <right_paren> }...
  * bnf-end
  */
@@ -4111,6 +4129,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.10  2007/07/13 15:56:02  jl99
+Region
+
 Revision 1.9  2007/07/13 15:17:02  jl99
 Region
 
