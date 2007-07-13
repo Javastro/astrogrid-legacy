@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.6 2007/07/13 11:03:47 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.7 2007/07/13 11:27:57 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -2022,19 +2022,7 @@ void in_value_list_constant_A() #InValueListConstant :
  * join_specification_S
  *
  * bnf-start
- *  <join_specification> ::= <join_condition>
- *  !! TODO:
- *  !! The ADQL draft spec has 
- *  !! <join_specification> ::= <join_condition> | <named_columns_join>	
- *  !! <named_columns_join> ::= USING <left_paren> <join_column_list> <right_paren> 
- *  !! <join_column_list> ::= <column_name_list>
- * bnf-end
- *
- * bnf-start
- *  <join_condition> ::= ON <comparison_predicate>
- *  !! TODO:
- *  !! The ADQL draft spec has
- *  !! <join_condition> ::= ON <search_condition>
+ *  <join_specification> ::= <join_condition> | <named_columns_join>	
  * bnf-end
  *
  */
@@ -2054,6 +2042,12 @@ void join_specification_S() #JoinSpecification : {}
     join_condition_S() | named_columns_join_S()
 }
 
+/*
+ * join_condition_S
+ *
+ * bnf-single <join_condition> ::= ON <search_condition>
+ *
+ */
 void join_condition_S() #JoinCondition : 
 {
     if( log.isTraceEnabled() ) enterTrace ( "join_condition_S()" ) ;
@@ -2065,6 +2059,12 @@ void join_condition_S() #JoinCondition :
 	}
 } 
 
+/*
+ * named_columns_join_S
+ *
+ * bnf-single <named_columns_join> ::= USING <left_paren> <join_column_list> <right_paren> 
+ *
+ */
 void named_columns_join_S() #NamedColumnsJoin :
 {
 	if( log.isTraceEnabled() ) enterTrace ( "named_columns_join_S()" ) ;
@@ -2076,6 +2076,12 @@ void named_columns_join_S() #NamedColumnsJoin :
 	}
 }
 
+/*
+ * join_column_list_S
+ *
+ * bnf-single <join_column_list> ::= <column_name_list>
+ *
+ */
 void join_column_list_S() : {}
 {	
 	column_name_list_S()
@@ -3882,6 +3888,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.7  2007/07/13 11:27:57  jl99
+BNF updated
+
 Revision 1.6  2007/07/13 11:03:47  jl99
 NamedColumnsJoin added
 
