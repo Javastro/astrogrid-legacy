@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.7 2007/07/13 11:27:57 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.8 2007/07/13 14:36:57 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -301,7 +301,7 @@ TOKEN : // <SQL_embedded_language_character>
  *   | CURRENT
  *   | CURRENT_DATE | CURRENT_TIME
  *   | CURRENT_TIMESTAMP | CURRENT_USER | CURSOR
- *   | DATE | DAY | DEALLOCATE | DEC
+ *   | DATE | DAY | DEALLOCATE 
  *   | DECIMAL | DECLARE | DEFAULT | DEFERRABLE
  *   | DEFERRED | DELETE | DESC | DESCRIBE | DESCRIPTOR
  *   | DIAGNOSTICS
@@ -356,6 +356,10 @@ TOKEN : // <SQL_embedded_language_character>
  *   | WHEN | WHENEVER | WHERE | WITH | WORK | WRITE
  *   | YEAR
  *   | ZONE
+ *  !! TODO:
+ *  !! I've removed DEC from the reserved words.
+ *  !! There was just too much hassle involved.
+ *  !! But I'm against making any other exceptions.
  * bnf-end
  */
 TOKEN : // <SQL_reserved_word>
@@ -416,7 +420,7 @@ TOKEN : // <SQL_reserved_word>
 | < DATE : "date" >
 | < DAY : "day" >
 | < DEALLOCATE : "deallocate" >
-| < DEC : "dec" >
+// | < DEC : "dec" >
 | < DECIMAL : "decimal" >
 | < DECLARE : "declare" >
 | < SQL_DEFAULT : "default" >
@@ -635,6 +639,14 @@ TOKEN : // <ADQL_reserved_word>
 	
 	//region
 |	< REGION: "region" >
+|   < J2000: "J2000" > 
+|   < LATLON: "LATLON" >
+|   < CARTESIAN: "CARTESIAN" >
+|   < CONVEX: "CONVEX" > 
+|   < CIRCLE: "CIRCLE" >
+|   < RECT: "RECT" >
+|   < POLY: "POLY" >
+|   < CHULL: "CHULL" >
 	
 	//math
 |   < ABS: "abs" >
@@ -2639,8 +2651,6 @@ void predicate_A() :
 	//    | <overlaps_predicate>
 //	try {
 		  (
-	//		region_predicate_A()    
-	//		|
 	
 	// NB: Possible site of some specialized processing to make the
 	//     lookahead more efficient (and of greater range!!!)
@@ -2676,7 +2686,10 @@ void predicate_A() :
 	//	    | 
 	// adql does not support overlap
 	//	    overlapsPredicate()
-	//    		        
+	//    	
+			|	
+			region_predicate_A()    
+	        
 	    )
 //	}//	catch( ParseException pex ) {//	    errorSkipTo( new int[] { token.kind }, pex ) ;	//	}
     { 
@@ -2684,6 +2697,110 @@ void predicate_A() :
     	if( log.isTraceEnabled() ) exitTrace ( "predicate_A()" ) ;
     }
 }
+
+void region_predicate_A() : {}
+{
+	region_predicate_J2000_A()
+//	|//	region_predicate_latlon_A()//	|//	region_predicate_cartesian_A()	
+}
+
+void region_predicate_J2000_A() : {}
+{
+	point_J2000_A() [ <NOT> ] <IN> region_specification_J2000_A()	
+}
+
+//void region_predicate_latlon_A() : {}//{//	point_latlon() [ <NOT> ] <IN> region_specification_latlon_A()	//}////void region_predicate_cartesian_A() : {}//{//	point_cartesian() [ <NOT> ] <IN> region_specification_cartesian_A()	//}
+
+
+void point_J2000_A() : {}
+{
+	<LEFT_PAREN>
+		numeric_value_expression_S() <COMMA> numeric_value_expression_S()		
+	<RIGHT_PAREN>
+}
+
+void region_specification_J2000_A() : {}
+{
+	CONVEX_J2000_A()
+	|
+	RECT_J2000_A()
+	|
+	CIRCLE_J2000_A()
+	|
+	POLY_J2000_A()
+	|
+	CHULL_J2000_A()
+}
+
+void CONVEX_J2000_A() : {}
+{
+	<CONVEX> <J2000> 
+	  ( LOOKAHEAD(2)
+	    <LEFT_PAREN>
+			numeric_value_expression_S() <COMMA>
+			numeric_value_expression_S() <COMMA>
+			numeric_value_expression_S() 
+		<RIGHT_PAREN> )+
+}
+
+void RECT_J2000_A() : {}
+{
+	<RECT> <J2000> 
+	  <LEFT_PAREN>
+		 numeric_value_expression_S() <COMMA>
+		 numeric_value_expression_S() 
+	  <RIGHT_PAREN> 
+	  <LEFT_PAREN>
+		 numeric_value_expression_S() <COMMA>
+		 numeric_value_expression_S() 
+	  <RIGHT_PAREN> 
+}
+
+void CIRCLE_J2000_A() : {}
+{
+	<CIRCLE> <J2000> 
+	  <LEFT_PAREN>
+		 numeric_value_expression_S() <COMMA>
+		 numeric_value_expression_S() 
+	  <RIGHT_PAREN> 
+}
+
+void POLY_J2000_A() : {}
+{
+	<POLY> <J2000> 
+	  <LEFT_PAREN>
+		 numeric_value_expression_S() <COMMA>
+		 numeric_value_expression_S() 
+	  <RIGHT_PAREN> 
+	  <LEFT_PAREN>
+		 numeric_value_expression_S() <COMMA>
+		 numeric_value_expression_S() 
+	  <RIGHT_PAREN> 
+	( LOOKAHEAD(2)
+	  <LEFT_PAREN>
+		 numeric_value_expression_S() <COMMA>
+		 numeric_value_expression_S() 
+	  <RIGHT_PAREN> )+ 
+}
+
+void CHULL_J2000_A() : {}
+{
+	<CHULL> <J2000> 
+	  <LEFT_PAREN>
+		 numeric_value_expression_S() <COMMA>
+		 numeric_value_expression_S() 
+	  <RIGHT_PAREN> 
+	  <LEFT_PAREN>
+		 numeric_value_expression_S() <COMMA>
+		 numeric_value_expression_S() 
+	  <RIGHT_PAREN> 
+	( LOOKAHEAD(2)
+	  <LEFT_PAREN>
+		 numeric_value_expression_S() <COMMA>
+		 numeric_value_expression_S() 
+	  <RIGHT_PAREN> )+ 
+}
+
 
 /*
  * qualified_join_S
@@ -3888,6 +4005,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.8  2007/07/13 14:36:57  jl99
+Region
+
 Revision 1.7  2007/07/13 11:27:57  jl99
 BNF updated
 
