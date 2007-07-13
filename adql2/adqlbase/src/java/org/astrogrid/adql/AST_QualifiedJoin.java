@@ -30,7 +30,7 @@ public class AST_QualifiedJoin extends SimpleNode {
         fttArray[1] = (FromTableType)children[2].getGeneratedObject() ;          
         tableArray.setFromTableTypeArray( fttArray ) ;      
         if( jjtGetNumChildren() == 4 ) {
-            children[3].buildXmlTree( jtType.addNewCondition() ) ;
+            children[3].buildXmlTree( jtType.addNewJoinSpecification() ) ;
         }
         setGeneratedObject( jtType ) ;
         super.buildXmlTree( jtType ) ;

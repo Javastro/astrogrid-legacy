@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.5 2007/07/13 08:21:32 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.6 2007/07/13 11:03:47 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -2019,7 +2019,7 @@ void in_value_list_constant_A() #InValueListConstant :
 }
 
 /*
- * join_specification_A
+ * join_specification_S
  *
  * bnf-start
  *  <join_specification> ::= <join_condition>
@@ -2038,7 +2038,7 @@ void in_value_list_constant_A() #InValueListConstant :
  * bnf-end
  *
  */
-void join_specification_A() : {}
+void join_specification_S() #JoinSpecification : {}
 {
 	//S:
 	// <join_specification> ::=
@@ -2054,7 +2054,7 @@ void join_specification_A() : {}
     join_condition_S() | named_columns_join_S()
 }
 
-void join_condition_S() : 
+void join_condition_S() #JoinCondition : 
 {
     if( log.isTraceEnabled() ) enterTrace ( "join_condition_S()" ) ;
 }
@@ -2063,9 +2063,9 @@ void join_condition_S() :
 	{
 		if( log.isTraceEnabled() ) exitTrace ( "join_condition_S()" ) ;
 	}
-}
+} 
 
-void named_columns_join_S() :
+void named_columns_join_S() #NamedColumnsJoin :
 {
 	if( log.isTraceEnabled() ) enterTrace ( "named_columns_join_S()" ) ;
 }
@@ -2705,7 +2705,7 @@ void qualified_join_S() #QualifiedJoin :
 		join_type_A() 
 		<JOIN> 
 		table_reference_A() 
-		[ LOOKAHEAD(3) join_specification_A() ]
+		[ LOOKAHEAD(3) join_specification_S() ]
 	)
 	{
 	   if( log.isTraceEnabled() ) exitTrace ( "qualified_join_S()" ) ;
@@ -3882,6 +3882,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.6  2007/07/13 11:03:47  jl99
+NamedColumnsJoin added
+
 Revision 1.5  2007/07/13 08:21:32  jl99
 Extending <join specification>
 
