@@ -15,21 +15,6 @@ public class AST_ComparisonPredicate extends SimpleNode {
     public AST_ComparisonPredicate(AdqlStoX p, int id) {
         super(p, id);
     }
-
-    public void jjtClose() {
-//        ScalarExpressionType[] args = new ScalarExpressionType[2] ;
-//        args[0] = (ScalarExpressionType)children[0].getGeneratedObject() ;
-//        args[1] = (ScalarExpressionType)children[2].getGeneratedObject() ;
-//        ComparisonPredType cpType = ComparisonPredType.Factory.newInstance() ;
-//        ComparisonType comp = (ComparisonType)children[1].getGeneratedObject() ;    
-//        cpType.setArgArray( args ) ;
-//        args = cpType.getArgArray() ;
-//        children[0].exchangeGeneratedObject(args[0]) ;
-//        children[1].exchangeGeneratedObject(args[1]) ;
-//        cpType.xsetComparison( comp ) ; 
-//        children[2].exchangeGeneratedObject( cpType.xgetComparison() ) ;
-//        setGeneratedObject( cpType ) ;
-    }
     
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_ComparisonPredicate.buildXmlTree()" ) ; 
