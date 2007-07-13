@@ -2,7 +2,7 @@
 
 package org.astrogrid.adql;
 
-import org.astrogrid.adql.beans.JointTableQualifierType;
+import org.astrogrid.adql.beans.JoinTableQualifierType;
 
 public class AST_JoinType extends SimpleNode {
  
@@ -11,24 +11,21 @@ public class AST_JoinType extends SimpleNode {
     }
 
     public void jjtClose() {
-        JointTableQualifierType jType = JointTableQualifierType.Factory.newInstance() ;
+        JoinTableQualifierType jType = JoinTableQualifierType.Factory.newInstance() ;
 
         switch ( firstToken.kind ) {
         case AdqlStoXConstants.INNER :
-            jType.set( JointTableQualifierType.INNER );
+            jType.set( JoinTableQualifierType.INNER );
             break;
         case AdqlStoXConstants.LEFT :
-            jType.set( JointTableQualifierType.LEFT_OUTER );
+            jType.set( JoinTableQualifierType.LEFT_OUTER );
             break;
         case AdqlStoXConstants.RIGHT :
-            jType.set( JointTableQualifierType.RIGHT_OUTER );
+            jType.set( JoinTableQualifierType.RIGHT_OUTER );
             break;
         case AdqlStoXConstants.FULL :
-            jType.set( JointTableQualifierType.FULL_OUTER );
+            jType.set( JoinTableQualifierType.FULL_OUTER );
             break;
-//          case AdqlStoXConstants.UNION :
-//          jType.set( JointTableQualifierType.??? );
-//          break;
         }  
         setGeneratedObject( jType ) ;
     }

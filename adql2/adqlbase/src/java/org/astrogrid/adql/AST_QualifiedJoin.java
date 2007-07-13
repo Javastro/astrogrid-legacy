@@ -4,7 +4,7 @@ package org.astrogrid.adql;
 
 import org.astrogrid.adql.beans.JoinTableType;
 import org.astrogrid.adql.beans.FromTableType;
-import org.astrogrid.adql.beans.JointTableQualifierType;
+import org.astrogrid.adql.beans.JoinTableQualifierType;
 import org.astrogrid.adql.beans.ArrayOfFromTableType;
 import org.apache.xmlbeans.XmlObject; 
 import org.apache.commons.logging.Log ;
@@ -21,7 +21,7 @@ public class AST_QualifiedJoin extends SimpleNode {
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_QualifiedJoin.buildXmlTree()" ) ;
         JoinTableType jtType = (JoinTableType)xo.changeType( JoinTableType.type ) ;         
-        jtType.xsetQualifier( (JointTableQualifierType)children[1].getGeneratedObject() ) ;
+        jtType.xsetQualifier( (JoinTableQualifierType)children[1].getGeneratedObject() ) ;
         ArrayOfFromTableType tableArray = jtType.addNewTables() ;
         FromTableType[] fttArray = new FromTableType[2] ;
         children[0].buildXmlTree( tableArray.addNewFromTableType() ) ;
