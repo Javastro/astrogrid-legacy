@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.4 2007/07/12 13:40:58 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.5 2007/07/13 08:21:32 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -1200,7 +1200,7 @@ void column_name_S() #ColumnName :
  * bnf-single <column_name_list> ::= <column_name> [ { <comma> <column_name> }... ]
  *
  */
-void column_name_list_S() : {}
+void column_name_list_S() #ColumnNameList : {}
 {
 	//S:
 	// <column_name_list> ::= <column_name> [ { <comma> <column_name> }... ]
@@ -2051,8 +2051,36 @@ void join_specification_A() : {}
     //
     // <join_column_list> ::= <column_name_list>
     
-	<ON> comparison_predicate_A()
+    join_condition_S() | named_columns_join_S()
 }
+
+void join_condition_S() : 
+{
+    if( log.isTraceEnabled() ) enterTrace ( "join_condition_S()" ) ;
+}
+{
+	<ON> search_condition_S()
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "join_condition_S()" ) ;
+	}
+}
+
+void named_columns_join_S() :
+{
+	if( log.isTraceEnabled() ) enterTrace ( "named_columns_join_S()" ) ;
+}
+{
+	<USING> <LEFT_PAREN> join_column_list_S() <RIGHT_PAREN>
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "named_columns_join_S()" ) ;
+	}
+}
+
+void join_column_list_S() : {}
+{	
+	column_name_list_S()
+}
+
 
 /*
  * joined_table_S
@@ -3312,7 +3340,7 @@ JoinTableType cross_join_S() :
 	{
 	   if( fType2 != null ) {
 	      jtType = JoinTableType.Factory.newInstance() ;
-	      jtType.setQualifier( JointTableQualifierType.CROSS ) ;
+	      jtType.setQualifier( JoinTableQualifierType.CROSS ) ;
 	      FromTableType[] fttArray = new FromTableType[2] ;
 	      fttArray[0] = fType1 ;
 	      fttArray[1] = fType2 ;
@@ -3854,6 +3882,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.5  2007/07/13 08:21:32  jl99
+Extending <join specification>
+
 Revision 1.4  2007/07/12 13:40:58  jl99
 Added extensive BNF comments which highlight differences from ADQL draft spec
 
