@@ -1,4 +1,4 @@
-/*$Id: Tracker.java,v 1.2 2007/07/10 21:05:49 jl99 Exp $
+/*$Id: Tracker.java,v 1.3 2007/07/13 14:37:38 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -95,10 +95,12 @@ public class Tracker {
             if( index != -1 ) {
                 buffer.append( '[' ).append( index ) ;
                 if( type != null ) {
-                    buffer
-                       .append( ",@type='" )
-                       .append( type.getName().getLocalPart() )
-                       .append( '\'' ) ;
+                    if( type.isAnonymousType() == false ) {
+                        buffer
+                            .append( ",@type='" )
+                            .append( type.getName().getLocalPart() )
+                            .append( '\'' ) ;
+                    }
                 }
                 buffer.append( ']' ) ; 
             }
@@ -460,6 +462,9 @@ public class Tracker {
 
 /*
 $Log: Tracker.java,v $
+Revision 1.3  2007/07/13 14:37:38  jl99
+Accommodating anonymous types again.
+
 Revision 1.2  2007/07/10 21:05:49  jl99
 new ADQL schema  experiment contains an anonymous type.
 
