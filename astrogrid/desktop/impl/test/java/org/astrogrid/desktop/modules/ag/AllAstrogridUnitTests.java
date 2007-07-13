@@ -16,11 +16,9 @@ public class AllAstrogridUnitTests {
 		TestSuite suite = new TestSuite(
 				"Unit tests for astrogrid module");
 		suite.addTestSuite(CeaHelperUnitTest.class);
-		suite.addTestSuite(MessageRecorderImplUnitTest.class);
-		suite.addTestSuite(MessagingInternalUnitTest.class);
 		suite.addTestSuite(RemoteProcessManagerUnitTest.class);
+		suite.addTestSuite(MonitorMapUnitTest.class);
 		suite.addTestSuite(StapUnitTest.class);
-		suite.addTestSuite(SysTrayRemoteProcessListenerUnitTest.class);
 		return suite;
 	}
 

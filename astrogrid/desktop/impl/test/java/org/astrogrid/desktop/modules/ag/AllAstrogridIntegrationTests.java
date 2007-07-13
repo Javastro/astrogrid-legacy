@@ -18,7 +18,6 @@ public class AllAstrogridIntegrationTests {
 		TestSuite suite = new TestSuite(
 				"Integration tests for astrogrid module");
 			suite.addTest(AstrogridModuleIntegrationTest.suite());
-	      suite.addTest(StoreIntegrationTest.suite());
 		return new ARTestSetup(suite);
 	}
 

@@ -108,7 +108,6 @@ VOMON
 			<string>${votech.vomon.endpoint}</string><!--  endpoint to fetch vomon status.xml from -->
 			<int>${votech.vomon.reload}</int><!--  period between refreshes of the status.xml (seconds) -->
 			<object>cache:vomon</object>
-			<service>system.ui</service>
 			</construct>
 		</invoke-factory>	
 	</service-point>

@@ -1,4 +1,4 @@
-/*$Id: ScheduledTask.java,v 1.7 2007/04/18 15:47:06 nw Exp $
+/*$Id: ScheduledTask.java,v 1.8 2007/07/13 23:14:55 nw Exp $
  * Created on 05-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,29 +10,35 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+import java.security.Principal;
+
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 
-/** interface to a schedulable task.
- * basically iit's a factory for background workers, and a period. The factory is called 
- * each 'period' <b>milliseconds</b>, and the new worker then executed.
+/** interface to a schedulable task. the execute method is called each 'period' milliseconds.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 05-Nov-2005
  *
  */
 public interface ScheduledTask{
-	/** create a new worker task - single-use object
-	 * if the worker is to be executed in a particular session, the principal property it should be populated with the principal for that session.
-	 * Else it will be executed in the default session.
-	 *  
-	 *  */
-	public BackgroundWorker createWorker();
-	/** period after which to repeat this task */
+
+	public void execute();
+	/** period (milliseconds) after which to repeat this task */
    public long getPeriod();
+	/** specify the session to run this continuation as
+	 * 
+	 * @return the user's session. if null, will run under default session 
+	 */   
+   public Principal getPrincipal();
    
 }
 
 
 /* 
 $Log: ScheduledTask.java,v $
+Revision 1.8  2007/07/13 23:14:55  nw
+Complete - task 1: task runner
+
+Complete - task 54: Rewrite remoteprocess framework
+
 Revision 1.7  2007/04/18 15:47:06  nw
 tidied up voexplorer, removed front pane.
 

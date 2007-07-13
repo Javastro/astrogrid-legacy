@@ -1,4 +1,4 @@
-/*$Id: CeaHelper.java,v 1.6 2007/06/18 16:25:34 nw Exp $
+/*$Id: CeaHelper.java,v 1.7 2007/07/13 23:14:54 nw Exp $
  * Created on 20-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotApplicableException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
@@ -22,6 +23,11 @@ import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
 import org.astrogrid.applications.delegate.DelegateFactory;
+import org.astrogrid.workflow.beans.v1.Tool;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.ValidationException;
+import org.w3c.dom.Document;
 
 /** helper object for working with cea services.
  * <P>
@@ -108,12 +114,34 @@ public CommonExecutionConnectorClient createCEADelegate(URI executionId) throws 
         return executionId.getScheme().equals("local");
     }
     
+    /** parse a document into a tool, performing any necessary adjustments */
+	public Tool parseTool(Document doc) throws InvalidArgumentException{
+		try {
+		Tool tool = (Tool)Unmarshaller.unmarshal(Tool.class, doc);
+		// munge name in document, if incorrect..       
+		// The application name is supposed to be an IVOID without the
+		// ivo:// prefix. Strip the prefix if it is present.
+		if (tool.getName().startsWith("ivo://")) {
+			tool.setName(tool.getName().substring(6));
+		}
+		return tool;
+    	} catch (MarshalException e) {
+    		throw new InvalidArgumentException(e);
+    	} catch (ValidationException e) {
+    		throw new InvalidArgumentException(e);
+    	}
+	}
 
 }
 
 
 /* 
 $Log: CeaHelper.java,v $
+Revision 1.7  2007/07/13 23:14:54  nw
+Complete - task 1: task runner
+
+Complete - task 54: Rewrite remoteprocess framework
+
 Revision 1.6  2007/06/18 16:25:34  nw
 javadoc
 

@@ -25,7 +25,6 @@
 	
 	<!-- things to start eager -->	
 	<contribution configuration-id="hivemind.EagerLoad">
-		<load service-id="messaging" />
 		<load service-id="myspace" />   <!--  enabling this means myspace it gets notified of login, and prefetches ms root - for preception of speedup -->
 	</contribution>
 	
@@ -385,11 +384,9 @@ REMOTE PROCESS MANAGER
 		<interceptor service-id="system.throbber" />		
 		<invoke-factory >
 			<construct class="org.astrogrid.desktop.modules.ag.RemoteProcessManagerImpl" >
-				<service>recorder</service>
 				<configuration>processStrategies</configuration>
 				<service>myspace</service>
-				<service>system.snitch</service>				
-				<event-listener service-id="recorder" />
+				<service>system.snitch</service>			
 			</construct>
 		</invoke-factory>	
 	</service-point>
@@ -409,88 +406,7 @@ REMOTE PROCESS MANAGER
 		</service>
 	</contribution>		
 <!--  infrastructure components -->
-<!-- 
-===========================
-RECORDER
- -->
-	<service-point id="recorder" interface="org.astrogrid.desktop.modules.ag.MessageRecorderInternal">
-		Recorder of messages
-		<interceptor service-id="hivelock.core.authorization">
-			<method pattern="*" roles="loggedin" />
-		</interceptor>
-		<invoke-factory model="session">
-			<construct class="org.astrogrid.desktop.modules.ag.MessageRecorderImpl" >
-				<service>messaging</service>
-				<service>store</service>
-				<service>ivoa.registry</service>
-				<event-listener service-id="community" />
-			</construct>
-		</invoke-factory>	
-	</service-point>
-	
-	<implementation service-id="recorder" if="property astrogrid.recorder.disabled">
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
-	</implementation>	
-	
-<!-- 
-=======================
-MESSAGING
- -->
-	<service-point id="messaging" interface="org.astrogrid.desktop.modules.ag.MessagingInternal">
-		Internal component - messaging system.
-		<create-instance class="org.astrogrid.desktop.modules.ag.MessagingImpl"
-			model="session"/>
-	</service-point>
-	
-	<implementation service-id="messaging" if="property astrogrid.messaging.disabled">
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
-	</implementation>			
-<!-- 
-===========================
-STORE
- -->
-	<service-point id="store" interface="org.astrogrid.desktop.modules.ag.StoreInternal">
-		Store for remote process execution information.
-		<interceptor service-id="hivelock.core.authorization">
-			<method pattern="*" roles="loggedin" />
-		</interceptor>
-		<invoke-factory model="session">
-			<construct class="org.astrogrid.desktop.modules.ag.StoreImpl" >
-				<event-listener service-id="builtin.shutdown" />
-				<service>community</service>
-				<set property="workDir" value="${astrogrid.workdir}" />				
-			</construct>
-		</invoke-factory>	
-	</service-point>
-	
-	<implementation service-id="store" if="property astrogrid.store.disabled">
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
-	</implementation>					
 
-<!-- 
-================
-REMOTE PROCESS LISTENER
- -->	
-	<!-- harrumph - got myself all confused here.
-	not sure whether this should be a remote process listerner, or a recorder listener.
-	no time to fix now - will code read and try to add back in after japan
-	also have to watch whether ti forces login behaviour -->
-	<service-point id="trayRemoteProcessListener" visibility="private" interface="org.astrogrid.acr.astrogrid.RemoteProcessListener">						
-		Display process events in systray.
-		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.ag.SysTrayRemoteProcessListener">
-				<service>recorder</service>
-				<service>system.systray</service>
-				<event-listener service-id="recorder" />
-			</construct>
-		</invoke-factory>		
-	</service-point>						
-	-->
-<!-- FIXME - needs testing -->
-	<contribution configuration-id="hivemind.EagerLoad"  if="(class org.jdesktop.jdic.tray.SystemTray ) and ( not ( property system.systray.disabled))">
-		<load service-id="trayRemoteProcessListener"/>
-	</contribution>
-	
 
 <!-- 
 ==========================

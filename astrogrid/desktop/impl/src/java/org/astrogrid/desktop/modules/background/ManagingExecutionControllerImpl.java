@@ -1,4 +1,4 @@
-/*$Id: MessagingExecutionController.java,v 1.8 2007/01/29 11:11:36 nw Exp $
+/*$Id: ManagingExecutionControllerImpl.java,v 1.1 2007/07/13 23:14:55 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,16 +17,15 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.applications.AbstractApplication;
+import org.astrogrid.applications.Application;
 import org.astrogrid.applications.Status;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.manager.ThreadPoolExecutionController;
 import org.astrogrid.applications.manager.persist.ExecutionHistory;
+import org.astrogrid.applications.manager.persist.ExecutionIDNotFoundException;
+import org.astrogrid.applications.manager.persist.PersistenceException;
 import org.astrogrid.desktop.modules.ag.CeaHelper;
-import org.astrogrid.desktop.modules.ag.MessagingInternal;
-import org.astrogrid.desktop.modules.ag.MessagingInternal.SourcedExecutionMessage;
-import org.astrogrid.desktop.modules.ag.recorder.ResultsExecutionMessage;
-import org.astrogrid.desktop.modules.ag.recorder.StatusChangeExecutionMessage;
 import org.astrogrid.desktop.modules.system.BackgroundExecutor;
 
 
@@ -35,71 +34,33 @@ import org.astrogrid.desktop.modules.system.BackgroundExecutor;
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Oct-2005
  *
  */
-public class MessagingExecutionController extends ThreadPoolExecutionController implements ManagingExecutionController {
+public class ManagingExecutionControllerImpl extends ThreadPoolExecutionController implements ManagingExecutionController {
 
     /** Construct a new MessagingExecutionController
      * @param arg0
      * @param arg1
      * @throws ServiceException
      */
-    public MessagingExecutionController(ApplicationDescriptionLibrary arg0, ExecutionHistory arg1, BackgroundExecutor e,MessagingInternal messaging, Registry reg) throws ServiceException{
+    public ManagingExecutionControllerImpl(ApplicationDescriptionLibrary arg0, ExecutionHistory arg1, BackgroundExecutor e) throws ServiceException{
         super(arg0, arg1, new PooledExecutorAdapter(e));
-        ceaHelper = new CeaHelper(reg);
-        this.messaging =  messaging;
     }
-    final MessagingInternal messaging;
-    final CeaHelper ceaHelper;
 
-    public void update(final Observable o, final Object arg) {
-    	super.update(o, arg);
-    	try {
-    	AbstractApplication app = (AbstractApplication)o;
-    	if (arg instanceof Status) {
-    		Status stat = (Status)arg;    
-    		ExecutionMessage em = new StatusChangeExecutionMessage (
-    				app.getID()
-    				,stat.toExecutionPhase().toString()
-    				,new Date()
-    		);
-    		injectMessage(app, em);  
-    		if (stat.equals(Status.COMPLETED) || stat.equals(Status.ERROR)) {// send a results message too.
-    			em = new ResultsExecutionMessage(app.getID(),new Date(), app.getResult());
-    		injectMessage(app,em);                          
-    		}
-    	} else if (arg instanceof MessageType) {
-    		MessageType mt = (MessageType)arg;
-    		ExecutionMessage em = new ExecutionMessage(
-    				app.getID()
-    				,mt.getLevel().toString()
-    				,mt.getPhase().toString()
-    				,mt.getTimestamp()
-    				,mt.getContent()
-    		);
-    		injectMessage(app,em);
+    public Application getApplication(String execId) {
+    	if (executionHistory.isApplicationInCurrentSet(execId)) {
+    		try {
+				return executionHistory.getApplicationFromCurrentSet(execId);
+			} catch (ExecutionIDNotFoundException x) {
+				logger.error("ExecutionIDNotFoundException",x);
+			} catch (PersistenceException x) {
+				logger.error("PersistenceException",x);
+			}
     	}
-    	} catch (ServiceException ex) {// unlikey
-    		logger.error("Failed to send notification messages",ex);
-    	}
-
+    	// fall through
+    		return null;
+    	
     }
 
-	/** inject a message into the internal messaging system.
-	 * @param app
-	 * @param em
-	 * @throws ServiceException 
-	 * @throws ServiceException
-	 */
-	private void injectMessage(AbstractApplication app, ExecutionMessage em) throws ServiceException  {
-		SourcedExecutionMessage sem = new SourcedExecutionMessage(
-		        ceaHelper.mkLocalTaskURI(app.getID())
-		        ,app.getTool().getName()
-		        ,em
-		        ,null //@odo find date fromsomewhere
-		        ,null
-		        );                                   
-		messaging.injectMessage(sem);
 
-    }
 
     /** extends delete - so when app is deleted, is removed from file store too.
      * @see org.astrogrid.desktop.modules.background.ManagingExecutionController#delete(java.lang.String)
@@ -117,7 +78,12 @@ public class MessagingExecutionController extends ThreadPoolExecutionController 
 
 
 /* 
-$Log: MessagingExecutionController.java,v $
+$Log: ManagingExecutionControllerImpl.java,v $
+Revision 1.1  2007/07/13 23:14:55  nw
+Complete - task 1: task runner
+
+Complete - task 54: Rewrite remoteprocess framework
+
 Revision 1.8  2007/01/29 11:11:36  nw
 updated contact details.
 

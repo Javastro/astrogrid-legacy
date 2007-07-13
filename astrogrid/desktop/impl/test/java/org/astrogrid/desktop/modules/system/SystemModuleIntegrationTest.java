@@ -3,6 +3,8 @@
  */
 package org.astrogrid.desktop.modules.system;
 
+import java.security.Principal;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -75,11 +77,19 @@ public class SystemModuleIntegrationTest extends InARTestCase {
 	
 	public void testScheduler() throws Exception {
 		SchedulerInternal s = (SchedulerInternal)assertComponentExists(SchedulerInternal.class, "system.scheduler");
-		try {
-		s.executePeriodically(null);
-		} catch (NullPointerException e) {
-			// ok, expected
-		}
+		s.schedule(new ScheduledTask() {
+
+			public void execute() {
+			}
+
+			public long getPeriod() {
+				return 1000 * 1000;
+			}
+
+			public Principal getPrincipal() {
+				return null;
+			}
+		});
 	}
 	
 	public void testSnitch() throws Exception {

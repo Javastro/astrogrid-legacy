@@ -1,4 +1,4 @@
-/*$Id: SchedulerInternal.java,v 1.7 2007/03/22 19:03:48 nw Exp $
+/*$Id: SchedulerInternal.java,v 1.8 2007/07/13 23:14:55 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,9 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+import java.security.Principal;
 import java.util.Date;
+
 
 
 /** Internal interface to a low-level scheduler.
@@ -21,9 +23,12 @@ import java.util.Date;
  *
  */
 public interface SchedulerInternal {
-    /** execute a task periodically */
-    public void executePeriodically(ScheduledTask task);
+    /** execute a periodic task */
+    public void schedule(ScheduledTask task);
     
+    /** execute a delayed continuation */
+    public void schedule(DelayedContinuation task);
+
     /** execute a simple task after a delay - the task is executed on the timer
      * thread, and should be a simple task */
     public void executeAfterDelay(long delay, Runnable task);
@@ -31,12 +36,41 @@ public interface SchedulerInternal {
     /** execute a simple task some time in the future - the task is executed on
      * the timer thread and should be a simple task. */
     public void executeAt(Date d, Runnable task);
+    
+    
+    
+	/** a process which should be run after a number of seconds have elapsed, 
+	 * does something, and who's product is another delayedContinuation, to run subsequently. */
+	public static interface DelayedContinuation {
+		/** the computation to execute
+		 * 
+		 * @return another delayed continuation, or null if no more repetitions are to happen 
+		 */
+		public DelayedContinuation execute();
+		/** the period to wait before executing
+		 * 
+		 * @return delay in milliseconds. 0 indicates 'as soon as possible', -1 indicates halt.
+		 */ 
+		public long getDelay();
+		
+		/** specify the session to run this continuation as
+		 * 
+		 * @return the user's session. if null, will run under default session 
+		 */
+		public Principal getPrincipal();
+		
+	}
 
 }
 
 
 /* 
 $Log: SchedulerInternal.java,v $
+Revision 1.8  2007/07/13 23:14:55  nw
+Complete - task 1: task runner
+
+Complete - task 54: Rewrite remoteprocess framework
+
 Revision 1.7  2007/03/22 19:03:48  nw
 added support for sessions and multi-user ar.
 

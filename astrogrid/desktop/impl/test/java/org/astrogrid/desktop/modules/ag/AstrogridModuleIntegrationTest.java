@@ -67,27 +67,8 @@ public class AstrogridModuleIntegrationTest extends InARTestCase {
 		s.getRegistryAdqlQuery();
 	}
 	
-	// supporting non-ar components.
-	/* private - can't be accessed
-	public void testCastorTransformer() throws Exception {
-		CastorTransformer c = (CastorTransformer) assertComponentExists(CastorTransformer.class, "astrogrid.castorTransformer");
-		c.transform(null);
-	}*/
-	public void testMessaging() throws Exception {
-		MessagingInternal m = (MessagingInternal)assertComponentExists(MessagingInternal.class, "astrogrid.messaging");
-		m.removeEventProcessor(null);
-		
-	}
-	// requires login
-	public void testMessageRecorder() throws Exception {
-		MessageRecorderInternal rec = (MessageRecorderInternal)assertComponentExists(MessageRecorderInternal.class, "astrogrid.recorder");
-		rec.removeRecorderListener(null);
-	}
+
 	
-	public void testStore() throws Exception {
-		StoreInternal st = (StoreInternal)assertComponentExists(StoreInternal.class, "astrogrid.store");
-		assertNotNull(st.getManager());
-	}
 	
 	// astrogrid also provides the s
 	

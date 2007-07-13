@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManagerImpl.java,v 1.10 2007/01/29 11:11:35 nw Exp $
+/*$Id: RemoteProcessManagerImpl.java,v 1.11 2007/07/13 23:14:54 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,6 +28,7 @@ import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.iterators.IteratorChain;
 import org.apache.commons.collections.map.LazyMap;
+import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ACRException;
@@ -39,12 +40,6 @@ import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.acr.astrogrid.RemoteProcessListener;
 import org.astrogrid.acr.astrogrid.RemoteProcessManager;
-import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.Folder;
-import org.astrogrid.desktop.modules.ag.MessageRecorderInternal.MessageContainer;
-import org.astrogrid.desktop.modules.ag.recorder.ResultsExecutionMessage;
-import org.astrogrid.desktop.modules.ag.recorder.StatusChangeExecutionMessage;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.w3c.dom.Document;
 
@@ -55,28 +50,89 @@ import org.w3c.dom.Document;
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 08-Nov-2005
  *
  */
-public class RemoteProcessManagerImpl implements RemoteProcessManager, RecorderListener{
+public class RemoteProcessManagerImpl implements RemoteProcessManager{
+	
+	/** internal datastructure of process monitors
+	 *  */
+	public static class MonitorMap {
+		/** map of process montiors */
+		private final Map m = new ListOrderedMap();
+		/** set of listeners which listen to all monitors
+		 * 	- so, need to be registered as listeners with all new tasks 
+		 */
+		private final Set wildcardListeners = new HashSet();
+		
+		/** add a listener to all remoteProcesses.
+		 * adds it to all current processes, and takes note that it wishes to 
+		 * be added to all subsequent processes
+		 * @param rpl
+		 */
+		public void addWildcardListener(RemoteProcessListener rpl) {
+			wildcardListeners.add(rpl);
+			for (Iterator i = m.values().iterator(); i.hasNext();) {
+				ProcessMonitor rpm = (ProcessMonitor) i.next();
+				rpm.addRemoteProcessListener(rpl);
+			}
+		}
+		/** remote a listener to all remote processes.
+		 * removes it from all current processes, and discards the
+		 * fact that it wishes to be added to subsequent processes.
+		 * @param rpl
+		 */
+		public void removeWildcardListener(RemoteProcessListener rpl) {
+			wildcardListeners.remove(rpl);
+			for (Iterator i = m.values().iterator(); i.hasNext();) {
+				ProcessMonitor rpm = (ProcessMonitor) i.next();
+				rpm.removeRemoteProcessListener(rpl);
+			}			
+		}
+		
+		/** add a new remot process monitor */
+		public void add(ProcessMonitor monitor) {
+			m.put(monitor.getId(),monitor);
+			for (Iterator i = wildcardListeners.iterator(); i.hasNext();) {
+				RemoteProcessListener l = (RemoteProcessListener) i.next();
+				monitor.addRemoteProcessListener(l);
+			}
+		}
+		/** remote a remote processes monitor */
+		public void remove(URI id) {
+			ProcessMonitor rpm = get(id);
+			if (rpm != null) {
+				m.remove(id);
+				rpm.cleanUp();
+			}
+			
+		}
+		/** access a monitor - may return null */
+		public ProcessMonitor get(URI id) {
+			return (ProcessMonitor)m.get(id);
+		}
+		/** list the keys of the current monitors */
+		public URI[] listKeys() {
+			return (URI[])m.keySet().toArray(new URI[m.size()]);
+		}
+	}
     /**
      * Commons Logger for this class
      */
     private static final Log logger = LogFactory.getLog(RemoteProcessManagerImpl.class);
 
-
-    public RemoteProcessManagerImpl(
-            MessageRecorderInternal recorder, List strategies, 
+    //@todo remove usage of myspace.
+    public RemoteProcessManagerImpl(List strategies, 
             MyspaceInternal vos, SnitchInternal snitch ) {
         super();
-        this.recorder = recorder;
         this.vos = vos;
         this.strategies = strategies;
         this.snitch = snitch;
+        this.monitors = new MonitorMap();
     }
-    final MessageRecorderInternal recorder;
+    private final MonitorMap monitors;
     final List strategies;
     final MyspaceInternal vos;
     final SnitchInternal snitch;
 
-    
+    /** unused at the moment - but will be used when we want to enable resumable cea apps */
     private RemoteProcessStrategy selectStrategy(URI uri) throws InvalidArgumentException {
         for (Iterator i = strategies.iterator(); i.hasNext(); ) {
             RemoteProcessStrategy s= (RemoteProcessStrategy)i.next();
@@ -105,30 +161,24 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, RecorderL
     }
     
     public URI[] list() throws ServiceException {
-        try {
-           List l = recorder.listLeaves();
-           CollectionUtils.filter(l, new Predicate() {
-               public boolean evaluate(Object arg0) {
-                   return !( "folder".equals(((URI)arg0).getScheme()));
-               }               
-           });
-           return (URI[])l.toArray(new URI[l.size()]);
-        } catch (IOException e) {
-            throw new ServiceException(e);
-        }
+    	return monitors.listKeys();
     }
 
     public URI submit(Document arg0) throws ServiceException, SecurityException, NotFoundException,
             InvalidArgumentException {
         RemoteProcessStrategy s = selectStrategyAndSnitch(arg0);   
-        return s.submit(arg0);
+        ProcessMonitor rpm  = s.submit(arg0);
+        monitors.add(rpm);
+        return rpm.getId();
     }
 
 
     public URI submitTo(Document arg0, URI arg1) throws NotFoundException,
             InvalidArgumentException, ServiceException, SecurityException {
         RemoteProcessStrategy s = selectStrategyAndSnitch(arg0);      
-        return s.submitTo(arg0,arg1);
+        ProcessMonitor rpm = s.submitTo(arg0,arg1);
+        monitors.add(rpm);
+        return rpm.getId();
     }
 
     
@@ -157,105 +207,56 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, RecorderL
     public URI submitStored(URI arg0) throws NotFoundException, InvalidArgumentException,
             SecurityException, ServiceException {
         Document doc = loadDocument(arg0);
-        RemoteProcessStrategy s = selectStrategyAndSnitch(doc);
-        return s.submit(doc);
+        return submit(doc);
     }
 
 
     public URI submitStoredTo(URI arg0, URI arg1) throws NotFoundException,
             InvalidArgumentException, ServiceException, SecurityException {
         Document doc = loadDocument(arg0);
-        RemoteProcessStrategy s = selectStrategyAndSnitch(doc);
-        return s.submitTo(doc,arg1);
+        return submitTo(doc,arg1);
     }
 
 
     public void halt(URI arg0) throws NotFoundException, InvalidArgumentException,
             ServiceException, SecurityException {
-        RemoteProcessStrategy s = selectStrategy(arg0);
-        s.halt(arg0);        
+    	ProcessMonitor rpm = monitors.get(arg0);
+    	if (rpm == null) {
+    		throw new NotFoundException(arg0.toString());
+    	}
+    	rpm.halt();      
     }
 
 
     public void delete(URI arg0) throws NotFoundException, ServiceException, SecurityException, InvalidArgumentException {
-        RemoteProcessStrategy s = selectStrategy(arg0);
-        // @bug - problem here - if we delete a folder, but there's meanwhile polling
-        // processes checking for it, a message may well be emitted that creates the folder again.
-        // need to keep a temporary list of deleted resources, and filter out any further processing.
-        try {
-            Folder f = recorder.getFolder(arg0);
-        if (f == null) {
-            // just try to delete frm the server then..
-            s.delete(arg0);            
-            throw new NotFoundException(arg0.toString());        
-        }
-        recorder.deleteFolder(f);
-        } catch (IOException e) {
-            s.delete(arg0);
-            throw new ServiceException("Failed to delete local records",e);
-        }
-        s.delete(arg0);
-        
+    	monitors.remove(arg0);        
     }
-
 
     public ExecutionInformation getExecutionInformation(URI arg0) throws ServiceException,
             NotFoundException, SecurityException, InvalidArgumentException {
-        try {
-        Folder f= recorder.getFolder(arg0);
-        if (f == null) {
-            throw new NotFoundException(arg0.toString());
-        }
-        return f.getInformation();
-        } catch (IOException e) {
-            throw new ServiceException(e);
-        }
+    	ProcessMonitor rpm = monitors.get(arg0);
+    	if (rpm == null) {
+    		throw new NotFoundException(arg0.toString());
+    	}
+    	return rpm.getExecutionInformation();
     }
 
 
     public ExecutionMessage[] getMessages(URI arg0) throws ServiceException, NotFoundException {
-        try {
-            Folder f= recorder.getFolder(arg0);
-            if (f == null) {
-                throw new NotFoundException(arg0.toString());
-            }
-            MessageContainer[] ms = recorder.listFolder(f);
-            // only safe to return plain messages.
-            //@todo check this - maybe we can serialize messages of an unknown subtype. I'd have thought this was possible.
-            //also , only a potential problem when serializing over a wire - if this is a problem, maybe should have an internal method for in-process use?
-            List result = new ArrayList(ms.length);
-            for (int i = 0; i < ms.length; i++) {
-                if (ms[i].getMessage().getClass() == ExecutionMessage.class) {
-                    result.add(ms[i].getMessage());
-                }
-            }
-            return (ExecutionMessage[])result.toArray(new ExecutionMessage[result.size()]);
-            } catch (IOException e) {
-                throw new ServiceException(e);
-            }
+    	ProcessMonitor rpm = monitors.get(arg0);
+    	if (rpm == null) {
+    		throw new NotFoundException(arg0.toString());
+    	}
+    	return rpm.getMessages();
     }
-
 
     public Map getResults(URI arg0) throws ServiceException, SecurityException, NotFoundException,
             InvalidArgumentException {
-        try {
-            Folder f= recorder.getFolder(arg0);
-            if (f == null) {
-                throw new NotFoundException(arg0.toString());
-            }
-            MessageContainer[] ms = recorder.listFolder(f);
-            // search for result.
-            for (int i = 0; i < ms.length; i++) {
-                if (ms[i].getMessage() instanceof ResultsExecutionMessage) {
-                    return convert( ((ResultsExecutionMessage)ms[i].getMessage()).getResults());
-                }
-            }
-            } catch (IOException e) {
-                throw new ServiceException(e);
-            }
-        // if recorder doesn't have it..
-        RemoteProcessStrategy s = selectStrategy(arg0);
-        return s.getLatestResults(arg0);
+    	ProcessMonitor rpm = monitors.get(arg0);
+    	if (rpm == null) {
+    		throw new NotFoundException(arg0.toString());
+    	}
+    	return rpm.getResults();
     }
     
     public String getSingleResult(URI arg0, String resultName) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {
@@ -269,77 +270,29 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, RecorderL
         }
         return m.get(resultName).toString();
     }
-
-    // map of listeners - key is the exec id, value is a list of listeners.
-    private Map  listenerMap = LazyMap.decorate(new HashMap(),new Factory() {
-        public Object create() {
-            return new HashSet();
-        }
-    });
-    // set of listeners that listen to everything
-    private Set wildcardListeners = new HashSet();
     
     public void addRemoteProcessListener(URI arg0, RemoteProcessListener arg1) {
         if (arg0 == null) {
-            wildcardListeners.add(arg1);
+            monitors.addWildcardListener(arg1);
         } else {
-            Set s = (Set)listenerMap.get(arg0);
-            s.add(arg1);
+        	ProcessMonitor rpm = monitors.get(arg0);
+        	if (rpm != null) {
+        		rpm.addRemoteProcessListener(arg1);
+        	}
         }
     }
 
 
     public void removeRemoteProcessListener(URI arg0, RemoteProcessListener arg1) {
         if (arg0 == null) {
-            wildcardListeners.remove(arg1);
+            monitors.removeWildcardListener(arg1);
         } else {
-            Set s = (Set)listenerMap.get(arg0);
-            s.remove(arg1);
+        	ProcessMonitor rpm = monitors.get(arg0);
+        	if (rpm != null) {
+        		rpm.removeRemoteProcessListener(arg1);
+        	}
         }
     }
-    // implementation of recorder listener
-    public void messageReceived(Folder f, MessageContainer msg) {
-    	if (f.isDeleted()) {
-    		// skip it;
-    		return;
-    	}
-        // check whether we've gt anything that's registered an interest in this.
-        final URI id = f.getInformation().getId();
-        if( wildcardListeners.size() > 0 || listenerMap.containsKey(id)) {
-            // might as well get on with it then.
-            Iterator listeners = listenerMap.containsKey(id) ? 
-                     new IteratorChain(wildcardListeners.iterator(), ((Set)listenerMap.get(id)).iterator()) 
-                     : wildcardListeners.iterator();
-            ExecutionMessage m = msg.getMessage();
-            if (m instanceof ResultsExecutionMessage) {
-                Map result = convert(((ResultsExecutionMessage)m).getResults());               
-                while(listeners.hasNext()) {
-                    RemoteProcessListener l = (RemoteProcessListener)listeners.next();
-                    l.resultsReceived(id,result);
-                }                    
-            } else if (m instanceof StatusChangeExecutionMessage) {
-                String status = m.getStatus();
-                while(listeners.hasNext()) {
-                    RemoteProcessListener l = (RemoteProcessListener)listeners.next();     
-                    l.statusChanged(id,status);
-                }                
-            } else {
-                while(listeners.hasNext()) {
-                    RemoteProcessListener l = (RemoteProcessListener)listeners.next();                  
-                    l.messageReceived(id,m);
-                }                
-            }
-        }
-    }
-
-   private Map convert(ResultListType rs) {
-    Map result = new LinkedHashMap();        
-    for (int i =0 ; i < rs.getResultCount(); i++) {
-        ParameterValue val = rs.getResult(i);
-        result.put(val.getName(),val.getValue());
-    }
-    return result;
-   }
 
 
 }
@@ -347,6 +300,11 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager, RecorderL
 
 /* 
 $Log: RemoteProcessManagerImpl.java,v $
+Revision 1.11  2007/07/13 23:14:54  nw
+Complete - task 1: task runner
+
+Complete - task 54: Rewrite remoteprocess framework
+
 Revision 1.10  2007/01/29 11:11:35  nw
 updated contact details.
 

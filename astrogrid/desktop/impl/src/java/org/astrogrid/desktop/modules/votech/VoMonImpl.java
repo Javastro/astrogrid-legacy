@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.Principal;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -45,7 +46,6 @@ public class VoMonImpl implements VoMonInternal {
 	private final URL voMonEndpoint;
 	private final int refreshSeconds;
 	private final Ehcache cache;
-	private final UIContext ui;
 
 
 	public VoMonBean checkAvailability(URI arg0) {
@@ -170,7 +170,7 @@ public class VoMonImpl implements VoMonInternal {
 		}
 	}
 
-	public VoMonImpl(final String endpoint, final int refreshSeconds, Ehcache cache ,final UIContext ui)  {
+	public VoMonImpl(final String endpoint, final int refreshSeconds, Ehcache cache )  {
 		super();
 		URL u; 
 		try {
@@ -181,26 +181,23 @@ public class VoMonImpl implements VoMonInternal {
 		this.voMonEndpoint = u;
 		this.refreshSeconds = refreshSeconds;
 		this.cache =cache;
-		this.ui = ui;
-		// start things happening - get list of services on a background thread.
-		createWorker().start();
 	}
 
-	public BackgroundWorker createWorker() {
-		return new BackgroundWorker(ui,"Downloading service statuses") {
-			protected Object construct() throws Exception {
-				try {
-					reload();
-				} catch (Throwable t) {
-					logger.warn("Failed to download service statuses: ",t);
-				}
-				return null;
-			}
-		};
+	
+	public void execute() {
+		try {
+			reload();
+		} catch (Throwable t) {
+			logger.warn("Failed to download service statuses: ",t);
+		}		
 	}
 
 	public long getPeriod() {
 		return 1000 * refreshSeconds;
+	}
+	
+	public Principal getPrincipal() {
+		return null; // run under default user.
 	}
 
 

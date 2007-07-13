@@ -505,16 +505,6 @@
 	    </properties>
     </dependency>    
 
-        <!-- storage -->
-<dependency>
-	<artifactId>jdbm</artifactId>
-	<groupId>jdbm</groupId>
-	<version>1.0</version>
-	<properties>		
-		<dist.bundle>true</dist.bundle>	
-		<strip>true</strip>	
-	</properties>
-</dependency>
 
 <!--  cache - -->
 	<dependency>

@@ -1142,6 +1142,7 @@ SYSTEM TRAY
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.system.ClockDaemonScheduler">
 				<configuration>scheduledTasks</configuration>
+				<service>ui</service>
 				<service>builtin.sessionManager</service>
 				<event-listener service-id="builtin.shutdown" />
 			</construct>

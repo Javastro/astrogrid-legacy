@@ -1,4 +1,4 @@
-/*$Id: ClockDaemonScheduler.java,v 1.9 2007/04/18 15:47:07 nw Exp $
+/*$Id: ClockDaemonScheduler.java,v 1.10 2007/07/13 23:14:55 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.builtin.ShutdownListener;
 import org.astrogrid.desktop.framework.SessionManagerInternal;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 
 import EDU.oswego.cs.dl.util.concurrent.ClockDaemon;
@@ -37,12 +38,13 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
      */
     private static final Log logger = LogFactory.getLog(ClockDaemonScheduler.class);
 
-    /** 
+    /**  
      * 
      */
-    public ClockDaemonScheduler(final List tasks, SessionManagerInternal session) {
+    public ClockDaemonScheduler(final List tasks, UIContext context,SessionManagerInternal session) {
         super();
         this.defaultSession = session.findSessionForKey(session.getDefaultSessionId());
+        this.context = context;
         this.daemon = new ClockDaemon();
         // make shceduled tasks run at low priority, but above the backgound executor tasks.
         this.daemon.setThreadFactory(new ThreadFactory() {
@@ -67,7 +69,7 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
                logger.error("List of services to schedule contains something that isn't a ScheduledTask - " + o);
            } else {
                ScheduledTask st = (ScheduledTask)o;
-               this.executePeriodically(st);
+               this.schedule(st);
            }
         }          
         }
@@ -75,19 +77,47 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
     // the implementation of the clock.
     final ClockDaemon daemon;
     final Principal defaultSession;
-    public void executePeriodically(final ScheduledTask task) {
-        daemon.executePeriodically(task.getPeriod(),
-        		new Runnable() {
+    final UIContext context;
+    
+    public void schedule(final ScheduledTask task) {
+        daemon.executePeriodically(task.getPeriod(), new Runnable() {
         	public void run() {
-        		BackgroundWorker worker = task.createWorker();
-        		if (worker.getPrincipal() == null) {
-        			worker.setPrincipal(defaultSession);
-        		}
-        		worker.start();
+        		BackgroundWorker worker = new BackgroundWorker(context,null) {
+
+					protected Object construct() throws Exception {
+						task.execute();
+						return null;
+					}
+        		};
+				worker.setPrincipal(task.getPrincipal() == null ? defaultSession : task.getPrincipal());
+				worker.start();
         	}
         }
-        		,false);
+        		,true);
     }
+    
+	public void schedule(final DelayedContinuation task) {
+		if (task.getDelay() < 0) {
+			return;
+		}
+		daemon.executeAfterDelay(task.getDelay(),new Runnable() {
+
+			public void run() {// rund on scheduler thread. just submits a new backgroundWorker for execution.
+				BackgroundWorker worker = new BackgroundWorker(context,null) {
+
+					protected Object construct() throws Exception {
+						DelayedContinuation next =  task.execute();
+						if (next != null) {
+							schedule(next); // recursive call.
+						}
+						return null;
+					}
+				};
+				worker.setPrincipal(task.getPrincipal() == null ? defaultSession : task.getPrincipal());
+				worker.start();
+			}
+		});
+	}
 
     public void executeAfterDelay(long delay, Runnable task) {
     	daemon.executeAfterDelay(delay,task);
@@ -109,11 +139,18 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
 
 
 
+
+
 }
 
 
 /* 
 $Log: ClockDaemonScheduler.java,v $
+Revision 1.10  2007/07/13 23:14:55  nw
+Complete - task 1: task runner
+
+Complete - task 54: Rewrite remoteprocess framework
+
 Revision 1.9  2007/04/18 15:47:07  nw
 tidied up voexplorer, removed front pane.
 

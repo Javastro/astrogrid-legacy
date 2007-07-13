@@ -35,7 +35,6 @@ public class AbsolutelyAllUnitTests {
 		suite.addTest(org.astrogrid.desktop.modules.system.transformers.AllSystemTransformerUnitTests.suite());
 		suite.addTest(org.astrogrid.desktop.modules.ivoa.AllIvoaUnitTests.suite());
 		suite.addTest(org.astrogrid.desktop.modules.ivoa.resource.AllResourceUnitTests.suite());
-		suite.addTest(org.astrogrid.desktop.modules.ag.recorder.AllRecorderUnitTests.suite());
 		suite.addTest(org.astrogrid.desktop.modules.ag.AllAstrogridUnitTests.suite());
 		suite.addTest(org.astrogrid.desktop.modules.plastic.AllPlasticUnitTests.suite());
 		suite.addTest(org.astrogrid.desktop.modules.util.AllUtilUnitTests.suite());
