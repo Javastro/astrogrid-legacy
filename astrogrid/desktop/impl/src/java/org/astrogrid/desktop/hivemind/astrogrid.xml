@@ -379,7 +379,7 @@ JOBS
 ===========================
 REMOTE PROCESS MANAGER
  -->
-	<service-point id="processManager" interface="RemoteProcessManager">
+	<service-point id="processManager" interface="org.astrogrid.desktop.modules.ag.RemoteProcessManagerInternal">
 		Manages and monitors execution of remote processes. Consumes the processStrategies configuration
 		<interceptor service-id="system.throbber" />		
 		<invoke-factory >

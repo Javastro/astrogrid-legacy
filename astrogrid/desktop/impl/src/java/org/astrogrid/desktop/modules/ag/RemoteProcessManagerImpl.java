@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManagerImpl.java,v 1.11 2007/07/13 23:14:54 nw Exp $
+/*$Id: RemoteProcessManagerImpl.java,v 1.12 2007/07/16 12:21:23 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,7 +40,9 @@ import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.acr.astrogrid.RemoteProcessListener;
 import org.astrogrid.acr.astrogrid.RemoteProcessManager;
+import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
+import org.astrogrid.workflow.beans.v1.Tool;
 import org.w3c.dom.Document;
 
 /** implementation of a remote process manager.
@@ -50,7 +52,7 @@ import org.w3c.dom.Document;
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 08-Nov-2005
  *
  */
-public class RemoteProcessManagerImpl implements RemoteProcessManager{
+public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
 	
 	/** internal datastructure of process monitors
 	 *  */
@@ -99,10 +101,16 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager{
 		public void remove(URI id) {
 			ProcessMonitor rpm = get(id);
 			if (rpm != null) {
-				m.remove(id);
-				rpm.cleanUp();
+				remove(rpm);
 			}
 			
+		}
+		
+		public void remove(ProcessMonitor pm) {
+			m.remove(pm.getId());
+			if (pm instanceof AbstractProcessMonitor) {
+				((AbstractProcessMonitor)pm).cleanUp();
+			}
 		}
 		/** access a monitor - may return null */
 		public ProcessMonitor get(URI id) {
@@ -232,6 +240,10 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager{
     	monitors.remove(arg0);        
     }
 
+	public void delete(ProcessMonitor pm) {
+		monitors.remove(pm);
+	}
+    
     public ExecutionInformation getExecutionInformation(URI arg0) throws ServiceException,
             NotFoundException, SecurityException, InvalidArgumentException {
     	ProcessMonitor rpm = monitors.get(arg0);
@@ -294,12 +306,28 @@ public class RemoteProcessManagerImpl implements RemoteProcessManager{
         }
     }
 
+	public ProcessMonitor submit(Tool t) throws ServiceException,
+			SecurityException, NotFoundException, InvalidArgumentException {
+		return null;
+	}
+
+	public ProcessMonitor submitTo(Tool t, Service s)
+			throws InvalidArgumentException, ServiceException,
+			SecurityException {
+		return null;
+	}
+
+
+
 
 }
 
 
 /* 
 $Log: RemoteProcessManagerImpl.java,v $
+Revision 1.12  2007/07/16 12:21:23  nw
+Complete - task 91: make remoteprocessmanager a full fledged ar member , and added internal interface.
+
 Revision 1.11  2007/07/13 23:14:54  nw
 Complete - task 1: task runner
 

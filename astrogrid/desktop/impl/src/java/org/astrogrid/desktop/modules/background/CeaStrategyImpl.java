@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.16 2007/07/13 23:14:55 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.17 2007/07/16 12:21:23 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,6 +46,7 @@ import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
 import org.astrogrid.desktop.framework.SessionManagerInternal;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.CeaHelper;
+import org.astrogrid.desktop.modules.ag.AbstractProcessMonitor;
 import org.astrogrid.desktop.modules.ag.ProcessMonitor;
 import org.astrogrid.desktop.modules.ag.RemoteProcessStrategy;
 import org.astrogrid.desktop.modules.ag.TimerDrivenProcessMonitor;
@@ -201,7 +202,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 	 * 
 	 * peeks directly into the local cea engine to get stuff - by implementing observer
 	 * */
-	private class LocalTaskMonitor extends ProcessMonitor implements Observer {
+	private class LocalTaskMonitor extends AbstractProcessMonitor implements Observer {
 
 		private final String ceaid;
 		private final Application application;
@@ -469,6 +470,9 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.17  2007/07/16 12:21:23  nw
+Complete - task 91: make remoteprocessmanager a full fledged ar member , and added internal interface.
+
 Revision 1.16  2007/07/13 23:14:55  nw
 Complete - task 1: task runner
 

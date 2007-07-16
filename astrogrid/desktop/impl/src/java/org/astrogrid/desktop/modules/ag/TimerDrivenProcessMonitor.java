@@ -18,7 +18,7 @@ import org.astrogrid.desktop.modules.system.SchedulerInternal.DelayedContinuatio
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 12, 20074:42:10 PM
  */
-public abstract class TimerDrivenProcessMonitor extends ProcessMonitor implements DelayedContinuation {
+public abstract class TimerDrivenProcessMonitor extends AbstractProcessMonitor implements DelayedContinuation {
 
 	/**
 	 * @param id
