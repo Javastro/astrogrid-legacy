@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManager.java,v 1.7 2007/03/08 17:46:56 nw Exp $
+/*$Id: RemoteProcessManager.java,v 1.8 2007/07/16 12:19:16 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,11 +26,12 @@ import org.w3c.dom.Document;
  * however, this interface also knows how to invoke other kinds of service, and provides a uniform interface to cea, cone, siap, ssap services.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 08-Nov-2005
  *@since 1.3
+ * @service astrogrid.processManager
  */
 public interface RemoteProcessManager {
     
-    /** list all remote processes known to belng to the current user
-      @return list of identifiers for the user's remote processes - both running and completed    
+    /** list current remote processes  belonging to the current user
+      @return list of identifiers for the user's remote processes that are currently being managed by AR
      */
     URI[] list() throws ServiceException;
     
@@ -53,7 +54,7 @@ public interface RemoteProcessManager {
      * @param server server to execute on
      * @return  a new unique execution id 
      * @throws NotFoundException if the specified server could not be found
-     * @throws InvalidArgumentException if the document is malformed, or the server is inacessible.
+     * @throws InvalidArgumentException if the document is malformed, or the server is inappropriate
      * @throws ServiceException  if an error occurs communicating with the server
      * @throws SecurityException if user is prevented from executing this application.
      * @see #submitStored(URI)
@@ -165,6 +166,9 @@ public interface RemoteProcessManager {
 
 /* 
 $Log: RemoteProcessManager.java,v $
+Revision 1.8  2007/07/16 12:19:16  nw
+Complete - task 91: make remoteprocessmanager a full fledged ar member
+
 Revision 1.7  2007/03/08 17:46:56  nw
 removed deprecated interfaces.
 
