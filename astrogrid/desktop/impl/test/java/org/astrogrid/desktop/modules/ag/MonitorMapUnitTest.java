@@ -41,8 +41,8 @@ public class MonitorMapUnitTest extends TestCase {
 	}
 	
 	protected MonitorMap mm;
-	protected ProcessMonitor rpm1;
-	protected ProcessMonitor rpm2;
+	protected AbstractProcessMonitor rpm1;
+	protected AbstractProcessMonitor rpm2;
 	public void testListKeysEmpty() throws Exception {
 		java.net.URI[] u = mm.listKeys();
 		assertNotNull(u);
@@ -147,7 +147,7 @@ public class MonitorMapUnitTest extends TestCase {
 		
 	}
 	
-	public static class TestRemoteProcessMonitor extends ProcessMonitor {
+	public static class TestRemoteProcessMonitor extends AbstractProcessMonitor {
 		private static int count = 0;
 		/**
 		 * @param id
