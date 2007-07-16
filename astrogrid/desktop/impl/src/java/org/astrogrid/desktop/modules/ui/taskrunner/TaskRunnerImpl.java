@@ -196,7 +196,8 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                                                             securityMethod);
                       doc.appendChild(p);
                     }
-                    Service[] services = apps.listServersProviding(new URI("ivo://" + tOrig.getName())); 
+                    Service[] services = apps.listServersProviding(new URI("ivo://" + tOrig.getName()));
+                    //@todo use vomon to direct choice - use same technique as for login dialogue.
                     logger.debug("resolved app to " + services.length + " servers");
                     if (services.length == 0) {// no providing servers found.
                     	return null;

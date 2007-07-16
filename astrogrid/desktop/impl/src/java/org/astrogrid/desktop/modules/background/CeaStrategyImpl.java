@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.17 2007/07/16 12:21:23 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.18 2007/07/16 13:02:15 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,9 +14,11 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
@@ -53,12 +55,15 @@ import org.astrogrid.desktop.modules.ag.TimerDrivenProcessMonitor;
 import org.astrogrid.desktop.modules.auth.CommunityInternal;
 import org.astrogrid.desktop.modules.system.SchedulerInternal;
 import org.astrogrid.desktop.modules.system.SchedulerInternal.DelayedContinuation;
+import org.astrogrid.desktop.modules.votech.VoMonInternal;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.security.SecurityGuard;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.exolab.castor.xml.CastorException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
+import org.votech.VoMon;
+import org.votech.VoMonBean;
 import org.w3c.dom.Document;
 
 
@@ -302,18 +307,21 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
     private final TasksInternal ceaInternal;
     private final CommunityInternal community;
 	private final SessionManagerInternal sess;
-	private final SchedulerInternal sched;   
+	private final SchedulerInternal sched; 
+	private final VoMon vomon;
     
     /** Construct a new CeaStrategyImpl
      * 
      */
     public CeaStrategyImpl(TasksInternal ceaInternal
             , Registry reg
+            ,VoMon vomon
             , ApplicationsInternal apps
             , CommunityInternal community, SessionManagerInternal sess, SchedulerInternal sched) {
         super();         
         this.apps = apps;
-        this.ceaInternal = ceaInternal;
+        this.vomon = vomon;
+        this.ceaInternal =ceaInternal;
         this.ceaHelper = new CeaHelper(reg);
         this.community = community;
         this.sess= sess;
@@ -349,7 +357,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 
     		URI appId = new URI("ivo://" + tool.getName());
     		Service[] arr = apps.listServersProviding(appId);
-
+    		
     		Service target = null;
     		switch(arr.length) {            
     		case 0:
@@ -361,6 +369,8 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
     			break;
     		default:
     			List l =  Arrays.asList(arr);
+    		// now filter on perceived availability.
+    			l = filterOnAvailability(l);
     			Collections.shuffle(l);
     			target = (Service)l.get(0);
     			logger.debug("Multiple providers, selected " + target.getId());
@@ -370,6 +380,26 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
     	} catch (URISyntaxException e) {
     		throw new InvalidArgumentException(e);
     	}        
+    }
+    /**
+     * use vomon to filter a list of services.
+     * if vomon has no knowledge of a service, return it unchanged.
+     *  if vomon thinks all services are down, return the list unchanged.
+     *  else only return services vomon thinks are up.
+     *  
+     * @param l
+     * @return
+     */
+    private List filterOnAvailability(List l) {
+    	List results = new ArrayList();
+    	for (Iterator i = l.iterator(); i.hasNext();) {
+			Service name = (Service) i.next();
+			VoMonBean b = vomon.checkAvailability(name.getId());
+			if (b == null || b.getCode() == VoMonBean.UP_CODE) {
+				results.add(name);
+			}
+		}
+    	return results.size() == 0 ? l : results;
     }
     
     /**
@@ -470,6 +500,9 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.18  2007/07/16 13:02:15  nw
+Complete - task 90: integrate vomon with remote process manager
+
 Revision 1.17  2007/07/16 12:21:23  nw
 Complete - task 91: make remoteprocessmanager a full fledged ar member , and added internal interface.
 

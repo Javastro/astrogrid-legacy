@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManagerImpl.java,v 1.12 2007/07/16 12:21:23 nw Exp $
+/*$Id: RemoteProcessManagerImpl.java,v 1.13 2007/07/16 13:02:15 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,21 +13,14 @@ package org.astrogrid.desktop.modules.ag;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Factory;
-import org.apache.commons.collections.Predicate;
-import org.apache.commons.collections.iterators.IteratorChain;
-import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,7 +32,6 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.acr.astrogrid.RemoteProcessListener;
-import org.astrogrid.acr.astrogrid.RemoteProcessManager;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -325,6 +317,9 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
 
 /* 
 $Log: RemoteProcessManagerImpl.java,v $
+Revision 1.13  2007/07/16 13:02:15  nw
+Complete - task 90: integrate vomon with remote process manager
+
 Revision 1.12  2007/07/16 12:21:23  nw
 Complete - task 91: make remoteprocessmanager a full fledged ar member , and added internal interface.
 
