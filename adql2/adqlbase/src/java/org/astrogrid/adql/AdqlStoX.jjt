@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.10 2007/07/13 15:56:02 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.11 2007/07/16 21:06:10 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -647,6 +647,7 @@ TOKEN : // <ADQL_reserved_word>
 |   < RECT: "RECT" >
 |   < POLY: "POLY" >
 |   < CHULL: "CHULL" >
+|   < BOX: "BOX" >
 	
 	//math
 |   < ABS: "abs" >
@@ -825,6 +826,7 @@ TOKEN : // The remainder
  *   !! The ADQL draft has <boolean_literal> and does not have <delimitied_identifier> 
  *   !! Should it also have <ADQL_special_character> ? 
  * bnf-end
+ * bnf-single <concatenation_operator> ::= ||
  * bnf-start
  *  <nondelimiter_token> ::= 
  *      <regular_identifier>
@@ -2614,21 +2616,7 @@ void pattern_A() :
  *   | <null_predicate>
  *   | <exists_predicate>
  *   | <region_predicate>
- * 
- *  !! TODO:
- *  !! The ADQL draft spec has <region_predicate> 
- *  !! 
- *  !! <region_predicate> ::= 
- *  !!   <table_reference> <period> REGION 
- *  !!   <left_paren> 
- *  !!   <region_specification>
- *  !!   [ <comma> <column_reference> [ { <comma> <column_reference> }... ] ]
- *  !!   <right_paren>
- *  !!
- *  !! <region_specification> ::= 
- *  !! Region definition from STC schema here
- *  !!
- *  !! SQL92 also supports the following predicates: 
+ *  !! For information, SQL92 also supports the following predicates: 
  *  !! <quantified_comparison_predicate>, <unique_predicate>, 
  *  !! <match_predicate> and <overlaps_predicate>
  * bnf-end
@@ -2709,13 +2697,40 @@ void predicate_A() :
  *     <region_predicate_J2000>
  *   | <region_predicate_latlon>
  *   | <region_predicate_cartesian>
+ *  !! TODO:
+ *  !! The ADQL draft spec has
+ *  !! 
+ *  !! <region_predicate> ::= 
+ *  !!   <table_reference> <period> REGION 
+ *  !!   <left_paren> 
+ *  !!   <region_specification>
+ *  !!   [ <comma> <column_reference> [ { <comma> <column_reference> }... ] ]
+ *  !!   <right_paren>
+ *  !!
+ *  !! <region_specification> ::= 
+ *  !! Region definition from STC schema here
+ * bnf-end
+ *
+ * bnf-start
+ *  <region_predicate_latlon> ::=
+ *  !! Place holder only
+ * bnf-end
+ *
+ * bnf-start
+ *  <region_predicate_cartesian> ::=
+ *  !! Place holder only
  * bnf-end
  *
  */
-void region_predicate_A() : {}
+void region_predicate_A() #RegionPredicate : 
 {
-	region_predicate_J2000_A()
-//	|//	region_predicate_latlon_A()//	|//	region_predicate_cartesian_A()	
+	if( log.isTraceEnabled() ) enterTrace ( "region_predicate_A()" ) ;
+}
+{
+	point_A() [ <NOT> ] <IN> region_specification_A()	
+    {
+    	if( log.isTraceEnabled() ) exitTrace ( "region_predicate_A()" ) ;	
+    }
 }
 
 /*
@@ -2729,7 +2744,7 @@ void region_predicate_A() : {}
  */
 void region_predicate_J2000_A() : {}
 {
-	point_J2000_A() [ <NOT> ] <IN> region_specification_J2000_A()	
+	point_A() [ <NOT> ] <IN> region_specification_J2000_A()	
 }
 
 //void region_predicate_latlon_A() : {}//{//	point_latlon() [ <NOT> ] <IN> region_specification_latlon_A()	//}////void region_predicate_cartesian_A() : {}//{//	point_cartesian() [ <NOT> ] <IN> region_specification_cartesian_A()	//}
@@ -2745,6 +2760,7 @@ void region_predicate_J2000_A() : {}
 void point_J2000_A() : {}
 {
 	<LEFT_PAREN> ra_A() <COMMA> dec_A() <RIGHT_PAREN>
+	
 }
 
 /*
@@ -2753,38 +2769,82 @@ void point_J2000_A() : {}
  * bnf-start
  *  <region_specification_J2000> ::=
  *     <convex_J2000>
- *   | <rectangle_J2000>
+ *   | <rect_J2000>
  *   | <circle_J2000>
  *   | <polygon_J2000>
  *   | <complex_hull_J2000>
  * bnf-end
  *
  */
-void region_specification_J2000_A() : {}
+void region_specification_A() : {}
 {
-	convex_J2000_A()
+	( <CONVEX> convex_A() )
 	|
-	rectangle_J2000_A()
+	( <RECT> rectangle_A() )
 	|
-	circle_J2000_A()
+	( <CIRCLE> circle_A() )
 	|
-	polygon_J2000_A()
+	( <POLY> polygon_A() )
 	|
-	complex_hull_J2000_A()
+	( <CHULL> complex_hull_A() )
+}
+
+void convex_A() : {}
+{	
+	( <LATLON> convex_LatLon_A() )
+	|
+	( <CARTESIAN> convex_Cartesian_A() )
+	|
+	( [ <J2000> ] convex_J2000_A() )	
+}
+
+void rectangle_A() : {} 
+{
+	( <LATLON> rectangle_LatLon_A() )
+	|
+	( <CARTESIAN> rectangle_Cartesian_A() )
+	|
+	( [ <J2000> ] rectangle_J2000_A() )	
+}
+
+void circle_A() : {}
+{
+	( <LATLON> circle_LatLon_A() )
+	|
+	( <CARTESIAN> circle_Cartesian_A() )
+	|
+	( [ <J2000> ] circle_J2000_A() ) 
+}
+
+void polygon_A() : {}
+{
+	( <LATLON> polygon_LatLon_A() )
+	|
+	( <CARTESIAN> polygon_Cartesian_A() )
+	|
+	( [ <J2000> ] polygon_J2000_A() ) 
+}
+
+void complex_hull_A() : {}
+{
+	( <LATLON> complex_hull_LatLon_A() )
+	|
+	( <CARTESIAN> complex_hull_Cartesian_A() )
+	|
+	( [ <J2000> ] complex_hull_J2000_A() ) 
 }
 
 /*
  * convex_J2000_A
  *
  * bnf-start
- *   <convex_J2000> ::= CONVEX J2000 
+ *   <convex_J2000> ::= 
  *      <left_paren> <ra> <comma> <dec> <comma> <direction> <right_paren>
  *    { <left_paren> <ra> <comma> <dec> <comma> <direction> <right_paren> }...
  * bnf-end
  */
 void convex_J2000_A() : {}
 {
-	<CONVEX> <J2000> 
 	  ( LOOKAHEAD(2)
 	    <LEFT_PAREN> ra_A() <COMMA>	dec_A() <COMMA>	direction_A() <RIGHT_PAREN> )+
 }
@@ -2793,87 +2853,127 @@ void convex_J2000_A() : {}
  * rectangle_J2000_A
  *
  * bnf-start
- *   <rectangle_J2000> ::= CONVEX J2000 
- *      <left_paren> <ra> <comma> <dec> <right_paren>
- *      <left_paren> <ra> <comma> <dec> <right_paren> 
+ *   <rect_J2000> ::= 
+ *      <left_paren> <ra> <comma> <dec> <comma> <right_paren>
+ *      <left_paren> <ra> <comma> <dec> <comma> <right_paren>
  * bnf-end
  */
 void rectangle_J2000_A() : {}
 {
-	<RECT> <J2000> 
 	  <LEFT_PAREN> ra_A() <COMMA> dec_A() <RIGHT_PAREN> 
-	  <LEFT_PAREN> ra_A() <COMMA> dec_A() <RIGHT_PAREN> 
+      <LEFT_PAREN> ra_A() <COMMA> dec_A() <RIGHT_PAREN>
 }
+
 
 /*
  * circle_J2000_A
  *
  * bnf-start
- *   <circle_J2000> ::= CONVEX J2000 
+ *   <circle_J2000> ::= 
  *      <left_paren> <ra> <comma> <dec> <comma> <radius> <right_paren>
  * bnf-end
  */
-void circle_J2000_A() : {}
+void circle_J2000_A() #CircleJ2000 : {}
 {
-	<CIRCLE> <J2000> 
 	  <LEFT_PAREN> ra_A() <COMMA> dec_A() <COMMA> radius_A() <RIGHT_PAREN> 
 }
 
 /*
  * ra_A
  *
- * bnf-single <ra> ::= <numeric_value_expression>
+ * -bnf-single <ra> ::= <numeric_value_expression>
+ * bnf-start
+ *  <ra> ::= <stc_numeric_value_expression>
+ *  !! At some point in the future,
+ *  !! this could be <numeric_value_expression>
+ * bnf-end
  *
  */
 void ra_A() : {}
 {
-	numeric_value_expression_S()	
+	// numeric_value_expression_S()
+	stc_numeric_value_expression_A()	
 }
 
 /*
  * dec_A
  *
- * bnf-single <dec> ::= <numeric_value_expression>
+ * -bnf-single <dec> ::= <numeric_value_expression>
+ * bnf-start
+ *  <dec> ::= <stc_numeric_value_expression>
+ *  !! At some point in the future,
+ *  !! this could be <numeric_value_expression>
+ * bnf-end
  *
  */
 void dec_A() : {}
 {
-	numeric_value_expression_S()	
+	// numeric_value_expression_S()	
+	stc_numeric_value_expression_A()
 }
 
 /*
  * direction_A
  *
  * bnf-start
- *  <direction> ::= <numeric_value_expression>
+ *  <direction> ::= <stc_numeric_value_expression>
  *  !! The distance along the normal vector where the constraint plane intersects that vector. 
  *  !! If positive, the spherical sector on the far side (seen from the center) is selected.
  *  !! If negative, the point of intersection is in the opposite direction of the vector, resulting in more than a hemisphere.
  *  !! The valid range is -1.0 to +1.0
+ *  !! At some point in the future,
+ *  !! this could be <numeric_value_expression>
  * bnf-end
  *
  */
 void direction_A() : {}
 {
-	numeric_value_expression_S()
+	// numeric_value_expression_S()
+	stc_numeric_value_expression_A()
 }
 
 /*
  * radius_A
  *
- * bnf-single <radius> ::= <numeric_value_expression>
+ * -bnf-single <radius> ::= <numeric_value_expression>
+ * bnf-start
+ *  <radius> ::= <stc_numeric_value_expression>
+ *  !! At some point in the future,
+ *  !! this could be <numeric_value_expression>
+ * bnf-end
  *
  */
 void radius_A() : {}
 {
-	numeric_value_expression_S()	
+	// numeric_value_expression_S()	
+	stc_numeric_value_expression_A()
+}
+
+/*
+ * stc_numeric_value_expression_A
+ *
+ * bnf-start
+ *   <stc_numeric_value_expression> ::=
+ *      [ <sign> ] <unsigned_numeric_literal>
+ * bnf-end
+ */
+void stc_numeric_value_expression_A() #STCNumericValueExpression : {}
+{
+	[
+	    t=sign_S() 
+	    {  if( t!=null ) {
+	    	  jjtThis.setSign(t) ;
+	       }
+	    } 
+	] 
+	unsigned_numeric_literal_S()
 }
 
 /*
  * polygon_J2000_A
  *
  * bnf-start
- *   <polygon_J2000> ::= POLY J2000 
+ *   <polygon_J2000> ::= 
  *      <left_paren> <ra> <comma> <dec> <right_paren>
  *      <left_paren> <ra> <comma> <dec> <right_paren>
  *    { <left_paren> <ra> <comma> <dec> <right_paren> }...
@@ -2881,7 +2981,6 @@ void radius_A() : {}
  */
 void polygon_J2000_A() : {}
 {
-	<POLY> <J2000> 
 	  <LEFT_PAREN>
 		 numeric_value_expression_S() <COMMA>
 		 numeric_value_expression_S() 
@@ -2901,7 +3000,7 @@ void polygon_J2000_A() : {}
  * complex_hull_J2000_A
  *
  * bnf-start
- *   <complex_hull_J2000> ::= CHULL J2000 
+ *   <complex_hull_J2000> ::= 
  *      <left_paren> <ra> <comma> <dec> <right_paren>
  *      <left_paren> <ra> <comma> <dec> <right_paren>
  *    { <left_paren> <ra> <comma> <dec> <right_paren> }...
@@ -2909,7 +3008,6 @@ void polygon_J2000_A() : {}
  */
 void complex_hull_J2000_A() : {}
 {
-	<CHULL> <J2000> 
 	  <LEFT_PAREN>
 		 numeric_value_expression_S() <COMMA>
 		 numeric_value_expression_S() 
@@ -4129,6 +4227,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.11  2007/07/16 21:06:10  jl99
+Attempt to accommodate element linking with STC.
+
 Revision 1.10  2007/07/13 15:56:02  jl99
 Region
 
