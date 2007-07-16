@@ -3,7 +3,7 @@
     targetNamespace="http://www.ivoa.net/xml/v2.0/adql" 
 	xmlns:adql="http://www.ivoa.net/xml/v2.0/adql" 
     xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-    xmlns:reg="http://www.ivoa.net/xml/v1.0/stc" 
+    xmlns:stc="http://www.ivoa.net/xml/v1.0/stc" 
     elementFormDefault="qualified"
     version="2.0">
                   
@@ -515,17 +515,47 @@
 
 	<xs:complexType name="regionSearchType" mixed="false">
 		<xs:annotation>
-			<xs:documentation>Represents the Regions such as circle in Where clause</xs:documentation>
+			<xs:documentation>Represents the IN region-predicate in Where clause</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
 			<xs:extension base="adql:searchType">
 				<xs:sequence>
-					<xs:element name="Region" type="reg:regionType"/>
+				    <xs:element name="LinkedElements" type="adql:linkedListType" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="Point" type="adql:scalarExpressionType"/>
+					<xs:element name="Region" type="stc:regionType"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-
+	
+	<xs:complexType name="notInRegionSearchType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents the NOT IN region-predicate in Where clause</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:regionSearchType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="linkedListType" mixed="false">
+		<xs:annotation>
+			<xs:documentation></xs:documentation>
+		</xs:annotation>
+			<xs:sequence>
+			     <!-- maxOccurs="unbounded" is too much -->
+			     <xs:element ref="adql:LinkedElement" minOccurs="1" maxOccurs="unbounded"/>
+			</xs:sequence>
+	</xs:complexType>
+	
+	<xs:element name="LinkedElement" nillable="true">
+        <xs:annotation>
+           <xs:documentation></xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+			<xs:attribute name="id" use="required" />
+		</xs:complexType>       
+    </xs:element>
+	
 	<xs:complexType name="havingType">
 		<xs:annotation>
 			<xs:documentation>Represents the Having expression part of a query</xs:documentation>
@@ -699,7 +729,7 @@
 				<xs:sequence>
 					<xs:element name="Qualifier" type="adql:joinTableQualifierType"/>
 					<xs:element name="Tables" type="adql:ArrayOfFromTableType"/>
-					<xs:element name="Condition" type="adql:searchType"/>
+					<xs:element name="JoinSpecification" type="adql:joinSpecType"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -732,12 +762,15 @@
 		</xs:complexContent>
 	</xs:complexType>
 	
-    <xs:complexType name="joinColumnListType" mixed="false">
+    <xs:complexType name="namedColumnsJoinType" mixed="false">
 		<xs:annotation>
-			<xs:documentation>Represents SQL column_names_list </xs:documentation>
+			<xs:documentation>Represents SQL name_columns_join </xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="adql:columnNameListType">
+			<xs:extension base="adql:joinSpecType">
+				<xs:sequence>
+					<xs:element name="ColumnList" type="adql:columnNameListType"/>
+				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>		
 	</xs:complexType>		
