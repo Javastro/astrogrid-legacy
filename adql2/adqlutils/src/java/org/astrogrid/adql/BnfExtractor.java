@@ -1,4 +1,4 @@
-/*$Id: BnfExtractor.java,v 1.2 2007/07/12 13:42:27 jl99 Exp $
+/*$Id: BnfExtractor.java,v 1.3 2007/07/16 21:09:25 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -79,6 +79,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         "The definition represents a movement towards the draft ADQL spec as of v1.5-20070419\n" +
         "Variations from the draft are commented.\n" +
         "The select statement is found at <a href=\"#query_specification\">&lt;query_specification&gt;</a>\n" +
+        "The region predicate is found at <a href=\"#region_predicate\">&lt;region_predicate&gt;</a>\n" +
         "See <a href=\"http://savage.net.au/SQL/sql-92.bnf.html\">SQL92</a> for a similar page describing SQL92 in full.\n\n" ;
   
     private static final String HTML_FOOTINGS =
@@ -98,11 +99,13 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
     private static final String BNF_END = " * bnf-end" ;
     private static final String BNF_TRIGGER = "bnf-" ;
     
-    private static String option = null ;
+    private static String formatOption = null ;
     private static String inFilePath = null ;
     private static String outFilePath = null ;
+    private static boolean overwrite = false ;
     
-    private String iOption = null ;
+    private String iFormatOption = null ;
+    private boolean iOverWriteOption = false ;
     private File inputFile ;
     private File outputFile ;   
     private FileReader reader = null ;
@@ -147,11 +150,11 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
             }
         }
         
-        if( BnfExtractor.option == null ) {
-            BnfExtractor.option = "t" ;
+        if( BnfExtractor.formatOption == null ) {
+            BnfExtractor.formatOption = "t" ;
         }
                
-        BnfExtractor extractor = new BnfExtractor( inputFile, outputFile, option ) ;
+        BnfExtractor extractor = new BnfExtractor( inputFile, outputFile, formatOption ) ;
         
         extractor.exec() ;
         System.out.println( "BNF extraction complete." ) ;
@@ -164,10 +167,10 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
             // Usage: BnfExtractor {Options} input=file-path output=file-path 
             for( int i=0; i<args.length; i++ ) {
                 if( args[i].startsWith( "-t" ) ) {
-                   BnfExtractor.option = "t" ;
+                   BnfExtractor.formatOption = "t" ;
                 }
                 else if( args[i].startsWith( "-h" ) ) {
-                    BnfExtractor.option = "h" ; 
+                    BnfExtractor.formatOption = "h" ; 
                 }
                 else if( args[i].startsWith( "input=" )  
                          |
@@ -204,7 +207,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         else {
             this.outputStream = System.out ;
         }   
-        this.iOption = format ;
+        this.iFormatOption = format ;
         if( log.isTraceEnabled() ) exitTrace ( "BnfExtractor(File, File, String)" ) ;
     }
     
@@ -282,7 +285,7 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
     
     private void produceOutput() {
         try {
-            if( iOption.equals( "t" ) ) {
+            if( iFormatOption.equals( "t" ) ) {
                 produceText() ;
             }
             else {
@@ -676,6 +679,9 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
 
 /*
 $Log: BnfExtractor.java,v $
+Revision 1.3  2007/07/16 21:09:25  jl99
+*** empty log message ***
+
 Revision 1.2  2007/07/12 13:42:27  jl99
 Changed top comments on emitted documentation.
 
