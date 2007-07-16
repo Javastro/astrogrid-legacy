@@ -75,9 +75,10 @@ public class EndToEndTest extends TestCase {
   }
   
   public SecurityGuard loadCredentials() throws Exception {
-    String trustedCertsDirectory
-        = "/C:/Documents and Settings/gtr/.workbench/trusted-certificates";
-    System.setProperty("X509_CERT_DIR", trustedCertsDirectory);
+    File pem = new File("pem");
+    System.out.println("Looking for trust anchors as PEM files in "
+                       + pem.getAbsolutePath());
+    System.setProperty("X509_CERT_DIR", pem.getAbsolutePath());
     
     SecurityGuard guard = new SecurityGuard();
     KeyStore store = KeyStore.getInstance("JKS");

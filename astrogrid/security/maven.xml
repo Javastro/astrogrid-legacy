@@ -19,13 +19,19 @@
     <mkdir dir="${basedir}/target/classes"/>
   </preGoal>
 	
-	<!-- Special preconditions for unit tests. The tests use Axis in its
-	     'loop-back' mode, with service endpoints expressed using the 'local'
-	     URL-scheme. This mode requires that server-config.wsdd be in the
-	     CWD when the tests are run. Similarly, the key-store files for
-	     the tests need to be in the CWD. -->
-	<preGoal name="test:test">
-		<copy file="${basedir}/test/wsdd/server-config.wsdd"  todir="${maven.build.dir}" overwrite="true"/>
-	</preGoal>
+  <!-- Special preconditions for unit tests. The tests use Axis in its
+       'loop-back' mode, with service endpoints expressed using the 'local'
+       URL-scheme. This mode requires that server-config.wsdd be in the
+       CWD when the tests are run. Similarly, the key-store files for
+       the tests need to be in the CWD. The trust anchors for one of the
+       tests need to be copied into the subdirectory "pem/" of the
+       test directory. -->
+  <preGoal name="test:test">
+    <copy file="${basedir}/test/wsdd/server-config.wsdd"  todir="${maven.build.dir}" overwrite="true"/>
+    <mkdir dir="${basedir}/target/pem"/>
+    <copy todir="${maven.build.dir}/pem" overwrite="true">
+      <fileset dir="${basedir}/test/pem"/>
+    </copy>
+  </preGoal>
 	
 </project>

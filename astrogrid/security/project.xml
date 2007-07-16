@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="maven-project.xsd">
-
-  <extend>../maven-base/project.xml</extend>
-  
+<project>  
+  <pomVersion>3</pomVersion>
+  <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-security</artifactId>
-  <currentVersion>${astrogrid.security.version}</currentVersion>
-  <name>AstroGrid security facade</name>
-
-  <shortDescription>APIs abstracting security in web services.</shortDescription>
+  <name>Security Facade</name>
+  <currentVersion>2007.2.03</currentVersion>
+  <shortDescription>APIs for security in web services.</shortDescription>
   
   <description>
     <![CDATA[
@@ -31,169 +27,236 @@
   	facade's APIs, with the Axis-specific security calls encapsulated in the axis-specific
   	delegates.
   	</p>
+        <p>For REST services running in the Apache-Tomcat container, the
+        facade provides an enhanced implementation of SSL that support
+        RFC3820 proxy-certificates.
+        </p>
     ]]>
   </description>
   
-  <dependencies>
-     
-  	<!-- axis, and the jars it relies upon -->
-  	<dependency>
-  		<groupId>axis</groupId>
-  		<type>jar</type>
-  		<artifactId>axis</artifactId>
-  		<version>1.2.1</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>axis</groupId>
-  		<type>jar</type>
-  		<artifactId>wsdl4j</artifactId>
-  		<version>1.5.1</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>axis</groupId>
-  		<type>jar</type>
-  		<artifactId>axis-saaj</artifactId>
-  		<version>1.2.1</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>axis</groupId>
-  		<type>jar</type>
-  		<artifactId>axis-jaxrpc</artifactId>
-  		<version>1.2.1</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>axis</groupId>
-  		<type>jar</type>
-  		<artifactId>commons-logging</artifactId>
-  		<version>1.0.4</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>axis</groupId>
-  		<type>jar</type>
-  		<artifactId>commons-discovery</artifactId>
-  		<version>0.2</version>
-  	</dependency>
-    
-    <dependency>
-      <groupId>castor</groupId>
-      <type>jar</type>
-      <artifactId>castor-xml</artifactId>
-      <version>0.9.5</version>
-      <jar>castor-0.9.5-xml.jar</jar>
-    </dependency>
-    
-    <dependency>
-      <groupId>wsdl4j</groupId>
-      <type>jar</type>
-      <artifactId>wsdl4j</artifactId>
-      <version>1.0</version>
-    </dependency>
+  <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
+  
+  <inceptionYear>2003</inceptionYear>
+  
+  <developers>
+    <developer>
+      <name>Guy Rixon</name>
+      <id>gtr</id>
+      <email>gtr@ast.cam.ac.uk</email>
+      <organization>University of Cambridge</organization>
+    </developer>
+ </developers>
 
-    <dependency>
-      <groupId>log4j</groupId>
-      <type>jar</type>
-      <artifactId>log4j</artifactId>
-      <version>1.2.8</version>
-    </dependency>
-  	
-  	<dependency>
-  		<groupId>xmlsec</groupId>
-  		<type>jar</type>
-  		<artifactId>xmlsec</artifactId>
-  		<version>1.2.1</version>
-  	</dependency>
-  	
-  	<dependency>
-  		<groupId>bouncycastle</groupId>
-  		<type>jar</type>
-  		<artifactId>bcprov-jdk14</artifactId>
-  		<version>129</version>
-  	</dependency>
-  	
-  	<dependency>
-  		<groupId>globus</groupId>
-  		<artifactId>cog-jglobus</artifactId>
-  		<version>1.2</version>
-  		<type>jar</type>
-  		<properties>
-  			<dist.bundle>true</dist.bundle>
-  		</properties>
-  	</dependency>
-  	
-  	<dependency>
-  		<groupId>globus</groupId>
-  		<artifactId>cog-puretls</artifactId>
-  		<version>1.2</version>
-  		<type>jar</type>
-  	</dependency>
-  	
-  	<dependency>
-  		<groupId>sun</groupId>
-  		<type>jar</type>
-  		<artifactId>mail</artifactId>
-  		<version>1.3.1</version>
-  	</dependency>
-  	
-  	<dependency>
-  		<groupId>activation</groupId>
-  		<type>jar</type>
-  		<artifactId>activation</artifactId>
-  		<version>1.0.2</version>
-  	</dependency>
-  	
-  	<dependency>
-  		<groupId>org.astrogrid</groupId>
-  		<artifactId>astrogrid-registry-client-lite</artifactId>
-  		<version>${astrogrid.registry.version}</version>
-  	</dependency>
-  	
-  	<dependency>
-  		<groupId>org.astrogrid</groupId>
-  		<artifactId>astrogrid-registry-common</artifactId>
-  		<version>${astrogrid.registry.version}</version>
-  	</dependency>
-  	
-  	<dependency>
-  		<groupId>org.astrogrid</groupId>
-  		<artifactId>astrogrid-common</artifactId>
-  		<version>${astrogrid.common.version}</version>
-  	</dependency>
-  	
-  	<dependency>
-  		<groupId>commons-collections</groupId>
-  		<artifactId>commons-collections</artifactId>
-  		<version>3.1</version>
-  	</dependency>
-  	
-  </dependencies>
-	
-
+ <reports>
+    <report>maven-changes-plugin</report>
+    <report>maven-javadoc-plugin</report>
+    <report>maven-junit-report-plugin</report>
+    <report>maven-pmd-plugin</report>
+    <report>maven-license-plugin</report>
+  </reports> 
+  
+  <organization>
+    <name>AstroGrid</name>
+    <url>http://www.astrogrid.org/</url>
+    <logo>http://www.astrogrid.org/images/AGlogo</logo>
+  </organization>
+  
   <build>
     <sourceDirectory>src/java</sourceDirectory>
     <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
-
     <unitTest>
       <includes>
         <include>**/*Test.java</include>
       </includes>
-
       <resources>
         <resource>
-          <directory>${basedir}/test/properties</directory>
+          <directory>test/properties</directory>
           <includes>
- 	    			<include>*.properties</include>
+ 	    <include>*.properties</include>
           </includes>
         </resource>
       	<resource>
-      		<directory>${basedir}/test/keystore</directory>
-      		<includes>
-      			<include>tester.jks</include>
-      		</includes>
+      	  <directory>test/keystore</directory>
+          <includes>
+      	    <include>tester.jks</include>
+      	  </includes>
+      	</resource>
+        <resource>
+      	  <directory>test/wsdd</directory>
+          <includes>
+      	    <include>*.wsdd</include>
+      	  </includes>
+      	</resource>
+        <resource>
+      	  <directory>test/pem</directory>
+          <includes>
+      	    <include>*</include>
+      	  </includes>
       	</resource>
       </resources>
     </unitTest>
-
   </build>
+  
+    <dependencies>
+      
+      <!-- axis, and the jars it relies upon -->
+      <dependency>
+        <groupId>axis</groupId>
+        <type>jar</type>
+        <artifactId>axis</artifactId>
+        <version>1.2.1</version>
+      </dependency>
+      <dependency>
+        <groupId>axis</groupId>
+        <type>jar</type>
+        <artifactId>wsdl4j</artifactId>
+        <version>1.5.1</version>
+      </dependency>
+      <dependency>
+        <groupId>axis</groupId>
+        <type>jar</type>
+        <artifactId>axis-saaj</artifactId>
+        <version>1.2.1</version>
+      </dependency>
+      <dependency>
+        <groupId>axis</groupId>
+        <type>jar</type>
+        <artifactId>axis-jaxrpc</artifactId>
+        <version>1.2.1</version>
+      </dependency>
+      <dependency>
+        <groupId>axis</groupId>
+        <type>jar</type>
+        <artifactId>commons-logging</artifactId>
+        <version>1.0.4</version>
+      </dependency>
+      <dependency>
+        <groupId>axis</groupId>
+        <type>jar</type>
+        <artifactId>commons-discovery</artifactId>
+        <version>0.2</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>castor</groupId>
+        <type>jar</type>
+        <artifactId>castor-xml</artifactId>
+        <version>0.9.5</version>
+        <jar>castor-0.9.5-xml.jar</jar>
+      </dependency>
+      
+      <dependency>
+        <groupId>wsdl4j</groupId>
+        <type>jar</type>
+        <artifactId>wsdl4j</artifactId>
+        <version>1.0</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>log4j</groupId>
+        <type>jar</type>
+        <artifactId>log4j</artifactId>
+        <version>1.2.8</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>xmlsec</groupId>
+        <type>jar</type>
+        <artifactId>xmlsec</artifactId>
+        <version>1.2.1</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>bouncycastle</groupId>
+        <type>jar</type>
+        <artifactId>bcprov-jdk14</artifactId>
+        <version>129</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>globus</groupId>
+        <artifactId>cog-jglobus</artifactId>
+        <version>1.2</version>
+        <type>jar</type>
+        <properties>
+          <dist.bundle>true</dist.bundle>
+        </properties>
+      </dependency>
+      
+      <dependency>
+        <groupId>globus</groupId>
+        <artifactId>cog-cryptix</artifactId>
+        <version>1.2</version>
+        <type>jar</type>
+      </dependency>
+      
+      <dependency>
+        <groupId>globus</groupId>
+        <artifactId>cog-cryptix32</artifactId>
+        <version>1.2</version>
+        <type>jar</type>
+      </dependency>
+      
+      <dependency>
+        <groupId>globus</groupId>
+        <artifactId>cog-cryptix-asn1</artifactId>
+        <version>1.2</version>
+        <type>jar</type>
+      </dependency>
+      
+      <dependency>
+        <groupId>globus</groupId>
+        <artifactId>cog-puretls</artifactId>
+        <version>1.2</version>
+        <type>jar</type>
+      </dependency>
+      
+      <dependency>
+        <groupId>sun</groupId>
+        <type>jar</type>
+        <artifactId>mail</artifactId>
+        <version>1.3.1</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>activation</groupId>
+        <type>jar</type>
+        <artifactId>activation</artifactId>
+        <version>1.0.2</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>tomcat</groupId>
+        <artifactId>tomcat-util</artifactId>
+        <type>jar</type>
+        <version>5.5.20</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.astrogrid</groupId>
+        <artifactId>astrogrid-registry-client-lite</artifactId>
+        <version>2007.2r</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.astrogrid</groupId>
+        <artifactId>astrogrid-registry-common</artifactId>
+        <version>2007.2r</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.astrogrid</groupId>
+        <artifactId>astrogrid-common</artifactId>
+        <version>2007.2c</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>commons-collections</groupId>
+        <artifactId>commons-collections</artifactId>
+        <version>3.1</version>
+      </dependency>
+      
+    </dependencies>
 
 
 </project>

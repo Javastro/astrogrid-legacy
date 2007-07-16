@@ -1,4 +1,6 @@
+.DS_Store
+.classpath
+velocity.log
 .project
 target
-.classpath
 bin
