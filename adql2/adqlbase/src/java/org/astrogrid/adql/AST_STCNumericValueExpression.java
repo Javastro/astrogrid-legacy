@@ -35,18 +35,6 @@ public class AST_STCNumericValueExpression extends SimpleNode {
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_STCNumericValueExpression.buildXmlTree()" ) ; 
       
-      Double1Type d1t = (Double1Type)xo ;
-//      if( isSetSign() ) {
-//          UnaryExprType ueType = (UnaryExprType)xo.changeType( UnaryExprType.type) ;
-//          ueType.setOper( UnaryOperatorType.Enum.forString( signToken.image ) ) ;  
-//          children[1].buildXmlTree( ueType.addNewArg() ) ;
-//          this.generatedObject = children[1].getGeneratedObject() ;
-//      }
-//      else {
-//          children[0].buildXmlTree( xo ) ;
-//          this.generatedObject = children[0].getGeneratedObject() ;
-//      }
-      d1t.
       super.buildXmlTree(xo) ;
       if( log.isTraceEnabled() ) exitTrace( log, "AST_STCNumericValueExpression.buildXmlTree()" ) ; 
   }

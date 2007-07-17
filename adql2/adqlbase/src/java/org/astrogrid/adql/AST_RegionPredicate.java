@@ -4,6 +4,7 @@ package org.astrogrid.adql;
 
 import org.apache.xmlbeans.XmlObject;
 import org.astrogrid.adql.beans.RegionSearchType;
+import org.astrogrid.adql.beans.NotInRegionSearchType;
 import org.astrogrid.stc.beans.*;
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
@@ -12,25 +13,30 @@ public class AST_RegionPredicate extends SimpleNode {
 
     private static Log log = LogFactory.getLog( AST_RegionPredicate.class ) ;
     
+    private boolean in = true ;
+    
   public AST_RegionPredicate(AdqlStoX p, int id) {
     super(p, id);
   }
   
+  public void setIn( boolean in ) {
+      this.in = in ;
+  }
+  
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_RegionPredicate.buildXmlTree()" ) ; 
-      RegionSearchType rst = (RegionSearchType)xo.changeType( RegionSearchType.type ) ;
+      RegionSearchType rst ;
      
-//      center.setC1() ;
-//      
-//      circle.addNewCenter() ;
-//      circle.addNewRadius() ;
-//      
-//      int childCount = jjtGetNumChildren() ;
-//      String[] nameArray = new String[ childCount ] ;
-//      for( int i=0; i<childCount; i++ ) {
-//          nameArray[i] = (String)children[i].getGeneratedObject() ;
-//      }
-//      cnlType.setColumnNameArray( nameArray ) ;
+      if( in ) {
+          rst = (RegionSearchType)xo.changeType( RegionSearchType.type ) ;
+      }
+      else {
+          rst = (NotInRegionSearchType)xo.changeType( NotInRegionSearchType.type ) ;
+      }
+      
+      rst.addNewLinkedElements() ; 
+      children[0].buildXmlTree( rst.addNewPoint() ) ;
+      children[1].buildXmlTree( rst.addNewRegion() ) ;         
       this.generatedObject = rst ;
       super.buildXmlTree(rst) ;
       if( log.isTraceEnabled() ) exitTrace( log, "AST_RegionPredicate.buildXmlTree()" ) ; 

@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.11 2007/07/16 21:06:10 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.12 2007/07/17 11:17:43 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -130,7 +130,8 @@ public class AdqlStoX {
 	protected Tracker tracker ;
 	protected HashSet comments ; 
 	protected AdqlCompiler compiler ; 
-	protected Token lastCommentWritten ; 
+	protected Token lastCommentWritten ;
+	 
 	void jjtreeOpenNodeScope( org.astrogrid.adql.Node n ) {		((SimpleNode)n).firstToken = getToken(1);	}		    void jjtreeCloseNodeScope( org.astrogrid.adql.Node n ) {        ((SimpleNode)n).lastToken = getToken(0);    }    	private void enterTrace( String entry ) {
 		log.trace( compiler.getIndent().toString() + "enter: " + entry ) ;
 		compiler.indentPlus() ;	}    private void exitTrace( String entry ) {    	compiler.indentMinus() ;
@@ -801,7 +802,7 @@ TOKEN : // miscellaneous SQL92
  */
 TOKEN : // The remainder
 {
- 	< OTHER : ~[] >
+	< OTHER : ~[] >
 }
 
 /*
@@ -2694,9 +2695,7 @@ void predicate_A() :
  *
  * bnf-start
  *  <region_predicate> ::=
- *     <region_predicate_J2000>
- *   | <region_predicate_latlon>
- *   | <region_predicate_cartesian>
+ *    <point> [ NOT ] IN <region_specification>
  *  !! TODO:
  *  !! The ADQL draft spec has
  *  !! 
@@ -2711,127 +2710,138 @@ void predicate_A() :
  *  !! Region definition from STC schema here
  * bnf-end
  *
- * bnf-start
- *  <region_predicate_latlon> ::=
- *  !! Place holder only
- * bnf-end
- *
- * bnf-start
- *  <region_predicate_cartesian> ::=
- *  !! Place holder only
- * bnf-end
- *
  */
 void region_predicate_A() #RegionPredicate : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "region_predicate_A()" ) ;
 }
 {
-	point_A() [ <NOT> ] <IN> region_specification_A()	
+	point_A() [ <NOT> {jjtThis.setIn(false);} ] <IN> region_specification_A()	
     {
     	if( log.isTraceEnabled() ) exitTrace ( "region_predicate_A()" ) ;	
     }
 }
 
+
 /*
- * region_predicate_J2000_A
+ * point_A
  *
  * bnf-start
- *  <region_predicate_J2000> ::=
- *     <point_J2000> [ NOT ] IN <region_specification_J2000>	
+ *  <point_A> ::= 
+ *    <point_J2000> | <point_LATLON> | <point_CARTESIAN>
  * bnf-end
- *
- */
-void region_predicate_J2000_A() : {}
-{
-	point_A() [ <NOT> ] <IN> region_specification_J2000_A()	
-}
-
-//void region_predicate_latlon_A() : {}//{//	point_latlon() [ <NOT> ] <IN> region_specification_latlon_A()	//}////void region_predicate_cartesian_A() : {}//{//	point_cartesian() [ <NOT> ] <IN> region_specification_cartesian_A()	//}
-
-/*
- * point_J2000_A
  *
  * bnf-start
  *  <point_J2000> ::= <left_paren> <ra> <comma> <dec> <right_paren>
  * bnf-end
+ 
+ * bnf-start
+ *  <point_LATLON> ::= <left_paren> <latitude> <comma> <longitude> <right_paren>
+ * bnf-end
+ *
+ * bnf-start
+ *  <point_CARTESIAN> ::= <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren>
+ * bnf-end
+ *
+ * bnf-single <ra> ::= <numeric_value_expression>
+ * bnf-single <dec> ::= <numeric_value_expression>
+ * bnf-single <latitude> ::= <numeric_value_expression>
+ * bnf-single <longitude> ::= <numeric_value_expression>
+ * bnf-single <x_coord> ::= <numeric_value_expression>
+ * bnf-single <y_coord> ::= <numeric_value_expression>
+ * bnf-single <z_coord> ::= <numeric_value_expression>
  *
  */
-void point_J2000_A() : {}
+void point_A() #Point : 
 {
-	<LEFT_PAREN> ra_A() <COMMA> dec_A() <RIGHT_PAREN>
-	
+	if( log.isTraceEnabled() ) enterTrace ( "point_A()" ) ;
+}
+{
+	<LEFT_PAREN> numeric_value_expression_S() 
+	     <COMMA> numeric_value_expression_S() 
+	   [ <COMMA> numeric_value_expression_S() ] 
+	<RIGHT_PAREN>
+	{
+	   if( log.isTraceEnabled() ) exitTrace ( "point_A()" ) ;	
+	}	
 }
 
 /*
- * region_specification_J2000_A
+ * region_specification_A
  *
  * bnf-start
- *  <region_specification_J2000> ::=
- *     <convex_J2000>
- *   | <rect_J2000>
- *   | <circle_J2000>
- *   | <polygon_J2000>
- *   | <complex_hull_J2000>
+ *  <region_specification> ::=
+ *     <convex>
+ *   | <rectangle>
+ *   | <circle>
+ *   | <polygon>
+ *   | <complex_hull>
  * bnf-end
  *
  */
-void region_specification_A() : {}
+void region_specification_A() #RegionSpecification : 
 {
-	( <CONVEX> convex_A() )
-	|
-	( <RECT> rectangle_A() )
-	|
-	( <CIRCLE> circle_A() )
-	|
-	( <POLY> polygon_A() )
-	|
-	( <CHULL> complex_hull_A() )
+    if( log.isTraceEnabled() ) enterTrace ( "region_specification_A()" ) ;
+}
+{
+	(
+		( <CONVEX> convex_A() )
+		|
+		( <RECT> rectangle_A() )
+		|
+		( <CIRCLE> circle_A() )
+		|
+		( <POLY> polygon_A() )
+		|
+		( <CHULL> complex_hull_A() )
+	)
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "region_specification_A()" ) ;
+	}
 }
 
-void convex_A() : {}
+void convex_A() : 
+{
+    if( log.isTraceEnabled() ) enterTrace ( "convex_A()" ) ;
+}
 {	
-	( <LATLON> convex_LatLon_A() )
-	|
-	( <CARTESIAN> convex_Cartesian_A() )
-	|
-	( [ <J2000> ] convex_J2000_A() )	
+	(
+		( <LATLON> convex_LatLon_A() )
+		|
+		( <CARTESIAN> convex_Cartesian_A() )
+		|
+		( [ <J2000> ] convex_J2000_A() )
+	)
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "convex_A()" ) ;
+	}	
 }
 
-void rectangle_A() : {} 
+
+/*
+ * convex_LatLon_A
+ *
+ * bnf-start
+ *   <convex_LatLon> ::= 
+ *    !! Place holder
+ * bnf-end
+ */
+void convex_LatLon_A() : {}
 {
-	( <LATLON> rectangle_LatLon_A() )
-	|
-	( <CARTESIAN> rectangle_Cartesian_A() )
-	|
-	( [ <J2000> ] rectangle_J2000_A() )	
+	    <LATLON>
 }
 
-void circle_A() : {}
+/*
+ * convex_Cartesian_A
+ *
+ * bnf-start
+ *   <convex_LatLon> ::= 
+ *    !! Place holder
+ * bnf-end
+ */
+void convex_Cartesian_A() : {}
 {
-	( <LATLON> circle_LatLon_A() )
-	|
-	( <CARTESIAN> circle_Cartesian_A() )
-	|
-	( [ <J2000> ] circle_J2000_A() ) 
-}
-
-void polygon_A() : {}
-{
-	( <LATLON> polygon_LatLon_A() )
-	|
-	( <CARTESIAN> polygon_Cartesian_A() )
-	|
-	( [ <J2000> ] polygon_J2000_A() ) 
-}
-
-void complex_hull_A() : {}
-{
-	( <LATLON> complex_hull_LatLon_A() )
-	|
-	( <CARTESIAN> complex_hull_Cartesian_A() )
-	|
-	( [ <J2000> ] complex_hull_J2000_A() ) 
+	    <CARTESIAN>
 }
 
 /*
@@ -2843,10 +2853,60 @@ void complex_hull_A() : {}
  *    { <left_paren> <ra> <comma> <dec> <comma> <direction> <right_paren> }...
  * bnf-end
  */
-void convex_J2000_A() : {}
+void convex_J2000_A() : 
+{
+    if( log.isTraceEnabled() ) enterTrace ( "convex_J2000_A()" ) ;
+}
 {
 	  ( LOOKAHEAD(2)
-	    <LEFT_PAREN> ra_A() <COMMA>	dec_A() <COMMA>	direction_A() <RIGHT_PAREN> )+
+	    <LEFT_PAREN> numeric_value_expression_S() <COMMA> numeric_value_expression_S() <COMMA>	direction_A() <RIGHT_PAREN> )+
+      {
+          if( log.isTraceEnabled() ) exitTrace ( "convex_J2000_A()" ) ;
+      }
+}
+
+
+void rectangle_A() : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "rectangle_A()" ) ;
+} 
+{
+	(
+		( <LATLON> rectangle_LatLon_A() )
+		|
+		( <CARTESIAN> rectangle_Cartesian_A() )
+		|
+		( [ <J2000> ] rectangle_J2000_A() )	
+	)
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "rectangle_A()" ) ;	
+	}
+}
+
+/*
+ * rectangle_LatLon_A
+ *
+ * bnf-start
+ *   <rectangle_LatLon> ::= 
+ *    !! Place holder
+ * bnf-end
+ */
+void rectangle_LatLon_A() : {}
+{
+	    <LATLON>
+}
+
+/*
+ * rectangle_Cartesian_A
+ *
+ * bnf-start
+ *   <rectangle_Cartesian> ::= 
+ *    !! Place holder
+ * bnf-end
+ */
+void rectangle_Cartesian_A() : {}
+{
+	    <CARTESIAN>
 }
 
 /*
@@ -2858,12 +2918,62 @@ void convex_J2000_A() : {}
  *      <left_paren> <ra> <comma> <dec> <comma> <right_paren>
  * bnf-end
  */
-void rectangle_J2000_A() : {}
+void rectangle_J2000_A() : 
 {
-	  <LEFT_PAREN> ra_A() <COMMA> dec_A() <RIGHT_PAREN> 
-      <LEFT_PAREN> ra_A() <COMMA> dec_A() <RIGHT_PAREN>
+	if( log.isTraceEnabled() ) enterTrace ( "rectangle_J2000_A()" ) ;
+}
+{
+	(
+	  <LEFT_PAREN> numeric_value_expression_S() <COMMA> numeric_value_expression_S() <RIGHT_PAREN> 
+      <LEFT_PAREN> numeric_value_expression_S() <COMMA> numeric_value_expression_S() <RIGHT_PAREN>
+    )
+      {
+      	   if( log.isTraceEnabled() ) exitTrace ( "rectangle_J2000_A()" ) ;
+      }
 }
 
+void circle_A() : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "circle_A()" ) ;
+}
+{
+	(
+		( <LATLON> circle_LatLon_A() )
+		|
+		( <CARTESIAN> circle_Cartesian_A() )
+		|
+		( [ <J2000> ] circle_J2000_A() ) 
+	)
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "circle_A()" ) ;	
+	}
+}
+
+/*
+ * circle_LatLon_A
+ *
+ * bnf-start
+ *   <circle_LatLon> ::= 
+ *    !! Place holder
+ * bnf-end
+ */
+void circle_LatLon_A() : {}
+{
+	    <LATLON>
+}
+
+/*
+ * circle_Cartesian_A
+ *
+ * bnf-start
+ *   <circle_Cartesian> ::= 
+ *    !! Place holder
+ * bnf-end
+ */
+void circle_Cartesian_A() : {}
+{
+	    <CARTESIAN>
+}
 
 /*
  * circle_J2000_A
@@ -2873,127 +2983,138 @@ void rectangle_J2000_A() : {}
  *      <left_paren> <ra> <comma> <dec> <comma> <radius> <right_paren>
  * bnf-end
  */
-void circle_J2000_A() #CircleJ2000 : {}
+void circle_J2000_A() #CircleJ2000 : 
 {
-	  <LEFT_PAREN> ra_A() <COMMA> dec_A() <COMMA> radius_A() <RIGHT_PAREN> 
+	if( log.isTraceEnabled() ) enterTrace ( "circle_J2000_A()" ) ;
+}
+{
+	 ( <LEFT_PAREN> numeric_value_expression_S() <COMMA> numeric_value_expression_S() <COMMA> radius_A() <RIGHT_PAREN> )
+	 {
+	 	if( log.isTraceEnabled() ) exitTrace ( "circle_J2000_A()" ) ;	
+	 }
+}
+
+
+void polygon_A() : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "polygon_A()" ) ;
+}
+{
+	(
+		( <LATLON> polygon_LatLon_A() )
+		|
+		( <CARTESIAN> polygon_Cartesian_A() )
+		|
+		( [ <J2000> ] polygon_J2000_A() ) 
+	)
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "polygon_A()" ) ;	
+	}
 }
 
 /*
- * ra_A
+ * polygon_LatLon_A
  *
- * -bnf-single <ra> ::= <numeric_value_expression>
  * bnf-start
- *  <ra> ::= <stc_numeric_value_expression>
- *  !! At some point in the future,
- *  !! this could be <numeric_value_expression>
+ *   <polygon_LatLon> ::= 
+ *    !! Place holder
  * bnf-end
- *
  */
-void ra_A() : {}
+void polygon_LatLon_A() : {}
 {
-	// numeric_value_expression_S()
-	stc_numeric_value_expression_A()	
+	    <LATLON>
 }
 
 /*
- * dec_A
- *
- * -bnf-single <dec> ::= <numeric_value_expression>
- * bnf-start
- *  <dec> ::= <stc_numeric_value_expression>
- *  !! At some point in the future,
- *  !! this could be <numeric_value_expression>
- * bnf-end
- *
- */
-void dec_A() : {}
-{
-	// numeric_value_expression_S()	
-	stc_numeric_value_expression_A()
-}
-
-/*
- * direction_A
+ * polygon_Cartesian_A
  *
  * bnf-start
- *  <direction> ::= <stc_numeric_value_expression>
- *  !! The distance along the normal vector where the constraint plane intersects that vector. 
- *  !! If positive, the spherical sector on the far side (seen from the center) is selected.
- *  !! If negative, the point of intersection is in the opposite direction of the vector, resulting in more than a hemisphere.
- *  !! The valid range is -1.0 to +1.0
- *  !! At some point in the future,
- *  !! this could be <numeric_value_expression>
- * bnf-end
- *
- */
-void direction_A() : {}
-{
-	// numeric_value_expression_S()
-	stc_numeric_value_expression_A()
-}
-
-/*
- * radius_A
- *
- * -bnf-single <radius> ::= <numeric_value_expression>
- * bnf-start
- *  <radius> ::= <stc_numeric_value_expression>
- *  !! At some point in the future,
- *  !! this could be <numeric_value_expression>
- * bnf-end
- *
- */
-void radius_A() : {}
-{
-	// numeric_value_expression_S()	
-	stc_numeric_value_expression_A()
-}
-
-/*
- * stc_numeric_value_expression_A
- *
- * bnf-start
- *   <stc_numeric_value_expression> ::=
- *      [ <sign> ] <unsigned_numeric_literal>
+ *   <polygon_Cartesian> ::= 
+ *    !! Place holder
  * bnf-end
  */
-void stc_numeric_value_expression_A() #STCNumericValueExpression : {}
+void polygon_Cartesian_A() : {}
 {
-	[
-	    t=sign_S() 
-	    {  if( t!=null ) {
-	    	  jjtThis.setSign(t) ;
-	       }
-	    } 
-	] 
-	unsigned_numeric_literal_S()
+	    <CARTESIAN>
 }
 
 /*
  * polygon_J2000_A
  *
  * bnf-start
- *   <polygon_J2000> ::= 
+ *   <polygon_J2000> ::=
  *      <left_paren> <ra> <comma> <dec> <right_paren>
  *      <left_paren> <ra> <comma> <dec> <right_paren>
  *    { <left_paren> <ra> <comma> <dec> <right_paren> }...
  * bnf-end
  */
-void polygon_J2000_A() : {}
+void polygon_J2000_A() : 
 {
-	  <LEFT_PAREN>
-		 numeric_value_expression_S() <COMMA>
-		 numeric_value_expression_S() 
-	  <RIGHT_PAREN> 
-	  <LEFT_PAREN>
-		 numeric_value_expression_S() <COMMA>
-		 numeric_value_expression_S() 
-	  <RIGHT_PAREN> 
-	( LOOKAHEAD(2)
-	  <LEFT_PAREN>
-		 numeric_value_expression_S() <COMMA>
-		 numeric_value_expression_S() 
-	  <RIGHT_PAREN> )+ 
+	if( log.isTraceEnabled() ) enterTrace ( "polygon_J2000_A()" ) ;
+}
+{
+	  (
+	  	<LEFT_PAREN>
+		 	numeric_value_expression_S() <COMMA>
+		 	numeric_value_expression_S() 
+	  	<RIGHT_PAREN> 
+	  	<LEFT_PAREN>
+		 	numeric_value_expression_S() <COMMA>
+		 	numeric_value_expression_S() 
+	  	<RIGHT_PAREN> 
+		( LOOKAHEAD(2)
+	  	  <LEFT_PAREN>
+		 	numeric_value_expression_S() <COMMA>
+		 	numeric_value_expression_S() 
+	  	  <RIGHT_PAREN> )+ 
+	  )
+	  {
+	  		if( log.isTraceEnabled() ) exitTrace ( "polygon_J2000_A()" ) ;
+	  }
+}
+
+
+
+void complex_hull_A() : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "complex_hull_A()" ) ;
+}
+{
+	( <LATLON> complex_hull_LatLon_A() )
+	|
+	( <CARTESIAN> complex_hull_Cartesian_A() )
+	|
+	( [ <J2000> ] complex_hull_J2000_A() ) 
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "complex_hull_A()" ) ;
+	}
+}
+
+
+/*
+ * complex_hull_LatLon_A
+ *
+ * bnf-start
+ *   <complex_hull_LatLon> ::= 
+ *    !! Place holder
+ * bnf-end
+ */
+void complex_hull_LatLon_A() : {}
+{
+	    <LATLON>
+}
+
+/*
+ * complex_hull_Cartesian_A
+ *
+ * bnf-start
+ *   <complex_hull_Cartesian> ::= 
+ *    !! Place holder
+ * bnf-end
+ */
+void complex_hull_Cartesian_A() : {}
+{
+	    <CARTESIAN>
 }
 
 /*
@@ -3006,7 +3127,10 @@ void polygon_J2000_A() : {}
  *    { <left_paren> <ra> <comma> <dec> <right_paren> }...
  * bnf-end
  */
-void complex_hull_J2000_A() : {}
+void complex_hull_J2000_A() : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "complex_hull_J2000_A()" ) ;
+}
 {
 	  <LEFT_PAREN>
 		 numeric_value_expression_S() <COMMA>
@@ -3021,6 +3145,65 @@ void complex_hull_J2000_A() : {}
 		 numeric_value_expression_S() <COMMA>
 		 numeric_value_expression_S() 
 	  <RIGHT_PAREN> )+ 
+	  
+	  {
+	  	  if( log.isTraceEnabled() ) exitTrace ( "complex_hull_J2000_A()" ) ;
+	  }
+}
+
+/*
+ * direction_A
+ *
+ * bnf-start
+ *  <direction> ::= <numeric_value_expression>
+ *  !! The distance along the normal vector where the constraint plane intersects that vector. 
+ *  !! If positive, the spherical sector on the far side (seen from the center) is selected.
+ *  !! If negative, the point of intersection is in the opposite direction of the vector, resulting in more than a hemisphere.
+ *  !! The valid range is -1.0 to +1.0
+ * bnf-end
+ *
+ */
+void direction_A() : {}
+{
+	numeric_value_expression_S()
+	// stc_numeric_value_expression_S()
+}
+
+/*
+ * radius_A
+ *
+ * bnf-single <radius> ::= <numeric_value_expression>
+ * -bnf-start
+ * - <radius> ::= <stc_numeric_value_expression>
+ * - !! At some point in the future,
+ * - !! this could be <numeric_value_expression>
+ * -bnf-end
+ *
+ */
+void radius_A() : {}
+{
+	numeric_value_expression_S()	
+	//stc_numeric_value_expression_S()
+}
+
+/*
+ * stc_numeric_value_expression_S
+ *
+ * bnf-start
+ *   <stc_numeric_value_expression> ::=
+ *      [ <sign> ] <unsigned_numeric_literal>
+ * bnf-end
+ */
+void stc_numeric_value_expression_S() #STCNumericValueExpression : {}
+{
+	[
+	    t=sign_S() 
+	    {  if( t!=null ) {
+	    	  jjtThis.setSign(t) ;
+	       }
+	    } 
+	] 
+	unsigned_numeric_literal_S()
 }
 
 
@@ -4227,6 +4410,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.12  2007/07/17 11:17:43  jl99
+Region
+
 Revision 1.11  2007/07/16 21:06:10  jl99
 Attempt to accommodate element linking with STC.
 
