@@ -4,6 +4,8 @@
 package org.astrogrid.desktop.modules.system;
 
 import java.io.File;
+import java.net.URLStreamHandler;
+import java.net.URLStreamHandlerFactory;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -71,6 +73,40 @@ public class HivemindFileSystemManager extends DefaultFileSystemManager implemen
 	
 	public void setBaseFileString(String arg0) throws FileSystemException {
 		super.setBaseFile(new File(arg0));
+	}
+	
+	/** Overridden - as default implementatio causes a StackOverflow - as it delegates back to the
+	 * system protocol handlers.
+	 */ 
+	public URLStreamHandlerFactory getURLStreamHandlerFactory() {
+		return new StackOverflowAvoidingStreamHandlerFactory(super.getURLStreamHandlerFactory());
+	}
+	
+	/** wrap the stream handler retruned from the core implementaiton, 
+	 * and intercept calls to it which will result in a stack overflow.
+	 * 
+	 * necessary to go this way, as because most classes in VFS are private or
+	 * final, there's no other way to override.
+	 * @author Noel.Winstanley@manchester.ac.uk
+	 * @since Jul 17, 20074:15:25 PM
+	 */
+	final class StackOverflowAvoidingStreamHandlerFactory implements URLStreamHandlerFactory {
+
+		private final URLStreamHandlerFactory orig;
+		
+		public StackOverflowAvoidingStreamHandlerFactory(
+				URLStreamHandlerFactory orig) {
+				this.orig = orig;
+		}
+
+		public URLStreamHandler createURLStreamHandler(String protocol) {
+			if (!hasProvider(protocol)) {
+				return null;
+			} else {
+				return orig.createURLStreamHandler(protocol);
+			}
+		}
+		
 	}
 
 }

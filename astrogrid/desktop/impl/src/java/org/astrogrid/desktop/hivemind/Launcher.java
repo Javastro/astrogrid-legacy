@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.17 2007/06/18 16:20:33 nw Exp $
+/*$Id: Launcher.java,v 1.18 2007/07/17 15:22:55 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.desktop.hivemind;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.vfs.FileSystemManager;
 
 import java.net.URL;
 import java.net.URLStreamHandler;
@@ -50,7 +51,39 @@ import org.apache.hivemind.util.URLResource;
  */
 public class Launcher implements Runnable {
 
-    // runtime defaults. - can be overridden by things in system properties
+    /**
+	 * @author Noel.Winstanley@manchester.ac.uk
+	 * @since Jul 17, 20071:13:04 PM
+	 */
+	private final class ExtensibleStreamHandler implements
+			URLStreamHandlerFactory {
+		private URLStreamHandlerFactory followOn;
+
+		public URLStreamHandler createURLStreamHandler(String protocol) {
+			if ("classpath".equals(protocol)) {
+				return new org.astrogrid.desktop.protocol.classpath.Handler();
+			} else if ("fallback".equals(protocol)) {
+				return new org.astrogrid.desktop.protocol.fallback.Handler();
+			} else if ("httpclient".equals(protocol)) {
+				return new org.astrogrid.desktop.protocol.httpclient.Handler();
+			} else {
+				if (followOn == null) {
+					return null; // defers back to system protocol handers.
+				} else {
+					return followOn.createURLStreamHandler(protocol);
+				}
+			}
+		}
+
+		/** add in a subsequent handler factory - can only be called once.
+		 * @param streamHandlerFactory
+		 */
+		public void setFollowOnHandler(URLStreamHandlerFactory streamHandlerFactory) {
+			followOn = streamHandlerFactory;
+		}
+	}
+
+	// runtime defaults. - can be overridden by things in system properties
     public static final Properties defaults = new Properties(){{
     	setProperty("java.net.preferIPv4Stack","true");
         setProperty("java.net.preferIPv6Addresses","false");
@@ -121,29 +154,17 @@ public class Launcher implements Runnable {
     	*/
         
         // should be enough - but isn't/
-        System.setProperty("java.protocol.handler.pkgs","org.astrogrid.desktop.protocol");
+       // System.setProperty("java.protocol.handler.pkgs","org.astrogrid.desktop.protocol");
         // try fixing Protocol Handler loading bugs under jnlp
         // see http://forum.java.sun.com/thread.jspa?threadID=269651&messageID=1031648
-        // however, the proposed work-around is quite brittle  - not happy doing this.
-        // I need to enumerate all custom url protocols here, and make sure it's only called once.
+        // however, the proposed work-around is quite brittle  - not very confiednet about this
+        // also need to ensure that this method is only called once per JVM.
+        extensibleStreamHandler = new ExtensibleStreamHandler();
         synchronized (Launcher.class) {
         	if (!haveSetHandlerFactory) {
         		logger.info("Programmatically setting url handlers");
         		haveSetHandlerFactory = true;
-        		URL.setURLStreamHandlerFactory(new URLStreamHandlerFactory() {
-
-        			public URLStreamHandler createURLStreamHandler(String protocol) {
-        				if ("classpath".equals(protocol)) {
-        					return new org.astrogrid.desktop.protocol.classpath.Handler();
-        				} else if ("fallback".equals(protocol)) {
-        					return new org.astrogrid.desktop.protocol.fallback.Handler();
-        				} else if ("httpclient".equals(protocol)) {
-        					return new org.astrogrid.desktop.protocol.httpclient.Handler();
-        				} else {
-        					return null; // defers back to system protocol handers.
-        				}
-        			} 
-        		});
+				URL.setURLStreamHandlerFactory(extensibleStreamHandler);
         	}
         }
        
@@ -161,6 +182,8 @@ public class Launcher implements Runnable {
 
     // internal flag to keep track of whether the handler factory has been set in this vm yet.
     private static boolean haveSetHandlerFactory = false;
+
+	private final  ExtensibleStreamHandler extensibleStreamHandler;
     
     /** add a descriptor to the load set, pointed to by a URL
      * to be called before {@link #run}
@@ -186,7 +209,12 @@ public class Launcher implements Runnable {
     	
         RegistryBuilder builder = new RegistryBuilder();
         builder.addModuleDescriptorProvider(createModuleDescriptorProvider()); // this one loads our own descriptors
-        reg = builder.constructRegistry(Locale.getDefault());        
+        reg = builder.constructRegistry(Locale.getDefault());      
+        
+        // extract vfs, and splice into stream handler..
+        logger.info("Setting vfs as url protocol handler");
+        FileSystemManager vfs = (FileSystemManager) reg.getService(FileSystemManager.class);
+        extensibleStreamHandler.setFollowOnHandler(vfs.getURLStreamHandlerFactory());
     }
 
 	/**
@@ -215,6 +243,9 @@ public class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.18  2007/07/17 15:22:55  nw
+Complete - task 55: VFS stream handler
+
 Revision 1.17  2007/06/18 16:20:33  nw
 improved startup logging.
 
