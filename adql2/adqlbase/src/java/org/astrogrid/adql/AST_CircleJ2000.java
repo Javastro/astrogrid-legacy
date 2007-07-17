@@ -110,8 +110,8 @@ public class AST_CircleJ2000 extends SimpleNode {
           setRadius.setId( uid ) ;
           d1tRad.setIdref( uid ) ;
       }
- 
-      super.buildXmlTree(xo) ;
+      this.generatedObject = circle ;
+      super.buildXmlTree(circle) ;
       if( log.isTraceEnabled() ) exitTrace( log, "AST_CircleJ2000.buildXmlTree()" ) ; 
   }
 

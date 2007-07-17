@@ -289,6 +289,8 @@ public class AdqlCompiler {
         else {
             parser.comments.clear() ;
         }
+        parser.currentLinkedElementList = null ;
+        this.numberForUniqueID = 0 ;
      }
     
     private AdqlStoX parser ;

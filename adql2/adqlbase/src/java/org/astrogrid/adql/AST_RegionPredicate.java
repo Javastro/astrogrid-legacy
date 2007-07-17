@@ -3,6 +3,9 @@
 package org.astrogrid.adql;
 
 import org.apache.xmlbeans.XmlObject;
+import org.apache.xmlbeans.SchemaParticle; 
+import org.apache.xmlbeans.QNameSet; 
+import javax.xml.namespace.QName;
 import org.astrogrid.adql.beans.RegionSearchType;
 import org.astrogrid.adql.beans.NotInRegionSearchType;
 import org.astrogrid.adql.beans.LinkedListType;
@@ -34,10 +37,25 @@ public class AST_RegionPredicate extends SimpleNode {
       else {
           rst = (NotInRegionSearchType)xo.changeType( NotInRegionSearchType.type ) ;
       }
+      AstroCoordSystemType acst = rst.addNewAstroCoordSystem() ;
+      SpaceFrameType sft = acst.addNewSpaceFrame() ;
+      
+      CoordRefFrameType crf = sft.addNewSpaceRefFrame() ;
+      QName qName = new QName( CoordRefFrameType.type.getName().getNamespaceURI(), "FK5") ;
+      FkType srf = (FkType)crf.substitute( qName , FkType.type ) ;
+      srf.setEquinox( "J2000" ) ;     
+      sft.setSpaceRefFrame( srf ) ;
+      
       LinkedListType llt = rst.addNewLinkedElements() ;
       this.setCurrentLinkedElementList( llt ) ; 
       children[0].buildXmlTree( rst.addNewPoint() ) ;
       children[1].buildXmlTree( rst.addNewRegion() ) ; 
+      
+      RegionType rt = (RegionType)children[1].getGeneratedObject() ;
+      String uid = this.formUniqueID() ;
+      rt.setCoordSystemId( uid) ;
+      acst.setId( uid ) ;
+      
       if( llt.getLinkedElementArray().length == 0 ) {
           rst.unsetLinkedElements() ;
       }
