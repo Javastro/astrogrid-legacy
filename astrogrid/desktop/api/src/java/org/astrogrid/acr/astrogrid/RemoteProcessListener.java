@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessListener.java,v 1.4 2007/01/24 14:04:44 nw Exp $
+/*$Id: RemoteProcessListener.java,v 1.5 2007/07/17 17:04:58 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.acr.astrogrid;
 
 import java.net.URI;
+import java.util.EventListener;
 import java.util.Map;
 
 /** Listener interface to execution of remote processes,
@@ -21,7 +22,7 @@ import java.util.Map;
  * @xmlrpc not accessible. - can't support callbacks / listener interfaces.
  *
  */
-public interface RemoteProcessListener {
+public interface RemoteProcessListener extends EventListener{
     /** called to notify when the status of the remote process changes
      * 
      * @param executionId id of the remote process in question
@@ -45,6 +46,9 @@ public interface RemoteProcessListener {
 
 /* 
 $Log: RemoteProcessListener.java,v $
+Revision 1.5  2007/07/17 17:04:58  nw
+altered so that it extends the listener marker interface.
+
 Revision 1.4  2007/01/24 14:04:44  nw
 updated my email address
 
