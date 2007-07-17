@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.12 2007/07/17 11:17:43 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.13 2007/07/17 16:54:01 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -29,6 +29,7 @@ import java.util.HashSet ;
 import java.util.ArrayList ;
 import java.util.List ;
 import org.astrogrid.adql.beans.* ;
+import org.astrogrid.stc.beans.* ;
 
 /**
  * AdqlStoX         
@@ -131,7 +132,7 @@ public class AdqlStoX {
 	protected HashSet comments ; 
 	protected AdqlCompiler compiler ; 
 	protected Token lastCommentWritten ;
-	 
+	protected LinkedListType currentLinkedElementList ; 
 	void jjtreeOpenNodeScope( org.astrogrid.adql.Node n ) {		((SimpleNode)n).firstToken = getToken(1);	}		    void jjtreeCloseNodeScope( org.astrogrid.adql.Node n ) {        ((SimpleNode)n).lastToken = getToken(0);    }    	private void enterTrace( String entry ) {
 		log.trace( compiler.getIndent().toString() + "enter: " + entry ) ;
 		compiler.indentPlus() ;	}    private void exitTrace( String entry ) {    	compiler.indentMinus() ;
@@ -3194,17 +3195,7 @@ void radius_A() : {}
  *      [ <sign> ] <unsigned_numeric_literal>
  * bnf-end
  */
-void stc_numeric_value_expression_S() #STCNumericValueExpression : {}
-{
-	[
-	    t=sign_S() 
-	    {  if( t!=null ) {
-	    	  jjtThis.setSign(t) ;
-	       }
-	    } 
-	] 
-	unsigned_numeric_literal_S()
-}
+//void stc_numeric_value_expression_S() #STCNumericValueExpression : {}//{//	[//	    t=sign_S() //	    {  if( t!=null ) {//	    	  jjtThis.setSign(t) ;//	       }//	    } //	] //	unsigned_numeric_literal_S()//}
 
 
 /*
@@ -4410,6 +4401,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.13  2007/07/17 16:54:01  jl99
+Region
+
 Revision 1.12  2007/07/17 11:17:43  jl99
 Region
 

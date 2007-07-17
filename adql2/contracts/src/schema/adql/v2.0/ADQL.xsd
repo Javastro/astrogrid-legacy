@@ -29,7 +29,9 @@
 			<xs:documentation>The base type for a scalar expression</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="adql:selectionItemType"/>
+			<xs:extension base="adql:selectionItemType">
+		       <xs:attribute name="id" type="xs:ID" use="optional" />
+			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="closedExprType" mixed="false">
@@ -520,8 +522,9 @@
 		<xs:complexContent mixed="false">
 			<xs:extension base="adql:searchType">
 				<xs:sequence>
-				    <xs:element name="LinkedElements" type="adql:linkedListType" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="Point" type="adql:scalarExpressionType"/>
+				    <xs:element name="AstroCoordSystem" type="stc:astroCoordSystemType" minOccurs="0"/>
+				    <xs:element name="LinkedElements" type="adql:linkedListType" minOccurs="0"/>
+					<xs:element name="Point" type="adql:pointType"/>
 					<xs:element name="Region" type="stc:regionType"/>
 				</xs:sequence>
 			</xs:extension>
@@ -537,24 +540,41 @@
 		</xs:complexContent>
 	</xs:complexType>
 	
+	<xs:complexType name="pointType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents a point made in an ADQL region query</xs:documentation>
+		</xs:annotation>	
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:scalarExpressionType">
+				<xs:sequence>
+			        <xs:element name="Coord" type="adql:scalarExpressionType" minOccurs="2" maxOccurs="3"/>
+		        </xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+		
+	</xs:complexType>
+	
 	<xs:complexType name="linkedListType" mixed="false">
 		<xs:annotation>
 			<xs:documentation></xs:documentation>
 		</xs:annotation>
 			<xs:sequence>
 			     <!-- maxOccurs="unbounded" is too much -->
-			     <xs:element ref="adql:LinkedElement" minOccurs="1" maxOccurs="unbounded"/>
+			     <xs:element name="LinkedElement" type="adql:scalarExpressionType" minOccurs="1" maxOccurs="unbounded"/>
 			</xs:sequence>
+			
 	</xs:complexType>
 	
-	<xs:element name="LinkedElement" nillable="true">
+	<!-- xs:complexType name="linkedElementType" mixed="false">
         <xs:annotation>
            <xs:documentation></xs:documentation>
         </xs:annotation>
-        <xs:complexType>
-			<xs:attribute name="id" use="required" />
-		</xs:complexType>       
-    </xs:element>
+        <xs:complexContent mixed="false">
+			<xs:extension base="adql:scalarExpressionType">
+		       <xs:attribute name="id" type="xs:ID" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+    </xs:complexType -->
 	
 	<xs:complexType name="havingType">
 		<xs:annotation>

@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
 import org.astrogrid.adql.beans.SelectionListType;
+import org.astrogrid.adql.beans.LinkedListType;
 
 public abstract class SimpleNode implements Node {
     
@@ -194,6 +195,18 @@ public static String prepareComment( String comment ) {
 
 public Tracker getTracker() {
     return parser.tracker ;
+}
+
+public LinkedListType getCurrentLinkedElementList() {
+    return parser.currentLinkedElementList ;
+}
+
+public void setCurrentLinkedElementList( LinkedListType currentLinkedElementList) {
+    parser.currentLinkedElementList = currentLinkedElementList ;
+}
+
+public String formUniqueID() {
+    return parser.compiler.formUniqueID() ;
 }
 
 public void enterTrace( Log log, String entry ) {

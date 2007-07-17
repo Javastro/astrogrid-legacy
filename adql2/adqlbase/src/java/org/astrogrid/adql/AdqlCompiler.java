@@ -79,6 +79,8 @@ public class AdqlCompiler {
     
     private int prettyPrintIndent = 2 ;
     
+    private int numberForUniqueID = 0 ;
+    
 //    public static HashMap SchemaPrefixes = new HashMap() ;
 //    static {
 //        SchemaPrefixes.put( "urn:astrogrid:schema:ADQL:v2.0", "adql" ) ;
@@ -1393,6 +1395,11 @@ public class AdqlCompiler {
      */
     public void setPrettyPrintIndent( int prettyPrintIndent ) {
         this.prettyPrintIndent = prettyPrintIndent ;
+    }
+     
+    protected String formUniqueID() {
+         this.numberForUniqueID++ ;
+         return "ID_" + Integer.toString( this.numberForUniqueID ) ;       
     }
     
 }

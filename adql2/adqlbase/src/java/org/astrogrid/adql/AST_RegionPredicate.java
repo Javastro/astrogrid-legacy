@@ -5,6 +5,7 @@ package org.astrogrid.adql;
 import org.apache.xmlbeans.XmlObject;
 import org.astrogrid.adql.beans.RegionSearchType;
 import org.astrogrid.adql.beans.NotInRegionSearchType;
+import org.astrogrid.adql.beans.LinkedListType;
 import org.astrogrid.stc.beans.*;
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
@@ -33,10 +34,13 @@ public class AST_RegionPredicate extends SimpleNode {
       else {
           rst = (NotInRegionSearchType)xo.changeType( NotInRegionSearchType.type ) ;
       }
-      
-      rst.addNewLinkedElements() ; 
+      LinkedListType llt = rst.addNewLinkedElements() ;
+      this.setCurrentLinkedElementList( llt ) ; 
       children[0].buildXmlTree( rst.addNewPoint() ) ;
-      children[1].buildXmlTree( rst.addNewRegion() ) ;         
+      children[1].buildXmlTree( rst.addNewRegion() ) ; 
+      if( llt.getLinkedElementArray().length == 0 ) {
+          rst.unsetLinkedElements() ;
+      }
       this.generatedObject = rst ;
       super.buildXmlTree(rst) ;
       if( log.isTraceEnabled() ) exitTrace( log, "AST_RegionPredicate.buildXmlTree()" ) ; 

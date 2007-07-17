@@ -3,7 +3,15 @@
 package org.astrogrid.adql;
 
 import org.apache.xmlbeans.XmlObject;
+import org.astrogrid.adql.beans.AtomType;
+import org.astrogrid.adql.beans.IntegerType;
+import org.astrogrid.adql.beans.LiteralType;
+import org.astrogrid.adql.beans.RealType;
+import org.astrogrid.adql.beans.StringType;
 import org.astrogrid.adql.beans.RegionSearchType;
+import org.astrogrid.adql.beans.LinkedListType;
+import org.astrogrid.adql.beans.ScalarExpressionType;
+
 import org.astrogrid.stc.beans.*;
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
@@ -14,26 +22,95 @@ public class AST_CircleJ2000 extends SimpleNode {
 
 
   public AST_CircleJ2000(AdqlStoX p, int id) {
-    super(p, id);
+    super(p, id) ;
   }
   
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_CircleJ2000.buildXmlTree()" ) ; 
-      CircleType circle = CircleType.Factory.newInstance() ;
-      circle.setCoordSystemId("J2000") ;
-      Double2Type center = Double2Type.Factory.newInstance() ;
-//      center.setC1() ;
-//      
-//      circle.addNewCenter() ;
-//      circle.addNewRadius() ;
-//      
-//      int childCount = jjtGetNumChildren() ;
-//      String[] nameArray = new String[ childCount ] ;
-//      for( int i=0; i<childCount; i++ ) {
-//          nameArray[i] = (String)children[i].getGeneratedObject() ;
-//      }
-//      cnlType.setColumnNameArray( nameArray ) ;
-//      this.generatedObject = cnlType ;
+   
+      CircleType circle = (CircleType)xo.changeType( CircleType.type ) ;
+      Double2Type center = circle.addNewCenter() ;
+      Double1Type d1tRad = circle.addNewRadius() ;
+      
+      LinkedListType llt = this.getCurrentLinkedElementList() ;
+      int currentLinkedArrayPosition = 0 ;
+      
+      ScalarExpressionType setRa = llt.addNewLinkedElement() ;
+      children[0].buildXmlTree( setRa ) ;
+      setRa = (ScalarExpressionType)children[0].getGeneratedObject() ;
+          
+      Double1Type d1tRa = center.addNewC1() ;
+      if( setRa instanceof AtomType ) {
+          LiteralType lt = ((AtomType)setRa).getLiteral() ;       
+          if(  lt instanceof IntegerType ) {
+              d1tRa.setDoubleValue( new Long( ((IntegerType)lt).getValue()).doubleValue() ) ;
+          }
+          else if( lt instanceof RealType ) {
+              d1tRa.setDoubleValue( new Double( ((RealType)lt).getValue()).doubleValue() ) ;
+          }
+          else if( lt instanceof StringType ) {
+              d1tRa.setDoubleValue( new Double( ((StringType)lt).getValue()).doubleValue() ) ;
+          }
+          llt.removeLinkedElement( currentLinkedArrayPosition ) ;
+      }
+      else {
+          log.debug( "ra instanceof: " + setRa.getClass() ) ;
+          String uid = this.formUniqueID() ;
+          setRa.setId( uid ) ;
+          d1tRa.setIdref( uid ) ;
+          currentLinkedArrayPosition++ ;
+      }
+      
+      ScalarExpressionType setDec = llt.addNewLinkedElement() ;
+      children[1].buildXmlTree( setDec ) ;
+      setDec = (ScalarExpressionType)children[1].getGeneratedObject() ;
+      
+      Double1Type d1tDec = center.addNewC2() ;
+      if( setDec instanceof AtomType ) {
+          LiteralType lt = ((AtomType)setDec).getLiteral() ;         
+          if(  lt instanceof IntegerType ) {          
+              d1tDec.setDoubleValue( new Long( ((IntegerType)lt).getValue()).doubleValue() ) ;
+          }
+          else if( lt instanceof RealType ) {
+              d1tDec.setDoubleValue( new Double( ((RealType)lt).getValue()).doubleValue() ) ;
+          }
+          else if( lt instanceof StringType ) {
+              d1tDec.setDoubleValue( new Double( ((StringType)lt).getValue()).doubleValue() ) ;
+          }
+          llt.removeLinkedElement( currentLinkedArrayPosition ) ;
+      }
+      else {
+          log.debug( "dec instanceof: " + setDec.getClass() ) ;
+          String uid = this.formUniqueID() ;
+          setDec.setId( uid ) ;
+          d1tDec.setIdref( uid ) ;
+          currentLinkedArrayPosition++ ;
+      }
+          
+      ScalarExpressionType setRadius = llt.addNewLinkedElement() ;
+      children[2].buildXmlTree( setRadius ) ;
+      setRadius = (ScalarExpressionType)children[2].getGeneratedObject() ;
+      
+      if( setRadius instanceof AtomType ) {
+          LiteralType lt = ((AtomType)setRadius).getLiteral() ;
+          if(  lt instanceof IntegerType ) {          
+              d1tRad.setDoubleValue( new Long( ((IntegerType)lt).getValue()).doubleValue() ) ;
+          }
+          else if( lt instanceof RealType ) {
+              d1tRad.setDoubleValue( new Double( ((RealType)lt).getValue()).doubleValue() ) ;
+          }
+          else if( lt instanceof StringType ) {
+              d1tRad.setDoubleValue( new Double( ((StringType)lt).getValue()).doubleValue() ) ;
+          }
+          llt.removeLinkedElement( currentLinkedArrayPosition ) ;
+      }
+      else {
+          log.debug( "radius instanceof: " + setRadius.getClass() ) ;
+          String uid = this.formUniqueID() ;
+          setRadius.setId( uid ) ;
+          d1tRad.setIdref( uid ) ;
+      }
+ 
       super.buildXmlTree(xo) ;
       if( log.isTraceEnabled() ) exitTrace( log, "AST_CircleJ2000.buildXmlTree()" ) ; 
   }
