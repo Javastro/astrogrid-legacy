@@ -1,4 +1,4 @@
-/*$Id: ApplicationLauncher.java,v 1.4 2007/01/24 14:04:45 nw Exp $
+/*$Id: ApplicationLauncher.java,v 1.5 2007/07/17 17:05:28 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,15 +18,19 @@ package org.astrogrid.acr.ui;
  *@see org.astrogrid.acr.astrogrid.Applications
  */
 public interface ApplicationLauncher {
-    /** display the application launcher gui */
+    /** display a  application launcher UI */
     public void show() ;
-    /** hide the application launcher window */
+    /** hide the application launcher window
+     * @deprecated not implemented */
     public void hide();
 }
 
 
 /* 
 $Log: ApplicationLauncher.java,v $
+Revision 1.5  2007/07/17 17:05:28  nw
+documentation fix.
+
 Revision 1.4  2007/01/24 14:04:45  nw
 updated my email address
 
