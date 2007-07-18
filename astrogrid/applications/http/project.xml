@@ -4,7 +4,7 @@
     <pomVersion>3</pomVersion>
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-cea-http</artifactId>
-  <name>CEA command-line-application server</name>
+  <name>CEA HTTP-application server</name>
   <currentVersion>2007.2.01</currentVersion>
   <shortDescription>CEA server for HTTP applications</shortDescription>
   <description>A CEA application-server for HTTP applications. The service provides
