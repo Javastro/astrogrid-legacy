@@ -74,7 +74,7 @@ public class TableMetadataPanel extends JPanel {
     private JTable displayTable ;
     private JScrollPane displayTableScrollPane ;
     private AdqlTree adqlTree ;
-    private ADQLToolEditorPanel adqlToolEditorPanel ;
+    private ADQLEditorPanel adqlToolEditorPanel ;
     private SchemaType columnReferenceType ;
     private SchemaType selectType ;
     private SchemaType fromType ;
@@ -95,7 +95,7 @@ public class TableMetadataPanel extends JPanel {
     /**
      * 
      */
-    public TableMetadataPanel( ADQLToolEditorPanel adqlToolEditorPanel
+    public TableMetadataPanel( ADQLEditorPanel adqlToolEditorPanel
                              , AdqlTree adqlTree
                              , Catalog databaseBean 
                              , TableBean tableBean ) {

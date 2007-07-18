@@ -29,6 +29,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedInputStream;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -69,7 +70,6 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -77,7 +77,6 @@ import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlError;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
-import org.astrogrid.adql.v1_0.beans.SelectType ;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.ColumnBean;
 import org.astrogrid.acr.astrogrid.TableBean;
@@ -87,12 +86,13 @@ import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Catalog;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.adql.v1_0.beans.SelectType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.adqlEditor.commands.ColumnInsertCommand;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CommandExec;
-import org.astrogrid.desktop.modules.adqlEditor.commands.CommandInfo;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CommandFactory;
+import org.astrogrid.desktop.modules.adqlEditor.commands.CommandInfo;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CopyHolder;
 import org.astrogrid.desktop.modules.adqlEditor.commands.CutCommand;
 import org.astrogrid.desktop.modules.adqlEditor.commands.EditCommand;
@@ -107,11 +107,6 @@ import org.astrogrid.desktop.modules.adqlEditor.nodes.AdqlNode;
 import org.astrogrid.desktop.modules.ag.ApplicationsImpl;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
-import org.astrogrid.desktop.modules.dialogs.editors.AbstractToolEditorPanel;
-import org.astrogrid.desktop.modules.dialogs.editors.AbstractToolEditorPanel.ActionType;
-import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
-import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditListener;
-import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
@@ -120,27 +115,35 @@ import org.astrogrid.workflow.beans.v1.Tool;
 /**
  * @author jl99
  *
+ *
+ *@modified nww - simplifed by refactoring from 'a panel that edits a tool document' to
+ *' a panel that edits an ADQL parameter'. Also made the parameter immutable - the editor cannot
+ *be switched to edit a different parameter - instead, construct a new editor.
+ *
+ *In the future, might want to go even further - make this 'a panel that edits an adql string' and 
+ *leave it's clients to insert the adql into the tool document / whatever
  */
-public class ADQLToolEditorPanel 
-       extends AbstractToolEditorPanel 
-       implements ToolEditListener
-                , TreeModelListener
+public class ADQLEditorPanel 
+       extends JPanel
+       implements TreeModelListener
                 , ChangeListener
                 , PropertyChangeListener{
     
-    private static final Log log = LogFactory.getLog( ADQLToolEditorPanel.class ) ;
+    private static final Log log = LogFactory.getLog( ADQLEditorPanel.class ) ;
     private StringBuffer logIndent ;
     
     public static final String CONFIG_KEY_DEBUG_VIEW = "adqleditor.debugview" ; 
     public static final String GOOD_COMPILE_ICON = "greentick.gif" ;
     public static final String BAD_COMPILE_ICON = "redcross.gif" ;
     
-    private ParameterValue queryParam = null ;
-    
-    protected final MyspaceInternal myspace ;  
+    private final ParameterValue queryParam;
+    /** registry resource that describes the application this query is targeted at 
+     * probably always going to be a CeaApplication at the moment, but use the
+     * most general type 'Resource', to allow us to target TAP when it appears
+     * */
+    protected final Resource targetApplication;
     protected final UIComponent parent;
     protected final RegistryGoogle regChooser;
-    protected final ResourceChooserInternal resourceChooser;
     protected final Registry registry ;
     protected final Preference showDebugPanePreference;
       
@@ -269,84 +272,27 @@ public class ADQLToolEditorPanel
     private AdqlTransformer transformer ;
     private boolean statusAfterValidate = false ;
           
-    public ADQLToolEditorPanel( ToolModel toolModel
-                              , ResourceChooserInternal resourceChooser
-                              , RegistryGoogle regChooser
-                              , UIComponent parent
-                              , MyspaceInternal myspace
+    public ADQLEditorPanel(ParameterValue queryParam
+    						  , Resource targetApplication
+    						  , UIComponent parent
+    						  ,RegistryGoogle regChooser
                               , Registry registry
                               , Preference showDebugPanePref ) {
-        super( toolModel );
+    	this.queryParam = queryParam;
+    	this.targetApplication = targetApplication;
         this.parent = parent;
         this.regChooser = regChooser;
-        this.resourceChooser = resourceChooser ; 
-        this.myspace = myspace ;
         this.registry = registry ;
         this.transformer = new AdqlTransformer() ;
         this.showDebugPanePreference = showDebugPanePref;
         this.showDebugPanePreference.addPropertyChangeListener(this);
-        this.toolModel.addToolEditListener( this );
+        this.init();
     }
-    
- 
-    public void parameterAdded(ToolEditEvent te) {
-        // can't apply to this - assume query is mandatory
-    }
-    
-    public void parameterChanged(ToolEditEvent te) {
-        if( log.isTraceEnabled() ) enterTrace( "parameterChanged(ToolEditEvent te)"  ) ;
-        if ( te.getSource() != ADQLToolEditorPanel.this // only listen if change has come from elsewhere..
-             && 
-             te.getChangedParameter() == queryParam ) { 
-            // Jeff. 
-            // This requires more thought.
-            // I dont think it is sensible to allow users to edit the
-            // instream parameter directly (ie: outside of this editor)
-            // so for the moment I shall ignore any edits.
-            // There is of course the added problem of distinguishing
-            // between switches from local to remote and vice versa.
-            
-            // The above is too simple. Whilst I experiment,
-            // I've enabled it once more.
-            	this.removeAll() ;
-            	this.init() ;
-            }
-        if( log.isTraceEnabled() ) exitTrace( "parameterChanged(ToolEditEvent te)"  ) ;
-    }
-   
-    public void parameterRemoved(ToolEditEvent te) {
-        // can't apply - assume query is mandatory.
-    }
-    
-    public void toolChanged(ToolEditEvent te) {
-        if( log.isTraceEnabled() ) enterTrace( "toolChanged(ToolEditEvent te)"  ) ;
-        toolSet(te);
-        if( log.isTraceEnabled() ) exitTrace( "toolChanged(ToolEditEvent te)"  ) ;
-    }
-   
-    public void toolCleared(ToolEditEvent te) {
-        if( log.isTraceEnabled() ) enterTrace( "toolCleared(ToolEditEvent te)"  ) ;
-        queryParam = null;
-        setEnabled(false);
-        this.removeAll() ;
-        if( log.isTraceEnabled() ) exitTrace( "toolCleared(ToolEditEvent te)"  ) ;
-    }
-    
-    public void toolSet(ToolEditEvent te) {
-        if( log.isTraceEnabled() ) enterTrace( "toolCleared(ToolEditEvent te)"  ) ;
-        String[] toks = ApplicationsImpl.listADQLParameters(toolModel.getTool().getInterface(),toolModel.getInfo());
-        if (toks.length > 0) {
-            setEnabled(true);
-            queryParam = (ParameterValue)toolModel.getTool().findXPathValue("input/parameter[name='" + toks[0] +"']");
-            this.removeAll() ;
-            this.init() ;
-        }
-        if( log.isTraceEnabled() ) exitTrace( "toolCleared(ToolEditEvent te)"  ) ;
-    }
+
       
     private AdqlTree setAdqlTree() { 
         if( log.isTraceEnabled() ) enterTrace( "setAdqlTree()"  ) ;
-        URI toolIvorn = toolModel.getInfo().getId() ;
+        URI toolIvorn = targetApplication.getId() ;
         String query = null ;
         this.adqlTree = null ;
         if( queryParam == null ) {
@@ -468,10 +414,10 @@ public class ADQLToolEditorPanel
     private String readQuery() {
         String retQuery = null ;
         BufferedInputStream bis = null ; 
-        URI fileLocation = null ;
+        URL fileLocation = null ;
         try {
-            fileLocation = new URI( queryParam.getValue().trim() ) ;
-            bis = new BufferedInputStream( myspace.getInputStream( fileLocation ), 2000 ) ;
+            fileLocation = new URL( queryParam.getValue().trim() ) ;
+            bis = new BufferedInputStream(fileLocation.openStream() , 2000 ) ;
             StringBuffer buffer = new StringBuffer( 2000 ) ;
             int c ;
             while( (c = bis.read()) != -1 ) {
@@ -787,12 +733,6 @@ public class ADQLToolEditorPanel
 //            chooseResourceButton.setEnabled( true ) ;
 //        }             
         return rhsPanel ;
-    }
-    
-        
-    /** applicable when it's a dsa-style tool - ie. has an ADQL parameter*/
-    public boolean isApplicable(Tool t, CeaApplication info) {
-        return t != null && info != null && ApplicationsImpl.listADQLParameters(t.getInterface(),info).length > 0;
     }
     
     public void treeNodesChanged(TreeModelEvent e) {
@@ -1260,7 +1200,7 @@ public class ADQLToolEditorPanel
             chooseResourceButton.addActionListener(new ActionListener() {               
                 public void actionPerformed(ActionEvent e) {
                    Resource[] selection = regChooser.selectResourcesXQueryFilter( "Select Catalogue description for " 
-                                                                   + toolModel.getInfo().getTitle()
+                                                                   + targetApplication.getTitle()
                                                                    ,false
                                                                    , "(@xsi:type &= '*TabularDB')"
                                                                    ) ;
@@ -1282,7 +1222,7 @@ public class ADQLToolEditorPanel
             validateEditButton.addActionListener(new ActionListener() {               
                 public void actionPerformed(ActionEvent e) {
                    // validateEditButton.setEnabled( false ) ;
-                   ADQLToolEditorPanel.this.adqlMainView.executeEditCommand() ;
+                   ADQLEditorPanel.this.adqlMainView.executeEditCommand() ;
                 }
             });
         }
@@ -1327,7 +1267,7 @@ public class ADQLToolEditorPanel
                 Arrays.sort( tables, comparator ) ;
                 for( int j=0; j<tables.length; j++) {
                     tabbedCatalogPane.addTab( tables[j].getName()
-                                            , new TableMetadataPanel( ADQLToolEditorPanel.this
+                                            , new TableMetadataPanel( ADQLEditorPanel.this
                                                                     , adqlTree
                                                                     , dbs
                                                                     , tables[j] ) ) ;
@@ -1439,8 +1379,7 @@ public class ADQLToolEditorPanel
         XmlOptions options = new XmlOptions() ;
         options.setSaveOuter() ;
         String xmlText = xmlRoot.xmlText( options ) ;
-        queryParam.setValue( xmlText ) ;
-        toolModel.fireParameterChanged( ADQLToolEditorPanel.this, queryParam ) ;                    
+        queryParam.setValue( xmlText ) ;                  
     }
     
 
@@ -1786,26 +1725,6 @@ public class ADQLToolEditorPanel
         return true ;
     }
 
-
-    /** Method overridden.
-     * 
-     * If we are about to execute with a query containing detectable errors,
-     * then we issue a suitable warning message.
-     * 
-     * @param actionType the action about to be performed
-     * @return a suitable warning message or null ;
-     */
-    public String getActionWarningMessage( ActionType actionType ) {
-        String message = null ;
-        if( actionType == EXECUTE 
-            && 
-            isApplicable( toolModel.getTool(), toolModel.getInfo() )
-            &&
-            this.statusAfterValidate == false  ) {
-                message = "Query Panel: errors or unprocessed edits have been detected." ;
-        }       
-        return message ;
-    }
     
     
     
@@ -1897,7 +1816,7 @@ public class ADQLToolEditorPanel
 		if (evt.getSource() == this.showDebugPanePreference) {
 		     boolean bState = this.showDebugPanePreference.asBoolean();
              if( bState) {
-                 ADQLToolEditorPanel.this.adqlXmlView = new AdqlXmlView( tabbedEditorPane ) ;
+                 ADQLEditorPanel.this.adqlXmlView = new AdqlXmlView( tabbedEditorPane ) ;
              }
              else {                       
                  tabbedEditorPane.removeTabAt( tabbedEditorPane.indexOfComponent( adqlXmlView) ) ;
