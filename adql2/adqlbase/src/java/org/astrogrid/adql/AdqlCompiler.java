@@ -12,8 +12,12 @@ import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.ArrayList ;
 import java.util.ListIterator ;
+
+import javax.xml.namespace.QName;
+
 import org.apache.xmlbeans.XmlOptions ;
 import org.astrogrid.adql.beans.*; 
+import org.astrogrid.stc.beans.*; 
 import org.w3c.dom.Node ;
 import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlObject;
@@ -125,6 +129,19 @@ public class AdqlCompiler {
     	AdqlStoXConstants.ORDERBY 
     } ;
      
+     private static AstroCoordSystemType systemDefault_AstroCoordSystemType ;
+     static { 
+         systemDefault_AstroCoordSystemType = AstroCoordSystemType.Factory.newInstance() ;
+         SpaceFrameType sft = systemDefault_AstroCoordSystemType.addNewSpaceFrame() ;         
+         CoordRefFrameType crf = sft.addNewSpaceRefFrame() ;
+         QName qName = new QName( CoordRefFrameType.type.getName().getNamespaceURI(), "FK5") ;
+         FkType srf = (FkType)crf.substitute( qName , FkType.type ) ;
+         srf.setEquinox( "J2000" ) ;     
+         sft.setSpaceRefFrame( srf ) ;        
+     }
+     
+     private AstroCoordSystemType default_AstroCoordSystemType ;
+     
      
      /**
       * Enables the compiler to be run from the command line, though a script
@@ -228,6 +245,31 @@ public class AdqlCompiler {
              System.err.println( "Error reading stdin: \n" + iox.getLocalizedMessage() ) ;
          }        
          return buffer.toString() ;
+     }
+     
+     public static synchronized void setSystemDefault_AstroCoordSystem( AstroCoordSystemType acst ) {
+         systemDefault_AstroCoordSystemType = acst ;
+     }
+     
+     public static synchronized AstroCoordSystemType getSystemDefault_AstroCoordSystem() {
+         AstroCoordSystemType acst = (AstroCoordSystemType)systemDefault_AstroCoordSystemType.copy() ;
+         return acst ;
+     }
+     
+     public void setDefault_AstroCoordSystem( AstroCoordSystemType acst ) {
+         this.default_AstroCoordSystemType = acst ;
+     }
+     
+     public AstroCoordSystemType getDefault_AstroCoordSystem() {
+         AstroCoordSystemType acst ;
+         if( default_AstroCoordSystemType == null ) {
+             acst = (AstroCoordSystemType)default_AstroCoordSystemType.copy() ;
+         }
+         else {
+             acst = (AstroCoordSystemType)getSystemDefault_AstroCoordSystem().copy() ;
+         }
+         acst.setId( "AstroCoordSystem_Default" ) ;
+         return acst ;
      }
      
           
@@ -1402,6 +1444,11 @@ public class AdqlCompiler {
     protected String formUniqueID() {
          this.numberForUniqueID++ ;
          return "ID_" + Integer.toString( this.numberForUniqueID ) ;       
+    }
+    
+    protected String formUniqueID( String prefix ) {
+        this.numberForUniqueID++ ;
+        return prefix + '_' + Integer.toString( this.numberForUniqueID ) ;  
     }
     
 }
