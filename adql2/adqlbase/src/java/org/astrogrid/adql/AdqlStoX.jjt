@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.14 2007/07/18 10:02:05 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.15 2007/07/19 17:53:57 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -777,20 +777,20 @@ TOKEN : // miscellaneous SQL92
 |	< ORDERBY : "order by" >
 |	< TIME_ZONE: "TIME ZONE" >
 |	< TRUTH_VALUE : "true" | "false" | "unknown" >
+
 |   < REGULAR_IDENTIFIER : ( <LETTER> )+ ( <DIGIT> | <LETTER> | <SPECIAL_CHARS> )* >|	< DELIMITED_IDENTIFIER : "\"" (~["\n","\r","\""])* "\"" >
 | 	< #LETTER: ["a"-"z", "A"-"Z"] >
 |   < #SPECIAL_CHARS: <DOLLAR> | "_">
-
+|   < APPROXIMATE_NUMERIC_LITERAL : <MANTISSA> <E> <EXPONENT> > 
 |	< UNSIGNED_INTEGER : ( <DIGIT> )+ > 
 |  	< DIGIT: ["0" - "9"] >   
-|   < APPROXIMATE_NUMERIC_LITERAL : <MANTISSA> <E> <EXPONENT> > 
 |   < EXACT_NUMERIC_LITERAL : 
         ( <UNSIGNED_INTEGER> ( <PERIOD> ( <UNSIGNED_INTEGER> )? )? )
         | 
         ( <PERIOD> <UNSIGNED_INTEGER> ) >
 |   < #MANTISSA : <EXACT_NUMERIC_LITERAL> >
 |   < #EXPONENT : <SIGNED_INTEGER> >        
-|	< #SIGNED_INTEGER : <SIGN> <UNSIGNED_INTEGER> >
+|	< #SIGNED_INTEGER : ( <SIGN> )? <UNSIGNED_INTEGER> >
 |   < #E : ["E", "e"] >
 |   < #SIGN : <PLUS_SIGN> | <MINUS_SIGN> >
 
@@ -1522,6 +1522,7 @@ void exact_numeric_literal_S( int possibleSignChange ) #ExactNumericLiteral :
 {
 	if( log.isTraceEnabled() ) enterTrace ( "exact_numeric_literal_S()" ) ;
 	jjtThis.setPossibleSignChange( possibleSignChange ) ;
+	Token t ;
 	//tracker.setType( AtomType.type ) ;
 }
 {
@@ -1539,8 +1540,15 @@ void exact_numeric_literal_S( int possibleSignChange ) #ExactNumericLiteral :
     // This is probably worthy of study to see whether a more
     // stable way of doing this is possible.
 //    try {
-		( <EXACT_NUMERIC_LITERAL> | <UNSIGNED_INTEGER> )
-		{ if( log.isTraceEnabled() ) exitTrace ( "exact_numeric_literal_S()" ) ; }
+		( t=<EXACT_NUMERIC_LITERAL> | t=<UNSIGNED_INTEGER> )
+		{ 
+			if( t != null ) {
+				if( log.isDebugEnabled() ) {
+					log.debug( "Token encountered: kind [" + t.kind + "] with image [" + t.image + "]" ) ;
+				}
+			}
+			if( log.isTraceEnabled() ) exitTrace ( "exact_numeric_literal_S()" ) ; 
+		}
 //    }//    catch( ParseException pex ) {//    	log.debug( "exact_numeric_literal_S complained, token.image: " + token.image ) ;//    	throw pex ;//    }
 }
 
@@ -1615,6 +1623,7 @@ Token sign_S() #Sign :
 {
 	( t=<PLUS_SIGN> | t=<MINUS_SIGN> )
 	{ 
+	   log.debug( "sign: " + t.image ) ;
 	   if( log.isTraceEnabled() ) exitTrace ( "sign_S()" ) ;
 	   return t ;
 	}
@@ -2780,7 +2789,7 @@ void point_A() #Point :
  * bnf-end
  *
  */
-void region_specification_A() #RegionSpecification : 
+void region_specification_A() : 
 {
     if( log.isTraceEnabled() ) enterTrace ( "region_specification_A()" ) ;
 }
@@ -2811,7 +2820,6 @@ void region_specification_A() #RegionSpecification :
  *    | [ J2000 ] <convex_J2000>
  * bnf-end
  */
-
 void convex_A() : 
 {
     if( log.isTraceEnabled() ) enterTrace ( "convex_A()" ) ;
@@ -4468,16 +4476,21 @@ void unsigned_literal_S() : {}
  * bnf-end
  *
  */
-void unsigned_numeric_literal_S() : {} 
+void unsigned_numeric_literal_S() : 
+{
+    if( log.isTraceEnabled() ) enterTrace ( "unsigned_numeric_literal_S()" ) ;
+} 
 {
 	//S:
 	//  <unsigned_numeric_literal> ::=
     //      <exact_numeric_literal>
     //    | <approximate_numeric_literal>
-
-	exact_numeric_literal_S( DONT_CHANGE_SIGN )
-	|
+    exact_numeric_literal_S( DONT_CHANGE_SIGN )
+    |
 	approximate_numeric_literal_S() 
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "unsigned_numeric_literal_S()" ) ;
+	}
 }
 
 /*
@@ -4617,6 +4630,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.15  2007/07/19 17:53:57  jl99
+Region
+
 Revision 1.14  2007/07/18 10:02:05  jl99
 Region
 

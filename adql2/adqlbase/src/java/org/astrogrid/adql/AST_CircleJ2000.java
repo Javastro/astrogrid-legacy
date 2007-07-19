@@ -11,6 +11,7 @@ import org.astrogrid.adql.beans.StringType;
 import org.astrogrid.adql.beans.RegionSearchType;
 import org.astrogrid.adql.beans.LinkedListType;
 import org.astrogrid.adql.beans.ScalarExpressionType;
+import org.astrogrid.adql.beans.UnaryExprType;
 
 import org.astrogrid.stc.beans.*;
 import org.apache.commons.logging.Log ;
@@ -31,6 +32,7 @@ public class AST_CircleJ2000 extends SimpleNode {
       CircleType circle = (CircleType)xo.changeType( CircleType.type ) ;
       Double2Type center = circle.addNewCenter() ;
       Double1Type d1tRad = circle.addNewRadius() ;
+      int sign = +1 ;
       
       LinkedListType llt = this.getCurrentLinkedElementList() ;
       int currentLinkedArrayPosition = 0 ;
@@ -91,17 +93,34 @@ public class AST_CircleJ2000 extends SimpleNode {
       children[2].buildXmlTree( setRadius ) ;
       setRadius = (ScalarExpressionType)children[2].getGeneratedObject() ;
       
+      // 
+      // If of the form +n or -n, we need to unpack the literal 
+      // and set the sign...
+      if( setRadius instanceof UnaryExprType ) {
+          UnaryExprType uet = ((UnaryExprType)setRadius) ;
+          String ssign = uet.getOper().toString() ;
+          if( ssign.equals( "-" ) ) {
+              sign = -1 ;
+          }
+          else {
+              sign = +1 ;
+          }
+          setRadius = uet.getArg() ;
+      }
+      
       if( setRadius instanceof AtomType ) {
           LiteralType lt = ((AtomType)setRadius).getLiteral() ;
+          double dHolder = 0 ;
           if(  lt instanceof IntegerType ) {          
-              d1tRad.setDoubleValue( new Long( ((IntegerType)lt).getValue()).doubleValue() ) ;
+              dHolder = new Long( ((IntegerType)lt).getValue() ).doubleValue() ;
           }
           else if( lt instanceof RealType ) {
-              d1tRad.setDoubleValue( new Double( ((RealType)lt).getValue()).doubleValue() ) ;
+              dHolder = new Double( ((RealType)lt).getValue()).doubleValue() ;
           }
           else if( lt instanceof StringType ) {
-              d1tRad.setDoubleValue( new Double( ((StringType)lt).getValue()).doubleValue() ) ;
+              dHolder = new Double( ((StringType)lt).getValue()).doubleValue() ;
           }
+          d1tRad.setDoubleValue( dHolder * sign ) ;
           llt.removeLinkedElement( currentLinkedArrayPosition ) ;
       }
       else {

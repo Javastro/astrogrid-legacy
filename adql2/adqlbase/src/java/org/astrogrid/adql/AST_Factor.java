@@ -2,7 +2,6 @@
 
 package org.astrogrid.adql;
 
-import org.astrogrid.adql.beans.BinaryExprType;
 import org.astrogrid.adql.beans.UnaryExprType;
 import org.astrogrid.adql.beans.UnaryOperatorType;
 import org.apache.xmlbeans.XmlObject; 
@@ -21,7 +20,7 @@ public class AST_Factor extends SimpleNode {
     
     public void setSign( Token t ) {
         signToken = t ;
-        getTracker().setType( BinaryExprType.type ) ;
+        getTracker().setType( UnaryExprType.type ) ;
         getTracker().push( AdqlCompiler.ARG_ELEMENT ) ;
     }
     
@@ -66,7 +65,7 @@ public class AST_Factor extends SimpleNode {
             UnaryExprType ueType = (UnaryExprType)xo.changeType( UnaryExprType.type) ;
             ueType.setOper( UnaryOperatorType.Enum.forString( signToken.image ) ) ;  
             children[1].buildXmlTree( ueType.addNewArg() ) ;
-            this.generatedObject = children[1].getGeneratedObject() ;
+            this.generatedObject = ueType ;
         }
         else {
             children[0].buildXmlTree( xo ) ;

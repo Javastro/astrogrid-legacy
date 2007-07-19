@@ -209,6 +209,10 @@ public String formUniqueID() {
     return parser.compiler.formUniqueID() ;
 }
 
+public String formUniqueID( String prefix ) {
+    return parser.compiler.formUniqueID( prefix ) ;
+}
+
 public void enterTrace( Log log, String entry ) {
     log.trace( parser.compiler.getIndent().toString() + "enter: " + entry ) ;
     parser.compiler.indentPlus() ;

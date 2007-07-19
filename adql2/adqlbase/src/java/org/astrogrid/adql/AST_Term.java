@@ -47,6 +47,12 @@ public class AST_Term extends SimpleNode {
         if( isSetOperator() == false ) {
             children[0].buildXmlTree( xo ) ;
             this.generatedObject = children[0].getGeneratedObject() ;
+            if( log.isDebugEnabled() ) {
+                buffer
+                    .append( "\n setOperator() is false. " )
+                    .append( "\n generatedObject set to one of " + this.generatedObject.getClass() )
+                    .append( "\n generatedObjec.toString(): " + this.generatedObject.toString() );
+            }
         }
         else {
             BinaryExprType beType = (BinaryExprType)xo.changeType( BinaryExprType.type ) ;

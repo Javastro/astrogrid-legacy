@@ -2,13 +2,116 @@
 
 package org.astrogrid.adql;
 
-public class AST_CircleCartesian extends SimpleNode {
-  public AST_CircleCartesian(int id) {
-    super(id);
-  }
+import org.apache.xmlbeans.XmlObject;
+import org.astrogrid.adql.beans.AtomType;
+import org.astrogrid.adql.beans.IntegerType;
+import org.astrogrid.adql.beans.LiteralType;
+import org.astrogrid.adql.beans.RealType;
+import org.astrogrid.adql.beans.StringType;
+import org.astrogrid.adql.beans.RegionSearchType;
+import org.astrogrid.adql.beans.LinkedListType;
+import org.astrogrid.adql.beans.ScalarExpressionType;
 
+import org.astrogrid.stc.beans.*;
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+
+public class AST_CircleCartesian extends SimpleNode {
+ 
+    private static Log log = LogFactory.getLog( AST_CircleCartesian.class ) ;
+    
   public AST_CircleCartesian(AdqlStoX p, int id) {
     super(p, id);
   }
 
+  public void buildXmlTree( XmlObject xo ) {
+      if( log.isTraceEnabled() ) enterTrace( log, "AST_CircleCartesian.buildXmlTree()" ) ; 
+   
+      CircleType circle = (CircleType)xo.changeType( CircleType.type ) ;
+      Double2Type center = circle.addNewCenter() ;
+      Double1Type d1tRad = circle.addNewRadius() ;
+      
+      LinkedListType llt = this.getCurrentLinkedElementList() ;
+      int currentLinkedArrayPosition = 0 ;
+      
+      ScalarExpressionType setCoordX = llt.addNewLinkedElement() ;
+      children[0].buildXmlTree( setCoordX ) ;
+      setCoordX = (ScalarExpressionType)children[0].getGeneratedObject() ;
+          
+      Double1Type d1tRa = center.addNewC1() ;
+      if( setCoordX instanceof AtomType ) {
+          LiteralType lt = ((AtomType)setCoordX).getLiteral() ;       
+          if(  lt instanceof IntegerType ) {
+              d1tRa.setDoubleValue( new Long( ((IntegerType)lt).getValue()).doubleValue() ) ;
+          }
+          else if( lt instanceof RealType ) {
+              d1tRa.setDoubleValue( new Double( ((RealType)lt).getValue()).doubleValue() ) ;
+          }
+          else if( lt instanceof StringType ) {
+              d1tRa.setDoubleValue( new Double( ((StringType)lt).getValue()).doubleValue() ) ;
+          }
+          llt.removeLinkedElement( currentLinkedArrayPosition ) ;
+      }
+      else {
+          log.debug( "ra instanceof: " + setCoordX.getClass() ) ;
+          String uid = this.formUniqueID() ;
+          setCoordX.setId( uid ) ;
+          d1tRa.setIdref( uid ) ;
+          currentLinkedArrayPosition++ ;
+      }
+      
+      ScalarExpressionType setDec = llt.addNewLinkedElement() ;
+      children[1].buildXmlTree( setDec ) ;
+      setDec = (ScalarExpressionType)children[1].getGeneratedObject() ;
+      
+      Double1Type d1tDec = center.addNewC2() ;
+      if( setDec instanceof AtomType ) {
+          LiteralType lt = ((AtomType)setDec).getLiteral() ;         
+          if(  lt instanceof IntegerType ) {          
+              d1tDec.setDoubleValue( new Long( ((IntegerType)lt).getValue()).doubleValue() ) ;
+          }
+          else if( lt instanceof RealType ) {
+              d1tDec.setDoubleValue( new Double( ((RealType)lt).getValue()).doubleValue() ) ;
+          }
+          else if( lt instanceof StringType ) {
+              d1tDec.setDoubleValue( new Double( ((StringType)lt).getValue()).doubleValue() ) ;
+          }
+          llt.removeLinkedElement( currentLinkedArrayPosition ) ;
+      }
+      else {
+          log.debug( "dec instanceof: " + setDec.getClass() ) ;
+          String uid = this.formUniqueID() ;
+          setDec.setId( uid ) ;
+          d1tDec.setIdref( uid ) ;
+          currentLinkedArrayPosition++ ;
+      }
+          
+      ScalarExpressionType setRadius = llt.addNewLinkedElement() ;
+      children[2].buildXmlTree( setRadius ) ;
+      setRadius = (ScalarExpressionType)children[2].getGeneratedObject() ;
+      
+      if( setRadius instanceof AtomType ) {
+          LiteralType lt = ((AtomType)setRadius).getLiteral() ;
+          if(  lt instanceof IntegerType ) {          
+              d1tRad.setDoubleValue( new Long( ((IntegerType)lt).getValue()).doubleValue() ) ;
+          }
+          else if( lt instanceof RealType ) {
+              d1tRad.setDoubleValue( new Double( ((RealType)lt).getValue()).doubleValue() ) ;
+          }
+          else if( lt instanceof StringType ) {
+              d1tRad.setDoubleValue( new Double( ((StringType)lt).getValue()).doubleValue() ) ;
+          }
+          llt.removeLinkedElement( currentLinkedArrayPosition ) ;
+      }
+      else {
+          log.debug( "radius instanceof: " + setRadius.getClass() ) ;
+          String uid = this.formUniqueID() ;
+          setRadius.setId( uid ) ;
+          d1tRad.setIdref( uid ) ;
+      }
+      this.generatedObject = circle ;
+      super.buildXmlTree(circle) ;
+      if( log.isTraceEnabled() ) exitTrace( log, "AST_CircleCartesian.buildXmlTree()" ) ; 
+  }
+  
 }

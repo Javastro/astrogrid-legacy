@@ -37,22 +37,34 @@ public class AST_RegionPredicate extends SimpleNode {
       else {
           rst = (NotInRegionSearchType)xo.changeType( NotInRegionSearchType.type ) ;
       }
-      AstroCoordSystemType acst = rst.addNewAstroCoordSystem() ;
-      SpaceFrameType sft = acst.addNewSpaceFrame() ;
-      
-      CoordRefFrameType crf = sft.addNewSpaceRefFrame() ;
-      QName qName = new QName( CoordRefFrameType.type.getName().getNamespaceURI(), "FK5") ;
-      FkType srf = (FkType)crf.substitute( qName , FkType.type ) ;
-      srf.setEquinox( "J2000" ) ;     
-      sft.setSpaceRefFrame( srf ) ;
+ 
       
       LinkedListType llt = rst.addNewLinkedElements() ;
       this.setCurrentLinkedElementList( llt ) ; 
       children[0].buildXmlTree( rst.addNewPoint() ) ;
       children[1].buildXmlTree( rst.addNewRegion() ) ; 
       
+      Node regionNode = children[1] ;
       RegionType rt = (RegionType)children[1].getGeneratedObject() ;
-      String uid = this.formUniqueID() ;
+      
+      AstroCoordSystemType acst = rst.addNewAstroCoordSystem() ;
+      SpaceFrameType sft = acst.addNewSpaceFrame() ;    
+      CoordRefFrameType crf = sft.addNewSpaceRefFrame() ;
+      
+      if( regionNode instanceof AST_CircleLatLon ) {
+          
+      }
+      else if( regionNode instanceof AST_CircleJ2000 ) {
+          QName qName = new QName( CoordRefFrameType.type.getName().getNamespaceURI(), "FK5") ;
+          FkType srf = (FkType)crf.substitute( qName , FkType.type ) ;
+          srf.setEquinox( "J2000" ) ;     
+          sft.setSpaceRefFrame( srf ) ;
+      }
+      else if( regionNode instanceof AST_CircleCartesian ) {
+          
+      }
+        
+      String uid = this.formUniqueID( "AstroCoordSystem" ) ;
       rt.setCoordSystemId( uid) ;
       acst.setId( uid ) ;
       

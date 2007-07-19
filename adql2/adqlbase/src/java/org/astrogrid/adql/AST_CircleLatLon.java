@@ -3,9 +3,6 @@
 package org.astrogrid.adql;
 
 public class AST_CircleLatLon extends SimpleNode {
-  public AST_CircleLatLon(int id) {
-    super(id);
-  }
 
   public AST_CircleLatLon(AdqlStoX p, int id) {
     super(p, id);
