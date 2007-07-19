@@ -1,9 +1,10 @@
-target
+.DS_Store
 .classpath
-.project
-tests.log
-bin
-junit*.properties
 velocity.log
 posttranstrans.xml
+junit*.properties
+target
+bin
+tests.log
 pretrans.xml
+.project
