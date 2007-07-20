@@ -31,49 +31,43 @@ public class AST_RegionPredicate extends SimpleNode {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_RegionPredicate.buildXmlTree()" ) ; 
       RegionSearchType rst ;
      
+      //
+      // The predicate is either IN or NOT IN ...
       if( in ) {
           rst = (RegionSearchType)xo.changeType( RegionSearchType.type ) ;
       }
       else {
           rst = (NotInRegionSearchType)xo.changeType( NotInRegionSearchType.type ) ;
       }
- 
+      this.generatedObject = rst ;
+      AstroCoordSystemType acst = rst.addNewAstroCoordSystem() ;
+      acst.addNewSpaceFrame().addNewSpaceRefFrame() ;    
       
       LinkedListType llt = rst.addNewLinkedElements() ;
       this.setCurrentLinkedElementList( llt ) ; 
       children[0].buildXmlTree( rst.addNewPoint() ) ;
       children[1].buildXmlTree( rst.addNewRegion() ) ; 
       
-      Node regionNode = children[1] ;
-      RegionType rt = (RegionType)children[1].getGeneratedObject() ;
-      
-      AstroCoordSystemType acst = rst.addNewAstroCoordSystem() ;
-      SpaceFrameType sft = acst.addNewSpaceFrame() ;    
-      CoordRefFrameType crf = sft.addNewSpaceRefFrame() ;
-      
-      if( regionNode instanceof AST_CircleLatLon ) {
-          
-      }
-      else if( regionNode instanceof AST_CircleJ2000 ) {
-          QName qName = new QName( CoordRefFrameType.type.getName().getNamespaceURI(), "FK5") ;
-          FkType srf = (FkType)crf.substitute( qName , FkType.type ) ;
-          srf.setEquinox( "J2000" ) ;     
-          sft.setSpaceRefFrame( srf ) ;
-      }
-      else if( regionNode instanceof AST_CircleCartesian ) {
-          
-      }
-        
       String uid = this.formUniqueID( "AstroCoordSystem" ) ;
-      rt.setCoordSystemId( uid) ;
+      ( (RegionType)children[1].getGeneratedObject() ).setCoordSystemId( uid ) ;
       acst.setId( uid ) ;
       
-      if( llt.getLinkedElementArray().length == 0 ) {
+      if( llt.sizeOfLinkedElementArray() == 0 ) {
           rst.unsetLinkedElements() ;
+          llt = null ;
       }
-      this.generatedObject = rst ;
+
       super.buildXmlTree(rst) ;
       if( log.isTraceEnabled() ) exitTrace( log, "AST_RegionPredicate.buildXmlTree()" ) ; 
   }
-
+  
+  protected void setAstroCoordSystem_J2000() {
+      SpaceFrameType sft = ((RegionSearchType)this.generatedObject).getAstroCoordSystem().getSpaceFrame() ;    
+      CoordRefFrameType crf = sft.getSpaceRefFrame() ;
+      QName qName = new QName( CoordRefFrameType.type.getName().getNamespaceURI(), "FK5") ;
+      FkType srf = (FkType)crf.substitute( qName , FkType.type ) ;
+      srf.setEquinox( "J2000" ) ;     
+      sft.setSpaceRefFrame( srf ) ;
+  }
+  
 }

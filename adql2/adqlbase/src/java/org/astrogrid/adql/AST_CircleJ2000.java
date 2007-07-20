@@ -28,35 +28,26 @@ public class AST_CircleJ2000 extends SimpleNode {
   
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_CircleJ2000.buildXmlTree()" ) ; 
+      
+      ( (AST_RegionPredicate)this.parent ).setAstroCoordSystem_J2000() ;
    
       CircleType circle = (CircleType)xo.changeType( CircleType.type ) ;
       Double2Type center = circle.addNewCenter() ;
-      Double1Type d1tRad = circle.addNewRadius() ;
-      int sign = +1 ;
-      
+
       LinkedListType llt = this.getCurrentLinkedElementList() ;
-      int currentLinkedArrayPosition = 0 ;
+      int currentLinkedArrayPosition = llt.sizeOfLinkedElementArray() ;
       
       ScalarExpressionType setRa = llt.addNewLinkedElement() ;
       children[0].buildXmlTree( setRa ) ;
       setRa = (ScalarExpressionType)children[0].getGeneratedObject() ;
           
       Double1Type d1tRa = center.addNewC1() ;
-      if( setRa instanceof AtomType ) {
-          LiteralType lt = ((AtomType)setRa).getLiteral() ;       
-          if(  lt instanceof IntegerType ) {
-              d1tRa.setDoubleValue( new Long( ((IntegerType)lt).getValue()).doubleValue() ) ;
-          }
-          else if( lt instanceof RealType ) {
-              d1tRa.setDoubleValue( new Double( ((RealType)lt).getValue()).doubleValue() ) ;
-          }
-          else if( lt instanceof StringType ) {
-              d1tRa.setDoubleValue( new Double( ((StringType)lt).getValue()).doubleValue() ) ;
-          }
+      Double d = this.unpackNumericLiteral( setRa ) ;
+      if( d != null ) {
+          d1tRa.setDoubleValue( d.doubleValue() ) ;
           llt.removeLinkedElement( currentLinkedArrayPosition ) ;
       }
       else {
-          log.debug( "ra instanceof: " + setRa.getClass() ) ;
           String uid = this.formUniqueID() ;
           setRa.setId( uid ) ;
           d1tRa.setIdref( uid ) ;
@@ -68,63 +59,27 @@ public class AST_CircleJ2000 extends SimpleNode {
       setDec = (ScalarExpressionType)children[1].getGeneratedObject() ;
       
       Double1Type d1tDec = center.addNewC2() ;
-      if( setDec instanceof AtomType ) {
-          LiteralType lt = ((AtomType)setDec).getLiteral() ;         
-          if(  lt instanceof IntegerType ) {          
-              d1tDec.setDoubleValue( new Long( ((IntegerType)lt).getValue()).doubleValue() ) ;
-          }
-          else if( lt instanceof RealType ) {
-              d1tDec.setDoubleValue( new Double( ((RealType)lt).getValue()).doubleValue() ) ;
-          }
-          else if( lt instanceof StringType ) {
-              d1tDec.setDoubleValue( new Double( ((StringType)lt).getValue()).doubleValue() ) ;
-          }
+      d = this.unpackNumericLiteral( setDec ) ;
+      if( d != null ) {
+          d1tDec.setDoubleValue( d.doubleValue() ) ;
           llt.removeLinkedElement( currentLinkedArrayPosition ) ;
       }
       else {
-          log.debug( "dec instanceof: " + setDec.getClass() ) ;
           String uid = this.formUniqueID() ;
           setDec.setId( uid ) ;
           d1tDec.setIdref( uid ) ;
           currentLinkedArrayPosition++ ;
       }
           
+      Double1Type d1tRad = circle.addNewRadius() ;
       ScalarExpressionType setRadius = llt.addNewLinkedElement() ;
       children[2].buildXmlTree( setRadius ) ;
-      setRadius = (ScalarExpressionType)children[2].getGeneratedObject() ;
-      
-      // 
-      // If of the form +n or -n, we need to unpack the literal 
-      // and set the sign...
-      if( setRadius instanceof UnaryExprType ) {
-          UnaryExprType uet = ((UnaryExprType)setRadius) ;
-          String ssign = uet.getOper().toString() ;
-          if( ssign.equals( "-" ) ) {
-              sign = -1 ;
-          }
-          else {
-              sign = +1 ;
-          }
-          setRadius = uet.getArg() ;
-      }
-      
-      if( setRadius instanceof AtomType ) {
-          LiteralType lt = ((AtomType)setRadius).getLiteral() ;
-          double dHolder = 0 ;
-          if(  lt instanceof IntegerType ) {          
-              dHolder = new Long( ((IntegerType)lt).getValue() ).doubleValue() ;
-          }
-          else if( lt instanceof RealType ) {
-              dHolder = new Double( ((RealType)lt).getValue()).doubleValue() ;
-          }
-          else if( lt instanceof StringType ) {
-              dHolder = new Double( ((StringType)lt).getValue()).doubleValue() ;
-          }
-          d1tRad.setDoubleValue( dHolder * sign ) ;
+      setRadius = (ScalarExpressionType)children[2].getGeneratedObject() ;     
+      d = this.unpackNumericLiteral( setRadius ) ;
+      if( d != null ) {
+          d1tRad.setDoubleValue( d.doubleValue() ) ;
           llt.removeLinkedElement( currentLinkedArrayPosition ) ;
-      }
-      else {
-          log.debug( "radius instanceof: " + setRadius.getClass() ) ;
+      } else {
           String uid = this.formUniqueID() ;
           setRadius.setId( uid ) ;
           d1tRad.setIdref( uid ) ;

@@ -8,6 +8,11 @@ import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
 import org.astrogrid.adql.beans.SelectionListType;
 import org.astrogrid.adql.beans.LinkedListType;
+import org.astrogrid.adql.beans.UnaryExprType;
+import org.astrogrid.adql.beans.AtomType;
+import org.astrogrid.adql.beans.LiteralType;
+import org.astrogrid.adql.beans.RealType;
+import org.astrogrid.adql.beans.IntegerType;
 
 public abstract class SimpleNode implements Node {
     
@@ -211,6 +216,36 @@ public String formUniqueID() {
 
 public String formUniqueID( String prefix ) {
     return parser.compiler.formUniqueID( prefix ) ;
+}
+
+protected Double unpackNumericLiteral( final XmlObject source ) {   
+    Double retVal = null ;
+    XmlObject tmp = source ;
+    
+    int sign = +1 ;
+    if( source instanceof UnaryExprType ) {
+        UnaryExprType uet = ((UnaryExprType)source) ;
+        if( uet.getOper().toString().equals( "-" ) ) {
+            sign = -1 ;
+        }
+        tmp = uet.getArg() ;
+    }
+    else {
+        tmp = source ;
+    }
+    
+    if( tmp instanceof AtomType ) {
+        LiteralType lt = ((AtomType)tmp).getLiteral() ;
+
+        if(  lt instanceof IntegerType ) {          
+            retVal = new Double( ((IntegerType)lt).getValue() * sign ) ;
+        }
+        else if( lt instanceof RealType ) {
+            retVal = new Double( ((RealType)lt).getValue() * sign ) ;
+        }
+    }
+   
+    return retVal ;
 }
 
 public void enterTrace( Log log, String entry ) {
