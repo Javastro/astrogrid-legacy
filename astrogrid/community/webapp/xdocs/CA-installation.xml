@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<document>
+  <properties>
+    <author>Guy Rixon</author>
+    <title>Installing a certificate authority</title>
+  </properties>
+  <body>
+    <section name="Installing a certificate authority">
+      <p>
+       Members of your community will need identity certificates for access
+       to controlled resources in the IVO. They need these certificates to
+       use VOSpace, so every user needs one.
+      </p>
+      <p>
+        Certificates are issued by certificate authorities (CA). Your users can
+        get their certificates either from the national-level science CA in your
+        region, or you can issue them yourself using a CA installed in your
+        community software. 
+      </p>
+      <p>
+        If you choose to install your own CA, follow the
+        instructions on this page. The AstroGrid community software works
+        with a specific kind of CA software provided by AstroGrid. The Java
+        software for the CA is already built into your community web-application.
+        You need to add a copy of the OpenSSL package and some files of
+        credentials for the CA.
+      </p>
+      
+      <subsection name="Install OpenSSL">
+        <p>
+          The AstroGrid CA software is a Java wrapper for the OpenSSL
+          package. It assumes that the user running the community
+          web-application - i.e. the account from which Tomcat is run - has
+          the <i>openssl</i> executable programme on its path; you need to make
+          sure that this is so.
+        </p>
+        <p>
+          OpenSSL is installed by default with many operating systems.
+        </p>
+      </subsection>
+      
+      <subsection name="Create and install the CA files">
+        <p>
+          The generic CA-software in the web-application is made to behave as
+          <em>your</em> CA for your specific community by installing
+          three configuration files.
+        </p>
+        <ul>
+          <li>A root certificate.</li>
+          <li>A private key.</li>
+          <li>A file noting the serial number of the last certificate issued.</li>
+        </ul>
+        <p>
+          The CA's root certificate defines the formal name of the CA and that
+          name defines the formal naming of the users.
+        </p>
+        <p>
+          These files are produced by a CA-generator application supplied by
+          AstroGrid. Please refer to the 
+          <a href="CA-generator.html">documentation for the generator
+          utility</a> which describes both how to run the utility and how 
+          to pick the CA's formal name.
+        </p>
+        <p>
+          When you have created the CA files, make a back-up copy of them, and
+          keep that copy safe and private. If the files are lost or corrupted,
+          or if the private key becomes known to strangers, then you will have
+          to install a new CA and issue new certificates to all your members.
+        </p>
+        <p>
+          Having generated the CA files, install them to these locations:
+        </p>
+        <ul>
+          <li>/etc/grid-security/ca/cakey.pem</li>
+          <li>/etc/grid-security/ca/cacert.pem</li>
+          <li>/etc/grid-security/ca/ca.ser</li>
+        </ul>
+        <p>
+          These are the default locations expected by the community
+          web-application. If you cannot use these locations (e.g. you
+          do not have sufficient permission) then you can put the files
+          elsewhere and tell the web-application where to look by changing
+          these configuration keys:
+        </p>
+        <ul>
+          <li>org.astrogrid.community.cakey</li>
+          <li>/etc/grid-security/ca/cacert.pem</li>
+          <li>org.astrogrid.community.caserial</li>
+        </ul>
+      </subsection>
+      
+    </section>
+   </body>
+</document>

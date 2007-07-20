@@ -1,44 +1,18 @@
-<!-- admin navigation -->
 <div id='leftColumn'>
-<div id='navcolumn'>
-   <div id='menuServer'>
-      <h5>Server</h5>
-      <ul>
-         <li><a href="../" >Home</a></li>
-         <li><a href='/manager/reload?path=<%= request.getContextPath() %>'>Restart</a></li>
-      </ul>
-   </div>
-   <div id='menuServer'>
-      <h5>Setup</h5>
-      <ul>
-       <li><a href="selfRegisterForm.jsp" >Register Metadata</a></li>
-       <li><a href="ResetDB.jsp" >Reset DB</a></li>
-      </ul>
-   </div>
-   <div id='menuConfig'>
-      <h5>Administration</h5>
-      <ul>
-       <li><a href="index.jsp" >Home</a></li>
-         <li><a href="AccountAdmin.jsp" >Account</a></li>
-         <li><a href="GroupAdmin.jsp" >Group</a></li>
-         <li><a href="GroupMemberAdmin.jsp" >Group Members</a></li>
-         <li><a href="ResourceAdmin.jsp" >Resource</a></li>
-         <li><a href="PermissionAdmin.jsp" >Permission</a></li>
-         <li><a href="CaEnablementForm.jsp">Enable the certificate authority</a></li>
-      </ul>
-   </div>
-   <div id='menuRegister'>
-      <h5>Configure</h5>
-      <ul>
-         <li><a href="fingerprint.jsp" >Fingerprint</a></li>
-      </ul>
-   </div>
-   <div id='menuDocs'>
-      <h5>Documentation</h5>
-      <ul>
-         <li><a href="../docs/index.html" >Docs</a>
-      </ul>
-   </div>   
-
-</div>
+  <div id='navcolumn'>
+    <h5>Navigation</h5>
+    <ul>
+      <li><a href="../" >Community home page</a></li>
+      <li><a href="docs/index.html">Document index</a></li>
+      <li><a href="docs/release-notes.html">Release notes</a></li>
+    </ul>
+    <h5>For community managers</h5>
+    <ul>
+      <li><a href='../configure.jsp'>Configuration instructions</a></li>
+      <li><a href="ResetDB.jsp">Initialize the database</a></li>
+      <li><a href="selfRegisterForm.jsp">Register the community</a></li>
+      <li><a href="AccountAdmin.jsp">View or change user accounts</a></li>
+      <li><a href="CaEnablementForm.jsp">Enable the certificate authority</a></li>
+    </ul>  
+  </div>
 </div>

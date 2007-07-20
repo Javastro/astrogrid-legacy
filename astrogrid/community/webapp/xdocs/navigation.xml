@@ -14,6 +14,7 @@
          <item name="External Testing" href="external_testing.html"/>      
          <item name="Upgrading" href="upgrading.html"/>
          <item name="Uninstallation" href="uninstall.html"/>
+         <item name="CA operation" href="CA-operation.html"/>
    </menu>
   </body>
 </project>

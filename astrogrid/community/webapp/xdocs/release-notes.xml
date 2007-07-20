@@ -7,72 +7,39 @@
     <section name="Release notes">
       <p>
         This version of the community has the following changes from version
-        2006.2.
+        2007.2.
       </p>
-      <subsection name="Password-changing facility">
+      <subsection name="Certificate authority support"/>
+      <p>
+        The internal certificate-authority for the community is now
+        fully supported and is part of the normal installation. Instructions
+        on how to make and install the certificate authority's files
+        are included in the web application.
+      </p>
+      <p>
+        A generator for the certificate-authority files (root certificate,
+        private key, serial-number record) is now available. This is a
+        separate artifact from the community web-application and must be
+        downloaded separately. The web-application documents explain where to
+        get the generator and how to use it.
+      </p>
+      <subsection name="Menus simplified">
         <p>
-          Users may now change their own passwords; previously, only the 
-          community administrators could change passwords.
-        </p>
-        <p>
-          The password-changing facility is a page within the community
-          web-application, linked from the menu on the community's front page.
-          Passwords may not be changed from the AstroGrid workbenmch
-          via the web service.
-        </p>
-      </subsection>
-      <subsection name="Passwords must be at least six characters long">
-        <p>
-          Starting with this release, all user passwords must be at least
-          six characters long. This restriction is introduced for
-          compatibility with MyProxy.
-        </p>
-      </subsection>
-      <subsection name="Experimental certificate authority and MyProxy linkage">
-        <p>
-          The community may now operate a certificate authority and use a
-          MyProxy installation if appropriate software is installed on the
-          community host. Certificates may be issued for community members
-          and installed in MyProxy.
-        </p>
-        <p>
-         To use the certificate authority, OpenSSL and MyProxy must be installed
-         on the machine running the community web-application. The authority 
-         itself must be manually installed in three files (private key,
-         root certificate and serial-number record).
-        </p>
-        <p>
-          There are some extra environment entries in the configuration that
-          configure the certificate authority. These locate the files and
-          directory noted above.
-        </p>
-        <p>
-          This feature is currently experimental and should not be used in
-          production communities. Service providers should not, at this stage,
-          trust identities certified by this community software to be secure
-          against misuse. The certificate authority should be made ready for
-          production use in the next version of this component.
-        </p>
-        <p>
-          If you want to experiment with the certificate authority, please
-          contact Guy Rixon 
-          (<a href="mailto:gtr@ast.cam.ac.uk">gtr@ast.cam.ac.uk</a>)
-          To run a community without a certificate authority, simply do not
-          install MyProxy and the certificate-authority files.
+          The administration menu has been simplified. Several functions
+          that were never properly supported have been withdrawn.
         </p>
       </subsection>
-      <subsection name="Web-page menus rearranged">
+      <subsection name="MyProxy support">
         <p>
-          The menus in pages of the community web application have
-          been rearranged. All the features useful in a production community
-          are now available in the menu on the front page of the community.
-          There are many other administration commands, all to do with features
-          not yet used in real communities, and these are grouped on their
-          own page.
+          MyProxy is now a normal part of the installation; a community
+          cannot function fully unless MyProxy is present. Minimal installation
+          instructions have been added.
         </p>
+      </subsection>
+      <subsection name="DB installation no longer needed">
         <p>
-          The "health" indicator for the commnity database is now shown in the
-          title bar of the administration pages.
+          There is no longer any need to install the DB software. It is 
+          always packaged in the WAR.
         </p>
       </subsection>
     </section>
