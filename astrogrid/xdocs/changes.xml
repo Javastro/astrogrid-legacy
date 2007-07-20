@@ -85,6 +85,17 @@
         </release>
 		
         <release version="HEAD">
+          <action dev="gtr" type="fix">
+          <em>community-gtr-2241</em>This branch carries changes to the Maven project astrogrid/community/webapp.
+          The sibling project astrogrid/community/server is also branched but there
+          are no changes there. 
+          There is also a new maven project: astrogrid/community/cagenerator. This latter project is already committed to the CVS trunk. 
+          All the community artifacts, including the new cagenerator-app-xyz.jar, need to be be built and released. 
+          This is a production version that I will be deploying around the project. 
+          In this build, most of the artifacts take their version number from astrogrid/maven/base/project.properties, 
+          which you will need to update, except cagenerator-app-xyz.jar which has the fixed version 2007.2. 
+          Apart from the new application, the changes are to documentation. There are no changes to the service contract or to the delegate. 
+          </action>
           <action dev="kmb" type="fix">
             Fix to fallback to backup registry appropriately for registry clients.  Change was in
             registry/client-lite jar only.  Does require a build of other components so it gets the new 
