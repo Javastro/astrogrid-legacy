@@ -3,23 +3,13 @@
  */
 package org.astrogrid.desktop.modules.ui.scope;
 
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.desktop.modules.ui.actions.DevSymbols;
 import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
-import org.astrogrid.desktop.modules.ui.fileexplorer.FileViewDnDManager;
-import org.astrogrid.desktop.modules.ui.fileexplorer.FilesList;
-import org.astrogrid.desktop.modules.ui.fileexplorer.IconFinder;
-import org.astrogrid.desktop.modules.ui.fileexplorer.StorageView;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceViewer;
-
-import ca.odell.glazedlists.BasicEventList;
-import ca.odell.glazedlists.EventList;
-import ca.odell.glazedlists.swing.EventSelectionModel;
 
 /** quite a mashup class - a resoource viewer for displaying query results.
  * @fixme implement
@@ -47,7 +37,7 @@ public class ResultsResourceViewer extends JPanel implements ResourceViewer {
 
 
 	public void addTo(UIComponentBodyguard parent, JTabbedPane t) {
-		t.addTab(DevSymbols.PROBLEM + " Results",null/*@todo find icon*/,this,"Shows results from selected service");
+		t.addTab( "Results",null/*@todo find icon*/,this,"Shows results from selected service");
 	}
 
 }
