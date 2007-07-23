@@ -12,7 +12,6 @@ import java.beans.PropertyChangeListener;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -27,6 +26,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ui.comp.ExpandCollapseButton;
 import org.astrogrid.desktop.modules.ui.comp.IconField;
 import org.astrogrid.desktop.modules.votech.AnnotationService;
 
@@ -61,6 +61,8 @@ public class FilterPipelineFactory   {
 		// system filters..
 		systemToggle = new JToggleButton(IconHelper.loadIcon("noserver16.png"),true); 
 		systemToggle.setToolTipText("Hide system resources");
+		systemToggle.putClientProperty("is3DEnabled", Boolean.FALSE);		
+		systemToggle.setBorderPainted(false);
 		FilterList systemFilteredItems = new FilterList(items
 				,new ToggleMatcherEditor(systemToggle,new SystemFilter()));
 		// incremental text field..
@@ -69,7 +71,9 @@ public class FilterPipelineFactory   {
 		FilterList filteredItems = new FilterList(systemFilteredItems
 				, new TextComponentMatcherEditor(textField, new ResourceTextFilterator(annotationService)));
 		
+		// collapsible filters.
 		filterPane = new JCollapsiblePane();
+		filterPane.setCollapsed(true);
 		// create the pipeline, plumbing together the various items.
 		final EventList pipeline = new BasicEventList();	
 		for (int i = 0; i < pipelineSize; i++) {
@@ -79,28 +83,20 @@ public class FilterPipelineFactory   {
 		}
 		totallyFilteredItems = filteredItems;
 
-		// collapsible filters.
-		filterPane.setCollapsed(true);
 		JEventListPanel pipelineDisplay = new JEventListPanel(pipeline, new PipelineFormat());
 		pipelineDisplay.setElementColumns(3);
 		filterPane.add(pipelineDisplay);
 		
 		// create a toggle button to show / hide the collapsed pane.
-		final Action toggleAction = filterPane.getActionMap().get(JCollapsiblePane.TOGGLE_ACTION);
-		toggleAction.putValue(JCollapsiblePane.EXPAND_ICON, IconHelper.loadIcon("expand22.png"));
-		toggleAction.putValue(JCollapsiblePane.COLLAPSE_ICON, IconHelper.loadIcon("contract22.png"));
-		
-		toggleButton = new JButton(toggleAction);
-		toggleButton.setText("");
-		toggleButton.putClientProperty("is3DEnabled", Boolean.FALSE);
-		toggleButton.setBorderPainted(false);
+		toggleButton = new ExpandCollapseButton(filterPane);
 		toggleButton.setToolTipText("Expand for further filters");
 	}
+	
 	private final EventList totallyFilteredItems;
 	private JToggleButton systemToggle;	
 	private final JTextField textField;
 	private final JCollapsiblePane filterPane;
-	private final JButton toggleButton;
+	private final JToggleButton toggleButton;
 	
 	/** toggle button to control filtering of system resources */
 	public JToggleButton getSystemToggleButton() {
@@ -118,7 +114,7 @@ public class FilterPipelineFactory   {
 	/**
 	 a toggle button, that controls display of the panel produced from <tt>getFilters()</tt>
 	 */
-	public JButton getExpandButton() {
+	public JToggleButton getExpandButton() {
 		return toggleButton;
 	}
 
