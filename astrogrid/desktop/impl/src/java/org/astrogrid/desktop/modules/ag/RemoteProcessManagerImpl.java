@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManagerImpl.java,v 1.13 2007/07/16 13:02:15 nw Exp $
+/*$Id: RemoteProcessManagerImpl.java,v 1.14 2007/07/23 12:17:31 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -298,17 +298,9 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
         }
     }
 
-	public ProcessMonitor submit(Tool t) throws ServiceException,
-			SecurityException, NotFoundException, InvalidArgumentException {
-		return null;
+	public ProcessMonitor findMonitor(URI id) {
+		return monitors.get(id);
 	}
-
-	public ProcessMonitor submitTo(Tool t, Service s)
-			throws InvalidArgumentException, ServiceException,
-			SecurityException {
-		return null;
-	}
-
 
 
 
@@ -317,6 +309,9 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
 
 /* 
 $Log: RemoteProcessManagerImpl.java,v $
+Revision 1.14  2007/07/23 12:17:31  nw
+finished implementation of process manager framework.
+
 Revision 1.13  2007/07/16 13:02:15  nw
 Complete - task 90: integrate vomon with remote process manager
 

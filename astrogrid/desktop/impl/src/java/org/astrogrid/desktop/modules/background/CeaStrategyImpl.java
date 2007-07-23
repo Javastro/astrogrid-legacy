@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.18 2007/07/16 13:02:15 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.19 2007/07/23 12:18:23 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -78,11 +78,14 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 	/** monitor for a single remote cea task */
 	private class RemoteTaskMonitor extends TimerDrivenProcessMonitor {
 		
-		public RemoteTaskMonitor(String ceaid, CeaApplication app, CeaService service) throws ServiceException {
+		public RemoteTaskMonitor(String ceaid, String iface,CeaApplication app, CeaService service) throws ServiceException {
 			super(ceaHelper.mkRemoteTaskURI(ceaid,service));
 			this.ceaid = ceaid;
 			this.delegate = ceaHelper.createCEADelegate(service);
 			this.name = app.getTitle();
+			if (app.getInterfaces().length > 1) { // more than one interface
+				this.name = iface + " - " + this.name;
+			}
 			this.description = app.getContent().getDescription();
 			// kick it off.
     		try {
@@ -169,10 +172,11 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 						, "Status changed to " + newStatus
 				);
 				addMessage(em);
-				fireStatusChanged(newStatus);
+				setStatus(newStatus);
 
 				if (newStatus.equals(ExecutionInformation.ERROR) 
 						||newStatus.equals(ExecutionInformation.COMPLETED)) {
+					finishTime = qes.getTimestamp();
 					// retrive the results.
 					ExecutionSummaryType summ = delegate.getExecutionSumary(ceaid);
 					if (summ != null && summ.getResultList() != null) {
@@ -212,10 +216,13 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 		private final String ceaid;
 		private final Application application;
 
-		public LocalTaskMonitor(String ceaid, CeaApplication appDesc) throws ServiceException {
+		public LocalTaskMonitor(String ceaid, String iface,CeaApplication appDesc) throws ServiceException {
 			super(ceaHelper.mkLocalTaskURI(ceaid));
 			this.ceaid = ceaid;
 			this.name = appDesc.getTitle();
+			if (appDesc.getInterfaces().length > 1) { // more than one interface
+				this.name = iface + " - " + this.name;
+			}			
 			this.description = appDesc.getContent().getDescription();
 			// register an interest to messages and status changes.
 			this.application = ceaInternal.getExecutionController().getApplication(ceaid);
@@ -253,6 +260,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 	    		addMessage(em);
 	    	}
 	    }
+	    //@todo should override something so that starttime and endtime are correctly set.
 	    
 	    // overridden methods - look directly at the application.
 		public String getStatus() {
@@ -464,7 +472,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
     		//try local invocation.
     		if (ceaInternal.getAppLibrary().hasMatch(application)) {
     			String primId = ceaInternal.getExecutionController().init(tool,jid.toString());
-    			return new LocalTaskMonitor(primId,application);
+    			return new LocalTaskMonitor(primId,tool.getInterface(),application);
     		}
     		// check remote invocation is possible
     		if (! (server instanceof CeaService)) {
@@ -476,8 +484,8 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
     		
     		// create an authenticated delegate.
     		CommonExecutionConnectorClient del = ceaHelper.createCEADelegate(ceaService);    		
-    		SecurityGuard guard = this.community.getSecurityGuard();
-    		if (community.isLoggedIn()) {
+    		if (community.isLoggedIn() && hasDigitalSignatureCredentials()) {
+    			SecurityGuard guard = this.community.getSecurityGuard();
     			del.setCredentials(guard);
     		}
     		
@@ -485,7 +493,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 
     		String primId = del.init(tool,jid);
     		logger.info("Server returned taskID " + primId);
-    		return new RemoteTaskMonitor(primId, application, ceaService);
+    		return new RemoteTaskMonitor(primId, tool.getInterface(), application, ceaService);
 
 
     	} catch (CeaException e) {
@@ -495,11 +503,25 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
     	} 
     }
     
+    private boolean hasDigitalSignatureCredentials() {
+        try {
+          SecurityGuard g = this.community.getSecurityGuard();
+          g.getCertificateChain(); // throws if credentials are absent
+          g.getPrivateKey(); // throws if credentials are absent
+          return true;
+        }
+        catch (Exception e) {
+          return false;
+        }
+      }
 }
 
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.19  2007/07/23 12:18:23  nw
+finished implementation of process manager framework.
+
 Revision 1.18  2007/07/16 13:02:15  nw
 Complete - task 90: integrate vomon with remote process manager
 
