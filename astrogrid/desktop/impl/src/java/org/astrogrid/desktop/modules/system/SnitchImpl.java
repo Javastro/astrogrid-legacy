@@ -82,7 +82,7 @@ public class SnitchImpl implements SnitchInternal {
 
 	public void snitch(final String message, final Map params) {
 		if (! snitchDisabled) {
-		(new BackgroundWorker(ui,".") {
+		(new BackgroundWorker(ui,"calling home") {
 
 		protected Object construct() throws Exception {
 			StringBuffer sb = new StringBuffer(base);
