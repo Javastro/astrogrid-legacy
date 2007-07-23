@@ -137,6 +137,25 @@ public final class AdqlTree extends JTree
         return nodeFactory ;
     }
 
+    /**
+     * set the selection to the top select node - nb, not the root node.
+     *             // (The root node contains the SelectDocumentType, not the SelectType!!!)
+     */
+    public void setSelectionToTopSelectNode() {
+            AdqlNode root = (AdqlNode)getModel().getRoot() ;
+            Object[] childArray = root.getChildren() ;
+            for( int i=0; i<childArray.length; i++ ) {
+                XmlObject xo = ((AdqlNode)childArray[i]).getXmlObject() ;
+                if( xo.schemaType() == SelectType.type ) {
+                    TreeNode[] nodes = ((AdqlNode)childArray[i]).getPath() ;
+                    TreePath rootSelectPath =  new TreePath( nodes );
+                    setSelectionPath( rootSelectPath) ;
+                    break ;
+                }
+            }
+       
+    }
+    
     public boolean isPathEditable( TreePath path ) {
         boolean result = false ;
         if( path != null && path.getPathCount() > 1) {
