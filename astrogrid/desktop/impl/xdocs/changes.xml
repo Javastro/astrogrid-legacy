@@ -14,6 +14,33 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="2007.4.alpha1" date="2007-07-26">
+    <action dev="nw" type="add">
+    Implemented Task Runner UI
+    </action>
+    <action dev="nw" type="add">
+    Integrated ADQL Query Builder with Task runner, and enabled it
+    to operate on catalogues and cea applications.
+    </action>
+    <action dev="nw" type="update">
+        Merged tabular metadata viewers used in voexplorer and query builder
+    </action>   
+    <action dev="nw" type="update">
+    Reworked remote execution framework
+    </action>
+    <action dev="nw" type="removed">
+    Removed old application launcher UI
+    </action>
+    <action dev="nw" type="add">
+    Implemented minimalistic ui for when system tray is not available
+    </action>
+    <action dev="nw" type="fix">
+    remote execution framework consults vomon to choose suitable server
+    </action>
+    <action dev="nw" type="fix">
+    Debugged AR ADQL parser
+    </action>            
+</release>
 <release version="2007.3.alpha4" date="unreleased">
 <action dev="nw" type="add">
 	Added icons for types / capabilities of resources to voexplorer.
