@@ -15,6 +15,9 @@ public class VOExplorer1 {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+	    // forces initialization of default properties before loading CmdLineParser (where some are required - i.e. log4j.logger)
+	    Launcher.spliceInDefaults();
+	    // now get on with the parsing.
 		CmdLineParser parser = new CmdLineParser();
 		Launcher l = parser.parse(args,"voexplorer");  
 		configureLauncherAsVOExplorer(l);

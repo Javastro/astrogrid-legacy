@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.18 2007/07/17 15:22:55 nw Exp $
+/*$Id: Launcher.java,v 1.19 2007/07/23 12:05:28 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -220,7 +220,7 @@ public class Launcher implements Runnable {
 	/**
 	 * 
 	 */
-	protected static void spliceInDefaults() {
+	public static void spliceInDefaults() {
 		// splice our defaults _behind_ existing system properties
     	for (Iterator i = defaults.entrySet().iterator(); i.hasNext(); ) {
     		Map.Entry e = (Map.Entry)i.next();
@@ -243,6 +243,9 @@ public class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.19  2007/07/23 12:05:28  nw
+Complete - task 68: fix build, and logger config.
+
 Revision 1.18  2007/07/17 15:22:55  nw
 Complete - task 55: VFS stream handler
 
