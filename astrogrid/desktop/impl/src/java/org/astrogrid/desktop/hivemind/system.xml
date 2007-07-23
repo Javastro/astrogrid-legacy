@@ -62,8 +62,7 @@ System module.
 	</contribution>
 	
 	<contribution configuration-id="uiStructure">
-		<menu name="file" text="File" parentName="menubar" before="*" />
-		<menu name="edit" text="Edit" parentName="menubar" after="file" />
+		<menu name="runtime" text="Runtime" parentName="menubar" before="*" />
 		<menu name="help" text="Help" parentName="menubar" after="*" />
 			<divider parentName="help" name="div1"
 				before="div2" />
@@ -71,15 +70,16 @@ System module.
 			after="div1"  />					
 		<menu name="projects" text="About Projects" parentName="help" before="about" after="div2"/>
 
-		<action parentName="file" name="exit" text="Exit" iconName="exit16.png" onEventDispatchThread="true"
+		<action parentName="runtime" name="exit" text="Exit" iconName="exit16.png" onEventDispatchThread="true"
 			object="service:builtin.shutdown" methodName="halt" after="*">
-			<tooltip>Close this window, and halt the service</tooltip>
-			<confirmMessage>Exit: are you sure?</confirmMessage>
+			<tooltip>Halt the service</tooltip>
+			<confirmMessage>About to close all windows and exit. Continue?</confirmMessage>
 		</action>	
-		<action parentName="edit" name="prefs" text="Preferences.." onEventDispatchThread="true"
-			object="service:configDialogue" methodName="run" before="*" />
-		<action parentName="edit" name="reset" text="Reset configuration"
-			object="service:configuration" methodName="reset" after="*">
+        
+		<action parentName="runtime" name="prefs" text="Preferences.." onEventDispatchThread="true"
+			object="service:configDialogue" methodName="run"  before="reset"/>
+		<action parentName="runtime" name="reset" text="Reset configuration"
+			object="service:configuration" methodName="reset" before="exit">
 			<tooltip>Reset all configuration back to factory defaults</tooltip>
 			<confirmMessage>Reset: All user settings wil be lost. Continue?</confirmMessage>
 		</action>
@@ -434,25 +434,6 @@ System module.
 		 	service-id="configuration" />
 	</contribution>	
 	
-	<contribution configuration-id="uiStructure" >
-		<action parentName="debug" name="configreset" text="Reset Configuration" onEventDispatchThread="true"
-			object="service:configuration" methodName="reset" after="*" >
-			<confirmMessage><![CDATA[<html>
-				This will reset the application's configuration to factory settings.
-				 All user settings will be lost.
-				Proceed?
-			]]></confirmMessage>
-		</action>	
-	</contribution>
-		
-			<contribution configuration-id="uiStructure" >
-		<menu name="debug" text="Debug" parentName="menubar"
-		 before="help" after="edit" visibleCondition="preference:acr.debug"/>
-		<action parentName="debug" name="configdump" text="Show Configuration"
-			visibleCondition="preference:acr.debug"
-			object="service:configuration" methodName="list"  />
-	</contribution>		
-	
 	<!--  preference editing servlet -->
 	<contribution configuration-id="servlets" if="not (property system.preference.servlet.disabled)">
 		<servlet name="preferences" path="/preferences" 
@@ -501,7 +482,7 @@ System module.
 	 	</schema>
 	 </configuration-point>
 	 
-	 
+	 <!--  todo - maybe replace this with a uiBuilder instead. -->
 	<service-point id="uiView" interface="org.astrogrid.desktop.modules.ui.UIComponent"> 
 		Main user interface view, used in AR and PLastic versions.
 		<invoke-factory>
@@ -838,7 +819,6 @@ System module.
 ==========================================
 SYSTEM TRAY
  -->
- <!--  TODO - implement for java 6, debug, improve installation of default -->
 	<service-point id="systray" interface="SystemTray">		
 	System Tray
 	</service-point>
@@ -852,19 +832,20 @@ SYSTEM TRAY
 			</construct>
 		</invoke-factory>
 	</implementation>
-	<!-- default implementation - will fallback if cannot load class - i.e. the native drivers aren't present -->	
-	<!-- <implementation service-id="systray" if="(class org.jdesktop.jdic.tray.SystemTray ) and ( not ( property system.systray.disabled))">
-		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.system.JDICSystemTray">	
-				<service>system.ui</service>
-				<service>builtin.shutdown</service>	
-				<event-listener service-id="builtin.shutdown" />
-		</construct>
-		</invoke-factory>		
-	</implementation>
-	-->
-	<implementation service-id="systray"  if="(property system.systray.disabled) or (not (class java.awt.SystemTray))">
-	<!--  todo - implement a minimal ui here instead. -->
+
+    <implementation service-id="systray" if="not (class java.awt.SystemTray)">
+        Minimalistic UI
+        <invoke-factory>
+            <construct class="org.astrogrid.desktop.modules.system.FallbackSystemTray">
+                <service>system.ui</service>
+                <service>builtin.shutdown</service>
+                <service>configDialogue</service>
+            </construct>
+        </invoke-factory>
+    </implementation>
+
+	<implementation service-id="systray"  if="(property system.systray.disabled)">
+        Non-UI - just logs.
 		<invoke-factory>
 			<construct class='org.astrogrid.desktop.alternatives.LoggingSystemTray'>
 				<string>SYSTRAY</string>
@@ -1432,6 +1413,5 @@ UPDATE CHECKER
 		<startup object="service:upgrade" />
 	</contribution>
  </module> 
- 
  
  
