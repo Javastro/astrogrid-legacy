@@ -3,15 +3,8 @@
 package org.astrogrid.adql;
 
 import org.apache.xmlbeans.XmlObject;
-import org.astrogrid.adql.beans.AtomType;
-import org.astrogrid.adql.beans.IntegerType;
-import org.astrogrid.adql.beans.LiteralType;
-import org.astrogrid.adql.beans.RealType;
-import org.astrogrid.adql.beans.StringType;
-import org.astrogrid.adql.beans.RegionSearchType;
 import org.astrogrid.adql.beans.LinkedListType;
 import org.astrogrid.adql.beans.ScalarExpressionType;
-import org.astrogrid.adql.beans.UnaryExprType;
 
 import org.astrogrid.stc.beans.*;
 import org.apache.commons.logging.Log ;
@@ -21,39 +14,58 @@ public class AST_CircleJ2000 extends SimpleNode {
     
   private static Log log = LogFactory.getLog( AST_CircleJ2000.class ) ;
 
-
   public AST_CircleJ2000(AdqlStoX p, int id) {
     super(p, id) ;
   }
   
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_CircleJ2000.buildXmlTree()" ) ; 
-      
+      //
+      // We know this is a J2000 circle type, else why are we here.
+      // So set the appropriate astro coord system...
       ( (AST_RegionPredicate)this.parent ).setAstroCoordSystem_J2000() ;
-   
+      //
+      // "Create" the appropriate circle type using XmlBeans magic.
+      // Give it a center and a radius.
+      // This seems obvious, but there are some doubts over center for other
+      // circle types (see LatLon and especially Cartesian)...
       CircleType circle = (CircleType)xo.changeType( CircleType.type ) ;
       Double2Type center = circle.addNewCenter() ;
-
+      //
+      // Get the linked element list, used by the predicate
+      // to hold references to ADQL elements which are not literals.
       LinkedListType llt = this.getCurrentLinkedElementList() ;
-      int currentLinkedArrayPosition = llt.sizeOfLinkedElementArray() ;
-      
+      //
+      // The first child is RA.
+      // We add a linked element which may later be removed.
+      // Then we get the child node to build the RA parameter.
       ScalarExpressionType setRa = llt.addNewLinkedElement() ;
       children[0].buildXmlTree( setRa ) ;
       setRa = (ScalarExpressionType)children[0].getGeneratedObject() ;
-          
+      //
+      // Create the ra portion of the center.
+      // We then attempt to unpack the value as a numeric literal.
+      // IF the return value is not null, it was a literal, in which
+      // case we can remove the linked element, for the value will 
+      // be in situ in the region type.
+      // IF the value is null, then the reference was to a column
+      // reference or complex expression ( sin, square etc ).
       Double1Type d1tRa = center.addNewC1() ;
       Double d = this.unpackNumericLiteral( setRa ) ;
       if( d != null ) {
+          // Literal...
           d1tRa.setDoubleValue( d.doubleValue() ) ;
-          llt.removeLinkedElement( currentLinkedArrayPosition ) ;
+          llt.removeLinkedElement( llt.sizeOfLinkedElementArray() ) ;
       }
       else {
+          // Column reference or complex expression...
           String uid = this.formUniqueID() ;
           setRa.setId( uid ) ;
           d1tRa.setIdref( uid ) ;
-          currentLinkedArrayPosition++ ;
       }
-      
+      //
+      // The second child is DEC.
+      // (See comments above for RA).
       ScalarExpressionType setDec = llt.addNewLinkedElement() ;
       children[1].buildXmlTree( setDec ) ;
       setDec = (ScalarExpressionType)children[1].getGeneratedObject() ;
@@ -62,15 +74,16 @@ public class AST_CircleJ2000 extends SimpleNode {
       d = this.unpackNumericLiteral( setDec ) ;
       if( d != null ) {
           d1tDec.setDoubleValue( d.doubleValue() ) ;
-          llt.removeLinkedElement( currentLinkedArrayPosition ) ;
+          llt.removeLinkedElement( llt.sizeOfLinkedElementArray() ) ;
       }
       else {
           String uid = this.formUniqueID() ;
           setDec.setId( uid ) ;
-          d1tDec.setIdref( uid ) ;
-          currentLinkedArrayPosition++ ;
+          d1tDec.setIdref( uid ) ;;
       }
-          
+      //
+      // The third child is radius. 
+      // (See comments above for RA).
       Double1Type d1tRad = circle.addNewRadius() ;
       ScalarExpressionType setRadius = llt.addNewLinkedElement() ;
       children[2].buildXmlTree( setRadius ) ;
@@ -78,7 +91,7 @@ public class AST_CircleJ2000 extends SimpleNode {
       d = this.unpackNumericLiteral( setRadius ) ;
       if( d != null ) {
           d1tRad.setDoubleValue( d.doubleValue() ) ;
-          llt.removeLinkedElement( currentLinkedArrayPosition ) ;
+          llt.removeLinkedElement( llt.sizeOfLinkedElementArray() ) ;
       } else {
           String uid = this.formUniqueID() ;
           setRadius.setId( uid ) ;

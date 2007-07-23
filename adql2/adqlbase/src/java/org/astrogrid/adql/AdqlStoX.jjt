@@ -1,13 +1,13 @@
-/*$Id: AdqlStoX.jjt,v 1.15 2007/07/19 17:53:57 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.16 2007/07/23 09:50:09 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
 // There is little point in placing any here. 
-// At this point they are ignored by the JavaCC processors.
+// At this point they are ignored by the JavaCC processors. 
 //
 // Jeff Lusted 
 //
-  
+   
 options {
   JDK_VERSION="1.4";
   STATIC=false;
@@ -2730,7 +2730,7 @@ void region_predicate_A() #RegionPredicate :
     {
     	if( log.isTraceEnabled() ) exitTrace ( "region_predicate_A()" ) ;	
     }
-}
+} 
 
 
 /*
@@ -2894,7 +2894,7 @@ void convex_Cartesian_A() :
  *    { <left_paren> <ra> <comma> <dec> <comma> <direction> <right_paren> }...
  * bnf-end
  */
-void convex_J2000_A() : 
+void convex_J2000_A() #ConvexJ2000 : 
 {
     if( log.isTraceEnabled() ) enterTrace ( "convex_J2000_A()" ) ;
 }
@@ -4630,6 +4630,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.16  2007/07/23 09:50:09  jl99
+Region
+
 Revision 1.15  2007/07/19 17:53:57  jl99
 Region
 

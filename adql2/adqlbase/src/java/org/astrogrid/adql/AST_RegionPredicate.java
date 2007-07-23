@@ -29,8 +29,7 @@ public class AST_RegionPredicate extends SimpleNode {
   
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_RegionPredicate.buildXmlTree()" ) ; 
-      RegionSearchType rst ;
-     
+      RegionSearchType rst ;   
       //
       // The predicate is either IN or NOT IN ...
       if( in ) {
@@ -40,18 +39,36 @@ public class AST_RegionPredicate extends SimpleNode {
           rst = (NotInRegionSearchType)xo.changeType( NotInRegionSearchType.type ) ;
       }
       this.generatedObject = rst ;
+      //
+      // Create a default astro coordinate system with 
+      // a space reference frame. The latter will be filled
+      // out according to the child region type...
       AstroCoordSystemType acst = rst.addNewAstroCoordSystem() ;
       acst.addNewSpaceFrame().addNewSpaceRefFrame() ;    
-      
+      //
+      // The linked element list will be used to create 
+      // the corresponding ADQL types that are not literals...
       LinkedListType llt = rst.addNewLinkedElements() ;
       this.setCurrentLinkedElementList( llt ) ; 
+      //
+      // The child nodes will fill out the appropriate
+      // point and region details. The assumption made here
+      // is that the point and the region share the same
+      // astro coordinate system and space frame reference.
+      // Jeff: Of course, I could be wrong.
       children[0].buildXmlTree( rst.addNewPoint() ) ;
       children[1].buildXmlTree( rst.addNewRegion() ) ; 
-      
+      //
+      // Form a unique linking ID for the astro coordinate system
+      // and set the id and its refid so the link between it and the region
+      // can be made...
       String uid = this.formUniqueID( "AstroCoordSystem" ) ;
       ( (RegionType)children[1].getGeneratedObject() ).setCoordSystemId( uid ) ;
       acst.setId( uid ) ;
-      
+      //
+      // If all the region parameters are literals (ie: there are no column
+      // references or complex expressions), then there is no point in 
+      // maintaining the list of linked elements, so we remove it...
       if( llt.sizeOfLinkedElementArray() == 0 ) {
           rst.unsetLinkedElements() ;
           llt = null ;
@@ -68,6 +85,16 @@ public class AST_RegionPredicate extends SimpleNode {
       FkType srf = (FkType)crf.substitute( qName , FkType.type ) ;
       srf.setEquinox( "J2000" ) ;     
       sft.setSpaceRefFrame( srf ) ;
+  }
+  
+  protected void setAstroCoordSystem_LatLon() {
+      SpaceFrameType sft = ((RegionSearchType)this.generatedObject).getAstroCoordSystem().getSpaceFrame() ;    
+      CoordRefFrameType crf = sft.getSpaceRefFrame() ;
+  }
+  
+  protected void setAstroCoordSystem_Cartesian() {
+      SpaceFrameType sft = ((RegionSearchType)this.generatedObject).getAstroCoordSystem().getSpaceFrame() ;    
+      CoordRefFrameType crf = sft.getSpaceRefFrame() ;
   }
   
 }

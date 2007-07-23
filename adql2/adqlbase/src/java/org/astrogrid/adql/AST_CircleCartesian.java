@@ -26,85 +26,48 @@ public class AST_CircleCartesian extends SimpleNode {
 
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_CircleCartesian.buildXmlTree()" ) ; 
-   
+      //
+      // We know this is a J2000 circle type, else why are we here.
+      // So set the appropriate astro coord system...
+      ( (AST_RegionPredicate)this.parent ).setAstroCoordSystem_Cartesian() ;
+      //
+      //
+      // We know this is a circle type, else why are we here ...
       CircleType circle = (CircleType)xo.changeType( CircleType.type ) ;
+      //
+      // Give it a center and a radius.
+      // This seems obvious, but I'm not understanding how
+      // x, y and z coords relate to the center!
       Double2Type center = circle.addNewCenter() ;
+
+      //
+      // Get the linked element list, used by the predicate
+      // to hold references to ADQL elements which are not literals.
+      //
+      LinkedListType llt = this.getCurrentLinkedElementList() ;      
+      //
+      // The first child is x-coord.
+     
+      
+      //
+      // The second child is y-coord.
+
+      
+      //
+      // The third child is z-coord.
+      
+  
+      //
+      // The forth child is radius. 
       Double1Type d1tRad = circle.addNewRadius() ;
-      
-      LinkedListType llt = this.getCurrentLinkedElementList() ;
-      int currentLinkedArrayPosition = 0 ;
-      
-      ScalarExpressionType setCoordX = llt.addNewLinkedElement() ;
-      children[0].buildXmlTree( setCoordX ) ;
-      setCoordX = (ScalarExpressionType)children[0].getGeneratedObject() ;
-          
-      Double1Type d1tRa = center.addNewC1() ;
-      if( setCoordX instanceof AtomType ) {
-          LiteralType lt = ((AtomType)setCoordX).getLiteral() ;       
-          if(  lt instanceof IntegerType ) {
-              d1tRa.setDoubleValue( new Long( ((IntegerType)lt).getValue()).doubleValue() ) ;
-          }
-          else if( lt instanceof RealType ) {
-              d1tRa.setDoubleValue( new Double( ((RealType)lt).getValue()).doubleValue() ) ;
-          }
-          else if( lt instanceof StringType ) {
-              d1tRa.setDoubleValue( new Double( ((StringType)lt).getValue()).doubleValue() ) ;
-          }
-          llt.removeLinkedElement( currentLinkedArrayPosition ) ;
-      }
-      else {
-          log.debug( "ra instanceof: " + setCoordX.getClass() ) ;
-          String uid = this.formUniqueID() ;
-          setCoordX.setId( uid ) ;
-          d1tRa.setIdref( uid ) ;
-          currentLinkedArrayPosition++ ;
-      }
-      
-      ScalarExpressionType setDec = llt.addNewLinkedElement() ;
-      children[1].buildXmlTree( setDec ) ;
-      setDec = (ScalarExpressionType)children[1].getGeneratedObject() ;
-      
-      Double1Type d1tDec = center.addNewC2() ;
-      if( setDec instanceof AtomType ) {
-          LiteralType lt = ((AtomType)setDec).getLiteral() ;         
-          if(  lt instanceof IntegerType ) {          
-              d1tDec.setDoubleValue( new Long( ((IntegerType)lt).getValue()).doubleValue() ) ;
-          }
-          else if( lt instanceof RealType ) {
-              d1tDec.setDoubleValue( new Double( ((RealType)lt).getValue()).doubleValue() ) ;
-          }
-          else if( lt instanceof StringType ) {
-              d1tDec.setDoubleValue( new Double( ((StringType)lt).getValue()).doubleValue() ) ;
-          }
-          llt.removeLinkedElement( currentLinkedArrayPosition ) ;
-      }
-      else {
-          log.debug( "dec instanceof: " + setDec.getClass() ) ;
-          String uid = this.formUniqueID() ;
-          setDec.setId( uid ) ;
-          d1tDec.setIdref( uid ) ;
-          currentLinkedArrayPosition++ ;
-      }
-          
       ScalarExpressionType setRadius = llt.addNewLinkedElement() ;
       children[2].buildXmlTree( setRadius ) ;
-      setRadius = (ScalarExpressionType)children[2].getGeneratedObject() ;
-      
-      if( setRadius instanceof AtomType ) {
-          LiteralType lt = ((AtomType)setRadius).getLiteral() ;
-          if(  lt instanceof IntegerType ) {          
-              d1tRad.setDoubleValue( new Long( ((IntegerType)lt).getValue()).doubleValue() ) ;
-          }
-          else if( lt instanceof RealType ) {
-              d1tRad.setDoubleValue( new Double( ((RealType)lt).getValue()).doubleValue() ) ;
-          }
-          else if( lt instanceof StringType ) {
-              d1tRad.setDoubleValue( new Double( ((StringType)lt).getValue()).doubleValue() ) ;
-          }
-          llt.removeLinkedElement( currentLinkedArrayPosition ) ;
-      }
-      else {
-          log.debug( "radius instanceof: " + setRadius.getClass() ) ;
+      setRadius = (ScalarExpressionType)children[2].getGeneratedObject() ;     
+      Double d = this.unpackNumericLiteral( setRadius ) ;
+      if( d != null ) {
+          d1tRad.setDoubleValue( d.doubleValue() ) ;
+          llt.removeLinkedElement( llt.sizeOfLinkedElementArray() ) ;
+      } else {
           String uid = this.formUniqueID() ;
           setRadius.setId( uid ) ;
           d1tRad.setIdref( uid ) ;
