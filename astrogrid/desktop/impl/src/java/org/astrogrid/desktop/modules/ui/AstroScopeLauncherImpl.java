@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.64 2007/07/12 10:14:57 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.65 2007/07/23 12:28:53 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -63,7 +63,9 @@ import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.system.ui.ActionContributionBuilder;
+import org.astrogrid.desktop.modules.system.ui.ArMainWindow;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.system.ui.UIContributionBuilder;
 import org.astrogrid.desktop.modules.ui.actions.Activity;
 import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle;
@@ -126,6 +128,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	public AstroScopeLauncherImpl(UIContext context
 			, IterableObjectBuilder protocolsBuilder
 			,  final ActionContributionBuilder activityBuilder
+			, UIContributionBuilder menuBuilder	
 			, EventList history
 			, ScopeServicesList summary
 			,FileSystemManager vfs
@@ -404,10 +407,18 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		mb.add(historyMenu);
 		
 		mb.add(actions);
-		mb.add(getContext().createWindowMenu(this));		
 		
-//		mb.add(Box.createHorizontalGlue());
-		mb.add(createHelpMenu());
+		   menuBuilder.populateWidget(mb,this,ArMainWindow.MENUBAR_NAME);
+           int sz = mb.getComponentCount();
+           
+           JMenu help = mb.getMenu(sz-1);
+           help.insertSeparator(0);
+           JMenuItem sci = new JMenuItem("AstroScope: Introduction");
+           getContext().getHelpServer().enableHelpOnButton(sci,"scope.intro");
+           help.insert(sci,0);                 
+       
+       mb.add(getContext().createWindowMenu(this),sz-1); // insert before help menu.
+
 		this.setJMenuBar(mb);
 
 		this.addWindowListener(new WindowAdapter() {
