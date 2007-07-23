@@ -3,25 +3,19 @@
  */
 package org.astrogrid.desktop.modules.ui.actions;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import groovy.lang.Binding;
 import groovy.lang.Closure;
 import groovy.lang.GroovyShell;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.codehaus.groovy.control.CompilationFailedException;
-import org.codehaus.groovy.control.CompilerConfiguration;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
@@ -38,7 +32,7 @@ public class GenerateScriptScavenger extends AbstractActivityScavenger {
 			.getLog(GenerateScriptScavenger.class);
 
 	public GenerateScriptScavenger(ResourceChooserInternal chooser, MyspaceInternal ms) {
-		super(DevSymbols.ALPHA + " Automation",IconHelper.loadIcon("wizard16.png"));
+		super("Automation",IconHelper.loadIcon("wizard16.png"));
 		this.chooser = chooser;
 		this.ms = ms;
 		//@future - load these lists dynamically - at moment are hard-coded		
@@ -97,7 +91,7 @@ public class GenerateScriptScavenger extends AbstractActivityScavenger {
 				// now, if we found a header, inspect the groovy script and initialize the generateScriptActivity from it.
 				Object o = shell.getVariable("name");
 				if (o != null) {
-					a.setText(DevSymbols.ALPHA + " " + o.toString());
+					a.setText( o.toString());
 					shell.setVariable("name",null);
 				}
 				o = shell.getVariable("tooltip");

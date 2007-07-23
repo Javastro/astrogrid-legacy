@@ -54,7 +54,7 @@ public class SaveActivity extends AbstractFileActivity {
 		super();
 		this.chooser = chooser;
 		this.myspace = ms;
-		setText(DevSymbols.PROBLEM + " Save");
+		setText("Save");
 		setToolTipText("Save the selected objects");
 		setIcon(IconHelper.loadIcon("filesave16.png"));		
 	}
