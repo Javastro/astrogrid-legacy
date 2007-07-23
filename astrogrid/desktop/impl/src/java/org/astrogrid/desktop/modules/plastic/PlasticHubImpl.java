@@ -29,6 +29,7 @@ import javax.swing.JOptionPane;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xmlrpc.XmlRpcClient;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.builtin.ShutdownListener;
 import org.astrogrid.acr.system.RmiServer;
@@ -438,7 +439,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
     	OutputStream os = null;
         try {
             int rmiPort = rmiServer.getPort();
-            String xmlServer = webServer.getUrlRoot() + "xmlrpc";
+            String xmlServer = webServer.getRoot() + "xmlrpc";
             Properties props = new Properties();
             props.put(PlasticHubListener.PLASTIC_RMI_PORT_KEY, Integer.toString(rmiPort));
             props.put(PlasticHubListener.PLASTIC_XMLRPC_URL_KEY, xmlServer);
@@ -449,21 +450,23 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
             plasticPropertyFile = new File(homeDir, PlasticHubListener.PLASTIC_CONFIG_FILENAME);
             if (plasticPropertyFile.exists()) {
                 logger.info("Plastic config file was already present");
-                // See if we can guess who it is.
-                // TODO decide on an official plastic.name key
-                String runningHubName="Unknown application";
-                Properties alreadyPresent = loadExistingDotPlastic();
-                if (alreadyPresent.containsKey("uk.ac.starlink.plastic.servid")) runningHubName="Topcat";
-                if (alreadyPresent.containsKey(ACR_VERSION)) runningHubName="the Astro Runtime";
-                
-                
-                JOptionPane.showMessageDialog(ui.findMainWindow().getFrame(),
-                        "<html>It appears that a Plastic Hub is already running on your system inside "+runningHubName+
-                        ".<br>We <em>will not</em> start our Plastic Hub.  If you are sure that there is no other Hub" +
-                        " <br>actually running on your machine, then delete your .plastic file and restart this application.</html>" 
-                        ,"Plastic Hub Already Running",JOptionPane.OK_OPTION);
-                
-                return;
+                // See if there really is a Hub running or not.
+                Properties otherHubsProps = loadExistingDotPlastic();
+                String xmlRpcUrl = otherHubsProps.getProperty(PLASTIC_XMLRPC_URL_KEY);
+                if (xmlRpcUrl!=null) {
+	                //If it is null, then assume the .plastic file is invalid and write our own.
+            	  XmlRpcClient xmlrpc = new XmlRpcClient(xmlRpcUrl);
+            	  try {
+					String result = (String) xmlrpc.execute ("plastic.hub.getHubId", new Vector ());
+					logger.info("A functioning hub with id "+result+" is already running");
+					return;
+            	  } catch (Exception e) {
+					//Something went wrong calling the hub, so assume it's duff and we can start our own.
+            		logger.info("Although a .plastic file is present, the associated Hub is not responding.  We shall start our own Hub");
+            	  }
+
+                }
+                plasticPropertyFile.delete(); //TODO check this is OK
             }
             plasticPropertyFile.deleteOnExit();
             weWroteTheConfigFile = true;

@@ -15,6 +15,9 @@
 	</head>
 <body>
 <release version="2007.4.alpha1" date="2007-07-26">
+    <action dev="jdt" type="fix">
+    Improved the way the PLASTIC hub deals with orphaned .plastic files - no more annoying user messages.  See bug 2248.
+    </action>
     <action dev="nw" type="add">
     Implemented Task Runner UI
     </action>
