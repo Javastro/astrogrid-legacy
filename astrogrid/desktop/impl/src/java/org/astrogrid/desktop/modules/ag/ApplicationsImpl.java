@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.24 2007/07/12 10:17:42 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.25 2007/07/23 12:15:50 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,11 +44,11 @@ import org.astrogrid.acr.astrogrid.InterfaceBean;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
 import org.astrogrid.acr.astrogrid.RemoteProcessManager;
-import org.astrogrid.acr.ivoa.Adql;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.common.bean.BaseBean;
+import org.astrogrid.desktop.modules.ivoa.AdqlInternal;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.ivoa.StreamingExternalRegistryImpl.KnowledgeAddingResourceArrayBuilder;
 import org.astrogrid.workflow.beans.v1.Input;
@@ -75,7 +75,7 @@ public class ApplicationsImpl implements ApplicationsInternal {
      * 
      */
     public ApplicationsImpl(RemoteProcessManager manager,MyspaceInternal vos, 
-    		RegistryInternal nuReg, Adql adql,
+    		RegistryInternal nuReg, AdqlInternal adql,
     		Ehcache applicationResourceCache) throws  ACRException{
         this.manager = manager;
         this.vos = vos;
@@ -87,7 +87,7 @@ public class ApplicationsImpl implements ApplicationsInternal {
     protected final RegistryInternal nuReg;
     protected final RemoteProcessManager manager;
     private final MyspaceInternal vos;
-    protected final Adql adql;
+    protected final AdqlInternal adql;
 
    
     public URI[] list() throws ServiceException {   
@@ -556,8 +556,8 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
                         XMLUtils.newDocument(is);
                     } catch (Exception e) { // aha - got a string query.
 						try {
-							Document adqlx = adql.s2x(val.getValue());
-							val.setValue( XMLUtils.DocumentToString(adqlx) );
+							String adqlx = adql.s2xs(val.getValue());
+							val.setValue(adqlx);
 						} catch (InvalidArgumentException x) {
 							throw new ServiceException(x);
 						}
@@ -624,6 +624,9 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.25  2007/07/23 12:15:50  nw
+got adql translation working in tool document submission
+
 Revision 1.24  2007/07/12 10:17:42  nw
 task runner ui
 
