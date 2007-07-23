@@ -11,7 +11,6 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.desktop.modules.ui.actions.DevSymbols;
 import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
 
 /**Tabular display of a resource entry.
@@ -47,7 +46,7 @@ public class ResourceFormViewer extends JPanel implements ResourceViewer {
 	private final JLabel label;
 	
 	public void addTo(UIComponentBodyguard parent, JTabbedPane t) {
-		t.addTab(DevSymbols.PROBLEM + " " + "Form"
+		t.addTab("Form"
 				,this);
 	}
 	

@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.7 2007/07/12 10:13:31 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.8 2007/07/23 11:41:49 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -63,7 +63,6 @@ import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.astrogrid.desktop.modules.ui.actions.DevSymbols;
 import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.CapabilityIconFactory;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.FilterPipelineFactory;
@@ -73,7 +72,7 @@ import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTable;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTableFomat;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTitleComparator;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceViewer;
-import org.astrogrid.desktop.modules.ui.voexplorer.google.TabularMetadataViewer;
+import org.astrogrid.desktop.modules.ui.voexplorer.google.TabularMetadataResourceViewer;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.XMLResourceViewer;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.FilterPipelineFactory.PipelineStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.BasicRegistrySRQLVisitor;
@@ -329,7 +328,6 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 		this.vomon = vm;
 		this.iconFac = iconFac;
 		this.annServer = annServer;
-
 		// prelims
 		//this.setSize(new Dimension(500,800));
 		setLayout(new BorderLayout());
@@ -696,6 +694,9 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.8  2007/07/23 11:41:49  nw
+removed dev symbols.
+
 Revision 1.7  2007/07/12 10:13:31  nw
 made layout more compact.
 
