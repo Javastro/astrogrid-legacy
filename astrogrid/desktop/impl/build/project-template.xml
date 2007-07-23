@@ -225,7 +225,7 @@
  <dependency>
 	 <artifactId>commons-lang</artifactId>
 	 <groupId>commons-lang</groupId>
-	 <version>2.2</version>  <!-- nww was 2.0. upgraded to get string builder. -->
+	 <version>2.3</version>  <!-- nww was 2.0. upgraded to 2.2 to get string builder, upgraded to 2.3 to get string builder bugfixes. -->
 	 <type>jar</type>
 	 <properties>		 
 		 <dist.bundle>true</dist.bundle>		 
@@ -373,52 +373,6 @@
 		</properties>		
 	</dependency>	
 	
-  <!-- JDIC components - a bit tricky, because of binary nature.. 
--->
- <dependency>
-	 <artifactId>jdic</artifactId>
-	 <groupId>jdic</groupId>
-	<version>${jdic.version}</version>
-	 <properties>
-		 <dist.bundle>true</dist.bundle>
-		<strip>false</strip><!--  fails if stripped - TODO work on this later. -->
-	 </properties>
- </dependency>
- <!--  
- <dependency>
-	 <artifactId>jdic_stub_${ag.os.name}</artifactId>
-	 <groupId>jdic</groupId>
-	<version>${jdic.version}</version>
-	 <properties>
-		 <dist.bundle>true</dist.bundle>
-	 </properties>	 
- </dependency>
--->
-<!-- NB - this is the jar of native libs, that needs to be locally installed. 
-      not a real dependency as such - and not needed for development
-      -->
-      <!--  
- <dependency>
-	 <artifactId>jdic_native_${ag.os.name}_${ag.os.arch}</artifactId>
-	 <groupId>jdic</groupId>
-	<version>${jdic.version}</version>
-	 <properties>
-		 <dist.bundle>true</dist.bundle>
-	 </properties>	 
- </dependency>
--->
-<!--  a zip of all the native libs, for all platforms - used by the installer. -->
-<dependency>
-	<artifactId>jdic_native_all</artifactId>
-	<groupId>jdic</groupId>
-	<version>${jdic.version}</version>
-	<type>zip</type>
-	<properties>
-		<unzip>true</unzip>
-	</properties>
-</dependency>
-<!-- end of jdic -->
-
 <!-- used within development only -->
 
 	<!--  jar shrinking -->
