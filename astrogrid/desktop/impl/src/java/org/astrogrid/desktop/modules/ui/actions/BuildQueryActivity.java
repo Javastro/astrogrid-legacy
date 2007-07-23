@@ -5,22 +5,20 @@ package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.astrogrid.CeaApplication;
+import org.astrogrid.acr.astrogrid.InterfaceBean;
 import org.astrogrid.acr.astrogrid.ParameterBean;
+import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
-import org.astrogrid.acr.ivoa.resource.DataService;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.adqlEditor.QueryBuilderInternal;
 import org.astrogrid.desktop.modules.system.CSH;
-import org.astrogrid.desktop.modules.ui.TaskRunnerInternal;
+import org.astrogrid.desktop.modules.ui.QueryBuilderInternal;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 
 /** build a query from a selected resource.
@@ -35,7 +33,7 @@ public final class BuildQueryActivity extends AbstractFileOrResourceActivity {
 public BuildQueryActivity(QueryBuilderInternal t) {
 	this.t = t;
 	CSH.setHelpIDString(this, "resourceTask.buildQuery");		
-	setText(DevSymbols.PROBLEM + " Build ADQL");
+	setText("Build ADQL");
 	setIcon(IconHelper.loadIcon("db16.png"));
 	setToolTipText("Construct an ADQL query against the selected table descriptions");
 	
@@ -45,23 +43,75 @@ private final QueryBuilderInternal t;
 // something to pass to the task invoker.
 private Object current;
 
+// unsure whether there's a better place to put these helper methods.
 	public static boolean hasAdqlParameter(CeaApplication a) {
-		ParameterBean[] parameters = a.getParameters();	
-		for (int i = 0; i < parameters.length; i++) {
-			if (parameters[i].getType().equalsIgnoreCase("adql")) {
-			return true;
-		}
-		}
-	return false;
+	    return findAdqlParameter(a) != null;
 	}
+
+	/** find the first adql parameter, or return null */
+	   public static ParameterBean findAdqlParameter(CeaApplication a) {
+	        ParameterBean[] parameters = a.getParameters();
+	        for (int i = 0; i < parameters.length; i++) {
+	            if (parameters[i].getType().equalsIgnoreCase("adql")) {
+	            return parameters[i];
+	        }
+	        }
+	    return null;
+	    }
+
+	   /** find the name of the first interface contianing an adql input parameter
+	    * or null */
+	    public static String findNameOfFirstADQLInterface(CeaApplication app) {
+	        ParameterBean adql = findAdqlParameter(app);
+	        if (adql == null) {
+	            return null;
+	        }
+	        String name = adql.getName();
+	        for (int i = 0; i < app.getInterfaces().length; i++) {
+	            // search through parameters.
+	            final InterfaceBean iface = app.getInterfaces()[i];
+                ParameterReferenceBean[] refs = iface.getInputs();
+	            for (int j = 0; j < refs.length; j++) {
+                    if (refs[j].getRef().equals(name)) {
+                        return iface.getName();
+                    }
+                }
+	        }
+	        return null;
+	    }
+	    /** find the name of the first interface NOT contianing an adql input parameter
+	        * or null */
+	        public static String findNameOfFirstNonADQLInterface(CeaApplication app) {
+	            ParameterBean adql = findAdqlParameter(app);
+	            if (adql == null) {
+	                return app.getInterfaces()[0].getName();
+	            }
+	            String name = adql.getName();
+	            for (int i = 0; i < app.getInterfaces().length; i++) {
+	                // search through parameters.
+	                boolean found = false;
+	                final InterfaceBean iface = app.getInterfaces()[i];
+	                ParameterReferenceBean[] refs = iface.getInputs();
+	                for (int j = 0; j < refs.length; j++) {
+	                    if (refs[j].getRef().equals(name)) {
+	                        found = true;
+	                    }
+	                }
+	                if (found == false) {
+	                    return iface.getName();
+	                }
+	            }
+	            return null;
+	        }	   
+	
 	public void actionPerformed(ActionEvent e) {
 		if (isDbSchema(current)) { 
 			// single db schema.
 			if (current instanceof DataCollection) {
 				t.build((DataCollection)current);
-			} else { // must be a catalog service.
+			} /* not implemented else { // must be a catalog service.
 				t.build((CatalogService)current);
-			}
+			}*/
 		} else if (current instanceof CeaApplication) {
 			// a cea app.
 			t.build((CeaApplication)current);
@@ -115,8 +165,8 @@ private Object current;
 	// accept a single database schema, or a single queriable service.
 	public void oneSelected(Resource resource) {
 		current = null;
-		setEnabled( //@fixme(isDbSchema(resource) ||
-				 resource instanceof CeaApplication && hasAdqlParameter((CeaApplication)resource));
+		setEnabled( isDbSchema(resource) ||
+				 (resource instanceof CeaApplication && hasAdqlParameter((CeaApplication)resource)));
 			// @future add a rule for tap services, when they emrge too.
 		if (isEnabled()) {
 			current = resource;
@@ -139,8 +189,8 @@ private Object current;
 		setEnabled(false);
 		*/
 	}
-	private boolean isDbSchema(Object r) {
-		return r instanceof DataCollection || r instanceof CatalogService;
+	private boolean isDbSchema(Object r) { // just for tabular db at the moment.
+		return r instanceof DataCollection; // || r instanceof CatalogService;
 	}
 
 	
