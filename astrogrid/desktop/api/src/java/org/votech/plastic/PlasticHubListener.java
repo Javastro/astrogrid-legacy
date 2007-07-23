@@ -87,7 +87,7 @@ public interface PlasticHubListener {
     /**
      * Register an application with the hub. Each application that wishes to use the hub should register with it - the
      * hub may not forward messages from applications whose ID it doesn't recognise. There are different register
-     * methods dependening on how (and whether) the application wishes to receive messages back from the hub.
+     * methods depending on how (and whether) the application wishes to receive messages back from the hub.
      * 
      * @param name An optional string with a short name describing the application. This may be added to the hub
      *            assigned ID, making it more human friendly.
