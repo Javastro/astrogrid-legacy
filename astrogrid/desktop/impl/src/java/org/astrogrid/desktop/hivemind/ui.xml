@@ -21,7 +21,7 @@
 		
 	<contribution configuration-id="framework.acrServices">
 			<acrService id="astroscope" interface="AstroScope"/>
-<!--  			<acrService id="myspaceBrowser" interface="FileManager" />-->
+			<acrService id="applicationLauncher" interface="ApplicationLauncher" />
 			<acrService id="registryBrowser" interface="RegistryBrowser" />
 			<acrService id="fileManager" interface="FileManager" />
 			<acrService id="queryBuilder" interface="QueryBuilder" />
@@ -35,7 +35,7 @@ UI STRUCTURES
 
 <!-- assume that if this module is loaded, we're running as workbench -->
 	<contribution configuration-id="system.uiStructure">
-			<action parentName="help" name="about" text="About VO Explorer.." onEventDispatchThread="true"
+			<action parentName="help" name="about" text="About Astro Runtime.." onEventDispatchThread="true"
 			object="instance:java.lang.String" methodName="concat" iconName="AGlogo16x16.png"
 			after="*" > 
 			<parameter><![CDATA[
@@ -90,23 +90,25 @@ ASTROSCOPE
 			<interceptor service-id="system.snitchInterceptor" />
 		<invoke-factory> 
 		<construct class="org.astrogrid.desktop.modules.ui.AstroScopeFactory" >
-						<service>hiveutils.ObjectBuilder</service>
+						<service>UiBuilder</service>
 		</construct>
 		</invoke-factory>	
 	</service-point>
 
 	<contribution configuration-id="system.windowFactories">
-		<window name="All-VO Scope &#x003B2;">service:astroscope</window>
+		<window name="All-VO Scope">service:astroscope</window>
 	</contribution>
-							
-	<contribution configuration-id="hiveutils.ObjectBuilderObjects">
+		
+										
+	<contribution configuration-id="UiBuilderObjects">
 		<object name="astroscope" class="org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl" >
 		Describes how to build a new astroscope window.
 			<inject object="service:system.ui"/>			
 			<inject object="service:protocolsBuilder" />
-			<inject object="service:actionsBuilder" />			
+			<inject object="service:actionsBuilder" />	
+            <inject object="service:system.uiBuilder" />            		
 			<inject object="service-property:scopeHistory:list" />
-			<inject object="object:scopeServiceList" />
+			<inject object="ui:scopeServiceList" />
 			<inject object="service:system.vfs" />
 			<inject object="service:cds.sesame" />
 			<inject object="service:system.snitch" />
@@ -189,17 +191,9 @@ ASTROSCOPE
 	 -->
 	<service-point id="applicationLauncher" interface="org.astrogrid.desktop.modules.ui.TaskRunnerInternal">
 		<interceptor service-id="system.snitchInterceptor" />
-		<invoke-factory>
+		<invoke-factory>   
 			<construct class="org.astrogrid.desktop.modules.ui.TaskRunnerFactory">
-			<!-- todo: simplify these deps - most aren't used. -->
-				<service>system.ui</service>
-				<service>dialogs.resourceChooser</service>
-				<service>astrogrid.applications</service>
-				<service>astrogrid.myspace</service>
-				<service>dialogs.registryGoogle</service>
-				<object>preference:acr.advanced</object>
-				<service>astrogrid.processManager</service>
-<!--				<event-listener service-id="builtin.shutdown" />						-->
+						<service>UiBuilder</service>
 			</construct>
 		</invoke-factory>	
 	</service-point>
@@ -207,32 +201,131 @@ ASTROSCOPE
 	<contribution configuration-id="system.windowFactories">
 		<window name="Task Runner">service:applicationLauncher</window>
 	</contribution>
+	
+		<contribution configuration-id="UiBuilderObjects">
+		<object name="taskrunner" class="org.astrogrid.desktop.modules.ui.taskrunner.TaskRunnerImpl" >
+		  Describes how to build a new task runner window.
+			<inject object="service:system.ui"/>		
+			<inject object="service:astrogrid.applications"/>		
+			<inject object="service:dialogs.resourceChooser" />
+			<inject object="service:dialogs.registryGoogle" />			
+			<inject object="ui:executionTracker"/>		
+            <inject object="service:system.uiBuilder" />
+            <inject object="service:ui.UiBuilder" />            	
+		</object>
+        
+		<object name="executionTracker" class="org.astrogrid.desktop.modules.ui.execution.ExecutionTracker">
+			<inject object="service:astrogrid.processManager" />
+		</object>
+        
+        <object name="taskParametersForm" class="org.astrogrid.desktop.modules.ui.taskrunner.TaskParametersForm">
+            <inject-arg />
+            <inject-arg />
+            <inject object="service:astrogrid.applications" />
+            <inject object="service:ui.UiBuilder" />
+        </object>
+        
+        <!--  full adql editor panel -->
+        <object name="adqlPanel" class="org.astrogrid.desktop.modules.adqlEditor.ADQLEditorPanel">
+            <inject-arg />
+            <inject-arg />
+            <inject-arg />
+            <inject object="service:dialogs.registryGoogle" />
+            <inject object="service:ivoa.registry" />
+            <inject object="preference:acr.debug" />
+        </object>
+        
+        
+        <!--  task parameter editors -->
+        <object name="textFormElement" class="org.astrogrid.desktop.modules.ui.taskrunner.TextFormElement">
+            <inject-arg />
+            <inject-arg />
+            <inject object="service:dialogs.resourceChooser" />
+        </object>
+        <object name="looseFormElement" class="org.astrogrid.desktop.modules.ui.taskrunner.LooselyFormattedFormElement">
+            <inject-arg />
+            <inject-arg />
+            <inject-arg />            
+            <inject object="service:dialogs.resourceChooser" />
+        </object>
+        <object name="largeFormElement" class="org.astrogrid.desktop.modules.ui.taskrunner.LargeTextFormElement">
+            <inject-arg />
+            <inject-arg />
+            <inject object="service:dialogs.resourceChooser" />
+        </object>
+        <object name="binaryFormElement" class="org.astrogrid.desktop.modules.ui.taskrunner.BinaryFormElement">
+            <inject-arg />
+            <inject-arg />
+            <inject object="service:dialogs.resourceChooser" />
+        </object>
+        <object name="enumerationFormElement" class="org.astrogrid.desktop.modules.ui.taskrunner.EnumerationFormElement">
+            <inject-arg />
+            <inject-arg />
+            <inject object="service:dialogs.resourceChooser" />
+        </object>
+        <object name="booleanFormElement" class="org.astrogrid.desktop.modules.ui.taskrunner.BooleanFormElement">
+            <inject-arg />
+            <inject-arg />
+            <inject object="service:dialogs.resourceChooser" />
+        </object>
+        <object name="outputFormElement" class="org.astrogrid.desktop.modules.ui.taskrunner.OutputFormElement">
+            <inject-arg />
+            <inject-arg />
+            <inject object="service:dialogs.resourceChooser" />
+        </object>
+        <object name="positionFormElement" class="org.astrogrid.desktop.modules.ui.taskrunner.PositionFormElement">
+            <inject-arg />
+            <inject-arg />
+            <inject-arg />
+            <inject-arg />                        
+            <inject-arg />
+            <inject object="service:dialogs.resourceChooser" />
+            <inject object="service:cds.sesame" />
+        </object>
+        <object name="adqlFormElement" class="org.astrogrid.desktop.modules.ui.taskrunner.AdqlTextFormElement">
+            <inject-arg />
+            <inject-arg />
+            <inject-arg />
+            <inject-arg />
+            <inject object="service:dialogs.resourceChooser" />
+            <inject object="service:ui.UiBuilder" />
+        </object>                                                                
+	</contribution>
 
 
 <!--  
 ===========================================
-Stand-alone Query Builder
+Query Builder
  -->
-	<service-point id="queryBuilder" 
-	interface="org.astrogrid.desktop.modules.adqlEditor.QueryBuilderInternal">
-		<interceptor service-id="system.snitchInterceptor" />
-		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.adqlEditor.QueryBuilderFactory">
-				<configuration>dialogs.toolEditors</configuration>
-				<service>dialogs.resourceChooser</service>
-				<service>astrogrid.applications</service>
-				<service>astrogrid.myspace</service>
-				<service>system.ui</service>
-				<object>preference:acr.advanced</object>
-<!--				<event-listener service-id="builtin.shutdown" />						-->
-			</construct>
-		</invoke-factory>	
-	</service-point>
+ 	<service-point id="queryBuilder" 
+	interface="org.astrogrid.desktop.modules.ui.QueryBuilderInternal">
+        <interceptor service-id="system.snitchInterceptor" />
+        <invoke-factory>   
+            <construct class="org.astrogrid.desktop.modules.ui.QueryBuilderFactory">
+                        <service>UiBuilder</service>
+            </construct>
+        </invoke-factory>   
+    </service-point>
+
+
+        <contribution configuration-id="UiBuilderObjects">
+        <object name="querybuilder" class="org.astrogrid.desktop.modules.ui.QueryBuilderImpl" >
+          Describes how to builld a new queryrunner window.
+            <inject object="service:system.ui"/>        
+            <inject object="service:astrogrid.applications"/>       
+            <inject object="service:dialogs.resourceChooser" />
+            <inject object="service:dialogs.registryGoogle" />          
+            <inject object="ui:executionTracker"/>      
+            <inject object="service:system.uiBuilder" />
+            <inject object="service:ui.UiBuilder" />  
+            <inject object="service:ivoa.registry" />                
+        </object>
+       </contribution>
 	
-		<contribution configuration-id="system.windowFactories">
+	<contribution configuration-id="system.windowFactories">
 		<window name="Query Builder">service:queryBuilder</window>
 	</contribution>
-	
+		
 		<contribution configuration-id="system.helpmap">
 		<!-- TODO: fix these urls. -->
 		<item id="userInterface.queryBuilder" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/resources/resources/" />
@@ -247,7 +340,7 @@ Stand-alone Query Builder
 			<interceptor service-id="system.snitchInterceptor" />
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ui.VOExplorerFactoryImpl" >
-				<service>hiveutils.ObjectBuilder</service>
+				<service>UiBuilder</service>
 			</construct>
 		</invoke-factory>	
 	</service-point>
@@ -260,14 +353,14 @@ Stand-alone Query Builder
 		<object>service:registryBrowser</object>
 	</contribution>
 	
-	<contribution configuration-id="hiveutils.ObjectBuilderObjects">
+	<contribution configuration-id="UiBuilderObjects">
 		Describes how to build a new voexplorer window.
 		<object name="voexplorer" class="org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl">
 			<inject object="service:system.ui"/>
 			<inject object="service:actionsBuilder" />
 			<inject object="service:system.uiBuilder" />
 			<inject object="service-property:resourceFolders:list" />
-			<inject object="object:registryGooglePanel" />
+			<inject object="ui:registryGooglePanel" />
 			<inject object="service:querySize" /> 
 		</object>
 	</contribution>
@@ -283,9 +376,11 @@ Stand-alone Query Builder
 	</service-point>
 	
 	<!--  makes the registryBrowser dsplay on startup if we've not got a system tray -->
+    <!-- 
 	<contribution configuration-id="hivemind.Startup" if="not (class java.awt.SystemTray)">
 		<startup object="service:registryBrowser" />
 	</contribution>
+    -->
 
 <!-- 
 =====================================
@@ -295,20 +390,20 @@ FILE EXPLORER
  		<interceptor service-id="system.snitchInterceptor" />
  		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ui.FileExplorerFactoryImpl" >
-				<service>hiveutils.ObjectBuilder</service>
+				<service>UiBuilder</service>
 			</construct>
 		</invoke-factory>	
  	</service-point>
  	
 	<contribution configuration-id="system.windowFactories">
-		<window name="File Explorer &#x003B1; ">service:fileManager</window>
+		<window name="File Explorer">service:fileManager</window>
 	</contribution>
 	
 	<contribution configuration-id="system.plasticMessageHandlers">
 		<object>service:fileManager</object>
 	</contribution>	
 	
-	<contribution configuration-id="hiveutils.ObjectBuilderObjects">
+	<contribution configuration-id="UiBuilderObjects">
 		Describes how to build a new fileexplorer window.
 		<object name="fileExplorer" class="org.astrogrid.desktop.modules.ui.fileexplorer.FileExplorerImpl">
 			<inject object="service:system.ui"/>
@@ -485,5 +580,47 @@ ACTIONS
 	 		/>
 	 	</contribution>
 
+
+<!-- ============================
+Building components on the EDT
+ based on hiveutils.ObjectBuilder
+ -->
+ 	<service-point	id="UiBuilder"
+					interface="org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder">
+	Based on hiveUtils.ObjectBuilder, but guarantees object construction 
+	will always occur on the EDT - no matter what the calling thread.
+		<invoke-factory model="singleton">
+			<construct class="org.astrogrid.desktop.modules.ui.TypesafeObjectBuilderImpl">
+				<log/>
+				<configuration>UiBuilderObjects</configuration>
+				<service>hiveutils.ObjectTranslator</service>
+				<service>hiveutils.EventLinker</service>
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+		<configuration-point id="UiBuilderObjects"  schema-id="hiveutils.ObjectBuilderSchema">
+		Extension point that defines "objects" to be created by the UiBuilder
+		service. Each object can be injected with various dependencies (almost
+		the same as for a HiveMind service).
+		Each contribution defines exactly one such kind of object.
+	
+	</configuration-point>
+
+	<service-point	id="UiBuilderObjectProvider"
+					interface="org.apache.hivemind.service.ObjectProvider"
+					visibility="private">
+		ObjectProvider that can find (or create) POJOs instances (built by the ObjectBuilder service).
+		Mapped to the object: prefix ("ui:&lt;name&gt;").
+		<invoke-factory model="singleton">
+			<construct class="net.sourceforge.hiveutils.service.impl.ObjectBuilderObjectProvider">
+				<object>service-property:UiBuilder:objectBuilder</object>
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+	<contribution configuration-id="hivemind.ObjectProviders">
+		<provider prefix="ui" service-id="UiBuilderObjectProvider"/>
+	</contribution>
  </module>
  
