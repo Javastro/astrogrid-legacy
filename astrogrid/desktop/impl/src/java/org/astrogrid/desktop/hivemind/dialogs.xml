@@ -38,63 +38,18 @@ RESOURCE (FILE) CHOOSER
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>
 	
-
-	<contribution configuration-id="system.uiStructure" >
-		<action parentName="debug"  onEventDispatchThread="true"  before="*"
-			name="fullChooseResource1" 
-			text="fullChooseResource(ms=true,file=true,uri=true)" 
-			object="service:resourceChooser" methodName="fullChooseResource" >
-			<parameter>fullChooseResource(ms=true,file=true,uri=true)</parameter>
-			<parameter>true</parameter>
-			<parameter>true</parameter>
-			<parameter>true</parameter>
-		</action>
-		<action parentName="debug"  onEventDispatchThread="true"  after="fullChooseResource1"
-			name="fullChooseResource2" 
-			text="fullChooseResource(ms=false,file=true,uri=false)"
-			object="service:resourceChooser" methodName="fullChooseResource" >
-			<parameter>fullChooseResource(ms=false,file=true,uri=false)</parameter>
-			<parameter>false</parameter>
-			<parameter>true</parameter>
-			<parameter>false</parameter>
-		</action>		
-		<action parentName="debug"  onEventDispatchThread="true" 
-			name="fullChooseResource3" after="fullChooseResource2"
-			text="fullChooseResource(ms=true,file=false,uri=true)" 
-			object="service:resourceChooser" methodName="fullChooseResource" >
-			<parameter>fullChooseResource(ms=true,file=false,uri=true)</parameter>
-			<parameter>true</parameter>
-			<parameter>false</parameter>
-			<parameter>true</parameter>
-		</action>
-		<action parentName="debug"  onEventDispatchThread="true" 
-			name="chooseDirectory1" after="fullChooseResource3"
-			text="chooseDirectory(ms=true,file=true,uri=true)" 
-			object="service:resourceChooser" methodName="chooseDirectoryWithParent" >
-			<parameter>chooseDirectory(ms=true,file=true,uri=true)</parameter>
-			<parameter>true</parameter>
-			<parameter>true</parameter>
-			<parameter>true</parameter>
-			<parameter>null</parameter>
-		</action>
-	
-	</contribution>			
 <!-- 
 ===========================
-TOOL EDITOR - TODO - reimplement using regExplorer.
+TOOL EDITOR - FIXME - reimplement using regExplorer.
  -->
 	<!-- todo: make non-singleton? -->			
 	<service-point id="toolEditor" interface="org.astrogrid.desktop.modules.dialogs.ToolEditorInternal">
 		Edit a remote application invocation.
 		<invoke-factory model="session">
 			<construct class="org.astrogrid.desktop.modules.dialogs.ToolEditorImpl" >
-				<configuration>toolEditors</configuration>
-				<service>resourceChooser</service>
-				<service>ivoa.registry</service>
 				<service>system.ui</service>
-				<service>astrogrid.applications</service>
-				<service>astrogrid.myspace</service>	
-				<object>preference:acr.advanced</object>							
+                <service>ui.UiBuilder</service>
+				<service>astrogrid.applications</service>						
 			</construct>
 		</invoke-factory>	
 	</service-point>
@@ -102,44 +57,10 @@ TOOL EDITOR - TODO - reimplement using regExplorer.
 	<implementation service-id="toolEditor" if="property dialogs.toolEditor.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>
-	
-	<configuration-point id="toolEditors" schema-id="system.objects">
-	 	List of tool editors. Each must implemen ToolEditorPanelFactory;
-	</configuration-point>
-	
-	<contribution configuration-id="toolEditors">
-		<object>service:adqlPanel</object>
-		<object>service:basicPanel</object>
-	</contribution>
-	
-		<contribution configuration-id="system.uiStructure">
-		<action parentName="debug" onEventDispatchThread="true" name="driveToolEditor" text="Launch ToolEditor"
-			object="service:toolEditor" methodName="selectAndBuild" />
-	</contribution>		
+		
 	<contribution configuration-id="system.helpmap">
 		<item id="userInterface.taskEditor" url="http://www2.astrogrid.org/science" />
 	</contribution>	
-<!-- 
-=======================
-SIMPLIFIED TOOL EDITOR
- -->	
-	<service-point id="simpleToolEditor" interface="org.astrogrid.desktop.modules.dialogs.ToolEditorInternal">
-		Edit a remote application invocation in a very simple tool editor
-		<invoke-factory model="session">
-			<construct class="org.astrogrid.desktop.modules.dialogs.ToolEditorImpl" >
-				<service>basicPanel</service>
-				<service>system.configuration</service>
-				<service>system.help</service>
-				<service>system.ui</service>
-				<service>astrogrid.applications</service>
-				<service>astrogrid.myspace</service>						
-			</construct>
-		</invoke-factory>	
-	</service-point>
-
-	<implementation service-id="simpleToolEditor" if="property dialogs.toolEditor.disabled">
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
-	</implementation>	
 
 <!--  
 ============================
@@ -151,12 +72,12 @@ REGISTRY GOOGLE
 		<invoke-factory model="session">
 			<construct class="org.astrogrid.desktop.modules.dialogs.RegistryGoogleImpl" >
 				<service>system.ui</service>
-				<object>object:registryGooglePanel</object>
+				<object>ui:registryGooglePanel</object>
 			</construct>
 		</invoke-factory>	
 	</service-point>
 
-	<contribution configuration-id="hiveutils.ObjectBuilderObjects">
+	<contribution configuration-id="ui.UiBuilderObjects">
 		Describes how to build a new registry google panel.
 		It's a complex thing to construct - using an object builder
 		means we only need to describe the construction in one place,
@@ -187,15 +108,7 @@ REGISTRY GOOGLE
 	<implementation service-id="registryGoogle" if="property dialogs.registryGoogle.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>		
-
-	<contribution configuration-id="system.uiStructure">
-		<action parentName="debug" name="driveRegistryChooser" onEventDispatchThread="true"
-			 text="Launch RegistryChooser" 
-			object="service:registryGoogle" methodName="selectResources" >		
-			<parameter>Choose a resource!</parameter>
-			<parameter>false</parameter>
-		</action>
-	</contribution>		
+	
 	
 	<!--  help keys for registry panel - they're pointing to the wiki for now. -->
 	<contribution configuration-id="system.helpmap">
@@ -237,7 +150,7 @@ which ones to display, and in which order, is specified in the program code.-->
 			<inject object="service:ui.registryBrowser" />
 			<inject object="service:votech.annotate" />
 	</object>	
-	<object name="table" class="org.astrogrid.desktop.modules.ui.voexplorer.google.TabularMetadataViewer"/>
+	<object name="table" class="org.astrogrid.desktop.modules.ui.voexplorer.google.TabularMetadataResourceViewer"/>
 	<object name="form" class="org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceFormViewer" />
 	<object name="xml" class="org.astrogrid.desktop.modules.ui.voexplorer.google.XMLResourceViewer">
 		<inject object="service:ivoa.registry" />
@@ -245,31 +158,7 @@ which ones to display, and in which order, is specified in the program code.-->
 	</object>
 	<object name="results" class="org.astrogrid.desktop.modules.ui.scope.ResultsResourceViewer" />
 </contribution>
-	
-	<!-- =================
-	TOOL EDITOR PANES
-	 -->
-	<service-point id="basicPanel" visibility="private" interface="org.astrogrid.desktop.modules.dialogs.editors.ToolEditorPanelFactory">
-		basic form-input panel
-		<invoke-factory model="primitive">
-			<construct class="org.astrogrid.desktop.modules.dialogs.editors.BasicToolEditorPanelFactory">
-				<service>resourceChooser</service>
-			</construct>
-		</invoke-factory>
-	</service-point>	
-	
-	<service-point id="adqlPanel" visibility="private" interface="org.astrogrid.desktop.modules.dialogs.editors.ToolEditorPanelFactory">
-		Allows user to build adql queries
-		<invoke-factory model="primitive">
-			<construct class="org.astrogrid.desktop.modules.adqlEditor.ADQLToolEditorPanelFactory">
-				<service>resourceChooser</service>
-				<service>registryGoogle</service>
-				<service>astrogrid.myspace</service>
-				<service>ivoa.registry</service>
-				<object>preference:acr.advanced</object>		
-			</construct>
-		</invoke-factory>
-	</service-point>				
+					
  </module>
 
 
