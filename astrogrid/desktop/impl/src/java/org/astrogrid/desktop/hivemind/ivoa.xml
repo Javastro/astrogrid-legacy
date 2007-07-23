@@ -25,10 +25,10 @@
 	
 	
 	<contribution configuration-id="system.uiStructure" if="not (property ivoa.cache.disabled)">
-		<action parentName="edit" name="cacheClear" text="Flush Cache" onEventDispatchThread="true"
-			object="service:cache" methodName="flush" after="*" >
+		<action parentName="runtime" name="cacheClear" text="Flush Cache" onEventDispatchThread="true"
+			object="service:cache" methodName="flush"  before="reset" after="prefs">
 			<confirmMessage><![CDATA[<html>
-				Remove all cached registry documents?
+				Remove all cached registry documents and other data?
 				Proceed?
 			]]></confirmMessage>
 		</action>		
@@ -37,7 +37,7 @@
 	<!--  =====================
 	ADQL
 	 -->
-	<service-point id="adql" interface="Adql">
+	<service-point id="adql" interface="org.astrogrid.desktop.modules.ivoa.AdqlInternal">
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ivoa.AdqlImpl" />
 		</invoke-factory>

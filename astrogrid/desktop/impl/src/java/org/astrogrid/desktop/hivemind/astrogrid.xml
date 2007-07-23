@@ -35,12 +35,12 @@ UI CONFIGURATION -->
 	<!-- NEW ACTIONS -->
 	<!-- add login and logout actions -->
 	<contribution configuration-id="system.uiStructure">
-		<action text="Login" name="login"  parentName="file" iconName="connect_creating16.png"
-			object="service:community" methodName="guiLogin" before="exit,logout">
+		<action text="Login" name="login"  parentName="runtime" iconName="connect_creating16.png"
+			object="service:community" methodName="guiLogin" before="logout">
 			<tooltip>Log in to AstroGrid</tooltip>
 		</action>
-		<action text="Logout" name="logout" parentName="file" iconName="connect_no16.png"
-			object="service:community" methodName="logout" after="login" before="exit">
+		<action text="Logout" name="logout" parentName="runtime" iconName="connect_no16.png"
+			object="service:community" methodName="logout" after="login" before="prefs">
 			<tooltip>Log out of AstroGrid</tooltip>
 		</action>
 	</contribution>
