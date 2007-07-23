@@ -1,4 +1,4 @@
-/*$Id: ToolEditorImpl.java,v 1.15 2007/06/18 17:03:12 nw Exp $
+/*$Id: ToolEditorImpl.java,v 1.16 2007/07/23 12:21:18 nw Exp $
  * Created on 16-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,11 +26,10 @@ import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.dialogs.editors.ToolEditorPanelFactory;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
@@ -42,39 +41,20 @@ import org.w3c.dom.Document;
  *
  */
 public class ToolEditorImpl implements ToolEditorInternal {
-   private final Applications apps;
-   private final ToolEditorDialog dialog;
-   private final MyspaceInternal myspace;    
+  private final Applications apps;
+   private final ToolEditorDialog dialog;   
 
 
-    public ToolEditorImpl(
-    		List panelFactories
-            ,ResourceChooserInternal rChooser
-            ,Registry reg           
-            , UIContext context
-            , ApplicationsInternal apps, MyspaceInternal myspace, Preference pref) {
+    public ToolEditorImpl(UIContext context
+            ,TypesafeObjectBuilder builder, Applications apps) {
         super(); 
-        dialog = new ToolEditorDialog(panelFactories,rChooser,apps,myspace,reg,context,pref);
+        dialog = new ToolEditorDialog(context,builder);
         //dialog.setSize(600,425);
         dialog.pack();      
         
         this.apps = apps;
-        this.myspace =myspace;
     }
     
-    public ToolEditorImpl(ToolEditorPanelFactory panelFactory         
-            , UIContext context, UIComponent ui
-            , ApplicationsInternal apps, MyspaceInternal myspace) {
-        super(); 
-        dialog = new ToolEditorDialog(panelFactory,context,ui);
-        //dialog.setSize(600,425);
-        dialog.pack();      
-        
-        this.apps = apps;
-        this.myspace =myspace;
-    }    
-    
-
 
     public Document edit(Document doc) throws InvalidArgumentException {
         try {
@@ -112,7 +92,7 @@ public class ToolEditorImpl implements ToolEditorInternal {
     public Tool editStoredTool(URI toolLocation, Component comp) throws InvalidArgumentException, ServiceException {
         Tool t = null;
         try {
-            InputStream is = myspace.getInputStream(toolLocation);
+            InputStream is = toolLocation.toURL().openStream();
             t = Tool.unmarshalTool(new InputStreamReader(is));
         } catch (Exception e) {
             throw new InvalidArgumentException(e);
@@ -186,6 +166,9 @@ public class ToolEditorImpl implements ToolEditorInternal {
 
 /* 
 $Log: ToolEditorImpl.java,v $
+Revision 1.16  2007/07/23 12:21:18  nw
+stopgap implementations of tool editor dialog - uses new codebase, but not tested at the moment.
+
 Revision 1.15  2007/06/18 17:03:12  nw
 javadoc fixes.
 

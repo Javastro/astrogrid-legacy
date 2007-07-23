@@ -1,4 +1,4 @@
-/*$Id: ToolEditorDialog.java,v 1.12 2007/04/18 15:47:10 nw Exp $
+/*$Id: ToolEditorDialog.java,v 1.13 2007/07/23 12:21:18 nw Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.desktop.modules.dialogs;
 
 import java.awt.BorderLayout;
 import java.awt.HeadlessException;
+import java.awt.event.MouseAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
@@ -29,14 +30,12 @@ import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.dialogs.editors.AbstractToolEditorPanel;
-import org.astrogrid.desktop.modules.dialogs.editors.CompositeToolEditorPanel;
-import org.astrogrid.desktop.modules.dialogs.editors.ToolEditorPanelFactory;
-import org.astrogrid.desktop.modules.dialogs.editors.model.ToolModel;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
+import org.astrogrid.desktop.modules.ui.taskrunner.TaskParametersForm;
 import org.astrogrid.workflow.beans.v1.Tool;
 /** dialog that allows the user to edit a tool document - i.e. a set of parameters.
  * 
@@ -50,33 +49,19 @@ public class ToolEditorDialog extends JDialog implements PropertyChangeListener 
 
     
     JOptionPane jOptionPane = null;
-    private final AbstractToolEditorPanel parametersPanel;
     private final UIComponentImpl parent;
     
    	private JLabel topLabel = null;
+    private TaskParametersForm parametersPanel;
    
    	
-   	public ToolEditorDialog(
-    		List panelFactories
-            ,ResourceChooserInternal rChooser
-            ,ApplicationsInternal apps
-            ,MyspaceInternal myspace
-            ,Registry reg
-            ,UIContext context,Preference pref) throws HeadlessException {
+   	public ToolEditorDialog(UIContext context,TypesafeObjectBuilder builder) throws HeadlessException {
         super();          
-        this.parent = new UIComponentImpl(context);        
-        parametersPanel = new CompositeToolEditorPanel(panelFactories,rChooser,apps,myspace,parent
-        		,context.getHelpServer(),context.getBrowser(),pref);
+        this.parent = new UIComponentImpl(context);    
+        this.parametersPanel = builder.createTaskParametersForm(parent,new MouseAdapter(){}); // pass in a stub mouse adapter for now.
         init();
     }
-    
-   	public ToolEditorDialog(ToolEditorPanelFactory panelFactory
-            ,UIContext context, UIComponent ui) throws HeadlessException {
-        super();          
-        this.parent = new UIComponentImpl(context);        
-        parametersPanel =panelFactory.create(new ToolModel(),parent);
-        init();   
-    }
+
 
 	/**
 	 * 
@@ -102,7 +87,7 @@ public class ToolEditorDialog extends JDialog implements PropertyChangeListener 
         setVisible(false);
         getTopLabel().setText(null);
         getTopLabel().setToolTipText(null);
-        parametersPanel.getToolModel().clear();
+        parametersPanel.clear();
     }
     
     private Tool editedTool = null;
@@ -116,19 +101,21 @@ public class ToolEditorDialog extends JDialog implements PropertyChangeListener 
      *
      */
     public void nextDisplayShowCEAOnly() {
-    	parametersPanel.putClientProperty(CompositeToolEditorPanel.CEA_ONLY_CLIENT_PROPERTY,Boolean.TRUE);
+        //@todo implement or remove this
+    //	parametersPanel.putClientProperty(CompositeToolEditorPanel.CEA_ONLY_CLIENT_PROPERTY,Boolean.TRUE);
     }
     /** overridden - resets client property */
     public void setVisible(boolean b) {
     	super.setVisible(b);
     	// once we've gotten here, modal dialogue has returned. so safe to remove the client property, if it exists
-    	parametersPanel.putClientProperty(CompositeToolEditorPanel.CEA_ONLY_CLIENT_PROPERTY,null);
+   // 	parametersPanel.putClientProperty(CompositeToolEditorPanel.CEA_ONLY_CLIENT_PROPERTY,null);
     }
     
     
     public void populate(Tool t, CeaApplication desc) {
         editedTool = null;
-        parametersPanel.getToolModel().populate(t,desc);        
+        //@todo check the interfacename for validity first.
+        parametersPanel.buildForm(t,t.getInterface(),desc);    
         getTopLabel().setText(desc.getTitle());
         getTopLabel().setToolTipText(desc.getContent().getDescription());
     }
@@ -156,7 +143,7 @@ public class ToolEditorDialog extends JDialog implements PropertyChangeListener 
                     JOptionPane.UNINITIALIZED_VALUE);
 
             if (JOptionPane.OK_OPTION == ((Integer)value).intValue()) {
-                editedTool = parametersPanel.getToolModel().getTool();
+                editedTool = parametersPanel.getTool();
                     resetAndHide();                
             } else { //user closed dialog or clicked cancel           
                 editedTool = null;
@@ -197,6 +184,9 @@ public class ToolEditorDialog extends JDialog implements PropertyChangeListener 
 
 /* 
 $Log: ToolEditorDialog.java,v $
+Revision 1.13  2007/07/23 12:21:18  nw
+stopgap implementations of tool editor dialog - uses new codebase, but not tested at the moment.
+
 Revision 1.12  2007/04/18 15:47:10  nw
 tidied up voexplorer, removed front pane.
 
