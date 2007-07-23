@@ -11,6 +11,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
+import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -93,13 +94,11 @@ public abstract class DescribedEnumerationTemplate extends ClauseTemplate {
 		EventList vals= new BasicEventList();
 		populate(vals);
 		final JComboBox c = new JComboBox();
-		c.setRenderer(new ListCellRenderer() {
-		ListCellRenderer orig= c.getRenderer();
+		c.setRenderer(new BasicComboBoxRenderer() {
 		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-			JLabel l = (JLabel)orig.getListCellRendererComponent(list,value,index,isSelected,cellHasFocus);
 			DescribedValue u = (DescribedValue)value;
-			l.setText(u.toFullString());
-			return l;
+			value = u.toFullString();
+			return super.getListCellRendererComponent(list,value,index,isSelected,cellHasFocus);
 		}
 		});
 		AutoCompleteSupport support = AutoCompleteSupport.install(c,vals);

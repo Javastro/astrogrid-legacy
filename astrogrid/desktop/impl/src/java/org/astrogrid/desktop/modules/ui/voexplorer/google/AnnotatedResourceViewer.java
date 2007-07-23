@@ -31,6 +31,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.HyperlinkListener;
+import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import javax.swing.text.JTextComponent;
 
 import org.apache.commons.lang.StringUtils;
@@ -495,7 +496,7 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Reso
 
 	}
 
-	  public static class ColorCellRenderer extends JLabel  implements ListCellRenderer {
+	  public static class ColorCellRenderer extends BasicComboBoxRenderer {
 
 		    // width doesn't matter as combobox will size
 		    private final static Dimension preferredSize = new Dimension(0, 20);
