@@ -7,6 +7,7 @@ import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
@@ -35,6 +36,8 @@ public class LargeTextFormElement extends AbstractTaskFormElement implements Doc
 	protected final JComponent createEditor() {
 		text = new JTextArea();
 		text.setRows(4);
+		text.setLineWrap(true);
+		text.setWrapStyleWord(true);
 		JScrollPane sp = new JScrollPane(text,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		if (pdesc.getDefaultValue() != null) {
 			text.setText(pdesc.getDefaultValue());
@@ -46,8 +49,8 @@ public class LargeTextFormElement extends AbstractTaskFormElement implements Doc
 		return sp;
 	}
 
-	
-	protected JTextArea text;
+
+    protected JTextArea text;
 
 	// listen to all changes to the dociment, and map this instantly back to the tool document.
 	public void changedUpdate(DocumentEvent e) {

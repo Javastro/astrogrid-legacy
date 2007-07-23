@@ -51,7 +51,10 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 	protected final JToggleButton indirectToggle;
 	private final JTextField indirectField;
 	protected final JLabel label;
-	protected final FlipPanel editor;
+	/** not final - so it can be lazily initialized if needed.
+	 do not refer to _editor directly - use getEditor() instead */
+	protected FlipPanel _editor;
+	protected final JPanel indirectPanel;
 	protected final ResourceChooserInternal fileChooser;
 	protected JButton chooserButton;
 	protected boolean localFileEnabled = true;
@@ -81,29 +84,21 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 			sb.append(" (").append(pdesc.getUnits()).append(")");
 		}		
 		label = new JLabel(sb.toString());
-		associate(label);
-		label.setBorder(BorderFactory.createMatteBorder(1,0,0,0,Color.LIGHT_GRAY));		
-		editor = new FlipPanel();
-		associate(editor);
-		editor.add(createEditor(),DIRECT);
+		associate(label);	
+
 		
+		//@todo sort this so that the button doesn't get occulded on resize
 		FormLayout layout = new FormLayout("d,2dlu,fill:max(50dlu;pref):grow,2dlu,d","d");
 		CellConstraints cc = new CellConstraints();
-		PanelBuilder indirect = new PanelBuilder(layout);
-		indirect.addLabel("URL:",cc.xy(1,1));
+		PanelBuilder indirectBuilder = new PanelBuilder(layout);
+		indirectBuilder.addLabel("URL:",cc.xy(1,1));
 		indirectField = new IndirectURIField();
-		indirect.add(indirectField,cc.xy(3,1));
+		indirectBuilder.add(indirectField,cc.xy(3,1));
 		chooserButton = new JButton("Browse..");
 		chooserButton.setToolTipText("Select a file");
 		chooserButton.addActionListener(this);
-		indirect.add(chooserButton,cc.xy(5,1));
-		
-		editor.add(indirect.getPanel(),INDIRECT);
-		// populate it, if there's stuff already in the tool.
-		if (pval.getValue() != null && pval.getIndirect()) {
-			editor.show(INDIRECT);
-			indirectField.setText(pval.getValue());
-		}
+		indirectBuilder.add(chooserButton,cc.xy(5,1));
+		indirectPanel = indirectBuilder.getPanel();
 	}
 		
 	
@@ -185,11 +180,11 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 			if (e.getStateChange() == ItemEvent.SELECTED) {
 				pval.setIndirect(true);
 				pval.setValue(indirectField.getText());
-				editor.show(INDIRECT);
+				getEditor().show(INDIRECT);
 			} else {
 				pval.setIndirect(false);
 				pval.setValue(getStringValue());
-				editor.show(DIRECT);
+				getEditor().show(DIRECT);
 			}
 		}
 	}
@@ -235,7 +230,22 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 	 * @return the editor
 	 */
 	public final FlipPanel getEditor() {
-		return this.editor;
+	    //lazily initialized, so that everything else can be setup in constructor of a subclass.
+	    if (this._editor == null) {
+	        _editor = new FlipPanel();
+	       // associate(_editor);
+	        final JComponent comp = createEditor();
+	       // associate(comp);
+            _editor.add(comp,DIRECT);	   
+	        
+	        _editor.add(indirectPanel,INDIRECT);
+	        // populate it, if there's stuff already in the tool.
+	        if (pval.getValue() != null && pval.getIndirect()) {
+	            _editor.show(INDIRECT);
+	            indirectField.setText(pval.getValue());
+	        }	        
+	    }
+		return this._editor;
 	}
 
 
@@ -259,7 +269,7 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 	public void setEnabled(boolean b) {
 		label.setEnabled(b);
 		indirectToggle.setVisible(b);
-		editor.setVisible(b);
+		getEditor().setVisible(b);
 		if (addButton != null) { // no point allowing more to be added if this is disabled..
 			addButton.setVisible(b);
 		}

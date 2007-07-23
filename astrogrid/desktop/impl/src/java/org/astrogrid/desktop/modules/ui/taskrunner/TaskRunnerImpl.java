@@ -3,21 +3,16 @@
  */
 package org.astrogrid.desktop.modules.ui.taskrunner;
 
-import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.lang.text.StrBuilder;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -33,49 +28,46 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
-import javax.swing.JToolBar;
 import javax.swing.border.TitledBorder;
 
+import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.InterfaceBean;
-import org.astrogrid.acr.astrogrid.RemoteProcessManager;
 import org.astrogrid.acr.dialogs.RegistryGoogle;
+import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
-import org.astrogrid.desktop.modules.dialogs.editors.CompositeToolEditorPanel;
-import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditAdapter;
-import org.astrogrid.desktop.modules.dialogs.editors.model.ToolEditEvent;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
+import org.astrogrid.desktop.modules.system.pref.Preference;
+import org.astrogrid.desktop.modules.system.ui.ArMainWindow;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
-import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.SimplifiedAppLauncherImpl;
+import org.astrogrid.desktop.modules.system.ui.UIContributionBuilder;
 import org.astrogrid.desktop.modules.ui.TaskRunnerInternal;
+import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
-import org.astrogrid.desktop.modules.ui.UIComponentImpl.CloseAction;
+import org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity;
 import org.astrogrid.desktop.modules.ui.comp.ResourceDisplayPane;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
+import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.exolab.castor.xml.Marshaller;
 import org.w3c.dom.Document;
-import org.w3c.dom.ProcessingInstruction;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-import com.l2fprod.common.swing.JLinkButton;
 
 /** Implementation of the task runner.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -104,7 +96,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                     protected Object construct() throws Exception {
                     	Reader fr = null;
                     	try {
-                        fr = new InputStreamReader(myspace.getInputStream(u));
+                        fr = new InputStreamReader(u.toURL().openStream());
                        Tool t = Tool.unmarshalTool(fr);
                        
                        newApp = apps.getCeaApplication(new URI("ivo://" + t.getName()));                       
@@ -155,7 +147,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	                    	Writer w = null;
 	                    	try {
 	                    		//@todo refactor myspace away.
-	                    		w = new OutputStreamWriter(myspace.getOutputStream(u));
+	                    		w = new OutputStreamWriter(u.toURL().openConnection().getOutputStream());
 	                        t.marshal(w);                       
 	                        return null;
 	                    	} finally {
@@ -189,16 +181,18 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                     logger.debug("Executing");
                     Document doc = XMLUtils.newDocument();
                     Marshaller.marshal(tOrig,doc);
-                    if (securityMethod != null) {
+                    /*if (securityMethod != null) {
                       logger.info("Setting security instruction on the tool document");
                       ProcessingInstruction p 
                           = doc.createProcessingInstruction("CEA-strategy-security", 
                                                             securityMethod);
                       doc.appendChild(p);
-                    }
+                    }*/
+                    
                     Service[] services = apps.listServersProviding(new URI("ivo://" + tOrig.getName()));
                     //@todo use vomon to direct choice - use same technique as for login dialogue.
                     logger.debug("resolved app to " + services.length + " servers");
+                    URI execId;
                     if (services.length == 0) {// no providing servers found.
                     	return null;
                     } else if (services.length > 1) {
@@ -213,10 +207,11 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                             ,null
                             , names
                             ,names[0]);
-                       return apps.submitTo(doc,chosen);
+                    	execId = apps.submitTo(doc,chosen);
                     } else {
-                    return apps.submitTo(doc,services[0].getId());
+                    	execId  =  apps.submitTo(doc,services[0].getId());
                     }
+                    return execId;
                 }
                 
                 protected void doFinished(Object o) {
@@ -224,8 +219,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                 		JOptionPane.showMessageDialog(TaskRunnerImpl.this,"<b>Failed to launch task</b><br>Could not find any servers that provide the task: " + tOrig.getName()
                 				,"Cannot launch task",JOptionPane.ERROR_MESSAGE);
                 	} else {
-                		// not much point constructing this if we're not going to display it...
-                		//ResultDialog rd = new ResultDialog(CompositeToolEditorPanel.this,"ExecutionId : " + o);
+                		tracker.add((URI)o);
                 	}
                }
                 
@@ -267,41 +261,41 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	/**
 	 * Logger for this class
 	 */
-	private static final Log logger = LogFactory.getLog(TaskRunnerImpl.class);
-	private final ApplicationsInternal apps;
+	protected static final Log logger = LogFactory.getLog(TaskRunnerImpl.class);
 	private final Action execute;
 	private final Action open;
 	private final Action save;
 	private final Action reset;
 	private final Action chooseApp;
 	
+	protected final ApplicationsInternal apps;
 	private final ResourceChooserInternal fileChooser;
 	private final RegistryGoogle regChooser;
-	private final MyspaceInternal myspace;
-	private final RemoteProcessManager rpm;
+	private final ExecutionTracker tracker;
+	private final TypesafeObjectBuilder builder;
+
 	/**
 	 * @param context
 	 * @throws HeadlessException
 	 */
-	public TaskRunnerImpl(UIContext context, ApplicationsInternal apps, ResourceChooserInternal rci,RegistryGoogle regChooser,MyspaceInternal myspace, RemoteProcessManager rpm) throws HeadlessException {
+	public TaskRunnerImpl(UIContext context, ApplicationsInternal apps,ResourceChooserInternal rci,RegistryGoogle regChooser,ExecutionTracker tracker, UIContributionBuilder menuBuilder, TypesafeObjectBuilder builder) throws HeadlessException {
+	   
 		super(context);
 		this.fileChooser = rci;
+        this.builder = builder;
 		this.regChooser = regChooser;
-		this.myspace = myspace;
-		this.rpm = rpm;
 		logger.info("Constructing new TaskRunner");
 		this.apps = apps;
 		
 		this.execute = new ExecuteAction();
 		this.open = new OpenAction();
-		this.save = new SaveAction();
+		this.save = new SaveAction(); 
 		this.reset = new ResetAction();
 		this.chooseApp = new ChooseApplicationAction();
 		
 		this.setSize(900,600);
 		getContext().getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.taskRunner");
-		JPanel pane = getMainPanel();
-		pane.setBorder(BorderFactory.createEmptyBorder());
+		
 
 		// menu bar
 		JMenuBar menuBar =new JMenuBar();
@@ -320,29 +314,32 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 		editMenu.add(chooseApp);
 		menuBar.add(editMenu);
 		
-		menuBar.add(getContext().createWindowMenu(this));
-		JMenu help = createHelpMenu();
-		menuBar.add(help);
+        menuBuilder.populateWidget(menuBar,this,ArMainWindow.MENUBAR_NAME);
+            int sz = menuBar.getComponentCount();
+            
+            JMenu help = menuBar.getMenu(sz-1);
+            help.insertSeparator(0);
+            JMenuItem sci = new JMenuItem("Task / Query Runner: Introduction");
+            getContext().getHelpServer().enableHelpOnButton(sci,"runner.intro");
+            help.insert(sci,0);         		
+		
+		menuBar.add(getContext().createWindowMenu(this),sz-1); // insert before help menu.
 
 		setJMenuBar(menuBar);
 				
 		// form panel
-		pForm = new TaskParametersForm(this,apps,this,fileChooser);
+		pForm = builder.createTaskParametersForm(this,this);
 		
 		// help pane
 		infoPane = new ResourceDisplayPane();
+		infoPane.setBorder(BorderFactory.createEmptyBorder());
         infoPane.setPreferredSize(new Dimension(130,100));
-		infoPane.setBorder(BorderFactory.createTitledBorder(
-				BorderFactory.createLineBorder(Color.LIGHT_GRAY)
-				,"Information"
-				,TitledBorder.LEFT
-				,TitledBorder.TOP
-				,UIConstants.SMALL_DIALOG_FONT
-				,Color.GRAY
-				));        
 
 		// processes panel
-		JPanel processes = new JPanel();
+		this.tracker = tracker;
+		JPanel processes = tracker.getPanel();
+		processes.setBackground(Color.WHITE);
+		processes.setBorder(BorderFactory.createEmptyBorder());
 
 		// toolbar
 		PanelBuilder toolbar = new PanelBuilder(new FormLayout(
@@ -365,31 +362,54 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 		
 		
 		// finish it all off.
-		JSplitPane rightPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT
-				,processes
-				,new JScrollPane(infoPane,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
+		final JScrollPane infoScroll = new JScrollPane(infoPane,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		infoScroll.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(Color.LIGHT_GRAY)
+                ,"Information"
+                ,TitledBorder.LEFT
+                ,TitledBorder.TOP
+                ,UIConstants.SMALL_DIALOG_FONT
+                ,Color.GRAY
+                ));        
+		final JScrollPane execScroll = new JScrollPane(processes,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		execScroll.setBorder(BorderFactory.createEtchedBorder());
+		
+		final JSplitPane rightPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT
+				,execScroll
+				,infoScroll);
 		rightPane.setDividerLocation(300);
 		rightPane.setDividerSize(7);
 		rightPane.setBorder(BorderFactory.createEmptyBorder());
 		rightPane.setResizeWeight(0.7);
+		rightPane.setPreferredSize(new Dimension(200,600));
 		
-		JSplitPane lrPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,pForm,rightPane);
-		lrPane.setDividerLocation(650);
-		lrPane.setResizeWeight(0.9); //most to the left
-		lrPane.setBorder(BorderFactory.createEmptyBorder());
-		lrPane.setDividerSize(7);
+		// hide info pane when bottom pane appears.
+		pForm.getBottomPane().addPropertyChangeListener("collapsed",new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (! pForm.getBottomPane().isCollapsed()) {
+                    infoScroll.setVisible(false);
+                    rightPane.setDividerLocation(1.0);
+                } else {
+                    infoScroll.setVisible(true);
+                    rightPane.setDividerLocation(0.5);
+                }               
+            }		    
+		});
 		
-		pane.add(toolbar.getPanel(),BorderLayout.NORTH);
-		pane.add(lrPane,BorderLayout.CENTER);
+		// abit of a hack at the moment - not the nicest way to build a form */
+		pForm.add(toolbar.getPanel(),cc.xyw(1,1,5));
+		//@todo add in an execution button bar here?
+		pForm.add(rightPane,cc.xy(5,3));
+		JPanel pane = getMainPanel();
+		pane.add(pForm,BorderLayout.CENTER);
 		this.setContentPane(pane);
 		this.setTitle("Task Runner");
-		//@todo find an icon here.
 		setIconImage(IconHelper.loadIcon("applaunch16.png").getImage());
 		logger.info("New TaskRunner - Completed");
 	}
 	
 	//private final DescriptionsPanel descriptions;
-	final TaskParametersForm pForm;
+	protected final TaskParametersForm pForm;
 	private final ResourceDisplayPane infoPane;
 
 	public void invokeTask(Resource r) {
@@ -402,7 +422,9 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 		} else {
 			// try to find a 'synthetic' cea application.
 			try {
-				//@todo - should probably do this in a bg thread.
+				//@@todo causes a long pause - do this on bg threa somehow.
+			    // however, only happens for non cea-apps. (cone, etc)
+			    System.err.println("finding app");
 				cea = apps.getCeaApplication(r.getId());
 			} catch (ACRException x) {
 				logger.error("ServiceException",x);
@@ -410,7 +432,13 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 				return;
 			}
 		}
-		pForm.buildForm(cea);
+		
+		String name = BuildQueryActivity.findNameOfFirstNonADQLInterface(cea);
+		if (name != null) {
+		    pForm.buildForm(name,cea);
+		} else { // show what we've got then
+		    pForm.buildForm(cea);
+		}
 		display(cea);
 	}
 	
@@ -435,7 +463,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	/**
 	 * @param cea
 	 */
-	private void display(CeaApplication cea) {
+	protected void display(CeaApplication cea) {
 		infoPane.display(cea);
 		setTitle("Task Runner - " + cea.getTitle());
 	}
@@ -476,3 +504,4 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	public void mouseReleased(MouseEvent e) {
 	}
 }
+

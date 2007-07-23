@@ -21,12 +21,15 @@ import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
+
+import net.sourceforge.hiveutils.service.ObjectBuilder;
 
 import org.apache.commons.collections.ArrayStack;
 import org.apache.commons.logging.Log;
@@ -35,15 +38,27 @@ import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.InterfaceBean;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
+import org.astrogrid.acr.cds.Sesame;
+import org.astrogrid.acr.dialogs.RegistryGoogle;
+import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Creator;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.adqlEditor.ADQLEditorPanel;
 import org.astrogrid.desktop.modules.ag.ApplicationsImpl;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.comp.ExpandCollapseButton;
 import org.astrogrid.workflow.beans.v1.Tool;
+
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+import com.l2fprod.common.swing.JCollapsiblePane;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
@@ -66,16 +81,25 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 	private final EventList outputElements;
 	private final JComboBox interfaceChooser;
 	private final JLabel resourceLabel;
+	private final JCollapsiblePane bottomPanel;
 	
 	private final NumberFormat integerFormat;
 	private final NumberFormat floatFormat;
 	private final MouseListener hoverListener;
-	private final ResourceChooserInternal fileChooser;
 	/* the internal model */
 	private Tool tool;
+	
 	/** current metadata */
 	private CeaApplication currentResource;
 	private Image currentResourceLogo;
+
+    private final TypesafeObjectBuilder builder;
+	
+	
+	public JCollapsiblePane getBottomPane() {
+	    return bottomPanel;
+	} 
+	   
 	
 	
 	/** returns the information for the current resource being edited */
@@ -100,13 +124,13 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 	public Tool getTool() {
 		return tool;
 	}
-
-	public TaskParametersForm(final UIComponent parent,final ApplicationsInternal apps, MouseListener hoverListener,ResourceChooserInternal fileChooser) {
+/** @todo reduce number of parameters by using a form factory instead */
+	public TaskParametersForm(final UIComponent parent, MouseListener hoverListener,final ApplicationsInternal apps,TypesafeObjectBuilder builder) {
 		super();
 		this.parent = parent;
 		this.apps = apps;
 		this.hoverListener = hoverListener;
-		this.fileChooser = fileChooser;
+		this.builder = builder;		
 		//@todo these formatters aren't strict enough - they seem
 		// to accept anything as long as it starts with a digit.
 		integerFormat = NumberFormat.getIntegerInstance();
@@ -117,7 +141,9 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 		this.outputElements = new BasicEventList();
 		
 		JEventListPanel inputsPanel = new JEventListPanel(inputElements, new ElementFormat());
+		inputsPanel.setBorder(BorderFactory.createEmptyBorder());
 		JEventListPanel outputsPanel = new JEventListPanel(outputElements, new ElementFormat());
+		outputsPanel.setBorder(BorderFactory.createEmptyBorder());
 
 		interfaceChooser = new JComboBox();
 		interfaceChooser.setEditable(false);
@@ -129,13 +155,29 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 		resourceLabel.addMouseListener(hoverListener);
 		
 		JScrollPane inScroll = new JScrollPane(inputsPanel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		inScroll.setBorder(BorderFactory.createTitledBorder("Inputs")); //@todo work out border colouring later.
+		
+		inScroll.setBorder(BorderFactory.createEtchedBorder());
 		JScrollPane outScroll = new JScrollPane(outputsPanel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		outScroll.setBorder(BorderFactory.createTitledBorder("Outputs"));
-		this.setLayout(new GridLayout(1,2));
+		outScroll.setBorder(BorderFactory.createEtchedBorder());
 		this.setBorder(BorderFactory.createEmptyBorder());
-		this.add(inScroll);
-		this.add(outScroll);
+		
+		bottomPanel = new JCollapsiblePane();
+		bottomPanel.setCollapsed(true);
+		
+		//@todo merge the building of this with the building of the main pane - at the moment it's a bit silly.
+		FormLayout fl = new FormLayout(
+				"fill:d:grow,3dlu,fill:d:grow,3dlu,d:grow" // cols
+				,"d,d,fill:50dlu:grow,d" // rows
+				);
+		fl.setColumnGroups(new int[][]{ {1, 3} });
+		PanelBuilder pb = new PanelBuilder(fl,this);
+		CellConstraints cc = new CellConstraints();
+		pb.addTitle("Inputs",cc.xy(1,2));
+		pb.addTitle("Outputs",cc.xy(3,2));
+		pb.addTitle("Execution",cc.xy(5,2));
+		pb.add(inScroll,cc.xy(1,3));
+		pb.add(outScroll,cc.xy(3,3));
+		pb.add(bottomPanel,cc.xyw(1,4,5));
 	}
 
 
@@ -151,6 +193,24 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 		Tool t = apps.createTemplateTool(interfaceName,applicationResource);
 		buildForm(t,interfaceName,applicationResource);
 		
+	}
+	private final Tool nullTool;
+	{
+	    nullTool = new Tool();
+	    // do I need to populate any more here?
+	}
+	public void clear() {
+	    currentResource = null;
+	    currentResourceLogo = null;
+	    tool = nullTool;
+	    resourceLabel.setText("");
+	    resourceLabel.setIcon(null);
+	    interfaceChooser.removeItemListener(this);
+	    interfaceChooser.removeAllItems();
+	    interfaceChooser.setEnabled(false);
+	    interfaceChooser.addItemListener(this);
+	    inputElements.clear();
+	    outputElements.clear();
 	}
 	/** populates the contents of the current model 
 	 * 	 * */
@@ -194,8 +254,10 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 			return;
 		}
 		String interfaceName = (String)interfaceChooser.getSelectedItem();
+		// close the bottom pane.
+		bottomPanel.setCollapsed(true);
 		// create a template tool.
-		tool = apps.createTemplateTool(interfaceName,currentResource);	
+		tool = apps.createTemplateTool(interfaceName,currentResource);
 		// build the form.
 		doBuildForm(interfaceName);
 	}
@@ -213,41 +275,76 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 		ParameterValue[] pvals = tool.getInput().getParameter();
 		
 		// check for RA,DEC like parameters. a bit tricky.
+		// at the same time, check for a single ADQL parameter too.
 		ParameterValue ra = null;
 		ParameterValue dec = null;
+		ParameterValue adql = null;
 		for (int i = 0; i < pvals.length; i++) {
 			final ParameterValue pv = pvals[i];
 			final ParameterBean pb = (ParameterBean)descriptions.get(pv.getName());
 			if (pb.getType().equalsIgnoreCase("ra") 
-					|| (pb.getType().equals("double") && "POS_EQ_RA_MAIN".equals(pb.getUcd()))) {
+					|| "POS_EQ_RA_MAIN".equals(pb.getUcd())
+					|| "POS_RA_MAIN".equals(pb.getUcd())
+					|| pb.getName().equalsIgnoreCase("RA")        
+					) {
 				// check it's not a repeating or fiddly thing thing like that. - too complex.
 				ParameterReferenceBean ref = (ParameterReferenceBean)refs.get(pv.getName());
 				if (ref.getMax() == 1 && ref.getMin() == 1) {
 					ra = pv;
 				}
 			}
-			if (pb.getType().equals("dec") 
-					|| (pb.getType().equals("double") && "POS_EQ_DEC_MAIN".equals(pb.getUcd()))) {
+			if (pb.getType().equalsIgnoreCase("dec") 
+                    || "POS_EQ_DEC_MAIN".equals(pb.getUcd())
+                    || "POS_DEC_MAIN".equals(pb.getUcd())
+                    || pb.getName().equalsIgnoreCase("DEC")    			        
+                    ){
 				ParameterReferenceBean ref = (ParameterReferenceBean)refs.get(pv.getName());
 				if (ref.getMax() == 1 && ref.getMin() == 1) {
 					dec = pv;
 				}
 			}			
+			if (pb.getType().equalsIgnoreCase("adql")) {
+				adql = pv;
+			}
 		}
 		if (ra != null && dec != null) { // good - found both.
 			ParameterBean raDesc = (ParameterBean)descriptions.get(ra.getName());
 			ParameterBean decDesc = (ParameterBean)descriptions.get(dec.getName());
-			inputElements.add(new PositionFormElement(ra,raDesc,dec,decDesc));
+			//@todo - work out what to do here..
+			inputElements.add(builder.createPositionFormElement(ra,raDesc,dec,decDesc,parent));
 		} else {
-			// might have found one - reset it, so it's not lost at the next step.
+			// still might have found one - reset it, so it's not lost at the next step.
 			ra = null;
 			dec = null;
+		}
+		if (adql != null) {
+			// create a custom form element for this.
+			ParameterBean adqlDesc = (ParameterBean)descriptions.get(adql.getName());
+			// full adql editor..
+			final AdqlTextFormElement adqlElement = builder.createAdqlTextFormElement(adql,adqlDesc,currentResource,parent);
+			ADQLEditorPanel adqlEditor = adqlElement.getEditorPanel();
+	
+			bottomPanel.removeAll(); // might have an adql editor from a previous app.
+			bottomPanel.add(adqlEditor);			
+			// standard sized editor...
+			// button to enable one editor or the other.
+			final ExpandCollapseButton ep = new ExpandCollapseButton(bottomPanel);
+			ep.setToolTipText("Open full editor for this parameter");
+			adqlElement.setOptionalButton(ep);
+			adqlElement.getLabel().addMouseListener(hoverListener);
+			// ep already shows / hides the fiull editor. now just need to make it do the same with the standard editor
+			ep.addActionListener(new ActionListener() {			
+				public void actionPerformed(ActionEvent e) {
+					adqlElement.setEnabled(! ep.isSelected());
+				}
+			});
+			inputElements.add(adqlElement);
 		}
 		
 		// process the rest of the parameters.
 		for (int i = 0; i < pvals.length; i++) {
 			final ParameterValue pv = pvals[i];
-			if (pv == ra || pv == dec) {
+			if (pv == ra || pv == dec || pv == adql) {
 				continue; // already handled these ones.
 			}
 			AbstractTaskFormElement el = createInputFormElement(pv,(ParameterBean)descriptions.get(pv.getName()));
@@ -320,22 +417,22 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 		String type = desc.getType();	
 		AbstractTaskFormElement el = null;
 		if (type.equalsIgnoreCase("boolean")) {
-			el =  new BooleanFormElement(value,desc,fileChooser);
+			el =  builder.createBooleanFormElement(value,desc);
 		} else if (type.equalsIgnoreCase("fits") || type.equalsIgnoreCase("binary")) {
-			el =  new BinaryFormElement(value,desc,fileChooser);
+			el = builder.createBinaryFormElement(value,desc);
 		} else if (desc.getOptions() != null && desc.getOptions().length > 0) {
-			el =  new EnumerationFormElement(value,desc,fileChooser);
+			el =  builder.createEnumerationFormElement(value,desc);
 		} else if (type.equalsIgnoreCase("anyxml") || type.equalsIgnoreCase("adql") || type.equalsIgnoreCase("votable")){
-			el =  new LargeTextFormElement(value,desc,fileChooser);
+			el =  builder. createLargeTextFormElement(value,desc);
 		} else if (type.equalsIgnoreCase("anyuri")) {
-			el =  new LooselyFormattedFormElement(value,desc,new URIFormat(),fileChooser);
+			el =  builder.createLooselyFormattedFormElement(value,desc,new URIFormat());
 		} else if (type.equalsIgnoreCase("integer")) {
-			el=  new LooselyFormattedFormElement(value,desc,integerFormat,fileChooser);
+			el=  builder.createLooselyFormattedFormElement(value,desc,integerFormat);
 		} else if (type.equalsIgnoreCase("real") || type.equalsIgnoreCase("double") 
 					|| type.equalsIgnoreCase("ra") || type.equalsIgnoreCase("dec")) {
-			el =  new LooselyFormattedFormElement(value,desc,floatFormat,fileChooser);
+			el =  builder.createLooselyFormattedFormElement(value,desc,floatFormat);
 		} else {
-			el =  new TextFormElement(value,desc,fileChooser);
+			el =  builder.createTextFormElement(value,desc);
 		}
 		el.getLabel().addMouseListener(hoverListener);
 		//el.getEditor().addMouseListener(hoverListener); // doesn't work with it's children.
@@ -348,7 +445,7 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 	 * @return
 	 */
 	private AbstractTaskFormElement createOutputFormElement(ParameterValue value, ParameterBean desc) {
-		AbstractTaskFormElement el = new OutputFormElement(value,desc,fileChooser);
+		AbstractTaskFormElement el = builder.createOutputFormElement(value,desc);
 		el.getLabel().addMouseListener(hoverListener);
 	//	el.getEditor().addMouseListener(hoverListener);
 		return el;		
@@ -462,8 +559,10 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 		}
 		/** adds a button to the compoonent to make it 'optional' / remove it. */
 		private void supplyOptionalButton(AbstractTaskFormElement el) {
-			JToggleButton optionalButton = new JToggleButton(IconHelper.loadIcon("editdelete16.png"));
-			optionalButton.setToolTipText("Remove this parameter");
+		//	JToggleButton optionalButton = new JToggleButton(IconHelper.loadIcon("remove16.png"));
+			JCheckBox optionalButton = new JCheckBox();
+			optionalButton.setSelected(true);
+			optionalButton.setToolTipText("Check to enable this parameter");
 			optionalButton.setActionCommand("optional");
 			optionalButton.addActionListener(this);
 			el.setOptionalButton(optionalButton);
@@ -552,7 +651,7 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 					}
 			} else if (action.equals("optional")) {
 				JToggleButton tb = (JToggleButton)butt;
-				if (tb.isSelected()) { // removed.
+				if (! tb.isSelected()) { // removed.
 					src.setEnabled(false);
 					removeParameter(src.getValue());
 				} else { //added
@@ -587,8 +686,8 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 
 	private static class ElementFormat extends JEventListPanel.AbstractFormat {
 		public ElementFormat() {
-			super("d,1dlu,d" ,"fill:max(60dlu;pref):grow,6dlu,d,d,d","3dlu","0dlu"
-					,new String[]{"1,1,4,1","1,3","3,3","4,3","5,3","5,1"});
+			super("top:d,1px,d" ,"22px,fill:60dlu:grow,6dlu,22px,22px,22px","4dlu","0dlu"
+					,new String[]{"2,1,5,1","2,3","4,3","5,3","6,3","1,1,1,3"});
 		}
 		public JComponent getComponent(Object o, int ix) {
 			if (o instanceof JComponent) {

@@ -23,7 +23,7 @@ public class BinaryFormElement extends AbstractTaskFormElement {
 	 */
 	public BinaryFormElement(ParameterValue pval, ParameterBean pdesc, ResourceChooserInternal chooser) {
 		super(pval, pdesc, chooser);
-		editor.show(INDIRECT);
+		getEditor().show(INDIRECT);
 		pval.setIndirect(true);
 		indirectToggle.setEnabled(false); // flip to indirect mode, and stay there.
 		indirectToggle.setVisible(false);
