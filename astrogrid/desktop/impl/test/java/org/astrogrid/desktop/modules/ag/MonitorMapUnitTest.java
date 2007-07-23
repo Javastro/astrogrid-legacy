@@ -135,7 +135,6 @@ public class MonitorMapUnitTest extends TestCase {
 		rpm1.fireStatusChanged("boo"); // not expected.
 		
 		rpm1.addRemoteProcessListener(rpl);
-		rpm1.addRemoteProcessListener(rpl); // even though duplicate add, should only see one message.
 		rpm1.fireResultsReceived(new HashMap());
 		rpm1.fireMessageReceived(execMessage);
 		
