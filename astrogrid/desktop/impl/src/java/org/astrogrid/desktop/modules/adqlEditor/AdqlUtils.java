@@ -703,6 +703,7 @@ public final class AdqlUtils {
     
     static public boolean areTypesEqual( SchemaType typeOne, SchemaType typeTwo ) {
         return typeOne.getName().equals( typeTwo.getName() ) ;
+
     }
     
     static public boolean areTypesEqual( XmlObject objOne, XmlObject objTwo ) {
@@ -929,7 +930,7 @@ public final class AdqlUtils {
     }
 
     public static boolean isSuitablePasteIntoTarget( AdqlNode entry, SchemaType clipboardType ) {
-       return ( findSuitablePasteIntoTarget( entry, clipboardType ) != null ) ;
+       return  ( findSuitablePasteIntoTarget( entry, clipboardType ) != null ) ;
     }
     
     public static SchemaType findSuitablePasteIntoTarget( AdqlNode entry, XmlObject clipboardObject ) {
@@ -1041,6 +1042,7 @@ public final class AdqlUtils {
     			break ;
            	case SchemaType.BTC_LONG:
         	    ((XmlLong)xmlObject).setLongValue( 0 ) ;
+        	    //NW - Jeff - is the lack of a 'break' intentional here?
           	case SchemaType.BTC_UNSIGNED_LONG:
         	    ((XmlUnsignedLong)xmlObject).setBigDecimalValue( new BigDecimal(0) ) ;
     			break ;
