@@ -1,4 +1,4 @@
-/*$Id: VOExplorerImpl.java,v 1.4 2007/06/27 11:16:40 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.5 2007/07/23 11:47:17 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import java.awt.Dimension;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
@@ -30,6 +31,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -40,6 +42,7 @@ import org.astrogrid.desktop.modules.system.ui.ArMainWindow;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.system.ui.UIContributionBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
+import org.astrogrid.desktop.modules.ui.UIComponentImpl.CloseAction;
 import org.astrogrid.desktop.modules.ui.actions.Activity;
 import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
 import org.astrogrid.desktop.modules.ui.folders.ResourceFolder;
@@ -80,6 +83,13 @@ public class VOExplorerImpl extends UIComponentImpl
 
 		// build the rest of the menuing system.
 		JMenuBar menuBar = new JMenuBar();
+	      JMenu fileMenu = new JMenu();
+	        fileMenu.setText("File");
+	        fileMenu.setMnemonic(KeyEvent.VK_F);
+	        fileMenu.add(new JSeparator());
+	        fileMenu.add( new CloseAction());
+	        menuBar.add(fileMenu);
+	        menuBar.add(actions); 
 		menuBuilder.populateWidget(menuBar,this,ArMainWindow.MENUBAR_NAME);
 		int sz = menuBar.getComponentCount();
 		
@@ -92,7 +102,6 @@ public class VOExplorerImpl extends UIComponentImpl
 		help.insert(sci,0);		
 		
 		// add other menus.
-		menuBar.add(actions,sz-2); // insert before help.
 		menuBar.add(getContext().createWindowMenu(this),sz-1); // insert before the help menu.
 		setJMenuBar(menuBar);
 

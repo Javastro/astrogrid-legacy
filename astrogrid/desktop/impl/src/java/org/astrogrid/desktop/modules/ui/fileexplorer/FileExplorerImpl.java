@@ -1,4 +1,4 @@
-/*$Id: FileExplorerImpl.java,v 1.2 2007/05/10 19:35:21 nw Exp $
+/*$Id: FileExplorerImpl.java,v 1.3 2007/07/23 11:51:15 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.desktop.modules.ui.fileexplorer;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.datatransfer.Transferable;
+import java.awt.event.KeyEvent;
 import java.util.Iterator;
 
 import javax.swing.BorderFactory;
@@ -23,6 +24,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -38,6 +40,7 @@ import org.astrogrid.desktop.modules.system.ui.ArMainWindow;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.system.ui.UIContributionBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
+import org.astrogrid.desktop.modules.ui.UIComponentImpl.CloseAction;
 import org.astrogrid.desktop.modules.ui.actions.Activity;
 import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
 import org.astrogrid.desktop.modules.ui.folders.ResourceFolder;
@@ -72,10 +75,24 @@ public class FileExplorerImpl extends UIComponentImpl {
 
 	// build the rest of the menuing system.
 		    JMenuBar menuBar = new JMenuBar();
+	          JMenu fileMenu = new JMenu();
+	            fileMenu.setText("File");
+	            fileMenu.setMnemonic(KeyEvent.VK_F);
+	            fileMenu.add(new JSeparator());
+	            fileMenu.add( new CloseAction());
+	            menuBar.add(fileMenu);
+	            
+	        menuBar.add(actions); 
+	        
 		    menuBuilder.populateWidget(menuBar,this,ArMainWindow.MENUBAR_NAME);
-		//	menuBar.add(createHelpMenu());
-			int sz = menuBar.getComponentCount();
-			menuBar.add(actions,sz-2); // insert before help.
+		    int sz = menuBar.getComponentCount();
+			
+	        JMenu help = menuBar.getMenu(sz-1);
+	        help.insertSeparator(0);
+	        JMenuItem sci = new JMenuItem("FileExplorer: Introduction");
+	        getContext().getHelpServer().enableHelpOnButton(sci,"fileexplorer.intro");
+	        help.insert(sci,0); 			
+			
 			menuBar.add(getContext().createWindowMenu(this),sz-1); // insert before the help menu.
 		    setJMenuBar(menuBar);		
 
