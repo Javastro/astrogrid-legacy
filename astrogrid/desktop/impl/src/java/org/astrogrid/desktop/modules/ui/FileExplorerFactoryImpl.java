@@ -34,15 +34,15 @@ import ca.odell.glazedlists.EventList;
  */
 public class FileExplorerFactoryImpl  extends AbstractMessageHandler implements FileExplorerFactoryInternal {
 	
-	public final ObjectBuilder builder;
+	public final TypesafeObjectBuilder builder;
 
 	private static final Log logger = LogFactory.getLog(FileExplorerFactoryImpl.class);
 	
-	public FileExplorerFactoryImpl(ObjectBuilder builder) {
+	public FileExplorerFactoryImpl(TypesafeObjectBuilder builder) {
 		this.builder = builder;
 	}	
 	private FileExplorerImpl newWindow() {
-		FileExplorerImpl vo = (FileExplorerImpl)builder.create("fileExplorer");
+		FileExplorerImpl vo = builder.createFileExplorer();
 		vo.setVisible(true);
 		return vo;
 	}

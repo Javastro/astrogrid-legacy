@@ -31,15 +31,15 @@ import ca.odell.glazedlists.EventList;
  */
 public class VOExplorerFactoryImpl  extends AbstractMessageHandler implements VOExplorerFactoryInternal {
 	
-	public final ObjectBuilder builder;
+	public final TypesafeObjectBuilder builder;
 
 	private static final Log logger = LogFactory.getLog(VOExplorerFactoryImpl.class);
 	
-	public VOExplorerFactoryImpl(ObjectBuilder builder) {
+	public VOExplorerFactoryImpl(TypesafeObjectBuilder builder) {
 		this.builder = builder;
 	}	
 	private VOExplorerImpl newWindow() {
-		VOExplorerImpl vo = (VOExplorerImpl)builder.create("voexplorer");
+		VOExplorerImpl vo = builder.createVoExplorer();
 		vo.setVisible(true);
 		return vo;
 	}

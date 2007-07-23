@@ -31,10 +31,10 @@ import org.astrogrid.desktop.modules.system.ui.UIContext;
  */
 public class AstroScopeFactory implements AstroScopeInternal{
 
-	public AstroScopeFactory(ObjectBuilder builder) {
+	public AstroScopeFactory(TypesafeObjectBuilder builder) {
 		this.builder = builder;
 	}
-	private final ObjectBuilder builder;
+	private final TypesafeObjectBuilder builder;
 	public void show() {
 		newWindow();
 	}
@@ -50,7 +50,7 @@ public class AstroScopeFactory implements AstroScopeInternal{
 	}
 	
 	private AstroScopeLauncherImpl newWindow() {
-		AstroScopeLauncherImpl	i = (AstroScopeLauncherImpl)builder.create("astroscope");
+		AstroScopeLauncherImpl i = builder.createAstroscope();
 		i.show();
 		return i;
 	}

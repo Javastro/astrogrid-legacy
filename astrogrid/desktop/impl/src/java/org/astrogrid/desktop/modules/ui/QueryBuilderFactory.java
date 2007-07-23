@@ -7,8 +7,12 @@ import java.util.List;
 
 import net.sourceforge.hiveutils.service.ObjectBuilder;
 
+import org.apache.commons.vfs.FileObject;
+import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.RemoteProcessManager;
 import org.astrogrid.acr.dialogs.RegistryGoogle;
+import org.astrogrid.acr.ivoa.resource.CatalogService;
+import org.astrogrid.acr.ivoa.resource.DataCollection;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ui.Lookout;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
@@ -23,24 +27,17 @@ import org.astrogrid.desktop.modules.ui.taskrunner.TaskRunnerImpl;
  * @author Noel Winstanley
  * @since Jun 21, 20067:48:11 PM
  */
-public class TaskRunnerFactory implements TaskRunnerInternal{
+public class QueryBuilderFactory implements QueryBuilderInternal{
 
-	public TaskRunnerFactory(TypesafeObjectBuilder builder) {
+	public QueryBuilderFactory(TypesafeObjectBuilder builder) {
 		this.builder = builder;
 	}
 	private final TypesafeObjectBuilder builder;
 
-	protected TaskRunnerInternal newInstance() {
-		return builder.createTaskRunner();
+	protected QueryBuilderInternal newInstance() {
+		return builder.createQueryBuilderImpl();
 	}
 	
-	public void invokeTask(Resource r) {
-		TaskRunnerInternal tr = newInstance();
-		tr.invokeTask(r);
-		tr.show();
-	}
-
-
 	public void hide() {
 		// ignored.
 	}
@@ -52,9 +49,32 @@ public class TaskRunnerFactory implements TaskRunnerInternal{
 
 
 	public Object create() {
-		TaskRunnerInternal tr = newInstance();
+		QueryBuilderInternal tr = newInstance();
 		tr.show();
 		return tr;
 	}
+
+    public void build(CeaApplication app) {
+        QueryBuilderInternal tr = newInstance();
+        tr.build(app);
+        tr.show();        
+    }
+
+    public void build(DataCollection coll) {
+        QueryBuilderInternal tr = newInstance();
+        tr.build(coll);   
+        tr.show();        
+    }
+//
+//    public void build(CatalogService cat) {
+//        QueryBuilderInternal tr = newInstance();
+//        tr.build(cat);        
+//    }
+
+    public void edit(FileObject fo) {
+        QueryBuilderInternal tr = newInstance();
+        tr.edit(fo);   
+        tr.show();        
+    }
 
 }
