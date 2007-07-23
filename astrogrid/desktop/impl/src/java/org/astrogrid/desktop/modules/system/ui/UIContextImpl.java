@@ -9,12 +9,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.EventListener;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.swing.AbstractAction;
 import javax.swing.ButtonModel;
@@ -32,6 +29,7 @@ import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.comp.EventListMenuManager;
+import org.astrogrid.desktop.modules.ui.comp.ObservableConnector;
 import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
 
 import ca.odell.glazedlists.BasicEventList;
@@ -297,8 +295,8 @@ public class UIContextImpl implements UIContext{
 			}
 		});
 		new EventListMenuManager(w,windowListMenu,false);
-
-		windowMenu.add(new HideAllAction());
+//@todo consider whether this is a good thing to do on all platofrms.
+//		windowMenu.add(new HideAllAction());
 		return windowMenu;
 	}
 	
@@ -311,33 +309,7 @@ public class UIContextImpl implements UIContext{
         public void actionPerformed(ActionEvent e) {
         	hide();
         }
-    } 
-	
-	/** a connector that listens to changes to observable objects and bridges these 
-     * events into the ObservableElementList. Used to display a list of running background tasks.
- * @author Noel.Winstanley@manchester.ac.uk
- * @since Mar 27, 200710:00:01 PM
- */
-private static class ObservableConnector implements ObservableElementList.Connector, Observer, EventListener {
-	ObservableElementList list;
-	public EventListener installListener(Object arg0) {
-		((Observable)arg0).addObserver(this);
-		return this;
-	}
-	public void setObservableElementList(ObservableElementList arg0) {
-		this.list = arg0;
-	}
-
-	public void uninstallListener(Object arg0, EventListener arg1) {
-		if (arg1 == this) {
-			((Observable)arg0).deleteObserver(this);
-		}
-	}
-	// update from the thing we're observing.
-	public void update(Observable o, Object arg) {
-		list.elementChanged(o);
-	}
-}
+    }
 
 
 
