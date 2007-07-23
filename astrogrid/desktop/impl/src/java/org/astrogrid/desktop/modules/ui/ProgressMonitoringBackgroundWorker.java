@@ -7,6 +7,7 @@ import javax.swing.ProgressMonitor;
 
 /** A background worker that integrates a progress monitor
  *  - this allows a dialogue to be displayed to indicate progress, and enable a 'cancel' button.
+ *  @implement not implemented at the moment.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 3, 200712:51:15 AM
  */
