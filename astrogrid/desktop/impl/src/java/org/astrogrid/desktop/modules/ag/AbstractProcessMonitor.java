@@ -6,11 +6,14 @@ package org.astrogrid.desktop.modules.ag;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.EventListener;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import javax.swing.event.EventListenerList;
 
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
@@ -21,6 +24,7 @@ import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.acr.astrogrid.RemoteProcessListener;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
+import org.astrogrid.desktop.modules.ag.ProcessMonitor.ProcessListener;
 
 /** abstract class that's an interface to a componoent that monitors the progress of a remote process.
  * and also possibly accumulates results and messages, and holds references to resources
@@ -130,40 +134,77 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
 	 * howver, always call <tt>super.cleanUp()</tt> which will  deregister all listeners.
 	 *  */
 	public void cleanUp() {
-		listeners.clear();
+	    listeners = null;
 	}
     
-    private final Set listeners = new HashSet();
+    private EventListenerList listeners = new EventListenerList();
 	
     protected void fireMessageReceived(ExecutionMessage m) {
-    	for (Iterator i = listeners.iterator(); i.hasNext();) {
-			RemoteProcessListener rpl = (RemoteProcessListener) i.next();
-			rpl.messageReceived(id,m);
+        if (listeners == null) {// deleted the listener list - we've already cleaned up.
+            return;
+        }
+    	ProcessListener[] pls = (ProcessListener[]) listeners.getListeners(ProcessListener.class);
+    	if (pls.length > 0) {
+    		ProcessEvent pe = new ProcessEvent(this);
+    		for (int i = 0; i < pls.length; i++) {
+				pls[i].messageReceived(pe);
+			}
+    	}
+    	RemoteProcessListener[] rpls = (RemoteProcessListener[])listeners.getListeners(RemoteProcessListener.class);
+    	for (int i = 0; i < rpls.length; i++) { 
+			rpls[i].messageReceived(id,m);
 		}
     }
     
     protected void fireResultsReceived(Map m) {
-    	for (Iterator i = listeners.iterator(); i.hasNext();) {
-			RemoteProcessListener rpl = (RemoteProcessListener) i.next();
-			rpl.resultsReceived(id,m);
+        if (listeners == null) {// deleted the listener list - we've already cleaned up.
+            return;
+        }        
+    	ProcessListener[] pls = (ProcessListener[]) listeners.getListeners(ProcessListener.class);
+    	if (pls.length > 0) {
+    		ProcessEvent pe = new ProcessEvent(this);
+    		for (int i = 0; i < pls.length; i++) {
+				pls[i].resultsReceived(pe);
+			}
+    	}    	
+    	RemoteProcessListener[] rpls = (RemoteProcessListener[])listeners.getListeners(RemoteProcessListener.class);
+    	for (int i = 0; i < rpls.length; i++) { 
+			rpls[i].resultsReceived(id,m);
 		}
     }
     
     protected void fireStatusChanged(String s) {
-    	for (Iterator i = listeners.iterator(); i.hasNext();) {
-			RemoteProcessListener rpl = (RemoteProcessListener) i.next();
-			rpl.statusChanged(id,s);
+        if (listeners == null) {// deleted the listener list - we've already cleaned up.
+            return;
+        }        
+    	ProcessListener[] pls = (ProcessListener[]) listeners.getListeners(ProcessListener.class);
+    	if (pls.length > 0) {
+    		ProcessEvent pe = new ProcessEvent(this);
+    		for (int i = 0; i < pls.length; i++) {
+				pls[i].statusChanged(pe);
+			}
+    	}    	
+    	RemoteProcessListener[] rpls = (RemoteProcessListener[])listeners.getListeners(RemoteProcessListener.class);
+    	for (int i = 0; i < rpls.length; i++) { 
+			rpls[i].statusChanged(id,s);
 		}
     }
     
+    public void addProcessListener(ProcessListener pl) {
+    	listeners.add(ProcessListener.class,pl);
+    }
+    
+    public void removeProcessListener(ProcessListener pl) {
+    	listeners.remove(ProcessListener.class,pl);
+    }
     
     
 	// public listener interace
 	public void addRemoteProcessListener(RemoteProcessListener listener) {
-		listeners.add(listener);
+		listeners.add(RemoteProcessListener.class,listener);
 	}
 	
 	public void removeRemoteProcessListener(RemoteProcessListener listener) {
-		listeners.remove(listener);
+		listeners.remove(RemoteProcessListener.class,listener);
 	}
 }
