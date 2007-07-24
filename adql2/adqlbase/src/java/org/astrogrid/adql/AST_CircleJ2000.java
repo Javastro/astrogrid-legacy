@@ -55,7 +55,7 @@ public class AST_CircleJ2000 extends SimpleNode {
       if( d != null ) {
           // Literal...
           d1tRa.setDoubleValue( d.doubleValue() ) ;
-          llt.removeLinkedElement( llt.sizeOfLinkedElementArray() ) ;
+          llt.removeLinkedElement( llt.sizeOfLinkedElementArray()-1 ) ;
       }
       else {
           // Column reference or complex expression...
@@ -74,7 +74,7 @@ public class AST_CircleJ2000 extends SimpleNode {
       d = this.unpackNumericLiteral( setDec ) ;
       if( d != null ) {
           d1tDec.setDoubleValue( d.doubleValue() ) ;
-          llt.removeLinkedElement( llt.sizeOfLinkedElementArray() ) ;
+          llt.removeLinkedElement( llt.sizeOfLinkedElementArray()-1 ) ;
       }
       else {
           String uid = this.formUniqueID() ;
@@ -91,7 +91,7 @@ public class AST_CircleJ2000 extends SimpleNode {
       d = this.unpackNumericLiteral( setRadius ) ;
       if( d != null ) {
           d1tRad.setDoubleValue( d.doubleValue() ) ;
-          llt.removeLinkedElement( llt.sizeOfLinkedElementArray() ) ;
+          llt.removeLinkedElement( llt.sizeOfLinkedElementArray()-1 ) ;
       } else {
           String uid = this.formUniqueID() ;
           setRadius.setId( uid ) ;

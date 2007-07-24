@@ -66,7 +66,7 @@ public class AST_CircleCartesian extends SimpleNode {
       Double d = this.unpackNumericLiteral( setRadius ) ;
       if( d != null ) {
           d1tRad.setDoubleValue( d.doubleValue() ) ;
-          llt.removeLinkedElement( llt.sizeOfLinkedElementArray() ) ;
+          llt.removeLinkedElement( llt.sizeOfLinkedElementArray()-1 ) ;
       } else {
           String uid = this.formUniqueID() ;
           setRadius.setId( uid ) ;

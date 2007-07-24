@@ -13,14 +13,19 @@ import org.apache.commons.logging.LogFactory ;
 public class AST_ExactNumericLiteral extends SimpleNode {
   
     private static Log log = LogFactory.getLog( AST_ExactNumericLiteral.class ) ;
-    private int possibleSignChange ;
+    private int sign = +1 ;
 
     public AST_ExactNumericLiteral(AdqlStoX p, int id) {
         super(p, id);
     }
 
-    public void setPossibleSignChange( int possibleSignChange ) {
-        this.possibleSignChange = possibleSignChange ;
+    public void setSign( int signIndication ) {
+        if( signIndication >= 0 ) {
+            this.sign = +1 ;
+        }
+        else {
+           this.sign = -1 ;
+        }
     }
     
     public void buildXmlTree( XmlObject xo ) {
@@ -29,12 +34,12 @@ public class AST_ExactNumericLiteral extends SimpleNode {
 
         if( firstToken.image.indexOf( '.' ) == -1 ) {           
             IntegerType intType = IntegerType.Factory.newInstance() ;
-            intType.setValue( new Long( firstToken.image ).longValue() * possibleSignChange ) ;
+            intType.setValue( new Long( firstToken.image ).longValue() * sign ) ;
             atomType.setLiteral( intType ) ;
         }
         else {
             RealType realType = RealType.Factory.newInstance() ;
-            realType.setValue( new Double( firstToken.image ).doubleValue() * possibleSignChange ) ;
+            realType.setValue( new Double( firstToken.image ).doubleValue() * sign ) ;
             atomType.setLiteral( realType ) ;
         }
         this.generatedObject = atomType ;

@@ -55,7 +55,7 @@ public class AST_CircleLatLon extends SimpleNode {
         if( d != null ) {
             // Literal...
             d1tLat.setDoubleValue( d.doubleValue() ) ;
-            llt.removeLinkedElement( llt.sizeOfLinkedElementArray() ) ;
+            llt.removeLinkedElement( llt.sizeOfLinkedElementArray()-1 ) ;
         }
         else {
             // Column reference or complex expression...
@@ -74,7 +74,7 @@ public class AST_CircleLatLon extends SimpleNode {
         d = this.unpackNumericLiteral( setLon ) ;
         if( d != null ) {
             d1tLon.setDoubleValue( d.doubleValue() ) ;
-            llt.removeLinkedElement( llt.sizeOfLinkedElementArray() ) ;
+            llt.removeLinkedElement( llt.sizeOfLinkedElementArray()-1 ) ;
         }
         else {
             String uid = this.formUniqueID() ;
@@ -91,7 +91,7 @@ public class AST_CircleLatLon extends SimpleNode {
         d = this.unpackNumericLiteral( setRadius ) ;
         if( d != null ) {
             d1tRad.setDoubleValue( d.doubleValue() ) ;
-            llt.removeLinkedElement( llt.sizeOfLinkedElementArray() ) ;
+            llt.removeLinkedElement( llt.sizeOfLinkedElementArray()-1 ) ;
         } else {
             String uid = this.formUniqueID() ;
             setRadius.setId( uid ) ;
