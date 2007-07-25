@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.18 2007/07/25 12:28:16 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.19 2007/07/25 13:47:37 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -2861,7 +2861,7 @@ void convex_A() :
  *    { <left_paren> <longitude> <comma> <latitude> <comma> <direction> <right_paren> }...
  * bnf-end
  */
-void convex_LatLon_A() : 
+void convex_LatLon_A() #ConvexLatLon: 
 {
     if( log.isTraceEnabled() ) enterTrace ( "convex_LatLon_A()" ) ;
 }
@@ -2883,7 +2883,7 @@ void convex_LatLon_A() :
  *    { <left_paren> <coord_x> <comma> <coord_y> <comma> <coord_z> <comma> <direction> <right_paren> }...
  * bnf-end
  */
-void convex_Cartesian_A() : 
+void convex_Cartesian_A() #ConvexCartesian : 
 {
     if( log.isTraceEnabled() ) enterTrace ( "convex_Cartesian_A()" ) ;
 }
@@ -2957,7 +2957,7 @@ void box_A() :
  * bnf-end
  *
  */
-void box_LatLon_A() : 
+void box_LatLon_A() #BoxLatLon : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "box_LatLon_A()" ) ;
 }
@@ -2985,7 +2985,7 @@ void box_LatLon_A() :
  * bnf-end
  *
  */
-void box_Cartesian_A() : 
+void box_Cartesian_A() #BoxCartesian : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "box_Cartesian_A()" ) ;
 }
@@ -3015,7 +3015,7 @@ void box_Cartesian_A() :
  * bnf-single <length> ::= <numeric_value_expression>
  * bnf-single <breadth> ::= <numeric_value_expression>
  */
-void box_J2000_A() : 
+void box_J2000_A() #BoxJ2000 : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "box_J2000_A()" ) ;
 }
@@ -3163,7 +3163,7 @@ void polygon_A() :
  *    { <left_paren> <latitude> <comma> <longitude> <right_paren> }...
  * bnf-end
  */
-void polygon_LatLon_A() : 
+void polygon_LatLon_A() #PolygonLatLon : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "polygon_LatLon_A()" ) ;
 }
@@ -3198,7 +3198,7 @@ void polygon_LatLon_A() :
  *    { <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> }...
  * bnf-end
  */
-void polygon_Cartesian_A() : 
+void polygon_Cartesian_A() #PolygonCartesian : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "polygon_Cartesian_A()" ) ;
 }
@@ -3237,7 +3237,7 @@ void polygon_Cartesian_A() :
  *    { <left_paren> <ra> <comma> <dec> <right_paren> }...
  * bnf-end
  */
-void polygon_J2000_A() : 
+void polygon_J2000_A() #PolygonJ2000 : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "polygon_J2000_A()" ) ;
 }
@@ -3300,7 +3300,7 @@ void convex_hull_A() :
  *    { <left_paren> <latitude> <comma> <longitude> <right_paren> }...
  * bnf-end
  */
-void convex_hull_LatLon_A() : 
+void convex_hull_LatLon_A() #ConvexHullLatLon : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "convex_hull_LatLon_A()" ) ;
 }
@@ -3335,7 +3335,7 @@ void convex_hull_LatLon_A() :
  *    { <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> }...
  * bnf-end
  */
-void convex_hull_Cartesian_A() : 
+void convex_hull_Cartesian_A() #ConvexHullCartesian : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "convex_hull_Cartesian_A()" ) ;
 }
@@ -3370,7 +3370,7 @@ void convex_hull_Cartesian_A() :
  *    { <left_paren> <ra> <comma> <dec> <right_paren> }...
  * bnf-end
  */
-void convex_hull_J2000_A() : 
+void convex_hull_J2000_A() #ConvexHullJ2000 : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "convex_hull_J2000_A()" ) ;
 }
@@ -4692,6 +4692,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.19  2007/07/25 13:47:37  jl99
+Shell of region types set up
+
 Revision 1.18  2007/07/25 12:28:16  jl99
 Introduced the tracker object into the AST_classes as a basis for tracking semantic errors.
 
