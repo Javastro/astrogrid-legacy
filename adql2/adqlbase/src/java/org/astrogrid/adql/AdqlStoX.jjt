@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.20 2007/07/25 16:05:22 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.21 2007/07/25 20:24:29 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -1196,16 +1196,6 @@ void concatenation_operator_S() : {}
 	  <VERTICAL_BAR> <VERTICAL_BAR>
 }
 
-void collate_clause_S() : {}
-{
-	//S:
-	// <collate_clause> ::= COLLATE <collation_name>
-    // <collation_name> ::= <qualified_name>
-	
-	// refactored to
-	<COLLATE> qualified_name_A()	
-}
-
 /*
  * column_name_S
  *
@@ -1255,10 +1245,23 @@ void column_name_list_S() #ColumnNameList : {}
  * bnf-end
  *
  */
-void column_reference_A() #ColumnReference : {	if( log.isTraceEnabled() ) enterTrace ( "column_reference_A()" ) ;	tracker.setType( ColumnReferenceType.type ) ;}{	//S: 	// <column_reference> ::= [ <qualifier> <period> ] <column_name>	(
-	   LOOKAHEAD(5)	   ( schema_name_A() <PERIOD> table_name_A() <PERIOD> column_name_S() )
-	   |
-	   ( table_name_A() <PERIOD> column_name_S() )	)	{		if( log.isTraceEnabled() ) exitTrace ( "column_reference_A()" ) ;						}}
+//void column_reference_A() #ColumnReference : //{//	if( log.isTraceEnabled() ) enterTrace ( "column_reference_A()" ) ;//	tracker.setType( ColumnReferenceType.type ) ;//}//{//	//S: //	// <column_reference> ::= [ <qualifier> <period> ] <column_name>//	(//	   LOOKAHEAD(5)//	   ( schema_name_A() <PERIOD> table_name_A() <PERIOD> column_name_S() )//	   |//	   ( table_name_A() <PERIOD> column_name_S() )////	)//	{//		if( log.isTraceEnabled() ) exitTrace ( "column_reference_A()" ) ;					//	}//}
+
+void column_reference_A() #ColumnReference : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "column_reference_A()" ) ;
+	tracker.setType( ColumnReferenceType.type ) ;
+}
+{
+	//S: 
+	// <column_reference> ::= [ <qualifier> <period> ] <column_name>
+	(
+	   [ qualifier_A() <PERIOD> ] column_name_S() 
+	)
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "column_reference_A()" ) ;					
+	}
+}
 
 ///*// * aliased_expression_reference_A// *// *-bnf-start// *- <aliased_expression_reference> ::= <identifier>// *- !! ADQL specific. // *- NB. This is simply a reference to an aliased expression.// *-bnf-end// *// *///AliasSelectionItemType aliased_expression_reference_A() ://{//	if( log.isTraceEnabled() ) enterTrace ( "aliased_expression_reference_A()" ) ;//	AliasSelectionItemType asiType = null ;//	String name = null ;//}//{//	////	// Note especially that this is simply a reference to an//	// aliased expression defined elsewhere. At this point we//	// only have the name of the alias, not the content, so we//	// can only construct an empty AliasSelectionItemType.//	// Filling in these must wait until the whole query has//	// been assembled and is thought to be syntactically correct!!!//	name=identifier_A()//	{//		if( name != null ) {//		    asiType = AliasSelectionItemType.Factory.newInstance() ;//			asiType.setAs( name ) ;//		}//	    if( log.isTraceEnabled() ) exitTrace ( "aliased_expression_reference_A()" ) ;		//	    return asiType ;	//	}//}
 
@@ -3541,7 +3544,6 @@ void qualified_name_A() #QualifiedName :
     }
 }
 
-
 /*
  * schema_name_A
  *
@@ -3562,10 +3564,15 @@ void schema_name_A() #SchemaName :
 	//S:
 	//  <schema name> ::=
 	//    [ <catalog name> <period> ] <unqualified schema name>
-	identifier_A()
+	[ catalog_name_A() <PERIOD> ] identifier_A()
 	{
 		if( log.isTraceEnabled() ) exitTrace ( "schema_name_A()" ) ;
 	}
+}
+
+void catalog_name_A() : {}
+{
+	identifier_A()
 }
 
 /*
@@ -4223,7 +4230,7 @@ void table_name_A() #TableName :
 	//S:
 	// <table_name> ::=
     //  <qualified_name> | <qualified_local_table_name>
-	identifier_A()
+	[ schema_name_A() <PERIOD> ] identifier_A()
 	{ 
 		if( log.isTraceEnabled() ) exitTrace ( "table_name_A()" ) ;
 	}
@@ -4703,6 +4710,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.21  2007/07/25 20:24:29  jl99
+Partial rejig (not yet finished) to accommodate schema name
+
 Revision 1.20  2007/07/25 16:05:22  jl99
 Added: character value expression and (implicitly) the ability to concatenate such expressions.
 
