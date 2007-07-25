@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.19 2007/07/25 13:47:37 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.20 2007/07/25 16:05:22 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -1157,32 +1157,43 @@ void ASCIIStringLiteralPart() #ASCIIStringLiteralPart : {}
 }
 
 /*
- * character_value_expression_A
+ * character_value_expression_S
  *
  * bnf-start
- *  <character_value_expression> ::= <character_factor>
- *  !! TODO:
- *  !! The ADQL spec has
- *  !! <character_value_expression> ::= <concatenation> | <character_factor>
- *  !! <concatenation> ::= <character_value_expression> <concatenation_operator> <character_factor>
- *  !! <concatenation_operator> ::= ||
+ *  <character_value_expression> ::= <concatenation> | <character_factor>
+ * bnf-end
+ *
+ * bnf-start
+ *  <concatenation> ::= <character_value_expression> <concatenation_operator> <character_factor>
  * bnf-end
  *
  */
-void character_value_expression_A() : 
+void character_value_expression_S() #CharacterValueExpression : 
 {
-	if( log.isTraceEnabled() ) enterTrace ( "character_value_expression_A()" ) ;
+	if( log.isTraceEnabled() ) enterTrace ( "character_value_expression_S()" ) ;
 }
 {
 	//S:
 	// <character_value_expression> ::=
     //     <concatenation>
     //   | <character_factor>
-
-	character_factor_A()
+    //
+    // To avoid left recursion, refactored to the following, which I believe
+    // is equivalent...
+	character_factor_A() [ concatenation_operator_S() character_value_expression_S() ]
 	{ 
-		if( log.isTraceEnabled() ) exitTrace ( "character_value_expression_A()" ) ;
+		if( log.isTraceEnabled() ) exitTrace ( "character_value_expression_S()" ) ;
 	}	
+}
+
+/*
+ * concatenation_operator_S
+ *
+ * bnf-single <concatenation_operator> ::= ||
+ */
+void concatenation_operator_S() : {}
+{
+	  <VERTICAL_BAR> <VERTICAL_BAR>
 }
 
 void collate_clause_S() : {}
@@ -1509,7 +1520,7 @@ void escape_character_A() : {}
 {
 	//S:
 	// <escape_character> ::= <character_value_expression>
-	character_value_expression_A()	
+	character_value_expression_S()	
 }
 
 /*
@@ -2197,7 +2208,7 @@ void match_value_S() #MatchValue :
 	//S:
 	// <match_value> ::= <character_value_expression>
 
-	character_value_expression_A()
+	character_value_expression_S()
 	{
 	   if( log.isTraceEnabled() ) exitTrace ( "match_value_S()" ) ;
 	}	
@@ -3331,8 +3342,8 @@ void convex_hull_LatLon_A() #ConvexHullLatLon :
  * bnf-start
  *   <convex_hull_Cartesian> ::= 
  *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren>
- *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord>
- *    { <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> }...
+ *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren>
+ *    { <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> }...
  * bnf-end
  */
 void convex_hull_Cartesian_A() #ConvexHullCartesian : 
@@ -3398,7 +3409,7 @@ void convex_hull_J2000_A() #ConvexHullJ2000 :
  * direction_A
  *
  * bnf-start
- *  <direction> ::= <sign> <unsigned_numeric_literal>
+ *  <direction> ::= [ <sign> ] <unsigned_numeric_literal>
  *  !! The distance along the normal vector where the constraint plane intersects that vector. 
  *  !! If positive, the spherical sector on the far side (seen from the center) is selected.
  *  !! If negative, the point of intersection is in the opposite direction of the vector, resulting in more than a hemisphere.
@@ -3993,7 +4004,7 @@ void string_value_expression_A() : {}
 	// <string_value_expression> ::=
     //    <character_value_expression>
     //  | <bit_value_expression>
-	character_value_expression_A()
+	character_value_expression_S()
 }
 
 /*
@@ -4692,6 +4703,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.20  2007/07/25 16:05:22  jl99
+Added: character value expression and (implicitly) the ability to concatenate such expressions.
+
 Revision 1.19  2007/07/25 13:47:37  jl99
 Shell of region types set up
 

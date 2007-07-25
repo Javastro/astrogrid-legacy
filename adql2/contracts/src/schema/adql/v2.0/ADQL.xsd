@@ -839,5 +839,18 @@
 			<xs:extension base="adql:nullPredType"/>
 		</xs:complexContent>
 	</xs:complexType>
+	
+    <xs:complexType name="characterValueExpressionType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>The character_value_expression in SQL</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:scalarExpressionType">
+				<xs:sequence>
+					<xs:element name="CharacterFactor" type="adql:scalarExpressionType" minOccurs="1" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>	
 
 </xs:schema>
