@@ -17,12 +17,14 @@ public class AST_Where extends SimpleNode {
 
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_Where.buildXmlTree()" ) ;  
+        getTracker().push( AdqlCompiler.WHERE_ELEMENT, WhereType.type ) ;
         WhereType whereType = (WhereType)xo.changeType( WhereType.type ) ;
         this.generatedObject = whereType ;
         if( jjtGetNumChildren() > 0 ) {
             children[0].buildXmlTree( whereType.addNewCondition() ) ;
         }
         super.buildXmlTree(whereType) ;
+        getTracker().pop() ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_Where.buildXmlTree()" ) ; 
     }
 }

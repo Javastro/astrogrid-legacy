@@ -24,12 +24,14 @@ public class AST_Restrict extends SimpleNode {
     }
 
     public void buildXmlTree( XmlObject xo ) {
+        getTracker().push( AdqlCompiler.RESTRICT_ELEMENT, SelectionLimitType.type ) ; 
         SelectionLimitType sl = (SelectionLimitType)xo ;
         if( log.isDebugEnabled() ) {
             log.debug( "buildXmlTree() setting limit value to " + limit ) ;
         }
         sl.setTop( this.limit ) ;
         this.generatedObject = sl ;
+        getTracker().pop() ;
     }
 
 }

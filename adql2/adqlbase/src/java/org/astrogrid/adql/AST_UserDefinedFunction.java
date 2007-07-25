@@ -24,6 +24,7 @@ public class AST_UserDefinedFunction extends SimpleNode {
   
   public void buildXmlTree( XmlObject xo ) {   
       if( log.isTraceEnabled() ) enterTrace( log, "AST_UserDefinedFunction.buildXmlTree()" ) ; 
+      getTracker().setType( UserDefinedFunctionType.type ) ;
       int childCount = jjtGetNumChildren() ;
       StringBuffer buffer = null ;
       if( log.isDebugEnabled() ) {

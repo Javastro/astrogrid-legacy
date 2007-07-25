@@ -19,6 +19,7 @@ public class AST_SelectionList extends SimpleNode {
     
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_SelectionList.buildXmlTree()" ) ; 
+        getTracker().push( AdqlCompiler.SELECTION_LIST_ELEMENT, SelectionListType.type ) ;
         SelectionListType slType = (SelectionListType)xo ;
         int childCount = jjtGetNumChildren() ;
         for( int i=0; i<childCount; i++ ) {
@@ -26,6 +27,7 @@ public class AST_SelectionList extends SimpleNode {
         }   
         this.generatedObject = slType ;
         super.buildXmlTree(slType) ;
+        getTracker().pop() ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_SelectionList.buildXmlTree()" ) ; 
     }
   

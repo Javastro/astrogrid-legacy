@@ -69,7 +69,10 @@ public class AdqlCompiler {
 	public static final String TABLES_ELEMENT = "Tables" ;
 	public static final String LITERAL_ELEMENT = "Literal" ;
     public static final String JOINSPECIFICATION_ELEMENT = "JoinSpecification" ;
-		
+    public static final String POINT_ELEMENT = "Point" ;
+    public static final String REGION_ELEMENT = "Region" ;
+    public static final String OFFSET_ELEMENT = "Offset" ;
+    
     public static final String AGGREGATE_FUNCTION_TYPE = AggregateFunctionType.type.getShortJavaName() ;
 	public static final String INCLUSIVE_SEARCH_TYPE = InclusiveSearchType.type.getShortJavaName() ;	
 	public static final String EXCLUSIVE_SEARCH_TYPE = ExclusiveSearchType.type.getShortJavaName() ;

@@ -14,47 +14,17 @@ public class AST_From extends SimpleNode {
     public AST_From(AdqlStoX p, int id) {
         super(p, id);
     }
-
-    public void jjtClose() {
-//        if( log.isTraceEnabled() ) enterTrace( log, "AST_From.jjtClose()" ) ; 
-//        FromType fromType = FromType.Factory.newInstance() ;
-//        int childCount = jjtGetNumChildren() ;
-//        FromTableType[] tableArray = new FromTableType[ childCount ] ;
-//        for( int i=0; i<childCount; i++ ) {
-//            tableArray[i] = ( (FromTableType)children[i].getGeneratedObject() ) ;
-//        }
-//        fromType.setTableArray( tableArray ) ; 
-//        tableArray = fromType.getTableArray() ;
-//        for( int i=0; i<childCount; i++ ) {
-//            children[i].exchangeGeneratedObject( tableArray[i] ) ;
-//        }
-//        setGeneratedObject( fromType ) ;
-//        if( log.isTraceEnabled() ) exitTrace( log, "AST_From.jjtClose()" ) ; 
-    }
-    
-//    public Object generateObject() {
-//        if( log.isTraceEnabled() ) enterTrace( log, "AST_From.generateObject()" ) ; 
-//        FromType fromType = FromType.Factory.newInstance() ;
-//        int childCount = jjtGetNumChildren() ;
-//        FromTableType[] tableArray = new FromTableType[ childCount ] ;
-//        for( int i=0; i<childCount; i++ ) {
-//            tableArray[i] = ( (FromTableType)children[i].generateObject() ) ;
-//        }
-//        fromType.setTableArray( tableArray ) ; 
-//        this.generatedObject = fromType ;
-//        super.generateObject() ;
-//        if( log.isTraceEnabled() ) exitTrace( log, "AST_From.generateObject()" ) ; 
-//        return this.generatedObject ;
-//    }
     
     public void buildXmlTree( XmlObject fromType ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_From.buildXmlTree()" ) ; 
+        getTracker().push( AdqlCompiler.FROM_ELEMENT, FromType.type ) ;
         int childCount = jjtGetNumChildren() ;
         for( int i=0; i<childCount; i++ ) {
             children[i].buildXmlTree( ((FromType)fromType).addNewTable() ) ;
         }
         this.generatedObject = fromType ;
         super.buildXmlTree(fromType) ;
+        getTracker().pop() ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_From.buildXmlTree()" ) ; 
     }
 

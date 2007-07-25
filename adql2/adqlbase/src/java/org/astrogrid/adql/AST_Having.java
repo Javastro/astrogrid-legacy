@@ -17,10 +17,12 @@ public class AST_Having extends SimpleNode {
     
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_Having.buildXmlTree()" ) ;
+        getTracker().push( AdqlCompiler.HAVING_ELEMENT, HavingType.type ) ;
         HavingType havingType = (HavingType)xo.changeType( HavingType.type ) ;
         this.generatedObject = havingType ;
         children[0].buildXmlTree( havingType.addNewCondition() ) ;
         super.buildXmlTree( havingType ) ;
+        getTracker().pop() ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_Having.buildXmlTree()" ) ;
     }
 

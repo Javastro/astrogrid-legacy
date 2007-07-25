@@ -6,6 +6,7 @@ import org.apache.xmlbeans.XmlObject;
 import org.astrogrid.adql.beans.AtomType;
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
+import org.astrogrid.stc.beans.HsOffsetType;
 
 public class AST_Direction extends SimpleNode {
     
@@ -16,7 +17,8 @@ public class AST_Direction extends SimpleNode {
     }
 
     public void buildXmlTree( XmlObject xo ) {
-        if( log.isTraceEnabled() ) enterTrace( log, "AST_Direction.buildXmlTree()" ) ; 
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_Direction.buildXmlTree()" ) ;
+        getTracker().push( AdqlCompiler.OFFSET_ELEMENT, HsOffsetType.type ) ;
         AtomType at = (AtomType)xo.changeType( AtomType.type )  ; 
         if( jjtGetNumChildren() > 1 ) {
             //
@@ -35,6 +37,7 @@ public class AST_Direction extends SimpleNode {
             this.parser.tracker.setError( "Direction must be between -1 and +1" ) ;
         }       
         super.buildXmlTree( (XmlObject )this.generatedObject ) ;
+        getTracker().pop() ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_Direction.buildXmlTree()" ) ; 
     }
 

@@ -20,10 +20,11 @@ public class AST_CircleJ2000 extends SimpleNode {
   
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_CircleJ2000.buildXmlTree()" ) ; 
+      getTracker().setType( CircleType.type ) ;
       //
       // We know this is a J2000 circle type, else why are we here.
       // So set the appropriate astro coord system...
-      ( (AST_RegionPredicate)this.parent ).setAstroCoordSystem_J2000() ;
+      AST_RegionPredicate.setAstroCoordSystem_J2000( this ) ;
       //
       // "Create" the appropriate circle type using XmlBeans magic.
       // Give it a center and a radius.

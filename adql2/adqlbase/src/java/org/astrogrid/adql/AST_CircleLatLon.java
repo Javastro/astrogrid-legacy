@@ -20,10 +20,11 @@ public class AST_CircleLatLon extends SimpleNode {
 
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_CircleLatLon.buildXmlTree()" ) ; 
+        getTracker().setType( CircleType.type ) ;
         //
         // We know this is a LatLon circle type, else why are we here.
         // So set the appropriate astro coord system...
-        ( (AST_RegionPredicate)this.parent ).setAstroCoordSystem_LatLon() ;
+        AST_RegionPredicate.setAstroCoordSystem_LatLon( this ) ;
         //
         // "Create" the appropriate circle type using XmlBeans magic.
         // Give it a center and a radius.

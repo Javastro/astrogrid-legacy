@@ -17,10 +17,12 @@ public class AST_RegionSpecification extends SimpleNode {
   
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_RegionSpecification.buildXmlTree()" ) ; 
+      getTracker().push( AdqlCompiler.REGION_ELEMENT ) ;
       RegionType rst = (RegionType)xo;
       children[0].buildXmlTree( rst ) ;
       this.generatedObject = children[0].getGeneratedObject() ;
       super.buildXmlTree( (XmlObject )this.generatedObject ) ;
+      getTracker().pop() ;
       if( log.isTraceEnabled() ) exitTrace( log, "AST_RegionSpecification.buildXmlTree()" ) ; 
   }
 

@@ -6,6 +6,8 @@ import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.SchemaParticle; 
 import org.apache.xmlbeans.QNameSet; 
 import javax.xml.namespace.QName;
+
+import org.astrogrid.adql.beans.LikePredType;
 import org.astrogrid.adql.beans.RegionSearchType;
 import org.astrogrid.adql.beans.NotInRegionSearchType;
 import org.astrogrid.adql.beans.LinkedListType;
@@ -33,9 +35,11 @@ public class AST_RegionPredicate extends SimpleNode {
       //
       // The predicate is either IN or NOT IN ...
       if( in ) {
+          getTracker().setType( RegionSearchType.type ) ;
           rst = (RegionSearchType)xo.changeType( RegionSearchType.type ) ;
       }
       else {
+          getTracker().setType( NotInRegionSearchType.type ) ;
           rst = (NotInRegionSearchType)xo.changeType( NotInRegionSearchType.type ) ;
       }
       this.generatedObject = rst ;
@@ -78,8 +82,9 @@ public class AST_RegionPredicate extends SimpleNode {
       if( log.isTraceEnabled() ) exitTrace( log, "AST_RegionPredicate.buildXmlTree()" ) ; 
   }
   
-  protected void setAstroCoordSystem_J2000() {
-      SpaceFrameType sft = ((RegionSearchType)this.generatedObject).getAstroCoordSystem().getSpaceFrame() ;    
+  protected static void setAstroCoordSystem_J2000( Node node ) {
+      RegionSearchType rst = findRegionSearchType( node ) ;
+      SpaceFrameType sft = rst.getAstroCoordSystem().getSpaceFrame() ;    
       CoordRefFrameType crf = sft.getSpaceRefFrame() ;
       QName qName = new QName( CoordRefFrameType.type.getName().getNamespaceURI(), "FK5") ;
       FkType srf = (FkType)crf.substitute( qName , FkType.type ) ;
@@ -87,14 +92,25 @@ public class AST_RegionPredicate extends SimpleNode {
       sft.setSpaceRefFrame( srf ) ;
   }
   
-  protected void setAstroCoordSystem_LatLon() {
-      SpaceFrameType sft = ((RegionSearchType)this.generatedObject).getAstroCoordSystem().getSpaceFrame() ;    
+  protected static void setAstroCoordSystem_LatLon( Node node) {
+      RegionSearchType rst = findRegionSearchType( node ) ;
+      SpaceFrameType sft = rst.getAstroCoordSystem().getSpaceFrame() ;    
       CoordRefFrameType crf = sft.getSpaceRefFrame() ;
   }
   
-  protected void setAstroCoordSystem_Cartesian() {
-      SpaceFrameType sft = ((RegionSearchType)this.generatedObject).getAstroCoordSystem().getSpaceFrame() ;    
+  protected static void setAstroCoordSystem_Cartesian( Node node ) {
+      RegionSearchType rst = findRegionSearchType( node ) ;
+      SpaceFrameType sft = rst.getAstroCoordSystem().getSpaceFrame() ;    
       CoordRefFrameType crf = sft.getSpaceRefFrame() ;
   }
   
+  private static RegionSearchType findRegionSearchType( Node node ) {
+      Node parentNode = node.jjtGetParent() ;
+      while( parentNode != null ) {
+          if( parentNode instanceof AST_RegionPredicate ) { 
+              return (RegionSearchType) ( (AST_RegionPredicate)parentNode ).getGeneratedObject() ;
+          }
+      }
+      return null ;
+  }
 }

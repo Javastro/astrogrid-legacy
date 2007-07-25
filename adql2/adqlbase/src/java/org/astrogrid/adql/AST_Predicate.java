@@ -2,13 +2,27 @@
 
 package org.astrogrid.adql;
 
-//
-// Class should be removed
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+import org.apache.xmlbeans.XmlObject;
+import org.astrogrid.adql.beans.ExistsPredType;
 
 public class AST_Predicate extends SimpleNode {
+    
+    private static Log log = LogFactory.getLog( AST_Predicate.class ) ;
  
     public AST_Predicate(AdqlStoX p, int id) {
         super(p, id);
+    }
+    
+    public void buildXmlTree( XmlObject xo ) {
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_Predicate.buildXmlTree()" ) ; 
+        getTracker().push( AdqlCompiler.CONDITION_ELEMENT ) ;
+        children[0].buildXmlTree( xo ) ;
+        this.generatedObject = children[0].getGeneratedObject() ;
+        super.buildXmlTree( (XmlObject)this.generatedObject ) ;
+        getTracker().pop() ;
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_Predicate.buildXmlTree()" ) ; 
     }
 
 }

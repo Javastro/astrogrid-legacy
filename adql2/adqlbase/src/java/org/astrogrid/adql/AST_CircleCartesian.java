@@ -26,10 +26,11 @@ public class AST_CircleCartesian extends SimpleNode {
 
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_CircleCartesian.buildXmlTree()" ) ; 
+      getTracker().setType( CircleType.type ) ;
       //
       // We know this is a J2000 circle type, else why are we here.
       // So set the appropriate astro coord system...
-      ( (AST_RegionPredicate)this.parent ).setAstroCoordSystem_Cartesian() ;
+      AST_RegionPredicate.setAstroCoordSystem_Cartesian( this ) ;
       //
       //
       // We know this is a circle type, else why are we here ...

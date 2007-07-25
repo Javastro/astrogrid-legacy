@@ -18,6 +18,7 @@ public class AST_ComparisonPredicate extends SimpleNode {
     
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_ComparisonPredicate.buildXmlTree()" ) ; 
+        getTracker().setType( ComparisonPredType.type ) ;
         ComparisonPredType cpType = (ComparisonPredType)xo.changeType( ComparisonPredType.type ) ;
         children[0].buildXmlTree( cpType.addNewArg() ) ;
         children[2].buildXmlTree( cpType.addNewArg() ) ;

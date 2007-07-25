@@ -21,8 +21,9 @@ public class AST_ConvexJ2000 extends SimpleNode {
 
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_ConvexJ2000.buildXmlTree()" ) ; 
-
-        ( (AST_RegionPredicate)this.parent ).setAstroCoordSystem_J2000() ;
+        getTracker().setType( ConvexType.type ) ;
+        
+        AST_RegionPredicate.setAstroCoordSystem_J2000( this ) ;
         //
         // Establish where we can create linked elements for this region...
         LinkedListType llt = this.getCurrentLinkedElementList() ;

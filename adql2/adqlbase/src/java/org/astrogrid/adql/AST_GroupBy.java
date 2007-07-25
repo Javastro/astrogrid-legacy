@@ -5,6 +5,7 @@ package org.astrogrid.adql;
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 import org.apache.xmlbeans.XmlObject ;
+import org.astrogrid.adql.beans.GroupByType;
 
 public class AST_GroupBy extends SimpleNode {
     
@@ -13,36 +14,15 @@ public class AST_GroupBy extends SimpleNode {
     public AST_GroupBy(AdqlStoX p, int id) {
         super(p, id);
     }
-
-    public void jjtClose() { 
-//        if( log.isTraceEnabled() ) enterTrace( log, "AST_GroupBy.jjtClose()" ) ;
-//        GroupByType gbt = GroupByType.Factory.newInstance() ;
-//        ColumnReferenceType[] 
-//           crtArray = (ColumnReferenceType[])children[0].getGeneratedObject() ;
-//        gbt.setColumnArray( crtArray ) ;
-//        children[0].exchangeGeneratedObject( gbt.getColumnArray() ) ;
-//        setGeneratedObject( gbt ) ;
-//        if( log.isTraceEnabled() ) exitTrace( log, "AST_GroupBy.jjtClose()" ) ;
-    }
-    
-//    public Object generateObject() { 
-//        if( log.isTraceEnabled() ) enterTrace( log, "AST_GroupBy.generateObject()" ) ;
-//        GroupByType gbt = GroupByType.Factory.newInstance() ;
-//        ColumnReferenceType[] 
-//           crtArray = (ColumnReferenceType[])children[0].generateObject() ;
-//        gbt.setColumnArray( crtArray ) ;
-//        this.generatedObject = gbt  ;
-//        super.generateObject() ;
-//        if( log.isTraceEnabled() ) exitTrace( log, "AST_GroupBy.generateObject()" ) ;
-//        return this.generatedObject ;
-//    }
      
     //
     // Basically a pass through...
     public void buildXmlTree( XmlObject xo ) { 
         if( log.isTraceEnabled() ) enterTrace( log, "AST_GroupBy.buildXmlTree()" ) ;
+        getTracker().push( AdqlCompiler.GROUPBY_ELEMENT, GroupByType.type ) ; 
         children[0].buildXmlTree( xo ) ;
         this.generatedObject = children[0].getGeneratedObject() ;
+        getTracker().pop() ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_GroupBy.buildXmlTree()" ) ;
     }
 

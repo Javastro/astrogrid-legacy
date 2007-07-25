@@ -13,6 +13,7 @@ public class AST_Allow extends SimpleNode {
     }
 
     public void buildXmlTree( XmlObject sot ) {
+        getTracker().push( AdqlCompiler.ALLOW_ELEMENT, SelectionOptionType.type ) ;
         if( getFirstToken().kind == AdqlStoXConstants.ALL ) {
             ((SelectionOptionType)sot).setOption( AllOrDistinctType.ALL ) ;
         }
@@ -20,6 +21,7 @@ public class AST_Allow extends SimpleNode {
             ((SelectionOptionType)sot).setOption( AllOrDistinctType.DISTINCT ) ;
         }
         this.generatedObject = sot ;
+        getTracker().pop() ;
     }
 
 }

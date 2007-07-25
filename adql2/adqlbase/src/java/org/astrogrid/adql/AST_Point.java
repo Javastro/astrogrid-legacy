@@ -19,6 +19,7 @@ public class AST_Point extends SimpleNode {
 
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_Point.buildXmlTree()" ) ; 
+      getTracker().push( AdqlCompiler.POINT_ELEMENT, PointType.type  ) ;
       PointType pt = (PointType)xo.changeType( PointType.type ) ;
       int childCount = jjtGetNumChildren() ;
       for( int i=0; i<childCount; i++ ) {
@@ -26,6 +27,7 @@ public class AST_Point extends SimpleNode {
       }   
       this.generatedObject = pt ;
       super.buildXmlTree(pt) ;
+      getTracker().pop() ;
       if( log.isTraceEnabled() ) exitTrace( log, "AST_Point.buildXmlTree()" ) ; 
   }
 }

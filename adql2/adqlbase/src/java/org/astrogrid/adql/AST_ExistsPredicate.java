@@ -17,6 +17,7 @@ public class AST_ExistsPredicate extends SimpleNode {
   
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_ExistsPredicate.buildXmlTree()" ) ; 
+      getTracker().setType( ExistsPredType.type ) ;
       ExistsPredType epType = (ExistsPredType)xo.changeType( ExistsPredType.type ) ;
       children[0].buildXmlTree( epType.addNewSet() ) ;
       this.generatedObject = epType ;

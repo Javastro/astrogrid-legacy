@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.17 2007/07/24 11:37:11 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.18 2007/07/25 12:28:16 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -1052,13 +1052,17 @@ void boolean_factor_S() #BooleanFactor :
 void like_predicate_A() #LikePredicate: 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "like_predicate_A()" ) ;
+	tracker.setType( LikePredType.type ) ;
 }
 {
 	//S: 
 	// <like_predicate> ::=
 	//   <match_value> [ NOT ] LIKE <pattern> [ ESCAPE <escape_character> ]
       
-	( match_value_S() [ <NOT> {jjtThis.setLike(false);} ] <LIKE> pattern_A() )
+	( match_value_S() 
+	  [ <NOT> { jjtThis.setLike(false);
+	            tracker.setType( NotLikePredType.type ) ; } ] 
+	    <LIKE> pattern_A() )
 	{
 		if( log.isTraceEnabled() ) exitTrace ( "like_predicate_A()" ) ;
 	}
@@ -1562,6 +1566,7 @@ void exact_numeric_literal_S( int signIndicator ) #ExactNumericLiteral :
 void exists_predicate_A() #ExistsPredicate : 
 {
     if( log.isTraceEnabled() ) enterTrace ( "exists_predicate_A()" ) ;
+    tracker.setType( ExistsPredType.type ) ;
 }
 {
 	//S: 
@@ -2724,9 +2729,13 @@ void predicate_A() :
 void region_predicate_A() #RegionPredicate :      
 {
 	if( log.isTraceEnabled() ) enterTrace ( "region_predicate_A()" ) ;
+	tracker.setType( RegionSearchType.type ) ;
 }
 {
-	point_A() [ <NOT> {jjtThis.setIn(false);} ] <IN> region_specification_A()	
+	point_A() 
+	[ <NOT> { jjtThis.setIn(false);
+	          tracker.setType( NotInRegionSearchType.type ) ; } ] 
+	<IN> region_specification_A()	
     {
     	if( log.isTraceEnabled() ) exitTrace ( "region_predicate_A()" ) ;	
     }
@@ -2765,6 +2774,7 @@ void region_predicate_A() #RegionPredicate :
 void point_A() #Point : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "point_A()" ) ;
+	tracker.push( compiler.POINT_ELEMENT, PointType.type  ) ;
 }
 {
 	<LEFT_PAREN> numeric_value_expression_S() 
@@ -2772,6 +2782,7 @@ void point_A() #Point :
 	   [ <COMMA> numeric_value_expression_S() ] 
 	<RIGHT_PAREN>
 	{
+	   tracker.pop() ;
 	   if( log.isTraceEnabled() ) exitTrace ( "point_A()" ) ;	
 	}	
 }
@@ -2783,7 +2794,7 @@ void point_A() #Point :
  *  <region_specification> ::=
  *     <box>
  *   | <circle>
- *   | <complex_hull>
+ *   | <convex_hull>
  *   | <convex>
  *   | <polygon>
  * bnf-end
@@ -2792,6 +2803,7 @@ void point_A() #Point :
 void region_specification_A() : 
 {
     if( log.isTraceEnabled() ) enterTrace ( "region_specification_A()" ) ;
+    tracker.push( compiler.REGION_ELEMENT ) ;
 }
 {
 	(
@@ -2803,9 +2815,10 @@ void region_specification_A() :
 		|
 		( <POLY> polygon_A() )
 		|
-		( <CHULL> complex_hull_A() )
+		( <CHULL> convex_hull_A() )
 	)
 	{
+		tracker.pop() ;
 		if( log.isTraceEnabled() ) exitTrace ( "region_specification_A()" ) ;
 	}
 }
@@ -2823,6 +2836,7 @@ void region_specification_A() :
 void convex_A() : 
 {
     if( log.isTraceEnabled() ) enterTrace ( "convex_A()" ) ;
+    tracker.setType( ConvexType.type ) ;
 }
 {	
 	(
@@ -2919,6 +2933,7 @@ void convex_J2000_A() #ConvexJ2000 :
 void box_A() : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "box_A()" ) ;
+	tracker.setType( BoxType.type ) ;
 } 
 {
 	(
@@ -3032,6 +3047,7 @@ void box_J2000_A() :
 void circle_A() : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "circle_A()" ) ;
+	tracker.setType( CircleType.type ) ;
 }
 {
 	(
@@ -3122,6 +3138,7 @@ void circle_J2000_A() #CircleJ2000 :
 void polygon_A() : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "polygon_A()" ) ;
+	tracker.setType( PolygonType.type ) ;
 }
 {
 	(
@@ -3247,44 +3264,45 @@ void polygon_J2000_A() :
 
 
 /*
- * complex_hull_A
+ * convex_hull_A
  *
  * bnf-start
- *  <complex_hull> ::= 
- *     LATLON <complex_hull_LatLon>
- *   | CARTESIAN <complex_hull_Cartesian>
- *   | [ J2000 ] <complex_hull_J2000>
+ *  <convex_hull> ::= 
+ *     LATLON <convex_hull_LatLon>
+ *   | CARTESIAN <convex_hull_Cartesian>
+ *   | [ J2000 ] <convex_hull_J2000>
  * bnf-end
  */
-void complex_hull_A() : 
+void convex_hull_A() : 
 {
-	if( log.isTraceEnabled() ) enterTrace ( "complex_hull_A()" ) ;
+	if( log.isTraceEnabled() ) enterTrace ( "convex_hull_A()" ) ;
+    tracker.setType( ConvexHullType.type ) ;
 }
 {
-	( <LATLON> complex_hull_LatLon_A() )
+	( <LATLON> convex_hull_LatLon_A() )
 	|
-	( <CARTESIAN> complex_hull_Cartesian_A() )
+	( <CARTESIAN> convex_hull_Cartesian_A() )
 	|
-	( [ <J2000> ] complex_hull_J2000_A() ) 
+	( [ <J2000> ] convex_hull_J2000_A() ) 
 	{
-		if( log.isTraceEnabled() ) exitTrace ( "complex_hull_A()" ) ;
+		if( log.isTraceEnabled() ) exitTrace ( "convex_hull_A()" ) ;
 	}
 }
 
 
 /*
- * complex_hull_LatLon_A
+ * convex_hull_LatLon_A
  *
  * bnf-start
- *   <complex_hull_LatLon> ::= 
+ *   <convex_hull_LatLon> ::= 
  *      <left_paren> <latitude> <comma> <longitude> <right_paren>
  *      <left_paren> <latitude> <comma> <longitude> <right_paren>
  *    { <left_paren> <latitude> <comma> <longitude> <right_paren> }...
  * bnf-end
  */
-void complex_hull_LatLon_A() : 
+void convex_hull_LatLon_A() : 
 {
-	if( log.isTraceEnabled() ) enterTrace ( "complex_hull_LatLon_A()" ) ;
+	if( log.isTraceEnabled() ) enterTrace ( "convex_hull_LatLon_A()" ) ;
 }
 {
 	  <LEFT_PAREN>
@@ -3302,24 +3320,24 @@ void complex_hull_LatLon_A() :
 	  <RIGHT_PAREN> )+ 
 	  
 	  {
-	  	  if( log.isTraceEnabled() ) exitTrace ( "complex_hull_LatLon_A()" ) ;
+	  	  if( log.isTraceEnabled() ) exitTrace ( "convex_hull_LatLon_A()" ) ;
 	  }
 }
 
 
 /*
- * complex_hull_Cartesian_A
+ * convex_hull_Cartesian_A
  *
  * bnf-start
- *   <complex_hull_Cartesian> ::= 
+ *   <convex_hull_Cartesian> ::= 
  *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren>
  *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord>
  *    { <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> }...
  * bnf-end
  */
-void complex_hull_Cartesian_A() : 
+void convex_hull_Cartesian_A() : 
 {
-	if( log.isTraceEnabled() ) enterTrace ( "complex_hull_Cartesian_A()" ) ;
+	if( log.isTraceEnabled() ) enterTrace ( "convex_hull_Cartesian_A()" ) ;
 }
 {
 	  <LEFT_PAREN>
@@ -3337,24 +3355,24 @@ void complex_hull_Cartesian_A() :
 	  <RIGHT_PAREN> )+ 
 	  
 	  {
-	  	  if( log.isTraceEnabled() ) exitTrace ( "complex_hull_Cartesian_A()" ) ;
+	  	  if( log.isTraceEnabled() ) exitTrace ( "convex_hull_Cartesian_A()" ) ;
 	  }
 }
 
 
 /*
- * complex_hull_J2000_A
+ * convex_hull_J2000_A
  *
  * bnf-start
- *   <complex_hull_J2000> ::= 
+ *   <convex_hull_J2000> ::= 
  *      <left_paren> <ra> <comma> <dec> <right_paren>
  *      <left_paren> <ra> <comma> <dec> <right_paren>
  *    { <left_paren> <ra> <comma> <dec> <right_paren> }...
  * bnf-end
  */
-void complex_hull_J2000_A() : 
+void convex_hull_J2000_A() : 
 {
-	if( log.isTraceEnabled() ) enterTrace ( "complex_hull_J2000_A()" ) ;
+	if( log.isTraceEnabled() ) enterTrace ( "convex_hull_J2000_A()" ) ;
 }
 {
 	  <LEFT_PAREN>
@@ -3372,7 +3390,7 @@ void complex_hull_J2000_A() :
 	  <RIGHT_PAREN> )+ 
 	  
 	  {
-	  	  if( log.isTraceEnabled() ) exitTrace ( "complex_hull_J2000_A()" ) ;
+	  	  if( log.isTraceEnabled() ) exitTrace ( "convex_hull_J2000_A()" ) ;
 	  }
 }
 
@@ -3390,9 +3408,13 @@ void complex_hull_J2000_A() :
  * bnf-end
  *
  */
-void direction_A() #Direction : {}
+void direction_A() #Direction : 
+{
+	tracker.push( AdqlCompiler.OFFSET_ELEMENT, HsOffsetType.type ) ;
+}
 {
 	signed_numeric_literal_A()
+	{ tracker.pop() ; }
 }
 
 
@@ -4670,6 +4692,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.18  2007/07/25 12:28:16  jl99
+Introduced the tracker object into the AST_classes as a basis for tracking semantic errors.
+
 Revision 1.17  2007/07/24 11:37:11  jl99
 Region
 

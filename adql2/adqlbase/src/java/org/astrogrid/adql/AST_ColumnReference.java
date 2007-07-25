@@ -89,6 +89,7 @@ public class AST_ColumnReference extends SimpleNode {
 
     public void buildXmlTree( XmlObject xo ) {   
       if( log.isTraceEnabled() ) enterTrace( log, "AST_ColumnReference.buildXmlTree()" ) ; 
+      getTracker().setType( ColumnReferenceType.type ) ;
       ColumnReferenceType crt = (ColumnReferenceType)xo.changeType( ColumnReferenceType.type ) ;
       
       int childCount = jjtGetNumChildren() ;

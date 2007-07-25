@@ -3,16 +3,24 @@
 package org.astrogrid.adql;
 
 import org.apache.xmlbeans.XmlObject;
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+
 
 public class AST_OrderByClause extends SimpleNode {
+    
+    private static Log log = LogFactory.getLog( AST_OrderByClause.class ) ;
 
     public AST_OrderByClause(AdqlStoX p, int id) {
         super(p, id);
     }
 
     public void buildXmlTree(XmlObject xo) {
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_OrderByClause.buildXmlTree()" ) ; 
+        getTracker().push( AdqlCompiler.ORDERBY_ELEMENT ) ;
         children[0].buildXmlTree(xo) ;
         setGeneratedObject( children[0].getGeneratedObject() ) ;
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_OrderByClause.buildXmlTree()" ) ; 
     }
     
     
