@@ -15,8 +15,22 @@
 	</head>
 <body>
 <release version="2007.4.alpha1" date="2007-07-26">
+    <action dev="mbt" type="fix">
+    Fixes related to entering positions and radii in AstroScope.
+    Only 1-d radius can now be entered; sexagesimal-&gt;decimal conversion 
+    bugs are fixed; position and radius parsing is more lenient (e.g. 
+    permits embedded spaces and leading + signs); and 'sexagesimal' display of
+    radius is now in decimal arcseconds rather than dd:mm:ss.ss.
+    See bugs 1824, 1939, 2185.
+    </action>
     <action dev="jdt" type="fix">
     Improved the way the PLASTIC hub deals with orphaned .plastic files - no more annoying user messages.  See bug 2248.
+    </action>
+    <action dev="nw" type="add">
+        Added the first few operations to file explorer.
+    </action>
+    <action dev="nw" type="add">
+        Added the first few operations to file explorer.
     </action>
     <action dev="nw" type="add">
     Implemented Task Runner UI
