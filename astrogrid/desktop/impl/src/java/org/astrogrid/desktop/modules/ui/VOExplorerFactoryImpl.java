@@ -17,7 +17,7 @@ import net.sourceforge.hiveutils.service.ObjectBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
-import org.astrogrid.desktop.modules.system.ui.ActionContributionBuilder;
+import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.system.ui.UIContributionBuilder;
 import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;

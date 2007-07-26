@@ -173,7 +173,7 @@ MYSPACE
 	<!--  myspace vfs provider 	-->
 	<service-point id="myspacevfs" interface="org.astrogrid.desktop.modules.ag.vfs.VfsFileProvider" >
 		<invoke-factory model="session">
-			<construct class="org.astrogrid.desktop.modules.ag.vfs.MyspaceProvider">
+			<construct class="org.astrogrid.desktop.modules.ag.vfs.myspace.MyspaceProvider">
 				<service>bundlePrefs</service>
 				<service>myspace</service>
 				<event-listener service-id="community" />
@@ -187,7 +187,8 @@ MYSPACE
 				<service>community</service>
 			</construct>
 		</invoke-factory>
-	</service-point>	
+	</service-point>
+    	
 	<contribution configuration-id="system.vfsProviders">
 		<provider scheme="ivo"
 			implementation="service:myspacevfs" />
@@ -405,7 +406,24 @@ REMOTE PROCESS MANAGER
 			<listener interface="org.astrogrid.acr.astrogrid.RemoteProcessListener" />
 		</service>
 	</contribution>		
-<!--  infrastructure components -->
+    
+    
+    <!--  vfs view over remote processes and results. -->
+    
+    <service-point id="processManagerVfs" interface="org.astrogrid.desktop.modules.ag.vfs.VfsFileProvider" >
+        <invoke-factory>
+            <construct class="org.astrogrid.desktop.modules.ag.vfs.task.RPProvider">
+                <service>processManager</service>
+            </construct>
+        </invoke-factory>
+    </service-point>
+        
+    <contribution configuration-id="system.vfsProviders">
+        <provider scheme="task"
+            implementation="service:processManagerVfs" />
+    </contribution>
+    
+
 
 
 <!-- 

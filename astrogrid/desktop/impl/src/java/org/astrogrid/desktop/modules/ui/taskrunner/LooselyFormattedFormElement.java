@@ -39,18 +39,21 @@ public class LooselyFormattedFormElement extends AbstractTaskFormElement impleme
 	}
 
 	protected final JComponent createEditor() {
-		text = new JTextField();
-		if (pdesc.getDefaultValue() != null) {
-			text.setText(pdesc.getDefaultValue());
-		}
-		
-		this.original = text.getBorder();
-		this.warn = BorderFactory.createLineBorder(Color.RED);
-		if (pval.getValue() != null && ! pval.getIndirect()) {
-			text.setText(pval.getValue());
-		}		
-		text.getDocument().addDocumentListener(this);
-		return text;
+	    text = new JTextField();
+	    this.original = text.getBorder();
+	    this.warn = BorderFactory.createLineBorder(Color.RED);
+	    if (! pval.getIndirect()) {
+	        if (pdesc.getDefaultValue() != null) {
+	            text.setText(pdesc.getDefaultValue());
+	        }
+
+	        if (pval.getValue() != null) {
+	            text.setText(pval.getValue());
+	        }	
+	        pval.setValue(getStringValue());
+	    }
+	    text.getDocument().addDocumentListener(this);
+	    return text;
 	}
 
 	protected JTextComponent text;

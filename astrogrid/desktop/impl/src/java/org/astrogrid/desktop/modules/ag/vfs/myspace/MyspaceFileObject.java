@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.astrogrid.desktop.modules.ag.vfs;
+package org.astrogrid.desktop.modules.ag.vfs.myspace;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileName;
 import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileType;
 import org.apache.commons.vfs.provider.AbstractFileObject;
 import org.astrogrid.filemanager.client.FileManagerClient;
@@ -73,7 +74,7 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
 		return (MyspaceFileSystem)getFileSystem();
 	}
 
-	protected FileManagerClient client() {
+	protected FileManagerClient client() throws FileSystemException {
 		return getMsFileSystem().client();
 	}
 

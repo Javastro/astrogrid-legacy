@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
@@ -42,18 +44,36 @@ public class PlasticVotableActivity extends AbstractFileActivity {
 	}
 	protected boolean invokable(FileObject f) {
 		try {
-			return VoDataFlavour.MIME_VOTABLE.equals(f.getContent().getContentInfo().getContentType());
+			final FileContent content = f.getContent();
+            return VoDataFlavour.MIME_VOTABLE.equals(content.getContentInfo().getContentType())
+                || content.getAttribute(VoDataFlavour.TABULAR_HINT) != null;
 		} catch (FileSystemException x) {
 			return false;
 		}
 	}
 
+	private static final List supportedProtocols = new ArrayList();
+	static {
+	    supportedProtocols.add("http");
+	    supportedProtocols.add("ftp");
+	    supportedProtocols.add("file");
+	}
+	
 	public void actionPerformed(ActionEvent e) {
 		List l = computeInvokable();
 		if (plas.understandsMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL)) {
 			for (Iterator i = l.iterator(); i.hasNext();) {
+			    try {
 				FileObject f = (FileObject) i.next();
-				sendLoadVotableURLMessage(f);
+				if (supportedProtocols.contains(f.getURL().getProtocol())) {
+				    sendLoadVotableURLMessage(f);
+				} else {
+				    sendLoadVotableInlineMessage(f);
+				}
+			    } catch (FileSystemException ex) {
+			        // oh well. skip that one.
+			        //@todo report what went wrong.
+			    }
 			}
 		} else { // fallback
 			for (Iterator i = l.iterator(); i.hasNext();) {

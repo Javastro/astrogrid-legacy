@@ -26,6 +26,7 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
 import org.astrogrid.acr.astrogrid.ColumnBean;
 import org.astrogrid.acr.astrogrid.TableBean;
@@ -36,6 +37,7 @@ import org.astrogrid.acr.ivoa.resource.DataCollection;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.ui.comp.IconField;
 import org.astrogrid.desktop.modules.ui.comp.TextAreaRenderer;
+import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
@@ -97,6 +99,7 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 		builder.add(cataCombo,cc.xy(3,row++));
 
 		cataLabel = builder.addLabel("",cc.xyw(1,row++,4));
+		cataLabel.setFont(UIConstants.SMALL_DIALOG_FONT);
 
 		builder.addLabel("Table",cc.xy(1,row));
 		// make this one auto-complete.
@@ -139,8 +142,10 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 				    // re-use a string builder, rather than contatenating strings each time.
 				    sb.clear();
 				    sb.append(tb.getName())
-				        .append(" : ")
-				        .appendFixedWidthPadRight(tb.getDescription(),50,' ');
+				        .append(" : ");
+				    if (tb.getDescription() != null) {
+				        sb.appendFixedWidthPadRight(tb.getDescription(),50,' ');
+				    }
 					value = sb.toString();
 				}
 				return super.getListCellRendererComponent(list,value,index,isSelected,cellHasFocus);
@@ -152,6 +157,7 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 		builder.add(tableCombo,cc.xy(3,row++));
 
 		tableLabel = builder.addLabel("",cc.xyw(1,row++,4));
+		tableLabel.setFont(UIConstants.SMALL_DIALOG_FONT);		
 
 		// add a text-filter to the columns list
 		JTextField filterField = new IconField(0);

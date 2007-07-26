@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.19 2007/07/23 12:18:23 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.20 2007/07/26 18:21:45 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -76,15 +76,17 @@ import org.w3c.dom.Document;
  */
 public class CeaStrategyImpl implements RemoteProcessStrategy{
 	/** monitor for a single remote cea task */
-	private class RemoteTaskMonitor extends TimerDrivenProcessMonitor {
+	private class RemoteTaskMonitor extends TimerDrivenProcessMonitor implements ProcessMonitor.Advanced {
 		
-		public RemoteTaskMonitor(String ceaid, String iface,CeaApplication app, CeaService service) throws ServiceException {
+		public RemoteTaskMonitor(Tool t,String ceaid, CeaApplication app, CeaService service, CommonExecutionConnectorClient delegate) throws ServiceException {
 			super(ceaHelper.mkRemoteTaskURI(ceaid,service));
+			this.tool = t;
 			this.ceaid = ceaid;
-			this.delegate = ceaHelper.createCEADelegate(service);
+			this.app = app;
+			this.delegate = delegate;
 			this.name = app.getTitle();
 			if (app.getInterfaces().length > 1) { // more than one interface
-				this.name = iface + " - " + this.name;
+				this.name = tool.getInterface() + " - " + this.name;
 			}
 			this.description = app.getContent().getDescription();
 			// kick it off.
@@ -102,6 +104,8 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 		}
 		private final CommonExecutionConnectorClient delegate;
 		private final String ceaid;
+		private final Tool tool;
+		private final CeaApplication app;
 
 	    /**
 	     * @see org.astrogrid.desktop.modules.ag.RemoteProcessStrategy#getLatestResults(java.net.URI)
@@ -205,20 +209,31 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 		public Principal getPrincipal() {
 			return sess.currentSession();
 		}
+
+        public Tool getInvocationTool() {
+            return tool;
+        }
+
+        public CeaApplication getApplicationDescription() {
+            return app;
+        }
 	}
 	
 	/** monitor for a single local cea task 
 	 * 
 	 * peeks directly into the local cea engine to get stuff - by implementing observer
 	 * */
-	private class LocalTaskMonitor extends AbstractProcessMonitor implements Observer {
+	private class LocalTaskMonitor extends AbstractProcessMonitor implements Observer, ProcessMonitor.Advanced {
 
 		private final String ceaid;
 		private final Application application;
-
-		public LocalTaskMonitor(String ceaid, String iface,CeaApplication appDesc) throws ServiceException {
+		private final Tool tool;
+        private final CeaApplication appDesc;
+		public LocalTaskMonitor(Tool t,String ceaid, String iface,CeaApplication appDesc) throws ServiceException {
 			super(ceaHelper.mkLocalTaskURI(ceaid));
+			this.tool = t;
 			this.ceaid = ceaid;
+            this.appDesc = appDesc;
 			this.name = appDesc.getTitle();
 			if (appDesc.getInterfaces().length > 1) { // more than one interface
 				this.name = iface + " - " + this.name;
@@ -304,6 +319,12 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 	            throw new ServiceException(e);
 	        }		
 		}
+        public Tool getInvocationTool() {
+            return tool;
+        }
+        public CeaApplication getApplicationDescription() {
+            return appDesc;
+        }
 	}
     /**
      * Commons Logger for this class
@@ -330,7 +351,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
         this.apps = apps;
         this.vomon = vomon;
         this.ceaInternal =ceaInternal;
-        this.ceaHelper = new CeaHelper(reg);
+        this.ceaHelper = new CeaHelper(reg,community);
         this.community = community;
         this.sess= sess;
         this.sched = sched;
@@ -472,7 +493,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
     		//try local invocation.
     		if (ceaInternal.getAppLibrary().hasMatch(application)) {
     			String primId = ceaInternal.getExecutionController().init(tool,jid.toString());
-    			return new LocalTaskMonitor(primId,tool.getInterface(),application);
+    			return new LocalTaskMonitor(tool,primId,tool.getInterface(),application);
     		}
     		// check remote invocation is possible
     		if (! (server instanceof CeaService)) {
@@ -483,17 +504,12 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
     		logger.debug("Using remote invocation to" + ceaService.getId());
     		
     		// create an authenticated delegate.
-    		CommonExecutionConnectorClient del = ceaHelper.createCEADelegate(ceaService);    		
-    		if (community.isLoggedIn() && hasDigitalSignatureCredentials()) {
-    			SecurityGuard guard = this.community.getSecurityGuard();
-    			del.setCredentials(guard);
-    		}
-    		
+    		CommonExecutionConnectorClient del = ceaHelper.createCEADelegate(ceaService);    		    		    		
     		logger.info("Initializing document on server" );
 
     		String primId = del.init(tool,jid);
     		logger.info("Server returned taskID " + primId);
-    		return new RemoteTaskMonitor(primId, tool.getInterface(), application, ceaService);
+    		return new RemoteTaskMonitor(tool,primId, application, ceaService,del);
 
 
     	} catch (CeaException e) {
@@ -503,22 +519,24 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
     	} 
     }
     
-    private boolean hasDigitalSignatureCredentials() {
-        try {
-          SecurityGuard g = this.community.getSecurityGuard();
-          g.getCertificateChain(); // throws if credentials are absent
-          g.getPrivateKey(); // throws if credentials are absent
-          return true;
-        }
-        catch (Exception e) {
-          return false;
-        }
-      }
+  
 }
 
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.20  2007/07/26 18:21:45  nw
+merged mark's and noel's branches
+
+Revision 1.19.2.3  2007/07/26 13:40:31  nw
+Complete - task 96: get authenticated access working
+
+Revision 1.19.2.2  2007/07/26 11:23:15  nw
+Incomplete - task 49: Implement file Tasks
+
+Revision 1.19.2.1  2007/07/24 17:57:26  nw
+added tasks vfs view
+
 Revision 1.19  2007/07/23 12:18:23  nw
 finished implementation of process manager framework.
 

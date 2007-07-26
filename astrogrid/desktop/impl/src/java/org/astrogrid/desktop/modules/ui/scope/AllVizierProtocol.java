@@ -25,10 +25,6 @@ import org.astrogrid.acr.ivoa.resource.Validation;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
-import org.astrogrid.desktop.modules.ui.scope.AllVizierProtocol.VizierRetriever.VizierTableHandler;
-import org.astrogrid.desktop.modules.ui.scope.Retriever.FileProducingTreeNode;
-import org.astrogrid.desktop.modules.ui.scope.Retriever.SummarizingTableHandler;
-import org.astrogrid.desktop.modules.ui.scope.ScopeTransferableFactory.AstroscopeFileObject;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -274,7 +270,7 @@ protected TreeNode createServiceNode(URL serviceURL, String tooltip) {
 			}
 
 			public String getType() {
-				return null;
+				return "service";
 			}
 
 			public String getUpdated() {

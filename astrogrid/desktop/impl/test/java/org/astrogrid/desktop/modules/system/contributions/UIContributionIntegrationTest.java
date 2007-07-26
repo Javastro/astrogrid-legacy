@@ -40,15 +40,11 @@ public class UIContributionIntegrationTest extends InARTestCase {
     }
     
 	public void testMenu() throws Exception {
-		UIMenuContribution m = (UIMenuContribution) contrib.get("debug");
+		UIMenuContribution m = (UIMenuContribution) contrib.get("help");
 		assertNotNull(m);
-		assertEquals("debug",m.getName());
-		assertEquals("Debug",m.getText());
-		assertEquals("edit",m.getAfter());
-		assertEquals("help",m.getBefore());
-		assertNotNull(m.getVisibleCondition());
-		assertEquals("acr.debug",m.getVisibleCondition().getName());
-	}
+		assertEquals("help",m.getName());
+		assertEquals("Help",m.getText());
+		}
 	
 	public void testTab() throws Exception {
 		if (! Boolean.getBoolean("asr.mode")) { // no tabs present in asr mode

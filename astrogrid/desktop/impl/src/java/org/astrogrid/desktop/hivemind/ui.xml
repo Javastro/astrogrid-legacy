@@ -190,7 +190,9 @@ ASTROSCOPE
 	TASK RUNNER
 	 -->
 	<service-point id="applicationLauncher" interface="org.astrogrid.desktop.modules.ui.TaskRunnerInternal">
-		<interceptor service-id="system.snitchInterceptor" />
+		<interceptor service-id="system.snitchInterceptor" >
+            <exclude method="hide" />
+        </interceptor>
 		<invoke-factory>   
 			<construct class="org.astrogrid.desktop.modules.ui.TaskRunnerFactory">
 						<service>UiBuilder</service>
@@ -208,15 +210,37 @@ ASTROSCOPE
 			<inject object="service:system.ui"/>		
 			<inject object="service:astrogrid.applications"/>		
 			<inject object="service:dialogs.resourceChooser" />
-			<inject object="service:dialogs.registryGoogle" />			
-			<inject object="ui:executionTracker"/>		
+			<inject object="service:dialogs.registryGoogle" />	
             <inject object="service:system.uiBuilder" />
-            <inject object="service:ui.UiBuilder" />            	
+            <inject object="service:ui.UiBuilder" />   
+            <inject object="service:system.vfs" />         	
 		</object>
         
 		<object name="executionTracker" class="org.astrogrid.desktop.modules.ui.execution.ExecutionTracker">
+            <inject-arg />
 			<inject object="service:astrogrid.processManager" />
+            <inject object="service:ui.UiBuilder" />
+            <inject object="service:actionsBuilder" />
+            <inject object="service:system.vfs" />
 		</object>
+        
+        <object name="fileModel" class="org.astrogrid.desktop.modules.ui.fileexplorer.FileModel">
+            <inject-arg />
+            <inject-arg />
+            <inject object="service:ui.iconFinder" />
+            <inject-arg />
+        </object>
+        
+        <object name="vfsOperations" class="org.astrogrid.desktop.modules.ui.fileexplorer.VFSOperationsImpl">
+            <inject-arg/>
+            <inject-arg />
+            <inject object="service:system.vfs" />
+        </object>
+        
+        <object name="operableFilesList" class="org.astrogrid.desktop.modules.ui.fileexplorer.OperableFilesList">
+            <inject object="service:ui.iconFinder" />
+            <inject-arg />
+        </object>
         
         <object name="taskParametersForm" class="org.astrogrid.desktop.modules.ui.taskrunner.TaskParametersForm">
             <inject-arg />
@@ -314,18 +338,19 @@ Query Builder
             <inject object="service:system.ui"/>        
             <inject object="service:astrogrid.applications"/>       
             <inject object="service:dialogs.resourceChooser" />
-            <inject object="service:dialogs.registryGoogle" />          
-            <inject object="ui:executionTracker"/>      
+            <inject object="service:dialogs.registryGoogle" />  
             <inject object="service:system.uiBuilder" />
-            <inject object="service:ui.UiBuilder" />  
+            <inject object="service:ui.UiBuilder" />   
+            <inject object="service:system.vfs" />                        
             <inject object="service:ivoa.registry" />                
         </object>
        </contribution>
 	
+    <!--  doesn't do anything at the moment
 	<contribution configuration-id="system.windowFactories">
 		<window name="Query Builder">service:queryBuilder</window>
 	</contribution>
-		
+		-->
 		<contribution configuration-id="system.helpmap">
 		<!-- TODO: fix these urls. -->
 		<item id="userInterface.queryBuilder" url="http://www2.astrogrid.org/science/documentation/workbench-system-services/resources/resources/" />
@@ -337,7 +362,13 @@ Query Builder
 	VOEXPLORER
 	 -->
 	<service-point id="registryBrowser" interface="org.astrogrid.desktop.modules.ui.VOExplorerFactoryInternal">
-			<interceptor service-id="system.snitchInterceptor" />
+			<interceptor service-id="system.snitchInterceptor" >
+                <!--  including things seems to mean we get 'all'. excluding what we dont' want seems to work. -->
+                <exclude method="appendHandler" />
+                <exclude method="getHandledMessages" />
+                <exclude method="perform" />
+                <exclude method="setNextHandler" />
+            </interceptor>
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ui.VOExplorerFactoryImpl" >
 				<service>UiBuilder</service>
@@ -387,7 +418,13 @@ Query Builder
 FILE EXPLORER
  -->
  	<service-point id="fileManager" interface="org.astrogrid.desktop.modules.ui.FileExplorerFactoryInternal">
- 		<interceptor service-id="system.snitchInterceptor" />
+ 		<interceptor service-id="system.snitchInterceptor" >
+                <!--  including things seems to mean we get 'all'. excluding what we dont' want seems to work. -->
+                <exclude method="appendHandler" />
+                <exclude method="getHandledMessages" />
+                <exclude method="perform" />
+                <exclude method="setNextHandler" />
+        </interceptor>
  		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ui.FileExplorerFactoryImpl" >
 				<service>UiBuilder</service>
@@ -411,6 +448,7 @@ FILE EXPLORER
 			<inject object="service:system.uiBuilder" />
 			<inject object="service-property:storageFolders:list" />
 			<inject object="service:system.vfs" />
+            <inject object="service:iconFinder" />
 		</object>
 	</contribution>
 
@@ -423,16 +461,25 @@ FILE EXPLORER
 			</construct>
 		</invoke-factory>
 	</service-point>
+    
+    <service-point id="iconFinder" visibility="private" interface="org.astrogrid.desktop.modules.ui.fileexplorer.IconFinder">
+    Helper service that finds icons for file objects. later will use hivemind contribtion
+    to add icon rules / locations.
+        <invoke-factory>
+            <construct class="org.astrogrid.desktop.modules.ui.fileexplorer.IconFinderImpl" />
+        </invoke-factory>
+    </service-point>
+
 
 <!--  
 ********************************************
 ACTIONS
 -->
 	
-	<service-point id="actionsBuilder" interface="org.astrogrid.desktop.modules.system.ui.ActionContributionBuilder">
+	<service-point id="actionsBuilder" interface="org.astrogrid.desktop.modules.system.ui.ActivityFactory">
 		Assembles actions menus from the contributed actions.
 		<invoke-factory model="singleton">
-			<construct class="org.astrogrid.desktop.modules.system.ui.ActionContributionBuilderImpl">
+			<construct class="org.astrogrid.desktop.modules.system.ui.ActivityFactoryImpl">
 				<service>actionsFactory</service>
 			</construct>
 		</invoke-factory>
@@ -471,13 +518,24 @@ ACTIONS
 		</object>
 		<object name="1viewBrowser" class="org.astrogrid.desktop.modules.ui.actions.ViewInBrowserActivity">
 			<inject object="service:system.browser"/>
+            <inject object="service:system.vfs" />
 			<inject name="section" object="literal:string:use" />
-		</object>	
+		</object>
+        <!--  not implemented	
 		<object name="1saveFile" class="org.astrogrid.desktop.modules.ui.actions.SaveActivity">
 			<inject object="service:dialogs.resourceChooser" />
 			<inject object="service:astrogrid.myspace" />
 			<inject name="section" object="literal:string:use" />
-		</object>		
+		</object>
+        		-->
+        <object name="1download" class="org.astrogrid.desktop.modules.ui.actions.SimpleDownloadActivity">
+            <inject object="service:system.vfs" />
+            <inject name="section" object="literal:string:use" />
+        </object>       
+        <object name="2delete" class="org.astrogrid.desktop.modules.ui.actions.DeleteFilesActivity">
+            <inject object="service:system.vfs" />
+            <inject name="section" object="literal:string:use" />
+        </object> 
 		<object name="1web" class="org.astrogrid.desktop.modules.ui.actions.WebInterfaceActivity">
 			<inject object="service:system.browser" />
 			<inject name="section" object="literal:string:use" />			

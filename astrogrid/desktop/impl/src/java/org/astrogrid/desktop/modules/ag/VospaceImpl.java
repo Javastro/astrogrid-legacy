@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.21 2007/06/18 16:27:15 nw Exp $
+/*$Id: VospaceImpl.java,v 1.22 2007/07/26 18:21:45 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -51,8 +51,8 @@ import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.community.common.exception.CommunityException;
-import org.astrogrid.desktop.modules.ag.vfs.MemoizingCommunityAccountSpaceResolver;
-import org.astrogrid.desktop.modules.ag.vfs.MemoizingNodeDelegateResolver;
+import org.astrogrid.desktop.modules.ag.vfs.myspace.MemoizingCommunityAccountSpaceResolver;
+import org.astrogrid.desktop.modules.ag.vfs.myspace.MemoizingNodeDelegateResolver;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
@@ -913,6 +913,12 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.22  2007/07/26 18:21:45  nw
+merged mark's and noel's branches
+
+Revision 1.21.2.1  2007/07/24 17:50:11  nw
+class re-arrangement
+
 Revision 1.21  2007/06/18 16:27:15  nw
 javadoc
 

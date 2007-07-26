@@ -65,7 +65,7 @@ public class ScopeServicesList extends RegistryGooglePanel
 	}
 	// overridden -- to return results too
 	protected String[] viewNames() {
-		return (String[])ArrayUtils.add(super.viewNames(),"results");
+	    return (String[])ArrayUtils.addAll(new String[]{"results"},super.viewNames());
 	}
 /** map of additional informaiton for each service resource
  * key - the resource object

@@ -65,8 +65,9 @@ public class SnitchInterceptorFactory implements ServiceInterceptorFactory {
         builder.begin();
       //  builder.addln("java.util.Map _m = new java.util.HashMap();");
       //  builder.addln("_m.put
-        builder.addln("_snitch.snitch(\"INVOKE/\" + _interfaceName + \"/" + sig.getName() + "\");");
-        
+//        builder.addln("_snitch.snitch(\"INVOKE/\" + _interfaceName + \"/" + sig.getName() + "\");");
+        builder.addln("_snitch.snitch(\"INVOKE/\" + _interfaceName );");     
+ 
         if (!isVoid)
         {
             builder.add(ClassFabUtils.getJavaClassName(returnType));

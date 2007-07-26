@@ -12,8 +12,13 @@ import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.modules.adqlEditor.ADQLEditorPanel;
+import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileExplorerImpl;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileModel;
+import org.astrogrid.desktop.modules.ui.fileexplorer.OperableFilesList;
+import org.astrogrid.desktop.modules.ui.fileexplorer.VFSOperations;
+import org.astrogrid.desktop.modules.ui.fileexplorer.VFSOperationsImpl;
 import org.astrogrid.desktop.modules.ui.taskrunner.AdqlTextFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.BinaryFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.BooleanFormElement;
@@ -27,6 +32,8 @@ import org.astrogrid.desktop.modules.ui.taskrunner.TaskRunnerImpl;
 import org.astrogrid.desktop.modules.ui.taskrunner.TextFormElement;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
+
+import ca.odell.glazedlists.SortedList;
 
 /** wraps the untyped hivemind ObjectBuilder with 
  * methods that make explicit the parameters required and the return type
@@ -57,7 +64,7 @@ public interface TypesafeObjectBuilder {
     
     // subcomponents.
     /** returns a new object as named <tt>executionTracker</tt> */
-    public ExecutionTracker createExecutionTracker();
+    public ExecutionTracker createExecutionTracker(UIComponent parent);
     
     /** returns a new object as named <tt>registryGooglePanel</tt> */
     public RegistryGooglePanel createGooglePanel();
@@ -79,6 +86,11 @@ public interface TypesafeObjectBuilder {
     OutputFormElement createOutputFormElement(ParameterValue pv,ParameterBean pb);
     PositionFormElement createPositionFormElement(ParameterValue ra, ParameterBean raDesc,ParameterValue dec, ParameterBean decDesc, UIComponent parent);
     AdqlTextFormElement createAdqlTextFormElement(ParameterValue pv,ParameterBean pb, CeaApplication app,UIComponent parent);
+
+// file view components.
+    FileModel createFileModel(SortedList files,ActivitiesManager activities,VFSOperations ops);
+    OperableFilesList createOperableFilesList(FileModel model);
+    VFSOperationsImpl createVFSOperations(UIComponent parent,VFSOperationsImpl.Current current);
     
     //
     // access the core object builder

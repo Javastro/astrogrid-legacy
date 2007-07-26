@@ -12,9 +12,11 @@ import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.acr.astrogrid.RemoteProcessListener;
+import org.astrogrid.workflow.beans.v1.Tool;
 
 /** Inteface to a remote process.
  * 
@@ -62,7 +64,20 @@ public interface ProcessMonitor {
 
 	public void removeProcessListener(ProcessListener listener);
 
-	
+	/** an optional aditional interface that process monitors may implement to 
+	 * provide more information
+	 * @author Noel.Winstanley@manchester.ac.uk
+	 * @since Jul 24, 200711:12:48 AM
+	 */
+	public static interface Advanced extends ProcessMonitor {
+	    /** returns the tool document (or a facsimile of it) which was used to invoke the 
+	     * process
+	     * @return
+	     */
+	    Tool getInvocationTool();
+	    CeaApplication getApplicationDescription();
+	    
+	}
 	
 	
 	public static interface ProcessListener extends EventListener {

@@ -39,12 +39,15 @@ public class LargeTextFormElement extends AbstractTaskFormElement implements Doc
 		text.setLineWrap(true);
 		text.setWrapStyleWord(true);
 		JScrollPane sp = new JScrollPane(text,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		if (pdesc.getDefaultValue() != null) {
-			text.setText(pdesc.getDefaultValue());
+		if (! pval.getIndirect()) {
+		    if (pdesc.getDefaultValue() != null) {
+		        text.setText(pdesc.getDefaultValue());
+		    }
+		    if (pval.getValue() != null) {
+		        text.setText(pval.getValue());
+		    }		
+		    pval.setValue(getStringValue());
 		}
-		if (pval.getValue() != null && ! pval.getIndirect()) {
-			text.setText(pval.getValue());
-		}		
 		text.getDocument().addDocumentListener(this);
 		return sp;
 	}

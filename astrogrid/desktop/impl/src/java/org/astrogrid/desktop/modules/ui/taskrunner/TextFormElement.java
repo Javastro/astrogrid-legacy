@@ -29,12 +29,15 @@ public class TextFormElement extends AbstractTaskFormElement implements Document
 
 	protected final JComponent createEditor() {
 		text = new JTextField();
-		if (pdesc.getDefaultValue() != null) {
-			text.setText(pdesc.getDefaultValue());
+		if (!pval.getIndirect()) {
+		    if (pdesc.getDefaultValue() != null) {
+		        text.setText(pdesc.getDefaultValue());
+		    }
+		    if (pval.getValue() != null) {
+		        text.setText(pval.getValue());
+		    }				
+		    pval.setValue(getStringValue());
 		}
-		if (pval.getValue() != null && ! pval.getIndirect()) {
-			text.setText(pval.getValue());
-		}				
 		text.getDocument().addDocumentListener(this);
 		return text;
 	}

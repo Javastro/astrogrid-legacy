@@ -5,39 +5,36 @@ package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.Component;
 import java.awt.datatransfer.Transferable;
-import java.util.Collections;
 import java.util.Iterator;
 
-import javax.swing.Action;
-import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JMenu;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.SwingUtilities;
-import javax.swing.border.TitledBorder;
 
-import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.modules.ui.comp.EventListMenuManager;
 import org.astrogrid.desktop.modules.ui.comp.SelfEnablingMenu;
-import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
 
-import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FunctionList;
-import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.event.ListEvent;
 import ca.odell.glazedlists.event.ListEventListener;
 
 import com.l2fprod.common.swing.JTaskPaneGroup;
 
-/** base class for components that manage a dynamic list of activities.
+/** base class for components that manage a dynamic list of activities - a 'scavenger' (inspired by taverna terminology)
  * To the outside, appears as a single activity - this class takes care of delegating
- * to the components. 
+ * to the list of activities it manages.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 17, 20071:41:47 AM
  */
 public  abstract class AbstractActivityScavenger extends AbstractActivity{
+    /**
+     * Logger for this class
+     */
+    private static final Log logger = LogFactory
+            .getLog(AbstractActivityScavenger.class);
 	
 	public AbstractActivityScavenger() {
 		super();
@@ -51,11 +48,9 @@ public  abstract class AbstractActivityScavenger extends AbstractActivity{
 		super(name);
 	}
 	
-	/** subclasses should populate this in the constructor.
-	 contents of this class must all be AbstractActivity */
 	private EventList _children;
 
-	
+	/** access the list of child activities */
 	protected EventList getChildren() {
 		if (_children == null) {
 			_children =   createEventList();
@@ -63,8 +58,13 @@ public  abstract class AbstractActivityScavenger extends AbstractActivity{
 		return _children;
 	}
 
-	/** implement this to specifiy which list implementaiton to use */
+	/** implement this to control which list implementaiton to use */
 	protected abstract EventList createEventList();
+	
+	/**implement this to populate the 'children' list, accessed via {@link #getChildren()} 
+	 * 
+	 * this method will be called to populate the chldren list lazily.*/
+    protected abstract void loadChildren();
 
 	public void addTo(JTaskPaneGroup grp) {
 		if (! loaded) {
@@ -110,8 +110,7 @@ public  abstract class AbstractActivityScavenger extends AbstractActivity{
 		});
 	}
 	
-	/** subclasses should use this method to populate tyhe 'children' list */
-	protected abstract void loadChildren();
+
 	private boolean loaded = false;
 	
 	public void noneSelected() {
@@ -134,6 +133,8 @@ public  abstract class AbstractActivityScavenger extends AbstractActivity{
 	
 	/** manages the display of a list of Activities in a taskPane */
 	private class EventListTaskPaneGroupManager implements ListEventListener {
+
+
 		private final JTaskPaneGroup pane;
 		private final EventList list;
 		private final Component markerComponent;
@@ -144,7 +145,8 @@ public  abstract class AbstractActivityScavenger extends AbstractActivity{
 			super();
 			this.pane = pane;
 			this.list = list;
-			
+			logger.debug(pane);
+			logger.debug("startpos: "+startPos);
 			// add an invisible item..
 			markerComponent = new Marker();
 			if (startPos != -1) {
@@ -154,9 +156,10 @@ public  abstract class AbstractActivityScavenger extends AbstractActivity{
 			}
 			list.addListEventListener(this);
 			int startIndex = findStartIndex();
+			logger.debug("startindex: " + startIndex);
 			for (Iterator i = list.iterator(); i.hasNext();) {
 				AbstractActivity a = (AbstractActivity) i.next();
-				a.addTo(pane,++startIndex);
+				a.addTo(pane,startIndex++);
 			}
 		}
 	

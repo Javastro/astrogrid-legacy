@@ -3,6 +3,7 @@
  */
 package org.astrogrid.desktop.modules.system;
 
+import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Arrays;
@@ -11,6 +12,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.text.StrBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
@@ -55,6 +57,7 @@ public class SnitchImpl implements SnitchInternal {
 							Map m = new HashMap();
 							m.put("name",plas.getName());
 							m.put("ops",Arrays.asList(plas.getUnderstoodMessages()));
+							m.put("description",plas.getDescription());
 							snitch("PLASTIC",m);								
 						}
 					}
@@ -82,11 +85,11 @@ public class SnitchImpl implements SnitchInternal {
 
 	public void snitch(final String message, final Map params) {
 		if (! snitchDisabled) {
-		(new BackgroundWorker(ui,"calling home") {
+		(new BackgroundWorker(ui,"") {
 
 		protected Object construct() throws Exception {
-			StringBuffer sb = new StringBuffer(base);
-			sb.append(message).append('?');
+			StrBuilder sb = new StrBuilder(base);
+			sb.append(message).append('?');			
 			for (Iterator i = params.entrySet().iterator(); i.hasNext(); ) {
 				Map.Entry e = (Map.Entry)i.next();
 				sb.append(e.getKey())
@@ -95,6 +98,7 @@ public class SnitchImpl implements SnitchInternal {
 					.append("&");
 			}
 			URL query = new URL(sb.toString());
+			logger.debug(query);
 			query.openConnection().getContent();
 			return null; // job done.
 		}

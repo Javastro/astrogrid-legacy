@@ -3,11 +3,15 @@
  */
 package org.astrogrid.desktop.modules.ui.fileexplorer;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
+import org.apache.commons.vfs.Selectors;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.actions.BulkCopyWorker;
 
 /** Implementation of operations on files - liable to change.
  * @todo hook this into tasks infrastryctyre, when it comes along - use to 
@@ -34,22 +38,13 @@ public class VFSOperationsImpl implements VFSOperations {
 
 	public void copyOrMoveToCurrent(List fileObjects) {
 		//@todo prompt user for the action to take.
-	//	copyToCurrent(fileObjects);
+		copyToCurrent(fileObjects);
 	}
 
-	//@fixme - not correct - overwrites current file, instead of copying into.
 	public void copyToCurrent(final List fileObjects) {
-	/*	final FileObject base = current.get(); // take a ref before going into background. 
-		(new BackgroundWorker(parent,"Copying") {
+		final FileObject target = current.get(); // take a ref before going into background. 
+		(new BulkCopyWorker(vfs,parent,target,fileObjects)).start();
 
-			protected Object construct() throws Exception {
-				for (Iterator i = fileObjects.iterator(); i.hasNext();) {
-					FileObject target = (FileObject) i.next();
-					base.copyFrom(target,Selectors.SELECT_ALL);
-				}
-				return null;
-			}
-		}).start();*/
 	}
 
 	public void moveToCurrent(final List fileObjects) {

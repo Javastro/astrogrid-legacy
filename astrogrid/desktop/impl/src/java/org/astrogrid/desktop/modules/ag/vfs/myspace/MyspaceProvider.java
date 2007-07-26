@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.astrogrid.desktop.modules.ag.vfs;
+package org.astrogrid.desktop.modules.ag.vfs.myspace;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -10,6 +10,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import junit.framework.Assert;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,6 +26,7 @@ import org.astrogrid.acr.astrogrid.UserLoginEvent;
 import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.ag.vfs.VfsFileProvider;
 import org.astrogrid.filemanager.client.FileManagerClient;
 import org.astrogrid.filemanager.common.BundlePreferences;
 import org.astrogrid.registry.RegistryException;
@@ -94,18 +97,10 @@ public class MyspaceProvider extends AbstractOriginatingFileProvider implements
 			FileSystemOptions arg1) throws FileSystemException {
 		MyspaceFileName fn = (MyspaceFileName)arg0;
 		logger.debug("Creating filesystem for " + arg0);
-		try {
-			FileManagerClient client = msi.getClient();
-			FileSystem sys = new MyspaceFileSystem(fn,client,arg1);
+			FileSystem sys = new MyspaceFileSystem(fn,msi,arg1);
 			filesystems.add(sys);
 			return sys;
-		} catch (CommunityException e) {
-			throw new FileSystemException(e);
-		} catch (RegistryException x) {
-			throw new FileSystemException(x);
-		} catch (URISyntaxException x) {
-			throw new FileSystemException(x);
-		} 	
+	
 	}
 	// hang onto the the filesystems, so can be closed on user logout.
 	private final List filesystems = new ArrayList();

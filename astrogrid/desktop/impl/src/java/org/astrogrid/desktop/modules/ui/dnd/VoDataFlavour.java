@@ -58,8 +58,8 @@ public class VoDataFlavour {
 	public static  final DataFlavor JPEG = new DataFlavor("image/jpeg","JPEG Image");
 	
 //the rest of these types still need to be sorted out.	
-	/** votable, accessible by Input Stream */
 	public static final String MIME_VOTABLE =  "application/x-votable+xml";
+	/** votable, accessible by Input Stream */
 	public static final  DataFlavor VOTABLE = new DataFlavor(MIME_VOTABLE,"VOTABLE");
 
 	/** siap response - a specialization of votable */
@@ -98,12 +98,16 @@ public class VoDataFlavour {
 	public static final String MIME_CEA = "application/x-tool+xml";
 	public static final DataFlavor CEA_TOOL = new DataFlavor(MIME_CEA,"CEA Tool Document");
 		
+	public static final String MIME_OCTET_STREAM = "application/octet-stream";
 	
 	//@todo add types for solar.
 	
 		//@todo define some types for movies..
 	
 	
+// Not a data flavour, but a hint that we suspect it might be..
+	public static final String TABULAR_HINT = "suspected.table";
+    public static final String FITS_HINT = "suspected.fits";	
 	// factory methods
 	
 	/** create a flavour only available in local vm

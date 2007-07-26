@@ -3,8 +3,18 @@
  */
 package org.astrogrid.desktop.modules.ui.taskrunner;
 
-import java.awt.BorderLayout;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.geom.Point2D;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.text.ParseException;
+
+import javax.swing.Box;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
@@ -19,47 +29,113 @@ import org.astrogrid.desktop.modules.ui.comp.NameResolvingPositionTextField;
 
 /** Composite form element that edits an RA and DEC parameter.
  * 
+ * needs a bit of trickery to shoehorn 2 parameters into 1 space.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 4, 20075:08:35 PM
  */
-public class PositionFormElement extends AbstractTaskFormElement {
+public class PositionFormElement extends AbstractTaskFormElement implements PropertyChangeListener{
 
-	private final ParameterValue dec;
+    private static final Log logger = LogFactory
+    .getLog(PositionFormElement.class);
+    private final ParameterValue dec;
     private final ParameterBean decDesc;
-    private final  UIComponent parent;
-    private final  Sesame ses;
+    private final UIComponent parent;
+    private final Sesame ses;
+    private final ParameterValue ra;
+    private final ParameterBean raDesc;
+    private NameResolvingPositionTextField positionField;
 
-    /**
-	 * @param ra
-	 * @param raDesc
-	 * @param dec
-	 * @param decDesc
-	 * @param chooser 
-	 */
-	public PositionFormElement(ParameterValue ra, ParameterBean raDesc, ParameterValue dec, ParameterBean decDesc,  UIComponent parent,ResourceChooserInternal chooser, Sesame ses) {
-	    super(ra,raDesc,chooser);
+    public PositionFormElement(ParameterValue ra, ParameterBean raDesc, ParameterValue dec, ParameterBean decDesc,  UIComponent parent,ResourceChooserInternal chooser, Sesame ses) {
+        super(ra /*ignored*/,new CompositeParameterBean(raDesc,decDesc)
+        ,chooser);
+        this.ra = ra;
+        this.raDesc = raDesc;	    
         this.dec = dec;
         this.decDesc = decDesc;
         this.parent = parent;
         this.ses = ses;
-	}
+
+        //make sure we just show direct mode.
+        getEditor().show(DIRECT);
+        indirectToggle.setEnabled(false);
+        indirectToggle.setVisible(false);
+    }
 
     protected JComponent createEditor() {
-        JPanel p = new JPanel(new BorderLayout());
-        NameResolvingPositionTextField f = new NameResolvingPositionTextField(parent,ses);
-        p.add(f,BorderLayout.CENTER);
+        // setup default values.
+        if (StringUtils.isEmpty(ra.getValue()) ) {
+            ra.setValue(StringUtils.isEmpty(raDesc.getDefaultValue()) ? "0.0" : raDesc.getDefaultValue());
+        }
+        if (StringUtils.isEmpty(dec.getValue())) {
+            dec.setValue(StringUtils.isEmpty(decDesc.getDefaultValue()) ? "0.0" : decDesc.getDefaultValue());
+        }
+        logger.debug("ra :" + ra.getValue());
+        logger.debug("dec:" + dec.getValue());        
+
+
+        positionField = new NameResolvingPositionTextField(parent,ses);
+        positionField.addPropertyChangeListener("value",this);
         DecSexToggle t = new DecSexToggle();
-        //p.add(,BorderLayout.SOUTH);
-        t.addListener(f);
-        
-        return f;
+        t.addListener(positionField);
+        try {
+            positionField.setPosition(ra.getValue() + "," + dec.getValue());
+        } catch (ParseException x) {
+            logger.error("ParseException",x);
+        }
+
+        Box p = Box.createVerticalBox();
+        p.add(positionField);
+        p.add(t.getDegreesRadio());
+        p.add(t.getSexaRadio());
+
+        return p;
     }
 
+    // only called when flipping between direct and indirect view - and as we've 
+    // disabled this, it'll never get called.
+    // as this is the case, means that all alterations to values of ra and dec occur within
+    // this class only - and not in the base class.
     protected String getStringValue() {
-        return null;
+        throw new RuntimeException("unimplemented - as should never be called");
     }
-	
-	
-	
+
+
+
+    // copy contents of position field back into ra and dec.
+    public void updateParameters() {
+        Point2D position = positionField.getPosition();
+        logger.debug("updating position to" + position);
+        ra.setValue(Double.toString(position.getX()));
+        dec.setValue(Double.toString(position.getY()));
+    }
+
+
+    public void propertyChange(PropertyChangeEvent evt) {
+        updateParameters();
+    }
+
+    /** fudged parameter bean which describes both of the parameters
+     * just used for UI display. */
+    private static class CompositeParameterBean extends ParameterBean {
+
+        public CompositeParameterBean(ParameterBean raDesc, ParameterBean decDesc) {
+            super(raDesc.getName() // unimportant
+                    , raDesc.getUiName() + ","+ decDesc.getUiName()
+                    ,raDesc.getUiName() + " : " + raDesc.getDescription() 
+                    + "<p >" 
+                    + decDesc. getUiName() + ":" + decDesc.getDescription()
+                    ,raDesc.getUcd()+","+decDesc.getUcd()
+                    ,raDesc.getDefaultValue() // unused
+                    ,raDesc.getUnits()+","+decDesc.getUnits()
+                    , raDesc.getType() + ", " + decDesc.getType()
+                    , raDesc.getSubType() // unused
+                    ,raDesc.getOptions() // unused
+            );
+        }
+    }
+
+
+
+
 
 }

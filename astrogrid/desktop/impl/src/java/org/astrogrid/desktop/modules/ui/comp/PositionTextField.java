@@ -1,14 +1,17 @@
 package org.astrogrid.desktop.modules.ui.comp;
 
 import java.awt.geom.Point2D;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.EventObject;
+import java.util.Locale;
 
 import javax.swing.JFormattedTextField;
 
 /**
- * UI filed that allows input of a point position
+ * UI field that allows input of a point position
  * 
  * 
  * Register this class as a listener on a DecSexToggle for it to automatically adjust <b>input & display</b> 
@@ -21,21 +24,42 @@ public class PositionTextField extends JFormattedTextField implements DecSexTogg
     
     protected class DecimalPositionFormatter extends AbstractFormatter {
 
-    	private NumberFormat nfd = NumberFormat.getNumberInstance();
-		{
-			nfd.setGroupingUsed(false);
-			nfd.setMinimumFractionDigits(6);
-			nfd.setMaximumFractionDigits(6);			
-		}
+        // Use fixed number formats.  Default-locale-sensitive ones are 
+        // dangerous here - we don't want one which uses a comma for a 
+        // decimal point since we are using comma as a delimiter.
+        private final NumberFormat rNfd;
+        private final NumberFormat dNfd;
+        {
+            DecimalFormatSymbols syms = new DecimalFormatSymbols(Locale.UK);
+            rNfd = new DecimalFormat("0.000000", syms);
+            dNfd = new DecimalFormat("+0.000000;-0.000000", syms);
+        }
+
 		public Object stringToValue(String arg0) throws ParseException {
 			String[] nums = arg0.split(",");
 			if (nums.length != 2) {
 				throw new ParseException("Expected 2 numbers",0);
 			}
-			return new Point2D.Double(
-					nfd.parse(nums[0]).doubleValue()
-					,nfd.parse(nums[1]).doubleValue()
-					);
+            String sx = nums[0].trim();
+            String sy = nums[1].trim();
+
+            // Double.parseDouble is more lenient than using the NumberFormat
+            // parser; for instance it allows optional leading plus signs.
+            double x;
+            try {
+                x = Double.parseDouble(sx);
+            }
+            catch (NumberFormatException e) {
+                throw new ParseException(sx + " is not numeric", 0);
+            }
+            double y;
+            try {
+                y = Double.parseDouble(sy);
+            }
+            catch (NumberFormatException e) {
+                throw new ParseException(sy + " is not numeric", 0);
+            }
+            return new Point2D.Double(x,y);
 		}
 
 		public String valueToString(Object arg0) throws ParseException {
@@ -43,7 +67,7 @@ public class PositionTextField extends JFormattedTextField implements DecSexTogg
 			if (dim == null) {
 				return null;
 			}
-				return nfd.format(dim.getX()) + "," + nfd.format(dim.getY());
+            return rNfd.format(dim.getX()) + "," + dNfd.format(dim.getY());
 		}
     }
     
@@ -53,11 +77,16 @@ public class PositionTextField extends JFormattedTextField implements DecSexTogg
 			String[] nums = arg0.split(",");
 			if (nums.length != 2) {
 				throw new ParseException("Expected 2 numbers",0);
-			}			
-			return new Point2D.Double (
-					PositionUtils.sexagesimalRaToDecimal(nums[0])
-					,PositionUtils.sexagesimalDecToDecimal(nums[1])
-							);
+			}
+            String sx = nums[0].trim();
+            String sy = nums[1].trim();
+            try {
+                return new Point2D.Double(PositionUtils.sexagesimalRaToDecimal(nums[0].trim()),
+                                          PositionUtils.sexagesimalDecToDecimal(nums[1].trim()));
+            }
+            catch (NumberFormatException e) {
+                throw new ParseException(e.getMessage(), 0);
+            }
 		}
 
 		public String valueToString(Object arg0) throws ParseException {
@@ -65,7 +94,7 @@ public class PositionTextField extends JFormattedTextField implements DecSexTogg
 			if (dim == null) {
 				return null;
 			}
-				return PositionUtils.decimalToSexagesimal(dim.getX(),dim.getY());
+            return PositionUtils.decimalToSexagesimal(dim.getX(),dim.getY());
 		}
     }
     
@@ -89,6 +118,8 @@ public class PositionTextField extends JFormattedTextField implements DecSexTogg
 			}
         });
         setValue(p);
+        setToolTipText("Position (187.27,+2.05 or 12:29:06.00,+02:03:08.60)");
+        
     }
     
     

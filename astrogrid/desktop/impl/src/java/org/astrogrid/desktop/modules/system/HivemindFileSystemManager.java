@@ -12,6 +12,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.CacheStrategy;
+import org.apache.commons.vfs.FileSystem;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.impl.DefaultFileReplicator;
 import org.apache.commons.vfs.impl.DefaultFileSystemManager;
@@ -23,7 +24,7 @@ import org.astrogrid.acr.builtin.ShutdownListener;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 26, 20072:50:59 PM
  */
-public class HivemindFileSystemManager extends DefaultFileSystemManager implements ShutdownListener {
+public class HivemindFileSystemManager extends DefaultFileSystemManager implements ShutdownListener, ExtendedFileSystemManager {
 	/**
 	 * Logger for this class
 	 */
@@ -73,6 +74,18 @@ public class HivemindFileSystemManager extends DefaultFileSystemManager implemen
 	
 	public void setBaseFileString(String arg0) throws FileSystemException {
 		super.setBaseFile(new File(arg0));
+	}
+	
+	/** extended - to initialize the results virtual file system too */
+	public void init() throws FileSystemException {
+	    super.init();
+	    results = createVirtualFileSystem("results://").getFileSystem();
+	}
+	
+	private FileSystem results;
+	
+	public FileSystem getResultsFilesystem() {
+	    return results;
 	}
 	
 	/** Overridden - as default implementatio causes a StackOverflow - as it delegates back to the

@@ -1,4 +1,4 @@
-/*$Id: FileExplorerImpl.java,v 1.3 2007/07/23 11:51:15 nw Exp $
+/*$Id: FileExplorerImpl.java,v 1.4 2007/07/26 18:21:44 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,7 +35,8 @@ import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.CSH;
-import org.astrogrid.desktop.modules.system.ui.ActionContributionBuilder;
+import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
+import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
 import org.astrogrid.desktop.modules.system.ui.ArMainWindow;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.system.ui.UIContributionBuilder;
@@ -55,10 +56,10 @@ import com.l2fprod.common.swing.JTaskPane;
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 30-Mar-2005
  *
  */
-public class FileExplorerImpl extends UIComponentImpl {
+public class FileExplorerImpl extends UIComponentImpl{
 
-	public FileExplorerImpl( final UIContext context,  final ActionContributionBuilder activityBuilder
-			,final UIContributionBuilder menuBuilder, EventList folders, FileSystemManager vfs) {
+	public FileExplorerImpl( final UIContext context,  final ActivityFactory activityBuilder
+			,final UIContributionBuilder menuBuilder, EventList folders, FileSystemManager vfs, IconFinder icons) {
         super(context);
  
         this.setSize(800, 800);    
@@ -68,10 +69,7 @@ public class FileExplorerImpl extends UIComponentImpl {
 		    pane.setBorder(BorderFactory.createEmptyBorder());
 
 		    // build the actions menu / pane / popup.
-		    popup = new JPopupMenu();
-			actionsPanel = new JTaskPane();
-			JMenu actions = new JMenu("Actions");
-		    activities = activityBuilder.buildActions(this,popup,actionsPanel,actions);
+		    activities = activityBuilder.create(this);
 
 	// build the rest of the menuing system.
 		    JMenuBar menuBar = new JMenuBar();
@@ -82,7 +80,7 @@ public class FileExplorerImpl extends UIComponentImpl {
 	            fileMenu.add( new CloseAction());
 	            menuBar.add(fileMenu);
 	            
-	        menuBar.add(actions); 
+	        menuBar.add(activities.getMenu()); 
 	        
 		    menuBuilder.populateWidget(menuBar,this,ArMainWindow.MENUBAR_NAME);
 		    int sz = menuBar.getComponentCount();
@@ -97,13 +95,13 @@ public class FileExplorerImpl extends UIComponentImpl {
 		    setJMenuBar(menuBar);		
 
 		    // main pane.	    
-		    StorageView view = new StorageView(this,folders,vfs);
+		    StorageView view = new StorageView(this,activities,folders,vfs,icons);
 		    JComponent foldersPanel = view.getHierarchiesPanel();
 		    JComponent mainPanel = view.getMainPanel();
 		    JComponent mainButtons = view.getMainButtons();
 		 
 		    // assemble all into main window.
-		    final JScrollPane scrollPane = new JScrollPane(actionsPanel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		    final JScrollPane scrollPane = new JScrollPane(activities.getTaskPane(),JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		    scrollPane.setBorder(BorderFactory.createEmptyBorder());
 			// assemble folders and tasks into LHS 
 		    
@@ -126,8 +124,6 @@ public class FileExplorerImpl extends UIComponentImpl {
 			this.setTitle("File Explorer");
 		  //@todo find a new icon  setIconImage(IconHelper.loadIcon("search16.png").getImage());  
     }
-
-	private final JTaskPane actionsPanel;
 	    
 // event listener.
   
@@ -147,28 +143,8 @@ public class FileExplorerImpl extends UIComponentImpl {
 		return menu;
 	}
 
-	public void clearSelection() {
-		for (int i = 0; i < activities.length; i++) {
-			activities[i].noneSelected();
-		}		
-	}
+	private final ActivitiesManager activities;
 
-	private final Activity[] activities;
-	private final JPopupMenu popup;
-	public JPopupMenu getPopupMenu() {
-		return popup;
-	}
 
-	public void setSelection(Transferable tran) {
-		if (tran == null) {
-			for (int i = 0; i < activities.length; i++) {
-				activities[i].noneSelected();
-			}
-		} else {
-			for (int i = 0; i < activities.length ; i++) {
-				activities[i].selected(tran);
-			}
-		}		
-	}
 }
 

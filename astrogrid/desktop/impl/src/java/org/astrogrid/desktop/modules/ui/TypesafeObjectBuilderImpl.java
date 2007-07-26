@@ -17,8 +17,14 @@ import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.hivemind.EventDispatchThreadObjectBuilder;
 import org.astrogrid.desktop.modules.adqlEditor.ADQLEditorPanel;
+import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileExplorerImpl;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileModel;
+import org.astrogrid.desktop.modules.ui.fileexplorer.OperableFilesList;
+import org.astrogrid.desktop.modules.ui.fileexplorer.VFSOperations;
+import org.astrogrid.desktop.modules.ui.fileexplorer.VFSOperationsImpl;
+import org.astrogrid.desktop.modules.ui.fileexplorer.VFSOperationsImpl.Current;
 import org.astrogrid.desktop.modules.ui.taskrunner.AdqlTextFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.BinaryFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.BooleanFormElement;
@@ -32,6 +38,8 @@ import org.astrogrid.desktop.modules.ui.taskrunner.TaskRunnerImpl;
 import org.astrogrid.desktop.modules.ui.taskrunner.TextFormElement;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
+
+import ca.odell.glazedlists.SortedList;
 
 /** extends the event dispatch object builder with methods to build particular kinds 
  * of ui components.
@@ -55,8 +63,8 @@ public class TypesafeObjectBuilderImpl extends EventDispatchThreadObjectBuilder 
         return (AstroScopeLauncherImpl)create("astroscope");
     }
 
-    public ExecutionTracker createExecutionTracker() {
-        return (ExecutionTracker)create("executionTracker");
+    public ExecutionTracker createExecutionTracker(UIComponent parent) {
+        return (ExecutionTracker)create("executionTracker",parent);
     }
 
     public FileExplorerImpl createFileExplorer() {
@@ -137,6 +145,20 @@ public class TypesafeObjectBuilderImpl extends EventDispatchThreadObjectBuilder 
     public TaskParametersForm createTaskParametersForm(UIComponent parent,
             MouseListener listener) {
         return (TaskParametersForm)create("taskParametersForm",new Object[]{parent,listener});
+    }
+
+    public FileModel createFileModel(SortedList files,
+            ActivitiesManager activities, VFSOperations ops) {
+        return (FileModel)create("fileModel",new Object[]{files,activities,ops});
+    }
+
+    public OperableFilesList createOperableFilesList(FileModel model) {
+        return (OperableFilesList)create("operableFilesList",model);
+    }
+
+    public VFSOperationsImpl createVFSOperations(UIComponent parent,
+            Current current) {
+        return (VFSOperationsImpl)create("vfsOperations",new Object[]{parent,current});
     }
     
 

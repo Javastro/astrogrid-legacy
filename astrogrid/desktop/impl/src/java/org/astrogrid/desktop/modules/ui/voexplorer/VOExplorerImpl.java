@@ -1,4 +1,4 @@
-/*$Id: VOExplorerImpl.java,v 1.5 2007/07/23 11:47:17 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.6 2007/07/26 18:21:45 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,7 +37,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.system.ui.ActionContributionBuilder;
+import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
+import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
 import org.astrogrid.desktop.modules.system.ui.ArMainWindow;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.system.ui.UIContributionBuilder;
@@ -66,7 +67,7 @@ public class VOExplorerImpl extends UIComponentImpl
 	 */
 	private static final Log logger = LogFactory.getLog(VOExplorerImpl.class);
 
-	public VOExplorerImpl( final UIContext context, final ActionContributionBuilder activityBuilder
+	public VOExplorerImpl( final UIContext context, final ActivityFactory activityBuilder
 			,final UIContributionBuilder menuBuilder, EventList folders, RegistryGooglePanel google, QuerySizer sizer) {
 		super(context);
 		logger.info("Constructing new VOExplorer");
@@ -76,10 +77,7 @@ public class VOExplorerImpl extends UIComponentImpl
 		pane.setBorder(BorderFactory.createEmptyBorder());
 
 		// build the actions menu / pane / popup.
-		JPopupMenu popup = new JPopupMenu();
-		actionsPanel = new JTaskPane();
-		JMenu actions = new JMenu("Actions");
-		activities = activityBuilder.buildActions(this,popup,actionsPanel,actions);
+		activities = activityBuilder.create(this);
 
 		// build the rest of the menuing system.
 		JMenuBar menuBar = new JMenuBar();
@@ -89,7 +87,7 @@ public class VOExplorerImpl extends UIComponentImpl
 	        fileMenu.add(new JSeparator());
 	        fileMenu.add( new CloseAction());
 	        menuBar.add(fileMenu);
-	        menuBar.add(actions); 
+	        menuBar.add(activities.getMenu()); 
 		menuBuilder.populateWidget(menuBar,this,ArMainWindow.MENUBAR_NAME);
 		int sz = menuBar.getComponentCount();
 		
@@ -119,7 +117,7 @@ public class VOExplorerImpl extends UIComponentImpl
 		google.parent.set(this);
 		// attach ourself to this reg chooser, to listen for selection changes.
 		google.getCurrentResourceModel().addListSelectionListener(this); // listen to currently selected resource
-		google.setPopup(popup);
+		google.setPopup(activities.getPopupMenu());
 		google.getNewSearchButton().addActionListener(this);
 		google.addLoadListener(this);
 		mainPanel.add(google,RESOURCES_VIEW);
@@ -134,7 +132,7 @@ public class VOExplorerImpl extends UIComponentImpl
 		wireUpEditor(xqueryEditPanel,EDIT_XQUERY_VIEW);
 		
 		// assemble all into main window.
-		final JScrollPane actionsScroll = new JScrollPane(actionsPanel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		final JScrollPane actionsScroll = new JScrollPane(activities.getTaskPane(),JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		actionsScroll.setBorder(BorderFactory.createEmptyBorder());
 		actionsScroll.setMinimumSize(new Dimension(200,200));		
 		JScrollPane foldersScroll = new JScrollPane(resourcesFolders,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -180,8 +178,7 @@ public class VOExplorerImpl extends UIComponentImpl
 
 	private final FlipPanel mainPanel;
 	private final FlipPanel mainButtons;
-	private final Activity[] activities;	
-	private final JTaskPane actionsPanel;
+	private final ActivitiesManager activities;
 	public static final String RESOURCES_VIEW = "resources";
 	public static final String EDIT_SMART_VIEW = "edit-smart";
 	public static final String EDIT_STATIC_VIEW = "edit-static";
@@ -209,20 +206,12 @@ public class VOExplorerImpl extends UIComponentImpl
 		return menu;
 	}
 
-	private void clearSelection() {
-		for (int i = 0; i < activities.length; i++) {
-			activities[i].noneSelected();
-		}		
-	}
-
 	private void notifyResourceTasks() {
 		Transferable tran = google.getSelectionTransferable();
 		if (tran == null) {
-			clearSelection();
+			activities.clearSelection();
 		} else {
-				for (int i = 0; i < activities.length ; i++) {
-					activities[i].selected(tran);
-				}	
+		    activities.setSelection(tran);
 		}
 	}
 	// listens to clicks on resource Folders and registry google.
@@ -233,7 +222,7 @@ public class VOExplorerImpl extends UIComponentImpl
 		if (e.getSource() == resourcesFolders) {
 			ResourceFolder f =  (ResourceFolder)resourcesFolders.getSelectedValue();
 			if (f != null) { 
-				clearSelection();
+				activities.clearSelection();
 				f.display(google);
 				setTitle("VO Explorer - " + f.getName());
 			}
@@ -272,7 +261,7 @@ public class VOExplorerImpl extends UIComponentImpl
 		ResourceFolder r = p.getCurrentlyEditing();
 		resourcesFolders.store(r);
 		//display updated folder contents.
-		clearSelection();
+		activities.clearSelection();
 		r.display(google);
 		setTitle("VO Explorer - " + r.getName());		
 		showResourceView();
@@ -284,7 +273,7 @@ public class VOExplorerImpl extends UIComponentImpl
 		mainPanel.show(EDIT_SMART_VIEW);
 		mainButtons.show(EDIT_SMART_VIEW);
 		resourcesFolders.setEnabled(false);
-		clearSelection(); // removes list of actions.
+		activities.clearSelection(); // removes list of actions.
 	}
 
 	public void editExistingSmartList(SmartList f) {
@@ -293,7 +282,7 @@ public class VOExplorerImpl extends UIComponentImpl
 		mainPanel.show(EDIT_SMART_VIEW);
 		mainButtons.show(EDIT_SMART_VIEW);
 		resourcesFolders.setEnabled(false);
-		clearSelection(); // removes list of actions.
+		activities.clearSelection(); // removes list of actions.
 	}
 	
 	public void editNewStaticList(StaticList f) {
@@ -302,7 +291,7 @@ public class VOExplorerImpl extends UIComponentImpl
 		mainPanel.show(EDIT_STATIC_VIEW);
 		mainButtons.show(EDIT_STATIC_VIEW);
 		resourcesFolders.setEnabled(false);
-		clearSelection(); // removes list of actions.
+		activities.clearSelection(); // removes list of actions.
 	}
 
 	public void editExistingStaticList(StaticList f) {
@@ -311,7 +300,7 @@ public class VOExplorerImpl extends UIComponentImpl
 		mainPanel.show(EDIT_STATIC_VIEW);
 		mainButtons.show(EDIT_STATIC_VIEW);
 		resourcesFolders.setEnabled(false);
-		clearSelection(); // removes list of actions.
+		activities.clearSelection(); // removes list of actions.
 	}
 	
 	public void editNewQueryList(XQueryList f) {
@@ -320,7 +309,7 @@ public class VOExplorerImpl extends UIComponentImpl
 		mainPanel.show(EDIT_XQUERY_VIEW);
 		mainButtons.show(EDIT_XQUERY_VIEW);
 		resourcesFolders.setEnabled(false);
-		clearSelection(); // removes list of actions.
+		activities.clearSelection(); // removes list of actions.
 	}
 
 	public void editExistingQueryList(XQueryList f) {
@@ -329,7 +318,7 @@ public class VOExplorerImpl extends UIComponentImpl
 		mainPanel.show(EDIT_XQUERY_VIEW);
 		mainButtons.show(EDIT_XQUERY_VIEW);
 		resourcesFolders.setEnabled(false);
-		clearSelection(); // removes list of actions.
+		activities.clearSelection(); // removes list of actions.
 	}
 
 	public void showResourceView() {

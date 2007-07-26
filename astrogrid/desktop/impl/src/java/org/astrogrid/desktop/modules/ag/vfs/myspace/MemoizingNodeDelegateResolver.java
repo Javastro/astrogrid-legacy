@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.astrogrid.desktop.modules.ag.vfs;
+package org.astrogrid.desktop.modules.ag.vfs.myspace;
 
 import java.net.URL;
 

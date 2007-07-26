@@ -45,6 +45,8 @@ public class NameResolvingPositionTextField extends PositionTextField {
         // stick an 'adapter' in front of existing formatters.
         super.decimal = new SesameResolver(decimal);
         super.sexa = new SesameResolver(sexa);        
+        setToolTipText("Object name (3c273) or Position (187.27,+2.05 or 12:29:06.00,+02:03:08.60)");
+        
     }
     
     //name resolver.

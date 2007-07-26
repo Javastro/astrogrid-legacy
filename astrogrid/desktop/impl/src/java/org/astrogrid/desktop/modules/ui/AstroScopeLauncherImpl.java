@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.65 2007/07/23 12:28:53 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.66 2007/07/26 18:21:44 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,6 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -62,17 +61,19 @@ import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
-import org.astrogrid.desktop.modules.system.ui.ActionContributionBuilder;
+import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
+import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
 import org.astrogrid.desktop.modules.system.ui.ArMainWindow;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.system.ui.UIContributionBuilder;
 import org.astrogrid.desktop.modules.ui.actions.Activity;
 import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle;
-import org.astrogrid.desktop.modules.ui.comp.DimensionTextField;
+import org.astrogrid.desktop.modules.ui.comp.DoubleDimension;
 import org.astrogrid.desktop.modules.ui.comp.EventListMenuManager;
 import org.astrogrid.desktop.modules.ui.comp.NameResolvingPositionTextField;
 import org.astrogrid.desktop.modules.ui.comp.PositionUtils;
+import org.astrogrid.desktop.modules.ui.comp.RadiusTextField;
 import org.astrogrid.desktop.modules.ui.comp.ShowOnceDialogue;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle.DecSexListener;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
@@ -127,7 +128,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 
 	public AstroScopeLauncherImpl(UIContext context
 			, IterableObjectBuilder protocolsBuilder
-			,  final ActionContributionBuilder activityBuilder
+			,  final ActivityFactory activityBuilder
 			, UIContributionBuilder menuBuilder	
 			, EventList history
 			, ScopeServicesList summary
@@ -144,10 +145,13 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		for (Iterator i = protocolsBuilder.creationIterator(); i.hasNext(); ) {
 			protocols.add((DalProtocol)i.next());
 		}
+		
+		// create the activities.
+	      activities = activityBuilder.create(this);
+	      JPopupMenu popup = activities.getPopupMenu();
 		// create the shared model
 		vizModel = new VizModel(protocols,summary,vfs);
 		// create the vizualizations
-		JPopupMenu popup = new JPopupMenu(); 		
 		vizualizations = new VizualizationManager(vizModel);
 		vizualizations.add(new WindowedRadialVizualization(vizualizations,popup,this));
 		vizualizations.add(new HyperbolicVizualization(vizualizations,popup,this));
@@ -200,16 +204,15 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 
 		row++;
 		posText = new NameResolvingPositionTextField(this,ses);
-		posText.setToolTipText("Object name (3c273) or Position (187.27,+2.05 or 12:29:06.00,+02:03:08.60)");
 		posText.setAlignmentX(LEFT_ALIGNMENT);
 		posText.setColumns(10);
 		builder.add(posText,cc.xyw(2,row,3));
 
 		row++;
-		builder.addLabel("Search Radius (degs/\")",cc.xyw(2,row,3));
+		builder.addLabel("Search Radius (degs/arcsecs)",cc.xyw(2,row,3));
 
 		row++;
-		regionText = new DimensionTextField();
+		regionText = new RadiusTextField();
 		regionText.setToolTipText("Search radius (0.008333 degs or 30.00\")");
 		regionText.setAlignmentX(LEFT_ALIGNMENT);
 		regionText.setColumns(10);
@@ -342,10 +345,8 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		builder.addSeparator("Process",cc.xyw(2,row,4));		
 		
 		row++; 
-		actionsPanel = new JTaskPane();
-		JMenu actions = new JMenu("Actions");
-		activities = activityBuilder.buildActions(this,popup,actionsPanel,actions);
-		final JScrollPane actionsScroll = new JScrollPane(actionsPanel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+		final JScrollPane actionsScroll = new JScrollPane(activities.getTaskPane(),JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		actionsScroll.setBorder(BorderFactory.createEmptyBorder());
 		actionsScroll.setMinimumSize(new Dimension(200,200));			
 		builder.add(actionsScroll,cc.xyw(2,row,4));
@@ -406,7 +407,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		}),historyMenu,false);
 		mb.add(historyMenu);
 		
-		mb.add(actions);
+		mb.add(activities.getMenu());
 		
 		   menuBuilder.populateWidget(mb,this,ArMainWindow.MENUBAR_NAME);
            int sz = mb.getComponentCount();
@@ -451,13 +452,12 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	private List resourceList;
 	private final SnitchInternal snitch;
 	private BiStateButton submitButton;
-	private final Activity[] activities;	
-	private final JTaskPane actionsPanel;	
+	private final ActivitiesManager activities;	
 	protected final Action clearAction = new ClearSelectionAction();
 	protected final DecSexToggle dsToggle;
 	protected final NameResolvingPositionTextField posText;
 	protected final DalProtocolManager protocols;
-	protected final DimensionTextField regionText;
+	protected final RadiusTextField regionText;
 	protected final Sesame ses;
 	protected final Action topAction = new TopAction();
 	protected final VizModel vizModel;
@@ -577,9 +577,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		final double ra = position.getX();
 		final double dec = position.getY();
 
-		Dimension2D dim = regionText.getDimension();
-		final double raSize = dim.getWidth();
-		final double decSize = dim.getHeight();
+		final double radius = regionText.getRadius();
 
 		for (Iterator i = protocols.iterator(); i.hasNext(); ) {
 			final DalProtocol p =(DalProtocol)i.next();
@@ -599,7 +597,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 						if (p instanceof SpatialDalProtocol) {
 							SpatialDalProtocol spatial = (SpatialDalProtocol)p;
 							for (int i = 0; i < services.length; i++) {
-								spatial.createRetriever(AstroScopeLauncherImpl.this,services[i],ra,dec,raSize,decSize).start();
+								spatial.createRetriever(AstroScopeLauncherImpl.this,services[i],ra,dec,radius,radius).start();
 							}                            
 						} else if (p instanceof TemporalDalProtocol) {
 							TemporalDalProtocol temporal = (TemporalDalProtocol)p;
@@ -609,7 +607,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 								if (noPosition.isSelected()) { // zero out the positional fields.
 									temporal.createRetriever(AstroScopeLauncherImpl.this,services[i],start,end,Double.NaN,Double.NaN,Double.NaN,Double.NaN).start();
 								} else {
-									temporal.createRetriever(AstroScopeLauncherImpl.this,services[i],start,end,ra,dec,raSize,decSize).start();
+									temporal.createRetriever(AstroScopeLauncherImpl.this,services[i],start,end,ra,dec,radius,radius).start();
 								}
 							}      							
 						}
@@ -639,7 +637,8 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		shi.setPosition(posText.getPositionAsSesameBean());
 		// blank out aliases - as long, and unneeded. - for storage efficiency.
 		shi.getPosition().setAliases(null);
-		shi.setRadius(regionText.getDimension());
+        double radius = regionText.getRadius();
+		shi.setRadius(new DoubleDimension(radius,radius));
 		history.add(0,shi); // insert at top of list.
 	}
 
@@ -669,7 +668,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 
 		public void actionPerformed(ActionEvent e) {
 					posText.setPosition(shi.getPosition().getRa(),shi.getPosition().getDec());
-					regionText.setDimension(shi.getRadius());
+					regionText.setRadius(shi.getRadius().getWidth());
 		}
 
 		public void degreesSelected(EventObject ignored) {
@@ -682,10 +681,17 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 				.append(nf.format(shi.getPosition().getRa()))
 				.append(',')
 				.append(nf.format(shi.getPosition().getDec()))
-				.append(", radius: ") 
-				.append(nf.format(shi.getRadius().getWidth()))
-				.append(',')
-				.append(nf.format(shi.getRadius().getHeight()));
+				.append(", radius: ");
+                double rw = shi.getRadius().getWidth();
+                double rh = shi.getRadius().getHeight();
+                if (rw == rh) {
+                    sb.append(nf.format(rw));
+                }
+                else {
+                    sb.append(nf.format(rw))
+                      .append(',')
+                      .append(nf.format(rh));
+                }
 			} catch (NumberFormatException e) {
 				// don't care too much.
 			}
@@ -705,10 +711,17 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 				.append(PositionUtils.decimalToSexagesimal(
 						shi.getPosition().getRa()
 						,shi.getPosition().getDec()))
-				.append(" radius: ") 
-				.append(PositionUtils.decimalToSexagesimal(	
-						shi.getRadius().getWidth()
-						,shi.getRadius().getHeight()));
+				.append(" radius: "); 
+                double rw = shi.getRadius().getWidth();
+                double rh = shi.getRadius().getHeight();
+                if (rw == rh) {
+                    sb.append(RadiusTextField.formatAsArcsec(rw)).append('"');
+                }
+                else {
+                    sb.append(RadiusTextField.formatAsArcsec(rw)).append('"')
+                      .append(',')
+                      .append(RadiusTextField.formatAsArcsec(rh)).append('"');
+                }
 			} catch (NumberFormatException e) {
 				// don't care too much.
 			}
@@ -723,28 +736,14 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		if (somethingSelected) {
 			Transferable tran = vizModel.getSelectionTransferable();
 			if (tran == null) { // unlikely
-				clearActivities();
+				activities.clearSelection();
 			} else {
-				enableActivities(tran);
+				activities.setSelection(tran);
 			}
 		} else {
-			clearActivities();			
+			activities.clearSelection();			
 		}
 	}
-
-	private void enableActivities(Transferable tran) {
-		for (int i = 0; i < activities.length; i++) {
-			activities[i].selected(tran);
-		}		
-	}
-
-	private void clearActivities() {
-		for (int i = 0; i < activities.length; i++) {
-			activities[i].noneSelected();
-		}
-	}
-	
-	// activities management
 	
 // action classes
 	/** clear selection action */

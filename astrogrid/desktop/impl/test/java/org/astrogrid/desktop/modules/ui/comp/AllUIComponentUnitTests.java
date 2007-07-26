@@ -16,6 +16,8 @@ public class AllUIComponentUnitTests {
 		TestSuite suite = new TestSuite(
 				"Test for org.astrogrid.desktop.modules.ui.comp");
 		suite.addTestSuite(UIComponentBodyguardUnitTest.class);
+        suite.addTestSuite(PositionTextFieldUnitTest.class);
+        suite.addTestSuite(RadiusTextFieldUnitTest.class);
 		return suite;
 	}
 

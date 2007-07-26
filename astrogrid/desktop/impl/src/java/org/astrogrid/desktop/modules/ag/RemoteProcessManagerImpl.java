@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManagerImpl.java,v 1.14 2007/07/23 12:17:31 nw Exp $
+/*$Id: RemoteProcessManagerImpl.java,v 1.15 2007/07/26 18:21:45 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -303,12 +303,17 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
 	}
 
 
-
 }
 
 
 /* 
 $Log: RemoteProcessManagerImpl.java,v $
+Revision 1.15  2007/07/26 18:21:45  nw
+merged mark's and noel's branches
+
+Revision 1.14.2.1  2007/07/24 17:54:52  nw
+added tasks vfs view
+
 Revision 1.14  2007/07/23 12:17:31  nw
 finished implementation of process manager framework.
 

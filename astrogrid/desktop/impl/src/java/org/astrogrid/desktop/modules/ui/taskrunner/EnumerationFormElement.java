@@ -27,16 +27,19 @@ public class EnumerationFormElement extends AbstractTaskFormElement {
 	}
 
 	protected JComponent createEditor() {
-		cb = new JComboBox(pdesc.getOptions());
-		cb.setEditable(false);
-		if (pdesc.getDefaultValue() != null) {
-			cb.setSelectedItem(pdesc.getDefaultValue());
-		}
-		if (pval.getValue() != null && ! pval.getIndirect()) {
-			cb.setSelectedItem(pval.getValue());
-		}		
-		cb.addItemListener(this);
-		return cb;
+	    cb = new JComboBox(pdesc.getOptions());
+	    cb.setEditable(false);
+	    if (! pval.getIndirect()) {
+	        if (pdesc.getDefaultValue() != null) {
+	            cb.setSelectedItem(pdesc.getDefaultValue());
+	        }
+	        if (pval.getValue() != null ) {
+	            cb.setSelectedItem(pval.getValue());
+	        }
+	        pval.setValue(getStringValue());
+	    }
+	    cb.addItemListener(this);
+	    return cb;
 	}
 	
 	protected JComboBox cb;

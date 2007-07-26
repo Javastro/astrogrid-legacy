@@ -16,6 +16,7 @@ import javax.swing.ImageIcon;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -54,7 +55,9 @@ private final TupperwareInternal tupp;
 
 	protected boolean invokable(FileObject f) {
 		try {
-			return VoDataFlavour.MIME_FITS_IMAGE.equals(f.getContent().getContentInfo().getContentType());
+			final FileContent content = f.getContent();
+            return VoDataFlavour.MIME_FITS_IMAGE.equals(content.getContentInfo().getContentType())
+                || content.getAttribute(VoDataFlavour.FITS_HINT) != null;
 		} catch (FileSystemException x) {
 			return false;
 		}

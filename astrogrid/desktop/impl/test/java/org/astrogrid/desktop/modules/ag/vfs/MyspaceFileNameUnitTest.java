@@ -8,6 +8,7 @@ import junit.framework.TestCase;
 import org.apache.commons.vfs.FileName;
 import org.apache.commons.vfs.FileType;
 import org.apache.commons.vfs.NameScope;
+import org.astrogrid.desktop.modules.ag.vfs.myspace.MyspaceFileName;
 
 /** Test that the myspace filename behaves as expected.
  * @author Noel.Winstanley@manchester.ac.uk

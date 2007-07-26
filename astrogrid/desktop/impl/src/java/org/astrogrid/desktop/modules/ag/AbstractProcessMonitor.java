@@ -124,7 +124,7 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
     
     
     protected Map resultMap = new HashMap();
-    /* helper method for default implementation of getResults - not that this does not fire
+    /* helper method for default implementation of getResults - note that this does not fire
      * an event.
      */
     protected void addResult(String resultname,Object result) {

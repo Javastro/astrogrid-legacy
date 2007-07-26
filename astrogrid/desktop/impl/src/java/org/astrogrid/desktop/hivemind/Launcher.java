@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.19 2007/07/23 12:05:28 nw Exp $
+/*$Id: Launcher.java,v 1.20 2007/07/26 18:21:44 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,6 +32,7 @@ import org.apache.hivemind.impl.RegistryBuilder;
 import org.apache.hivemind.impl.XmlModuleDescriptorProvider;
 import org.apache.hivemind.util.ClasspathResource;
 import org.apache.hivemind.util.URLResource;
+import org.astrogrid.desktop.modules.system.ExtendedFileSystemManager;
 
 /**
  *Assembles and starts some flavour of AR. Used by the main classes in {@link org.astrogrid}
@@ -213,7 +214,7 @@ public class Launcher implements Runnable {
         
         // extract vfs, and splice into stream handler..
         logger.info("Setting vfs as url protocol handler");
-        FileSystemManager vfs = (FileSystemManager) reg.getService(FileSystemManager.class);
+        FileSystemManager vfs = (FileSystemManager) reg.getService(ExtendedFileSystemManager.class);
         extensibleStreamHandler.setFollowOnHandler(vfs.getURLStreamHandlerFactory());
     }
 
@@ -243,6 +244,14 @@ public class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.20  2007/07/26 18:21:44  nw
+merged mark's and noel's branches
+
+Revision 1.19.2.1  2007/07/26 11:15:10  nw
+Incomplete - task 49: Implement file Tasks
+
+Incomplete - task 105: polish vfs for cea.
+
 Revision 1.19  2007/07/23 12:05:28  nw
 Complete - task 68: fix build, and logger config.
 

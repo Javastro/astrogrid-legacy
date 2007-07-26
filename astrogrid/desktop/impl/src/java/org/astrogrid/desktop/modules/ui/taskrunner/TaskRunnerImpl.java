@@ -39,9 +39,11 @@ import javax.swing.border.TitledBorder;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.InterfaceBean;
+import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.dialogs.RegistryGoogle;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -58,6 +60,7 @@ import org.astrogrid.desktop.modules.ui.TaskRunnerInternal;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity;
+import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
 import org.astrogrid.desktop.modules.ui.comp.ResourceDisplayPane;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker;
@@ -96,7 +99,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                     protected Object construct() throws Exception {
                     	Reader fr = null;
                     	try {
-                        fr = new InputStreamReader(u.toURL().openStream());
+                        fr = new InputStreamReader(vfs.resolveFile(u.toString()).getContent().getInputStream());
                        Tool t = Tool.unmarshalTool(fr);
                        
                        newApp = apps.getCeaApplication(new URI("ivo://" + t.getName()));                       
@@ -146,8 +149,8 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	                    protected Object construct() throws Exception {
 	                    	Writer w = null;
 	                    	try {
-	                    		//@todo refactor myspace away.
-	                    		w = new OutputStreamWriter(u.toURL().openConnection().getOutputStream());
+	                    	    w = new OutputStreamWriter(vfs.resolveFile(u.toString()).getContent().getOutputStream());
+	                    		// can't output using this.	                    		w = new OutputStreamWriter(u.toURL().openConnection().getOutputStream());
 	                        t.marshal(w);                       
 	                        return null;
 	                    	} finally {
@@ -253,15 +256,19 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	            this.setEnabled(true);
 	        }
 	        public void actionPerformed(ActionEvent e) {
+	            JOptionPane.showMessageDialog(TaskRunnerImpl.this,"not implemented");
+	            
 	        	//@fixme requires the registryGoogle interface to be reimplemented
 	        	// with some finer control.
-	        	regChooser.selectResources("Choose someting for now",true);
+	        	//regChooser.selectResources("Choose someting for now",true);
 	        }
 	    }	    
 	/**
 	 * Logger for this class
 	 */
 	protected static final Log logger = LogFactory.getLog(TaskRunnerImpl.class);
+    private static final String INFORMATION = "info";
+    private static final String TASKS = "tasks";
 	private final Action execute;
 	private final Action open;
 	private final Action save;
@@ -273,17 +280,19 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	private final RegistryGoogle regChooser;
 	private final ExecutionTracker tracker;
 	private final TypesafeObjectBuilder builder;
+    private final FileSystemManager vfs;
 
 	/**
 	 * @param context
 	 * @throws HeadlessException
 	 */
-	public TaskRunnerImpl(UIContext context, ApplicationsInternal apps,ResourceChooserInternal rci,RegistryGoogle regChooser,ExecutionTracker tracker, UIContributionBuilder menuBuilder, TypesafeObjectBuilder builder) throws HeadlessException {
+	public TaskRunnerImpl(UIContext context, ApplicationsInternal apps,ResourceChooserInternal rci,RegistryGoogle regChooser,UIContributionBuilder menuBuilder, TypesafeObjectBuilder builder, FileSystemManager vfs) throws HeadlessException {
 	   
 		super(context);
 		this.fileChooser = rci;
         this.builder = builder;
 		this.regChooser = regChooser;
+        this.vfs = vfs;
 		logger.info("Constructing new TaskRunner");
 		this.apps = apps;
 		
@@ -334,12 +343,16 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 		infoPane = new ResourceDisplayPane();
 		infoPane.setBorder(BorderFactory.createEmptyBorder());
         infoPane.setPreferredSize(new Dimension(130,100));
+        
+        
 
 		// processes panel
-		this.tracker = tracker;
-		JPanel processes = tracker.getPanel();
-		processes.setBackground(Color.WHITE);
-		processes.setBorder(BorderFactory.createEmptyBorder());
+		this.tracker = builder.createExecutionTracker(this);
+		trackerPanel = tracker.getPanel();
+        trackerPanel.addMouseListener(this);
+		trackerPanel.setBackground(Color.WHITE);
+		trackerPanel.setBorder(BorderFactory.createEmptyBorder());
+		// tasks pane.
 
 		// toolbar
 		PanelBuilder toolbar = new PanelBuilder(new FormLayout(
@@ -371,12 +384,20 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                 ,UIConstants.SMALL_DIALOG_FONT
                 ,Color.GRAY
                 ));        
-		final JScrollPane execScroll = new JScrollPane(processes,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		final JScrollPane execScroll = new JScrollPane(trackerPanel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		execScroll.setBorder(BorderFactory.createEtchedBorder());
+
+		
+		final JScrollPane tasksScroll = new JScrollPane(tracker.getTaskPane(),JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		tasksScroll.setBorder(BorderFactory.createEmptyBorder());
+		
+		bottomFlipPanel = new FlipPanel();
+        bottomFlipPanel.add(infoScroll,INFORMATION);
+		bottomFlipPanel.add(tasksScroll,TASKS);
 		
 		final JSplitPane rightPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT
 				,execScroll
-				,infoScroll);
+				,bottomFlipPanel);
 		rightPane.setDividerLocation(300);
 		rightPane.setDividerSize(7);
 		rightPane.setBorder(BorderFactory.createEmptyBorder());
@@ -387,10 +408,10 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 		pForm.getBottomPane().addPropertyChangeListener("collapsed",new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
                 if (! pForm.getBottomPane().isCollapsed()) {
-                    infoScroll.setVisible(false);
+                    bottomFlipPanel.setVisible(false);
                     rightPane.setDividerLocation(1.0);
                 } else {
-                    infoScroll.setVisible(true);
+                    bottomFlipPanel.setVisible(true);
                     rightPane.setDividerLocation(0.5);
                 }               
             }		    
@@ -411,6 +432,8 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	//private final DescriptionsPanel descriptions;
 	protected final TaskParametersForm pForm;
 	private final ResourceDisplayPane infoPane;
+    private final JPanel trackerPanel;
+    private final FlipPanel bottomFlipPanel;
 
 	public void invokeTask(Resource r) {
 		buildForm(r);
@@ -476,12 +499,28 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	// callback to display help in infoPane.
 	public void mouseEntered(MouseEvent e) {
 		JComponent comp = (JComponent)e.getSource();
+		if (comp == trackerPanel) {
+		    logger.debug("tracker panel");
+		    bottomFlipPanel.show(TASKS);
+		} else {
+		    bottomFlipPanel.show(INFORMATION);
+		}
 		AbstractTaskFormElement t = (AbstractTaskFormElement)comp.getClientProperty(AbstractTaskFormElement.class);
 		if (t != null) {
 			HtmlBuilder sb = new HtmlBuilder();
 			sb.append("<html><body>");
-			sb.h2(t.getDescription().getUiName());
-			sb.append(t.getDescription().getDescription());
+			final ParameterBean d = t.getDescription();
+            sb.h2(d.getUiName());
+			sb.append(d.getDescription()).append("<p>");
+	        if (d.getType() != null) {
+	            sb.br().append("Type : ").append(d.getType());
+	        }
+	        if (d.getUcd() != null) {
+	            sb.br().append("UCD : ").append(d.getUcd());
+	        }
+	        if (d.getUnits() != null) {
+	            sb.br().append("Units : ").append(d.getUnits());
+	        }			
 			sb.append("</body></html>");
 			infoPane.setText(sb.toString());
 			infoPane.setCaretPosition(0);

@@ -68,6 +68,10 @@ public void noneSelected() {
 		String mime;
 		currentResource = null;
 		try {
+		if (!fo.getType().hasContent()) { // no activities for folders.
+		    setEnabled(false);
+		    currentFile = null;
+		}
 			mime = fo.getContent().getContentInfo().getContentType();
 			if (mime != null && mime.equals(VoDataFlavour.MIME_CEA)) {
 				setEnabled(true);

@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.8 2007/07/23 11:41:49 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.9 2007/07/26 18:21:45 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -433,8 +433,6 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 			viewer.addTo(parent,tabPane);
 		}
 		
-		// xml pane not added to tabs in same way - as is an 'advanced' view.
-		// will be added / removed in the property change listener, when initialized from preferneces.
 		
 		// stitch middle and bottom together.
 		JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,centerPanel,tabPane);
@@ -694,6 +692,12 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.9  2007/07/26 18:21:45  nw
+merged mark's and noel's branches
+
+Revision 1.8.2.1  2007/07/26 17:48:19  nw
+removed misleading comment.
+
 Revision 1.8  2007/07/23 11:41:49  nw
 removed dev symbols.
 

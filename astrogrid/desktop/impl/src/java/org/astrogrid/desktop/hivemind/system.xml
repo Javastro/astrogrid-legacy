@@ -963,7 +963,7 @@ SYSTEM TRAY
 	<!--  ===========================
 	VFS
 	 -->
-	<service-point id="vfs" interface="org.apache.commons.vfs.FileSystemManager">
+	<service-point id="vfs" interface="org.astrogrid.desktop.modules.system.ExtendedFileSystemManager">
 		Uniform access to all filesystems.
 		<invoke-factory model="session">
 			<construct 
@@ -974,7 +974,7 @@ SYSTEM TRAY
 				<configuration>vfsProviders</configuration>
 				<configuration>vfsOperations</configuration>
 				<configuration>vfsExtensions</configuration>
-				<configuration>vfsMimes</configuration>
+				<configuration>vfsMimes</configuration>                
 				<set-object property="filesCache" 
 					value="instance:org.apache.commons.vfs.cache.SoftRefFilesCache" />
 				<set-object property="defaultProvider"
@@ -987,6 +987,7 @@ SYSTEM TRAY
 			</construct>
 		</invoke-factory>
 	</service-point>
+    
 	
 		<!-- ikkle services that vfs depends upon.	-->
 		
@@ -1272,7 +1273,6 @@ MAC SETUP
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>		
 	
-	<!--  is this interceptor used anymore?? -->
 	<service-point id="snitchInterceptor" 
 		interface="org.apache.hivemind.ServiceInterceptorFactory"
 		parameters-schema-id="hivemind.MethodFilter">

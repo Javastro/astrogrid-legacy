@@ -7,6 +7,7 @@ import junit.framework.TestCase;
 
 import org.apache.commons.vfs.FileName;
 import org.apache.commons.vfs.FileType;
+import org.astrogrid.desktop.modules.ag.vfs.myspace.MyspaceNameParser;
 
 /**
  * @author Noel.Winstanley@manchester.ac.uk

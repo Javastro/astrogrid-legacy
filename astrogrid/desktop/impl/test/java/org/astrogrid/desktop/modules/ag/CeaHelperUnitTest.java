@@ -11,6 +11,7 @@ import junit.framework.TestCase;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.CeaService;
 import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.desktop.modules.auth.CommunityInternal;
 import org.easymock.MockControl;
 
 /** Unit test for cea helper.
@@ -22,11 +23,15 @@ public class CeaHelperUnitTest extends TestCase {
 	protected void setUp() throws Exception {
 		regControl = MockControl.createControl(Registry.class);
 		reg = (Registry)regControl.getMock();
-		cea = new CeaHelper(reg);
+		communityControl = MockControl.createControl(CommunityInternal.class);
+		community = (CommunityInternal)communityControl.getMock();
+		cea = new CeaHelper(reg,community);
 		serverId = new URI("ivo://wibble/bing");
 		endpoint = new URL("http://www.slashdot.org");
 	}
 	
+	protected MockControl communityControl;
+	protected CommunityInternal community;
 	protected MockControl regControl;
 	protected Registry reg;
 	protected CeaHelper cea;
@@ -51,7 +56,7 @@ public class CeaHelperUnitTest extends TestCase {
 		assertEquals(endpoint.toString(),c.getTargetEndPoint());
 	}
 	*/
-	public void testCreateDelegateNoAccessURL() {
+	public void testCreateDelegateNoAccessURL() throws Exception{
 		try {
 			cea.createCEADelegate((CeaService)null);
 			fail("expected to chuck");

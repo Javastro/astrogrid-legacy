@@ -15,6 +15,17 @@ import org.apache.commons.vfs.FileType;
  */
 public class FileObjectComparator implements Comparator {
 
+    /**
+     * 
+     */
+    private FileObjectComparator() {
+    }
+    
+    public static final FileObjectComparator getInstance() {
+        return theInstance;
+    }
+    private static final FileObjectComparator theInstance = new FileObjectComparator();
+    
 	public int compare(Object arg0, Object arg1) {
 		try {
 		FileObject a = (FileObject)arg0;

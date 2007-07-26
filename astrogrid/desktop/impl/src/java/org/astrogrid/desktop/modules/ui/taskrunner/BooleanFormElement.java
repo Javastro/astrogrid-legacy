@@ -29,15 +29,18 @@ public class BooleanFormElement extends AbstractTaskFormElement {
 
 	
 	protected JComponent createEditor() {
-		cb = new JCheckBox();
-		if (pdesc.getDefaultValue() != null) {
-				cb.setSelected(Boolean.valueOf(pdesc.getDefaultValue()).booleanValue());
-		} 
-		if (pval.getValue() != null && ! pval.getIndirect()) {
-			cb.setSelected(Boolean.valueOf(pval.getValue()).booleanValue());
-		}
-		cb.addItemListener(this);
-		return cb;
+	    cb = new JCheckBox();
+	    if (! pval.getIndirect()) {
+	        if (pdesc.getDefaultValue() != null) {
+	            cb.setSelected(Boolean.valueOf(pdesc.getDefaultValue()).booleanValue());
+	        } 
+	        if (pval.getValue() != null) {
+	            cb.setSelected(Boolean.valueOf(pval.getValue()).booleanValue());
+	        }
+	        pval.setValue(getStringValue());
+	    }
+	    cb.addItemListener(this);
+	    return cb;
 	}
 	
 	protected JCheckBox cb;

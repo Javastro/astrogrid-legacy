@@ -28,6 +28,7 @@ import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.ActionComboBox;
@@ -70,8 +71,8 @@ import com.l2fprod.common.swing.JTaskPane;
  * @since Mar 3, 200712:17:50 AM
  */
 public class StorageView implements ListSelectionListener, HistoryListener{
-	private final FileExplorerImpl parent;
-	public FileExplorerImpl getParent() {
+	private final UIComponent parent;
+	public UIComponent getParent() {
 		return parent;
 	}
 	/** background worker that opens a directory */
@@ -237,9 +238,12 @@ public class StorageView implements ListSelectionListener, HistoryListener{
 	}
 	
 	private static final String STORAGE_VIEW = "Storage";
+    private final ActivitiesManager actsManager;
 
-	public StorageView(FileExplorerImpl parent, EventList foldersList, FileSystemManager vfs) {
+	public StorageView(UIComponent parent, ActivitiesManager actsManager,EventList foldersList, FileSystemManager vfs, IconFinder iconFinder) {
 		this.parent = parent;
+        this.actsManager = actsManager;
+		
 		this.vfs = vfs;
 		this.foldersList = foldersList;
 	// hierarchies.
@@ -330,17 +334,11 @@ public class StorageView implements ListSelectionListener, HistoryListener{
 	    });
 	    EventList filteredFiles = new FilterList(noHiddenFiles,
 	    		new TextComponentMatcherEditor(filter,new FileObjectFilterator()));
-	    SortedList sortedFiles= new SortedList(filteredFiles, new FileObjectComparator());
-	    // shared selection model;
-	    EventSelectionModel fileSelection = new EventSelectionModel(sortedFiles);
-		fileSelection.setSelectionMode(ListSelection.MULTIPLE_INTERVAL_SELECTION_DEFENSIVE);
-		fileSelection.addListSelectionListener(this); // listen to currently selected files.
-		
+	    SortedList sortedFiles= new SortedList(filteredFiles, FileObjectComparator.getInstance());
+	
 		// listen to movement through the history list.
 		history.addHistoryListener(this);
-		
-	// different views for main window
-		IconFinder iconFinder = new IconFinder();
+
 		VFSOperationsImpl.Current curr = new VFSOperationsImpl.Current() {
 
 			public FileObject get() {
@@ -354,9 +352,9 @@ public class StorageView implements ListSelectionListener, HistoryListener{
 			}
 		};
 		VFSOperations ops = new VFSOperationsImpl(parent,curr,vfs);
-		dnd = new FileViewDnDManager(fileSelection,iconFinder,ops);
-		fileList =  new FilesList(sortedFiles, fileSelection, this,iconFinder,dnd);
-	    fileTable = new FilesTable(sortedFiles, fileSelection, this,iconFinder,dnd); 
+		dnd = new FileModel(sortedFiles, actsManager, iconFinder,ops);
+		fileList =  new NavigableFilesList( this,iconFinder,dnd);
+	    fileTable = new NavigableFilesTable( this,iconFinder,dnd); 
 	    mainPanel = new FlipPanel();
 	    mainPanel.add(new JScrollPane(fileList,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER)
 	    		,"list");
@@ -376,7 +374,7 @@ public class StorageView implements ListSelectionListener, HistoryListener{
 	// list of Actions for selecting between different views.
 	final EventList views;
 	final StorageFoldersList folders;
-	private final FilesList fileList;
+	private final NavigableFilesList fileList;
 	private final JTable fileTable;
 	final FlipPanel mainPanel;
 	private final JComponent mainButtons;
@@ -394,7 +392,7 @@ public class StorageView implements ListSelectionListener, HistoryListener{
 	final History history = new History();
 	final JTextField location;
 	final BiStateButton goButton;
-	private  final FileViewDnDManager dnd;
+	private  final FileModel dnd;
 
 	
 	/** create and configure a button from an action */
@@ -432,23 +430,11 @@ public class StorageView implements ListSelectionListener, HistoryListener{
 		return mainButtons;
 	}
 
-	
-	public void notifyStorageTasks() {
-		Transferable tran = this.dnd.getSelectionTransferable();
-		if (tran == null) {
-			// @FIXME - when nothing selected - take selection from folder list instead.
-			getParent().clearSelection();
-		} else {
-			getParent().setSelection(tran);
-		}
-	}
-
 		// calle when visibility of this view changes.
 	public void setVisible(boolean b) {
 		folders.setEnabled(b);
 		fileList.setEnabled(b);
 		mainButtons.setEnabled(b);
-		notifyStorageTasks();
 	}
 
 	//we've moved.
@@ -476,9 +462,7 @@ public class StorageView implements ListSelectionListener, HistoryListener{
 				//causes eveything else to be triggered.
 					history.move(new Location(f));
 			}
-		} else { // assume it's the file list then.
-			notifyStorageTasks();
-		}		
+		}
 	}	
 	// data structure used to manage the different ways we might provide a location to navigate to.
 	// also extends JMenu item, which means it can be displayed ina  menu, and if clicked

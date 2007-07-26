@@ -25,6 +25,7 @@ public interface RemoteProcessManagerInternal extends RemoteProcessManager {
 	/** find a process monitor associated with this execution id
 	 * @return a prociess monitor, or null if no associated one can be found*/
 	ProcessMonitor findMonitor(URI id) ;
+
 	
 	/** delete a process monitor - final cleanup action */
 	void delete(ProcessMonitor pm);

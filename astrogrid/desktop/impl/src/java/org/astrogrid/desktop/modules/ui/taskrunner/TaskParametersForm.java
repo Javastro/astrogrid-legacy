@@ -13,6 +13,7 @@ import java.awt.event.MouseListener;
 import java.net.URI;
 import java.text.NumberFormat;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -273,7 +274,7 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 		Map refs = createInterfaceMap(ApplicationsImpl.findInterface(interfaceName,currentResource.getInterfaces()));
 		
 		ParameterValue[] pvals = tool.getInput().getParameter();
-		
+		// handle special cases first
 		// check for RA,DEC like parameters. a bit tricky.
 		// at the same time, check for a single ADQL parameter too.
 		ParameterValue ra = null;
@@ -310,8 +311,10 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 		if (ra != null && dec != null) { // good - found both.
 			ParameterBean raDesc = (ParameterBean)descriptions.get(ra.getName());
 			ParameterBean decDesc = (ParameterBean)descriptions.get(dec.getName());
-			//@todo - work out what to do here..
-			inputElements.add(builder.createPositionFormElement(ra,raDesc,dec,decDesc,parent));
+
+			final PositionFormElement posForm = builder.createPositionFormElement(ra,raDesc,dec,decDesc,parent);
+			posForm.getLabel().addMouseListener(hoverListener);
+            inputElements.add(posForm);
 		} else {
 			// still might have found one - reset it, so it's not lost at the next step.
 			ra = null;
@@ -720,6 +723,27 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 			return 6;
 		}
 	}
+
+    /** if theres an adql editor in the tool currently being editor
+     * method will show or hide the full adql editor.
+     * @param b
+     */
+    public void setExpanded(boolean b) {
+        for (Iterator i = inputElements.iterator(); i.hasNext();) {
+            AbstractTaskFormElement el = (AbstractTaskFormElement) i.next();
+            if (el instanceof AdqlTextFormElement) {
+                AbstractButton butt = el.getOptionalButton();
+                if (butt != null && butt instanceof ExpandCollapseButton) {
+                    ExpandCollapseButton ec = (ExpandCollapseButton) butt;
+                    if (ec.isSelected() != b) {
+                        ec.doClick();
+                    }
+                }
+                // done;
+                return;
+            }            
+        }
+    }
 
 
 

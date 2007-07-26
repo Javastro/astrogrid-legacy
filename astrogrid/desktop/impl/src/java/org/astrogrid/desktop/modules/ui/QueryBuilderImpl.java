@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
@@ -38,11 +39,11 @@ public class QueryBuilderImpl extends TaskRunnerImpl implements
 
     public QueryBuilderImpl(UIContext context, ApplicationsInternal apps,
             ResourceChooserInternal rci, RegistryGoogle regChooser,
-            ExecutionTracker tracker,
             UIContributionBuilder menuBuilder, TypesafeObjectBuilder builder
+            ,FileSystemManager vfs
             ,Registry reg)
             throws HeadlessException {
-        super(context, apps, rci, regChooser, tracker, menuBuilder, builder);
+        super(context, apps, rci, regChooser, menuBuilder, builder,vfs);
         this.reg = reg;
     }
 
@@ -67,7 +68,7 @@ public class QueryBuilderImpl extends TaskRunnerImpl implements
         String name = BuildQueryActivity.findNameOfFirstADQLInterface(cea);
         if (name != null) {
             pForm.buildForm(name,cea);
-            pForm.getBottomPane().setCollapsed(false);
+            pForm.setExpanded(true);
         } else { // show what we've got then - unlikely in this case
             pForm.buildForm(cea);
         }

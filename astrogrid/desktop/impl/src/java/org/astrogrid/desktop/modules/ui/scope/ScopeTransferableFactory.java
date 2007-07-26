@@ -108,13 +108,15 @@ public class ScopeTransferableFactory{
 
 	/** delegate / wrapper class that delays creation of real file object
 	 *  as long as possible 
+	 *  
+	 *  @todo re-implemnt based on DelegateFileObject
 	 * @author Noel.Winstanley@manchester.ac.uk
 	 * @since May 10, 20077:23:57 PM
 	 */
 	public class AstroscopeFileObject implements FileObject {
 
 		public boolean canRenameTo(FileObject newfile) {
-			return this.getFo().canRenameTo(newfile);
+			return false;
 		}
 
 		public void close() throws FileSystemException {
@@ -122,27 +124,27 @@ public class ScopeTransferableFactory{
 		}
 
 		public void copyFrom(FileObject srcFile, FileSelector selector) throws FileSystemException {
-			this.getFo().copyFrom(srcFile, selector);
+		    throw new FileSystemException("not supported");
 		}
 
 		public void createFile() throws FileSystemException {
-			this.getFo().createFile();
+            throw new FileSystemException("not supported");
 		}
 
 		public void createFolder() throws FileSystemException {
-			this.getFo().createFolder();
+            throw new FileSystemException("not supported");
 		}
 
 		public boolean delete() throws FileSystemException {
-			return this.getFo().delete();
+            throw new FileSystemException("not supported");
 		}
 
 		public int delete(FileSelector selector) throws FileSystemException {
-			return this.getFo().delete(selector);
+            throw new FileSystemException("not supported");
 		}
 
 		public boolean exists() throws FileSystemException {
-			return this.getFo().exists();
+		    return true;
 		}
 
 		public void findFiles(FileSelector selector, boolean depthwise, List selected) throws FileSystemException {
@@ -194,19 +196,19 @@ public class ScopeTransferableFactory{
 		}
 
 		public boolean isHidden() throws FileSystemException {
-			return this.getFo().isHidden();
+		    return false;
 		}
 
 		public boolean isReadable() throws FileSystemException {
-			return this.getFo().isReadable();
+		    return true;
 		}
 
 		public boolean isWriteable() throws FileSystemException {
-			return this.getFo().isWriteable();
+		    return false;
 		}
 
 		public void moveTo(FileObject destFile) throws FileSystemException {
-			this.getFo().moveTo(destFile);
+            throw new FileSystemException("not supported");
 		}
 
 		public void refresh() throws FileSystemException {

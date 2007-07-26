@@ -3,11 +3,18 @@
  */
 package org.astrogrid.desktop.modules.ui.taskrunner;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParsePosition;
@@ -42,6 +49,11 @@ import com.jgoodies.forms.layout.FormLayout;
  * @since Jul 4, 200711:16:30 AM
  */
 public abstract class AbstractTaskFormElement  implements ItemListener, ActionListener {
+    /**
+     * Logger for this class
+     */
+    private static final Log logger = LogFactory
+            .getLog(AbstractTaskFormElement.class);
 	
 	/** the parameter value this form element operates upon */
 	protected final ParameterValue pval;
@@ -59,10 +71,12 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 	protected JButton chooserButton;
 	protected boolean localFileEnabled = true;
 	// add and remove buttons - null by default. An external manager 
-	// will provide these if needed.
+	// will provide these through setters if needed.
 	protected AbstractButton addButton;
 	protected AbstractButton removeButton;
 	protected AbstractButton optionalButton;
+	
+	
 	public AbstractTaskFormElement(ParameterValue pval, ParameterBean pdesc, ResourceChooserInternal fileChooser) {
 		this.pval = pval;
 		this.pdesc = pdesc;
@@ -74,19 +88,9 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 		
 		StrBuilder sb = new StrBuilder();
 		sb.append(pdesc.getUiName());
-		if (! pdesc.getType().equalsIgnoreCase("text")) {
-			sb.append(" - ").append(pdesc.getType());
-		}
-		if (StringUtils.isNotEmpty(pdesc.getUcd())) {
-			sb.append(" (").append(pdesc.getUcd()).append(")");
-		}
-		if (StringUtils.isNotEmpty(pdesc.getUnits())) {
-			sb.append(" (").append(pdesc.getUnits()).append(")");
-		}		
 		label = new JLabel(sb.toString());
 		associate(label);	
 
-		
 		//@todo sort this so that the button doesn't get occulded on resize
 		FormLayout layout = new FormLayout("d,2dlu,fill:max(50dlu;pref):grow,2dlu,d","d");
 		CellConstraints cc = new CellConstraints();
@@ -111,8 +115,37 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 		if (u == null) {
 			return;
 		}
-		//@FIXME inline file parameters - wait for vfs integration first.
-		indirectField.setText(u.toString());
+		if (u.getScheme().equals("file")) {
+		    //@todo notify the user what we're doing?
+		    ByteArrayOutputStream s = null;
+		    InputStream is = null;
+		    try {
+		    s = new ByteArrayOutputStream();
+		    is = u.toURL().openStream();
+		    org.astrogrid.io.Piper.pipe(is,s);
+		    indirectField.setText(s.toString());
+		    } catch (java.io.IOException x) {
+		        //@todo report error
+		        logger.error(x);
+		    } finally {
+		        if (is != null) {
+		            try {
+                        is.close();
+                    } catch (IOException x) {
+                        logger.error("IOException",x);
+                    }
+		        }
+		        if (s != null) {
+		            try {
+                        s.close();
+                    } catch (IOException x) {
+                        logger.error("IOException",x);
+                    }
+		        }
+		    }
+		} else {
+		    indirectField.setText(u.toString());
+		}
 		
 	}
 	

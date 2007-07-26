@@ -1,4 +1,4 @@
-/*$Id: CeaHelper.java,v 1.7 2007/07/13 23:14:54 nw Exp $
+/*$Id: CeaHelper.java,v 1.8 2007/07/26 18:21:45 nw Exp $
  * Created on 20-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,8 +21,11 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.CeaService;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.applications.delegate.CEADelegateException;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
 import org.astrogrid.applications.delegate.DelegateFactory;
+import org.astrogrid.desktop.modules.auth.CommunityInternal;
+import org.astrogrid.security.SecurityGuard;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Unmarshaller;
@@ -39,17 +42,34 @@ public class CeaHelper {
     /** Construct a new RemoteCeaHelper
      * 
      */
-    public CeaHelper(Registry reg) {
+    public CeaHelper(Registry reg, CommunityInternal community) {
         super();
         this.reg = reg;
+        this.community = community;
     }
+    private final CommunityInternal community;
     private final Registry reg;
 
 
+    private boolean hasDigitalSignatureCredentials() {
+        try {
+          SecurityGuard g = this.community.getSecurityGuard();
+          g.getCertificateChain(); // throws if credentials are absent
+          g.getPrivateKey(); // throws if credentials are absent
+          return true;
+        }
+        catch (Exception e) {
+          return false;
+        }
+      }
+    
+    
 
 /** create a delegate to connect tot he server described in a resource information
+ * delegate will be authenticated if the user is logged in.
+ * @throws CEADelegateException 
  * @throws IllegalArgumentException if resource information does not prodvdide an access url */
-    public CommonExecutionConnectorClient createCEADelegate(CeaService server) {
+    public CommonExecutionConnectorClient createCEADelegate(CeaService server) throws CEADelegateException {
 		if (server == null 
 				|| server.getCapabilities().length == 0 
 				|| server.getCapabilities()[0].getInterfaces().length == 0
@@ -57,15 +77,21 @@ public class CeaHelper {
     		throw new IllegalArgumentException("invalid resource information: " + server);
     	}
 		final URL endpoint = server.getCapabilities()[0].getInterfaces()[0].getAccessUrls()[0].getValue();
-        return  DelegateFactory.createDelegate(endpoint.toString());       
+        CommonExecutionConnectorClient del = DelegateFactory.createDelegate(endpoint.toString());
+        if (community.isLoggedIn() && hasDigitalSignatureCredentials()) {
+            SecurityGuard guard = this.community.getSecurityGuard();
+            del.setCredentials(guard);
+        }
+        return del;
      }
     
     /** create a delegate to connect to a server descried in an exec Id 
      * @throws URISyntaxException
      * @throws NotApplicableException
      * @throws ServiceException
-     * @throws NotFoundException*/
-public CommonExecutionConnectorClient createCEADelegate(URI executionId) throws NotFoundException, ServiceException {
+     * @throws NotFoundException
+     * @throws CEADelegateException */
+public CommonExecutionConnectorClient createCEADelegate(URI executionId) throws NotFoundException, ServiceException, CEADelegateException {
     try {    
     final URI ivorn = new URI(executionId.getScheme(),executionId.getSchemeSpecificPart(),null);
     Resource r = reg.getResource(ivorn);
@@ -137,6 +163,12 @@ public CommonExecutionConnectorClient createCEADelegate(URI executionId) throws 
 
 /* 
 $Log: CeaHelper.java,v $
+Revision 1.8  2007/07/26 18:21:45  nw
+merged mark's and noel's branches
+
+Revision 1.7.2.1  2007/07/26 13:40:29  nw
+Complete - task 96: get authenticated access working
+
 Revision 1.7  2007/07/13 23:14:54  nw
 Complete - task 1: task runner
 
