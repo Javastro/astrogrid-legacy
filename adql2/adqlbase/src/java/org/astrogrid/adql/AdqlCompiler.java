@@ -961,8 +961,8 @@ public class AdqlCompiler {
                     element = cursor.getObject() ;
                     if( element.schemaType() == ColumnReferenceType.type ) {
                         ColumnReferenceType col = (ColumnReferenceType)element ;
-                        if( col.isSetArchive() ) {
-                            sTabReference = col.getArchive() + '.' + col.getTable() ;
+                        if( col.isSetSchema() ) {
+                            sTabReference = col.getSchema() + '.' + col.getTable() ;
                         }
                         else {
                             sTabReference = col.getTable() ;
@@ -1008,8 +1008,8 @@ public class AdqlCompiler {
                     
                     if( schemaType == TableType.type ) {
                         tType = (TableType)xmlObject ;
-                        if( tType.isSetArchive() ) {
-                            tables.add( tType.getArchive() + '.' + tType.getName() ) ;
+                        if( tType.isSetSchema() ) {
+                            tables.add( tType.getSchema() + '.' + tType.getName() ) ;
                         }
                         else {
                             tables.add( tType.getName() ) ;
