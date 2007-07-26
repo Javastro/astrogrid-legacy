@@ -200,7 +200,7 @@ todo see if we can include other things in the disk image too. -->
 
 <!--  try running stripped - testing / development only -->
 <goal name="run" 
-	description="run the application from within the dist/bin directory - useful as part of testing. Depends on dist:build-bin"
+	description="run the application from within the dist/bin directory - useful as part of testing to verify that stripping has worked. Depends on dist:build-bin"
 	>
 	<echo>Running ${maven.javaapp.mainclass} from the dist/bin directory</echo>
 	<java classname="${maven.javaapp.mainclass}"
@@ -251,6 +251,17 @@ todo see if we can include other things in the disk image too. -->
     			<arg value="-list" />
     		</java>	
     <echo>Config documentation written to ${maven.build.dir}/docs/config.txt</echo>
+</goal>
+
+<goal name="run-now" prereqs="java:compile,java:jar-resources"
+	description="just compile the code and run it now.">
+	<echo>Running ${maven.javaapp.mainclass} from sources</echo>
+	<java classname="${maven.javaapp.mainclass}" fork="true">
+		<classpath>
+			<path refid="maven.dependency.classpath" />
+			<pathelement path="${maven.build.dir}/classes" />
+		</classpath>
+	</java>	
 </goal>
 
 
