@@ -2,22 +2,32 @@
 
 package org.astrogrid.adql;
 
+import java.util.ArrayList;
+
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 
 public class AST_SchemaName extends SimpleNode {
     
-    private static Log log = LogFactory.getLog( AST_SchemaName.class ) ;
+  private static Log log = LogFactory.getLog( AST_SchemaName.class ) ;
   
   public AST_SchemaName(AdqlStoX p, int id) {
     super(p, id);
   }
   
-  public void jjtClose() { 
-      if( log.isTraceEnabled() ) enterTrace( log, "AST_SchemaName.jjtClose()" ) ; 
-      if( jjtGetNumChildren() == 1 ) {
-          setGeneratedObject( children[0].getGeneratedObject() ) ;
+  /**
+   * Aggregates the dot-qualified string components of a column reference
+   * into an ArrayList.
+   * 
+   */
+  public void jjtClose() {
+      if( log.isTraceEnabled() ) enterTrace( log, "AST_SchemaName.jjtClose()" ) ;
+      ArrayList dotQualifications = new ArrayList() ;
+      int childCount = jjtGetNumChildren() ;      
+      for( int i=0; i<childCount; i++ ){
+          dotQualifications.add( children[i].getGeneratedObject() ) ;  
       }
+      this.generatedObject = dotQualifications ;
       if( log.isTraceEnabled() ) exitTrace( log, "AST_SchemaName.jjtClose()" ) ; 
   }
   

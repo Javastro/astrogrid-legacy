@@ -2,6 +2,8 @@
 
 package org.astrogrid.adql;
 
+import java.util.ArrayList;
+
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 
@@ -12,12 +14,24 @@ public class AST_TableName extends SimpleNode {
     public AST_TableName(AdqlStoX p, int id) {
         super(p, id);
     }
-
-    public void jjtClose() { 
+    
+    /**
+     * Aggregates the dot-qualified string components of a column reference
+     * into an ArrayList.
+     * 
+     */
+    public void jjtClose() {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_TableName.jjtClose()" ) ;
-        if( jjtGetNumChildren() == 1 ) {
-            setGeneratedObject( children[0].getGeneratedObject() ) ;
+        ArrayList dotQualifications ;
+        if( jjtGetNumChildren() > 1 ) {
+            dotQualifications = (ArrayList) children[0].getGeneratedObject() ;
+            dotQualifications.add( children[1].getGeneratedObject() ) ;  
         }
+        else {
+            dotQualifications = new ArrayList() ;
+            dotQualifications.add( children[0].getGeneratedObject() ) ;  
+        } 
+        this.generatedObject = dotQualifications ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_TableName.jjtClose()" ) ; 
     }
 

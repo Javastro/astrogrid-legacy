@@ -94,6 +94,10 @@ public void buildXmlTree( XmlObject xo ) {
     writeCommentsForChildren() ;
 };
 
+public void buildXmlTree() {
+    ;
+}
+
 public Token getFirstToken() {
     return firstToken;
 }

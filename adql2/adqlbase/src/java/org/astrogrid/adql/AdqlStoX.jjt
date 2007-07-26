@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.21 2007/07/25 20:24:29 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.22 2007/07/26 17:51:02 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -1256,7 +1256,7 @@ void column_reference_A() #ColumnReference :
 	//S: 
 	// <column_reference> ::= [ <qualifier> <period> ] <column_name>
 	(
-	   [ qualifier_A() <PERIOD> ] column_name_S() 
+	   [ LOOKAHEAD(2) qualifier_A() <PERIOD> ] column_name_S() 
 	)
 	{
 		if( log.isTraceEnabled() ) exitTrace ( "column_reference_A()" ) ;					
@@ -3564,7 +3564,7 @@ void schema_name_A() #SchemaName :
 	//S:
 	//  <schema name> ::=
 	//    [ <catalog name> <period> ] <unqualified schema name>
-	[ catalog_name_A() <PERIOD> ] identifier_A()
+	[ LOOKAHEAD(2) catalog_name_A() <PERIOD> ] identifier_A()
 	{
 		if( log.isTraceEnabled() ) exitTrace ( "schema_name_A()" ) ;
 	}
@@ -4207,9 +4207,6 @@ void simple_table_S() : {}
 	explicit_table_S()	
 }
 
-///*// * table_expression_A// *// *-bnf-start// *- <table_expression> ::=// *-     <from_clause>// *-     [ <where_clause> ]// *-     [ <group_by_clause> ]// *-     [ <having_clause> ]// *-     [ <order_by_clause> ]// *-!! ADQL adds <order_by_clause>// *-bnf-end// *// */
-//void table_expression_A( SelectType st ) : //{//	if( log.isTraceEnabled() ) enterTrace ( "table_expression_A" ) ;//} //{//	//S://	// <table_expression> ::=//	// <from_clause>//    // [ <where_clause> ]//    // [ <group_by_clause> ]//    // [ <having_clause> ]//	(//		from_clause_S( st ) 		//		[ LOOKAHEAD(3) where_clause_S( st ) ] //		//		[ LOOKAHEAD(3) group_by_clause_S( st ) ] //		//		[ LOOKAHEAD(3) having_clause_S( st ) ] //		//		[ LOOKAHEAD(3) order_by_clause( st ) ]	//	)//	{ //		if( log.isTraceEnabled() ) exitTrace ( "table_expression_A" ) ;//	}//}
-
 /*
  * table_name_A
  *
@@ -4230,7 +4227,7 @@ void table_name_A() #TableName :
 	//S:
 	// <table_name> ::=
     //  <qualified_name> | <qualified_local_table_name>
-	[ schema_name_A() <PERIOD> ] identifier_A()
+	[ LOOKAHEAD(2) schema_name_A() <PERIOD> ] identifier_A()
 	{ 
 		if( log.isTraceEnabled() ) exitTrace ( "table_name_A()" ) ;
 	}
@@ -4241,14 +4238,9 @@ void table_name_A() #TableName :
  *
  * bnf-start
  *  <table_reference> ::=
- *      [ <schema_name> <period> ] <table_name> [ [ AS ] <correlation_name> ] 
- *    | <joined_table> 
- *  !! TODO:
- *  !! The ADQL draft spec has
- *  !! <table_reference> ::=
- *  !!    <table_name> [ <correlation_specification> ]
- *  !!  | <table_subquery> <correlation specification>
- *  !!  | <joined_table>
+ *     <table_name> [ <correlation_specification> ]
+ *   | <table_subquery> <correlation specification>
+ *   | <joined_table>
  * bnf-end
  *
  */
@@ -4258,34 +4250,20 @@ void table_reference_A() #Table :
 } 
 {
 	//S:
-	//  <table_reference> ::=
-    //     <table_name> [ [ AS ] <correlation_name> [ <left_paren> <derived_column_list> <right_paren> ] ]
-    //   | <derived_table> [ AS ] <correlation_name> [ <left_paren> <derived_column_list> <right_paren> ]
-    //   | <joined_table>
+	// <table reference> ::=
+    //     <table name> [ <correlation specification> ]
+    //   | <derived table> <correlation specification>
+    //   | <joined table>
 	try {
-	(
-		// refactored... 
-		// 1. derivedTable() moved to first choice point
-		// 2. joinedTable() moved to second choice point
-//	    LOOKAHEAD(4) 
-//	    derivedTable() [ <AS> ] correlationName() [ <LEFT_PAREN> derived_column_list_S() <RIGHT_PAREN> ]
-//	    |	
-//		LOOKAHEAD(4)
-//	    joinedTable()
-//	    |
-//		tableName() [ [ <AS> ] correlationName() [ <LEFT_PAREN> derived_column_list_S() <RIGHT_PAREN> ] ]    
-
-		// Foreshortened. 
-		// derivedColumnList not supported in adql
-		// derivedTable not supported in adql
-//		LOOKAHEAD(4)
-//	    derivedTable() [ <AS> ] correlationName()
-//	    |	
-		LOOKAHEAD(6)
+	  (
+		LOOKAHEAD(3)
+	    table_name_A() [ correlation_specification_A() ]
+		| 
+		LOOKAHEAD(2)
+		table_subquery_A() correlation_specification_A()
+		|
 	    joined_table_S()
-	    |
-	    ( ( LOOKAHEAD(6) schema_name_A() <PERIOD> )? table_name_A() ( [ <AS> ] correlation_name_S() )? )	
-	)
+	  )
 	}
 	catch( ParseException pex ) {
 		compiler.errorSkipTo( compiler.TABLE_REF_SKIP_TO, pex ) ;
@@ -4293,6 +4271,20 @@ void table_reference_A() #Table :
 	{ 
 		if( log.isTraceEnabled() ) exitTrace ( "table_reference_A()" ) ;
 	} 
+}
+
+/*
+ * correlation_specification_A
+ *
+ * bnf-single <correlation_specification> ::= [ AS ] <correlation_name>
+ *
+ */
+void correlation_specification_A() : {}
+{
+	//S:
+	//  <correlation specification>    ::=
+    //     [ AS ] <correlation name> [ <left paren> <derived column list> <right paren> ]
+	[ <AS> ] correlation_name_S()
 }
 
 // Adaptation of <table_reference>
@@ -4391,8 +4383,6 @@ void term_S() #Term :
 		if( log.isTraceEnabled() ) exitTrace ( "term_S()" ) ;
 	}
 }
-
-//ScalarExpressionType[] termList() : //{//	ArrayList list = null ;//	ScalarExpressionType[] exprPairs1 = null ;//	ScalarExpressionType[] exprPairs2 = null ;//	ScalarExpressionType[] retExprPairs = null ;	//}//{//	( LOOKAHEAD(3) exprPairs1=termSingleton() //	  { if( list == null )//	  	   list = new ArrayList() ;//	  	list.add( exprPairs1 ) ;//	  } //	)*//	{ //		if( list != null ) {//			ListIterator iterator = list.listIterator() ;//			retExprPairs = exprPairs1 = (ScalarExpressionType[])iterator.next() ;//			ScalarExpressionType[] args = new ScalarExpressionType[2] ;//			BinaryExprType beType = null ;//			while( iterator.hasNext() ) {//				exprPairs2 = (ScalarExpressionType[])iterator.next() ;//				args[0] = exprPairs1[1] ;//				args[1] = exprPairs2[1] ;//				beType = (BinaryExprType)exprPairs2[0] ;//				beType.setArgArray( args ) ;//				exprPairs1 = exprPairs2 ;//			}//		}		//		return retExprPairs ;//	}//}////ScalarExpressionType[] termSingleton() ://{////	ScalarExpressionType[] retPairs = null ;//	BinaryExprType beType = null ;//	ScalarExpressionType seType = null ;//	Token t = null ; //}//{//	( t=<ASTERISK> | t=<SOLIDUS> ) seType=term_S()	//	{//		if( t != null ) {//			retPairs = new ScalarExpressionType[2] ;		//			beType = BinaryExprType.Factory.newInstance() ;//			beType.setOper( BinaryOperatorType.Enum.forString( t.image ) ) ;//			retPairs[0] = beType ;//			retPairs[1] = seType ;//		}////		return retPairs ;//	}//}
 
 void time_fractional_seconds_precision_S() : {}
 {
@@ -4710,6 +4700,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.22  2007/07/26 17:51:02  jl99
+Partial rejig (not yet finished) to accommodate schema name
+
 Revision 1.21  2007/07/25 20:24:29  jl99
 Partial rejig (not yet finished) to accommodate schema name
 
