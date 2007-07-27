@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.22 2007/07/26 17:51:02 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.23 2007/07/27 10:36:24 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -1256,7 +1256,7 @@ void column_reference_A() #ColumnReference :
 	//S: 
 	// <column_reference> ::= [ <qualifier> <period> ] <column_name>
 	(
-	   [ LOOKAHEAD(2) qualifier_A() <PERIOD> ] column_name_S() 
+	   [ LOOKAHEAD(4) qualifier_A() <PERIOD> ] column_name_S() 
 	)
 	{
 		if( log.isTraceEnabled() ) exitTrace ( "column_reference_A()" ) ;					
@@ -3564,7 +3564,7 @@ void schema_name_A() #SchemaName :
 	//S:
 	//  <schema name> ::=
 	//    [ <catalog name> <period> ] <unqualified schema name>
-	[ LOOKAHEAD(2) catalog_name_A() <PERIOD> ] identifier_A()
+	[ LOOKAHEAD(3) catalog_name_A() <PERIOD> ] identifier_A()
 	{
 		if( log.isTraceEnabled() ) exitTrace ( "schema_name_A()" ) ;
 	}
@@ -4227,7 +4227,7 @@ void table_name_A() #TableName :
 	//S:
 	// <table_name> ::=
     //  <qualified_name> | <qualified_local_table_name>
-	[ LOOKAHEAD(2) schema_name_A() <PERIOD> ] identifier_A()
+	[ LOOKAHEAD(4) schema_name_A() <PERIOD> ] identifier_A()
 	{ 
 		if( log.isTraceEnabled() ) exitTrace ( "table_name_A()" ) ;
 	}
@@ -4256,13 +4256,15 @@ void table_reference_A() #Table :
     //   | <joined table>
 	try {
 	  (
-		LOOKAHEAD(3)
+	    LOOKAHEAD(20)
+	    joined_table_S()
+	    |
+		LOOKAHEAD(20)
 	    table_name_A() [ correlation_specification_A() ]
 		| 
-		LOOKAHEAD(2)
+		LOOKAHEAD(10)
 		table_subquery_A() correlation_specification_A()
-		|
-	    joined_table_S()
+		
 	  )
 	}
 	catch( ParseException pex ) {
@@ -4293,7 +4295,11 @@ void tableReferenceBarJoinedTable() #TableReferenceBarJoinedTable :
 	if( log.isTraceEnabled() ) enterTrace ( "tableReferenceBarJoinedTable()" ) ;
 }
 {
-	( ( LOOKAHEAD(5) schema_name_A() <PERIOD> )? table_name_A() [ [ <AS> ] correlation_name_S() ] )
+//	( ( LOOKAHEAD(5) schema_name_A() <PERIOD> )? table_name_A() [ [ <AS> ] correlation_name_S() ] )
+		LOOKAHEAD(20)
+	    table_name_A() [ correlation_specification_A() ]
+		| 
+		table_subquery_A() correlation_specification_A()
 	{ 
 		if( log.isTraceEnabled() ) exitTrace ( "tableReferenceBarJoinedTable()" ) ;
 	}
@@ -4700,6 +4706,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.23  2007/07/27 10:36:24  jl99
+Schema name and relaxing of correlation in place
+
 Revision 1.22  2007/07/26 17:51:02  jl99
 Partial rejig (not yet finished) to accommodate schema name
 

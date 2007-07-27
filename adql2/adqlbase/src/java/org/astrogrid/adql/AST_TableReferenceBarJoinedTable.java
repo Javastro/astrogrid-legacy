@@ -2,8 +2,11 @@
 
 package org.astrogrid.adql;
 
+import java.util.ArrayList;
+
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
+import org.astrogrid.adql.beans.DerivedTableType;
 import org.astrogrid.adql.beans.TableType;
 import org.apache.xmlbeans.XmlObject ;
 
@@ -15,46 +18,42 @@ public class AST_TableReferenceBarJoinedTable extends SimpleNode {
         super(p, id);
     }
 
-
     public void buildXmlTree( XmlObject ftt ) { 
         if( log.isTraceEnabled() ) enterTrace( log, "AST_TableReferenceBarJoinedTable.buildXmlTree()" ) ;
-        //  joined_table_S()
-        //  |
-        //  ( table_name_A() [ [ <AS> ] correlation_name_S() ] )
-        int childCount = jjtGetNumChildren() ;
-        try {
-            // This is just a safety first measure.
-            // It should fail somewhere else, but without a NullPointerException
-            if( childCount == 0 ) {
-                setGeneratedObject( TableType.Factory.newInstance() ) ;
-            }       
-            else {
-                // We have a table, maybe with schema and maybe with alias...
-                // Complicated possibly by error recovery providing non-standard
-                // number of children! ...
-                TableType tt = (TableType)ftt.changeType( TableType.type ) ;
-                for( int i=0; i<childCount; i++ ) {
-                    if( children[i] instanceof AST_SchemaName ) {
-                        tt.setArchive( (String)children[0].getGeneratedObject() ) ;
-                    }
-                    else if( children[i] instanceof AST_TableName ) {
-                        tt.setName( (String)children[i].getGeneratedObject() ) ;
-                    }
-                    else if( children[i] instanceof AST_CorrelationName ) {
-                        tt.setAlias( (String)children[i].getGeneratedObject() ) ;
-                    }
-                    else {
-                        log.warn( "Unrecognized table naming structure." ) ;
-                    }                   
+
+        if( children[0] instanceof AST_TableName ) {
+            TableType tt = (TableType)ftt.changeType( TableType.type ) ;           
+            ArrayList dotQualifications = (ArrayList) children[0].getGeneratedObject() ;
+            String[] names = new String[ dotQualifications.size() ] ;
+            names = (String[])dotQualifications.toArray( names ) ;
+            for( int i=0; i<names.length; i++ ) {
+                if( i==0 ) {
+                    tt.setName( names[names.length - (i+1) ] ) ;
                 }
-                setGeneratedObject( tt ) ;
-            } 
-            super.buildXmlTree( (XmlObject)this.generatedObject ) ;
+                else if( i==1 ) {
+                    tt.setSchema( names[names.length - (i+1) ] ) ;
+                }
+                else if( i==2 ) {
+                    tt.setCatalog( names[names.length - (i+1) ] ) ;
+                }
+            }
+            if( jjtGetNumChildren() > 1 ) {
+                tt.setAlias( (String)children[1].getGeneratedObject() ) ;
+            }
+            setGeneratedObject( tt ) ; 
         }
-        finally {
-            if( log.isTraceEnabled() ) exitTrace( log, "AST_TableReferenceBarJoinedTable.buildXmlTree()" ) ; 
+        else if( children[0] instanceof AST_TableSubQuery ) {
+            children[0].buildXmlTree( ftt ) ;
+            DerivedTableType dtt = (DerivedTableType)ftt ;
+            dtt.setAlias( (String)children[1].getGeneratedObject() ) ;
+            setGeneratedObject( dtt ) ;           
         }
-       
+        else {
+            log.warn( "Unrecognized table type." ) ;
+        }
+        
+        super.buildXmlTree( (XmlObject)this.generatedObject ) ;
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_TableReferenceBarJoinedTable.buildXmlTree()" ) ; 
     }
 
 }

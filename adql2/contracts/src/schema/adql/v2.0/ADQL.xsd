@@ -98,8 +98,9 @@
 		</xs:annotation>
 		<xs:complexContent mixed="false">
 			<xs:extension base="adql:scalarExpressionType">
-			    <xs:attribute name="Archive" type="xs:string"/>
-				<xs:attribute name="Table" type="xs:string" use="required"/>
+			    <xs:attribute name="Catalog" type="xs:string" use="optional"/>
+			    <xs:attribute name="Schema" type="xs:string" use="optional"/>
+				<xs:attribute name="Table" type="xs:string" use="optional"/>
 				<xs:attribute name="Name" type="xs:string" use="required"/>
 				<xs:attribute name="xpathName" type="xs:string"/>
 			</xs:extension>
@@ -308,18 +309,18 @@
 		</xs:annotation>
 	</xs:complexType>
 <!-- archiveTableType removed as an experiment 
-	<xs:complexType name="archiveTableType" mixed="false">
-		<xs:annotation>
-			<xs:documentation>Same as a tableType with an additional archive name</xs:documentation>
-		</xs:annotation>
-		<xs:complexContent mixed="false">
-			<xs:extension base="adql:fromTableType">
-				<xs:attribute name="Archive" type="xs:string" use="required"/>
-				<xs:attribute name="Name" type="xs:string" use="required"/>
-				<xs:attribute name="Alias" type="xs:string" use="optional"/>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
+#	<xs:complexType name="archiveTableType" mixed="false">
+#		<xs:annotation>
+#			<xs:documentation>Same as a tableType with an additional archive name</xs:documentation>
+#		</xs:annotation>
+#		<xs:complexContent mixed="false">
+#			<xs:extension base="adql:fromTableType">
+#				<xs:attribute name="Archive" type="xs:string" use="required"/>
+#				<xs:attribute name="Name" type="xs:string" use="required"/>
+#				<xs:attribute name="Alias" type="xs:string" use="optional"/>
+#			</xs:extension>
+#		</xs:complexContent>
+#	</xs:complexType>
 -->
 	<xs:complexType name="tableType" mixed="false">
 		<xs:annotation>
@@ -327,7 +328,8 @@
 		</xs:annotation>
 		<xs:complexContent mixed="false">
 			<xs:extension base="adql:fromTableType">
-			    <xs:attribute name="Archive" type="xs:string" use="optional"/>
+			    <xs:attribute name="Catalog" type="xs:string" use="optional"/>
+			    <xs:attribute name="Schema" type="xs:string" use="optional"/>
 				<xs:attribute name="Name" type="xs:string" use="required"/>
 				<xs:attribute name="Alias" type="xs:string" use="optional"/>
 				<xs:attribute name="xpathName" type="xs:string" use="optional"/>
@@ -335,31 +337,31 @@
 		</xs:complexContent>
 	</xs:complexType>
 <!-- Removed by Jeff Lusted 28 June 2007
-	<xs:complexType name="xMatchTableAliasType" abstract="true">
-		<xs:annotation>
-			<xs:documentation>The base type for all table inclusion or drop types used in a cross match expression</xs:documentation>
-		</xs:annotation>
-	</xs:complexType>
-	<xs:complexType name="includeTableType" mixed="false">
-		<xs:annotation>
-			<xs:documentation>Used for adding a table for the Xmatch operation</xs:documentation>
-		</xs:annotation>
-		<xs:complexContent mixed="false">
-			<xs:extension base="adql:xMatchTableAliasType">
-				<xs:attribute name="Name" type="xs:string" use="required"/>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-	<xs:complexType name="dropTableType" mixed="false">
-		<xs:annotation>
-			<xs:documentation>Used for avoiding a table in Xmatch</xs:documentation>
-		</xs:annotation>
-		<xs:complexContent mixed="false">
-			<xs:extension base="adql:xMatchTableAliasType">
-				<xs:attribute name="Name" type="xs:string" use="required"/>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
+#	<xs:complexType name="xMatchTableAliasType" abstract="true">
+#		<xs:annotation>
+#			<xs:documentation>The base type for all table inclusion or drop types used in a cross match expression</xs:documentation>
+#		</xs:annotation>
+#	</xs:complexType>
+#	<xs:complexType name="includeTableType" mixed="false">
+#		<xs:annotation>
+#			<xs:documentation>Used for adding a table for the Xmatch operation</xs:documentation>
+#		</xs:annotation>
+#		<xs:complexContent mixed="false">
+#			<xs:extension base="adql:xMatchTableAliasType">
+#				<xs:attribute name="Name" type="xs:string" use="required"/>
+#			</xs:extension>
+#		</xs:complexContent>
+#	</xs:complexType>
+#	<xs:complexType name="dropTableType" mixed="false">
+#		<xs:annotation>
+#			<xs:documentation>Used for avoiding a table in Xmatch</xs:documentation>
+#		</xs:annotation>
+#		<xs:complexContent mixed="false">
+#			<xs:extension base="adql:xMatchTableAliasType">
+#				<xs:attribute name="Name" type="xs:string" use="required"/>
+#			</xs:extension>
+#		</xs:complexContent>
+#	</xs:complexType>
 -->
 	<xs:complexType name="searchType" abstract="true">
 		<xs:annotation>
@@ -391,20 +393,20 @@
 		</xs:complexContent>
 	</xs:complexType>
 <!-- Removed by Jeff Lusted 28 June 2007
-	<xs:complexType name="xMatchType" mixed="false">
-		<xs:annotation>
-			<xs:documentation>A cross match expression</xs:documentation>
-		</xs:annotation>
-		<xs:complexContent mixed="false">
-			<xs:extension base="adql:searchType">
-				<xs:sequence>
-					<xs:element name="Table" type="adql:xMatchTableAliasType" minOccurs="2" maxOccurs="unbounded"/>
-					<xs:element name="Nature" type="adql:comparisonType"/>
-					<xs:element name="Sigma" type="adql:numberType"/>
-				</xs:sequence>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
+#	<xs:complexType name="xMatchType" mixed="false">
+#		<xs:annotation>
+#			<xs:documentation>A cross match expression</xs:documentation>
+#		</xs:annotation>
+#		<xs:complexContent mixed="false">
+#			<xs:extension base="adql:searchType">
+#				<xs:sequence>
+#					<xs:element name="Table" type="adql:xMatchTableAliasType" minOccurs="2" maxOccurs="unbounded"/>
+#					<xs:element name="Nature" type="adql:comparisonType"/>
+#					<xs:element name="Sigma" type="adql:numberType"/>
+#				</xs:sequence>
+#			</xs:extension>
+#		</xs:complexContent>
+#	</xs:complexType>
 -->
 	<xs:complexType name="likePredType" mixed="false">
 		<xs:annotation>
@@ -852,5 +854,19 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>	
+	
+	<xs:complexType name="derivedTableType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents SQL derived table expression</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:fromTableType">
+				<xs:sequence>
+					<xs:element name="SubQuery" type="adql:subQuerySet"/>
+				</xs:sequence>
+				<xs:attribute name="Alias" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 
 </xs:schema>

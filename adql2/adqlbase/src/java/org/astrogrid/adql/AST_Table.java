@@ -41,6 +41,7 @@ public class AST_Table extends SimpleNode {
             if( jjtGetNumChildren() > 1 ) {
                 tt.setAlias( (String)children[1].getGeneratedObject() ) ;
             }
+            setGeneratedObject( tt ) ;    
         }
         else if( children[0] instanceof AST_TableSubQuery ) {
             children[0].buildXmlTree( ftt ) ;
