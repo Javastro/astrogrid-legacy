@@ -587,7 +587,7 @@
     </dependency>
     
     <dependency>
-      <groupId>org.astrogrid</groupId>
+      <groupId>xmlsec</groupId>
       <artifactId>xmlsec</artifactId>
       <version>1.3.0</version>
       <type>jar</type>
