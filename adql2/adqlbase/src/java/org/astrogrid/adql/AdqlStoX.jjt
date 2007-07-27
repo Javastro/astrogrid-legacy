@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.25 2007/07/27 15:09:37 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.26 2007/07/27 15:32:32 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -1981,11 +1981,7 @@ void interval_value_expression_S() : {}
  *
  * bnf-start
  *  <in_value_list> ::=
- *      <in_value_list_constant> { <comma> <in_value_list_constant> }...
- *  !! TODO:
- *  !! The ADQL draft spec has 
- *  !! <in_value_list> ::= 
- *  !!   <value_expression> { <comma> <value_expression> } ...
+ *      <value_expression> { <comma> <value_expression> } ...
  * bnf-end
  *
  */
@@ -1994,38 +1990,10 @@ void in_value_list_A() #InValueList : {}
 	//S:
 	// <in_value_list> ::=
     //   <value_expression> { <comma> <value_expression> }...    
-    ( in_value_list_constant_A() ( <COMMA> in_value_list_constant_A() )* )
+    ( value_expression_A() ( <COMMA> value_expression_A() )* )
 }
 
-/*
- * in_value_list_constant_A
- *
- * bnf-start
- *  <in_value_list_constant> ::=
- *	       [ <plus_sign> | <minus_sign> ] <exact_numeric_literal>
- *	    |  <character_string_literal> 
- * bnf-end
- *
- */
-void in_value_list_constant_A() #InValueListConstant : 
-{
-	int signChange = +1 ;
-	Token t = null ;
-}
-{
-	//A:
-	// <in_value_list_constant_A> ::=
-	//      [ <plus> | <minus> ] <exact_numeric_literal_S>
-	//      |
-	//      <character_string_literal_A> 
-	(
-	  (
-	    ( [ (<PLUS_SIGN> | t=<MINUS_SIGN>) {if(t != null) signChange = -1 ;} ] ) exact_numeric_literal_S( signChange ) 
-	  )
-	  |
-	  character_string_literal_A()
-	)
-}
+///*// * in_value_list_constant_A// *// * bnf-start// *  <in_value_list_constant> ::=// *	       [ <plus_sign> | <minus_sign> ] <exact_numeric_literal>// *	    |  <character_string_literal> // * bnf-end// *// *///void in_value_list_constant_A() #InValueListConstant : //{//	int signChange = +1 ;//	Token t = null ;//}//{//	//A://	// <in_value_list_constant_A> ::=//	//      [ <plus> | <minus> ] <exact_numeric_literal_S>//	//      |//	//      <character_string_literal_A> //	(//	  (//	    ( [ (<PLUS_SIGN> | t=<MINUS_SIGN>) {if(t != null) signChange = -1 ;} ] ) exact_numeric_literal_S( signChange ) //	  )//	  |//	  character_string_literal_A()//	)//}
 
 /*
  * join_specification_S
@@ -4670,6 +4638,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.26  2007/07/27 15:32:32  jl99
+In predicate now supports value_expression in lists
+
 Revision 1.25  2007/07/27 15:09:37  jl99
 set_quantifier now correctly supported
 

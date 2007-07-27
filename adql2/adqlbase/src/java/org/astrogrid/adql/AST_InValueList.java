@@ -2,7 +2,7 @@
 
 package org.astrogrid.adql;
 
-import org.astrogrid.adql.beans.ConstantListSet;
+import org.astrogrid.adql.beans.InListSet;
 import org.apache.xmlbeans.XmlObject ;
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
@@ -17,7 +17,7 @@ public class AST_InValueList extends SimpleNode {
     
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_InValueList.buildXmlTree()" ) ;
-        ConstantListSet constantListSet = (ConstantListSet)xo.changeType( ConstantListSet.type ) ;
+        InListSet constantListSet = (InListSet)xo.changeType( InListSet.type ) ;
         int childCount = jjtGetNumChildren() ;
         for( int i=0; i<childCount; i++ ) {
             children[i].buildXmlTree( constantListSet.addNewItem() ) ;
