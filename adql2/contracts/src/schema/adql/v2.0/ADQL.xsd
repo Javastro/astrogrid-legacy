@@ -297,7 +297,11 @@
 			<xs:documentation>Represent all columns as in Select * query</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="adql:selectionItemType"/>
+			<xs:extension base="adql:selectionItemType">
+			    <xs:attribute name="Catalog" type="xs:string" use="optional"/>
+			    <xs:attribute name="Schema" type="xs:string" use="optional"/>
+				<xs:attribute name="Table" type="xs:string" use="optional"/>
+			</xs:extension>	
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:simpleType name="comparisonType">
