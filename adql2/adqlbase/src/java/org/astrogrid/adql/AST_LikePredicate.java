@@ -2,7 +2,6 @@
 
 package org.astrogrid.adql;
 
-import org.astrogrid.adql.beans.BetweenPredType;
 import org.astrogrid.adql.beans.LikePredType ;
 import org.astrogrid.adql.beans.NotLikePredType ;
 import org.apache.xmlbeans.XmlObject ;

@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.26 2007/07/27 15:32:32 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.27 2007/07/27 18:32:30 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -1040,12 +1040,12 @@ void boolean_factor_S() #BooleanFactor :
  * bnf-start
  *  <like_predicate> ::=
  *      <match_value> [ NOT ] LIKE <pattern>
- *  !! TODO:
+ *  !! For information,
  *  !! The ADQL draft spec has
  *  !! <like_predicate> ::= 
  *  !!   <character_value_expression> [ NOT ] LIKE <character_value_expression>
- *  !! The main difference is with <pattern>.
- *  !! Not quite sure of the ramifications of <character_value_expression>
+ *  !! But there is no underlying difference. Just different documentation.
+ *  !! Using <match_value> and <pattern> is in line with SQL92.
  * bnf-end
  *
  */
@@ -1993,7 +1993,7 @@ void in_value_list_A() #InValueList : {}
     ( value_expression_A() ( <COMMA> value_expression_A() )* )
 }
 
-///*// * in_value_list_constant_A// *// * bnf-start// *  <in_value_list_constant> ::=// *	       [ <plus_sign> | <minus_sign> ] <exact_numeric_literal>// *	    |  <character_string_literal> // * bnf-end// *// *///void in_value_list_constant_A() #InValueListConstant : //{//	int signChange = +1 ;//	Token t = null ;//}//{//	//A://	// <in_value_list_constant_A> ::=//	//      [ <plus> | <minus> ] <exact_numeric_literal_S>//	//      |//	//      <character_string_literal_A> //	(//	  (//	    ( [ (<PLUS_SIGN> | t=<MINUS_SIGN>) {if(t != null) signChange = -1 ;} ] ) exact_numeric_literal_S( signChange ) //	  )//	  |//	  character_string_literal_A()//	)//}
+///*// * in_value_list_constant_A// *// *-bnf-start// *- <in_value_list_constant> ::=// *-       [ <plus_sign> | <minus_sign> ] <exact_numeric_literal>// *-    |  <character_string_literal> // *-bnf-end// *// *///void in_value_list_constant_A() #InValueListConstant : //{//	int signChange = +1 ;//	Token t = null ;//}//{//	//A://	// <in_value_list_constant_A> ::=//	//      [ <plus> | <minus> ] <exact_numeric_literal_S>//	//      |//	//      <character_string_literal_A> //	(//	  (//	    ( [ (<PLUS_SIGN> | t=<MINUS_SIGN>) {if(t != null) signChange = -1 ;} ] ) exact_numeric_literal_S( signChange ) //	  )//	  |//	  character_string_literal_A()//	)//}
 
 /*
  * join_specification_S
@@ -2548,9 +2548,7 @@ void overlaps_predicate_S() : {}
  * pattern_A
  *
  * bnf-start
- *  <pattern> ::= <character_string_literal>
- *  !! TODO:
- *  !! The ADQL draft spec in effect uses <character_value_expression>
+ *  <pattern> ::= <character_value_expression>
  * bnf-end
  *
  */
@@ -2561,7 +2559,8 @@ void pattern_A() :
 {
 	//S:
 	//   <pattern> ::= <character_value_expression>
-	character_string_literal_A()
+	// character_string_literal_A()
+	character_value_expression_S()
 	{
 		if( log.isTraceEnabled() ) exitTrace ( "pattern_A()" ) ;
 	}	
@@ -2826,8 +2825,8 @@ void convex_LatLon_A() #ConvexLatLon:
  *
  * bnf-start
  *   <convex_Cartesian> ::= 
- *      <left_paren> <coord_x> <comma> <coord_y> <comma> <coord_z> <comma> <direction> <right_paren>
- *    { <left_paren> <coord_x> <comma> <coord_y> <comma> <coord_z> <comma> <direction> <right_paren> }...
+ *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma> <direction> <right_paren>
+ *    { <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma> <direction> <right_paren> }...
  * bnf-end
  */
 void convex_Cartesian_A() #ConvexCartesian : 
@@ -2926,7 +2925,7 @@ void box_LatLon_A() #BoxLatLon :
  * box_Cartesian_A
  *
  * bnf-start
- *   <box_LatLon> ::= 
+ *   <box_Cartesian> ::= 
  *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma> 
  *                    <length> <comma> <breadth> <right_paren>
  * bnf-end
@@ -4169,7 +4168,7 @@ void table_name_A() #TableName :
  * bnf-start
  *  <table_reference> ::=
  *     <table_name> [ <correlation_specification> ]
- *   | <table_subquery> <correlation specification>
+ *   | <table_subquery> <correlation_specification>
  *   | <joined_table>
  * bnf-end
  *
@@ -4638,6 +4637,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.27  2007/07/27 18:32:30  jl99
+tidy
+
 Revision 1.26  2007/07/27 15:32:32  jl99
 In predicate now supports value_expression in lists
 
