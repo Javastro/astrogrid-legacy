@@ -426,7 +426,7 @@
 			<xs:extension base="adql:searchType">
 				<xs:sequence>
 					<xs:element name="Arg" type="adql:scalarExpressionType"/>
-					<xs:element name="Pattern" type="adql:atomType"/>
+					<xs:element name="Pattern" type="adql:scalarExpressionType"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -674,14 +674,14 @@
 			<xs:element name="Item" type="adql:orderType" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:complexType name="ConstantListSet" mixed="false">
+	<xs:complexType name="InListSet" mixed="false">
 		<xs:annotation>
-			<xs:documentation>Represents a list of constants provided for a SQL IN expression</xs:documentation>
+			<xs:documentation>Represents a list provided for an SQL IN expression</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
 			<xs:extension base="adql:inclusionSetType">
 				<xs:sequence>
-					<xs:element name="Item" type="adql:literalType" maxOccurs="unbounded"/>
+					<xs:element name="Item" type="adql:scalarExpressionType" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
