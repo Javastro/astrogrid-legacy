@@ -21,7 +21,13 @@ public class AST_GeneralSetFunction extends SimpleNode {
         getTracker().setType( AggregateFunctionType.type ) ;
         AggregateFunctionType afType = (AggregateFunctionType)xo.changeType( AggregateFunctionType.type ) ;
         afType.setName( AggregateFunctionNameType.Enum.forString( firstToken.image.toUpperCase() ) ) ;
-        children[0].buildXmlTree( afType.addNewArg() ) ;
+        if( jjtGetNumChildren() > 1) {
+            children[0].buildXmlTree( afType.addNewAllow() ) ;
+            children[1].buildXmlTree( afType.addNewArg() ) ;
+        }
+        else {
+            children[0].buildXmlTree( afType.addNewArg() ) ;
+        }
         this.generatedObject = afType ;
         super.buildXmlTree(afType) ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_GeneralSetFunction.buildXmlTree()" ) ; 

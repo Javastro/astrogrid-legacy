@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.24 2007/07/27 11:11:00 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.25 2007/07/27 15:09:37 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -1683,13 +1683,7 @@ void general_literal_A() : {}
  *
  * bnf-start
  *  <general_set_function> ::=
- *     <set_function_type>
- *         <left_paren> <value_expression> <right_paren>
- *  !! TODO:
- *  !! Include <set_quantifier>
- *  !! The ADQL draft has 
- *  !! <general_set_function> ::=
- *  !!   <set_function_type> <left_paren> [ <set_quantifier> ] <value_expression> <right_paren>
+ *     <set_function_type> <left_paren> [ <set_quantifier> ] <value_expression> <right_paren>
  * bnf-end
  *
  * bnf-single <set_function_type> ::= AVG | MAX | MIN | SUM | COUNT
@@ -1706,6 +1700,7 @@ void general_set_function_A() #GeneralSetFunction :
 	// ( <AVG> | <MAX> | <MIN> | <SUM> | <COUNT> ) <LEFT_PAREN> [ setQuantifier() ] value_expression_A() <RIGHT_PAREN>	
 	( <AVG> | <MAX> | <MIN> | <SUM> | <COUNT> ) 
 	<LEFT_PAREN>
+	   [  set_quantifier_S()  ]
 	   { tracker.push( compiler.ARG_ELEMENT ) ; } 
 	   value_expression_A() 
 	   { tracker.pop() ; }
@@ -4675,6 +4670,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.25  2007/07/27 15:09:37  jl99
+set_quantifier now correctly supported
+
 Revision 1.24  2007/07/27 11:11:00  jl99
 Updated bnd documentation
 

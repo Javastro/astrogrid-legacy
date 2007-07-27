@@ -167,14 +167,14 @@
 			<xs:documentation>The base type for a function</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="adql:scalarExpressionType">
-				<xs:sequence>
-					<xs:element name="Allow" type="adql:selectionOptionType" minOccurs="0"/>
-					<xs:element name="Arg" type="adql:selectionItemType" minOccurs="0" maxOccurs="unbounded"/>
-				</xs:sequence>
-			</xs:extension>
-		</xs:complexContent>
+			<xs:extension base="adql:scalarExpressionType"/>
+		</xs:complexContent>		
 	</xs:complexType>
+	<xs:group name="functionArgsGroup" >
+	    <xs:sequence>
+			<xs:element name="Arg" type="adql:selectionItemType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:group>
 	<xs:complexType name="selectionOptionType">
 		<xs:annotation>
 			<xs:documentation>Option of selecting all or distinct elements in a query</xs:documentation>
@@ -196,6 +196,9 @@
 		</xs:annotation>
 		<xs:complexContent mixed="false">
 			<xs:extension base="adql:functionType">
+			    <xs:sequence>			      
+			        <xs:group ref="adql:functionArgsGroup"/> 
+			    </xs:sequence>	
 				<xs:attribute name="Name" type="adql:trigonometricFunctionNameType" use="required"/>
 			</xs:extension>
 		</xs:complexContent>
@@ -221,6 +224,9 @@
 		</xs:annotation>
 		<xs:complexContent mixed="false">
 			<xs:extension base="adql:functionType">
+			    <xs:sequence>			      
+			        <xs:group ref="adql:functionArgsGroup"/> 
+			    </xs:sequence>	
 				<xs:attribute name="Name" type="adql:mathFunctionNameType" use="required"/>
 			</xs:extension>
 		</xs:complexContent>
@@ -252,7 +258,11 @@
 			<xs:documentation>Represents an aggregate function</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
-			<xs:extension base="adql:functionType">
+			<xs:extension base="adql:functionType">				
+			    <xs:sequence>			    
+			        <xs:element name="Allow" type="adql:selectionOptionType" minOccurs="0"/>   
+			        <xs:group ref="adql:functionArgsGroup"/> 
+			    </xs:sequence>				    		
 				<xs:attribute name="Name" type="adql:aggregateFunctionNameType" use="required"/>
 			</xs:extension>
 		</xs:complexContent>
