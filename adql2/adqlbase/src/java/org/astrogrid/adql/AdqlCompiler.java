@@ -132,18 +132,18 @@ public class AdqlCompiler {
     	AdqlStoXConstants.ORDERBY 
     } ;
      
-     private static AstroCoordSystemType systemDefault_AstroCoordSystemType ;
-     static { 
-         systemDefault_AstroCoordSystemType = AstroCoordSystemType.Factory.newInstance() ;
-         SpaceFrameType sft = systemDefault_AstroCoordSystemType.addNewSpaceFrame() ;         
-         CoordRefFrameType crf = sft.addNewSpaceRefFrame() ;
-         QName qName = new QName( CoordRefFrameType.type.getName().getNamespaceURI(), "FK5") ;
-         FkType srf = (FkType)crf.substitute( qName , FkType.type ) ;
-         srf.setEquinox( "J2000" ) ;     
-         sft.setSpaceRefFrame( srf ) ;        
-     }
-     
-     private AstroCoordSystemType default_AstroCoordSystemType ;
+//     private static AstroCoordSystemType systemDefault_AstroCoordSystemType ;
+//     static { 
+//         systemDefault_AstroCoordSystemType = AstroCoordSystemType.Factory.newInstance() ;
+//         SpaceFrameType sft = systemDefault_AstroCoordSystemType.addNewSpaceFrame() ;         
+//         CoordRefFrameType crf = sft.addNewSpaceRefFrame() ;
+//         QName qName = new QName( CoordRefFrameType.type.getName().getNamespaceURI(), "FK5") ;
+//         FkType srf = (FkType)crf.substitute( qName , FkType.type ) ;
+//         srf.setEquinox( "J2000" ) ;     
+//         sft.setSpaceRefFrame( srf ) ;        
+//     }
+//     
+//     private AstroCoordSystemType default_AstroCoordSystemType ;
      
      
      /**
@@ -250,30 +250,32 @@ public class AdqlCompiler {
          return buffer.toString() ;
      }
      
-     public static synchronized void setSystemDefault_AstroCoordSystem( AstroCoordSystemType acst ) {
-         systemDefault_AstroCoordSystemType = acst ;
-     }
+//     public static synchronized void setSystemDefault_AstroCoordSystem( AstroCoordSystemType acst ) {
+//         systemDefault_AstroCoordSystemType = acst ;
+//     }
+//     
+//     public static synchronized AstroCoordSystemType getSystemDefault_AstroCoordSystem() {
+//         AstroCoordSystemType acst = (AstroCoordSystemType)systemDefault_AstroCoordSystemType.copy() ;
+//         return acst ;
+//     }
+//     
+//     public void setDefault_AstroCoordSystem( AstroCoordSystemType acst ) {
+//         this.default_AstroCoordSystemType = acst ;
+//     }
+//     
+//     public AstroCoordSystemType getDefault_AstroCoordSystem() {
+//         AstroCoordSystemType acst ;
+//         if( default_AstroCoordSystemType == null ) {
+//             acst = (AstroCoordSystemType)default_AstroCoordSystemType.copy() ;
+//         }
+//         else {
+//             acst = (AstroCoordSystemType)getSystemDefault_AstroCoordSystem().copy() ;
+//         }
+//         acst.setId( "AstroCoordSystem_Default" ) ;
+//         return acst ;
+//     }
      
-     public static synchronized AstroCoordSystemType getSystemDefault_AstroCoordSystem() {
-         AstroCoordSystemType acst = (AstroCoordSystemType)systemDefault_AstroCoordSystemType.copy() ;
-         return acst ;
-     }
-     
-     public void setDefault_AstroCoordSystem( AstroCoordSystemType acst ) {
-         this.default_AstroCoordSystemType = acst ;
-     }
-     
-     public AstroCoordSystemType getDefault_AstroCoordSystem() {
-         AstroCoordSystemType acst ;
-         if( default_AstroCoordSystemType == null ) {
-             acst = (AstroCoordSystemType)default_AstroCoordSystemType.copy() ;
-         }
-         else {
-             acst = (AstroCoordSystemType)getSystemDefault_AstroCoordSystem().copy() ;
-         }
-         acst.setId( "AstroCoordSystem_Default" ) ;
-         return acst ;
-     }
+     private String defaultUserDefinedFunctionPrefix = "udf_" ;
      
           
      public AdqlCompiler( java.io.InputStream stream ) {
@@ -839,7 +841,7 @@ public class AdqlCompiler {
     }
     
     private void fInValueListConstant() throws ParseException {
-        parser.in_value_list_constant_A() ;
+//        parser.in_value_list_constant_A() ;
         ConstantListSet constantListSet = ConstantListSet.Factory.newInstance() ;
         AST_InValueListConstant inValueListConstantNode = (AST_InValueListConstant)parser.jjtree.rootNode() ;
         inValueListConstantNode.buildXmlTree( constantListSet.addNewItem() ) ;  
@@ -1452,6 +1454,25 @@ public class AdqlCompiler {
     protected String formUniqueID( String prefix ) {
         this.numberForUniqueID++ ;
         return prefix + '_' + Integer.toString( this.numberForUniqueID ) ;  
+    }
+
+
+    /**
+     * @return the defaultUserDefinedFunctionPrefix
+     */
+    public String getDefaultUserDefinedFunctionPrefix() {
+        return defaultUserDefinedFunctionPrefix;
+    }
+
+    /**
+     * @param defaultUserDefinedFunctionPrefix the defaultUserDefinedFunctionPrefix to set
+     */
+    public void setDefaultUserDefinedFunctionPrefix( String prefix ) {
+        this.defaultUserDefinedFunctionPrefix = prefix;
+    }
+    
+    public void resetDefaultUserDefinedFunctionPrefix() {
+        this.defaultUserDefinedFunctionPrefix = "_udf";
     }
     
 }

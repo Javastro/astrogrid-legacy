@@ -18,8 +18,14 @@ public class AST_UserDefinedFunction extends SimpleNode {
     super(p, id);
   }
   
-  public void setFunctionName( String name ) {
-      this.name = name ;
+  public void setFunctionName( String name ) throws ParseException {
+      String defaultPrefix = this.parser.compiler.getDefaultUserDefinedFunctionPrefix() ;     
+      if( name.startsWith( defaultPrefix ) == false ) {
+         throw new ParseException( "User Defined Functions must begin with \"" + defaultPrefix + "\"" ) ;
+      }
+      else {
+          this.name = name ;
+      }
   }
   
   public void buildXmlTree( XmlObject xo ) {   
