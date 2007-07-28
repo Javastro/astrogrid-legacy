@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.30 2007/07/28 08:00:17 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.31 2007/07/28 08:29:41 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -628,9 +628,10 @@ TOKEN : // <SQL_reserved_word>
  *    | SQUARE
  *    | SQRT 
  *    | TOP
- *    | UDF 
  *    | TAN 
  *    | TRUNCATE
+ *    | UDF  
+ *    | VAR
  * bnf-end
  *
  */
@@ -4611,7 +4612,7 @@ void value_expression_A() #ValueExpression :
  * bnf-start
  * <variable_specification> ::=
  *     <dollar> <left_brace> <regular_identifier> <right_brace>
- *   | <var> <regular_identifier>
+ *   | VAR <regular_identifier>
  *  !! TODO:
  *  !! Part of an ADQL experiment to specify symbolic scripting variables.
  * bnf-end
@@ -4666,6 +4667,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.31  2007/07/28 08:29:41  jl99
+BNF tidy
+
 Revision 1.30  2007/07/28 08:00:17  jl99
 Sort key and symbolic variables done.
 
