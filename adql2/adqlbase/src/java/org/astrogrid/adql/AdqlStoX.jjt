@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.29 2007/07/28 07:38:11 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.30 2007/07/28 08:00:17 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -4627,9 +4627,9 @@ void variable_specification_A() #VariableSpec :
 	// <variable_specification> ::=
     //    <embedded_variable_name> [ <indicator_variable> ]
     
-	( <DOLLAR> <LBRACE> t=<REGULAR_IDENTIFIER> <RBRACE> )
-	|
-	( <VAR> t=<REGULAR_IDENTIFIER> )
+	( <DOLLAR> <LBRACE> t=<REGULAR_IDENTIFIER> <RBRACE> 
+	  |
+	  <VAR> t=<REGULAR_IDENTIFIER> )
 	{
 		if( t != null ) {
 			jjtThis.setVariable( t.image ) ;
@@ -4666,6 +4666,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.30  2007/07/28 08:00:17  jl99
+Sort key and symbolic variables done.
+
 Revision 1.29  2007/07/28 07:38:11  jl99
 Symbolic variable specification accommodated
 
