@@ -882,5 +882,18 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	
+	<xs:complexType name="variableSpecType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>The symbolic specification for a scripting variable</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:scalarExpressionType">
+				<xs:sequence>
+					<xs:element name="Variable" type="adql:atomType" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>	
 
 </xs:schema>
