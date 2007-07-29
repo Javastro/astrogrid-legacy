@@ -1,4 +1,4 @@
-/*$Id: Container.java,v 1.2 2007/07/29 22:51:56 jl99 Exp $
+/*$Id: Container.java,v 1.3 2007/07/29 23:33:59 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -19,8 +19,10 @@ import java.util.Hashtable;
  */
 public class Container {
     
-    private Hashtable htFunctions = new Hashtable( 32 ) ;
-    private Hashtable htColumns = new Hashtable( 256 ) ;
+    private Hashtable htFunctions = new Hashtable( 64 ) ;
+    private Hashtable htColumns = new Hashtable( 512 ) ;
+    private Hashtable htTables = new Hashtable( 256 ) ;
+    private Hashtable htSchemas = new Hashtable( 16 ) ;
     
     public Container() {}
     
@@ -48,6 +50,10 @@ public class Container {
         return (Column)htColumns.get( Key.formKeyString( name, qualifiers ) ) ;
     }
     
+    public Column getColumn( String name, Table table ) {
+        return (Column)htColumns.get( Key.formKeyString( name, table.key.qualifiers ) ) ;
+    }
+    
     public boolean isColumn( String name ) {
         return htColumns.containsKey( name ) ;
     }
@@ -55,12 +61,59 @@ public class Container {
     public boolean isColumn( String name, String[] qualifiers ) {
         return htColumns.containsKey( Key.formKeyString( name, qualifiers ) ) ;
     }
+    
+    public boolean isColumn( String name, Table table ) {
+        return htColumns.containsKey( Key.formKeyString( name, table.key.qualifiers ) ) ;
+    }
+    
+    public void pushTable( Table t ) {
+        this.htTables.put( t.getKey(), t ) ;
+    }
+    
+    public Table getTable( String name ) {
+        return (Table)htTables.get( name ) ;
+    }
+    
+    public Table getTable( String name, String[] qualifiers ) {
+        return (Table)htTables.get( Key.formKeyString( name, qualifiers ) ) ;
+    }
+    
+    public boolean isTable( String name ) {
+        return htTables.containsKey( name ) ;
+    }
+    
+    public boolean isTable( String name, String[] qualifiers ) {
+        return htTables.containsKey( Key.formKeyString( name, qualifiers ) ) ;
+    }
+    
+    public void pushSchema( Schema s ) {
+        this.htSchemas.put( s.getKey(), s ) ;
+    }
+    
+    public Schema getSchema( String name ) {
+        return (Schema)htSchemas.get( name ) ;
+    }
+    
+    public Schema getSchema( String name, String catalog ) {
+        return (Schema)htSchemas.get( Key.formKeyString( name, new String[] { catalog } ) ) ;
+    }
+    
+    public boolean isSchema( String name ) {
+        return htSchemas.containsKey( name ) ;
+    }
+    
+    public boolean isSchema( String name, String catalog ) {
+        return htSchemas.containsKey( Key.formKeyString( name, new String[] { catalog } ) ) ;
+    }
 
 }
 
 
 /*
 $Log: Container.java,v $
+Revision 1.3  2007/07/29 23:33:59  jl99
+tidy
+
 Revision 1.2  2007/07/29 22:51:56  jl99
 First commit of meta data low level implementation
 

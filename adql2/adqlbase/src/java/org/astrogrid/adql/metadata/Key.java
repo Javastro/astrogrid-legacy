@@ -1,4 +1,4 @@
-/*$Id: Key.java,v 1.1 2007/07/29 22:51:56 jl99 Exp $
+/*$Id: Key.java,v 1.2 2007/07/29 23:33:59 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -84,9 +84,9 @@ public class Key {
         }      
     }
     
-    private String keyValue ;
-    private String[] qualifiers ;
-    private String name ;
+    protected String keyValue ;
+    protected String[] qualifiers ;
+    protected String name ;
     
     private Key( String keyValue, String name, String[] qualifiers ) {
         this.keyValue = keyValue ;
@@ -146,6 +146,9 @@ public class Key {
 
 /*
 $Log: Key.java,v $
+Revision 1.2  2007/07/29 23:33:59  jl99
+tidy
+
 Revision 1.1  2007/07/29 22:51:56  jl99
 First commit of meta data low level implementation
 

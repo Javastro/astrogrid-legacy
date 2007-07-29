@@ -1,4 +1,4 @@
-/*$Id: Table.java,v 1.1 2007/07/29 22:51:56 jl99 Exp $
+/*$Id: Table.java,v 1.2 2007/07/29 23:33:59 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -17,6 +17,10 @@ package org.astrogrid.adql.metadata;
  */
 public class Table extends MetaData {
     
+    public Table( String name, Schema parent ) {
+        super( name, parent ) ;
+    }
+    
     public Table( String name, String[] qualifiers ) {
         super( name, qualifiers ) ;
     }
@@ -30,6 +34,9 @@ public class Table extends MetaData {
 
 /*
 $Log: Table.java,v $
+Revision 1.2  2007/07/29 23:33:59  jl99
+tidy
+
 Revision 1.1  2007/07/29 22:51:56  jl99
 First commit of meta data low level implementation
 
