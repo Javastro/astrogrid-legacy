@@ -1,4 +1,4 @@
-/*$Id: BnfExtractor.java,v 1.3 2007/07/16 21:09:25 jl99 Exp $
+/*$Id: BnfExtractor.java,v 1.4 2007/07/29 11:28:34 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -299,8 +299,9 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
     }
     
     private void processOneStatement() {
-        if( log.isTraceEnabled() ) enterTrace ( "BnfExtractor.processOneStatement()" ) ;
+        if( log.isTraceEnabled() ) enterTrace ( "BnfExtractor.processOneStatement()" ) ;     
         String line = readAheadToStatement() ;
+        String debugLine = line ;
         try {
             if( isBnfSingle( line ) ) {
                 list.add( statementFactory.newInstance( line.substring( BNF_SINGLE.length() ) ) ) ;
@@ -319,6 +320,9 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         }
         catch( InvalidBnfStatementException ibsex ) {
             System.out.println( ibsex.getLocalizedMessage() ) ;
+        }
+        catch( Throwable ex ) {
+            log.error( "debugLine: " + debugLine, ex ) ;
         }
         finally {
             if( log.isTraceEnabled() ) exitTrace ( "BnfExtractor.processOneStatement()" ) ;
@@ -679,6 +683,9 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
 
 /*
 $Log: BnfExtractor.java,v $
+Revision 1.4  2007/07/29 11:28:34  jl99
+tidy
+
 Revision 1.3  2007/07/16 21:09:25  jl99
 *** empty log message ***
 

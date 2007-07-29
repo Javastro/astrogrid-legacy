@@ -15,6 +15,8 @@ import java.io.StringReader;
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 
+import org.astrogrid.adql.metadata.*;
+
 /**
  * Interactive
  * 
@@ -76,6 +78,7 @@ public class Interactive {
     private static StringBuffer queryBuffer ;
     private static Interactive interactive ;
     private static String fragmentName ;
+    private static Container metadata ;
     
     
     public static final String WELCOME = 
@@ -90,9 +93,9 @@ public class Interactive {
         "        Select/Item[@type=\"aggregateFunctionType\"]/Arg: * ; \n\n" +
         "        To return to compiling full queries, switch by typing \"compile_full\"." ;
     
-    public Interactive() {
-        
-    }
+   
+    
+    public Interactive() {}
     
 	 public static void main(String args[]) {
          interactive = new Interactive() ;     
@@ -220,6 +223,7 @@ public class Interactive {
      private static AdqlCompiler getCompiler( StringReader source) {
          if( COMPILER == null ) {
              COMPILER = new AdqlCompiler( source ); 
+             initMetadata() ;
          }
          else {
              COMPILER.ReInit( source ) ;
@@ -246,4 +250,10 @@ public class Interactive {
          }
      }
      
+     private static void initMetadata() {
+         metadata = new Container() ;
+         metadata.pushFunction( new Function( "fCamcol", 1 ) ) ;
+         metadata.pushFunction( new Function( "fFieldMask", 1 ) ) ;
+         COMPILER.setMetadata( metadata ) ;
+     }
 }
