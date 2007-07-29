@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.32 2007/07/28 14:14:58 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.33 2007/07/29 11:27:27 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -2419,8 +2419,8 @@ void numeric_value_function_A() :
  *
  * bnf-start
  *   <user_defined_function_name> ::=
- *       <default_function_prefix> <regular_identifier>
- * bnf-end
+ *       [ <default_function_prefix> ] <regular_identifier>
+ * bnf-end 
  *
  * bnf-start
  *   <default_function_prefix> ::=
@@ -4688,6 +4688,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.33  2007/07/29 11:27:27  jl99
+User defined function calls accommodated with metadata
+
 Revision 1.32  2007/07/28 14:14:58  jl99
 User defined function calls accommodated
 

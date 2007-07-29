@@ -3,6 +3,8 @@ package org.astrogrid.adql ;
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 
+import org.astrogrid.adql.metadata.*;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -276,7 +278,7 @@ public class AdqlCompiler {
 //     }
      
      private String defaultUserDefinedFunctionPrefix = "udf_" ;
-     
+     private Container metadata ;
           
      public AdqlCompiler( java.io.InputStream stream ) {
          this.parser = new AdqlStoX( stream ) ;
@@ -1473,6 +1475,16 @@ public class AdqlCompiler {
     
     public void resetDefaultUserDefinedFunctionPrefix() {
         this.defaultUserDefinedFunctionPrefix = "_udf";
+    }
+    
+    public void setMetadata( Container metadata ) {
+        this.metadata = metadata ;
+    }
+    public Container getMetadata() {
+        if( this.metadata == null ) {
+            this.metadata = new Container() ;
+        }
+        return this.metadata ;
     }
     
 }
