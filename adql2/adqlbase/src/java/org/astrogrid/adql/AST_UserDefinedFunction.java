@@ -22,44 +22,42 @@ public class AST_UserDefinedFunction extends SimpleNode {
   
   public void setFunctionName( String name ) throws ParseException {
       String defaultPrefix = this.parser.compiler.getDefaultUserDefinedFunctionPrefix() ;     
-      if( name.startsWith( defaultPrefix ) == false ) {
-         Container metadata = this.parser.compiler.getMetadata() ;
-         Function function = metadata.getFunction(name) ;
-         if( function == null ) {
+      Container metadata = this.parser.compiler.getMetadata() ;
+      Function function = metadata.getFunction(name) ;
+      if( function != null ) {
+          //
+          // Cardinality taken from metadata...
+          cardinality = function.getCardinality() ; 
+      }
+      else if( name.startsWith( defaultPrefix ) == false ) {
              throw new ParseException( "User Defined Functions must begin with \"" + defaultPrefix + "\" " +
-                                       "or be known to the system via a metadata call. " ) ;
-         }
-         cardinality = function.getCardinality() ;        
+                                       "or be known to the system via a metadata call. " ) ;      
       }
       else {
-         cardinality = new int[] { -1, -1 } ;
+          //
+          // Default allowed cardinality is zero to many... 
+         cardinality = new int[] { 0, -1 } ;
       }      
       this.name = name ;
   }
   
-  
-  /* (non-Javadoc)
- * @see org.astrogrid.adql.SimpleNode#jjtClose()
- */
-public void jjtClose() {
-    int childCount = jjtGetNumChildren() ;
-    if( log.isDebugEnabled() ) {
-        log.debug( "childCount: [" + childCount + "] cardinality: [" 
-                  + cardinality[0] + "," + cardinality[1] + "]" ) ;
-    }
-    if( cardinality[0] > childCount 
-        ||
-        ( cardinality[1] < childCount && cardinality[1] != -1 ) ) {
-            // throw new ParseException( "User defined function has incorrect number of parameters. " ) ;
-    }
-    super.jjtClose();
-}
-
 public void buildXmlTree( XmlObject xo ) {   
       if( log.isTraceEnabled() ) enterTrace( log, "AST_UserDefinedFunction.buildXmlTree()" ) ; 
       getTracker().setType( UserDefinedFunctionType.type ) ;
       int childCount = jjtGetNumChildren() ;
-      
+      if( log.isDebugEnabled() ) {
+          log.debug( "childCount: [" + childCount + "] cardinality: [" 
+                    + cardinality[0] + "," + cardinality[1] + "]" ) ;
+      }
+      //
+      // Cardinality needs to obey some metadata rules...
+      if( cardinality[0] > childCount 
+          ||
+          ( cardinality[1] < childCount && cardinality[1] != -1 ) ) {
+          //
+          // Set a cardinality error but allow build to continue...
+          this.parser.tracker.setError( "User defined function has incorrect number of parameters " ) ;         
+      }
       StringBuffer buffer = null ;
       if( log.isDebugEnabled() ) {
           buffer = new StringBuffer() ;
