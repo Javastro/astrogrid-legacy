@@ -31,6 +31,8 @@ public class MonitorMapUnitTest extends TestCase {
 		this.mm = new RemoteProcessManagerImpl.MonitorMap();
 		this.rpm1 = new TestRemoteProcessMonitor();
 		this.rpm2 = new TestRemoteProcessMonitor();
+		rpm1.start();
+		rpm2.start();
 	}
 
 	protected void tearDown() throws Exception {
@@ -148,12 +150,7 @@ public class MonitorMapUnitTest extends TestCase {
 	
 	public static class TestRemoteProcessMonitor extends AbstractProcessMonitor {
 		private static int count = 0;
-		/**
-		 * @param id
-		 */
-		public TestRemoteProcessMonitor() {
-			super(URI.create("testmonitor://" + (count++)));
-		}
+
 
 		public ExecutionInformation getExecutionInformation()
 				throws NotFoundException, InvalidArgumentException,
@@ -174,6 +171,17 @@ public class MonitorMapUnitTest extends TestCase {
 		public void halt() throws NotFoundException, InvalidArgumentException,
 				ServiceException, SecurityException {
 		}
+
+        public void start(URI serviceId) {
+            this.start();
+        }
+
+        public void start() {
+            setId(URI.create("testmonitor://" + (count++)));
+        }
+
+        public void refresh() throws ServiceException {
+        }
 	}
 
 }

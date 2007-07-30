@@ -22,10 +22,25 @@ import org.w3c.dom.Document;
  */
 public interface RemoteProcessManagerInternal extends RemoteProcessManager {
 
-	/** find a process monitor associated with this execution id
+    /** create a fresh, un-init'ed process monitor
+     * This allows a step-by-step execution of a remote task - 
+     * providing space for progress reporting and UI feedback.
+     * For purely programmatic execution, prefer the {@link RemoteProcessManager#submit} methods
+     * @throws InvalidArgumentException iif document is not a known type.
+     * @return an uninitialized process monitor. never null
+     * @throws ServiceException if connection to services fails.
+     */
+    ProcessMonitor create(Document doc) throws InvalidArgumentException, ServiceException, NotFoundException;
+    
+	/** find a running process monitor associated with this execution id
 	 * @return a prociess monitor, or null if no associated one can be found*/
 	ProcessMonitor findMonitor(URI id) ;
 
+	/** register a process monitor (i.e. one that's been created from the 'create' method
+	 * with the internal list of process monitors.
+	 * can only be called after processMonitor.start() has initialized the process
+	 */
+	void addMonitor(ProcessMonitor pm);
 	
 	/** delete a process monitor - final cleanup action */
 	void delete(ProcessMonitor pm);

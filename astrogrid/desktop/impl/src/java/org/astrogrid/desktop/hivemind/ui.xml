@@ -208,7 +208,8 @@ ASTROSCOPE
 		<object name="taskrunner" class="org.astrogrid.desktop.modules.ui.taskrunner.TaskRunnerImpl" >
 		  Describes how to build a new task runner window.
 			<inject object="service:system.ui"/>		
-			<inject object="service:astrogrid.applications"/>		
+			<inject object="service:astrogrid.applications"/>	
+            <inject object="service:astrogrid.processManager" />	
 			<inject object="service:dialogs.resourceChooser" />
 			<inject object="service:dialogs.registryGoogle" />	
             <inject object="service:system.uiBuilder" />
@@ -336,7 +337,8 @@ Query Builder
         <object name="querybuilder" class="org.astrogrid.desktop.modules.ui.QueryBuilderImpl" >
           Describes how to builld a new queryrunner window.
             <inject object="service:system.ui"/>        
-            <inject object="service:astrogrid.applications"/>       
+            <inject object="service:astrogrid.applications"/>   
+            <inject object="service:astrogrid.processManager" />    
             <inject object="service:dialogs.resourceChooser" />
             <inject object="service:dialogs.registryGoogle" />  
             <inject object="service:system.uiBuilder" />

@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.20 2007/07/26 18:21:45 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.21 2007/07/30 17:59:56 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -78,35 +78,21 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 	/** monitor for a single remote cea task */
 	private class RemoteTaskMonitor extends TimerDrivenProcessMonitor implements ProcessMonitor.Advanced {
 		
-		public RemoteTaskMonitor(Tool t,String ceaid, CeaApplication app, CeaService service, CommonExecutionConnectorClient delegate) throws ServiceException {
-			super(ceaHelper.mkRemoteTaskURI(ceaid,service));
+		public RemoteTaskMonitor(Tool t,CeaApplication app) throws ServiceException {
 			this.tool = t;
-			this.ceaid = ceaid;
 			this.app = app;
-			this.delegate = delegate;
 			this.name = app.getTitle();
 			if (app.getInterfaces().length > 1) { // more than one interface
 				this.name = tool.getInterface() + " - " + this.name;
 			}
 			this.description = app.getContent().getDescription();
-			// kick it off.
-    		try {
-				if (delegate.execute(ceaid)) {
-					// task has started, so register this monitor with the scheduler...
-					sched.schedule(this);
-				} else {
-					signalError("Failed to start application, for unknown reason");
-				}
-			} catch (CEADelegateException x) {
-				signalError("Failed to start application: " + x.getMessage());
-			}    	
-
+		
 		}
-		private final CommonExecutionConnectorClient delegate;
-		private final String ceaid;
-		private final Tool tool;
+		private final Tool tool;		
 		private final CeaApplication app;
 
+		private String ceaid;
+		private CommonExecutionConnectorClient delegate;
 	    /**
 	     * @see org.astrogrid.desktop.modules.ag.RemoteProcessStrategy#getLatestResults(java.net.URI)
 	     */
@@ -129,28 +115,139 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 	        }  
 	    }		
 		
+        public void start(URI server) throws ServiceException, NotFoundException{
+                Service[] arr;
+                try {
+                    arr = apps.listServersProviding(app.getId());
+                } catch (InvalidArgumentException x) {
+                    error(x.getMessage());
+                    throw new NotFoundException(x);
+                }
+                CeaService target = null;
+                for (int i = 0; i < arr.length ; i++) {
+                    if (arr[i].getId().equals(server)) { 
+                        target = (CeaService)arr[i];
+                        break;
+                    }
+                }
+                if (target == null) {
+                    error("Requested server does not provide this application");
+                    throw new NotFoundException(server + " does not provide application " + app.getId());            
+                }        
+                invoke(target);         
+        }
+
+        public void start() throws ServiceException, NotFoundException{
+                Service[] arr;
+                try {
+                    arr = apps.listServersProviding(app.getId());
+                } catch (InvalidArgumentException x) {
+                    error(x.getMessage());                    
+                    throw new NotFoundException(x);
+                }
+                
+                CeaService target = null;
+                switch(arr.length) {            
+                case 0:
+                    error("No providers for this application");
+                    throw new NotFoundException(app.getId() +" has no registered providers");
+                case 1:
+                    target = (CeaService)arr[0];
+                    info("Using service " + target.getId()); 
+                    break;
+                default:
+                    List l =  Arrays.asList(arr);
+                // now filter on perceived availability.
+                    l = filterOnAvailability(l);
+                    Collections.shuffle(l);
+                    target = (CeaService)l.get(0);
+                    info("Multiple available services, selected " + target.getId());
+                }     
+                invoke(target);                     
+        }		
+        
+        // actually set the process running.
+        private void invoke(CeaService target) throws ServiceException {
+            
+            try {
+            JobIdentifierType jid = new JobIdentifierType(target.getId().toString());
+            delegate = ceaHelper.createCEADelegate(target);                                   
+            info("Initializing on server " + target.getId() );
+
+            ceaid = delegate.init(tool,jid);
+            info("Server returned taskID " + ceaid);            
+            setId(ceaHelper.mkRemoteTaskURI(ceaid,target));
+            // kick it off.
+                if (delegate.execute(ceaid)) {
+                    info("Started application");
+                    // task has started, so register this monitor with the scheduler...
+                    sched.schedule(this);
+                } else {
+                    error("Failed to execute application");
+                    throw new ServiceException("Failed to execute application");
+                }
+            } catch (CEADelegateException x) {
+                error("Failed: " + x.getMessage());
+                throw new ServiceException("Failed to execute application");
+            }       
+        }
+        
+        /**
+         * use vomon to filter a list of services.
+         * if vomon has no knowledge of a service, return it unchanged.
+         *  if vomon thinks all services are down, return the list unchanged.
+         *  else only return services vomon thinks are up.
+         *  
+         * @param l
+         * @return
+         */
+        private List filterOnAvailability(List l) {
+            List results = new ArrayList();
+            for (Iterator i = l.iterator(); i.hasNext();) {
+                Service name = (Service) i.next();
+                VoMonBean b = vomon.checkAvailability(name.getId());
+                if (b == null || b.getCode() == VoMonBean.UP_CODE) {
+                    results.add(name);
+                }
+            }
+            return results.size() == 0 ? l : results;
+        }        
+		
+        public void refresh() {
+            execute();
+        }
+        
 		public void halt() throws NotFoundException, InvalidArgumentException,
 				ServiceException, SecurityException {
 	        try { 
+	            info("Halting");
 	            delegate.abort(ceaid);
 	        } catch (CEADelegateException e) {
+	            error("Failed: " + e.getMessage());
 	            throw new ServiceException(e);
-	        } 			
+	        } finally {
+	            // cause a status check.
+	            refresh();
+	        }
 		}
 		
 		//@todo find out how to cleanup a remote service.
 
-		public static final long SHORTEST = 1000 * 5;
-		public static final long LONGEST = 1000 * 60 * 10;
-		public static final double FACTOR = 2.5;
+		public static final long SHORTEST = 1000 * 1; // 1 second
+		public static final long LONGEST = 1000 * 60 * 10; // 10 minutes
+		public static final double FACTOR = 2; // double every time
 		
+		/** increase the time before running again */
 		private void standOff() {
-            runAgain = Math.min(LONGEST,Math.round(runAgain*FACTOR)); // stand off for three times as long, up to a limit.
+            runAgain = Math.min(LONGEST,Math.round(runAgain*FACTOR));
+            int secs = (int)runAgain / 1000;
+            int mins = secs / 60; 
+            info("Will check again in " + (secs < 120 ? secs + " seconds" : mins + " minutes" ));
 		}
 		
 		public DelayedContinuation execute() {
-			//@ffuture - should I just create a single delegate and hang onto it?
 			try {
+			    info("Checking progress");
 				MessageType qes = delegate.queryExecutionStatus(ceaid);
 				String newStatus = qes.getPhase().toString(); 
 
@@ -173,7 +270,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 						,"information"
 						,newStatus
 						,qes.getTimestamp()
-						, "Status changed to " + newStatus
+						, newStatus
 				);
 				addMessage(em);
 				setStatus(newStatus);
@@ -195,7 +292,8 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 				}
 				return this;
 			} catch (CEADelegateException x) {
-				standOff();
+			    standOff();
+			    info("Failed: " + x.getMessage());
 				return this;
 			}
 
@@ -217,42 +315,29 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
         public CeaApplication getApplicationDescription() {
             return app;
         }
+
+
 	}
 	
 	/** monitor for a single local cea task 
 	 * 
 	 * peeks directly into the local cea engine to get stuff - by implementing observer
+	 * @todo if we ever expose this functionality, add more message reporting.
 	 * */
 	private class LocalTaskMonitor extends AbstractProcessMonitor implements Observer, ProcessMonitor.Advanced {
 
-		private final String ceaid;
-		private final Application application;
+		private Application application;
 		private final Tool tool;
         private final CeaApplication appDesc;
-		public LocalTaskMonitor(Tool t,String ceaid, String iface,CeaApplication appDesc) throws ServiceException {
-			super(ceaHelper.mkLocalTaskURI(ceaid));
+        private String ceaid;
+		public LocalTaskMonitor(Tool t, CeaApplication appDesc) throws ServiceException {
 			this.tool = t;
-			this.ceaid = ceaid;
             this.appDesc = appDesc;
 			this.name = appDesc.getTitle();
 			if (appDesc.getInterfaces().length > 1) { // more than one interface
-				this.name = iface + " - " + this.name;
+				this.name = tool.getInterface() + " - " + this.name;
 			}			
 			this.description = appDesc.getContent().getDescription();
-			// register an interest to messages and status changes.
-			this.application = ceaInternal.getExecutionController().getApplication(ceaid);
-			// now, once everythiong is ready, start the application
-			try {
-				if (! ceaInternal.getExecutionController().execute(ceaid)) {
-					signalError("Failed to start application, for unknown reason");
-				} else {
-					// attach myself as a listener for further events.
-					this.application.addObserver(this);
-				}
-			} catch (CeaException x) {
-				signalError("Failed to start application: " + x.getMessage());
-			}		
-			
 		}
 		// observer interface.
 	    public void update(final Observable o, final Object arg) {
@@ -310,7 +395,31 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 			// remove the local record.
             ceaInternal.getExecutionController().delete(ceaid);
 		}
-		
+        public void start(URI serviceId) throws ServiceException {
+            // service id is ignored.
+            start();
+        }
+
+        public void start() throws ServiceException { 
+            try {
+                this.ceaid = ceaInternal.getExecutionController().init(tool,appDesc.getId().toString());
+                setId(ceaHelper.mkLocalTaskURI(ceaid));
+
+                // register an interest to messages and status changes.
+                this.application = ceaInternal.getExecutionController().getApplication(ceaid);
+                // now, once everythiong is ready, start the application
+                    if (! ceaInternal.getExecutionController().execute(ceaid)) {
+                        error("Failed to start application, for unknown reason");
+                    } else {
+                        // attach myself as a listener for further events.
+                        this.application.addObserver(this);
+                    }
+                } catch (CeaException x) {
+                    //@todo do I signal an error, or throw it here?
+                    error("Failed to start application: " + x.getMessage());
+                }       
+            
+        }       
 		public void halt() throws NotFoundException, InvalidArgumentException,
 				ServiceException, SecurityException {
 	        try { 
@@ -325,6 +434,10 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
         public CeaApplication getApplicationDescription() {
             return appDesc;
         }
+        public void refresh() throws ServiceException {
+            // does nothing - as this monitor is callback-driven anyhow, no way to poll on demand.
+        }
+
 	}
     /**
      * Commons Logger for this class
@@ -376,148 +489,41 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
         return "ivo".equals(execId.getScheme()) || "local".equals(execId.getScheme());
     }
 
-    /**
-     * @see org.astrogrid.desktop.modules.ag.RemoteProcessStrategy#submit(org.w3c.dom.Document)
-     */
-    public ProcessMonitor submit(Document doc) throws ServiceException, SecurityException, NotFoundException,
-    InvalidArgumentException {
-    	try {
-    		Tool tool = ceaHelper.parseTool(doc);
+    public ProcessMonitor create(Document doc) throws InvalidArgumentException, ServiceException {
+            Tool tool = ceaHelper.parseTool(doc);
+            URI appId;
+            CeaApplication info;
+            try {
+                appId = new URI("ivo://" + tool.getName());
+                info = apps.getCeaApplication(appId);
+            } catch (URISyntaxException x1) {
+                throw new InvalidArgumentException(x1);
+            } catch (NotFoundException x1) {
+                throw new InvalidArgumentException(x1);                
+            }            
+            apps.translateQueries(info , tool); //@todo - maybe move this into manager too???
 
-    		URI appId = new URI("ivo://" + tool.getName());
-    		Service[] arr = apps.listServersProviding(appId);
-    		
-    		Service target = null;
-    		switch(arr.length) {            
-    		case 0:
-    			logger.debug("No providers");
-    			throw new NotFoundException(appId +" has no registered providers");
-    		case 1:
-    			target = arr[0];
-    			logger.debug("One provider " + target.getId()); 
-    			break;
-    		default:
-    			List l =  Arrays.asList(arr);
-    		// now filter on perceived availability.
-    			l = filterOnAvailability(l);
-    			Collections.shuffle(l);
-    			target = (Service)l.get(0);
-    			logger.debug("Multiple providers, selected " + target.getId());
-    		}
-    		CeaApplication info = apps.getCeaApplication(appId);        
-    		return invoke(info, tool, target);    
-    	} catch (URISyntaxException e) {
-    		throw new InvalidArgumentException(e);
-    	}        
-    }
-    /**
-     * use vomon to filter a list of services.
-     * if vomon has no knowledge of a service, return it unchanged.
-     *  if vomon thinks all services are down, return the list unchanged.
-     *  else only return services vomon thinks are up.
-     *  
-     * @param l
-     * @return
-     */
-    private List filterOnAvailability(List l) {
-    	List results = new ArrayList();
-    	for (Iterator i = l.iterator(); i.hasNext();) {
-			Service name = (Service) i.next();
-			VoMonBean b = vomon.checkAvailability(name.getId());
-			if (b == null || b.getCode() == VoMonBean.UP_CODE) {
-				results.add(name);
-			}
-		}
-    	return results.size() == 0 ? l : results;
-    }
+                if (logger.isDebugEnabled()) { // log the adjusted tool document before executing it.
+                    try {
+                        StringWriter sw = new StringWriter();
+                        Marshaller.marshal(tool,sw);
+                        logger.debug(sw.toString());
+                    } catch (CastorException x) {
+                        logger.debug("MarshalException",x);
+                    } 
+                }
+        
+                if (ceaInternal.getAppLibrary().hasMatch(info)) {
+                    logger.info("Dispatching to local cea server");
+                    return new LocalTaskMonitor(tool,info);
+                } else {
+                    logger.info("Dispatching to remote cea server");
+                    return new RemoteTaskMonitor(tool,info);
+                }
+        
+        }
     
-    /**
-     * @see org.astrogrid.desktop.modules.ag.RemoteProcessStrategy#submitTo(org.w3c.dom.Document, java.net.URI)
-     */
-    public ProcessMonitor submitTo(Document doc, URI server) throws ServiceException, SecurityException,
-    NotFoundException, InvalidArgumentException {
-    	try {
-    		Tool tool = ceaHelper.parseTool(doc);
-    		
-    		URI appId = new URI("ivo://" + tool.getName());
-    		Service[] arr = apps.listServersProviding(appId);
-    		
-    		Service target = null;
-    		for (int i = 0; i < arr.length ; i++) {
-    			if (arr[i].getId().equals(server)) { 
-    				target = arr[i];
-    				break;
-    			}
-    		}
-    		if (target == null) {
-    			throw new NotFoundException(server + " does not provide application " + appId);            
-    		}        
-    		CeaApplication info = apps.getCeaApplication(appId);
-    		return invoke(info, tool, target);
-    	} catch (URISyntaxException e) {
-    		throw new InvalidArgumentException(e);
-    	}
-    }
 
-
-
-	/**
-     * actually executes an applicaiton.
-     * first checks whether it can be serviced by the local cea lib.
-     * if not, delegates to a remote cea server 
-     * @param application
-     * @param v1Tool
-     * @param server
-     * @param securityAction The kind of authentication to be performed.
-     * @return
-     * @throws ServiceException
-     */
-    private ProcessMonitor invoke(CeaApplication application, 
-    		Tool tool, 
-    		Service server)
-    throws ServiceException {
-    	apps.translateQueries(application, tool); //@todo - maybe move this into manager too???
-    	try {
-    		if (logger.isDebugEnabled()) { // log the adjusted tool document before executing it.
-	        	try {
-	        		StringWriter sw = new StringWriter();
-					Marshaller.marshal(tool,sw);
-					logger.debug(sw.toString());
-				} catch (CastorException x) {
-					logger.debug("MarshalException",x);
-				} 
-    		}
-    		
-    		JobIdentifierType jid = new JobIdentifierType(server.getId().toString());
-    		logger.debug("Id will be " + jid);
-    		//try local invocation.
-    		if (ceaInternal.getAppLibrary().hasMatch(application)) {
-    			String primId = ceaInternal.getExecutionController().init(tool,jid.toString());
-    			return new LocalTaskMonitor(tool,primId,tool.getInterface(),application);
-    		}
-    		// check remote invocation is possible
-    		if (! (server instanceof CeaService)) {
-    			throw new ServiceException("Can't dispatch a cea application to non-cea server");
-    		}
-    		// try remote invocation.
-    		CeaService ceaService = (CeaService)server;
-    		logger.debug("Using remote invocation to" + ceaService.getId());
-    		
-    		// create an authenticated delegate.
-    		CommonExecutionConnectorClient del = ceaHelper.createCEADelegate(ceaService);    		    		    		
-    		logger.info("Initializing document on server" );
-
-    		String primId = del.init(tool,jid);
-    		logger.info("Server returned taskID " + primId);
-    		return new RemoteTaskMonitor(tool,primId, application, ceaService,del);
-
-
-    	} catch (CeaException e) {
-    		throw new ServiceException(e);
-    	} catch (CEADelegateException e) {
-    		throw new ServiceException(e);
-    	} 
-    }
     
   
 }
@@ -525,6 +531,10 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.21  2007/07/30 17:59:56  nw
+RESOLVED - bug 2257: More feedback, please
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2257
+
 Revision 1.20  2007/07/26 18:21:45  nw
 merged mark's and noel's branches
 

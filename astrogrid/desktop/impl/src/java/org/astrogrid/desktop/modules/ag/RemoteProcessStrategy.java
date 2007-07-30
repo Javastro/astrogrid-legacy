@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessStrategy.java,v 1.5 2007/07/13 23:14:53 nw Exp $
+/*$Id: RemoteProcessStrategy.java,v 1.6 2007/07/30 17:59:55 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,13 +32,9 @@ public interface RemoteProcessStrategy{
      *  @return the application being invoked / workflow name / somesuch.*/
     String canProcess(Document doc);
     
+    public ProcessMonitor create(Document doc) throws InvalidArgumentException, ServiceException;
     
-    public ProcessMonitor submit(Document doc) throws ServiceException, SecurityException, NotFoundException,
-    InvalidArgumentException;
     
-    public ProcessMonitor submitTo(Document doc,URI service) throws ServiceException, SecurityException, NotFoundException,
-    InvalidArgumentException;
-
 
     
 }
@@ -46,6 +42,10 @@ public interface RemoteProcessStrategy{
 
 /* 
 $Log: RemoteProcessStrategy.java,v $
+Revision 1.6  2007/07/30 17:59:55  nw
+RESOLVED - bug 2257: More feedback, please
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2257
+
 Revision 1.5  2007/07/13 23:14:53  nw
 Complete - task 1: task runner
 

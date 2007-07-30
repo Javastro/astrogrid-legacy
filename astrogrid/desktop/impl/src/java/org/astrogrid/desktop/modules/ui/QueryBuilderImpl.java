@@ -20,6 +20,7 @@ import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
+import org.astrogrid.desktop.modules.ag.RemoteProcessManagerInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
@@ -38,12 +39,13 @@ public class QueryBuilderImpl extends TaskRunnerImpl implements
 
 
     public QueryBuilderImpl(UIContext context, ApplicationsInternal apps,
-            ResourceChooserInternal rci, RegistryGoogle regChooser,
+            RemoteProcessManagerInternal rpmi
+            ,ResourceChooserInternal rci, RegistryGoogle regChooser,
             UIContributionBuilder menuBuilder, TypesafeObjectBuilder builder
             ,FileSystemManager vfs
             ,Registry reg)
             throws HeadlessException {
-        super(context, apps, rci, regChooser, menuBuilder, builder,vfs);
+        super(context, apps, rpmi,rci, regChooser, menuBuilder, builder,vfs);
         this.reg = reg;
     }
 

@@ -13,6 +13,7 @@ import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Observable;
 
 import javax.swing.Icon;
@@ -44,6 +45,7 @@ import org.astrogrid.desktop.modules.ag.ProcessMonitor.ProcessListener;
 import org.astrogrid.desktop.modules.system.ExtendedFileSystemManager;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.ObservableConnector;
@@ -60,6 +62,8 @@ import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FunctionList;
 import ca.odell.glazedlists.ObservableElementList;
 import ca.odell.glazedlists.SortedList;
+import ca.odell.glazedlists.TransformedList;
+import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.JEventListPanel;
 
 /** Tracks the execution of a series of remote processes
@@ -95,8 +99,12 @@ public class ExecutionTracker{
         this.activities = actFact.create(parent);
         logger.debug("created activities");
 		monitors = new BasicEventList();
+		// wrap the monitors list with a proxy that fires all updates on the EDT
+		// means that monitors can be added to the list from any thread, and the 
+		// UI will update correctluy.
+		TransformedList proxyList = GlazedListsSwing.swingThreadProxyList(monitors);
 		// map each monitor to a bean of UI components.
-		EventList components = new FunctionList(monitors, new FunctionList.Function() {
+		EventList components = new FunctionList(proxyList, new FunctionList.Function() {
 			public Object evaluate(Object sourceValue) {
 				return new ProcessMonitorDisplay((ProcessMonitor)sourceValue);
 			}
@@ -130,7 +138,10 @@ public class ExecutionTracker{
 	}
 	
 	
-	/** add a monitor for the specified id to the tracker */
+	/** add a monitor for the specified id to the tracker 
+     * @threads can be called on any thread - notifications and updates to display
+     * are dispatched onto the EDT by this component.	 
+	 * */
 	public void add(URI execId) {
 		ProcessMonitor m = rpmi.findMonitor(execId);
 		if (m != null) {
@@ -138,9 +149,16 @@ public class ExecutionTracker{
 		}
 	}
 	
-	/** add a new monitor to the tracker */
+	
+	/** add a new monitor to the tracker 
+	 * @threads can be called on any thread - notifications and updates to display
+	 * are dispatched onto the EDT by this component.
+	 * */
 	public void add(ProcessMonitor pm) {
 		monitors.add(pm);
+	}
+	public void remove(ProcessMonitor pm) {
+	    monitors.remove(pm);
 	}
 	public JPanel getPanel() {
 		return panel;
@@ -172,40 +190,36 @@ public class ExecutionTracker{
 	 */
 	private class ProcessMonitorDisplay extends Observable implements ProcessListener, ActionListener {
 
+	    /** constructor is always called on the EDT, 
+	     * however, need to delegate to the EDT when receiving
+	     * events from the processMonitor itself.
+	     * @param pm
+	     */
         public ProcessMonitorDisplay(ProcessMonitor pm) {
 			super();
 			this.pm = pm;
 			pm.addProcessListener(this);
 			msg.setFont(UIConstants.SMALL_DIALOG_FONT);
 			files = new BasicEventList();
-			button = new JButton(IconHelper.loadIcon("stop16.png"));
-			button.putClientProperty("is3DEnabled",Boolean.FALSE);
-			button.setBorderPainted(false);
-			button.setToolTipText("Cancel tasl");
-			button.addActionListener(this);
+			deleteButton = new JButton(IconHelper.loadIcon("stop16.png"));
+			deleteButton.putClientProperty("is3DEnabled",Boolean.FALSE);
+			deleteButton.setBorderPainted(false);
+			deleteButton.setToolTipText("Cancel task");
+			deleteButton.addActionListener(this);
+			
+			refreshButton = new JButton(IconHelper.loadIcon("reload16.png"));
+            refreshButton.putClientProperty("is3DEnabled",Boolean.FALSE);
+            refreshButton.setBorderPainted(false);
+            refreshButton.setToolTipText("Refresh task");
+            refreshButton.addActionListener(this);
+            
 			FileModel model = uiBuilder.createFileModel(new SortedList(files,FileObjectComparator.getInstance())
 			    ,activities,vfsOps);
 			results = uiBuilder.createOperableFilesList(model);
-			try {
-                resultFolder = vfs.resolveFile("task:/" + URLEncoder.encode(pm.getId().toString()));
-			   // resultFolder = vfs.getResultsFilesystem().resolveFile("/" + URLEncoder.encode(pm.getId().toString()));
-                logger.debug(resultFolder);
-                logger.debug(resultFolder.getClass().getName());
-            } catch (FileSystemException x) {
-                logger.error("FileSystemException - unable to view results.",x);
-                resultFolder= null;
-            }
-			// populate it on the EDT.
-			SwingUtilities.invokeLater(new Runnable() {
-
-				public void run() {
 					populateMsgLabel();			
 					populateStatusLabel();			
 					populateTitleLabel();
-					populateResults();
 					triggerUpdate();
-				}
-			});
 		}
 
 		private final ProcessMonitor pm;
@@ -213,8 +227,8 @@ public class ExecutionTracker{
 		private final JLabel status = new JLabel(PENDING_ICON);		
 		private final JLabel title = new JLabel();
 		private final EventList files;
-		private final JButton button;
-		private FileObject resultFolder;
+		private final JButton deleteButton;
+		private final JButton refreshButton;
 		
 		private final OperableFilesList results ;
 		public JComponent getComponent(int ix) {
@@ -224,10 +238,12 @@ public class ExecutionTracker{
 			case 1:
 				return status;
 			case 2:
-			    return button;
+			    return refreshButton;
 			case 3:
-			    return msg;
+			    return deleteButton;
 			case 4:
+			    return msg;
+			case 5:
 			    return results;
 			default:
 				return new JLabel("invalid index: " + ix);
@@ -239,6 +255,7 @@ public class ExecutionTracker{
 			super.notifyObservers();			
 		}
 
+		// need to delegate to the edt here.
 		public void messageReceived(ProcessEvent ev) {
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {			
@@ -251,7 +268,6 @@ public class ExecutionTracker{
 			SwingUtilities.invokeLater(new Runnable() {
 
 				public void run() {	
-					
 				    populateResults();
 					triggerUpdate();
 				}
@@ -259,26 +275,34 @@ public class ExecutionTracker{
 		}
 		public void statusChanged(ProcessEvent ev) {
 			SwingUtilities.invokeLater(new Runnable() {
-
 				public void run() {			
 					populateStatusLabel();
 					populateTitleLabel();
-					populateResults();
 					triggerUpdate();			
 				}
 			});
 		}
 		
+		/** not to be called before task has been 'init()' - as it's not got an ID at that stage */
 		private void populateResults() {
-		    if (resultFolder == null) {
-		        return;
-		    }
-		   files.clear();
-		   try {
-            files.addAll(Arrays.asList(resultFolder.getChildren()));
-        } catch (FileSystemException x) {
-            logger.error("FileSystemException listing children.",x);
-        }
+		    (new BackgroundWorker(parent,"Listing results") {
+
+                protected Object construct() throws Exception {
+                        FileObject resultFolder = vfs.resolveFile("task:/" + URLEncoder.encode(pm.getId().toString()));
+                        // resultFolder = vfs.getResultsFilesystem().resolveFile("/" + URLEncoder.encode(pm.getId().toString()));
+                        logger.debug(resultFolder);
+                        logger.debug(resultFolder.getClass().getName());
+                        return Arrays.asList(resultFolder.getChildren());
+                }
+                protected void doFinished(Object result) {
+                    List contents = (List)result;
+                    files.clear();
+                    files.addAll(contents);
+                }
+                protected void doError(Throwable ex) {
+                    //@todo display error in monitor window.
+                }
+		    }).start();
 		}
 		
 		private void populateMsgLabel() {
@@ -300,9 +324,11 @@ public class ExecutionTracker{
 			if (st.equalsIgnoreCase("error")) {
 			    alterButton();
 				status.setIcon(ERROR_ICON);
+				populateResults();
 			} else if (st.equalsIgnoreCase("completed")) {
 				status.setIcon(COMPLETED_ICON);
 				alterButton();
+				populateResults();
 			} else if (st.equalsIgnoreCase("pending")) {
 				status.setIcon(PENDING_ICON);
 			} else if (st.equalsIgnoreCase("running")) {
@@ -338,28 +364,44 @@ public class ExecutionTracker{
 		}
 
         public void actionPerformed(ActionEvent e) {
-            // called when 'delete' or 'cancel' happens.
-            if (hasFinished()) {
+            if (e.getSource() == refreshButton && pm.started()) {
+                (new BackgroundWorker(parent,"Refreshing") {
+
+                    protected Object construct() throws Exception {
+                        pm.refresh();
+                        return null;
+                    }
+                }).start();
+            } else {                // do a delete/halt
                 pm.removeProcessListener(this);
-                rpmi.delete(pm);
                 monitors.remove(pm);
-            } else {
-                try {
-                    pm.halt();
-                    triggerUpdate();
-                } catch (ACRException x) {
-                    logger.error("NotFoundException",x);
-                } 
-            }
+                // record these conditions now.. else they might change.
+                final boolean running = pm.started() && ! hasFinished();
+                (new BackgroundWorker(parent,"Cleaning up") {                    
+                    protected Object construct() throws Exception {
+                        if (running) {
+                            pm.halt();
+                        }
+                        rpmi.delete(pm);
+                        return null;
+                    }
+                    protected void doError(Throwable ex) {
+                        logger.error("NotFoundException",ex);
+                    }
+                }).start();
+            }            
         }
         private boolean hasFinished() {
+            if (! pm.started()) {
+                return false;
+            }
             final String stat = pm.getStatus();
             return stat.equalsIgnoreCase("ERROR") || stat.equalsIgnoreCase("COMPLETED");
         }
         
         private void alterButton() {
-            button.setToolTipText("Delete this task");
-            button.setIcon(IconHelper.loadIcon("editdelete16.png"));
+            deleteButton.setToolTipText("Delete this task");
+            deleteButton.setIcon(IconHelper.loadIcon("editdelete16.png"));
         }
 	}
 
@@ -372,10 +414,10 @@ public class ExecutionTracker{
 
 		public TrackerFormat() {
 			super("p,d,d"// rows
-					,"20px,fill:60px:grow,20px" // cols
+					,"20px,fill:60px:grow,20px,20px" // cols
 					,"2dlu" // row spacing
 					,"0dlu" // colspacing
-					, new String[]{"2,1","1,1","3,1","2,2","1,3,3,1"}
+					, new String[]{"2,1","1,1","3,1","4,1","2,2","1,3,4,1"}
 			);
 		}
 
@@ -384,7 +426,7 @@ public class ExecutionTracker{
 		}
 
 		public int getComponentsPerElement() {
-		    return 5;
+		    return 6;
 		}
 
 

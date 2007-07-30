@@ -38,18 +38,36 @@ import org.astrogrid.desktop.modules.ag.ProcessMonitor.ProcessListener;
  * @since Jul 12, 20071:37:05 PM
  */
 public abstract class AbstractProcessMonitor implements ProcessMonitor {
-	private final URI id;
-	public AbstractProcessMonitor(URI id) {
-		this.id = id;
+	private URI id;
+	public AbstractProcessMonitor() {
+		this.id = UNINITIALIZED;
 	}
-	/** get the execution id for the remote process */
-	public final URI getId() {
-		return id;
+	public static final URI UNINITIALIZED = URI.create("uninitialized://");
+	
+	public boolean started() {
+	    return id != UNINITIALIZED;
 	}
 	
-	/** halt the process */
-	public abstract void halt() throws NotFoundException, InvalidArgumentException,
-    ServiceException, SecurityException;
+	/** get the execution id for the remote process */
+	public final URI getId() throws IllegalStateException {
+	    if (id == UNINITIALIZED) {
+	        throw new IllegalStateException("Process ID not set - as start() has not yet been called");
+	    } else {
+	        return id;
+	    }
+	}
+	
+	/** set the execution id - will throw if id has already been set */
+	protected synchronized final void setId(URI id) throws IllegalStateException{
+	    if (this.id != UNINITIALIZED) {
+	        throw new IllegalStateException("Process ID has already been set");
+	    }
+	    if (id == null) {
+	        throw new IllegalArgumentException("Supplied ID is null");
+	    }
+	    this.id = id;    
+	}
+
 	
 	/** access execution messages returned from the process */
 	public ExecutionMessage[] getMessages() throws NotFoundException,     ServiceException {
@@ -65,17 +83,37 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
 		messages.add(m);
 		fireMessageReceived(m);
 	}
+	
+	protected void info(String message) {
+        ExecutionMessage em = new ExecutionMessage(id.toString()
+                ,LogLevel.INFO.toString()
+                ,getStatus()
+                ,new Date()
+                ,message);
+        addMessage(em);
+	}
+	
+    protected void warn(String message) {
+        ExecutionMessage em = new ExecutionMessage(id.toString()
+                ,LogLevel.WARN.toString()
+                ,getStatus()
+                ,new Date()
+                ,message);
+        addMessage(em);
+    }
+
+    
 
 
 	/** access execution information - by default uses fields in this object. */
 	public ExecutionInformation getExecutionInformation()  throws NotFoundException, InvalidArgumentException,
     ServiceException, SecurityException {
-		return new ExecutionInformation(getId(),name,description,status,startTime,finishTime);
+		return new ExecutionInformation(this.id,name,description,status,startTime,finishTime);
 	}
 	
-	// helper method to signal an error.
-	protected final void signalError(String msg) {
-		ExecutionMessage em = new ExecutionMessage(getId().toString()
+	// helper method to signal an error, record a message, change status to error, and fire a notification
+	protected final void error(String msg) {
+		ExecutionMessage em = new ExecutionMessage(id.toString()
 				,LogLevel.ERROR.toString()
 				,getStatus()
 				,new Date()

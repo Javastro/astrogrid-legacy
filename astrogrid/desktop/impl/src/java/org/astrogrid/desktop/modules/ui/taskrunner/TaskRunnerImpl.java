@@ -45,14 +45,14 @@ import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.InterfaceBean;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.dialogs.RegistryGoogle;
-import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
+import org.astrogrid.desktop.modules.ag.RemoteProcessManagerInternal;
+import                     org.astrogrid.desktop.modules.ag.ProcessMonitor;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
-import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.ArMainWindow;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.system.ui.UIContributionBuilder;
@@ -166,69 +166,67 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	        }
 	    }	
 	/** execute the application */
-	  protected final class ExecuteAction extends AbstractAction {
+	 protected final class ExecuteAction extends AbstractAction {
 
-	        public ExecuteAction() {
-	            super("Execute !", IconHelper.loadIcon("run16.png"));
-	            this.putValue(SHORT_DESCRIPTION,"Execute this application");
-	            this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_E));
-	        }
+	     public ExecuteAction() {
+	         super("Execute !", IconHelper.loadIcon("run16.png"));
+	         this.putValue(SHORT_DESCRIPTION,"Execute this application");
+	         this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_E));
+	     }
 
-			public void actionPerformed(ActionEvent e) {
-				final Tool tOrig = pForm.getTool();
-            final String securityMethod = null; //@todo getToolModel().getSecurityMethod();
-            logger.info("Security method = " + securityMethod);
-            (new BackgroundOperation("Executing..") {
+	     public void actionPerformed(ActionEvent e) {
+	         final Tool tOrig = pForm.getTool();
+	         final String securityMethod = null; //@todo getToolModel().getSecurityMethod();
+	         logger.info("Security method = " + securityMethod);
+	         (new BackgroundOperation("Executing..") {
 
-                protected Object construct() throws Exception {
-                    logger.debug("Executing");
-                    Document doc = XMLUtils.newDocument();
-                    Marshaller.marshal(tOrig,doc);
-                    /*if (securityMethod != null) {
-                      logger.info("Setting security instruction on the tool document");
-                      ProcessingInstruction p 
-                          = doc.createProcessingInstruction("CEA-strategy-security", 
-                                                            securityMethod);
-                      doc.appendChild(p);
-                    }*/
-                    
-                    Service[] services = apps.listServersProviding(new URI("ivo://" + tOrig.getName()));
-                    //@todo use vomon to direct choice - use same technique as for login dialogue.
-                    logger.debug("resolved app to " + services.length + " servers");
-                    URI execId;
-                    if (services.length == 0) {// no providing servers found.
-                    	return null;
-                    } else if (services.length > 1) {
-                        URI[] names = new URI[services.length];
-                        for (int i = 0 ; i < services.length; i++) {
-                            names[i] = services[i].getId(); //@todo should be titile here really.
-                        }
-                    URI chosen = (URI)JOptionPane.showInputDialog(TaskRunnerImpl.this
-                            ,"More than one CEA server provides this application - please choose one"
-                            ,"Choose Server"
-                            ,JOptionPane.QUESTION_MESSAGE
-                            ,null
-                            , names
-                            ,names[0]);
-                    	execId = apps.submitTo(doc,chosen);
-                    } else {
-                    	execId  =  apps.submitTo(doc,services[0].getId());
-                    }
-                    return execId;
-                }
-                
-                protected void doFinished(Object o) {
-                	if (o == null) { // unable to launch the app
-                		JOptionPane.showMessageDialog(TaskRunnerImpl.this,"<b>Failed to launch task</b><br>Could not find any servers that provide the task: " + tOrig.getName()
-                				,"Cannot launch task",JOptionPane.ERROR_MESSAGE);
-                	} else {
-                		tracker.add((URI)o);
-                	}
-               }
-                
-            }).start();
-			}
-	  }
+	             protected Object construct() throws Exception {
+	                 logger.debug("Executing");
+	                 Document doc = XMLUtils.newDocument();
+	                 Marshaller.marshal(tOrig,doc);
+	                 // ok. looks like a goer - lets create a monitor.
+	                 logger.debug("Created monitor");
+	                 ProcessMonitor monitor = rpmi.create(doc);
+	                 // start tracking it - i.e. display it in the ui.
+	                 // we do this early, even before we know how to run it, to show some visual progress.
+	                 tracker.add(monitor);
+	                 
+	                 // now see how we need to 'start()' it.
+	                 Service[] services = apps.listServersProviding(new URI("ivo://" + tOrig.getName()));
+	                 //@todo use vomon to direct choice - use same technique as for login dialogue.
+	                 logger.debug("resolved app to " + services.length + " servers");
+	                 if (services.length == 0) {// no providing servers found.
+	                     tracker.remove(monitor);
+	                     showError("Unable to start task - can't find any supporting services");
+	                     return null;
+	                 }
+	                 if (services.length > 1) {
+	                     URI[] names = new URI[services.length];
+	                     for (int i = 0 ; i < services.length; i++) {
+	                         names[i] = services[i].getId(); //@todo should be titile here really.
+	                     }
+	                     URI chosen = (URI)JOptionPane.showInputDialog(TaskRunnerImpl.this
+	                             ,"More than one CEA server provides this application - please choose one"
+	                             ,"Choose Server"
+	                             ,JOptionPane.QUESTION_MESSAGE
+	                             ,null
+	                             , names
+	                             ,names[0]);
+	                     if (chosen == null) {
+	                         tracker.remove(monitor);
+	                         return null; // halt here
+	                     }
+	                     monitor.start(chosen);
+
+	                 } else { // only one service known.
+	                     monitor.start(services[0].getId());
+	                 }
+	                 rpmi.addMonitor(monitor); // it's running - so now can add it to the rpmi's monitor list.
+	                 return null;
+	             }                
+	         }).start();
+	     }
+	 }
 	  
 	  /** reset back to oroginal form contents */
 	    protected final class ResetAction extends AbstractAction {
@@ -281,14 +279,16 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	private final ExecutionTracker tracker;
 	private final TypesafeObjectBuilder builder;
     private final FileSystemManager vfs;
+    private final RemoteProcessManagerInternal rpmi;
 
 	/**
 	 * @param context
 	 * @throws HeadlessException
 	 */
-	public TaskRunnerImpl(UIContext context, ApplicationsInternal apps,ResourceChooserInternal rci,RegistryGoogle regChooser,UIContributionBuilder menuBuilder, TypesafeObjectBuilder builder, FileSystemManager vfs) throws HeadlessException {
+	public TaskRunnerImpl(UIContext context, ApplicationsInternal apps,RemoteProcessManagerInternal rpmi,ResourceChooserInternal rci,RegistryGoogle regChooser,UIContributionBuilder menuBuilder, TypesafeObjectBuilder builder, FileSystemManager vfs) throws HeadlessException {
 	   
 		super(context);
+        this.rpmi = rpmi;
 		this.fileChooser = rci;
         this.builder = builder;
 		this.regChooser = regChooser;

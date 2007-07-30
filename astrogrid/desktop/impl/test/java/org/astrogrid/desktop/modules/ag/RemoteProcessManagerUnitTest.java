@@ -165,17 +165,11 @@ public class RemoteProcessManagerUnitTest extends TestCase {
 			return "ok";
 		}
 
-		public ProcessMonitor submit(Document doc)
-				throws ServiceException, SecurityException, NotFoundException,
-				InvalidArgumentException {
-			return new MonitorMapUnitTest.TestRemoteProcessMonitor();
-		}
 
-		public ProcessMonitor submitTo(Document doc, URI service)
-				throws ServiceException, SecurityException, NotFoundException,
-				InvalidArgumentException {
-			return new MonitorMapUnitTest.TestRemoteProcessMonitor();
-		}
+        public ProcessMonitor create(Document doc)
+                throws InvalidArgumentException, ServiceException {
+            return new MonitorMapUnitTest.TestRemoteProcessMonitor();
+        }
 	}
 	
 }

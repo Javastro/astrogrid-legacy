@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManagerImpl.java,v 1.15 2007/07/26 18:21:45 nw Exp $
+/*$Id: RemoteProcessManagerImpl.java,v 1.16 2007/07/30 17:59:55 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -143,8 +143,7 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
         throw new InvalidArgumentException("Could not find handler for " +uri);
     }
     
-    /** sleect the strategy we're going to use - and snitch what we're doing */
-    private RemoteProcessStrategy selectStrategyAndSnitch(Document doc) throws InvalidArgumentException {
+    public ProcessMonitor create(Document doc) throws InvalidArgumentException, ServiceException {
         for (Iterator i = strategies.iterator(); i.hasNext(); ) {
             RemoteProcessStrategy s= (RemoteProcessStrategy)i.next();
             String name = s.canProcess(doc);
@@ -152,12 +151,13 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
             	if (snitch != null) { // be extra safe..
                 	Map m = new HashMap();
                 	m.put("name",name);
-                	snitch.snitch("SUBMIT",m);            		
+                	snitch.snitch("SUBMIT",m); 
+                	// not strictly true.. but at least snitching here means that snitching is uniform across all strategies            		
             	}
-                return s;
+                return s.create(doc);
             }
         }
-        throw new InvalidArgumentException("Could not find handler document ");        
+        throw new InvalidArgumentException("Unrecognized kind of execution document ");        
     }
     
     public URI[] list() throws ServiceException {
@@ -166,8 +166,15 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
 
     public URI submit(Document arg0) throws ServiceException, SecurityException, NotFoundException,
             InvalidArgumentException {
-        RemoteProcessStrategy s = selectStrategyAndSnitch(arg0);   
-        ProcessMonitor rpm  = s.submit(arg0);
+        ProcessMonitor rpm = create(arg0);
+        rpm.start();
+        //@todo would like to be able to add rpm to the monitors list before I've called
+        // start, but not possible, as no ID has been associated.
+        // only impacts listeners on this map.
+        // work-around woul be to assign a temporary ID to the processMonitor
+        // but then would need to change the ID halfway through the monitor's life
+        // which sounds like a source for bugs (and confusion on the part of AR clients).
+        // so monitors remains a map of _running_ processes only.
         monitors.add(rpm);
         return rpm.getId();
     }
@@ -175,14 +182,13 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
 
     public URI submitTo(Document arg0, URI arg1) throws NotFoundException,
             InvalidArgumentException, ServiceException, SecurityException {
-        RemoteProcessStrategy s = selectStrategyAndSnitch(arg0);      
-        ProcessMonitor rpm = s.submitTo(arg0,arg1);
+        ProcessMonitor rpm = create(arg0);
+        rpm.start(arg1);
         monitors.add(rpm);
         return rpm.getId();
     }
 
-    
-
+   
     private Document loadDocument(URI location) throws NotFoundException, InvalidArgumentException {
         InputStream is = null;
         try {
@@ -302,12 +308,22 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
 		return monitors.get(id);
 	}
 
+    public void addMonitor(ProcessMonitor pm) {
+        monitors.add(pm);
+    }
+
+
+
 
 }
 
 
 /* 
 $Log: RemoteProcessManagerImpl.java,v $
+Revision 1.16  2007/07/30 17:59:55  nw
+RESOLVED - bug 2257: More feedback, please
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2257
+
 Revision 1.15  2007/07/26 18:21:45  nw
 merged mark's and noel's branches
 

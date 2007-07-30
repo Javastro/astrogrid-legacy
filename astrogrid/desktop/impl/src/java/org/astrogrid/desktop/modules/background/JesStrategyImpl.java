@@ -1,4 +1,4 @@
-/*$Id: JesStrategyImpl.java,v 1.13 2007/07/13 23:14:55 nw Exp $
+/*$Id: JesStrategyImpl.java,v 1.14 2007/07/30 17:59:56 nw Exp $
  * Created on 05-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -61,10 +61,12 @@ import org.w3c.dom.Document;
 public class JesStrategyImpl implements RemoteProcessStrategy {
 	/** monitor for a single jes workflow */
 	private class WorkflowMonitor extends TimerDrivenProcessMonitor {
+	    
+		private final Workflow wf;
 
-		public WorkflowMonitor(URI id, Workflow wf) {
-			super(id);
-			name = wf.getName();
+        public WorkflowMonitor(final Workflow wf) {
+			this.wf = wf;
+            name = wf.getName();
 			description = wf.getDescription();
 		} 
 
@@ -98,6 +100,21 @@ public class JesStrategyImpl implements RemoteProcessStrategy {
 				throw new ServiceException("Failed to halt job",e);
 			}			
 		}
+		
+		/** ignores any suggestion of what server to use 
+		 * @throws ServiceException */
+        public void start(URI serviceId) throws ServiceException {
+            this.start(); 
+        }
+
+        public void start() throws ServiceException {
+            try {
+            setId(cvt(getJes().submitWorkflow(wf)));
+            sched.schedule(this);
+            } catch (JesDelegateException e) {
+                throw new ServiceException("Failed to submit document to service",e);
+            }             
+        }		
 
 		public void cleanUp() {
 			super.cleanUp();
@@ -181,6 +198,26 @@ public class JesStrategyImpl implements RemoteProcessStrategy {
 		public Principal getPrincipal() {
 			return sess.currentSession();
 		}
+		
+
+	    private JobURN cvt(URI uri) {
+	        JobURN urn = new JobURN();
+	        urn.setContent(uri.toString());
+	        return urn;
+	    }
+
+	    private URI cvt(JobURN urn) throws ServiceException {       
+	        try {
+	            return new URI(urn.getContent());
+	        } catch (URISyntaxException e) {
+	            throw new ServiceException(e);
+	        }       
+	    }
+
+        public void refresh() throws ServiceException {
+            execute();
+        }		
+
 	}
 
 	/**
@@ -238,30 +275,20 @@ public class JesStrategyImpl implements RemoteProcessStrategy {
 			return null;
 		}            
 	}
-
-	public ProcessMonitor submit(Document doc) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {
-		try {
-			Workflow wf = (Workflow) Unmarshaller.unmarshal(Workflow.class, doc);
-			adjustWorkflow(wf);
-			URI uri =  cvt(getJes().submitWorkflow(wf));
-			WorkflowMonitor mon =  new WorkflowMonitor(uri,wf);
-			sched.schedule(mon);
-			return mon;
-		} catch (CastorException e) {
-			throw new InvalidArgumentException("Malformed workflow",e);
-		} catch (JesDelegateException e) {
-			throw new ServiceException("Failed to submit document to service",e);
-		} 
-	}
-
-	public ProcessMonitor submitTo(Document doc, URI service) throws ServiceException, SecurityException, NotFoundException, InvalidArgumentException {
-		// only handle a single jes server at the moment - so always send to the defailt.
-		logger.warn("Sending to default jes server");
-		return submit(doc);
-	}
+	
+    public ProcessMonitor create(Document doc) throws InvalidArgumentException, ServiceException {
+        try {
+        Workflow wf = (Workflow) Unmarshaller.unmarshal(Workflow.class, doc);
+        adjustWorkflow(wf);
+        WorkflowMonitor mon = new WorkflowMonitor(wf);
+        return mon;
+        } catch (CastorException e) {
+            throw new InvalidArgumentException("Malformed workflow",e);
+        }      
+    }
 
 	// make the workflow belong to the current user, fiddle the stirng adql, etc.
-	private void adjustWorkflow(Workflow workflow) throws ServiceException, InvalidArgumentException{
+	private void adjustWorkflow(Workflow workflow) throws InvalidArgumentException, ServiceException{
 		workflow.getCredentials().setAccount(getAccount());
 		// fiddle any string-adql..     
 		Iterator i = workflow.findXPathIterator("//tool[input/parameter/indirect='false']" ); // find all tools with at least one inline parameter.
@@ -276,26 +303,15 @@ public class JesStrategyImpl implements RemoteProcessStrategy {
 		}        
 	}
 
-	JobURN cvt(URI uri) {
-		JobURN urn = new JobURN();
-		urn.setContent(uri.toString());
-		return urn;
-	}
-
-	private URI cvt(JobURN urn) throws ServiceException {       
-		try {
-			return new URI(urn.getContent());
-		} catch (URISyntaxException e) {
-			throw new ServiceException(e);
-		}       
-	}
-
-
 }
 
 
 /* 
 $Log: JesStrategyImpl.java,v $
+Revision 1.14  2007/07/30 17:59:56  nw
+RESOLVED - bug 2257: More feedback, please
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2257
+
 Revision 1.13  2007/07/13 23:14:55  nw
 Complete - task 1: task runner
 
