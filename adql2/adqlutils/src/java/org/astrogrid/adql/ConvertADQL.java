@@ -38,6 +38,16 @@ import org.apache.commons.logging.LogFactory ;
 public class ConvertADQL {
     
      private static Log log = LogFactory.getLog( Interactive.class ) ;
+     
+     public static final String[] CONVERTABLE_NAMESPACES = new String[] 
+     {
+         "http://adql.ivoa.net/v0.73",
+         "http://www.ivoa.net/xml/ADQL/v0.7.4",          
+         "http://www.ivoa.net/xml/ADQL/v0.8",
+         "http://www.ivoa.net/xml/ADQL/v0.9",
+         "http://www.ivoa.net/xml/ADQL/v1.0",         
+         "urn:astrogrid:schema:ADQL:v1.0a1" 
+     } ;
     
      private static Transformer adqlV1ToV2Transformer ;
      
@@ -56,6 +66,52 @@ public class ConvertADQL {
          getTransformer().transform( source, result ) ;
          String retVal = ((StringWriter)result.getWriter()).toString() ;         
          return retVal ;
+     }
+     
+     
+     /**
+      * Searches for an ADQL namespace in a query that we think is convertible.
+      * The method is suitable provided there are no misleading comments prior
+      * to encountering namespaces.
+      * 
+      * @param query
+      * @return Found convertible namespace string or a null if none is found.
+      */
+    public static String getCovertibleNameSpace( String query ) {
+        //
+        // Defensive stuff first...
+         if( query == null )
+             return null ;
+         query = query.trim() ;
+         if( !query.startsWith( "<?xml" ) )
+             return null ;
+         if( query.length() < 100 )
+             return null ;         
+         //
+         // Get an adequate portion of the document.
+         // If anything goes wrong here, the document is unsuitable for conversion...
+         String part ;
+         try {
+             int start = query.indexOf( "?>" )+2 ;
+             int end = query.indexOf( "/>", start )-2 ;
+             part= query.substring( start, end ) ;
+         }
+         catch( Exception ex ) {
+             return null ;
+         }
+         //
+         // Now search for a namespace we know we can convert (I hope) ...
+         for( int i=0; i<CONVERTABLE_NAMESPACES.length; i++ ) {
+             if( part.indexOf( CONVERTABLE_NAMESPACES[i], 0 ) != -1 ) 
+                 return CONVERTABLE_NAMESPACES[i] ;
+         } 
+         //
+         // If none have been found...
+         return null ;
+     }
+     
+     public static boolean isConvertible( String query ) {
+         return null == getCovertibleNameSpace( query ) ;
      }
     
      public static void main(String args[]) {
