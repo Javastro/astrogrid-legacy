@@ -1,4 +1,4 @@
-/*$Id: AdqlStoXTest.java,v 1.3 2007/07/30 10:57:30 jl99 Exp $
+/*$Id: AdqlStoXTest.java,v 1.4 2007/07/30 14:38:38 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -18,6 +18,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 
 import org.apache.xmlbeans.XmlObject;
@@ -58,6 +59,14 @@ public class AdqlStoXTest extends XMLTestCase {
 	private static boolean sInitialized = false ; 
 	private static boolean sBadInitializedStatus = false ;
 	private static File sDirectoryOfREADME = null ;
+    
+    public static HashMap sImplicitNamespaces = new HashMap() ;
+    static {
+        sImplicitNamespaces.put( "adql", "http://www.ivoa.net/xml/v2.0/adql" ) ;    
+        sImplicitNamespaces.put( "xs", "http://www.w3.org/2001/XMLSchema" ) ; 
+        sImplicitNamespaces.put( "stc", "http://www.ivoa.net/xml/v1.0/stc" ) ; 
+        sImplicitNamespaces.put( "xsi", "http://www.w3.org/2001/XMLSchema-instance" ) ; 
+    }
 	
 	private File currentSFile ; 
 	private File currentXFile ;
@@ -508,34 +517,48 @@ public class AdqlStoXTest extends XMLTestCase {
 	}
 	
 	private void compareCompilations( XmlObject xo, File xmlFile ) throws Exception {
-
-		Document compiledDom = null ;
-		Document fileDom = null ;
-		
-		compiledDom = DomHelper.newDocument( xo.toString() ) ;
+        //
+        // This rather extended rigmarole is what I've had to do (partly!)
+        // to control namespace occurances in an instance...
+        XmlOptions opts = getCompareOptions() ;
+	    String compiledVersion = xo.xmlText( opts ) ;
+                
         String fileContents = retrieveFile( xmlFile ) ;
         String namespace = ConvertADQL.getCovertibleNameSpace( fileContents ) ;
+        String controlledVersion ;
         String convertedXml ;
         if( namespace != null ) {
             System.out.println( "Xml file requires converting. Namespace: " + namespace ) ;
             convertedXml = getConvertor().convertV10ToV20( new StringReader( fileContents ) ) ;
-            fileDom = DomHelper.newDocument( convertedXml ) ;
+            controlledVersion = XmlObject.Factory.parse( convertedXml ).xmlText( opts ) ;
         }
         else {
             System.out.println( "Xml file does not require conversion." ) ;
-            fileDom = DomHelper.newDocument( fileContents ) ;
+            controlledVersion = XmlObject.Factory.parse( fileContents ).xmlText( opts ) ;
         }
+      
+        Document compiledDom = DomHelper.newDocument( compiledVersion ) ;
+        Document fileDom = DomHelper.newDocument( controlledVersion ) ;
         
+        // Normalize just to be sure 
+        compiledDom.normalize();
+        fileDom.normalize();
         
-		// Normalize just to be sure 
-		compiledDom.normalize();
-		fileDom.normalize();
-        
-		// Using xmlunit to compare documents
-		setIgnoreWhitespace(true);
-		assertXMLEqual("Adql/s does not compile to what is expected!",compiledDom, fileDom);
+        // Using xmlunit to compare documents
+        setIgnoreWhitespace(true);
+        assertXMLEqual("Adql/s does not compile to what is expected!",compiledDom, fileDom);
+
 	}
-	
+    
+    private XmlOptions getCompareOptions() {
+        XmlOptions opts = new XmlOptions();
+        opts.setSaveOuter() ;
+        opts.setSaveNamespacesFirst() ;
+        opts.setSaveAggressiveNamespaces() ;
+        opts.setLoadStripWhitespace() ;
+        return opts ;
+    }
+    
     private AdqlCompiler getCompiler( File file ) throws FileNotFoundException {
         if( sCompiler == null ) {
             sCompiler = new AdqlCompiler( new FileReader( file ) ) ;
@@ -727,9 +750,12 @@ public class AdqlStoXTest extends XMLTestCase {
 
 
 /* $Log: AdqlStoXTest.java,v $
- * Revision 1.3  2007/07/30 10:57:30  jl99
- * Attempting conversion of expected results to account for change in version number and namespace
+ * Revision 1.4  2007/07/30 14:38:38  jl99
+ * Attempting to compare newer compilations against control output files from previous version.
  *
+/* Revision 1.3  2007/07/30 10:57:30  jl99
+/* Attempting conversion of expected results to account for change in version number and namespace
+/*
 /* Revision 1.2  2007/07/12 13:45:07  jl99
 /* Accommodating top Select element for fragmet processing.
 /* Explicit Select element required for version number.
