@@ -94,7 +94,7 @@ public class ConvertADQL {
          String part ;
          try {
              int start = query.indexOf( "?>" )+2 ;
-             int end = query.indexOf( "/>", start )-2 ;
+             int end = query.indexOf( "</", start )-2 ;
              part= query.substring( start, end ) ;
          }
          catch( Exception ex ) {
