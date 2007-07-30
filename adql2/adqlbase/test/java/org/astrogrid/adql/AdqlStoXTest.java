@@ -1,4 +1,4 @@
-/*$Id: AdqlStoXTest.java,v 1.2 2007/07/12 13:45:07 jl99 Exp $
+/*$Id: AdqlStoXTest.java,v 1.3 2007/07/30 10:57:30 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -63,6 +63,8 @@ public class AdqlStoXTest extends XMLTestCase {
 	private File currentXFile ;
     
     private String fragmentContext ;
+    
+    private ConvertADQL convertor ;
     
     private static long accumulatedTime ;
     private static int testMethodCount ;
@@ -511,7 +513,20 @@ public class AdqlStoXTest extends XMLTestCase {
 		Document fileDom = null ;
 		
 		compiledDom = DomHelper.newDocument( xo.toString() ) ;
-        fileDom = DomHelper.newDocument( xmlFile ) ;
+        String fileContents = retrieveFile( xmlFile ) ;
+        String namespace = ConvertADQL.getCovertibleNameSpace( fileContents ) ;
+        String convertedXml ;
+        if( namespace != null ) {
+            System.out.println( "Xml file requires converting. Namespace: " + namespace ) ;
+            convertedXml = getConvertor().convertV10ToV20( new StringReader( fileContents ) ) ;
+            fileDom = DomHelper.newDocument( convertedXml ) ;
+        }
+        else {
+            System.out.println( "Xml file does not require conversion." ) ;
+            fileDom = DomHelper.newDocument( fileContents ) ;
+        }
+        
+        
 		// Normalize just to be sure 
 		compiledDom.normalize();
 		fileDom.normalize();
@@ -539,6 +554,13 @@ public class AdqlStoXTest extends XMLTestCase {
             sCompiler.ReInit(source);
         }
         return sCompiler ;
+    }
+    
+    private ConvertADQL getConvertor() {
+        if ( this.convertor == null ) {
+            this.convertor = new ConvertADQL() ;
+        }
+        return this.convertor ;
     }
 	
 	private void init() throws InitializationException {
@@ -618,23 +640,30 @@ public class AdqlStoXTest extends XMLTestCase {
 	}
 	
 	private void printFullCompilationFile( File file ) {
-		FileReader reader = null ;
-		try {
-			reader = new FileReader( file ) ;
-			int ch = reader.read() ;
-			while( ch != -1 ) {
-				System.out.print( (char)ch ) ;
-				ch = reader.read() ;
-			}
-		    System.out.print( "\n" ) ;
-		}
-		catch( Exception iox ) {
-			;
-		}
-		finally {
-			try{ reader.close() ; } catch( Exception ex ) { ; }
-		}
+        String fileContent = retrieveFile( file ) ;
+        System.out.print( fileContent ) ;
+        System.out.print( "\n" ) ;
 	}
+    
+    private String retrieveFile( File file ) {
+        FileReader reader = null ;
+        StringBuffer buffer = new StringBuffer( 1024 ) ;
+        try {
+            reader = new FileReader( file ) ;
+            int ch = reader.read() ;
+            while( ch != -1 ) {
+                buffer.append( (char)ch ) ;
+                ch = reader.read() ;
+            }
+        }
+        catch( Exception iox ) {
+            ;
+        }
+        finally {
+            try{ reader.close() ; } catch( Exception ex ) { ; }
+        }
+        return buffer.toString() ;
+    }
     
     private void printFragmentCompilationFile( File file ) {
         FileReader reader = null ;
@@ -698,10 +727,13 @@ public class AdqlStoXTest extends XMLTestCase {
 
 
 /* $Log: AdqlStoXTest.java,v $
- * Revision 1.2  2007/07/12 13:45:07  jl99
- * Accommodating top Select element for fragmet processing.
- * Explicit Select element required for version number.
+ * Revision 1.3  2007/07/30 10:57:30  jl99
+ * Attempting conversion of expected results to account for change in version number and namespace
  *
+/* Revision 1.2  2007/07/12 13:45:07  jl99
+/* Accommodating top Select element for fragmet processing.
+/* Explicit Select element required for version number.
+/*
 /* Revision 1.1  2007/06/28 09:07:49  jl99
 /* Creation of temporary project adql2 to explore complexities of moving
 /* ADQL to conform to the draft spec of April 2007.
