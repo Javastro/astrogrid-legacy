@@ -192,7 +192,7 @@ ASTROSCOPE
 	<service-point id="applicationLauncher" interface="org.astrogrid.desktop.modules.ui.TaskRunnerInternal">
 		<interceptor service-id="system.snitchInterceptor" >
             <exclude method="hide" />
-        </interceptor>
+        </interceptor>  
 		<invoke-factory>   
 			<construct class="org.astrogrid.desktop.modules.ui.TaskRunnerFactory">
 						<service>UiBuilder</service>

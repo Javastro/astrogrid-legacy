@@ -965,6 +965,7 @@ SYSTEM TRAY
 	 -->
 	<service-point id="vfs" interface="org.astrogrid.desktop.modules.system.ExtendedFileSystemManager">
 		Uniform access to all filesystems.
+        <interceptor service-id="system.edt" /><!-- doesn't give much protection, but might identify some problems. -->        
 		<invoke-factory model="session">
 			<construct 
 			class="org.astrogrid.desktop.modules.system.HivemindFileSystemManager"
@@ -1299,6 +1300,19 @@ MAC SETUP
 		</invoke-factory>
 		</service-point>
 
+    <!--  ==================================
+    EDT enforcement
+     -->
+    <service-point id="edt"
+        interface="org.apache.hivemind.ServiceInterceptorFactory"
+        parameters-schema-id="hivemind.MethodFilter">
+        Warn on calling long-running methods on the EDT thread.
+        <invoke-factory model="primitive">
+            <construct class="org.astrogrid.desktop.modules.system.ExpensiveMethodInterceptorFactory">
+                <service>hivemind.ClassFactory</service>
+            </construct>
+        </invoke-factory>
+    </service-point>
 <!--  ================================
 	TUPPERWARE
 	 -->

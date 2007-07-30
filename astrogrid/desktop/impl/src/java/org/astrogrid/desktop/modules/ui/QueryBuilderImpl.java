@@ -83,19 +83,24 @@ public class QueryBuilderImpl extends TaskRunnerImpl implements
 
     public void build(DataCollection coll) {
         // find the related cea app, and go from there...
-        String s = StringUtils.substringBeforeLast(coll.getId().toString(),"/");
-        try {
-            URI id = new URI(s + "/ceaApplication");
-            Resource app = reg.getResource(id);
-            if (app != null && app instanceof CeaApplication) {
-                build((CeaApplication)app);
-            } else {
-                logger.error("not found");
+        final String s = StringUtils.substringBeforeLast(coll.getId().toString(),"/");
+        // do the query to find a related cea app on a bg thread.
+        (new BackgroundOperation("Finding application definition for this collection") {
+
+            protected Object construct() throws Exception {
+                URI id = new URI(s + "/ceaApplication");
+                Resource app =  reg.getResource(id);
+                if (app != null && app instanceof CeaApplication) {
+                    return app;
+                } else {
+                    throw new ACRException("Failed to find an application associated with this collection");
+                }
             }
-        } catch (Exception x) {
-            logger.error("Failed to find associated app",x);
-            //@todo report inability to show ui.
-        }
+            protected void doFinished(Object result) {
+                build((CeaApplication)result);
+            }
+        }).start();
+
     }
 
     public void edit(FileObject fo) {

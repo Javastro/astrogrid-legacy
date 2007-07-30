@@ -26,6 +26,7 @@ SESAME
  -->
 	<service-point id="sesame" interface="Sesame">
 		Name resolver
+        <interceptor service-id="system.edt" />        
 		<interceptor service-id="system.throbber" />		
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.cds.SesameDynamicImpl" >
@@ -52,6 +53,7 @@ VIZIER
  -->			
 		<service-point id="vizier" interface="VizieR">
 			VizieR
+        <interceptor service-id="system.edt" />            
 		<interceptor service-id="system.throbber" />			
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.cds.VizieRImpl">
@@ -85,6 +87,7 @@ COORDINATES
  -->
 	<service-point id="coordinate" interface="Coordinate">
 		Coordinate conversion
+        <interceptor service-id="system.edt" />        
 		<interceptor service-id="system.throbber" />		
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.cds.CoordinateImpl">
@@ -110,6 +113,7 @@ UCD Dictionary
  -->
 	<service-point id="ucd" interface="UCD">
 		UCD dictionary
+        <interceptor service-id="system.edt" />        
 		<interceptor service-id="system.throbber" />		
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.cds.UCDImpl">
@@ -137,6 +141,7 @@ UCD Dictionary
 	 -->	
 	<service-point id="glu" interface="Glu">
 		CDS service registry
+        <interceptor service-id="system.edt" />        
 		<interceptor service-id="system.throbber" />		
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.cds.GluImpl">

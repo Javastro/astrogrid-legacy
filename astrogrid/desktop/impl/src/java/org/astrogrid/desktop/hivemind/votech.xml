@@ -22,7 +22,7 @@
 ANNOTATION SERVICE
  -->	
 	<service-point id="annotate" interface="org.astrogrid.desktop.modules.votech.AnnotationService">
-	Annotation Service
+	Annotation Service  
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.votech.AnnotationServiceImpl">
 				<object>cache:annotate</object>

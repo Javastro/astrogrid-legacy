@@ -134,6 +134,7 @@ MYSPACE
  -->
 	<service-point id="myspace" interface="org.astrogrid.desktop.modules.ag.MyspaceInternal">
 		Myspace client
+        <interceptor service-id="system.edt" />
 		<interceptor service-id="system.throbber" />	
 		<interceptor service-id="hivelock.core.authorization">
 			<method pattern="*" roles="loggedin" />
@@ -197,6 +198,10 @@ MYSPACE
 	</contribution><!-- 
 ==========================
 COMMUNITY -->	<service-point id="community" interface="org.astrogrid.desktop.modules.auth.CommunityInternal">		Community and login.	
+        <interceptor service-id="system.edt" >
+            <exclude method="addUserLoginListener" />
+            <exclude method="removeUserLoginListener" />
+        </interceptor>                        
 		<interceptor service-id="system.throbber" />		
 		<interceptor service-id="hivelock.core.authorization">
 			<!--   can't protect this - need it as part of upgrading credentials.
@@ -290,6 +295,7 @@ STAP
  -->
 	<service-point id="stap" interface="Stap">
 		Client for STAP services.
+        <interceptor service-id="system.edt" />        
 		<interceptor service-id="system.throbber" />		
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ag.StapImpl" >
@@ -315,6 +321,13 @@ APPLICATIONS
 			<include method="listProvidersOf" />
 			<exclude method="*" />
 		</interceptor>
+        <interceptor service-id="system.edt" >
+            <!--  these themselves aren't expensive, but conditionally call expensive methods - which are themselves intercepted. -->
+            <exclude method="createTemplateTool" />
+            <exclude method="getCeaApplication" />
+            <exclude method="getInfoFor" />
+            <!--  a few more could be added here, if it bites -->
+        </interceptor>        
 		<interceptor service-id="system.throbber" />		
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ag.ApplicationsImpl" >
@@ -351,6 +364,8 @@ JOBS
  -->
 	<service-point id="jobs" interface="org.astrogrid.desktop.modules.ag.JobsInternal">
 		Workflow client
+        <interceptor service-id="system.deprecation" />        
+        <interceptor service-id="system.edt" />
 		<interceptor service-id="system.throbber" />		
 		<interceptor service-id="hivelock.core.authorization">
 			<method pattern="*" roles="loggedin" />
@@ -382,6 +397,7 @@ REMOTE PROCESS MANAGER
  -->
 	<service-point id="processManager" interface="org.astrogrid.desktop.modules.ag.RemoteProcessManagerInternal">
 		Manages and monitors execution of remote processes. Consumes the processStrategies configuration
+        <interceptor service-id="system.edt" />        
 		<interceptor service-id="system.throbber" />		
 		<invoke-factory >
 			<construct class="org.astrogrid.desktop.modules.ag.RemoteProcessManagerImpl" >

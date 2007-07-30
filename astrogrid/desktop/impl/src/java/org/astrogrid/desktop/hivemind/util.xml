@@ -24,6 +24,7 @@ TABLES
 	
 	<service-point id="tables" interface="Tables">
 		Table Manipulation Utilities (STIL)
+        <interceptor service-id="system.edt" />        
 		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.util.TablesImpl" >
 				<service>astrogrid.myspace</service>
