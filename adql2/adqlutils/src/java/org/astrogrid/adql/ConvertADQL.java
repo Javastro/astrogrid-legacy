@@ -56,6 +56,7 @@ public class ConvertADQL {
          " USAGE: Type a full path to an ADQL/x query and press the ENTER key.\n" +
          "        Type \"bye\" to exit.\n" ;
      
+     public ConvertADQL() {} 
      
      public synchronized String convertV10ToV20( Reader reader ) throws TransformerException {
          StreamSource source = new StreamSource( reader ) ;
