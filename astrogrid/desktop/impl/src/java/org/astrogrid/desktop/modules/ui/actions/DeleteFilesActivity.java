@@ -64,6 +64,7 @@ public class DeleteFilesActivity extends AbstractFileActivity {
 		logger.debug(l);
 		if (JOptionPane.showConfirmDialog(uiParent.get().getFrame(),"Delete these " + l.size() + " files?")
 		    != JOptionPane.OK_OPTION) {
+		    return; // woops. missed this.
 		}
 
 		(new BackgroundWorker(uiParent.get(),"Deleting files") {
