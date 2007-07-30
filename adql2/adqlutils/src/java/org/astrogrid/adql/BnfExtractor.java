@@ -1,4 +1,4 @@
-/*$Id: BnfExtractor.java,v 1.4 2007/07/29 11:28:34 jl99 Exp $
+/*$Id: BnfExtractor.java,v 1.5 2007/07/30 09:04:14 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -77,9 +77,10 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
         "astronomical usage.\n" +
         "\n" +
         "The definition represents a movement towards the draft ADQL spec as of v1.5-20070419\n" +
-        "Variations from the draft are commented.\n" +
+        "Variations from the draft are commented (Search for the string \"ADQL Note:\").\n" +
         "The select statement is found at <a href=\"#query_specification\">&lt;query_specification&gt;</a>\n" +
         "The region predicate is found at <a href=\"#region_predicate\">&lt;region_predicate&gt;</a>\n" +
+        "User defined function is found at <a href=\"#user_defined_function\">&lt;user_defined_function&gt;</a>\n" +
         "See <a href=\"http://savage.net.au/SQL/sql-92.bnf.html\">SQL92</a> for a similar page describing SQL92 in full.\n\n" ;
   
     private static final String HTML_FOOTINGS =
@@ -683,6 +684,9 @@ private static Log log = LogFactory.getLog( BnfExtractor.class ) ;
 
 /*
 $Log: BnfExtractor.java,v $
+Revision 1.5  2007/07/30 09:04:14  jl99
+BNF tidy
+
 Revision 1.4  2007/07/29 11:28:34  jl99
 tidy
 

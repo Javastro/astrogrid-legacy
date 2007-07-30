@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.33 2007/07/29 11:27:27 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.34 2007/07/30 09:03:47 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -202,8 +202,8 @@ SKIP :
  *   | <question_mark>
  *   | <underscore>
  *   | <vertical_bar>
- *  !! TODO:
- *  !! ADQL draft spec omits <ampersand> <semicolon> <question_mark> and <vertical_bar>
+ *  !! ADQL Note:
+ *  !! The draft spec omits <ampersand> <semicolon> <question_mark> and <vertical_bar>
  *  !! I believe the spec is in error.
  * bnf-end
  * bnf-start
@@ -358,7 +358,7 @@ TOKEN : // <SQL_embedded_language_character>
  *   | WHEN | WHENEVER | WHERE | WITH | WORK | WRITE
  *   | YEAR
  *   | ZONE
- *  !! TODO:
+ *  !! ADQL Note:
  *  !! I've removed DEC from the reserved words.
  *  !! There was just too much hassle involved.
  *  !! But I'm against making any other exceptions.
@@ -632,6 +632,8 @@ TOKEN : // <SQL_reserved_word>
  *    | TRUNCATE
  *    | UDF  
  *    | VAR
+ *  !! ADQL Note:
+ *  !! VAR is part of an experiment in supporting scripting variables.
  * bnf-end
  *
  */
@@ -691,9 +693,9 @@ TOKEN : // <ADQL_reserved_word>
  *      <left_brace>
  *    | <right_brace>
  *    | <dollar>
- *   !! TODO:
+ *   !! ADQL Note:
  *   !! These are not present in the ADQL draft.
- *   !! This is part of an experiment to see whether it is possible to accommodate
+ *   !! Part of an experiment to see whether it is possible to accommodate
  *   !! the presence of scripting variables in a query.
  * bnf-end
  * bnf-single <left_brace> ::= {
@@ -744,15 +746,15 @@ TOKEN : // <ADQL_special_character>
  *  <regular_identifier> ::=
  *      <simple_Latin_letter>... 
  *      [ { <digit> | <simple_Latin_letter> | <dollar> | <underscore> }... ]
- *  !! TODO:
- *  !! The ADQL draft spec does not have <dollar>. Investigate.
+ *  !! ADQL Note:
+ *  !! Draft spec does not have <dollar>. 
  * bnf-end
  * bnf-start
  *  <delimited_identifier> ::=
- *  !! TODO:
+ *  !! ADQL Note:
  *  !! Begins and ends with a double quote as delimiters
  *  !! but itself contains no double quotes or white space.
- *  !! The ADQL draft spec needs correcting. It has
+ *  !! The draft spec needs correcting. It has
  *  !! <delimited_identifier> ::= <double_quote> <regular_identifier> <double_quote> 
  *  !! which cannot be correct. 
  *  !! If this were the case, we could simply make do with <regular_identifier>
@@ -826,8 +828,8 @@ TOKEN : // The remainder
  *    |   <double_period>
  *    |   <left_bracket>
  *    |   <right_bracket>
- *   !! TODO:
- *   !! The ADQL draft has <boolean_literal> and does not have <delimitied_identifier> 
+ *   !! ADQL Note:
+ *   !! The draft spec has <boolean_literal> and does not have <delimitied_identifier> 
  *   !! Should it also have <ADQL_special_character> ? 
  * bnf-end
  * bnf-single <concatenation_operator> ::= ||
@@ -837,7 +839,7 @@ TOKEN : // The remainder
  *    | <keyword>
  *    | <unsigned_numeric_literal>
  *   !! For information, SQL92 has some others. 
- *   !! Not sure I understand how this is used.
+ *   !! (Jeff: Not sure I understand how this is used.)
  * bnf-end
  * bnf-start
  *  <token> ::= 
@@ -1004,8 +1006,8 @@ void boolean_term_S() #BooleanTerm :
  *
  * bnf-start
  *   <boolean_factor> ::= [ NOT ] <boolean_primary>
- *   !! TODO:
- *   !! ADQL spec supports <boolean_test> and its adjunct <truth value>. 
+ *   !! ADQL Note:
+ *   !! The draft spec supports <boolean_test> and its adjunct <truth value>. 
  *   !! There is some doubt as to whether we should or not.
  *   !! <boolean_test> could be an unwarranted complication.
  *   !! Change the spec.
@@ -1655,9 +1657,9 @@ void from_clause_S() #From :
  *
  * bnf-start
  *  <general_literal> ::= <character_string_literal>
- *  !! TODO:
- *  !! Not present in the ADQL draft.
- *  !! SQL92 has <general_literal> where it also supports
+ *  !! ADQL Note:
+ *  !! Not present in the draft spec.
+ *  !! For information, SQL92 has <general_literal>, and also supports
  *  !! <national_character_string_literal>, <bit_string_literal>, 
  *  !! <hex_string_literal>, <datetime_literal> and <interval_literal>
  *  !! Is it good to retain it as a place-holder, bearing in mind
@@ -1713,9 +1715,9 @@ void general_set_function_A() #GeneralSetFunction :
  *
  * bnf-start
  *  <general_value_specification> ::= <variable_specification>
- *  !! TODO:
+ *  !! ADQL Note:
  *  !! Missing from the ADQL draft spec.
- *  !! The above is an experiment to see if scripting variables can be accommodated.
+ *  !! Part of an experiment to see if scripting variables can be accommodated.
  *  !! SQL92 also supports <parameter_specification>, <dynamic_parameter_specification>,
  *  !! USER, CURRENT_USER, SESSION_USER, SYSTEM_USER and VALUE
  * bnf-end
@@ -2273,8 +2275,8 @@ void math_function_A() #MathFunction :
  *
  * bnf-start
  *  <null_predicate> ::= <column_reference> IS [ NOT ] NULL
- *  !! TODO:
- *  !! The ADQL draft spec is in error here. It has
+ *  !! ADQL Note:
+ *  !! The draft spec is in error here. It has
  *  !! <null_predicate> ::= IS [ NOT ] NULL	
  * bnf-end
  *
@@ -2415,18 +2417,22 @@ void numeric_value_function_A() :
  *          <left_paren> 
  *              [ <numeric_value_expression> [ { <comma> <numeric_value_expression> }... ] ]
  *          <right_paren> 
+ *  !! ADQL Note:
+ *  !! This is an experiment. Not currently present in the draft spec.
+ *  !! If metadata on a user defined function is available, this should be used.
+ *  !! For example, function names and cardinality of arguments should be checked.
  * bnf-end
  *
  * bnf-start
  *   <user_defined_function_name> ::=
  *       [ <default_function_prefix> ] <regular_identifier>
+ *   !! Function names should be checked against metadata where available. 
  * bnf-end 
  *
  * bnf-start
  *   <default_function_prefix> ::=
  *   !! The prefix is set by default to "udf_".
- *   !! A system default can be loaded using configuration settings on the compiler.
- *   !! The prefix can also be changed by a setter method call on the compiler.
+ *   !! It should be possible to change the default prefix to accommodate local preferences.
  * bnf-end
  *
  */
@@ -2691,16 +2697,14 @@ void predicate_A() :
  * bnf-start
  *  <region_predicate> ::=
  *    <point> [ NOT ] IN <region_specification>
- *  !! TODO:
- *  !! The ADQL draft spec has
- *  !! 
+ *  !! ADQL Note:
+ *  !! The draft spec has the following...
  *  !! <region_predicate> ::= 
  *  !!   <table_reference> <period> REGION 
  *  !!   <left_paren> 
  *  !!   <region_specification>
  *  !!   [ <comma> <column_reference> [ { <comma> <column_reference> }... ] ]
  *  !!   <right_paren>
- *  !!
  *  !! <region_specification> ::= 
  *  !! Region definition from STC schema here
  * bnf-end
@@ -3383,7 +3387,7 @@ void convex_hull_J2000_A() #ConvexHullJ2000 :
  *  !! If positive, the spherical sector on the far side (seen from the center) is selected.
  *  !! If negative, the point of intersection is in the opposite direction of the vector, resulting in more than a hemisphere.
  *  !! The valid range is -1.0 to +1.0
- *  !! TODO: As far as I can see, there is not room within STC for allowing a symbolic representation / link
+ *  !! ADQL Note: As far as I can see, there is not room within STC for allowing a symbolic representation / link
  *  !! to something like a column reference or complex expression. Therefore, this has to be a literal.
  * bnf-end
  *
@@ -3515,10 +3519,10 @@ void qualified_name_A() #QualifiedName :
  *
  * bnf-start
  *    <schema_name> ::= [ <catalog_name> <period> ] <unqualified_schema name>
- *    !! TODO:
- *    !! The ADQL draft spec has
+ *    !! ADQL Note:
+ *    !! The draft spec has
  *    !! <schema_name> ::= [ <identifier> <period> ] <identifier>
- *    !! I think mine is more informative, but the two are equivalent.
+ *    !! which is less informative, but the two are equivalent.
  * bnf-end
  * bnf-single <catalog_name> ::= <identifier>
  * bnf-single <unqualified_schema name> ::= <identifier>
@@ -4564,9 +4568,8 @@ void approximate_numeric_literal_S( int sign ) #ApproximateNumericLiteral :
  *  <unsigned_value_specification> ::=
  *      <unsigned_literal>
  *    | <general_value_specification>
- *  !! TODO:
- *  !! The ADQL draft does not have <general_value_specification>
- *  !! Investigate.
+ *  !! ADQL Note:
+ *  !! The draft spec does not have <general_value_specification>
  * bnf-end
  *
  */
@@ -4634,7 +4637,8 @@ void value_expression_A() #ValueExpression :
  * <variable_specification> ::=
  *     <dollar> <left_brace> <regular_identifier> <right_brace>
  *   | VAR <regular_identifier>
- *  !! TODO:
+ *  !! ADQL Note:
+ *  !! Not in the draft spec.
  *  !! Part of an ADQL experiment to specify symbolic scripting variables.
  * bnf-end
  *
@@ -4688,6 +4692,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.34  2007/07/30 09:03:47  jl99
+BNF tidy
+
 Revision 1.33  2007/07/29 11:27:27  jl99
 User defined function calls accommodated with metadata
 
