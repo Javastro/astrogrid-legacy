@@ -96,8 +96,7 @@ public class AdqlCompiler {
 //    }
 //    public static HashMap ImplicitNamespaces = new HashMap() ;
 //    static {
-//        ImplicitNamespaces.put( "adql", "urn:astrogrid:schema:ADQL:v2.0" ) ;
-////        ImplicitNamespaces.put( "urn", "urn:astrogrid:schema:ADQL:v2.0" ) ;
+//        // ImplicitNamespaces.put( "xsi", "http://www.w3.org/2001/XMLSchema-instance" ) ;       
 //    }
 //    
 //    public static HashMap SubstituteNamespaces = new HashMap() ;
@@ -358,11 +357,7 @@ public class AdqlCompiler {
                 selectNode.writeComment( selectDoc ) ;
             }
 			if( DETAILED_DEBUG_PRINT_ENABLED ) {
-				XmlOptions opts = new XmlOptions();
-		        opts.setSaveOuter() ;
-		        opts.setSaveAggressiveNamespaces() ;
-		        opts.setSavePrettyPrint() ;
-		        opts.setSavePrettyPrintIndent( prettyPrintIndent ) ;
+				XmlOptions opts = getSaveOptions( true ) ; ;
                               
                 // Create an error listener.
                 ArrayList errorList = new ArrayList() ;
@@ -393,6 +388,19 @@ public class AdqlCompiler {
             if( log.isTraceEnabled() ) exitTrace( "exec()" ) ;
 		}
 	} 
+    
+    private XmlOptions getSaveOptions( boolean prettyPrint ) {
+        XmlOptions opts = new XmlOptions();
+        opts.setSaveOuter() ;
+//        opts.setSaveImplicitNamespaces( ImplicitNamespaces ) ;
+        opts.setSaveNamespacesFirst() ;
+        opts.setSaveAggressiveNamespaces() ;
+        if( prettyPrint ) {     
+           opts.setSavePrettyPrint() ;
+           opts.setSavePrettyPrintIndent( prettyPrintIndent ) ; 
+        }
+        return opts ;
+    }
 	
 	private void logReportOnErrors( XmlObject xmlObject ) {
 		 ArrayList list = parser.tracker.getErrors() ;
@@ -415,11 +423,7 @@ public class AdqlCompiler {
              log.debug( buffer.toString() ) ;
 	     }
          if( xmlObject != null ) {
-             XmlOptions opts = new XmlOptions();
-                opts.setSaveOuter() ;
-                opts.setSaveAggressiveNamespaces() ;
-                opts.setSavePrettyPrint() ;
-                opts.setSavePrettyPrintIndent( prettyPrintIndent ) ;
+             XmlOptions opts = getSaveOptions( true ) ;
                 log.debug( "Compilation produced: " 
                          + xmlObject.xmlText(opts) ) ;
          }
@@ -431,15 +435,7 @@ public class AdqlCompiler {
 	}
 	
 	public String compileToXmlText( boolean prettyPrint ) throws AdqlException {
-		XmlOptions opts = new XmlOptions();
-		opts.setSaveOuter() ;
-//        opts.setSaveSuggestedPrefixes( SchemaPrefixes ) ;
-        opts.setSaveNamespacesFirst() ;
-        opts.setSaveAggressiveNamespaces() ;
-		if( prettyPrint ) {		
-		   opts.setSavePrettyPrint() ;
-		   opts.setSavePrettyPrintIndent( prettyPrintIndent ) ; 
-		}
+        XmlOptions opts = getSaveOptions( prettyPrint ) ;
 		return exec().xmlText(opts) ; 
 	}
 	
@@ -453,14 +449,7 @@ public class AdqlCompiler {
 	
 	public String compileFragmentToXmlText( String contextPath
 	                                      , boolean prettyPrint ) throws AdqlException {
-		XmlOptions opts = new XmlOptions();
-	    opts.setSaveOuter() ;
-        opts.setSaveAggressiveNamespaces() ;
-//        opts.setSaveSuggestedPrefixes( SchemaPrefixes ) ;
-		if( prettyPrint ) {
-		   opts.setSavePrettyPrint() ;
-		   opts.setSavePrettyPrintIndent( prettyPrintIndent ) ;
-		}
+        XmlOptions opts = getSaveOptions( prettyPrint ) ;
 		return execFragment( contextPath ).xmlText(opts) ; 
 	}
 	

@@ -23,34 +23,31 @@
     <xsl:param name="v2NS" select="'http://www.ivoa.net/xml/v2.0/adql'" />
     <xsl:param name="xsiNS" select="'http://www.w3.org/2001/XMLSchema-instance'"/>
     
-	<!-- the root template -->
-	
-    <xsl:template match="/">
-	       <xsl:apply-templates select="*"/>
-	</xsl:template>
-	
 	<xsl:template match="node()">
-		<xsl:if test="namespace-uri() = $v1NS" >
-			<xsl:element name="{$v2Prefix}:{local-name()}" namespace="{$v2NS}">
-			   	<xsl:for-each select="@*">
-			   	    <xsl:choose>
-			   	    	<xsl:when test="namespace-uri() = $xsiNS">			   	    	   
-			   	    		<xsl:call-template name="attribute-schema-instance" />
-			   	    	</xsl:when>
-			   	    	<xsl:otherwise>
-			   	    		<!-- xsl:attribute name="{local-name()}" namespace="{$v2NS}" -->
-			   	    		<xsl:attribute name="{local-name()}" >
-			   	    			<xsl:value-of select="." />
-			   	    		</xsl:attribute>
-			   	    	</xsl:otherwise>
-			   	    </xsl:choose>
-			   	</xsl:for-each>									
-				<xsl:apply-templates select="*"/>
-			</xsl:element>
-		</xsl:if>
-	</xsl:template>
-	
-	<xsl:template name="attribute-schema-instance">
+        <xsl:copy>
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:copy>
+    </xsl:template>
+    
+    <xsl:template match="*">
+        <xsl:element name="{$v2Prefix}:{local-name()}" namespace="{$v2NS}">
+			 <xsl:for-each select="@*">
+			      <xsl:choose>
+				      <xsl:when test="namespace-uri() = $xsiNS">			   	    	   
+				   	      <xsl:call-template name="attribute-schema-instance" />
+				   	  </xsl:when>
+				   	  <xsl:otherwise>
+				   	      <xsl:attribute name="{local-name()}" >
+				   	    	  <xsl:value-of select="." />
+				   	      </xsl:attribute>
+				   	  </xsl:otherwise>
+				  </xsl:choose>
+		 	</xsl:for-each>									
+			<xsl:apply-templates select="node()"/>
+		</xsl:element>                
+    </xsl:template>
+    
+    <xsl:template name="attribute-schema-instance">
 		<xsl:attribute name="{local-name()}" namespace="{$xsiNS}">
 			<xsl:choose>
 			    <xsl:when test="substring-after( . , ':' ) = 'jointTableQualifierType'">

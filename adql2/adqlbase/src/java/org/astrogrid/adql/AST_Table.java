@@ -22,7 +22,14 @@ public class AST_Table extends SimpleNode {
     public void buildXmlTree( XmlObject ftt ) { 
         if( log.isTraceEnabled() ) enterTrace( log, "AST_Table.buildXmlTree()" ) ;
 
-        if( children[0] instanceof AST_TableName ) {
+        int childCount = jjtGetNumChildren() ;
+        if( childCount == 0 ) {
+          //
+          // This is just a safety first measure.
+          // It should fail somewhere else, but without a NullPointerException
+            setGeneratedObject( TableType.Factory.newInstance() ) ;
+        }
+        else if( children[0] instanceof AST_TableName ) {
             TableType tt = (TableType)ftt.changeType( TableType.type ) ;           
             ArrayList dotQualifications = (ArrayList) children[0].getGeneratedObject() ;
             String[] names = new String[ dotQualifications.size() ] ;
@@ -38,7 +45,7 @@ public class AST_Table extends SimpleNode {
                     tt.setCatalog( names[names.length - (i+1) ] ) ;
                 }
             }
-            if( jjtGetNumChildren() > 1 ) {
+            if( childCount > 1 ) {
                 tt.setAlias( (String)children[1].getGeneratedObject() ) ;
             }
             setGeneratedObject( tt ) ;    
@@ -60,51 +67,5 @@ public class AST_Table extends SimpleNode {
         if( log.isTraceEnabled() ) exitTrace( log, "AST_Table.buildXmlTree()" ) ; 
     }
     
-//    public void _buildXmlTree( XmlObject ftt ) { 
-//        if( log.isTraceEnabled() ) enterTrace( log, "AST_Table.buildXmlTree()" ) ;
-//        //  joined_table_S()
-//        //  |
-//        //  ( table_name_A() [ [ <AS> ] correlation_name_S() ] )
-//        int childCount = jjtGetNumChildren() ;
-//        try {
-//            // This is just a safety first measure.
-//            // It should fail somewhere else, but without a NullPointerException
-//            if( childCount == 0 ) {
-//                setGeneratedObject( TableType.Factory.newInstance() ) ;
-//            }   
-//            else if( children[0] instanceof AST_QualifiedJoin ) {
-//                // This bit deals with joined_table...  
-//                children[0].buildXmlTree( ftt ) ;
-//                setGeneratedObject( children[0].getGeneratedObject() ) ;
-//            }
-//            else {
-//                // We have a table, maybe with schema and maybe with alias...
-//                // Complicated possibly by error recovery providing non-standard
-//                // number of children! ...
-//                TableType tt = (TableType)ftt.changeType( TableType.type ) ;
-//                for( int i=0; i<childCount; i++ ) {
-//                    if( children[i] instanceof AST_SchemaName ) {
-//                        tt.setArchive( (String)children[0].getGeneratedObject() ) ;
-//                    }
-//                    else if( children[i] instanceof AST_TableName ) {
-//                        tt.setName( (String)children[i].getGeneratedObject() ) ;
-//                    }
-//                    else if( children[i] instanceof AST_CorrelationName ) {
-//                        tt.setAlias( (String)children[i].getGeneratedObject() ) ;
-//                    }
-//                    else {
-//                        log.warn( "Unrecognized table naming structure." ) ;
-//                    }                   
-//                }
-//                setGeneratedObject( tt ) ;
-//            } 
-//            super.buildXmlTree( (XmlObject)this.generatedObject ) ;
-//        }
-//        finally {
-//            if( log.isTraceEnabled() ) exitTrace( log, "AST_Table.buildXmlTree()" ) ; 
-//        }
-//
-//    }
-
 }
 

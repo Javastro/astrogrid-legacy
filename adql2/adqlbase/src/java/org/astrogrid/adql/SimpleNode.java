@@ -178,7 +178,9 @@ public void writeComment( XmlObject parent ) {
         do {
             if( cursor.isStart() ) {
                 xo = cursor.getObject() ; 
-                log.debug( xo.schemaType().getName().getLocalPart() + ": " + xo.toString() ) ;
+                if( log.isDebugEnabled() && !xo.schemaType().isAnonymousType() ) {
+                    log.debug( xo.schemaType().getName().getLocalPart() + ": " + xo.toString() ) ;
+                }
                 if( xo == go ) {
                     cursor.insertComment( SimpleNode.prepareComment( comment ) ) ; 
                     break ;
