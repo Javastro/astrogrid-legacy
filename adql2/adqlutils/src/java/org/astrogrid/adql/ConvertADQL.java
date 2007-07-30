@@ -45,7 +45,7 @@ public class ConvertADQL {
          "http://www.ivoa.net/xml/ADQL/v0.7.4",          
          "http://www.ivoa.net/xml/ADQL/v0.8",
          "http://www.ivoa.net/xml/ADQL/v0.9",
-         "http://www.ivoa.net/xml/ADQL/v1.0",         
+         "http://www.ivoa.net/xml/ADQL/v1.0",  
          "urn:astrogrid:schema:ADQL:v1.0a1" 
      } ;
     
@@ -111,7 +111,7 @@ public class ConvertADQL {
      }
      
      public static boolean isConvertible( String query ) {
-         return null == getCovertibleNameSpace( query ) ;
+         return getCovertibleNameSpace( query ) != null ;
      }
     
      public static void main(String args[]) {
