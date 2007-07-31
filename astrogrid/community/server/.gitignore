@@ -1,8 +1,10 @@
-.project
-.classpath
-target
-build.properties
+.DS_Store
 maven.log
-server-config.wsdd
-
+.classpath
+velocity.log
 junit*.properties
+target
+server-config.wsdd
+build.properties
+.project
+

@@ -489,28 +489,19 @@ public class CertificateAuthority {
     assert this.caKeyFile != null;
     assert this.caKeyFile.exists();
     
-    // Try to make a PKCS#12 key-store from the CA's key and certificate, but
-    // don't bother to store the result to disc. The key-store can only be
-    // created if the key file can be read with the passphrase, so the call
-    // to Openssl will return errors if the passphrase is no good. This operation
-    // also checks that the keyt matches the certificate.
+    // Check the CA's private key using the openssl rsa command.
+    // This forces use of the passphrase.
     String ckp = this.caKeyFile.getAbsolutePath();
-    String ccp = this.caCertificateFile.getAbsolutePath();
-    String[] signCommand = {
+    String[] rsaCommand = {
         "openssl",    // Invoke openssl
-        "pkcs12",     // Use the PKCS#12 command...
-        "-export",    // ...to make a key-store...
-        "-noout",     // ...but not to save it to disc.
-        "-in",        // Get the certificate...
-        ccp,          // ...from this PEM file.
-        "-inkey",     // ...and the CA private key...
-        ckp,          // ...from this file.
+        "rsa",        // Use the RSA command...
+        "-check",     // ...to check the private key.
+        "-in",        // Get the private key...
+        ckp,          // ...from this PEM file.
         "-passin",    // Read the passphrase for the CA key...
         "stdin",      // ...from standard input.
-        "-passout",   // Make the password for the key-store
-        "pass:foo"    // ...the string "foo".     
-    };
-    this.runCommandWithStdinPassword(signCommand, this.caKeyPassphrase); 
+    };    
+    this.runCommandWithStdinPassword(rsaCommand, this.caKeyPassphrase); 
     
     
   }

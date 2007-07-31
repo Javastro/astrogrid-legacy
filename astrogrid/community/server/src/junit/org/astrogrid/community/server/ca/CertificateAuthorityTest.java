@@ -65,6 +65,40 @@ public class CertificateAuthorityTest extends TestCase {
   public void testGenerateCa() throws Exception {
     String rootDn = "/O=foo/OU=bar";
     String password = "fubar";
+    
+    File keyFile = this.createFreshFile("ca.key");
+    assertNotNull("Key file-name was generated", keyFile);
+    
+    File certificateFile = this.createFreshFile("ca.crt");
+    assertNotNull("Certificate file-name was generated", certificateFile);
+    System.out.println(keyFile.getAbsolutePath());
+    
+    File serialFile = this.createFreshFile("ca.srl");
+    assertNotNull("Serial file-name was generated", serialFile);
+    System.out.println(certificateFile.getAbsolutePath());
+    
+    File myProxyDirectory = new File("/opt/globus4.0.2/var/myproxy");
+    assertNotNull(myProxyDirectory);
+    CertificateAuthority instance = 
+        new CertificateAuthority(rootDn,
+                                 password,
+                                 keyFile,
+                                 certificateFile,
+                                 serialFile,
+                                 myProxyDirectory);
+    assertTrue("Key file should exist", keyFile.exists());
+    assertTrue("Certificate file should exist", certificateFile.exists());
+    assertTrue("Serial file should exist", serialFile.exists());
+  }
+  
+  /**
+   * Tests the generation of a CA object from existing credentials.
+   */
+  public void testReuseCa() throws Exception {
+    
+    // Create a CA with new cerdentials.
+    String rootDn = "/O=foo/OU=bar";
+    String password = "fubar";
     File keyFile = this.createFreshFile("ca.key");
     File certificateFile = this.createFreshFile("ca.crt");
     File serialFile = this.createFreshFile("ca.srl");
@@ -76,18 +110,65 @@ public class CertificateAuthorityTest extends TestCase {
                                  certificateFile,
                                  serialFile,
                                  myProxyDirectory);
-    assertFalse(keyFile.exists());
-    assertFalse(certificateFile.exists());
-    instance.generateCa();
-    assertTrue(keyFile.exists());
-    assertTrue(certificateFile.exists());
+    
+    // Create another CA using the same credentials from file.
+    CertificateAuthority sut = 
+        new CertificateAuthority(password,
+                                 keyFile,
+                                 certificateFile,
+                                 serialFile,
+                                 myProxyDirectory);
+    assertNotNull("CA was recovered from files", sut);
   }
   
+  /**
+   * Tests the generation of a CA object from existing credentials,
+   * but with an incorrect password.
+   */
+  public void testReuseCaBadPassword() throws Exception {
+    
+    // Create a CA with new cerdentials.
+    String rootDn = "/O=foo/OU=bar";
+    String password = "fubar";
+    File keyFile = this.createFreshFile("ca.key");
+    File certificateFile = this.createFreshFile("ca.crt");
+    File serialFile = this.createFreshFile("ca.srl");
+    File myProxyDirectory = new File("/opt/globus4.0.2/var/myproxy");
+    CertificateAuthority instance = 
+        new CertificateAuthority(rootDn,
+                                 password,
+                                 keyFile,
+                                 certificateFile,
+                                 serialFile,
+                                 myProxyDirectory);
+    
+    // Create another CA using the same credentials from file.
+    try {
+      CertificateAuthority sut = 
+          new CertificateAuthority("wrong",
+                                   keyFile,
+                                   certificateFile,
+                                   serialFile,
+                                   myProxyDirectory);
+      fail("CA object should not be obtained with a bad password.");
+    }
+    catch (Exception e) {
+      // Expected.
+    }
+  }
+  
+  /**
+   * Creates a File object for a file that does not yet exist.
+   * Deletes any file with that name.
+   */
   private File createFreshFile(String fileName) throws Exception {
     File f = new File(fileName);
     if (f.exists()) {
       f.delete();
     }
+   if (f.exists()) {
+      throw new Exception("Failed to delete " + fileName);
+   }
     return f;
   }
 

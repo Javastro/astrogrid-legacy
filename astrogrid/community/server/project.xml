@@ -2,11 +2,17 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/Attic/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: kea $</cvs:author>
-    | <cvs:date>$Date: 2006/06/16 16:08:42 $</cvs:date>
-    | <cvs:version>$Revision: 1.23 $</cvs:version>
+    | <cvs:author>$Author: clq2 $</cvs:author>
+    | <cvs:date>$Date: 2007/07/31 10:13:30 $</cvs:date>
+    | <cvs:version>$Revision: 1.24 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.24  2007/07/31 10:13:30  clq2
+    |   gtr-community-2258
+    |
+    |   Revision 1.23.16.1  2007/07/30 11:06:40  gtr
+    |   I arranged for the missing test-cases to be run.
+    |
     |   Revision 1.23  2006/06/16 16:08:42  kea
     |   Changing dependency on astrogrid-pal-query to astrogrid-pal-oldquery.
     |
@@ -291,20 +297,12 @@
             | Our JUnit test classes.
             +-->
         <unitTest>
-            <!--+
-                | Which tests to include.
             <includes>
-                <include>**/*Test.java</include>
+              <include>**/*Test.java</include>
+              <include>**/*TestCase.java</include>
             </includes>
-                +-->
-            <includes>
-                <include>**/*TestCase.java</include>
-            </includes>
-            <!--+
-                | Which tests to exclude.
-                +-->
             <excludes>
-                <exclude>**/*Test.frog</exclude>
+              <exclude>**/*Test.frog</exclude>
             </excludes>
             <!--+
                 | The resources for our tests.
