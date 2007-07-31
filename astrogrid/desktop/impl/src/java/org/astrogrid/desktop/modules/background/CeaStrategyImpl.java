@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.22 2007/07/31 11:26:43 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.23 2007/07/31 13:44:11 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -213,8 +213,18 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
             return results.size() == 0 ? l : results;
         }        
 		
-        public void refresh() {
-            execute();
+        /** not perfect - refreshes immediately, but inteacts badly with the shceduled task.
+         * would like to reset the scheduled task time, so that it runs immediately.
+         * but can't do that.
+         * instead, we run the refresh, and then the next time the scheduled task runs, the refresh-period
+         * will be set to SHORTEST - so that it runs soon the time after that.
+         * 
+         * however, this means that there might still be large pause between a refresh and the next 
+         * scheduled operation.
+         */
+        public void refresh() {            
+            runAgain = SHORTEST; // 
+            execute(false);
         }
         
 		public void halt() throws NotFoundException, InvalidArgumentException,
@@ -238,21 +248,35 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 		public static final double FACTOR = 2; // double every time
 		
 		/** increase the time before running again */
-		private void standOff() {
-            runAgain = Math.min(LONGEST,Math.round(runAgain*FACTOR));
-            int secs = (int)runAgain / 1000;
-            int mins = secs / 60; 
-            info("Will check again in " + (secs < 120 ? secs + " seconds" : mins + " minutes" ));
+		private void standOff(boolean increaseStandoff) {
+		    if (increaseStandoff) {
+		        runAgain = Math.min(LONGEST,Math.round(runAgain*FACTOR));
+		        int secs = (int)runAgain / 1000;
+		        int mins = secs / 60; 
+		        info("No change: will re-check in " + (secs < 120 ? secs + " seconds" : mins + " minutes" ));
+		    } else {
+		        info("No change");
+		    }
 		}
 		
 		public DelayedContinuation execute() {
+		    return execute(true);
+		}
+		
+		/** do a poll, and if increaseStandoff=true, increate the standoff value if nothing has happended */
+		public DelayedContinuation execute(boolean increaseStandoff) {
+		    if (getStatus().equals(ExecutionInformation.ERROR) 
+                    ||getStatus().equals(ExecutionInformation.COMPLETED)) {
+		        // we're done already (probably by an intermediate refresh..)
+		        return null; // halts the progress checking.
+		    }
 			try {
 			    info("Checking progress");
 				MessageType qes = delegate.queryExecutionStatus(ceaid);
 				String newStatus = qes.getPhase().toString(); 
 
 				if  (getStatus().equals(newStatus)) { // nothing changed.
-					standOff();
+					standOff(increaseStandoff);
 					return this;
 				}
 
@@ -291,8 +315,8 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 					}
 				}
 				return this;
-			} catch (CEADelegateException x) {
-			    standOff();
+			} catch (Throwable x) {
+			    standOff(increaseStandoff);
 			    warn("Failed: " + x.getMessage());
 				return this;
 			}
@@ -531,6 +555,9 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.23  2007/07/31 13:44:11  nw
+Complete - task 128: Fix refresh
+
 Revision 1.22  2007/07/31 11:26:43  nw
 Complete - task 107: Polish Execution Tracker
 
