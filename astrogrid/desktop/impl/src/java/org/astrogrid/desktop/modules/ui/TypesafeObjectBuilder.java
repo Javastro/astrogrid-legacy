@@ -13,6 +13,7 @@ import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.modules.adqlEditor.ADQLEditorPanel;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
+import org.astrogrid.desktop.modules.ui.comp.DecSexToggle;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileExplorerImpl;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileModel;
@@ -27,6 +28,7 @@ import org.astrogrid.desktop.modules.ui.taskrunner.LargeTextFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.LooselyFormattedFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.OutputFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.PositionFormElement;
+import org.astrogrid.desktop.modules.ui.taskrunner.RadiusFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.TaskParametersForm;
 import org.astrogrid.desktop.modules.ui.taskrunner.TaskRunnerImpl;
 import org.astrogrid.desktop.modules.ui.taskrunner.TextFormElement;
@@ -86,6 +88,11 @@ public interface TypesafeObjectBuilder {
     OutputFormElement createOutputFormElement(ParameterValue pv,ParameterBean pb);
     PositionFormElement createPositionFormElement(ParameterValue ra, ParameterBean raDesc,ParameterValue dec, ParameterBean decDesc, UIComponent parent);
     AdqlTextFormElement createAdqlTextFormElement(ParameterValue pv,ParameterBean pb, CeaApplication app,UIComponent parent);
+    public RadiusFormElement createRadiusFormElement(ParameterValue radius,
+            ParameterBean radiusDesc);
+    
+    public RadiusFormElement createRadiusFormElement(ParameterValue radius,
+            ParameterBean radiusDesc, DecSexToggle toggle);
 
 // file view components.
     FileModel createFileModel(SortedList files,ActivitiesManager activities,VFSOperations ops);
@@ -95,6 +102,8 @@ public interface TypesafeObjectBuilder {
     //
     // access the core object builder
     public ObjectBuilder getObjectBuilder();
+
+
     
     
     

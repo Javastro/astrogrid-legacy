@@ -36,6 +36,7 @@ public class LooselyFormattedFormElement extends AbstractTaskFormElement impleme
 	public LooselyFormattedFormElement(ParameterValue pval, ParameterBean pdesc,Format format,ResourceChooserInternal chooser) {
 		super(pval, pdesc,chooser);
 		this.format = format;
+		disableIndirect(); // never allow indirectionn for these primitive types.
 	}
 
 	protected final JComponent createEditor() {

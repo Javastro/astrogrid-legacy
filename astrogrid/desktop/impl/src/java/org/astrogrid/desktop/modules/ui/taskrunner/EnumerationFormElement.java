@@ -24,6 +24,7 @@ public class EnumerationFormElement extends AbstractTaskFormElement {
 	 */
 	public EnumerationFormElement(ParameterValue pval, ParameterBean pdesc, ResourceChooserInternal chooser) {
 		super(pval, pdesc,chooser);
+		disableIndirect();
 	}
 
 	protected JComponent createEditor() {

@@ -23,6 +23,7 @@ import java.net.URI;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -498,15 +499,33 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 
 	// callback to display help in infoPane.
 	public void mouseEntered(MouseEvent e) {
+	    System.out.println(e.getSource().getClass().getName());
 		JComponent comp = (JComponent)e.getSource();
 		if (comp == trackerPanel) {
-		    logger.debug("tracker panel");
 		    bottomFlipPanel.show(TASKS);
 		} else {
 		    bottomFlipPanel.show(INFORMATION);
 		}
-		AbstractTaskFormElement t = (AbstractTaskFormElement)comp.getClientProperty(AbstractTaskFormElement.class);
-		if (t != null) {
+		if (! pinnedHelp) {
+	      AbstractTaskFormElement t = (AbstractTaskFormElement)comp.getClientProperty(AbstractTaskFormElement.class);
+		    displayParameterHelp(t);
+		}
+		//else {
+		    /** dunno if I want to display this -- too cramped.
+			Resource resource = pForm.getCurrentResource();
+			// show defalt information.
+			infoPane.display(resource);
+			*/
+		//}
+	}
+	
+	private boolean pinnedHelp = false;
+	
+    /** show help for a parameter.
+     * @param comp
+     */
+    private void displayParameterHelp(AbstractTaskFormElement t) {
+  		if (t != null) {
 			HtmlBuilder sb = new HtmlBuilder();
 			sb.append("<html><body>");
 			final ParameterBean d = t.getDescription();
@@ -524,16 +543,21 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 			sb.append("</body></html>");
 			infoPane.setText(sb.toString());
 			infoPane.setCaretPosition(0);
-		} else {
-			Resource resource = pForm.getCurrentResource();
-			// show defalt information.
-			infoPane.display(resource);
 		}
-	}
+    }
 // these mouse events ignored.
 	public void mouseClicked(MouseEvent e) {
+	    JComponent comp = (JComponent)e.getSource();
+        AbstractTaskFormElement t = (AbstractTaskFormElement)comp.getClientProperty(AbstractTaskFormElement.class);
+        if (t != null && comp.equals(t.getLabel())) {
+            pinnedHelp = !pinnedHelp; // pin if was previously unpinned, and vise-versa
+            t.getLabel().setIcon(pinnedHelp ? PIN_ICON : null);
+            displayParameterHelp(t);
+        }
 	}
 
+	private static final Icon PIN_ICON = IconHelper.loadIcon("pin16.gif");
+	
 	public void mouseExited(MouseEvent e) {
 	}
 

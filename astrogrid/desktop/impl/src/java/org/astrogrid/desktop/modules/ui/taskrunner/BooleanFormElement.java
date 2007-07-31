@@ -25,6 +25,7 @@ public class BooleanFormElement extends AbstractTaskFormElement {
 	 */
 	public BooleanFormElement(ParameterValue pval, ParameterBean pdesc, ResourceChooserInternal fileChooser) {
 		super(pval, pdesc,fileChooser);
+		disableIndirect();
 	}
 
 	

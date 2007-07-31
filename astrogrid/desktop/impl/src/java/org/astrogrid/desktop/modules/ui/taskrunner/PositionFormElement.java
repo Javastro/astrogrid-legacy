@@ -44,6 +44,7 @@ public class PositionFormElement extends AbstractTaskFormElement implements Prop
     private final ParameterValue ra;
     private final ParameterBean raDesc;
     private NameResolvingPositionTextField positionField;
+    private DecSexToggle toggle;
 
     public PositionFormElement(ParameterValue ra, ParameterBean raDesc, ParameterValue dec, ParameterBean decDesc,  UIComponent parent,ResourceChooserInternal chooser, Sesame ses) {
         super(ra /*ignored*/,new CompositeParameterBean(raDesc,decDesc)
@@ -55,10 +56,7 @@ public class PositionFormElement extends AbstractTaskFormElement implements Prop
         this.parent = parent;
         this.ses = ses;
 
-        //make sure we just show direct mode.
-        getEditor().show(DIRECT);
-        indirectToggle.setEnabled(false);
-        indirectToggle.setVisible(false);
+           disableIndirect();
     }
 
     protected JComponent createEditor() {
@@ -72,11 +70,10 @@ public class PositionFormElement extends AbstractTaskFormElement implements Prop
         logger.debug("ra :" + ra.getValue());
         logger.debug("dec:" + dec.getValue());        
 
-
         positionField = new NameResolvingPositionTextField(parent,ses);
         positionField.addPropertyChangeListener("value",this);
-        DecSexToggle t = new DecSexToggle();
-        t.addListener(positionField);
+        toggle = new DecSexToggle();
+        toggle.addListener(positionField);
         try {
             positionField.setPosition(ra.getValue() + "," + dec.getValue());
         } catch (ParseException x) {
@@ -85,9 +82,8 @@ public class PositionFormElement extends AbstractTaskFormElement implements Prop
 
         Box p = Box.createVerticalBox();
         p.add(positionField);
-        p.add(t.getDegreesRadio());
-        p.add(t.getSexaRadio());
-
+        p.add(toggle.getDegreesRadio());
+        p.add(toggle.getSexaRadio());
         return p;
     }
 
@@ -98,8 +94,6 @@ public class PositionFormElement extends AbstractTaskFormElement implements Prop
     protected String getStringValue() {
         throw new RuntimeException("unimplemented - as should never be called");
     }
-
-
 
     // copy contents of position field back into ra and dec.
     public void updateParameters() {
@@ -132,6 +126,13 @@ public class PositionFormElement extends AbstractTaskFormElement implements Prop
                     ,raDesc.getOptions() // unused
             );
         }
+    }
+
+    /**
+     * @return the toggle
+     */
+    public final DecSexToggle getToggle() {
+        return this.toggle;
     }
 
 

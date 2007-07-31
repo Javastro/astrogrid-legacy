@@ -276,50 +276,66 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 		ParameterValue[] pvals = tool.getInput().getParameter();
 		// handle special cases first
 		// check for RA,DEC like parameters. a bit tricky.
+		// and 'Radius' like parameters.
 		// at the same time, check for a single ADQL parameter too.
 		ParameterValue ra = null;
 		ParameterValue dec = null;
 		ParameterValue adql = null;
-		for (int i = 0; i < pvals.length; i++) {
+		ParameterValue radius = null;
+		for (int i = 0; i < pvals.length; i++) { // only looking through mandatory parameters.
 			final ParameterValue pv = pvals[i];
 			final ParameterBean pb = (ParameterBean)descriptions.get(pv.getName());
+			ParameterReferenceBean ref = (ParameterReferenceBean)refs.get(pv.getName());
+			if (ref.getMax() != 1) {
+			    continue; // don't handle repeated params. too fiddly.
+			}
 			if (pb.getType().equalsIgnoreCase("ra") 
 					|| "POS_EQ_RA_MAIN".equals(pb.getUcd())
 					|| "POS_RA_MAIN".equals(pb.getUcd())
 					|| pb.getName().equalsIgnoreCase("RA")        
 					) {
-				// check it's not a repeating or fiddly thing thing like that. - too complex.
-				ParameterReferenceBean ref = (ParameterReferenceBean)refs.get(pv.getName());
-				if (ref.getMax() == 1 && ref.getMin() == 1) {
 					ra = pv;
-				}
-			}
-			if (pb.getType().equalsIgnoreCase("dec") 
+			} else if (pb.getType().equalsIgnoreCase("dec") 
                     || "POS_EQ_DEC_MAIN".equals(pb.getUcd())
                     || "POS_DEC_MAIN".equals(pb.getUcd())
                     || pb.getName().equalsIgnoreCase("DEC")    			        
                     ){
-				ParameterReferenceBean ref = (ParameterReferenceBean)refs.get(pv.getName());
-				if (ref.getMax() == 1 && ref.getMin() == 1) {
 					dec = pv;
-				}
-			}			
-			if (pb.getType().equalsIgnoreCase("adql")) {
+			} else 	if ("PHYS_SIZE_RADIUS".equals(pb.getUcd())
+			        || pb.getName().equalsIgnoreCase("radius")) {
+			    radius = pv;
+			} else 	if (pb.getType().equalsIgnoreCase("adql")) {
 				adql = pv;
 			}
-		}
-		if (ra != null && dec != null) { // good - found both.
+		}// end of scanning loop.
+		
+		// check if we found enough for a Position element
+		PositionFormElement posForm = null;
+		if (ra != null && dec != null) { // good - found a position
 			ParameterBean raDesc = (ParameterBean)descriptions.get(ra.getName());
 			ParameterBean decDesc = (ParameterBean)descriptions.get(dec.getName());
 
-			final PositionFormElement posForm = builder.createPositionFormElement(ra,raDesc,dec,decDesc,parent);
-			posForm.getLabel().addMouseListener(hoverListener);
+			posForm = builder.createPositionFormElement(ra,raDesc,dec,decDesc,parent);
+			posForm.addMouseListener(hoverListener);
             inputElements.add(posForm);
 		} else {
-			// still might have found one - reset it, so it's not lost at the next step.
+			// still might have found one of these - reset it, so it's not lost at the next step.
 			ra = null;
 			dec = null;
 		}
+		
+		if (radius != null) {// found a radius. 
+		    ParameterBean radiusDesc = (ParameterBean)descriptions.get(radius.getName());
+		    RadiusFormElement radForm;
+		    if (posForm == null) { // ok, no associated position
+		        radForm = builder.createRadiusFormElement(radius,radiusDesc);
+		    } else {
+                radForm = builder.createRadiusFormElement(radius,radiusDesc,posForm.getToggle());		        
+		    }
+		    radForm.addMouseListener(hoverListener);
+		    inputElements.add(radForm);
+		}
+		
 		if (adql != null) {
 			// create a custom form element for this.
 			ParameterBean adqlDesc = (ParameterBean)descriptions.get(adql.getName());
@@ -334,7 +350,7 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 			final ExpandCollapseButton ep = new ExpandCollapseButton(bottomPanel);
 			ep.setToolTipText("Open full editor for this parameter");
 			adqlElement.setOptionalButton(ep);
-			adqlElement.getLabel().addMouseListener(hoverListener);
+			adqlElement.addMouseListener(hoverListener);
 			// ep already shows / hides the fiull editor. now just need to make it do the same with the standard editor
 			ep.addActionListener(new ActionListener() {			
 				public void actionPerformed(ActionEvent e) {
@@ -347,7 +363,7 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 		// process the rest of the parameters.
 		for (int i = 0; i < pvals.length; i++) {
 			final ParameterValue pv = pvals[i];
-			if (pv == ra || pv == dec || pv == adql) {
+			if (pv == ra || pv == dec || pv == adql || pv == radius) {
 				continue; // already handled these ones.
 			}
 			AbstractTaskFormElement el = createInputFormElement(pv,(ParameterBean)descriptions.get(pv.getName()));
@@ -437,7 +453,7 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 		} else {
 			el =  builder.createTextFormElement(value,desc);
 		}
-		el.getLabel().addMouseListener(hoverListener);
+		el.addMouseListener(hoverListener);
 		//el.getEditor().addMouseListener(hoverListener); // doesn't work with it's children.
 		return el;
 	}
@@ -449,8 +465,7 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 	 */
 	private AbstractTaskFormElement createOutputFormElement(ParameterValue value, ParameterBean desc) {
 		AbstractTaskFormElement el = builder.createOutputFormElement(value,desc);
-		el.getLabel().addMouseListener(hoverListener);
-	//	el.getEditor().addMouseListener(hoverListener);
+		el.addMouseListener(hoverListener);
 		return el;		
 	}
 	/** helper method - temporarily create a map of the parameter descritpions - makes it 
@@ -689,8 +704,8 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 
 	private static class ElementFormat extends JEventListPanel.AbstractFormat {
 		public ElementFormat() {
-			super("top:d,1px,d" ,"22px,fill:60dlu:grow,6dlu,22px,22px,22px","4dlu","0dlu"
-					,new String[]{"2,1,5,1","2,3","4,3","5,3","6,3","1,1,1,3"});
+			super("top:d,d" ,"22px,fill:60dlu:grow,6dlu,22px,22px,22px","4dlu","0dlu"
+					,new String[]{"2,1,5,1","2,2","4,2","5,2","6,2","1,1,1,2"});
 		}
 		public JComponent getComponent(Object o, int ix) {
 			if (o instanceof JComponent) {
@@ -702,7 +717,7 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 				case 0:
 					return e.getLabel();
 				case 1:
-					return e.getEditor();
+				    return e.getEditor();
 				case 2:
 					return e.getIndirectToggle();
 				case 3:

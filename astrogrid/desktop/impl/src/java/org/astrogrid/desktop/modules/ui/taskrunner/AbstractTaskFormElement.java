@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseListener;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +22,8 @@ import java.text.ParsePosition;
 
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -66,7 +69,7 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 	/** not final - so it can be lazily initialized if needed.
 	 do not refer to _editor directly - use getEditor() instead */
 	protected FlipPanel _editor;
-	protected final JPanel indirectPanel;
+	protected final Box indirectPanel;
 	protected final ResourceChooserInternal fileChooser;
 	protected JButton chooserButton;
 	protected boolean localFileEnabled = true;
@@ -75,8 +78,7 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 	protected AbstractButton addButton;
 	protected AbstractButton removeButton;
 	protected AbstractButton optionalButton;
-	
-	
+
 	public AbstractTaskFormElement(ParameterValue pval, ParameterBean pdesc, ResourceChooserInternal fileChooser) {
 		this.pval = pval;
 		this.pdesc = pdesc;
@@ -91,20 +93,32 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 		label = new JLabel(sb.toString());
 		associate(label);	
 
-		//@todo sort this so that the button doesn't get occulded on resize
-		FormLayout layout = new FormLayout("d,2dlu,fill:max(50dlu;pref):grow,2dlu,d","d");
-		CellConstraints cc = new CellConstraints();
-		PanelBuilder indirectBuilder = new PanelBuilder(layout);
-		indirectBuilder.addLabel("URL:",cc.xy(1,1));
+		indirectPanel = new javax.swing.Box(BoxLayout.X_AXIS);
+		indirectPanel.add(new JLabel("URL:"));
 		indirectField = new IndirectURIField();
-		indirectBuilder.add(indirectField,cc.xy(3,1));
-		chooserButton = new JButton("Browse..");
-		chooserButton.setToolTipText("Select a file");
-		chooserButton.addActionListener(this);
-		indirectBuilder.add(chooserButton,cc.xy(5,1));
-		indirectPanel = indirectBuilder.getPanel();
+		indirectPanel.add(indirectField);
+        chooserButton = new JButton("Browse..");
+        chooserButton.setToolTipText("Select a file");
+        chooserButton.addActionListener(this);
+        indirectPanel.add(chooserButton);
 	}
-		
+	
+	/** customization method, for use by subclasses
+	 * call tthis to disallow the 'indirect' function - this parameter will always be direct
+	 */
+	protected void disableIndirect() {
+        
+        //make sure we just show direct mode.
+        getEditor().show(DIRECT);
+        indirectToggle.setEnabled(false);
+        indirectToggle.setVisible(false);	    
+	}
+	
+	// register a listener of various components.
+	public void addMouseListener(MouseListener listener) {
+	    getLabel().addMouseListener(listener);
+	    getEditor().addMouseListener(listener);
+	}
 	
 	// callback from chooserButton.
 	public void actionPerformed(ActionEvent e) {
@@ -181,7 +195,6 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 		protected final Border original;
 		protected final Border warn;
 
-
 		public void insertUpdate(DocumentEvent e) {
 			update();
 		}
@@ -189,7 +202,7 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 		public void removeUpdate(DocumentEvent e) {
 			update();
 		}
-	}
+	}// end of indirect field.
 	
 	
 	/** subclasses should implement this */
@@ -266,9 +279,10 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 	    //lazily initialized, so that everything else can be setup in constructor of a subclass.
 	    if (this._editor == null) {
 	        _editor = new FlipPanel();
-	       // associate(_editor);
+	        // border around the editor is necessary to cause mouse-over effects to be triggered.
+	        _editor.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+	        associate(_editor);
 	        final JComponent comp = createEditor();
-	       // associate(comp);
             _editor.add(comp,DIRECT);	   
 	        
 	        _editor.add(indirectPanel,INDIRECT);
@@ -301,7 +315,9 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 	 */
 	public void setEnabled(boolean b) {
 		label.setEnabled(b);
-		indirectToggle.setVisible(b);
+		if (indirectToggle.isEnabled()) {
+		    indirectToggle.setVisible(b);
+		}
 		getEditor().setVisible(b);
 		if (addButton != null) { // no point allowing more to be added if this is disabled..
 			addButton.setVisible(b);

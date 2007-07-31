@@ -18,6 +18,7 @@ import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.hivemind.EventDispatchThreadObjectBuilder;
 import org.astrogrid.desktop.modules.adqlEditor.ADQLEditorPanel;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
+import org.astrogrid.desktop.modules.ui.comp.DecSexToggle;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileExplorerImpl;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileModel;
@@ -33,6 +34,7 @@ import org.astrogrid.desktop.modules.ui.taskrunner.LargeTextFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.LooselyFormattedFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.OutputFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.PositionFormElement;
+import org.astrogrid.desktop.modules.ui.taskrunner.RadiusFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.TaskParametersForm;
 import org.astrogrid.desktop.modules.ui.taskrunner.TaskRunnerImpl;
 import org.astrogrid.desktop.modules.ui.taskrunner.TextFormElement;
@@ -136,6 +138,18 @@ public class TypesafeObjectBuilderImpl extends EventDispatchThreadObjectBuilder 
             ParameterBean raDesc, ParameterValue dec, ParameterBean decDesc, UIComponent parent) {
         return (PositionFormElement)create("positionFormElement",new Object[]{ra,raDesc,dec,decDesc,parent});
     }
+    
+
+    public RadiusFormElement createRadiusFormElement(ParameterValue radius,
+            ParameterBean radiusDesc) {
+        return (RadiusFormElement)create("radiusFormElement",new Object[]{radius,radiusDesc});
+    }
+
+    public RadiusFormElement createRadiusFormElement(ParameterValue radius,
+            ParameterBean radiusDesc, DecSexToggle toggle) {
+        return (RadiusFormElement)create("radiusFormElementExternal",new Object[]{radius,radiusDesc,toggle});
+        
+    }
 
     public TextFormElement createTextFormElement(ParameterValue pv,
             ParameterBean pb) {
@@ -160,9 +174,6 @@ public class TypesafeObjectBuilderImpl extends EventDispatchThreadObjectBuilder 
             Current current) {
         return (VFSOperationsImpl)create("vfsOperations",new Object[]{parent,current});
     }
-    
-
-    
     
 
 }

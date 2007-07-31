@@ -15,8 +15,15 @@
 	</head>
 <body>
 <release version="2007.4.alpha2" date="unreleased">
+
+    <action dev="nw" type="fix" issue="2261">
+    Removed the 'load from storage' button for simple types -  boolean, enumeration, integer and float-like types.
+    Show a specialzed input for radius parameters - detected when name=Radius or ucd=PHYS_SIZE_RADIUS.
+    Added ability to 'pin' parameter help by clicking on the parameter heading. 
+    Made an effort to get parameter help to appear when mouse-overing input dialogues.
+    </action>
     <action dev="nw" type="fix" issue="2257">
-        Improved progress reporting of tasks.
+        Improved progress reporting of tasks - progress starts earlier, and shows more, more often.
     </action>
 </release>
 <release version="2007.4.alpha1" date="2007-07-26">

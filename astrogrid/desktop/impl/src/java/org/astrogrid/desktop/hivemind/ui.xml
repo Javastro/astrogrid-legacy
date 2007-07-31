@@ -307,6 +307,17 @@ ASTROSCOPE
             <inject object="service:dialogs.resourceChooser" />
             <inject object="service:cds.sesame" />
         </object>
+        <object name="radiusFormElement" class="org.astrogrid.desktop.modules.ui.taskrunner.RadiusFormElement">
+            <inject-arg />
+            <inject-arg />
+            <inject object="service:dialogs.resourceChooser" />
+        </object>
+        <object name="radiusFormElementExternal" class="org.astrogrid.desktop.modules.ui.taskrunner.RadiusFormElement">
+            <inject-arg />
+            <inject-arg />
+            <inject object="service:dialogs.resourceChooser" />
+            <inject-arg />
+        </object>
         <object name="adqlFormElement" class="org.astrogrid.desktop.modules.ui.taskrunner.AdqlTextFormElement">
             <inject-arg />
             <inject-arg />
