@@ -42,7 +42,7 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
 	public AbstractProcessMonitor() {
 		this.id = UNINITIALIZED;
 	}
-	public static final URI UNINITIALIZED = URI.create("uninitialized://");
+	public static final URI UNINITIALIZED = URI.create("uninitialized:/task/");
 	
 	public boolean started() {
 	    return id != UNINITIALIZED;
