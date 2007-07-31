@@ -5,6 +5,9 @@ package org.astrogrid.desktop.modules.ivoa.resource;
 
 import java.net.URI;
 
+import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.text.StrBuilder;
 import org.astrogrid.acr.ivoa.resource.ResourceName;
 
@@ -15,7 +18,7 @@ import org.astrogrid.acr.ivoa.resource.ResourceName;
 public class HtmlBuilder extends StrBuilder {
 
 	public HtmlBuilder() {
-		super();
+		super("<html>");
 	}
 
 	public HtmlBuilder(int arg0) {
@@ -46,9 +49,18 @@ public class HtmlBuilder extends StrBuilder {
 		return this;
 	}
 	
+	public HtmlBuilder p() {
+	    append("<p>");
+	    return this;
+	}
 	public HtmlBuilder hr() {
 		append("<hr>");
 		return this;
+	}
+	
+	public HtmlBuilder appendWrap(Object txt, int wrap) {
+	    append(WordUtils.wrap(ObjectUtils.toString(txt),wrap,"<br>",true));
+	    return this;
 	}
 	
 	/** appends the list, prefixed with the title, if the list is non-null & length > 0 

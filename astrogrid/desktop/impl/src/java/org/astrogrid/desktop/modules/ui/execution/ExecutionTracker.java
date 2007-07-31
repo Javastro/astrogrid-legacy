@@ -37,11 +37,14 @@ import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
+import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ag.AbstractProcessMonitor;
 import org.astrogrid.desktop.modules.ag.ProcessMonitor;
 import org.astrogrid.desktop.modules.ag.RemoteProcessManagerInternal;
 import org.astrogrid.desktop.modules.ag.ProcessMonitor.ProcessEvent;
 import org.astrogrid.desktop.modules.ag.ProcessMonitor.ProcessListener;
+import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.system.ExtendedFileSystemManager;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
@@ -200,9 +203,11 @@ public class ExecutionTracker{
 			this.pm = pm;
 			pm.addProcessListener(this);
 			msg.setFont(UIConstants.SMALL_DIALOG_FONT);
+			
 			files = new BasicEventList();
 			deleteButton = new JButton(IconHelper.loadIcon("stop16.png"));
 			deleteButton.putClientProperty("is3DEnabled",Boolean.FALSE);
+			deleteButton.setRolloverEnabled(true);
 			deleteButton.setBorderPainted(false);
 			deleteButton.setToolTipText("Cancel task");
 			deleteButton.addActionListener(this);
@@ -210,6 +215,7 @@ public class ExecutionTracker{
 			refreshButton = new JButton(IconHelper.loadIcon("reload16.png"));
             refreshButton.putClientProperty("is3DEnabled",Boolean.FALSE);
             refreshButton.setBorderPainted(false);
+            refreshButton.setRolloverEnabled(true);
             refreshButton.setToolTipText("Refresh task");
             refreshButton.addActionListener(this);
             
@@ -224,7 +230,7 @@ public class ExecutionTracker{
 
 		private final ProcessMonitor pm;
 		private final JLabel msg = new JLabel();
-		private final JLabel status = new JLabel(PENDING_ICON);		
+		private final JLabel status = new JLabel(PENDING_ICON);
 		private final JLabel title = new JLabel();
 		private final EventList files;
 		private final JButton deleteButton;
@@ -308,16 +314,33 @@ public class ExecutionTracker{
 		private void populateMsgLabel() {
 			try {
 				ExecutionMessage[] messages = pm.getMessages();
-				if (messages.length > 0) {
-					ExecutionMessage m = messages[messages.length-1]; // last one
-					//@todo format this better.
-					msg.setText(m.getContent());
-					msg.setToolTipText("Message received at " + df.format(m.getTimestamp()));
+				if (messages.length > previousMsgCount) { // new messages seen.
+				    previousMsgCount = messages.length;
+				    // set label to content of latest message
+					msg.setText(messages[messages.length-1].getContent());
+					
+					// put transcript of all other messages into the tooltip 
+					HtmlBuilder builder = new HtmlBuilder();
+					for (int i = 0; i < messages.length; i++) {
+                        ExecutionMessage m = messages[i];
+                        if (m.getSource().equals(AbstractProcessMonitor.MONITOR_MESSAGE_SOURCE)
+                                && m.getLevel().equals(LogLevel.INFO.toString())) {
+                            continue; // not interesting.
+                        }
+                        builder.append(df.format(m.getTimestamp()))
+                                .append(" Status: ")
+                                .append(m.getStatus());
+                        builder.br().appendWrap(m.getContent(),50);
+                        builder.p();        
+                                 
+                    }
+					msg.setToolTipText(builder.toString());
 				}
 			} catch (ACRException x) {
 				msg.setText("inaccessible: " + x.getMessage());
 			}
 		}
+		private int previousMsgCount = 0;
 		// can share this - as is only ever run on EDT.
 		private void populateStatusLabel() {
 			String st = pm.getStatus();
@@ -343,17 +366,19 @@ public class ExecutionTracker{
 			try {
 				ExecutionInformation ei = pm.getExecutionInformation();
 				title.setText(ei.getName());
-				StrBuilder sb = new StrBuilder("<html>");
-				sb.append(ei.getId());
+				HtmlBuilder sb = new HtmlBuilder();
+				sb.appendWrap(ei.getId(),50);
+				sb.br().append("Status: ").append(ei.getStatus());
+				sb.br().appendWrap(ei.getDescription(),50);
 				if (ei.getStartTime() != null) {
-					sb.append("<br>");
-					sb.append("Started ");
-					sb.append(df.format(ei.getStartTime()));
+					sb.br()
+					    .append("Started: ")
+					    .append(df.format(ei.getStartTime()));
 				} 
 				if (ei.getFinishTime() != null) {
-					sb.append("<br>");
-					sb.append("Finished ");
-					sb.append(df.format(ei.getFinishTime()));
+					sb.br()
+					    .append("Finished: ")
+					    .append(df.format(ei.getFinishTime()));
 				}
 				title.setToolTipText(sb.toString());
 				//result.setToolTipText(ei.getDescription());

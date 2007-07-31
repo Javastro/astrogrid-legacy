@@ -53,7 +53,6 @@ public final class ResourceFormatter {
 	public static String renderResourceAsHTML(Resource r) {
 		HtmlBuilder sb = new HtmlBuilder();
 		
-		sb.append("<html>");
 		sb.append("<body><basefont face='Arial,Helvetica,sans-serif'>");//@todo get fonts to work.
 		sb.h2(r.getTitle());
 		sb.append("<i>");

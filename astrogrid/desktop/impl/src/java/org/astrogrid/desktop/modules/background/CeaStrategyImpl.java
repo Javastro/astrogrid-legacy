@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.21 2007/07/30 17:59:56 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.22 2007/07/31 11:26:43 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -293,7 +293,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 				return this;
 			} catch (CEADelegateException x) {
 			    standOff();
-			    info("Failed: " + x.getMessage());
+			    warn("Failed: " + x.getMessage());
 				return this;
 			}
 
@@ -531,6 +531,11 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.22  2007/07/31 11:26:43  nw
+Complete - task 107: Polish Execution Tracker
+
+tweaked implementation and use of HtmlBuilder
+
 Revision 1.21  2007/07/30 17:59:56  nw
 RESOLVED - bug 2257: More feedback, please
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2257

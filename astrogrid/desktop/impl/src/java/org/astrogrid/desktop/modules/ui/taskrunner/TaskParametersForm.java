@@ -165,7 +165,6 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 		bottomPanel = new JCollapsiblePane();
 		bottomPanel.setCollapsed(true);
 		
-		//@todo merge the building of this with the building of the main pane - at the moment it's a bit silly.
 		FormLayout fl = new FormLayout(
 				"fill:d:grow,3dlu,fill:d:grow,3dlu,d:grow" // cols
 				,"d,d,fill:50dlu:grow,d" // rows
@@ -261,6 +260,18 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 		tool = apps.createTemplateTool(interfaceName,currentResource);
 		// build the form.
 		doBuildForm(interfaceName);
+	}
+	
+	
+	/** map to cache some info about ui state of different form elements 
+	 *  - a cache of interfaceName -> InterfaceState objects*/
+	private final Map interfaceStateMap = new HashMap();
+	
+	/** bits of state information */
+	private static class InterfaceState {
+	    public boolean bottomPanelCollapsed = true;
+	    public Tool tool = null;
+	    
 	}
 	
 	private void doBuildForm(String interfaceName) {

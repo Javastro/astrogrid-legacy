@@ -85,7 +85,7 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
 	}
 	
 	protected void info(String message) {
-        ExecutionMessage em = new ExecutionMessage(id.toString()
+        ExecutionMessage em = new ExecutionMessage(MONITOR_MESSAGE_SOURCE
                 ,LogLevel.INFO.toString()
                 ,getStatus()
                 ,new Date()
@@ -94,13 +94,15 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
 	}
 	
     protected void warn(String message) {
-        ExecutionMessage em = new ExecutionMessage(id.toString()
+        ExecutionMessage em = new ExecutionMessage(MONITOR_MESSAGE_SOURCE
                 ,LogLevel.WARN.toString()
                 ,getStatus()
                 ,new Date()
                 ,message);
         addMessage(em);
     }
+    
+    public static final String MONITOR_MESSAGE_SOURCE = "monitor";
 
     
 
@@ -113,7 +115,7 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
 	
 	// helper method to signal an error, record a message, change status to error, and fire a notification
 	protected final void error(String msg) {
-		ExecutionMessage em = new ExecutionMessage(id.toString()
+		ExecutionMessage em = new ExecutionMessage(MONITOR_MESSAGE_SOURCE
 				,LogLevel.ERROR.toString()
 				,getStatus()
 				,new Date()

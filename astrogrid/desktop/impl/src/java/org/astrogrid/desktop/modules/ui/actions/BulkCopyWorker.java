@@ -99,7 +99,7 @@ public final class BulkCopyWorker extends BackgroundWorker {
         if (errors.size() ==0) {
             return;
         }
-        HtmlBuilder msgBuilder = new HtmlBuilder("<html>");			    
+        HtmlBuilder msgBuilder = new HtmlBuilder();			    
         msgBuilder.h2("Encountered errors when copying some files");
         for (Iterator i = errors.entrySet().iterator(); i.hasNext();) {
             Map.Entry err = (Map.Entry) i.next();

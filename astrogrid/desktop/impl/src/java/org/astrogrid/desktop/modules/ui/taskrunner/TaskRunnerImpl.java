@@ -499,7 +499,6 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 
 	// callback to display help in infoPane.
 	public void mouseEntered(MouseEvent e) {
-	    System.out.println(e.getSource().getClass().getName());
 		JComponent comp = (JComponent)e.getSource();
 		if (comp == trackerPanel) {
 		    bottomFlipPanel.show(TASKS);
@@ -527,7 +526,6 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
     private void displayParameterHelp(AbstractTaskFormElement t) {
   		if (t != null) {
 			HtmlBuilder sb = new HtmlBuilder();
-			sb.append("<html><body>");
 			final ParameterBean d = t.getDescription();
             sb.h2(d.getUiName());
 			sb.append(d.getDescription()).append("<p>");
@@ -540,7 +538,6 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	        if (d.getUnits() != null) {
 	            sb.br().append("Units : ").append(d.getUnits());
 	        }			
-			sb.append("</body></html>");
 			infoPane.setText(sb.toString());
 			infoPane.setCaretPosition(0);
 		}
