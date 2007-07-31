@@ -201,6 +201,8 @@ COMMUNITY -->	<service-point id="community" interface="org.astrogrid.desktop.mo
         <interceptor service-id="system.edt" >
             <exclude method="addUserLoginListener" />
             <exclude method="removeUserLoginListener" />
+            <exclude method="isLoggedIn" />
+            <exclude method="getUserInformation" />
         </interceptor>                        
 		<interceptor service-id="system.throbber" />		
 		<interceptor service-id="hivelock.core.authorization">

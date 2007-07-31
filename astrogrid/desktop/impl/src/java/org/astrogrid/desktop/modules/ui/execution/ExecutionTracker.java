@@ -202,7 +202,7 @@ public class ExecutionTracker{
 			super();
 			this.pm = pm;
 			pm.addProcessListener(this);
-			msg.setFont(UIConstants.SMALL_DIALOG_FONT);
+			messageLabel.setFont(UIConstants.SMALL_DIALOG_FONT);
 			
 			files = new BasicEventList();
 			deleteButton = new JButton(IconHelper.loadIcon("stop16.png"));
@@ -229,7 +229,7 @@ public class ExecutionTracker{
 		}
 
 		private final ProcessMonitor pm;
-		private final JLabel msg = new JLabel();
+		private final JLabel messageLabel = new JLabel();
 		private final JLabel status = new JLabel(PENDING_ICON);
 		private final JLabel title = new JLabel();
 		private final EventList files;
@@ -248,7 +248,7 @@ public class ExecutionTracker{
 			case 3:
 			    return deleteButton;
 			case 4:
-			    return msg;
+			    return messageLabel;
 			case 5:
 			    return results;
 			default:
@@ -291,6 +291,7 @@ public class ExecutionTracker{
 		
 		/** not to be called before task has been 'init()' - as it's not got an ID at that stage */
 		private void populateResults() {
+		    logger.debug("Fetching results");
 		    (new BackgroundWorker(parent,"Listing results") {
 
                 protected Object construct() throws Exception {
@@ -302,11 +303,13 @@ public class ExecutionTracker{
                 }
                 protected void doFinished(Object result) {
                     List contents = (List)result;
+                    logger.debug(contents);
                     files.clear();
                     files.addAll(contents);
                 }
                 protected void doError(Throwable ex) {
-                    //@todo display error in monitor window.
+                    messageLabel.setText(ex.getMessage());
+                    logger.warn("Failed to fetch results",ex);
                 }
 		    }).start();
 		}
@@ -317,7 +320,7 @@ public class ExecutionTracker{
 				if (messages.length > previousMsgCount) { // new messages seen.
 				    previousMsgCount = messages.length;
 				    // set label to content of latest message
-					msg.setText(messages[messages.length-1].getContent());
+					messageLabel.setText(messages[messages.length-1].getContent());
 					
 					// put transcript of all other messages into the tooltip 
 					HtmlBuilder builder = new HtmlBuilder();
@@ -334,10 +337,10 @@ public class ExecutionTracker{
                         builder.p();        
                                  
                     }
-					msg.setToolTipText(builder.toString());
+					messageLabel.setToolTipText(builder.toString());
 				}
 			} catch (ACRException x) {
-				msg.setText("inaccessible: " + x.getMessage());
+				messageLabel.setText("inaccessible: " + x.getMessage());
 			}
 		}
 		private int previousMsgCount = 0;

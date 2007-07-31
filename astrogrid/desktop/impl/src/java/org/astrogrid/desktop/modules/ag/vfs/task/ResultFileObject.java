@@ -49,7 +49,9 @@ public class ResultFileObject extends RPFileObject {
             ParameterValue[] arr = t.getOutput().getParameter();
             for (int i = 0; i < arr.length; i++) {
                 if (arr[i].getIndirect()) {
-                    if (StringUtils.substringBefore(StringUtils.substringAfterLast(arr[i].getValue(),"/"),".").equals(resultName)) {
+                    if (StringUtils.substringBefore(
+                            TaskFileObject.computeFileBaseName(arr[i])                            
+                            ,".").equals(resultName)) {
                         // found a match - by indirection target name.
                         indirect = true;
                         resultName = arr[i].getName();

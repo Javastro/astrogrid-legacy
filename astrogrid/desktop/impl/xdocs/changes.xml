@@ -15,7 +15,12 @@
 	</head>
 <body>
 <release version="2007.4.alpha2" date="unreleased">
-
+    <action dev="nw" type="add">
+       TaskRunner: Added tooltips showing message history for tasks
+    </action>
+    <action dev="nw" type="fix">
+    Task Runner now shows file results even when in myspace root directory
+    </action>
     <action dev="nw" type="fix" issue="2261">
     Removed the 'load from storage' button for simple types -  boolean, enumeration, integer and float-like types.
     Show a specialzed input for radius parameters - detected when name=Radius or ucd=PHYS_SIZE_RADIUS.

@@ -60,11 +60,13 @@ public class TaskFileObject extends RPFileObject {
             ParameterValue[] arr = t.getOutput().getParameter();
             
             // populate an array of filenames.
+            //@todo  this code is terrible - need to rewrite the whole task filesystem
             String[] children = new String[arr.length];
             for (int i = 0; i < arr.length; i++) {
                 if (arr[i].getIndirect()) { // 
                     // name the file after the indirect file - then need to add code to check in the result file object for this.
-                    children[i] = StringUtils.substringAfterLast(arr[i].getValue(),"/");
+                    String name = computeFileBaseName(arr[i]);
+                    children[i]= name;
                 } else {
                     children[i] = arr[i].getName() + suggestExtension(findDescriptionFor(arr[i],descs));
                 }
@@ -77,6 +79,22 @@ public class TaskFileObject extends RPFileObject {
             
             return (String[])m.keySet().toArray(new String[m.size()]);
         }
+    }
+
+    /**
+     * @param arr
+     * @param i
+     * @return
+     */
+    public static String computeFileBaseName(ParameterValue p) {
+        String name = p.getValue();
+        if (StringUtils.contains(name,'#')) {
+            name = StringUtils.substringAfter(name,"#");
+        }
+        if (StringUtils.contains(name,'/')) {                        
+            name = StringUtils.substringAfterLast(name,"/");
+        }
+        return name;
     }
 
     private String suggestExtension(ParameterBean pb) {
