@@ -3,6 +3,7 @@
 package org.astrogrid.adql;
 
 import org.astrogrid.adql.beans.AtomType;
+import org.astrogrid.adql.beans.ColumnReferenceType;
 import org.astrogrid.adql.beans.LiteralType;
 import org.astrogrid.adql.beans.StringType;
 import org.astrogrid.adql.beans.IntegerType;
@@ -20,20 +21,23 @@ public class AST_SortKey extends SimpleNode {
   
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_SortKey.buildXmlTree()" ) ; 
-        AtomType orderType = (AtomType)xo.changeType( AtomType.type ) ;
-        LiteralType lt = orderType.addNewLiteral() ;
+       
       
         //
         // If it is only 1 child, it must be column name...
         if( jjtGetNumChildren() == 1 ) {
-            StringType st = (StringType)lt.changeType(StringType.type) ;
-            st.setValue( (String)children[0].getGeneratedObject() ) ;
-            this.generatedObject = st ;
+            //
+            // Use a column reference rather than a literal to contain the name...
+            ColumnReferenceType crt = (ColumnReferenceType)xo.changeType( ColumnReferenceType.type ) ;
+            crt.setName( (String)children[0].getGeneratedObject() ) ;
+            this.generatedObject = crt ;
         }
         //
         // Else it must be column rank order...
         // (may need to rule out 0 ???)
         else {
+            AtomType orderType = (AtomType)xo.changeType( AtomType.type ) ;
+            LiteralType lt = orderType.addNewLiteral() ;
             IntegerType it = (IntegerType)lt.changeType(IntegerType.type) ;
             Integer i = Integer.valueOf( this.getFirstToken().image ) ; 
             it.setValue( i.longValue() ) ;
