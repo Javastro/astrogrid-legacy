@@ -1,0 +1,5 @@
+This is a collection of the schemas referred to in ../../Namespaces,
+downloaded as of July 2007.  They're here so that the diffs with the
+edited versions in ../ can be examined.  Of course, doing this with a
+CVS branch would probably be the Right Thing, but it'd be confusing
+for a bear of very little brain.
