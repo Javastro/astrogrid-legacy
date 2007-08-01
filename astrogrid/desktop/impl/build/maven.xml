@@ -264,6 +264,22 @@ todo see if we can include other things in the disk image too. -->
 	</java>	
 </goal>
 
+<goal name="dep-jar" prereqs="java:compile,java:jar-resources"
+      description="write jar file with a Class-Path including all dependencies">
+    <property name="dependencies.jar"
+              value="${maven.build.dir}/dependencies.jar"/>
+    <pathconvert property="dependencies.path" pathsep=" ">
+        <path>
+            <path refid="maven.dependency.classpath"/>
+        </path>
+    </pathconvert>
+    <jar destfile="${dependencies.jar}">
+        <manifest>
+            <attribute name="Class-Path" value="${dependencies.path}"/>
+            <attribute name="Main-Class" value="${maven.javaapp.mainclass}"/>
+        </manifest>
+    </jar>
+</goal>
 
 	<!--  helper goal - unpackage resource zips, so that they can be referenced by the installer builder -->
 	<goal name="unzipResources">
