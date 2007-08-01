@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0"
-		xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0"
-		xmlns:adql="http://www.ivoa.net/xml/v2.0/adql"
-		xmlns:stc="http://www.ivoa.net/xml/v1.0/stc"
+		xmlns:ad1="http://www.ivoa.net/xml/ADQL/v1.0"
+		xmlns:ad2="http://www.ivoa.net/xml/v2.0/adql"
 		xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		exclude-result-prefixes="v1"  >
+		exclude-result-prefixes="ad1"  >
 	
 	<!-- 
 		Stylesheet to convert ADQL/x v1.0 to ADQL/x v2.0
@@ -16,55 +15,97 @@
 	
     <xsl:output method="xml" encoding="UTF-8" indent="yes"/>   	
     
-  	<xsl:param name="v1Prefix" select="'v1'"/>
-    <xsl:param name="v2Prefix" select="'adql'"/>
+  	<xsl:param name="ad1Prefix" select="'v1'"/>
+    <xsl:param name="ad2Prefix" select="'adql'"/>
+    <xsl:param name="xsiPrefix" select="'xsi'"/>
     
-    <xsl:param name="v1NS" select="'http://www.ivoa.net/xml/ADQL/v1.0'" />
-    <xsl:param name="v2NS" select="'http://www.ivoa.net/xml/v2.0/adql'" />
+    <xsl:param name="ad1NS" select="'http://www.ivoa.net/xml/ADQL/v1.0'" />
+    <xsl:param name="ad2NS" select="'http://www.ivoa.net/xml/v2.0/adql'" />
     <xsl:param name="xsiNS" select="'http://www.w3.org/2001/XMLSchema-instance'"/>
     
-	<xsl:template match="node()">
+    <!--+
+        | Identity template that ensures everything gets copied.
+        | We override this to change specific differences between versions.
+        +--> 
+    <xsl:template match="@*|node()">
         <xsl:copy>
-            <xsl:apply-templates select="@*|node()"/>
-        </xsl:copy>
-    </xsl:template>
+	       <xsl:apply-templates select="@*|node()"/>
+	    </xsl:copy>
+	</xsl:template>
+	
+	<!--+
+        | Sponge category for any elements that do not require change
+        | apart from the namespace and prefix change.
+        +-->
+	<xsl:template match="*[ namespace-uri() = $ad1NS ]">
+        <xsl:element name="{$ad2Prefix}:{local-name()}" namespace="{$ad2NS}">	     	
+			<xsl:apply-templates select="@*|node()"/>	
+		</xsl:element> 
+	</xsl:template>
     
-    <xsl:template match="*">
-        <xsl:element name="{$v2Prefix}:{local-name()}" namespace="{$v2NS}">
-			 <xsl:for-each select="@*">
-			      <xsl:choose>
-				      <xsl:when test="namespace-uri() = $xsiNS">			   	    	   
-				   	      <xsl:call-template name="attribute-schema-instance" />
-				   	  </xsl:when>
-				   	  <xsl:otherwise>
-				   	      <xsl:attribute name="{local-name()}" >
-				   	    	  <xsl:value-of select="." />
-				   	      </xsl:attribute>
-				   	  </xsl:otherwise>
-				  </xsl:choose>
-		 	</xsl:for-each>									
-			<xsl:apply-templates select="node()"/>
-		</xsl:element>                
-    </xsl:template>
-    
-    <xsl:template name="attribute-schema-instance">
+    <!--xsl:template match="ad1:Select | ad1:selection | ad1:Selection">
+        <xsl:element name="{$ad2Prefix}:{local-name()}" namespace="{$ad2NS}">	
+            <xsl:apply-templates select="@*"/>       	
+			<xsl:apply-templates select="ad1:OrderBy"/>
+		</xsl:element> 
+	</xsl:template>
+	
+	<xsl:template match="ad1:OrderBy">
+        <xsl:element name="{$ad2Prefix}:{local-name()}" namespace="{$ad2NS}">	 
+            <xsl:apply-templates select="@*"/>      	
+			<xsl:apply-templates select="ad1:Item"/>		
+		</xsl:element> 
+	</xsl:template>
+	
+	<xsl:template match="ad1:Item">
+        <xsl:element name="{$ad2Prefix}:{local-name()}" namespace="{$ad2NS}">	
+            <xsl:apply-templates select="@*"/>     	
+			<xsl:apply-templates select="ad1:Expression"/>	
+		</xsl:element> 
+	</xsl:template-->
+	
+	<!--+
+        | Expression within OrderBy needs have column name only,
+        | so we drop Table and Archive...
+        +--> 
+	<xsl:template match="ad1:OrderBy/ad1:Item/ad1:Expression">
+        <xsl:element name="{$ad2Prefix}:{local-name()}" namespace="{$ad2NS}">
+            <xsl:for-each select="@*">
+            	<xsl:choose>
+			    	<xsl:when test="local-name() = 'Table'"/>
+			    	<xsl:when test="local-name() = 'Archive'"/>
+					<xsl:otherwise>
+						<xsl:apply-templates select="."/> 
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:for-each>	
+		</xsl:element> 
+	</xsl:template>
+	   
+	<!--+
+        | Template for type attributes belonging to Schema-instance.
+        +--> 
+    <xsl:template match="@xsi:type">
 		<xsl:attribute name="{local-name()}" namespace="{$xsiNS}">
 			<xsl:choose>
+				<!-- correction of a typo -->
 			    <xsl:when test="substring-after( . , ':' ) = 'jointTableQualifierType'">
-			 	    <xsl:value-of select="$v2Prefix" />
+			 	    <xsl:value-of select="$ad2Prefix" />
 			 	    <xsl:text>:joinTableQualifierType</xsl:text>
 			 	</xsl:when>
-			 	<xsl:when test="substring-before( . , ':' ) = $v1Prefix">
-			 	    <xsl:value-of select="$v2Prefix" />
+			 	<!-- change the prefix for ADQL version 1 to version 2 -->
+			 	<xsl:when test="substring-before( . , ':' ) = $ad1Prefix">
+			 	    <xsl:value-of select="$ad2Prefix" />
 			 	    <xsl:text>:</xsl:text>
 			 		<xsl:value-of select="substring-after( . , ':' )" />
 			 	</xsl:when>
+			 	<!-- copy anything else as is -->
 				<xsl:otherwise>
 					<xsl:value-of select="." />
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:attribute>
 	</xsl:template>
-	
+		
 </xsl:stylesheet>
 
