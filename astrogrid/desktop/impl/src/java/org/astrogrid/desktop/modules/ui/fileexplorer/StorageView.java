@@ -35,7 +35,7 @@ import org.astrogrid.desktop.modules.ui.comp.ActionComboBox;
 import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
 import org.astrogrid.desktop.modules.ui.comp.EventListDropDownButton;
 import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
-import org.astrogrid.desktop.modules.ui.comp.IconField;
+import org.astrogrid.desktop.modules.ui.comp.SearchField;
 import org.astrogrid.desktop.modules.ui.fileexplorer.History.HistoryEvent;
 import org.astrogrid.desktop.modules.ui.fileexplorer.History.HistoryListener;
 import org.astrogrid.desktop.modules.ui.folders.StorageFolder;
@@ -306,8 +306,7 @@ public class StorageView implements ListSelectionListener, HistoryListener{
 	    views.add(list);
 	    builder.add(new ActionComboBox(views),cc.xy(r++,c));
 	    r++;
-	    IconField filter = new IconField(10);
-	    filter.setToolTipText("Filter box: filter the current list");
+	    SearchField filter = new SearchField("Filter files");
 	    builder.add(filter,cc.xy(r++,c));
 	    mainButtons = builder.getPanel();
 	     
@@ -333,7 +332,7 @@ public class StorageView implements ListSelectionListener, HistoryListener{
 	    	}
 	    });
 	    EventList filteredFiles = new FilterList(noHiddenFiles,
-	    		new TextComponentMatcherEditor(filter,new FileObjectFilterator()));
+	    		new TextComponentMatcherEditor(filter.getWrappedDocument(),new FileObjectFilterator()));
 	    SortedList sortedFiles= new SortedList(filteredFiles, FileObjectComparator.getInstance());
 	
 		// listen to movement through the history list.

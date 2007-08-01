@@ -35,7 +35,7 @@ import org.astrogrid.acr.ivoa.resource.Catalog;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.desktop.modules.ui.comp.IconField;
+import org.astrogrid.desktop.modules.ui.comp.SearchField;
 import org.astrogrid.desktop.modules.ui.comp.TextAreaRenderer;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 
@@ -75,8 +75,8 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 		columns = new BasicEventList();
 
 		// build the panel. 
-		FormLayout layout = new FormLayout("right:d, 3dlu,100dlu,3dlu:grow" // cols
-				,"d,max(10dlu;d),d,max(10dlu;d),fill:100dlu:grow,d" // rows
+		FormLayout layout = new FormLayout("right:d, 3dlu,100dlu:grow,d" // cols
+				,"d,max(10dlu;d),d,max(10dlu;d),fill:100dlu:grow" // rows
 		);
 		PanelBuilder builder = new PanelBuilder(layout,this);
 		CellConstraints cc = new CellConstraints();
@@ -154,16 +154,18 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 		acs.setStrict(false);
 		acs.setSelectsTextOnFocusGain(true);
 		acs.setFilterMode(TextMatcherEditor.CONTAINS);
-		builder.add(tableCombo,cc.xy(3,row++));
-
-		tableLabel = builder.addLabel("",cc.xyw(1,row++,4));
-		tableLabel.setFont(UIConstants.SMALL_DIALOG_FONT);		
+		builder.add(tableCombo,cc.xy(3,row));
 
 		// add a text-filter to the columns list
-		JTextField filterField = new IconField(0);
-		filterField.setToolTipText("Filter columns");
+		SearchField filterField = new SearchField("Filter columns");
 		FilterList filteredColumns = new FilterList(columns,
-					new TextComponentMatcherEditor(filterField, new ColumnTextFilterator()));
+					new TextComponentMatcherEditor(filterField.getWrappedDocument(), new ColumnTextFilterator()));
+
+        // add the text-filter box to the same row as the table combo.
+        builder.add(filterField,cc.xy(4,row++));		
+        
+        tableLabel = builder.addLabel("",cc.xyw(1,row++,4));
+        tableLabel.setFont(UIConstants.SMALL_DIALOG_FONT);		
 		
 		// necessary to have sorted columns before 
 		SortedList sortedColumns = new SortedList(filteredColumns,new Comparator() {
@@ -182,9 +184,7 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 		jtableScrollpane.getViewport().setBackground(jtable.getBackground());
 		builder.add(jtableScrollpane,cc.xyw(1,row++,4));
 		
-		// add the text-filter box at the bottom of the ui.
-		builder.addLabel("Filter columns by",cc.xy(1,row));
-		builder.add(filterField,cc.xy(3,row));
+
 		
 	}
 	

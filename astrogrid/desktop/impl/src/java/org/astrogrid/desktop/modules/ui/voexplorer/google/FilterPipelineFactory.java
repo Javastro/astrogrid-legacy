@@ -27,7 +27,7 @@ import javax.swing.event.ListSelectionListener;
 
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.comp.ExpandCollapseButton;
-import org.astrogrid.desktop.modules.ui.comp.IconField;
+import org.astrogrid.desktop.modules.ui.comp.SearchField;
 import org.astrogrid.desktop.modules.votech.AnnotationService;
 
 import ca.odell.glazedlists.BasicEventList;
@@ -66,10 +66,11 @@ public class FilterPipelineFactory   {
 		FilterList systemFilteredItems = new FilterList(items
 				,new ToggleMatcherEditor(systemToggle,new SystemFilter()));
 		// incremental text field..
-		textField = new IconField(10);
-		textField.setToolTipText("Filter box: type a word to filter with");
+		//textField = new IconField(10);
+		SearchField sf = new SearchField("Filter results");
 		FilterList filteredItems = new FilterList(systemFilteredItems
-				, new TextComponentMatcherEditor(textField, new ResourceTextFilterator(annotationService)));
+				, new TextComponentMatcherEditor(sf.getWrappedDocument(), new ResourceTextFilterator(annotationService)));
+		textField = sf;
 		
 		// collapsible filters.
 		filterPane = new JCollapsiblePane();

@@ -25,6 +25,7 @@ import org.netbeans.spi.wizard.WizardPage.WizardResultProducer;
 
 /** common subclass for all wizards used in workbench
  * Extends external wizard framework and integrates it with Background Worker, etc.
+ * @todo unused at the moment - either finish, or remove.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 17, 200710:56:43 AM
  */
