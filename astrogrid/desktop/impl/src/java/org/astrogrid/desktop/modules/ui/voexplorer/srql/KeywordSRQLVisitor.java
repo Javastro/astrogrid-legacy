@@ -5,11 +5,16 @@ package org.astrogrid.desktop.modules.ui.voexplorer.srql;
 
 /** visitor that traverse a SRQL and generates a normalized search string from it - indicates what the parser
  * thinks the user has inputted. The query is not executable - but indicates what's being searched for.
+ * This visitor generates output that is compatible with the SRQL parser.
  * @author Noel Winstanley
  * @since Aug 15, 200612:12:11 PM
  */
 public class KeywordSRQLVisitor implements SRQLVisitor {
-
+    /**
+     * 
+     */
+    public KeywordSRQLVisitor() {
+    }
 
 	public Object visit(AndSRQL q) {
 		return "(" + q.getLeft().accept(this) + ") AND (" + q.getRight().accept(this) + ")";
@@ -34,7 +39,7 @@ public class KeywordSRQLVisitor implements SRQLVisitor {
 	}
 
 	public Object visit(TargettedSRQL q) {
-		return q.getTarget() + " = " + parenthesizeNonLeaf(q.getChild());
+		return q.getTarget() + " = " + (q.getChild() == null ? "null" :  parenthesizeNonLeaf(q.getChild())); // a little more tolerant of commonest error cases.
 	}
 
 	public Object visit(XPathSRQL q) {

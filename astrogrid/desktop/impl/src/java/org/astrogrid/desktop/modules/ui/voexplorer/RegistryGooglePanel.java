@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.9 2007/07/26 18:21:45 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.10 2007/08/01 10:45:45 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -263,7 +263,7 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 		}
 	}
 	// no state - so can be reused between instances.
-	static final SRQLVisitor feedbackVisitor = new KeywordSRQLVisitor();	
+	//seems unneeded static final SRQLVisitor feedbackVisitor = new KeywordSRQLVisitor();	
 	static final Builder briefXQueryBuilder = new BasicRegistrySRQLVisitor();
 	
 	// member variables.
@@ -692,6 +692,9 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.10  2007/08/01 10:45:45  nw
+changed persistence mechanism to XStream, and configured a central service to manage this.
+
 Revision 1.9  2007/07/26 18:21:45  nw
 merged mark's and noel's branches
 

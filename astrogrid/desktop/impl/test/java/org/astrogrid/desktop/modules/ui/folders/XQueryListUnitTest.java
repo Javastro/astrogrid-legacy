@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.astrogrid.desktop.modules.ui.voexplorer.folders;
+package org.astrogrid.desktop.modules.ui.folders;
 
 import org.astrogrid.desktop.modules.ui.folders.Folder;
 import org.astrogrid.desktop.modules.ui.folders.SmartList;

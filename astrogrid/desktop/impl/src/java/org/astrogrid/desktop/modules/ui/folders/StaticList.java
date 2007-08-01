@@ -1,16 +1,15 @@
 package org.astrogrid.desktop.modules.ui.folders;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.apache.commons.collections.set.ListOrderedSet;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
 
@@ -31,6 +30,7 @@ public class StaticList extends ResourceFolder  {
 		super(name, defaultIcon);
 	}
 	// just for persistence.
+	/** @deprecated - only used for obsolete persistence method */
 	public String[] getResourceArray() {
 		String[] result = new String[resouceUris.size()];
 		Iterator i = resouceUris.iterator();
@@ -40,6 +40,7 @@ public class StaticList extends ResourceFolder  {
 		}
 		return result;
 	}
+	/** @deprecated - only used for obsolete persistence method */
 	public void setResourceArray(String[] arr) {
 		Collection c = Arrays.asList(arr);
 		setResourceSet(c);
@@ -71,7 +72,7 @@ public class StaticList extends ResourceFolder  {
 	}
 
 	private static final String defaultIcon ="folder16.png";
-	private final Set resouceUris = new ListOrderedSet(); // maintains order of insertion.
+	private Set resouceUris = new LinkedHashSet(); // maintains order of insertion.
 	
 	public int getSize() {
 		return resouceUris.size();

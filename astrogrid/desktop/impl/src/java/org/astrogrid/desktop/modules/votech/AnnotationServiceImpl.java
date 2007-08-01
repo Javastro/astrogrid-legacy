@@ -20,6 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
+import org.astrogrid.desktop.modules.system.XmlPersist;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
@@ -41,9 +42,9 @@ public class AnnotationServiceImpl implements AnnotationService{
 	private final Ehcache cache;
 	private final UIContext ui;
 	private final AnnotationSource userSource;
-	public AnnotationServiceImpl(final Ehcache cache, final UIContext ui, IterableObjectBuilder sources,Preference workDir) {
+	public AnnotationServiceImpl(final Ehcache cache, final UIContext ui, IterableObjectBuilder sources,Preference workDir, XmlPersist xml) {
 		super();
-		this.io = new AnnotationIO(workDir, sources); 
+		this.io = new AnnotationIO(workDir, sources,xml); 
 		this.cache = cache;
 		this.ui = ui;
 		

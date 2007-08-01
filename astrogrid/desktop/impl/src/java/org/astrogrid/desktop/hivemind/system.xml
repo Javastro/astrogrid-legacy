@@ -1340,6 +1340,12 @@ MAC SETUP
 	Should all be instances of org.votech.plastic.incoming.handlers.MessageHandler
 	</configuration-point>
 
+<!-- ========================================
+XML Persistence --> 
+    <service-point id="xmlPersist" interface="org.astrogrid.desktop.modules.system.XmlPersist">
+        <create-instance class="org.astrogrid.desktop.modules.system.XStreamXmlPersist" />
+    </service-point>
+
 <!-- ================================
 	CONFIGURATION DIALOGUE
  -->

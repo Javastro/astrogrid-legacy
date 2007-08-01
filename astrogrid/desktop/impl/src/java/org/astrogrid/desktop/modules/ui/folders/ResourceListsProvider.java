@@ -6,6 +6,7 @@ package org.astrogrid.desktop.modules.ui.folders;
 import java.io.File;
 
 import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.desktop.modules.system.XmlPersist;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.TermSRQL;
@@ -17,15 +18,15 @@ import ca.odell.glazedlists.event.ListEventListener;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 5, 200712:24:41 PM
  */
-public class ResourceListsProvider extends AbstractFoldersProvider implements ListEventListener {
-	public ResourceListsProvider(final UIContext parent, Preference workdirPreference) {
-		super(parent,new File(new File(workdirPreference.getValue()),"resourceLists.xml"));
-		logger.info("Reading/Writing resource folders to " + storage);
+public class ResourceListsProvider extends AbstractListProvider implements ListEventListener {
+	public ResourceListsProvider(final UIContext parent, Preference workdirPreference, XmlPersist xml) {
+		super(parent,new File(new File(workdirPreference.getValue()),"resourceLists.xml"), xml);
+		logger.info("Reading/Writing resource folders to " + getStorageLocation());
 	}
 
 	//	 create some basic entries in the folder list.
 	protected void initializeFolderList() {
-		try {
+		try {		   
 		ResourceFolder[] folders = new ResourceFolder[] {
 
 				//new SmartList("Abell clusters","abell")
@@ -58,7 +59,7 @@ public class ResourceListsProvider extends AbstractFoldersProvider implements Li
 		for (int i = 0; i < folders.length; i++) {
 			ResourceFolder f = folders[i];
 			f.setFixed(true);
-			folderList.add( f);
+			getList().add( f);
 		}
 		} catch (InvalidArgumentException e) {
 			throw new RuntimeException("Programming Error",e);

@@ -5,7 +5,9 @@ package org.astrogrid.desktop.modules.votech;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.ServiceException;
 import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
+import org.astrogrid.desktop.modules.system.XmlPersist;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.folders.Folder;
 
@@ -61,46 +63,15 @@ public class AnnotationIO implements ExceptionListener{
 	private final File annotationSourceList;
 	private final File userAnnotationsFile;
 	private final List userAnnotations;
+
+    private final XmlPersist xml;
 	
-	private final XStream xstream;
-	
-	/** converter for java.net.URI */
-	public static class URIConverter extends AbstractSingleValueConverter{
 
-		public boolean canConvert(Class arg0) {
-			return arg0.equals(URI.class);
-		}
-
-		public Object fromString(String arg0) {
-			return URI.create(arg0);
-		} 
-	}
-	
-	/** convertor for java.awt.Color */
-	public static class ColorConverter implements Converter {
-
-		public void marshal(Object arg0, HierarchicalStreamWriter arg1, MarshallingContext arg2) {
-			Color c = (Color)arg0;
-			int i = c.getRGB();
-			arg1.setValue("#" + Integer.toHexString(i).substring(2,8)); // omit the alpha chanel, otherwise can't parse back in. odd.
-		}
-
-		public Object unmarshal(HierarchicalStreamReader arg0, UnmarshallingContext arg1) {
-			try {
-				return Color.decode(arg0.getValue());
-			} catch (NumberFormatException e) {
-				return Color.WHITE;
-			}
-		}
-
-		public boolean canConvert(Class arg0) {
-			return arg0.equals(Color.class);
-		}
-	}
 	
 	
-	public AnnotationIO(final Preference workDirPref, IterableObjectBuilder srcBuilder) {
+	public AnnotationIO(final Preference workDirPref, IterableObjectBuilder srcBuilder,XmlPersist xml) {
 		super();
+        this.xml = xml;
 		userAnnotations = new ArrayList();
 		this.workDir = new File(workDirPref.toString());
 		userAnnotationsFile =  new File(workDir,"user-annotations.xstream");
@@ -119,12 +90,7 @@ public class AnnotationIO implements ExceptionListener{
 			sources.add(src);
 		}
 				
-		xstream = new XStream(new PureJavaReflectionProvider()); // @todo configure to use stax too?
-		xstream.alias("annotation",UserAnnotation.class);
-		xstream.registerConverter(new URIConverter());
-		xstream.registerConverter(new ColorConverter());
-		xstream.omitField(Annotation.class,"source");
-		xstream.addImmutableType(Color.class);
+	
 	}
 
 	//temporary hard-coded annotation source list
@@ -155,7 +121,7 @@ public class AnnotationIO implements ExceptionListener{
 			//@todo open streams in a more robust way (allowing for ivo://) later.
 			try {
 				is = source.getSource().toURL().openStream();
-				Annotation[] anns = (Annotation[])xstream.fromXML(is);
+				Annotation[] anns = (Annotation[])xml.fromXml(is);
 				if (anns != null) {
 					logger.info("Read " + anns.length + " from " + source);
 					if (source.equals(userSource)) {
@@ -169,7 +135,9 @@ public class AnnotationIO implements ExceptionListener{
 				logger.warn(x1.getMessage());
 			} catch (IOException x1) {
 				logger.warn(x1.getMessage());					
-			} finally {
+			} catch (ServiceException x) {
+                logger.warn(x.getMessage());
+            } finally {
 				if (is != null) {
 					try {
 						is.close();
@@ -258,10 +226,12 @@ public class AnnotationIO implements ExceptionListener{
 		try {
 			fos = new FileOutputStream(userAnnotationsFile);
 			UserAnnotation[] arr = (UserAnnotation[])userAnnotations.toArray(new UserAnnotation[userAnnotations.size()]);
-			xstream.toXML(arr,fos);
+			xml.toXml(arr,fos);
 		} catch (FileNotFoundException x) {
 			logger.error("Failed to save user annotations",x);
-		} finally {
+		} catch (ServiceException x) {
+            logger.error("Failed to save user annotations",x);
+        } finally {
 			if (fos != null) {
 				try {
 					fos.close();

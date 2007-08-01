@@ -29,6 +29,7 @@ ANNOTATION SERVICE
 				<service>system.ui</service>
 				<service>annotationSourcesFactory</service>
 				<object>preference:astrogrid.workdir</object>
+                <service>system.xmlPersist</service>
 			</construct>
 		</invoke-factory>
 	</service-point>	

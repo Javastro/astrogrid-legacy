@@ -40,4 +40,24 @@ public abstract class ResourceFolder extends Folder{
 		return fixed;
 	}
 
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + (this.fixed ? 1231 : 1237);
+        return result;
+    }
+
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final ResourceFolder other = (ResourceFolder) obj;
+        if (this.fixed != other.fixed)
+            return false;
+        return true;
+    }
+
 }

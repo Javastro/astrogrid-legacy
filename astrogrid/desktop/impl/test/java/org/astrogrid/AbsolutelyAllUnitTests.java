@@ -12,7 +12,8 @@ import org.astrogrid.desktop.modules.dialogs.file.AllFileDialogUnitTests;
 import org.astrogrid.desktop.modules.system.ui.AllSystemUiUnitTests;
 import org.astrogrid.desktop.modules.ui.comp.AllUIComponentUnitTests;
 import org.astrogrid.desktop.modules.ui.dnd.AllDndUnitTests;
-import org.astrogrid.desktop.modules.ui.voexplorer.folders.AllVoExplorerFoldersUnitTests;
+import org.astrogrid.desktop.modules.ui.folders.AllUiFoldersUnitTests;
+import org.astrogrid.desktop.modules.ui.scope.AllScopeUnitTests;
 import org.astrogrid.desktop.modules.ui.voexplorer.storage.AllVOExplorerStorageUnitTests;
 import org.astrogrid.desktop.modules.votech.AllVotechUnitTests;
 
@@ -45,9 +46,10 @@ public class AbsolutelyAllUnitTests {
 		suite.addTest(AllUIComponentUnitTests.suite());
 		suite.addTest(AllDndUnitTests.suite());
 		suite.addTest(AllAuthUnitTests.suite());
-		suite.addTest(AllVoExplorerFoldersUnitTests.suite());
+		suite.addTest(AllUiFoldersUnitTests.suite());
 		suite.addTest(AllVOExplorerStorageUnitTests.suite());
 		suite.addTest(AllSystemUiUnitTests.suite());
+		suite.addTest(AllScopeUnitTests.suite());
 		return suite;
 	}
 

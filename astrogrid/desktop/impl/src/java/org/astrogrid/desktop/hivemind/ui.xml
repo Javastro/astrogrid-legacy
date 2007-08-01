@@ -127,12 +127,13 @@ ASTROSCOPE
 		</object>
 	</contribution>
 	
-	<service-point id="scopeHistory" visibility="private" interface="org.astrogrid.desktop.modules.ui.folders.FoldersProvider">
+	<service-point id="scopeHistory" visibility="private" interface="org.astrogrid.desktop.modules.ui.folders.ListProvider">
 		Loads / saves the astroscope search history.
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ui.scope.ScopeHistoryProvider">
 				<service>system.ui</service>
 				<object>preference:astrogrid.workdir</object>
+                <service>system.xmlPersist</service>
 			</construct>
 		</invoke-factory>
 	</service-point>	
@@ -409,12 +410,13 @@ Query Builder
 		</object>
 	</contribution>
 
-	<service-point id="resourceFolders" visibility="private" interface="org.astrogrid.desktop.modules.ui.folders.FoldersProvider">
+	<service-point id="resourceFolders" visibility="private" interface="org.astrogrid.desktop.modules.ui.folders.ListProvider">
 		Loads / saves the list of resource folders. shared between multiple instances of voexplorer.
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ui.folders.ResourceListsProvider">
 				<service>system.ui</service>
 				<object>preference:astrogrid.workdir</object>
+                <service>system.xmlPersist</service>
 			</construct>
 		</invoke-factory>
 	</service-point>
@@ -465,12 +467,13 @@ FILE EXPLORER
 		</object>
 	</contribution>
 
-	<service-point id="storageFolders" visibility="private" interface="org.astrogrid.desktop.modules.ui.folders.FoldersProvider">
+	<service-point id="storageFolders" visibility="private" interface="org.astrogrid.desktop.modules.ui.folders.ListProvider">
 		Loads / saves the list of resource folders.
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ui.folders.StorageFoldersProvider">
 				<service>system.ui</service>
 				<object>preference:astrogrid.workdir</object>
+                <service>system.xmlPersist</service>
 			</construct>
 		</invoke-factory>
 	</service-point>
@@ -622,7 +625,7 @@ ACTIONS
 		<item id="resouceFolders" url="http://wiki.astrogrid.org/bin/view/Astrogrid/VoExplorer#Registry_View"/>
 		<item id="resouceFolders.buttons" url="http://wiki.astrogrid.org/bin/view/Astrogrid/VoExplorer#Buttons" />
 	</contribution>	
-	
+
 
 	
 	<!--  =====================================

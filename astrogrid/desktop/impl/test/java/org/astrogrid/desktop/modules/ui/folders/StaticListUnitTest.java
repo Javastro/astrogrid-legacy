@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.astrogrid.desktop.modules.ui.voexplorer.folders;
+package org.astrogrid.desktop.modules.ui.folders;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -37,23 +37,6 @@ public class StaticListUnitTest extends FolderUnitTest {
 	public void testGetSize() {
 		StaticList d = (StaticList)f;
 		assertEquals(0,d.getSize());
-	}
-
-	/**
-	 * Test method for {@link org.astrogrid.desktop.modules.ui.folders.StaticList#setResourceArray(java.lang.String[])}.
-	 */
-	public void testSetResourceArray() {
-		StaticList d = (StaticList)f;
-		String[] resourceArray = d.getResourceArray();
-		assertNotNull(resourceArray);
-		assertEquals(0,resourceArray.length);
-		
-		String[] arr = new String[] {"foo","bar","choo"};
-		d.setResourceArray(arr);
-		assertNotNull(d.getResourceArray());
-		assertTrue(Arrays.equals(arr,d.getResourceArray()));
-		// check size and link to Collection is working.
-		assertEquals(arr.length, d.getSize());
 	}
 
 	/**

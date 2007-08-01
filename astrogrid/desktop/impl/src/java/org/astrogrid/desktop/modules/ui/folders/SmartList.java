@@ -64,6 +64,30 @@ public class SmartList extends ResourceFolder {
 	public void editAsNew(VOExplorerImpl voe) {
 		voe.editNewSmartList(this);
 	}
+
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result
+                + ((this.query == null) ? 0 : this.query.hashCode());
+        return result;
+    }
+
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final SmartList other = (SmartList) obj;
+        if (this.query == null) {
+            if (other.query != null)
+                return false;
+        } else if (!this.query.equals(other.query))
+            return false;
+        return true;
+    }
 	
 
 }
