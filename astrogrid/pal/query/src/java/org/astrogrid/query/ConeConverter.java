@@ -1,5 +1,5 @@
 /*
- * $Id: ConeConverter.java,v 1.4 2007/06/08 13:16:11 clq2 Exp $
+ * $Id: ConeConverter.java,v 1.5 2007/08/01 16:06:38 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -167,6 +167,16 @@ public class ConeConverter  {
 
       double raMin = coneRA - coneRadius;
       double raMax = coneRA + coneRadius;
+
+      double colsRaMin = raMin;
+      double colsRaMax = raMax;
+      if (colsInDegs == false) {
+        // Convert RA clip bounds to radians for actual substitution
+        // into formula
+        colsRaMin = colsRaMin * CONVERT_FACTOR;
+        colsRaMax = colsRaMax * CONVERT_FACTOR;
+      }
+
       String raClipCondition = "";
       if (coneRadius >= 180) {
         // Forget about RA clipping in this case, might as well do
@@ -177,8 +187,8 @@ public class ConeConverter  {
       else if ((raMin >= 0.0) && (raMax < 360.0)) {
         log.debug("Got simple RA boxcut");
         // Ahh, nice simple boxcut here!
-        raClipCondition = " AND ( (a.INSERT_NAME_RA >= " + raMin + ") AND " +
-            "(a.INSERT_NAME_RA <= " + raMax + ") )";
+        raClipCondition = " AND ( (a.INSERT_NAME_RA >= " + colsRaMin + ") AND " +
+            "(a.INSERT_NAME_RA <= " + colsRaMax + ") )";
       }
       else if (raMin < 0.0) {
         // Wrapping leftwards :  <   |0|   *        >
@@ -186,9 +196,12 @@ public class ConeConverter  {
         //   (ra > 360+raMin) OR (ra <= raMax)
         log.debug("Got RA boxcut left wrap");
         double realMin = 360.0 + raMin;   // A value less than 360.0
+        if (colsInDegs == false) {
+           realMin = realMin * CONVERT_FACTOR;
+        }
         raClipCondition = " AND ( " +
           "(a.INSERT_NAME_RA >= "+ Double.toString(realMin) + ") OR " +
-            "(a.INSERT_NAME_RA <= " + raMax + ") )";
+            "(a.INSERT_NAME_RA <= " + colsRaMax + ") )";
       }
       else if (raMax >= 360.0) {
         // Wrapping rightwards :  <       *    |0|   >
@@ -196,8 +209,11 @@ public class ConeConverter  {
         //   (ra >= raMin) OR (ra < raMax-360) 
         log.debug("Got RA boxcut right wrap");
         double realMax = raMax-360.0;   // A value greater than 0
+        if (colsInDegs == false) {
+          realMax = realMax * CONVERT_FACTOR;
+        }
         raClipCondition = " AND ( " +
-          "(a.INSERT_NAME_RA >= "+ Double.toString(raMin) + ") OR " +
+          "(a.INSERT_NAME_RA >= "+ Double.toString(colsRaMin) + ") OR " +
           "(a.INSERT_NAME_RA <= " + Double.toString(realMax) + ") )";
       }
       else {
@@ -288,7 +304,7 @@ public class ConeConverter  {
       }
       else {
         double decMinRad = decMin * CONVERT_FACTOR;
-        double decMaxRad = decMin * CONVERT_FACTOR;
+        double decMaxRad = decMax * CONVERT_FACTOR;
         adqlString = adqlString.replaceAll(
             DECMIN_VALUE_RAD,Double.toString(decMinRad));
         adqlString = adqlString.replaceAll(
