@@ -1,4 +1,4 @@
-/*$Id: Tracker.java,v 1.3 2007/07/13 14:37:38 jl99 Exp $
+/*$Id: Tracker.java,v 1.4 2007/08/02 14:15:28 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -154,11 +154,12 @@ public class Tracker {
             if (index != other.index) {
                 return false;
             }
-            if (type == null) {
-                if (other.type != null) {
-                    return false;
-                }
-            } else if (!type.getName().equals(other.type.getName()) ) {
+            if (type == null && other.type != null) {
+                return false;                
+            }
+            if (type != null && other.type == null) {
+                return false;                
+            } else if (other.type != type ) {
                 return false;
             }
             return true;
@@ -462,6 +463,9 @@ public class Tracker {
 
 /*
 $Log: Tracker.java,v $
+Revision 1.4  2007/08/02 14:15:28  jl99
+fix to null pointer exception
+
 Revision 1.3  2007/07/13 14:37:38  jl99
 Accommodating anonymous types again.
 
