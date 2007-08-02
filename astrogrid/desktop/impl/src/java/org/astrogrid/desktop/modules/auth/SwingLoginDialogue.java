@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.2 2007/07/12 10:12:00 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.3 2007/08/02 00:15:29 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,6 +42,7 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory;
+import org.astrogrid.desktop.modules.votech.VoMonInternal;
 import org.astrogrid.store.Ivorn;
 import org.votech.VoMon;
 import org.votech.VoMonBean;
@@ -74,7 +75,7 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
      * @throws MalformedURLException 
      * @throws ServiceException 
      */
-    public SwingLoginDialogue(final VoMon monitor,final BrowserControl browser, Registry reg, String registerLink, String defaultCommunity) throws MalformedURLException, ServiceException {
+    public SwingLoginDialogue(final VoMonInternal monitor,final BrowserControl browser, Registry reg, String registerLink, String defaultCommunity) throws MalformedURLException, ServiceException {
     	this.defaultCommunity = defaultCommunity;
     	// this query blocks - but I think that's acceptable.
     	Resource[] knownCommunities = reg.xquerySearch(
@@ -126,18 +127,10 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
 		
 				if (value instanceof Resource) {
 					Resource r = (Resource) value;
-					String s = mkCommunityString(r); //@future when registry moves to v1.0, add in more data display here.
-					VoMonBean b = monitor.checkAvailability(r.getId());
-					if (b == null) {
-						setText("<html><FONT color='#666666'>" + s);
-						setToolTipText("This community is unknown to the monitoring appliction");
-					} else 	if (b.getCode() != VoMonBean.UP_CODE) {
-						setText("<html><FONT color='#AAAAAA'>" + s);
-						setToolTipText("This community appears to be unavailable at the moment");
-					} else {
-						setText(s);
-						setToolTipText("Available");
-					}
+					String s = mkCommunityString(r); //@future when registry moves to v1.0, add in more data display here
+					setText(s);
+					setIcon(monitor.suggestIconFor(r));
+					setToolTipText(monitor.getTooltipInformationFor(r));
 				} else {
 					setText(value.toString());
 				}
@@ -312,6 +305,9 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.3  2007/08/02 00:15:29  nw
+prettified use of vomon
+
 Revision 1.2  2007/07/12 10:12:00  nw
 minor change
 
