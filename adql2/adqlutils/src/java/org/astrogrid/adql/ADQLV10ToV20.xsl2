@@ -81,6 +81,34 @@
 			</xsl:for-each>	
 		</xsl:element> 
 	</xsl:template>
+	
+	<!--+
+        | Joins are now more complex. A simple condition is no longer sufficient structure...
+        +
+      <adql:JoinSpecification xsi:type="adql:joinConditionType">
+        <adql:Condition xsi:type="adql:comparisonPredType" Comparison="=">
+          <adql:Arg xsi:type="adql:columnReferenceType" Name="id" Table="s"/>
+          <adql:Arg xsi:type="adql:columnReferenceType" Name="id" Table="o"/>
+        </adql:Condition>
+      </adql:JoinSpecification>
+        -->        
+	<xsl:template match="ad1:From/ad1:Table[substring-after(@xsi:type, ':') = 'joinTableType']/ad1:Condition | ad1:From/ad1:Table[@xsi:type = 'joinTableType']/ad1:Condition">
+       <xsl:element name="{$ad2Prefix}:JoinSpecification" namespace="{$ad2NS}">
+            <xsl:attribute name="{$xsiPrefix}:type" namespace="{$xsiNS}">
+                <xsl:value-of select="$ad2Prefix" />
+			 	<xsl:text>:joinConditionType</xsl:text>
+			</xsl:attribute>
+            <xsl:element name="{$ad2Prefix}:Condition" namespace="{$ad2NS}">
+                <xsl:attribute name="{$xsiPrefix}:type" namespace="{$xsiNS}">
+                    <xsl:value-of select="$ad2Prefix" />
+			 	    <xsl:text>:comparisonPredType</xsl:text>
+			    </xsl:attribute>
+			    <xsl:apply-templates select="@*"/> 
+            	<xsl:apply-templates select="node()"/>            	
+            </xsl:element>	
+        </xsl:element> 
+	</xsl:template>
+
 	   
 	<!--+
         | Template for type attributes belonging to Schema-instance.
