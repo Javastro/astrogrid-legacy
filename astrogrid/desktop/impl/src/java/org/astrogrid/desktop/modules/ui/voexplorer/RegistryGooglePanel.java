@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.11 2007/08/02 00:17:34 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.12 2007/08/02 11:12:47 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -272,7 +272,6 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 	private final JButton newButton;
 	private final JLabel searchCount;
 	private final JLabel filterCount;
-	private final JLabel searchTitle;
 	protected final ResourceTable resourceTable;
 	protected final EventList  items ;
 	protected final EventList edtItems; // a view of the items event list, on the Event dispatch thread.
@@ -291,6 +290,8 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 	private final AnnotationService annServer;
 	// stuff that's accessed when composing this pane together in the UI.
 	public final UIComponentBodyguard parent;
+
+    private JLabel searchTitle;
 	
 	public void setPopup(JPopupMenu popup) {
 		resourceTable.setPopup(popup);
@@ -369,7 +370,7 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 		currentResourceInView.addListSelectionListener(this); // assume this happens on EDT?
 		
 		FormLayout form = new FormLayout(
-				"1dlu, pref,1dlu,pref,2dlu,left:pref:grow,2dlu,right:30dlu,left:60dlu,6dlu,70dlu,pref,pref,1dlu" // cols
+				"1dlu, pref,0dlu,pref,0dlu,left:pref:grow,0dlu,right:80dlu,left:60dlu,0dlu,60dlu,pref,pref,1dlu" // cols
 				,"d" // rows
 				);
 		PanelBuilder builder = new PanelBuilder(form);
@@ -495,7 +496,7 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 			int resultSize = edtItems.size();
 			int viewSize = resourceTableModel.getRowCount();
 			if (viewSize != resultSize) {
-				filterCount.setText(viewSize + " of ");
+				filterCount.setText("Filtering to " + viewSize + " of ");
 			} else {
 				filterCount.setText(null);
 			}
@@ -693,6 +694,9 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.12  2007/08/02 11:12:47  nw
+improved the formatting of filtering information.
+
 Revision 1.11  2007/08/02 00:17:34  nw
 moved formatting methods into vomon component.
 
