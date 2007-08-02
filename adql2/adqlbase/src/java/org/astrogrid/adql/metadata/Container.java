@@ -1,4 +1,4 @@
-/*$Id: Container.java,v 1.3 2007/07/29 23:33:59 jl99 Exp $
+/*$Id: Container.java,v 1.4 2007/08/02 14:14:13 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -78,6 +78,10 @@ public class Container {
         return (Table)htTables.get( Key.formKeyString( name, qualifiers ) ) ;
     }
     
+    public Table getTable( String[] nameAndQualifiers ) {
+        return (Table)htTables.get( Key.formKeyString( nameAndQualifiers) ) ;
+    }
+    
     public boolean isTable( String name ) {
         return htTables.containsKey( name ) ;
     }
@@ -111,6 +115,9 @@ public class Container {
 
 /*
 $Log: Container.java,v $
+Revision 1.4  2007/08/02 14:14:13  jl99
+Bug fix and code tidy
+
 Revision 1.3  2007/07/29 23:33:59  jl99
 tidy
 

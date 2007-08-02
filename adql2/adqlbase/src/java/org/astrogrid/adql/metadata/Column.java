@@ -1,4 +1,4 @@
-/*$Id: Column.java,v 1.1 2007/07/29 22:51:57 jl99 Exp $
+/*$Id: Column.java,v 1.2 2007/08/02 14:14:13 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -17,24 +17,26 @@ package org.astrogrid.adql.metadata;
  */
 public class Column extends MetaData {
     
-    private String ucd ;
     private String type ;
+    private String unit ;
+    private String ucd ;
     private String description ;
 
-    public Column( String name, String[] qualifiers, String ucd, String type, String description ) {
+    public Column( String name, String[] qualifiers, String type, String unit, String ucd, String description ) {
         super( name, qualifiers ) ;
-        initDetails( ucd, type, description ) ;
+        initDetails( type, unit, ucd, description ) ;
     } 
     
-    public Column( String name, Table table, String ucd, String type, String description ) {
+    public Column( String name, Table table, String type, String unit, String ucd, String description ) {
         super( name, table ) ;
-        initDetails( ucd, type, description ) ;
+        initDetails( type, unit, ucd, description ) ;
     } 
     
     public Column( String name ) {
         super( name ) ;
         this.ucd = "" ;
         this.type = "" ;
+        this.unit = "" ;
         this.description = "" ;
     }
     
@@ -50,19 +52,24 @@ public class Column extends MetaData {
     
     private void initDetails( String[] details ) {
         if( details == null ) {
-            this.ucd = "" ;
             this.type = "" ;
+            this.unit = "" ;
+            this.ucd = "" ;          
             this.description = "" ;
         }
         else {
             if( details[0] == null )
-                this.ucd = "" ;
-            else
-                this.ucd = details[0] ;
-            if( details[1] == null )
                 this.type = "" ;
             else
-                this.type = details[1] ;
+                this.type = details[0] ;
+            if( details[0] == null )
+                this.unit = "" ;
+            else
+                this.unit = details[0] ;
+            if( details[1] == null )
+                this.ucd = "" ;
+            else
+                this.ucd = details[1] ;
             if( details[2] == null ) 
                 this.description = "" ;
             else
@@ -70,7 +77,11 @@ public class Column extends MetaData {
         }
     }
     
-    private void initDetails( String ucd, String type, String description ) {
+    private void initDetails( String type, String unit, String ucd, String description ) {
+        if( unit == null )
+            this.unit = "" ;
+        else
+            this.unit = unit ;
         if( ucd == null )
             this.ucd = "" ;
         else
@@ -105,12 +116,22 @@ public class Column extends MetaData {
     public String getUcd() {
         return ucd;
     }
+    
+    /**
+     * @return the unit
+     */
+    public String getUnit() {
+        return unit;
+    }
 
 }
 
 
 /*
 $Log: Column.java,v $
+Revision 1.2  2007/08/02 14:14:13  jl99
+Bug fix and code tidy
+
 Revision 1.1  2007/07/29 22:51:57  jl99
 First commit of meta data low level implementation
 

@@ -1,4 +1,4 @@
-/*$Id: Schema.java,v 1.1 2007/07/29 23:33:59 jl99 Exp $
+/*$Id: Schema.java,v 1.2 2007/08/02 14:14:12 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -25,6 +25,10 @@ public class Schema extends MetaData {
         super( name ) ;
     }
     
+    public Schema( String[] nameAndQualifiers ) {
+        super( nameAndQualifiers ) ;
+    }
+    
     public String getCatalog() {
         return this.key.qualifiers[0] ;
     }
@@ -34,6 +38,9 @@ public class Schema extends MetaData {
 
 /*
 $Log: Schema.java,v $
+Revision 1.2  2007/08/02 14:14:12  jl99
+Bug fix and code tidy
+
 Revision 1.1  2007/07/29 23:33:59  jl99
 tidy
 

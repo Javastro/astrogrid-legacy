@@ -1,4 +1,4 @@
-/*$Id: Key.java,v 1.2 2007/07/29 23:33:59 jl99 Exp $
+/*$Id: Key.java,v 1.3 2007/08/02 14:14:12 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -47,6 +47,19 @@ public class Key {
         return initKey( candidate, name, qualifiers ) ;   
     }
     
+    public static Key buildKey( String[] nameAndQualifiers ) {
+        if( nameAndQualifiers.length == 1 ) {
+            return buildKey( nameAndQualifiers[0] ) ;
+        }
+        else {
+            String[] qualifiers = new String[ nameAndQualifiers.length - 1 ] ;
+            String name = nameAndQualifiers[ nameAndQualifiers.length - 1 ] ;
+            System.arraycopy( nameAndQualifiers, 0, qualifiers, 0,  nameAndQualifiers.length - 1 ) ;
+            return buildKey( name, qualifiers ) ;
+        }
+        
+    }
+    
     public static Key buildKey( String name, Key parent ) {
         String candidate = parent.keyValue + '.' + name ;
         String[] qualifiers = new String[ parent.qualifiers.length + 1 ] ;
@@ -57,6 +70,15 @@ public class Key {
     
     public static String formKeyString( String name ) {
         return name ;
+    }
+    
+    public static String formKeyString( String[] nameAndQualifiers ) {
+        StringBuffer buffer = new StringBuffer( nameAndQualifiers.length * 16 ) ;
+        for( int i=0; i<nameAndQualifiers.length; i++ ) {
+            buffer.append( nameAndQualifiers[i] ).append( '.' ) ;
+        }
+        buffer.deleteCharAt( buffer.length()-1 ) ;
+        return buffer.toString() ;
     }
 
     public static String formKeyString( String name, String[] qualifiers ) {
@@ -146,6 +168,9 @@ public class Key {
 
 /*
 $Log: Key.java,v $
+Revision 1.3  2007/08/02 14:14:12  jl99
+Bug fix and code tidy
+
 Revision 1.2  2007/07/29 23:33:59  jl99
 tidy
 

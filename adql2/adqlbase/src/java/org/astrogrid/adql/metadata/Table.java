@@ -1,4 +1,4 @@
-/*$Id: Table.java,v 1.2 2007/07/29 23:33:59 jl99 Exp $
+/*$Id: Table.java,v 1.3 2007/08/02 14:14:12 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -25,6 +25,10 @@ public class Table extends MetaData {
         super( name, qualifiers ) ;
     }
     
+    public Table( String[] nameAndQualifiers ) {
+        super( nameAndQualifiers ) ;
+    }
+    
     public Table( String name ) {
         super( name ) ;
     }
@@ -34,6 +38,9 @@ public class Table extends MetaData {
 
 /*
 $Log: Table.java,v $
+Revision 1.3  2007/08/02 14:14:12  jl99
+Bug fix and code tidy
+
 Revision 1.2  2007/07/29 23:33:59  jl99
 tidy
 

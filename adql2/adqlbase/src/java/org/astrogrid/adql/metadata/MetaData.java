@@ -1,4 +1,4 @@
-/*$Id: MetaData.java,v 1.1 2007/07/29 22:51:56 jl99 Exp $
+/*$Id: MetaData.java,v 1.2 2007/08/02 14:14:12 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -29,6 +29,10 @@ public class MetaData {
     
     public MetaData( String name ) {
         this.key = Key.buildKey( name ) ;
+    }
+    
+    public MetaData( String[] nameAndQualifiers ) {
+        this.key = Key.buildKey( nameAndQualifiers ) ;
     }
     
     public String getName() {
