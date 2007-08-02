@@ -38,6 +38,9 @@ import org.astrogrid.adql.metadata.*;
  * <p>
  * To return to compiling full queries, switch mode by typing "compile_full" 
  * and pressing the ENTER key.
+ * <p>
+ * There is one command line option -m, which will attempt to load test metadata from
+ * the test-metadata.properties file.
  *
  * @author Jeff Lusted jl99@star.le.ac.uk Sep 18, 2006
  */
@@ -78,9 +81,9 @@ public class Interactive {
     private static StringBuffer queryBuffer ;
     private static Interactive interactive ;
     private static String fragmentName ;
-    private static Container metadata ;
-    
-    
+    private static Container metadata ;  
+    private static boolean useTestMetaData = false ;
+       
     public static final String WELCOME = 
         "Welcome to the command line tester for the AdqlStoX compiler...\n" +
         " USAGE: Type an ADQL query and press the ENTER key.\n" +
@@ -91,14 +94,20 @@ public class Interactive {
         "        from: from catalogA as a inner join catalogB as b on a.col1 = b.col1;\n" +
         "        Select/Column: a.ra;\n" +
         "        Select/Item[@type=\"aggregateFunctionType\"]/Arg: * ; \n\n" +
-        "        To return to compiling full queries, switch by typing \"compile_full\"." ;
-    
+        "        To return to compiling full queries, switch by typing \"compile_full\".\n" +
+        " COMMAND LINE OPTIONS: \n" +
+        "        -m    Will attempt to load test metadata from the test-metadata.properties file." ;
    
-    
     public Interactive() {}
     
 	 public static void main(String args[]) {
-         interactive = new Interactive() ;     
+         interactive = new Interactive() ;   
+         
+         if( args.length > 0 ) {
+             if( args[0].equals( "-m") ) {
+                 useTestMetaData = true ;
+             }
+         }
             
          print( WELCOME );
          while( true ) {
@@ -251,9 +260,10 @@ public class Interactive {
      }
      
      private static void initMetadata() {
-         metadata = new Container() ;
-         metadata.pushFunction( new Function( "fCamcol", 1 ) ) ;
-         metadata.pushFunction( new Function( "fFieldMask", 1 ) ) ;
+         if( useTestMetaData == true )
+             metadata = TestMetaDataLoader.getMetaData() ;
+         else 
+             metadata = new Container() ;
          COMPILER.setMetadata( metadata ) ;
      }
 }
