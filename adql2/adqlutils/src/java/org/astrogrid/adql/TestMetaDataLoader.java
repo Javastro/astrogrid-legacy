@@ -1,4 +1,4 @@
-/*$Id: TestMetaDataLoader.java,v 1.1 2007/08/02 11:20:18 jl99 Exp $
+/*$Id: TestMetaDataLoader.java,v 1.2 2007/08/02 14:13:31 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -65,14 +65,13 @@ public class TestMetaDataLoader {
     }
     
     private static void loadFunction( Container md, Properties p, String key ) {
-        String[]pp = ((String)p.getProperty( key )).split( "\\." ) ;
-        
+        String[]pp = p.getProperty( key ).trim().split( "\\." ) ;       
         Function f = new Function( pp[0], Integer.valueOf( pp[1]).intValue(), Integer.valueOf(pp[2]).intValue() ) ;
         md.pushFunction( f ) ;
     }
     
     private static void loadTable( Container md, Properties p, String key ) {
-        String[]pp = ((String)p.getProperty( key )).split( "\\." ) ;
+        String[]pp = p.getProperty( key ).trim().split( "\\." ) ;
         if( pp.length == 1 ) {
             Table t = new Table( pp[0]  ) ;
             md.pushTable( t ) ;
@@ -90,20 +89,29 @@ public class TestMetaDataLoader {
     
     private static void loadColumn( Container md, Properties p, String key ) {
         String[]keyParts = key.split( "\\." ) ;
-        String[]valueParts = ((String)p.getProperty( key )).split( "\\." ) ;
+        String[]valueParts = p.getProperty( key ).trim().split( "\\." ) ;
        
-        String[] tableQualifiers = p.getProperty( "table" + valueParts[0] ).split( "\\." ) ;
+        String[] tableQualifiers = p.getProperty( "table." + valueParts[0] ).trim().split( "\\." ) ;
        
-        String ucd = p.getProperty( keyParts[0] + keyParts[1] + "ucd" ) ;
-        String type = p.getProperty( keyParts[0] + keyParts[1] + "type" ) ;
-        String desc = p.getProperty( keyParts[0] + keyParts[1] + "description" ) ; 
+        String ucd = p.getProperty( keyParts[0] + '.' + keyParts[1] + '.' + "ucd" ) ;
+        if( ucd != null )
+            ucd = ucd.trim() ;
+        String unit = p.getProperty( keyParts[0] + '.' + keyParts[1] + '.' + "unit" ) ;
+        if( unit != null )
+            unit = unit.trim() ;
+        String type = p.getProperty( keyParts[0] + '.' + keyParts[1] + '.' + "type" ).trim() ;
+        if( type != null )
+            type = type.trim();
+        String desc = p.getProperty( keyParts[0] + '.' + keyParts[1] + '.' + "description" ).trim() ; 
+        if( desc != null )
+            desc = desc.trim();
        
-        Column c = new Column( valueParts[1], tableQualifiers, new String[] { ucd, type, desc } ) ;
+        Column c = new Column( valueParts[1], tableQualifiers, new String[] { type, unit, ucd, desc } ) ;
         md.pushColumn( c ) ;
     }
     
     private static Properties getMetaDataProperties() {        
-        InputStream pIS = AdqlStoXTest.class.getResourceAsStream( "adql-metadata.properties" ) ;
+        InputStream pIS = AdqlStoXTest.class.getResourceAsStream( "test-metadata.properties" ) ;
         if( pIS == null )
             return null ;
         Properties p = new Properties() ;
@@ -121,6 +129,9 @@ public class TestMetaDataLoader {
 
 /*
 $Log: TestMetaDataLoader.java,v $
+Revision 1.2  2007/08/02 14:13:31  jl99
+Test system metadata loader with metadata modelled on a subset of SDSS.
+
 Revision 1.1  2007/08/02 11:20:18  jl99
 Test meta data loader first commit.
 
