@@ -1,4 +1,4 @@
-/*$Id: UIComponentImpl.java,v 1.15 2007/07/12 10:15:42 nw Exp $
+/*$Id: UIComponentImpl.java,v 1.16 2007/08/02 00:16:26 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -62,7 +62,9 @@ import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.comp.EventListPopupMenuManager;
+import org.astrogrid.desktop.modules.ui.comp.IndeterminateProgressIndicator;
 import org.astrogrid.desktop.modules.ui.comp.MessageTimerProgressBar;
+import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 
 import ca.odell.glazedlists.FilterList;
 import ca.odell.glazedlists.FunctionList;
@@ -212,6 +214,7 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
     private JButton tasksButton;
     private final FilterList tasksList;
     private JButton throbber;
+
     
     
     public JFrame getFrame() {
@@ -307,7 +310,7 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
             bottomPanel.setZoneBorder(EMPTY_BORDER);   
             
             bottomPanel.addZone("throbber",getThrobber(),"20");
-            bottomPanel.addZone("background tasks",getTasksButton(),"20");
+            bottomPanel.addZone("background tasks",getTasksButton(),"25");
 
             bottomPanel.addZone("status",getProgressBar(),"*");
             bottomPanel.addZone("help",getContextSensitiveHelpButton(),"20");
@@ -373,7 +376,7 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
     
     private JButton getTasksButton() {
         if (tasksButton == null) {
-            tasksButton = new JButton(IconHelper.loadIcon("loader.gif"));
+            tasksButton = new IndeterminateProgressIndicator.Button();
             tasksButton.putClientProperty("is3DEnabled",Boolean.TRUE);
             tasksButton.setBorder(BorderFactory.createEtchedBorder());
             tasksButton.setToolTipText("<html>List background tasks.<br> Click a task to halt and cancel it.");
@@ -394,9 +397,7 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
 				}
             };
             final FunctionList jcomponentList = new FunctionList(rangeList,new FunctionList.Function() {
-            	Icon completed = IconHelper.loadIcon("tick16.png");
-            	Icon pending = IconHelper.loadIcon("idle16.png");
-            	Icon running = IconHelper.loadIcon("loader.gif");
+
             	public Object evaluate(Object arg0) {
             		BackgroundWorker w = (BackgroundWorker)arg0;
             		JMenuItem mi = new JMenuItem(w.getMessage());
@@ -404,13 +405,13 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
             		mi.addActionListener(l);
             		switch (w.getStatus()) {
             		case BackgroundWorker.PENDING:
-            			mi.setIcon(pending);
+            			mi.setIcon(UIConstants.PENDING_ICON);
             			break;
             		case BackgroundWorker.RUNNING:
-            			mi.setIcon(running);
+            			mi.setIcon(UIConstants.RUNNING_ICON);
             			break;
             		case BackgroundWorker.COMPLETED:
-            			mi.setIcon(completed);
+            			mi.setIcon(UIConstants.COMPLETED_ICON);
             			break;                         
             		}
             		return mi;    
@@ -510,6 +511,9 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
 
 /* 
 $Log: UIComponentImpl.java,v $
+Revision 1.16  2007/08/02 00:16:26  nw
+nicer progress indicator
+
 Revision 1.15  2007/07/12 10:15:42  nw
 added icon to close action
 
