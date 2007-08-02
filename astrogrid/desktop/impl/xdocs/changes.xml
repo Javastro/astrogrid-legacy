@@ -15,6 +15,19 @@
 	</head>
 <body>
 <release version="2007.4.alpha2" date="unreleased">
+    <action dev="nw" type="update">
+        Improved presentation of vomon information in login dialogue
+    </action>
+    <action dev="nw" type="add">
+        Reimplemented taskrunner 'execute' button to present a choice of
+        available servers.
+    </action>
+    <action dev="nw" type="fix">
+        Clarified the function of the filter field 
+    </action>
+    <action dev="nw" type="update">
+        Altered persistence format for resource lists to more human-friendly xml.
+    </action>
     <action dev="nw" type="add">
        TaskRunner: Added tooltips showing message history for tasks
     </action>

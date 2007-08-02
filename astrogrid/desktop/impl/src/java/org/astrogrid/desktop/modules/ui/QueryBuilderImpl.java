@@ -28,6 +28,7 @@ import org.astrogrid.desktop.modules.system.ui.UIContributionBuilder;
 import org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker;
 import org.astrogrid.desktop.modules.ui.taskrunner.TaskRunnerImpl;
+import org.astrogrid.desktop.modules.votech.VoMonInternal;
 
 /** subclass of taskrunnner that takes care of query building.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -42,10 +43,10 @@ public class QueryBuilderImpl extends TaskRunnerImpl implements
             RemoteProcessManagerInternal rpmi
             ,ResourceChooserInternal rci, RegistryGoogle regChooser,
             UIContributionBuilder menuBuilder, TypesafeObjectBuilder builder
-            ,FileSystemManager vfs
+            ,FileSystemManager vfs, VoMonInternal vomon
             ,Registry reg)
             throws HeadlessException {
-        super(context, apps, rpmi,rci, regChooser, menuBuilder, builder,vfs);
+        super(context, apps, rpmi,rci, regChooser, menuBuilder, builder,vfs,vomon);
         this.reg = reg;
     }
 

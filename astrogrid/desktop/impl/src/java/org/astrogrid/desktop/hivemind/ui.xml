@@ -216,6 +216,7 @@ ASTROSCOPE
             <inject object="service:system.uiBuilder" />
             <inject object="service:ui.UiBuilder" />   
             <inject object="service:system.vfs" />         	
+            <inject object="service:votech.vomon" />
 		</object>
         
 		<object name="executionTracker" class="org.astrogrid.desktop.modules.ui.execution.ExecutionTracker">
@@ -355,7 +356,8 @@ Query Builder
             <inject object="service:dialogs.registryGoogle" />  
             <inject object="service:system.uiBuilder" />
             <inject object="service:ui.UiBuilder" />   
-            <inject object="service:system.vfs" />                        
+            <inject object="service:system.vfs" />  
+             <inject object="service:votech.vomon" />                                  
             <inject object="service:ivoa.registry" />                
         </object>
        </contribution>
