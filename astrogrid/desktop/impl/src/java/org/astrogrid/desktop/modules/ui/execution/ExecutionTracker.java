@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Observable;
 
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -169,15 +168,6 @@ public class ExecutionTracker{
 
 
 	private static DateFormat df = SimpleDateFormat.getDateTimeInstance(); 
-	private static final Icon COMPLETED_ICON = IconHelper.loadIcon("tick16.png");
-	private static final Icon ERROR_ICON = IconHelper.loadIcon("no16.png");
-	private static final Icon RUNNING_ICON = IconHelper.loadIcon("greenled16.png");
-	private static final Icon UNKNOWN_ICON = IconHelper.loadIcon("idle16.png");
-	private static final Icon PENDING_ICON = IconHelper.loadIcon("yellowled16.png");
-	//private static final Icon RUNNING_ICON = IconHelper.loadIcon("loader.gif");
-	//private static final Icon COMPLETED_ICON = IconHelper.loadIcon("greenled16.png");
-	//private static final Icon ERROR_ICON = IconHelper.loadIcon("redled16.png");		
-
 	/** container class that holds the ui components required to display a single process monitor
 	 * 
 	 *  listens to the process manager, and updates ui components on changes.
@@ -230,7 +220,7 @@ public class ExecutionTracker{
 
 		private final ProcessMonitor pm;
 		private final JLabel messageLabel = new JLabel();
-		private final JLabel status = new JLabel(PENDING_ICON);
+		private final JLabel status = new JLabel(UIConstants.PENDING_ICON);
 		private final JLabel title = new JLabel();
 		private final EventList files;
 		private final JButton deleteButton;
@@ -291,7 +281,12 @@ public class ExecutionTracker{
 		
 		/** not to be called before task has been 'init()' - as it's not got an ID at that stage */
 		private void populateResults() {
+		    if (!pm.started()) {
+		        // not started - so won't have any results to retrieve.
+		        return;
+		    }
 		    logger.debug("Fetching results");
+		    
 		    (new BackgroundWorker(parent,"Listing results") {
 
                 protected Object construct() throws Exception {
@@ -349,18 +344,18 @@ public class ExecutionTracker{
 			String st = pm.getStatus();
 			if (st.equalsIgnoreCase("error")) {
 			    alterButton();
-				status.setIcon(ERROR_ICON);
+				status.setIcon(UIConstants.ERROR_ICON);
 				populateResults();
 			} else if (st.equalsIgnoreCase("completed")) {
-				status.setIcon(COMPLETED_ICON);
+				status.setIcon(UIConstants.COMPLETED_ICON);
 				alterButton();
 				populateResults();
 			} else if (st.equalsIgnoreCase("pending")) {
-				status.setIcon(PENDING_ICON);
+				status.setIcon(UIConstants.PENDING_ICON);
 			} else if (st.equalsIgnoreCase("running")) {
-				status.setIcon(RUNNING_ICON);
+				status.setIcon(UIConstants.RUNNING_ICON);
 			} else {
-				status.setIcon(UNKNOWN_ICON);
+				status.setIcon(UIConstants.UNKNOWN_ICON);
 			}
 			status.setToolTipText(st);
 		}
