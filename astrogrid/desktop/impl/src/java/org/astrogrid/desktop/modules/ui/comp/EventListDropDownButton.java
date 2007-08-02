@@ -3,6 +3,9 @@
  */
 package org.astrogrid.desktop.modules.ui.comp;
 
+import javax.swing.Icon;
+import javax.swing.JButton;
+
 import org.astrogrid.desktop.icons.IconHelper;
 
 import ca.odell.glazedlists.EventList;
@@ -15,18 +18,21 @@ import ca.odell.glazedlists.EventList;
  * @since Apr 2, 200712:43:12 AM
  */
 public class EventListDropDownButton extends DropDownButton {
-	/**
-	 * cnstruct a drop-down button list, 
-	 * @param iconName the icon for the button
-	 * @param el the event list to show items for
-	 * @param reverse whether to display items in reverse order or not.
-	 */
-	public EventListDropDownButton(String iconName,EventList el, boolean reverse) {
-		super(IconHelper.loadIcon(iconName));
+
+	public EventListDropDownButton(JButton main,EventList el, boolean reverse) {
+		super(main);
 		setRunFirstItem(true);	
-		new EventListPopupMenuManager(el,this,getPopupMenu(),reverse);
+		new EventListPopupMenuManager(el,this.getArrowButton(),getPopupMenu(),reverse);
 
 	}
+	
+	
+	   public EventListDropDownButton(String title, Icon icon, EventList el, boolean reverse) {
+	        super(title,icon);
+	        setRunFirstItem(true);  
+	        new EventListPopupMenuManager(el,this.getArrowButton(),getPopupMenu(),reverse);
+
+	    }
 
 
 }

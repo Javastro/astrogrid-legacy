@@ -31,6 +31,7 @@ import java.awt.event.MouseListener;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
@@ -44,9 +45,8 @@ import javax.swing.border.CompoundBorder;
  * Copyright 2005 Mammoth Software LLC
  * Edited nww - fixed some bugs, made it more open to extension
  */
-public class DropDownButton extends JButton implements ActionListener {
+public class DropDownButton extends JToolBar implements ActionListener {
 	protected JPopupMenu popup = new JPopupMenu();
-	protected JToolBar tb = new ToolBar();
 	protected JButton mainButton;
 	protected JButton arrowButton;
 	private ActionListener mainButtonListener = new ActionListener() {
@@ -65,30 +65,32 @@ public class DropDownButton extends JButton implements ActionListener {
 	
 	public void setEnabled(boolean b) {
 		super.setEnabled(b);
-		tb.setEnabled(b);
 		mainButton.setEnabled(b);
 		arrowButton.setEnabled(b);
 	} 
 	
-	public DropDownButton(Icon icon) {
-		this();
-		mainButton = new RolloverButton(icon, 25, false);
-		arrowButton = new RolloverButton(new DownArrow(), 11, false);
-		init();
+	public DropDownButton(String title,Icon icon) {
+	    this(new JButton(title,icon));
+	}
+
+	
+	public DropDownButton(JButton mainButton) {
+		this(mainButton, new JButton(new DownArrow()));
 	}
 	
-	public DropDownButton(Icon icon, int size) {
-		this();
-		mainButton = new RolloverButton(icon, size, false);
-		arrowButton = new RolloverButton(new DownArrow(), 11, false);
-		init();
-	}
-	
-	public DropDownButton(RolloverButton mainButton, RolloverButton arrowButton) {
+	public DropDownButton(JButton mainButton, JButton arrowButton) {
 		this();
 		this.mainButton = mainButton;
 		this.arrowButton = arrowButton;
 		init();
+	}
+	
+	public JButton getMainButton() {
+	    return mainButton;
+	}
+	
+	public JButton getArrowButton() {
+	    return arrowButton;
 	}
 	
 	private DropDownButton() {
@@ -105,31 +107,9 @@ public class DropDownButton extends JButton implements ActionListener {
 		return BorderFactory.createRaisedBevelBorder();
 	}
 	
-	private void initRolloverListener() {
-		MouseListener l = new MouseAdapter(){
-			Border mainBorder = null;
-			Border arrowBorder = null;
-			public void mouseEntered(MouseEvent e) {
-				mainBorder = mainButton.getBorder();
-				arrowBorder = mainButton.getBorder();
-				mainButton.setBorder(new CompoundBorder(getRolloverBorder(), mainBorder));
-				arrowButton.setBorder(new CompoundBorder(getRolloverBorder(), arrowBorder));
-				mainButton.getModel().setRollover(true);
-				arrowButton.getModel().setRollover(true);
-			}
-			public void mouseExited(MouseEvent e) {
-				mainButton.setBorder(mainBorder);
-				arrowButton.setBorder(arrowBorder);
-				mainButton.getModel().setRollover(false);
-				arrowButton.getModel().setRollover(false);
-			}
-		};
-		mainButton.addMouseListener(l);
-		arrowButton.addMouseListener(l);
-	}
+
 	
 	private void init() {
-		initRolloverListener();
 		
       Icon disDownArrow = new DisabledDownArrow();
       arrowButton.setDisabledIcon(disDownArrow);
@@ -137,19 +117,17 @@ public class DropDownButton extends JButton implements ActionListener {
       mainButton.addActionListener(this); 
       arrowButton.addActionListener(this);
       
-      setMargin(new Insets(0, 0, 0, 0));
-      
+
       
       // Windows draws border around buttons, but not toolbar buttons
       // Using a toolbar keeps the look consistent.
-      tb.setBorder(null);
-      tb.setMargin(new Insets(0, 0, 0, 0));
-      tb.setFloatable(false);
-      tb.add(mainButton);
-      tb.add(arrowButton);
-      add(tb);
+      setBorder(null);
+      setMargin(new Insets(0, 0, 0, 0));
+      setFloatable(false);
+      add(mainButton);
+      add(arrowButton);
       
-      setFixedSize(mainButton, arrowButton);
+//      setFixedSize(mainButton, arrowButton);
   
 	}
 	/*
@@ -241,12 +219,6 @@ public class DropDownButton extends JButton implements ActionListener {
           g.drawLine(x+3, y+3, x+5, y+1);
       }
   }
-   
-   private static class ToolBar extends JToolBar {
-   	public void updateUI() {
-   		super.updateUI();
-   		setBorder(null);
-   	}
-   }
+
 
 }
