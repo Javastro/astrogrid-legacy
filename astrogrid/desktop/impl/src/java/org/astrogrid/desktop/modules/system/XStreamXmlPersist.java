@@ -162,9 +162,18 @@ public class XStreamXmlPersist implements XmlPersist {
         public Object unmarshal(HierarchicalStreamReader reader,
                 UnmarshallingContext context) {
             SmartList sl = new SmartList();
-            sl.setFixed(Boolean.valueOf(reader.getAttribute("fixed")).booleanValue());
-            sl.setName(reader.getAttribute("name"));
-            sl.setIconName(reader.getAttribute("iconName"));
+            final String fixedVal = reader.getAttribute("fixed");
+            if (fixedVal != null) {
+                sl.setFixed(Boolean.valueOf(fixedVal).booleanValue());
+            }
+            final String nameVal = reader.getAttribute("name");
+            if (nameVal != null) {
+                sl.setName(nameVal);
+            }
+            final String iconVal = reader.getAttribute("iconName");
+            if (iconVal != null) {
+                sl.setIconName(iconVal);
+            }
             while (reader.hasMoreChildren()) {
                 reader.moveDown();
                 if ("query".equals(reader.getNodeName())) {

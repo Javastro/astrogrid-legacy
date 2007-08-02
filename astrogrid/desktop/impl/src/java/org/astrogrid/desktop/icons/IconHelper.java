@@ -1,4 +1,4 @@
-/*$Id: IconHelper.java,v 1.9 2007/06/18 16:23:52 nw Exp $
+/*$Id: IconHelper.java,v 1.10 2007/08/02 10:56:00 nw Exp $
  * Created on 06-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.desktop.icons;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 
@@ -94,9 +95,16 @@ public class IconHelper {
         if (u != null) {
             ImageIcon i = new ImageIcon(u);
             cache.put(imgName,i);
-            return i;
+            return i;            
         } else {
-            logger.warn("Failed to find " + imgName);
+            // maybe it's a url itself then... try downloading from this.
+            try {
+                u = new URL(imgName);
+                return loadIcon(u);
+            } catch (MalformedURLException x) {
+                // fall through
+            }
+            logger.warn("Failed to find " + imgName );
             return null;
         }
     }
@@ -111,6 +119,9 @@ public class IconHelper {
 
 /* 
 $Log: IconHelper.java,v $
+Revision 1.10  2007/08/02 10:56:00  nw
+Complete - task 47: Use XStream for persistence.
+
 Revision 1.9  2007/06/18 16:23:52  nw
 javadoc fix
 
