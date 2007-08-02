@@ -262,12 +262,12 @@ public class StorageView implements ListSelectionListener, HistoryListener{
 	    // previous button
 	    RangeList historyRange = new RangeList(history.getPreviousList());
 	    historyRange.setTailRange(history.getMaxHistorySize(),1); // not including the current.
-	    back = new EventListDropDownButton("previous22.png",historyRange,true);
+	    back = new EventListDropDownButton(new JButton(IconHelper.loadIcon("previous22.png")),historyRange,true);
 	 //   configureButton(back);
 	    back.setToolTipText("Back: See folders you viewed previously");
 	    builder.add(back,cc.xy(r++,c));
 	    // next button.
-	    forward = new EventListDropDownButton("next22.png",history.getNextList(),true);
+	    forward = new EventListDropDownButton(new JButton(IconHelper.loadIcon("next22.png")),history.getNextList(),true);
 	//    configureButton(forward);
 	    forward.setToolTipText("Forward: See folders you viewed previously");
 	    builder.add(forward,cc.xy(r++,c));
