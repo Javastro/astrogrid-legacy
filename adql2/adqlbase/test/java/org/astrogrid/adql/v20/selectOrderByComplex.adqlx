@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<adql:Select xmlns:adql="http://www.ivoa.net/xml/v2.0/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <adql:SelectionList>
+    <adql:Item xsi:type="adql:allSelectionItemType" Table="a"/>
+    <adql:Item xsi:type="adql:aliasSelectionItemType" As="absPOS_EQ_DEC">
+      <adql:Expression xsi:type="adql:mathFunctionType" Name="ABS">
+        <adql:Arg xsi:type="adql:columnReferenceType" Name="POS_EQ_DEC" Table="a"/>
+      </adql:Expression>
+    </adql:Item>
+    <adql:Item xsi:type="adql:aliasSelectionItemType" As="flux">
+      <adql:Expression xsi:type="adql:binaryExprType" Oper="+">
+        <adql:Arg xsi:type="adql:columnReferenceType" Name="PHOT_FLUX_PEAK" Table="a"/>
+        <adql:Arg xsi:type="adql:columnReferenceType" Name="PHOT_FLUX_INT" Table="a"/>
+      </adql:Expression>
+    </adql:Item>
+  </adql:SelectionList>
+  <adql:From>
+    <adql:Table xsi:type="adql:tableType" Name="catalogue" Alias="a"/>
+  </adql:From>
+  <adql:OrderBy>
+    <adql:Item>
+      <adql:Expression xsi:type="adql:columnReferenceType" Name="POS_EQ_RA"/>
+      <adql:Order Direction="ASC"/>
+    </adql:Item>
+    <adql:Item>
+      <adql:Expression xsi:type="adql:columnReferenceType" Name="absPOS_EQ_DEC"/>
+      <adql:Order Direction="DESC"/>
+    </adql:Item>
+    <adql:Item>
+      <adql:Expression xsi:type="adql:columnReferenceType" Name="flux"/>
+      <adql:Order Direction="ASC"/>
+    </adql:Item>
+  </adql:OrderBy>
+</adql:Select>

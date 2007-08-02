@@ -25,5 +25,20 @@ Some things about the file names, simply for convenience...
 (3) File names for selections involving multiple archives have the letters "MA" somewhere in the name.
 (4) Some files have WILLFAIL embedded in the name. These are the focus of some experimentation and
     may or may not fail according to the success, extent or otherwise of the experiment.
+    These will eventually be removed.
 
 Usually the above annotations are prefixed to the file name.
+
+SPECIAL NOTE on the test directory structure.
+(1) The v10 directory contains ADQL/s files that can be successfully processed by the version 2 compiler without change.
+(Note that "success" here also means that the ones expected to fail do still fail!). All of the ADQL/x output control 
+files are converted to the version 2 structure prior to comparison with the output of the compiler.
+
+(2) The v10weeds directory contains two sorts of ADQL/s files. Firstly, those queries that fail under version 1
+but succeed under version 2. For each of these a new ADQL/x file has been generated to form a valid pair.
+Secondly, those queries that succeed under version 1 but fail under version 2. Here the ADQL/s file has been 
+altered to reflect the new syntax, whilst the matching ADQL/x file has been left as-is. The converter processes
+the latter ADQL/x file prior to comparison with the compiler output.
+
+(3) The v20 directory contains brand new version 2 files. 
+

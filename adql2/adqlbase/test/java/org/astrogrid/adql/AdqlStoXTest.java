@@ -1,4 +1,4 @@
-/*$Id: AdqlStoXTest.java,v 1.4 2007/07/30 14:38:38 jl99 Exp $
+/*$Id: AdqlStoXTest.java,v 1.5 2007/08/02 17:07:33 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -13,6 +13,8 @@ import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.StringReader;
+import java.io.InputStream;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
@@ -20,6 +22,9 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Properties;
+
+import org.astrogrid.adql.metadata.*;
 
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
@@ -33,6 +38,8 @@ import org.apache.xmlbeans.XmlCursor;
 import org.apache.log4j.Logger ;
 import org.apache.log4j.Level ;
 import org.apache.log4j.spi.LoggerRepository;
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
 
 /**
  * AdqlStoXTest
@@ -42,6 +49,8 @@ import org.apache.log4j.spi.LoggerRepository;
  * Sep 26, 2006
  */
 public class AdqlStoXTest extends XMLTestCase {
+    
+    private static Log log = LogFactory.getLog( AdqlStoXTest.class ) ;
 	
 	final static String README = "README" ;
 	final static String BAD_INIT_MESSAGE = "AdqlStoXTest. Initialization failed: " ;
@@ -79,6 +88,10 @@ public class AdqlStoXTest extends XMLTestCase {
     private static int testMethodCount ;
     private long startTime ;
     private long endTime ;
+    
+    public AdqlStoXTest() {
+        super() ;
+    }
 
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
@@ -111,9 +124,9 @@ public class AdqlStoXTest extends XMLTestCase {
     public void testOf_v10_ceilingFunction() throws Exception { execTest() ; }
     public void testOf_v10_comments01() throws Exception { execTest() ; }
     public void testOf_v10_comments02() throws Exception { execTest() ; }
-    public void testOf_v10_comments03() throws Exception { execTest() ; }
+    public void testOf_v10weeds_comments03() throws Exception { execTest() ; }
     public void testOf_v10_commentsMultipleLines04() throws Exception { execTest() ; }
-    public void testOf_v10_complexSelect01() throws Exception { execTest() ; }
+    public void testOf_v10weeds_complexSelect01() throws Exception { execTest() ; }
     public void testOf_v10_coneSearch01() throws Exception { execTest() ; }
     public void testOf_v10_coneSearch02() throws Exception { execTest() ; }
     public void testOf_v10_delimitedIdentifier() throws Exception { execTest() ; }
@@ -187,8 +200,9 @@ public class AdqlStoXTest extends XMLTestCase {
     public void testOf_v10_selectLogPowMathsFuncs() throws Exception { execTest() ; }
     public void testOf_v10_selectMultiTabMultiAlias1() throws Exception { execTest() ; }
     public void testOf_v10_selectOneTableTwoCols() throws Exception { execTest() ; }
-    public void testOf_v10_selectOrderByCol() throws Exception { execTest() ; }
-    public void testOf_v10_selectOrderByComplex() throws Exception { execTest() ; }
+    public void testOf_v10weeds_selectOrderByCol() throws Exception { execTest() ; }
+    public void testOf_v10weeds_BADselectOrderByComplex() throws Exception { execTest() ; }
+    public void testOf_v20_selectOrderByComplex() throws Exception { execTest() ; }
     public void testOf_v10_selectSome() throws Exception { execTest() ; }
     public void testOf_v10_selectTrigFuncsDeg() throws Exception { execTest() ; }
     public void testOf_v10_selectTrigFuncsRad() throws Exception { execTest() ; }
@@ -545,23 +559,24 @@ public class AdqlStoXTest extends XMLTestCase {
         fileDom.normalize();
         
         // Using xmlunit to compare documents
-        setIgnoreWhitespace(true);
-        assertXMLEqual("Adql/s does not compile to what is expected!",compiledDom, fileDom);
+        // setIgnoreWhitespace(true);
+        
+        assertXMLEqual("Adql/s does not compile to what is expected!", compiledDom, fileDom) ;
 
 	}
     
     private XmlOptions getCompareOptions() {
-        XmlOptions opts = new XmlOptions();
-        opts.setSaveOuter() ;
-        opts.setSaveNamespacesFirst() ;
-        opts.setSaveAggressiveNamespaces() ;
-        opts.setLoadStripWhitespace() ;
-        return opts ;
+        return sCompiler.getSaveOptions( true ) ;
+    }
+    
+    private Container getMetaData() {
+        return TestMetaDataLoader.getMetaData() ;
     }
     
     private AdqlCompiler getCompiler( File file ) throws FileNotFoundException {
         if( sCompiler == null ) {
             sCompiler = new AdqlCompiler( new FileReader( file ) ) ;
+            sCompiler.setMetadata(  getMetaData() ) ;
         }
         else {
             sCompiler.ReInit( new FileReader( file ) ) ;
@@ -750,9 +765,12 @@ public class AdqlStoXTest extends XMLTestCase {
 
 
 /* $Log: AdqlStoXTest.java,v $
- * Revision 1.4  2007/07/30 14:38:38  jl99
- * Attempting to compare newer compilations against control output files from previous version.
+ * Revision 1.5  2007/08/02 17:07:33  jl99
+ * Partial reorg of test directories between versions.
  *
+/* Revision 1.4  2007/07/30 14:38:38  jl99
+/* Attempting to compare newer compilations against control output files from previous version.
+/*
 /* Revision 1.3  2007/07/30 10:57:30  jl99
 /* Attempting conversion of expected results to account for change in version number and namespace
 /*
