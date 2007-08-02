@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.10 2007/08/01 10:45:45 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.11 2007/08/02 00:17:34 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -93,6 +93,7 @@ import org.astrogrid.desktop.modules.ui.voexplorer.strategy.UcdStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.WavebandStrategy;
 import org.astrogrid.desktop.modules.votech.Annotation;
 import org.astrogrid.desktop.modules.votech.AnnotationService;
+import org.astrogrid.desktop.modules.votech.VoMonInternal;
 import org.votech.VoMon;
 
 import ca.odell.glazedlists.BasicEventList;
@@ -282,7 +283,7 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 	protected final JTabbedPane tabPane;
 	protected final RegistryInternal reg;
 	protected final Ehcache resources ;
-	protected final VoMon vomon;
+	protected final VoMonInternal vomon;
 	protected final CapabilityIconFactory iconFac;
 	protected final Ehcache bulk;
 	protected final JComponent toolbar;
@@ -319,7 +320,7 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 	 */
 	public RegistryGooglePanel(final RegistryInternal reg,
 			final Ehcache resources, final Ehcache bulk, IterableObjectBuilder viewFactory
-			, final VoMon vm, final CapabilityIconFactory iconFac, final AnnotationService annServer) {
+			, final VoMonInternal vm, final CapabilityIconFactory iconFac, final AnnotationService annServer) {
 		super();    
 		this.parent = new UIComponentBodyguard();
 		this.reg = reg;
@@ -692,6 +693,9 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.11  2007/08/02 00:17:34  nw
+moved formatting methods into vomon component.
+
 Revision 1.10  2007/08/01 10:45:45  nw
 changed persistence mechanism to XStream, and configured a central service to manage this.
 

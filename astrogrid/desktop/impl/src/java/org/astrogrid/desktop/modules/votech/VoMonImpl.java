@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import javax.swing.Icon;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -26,11 +27,17 @@ import net.sf.ehcache.Status;
 
 import org.apache.commons.collections.MultiHashMap;
 import org.apache.commons.collections.MultiMap;
+import org.apache.commons.lang.text.StrBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.CeaApplication;
+import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.votech.VoMonBean;
 
 /** Implementation of the VoMon service.
@@ -199,6 +206,72 @@ public class VoMonImpl implements VoMonInternal {
 	public Principal getPrincipal() {
 		return null; // run under default user.
 	}
+
+	// higher-level utilities.
+    public String getTooltipInformationFor(Resource ri) {
+        HtmlBuilder result = new HtmlBuilder();
+        if (ri instanceof Service) {
+            VoMonBean b = checkAvailability(ri.getId());
+            if (b == null) {
+                result.append("This resource is unknown to the monitoring service");
+            } else {
+                result.append("<b>")
+                .append(b.getStatus())
+                .append("</b> at ")
+                .append(b.getTimestamp());
+            }
+        } else if (ri instanceof CeaApplication) {
+            VoMonBean[] arr = checkCeaAvailability(ri.getId());
+            if (arr == null || arr.length == 0) {
+                result.append("The monitoring service knows of no providers of this application");
+            } else {
+                result.append("Provided by<ul>");
+                for (int i =0; i < arr.length; i++) {
+                    VoMonBean b = arr[i];
+                    result.append("<li>")
+                    .append(b.getId())
+                    .append(" - ")
+                    .append(" <b>")
+                    .append(b.getStatus())
+                    .append("</b> at ")
+                    .append(b.getTimestamp());
+                }
+                result.append("</ul>");
+            }
+        }
+        return result.toString();
+    }
+
+    public Icon suggestIconFor(Resource r) {
+
+        if (r instanceof Service) {
+            VoMonBean b = checkAvailability(r.getId());
+            if (b == null) {// unknown
+                return UIConstants.UNKNOWN_ICON;
+            } else if ( b.getCode() != VoMonBean.UP_CODE) { // service down
+                return UIConstants.SERVICE_DOWN_ICON;
+            } else {
+                return UIConstants.SERVICE_OK_ICON;
+            }
+        } else if (r instanceof CeaApplication) {
+            VoMonBean[] providers = checkCeaAvailability(r.getId());
+            if (providers == null ) { 
+                // unknown application.
+                return UIConstants.UNKNOWN_ICON;
+            } else {
+                for (int i = 0; i < providers.length; i++) {
+                    if (providers[i].getCode() == VoMonBean.UP_CODE) {
+                        return UIConstants.SERVICE_OK_ICON;
+                    }
+                }
+                // all servers unavailable.
+                return UIConstants.SERVICE_DOWN_ICON;
+            }
+
+        } else {
+            return null;
+        }
+    }
 
 
 

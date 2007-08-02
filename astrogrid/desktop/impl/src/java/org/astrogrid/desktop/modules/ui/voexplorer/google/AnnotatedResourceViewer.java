@@ -46,6 +46,7 @@ import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceFormatter;
 import org.astrogrid.desktop.modules.system.CSH;
+import org.astrogrid.desktop.modules.ui.comp.ColorSwatchIcon;
 import org.astrogrid.desktop.modules.ui.comp.ResourceDisplayPane;
 import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
@@ -355,26 +356,16 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Reso
 			builder.add(check,cc.xyw(2,row++,3));
 			row++;
 
-			// not as easy to get a combo box to show colours as you'd think. sheesh.
 			colours = new JComboBox(new Object[]{
 					Color.WHITE,Color.YELLOW,Color.GREEN,Color.BLUE,Color.RED
 			});
-			// magic #1 - make it editable, so we can zap the editor, but remove the ability to focus on the editor.
-			colours.setEditable(true);
-			colours.getEditor().getEditorComponent().setFocusable(false);
-			colours.getEditor().getEditorComponent().setForeground((Color)colours.getSelectedItem());
-			// renderer is quite straightforward.
 			colours.setRenderer(new ColorCellRenderer());
 			colours.addActionListener(new ActionListener() {
-				// magic #2 listen to changes, and zap the editor.
-				// need to zap forgound too, as it's trying to toString() the colour.
 				public void actionPerformed(ActionEvent e) {
-					Color col = (Color)colours.getSelectedItem();
-					 colours.getEditor().getEditorComponent().setBackground(col);
-					 colours.getEditor().getEditorComponent().setForeground(col);
 					 dirty= true;
 				}
 			});
+			
 			builder.addLabel("Highlight",cc.xy(2,row,"right, center")).setFont(UIConstants.SMALL_DIALOG_FONT);
 			builder.add(colours,cc.xy(4,row++));			
 
@@ -497,15 +488,10 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Reso
 	}
 
 	  public static class ColorCellRenderer extends BasicComboBoxRenderer {
-
-		    // width doesn't matter as combobox will size
-		    private final static Dimension preferredSize = new Dimension(0, 20);
+		    private final static Dimension preferredSize = new Dimension(16, 16);
+		    ColorSwatchIcon ico = new ColorSwatchIcon(Color.WHITE,preferredSize);
 		    public ColorCellRenderer() {
-		        setOpaque(true);
-		        setHorizontalAlignment(CENTER);
-		        setVerticalAlignment(CENTER);
-		        setPreferredSize(preferredSize);
-		        setText(" ");
+		        setIcon(ico);
 		    }
 
 		    public Component getListCellRendererComponent(JList list, Object value,
@@ -517,8 +503,8 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Reso
 		            setBackground(list.getBackground());
 		            setForeground(list.getForeground());
 		        }
-		      if (value instanceof Color && ! isSelected) {
-		    		  setBackground((Color) value);
+		      if (value instanceof Color) {
+		          ico.setColor((Color)value);
 		      }
 		      return this;
 		    }

@@ -9,6 +9,7 @@ import org.apache.commons.lang.text.StrBuilder;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
+import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.votech.VoMon;
 import org.votech.VoMonBean;
 
@@ -20,23 +21,24 @@ public class VomonAnnotationSource extends DynamicAnnotationSource {
 
 	
 	
-	public VomonAnnotationSource(VoMon vomon) {
+	public VomonAnnotationSource(VoMonInternal vomon) {
 		super(URI.create("votech://vomon"), "Monitoring");
 		this.vomon = vomon;
 		setSortOrder(3);
 	}
-	private final VoMon vomon;
+	private final VoMonInternal vomon;
 	public Annotation getAnnotationFor(Resource r) {
 		Annotation ann = new Annotation();
 		ann.setResourceId(r.getId());
 		ann.setSource(this);
+		// slightly different formatting than getTooltipInformationFor
 		if (r instanceof CeaApplication) {
 			VoMonBean[] beans = vomon.checkCeaAvailability(r.getId());
 			if (beans == null || beans.length ==0) {
 				ann.setNote("Not known");
 			} else {
 				// non-synchronized version of StringBuffer.
-				StrBuilder sb = new StrBuilder();
+				HtmlBuilder sb = new HtmlBuilder();
 				for (int i =0; i < beans.length; i++) {
 					VoMonBean b = beans[i];
 					sb.append("<a href='")
@@ -54,12 +56,7 @@ public class VomonAnnotationSource extends DynamicAnnotationSource {
 				ann.setNote(sb.toString());
 			}
 		} else if (r instanceof Service){
-			VoMonBean bean = vomon.checkAvailability(r.getId());
-			if (bean == null) {
-				return null;
-			} else {
-				ann.setNote("<b>" +  bean.getStatus() + "</b> at " + bean.getTimestamp());
-			}
+		    ann.setNote(vomon.getTooltipInformationFor(r));
 		} else {
 			return null;
 		}

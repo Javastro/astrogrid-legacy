@@ -3,6 +3,9 @@
  */
 package org.astrogrid.desktop.modules.votech;
 
+import javax.swing.Icon;
+
+import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.system.ScheduledTask;
 import org.votech.VoMon;
 
@@ -11,5 +14,19 @@ import org.votech.VoMon;
  * @since Dec 11, 20066:27:58 PM
  */
 public interface VoMonInternal extends VoMon, ScheduledTask {
+    
+    /** return html-formatted details about the availability of this resource
+     * 
+     * @param a rsouce r
+     * @return
+     */
+    String getTooltipInformationFor(Resource r);
+    
+    /** returns an icon (one of the constants in UIConstants) to 
+     * represent the current status of this resource
+     * @param r
+     * @return an icon for Service and CeaApplication resources. for other resource types will return null;
+     */
+    Icon suggestIconFor(Resource r);
 
 }

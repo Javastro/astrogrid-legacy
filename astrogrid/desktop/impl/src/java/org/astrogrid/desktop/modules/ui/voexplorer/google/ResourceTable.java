@@ -31,12 +31,15 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
+import org.apache.commons.lang.text.StrBuilder;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.ui.dnd.ResourceListTransferable;
 import org.astrogrid.desktop.modules.ui.dnd.ResourceTransferable;
+import org.astrogrid.desktop.modules.votech.VoMonInternal;
 import org.votech.VoMon;
 import org.votech.VoMonBean;
 
@@ -51,7 +54,7 @@ import ca.odell.glazedlists.swing.EventSelectionModel;
  */
 public class ResourceTable extends JTable implements DragGestureListener, DragSourceListener, MouseListener {
 	private final List items;
-	private final VoMon vomon;
+	private final VoMonInternal vomon;
 	private final CapabilityIconFactory iconFac;
 	private final DragSource dragSource;
 
@@ -61,7 +64,7 @@ public class ResourceTable extends JTable implements DragGestureListener, DragSo
 	 * @param items list (probablby a glazed list) of items that the table model is based upon.
 	 * @param vomon monitoring information.
 	 */
-	public ResourceTable(TableModel dm, List items, VoMon vomon,CapabilityIconFactory iconFac) {
+	public ResourceTable(TableModel dm, List items, VoMonInternal vomon,CapabilityIconFactory iconFac) {
 		super(dm);
 		this.items = items;
 		this.vomon = vomon;
@@ -99,7 +102,6 @@ public class ResourceTable extends JTable implements DragGestureListener, DragSo
 
 	/** construct a tool tip, based on vomon information */
 	public String getToolTipText(MouseEvent e) {
-		String tip = null;
 		java.awt.Point p = e.getPoint();
 		int rowIndex = rowAtPoint(p);
 		int colIndex = columnAtPoint(p);
@@ -107,63 +109,30 @@ public class ResourceTable extends JTable implements DragGestureListener, DragSo
 		
 		if (rowIndex > -1) { 
 			Resource ri =(Resource) items.get(rowIndex);  // weakness - possiblility of getting the wrong tooltip if the list is rapidly updating. not the end of the world.
-			StringBuffer result = new StringBuffer();
-			result.append("<html>");
 			switch (realColumnIndex) {
 			case 0:// status
-				if (ri instanceof Service) {
-					VoMonBean b = vomon.checkAvailability(ri.getId());
-					if (b == null) {
-						result.append("The Monitoring service knows nothing about this service");
-					} else {
-						result.append("Status at ")
-						.append(b.getTimestamp())
-						.append(" - <b>" )
-						.append(b.getStatus())
-						.append("</b>");
-					}
-				} else if (ri instanceof CeaApplication) {
-					VoMonBean[] arr = vomon.checkCeaAvailability(ri.getId());
-					if (arr == null || arr.length == 0) {
-						result.append("The monitoring service knows of no providers of this application");
-					} else {
-						result.append("<br>Provided by<ul>");
-						for (int i =0; i < arr.length; i++) {
-							VoMonBean b = arr[i];
-							result.append("<li>")
-							.append(b.getId())
-							.append(" - status at ")
-							.append(b.getTimestamp())
-							.append(" - <b>")
-							.append(b.getStatus())
-							.append("</b>");
-						}
-						result.append("</ul>");
-					}
-				}
-				break;
+			    return vomon.getTooltipInformationFor(ri);		
 			case 1: // title
+			    HtmlBuilder result = new HtmlBuilder();
 				result.append("<b>").append(ri.getTitle()).append("</b>");
 				result.append("<br><i>").append(ri.getShortName()).append("</i>");
 				result.append("<br><i>").append(ri.getId()).append("</i>");
-				break;
+				return result.toString();
 			case 2: // capabilties.
 				Icon ic = (Icon)getModel().getValueAt(rowIndex,2);
-				result.append(iconFac.getTooltip(ic));
+				return iconFac.getTooltip(ic);
 			default:
-				createTooltipFor(realColumnIndex,ri,result);
-				break;
-			}
-			result.append("</html>");                                          
-			tip= result.toString(); 
+			    HtmlBuilder hb = new HtmlBuilder();
+				createTooltipFor(realColumnIndex,ri,hb);
+				return hb.toString();
+			}                              
 		} else { 
-			tip = super.getToolTipText(e);
+			return super.getToolTipText(e);
 		}
-		return tip;
 	}
 	
 	/** extensionPoint */
-	protected void createTooltipFor(int ix,Resource r,StringBuffer sb) {
+	protected void createTooltipFor(int ix,Resource r,HtmlBuilder sb) {
 	}
 	
 	private JPopupMenu popup;

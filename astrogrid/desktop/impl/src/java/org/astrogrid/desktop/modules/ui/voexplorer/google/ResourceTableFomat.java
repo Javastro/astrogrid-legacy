@@ -14,9 +14,11 @@ import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.votech.Annotation;
 import org.astrogrid.desktop.modules.votech.AnnotationService;
 import org.astrogrid.desktop.modules.votech.UserAnnotation;
+import org.astrogrid.desktop.modules.votech.VoMonInternal;
 import org.votech.VoMon;
 import org.votech.VoMonBean;
 
@@ -31,22 +33,16 @@ import ca.odell.glazedlists.gui.WritableTableFormat;
  */
 
 public  class ResourceTableFomat implements AdvancedTableFormat, WritableTableFormat{
-	public ResourceTableFomat(AnnotationService annService,final VoMon vomon,final CapabilityIconFactory capBuilder) {
+	public ResourceTableFomat(AnnotationService annService,final VoMonInternal vomon,final CapabilityIconFactory capBuilder) {
 		super();
 		this.vomon = vomon;
 		this.annService = annService;
 		this.capBuilder = capBuilder;
-		this.okLabel = IconHelper.loadIcon("greenled16.png");
-		this.downLabel = IconHelper.loadIcon("redled16.png");
-		this.unknownLabel = IconHelper.loadIcon("idle16.png");
 	}
 	private final CapabilityIconFactory capBuilder;
 	private final AnnotationService annService;
-	private final Icon okLabel;
-	private final Icon downLabel;
-	private final Icon unknownLabel;
 	private static final int COLUMN_COUNT = 4;
-	private final VoMon vomon;
+	private final VoMonInternal vomon;
 
 	public Class getColumnClass(int columnIndex) {
 		switch(columnIndex) {
@@ -87,13 +83,13 @@ public  class ResourceTableFomat implements AdvancedTableFormat, WritableTableFo
 			if (a == null) {
 				return 0;
 			}
-			if (a == okLabel) {
+			if (a == UIConstants.SERVICE_OK_ICON) {
 				return 5;
 			}
-			if (a == unknownLabel) {
+			if (a == UIConstants.UNKNOWN_ICON) {
 				return 4;
 			}
-			if (a == downLabel) {
+			if (a == UIConstants.SERVICE_DOWN_ICON) {
 				return 1;
 			}
 			return a.hashCode(); // works for icons in capabilities list.
@@ -117,7 +113,7 @@ public  class ResourceTableFomat implements AdvancedTableFormat, WritableTableFo
 		Resource r = (Resource)arg0;
 		switch(columnIndex) {
 		case 0:
-			return getAvailability(r);
+			return vomon.suggestIconFor(r);
 		case 1:
 			return createTitle(r);
 		case 2:
@@ -201,37 +197,6 @@ public  class ResourceTableFomat implements AdvancedTableFormat, WritableTableFo
 			date = r.getCreated();
 		}
 		return date == null ? "" : date.substring(0,10);
-	}
-	
-	private Icon getAvailability(Resource r) {
-
-		if (r instanceof Service) {
-			VoMonBean b = vomon.checkAvailability(r.getId());
-			if (b == null) {// unknown
-				return unknownLabel;
-			} else if ( b.getCode() != VoMonBean.UP_CODE) { // service down
-				return downLabel;
-			} else {
-				return okLabel;
-			}
-		} else if (r instanceof CeaApplication) {
-			VoMonBean[] providers = vomon.checkCeaAvailability(r.getId());
-			if (providers == null ) { 
-				// unknown application.
-				return unknownLabel;
-			} else {
-				for (int i = 0; i < providers.length; i++) {
-					if (providers[i].getCode() == VoMonBean.UP_CODE) {
-						return okLabel;
-					}
-				}
-				// all servers unavailable.
-				return downLabel;
-			}
-
-		} else {
-			return null;
-		}
 	}
 	
 }

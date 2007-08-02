@@ -30,6 +30,7 @@ import org.astrogrid.desktop.modules.ui.voexplorer.google.CapabilityIconFactory;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTable;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTableFomat;
 import org.astrogrid.desktop.modules.votech.AnnotationService;
+import org.astrogrid.desktop.modules.votech.VoMonInternal;
 import org.votech.VoMon;
 
 import ca.odell.glazedlists.EventList;
@@ -57,7 +58,7 @@ public class ScopeServicesList extends RegistryGooglePanel
 	 * @param vomon
 	 * @param pref
 	 */
-	public ScopeServicesList(RegistryInternal reg, Ehcache resources, Ehcache bulk, IterableObjectBuilder views,VoMon vomon, final CapabilityIconFactory iconFac,AnnotationService annServer) {
+	public ScopeServicesList(RegistryInternal reg, Ehcache resources, Ehcache bulk, IterableObjectBuilder views,VoMonInternal vomon, final CapabilityIconFactory iconFac,AnnotationService annServer) {
 		super(reg, resources, bulk, views,vomon, iconFac,annServer);
 		getSearchTitleLabel().setText("Query Results");
 		getNewSearchButton().setVisible(false);
