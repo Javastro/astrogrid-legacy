@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.35 2007/07/31 07:46:04 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.36 2007/08/02 14:14:49 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -760,7 +760,6 @@ TOKEN : // <ADQL_special_character>
  *  !! If this were the case, we could simply make do with <regular_identifier>
  * bnf-end
  * bnf-single <unsigned_integer> ::= <digit>...
- * bnf-single <sign> ::= <plus_sign> | <minus_sign>
  * bnf-single <mantissa> ::= <exact_numeric_literal>
  * bnf-single <exponent> ::= <signed_integer> 
  * bnf-single <signed_integer> ::= [ <sign> ] <unsigned_integer>
@@ -4695,6 +4694,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.36  2007/08/02 14:14:49  jl99
+code tidy
+
 Revision 1.35  2007/07/31 07:46:04  jl99
 Changes to sort key
 

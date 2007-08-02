@@ -389,7 +389,7 @@ public class AdqlCompiler {
 		}
 	} 
     
-    private XmlOptions getSaveOptions( boolean prettyPrint ) {
+    public XmlOptions getSaveOptions( boolean prettyPrint ) {
         XmlOptions opts = new XmlOptions();
         opts.setSaveOuter() ;
 //        opts.setSaveImplicitNamespaces( ImplicitNamespaces ) ;
@@ -944,27 +944,40 @@ public class AdqlCompiler {
         XmlObject element = null ;
         XmlCursor cursor = xmlObject.newCursor() ;
         String sTabReference = null ;
+        StringBuffer buffer = new StringBuffer( 128 ) ;
         parser.tracker.resetPosition() ;
         try {
-            cursor.toFirstChild() ; // There has to be a first child!
+            cursor.toFirstChild() ; // There has to be a first child!          
             do {
+                
                 if( cursor.isStart() ) {
                     parser.tracker.push( cursor.getName().getLocalPart()
                             , cursor.getObject().schemaType() ) ;
                     element = cursor.getObject() ;
                     if( element.schemaType() == ColumnReferenceType.type ) {
                         ColumnReferenceType col = (ColumnReferenceType)element ;
+                        if( col.isSetCatalog() ) {
+                            buffer.append( col.getCatalog() ).append( '.' ) ;
+                        }
                         if( col.isSetSchema() ) {
-                            sTabReference = col.getSchema() + '.' + col.getTable() ;
+                            buffer.append( col.getSchema() ).append( '.' ) ;
                         }
-                        else {
-                            sTabReference = col.getTable() ;
+                        if( col.isSetTable() ) {
+                            buffer.append( col.getTable() ) ;
                         }
+                        //
+                        // Currently I don't check for unqualified columns, so
+                        // if the buffer contains nothing, continue to the next loop...
+                        if( buffer.length() == 0 )
+                            continue ;
+                        sTabReference = buffer.toString() ;
                         if( !tRefs.contains( sTabReference ) ) {
-                            String message = NONEXISTENT_ALIAS + col.getTable() + '.' + col.getName() ;
+                            buffer.append( col.getName() ) ;
+                            String message = NONEXISTENT_ALIAS + buffer.toString() ;
                             ParseException pex = new ParseException( message ) ;
                             parser.tracker.setError( pex ) ;
                         }
+                        buffer.delete( 0, buffer.length() ) ;
                     }                       
                 } 
                 else if( cursor.isEnd() ) {
@@ -983,8 +996,8 @@ public class AdqlCompiler {
 		HashSet tables = new HashSet() ;
 		HashSet aliases = new HashSet() ;
         TableType tType = null ;
-//        ArchiveTableType aType = null ;
         String alias = null ;
+        StringBuffer buffer = new StringBuffer( 64 ) ;
         //
         // Loop through the whole of the query looking for table refs....
         XmlCursor cursor = selObject.newCursor() ;
@@ -1001,19 +1014,17 @@ public class AdqlCompiler {
                     
                     if( schemaType == TableType.type ) {
                         tType = (TableType)xmlObject ;
-                        if( tType.isSetSchema() ) {
-                            tables.add( tType.getSchema() + '.' + tType.getName() ) ;
+                        if( tType.isSetCatalog() ) {
+                            buffer.append( tType.getCatalog() ).append( '.' ) ;
                         }
-                        else {
-                            tables.add( tType.getName() ) ;
-                        }                       
+                        if( tType.isSetSchema() ) {
+                            buffer.append( tType.getSchema() ).append( '.' ) ;
+                        }
+                        buffer.append( tType.getName() ) ;
+                        tables.add( buffer.toString() ) ;
                         alias = tType.getAlias() ;
+                        buffer.delete( 0, buffer.length() ) ;
                     }
-//                    else if( schemaType == ArchiveTableType.type ) {
-//                        aType = (ArchiveTableType)xmlObject ;
-//                        tables.add( aType.getArchive() + '.'  + aType.getName() ) ;  
-//                        alias = aType.getAlias() ;
-//                    }
                     else {
                         continue ;
                     }
