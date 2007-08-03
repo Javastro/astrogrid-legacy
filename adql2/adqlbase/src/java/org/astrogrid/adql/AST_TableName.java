@@ -6,6 +6,9 @@ import java.util.ArrayList;
 
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
+import org.apache.xmlbeans.XmlObject;
+import org.astrogrid.adql.beans.TableType;
+
 
 public class AST_TableName extends SimpleNode {
 
@@ -15,24 +18,38 @@ public class AST_TableName extends SimpleNode {
         super(p, id);
     }
     
-    /**
-     * Aggregates the dot-qualified string components of a column reference
-     * into an ArrayList.
-     * 
+
+    /* (non-Javadoc)
+     * @see org.astrogrid.adql.SimpleNode#buildXmlTree(org.apache.xmlbeans.XmlObject)
      */
-    public void jjtClose() {
-        if( log.isTraceEnabled() ) enterTrace( log, "AST_TableName.jjtClose()" ) ;
-        ArrayList dotQualifications ;
-        if( jjtGetNumChildren() > 1 ) {
-            dotQualifications = (ArrayList) children[0].getGeneratedObject() ;
-            dotQualifications.add( children[1].getGeneratedObject() ) ;  
+    public void buildXmlTree(XmlObject xo) {
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_TableName.buildXmlTree()" ) ;
+        TableType tt = (TableType)xo.changeType( TableType.type ) ;
+        
+        int childCount = jjtGetNumChildren() ;
+        if( childCount > 3 ) {
+            this.getTracker().setError( "Invalid table reference: too many qualifiers." ) ;
         }
         else {
-            dotQualifications = new ArrayList() ;
-            dotQualifications.add( children[0].getGeneratedObject() ) ;  
-        } 
-        this.generatedObject = dotQualifications ;
-        if( log.isTraceEnabled() ) exitTrace( log, "AST_TableName.jjtClose()" ) ; 
+            for( int i=0; i<childCount; i++ ) {
+                if( i==0 ) {
+                    tt.setName( (String)children[childCount - (i+1) ].getGeneratedObject() ) ;
+                }
+                else if( i==1 ) {
+                    tt.setSchema( (String)children[childCount - (i+1) ].getGeneratedObject() ) ;
+                }
+                else if( i==2 ) {
+                    tt.setCatalog( (String)children[childCount - (i+1) ].getGeneratedObject() ) ;
+                }
+            }
+        }  
+        
+        this.generatedObject = tt ;
+        super.buildXmlTree( tt );
+        if( log.isTraceEnabled() ) exitTrace( log, "AST_TableName.buildXmlTree()" ) ; 
+        
     }
+    
+    
 
 }

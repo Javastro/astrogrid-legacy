@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.36 2007/08/02 14:14:49 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.37 2007/08/03 14:46:57 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -1247,7 +1247,8 @@ void column_reference_A() #ColumnReference :
 	//S: 
 	// <column_reference> ::= [ <qualifier> <period> ] <column_name>
 	(
-	   [ LOOKAHEAD(4) qualifier_A() <PERIOD> ] column_name_S() 
+//	   LOOKAHEAD(6)//	   column_name_S()//	   |//	   qualifier_A() <PERIOD> column_name_S()
+	   ( LOOKAHEAD(2) identifier_A() <PERIOD> )* column_name_S() 
 	)
 	{
 		if( log.isTraceEnabled() ) exitTrace ( "column_reference_A()" ) ;					
@@ -3538,15 +3539,25 @@ void schema_name_A() #SchemaName :
 	//S:
 	//  <schema name> ::=
 	//    [ <catalog name> <period> ] <unqualified schema name>
-	[ LOOKAHEAD(3) catalog_name_A() <PERIOD> ] identifier_A()
+	LOOKAHEAD(6) 
+	identifier_A()
+	|
+	( catalog_name_A() <PERIOD> identifier_A() )
+	
 	{
 		if( log.isTraceEnabled() ) exitTrace ( "schema_name_A()" ) ;
 	}
 }
 
-void catalog_name_A() : {}
+void catalog_name_A() : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "catalog_name_A()" ) ;
+}
 {
 	identifier_A()
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "catalog_name_A()" ) ;
+	}
 }
 
 /*
@@ -4206,7 +4217,9 @@ void table_name_A() #TableName :
 	//S:
 	// <table_name> ::=
     //  <qualified_name> | <qualified_local_table_name>
-	[ LOOKAHEAD(4) schema_name_A() <PERIOD> ] identifier_A()
+//	LOOKAHEAD(6)
+//	identifier_A()//	|//	( schema_name_A() <PERIOD> identifier_A() )
+	( LOOKAHEAD(2) identifier_A() <PERIOD> )* identifier_A() 
 	{ 
 		if( log.isTraceEnabled() ) exitTrace ( "table_name_A()" ) ;
 	}
@@ -4694,6 +4707,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.37  2007/08/03 14:46:57  jl99
+Yet another go at accommodating catalog, schema, table and column qualifiers.
+
 Revision 1.36  2007/08/02 14:14:49  jl99
 code tidy
 

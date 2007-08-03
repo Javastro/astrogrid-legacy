@@ -23,20 +23,7 @@ public class AST_TableReferenceBarJoinedTable extends SimpleNode {
 
         if( children[0] instanceof AST_TableName ) {
             TableType tt = (TableType)ftt.changeType( TableType.type ) ;           
-            ArrayList dotQualifications = (ArrayList) children[0].getGeneratedObject() ;
-            String[] names = new String[ dotQualifications.size() ] ;
-            names = (String[])dotQualifications.toArray( names ) ;
-            for( int i=0; i<names.length; i++ ) {
-                if( i==0 ) {
-                    tt.setName( names[names.length - (i+1) ] ) ;
-                }
-                else if( i==1 ) {
-                    tt.setSchema( names[names.length - (i+1) ] ) ;
-                }
-                else if( i==2 ) {
-                    tt.setCatalog( names[names.length - (i+1) ] ) ;
-                }
-            }
+            children[0].buildXmlTree( tt ) ;
             if( jjtGetNumChildren() > 1 ) {
                 tt.setAlias( (String)children[1].getGeneratedObject() ) ;
             }

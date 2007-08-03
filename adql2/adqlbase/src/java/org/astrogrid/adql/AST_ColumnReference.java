@@ -15,40 +15,46 @@ public class AST_ColumnReference extends SimpleNode {
     public AST_ColumnReference(AdqlStoX p, int id) {
         super(p, id);
     }
-    
+
     public void buildXmlTree( XmlObject xo ) {   
       if( log.isTraceEnabled() ) enterTrace( log, "AST_ColumnReference.buildXmlTree()" ) ; 
       
       getTracker().setType( ColumnReferenceType.type ) ;     
       ColumnReferenceType crt = (ColumnReferenceType)xo.changeType( ColumnReferenceType.type ) ;
       
-      ArrayList dotQualifications ;
-      if( jjtGetNumChildren() > 1 ) {
-          dotQualifications = (ArrayList) children[0].getGeneratedObject() ;
-          dotQualifications.add( children[1].getGeneratedObject() ) ;  
+//      ArrayList dotQualifications ;
+//      if( jjtGetNumChildren() > 1 ) {
+//          dotQualifications = (ArrayList) children[0].getGeneratedObject() ;
+//          dotQualifications.add( children[1].getGeneratedObject() ) ;  
+//      }
+//      else {
+//          dotQualifications = new ArrayList() ;
+//          dotQualifications.add( children[0].getGeneratedObject() ) ;  
+//      }   
+      
+      int childCount = jjtGetNumChildren() ;
+      if( childCount > 4 ) {
+          this.getTracker().setError( "Invalid column reference: too many qualifiers." ) ;
       }
       else {
-          dotQualifications = new ArrayList() ;
-          dotQualifications.add( children[0].getGeneratedObject() ) ;  
-      }   
-      
-      String[] names = new String[ dotQualifications.size() ] ;
-      names = (String[])dotQualifications.toArray( names ) ;
-      for( int i=0; i<names.length; i++ ) {
-          if( i==0 ) {
-              crt.setName( names[names.length - (i+1) ] ) ;
+//          String[] names = new String[ dotQualifications.size() ] ;
+//          names = (String[])dotQualifications.toArray( names ) ;
+          
+          for( int i=0; i<childCount; i++ ) {
+              if( i==0 ) {
+                  crt.setName( (String)children[childCount - (i+1) ].getGeneratedObject() ) ;
+              }
+              else if( i==1 ) {
+                  crt.setTable( (String)children[childCount - (i+1) ].getGeneratedObject() ) ;
+              }
+              else if( i==2 ) {
+                  crt.setSchema( (String)children[childCount - (i+1) ].getGeneratedObject() ) ;
+              }
+              else if( i==3 ) {
+                  crt.setCatalog( (String)children[childCount - (i+1) ].getGeneratedObject() ) ;
+              }
           }
-          else if( i==1 ) {
-              crt.setTable( names[names.length - (i+1) ] ) ;
-          }
-          else if( i==2 ) {
-              crt.setSchema( names[names.length - (i+1) ] ) ;
-          }
-          else if( i==3 ) {
-              crt.setCatalog( names[names.length - (i+1) ] ) ;
-          }
-      }
-                          
+      }                         
       setGeneratedObject( crt ) ;
       super.buildXmlTree (crt ) ;
       if( log.isTraceEnabled() ) exitTrace( log, "AST_ColumnReference.buildXmlTree()" ) ; 
