@@ -42,27 +42,6 @@
 			<xsl:apply-templates select="@*|node()"/>	
 		</xsl:element> 
 	</xsl:template>
-    
-    <!--xsl:template match="ad1:Select | ad1:selection | ad1:Selection">
-        <xsl:element name="{$ad2Prefix}:{local-name()}" namespace="{$ad2NS}">	
-            <xsl:apply-templates select="@*"/>       	
-			<xsl:apply-templates select="ad1:OrderBy"/>
-		</xsl:element> 
-	</xsl:template>
-	
-	<xsl:template match="ad1:OrderBy">
-        <xsl:element name="{$ad2Prefix}:{local-name()}" namespace="{$ad2NS}">	 
-            <xsl:apply-templates select="@*"/>      	
-			<xsl:apply-templates select="ad1:Item"/>		
-		</xsl:element> 
-	</xsl:template>
-	
-	<xsl:template match="ad1:Item">
-        <xsl:element name="{$ad2Prefix}:{local-name()}" namespace="{$ad2NS}">	
-            <xsl:apply-templates select="@*"/>     	
-			<xsl:apply-templates select="ad1:Expression"/>	
-		</xsl:element> 
-	</xsl:template-->
 	
 	<!--+
         | Expression within OrderBy needs have column name only,
@@ -84,15 +63,8 @@
 	
 	<!--+
         | Joins are now more complex. A simple condition is no longer sufficient structure...
-        +
-      <adql:JoinSpecification xsi:type="adql:joinConditionType">
-        <adql:Condition xsi:type="adql:comparisonPredType" Comparison="=">
-          <adql:Arg xsi:type="adql:columnReferenceType" Name="id" Table="s"/>
-          <adql:Arg xsi:type="adql:columnReferenceType" Name="id" Table="o"/>
-        </adql:Condition>
-      </adql:JoinSpecification>
-        -->        
-	<xsl:template match="ad1:From/ad1:Table[substring-after(@xsi:type, ':') = 'joinTableType']/ad1:Condition | ad1:From/ad1:Table[@xsi:type = 'joinTableType']/ad1:Condition">
+        +-->        
+	<xsl:template match="ad1:Table[substring-after(@xsi:type, ':') = 'joinTableType']/ad1:Condition | ad1:Table[@xsi:type = 'joinTableType']/ad1:Condition">
        <xsl:element name="{$ad2Prefix}:JoinSpecification" namespace="{$ad2NS}">
             <xsl:attribute name="{$xsiPrefix}:type" namespace="{$xsiNS}">
                 <xsl:value-of select="$ad2Prefix" />
@@ -108,7 +80,86 @@
             </xsl:element>	
         </xsl:element> 
 	</xsl:template>
-
+	
+	<!--+
+        | ConstantListSet of In predicate and Not In predicate no longer sufficient.
+        +-->  
+	<xsl:template match="*[substring-after(@xsi:type, ':') = 'ConstantListSet'] | *[@xsi:type = 'ConstantListSet']">
+       <xsl:element name="{$ad2Prefix}:Set" namespace="{$ad2NS}">
+            <xsl:attribute name="{$xsiPrefix}:type" namespace="{$xsiNS}">
+                <xsl:value-of select="$ad2Prefix" />
+			 	<xsl:text>:InListSet</xsl:text>
+			</xsl:attribute>
+			<xsl:for-each select="ad1:Item">
+				<xsl:element name="{$ad2Prefix}:Item" namespace="{$ad2NS}">
+                	<xsl:attribute name="{$xsiPrefix}:type" namespace="{$xsiNS}">
+                    	<xsl:value-of select="$ad2Prefix" />
+			 	    	<xsl:text>:atomType</xsl:text>
+			    	</xsl:attribute>
+			    	<xsl:element name="{$ad2Prefix}:Literal" namespace="{$ad2NS}">
+                		<xsl:attribute name="{$xsiPrefix}:type" namespace="{$xsiNS}">
+                    		<xsl:value-of select="$ad2Prefix" />
+			 	    		<xsl:text>:</xsl:text>
+			 	    		<xsl:value-of select="substring-after(@xsi:type, ':')" />
+			    		</xsl:attribute>	
+			    		<xsl:apply-templates select="@*"/>            	
+            		</xsl:element>			    	          	
+            	</xsl:element>	
+			</xsl:for-each>           
+        </xsl:element> 
+	</xsl:template>
+	
+	<!--+
+        | Children of Like and Not Like predicates no longer sufficient.
+        +-->  
+	<xsl:template match="*[substring-after(@xsi:type, ':') = 'likePredType'] | *[@xsi:type = 'likePredType']
+	                   | *[substring-after(@xsi:type, ':') = 'notLikePredType'] | *[@xsi:type = 'notLikePredType']" >
+	    <xsl:element name="{$ad2Prefix}:{local-name()}" namespace="{$ad2NS}">
+	   	 	<xsl:for-each select="@*|node()">
+	   			<xsl:choose>
+					<xsl:when test="ad1:Arg" >
+						<xsl:element name="{$ad2Prefix}:Arg" namespace="{$ad2NS}">
+                			<xsl:attribute name="{$xsiPrefix}:type" namespace="{$xsiNS}">
+                    			<xsl:value-of select="$ad2Prefix" />
+			 	    			<xsl:text>:characterValueExpressionType</xsl:text>			 	    		
+			    			</xsl:attribute>
+			    			<xsl:apply-templates select="@*"/>  
+			    			<xsl:element name="{$ad2Prefix}:CharacterFactor" namespace="{$ad2NS}">		    			
+			    				<xsl:apply-templates select="@*|node()"/>            	
+            				</xsl:element>           	
+            			</xsl:element>
+					</xsl:when>
+					<xsl:when test="ad1:Pattern" >
+						<xsl:element name="{$ad2Prefix}:Pattern" namespace="{$ad2NS}">
+                			<xsl:attribute name="{$xsiPrefix}:type" namespace="{$xsiNS}">
+                    			<xsl:value-of select="$ad2Prefix" />
+			 	    			<xsl:text>:characterValueExpressionType</xsl:text>			 	    		
+			    			</xsl:attribute>
+			    			<xsl:apply-templates select="@*"/>
+			    			<xsl:element name="{$ad2Prefix}:CharacterFactor" namespace="{$ad2NS}">					    			
+                				<xsl:attribute name="{$xsiPrefix}:type" namespace="{$xsiNS}">
+                    				<xsl:value-of select="$ad2Prefix" />
+			 	    				<xsl:text>:atomType</xsl:text>
+			    				</xsl:attribute>
+			    				<xsl:apply-templates select="@*"/>
+			    				<xsl:element name="{$ad2Prefix}:Literal" namespace="{$ad2NS}">
+                					<xsl:attribute name="{$xsiPrefix}:type" namespace="{$xsiNS}">
+                    					<xsl:value-of select="$ad2Prefix" />
+			 	    					<xsl:text>:</xsl:text>
+			 	    					<xsl:value-of select="substring-after(@xsi:type, ':')" />
+			 	    				</xsl:attribute>
+			 	    				<xsl:apply-templates select="@*"/>
+			    				</xsl:element>	          	
+            				</xsl:element>			    	          	        	
+            			</xsl:element>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates select="."/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:for-each>
+		</xsl:element>                   
+	</xsl:template>
 	   
 	<!--+
         | Template for type attributes belonging to Schema-instance.
