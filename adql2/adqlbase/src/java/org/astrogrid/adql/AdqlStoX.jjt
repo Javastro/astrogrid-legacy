@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.37 2007/08/03 14:46:57 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.38 2007/08/03 16:26:39 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -796,6 +796,7 @@ TOKEN : // miscellaneous SQL92
 |	< #SIGNED_INTEGER : ( <SIGN> )? <UNSIGNED_INTEGER> >
 |   < #E : ["E", "e"] >
 |   < #SIGN : <PLUS_SIGN> | <MINUS_SIGN> >
+|   < PERIOD_ASTERISK : <PERIOD> <ASTERISK> >
 
 }
 
@@ -3826,10 +3827,10 @@ void select_sublist_A( boolean first ) #SelectSublist :
 	//S:
 	// <select_sublist> ::= <derived_column> | <qualifier> <period> <asterisk>
     try {
-       LOOKAHEAD(3) 
-	   ( derived_column_S() { compiler.selectSublistEnsureCommaOrFrom() ; } )
-	   |
+       LOOKAHEAD(8)       
 	   ( qualifierPeriodAsterisk() { compiler.selectSublistEnsureCommaOrFrom() ; } )
+	   |
+	   ( derived_column_S() { compiler.selectSublistEnsureCommaOrFrom() ; } )
 	   |
 	   { compiler.selectSublistError( first, new ParseException( "select_sublist error" ) ) ; }
     }    catch( ParseException pex ) {       compiler.selectSublistError( first, pex ) ;	    }
@@ -3845,7 +3846,7 @@ void qualifierPeriodAsterisk() #QualifierPeriodAsterisk :
 	if( log.isTraceEnabled() ) enterTrace ( "qualifierPeriodAsterisk()" ) ;
 }
 {
-	qualifier_A() <PERIOD> <ASTERISK>
+	table_name_A() <PERIOD_ASTERISK>
 	{
 		if( log.isTraceEnabled() ) exitTrace ( "qualifierPeriodAsterisk()" ) ;
 	}
@@ -4707,6 +4708,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.38  2007/08/03 16:26:39  jl99
+Yet another go at accommodating catalog, schema, table and column qualifiers.
+
 Revision 1.37  2007/08/03 14:46:57  jl99
 Yet another go at accommodating catalog, schema, table and column qualifiers.
 

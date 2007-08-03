@@ -6,7 +6,6 @@ import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 import org.astrogrid.adql.beans.*;
 import org.apache.xmlbeans.XmlObject ;
-import java.util.ArrayList;
 
 public class AST_QualifierPeriodAsterisk extends SimpleNode {
     
@@ -20,22 +19,21 @@ public class AST_QualifierPeriodAsterisk extends SimpleNode {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_QualifierPeriodAsterisk.buildXmlTree()" ) ; 
       
       getTracker().setType( AllSelectionItemType.type ) ;     
-      AllSelectionItemType asit = (AllSelectionItemType)xo.changeType( AllSelectionItemType.type ) ;     
-      ArrayList dotQualifications = (ArrayList) children[0].getGeneratedObject() ;         
-      String[] names = new String[ dotQualifications.size() ] ;
-      names = (String[])dotQualifications.toArray( names ) ;
-      for( int i=0; i<names.length; i++ ) {
-          if( i==0 ) {
-              asit.setTable( names[names.length - (i+1) ] ) ;
+      AllSelectionItemType asit = (AllSelectionItemType)xo.changeType( AllSelectionItemType.type ) ;
+      
+      if( children[0] instanceof AST_TableName ) {
+          //
+          // I'm using TableType here purely as a light container...
+          TableType tt = TableType.Factory.newInstance() ;           
+          children[0].buildXmlTree( tt ) ;   
+          if( tt.isSetCatalog() ) {
+              asit.setCatalog( tt.getCatalog() ) ;
           }
-          else if( i==1 ) {
-              asit.setSchema( names[names.length - (i+1) ] ) ;
+          if( tt.isSetSchema() ) {
+              asit.setSchema( tt.getSchema() ) ;
           }
-          else if( i==2 ) {
-              asit.setCatalog( names[names.length - (i+1) ] ) ;
-          }
-      }
-                          
+          asit.setTable( tt.getName() ) ;   
+      } 
       setGeneratedObject( asit ) ;
       super.buildXmlTree (asit ) ;
       if( log.isTraceEnabled() ) exitTrace( log, "AST_QualifierPeriodAsterisk.buildXmlTree()" ) ; 
