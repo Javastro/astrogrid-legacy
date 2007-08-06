@@ -34,7 +34,7 @@ SPECIAL NOTE on the test directory structure.
 (Note that "success" here also means that the ones expected to fail do still fail!). All of the ADQL/x output control 
 files are converted to the version 2 structure prior to comparison with the output of the compiler.
 
-(2) The v10weeds directory contains three sorts of ADQL/s files:
+(2) The v10weeds directory contains four sorts of ADQL/s files:
 	(a) Those queries that fail under version 1 but succeed under version 2. 
         For each of these a new ADQL/x file has been generated to form a valid pair.
     (b) Those queries that succeed under version 1 but fail under version 2. Here the ADQL/s file has been 
@@ -44,6 +44,7 @@ files are converted to the version 2 structure prior to comparison with the outp
         sense of what requires change. (It could be passed down to the conversion programme but is not
         worth the effort for the number involved). In this instance we keep the ADQL/s fragment, but
         provide a new control file of the expected output.
+    (d) Sometimes a combination of (b) and (c): New syntax plus insufficient context information.
 
 (3) The v20 directory contains brand new version 2 files. 
 

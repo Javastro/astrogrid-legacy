@@ -667,7 +667,7 @@ public class AdqlCompiler {
 			        }
 			        // Unit test done.
 			        else if( parentName.equalsIgnoreCase( SET_ELEMENT ) ) {
-			            fInValueListConstant() ;
+			            fInValueListExpression() ;
 			        }
 			    }
 			    else if( childName.equalsIgnoreCase( JOINSPECIFICATION_ELEMENT ) ) {
@@ -677,41 +677,25 @@ public class AdqlCompiler {
 			        if( parentName.equalsIgnoreCase( TABLE_ELEMENT ) ) {
 			            fJoinSpecification() ;
 			        }
-			        // Unit test done.
-			        else {
-			            fSearchCondition() ;
-			        }
 			    }
 			    else if( childName.equalsIgnoreCase( ARG_ELEMENT ) ) {
 			        parent = cp.getParent() ;
 			        // Unit test done.
 			        if( parent.getType().equalsIgnoreCase( AGGREGATE_FUNCTION_TYPE ) ) {
-			            parser.set_function_specification_part_fragment() ;
-			            ComparisonPredType compPred = ComparisonPredType.Factory.newInstance() ;
-			            AST_SetFunctionSpecificationPartFragment sfsNode = (AST_SetFunctionSpecificationPartFragment)parser.jjtree.rootNode() ;
-			            sfsNode.buildXmlTree( compPred.addNewArg() ) ;
+                        fSetFunctionSpecifictationPartFragment() ;
 			        }
 			        // Unit test done.
 			        else {
-			            parser.value_expression_A() ;
-			            ComparisonPredType compPred = ComparisonPredType.Factory.newInstance() ;
-			            AST_ValueExpression valueExpressionNode = (AST_ValueExpression)parser.jjtree.rootNode() ;
-			            valueExpressionNode.buildXmlTree( compPred.addNewArg() ) ;
+                        fValueExpression() ;
 			        }
 			    }
 			    // Unit test done.
 			    else if( childName.equalsIgnoreCase( PATTERN_ELEMENT ) ) {
-			        parser.pattern_A() ;
-			        LikePredType lpt = LikePredType.Factory.newInstance() ;
-			        AST_CharacterStringLiteral patternNode = (AST_CharacterStringLiteral)parser.jjtree.rootNode() ;
-			        patternNode.buildXmlTree( lpt.addNewPattern() ) ;
+			        fPattern() ;
 			    }
 			    // Unit test done.
 			    else if( childName.equalsIgnoreCase( TABLE_ELEMENT ) ) {
-			        parser.table_reference_A() ;
-			        FromType from = FromType.Factory.newInstance() ;
-			        AST_Table tableNode = (AST_Table)parser.jjtree.rootNode() ;
-			        tableNode.buildXmlTree( from.addNewTable() ) ;
+                    fTableReference() ;
 			    }
 			    // Adjustment made for:
 			    // /Select[@type='selectType']/SelectionList[@type='selectionListType']/Item[@type='aliasSelectionItemType']/Expression[@type='mathFunctionType']
@@ -728,10 +712,7 @@ public class AdqlCompiler {
 			                ||
 			                // Unit test done.
 			                parent.getType().equalsIgnoreCase( ALIAS_SELECTION_ITEM_TYPE ) ) {
-			            parser.value_expression_A() ;
-			            ComparisonPredType compPred = ComparisonPredType.Factory.newInstance() ;
-			            AST_ValueExpression valueExpressionNode = (AST_ValueExpression)parser.jjtree.rootNode() ;
-			            valueExpressionNode.buildXmlTree( compPred.addNewArg() ) ;
+			            fValueExpression() ;
 			        }
 			        else {
 			            throw new ParseException( UNRECOGNIZED_FRAGMENT + contextPath ) ;	
@@ -740,10 +721,7 @@ public class AdqlCompiler {
 			    else if( childName.equalsIgnoreCase( ORDER_ELEMENT ) ) { 
 			        // Unit test done.
 			        if( child.getType().equalsIgnoreCase( ORDER_OPTION_TYPE ) ) {		  
-			            parser.ordering_specification_S() ;
-			            OrderType orderType = OrderType.Factory.newInstance() ;
-			            AST_OrderingSpecification orderSpecNode = (AST_OrderingSpecification)parser.jjtree.rootNode() ;
-			            orderSpecNode.buildXmlTree( orderType.addNewOrder() ) ;
+                        fOrderingSpecification() ;
 			        }
 			        else {
 			            parent = cp.getParent() ;
@@ -752,10 +730,7 @@ public class AdqlCompiler {
 			            if( parent.getName().equalsIgnoreCase( ITEM_ELEMENT )
 			                    ||
 			                    grandParent.getName().equalsIgnoreCase( ORDERBY_ELEMENT ) ) {
-			                parser.ordering_specification_S() ;
-			                OrderType orderType = OrderType.Factory.newInstance() ;
-			                AST_OrderingSpecification orderSpecNode = (AST_OrderingSpecification)parser.jjtree.rootNode() ;
-			                orderSpecNode.buildXmlTree( orderType.addNewOrder() ) ; 
+                            fOrderingSpecification() ; 
 			            }
 			            else {
 			                throw new ParseException( UNRECOGNIZED_FRAGMENT + contextPath ) ;	
@@ -765,10 +740,7 @@ public class AdqlCompiler {
 			    else if( childName.equalsIgnoreCase( FROM_TABLE_TYPE_ELEMENT ) ) {
 			        // Unit test done.
 			        if( child.getType().equalsIgnoreCase( TABLE_TYPE ) ) {
-			            parser.table_reference_A() ;     
-			            ArrayOfFromTableType tableArray = ArrayOfFromTableType.Factory.newInstance() ;
-			            AST_Table tableNode = (AST_Table)parser.jjtree.rootNode() ;
-			            tableNode.buildXmlTree(tableArray.addNewFromTableType() ) ;
+                        fTableReferenceWithinJoinFromArray() ;
 			        }
 			        else {
 			            throw new ParseException( UNRECOGNIZED_FRAGMENT + contextPath ) ;	
@@ -777,15 +749,15 @@ public class AdqlCompiler {
 			    else if( childName.equalsIgnoreCase( TABLES_ELEMENT ) ) {
 			        // Unit test done.
 			        if( child.getType().equalsIgnoreCase( ARRAY_OF_FROM_TABLE_TYPE ) ) {
-			            parser.table_array_fragment() ;
-			            JoinTableType joinTable = JoinTableType.Factory.newInstance() ;
-			            AST_TableArrayFragment tableArrayNode = (AST_TableArrayFragment)parser.jjtree.rootNode() ;
-			            tableArrayNode.buildXmlTree( joinTable.addNewTables() ) ; 
+                        fJoinFromArray() ; 
 			        }
 			        else {
 			            throw new ParseException( UNRECOGNIZED_FRAGMENT + contextPath ) ;	
 			        }
 			    }
+                else if( childName.equalsIgnoreCase( CONDITION_ELEMENT ) ) {                  
+                        fSearchCondition() ;
+                }
 			    // Unit test done.
 			    else {
 			        throw new ParseException( UNRECOGNIZED_FRAGMENT + contextPath ) ;
@@ -817,6 +789,56 @@ public class AdqlCompiler {
 
 	}
     
+   private void fJoinFromArray() throws ParseException {
+       parser.table_array_fragment() ;
+       JoinTableType joinTable = JoinTableType.Factory.newInstance() ;
+       AST_TableArrayFragment tableArrayNode = (AST_TableArrayFragment)parser.jjtree.rootNode() ;
+       tableArrayNode.buildXmlTree( joinTable.addNewTables() ) ; 
+    }
+   
+   private void fTableReferenceWithinJoinFromArray() throws ParseException {
+       parser.table_reference_A() ;     
+       ArrayOfFromTableType tableArray = ArrayOfFromTableType.Factory.newInstance() ;
+       AST_Table tableNode = (AST_Table)parser.jjtree.rootNode() ;
+       tableNode.buildXmlTree(tableArray.addNewFromTableType() ) ;
+   }
+   
+   private void fOrderingSpecification() throws ParseException {
+       parser.ordering_specification_S() ;
+       OrderType orderType = OrderType.Factory.newInstance() ;
+       AST_OrderingSpecification orderSpecNode = (AST_OrderingSpecification)parser.jjtree.rootNode() ;
+       orderSpecNode.buildXmlTree( orderType.addNewOrder() ) ;
+   }
+   
+   private void fTableReference() throws ParseException {
+       parser.table_reference_A() ;
+       FromType from = FromType.Factory.newInstance() ;
+       AST_Table tableNode = (AST_Table)parser.jjtree.rootNode() ;
+       tableNode.buildXmlTree( from.addNewTable() ) ;
+   }
+    
+    private void fPattern () throws ParseException {
+        parser.pattern_A() ;
+        LikePredType lpt = LikePredType.Factory.newInstance() ;
+//        AST_CharacterStringLiteral patternNode = (AST_CharacterStringLiteral)parser.jjtree.rootNode() ;
+        AST_CharacterValueExpression patternNode = (AST_CharacterValueExpression)parser.jjtree.rootNode() ;
+        patternNode.buildXmlTree( lpt.addNewPattern() ) ;
+    }
+    
+    private void fValueExpression() throws ParseException {
+        parser.value_expression_A() ;
+        ComparisonPredType compPred = ComparisonPredType.Factory.newInstance() ;
+        AST_ValueExpression valueExpressionNode = (AST_ValueExpression)parser.jjtree.rootNode() ;
+        valueExpressionNode.buildXmlTree( compPred.addNewArg() ) ;
+    }
+    
+    private void fSetFunctionSpecifictationPartFragment() throws ParseException {
+        parser.set_function_specification_part_fragment() ;
+        ComparisonPredType compPred = ComparisonPredType.Factory.newInstance() ;
+        AST_SetFunctionSpecificationPartFragment sfsNode = (AST_SetFunctionSpecificationPartFragment)parser.jjtree.rootNode() ;
+        sfsNode.buildXmlTree( compPred.addNewArg() ) ;
+    }
+    
     private void fSearchCondition() throws ParseException {
         parser.search_condition_S() ;  
         WhereType where = WhereType.Factory.newInstance() ;
@@ -831,11 +853,11 @@ public class AdqlCompiler {
         jsNode.buildXmlTree( joinTable.addNewJoinSpecification() ) ; 
     }
     
-    private void fInValueListConstant() throws ParseException {
-//        parser.in_value_list_constant_A() ;
-        ConstantListSet constantListSet = ConstantListSet.Factory.newInstance() ;
-        AST_InValueListConstant inValueListConstantNode = (AST_InValueListConstant)parser.jjtree.rootNode() ;
-        inValueListConstantNode.buildXmlTree( constantListSet.addNewItem() ) ;  
+    private void fInValueListExpression() throws ParseException {
+        parser.value_expression_A() ;
+        InListSet inListSet = InListSet.Factory.newInstance() ;
+        AST_ValueExpression inValueListNode = (AST_ValueExpression)parser.jjtree.rootNode() ;
+        inValueListNode.buildXmlTree( inListSet.addNewItem() ) ;  
     }
     
     private void fQuerySpecification() throws ParseException {

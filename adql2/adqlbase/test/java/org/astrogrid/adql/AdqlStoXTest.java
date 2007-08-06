@@ -1,4 +1,4 @@
-/*$Id: AdqlStoXTest.java,v 1.7 2007/08/06 12:36:36 jl99 Exp $
+/*$Id: AdqlStoXTest.java,v 1.8 2007/08/06 15:10:42 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -21,8 +21,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Properties;
+import java.util.ListIterator;
 
 import org.astrogrid.adql.metadata.*;
 
@@ -114,6 +116,7 @@ public class AdqlStoXTest extends XMLTestCase {
     public void testOf_v10_BADextremelyComplexQuery() throws Exception { execTest() ; }
     public void testOf_v10_BADinnerJoinWithJoinCondition() throws Exception { execTest() ; }
     public void testOf_v10_BADNestedBracketWithinConeSearch01() throws Exception { execTest() ; }
+    public void testOf_v10_BADregion() throws Exception { execTest() ; }
     public void testOf_v10_BADregularIdentifier() throws Exception { execTest() ; }
     public void testOf_v10_BADreservedWordAsTableName() throws Exception { execTest() ; }
 	public void testOf_v10_BADselectEmptyAlias() throws Exception { execTest() ; }
@@ -233,8 +236,8 @@ public class AdqlStoXTest extends XMLTestCase {
     public void testOf_v10weeds_FragmentLikePattern() throws Exception { execFragment() ; }
     public void testOf_v10_FragmentMATablesArrayOfFromTableType() throws Exception { execFragment() ; }
     public void testOf_v10_FragmentNaiveConeSearch() throws Exception { execFragment() ; }
-    public void testOf_v10_FragmentOrderBy() throws Exception { execFragment() ; }
-    public void testOf_v10_FragmentOrderByItem() throws Exception { execFragment() ; }
+    public void testOf_v10weeds_FragmentOrderBy() throws Exception { execFragment() ; }
+    public void testOf_v10weeds_FragmentOrderByItem() throws Exception { execFragment() ; }
     public void testOf_v10_FragmentOrderByItemExpression() throws Exception { execFragment() ; }
     public void testOf_v10_FragmentOrderByItemOrder() throws Exception { execFragment() ; }
     public void testOf_v10_FragmentOrderByItemOrder02() throws Exception { execFragment() ; }
@@ -246,9 +249,9 @@ public class AdqlStoXTest extends XMLTestCase {
     public void testOf_v10_FragmentSelectionListAllItems() throws Exception { execFragment() ; }
     public void testOf_v10_FragmentSelectionListCeilingFunction() throws Exception { execFragment() ; }
     public void testOf_v10_FragmentSelectionListItemExpression() throws Exception { execFragment() ; }
-    public void testOf_v10_FragmentSetItem() throws Exception { execFragment() ; }
+    public void testOf_v10weeds_FragmentSetItem() throws Exception { execFragment() ; }
     public void testOf_v10_FragmentSubsetSpectralLines() throws Exception { execFragment() ; }
-    public void testOf_v10_FragmentTableCondition() throws Exception { execFragment() ; }
+    public void testOf_v10weeds_FragmentTableCondition() throws Exception { execFragment() ; }
     public void testOf_v10_FragmentTablesArrayOfFromTableType() throws Exception { execFragment() ; }
     public void testOf_v10_FragmentTableTableType() throws Exception { execFragment() ; }
     public void testOf_v10_FragmentTop() throws Exception { execFragment() ; }
@@ -702,6 +705,27 @@ public class AdqlStoXTest extends XMLTestCase {
 						"   You may encounter failures within a test or complete absence of some tests.\n"
 					+   "   Please inspect AdqlStoXTest for test methods and your test files.\n"					
 				) ;
+                
+                //
+                // Attempt to find any files without methods
+                // (Any others will show up in the unit tests)...
+                HashSet ms = new HashSet() ;
+                for( int i=0; i<methodArray.length; i++ ) {
+                    ms.add( methodArray[i].getName() ) ;
+                }
+                
+                ListIterator it = fileList.listIterator() ;
+                while( it.hasNext() ) {
+                    File file = (File)it.next() ;
+                    String mf = file.getName().split( "\\." )[0] ;
+                    String md = file.getParentFile().getName() ;
+                    String methodName = "testOf_" + md + '_' + mf ;
+                    if( !ms.contains( methodName ) ) {
+                        System.out.println( "Method missing for: " + file.getPath() ) ;
+                    }
+                    
+                }
+                    
 			}			
 			sBadInitializedStatus = false ;
 			sInitialized = true ;
@@ -813,9 +837,12 @@ public class AdqlStoXTest extends XMLTestCase {
 
 
 /* $Log: AdqlStoXTest.java,v $
- * Revision 1.7  2007/08/06 12:36:36  jl99
+ * Revision 1.8  2007/08/06 15:10:42  jl99
  * Converting fragments.
  *
+/* Revision 1.7  2007/08/06 12:36:36  jl99
+/* Converting fragments.
+/*
 /* Revision 1.6  2007/08/06 11:26:02  jl99
 /* First attempts at converting fragments.
 /*
