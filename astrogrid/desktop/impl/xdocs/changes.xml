@@ -16,6 +16,9 @@
 <body>
 <release version="2007.4.alpha2" date="unreleased">
     <action dev="nw" type="fix">
+        VOExplorer searches halt completely when pressing the 'stop search' button.
+    </action>
+    <action dev="nw" type="fix">
         Fixed a problem with displaying contents of a voexplorer folder after
         creating / editing that folder.
     </action>

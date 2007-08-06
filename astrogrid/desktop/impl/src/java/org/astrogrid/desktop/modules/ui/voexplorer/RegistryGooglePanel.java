@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.12 2007/08/02 11:12:47 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.13 2007/08/06 14:37:37 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -135,24 +135,44 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 
 		// callback from the xml stream reader.
 		public void process(XMLStreamReader reader) throws Exception {
+		    if (isInterrupted()) {
+		        return;
+		    }
 			ResourceStreamParser p = new ResourceStreamParser(reader);
 			load(p);	
 		}
+		
+		private Thread _thread;
+		private boolean interrupted = false;
+		/** keep track of whrther this background process was interrupted */
+		private boolean isInterrupted() {
+		    if (_thread == null) {
+		        // must be called first on the background thread to initialize this.
+		        _thread = Thread.currentThread(); 
+		    }
+		    if (! interrupted) { // else we know already that we've been interrupted.
+		        interrupted = _thread.isInterrupted();
+		    }
+		    return interrupted;
+		}
+		
 		/**
 		 * @param p
+		 * @throws InterruptedException 
 		 */
-		protected void load(ResourceStreamParser p) {
-			while (p.hasNext()) {
+		private void load(ResourceStreamParser p) throws InterruptedException {
+			while (p.hasNext() && ! isInterrupted()) { // bail out on interrupt.
 				final Resource r = (Resource)p.next();
 				try {
 					items.getReadWriteLock().writeLock().lock();
 					items.add(r);
 				} finally {
-					items.getReadWriteLock().writeLock().unlock();
+				    //this throws an illegal monitor state exception if I didn't lock it.
+				        items.getReadWriteLock().writeLock().unlock();
 				}
 			}
 		}
-		protected void load(Resource[] arr) {
+		private void load(Resource[] arr) {
 			for (int i = 0; i < arr.length; i++) {
 				try {
 					items.getReadWriteLock().writeLock().lock();
@@ -163,7 +183,7 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 			}			
 		}
 		
-		protected void cacheResult( final String key) {
+		private void cacheResult( final String key) {
 			Resource[] arr = (Resource[]) items.toArray(new Resource[items.size()]);
 			Element el = new Element(key,arr);
 			bulk.put(el);
@@ -177,22 +197,28 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 		protected void runQuery(String xq) throws ServiceException {
 			// check bulk cache.
 			Element el = bulk.get(xq);
-			if (el != null) {
+			if (! isInterrupted() && el != null) {
 				load((Resource[])el.getValue()); 
 				return;// found a cached result - halt here.
 			}
 			reg.xquerySearchStream(xq,this);
 			// no need to lock - as we know we're the thread that was doing the modifying. and it's finished now.
-			if (items.size() > 0) {
+			
+			if (! isInterrupted() && items.size() > 0) {
 				cacheResult(xq);
 			}
 		}
 		protected void doFinished(Object result) {
-			resourceTable.selectAll();
+			//resourceTable.selectAll(); dislike this.
+		    if (! isInterrupted() && resourceTable.getRowCount() > 0) {
+		        resourceTable.getSelectionModel().setSelectionInterval(0,0);
+		    }
 			
 		}		
 		protected void doAlways() {
-			fireLoadCompleted();
+		    if (! isInterrupted()) {
+		        fireLoadCompleted();
+		    }
 		}
 	}
 	
@@ -694,6 +720,9 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.13  2007/08/06 14:37:37  nw
+Complete - task 133: make cancel more effective.
+
 Revision 1.12  2007/08/02 11:12:47  nw
 improved the formatting of filtering information.
 
