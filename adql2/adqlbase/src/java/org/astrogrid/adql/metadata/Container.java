@@ -1,4 +1,4 @@
-/*$Id: Container.java,v 1.4 2007/08/02 14:14:13 jl99 Exp $
+/*$Id: Container.java,v 1.5 2007/08/06 21:29:35 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -26,7 +26,7 @@ public class Container {
     
     public Container() {}
     
-    public void pushFunction( Function f ) {
+    public synchronized void pushFunction( Function f ) {
         this.htFunctions.put( f.getKey(), f ) ;
     }
     
@@ -38,7 +38,7 @@ public class Container {
         return htFunctions.containsKey( name ) ;
     }
     
-    public void pushColumn( Column c ) {
+    public synchronized void pushColumn( Column c ) {
         this.htColumns.put( c.getKey(), c ) ;
     }
     
@@ -66,7 +66,7 @@ public class Container {
         return htColumns.containsKey( Key.formKeyString( name, table.key.qualifiers ) ) ;
     }
     
-    public void pushTable( Table t ) {
+    public synchronized void pushTable( Table t ) {
         this.htTables.put( t.getKey(), t ) ;
     }
     
@@ -90,7 +90,7 @@ public class Container {
         return htTables.containsKey( Key.formKeyString( name, qualifiers ) ) ;
     }
     
-    public void pushSchema( Schema s ) {
+    public synchronized void pushSchema( Schema s ) {
         this.htSchemas.put( s.getKey(), s ) ;
     }
     
@@ -115,6 +115,9 @@ public class Container {
 
 /*
 $Log: Container.java,v $
+Revision 1.5  2007/08/06 21:29:35  jl99
+First attempt at pooling the AdqlCompiler
+
 Revision 1.4  2007/08/02 14:14:13  jl99
 Bug fix and code tidy
 
