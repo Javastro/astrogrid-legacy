@@ -1,4 +1,4 @@
-/*$Id: VOExplorerImpl.java,v 1.6 2007/07/26 18:21:45 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.7 2007/08/06 13:36:47 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -261,10 +261,19 @@ public class VOExplorerImpl extends UIComponentImpl
 		ResourceFolder r = p.getCurrentlyEditing();
 		resourcesFolders.store(r);
 		//display updated folder contents.
-		activities.clearSelection();
-		r.display(google);
-		setTitle("VO Explorer - " + r.getName());		
-		showResourceView();
+		
+        mainPanel.show(RESOURCES_VIEW);
+        mainButtons.show(RESOURCES_VIEW);
+        // clearing selection and then setting hte selection will trigger a query reload in all circumstances.
+        resourcesFolders.clearSelection();
+        resourcesFolders.setSelectedValue(r,true);
+        // make sure the edited folder is the selected one (necessary when we've just created a new one..
+       // if (resourcesFolders.getSelectedValue() != r) {
+       //     resourcesFolders.setSelectedValue(r,true);
+       // } else {
+    //    activities.clearSelection();
+	//	r.display(google);
+	//	setTitle("VO Explorer - " + r.getName());		
 	}
 
 	public void editNewSmartList(SmartList f) {

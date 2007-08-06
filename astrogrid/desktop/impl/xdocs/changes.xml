@@ -15,6 +15,10 @@
 	</head>
 <body>
 <release version="2007.4.alpha2" date="unreleased">
+    <action dev="nw" type="fix">
+        Fixed a problem with displaying contents of a voexplorer folder after
+        creating / editing that folder.
+    </action>
     <action dev="nw" type="fix" issue="2260">
         Usability enhancements to task runner: made full adql editor resizable, 
         remembered adql editor expansion state & parameter values when 
