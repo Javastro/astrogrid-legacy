@@ -14,7 +14,7 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="2007.4.alpha2" date="unreleased">
+<release version="2007.4.alpha2" date="2007-08-06">
     <action dev="nw" type="fix">
         VOExplorer searches halt completely when pressing the 'stop search' button.
     </action>
