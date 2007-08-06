@@ -23,9 +23,6 @@ Some things about the file names, simply for convenience...
 (1) File names of those compilations that are designed to fail begin with the string "BAD".
 (2) File names for fragment type processing have the word "Fragment" somewhere in the name.
 (3) File names for selections involving multiple archives have the letters "MA" somewhere in the name.
-(4) Some files have WILLFAIL embedded in the name. These are the focus of some experimentation and
-    may or may not fail according to the success, extent or otherwise of the experiment.
-    These will eventually be removed.
 
 Usually the above annotations are prefixed to the file name.
 

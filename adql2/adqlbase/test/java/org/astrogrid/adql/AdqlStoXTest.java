@@ -1,4 +1,4 @@
-/*$Id: AdqlStoXTest.java,v 1.8 2007/08/06 15:10:42 jl99 Exp $
+/*$Id: AdqlStoXTest.java,v 1.9 2007/08/06 16:12:06 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -156,35 +156,37 @@ public class AdqlStoXTest extends XMLTestCase {
     public void testOf_v10_SDSSGalaxiesWithTwoCriteria() throws Exception { execTest() ; }
     // Has a user defined function which will fail at present.
     // Now requires renaming as user defined functions catered for...
-    public void _testOf_v10_SDSSUnclassifiedSpectraWILLFAIL() throws Exception { execTest() ; }
+    public void _testOf_v10_SDSSUnclassifiedSpectra() throws Exception { execTest() ; }
     public void testOf_v10_SDSSGalaxiesWithMultipleCriteria() throws Exception { execTest() ; }
     public void testOf_v10_SDSSSpatialUnitVectors() throws Exception { execTest() ; }
     public void testOf_v10_SDSSCataclysmicVariablesUsingColors() throws Exception { execTest() ; }
     // Has bit processing which will fail...
-    public void testOf_v10_SDSSDataSubSampleWILLFAIL() throws Exception { execTest() ; }
+    public void testOf_v10_SDSSDataSubSample() throws Exception { execTest() ; }
     public void testOf_v10_SDSSLowzQSOsUsingColors() throws Exception { execTest() ; }
     public void testOf_v10_SDSSObjectVelocitiesAndErrors() throws Exception { execTest() ; }
     public void testOf_v10_SDSSUsingBetween() throws Exception { execTest() ; }
     public void testOf_v10_SDSSMovingAsteroids() throws Exception { execTest() ; }
     public void testOf_v10_SDSSQuasarsInImaging() throws Exception { execTest() ; }
+    public void testOf_v10_SDSSQSOsInSpectroscopy() throws Exception { execTest() ; }  
     // Has bit processing and use of str function...
-    public void testOf_v10_SDSSSelectedNeighborsInRunWILLFAIL() throws Exception { execTest() ; }
+    public void testOf_v10_SDSSSelectedNeighborsInRun() throws Exception { execTest() ; }
     // Contains a case...
-    public void testOf_v10_SDSSObjectCountingAndLogicWILLFAIL() throws Exception { execTest() ; }
+    public void testOf_v10_SDSSObjectCountingAndLogic() throws Exception { execTest() ; }
     public void testOf_v10_SDSSGalaxiesBlendedWithStars() throws Exception { execTest() ; }
     public void testOf_v10_SDSSStarsInSpecificFields() throws Exception { execTest() ; }
     // Uses bit processing...
-    public void testOf_v10_SDSSUsingThreeTablesWILLFAIL() throws Exception { execTest() ; }
+    public void testOf_v10_SDSSUsingThreeTables() throws Exception { execTest() ; }
     // User defined function...
-    // Now requires renaming as user defined functions catered for...
-    public void _testOf_v10_SDSSQSOsInSpectroscopyWILLFAIL() throws Exception { execTest() ; }
+    public void _testOf_v10_SDSSQSOsInSpectroscopy() throws Exception { execTest() ; }
     public void testOf_v10_SDSSObjectsClosePairs() throws Exception { execTest() ; }
     // Uses bit processing and user defined function...
-    public void testOf_v10_SDSSErrorsUsingFlagsWILLFAIL() throws Exception { execTest() ; }
+    public void testOf_v10_SDSSErrorsUsingFlags() throws Exception { execTest() ; }
     // Uses bit processing and user defined function...
-    public void testOf_v10_SDSSEllipticalGalaxiesBasedOnModelFitsWILLFAIL() throws Exception { execTest() ; }
+    public void testOf_v10_SDSSEllipticalGalaxiesBasedOnModelFits() throws Exception { execTest() ; }
+    public void testOf_v10_SDSSUnclassifiedSpectra() throws Exception { execTest() ; }
 	public void testOf_v10_selectAggregateFuncs() throws Exception { execTest() ; }
 	public void testOf_v10_selectAliasExpr() throws Exception { execTest() ; } 
+    public void testOf_v10_selectAll() throws Exception { execTest() ; }
 	public void testOf_v10_selectAllAllow() throws Exception { execTest() ; } 
 	public void testOf_v10_selectAllLimit() throws Exception { execTest() ; } 
 	public void testOf_v10_selectBetweenOps() throws Exception { execTest() ; } 
@@ -837,9 +839,12 @@ public class AdqlStoXTest extends XMLTestCase {
 
 
 /* $Log: AdqlStoXTest.java,v $
- * Revision 1.8  2007/08/06 15:10:42  jl99
- * Converting fragments.
+ * Revision 1.9  2007/08/06 16:12:06  jl99
+ * Some test file name changes
  *
+/* Revision 1.8  2007/08/06 15:10:42  jl99
+/* Converting fragments.
+/*
 /* Revision 1.7  2007/08/06 12:36:36  jl99
 /* Converting fragments.
 /*

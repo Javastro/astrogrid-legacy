@@ -1,1 +1,0 @@
-Select * From catalogue as a Order By a.POS_EQ_RA ASC, ABS(a.POS_EQ_DEC)  DESC, a.PHOT_FLUX_PEAK+a.PHOT_FLUX_INT ASC ;
