@@ -127,6 +127,7 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 				// ignore already existing composite icons.
 				Icon[] is = new Icon[caps.cardinality()];
 				StringBuffer tip = new StringBuffer();
+                tip.append("<html>");
 				int j = 0;
 				for (Iterator entries = icons.entrySet().iterator(); entries.hasNext(); ) {
 					Map.Entry e = (Map.Entry) entries.next();
@@ -137,6 +138,7 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 						tip.append(tips.get(component)).append("<br>");
 					}
 				}
+                tip.append("</html>");
 				// merge together what we've got. 
 				i = new CombinedIcon(is);
 				icons.put(caps,i);
