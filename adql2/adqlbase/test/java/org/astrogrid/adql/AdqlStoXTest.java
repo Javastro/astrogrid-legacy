@@ -1,4 +1,4 @@
-/*$Id: AdqlStoXTest.java,v 1.5 2007/08/02 17:07:33 jl99 Exp $
+/*$Id: AdqlStoXTest.java,v 1.6 2007/08/06 11:26:02 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -533,9 +533,50 @@ public class AdqlStoXTest extends XMLTestCase {
 	private void compareCompilations( XmlObject xo, File xmlFile ) throws Exception {
         //
         // This rather extended rigmarole is what I've had to do (partly!)
-        // to control namespace occurances in an instance...
+        // to control namespace occurances in an instance, 
+        // and also text and white space...
         XmlOptions opts = getCompareOptions() ;
 	    String compiledVersion = xo.xmlText( opts ) ;
+                
+        String fileContents = retrieveFile( xmlFile ) ;
+        String namespace = ConvertADQL.getCovertibleNameSpace( fileContents ) ;
+        String controlledVersion ;
+        String convertedXml ;
+        if( namespace != null ) {
+            System.out.println( "Xml file requires converting. Namespace: " + namespace ) ;
+            convertedXml = getConvertor().convertV10ToV20( new StringReader( fileContents ) ) ;
+            controlledVersion = XmlObject.Factory.parse( convertedXml ).xmlText( opts ) ;
+        }
+        else {
+            System.out.println( "Xml file does not require conversion." ) ;
+            controlledVersion = XmlObject.Factory.parse( fileContents ).xmlText( opts ) ;
+        }
+
+//        if( controlledVersion.indexOf( "fragment" ) != -1 ) {
+//            System.out.println( "====compiledVersion:====\n" + compiledVersion 
+//                    +  "\n====controlledVersion:====\n" + controlledVersion ) ;
+//        }
+
+        Document compiledDom = DomHelper.newDocument( compiledVersion ) ;
+        Document fileDom = DomHelper.newDocument( controlledVersion ) ;
+
+        // Normalize just to be sure 
+        compiledDom.normalize();
+        fileDom.normalize();
+        
+        // Using xmlunit to compare documents
+        assertXMLEqual("Adql/s does not compile to what is expected!", compiledDom, fileDom) ;
+
+	}
+    
+    private void _compareCompilations( XmlObject xo, File xmlFile ) throws Exception {
+        //
+        // This rather extended rigmarole is what I've had to do (partly!)
+        // to control namespace occurances in an instance...
+        XmlOptions opts = getCompareOptions() ;
+        String compiledVersion = 
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
+            + xo.xmlText( opts ) ;
                 
         String fileContents = retrieveFile( xmlFile ) ;
         String namespace = ConvertADQL.getCovertibleNameSpace( fileContents ) ;
@@ -559,14 +600,21 @@ public class AdqlStoXTest extends XMLTestCase {
         fileDom.normalize();
         
         // Using xmlunit to compare documents
-        // setIgnoreWhitespace(true);
+        if( controlledVersion.indexOf( "fragment" ) != -1 ) {
+            System.out.println( "====compiledVersion:====\n" + compiledVersion 
+                     +  "\n====controlledVersion:====\n" + controlledVersion ) ;
+        }
         
         assertXMLEqual("Adql/s does not compile to what is expected!", compiledDom, fileDom) ;
 
-	}
+    }
     
     private XmlOptions getCompareOptions() {
-        return sCompiler.getSaveOptions( true ) ;
+        //return sCompiler.getSaveOptions( true ) ;
+        XmlOptions opts = new XmlOptions();
+        opts.setSavePrettyPrint();
+        opts.setSavePrettyPrintIndent(4);
+        return opts ;
     }
     
     private Container getMetaData() {
@@ -765,9 +813,12 @@ public class AdqlStoXTest extends XMLTestCase {
 
 
 /* $Log: AdqlStoXTest.java,v $
- * Revision 1.5  2007/08/02 17:07:33  jl99
- * Partial reorg of test directories between versions.
+ * Revision 1.6  2007/08/06 11:26:02  jl99
+ * First attempts at converting fragments.
  *
+/* Revision 1.5  2007/08/02 17:07:33  jl99
+/* Partial reorg of test directories between versions.
+/*
 /* Revision 1.4  2007/07/30 14:38:38  jl99
 /* Attempting to compare newer compilations against control output files from previous version.
 /*

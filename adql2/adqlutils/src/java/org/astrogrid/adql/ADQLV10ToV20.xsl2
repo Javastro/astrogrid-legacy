@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0"
 		xmlns:ad1="http://www.ivoa.net/xml/ADQL/v1.0"
-		xmlns:ad2="http://www.ivoa.net/xml/v2.0/adql"
+		xmlns:adql="http://www.ivoa.net/xml/v2.0/adql"
 		xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		exclude-result-prefixes="ad1"  >
+		xmlns:fragment="http://www.w3.org/2001/02/xml-fragment"
+		exclude-result-prefixes="ad1 xsd fragment"  >
 	
 	<!-- 
 		Stylesheet to convert ADQL/x v1.0 to ADQL/x v2.0
@@ -20,7 +21,7 @@
     <xsl:param name="xsiPrefix" select="'xsi'"/>
     
     <xsl:param name="ad1NS" select="'http://www.ivoa.net/xml/ADQL/v1.0'" />
-    <!--xsl:param name="ad1NSxxx" select="http://www.ivoa.net/xml/ADQL/v1.0" /-->
+    <xsl:param name="fragmentNS" select="'http://www.w3.org/2001/02/xml-fragment'"/>
     <xsl:param name="ad2NS" select="'http://www.ivoa.net/xml/v2.0/adql'" />
     <xsl:param name="xsiNS" select="'http://www.w3.org/2001/XMLSchema-instance'"/>
     
@@ -40,6 +41,18 @@
         +-->
 	<xsl:template match="*[ namespace-uri() = $ad1NS ]">
         <xsl:element name="{$ad2Prefix}:{local-name()}" namespace="{$ad2NS}">	     	
+			<xsl:apply-templates select="@*|node()"/>	
+		</xsl:element> 
+	</xsl:template>
+	
+	<!--+
+        | Sponge category for any fragment elements.
+        | It could probable be fitted into above template, but simplicity first.
+        | xmlns:v1="http://www.ivoa.net/xml/ADQL/v1.0" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        +-->
+	<xsl:template match="xml-fragment">
+        <xsl:element name="{local-name()}" namespace="{namespace-uri()}">  	
 			<xsl:apply-templates select="@*|node()"/>	
 		</xsl:element> 
 	</xsl:template>
@@ -182,6 +195,15 @@
 					<xsl:value-of select="." />
 				</xsl:otherwise>
 			</xsl:choose>
+		</xsl:attribute>
+	</xsl:template>
+	
+	<!--+
+        | Template for v1 namespace.
+        +--> 
+    <xsl:template match="@xmlns:v1">
+		<xsl:attribute name="@xmlns:{$ad2Prefix}" namespace="{namespace-uri()}">			
+			<xsl:value-of select="$ad2NS" />
 		</xsl:attribute>
 	</xsl:template>
 	
