@@ -1,4 +1,4 @@
-/*$Id: AdqlStoXTest.java,v 1.6 2007/08/06 11:26:02 jl99 Exp $
+/*$Id: AdqlStoXTest.java,v 1.7 2007/08/06 12:36:36 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -230,7 +230,7 @@ public class AdqlStoXTest extends XMLTestCase {
     public void testOf_v10_FragmentGroupBy() throws Exception { execFragment() ; }
     public void testOf_v10_FragmentHaving() throws Exception { execFragment() ; }
     public void testOf_v10_FragmentItemArgument() throws Exception { execFragment() ; }
-    public void testOf_v10_FragmentLikePattern() throws Exception { execFragment() ; }
+    public void testOf_v10weeds_FragmentLikePattern() throws Exception { execFragment() ; }
     public void testOf_v10_FragmentMATablesArrayOfFromTableType() throws Exception { execFragment() ; }
     public void testOf_v10_FragmentNaiveConeSearch() throws Exception { execFragment() ; }
     public void testOf_v10_FragmentOrderBy() throws Exception { execFragment() ; }
@@ -813,9 +813,12 @@ public class AdqlStoXTest extends XMLTestCase {
 
 
 /* $Log: AdqlStoXTest.java,v $
- * Revision 1.6  2007/08/06 11:26:02  jl99
- * First attempts at converting fragments.
+ * Revision 1.7  2007/08/06 12:36:36  jl99
+ * Converting fragments.
  *
+/* Revision 1.6  2007/08/06 11:26:02  jl99
+/* First attempts at converting fragments.
+/*
 /* Revision 1.5  2007/08/02 17:07:33  jl99
 /* Partial reorg of test directories between versions.
 /*
