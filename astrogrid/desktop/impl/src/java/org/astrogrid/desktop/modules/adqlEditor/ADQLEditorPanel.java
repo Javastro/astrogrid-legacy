@@ -41,6 +41,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -461,18 +462,19 @@ public class ADQLEditorPanel
 
     private void init() {   
         setLayout(new BorderLayout());
-
         // Put the editing panels plus the metadata panels in the top half of the split pane.
-        add( initTopView() , BorderLayout.NORTH) ;
+        add( initTopView(),BorderLayout.CENTER) ;
 
         // Put the diagnostics panel at the bottom of the split pane.
-        add( initBottomView(), BorderLayout.SOUTH ) ;
+        add( initBottomView(),BorderLayout.SOUTH) ; 
+        setPreferredSize(new Dimension(400,450));
     } // end of init()
     
     
     private JSplitPane initTopView() {
         JSplitPane topView = new JSplitPane();
-        topView.setPreferredSize(new Dimension(600,350));
+      //  topView.setPreferredSize(new Dimension(600,350));
+        topView.setMaximumSize(null);
         // Put the editor panels in the left side of the split pane.
         topView.setLeftComponent( initLeftHandView() ) ;
 
@@ -540,7 +542,9 @@ public class ADQLEditorPanel
        
         tabbedBottomPane = new JTabbedPane();
         tabbedBottomPane.setBorder(BorderFactory.createEmptyBorder());
-        tabbedBottomPane.setPreferredSize(new Dimension(600,100));
+        Dimension dim = new Dimension(400,80);
+        tabbedBottomPane.setPreferredSize(dim);
+        tabbedBottomPane.setMaximumSize(dim);
         tabbedBottomPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         tabbedBottomPane.setTabPlacement(SwingConstants.TOP);
         
@@ -669,7 +673,7 @@ public class ADQLEditorPanel
         
         // RHS top pane...
         JPanel rhsPanel = new JPanel() ;
-        rhsPanel.setPreferredSize(new Dimension(400,250));
+    //    rhsPanel.setPreferredSize(new Dimension(400,350));
         rhsPanel.setLayout( new GridBagLayout() ) ;
         
         // Top bit will be a series of metadata tabs...

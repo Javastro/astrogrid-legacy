@@ -76,7 +76,7 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 
 		// build the panel. 
 		FormLayout layout = new FormLayout("right:d, 3dlu,100dlu:grow,d" // cols
-				,"d,max(10dlu;d),d,max(10dlu;d),fill:100dlu:grow" // rows
+				,"d,max(10dlu;d),d,max(10dlu;d),fill:m:grow" // rows
 		);
 		PanelBuilder builder = new PanelBuilder(layout,this);
 		CellConstraints cc = new CellConstraints();

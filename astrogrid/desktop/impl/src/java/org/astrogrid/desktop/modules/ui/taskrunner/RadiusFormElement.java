@@ -36,6 +36,7 @@ public class RadiusFormElement extends AbstractTaskFormElement implements Proper
         super(pval, pdesc, fileChooser);
         this.isExternalToggle = true;
         this.toggle = externalToggle;
+        disableIndirect();
     }
     
     /** create a new form, which creates and displays it's own
