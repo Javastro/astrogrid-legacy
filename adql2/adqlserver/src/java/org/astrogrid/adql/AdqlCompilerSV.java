@@ -1,4 +1,4 @@
-/*$Id: AdqlCompilerSV.java,v 1.3 2007/08/07 11:10:05 jl99 Exp $
+/*$Id: AdqlCompilerSV.java,v 1.4 2007/08/07 17:37:05 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -81,7 +81,7 @@ public class AdqlCompilerSV {
     private boolean sealed = false ;
 
     private TransformerFactory transformerFactory = TransformerFactory.newInstance() ;
-    private Source transformerSource ;
+    private String styleSheet ;
     private Transformer firstCandidate ;
     private String userDefinedFunctionPrefix ;
     private Container metadata ; 
@@ -112,7 +112,7 @@ public class AdqlCompilerSV {
             //
             // Then get the resulting XML and transform it to SQL variant...
             String adqlx = selectDoc.xmlText() ;       
-            StreamSource source = new StreamSource( adqlx ) ;
+            StreamSource source = new StreamSource( new StringReader( adqlx ) ) ;
             StreamResult result = new StreamResult( new StringWriter() ) ;      
             cu.sqlTransformer.transform( source, result ) ;      
             return ((StringWriter)result.getWriter()).toString() ;
@@ -141,12 +141,13 @@ public class AdqlCompilerSV {
         return true ;
     }
     
-    protected synchronized boolean setTransformerSource( Source source ) 
+    protected synchronized boolean setStyleSheet( String styleSheet ) 
                                 throws TransformerConfigurationException {
         if( this.sealed == true )
             return false ;
+        StreamSource source = new StreamSource( new StringReader( styleSheet )  ) ;
         this.firstCandidate = this.transformerFactory.newTransformer( source ) ;       
-        this.transformerSource = source ;
+        this.styleSheet = styleSheet ;
         return true ;
     }
     
@@ -194,7 +195,8 @@ public class AdqlCompilerSV {
                 }
                 else {
                     try {
-                        Transformer t = transformerFactory.newTransformer( transformerSource ) ;
+                        Source s = new StreamSource( new StringReader( this.styleSheet ) ) ;
+                        Transformer t = transformerFactory.newTransformer( s ) ;
                         cu = new CompilerUnit( c, t ) ;
                     }
                     catch ( Throwable th ) {
@@ -247,6 +249,9 @@ public class AdqlCompilerSV {
 
 /*
 $Log: AdqlCompilerSV.java,v $
+Revision 1.4  2007/08/07 17:37:05  jl99
+Initial multi-threaded test environment for AdqlCompilerSV
+
 Revision 1.3  2007/08/07 11:10:05  jl99
 Ensured compiler unit is returned to pool under all circumstances.
 

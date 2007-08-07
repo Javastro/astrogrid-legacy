@@ -1,4 +1,4 @@
-/*$Id: AdqlStoXTest.java,v 1.9 2007/08/06 16:12:06 jl99 Exp $
+/*$Id: AdqlStoXTest.java,v 1.10 2007/08/07 17:37:05 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -262,7 +262,7 @@ public class AdqlStoXTest extends XMLTestCase {
     
     // JL note:
     // need to try the next two tests for memory on separate threading basis as well.
-    public void _testMemoryUsageWithReinit() throws OutOfMemoryError {
+    public void testMemoryUsageWithReinit() throws OutOfMemoryError {
         // NB: (JL) I've tried this with the setting set to 1000000 and it worked.
         //
         // Turn off all logging.
@@ -332,7 +332,7 @@ public class AdqlStoXTest extends XMLTestCase {
                
     }
     
-    public void _testMemoryUsageWithoutReinit() throws OutOfMemoryError {
+    public void testMemoryUsageWithoutReinit() throws OutOfMemoryError {
         //
         // Turn off all logging.
         // Precaution in case the log level is set inappropriately,
@@ -621,8 +621,8 @@ public class AdqlStoXTest extends XMLTestCase {
         opts.setSavePrettyPrintIndent(4);
         return opts ;
     }
-    
-    private Container getMetaData() {
+       
+    private Container getMetaData() { 
         return TestMetaDataLoader.getMetaData() ;
     }
     
@@ -839,9 +839,12 @@ public class AdqlStoXTest extends XMLTestCase {
 
 
 /* $Log: AdqlStoXTest.java,v $
- * Revision 1.9  2007/08/06 16:12:06  jl99
- * Some test file name changes
+ * Revision 1.10  2007/08/07 17:37:05  jl99
+ * Initial multi-threaded test environment for AdqlCompilerSV
  *
+/* Revision 1.9  2007/08/06 16:12:06  jl99
+/* Some test file name changes
+/*
 /* Revision 1.8  2007/08/06 15:10:42  jl99
 /* Converting fragments.
 /*

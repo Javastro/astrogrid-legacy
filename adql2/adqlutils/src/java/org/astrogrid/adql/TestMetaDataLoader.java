@@ -1,4 +1,4 @@
-/*$Id: TestMetaDataLoader.java,v 1.2 2007/08/02 14:13:31 jl99 Exp $
+/*$Id: TestMetaDataLoader.java,v 1.3 2007/08/07 17:37:05 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -111,7 +111,7 @@ public class TestMetaDataLoader {
     }
     
     private static Properties getMetaDataProperties() {        
-        InputStream pIS = AdqlStoXTest.class.getResourceAsStream( "test-metadata.properties" ) ;
+        InputStream pIS = TestMetaDataLoader.class.getResourceAsStream( "test-metadata.properties" ) ;
         if( pIS == null )
             return null ;
         Properties p = new Properties() ;
@@ -129,6 +129,9 @@ public class TestMetaDataLoader {
 
 /*
 $Log: TestMetaDataLoader.java,v $
+Revision 1.3  2007/08/07 17:37:05  jl99
+Initial multi-threaded test environment for AdqlCompilerSV
+
 Revision 1.2  2007/08/02 14:13:31  jl99
 Test system metadata loader with metadata modelled on a subset of SDSS.
 
