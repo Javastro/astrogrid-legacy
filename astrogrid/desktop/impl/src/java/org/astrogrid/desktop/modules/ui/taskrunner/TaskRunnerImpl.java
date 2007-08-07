@@ -132,18 +132,26 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                 // first split into 'up' and 'down'
                     List up = new ArrayList();
                     List down = new ArrayList();
+                    List unknown = new ArrayList();
                     for (int i = 0; i < services.length; i++) {
-                        if (vomon.checkAvailability(services[i].getId()).getCode() == VoMonBean.UP_CODE) {
-                            up.add(services[i]);
+                        final Service service = services[i];
+                        final VoMonBean avail = vomon.checkAvailability(service.getId());
+                        if (avail == null) {
+                            unknown.add(service);
+                        } else if  (avail.getCode() == VoMonBean.UP_CODE) {
+                            up.add(service);
                         } else {
-                            down.add(services[i]);
+                            down.add(service);
                         }
                     }
                  // now if we've more than one 'up', shuffle the list.
                     if (up.size() > 1) {
                         Collections.shuffle(up);
                     }
-                    // merge both back together..
+                    // merge back together..
+                    if (! unknown.isEmpty()) {
+                       up.addAll(unknown);
+                    }
                     if (! down.isEmpty()) {
                         up.addAll(down); // tack the services that are 'down' at the end.
                     }
