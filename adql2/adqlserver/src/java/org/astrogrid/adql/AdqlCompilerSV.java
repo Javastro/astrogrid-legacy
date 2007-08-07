@@ -1,4 +1,4 @@
-/*$Id: AdqlCompilerSV.java,v 1.2 2007/08/07 11:04:50 jl99 Exp $
+/*$Id: AdqlCompilerSV.java,v 1.3 2007/08/07 11:10:05 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -119,9 +119,11 @@ public class AdqlCompilerSV {
         }
         finally {
             if( cu != null ) {
-                outCompilers.remove( cu ) ;
-                inCompilers.push( cu ) ;
-            }           
+                synchronized( this ) {
+                    outCompilers.remove( cu ) ;
+                    inCompilers.push( cu ) ;
+                }   
+            }                               
         }       
     }
     
@@ -245,6 +247,9 @@ public class AdqlCompilerSV {
 
 /*
 $Log: AdqlCompilerSV.java,v $
+Revision 1.3  2007/08/07 11:10:05  jl99
+Ensured compiler unit is returned to pool under all circumstances.
+
 Revision 1.2  2007/08/07 11:04:50  jl99
 Reduced to the one class AdqlCompilerSV with some internal classes of its own.
 
