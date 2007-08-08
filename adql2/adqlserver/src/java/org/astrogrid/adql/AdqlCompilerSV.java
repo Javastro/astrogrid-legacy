@@ -1,4 +1,4 @@
-/*$Id: AdqlCompilerSV.java,v 1.4 2007/08/07 17:37:05 jl99 Exp $
+/*$Id: AdqlCompilerSV.java,v 1.5 2007/08/08 09:31:04 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -37,7 +37,7 @@ import org.astrogrid.adql.metadata.Container;
  */
 public class AdqlCompilerSV {
     
-    private static Log log = LogFactory.getLog( Interactive.class ) ;
+    private static Log log = LogFactory.getLog( AdqlCompilerSV.class ) ;
     
     public static final int ABSOLUTE_MAX_COMPILERS = 16 ;
     public static final int DEFAULT_MAX_COMPILERS = 2 ;
@@ -122,6 +122,7 @@ public class AdqlCompilerSV {
                 synchronized( this ) {
                     outCompilers.remove( cu ) ;
                     inCompilers.push( cu ) ;
+                    this.notify() ;
                 }   
             }                               
         }       
@@ -210,6 +211,7 @@ public class AdqlCompilerSV {
                 // No! We better wait for one to be released...
                 while( inCompilers.isEmpty() ) {
                     try {
+                        log.debug( Thread.currentThread().getName() + " waiting for compiler..." ) ;
                         this.wait() ;
                     }
                     catch( Exception ex ) {
@@ -231,6 +233,10 @@ public class AdqlCompilerSV {
         // Make sure we register with the outCompilers...
         outCompilers.push( cu ) ;
         this.sealed = true ;
+        if( log.isDebugEnabled() ) {
+            log.debug( "outCompilers: [" + outCompilers.size() 
+                     + "] inCompilers: [" + inCompilers.size() + "]" ) ;
+        }
         return cu ;
     }
     
@@ -249,6 +255,9 @@ public class AdqlCompilerSV {
 
 /*
 $Log: AdqlCompilerSV.java,v $
+Revision 1.5  2007/08/08 09:31:04  jl99
+Debugging test environment for AdqlCompilerSV
+
 Revision 1.4  2007/08/07 17:37:05  jl99
 Initial multi-threaded test environment for AdqlCompilerSV
 

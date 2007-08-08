@@ -1,4 +1,4 @@
-/*$Id: AdqlCompilerSVTest.java,v 1.1 2007/08/07 17:37:05 jl99 Exp $
+/*$Id: AdqlCompilerSVTest.java,v 1.2 2007/08/08 09:31:04 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -63,7 +63,8 @@ public class AdqlCompilerSVTest implements Runnable {
     
     final static String README = "README" ;
     final static String BAD_INIT_MESSAGE = "AdqlCompilerSVTest. Initialization failed: " ;
-    
+    final static int TEST_MAX_COMPILERS = 4 ;
+    final static int TEST_THREADS = 5 ;
     
     private class AdqlQueryUnit {
         File file ;
@@ -78,6 +79,7 @@ public class AdqlCompilerSVTest implements Runnable {
     private static long accumulatedTime ;
     private long startTime ;
     private long endTime ;
+    private int queryCount = 0 ;
     
     public static void main(String args[]) {
         if( log.isTraceEnabled() ) log.trace( "entry: main()" ) ;
@@ -87,7 +89,8 @@ public class AdqlCompilerSVTest implements Runnable {
         try {
             svTest.init() ;
             svTest.compileQueries() ;
-            Thread.currentThread().sleep( 8000 ) ;
+            svTest.waitForCompletion() ;
+            svTest.print( "Query count: " + svTest.queryCount ) ;
         }
         catch( Exception ex ) {
             svTest.print( "AdqlCompilerSVTest failed.", ex ) ;
@@ -103,7 +106,7 @@ public class AdqlCompilerSVTest implements Runnable {
     
     private void compileQueries() {
         if( log.isTraceEnabled() ) log.trace( "entry: compileQueries()" ) ;
-        for( int i=0; i<5; i++ ) {
+        for( int i=0; i<TEST_THREADS; i++ ) {
             Thread qThread = new Thread( this ) ;
             qThread.setName( "SVTest worker thread " + (i+1) ) ;
             qThread.start() ;
@@ -116,8 +119,10 @@ public class AdqlCompilerSVTest implements Runnable {
             queryIterator = queries.values().iterator() ;
         }
         if( queryIterator.hasNext() ) {
-            print( Thread.currentThread().getName() + " -> returning query" ) ;
-            return (AdqlQueryUnit)queryIterator.next() ;
+            AdqlQueryUnit aqu = (AdqlQueryUnit)queryIterator.next() ;
+            print( Thread.currentThread().getName() + " -> returning query: " + aqu.file.getName() ) ;
+            queryCount++ ;
+            return aqu ;
         }
         print( Thread.currentThread().getName() + " -> returning null query" ) ;
         return null ;
@@ -130,6 +135,29 @@ public class AdqlCompilerSVTest implements Runnable {
     private void init() throws SVTestInitializationException {
         initFiles() ;
         initCompiler() ;
+    }
+    
+    private void waitForCompletion() {
+        if( log.isTraceEnabled() ) log.trace( "entry: waitForCompletion()" ) ;
+        Thread[] threads = new Thread[ Thread.activeCount() ] ;
+        int tCount = Thread.enumerate( threads ) ;
+        for( int i=0; i<tCount; i++ ) {
+            if( threads[i] != Thread.currentThread() ) {
+                log.debug( "Attempting to join " + threads[i].getName() ) ;
+                while( true ) {
+                    try {
+                        threads[i].join() ;
+                        log.debug( "Joined successfully: " + threads[i].getName() ) ;
+                        break ;
+                    }
+                    catch( InterruptedException iex ) {
+                        
+                    }
+                }               
+            }
+        }
+        print( "Compilations complete." ) ;
+        if( log.isTraceEnabled() ) log.trace( "exit: waitForCompletion()" ) ;
     }
     
     private void initFiles() throws SVTestInitializationException {
@@ -150,15 +178,19 @@ public class AdqlCompilerSVTest implements Runnable {
                 //
                 // For each query...
                 for( int j=0; j<fileArray.length; j++ ) {
-                    AdqlQueryUnit qu = new AdqlQueryUnit() ;
-                    qu.file = fileArray[j] ;
-                    qu.query = retrieveFile( fileArray[j] ) ;
                     //
-                    // For the moment, assume each query is invalid...
-                    qu.valid = false ;
-                    //
-                    // Save the query unit using the file name as key...
-                    queries.put( fileArray[j].getName().split("\\.")[0], qu ) ;
+                    // Ignore fragments...
+                    if( !fileArray[j].getName().startsWith( "Fragment" ) ) {
+                        AdqlQueryUnit qu = new AdqlQueryUnit() ;
+                        qu.file = fileArray[j] ;
+                        qu.query = retrieveFile( fileArray[j] ) ;
+                        //
+                        // For the moment, assume each query is invalid...
+                        qu.valid = false ;
+                        //
+                        // Save the query unit using the file name as key...
+                        queries.put( fileArray[j].getName().split("\\.")[0], qu ) ;
+                    }
                 }
             }
             //
@@ -189,7 +221,7 @@ public class AdqlCompilerSVTest implements Runnable {
         if( log.isTraceEnabled() ) log.trace( "entry: initCompiler()" ) ;
         try {
             this.compiler = new AdqlCompilerSV() ;
-            compiler.setMaxCompilers( 4 ) ;
+            compiler.setMaxCompilers( TEST_MAX_COMPILERS ) ;
             compiler.setMetadata( getMetaData() ) ;
             compiler.setStyleSheet( getStyleSheet() ) ;
         }
@@ -270,6 +302,7 @@ public class AdqlCompilerSVTest implements Runnable {
     }
     
     public void run() {
+        int threadQueryCount = 0 ;
         AdqlQueryUnit qu = getOneQuery() ;
         while( qu != null ) {
             try {
@@ -283,7 +316,9 @@ public class AdqlCompilerSVTest implements Runnable {
                     for( int i=0; i<messages.length; i++ ) {
                         buffer
                             .append( Thread.currentThread().getName() )
-                            .append( ": Compilation suffered an ADQL Exception. Messages follow... \n" )
+                            .append( ": Compilation " )
+                            .append( qu.file.getName() )
+                            .append( " suffered an ADQL Exception. Messages follow... \n" )
                             .append( "[" + i + "] " + messages[i] + "\n" ) ;
                     }
                     print( Thread.currentThread().getName() + " ->\n" +buffer.toString() ) ;
@@ -299,8 +334,10 @@ public class AdqlCompilerSVTest implements Runnable {
             catch( Throwable th ) {
                 print( Thread.currentThread().getName(), th ) ;
             }
+            threadQueryCount++ ;
             qu = getOneQuery() ;
-        }      
+        } 
+        log.debug( threadQueryCount + " queries completed: " + Thread.currentThread().getName() ) ;
     }
     
     private class AdqlsFilter implements FileFilter {
@@ -336,6 +373,9 @@ public class AdqlCompilerSVTest implements Runnable {
 }
 /*
 $Log: AdqlCompilerSVTest.java,v $
+Revision 1.2  2007/08/08 09:31:04  jl99
+Debugging test environment for AdqlCompilerSV
+
 Revision 1.1  2007/08/07 17:37:05  jl99
 Initial multi-threaded test environment for AdqlCompilerSV
 
