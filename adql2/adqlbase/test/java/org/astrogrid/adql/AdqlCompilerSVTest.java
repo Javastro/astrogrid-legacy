@@ -1,4 +1,4 @@
-/*$Id: AdqlCompilerSVTest.java,v 1.3 2007/08/08 13:24:09 jl99 Exp $
+/*$Id: AdqlCompilerSVTest.java,v 1.4 2007/08/08 15:22:16 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -341,7 +341,6 @@ public class AdqlCompilerSVTest implements Runnable {
     }
     
     private String getStyleSheet() throws IOException {
-//        InputStream is = AdqlCompilerSV.class.getResourceAsStream( "ADQL20_MYSQL.xsl" ) ;
         InputStream is = AdqlCompilerSV.class.getResourceAsStream( this.styleSheetName ) ;
         StringBuffer buffer =  new StringBuffer( 1024 ) ;
         int c = is.read() ;
@@ -481,6 +480,9 @@ public class AdqlCompilerSVTest implements Runnable {
 }
 /*
 $Log: AdqlCompilerSVTest.java,v $
+Revision 1.4  2007/08/08 15:22:16  jl99
+Some docs
+
 Revision 1.3  2007/08/08 13:24:09  jl99
 Recording results implemented
 
