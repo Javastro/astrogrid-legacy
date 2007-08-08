@@ -1,4 +1,4 @@
-/*$Id: AdqlCompilerSV.java,v 1.5 2007/08/08 09:31:04 jl99 Exp $
+/*$Id: AdqlCompilerSV.java,v 1.6 2007/08/08 16:59:48 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -29,8 +29,25 @@ import org.astrogrid.adql.beans.SelectDocument;
 import org.astrogrid.adql.metadata.Container;
 
 /**
- * AdqlCompilerSV
- *
+ * The <code>AdqlCompilerSV</code> class is a server side version of 
+ * <code>AdqlCompiler</code>. It differs from <code>AdqlCompiler</code>
+ * in a number of important respects:
+ * <p><blockquote><pre>
+ *   (1) It processes ADQL right the way through to SQL.
+ *   (2) It is suitable for a multi-threading environment.
+ * </pre></blockquote><p>
+ * In starting from ADQL/s and progressing to SQL, there are a number of
+ * phases. The original ADQL/s is parsed into instances of XMLBeans; if a callback
+ * has been registered, the resulting SelectDocument is passed to the callback for
+ * whatever processing the user thinks is fit, before emitting
+ * XML and transforming that with an appropriate XSLT style sheet into a 
+ * variant of SQL. The style sheet must be provided by the user.
+ * <p><p>
+ * The underlying compiler is not thread safe, but is serially reusable.
+ * <code>AdqlCompilerSV</code> wraps a pool of compilers to provided
+ * a thread safety mechanism. The minimum size of the pool is 1 and the
+ * maximum size can be set to an upper limit of 16, with a default setting
+ * of 2.
  *
  * @author Jeff Lusted jl99@star.le.ac.uk
  * Aug 6, 2007
@@ -39,9 +56,22 @@ public class AdqlCompilerSV {
     
     private static Log log = LogFactory.getLog( AdqlCompilerSV.class ) ;
     
+    /**
+     * The maximum number of compiler instances allowed.
+     */
     public static final int ABSOLUTE_MAX_COMPILERS = 16 ;
+    /**
+     * The default maximum number of compiler instances allowed.
+     */
     public static final int DEFAULT_MAX_COMPILERS = 2 ;
     
+    /**
+     * CallBack
+     *
+     *
+     * @author Jeff Lusted jl99@star.le.ac.uk
+     * Aug 8, 2007
+     */
     public interface CallBack {       
         public XmlObject exec( XmlObject xo ) ;       
     }
@@ -87,11 +117,49 @@ public class AdqlCompilerSV {
     private Container metadata ; 
     private CallBack midpointCallBack ;
     
+   
     /**
-     * @param stream
+     * The only constructor.
+     * <p> 
+     * All state is established by setters.
+     * In order to guarantee thread safety, no alteration of the
+     * internal state of <code>AdqlCompilerSV</code> is allowed
+     * once compilation gets underway. That is: the first compilation
+     * will seal the compiler against any further change of settings.
+     * 
+     * @see org.astrogrid.adql.AdqlCompilerSV#registerMidPointCallBack(CallBack)
+     * @see org.astrogrid.adql.AdqlCompilerSV#setMaxCompilers(int)
+     * @see org.astrogrid.adql.AdqlCompilerSV#setMetadata(Container)
+     * @see org.astrogrid.adql.AdqlCompilerSV#setStyleSheet(String)
+     * @see org.astrogrid.adql.AdqlCompilerSV#setUserDefinedFunctionPrefix(String)
      */
     public AdqlCompilerSV() {}
     
+    /**
+     * Compiles an ADQL query in string format to a specific
+     * variant of SQL. The input is a full query, starting
+     * with a SELECT statement, and not simply a fragment of a query. 
+     * For example:
+     * <p>
+     * Select * from first as f ;
+     * <p><p>
+     * 
+     * (1) Retrieves a compiler from the compiler pool.<p>
+     * (2) Compiles the source to XmlBeans.<p>
+     * (3) Invokes the user's mid-point call back (if one was registered).<p>
+     * (4) Emits XML from the SelectDocument bean.<p>
+     * (5) Transforms the XML into SQL variant using style sheet.<p>
+     * <p>
+     * @param adqls - An ADQL query in string format
+     * @return A specific SQL version of the query
+     * @throws AdqlException 
+     *         if ADQL input fails compilation.
+     * @throws InvalidStateException 
+     *         if there is an invalid state, for example: an instance of
+     *         the transformer corresponding to the XSLT style sheet cannot be formed.
+     * @throws TransformerException
+     *         if there is a problem with the XSLT style sheet.
+     */
     public String compileToSQL( String adqls ) throws AdqlException
                                                     , InvalidStateException
                                                     , TransformerException { 
@@ -128,21 +196,52 @@ public class AdqlCompilerSV {
         }       
     }
     
-    protected synchronized boolean setuserDefinedFunctionPrefix( String prefix ) {
+    /**
+     * Sets the prefix to be used for checking for user defined functions.
+     * Can be any string of characters provided the prefix begins with an
+     * letter. But check ADQL syntax if in doubt. If not set, assumes "_udf".
+     * The setter - if used - must be before compilations
+     * begin, otherwise it will be ignored.
+     * 
+     * @param prefix
+     * @return boolean indicating whether setting was a success.
+     */
+    public synchronized boolean setUserDefinedFunctionPrefix( String prefix ) {
         if( this.sealed == true )
             return false ;
         this.userDefinedFunctionPrefix = prefix ;
         return true ;
     }
     
-    protected synchronized boolean setMetadata( Container metadata ) {
+    /**
+     * Sets any metadata that the user wishes the compiler to take
+     * account of when compiling. If none, is provided, none will
+     * be used. 
+     * The setter - if used - must be before compilations
+     * begin, otherwise it will be ignored.
+     * 
+     * @param metadata
+     * @return boolean indicating whether setting was a success.
+     */
+    public synchronized boolean setMetadata( Container metadata ) {
         if( this.sealed == true )
             return false ;
         this.metadata = metadata ;
         return true ;
     }
     
-    protected synchronized boolean setStyleSheet( String styleSheet ) 
+    /**
+     * Sets the XSLT style sheet to be used in the transformation from 
+     * ADQL/x to an SQL variant. All the compilations managed by
+     * <code>AdqlCompilerSV</code> will use this style sheet.
+     * The setter - if used - must be before compilations
+     * begin, otherwise it will be ignored.
+     * 
+     * @param styleSheet in String format.
+     * @return boolean indicating whether setting was a success.
+     * @throws TransformerConfigurationException
+     */
+    public synchronized boolean setStyleSheet( String styleSheet ) 
                                 throws TransformerConfigurationException {
         if( this.sealed == true )
             return false ;
@@ -152,7 +251,18 @@ public class AdqlCompilerSV {
         return true ;
     }
     
-    protected synchronized boolean setMaxCompilers( int max ) {
+    /**
+     * Sets the maximum number of compiler instances that
+     * <code>AdqlCompilerSV</code> is allowed to instantiate.
+     * The setter - if used - must be before compilations
+     * begin, otherwise it will be ignored. The setting must 
+     * be beween 1 and 16 inclusive. If the setter is not used, 
+     * the maximum setting of 2 is assumed. 
+     * 
+     * @param max - Ceiling for the number of compilers allowed.
+     * @return boolean indicating whether setting was a success.
+     */
+    public synchronized boolean setMaxCompilers( int max ) {
         if( this.sealed == true )
             return false ;
         if( max > ABSOLUTE_MAX_COMPILERS ) {
@@ -167,7 +277,17 @@ public class AdqlCompilerSV {
         return true ;
     }
     
-    protected synchronized boolean registerMidPointCallBack( CallBack mpcb ) {
+    /**
+     * Registers a user's call back routine, which will be invoked once
+     * the ADQL/s source has been compiled into XMLBeans. A call back
+     * must be registered before compilations begin.
+     * 
+     * @param mpcb - the CallBack interface
+     * @return boolean indicating whether the registration was a success.
+     * 
+     * @see  org.astrogrid.adql.AdqlCompilerSV#CallBack
+     */
+    public synchronized boolean registerMidPointCallBack( CallBack mpcb ) {
         if( this.sealed == true )
             return false ;
         this.midpointCallBack = mpcb ;
@@ -255,6 +375,9 @@ public class AdqlCompilerSV {
 
 /*
 $Log: AdqlCompilerSV.java,v $
+Revision 1.6  2007/08/08 16:59:48  jl99
+Some docs
+
 Revision 1.5  2007/08/08 09:31:04  jl99
 Debugging test environment for AdqlCompilerSV
 
