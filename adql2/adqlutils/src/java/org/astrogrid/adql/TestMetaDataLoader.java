@@ -1,4 +1,4 @@
-/*$Id: TestMetaDataLoader.java,v 1.3 2007/08/07 17:37:05 jl99 Exp $
+/*$Id: TestMetaDataLoader.java,v 1.4 2007/08/09 10:43:18 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -31,7 +31,7 @@ import org.apache.commons.logging.LogFactory ;
  */
 public class TestMetaDataLoader {
     
-    private static Log log = LogFactory.getLog( Interactive.class ) ;
+    private static Log log = LogFactory.getLog( TestMetaDataLoader.class ) ;
     
     public static Container getMetaData() {
         //
@@ -129,6 +129,9 @@ public class TestMetaDataLoader {
 
 /*
 $Log: TestMetaDataLoader.java,v $
+Revision 1.4  2007/08/09 10:43:18  jl99
+tidy
+
 Revision 1.3  2007/08/07 17:37:05  jl99
 Initial multi-threaded test environment for AdqlCompilerSV
 

@@ -1,4 +1,4 @@
-/*$Id: AdqlCompilerSV.java,v 1.6 2007/08/08 16:59:48 jl99 Exp $
+/*$Id: AdqlCompilerSV.java,v 1.7 2007/08/09 10:43:39 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -39,14 +39,14 @@ import org.astrogrid.adql.metadata.Container;
  * In starting from ADQL/s and progressing to SQL, there are a number of
  * phases. The original ADQL/s is parsed into instances of XMLBeans; if a callback
  * has been registered, the resulting SelectDocument is passed to the callback for
- * whatever processing the user thinks is fit, before emitting
+ * whatever processing the user thinks is fit to do, before emitting
  * XML and transforming that with an appropriate XSLT style sheet into a 
  * variant of SQL. The style sheet must be provided by the user.
  * <p><p>
  * The underlying compiler is not thread safe, but is serially reusable.
  * <code>AdqlCompilerSV</code> wraps a pool of compilers to provided
  * a thread safety mechanism. The minimum size of the pool is 1 and the
- * maximum size can be set to an upper limit of 16, with a default setting
+ * maximum size can be set up to a limit of 16, with a default setting
  * of 2.
  *
  * @author Jeff Lusted jl99@star.le.ac.uk
@@ -69,11 +69,20 @@ public class AdqlCompilerSV {
      * CallBack
      *
      *
+     *
      * @author Jeff Lusted jl99@star.le.ac.uk
      * Aug 8, 2007
      */
-    public interface CallBack {       
-        public XmlObject exec( XmlObject xo ) ;       
+    public interface CallBack { 
+        
+        
+        /**
+         * @param xo
+         * @return
+         */
+        public XmlObject exec( XmlObject xo ) ; 
+        
+        
     }
     
     public class InvalidStateException extends Exception {
@@ -182,10 +191,15 @@ public class AdqlCompilerSV {
             String adqlx = selectDoc.xmlText() ;       
             StreamSource source = new StreamSource( new StringReader( adqlx ) ) ;
             StreamResult result = new StreamResult( new StringWriter() ) ;      
-            cu.sqlTransformer.transform( source, result ) ;      
+            cu.sqlTransformer.transform( source, result ) ;  
+            //
+            // Return the final SQL variant...
             return ((StringWriter)result.getWriter()).toString() ;
         }
         finally {
+            //
+            // Whatever happens, the compiler unit instance must be returned
+            // to the pool in a thread-safe manner...
             if( cu != null ) {
                 synchronized( this ) {
                     outCompilers.remove( cu ) ;
@@ -294,10 +308,32 @@ public class AdqlCompilerSV {
         return true ;
     }
   
+    /*
+     * The critical method of AdqlCompilerSV in that it manages the controlled removal
+     * of a compiler instance for use from a pool of instances. It manages instantiating
+     * a new compiler instance when the pool is empty AND the maximum setting has not been
+     * reached. If the pool is empty and the maximum setting has been reached, then
+     * a wait is imposed until an instance is returned to the pool.
+     * 
+     * For each compiler instance in the pool, an associated transformer is also instantiated.
+     * Neither compilers nor transformers are thread safe, though they are serially reusable.
+     */
     private synchronized CompilerUnit getCompiler( Reader reader ) throws InvalidStateException {
+        //
+        // If not yet sealed, the first invocation will seal against any 
+        // further changes to settings by a user...
         if( this.sealed == false ) {
             this.sealed = true ;
         }
+        //
+        // Some defensive programming here. 
+        // If possible, fail anywhere but where it will affect the pool.
+        // At some point it may be worthwhile to investigate the Reinit()
+        // method on the underlying compiler, to establish any potential
+        // weaknesses to do with the Reader input object.
+        if( reader == null )
+            return null ;
+
         CompilerUnit cu ;
         //
         // If the pool is empty, we need to create a new compiler
@@ -350,6 +386,7 @@ public class AdqlCompilerSV {
             cu = (CompilerUnit)inCompilers.pop() ;
             cu.compiler.ReInit( reader ) ;
         }
+        //
         // Make sure we register with the outCompilers...
         outCompilers.push( cu ) ;
         this.sealed = true ;
@@ -375,6 +412,9 @@ public class AdqlCompilerSV {
 
 /*
 $Log: AdqlCompilerSV.java,v $
+Revision 1.7  2007/08/09 10:43:39  jl99
+tidy
+
 Revision 1.6  2007/08/08 16:59:48  jl99
 Some docs
 
