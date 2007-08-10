@@ -1,4 +1,4 @@
-/*$Id: AdqlStoXTest.java,v 1.10 2007/08/07 17:37:05 jl99 Exp $
+/*$Id: AdqlStoXTest.java,v 1.11 2007/08/10 11:59:52 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -218,6 +218,7 @@ public class AdqlStoXTest extends XMLTestCase {
     public void testOf_v10_spectralLines() throws Exception { execTest() ; }
     public void testOf_v10_squaringTheCircle() throws Exception { execTest() ; }
     public void testOf_v10_threeWayJoin() throws Exception { execTest() ; }
+    public void testOf_v20_udfLikeWithoutBrackets() throws Exception { execTest() ; }
     public void testOf_v10_whereWithBinaryOpsAndUnaryOps() throws Exception { execTest() ; }
     public void testOf_v10_whereWithNegativeUnaryLiteral() throws Exception { execTest() ; }
     public void testOf_v10_whereWithPositiveUnaryLiteral() throws Exception { execTest() ; }
@@ -574,46 +575,6 @@ public class AdqlStoXTest extends XMLTestCase {
 
 	}
     
-    private void _compareCompilations( XmlObject xo, File xmlFile ) throws Exception {
-        //
-        // This rather extended rigmarole is what I've had to do (partly!)
-        // to control namespace occurances in an instance...
-        XmlOptions opts = getCompareOptions() ;
-        String compiledVersion = 
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
-            + xo.xmlText( opts ) ;
-                
-        String fileContents = retrieveFile( xmlFile ) ;
-        String namespace = ConvertADQL.getCovertibleNameSpace( fileContents ) ;
-        String controlledVersion ;
-        String convertedXml ;
-        if( namespace != null ) {
-            System.out.println( "Xml file requires converting. Namespace: " + namespace ) ;
-            convertedXml = getConvertor().convertV10ToV20( new StringReader( fileContents ) ) ;
-            controlledVersion = XmlObject.Factory.parse( convertedXml ).xmlText( opts ) ;
-        }
-        else {
-            System.out.println( "Xml file does not require conversion." ) ;
-            controlledVersion = XmlObject.Factory.parse( fileContents ).xmlText( opts ) ;
-        }
-      
-        Document compiledDom = DomHelper.newDocument( compiledVersion ) ;
-        Document fileDom = DomHelper.newDocument( controlledVersion ) ;
-        
-        // Normalize just to be sure 
-        compiledDom.normalize();
-        fileDom.normalize();
-        
-        // Using xmlunit to compare documents
-        if( controlledVersion.indexOf( "fragment" ) != -1 ) {
-            System.out.println( "====compiledVersion:====\n" + compiledVersion 
-                     +  "\n====controlledVersion:====\n" + controlledVersion ) ;
-        }
-        
-        assertXMLEqual("Adql/s does not compile to what is expected!", compiledDom, fileDom) ;
-
-    }
-    
     private XmlOptions getCompareOptions() {
         //return sCompiler.getSaveOptions( true ) ;
         XmlOptions opts = new XmlOptions();
@@ -839,9 +800,12 @@ public class AdqlStoXTest extends XMLTestCase {
 
 
 /* $Log: AdqlStoXTest.java,v $
- * Revision 1.10  2007/08/07 17:37:05  jl99
- * Initial multi-threaded test environment for AdqlCompilerSV
+ * Revision 1.11  2007/08/10 11:59:52  jl99
+ * Correction to LIKE predicate when used with a user defined function.
  *
+/* Revision 1.10  2007/08/07 17:37:05  jl99
+/* Initial multi-threaded test environment for AdqlCompilerSV
+/*
 /* Revision 1.9  2007/08/06 16:12:06  jl99
 /* Some test file name changes
 /*

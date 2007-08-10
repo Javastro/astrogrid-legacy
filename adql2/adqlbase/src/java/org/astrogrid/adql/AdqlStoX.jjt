@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.38 2007/08/03 16:26:39 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.39 2007/08/10 11:59:52 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -1114,7 +1114,9 @@ void character_primary_A() : {}
 	//S:
 	//  <character_primary> ::=
     //    <value_expression_primary> | <string_value_function>
-    LOOKAHEAD(16)	value_expression_primary_A()	|    user_defined_function_A()
+    LOOKAHEAD(16)
+    user_defined_function_A()
+    |	value_expression_primary_A()
 }
 
 /*
@@ -4708,6 +4710,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.39  2007/08/10 11:59:52  jl99
+Correction to LIKE predicate when used with a user defined function.
+
 Revision 1.38  2007/08/03 16:26:39  jl99
 Yet another go at accommodating catalog, schema, table and column qualifiers.
 
