@@ -45,6 +45,7 @@ import org.votech.VoMonBean;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.swing.EventSelectionModel;
+import ca.odell.glazedlists.swing.EventTableModel;
 
 
 /** A table for displaying resource titles
@@ -55,7 +56,6 @@ import ca.odell.glazedlists.swing.EventSelectionModel;
 public class ResourceTable extends JTable implements DragGestureListener, DragSourceListener, MouseListener {
 	private final List items;
 	private final VoMonInternal vomon;
-	private final CapabilityIconFactory iconFac;
 	private final DragSource dragSource;
 
 	/**
@@ -64,29 +64,14 @@ public class ResourceTable extends JTable implements DragGestureListener, DragSo
 	 * @param items list (probablby a glazed list) of items that the table model is based upon.
 	 * @param vomon monitoring information.
 	 */
-	public ResourceTable(TableModel dm, List items, VoMonInternal vomon,CapabilityIconFactory iconFac) {
+	public ResourceTable(TableModel dm, List items, VoMonInternal vomon) {
 		super(dm);
 		this.items = items;
 		this.vomon = vomon;
-		this.iconFac = iconFac;
 		setAutoResizeMode(AUTO_RESIZE_NEXT_COLUMN);
 		setBorder(BorderFactory.createEmptyBorder());	
 		setShowGrid(false);
-		final TableColumnModel cm = getColumnModel();
-
-		cm.getColumn(0).setPreferredWidth(40);
-		cm.getColumn(0).setMaxWidth(40);
-		cm.getColumn(0).setResizable(true);
-		
-		cm.getColumn(1).setResizable(true);
-		
-		cm.getColumn(2).setPreferredWidth(80);
-		cm.getColumn(2).setMaxWidth(100);
-		cm.getColumn(2).setResizable(true);
-		
-		cm.getColumn(3).setPreferredWidth(90);
-		cm.getColumn(3).setMaxWidth(90);
-		cm.getColumn(3).setResizable(true);		
+        getFormat().configureColumnModel(getColumnModel());
 		
 		// drag and drop.
 		resourceImage = IconHelper.loadIcon("doc16.png").getImage();
@@ -109,31 +94,20 @@ public class ResourceTable extends JTable implements DragGestureListener, DragSo
 		
 		if (rowIndex > -1) { 
 			Resource ri =(Resource) items.get(rowIndex);  // weakness - possiblility of getting the wrong tooltip if the list is rapidly updating. not the end of the world.
-			switch (realColumnIndex) {
-			case 0:// status
-			    return vomon.getTooltipInformationFor(ri);		
-			case 1: // title
-			    HtmlBuilder result = new HtmlBuilder();
-				result.append("<b>").append(ri.getTitle()).append("</b>");
-				result.append("<br><i>").append(ri.getShortName()).append("</i>");
-				result.append("<br><i>").append(ri.getId()).append("</i>");
-				return result.toString();
-			case 2: // capabilties.
-				Icon ic = (Icon)getModel().getValueAt(rowIndex,2);
-				return iconFac.getTooltip(ic);
-			default:
-			    HtmlBuilder hb = new HtmlBuilder();
-				createTooltipFor(realColumnIndex,ri,hb);
-				return hb.toString();
-			}                              
-		} else { 
+            return getFormat().getToolTipText(ri, realColumnIndex);
+        } else { 
 			return super.getToolTipText(e);
 		}
 	}
-	
-	/** extensionPoint */
-	protected void createTooltipFor(int ix,Resource r,HtmlBuilder sb) {
-	}
+
+    /**
+     * Returns the TableFormat associated with this table.
+     *
+     * @return  resource table format
+     */
+    private ResourceTableFomat getFormat() {
+        return (ResourceTableFomat) ((EventTableModel) getModel()).getTableFormat();
+    }
 	
 	private JPopupMenu popup;
 	

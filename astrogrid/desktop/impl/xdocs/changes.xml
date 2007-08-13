@@ -15,6 +15,10 @@
 	</head>
 <body>
 <release version="2007.4.alpha3" date="2007-08-06">
+    <action dev="mbt" type="add">
+        Voexplorer resource table: can add, remove, reorder the displayed columns.
+        Need feedback on what columns users would like to have available.
+    </action>
     <action dev="nw" type="fix" issue="2270">
         TaskRunner doesn't barf when encountering an unknown cea server
     </action>
@@ -32,6 +36,13 @@
         remembered adql editor expansion state and parameter values when 
         flipping between tool interfaces
     </action>
+=======
+<release version="2007.4.alpha2" date="unreleased">
+    <action dev="mbt" type="add">
+        Provided option to configure which columns are displayed in VOExplorer
+        resource display table.
+    </action>
+>>>>>>> 1.134.2.1
     <action dev="nw" type="update">
         Improved presentation of vomon information in login dialogue
     </action>

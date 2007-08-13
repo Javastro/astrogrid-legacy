@@ -1,4 +1,5 @@
-/*$Id: RegistryGooglePanel.java,v 1.13 2007/08/06 14:37:37 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.14 2007/08/13 19:14:17 nw Exp $
+>>>>>>> 1.12.2.6
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,11 +26,15 @@ import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
+import java.util.prefs.Preferences;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -37,17 +42,23 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableColumnModelEvent;
+import javax.swing.event.TableColumnModelListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.TableColumn;
 import javax.xml.stream.XMLStreamReader;
 
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 
+import org.apache.commons.lang.text.StrBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ServiceException;
@@ -63,6 +74,9 @@ import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.comp.AdjustableColumnModel;
+import org.astrogrid.desktop.modules.ui.comp.CheckBoxMenu;
+import org.astrogrid.desktop.modules.ui.comp.TableColumnModelAdapter;
 import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.CapabilityIconFactory;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.FilterPipelineFactory;
@@ -122,6 +136,9 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 
 	private static final Log logger = LogFactory
 			.getLog(RegistryGooglePanel.class);
+
+    /** key in preferences database for this class giving list of table columns displayed.  The value is a tab-separated list of column names. */
+    public static final String COLUMNS_KEY = "columns";
 
 	/** an asbtract background worker that provides machinery for processing the results of a streaming parse
 	 * and caching the result */
@@ -304,6 +321,8 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
     protected final EventTableModel resourceTableModel;
 	// tracks the currently clicked on registry entry - i.e. the one to display in viewer
 	private final EventSelectionModel currentResourceInView;
+    private final AdjustableColumnModel resourceColumnModel;
+    private final JScrollPane tableScroller;
 
 	protected final JTabbedPane tabPane;
 	protected final RegistryInternal reg;
@@ -442,10 +461,36 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 		resourceTable.setSelectionModel(currentResourceInView);
 		// surprising - this is all that's needed tp add sorting to columns in the table.
 		new TableComparatorChooser(resourceTable,sortedItems,true);
-		JComponent centerPanel = new JScrollPane(resourceTable);
-		centerPanel.setBorder(BorderFactory.createEmptyBorder());
-		centerPanel.setMinimumSize(new Dimension(100,50)); 
-		
+		tableScroller = new JScrollPane(resourceTable);
+		tableScroller.setBorder(BorderFactory.createEmptyBorder());
+		tableScroller.setMinimumSize(new Dimension(100,50)); 
+
+        // arrange for the column model of the table to be configurable by the user.
+        resourceColumnModel = createResourceColumnModel(resourceTable);
+        resourceTable.setColumnModel(resourceColumnModel);
+        Action colsAct = new AbstractAction(null, IconHelper.loadIcon("configure14.png")) {
+            final JPopupMenu colMenu = createColumnsMenu("").getPopupMenu();
+            public void actionPerformed(ActionEvent evt) {
+                colMenu.show((Component) evt.getSource(), 0, 0);
+            }
+        };
+        JButton colButton = new JButton(colsAct);
+        tableScroller.setCorner(JScrollPane.UPPER_RIGHT_CORNER, new JButton(colsAct));
+        resourceColumnModel.addColumnModelListener(new TableColumnModelAdapter() {
+            public void columnAdded(TableColumnModelEvent evt) {
+                adjustScrolling();
+            }
+            public void columnRemoved(TableColumnModelEvent evt) {
+                adjustScrolling();
+            }
+        });
+        // ensure scroller is set up properly - need to queue this for later, when the layout will have been done
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                adjustScrolling();
+            }
+        });
+
 		// bottom pane.
 		tabPane = new JTabbedPane();    
 		tabPane.setBorder(BorderFactory.createEmptyBorder());
@@ -461,18 +506,16 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 			viewer.addTo(parent,tabPane);
 		}
 		
-		
 		// stitch middle and bottom together.
-		JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,centerPanel,tabPane);
+		JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,tableScroller,tabPane);
 		split.setResizeWeight(1.0); // all goes to the top. necessary for appearing filterwheels to work correctly
 		
 		split.setDividerLocation(200);
 		split.setDividerSize(7);
 		split.setBorder(BorderFactory.createEmptyBorder());
 		add(split,BorderLayout.CENTER);
-	
 	}
-	
+
 	/** lists the views to create - these names are passed to the objectBuilder
 	 * this method acts as an extensio point - subclasses can alter the
 	 * number andorder of the views. */
@@ -484,12 +527,66 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 	protected TableFormat createTableFormat() {
 		return new ResourceTableFomat(annServer,vomon,iconFac);
 	}
+
+    /** Returns a new column model for use with a given resource JTable.
+     * Columns in this model can be removed/restored under user control.
+     * The visibility of columns is initialised from the prefs database 
+     * and subsequent user-initiated changes to this visibility will be
+     * persisted there.  If the prefs database contains a value which 
+     * can't be interpreted (for instance because the column model has
+     * changed since last time the program was run) a default list will
+     * be used.  This means that version skew will not cause problems.
+     *
+     * @param  resourceTable  table whose columns are to be controlled
+     * @return   new column model which can be used with <code>resourceTable</code>
+     */
+    private static AdjustableColumnModel createResourceColumnModel(JTable resourceTable) {
+        final AdjustableColumnModel colModel = new AdjustableColumnModel(resourceTable.getColumnModel(), resourceTable.getModel());
+
+        // initialise visible column list with persisted value from prefs
+        final Preferences prefs = Preferences.userNodeForPackage(RegistryGooglePanel.class);
+        String colNameList = prefs.get(COLUMNS_KEY, null);
+        String[] defaultColNames = ResourceTableFomat.getDefaultColumns();
+        String[] colNames = colNameList == null ? defaultColNames
+                                                : colNameList.split("\t");
+        if (! colModel.setVisibleColumnsByName(colNames)) {
+            boolean ok = colModel.setVisibleColumnsByName(defaultColNames);
+            assert ok;
+        }
+
+        // write subsequent changes to visible list to prefs
+        colModel.addColumnModelListener(new TableColumnModelAdapter() {
+            public void columnAdded(TableColumnModelEvent evt) {
+                saveState();
+            }
+            public void columnMoved(TableColumnModelEvent evt) {
+                saveState();
+            }
+            public void columnRemoved(TableColumnModelEvent evt) {
+                saveState();
+            }
+            private void saveState() {
+                prefs.put(COLUMNS_KEY, new StrBuilder().appendWithSeparators(colModel.getVisibleColumnsByName(), "\t").toString());
+            }
+        });
+        return colModel;
+    }
 	
 	/** called to create the central table - may be overridden by subclasses */
 	protected ResourceTable createTable(EventTableModel model,EventList list) {
-		return new ResourceTable(model,list,vomon,iconFac);
+		return new ResourceTable(model,list,vomon);
 	}
 
+    /** configures the resource display JTable appropriately in its scroll pane according to column widths */
+    private void adjustScrolling() {
+        int prefWidth = 0;
+        for (int ic = 0; ic < resourceColumnModel.getColumnCount(); ic++ ) {
+            TableColumn tcol = resourceColumnModel.getColumn(ic);
+            prefWidth += Math.max(tcol.getPreferredWidth(), tcol.getWidth());
+        }
+        boolean hscroll = prefWidth > tableScroller.getWidth();
+        resourceTable.setAutoResizeMode(hscroll ? JTable.AUTO_RESIZE_OFF : JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+    }
 
 // view updating methods	
 
@@ -586,7 +683,27 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 			items.getReadWriteLock().writeLock().unlock();
 		}
 	}
-// configure the behaviour of htis component.
+
+    /** returns a menu which allows the user to configure visibility of columns in the displayed JTable.
+     * @param   name   menu name
+     * @return   new menu giving column visiblity options
+     */
+    public JMenu createColumnsMenu(String name) {
+        CheckBoxMenu menu = resourceColumnModel.makeCheckBoxMenu(name);
+        menu.insertAction(new AbstractAction("Show Defaults") {
+            public void actionPerformed(ActionEvent evt) {
+                resourceColumnModel.setVisibleColumnsByName(ResourceTableFomat.getDefaultColumns());
+            }
+        });
+        menu.insertAction(new AbstractAction("Show All") {
+            public void actionPerformed(ActionEvent evt) {
+                resourceColumnModel.setAllVisible();
+            }
+        });
+        return menu;
+    }
+
+// configure the behaviour of this component.
 	public boolean isMultipleResources() {
 		//@fixme implement
 		return false;
@@ -720,9 +837,33 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.14  2007/08/13 19:14:17  nw
+merged in mark's adjustable columns
+
+<<<<<<< RegistryGooglePanel.java
 Revision 1.13  2007/08/06 14:37:37  nw
 Complete - task 133: make cancel more effective.
 
+=======
+Revision 1.12.2.6  2007/08/07 09:25:40  mbt
+Fix resource display JTable's scrolling within its scroll pane appropriately for column widths
+
+Revision 1.12.2.5  2007/08/06 16:51:16  mbt
+ResourceTable constructor signature modified
+
+Revision 1.12.2.4  2007/08/06 12:37:09  mbt
+Add Show All and Show Defaults to column visibility menus
+
+Revision 1.12.2.3  2007/08/04 10:15:00  mbt
+Implement persistence for resource table column visibility
+
+Revision 1.12.2.2  2007/08/03 16:12:38  mbt
+Rename MetaColumnModel to the more meaningful AdjustableColumnModel
+
+Revision 1.12.2.1  2007/08/03 15:45:27  mbt
+Provide a menu for column remove/restore in resource table display
+
+>>>>>>> 1.12.2.6
 Revision 1.12  2007/08/02 11:12:47  nw
 improved the formatting of filtering information.
 

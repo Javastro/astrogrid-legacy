@@ -1,4 +1,7 @@
-/*$Id: VOExplorerImpl.java,v 1.7 2007/08/06 13:36:47 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.8 2007/08/13 19:14:17 nw Exp $
+=======
+/*$Id: VOExplorerImpl.java,v 1.8 2007/08/13 19:14:17 nw Exp $
+>>>>>>> 1.6.2.2
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -122,6 +125,7 @@ public class VOExplorerImpl extends UIComponentImpl
 		google.addLoadListener(this);
 		mainPanel.add(google,RESOURCES_VIEW);
 		mainButtons.add(google.getToolbar(),RESOURCES_VIEW);
+        menuBar.add(google.createColumnsMenu("Columns"));
 
 		// build the various editing panels.
 		smartEditPanel = new SmartListEditingPanel(this,sizer);

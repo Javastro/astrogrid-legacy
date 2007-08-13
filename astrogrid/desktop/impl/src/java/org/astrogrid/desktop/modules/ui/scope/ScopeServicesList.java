@@ -81,7 +81,7 @@ public class ScopeServicesList extends RegistryGooglePanel
 		return new ServicesListTableFormat();
 	}
 	protected ResourceTable createTable(EventTableModel model, EventList list) {
-		ResourceTable rt=  new ResourceTable(model,list,vomon,iconFac) {
+		ResourceTable rt=  new ResourceTable(model,list,vomon) {
 			protected void createTooltipFor(int col,Resource r, StringBuffer sb) {
 				if (col == 23) {
 					Object o = results.get(r);

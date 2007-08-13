@@ -1,19 +1,26 @@
 package org.astrogrid.desktop.modules.ui.voexplorer.google;
 
 import java.awt.Color;
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.Icon;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
-import org.apache.commons.collections.ComparatorUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
-import org.astrogrid.acr.astrogrid.CeaApplication;
-import org.astrogrid.acr.ivoa.resource.ConeService;
+import org.astrogrid.acr.ivoa.resource.Contact;
+import org.astrogrid.acr.ivoa.resource.Creator;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.acr.ivoa.resource.ResourceName;
+import org.astrogrid.acr.ivoa.resource.Validation;
+import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
+import org.astrogrid.desktop.modules.ui.comp.ModularColumn;
+import org.astrogrid.desktop.modules.ui.comp.ModularTableFormat;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.votech.Annotation;
 import org.astrogrid.desktop.modules.votech.AnnotationService;
@@ -23,180 +30,464 @@ import org.votech.VoMon;
 import org.votech.VoMonBean;
 
 import ca.odell.glazedlists.GlazedLists;
-import ca.odell.glazedlists.ListSelection;
-import ca.odell.glazedlists.gui.AdvancedTableFormat;
-import ca.odell.glazedlists.gui.CheckableTableFormat;
-import ca.odell.glazedlists.gui.WritableTableFormat;
 
 /** Glazed Lists format for a table of registry entries
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 07-Sep-2005
+ * @author Mark Taylor
  */
 
-public  class ResourceTableFomat implements AdvancedTableFormat, WritableTableFormat{
-	public ResourceTableFomat(AnnotationService annService,final VoMonInternal vomon,final CapabilityIconFactory capBuilder) {
-		super();
-		this.vomon = vomon;
-		this.annService = annService;
-		this.capBuilder = capBuilder;
-	}
-	private final CapabilityIconFactory capBuilder;
-	private final AnnotationService annService;
-	private static final int COLUMN_COUNT = 4;
-	private final VoMonInternal vomon;
+public class ResourceTableFomat extends ModularTableFormat {
 
-	public Class getColumnClass(int columnIndex) {
-		switch(columnIndex) {
-		case 0:
-		case 2:
-			return Icon.class;
-		case 1:
-		case 3:
-			return Object.class;
-		default:
-			throw new IndexOutOfBoundsException("Oversized column ix:" +columnIndex);			
-		}
-	}		
+    private final static String STATUS_NAME = "Status";
+    private final static String LABEL_NAME = "Title";
+    private final static String CAPABILITY_NAME = "Capability";
+    private final static String DATE_NAME = "Date";
+    private final static String SHORT_NAME = "Short Name";
+    private final static String SUBJECT_NAME = "Subject";
+    private final static String PUBLISHER_NAME = "Publisher";
+    private final static String CONTACT_NAME = "Contact";
+    private final static String CREATOR_NAME = "Creator";
+    private final static String ID_NAME = "Id";
+    private final static String TYPE_NAME = "Type";
+    private final static String VALIDATION_NAME = "Validation";
+    private final static String VERSION_NAME = "Version";
 
-	public Comparator getColumnComparator(int arg0) {
-		switch (arg0) {
-		case 0:
-		case 2:
-			return iconComparator;
-		case 1:
-			return GlazedLists.caseInsensitiveComparator();
-		case 3:
-			return GlazedLists.comparableComparator();
-		default:
-			throw new IndexOutOfBoundsException("Oversized column ix:" +arg0);
-		}
-	}
+    private final static String MORE = ", ...";  // continuation string
 
-	/** compare 2 icons. */
-	private final Comparator iconComparator = new Comparator() {
-		public int compare(Object arg0, Object arg1) {
-			Icon a = (Icon)arg0;
-			Icon b = (Icon)arg1;
-			return map(a) - map(b); 
-		}
-		
-		private int map(Icon a) {
-			if (a == null) {
-				return 0;
-			}
-			if (a == UIConstants.SERVICE_OK_ICON) {
-				return 5;
-			}
-			if (a == UIConstants.UNKNOWN_ICON) {
-				return 4;
-			}
-			if (a == UIConstants.SERVICE_DOWN_ICON) {
-				return 1;
-			}
-			return a.hashCode(); // works for icons in capabilities list.
-		}
-	};
-	
-	public int getColumnCount() {
-		return COLUMN_COUNT;
-	}
-	public String getColumnName(int column) {
-		switch(column) {
-		case 0 :return "Status";
-		case 1: return "Title";
-		case 2: return "Capability";
-		case 3: return "Date";
-		default: 
-			throw new IndexOutOfBoundsException("Oversized column ix:" +column);
-		}
-	}
-	public Object getColumnValue(Object arg0, int columnIndex) {
-		Resource r = (Resource)arg0;
-		switch(columnIndex) {
-		case 0:
-			return vomon.suggestIconFor(r);
-		case 1:
-			return createTitle(r);
-		case 2:
-			return capBuilder.buildIcon(r);
-		case 3:
-			return createDate(r);
-		default:
-			throw new IndexOutOfBoundsException("Oversized column ix:" +columnIndex);
-		}
-	}
+    public ResourceTableFomat(AnnotationService annService,final VoMonInternal vomon,final CapabilityIconFactory capBuilder) {
+        super();
+        this.vomon = vomon;
+        this.annService = annService;
+        this.capBuilder = capBuilder;
 
+        List columnList = new ArrayList();
 
-	public boolean isEditable(Object arg0, int columnIndex) {
-		return false;
-	}
+        columnList.add(new IconColumn(STATUS_NAME) {
+            public Icon getValue(Resource res) {
+                return vomon.suggestIconFor(res);
+            }
+            public void configureColumn(TableColumn tcol) {
+                tcol.setPreferredWidth(40);
+                tcol.setMaxWidth(40);
+            }
+            public String getToolTipText(Resource res) {
+                return vomon.getTooltipInformationFor(res);
+            }
+        });
 
-	public Object setColumnValue(Object obj, Object bVal, int columnIndex) {
+        columnList.add(new StringColumn(LABEL_NAME) {
+            public String getValue(Resource res) {
+                return createTitle(res);
+            }
+            public void configureColumn(TableColumn tcol) {
+                tcol.setPreferredWidth(300);
+            }
+            public String getToolTipText(Resource res) {
+                HtmlBuilder result = new HtmlBuilder();
+                result.append("<b>").append(res.getTitle()).append("</b>");
+                result.append("<br><i>").append(res.getShortName()).append("</i>");
+                result.append("<br><i>").append(res.getId()).append("</i>");
+                return result.toString();
+            }
+        });
 
-			throw new IllegalArgumentException("This column is not editable");
-	}
+        columnList.add(new IconColumn(CAPABILITY_NAME) {
+            public Icon getValue(Resource res) {
+                return capBuilder.buildIcon(res);
+            }
+            public void configureColumn(TableColumn tcol) {
+                tcol.setPreferredWidth(80);
+                tcol.setMaxWidth(100);
+                tcol.setResizable(true);
+            }
+            public String getToolTipText(Resource res) {
+                return capBuilder.getTooltip(getValue(res));
+            }
+        });
 
-	public  String createTitle(Resource r) {
-		if (r == null) {
-			return "";
-		}
-		String title = null;
-		int titleLevel = Integer.MAX_VALUE;
-		boolean flag = false;
-		Color highlight = null;
-		int highlightLevel = Integer.MAX_VALUE;
-		// check for overrides.
-		for (Iterator i = annService.getLocalAnnotations(r); i.hasNext(); ) {
-			Annotation a = (Annotation)i.next();
-			String t = StringUtils.trimToNull(a.getAlternativeTitle());
-			if (t != null && a.getSource().getSortOrder() <= titleLevel) {
-				title = t;
-				titleLevel = a.getSource().getSortOrder();
-			}
-			if (a instanceof UserAnnotation) {
-				UserAnnotation u = (UserAnnotation)a;
-				if (!flag && u.isFlagged()) {
-					flag = true;
-				}
-				if (u.getHighlight() != null && ! u.getHighlight().equals(Color.WHITE) 
-						&& u.getSource().getSortOrder() <= highlightLevel) {
-					highlight = u.getHighlight();
-					highlightLevel = u.getSource().getSortOrder();
-				}
-			}
-		}
+        columnList.add(new StringColumn(DATE_NAME) {
+            public String getValue(Resource res) {
+                return createDate(res);
+            }
+            public void configureColumn(TableColumn tcol) {
+                tcol.setPreferredWidth(90);
+                tcol.setMaxWidth(90);
+            }
+        });
 
-		// work out what we've found, and assemble all bits of data into a single formatted string.
-		StrBuilder result = new StrBuilder();
-		if (flag || title != null|| highlight != null) {
-			result.append("<html>");
-		}
-		
-		if (highlight != null) {
-			result.append("<body bgcolor='#");
-			int i = highlight.getRGB();
-			result.append(Integer.toHexString(i).substring(2,8));
-			result.append("'>");
-		}
-		
-		if (flag) { // nasty ascii art for now.
-			result.append("<b>*</b>");
-		}
-		
-		if (title != null) {
-			result.append("<i>").append(title);
-		} else {
-			result.append(StringUtils.replace(r.getTitle(), "\n", " ") );
-		}
-		
-		return result.toString();
-	}		
+        columnList.add(new StringColumn(SHORT_NAME) {
+            public String getValue(Resource res) {
+                return res.getShortName();
+            }
+            public void configureColumn(TableColumn tcol) {
+                tcol.setPreferredWidth(150);
+            }
+        });
 
-	private String createDate(Resource r) {
-		String date = r.getUpdated();
-		if (date == null) {
-			date = r.getCreated();
-		}
-		return date == null ? "" : date.substring(0,10);
-	}
-	
+        columnList.add(new StringColumn(SUBJECT_NAME) {
+            public String getValue(Resource res) {
+                String[] subjects = res.getContent().getSubject();
+                StrBuilder sbuf = new StrBuilder();
+                for (int i = 0; i < subjects.length; i++) {
+                    if (i > 0) {
+                        sbuf.append(", ");
+                    }
+                    sbuf.append(subjects[i]);
+                }
+                return sbuf.toString();
+            }
+            public void configureColumn(TableColumn tcol) {
+                tcol.setPreferredWidth(150);
+            }
+        });
+
+        columnList.add(new StringColumn(PUBLISHER_NAME) {
+            public String getValue(Resource res) {
+                return resourceNameToString(res.getCuration().getPublisher());
+            }
+            public void configureColumn(TableColumn tcol) {
+                tcol.setPreferredWidth(150);
+            }
+        });
+
+        columnList.add(new StringColumn(CONTACT_NAME) {
+            public String getValue(Resource res) {
+                Contact[] contacts = res.getCuration().getContacts();
+                StrBuilder sbuf = new StrBuilder();
+                if (contacts.length > 0) {
+                    Contact contact = contacts[0];
+                    String name = resourceNameToString(contact.getName());
+                    if (name != null) {
+                        sbuf.append(name)
+                            .append(' ');
+                    }
+                    String mail = contact.getEmail();
+                    if (mail != null) {
+                        sbuf.append('<')
+                            .append(mail)
+                            .append('>');
+                    }
+                    if (contacts.length > 1) {
+                        sbuf.append(MORE);
+                    }
+                }
+                return sbuf.toString();
+            }
+            public void configureColumn(TableColumn tcol) {
+                tcol.setPreferredWidth(200);
+            }
+        });
+
+        columnList.add(new StringColumn(CREATOR_NAME) {
+            public String getValue(Resource res) {
+                Creator[] creators = res.getCuration().getCreators();
+                StrBuilder sbuf = new StrBuilder();
+                if (creators.length > 0) {
+                    sbuf.append(resourceNameToString(creators[0].getName()));
+                    if (creators.length > 1) {
+                        sbuf.append(MORE);
+                    }
+                }
+                return sbuf.toString();
+            }
+            public void configureColumn(TableColumn tcol) {
+                tcol.setPreferredWidth(200);
+            }
+        });
+
+        columnList.add(new StringColumn(ID_NAME) {
+            public String getValue(Resource res) {
+                URI id = res.getId();
+                return id == null ? "" : id.toString();
+            }
+            public void configureColumn(TableColumn tcol) {
+                tcol.setPreferredWidth(200);
+            }
+        });
+
+        columnList.add(new StringColumn(TYPE_NAME) {
+            public String getValue(Resource res) {
+                return res.getType();
+            }
+            public void configureColumn(TableColumn tcol) {
+                tcol.setPreferredWidth(150);
+            }
+        });
+
+        columnList.add(new StringColumn(VALIDATION_NAME) {
+            public String getValue(Resource res) {
+                Validation[] validations = res.getValidationLevel();
+                StrBuilder sbuf = new StrBuilder();
+                if (validations.length > 0) {
+                    Validation validation = validations[0];
+                    sbuf.append(validation.getValidationLevel())
+                        .append(": ")
+                        .append(validation.getValidatedBy());
+                    if (validations.length > 1) {
+                        sbuf.append(MORE);
+                    }
+                }
+                return sbuf.toString();
+            }
+            public void configureColumn(TableColumn tcol) {
+                tcol.setPreferredWidth(150);
+            }
+        });
+
+        columnList.add(new StringColumn(VERSION_NAME) {
+            public String getValue(Resource res) {
+                return res.getCuration().getVersion();
+            }
+            public void configureColumn(TableColumn tcol) {
+                tcol.setPreferredWidth(75);
+            }
+        });
+
+        setColumns((ModularColumn[])columnList.toArray(new ModularColumn[0]));
+    }
+
+    /**
+     * Configures a table column model appropriately for describing a TableModel
+     * built using this TableFormat.
+     *
+     * @param  colModel  column model
+     */
+    public void configureColumnModel(TableColumnModel colModel) {
+        int ncol = colModel.getColumnCount();
+        for (int icol = 0; icol < ncol; icol++) {
+            ((Column) getColumn(icol)).configureColumn(colModel.getColumn(icol));
+        }
+    }
+
+    /**
+     * Returns a tooltip for a given resource in a given column.
+     *
+     * @param   res  resource (table cell content)
+     * @param   icol  index of column in which <code>res</code> appears
+     * @return   tooltip string
+     */
+    public String getToolTipText(Resource res, int icol) {
+        return ((Column) getColumn(icol)).getToolTipText(res);
+    }
+
+    /**
+     * Returns the names of the columns which are visible by default in a resource table.
+     *
+     * @return   array of initially visible column names
+     */
+    public static String[] getDefaultColumns() {
+        return new String[] {
+            STATUS_NAME, LABEL_NAME, CAPABILITY_NAME, DATE_NAME,
+        };
+    }
+
+    private final CapabilityIconFactory capBuilder;
+    private final AnnotationService annService;
+    private final VoMonInternal vomon;
+
+    public final String createTitle(Resource r) {
+        if (r == null) {
+            return "";
+        }
+        String title = null;
+        int titleLevel = Integer.MAX_VALUE;
+        boolean flag = false;
+        Color highlight = null;
+        int highlightLevel = Integer.MAX_VALUE;
+        // check for overrides.
+        for (Iterator i = annService.getLocalAnnotations(r); i.hasNext(); ) {
+            Annotation a = (Annotation)i.next();
+            String t = StringUtils.trimToNull(a.getAlternativeTitle());
+            if (t != null && a.getSource().getSortOrder() <= titleLevel) {
+                title = t;
+                titleLevel = a.getSource().getSortOrder();
+            }
+            if (a instanceof UserAnnotation) {
+                UserAnnotation u = (UserAnnotation)a;
+                if (!flag && u.isFlagged()) {
+                    flag = true;
+                }
+                if (u.getHighlight() != null && ! u.getHighlight().equals(Color.WHITE) 
+                        && u.getSource().getSortOrder() <= highlightLevel) {
+                    highlight = u.getHighlight();
+                    highlightLevel = u.getSource().getSortOrder();
+                }
+            }
+        }
+
+        // work out what we've found, and assemble all bits of data into a single formatted string.
+        StrBuilder result = new StrBuilder();
+        if (flag || title != null|| highlight != null) {
+            result.append("<html>");
+        }
+        
+        if (highlight != null) {
+            result.append("<body bgcolor='#");
+            int i = highlight.getRGB();
+            result.append(Integer.toHexString(i).substring(2,8));
+            result.append("'>");
+        }
+        
+        if (flag) { // nasty ascii art for now.
+            result.append("<b>*</b>");
+        }
+        
+        if (title != null) {
+            result.append("<i>").append(title);
+        } else {
+            result.append(StringUtils.replace(r.getTitle(), "\n", " ") );
+        }
+        
+        return result.toString();
+    }        
+
+    private final String createDate(Resource r) {
+        String date = r.getUpdated();
+        if (date == null) {
+            date = r.getCreated();
+        }
+        return date == null ? "" : date.substring(0,10);
+    }
+
+    /**
+     * Converts a ResourceName to a human-readable string.
+     *
+     * @param   rname  resource name
+     * @return   stringified version
+     */
+    private static String resourceNameToString(ResourceName rname) {
+        return rname == null ? ""
+                             : rname.getValue();
+    }
+
+    /**
+     * ModularColumn implementation for use internally to this TableFormat.
+     */
+    private static abstract class Column extends ModularColumn {
+
+        /**
+         * Constructor.
+         *
+         * @param  name  column name
+         * @param  clazz  most specific known superclass for values in this column
+         * @param  comparator  default comparator to use for this column;
+         *                     use null for a non-comparable column
+         */
+        Column(String name, Class clazz, Comparator comparator) {
+            super(name, clazz, comparator);
+        }
+
+        /**
+         * Performs column-specific configuration on a TableColumn to hold this column,
+         * for instance setting preferred width.
+         * The default implementation does nothing; subclasses which know how
+         * their contents will look are encouraged to override it.
+         *
+         * @param  tcol  column to configure
+         */
+        public void configureColumn(TableColumn tcol) {
+        }
+
+        /**
+         * Returns a tooltip for a resource object appearing in this column.
+         * The default implementation returns null; subclasses which have
+         * more to say about their contents are encouraged to override it.
+         *
+         * @param  res  column cell content
+         * @return   tooltop describing <code>res</code>
+         */
+        public String getToolTipText(Resource res) {
+            return null;
+        }
+    }
+
+    /**
+     * Column implementation for a column containing strings.
+     */
+    private static abstract class StringColumn extends Column {
+
+        /**
+         * Constructs a column with a default comparator.
+         *
+         * @param name  column name
+         */
+        StringColumn(String name) {
+            this(name, false);
+        }
+
+        /**
+         * Constructs a column with an optionally case sensitive comparator
+         *
+         * @param  name  column name
+         * @param  caseSensitive    true iff comparisons should be case sensitive
+         */
+        StringColumn(String name, boolean caseSensitive) {
+            super(name, String.class, caseSensitive ? GlazedLists.comparableComparator() : GlazedLists.caseInsensitiveComparator());
+        }
+
+        /**
+         * Returns the string value corresponding to a given resource.
+         *
+         * @param  res  resource
+         * @return  string value
+         */
+        protected abstract String getValue(Resource res);
+
+        public Object getColumnValue(Object obj) {
+            return obj instanceof Resource ? getValue((Resource) obj)
+                                           : null;
+        }
+    }
+
+    /**
+     * ModularColumn implementation for a column containing icons.
+     */
+    private static abstract class IconColumn extends Column {
+
+        /**
+         * Constructor.
+         *
+         * @param   name  column name
+         */
+        IconColumn(String name) {
+            super(name, Icon.class, ICON_COMPARATOR);
+        }
+
+        /**
+         * Returns the icon value corresponding to a given resource.
+         *
+         * @param  res  resource
+         * @return   icon value
+         */
+        protected abstract Icon getValue(Resource res);
+
+        public Object getColumnValue(Object obj) {
+            return obj instanceof Resource ? getValue((Resource) obj)
+                                           : null;
+        }
+
+        /** compare 2 icons. */
+        private static final Comparator ICON_COMPARATOR = new Comparator() {
+            public int compare(Object arg0, Object arg1) {
+                Icon a = (Icon)arg0;
+                Icon b = (Icon)arg1;
+                return map(a) - map(b); 
+            }
+            private int map(Icon a) {
+                if (a == null) {
+                    return 0;
+                }
+                if (a == UIConstants.SERVICE_OK_ICON) {
+                    return 5;
+                }
+                if (a == UIConstants.UNKNOWN_ICON) {
+                    return 4;
+                }
+                if (a == UIConstants.SERVICE_DOWN_ICON) {
+                    return 1;
+                }
+                return a.hashCode(); // works for icons in capabilities list.
+            }
+        };
+    }
 }
