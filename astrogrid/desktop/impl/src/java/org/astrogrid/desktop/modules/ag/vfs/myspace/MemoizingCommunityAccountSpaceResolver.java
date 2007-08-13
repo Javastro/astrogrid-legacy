@@ -6,6 +6,7 @@ package org.astrogrid.desktop.modules.ag.vfs.myspace;
 import java.net.URL;
 import java.util.Map;
 
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.map.ReferenceMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,7 +44,9 @@ public class MemoizingCommunityAccountSpaceResolver extends
 		String key = arg0.toString(); // equals isn't implemented on Ivorn - another black mark.
 		Object o = results.get(key);
 		if (o != null) {
-			logger.debug("cache hit! " + arg0);
+		    if (logger.isDebugEnabled()) {
+		        logger.debug("cache hit! " + arg0 + " -> " + o);
+		    }
 			// good greif - not one base type. how sad.
 			if (o instanceof CommunityServiceException) {
 				throw (CommunityServiceException)o;
@@ -63,7 +66,10 @@ public class MemoizingCommunityAccountSpaceResolver extends
 				return (Ivorn)o;
 			}
 		}
-		logger.debug("cache miss " + arg0);
+		if (logger.isDebugEnabled()) {
+		    logger.debug("cache miss " + arg0);
+		    MapUtils.debugPrint(System.out,"memoized communities",results);
+		}
 		// not got a memoized result - need to compute it.
 		try {
 			Ivorn result = super.resolve(arg0);

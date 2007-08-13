@@ -3,9 +3,13 @@
  */
 package org.astrogrid.desktop.modules.ag.vfs.myspace;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.net.URISyntaxException;
 import java.util.Collection;
 
+import org.apache.commons.vfs.CacheStrategy;
 import org.apache.commons.vfs.FileName;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystem;
@@ -15,6 +19,7 @@ import org.apache.commons.vfs.provider.AbstractFileSystem;
 import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.filemanager.client.FileManagerClient;
+import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.registry.RegistryException;
 
 /** vfs filesystem for myspace.
@@ -22,6 +27,11 @@ import org.astrogrid.registry.RegistryException;
  * @since Apr 3, 20076:01:45 PM
  */
 public class MyspaceFileSystem extends AbstractFileSystem implements FileSystem {
+    /**
+     * Logger for this class
+     */
+    private static final Log logger = LogFactory
+            .getLog(MyspaceFileSystem.class);
 
 
 	protected MyspaceFileSystem(MyspaceFileName rootName, MyspaceInternal msi, FileSystemOptions fileSystemOptions) {
@@ -29,12 +39,10 @@ public class MyspaceFileSystem extends AbstractFileSystem implements FileSystem 
 		this.msi = msi;
 	}
 	private final MyspaceInternal msi;
-	// lazily initialized
-	private FileManagerClient _client;
 	
 	public FileManagerClient client() throws FileSystemException {		
 		try {
-            return getClient();
+            return msi.getClient();
 	    } catch (CommunityException e) {
             throw new FileSystemException(e);
         } catch (RegistryException x) {
@@ -50,7 +58,36 @@ public class MyspaceFileSystem extends AbstractFileSystem implements FileSystem 
 	}
 
 	protected FileObject createFile(FileName name) throws Exception {
+	    if (logger.isDebugEnabled()) {
+	        logger.debug("Creating file " + name);
+	    }
 		return new MyspaceFileObject((MyspaceFileName)name,this);
+	}
+	
+	// method to build a fully initialized file object.
+	// used from MyspaceFileObject
+	public FileObject resolveFile(MyspaceFileName name, FileManagerNode node) throws FileSystemException {
+	    // cribbed from AbstractFileSystem.resolveFile	    
+	    FileObject file = getFileFromCache(name);	     
+	    if (file == null)  {
+	        try {
+	            synchronized (this){
+	                file = new MyspaceFileObject(node,name,this);
+	            }
+	        } catch (Exception e){
+	            throw new FileSystemException("vfs.provider/resolve-file.error", name, e);
+	        }
+	        file = decorateFileObject(file);
+	        putFileToCache(file);
+	    }
+	    /**
+	     * resync the file information if requested
+	     */
+	    if (getFileSystemManager().getCacheStrategy().equals(CacheStrategy.ON_RESOLVE))
+	    {
+	        file.refresh();
+	    }
+	    return file;	    
 	}
 
 	public double getLastModTimeAccuracy() {
@@ -60,20 +97,11 @@ public class MyspaceFileSystem extends AbstractFileSystem implements FileSystem 
 	public FileSystemOptions getFileSystemOptions() {
 		return super.getFileSystemOptions();
 	}
+	
+	public String toString() {
+	    return super.toString() + "/" + getRootName();
+	}
 
-    /**
-     * @return the client
-     * @throws URISyntaxException 
-     * @throws RegistryException 
-     * @throws CommunityException 
-     */
-    private FileManagerClient getClient() throws CommunityException, RegistryException, URISyntaxException {
-        synchronized(this) {
-            if (_client == null) {
-                _client = msi.getClient();
-            }
-        }
-        return _client;
-    }
+
 
 }

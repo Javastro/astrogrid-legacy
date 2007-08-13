@@ -14,13 +14,36 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="2007.4.alpha3" date="2007-08-06">
+<release version="2007.4.alpha3" date="2007-08-13">
     <action dev="mbt" type="add">
-        Voexplorer resource table: can add, remove, reorder the displayed columns.
-        Need feedback on what columns users would like to have available.
+        Provided option to configure which columns are displayed in VOExplorer
+        resource display table.
+    </action>
+    <action dev="nw" type="add">
+        Implemented the basic operations in fileexplorer - copy, delete, rename, move, newFolder
+    </action>
+    <action dev="nw" type="add">
+        Added a column number column to table metadata viewer.
+    </action>
+    <action dev="nw" type="fix" issue="2272">
+        Improved error trapping and reporting in taskrunner
+    </action>
+    <action dev="nw" type="add">
+    Added operation to task runner results view to reveal indirect results 
+    in file explorer.
+    </action>
+    <action dev="nw" type="add">
+        Result files in task runner can be dragged and dropped to file explorer to  save them
+        to myspace or local disk.
+    </action>
+    <action dev="nw" type="fix" issue="2273">
+        Execute button now populates in query builder.
     </action>
     <action dev="nw" type="fix" issue="2270">
         TaskRunner doesn't barf when encountering an unknown cea server
+    </action>
+    <action dev="nw" type="fix">
+        Improved efficiency and caching behaviour of myspace file view
     </action>
 </release>
 <release version="2007.4.alpha2" date="2007-08-06">
@@ -36,13 +59,7 @@
         remembered adql editor expansion state and parameter values when 
         flipping between tool interfaces
     </action>
-=======
-<release version="2007.4.alpha2" date="unreleased">
-    <action dev="mbt" type="add">
-        Provided option to configure which columns are displayed in VOExplorer
-        resource display table.
-    </action>
->>>>>>> 1.134.2.1
+
     <action dev="nw" type="update">
         Improved presentation of vomon information in login dialogue
     </action>

@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
+import org.apache.commons.vfs.provider.DelegateFileObject;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
@@ -52,6 +53,9 @@ public class PlasticSpectrumActivity extends AbstractFileActivity {
 		List l = computeInvokable();		
 		for (Iterator i = l.iterator(); i.hasNext();) {
 			FileObject f = (FileObject) i.next();
+            if (f instanceof DelegateFileObject) { // if we've got a delegate, get to the source here...
+                f = ((DelegateFileObject)f).getDelegateFile();
+            }			
 			sendLoadSpectrumMessage(f);
 		}	
 	}
@@ -62,7 +66,7 @@ public class PlasticSpectrumActivity extends AbstractFileActivity {
 				List l = new ArrayList();
 				URL url = f.getURL();
 				l.add(url.toString());// url
-				l.add(url.toString()); // identifier - have nothing else to use really.
+				l.add(f.getName().getBaseName());
 				Hashtable t = new Hashtable(f.getContent().getAttributes());
 				l.add(t);// some kind of map here.
 				tupp.singleTargetPlasticMessage(PlasticScavenger.SPECTRA_LOAD_FROM_URL,l,plas.getId());

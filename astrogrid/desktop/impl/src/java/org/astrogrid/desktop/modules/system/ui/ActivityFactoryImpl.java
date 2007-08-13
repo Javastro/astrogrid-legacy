@@ -188,11 +188,19 @@ public class ActivityFactoryImpl implements ActivityFactory {
         }
 
         public void setSelection(Transferable tran) {
+            trans = tran;
             for (int i = 0; i < acts.length; i++) {
                 acts[i].selected(tran);
             }               
         }
+        
+        private Transferable trans;
+        public Transferable getCurrentSelection() {
+            return trans;
+        }
+        
         public void clearSelection() {
+            trans = null;
             for (int i = 0; i < acts.length; i++) {
                 acts[i].noneSelected();
             }            

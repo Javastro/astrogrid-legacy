@@ -348,6 +348,13 @@ public class ScopeTransferableFactory{
 				public void setLastModifiedTime(long modTime) throws FileSystemException {
 					// unimplemented
 				}
+                public boolean hasAttribute(String attrName)
+                        throws FileSystemException {
+                    return false;
+                }
+                public void removeAttribute(String attrName)
+                        throws FileSystemException {
+                }
 			};
 
 			// from this accessed ContentInfo.contentType

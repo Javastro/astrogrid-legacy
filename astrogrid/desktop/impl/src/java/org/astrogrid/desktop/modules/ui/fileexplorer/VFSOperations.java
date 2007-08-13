@@ -13,10 +13,16 @@ import java.util.List;
  */
 public interface VFSOperations {
 	
+    /** copy this list of fileobjects (which might be subtrees of folders 
+     * to the 'current location'
+     * @param fileObjects
+     */
 	public void copyToCurrent(List fileObjects) ;
 	
+    /** move this list of fileobjects (which might be subtrees of folders 
+     * to the 'current location'
+     * @param fileObjects
+     */
 	public void moveToCurrent(List fileObjects);
-	
-	public void copyOrMoveToCurrent(List fileObjects);
 
 }

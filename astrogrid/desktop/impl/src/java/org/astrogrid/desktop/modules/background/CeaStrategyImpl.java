@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.23 2007/07/31 13:44:11 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.24 2007/08/13 19:29:48 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,8 +24,13 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystem;
+import org.apache.commons.vfs.FileSystemException;
+import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
@@ -34,6 +39,7 @@ import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.CeaService;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
+import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.applications.Application;
@@ -55,6 +61,7 @@ import org.astrogrid.desktop.modules.ag.TimerDrivenProcessMonitor;
 import org.astrogrid.desktop.modules.auth.CommunityInternal;
 import org.astrogrid.desktop.modules.system.SchedulerInternal;
 import org.astrogrid.desktop.modules.system.SchedulerInternal.DelayedContinuation;
+import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.votech.VoMonInternal;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.security.SecurityGuard;
@@ -79,6 +86,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 	private class RemoteTaskMonitor extends TimerDrivenProcessMonitor implements ProcessMonitor.Advanced {
 		
 		public RemoteTaskMonitor(Tool t,CeaApplication app) throws ServiceException {
+		    super(vfs);
 			this.tool = t;
 			this.app = app;
 			this.name = app.getTitle();
@@ -120,7 +128,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
                 try {
                     arr = apps.listServersProviding(app.getId());
                 } catch (InvalidArgumentException x) {
-                    error(x.getMessage());
+                    error("Unable to start application",x);
                     throw new NotFoundException(x);
                 }
                 CeaService target = null;
@@ -142,7 +150,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
                 try {
                     arr = apps.listServersProviding(app.getId());
                 } catch (InvalidArgumentException x) {
-                    error(x.getMessage());                    
+                    error("Unablel to find servers providing this application",x);                    
                     throw new NotFoundException(x);
                 }
                 
@@ -187,8 +195,8 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
                     throw new ServiceException("Failed to execute application");
                 }
             } catch (CEADelegateException x) {
-                error("Failed: " + x.getMessage());
-                throw new ServiceException("Failed to execute application");
+                error("Failed to execute application ",x);
+                throw new ServiceException(x);
             }       
         }
         
@@ -233,7 +241,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 	            info("Halting");
 	            delegate.abort(ceaid);
 	        } catch (CEADelegateException e) {
-	            error("Failed: " + e.getMessage());
+	            error("Failed to halt" ,e);
 	            throw new ServiceException(e);
 	        } finally {
 	            // cause a status check.
@@ -305,9 +313,20 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 					// retrive the results.
 					ExecutionSummaryType summ = delegate.getExecutionSumary(ceaid);
 					if (summ != null && summ.getResultList() != null) {
+					    ParameterBean[] descs = app.getParameters();
 						ParameterValue[] arr = summ.getResultList().getResult();
 						for (int i = 0 ; i < arr.length; i++) {
-							addResult(arr[i].getName(),arr[i].getValue());
+							final ParameterValue val = arr[i];
+							ParameterBean desc = findDescriptionFor(val,descs);
+							if (val.getIndirect()) {
+							    // do something clever - get a pointer to the remote file, and then add this as the result.
+							    //@issue hope this doesn't force login. if it does, need to create an lazily-initialized file object here instead.
+							    FileObject src = vfs.resolveFile(val.getValue());
+							    addResult(val.getName(),src);							    
+							} else {
+							    // sugges a file extension here - makes the files stuff work better.
+							    addResult(val.getName() + suggestExtension(desc),val.getValue());
+							}
 						}
 						fireResultsReceived(resultMap);
 						// done
@@ -322,6 +341,27 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 			}
 
 		}
+
+		/** work out a suitable file extension for this parameter, if none was provided */
+	    private String suggestExtension(ParameterBean pb) {
+	        if (pb == null) {
+	            return "";
+	        }
+	        String type = pb.getType();
+	        if (type.equalsIgnoreCase("fits")) {
+	            return ".fits";
+	        } else if (type.equalsIgnoreCase("binary")) {
+	            return ".bin";
+	        } else if (type.equalsIgnoreCase("anyxml")) {
+	            return ".xml";
+	        } else if (type.equalsIgnoreCase("votable")) {
+	            return ".vot";
+	        } else if(type.equalsIgnoreCase("adql")) {
+	            return ".adql";
+	        } else {
+	            return ".txt";
+	        }
+	    }
 
 		private long runAgain = SHORTEST;
 		public long getDelay() {
@@ -355,6 +395,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
         private final CeaApplication appDesc;
         private String ceaid;
 		public LocalTaskMonitor(Tool t, CeaApplication appDesc) throws ServiceException {
+		    super(vfs);
 			this.tool = t;
             this.appDesc = appDesc;
 			this.name = appDesc.getTitle();
@@ -400,9 +441,12 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 				throw new ServiceException(e);
 			}              
 		}
+
+
 		/**
 		 * @param results
 		 * @return
+		//@todo should override filesystem so that it is populated too
 		 */
 		private Map cvtResultList2Map(ResultListType results) {
 			Map map = new HashMap();
@@ -439,8 +483,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
                         this.application.addObserver(this);
                     }
                 } catch (CeaException x) {
-                    //@todo do I signal an error, or throw it here?
-                    error("Failed to start application: " + x.getMessage());
+                    error("Failed to start application",x);
                 }       
             
         }       
@@ -475,6 +518,8 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 	private final SessionManagerInternal sess;
 	private final SchedulerInternal sched; 
 	private final VoMon vomon;
+
+    private final FileSystemManager vfs;
     
     /** Construct a new CeaStrategyImpl
      * 
@@ -483,11 +528,14 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
             , Registry reg
             ,VoMon vomon
             , ApplicationsInternal apps
-            , CommunityInternal community, SessionManagerInternal sess, SchedulerInternal sched) {
+            , CommunityInternal community
+            , FileSystemManager vfs
+            ,SessionManagerInternal sess, SchedulerInternal sched) {
         super();         
         this.apps = apps;
         this.vomon = vomon;
         this.ceaInternal =ceaInternal;
+        this.vfs = vfs;
         this.ceaHelper = new CeaHelper(reg,community);
         this.community = community;
         this.sess= sess;
@@ -547,7 +595,16 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
         
         }
     
-
+    // should this be elsewere?
+    static ParameterBean findDescriptionFor(ParameterValue pv,ParameterBean[] descs) {
+        for (int i = 0; i < descs.length; i++) {
+            if (pv.getName().equals(descs[i].getName())) {
+                return descs[i];
+            }            
+        }
+        return null;
+        
+    }
     
   
 }
@@ -555,6 +612,28 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.24  2007/08/13 19:29:48  nw
+merged mark's and noel's changes.
+
+Revision 1.23.4.2  2007/08/13 18:44:08  nw
+Complete - task 140: clear selection in one fileresult space when another is selected in a different resultspace.
+
+Complete - task 138: add index column to metadata viewer
+
+Incomplete - task 112: implement vfsoperations
+
+Incomplete - task 49: Implement file Tasks
+
+Incomplete - task 73: filechooser dialogue.
+
+RESOLVED - bug 2272: Task runer locks up AR, menu bar
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2272
+
+Revision 1.23.4.1  2007/08/09 19:08:21  nw
+Complete - task 126: Action to 'Reveal' location of remote results in FileExplorer
+
+Complete - task 122: plastic messaging of myspace resources
+
 Revision 1.23  2007/07/31 13:44:11  nw
 Complete - task 128: Fix refresh
 

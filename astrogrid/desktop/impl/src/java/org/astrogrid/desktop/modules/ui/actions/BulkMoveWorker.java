@@ -2,9 +2,11 @@ package org.astrogrid.desktop.modules.ui.actions;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs.FileObject;
@@ -19,11 +21,11 @@ import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 
-/** worker class which does a bulk copy of a bunch of files/folders to another target.
+/** worker class which does a bulk move of a bunch of files/folders to another target.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 25, 20074:49:51 PM
  */
-public final class BulkCopyWorker extends BackgroundWorker {
+public final class BulkMoveWorker extends BackgroundWorker {
     /**
      * 
      */
@@ -40,16 +42,16 @@ public final class BulkCopyWorker extends BackgroundWorker {
      * @param saveDir directory to copy data to.
      * @param l list of file objects to copy.
      */
-    public BulkCopyWorker(FileSystemManager vfs,UIComponent parent,File saveDir, List l) {
-        super(parent,  "Copying to " + saveDir);
+    public BulkMoveWorker(FileSystemManager vfs,UIComponent parent,File saveDir, List l) {
+        super(parent,  "Moving to " + saveDir);
         this.vfs = vfs;
         this.saveDir = saveDir;
         saveObject = null;
         this.l = l;
     }
     
-    public BulkCopyWorker(FileSystemManager vfs,UIComponent parent,FileObject saveObject, List l) {
-        super(parent,  "Copying to " + saveObject.getName().getPath());
+    public BulkMoveWorker(FileSystemManager vfs,UIComponent parent,FileObject saveObject, List l) {
+        super(parent,  "Moving to " + saveObject.getName().getPath());
         this.vfs = vfs;
         this.saveObject = saveObject;
         this.saveDir = null;
@@ -58,6 +60,7 @@ public final class BulkCopyWorker extends BackgroundWorker {
 
     protected FileObject saveTarget;
     protected Object construct() throws Exception {
+        Set moveSourceDirs = new HashSet();
         if (saveObject == null) {
             saveTarget = vfs.resolveFile(this.saveDir.toURI().toString());
         } else {
@@ -89,7 +92,11 @@ public final class BulkCopyWorker extends BackgroundWorker {
                 } while  (dest.exists());
                 
                 // cool. now got a non-existent destination file.
-                dest.copyFrom(src, Selectors.SELECT_ALL); // creates and copies from src. handles folders and files. nice!
+                FileObject srcParent = src.getParent();
+                if (srcParent != null) {
+                    moveSourceDirs.add(srcParent);
+                }
+                src.moveTo(dest);
             } catch (FileSystemException x) {
                 errors.put(src,x);
             }
@@ -101,6 +108,14 @@ public final class BulkCopyWorker extends BackgroundWorker {
                 ((AbstractFileSystem)fs).fireFileChanged(saveTarget);
             }
         }
+        // also need to notify old parents of the files we've moved.
+        for (Iterator i = moveSourceDirs.iterator(); i.hasNext();) {
+            FileObject p = (FileObject) i.next();
+            FileSystem fs = p.getFileSystem();
+            if (fs instanceof AbstractFileSystem) {
+                ((AbstractFileSystem)fs).fireFileChanged(p);
+            }            
+        }
         return errors;
     }
 
@@ -110,7 +125,7 @@ public final class BulkCopyWorker extends BackgroundWorker {
             return;
         }
         HtmlBuilder msgBuilder = new HtmlBuilder();			    
-        msgBuilder.h2("Encountered errors when copying some files");
+        msgBuilder.h2("Encountered errors when moving some files");
         for (Iterator i = errors.entrySet().iterator(); i.hasNext();) {
             Map.Entry err = (Map.Entry) i.next();
             FileObject f = (FileObject)err.getKey();

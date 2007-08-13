@@ -3,16 +3,19 @@
  */
 package org.astrogrid.desktop.modules.ui.execution;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
+import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
 
@@ -21,19 +24,14 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
-import net.sourceforge.hiveutils.service.ObjectBuilder;
-
-import org.apache.commons.lang.text.StrBuilder;
-import org.apache.commons.vfs.FileName;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.SecurityException;
-import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
@@ -44,7 +42,6 @@ import org.astrogrid.desktop.modules.ag.RemoteProcessManagerInternal;
 import org.astrogrid.desktop.modules.ag.ProcessMonitor.ProcessEvent;
 import org.astrogrid.desktop.modules.ag.ProcessMonitor.ProcessListener;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
-import org.astrogrid.desktop.modules.system.ExtendedFileSystemManager;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
@@ -53,26 +50,30 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.ObservableConnector;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileModel;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectComparator;
+import org.astrogrid.desktop.modules.ui.fileexplorer.NavigableFilesList;
 import org.astrogrid.desktop.modules.ui.fileexplorer.OperableFilesList;
 import org.astrogrid.desktop.modules.ui.fileexplorer.VFSOperationsImpl;
-
-import com.l2fprod.common.swing.JTaskPane;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FunctionList;
+import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.ObservableElementList;
 import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.TransformedList;
+import ca.odell.glazedlists.impl.ThreadSafeList;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.JEventListPanel;
+
+import com.l2fprod.common.swing.JTaskPane;
 
 /** Tracks the execution of a series of remote processes
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 16, 20072:06:17 PM
  */
-public class ExecutionTracker{
+public class ExecutionTracker implements ListSelectionListener{
     /**
      * Logger for this class
      */
@@ -86,39 +87,25 @@ public class ExecutionTracker{
     private final UIComponent parent;
 
 
-    private final VFSOperationsImpl vfsOps;
-
-
-    private final ExtendedFileSystemManager vfs;
-
-    public ExecutionTracker(UIComponent parent,RemoteProcessManagerInternal rpmi, TypesafeObjectBuilder uiBuilder, ActivityFactory actFact, ExtendedFileSystemManager vfs) {
+    public ExecutionTracker(UIComponent parent,RemoteProcessManagerInternal rpmi, TypesafeObjectBuilder uiBuilder, ActivityFactory actFact) {
 		super();
-        this.vfs = vfs;
 		logger.debug("creating executioon tracker");
         this.parent = parent;
 		this.rpmi = rpmi;
         this.uiBuilder = uiBuilder;
         this.activities = actFact.create(parent);
         logger.debug("created activities");
-		monitors = new BasicEventList();
+		monitors = new ThreadSafeList(new BasicEventList()); // trying this instead of a basic event list, to provide a bit more thread-safety without all the hassle of locking myself.
 		// wrap the monitors list with a proxy that fires all updates on the EDT
 		// means that monitors can be added to the list from any thread, and the 
 		// UI will update correctluy.
 		TransformedList proxyList = GlazedListsSwing.swingThreadProxyList(monitors);
-		// map each monitor to a bean of UI components.
-		EventList components = new FunctionList(proxyList, new FunctionList.Function() {
+		components = new FunctionList(proxyList, new FunctionList.Function() {
 			public Object evaluate(Object sourceValue) {
 				return new ProcessMonitorDisplay((ProcessMonitor)sourceValue);
 			}
 		});
-		this.vfsOps = uiBuilder.createVFSOperations(parent,new VFSOperationsImpl.Current() {
-		    // provides a way of getting at the current directory
-            public FileObject get() {
-                //@fixme implement to get the currently selected item in the monitors list.
-                return null;
-            }
-		});
-		// make this a self-observing list.
+        // make this a self-observing list.
 		EventList observing = new ObservableElementList(components,new ObservableConnector());
 
 		// layout this list of beans of components to a panel
@@ -167,7 +154,10 @@ public class ExecutionTracker{
 	}
 
 
-	private static DateFormat df = SimpleDateFormat.getDateTimeInstance(); 
+	private static DateFormat df = SimpleDateFormat.getDateTimeInstance();
+
+
+    private final EventList components; 
 	/** container class that holds the ui components required to display a single process monitor
 	 * 
 	 *  listens to the process manager, and updates ui components on changes.
@@ -193,8 +183,7 @@ public class ExecutionTracker{
 			this.pm = pm;
 			pm.addProcessListener(this);
 			messageLabel.setFont(UIConstants.SMALL_DIALOG_FONT);
-			
-			files = new BasicEventList();
+	
 			deleteButton = new JButton(IconHelper.loadIcon("stop16.png"));
 			deleteButton.putClientProperty("is3DEnabled",Boolean.FALSE);
 			deleteButton.setRolloverEnabled(true);
@@ -209,9 +198,9 @@ public class ExecutionTracker{
             refreshButton.setToolTipText("Refresh task");
             refreshButton.addActionListener(this);
             
-			FileModel model = uiBuilder.createFileModel(new SortedList(files,FileObjectComparator.getInstance())
-			    ,activities,vfsOps);
-			results = uiBuilder.createOperableFilesList(model);
+            navigator = uiBuilder.createFileNavigator(parent,activities);
+            results = new NavigableFilesList(navigator);
+            results.addListSelectionListener(ExecutionTracker.this);
 					populateMsgLabel();			
 					populateStatusLabel();			
 					populateTitleLabel();
@@ -222,11 +211,10 @@ public class ExecutionTracker{
 		private final JLabel messageLabel = new JLabel();
 		private final JLabel status = new JLabel(UIConstants.PENDING_ICON);
 		private final JLabel title = new JLabel();
-		private final EventList files;
 		private final JButton deleteButton;
-		private final JButton refreshButton;
+		private final JButton refreshButton;		
+		private final NavigableFilesList results ;
 		
-		private final OperableFilesList results ;
 		public JComponent getComponent(int ix) {
 			switch(ix) {
 			case 0:
@@ -278,35 +266,41 @@ public class ExecutionTracker{
 				}
 			});
 		}
-		
+		private FileObject resultsRoot;
 		/** not to be called before task has been 'init()' - as it's not got an ID at that stage */
 		private void populateResults() {
 		    if (!pm.started()) {
 		        // not started - so won't have any results to retrieve.
 		        return;
 		    }
-		    logger.debug("Fetching results");
 		    
 		    (new BackgroundWorker(parent,"Listing results") {
+		        private boolean alreadyFoundRoot;
+		        protected Object construct() throws Exception {
+		            if (! alreadyFoundRoot) {
+		                final FileObject root = pm.getResultsFileSystem().getRoot();
+		                if (root.exists()) { // it's created lazily, once children are present.
+		                    alreadyFoundRoot = true;
+		                    return root; // returned on first time.
+		                }
+		            }
+		            return null;
+		        }
+		        
+		        protected void doFinished(Object result) {
+		            if (result != null) {
+		                navigator.move((FileObject)result);		                
+		            } else if  (alreadyFoundRoot) {
+		                navigator.refresh();
+		            }
+		        }
 
-                protected Object construct() throws Exception {
-                        FileObject resultFolder = vfs.resolveFile("task:/" + URLEncoder.encode(pm.getId().toString()));
-                        // resultFolder = vfs.getResultsFilesystem().resolveFile("/" + URLEncoder.encode(pm.getId().toString()));
-                        logger.debug(resultFolder);
-                        logger.debug(resultFolder.getClass().getName());
-                        return Arrays.asList(resultFolder.getChildren());
-                }
-                protected void doFinished(Object result) {
-                    List contents = (List)result;
-                    logger.debug(contents);
-                    files.clear();
-                    files.addAll(contents);
-                }
-                protected void doError(Throwable ex) {
-                    messageLabel.setText(ex.getMessage());
-                    logger.warn("Failed to fetch results",ex);
-                }
+		        protected void doError(Throwable ex) {
+		            messageLabel.setText(ex.getMessage());
+		            logger.warn("Failed to fetch results",ex);
+		        }
 		    }).start();
+		    // got a results root by this point.
 		}
 		
 		private void populateMsgLabel() {
@@ -339,6 +333,7 @@ public class ExecutionTracker{
 			}
 		}
 		private int previousMsgCount = 0;
+        private FileNavigator navigator;
 		// can share this - as is only ever run on EDT.
 		private void populateStatusLabel() {
 			String st = pm.getStatus();
@@ -454,5 +449,30 @@ public class ExecutionTracker{
 
 
 	}
+
+	// list selection listener interface. - used to remove selection in other file views when a click happens in one file view.
+	
+    public void valueChanged(ListSelectionEvent e) {
+        NavigableFilesList src = (NavigableFilesList) e.getSource();
+        if (! src.isSelectedIndex(e.getFirstIndex())) {
+            return; // only care about selection events, not deselections.
+        }
+        Transferable currentSelection = activities.getCurrentSelection();
+        // go through the other items of the the list, and if the selection is non-null, clear it.
+        for (Iterator i = components.iterator(); i.hasNext();) {
+            ProcessMonitorDisplay proc = (ProcessMonitorDisplay) i.next();
+            NavigableFilesList list = proc.results;
+            if (list == src) { 
+                continue;
+            }
+            if (! list.isSelectionEmpty()) {
+                list.clearSelection(); // sadly tis fires an event to the shared activities manager, notifying that the selection has now been cleared.
+            }
+        }
+        // a bit ikky -  activity manager has lost it's selection - so now remind it what it's meant to be displaying.        
+        activities.setSelection(currentSelection);
+        
+        
+    }
 
 }

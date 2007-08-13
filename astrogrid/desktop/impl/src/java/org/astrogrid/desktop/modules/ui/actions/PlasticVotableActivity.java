@@ -18,6 +18,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
+import org.apache.commons.vfs.provider.DelegateFileObject;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
@@ -45,8 +46,7 @@ public class PlasticVotableActivity extends AbstractFileActivity {
 	protected boolean invokable(FileObject f) {
 		try {
 			final FileContent content = f.getContent();
-            return VoDataFlavour.MIME_VOTABLE.equals(content.getContentInfo().getContentType())
-                || content.getAttribute(VoDataFlavour.TABULAR_HINT) != null;
+            return VoDataFlavour.MIME_VOTABLE.equals(content.getContentInfo().getContentType());
 		} catch (FileSystemException x) {
 			return false;
 		}
@@ -65,14 +65,21 @@ public class PlasticVotableActivity extends AbstractFileActivity {
 			for (Iterator i = l.iterator(); i.hasNext();) {
 			    try {
 				FileObject f = (FileObject) i.next();
-				if (supportedProtocols.contains(f.getURL().getProtocol())) {
+				if (f instanceof DelegateFileObject) { // if we've got a delegate, get to the source here...
+				    f = ((DelegateFileObject)f).getDelegateFile();
+				}
+				URL url = f.getURL();
+				if (supportedProtocols.contains(url.getProtocol())) {
+				    logger.debug("Sending URL message");
 				    sendLoadVotableURLMessage(f);
 				} else {
+				    logger.debug("Sending inline message");
 				    sendLoadVotableInlineMessage(f);
 				}
 			    } catch (FileSystemException ex) {
 			        // oh well. skip that one.
-			        //@todo report what went wrong.
+			        //@todo report error in dialogue.
+			        logger.warn("Failed to send plastic message",ex);
 			    }
 			}
 		} else { // fallback
@@ -95,8 +102,8 @@ public class PlasticVotableActivity extends AbstractFileActivity {
 					Piper.pipe(is,os);
 					// inline value.
 					l.add(os.toString());
-					URL url = f.getURL();
-					l.add(url.toString()); // identifier.
+					//URL url = f.getURL();
+					l.add(f.getName().getBaseName()); // identifier.
 					tupp.singleTargetPlasticMessage(CommonMessageConstants.VOTABLE_LOAD,l,plas.getId());
 					return null;
 				} finally {
@@ -126,7 +133,7 @@ public class PlasticVotableActivity extends AbstractFileActivity {
 				List l = new ArrayList();
 				URL url = f.getURL();
 				l.add(url.toString());// url
-				l.add(url.toString()); // identifier - have nothing else to use really.			
+				l.add(f.getName().getBaseName()); // identifier - have nothing else to use really.			
 				tupp.singleTargetPlasticMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL,l,plas.getId());
 				return null;
 			}

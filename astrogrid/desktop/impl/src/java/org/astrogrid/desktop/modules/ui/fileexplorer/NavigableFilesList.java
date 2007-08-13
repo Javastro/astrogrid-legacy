@@ -34,14 +34,14 @@ import ca.odell.glazedlists.swing.EventSelectionModel;
  */
 public class NavigableFilesList extends OperableFilesList {
 
-	private final StorageView view;
+    private final FileNavigator navigator;
 
 	/**
 	 * @param files
 	 */
-	public NavigableFilesList( StorageView view, final IconFinder icons, final FileModel dnd) {
-		super(icons,dnd);
-		this.view = view;
+	public NavigableFilesList(FileNavigator navigator) {
+		super(navigator.getIcons(),navigator.getModel());
+        this.navigator = navigator;
 
 	}
 
@@ -58,7 +58,7 @@ public class NavigableFilesList extends OperableFilesList {
 		     }
 		     try {
 		     if (item.getType().hasChildren()) {
-		    	 view.move(item);
+		    	 navigator.move(item);
 		     }
 		     } catch (FileSystemException ex) {
 		    	 //@todo report or recover

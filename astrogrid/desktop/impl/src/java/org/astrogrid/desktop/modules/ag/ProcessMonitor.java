@@ -8,6 +8,7 @@ import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Map;
 
+import org.apache.commons.vfs.FileSystem;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
@@ -84,6 +85,10 @@ public interface ProcessMonitor {
 	public Map getResults() throws ServiceException, SecurityException,
 			NotFoundException, InvalidArgumentException;
 
+	
+	/** access the result of the remote process as a filesystem
+	 * this can then be displayed,  */
+	FileSystem getResultsFileSystem(); 
 // listener methods
 	// remote listener interface - used by remote RMI clients.
 	public void addRemoteProcessListener(RemoteProcessListener listener);

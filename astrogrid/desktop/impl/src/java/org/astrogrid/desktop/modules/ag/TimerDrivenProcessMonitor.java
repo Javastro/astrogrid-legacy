@@ -5,6 +5,7 @@ package org.astrogrid.desktop.modules.ag;
 
 import java.net.URI;
 
+import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
@@ -19,6 +20,13 @@ import org.astrogrid.desktop.modules.system.SchedulerInternal.DelayedContinuatio
  * @since Jul 12, 20074:42:10 PM
  */
 public abstract class TimerDrivenProcessMonitor extends AbstractProcessMonitor implements DelayedContinuation {
+
+    /**
+     * @param vfs
+     */
+    public TimerDrivenProcessMonitor(FileSystemManager vfs) {
+        super(vfs);
+    }
 
 
 	

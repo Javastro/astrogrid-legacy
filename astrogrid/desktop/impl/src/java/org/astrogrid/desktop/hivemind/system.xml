@@ -963,7 +963,7 @@ SYSTEM TRAY
 	<!--  ===========================
 	VFS
 	 -->
-	<service-point id="vfs" interface="org.astrogrid.desktop.modules.system.ExtendedFileSystemManager">
+	<service-point id="vfs" interface="org.apache.commons.vfs.FileSystemManager">
 		Uniform access to all filesystems.
         <interceptor service-id="system.edt" /><!-- doesn't give much protection, but might identify some problems. -->        
 		<invoke-factory model="session">
@@ -976,8 +976,7 @@ SYSTEM TRAY
 				<configuration>vfsOperations</configuration>
 				<configuration>vfsExtensions</configuration>
 				<configuration>vfsMimes</configuration>                
-				<set-object property="filesCache" 
-					value="instance:org.apache.commons.vfs.cache.SoftRefFilesCache" />
+				<set-object property="filesCache" value="service:vfsCache" />
 				<set-object property="defaultProvider"
 				 value="instance:org.apache.commons.vfs.provider.url.UrlFileProvider" />
 				 <set-object property="replicator" value="service:replicator" />
@@ -992,6 +991,14 @@ SYSTEM TRAY
 	
 		<!-- ikkle services that vfs depends upon.	-->
 		
+    <service-point id="vfsCache" visibility="private" interface="org.apache.commons.vfs.FilesCache" >
+        <invoke-factory model="primitive">
+            <construct class="org.astrogrid.desktop.modules.ag.vfs.DesktopFilesCache">
+            </construct>
+        </invoke-factory>
+    </service-point>
+            
+        
 	<service-point id="replicator" visibility="private"
 		interface="org.apache.commons.vfs.provider.FileReplicator">
 		<invoke-factory model="primitive">
@@ -1066,10 +1073,13 @@ SYSTEM TRAY
 	<contribution configuration-id="vfsProviders">
 		<provider scheme="file" 
 			implementation="instance:org.apache.commons.vfs.provider.local.DefaultLocalFileProvider" />
+            <!--  don't want these for now - not sure if my ui could support it 
+            re-examine these later
 		<provider scheme="zip"
 			implementation="instance:org.apache.commons.vfs.provider.zip.ZipFileProvider" />
 		<provider scheme="gz"
 			implementation="instance:org.apache.commons.vfs.provider.gzip.GzipFileProvider" />
+            -->
 			<!--  required external libs 
 		<provider scheme="tar"
 			implementation="instance:org.apache.commons.vfs.provider.tar.TarFileProvider" />
@@ -1084,14 +1094,19 @@ SYSTEM TRAY
 			implementation="instance:org.apache.commons.vfs.provider.temp.TemporaryFileProvider" />
 		<provider scheme="ftp"
 			implementation="instance:org.apache.commons.vfs.provider.ftp.FtpFileProvider" />
+            <!--  removed for now - as latest vfs has a version class with httpclient.
+            removing this providers means that the native java lib's HTTP access is used - which is not a problem.
 		<provider scheme="http"
 			implementation="instance:org.apache.commons.vfs.provider.http.HttpFileProvider" />
 		<provider scheme="https"
 			implementation="instance:org.apache.commons.vfs.provider.https.HttpsFileProvider" />
+            -->
 		<provider scheme="sftp"
 			implementation="instance:org.apache.commons.vfs.provider.sftp.SftpFileProvider" />
+            <!-- unneeded 
 		<provider scheme="res"
 			implementation="instance:org.apache.commons.vfs.provider.res.ResourceFileProvider" />
+            -->
 		<provider scheme="ram"
 			implementation="instance:org.apache.commons.vfs.provider.ram.RamFileProvider" />
 	</contribution>
@@ -1382,6 +1397,21 @@ PLASTIC LIST MODEL -->
 		<create-instance class="ca.odell.glazedlists.BasicEventList" />
 	</service-point>
 
+    <!--  plastic filesystem
+    interresting idea, but incomplete.
+    <service-point id="plasticVfs" visibility="private" interface="org.astrogrid.desktop.modules.ag.vfs.VfsFileProvider" >
+        <invoke-factory>
+            <construct class="org.astrogrid.desktop.modules.ag.vfs.plastic.PlasticProvider">
+                <service>plasticList</service>
+            </construct>
+        </invoke-factory>
+    </service-point>
+        
+    <contribution configuration-id="system.vfsProviders">
+        <provider scheme="plastic"
+            implementation="service:plasticVfs" />
+    </contribution>
+     -->
 <!-- 
 ================================
 UPDATE CHECKER

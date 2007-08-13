@@ -53,31 +53,16 @@ public class QueryBuilderImpl extends TaskRunnerImpl implements
     private final Registry reg;
     
     // overridden - to prefer adql apps first.
-    public void buildForm(Resource r) {
-        CeaApplication cea = null;
-        if (r instanceof CeaApplication) {
-            cea = (CeaApplication)r;
-        } else {
-            // try to find a 'synthetic' cea application.
-            try {
-                //@todo - should probably do this in a bg thread.
-                cea = apps.getCeaApplication(r.getId());
-            } catch (ACRException x) {
-                logger.error("ServiceException",x);
-                //@todo report a fault somewherte..
-                return;
-            }
-        }
+    protected void selectStartingInterface(CeaApplication cea) {
+        // now that's working in the background, work out what we should be building a form for.
         String name = BuildQueryActivity.findNameOfFirstADQLInterface(cea);
         if (name != null) {
             pForm.buildForm(name,cea);
             pForm.setExpanded(true);
-        } else { // show what we've got then - unlikely in this case
+        } else { // show what we've got then
             pForm.buildForm(cea);
         }
-        display(cea);
     }
-    
     
 // cea internal interface - need to harmonize this with taskrunner at some point    
     public void build(CeaApplication app) {

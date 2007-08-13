@@ -12,6 +12,7 @@ import org.apache.commons.vfs.Selectors;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.actions.BulkCopyWorker;
+import org.astrogrid.desktop.modules.ui.actions.BulkMoveWorker;
 
 /** Implementation of operations on files - liable to change.
  * @todo hook this into tasks infrastryctyre, when it comes along - use to 
@@ -36,11 +37,6 @@ public class VFSOperationsImpl implements VFSOperations {
 		this.vfs = vfs;
 	}
 
-	public void copyOrMoveToCurrent(List fileObjects) {
-		//@todo prompt user for the action to take.
-		copyToCurrent(fileObjects);
-	}
-
 	public void copyToCurrent(final List fileObjects) {
 		final FileObject target = current.get(); // take a ref before going into background. 
 		(new BulkCopyWorker(vfs,parent,target,fileObjects)).start();
@@ -48,8 +44,8 @@ public class VFSOperationsImpl implements VFSOperations {
 	}
 
 	public void moveToCurrent(final List fileObjects) {
-		final FileObject base = current.get(); // take a ref before going into background. 
-		//@todo
+		final FileObject target = current.get(); // take a ref before going into background. 
+		(new BulkMoveWorker(vfs,parent,target,fileObjects)).start();
 	}
 
 }

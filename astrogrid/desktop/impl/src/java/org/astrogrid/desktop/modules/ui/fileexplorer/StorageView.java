@@ -14,6 +14,7 @@ import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -22,11 +23,14 @@ import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystem;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
+import org.apache.commons.vfs.provider.AbstractFileSystem;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
@@ -36,6 +40,8 @@ import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
 import org.astrogrid.desktop.modules.ui.comp.EventListDropDownButton;
 import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
 import org.astrogrid.desktop.modules.ui.comp.SearchField;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator.BookmarkNavigationEvent;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator.NavigationEvent;
 import org.astrogrid.desktop.modules.ui.fileexplorer.History.HistoryEvent;
 import org.astrogrid.desktop.modules.ui.fileexplorer.History.HistoryListener;
 import org.astrogrid.desktop.modules.ui.folders.StorageFolder;
@@ -48,6 +54,7 @@ import ca.odell.glazedlists.RangeList;
 import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.matchers.AbstractMatcherEditor;
 import ca.odell.glazedlists.matchers.Matcher;
+import ca.odell.glazedlists.matchers.MatcherEditor;
 import ca.odell.glazedlists.swing.EventSelectionModel;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 
@@ -61,73 +68,19 @@ import com.l2fprod.common.swing.JTaskPane;
  * a 'places' sidebar - which later we'll add in options for 'history' and maybe even 'tree'.
  * Alternately, keep it as 'places', but add in some recent history under a divider, 
  * and provide a 'tree' view in hte main window.
- * meanwhile, at the top of the main view, we'll show a breadcrumb trail, and an option 
- * to alter display between 'icons' and 'list' view.
- * also - a filter field, backwards, up and forwards buttons. Also refresh button?
  * 
- * maybe - add tree to 'list' view - as in OSX. also could add OSX's 'columns' view - which 
+ *@future, at the top of the main view, we'll show a breadcrumb trail,
+ *@future - add tree to 'list' view - as in OSX. also could add OSX's 'columns' view - which 
  * is nice to navigate through.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 3, 200712:17:50 AM
  */
-public class StorageView implements ListSelectionListener, HistoryListener{
+public class StorageView  implements  ListSelectionListener, FileNavigator.NavigationListener{
 	private final UIComponent parent;
-	public UIComponent getParent() {
+	protected final UIComponent getParent() {
 		return parent;
 	}
-	/** background worker that opens a directory */
-	private class OpenDirectoryWorker extends BackgroundWorker {
-
-		public OpenDirectoryWorker( Location loc) {
-			super(StorageView.this.getParent(),"Opening " + loc.getURI(),Thread.MAX_PRIORITY);
-			this.loc = loc;
-		}
-		private Location loc;
-		protected Object construct() throws Exception {
-				FileObject fo = loc.retrieveFileObject();
-				FileObject[] children = fo.getChildren();
-				try {
-					files.getReadWriteLock().writeLock().lock();
-					files.clear();
-					files.addAll(Arrays.asList(children));
-				} finally {
-					files.getReadWriteLock().writeLock().unlock();
-				}
-				return loc;
-		}
-		protected void doFinished(Object result) {
-			location.setText(loc.getURI());
-			try {// @todo place all this on background thread?
-				FileObject fo = loc.retrieveFileObject();
-				FileObject root = fo.getFileSystem().getRoot();						
-				up.setEnabled(! fo.equals(root));
-			} catch (FileSystemException x) {
-				up.setEnabled(false);
-			}
-			// resynchronize the folder view.
-			if (loc.getFolder() == null) {
-				folders.clearSelection();
-			} else {
-				StorageFolder f = loc.getFolder();
-				// if this item isn't already selected, select it.
-				if (! f.equals(folders.getSelectedValue())) {
-					folders.setSelectedValue(f,true); 
-					// although this fires another event, this is blocked at history
-					// as it's idempotent.
-				}
-			}
-		}
-		protected void doAlways() {
-			goButton.enableA();
-		}
-		protected void doError(Throwable ex) {
-			up.setEnabled(false);
-			super.doError(ex);
-			// move back in the history.
-			// not a good idea.
-			//history.movePrevious();
-		}
-	}
+	
 	/**
 	 * Logger for this class
 	 */
@@ -141,16 +94,7 @@ public class StorageView implements ListSelectionListener, HistoryListener{
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			Location loc = (Location)history.current();
-			// the locatio will already have a file object - don't need to fetch it.
-			try {
-				FileObject fo = loc.retrieveFileObject();
-				FileObject p= fo.getParent();
-				history.move(new Location(p));
-			} catch (FileSystemException x) {
-				getParent().showError("Failed to access parent",x); // unlikely.
-			}
-			
+		    navigator.up();			
 		}
 	}
 	
@@ -162,10 +106,7 @@ public class StorageView implements ListSelectionListener, HistoryListener{
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			Location loc = (Location)history.current();
-			goButton.enableB();			
-			(new OpenDirectoryWorker(loc)).start();
-		
+			navigator.refresh();
 		}
 	}
 	
@@ -176,7 +117,8 @@ public class StorageView implements ListSelectionListener, HistoryListener{
 		}
 		public void actionPerformed(ActionEvent e) {
 			String s = location.getText();
-			history.move(new Location(s));
+			//@todo add some input validation here
+			navigator.move(s);
 		}
 	}
 	
@@ -222,19 +164,52 @@ public class StorageView implements ListSelectionListener, HistoryListener{
 			setEnabled(false);
 		}
 		public void actionPerformed(ActionEvent e) {
-			Location loc = (Location)history.current();
+		    
 			StorageFolder f = new StorageFolder();
 			try {
 				//@todo work out a more sensible icon in some cases.
-				FileObject fo = loc.retrieveFileObject();
+				FileObject fo = navigator.current();
 				f.setFile(fo);
 				f.setUriString(fo.getName().getURI());
-				f.setName(fo.getName().getFriendlyURI());
+				f.setName(fo.getName().getBaseName());
 				foldersList.add(f); // and this is automatically persisted.
 			} catch (Exception ex) {
 				//@todo report and recover
 			}
 		}
+	}
+	
+	private class NewFolderAction extends AbstractAction {
+	    public  NewFolderAction() {
+	        super("New Folder", IconHelper.loadIcon("foldernew16.png"));
+	        putValue(Action.SHORT_DESCRIPTION,"Create a new folder in the current location");
+	        setEnabled(true);
+	    }
+	    public void actionPerformed(ActionEvent e) {
+	        // work out where we are at the moment.
+	        final FileObject base =navigator.current();
+	    
+	        
+	        (new BackgroundWorker(getParent(),"Creating subfolder of " + base.getName().getBaseName()) {
+
+	            protected Object construct() throws Exception {
+	                FileObject f;
+	                do {
+	                    String nuName = JOptionPane.showInputDialog(getParent().getFrame(),"Enter new folder name","NewFolder");
+	                    if (StringUtils.isEmpty(nuName)) {
+	                        return null; // user pressed cancel;
+	                    }
+	                    f = base.resolveFile(nuName);
+	                } while (f.exists());
+	                f.createFolder();
+	                FileSystem fs = base.getFileSystem();
+	                if (fs instanceof AbstractFileSystem) {
+	                    ((AbstractFileSystem)fs).fireFileChanged(base);
+	                }
+	                return null;
+	            }
+	        }).start();	        
+	    }
 	}
 	
 	private static final String STORAGE_VIEW = "Storage";
@@ -244,30 +219,35 @@ public class StorageView implements ListSelectionListener, HistoryListener{
 		this.parent = parent;
         this.actsManager = actsManager;
 		
-		this.vfs = vfs;
 		this.foldersList = foldersList;
+		
+		// core model.
+        SearchField filter = new SearchField("Filter files");		
+        MatcherEditor ed = new TextComponentMatcherEditor(filter.getWrappedDocument(),new FileObjectFilterator());
+        navigator = new FileNavigator(getParent(),vfs,ed,actsManager,iconFinder);		
+        navigator.addNavigationListener(this);
 	// hierarchies.
 		folders = new StorageFoldersList(foldersList,parent,vfs);
 		folders.addListSelectionListener(this);
 		folders.setName(STORAGE_VIEW);
    // toolbar
 	    FormLayout layout = new FormLayout(
-	    		//      back fore      up            label             location             stop, refresh bookmark views        filter
-	    		"2dlu,pref,pref,4dlu,pref,4dlu,right:pref,2dlu 80dlu:grow,1dlu,pref,pref,pref, 4dlu, pref,1dlu,50dlu,1dlu" // cols
+	    		//      back fore      up            label             location             stop, refresh bookmark newFolder views        filter
+	    		"2dlu,pref,pref,4dlu,pref,4dlu,right:pref,2dlu 80dlu:grow,1dlu,pref,pref,pref, pref,4dlu, pref,1dlu,50dlu,1dlu" // cols
 	    		,"pref"); // rows
 	    PanelBuilder builder = new PanelBuilder(layout);
 	    CellConstraints cc = new CellConstraints();
 	    int c = 1;
 	    int r = 2;
 	    // previous button
-	    RangeList historyRange = new RangeList(history.getPreviousList());
-	    historyRange.setTailRange(history.getMaxHistorySize(),1); // not including the current.
+	    RangeList historyRange = new RangeList(navigator.getPreviousList());
+	    historyRange.setTailRange(navigator.getMaxHistorySize(),1); // not including the current.
 	    back = new EventListDropDownButton(new JButton(IconHelper.loadIcon("previous22.png")),historyRange,true);
 	 //   configureButton(back);
 	    back.setToolTipText("Back: See folders you viewed previously");
 	    builder.add(back,cc.xy(r++,c));
 	    // next button.
-	    forward = new EventListDropDownButton(new JButton(IconHelper.loadIcon("next22.png")),history.getNextList(),true);
+	    forward = new EventListDropDownButton(new JButton(IconHelper.loadIcon("next22.png")),navigator.getNextList(),true);
 	//    configureButton(forward);
 	    forward.setToolTipText("Forward: See folders you viewed previously");
 	    builder.add(forward,cc.xy(r++,c));
@@ -300,60 +280,23 @@ public class StorageView implements ListSelectionListener, HistoryListener{
 	    builder.add(goButton,cc.xy(r++,c));
 	    builder.add(createMainButton(refresh),cc.xy(r++,c));
 	    builder.add(createMainButton(bookmark),cc.xy(r++,c));
+	    builder.add(createMainButton(newFolder),cc.xy(r++,c));
 	    r++;
 	    views = new BasicEventList();
 	    views.add(icons);
 	    views.add(list);
 	    builder.add(new ActionComboBox(views),cc.xy(r++,c));
 	    r++;
-	    SearchField filter = new SearchField("Filter files");
+	    // filter was created much earlier.
 	    builder.add(filter,cc.xy(r++,c));
 	    mainButtons = builder.getPanel();
 	     
 	    final KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
 		mainButtons.getInputMap(JPanel.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(enter,"go");
 		mainButtons.getActionMap().put("go",go);
-//		 main window datastructures.
-	    files = new BasicEventList();
-	    // filter out hidden files. Later, add an option to show them - which will 
-	    // cause this matcherEditor to emit a change event and use a 'pass all' matcher.
-	    EventList noHiddenFiles = new FilterList(files,new AbstractMatcherEditor() {
-	    	public Matcher getMatcher() {
-	    		return new Matcher() {
-					public boolean matches(Object arg0) {
-						FileObject fo = (FileObject)arg0;
-						try {
-							return !(fo.isHidden() || fo.getName().getBaseName().charAt(0) == '.') ;
-						} catch (FileSystemException x) {
-							return true;
-						}
-					}
-	    		};
-	    	}
-	    });
-	    EventList filteredFiles = new FilterList(noHiddenFiles,
-	    		new TextComponentMatcherEditor(filter.getWrappedDocument(),new FileObjectFilterator()));
-	    SortedList sortedFiles= new SortedList(filteredFiles, FileObjectComparator.getInstance());
-	
-		// listen to movement through the history list.
-		history.addHistoryListener(this);
-
-		VFSOperationsImpl.Current curr = new VFSOperationsImpl.Current() {
-
-			public FileObject get() {
-				try {
-					return ((Location)history.current()).retrieveFileObject();
-				} catch (FileSystemException x) {
-					// unlikely.
-					logger.error("FileSystemException",x);
-					return null;
-				}
-			}
-		};
-		VFSOperations ops = new VFSOperationsImpl(parent,curr,vfs);
-		dnd = new FileModel(sortedFiles, actsManager, iconFinder,ops);
-		fileList =  new NavigableFilesList( this,iconFinder,dnd);
-	    fileTable = new NavigableFilesTable( this,iconFinder,dnd); 
+		
+		fileList =  new NavigableFilesList(navigator);
+	    fileTable = new NavigableFilesTable( navigator); 
 	    mainPanel = new FlipPanel();
 	    mainPanel.add(new JScrollPane(fileList,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER)
 	    		,"list");
@@ -365,33 +308,29 @@ public class StorageView implements ListSelectionListener, HistoryListener{
 	    folders.clearSelection();
 	    folders.setSelectedIndex(0);
 	}
-	final FileSystemManager vfs;
-	// list of FileObjects currently being displayed in main window.
-	final EventList files;
 	// list of folders being displayed in LHS
-	final EventList foldersList;
+	private final EventList foldersList;
 	// list of Actions for selecting between different views.
-	final EventList views;
-	final StorageFoldersList folders;
+	private final EventList views;
+	private final StorageFoldersList folders;
 	private final NavigableFilesList fileList;
 	private final JTable fileTable;
-	final FlipPanel mainPanel;
+	private final FlipPanel mainPanel;
 	private final JComponent mainButtons;
 	
-	private final 	    EventListDropDownButton back;
+	private final EventListDropDownButton back;
 	private final EventListDropDownButton forward;
-	final Action up = new UpAction();
+	private final Action up = new UpAction();
 	private final Action refresh = new RefreshAction();
 	private final Action stop = new StopAction();
 	private final Action go = new GoAction();
 	private final Action icons = new IconsAction();
 	private final Action list = new ListAction();
 	private final Action bookmark = new BookmarkAction();
-		
-	final History history = new History();
-	final JTextField location;
-	final BiStateButton goButton;
-	private  final FileModel dnd;
+	private final Action newFolder = new NewFolderAction();
+	private final FileNavigator navigator;
+	private final JTextField location;
+	private final BiStateButton goButton;
 
 	
 	/** create and configure a button from an action */
@@ -416,9 +355,6 @@ public class StorageView implements ListSelectionListener, HistoryListener{
 		return folders;
 	}
 
-	public String getName() {
-		return STORAGE_VIEW;
-	}
 
 	public JComponent getMainPanel() {
 		return mainPanel;
@@ -429,26 +365,6 @@ public class StorageView implements ListSelectionListener, HistoryListener{
 		return mainButtons;
 	}
 
-		// calle when visibility of this view changes.
-	public void setVisible(boolean b) {
-		folders.setEnabled(b);
-		fileList.setEnabled(b);
-		mainButtons.setEnabled(b);
-	}
-
-	//we've moved.
-	public void currentChanged(HistoryEvent e) {
-		back.setEnabled( history.getPreviousList().size() > 1);
-		forward.setEnabled(! history.getNextList().isEmpty());
-		final Location current = (Location)e.current();
-		refresh.setEnabled(current != null);
-		bookmark.setEnabled(current != null && current.getFolder() == null);
-		if (current != null) {
-			goButton.enableB();
-			(new OpenDirectoryWorker(current)).start();
-		}		
-	//	notifyStorageTasks();
-	}
 
 	// listens to clicks on storage folders and file list
 	public void valueChanged(ListSelectionEvent e) {
@@ -458,77 +374,47 @@ public class StorageView implements ListSelectionListener, HistoryListener{
 		if (e.getSource() == folders) {
 			StorageFolder f =  (StorageFolder)folders.getSelectedValue();
 			if (f != null) { 
-				//causes eveything else to be triggered.
-					history.move(new Location(f));
+			    navigator.move(f);
 			}
 		}
-	}	
-	// data structure used to manage the different ways we might provide a location to navigate to.
-	// also extends JMenu item, which means it can be displayed ina  menu, and if clicked
-	// knows how to navigate to this location.
-	private class Location extends JMenuItem implements ActionListener{
-		/**
-		 * create a location from a uri string
-		 * @param s
-		 */
-		public Location(String s) {
-			setText(s);
-			addActionListener(this); // listen to clicks on ourselves.
-		}
-		/** use an existing file object as a location */
-		public Location(FileObject o) {
-			this( o.getName().getURI());			
-			this.o = o;
-		}
-		/** use a storage folder as a location */
-		public Location(StorageFolder f) {
-			this(f.getUriString());
-			this.f = f;
-			this.o = f.getFile();		
-		}
-		private StorageFolder f = null;
-		private FileObject o = null;
+	}
 
-		public void actionPerformed(ActionEvent e) {
-			history.move(this);
-		}		
-		public FileObject retrieveFileObject() throws FileSystemException {
-			if (o == null) {
-				o = vfs.resolveFile(getURI());
-				if (f != null) {
-					f.setFile(o);
-				}
-			}
-			return o;
-		}
+	// listen to navigation 
+    public void moved(NavigationEvent e) {
+        back.setEnabled( navigator.hasPrevious());
+        forward.setEnabled(navigator.hasNext());        
+        goButton.enableA();
+        refresh.setEnabled(true);
+        up.setEnabled(! e.isRoot());
+        //  notifyStorageTasks();        
+        if (e instanceof BookmarkNavigationEvent) {
+            bookmark.setEnabled(false);
+            StorageFolder bookmark = ((BookmarkNavigationEvent)e).getBookmark();
+            // if this item isn't already selected, select it.
+            if (! bookmark.equals(folders.getSelectedValue())) {
+                folders.setSelectedValue(bookmark,true); 
+                // although this fires another event, this is blocked at history
+                // as it's idempotent.
+            }            
+        } else {
+            bookmark.setEnabled(true);
+            folders.clearSelection();
+        }
+    }
 
-		public String getURI() {
-			return getText();
-		}
-		
-		public StorageFolder getFolder() {
-			return f;
-		}
-		
-		public boolean equals(Object obj) {
-			if (! (obj instanceof Location)) {
-				return false;
-			}
-			Location other = (Location)obj;
-			if (other == null) {
-				return false;
-			}
-			return getText().equals(other.getText());
-		}		
-	}
-	/** move this view to the specified uri */
-	public void move(String uri) {
-		history.move(new Location(uri));
-	}
-	
-	/** move ths view to the specified file object */
-	public void move(FileObject obj) {
-		history.move(new Location(obj));
-	}
-	
+    public void moving() {
+        up.setEnabled(false);
+        refresh.setEnabled(false);
+        goButton.enableB();      
+        
+    }
+
+    /**
+     * @return the navigator
+     */
+    public final FileNavigator getNavigator() {
+        return this.navigator;
+    }
+
+
 }

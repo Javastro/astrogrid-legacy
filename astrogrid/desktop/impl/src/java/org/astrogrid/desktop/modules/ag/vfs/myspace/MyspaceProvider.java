@@ -96,6 +96,7 @@ public class MyspaceProvider extends AbstractOriginatingFileProvider implements
 	protected FileSystem doCreateFileSystem(FileName arg0,
 			FileSystemOptions arg1) throws FileSystemException {
 		MyspaceFileName fn = (MyspaceFileName)arg0;
+
 		logger.debug("Creating filesystem for " + arg0);
 			FileSystem sys = new MyspaceFileSystem(fn,msi,arg1);
 			filesystems.add(sys);

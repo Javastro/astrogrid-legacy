@@ -33,7 +33,7 @@ public class OperableFilesList extends FilesList implements MouseListener{
      * @param icons
      */
     public OperableFilesList( IconFinder icons, FileModel fileModel) {
-        super(fileModel.getFiles(),  icons);
+        super(fileModel.getChildrenList(),  icons);
         this.fileModel = fileModel;
         setSelectionModel(fileModel.getSelection());      
         this.addMouseListener(this);        

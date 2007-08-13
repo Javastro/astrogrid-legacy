@@ -22,6 +22,7 @@ import org.astrogrid.desktop.modules.ui.comp.DecSexToggle;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileExplorerImpl;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileModel;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator;
 import org.astrogrid.desktop.modules.ui.fileexplorer.OperableFilesList;
 import org.astrogrid.desktop.modules.ui.fileexplorer.VFSOperations;
 import org.astrogrid.desktop.modules.ui.fileexplorer.VFSOperationsImpl;
@@ -42,6 +43,10 @@ import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
 
 import ca.odell.glazedlists.SortedList;
+import ca.odell.glazedlists.impl.matchers.FixedMatcherEditor;
+import ca.odell.glazedlists.matchers.Matcher;
+import ca.odell.glazedlists.matchers.MatcherEditor;
+import ca.odell.glazedlists.matchers.Matchers;
 
 /** extends the event dispatch object builder with methods to build particular kinds 
  * of ui components.
@@ -161,19 +166,17 @@ public class TypesafeObjectBuilderImpl extends EventDispatchThreadObjectBuilder 
         return (TaskParametersForm)create("taskParametersForm",new Object[]{parent,listener});
     }
 
-    public FileModel createFileModel(SortedList files,
-            ActivitiesManager activities, VFSOperations ops) {
-        return (FileModel)create("fileModel",new Object[]{files,activities,ops});
+    public FileNavigator createFileNavigator(UIComponent parent,
+            MatcherEditor ed, ActivitiesManager acts) {
+        return (FileNavigator) create("fileNavigator",new Object[]{parent, ed, acts});
     }
 
-    public OperableFilesList createOperableFilesList(FileModel model) {
-        return (OperableFilesList)create("operableFilesList",model);
+    public FileNavigator createFileNavigator(UIComponent parent,
+            ActivitiesManager acts) {
+        return createFileNavigator(parent,new FixedMatcherEditor(Matchers.trueMatcher()),acts);
     }
 
-    public VFSOperationsImpl createVFSOperations(UIComponent parent,
-            Current current) {
-        return (VFSOperationsImpl)create("vfsOperations",new Object[]{parent,current});
-    }
+
     
 
 }

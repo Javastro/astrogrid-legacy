@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.20 2007/07/26 18:21:44 nw Exp $
+/*$Id: Launcher.java,v 1.21 2007/08/13 19:29:47 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,7 +32,6 @@ import org.apache.hivemind.impl.RegistryBuilder;
 import org.apache.hivemind.impl.XmlModuleDescriptorProvider;
 import org.apache.hivemind.util.ClasspathResource;
 import org.apache.hivemind.util.URLResource;
-import org.astrogrid.desktop.modules.system.ExtendedFileSystemManager;
 
 /**
  *Assembles and starts some flavour of AR. Used by the main classes in {@link org.astrogrid}
@@ -214,7 +213,7 @@ public class Launcher implements Runnable {
         
         // extract vfs, and splice into stream handler..
         logger.info("Setting vfs as url protocol handler");
-        FileSystemManager vfs = (FileSystemManager) reg.getService(ExtendedFileSystemManager.class);
+        FileSystemManager vfs = (FileSystemManager) reg.getService(FileSystemManager.class);
         extensibleStreamHandler.setFollowOnHandler(vfs.getURLStreamHandlerFactory());
     }
 
@@ -244,6 +243,14 @@ public class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.21  2007/08/13 19:29:47  nw
+merged mark's and noel's changes.
+
+Revision 1.20.4.1  2007/08/09 19:08:20  nw
+Complete - task 126: Action to 'Reveal' location of remote results in FileExplorer
+
+Complete - task 122: plastic messaging of myspace resources
+
 Revision 1.20  2007/07/26 18:21:44  nw
 merged mark's and noel's branches
 

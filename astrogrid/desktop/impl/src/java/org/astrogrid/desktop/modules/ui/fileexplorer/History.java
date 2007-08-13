@@ -103,6 +103,8 @@ public class History  {
 			return l;
 		}
 		
+	
+		
 		public Object peek() throws EmptyStackException {
 			if (l.isEmpty()) {
 				throw new EmptyStackException();
@@ -175,6 +177,22 @@ public class History  {
 	public EventList getNextList() {	
 		return nextStack.getEventList();
 	}
+	/** returns true if there's a previousl location in the hisotry */
+	public boolean hasPrevious() {
+	    return previousStack.getEventList().size() > 1;
+	}
+	
+	/** take a peek at the previous entry */
+	public Object peekPrevious() {
+	    EventList list = previousStack.getEventList();
+	    return list.get(list.size()-2);
+	}
+	
+	/** returns true if there's a next location in the history */
+	public boolean hasNext() {
+	    return !nextStack.isEmpty();
+	}
+	
 	/** move to the prevous location in history */
 	public Object movePrevious() throws IllegalStateException{
 		if (logger.isDebugEnabled()) {

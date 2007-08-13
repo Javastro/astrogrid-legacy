@@ -17,6 +17,7 @@ import org.astrogrid.desktop.modules.ui.comp.DecSexToggle;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileExplorerImpl;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileModel;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator;
 import org.astrogrid.desktop.modules.ui.fileexplorer.OperableFilesList;
 import org.astrogrid.desktop.modules.ui.fileexplorer.VFSOperations;
 import org.astrogrid.desktop.modules.ui.fileexplorer.VFSOperationsImpl;
@@ -36,6 +37,7 @@ import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
 
 import ca.odell.glazedlists.SortedList;
+import ca.odell.glazedlists.matchers.MatcherEditor;
 
 /** wraps the untyped hivemind ObjectBuilder with 
  * methods that make explicit the parameters required and the return type
@@ -94,10 +96,9 @@ public interface TypesafeObjectBuilder {
     public RadiusFormElement createRadiusFormElement(ParameterValue radius,
             ParameterBean radiusDesc, DecSexToggle toggle);
 
-// file view components.
-    FileModel createFileModel(SortedList files,ActivitiesManager activities,VFSOperations ops);
-    OperableFilesList createOperableFilesList(FileModel model);
-    VFSOperationsImpl createVFSOperations(UIComponent parent,VFSOperationsImpl.Current current);
+    public FileNavigator createFileNavigator(UIComponent parent, MatcherEditor ed, ActivitiesManager acts);
+    public FileNavigator createFileNavigator(UIComponent parent, ActivitiesManager acts);
+    
     
     //
     // access the core object builder

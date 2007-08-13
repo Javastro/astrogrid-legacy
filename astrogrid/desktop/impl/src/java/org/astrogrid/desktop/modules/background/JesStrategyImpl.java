@@ -1,4 +1,4 @@
-/*$Id: JesStrategyImpl.java,v 1.14 2007/07/30 17:59:56 nw Exp $
+/*$Id: JesStrategyImpl.java,v 1.15 2007/08/13 19:29:48 nw Exp $
  * Created on 05-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
@@ -65,6 +66,7 @@ public class JesStrategyImpl implements RemoteProcessStrategy {
 		private final Workflow wf;
 
         public WorkflowMonitor(final Workflow wf) {
+            super(vfs);
 			this.wf = wf;
             name = wf.getName();
 			description = wf.getDescription();
@@ -224,15 +226,18 @@ public class JesStrategyImpl implements RemoteProcessStrategy {
 	 * Commons Logger for this class
 	 */
 	static final Log logger = LogFactory.getLog(JesStrategyImpl.class);
+    private final FileSystemManager vfs;
 
 	public JesStrategyImpl( Community comm
 			, ApplicationsInternal apps
+			,FileSystemManager vfs
 			, SessionManagerInternal sess
 			, SchedulerInternal sched
 	) {
 		super();
 		this.comm = comm;    
 		this.apps = apps;
+        this.vfs = vfs;
 		this.sess = sess;
 		this.sched = sched;
 	}
@@ -308,6 +313,14 @@ public class JesStrategyImpl implements RemoteProcessStrategy {
 
 /* 
 $Log: JesStrategyImpl.java,v $
+Revision 1.15  2007/08/13 19:29:48  nw
+merged mark's and noel's changes.
+
+Revision 1.14.4.1  2007/08/09 19:08:21  nw
+Complete - task 126: Action to 'Reveal' location of remote results in FileExplorer
+
+Complete - task 122: plastic messaging of myspace resources
+
 Revision 1.14  2007/07/30 17:59:56  nw
 RESOLVED - bug 2257: More feedback, please
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2257

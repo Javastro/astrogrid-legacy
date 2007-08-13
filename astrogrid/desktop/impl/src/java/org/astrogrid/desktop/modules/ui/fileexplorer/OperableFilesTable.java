@@ -27,7 +27,7 @@ public class OperableFilesTable extends FilesTable implements MouseListener {
      * @param fileModel
      */
     public OperableFilesTable(IconFinder icons, FileModel fileModel) {
-        super(fileModel.getFiles(),icons);
+        super(fileModel.getChildrenList(),icons);
         this.fileModel = fileModel;
         //@todo selection doesn't seem to show up.
         setSelectionModel(fileModel.getSelection());        
@@ -42,7 +42,7 @@ public class OperableFilesTable extends FilesTable implements MouseListener {
     	String tip = null;
     	java.awt.Point p = e.getPoint();
     	int rowIndex = rowAtPoint(p);
-    	FileObject item = (FileObject)fileModel.getFiles().get(rowIndex);
+    	FileObject item = (FileObject)fileModel.getChildrenList().get(rowIndex);
     	if (item == null) {
     		return "";
     	}

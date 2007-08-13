@@ -16,6 +16,7 @@ import net.sourceforge.hiveutils.service.ObjectBuilder;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.vfs.FileObject;
 import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
@@ -33,7 +34,7 @@ import ca.odell.glazedlists.EventList;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 6, 20076:44:32 PM
  */
-public class FileExplorerFactoryImpl  extends AbstractMessageHandler implements FileExplorerFactoryInternal {
+public class FileExplorerFactoryImpl  extends AbstractMessageHandler implements FileManagerFactory {
 	
 	public final TypesafeObjectBuilder builder;
 
@@ -42,7 +43,7 @@ public class FileExplorerFactoryImpl  extends AbstractMessageHandler implements 
 	public FileExplorerFactoryImpl(TypesafeObjectBuilder builder) {
 		this.builder = builder;
 	}	
-	private FileExplorerImpl newWindow() {
+	private FileManagerInternal newWindow() {
 		FileExplorerImpl vo = builder.createFileExplorer();
 		vo.setVisible(true);
 		return vo;
@@ -108,7 +109,7 @@ public class FileExplorerFactoryImpl  extends AbstractMessageHandler implements 
 				// got all the info we need. display the ui on the EDT.
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						FileExplorerImpl ve = newWindow();
+						 FileManagerInternal newWindow = newWindow();
 						//@todo implement
 						//ve.displayResources(resList);
 					}
@@ -127,5 +128,8 @@ public class FileExplorerFactoryImpl  extends AbstractMessageHandler implements 
 			}
 		}
 	}
+    public void show(FileObject fo) {
+        newWindow().show(fo);
+    }
 	
 }

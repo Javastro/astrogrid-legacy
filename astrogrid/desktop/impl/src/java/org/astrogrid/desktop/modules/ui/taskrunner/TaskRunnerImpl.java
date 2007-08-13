@@ -293,7 +293,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                         // (and so be reported as a popup dialogue
                         // and these exceptions from the monitor will
                         // be messaged back to the tracker anyhow.
-                        logger.error("ServiceException",x);
+                        logger.warn("ServiceException",x);
                         return null; // bail out.
                     } 
 	                 
@@ -570,15 +570,21 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 		final URI appId = cea.getId();
 		(new ListServicesWorker(appId)).start();
 		
-		// now that's working in the background, work out what we should be building a form for.
+		selectStartingInterface(cea);
+		display(cea);
+	}
+    /**
+     * @param cea
+     */
+    protected void selectStartingInterface(CeaApplication cea) {
+        // now that's working in the background, work out what we should be building a form for.
 		String name = BuildQueryActivity.findNameOfFirstNonADQLInterface(cea);
 		if (name != null) {
 		    pForm.buildForm(name,cea);
 		} else { // show what we've got then
 		    pForm.buildForm(cea);
 		}
-		display(cea);
-	}
+    }
 	
 	public void buildForm(Tool t,String interfaceName,Resource r) {
 		CeaApplication cea = null;

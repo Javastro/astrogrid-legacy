@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.vfs.FileSystemManager;
+import org.apache.commons.vfs.VFS;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
@@ -29,8 +31,9 @@ public class MonitorMapUnitTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		this.mm = new RemoteProcessManagerImpl.MonitorMap();
-		this.rpm1 = new TestRemoteProcessMonitor();
-		this.rpm2 = new TestRemoteProcessMonitor();
+		FileSystemManager vfs = VFS.getManager(); // use static initialized here in tests.
+		this.rpm1 = new TestRemoteProcessMonitor(vfs);
+		this.rpm2 = new TestRemoteProcessMonitor(vfs);
 		rpm1.start();
 		rpm2.start();
 	}
@@ -149,7 +152,16 @@ public class MonitorMapUnitTest extends TestCase {
 	}
 	
 	public static class TestRemoteProcessMonitor extends AbstractProcessMonitor {
-		private static int count = 0;
+
+
+        /**
+         * @param vfs
+         */
+        public TestRemoteProcessMonitor(FileSystemManager vfs) {
+            super(vfs);
+        }
+
+        private static int count = 0;
 
 
 		public ExecutionInformation getExecutionInformation()

@@ -26,6 +26,13 @@ public interface ActivitiesManager {
     /** notify the manager that the following transferable is the current selection */
     public void setSelection(Transferable tran);
 
+    
+    /** access the last value passed to setSelection() 
+     * will be null if clearSelection() has since been called.
+     * 
+     */
+    public Transferable getCurrentSelection();
+    
     /** access a shared popup menu that provides operations over the current
      * selection 
      * 

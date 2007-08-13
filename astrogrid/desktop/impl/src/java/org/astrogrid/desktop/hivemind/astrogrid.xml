@@ -425,25 +425,6 @@ REMOTE PROCESS MANAGER
 		</service>
 	</contribution>		
     
-    
-    <!--  vfs view over remote processes and results. -->
-    
-    <service-point id="processManagerVfs" interface="org.astrogrid.desktop.modules.ag.vfs.VfsFileProvider" >
-        <invoke-factory>
-            <construct class="org.astrogrid.desktop.modules.ag.vfs.task.RPProvider">
-                <service>processManager</service>
-            </construct>
-        </invoke-factory>
-    </service-point>
-        
-    <contribution configuration-id="system.vfsProviders">
-        <provider scheme="task"
-            implementation="service:processManagerVfs" />
-    </contribution>
-    
-
-
-
 <!-- 
 ==========================
 CERTIFICATE INSTALLER

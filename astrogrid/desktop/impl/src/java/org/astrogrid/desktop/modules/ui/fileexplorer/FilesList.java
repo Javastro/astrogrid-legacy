@@ -7,6 +7,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Date;
 import java.util.Vector;
 
 import javax.swing.DefaultListCellRenderer;
@@ -17,7 +18,12 @@ import javax.swing.ListModel;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemException;
+import org.apache.commons.vfs.provider.DelegateFileObject;
+import org.apache.html.dom.HTMLBuilder;
+import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.system.CSH;
 
 import ca.odell.glazedlists.EventList;
@@ -78,8 +84,23 @@ public class FilesList extends JList {
        if (item == null) {
            return "";
        }
-       //@todo add more info in here later.
-       return item.getName().getFriendlyURI();
+       if (item instanceof DelegateFileObject) {
+           item = ((DelegateFileObject)item).getDelegateFile();
+       }
+       HtmlBuilder sb = new HtmlBuilder();
+       sb.append(item.getName().getFriendlyURI());
+       try {
+       FileContent content = item.getContent();
+       sb.br().append(new Date(content.getLastModifiedTime()));
+       if (item.getType().hasContent()) {
+           long sz = content.getSize();
+           sb.br().append(sz < 1024 && sz > 0 ? 1 : sz / 1024).append("KB");
+           sb.br().append(content.getContentInfo().getContentType());
+       }
+       } catch (FileSystemException ex) {
+           // don't care
+       }
+       return sb.toString();
    }
 
 }

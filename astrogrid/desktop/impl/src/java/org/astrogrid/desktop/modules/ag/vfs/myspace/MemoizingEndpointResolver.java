@@ -6,6 +6,7 @@ package org.astrogrid.desktop.modules.ag.vfs.myspace;
 import java.net.URL;
 import java.util.Map;
 
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.map.ReferenceMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,7 +33,9 @@ public class MemoizingEndpointResolver extends FileManagerEndpointResolverImpl
 		String key = arg0.toString(); // equals isn't implemented on Ivorn - another black mark.
 		Object o = results.get(key);
 		if (o != null) {
-			logger.debug("cache hit! " + arg0);
+		    if (logger.isDebugEnabled()) {
+		        logger.debug("cache hit! " + arg0 + " -> " + o);
+		    }
 			if (o instanceof FileManagerResolverException) {
 				throw (FileManagerResolverException)o;
 			} else if (o instanceof RuntimeException) {
@@ -43,7 +46,10 @@ public class MemoizingEndpointResolver extends FileManagerEndpointResolverImpl
 				return (URL)o;
 			}
 		}
-		logger.debug("cache miss " + arg0);
+        if (logger.isDebugEnabled()) {
+            logger.debug("cache miss " + arg0);
+            MapUtils.debugPrint(System.out,"memoized endpoints",results);
+        }
 		// not got a memoized result - need to compute it.
 		try {
 			URL result = super.resolve(arg0);

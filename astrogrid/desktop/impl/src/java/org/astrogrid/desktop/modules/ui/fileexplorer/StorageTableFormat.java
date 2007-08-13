@@ -76,7 +76,6 @@ public class StorageTableFormat implements AdvancedTableFormat {
 				throw new IndexOutOfBoundsException("Oversized column index " + arg1);
 		}
 		} catch (FileSystemException e) {
-			// @todo handle or catch
 			return null;
 		}
 	}

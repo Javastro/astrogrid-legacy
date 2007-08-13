@@ -51,7 +51,7 @@ public class MyspaceFileNameUnitTest extends TestCase {
 	}
 	
 	public void testDepth() throws Exception {
-		assertEquals(3,fn.getDepth()); // I beleive this is buggy - would expect 2 here.
+		assertEquals(3,fn.getDepth()); 
 	}
 	
 	public void testScheme() throws Exception {

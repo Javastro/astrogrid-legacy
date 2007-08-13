@@ -63,7 +63,7 @@ public class VfsLibraryTest extends InARTestCase {
 	    
 	    FileObject fn = vfs.resolveFile("http://www2.astrogrid.org");
 	    virt.addJunction("/foo/bar",fn); // absolute path necesary here.
-	   // FileObject f = vfs.resolveFile("vfs:/foo/bar");
+	   //FileObject f = vfs.resolveFile("nigel://foo/bar");
 	    FileObject f = virt.resolveFile("/foo/bar");
 	    assertTrue(f.exists());
 	    System.out.println(f);
@@ -87,7 +87,7 @@ public class VfsLibraryTest extends InARTestCase {
         
         
         // now can we resolve stuff from vfs itself??
-        System.out.println(Arrays.asList(vfs.getSchemes())); // vfs not here :( - how can we add it?
+        assertFalse(Arrays.asList(vfs.getSchemes()).contains("nigel")); // vfs not here :( - how can we add it?
         //FileObject sus = vfs.resolveFile("nigel:///");
         //System.out.println(Arrays.asList(sus.getChildren()));
         // throws - can't resolve it, as vfs not know.
@@ -117,7 +117,8 @@ public class VfsLibraryTest extends InARTestCase {
      //   System.out.println(Arrays.asList(temporary.getFileOperations().getOperations()));
         System.out.println(temporary.getName().getURI());
         // must be a new method - it's in the sources, but not in the lib.
-       // not available in 1.0 - only in 1.1System.out.println(((DelegateFileObject)temporary).getDelegateFile().getName());
+       // not available in 1.0 - only in 1.1
+        System.out.println(((DelegateFileObject)f).getDelegateFile().getName());
          // yep!! that's good.
         /*
          * conclusion - so we can create a file system - name of which isn't important,
@@ -130,22 +131,87 @@ public class VfsLibraryTest extends InARTestCase {
          *  - likewise, I can synthesize a virtual file system on top of the 'tasks' internal file system
          *      - which would allow me to add indirect results and direct results.
          *      
-         *      point to note - always have 'vfs' urls - a redirection never happens. unsure whether this is a good or a bad thing..
-         *      at some point, would be nice to be able to resolve the virtual astroscope result back to a concreete url.
-         *      seems to be no way to do this. :( pity that - as would like to pass the result
-         *      by reference sometimes.
-         *      
-         *      
-         *      
-         *      2 questions -1. can I find hte implementation class for a virtual file object - and then can I cast it to 
-         *      get to the child object. --seems to be a 'DelegateFileObject'
-         *      
-         *      2 can I check the 'addJunction' code (and see which other filesystems support this), 
-         *      and implememnt this in my 'task' filesystem.
-         *      
          */
         System.out.println(temporary.getClass().getName());
     }
+	
+
+    public void testSameScheme() throws Exception {
+        // can we create two different & distinct virtfs with the same scheme.
+        //   FileObject root = vfs.resolveFile("ram:/");
+           FileSystem virt = vfs.createVirtualFileSystem("nigel://").getFileSystem(); /* '//' necessary here, otherwise wont work */
+           assertNotNull(virt);
+           FileSystem virt1 = vfs.createVirtualFileSystem("nigell://").getFileSystem();
+           assertNotNull(virt1);
+           assertNotSame(virt,virt1);
+           assertFalse(virt1.equals(virt));
+           
+           // can we mount the same file in 2 vfs??
+           FileObject fn = vfs.resolveFile("http://www2.astrogrid.org");
+           virt.addJunction("/foo",fn); // absolute path necesary here.
+           virt1.addJunction("/bar",fn);
+           
+           FileObject f = virt.resolveFile("/foo");
+           assertTrue(f.exists());
+           f = virt.resolveFile("/bar");
+           assertFalse(f.exists());           
+           
+           f = virt1.resolveFile("/bar");
+           assertTrue(f.exists());
+
+           f = virt1.resolveFile("/foo");
+           assertFalse(f.exists());
+           
+           
+           
+    }	
+	
+	   public void testMountWithinMountl() throws Exception {
+	       // can we mount one virt fs wihin another one - even though they've got the same scheme..
+           final FileSystem virt = vfs.createVirtualFileSystem("nigel://").getFileSystem(); /* '//' necessary here, otherwise wont work */
+           assertNotNull(virt);
+           final FileObject virt1Root = vfs.createVirtualFileSystem("nigell://");
+           final FileSystem virt1 = virt1Root.getFileSystem();
+           assertNotNull(virt1);
+           assertNotSame(virt,virt1);
+           assertFalse(virt1.equals(virt));
+           
+           
+           virt.addJunction("/foo",virt1Root);
+           
+           FileObject fn = vfs.resolveFile("http://www2.astrogrid.org");
+           virt1.addJunction("/bar",fn); // absolute path necesary here.
+           
+	          FileObject f = virt.resolveFile("/foo/bar");
+	          assertTrue(f.exists());
+	          System.out.println(f);
+	          byte[] content = FileUtil.getContent(f);
+	          System.out.println(new String(content));
+	   }
+	   
+	   public void testGetRootFromVirtualFileSystem() throws Exception {
+           final FileObject virt1Root = vfs.createVirtualFileSystem("nigell://");
+           final FileSystem virt1 = virt1Root.getFileSystem();
+           FileObject a = virt1.getRoot();
+           assertSame(virt1Root,a);
+
+        
+    }
+	   
+       public void testVirtualRootIsFolder() throws Exception {
+           // this test shows that a virtual root is imaginary until something is mounted in it.
+           final FileObject a = vfs.createVirtualFileSystem("nigell://");
+           final FileSystem virt1 = a.getFileSystem();
+
+           assertEquals(FileType.IMAGINARY,a.getType());
+           assertFalse(a.exists());
+           // mount something
+           virt1.addJunction("/fred",vfs.resolveFile("ram://foo/bar"));
+                          
+           assertEquals(FileType.FOLDER,a.getType());
+           assertTrue(a.exists());
+    }
+	
 	/*
 	public void testConvertingTmpFileToVFS() throws Exception {
 	    File f = File.createTempFile("foo","nar");

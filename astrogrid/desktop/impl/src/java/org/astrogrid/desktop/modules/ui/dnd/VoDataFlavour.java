@@ -103,11 +103,7 @@ public class VoDataFlavour {
 	//@todo add types for solar.
 	
 		//@todo define some types for movies..
-	
-	
-// Not a data flavour, but a hint that we suspect it might be..
-	public static final String TABULAR_HINT = "suspected.table";
-    public static final String FITS_HINT = "suspected.fits";	
+
 	// factory methods
 	
 	/** create a flavour only available in local vm

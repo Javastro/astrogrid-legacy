@@ -24,7 +24,7 @@ import org.astrogrid.acr.builtin.ShutdownListener;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 26, 20072:50:59 PM
  */
-public class HivemindFileSystemManager extends DefaultFileSystemManager implements ShutdownListener, ExtendedFileSystemManager {
+public class HivemindFileSystemManager extends DefaultFileSystemManager implements ShutdownListener {
 	/**
 	 * Logger for this class
 	 */
@@ -60,7 +60,9 @@ public class HivemindFileSystemManager extends DefaultFileSystemManager implemen
 			addMimeTypeMap((String)e.getKey(),(String)e.getValue());
 		}		
 		
-		setCacheStrategy(CacheStrategy.ON_RESOLVE);
+		// much more efficient if no auto-refresh happens. need to call 'refresh()' programmatically in this setting.
+		setCacheStrategy(CacheStrategy.MANUAL);
+		//setCacheStrategy(CacheStrategy.ON_RESOLVE); -- much too slow for myspace
 	}
 
 
@@ -79,14 +81,8 @@ public class HivemindFileSystemManager extends DefaultFileSystemManager implemen
 	/** extended - to initialize the results virtual file system too */
 	public void init() throws FileSystemException {
 	    super.init();
-	    results = createVirtualFileSystem("results://").getFileSystem();
 	}
-	
-	private FileSystem results;
-	
-	public FileSystem getResultsFilesystem() {
-	    return results;
-	}
+
 	
 	/** Overridden - as default implementatio causes a StackOverflow - as it delegates back to the
 	 * system protocol handlers.

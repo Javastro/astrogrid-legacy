@@ -36,12 +36,12 @@ public class NavigableFilesTable extends OperableFilesTable implements MouseList
 	 * Logger for this class
 	 */
 	private static final Log logger = LogFactory.getLog(NavigableFilesTable.class);
-    private final StorageView view;
+    private final FileNavigator navigator;
 
 
-    public NavigableFilesTable( StorageView view, IconFinder icons, FileModel fileModel) {
-        super(icons,fileModel);
-        this.view = view;
+    public NavigableFilesTable( FileNavigator navigator) {
+        super(navigator.getIcons(),navigator.getModel());
+        this.navigator = navigator;
 
 	}
 	
@@ -49,7 +49,7 @@ public class NavigableFilesTable extends OperableFilesTable implements MouseList
 	public void mouseClicked(MouseEvent e) {
 		 if(e.getClickCount() == 2){
 		     int row = rowAtPoint(e.getPoint());
-		     FileObject item = (FileObject)fileModel.getFiles().get(row);
+		     FileObject item = (FileObject)fileModel.getChildrenList().get(row);
 		     if (item == null) {
 		    	 return;
 		     }
@@ -57,7 +57,7 @@ public class NavigableFilesTable extends OperableFilesTable implements MouseList
 		     // seems not
 		     try {
 		    	 if (item.getType().hasChildren()) {
-		    		 view.move(item);
+		    		 navigator.move(item);
 		    	 }
 		     } catch (FileSystemException ex) {
 		    	 // @todo report?

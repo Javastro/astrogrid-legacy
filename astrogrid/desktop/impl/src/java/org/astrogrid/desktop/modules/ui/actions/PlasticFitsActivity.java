@@ -19,6 +19,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
+import org.apache.commons.vfs.provider.DelegateFileObject;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
@@ -56,8 +57,7 @@ private final TupperwareInternal tupp;
 	protected boolean invokable(FileObject f) {
 		try {
 			final FileContent content = f.getContent();
-            return VoDataFlavour.MIME_FITS_IMAGE.equals(content.getContentInfo().getContentType())
-                || content.getAttribute(VoDataFlavour.FITS_HINT) != null;
+            return VoDataFlavour.MIME_FITS_IMAGE.equals(content.getContentInfo().getContentType());
 		} catch (FileSystemException x) {
 			return false;
 		}
@@ -67,6 +67,9 @@ private final TupperwareInternal tupp;
 		List l = computeInvokable();
 		for (Iterator i = l.iterator(); i.hasNext();) {
 			FileObject f = (FileObject) i.next();
+            if (f instanceof DelegateFileObject) { // if we've got a delegate, get to the source here...
+                f = ((DelegateFileObject)f).getDelegateFile();
+            }			
 			sendLoadImageMessage(f);
 		}
 	}
@@ -75,6 +78,7 @@ private final TupperwareInternal tupp;
 		(new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName()) {
 			protected Object construct() throws Exception {
 				List l = new ArrayList();
+				
 				URL url = f.getURL();
 				l.add(url.toString());
 				tupp.singleTargetPlasticMessage(CommonMessageConstants.FITS_LOAD_FROM_URL,l,plas.getId());

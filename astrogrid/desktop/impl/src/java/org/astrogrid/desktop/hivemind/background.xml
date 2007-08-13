@@ -3,6 +3,7 @@
  =============================
 JES EXECUTION STRATEGY
  -->	<service-point id="jesStrategy"  interface="org.astrogrid.desktop.modules.ag.RemoteProcessStrategy">		Strategy for executing remote workflows		<invoke-factory>			<construct class="JesStrategyImpl" >				<service>astrogrid.community</service>				<service>astrogrid.applications</service>
+                <service>system.vfs</service>
 				<service>builtin.sessionManager</service>				<service>system.scheduler</service>							</construct>		</invoke-factory>		</service-point>	<implementation service-id="jesStrategy" if="property background.jesStrategy.disabled">		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />				</implementation>
 	
 	<contribution configuration-id="astrogrid.processStrategies">
@@ -12,6 +13,7 @@ JES EXECUTION STRATEGY
 CEA EXECUTION STRATEGY
  -->	<service-point id="ceaStrategy" interface="org.astrogrid.desktop.modules.ag.RemoteProcessStrategy">		Strategy for executing remote cea applications.		<invoke-factory>			<construct class="CeaStrategyImpl" >				<service>tasks</service>				<service>ivoa.registry</service>
 				<service>votech.vomon</service>				<service>astrogrid.applications</service>                <service>astrogrid.community</service>
+                <service>system.vfs</service>                
 				<service>builtin.sessionManager</service>
 				<service>system.scheduler</service>		                						</construct>		</invoke-factory>		</service-point>	<implementation service-id="ceaStrategy" if="property background.ceaStrategy.disabled">		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />		</implementation>					
 

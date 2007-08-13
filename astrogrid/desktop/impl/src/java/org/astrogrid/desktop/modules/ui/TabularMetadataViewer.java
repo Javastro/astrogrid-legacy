@@ -26,6 +26,7 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
+import org.apache.commons.collections.ComparatorUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
 import org.astrogrid.acr.astrogrid.ColumnBean;
@@ -42,9 +43,13 @@ import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FilterList;
+import ca.odell.glazedlists.FunctionList;
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.TextFilterator;
+import ca.odell.glazedlists.TransformedList;
+import ca.odell.glazedlists.event.ListEvent;
+import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import ca.odell.glazedlists.gui.TableFormat;
 import ca.odell.glazedlists.matchers.TextMatcherEditor;
 import ca.odell.glazedlists.swing.AutoCompleteSupport;
@@ -167,31 +172,21 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
         tableLabel = builder.addLabel("",cc.xyw(1,row++,4));
         tableLabel.setFont(UIConstants.SMALL_DIALOG_FONT);		
 		
-		// necessary to have sorted columns before 
-		SortedList sortedColumns = new SortedList(filteredColumns,new Comparator() {
 
-			public int compare(Object arg0, Object arg1) {
-				ColumnBean a = (ColumnBean)arg0;
-				ColumnBean b = (ColumnBean)arg1;
-				return a.getName().compareTo(b.getName());
-			}
-		});
-		jtable = new MetadataTable(sortedColumns );
+		jtable = new MetadataTable(filteredColumns );
 				
 		jtableScrollpane = new JScrollPane(jtable,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		jtableScrollpane.setBorder(BorderFactory.createEmptyBorder());
 		jtableScrollpane.setMinimumSize(new Dimension(50,50));
 		jtableScrollpane.getViewport().setBackground(jtable.getBackground());
-		builder.add(jtableScrollpane,cc.xyw(1,row++,4));
-		
-
-		
+		builder.add(jtableScrollpane,cc.xyw(1,row++,4));		
 	}
 	
 	private static class ColumnTextFilterator implements TextFilterator {
 
 		public void getFilterStrings(List baseList, Object element) {
-			ColumnBean cb = (ColumnBean) element;
+			NumberedColumnBean n = (NumberedColumnBean) element;
+			ColumnBean cb = n.cb;
 			if (cb.getDatatype() != null) {
 				baseList.add(cb.getDatatype());
 			}
@@ -295,77 +290,129 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 			tableLabel.setText(tb == null || tb.getDescription() == null 
 					? "" : "<html>" + tb.getDescription());
 			columns.clear();
-			columns.addAll(Arrays.asList(tb.getColumns()));
+//			columns.addAll(Arrays.asList(tb.getColumns()));
+			final ColumnBean[] cbs = tb.getColumns();
+            for (int i = 0; i < cbs.length; i++) {
+                columns.add(new NumberedColumnBean(cbs[i],i));
+            }
 		}
 	}
-
-	private static class MetadataTableFormat implements TableFormat {
+	    // datastructure used to add an 'index' column to the column beans.
+	   private static class NumberedColumnBean {
+	        public final ColumnBean cb;
+	        public final Integer ix;
+	        public NumberedColumnBean(ColumnBean cb, int n) {
+	            super();
+	            this.cb = cb;
+	            this.ix = new Integer(n + 1);
+	        }
+	    }
+	
+/** hacked around a little bit to return row numbers */
+	private static class MetadataTableFormat implements AdvancedTableFormat {
 
 		public int getColumnCount() {
-			return 5;
+			return 6;
 		}
 
 		public String getColumnName(int arg0) {
-			switch (arg0) {
-			case 0:
-				return "Column Name";
-			case 1:
-				return "Description";
-			case 2:
-				return "Datatype";
-			case 3:
-				return "UCD";
-			case 4:
-				return "Units";
-			default:
-				return "Unknown";
-			}
+		    switch (arg0) {
+		        case 0:
+		            return "#";
+		        case 1:
+		            return "Column Name";
+		        case 2:
+		            return "Description";
+		        case 3:
+		            return "Datatype";
+		        case 4:
+		            return "UCD";
+		        case 5:
+		            return "Units";
+		        default:
+		            return "Unknown";
+		    }
+		}
+		
+		public Object getColumnValue(Object arg0, int arg1) {
+		    NumberedColumnBean n = (NumberedColumnBean)arg0;
+		    switch(arg1) {
+		        case 0:
+		           return n.ix;
+		        case 1:
+		            return n.cb.getName();
+		        case 2:
+		            return n.cb.getDescription();
+		        case 3:
+		            return n.cb.getDatatype();
+		        case 4:
+		            return n.cb.getUCD();
+		        case 5:
+		            return n.cb.getUnit();
+		        default:
+		            return null;
+		    }
 		}
 
-		public Object getColumnValue(Object arg0, int arg1) {
-			ColumnBean cb = (ColumnBean)arg0;
-			switch(arg1) {
-			case 0:
-				return cb.getName();
-			case 1:
-				return cb.getDescription();
-			case 2:
-				return cb.getDatatype();
-			case 3:
-				return cb.getUCD();
-			case 4:
-				return cb.getUnit();
-			default:
-				return null;
-			}
-		}
+        public Class getColumnClass(int column) {
+            switch (column) {
+                case 0:
+                    return Integer.class;
+                default:
+                    return String.class;
+            }
+        }
+
+        public Comparator getColumnComparator(int column) {
+            switch (column) {
+                case 0:
+                    return GlazedLists.comparableComparator();
+                default:   
+                    return GlazedLists.caseInsensitiveComparator();
+            }
+        }
 	}
 
+
+	
 	/** display a list of columns */
 	public static class MetadataTable extends JTable {
 		/** model containing the current _selection_ in jtable */
 		private final EventSelectionModel tableSelection;	
 		
-		public MetadataTable(SortedList columns) { // sorted list required by TableComparatorChooser
-			SortedList sortedColumns = new SortedList(columns
-					,GlazedLists.beanPropertyComparator(ColumnBean.class,"name"));
+		public MetadataTable(EventList columns) { // sorted list required by TableComparatorChooser
+		    SortedList sortedColumns = new SortedList(columns,
+		            new Comparator() {
+
+                        public int compare(Object arg0, Object arg1) {
+                            NumberedColumnBean a = (NumberedColumnBean)arg0;
+                            NumberedColumnBean b = (NumberedColumnBean)arg1;
+                            return a.ix.compareTo(b.ix);
+                        }
+		    });
 			setModel(new EventTableModel(sortedColumns,new MetadataTableFormat()));
 			new TableComparatorChooser(this,sortedColumns,false);
 			tableSelection = new EventSelectionModel(columns);
 			setSelectionModel(tableSelection);
 			tableSelection.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-			getColumnModel().getColumn(0).setPreferredWidth(75);
-			getColumnModel().getColumn(1).setPreferredWidth(150);
-			getColumnModel().getColumn(1).setCellRenderer(new TextAreaRenderer());
-			getColumnModel().getColumn(2).setPreferredWidth(50);
-			getColumnModel().getColumn(3).setPreferredWidth(75);
-			getColumnModel().getColumn(4).setPreferredWidth(50);	
+			getColumnModel().getColumn(0).setPreferredWidth(10);
+			getColumnModel().getColumn(1).setPreferredWidth(75);
+			getColumnModel().getColumn(2).setPreferredWidth(150);
+			getColumnModel().getColumn(2).setCellRenderer(new TextAreaRenderer());
+			getColumnModel().getColumn(3).setPreferredWidth(50);
+			getColumnModel().getColumn(4).setPreferredWidth(75);
+			getColumnModel().getColumn(5).setPreferredWidth(50);	
 			setPreferredScrollableViewportSize(new Dimension(50,50));			
 		}
 		
 		public ColumnBean[] getSelected() {
 			List l = tableSelection.getSelected();
-			return (ColumnBean[])l.toArray(new ColumnBean[l.size()]);
+			ColumnBean[] result = new ColumnBean[l.size()];
+			Iterator i = l.iterator();
+			for (int ix = 0; i.hasNext(); ix++) {
+                result[ix] = ((NumberedColumnBean) i.next()).cb;                
+            }
+			return result;
 		}
 	}
 }

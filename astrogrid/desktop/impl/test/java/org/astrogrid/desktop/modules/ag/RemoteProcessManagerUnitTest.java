@@ -7,6 +7,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.apache.commons.vfs.FileSystem;
+import org.apache.commons.vfs.FileSystemException;
+import org.apache.commons.vfs.VFS;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
@@ -19,7 +22,7 @@ import org.w3c.dom.Document;
 
 import junit.framework.TestCase;
 
-/** @implement
+/** 
  * @author Noel Winstanley
  * @since Jun 13, 20067:01:00 PM
  */
@@ -76,6 +79,7 @@ public class RemoteProcessManagerUnitTest extends TestCase {
 		Map results = rpm.getResults(uri);
 		assertNotNull(results);
 		assertEquals(0,results.size());
+		
 		
 		assertNotNull(rpm.getExecutionInformation(uri));		
 		
@@ -168,7 +172,11 @@ public class RemoteProcessManagerUnitTest extends TestCase {
 
         public ProcessMonitor create(Document doc)
                 throws InvalidArgumentException, ServiceException {
-            return new MonitorMapUnitTest.TestRemoteProcessMonitor();
+            try {
+                return new MonitorMapUnitTest.TestRemoteProcessMonitor(VFS.getManager());
+            } catch (FileSystemException x) {
+                throw new ServiceException(x);
+            }
         }
 	}
 	

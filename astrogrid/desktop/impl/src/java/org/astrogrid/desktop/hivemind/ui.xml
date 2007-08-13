@@ -224,26 +224,16 @@ ASTROSCOPE
 			<inject object="service:astrogrid.processManager" />
             <inject object="service:ui.UiBuilder" />
             <inject object="service:actionsBuilder" />
-            <inject object="service:system.vfs" />
 		</object>
         
-        <object name="fileModel" class="org.astrogrid.desktop.modules.ui.fileexplorer.FileModel">
-            <inject-arg />
-            <inject-arg />
-            <inject object="service:ui.iconFinder" />
-            <inject-arg />
-        </object>
-        
-        <object name="vfsOperations" class="org.astrogrid.desktop.modules.ui.fileexplorer.VFSOperationsImpl">
-            <inject-arg/>
+        <object name="fileNavigator" class="org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator">
             <inject-arg />
             <inject object="service:system.vfs" />
+            <inject-arg />
+            <inject-arg />
+            <inject object="service:ui.iconFinder" />
         </object>
         
-        <object name="operableFilesList" class="org.astrogrid.desktop.modules.ui.fileexplorer.OperableFilesList">
-            <inject object="service:ui.iconFinder" />
-            <inject-arg />
-        </object>
         
         <object name="taskParametersForm" class="org.astrogrid.desktop.modules.ui.taskrunner.TaskParametersForm">
             <inject-arg />
@@ -434,7 +424,7 @@ Query Builder
 =====================================
 FILE EXPLORER
  -->
- 	<service-point id="fileManager" interface="org.astrogrid.desktop.modules.ui.FileExplorerFactoryInternal">
+ 	<service-point id="fileManager" interface="org.astrogrid.desktop.modules.ui.FileManagerFactory">
  		<interceptor service-id="system.snitchInterceptor" >
                 <!--  including things seems to mean we get 'all'. excluding what we dont' want seems to work. -->
                 <exclude method="appendHandler" />
@@ -539,6 +529,11 @@ ACTIONS
             <inject object="service:system.vfs" />
 			<inject name="section" object="literal:string:use" />
 		</object>
+        <object name="2reveal" class="org.astrogrid.desktop.modules.ui.actions.RevealFileActivity">
+            <inject object="service:system.vfs" />
+            <inject object="service:ui.fileManager" />
+            <inject name="section" object="literal:string:use" />
+        </object>
         <!--  not implemented	
 		<object name="1saveFile" class="org.astrogrid.desktop.modules.ui.actions.SaveActivity">
 			<inject object="service:dialogs.resourceChooser" />
@@ -546,10 +541,16 @@ ACTIONS
 			<inject name="section" object="literal:string:use" />
 		</object>
         		-->
+                
         <object name="1download" class="org.astrogrid.desktop.modules.ui.actions.SimpleDownloadActivity">
             <inject object="service:system.vfs" />
             <inject name="section" object="literal:string:use" />
-        </object>       
+        </object>
+
+        <object name="2rename" class="org.astrogrid.desktop.modules.ui.actions.RenameActivity">
+            <inject object="service:system.vfs" />
+            <inject name="section" object="literal:string:use" />
+        </object>      
         <object name="2delete" class="org.astrogrid.desktop.modules.ui.actions.DeleteFilesActivity">
             <inject object="service:system.vfs" />
             <inject name="section" object="literal:string:use" />

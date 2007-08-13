@@ -1,4 +1,4 @@
-/*$Id: FileExplorerImpl.java,v 1.4 2007/07/26 18:21:44 nw Exp $
+/*$Id: FileExplorerImpl.java,v 1.5 2007/08/13 19:29:47 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,6 +31,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 
 import org.apache.commons.collections.map.ListOrderedMap;
+import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
 import org.astrogrid.desktop.icons.IconHelper;
@@ -40,6 +41,8 @@ import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
 import org.astrogrid.desktop.modules.system.ui.ArMainWindow;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.system.ui.UIContributionBuilder;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.FileManagerInternal;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl.CloseAction;
 import org.astrogrid.desktop.modules.ui.actions.Activity;
@@ -52,11 +55,10 @@ import com.l2fprod.common.swing.JOutlookBar;
 import com.l2fprod.common.swing.JTaskPane;
 
 /** Main window of fileexplorer - assembles together the contributions.
- * a copy of the old window of voexplorer - to allow me to refactor that in freedom.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 30-Mar-2005
  *
  */
-public class FileExplorerImpl extends UIComponentImpl{
+public class FileExplorerImpl extends UIComponentImpl implements FileManagerInternal{
 
 	public FileExplorerImpl( final UIContext context,  final ActivityFactory activityBuilder
 			,final UIContributionBuilder menuBuilder, EventList folders, FileSystemManager vfs, IconFinder icons) {
@@ -94,9 +96,8 @@ public class FileExplorerImpl extends UIComponentImpl{
 			menuBar.add(getContext().createWindowMenu(this),sz-1); // insert before the help menu.
 		    setJMenuBar(menuBar);		
 
-		    // main pane.	    
-		    StorageView view = new StorageView(this,activities,folders,vfs,icons);
-		    JComponent foldersPanel = view.getHierarchiesPanel();
+		    view = new StorageView(this,activities,folders,vfs,icons);
+            JComponent foldersPanel = view.getHierarchiesPanel();
 		    JComponent mainPanel = view.getMainPanel();
 		    JComponent mainButtons = view.getMainButtons();
 		 
@@ -144,6 +145,18 @@ public class FileExplorerImpl extends UIComponentImpl{
 	}
 
 	private final ActivitiesManager activities;
+    private StorageView view;
+	
+	public void show(final FileObject fileToShow) {
+	    view.getNavigator().move(fileToShow);
+	}
+
+    /**
+     * @return the view
+     */
+    public final StorageView getView() {
+        return this.view;
+    }
 
 
 }

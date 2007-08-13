@@ -356,7 +356,8 @@
 	<dependency>
 		<groupId>commons-httpclient</groupId>
 		<artifactId>commons-httpclient</artifactId>
-		<version>3.0</version> <!--  however, vfs requires 2.0 -->
+		<version>3.0.1</version> <!--  vanilla  vfs requires 2.0.2, however have adjusted vfs to work with 3.0.1 -->
+        <!-- <version>2.0.2</version>-->
 		<properties>
 			<dist.bundle>true</dist.bundle>
 			<strip>true</strip>

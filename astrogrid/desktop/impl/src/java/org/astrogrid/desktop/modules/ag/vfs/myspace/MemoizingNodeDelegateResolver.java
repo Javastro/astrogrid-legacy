@@ -19,8 +19,8 @@ import org.astrogrid.store.Ivorn;
 
 /** reimplementation of the stuff in the filemanager client to use some memoization 
  * so that it becomes a little more efficient.
- * 
- * @future extend CachingNodeDelegate so that bundled nodes are injected
+ *
+ * @todo  extend CachingNodeDelegate so that bundled nodes are injected
  * into the VFS cache whenever new updates are received from the server.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 4, 200711:11:20 AM

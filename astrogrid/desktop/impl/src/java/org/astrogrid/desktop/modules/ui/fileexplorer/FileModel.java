@@ -5,6 +5,7 @@ package org.astrogrid.desktop.modules.ui.fileexplorer;
 
 import java.awt.Component;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
@@ -21,13 +22,19 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.awt.dnd.InvalidDnDOperationException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JComponent;
+import javax.swing.JPopupMenu;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
@@ -35,6 +42,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemException;
+import org.apache.commons.vfs.provider.DelegateFileObject;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.ui.dnd.FileObjectListTransferable;
 import org.astrogrid.desktop.modules.ui.dnd.FileObjectTransferable;
@@ -42,10 +51,16 @@ import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.ui.voexplorer.ResourceLists;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTable;
 
+import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.FilterList;
 import ca.odell.glazedlists.ListSelection;
 import ca.odell.glazedlists.SortedList;
+import ca.odell.glazedlists.matchers.AbstractMatcherEditor;
+import ca.odell.glazedlists.matchers.Matcher;
+import ca.odell.glazedlists.matchers.MatcherEditor;
 import ca.odell.glazedlists.swing.EventSelectionModel;
+import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 
 /** 
  * Class that provides a shared data/selection/dnd model for all linked file views.
@@ -70,6 +85,37 @@ public class FileModel implements DragGestureListener, DragSourceListener, DropT
 
     private final ActivitiesManager activities;
 	
+    public FileModel(MatcherEditor ed,ActivitiesManager activities,IconFinder icons, VFSOperations ops) {
+        this(createDefaultListModel(ed),activities,icons,ops);
+    }
+    
+    private static final SortedList createDefaultListModel(MatcherEditor ed) {
+        EventList basic = new BasicEventList();
+        // filter out hidden files. Later, add an option to show them - which will 
+        // cause this matcherEditor to emit a change event and use a 'pass all' matcher.
+        EventList filteredFiles = new FilterList(basic,new AbstractMatcherEditor() {
+            public Matcher getMatcher() {
+                return new Matcher() {
+                    public boolean matches(Object arg0) {
+                        FileObject fo = (FileObject)arg0;
+                        try {
+                            return !(fo.isHidden() || fo.getName().getBaseName().charAt(0) == '.') ;
+                        } catch (FileSystemException x) {
+                            return true;
+                        }
+                    }
+                };
+            }
+        });
+        if (ed != null) { // add an additional filter,
+            filteredFiles = new FilterList(filteredFiles,ed);
+        }
+        return new SortedList(filteredFiles, FileObjectComparator.getInstance());
+            
+    }
+            
+    
+    
 	public FileModel(SortedList files,ActivitiesManager activities,IconFinder icons, VFSOperations ops) {
 		
 		super();
@@ -181,10 +227,23 @@ public class FileModel implements DragGestureListener, DragSourceListener, DropT
 				} else {
 					logger.warn("Unknown type of transferable " + t);					
 				}
-				 if (fileObjects != null) {
-					 ops.copyOrMoveToCurrent(fileObjects);
-					 //@todo refresh at this point.
-					 dtde.dropComplete(true);
+				 if (fileObjects != null && ! fileObjects.isEmpty()) {
+				     // see if we've got anything that is read-only.
+				     boolean moveAllowed =true;
+				     for (Iterator i = fileObjects.iterator(); i
+                            .hasNext();) {
+                        FileObject fo = (FileObject) i.next();
+                        if (fo instanceof DelegateFileObject || ! fo.isWriteable()) {
+                            moveAllowed = false;
+                            break;
+                        }
+                    }
+				     if (moveAllowed) {
+				         promptUserForSaveOrMove(dtde,fileObjects);
+				     } else {
+				         ops.copyToCurrent(fileObjects);
+				         dtde.dropComplete(true);
+				     }
 				 } else {
 					 dtde.dropComplete(false);
 				 }
@@ -194,6 +253,41 @@ public class FileModel implements DragGestureListener, DragSourceListener, DropT
 		} else {
 			dtde.rejectDrop();
 		}
+	}
+	/** show a popup to the user. 
+	 * and perform a save or a move according to his selection.
+	 */
+	private void promptUserForSaveOrMove(final DropTargetDropEvent dtde, final List fileObjects) {
+	    JPopupMenu m = new JPopupMenu(); // create a fresh one each time, as the model might be shared
+	    int sz = fileObjects.size();
+	    m.add("Copy " + sz + " items here").addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                ops.copyToCurrent(fileObjects);
+                dtde.dropComplete(true);
+            }
+	    });
+	    m.add("Move " + sz + " items here").addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                ops.moveToCurrent(fileObjects);
+                dtde.dropComplete(true);                
+            }
+	    });
+	    Point location = dtde.getLocation();
+	    m.addPopupMenuListener(new PopupMenuListener() {
+
+            public void popupMenuCanceled(PopupMenuEvent e) {
+                dtde.dropComplete(false);
+            }
+
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+            }
+
+            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+            }
+	    });
+	    m.show(dtde.getDropTargetContext().getComponent(),location.x,location.y);
+	    
+	    
 	}
 
 	public void dropActionChanged(DropTargetDragEvent dtde) {
@@ -217,17 +311,10 @@ public class FileModel implements DragGestureListener, DragSourceListener, DropT
     /**
      * @return the files
      */
-    public final SortedList getFiles() {
+    public final SortedList getChildrenList() {
         return this.files;
     }
 
-    /**
-     * @return the activities
-     */
-    public final ActivitiesManager getActivities() {
-        return this.activities;
-    }
-   
     /***     determine whether event should trigger popup menu
  * then update selection model before displpaying the popup
  * @param event
@@ -245,7 +332,7 @@ public class FileModel implements DragGestureListener, DragSourceListener, DropT
      * rarely need to call this method, as selecction model events cause it
      * to be triggered anyhow.
      */
-    public void updateActivities() {
+    private void updateActivities() {
         Transferable tran =getSelectionTransferable();
             if (tran == null) {
                 activities.clearSelection();
@@ -262,6 +349,8 @@ public class FileModel implements DragGestureListener, DragSourceListener, DropT
         updateActivities();
         
     }   
+    
+
     
 	
 
