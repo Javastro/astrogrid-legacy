@@ -49,7 +49,7 @@ public class AdqlCompiler {
 	     "Unexpected remaining characters found: " ;
 	     
 	public static final String SELECT_ELEMENT = "Select" ;
-	public static final String SELECTION_ELEMENT = "selection" ;
+    public static final String QUERYEXPRESSION_ELEMENT = "QueryExpression" ;
 	public static final String ALLOW_ELEMENT = "Allow" ;
 	public static final String RESTRICT_ELEMENT = "Restrict" ;
 	public static final String SELECTION_LIST_ELEMENT = "SelectionList" ;
@@ -607,163 +607,154 @@ public class AdqlCompiler {
 			if( childName.equalsIgnoreCase( SELECT_ELEMENT ) ) {
 			    fQuerySpecification() ;
 			} 
-			// This check is probably being pedantic...
+            // New for version 2 of ADQL
+			else if( childName.equalsIgnoreCase( QUERYEXPRESSION_ELEMENT ) ) {
+			    fQueryExpression() ;
+			}
+			else if( childName.equalsIgnoreCase( ALLOW_ELEMENT ) ) {
+			    fSetQuantifier() ;
+			}
 			// Unit test done.
-			else if( childName.equalsIgnoreCase( SELECTION_ELEMENT ) ) {
+			else if( childName.equalsIgnoreCase( RESTRICT_ELEMENT ) ) {
+			    fSetLimit() ;
+			}
+			// Unit test done.
+			else if( childName.equalsIgnoreCase( SELECTION_LIST_ELEMENT ) ) {
+			    fSelectionList() ;
+			}
+			// Unit test done.
+			else if( childName.equalsIgnoreCase( FROM_ELEMENT ) ) {
+			    fFromClause() ;
+			}
+			// Unit test done.
+			else if( childName.equalsIgnoreCase( WHERE_ELEMENT ) ) {
+			    fWhereClause() ;
+			}
+			// Unit test done.
+			else if( childName.equalsIgnoreCase( GROUPBY_ELEMENT ) ) {
+			    fGroupBy() ;
+			}
+			// Unit test done.
+			else if( childName.equalsIgnoreCase( HAVING_ELEMENT ) ) {
+			    fHaving() ;
+			}
+			// Unit test done.
+			else if( childName.equalsIgnoreCase( ORDERBY_ELEMENT ) ) {
+			    fOrderBy() ;
+			}
+			// Unit test done.
+			else if( childName.equalsIgnoreCase( COLUMN_ELEMENT ) ) {
+			    fColumnReference() ;
+			}
+			else if( childName.equalsIgnoreCase( ITEM_ELEMENT ) ) {
+			    parentName = cp.getParent().getName() ;
+			    // Unit test done.
+			    if( parentName.equalsIgnoreCase( SELECTION_LIST_ELEMENT ) ) {
+			        fDerivedColumn() ;
+			    }
+			    // Unit test done.
+			    else if( parentName.equalsIgnoreCase( ORDERBY_ELEMENT ) ) {
+			        fSortSpecification() ;
+			    }
+			    // Unit test done.
+			    else if( parentName.equalsIgnoreCase( SET_ELEMENT ) ) {
+			        fInValueListExpression() ;
+			    }
+			}
+			else if( childName.equalsIgnoreCase( JOINSPECIFICATION_ELEMENT ) ) {
+			    parentName = cp.getParent().getName() ;
+			    // Join table comparison ...
+			    // Unit test done.
+			    if( parentName.equalsIgnoreCase( TABLE_ELEMENT ) ) {
+			        fJoinSpecification() ;
+			    }
+			}
+			else if( childName.equalsIgnoreCase( ARG_ELEMENT ) ) {
 			    parent = cp.getParent() ;
-			    if( parent.getType().equalsIgnoreCase( SUB_QUERY_SET_TYPE ) ) {
-			        fSubQuerySpecification() ;
+			    // Unit test done.
+			    if( parent.getType().equalsIgnoreCase( AGGREGATE_FUNCTION_TYPE ) ) {
+			        fSetFunctionSpecifictationPartFragment() ;
+			    }
+			    // Unit test done.
+			    else {
+			        fValueExpression() ;
+			    }
+			}
+			// Unit test done.
+			else if( childName.equalsIgnoreCase( PATTERN_ELEMENT ) ) {
+			    fPattern() ;
+			}
+			// Unit test done.
+			else if( childName.equalsIgnoreCase( TABLE_ELEMENT ) ) {
+			    fTableReference() ;
+			}
+			// Adjustment made for:
+			// /Select[@type='selectType']/SelectionList[@type='selectionListType']/Item[@type='aliasSelectionItemType']/Expression[@type='mathFunctionType']
+			else if( childName.equalsIgnoreCase( EXPRESSION_ELEMENT ) ) {
+			    parent = cp.getParent() ;
+			    // Unit test done 
+			    if( parent.getType().equalsIgnoreCase( INCLUSIVE_SEARCH_TYPE )
+			            ||
+			            // Unit test done 
+			            parent.getType().equalsIgnoreCase( EXCLUSIVE_SEARCH_TYPE ) 
+			            ||
+			            // Unit test done.
+			            parent.getType().equalsIgnoreCase( ORDER_TYPE ) 
+			            ||
+			            // Unit test done.
+			            parent.getType().equalsIgnoreCase( ALIAS_SELECTION_ITEM_TYPE ) ) {
+			        fValueExpression() ;
 			    }
 			    else {
 			        throw new ParseException( UNRECOGNIZED_FRAGMENT + contextPath ) ;	
 			    }
 			}
-			else {
+			else if( childName.equalsIgnoreCase( ORDER_ELEMENT ) ) { 
 			    // Unit test done.
-			    if( childName.equalsIgnoreCase( ALLOW_ELEMENT ) ) {
-			        fSetQuantifier() ;
+			    if( child.getType().equalsIgnoreCase( ORDER_OPTION_TYPE ) ) {		  
+			        fOrderingSpecification() ;
 			    }
-			    // Unit test done.
-			    else if( childName.equalsIgnoreCase( RESTRICT_ELEMENT ) ) {
-			        fSetLimit() ;
-			    }
-			    // Unit test done.
-			    else if( childName.equalsIgnoreCase( SELECTION_LIST_ELEMENT ) ) {
-			        fSelectionList() ;
-			    }
-			    // Unit test done.
-			    else if( childName.equalsIgnoreCase( FROM_ELEMENT ) ) {
-			        fFromClause() ;
-			    }
-			    // Unit test done.
-			    else if( childName.equalsIgnoreCase( WHERE_ELEMENT ) ) {
-			        fWhereClause() ;
-			    }
-			    // Unit test done.
-			    else if( childName.equalsIgnoreCase( GROUPBY_ELEMENT ) ) {
-			        fGroupBy() ;
-			    }
-			    // Unit test done.
-			    else if( childName.equalsIgnoreCase( HAVING_ELEMENT ) ) {
-			        fHaving() ;
-			    }
-			    // Unit test done.
-			    else if( childName.equalsIgnoreCase( ORDERBY_ELEMENT ) ) {
-			        fOrderBy() ;
-			    }
-			    // Unit test done.
-			    else if( childName.equalsIgnoreCase( COLUMN_ELEMENT ) ) {
-			        fColumnReference() ;
-			    }
-			    else if( childName.equalsIgnoreCase( ITEM_ELEMENT ) ) {
-			        parentName = cp.getParent().getName() ;
-			        // Unit test done.
-			        if( parentName.equalsIgnoreCase( SELECTION_LIST_ELEMENT ) ) {
-			            fDerivedColumn() ;
-			        }
-			        // Unit test done.
-			        else if( parentName.equalsIgnoreCase( ORDERBY_ELEMENT ) ) {
-			            fSortSpecification() ;
-			        }
-			        // Unit test done.
-			        else if( parentName.equalsIgnoreCase( SET_ELEMENT ) ) {
-			            fInValueListExpression() ;
-			        }
-			    }
-			    else if( childName.equalsIgnoreCase( JOINSPECIFICATION_ELEMENT ) ) {
-			        parentName = cp.getParent().getName() ;
-			        // Join table comparison ...
-			        // Unit test done.
-			        if( parentName.equalsIgnoreCase( TABLE_ELEMENT ) ) {
-			            fJoinSpecification() ;
-			        }
-			    }
-			    else if( childName.equalsIgnoreCase( ARG_ELEMENT ) ) {
-			        parent = cp.getParent() ;
-			        // Unit test done.
-			        if( parent.getType().equalsIgnoreCase( AGGREGATE_FUNCTION_TYPE ) ) {
-                        fSetFunctionSpecifictationPartFragment() ;
-			        }
-			        // Unit test done.
-			        else {
-                        fValueExpression() ;
-			        }
-			    }
-			    // Unit test done.
-			    else if( childName.equalsIgnoreCase( PATTERN_ELEMENT ) ) {
-			        fPattern() ;
-			    }
-			    // Unit test done.
-			    else if( childName.equalsIgnoreCase( TABLE_ELEMENT ) ) {
-                    fTableReference() ;
-			    }
-			    // Adjustment made for:
-			    // /Select[@type='selectType']/SelectionList[@type='selectionListType']/Item[@type='aliasSelectionItemType']/Expression[@type='mathFunctionType']
-			    else if( childName.equalsIgnoreCase( EXPRESSION_ELEMENT ) ) {
-			        parent = cp.getParent() ;
-			        // Unit test done 
-			        if( parent.getType().equalsIgnoreCase( INCLUSIVE_SEARCH_TYPE )
-			                ||
-			                // Unit test done 
-			                parent.getType().equalsIgnoreCase( EXCLUSIVE_SEARCH_TYPE ) 
-			                ||
-			                // Unit test done.
-			                parent.getType().equalsIgnoreCase( ORDER_TYPE ) 
-			                ||
-			                // Unit test done.
-			                parent.getType().equalsIgnoreCase( ALIAS_SELECTION_ITEM_TYPE ) ) {
-			            fValueExpression() ;
-			        }
-			        else {
-			            throw new ParseException( UNRECOGNIZED_FRAGMENT + contextPath ) ;	
-			        }
-			    }
-			    else if( childName.equalsIgnoreCase( ORDER_ELEMENT ) ) { 
-			        // Unit test done.
-			        if( child.getType().equalsIgnoreCase( ORDER_OPTION_TYPE ) ) {		  
-                        fOrderingSpecification() ;
-			        }
-			        else {
-			            parent = cp.getParent() ;
-			            ContextPath.Element grandParent = cp.getElement( cp.size() - 3 ) ;
-			            // Unit test done.
-			            if( parent.getName().equalsIgnoreCase( ITEM_ELEMENT )
-			                    ||
-			                    grandParent.getName().equalsIgnoreCase( ORDERBY_ELEMENT ) ) {
-                            fOrderingSpecification() ; 
-			            }
-			            else {
-			                throw new ParseException( UNRECOGNIZED_FRAGMENT + contextPath ) ;	
-			            }
-			        }
-			    }
-			    else if( childName.equalsIgnoreCase( FROM_TABLE_TYPE_ELEMENT ) ) {
-			        // Unit test done.
-			        if( child.getType().equalsIgnoreCase( TABLE_TYPE ) ) {
-                        fTableReferenceWithinJoinFromArray() ;
-			        }
-			        else {
-			            throw new ParseException( UNRECOGNIZED_FRAGMENT + contextPath ) ;	
-			        }
-			    }
-			    else if( childName.equalsIgnoreCase( TABLES_ELEMENT ) ) {
-			        // Unit test done.
-			        if( child.getType().equalsIgnoreCase( ARRAY_OF_FROM_TABLE_TYPE ) ) {
-                        fJoinFromArray() ; 
-			        }
-			        else {
-			            throw new ParseException( UNRECOGNIZED_FRAGMENT + contextPath ) ;	
-			        }
-			    }
-                else if( childName.equalsIgnoreCase( CONDITION_ELEMENT ) ) {                  
-                        fSearchCondition() ;
-                }
-			    // Unit test done.
 			    else {
-			        throw new ParseException( UNRECOGNIZED_FRAGMENT + contextPath ) ;
+			        parent = cp.getParent() ;
+			        ContextPath.Element grandParent = cp.getElement( cp.size() - 3 ) ;
+			        // Unit test done.
+			        if( parent.getName().equalsIgnoreCase( ITEM_ELEMENT )
+			                ||
+			                grandParent.getName().equalsIgnoreCase( ORDERBY_ELEMENT ) ) {
+			            fOrderingSpecification() ; 
+			        }
+			        else {
+			            throw new ParseException( UNRECOGNIZED_FRAGMENT + contextPath ) ;	
+			        }
 			    }
-			    checkForRemainingSource() ;
 			}
+			else if( childName.equalsIgnoreCase( FROM_TABLE_TYPE_ELEMENT ) ) {
+			    // Unit test done.
+			    if( child.getType().equalsIgnoreCase( TABLE_TYPE ) ) {
+			        fTableReferenceWithinJoinFromArray() ;
+			    }
+			    else {
+			        throw new ParseException( UNRECOGNIZED_FRAGMENT + contextPath ) ;	
+			    }
+			}
+			else if( childName.equalsIgnoreCase( TABLES_ELEMENT ) ) {
+			    // Unit test done.
+			    if( child.getType().equalsIgnoreCase( ARRAY_OF_FROM_TABLE_TYPE ) ) {
+			        fJoinFromArray() ; 
+			    }
+			    else {
+			        throw new ParseException( UNRECOGNIZED_FRAGMENT + contextPath ) ;	
+			    }
+			}
+			else if( childName.equalsIgnoreCase( CONDITION_ELEMENT ) ) {                  
+			    fSearchCondition() ;
+			}
+			// Unit test done.
+			else {
+			    throw new ParseException( UNRECOGNIZED_FRAGMENT + contextPath ) ;
+			}
+			checkForRemainingSource() ;
+
 			if( parser.tracker.numberOfErrors() > 0 ) {
 			    throw new AdqlException( parser.tracker ) ;
 			}
@@ -871,12 +862,12 @@ public class AdqlCompiler {
         checkExpressionAliases( xmlObject ) ;
     }
     
-    private void fSubQuerySpecification() throws ParseException {
-        parser.query_specification_A() ;
+    private void fQueryExpression() throws ParseException {
+        parser.query_expression_A() ;
         checkForRemainingSource() ;
-        SubQuerySet subQuerySet = SubQuerySet.Factory.newInstance() ;
-        AST_Select selectNode = (AST_Select)parser.jjtree.rootNode() ;
-        selectNode.buildXmlTree( subQuerySet.addNewQueryExpression() ) ;    
+        DerivedTableType dtt = DerivedTableType.Factory.newInstance() ;
+        AST_QueryExpression  qeNode = (AST_QueryExpression)parser.jjtree.rootNode() ;
+        qeNode.buildXmlTree( dtt.addNewQueryExpression() ) ;    
     }
     
     private void fSetQuantifier() throws ParseException {

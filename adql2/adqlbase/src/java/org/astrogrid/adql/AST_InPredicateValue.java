@@ -5,6 +5,8 @@ package org.astrogrid.adql;
 import org.apache.xmlbeans.XmlObject ;
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
+import org.astrogrid.adql.beans.InListSet;
+import org.astrogrid.adql.beans.SubQuerySet;
 
 
 public class AST_InPredicateValue extends SimpleNode {
@@ -17,8 +19,16 @@ public class AST_InPredicateValue extends SimpleNode {
 
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_InPredicateValue.buildXmlTree()" ) ;
-        children[0].buildXmlTree( xo ) ;
-        this.generatedObject = children[0].getGeneratedObject() ;
+        if( children[0] instanceof AST_InValueList ) {
+            InListSet inListSet = (InListSet)xo.changeType( InListSet.type ) ;
+            children[0].buildXmlTree( inListSet ) ;
+            this.generatedObject = children[0].getGeneratedObject() ;
+        }
+        else if( children[0] instanceof AST_QueryExpression ) {
+            SubQuerySet sqs = (SubQuerySet)xo.changeType( SubQuerySet.type ) ;
+            children[0].buildXmlTree( sqs.addNewQueryExpression() ) ;
+            this.generatedObject = sqs ;
+        }       
         super.buildXmlTree( (XmlObject)this.generatedObject ) ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_InPredicateValue.buildXmlTree()" ) ;
     }

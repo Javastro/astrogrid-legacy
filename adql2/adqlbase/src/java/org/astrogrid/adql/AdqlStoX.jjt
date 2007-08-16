@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.40 2007/08/16 15:19:16 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.41 2007/08/16 22:28:22 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -4350,7 +4350,7 @@ void tableReferenceBarJoinedTable() #TableReferenceBarJoinedTable :
  * bnf-end
  *
  */
-void table_subquery_S() #TableSubQuery: 
+void table_subquery_S() : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "table_subquery_S" ) ;
 }
@@ -4747,6 +4747,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.41  2007/08/16 22:28:22  jl99
+Refinements to the use of Query Expression
+
 Revision 1.40  2007/08/16 15:19:16  jl99
 Rejigged to accommodate Query Expression
 

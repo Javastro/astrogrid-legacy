@@ -1,4 +1,4 @@
-/*$Id: AdqlStoXTest.java,v 1.11 2007/08/10 11:59:52 jl99 Exp $
+/*$Id: AdqlStoXTest.java,v 1.12 2007/08/16 22:30:15 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -138,6 +138,7 @@ public class AdqlStoXTest extends XMLTestCase {
     public void testOf_v10_innerJoinWithJoinCondition() throws Exception { execTest() ; }
     public void testOf_v10_inPredicateWithConstantStringList() throws Exception { execTest() ; }
     public void testOf_v10_inPredicateWithSubQuery() throws Exception { execTest() ; }
+    public void testOf_v20_joinTableWithAlias() throws Exception { execTest() ; }
     public void testOf_v10_leftOuterJoinWithJoinCondition() throws Exception { execTest() ; }
     public void testOf_v10_likeWithoutBracket() throws Exception { execTest() ; }
     public void testOf_v10_likeWithBracket() throws Exception { execTest() ; }
@@ -253,7 +254,7 @@ public class AdqlStoXTest extends XMLTestCase {
     public void testOf_v10_FragmentSelectionListCeilingFunction() throws Exception { execFragment() ; }
     public void testOf_v10_FragmentSelectionListItemExpression() throws Exception { execFragment() ; }
     public void testOf_v10weeds_FragmentSetItem() throws Exception { execFragment() ; }
-    public void testOf_v10_FragmentSubsetSpectralLines() throws Exception { execFragment() ; }
+    public void testOf_v10weeds_FragmentSubsetSpectralLines() throws Exception { execFragment() ; }
     public void testOf_v10weeds_FragmentTableCondition() throws Exception { execFragment() ; }
     public void testOf_v10_FragmentTablesArrayOfFromTableType() throws Exception { execFragment() ; }
     public void testOf_v10_FragmentTableTableType() throws Exception { execFragment() ; }
@@ -800,9 +801,12 @@ public class AdqlStoXTest extends XMLTestCase {
 
 
 /* $Log: AdqlStoXTest.java,v $
- * Revision 1.11  2007/08/10 11:59:52  jl99
- * Correction to LIKE predicate when used with a user defined function.
+ * Revision 1.12  2007/08/16 22:30:15  jl99
+ * Refinements to the use of Query Expression
  *
+/* Revision 1.11  2007/08/10 11:59:52  jl99
+/* Correction to LIKE predicate when used with a user defined function.
+/*
 /* Revision 1.10  2007/08/07 17:37:05  jl99
 /* Initial multi-threaded test environment for AdqlCompilerSV
 /*
