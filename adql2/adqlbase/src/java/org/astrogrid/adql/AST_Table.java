@@ -37,9 +37,9 @@ public class AST_Table extends SimpleNode {
             }
             setGeneratedObject( tt ) ;    
         }
-        else if( children[0] instanceof AST_TableSubQuery ) {
-            children[0].buildXmlTree( ftt ) ;
-            DerivedTableType dtt = (DerivedTableType)ftt ;
+        else if( children[0] instanceof AST_DerivedTable ) {
+            DerivedTableType dtt = (DerivedTableType)ftt.changeType( DerivedTableType.type ) ;
+            children[0].buildXmlTree( dtt ) ;
             dtt.setAlias( (String)children[1].getGeneratedObject() ) ;
             setGeneratedObject( dtt ) ;           
         }

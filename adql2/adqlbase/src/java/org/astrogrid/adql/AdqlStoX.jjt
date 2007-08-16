@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.39 2007/08/10 11:59:52 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.40 2007/08/16 15:19:16 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -1479,11 +1479,24 @@ void datetime_value_function_S() : {}
 	<CURRENT_TIMESTAMP> [ <LEFT_PAREN> timestamp_precision_S() <RIGHT_PAREN> ]
 }
 
-void derived_table_S() : {}
+/*
+ * derived_table_S
+ *
+ * bnf-single <derived_table> ::= <table_subquery>
+ *
+ * 
+ */
+void derived_table_S() #DerivedTable : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "derived_table_S()" ) ;
+}
 {
 	//S:
 	// <derived_table> ::= <table_subquery>
-   	table_subquery_A()
+   	table_subquery_S()
+   	{
+   		if( log.isTraceEnabled() ) exitTrace ( "derived_table_S()" ) ;
+   	}
 }
 
 void end_field_S() : {}
@@ -1561,7 +1574,7 @@ void exists_predicate_A() #ExistsPredicate :
 {
 	//S: 
 	// <exists_predicate> ::= EXISTS <table_subquery>
-	<EXISTS> table_subquery_A()
+	<EXISTS> table_subquery_S()
 	{ 
 	   if( log.isTraceEnabled() ) exitTrace ( "exists_predicate_A()" ) ;		
 	}	
@@ -1643,7 +1656,7 @@ void from_clause_S() #From :
 	// FROM <table_reference>
     // [ { <comma> <table_reference> }... ]
 	try {		
-	   (  <FROM> table_reference_A() ( <COMMA> table_reference_A() )*  )
+	   (  <FROM> table_reference_S() ( <COMMA> table_reference_S() )*  )
 	}
 	catch( ParseException pex ) {		compiler.errorSkipTo( compiler.FROM_SKIP_TO, pex ) ;
 	}
@@ -1891,7 +1904,7 @@ void in_predicate_value_S() #InPredicateValue :
 	//S:
     // <in_predicate_value> ::= <table_subquery>  | <left_paren> <in_value_list> <right_paren>
 	
-	( LOOKAHEAD(2) table_subquery_A() | ( <LEFT_PAREN> in_value_list_A() <RIGHT_PAREN> ) )
+	( LOOKAHEAD(5) table_subquery_S() | ( <LEFT_PAREN> in_value_list_A() <RIGHT_PAREN> ) )
 	{ 
 		if( log.isTraceEnabled() ) exitTrace ( "in_predicate_value_S()" ) ;
 	} 	
@@ -2067,7 +2080,7 @@ void join_column_list_S() : {}
 
 
 /*
- * joined_table_S
+ * joined_table_A
  *
  * bnf-start
  *  <joined_table> ::=
@@ -2076,9 +2089,9 @@ void join_column_list_S() : {}
  * bnf-end
  *
  */
-void joined_table_S() : 
+void joined_table_A() : 
 {
-	if( log.isTraceEnabled() ) enterTrace ( "joined_table_S()" ) ;
+	if( log.isTraceEnabled() ) enterTrace ( "joined_table_A()" ) ;
 }
 {
 	//S:
@@ -2092,10 +2105,10 @@ void joined_table_S() :
 		LOOKAHEAD(4)
 		qualified_join_S()
 		|
-		( <LEFT_PAREN> joined_table_S() <RIGHT_PAREN> )
+		( <LEFT_PAREN> joined_table_A() <RIGHT_PAREN> )
 	)
 	{ 
-		if( log.isTraceEnabled() ) exitTrace ( "joined_table_S()" ) ;
+		if( log.isTraceEnabled() ) exitTrace ( "joined_table_A()" ) ;
 	}
 }
 
@@ -2157,7 +2170,7 @@ void match_predicate_S() : {}
 	// <match_predicate> ::=
     //   <row_value_constructor> MATCH [ UNIQUE ] [ PARTIAL | FULL ] <table_subquery>
 
-	row_value_constructor_S() <MATCH> [ <UNIQUE> ] [ <PARTIAL> | <FULL> ] table_subquery_A() 
+	row_value_constructor_S() <MATCH> [ <UNIQUE> ] [ <PARTIAL> | <FULL> ] table_subquery_S() 
 }
 
 /*
@@ -3465,7 +3478,7 @@ void qualified_join_S() #QualifiedJoin :
 		[ <NATURAL> ] 
 		join_type_A() 
 		<JOIN> 
-		table_reference_A() 
+		table_reference_S() 
 		[ LOOKAHEAD(3) join_specification_S() ]
 	)
 	{
@@ -3482,7 +3495,7 @@ void table_array_fragment() #TableArrayFragment :
 	(
 	   tableReferenceBarJoinedTable()
 	   <COMMA> 
-	   table_reference_A() 
+	   table_reference_S() 
 	   <SEMICOLON>
 	)
 	{
@@ -4014,16 +4027,21 @@ void string_value_expression_A() : {}
 /*
  * subquery_S
  *
+ * bnf-start
+ *    <subquery> ::= <left_paren> <query_expression> <right_paren>
+ * bnf-end
  */
-SearchType subquery_S() : 
+void subquery_S() : 
 {
-	SearchType st = null ;
+	if( log.isTraceEnabled() ) enterTrace ( "subquery_S()" ) ;
 }
 {
 	//S:
 	//  <subquery> ::= <left_paren> <query_expression> <right_paren>
-	( <LEFT_PAREN> query_expression_S() <RIGHT_PAREN> )
-	{ return st ; }		
+	( <LEFT_PAREN> query_expression_A() <RIGHT_PAREN> )	
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "subquery_S()" ) ;	
+	}
 }
 
 
@@ -4033,7 +4051,7 @@ void quantified_comparison_predicate_S() : {}
 	// <quantified_comparison_predicate> ::=
     //    <row_value_constructor> <comp_op> <quantifier> <table_subquery>
 
-	row_value_constructor_S() comp_op_S() quantifier_S() table_subquery_A()	
+	row_value_constructor_S() comp_op_S() quantifier_S() table_subquery_S()	
 }
 
 void quantifier_S() : {}
@@ -4047,17 +4065,34 @@ void quantifier_S() : {}
 	<ALL> | ( <SOME> | <ANY> )	
 }
 
-void query_expression_S() : {}
+/*
+ * query_expression_A
+ *
+ * bnf-start
+ *   <query_expression> ::=
+ *       <query_specification>
+ *     | <joined_table>
+ *   !! ADQL Note: SQL92 uses <non_join_query_expression> rather than <query_specification>
+ * bnf-end
+ *
+ */
+void query_expression_A() #QueryExpression : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "query_expression_A()" ) ;
+}
 {
 	//S:
 	// <query_expression> ::=
     //    <non-join_query_expression>
     //  | <joined_table>
 	
-	LOOKAHEAD(3)
-	nonjoin_query_expression_S()
+	( LOOKAHEAD(3)
+	query_specification_A()
 	|
-	joined_table_S()
+	joined_table_A() )
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "query_expression_A()" ) ;	
+	}
 }
 
 void query_primary_S() : {}
@@ -4070,7 +4105,7 @@ void query_primary_S() : {}
     LOOKAHEAD(3)
  	nonjoin_query_primary_S()
     | 
-    joined_table_S()
+    joined_table_A()
 }
 
 
@@ -4084,7 +4119,7 @@ void query_term_S() : {}
 	LOOKAHEAD(2)
 	nonjoin_query_term_S()
 	|
-	joined_table_S()	
+	joined_table_A()	
 }
 
 void corresponding_spec_S() : {}
@@ -4122,7 +4157,7 @@ JoinTableType cross_join_S() :
 	//S:
 	// <cross_join> ::=
     //    <table_reference> CROSS JOIN <table_reference>
-	( tableReferenceBarJoinedTable() <CROSS_JOIN> table_reference_A() )
+	( tableReferenceBarJoinedTable() <CROSS_JOIN> table_reference_S() )
 	{
 	   if( fType2 != null ) {
 	      jtType = JoinTableType.Factory.newInstance() ;
@@ -4229,19 +4264,23 @@ void table_name_A() #TableName :
 }
 
 /* 
- * table_reference_A
+ * table_reference_S
  *
  * bnf-start
  *  <table_reference> ::=
  *     <table_name> [ <correlation_specification> ]
- *   | <table_subquery> <correlation_specification>
+ *   | <derived_table> <correlation_specification>
  *   | <joined_table>
+ *  !! ADQL Note: The spec uses <table_subquery> rather than <derived_table>.
+ *  !! Needed to make some adjustment similar to the above to enable <joined_table>
+ *  !! to have a <correlation_specification> if required. In SQL92 this is enabled
+ *  !! way down within <derived_table>.
  * bnf-end
  *
  */
-void table_reference_A() #Table : 
+void table_reference_S() #Table : 
 {
-	if( log.isTraceEnabled() ) enterTrace ( "table_reference_A()" ) ;
+	if( log.isTraceEnabled() ) enterTrace ( "table_reference_S()" ) ;
 } 
 {
 	//S:
@@ -4253,14 +4292,14 @@ void table_reference_A() #Table :
 	  (
 	  // Sequence slightly refactored...
 	  // JL: These lookaheads probably need adjusting.
-	    LOOKAHEAD(20)
-	    joined_table_S()
-	    |
 		LOOKAHEAD(20)
+		derived_table_S() correlation_specification_A()
+		|
+	    LOOKAHEAD(20)
+	    joined_table_A()
+	    |
 	    table_name_A() [ correlation_specification_A() ]
-		| 
-		LOOKAHEAD(10)
-		table_subquery_A() correlation_specification_A()
+		
 		
 	  )
 	}
@@ -4268,7 +4307,7 @@ void table_reference_A() #Table :
 		compiler.errorSkipTo( compiler.TABLE_REF_SKIP_TO, pex ) ;
 	}
 	{ 
-		if( log.isTraceEnabled() ) exitTrace ( "table_reference_A()" ) ;
+		if( log.isTraceEnabled() ) exitTrace ( "table_reference_S()" ) ;
 	} 
 }
 
@@ -4293,10 +4332,10 @@ void tableReferenceBarJoinedTable() #TableReferenceBarJoinedTable :
 }
 {
 //	( ( LOOKAHEAD(5) schema_name_A() <PERIOD> )? table_name_A() [ [ <AS> ] correlation_name_S() ] )
-		LOOKAHEAD(20)
+	(	LOOKAHEAD(20)
 	    table_name_A() [ correlation_specification_A() ]
 		| 
-		table_subquery_A() correlation_specification_A()
+		derived_table_S() correlation_specification_A() )
 	{ 
 		if( log.isTraceEnabled() ) exitTrace ( "tableReferenceBarJoinedTable()" ) ;
 	}
@@ -4304,25 +4343,23 @@ void tableReferenceBarJoinedTable() #TableReferenceBarJoinedTable :
 
 
 /*
- * table_subquery_A
+ * table_subquery_S
  *
  * bnf-start
- *  <table_subquery> ::= 
- *      <left_paren> <query_specification> <right_paren>
- *  !! SQL92 uses <subquery>. Not sure whether this is relevant.
+ *  <table_subquery> ::= <subquery>
  * bnf-end
  *
  */
-void table_subquery_A() #TableSubQuery: 
+void table_subquery_S() #TableSubQuery: 
 {
-	if( log.isTraceEnabled() ) enterTrace ( "table_subquery_A" ) ;
+	if( log.isTraceEnabled() ) enterTrace ( "table_subquery_S" ) ;
 }
 {
 	//S:
 	// <table_subquery> ::= <subquery>
-	( <LEFT_PAREN> query_specification_A() <RIGHT_PAREN> )	
+	subquery_S()	
 	{
-		if( log.isTraceEnabled() ) exitTrace ( "table_subquery_A" ) ;
+		if( log.isTraceEnabled() ) exitTrace ( "table_subquery_S" ) ;
 	}
 }
 
@@ -4484,7 +4521,7 @@ void unique_predicate_S() : {}
 {
 	//S:
 	// <unique_predicate> ::= UNIQUE <table_subquery>
-	<UNIQUE> table_subquery_A()	
+	<UNIQUE> table_subquery_S()	
 }
 
 /*
@@ -4710,6 +4747,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.40  2007/08/16 15:19:16  jl99
+Rejigged to accommodate Query Expression
+
 Revision 1.39  2007/08/10 11:59:52  jl99
 Correction to LIKE predicate when used with a user defined function.
 

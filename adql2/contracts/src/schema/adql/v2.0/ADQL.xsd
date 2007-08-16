@@ -468,7 +468,7 @@
 		<xs:complexContent mixed="false">
 			<xs:extension base="adql:inclusionSetType">
 				<xs:sequence>
-					<xs:element name="selection" type="adql:selectType"/>
+					<xs:element name="QueryExpression" type="adql:queryExpressionType"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -867,18 +867,32 @@
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
-	</xs:complexType>	
+	</xs:complexType>
 	
 	<xs:complexType name="derivedTableType" mixed="false">
 		<xs:annotation>
-			<xs:documentation>Represents SQL derived table expression</xs:documentation>
+			<xs:documentation>Represents SQL92 derived table type</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent mixed="false">
 			<xs:extension base="adql:fromTableType">
-				<xs:sequence>
-					<xs:element name="SubQuery" type="adql:subQuerySet"/>
-				</xs:sequence>
+				<xs:choice>
+					<xs:element name="QueryExpression" type="adql:queryExpressionType"/>
+				</xs:choice>
 				<xs:attribute name="Alias" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>	
+	
+	<xs:complexType name="queryExpressionType" mixed="false">
+		<xs:annotation>
+			<xs:documentation>Represents SQL92 query expression</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="adql:fromTableType">
+				<xs:choice>
+					<xs:element name="Select" type="adql:selectType"/>
+					<xs:element name="JoinedTable" type="adql:joinTableType"/>
+				</xs:choice>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

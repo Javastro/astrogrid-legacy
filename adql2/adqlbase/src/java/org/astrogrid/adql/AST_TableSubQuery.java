@@ -18,7 +18,7 @@ public class AST_TableSubQuery extends SimpleNode {
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_TableSubQuery.buildXmlTree()" ) ;
         SubQuerySet sqs = (SubQuerySet)xo.changeType( SubQuerySet.type ) ;
-        children[0].buildXmlTree( sqs.addNewSelection() ) ;
+        children[0].buildXmlTree( sqs.addNewQueryExpression() ) ;
         setGeneratedObject( children[0].getGeneratedObject() ) ;
         super.buildXmlTree( (XmlObject)this.generatedObject ) ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_TableSubQuery.buildXmlTree()" ) ;

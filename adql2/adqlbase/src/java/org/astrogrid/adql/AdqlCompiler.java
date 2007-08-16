@@ -797,7 +797,7 @@ public class AdqlCompiler {
     }
    
    private void fTableReferenceWithinJoinFromArray() throws ParseException {
-       parser.table_reference_A() ;     
+       parser.table_reference_S() ;     
        ArrayOfFromTableType tableArray = ArrayOfFromTableType.Factory.newInstance() ;
        AST_Table tableNode = (AST_Table)parser.jjtree.rootNode() ;
        tableNode.buildXmlTree(tableArray.addNewFromTableType() ) ;
@@ -811,7 +811,7 @@ public class AdqlCompiler {
    }
    
    private void fTableReference() throws ParseException {
-       parser.table_reference_A() ;
+       parser.table_reference_S() ;
        FromType from = FromType.Factory.newInstance() ;
        AST_Table tableNode = (AST_Table)parser.jjtree.rootNode() ;
        tableNode.buildXmlTree( from.addNewTable() ) ;
@@ -876,7 +876,7 @@ public class AdqlCompiler {
         checkForRemainingSource() ;
         SubQuerySet subQuerySet = SubQuerySet.Factory.newInstance() ;
         AST_Select selectNode = (AST_Select)parser.jjtree.rootNode() ;
-        selectNode.buildXmlTree( subQuerySet.addNewSelection() ) ;    
+        selectNode.buildXmlTree( subQuerySet.addNewQueryExpression() ) ;    
     }
     
     private void fSetQuantifier() throws ParseException {
