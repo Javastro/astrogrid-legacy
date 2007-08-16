@@ -80,12 +80,12 @@
         +-->        
 	<xsl:template match="ad1:Table[substring-after(@xsi:type, ':') = 'joinTableType']/ad1:Condition | ad1:Table[@xsi:type = 'joinTableType']/ad1:Condition">
        <xsl:element name="{$ad2Prefix}:JoinSpecification" namespace="{$ad2NS}">
-            <xsl:attribute name="{$xsiPrefix}:type" namespace="{$xsiNS}">
+            <xsl:attribute name="xsi:type" namespace="{$xsiNS}">
                 <xsl:value-of select="$ad2Prefix" />
 			 	<xsl:text>:joinConditionType</xsl:text>
 			</xsl:attribute>
             <xsl:element name="{$ad2Prefix}:Condition" namespace="{$ad2NS}">
-                <xsl:attribute name="{$xsiPrefix}:type" namespace="{$xsiNS}">
+                <xsl:attribute name="xsi:type" namespace="{$xsiNS}">
                     <xsl:value-of select="$ad2Prefix" />
 			 	    <xsl:text>:comparisonPredType</xsl:text>
 			    </xsl:attribute>
@@ -100,18 +100,18 @@
         +-->  
 	<xsl:template match="*[substring-after(@xsi:type, ':') = 'ConstantListSet'] | *[@xsi:type = 'ConstantListSet']">
        <xsl:element name="{$ad2Prefix}:Set" namespace="{$ad2NS}">
-            <xsl:attribute name="{$xsiPrefix}:type" namespace="{$xsiNS}">
+            <xsl:attribute name="xsi:type" namespace="{$xsiNS}">
                 <xsl:value-of select="$ad2Prefix" />
 			 	<xsl:text>:InListSet</xsl:text>
 			</xsl:attribute>
 			<xsl:for-each select="ad1:Item">
 				<xsl:element name="{$ad2Prefix}:Item" namespace="{$ad2NS}">
-                	<xsl:attribute name="{$xsiPrefix}:type" namespace="{$xsiNS}">
+                	<xsl:attribute name="xsi:type" namespace="{$xsiNS}">
                     	<xsl:value-of select="$ad2Prefix" />
 			 	    	<xsl:text>:atomType</xsl:text>
 			    	</xsl:attribute>
 			    	<xsl:element name="{$ad2Prefix}:Literal" namespace="{$ad2NS}">
-                		<xsl:attribute name="{$xsiPrefix}:type" namespace="{$xsiNS}">
+                		<xsl:attribute name="xsi:type" namespace="{$xsiNS}">
                     		<xsl:value-of select="$ad2Prefix" />
 			 	    		<xsl:text>:</xsl:text>
 			 	    		<xsl:value-of select="substring-after(@xsi:type, ':')" />
@@ -120,6 +120,29 @@
             		</xsl:element>			    	          	
             	</xsl:element>	
 			</xsl:for-each>           
+        </xsl:element> 
+	</xsl:template>
+	
+	<!--+
+        | subQuerySet changed to be a simple holder of QueryExpression...
+        +-->  
+	<xsl:template match="*[substring-after(@xsi:type, ':') = 'subQuerySet'] | *[@xsi:type = 'subQuerySet']">
+       <xsl:element name="{$ad2Prefix}:Set" namespace="{$ad2NS}">
+            <xsl:apply-templates select="@*"/>
+            <xsl:element name="{$ad2Prefix}:QueryExpression" namespace="{$ad2NS}">           
+				<xsl:for-each select="*">		
+					<xsl:choose>	
+			    		<xsl:when test="self::node()[local-name() = 'selection']" >
+							<xsl:element name="{$ad2Prefix}:Select" namespace="{$ad2NS}">
+                				<xsl:apply-templates select="@*|node()"/>      	
+            				</xsl:element>
+						</xsl:when>
+			    		<xsl:otherwise>
+							<xsl:apply-templates select="@*|node()"/>     	
+						</xsl:otherwise>
+					</xsl:choose>			
+				</xsl:for-each>  			
+			</xsl:element>         
         </xsl:element> 
 	</xsl:template>
 	
@@ -134,7 +157,7 @@
 	   			<xsl:choose>
 					<xsl:when test="self::node()[local-name() = 'Arg']" >
 						<xsl:element name="{$ad2Prefix}:Arg" namespace="{$ad2NS}">
-                			<xsl:attribute name="{$xsiPrefix}:type" namespace="{$xsiNS}">
+                			<xsl:attribute name="xsi:type" namespace="{$xsiNS}">
                     			<xsl:value-of select="$ad2Prefix" />
 			 	    			<xsl:text>:characterValueExpressionType</xsl:text>			 	    		
 			    			</xsl:attribute>  
@@ -145,12 +168,12 @@
 					</xsl:when>
 					<xsl:when test="self::node()[local-name() = 'Pattern']" >
 						<xsl:element name="{$ad2Prefix}:Pattern" namespace="{$ad2NS}">
-                			<xsl:attribute name="{$xsiPrefix}:type" namespace="{$xsiNS}">
+                			<xsl:attribute name="xsi:type" namespace="{$xsiNS}">
                     			<xsl:value-of select="$ad2Prefix" />
 			 	    			<xsl:text>:characterValueExpressionType</xsl:text>			 	    		
 			    			</xsl:attribute>
 			    			<xsl:element name="{$ad2Prefix}:CharacterFactor" namespace="{$ad2NS}">					    			
-                				<xsl:attribute name="{$xsiPrefix}:type" namespace="{$xsiNS}">
+                				<xsl:attribute name="xsi:type" namespace="{$xsiNS}">
                     				<xsl:value-of select="$ad2Prefix" />
 			 	    				<xsl:text>:atomType</xsl:text>
 			    				</xsl:attribute>
@@ -177,7 +200,7 @@
         | Template for type attributes belonging to Schema-instance.
         +--> 
     <xsl:template match="@xsi:type">
-		<xsl:attribute name="{local-name()}" namespace="{$xsiNS}">
+		<xsl:attribute name="xsi:type" namespace="{$xsiNS}">
 			<xsl:choose>
 				<!-- correction of a typo -->
 			    <xsl:when test="substring-after( . , ':' ) = 'jointTableQualifierType'">
