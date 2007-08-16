@@ -52,7 +52,7 @@ public class Interactive {
     } 
     
     class ExitException extends Exception {
-        ExitException() {} ;
+        ExitException() {} ; 
     }
     
     class ModeSwitchException extends Exception {

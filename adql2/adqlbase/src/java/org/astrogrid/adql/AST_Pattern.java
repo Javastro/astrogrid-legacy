@@ -2,9 +2,6 @@
 
 package org.astrogrid.adql;
 
-//
-// Class should be removed
-
 public class AST_Pattern extends SimpleNode {
 
     public AST_Pattern(AdqlStoX p, int id) {
