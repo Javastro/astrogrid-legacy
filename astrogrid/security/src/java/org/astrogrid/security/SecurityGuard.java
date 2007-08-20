@@ -1,8 +1,10 @@
 package org.astrogrid.security;
 
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.security.PrivateKey;
 import java.security.cert.CertificateException;
@@ -11,6 +13,7 @@ import java.security.cert.CertPath;
 import java.security.cert.X509Certificate;
 import javax.security.auth.Subject;
 import javax.security.auth.x500.X500Principal;
+import org.astrogrid.security.authorization.AccessPolicy;
 
 
 /**
@@ -46,6 +49,8 @@ public class SecurityGuard {
    */
   protected Subject subject;
 
+  protected AccessPolicy accessPolicy;
+
   /**
    * Constructs a SecurityGuard with empty
    * JAAS subjects.
@@ -66,11 +71,14 @@ public class SecurityGuard {
   /**
    * Creates a SecurityGuard with credentials.
    * The credentials are copied from a given SecurityGuard.
+   * A reference to the access policy of the given guard is copied into
+   * the new one.
    *
    * @param sg The source of the credentials.
    */
    public SecurityGuard (SecurityGuard sg) {
      this.subject = this.cloneSubject(sg.getSubject());
+     this.accessPolicy = sg.accessPolicy;
   }
 
   
@@ -295,6 +303,27 @@ public class SecurityGuard {
   public Object getFirstPrivateCredential(Class clazz) {
     Object[] a = this.subject.getPrivateCredentials(clazz).toArray();
     return (a.length > 0)? a[0] : null;
+  }
+  
+  /**
+   * Sets the access policy that makes authorization decisions.
+   */
+  public void setAccessPolicy(AccessPolicy policy) {
+    this.accessPolicy = policy;
+  }
+  
+  /**
+   * Makes an authorization decision based on the current access-policy.
+   */
+  public Map decide(Map request) throws SecurityException, 
+                                        GeneralSecurityException, 
+                                        Exception {
+    if (this.accessPolicy == null) {
+      throw new GeneralSecurityException("No access policy is loaded");
+    }
+    else {
+      return this.accessPolicy.decide(this, request);
+    }
   }
   
   /**

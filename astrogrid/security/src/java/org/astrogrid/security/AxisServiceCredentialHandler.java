@@ -64,11 +64,9 @@ public class AxisServiceCredentialHandler extends BasicHandler {
    * @param msgContext - message context.
    * @throws AxisFault - if anything goes wrong.
    */
-  public void invoke(MessageContext msgContext) throws AxisFault {
+  public void invoke(MessageContext msgContext) {
+    AxisServiceSecurityGuard guard = new AxisServiceSecurityGuard();
     try {
-      System.out.println();
-      System.out.println("Message in service:");
-      System.out.println(msgContext.getRequestMessage().getSOAPPartAsString());
       SOAPEnvelope envelope = msgContext.getRequestMessage().getSOAPEnvelope();
       SOAPHeaderElement header = envelope.getHeaderByName(WSSE_1_0_NAMESPACE,
                                                           "Security",
@@ -78,22 +76,21 @@ public class AxisServiceCredentialHandler extends BasicHandler {
         WsseSignature signature = new WsseSignature(document, this.trustAnchors);
         signature.verify();
         header.setProcessed(true);
-        AxisServiceSecurityGuard guard = signature.getServiceGuard();
+        guard = signature.getServiceGuard();
         X500Principal p = guard.getX500Principal();
         log.info("Caller is authenticated as " + p + " by digital signature.");
-        msgContext.setProperty("org.astrogrid.security.guard", guard);
       }
       else {
-        msgContext.setProperty("org.astrogrid.security.guard",
-                               new AxisServiceSecurityGuard());
         log.info("Caller is anonymous.");
       }
     }
     catch (Exception e) {
-      log.info("The digital-signature-checking handler failed" + e);
-      e.printStackTrace();
-      throw new AxisFault("The digital-signature-checking handler failed", e);
+      log.info("The digital-signature-checking handler failed: " + e);
     }
+    finally {
+      msgContext.setProperty("org.astrogrid.security.guard", guard);
+    }
+    
   }
   
   /**

@@ -4,7 +4,7 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-security</artifactId>
   <name>Security Facade</name>
-  <currentVersion>2007.2.03</currentVersion>
+  <currentVersion>2007.2.04</currentVersion>
   <shortDescription>APIs for security in web services.</shortDescription>
   
   <description>
@@ -176,7 +176,7 @@
       <dependency>
         <groupId>globus</groupId>
         <artifactId>cog-jglobus</artifactId>
-        <version>1.2</version>
+        <version>1.4</version>
         <type>jar</type>
         <properties>
           <dist.bundle>true</dist.bundle>
