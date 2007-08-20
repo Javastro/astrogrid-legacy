@@ -1,8 +1,8 @@
 #
 # PLEASE DO NOT DELETE THIS README FILE
-# (It is used by the test program to locate the test files)
+# (It is used by test programs to locate the test files)
 #
-Test files are organized by version number.
+Test files for ADQL queries are organized by version number.
 There should be directories for each version number of Adql, for example v074 and v10.
 The files in these directories are organized along the following lines. 
 All files have an extension of either .adqls or .adqlx
@@ -13,7 +13,7 @@ If an adqls file is paired with an adqlx file of the same name, then it is assum
 compiles into the twinned file format, and therefore the test can assert true on compilation.
 If an adqls file is not paired, it is assumed the compilation will fail.
 
-Test Methods. 
+Test Methods within AdqlStoXTest. 
 For each file of extension .adqls, there should be a corresponding testOf_ method.
 Thus for file selectBinaries.adqls within directory v10 there is a method testOf_v10_selectBinaries() 
  
@@ -26,7 +26,7 @@ Some things about the file names, simply for convenience...
 
 Usually the above annotations are prefixed to the file name.
 
-SPECIAL NOTE on the test directory structure.
+SPECIAL NOTE on the test directory structure pertaining to ADQL/s input files.
 (1) The v10 directory contains ADQL/s files that can be successfully processed by the version 2 compiler without change.
 (Note that "success" here also means that the ones expected to fail do still fail!). All of the ADQL/x output control 
 files are converted to the version 2 structure prior to comparison with the output of the compiler.
