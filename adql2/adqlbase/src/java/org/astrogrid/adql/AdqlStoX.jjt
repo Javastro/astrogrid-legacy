@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.42 2007/08/17 06:59:41 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.43 2007/08/20 16:32:45 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -2714,9 +2714,11 @@ void predicate_A() :
  *
  * bnf-start
  *  <region_predicate> ::=
- *    <point> [ NOT ] IN <region_specification>
+ *    <position> [ NOT ] IN <region_specification>
  *  !! ADQL Note:
- *  !! The draft spec has the following...
+ *  !! JEFF: I'm ignoring the draft spec here
+ *  !! in favour of some experimentation.
+ *  !! For information, the draft spec has...
  *  !! <region_predicate> ::= 
  *  !!   <table_reference> <period> REGION 
  *  !!   <left_paren> 
@@ -2734,7 +2736,7 @@ void region_predicate_A() #RegionPredicate :
 	tracker.setType( RegionSearchType.type ) ;
 }
 {
-	point_A() 
+	position_A() 
 	[ <NOT> { jjtThis.setIn(false);
 	          tracker.setType( NotInRegionSearchType.type ) ; } ] 
 	<IN> region_specification_A()	
@@ -2748,44 +2750,26 @@ void region_predicate_A() #RegionPredicate :
  * point_A
  *
  * bnf-start
- *  <point> ::= 
- *    <point_J2000> | <point_LATLON> | <point_CARTESIAN>
+ *  <position> ::= 
+ *    <left_paren> <coord_one> <comma> <coord_two> <right_paren>
  * bnf-end
  *
- * bnf-start
- *  <point_J2000> ::= <left_paren> <ra> <comma> <dec> <right_paren>
- * bnf-end
- 
- * bnf-start
- *  <point_LATLON> ::= <left_paren> <latitude> <comma> <longitude> <right_paren>
- * bnf-end
- *
- * bnf-start
- *  <point_CARTESIAN> ::= <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren>
- * bnf-end
- *
- * bnf-single <ra> ::= <numeric_value_expression>
- * bnf-single <dec> ::= <numeric_value_expression>
- * bnf-single <latitude> ::= <numeric_value_expression>
- * bnf-single <longitude> ::= <numeric_value_expression>
- * bnf-single <x_coord> ::= <numeric_value_expression>
- * bnf-single <y_coord> ::= <numeric_value_expression>
- * bnf-single <z_coord> ::= <numeric_value_expression>
+ * bnf-single <coord_one> ::= <numeric_value_expression>
+ * bnf-single <coord_two> ::= <numeric_value_expression>
  *
  */
-void point_A() #Point : 
+void position_A() #Point : 
 {
-	if( log.isTraceEnabled() ) enterTrace ( "point_A()" ) ;
-	tracker.push( compiler.POINT_ELEMENT, PointType.type  ) ;
+	if( log.isTraceEnabled() ) enterTrace ( "position_A()" ) ;
+	tracker.push( compiler.POSITION_ELEMENT, PositionType.type  ) ;
 }
 {
 	<LEFT_PAREN> numeric_value_expression_S() 
 	     <COMMA> numeric_value_expression_S() 
-	   [ <COMMA> numeric_value_expression_S() ] 
 	<RIGHT_PAREN>
 	{
 	   tracker.pop() ;
-	   if( log.isTraceEnabled() ) exitTrace ( "point_A()" ) ;	
+	   if( log.isTraceEnabled() ) exitTrace ( "position_A()" ) ;	
 	}	
 }
 
@@ -2794,11 +2778,11 @@ void point_A() #Point :
  *
  * bnf-start
  *  <region_specification> ::=
- *     <box>
- *   | <circle>
- *   | <convex_hull>
- *   | <convex>
- *   | <polygon>
+ *     BOX <box>
+ *   | CIRCLE <circle>
+ *   | CHULL <convex_hull>
+ *   | CONVEX <convex>
+ *   | POLY <polygon>
  * bnf-end
  *
  */
@@ -2829,10 +2813,7 @@ void region_specification_A() :
  * convex_A
  *
  * bnf-start
- *   <convex> ::=
- *      LATLON <convex_LatLon>
- *    | CARTESIAN <convex_Cartesian>
- *    | [ J2000 ] <convex_J2000>
+ *   <convex> ::= [ J2000 ] <convex_J2000>
  * bnf-end
  */
 void convex_A() : 
@@ -2841,11 +2822,7 @@ void convex_A() :
     tracker.setType( ConvexType.type ) ;
 }
 {	
-	(
-		( <LATLON> convex_LatLon_A() )
-		|
-		( <CARTESIAN> convex_Cartesian_A() )
-		|
+	(	
 		( [ <J2000> ] convex_J2000_A() )
 	)
 	{
@@ -2854,51 +2831,7 @@ void convex_A() :
 }
 
 
-/*
- * convex_LatLon_A
- *
- * bnf-start
- *   <convex_LatLon> ::= 
- *      <left_paren> <longitude> <comma> <latitude> <comma> <direction> <right_paren>
- *    { <left_paren> <longitude> <comma> <latitude> <comma> <direction> <right_paren> }...
- * bnf-end
- */
-void convex_LatLon_A() #ConvexLatLon: 
-{
-    if( log.isTraceEnabled() ) enterTrace ( "convex_LatLon_A()" ) ;
-}
-{
-	  ( LOOKAHEAD(2)
-	    <LEFT_PAREN> numeric_value_expression_S() <COMMA> numeric_value_expression_S() <COMMA>	direction_A() <RIGHT_PAREN> )+
-      {
-          if( log.isTraceEnabled() ) exitTrace ( "convex_LatLon_A()" ) ;
-      }
-}
-
-
-/*
- * convex_Cartesian_A
- *
- * bnf-start
- *   <convex_Cartesian> ::= 
- *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma> <direction> <right_paren>
- *    { <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma> <direction> <right_paren> }...
- * bnf-end
- */
-void convex_Cartesian_A() #ConvexCartesian : 
-{
-    if( log.isTraceEnabled() ) enterTrace ( "convex_Cartesian_A()" ) ;
-}
-{
-	  ( LOOKAHEAD(2)
-	    <LEFT_PAREN> numeric_value_expression_S() 
-	         <COMMA> numeric_value_expression_S()
-	         <COMMA> numeric_value_expression_S()  
-	         <COMMA> direction_A() <RIGHT_PAREN> )+
-      {
-          if( log.isTraceEnabled() ) exitTrace ( "convex_Cartesian_A()" ) ;
-      }
-}
+///*// * convex_LatLon_A// *// * bnf-start// *   <convex_LatLon> ::= // *      <left_paren> <longitude> <comma> <latitude> <comma> <direction> <right_paren>// *    { <left_paren> <longitude> <comma> <latitude> <comma> <direction> <right_paren> }...// * bnf-end// *///void convex_LatLon_A() #ConvexLatLon: //{//    if( log.isTraceEnabled() ) enterTrace ( "convex_LatLon_A()" ) ;//}//{//	  ( LOOKAHEAD(2)//	    <LEFT_PAREN> numeric_value_expression_S() <COMMA> numeric_value_expression_S() <COMMA>	direction_A() <RIGHT_PAREN> )+//      {//          if( log.isTraceEnabled() ) exitTrace ( "convex_LatLon_A()" ) ;//      }//}///////*// * convex_Cartesian_A// *// * bnf-start// *   <convex_Cartesian> ::= // *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma> <direction> <right_paren>// *    { <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma> <direction> <right_paren> }...// * bnf-end// *///void convex_Cartesian_A() #ConvexCartesian : //{//    if( log.isTraceEnabled() ) enterTrace ( "convex_Cartesian_A()" ) ;//}//{//	  ( LOOKAHEAD(2)//	    <LEFT_PAREN> numeric_value_expression_S() //	         <COMMA> numeric_value_expression_S()//	         <COMMA> numeric_value_expression_S()  //	         <COMMA> direction_A() <RIGHT_PAREN> )+//      {//          if( log.isTraceEnabled() ) exitTrace ( "convex_Cartesian_A()" ) ;//      }//}
 
 
 /*
@@ -2906,8 +2839,8 @@ void convex_Cartesian_A() #ConvexCartesian :
  *
  * bnf-start
  *   <convex_J2000> ::= 
- *      <left_paren> <ra> <comma> <dec> <comma> <direction> <right_paren>
- *    { <left_paren> <ra> <comma> <dec> <comma> <direction> <right_paren> }...
+ *      <left_paren> <coord_one> <comma> <coord_two> <comma> <direction> <right_paren>
+ *    { <left_paren> <coord_one> <comma> <coord_one> <comma> <direction> <right_paren> }...
  * bnf-end
  */
 void convex_J2000_A() #ConvexJ2000 : 
@@ -2926,10 +2859,7 @@ void convex_J2000_A() #ConvexJ2000 :
  * box_A
  *
  * bnf-start
- *   <box> ::=
- *      LATLON <box_LatLon>
- *    | CARTESIAN <box_Cartesian>
- *    | [ J2000 ] <box_J2000>
+ *   <box> ::= [ J2000 ] <box_J2000>
  * bnf-end
  */
 void box_A() : 
@@ -2938,80 +2868,20 @@ void box_A() :
 	tracker.setType( BoxType.type ) ;
 } 
 {
-	(
-		( <LATLON> box_LatLon_A() )
-		|
-		( <CARTESIAN> box_Cartesian_A() )
-		|
-		( [ <J2000> ] box_J2000_A() )	
-	)
+	( [ <J2000> ] box_J2000_A() )	
 	{
 		if( log.isTraceEnabled() ) exitTrace ( "box_A()" ) ;	
 	}
 }
 
-/*
- * box_LatLon_A
- *
- * bnf-start
- *   <box_LatLon> ::= 
- *      <left_paren> <latitude> <comma> <longitude> <comma> <length> <comma> <breadth> <right_paren>
- * bnf-end
- *
- */
-void box_LatLon_A() #BoxLatLon : 
-{
-	if( log.isTraceEnabled() ) enterTrace ( "box_LatLon_A()" ) ;
-}
-{
-	(
-	  <LEFT_PAREN> numeric_value_expression_S() 
-	       <COMMA> numeric_value_expression_S() 
-	       <COMMA> numeric_value_expression_S() 
-	       <COMMA> numeric_value_expression_S() 
-	 <RIGHT_PAREN> 
-   
-    )
-      {
-      	   if( log.isTraceEnabled() ) exitTrace ( "box_LatLon_A()" ) ;
-      }
-}
-
-/*
- * box_Cartesian_A
- *
- * bnf-start
- *   <box_Cartesian> ::= 
- *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma> 
- *                    <length> <comma> <breadth> <right_paren>
- * bnf-end
- *
- */
-void box_Cartesian_A() #BoxCartesian : 
-{
-	if( log.isTraceEnabled() ) enterTrace ( "box_Cartesian_A()" ) ;
-}
-{
-	(
-	  <LEFT_PAREN> numeric_value_expression_S() 
-	       <COMMA> numeric_value_expression_S() 
-	       <COMMA> numeric_value_expression_S() 
-	       <COMMA> numeric_value_expression_S() 
-	       <COMMA> numeric_value_expression_S() 
-	 <RIGHT_PAREN> 
-   
-    )
-      {
-      	   if( log.isTraceEnabled() ) exitTrace ( "box_Cartesian_A()" ) ;
-      }
-}
+///*// * box_LatLon_A// *// * bnf-start// *   <box_LatLon> ::= // *      <left_paren> <latitude> <comma> <longitude> <comma> <length> <comma> <breadth> <right_paren>// * bnf-end// *// *///void box_LatLon_A() #BoxLatLon : //{//	if( log.isTraceEnabled() ) enterTrace ( "box_LatLon_A()" ) ;//}//{//	(//	  <LEFT_PAREN> numeric_value_expression_S() //	       <COMMA> numeric_value_expression_S() //	       <COMMA> numeric_value_expression_S() //	       <COMMA> numeric_value_expression_S() //	 <RIGHT_PAREN> //   //    )//      {//      	   if( log.isTraceEnabled() ) exitTrace ( "box_LatLon_A()" ) ;//      }//}/////*// * box_Cartesian_A// *// * bnf-start// *   <box_Cartesian> ::= // *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma> // *                    <length> <comma> <breadth> <right_paren>// * bnf-end// *// *///void box_Cartesian_A() #BoxCartesian : //{//	if( log.isTraceEnabled() ) enterTrace ( "box_Cartesian_A()" ) ;//}//{//	(//	  <LEFT_PAREN> numeric_value_expression_S() //	       <COMMA> numeric_value_expression_S() //	       <COMMA> numeric_value_expression_S() //	       <COMMA> numeric_value_expression_S() //	       <COMMA> numeric_value_expression_S() //	 <RIGHT_PAREN> //   //    )//      {//      	   if( log.isTraceEnabled() ) exitTrace ( "box_Cartesian_A()" ) ;//      }//}
 
 /*
  * box_J2000_A
  *
  * bnf-start
  *   <box_J2000> ::= 
- *      <left_paren> <ra> <comma> <dec> <comma> <length> <comma> <breadth> <right_paren>
+ *      <left_paren> <coord_one> <comma> <coord_two> <comma> <length> <comma> <breadth> <right_paren>
  * bnf-end
  *
  * bnf-single <length> ::= <numeric_value_expression>
@@ -3040,10 +2910,7 @@ void box_J2000_A() #BoxJ2000 :
  * circle_A
  *
  * bnf-start
- *  <circle> ::= 
- *     LATLON <circle_LatLon>
- *   | CARTESIAN <circle_Cartesian>
- *   | [ J2000 ] <circle_J2000>
+ *  <circle> ::= [ J2000 ] <circle_J2000>
  * bnf-end
  */
 void circle_A() : 
@@ -3051,61 +2918,14 @@ void circle_A() :
 	if( log.isTraceEnabled() ) enterTrace ( "circle_A()" ) ;
 	tracker.setType( CircleType.type ) ;
 }
-{
-	(
-		( <LATLON> circle_LatLon_A() )
-		|
-		( <CARTESIAN> circle_Cartesian_A() )
-		|
-		( [ <J2000> ] circle_J2000_A() ) 
-	)
+{ 
+	( [ <J2000> ] circle_J2000_A() ) 
 	{
 		if( log.isTraceEnabled() ) exitTrace ( "circle_A()" ) ;	
 	}
 }
 
-/*
- * circle_LatLon_A
- *
- * bnf-start
- *   <circle_LatLon> ::= 
- *      <left_paren> <latitude> <comma> <longitude> <comma> <radius> <right_paren>
- * bnf-end
- */
-void circle_LatLon_A() #CircleLatLon : 
-{
-	if( log.isTraceEnabled() ) enterTrace ( "circle_LatLon_A()" ) ;
-}
-{
-	 ( <LEFT_PAREN> numeric_value_expression_S() <COMMA> numeric_value_expression_S() <COMMA> radius_A() <RIGHT_PAREN> )
-	 {
-	 	if( log.isTraceEnabled() ) exitTrace ( "circle_LatLon_A()" ) ;	
-	 }
-}
-
-
-/*
- * circle_Cartesian_A
- *
- * bnf-start
- *   <circle_Cartesian> ::= 
- *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma> <radius> <right_paren>
- * bnf-end
- */
-void circle_Cartesian_A() #CircleCartesian : 
-{
-	if( log.isTraceEnabled() ) enterTrace ( "circle_Cartesian_A()" ) ;
-}
-{
-	 ( <LEFT_PAREN> numeric_value_expression_S() 
-	        <COMMA> numeric_value_expression_S() 
-	        <COMMA> numeric_value_expression_S()
-	        <COMMA> radius_A() 
-	   <RIGHT_PAREN> )
-	 {
-	 	if( log.isTraceEnabled() ) exitTrace ( "circle_Cartesian_A()" ) ;	
-	 }
-}
+///*// * circle_LatLon_A// *// * bnf-start// *   <circle_LatLon> ::= // *      <left_paren> <latitude> <comma> <longitude> <comma> <radius> <right_paren>// * bnf-end// *///void circle_LatLon_A() #CircleLatLon : //{//	if( log.isTraceEnabled() ) enterTrace ( "circle_LatLon_A()" ) ;//}//{//	 ( <LEFT_PAREN> numeric_value_expression_S() <COMMA> numeric_value_expression_S() <COMMA> radius_A() <RIGHT_PAREN> )//	 {//	 	if( log.isTraceEnabled() ) exitTrace ( "circle_LatLon_A()" ) ;	//	 }//}///////*// * circle_Cartesian_A// *// * bnf-start// *   <circle_Cartesian> ::= // *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma> <radius> <right_paren>// * bnf-end// *///void circle_Cartesian_A() #CircleCartesian : //{//	if( log.isTraceEnabled() ) enterTrace ( "circle_Cartesian_A()" ) ;//}//{//	 ( <LEFT_PAREN> numeric_value_expression_S() //	        <COMMA> numeric_value_expression_S() //	        <COMMA> numeric_value_expression_S()//	        <COMMA> radius_A() //	   <RIGHT_PAREN> )//	 {//	 	if( log.isTraceEnabled() ) exitTrace ( "circle_Cartesian_A()" ) ;	//	 }//}
 
 
 /*
@@ -3113,7 +2933,7 @@ void circle_Cartesian_A() #CircleCartesian :
  *
  * bnf-start
  *   <circle_J2000> ::= 
- *      <left_paren> <ra> <comma> <dec> <comma> <radius> <right_paren>
+ *      <left_paren> <coord_one> <comma> <coord_two> <comma> <radius> <right_paren>
  * bnf-end
  */
 void circle_J2000_A() #CircleJ2000 : 
@@ -3131,10 +2951,7 @@ void circle_J2000_A() #CircleJ2000 :
  * polygon_A
  *
  * bnf-start
- *  <polygon> ::= 
- *     LATLON <polygon_LatLon>
- *   | CARTESIAN <polygon_Cartesian>
- *   | [ J2000 ] <polygon_J2000>
+ *  <polygon> ::= [ J2000 ] <polygon_J2000>
  * bnf-end
  */
 void polygon_A() : 
@@ -3143,90 +2960,13 @@ void polygon_A() :
 	tracker.setType( PolygonType.type ) ;
 }
 {
-	(
-		( <LATLON> polygon_LatLon_A() )
-		|
-		( <CARTESIAN> polygon_Cartesian_A() )
-		|
-		( [ <J2000> ] polygon_J2000_A() ) 
-	)
+	( [ <J2000> ] polygon_J2000_A() ) 
 	{
 		if( log.isTraceEnabled() ) exitTrace ( "polygon_A()" ) ;	
 	}
 }
 
-/*
- * polygon_LatLon_A
- *
- * bnf-start
- *   <polygon_LatLon> ::=
- *      <left_paren> <latitude> <comma> <longitude> <right_paren>
- *      <left_paren> <latitude> <comma> <longitude> <right_paren>
- *    { <left_paren> <latitude> <comma> <longitude> <right_paren> }...
- * bnf-end
- */
-void polygon_LatLon_A() #PolygonLatLon : 
-{
-	if( log.isTraceEnabled() ) enterTrace ( "polygon_LatLon_A()" ) ;
-}
-{
-	  (
-	  	<LEFT_PAREN>
-		 	numeric_value_expression_S() <COMMA>
-		 	numeric_value_expression_S() 
-	  	<RIGHT_PAREN> 
-	  	<LEFT_PAREN>
-		 	numeric_value_expression_S() <COMMA>
-		 	numeric_value_expression_S() 
-	  	<RIGHT_PAREN> 
-		( LOOKAHEAD(2)
-	  	  <LEFT_PAREN>
-		 	numeric_value_expression_S() <COMMA>
-		 	numeric_value_expression_S() 
-	  	  <RIGHT_PAREN> )+ 
-	  )
-	  {
-	  		if( log.isTraceEnabled() ) exitTrace ( "polygon_LatLon_A()" ) ;
-	  }
-}
-
-/*
- * polygon_Cartesian_A
- *
- * bnf-start
- *   <polygon_Cartesian> ::=
- *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren>
- *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren>
- *    { <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> }...
- * bnf-end
- */
-void polygon_Cartesian_A() #PolygonCartesian : 
-{
-	if( log.isTraceEnabled() ) enterTrace ( "polygon_Cartesian_A()" ) ;
-}
-{
-	  (
-	  	<LEFT_PAREN>
-		 	numeric_value_expression_S() <COMMA>
-		 	numeric_value_expression_S() <COMMA>
-		 	numeric_value_expression_S() 
-	  	<RIGHT_PAREN> 
-	  	<LEFT_PAREN>
-		 	numeric_value_expression_S() <COMMA>
-		 	numeric_value_expression_S() <COMMA>
-		 	numeric_value_expression_S() 
-	  	<RIGHT_PAREN> 
-		( LOOKAHEAD(2)
-	  	  <LEFT_PAREN>
-		 	numeric_value_expression_S() <COMMA>
-		 	numeric_value_expression_S() <COMMA>
-		 	numeric_value_expression_S() 
-	  	  <RIGHT_PAREN> )+ 
-	  )
-	  {
-	  		if( log.isTraceEnabled() ) exitTrace ( "polygon_Cartesian_A()" ) ;
-	  }
-}
+///*// * polygon_LatLon_A// *// * bnf-start// *   <polygon_LatLon> ::=// *      <left_paren> <latitude> <comma> <longitude> <right_paren>// *      <left_paren> <latitude> <comma> <longitude> <right_paren>// *    { <left_paren> <latitude> <comma> <longitude> <right_paren> }...// * bnf-end// *///void polygon_LatLon_A() #PolygonLatLon : //{//	if( log.isTraceEnabled() ) enterTrace ( "polygon_LatLon_A()" ) ;//}//{//	  (//	  	<LEFT_PAREN>//		 	numeric_value_expression_S() <COMMA>//		 	numeric_value_expression_S() //	  	<RIGHT_PAREN> //	  	<LEFT_PAREN>//		 	numeric_value_expression_S() <COMMA>//		 	numeric_value_expression_S() //	  	<RIGHT_PAREN> //		( LOOKAHEAD(2)//	  	  <LEFT_PAREN>//		 	numeric_value_expression_S() <COMMA>//		 	numeric_value_expression_S() //	  	  <RIGHT_PAREN> )+ //	  )//	  {//	  		if( log.isTraceEnabled() ) exitTrace ( "polygon_LatLon_A()" ) ;//	  }//}/////*// * polygon_Cartesian_A// *// * bnf-start// *   <polygon_Cartesian> ::=// *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren>// *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren>// *    { <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> }...// * bnf-end// *///void polygon_Cartesian_A() #PolygonCartesian : //{//	if( log.isTraceEnabled() ) enterTrace ( "polygon_Cartesian_A()" ) ;//}//{//	  (//	  	<LEFT_PAREN>//		 	numeric_value_expression_S() <COMMA>//		 	numeric_value_expression_S() <COMMA>//		 	numeric_value_expression_S() //	  	<RIGHT_PAREN> //	  	<LEFT_PAREN>//		 	numeric_value_expression_S() <COMMA>//		 	numeric_value_expression_S() <COMMA>//		 	numeric_value_expression_S() //	  	<RIGHT_PAREN> //		( LOOKAHEAD(2)//	  	  <LEFT_PAREN>//		 	numeric_value_expression_S() <COMMA>//		 	numeric_value_expression_S() <COMMA>//		 	numeric_value_expression_S() //	  	  <RIGHT_PAREN> )+ //	  )//	  {//	  		if( log.isTraceEnabled() ) exitTrace ( "polygon_Cartesian_A()" ) ;//	  }//}
 
 
 /*
@@ -3234,9 +2974,9 @@ void polygon_Cartesian_A() #PolygonCartesian :
  *
  * bnf-start
  *   <polygon_J2000> ::=
- *      <left_paren> <ra> <comma> <dec> <right_paren>
- *      <left_paren> <ra> <comma> <dec> <right_paren>
- *    { <left_paren> <ra> <comma> <dec> <right_paren> }...
+ *      <left_paren> <coord_one> <comma> <coord_two> <right_paren>
+ *      <left_paren> <coord_one> <comma> <coord_two> <right_paren>
+ *    { <left_paren> <coord_one> <comma> <coord_two> <right_paren> }...
  * bnf-end
  */
 void polygon_J2000_A() #PolygonJ2000 : 
@@ -3269,10 +3009,7 @@ void polygon_J2000_A() #PolygonJ2000 :
  * convex_hull_A
  *
  * bnf-start
- *  <convex_hull> ::= 
- *     LATLON <convex_hull_LatLon>
- *   | CARTESIAN <convex_hull_Cartesian>
- *   | [ J2000 ] <convex_hull_J2000>
+ *  <convex_hull> ::= [ J2000 ] <convex_hull_J2000>
  * bnf-end
  */
 void convex_hull_A() : 
@@ -3281,10 +3018,6 @@ void convex_hull_A() :
     tracker.setType( ConvexHullType.type ) ;
 }
 {
-	( <LATLON> convex_hull_LatLon_A() )
-	|
-	( <CARTESIAN> convex_hull_Cartesian_A() )
-	|
 	( [ <J2000> ] convex_hull_J2000_A() ) 
 	{
 		if( log.isTraceEnabled() ) exitTrace ( "convex_hull_A()" ) ;
@@ -3292,74 +3025,7 @@ void convex_hull_A() :
 }
 
 
-/*
- * convex_hull_LatLon_A
- *
- * bnf-start
- *   <convex_hull_LatLon> ::= 
- *      <left_paren> <latitude> <comma> <longitude> <right_paren>
- *      <left_paren> <latitude> <comma> <longitude> <right_paren>
- *    { <left_paren> <latitude> <comma> <longitude> <right_paren> }...
- * bnf-end
- */
-void convex_hull_LatLon_A() #ConvexHullLatLon : 
-{
-	if( log.isTraceEnabled() ) enterTrace ( "convex_hull_LatLon_A()" ) ;
-}
-{
-	  <LEFT_PAREN>
-		 numeric_value_expression_S() <COMMA>
-		 numeric_value_expression_S() 
-	  <RIGHT_PAREN> 
-	  <LEFT_PAREN>
-		 numeric_value_expression_S() <COMMA>
-		 numeric_value_expression_S() 
-	  <RIGHT_PAREN> 
-	( LOOKAHEAD(2)
-	  <LEFT_PAREN>
-		 numeric_value_expression_S() <COMMA>
-		 numeric_value_expression_S() 
-	  <RIGHT_PAREN> )+ 
-	  
-	  {
-	  	  if( log.isTraceEnabled() ) exitTrace ( "convex_hull_LatLon_A()" ) ;
-	  }
-}
-
-
-/*
- * convex_hull_Cartesian_A
- *
- * bnf-start
- *   <convex_hull_Cartesian> ::= 
- *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren>
- *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren>
- *    { <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> }...
- * bnf-end
- */
-void convex_hull_Cartesian_A() #ConvexHullCartesian : 
-{
-	if( log.isTraceEnabled() ) enterTrace ( "convex_hull_Cartesian_A()" ) ;
-}
-{
-	  <LEFT_PAREN>
-		 numeric_value_expression_S() <COMMA>
-		 numeric_value_expression_S() 
-	  <RIGHT_PAREN> 
-	  <LEFT_PAREN>
-		 numeric_value_expression_S() <COMMA>
-		 numeric_value_expression_S() 
-	  <RIGHT_PAREN> 
-	( LOOKAHEAD(2)
-	  <LEFT_PAREN>
-		 numeric_value_expression_S() <COMMA>
-		 numeric_value_expression_S() 
-	  <RIGHT_PAREN> )+ 
-	  
-	  {
-	  	  if( log.isTraceEnabled() ) exitTrace ( "convex_hull_Cartesian_A()" ) ;
-	  }
-}
+///*// * convex_hull_LatLon_A// *// * bnf-start// *   <convex_hull_LatLon> ::= // *      <left_paren> <latitude> <comma> <longitude> <right_paren>// *      <left_paren> <latitude> <comma> <longitude> <right_paren>// *    { <left_paren> <latitude> <comma> <longitude> <right_paren> }...// * bnf-end// *///void convex_hull_LatLon_A() #ConvexHullLatLon : //{//	if( log.isTraceEnabled() ) enterTrace ( "convex_hull_LatLon_A()" ) ;//}//{//	  <LEFT_PAREN>//		 numeric_value_expression_S() <COMMA>//		 numeric_value_expression_S() //	  <RIGHT_PAREN> //	  <LEFT_PAREN>//		 numeric_value_expression_S() <COMMA>//		 numeric_value_expression_S() //	  <RIGHT_PAREN> //	( LOOKAHEAD(2)//	  <LEFT_PAREN>//		 numeric_value_expression_S() <COMMA>//		 numeric_value_expression_S() //	  <RIGHT_PAREN> )+ //	  //	  {//	  	  if( log.isTraceEnabled() ) exitTrace ( "convex_hull_LatLon_A()" ) ;//	  }//}///////*// * convex_hull_Cartesian_A// *// * bnf-start// *   <convex_hull_Cartesian> ::= // *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren>// *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren>// *    { <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> }...// * bnf-end// *///void convex_hull_Cartesian_A() #ConvexHullCartesian : //{//	if( log.isTraceEnabled() ) enterTrace ( "convex_hull_Cartesian_A()" ) ;//}//{//	  <LEFT_PAREN>//		 numeric_value_expression_S() <COMMA>//		 numeric_value_expression_S() //	  <RIGHT_PAREN> //	  <LEFT_PAREN>//		 numeric_value_expression_S() <COMMA>//		 numeric_value_expression_S() //	  <RIGHT_PAREN> //	( LOOKAHEAD(2)//	  <LEFT_PAREN>//		 numeric_value_expression_S() <COMMA>//		 numeric_value_expression_S() //	  <RIGHT_PAREN> )+ //	  //	  {//	  	  if( log.isTraceEnabled() ) exitTrace ( "convex_hull_Cartesian_A()" ) ;//	  }//}
 
 
 /*
@@ -3367,9 +3033,9 @@ void convex_hull_Cartesian_A() #ConvexHullCartesian :
  *
  * bnf-start
  *   <convex_hull_J2000> ::= 
- *      <left_paren> <ra> <comma> <dec> <right_paren>
- *      <left_paren> <ra> <comma> <dec> <right_paren>
- *    { <left_paren> <ra> <comma> <dec> <right_paren> }...
+ *      <left_paren> <coord_one> <comma> <coord_two> <right_paren>
+ *      <left_paren> <coord_one> <comma> <coord_two> <right_paren>
+ *    { <left_paren> <coord_one> <comma> <coord_two> <right_paren> }...
  * bnf-end
  */
 void convex_hull_J2000_A() #ConvexHullJ2000 : 
@@ -4746,6 +4412,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.43  2007/08/20 16:32:45  jl99
+Simplification of Region.
+
 Revision 1.42  2007/08/17 06:59:41  jl99
 Some BNF doc changes
 

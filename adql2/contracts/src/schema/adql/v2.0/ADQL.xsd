@@ -540,7 +540,7 @@
 				<xs:sequence>
 				    <xs:element name="AstroCoordSystem" type="stc:astroCoordSystemType" minOccurs="0"/>
 				    <xs:element name="LinkedElements" type="adql:linkedListType" minOccurs="0"/>
-					<xs:element name="Point" type="adql:pointType"/>
+					<xs:element name="Position" type="adql:positionType"/>
 					<xs:element name="Region" type="stc:regionType"/>
 				</xs:sequence>
 			</xs:extension>
@@ -556,9 +556,9 @@
 		</xs:complexContent>
 	</xs:complexType>
 	
-	<xs:complexType name="pointType" mixed="false">
+	<xs:complexType name="positionType" mixed="false">
 		<xs:annotation>
-			<xs:documentation>Represents a point made in an ADQL region query</xs:documentation>
+			<xs:documentation>Represents a position made in an ADQL region query</xs:documentation>
 		</xs:annotation>	
 		<xs:complexContent mixed="false">
 			<xs:extension base="adql:scalarExpressionType">

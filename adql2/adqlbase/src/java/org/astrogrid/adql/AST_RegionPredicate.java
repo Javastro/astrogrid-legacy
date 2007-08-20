@@ -3,11 +3,8 @@
 package org.astrogrid.adql;
 
 import org.apache.xmlbeans.XmlObject;
-import org.apache.xmlbeans.SchemaParticle; 
-import org.apache.xmlbeans.QNameSet; 
 import javax.xml.namespace.QName;
 
-import org.astrogrid.adql.beans.LikePredType;
 import org.astrogrid.adql.beans.RegionSearchType;
 import org.astrogrid.adql.beans.NotInRegionSearchType;
 import org.astrogrid.adql.beans.LinkedListType;
@@ -16,6 +13,11 @@ import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 
 public class AST_RegionPredicate extends SimpleNode {
+    
+    public static final String IVOA_STC_LIBRARY = "ivo://STClib/CoordSys" ;
+    public static final String DEFAULT_J2000 = "UTC-ICRS-TOPO" ;
+    public static final String DEFAULT_CARTESIAN = "UTC-ICRS-TOPO" ;
+    public static final String DEFAULT_LATLON = "UTC-ICRS-TOPO" ;
 
     private static Log log = LogFactory.getLog( AST_RegionPredicate.class ) ;
     
@@ -44,11 +46,10 @@ public class AST_RegionPredicate extends SimpleNode {
       }
       this.generatedObject = rst ;
       //
-      // Create a default astro coordinate system with 
-      // a space reference frame. The latter will be filled
-      // out according to the child region type...
-      AstroCoordSystemType acst = rst.addNewAstroCoordSystem() ;
-      acst.addNewSpaceFrame().addNewSpaceRefFrame() ;    
+      // Create a default astro coordinate system. 
+      // Will be filled out according to the child region type...
+      rst.addNewAstroCoordSystem() ;
+   
       //
       // The linked element list will be used to create 
       // the corresponding ADQL types that are not literals...
@@ -60,15 +61,9 @@ public class AST_RegionPredicate extends SimpleNode {
       // is that the point and the region share the same
       // astro coordinate system and space frame reference.
       // Jeff: Of course, I could be wrong.
-      children[0].buildXmlTree( rst.addNewPoint() ) ;
+      children[0].buildXmlTree( rst.addNewPosition() ) ;
       children[1].buildXmlTree( rst.addNewRegion() ) ; 
-      //
-      // Form a unique linking ID for the astro coordinate system
-      // and set the id and its refid so the link between it and the region
-      // can be made...
-      String uid = this.formUniqueID( "AstroCoordSystem" ) ;
-      ( (RegionType)children[1].getGeneratedObject() ).setCoordSystemId( uid ) ;
-      acst.setId( uid ) ;
+     
       //
       // If all the region parameters are literals (ie: there are no column
       // references or complex expressions), then there is no point in 
@@ -82,34 +77,90 @@ public class AST_RegionPredicate extends SimpleNode {
       if( log.isTraceEnabled() ) exitTrace( log, "AST_RegionPredicate.buildXmlTree()" ) ; 
   }
   
-  protected static void setAstroCoordSystem_J2000( Node node ) {
-      RegionSearchType rst = findRegionSearchType( node ) ;
-      SpaceFrameType sft = rst.getAstroCoordSystem().getSpaceFrame() ;    
-      CoordRefFrameType crf = sft.getSpaceRefFrame() ;
+ 
+  private void setAstroCoordSystemByReference_J2000() {
+      RegionSearchType rst = (RegionSearchType)generatedObject ;
+      AstroCoordSystemType acst = rst.getAstroCoordSystem() ;
+      setByReferenceLink( acst, DEFAULT_J2000 ) ;  
+  }
+  
+  private void setAstroCoordSystemByReference_LatLon() {
+      RegionSearchType rst = (RegionSearchType)generatedObject ;
+      AstroCoordSystemType acst = rst.getAstroCoordSystem() ;
+      setByReferenceLink( acst, DEFAULT_LATLON ) ;  
+  }
+  
+  private void setAstroCoordSystemByReference_Cartesian() {
+      RegionSearchType rst = (RegionSearchType)generatedObject ;
+      AstroCoordSystemType acst = rst.getAstroCoordSystem() ;
+      setByReferenceLink( acst, DEFAULT_CARTESIAN ) ;  
+  }
+  
+  private void setAstroCoordSystemInSitu_J2000() {
+      RegionSearchType rst = (RegionSearchType)generatedObject ;
+      AstroCoordSystemType acst = rst.getAstroCoordSystem() ;
+      SpaceFrameType sft = acst.addNewSpaceFrame() ;    
+      CoordRefFrameType crf = sft.addNewSpaceRefFrame() ;
       QName qName = new QName( CoordRefFrameType.type.getName().getNamespaceURI(), "FK5") ;
       FkType srf = (FkType)crf.substitute( qName , FkType.type ) ;
       srf.setEquinox( "J2000" ) ;     
-      sft.setSpaceRefFrame( srf ) ;
+      sft.setSpaceRefFrame( srf ) ;    
+      setInSituLink( acst ) ;
+  }
+  
+  /*
+   * Form a unique linking ID for the astro coordinate system
+   * and set the id and its refid so the link between it and the region
+   * can be made. 
+   * 
+   * The link is for an AstroCoordSystem embedded in the query!
+   * 
+   */
+  private void setInSituLink( AstroCoordSystemType acst ) {
+      String uid = this.formUniqueID( "AstroCoordSystem" ) ;
+      ( (RegionType)children[1].getGeneratedObject() ).setCoordSystemId( uid ) ;
+      acst.setId( uid ) ;
+  }
+  
+  /*
+   * Form a unique linking ID for the astro coordinate system
+   * and set the id and its refid so the link between it and the region
+   * can be made. 
+   * 
+   * The link is for an AstroCoordSystem within the IVOA STC library!
+   * 
+   */
+  private void setByReferenceLink( AstroCoordSystemType acst, String name ) {
+      acst.setHref( IVOA_STC_LIBRARY + '#' + name ) ;
+      RegionType rt = (RegionType)children[1].getGeneratedObject() ;
+      rt.setCoordSystemId( name ) ;
+      acst.setId( name ) ;
+      acst.setType( org.w3.xlink.beans.TypeAttribute.Type.Enum.forString( "simple" ) ) ;
+  }
+  
+  
+  protected static void setAstroCoordSystem_J2000( Node node ) {
+      AST_RegionPredicate rp = AST_RegionPredicate.findRegionPredicate( node ) ;
+      rp.setAstroCoordSystemByReference_J2000() ;
   }
   
   protected static void setAstroCoordSystem_LatLon( Node node) {
-      RegionSearchType rst = findRegionSearchType( node ) ;
-      SpaceFrameType sft = rst.getAstroCoordSystem().getSpaceFrame() ;    
-      CoordRefFrameType crf = sft.getSpaceRefFrame() ;
+      AST_RegionPredicate rp = AST_RegionPredicate.findRegionPredicate( node ) ;
+      rp.setAstroCoordSystemByReference_LatLon() ;
   }
   
   protected static void setAstroCoordSystem_Cartesian( Node node ) {
-      RegionSearchType rst = findRegionSearchType( node ) ;
-      SpaceFrameType sft = rst.getAstroCoordSystem().getSpaceFrame() ;    
-      CoordRefFrameType crf = sft.getSpaceRefFrame() ;
+      AST_RegionPredicate rp = AST_RegionPredicate.findRegionPredicate( node ) ;
+      rp.setAstroCoordSystemByReference_Cartesian() ;
   }
   
-  private static RegionSearchType findRegionSearchType( Node node ) {
+  private static AST_RegionPredicate findRegionPredicate( Node node ) {
       Node parentNode = node.jjtGetParent() ;
       while( parentNode != null ) {
           if( parentNode instanceof AST_RegionPredicate ) { 
-              return (RegionSearchType) ( (AST_RegionPredicate)parentNode ).getGeneratedObject() ;
+              return (AST_RegionPredicate)parentNode ;
           }
+          parentNode = node.jjtGetParent() ;
       }
       return null ;
   }

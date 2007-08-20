@@ -3,9 +3,7 @@
 package org.astrogrid.adql;
 
 import org.apache.xmlbeans.XmlObject;
-import org.astrogrid.adql.beans.PointType;
-import org.astrogrid.adql.beans.ScalarExpressionType;
-import org.astrogrid.stc.beans.*;
+import org.astrogrid.adql.beans.PositionType;
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 
@@ -19,8 +17,8 @@ public class AST_Point extends SimpleNode {
 
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_Point.buildXmlTree()" ) ; 
-      getTracker().push( AdqlCompiler.POINT_ELEMENT, PointType.type  ) ;
-      PointType pt = (PointType)xo.changeType( PointType.type ) ;
+      getTracker().push( AdqlCompiler.POSITION_ELEMENT, PositionType.type  ) ;
+      PositionType pt = (PositionType)xo.changeType( PositionType.type ) ;
       int childCount = jjtGetNumChildren() ;
       for( int i=0; i<childCount; i++ ) {
           children[i].buildXmlTree( pt.addNewCoord() ) ;

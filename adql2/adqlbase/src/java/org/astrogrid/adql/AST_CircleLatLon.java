@@ -21,17 +21,19 @@ public class AST_CircleLatLon extends SimpleNode {
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_CircleLatLon.buildXmlTree()" ) ; 
         getTracker().setType( CircleType.type ) ;
-        //
-        // We know this is a LatLon circle type, else why are we here.
-        // So set the appropriate astro coord system...
-        AST_RegionPredicate.setAstroCoordSystem_LatLon( this ) ;
+       
         //
         // "Create" the appropriate circle type using XmlBeans magic.
         // Give it a center and a radius.
         // This seems obvious, but there are some doubts over center for other
         // circle types (see especially Cartesian)...
         CircleType circle = (CircleType)xo.changeType( CircleType.type ) ;
-        Double2Type center = circle.addNewCenter() ;
+        this.generatedObject = circle ;
+        //
+        // We know this is a LatLon circle type, else why are we here.
+        // So set the appropriate astro coord system...
+        AST_RegionPredicate.setAstroCoordSystem_LatLon( this ) ;
+
         //
         // Get the linked element list, used by the predicate
         // to hold references to ADQL elements which are not literals.
@@ -51,6 +53,7 @@ public class AST_CircleLatLon extends SimpleNode {
         // be in situ in the region type.
         // IF the value is null, then the reference was to a column
         // reference or complex expression ( sin, square etc ).
+        Double2Type center = circle.addNewCenter() ;
         Double1Type d1tLat = center.addNewC1() ;
         Double d = this.unpackNumericLiteral( setLat ) ;
         if( d != null ) {
@@ -98,7 +101,7 @@ public class AST_CircleLatLon extends SimpleNode {
             setRadius.setId( uid ) ;
             d1tRad.setIdref( uid ) ;
         }
-        this.generatedObject = circle ;
+
         super.buildXmlTree(circle) ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_CircleLatLon.buildXmlTree()" ) ; 
     }

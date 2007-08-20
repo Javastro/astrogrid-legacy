@@ -27,14 +27,16 @@ public class AST_CircleCartesian extends SimpleNode {
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_CircleCartesian.buildXmlTree()" ) ; 
       getTracker().setType( CircleType.type ) ;
-      //
-      // We know this is a J2000 circle type, else why are we here.
-      // So set the appropriate astro coord system...
-      AST_RegionPredicate.setAstroCoordSystem_Cartesian( this ) ;
+     
       //
       //
       // We know this is a circle type, else why are we here ...
       CircleType circle = (CircleType)xo.changeType( CircleType.type ) ;
+      this.generatedObject = circle ;
+      //
+      // We know this is a J2000 circle type, else why are we here.
+      // So set the appropriate astro coord system...
+      AST_RegionPredicate.setAstroCoordSystem_Cartesian( this ) ;
       //
       // Give it a center and a radius.
       // This seems obvious, but I'm not understanding how
@@ -73,7 +75,6 @@ public class AST_CircleCartesian extends SimpleNode {
           setRadius.setId( uid ) ;
           d1tRad.setIdref( uid ) ;
       }
-      this.generatedObject = circle ;
       super.buildXmlTree(circle) ;
       if( log.isTraceEnabled() ) exitTrace( log, "AST_CircleCartesian.buildXmlTree()" ) ; 
   }
