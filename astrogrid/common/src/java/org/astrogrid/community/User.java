@@ -1,5 +1,5 @@
 /*
- * $Id: User.java,v 1.15 2004/08/25 23:05:27 jdt Exp $
+ * $Id: User.java,v 1.16 2007/08/20 10:02:57 gtr Exp $
  *
  * Created on 27-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,6 +13,7 @@
 
 package org.astrogrid.community;
 
+import java.security.Principal;
 import org.astrogrid.community.common.util.CommunityMessage;
 
 /**
@@ -32,6 +33,7 @@ public class User {
     String account = null;
     String group = null;
     String token = null;
+    private Principal principal = null;
    
     public final static User ANONYMOUS = new User("Anon@nowhere","Anonymous","None");
 
@@ -79,6 +81,23 @@ public class User {
     {
        this(CommunityMessage.getAccount(snippet),CommunityMessage.getGroup(snippet),CommunityMessage.getToken(snippet));
     }
+    
+    
+  /**
+   * Reveals the user's main identity.
+   * 
+   * @return The identity; null if not known.
+   */
+  public Principal getPrincipal() {
+    return this.principal;
+  }
+  
+  /**
+   * Sets the user's main identity.
+   */
+  public void setPrincipal(Principal p) {
+    this.principal = p;
+  }
     
    /**
     * @return
@@ -188,9 +207,15 @@ public class User {
 }
 
 /* $Log: User.java,v $
- * Revision 1.15  2004/08/25 23:05:27  jdt
- * removed deprecation warning....I'm such a rebel
+ * Revision 1.16  2007/08/20 10:02:57  gtr
+ * Merging astrogrid/community from branch security-gtr-2244-3.
  *
+/* Revision 1.15.170.1  2007/08/06 12:14:53  gtr
+/* I added a property "principal" to the bean.
+/*
+/* Revision 1.15  2004/08/25 23:05:27  jdt
+/* removed deprecation warning....I'm such a rebel
+/*
 /* Revision 1.14  2004/05/11 08:15:53  pah
 /* put in assertions to try to get correct form used
 /*
