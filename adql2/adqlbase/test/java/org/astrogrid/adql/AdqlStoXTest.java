@@ -1,4 +1,4 @@
-/*$Id: AdqlStoXTest.java,v 1.13 2007/08/20 16:34:05 jl99 Exp $
+/*$Id: AdqlStoXTest.java,v 1.14 2007/08/20 17:30:57 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -154,6 +154,7 @@ public class AdqlStoXTest extends XMLTestCase {
     public void testOf_v10_notInPredicateWithSubQuery() throws Exception { execTest() ; }
     public void testOf_v20_regionCircleJ2000() throws Exception { execTest() ; }
     public void testOf_v20_regionCircleJ2000WithColRefs() throws Exception { execTest() ; }
+    public void testOf_v20_regionNotInBoxJ2000() throws Exception { execTest() ; }
     public void testOf_v10_regularIdentifier() throws Exception { execTest() ; }
     public void testOf_v10_SDSSBasicSelectFromWhere() throws Exception { execTest() ; }
     public void testOf_v10_SDSSGalaxiesWithTwoCriteria() throws Exception { execTest() ; }
@@ -803,9 +804,12 @@ public class AdqlStoXTest extends XMLTestCase {
 
 
 /* $Log: AdqlStoXTest.java,v $
- * Revision 1.13  2007/08/20 16:34:05  jl99
- * Simplification of Region.
+ * Revision 1.14  2007/08/20 17:30:57  jl99
+ * Simplification of Region: Box
  *
+/* Revision 1.13  2007/08/20 16:34:05  jl99
+/* Simplification of Region.
+/*
 /* Revision 1.12  2007/08/16 22:30:15  jl99
 /* Refinements to the use of Query Expression
 /*
