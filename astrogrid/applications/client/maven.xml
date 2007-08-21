@@ -33,4 +33,6 @@
                 project="${pom}"
         />
   </goal>
+  <goal name="astrogrid-build-site"  prereqs="site"/>
+  <goal name="astrogrid-deploy-site" prereqs="site:deploy"/>
 </project>

@@ -1,13 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
-<extend>${basedir}/../project.xml</extend>
-<id>astrogrid-cea-client</id>
-<currentVersion>2007.1.1</currentVersion>
-<name>CEA Client</name>
-<description>Client library for communicating with CEA services</description>
-<shortDescription>AstroGrid CEA Client</shortDescription>
-
+  <groupId>org.astrogrid</groupId>
+  <artifactId>astrogrid-cea-client</artifactId>
+  <currentVersion>2007.2.01</currentVersion>
+  <name>CEA Client</name>
+  <shortDescription>AstroGrid CEA Client</shortDescription>
+  <description>Client library for communicating with CEA services.</description>
+  <inceptionYear>2003</inceptionYear>
+  <developers>
+    <developer>
+      <name>Guy Rixon</name>
+      <id>gtr</id>
+      <email>gtr@ast.cam.ac.uk</email>
+      <organization>University of Cambridge</organization>
+    </developer>
+    <developer>
+      <name>Noel Winstanley</name>
+      <id>nw</id>
+      <email>Noel.Winstanley@manchester.ac.uk</email>
+      <organization>University of Manchester</organization>
+    </developer>
+    <developer>
+      <name>Paul Harrison</name>
+      <id>pah</id>
+      <email>pah@jb.man.ac.uk</email>
+      <organization>ESO</organization>
+    </developer>
+  </developers>
+  
   <reports>
+    <report>download</report>
     <report>maven-changes-plugin</report>
     <report>maven-javadoc-plugin</report>
     <report>maven-junit-report-plugin</report>
@@ -15,37 +37,39 @@
     <report>maven-license-plugin</report>
   </reports>
   
-<build>
-  <sourceDirectory>src/java</sourceDirectory>
-  <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
-  <unitTest>
-    <includes>
-      <include>**/*Test.java</include>
-    </includes>
-  </unitTest>
-</build>
-<dependencies>
-  <dependency>
-    <artifactId>astrogrid-common</artifactId>
-    <groupId>org.astrogrid</groupId>
-    <version>${astrogrid.common.version}</version>
-  </dependency>
-  <dependency>
-    <groupId>org.astrogrid</groupId>
-    <artifactId>astrogrid-workflow-objects</artifactId>
-    <version>${astrogrid.workflowobjects.version}</version>
-  </dependency>
-	<dependency>
-		<groupId>org.astrogrid</groupId>
-		<artifactId>astrogrid-security</artifactId>
-		<version>${astrogrid.security.version}</version>
-		<type>jar</type>
-	</dependency>
-  <dependency>
-    <groupId>junit</groupId>
-    <artifactId>junit</artifactId>
-    <version>3.8</version>
-  </dependency>
+  <build>
+    <sourceDirectory>src/java</sourceDirectory>
+    <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+    <unitTest>
+      <includes>
+        <include>**/*Test.java</include>
+      </includes>
+    </unitTest>
+  </build>
+
+  
+  <dependencies>
+    <dependency>
+      <artifactId>astrogrid-common</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <version>2006.4c</version>
+    </dependency>
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-workflow-objects</artifactId>
+      <version>2006.4wo</version>
+    </dependency>
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-security</artifactId>
+      <version>2006.4st</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8</version>
+    </dependency>
 	
 	<!-- axis, and the jars it relies upon -->
 	<dependency>
