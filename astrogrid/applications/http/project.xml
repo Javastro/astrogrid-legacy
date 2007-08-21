@@ -97,7 +97,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-common</artifactId>
-      <version>2006.4c</version>
+      <version>2007.2.01</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -496,7 +496,7 @@
     <dependency>
       <groupId>globus</groupId>
       <artifactId>cog-jglobus</artifactId>
-      <version>1.2</version>
+      <version>1.4</version>
       <type>jar</type>
       <properties>
         <war.bundle>true</war.bundle>

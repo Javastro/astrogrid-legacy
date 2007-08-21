@@ -121,6 +121,13 @@
 		<env-entry-value>org.astrogrid.applications.http.HttpApplicationCEAComponentManager</env-entry-value>
 		<env-entry-type>java.lang.String</env-entry-type>
 	</env-entry>
+        
+        <env-entry>
+          <description>Class-name of the access-policy plug-in for controlling requests to this service. Use the default value if you don't want to restrict access.</description>
+          <env-entry-name>cea.access.policy</env-entry-name>
+          <env-entry-value>org.astrogrid.security.authorization.OpenAccessPolicy</env-entry-value>
+          <env-entry-type>java.lang.String</env-entry-type>
+        </env-entry>
 	
 	<!-- Nominate a full, searchable registry from which to read by this web-application's details.
 	     The given value is AstroGrid's central registry which will be OK for most cases. --> 
