@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.43 2007/08/20 16:32:45 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.44 2007/08/21 09:28:38 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -2716,8 +2716,8 @@ void predicate_A() :
  *  <region_predicate> ::=
  *    <position> [ NOT ] IN <region_specification>
  *  !! ADQL Note:
- *  !! JEFF: I'm ignoring the draft spec here
- *  !! in favour of some experimentation.
+ *  !! This is an experiment that differs from the draft spec.
+ *  !! It only covers Circle, Box and Polygon for J2000.
  *  !! For information, the draft spec has...
  *  !! <region_predicate> ::= 
  *  !!   <table_reference> <period> REGION 
@@ -2780,8 +2780,6 @@ void position_A() #Point :
  *  <region_specification> ::=
  *     BOX <box>
  *   | CIRCLE <circle>
- *   | CHULL <convex_hull>
- *   | CONVEX <convex>
  *   | POLY <polygon>
  * bnf-end
  *
@@ -2792,16 +2790,13 @@ void region_specification_A() :
     tracker.push( compiler.REGION_ELEMENT ) ;
 }
 {
-	(
-		( <CONVEX> convex_A() )
-		|
+	(		
 		( <BOX> box_A() )
 		|
 		( <CIRCLE> circle_A() )
 		|
 		( <POLY> polygon_A() )
-		|
-		( <CHULL> convex_hull_A() )
+//		|//		( <CHULL> convex_hull_A() )//		|//		( <CONVEX> convex_A() )
 	)
 	{
 		tracker.pop() ;
@@ -2812,9 +2807,12 @@ void region_specification_A() :
 /*
  * convex_A
  *
- * bnf-start
- *   <convex> ::= [ J2000 ] <convex_J2000>
- * bnf-end
+ *-bnf-start
+ *-  <convex> ::= 
+ *-       LATLON <convex_LatLon>
+ *-     | CARTESIAN <convex_Cartesian>
+ *-     | [ J2000 ] <convex_J2000>
+ *-bnf-end
  */
 void convex_A() : 
 {
@@ -2823,6 +2821,7 @@ void convex_A() :
 }
 {	
 	(	
+	    ( <LATLON> convex_LatLon_A() )	    |	    ( <CARTESIAN> convex_Cartesian_A() )	    |
 		( [ <J2000> ] convex_J2000_A() )
 	)
 	{
@@ -2831,17 +2830,17 @@ void convex_A() :
 }
 
 
-///*// * convex_LatLon_A// *// * bnf-start// *   <convex_LatLon> ::= // *      <left_paren> <longitude> <comma> <latitude> <comma> <direction> <right_paren>// *    { <left_paren> <longitude> <comma> <latitude> <comma> <direction> <right_paren> }...// * bnf-end// *///void convex_LatLon_A() #ConvexLatLon: //{//    if( log.isTraceEnabled() ) enterTrace ( "convex_LatLon_A()" ) ;//}//{//	  ( LOOKAHEAD(2)//	    <LEFT_PAREN> numeric_value_expression_S() <COMMA> numeric_value_expression_S() <COMMA>	direction_A() <RIGHT_PAREN> )+//      {//          if( log.isTraceEnabled() ) exitTrace ( "convex_LatLon_A()" ) ;//      }//}///////*// * convex_Cartesian_A// *// * bnf-start// *   <convex_Cartesian> ::= // *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma> <direction> <right_paren>// *    { <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma> <direction> <right_paren> }...// * bnf-end// *///void convex_Cartesian_A() #ConvexCartesian : //{//    if( log.isTraceEnabled() ) enterTrace ( "convex_Cartesian_A()" ) ;//}//{//	  ( LOOKAHEAD(2)//	    <LEFT_PAREN> numeric_value_expression_S() //	         <COMMA> numeric_value_expression_S()//	         <COMMA> numeric_value_expression_S()  //	         <COMMA> direction_A() <RIGHT_PAREN> )+//      {//          if( log.isTraceEnabled() ) exitTrace ( "convex_Cartesian_A()" ) ;//      }//}
+/* * convex_LatLon_A * *-bnf-start *-  <convex_LatLon> ::=  *-     <left_paren> <longitude> <comma> <latitude> <comma> <direction> <right_paren> *-   { <left_paren> <longitude> <comma> <latitude> <comma> <direction> <right_paren> }... *-bnf-end */void convex_LatLon_A() #ConvexLatLon: {    if( log.isTraceEnabled() ) enterTrace ( "convex_LatLon_A()" ) ;}{	  ( LOOKAHEAD(2)	    <LEFT_PAREN> numeric_value_expression_S() <COMMA> numeric_value_expression_S() <COMMA>	direction_A() <RIGHT_PAREN> )+      {          if( log.isTraceEnabled() ) exitTrace ( "convex_LatLon_A()" ) ;      }}/* * convex_Cartesian_A * *-bnf-start *-  <convex_Cartesian> ::=  *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma> <direction> <right_paren> *-   { <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma> <direction> <right_paren> }... *-bnf-end */void convex_Cartesian_A() #ConvexCartesian : {    if( log.isTraceEnabled() ) enterTrace ( "convex_Cartesian_A()" ) ;}{	  ( LOOKAHEAD(2)	    <LEFT_PAREN> numeric_value_expression_S() 	         <COMMA> numeric_value_expression_S()	         <COMMA> numeric_value_expression_S()  	         <COMMA> direction_A() <RIGHT_PAREN> )+      {          if( log.isTraceEnabled() ) exitTrace ( "convex_Cartesian_A()" ) ;      }}
 
 
 /*
  * convex_J2000_A
  *
- * bnf-start
- *   <convex_J2000> ::= 
- *      <left_paren> <coord_one> <comma> <coord_two> <comma> <direction> <right_paren>
- *    { <left_paren> <coord_one> <comma> <coord_one> <comma> <direction> <right_paren> }...
- * bnf-end
+ *-bnf-start
+ *-  <convex_J2000> ::= 
+ *-     <left_paren> <coord_one> <comma> <coord_two> <comma> <direction> <right_paren>
+ *-   { <left_paren> <coord_one> <comma> <coord_one> <comma> <direction> <right_paren> }...
+ *-bnf-end
  */
 void convex_J2000_A() #ConvexJ2000 : 
 {
@@ -2874,7 +2873,7 @@ void box_A() :
 	}
 }
 
-///*// * box_LatLon_A// *// * bnf-start// *   <box_LatLon> ::= // *      <left_paren> <latitude> <comma> <longitude> <comma> <length> <comma> <breadth> <right_paren>// * bnf-end// *// *///void box_LatLon_A() #BoxLatLon : //{//	if( log.isTraceEnabled() ) enterTrace ( "box_LatLon_A()" ) ;//}//{//	(//	  <LEFT_PAREN> numeric_value_expression_S() //	       <COMMA> numeric_value_expression_S() //	       <COMMA> numeric_value_expression_S() //	       <COMMA> numeric_value_expression_S() //	 <RIGHT_PAREN> //   //    )//      {//      	   if( log.isTraceEnabled() ) exitTrace ( "box_LatLon_A()" ) ;//      }//}/////*// * box_Cartesian_A// *// * bnf-start// *   <box_Cartesian> ::= // *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma> // *                    <length> <comma> <breadth> <right_paren>// * bnf-end// *// *///void box_Cartesian_A() #BoxCartesian : //{//	if( log.isTraceEnabled() ) enterTrace ( "box_Cartesian_A()" ) ;//}//{//	(//	  <LEFT_PAREN> numeric_value_expression_S() //	       <COMMA> numeric_value_expression_S() //	       <COMMA> numeric_value_expression_S() //	       <COMMA> numeric_value_expression_S() //	       <COMMA> numeric_value_expression_S() //	 <RIGHT_PAREN> //   //    )//      {//      	   if( log.isTraceEnabled() ) exitTrace ( "box_Cartesian_A()" ) ;//      }//}
+/* * box_LatLon_A * *-bnf-start *-  <box_LatLon> ::=  *-     <left_paren> <latitude> <comma> <longitude> <comma> <length> <comma> <breadth> <right_paren> *-bnf-end * */void box_LatLon_A() #BoxLatLon : {	if( log.isTraceEnabled() ) enterTrace ( "box_LatLon_A()" ) ;}{	(	  <LEFT_PAREN> numeric_value_expression_S() 	       <COMMA> numeric_value_expression_S() 	       <COMMA> numeric_value_expression_S() 	       <COMMA> numeric_value_expression_S() 	 <RIGHT_PAREN>        )      {      	   if( log.isTraceEnabled() ) exitTrace ( "box_LatLon_A()" ) ;      }}/* * box_Cartesian_A * *-bnf-start *-  <box_Cartesian> ::=  *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma>  *-                   <length> <comma> <breadth> <right_paren> *-bnf-end * */void box_Cartesian_A() #BoxCartesian : {	if( log.isTraceEnabled() ) enterTrace ( "box_Cartesian_A()" ) ;}{	(	  <LEFT_PAREN> numeric_value_expression_S() 	       <COMMA> numeric_value_expression_S() 	       <COMMA> numeric_value_expression_S() 	       <COMMA> numeric_value_expression_S() 	       <COMMA> numeric_value_expression_S() 	 <RIGHT_PAREN>        )      {      	   if( log.isTraceEnabled() ) exitTrace ( "box_Cartesian_A()" ) ;      }}
 
 /*
  * box_J2000_A
@@ -2925,7 +2924,7 @@ void circle_A() :
 	}
 }
 
-///*// * circle_LatLon_A// *// * bnf-start// *   <circle_LatLon> ::= // *      <left_paren> <latitude> <comma> <longitude> <comma> <radius> <right_paren>// * bnf-end// *///void circle_LatLon_A() #CircleLatLon : //{//	if( log.isTraceEnabled() ) enterTrace ( "circle_LatLon_A()" ) ;//}//{//	 ( <LEFT_PAREN> numeric_value_expression_S() <COMMA> numeric_value_expression_S() <COMMA> radius_A() <RIGHT_PAREN> )//	 {//	 	if( log.isTraceEnabled() ) exitTrace ( "circle_LatLon_A()" ) ;	//	 }//}///////*// * circle_Cartesian_A// *// * bnf-start// *   <circle_Cartesian> ::= // *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma> <radius> <right_paren>// * bnf-end// *///void circle_Cartesian_A() #CircleCartesian : //{//	if( log.isTraceEnabled() ) enterTrace ( "circle_Cartesian_A()" ) ;//}//{//	 ( <LEFT_PAREN> numeric_value_expression_S() //	        <COMMA> numeric_value_expression_S() //	        <COMMA> numeric_value_expression_S()//	        <COMMA> radius_A() //	   <RIGHT_PAREN> )//	 {//	 	if( log.isTraceEnabled() ) exitTrace ( "circle_Cartesian_A()" ) ;	//	 }//}
+/* * circle_LatLon_A * *-bnf-start *-  <circle_LatLon> ::=  *-     <left_paren> <latitude> <comma> <longitude> <comma> <radius> <right_paren> *-bnf-end */void circle_LatLon_A() #CircleLatLon : {	if( log.isTraceEnabled() ) enterTrace ( "circle_LatLon_A()" ) ;}{	 ( <LEFT_PAREN> numeric_value_expression_S() <COMMA> numeric_value_expression_S() <COMMA> radius_A() <RIGHT_PAREN> )	 {	 	if( log.isTraceEnabled() ) exitTrace ( "circle_LatLon_A()" ) ;		 }}/* * circle_Cartesian_A * *-bnf-start *-  <circle_Cartesian> ::=  *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma> <radius> <right_paren> *-bnf-end */void circle_Cartesian_A() #CircleCartesian : {	if( log.isTraceEnabled() ) enterTrace ( "circle_Cartesian_A()" ) ;}{	 ( <LEFT_PAREN> numeric_value_expression_S() 	        <COMMA> numeric_value_expression_S() 	        <COMMA> numeric_value_expression_S()	        <COMMA> radius_A() 	   <RIGHT_PAREN> )	 {	 	if( log.isTraceEnabled() ) exitTrace ( "circle_Cartesian_A()" ) ;		 }}
 
 
 /*
@@ -2966,7 +2965,7 @@ void polygon_A() :
 	}
 }
 
-///*// * polygon_LatLon_A// *// * bnf-start// *   <polygon_LatLon> ::=// *      <left_paren> <latitude> <comma> <longitude> <right_paren>// *      <left_paren> <latitude> <comma> <longitude> <right_paren>// *    { <left_paren> <latitude> <comma> <longitude> <right_paren> }...// * bnf-end// *///void polygon_LatLon_A() #PolygonLatLon : //{//	if( log.isTraceEnabled() ) enterTrace ( "polygon_LatLon_A()" ) ;//}//{//	  (//	  	<LEFT_PAREN>//		 	numeric_value_expression_S() <COMMA>//		 	numeric_value_expression_S() //	  	<RIGHT_PAREN> //	  	<LEFT_PAREN>//		 	numeric_value_expression_S() <COMMA>//		 	numeric_value_expression_S() //	  	<RIGHT_PAREN> //		( LOOKAHEAD(2)//	  	  <LEFT_PAREN>//		 	numeric_value_expression_S() <COMMA>//		 	numeric_value_expression_S() //	  	  <RIGHT_PAREN> )+ //	  )//	  {//	  		if( log.isTraceEnabled() ) exitTrace ( "polygon_LatLon_A()" ) ;//	  }//}/////*// * polygon_Cartesian_A// *// * bnf-start// *   <polygon_Cartesian> ::=// *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren>// *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren>// *    { <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> }...// * bnf-end// *///void polygon_Cartesian_A() #PolygonCartesian : //{//	if( log.isTraceEnabled() ) enterTrace ( "polygon_Cartesian_A()" ) ;//}//{//	  (//	  	<LEFT_PAREN>//		 	numeric_value_expression_S() <COMMA>//		 	numeric_value_expression_S() <COMMA>//		 	numeric_value_expression_S() //	  	<RIGHT_PAREN> //	  	<LEFT_PAREN>//		 	numeric_value_expression_S() <COMMA>//		 	numeric_value_expression_S() <COMMA>//		 	numeric_value_expression_S() //	  	<RIGHT_PAREN> //		( LOOKAHEAD(2)//	  	  <LEFT_PAREN>//		 	numeric_value_expression_S() <COMMA>//		 	numeric_value_expression_S() <COMMA>//		 	numeric_value_expression_S() //	  	  <RIGHT_PAREN> )+ //	  )//	  {//	  		if( log.isTraceEnabled() ) exitTrace ( "polygon_Cartesian_A()" ) ;//	  }//}
+/* * polygon_LatLon_A * *-bnf-start *-  <polygon_LatLon> ::= *-     <left_paren> <latitude> <comma> <longitude> <right_paren> *-     <left_paren> <latitude> <comma> <longitude> <right_paren> *-   { <left_paren> <latitude> <comma> <longitude> <right_paren> }... *-bnf-end */void polygon_LatLon_A() #PolygonLatLon : {	if( log.isTraceEnabled() ) enterTrace ( "polygon_LatLon_A()" ) ;}{	  (	  	<LEFT_PAREN>		 	numeric_value_expression_S() <COMMA>		 	numeric_value_expression_S() 	  	<RIGHT_PAREN> 	  	<LEFT_PAREN>		 	numeric_value_expression_S() <COMMA>		 	numeric_value_expression_S() 	  	<RIGHT_PAREN> 		( LOOKAHEAD(2)	  	  <LEFT_PAREN>		 	numeric_value_expression_S() <COMMA>		 	numeric_value_expression_S() 	  	  <RIGHT_PAREN> )+ 	  )	  {	  		if( log.isTraceEnabled() ) exitTrace ( "polygon_LatLon_A()" ) ;	  }}/* * polygon_Cartesian_A * *-bnf-start *-  <polygon_Cartesian> ::= *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> *-   { <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> }... *-bnf-end */void polygon_Cartesian_A() #PolygonCartesian : {	if( log.isTraceEnabled() ) enterTrace ( "polygon_Cartesian_A()" ) ;}{	  (	  	<LEFT_PAREN>		 	numeric_value_expression_S() <COMMA>		 	numeric_value_expression_S() <COMMA>		 	numeric_value_expression_S() 	  	<RIGHT_PAREN> 	  	<LEFT_PAREN>		 	numeric_value_expression_S() <COMMA>		 	numeric_value_expression_S() <COMMA>		 	numeric_value_expression_S() 	  	<RIGHT_PAREN> 		( LOOKAHEAD(2)	  	  <LEFT_PAREN>		 	numeric_value_expression_S() <COMMA>		 	numeric_value_expression_S() <COMMA>		 	numeric_value_expression_S() 	  	  <RIGHT_PAREN> )+ 	  )	  {	  		if( log.isTraceEnabled() ) exitTrace ( "polygon_Cartesian_A()" ) ;	  }}
 
 
 /*
@@ -3008,9 +3007,9 @@ void polygon_J2000_A() #PolygonJ2000 :
 /*
  * convex_hull_A
  *
- * bnf-start
- *  <convex_hull> ::= [ J2000 ] <convex_hull_J2000>
- * bnf-end
+ *-bnf-start
+ *- <convex_hull> ::= [ J2000 ] <convex_hull_J2000>
+ *-bnf-end
  */
 void convex_hull_A() : 
 {
@@ -3025,18 +3024,18 @@ void convex_hull_A() :
 }
 
 
-///*// * convex_hull_LatLon_A// *// * bnf-start// *   <convex_hull_LatLon> ::= // *      <left_paren> <latitude> <comma> <longitude> <right_paren>// *      <left_paren> <latitude> <comma> <longitude> <right_paren>// *    { <left_paren> <latitude> <comma> <longitude> <right_paren> }...// * bnf-end// *///void convex_hull_LatLon_A() #ConvexHullLatLon : //{//	if( log.isTraceEnabled() ) enterTrace ( "convex_hull_LatLon_A()" ) ;//}//{//	  <LEFT_PAREN>//		 numeric_value_expression_S() <COMMA>//		 numeric_value_expression_S() //	  <RIGHT_PAREN> //	  <LEFT_PAREN>//		 numeric_value_expression_S() <COMMA>//		 numeric_value_expression_S() //	  <RIGHT_PAREN> //	( LOOKAHEAD(2)//	  <LEFT_PAREN>//		 numeric_value_expression_S() <COMMA>//		 numeric_value_expression_S() //	  <RIGHT_PAREN> )+ //	  //	  {//	  	  if( log.isTraceEnabled() ) exitTrace ( "convex_hull_LatLon_A()" ) ;//	  }//}///////*// * convex_hull_Cartesian_A// *// * bnf-start// *   <convex_hull_Cartesian> ::= // *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren>// *      <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren>// *    { <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> }...// * bnf-end// *///void convex_hull_Cartesian_A() #ConvexHullCartesian : //{//	if( log.isTraceEnabled() ) enterTrace ( "convex_hull_Cartesian_A()" ) ;//}//{//	  <LEFT_PAREN>//		 numeric_value_expression_S() <COMMA>//		 numeric_value_expression_S() //	  <RIGHT_PAREN> //	  <LEFT_PAREN>//		 numeric_value_expression_S() <COMMA>//		 numeric_value_expression_S() //	  <RIGHT_PAREN> //	( LOOKAHEAD(2)//	  <LEFT_PAREN>//		 numeric_value_expression_S() <COMMA>//		 numeric_value_expression_S() //	  <RIGHT_PAREN> )+ //	  //	  {//	  	  if( log.isTraceEnabled() ) exitTrace ( "convex_hull_Cartesian_A()" ) ;//	  }//}
+/* * convex_hull_LatLon_A * *-bnf-start *-  <convex_hull_LatLon> ::=  *-     <left_paren> <latitude> <comma> <longitude> <right_paren> *-     <left_paren> <latitude> <comma> <longitude> <right_paren> *-   { <left_paren> <latitude> <comma> <longitude> <right_paren> }... *-bnf-end */void convex_hull_LatLon_A() #ConvexHullLatLon : {	if( log.isTraceEnabled() ) enterTrace ( "convex_hull_LatLon_A()" ) ;}{	  <LEFT_PAREN>		 numeric_value_expression_S() <COMMA>		 numeric_value_expression_S() 	  <RIGHT_PAREN> 	  <LEFT_PAREN>		 numeric_value_expression_S() <COMMA>		 numeric_value_expression_S() 	  <RIGHT_PAREN> 	( LOOKAHEAD(2)	  <LEFT_PAREN>		 numeric_value_expression_S() <COMMA>		 numeric_value_expression_S() 	  <RIGHT_PAREN> )+ 	  	  {	  	  if( log.isTraceEnabled() ) exitTrace ( "convex_hull_LatLon_A()" ) ;	  }}/* * convex_hull_Cartesian_A * *-bnf-start *-  <convex_hull_Cartesian> ::=  *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> *-   { <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> }... *-bnf-end */void convex_hull_Cartesian_A() #ConvexHullCartesian : {	if( log.isTraceEnabled() ) enterTrace ( "convex_hull_Cartesian_A()" ) ;}{	  <LEFT_PAREN>		 numeric_value_expression_S() <COMMA>		 numeric_value_expression_S() 	  <RIGHT_PAREN> 	  <LEFT_PAREN>		 numeric_value_expression_S() <COMMA>		 numeric_value_expression_S() 	  <RIGHT_PAREN> 	( LOOKAHEAD(2)	  <LEFT_PAREN>		 numeric_value_expression_S() <COMMA>		 numeric_value_expression_S() 	  <RIGHT_PAREN> )+ 	  	  {	  	  if( log.isTraceEnabled() ) exitTrace ( "convex_hull_Cartesian_A()" ) ;	  }}
 
 
 /*
  * convex_hull_J2000_A
  *
- * bnf-start
- *   <convex_hull_J2000> ::= 
- *      <left_paren> <coord_one> <comma> <coord_two> <right_paren>
- *      <left_paren> <coord_one> <comma> <coord_two> <right_paren>
- *    { <left_paren> <coord_one> <comma> <coord_two> <right_paren> }...
- * bnf-end
+ *-bnf-start
+ *-  <convex_hull_J2000> ::= 
+ *-     <left_paren> <coord_one> <comma> <coord_two> <right_paren>
+ *-     <left_paren> <coord_one> <comma> <coord_two> <right_paren>
+ *-   { <left_paren> <coord_one> <comma> <coord_two> <right_paren> }...
+ *-bnf-end
  */
 void convex_hull_J2000_A() #ConvexHullJ2000 : 
 {
@@ -3065,15 +3064,15 @@ void convex_hull_J2000_A() #ConvexHullJ2000 :
 /*
  * direction_A
  *
- * bnf-start
- *  <direction> ::= [ <sign> ] <unsigned_numeric_literal>
- *  !! The distance along the normal vector where the constraint plane intersects that vector. 
- *  !! If positive, the spherical sector on the far side (seen from the center) is selected.
- *  !! If negative, the point of intersection is in the opposite direction of the vector, resulting in more than a hemisphere.
- *  !! The valid range is -1.0 to +1.0
- *  !! ADQL Note: As far as I can see, there is not room within STC for allowing a symbolic representation / link
- *  !! to something like a column reference or complex expression. Therefore, this has to be a literal.
- * bnf-end
+ *-bnf-start
+ *- <direction> ::= [ <sign> ] <unsigned_numeric_literal>
+ *- !! The distance along the normal vector where the constraint plane intersects that vector. 
+ *- !! If positive, the spherical sector on the far side (seen from the center) is selected.
+ *- !! If negative, the point of intersection is in the opposite direction of the vector, resulting in more than a hemisphere.
+ *- !! The valid range is -1.0 to +1.0
+ *- !! ADQL Note: As far as I can see, there is not room within STC for allowing a symbolic representation / link
+ *- !! to something like a column reference or complex expression. Therefore, this has to be a literal.
+ *-bnf-end
  *
  */
 void direction_A() #Direction : 
@@ -3086,37 +3085,16 @@ void direction_A() #Direction :
 }
 
 
-
-
-
-
 /*
  * radius_A
  *
  * bnf-single <radius> ::= <numeric_value_expression>
- * -bnf-start
- * - <radius> ::= <stc_numeric_value_expression>
- * - !! At some point in the future,
- * - !! this could be <numeric_value_expression>
- * -bnf-end
  *
  */
 void radius_A() : {}
 {
 	numeric_value_expression_S()	
-	//stc_numeric_value_expression_S()
 }
-
-/*
- * stc_numeric_value_expression_S
- *
- *- bnf-start
- *-   <stc_numeric_value_expression> ::=
- *-      [ <sign> ] <unsigned_numeric_literal>
- *- bnf-end
- */
-//void stc_numeric_value_expression_S() #STCNumericValueExpression : {}//{//	[//	    t=sign_S() //	    {  if( t!=null ) {//	    	  jjtThis.setSign(t) ;//	       }//	    } //	] //	unsigned_numeric_literal_S()//}
-
 
 /*
  * qualified_join_S
@@ -4412,6 +4390,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.44  2007/08/21 09:28:38  jl99
+Simplification of Region: Polygon
+
 Revision 1.43  2007/08/20 16:32:45  jl99
 Simplification of Region.
 
