@@ -3,15 +3,16 @@
 <project xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="astrogrid-install-snapshot">
 <!-- properties -->
 <property name="working.dir" location="${basedir}/target/tmp" />
-<!-- standard astrogrid goals -->
-  <goal name="astrogrid-build-artifact" prereqs="jar,war" />
-  <goal name="astrogrid-build-snapshot" prereqs="jar:snapshot,war" />
 
-  <goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot,war:install-snapshot" />
-  <goal name="astrogrid-install-artifact" prereqs="jar:install,war:install" />
-  <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot,war:deploy-snapshot" />
-  <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,war:deploy" />
-  <!-- hooks into existing goals -->
+<!-- standard astrogrid goals -->
+  <goal name="astrogrid-build-artifact"   prereqs="jar" />
+  <goal name="astrogrid-build-snapshot"   prereqs="jar:snapshot" />
+  <goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot" />
+  <goal name="astrogrid-install-artifact" prereqs="jar:install" />
+  <goal name="astrogrid-deploy-snapshot"  prereqs="jar:deploy-snapshot" />
+  <goal name="astrogrid-deploy-artifact"  prereqs="jar:deploy" />
+  <goal name="astrogrid-build-site"       prereqs="site" />
+  <goal name="astrogrid-deploy-site"      prereqs="site:deploy" />
 
 <!--we want to package tests up along with classes in the jar -->
 <preGoal name="jar:jar">

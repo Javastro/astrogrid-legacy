@@ -1,6 +1,8 @@
 package org.astrogrid.applications.service.v1.cea;
 
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.security.SecurityGuard;
+import org.astrogrid.security.authorization.AccessPolicy;
 
 /**
  * A specialization of SecurityGuard for use in CEA services.
@@ -44,13 +46,16 @@ public class CeaSecurityGuard extends SecurityGuard {
   /** Creates a new instance of CeaSecurityGuard */
   public CeaSecurityGuard() {
     super();
+    this.chooseAccessPolicy();
   }
   
   public CeaSecurityGuard(SecurityGuard g) {
     super(g);
+    this.chooseAccessPolicy();
   }
   
-  public static void setInstanceInContext(SecurityGuard g1) {
+  public static void setInstanceInContext(SecurityGuard g1) 
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException {
     CeaSecurityGuard g2 = new CeaSecurityGuard(g1);
     CeaSecurityGuard.store.set(g2);
   }
@@ -75,5 +80,22 @@ public class CeaSecurityGuard extends SecurityGuard {
   public boolean isAuthenticated() {
     return (this.getX500Principal() != null);
   }
-
+  
+  /**
+   * Sets the access policy in the guard.
+   * The name of the class defining the policy is determined from the
+   * configuration item cea.access.policy. If this is misconfigured
+   * such that an instance of that class cannot be made, then this method
+   * throws a RuntimeException.
+   */
+  private void chooseAccessPolicy() {
+    String accessPolicyClass = 
+        SimpleConfig.getSingleton().getString("cea.access.policy");
+    try {
+      this.accessPolicy = 
+          (AccessPolicy) Class.forName(accessPolicyClass).newInstance();
+    } catch (Exception ex) {
+      throw new RuntimeException("The access policy is wrongly configured", ex);
+    }
+  }
 }
