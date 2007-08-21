@@ -140,9 +140,6 @@
   <requestFlow>
    <handler type="URLMapper"/>
    <handler type="java:org.astrogrid.security.AxisServiceCredentialHandler"/>
-   <!-- Uncomment this if you want the service to reject unauthenticated requests.
-   <handler type="java:org.astrogrid.applications.service.v1.cea.AuthorizationHandler"/>
-    -->
   </requestFlow>
  </transport>
 </deployment>

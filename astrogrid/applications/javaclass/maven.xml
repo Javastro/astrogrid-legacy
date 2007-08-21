@@ -1,38 +1,23 @@
 <?xml version="1.0"?>
-<!-- extension maven script -->
+
 <project xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="astrogrid-install-snapshot">
-<!-- properties -->
-<property name="working.dir" location="${basedir}/target/tmp" />
-<!-- standard astrogrid goals -->
-  <goal name="astrogrid-build-artifact" prereqs="jar,war" />
-  <goal name="astrogrid-build-snapshot" prereqs="jar:snapshot,war" />
-
-  <goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot,war:install-snapshot" />
-  <goal name="astrogrid-install-artifact" prereqs="jar:install,war:install" />
-  <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot,war:deploy-snapshot" />
-  <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,war:deploy" />
-  <!-- hooks into existing goals -->
-
-<!--we want to package tests up along with classes in the jar -->
-<preGoal name="jar:jar">
-        <attainGoal name="force.compile.tests" />
-</preGoal>
-
-<goal name="force.compile.tests">
-        <j:if test="${maven.test.skip}">
-                <echo>Building test classes, although we're skipping the tests</echo>
-                <j:set var="maven.test.skip" value="false" />
-                <attainGoal name="test:compile" />
-                <j:set var="maven.test.skip" value="true" />
-        </j:if>
-        <echo>Server: Copying test classes into jar from ${maven.build.dir}/test-classes into ${maven.build.dest}</echo>
-        <copy todir="${maven.build.dest}">
-                <fileset dir="${maven.build.dir}/test-classes">
-                        <exclude name="log4j.properties" /> <!-- as webapp provides its own -->
-                </fileset>
-        </copy>
-</goal>
-	
+  
+  <goal name="astrogrid-build-artifact"   prereqs="war" />
+  <goal name="astrogrid-build-snapshot"   prereqs="war:snapshot" />
+  <goal name="astrogrid-install-snapshot" prereqs="war:install-snapshot" />
+  <goal name="astrogrid-install-artifact" prereqs="war:install" />
+  <goal name="astrogrid-deploy-snapshot"  prereqs="war:deploy-snapshot" />
+  <goal name="astrogrid-deploy-artifact"  prereqs="war:deploy" />
+  <goal name="astrogrid-build-site"       prereqs="site" />
+  <goal name="astrogrid-deploy-site"      prereqs="site:deploy" />
+  
+  
+  <!-- Before building the WAR, compile the documents.
+       The webapp-docs goal is defined in the parent project. -->
+  <preGoal name="war:war">
+    <attainGoal name="webapp-docs"/>
+  </preGoal>
+  
   <!-- When building the WAR, add the documentation from the main site; 
        but do it selectively. -->
   <preGoal name="war:war">
