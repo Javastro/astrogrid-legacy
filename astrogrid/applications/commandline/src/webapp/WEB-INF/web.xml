@@ -136,6 +136,13 @@
 	</env-entry>
         
         <env-entry>
+          <description>Class-name of the access-policy plug-in for controlling requests to this service. Use the default value if you don't want to restrict access.</description>
+          <env-entry-name>cea.access.policy</env-entry-name>
+          <env-entry-value>org.astrogrid.security.authorization.OpenAccessPolicy</env-entry-value>
+          <env-entry-type>java.lang.String</env-entry-type>
+        </env-entry>
+        
+        <env-entry>
           <description>Whether HTTP "chunking" is used when sending data to AstroGrid MySpace: set to "enabled" or "disabled". "Chunking" reduces the memory load on this service.</description>
           <env-entry-name>org.astrogrid.filestore.chunked.send</env-entry-name>
           <env-entry-value>enabled</env-entry-value>
