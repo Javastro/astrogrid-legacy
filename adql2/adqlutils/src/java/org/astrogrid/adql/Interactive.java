@@ -180,7 +180,7 @@ public class Interactive {
              queryBuffer = new StringBuffer( 1024 ) ;
          }
          else if( queryBuffer.length() > 0 ) {
-             queryBuffer.delete( 0, queryBuffer.length()-1 ) ;
+             queryBuffer.delete( 0, queryBuffer.length() ) ;
          }            
      }
      
