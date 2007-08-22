@@ -43,7 +43,7 @@ public class FilesTable extends JTable {
         setPreferredScrollableViewportSize(new Dimension(300,300));
         setRowSelectionAllowed(true);
         setColumnSelectionAllowed(false);
-        setCellSelectionEnabled(false);     
+     //   setCellSelectionEnabled(false);     
         setAutoResizeMode(AUTO_RESIZE_NEXT_COLUMN);
         setBorder(BorderFactory.createEmptyBorder());
         setShowGrid(false);
