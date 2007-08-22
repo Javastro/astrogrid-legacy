@@ -15,9 +15,12 @@
 	</head>
 <body>
 <release version="2007.4.alpha4" date="2007-08-23">
+    <action dev="nw" type="fix" issue="2274">
+        Fixed colours of query size indicator (tick off)
+    </action>
     <action dev="nw" type="fix" issue="2293">
         file explorer views now clean up on user logout - 
-        now possible to cleanly switch between different user accounts.
+        now possible to cleanly switch between different user accounts. (tick off)
     </action>
     <action dev="nw" type="fix" issue="2279">
         Fixed selection shading for 'list' view.
