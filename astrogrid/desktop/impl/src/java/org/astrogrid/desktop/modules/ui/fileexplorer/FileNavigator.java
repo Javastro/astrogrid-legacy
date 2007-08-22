@@ -15,14 +15,18 @@ import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileChangeEvent;
 import org.apache.commons.vfs.FileListener;
+import org.apache.commons.vfs.FileName;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystem;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
+import org.apache.commons.vfs.util.FileObjectUtils;
+import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
@@ -30,6 +34,7 @@ import org.astrogrid.desktop.modules.ui.fileexplorer.History.HistoryEvent;
 import org.astrogrid.desktop.modules.ui.fileexplorer.History.HistoryListener;
 import org.astrogrid.desktop.modules.ui.folders.StorageFolder;
 
+import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.matchers.MatcherEditor;
 
@@ -123,6 +128,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
     private final FileModel model;
     private final History history;
     private final UIComponent parent;
+    private final EventList upList;
 
     private final FileSystemManager vfs;
 
@@ -135,6 +141,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
         this.model = new FileModel(ed,activities,icons,new VFSOperationsImpl(parent,this,vfs));
         this.history = new History();
         history.addHistoryListener(this);
+        this.upList = new BasicEventList();
     }
 
     public FileModel getModel() {
@@ -163,6 +170,10 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
 
     public EventList getPreviousList() {
         return this.history.getPreviousList();
+    }
+    
+    public EventList getUpList() {
+        return upList;
     }
 
 // current state
@@ -217,14 +228,26 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
         (new OpenDirectoryWorker()).start();                
     }
     
+    // UI component used to  represent an item in the 'up' menu
+    private class UpMenuItem extends JMenuItem implements ActionListener {
+        private final FileName fn;
+
+        public UpMenuItem(FileName fn) {
+            this.fn = fn;
+            final String baseName = fn.getBaseName();
+            setText(StringUtils.isEmpty(baseName) ? fn.getURI() : baseName);
+            setIcon(icons.defaultFolderIcon());
+            addActionListener(this);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            FileNavigator.this.move(fn.getURI());
+        }
+    }
     // data structure used to manage the different ways we might provide a location to navigate to.
     // also extends JMenu item, which means it can be displayed ina  menu, and if clicked
     // knows how to navigate to this location.
     private class Location extends JMenuItem implements ActionListener{
-        /**
-         * Logger for this class
-         */
-        private final Log logger = LogFactory.getLog(Location.class);
 
         /**
          * create a location from a uri string
@@ -299,6 +322,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
 
     /** background worker that finds the parent of a file,
      * then moves the history - which in turn fires events to trigger a view reload
+     * calld by the up() api function, but not used in the up menu.
      */
     private class UpWorker extends BackgroundWorker {
 
@@ -368,6 +392,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
                 if (shown == null) {
                     return null;
                 }
+                // populate the children.
                 EventList files = model.getChildrenList();
                 FileObject[] children = shown.getChildren();
                 try {
@@ -377,6 +402,19 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
                 } finally {
                     files.getReadWriteLock().writeLock().unlock();
                 }
+                // populate the parents.
+                try {
+                    upList.getReadWriteLock().writeLock().lock();
+                    upList.clear();
+                    FileName fn = shown.getName().getParent();
+                    while(fn != null) {
+                        upList.add(new UpMenuItem(fn));
+                        fn = fn.getParent();
+                    }
+                } finally {
+                    upList.getReadWriteLock().writeLock().unlock();
+                }
+                // listen for changes.
                 final FileSystem fileSystem = shown.getFileSystem();
                 isRoot = shown == fileSystem.getRoot();
                 fileSystem.addListener(shown,FileNavigator.this);            
@@ -408,6 +446,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
     public void fileDeleted(FileChangeEvent event) throws Exception {
         refresh();
     }
+
 
 
 }

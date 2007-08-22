@@ -14,6 +14,14 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="2007.4.alpha4" date="2007-08-23">
+    <action dev="nw" type="fix">
+        Minor improvements to file explorer
+    </action>
+    <action dev="nw" type="fix" issue="2285">
+    Astroscope now launches again.
+    </action>
+</release>
 <release version="2007.4.alpha3" date="2007-08-13">
     <action dev="mbt" type="add">
         Provided option to configure which columns are displayed in VOExplorer

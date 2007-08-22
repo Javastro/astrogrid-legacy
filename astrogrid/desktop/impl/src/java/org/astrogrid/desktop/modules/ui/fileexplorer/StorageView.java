@@ -86,18 +86,6 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	 */
 	private static final Log logger = LogFactory.getLog(StorageView.class);
 	
-	private class UpAction extends AbstractAction {
-		public UpAction() {
-			super("Up",IconHelper.loadIcon("up22.png"));
-			putValue(Action.SHORT_DESCRIPTION,"Up: Move to parent folder");
-			setEnabled(false);
-		}
-
-		public void actionPerformed(ActionEvent e) {
-		    navigator.up();			
-		}
-	}
-	
 	private class RefreshAction extends AbstractAction {
 		public RefreshAction() {
 			super("Refresh",IconHelper.loadIcon("reload22.png"));
@@ -215,6 +203,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	private static final String STORAGE_VIEW = "Storage";
     private final ActivitiesManager actsManager;
 
+
 	public StorageView(UIComponent parent, ActivitiesManager actsManager,EventList foldersList, FileSystemManager vfs, IconFinder iconFinder) {
 		this.parent = parent;
         this.actsManager = actsManager;
@@ -243,16 +232,16 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	    RangeList historyRange = new RangeList(navigator.getPreviousList());
 	    historyRange.setTailRange(navigator.getMaxHistorySize(),1); // not including the current.
 	    back = new EventListDropDownButton(new JButton(IconHelper.loadIcon("previous22.png")),historyRange,true);
-	 //   configureButton(back);
 	    back.setToolTipText("Back: See folders you viewed previously");
 	    builder.add(back,cc.xy(r++,c));
 	    // next button.
 	    forward = new EventListDropDownButton(new JButton(IconHelper.loadIcon("next22.png")),navigator.getNextList(),true);
-	//    configureButton(forward);
 	    forward.setToolTipText("Forward: See folders you viewed previously");
 	    builder.add(forward,cc.xy(r++,c));
 	    r++;
-	    builder.add(createMainButton(up),cc.xy(r++,c));
+	    up = new EventListDropDownButton(new JButton(IconHelper.loadIcon("up22.png")),navigator.getUpList(),false);
+	    up.setToolTipText("Up: navigate to the parent of the current folder");
+	    builder.add(up,cc.xy(r++,c));
 	    r++;
 	    builder.addLabel("Location",cc.xy(r++,c));
 	    r++;
@@ -320,7 +309,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	
 	private final EventListDropDownButton back;
 	private final EventListDropDownButton forward;
-	private final Action up = new UpAction();
+	private final EventListDropDownButton up;
 	private final Action refresh = new RefreshAction();
 	private final Action stop = new StopAction();
 	private final Action go = new GoAction();
@@ -386,6 +375,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
         goButton.enableA();
         refresh.setEnabled(true);
         up.setEnabled(! e.isRoot());
+        location.setText(navigator.current().getName().getURI());
         //  notifyStorageTasks();        
         if (e instanceof BookmarkNavigationEvent) {
             bookmark.setEnabled(false);

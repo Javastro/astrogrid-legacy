@@ -21,7 +21,7 @@ import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 29, 200712:46:02 PM
  */
-public class IconFinderImpl implements IconFinder {
+public final class IconFinderImpl implements IconFinder {
 
 	public static final String FOLDER = "folder16.png";
 	public static final String FILE = "document16.png";
@@ -72,4 +72,7 @@ public class IconFinderImpl implements IconFinder {
 			return IconHelper.loadIcon(UNKNOWN);
 		}
 	}
+    public ImageIcon defaultFolderIcon() {
+        return IconHelper.loadIcon(FOLDER);
+    }
 }

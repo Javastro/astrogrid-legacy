@@ -16,5 +16,7 @@ import org.apache.commons.vfs.FileObject;
 public interface IconFinder {
     /** find an icon for a file object */
     public ImageIcon find(FileObject fo);
+    
+    public ImageIcon defaultFolderIcon();
 
 }
