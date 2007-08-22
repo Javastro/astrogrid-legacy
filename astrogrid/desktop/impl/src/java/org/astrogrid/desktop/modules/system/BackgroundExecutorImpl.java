@@ -1,4 +1,4 @@
-/*$Id: BackgroundExecutorImpl.java,v 1.10 2007/04/18 15:47:07 nw Exp $
+/*$Id: BackgroundExecutorImpl.java,v 1.11 2007/08/22 22:33:42 nw Exp $
  * Created on 30-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -180,11 +180,13 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
     
     public void executeWorker(BackgroundWorker worker) {
         try {
+            logger.debug("executing worker");
         	// this is called by Thread.start(), and any other ways to execute this worker
         	// so we've waited till the last moment, and now capture the permissions / session
         	// of the calling thread, so it'll be passed into the background thread.
         	if (worker.getPrincipal() == null) { // if a principal has already been set, that's fine
         		Principal p = ss.currentSession();
+        		logger.debug("setting principal to " + p.getName());
         		worker.setPrincipal(p);
         	}
             exec.execute(worker);
@@ -244,6 +246,9 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
 
 /* 
 $Log: BackgroundExecutorImpl.java,v $
+Revision 1.11  2007/08/22 22:33:42  nw
+Complete - task 144: clear view when logging out and loggin in as different user
+
 Revision 1.10  2007/04/18 15:47:07  nw
 tidied up voexplorer, removed front pane.
 

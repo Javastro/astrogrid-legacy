@@ -52,6 +52,13 @@ public class MyspaceFileSystem extends AbstractFileSystem implements FileSystem 
         }   
 	}
 
+	
+	protected void doCloseCommunicationLink() {
+	    // sadly nothing we can do here - as fileobjects have already attached, and so don't need the client any longer.
+	    // a proper close() would require keeping refereences to all fileobjects created for tis filesystem,
+	    // at least we can remove the cached entries.
+	}
+	
 	// add the capabiltiies of this file system.
 	protected void addCapabilities(Collection caps) {
 		caps.addAll(MyspaceProvider.CAPABILITIES);

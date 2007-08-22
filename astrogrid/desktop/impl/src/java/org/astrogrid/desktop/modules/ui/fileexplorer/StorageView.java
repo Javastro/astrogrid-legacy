@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
+import java.util.Iterator;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -31,6 +32,9 @@ import org.apache.commons.vfs.FileSystem;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.provider.AbstractFileSystem;
+import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.acr.astrogrid.UserLoginEvent;
+import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
@@ -75,7 +79,7 @@ import com.l2fprod.common.swing.JTaskPane;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 3, 200712:17:50 AM
  */
-public class StorageView  implements  ListSelectionListener, FileNavigator.NavigationListener{
+public class StorageView  implements  ListSelectionListener, FileNavigator.NavigationListener, UserLoginListener{
 	private final UIComponent parent;
 	protected final UIComponent getParent() {
 		return parent;
@@ -204,7 +208,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     private final ActivitiesManager actsManager;
 
 
-	public StorageView(UIComponent parent, ActivitiesManager actsManager,EventList foldersList, FileSystemManager vfs, IconFinder iconFinder) {
+	public StorageView(UIComponent parent, ActivitiesManager actsManager,EventList foldersList, FileSystemManager vfs, IconFinder iconFinder, Community comm) {
 		this.parent = parent;
         this.actsManager = actsManager;
 		
@@ -214,6 +218,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
         SearchField filter = new SearchField("Filter files");		
         MatcherEditor ed = new TextComponentMatcherEditor(filter.getWrappedDocument(),new FileObjectFilterator());
         navigator = new FileNavigator(getParent(),vfs,ed,actsManager,iconFinder);		
+        comm.addUserLoginListener(this);
         navigator.addNavigationListener(this);
 	// hierarchies.
 		folders = new StorageFoldersList(foldersList,parent,vfs);
@@ -404,6 +409,17 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
      */
     public final FileNavigator getNavigator() {
         return this.navigator;
+    }
+
+    // listen to login / logout events.
+    public void userLogin(UserLoginEvent arg0) {
+        // ignored.
+    }
+
+    public void userLogout(UserLoginEvent arg0) {
+        // clear anything that might have references to myspace, and move home.
+        navigator.reset();
+
     }
 
 

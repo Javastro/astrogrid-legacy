@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.22 2007/07/26 18:21:45 nw Exp $
+/*$Id: VospaceImpl.java,v 1.23 2007/08/22 22:33:42 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -796,13 +796,6 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
        
 
     public void userLogin(UserLoginEvent e) {
-    	// perceptual speedup.
-    	(new BackgroundWorker(ui,"Prefetching Myspace root") {
-    		protected Object construct() throws Exception {
-    			getClient().home();
-    			return null;
-    		}
-    	}).start();
     }
 
 
@@ -913,6 +906,9 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.23  2007/08/22 22:33:42  nw
+Complete - task 144: clear view when logging out and loggin in as different user
+
 Revision 1.22  2007/07/26 18:21:45  nw
 merged mark's and noel's branches
 

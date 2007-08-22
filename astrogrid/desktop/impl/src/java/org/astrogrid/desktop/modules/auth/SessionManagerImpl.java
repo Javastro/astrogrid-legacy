@@ -62,7 +62,6 @@ public class SessionManagerImpl  extends SingleSessionManager implements UserLog
 		// this will flush all the session-based services too - so we start afresh.
 		MutablePrincipal mp = (MutablePrincipal)ss.getCurrentUser();
 		mp.setActualPrincipal(new UnauthenticatedPrincipal());
-		mp.scrubIdentity();
 	}
 
 // sessionManager interface

@@ -15,6 +15,10 @@
 	</head>
 <body>
 <release version="2007.4.alpha4" date="2007-08-23">
+    <action dev="nw" type="fix" issue="2293">
+        file explorer views now clean up on user logout - 
+        now possible to cleanly switch between different user accounts.
+    </action>
     <action dev="nw" type="fix" issue="2279">
         Fixed selection shading for 'list' view.
     </action>

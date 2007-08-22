@@ -58,19 +58,7 @@ public class MutablePrincipal implements Principal {
 		result = PRIME * result + ((this.identity == null) ? 0 : this.identity.hashCode());
 		return result;
 	}
-/** changes the identity of this object - hashCode give different results 
- * 
- * works, in a hacky way, because hivelock seesm to use hashcode to reference 
- *  session-specific components. So if hashcode of the object finds, previous session's stuff
- *  is discarded.
- * 
- * and not vital if this doesn't work  - there's a very small chance that we'll get an object with the 
- * same hashcode - but does give an extra layer of protection when
- * a user logs out within a session that no old stuff is left lying around.
- * */
-	public void scrubIdentity() {
-		identity = new Object();
-	}
+
 	
 	public String toString() {
 		return this.p.toString();

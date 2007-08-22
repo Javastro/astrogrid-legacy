@@ -16,6 +16,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileChangeEvent;
@@ -26,7 +27,10 @@ import org.apache.commons.vfs.FileSystem;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.util.FileObjectUtils;
+import org.astrogrid.acr.astrogrid.UserLoginEvent;
+import org.astrogrid.acr.astrogrid.UserLoginListener;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ag.vfs.myspace.MyspaceFileSystem;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
@@ -45,7 +49,7 @@ import ca.odell.glazedlists.matchers.MatcherEditor;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Aug 10, 20074:45:27 PM
  */
-public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current, FileListener {
+public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current, FileListener{
     
     // event listener interface
     public static interface NavigationListener extends EventListener {
@@ -197,6 +201,10 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
     
     public void next() {
         history.moveNext();
+    }
+    
+    public void home() {
+        move(SystemUtils.getUserHome().toString());
     }
    
     public void refresh() {
@@ -445,6 +453,14 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
     }
     public void fileDeleted(FileChangeEvent event) throws Exception {
         refresh();
+    }
+
+    /** rest history, and go home */
+    public void reset() {
+//        if (current().getFileSystem() instanceof MyspaceFileSystem) { //do all views - whether currently showing mysopace or not - as might have some previous state..
+            history.reset(); // necessary, as it holds onto references to file objects - and some might be myspace related.
+            home();
+  //      }
     }
 
 

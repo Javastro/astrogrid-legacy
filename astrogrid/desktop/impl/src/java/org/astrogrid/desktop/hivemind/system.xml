@@ -966,7 +966,7 @@ SYSTEM TRAY
 	<service-point id="vfs" interface="org.apache.commons.vfs.FileSystemManager">
 		Uniform access to all filesystems.
         <interceptor service-id="system.edt" /><!-- doesn't give much protection, but might identify some problems. -->        
-		<invoke-factory model="session">
+		<invoke-factory> <!-- should maybe be session later -->
 			<construct 
 			class="org.astrogrid.desktop.modules.system.HivemindFileSystemManager"
 			initialize-method="init"

@@ -114,8 +114,15 @@ public class MyspaceProvider extends AbstractOriginatingFileProvider implements
 		// close all the open myspace filesystems.
 		for (Iterator i = filesystems.iterator(); i.hasNext();) {
 			MyspaceFileSystem f = (MyspaceFileSystem) i.next();
-			f.close();
+			try {
+			    getContext().getFileSystemManager().getFilesCache().clear(f);
+			   
+			} catch (Throwable t) {
+			  logger.warn("Exception when closing filesystem",t);  
+			}
 		}
+		filesystems.clear();
+		close();
 	}
 	
 }

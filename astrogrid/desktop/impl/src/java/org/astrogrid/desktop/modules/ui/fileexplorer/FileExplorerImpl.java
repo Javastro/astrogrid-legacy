@@ -1,4 +1,4 @@
-/*$Id: FileExplorerImpl.java,v 1.5 2007/08/13 19:29:47 nw Exp $
+/*$Id: FileExplorerImpl.java,v 1.6 2007/08/22 22:33:41 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,6 +33,7 @@ import javax.swing.event.ListSelectionEvent;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
+import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.CSH;
@@ -61,7 +62,7 @@ import com.l2fprod.common.swing.JTaskPane;
 public class FileExplorerImpl extends UIComponentImpl implements FileManagerInternal{
 
 	public FileExplorerImpl( final UIContext context,  final ActivityFactory activityBuilder
-			,final UIContributionBuilder menuBuilder, EventList folders, FileSystemManager vfs, IconFinder icons) {
+			,final UIContributionBuilder menuBuilder, EventList folders, FileSystemManager vfs, IconFinder icons, Community comm) {
         super(context);
  
         this.setSize(800, 800);    
@@ -96,7 +97,7 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 			menuBar.add(getContext().createWindowMenu(this),sz-1); // insert before the help menu.
 		    setJMenuBar(menuBar);		
 
-		    view = new StorageView(this,activities,folders,vfs,icons);
+		    view = new StorageView(this,activities,folders,vfs,icons,comm);
             JComponent foldersPanel = view.getHierarchiesPanel();
 		    JComponent mainPanel = view.getMainPanel();
 		    JComponent mainButtons = view.getMainButtons();

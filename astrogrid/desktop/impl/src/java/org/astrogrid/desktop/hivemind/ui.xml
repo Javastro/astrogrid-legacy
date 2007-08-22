@@ -456,16 +456,18 @@ FILE EXPLORER
 			<inject object="service-property:storageFolders:list" />
 			<inject object="service:system.vfs" />
             <inject object="service:iconFinder" />
+            <inject object="service:astrogrid.community" />
 		</object>
 	</contribution>
 
 	<service-point id="storageFolders" visibility="private" interface="org.astrogrid.desktop.modules.ui.folders.ListProvider">
 		Loads / saves the list of resource folders.
-		<invoke-factory>
+		<invoke-factory><!-- to think about - does this need to be sessioned too? -->
 			<construct class="org.astrogrid.desktop.modules.ui.folders.StorageFoldersProvider">
 				<service>system.ui</service>
 				<object>preference:astrogrid.workdir</object>
                 <service>system.xmlPersist</service>
+                <event-listener service-id="astrogrid.community" />                
 			</construct>
 		</invoke-factory>
 	</service-point>

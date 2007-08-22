@@ -226,6 +226,11 @@ public class History  {
 		return previousStack.peek();
 	}
 	
+	public void reset() {
+	    nextStack.clear();
+	    previousStack.clear();
+	}
+	
 	public void move(Object location) {
 		if (location.equals(current())) {
 			return; // ignore

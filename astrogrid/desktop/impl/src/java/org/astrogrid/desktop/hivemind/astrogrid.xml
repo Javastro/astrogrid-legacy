@@ -139,7 +139,7 @@ MYSPACE
 		<interceptor service-id="hivelock.core.authorization">
 			<method pattern="*" roles="loggedin" />
 		</interceptor>
-		<invoke-factory model="session">
+		<invoke-factory model="session"><!--  session necessary as am listening to sessioned community. -->
 			<construct class="org.astrogrid.desktop.modules.ag.VospaceImpl" >
 				<service>community</service>
 				<service>ivoa.registry</service>
@@ -173,17 +173,18 @@ MYSPACE
 	
 	<!--  myspace vfs provider 	-->
 	<service-point id="myspacevfs" interface="org.astrogrid.desktop.modules.ag.vfs.VfsFileProvider" >
-		<invoke-factory model="session">
+		<invoke-factory model="primitive"><!--  has to be primitive, as vfs implementation casts it to implementation type. -->
 			<construct class="org.astrogrid.desktop.modules.ag.vfs.myspace.MyspaceProvider">
 				<service>bundlePrefs</service>
 				<service>myspace</service>
-				<event-listener service-id="community" />
+				<!--  <event-listener service-id="community" /> problem - listening to a sessioned object here. 
+                seems to work fine without this at the moment anyhow.-->
 			</construct>
 		</invoke-factory>
 	</service-point>
 	
 	<service-point id="workspacevfs" interface="org.astrogrid.desktop.modules.ag.vfs.VfsFileProvider" >
-		<invoke-factory>
+		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.ag.vfs.WorkspaceProvider">
 				<service>community</service>
 			</construct>
