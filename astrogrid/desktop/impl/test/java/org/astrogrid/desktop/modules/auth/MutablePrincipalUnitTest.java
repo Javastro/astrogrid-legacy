@@ -34,15 +34,10 @@ public class MutablePrincipalUnitTest extends TestCase {
 		// caught a bug in my previous implementation.
 		assertEquals(p,p);
 		
-		// test we can change the 'identity' without changing anything much else.
-		int hc = p.hashCode();
-		p.scrubIdentity();
-		assertFalse(hc == p.hashCode());
-		assertSame(actualPrincipal,p.getActualPrincipal());
 		
 		// finally, test changing the actual Principal works, without changing the identity.
 		Principal r = new HomeIvorn("ivo://foobar");
-		hc = p.hashCode();
+		int hc = p.hashCode();
 		p.setActualPrincipal(r);
 		assertEquals(r,p.getActualPrincipal());
 		assertEquals(r.getName(),p.getName());
