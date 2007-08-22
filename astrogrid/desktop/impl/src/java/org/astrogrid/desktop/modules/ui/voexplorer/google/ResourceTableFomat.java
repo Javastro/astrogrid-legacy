@@ -38,19 +38,19 @@ import ca.odell.glazedlists.GlazedLists;
 
 public class ResourceTableFomat extends ModularTableFormat {
 
-    private final static String STATUS_NAME = "Status";
-    private final static String LABEL_NAME = "Title";
-    private final static String CAPABILITY_NAME = "Capability";
-    private final static String DATE_NAME = "Date";
-    private final static String SHORT_NAME = "Short Name";
-    private final static String SUBJECT_NAME = "Subject";
-    private final static String PUBLISHER_NAME = "Publisher";
-    private final static String CONTACT_NAME = "Contact";
-    private final static String CREATOR_NAME = "Creator";
-    private final static String ID_NAME = "Id";
-    private final static String TYPE_NAME = "Type";
-    private final static String VALIDATION_NAME = "Validation";
-    private final static String VERSION_NAME = "Version";
+    protected final static String STATUS_NAME = "Status";
+    protected final static String LABEL_NAME = "Title";
+    protected final static String CAPABILITY_NAME = "Capability";
+    protected final static String DATE_NAME = "Date";
+    protected final static String SHORT_NAME = "Short Name";
+    protected final static String SUBJECT_NAME = "Subject";
+    protected final static String PUBLISHER_NAME = "Publisher";
+    protected final static String CONTACT_NAME = "Contact";
+    protected final static String CREATOR_NAME = "Creator";
+    protected final static String ID_NAME = "Id";
+    protected final static String TYPE_NAME = "Type";
+    protected final static String VALIDATION_NAME = "Validation";
+    protected final static String VERSION_NAME = "Version";
 
     private final static String MORE = ", ...";  // continuation string
 
@@ -243,7 +243,7 @@ public class ResourceTableFomat extends ModularTableFormat {
             }
         });
 
-        setColumns((ModularColumn[])columnList.toArray(new ModularColumn[0]));
+        setColumns((ModularColumn[])columnList.toArray(new ModularColumn[columnList.size()]));
     }
 
     /**
@@ -275,7 +275,7 @@ public class ResourceTableFomat extends ModularTableFormat {
      *
      * @return   array of initially visible column names
      */
-    public static String[] getDefaultColumns() {
+    public String[] getDefaultColumns() {
         return new String[] {
             STATUS_NAME, LABEL_NAME, CAPABILITY_NAME, DATE_NAME,
         };
@@ -363,7 +363,7 @@ public class ResourceTableFomat extends ModularTableFormat {
     /**
      * ModularColumn implementation for use internally to this TableFormat.
      */
-    private static abstract class Column extends ModularColumn {
+    protected static abstract class Column extends ModularColumn {
 
         /**
          * Constructor.
@@ -373,7 +373,7 @@ public class ResourceTableFomat extends ModularTableFormat {
          * @param  comparator  default comparator to use for this column;
          *                     use null for a non-comparable column
          */
-        Column(String name, Class clazz, Comparator comparator) {
+        public Column(String name, Class clazz, Comparator comparator) {
             super(name, clazz, comparator);
         }
 
@@ -404,14 +404,14 @@ public class ResourceTableFomat extends ModularTableFormat {
     /**
      * Column implementation for a column containing strings.
      */
-    private static abstract class StringColumn extends Column {
+    protected static abstract class StringColumn extends Column {
 
         /**
          * Constructs a column with a default comparator.
          *
          * @param name  column name
          */
-        StringColumn(String name) {
+        public StringColumn(String name) {
             this(name, false);
         }
 
@@ -421,7 +421,7 @@ public class ResourceTableFomat extends ModularTableFormat {
          * @param  name  column name
          * @param  caseSensitive    true iff comparisons should be case sensitive
          */
-        StringColumn(String name, boolean caseSensitive) {
+        public StringColumn(String name, boolean caseSensitive) {
             super(name, String.class, caseSensitive ? GlazedLists.comparableComparator() : GlazedLists.caseInsensitiveComparator());
         }
 
@@ -442,7 +442,7 @@ public class ResourceTableFomat extends ModularTableFormat {
     /**
      * ModularColumn implementation for a column containing icons.
      */
-    private static abstract class IconColumn extends Column {
+    protected static abstract class IconColumn extends Column {
 
         /**
          * Constructor.

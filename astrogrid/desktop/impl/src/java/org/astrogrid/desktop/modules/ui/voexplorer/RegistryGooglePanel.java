@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.14 2007/08/13 19:14:17 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.15 2007/08/22 16:12:19 nw Exp $
 >>>>>>> 1.12.2.6
  * Created on 02-Sep-2005
  *
@@ -53,6 +53,8 @@ import javax.swing.event.TableColumnModelListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 import javax.xml.stream.XMLStreamReader;
 
 import net.sf.ehcache.Ehcache;
@@ -321,7 +323,7 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
     protected final EventTableModel resourceTableModel;
 	// tracks the currently clicked on registry entry - i.e. the one to display in viewer
 	private final EventSelectionModel currentResourceInView;
-    private final AdjustableColumnModel resourceColumnModel;
+    private final ResettableAdjustableColumnModel resourceColumnModel;
     private final JScrollPane tableScroller;
 
 	protected final JTabbedPane tabPane;
@@ -332,7 +334,7 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 	protected final Ehcache bulk;
 	protected final JComponent toolbar;
 	private final ResourceViewer[] resourceViewers;
-	private final AnnotationService annServer;
+	protected final AnnotationService annServer;
 	// stuff that's accessed when composing this pane together in the UI.
 	public final UIComponentBodyguard parent;
 
@@ -454,7 +456,8 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 		// middle pane
 		
 		// model for the table.
-		resourceTableModel= new EventTableModel(filteredItems,createTableFormat());          		
+		final ResourceTableFomat tableFormat = createTableFormat();
+        resourceTableModel= new EventTableModel(filteredItems,tableFormat);          		
 		resourceTableModel.addTableModelListener(this);
 		resourceTable = createTable(resourceTableModel,filteredItems);
 		CSH.setHelpIDString(resourceTable, "reg.table");
@@ -466,7 +469,7 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 		tableScroller.setMinimumSize(new Dimension(100,50)); 
 
         // arrange for the column model of the table to be configurable by the user.
-        resourceColumnModel = createResourceColumnModel(resourceTable);
+        resourceColumnModel = createResourceColumnModel(tableFormat.getDefaultColumns(),resourceTable);
         resourceTable.setColumnModel(resourceColumnModel);
         Action colsAct = new AbstractAction(null, IconHelper.loadIcon("configure14.png")) {
             final JPopupMenu colMenu = createColumnsMenu("").getPopupMenu();
@@ -524,7 +527,7 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 	}
 	
 	/** called to create the format definition of the central table - maybe overridden by subclasses */
-	protected TableFormat createTableFormat() {
+	protected ResourceTableFomat createTableFormat() {
 		return new ResourceTableFomat(annServer,vomon,iconFac);
 	}
 
@@ -540,13 +543,17 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
      * @param  resourceTable  table whose columns are to be controlled
      * @return   new column model which can be used with <code>resourceTable</code>
      */
-    private static AdjustableColumnModel createResourceColumnModel(JTable resourceTable) {
-        final AdjustableColumnModel colModel = new AdjustableColumnModel(resourceTable.getColumnModel(), resourceTable.getModel());
+    private ResettableAdjustableColumnModel createResourceColumnModel(String[] defaultColNames,JTable resourceTable) {
+        final ResettableAdjustableColumnModel colModel = 
+            new ResettableAdjustableColumnModel(
+                    resourceTable.getColumnModel()
+                    , resourceTable.getModel()
+                    ,defaultColNames
+                    );
 
         // initialise visible column list with persisted value from prefs
-        final Preferences prefs = Preferences.userNodeForPackage(RegistryGooglePanel.class);
+        final Preferences prefs = Preferences.userNodeForPackage(this.getClass()); //NWW find the class name dynamically, so subclasses have their own preferences.
         String colNameList = prefs.get(COLUMNS_KEY, null);
-        String[] defaultColNames = ResourceTableFomat.getDefaultColumns();
         String[] colNames = colNameList == null ? defaultColNames
                                                 : colNameList.split("\t");
         if (! colModel.setVisibleColumnsByName(colNames)) {
@@ -570,6 +577,20 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
             }
         });
         return colModel;
+    }
+    
+    /** an extended column model which knows how to reset itself back to it's original layout */
+    private class ResettableAdjustableColumnModel extends AdjustableColumnModel {
+        private final String[] defaultColNames;
+        public ResettableAdjustableColumnModel(
+                TableColumnModel baseColumnModel, TableModel tableModel,String[] defaultColNames) {
+            super(baseColumnModel, tableModel);
+            this.defaultColNames = defaultColNames;
+        }
+        
+        public void reset() {
+            setVisibleColumnsByName(defaultColNames);
+        }
     }
 	
 	/** called to create the central table - may be overridden by subclasses */
@@ -692,7 +713,7 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
         CheckBoxMenu menu = resourceColumnModel.makeCheckBoxMenu(name);
         menu.insertAction(new AbstractAction("Show Defaults") {
             public void actionPerformed(ActionEvent evt) {
-                resourceColumnModel.setVisibleColumnsByName(ResourceTableFomat.getDefaultColumns());
+                resourceColumnModel.reset();
             }
         });
         menu.insertAction(new AbstractAction("Show All") {
@@ -837,6 +858,10 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.15  2007/08/22 16:12:19  nw
+RESOLVED - bug 2285: All VOscope broken in latest snapshots
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2285
+
 Revision 1.14  2007/08/13 19:14:17  nw
 merged in mark's adjustable columns
 

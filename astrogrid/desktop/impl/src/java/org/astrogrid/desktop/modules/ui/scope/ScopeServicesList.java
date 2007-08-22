@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.Icon;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import net.sf.ehcache.Ehcache;
@@ -25,6 +26,7 @@ import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.system.pref.Preference;
+import org.astrogrid.desktop.modules.ui.comp.ModularColumn;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.CapabilityIconFactory;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTable;
@@ -77,26 +79,8 @@ public class ScopeServicesList extends RegistryGooglePanel
 	final BidiMap services = new DualHashBidiMap();
 
 	
-	protected TableFormat createTableFormat() {
-		return new ServicesListTableFormat();
-	}
-	protected ResourceTable createTable(EventTableModel model, EventList list) {
-		ResourceTable rt=  new ResourceTable(model,list,vomon) {
-			protected void createTooltipFor(int col,Resource r, StringBuffer sb) {
-				if (col == 23) {
-					Object o = results.get(r);
-					if (o != null && o instanceof String) {
-						sb.append(o);
-					}
-				}
-			}
-		};
-		TableColumnModel cm = rt.getColumnModel();
-		cm.getColumn(1).setPreferredWidth(350);
-		cm.getColumn(1).setMaxWidth(350);
-		cm.getColumn(3).setPreferredWidth(500);
-		cm.getColumn(3).setMaxWidth(1000);
-		return rt;
+	protected ResourceTableFomat createTableFormat() {
+		return new ServicesListTableFormat(annServer,vomon,iconFac);
 	}
 	
 // query summarizer stuff	
@@ -134,87 +118,47 @@ public class ScopeServicesList extends RegistryGooglePanel
 	public EventList getList() {
 		return edtItems;
 	}
-	
-	private class ServicesListTableFormat implements AdvancedTableFormat{
 
-		public Class getColumnClass(int arg0) {
-			switch(arg0) {
-			case 0:
-				return Integer.class;
-			case 1:
-			case 3:
-				return Object.class;
-			case 2:
-				return Icon.class;
-			default:
-				throw new IndexOutOfBoundsException("Oversized column ix:" +arg0);					
-			}
-		}
+	/** extends the resource table format with two additional columns */
+	private class ServicesListTableFormat extends ResourceTableFomat{
 
-		public Comparator getColumnComparator(int arg0) {
-			switch (arg0) {
-			case 0:
-				return GlazedLists.comparableComparator();
-			case 1:
-				return GlazedLists.caseInsensitiveComparator();
-			case 2:
-				return hashCodeComparator;
-			case 3:
-				return GlazedLists.caseInsensitiveComparator();
-			default:
-				throw new IndexOutOfBoundsException("Oversized column ix:" +arg0);
-			}
-		}
+        public ServicesListTableFormat(AnnotationService annService,
+                VoMonInternal vomon, CapabilityIconFactory capBuilder) {
+            super(annService, vomon, capBuilder);
+            ModularColumn[] already = getColumns();
+            ModularColumn[] more = new ModularColumn[already.length+2];
+            System.arraycopy(already,0,more,0,already.length);
+            more[already.length] =new Column(RESULTS_NAME,Integer.class,GlazedLists.comparableComparator()){
+                public Object getColumnValue(Object baseObj) {
+                    Resource r = (Resource)baseObj;
+                    Object o = results.get(r);
+                    return o != null && (o instanceof Integer) ? o : null;                    
+                }
+                public void configureColumn(TableColumn tcol) {
+                    tcol.setPreferredWidth(40);
+                }
+            };
+            more[already.length + 1] = new StringColumn(ERRORS_NAME,true) {
 
-		private final Comparator hashCodeComparator = new Comparator() {
+                protected String getValue(Resource r) {
+                    Object o = results.get(r);
+                    return o != null && (o instanceof String) ? (String)o : "";
+                }
+                public void configureColumn(TableColumn tcol) {
+                    tcol.setPreferredWidth(500);
+                }
+            };
+            setColumns(more);
+        }
 
-			public int compare(Object arg0, Object arg1) {
-				return arg0.hashCode() - arg1.hashCode();
-			}
-		};
-		
-		public int getColumnCount() {
-			return 4;
-		}
+        private final static String RESULTS_NAME = "Results"; // integer, comparableComparator
+	    private final static String ERRORS_NAME = "Error Message"; // long string, caseInsensitiveComparator
 
-		public String getColumnName(int column) {
-			switch(column) {
-			case 0 :return "Results";
-			case 1: return "Title";
-			case 2: return "Capabilities";
-			case 3: return "Error Message";
-			default: 
-				throw new IndexOutOfBoundsException("Oversized column ix:" +column);
-			}
-		}
-
-		public Object getColumnValue(Object arg0, int columnIndex) {
-			Resource r = (Resource)arg0;
-			switch(columnIndex) {
-			case 0:
-				Object o = results.get(r);
-				return o != null && (o instanceof Integer) ? o : null;
-			case 1:
-				return createTitle(r);
-			case 2:
-				return iconFac.buildIcon(r);
-			case 3:
-				o = results.get(r);
-				return o != null && (o instanceof String) ? o : "";
-			default:
-				throw new IndexOutOfBoundsException("Oversized column ix:" +columnIndex);
-			}
-		}
-		
-		public  String createTitle(Resource r) {
-			if (r == null) {
-				return "";
-			}
-			String title = StringUtils.replace(r.getTitle(), "\n", " ") ;
-
-			return title;
-		}		
-
-
+	    
+	    public String[] getDefaultColumns() {
+	        return new String[] {
+	                STATUS_NAME,RESULTS_NAME,LABEL_NAME,CAPABILITY_NAME,ERRORS_NAME
+	        };
+	    }
 	}
 }

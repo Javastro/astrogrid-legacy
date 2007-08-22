@@ -25,6 +25,10 @@ public class ModularTableFormat implements AdvancedTableFormat {
     public void setColumns(ModularColumn[] columns) {
         this.columns = columns;
     }
+    
+    public ModularColumn[] getColumns() {
+        return this.columns;
+    }
 
     /**
      * Returns the column used for a given column index.
