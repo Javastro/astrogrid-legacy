@@ -16,6 +16,9 @@
 <body>
 <release version="2007.4.alpha4" date="2007-08-23">
     <action dev="nw" type="add">
+        Added a 'rename' operation to tasks list.
+    </action>
+    <action dev="nw" type="add">
         Added a starter XQuery to the xquery editor box.
     </action>
     <action dev="nw" type="add">

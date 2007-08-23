@@ -31,7 +31,6 @@ import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -43,15 +42,13 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.InvalidArgumentException;
@@ -77,6 +74,7 @@ public class ResourceLists extends JList implements DropTargetListener,ActionLis
 	 * Logger for this class
 	 */
 	private static final Log logger = LogFactory.getLog(ResourceLists.class);
+
 
 /**
  * 
@@ -130,6 +128,11 @@ public ResourceLists(EventList folderList, VOExplorerImpl  parent) {
 	remove.setEnabled(false);
 	remove.addActionListener(this);
 	
+	rename = new JMenuItem("Rename",IconHelper.loadIcon("rename16.png"));
+	rename.setToolTipText("Rename this list");
+	rename.setEnabled(false);
+	rename.addActionListener(this);
+	
 	properties = new JMenuItem("Edit",IconHelper.loadIcon("edit16.png"));
 	properties.setToolTipText("Edit this list");
 	properties.setEnabled(false);
@@ -142,9 +145,10 @@ public ResourceLists(EventList folderList, VOExplorerImpl  parent) {
 	nu.add(addXQuery);
 	popup.add(nu);
 //	popup.addSeparator();
-	popup.add(remove);
+	popup.add(rename);
 	popup.add(properties);
 	popup.add(duplicate);
+	popup.add(remove);
 	
 	addMouseListener(this);
 }
@@ -155,6 +159,7 @@ private final JMenuItem addXQuery;
 private final JMenuItem remove;
 private final JMenuItem properties;
 private final JMenuItem duplicate;
+private final  JMenuItem rename;
 private final JPopupMenu popup;
 private final VOExplorerImpl parent;
 private final EventList folderList;
@@ -350,30 +355,38 @@ public void store(ResourceFolder f) {
 // called when button is pressed
 public void actionPerformed(ActionEvent e) {
 	ResourceFolder f = (ResourceFolder)getSelectedValue();	
-	if (e.getSource() == addStatic) {
+	final Object src = e.getSource();
+    if (src == addStatic) {
 		f =  new StaticList();
 		f.editAsNew(parent);
-	} else if (e.getSource() == addSmart) {
+	} else if (src == addSmart) {
 		f = new SmartList();
 		f.editAsNew(parent);		
-	} else if (e.getSource() == addXQuery) {
+	} else if (src == addXQuery) {
 		f = new XQueryList();
 		f.editAsNew(parent);
-	} else if (e.getSource() == remove && f != null) {
+	} else if (src == remove && f != null) {
 		if (f != null) {
 			folderList.remove(f);
 			setSelectedIndex(0);
 		}
-	} else if (e.getSource() == duplicate && f != null) {
+	} else if (src == duplicate && f != null) {
 		if (f != null) {
 			ResourceFolder dup = duplicate(f);
 			dup.setFixed(false);
 			dup.setName("copy of " + dup.getName());
 			folderList.add(dup);
 		}		
-	} else if(e.getSource() == properties && f != null) {
+	} else if(src == properties && f != null) {
 		f.edit(parent);
-	} 
+	} else if (src == rename && f != null) {
+	    String nuName = JOptionPane.showInputDialog(parent,"Enter a new name",f.getName());
+	    if (StringUtils.isNotEmpty(nuName)) {
+	        f.setName(nuName);
+	        // perform a 'set' to trigger an event ist update.
+	        folderList.set(getSelectedIndex(),f);
+	    }
+	}
 }
 
 // expensive way to do this, but don't want to monkey with 
@@ -431,8 +444,10 @@ private void checkForTriggerEvent( MouseEvent event ){
 
 /** enable / disable actions depending on what's been currently selected */
 private void tailorActionsToResource(ResourceFolder f) {
-	remove.setEnabled(f != null && ! f.isFixed());
-	properties.setEnabled(f != null && ! f.isFixed());
+	final boolean fixed = f != null && ! f.isFixed();
+    remove.setEnabled(fixed);
+	properties.setEnabled(fixed);
+	rename.setEnabled(fixed);
 	duplicate.setEnabled(f != null);
 }
 
