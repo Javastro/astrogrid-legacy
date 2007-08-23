@@ -30,7 +30,8 @@
      <mkdir dir="${maven.docs.dest}"/>
    	
      <!-- Create the directory in which the document sources are accumulated. -->
-     <property name="tmp.docs" location="${working.dir}/webapp-docs" />
+     <property name="tmp.docs" location="${maven.build.dir}/webapp-docs" />
+     <echo>Caching web-app's internal documentation in ${tmp.docs}</echo>
      <mkdir dir="${tmp.docs}" />
    	
    	 <!-- Copy the xdocs for the static web pages. These pages are the same as 
