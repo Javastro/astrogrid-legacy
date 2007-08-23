@@ -1,38 +1,11 @@
 <?xml version="1.0"?>
-<!-- extension maven script -->
-<project xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:artifact="artifact" default="jar:jar">
-  <goal name="astrogrid-build-artifact" prereqs="jar" />
-  <goal name="astrogrid-install-artifact" prereqs="jar:install,dist:build-bin">
-        <artifact:install
-                artifact="${maven.dist.dir}/${maven.final.name}.zip"
-                type="zip"
-                project="${pom}"
-        />
-  </goal>
-  <goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot,dist:build-bin">
-        <artifact:install-snapshot
-                artifact="${maven.dist.dir}/${maven.final.name}.zip"
-                type="zip"
-                project="${pom}"
-        />
-  </goal>
-  <goal name="astrogrid-build-snapshot" prereqs="jar:snapshot" />
-  <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot,dist:build-bin">
-        <!-- can't use dist:deploy-bin-snapshot here, as then put in 'distributions' part of repo - and hard to get it out again-->
-        <artifact:deploy-snapshot
-                artifact="${maven.dist.dir}/${maven.final.name}.zip"
-                type="zip"
-                project="${pom}"
-        />
-  </goal>
-  <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,dist:build-bin" >
-        <!-- ditto with dist:deploy-bin -->
-        <artifact:deploy
-                artifact="${maven.dist.dir}/${maven.final.name}.zip"
-                type="zip"
-                project="${pom}"
-        />
-  </goal>
+<project default="jar:jar">
+  <goal name="astrogrid-build-artifact" prereqs="jar:jar"/>
+  <goal name="astrogrid-install-artifact" prereqs="jar:install"/>
+  <goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot"/>
+  <goal name="astrogrid-build-snapshot" prereqs="jar:snapshot"/>
+  <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot"/>
+  <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy"/>
   <goal name="astrogrid-build-site"  prereqs="site"/>
   <goal name="astrogrid-deploy-site" prereqs="site:deploy"/>
 </project>
