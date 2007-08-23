@@ -32,6 +32,7 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
+import javax.swing.text.JTextComponent;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -460,7 +461,17 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 		public void itemStateChanged(ItemEvent e) {
 			if (e.getStateChange() == ItemEvent.SELECTED 
 					&& currentTemplate != e.getItem()) {
+			    String oldText = null;
+			    if (valueField instanceof JTextComponent) {
+			        // save the current input, so we can set the corresponding field in the new clause.
+			        oldText = ((JTextComponent)valueField).getText();
+			    }
 				setCurrentTemplate((ClauseTemplate)e.getItem());
+				// now see if new value field is a text component..
+                if (valueField instanceof JTextComponent && StringUtils.isNotBlank(oldText)) {
+                    // save the current input, so we can set the corresponding field in the new clause.
+                    ((JTextComponent)valueField).setText(oldText);
+                }				
 			}
 		}
 		private void setCurrentTemplate(ClauseTemplate ct) {

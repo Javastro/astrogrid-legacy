@@ -15,6 +15,9 @@
 	</head>
 <body>
 <release version="2007.4.alpha4" date="2007-08-23">
+    <action dev="nw" type="fix">
+    in smart list query editor, form values persist when switching between criteria.
+    </action>
     <action dev="nw" type="add">
         Added a 'rename' operation to tasks list.
     </action>
