@@ -38,6 +38,10 @@ public class SiapParserUnitTest extends AbstractTestForParser {
 		assertTrue(arr[0] instanceof SiapService);
 		assertTrue(c instanceof SiapCapability);
 		assertSame(c,((SiapService)arr[0]).findSiapCapability());
+		
+		SiapCapability siapCap = (SiapCapability)c;
+		assertNotNull(siapCap.getImageServiceType());
+		assertEquals("Cutout",siapCap.getImageServiceType());
 	}
 	
 

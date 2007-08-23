@@ -1,6 +1,6 @@
-/*$Id: VOExplorerImpl.java,v 1.8 2007/08/13 19:14:17 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.9 2007/08/23 15:09:43 nw Exp $
 =======
-/*$Id: VOExplorerImpl.java,v 1.8 2007/08/13 19:14:17 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.9 2007/08/23 15:09:43 nw Exp $
 >>>>>>> 1.6.2.2
  * Created on 30-Mar-2005
  *
@@ -191,7 +191,7 @@ public class VOExplorerImpl extends UIComponentImpl
 	private final RegistryGooglePanel google;
 	private final EditingPanel smartEditPanel;
 	private final EditingPanel staticEditPanel;
-	private final EditingPanel xqueryEditPanel;
+	private final XQueryListEditingPanel xqueryEditPanel;
 
 	/** override:  create a help menu with additional entries */
 	protected JMenu createHelpMenu() {

@@ -244,9 +244,9 @@ public final class ResourceStreamParser implements Iterator {
 				} else if (elementName.equals("rights")) {
 					rights.add(in.getElementText().trim().toLowerCase());
 					// service interface
-			//enable for v1.0	} else if (elementName.equals("capability")) {//v1.0
-			//		capabilities.add(parseCapability());
-			//		ifaces.add(Service.class); // it's a service
+				//} else if (elementName.equals("capability")) {//v1.0 - disabled for now..
+				//	capabilities.add(parseCapability());
+					//ifaces.add(Service.class); // it's a service
 				} else if (elementName.equals("interface")) { //v0.10 legacy stuff.
 					String type = in.getAttributeValue(null,"type");
 				//	if (StringUtils.contains(type,"ParamHTTP")){
@@ -296,7 +296,7 @@ public final class ResourceStreamParser implements Iterator {
 				} else if (elementName.equals("ApplicationDefinition")) { //v0.10 cea application
 					parseV10CeaApplication(m);
 					ifaces.add(CeaApplication.class);
-				} else if (elementName.equals("capability")) {//v0.10 capablity - used for cone search..
+				} else if (elementName.equals("capability")) {//v0.10 capablity - used for cone search, sia, etc.
 					parseV10Capability(m);
 				} else if (elementName.equals("coverage")) { // coverage info - used in various ifaces.
 					ifaces.add(HasCoverage.class);	
@@ -373,8 +373,10 @@ public final class ResourceStreamParser implements Iterator {
 
 
 
-	/** hacky way of adding on the bits of missing capability info.
-	 * will be better to do in 1.0
+	/** hacky way of adding on the bits of missing capability info for cone and siap. v0.10 capability.
+	 * will be better to do in 1.0 - can remove this method then
+	 * 
+	 * only works because thwse capability bits occur after the interfaces.
 	 * @param m
 	 */
 	private void parseV10Capability(HashMap m) {
@@ -406,7 +408,15 @@ public final class ResourceStreamParser implements Iterator {
 								cap.setMaxRecords(Integer.valueOf(in.getElementText()).intValue());
 							} catch (RuntimeException e) { // oh well
 						}
-						}						
+						}
+						// siap stuff.. luckily none of the names clash with cone.
+					} else if (elementName.equals("imageServiceType")) {
+					    SiapCapability cap = (SiapCapability)m.get("findSiapCapability");
+					    if (cap != null) {
+					        cap.setImageServiceType(in.getElementText());
+					    }
+					    //@todo there's some more to add here - but not needed.
+//					} else if (elementName.equals("maxQueryRegionSize")) {
 					} else {
 						logger.debug("Unknown element" + elementName);
 					}

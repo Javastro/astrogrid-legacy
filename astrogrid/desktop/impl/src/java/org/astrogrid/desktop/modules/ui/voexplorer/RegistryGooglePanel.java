@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.15 2007/08/22 16:12:19 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.16 2007/08/23 15:09:43 nw Exp $
 >>>>>>> 1.12.2.6
  * Created on 02-Sep-2005
  *
@@ -398,6 +398,7 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 				, new WavebandStrategy()
 				,new TypeStrategy()
 				, new TypesStrategy()
+				, new org.astrogrid.desktop.modules.ui.voexplorer.strategy.ServiceTypeStrategy()
 				,new UcdStrategy()
 				, new ContentLevelStrategy()
 				,new PublisherStrategy()
@@ -858,6 +859,9 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.16  2007/08/23 15:09:43  nw
+Complete - task 147: add starter xquery to edit box
+
 Revision 1.15  2007/08/22 16:12:19  nw
 RESOLVED - bug 2285: All VOscope broken in latest snapshots
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2285

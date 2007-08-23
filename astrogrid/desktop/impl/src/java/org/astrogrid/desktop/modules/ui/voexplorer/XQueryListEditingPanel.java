@@ -22,6 +22,7 @@ import jedit.SyntaxDocument;
 import jedit.Token;
 import jedit.TokenMarker;
 
+import org.apache.commons.lang.StringUtils;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.folders.ResourceFolder;
 import org.astrogrid.desktop.modules.ui.folders.SmartList;
@@ -37,6 +38,13 @@ import com.jgoodies.forms.layout.FormLayout;
  */
 public class XQueryListEditingPanel extends EditingPanel implements ActionListener {
 	
+    public final void showExample() {
+        text.setText("(:example query - list all cone searches:)\n"
+                + "for $r in //vor:Resource[not (@status='inactive' or @status='deleted')] \n"
+                + "where $r/@xsi:type  &=  '*ConeSearch' \n"
+                + "return $r");
+    }
+    
 	public XQueryListEditingPanel(UIComponent parent,QuerySizer sizer) {
 		FormLayout layout = new FormLayout(
 				"2dlu,right:d,1dlu,max(30dlu;d):grow,4dlu,d,1dlu,d,3dlu" // cols
@@ -88,7 +96,11 @@ public class XQueryListEditingPanel extends EditingPanel implements ActionListen
 		}
 		super.setCurrentlyEditing(currentlyEditing);
 		XQueryList sl = (XQueryList)getCurrentlyEditing();
-		text.setText(sl.getQuery());
+		if (StringUtils.isEmpty(sl.getQuery())) {
+		    showExample();
+		} else {
+		    text.setText(sl.getQuery());
+		}
 	}
 	
 	public void loadEdits() {
