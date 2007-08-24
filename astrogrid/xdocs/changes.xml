@@ -37,36 +37,6 @@
         bugzilla ticket 2136.
       </action>    	  
 
-      <action dev="gtr" type="fix">
-        Branch apps-gtr-2232-2 fixes BZ2132 in the CEA core server-library only.
-        It builds astrogrid-cea-server-2007.1.2.jar; none of the WAR projects
-        have yet been updated to use this jar, although it has been tested in
-        DSA/catalogue. Only the project astrogrid/applications/server needs to
-        be rebuilt to deploy this change. There are no changes to the CEA
-        delegates or to the CEA contracts, so no changes are needed in
-        astrogrid/maven-base/project.properties.
-      </action>
-    	
-    	<action dev="kmb" type="fix">
-    	    <em>Branch Reg_KMB_ErrorMessageFix2.</em> Fixed server messages due to a problem: when
-    	    a auth id is not managed by the registry, it was not giving any messages suggesting where went wrong.
-    	    -this branch has been merged into Reg_KMB_Xfire, so will be abounened.
-    	    NOTE: won't go in 2006.4 release
-    	  </action>    	  
-	        
-     	<action dev="kmb" type="add">
-    		  <em>Branch Reg_KMB_Paging in astrogrid/registry:</em> Okay be good to make this a beta type version as part of the version name.  It
-    		  has a lot of changes mainly targeting 1.0 VOResources and multiple contract ability.  I believe I have it though
-    		  that everything can be copied/replaced into HEAD hence this branch can overwrite anything in HEAD even if there are
-    		  merge conflicts. Reg_KMB_Paging had been abandened replaced with Reg_KMB_Xfire
-    		  It needs to go with the
-    		  contracts branch Contracts_KMB_XForms (which needs Guy's approval). - Kev will let me know when this is ready - CLQ
-    		  This branch had been abandened and replaced with branch Reg_KMB_Xfire and still in process of being merged/tested - CLQ 05/Oct/06
-    		  
-    		  <b>Reg_KMB_Xfire is the only reg branch needs to be merged.</b> Reg_KMB_Paging had been abandened. 
-    		  NOTE: won't go in 2006.4 release 
-    	</action>
-
 
         </release>
         
@@ -85,6 +55,18 @@
         </release>
 		
         <release version="HEAD">
+        
+        <action dev="gtr" type="fix">
+    	    <em>Branch security-gtr-2244-3</em> 
+    	    <li>astrogrid-security-2007.2.04.jar</li>
+			<li>astrogrid-cea-server-2007.2.01.jar</li>
+			<li>astrogrid-cea-commandline-2007.2.01.war</li>
+			<li>astrogrid-cea-http-2007.2.01.war</li>
+			<li>astrogrid-cea-javaclass-2007.2.01.war</li>
+			<li>astrogrid-common-2007.2.01.jar
+			fixes BZ2266 see gtr email date: 11:46 22nd Aug 2007 
+    	  </action>  
+        
           <action dev="gtr" type="fix">
           <em>community-gtr-2241</em>This branch carries changes to the Maven project astrogrid/community/webapp.
           The sibling project astrogrid/community/server is also branched but there
