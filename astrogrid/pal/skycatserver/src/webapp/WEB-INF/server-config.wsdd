@@ -100,6 +100,7 @@
       <requestFlow>
          <handler type="URLMapper"/>
          <handler type="java:org.apache.axis.handlers.http.HTTPAuthHandler"/>
+         <handler type="java:org.astrogrid.security.AxisServiceCredentialHandler"/>
       </requestFlow>
    </transport>
    <transport name="local">
