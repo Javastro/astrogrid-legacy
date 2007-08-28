@@ -6,12 +6,13 @@ package org.astrogrid.desktop.alternatives;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.system.SystemTray;
+import org.astrogrid.desktop.modules.system.SystemTrayInternal;
 
 /** Alternative implementation of 'system tray' that just logs all events.
  * @author noel
  * @since Apr 10, 20063:38:14 PM
  */
-public class LoggingSystemTray implements SystemTray {
+public class LoggingSystemTray implements SystemTrayInternal {
 	/**
 	 * Logger for this class
 	 */
@@ -62,5 +63,9 @@ public class LoggingSystemTray implements SystemTray {
 		// does nothing
 
 	}
+
+    public void run() {
+        // does nothing.
+    }
 
 }

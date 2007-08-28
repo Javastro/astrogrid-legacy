@@ -50,7 +50,7 @@ import EDU.oswego.cs.dl.util.concurrent.SynchronizedInt;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 21, 20076:24:07 PM
  */
-public class FallbackSystemTray  implements SystemTray, ActionListener {
+public class FallbackSystemTray  implements SystemTrayInternal, ActionListener {
 
     protected static final Log logger = LogFactory.getLog(SystemTray.class);
     
@@ -65,10 +65,10 @@ public class FallbackSystemTray  implements SystemTray, ActionListener {
     protected final UIContext context;
     protected final Runnable configDialogue;
     protected final PopupFactory popups;
-    private Icon defaultImage;
-    private Icon throbbingImage;
-    private JButton ico;
-    private PopupDraggableWindow window;
+    private final Icon defaultImage;
+    private final Icon throbbingImage;
+    private final JButton ico;
+    private final PopupDraggableWindow window;
     
     public FallbackSystemTray( UIContext context, Shutdown shutdown,
             Runnable configDialogue) {
@@ -77,22 +77,19 @@ public class FallbackSystemTray  implements SystemTray, ActionListener {
         this.context = context;
         this.configDialogue = configDialogue;
         this.popups = PopupFactory.getSharedInstance();
-        displayUI();
-    }
-    /**
-     * 
-     */
-    protected void displayUI() {
-        window = new PopupDraggableWindow(createPopupMenu());
-        defaultImage = IconHelper.loadIcon("ivoa.gif");
-        throbbingImage = IconHelper.loadIcon("running16.png"); // @todo find a larger icon here.
+        this.defaultImage = IconHelper.loadIcon("ivoa.gif");
+        this.throbbingImage = IconHelper.loadIcon("running16.png"); // @todo find a larger icon here.
+        this.window = new PopupDraggableWindow(createPopupMenu());
+        this.ico = new JButton(defaultImage);
         
+    }
+
+    public void run() {
         timer = new Timer(5000,this);
         timer.setRepeats(false);
         
         currentPopups = new ArrayList();
         
-        ico = new JButton(defaultImage);
         ico.addActionListener(window);
         // NB: can't set tooltip - as this seems to destroy the mouse draggable behaviour - how odd.
         //ico.setToolTipText("Astro Runtime");

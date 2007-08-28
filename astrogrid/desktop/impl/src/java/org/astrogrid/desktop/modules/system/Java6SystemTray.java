@@ -12,57 +12,59 @@ import java.util.Iterator;
 
 import javax.swing.ImageIcon;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.desktop.framework.ReflectionHelper;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
+
+import EDU.oswego.cs.dl.util.concurrent.SynchronizedBoolean;
 
 /** System tray implementation for Java6
  * reuses much of the machinery of the fallback system tray.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jun 20, 200710:30:07 AM
  */
-public class Java6SystemTray extends FallbackSystemTray {
+public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInternal {
 
-
-	public Java6SystemTray(UIContext context,org.astrogrid.acr.builtin.Shutdown shutdown,Runnable config) {
+	public Java6SystemTray(UIContext context,org.astrogrid.acr.builtin.Shutdown shutdown,Runnable config) throws Exception {
 	    super(context, shutdown,config);
+
+        Class systrayClz = Class.forName("java.awt.SystemTray");
+        Object b =ReflectionHelper.callStatic(systrayClz,"isSupported");
+        if (((Boolean)b).booleanValue() == false) { // not supported
+            logger.warn("System tray is not supported on this platform. Falling back");
+            throw new Exception("System tray not supported");
+        }	    
+	    
+        systemTray = ReflectionHelper.callStatic(systrayClz,"getSystemTray");
+        Class trayIconClz = Class.forName("java.awt.TrayIcon");
+        Constructor trayConstructor = trayIconClz.getConstructor(new Class[]{Image.class,String.class,PopupMenu.class});
+        // looks good - initialize the rest of our stuff...
+        ImageIcon ic = IconHelper.loadIcon("ar16.png");//"AGlogo16x16.png");
+        defaultImage = ic.getImage();
+        ic = IconHelper.loadIcon("running16.png");
+        throbbingImage = ic.getImage();
+        
+        String tooltip = "Astro Runtime";
+        PopupMenu menu = createPopupMenu();
+        trayIcon = trayConstructor.newInstance(new Object[]{defaultImage,tooltip,menu});
+        ReflectionHelper.call(trayIcon,"setImageAutoSize",Boolean.TRUE);           
 	}
 	
-	private boolean fallback = false; 
 	
-	private Object trayIcon;
-    private Image defaultImage;
-    private Image throbbingImage;	
+	private final Object trayIcon;
+    private final Image defaultImage;
+    private final Image throbbingImage;
+    private final Object systemTray;
     
 	// overridden to display as system tray.
-	protected void displayUI() {
+    public void run() {
 		// crap, got to do all this by reflection...
 		logger.info("Starting Java 1.6 Systemtray");
 		try {
-			Class systrayClz = Class.forName("java.awt.SystemTray");
-			Object b =ReflectionHelper.callStatic(systrayClz,"isSupported");
-			if (((Boolean)b).booleanValue() == false) { // not supported
-				logger.warn("System tray is not supported on this platform. Falling back");
-				fallback  = true;
-				super.displayUI();
-				return;
-			}
-			Object systemTray = ReflectionHelper.callStatic(systrayClz,"getSystemTray");
-			
-			ImageIcon ic = IconHelper.loadIcon("ar16.png");//"AGlogo16x16.png");
-			defaultImage = ic.getImage();
-			ic = IconHelper.loadIcon("running16.png");
-			throbbingImage = ic.getImage();
-			
-			Class trayIconClz = Class.forName("java.awt.TrayIcon");
-			Constructor trayConstructor = trayIconClz.getConstructor(new Class[]{Image.class,String.class,PopupMenu.class}); 
-			String tooltip = "Astro Runtime";
-			PopupMenu menu = createPopupMenu();
-			trayIcon = trayConstructor.newInstance(new Object[]{defaultImage,tooltip,menu});
-			ReflectionHelper.call(trayIcon,"setImageAutoSize",Boolean.TRUE);
 			ReflectionHelper.call(systemTray,"add",trayIcon);
-		} catch (ClassNotFoundException x) {
-			logger.warn("Failed to find java.awt.SystemTray");
 		} catch (NoSuchMethodException x) {
 			logger.warn("System tray lacks expected methods");
 		} catch (IllegalArgumentException x) {
@@ -71,9 +73,7 @@ public class Java6SystemTray extends FallbackSystemTray {
 			logger.error("IllegalAccessException",x);
 		} catch (InvocationTargetException x) {
 			logger.error("InvocationTargetException",x);
-		} catch (InstantiationException x) {
-			logger.error("InstantiationException",x);
-		}
+		} 
 	}
 
     
@@ -122,27 +122,15 @@ public class Java6SystemTray extends FallbackSystemTray {
 	
 	
 	public void displayErrorMessage(String arg0, String arg1) {
-	    if (fallback) {
-	        super.displayErrorMessage(arg0,arg1);
-	    } else {
 	        displayMsg(arg0,arg1,"ERROR");
-	    }
 	}
 
 	public void displayInfoMessage(String arg0, String arg1) {
-	    if (fallback) {
-	        super.displayInfoMessage(arg0,arg1);
-	    } else {
 	        displayMsg(arg0,arg1,"INFO");
-	    }
 	}
 
 	public void displayWarningMessage(String arg0, String arg1) {
-	    if (fallback) {
-	        super.displayWarningMessage(arg0,arg1);
-	    } else {
 	        displayMsg(arg0,arg1,"WARNING");
-	    }
 	}
 	
 	private void displayMsg(String caption, String text, String type) {
@@ -166,10 +154,6 @@ public class Java6SystemTray extends FallbackSystemTray {
 	}
 
 	public void startThrobbing() {
-	    if(fallback) {
-	        super.startThrobbing();
-	        return;
-	    }
         if (throbberCallCount.increment() > 0) {
         	try {
 				ReflectionHelper.call(trayIcon,"setImage",throbbingImage);
@@ -186,10 +170,6 @@ public class Java6SystemTray extends FallbackSystemTray {
 	}
 
 	public void stopThrobbing() {
-	    if (fallback) {
-	        super.stopThrobbing();
-	        return;
-	    }
         if (! (throbberCallCount.decrement() > 0)) {
         	try {
 				ReflectionHelper.call(trayIcon,"setImage",defaultImage);

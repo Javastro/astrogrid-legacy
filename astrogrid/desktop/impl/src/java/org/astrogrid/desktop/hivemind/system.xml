@@ -819,13 +819,16 @@ System module.
 ==========================================
 SYSTEM TRAY
  -->
-	<service-point id="systray" interface="SystemTray">		
+	<service-point id="systray" interface="org.astrogrid.desktop.modules.system.SystemTrayInternal">		
 	System Tray
 	</service-point>
-	
+	 <contribution configuration-id="hivemind.Startup" >
+        <startup object="service:systray" />
+    </contribution>
+    
 	<implementation service-id="systray" if="class java.awt.SystemTray">
 		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.system.Java6SystemTray">
+			<construct class="org.astrogrid.desktop.modules.system.BestSuitableSystemTray">
 				<service>system.ui</service>
 				<service>builtin.shutdown</service>
 				<service>configDialogue</service>
@@ -852,6 +855,7 @@ SYSTEM TRAY
 			</construct>
 		</invoke-factory>		
 	</implementation>	
+    
 	
 	<!-- 
 	========================================
