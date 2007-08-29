@@ -3,6 +3,7 @@
 <%@page contentType="application/xml"%>
 
 <jsp:useBean id="cb" class="org.astrogrid.applications.vosi.CapabilitiesBean"/>
+<% cb.setRequest(request); %>
 
 <cap:capabilities
     xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
@@ -24,7 +25,7 @@
     </interface>
     <managedApplications>
       <% for (int i = 0; i < cb.getApplicationCount(); i++) { %>
-	     <ApplicationReference><%=cb.getApplications(i)%></ApplicationReference>
+	<ApplicationReference><%=cb.getApplications(i)%></ApplicationReference>
       <%}%>
     </managedApplications>
   </capability>
