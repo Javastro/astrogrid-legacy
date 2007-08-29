@@ -1,4 +1,4 @@
-/* $Id: HttpApplicationWebServiceException.java,v 1.4 2004/09/01 15:42:26 jdt Exp $
+/* $Id: HttpApplicationWebServiceException.java,v 1.5 2007/08/29 09:51:27 gtr Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -14,7 +14,7 @@ import java.io.IOException;
  * Exceptions caused by problems connecting to the webservice
  * @author jdt
  */
-public abstract class HttpApplicationWebServiceException extends IOException implements HttpApplicationException {
+public class HttpApplicationWebServiceException extends IOException implements HttpApplicationException {
 
     /**
      * Constructor
@@ -40,13 +40,16 @@ public abstract class HttpApplicationWebServiceException extends IOException imp
      * @param string fault description
      * @param e original exception
      */
-    public HttpApplicationWebServiceException(String string, IOException e) {
+    public HttpApplicationWebServiceException(String string, Exception e) {
         this(string + "\n" + e.getMessage());
     }
 }
 
 /* 
  * $Log: HttpApplicationWebServiceException.java,v $
+ * Revision 1.5  2007/08/29 09:51:27  gtr
+ * It can now be constructed from a generic Exception.
+ *
  * Revision 1.4  2004/09/01 15:42:26  jdt
  * Merged in Case 3
  *
