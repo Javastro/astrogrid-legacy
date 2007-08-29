@@ -14,24 +14,6 @@ public class AST_Comparison extends SimpleNode {
     public AST_Comparison(AdqlStoX p, int id) {
         super(p, id);
     }
-
-    public void jjtClose() {
-//        String image = firstToken.image ;
-//        ComparisonType c = ComparisonType.Factory.newInstance() ;
-//
-//        //  
-//        // The != comparison is a convenience. It is not a valid enum within
-//        // the schema. So we substitute the official value instead...
-//        if( parser.token.kind == AdqlStoXConstants.NOT_EQUALS_OPERATOR ) {
-//            image = "<>" ;
-//        }
-//        if( log.isDebugEnabled() ) {
-//            log.debug("comp: " + image ) ;
-//        }
-//        c.set( ComparisonType.Enum.forString( image ) ) ;  
-//        this.setGeneratedObject( c ) ;
-
-    }
     
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_Comparison.buildXmlTree()" ) ; 

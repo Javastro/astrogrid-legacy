@@ -20,19 +20,11 @@ public class AST_NumericValueExpression extends SimpleNode {
 
     public void setOperator( Token t ) {
         binaryOpToken = t ;
-        getTracker().setType( BinaryExprType.type ) ;
-        getTracker().push( AdqlCompiler.ARG_ELEMENT ) ;
+        setPositionType( BinaryExprType.type ) ;
     }
     
     public boolean isSetOperator() {
         return binaryOpToken != null ;
-    }
-    
-    public void jjtClose() { 
-        // JL Note: I'm not sure this is correct...
-       if( isSetOperator() ) {
-           getTracker().pop() ;
-       }       
     }
     
     public void buildXmlTree( XmlObject xo ) {   
@@ -51,6 +43,7 @@ public class AST_NumericValueExpression extends SimpleNode {
             this.generatedObject = children[0].getGeneratedObject() ;
         }
         else {
+            setPositionType( BinaryExprType.type ) ;
             BinaryExprType beType = (BinaryExprType)xo.changeType( BinaryExprType.type ) ;
             beType.setOper( BinaryOperatorType.Enum.forString( binaryOpToken.image ) ) ;
             if( log.isDebugEnabled() ) {

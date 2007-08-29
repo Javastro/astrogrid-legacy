@@ -13,18 +13,20 @@ public class AST_From extends SimpleNode {
 
     public AST_From(AdqlStoX p, int id) {
         super(p, id);
+        this.elementName = AdqlCompiler.FROM_ELEMENT ;
+        this.schemaType = FromType.type ;
     }
     
     public void buildXmlTree( XmlObject fromType ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_From.buildXmlTree()" ) ; 
-        getTracker().push( AdqlCompiler.FROM_ELEMENT, FromType.type ) ;
+        pushPosition() ;
         int childCount = jjtGetNumChildren() ;
         for( int i=0; i<childCount; i++ ) {
             children[i].buildXmlTree( ((FromType)fromType).addNewTable() ) ;
         }
         this.generatedObject = fromType ;
         super.buildXmlTree(fromType) ;
-        getTracker().pop() ;
+        popPosition() ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_From.buildXmlTree()" ) ; 
     }
 

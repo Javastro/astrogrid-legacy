@@ -22,11 +22,12 @@ public class AST_CircleCartesian extends SimpleNode {
     
   public AST_CircleCartesian(AdqlStoX p, int id) {
     super(p, id);
+    setPositionType( CircleType.type ) ;
   }
 
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_CircleCartesian.buildXmlTree()" ) ; 
-      getTracker().setType( CircleType.type ) ;
+      setPositionType( CircleType.type ) ;
      
       //
       //

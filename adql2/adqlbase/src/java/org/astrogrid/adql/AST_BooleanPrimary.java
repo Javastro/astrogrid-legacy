@@ -20,6 +20,7 @@ public class AST_BooleanPrimary extends SimpleNode {
     
     public void setParenthesized() {
         parenthesized = true ;
+        this.setPositionType( ClosedSearchType.type ) ;
     }
     
     public boolean isParenthesized() {
@@ -29,7 +30,8 @@ public class AST_BooleanPrimary extends SimpleNode {
     public void buildXmlTree( XmlObject xo ) {   
         if( log.isTraceEnabled() ) enterTrace( log, "AST_BooleanPrimary.buildXmlTree()" ) ; 
         if( parenthesized ) {
-            ClosedSearchType cs = (ClosedSearchType)xo.changeType( ClosedSearchType.type ) ;
+            this.setPositionType( ClosedSearchType.type ) ;
+            ClosedSearchType cs = (ClosedSearchType)xo.changeType( ClosedSearchType.type ) ;           
             if( jjtGetNumChildren() > 0 ) {
                 children[0].buildXmlTree( cs.addNewCondition() ) ;
             }

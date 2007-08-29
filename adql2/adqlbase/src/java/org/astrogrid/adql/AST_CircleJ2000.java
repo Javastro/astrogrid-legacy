@@ -16,11 +16,12 @@ public class AST_CircleJ2000 extends SimpleNode {
 
   public AST_CircleJ2000(AdqlStoX p, int id) {
     super(p, id) ;
+    setPositionType( CircleType.type ) ;
   }
   
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_CircleJ2000.buildXmlTree()" ) ; 
-      getTracker().setType( CircleType.type ) ;   
+      setPositionType( CircleType.type ) ;  
       //
       // "Create" the appropriate circle type using XmlBeans magic.
       // Give it a center and a radius.

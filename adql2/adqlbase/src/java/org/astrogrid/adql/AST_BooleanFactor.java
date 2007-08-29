@@ -20,17 +20,13 @@ public class AST_BooleanFactor extends SimpleNode {
 
     public void setInverse( boolean inverse ) {
         this.inverse = inverse ;
-    }
-
-    public void jjtClose() {
-        if( inverse ) {
-            getTracker().pop();
-        }
+        setPositionType( InverseSearchType.type ) ;
     }
     
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_BooleanFactor.buildXmlTree()" ) ; 
         if( inverse ) {
+            setPositionType( InverseSearchType.type ) ;
             InverseSearchType is = (InverseSearchType)xo.changeType( InverseSearchType.type ) ;
             children[0].buildXmlTree( is.addNewCondition() ) ;
             this.generatedObject = is ;

@@ -13,11 +13,12 @@ public class AST_ConvexLatLon extends SimpleNode {
 
   public AST_ConvexLatLon(AdqlStoX p, int id) {
     super(p, id) ;
+    setPositionType( ConvexType.type ) ;
   }
   
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_ConvexLatLon.buildXmlTree()" ) ; 
-      getTracker().setType( ConvexType.type ) ;
+      setPositionType( ConvexType.type ) ;
       //
       // We know this is a Cartesian Convex type, else why are we here.
       // So set the appropriate astro coord system...

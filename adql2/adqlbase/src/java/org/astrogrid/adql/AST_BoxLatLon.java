@@ -13,11 +13,12 @@ public class AST_BoxLatLon extends SimpleNode {
 
   public AST_BoxLatLon(AdqlStoX p, int id) {
     super(p, id) ;
+    setPositionType( BoxType.type ) ;
   }
   
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_BoxLatLon.buildXmlTree()" ) ; 
-      getTracker().setType( BoxType.type ) ;
+      setPositionType( BoxType.type ) ;
       //
       // We know this is a LatLon Box type, else why are we here.
       // So set the appropriate astro coord system...

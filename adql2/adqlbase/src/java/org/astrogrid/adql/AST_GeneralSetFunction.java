@@ -14,11 +14,12 @@ public class AST_GeneralSetFunction extends SimpleNode {
   
     public AST_GeneralSetFunction(AdqlStoX p, int id) {
         super(p, id);
+        setPositionType( AggregateFunctionType.type ) ;
     }
     
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_GeneralSetFunction.buildXmlTree()" ) ; 
-        getTracker().setType( AggregateFunctionType.type ) ;
+        setPositionType( AggregateFunctionType.type ) ;
         AggregateFunctionType afType = (AggregateFunctionType)xo.changeType( AggregateFunctionType.type ) ;
         afType.setName( AggregateFunctionNameType.Enum.forString( firstToken.image.toUpperCase() ) ) ;
         if( jjtGetNumChildren() > 1) {

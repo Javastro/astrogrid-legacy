@@ -20,20 +20,13 @@ public class AST_Term extends SimpleNode {
 
     public void setOperator( Token t ) {
         binaryOpToken = t ;
-        getTracker().setType( BinaryExprType.type ) ;
-        getTracker().push( AdqlCompiler.ARG_ELEMENT ) ;
+        setPositionType( BinaryExprType.type ) ;
     }
     
     public boolean isSetOperator() {
         return binaryOpToken != null ;
     }
 
-    public void jjtClose() {
-        if( isSetOperator() ) {
-            getTracker().pop() ;
-        }  
-    }
-    
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_Term.buildXmlTree()" ) ; 
         int childCount = jjtGetNumChildren() ;
@@ -55,6 +48,7 @@ public class AST_Term extends SimpleNode {
             }
         }
         else {
+            setPositionType( BinaryExprType.type ) ;
             BinaryExprType beType = (BinaryExprType)xo.changeType( BinaryExprType.type ) ;
             beType.setOper( BinaryOperatorType.Enum.forString( binaryOpToken.image ) ) ;
             if( log.isDebugEnabled() ) {

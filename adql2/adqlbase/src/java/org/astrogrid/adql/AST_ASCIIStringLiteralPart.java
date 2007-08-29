@@ -15,14 +15,5 @@ public class AST_ASCIIStringLiteralPart extends SimpleNode {
         image = image.substring( 1, image.length()-1 ) ;
         setGeneratedObject( image ) ;
     }
-    
-//    public Object generateObject() {
-//        // An Ascii string literal has its parts enclosed in single quotes.
-//        // So we start by removing the quotes...
-//        String image = getFirstToken().image ; 
-//        image = image.substring( 1, image.length()-1 ) ;
-//        this.generatedObject = image ;
-//        return this.generatedObject ;
-//    }
 
 }

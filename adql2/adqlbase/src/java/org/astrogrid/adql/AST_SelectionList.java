@@ -13,13 +13,15 @@ public class AST_SelectionList extends SimpleNode {
  
     public AST_SelectionList(AdqlStoX p, int id) {
         super(p, id);
+        this.elementName = AdqlCompiler.SELECTION_LIST_ELEMENT ;
+        this.schemaType = SelectionListType.type ;
     }
 
     public void jjtClose() {}
     
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_SelectionList.buildXmlTree()" ) ; 
-        getTracker().push( AdqlCompiler.SELECTION_LIST_ELEMENT, SelectionListType.type ) ;
+        pushPosition() ;
         SelectionListType slType = (SelectionListType)xo ;
         int childCount = jjtGetNumChildren() ;
         for( int i=0; i<childCount; i++ ) {
@@ -27,7 +29,7 @@ public class AST_SelectionList extends SimpleNode {
         }   
         this.generatedObject = slType ;
         super.buildXmlTree(slType) ;
-        getTracker().pop() ;
+        popPosition() ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_SelectionList.buildXmlTree()" ) ; 
     }
   

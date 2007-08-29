@@ -13,11 +13,12 @@ public class AST_ConvexHullCartesian extends SimpleNode {
 
   public AST_ConvexHullCartesian(AdqlStoX p, int id) {
     super(p, id) ;
+    setPositionType( ConvexHullType.type ) ;
   }
   
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_ConvexHullCartesian.buildXmlTree()" ) ; 
-      getTracker().setType( ConvexHullType.type ) ;
+      setPositionType( ConvexHullType.type ) ;
       //
       // We know this is a Cartesian Convex Hull type, else why are we here.
       // So set the appropriate astro coord system...

@@ -13,12 +13,13 @@ public class AST_QualifierPeriodAsterisk extends SimpleNode {
     
     public AST_QualifierPeriodAsterisk(AdqlStoX p, int id) {
         super(p, id);
+        setPositionType( AllSelectionItemType.type ) ;
     }
     
     public void buildXmlTree( XmlObject xo ) {   
       if( log.isTraceEnabled() ) enterTrace( log, "AST_QualifierPeriodAsterisk.buildXmlTree()" ) ; 
       
-      getTracker().setType( AllSelectionItemType.type ) ;     
+      setPositionType( AllSelectionItemType.type ) ;     
       AllSelectionItemType asit = (AllSelectionItemType)xo.changeType( AllSelectionItemType.type ) ;
       
       if( children[0] instanceof AST_TableName ) {

@@ -13,16 +13,18 @@ public class AST_GroupBy extends SimpleNode {
     
     public AST_GroupBy(AdqlStoX p, int id) {
         super(p, id);
+        this.elementName = AdqlCompiler.GROUPBY_ELEMENT ;
+        this.schemaType = GroupByType.type ;
     }
      
     //
     // Basically a pass through...
     public void buildXmlTree( XmlObject xo ) { 
         if( log.isTraceEnabled() ) enterTrace( log, "AST_GroupBy.buildXmlTree()" ) ;
-        getTracker().push( AdqlCompiler.GROUPBY_ELEMENT, GroupByType.type ) ; 
+        pushPosition() ; 
         children[0].buildXmlTree( xo ) ;
         this.generatedObject = children[0].getGeneratedObject() ;
-        getTracker().pop() ;
+        popPosition() ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_GroupBy.buildXmlTree()" ) ;
     }
 

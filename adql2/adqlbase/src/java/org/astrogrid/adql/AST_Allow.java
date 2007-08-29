@@ -10,10 +10,12 @@ public class AST_Allow extends SimpleNode {
     
     public AST_Allow(AdqlStoX p, int id) {
         super(p, id);
+        this.elementName = AdqlCompiler.ALLOW_ELEMENT ;
+        this.schemaType = SelectionOptionType.type ;
     }
 
     public void buildXmlTree( XmlObject sot ) {
-        getTracker().push( AdqlCompiler.ALLOW_ELEMENT, SelectionOptionType.type ) ;
+        pushPosition() ;
         if( getFirstToken().kind == AdqlStoXConstants.ALL ) {
             ((SelectionOptionType)sot).setOption( AllOrDistinctType.ALL ) ;
         }
@@ -21,7 +23,7 @@ public class AST_Allow extends SimpleNode {
             ((SelectionOptionType)sot).setOption( AllOrDistinctType.DISTINCT ) ;
         }
         this.generatedObject = sot ;
-        getTracker().pop() ;
+        popPosition() ;
     }
 
 }

@@ -4,6 +4,7 @@ package org.astrogrid.adql;
 
 import org.apache.xmlbeans.XmlObject;
 import org.astrogrid.adql.beans.BetweenPredType;
+import org.astrogrid.adql.beans.ComparisonPredType;
 import org.astrogrid.adql.beans.NotBetweenPredType;
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
@@ -17,16 +18,18 @@ public class AST_BetweenPredicate extends SimpleNode {
 
     public AST_BetweenPredicate(AdqlStoX p, int id) {
         super(p, id);
+        this.setPositionType( BetweenPredType.type ) ;
     }
 
-    public void setBetween( boolean between ) {
-        this.between = between ;
+    public void setNot() {
+        this.between = false ;
+        this.setPositionType( NotBetweenPredType.type ) ;
     }
 
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_BetweenPredicate.buildXmlTree()" ) ;
         if( between ) {
-            getTracker().setType( BetweenPredType.type ) ;
+            this.setPositionType( BetweenPredType.type ) ;
             BetweenPredType bp = (BetweenPredType)xo.changeType( BetweenPredType.type ) ;
             children[0].buildXmlTree( bp.addNewArg() ) ; 
             children[1].buildXmlTree( bp.addNewArg() ) ;
@@ -34,7 +37,7 @@ public class AST_BetweenPredicate extends SimpleNode {
             this.generatedObject = bp ;
         } 
         else {
-            getTracker().setType( NotBetweenPredType.type ) ;
+            this.setPositionType( NotBetweenPredType.type ) ;
             NotBetweenPredType nbp = (NotBetweenPredType)xo.changeType( NotBetweenPredType.type ) ;
             children[0].buildXmlTree( nbp.addNewArg() ) ; 
             children[1].buildXmlTree( nbp.addNewArg() ) ;

@@ -13,11 +13,13 @@ public class AST_Select extends SimpleNode {
     
     public AST_Select(AdqlStoX p, int id) {
         super(p, id);
+        this.elementName = AdqlCompiler.SELECT_ELEMENT ;
+        this.schemaType = SelectType.type ;
     }
     
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_Select.buildXmlTree()" ) ; 
-        this.getTracker().push( AdqlCompiler.SELECT_ELEMENT, SelectType.type ) ;
+        pushPosition() ;
         SelectType st = (SelectType)xo ;     
         this.generatedObject = st ;
         int childCount = jjtGetNumChildren() ;
@@ -53,7 +55,7 @@ public class AST_Select extends SimpleNode {
             }
         }
         super.buildXmlTree(xo) ;
-        this.getTracker().pop() ;
+        popPosition() ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_Select.buildXmlTree()" ) ; 
     }
 

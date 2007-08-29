@@ -21,13 +21,4 @@ public class AST_CorrelationName extends SimpleNode {
       if( log.isTraceEnabled() ) exitTrace( log, "AST_CorrelationName.jjtClose()" ) ; 
   }
   
-//  public Object generateObject() { 
-//      if( log.isTraceEnabled() ) enterTrace( log, "AST_CorrelationName.generateObject()" ) ; 
-//      if( jjtGetNumChildren() == 1 ) {
-//          this.generatedObject = children[0].generateObject() ;
-//      }
-//      if( log.isTraceEnabled() ) exitTrace( log, "AST_CorrelationName.generateObject()" ) ; 
-//      return this.generatedObject ;
-//  }
-  
 }

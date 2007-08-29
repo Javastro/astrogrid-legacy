@@ -22,14 +22,4 @@ public class AST_ColumnName extends SimpleNode {
       if( log.isTraceEnabled() ) exitTrace( log, "AST_ColumnName.jjtClose()" ) ; 
   }
   
-//  public Object generateObject() { 
-//      if( log.isTraceEnabled() ) enterTrace( log, "AST_ColumnName.generateObject()" ) ; 
-//      if( jjtGetNumChildren() == 1 ) {
-//          this.generatedObject = children[0].generateObject() ;
-//      }
-//      super.generateObject() ;
-//      if( log.isTraceEnabled() ) exitTrace( log, "AST_ColumnName.generateObject()" ) ; 
-//      return this.generatedObject ;
-//  }
-
 }

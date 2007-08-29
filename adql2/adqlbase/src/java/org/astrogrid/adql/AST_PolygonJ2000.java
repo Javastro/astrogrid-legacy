@@ -15,11 +15,12 @@ public class AST_PolygonJ2000 extends SimpleNode {
 
   public AST_PolygonJ2000(AdqlStoX p, int id) {
     super(p, id) ;
+    setPositionType( PolygonType.type ) ;
   }
   
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_PolygonJ2000.buildXmlTree()" ) ; 
-      getTracker().setType( PolygonType.type ) ;
+      setPositionType( PolygonType.type ) ;
      
       //
       // "Create" the appropriate polygon type using XmlBeans magic.

@@ -2,6 +2,7 @@
 
 package org.astrogrid.adql;
 
+import org.astrogrid.adql.beans.BetweenPredType;
 import org.astrogrid.adql.beans.LikePredType ;
 import org.astrogrid.adql.beans.NotLikePredType ;
 import org.apache.xmlbeans.XmlObject ;
@@ -16,23 +17,25 @@ public class AST_LikePredicate extends SimpleNode {
 
     public AST_LikePredicate(AdqlStoX p, int id) {
         super(p, id);
+        this.setPositionType( LikePredType.type ) ;
     }
 
     public void setLike( boolean like ) {
         this.like = like ;
+        this.setPositionType( NotLikePredType.type ) ;
     }
 
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_LikePredicate.buildXmlTree()" ) ; 
         if( like ) {
-            getTracker().setType( LikePredType.type ) ;
+            this.setPositionType( LikePredType.type ) ;
             LikePredType lpt = (LikePredType)xo.changeType( LikePredType.type ) ;
             children[0].buildXmlTree( lpt.addNewArg() ) ;
             children[1].buildXmlTree( lpt.addNewPattern() ) ;
             setGeneratedObject( lpt ) ;
         }
         else {
-            getTracker().setType( NotLikePredType.type ) ;
+            this.setPositionType( NotLikePredType.type ) ;
             NotLikePredType nlpt = (NotLikePredType)xo.changeType( NotLikePredType.type ) ;
             children[0].buildXmlTree( nlpt.addNewArg() ) ;
             children[1].buildXmlTree( nlpt.addNewPattern() ) ;

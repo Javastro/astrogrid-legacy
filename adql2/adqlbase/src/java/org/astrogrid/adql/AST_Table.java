@@ -2,13 +2,10 @@
 
 package org.astrogrid.adql;
 
-import java.util.ArrayList;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory; 
 import org.apache.xmlbeans.XmlObject; 
 import org.astrogrid.adql.beans.DerivedTableType;
-import org.astrogrid.adql.beans.JoinTableType;
 import org.astrogrid.adql.beans.TableType;
 
 public class AST_Table extends SimpleNode {
@@ -17,6 +14,9 @@ public class AST_Table extends SimpleNode {
 
     public AST_Table(AdqlStoX p, int id) {
         super(p, id);
+        //
+        // Default to basic table type...
+        setPositionType( TableType.type ) ;
     }
 
     public void buildXmlTree( XmlObject ftt ) { 

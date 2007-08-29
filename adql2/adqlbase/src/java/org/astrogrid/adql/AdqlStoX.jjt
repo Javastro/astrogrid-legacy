@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.44 2007/08/21 09:28:38 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.45 2007/08/29 15:56:46 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -204,7 +204,7 @@ SKIP :
  *   | <vertical_bar>
  *  !! ADQL Note:
  *  !! The draft spec omits <ampersand> <semicolon> <question_mark> and <vertical_bar>
- *  !! I believe the spec is in error.
+ *  !! I believe these need to be included.
  * bnf-end
  * bnf-start
  *  <space> ::=
@@ -359,9 +359,9 @@ TOKEN : // <SQL_embedded_language_character>
  *   | YEAR
  *   | ZONE
  *  !! ADQL Note:
- *  !! I've removed DEC from the reserved words.
+ *  !! Removed DEC from the reserved words.
  *  !! There was just too much hassle involved.
- *  !! But I'm against making any other exceptions.
+ *  !! But perhaps this should be the only exception.
  * bnf-end
  */
 TOKEN : // <SQL_reserved_word>
@@ -754,10 +754,9 @@ TOKEN : // <ADQL_special_character>
  *  !! ADQL Note:
  *  !! Begins and ends with a double quote as delimiters
  *  !! but itself contains no double quotes or white space.
- *  !! The draft spec needs correcting. It has
+ *  !! The draft spec needs adjusting. It has
  *  !! <delimited_identifier> ::= <double_quote> <regular_identifier> <double_quote> 
- *  !! which cannot be correct. 
- *  !! If this were the case, we could simply make do with <regular_identifier>
+ *  !! which cannot be correct, as we could then simply make do with <regular_identifier>.
  * bnf-end
  * bnf-single <unsigned_integer> ::= <digit>...
  * bnf-single <mantissa> ::= <exact_numeric_literal>
@@ -887,8 +886,6 @@ void signed_integer_S() : {}
 void between_predicate_A() #BetweenPredicate : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "between_predicate_A()" ) ;
-	// Assume "BETWEEN"...
-	tracker.setType( BetweenPredType.type ) ;
 }
 {
 	//S:
@@ -897,22 +894,12 @@ void between_predicate_A() #BetweenPredicate :
     
     // Note the absence of row_value_constructor...	
     (
-       { tracker.push( compiler.ARG_ELEMENT ) ; }
-	   value_expression_A() 
-	   { tracker.pop() ; }
-	   [ <NOT> 
-	     // We know now it is a "NOT BETWEEN"...
-	     { tracker.setType( NotBetweenPredType.type ) ;
-	       jjtThis.setBetween(false); } 
-	   ] 
+	   value_expression_A( AdqlCompiler.ARG_ELEMENT ) 
+	   [ <NOT> { jjtThis.setNot(); } ] 
 	   <BETWEEN> 
-	   { tracker.push( compiler.ARG_ELEMENT ) ; }
-	   value_expression_A()
-	   { tracker.pop() ; }
+	   value_expression_A( AdqlCompiler.ARG_ELEMENT )
 	   <AND> 
-	   { tracker.push( compiler.ARG_ELEMENT ) ; }
-	   value_expression_A()
-	   { tracker.pop() ; }
+	   value_expression_A( AdqlCompiler.ARG_ELEMENT )
 	)
 	{
 		if( log.isTraceEnabled() ) exitTrace ( "between_predicate_A()" ) ;
@@ -945,12 +932,8 @@ void boolean_primary_S() #BooleanPrimary :
 	       LOOKAHEAD( <LEFT_PAREN> search_condition_S() <RIGHT_PAREN> )
 		   ( 
 		     <LEFT_PAREN> 
-		     { 
-		     	tracker.push( compiler.CONDITION_ELEMENT, ClosedSearchType.type ) ; 
-		        jjtThis.setParenthesized() ; 
-		     }
+		     { jjtThis.setParenthesized() ; }
 		     search_condition_S() 
-		     { tracker.pop() ; }
 		     <RIGHT_PAREN> 
 		   )
 		   |
@@ -983,15 +966,14 @@ void boolean_term_S() #BooleanTerm :
     //  | <boolean_term> AND <boolean_factor>
 
 	// Refactored to
-	// boolean_factor_S() ( <AND> boolean_factor_S() )?
+	// boolean_factor_S() ( <AND> boolean_term_S() )?
 	// which I believe is equivalent to the above
 //	try {
 		( boolean_factor_S() 
 		  ( LOOKAHEAD(3) 
 		    <AND> 
-		    { tracker.push( compiler.CONDITION_ELEMENT, IntersectionSearchType.type ) ; }
+		    { jjtThis.setPositionType( IntersectionSearchType.type ) ; }
 		    boolean_term_S()
-		    { tracker.pop() ; } 
 		  )? 
 		) 
 //	}//	catch( ParseException pex ) {//	   errorSkipTo( new int[]{ token.kind }, pex ) ;				//	}	
@@ -1009,7 +991,7 @@ void boolean_term_S() #BooleanTerm :
  *   !! The draft spec supports <boolean_test> and its adjunct <truth value>. 
  *   !! There is some doubt as to whether we should or not.
  *   !! <boolean_test> could be an unwarranted complication.
- *   !! Change the spec.
+ *   !! It's presence does seem to add potential complexities.
  * bnf-end
  */
 void boolean_factor_S() #BooleanFactor :
@@ -1026,7 +1008,6 @@ void boolean_factor_S() #BooleanFactor :
 //	try {
 		( [ t=<NOT> ]
 		  { if( t != null ) {
-		  	   tracker.push( compiler.CONDITION_ELEMENT, InverseSearchType.type ) ;
 		  	   jjtThis.setInverse(true);
 		  	} 
 		  }
@@ -1055,7 +1036,6 @@ void boolean_factor_S() #BooleanFactor :
 void like_predicate_A() #LikePredicate: 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "like_predicate_A()" ) ;
-	tracker.setType( LikePredType.type ) ;
 }
 {
 	//S: 
@@ -1063,8 +1043,7 @@ void like_predicate_A() #LikePredicate:
 	//   <match_value> [ NOT ] LIKE <pattern> [ ESCAPE <escape_character> ]
       
 	( match_value_S() 
-	  [ <NOT> { jjtThis.setLike(false);
-	            tracker.setType( NotLikePredType.type ) ; } ] 
+	  [ <NOT> { jjtThis.setLike(false); } ] 
 	    <LIKE> pattern_A() )
 	{
 		if( log.isTraceEnabled() ) exitTrace ( "like_predicate_A()" ) ;
@@ -1114,8 +1093,8 @@ void character_primary_A() : {}
 	//  <character_primary> ::=
     //    <value_expression_primary> | <string_value_function>
     LOOKAHEAD(16)
-    user_defined_function_A()
-    |	value_expression_primary_A()
+    user_defined_function_A( null )
+    |	value_expression_primary_A( null )
 }
 
 /*
@@ -1243,7 +1222,6 @@ void column_name_list_S() #ColumnNameList : {}
 void column_reference_A() #ColumnReference : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "column_reference_A()" ) ;
-	tracker.setType( ColumnReferenceType.type ) ;
 }
 {
 	//S: 
@@ -1275,7 +1253,7 @@ void column_reference_A() #ColumnReference :
  * bnf-end
  *
  */
-void value_expression_primary_A() #ValueExpressionPrimary : 
+void value_expression_primary_A( String elementName ) #ValueExpressionPrimary : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "value_expression_primary_A()" ) ;
 }
@@ -1307,7 +1285,7 @@ void value_expression_primary_A() #ValueExpressionPrimary :
 	//	| 
 		( 
 		  <LEFT_PAREN>
-		  value_expression_A() 
+		  value_expression_A( null ) 
 		  <RIGHT_PAREN> { jjtThis.setParenthesized(); }
 		)
 	// JBL: cast ommitted in initial version
@@ -1376,19 +1354,14 @@ void comp_op_S() #Comparison :
 void comparison_predicate_A() #ComparisonPredicate : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "comparison_predicate_A()" ) ;
-	tracker.setType( ComparisonPredType.type ) ;
 }
 {
 	//S:
 	//  <row_value_constructor> <comp_op> <row_value_constructor>
 //	try {		( 
-		  { tracker.push( compiler.ARG_ELEMENT ) ; }
-		  value_expression_A() 
-		  { tracker.pop() ; }
+		  value_expression_A( compiler.ARG_ELEMENT ) 
 		  comp_op_S() 
-		  { tracker.push( compiler.ARG_ELEMENT ) ; }
-		  value_expression_A() 
-		  { tracker.pop() ; }
+		  value_expression_A( compiler.ARG_ELEMENT ) 
 		)
 //	}//	catch( ParseException pex ) {//		errorSkipTo( new int[]{ token.kind }, pex ) ;//	}
 	{ 
@@ -1435,7 +1408,7 @@ void datetime_primary_S() : {}
     //    <value_expression_primary>
     //  | <datetime_value_function>
 
-	value_expression_primary_A()
+	value_expression_primary_A( null )
     | 
     datetime_value_function_S()
 }
@@ -1529,7 +1502,6 @@ void exact_numeric_literal_S( int signIndicator ) #ExactNumericLiteral :
 	if( log.isTraceEnabled() ) enterTrace ( "exact_numeric_literal_S()" ) ;
 	jjtThis.setSign( signIndicator ) ;
 	Token t ;
-	//tracker.setType( AtomType.type ) ;
 }
 {
 	//S:
@@ -1568,7 +1540,6 @@ void exact_numeric_literal_S( int signIndicator ) #ExactNumericLiteral :
 void exists_predicate_A() #ExistsPredicate : 
 {
     if( log.isTraceEnabled() ) enterTrace ( "exists_predicate_A()" ) ;
-    tracker.setType( ExistsPredType.type ) ;
 }
 {
 	//S: 
@@ -1609,7 +1580,7 @@ void factor_S() #Factor :
 	       }
 	    } 
 	  ] 
-	  numeric_primary_S() 
+	  numeric_primary_S( AdqlCompiler.ARG_ELEMENT ) 
 	)
 	{ 
 	   if( log.isTraceEnabled() ) exitTrace ( "factor_S()" ) ;
@@ -1648,7 +1619,7 @@ Token sign_S() #Sign :
 void from_clause_S() #From : 
 {
     if( log.isTraceEnabled() ) enterTrace ( "from_clause_S()" ) ;
-    tracker.push( compiler.FROM_ELEMENT, FromType.type ) ;
+    jjtThis.pushPosition() ;
 }
 {
 	//S:
@@ -1660,7 +1631,7 @@ void from_clause_S() #From :
 	catch( ParseException pex ) {		compiler.errorSkipTo( compiler.FROM_SKIP_TO, pex ) ;
 	}
 	finally {
-		tracker.pop() ;
+		jjtThis.popPosition() ;
 		if( log.isTraceEnabled() ) exitTrace ( "from_clause_S()" ) ;
 	}
 
@@ -1708,7 +1679,9 @@ void general_literal_A() : {}
  *
  */
 void general_set_function_A() #GeneralSetFunction : 
-{  tracker.setType( AggregateFunctionType.type ) ; }
+{  
+	if( log.isTraceEnabled() ) enterTrace ( "general_set_function_A()" ) ; 
+}
 {
 	//S:
 	// <general_set_function> ::=
@@ -1716,13 +1689,16 @@ void general_set_function_A() #GeneralSetFunction :
 
 	// JBL. setQuantifier removed for the moment. Need to talk to Kona about this.
 	// ( <AVG> | <MAX> | <MIN> | <SUM> | <COUNT> ) <LEFT_PAREN> [ setQuantifier() ] value_expression_A() <RIGHT_PAREN>	
+	(
 	( <AVG> | <MAX> | <MIN> | <SUM> | <COUNT> ) 
 	<LEFT_PAREN>
 	   [  set_quantifier_S()  ]
-	   { tracker.push( compiler.ARG_ELEMENT ) ; } 
-	   value_expression_A() 
-	   { tracker.pop() ; }
+	   value_expression_A( compiler.ARG_ELEMENT ) 
 	<RIGHT_PAREN>
+	)
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "general_set_function_A()" ) ; 
+	}
 }
 
 /*
@@ -1766,14 +1742,14 @@ void general_value_specification_A() : {}
 void group_by_clause_S() #GroupBy : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "group_by_clause_S()" ) ;
-	tracker.push( compiler.GROUPBY_ELEMENT, GroupByType.type ) ; 
+	jjtThis.pushPosition() ; 
 }
 {
 	//S:
 	// GROUP BY <grouping_column_reference_list>
 	( <GROUPBY> grouping_column_reference_list_S() )
 	{
-		tracker.pop() ;
+		jjtThis.popPosition() ;
 		if( log.isTraceEnabled() ) exitTrace ( "group_by_clause_S()" ) ;
 	}
 }
@@ -1833,14 +1809,14 @@ void grouping_column_reference_A() :
 void having_clause_S() #Having :
 {
 	if( log.isTraceEnabled() ) enterTrace ( "having_clause_S()" ) ;
-	tracker.push( compiler.HAVING_ELEMENT, HavingType.type ) ;
+	jjtThis.pushPosition() ;
 }
 {	
 	//S:
 	//  HAVING <search_condition>	
 	( <HAVING> search_condition_S() )
 	{	
-		tracker.pop() ;
+		jjtThis.popPosition() ;
 		if( log.isTraceEnabled() ) exitTrace ( "having_clause_S()" ) ;	
 	}
 }
@@ -1879,7 +1855,7 @@ void in_predicate_A() #InPredicate :
     
 	// refactored to
 	( 
-	  value_expression_A() [ <NOT> {jjtThis.setIn(false);} ] <IN> in_predicate_value_S()
+	  value_expression_A( null ) [ <NOT> {jjtThis.setIn(false);} ] <IN> in_predicate_value_S()
 	)
     {
        if( log.isTraceEnabled() ) exitTrace ( "in_predicate_A()" ) ;	
@@ -1938,7 +1914,7 @@ void interval_primary_S() : {}
 	// <interval_primary> ::=
     //    <value_expression_primary> [ <interval_qualifier> ]
 
-      value_expression_primary_A() [ LOOKAHEAD(2) interval_qualifier_S() ]
+      value_expression_primary_A( null ) [ LOOKAHEAD(2) interval_qualifier_S() ]
 }
 
 void interval_qualifier_S() : {}
@@ -2003,7 +1979,7 @@ void in_value_list_A() #InValueList : {}
 	//S:
 	// <in_value_list> ::=
     //   <value_expression> { <comma> <value_expression> }...    
-    ( value_expression_A() ( <COMMA> value_expression_A() )* )
+    ( value_expression_A( null ) ( <COMMA> value_expression_A( null ) )* )
 }
 
 ///*// * in_value_list_constant_A// *// *-bnf-start// *- <in_value_list_constant> ::=// *-       [ <plus_sign> | <minus_sign> ] <exact_numeric_literal>// *-    |  <character_string_literal> // *-bnf-end// *// *///void in_value_list_constant_A() #InValueListConstant : //{//	int signChange = +1 ;//	Token t = null ;//}//{//	//A://	// <in_value_list_constant_A> ::=//	//      [ <plus> | <minus> ] <exact_numeric_literal_S>//	//      |//	//      <character_string_literal_A> //	(//	  (//	    ( [ (<PLUS_SIGN> | t=<MINUS_SIGN>) {if(t != null) signChange = -1 ;} ] ) exact_numeric_literal_S( signChange ) //	  )//	  |//	  character_string_literal_A()//	)//}
@@ -2195,44 +2171,42 @@ void match_predicate_S() : {}
  * bnf-end
  *
  */
-void math_function_A() #MathFunction : 
+void math_function_A( String elementName ) #MathFunction : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "math_function_A()" ) ;
+	jjtThis.pushPosition( elementName ) ;
     Token arg2 = null ;
-    tracker.setType( MathFunctionType.type ) ;
 }
 {
 	(
 		( <ABS> 
 		     <LEFT_PAREN> 
-		        { tracker.push( compiler.ARG_ELEMENT ) ; } 
-		        numeric_value_expression_S() 
-		        { tracker.pop() ; }
+		        numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT ) 
 		     <RIGHT_PAREN> )
 		|
 		( <CEILING> 
 		     <LEFT_PAREN> 
-		        { tracker.push( compiler.ARG_ELEMENT ) ; } numeric_value_expression_S() { tracker.pop() ; }
+		        numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT )
 		     <RIGHT_PAREN> )
 		|
 		( <DEGREES> 
 		     <LEFT_PAREN> 
-		        { tracker.push( compiler.ARG_ELEMENT ) ; } numeric_value_expression_S() { tracker.pop() ; }
+		        numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT )
 		     <RIGHT_PAREN> )
 		|
 		( <EXP> 
 		     <LEFT_PAREN> 
-		        { tracker.push( compiler.ARG_ELEMENT ) ; } numeric_value_expression_S() { tracker.pop() ; }
+		        numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT )
 		     <RIGHT_PAREN> )
 		|
 		( <FLOOR> 
 		     <LEFT_PAREN> 
-		        { tracker.push( compiler.ARG_ELEMENT ) ; } numeric_value_expression_S() { tracker.pop() ; }
+		        numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT )
 		     <RIGHT_PAREN> )
 		|
 		( <LOG> 
 		     <LEFT_PAREN> 
-		        { tracker.push( compiler.ARG_ELEMENT ) ; } numeric_value_expression_S() { tracker.pop() ; }
+		        numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT )
 		     <RIGHT_PAREN> )
 		|
 		( <PI> 
@@ -2240,47 +2214,48 @@ void math_function_A() #MathFunction :
 		|
 		( <POWER> 
 		     <LEFT_PAREN> 
-                { tracker.push( compiler.ARG_ELEMENT ) ; } numeric_value_expression_S() { tracker.pop() ; }
+                numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT )
 		     <COMMA> 
 		        arg2=<UNSIGNED_INTEGER> {jjtThis.setArg2(new Long(arg2.image));} 
 		     <RIGHT_PAREN> )
 		|
 		( <RADIANS> 
 		     <LEFT_PAREN> 
-                { tracker.push( compiler.ARG_ELEMENT ) ; } numeric_value_expression_S() { tracker.pop() ; }
+                numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT )
 		     <RIGHT_PAREN> )
 		|
 		( <SQUARE> 
 		     <LEFT_PAREN> 
-		        { tracker.push( compiler.ARG_ELEMENT ) ; } numeric_value_expression_S() { tracker.pop() ; } 
+		        numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT ) 
 		     <RIGHT_PAREN> )
 		|
 		( <SQRT> 
 		     <LEFT_PAREN> 
-		        { tracker.push( compiler.ARG_ELEMENT ) ; } numeric_value_expression_S() { tracker.pop() ; } 
+		        numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT ) 
 		     <RIGHT_PAREN> )
 		|
 		( <LOG10> 
 		     <LEFT_PAREN> 
-		        { tracker.push( compiler.ARG_ELEMENT ) ; } numeric_value_expression_S() { tracker.pop() ; } 
+		        numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT )
 		     <RIGHT_PAREN> )
 		|
 		( <RAND> 
 		     <LEFT_PAREN> 
-		         [ { tracker.push( compiler.ARG_ELEMENT ) ; } numeric_value_expression_S() { tracker.pop() ; } ] 
+		         [ numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT ) ] 
 		     <RIGHT_PAREN> )
 		|
 		( <ROUND> 
 		     <LEFT_PAREN> 
-		        { tracker.push( compiler.ARG_ELEMENT ) ; } numeric_value_expression_S() { tracker.pop() ; } 
+		        numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT ) 
 		     <RIGHT_PAREN> )
 		|
 		( <TRUNCATE> 
 		     <LEFT_PAREN> 
-		        { tracker.push( compiler.ARG_ELEMENT ) ; } numeric_value_expression_S() { tracker.pop() ; } 
+		        numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT )
 		     <RIGHT_PAREN> )
 	)
 	{
+	   jjtThis.popPosition( elementName ) ;
 	   if( log.isTraceEnabled() ) exitTrace ( "math_function_A()" ) ;
 	}
 }
@@ -2291,8 +2266,9 @@ void math_function_A() #MathFunction :
  * bnf-start
  *  <null_predicate> ::= <column_reference> IS [ NOT ] NULL
  *  !! ADQL Note:
- *  !! The draft spec is in error here. It has
+ *  !! The draft spec has an omission here. It has
  *  !! <null_predicate> ::= IS [ NOT ] NULL	
+ *  !! which means there is no column to test for NULL.
  * bnf-end
  *
  */
@@ -2322,7 +2298,7 @@ void null_predicate_A() #NullPredicate :
  * bnf-end
  *
  */
-void numeric_primary_S() : 
+void numeric_primary_S( String elementName ) : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "numeric_primary_S()" ) ;
 }
@@ -2335,9 +2311,9 @@ void numeric_primary_S() :
     // Refactored to...
 	( 
 	  LOOKAHEAD(3)
-	  numeric_value_function_A()	
+	  numeric_value_function_A( elementName )	
 	  |
-	  value_expression_primary_A()
+	  value_expression_primary_A( elementName )
 	)
 	{ 
 		if( log.isTraceEnabled() ) exitTrace ( "numeric_primary_S()" ) ;
@@ -2356,9 +2332,10 @@ void numeric_primary_S() :
  * bnf-end
  *
  */
-void numeric_value_expression_S() #NumericValueExpression : 
+void numeric_value_expression_S( String elementName ) #NumericValueExpression : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "numeric_value_expression_S()" ) ;
+	jjtThis.pushPosition( elementName ) ;
 	Token t = null ;
 }
 {
@@ -2379,9 +2356,10 @@ void numeric_value_expression_S() #NumericValueExpression :
 	           	  jjtThis.setOperator(t);
 	           }
 	        } 
-	     ) numeric_value_expression_S() )? 
+	     ) numeric_value_expression_S( elementName ) )? 
 	)
     {
+    	jjtThis.popPosition( elementName ) ;
         if( log.isTraceEnabled() ) exitTrace ( "numeric_value_expression_S()" ) ;		
 	}
 }
@@ -2399,7 +2377,7 @@ void numeric_value_expression_S() #NumericValueExpression :
  * bnf-end
  *
  */
-void numeric_value_function_A() : 
+void numeric_value_function_A( String elementName ) : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "numeric_value_function_A()" ) ;
 }
@@ -2412,10 +2390,10 @@ void numeric_value_function_A() :
 
 	(
 		// JBL ADQL adaptation
-		trig_function_A()
+		trig_function_A( elementName )
 		|
-		math_function_A()	
-	    |	    user_defined_function_A()
+		math_function_A( elementName )	
+	    |	    user_defined_function_A( elementName ) 
 		
 	)
 	{ 
@@ -2451,10 +2429,10 @@ void numeric_value_function_A() :
  * bnf-end
  *
  */
-void user_defined_function_A() #UserDefinedFunction : 
+void user_defined_function_A( String elementName ) #UserDefinedFunction : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "user_defined_function_A()" ) ;
-	tracker.setType( UserDefinedFunctionType.type ) ;
+	jjtThis.pushPosition( elementName ) ;
 	Token t = null ;
 }
 {
@@ -2462,9 +2440,8 @@ void user_defined_function_A() #UserDefinedFunction :
 		( t=<REGULAR_IDENTIFIER>
 		     <LEFT_PAREN> 
 		     [
-                { tracker.push( compiler.ARG_ELEMENT ) ; } value_expression_A() { tracker.pop() ; }
-                ( <COMMA> 
-                  { tracker.push( compiler.ARG_ELEMENT ) ; } value_expression_A() { tracker.pop() ; } )* 
+                value_expression_A( AdqlCompiler.ARG_ELEMENT ) 
+                ( <COMMA> value_expression_A( AdqlCompiler.ARG_ELEMENT ) )* 
              ]	       
 		     <RIGHT_PAREN> 
 		     { if(t!=null) {
@@ -2474,7 +2451,8 @@ void user_defined_function_A() #UserDefinedFunction :
 		)
 	)
 	{
-	   if( log.isTraceEnabled() ) exitTrace ( "user_defined_function_A()" ) ;
+		jjtThis.popPosition() ;
+	   	if( log.isTraceEnabled() ) exitTrace ( "user_defined_function_A()" ) ;
 	}
 }
 
@@ -2488,18 +2466,15 @@ void user_defined_function_A() #UserDefinedFunction :
  *
  */
 void order_by_clause_S() #OrderByClause :
- //	public static final String ORDERBY_ELEMENT = "OrderBy" ;
 { 
 	if( log.isTraceEnabled() ) enterTrace ( "order_by_clause_S()" ) ;
-	tracker.push( compiler.ORDERBY_ELEMENT ) ; 
 } 
 {
 	//S:
 	//	ORDER BY <sort_specification_list>
 	//
-	( <ORDERBY> sort_specification_list() )
+	( <ORDERBY> sort_specification_list_S( AdqlCompiler.ORDERBY_ELEMENT ) )
 	{ 
-	  tracker.pop() ; 
 	  if( log.isTraceEnabled() ) exitTrace ( "order_by_clause_S()" ) ;
 	}
 }
@@ -2513,9 +2488,9 @@ void order_by_clause_S() #OrderByClause :
  * bnf-end 
  *
  */
-void sort_specification_list() #SortSpecificationList : 
+void sort_specification_list_S( String elementName) #SortSpecificationList : 
 {
-    if( log.isTraceEnabled() ) enterTrace ( "sort_specification_list()" ) ;
+    if( log.isTraceEnabled() ) enterTrace ( "sort_specification_list_S()" ) ;
 } 
 {
 	//S:
@@ -2523,10 +2498,10 @@ void sort_specification_list() #SortSpecificationList :
 	//    <sort_specification> [ { <comma> <sort_specification> }... ]
 	
 	// refactored to...
-	( sort_specification_A() ( <COMMA> sort_specification_A() )* )
+	( sort_specification_A( null ) ( <COMMA> sort_specification_A( null ) )* )
 	
 	{
-		if( log.isTraceEnabled() ) exitTrace ( "sort_specification_list()" ) ;	
+		if( log.isTraceEnabled() ) exitTrace ( "sort_specification_list_S()" ) ;	
 	}
 }
 
@@ -2540,14 +2515,16 @@ void sort_specification_list() #SortSpecificationList :
  * bnf-end
  * 
  */
-void sort_specification_A() #SortSpecification : 
+void sort_specification_A( String elementName ) #SortSpecification : 
 {
     if( log.isTraceEnabled() ) enterTrace ( "sort_specification_A()" ) ;
+    jjtThis.pushPosition( elementName ) ;
 }
 {
 	( sort_key_S() [ ordering_specification_S() ] )
 	
 	{
+		jjtThis.popPosition() ;
 		if( log.isTraceEnabled() ) exitTrace ( "sort_specification_A()" ) ;
 	}
 }
@@ -2645,7 +2622,6 @@ void pattern_A() :
 void predicate_A() : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "predicate_A()" ) ;
-	tracker.push( compiler.CONDITION_ELEMENT ) ;
 }
 {
 	//S:
@@ -2703,7 +2679,6 @@ void predicate_A() :
 	    )
 //	}//	catch( ParseException pex ) {//	    errorSkipTo( new int[] { token.kind }, pex ) ;	//	}
     { 
-    	tracker.pop() ;
     	if( log.isTraceEnabled() ) exitTrace ( "predicate_A()" ) ;
     }
 }
@@ -2733,12 +2708,10 @@ void predicate_A() :
 void region_predicate_A() #RegionPredicate :      
 {
 	if( log.isTraceEnabled() ) enterTrace ( "region_predicate_A()" ) ;
-	tracker.setType( RegionSearchType.type ) ;
 }
 {
 	position_A() 
-	[ <NOT> { jjtThis.setIn(false);
-	          tracker.setType( NotInRegionSearchType.type ) ; } ] 
+	[ <NOT> { jjtThis.setIn(false); } ] 
 	<IN> region_specification_A()	
     {
     	if( log.isTraceEnabled() ) exitTrace ( "region_predicate_A()" ) ;	
@@ -2761,14 +2734,14 @@ void region_predicate_A() #RegionPredicate :
 void position_A() #Point : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "position_A()" ) ;
-	tracker.push( compiler.POSITION_ELEMENT, PositionType.type  ) ;
+	jjtThis.pushPosition( compiler.POSITION_ELEMENT, PositionType.type  ) ;
 }
 {
-	<LEFT_PAREN> numeric_value_expression_S() 
-	     <COMMA> numeric_value_expression_S() 
+	<LEFT_PAREN> numeric_value_expression_S( null ) 
+	     <COMMA> numeric_value_expression_S( null ) 
 	<RIGHT_PAREN>
 	{
-	   tracker.pop() ;
+	   jjtThis.popPosition( compiler.POSITION_ELEMENT ) ;
 	   if( log.isTraceEnabled() ) exitTrace ( "position_A()" ) ;	
 	}	
 }
@@ -2787,7 +2760,7 @@ void position_A() #Point :
 void region_specification_A() : 
 {
     if( log.isTraceEnabled() ) enterTrace ( "region_specification_A()" ) ;
-    tracker.push( compiler.REGION_ELEMENT ) ;
+    tracker.push( AdqlCompiler.REGION_ELEMENT ) ;
 }
 {
 	(		
@@ -2817,7 +2790,6 @@ void region_specification_A() :
 void convex_A() : 
 {
     if( log.isTraceEnabled() ) enterTrace ( "convex_A()" ) ;
-    tracker.setType( ConvexType.type ) ;
 }
 {	
 	(	
@@ -2830,7 +2802,7 @@ void convex_A() :
 }
 
 
-/* * convex_LatLon_A * *-bnf-start *-  <convex_LatLon> ::=  *-     <left_paren> <longitude> <comma> <latitude> <comma> <direction> <right_paren> *-   { <left_paren> <longitude> <comma> <latitude> <comma> <direction> <right_paren> }... *-bnf-end */void convex_LatLon_A() #ConvexLatLon: {    if( log.isTraceEnabled() ) enterTrace ( "convex_LatLon_A()" ) ;}{	  ( LOOKAHEAD(2)	    <LEFT_PAREN> numeric_value_expression_S() <COMMA> numeric_value_expression_S() <COMMA>	direction_A() <RIGHT_PAREN> )+      {          if( log.isTraceEnabled() ) exitTrace ( "convex_LatLon_A()" ) ;      }}/* * convex_Cartesian_A * *-bnf-start *-  <convex_Cartesian> ::=  *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma> <direction> <right_paren> *-   { <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma> <direction> <right_paren> }... *-bnf-end */void convex_Cartesian_A() #ConvexCartesian : {    if( log.isTraceEnabled() ) enterTrace ( "convex_Cartesian_A()" ) ;}{	  ( LOOKAHEAD(2)	    <LEFT_PAREN> numeric_value_expression_S() 	         <COMMA> numeric_value_expression_S()	         <COMMA> numeric_value_expression_S()  	         <COMMA> direction_A() <RIGHT_PAREN> )+      {          if( log.isTraceEnabled() ) exitTrace ( "convex_Cartesian_A()" ) ;      }}
+/* * convex_LatLon_A * *-bnf-start *-  <convex_LatLon> ::=  *-     <left_paren> <longitude> <comma> <latitude> <comma> <direction> <right_paren> *-   { <left_paren> <longitude> <comma> <latitude> <comma> <direction> <right_paren> }... *-bnf-end */void convex_LatLon_A() #ConvexLatLon: {    if( log.isTraceEnabled() ) enterTrace ( "convex_LatLon_A()" ) ;}{	  ( LOOKAHEAD(2)	    <LEFT_PAREN> numeric_value_expression_S( null ) <COMMA> numeric_value_expression_S( null ) <COMMA>	direction_A() <RIGHT_PAREN> )+      {          if( log.isTraceEnabled() ) exitTrace ( "convex_LatLon_A()" ) ;      }}/* * convex_Cartesian_A * *-bnf-start *-  <convex_Cartesian> ::=  *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma> <direction> <right_paren> *-   { <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma> <direction> <right_paren> }... *-bnf-end */void convex_Cartesian_A() #ConvexCartesian : {    if( log.isTraceEnabled() ) enterTrace ( "convex_Cartesian_A()" ) ;}{	  ( LOOKAHEAD(2)	    <LEFT_PAREN> numeric_value_expression_S( null ) 	         <COMMA> numeric_value_expression_S( null )	         <COMMA> numeric_value_expression_S( null )  	         <COMMA> direction_A() <RIGHT_PAREN> )+      {          if( log.isTraceEnabled() ) exitTrace ( "convex_Cartesian_A()" ) ;      }}
 
 
 /*
@@ -2848,7 +2820,7 @@ void convex_J2000_A() #ConvexJ2000 :
 }
 {
 	  ( LOOKAHEAD(2)
-	    <LEFT_PAREN> numeric_value_expression_S() <COMMA> numeric_value_expression_S() <COMMA>	direction_A() <RIGHT_PAREN> )+
+	    <LEFT_PAREN> numeric_value_expression_S( null ) <COMMA> numeric_value_expression_S( null ) <COMMA>	direction_A() <RIGHT_PAREN> )+
       {
           if( log.isTraceEnabled() ) exitTrace ( "convex_J2000_A()" ) ;
       }
@@ -2864,7 +2836,6 @@ void convex_J2000_A() #ConvexJ2000 :
 void box_A() : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "box_A()" ) ;
-	tracker.setType( BoxType.type ) ;
 } 
 {
 	( [ <J2000> ] box_J2000_A() )	
@@ -2873,7 +2844,7 @@ void box_A() :
 	}
 }
 
-/* * box_LatLon_A * *-bnf-start *-  <box_LatLon> ::=  *-     <left_paren> <latitude> <comma> <longitude> <comma> <length> <comma> <breadth> <right_paren> *-bnf-end * */void box_LatLon_A() #BoxLatLon : {	if( log.isTraceEnabled() ) enterTrace ( "box_LatLon_A()" ) ;}{	(	  <LEFT_PAREN> numeric_value_expression_S() 	       <COMMA> numeric_value_expression_S() 	       <COMMA> numeric_value_expression_S() 	       <COMMA> numeric_value_expression_S() 	 <RIGHT_PAREN>        )      {      	   if( log.isTraceEnabled() ) exitTrace ( "box_LatLon_A()" ) ;      }}/* * box_Cartesian_A * *-bnf-start *-  <box_Cartesian> ::=  *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma>  *-                   <length> <comma> <breadth> <right_paren> *-bnf-end * */void box_Cartesian_A() #BoxCartesian : {	if( log.isTraceEnabled() ) enterTrace ( "box_Cartesian_A()" ) ;}{	(	  <LEFT_PAREN> numeric_value_expression_S() 	       <COMMA> numeric_value_expression_S() 	       <COMMA> numeric_value_expression_S() 	       <COMMA> numeric_value_expression_S() 	       <COMMA> numeric_value_expression_S() 	 <RIGHT_PAREN>        )      {      	   if( log.isTraceEnabled() ) exitTrace ( "box_Cartesian_A()" ) ;      }}
+/* * box_LatLon_A * *-bnf-start *-  <box_LatLon> ::=  *-     <left_paren> <latitude> <comma> <longitude> <comma> <length> <comma> <breadth> <right_paren> *-bnf-end * */void box_LatLon_A() #BoxLatLon : {	if( log.isTraceEnabled() ) enterTrace ( "box_LatLon_A()" ) ;}{	(	  <LEFT_PAREN> numeric_value_expression_S( null ) 	       <COMMA> numeric_value_expression_S( null ) 	       <COMMA> numeric_value_expression_S( null ) 	       <COMMA> numeric_value_expression_S( null ) 	 <RIGHT_PAREN>        )      {      	   if( log.isTraceEnabled() ) exitTrace ( "box_LatLon_A()" ) ;      }}/* * box_Cartesian_A * *-bnf-start *-  <box_Cartesian> ::=  *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma>  *-                   <length> <comma> <breadth> <right_paren> *-bnf-end * */void box_Cartesian_A() #BoxCartesian : {	if( log.isTraceEnabled() ) enterTrace ( "box_Cartesian_A()" ) ;}{	(	  <LEFT_PAREN> numeric_value_expression_S( null ) 	       <COMMA> numeric_value_expression_S( null ) 	       <COMMA> numeric_value_expression_S( null ) 	       <COMMA> numeric_value_expression_S( null ) 	       <COMMA> numeric_value_expression_S( null ) 	 <RIGHT_PAREN>        )      {      	   if( log.isTraceEnabled() ) exitTrace ( "box_Cartesian_A()" ) ;      }}
 
 /*
  * box_J2000_A
@@ -2892,10 +2863,10 @@ void box_J2000_A() #BoxJ2000 :
 }
 {
 	(
-	  <LEFT_PAREN> numeric_value_expression_S() 
-	       <COMMA> numeric_value_expression_S() 
-	       <COMMA> numeric_value_expression_S() 
-	       <COMMA> numeric_value_expression_S() 
+	  <LEFT_PAREN> numeric_value_expression_S( null ) 
+	       <COMMA> numeric_value_expression_S( null ) 
+	       <COMMA> numeric_value_expression_S( null ) 
+	       <COMMA> numeric_value_expression_S( null ) 
 	 <RIGHT_PAREN> 
    
     )
@@ -2915,7 +2886,6 @@ void box_J2000_A() #BoxJ2000 :
 void circle_A() : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "circle_A()" ) ;
-	tracker.setType( CircleType.type ) ;
 }
 { 
 	( [ <J2000> ] circle_J2000_A() ) 
@@ -2924,7 +2894,7 @@ void circle_A() :
 	}
 }
 
-/* * circle_LatLon_A * *-bnf-start *-  <circle_LatLon> ::=  *-     <left_paren> <latitude> <comma> <longitude> <comma> <radius> <right_paren> *-bnf-end */void circle_LatLon_A() #CircleLatLon : {	if( log.isTraceEnabled() ) enterTrace ( "circle_LatLon_A()" ) ;}{	 ( <LEFT_PAREN> numeric_value_expression_S() <COMMA> numeric_value_expression_S() <COMMA> radius_A() <RIGHT_PAREN> )	 {	 	if( log.isTraceEnabled() ) exitTrace ( "circle_LatLon_A()" ) ;		 }}/* * circle_Cartesian_A * *-bnf-start *-  <circle_Cartesian> ::=  *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma> <radius> <right_paren> *-bnf-end */void circle_Cartesian_A() #CircleCartesian : {	if( log.isTraceEnabled() ) enterTrace ( "circle_Cartesian_A()" ) ;}{	 ( <LEFT_PAREN> numeric_value_expression_S() 	        <COMMA> numeric_value_expression_S() 	        <COMMA> numeric_value_expression_S()	        <COMMA> radius_A() 	   <RIGHT_PAREN> )	 {	 	if( log.isTraceEnabled() ) exitTrace ( "circle_Cartesian_A()" ) ;		 }}
+/* * circle_LatLon_A * *-bnf-start *-  <circle_LatLon> ::=  *-     <left_paren> <latitude> <comma> <longitude> <comma> <radius> <right_paren> *-bnf-end */void circle_LatLon_A() #CircleLatLon : {	if( log.isTraceEnabled() ) enterTrace ( "circle_LatLon_A()" ) ;}{	 ( <LEFT_PAREN> numeric_value_expression_S( null ) <COMMA> numeric_value_expression_S( null ) <COMMA> radius_A() <RIGHT_PAREN> )	 {	 	if( log.isTraceEnabled() ) exitTrace ( "circle_LatLon_A()" ) ;		 }}/* * circle_Cartesian_A * *-bnf-start *-  <circle_Cartesian> ::=  *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma> <radius> <right_paren> *-bnf-end */void circle_Cartesian_A() #CircleCartesian : {	if( log.isTraceEnabled() ) enterTrace ( "circle_Cartesian_A()" ) ;}{	 ( <LEFT_PAREN> numeric_value_expression_S( null ) 	        <COMMA> numeric_value_expression_S( null ) 	        <COMMA> numeric_value_expression_S( null )	        <COMMA> radius_A() 	   <RIGHT_PAREN> )	 {	 	if( log.isTraceEnabled() ) exitTrace ( "circle_Cartesian_A()" ) ;		 }}
 
 
 /*
@@ -2940,7 +2910,7 @@ void circle_J2000_A() #CircleJ2000 :
 	if( log.isTraceEnabled() ) enterTrace ( "circle_J2000_A()" ) ;
 }
 {
-	 ( <LEFT_PAREN> numeric_value_expression_S() <COMMA> numeric_value_expression_S() <COMMA> radius_A() <RIGHT_PAREN> )
+	 ( <LEFT_PAREN> numeric_value_expression_S( null ) <COMMA> numeric_value_expression_S( null ) <COMMA> radius_A() <RIGHT_PAREN> )
 	 {
 	 	if( log.isTraceEnabled() ) exitTrace ( "circle_J2000_A()" ) ;	
 	 }
@@ -2956,7 +2926,6 @@ void circle_J2000_A() #CircleJ2000 :
 void polygon_A() : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "polygon_A()" ) ;
-	tracker.setType( PolygonType.type ) ;
 }
 {
 	( [ <J2000> ] polygon_J2000_A() ) 
@@ -2965,7 +2934,7 @@ void polygon_A() :
 	}
 }
 
-/* * polygon_LatLon_A * *-bnf-start *-  <polygon_LatLon> ::= *-     <left_paren> <latitude> <comma> <longitude> <right_paren> *-     <left_paren> <latitude> <comma> <longitude> <right_paren> *-   { <left_paren> <latitude> <comma> <longitude> <right_paren> }... *-bnf-end */void polygon_LatLon_A() #PolygonLatLon : {	if( log.isTraceEnabled() ) enterTrace ( "polygon_LatLon_A()" ) ;}{	  (	  	<LEFT_PAREN>		 	numeric_value_expression_S() <COMMA>		 	numeric_value_expression_S() 	  	<RIGHT_PAREN> 	  	<LEFT_PAREN>		 	numeric_value_expression_S() <COMMA>		 	numeric_value_expression_S() 	  	<RIGHT_PAREN> 		( LOOKAHEAD(2)	  	  <LEFT_PAREN>		 	numeric_value_expression_S() <COMMA>		 	numeric_value_expression_S() 	  	  <RIGHT_PAREN> )+ 	  )	  {	  		if( log.isTraceEnabled() ) exitTrace ( "polygon_LatLon_A()" ) ;	  }}/* * polygon_Cartesian_A * *-bnf-start *-  <polygon_Cartesian> ::= *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> *-   { <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> }... *-bnf-end */void polygon_Cartesian_A() #PolygonCartesian : {	if( log.isTraceEnabled() ) enterTrace ( "polygon_Cartesian_A()" ) ;}{	  (	  	<LEFT_PAREN>		 	numeric_value_expression_S() <COMMA>		 	numeric_value_expression_S() <COMMA>		 	numeric_value_expression_S() 	  	<RIGHT_PAREN> 	  	<LEFT_PAREN>		 	numeric_value_expression_S() <COMMA>		 	numeric_value_expression_S() <COMMA>		 	numeric_value_expression_S() 	  	<RIGHT_PAREN> 		( LOOKAHEAD(2)	  	  <LEFT_PAREN>		 	numeric_value_expression_S() <COMMA>		 	numeric_value_expression_S() <COMMA>		 	numeric_value_expression_S() 	  	  <RIGHT_PAREN> )+ 	  )	  {	  		if( log.isTraceEnabled() ) exitTrace ( "polygon_Cartesian_A()" ) ;	  }}
+/* * polygon_LatLon_A * *-bnf-start *-  <polygon_LatLon> ::= *-     <left_paren> <latitude> <comma> <longitude> <right_paren> *-     <left_paren> <latitude> <comma> <longitude> <right_paren> *-   { <left_paren> <latitude> <comma> <longitude> <right_paren> }... *-bnf-end */void polygon_LatLon_A() #PolygonLatLon : {	if( log.isTraceEnabled() ) enterTrace ( "polygon_LatLon_A()" ) ;}{	  (	  	<LEFT_PAREN>		 	numeric_value_expression_S( null ) <COMMA>		 	numeric_value_expression_S( null ) 	  	<RIGHT_PAREN> 	  	<LEFT_PAREN>		 	numeric_value_expression_S( null ) <COMMA>		 	numeric_value_expression_S( null ) 	  	<RIGHT_PAREN> 		( LOOKAHEAD(2)	  	  <LEFT_PAREN>		 	numeric_value_expression_S( null ) <COMMA>		 	numeric_value_expression_S( null ) 	  	  <RIGHT_PAREN> )+ 	  )	  {	  		if( log.isTraceEnabled() ) exitTrace ( "polygon_LatLon_A()" ) ;	  }}/* * polygon_Cartesian_A * *-bnf-start *-  <polygon_Cartesian> ::= *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> *-   { <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> }... *-bnf-end */void polygon_Cartesian_A() #PolygonCartesian : {	if( log.isTraceEnabled() ) enterTrace ( "polygon_Cartesian_A()" ) ;}{	  (	  	<LEFT_PAREN>		 	numeric_value_expression_S( null ) <COMMA>		 	numeric_value_expression_S( null ) <COMMA>		 	numeric_value_expression_S( null ) 	  	<RIGHT_PAREN> 	  	<LEFT_PAREN>		 	numeric_value_expression_S( null ) <COMMA>		 	numeric_value_expression_S( null ) <COMMA>		 	numeric_value_expression_S( null ) 	  	<RIGHT_PAREN> 		( LOOKAHEAD(2)	  	  <LEFT_PAREN>		 	numeric_value_expression_S( null ) <COMMA>		 	numeric_value_expression_S( null ) <COMMA>		 	numeric_value_expression_S( null ) 	  	  <RIGHT_PAREN> )+ 	  )	  {	  		if( log.isTraceEnabled() ) exitTrace ( "polygon_Cartesian_A()" ) ;	  }}
 
 
 /*
@@ -2985,17 +2954,17 @@ void polygon_J2000_A() #PolygonJ2000 :
 {
 	  (
 	  	<LEFT_PAREN>
-		 	numeric_value_expression_S() <COMMA>
-		 	numeric_value_expression_S() 
+		 	numeric_value_expression_S( null ) <COMMA>
+		 	numeric_value_expression_S( null ) 
 	  	<RIGHT_PAREN> 
 	  	<LEFT_PAREN>
-		 	numeric_value_expression_S() <COMMA>
-		 	numeric_value_expression_S() 
+		 	numeric_value_expression_S( null ) <COMMA>
+		 	numeric_value_expression_S( null ) 
 	  	<RIGHT_PAREN> 
 		( LOOKAHEAD(2)
 	  	  <LEFT_PAREN>
-		 	numeric_value_expression_S() <COMMA>
-		 	numeric_value_expression_S() 
+		 	numeric_value_expression_S( null ) <COMMA>
+		 	numeric_value_expression_S( null ) 
 	  	  <RIGHT_PAREN> )+ 
 	  )
 	  {
@@ -3014,7 +2983,6 @@ void polygon_J2000_A() #PolygonJ2000 :
 void convex_hull_A() : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "convex_hull_A()" ) ;
-    tracker.setType( ConvexHullType.type ) ;
 }
 {
 	( [ <J2000> ] convex_hull_J2000_A() ) 
@@ -3024,7 +2992,7 @@ void convex_hull_A() :
 }
 
 
-/* * convex_hull_LatLon_A * *-bnf-start *-  <convex_hull_LatLon> ::=  *-     <left_paren> <latitude> <comma> <longitude> <right_paren> *-     <left_paren> <latitude> <comma> <longitude> <right_paren> *-   { <left_paren> <latitude> <comma> <longitude> <right_paren> }... *-bnf-end */void convex_hull_LatLon_A() #ConvexHullLatLon : {	if( log.isTraceEnabled() ) enterTrace ( "convex_hull_LatLon_A()" ) ;}{	  <LEFT_PAREN>		 numeric_value_expression_S() <COMMA>		 numeric_value_expression_S() 	  <RIGHT_PAREN> 	  <LEFT_PAREN>		 numeric_value_expression_S() <COMMA>		 numeric_value_expression_S() 	  <RIGHT_PAREN> 	( LOOKAHEAD(2)	  <LEFT_PAREN>		 numeric_value_expression_S() <COMMA>		 numeric_value_expression_S() 	  <RIGHT_PAREN> )+ 	  	  {	  	  if( log.isTraceEnabled() ) exitTrace ( "convex_hull_LatLon_A()" ) ;	  }}/* * convex_hull_Cartesian_A * *-bnf-start *-  <convex_hull_Cartesian> ::=  *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> *-   { <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> }... *-bnf-end */void convex_hull_Cartesian_A() #ConvexHullCartesian : {	if( log.isTraceEnabled() ) enterTrace ( "convex_hull_Cartesian_A()" ) ;}{	  <LEFT_PAREN>		 numeric_value_expression_S() <COMMA>		 numeric_value_expression_S() 	  <RIGHT_PAREN> 	  <LEFT_PAREN>		 numeric_value_expression_S() <COMMA>		 numeric_value_expression_S() 	  <RIGHT_PAREN> 	( LOOKAHEAD(2)	  <LEFT_PAREN>		 numeric_value_expression_S() <COMMA>		 numeric_value_expression_S() 	  <RIGHT_PAREN> )+ 	  	  {	  	  if( log.isTraceEnabled() ) exitTrace ( "convex_hull_Cartesian_A()" ) ;	  }}
+/* * convex_hull_LatLon_A * *-bnf-start *-  <convex_hull_LatLon> ::=  *-     <left_paren> <latitude> <comma> <longitude> <right_paren> *-     <left_paren> <latitude> <comma> <longitude> <right_paren> *-   { <left_paren> <latitude> <comma> <longitude> <right_paren> }... *-bnf-end */void convex_hull_LatLon_A() #ConvexHullLatLon : {	if( log.isTraceEnabled() ) enterTrace ( "convex_hull_LatLon_A()" ) ;}{	  <LEFT_PAREN>		 numeric_value_expression_S( null ) <COMMA>		 numeric_value_expression_S( null ) 	  <RIGHT_PAREN> 	  <LEFT_PAREN>		 numeric_value_expression_S( null ) <COMMA>		 numeric_value_expression_S( null ) 	  <RIGHT_PAREN> 	( LOOKAHEAD(2)	  <LEFT_PAREN>		 numeric_value_expression_S( null ) <COMMA>		 numeric_value_expression_S( null ) 	  <RIGHT_PAREN> )+ 	  	  {	  	  if( log.isTraceEnabled() ) exitTrace ( "convex_hull_LatLon_A()" ) ;	  }}/* * convex_hull_Cartesian_A * *-bnf-start *-  <convex_hull_Cartesian> ::=  *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> *-   { <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> }... *-bnf-end */void convex_hull_Cartesian_A() #ConvexHullCartesian : {	if( log.isTraceEnabled() ) enterTrace ( "convex_hull_Cartesian_A()" ) ;}{	  <LEFT_PAREN>		 numeric_value_expression_S( null ) <COMMA>		 numeric_value_expression_S( null ) 	  <RIGHT_PAREN> 	  <LEFT_PAREN>		 numeric_value_expression_S( null ) <COMMA>		 numeric_value_expression_S( null ) 	  <RIGHT_PAREN> 	( LOOKAHEAD(2)	  <LEFT_PAREN>		 numeric_value_expression_S( null ) <COMMA>		 numeric_value_expression_S( null ) 	  <RIGHT_PAREN> )+ 	  	  {	  	  if( log.isTraceEnabled() ) exitTrace ( "convex_hull_Cartesian_A()" ) ;	  }}
 
 
 /*
@@ -3043,17 +3011,17 @@ void convex_hull_J2000_A() #ConvexHullJ2000 :
 }
 {
 	  <LEFT_PAREN>
-		 numeric_value_expression_S() <COMMA>
-		 numeric_value_expression_S() 
+		 numeric_value_expression_S( null ) <COMMA>
+		 numeric_value_expression_S( null ) 
 	  <RIGHT_PAREN> 
 	  <LEFT_PAREN>
-		 numeric_value_expression_S() <COMMA>
-		 numeric_value_expression_S() 
+		 numeric_value_expression_S( null ) <COMMA>
+		 numeric_value_expression_S( null ) 
 	  <RIGHT_PAREN> 
 	( LOOKAHEAD(2)
 	  <LEFT_PAREN>
-		 numeric_value_expression_S() <COMMA>
-		 numeric_value_expression_S() 
+		 numeric_value_expression_S( null ) <COMMA>
+		 numeric_value_expression_S( null ) 
 	  <RIGHT_PAREN> )+ 
 	  
 	  {
@@ -3077,11 +3045,11 @@ void convex_hull_J2000_A() #ConvexHullJ2000 :
  */
 void direction_A() #Direction : 
 {
-	tracker.push( AdqlCompiler.OFFSET_ELEMENT, HsOffsetType.type ) ;
+	jjtThis.pushPosition( AdqlCompiler.OFFSET_ELEMENT, HsOffsetType.type ) ;
 }
 {
 	signed_numeric_literal_A()
-	{ tracker.pop() ; }
+	{ jjtThis.popPosition( AdqlCompiler.OFFSET_ELEMENT ) ; }
 }
 
 
@@ -3093,7 +3061,7 @@ void direction_A() #Direction :
  */
 void radius_A() : {}
 {
-	numeric_value_expression_S()	
+	numeric_value_expression_S( null )	
 }
 
 /*
@@ -3264,7 +3232,7 @@ void qualifier_A() :
 void query_specification_A() #Select : 
 {
     if( log.isTraceEnabled() ) enterTrace ( "query_specification_A()" ) ;
-    tracker.push( compiler.SELECT_ELEMENT, SelectType.type ) ;
+    jjtThis.pushPosition() ;
 }
 { 
 	(
@@ -3293,7 +3261,7 @@ void query_specification_A() #Select :
 		[ <SEMICOLON> ]
     )
 	{ 
-		tracker.pop() ;
+		jjtThis.popPosition() ;
 		if( log.isTraceEnabled() ) exitTrace ( "query_specification_A()" ) ;
 	}
 }
@@ -3358,7 +3326,7 @@ ScalarExpressionType row_value_constructor_element_S() :
     //   | <null_specification>
     //   | <default_specification>
 
-	value_expression_A()
+	value_expression_A( null )
 // adql has nothing to support the embedding of keywords...
 //    | 
 //    <NULL>
@@ -3397,6 +3365,7 @@ void scalar_subquery_S() : {}
 void search_condition_S() #SearchCondition : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "search_condition_S" ) ;
+	jjtThis.pushPosition() ;
 }
 {
 	//S:
@@ -3410,13 +3379,13 @@ void search_condition_S() #SearchCondition :
 //    try {
 		( boolean_term_S() 
 		  ( <OR>
-		    { tracker.push( compiler.CONDITION_ELEMENT, UnionSearchType.type ) ; }	      
+		    { jjtThis.setPositionType( UnionSearchType.type ) ; }	      
 		    search_condition_S() 
-		    { tracker.pop() ; }
 		  )? 
 		)
 //    }//    catch( ParseException pex ) {//        errorSkipTo( new int[]{ token.kind }, pex ) ;	//    } 
 	{ 
+		jjtThis.popPosition() ;
 		if( log.isTraceEnabled() ) exitTrace ( "search_condition_S" ) ;	
 	}
 }
@@ -3436,7 +3405,7 @@ void search_condition_S() #SearchCondition :
 void select_list_S() #SelectionList : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "select_list_S()" ) ;
-	tracker.push( compiler.SELECTION_LIST_ELEMENT, SelectionListType.type ) ;
+	jjtThis.pushPosition() ;
 }
 {
 	//S:
@@ -3452,17 +3421,17 @@ void select_list_S() #SelectionList :
     }    catch( ParseException pex ) {
     	compiler.errorSkipTo( new int[] { AdqlStoXConstants.FROM }, pex ) ;    }
     finally {
-    	tracker.pop() ;
+    	jjtThis.popPosition() ;
     	if( log.isTraceEnabled() ) exitTrace ( "select_list_S()" ) ;	
     }
 	
 }
 
 void allSelectionItem() #AllSelectionItem : 
-{ tracker.push( compiler.ITEM_ELEMENT, AllSelectionItemType.type ) ; }
+{ jjtThis.pushPosition( compiler.ITEM_ELEMENT ) ; }
 {
 	<ASTERISK>
-    { tracker.pop() ; }
+    { jjtThis.popPosition( compiler.ITEM_ELEMENT ) ; }
 }
 
 /*
@@ -3476,7 +3445,7 @@ void allSelectionItem() #AllSelectionItem :
 void select_sublist_A( boolean first ) #SelectSublist : 
 { 
 	if( log.isTraceEnabled() ) enterTrace ( "select_sublist_A()" ) ;
-	tracker.push( compiler.ITEM_ELEMENT ) ; 
+	jjtThis.pushPosition( compiler.ITEM_ELEMENT ) ; 
 	if( first ) {
 		compiler.selectSublistEnsureNotComma() ;
 	}
@@ -3493,7 +3462,7 @@ void select_sublist_A( boolean first ) #SelectSublist :
 	   { compiler.selectSublistError( first, new ParseException( "select_sublist error" ) ) ; }
     }    catch( ParseException pex ) {       compiler.selectSublistError( first, pex ) ;	    }
     finally {
-       tracker.pop() ;
+       jjtThis.popPosition( compiler.ITEM_ELEMENT ) ;
        if( log.isTraceEnabled() ) exitTrace ( "select_sublist_A()" ) ;
     }
 	
@@ -3525,11 +3494,11 @@ void derived_column_S() #DerivedColumn :
 {
 	if( log.isTraceEnabled() ) enterTrace ( "derived_column_S()" ) ;
 }
-{
+{ 
 	//S:
 	// <derived_column> ::= <value_expression> [ <as_clause> ]
 	// <as_clause> ::= [ AS ] <column_name>
-	( value_expression_A() [ [ <AS> ] column_name_S() ] ) 
+	( value_expression_A( null ) [ [ <AS> ] column_name_S() {jjtThis.setAliased();}  ] ) 
 	{ 
 		if( log.isTraceEnabled() ) exitTrace ( "derived_column_S()" ) ;
 	}	
@@ -3566,7 +3535,7 @@ void set_function_specification_part_fragment() #SetFunctionSpecificationPartFra
 	if( log.isTraceEnabled() ) enterTrace ( "set_function_specification_part_fragment()" ) ;
 }
 {
-		( ( <ASTERISK> | value_expression_A() ) )
+		( ( <ASTERISK> | value_expression_A( null ) ) )
 		{
 		  if( log.isTraceEnabled() ) exitTrace ( "set_function_specification_part_fragment()" ) ;
 		}
@@ -3582,7 +3551,7 @@ void set_function_specification_part_fragment() #SetFunctionSpecificationPartFra
  */
 void set_limit_A() #Restrict : 
 { if( log.isTraceEnabled() ) enterTrace ( "set_limit_A" ) ;
-  tracker.push( compiler.RESTRICT_ELEMENT, SelectionLimitType.type ) ; 
+  jjtThis.pushPosition() ; 
   Token t = null ;
 }
 {
@@ -3605,7 +3574,7 @@ void set_limit_A() #Restrict :
 	}	catch( ParseException pex ) {
 	    tracker.setError( pex.getLocalizedMessage() ) ;	}
 	{ 		
-		tracker.pop() ;
+		jjtThis.popPosition() ;
         if( log.isTraceEnabled() ) exitTrace ( "set_limit_A" ) ;
 	}
 }
@@ -3617,13 +3586,13 @@ void set_limit_A() #Restrict :
  *
  */
 void set_quantifier_S() #Allow : 
-{ tracker.push( compiler.ALLOW_ELEMENT, SelectionOptionType.type ) ; }
+{ jjtThis.pushPosition() ; }
 {
 	//S:
 	// <set_quantifier> ::= DISTINCT | ALL
 	//
 	( <DISTINCT> | <ALL> )
-	{ tracker.pop() ; }
+	{ jjtThis.popPosition() ; }
 }
 
 
@@ -3658,7 +3627,7 @@ void start_field_S() : {}
  * bnf-end
  *
  */
-void string_value_expression_A() : {}
+void string_value_expression_A( String elementName ) : {}
 {
 	//S:
 	// <string_value_expression> ::=
@@ -3924,6 +3893,7 @@ void table_name_A() #TableName :
 void table_reference_S() #Table : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "table_reference_S()" ) ;
+	jjtThis.pushPosition( AdqlCompiler.TABLE_ELEMENT ) ; 
 } 
 {
 	//S:
@@ -3941,15 +3911,14 @@ void table_reference_S() #Table :
 	    LOOKAHEAD(20)
 	    joined_table_A()
 	    |
-	    table_name_A() [ correlation_specification_A() ]
-		
-		
+	    table_name_A() [ correlation_specification_A() ]		
 	  )
 	}
 	catch( ParseException pex ) {
-		compiler.errorSkipTo( compiler.TABLE_REF_SKIP_TO, pex ) ;
+		compiler.errorSkipTo( AdqlCompiler.TABLE_REF_SKIP_TO, pex ) ;
 	}
 	{ 
+		jjtThis.popPosition( AdqlCompiler.TABLE_ELEMENT ) ;
 		if( log.isTraceEnabled() ) exitTrace ( "table_reference_S()" ) ;
 	} 
 }
@@ -4114,48 +4083,49 @@ void time_zone_S() : {}
  * bnf-end
  *
  */
-void trig_function_A() #TrigFunction : 
+void trig_function_A( String elementName ) #TrigFunction : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "trig_function_A()" ) ;
-	tracker.setType( TrigonometricFunctionType.type ) ;
+	jjtThis.pushPosition( elementName ) ;
 }
 {
 	(
 		<ACOS> <LEFT_PAREN>
-		          { tracker.push( compiler.ARG_ELEMENT ) ; } numeric_value_expression_S() { tracker.pop() ; }
+		          numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT )
 		       <RIGHT_PAREN>
 		|
 		<ASIN> <LEFT_PAREN> 
-		          { tracker.push( compiler.ARG_ELEMENT ) ; } numeric_value_expression_S() { tracker.pop() ; }
+		          numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT )
 		       <RIGHT_PAREN>
 		|
         <ATAN> <LEFT_PAREN> 
-                  { tracker.push( compiler.ARG_ELEMENT ) ; } numeric_value_expression_S() { tracker.pop() ; }
+                  numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT )
                <RIGHT_PAREN>
 		|
 		( <ATAN2> <LEFT_PAREN> 
-		             { tracker.push( compiler.ARG_ELEMENT ) ; } numeric_value_expression_S() { tracker.pop() ; }
+		             numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT )
 		          <COMMA> 
-		             { tracker.push( compiler.ARG_ELEMENT ) ; } numeric_value_expression_S() { tracker.pop() ; }
+		             numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT )
 		          <RIGHT_PAREN> )
 		|
 		<COS> <LEFT_PAREN> 
-		         { tracker.push( compiler.ARG_ELEMENT ) ; } numeric_value_expression_S() { tracker.pop() ; } 
+		         numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT )
 		      <RIGHT_PAREN>
 		|
 		<COT> <LEFT_PAREN> 
-		         { tracker.push( compiler.ARG_ELEMENT ) ; } numeric_value_expression_S() { tracker.pop() ; }
+		         numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT )
 		      <RIGHT_PAREN>
 		|
 		<SIN> <LEFT_PAREN> 
-		         { tracker.push( compiler.ARG_ELEMENT ) ; } numeric_value_expression_S() { tracker.pop() ; } 
+		         numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT ) 
 		      <RIGHT_PAREN>
 		|
 		<TAN> <LEFT_PAREN> 
-		         { tracker.push( compiler.ARG_ELEMENT ) ; } numeric_value_expression_S() { tracker.pop() ; } 
+		         numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT )
 		      <RIGHT_PAREN>
 	)
 	{
+		jjtThis.popPosition( elementName ) ;
 		if( log.isTraceEnabled() ) exitTrace ( "trig_function_A()" ) ;
 	}
 }
@@ -4293,7 +4263,7 @@ void unsigned_value_specification_S() : {}
  * bnf-end
  *
  */
-void value_expression_A() #ValueExpression : 
+void value_expression_A( String elementName ) #ValueExpression : 
 {
     if( log.isTraceEnabled() ) enterTrace ( "value_expression_A()" ) ;
 } 
@@ -4307,10 +4277,10 @@ void value_expression_A() #ValueExpression :
     try {
 		(
 		LOOKAHEAD(16) 
-		numeric_value_expression_S() 
+		numeric_value_expression_S( elementName ) 
 		|
 		LOOKAHEAD(16) 	
-		string_value_expression_A() 
+		string_value_expression_A( elementName ) 
 		// JL. foreshortened. At present there seems no accommodation for
 		// datetime and interval expressions in adql
 	//	|
@@ -4371,7 +4341,7 @@ void variable_specification_A() #VariableSpec :
 void where_clause_S() #Where : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "where_clause_S" ) ;
-	tracker.push( compiler.WHERE_ELEMENT, WhereType.type ) ;
+	jjtThis.pushPosition() ;
 }
 {
 	//S:
@@ -4383,13 +4353,16 @@ void where_clause_S() #Where :
        compiler.errorSkipTo( compiler.WHERE_SKIP_TO, pex ) ;	
     }
 	{ 			
-		tracker.pop() ;
+		jjtThis.popPosition() ;
 		if( log.isTraceEnabled() ) exitTrace ( "where_clause_S" ) ;
 	}
 }
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.45  2007/08/29 15:56:46  jl99
+Refining position tracking.
+
 Revision 1.44  2007/08/21 09:28:38  jl99
 Simplification of Region: Polygon
 

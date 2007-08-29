@@ -2,6 +2,14 @@
 
 package org.astrogrid.adql;
 
+/**
+ * AST_ActualIdentifier
+ *
+ * Represents ADQL <identifier> and in SQL92 <actual_identifier>.
+ *
+ * @author Jeff Lusted jl99@star.le.ac.uk
+ * Aug 23, 2007
+ */
 public class AST_ActualIdentifier extends SimpleNode {
     
     public AST_ActualIdentifier(AdqlStoX p, int id) {

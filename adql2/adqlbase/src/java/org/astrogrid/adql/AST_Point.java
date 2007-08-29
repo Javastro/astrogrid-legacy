@@ -13,11 +13,13 @@ public class AST_Point extends SimpleNode {
     
   public AST_Point(AdqlStoX p, int id) {
     super(p, id);
+    this.elementName = AdqlCompiler.POSITION_ELEMENT ;
+    this.schemaType = PositionType.type ;
   }
 
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_Point.buildXmlTree()" ) ; 
-      getTracker().push( AdqlCompiler.POSITION_ELEMENT, PositionType.type  ) ;
+      pushPosition() ;
       PositionType pt = (PositionType)xo.changeType( PositionType.type ) ;
       int childCount = jjtGetNumChildren() ;
       for( int i=0; i<childCount; i++ ) {
@@ -25,7 +27,7 @@ public class AST_Point extends SimpleNode {
       }   
       this.generatedObject = pt ;
       super.buildXmlTree(pt) ;
-      getTracker().pop() ;
+      popPosition() ;
       if( log.isTraceEnabled() ) exitTrace( log, "AST_Point.buildXmlTree()" ) ; 
   }
 }

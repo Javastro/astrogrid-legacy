@@ -2,8 +2,6 @@
 
 package org.astrogrid.adql;
 
-import java.util.ArrayList;
-
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 import org.apache.xmlbeans.XmlObject;

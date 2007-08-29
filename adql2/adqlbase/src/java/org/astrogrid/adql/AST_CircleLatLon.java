@@ -16,11 +16,12 @@ public class AST_CircleLatLon extends SimpleNode {
 
     public AST_CircleLatLon( AdqlStoX p, int id ) { 
         super(p, id);
+        setPositionType( CircleType.type ) ;
     }
 
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_CircleLatLon.buildXmlTree()" ) ; 
-        getTracker().setType( CircleType.type ) ;
+        setPositionType( CircleType.type ) ;
        
         //
         // "Create" the appropriate circle type using XmlBeans magic.

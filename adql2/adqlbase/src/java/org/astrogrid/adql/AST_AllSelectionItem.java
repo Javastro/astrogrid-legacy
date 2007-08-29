@@ -13,14 +13,13 @@ public class AST_AllSelectionItem extends SimpleNode {
     
     public AST_AllSelectionItem(AdqlStoX p, int id) {
         super(p, id);
+        this.schemaType = AllSelectionItemType.type ;
     }
 
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_AllSelectionItem.buildXmlTree()" ) ; 
-        getTracker().push( AdqlCompiler.ITEM_ELEMENT, AllSelectionItemType.type ) ; 
         AllSelectionItemType allSelection = (AllSelectionItemType)xo.changeType( AllSelectionItemType.type ) ;
         setGeneratedObject( allSelection ) ;
-        getTracker().pop() ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_AllSelectionItem.buildXmlTree()" ) ; 
     }
 

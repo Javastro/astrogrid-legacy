@@ -5,7 +5,8 @@ package org.astrogrid.adql;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
-
+import org.astrogrid.adql.beans.OrderExpressionType;
+import org.astrogrid.adql.beans.OrderType;
 
 public class AST_OrderByClause extends SimpleNode {
     
@@ -17,12 +18,9 @@ public class AST_OrderByClause extends SimpleNode {
 
     public void buildXmlTree(XmlObject xo) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_OrderByClause.buildXmlTree()" ) ; 
-        getTracker().push( AdqlCompiler.ORDERBY_ELEMENT ) ;
         children[0].buildXmlTree(xo) ;
         setGeneratedObject( children[0].getGeneratedObject() ) ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_OrderByClause.buildXmlTree()" ) ; 
     }
     
-    
-
 }

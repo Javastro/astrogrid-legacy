@@ -6,6 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
+import org.apache.xmlbeans.SchemaType;
 import org.astrogrid.adql.beans.SelectionListType;
 import org.astrogrid.adql.beans.LinkedListType;
 import org.astrogrid.adql.beans.UnaryExprType;
@@ -23,6 +24,8 @@ public abstract class SimpleNode implements Node {
   protected int id;
   protected AdqlStoX parser;
   protected Object generatedObject = null ;
+  protected String elementName ;
+  protected SchemaType schemaType ;
   
   protected Token firstToken, lastToken;
   
@@ -206,6 +209,57 @@ public static String prepareComment( String comment ) {
 
 public Tracker getTracker() {
     return parser.tracker ;
+}
+
+protected void pushPosition() {
+    if( elementName != null ) {
+        if( schemaType != null ) {
+            parser.tracker.push( elementName, schemaType ) ;
+        }
+        else {
+            parser.tracker.push( elementName ) ;
+        }
+    }
+    else {
+        if( log.isDebugEnabled() ) {
+            log.debug( "pushPosition() invoked where elementName null" ) ;
+        }
+        if( schemaType != null ) {
+            parser.tracker.setType( schemaType ) ;
+        }
+    }
+}
+
+protected void pushPosition( String elementName, SchemaType type ) {
+    this.elementName = elementName ;
+    this.schemaType = type ;
+    pushPosition() ;
+}
+
+protected void pushPosition( String elementName ) {
+    this.elementName = elementName ;
+    pushPosition() ;
+}
+
+protected void popPosition( String elementName ) {
+    if( elementName != null ) {
+        String name = parser.tracker.peek().getElement() ;
+        if( name.equals( elementName ) ) {
+            parser.tracker.pop() ;  
+        }
+        else if( log.isDebugEnabled() ) {
+            log.debug( "popPosition() out of synch. Stack: [" + name + "] Request: [" + elementName + "]" ) ;
+        }            
+    }
+}
+
+protected void popPosition() {   
+    parser.tracker.pop() ;  
+}
+
+protected void setPositionType( SchemaType schemaType ) {
+    this.schemaType = schemaType ;
+    parser.tracker.setType( schemaType ) ;
 }
 
 public LinkedListType getCurrentLinkedElementList() {

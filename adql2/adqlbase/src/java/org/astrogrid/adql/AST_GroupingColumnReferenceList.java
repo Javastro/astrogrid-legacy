@@ -14,16 +14,6 @@ public class AST_GroupingColumnReferenceList extends SimpleNode {
     public AST_GroupingColumnReferenceList(AdqlStoX p, int id) {
         super(p, id);
     }
-
-    // May have problems with comments here.
-    public void jjtClose() {
-//        int childCount = jjtGetNumChildren() ;
-//        ColumnReferenceType[] crtArray = new ColumnReferenceType[ childCount ] ;
-//        for( int i=0; i<childCount; i++ ) {
-//            crtArray[i] = ( (ColumnReferenceType)children[i].getGeneratedObject() ) ;
-//        }
-//        this.setGeneratedObject( crtArray ) ;
-    }
     
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_GroupingColumnReferenceList.buildXmlTree()" ) ;

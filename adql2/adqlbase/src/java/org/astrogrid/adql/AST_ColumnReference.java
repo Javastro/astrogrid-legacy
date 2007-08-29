@@ -6,7 +6,6 @@ import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 import org.astrogrid.adql.beans.*;
 import org.apache.xmlbeans.XmlObject ;
-import java.util.ArrayList;
 
 public class AST_ColumnReference extends SimpleNode {
     
@@ -14,31 +13,20 @@ public class AST_ColumnReference extends SimpleNode {
     
     public AST_ColumnReference(AdqlStoX p, int id) {
         super(p, id);
+        setPositionType( ColumnReferenceType.type ) ;
     }
 
     public void buildXmlTree( XmlObject xo ) {   
       if( log.isTraceEnabled() ) enterTrace( log, "AST_ColumnReference.buildXmlTree()" ) ; 
       
-      getTracker().setType( ColumnReferenceType.type ) ;     
+      setPositionType( ColumnReferenceType.type ) ;    
       ColumnReferenceType crt = (ColumnReferenceType)xo.changeType( ColumnReferenceType.type ) ;
-      
-//      ArrayList dotQualifications ;
-//      if( jjtGetNumChildren() > 1 ) {
-//          dotQualifications = (ArrayList) children[0].getGeneratedObject() ;
-//          dotQualifications.add( children[1].getGeneratedObject() ) ;  
-//      }
-//      else {
-//          dotQualifications = new ArrayList() ;
-//          dotQualifications.add( children[0].getGeneratedObject() ) ;  
-//      }   
       
       int childCount = jjtGetNumChildren() ;
       if( childCount > 4 ) {
           this.getTracker().setError( "Invalid column reference: too many qualifiers." ) ;
       }
       else {
-//          String[] names = new String[ dotQualifications.size() ] ;
-//          names = (String[])dotQualifications.toArray( names ) ;
           
           for( int i=0; i<childCount; i++ ) {
               if( i==0 ) {

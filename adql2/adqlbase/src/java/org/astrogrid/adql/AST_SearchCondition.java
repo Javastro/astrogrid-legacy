@@ -13,12 +13,16 @@ public class AST_SearchCondition extends SimpleNode {
 
     public AST_SearchCondition(AdqlStoX p, int id) {
         super(p, id);
+        this.elementName = AdqlCompiler.CONDITION_ELEMENT ;
     }
 
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_SearchCondition.buildXmlTree()" ) ; 
+        this.pushPosition() ;
         int numberOfChildren = jjtGetNumChildren() ;
+        // QU: Why is this here?
         if( numberOfChildren == 0 ) {
+            this.popPosition() ;
             return ;
         }
         else if( numberOfChildren == 1 ) {
@@ -32,6 +36,7 @@ public class AST_SearchCondition extends SimpleNode {
             setGeneratedObject( orConstruct ) ;
         }
         super.buildXmlTree( (XmlObject)this.generatedObject ) ;
+        this.popPosition() ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_SearchCondition.buildXmlTree()" ) ; 
     }
 }

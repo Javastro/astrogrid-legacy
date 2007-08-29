@@ -20,48 +20,17 @@ public class AST_Factor extends SimpleNode {
     
     public void setSign( Token t ) {
         signToken = t ;
-        getTracker().setType( UnaryExprType.type ) ;
-        getTracker().push( AdqlCompiler.ARG_ELEMENT ) ;
+        setPositionType( UnaryExprType.type ) ;
     }
     
     public boolean isSetSign() {
         return signToken != null ;
     }
-
-//    public Object generatedObject() {
-//        int childCount = jjtGetNumChildren() ;
-//        UnaryExprType ueType = null ;
-//        ScalarExpressionType numericPrimary = null ;
-//        Object child = null ;
-//        for( int i=0; i<childCount; i++ ) {
-//            child = children[i].generateObject() ;
-//            if( child instanceof String ) {
-//                ueType = UnaryExprType.Factory.newInstance() ;
-//                ueType.setOper( UnaryOperatorType.Enum.forString( (String)child ) ) ;    
-//            }
-//            else {
-//                numericPrimary = (ScalarExpressionType)child ; 
-//            }
-//        }
-//        if( ueType != null ) {
-//            ueType.setArg( numericPrimary ) ; 
-//            this.generatedObject = ueType ;
-//        }
-//        else {
-//            this.generatedObject = numericPrimary ;
-//        }       
-//        return super.generateObject() ;
-//    }
-    
-    public void jjtClose() {
-        if( isSetSign() ) {
-            getTracker().pop() ;
-        }
-    }
     
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_Factor.buildXmlTree()" ) ; 
         if( isSetSign() ) {
+            setPositionType( UnaryExprType.type ) ;
             UnaryExprType ueType = (UnaryExprType)xo.changeType( UnaryExprType.type) ;
             ueType.setOper( UnaryOperatorType.Enum.forString( signToken.image ) ) ;  
             children[1].buildXmlTree( ueType.addNewArg() ) ;

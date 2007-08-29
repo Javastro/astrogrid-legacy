@@ -13,11 +13,12 @@ public class AST_CharacterValueExpression extends SimpleNode {
 
     public AST_CharacterValueExpression(AdqlStoX p, int id) {
         super(p, id);
+        setPositionType( CharacterValueExpressionType.type ) ;
     }
 
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_CharacterValueExpression.buildXmlTree()" ) ; 
-        getTracker().setType( CharacterValueExpressionType.type ) ;
+        setPositionType( CharacterValueExpressionType.type ) ;
         //
         // "Create" the appropriate type type using XmlBeans magic.
         CharacterValueExpressionType cvet = (CharacterValueExpressionType)xo.changeType( CharacterValueExpressionType.type ) ;

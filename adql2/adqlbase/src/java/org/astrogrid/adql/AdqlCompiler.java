@@ -817,7 +817,7 @@ public class AdqlCompiler {
     }
     
     private void fValueExpression() throws ParseException {
-        parser.value_expression_A() ;
+        parser.value_expression_A( null ) ;
         ComparisonPredType compPred = ComparisonPredType.Factory.newInstance() ;
         AST_ValueExpression valueExpressionNode = (AST_ValueExpression)parser.jjtree.rootNode() ;
         valueExpressionNode.buildXmlTree( compPred.addNewArg() ) ;
@@ -845,7 +845,7 @@ public class AdqlCompiler {
     }
     
     private void fInValueListExpression() throws ParseException {
-        parser.value_expression_A() ;
+        parser.value_expression_A( null ) ;
         InListSet inListSet = InListSet.Factory.newInstance() ;
         AST_ValueExpression inValueListNode = (AST_ValueExpression)parser.jjtree.rootNode() ;
         inValueListNode.buildXmlTree( inListSet.addNewItem() ) ;  
@@ -927,7 +927,7 @@ public class AdqlCompiler {
     }
     
     private void fSortSpecification() throws ParseException {
-        parser.sort_specification_A() ; 
+        parser.sort_specification_A( null ) ; 
         OrderExpressionType orderExpression = OrderExpressionType.Factory.newInstance() ;
         AST_SortSpecification sortSpecNode = (AST_SortSpecification)parser.jjtree.rootNode() ;
         sortSpecNode.buildXmlTree( orderExpression.addNewItem() ) ;

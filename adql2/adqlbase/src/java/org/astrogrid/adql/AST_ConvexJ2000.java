@@ -17,13 +17,13 @@ public class AST_ConvexJ2000 extends SimpleNode {
 
     public AST_ConvexJ2000(AdqlStoX p, int id) {
         super(p, id);
+        setPositionType( ConvexType.type ) ;
     }
 
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_ConvexJ2000.buildXmlTree()" ) ; 
-        getTracker().setType( ConvexType.type ) ;
-        
-        AST_RegionPredicate.setAstroCoordSystem_J2000( this ) ;
+        setPositionType( ConvexType.type ) ;
+             
         //
         // Establish where we can create linked elements for this region...
         LinkedListType llt = this.getCurrentLinkedElementList() ;
@@ -31,6 +31,10 @@ public class AST_ConvexJ2000 extends SimpleNode {
         //
         // Calculate the number of half spaces requested...
         ConvexType convex = (ConvexType)xo.changeType( ConvexType.type ) ;
+        this.generatedObject = convex ;
+        
+        AST_RegionPredicate.setAstroCoordSystem_J2000( this ) ;
+               
         int childCount = jjtGetNumChildren() ;
         int halfSpaceCount = childCount / 3 ;      
         //
@@ -90,7 +94,7 @@ public class AST_ConvexJ2000 extends SimpleNode {
             halfSpace.setOffset( d.doubleValue() ) ;
         }
 
-        this.generatedObject = convex ;
+
         super.buildXmlTree( convex ) ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_ConvexJ2000.buildXmlTree()" ) ; 
     }

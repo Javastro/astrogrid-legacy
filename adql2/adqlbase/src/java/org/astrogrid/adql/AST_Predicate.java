@@ -17,11 +17,9 @@ public class AST_Predicate extends SimpleNode {
     
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_Predicate.buildXmlTree()" ) ; 
-        getTracker().push( AdqlCompiler.CONDITION_ELEMENT ) ;
         children[0].buildXmlTree( xo ) ;
         this.generatedObject = children[0].getGeneratedObject() ;
         super.buildXmlTree( (XmlObject)this.generatedObject ) ;
-        getTracker().pop() ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_Predicate.buildXmlTree()" ) ; 
     }
 

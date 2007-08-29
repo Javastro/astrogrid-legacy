@@ -13,11 +13,12 @@ public class AST_ExistsPredicate extends SimpleNode {
 
   public AST_ExistsPredicate(AdqlStoX p, int id) {
     super(p, id);
+    setPositionType( ExistsPredType.type ) ;
   }
   
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_ExistsPredicate.buildXmlTree()" ) ; 
-      getTracker().setType( ExistsPredType.type ) ;
+      setPositionType( ExistsPredType.type ) ;
       ExistsPredType epType = (ExistsPredType)xo.changeType( ExistsPredType.type ) ;
       children[0].buildXmlTree( epType.addNewSet() ) ;
       this.generatedObject = epType ;

@@ -25,10 +25,12 @@ public class AST_RegionPredicate extends SimpleNode {
     
   public AST_RegionPredicate(AdqlStoX p, int id) {
     super(p, id);
+    setPositionType( RegionSearchType.type ) ;
   }
   
   public void setIn( boolean in ) {
       this.in = in ;
+      setPositionType( NotInRegionSearchType.type ) ;
   }
   
   public void buildXmlTree( XmlObject xo ) {
@@ -37,11 +39,11 @@ public class AST_RegionPredicate extends SimpleNode {
       //
       // The predicate is either IN or NOT IN ...
       if( in ) {
-          getTracker().setType( RegionSearchType.type ) ;
+          setPositionType( RegionSearchType.type ) ;
           rst = (RegionSearchType)xo.changeType( RegionSearchType.type ) ;
       }
       else {
-          getTracker().setType( NotInRegionSearchType.type ) ;
+          setPositionType( NotInRegionSearchType.type ) ;
           rst = (NotInRegionSearchType)xo.changeType( NotInRegionSearchType.type ) ;
       }
       this.generatedObject = rst ;

@@ -13,21 +13,22 @@ public class AST_ConvexHullJ2000 extends SimpleNode {
 
   public AST_ConvexHullJ2000(AdqlStoX p, int id) {
     super(p, id) ;
+    setPositionType( ConvexHullType.type ) ;
   }
   
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_ConvexHullJ2000.buildXmlTree()" ) ; 
-      getTracker().setType( ConvexHullType.type ) ;
+      setPositionType( ConvexHullType.type ) ;
+      //
+      // "Create" the appropriate polygon type using XmlBeans magic.
+      ConvexHullType cht = (ConvexHullType)xo.changeType( ConvexHullType.type ) ;   
+      this.generatedObject = cht ;
       //
       // We know this is a J2000 Convex Hull type, else why are we here.
       // So set the appropriate astro coord system...
       AST_RegionPredicate.setAstroCoordSystem_J2000( this ) ;
-      //
-      // "Create" the appropriate polygon type using XmlBeans magic.
-      ConvexHullType p = (ConvexHullType)xo.changeType( ConvexHullType.type ) ;
-    
-      this.generatedObject = p ;
-      super.buildXmlTree(p) ;
+      
+      super.buildXmlTree( cht ) ;
       if( log.isTraceEnabled() ) exitTrace( log, "AST_ConvexHullJ2000.buildXmlTree()" ) ; 
   }
 

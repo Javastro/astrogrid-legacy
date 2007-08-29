@@ -15,27 +15,6 @@ public class AST_BooleanTerm extends SimpleNode {
     public AST_BooleanTerm(AdqlStoX p, int id) {
         super(p, id);
     }
-
-    public void jjtClose() {
-//        if( jjtGetNumChildren() == 1 ) {
-//            setGeneratedObject( children[0].getGeneratedObject() ) ;
-//        }
-//        else {
-//            SearchType[] conditionArray = new SearchType[2] ;
-//            IntersectionSearchType andConstruct = IntersectionSearchType.Factory.newInstance() ;
-//            conditionArray[0] = (SearchType)children[0].getGeneratedObject() ;
-//            conditionArray[1] = (SearchType)children[1].getGeneratedObject() ;
-//            andConstruct.setConditionArray( conditionArray ) ;
-//            conditionArray = andConstruct.getConditionArray() ;
-//            children[0].exchangeGeneratedObject( conditionArray[0] ) ;
-//            children[1].exchangeGeneratedObject( conditionArray[1] ) ;
-//            setGeneratedObject( andConstruct ) ;
-//            if( log.isDebugEnabled() ) {
-//                log.debug( "AND written." ) ;
-//            }
-//        }
-//        
-    }
     
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_BooleanTerm.buildXmlTree()" ) ; 
@@ -44,6 +23,7 @@ public class AST_BooleanTerm extends SimpleNode {
             this.generatedObject = children[0].getGeneratedObject() ;
         }
         else {
+            setPositionType( IntersectionSearchType.type ) ;
             IntersectionSearchType andConstruct = (IntersectionSearchType)xo.changeType( IntersectionSearchType.type) ;
             children[0].buildXmlTree( andConstruct.addNewCondition() ) ;
             children[1].buildXmlTree( andConstruct.addNewCondition() ) ;      

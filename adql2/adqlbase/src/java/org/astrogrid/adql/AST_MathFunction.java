@@ -9,6 +9,7 @@ import org.astrogrid.adql.beans.AtomType;
 import org.astrogrid.adql.beans.IntegerType;
 import org.astrogrid.adql.beans.MathFunctionNameType;
 import org.astrogrid.adql.beans.MathFunctionType;
+import org.astrogrid.adql.beans.TrigonometricFunctionType;
 
 
 public class AST_MathFunction extends SimpleNode {
@@ -19,6 +20,7 @@ public class AST_MathFunction extends SimpleNode {
 
     public AST_MathFunction(AdqlStoX p, int id) {
         super(p, id);
+        this.schemaType = MathFunctionNameType.type ;
     }
 
     public void setArg2( Object arg2 ) {
@@ -28,7 +30,7 @@ public class AST_MathFunction extends SimpleNode {
 
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_MathFunction.buildXmlTree()" ) ; 
-        getTracker().setType( MathFunctionType.type ) ;
+        setPositionType( MathFunctionType.type ) ;
         MathFunctionType mfType = (MathFunctionType)xo.changeType( MathFunctionType.type ) ;
         mfType.setName( MathFunctionNameType.Enum.forString( firstToken.image.toUpperCase() ) ) ;
       

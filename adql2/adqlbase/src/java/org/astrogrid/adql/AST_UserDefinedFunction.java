@@ -18,6 +18,7 @@ public class AST_UserDefinedFunction extends SimpleNode {
     
   public AST_UserDefinedFunction(AdqlStoX p, int id) {
     super(p, id);
+    this.schemaType = UserDefinedFunctionType.type ;
   }
   
   public void setFunctionName( String name ) throws ParseException {
@@ -43,7 +44,7 @@ public class AST_UserDefinedFunction extends SimpleNode {
   
 public void buildXmlTree( XmlObject xo ) {   
       if( log.isTraceEnabled() ) enterTrace( log, "AST_UserDefinedFunction.buildXmlTree()" ) ; 
-      getTracker().setType( UserDefinedFunctionType.type ) ;
+      setPositionType( UserDefinedFunctionType.type ) ;
       int childCount = jjtGetNumChildren() ;
       if( log.isDebugEnabled() ) {
           log.debug( "childCount: [" + childCount + "] cardinality: [" 
