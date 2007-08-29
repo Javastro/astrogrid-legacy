@@ -4,14 +4,15 @@
   <pomVersion>3</pomVersion>
   <artifactId>astrogrid-cea-integrationtest</artifactId>
   <groupId>org.astrogrid</groupId>
-  <currentVersion>2007.1.1</currentVersion>
+  <currentVersion>2007.2</currentVersion>
   <name>CEA integration tests</name>
   
   <shortDescription>Integration tests for implementations of CEC</shortDescription>
   <description>This component provides JUnit tests that exercise the client and
   server implementations of the CEC interface. The artifact is an executable jar
   that runs the tests using a JUnit test-runner. This jar includes the classes
-  of the CEA client-library taken from the jar with the same version as this POM.
+  of the CEA client-library taken from the jar with the version given in the
+  project properties.
   </description>
   
   <package>org.astrogrid.applications.integrationtest</package>
@@ -31,7 +32,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-cea-client</artifactId>
-      <version>${pom.currentVersion}</version>
+      <version>${cea.delegate.version}</version>
       <type>jar</type>
       <properties>
         <war.bundle>true</war.bundle>
@@ -46,7 +47,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-common</artifactId>
-      <version>2006.3c</version>
+      <version>2007.2.01</version>
       <type>jar</type>
     </dependency>
     <dependency>
@@ -81,7 +82,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-workflow-objects</artifactId>
-      <version>2006.3wo</version>
+      <version>2007.2wo</version>
       <type>jar</type>
     </dependency>
     <dependency>
@@ -93,7 +94,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-security</artifactId>
-      <version>2006.3.02st</version>
+      <version>2007.2.04</version>
       <type>jar</type>
     </dependency>
     <dependency>
@@ -123,13 +124,13 @@
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
-      <version>2.7.1</version>
+      <version>2.9.0</version>
       <type>jar</type>
     </dependency>
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xml-apis</artifactId>
-      <version>2.7.1</version>
+      <version>2.9.0</version>
       <type>jar</type>
     </dependency>
   </dependencies>
