@@ -1,4 +1,4 @@
-/* $Id: HttpServiceClient.java,v 1.9 2007/08/29 09:21:01 gtr Exp $
+/* $Id: HttpServiceClient.java,v 1.10 2007/08/29 09:55:53 gtr Exp $
  * Created on Jul 24, 2004
  * Copyright (C) 2004 AstroGrid. All rights reserved.
  *
@@ -21,12 +21,13 @@ import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpRecoverableException;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.astrogrid.applications.http.exceptions.HttpApplicationException;
 import org.astrogrid.applications.http.exceptions.HttpApplicationNetworkException;
+import org.astrogrid.applications.http.exceptions.HttpApplicationWebServiceException;
 import org.astrogrid.applications.http.exceptions.HttpApplicationWebServiceURLException;
 ;
 
@@ -129,8 +130,7 @@ public class HttpServiceClient {
      * @throws IOException
      * @throws HttpException
      */
-    public Object call(final Map args) 
-        throws HttpApplicationNetworkException, HttpApplicationWebServiceURLException {
+    public Object call(final Map args) throws HttpApplicationWebServiceException {
         if (log.isTraceEnabled()) {
             log.trace("call(Map args = " + args + ") - start");
         }
@@ -163,15 +163,17 @@ public class HttpServiceClient {
                 statusCode = client.executeMethod(method);
                 results = this.getResponseBody(method);
                 log.debug("Method returned with results: "+results);
-            } catch (HttpRecoverableException e) {
-                log.warn("A recoverable error occured, retrying..."+attempt,e);
-            } catch (MalformedURLException e) {
-                log.error(e);
-                throw new HttpApplicationWebServiceURLException("A non-recoverable error occurred connecting to the web site", e);
-            } catch (IOException e) {
-                log.error(e);
-                throw new HttpApplicationNetworkException("A non-recoverable error occurred connecting to the web site", e);
-            } finally {
+            }
+            catch (MalformedURLException e) {
+              throw new HttpApplicationWebServiceURLException("A non-recoverable error occurred connecting to the web site", e);
+            } 
+            catch (IOException e) {
+                log.warn("A recoverable error occured on try " + attempt, e);
+            }
+            catch (Exception e) {
+                throw new HttpApplicationWebServiceException("A non-recoverable error occurred connecting to the web site", e);
+            } 
+            finally {
             
                 //@TODO will this fail if there *was* an exception?
                 method.releaseConnection();
@@ -287,6 +289,9 @@ public class HttpServiceClient {
 
 /*
  * $Log: HttpServiceClient.java,v $
+ * Revision 1.10  2007/08/29 09:55:53  gtr
+ * I eliminated use of HttpRecoverableException which is deprecated in HttpClient 3.x.
+ *
  * Revision 1.9  2007/08/29 09:21:01  gtr
  * Some private messages now throw IOException, reflecting changes in commons-httpclient.
  *
