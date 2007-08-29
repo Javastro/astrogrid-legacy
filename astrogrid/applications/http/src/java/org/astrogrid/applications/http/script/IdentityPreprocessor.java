@@ -1,4 +1,4 @@
-/* $Id: IdentityPreprocessor.java,v 1.3 2005/07/05 08:27:00 clq2 Exp $
+/* $Id: IdentityPreprocessor.java,v 1.4 2007/08/29 08:47:46 gtr Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -34,10 +34,10 @@ public final class IdentityPreprocessor implements Preprocessor {
         final WebHttpCall webCall = new WebHttpCall();
         webCall.setURL(app.getCeaHttpAdapterSetup().getURL());
         final Input inputs = tool.getInput();
-        final Enumeration enum = inputs.enumerateParameter();
+        final Enumeration en = inputs.enumerateParameter();
 
-        while (enum.hasMoreElements()) {
-            final ParameterValue parameter = (ParameterValue) enum.nextElement();
+        while (en.hasMoreElements()) {
+            final ParameterValue parameter = (ParameterValue) en.nextElement();
             final SimpleParameter simpleParameter = new ConstructableSimpleParameter(parameter);
             webCall.addSimpleParameter(simpleParameter);
         }
