@@ -1,4 +1,4 @@
-/* $Id: HttpServiceClient.java,v 1.8 2006/03/17 17:50:58 clq2 Exp $
+/* $Id: HttpServiceClient.java,v 1.9 2007/08/29 09:21:01 gtr Exp $
  * Created on Jul 24, 2004
  * Copyright (C) 2004 AstroGrid. All rights reserved.
  *
@@ -216,7 +216,7 @@ public class HttpServiceClient {
      * @param method The object representing the HTTP call.
      * @return The response body, either as a String or as a byte array.
      */
-    private Object getResponseBody(HttpMethod method) {
+    private Object getResponseBody(HttpMethod method) throws IOException {
       Header contentType = method.getResponseHeader("Content-Type");
       Header contentEncoding = method.getResponseHeader("Content-Encoding");
       
@@ -287,6 +287,9 @@ public class HttpServiceClient {
 
 /*
  * $Log: HttpServiceClient.java,v $
+ * Revision 1.9  2007/08/29 09:21:01  gtr
+ * Some private messages now throw IOException, reflecting changes in commons-httpclient.
+ *
  * Revision 1.8  2006/03/17 17:50:58  clq2
  * gtr_1489_cea correted version
  *
