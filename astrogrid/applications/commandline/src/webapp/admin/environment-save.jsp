@@ -1,5 +1,4 @@
 <%@page contentType="text/html" import="java.io.*, java.net.URL"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jstl/core"%>
 
 <head>
 <title>Saved environment for web-app</title>

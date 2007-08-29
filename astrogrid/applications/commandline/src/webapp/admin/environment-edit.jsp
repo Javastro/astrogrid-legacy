@@ -1,5 +1,4 @@
 <%@page contentType="text/html"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jstl/core"%>
 
 <html>
 <head>
@@ -42,34 +41,29 @@ and then follow the instructions on the next page.
 <%
 org.astrogrid.common.j2ee.environment.EnvEntry[] entries = environment.getEnvEntry();
 pageContext.setAttribute("entries", entries);
+for (int i = 0; i < entries.length; i++) {
+  EnvEntry e = entries[i];
 %>
-<c:forEach var="e" items="${entries}">
-  <dt class="envEntryName"><c:out value="${e.name}"/></dt>
+  <dt class="envEntryName"><%=e.getName()%>}</dt>
   <dd><table>
     <tr>
       <td>Usage</td>
-      <td><c:out value="${e.description}"/></td>
+      <td><%=e.getDescription()%></td>
     </tr>
     <tr>
       <td>Type</td>
-      <td><c:out value="${e.type}"/></td>
+      <td><%=e.getType%></td>
     </tr>
     <tr>
       <td>Default value</td>
-      <td><c:out value="${e.defaultValue}"/></td>
+      <td><%=e.getDefaultValue()%></td>
     </tr>
     <tr>
       <td>Operational value</td>
-      <td><c:out value="${e.operationalValue}"/></td>
+      <td><%=e.operationalValue()%></td>
     </tr>
-    <c:if test="${e.name ne avoid}">
-      <tr>
-        <td>Replacement value</td>
-        <td><input name="<c:out value="${e.name}"/>" value="<c:out value="${e.replacementValue}"/>" size="96"/></td>
-      </tr>
-    </c:if>
   </table></dd>
-</c:forEach>
+<% } %>
 </dl>
 <p><input type="submit" value="Submit"></p>
 </form>
