@@ -1,13 +1,3 @@
-/*$Id: CommandLineApplicationTest.java,v 1.14 2007/03/02 11:43:24 gtr Exp $
- * Created on 27-May-2004
- *
- * Copyright (C) AstroGrid. All rights reserved.
- *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
- *
- **/
 package org.astrogrid.applications.commandline;
 
 import java.io.File;
@@ -39,7 +29,9 @@ import org.astrogrid.workflow.beans.v1.Tool;
 /**
  * end-to-end test really. creates a micro-cea server, and then runs a test
  * application, and inspects the results.
- * <p>The tests rely heavily on the testapp.sh script and its behaviour. The intention is to test out all the combinations of direct and indirect paramaeters with fileref and non-fileref command-line parameters.
+ * <p>The tests rely heavily on the testapp.sh script and its behaviour. 
+ * The intention is to test out all the combinations of direct and indirect 
+ * paramaeters with fileref and non-fileref command-line parameters.
  * 
  * @author Noel Winstanley nw@jb.man.ac.uk 27-May-2004
  * @author pah
@@ -273,9 +265,12 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
     }
 
    /**
-    * N.B. will see writeback errors for the output parameters in stderr when running this test - this is normal.
+    * Tests an application that always returns bad status.
+    * The application has some output parameters. The monitor should see
+    * the execution failure but should not see warnings about the output
+    * parameters: see BZ2077.
     */
-   public void testSeeError() {
+   public void testSeeError() throws Exception {
            Tool t = null;
            try {
                t = buildTool("-1");
@@ -285,7 +280,6 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
                // not really trying to test this
                e.printStackTrace();
            }
-           try {
            Application app = testAppDescr.initializeApplication("testExecution",
                    new User(), t);
            assertNotNull(app);
@@ -297,20 +291,9 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
            monitor.waitFor(WAIT_SECONDS);
            assertNotNull(monitor.sawApp);
            assertTrue(monitor.sawError);
-           
-           // There seems to be some race condition here. Sometimes it
-           // sees 3 warnings, sometimes it sees none. I suspect it to be
-           // to do with MockMonitor using a separate thread; it probably
-           // needs some explicit synchronization.
-           assertEquals("should have seen 3 warnings before final error status",3, monitor.nwarn);
-           
+           assertEquals("Saw no (parameter) warnings",0, monitor.nwarn);
            assertEquals("application should have ended with error status",
-                   Status.ERROR, app.getStatus());
-           }
-           catch (Exception e1) {
-                   fail("unexpected exception " + e1);
-               }
-           
+                        Status.ERROR, app.getStatus());
        }
 
     private ResultListType execute(Tool t) throws Exception, CeaException,
@@ -376,82 +359,3 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
     t.start();
   }
 }
-
-/*
- * $Log: CommandLineApplicationTest.java,v $
- * Revision 1.14  2007/03/02 11:43:24  gtr
- * Extra comment: I note a possible race condition with the monitor thread. No code changes.
- *
- * Revision 1.13  2007/02/19 16:18:48  gtr
- * Branch apps-gtr-1061 is merged.
- *
- * Revision 1.12.64.1  2007/01/17 18:19:44  gtr
- * The deprecated method Application.execute() has been removed.
- *
- * Revision 1.12  2005/08/10 14:45:37  clq2
- * cea_pah_1317
- *
- * Revision 1.11.4.1  2005/07/21 15:12:06  pah
- * added workfile deletion
- *
- * Revision 1.11  2005/07/05 08:26:56  clq2
- * paul's 559b and 559c for wo/apps and jes
- *
- * Revision 1.10.66.2  2005/06/09 22:17:58  pah
- * tweaking the log getter
- *
- * Revision 1.10.66.1  2005/06/09 08:47:32  pah
- * result of merging branch cea_pah_559b into HEAD
- *
- * Revision 1.10.52.3  2005/06/08 22:10:45  pah
- * make http applications v10 compliant
- *
- * Revision 1.10.52.2  2005/06/03 16:01:48  pah
- * first try at getting commandline execution log bz#1058
- *
- * Revision 1.10.52.1  2005/05/31 12:58:26  pah
- * moved to v10 schema interpretation - this means that the authorityID is read directly with the applicaion "name"
- *
- * Revision 1.10  2004/11/27 13:20:02  pah
- * result of merge of pah_cea_bz561 branch
- *
- * Revision 1.9.6.2  2004/11/15 16:53:56  pah
- * enable pickup of locally generated file name
- *
- * Revision 1.9.6.1  2004/10/27 16:04:05  pah
- * pulled up an AbstractParameterAdapter
- *
- * Revision 1.9  2004/09/30 15:10:00  pah
- * try to test for failure a bit better
- *
- * Revision 1.8  2004/09/23 22:44:23  pah
- * need new CommandLineParameterAdapter to separate out the switch adding part so that patricios merge tool can be accomodated
- *
- * Revision 1.7  2004/09/15 11:37:00  pah
- * make the commandline appliction do all the parameter fetching int he main execution thread
- *
- * Revision 1.6  2004/09/10 21:29:00  pah
- * add the controller as an observer
- *
- * Revision 1.5  2004/09/10 12:13:09  pah
- * allow for p9 to be repeatable
- *
- * Revision 1.4  2004/08/28 07:17:34  pah
- * commandline parameter passing - unit tests ok
- * Revision 1.3 2004/07/26 12:03:33 nw
- * updated to match name changes in cea server library
- * 
- * Revision 1.2 2004/07/01 11:07:59 nw merged in branch
- * nww-itn06-componentization
- * 
- * Revision 1.1.2.3 2004/07/01 01:43:39 nw final version, before merge
- * 
- * Revision 1.1.2.2 2004/06/17 09:24:18 nw intermediate version
- * 
- * Revision 1.1.2.1 2004/06/14 08:57:48 nw factored applications into
- * sub-projects, got packaging of wars to work again
- * 
- * Revision 1.1.22.1 2004/05/28 10:23:11 nw checked in early, broken version -
- * but it builds and tests (fail)
- *  
- */

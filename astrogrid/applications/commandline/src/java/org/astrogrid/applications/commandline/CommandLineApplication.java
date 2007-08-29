@@ -1,14 +1,3 @@
-/*
- * $Id: CommandLineApplication.java,v 1.25 2007/02/19 16:18:47 gtr Exp $
- *
- * Created on 14 October 2003 by Paul Harrison
- * Copyright 2003 AstroGrid. All rights reserved.
- *
- * This software is published under the terms of the AstroGrid
- * Software License version 1.2, a copy of which has been included
- * with this distribution in the LICENSE.txt file.
- */
-
 package org.astrogrid.applications.commandline;
 
 import org.astrogrid.applications.AbstractApplication;
@@ -23,6 +12,7 @@ import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.parameter.ParameterAdapter;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
+import org.astrogrid.config.PropertyNotFoundException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.workflow.beans.v1.Tool;
 
@@ -47,13 +37,18 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+
 /**
- * A generic model for a command line application. This generally assumes that the application can be run from a command line obtaining all of its parameters from commandline arguments and possibly standard in. 
+ * A generic model for a command line application. This generally assumes that 
+ * the application can be run from a command line obtaining all of its 
+ * parameters from commandline arguments and possibly standard in. 
  * The application can interact with the filesystem.
  * 
- * This is achieved with the {@link java.lang.Runtime#exec(java.lang.String[], java.lang.String[], java.io.File) }call,
+ * This is achieved with the {@link java.lang.Runtime#exec(java.lang.String[], 
+ * java.lang.String[], java.io.File) }call,
  * 
- * It was programmed/tested under unix, but I think that the code would work with windows based systems with very little alteration.
+ * It was programmed/tested under unix, but I think that the code would work 
+ * with windows based systems with very little alteration.
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
@@ -235,7 +230,7 @@ public class CommandLineApplication extends AbstractApplication implements Runna
 
             reportMessage("waiting for " + this.toString() + " to finish....");
             try {
-                exitStatus = process.waitFor();
+                this.exitStatus = process.waitFor();
                 reportMessage(this.toString() + " finished");
                 endApplication();
             }
@@ -252,58 +247,83 @@ public class CommandLineApplication extends AbstractApplication implements Runna
         }
     }
 
-/**
-  *stop reader and writer threads and free up some resources 
-  
- * @throws CeaException
- */
-private final void endApplication()  {
-      reportMessage("Execution post application processes");
-      //wait for the error stream a little....
-      errPiper.join(OUTSTREAM_WAITTIME);
-      errPiper.terminate();
-      outPiper.terminate();
-      process = null;
-      
-      setStatus(Status.WRITINGBACK);
-      // call the hook to allow manipulation by subclasses
-      reportMessage("Calling preWritebackHook");
-      preWritebackHook();
-      logger.debug("preWritebackHook - completed");
-      // copy back any output parameters
-      ApplicationInterface applicationInterface = getApplicationInterface();
-      for (Iterator i = outputParameterAdapters(); i.hasNext(); ) {   
-         ParameterAdapter adapter = (ParameterAdapter)i.next();
-         try {         
-            adapter.writeBack(null);
-         } catch (CeaException e) {                        
-                reportWarning("There was a problem writing back parameter "+adapter.getWrappedParameter().getName(),e);
-                //set non-zero exit status if not already set to force the reporting of standard error below....
-                exitStatus = exitStatus == 0? -1 : exitStatus;
-         }
-      }        
+  /**
+   * Reports the results of execution.
+   * If the application ran to completion, then the output parameters are
+   * written back to their pre-specified destinations. 
+   */
+  private final void endApplication()  {
+    reportMessage("Execution post application processes");
+    
+    // Tidy up the application's output and error streams.
+    errPiper.join(OUTSTREAM_WAITTIME);
+    errPiper.terminate();
+    outPiper.terminate();
+    this.process = null;
+    
+    // Send the output parameters to their pre-specified locations.
+    if (this.exitStatus == 0) {
+      writeBackOutputParameters();        
+    }
+    
+    // Tell the client how to get the application logs.
+    reportStandardOutput();
 
-      reportMessage("The application has completed with exit status="+exitStatus);
-      //report how to get hold of the log
-      StringBuffer sb = new StringBuffer("standard out at ");
-      //FIXME - very ugly to use the Simpleconfig here - endpoint url needs to be better encapsulated
-      sb.append(SimpleConfig.getSingleton().getProperty("cea.webapp.url"));
-      sb.append("/cec-http?method=getexecutionlog&type=out&id=");
-      try {
-         sb.append(URLEncoder.encode(applicationEnvironment.getExecutionId(), "UTF-8"));
-      } catch (UnsupportedEncodingException e) {
-         logger.error("internal error - encoding for log access url bad - need to fix code", e);
-      }
-      reportMessage(sb.toString());
-
-      if (exitStatus != 0) {
-         reportStandardError(true);// send the stderr output as well
-      } else {
-         // clean up the input files if the command was successful
-          cleanInputFiles();
-          setStatus(Status.COMPLETED);//it notifies that results are ready to be consumed.
-      }
+    // Application succeeded: throw away the files holding values of input
+    // parameters and tell the client that the output parameters are ready
+    // to collect.
+    if (this.exitStatus == 0) {
+      cleanInputFiles();
+      setStatus(Status.COMPLETED);
+    }
+    
+    // Application failed: make the standard-error log available and notify the
+    // client not to bother with the output parameters.
+    else {
+      reportStandardError(true);
+      this.setStatus(Status.ERROR);
+    }
    }
+
+  private void reportStandardOutput() throws PropertyNotFoundException {
+    reportMessage("The application has completed with exit status " + exitStatus);
+    StringBuffer sb = new StringBuffer("Application's standard output is logged at ");
+    sb.append(SimpleConfig.getSingleton().getProperty("cea.webapp.url"));
+    sb.append("/cec-http?method=getexecutionlog&type=out&id=");
+    try {
+       sb.append(URLEncoder.encode(applicationEnvironment.getExecutionId(), "UTF-8"));
+    } catch (UnsupportedEncodingException e) {
+       logger.error("internal error - encoding for log access url bad - need to fix code", e);
+    }
+    reportMessage(sb.toString());
+  }
+
+  /**
+   * Writes the values of the output parameters to their designated location.
+   * This should only be called if the application has run to completion.
+   */
+  private void writeBackOutputParameters() {
+    setStatus(Status.WRITINGBACK);
+    // call the hook to allow manipulation by subclasses
+    reportMessage("Calling preWritebackHook");
+    preWritebackHook();
+    logger.debug("preWritebackHook - completed");
+    // copy back any output parameters
+    ApplicationInterface applicationInterface = getApplicationInterface();
+    for (Iterator i = outputParameterAdapters(); i.hasNext(); ) {   
+      ParameterAdapter adapter = (ParameterAdapter)i.next();
+      try {         
+        adapter.writeBack(null);
+      } 
+      catch (CeaException e) {                        
+        reportWarning("There was a problem writing back parameter "+adapter.getWrappedParameter().getName(),e);
+        //set non-zero exit status if not already set to force the reporting of standard error below....
+        exitStatus = exitStatus == 0? -1 : exitStatus;
+      }
+    }        
+  }
+
+
    
    private void cleanInputFiles() {
       for (Iterator iter = inputParameterAdapters(); iter.hasNext();) {
@@ -394,20 +414,4 @@ private void reportStandardError(boolean doError) {
       return applicationEnvironment;
    }
 
-
-
-
-   /* (non-Javadoc)
-    * @see org.astrogrid.applications.Application#completionStatus()
-    */
-    /* or this
-   public int completionStatus() {
-      return exitStatus;
-   }
-   */
-
-
-
-
-   
 }
