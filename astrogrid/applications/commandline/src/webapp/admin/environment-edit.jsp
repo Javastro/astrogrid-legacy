@@ -1,4 +1,4 @@
-<%@page contentType="text/html"%>
+<%@page contentType="text/html" import="org.astrogrid.common.j2ee.environment.*"%>
 
 <html>
 <head>
@@ -40,19 +40,18 @@ and then follow the instructions on the next page.
     id="environment" scope="application"/>
 <%
 org.astrogrid.common.j2ee.environment.EnvEntry[] entries = environment.getEnvEntry();
-pageContext.setAttribute("entries", entries);
 for (int i = 0; i < entries.length; i++) {
   EnvEntry e = entries[i];
 %>
-  <dt class="envEntryName"><%=e.getName()%>}</dt>
+  <dt class="envEntryName"><%=e.getName()%></dt>
   <dd><table>
     <tr>
-      <td>Usage</td>
+      <td style="width: 20em;">Usage</td>
       <td><%=e.getDescription()%></td>
     </tr>
     <tr>
       <td>Type</td>
-      <td><%=e.getType%></td>
+      <td><%=e.getType()%></td>
     </tr>
     <tr>
       <td>Default value</td>
@@ -60,7 +59,11 @@ for (int i = 0; i < entries.length; i++) {
     </tr>
     <tr>
       <td>Operational value</td>
-      <td><%=e.operationalValue()%></td>
+      <td><%=e.getOperationalValue()%></td>
+    </tr>
+    <tr>
+      <td>Replacement value</td>
+      <td><input name="<%=e.getName()%>" value="<%=e.getReplacementValue()%>" size="96"/></td>
     </tr>
   </table></dd>
 <% } %>

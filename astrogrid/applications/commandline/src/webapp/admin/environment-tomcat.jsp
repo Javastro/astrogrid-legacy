@@ -1,21 +1,20 @@
 <?xml version="1.0"?>
-<%@page contentType="application/xml"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jstl/core"%>
-
+<%@page contentType="application/xml" 
+        import="org.astrogrid.common.j2ee.environment.*"%>
 <jsp:useBean class="org.astrogrid.common.j2ee.environment.Environment" 
     id="environment" scope="application"/>
+<Context path="<%=environment.getContextPath()%>">
 <%
-org.astrogrid.common.j2ee.environment.EnvEntry[] entries = environment.getEnvEntry();
-pageContext.setAttribute("entries", entries);
+EnvEntry[] entries = environment.getEnvEntry();
+for (int i = 0; i < entries.length; i++) {
+  EnvEntry e = entries[i];
 %>
-<Context path="<c:out value="${environment.contextPath}"/>">
-  <c:forEach var="e" items="${entries}">
-    <Environment
-      description="<c:out value="${e.description}"/>"
-      name="<c:out value="${e.name}"/>"
+  <Environment
+      description="<%=e.getDescription()%>"
+      name="<%=e.getName()%>"
       override="false"
-      type="<c:out value="${e.type}"/>"
-      value="<c:out value="${e.replacementValue}"/>"
+      type="<%=e.getType()%>"
+      value="<%=e.getReplacementValue()%>"
     />
-  </c:forEach>
+<% } %>
 </Context>
