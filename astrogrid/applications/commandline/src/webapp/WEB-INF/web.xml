@@ -131,7 +131,7 @@
 	</env-entry>
  
 	<env-entry>
-		<description>Class name of the component manager implementation to use. Don't change this during deployment!</description>
+		<description>Class name of the component manager implementation to use.</description>
 		<env-entry-name>cea.component.manager.class</env-entry-name>
 		<env-entry-type>java.lang.String</env-entry-type>
 		<env-entry-value>org.astrogrid.applications.commandline.CommandLineCEAComponentManager</env-entry-value>
@@ -145,7 +145,7 @@
         </env-entry>
         
         <env-entry>
-          <description>Whether HTTP "chunking" is used when sending data to AstroGrid MySpace: set to "enabled" or "disabled". "Chunking" reduces the memory load on this service.</description>
+          <description>Whether HTTP 'chunking' is used when sending data to AstroGrid MySpace: set to 'enabled' or 'disabled'. 'Chunking' reduces the memory load on this service.</description>
           <env-entry-name>org.astrogrid.filestore.chunked.send</env-entry-name>
           <env-entry-type>java.lang.String</env-entry-type>
           <env-entry-value>enabled</env-entry-value>
