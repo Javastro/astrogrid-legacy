@@ -7,20 +7,18 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Map;
 
-import org.apache.commons.vfs.FileSystem;
+import junit.framework.TestCase;
+
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.VFS;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.acr.astrogrid.RemoteProcessManager;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.easymock.MockControl;
 import org.w3c.dom.Document;
-
-import junit.framework.TestCase;
 
 /** 
  * @author Noel Winstanley
@@ -35,14 +33,11 @@ public class RemoteProcessManagerUnitTest extends TestCase {
 		super.setUp();
 		strats = new ArrayList();
 		strats.add(new TestRemoteProcessStrategy());
-		MockControl msControl = MockControl.createNiceControl(MyspaceInternal.class);
-		MyspaceInternal ms = (MyspaceInternal)msControl.getMock();
 		MockControl snitchControl = MockControl.createNiceControl(SnitchInternal.class);
 		SnitchInternal snitch = (SnitchInternal)snitchControl.getMock();
-		rpm = new RemoteProcessManagerImpl(strats,ms,snitch);
+		rpm = new RemoteProcessManagerImpl(strats,VFS.getManager(),snitch);
 		
 		snitchControl.replay();
-		msControl.replay();
 		
 		MockControl docControl = MockControl.createControl(Document.class);
 		mocdoc = (Document)docControl.getMock();

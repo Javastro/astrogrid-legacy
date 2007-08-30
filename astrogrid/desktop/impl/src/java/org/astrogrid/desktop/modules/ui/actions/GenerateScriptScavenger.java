@@ -12,8 +12,8 @@ import java.net.URL;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 
@@ -31,10 +31,10 @@ public class GenerateScriptScavenger extends AbstractActivityScavenger {
 	private static final Log logger = LogFactory
 			.getLog(GenerateScriptScavenger.class);
 
-	public GenerateScriptScavenger(ResourceChooserInternal chooser, MyspaceInternal ms) {
+	public GenerateScriptScavenger(ResourceChooserInternal chooser, FileSystemManager vfs) {
 		super("Automation",IconHelper.loadIcon("wizard16.png"));
 		this.chooser = chooser;
-		this.ms = ms;
+		this.vfs = vfs;
 		//@future - load these lists dynamically - at moment are hard-coded		
 	}
 	// can't do this in constructor, as ui Parent hasn't be set at that point.
@@ -48,7 +48,7 @@ public class GenerateScriptScavenger extends AbstractActivityScavenger {
 	}
 	
 	private final ResourceChooserInternal chooser;
-	private final MyspaceInternal ms;
+	private final FileSystemManager vfs;
 	
 	private void add(final URL u) {
 		if (u == null) {
@@ -86,7 +86,7 @@ public class GenerateScriptScavenger extends AbstractActivityScavenger {
 			
 			protected void doFinished(Object result) {
 				String template = (String)result;
-				GenerateScriptActivity a  =new GenerateScriptActivity(template,chooser,ms);
+				GenerateScriptActivity a  =new GenerateScriptActivity(template,chooser,vfs);
 				a.setUIParent(uiParent.get());
 				// now, if we found a header, inspect the groovy script and initialize the generateScriptActivity from it.
 				Object o = shell.getVariable("name");
