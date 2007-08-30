@@ -1,6 +1,7 @@
 package org.astrogrid.desktop.modules.ui.actions;
 
 import java.io.File;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -34,6 +35,7 @@ public final class BulkCopyWorker extends BackgroundWorker {
     private final List l;
     private final FileSystemManager vfs;
     private final FileObject saveObject;
+    private final URI saveLoc;
 
     /**
      * @param parent ui parent
@@ -45,6 +47,7 @@ public final class BulkCopyWorker extends BackgroundWorker {
         this.vfs = vfs;
         this.saveDir = saveDir;
         saveObject = null;
+        saveLoc = null;
         this.l = l;
     }
     
@@ -53,16 +56,29 @@ public final class BulkCopyWorker extends BackgroundWorker {
         this.vfs = vfs;
         this.saveObject = saveObject;
         this.saveDir = null;
+        saveLoc = null;
+        this.l = l;
+    }
+    
+    public BulkCopyWorker(FileSystemManager vfs,UIComponent parent,URI saveLoc, List l) {
+        super(parent,  "Copying to " + saveLoc);
+        this.vfs = vfs;
+        this.saveLoc = saveLoc;
+        this.saveObject = null;
+        this.saveDir = null;
         this.l = l;
     }
 
     protected FileObject saveTarget;
     protected Object construct() throws Exception {
-        if (saveObject == null) {
-            saveTarget = vfs.resolveFile(this.saveDir.toURI().toString());
-        } else {
+        if (saveObject != null) { // we've been given an file object
             saveTarget = saveObject;
+        } else if (saveDir != null) { // we've been given a file
+            saveTarget = vfs.resolveFile(this.saveDir.toURI().toString());
+        } else { // have been given a UI 
+            saveTarget = vfs.resolveFile(saveLoc.toString());
         }
+        
         if (! saveTarget.exists()) {
             saveTarget.createFolder();
         }

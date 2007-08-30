@@ -19,6 +19,7 @@ import org.astrogrid.desktop.modules.ui.fileexplorer.FileExplorerImpl;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileModel;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator;
 import org.astrogrid.desktop.modules.ui.fileexplorer.OperableFilesList;
+import org.astrogrid.desktop.modules.ui.fileexplorer.StorageView;
 import org.astrogrid.desktop.modules.ui.fileexplorer.VFSOperations;
 import org.astrogrid.desktop.modules.ui.fileexplorer.VFSOperationsImpl;
 import org.astrogrid.desktop.modules.ui.taskrunner.AdqlTextFormElement;
@@ -65,6 +66,8 @@ public interface TypesafeObjectBuilder {
     /** reutns a new object as named <tt>fileExplorer</tt> */
     public FileExplorerImpl createFileExplorer();
     
+    /** returns a new object as named <tt>storageView</tt> */
+    public StorageView createStorageView(UIComponent parent, ActivitiesManager acts);
     
     // subcomponents.
     /** returns a new object as named <tt>executionTracker</tt> */

@@ -12,6 +12,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileObject;
@@ -52,13 +53,13 @@ public class FileObjectTransferable implements Transferable {
 			return fo;
 		} else if (VoDataFlavour.LOCAL_URI.equals(flavor)) {
 			try {
-				return new URI(fo.getName().getURI());
+				return new URI(StringUtils.replaceChars(fo.getName().getURI(),' ','+'));
 			} catch (URISyntaxException x) {
 				logger.error("Unable to create URI for fileObject",x);
 				throw new UnsupportedFlavorException(flavor);
 			}
 		} else if (VoDataFlavour.URI_LIST.equals(flavor)) {
-			return new ByteArrayInputStream((fo.getName().getURI()).getBytes());
+			return new ByteArrayInputStream((StringUtils.replaceChars(fo.getName().getURI(),' ','+')).getBytes());
 		} else { // must be asking for the content of the file then..
 			return fo.getContent().getInputStream();
 		}

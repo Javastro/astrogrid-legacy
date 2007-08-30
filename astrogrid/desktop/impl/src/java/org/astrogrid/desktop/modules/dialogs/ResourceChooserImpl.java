@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserImpl.java,v 1.13 2007/05/10 19:35:27 nw Exp $
+/*$Id: ResourceChooserImpl.java,v 1.14 2007/08/30 23:46:48 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,9 +13,8 @@ package org.astrogrid.desktop.modules.dialogs;
 import java.awt.Component;
 import java.net.URI;
 
-import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.dialogs.file.FileStoreChooserResourceChooserDialog;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 
 /** Implementation of the ResourceChooser component
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Apr-2005
@@ -24,15 +23,17 @@ import org.astrogrid.desktop.modules.dialogs.file.FileStoreChooserResourceChoose
 public class ResourceChooserImpl implements ResourceChooserInternal {
  
 
-    public ResourceChooserImpl(MyspaceInternal vos,Community comm) {
-    		dialog = new FileStoreChooserResourceChooserDialog(vos,comm);
+    public ResourceChooserImpl(UIContext context,TypesafeObjectBuilder builder) {
+    		dialog = new FileExplorerBaseDialog(context, builder);
         getDialog().pack();
     }
-    private final AbstractResourceChooserDialog dialog;
+    private final FileExplorerBaseDialog dialog;
+    
+    // public  API
     public synchronized URI chooseResource(String title,boolean enableMySpace) {
-         AbstractResourceChooserDialog d = getDialog();
+         FileExplorerBaseDialog d = getDialog();
         d.setTitle(title);
-        d.setEnableMySpacePanel(enableMySpace);
+        d.setVospaceEnabled(enableMySpace);
         d.setLocationRelativeTo(null);
         d.setVisible(true);
         d.requestFocus();
@@ -41,19 +42,30 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
     }
     
     public synchronized URI fullChooseResource(String title,boolean enableMySpace,boolean enableLocalFile,boolean enableURI) {
-        getDialog().setEnableLocalFilePanel(enableLocalFile);
-        getDialog().setEnableURIPanel(enableURI);
+        getDialog().setLocalEnabled(enableLocalFile);
+        getDialog().setUrlEnabled(enableURI);
         return chooseResource(title,enableMySpace);        
     }
+
+    public URI chooseFolder(String arg0, boolean arg1) {
+        getDialog().setChooseDirectories(true);
+        return chooseResource(arg0,arg1);
+    }
+
+    public URI fullChooseFolder(String arg0, boolean arg1, boolean arg2,
+            boolean arg3) {
+        getDialog().setChooseDirectories(true);
+        return fullChooseResource(arg0,arg1,arg2,arg3);
+    }    
     
-/////
+///// Internal API
 
     public synchronized URI chooseResourceWithParent(String title,boolean enableMySpace,boolean enableLocalFile, boolean enableURI,Component comp) {
     	getDialog().setLocationRelativeTo(comp);
         getDialog().setTitle(title);
-        getDialog().setEnableLocalFilePanel(enableLocalFile);
-        getDialog().setEnableURIPanel(enableURI);
-        getDialog().setEnableMySpacePanel(enableMySpace);
+        getDialog().setLocalEnabled(enableLocalFile);
+        getDialog().setUrlEnabled(enableURI);
+        getDialog().setVospaceEnabled(enableMySpace);
 
         getDialog().setVisible(true);
         getDialog().requestFocus();
@@ -69,15 +81,21 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
 	/**
 	 * @return the dialog
 	 */
-	protected AbstractResourceChooserDialog getDialog() {
+	protected FileExplorerBaseDialog getDialog() {
 		return dialog;
 	}
+
+
 
 }
 
 
 /* 
 $Log: ResourceChooserImpl.java,v $
+Revision 1.14  2007/08/30 23:46:48  nw
+Complete - task 73: upgrade filechooser dialogue to new fileexplorer code
+replaced uses of myspace by uses of vfs where sensible
+
 Revision 1.13  2007/05/10 19:35:27  nw
 reqwork
 

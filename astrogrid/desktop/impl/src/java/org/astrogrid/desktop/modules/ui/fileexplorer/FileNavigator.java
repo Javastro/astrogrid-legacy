@@ -15,6 +15,7 @@ import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.logging.Log;
@@ -142,7 +143,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
         this.parent = parent;
         this.vfs = vfs;
         this.icons = icons;
-        this.model = new FileModel(ed,activities,icons,new VFSOperationsImpl(parent,this,vfs));
+        this.model = FileModel.newInstance(ed,activities,icons,new VFSOperationsImpl(parent,this,vfs));
         this.history = new History();
         history.addHistoryListener(this);
         this.upList = new BasicEventList();
@@ -300,7 +301,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
          */
         public synchronized FileObject getFileObject() {
             if (o == null) {
-                throw new IllegalStateException("Has not yet been resolved");
+                throw new IllegalStateException(getText() + " - Has not yet been resolved");
             } else {
                 return o;
             }
@@ -406,7 +407,9 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
                 try {
                     files.getReadWriteLock().writeLock().lock();
                     files.clear();
-                    files.addAll(Arrays.asList(children));
+                    if (! ArrayUtils.isEmpty(children)) {
+                        files.addAll(Arrays.asList(children));
+                    }
                 } finally {
                     files.getReadWriteLock().writeLock().unlock();
                 }

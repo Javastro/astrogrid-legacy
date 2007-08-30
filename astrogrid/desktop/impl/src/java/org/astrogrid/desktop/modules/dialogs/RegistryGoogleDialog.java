@@ -1,4 +1,4 @@
-/*$Id: RegistryGoogleDialog.java,v 1.10 2007/06/18 17:03:12 nw Exp $
+/*$Id: RegistryGoogleDialog.java,v 1.11 2007/08/30 23:46:48 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -52,7 +52,7 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
         chooserPanel.parent.set(parent);
         this.setContentPane(getJOptionPane());           
      
-        this.setTitle("Resource Chooser");
+        this.setTitle("Registry Resource Chooser");
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
@@ -174,6 +174,10 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
 
 /* 
 $Log: RegistryGoogleDialog.java,v $
+Revision 1.11  2007/08/30 23:46:48  nw
+Complete - task 73: upgrade filechooser dialogue to new fileexplorer code
+replaced uses of myspace by uses of vfs where sensible
+
 Revision 1.10  2007/06/18 17:03:12  nw
 javadoc fixes.
 

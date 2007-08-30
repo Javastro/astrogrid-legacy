@@ -24,6 +24,7 @@ import org.astrogrid.desktop.modules.ui.fileexplorer.FileExplorerImpl;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileModel;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator;
 import org.astrogrid.desktop.modules.ui.fileexplorer.OperableFilesList;
+import org.astrogrid.desktop.modules.ui.fileexplorer.StorageView;
 import org.astrogrid.desktop.modules.ui.fileexplorer.VFSOperations;
 import org.astrogrid.desktop.modules.ui.fileexplorer.VFSOperationsImpl;
 import org.astrogrid.desktop.modules.ui.fileexplorer.VFSOperationsImpl.Current;
@@ -76,6 +77,10 @@ public class TypesafeObjectBuilderImpl extends EventDispatchThreadObjectBuilder 
 
     public FileExplorerImpl createFileExplorer() {
         return (FileExplorerImpl)create("fileExplorer");
+    }
+    
+    public StorageView createStorageView(UIComponent parent, ActivitiesManager acts) {
+        return (StorageView)create("storageView",new Object[]{parent,acts});
     }
 
     public RegistryGooglePanel createGooglePanel() {
@@ -175,6 +180,8 @@ public class TypesafeObjectBuilderImpl extends EventDispatchThreadObjectBuilder 
             ActivitiesManager acts) {
         return createFileNavigator(parent,new FixedMatcherEditor(Matchers.trueMatcher()),acts);
     }
+
+
 
 
     

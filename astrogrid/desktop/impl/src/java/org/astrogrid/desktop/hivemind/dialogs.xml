@@ -23,13 +23,13 @@
 ==========================
 RESOURCE (FILE) CHOOSER
  -->
- 	<!--  todo - make non-singleton -->
 	<service-point id="resourceChooser" interface="org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal">
 		Select a local or myspace file
+        <!--  some encapsilation leaking from ui here - would be nice to have an object builder which knew how to build this.. -->
 		<invoke-factory model="session">
 			<construct class="org.astrogrid.desktop.modules.dialogs.ResourceChooserImpl" >
-			    <service>astrogrid.myspace</service>
-				<service>astrogrid.community</service>			
+			    <service>system.ui</service>
+                <service>ui.UiBuilder</service>		
 			</construct>
 		</invoke-factory>	
 	</service-point>

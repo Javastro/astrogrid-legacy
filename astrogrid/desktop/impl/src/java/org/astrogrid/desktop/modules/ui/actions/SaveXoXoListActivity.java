@@ -16,6 +16,7 @@ import java.net.URI;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.ivoa.resource.AccessURL;
 import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.Interface;
@@ -43,16 +44,16 @@ public class SaveXoXoListActivity extends AbstractResourceActivity {
 	/**
 	 * 
 	 */
-	public SaveXoXoListActivity(ResourceChooserInternal chooser, MyspaceInternal ms) {
+	public SaveXoXoListActivity(ResourceChooserInternal chooser,FileSystemManager vfs) {
 		this.chooser = chooser;
-		this.ms = ms;
+		this.vfs = vfs;
 		setText("Save Formatted List");
 		setToolTipText("Save formatted details of the current selection to a textfile");
 		setIcon(IconHelper.loadIcon("ascii16.png"));
 	}
 
 	private final ResourceChooserInternal chooser;
-	private final MyspaceInternal ms;
+	private final FileSystemManager vfs;
 	public void actionPerformed(ActionEvent e) {
 		final List rs = computeInvokable();
 		Component comp = null;
@@ -67,11 +68,8 @@ public class SaveXoXoListActivity extends AbstractResourceActivity {
 			protected Object construct() throws Exception {
 				PrintWriter out = null;
 				try {
-					if (u.getScheme().equals("file")) { //@todo tidy this up - temporary work around to avoid login when writing to local
-						out = new PrintWriter(new FileOutputStream(new File(u)));
-					} else {
-						out = new PrintWriter(ms.getOutputStream(u));
-					}
+				    out = new PrintWriter(new java.io.OutputStreamWriter(vfs.resolveFile(u.toString()).getContent().getOutputStream()));
+
 					out.print("<ul class='xoxo'>");
 					out.println("<!-- See http://microformats.org/wiki/xoxo for details of XoXo format -->");
 					for (Iterator i = rs.iterator(); i.hasNext();) {

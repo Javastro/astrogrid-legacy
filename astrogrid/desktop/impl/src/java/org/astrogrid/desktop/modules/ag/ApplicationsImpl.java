@@ -1,4 +1,4 @@
-/*$Id: ApplicationsImpl.java,v 1.25 2007/07/23 12:15:50 nw Exp $
+/*$Id: ApplicationsImpl.java,v 1.26 2007/08/30 23:46:47 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,6 +32,7 @@ import net.sf.ehcache.Element;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
@@ -74,11 +75,11 @@ public class ApplicationsImpl implements ApplicationsInternal {
     /** 
      * 
      */
-    public ApplicationsImpl(RemoteProcessManager manager,MyspaceInternal vos, 
+    public ApplicationsImpl(RemoteProcessManager manager,FileSystemManager vfs, 
     		RegistryInternal nuReg, AdqlInternal adql,
     		Ehcache applicationResourceCache) throws  ACRException{
         this.manager = manager;
-        this.vos = vos;
+        this.vfs = vfs;
         this.adql = adql;
         this.nuReg = nuReg;
         this.applicationResourceCache = applicationResourceCache;
@@ -86,7 +87,7 @@ public class ApplicationsImpl implements ApplicationsInternal {
     protected final Ehcache applicationResourceCache;
     protected final RegistryInternal nuReg;
     protected final RemoteProcessManager manager;
-    private final MyspaceInternal vos;
+    private final FileSystemManager vfs;
     protected final AdqlInternal adql;
 
    
@@ -475,7 +476,7 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
     public void validateStored(URI documentLocation) throws ServiceException, InvalidArgumentException, NotFoundException {
         Document doc;
         try {
-            InputStream r = vos.getInputStream(documentLocation);
+            InputStream r = vfs.resolveFile(documentLocation.toString()).getContent().getInputStream();
             doc = XMLUtils.newDocument(r);
   
         } catch (ParserConfigurationException e) {
@@ -484,13 +485,7 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
             throw new InvalidArgumentException(e);
         } catch (IOException e) {
             throw new NotFoundException(e);
-        } catch (InvalidArgumentException e) {
-            throw new NotFoundException(e);
-        } catch (ServiceException e) {
-            throw new NotFoundException(e);
-        } catch (SecurityException e) {
-            throw new NotFoundException(e);
-        }
+        } 
         validate(doc);
         
 
@@ -624,6 +619,10 @@ public static ParameterBean findParameter(ParameterBean[] arr,String name) {
 
 /* 
 $Log: ApplicationsImpl.java,v $
+Revision 1.26  2007/08/30 23:46:47  nw
+Complete - task 73: upgrade filechooser dialogue to new fileexplorer code
+replaced uses of myspace by uses of vfs where sensible
+
 Revision 1.25  2007/07/23 12:15:50  nw
 got adql translation working in tool document submission
 

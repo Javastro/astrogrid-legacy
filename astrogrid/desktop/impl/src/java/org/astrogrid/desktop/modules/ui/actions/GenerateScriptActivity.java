@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
@@ -32,9 +33,9 @@ import org.astrogrid.desktop.modules.ui.BackgroundWorker;
  */
 public final class GenerateScriptActivity extends AbstractResourceActivity {
 
-	public GenerateScriptActivity(String templateString,ResourceChooserInternal chooser, MyspaceInternal ms) {
+	public GenerateScriptActivity(String templateString,ResourceChooserInternal chooser, FileSystemManager vfs) {
 		CSH.setHelpIDString(this, "resourceTask.script");		
-		this.ms = ms;
+		this.vfs = vfs;
 		this.chooser = chooser;
 		setText("Generate script");
 		setIcon(IconHelper.loadIcon("wizard16.png"));
@@ -53,7 +54,7 @@ public final class GenerateScriptActivity extends AbstractResourceActivity {
 	protected boolean functional = true;
 	private final Template template;
 	private final ResourceChooserInternal chooser;
-	private final MyspaceInternal ms;
+	private final FileSystemManager vfs;
 
 
 	/** Test whether it's something we can invoke.
@@ -118,7 +119,7 @@ public final class GenerateScriptActivity extends AbstractResourceActivity {
 				Writable w = template.make(binding);
 				OutputStreamWriter writer = null;
 				try {
-					writer = new OutputStreamWriter(ms.getOutputStream(u));
+					writer = new OutputStreamWriter(vfs.resolveFile(u.toString()).getContent().getOutputStream());
 					w.writeTo(writer);
 				} catch (IOException x) {
 					logger.error("IOException",x);

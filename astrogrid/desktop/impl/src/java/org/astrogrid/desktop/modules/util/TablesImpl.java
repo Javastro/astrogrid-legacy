@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 
+import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
@@ -36,18 +37,18 @@ import uk.ac.starlink.table.TableFormatException;
  */
 public class TablesImpl implements Tables {
 
-	public TablesImpl(MyspaceInternal vos) {
+	public TablesImpl(FileSystemManager vfs) {
 		//@todo - candidate for factoring out?
 		this.builderFactory = new StarTableFactory(false);
 		// configure to be more memory-efficient.
 		this.builderFactory.setStoragePolicy(StoragePolicy.PREFER_DISK);
 		this.writerFactory = new StarTableOutput();
-		this.vos = vos;
+		this.vfs = vfs;
 	}
 	
 	protected final StarTableFactory builderFactory;
 	protected final StarTableOutput writerFactory;
-	protected final MyspaceInternal vos;
+	protected final FileSystemManager vfs;
 	
 	public String convert(String input, String inFormat, String outFormat) throws InvalidArgumentException, ServiceException {
 		TableBuilder tableBuilder;
@@ -214,23 +215,11 @@ public class TablesImpl implements Tables {
 			}
 		}		
 	}
-	
-	// myspace componet could all do this itself - but access forces login, which is a bit of a pain if you're just reading and 
-	// writing to local disk. - so test first, and only pass the ivo ones on to it.
-	//@todo replace with a decent infrastucture based on URLProctocolHandlers
+
 	private InputStream getInputStream(URI u) throws InvalidArgumentException, NotFoundException, SecurityException, ServiceException {
 		try {
-		if (u.getScheme().equals("ivo")) {
-				return vos.getInputStream(u);
-		} else if (u.getScheme().equals("file")) {
-            return new FileInputStream(new File(u));
-        } else {
-            return u.toURL().openStream();
-        }
-    } catch (FileNotFoundException e) {
-        throw new NotFoundException(e);
-    } catch (FileManagerFault e) {
-        throw new ServiceException(e);
+		    return vfs.resolveFile(u.toString()).getContent().getInputStream();
+
     } catch (IOException e) {
         throw new ServiceException(e);
     }
@@ -238,20 +227,11 @@ public class TablesImpl implements Tables {
 	
 	private OutputStream getOutputStream(URI u) throws InvalidArgumentException, NotFoundException, SecurityException, ServiceException {
 		try {
-		if (u.getScheme().equals("ivo")) {
-			return vos.getOutputStream(u);
-	} else if (u.getScheme().equals("file")) {
-        return new FileOutputStream(new File(u));
-    } else {
-        return u.toURL().openConnection().getOutputStream();                      
-    }      
-   } catch (FileNotFoundException e) {
-       throw new NotFoundException(e);
-   } catch (FileManagerFault e) {
-       throw new ServiceException(e);
-   } catch (IOException e) {
-       throw new ServiceException(e);
-   }	
+		    return vfs.resolveFile(u.toString()).getContent().getOutputStream();
+
+	    } catch (IOException e) {
+	        throw new ServiceException(e);
+	    }
 	}
 	
 	public String[] listOutputFormats() {

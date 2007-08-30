@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserInternal.java,v 1.6 2007/01/29 11:11:37 nw Exp $
+/*$Id: ResourceChooserInternal.java,v 1.7 2007/08/30 23:46:48 nw Exp $
  * Created on 24-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,15 +21,20 @@ import org.astrogrid.acr.dialogs.ResourceChooser;
  */
 public interface ResourceChooserInternal extends ResourceChooser {
 
-    public URI chooseDirectoryWithParent(String title,boolean enableMySpace,boolean enableLocalFile, boolean enableURI,Component comp);
+   
+    public URI chooseDirectoryWithParent(String title,boolean enableMySpace,boolean enableLocalFile, boolean enableURL,Component comp);
     
-    public URI chooseResourceWithParent(String title,boolean enableMySpace,boolean enableLocalFile, boolean enableURI,Component comp);    
+    public URI chooseResourceWithParent(String title,boolean enableMySpaceDir,boolean enableLocalDir, boolean enableURL,Component comp);    
 
 }
 
 
 /* 
 $Log: ResourceChooserInternal.java,v $
+Revision 1.7  2007/08/30 23:46:48  nw
+Complete - task 73: upgrade filechooser dialogue to new fileexplorer code
+replaced uses of myspace by uses of vfs where sensible
+
 Revision 1.6  2007/01/29 11:11:37  nw
 updated contact details.
 

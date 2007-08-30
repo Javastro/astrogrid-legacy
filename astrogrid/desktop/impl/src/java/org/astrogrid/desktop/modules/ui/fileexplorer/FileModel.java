@@ -56,7 +56,7 @@ import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FilterList;
 import ca.odell.glazedlists.ListSelection;
 import ca.odell.glazedlists.SortedList;
-import ca.odell.glazedlists.matchers.AbstractMatcherEditor;
+import ca.odell.glazedlists.matchers.CompositeMatcherEditor;
 import ca.odell.glazedlists.matchers.Matcher;
 import ca.odell.glazedlists.matchers.MatcherEditor;
 import ca.odell.glazedlists.swing.EventSelectionModel;
@@ -73,6 +73,24 @@ import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
  */
 public class FileModel implements DragGestureListener, DragSourceListener, DropTargetListener, ListSelectionListener{
 	/**
+     * @author Noel.Winstanley@manchester.ac.uk
+     * @since Aug 30, 20072:20:51 PM
+     */
+    private static final class NoHiddenFiles implements Matcher {
+        public boolean matches(Object arg0) {
+            FileObject fo = (FileObject)arg0;
+            try {
+                return !(fo.isHidden() || fo.getName().getBaseName().charAt(0) == '.') ;
+            } catch (FileSystemException x) {
+                return true;
+            }
+        }
+    }
+
+   
+    
+    
+    /**
 	 * Logger for this class
 	 */
 	private static final Log logger = LogFactory
@@ -84,41 +102,36 @@ public class FileModel implements DragGestureListener, DragSourceListener, DropT
 	private final VFSOperations ops;
 
     private final ActivitiesManager activities;
+
+    private final MutableMatcherEditor programmaticFilter;
+
+    private final MutableMatcherEditor hiddenFilter;
 	
-    public FileModel(MatcherEditor ed,ActivitiesManager activities,IconFinder icons, VFSOperations ops) {
-        this(createDefaultListModel(ed),activities,icons,ops);
-    }
-    
-    private static final SortedList createDefaultListModel(MatcherEditor ed) {
-        EventList basic = new BasicEventList();
-        // filter out hidden files. Later, add an option to show them - which will 
-        // cause this matcherEditor to emit a change event and use a 'pass all' matcher.
-        EventList filteredFiles = new FilterList(basic,new AbstractMatcherEditor() {
-            public Matcher getMatcher() {
-                return new Matcher() {
-                    public boolean matches(Object arg0) {
-                        FileObject fo = (FileObject)arg0;
-                        try {
-                            return !(fo.isHidden() || fo.getName().getBaseName().charAt(0) == '.') ;
-                        } catch (FileSystemException x) {
-                            return true;
-                        }
-                    }
-                };
-            }
-        });
-        if (ed != null) { // add an additional filter,
-            filteredFiles = new FilterList(filteredFiles,ed);
+    /** a complex object to build - need to use a factory method */
+    public static FileModel newInstance(MatcherEditor ed,ActivitiesManager activities,IconFinder icons, VFSOperations ops) {
+        MutableMatcherEditor programmaticFilter = new MutableMatcherEditor();
+        MutableMatcherEditor hiddenFilter = new MutableMatcherEditor();
+        hiddenFilter.setMatcher(new NoHiddenFiles());
+        // make a composite out of all these matchers.
+        CompositeMatcherEditor composite = new CompositeMatcherEditor();
+        composite.setMode(CompositeMatcherEditor.AND);
+        composite.getMatcherEditors().add(programmaticFilter);
+        composite.getMatcherEditors().add(hiddenFilter);
+        if (ed != null) {
+            composite.getMatcherEditors().add(ed);
         }
-        return new SortedList(filteredFiles, FileObjectComparator.getInstance());
-            
+        EventList filteredFiles = new FilterList(new BasicEventList(),composite);
+        SortedList list = new SortedList(filteredFiles, FileObjectComparator.getInstance());
+       return new FileModel(list,programmaticFilter, hiddenFilter,activities,icons,ops);
     }
+
             
     
-    
-	public FileModel(SortedList files,ActivitiesManager activities,IconFinder icons, VFSOperations ops) {
+	private FileModel(SortedList files,MutableMatcherEditor programmaticFilter, MutableMatcherEditor hiddenFilter, ActivitiesManager activities,IconFinder icons, VFSOperations ops) {
 		
 		super();
+        this.programmaticFilter = programmaticFilter;
+        this.hiddenFilter = hiddenFilter;
         this.activities = activities;
 		this.ops = ops;
 		this.files = files;
@@ -320,8 +333,9 @@ public class FileModel implements DragGestureListener, DragSourceListener, DropT
  * @param event
  */
     public void maybeShowPopupMenu( MouseEvent event ){
-       if ( event.isPopupTrigger() ) {
-           updateActivities();
+       if ( event.isPopupTrigger() && activities.getPopupMenu() != null ) {
+           //@todo - only update activities if what we've clicked on is not alreays part of the selection
+           updateActivities();           
             activities.getPopupMenu().show( event.getComponent(),
                     event.getX(), event.getY() );
        }
@@ -329,7 +343,7 @@ public class FileModel implements DragGestureListener, DragSourceListener, DropT
 
     /**
      * update activities to reflect current selection.
-     * rarely need to call this method, as selecction model events cause it
+     * rarely need to call this method directly, as selecction model events cause it
      * to be triggered anyhow.
      */
     private void updateActivities() {
@@ -348,7 +362,19 @@ public class FileModel implements DragGestureListener, DragSourceListener, DropT
         }
         updateActivities();
         
+    }
+
+    /**
+     * @param mode
+     */
+    public void setSelectionMode(int mode) {
+        selection.setSelectionMode(mode);
     }   
+    
+    /** add an additional filter to the file view */
+    public void installFilter(Matcher m) {
+        programmaticFilter.setMatcher(m);
+    }
     
 
     

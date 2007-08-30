@@ -32,6 +32,9 @@ public abstract class AbstractFileActivity extends AbstractActivity implements P
 		current = null;
 	}
 	public void selected(Transferable r) {
+	    if (r == null) {
+	        return;
+	    }
 		try {
 		if (r.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT)) {
 			oneSelected((FileObject)r.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT));

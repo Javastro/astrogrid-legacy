@@ -17,6 +17,8 @@ import java.util.List;
 
 import javax.swing.JFileChooser;
 
+import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
@@ -52,9 +54,9 @@ public class SaveResourceActivity extends AbstractResourceActivity {
 	/**
 	 * 
 	 */
-	public SaveResourceActivity(UIContext cxt,ResourceChooserInternal chooser, RegistryInternal reg,MyspaceInternal ms) {
+	public SaveResourceActivity(UIContext cxt,ResourceChooserInternal chooser, RegistryInternal reg,FileSystemManager vfs) {
 		this.chooser = chooser;
-		this.ms = ms;
+		this.vfs = vfs;
 		this.reg = reg;
 		this.cxt = cxt;
 		setText("Save xml");
@@ -62,7 +64,7 @@ public class SaveResourceActivity extends AbstractResourceActivity {
 	}
 
 private final ResourceChooserInternal chooser;
-private final MyspaceInternal ms;
+private final FileSystemManager vfs;
 private final RegistryInternal reg;
 private final UIContext cxt;
 
@@ -132,12 +134,8 @@ public void actionPerformed(ActionEvent e) {
 			protected Object construct() throws Exception {
 				OutputStream os = null;
 				try {
+				    os = vfs.resolveFile(u.toString()).getContent().getOutputStream();
 					Resource res = (Resource)l.get(0);
-					if (u.getScheme().equals("file")) { //@todo tidy this
-						os = new FileOutputStream(new File(u));
-					} else {
-						os = ms.getOutputStream(u);
-					}
 					Document doc = reg.getResourceXML(res.getId());
 					DomHelper.DocumentToStream(doc,os);
 				} finally {
@@ -152,16 +150,19 @@ public void actionPerformed(ActionEvent e) {
 				return null;
 			}
 		}).start();
-	} else {
+	} else {/* do this later - need a nice generic utility to generate new filenames, etc.
 		final URI u = chooser.chooseDirectoryWithParent("Select a directory to save resources to",true,true,true,comp);
 		(new BackgroundWorker(uiParent.get(),"Saving resource documents") {
 			protected Object construct() throws Exception {
 				OutputStream os = null;
+				FileObject baseDir = vfs.resolveFile(u.toString());
+				if (
 				for (Iterator i = l.iterator(); i.hasNext();) {
 					Resource res = (Resource) i.next();
 					try {
+					    
 						String name = URLEncoder.encode(res.getId().toString());
-						os = ms.getOutputStream(u.resolve(name));
+						os = vfs.getOutputStream(u.resolve(name));
 						Document doc = reg.getResourceXML(res.getId());
 						DomHelper.DocumentToStream(doc,os);
 					} finally {
@@ -177,7 +178,7 @@ public void actionPerformed(ActionEvent e) {
 				return null;
 			}
 		}).start();
-
+*/
 	}
 }
 

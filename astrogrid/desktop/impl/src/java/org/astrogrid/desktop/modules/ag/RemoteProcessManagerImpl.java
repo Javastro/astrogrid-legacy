@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManagerImpl.java,v 1.16 2007/07/30 17:59:55 nw Exp $
+/*$Id: RemoteProcessManagerImpl.java,v 1.17 2007/08/30 23:46:47 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,10 +20,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.vfs.FileSystemException;
+import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
@@ -36,6 +40,7 @@ import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /** implementation of a remote process manager.
  *  - handles running cea / jes / whatever else.
@@ -120,16 +125,16 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
 
     //@todo remove usage of myspace.
     public RemoteProcessManagerImpl(List strategies, 
-            MyspaceInternal vos, SnitchInternal snitch ) {
+            FileSystemManager vfs, SnitchInternal snitch ) {
         super();
-        this.vos = vos;
+        this.vfs = vfs;
         this.strategies = strategies;
         this.snitch = snitch;
         this.monitors = new MonitorMap();
     }
     private final MonitorMap monitors;
     final List strategies;
-    final MyspaceInternal vos;
+    final FileSystemManager vfs;
     final SnitchInternal snitch;
 
     /** unused at the moment - but will be used when we want to enable resumable cea apps */
@@ -192,12 +197,16 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
     private Document loadDocument(URI location) throws NotFoundException, InvalidArgumentException {
         InputStream is = null;
         try {
-            is = vos.getInputStream(location);
+            is = vfs.resolveFile(location.toString()).getContent().getInputStream();
             return XMLUtils.newDocument(is);
-        } catch (ACRException e) {
-            throw new NotFoundException("Failed to load document from " + location,e);
-        } catch (Exception e) {
-            throw new InvalidArgumentException("Failed to parse document from " + location,e);
+          } catch (FileSystemException x) {
+            throw new NotFoundException(x);
+        } catch (ParserConfigurationException x) {
+            throw new InvalidArgumentException(x);
+        } catch (SAXException x) {
+            throw new InvalidArgumentException(x);
+        } catch (IOException x) {
+            throw new InvalidArgumentException(x);
         } finally {
             if (is != null) {
                 try {
@@ -320,6 +329,10 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
 
 /* 
 $Log: RemoteProcessManagerImpl.java,v $
+Revision 1.17  2007/08/30 23:46:47  nw
+Complete - task 73: upgrade filechooser dialogue to new fileexplorer code
+replaced uses of myspace by uses of vfs where sensible
+
 Revision 1.16  2007/07/30 17:59:55  nw
 RESOLVED - bug 2257: More feedback, please
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2257

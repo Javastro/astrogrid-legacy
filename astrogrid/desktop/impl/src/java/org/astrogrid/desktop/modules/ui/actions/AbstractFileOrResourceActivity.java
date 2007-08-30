@@ -35,6 +35,9 @@ public  abstract class AbstractFileOrResourceActivity extends AbstractActivity{
 	public abstract void manyFilesSelected(FileObject[] l);
 	public abstract void somethingElseSelected();
 	public void selected(Transferable r) {
+	    if (r == null) {
+	        return;
+	    }
 		try {
 		if (r.isDataFlavorSupported(VoDataFlavour.LOCAL_RESOURCE)) {
 			oneSelected((Resource)r.getTransferData(VoDataFlavour.RESOURCE));

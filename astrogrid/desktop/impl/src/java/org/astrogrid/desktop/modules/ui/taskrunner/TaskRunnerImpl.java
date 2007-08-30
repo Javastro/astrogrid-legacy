@@ -177,7 +177,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 
         public void actionPerformed(ActionEvent e) {
 
-            final URI u = fileChooser.chooseResourceWithParent("Select tool document to load",true,true, true,TaskRunnerImpl.this);
+            final URI u = fileChooser.chooseResourceWithParent("Select tool document to load",true,true,true,TaskRunnerImpl.this);
             if (u == null) {
                 return;
             }                   

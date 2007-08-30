@@ -1,4 +1,4 @@
-/*$Id: FileExplorerImpl.java,v 1.6 2007/08/22 22:33:41 nw Exp $
+/*$Id: FileExplorerImpl.java,v 1.7 2007/08/30 23:46:48 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,6 +44,7 @@ import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.system.ui.UIContributionBuilder;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.FileManagerInternal;
+import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl.CloseAction;
 import org.astrogrid.desktop.modules.ui.actions.Activity;
@@ -62,7 +63,8 @@ import com.l2fprod.common.swing.JTaskPane;
 public class FileExplorerImpl extends UIComponentImpl implements FileManagerInternal{
 
 	public FileExplorerImpl( final UIContext context,  final ActivityFactory activityBuilder
-			,final UIContributionBuilder menuBuilder, EventList folders, FileSystemManager vfs, IconFinder icons, Community comm) {
+			,final UIContributionBuilder menuBuilder
+			, TypesafeObjectBuilder uiBuilder) {
         super(context);
  
         this.setSize(800, 800);    
@@ -97,7 +99,7 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 			menuBar.add(getContext().createWindowMenu(this),sz-1); // insert before the help menu.
 		    setJMenuBar(menuBar);		
 
-		    view = new StorageView(this,activities,folders,vfs,icons,comm);
+		    view = uiBuilder.createStorageView(this,activities);
             JComponent foldersPanel = view.getHierarchiesPanel();
 		    JComponent mainPanel = view.getMainPanel();
 		    JComponent mainButtons = view.getMainButtons();
@@ -152,12 +154,6 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 	    view.getNavigator().move(fileToShow);
 	}
 
-    /**
-     * @return the view
-     */
-    public final StorageView getView() {
-        return this.view;
-    }
 
 
 }

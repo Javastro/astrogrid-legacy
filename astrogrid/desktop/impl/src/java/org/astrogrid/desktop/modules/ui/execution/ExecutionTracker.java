@@ -458,6 +458,9 @@ public class ExecutionTracker implements ListSelectionListener{
             return; // only care about selection events, not deselections.
         }
         Transferable currentSelection = activities.getCurrentSelection();
+        if (currentSelection == null) { // dunno why I sometimes get a null here, but it seems to happen breifly.
+            return;
+        }
         // go through the other items of the the list, and if the selection is non-null, clear it.
         for (Iterator i = components.iterator(); i.hasNext();) {
             ProcessMonitorDisplay proc = (ProcessMonitorDisplay) i.next();

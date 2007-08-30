@@ -42,6 +42,9 @@ public abstract class AbstractResourceActivity extends AbstractActivity implemen
 	}
 	
 	public void selected(Transferable r) {
+	    if (r == null) {
+	        return; 
+	    }
 		try {
 		if (r.isDataFlavorSupported(VoDataFlavour.LOCAL_RESOURCE)) {
 			oneSelected((Resource)r.getTransferData(VoDataFlavour.RESOURCE));

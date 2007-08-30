@@ -72,7 +72,7 @@ public class SaveActivity extends AbstractFileActivity {
 		}	
 		final UIComponent ui = uiParent.get();
 		final List files = computeInvokable();
-        final URI saveLocationRoot = chooser.chooseDirectoryWithParent("Save Data",true,true,false,ui.getFrame());
+        final URI saveLocationRoot = chooser.chooseDirectoryWithParent("Save Data",true,true,true,ui.getFrame());
         if (saveLocationRoot == null) {
             return;
         }

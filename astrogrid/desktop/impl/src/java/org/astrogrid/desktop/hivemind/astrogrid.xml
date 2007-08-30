@@ -22,11 +22,7 @@
 		&descriptors;
 		</acr-module>
 	</contribution>
-	
-	<!-- things to start eager -->	
-	<contribution configuration-id="hivemind.EagerLoad">
-		<load service-id="myspace" />   <!--  enabling this means myspace it gets notified of login, and prefetches ms root - for preception of speedup -->
-	</contribution>
+
 	
 <!-- 
 ===================
@@ -335,7 +331,7 @@ APPLICATIONS
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ag.ApplicationsImpl" >
 				<service>processManager</service>
-				<service>myspace</service>
+				<service>system.vfs</service>
 				<service>ivoa.registry</service>
 				<service>ivoa.adql</service>
 				<object>cache:applicationResources</object>
@@ -405,7 +401,7 @@ REMOTE PROCESS MANAGER
 		<invoke-factory >
 			<construct class="org.astrogrid.desktop.modules.ag.RemoteProcessManagerImpl" >
 				<configuration>processStrategies</configuration>
-				<service>myspace</service>
+				<service>system.vfs</service>
 				<service>system.snitch</service>			
 			</construct>
 		</invoke-factory>	

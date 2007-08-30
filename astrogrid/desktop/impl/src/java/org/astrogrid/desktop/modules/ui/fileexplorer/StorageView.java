@@ -21,6 +21,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -59,6 +60,7 @@ import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.matchers.AbstractMatcherEditor;
 import ca.odell.glazedlists.matchers.Matcher;
 import ca.odell.glazedlists.matchers.MatcherEditor;
+import ca.odell.glazedlists.matchers.Matchers;
 import ca.odell.glazedlists.swing.EventSelectionModel;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 
@@ -73,7 +75,6 @@ import com.l2fprod.common.swing.JTaskPane;
  * Alternately, keep it as 'places', but add in some recent history under a divider, 
  * and provide a 'tree' view in hte main window.
  * 
- *@future, at the top of the main view, we'll show a breadcrumb trail,
  *@future - add tree to 'list' view - as in OSX. also could add OSX's 'columns' view - which 
  * is nice to navigate through.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -205,14 +206,14 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	}
 	
 	private static final String STORAGE_VIEW = "Storage";
-    private final ActivitiesManager actsManager;
+    private final FileSystemManager vfs;
 
 
-	public StorageView(UIComponent parent, ActivitiesManager actsManager,EventList foldersList, FileSystemManager vfs, IconFinder iconFinder, Community comm) {
+	public StorageView(UIComponent parent, ActivitiesManager actsManager,EventList unfilteredfoldersList, FileSystemManager vfs, IconFinder iconFinder, Community comm) {
 		this.parent = parent;
-        this.actsManager = actsManager;
-		
-		this.foldersList = foldersList;
+        this.vfs = vfs;
+		foldersListFilter = new MutableMatcherEditor();
+        this.foldersList = new FilterList(unfilteredfoldersList,foldersListFilter);
 		
 		// core model.
         SearchField filter = new SearchField("Filter files");		
@@ -325,6 +326,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	private final FileNavigator navigator;
 	private final JTextField location;
 	private final BiStateButton goButton;
+    private final MutableMatcherEditor foldersListFilter;
 
 	
 	/** create and configure a button from an action */
@@ -345,7 +347,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 		b.putClientProperty("is3DEnabled", Boolean.FALSE);		
 	}
 
-	public JComponent getHierarchiesPanel() {
+	public StorageFoldersList getHierarchiesPanel() {
 		return folders;
 	}
 
@@ -420,6 +422,39 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
         // clear anything that might have references to myspace, and move home.
         navigator.reset();
 
+    }
+
+    /**
+     * @return the location
+     */
+    public final JTextField getLocation() {
+        return this.location;
+    }
+    
+    public void setSingleSelectionMode(boolean singleSelection) {
+        navigator.getModel().setSelectionMode(singleSelection ? ListSelectionModel.SINGLE_SELECTION : ListSelection.MULTIPLE_INTERVAL_SELECTION_DEFENSIVE);
+    }
+    
+    /** add an additional filter to this view.
+     * 
+     * @param m a matcher that works on FileObjects and also 'StorageFolders'
+     */
+    public void installFilter(Matcher m) {
+        navigator.getModel().installFilter(m);
+        foldersListFilter.setMatcher(m);
+    }
+    
+    /** clear the filter */
+    public void clearFilter() {
+        navigator.getModel().installFilter(Matchers.trueMatcher());
+        foldersListFilter.setMatcher(Matchers.trueMatcher());
+    }
+
+    /**
+     * @return the vfs
+     */
+    public final FileSystemManager getVfs() {
+        return this.vfs;
     }
 
 

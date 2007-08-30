@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 
+import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
@@ -44,16 +45,16 @@ public class SaveIdListActivity extends AbstractActivity {
 	/**
 	 * 
 	 */
-	public SaveIdListActivity(ResourceChooserInternal chooser, MyspaceInternal ms) {
+	public SaveIdListActivity(ResourceChooserInternal chooser, FileSystemManager vfs) {
 		this.chooser = chooser;
-		this.ms = ms;
+		this.vfs = vfs;
 		setText("Save ID List");
 		setToolTipText("Save the resource ids of the current selection to a textfile");
 		setIcon(IconHelper.loadIcon("ascii16.png"));
 	}
 
 private final ResourceChooserInternal chooser;
-private final MyspaceInternal ms;
+private final FileSystemManager vfs;
 public void actionPerformed(ActionEvent e) {
 	Component comp = null;
 	if (e.getSource() instanceof Component) {
@@ -70,11 +71,7 @@ public void actionPerformed(ActionEvent e) {
 				InputStream is = null;
 				try {
 					is = (InputStream)t.getTransferData(VoDataFlavour.URI_LIST);
-					if (u.getScheme().equals("file")) {
-						os = new FileOutputStream(new File(u));
-					} else {
-						os = ms.getOutputStream(u);
-					}
+					os = vfs.resolveFile(u.toString()).getContent().getOutputStream();
 					Piper.pipe(is,os);
 				} finally {
 					if (os != null) {

@@ -27,7 +27,7 @@ TABLES
         <interceptor service-id="system.edt" />        
 		<invoke-factory model="primitive">
 			<construct class="org.astrogrid.desktop.modules.util.TablesImpl" >
-				<service>astrogrid.myspace</service>
+				<service>system.vfs</service>
 			</construct>
 		</invoke-factory>	
 	</service-point>
