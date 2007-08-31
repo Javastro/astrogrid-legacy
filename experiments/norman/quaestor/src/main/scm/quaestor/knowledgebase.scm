@@ -266,6 +266,30 @@
                    #f)))))
 
       (lambda (cmd . args)
+
+        ;; First, some helpful syntax...
+
+        ;; (call-with-args (arg arg ...) body...)
+        (define-syntax call-with-args
+          (syntax-rules ()
+            ((_ (arg1 . moreargs) form . forms)
+             (if (= (length args) (length '(arg1 . moreargs)))
+                 (apply (lambda (arg1 . moreargs) form . forms) args)
+                 (error 'knowledgebase
+                        "bad call to knowledgebase with args ~s (expecting ~s)"
+                        args (cons (car args) '(arg1 . moreargs)))))
+            ((_ () form . forms)
+             (if (= (length args) 0)
+                 ((lambda () form . forms))
+                 (error 'knowledgebase
+                        "bad call to knowledgebase with args ~s (expecting no args)"
+                        args)))))
+        (define-syntax unless
+          (syntax-rules ()
+            ((_ test expr)
+             (if (not test)
+                 expr))))
+
         (case cmd
 
           ;;;;;;;;;;
@@ -273,35 +297,37 @@
           
           ((add-abox add-tbox)
            ;; (kb 'add-abox/tbox SUBMODEL-NAME SUBMODEL)
-           (if (not (and (= (length args) 2)
-                         (string? (car args))))
-               (error 'make-kb
-                      "Bad call to add-abox/tbox: wrong number or type of args in ~s"
-                      args))
-           (add-box (car args)
-                    (cadr args)
-                    (if (eq? cmd 'add-tbox)
-                        'tbox
-                        'abox))
-           #t)
+           (call-with-args
+            (submodel-name submodel)
+            (unless (string? submodel-name)
+                    (error 'make-kb
+                           "Bad call to add-abox/tbox: submodel name ~s is not a string"
+                           submodel-name))
+            (add-box submodel-name
+                     submodel
+                     (if (eq? cmd 'add-tbox)
+                         'tbox
+                         'abox))
+            #t))
 
           ((drop-submodel)
            ;; (kb 'drop-submodel SUBMODEL-NAME) -> boolean
-           (if (not (and (= (length args) 1)
-                         (string? (car args))))
-               (error 'make-kb
-                      "bad call to drop-submodel: wrong number or type of args"
-                      args))
-           (cond ((assoc (car args) submodels)
-                  (kb-synchronized
-                   (set! submodels
-                         (remove! (lambda (sm)
-                                    (string=? (car args) (car sm)))
-                                  submodels))
-                   (clear-memos!))
-                  #t)
-                 (else
-                  #f)))
+           (call-with-args
+            (submodel-name)
+            (unless (string? submodel-name)
+                    (error 'make-kb
+                           "bad call to drop-submodel: submodel name ~s is not a string"
+                           submodel-name))
+            (cond ((assoc submodel-name submodels)
+                   (kb-synchronized
+                    (set! submodels
+                          (remove! (lambda (sm)
+                                     (string=? submodel-name (car sm)))
+                                   submodels))
+                    (clear-memos!))
+                   #t)
+                  (else
+                   #f))))
 
           ((set-metadata)
            ;; (kb 'set-metadata jinput-stream base-uri content-type-string)
@@ -309,17 +335,12 @@
            ;; Set model metadata to the Model read from the given reader.
            ;; If the first argument is a string, then create a model with
            ;; this as a dc:description.
-           (if (not (= (length args) 3))
-               (error 'make-kb
-                      "bad call to set-metadata: wrong number of args in ~s"
-                      args))
-           (let ((input (car args))
-                 (base-uri (cadr args))
-                 (content-type (caddr args)))
-             (let ((m (get-metadata-from-source input base-uri content-type)))
-               (kb-synchronized
-                (set! myuri base-uri)
-                (set! metadata m)))))
+           (call-with-args
+            (input base-uri content-type)
+            (let ((m (get-metadata-from-source input base-uri content-type)))
+              (kb-synchronized
+               (set! myuri base-uri)
+               (set! metadata m)))))
 
           ;;;;;;;;;;
           ;; Commands which implicitly mutate the knowledgebase, via memoisation
@@ -347,31 +368,30 @@
 
           ((get-inferencing-model)
            ;; return #f on error
-           (kb-synchronized
-            (if (not inferencing-model)
-                (set! inferencing-model
-                      (create-inferencing-model))))
-           inferencing-model)
+           (call-with-args 
+            ()
+            (kb-synchronized
+             (if (not inferencing-model)
+                 (set! inferencing-model
+                       (create-inferencing-model))))
+            inferencing-model))
 
           ((get-model-tbox get-model-abox)
            ;; (kb 'get-model-tbox/abox)
            ;; return merged models or #f if none
-           (or (null? args)
-               (error 'make-kb
-                      "Bad call to get-model-tbox/abox: wrong no args ~s" args))
-           (get-box (if (eq? cmd 'get-model-tbox)
-                        'tbox
-                        'abox)))
+           (call-with-args
+            ()
+            (get-box (if (eq? cmd 'get-model-tbox)
+                         'tbox
+                         'abox))))
 
           ;;;;;;;;;;
           ;; Commands which do not mutate the knowledgebase
 
           ((has-model)
            ;; (kb 'has-model [SUBMODEL-NAME])
-           ;; With an argument, this is redundant with
-           ;; (kb 'get-model SUBMODEL-NAME); but without an argument,
-           ;; it saves the redundant merging of the models,
-           ;; as well as being more intelligible.
+           ;; With an argument, returns true if the named submodel exists.
+           ;; Without an argument, it returns true if any submodels exist.
            (cond ((= (length args) 0)
                   (not (null? submodels)))
                  ((= (length args) 1)
@@ -381,19 +401,21 @@
                          "Bad call to has-model: wrong no. args ~s" args))))
 
           ((get-metadata)
-           metadata)
+           (call-with-args () metadata))
 
           ((get-name)
-           myname)
+           (call-with-args () myname))
 
           ((info)
-           (list (cons 'submodels
-                       (map (lambda (sm)
-                              `((name . ,(car sm))
-                                (tbox . ,(cadr sm))
-                                (namespaces
-                                 . ,(get-model-namespaces (cddr sm)))))
-                            submodels))))
+           (call-with-args
+            ()
+            (list (cons 'submodels
+                        (map (lambda (sm)
+                               `((name . ,(car sm))
+                                 (tbox . ,(cadr sm))
+                                 (namespaces
+                                  . ,(get-model-namespaces (cddr sm)))))
+                             submodels)))))
 
           (else
            (error 'make-kb "impossible command for knowledgebase: ~s" cmd))))))
