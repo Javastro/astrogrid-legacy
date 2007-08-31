@@ -1,4 +1,4 @@
-/*$Id: ResourceChooser.java,v 1.4 2007/01/24 14:04:44 nw Exp $
+/*$Id: ResourceChooser.java,v 1.5 2007/08/31 00:01:50 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,10 +14,8 @@ import java.net.URI;
 
 /** Prompt the user to select a local file / myspace resource / url by displaying a resource chooser dialogue.
  *  
- * This is a  generalisation of the 'open/save file' browser that also allows a myspace resource, or arbitrary URL to be selected.
- * <br />
- * <img src="doc-files/myspacechooser.png"/>
- * <br />
+ * This is a  generalisation of the 'open/save file' browser that also allows local and  remote ( myspace / vospace / URL) resources to be selected.
+
  * @service  dialogs.resourceChooser
  * @see org.astrogrid.acr.astrogrid.Myspace
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Apr-2005
@@ -25,26 +23,46 @@ import java.net.URI;
  */
 public interface ResourceChooser {
 
-    /** show the resource chooser, and block until user selects.
+    /** show the resource chooser, and block until user selects a file
      * 
      * @param title title for the dialogue - e.g.'choose file to open'
-     * @param enableMySpace - if true, enable the myspace tab. if false, don't display this.
+     * @param enableRemote - if true,allow selection of a remote resource (myspace / vospace / URL). Selection of local resources is enabled always.
      * @return URI of the selected resource, or null if the user cancelled.
      */
-    URI chooseResource(String title, boolean enableMySpace);
+    URI chooseResource(String title, boolean enableRemote);
+    
+    /** show the resource chooser, and block untiil user selects a folder.
+     * @param title title for the dialogue - e.g.'choose file to open'
+     * @param enableRemote - if true,allow selection of a remote resource (myspace / vospace / URL). Selection of local resources is enabled always.
+     * @return URI of the selected folder, or null if the user cancelled.
+     */
+    URI chooseFolder(String title, boolean enableRemote);
 
     /** fully-configurable resource chooser - a generalization of {@link #chooseResource}
      * @param title title for the dialogue
-     * @param enableMySpace if true, enable the myspace tab
-     * @param enableLocalFile if true, enable the local file tab
-     * @param enableURI if true, enable the 'enter a URL' tab
+     * @param enableVospace if true,allow selection of a remote myspace / vospace resource.
+     * @param enableLocal if true, allow selection of local files
+     * @param enableURL if true, enable the 'enter a URL' tab, so an arbitrary URL can be entered.
      * @return the URI of the selected resource, or null if the user cancelled
      */
-    URI fullChooseResource(String title, boolean enableMySpace, boolean enableLocalFile, boolean enableURI);
+    URI fullChooseResource(String title, boolean enableVospace, boolean enableLocal, boolean enableURL);
+    
+    
+    /** fully-configurable resource chooser - a generalization of {@link #chooseFolder}
+     * @param title title for the dialogue
+     * @param enableVospace if true,allow selection of a remote myspace / vospace folder
+     * @param enableLocal if true, allow selection of local folders
+     * @param enableURL if true, enable the 'enter a URL' tab, so an arbitrary URL can be entered. No verification that this _is_ a folder in some sense is performed.
+     * @return the URI of the selected folder, or null if the user cancelled
+     */
+    URI fullChooseFolder(String title, boolean enableVospace, boolean enableLocal, boolean enableURL);    
 }
 
 /* 
  $Log: ResourceChooser.java,v $
+ Revision 1.5  2007/08/31 00:01:50  nw
+ Complete - task 73: upgrade filechooser dialogue to new fileexplorer code
+
  Revision 1.4  2007/01/24 14:04:44  nw
  updated my email address
 
