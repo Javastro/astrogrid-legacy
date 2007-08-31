@@ -16,6 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
+import org.astrogrid.desktop.modules.system.SystemTrayInternal;
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.ui.VOExplorerFactoryImpl;
 import org.votech.plastic.CommonMessageConstants;
@@ -31,11 +32,13 @@ import ca.odell.glazedlists.swing.GlazedListsSwing;
 public final class PlasticScavenger extends AbstractActivityScavenger implements Model{
 
 private static final Log logger = LogFactory.getLog(PlasticScavenger.class);
+private final SystemTrayInternal systray;
 
-public PlasticScavenger(EventList apps,TupperwareInternal tupp) {
+public PlasticScavenger(EventList apps,TupperwareInternal tupp, SystemTrayInternal systray) {
 	super("Plastic Applications");
 	this.tupp = tupp;   
 	this.apps = apps;
+    this.systray = systray;
 }
 private final EventList apps;
 private final TupperwareInternal tupp;
@@ -61,23 +64,23 @@ public List getChildren(Object sourceValue) {
 	List butts = new ArrayList();
 		if (plas.understandsMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL)
 				|| plas.understandsMessage(CommonMessageConstants.VOTABLE_LOAD)) {
-			AbstractActivity activity = new PlasticVotableActivity(plas,tupp);
+			AbstractActivity activity = new PlasticVotableActivity(plas,this);
 			activity.setUIParent(uiParent.get());
 			butts.add(activity);	
 		} 
 		if (plas.understandsMessage(CommonMessageConstants.FITS_LOAD_FROM_URL)) {
-			AbstractActivity activity = new PlasticFitsActivity(plas,tupp);
+			AbstractActivity activity = new PlasticFitsActivity(plas,this);
 			activity.setUIParent(uiParent.get());
 			butts.add(activity);
 		}
 		if  (plas.understandsMessage(SPECTRA_LOAD_FROM_URL)) {
-			AbstractActivity activity = new PlasticSpectrumActivity(plas,tupp);
+			AbstractActivity activity = new PlasticSpectrumActivity(plas,this);
 			activity.setUIParent(uiParent.get());
 			butts.add(activity);		
 			}		
 	if (plas.understandsMessage(VOExplorerFactoryImpl.VORESOURCE_LOAD)
 			|| plas.understandsMessage(VOExplorerFactoryImpl.VORESOURCE_LOADLIST)) {
-		Activity activity = new PlasticRegistryActivity(plas,tupp);
+		Activity activity = new PlasticRegistryActivity(plas,this);
 		activity.setUIParent(uiParent.get());
 		butts.add(activity);
 	}
@@ -97,6 +100,18 @@ public List getChildren(Object sourceValue) {
 	    act.setToolTipText("<html>Send selection to " + appName + "<br>" 
 	    		+WordUtils.wrap( plas.getDescription(),40,"<br>",true));		
 	}
+/**
+ * @return the systray
+ */
+public final SystemTrayInternal getSystray() {
+    return this.systray;
+}
+/**
+ * @return the tupp
+ */
+public final TupperwareInternal getTupp() {
+    return this.tupp;
+}
 
 
 

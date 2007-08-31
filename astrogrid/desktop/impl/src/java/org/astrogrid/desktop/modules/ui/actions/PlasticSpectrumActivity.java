@@ -30,15 +30,15 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
  */
 public class PlasticSpectrumActivity extends AbstractFileActivity {
 	private final PlasticApplicationDescription plas;
-	private final TupperwareInternal tupp;
+    private final PlasticScavenger scav;
 	/**
 	 * @param plas
 	 * @param tupp
 	 */
-	public PlasticSpectrumActivity(PlasticApplicationDescription plas, TupperwareInternal tupp) {
+	public PlasticSpectrumActivity(PlasticApplicationDescription plas,PlasticScavenger scav) {
 		super();
 		this.plas = plas;
-		this.tupp = tupp;
+        this.scav = scav;
 		PlasticScavenger.configureActivity("spectra",this,plas);
 	}
 	protected boolean invokable(FileObject f) {
@@ -69,11 +69,12 @@ public class PlasticSpectrumActivity extends AbstractFileActivity {
 				l.add(f.getName().getBaseName());
 				Hashtable t = new Hashtable(f.getContent().getAttributes());
 				l.add(t);// some kind of map here.
-				tupp.singleTargetPlasticMessage(PlasticScavenger.SPECTRA_LOAD_FROM_URL,l,plas.getId());
+				scav.getTupp().singleTargetPlasticMessage(PlasticScavenger.SPECTRA_LOAD_FROM_URL,l,plas.getId());
 				return null;
 			}
 			protected void doFinished(Object result) {
 				parent.setStatusMessage("Message sent to " + plas.getName());
+                scav.getSystray().displayInfoMessage("Message sent"," to " + plas.getName());				
 			}			
 		}).start();		
 	}

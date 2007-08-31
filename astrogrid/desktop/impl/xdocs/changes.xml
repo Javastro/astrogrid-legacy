@@ -14,6 +14,15 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="2007.4.alpha5" date="unreleased">
+    <action dev="nw" type="update">
+        Updated file chooser dialogue to use new FileExplorer UI
+    </action>
+    <action dev="nw" type="add">
+        Indicate 'handoff' with a transient popup notification when 
+        plastic message is sent to another application
+    </action>
+</release>
 <release version="2007.4.alpha4" date="2007-08-23">
     <action dev="nw" type="fix">
     in smart list query editor, form values persist when switching between criteria.

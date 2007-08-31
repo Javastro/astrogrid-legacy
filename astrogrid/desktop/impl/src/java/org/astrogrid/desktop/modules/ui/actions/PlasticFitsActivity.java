@@ -42,15 +42,16 @@ public class PlasticFitsActivity extends AbstractFileActivity {
 	.getLog(PlasticRegistryActivity.class);
 
 private final PlasticApplicationDescription plas;
-private final TupperwareInternal tupp;
+
+private final PlasticScavenger scav;
 	/**
 	 * @param plas
 	 * @param tupp
 	 */
-	public PlasticFitsActivity(PlasticApplicationDescription plas, TupperwareInternal tupp) {
+	public PlasticFitsActivity(PlasticApplicationDescription plas, PlasticScavenger scav) {
 		super();
 		this.plas = plas;
-		this.tupp = tupp;
+        this.scav = scav;
 		PlasticScavenger.configureActivity("FITS",this,plas);
 	}
 
@@ -81,11 +82,12 @@ private final TupperwareInternal tupp;
 				
 				URL url = f.getURL();
 				l.add(url.toString());
-				tupp.singleTargetPlasticMessage(CommonMessageConstants.FITS_LOAD_FROM_URL,l,plas.getId());
+				scav.getTupp().singleTargetPlasticMessage(CommonMessageConstants.FITS_LOAD_FROM_URL,l,plas.getId());
 				return null;
 			}
 			protected void doFinished(Object result) {
 				parent.setStatusMessage("Message sent to " + plas.getName());
+				scav.getSystray().displayInfoMessage("Message sent"," to " + plas.getName());
 			}			
 		}).start();		
 	}

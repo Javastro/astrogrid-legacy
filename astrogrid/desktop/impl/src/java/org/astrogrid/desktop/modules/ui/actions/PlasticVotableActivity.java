@@ -32,15 +32,15 @@ import org.votech.plastic.CommonMessageConstants;
  */
 public class PlasticVotableActivity extends AbstractFileActivity {
 	private final PlasticApplicationDescription plas;
-	private final TupperwareInternal tupp;
+    private final PlasticScavenger scav;
 	/**
 	 * @param plas
 	 * @param tupp
 	 */
-	public PlasticVotableActivity(PlasticApplicationDescription plas, TupperwareInternal tupp) {
+	public PlasticVotableActivity(PlasticApplicationDescription plas, PlasticScavenger scav) {
 		super();
 		this.plas = plas;
-		this.tupp = tupp;
+        this.scav = scav;
 		PlasticScavenger.configureActivity("tables",this,plas);
 	}
 	protected boolean invokable(FileObject f) {
@@ -104,7 +104,7 @@ public class PlasticVotableActivity extends AbstractFileActivity {
 					l.add(os.toString());
 					//URL url = f.getURL();
 					l.add(f.getName().getBaseName()); // identifier.
-					tupp.singleTargetPlasticMessage(CommonMessageConstants.VOTABLE_LOAD,l,plas.getId());
+					scav.getTupp().singleTargetPlasticMessage(CommonMessageConstants.VOTABLE_LOAD,l,plas.getId());
 					return null;
 				} finally {
 					if (is != null) {
@@ -123,6 +123,7 @@ public class PlasticVotableActivity extends AbstractFileActivity {
 			}
 			protected void doFinished(Object result) {
 				parent.setStatusMessage("Message sent to " + plas.getName());
+                scav.getSystray().displayInfoMessage("Message sent"," to " + plas.getName());				
 			}			
 		}).start();		
 	}
@@ -134,11 +135,12 @@ public class PlasticVotableActivity extends AbstractFileActivity {
 				URL url = f.getURL();
 				l.add(url.toString());// url
 				l.add(f.getName().getBaseName()); // identifier - have nothing else to use really.			
-				tupp.singleTargetPlasticMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL,l,plas.getId());
+				scav.getTupp().singleTargetPlasticMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL,l,plas.getId());
 				return null;
 			}
 			protected void doFinished(Object result) {
 				parent.setStatusMessage("Message sent to " + plas.getName());
+                scav.getSystray().displayInfoMessage("Message sent"," to " + plas.getName());				
 			}			
 		}).start();		
 	}

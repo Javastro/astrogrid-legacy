@@ -33,14 +33,15 @@ public class PlasticRegistryActivity extends AbstractResourceActivity {
 			.getLog(PlasticRegistryActivity.class);
 
 	private final PlasticApplicationDescription plas;
-	private final TupperwareInternal tupp;
+
+    private final PlasticScavenger scav;
 	protected boolean invokable(Resource r) {
 		return true;
 	}
-	public PlasticRegistryActivity(final PlasticApplicationDescription descr, TupperwareInternal tupp) {
+	public PlasticRegistryActivity(final PlasticApplicationDescription descr, PlasticScavenger scav) {
 		super();
 		this.plas = descr;
-		this.tupp = tupp;
+        this.scav = scav;
 		PlasticScavenger.configureActivity(null,this,plas);
 	}
 
@@ -76,12 +77,13 @@ public class PlasticRegistryActivity extends AbstractResourceActivity {
 			protected Object construct() throws Exception {
 				List l = new ArrayList();
 				l.add(r.getId().toString());
-				tupp.singleTargetPlasticMessage(VOExplorerFactoryImpl.VORESOURCE_LOAD,l,plas.getId());
+				scav.getTupp().singleTargetPlasticMessage(VOExplorerFactoryImpl.VORESOURCE_LOAD,l,plas.getId());
 				return null;
 			}
 			// indicate when hand-off happended.
 			protected void doFinished(Object result) {
 				parent.setStatusMessage("Message sent to " + plas.getName());
+                scav.getSystray().displayInfoMessage("Message sent"," to " + plas.getName());				
 			}
 		}).start();
 	}
@@ -97,11 +99,12 @@ public class PlasticRegistryActivity extends AbstractResourceActivity {
 					Resource r = (Resource)resources.get(i);
 					us.add(r.getId().toString());
 				}
-				tupp.singleTargetPlasticMessage(VOExplorerFactoryImpl.VORESOURCE_LOADLIST,l,plas.getId());
+				scav.getTupp().singleTargetPlasticMessage(VOExplorerFactoryImpl.VORESOURCE_LOADLIST,l,plas.getId());
 				return null;
 			}
 			protected void doFinished(Object result) {
 				parent.setStatusMessage("Message sent to " + plas.getName());
+                scav.getSystray().displayInfoMessage("Message sent"," to " + plas.getName());				
 			}			
 		}).start();					
 	}

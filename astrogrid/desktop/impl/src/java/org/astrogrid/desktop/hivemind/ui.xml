@@ -575,6 +575,7 @@ ACTIONS
 		<object name="2plastic" class="org.astrogrid.desktop.modules.ui.actions.PlasticScavenger">
 			<inject object="service:system.plasticList" />
 			<inject object="service:system.tupperware" />
+            <inject object="service:system.systray" />
 			<inject name="section" object="literal:string:plastic" />
 		</object>
 		<!--  removed - too inefficient at the moment 
