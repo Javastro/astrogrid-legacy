@@ -827,6 +827,7 @@ SYSTEM TRAY
     </contribution>
     
 	<implementation service-id="systray" if="class java.awt.SystemTray">
+        Adaptable UI, when JVM offers a system tray (yet this may not be supported under this particular OS / Window manager)
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.system.BestSuitableSystemTray">
 				<service>system.ui</service>
@@ -837,7 +838,7 @@ SYSTEM TRAY
 	</implementation>
 
     <implementation service-id="systray" if="not (class java.awt.SystemTray)">
-        Minimalistic UI
+        Minimalistic UI, when no system tray provided by JVM
         <invoke-factory>
             <construct class="org.astrogrid.desktop.modules.system.FallbackSystemTray">
                 <service>system.ui</service>

@@ -34,7 +34,7 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
         Class systrayClz = Class.forName("java.awt.SystemTray");
         Object b =ReflectionHelper.callStatic(systrayClz,"isSupported");
         if (((Boolean)b).booleanValue() == false) { // not supported
-            logger.warn("System tray is not supported on this platform. Falling back");
+            logger.info("System tray is not supported on this platform. Falling back");
             throw new Exception("System tray not supported");
         }	    
 	    
