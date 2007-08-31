@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.32 2007/03/06 15:04:26 norman Exp $
+     $Id: build.xml,v 1.33 2007/08/31 10:55:20 norman Exp $
 -->
 
 
@@ -122,8 +122,9 @@
   <property name="build.tests"   value="${build.home}/tests"/>
   <property name="dist.home"     value="${basedir}/dist"/>
   <property name="docs.home"     value="${basedir}/docs"/>
-  <property name="manager.url"   value="http://localhost:8080/manager"/>
-  <property name="quaestor.url"  value="http://localhost:8080/${app.name}"/>
+  <property name="tomcat.hostport" value="http://localhost:8080"/>
+  <property name="manager.url"   value="${tomcat.hostport}/manager"/>
+  <property name="quaestor.url"  value="${tomcat.hostport}/${app.name}"/>
   <property name="src.home"      value="${basedir}/src/main"/>
   <property name="scm.src.home"  value="${basedir}/src/main/scm"/>
   <property name="src.etc"       value="${basedir}/src/etc"/>
