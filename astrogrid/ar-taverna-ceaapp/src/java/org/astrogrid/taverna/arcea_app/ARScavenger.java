@@ -58,7 +58,8 @@ public class ARScavenger extends Scavenger {
 	public  static final String PROPERTY_FILE = "my_cealist.properties";
 	
 	public static void saveProperties(String []ivorns) throws java.io.IOException {
-		File confDir = MyGridConfiguration.getUserDir(MyGridConfiguration.CONFIGURATION_DIRECTORY);
+		//File confDir = MyGridConfiguration.getUserDir(MyGridConfiguration.CONFIGURATION_DIRECTORY);
+		File confDir = MyGridConfiguration.getUserDir("conf");
 		File propertyFile = new File(confDir, PROPERTY_FILE);
 		int size = ceaProp.size();
 		size++;
@@ -85,7 +86,9 @@ public class ARScavenger extends Scavenger {
 			//MyGridConfigurationgetUserDir("conf"); //could be handy to add&remove apps.
 			//Properties prop = new Properties();//MyGridConfiguration.loadUserProperties("my_cealist.properties");
 			try {
-				File confDir = MyGridConfiguration.getUserDir(MyGridConfiguration.CONFIGURATION_DIRECTORY);
+				//File confDir = MyGridConfiguration.getUserDir(MyGridConfiguration.CONFIGURATION_DIRECTORY);
+				File confDir = MyGridConfiguration.getUserDir("conf");
+				logger.warn("here is the confdir = " + confDir.toString());
 				File propertyFile = new File(confDir, PROPERTY_FILE);
 				logger.warn("try to load ceaProp");
 				if(propertyFile.exists() && propertyFile.isFile()) {
@@ -97,7 +100,7 @@ public class ARScavenger extends Scavenger {
 					ceaProp.setProperty("my.cea_app.3", "ivo://org.astrogrid/HyperZ");
 					ceaProp.setProperty("my.cea_app.4", "ivo://org.astrogrid/CrossMatcher");
 					ceaProp.setProperty("my.cea_app.5", "ivo://org.astrogrid/MERLINImager");
-					ceaProp.setProperty("my.cea_app.6", "ivo://starlink.ac.uk/stilts1.3");					
+					ceaProp.setProperty("my.cea_app.6", "ivo://starlink.ac.uk/stilts");					
 				}
 				logger.warn("ceaProp size = " + ceaProp.size());
 				ACR acr = SingletonACR.getACR();

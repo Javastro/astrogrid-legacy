@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: project.xml,v 1.4 2007/06/05 13:51:26 KevinBenson Exp $ -->
+<!-- $Id: project.xml,v 1.5 2007/09/03 14:54:27 KevinBenson Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
   <extend>../maven-base/project.xml</extend>
   <artifactId>ar-taverna-cea</artifactId>
@@ -129,7 +129,7 @@
       <groupId>org.astrogrid</groupId>
     	<type>jar</type>
     	<artifactId>acr-interface</artifactId>
-      <version>2007.1.rc1</version>
+      <version>${acr.version}</version>
 	<properties>
 		<dist.bundle>true</dist.bundle>
 	</properties>      
@@ -173,7 +173,5 @@
 	      <dist.bundle>true</dist.bundle>
 	</properties>      
     </dependency>
-
-
   </dependencies>  
 </project>

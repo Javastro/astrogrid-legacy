@@ -156,7 +156,7 @@ public class ARTask implements ProcessorTaskWorker {
 				if(arg0.containsKey("Optional CeaService Ivorn")) {
 					temp = ((DataThing)arg0.get("Optional CeaService Ivorn")).getDataObject();
 					if(temp != null && ((String)temp).trim().length() > 0) {
-						ceaServiceIvorn = new URI(new String(((String)temp)));
+						ceaServiceIvorn = new URI(new String((((String)temp).trim())));
 					}
 				}
 	
@@ -182,7 +182,7 @@ public class ARTask implements ProcessorTaskWorker {
 				URI executionID;
 				if(arg0.containsKey("Optional CeaService Ivorn")) {
 					temp = ((DataThing)arg0.get("Optional CeaService Ivorn")).getDataObject();
-					ceaServiceIvorn = new URI(new String(((String)temp)));
+					ceaServiceIvorn = new URI(new String((  ((String)temp).trim()  )));
 					logger.warn("try to do a submit");
 					if(ceaServiceIvorn == null) {
 						executionID = apps.submitStored(toolFile.toURI());
@@ -302,7 +302,7 @@ public class ARTask implements ProcessorTaskWorker {
 		    		 }else {
 		    			inputVals.put("indirect",new Boolean(false));
 		    		 }
-		    		 inputVals.put("value",(String)paramValue);
+		    		 inputVals.put("value",((String)paramValue).trim());
 	    		 }else if(paramValue instanceof List) {
 	    			 logger.warn("parameter instance a List");
 	    			 int listSize = ((List)paramValue).size();
@@ -313,9 +313,9 @@ public class ARTask implements ProcessorTaskWorker {
 					        ((String)(((List)paramValue).get(0))).startsWith("ivo://")) {
 					    		inputVals.put("indirect",new Boolean(true));
 			    		 }else {
-					    			inputVals.put("indirect",new Boolean(false));
+					    		inputVals.put("indirect",new Boolean(false));
 					     }	    				 
-	    				 inputVals.put("value",  ((List)paramValue).get(0));
+	    				 inputVals.put("value",  ((String)((List)paramValue).get(0)).trim()   );
 	    				 inputListTable.put(paramName, ((List)paramValue));
 		    			 //will need to do the rest later.
 	    				 
@@ -329,7 +329,7 @@ public class ARTask implements ProcessorTaskWorker {
 	 		    		 }else {
 	 		    			inputVals.put("indirect",new Boolean(false));
 	 		    		 }
-	 		    		 inputVals.put("value",paramValue.toString());	    			 
+	 		    		 inputVals.put("value",paramValue.toString().trim());	    			 
 	    		 }
 	    	}else {
 	    		logger.warn("need to remove from template paramName = " + paramName);
@@ -353,7 +353,7 @@ public class ARTask implements ProcessorTaskWorker {
 		    	if(paramValue != null && ((String)paramValue).trim().length() > 0) {
 		    		outputVals = (Hashtable)outputFromCEATemplate.get(paramName);
 		    		outputVals.put("indirect",new Boolean(true));
-	   			 	outputVals.put("value",(String)paramValue);
+	   			 	outputVals.put("value",  ((String)paramValue).trim()  );
 		    	}
 	    	}
 	    }
@@ -381,7 +381,7 @@ public class ARTask implements ProcessorTaskWorker {
 		    			logger.warn("ok great the paramElem name attribute matched paramName");
 		    			Node cloneParam = ((Element)paramElem.item(k)).cloneNode(true);
 		    			Node childNode = cloneParam.getFirstChild();
-		    			childNode.getFirstChild().setNodeValue((String)listIter.next());
+		    			childNode.getFirstChild().setNodeValue(  ((String)listIter.next()).trim()  );
 		    			((Element)paramElem.item(k)).getParentNode().appendChild(cloneParam);
 		    			k = paramElem.getLength()+2;
 		    		}else if(k == (paramElem.getLength() - 1)) {

@@ -82,7 +82,7 @@ public class ARTask implements ProcessorTaskWorker {
 		Resource []res = new Resource[ivorns.size()];
 		int i = 0;
 		while(iter.hasNext()) {
-			ivorn = (String)iter.next();
+			ivorn = ((String)iter.next()).trim();
 			if(ivorn.startsWith("ivo://")) {
 				logger.warn("in getResources(list..) ivorn = " + ivorn);
 				res[i] = getResources(ivorn,serviceType)[0];
@@ -286,7 +286,7 @@ public class ARTask implements ProcessorTaskWorker {
 		    Resource []res = null;
 		    if(name.indexOf("RegQuery") != -1) {
 		    	DataThing parameterThing = (DataThing)arg0.get("Ivorn or Registry Keywords");
-			    String paramValue = (String)parameterThing.getDataObject();
+			    String paramValue = ((String)parameterThing.getDataObject()).trim();
 			    logger.warn("paramValue = " + paramValue);
 		    	res = getResources(paramValue,name);
 		    	ArrayList ivornList = new ArrayList();
@@ -317,30 +317,21 @@ public class ARTask implements ProcessorTaskWorker {
 		    if(allNulls) {
 		    	throw new TaskExecutionException("No Resources Found that corresponded to type = " + name);		    	
 		    }
-		    logger.warn("grab RA object and analyze");
-		    Object test = ((DataThing)arg0.get("RA")).getDataObject();
-		    if(test instanceof String) {
-		    	logger.warn("RA dataobject is a string :(");
-		    }else if(test instanceof Double) {
-		    	logger.warn("RA is a instanceof Double");
-		    }else {
-		    	logger.warn("darn RA not sure what insanceof it is");
-		    }
-		    
+		    logger.warn("grab RA object and analyze");		    
 		    if(arg0.containsKey("RA"))
-		    	ra = Double.parseDouble((String)((DataThing)arg0.get("RA")).getDataObject());
+		    	ra = Double.parseDouble(((String)((DataThing)arg0.get("RA")).getDataObject()).trim());
 		    if(arg0.containsKey("DEC"))
-		    	dec = Double.parseDouble((String)((DataThing)arg0.get("DEC")).getDataObject());
+		    	dec = Double.parseDouble(((String)((DataThing)arg0.get("DEC")).getDataObject()).trim());
 		    if(arg0.containsKey("SIZE"))
-		    	size = Double.parseDouble((String)((DataThing)arg0.get("SIZE")).getDataObject());
+		    	size = Double.parseDouble(((String)((DataThing)arg0.get("SIZE")).getDataObject()).trim());
 		    if(arg0.containsKey("START")) {
-		    	start.setTime(dateFormat.parse((String)((DataThing)arg0.get("START")).getDataObject()));
+		    	start.setTime(dateFormat.parse( ((String)((DataThing)arg0.get("START")).getDataObject()).trim()   ));
 		    }
 		    if(arg0.containsKey("END")) {
-		    	end.setTime(dateFormat.parse((String)((DataThing)arg0.get("END")).getDataObject()));
+		    	end.setTime(dateFormat.parse( ((String)((DataThing)arg0.get("END")).getDataObject()).trim()));
 		    }
 		    
-    		String saveURLS = (String)((DataThing)arg0.get("Only URLS Needed")).getDataObject();
+    		String saveURLS = ((String)((DataThing)arg0.get("Only URLS Needed")).getDataObject()).trim();
     		logger.warn("ok process things ra = " + ra + " dec = " + dec + " size = " + size);
     		//outputLoc = (String)((DataThing)arg0.get("OutputLocation")).getDataObject();
     		String result;

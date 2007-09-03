@@ -22,6 +22,9 @@ import uk.ac.starlink.table.StarTableFactory;
 import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.RowSequence;
 
+import org.apache.log4j.Logger;
+
+
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JOptionPane;
@@ -82,11 +85,14 @@ public class PlasticRenderer extends AbstractRenderer.ByMimeType implements Acti
     private JCheckBox votableCheck;
     private JCheckBox siaCheck;
     private JCheckBox specCheck;
+
+    private static Logger logger = Logger.getLogger(PlasticRenderer.class);
     
     
 	PlasticAdmin pa;
     public PlasticRenderer() {
     	super("PlasticDispatcher");
+    	logger.warn("inside plasticrenderer constructor");
     	pa = new PlasticAdmin();
     }
     
@@ -99,9 +105,11 @@ public class PlasticRenderer extends AbstractRenderer.ByMimeType implements Acti
 			     String mimeType) {
         if (mimeType.matches(".*text/votable*")) {
         	determinedMimeType = VOTABLEMIME;
+        	logger.warn("mime type votable return true in canhandle");
         	return true;
         }
         if(mimeType.matches(".*images/fits*")) {
+        	logger.warn("mime type fits return true in canhandle");        	
         	determinedMimeType = FITSMIME;
         	return true;
         }

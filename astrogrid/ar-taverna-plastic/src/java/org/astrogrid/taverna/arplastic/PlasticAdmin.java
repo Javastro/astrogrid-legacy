@@ -3,12 +3,7 @@
  */
 package org.astrogrid.taverna.arplastic;
 
-import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.Finder;
-import org.astrogrid.acr.builtin.ACR;
-import org.astrogrid.acr.builtin.ModuleDescriptor;
-import org.astrogrid.acr.system.ApiHelp;
-import org.astrogrid.acr.NotFoundException;
+
 import java.util.Hashtable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,6 +14,7 @@ import java.awt.Color;
 
 import java.util.Vector;
 import java.util.Iterator;
+//import org.votech.plastic.PlasticHubListener;
 import org.votech.plastic.incoming.handlers.ExtendableHandler;
 import org.votech.plastic.incoming.handlers.StandardHandler;
 import org.votech.plastic.incoming.messages.votable.VOTableLoader;
@@ -33,6 +29,9 @@ import org.votech.plastic.managers.PlasticApplication;
 
 import org.votech.plastic.managers.PlasticRegistryListener;
 
+import org.apache.log4j.Logger;
+
+
 /** Singleton static that contains a reference to ACR.
  * seems only way to share context object between processor / factory / etc.
  * @todo replace with a better-architected solution - in particular, something
@@ -41,6 +40,9 @@ import org.votech.plastic.managers.PlasticRegistryListener;
  * @since May 30, 20064:36:02 PM
  */
 public class PlasticAdmin implements ManagerObserver, PlasticRegistryListener {
+	
+	private static Logger logger = Logger.getLogger(PlasticAdmin.class);
+	
 	
     private static final String NAME = "Taverna";
     private static final String DESCRIPTION = "Taverna used for sending messages to other apps on the Hub";
@@ -53,6 +55,7 @@ public class PlasticAdmin implements ManagerObserver, PlasticRegistryListener {
 
 
 	public PlasticAdmin() {
+		logger.warn("plasticadmin constructor initPlastic");
 		initPlastic();
 		
 	}
@@ -122,7 +125,7 @@ public class PlasticAdmin implements ManagerObserver, PlasticRegistryListener {
      * @see org.votech.plastic.managers.AbstractObservableManager.ManagerObserver
      */
     public void down() {
-        System.out.println("The hub has gone down");
+        logger.warn("The hub has gone down");
 //        System.exit(0);
         plasticHubisUp = false;
     }
@@ -132,9 +135,9 @@ public class PlasticAdmin implements ManagerObserver, PlasticRegistryListener {
      * @see org.votech.plastic.managers.AbstractObservableManager.ManagerObserver
      */
     public void up() {
-        System.out.println("The hub is up");
-        System.out.println("This hub's ID is "+manager.getHub().getHubId());
-        System.out.println("My ID is "+ manager.getId());
+        logger.warn("The hub is up");
+        //logger.warn("This hub's ID is "+manager.getHub().getHubId());
+        logger.warn("My ID is "+ manager.getId());
         plasticHubisUp = true;
     }
     
@@ -151,11 +154,12 @@ public class PlasticAdmin implements ManagerObserver, PlasticRegistryListener {
     
     
     private JList makeList() {
+    	logger.warn("makeList()");
         Collection apps =  registry.getPlasticApplications();
         Iterator it = apps.iterator();
-        System.out.println("Registered applications-------");
         Vector plasticApps = new Vector(apps.size());
         PlasticAppForList []pafl = new PlasticAppForList[apps.size()];
+        logger.warn("makeList PlasticAppForList array size = " + pafl.length);
         while (it.hasNext()) {
             PlasticApplication app = (PlasticApplication) it.next();
             plasticApps.add(new PlasticAppForList(app));
@@ -169,6 +173,7 @@ public class PlasticAdmin implements ManagerObserver, PlasticRegistryListener {
     }
     
     public PlasticRegistry getPlasticRegistry() {
+    	logger.warn("getPlasticRegistry()");
     	return this.registry;
     }
 

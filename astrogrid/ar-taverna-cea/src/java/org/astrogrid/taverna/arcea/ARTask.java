@@ -218,8 +218,8 @@ public class ARTask implements ProcessorTaskWorker {
 		*/
 		try {
 			if(name.equals("VOTABLE_Fetch_Field")) {
-				String votable = (String)((DataThing)arg0.get("VOTABLE")).getDataObject();
-				String column = (String)((DataThing)arg0.get("Column or UCD")).getDataObject();
+				String votable = ((String)((DataThing)arg0.get("VOTABLE")).getDataObject()).trim();
+				String column = ((String)((DataThing)arg0.get("Column or UCD")).getDataObject()).trim();
 				StarTable st;
 				if(votable.startsWith("http")) {
 					try {
@@ -258,7 +258,7 @@ public class ARTask implements ProcessorTaskWorker {
 				URI executionID;
 				if(arg0.containsKey("Optional CeaService Ivorn")) {
 					temp = ((DataThing)arg0.get("Optional CeaService Ivorn")).getDataObject();
-					URI ceaServiceIvorn = new URI(new String(((String)temp)));
+					URI ceaServiceIvorn = new URI(new String((  ((String)temp).trim()   )));
 					logger.warn("try to do a submit");
 					if(ceaServiceIvorn == null) {
 						executionID = apps.submitStored(toolFile.toURI());
@@ -342,7 +342,7 @@ public class ARTask implements ProcessorTaskWorker {
 		if(input.containsKey("Optional CeaService Ivorn")) {
 			temp = ((DataThing)input.get("Optional CeaService Ivorn")).getDataObject();
 			if(temp != null && ((String)temp).trim().length() > 0) {
-				ceaServiceIvorn = new URI(new String(((String)temp)));
+				ceaServiceIvorn = new URI(new String((   ((String)temp).trim()   )));
 			}
 		}
 		String ceaInterfaceName = (String)((DataThing)input.get("Interface Name")).getDataObject();
@@ -373,7 +373,7 @@ public class ARTask implements ProcessorTaskWorker {
 	    		 }else {
 	    			inputVals.put("indirect",new Boolean(false));
 	    		 }
-	    		 inputVals.put("value",paramValue);
+	    		 inputVals.put("value",paramValue.trim());
 	    	}else {
 	    		//not found assume an optional param, but probably good to
 	    		//check and throw an exceptin if minOccurs is not 0.
@@ -390,7 +390,7 @@ public class ARTask implements ProcessorTaskWorker {
 	    			 //Hashtable outputVals = (Hashtable)outputFromCEATemplate.get((String)outputFromCEATemplate.get("Result"));
 	    			 Hashtable outputVals = (Hashtable)outputFromCEATemplate.get("Result");
 	    			 outputVals.put("indirect",new Boolean(true));
-	    			 outputVals.put("value",paramValue);
+	    			 outputVals.put("value",paramValue.trim());
 	    		 }
 	    	}
 	    }

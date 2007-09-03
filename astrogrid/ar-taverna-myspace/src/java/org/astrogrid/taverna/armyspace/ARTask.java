@@ -94,7 +94,7 @@ public class ARTask implements ProcessorTaskWorker {
 		    //String myspaceDirectory = (String)((DataThing)arg0.get("Myspace Directory or File")).getDataObject();
 		    String myspaceDirectory = processor.getChosenDirectoryURI();
 		    if(myspaceDirectory == null) {
-		    	myspaceDirectory = (String)((DataThing)arg0.get("Myspace Directory or File")).getDataObject();
+		    	myspaceDirectory = ((String)((DataThing)arg0.get("Myspace Directory or File")).getDataObject()).trim();
 		    }
 		    Object mainInputObj;	
 		    String recurseDir, votableOnly;
@@ -121,8 +121,8 @@ public class ARTask implements ProcessorTaskWorker {
 		    	
 		    }else if(name.equals("Fetch")) {
 		    	//myspaceDirectory
-		    	recurseDir = (String)((DataThing)arg0.get("Recurse Directories")).getDataObject();
-		    	votableOnly = (String)((DataThing)arg0.get("Only VOTables")).getDataObject();
+		    	recurseDir = ((String)((DataThing)arg0.get("Recurse Directories")).getDataObject()).trim();
+		    	votableOnly = ((String)((DataThing)arg0.get("Only VOTables")).getDataObject()).trim();
 		    	MyspaceFetcher mf = new MyspaceFetcher(myspace);
 		    	resultMap = mf.fetchObjects(myspaceDirectory,Boolean.parseBoolean(recurseDir),false,Boolean.parseBoolean(votableOnly));
 		    	//Outputport name = ""Map of Results"
@@ -135,8 +135,8 @@ public class ARTask implements ProcessorTaskWorker {
 		    	outputMap.put("ResultListValue",DataThingFactory.bake(new ArrayList(resultMap.values())));
 		    	
 		    }else if(name.equals("Fetch_String_Content")) {
-		    	recurseDir = (String)((DataThing)arg0.get("Recurse Directories")).getDataObject();
-		    	votableOnly = (String)((DataThing)arg0.get("Only VOTables")).getDataObject();
+		    	recurseDir = ((String)((DataThing)arg0.get("Recurse Directories")).getDataObject()).trim();
+		    	votableOnly = ((String)((DataThing)arg0.get("Only VOTables")).getDataObject()).trim();
 		    	MyspaceFetcher mf = new MyspaceFetcher(myspace);
 		    	resultMap = mf.fetchObjects(myspaceDirectory,Boolean.parseBoolean(recurseDir),true,Boolean.parseBoolean(votableOnly));
 		    	//outputMap.put("Map of Results", resultMap);
