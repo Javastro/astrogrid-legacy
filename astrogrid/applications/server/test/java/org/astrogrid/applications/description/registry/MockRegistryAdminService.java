@@ -1,4 +1,4 @@
-/*$Id: MockRegistryAdminService.java,v 1.5 2005/07/05 08:27:00 clq2 Exp $
+/*$Id: MockRegistryAdminService.java,v 1.6 2007/09/04 15:42:41 clq2 Exp $
  * Created on 02-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.applications.description.registry;
 import org.astrogrid.registry.RegistryException;
 //FIXME this is using v9 semantics
 import org.astrogrid.registry.beans.resource.VODescription;
-import org.astrogrid.registry.client.admin.UpdateRegistry;
+import org.astrogrid.registry.client.admin.v0_1.UpdateRegistry;
 
 import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Document;
@@ -21,6 +21,11 @@ import org.w3c.dom.Document;
 
 public class MockRegistryAdminService extends UpdateRegistry {
     public int callCount = 0;
+    
+    public MockRegistryAdminService() {
+    	//hello
+    }
+    
     public Document update(Document doc) throws RegistryException{
         callCount++;
         try {
@@ -33,6 +38,12 @@ public class MockRegistryAdminService extends UpdateRegistry {
 
 /* 
 $Log: MockRegistryAdminService.java,v $
+Revision 1.6  2007/09/04 15:42:41  clq2
+KMB changes for PAL
+
+Revision 1.5.98.1  2007/08/16 12:22:01  KevinBenson
+small change to use some changes made to the registry client dealing with 0.1 and 1.0 contracts and now an abstract super class in the reg client.
+
 Revision 1.5  2005/07/05 08:27:00  clq2
 paul's 559b and 559c for wo/apps and jes
 

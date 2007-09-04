@@ -107,7 +107,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-registry-client-lite</artifactId>
-      <version>2006.4r</version>
+      <version>2007.2.01r</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
