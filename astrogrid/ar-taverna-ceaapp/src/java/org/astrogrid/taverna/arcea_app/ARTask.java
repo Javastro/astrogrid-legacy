@@ -42,7 +42,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.astrogrid.Applications;
-import org.astrogrid.acr.ui.Lookout;
+//import org.astrogrid.acr.ui.Lookout;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 
 import java.net.URI;
@@ -165,7 +165,7 @@ public class ARTask implements ProcessorTaskWorker {
 				logger.warn("try to create the template struct");
 				Map toolStruct = apps.createTemplateStruct(ceaAppIvorn,ceaInterfaceName);
 				logger.warn("created and toolstruct size = " + toolStruct.size());
-				Lookout lookout;
+				//Lookout lookout;
 			//if(name.equals("DSA")) {				
 				Document toolDoc  = createCEAToolDocument(arg0, toolStruct);
 				//Document toolDoc = createToolDocument(toolStruct);
@@ -209,7 +209,7 @@ public class ARTask implements ProcessorTaskWorker {
 			while(!discovered && tempCounter < 5) {
 				try {
 					logger.warn("firing off exectuion");
-					lookout = (Lookout)acr.getService(Lookout.class);
+					//lookout = (Lookout)acr.getService(Lookout.class);
 					ExecutionInformation execInfo = apps.getExecutionInformation(executionID);
 					discovered = true;
 					while(execInfo.getStatus().equals(ExecutionInformation.INITIALIZING) ||
@@ -218,7 +218,7 @@ public class ARTask implements ProcessorTaskWorker {
 						  execInfo.getStatus().equals(ExecutionInformation.PENDING)) {
 						logger.warn("need to sleep hasn't completed, status = " + execInfo.getStatus());
 						Thread.sleep(5000);
-						lookout.refresh();
+						//lookout.refresh();
 						execInfo = apps.getExecutionInformation(executionID);
 					}//while
 					logger.warn("finished with execution the final status = " + execInfo.getStatus());
@@ -236,6 +236,7 @@ public class ARTask implements ProcessorTaskWorker {
 					logger.warn("did not find executionID lets try several more times before quiting " + executionID);
 					tempCounter++;
 					Thread.sleep(1000);
+					logger.warn("finished sleeping for 1 second");
 				}
 			}//while
 				
