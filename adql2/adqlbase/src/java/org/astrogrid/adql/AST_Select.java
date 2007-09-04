@@ -19,7 +19,6 @@ public class AST_Select extends SimpleNode {
     
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_Select.buildXmlTree()" ) ; 
-        pushPosition() ;
         SelectType st = (SelectType)xo ;     
         this.generatedObject = st ;
         int childCount = jjtGetNumChildren() ;
@@ -55,7 +54,6 @@ public class AST_Select extends SimpleNode {
             }
         }
         super.buildXmlTree(xo) ;
-        popPosition() ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_Select.buildXmlTree()" ) ; 
     }
 

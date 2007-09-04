@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.45 2007/08/29 15:56:46 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.46 2007/09/04 16:24:46 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -933,7 +933,8 @@ void boolean_primary_S() #BooleanPrimary :
 		   ( 
 		     <LEFT_PAREN> 
 		     { jjtThis.setParenthesized() ; }
-		     search_condition_S() 
+		     search_condition_S()
+		     { jjtThis.popPosition() ; }
 		     <RIGHT_PAREN> 
 		   )
 		   |
@@ -969,13 +970,11 @@ void boolean_term_S() #BooleanTerm :
 	// boolean_factor_S() ( <AND> boolean_term_S() )?
 	// which I believe is equivalent to the above
 //	try {
-		( boolean_factor_S() 
-		  ( LOOKAHEAD(3) 
-		    <AND> 
-		    { jjtThis.setPositionType( IntersectionSearchType.type ) ; }
-		    boolean_term_S()
-		  )? 
-		) 
+//		( boolean_factor_S() //		  ( LOOKAHEAD(3) //		    <AND> { jjtThis.setAnd() ; }//		    boolean_term_S()//		  )? //		)
+		LOOKAHEAD(2147483647)
+		( { jjtThis.setAnd() ; } boolean_factor_S() <AND> boolean_term_S() { jjtThis.popPosition() ; } )
+		|
+		boolean_factor_S()  
 //	}//	catch( ParseException pex ) {//	   errorSkipTo( new int[]{ token.kind }, pex ) ;				//	}	
 	{
 		if( log.isTraceEnabled() ) exitTrace ( "boolean_term_S()" ) ;
@@ -997,7 +996,6 @@ void boolean_term_S() #BooleanTerm :
 void boolean_factor_S() #BooleanFactor :
 {
 	if( log.isTraceEnabled() ) enterTrace ( "boolean_factor_S()" ) ;
-	Token t = null ;
 }
 {
 	//S:
@@ -1006,15 +1004,17 @@ void boolean_factor_S() #BooleanFactor :
 	// <truth value> ::= TRUE | FALSE  | UNKNOWN
 	
 //	try {
-		( [ t=<NOT> ]
-		  { if( t != null ) {
-		  	   jjtThis.setInverse(true);
-		  	} 
-		  }
+		( [ <NOT> { jjtThis.setInverse(); } ] 
 		  boolean_primary_S() 
+		  { if( jjtThis.isInverse() ) { 
+			    jjtThis.popPosition(); 
+		    }
+		  }
 		)
 //	}//	catch( ParseException pex ) {//	    errorSkipTo( new int[]{ token.kind }, pex ) ;		//	}
-	{ if( log.isTraceEnabled() ) exitTrace ( "boolean_factor_S()" ) ; }
+	{ 
+		if( log.isTraceEnabled() ) exitTrace ( "boolean_factor_S()" ) ; 
+	}
 }
 
 
@@ -1219,9 +1219,10 @@ void column_name_list_S() #ColumnNameList : {}
  * bnf-end
  *
  */
-void column_reference_A() #ColumnReference : 
+void column_reference_A( String elementName ) #ColumnReference : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "column_reference_A()" ) ;
+	jjtThis.pushPosition( elementName ) ;
 }
 {
 	//S: 
@@ -1231,6 +1232,7 @@ void column_reference_A() #ColumnReference :
 	   ( LOOKAHEAD(2) identifier_A() <PERIOD> )* column_name_S() 
 	)
 	{
+		jjtThis.popPosition( elementName ) ;
 		if( log.isTraceEnabled() ) exitTrace ( "column_reference_A()" ) ;					
 	}
 }
@@ -1272,7 +1274,7 @@ void value_expression_primary_A( String elementName ) #ValueExpressionPrimary :
 		// Foreshortened 
 		unsigned_value_specification_S() 
 		|
-		column_reference_A()
+		column_reference_A( elementName )
 		|
 		set_function_specification_S()
 		|
@@ -1285,8 +1287,10 @@ void value_expression_primary_A( String elementName ) #ValueExpressionPrimary :
 	//	| 
 		( 
 		  <LEFT_PAREN>
-		  value_expression_A( null ) 
-		  <RIGHT_PAREN> { jjtThis.setParenthesized(); }
+		  { jjtThis.setParenthesized( elementName ); }
+		  value_expression_A( AdqlCompiler.ARG_ELEMENT )
+		  { jjtThis.popPosition() ; } 
+		  <RIGHT_PAREN> 
 		)
 	// JBL: cast ommitted in initial version
 	//	|
@@ -1354,6 +1358,7 @@ void comp_op_S() #Comparison :
 void comparison_predicate_A() #ComparisonPredicate : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "comparison_predicate_A()" ) ;
+	jjtThis.pushPosition() ;
 }
 {
 	//S:
@@ -1365,6 +1370,7 @@ void comparison_predicate_A() #ComparisonPredicate :
 		)
 //	}//	catch( ParseException pex ) {//		errorSkipTo( new int[]{ token.kind }, pex ) ;//	}
 	{ 
+	   jjtThis.popPosition() ;
 	   if( log.isTraceEnabled() ) exitTrace( "comparison_predicate_A()" ) ;	
 	}
 }
@@ -1564,10 +1570,11 @@ void explicit_table_S() : {}
  * bnf-single <factor> ::= [ <sign> ] <numeric_primary> 
  *
  */
-void factor_S() #Factor : 
+void factor_S( String elementName ) #Factor : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "factor_S()" ) ;
 	Token t = null ;
+	String em = elementName ;
 }
 {
 	//S:
@@ -1576,11 +1583,12 @@ void factor_S() #Factor :
 	  [
 	    t=sign_S() 
 	    {  if( t!=null ) {
-	    	  jjtThis.setSign(t) ;
+	    	  jjtThis.setSign( t, elementName ) ;
+	    	  em = AdqlCompiler.ARG_ELEMENT ;
 	       }
 	    } 
 	  ] 
-	  numeric_primary_S( AdqlCompiler.ARG_ELEMENT ) 
+	  numeric_primary_S( em ) { if( t!=null) jjtThis.popPosition(); }
 	)
 	{ 
 	   if( log.isTraceEnabled() ) exitTrace ( "factor_S()" ) ;
@@ -1794,7 +1802,7 @@ void grouping_column_reference_A() :
     //S:
     // <grouping_column_reference> ::=
     //      <column_reference> [ <collate_clause> ]
-	column_reference_A()
+	column_reference_A( "todo" )
 	{
 		if( log.isTraceEnabled() ) exitTrace ( "grouping_column_reference_A()" ) ;
 	}	
@@ -1943,9 +1951,9 @@ void interval_term_S() : {}
 	interval_factor_S() 
     |
 	LOOKAHEAD(3)    
-    factor_S() (<ASTERISK> | <SOLIDUS>) interval_term_S()
+    factor_S( "to-do" ) (<ASTERISK> | <SOLIDUS>) interval_term_S()
     | 
-    term_S() <ASTERISK> interval_factor_S()
+    term_S( "to-do" ) <ASTERISK> interval_factor_S()
 }
 
 void interval_value_expression_S() : {}
@@ -2281,7 +2289,7 @@ void null_predicate_A() #NullPredicate :
 	// <null_predicate> ::= 
 	//   <row_value_constructor> IS [ NOT ] NULL
 
-	column_reference_A() <IS> [ <NOT> {jjtThis.setNullPredicate(false);} ] <NULL>	
+	column_reference_A( "todo" ) <IS> [ <NOT> {jjtThis.setNullPredicate(false);} ] <NULL>	
 	
 	{
 	   if( log.isTraceEnabled() ) exitTrace ( "null_predicate_A()" ) ;
@@ -2335,8 +2343,7 @@ void numeric_primary_S( String elementName ) :
 void numeric_value_expression_S( String elementName ) #NumericValueExpression : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "numeric_value_expression_S()" ) ;
-	jjtThis.pushPosition( elementName ) ;
-	Token t = null ;
+//	Token t = null ;
 }
 {
 	//S:
@@ -2346,20 +2353,16 @@ void numeric_value_expression_S( String elementName ) #NumericValueExpression :
     //  | <numeric_value_expression> <minus_sign> <term>
 	
 	// refactored to...
-	( term_S() 
-	  ( 
-	     LOOKAHEAD(3) 
-	     ( 
-	        ( t=<PLUS_SIGN> | t=<MINUS_SIGN> ) 
-	        { 
-	           if( t!=null ) {
-	           	  jjtThis.setOperator(t);
-	           }
-	        } 
-	     ) numeric_value_expression_S( elementName ) )? 
-	)
+//	( term_S( elementName ) //	  ( //	     LOOKAHEAD(3) //	     ( //	        ( t=<PLUS_SIGN> | t=<MINUS_SIGN> ) //	        { jjtThis.setOperator( t, elementName ); } //	     ) numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT ) //	  )? //	)
+
+	LOOKAHEAD(2147483647)
+	( {jjtThis.setPlus( elementName );} term_S( AdqlCompiler.ARG_ELEMENT ) <PLUS_SIGN>  numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT ) {jjtThis.popPosition();} )
+	|
+	LOOKAHEAD(2147483647)
+	( {jjtThis.setMinus( elementName );} term_S( AdqlCompiler.ARG_ELEMENT ) <PLUS_SIGN>  numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT ) {jjtThis.popPosition();} )
+	|
+	term_S( elementName )
     {
-    	jjtThis.popPosition( elementName ) ;
         if( log.isTraceEnabled() ) exitTrace ( "numeric_value_expression_S()" ) ;		
 	}
 }
@@ -2674,8 +2677,7 @@ void predicate_A() :
 	//	    overlapsPredicate()
 	//    	
 			|	
-			region_predicate_A()    
-	        
+			region_predicate_A()    	        
 	    )
 //	}//	catch( ParseException pex ) {//	    errorSkipTo( new int[] { token.kind }, pex ) ;	//	}
     { 
@@ -3365,7 +3367,6 @@ void scalar_subquery_S() : {}
 void search_condition_S() #SearchCondition : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "search_condition_S" ) ;
-	jjtThis.pushPosition() ;
 }
 {
 	//S:
@@ -3377,15 +3378,14 @@ void search_condition_S() #SearchCondition :
 	// boolean_term() ( <OR> search_condition() )?
 	// which I believe is equivalent to the above
 //    try {
-		( boolean_term_S() 
-		  ( <OR>
-		    { jjtThis.setPositionType( UnionSearchType.type ) ; }	      
-		    search_condition_S() 
-		  )? 
-		)
+
+// (for tracking) Refactored from this://		( boolean_term_S() //		  ( <OR> { jjtThis.setOr() ; }	      //		    search_condition_S() //		  )? //		)
+// To this:
+		LOOKAHEAD(2147483647) 
+		( {jjtThis.setOr();} boolean_term_S() <OR> search_condition_S() {jjtThis.popPosition();} )
+		|		boolean_term_S()
 //    }//    catch( ParseException pex ) {//        errorSkipTo( new int[]{ token.kind }, pex ) ;	//    } 
 	{ 
-		jjtThis.popPosition() ;
 		if( log.isTraceEnabled() ) exitTrace ( "search_condition_S" ) ;	
 	}
 }
@@ -3455,9 +3455,9 @@ void select_sublist_A( boolean first ) #SelectSublist :
 	// <select_sublist> ::= <derived_column> | <qualifier> <period> <asterisk>
     try {
        LOOKAHEAD(8)       
-	   ( qualifierPeriodAsterisk() { compiler.selectSublistEnsureCommaOrFrom() ; } )
+	   ( qualifierPeriodAsterisk( AdqlCompiler.ITEM_ELEMENT ) { compiler.selectSublistEnsureCommaOrFrom() ; } )
 	   |
-	   ( derived_column_S() { compiler.selectSublistEnsureCommaOrFrom() ; } )
+	   ( derived_column_S( AdqlCompiler.ITEM_ELEMENT ) { compiler.selectSublistEnsureCommaOrFrom() ; } )
 	   |
 	   { compiler.selectSublistError( first, new ParseException( "select_sublist error" ) ) ; }
     }    catch( ParseException pex ) {       compiler.selectSublistError( first, pex ) ;	    }
@@ -3468,13 +3468,15 @@ void select_sublist_A( boolean first ) #SelectSublist :
 	
 }
 
-void qualifierPeriodAsterisk() #QualifierPeriodAsterisk : 
+void qualifierPeriodAsterisk( String elementName ) #QualifierPeriodAsterisk : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "qualifierPeriodAsterisk()" ) ;
+//	jjtThis.pushPosition( elementName ) ;
 }
 {
 	table_name_A() <PERIOD_ASTERISK>
 	{
+//		jjtThis.popPosition( elementName ) ;
 		if( log.isTraceEnabled() ) exitTrace ( "qualifierPeriodAsterisk()" ) ;
 	}
 }
@@ -3490,7 +3492,7 @@ void qualifierPeriodAsterisk() #QualifierPeriodAsterisk :
  *  <as_clause> ::= [ AS ] <column_name>
  * bnf-end
  */
-void derived_column_S() #DerivedColumn : 
+void derived_column_S( String elementName ) #DerivedColumn : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "derived_column_S()" ) ;
 }
@@ -3498,7 +3500,14 @@ void derived_column_S() #DerivedColumn :
 	//S:
 	// <derived_column> ::= <value_expression> [ <as_clause> ]
 	// <as_clause> ::= [ AS ] <column_name>
-	( value_expression_A( null ) [ [ <AS> ] column_name_S() {jjtThis.setAliased();}  ] ) 
+//	( value_expression_A( elementName ) [ [ <AS> ] column_name_S() {jjtThis.setAliased();}  ] )
+	LOOKAHEAD(2147483647)
+	( { jjtThis.setAliased( elementName ) ; } 
+	  value_expression_A( AdqlCompiler.EXPRESSION_ELEMENT ) [ <AS> ] column_name_S()
+	  { jjtThis.popPosition( elementName ) ; } 
+	) 
+	|
+	( value_expression_A( elementName ) )
 	{ 
 		if( log.isTraceEnabled() ) exitTrace ( "derived_column_S()" ) ;
 	}	
@@ -4004,10 +4013,10 @@ void table_value_constructor_list_S() : {}
  * bnf-end
  *
  */
-void term_S() #Term :  
+void term_S( String elementName ) #Term :  
 {
 	if( log.isTraceEnabled() ) enterTrace ( "term_S()" ) ;
-	Token t = null ;
+//	Token t = null ;
 }
 {
 	//S:
@@ -4018,19 +4027,14 @@ void term_S() #Term :
 
 	// refactored
 	// factor() ( LOOKAHEAD(2) (<ASTERISK> | <SOLIDUS> ) term() )?
-	( 
-	   factor_S() 
-	   ( LOOKAHEAD(2) 
-	     ( 
-	       ( t=<ASTERISK> | t=<SOLIDUS> ) 
-	       {   if( t!=null ) {
-	           	  jjtThis.setOperator(t);
-	           }
-	       } 
-	     ) 
-	     term_S() 
-	   )? 	
-	)
+//	( //	   factor_S() //	   ( LOOKAHEAD(2) //	     ( //	       ( t=<ASTERISK> | t=<SOLIDUS> ) //	       { jjtThis.setOperator(t); } //	     ) //	     term_S( AdqlCompiler.ARG_ELEMENT )//	   )? 	//	)
+	LOOKAHEAD(2147483647)
+	( { jjtThis.setMultiply( elementName ); } factor_S( AdqlCompiler.ARG_ELEMENT ) <ASTERISK> term_S( AdqlCompiler.ARG_ELEMENT ) { jjtThis.popPosition(); }	)
+	|
+	LOOKAHEAD(2147483647)
+	( { jjtThis.setDivide( elementName ); } factor_S( AdqlCompiler.ARG_ELEMENT ) <SOLIDUS> term_S( AdqlCompiler.ARG_ELEMENT ) { jjtThis.popPosition(); }	)
+	|
+	factor_S( elementName )
 	{
 		if( log.isTraceEnabled() ) exitTrace ( "term_S()" ) ;
 	}
@@ -4360,6 +4364,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.46  2007/09/04 16:24:46  jl99
+Yet another attempt at refining position tracking.
+
 Revision 1.45  2007/08/29 15:56:46  jl99
 Refining position tracking.
 

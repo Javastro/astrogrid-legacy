@@ -21,10 +21,8 @@ public class AST_GroupBy extends SimpleNode {
     // Basically a pass through...
     public void buildXmlTree( XmlObject xo ) { 
         if( log.isTraceEnabled() ) enterTrace( log, "AST_GroupBy.buildXmlTree()" ) ;
-        pushPosition() ; 
         children[0].buildXmlTree( xo ) ;
         this.generatedObject = children[0].getGeneratedObject() ;
-        popPosition() ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_GroupBy.buildXmlTree()" ) ;
     }
 

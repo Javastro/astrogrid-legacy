@@ -19,9 +19,7 @@ public class AST_PolygonJ2000 extends SimpleNode {
   }
   
   public void buildXmlTree( XmlObject xo ) {
-      if( log.isTraceEnabled() ) enterTrace( log, "AST_PolygonJ2000.buildXmlTree()" ) ; 
-      setPositionType( PolygonType.type ) ;
-     
+      if( log.isTraceEnabled() ) enterTrace( log, "AST_PolygonJ2000.buildXmlTree()" ) ;      
       //
       // "Create" the appropriate polygon type using XmlBeans magic.
       PolygonType p = (PolygonType)xo.changeType( PolygonType.type ) ;   
@@ -34,8 +32,6 @@ public class AST_PolygonJ2000 extends SimpleNode {
       // Get the linked element list, used by the predicate
       // to hold references to ADQL elements which are not literals.
       LinkedListType llt = this.getCurrentLinkedElementList() ;
-   
- 
       //
       // Construct vertices...
       int childCount = jjtGetNumChildren() ;

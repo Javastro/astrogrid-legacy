@@ -12,19 +12,38 @@ public class AST_NumericValueExpression extends SimpleNode {
  
     private static Log log = LogFactory.getLog( AST_NumericValueExpression.class ) ;
    
-    Token binaryOpToken = null ; 
+    String sBinaryOperation = null ; 
 
     public AST_NumericValueExpression(AdqlStoX p, int id) {
         super(p, id);
     }
-
-    public void setOperator( Token t ) {
-        binaryOpToken = t ;
-        setPositionType( BinaryExprType.type ) ;
+    
+    public void setPlus( String elementName ) {
+        sBinaryOperation = "+" ;
+        pushPosition( elementName, BinaryExprType.type ) ;
     }
     
+    public void setMinus( String elementName ) {
+        sBinaryOperation = "-" ;
+        pushPosition( elementName, BinaryExprType.type ) ;
+    }
+    
+//    public void setOperator( Token binaryOpToken, String elementName ) {       
+//        this.binaryOpToken = binaryOpToken ;
+//        pushPosition( elementName, BinaryExprType.type ) ;
+//        Tracker t = getTracker() ;
+//        //
+//        // Adjust the child count. 
+//        // As a binary operation, it already has one child...
+//        Tracker.Part p = t.peek() ;
+//        p.setChildCount( 1 ) ;       
+//        //
+//        // Keep the current element but change its type to operator...
+//        t.setType( BinaryExprType.type ) ;
+//    }
+    
     public boolean isSetOperator() {
-        return binaryOpToken != null ;
+        return sBinaryOperation != null ;
     }
     
     public void buildXmlTree( XmlObject xo ) {   
@@ -43,13 +62,12 @@ public class AST_NumericValueExpression extends SimpleNode {
             this.generatedObject = children[0].getGeneratedObject() ;
         }
         else {
-            setPositionType( BinaryExprType.type ) ;
             BinaryExprType beType = (BinaryExprType)xo.changeType( BinaryExprType.type ) ;
-            beType.setOper( BinaryOperatorType.Enum.forString( binaryOpToken.image ) ) ;
+            beType.setOper( BinaryOperatorType.Enum.forString( sBinaryOperation ) ) ;
             if( log.isDebugEnabled() ) {
                 buffer
                     .append( "\nbinaryOpToken: " )
-                    .append( binaryOpToken.image ) ;
+                    .append( sBinaryOperation ) ;
             }     
             for( int i=0; i<childCount; i++ ) {
                 children[i].buildXmlTree( beType.addNewArg() ) ;

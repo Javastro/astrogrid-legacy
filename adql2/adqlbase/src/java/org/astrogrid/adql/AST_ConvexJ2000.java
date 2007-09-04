@@ -22,7 +22,6 @@ public class AST_ConvexJ2000 extends SimpleNode {
 
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_ConvexJ2000.buildXmlTree()" ) ; 
-        setPositionType( ConvexType.type ) ;
              
         //
         // Establish where we can create linked elements for this region...
@@ -93,8 +92,6 @@ public class AST_ConvexJ2000 extends SimpleNode {
             d = this.unpackNumericLiteral( setHsOffset ) ;
             halfSpace.setOffset( d.doubleValue() ) ;
         }
-
-
         super.buildXmlTree( convex ) ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_ConvexJ2000.buildXmlTree()" ) ; 
     }

@@ -2,6 +2,7 @@
 
 package org.astrogrid.adql;
 
+import org.astrogrid.adql.beans.InverseSearchType;
 import org.astrogrid.adql.beans.UnaryExprType;
 import org.astrogrid.adql.beans.UnaryOperatorType;
 import org.apache.xmlbeans.XmlObject; 
@@ -18,9 +19,23 @@ public class AST_Factor extends SimpleNode {
         super(p, id);
     }
     
-    public void setSign( Token t ) {
-        signToken = t ;
-        setPositionType( UnaryExprType.type ) ;
+    public void setSign( Token signToken, String elementName ) {
+        this.signToken = signToken ;
+        pushPosition( elementName, UnaryExprType.type ) ;
+//        Tracker t = getTracker() ;
+//        //
+//        // The sign (UnaryExprType) is replacing a current element, so
+//        // we remember the current element, which we will
+//        // use to create a sub element below the sign...
+//        Tracker.Part p = t.peek() ;
+//        String element = p.getElement() ;
+//        //
+//        // Keep the current element but change its type to sign...
+//        t.setType( UnaryExprType.type ) ;
+//        //
+//        // Create the sub element below it...
+//        // (Effectively, the sign has pushed this below)
+//        t.push( element ) ;
     }
     
     public boolean isSetSign() {
@@ -30,7 +45,6 @@ public class AST_Factor extends SimpleNode {
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_Factor.buildXmlTree()" ) ; 
         if( isSetSign() ) {
-            setPositionType( UnaryExprType.type ) ;
             UnaryExprType ueType = (UnaryExprType)xo.changeType( UnaryExprType.type) ;
             ueType.setOper( UnaryOperatorType.Enum.forString( signToken.image ) ) ;  
             children[1].buildXmlTree( ueType.addNewArg() ) ;

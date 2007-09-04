@@ -18,7 +18,6 @@ public class AST_ConvexHullJ2000 extends SimpleNode {
   
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_ConvexHullJ2000.buildXmlTree()" ) ; 
-      setPositionType( ConvexHullType.type ) ;
       //
       // "Create" the appropriate polygon type using XmlBeans magic.
       ConvexHullType cht = (ConvexHullType)xo.changeType( ConvexHullType.type ) ;   

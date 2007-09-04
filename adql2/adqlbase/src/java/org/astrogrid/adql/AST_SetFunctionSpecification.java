@@ -16,10 +16,12 @@ public class AST_SetFunctionSpecification extends SimpleNode {
 
     public AST_SetFunctionSpecification(AdqlStoX p, int id) {
         super(p, id);
+//        setPositionType( AggregateFunctionType.type ) ;
+        schemaType = AggregateFunctionType.type ;
     }
 
     public void buildXmlTree( XmlObject xo ) {
-        if( log.isTraceEnabled() ) enterTrace( log, "AST_SetFunctionSpecification.buildXmlTree()" ) ; 
+        if( log.isTraceEnabled() ) enterTrace( log, "AST_SetFunctionSpecification.buildXmlTree()" ) ;
         if( jjtGetNumChildren() == 1 ) {
             children[0].buildXmlTree( xo ) ;
             setGeneratedObject( children[0].getGeneratedObject() ) ;

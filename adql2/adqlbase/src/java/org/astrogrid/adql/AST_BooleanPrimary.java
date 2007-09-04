@@ -12,25 +12,24 @@ public class AST_BooleanPrimary extends SimpleNode {
     
     private static Log log = LogFactory.getLog( AST_BooleanPrimary.class ) ;
     
-    private boolean parenthesized = false ;
+    private boolean bParenthesized = false ;
    
     public AST_BooleanPrimary(AdqlStoX p, int id) {
         super(p, id);
     }
     
     public void setParenthesized() {
-        parenthesized = true ;
-        this.setPositionType( ClosedSearchType.type ) ;
+        bParenthesized = true ;
+        pushPosition( AdqlCompiler.CONDITION_ELEMENT, ClosedSearchType.type ) ;
     }
     
     public boolean isParenthesized() {
-        return parenthesized ;
+        return bParenthesized ;
     }
     
     public void buildXmlTree( XmlObject xo ) {   
         if( log.isTraceEnabled() ) enterTrace( log, "AST_BooleanPrimary.buildXmlTree()" ) ; 
-        if( parenthesized ) {
-            this.setPositionType( ClosedSearchType.type ) ;
+        if( bParenthesized ) {
             ClosedSearchType cs = (ClosedSearchType)xo.changeType( ClosedSearchType.type ) ;           
             if( jjtGetNumChildren() > 0 ) {
                 children[0].buildXmlTree( cs.addNewCondition() ) ;

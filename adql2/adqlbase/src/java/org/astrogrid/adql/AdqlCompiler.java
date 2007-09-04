@@ -32,6 +32,7 @@ public class AdqlCompiler {
 	private static Log log = LogFactory.getLog( AdqlCompiler.class ) ;
 	   
     private static final boolean DETAILED_DEBUG_PRINT_ENABLED = false ;
+    private static final boolean DETAILED_ERROR_REPORT_ENABLED = false ;
     
 	private StringBuffer logIndent = null ;
 	
@@ -326,22 +327,28 @@ public class AdqlCompiler {
              parser.compiler = this ;
          }
          if( parser.tracker == null ) {
-            parser.tracker = new Tracker() ;
-        }
-        else {
-            parser.tracker.Reinit() ;
-        }   
-        if( parser.comments == null ) {
-            parser.comments = new HashSet() ;
-        }
-        else {
-            parser.comments.clear() ;
-        }
-        parser.currentLinkedElementList = null ;
-        this.numberForUniqueID = 0 ;
+             parser.tracker = new Tracker() ;
+             if( log.isTraceEnabled() ) {
+                 parser.tracker.setTraceBufferEnabled( true ) ;
+             }
+         }
+         else {
+             parser.tracker.Reinit() ;
+             if( log.isTraceEnabled() ) {
+                 parser.tracker.flushTraceBuffer() ;
+             }
+         }   
+         if( parser.comments == null ) {
+             parser.comments = new HashSet() ;
+         }
+         else {
+             parser.comments.clear() ;
+         }
+         parser.currentLinkedElementList = null ;
+         this.numberForUniqueID = 0 ;
      }
     
-    private AdqlStoX parser ;
+    protected AdqlStoX parser ;
 	private StringBuffer uBuffer = new StringBuffer() ;    
     
 	public SelectDocument exec() throws AdqlException {
@@ -349,6 +356,9 @@ public class AdqlCompiler {
         SelectDocument selectDoc = SelectDocument.Factory.newInstance() ; 
 		try {           
 			parser.query_specification_A() ;
+            if( parser.tracker.isTraceBufferEnabled() ) {
+                parser.tracker.writeTraceBuffer() ;
+            }
 			checkForRemainingSource() ;	
             AST_Select selectNode = (AST_Select)parser.jjtree.rootNode() ;
             selectNode.buildXmlTree( selectDoc.addNewSelect() ) ;
@@ -403,6 +413,8 @@ public class AdqlCompiler {
     }
 	
 	private void logReportOnErrors( XmlObject xmlObject ) {
+        if( !DETAILED_ERROR_REPORT_ENABLED )
+            return ;
 		 ArrayList list = parser.tracker.getErrors() ;
 	     if( list.size() > 0 ) {
 	     	 StringBuffer buffer = new StringBuffer() ;
@@ -817,7 +829,7 @@ public class AdqlCompiler {
     }
     
     private void fValueExpression() throws ParseException {
-        parser.value_expression_A( null ) ;
+        parser.value_expression_A( AdqlCompiler.ARG_ELEMENT ) ;
         ComparisonPredType compPred = ComparisonPredType.Factory.newInstance() ;
         AST_ValueExpression valueExpressionNode = (AST_ValueExpression)parser.jjtree.rootNode() ;
         valueExpressionNode.buildXmlTree( compPred.addNewArg() ) ;
@@ -934,14 +946,14 @@ public class AdqlCompiler {
     }
     
     private void fColumnReference() throws ParseException {
-        parser.column_reference_A() ;
+        parser.column_reference_A( "to-do" ) ;
         SelectionListType selectList = SelectionListType.Factory.newInstance() ;
         AST_ColumnReference colRefNode = (AST_ColumnReference)parser.jjtree.rootNode() ;
         colRefNode.buildXmlTree( selectList.addNewItem() ) ; 
     }
     
     private void fDerivedColumn() throws ParseException {
-        parser.derived_column_S() ; 
+        parser.derived_column_S( AdqlCompiler.ITEM_ELEMENT ) ; 
         SelectionListType selectList = SelectionListType.Factory.newInstance() ;
         AST_DerivedColumn derivedColNode = (AST_DerivedColumn)parser.jjtree.rootNode() ;
         derivedColNode.buildXmlTree( selectList.addNewItem() ) ; 

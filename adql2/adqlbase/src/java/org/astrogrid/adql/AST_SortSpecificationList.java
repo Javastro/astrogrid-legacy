@@ -18,7 +18,6 @@ public class AST_SortSpecificationList extends SimpleNode {
 
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_SortSpecificationList.buildXmlTree()" ) ;
-        pushPosition() ;
         OrderExpressionType oeType = (OrderExpressionType)xo.changeType( OrderExpressionType.type ) ;
         int childCount = jjtGetNumChildren() ;
         for( int i=0; i<childCount; i++ ) {
@@ -26,7 +25,6 @@ public class AST_SortSpecificationList extends SimpleNode {
         }
         setGeneratedObject( oeType ) ;
         super.buildXmlTree( oeType ) ;
-        popPosition() ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_SortSpecificationList.buildXmlTree()" ) ;
     }
 

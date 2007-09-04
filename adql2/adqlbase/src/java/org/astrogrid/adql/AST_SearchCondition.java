@@ -10,22 +10,47 @@ import org.apache.commons.logging.LogFactory ;
 public class AST_SearchCondition extends SimpleNode {
     
     private static Log log = LogFactory.getLog( AST_SearchCondition.class ) ;
-
+    private boolean bOR = false ;
+    
     public AST_SearchCondition(AdqlStoX p, int id) {
         super(p, id);
-        this.elementName = AdqlCompiler.CONDITION_ELEMENT ;
+    }
+    
+    public void setOr() {
+        bOR = true ;
+        pushPosition( AdqlCompiler.CONDITION_ELEMENT, UnionSearchType.type ) ;
+//        Tracker t = getTracker() ;
+//        //
+//        // The OR is replacing a current element, so
+//        // we remember the current element, which we will
+//        // use to create a sub element below the OR...
+//        Tracker.Part p = t.peek() ;
+//        String element = p.getElement() ;
+//        //
+//        // Adjust the child count. 
+//        // As an OR, it already has one child...
+//        p.setChildCount( 1 ) ;
+//        //
+//        // Keep the current element but change its type to OR...
+//        t.setType( UnionSearchType.type ) ;
+//        //
+//        // Create the sub element below it...
+//        // (Effectively, the OR has pushed this below)
+////        t.push( element ) ;
+    }
+    
+    public boolean isOr() {
+        return bOR ;
     }
 
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_SearchCondition.buildXmlTree()" ) ; 
-        this.pushPosition() ;
         int numberOfChildren = jjtGetNumChildren() ;
         // QU: Why is this here?
         if( numberOfChildren == 0 ) {
-            this.popPosition() ;
             return ;
         }
-        else if( numberOfChildren == 1 ) {
+        else if( !bOR ) {
             children[0].buildXmlTree( xo ) ;
             setGeneratedObject( children[0].getGeneratedObject() ) ;
         }
@@ -36,7 +61,6 @@ public class AST_SearchCondition extends SimpleNode {
             setGeneratedObject( orConstruct ) ;
         }
         super.buildXmlTree( (XmlObject)this.generatedObject ) ;
-        this.popPosition() ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_SearchCondition.buildXmlTree()" ) ; 
     }
 }

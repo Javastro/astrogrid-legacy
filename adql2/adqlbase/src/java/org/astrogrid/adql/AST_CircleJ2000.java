@@ -20,8 +20,7 @@ public class AST_CircleJ2000 extends SimpleNode {
   }
   
   public void buildXmlTree( XmlObject xo ) {
-      if( log.isTraceEnabled() ) enterTrace( log, "AST_CircleJ2000.buildXmlTree()" ) ; 
-      setPositionType( CircleType.type ) ;  
+      if( log.isTraceEnabled() ) enterTrace( log, "AST_CircleJ2000.buildXmlTree()" ) ;  
       //
       // "Create" the appropriate circle type using XmlBeans magic.
       // Give it a center and a radius.

@@ -21,7 +21,6 @@ public class AST_CircleLatLon extends SimpleNode {
 
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_CircleLatLon.buildXmlTree()" ) ; 
-        setPositionType( CircleType.type ) ;
        
         //
         // "Create" the appropriate circle type using XmlBeans magic.

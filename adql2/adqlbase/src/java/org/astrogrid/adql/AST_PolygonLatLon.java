@@ -18,7 +18,6 @@ public class AST_PolygonLatLon extends SimpleNode {
   
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_PolygonLatLon.buildXmlTree()" ) ; 
-      setPositionType( PolygonType.type ) ;
       //
       // We know this is a LatLon Polygon type, else why are we here.
       // So set the appropriate astro coord system...

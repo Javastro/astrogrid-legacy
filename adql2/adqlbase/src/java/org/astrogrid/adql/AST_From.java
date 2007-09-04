@@ -19,14 +19,12 @@ public class AST_From extends SimpleNode {
     
     public void buildXmlTree( XmlObject fromType ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_From.buildXmlTree()" ) ; 
-        pushPosition() ;
         int childCount = jjtGetNumChildren() ;
         for( int i=0; i<childCount; i++ ) {
             children[i].buildXmlTree( ((FromType)fromType).addNewTable() ) ;
         }
         this.generatedObject = fromType ;
         super.buildXmlTree(fromType) ;
-        popPosition() ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_From.buildXmlTree()" ) ; 
     }
 

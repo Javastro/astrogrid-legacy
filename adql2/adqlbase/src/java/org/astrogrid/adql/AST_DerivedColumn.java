@@ -19,18 +19,17 @@ public class AST_DerivedColumn extends SimpleNode {
         super(p, id);
     }
     
-    public void setAliased() {
+    public void setAliased( String elementName ) {
         bAliased = true ;
-        setPositionType( AliasSelectionItemType.type ) ;
+        //pushPosition( elementName, AliasSelectionItemType.type ) ;
+        this.schemaType = AliasSelectionItemType.type ;
     }
     
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_DerivedColumn.buildXmlTree()" ) ; 
-        setPositionType( SelectionItemType.type ) ;
         SelectionItemType sit = (SelectionItemType)xo ;
         int childCount = jjtGetNumChildren() ;
         if( bAliased ) {
-            setPositionType( AliasSelectionItemType.type ) ;
             AliasSelectionItemType asiType = (AliasSelectionItemType)sit.changeType( AliasSelectionItemType.type ) ;
             this.generatedObject = asiType ;
             for( int i=0; i<childCount; i++ ) {
@@ -38,16 +37,20 @@ public class AST_DerivedColumn extends SimpleNode {
                     asiType.setAs( (String)children[i].getGeneratedObject() ) ;
                 }
                 else if( children[i] instanceof AST_ValueExpression ) {
+                    AST_ValueExpression ve = (AST_ValueExpression)children[i] ;
+                    ve.elementName = AdqlCompiler.EXPRESSION_ELEMENT ;
                     children[i].buildXmlTree( asiType.addNewExpression() ) ;
                 }
             }  
             this.generatedObject = asiType ;
+            super.buildXmlTree(xo) ;
         }
         else if( childCount > 0 ){
             children[0].buildXmlTree( sit ) ;
             this.generatedObject = children[0].getGeneratedObject() ;
+            super.buildXmlTree(xo) ;
         }
-        super.buildXmlTree(xo) ;
+        
         if( log.isTraceEnabled() ) exitTrace( log, "AST_DerivedColumn.buildXmlTree()" ) ; 
         
     }

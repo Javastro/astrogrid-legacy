@@ -16,12 +16,11 @@ public class AST_Table extends SimpleNode {
         super(p, id);
         //
         // Default to basic table type...
-        setPositionType( TableType.type ) ;
+        this.schemaType = TableType.type ;
     }
 
     public void buildXmlTree( XmlObject ftt ) { 
         if( log.isTraceEnabled() ) enterTrace( log, "AST_Table.buildXmlTree()" ) ;
-
         int childCount = jjtGetNumChildren() ;
         if( childCount == 0 ) {
           //

@@ -30,7 +30,6 @@ public class AST_MathFunction extends SimpleNode {
 
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_MathFunction.buildXmlTree()" ) ; 
-        setPositionType( MathFunctionType.type ) ;
         MathFunctionType mfType = (MathFunctionType)xo.changeType( MathFunctionType.type ) ;
         mfType.setName( MathFunctionNameType.Enum.forString( firstToken.image.toUpperCase() ) ) ;
       

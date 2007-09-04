@@ -18,7 +18,7 @@ public class AST_BetweenPredicate extends SimpleNode {
 
     public AST_BetweenPredicate(AdqlStoX p, int id) {
         super(p, id);
-        this.setPositionType( BetweenPredType.type ) ;
+        this.schemaType = BetweenPredType.type ;
     }
 
     public void setNot() {
@@ -29,7 +29,6 @@ public class AST_BetweenPredicate extends SimpleNode {
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_BetweenPredicate.buildXmlTree()" ) ;
         if( between ) {
-            this.setPositionType( BetweenPredType.type ) ;
             BetweenPredType bp = (BetweenPredType)xo.changeType( BetweenPredType.type ) ;
             children[0].buildXmlTree( bp.addNewArg() ) ; 
             children[1].buildXmlTree( bp.addNewArg() ) ;
@@ -37,7 +36,6 @@ public class AST_BetweenPredicate extends SimpleNode {
             this.generatedObject = bp ;
         } 
         else {
-            this.setPositionType( NotBetweenPredType.type ) ;
             NotBetweenPredType nbp = (NotBetweenPredType)xo.changeType( NotBetweenPredType.type ) ;
             children[0].buildXmlTree( nbp.addNewArg() ) ; 
             children[1].buildXmlTree( nbp.addNewArg() ) ;

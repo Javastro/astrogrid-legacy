@@ -20,7 +20,6 @@ public class AST_SelectSublist extends SimpleNode {
 
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_SelectSublist.buildXmlTree()" ) ;
-        pushPosition( AdqlCompiler.ITEM_ELEMENT ) ; 
         SelectionItemType sit = (SelectionItemType)xo ;
         int childCount = jjtGetNumChildren() ;
         if( childCount != 0 ) {
@@ -35,7 +34,6 @@ public class AST_SelectSublist extends SimpleNode {
             this.generatedObject = at ;   
         }
         super.buildXmlTree( (XmlObject)this.generatedObject ) ;
-        popPosition() ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_SelectSublist.buildXmlTree()" ) ; 
     }
     

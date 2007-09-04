@@ -3,6 +3,7 @@
 package org.astrogrid.adql;
 
 import org.astrogrid.adql.beans.InverseSearchType ;
+import org.astrogrid.adql.beans.UnionSearchType;
 import org.apache.xmlbeans.XmlObject ;
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
@@ -12,21 +13,38 @@ public class AST_BooleanFactor extends SimpleNode {
 
     private static Log log = LogFactory.getLog( AST_Select.class ) ;
     
-    private boolean inverse = false ;
+    private boolean bInverse = false ;
 
     public AST_BooleanFactor(AdqlStoX p, int id) {
         super(p, id);
     }
 
-    public void setInverse( boolean inverse ) {
-        this.inverse = inverse ;
-        setPositionType( InverseSearchType.type ) ;
+    public void setInverse() {
+        bInverse = true ;
+        pushPosition( AdqlCompiler.CONDITION_ELEMENT, InverseSearchType.type ) ;
+//        Tracker t = getTracker() ;
+//        //
+//        // The NOT is replacing a current element, so
+//        // we remember the current element, which we will
+//        // use to create a sub element below the NOT...
+//        Tracker.Part p = t.peek() ;
+//        String element = p.getElement() ;
+//        //
+//        // Keep the current element but change its type to NOT...
+//        t.setType( InverseSearchType.type ) ;
+//        //
+//        // Create the sub element below it...
+//        // (Effectively, the NOT has pushed this below)
+//        t.push( element ) ;
+    }
+    
+    public boolean isInverse() {
+        return bInverse ;
     }
     
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_BooleanFactor.buildXmlTree()" ) ; 
-        if( inverse ) {
-            setPositionType( InverseSearchType.type ) ;
+        if( bInverse ) {
             InverseSearchType is = (InverseSearchType)xo.changeType( InverseSearchType.type ) ;
             children[0].buildXmlTree( is.addNewCondition() ) ;
             this.generatedObject = is ;

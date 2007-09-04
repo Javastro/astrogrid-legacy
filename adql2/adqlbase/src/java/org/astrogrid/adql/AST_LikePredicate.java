@@ -17,7 +17,7 @@ public class AST_LikePredicate extends SimpleNode {
 
     public AST_LikePredicate(AdqlStoX p, int id) {
         super(p, id);
-        this.setPositionType( LikePredType.type ) ;
+        this.schemaType = LikePredType.type ;
     }
 
     public void setLike( boolean like ) {
@@ -28,14 +28,12 @@ public class AST_LikePredicate extends SimpleNode {
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_LikePredicate.buildXmlTree()" ) ; 
         if( like ) {
-            this.setPositionType( LikePredType.type ) ;
             LikePredType lpt = (LikePredType)xo.changeType( LikePredType.type ) ;
             children[0].buildXmlTree( lpt.addNewArg() ) ;
             children[1].buildXmlTree( lpt.addNewPattern() ) ;
             setGeneratedObject( lpt ) ;
         }
         else {
-            this.setPositionType( NotLikePredType.type ) ;
             NotLikePredType nlpt = (NotLikePredType)xo.changeType( NotLikePredType.type ) ;
             children[0].buildXmlTree( nlpt.addNewArg() ) ;
             children[1].buildXmlTree( nlpt.addNewPattern() ) ;

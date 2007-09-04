@@ -20,7 +20,6 @@ public class AST_Direction extends SimpleNode {
 
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_Direction.buildXmlTree()" ) ;
-        pushPosition() ;
         AtomType at = (AtomType)xo.changeType( AtomType.type )  ; 
         if( jjtGetNumChildren() > 1 ) {
             //
@@ -39,7 +38,6 @@ public class AST_Direction extends SimpleNode {
             this.parser.tracker.setError( "Direction must be between -1 and +1" ) ;
         }       
         super.buildXmlTree( (XmlObject )this.generatedObject ) ;
-        popPosition() ;
         if( log.isTraceEnabled() ) exitTrace( log, "AST_Direction.buildXmlTree()" ) ; 
     }
 

@@ -27,7 +27,6 @@ public class AST_CircleCartesian extends SimpleNode {
 
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_CircleCartesian.buildXmlTree()" ) ; 
-      setPositionType( CircleType.type ) ;
      
       //
       //

@@ -13,13 +13,11 @@ public class AST_ColumnReference extends SimpleNode {
     
     public AST_ColumnReference(AdqlStoX p, int id) {
         super(p, id);
-        setPositionType( ColumnReferenceType.type ) ;
+        this.schemaType = ColumnReferenceType.type ;
     }
 
     public void buildXmlTree( XmlObject xo ) {   
       if( log.isTraceEnabled() ) enterTrace( log, "AST_ColumnReference.buildXmlTree()" ) ; 
-      
-      setPositionType( ColumnReferenceType.type ) ;    
       ColumnReferenceType crt = (ColumnReferenceType)xo.changeType( ColumnReferenceType.type ) ;
       
       int childCount = jjtGetNumChildren() ;

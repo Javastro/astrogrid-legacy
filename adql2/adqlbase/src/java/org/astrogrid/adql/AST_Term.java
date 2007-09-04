@@ -7,24 +7,42 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.XmlObject;
 import org.astrogrid.adql.beans.BinaryExprType;
 import org.astrogrid.adql.beans.BinaryOperatorType;
+import org.astrogrid.adql.beans.UnaryExprType;
 
 public class AST_Term extends SimpleNode {
     
     private static Log log = LogFactory.getLog( AST_Term.class ) ;
     
-    Token binaryOpToken ; 
+    String sBinaryOp = null ; 
 
     public AST_Term(AdqlStoX p, int id) {
         super(p, id);
     }
-
-    public void setOperator( Token t ) {
-        binaryOpToken = t ;
-        setPositionType( BinaryExprType.type ) ;
+ 
+    public void setMultiply( String elementName ) {
+        this.sBinaryOp = "*" ;
+        pushPosition( elementName, BinaryExprType.type ) ;
     }
     
+    public void setDivide( String elementName ) {
+        this.sBinaryOp = "/" ;
+        pushPosition( elementName, BinaryExprType.type ) ;
+    }
+//    public void setOperator( Token binaryOpToken ) {       
+//        this.binaryOpToken = binaryOpToken ;      
+//        //
+//        // Adjust the child count. 
+//        // As a binary operation, it already has one child...
+//        Tracker t = getTracker() ;
+//        Tracker.Part p = t.peek() ;
+//        p.setChildCount( 1 ) ;  
+//        //
+//        // Keep the current element but change its type to operator...
+//        t.setType( BinaryExprType.type ) ;
+//    }
+    
     public boolean isSetOperator() {
-        return binaryOpToken != null ;
+        return sBinaryOp != null ;
     }
 
     public void buildXmlTree( XmlObject xo ) {
@@ -48,13 +66,12 @@ public class AST_Term extends SimpleNode {
             }
         }
         else {
-            setPositionType( BinaryExprType.type ) ;
             BinaryExprType beType = (BinaryExprType)xo.changeType( BinaryExprType.type ) ;
-            beType.setOper( BinaryOperatorType.Enum.forString( binaryOpToken.image ) ) ;
+            beType.setOper( BinaryOperatorType.Enum.forString( sBinaryOp ) ) ;
             if( log.isDebugEnabled() ) {
                 buffer
                     .append( "\nbinaryOpToken: " )
-                    .append( binaryOpToken.image ) ;
+                    .append( sBinaryOp ) ;
             }
             for( int i=0; i<childCount; i++ ) {
                 children[i].buildXmlTree( beType.addNewArg() ) ;

@@ -21,8 +21,7 @@ public class AST_SortKey extends SimpleNode {
   
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_SortKey.buildXmlTree()" ) ; 
-       
-      
+            
         //
         // If it is only 1 child, it must be column name...
         if( jjtGetNumChildren() == 1 ) {

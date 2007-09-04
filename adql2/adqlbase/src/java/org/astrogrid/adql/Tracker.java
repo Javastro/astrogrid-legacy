@@ -1,4 +1,4 @@
-/*$Id: Tracker.java,v 1.4 2007/08/02 14:15:28 jl99 Exp $
+/*$Id: Tracker.java,v 1.5 2007/09/04 16:24:47 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Stack;
+
+import org.apache.xmlbeans.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,6 +33,10 @@ import org.apache.xmlbeans.SchemaType;
 public class Tracker {
     
     private static Log log = LogFactory.getLog( Tracker.class ) ;
+    private static final boolean TRACE_BUFFER_ENABLED = true ;
+    private static final int TRACE_BUFFER_LENGTH = 4096 ;
+    
+    private boolean traceBufferEnabled = false ;
     
     public class Part {
         
@@ -76,6 +82,10 @@ public class Tracker {
         
         public int getChildCount() {
             return childCount ;
+        }
+        
+        public void setChildCount( int count ) {
+            this.childCount = count ;
         }
         
         public String toString() {
@@ -246,6 +256,7 @@ public class Tracker {
     private Stack stack ;
     private Stack pool ;
     private ArrayList errors ;
+    private StringBuffer traceBuffer ;
     
     public Tracker() {
         if( log.isTraceEnabled() ) {
@@ -294,10 +305,11 @@ public class Tracker {
         if( stack.isEmpty() )
             return null ;
         Part p = (Part)stack.pop() ;
-        if( log.isDebugEnabled() ) {
-            log.debug( "pop() left position as: " + this.toPosition() ) ;
-        }
+//        if( log.isDebugEnabled() ) {
+//            log.debug( "pop() left position as: " + this.toPosition() ) ;
+//        }
         pool.push( p ) ;
+        if( TRACE_BUFFER_ENABLED ) tracePosition() ;
         return p ;
     }
     
@@ -318,9 +330,10 @@ public class Tracker {
            part.setIndex( index - 1 ) ;
        }
        Part p = (Part)stack.push( part );
-       if( log.isDebugEnabled() ) {
-           log.debug( "push() set up position: " + this.toPosition() ) ;
-       }
+//       if( log.isDebugEnabled() ) {
+//           log.debug( "push() set up position: " + this.toPosition() ) ;
+//       }
+       if( TRACE_BUFFER_ENABLED ) tracePosition() ;
        return p ;
     }
     
@@ -340,6 +353,7 @@ public class Tracker {
         }
         if( isEmpty() == false ) {
            peek().setType( type ) ;
+           if( TRACE_BUFFER_ENABLED ) retracePosition() ;
         }
     }
     
@@ -353,6 +367,78 @@ public class Tracker {
         }
         error.setPosition( position ) ;
         errors.add( error ) ;
+    }
+    
+    //
+    // This does not work. Fails on the comparison.
+    // However, if/when perfected, will be far superior
+    // to push/pop of position on tracker object.
+    private Part[] formPosition( XmlObject xoError ) {       
+        Part[] parts ;
+        XmlCursor cu = xoError.newCursor() ;
+        try {
+            Stack xos = new Stack() ;
+            if( cu.isAnyAttr() ) {
+                cu.toParent() ;
+            }
+            xos.push( cu.getObject() ) ;
+            //
+            // Work backwards to the select 
+            // or possibly the first element in a fragment...
+            while( cu.toParent() ) {
+                if( cu.isStartdoc() == false ) {
+                    xos.push( cu.getObject() ) ;
+                }
+            }
+            //
+            // Work through to the error element 
+            // creating a part/position array on the way...
+            parts = new Part[ xos.size() ] ;
+            for( int i=0; i<parts.length; i++ ) {
+                XmlObject xo = (XmlObject)xos.pop() ;
+                int childIndex = 0 ;
+                XmlObject cox = cu.getObject() ;
+                //
+                // Fails on the comparison.
+                while( cox != xo ) {
+                    cu.toNextSibling() ;
+                    cox = cu.getObject();
+                    childIndex++ ;
+                }
+                Part p = new Part() ;
+                p.setElement( cu.getName().getLocalPart() ) ;
+                p.setType( xo.schemaType() ) ;
+                p.setIndex( childIndex ) ;
+                parts[i] = p ;
+                cu.toFirstChild() ;
+            }
+        }
+        finally {
+            cu.dispose() ;
+        }
+        return parts ;
+    }
+    
+    public void setError( String message, XmlObject xoError ) {
+        //
+        // Form a position from the error object...
+        Part[] parts = formPosition( xoError ) ;
+        //
+        // Generate the error
+        Error error = new Error() ;
+        error.setMessage( message ) ;   
+        error.setPosition( parts ) ;
+        errors.add( error ) ;       
+    }
+    
+    public void setError( ParseException pex, XmlObject xoError ) {
+        if( isExceptionRecorded( pex ) == false ) {       
+            Error error = new Error() ;
+            error.setParseException( pex ) ;        
+            Part[] position = formPosition( xoError ) ;
+            error.setPosition( position ) ;
+            errors.add( error ) ;
+        }
     }
     
     public void setError( ParseException pex ) {
@@ -457,12 +543,70 @@ public class Tracker {
         }     
         return retCode ;
     }
+    
+    private void tracePosition() {
+        if( !isTraceBufferEnabled() )
+            return ;
+        traceBuffer.append( '\n' ).append( this.toPosition() ) ;
+    }
+    
+    private void retracePosition() {
+        if( !isTraceBufferEnabled() )
+            return ;
+        int i = traceBuffer.lastIndexOf( "\n" ) ;
+        traceBuffer.delete( i, traceBuffer.length() ) ;
+        traceBuffer.append( '\n' ).append( this.toPosition() ) ;
+    }
+    
+    public void writeTraceBuffer() {
+        if( !isTraceBufferEnabled() )
+            return ;
+        log.trace( traceBuffer.toString() ) ;
+        resetTraceBuffer() ;
+    }
+    
+    public void flushTraceBuffer() {
+        if( !isTraceBufferEnabled() )
+            return ;
+        resetTraceBuffer() ;
+    }
+    
+    private void resetTraceBuffer() {
+        traceBuffer.delete( 0, traceBuffer.length() ) ;
+        traceBuffer.append( "Tracker's position trace buffer:" ) ;
+    }
+
+    /**
+     * @return the traceBufferEnabled
+     */
+    public boolean isTraceBufferEnabled() {
+        if( TRACE_BUFFER_ENABLED && log.isTraceEnabled() )
+            return traceBufferEnabled;
+        return false ;
+    }
+
+    /**
+     * @param traceBufferEnabled the traceBufferEnabled to set
+     */
+    public void setTraceBufferEnabled( boolean traceBufferEnabled ) {
+        this.traceBufferEnabled = traceBufferEnabled;
+        if( TRACE_BUFFER_ENABLED && traceBufferEnabled ) {
+            traceBuffer = new StringBuffer( TRACE_BUFFER_LENGTH ) ;
+            traceBuffer.append( "Tracker's position trace buffer:" ) ;
+        }
+        else {
+            traceBuffer = null ;
+        }
+    }
 
 }
 
 
 /*
 $Log: Tracker.java,v $
+Revision 1.5  2007/09/04 16:24:47  jl99
+Yet another attempt at refining position tracking.
+
 Revision 1.4  2007/08/02 14:15:28  jl99
 fix to null pointer exception
 

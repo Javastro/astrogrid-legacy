@@ -19,7 +19,6 @@ public class AST_TrigFunction extends SimpleNode {
 
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_TrigFunction.buildXmlTree()" ) ; 
-        setPositionType( TrigonometricFunctionType.type ) ;
         TrigonometricFunctionType tfType = (TrigonometricFunctionType)xo.changeType( TrigonometricFunctionType.type ) ;
         tfType.setName( TrigonometricFunctionNameType.Enum.forString( firstToken.image.toUpperCase() ) ) ;
         if( firstToken.kind == AdqlStoXConstants.ATAN2 ) {

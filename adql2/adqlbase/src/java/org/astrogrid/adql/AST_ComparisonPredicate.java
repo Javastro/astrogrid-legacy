@@ -14,12 +14,12 @@ public class AST_ComparisonPredicate extends SimpleNode {
 
     public AST_ComparisonPredicate(AdqlStoX p, int id) {
         super(p, id);
-        this.setPositionType( ComparisonPredType.type ) ;
+        this.elementName = AdqlCompiler.CONDITION_ELEMENT ;
+        this.schemaType = ComparisonPredType.type ;
     }
     
     public void buildXmlTree( XmlObject xo ) {
         if( log.isTraceEnabled() ) enterTrace( log, "AST_ComparisonPredicate.buildXmlTree()" ) ; 
-        this.setPositionType( ComparisonPredType.type ) ;
         ComparisonPredType cpType = (ComparisonPredType)xo.changeType( ComparisonPredType.type ) ;
         children[0].buildXmlTree( cpType.addNewArg() ) ;
         children[2].buildXmlTree( cpType.addNewArg() ) ;

@@ -18,7 +18,6 @@ public class AST_BoxCartesian extends SimpleNode {
   
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_BoxCartesian.buildXmlTree()" ) ; 
-      setPositionType( BoxType.type ) ;
       //
       // We know this is a Cartesian Box type, else why are we here.
       // So set the appropriate astro coord system...

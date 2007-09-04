@@ -20,7 +20,6 @@ public class AST_BoxJ2000 extends SimpleNode {
   
   public void buildXmlTree( XmlObject xo ) {
       if( log.isTraceEnabled() ) enterTrace( log, "AST_BoxJ2000.buildXmlTree()" ) ; 
-      setPositionType( BoxType.type ) ;
       //
       // "Create" the appropriate polygon type using XmlBeans magic.
       BoxType bt = (BoxType)xo.changeType( BoxType.type ) ;

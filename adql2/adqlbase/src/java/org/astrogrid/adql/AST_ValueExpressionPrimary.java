@@ -19,8 +19,9 @@ public class AST_ValueExpressionPrimary extends SimpleNode {
         super(p, id);
     }
 
-    public void setParenthesized() {
+    public void setParenthesized( String elementName ) {
         this.parenthesized = true ;
+        pushPosition( elementName, ClosedExprType.type ) ;
     }
 
  

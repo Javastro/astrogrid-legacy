@@ -44,7 +44,6 @@ public class AST_UserDefinedFunction extends SimpleNode {
   
 public void buildXmlTree( XmlObject xo ) {   
       if( log.isTraceEnabled() ) enterTrace( log, "AST_UserDefinedFunction.buildXmlTree()" ) ; 
-      setPositionType( UserDefinedFunctionType.type ) ;
       int childCount = jjtGetNumChildren() ;
       if( log.isDebugEnabled() ) {
           log.debug( "childCount: [" + childCount + "] cardinality: [" 
