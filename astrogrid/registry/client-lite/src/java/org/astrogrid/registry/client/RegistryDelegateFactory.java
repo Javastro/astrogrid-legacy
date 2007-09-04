@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryDelegateFactory.java,v 1.17 2007/03/01 11:44:27 KevinBenson Exp $
+ * $Id: RegistryDelegateFactory.java,v 1.18 2007/09/04 15:15:58 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,6 +13,8 @@ import org.apache.commons.logging.LogFactory;
 import java.io.IOException;
 
 import org.astrogrid.registry.client.query.RegistryService;
+//import org.astrogrid.registry.client.query.v0_1.RegistryService;
+//import org.astrogrid.registry.client.query.v1_0.RegistryService;
 import org.astrogrid.registry.client.query.OAIService;
 import org.astrogrid.registry.client.admin.RegistryAdminService;
 
@@ -36,6 +38,8 @@ public class RegistryDelegateFactory {
 
 
    public static Config conf = null;
+   
+   private static final String DEFAULT_CONTRACT_VERSION = "0.1";
    
    public static final String QUERY_URL_PROPERTY = "org.astrogrid.registry.query.endpoint";
    public static final String OAI_URL_PROPERTY = "org.astrogrid.registry.oai.query.endpoint";
@@ -67,15 +71,48 @@ public class RegistryDelegateFactory {
    public static synchronized RegistryService createQuery(URL endPoint) {
         logger.info("createQuery(URL) - the ENDPOINT AT DELEGATE = "
                 + "'" + endPoint + "'");
-      return new org.astrogrid.registry.client.query.QueryRegistry(endPoint);
-   }
+      //return createQuery(endPoint,DEFAULT_CONTRACT_VERSION);
+      return new org.astrogrid.registry.client.query.v0_1.QueryRegistry(endPoint);
+   } 
+   
+   public static synchronized org.astrogrid.registry.client.query.v1_0.RegistryService createQueryv1_0(URL endPoint) {
+     logger.info("createQuery(URL) - the ENDPOINT AT DELEGATE = "
+               + "'" + endPoint + "'");
+     return new org.astrogrid.registry.client.query.v1_0.QueryRegistry(endPoint);
+       //return new org.astrogrid.registry.client.query.v0_1.QueryRegistry(contractEndpoint);
+  }
+
+ 
+
+   /*
+   public static synchronized RegistryService createQuery(URL endPoint, String contractVersion) {
+	   URL contractEndpoint = null;
+		  try {
+			 contractEndpoint =  new URL(endPoint.toString() + "v" + contractVersion.replaceAll("[^\\w*]","_"));
+		  }catch(java.net.MalformedURLException me) {
+			  logger.error(me);
+			  throw new RuntimeException("Error could not construct url " + me.getMessage());
+		  }
+		  //System.out.println("the endpoint constructoed = " + contractEndpoint);
+		  if(contractVersion.equals("1.0")) {
+			  return (org.astrogrid.registry.client.query.v1_0.RegistryService) new org.astrogrid.registry.client.query.v1_0.QueryRegistry(contractEndpoint);
+		  }else if(contractVersion.equals("0.1")) {
+			  return (org.astrogrid.registry.client.query.v0_1.RegistryService) new org.astrogrid.registry.client.query.v0_1.QueryRegistry(contractEndpoint);
+		  }else {
+			  logger.warn("Could not find an AdminService for version = " + contractVersion + 
+					  " Currently only 0.1 and 1.0 is available.  Defaulting to 0.1");
+			  return (org.astrogrid.registry.client.query.v0_1.RegistryService) new org.astrogrid.registry.client.query.v0_1.QueryRegistry(contractEndpoint);
+		  }	   
+  }
+  */
+
    
    /**
     * 
     * @return
     */
    public static synchronized RegistryAdminService createAdmin() {      
-      return createAdmin(conf.getUrl(ADMIN_URL_PROPERTY,null));      
+      return createAdmin(conf.getUrl(ADMIN_URL_PROPERTY,null),DEFAULT_CONTRACT_VERSION);      
    }
 
    /**
@@ -85,7 +122,41 @@ public class RegistryDelegateFactory {
     * @return
     */
    public static synchronized RegistryAdminService createAdmin(URL endPoint) {
-      return new org.astrogrid.registry.client.admin.UpdateRegistry(endPoint);
+	   return createAdmin(endPoint,DEFAULT_CONTRACT_VERSION);
+   }
+   
+   /**
+    * 
+    * @return
+    */
+   public static synchronized RegistryAdminService createAdmin(String contractVersion) {      
+      return createAdmin(conf.getUrl(ADMIN_URL_PROPERTY,null),contractVersion);      
+   }
+   
+   /**
+    * 
+    * @todo check for null endpoint and return illegal argument exception?
+    * @param endPoint
+    * @return
+    */
+   public static synchronized RegistryAdminService createAdmin(URL endPoint, String contractVersion) {
+	  URL contractEndpoint = null;
+	  try {
+		 contractEndpoint =  new URL(endPoint.toString() + "v" + contractVersion.replaceAll("[^\\w*]","_"));
+	  }catch(java.net.MalformedURLException me) {
+		  logger.error(me);
+		  throw new RuntimeException("Error could not construct url " + me.getMessage());
+	  }
+	  System.out.println("the endpoint constructoed = " + contractEndpoint);
+	  if(contractVersion.equals("1.0")) {
+		  return new org.astrogrid.registry.client.admin.v1_0.UpdateRegistry(contractEndpoint);
+	  }else if(contractVersion.equals("0.1")) {
+		  return new org.astrogrid.registry.client.admin.v0_1.UpdateRegistry(contractEndpoint);
+	  }else {
+		  logger.warn("Could not find an AdminService for version = " + contractVersion + 
+				  " Currently only 0.1 and 1.0 is available.  Defaulting to 0.1");
+		  return new org.astrogrid.registry.client.admin.v0_1.UpdateRegistry(contractEndpoint);
+	  }
    }
    
    /**

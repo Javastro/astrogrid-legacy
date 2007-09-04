@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 import java.net.URL; 
+import java.util.HashMap;
 import java.util.Vector; 
 import javax.xml.parsers.DocumentBuilder; 
 import javax.xml.parsers.DocumentBuilderFactory; 
@@ -51,16 +52,17 @@ import org.astrogrid.registry.common.XSLHelper;
  * @todo document the method bodies
  *
  * 
+ * 
  */
-public class UpdateRegistry implements RegistryAdminService {
+//Dropping the abstract because several other components to instantiate
+//this class directly instead of the DelegateFactory.
+public  abstract class UpdateRegistry  {
     /**
      * Commons Logger for this class
      */
    private static final Log logger = LogFactory.getLog(UpdateRegistry.class); 
 
 
-   private static final String NAMESPACE_URI =  "http://www.ivoa.net/schemas/services/UpdateRegistry/wsdl";
-   
    public static final String ADMIN_URL_PROPERTY = "org.astrogrid.registry.admin.endpoint";
    
    private static String cacheDir = null;
@@ -83,14 +85,8 @@ public class UpdateRegistry implements RegistryAdminService {
       }      
    }
    
-    
-    /**
-     * Empty constructor that defaults the end point to local host.
-     * @author Kevin Benson
-     */
-   public UpdateRegistry() {
-      this(conf.getUrl(ADMIN_URL_PROPERTY,null));
-   }
+   public abstract String getSoapBodyNamespaceURI();
+   
    
    /**
     * Main constructor to allocate the endPoint variable.
@@ -101,6 +97,11 @@ public class UpdateRegistry implements RegistryAdminService {
    public UpdateRegistry(URL endPoint) {
       this.endPoint = endPoint;
    }
+   
+   public UpdateRegistry() {
+		  //super(endPoint);
+		  //do nothing
+	  }  
     
    /**
     * Method to establish a Service and a Call to the server side web service.
@@ -119,7 +120,8 @@ public class UpdateRegistry implements RegistryAdminService {
          _call.setEncodingStyle(null);
          return _call;       
     }
-    
+   
+   
    /**
     * Takes an XML Document to send to the update server side web service call.  Establishes
     * a service and a call to the web service and call it's update method, using an Axis-Message
@@ -134,6 +136,7 @@ public class UpdateRegistry implements RegistryAdminService {
       if(update == null) {
           throw new RegistryException("Cannot update 'null' found as the document to update");
       }
+      //System.out.println("THE NAMESPACE URI USED = " + getSoapBodyNamespaceURI());
       
       boolean validateXML = conf.getBoolean("registry.validate.onupdates",false);
       if(validateXML) {
@@ -173,7 +176,8 @@ public class UpdateRegistry implements RegistryAdminService {
       Document doc = null;
       Document resultDoc = null;
           //Element root = doc.createElementNS(NAMESPACE_URI,"update");
-          Element root = update.createElementNS(NAMESPACE_URI,"Update");
+
+          Element root = update.createElementNS(getSoapBodyNamespaceURI(),"Update");
           root.appendChild(update.getDocumentElement());
           update.appendChild(root);
           
@@ -189,7 +193,7 @@ public class UpdateRegistry implements RegistryAdminService {
       //SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
       SOAPBodyElement sbeRequest = new SOAPBodyElement(update.getDocumentElement());
       sbeRequest.setName("Update");
-      sbeRequest.setNamespaceURI(NAMESPACE_URI);
+      sbeRequest.setNamespaceURI(getSoapBodyNamespaceURI());
       
     
          Vector result = (Vector) call.invoke (new Object[] {sbeRequest});

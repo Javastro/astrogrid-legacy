@@ -133,6 +133,30 @@
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>      
+
+		<dependency>
+            <groupId>saxon</groupId>
+            <artifactId>saxon</artifactId>
+	        <version>8.9</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>      
+
+		<dependency>
+            <groupId>saxon</groupId>
+            <artifactId>saxon-dom</artifactId>
+	        <version>8.9</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>  
+        
+		<dependency>
+            <groupId>saxon</groupId>
+            <artifactId>saxon-dom4j</artifactId>
+	        <version>8.9</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>         	
         
 		<dependency>
             <groupId>spring</groupId>

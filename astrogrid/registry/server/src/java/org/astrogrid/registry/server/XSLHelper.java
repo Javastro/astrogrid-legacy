@@ -15,6 +15,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory; 
 import javax.xml.parsers.ParserConfigurationException;
 
+import net.sf.saxon.TransformerFactoryImpl;
+
 import org.astrogrid.contracts.http.filters.ContractsFilter;
 import org.astrogrid.registry.RegistryException;
 
@@ -171,59 +173,6 @@ public class XSLHelper {
    }
    
    /**
-    * Method: transformExistResult
-    * Description: When querying eXist XML database it will put a known <exist:Result> root
-    * element around the results of the query (so the xml will be valid xml).  This transforms that XML to simply get rid of
-    * that root element and put a different root element around.  Also for convenience a responseElement parameter is used
-    * for Web Service methods to wrap the Results with another Element for use in the Soap:body on the response.
-    * @param doc XML Root node results from a query of the XML database.
-    * @param versionNumber version number from main vr namespace.
-    * @param responseElement An optional string to wrap around another element for web service methods.
-    * @return XML document to be returned.
-    */
-   public Document transformExistResult(Node doc, String contractVersion, String start, String more, String identOnly) throws
-       ParserConfigurationException, TransformerConfigurationException, TransformerException, UnsupportedEncodingException  {
-      
-      if(doc != null && (doc.getNodeName().indexOf("Fault") != -1 ||
-          (doc.hasChildNodes() && doc.getFirstChild().getNodeName().indexOf("Fault") != -1))) {
-           //okay it is a fault don't bother transforming, just return it.
-           //registry creates Faults with org.w3c.dom.Document so just typecast and return it.
-           return (Document)doc;
-      }
-      
-      Source xmlSource = new DOMSource(doc);
-      Document resultDoc = null;
-      Source xslSource = new StreamSource(new InputStreamReader(loadStyleSheet(XSL_DIRECTORY + "ExistRegistryResult" + contractVersion + ".xsl"),"UTF-8"));      
-      DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();          
-      builderFactory.setNamespaceAware(true);
-      DocumentBuilder builder = builderFactory.newDocumentBuilder();
-      resultDoc = builder.newDocument();
-
-      TransformerFactory transformerFactory = TransformerFactory.newInstance();
-       
-      DOMResult result = new DOMResult(resultDoc);
-      Transformer transformer = transformerFactory.newTransformer(xslSource);
-      transformer.setParameter("schemaLocationBase", schemaLocationBase);
-      if(start == null)
-          start = "1";
-      if(identOnly == null)
-          identOnly = "false";
-      
-      transformer.setParameter("from", start);      
-      transformer.setParameter("identOnly", identOnly);
-      transformer.setParameter("more", more);
-      if(doc instanceof Document)          
-          transformer.setParameter("numReturned", String.valueOf(((Document)doc).getElementsByTagNameNS("*","Resource").getLength()));
-      else if(doc instanceof Element)
-          transformer.setParameter("numReturned", String.valueOf(((Element)doc).getElementsByTagNameNS("*","Resource").getLength()));
-          
-      if(doc.hasChildNodes())
-                
-      transformer.transform(xmlSource,result);
-      return resultDoc;
-   }
-   
-   /**
     * Method: transformUpdate
     * Description: Allows the registry to transform the XML before going into the database. It is multiple versioned
     * based on the vr namespace and can be applied to regular updates (from Astrogrid) or on harvests from other
@@ -258,6 +207,60 @@ public class XSLHelper {
           resultDoc = builder.newDocument();
           //DocumentFragment df = resultDoc.createDocumentFragment();
           TransformerFactory transformerFactory = TransformerFactory.newInstance();
+          
+          DOMResult result = new DOMResult(resultDoc);
+          Transformer transformer = transformerFactory.newTransformer(xslSource);
+          
+          transformer.transform(xmlSource,result);
+          return resultDoc;  
+       }catch(ParserConfigurationException pce) {
+        logger.error("transformUpdate(Node, String)", pce);
+        throw new RegistryException(pce);        
+       }catch(TransformerConfigurationException tce) {
+        logger.error("transformUpdate(Node, String)", tce);
+        throw new RegistryException(tce);        
+       }catch(TransformerException te) {
+        logger.error("transformUpdate(Node, String)", te);
+        throw new RegistryException(te);        
+       }catch(UnsupportedEncodingException uee) {
+           logger.error(uee);
+           throw new RegistryException(uee);           
+       }
+    }   
+   
+   /**
+    * Method: transformUpdate
+    * Description: Allows the registry to transform the XML before going into the database. It is multiple versioned
+    * based on the vr namespace and can be applied to regular updates (from Astrogrid) or on harvests from other
+    * registries. 
+    * This usefullness is best described in some examples:
+    * ex 1: 0.9 - used substitution groups hence same xml could be expressed in 2 or 3 ways meaning xql queries very
+    * difficult, so a xsl stylesshet was applied to make the xml consistent and be able to query easier.
+    * ex 2: 0.10 - no more subtituion groups, but the way the main Resource element was described any number of XML name 
+    * with any number of namespaces could be of type Resouce.  So XSL is used to again put it in the way that is 
+    * consistent in the db.
+    * @param doc XML to be transformed.
+    * @param versionNumber version number of main vr namespace.
+    * @param harvestUpdate is this used on a harvest, if so use a different xsl stylesheet name.
+    * @return XML to be updated into the database.
+    */
+   public Document transformVersionConversion(Node doc) throws RegistryException {
+       
+       Source xmlSource = new DOMSource(doc);
+       Document resultDoc = null;
+       String harvestName = "";    
+       String styleSheetName = "Convert0_10-1_0.xsl";
+       logger.debug("transformUpdate(Node, String) - the stylesheet name = "
+            + styleSheetName);
+       try {
+    	  
+          Source xslSource = new StreamSource(new InputStreamReader(loadStyleSheet(XSL_DIRECTORY + styleSheetName),"UTF-8"));
+          DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();           
+          builderFactory.setNamespaceAware(true);
+          DocumentBuilder builder = builderFactory.newDocumentBuilder();
+          resultDoc = builder.newDocument();
+          //DocumentFragment df = resultDoc.createDocumentFragment();
+          net.sf.saxon.TransformerFactoryImpl transformerFactory = new net.sf.saxon.TransformerFactoryImpl();
           
           DOMResult result = new DOMResult(resultDoc);
           Transformer transformer = transformerFactory.newTransformer(xslSource);

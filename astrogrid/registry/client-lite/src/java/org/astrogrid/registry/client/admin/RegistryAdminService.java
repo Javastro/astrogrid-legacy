@@ -2,6 +2,7 @@ package org.astrogrid.registry.client.admin;
 
 
 import java.net.URL; 
+import java.util.HashMap;
 import java.util.Vector; 
 import javax.xml.parsers.DocumentBuilder; 
 import javax.xml.parsers.DocumentBuilderFactory; 
@@ -66,5 +67,6 @@ public interface RegistryAdminService {
    public String getCurrentStatus();
    
    public Document getStatus();
+   
    
 } 

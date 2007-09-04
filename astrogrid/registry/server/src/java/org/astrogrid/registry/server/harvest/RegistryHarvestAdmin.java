@@ -237,17 +237,26 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
        log.debug("the nl length of resoruces = " + nl.getLength());      
 
        //String versionNumber = attrVersion.replace('.','_');      
-       String collectionName = "astrogridv" + versionNumber.replace('.','_');
-       log.debug("Collection Name = " + collectionName);
        
        boolean hasStyleSheet = true;//conf.getBoolean("reg.custom.harveststylesheet." + versionNumber,false);
        Document xsDoc = null;
-       log.debug("Before the transform:::");
-       log.debug(DomHelper.DocumentToString(update));
+
+       log.debug("Before " + DomHelper.DocumentToString(update));
        if(hasStyleSheet) {
           log.debug("performing transformation before analysis of update for versionNumber = " + versionNumber);
           try {
-              xsDoc = xs.transformUpdate((Node)update.getDocumentElement(),versionNumber,true);
+        	  NodeList convertCheck = update.getDocumentElement().getElementsByTagNameNS("*","Resource");
+        	  log.info("checking versions and convertCheck");
+        	  if(versionNumber.equals("1.0") && convertCheck.getLength() > 0 &&
+        	     convertCheck.item(0).getNamespaceURI().indexOf("0.10") != -1) {
+        		  log.info("yes it needs converting to 1.0");
+       			  xsDoc = xs.transformUpdate((Node)update.getDocumentElement(),"0.10",true);
+       			  xsDoc = xs.transformVersionConversion((Node)xsDoc.getDocumentElement());
+       			  log.info("XML result After converting 0.10-1.0 = " + DomHelper.DocumentToString(xsDoc));
+        	  }
+        	  else {
+        		  xsDoc = xs.transformUpdate((Node)update.getDocumentElement(),versionNumber,true);
+        	  }
           }catch(RegistryException re) {
               log.error("Problem with xsl transformation of xml in the update method will try to use raw xml from web service ");
               log.error(re);
@@ -256,8 +265,12 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
        } else {
           xsDoc = update;
        }
+       log.debug("After = " + DomHelper.DocumentToString(update));
        
-       if(validateResourceXML && !collectionName.equals("astrogridv0_10")) {
+       String collectionName = "astrogridv" + versionNumber.replace('.','_');
+       log.debug("Collection Name = " + collectionName);
+       /* && !collectionName.equals("astrogridv0_10") */
+       if(validateResourceXML) {
            try {
                //validate the xml, the xsl should have made it into a well-formed xml doc with a 
         	   //wrapper(root element) valid to schema, as far as the rest of the xml the validator
@@ -266,14 +279,35 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
            }catch(AssertionFailedError afe) {
                afe.printStackTrace();
                log.error("Error invalid document = " + afe.getMessage());
-               throw new IOException("Error validating document " + afe.getMessage());
+               if(!versionNumber.equals("1.0")) {
+            	   throw new IOException("Error validating document " + afe.getMessage());
+               }else {
+            	   log.error("though validation error occurred 1.0 XML will be revalidated individually for each Resource");
+               }
                //return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + "Invalid update, document not valid ",afe.getMessage());           
            }//catch
        }
-       
-       
-       //log.info("the xsdoc = " + DomHelper.DocumentToString(xsDoc));
+
        nl = xsDoc.getElementsByTagNameNS("*","Resource");
+       log.info("Number of Resources to try validating and updating = " + nl.getLength());
+       if(versionNumber.equals("1.0")) {
+    	   int loopi = 0;
+    	   while(loopi < nl.getLength()) {
+    		   log.info("loopi = " + loopi + " and nl.getlength = " + nl.getLength());
+    		   try {
+    			   RegistryValidator.isValid(((Element)nl.item(loopi)),"Resource");
+    			   loopi++;
+    		   }catch(AssertionFailedError afe) {
+    			   //log.error("Error invalid individual Resource = " + afe.getMessage() + " loop i = " + loopi);
+    			   xsDoc.getDocumentElement().removeChild(nl.item(loopi));
+    			   //log.info("nl.getlength in afe after removechild = " + nl.getLength());
+                   //afe.printStackTrace();
+                   
+                   //return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + "Invalid update, document not valid ",afe.getMessage());           
+               }//catch
+    	   }//while
+       }
+       
        log.info("Number of Resources = " + nl.getLength());
        AuthorityList someTestAuth = new AuthorityList(authorityID,versionNumber);      
        if(manageAuths.isEmpty()) {
@@ -304,6 +338,7 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
        // but later on an appendChild is performed which
        // automatically reduced the length by one.
        final int resourceNum = nl.getLength();
+       log.info("Attempting to update number of Resources = " + resourceNum);
        boolean updateResource = true;
        Collection harvestColl = xdbRegistry.getCollection(collectionName,true);
        try {

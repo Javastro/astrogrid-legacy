@@ -182,7 +182,7 @@ public abstract class DefaultHarvestService {
                            } else {
                                rha.clearOAILastUpdateInfo(tempIdent + "/" + resKey,versionNumber);
                                beginHarvest(elem,dt, lastResumptionToken);                  
-                               rha.harvestingUpdate(DomHelper.newDocument(DomHelper.ElementToString(elem)), versionNumber);
+                               //rha.harvestingUpdate(DomHelper.newDocument(DomHelper.ElementToString(elem)), versionNumber);
                            }
                        }catch(IOException ioe) {
                            log.error(ioe);
@@ -190,11 +190,11 @@ public abstract class DefaultHarvestService {
                            //update this reg stat here
                            rha.addStatError(tempIdent + "/" + resKey,versionNumber,ioe.getMessage());
                            //re = new RegistryException(ioe);
-                       }catch(XMLDBException xmldbe) {
+                       }/*catch(XMLDBException xmldbe) {
                            log.error(xmldbe);
                            rha.addStatError(tempIdent + "/" + resKey,versionNumber,xmldbe.getMessage());
                            //update this reg stat here
-                       }catch(InvalidStorageNodeException isne) {
+                       }*/catch(InvalidStorageNodeException isne) {
                            log.error(isne);
                            rha.addStatError(tempIdent + "/" + resKey,versionNumber,isne.getMessage());
                            //update this reg stat here
@@ -203,7 +203,7 @@ public abstract class DefaultHarvestService {
                            log.debug("still continue to the next Registry type if there are any");
                            rha.addStatError(tempIdent + "/" + resKey,versionNumber,ree.getMessage());
                            //update this reg stat here
-                       }catch(SAXException sax) {
+                       }/*catch(SAXException sax) {
                            log.error(sax);
                            rha.addStatError(tempIdent + "/" + resKey,versionNumber,sax.getMessage());
                            //update this reg stat here
@@ -211,7 +211,7 @@ public abstract class DefaultHarvestService {
                            log.error(pce);
                            rha.addStatError(tempIdent + "/" + resKey,versionNumber,pce.getMessage());
                            //update this reg stat here
-                       }
+                       }*/
                      }//for
                  }//if
           }//if
@@ -311,7 +311,6 @@ public abstract class DefaultHarvestService {
                    }
                    if(urlQuery != null) {
                 	   log.debug("Grabbing doc from this harvest url = " + accessURL + urlQuery);
-                	   
                        doc = DomHelper.newDocument(new URL(accessURL + urlQuery));
                    }
                    resumptionSuccess = true;                   
@@ -325,8 +324,16 @@ public abstract class DefaultHarvestService {
                }                   
            }
            try {
-               if(doc.getDocumentElement() != null && doc.getDocumentElement().getElementsByTagNameNS("*","metadata").getLength() > 0)
+               if(doc.getDocumentElement() != null && doc.getDocumentElement().getElementsByTagNameNS("*","metadata").getLength() > 0) {
                    results += rha.harvestingUpdate(doc, versionNumber);
+                   /*
+                   if(versionNumber.equals(("0.10")) {
+                	   log.debug("transform to 1.0 version and do an update for 1.0");                	   
+                	   rha.harvestingUpdate(doc, "0.10_1.0");
+                   }
+                   */
+                   
+               }
                //rha.addStatInfo()
            }catch(Exception e) {
         	   e.printStackTrace();

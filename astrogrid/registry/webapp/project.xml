@@ -160,6 +160,39 @@
         </dependency>                
         
 		<dependency>
+            <groupId>saxon</groupId>
+            <artifactId>saxon</artifactId>
+	        <version>8.9</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+    	        <war.bundle>true</war.bundle>
+	        </properties>   	            
+        </dependency>      
+
+		<dependency>
+            <groupId>saxon</groupId>
+            <artifactId>saxon-dom</artifactId>
+	        <version>8.9</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+    	        <war.bundle>true</war.bundle>
+	        </properties>            
+        </dependency>  
+        
+		<dependency>
+            <groupId>saxon</groupId>
+            <artifactId>saxon-dom4j</artifactId>
+	        <version>8.9</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+    	        <war.bundle>true</war.bundle>
+	        </properties>            
+        </dependency>         
+        
+		<dependency>
             <groupId>jdom</groupId>
             <artifactId>jdom</artifactId>
 	        <version>1.0</version>

@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryLoaderTask.java,v 1.4 2004/09/16 06:56:12 pah Exp $
+ * $Id: RegistryLoaderTask.java,v 1.5 2007/09/04 15:17:38 clq2 Exp $
  * 
  * Created on 13-Jul-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -20,7 +20,7 @@ import org.apache.tools.ant.Task ;
 import org.apache.tools.ant.BuildException ;
 
 import org.astrogrid.registry.client.admin.RegistryAdminService ;
-import org.astrogrid.registry.client.admin.UpdateRegistry;
+import org.astrogrid.registry.client.RegistryDelegateFactory;
 
 /**
  * An Ant task to load a registry entry to a remote Registry.
@@ -116,7 +116,7 @@ public class RegistryLoaderTask
             
             log("sending  "+data+" - to registry at "+ registry);
             // Create our RegistryAdminService client.
-            RegistryAdminService registry = new UpdateRegistry(
+            RegistryAdminService registry = RegistryDelegateFactory.createAdmin(
                 new URL(
                     this.registry
                     )
