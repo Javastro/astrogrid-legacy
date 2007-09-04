@@ -321,7 +321,8 @@ public abstract class Retriever extends BackgroundWorker {
 
 
     protected void doError(Throwable ex) {
-    	ex.printStackTrace();
+    	logger.warn("Service failed " + ex.getMessage());
+    	logger.debug("Exception",ex);
         parent.setStatusMessage(service.getTitle() + " - failed; " + ex.getMessage());
         model.addQueryResult(service,null,QueryResultSummarizer.ERROR,fmt(ex));
     }

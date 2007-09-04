@@ -3,7 +3,9 @@ package org.astrogrid.desktop.modules.plastic;
 import junit.framework.TestCase;
 
 import org.astrogrid.acr.builtin.ACR;
+import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.TestingFinder;
+import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.votech.plastic.PlasticHubListener;
 
 import uk.ac.starlink.plastic.HubTester;
@@ -15,8 +17,12 @@ import uk.ac.starlink.plastic.HubTester;
  *
  */
 public class PlaskitIntegrationTest extends TestCase {
+    private String origSetting;
+    private Configuration conf;
+
     public void setUp() throws Exception {
         super.setUp();
+        System.setProperty(AllPlasticIntegrationTests.NOTIFICATION_KEY,"false");        
         ACR acr = new TestingFinder().find();
         //Make sure that the hub is loaded and started
         PlasticHubListener listener = (PlasticHubListener) acr.getService(PlasticHubListener.class); 
@@ -24,12 +30,12 @@ public class PlaskitIntegrationTest extends TestCase {
     }
     
     public void testPlaskit() {
-
         try {
             HubTester.testHub();
             
         } catch (Throwable e) {
-            assertTrue("One of the plaskit tests failed with error "+e.getMessage(), false);
+            e.printStackTrace();
+            fail("One of the plaskit tests failed with error "+e.getMessage());
         }
     }
 

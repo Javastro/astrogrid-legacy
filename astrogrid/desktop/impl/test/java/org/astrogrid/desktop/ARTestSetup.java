@@ -1,4 +1,4 @@
-/*$Id: ARTestSetup.java,v 1.6 2007/06/18 16:12:52 nw Exp $
+/*$Id: ARTestSetup.java,v 1.7 2007/09/04 18:50:50 nw Exp $
  * Created on 25-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.desktop.framework.SessionManagerInternal;
+import org.astrogrid.desktop.modules.plastic.AllPlasticIntegrationTests;
 
 /** sets up a fixture of a running in-process workbench,
  *
@@ -130,6 +131,7 @@ public class ARTestSetup extends TestSetup{
 		try {
     		logger.info("Creating AR fixture");			
     		System.setProperty("builtin.shutdown.exit", "false");
+    		System.setProperty(AllPlasticIntegrationTests.NOTIFICATION_KEY,"false");
 			fixture = new BuildInprocessWorkbench();
 			//if needed add furtyher config in here - e.g. different java.util.properties base class,
 			// custom system properties, etc.
@@ -151,6 +153,9 @@ public class ARTestSetup extends TestSetup{
 
 /* 
 $Log: ARTestSetup.java,v $
+Revision 1.7  2007/09/04 18:50:50  nw
+Event Dispatch thread related fixes.
+
 Revision 1.6  2007/06/18 16:12:52  nw
 debugged operation of ARTestSetup
 

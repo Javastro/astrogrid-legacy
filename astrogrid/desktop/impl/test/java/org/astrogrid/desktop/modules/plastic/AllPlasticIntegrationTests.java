@@ -6,6 +6,7 @@ import junit.framework.TestSuite;
 public class AllPlasticIntegrationTests {
 
     public static Test suite() {
+        System.setProperty(NOTIFICATION_KEY,"false");
         TestSuite suite = new TestSuite("Integration Tests for PLASTIC");
         //$JUnit-BEGIN$
         suite.addTestSuite(XMLRPCListenerIntegrationTest.class);
@@ -15,5 +16,10 @@ public class AllPlasticIntegrationTests {
         //$JUnit-END$
         return suite;
     }
+
+    /**
+     * 
+     */
+    public static final String NOTIFICATION_KEY = "org.votech.plastic.notificationsenabled";
 
 }

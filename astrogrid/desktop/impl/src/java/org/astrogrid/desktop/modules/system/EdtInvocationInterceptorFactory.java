@@ -1,4 +1,4 @@
-/*$Id: EdtInvocationInterceptorFactory.java,v 1.1 2007/09/04 13:38:38 nw Exp $
+/*$Id: EdtInvocationInterceptorFactory.java,v 1.2 2007/09/04 18:50:50 nw Exp $
  * Created on 31-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,15 +11,17 @@
 package org.astrogrid.desktop.modules.system;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections.Transformer;
 import org.apache.hivemind.ApplicationRuntimeException;
 import org.apache.hivemind.InterceptorStack;
 import org.apache.hivemind.ServiceInterceptorFactory;
@@ -33,8 +35,7 @@ import org.apache.hivemind.service.MethodContribution;
 import org.apache.hivemind.service.MethodFab;
 import org.apache.hivemind.service.MethodIterator;
 import org.apache.hivemind.service.MethodSignature;
-import org.astrogrid.acr.system.SystemTray;
-import org.astrogrid.acr.system.UI;
+import org.astrogrid.desktop.framework.ReflectionHelper;
 /** an interceptor that ensures a method is being invoked on the EDT.
  * if not on the EDT, it will call 'invokeLater' for void typed methods, and 
  * 'invokeAndWait' for methods which return a value with a Runnable encapsulating
@@ -108,10 +109,12 @@ public class EdtInvocationInterceptorFactory implements ServiceInterceptorFactor
         builder.add(" invoke = new ");
         builder.add(invoke);
         builder.add("(");
-        builder.add(ClassFabUtils.getJavaClassName(iface));
-        builder.add(".class.getMethod(");
-        builder.addQuoted(methodName);
-        builder.addln(",$sig),$args,_delegate);");
+//        builder.add(ClassFabUtils.getJavaClassName(iface));
+//        builder.add(".class.getMethod(");
+//        builder.addQuoted(methodName);
+//        builder.addln(",$sig),$args,_delegate);");
+        builder.add((String)fieldMap.get(sig));
+        builder.addln(",$args,_delegate);");
         
         if (isVoid) {
             builder.add(su);
@@ -133,9 +136,8 @@ public class EdtInvocationInterceptorFactory implements ServiceInterceptorFactor
 
 
 
-    protected void addServiceMethods(InterceptorStack stack, ClassFab fab, List parameters)
+    protected void addServiceMethods(InterceptorStack stack, ClassFab fab, MethodMatcher matcher)
     {
-        MethodMatcher matcher = buildMethodMatcher(parameters);
 
         MethodIterator mi = new MethodIterator(stack.getServiceInterface());
 
@@ -198,29 +200,66 @@ public class EdtInvocationInterceptorFactory implements ServiceInterceptorFactor
 
         ClassFab classFab = _factory.newClass(name, Object.class);
 
+        
         classFab.addInterface(serviceInterfaceClass);
 
-        createInfrastructure(stack, classFab);
+        MethodMatcher matcher = buildMethodMatcher(parameters);
 
-        addServiceMethods(stack, classFab, parameters);
+        createInfrastructure(stack, classFab,matcher);
+
+        addServiceMethods(stack, classFab,matcher);
 
 
         return classFab.createClass();
     }
 
-    private void createInfrastructure(InterceptorStack stack, ClassFab classFab)
+    private void createInfrastructure(InterceptorStack stack, ClassFab classFab, MethodMatcher matcher)
     {
-        Class topClass = ClassFabUtils.getInstanceClass(stack.peek(), stack.getServiceInterface());
-
-        classFab.addField("_delegate", topClass);
-
-        classFab.addConstructor(
-            new Class[] {  topClass},
-            null,
-            "{  _delegate = $1;"
-            + " }");
+        final Class serviceInterface = stack.getServiceInterface();
+                
+        BodyBuilder builder = new BodyBuilder();
+        builder.begin();
         
+        // now create and initialize a member variable for each wrapped method
+        String iface = ClassFabUtils.getJavaClassName(serviceInterface);        
+        String reflectionHelper = ClassFabUtils.getJavaClassName(ReflectionHelper.class);
+        MethodIterator mi = new MethodIterator(serviceInterface);
+
+        while (mi.hasNext())
+        {
+            MethodSignature sig = mi.next();            
+            if (includeMethod(matcher, sig)) {
+                String varName =(String)fieldMap.get(sig);
+                classFab.addField(varName,Method.class);
+                builder.add(varName);
+                builder.add(" = ");
+                builder.add(reflectionHelper);
+                builder.add(".getMethodByName(");
+                builder.add(iface);
+                builder.add(".class,");
+                builder.addQuoted(sig.getName());
+                builder.addln(");");
+            }
+        }
+        
+        final Class topClass = ClassFabUtils.getInstanceClass(stack.peek(), serviceInterface);
+        classFab.addField("_delegate", topClass);
+        builder.addln(" _delegate = $1;");
+        builder.end();
+        classFab.addConstructor(new Class[] {topClass},null,builder.toString());
     }
+
+    
+    // map that generates new method names on demand.
+    
+    private final Map fieldMap = MapUtils.lazyMap(new HashMap(),new Transformer() {
+        private int varName = 0;
+        public Object transform(Object arg0) {
+            MethodSignature sig = (MethodSignature)arg0;
+            String str =  sig.getName() + varName++;
+            return str;
+        }
+    });
 
     /**
      * Creates the interceptor.
@@ -277,6 +316,9 @@ public class EdtInvocationInterceptorFactory implements ServiceInterceptorFactor
 
 /* 
 $Log: EdtInvocationInterceptorFactory.java,v $
+Revision 1.2  2007/09/04 18:50:50  nw
+Event Dispatch thread related fixes.
+
 Revision 1.1  2007/09/04 13:38:38  nw
 added debugging for EDT, and adjusted UI to not violate EDT rules.
 

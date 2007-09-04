@@ -1,4 +1,4 @@
-/*$Id: ReflectionHelper.java,v 1.5 2007/06/27 11:10:30 nw Exp $
+/*$Id: ReflectionHelper.java,v 1.6 2007/09/04 18:50:50 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,6 +36,7 @@ public class ReflectionHelper {
                 return ms[i];
             }
         }
+        System.err.println(name + " not found");
         throw new NoSuchMethodException("method " + name + " not found");
     }
     
@@ -78,6 +79,9 @@ public class ReflectionHelper {
 
 /* 
 $Log: ReflectionHelper.java,v $
+Revision 1.6  2007/09/04 18:50:50  nw
+Event Dispatch thread related fixes.
+
 Revision 1.5  2007/06/27 11:10:30  nw
 additional reflection methods.
 

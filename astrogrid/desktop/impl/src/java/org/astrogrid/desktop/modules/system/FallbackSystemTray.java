@@ -214,17 +214,17 @@ public class FallbackSystemTray  implements SystemTrayInternal, ActionListener {
     private Timer timer;
 
 
-    
-    protected SynchronizedInt throbberCallCount = new SynchronizedInt(0);
+    // no need to synchronize, as hivemind ensures this is only ever called from EDT.
+  protected int throbberCallCount = 0;
     
     public void startThrobbing() {
-        if (throbberCallCount.increment() > 0) {    
+        if (++throbberCallCount > 0) {    
                     ico.setIcon(throbbingImage);
         }
     }
 
     public void stopThrobbing() {
-        if (! (throbberCallCount.decrement() > 0)) {
+        if (! (--throbberCallCount> 0)) {
                     ico.setIcon(defaultImage);
         }        
     }

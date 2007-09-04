@@ -1,4 +1,4 @@
-/*$Id: BackgroundExecutorImpl.java,v 1.11 2007/08/22 22:33:42 nw Exp $
+/*$Id: BackgroundExecutorImpl.java,v 1.12 2007/09/04 18:50:50 nw Exp $
  * Created on 30-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -186,8 +186,10 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
         	// of the calling thread, so it'll be passed into the background thread.
         	if (worker.getPrincipal() == null) { // if a principal has already been set, that's fine
         		Principal p = ss.currentSession();
-        		logger.debug("setting principal to " + p.getName());
-        		worker.setPrincipal(p);
+        		if (p != null) {
+        		    logger.debug("setting principal to " + p.getName());
+        		    worker.setPrincipal(p);
+        		}
         	}
             exec.execute(worker);
         } catch (InterruptedException e) {
@@ -246,6 +248,9 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
 
 /* 
 $Log: BackgroundExecutorImpl.java,v $
+Revision 1.12  2007/09/04 18:50:50  nw
+Event Dispatch thread related fixes.
+
 Revision 1.11  2007/08/22 22:33:42  nw
 Complete - task 144: clear view when logging out and loggin in as different user
 

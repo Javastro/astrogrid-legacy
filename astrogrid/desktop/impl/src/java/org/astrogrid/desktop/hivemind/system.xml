@@ -452,6 +452,8 @@ System module.
 	 
 	 <service-point id="ui" interface="org.astrogrid.desktop.modules.system.ui.UIContext">
 	 	The User Interface central model.
+        <!-- 
+         -->
         <interceptor service-id="system.edtInvoke" >
             <include method="show" />
             <include method="hide" />
@@ -830,7 +832,7 @@ SYSTEM TRAY
  -->
 	<service-point id="systray" interface="org.astrogrid.desktop.modules.system.SystemTrayInternal">		
 	System Tray
-                <interceptor service-id="system.edtInvoke" />
+                <interceptor service-id="system.edtInvoke" />               
 	</service-point>
     
 	 <contribution configuration-id="hivemind.Startup" >

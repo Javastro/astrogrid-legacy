@@ -154,7 +154,7 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
 	}
 
 	public void startThrobbing() {
-        if (throbberCallCount.increment() > 0) {
+        if (++throbberCallCount > 0) {
         	try {
 				ReflectionHelper.call(trayIcon,"setImage",throbbingImage);
 			} catch (IllegalArgumentException x) {
@@ -170,7 +170,7 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
 	}
 
 	public void stopThrobbing() {
-        if (! (throbberCallCount.decrement() > 0)) {
+        if (! (--throbberCallCount > 0)) {
         	try {
 				ReflectionHelper.call(trayIcon,"setImage",defaultImage);
 			} catch (IllegalArgumentException x) {
