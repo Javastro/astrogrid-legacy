@@ -17,6 +17,7 @@ import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.hivemind.EventDispatchThreadObjectBuilder;
 import org.astrogrid.desktop.modules.adqlEditor.ADQLEditorPanel;
+import org.astrogrid.desktop.modules.auth.SwingLoginDialogue;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker;
@@ -179,6 +180,10 @@ public class TypesafeObjectBuilderImpl extends EventDispatchThreadObjectBuilder 
     public FileNavigator createFileNavigator(UIComponent parent,
             ActivitiesManager acts) {
         return createFileNavigator(parent,new FixedMatcherEditor(Matchers.trueMatcher()),acts);
+    }
+
+    public SwingLoginDialogue createLoginDialogue() {
+        return (SwingLoginDialogue)create("swingLoginDialogue");
     }
 
 

@@ -268,17 +268,27 @@ COMMUNITY -->	<service-point id="community" interface="org.astrogrid.desktop.mo
 ===========================
 LOGIN DIALOGUE -->
 
-	<service-point id="loginDialogue" visibility="private" interface="org.astrogrid.desktop.modules.auth.LoginDialogue">
-		<invoke-factory model="session"><!--  privacy fix - else values are shared. -->
-			<construct  class="org.astrogrid.desktop.modules.auth.SwingLoginDialogue">
-				<service>votech.vomon</service>
-				<service>system.browser</service>
-				<service>ivoa.registry</service>
-				<string>${astrogrid.community.register}</string>
-				<string>${astrogrid.community.defaultCommunity}</string>
-			</construct>
+    <!--  public visiblity to enable testing -->
+	<service-point id="loginDialogue"  visibility="private" interface="org.astrogrid.desktop.modules.auth.LoginDialogue">
+        <interceptor service-id="system.edtInvoke" />	
+        <invoke-factory model="session"><!--  privacy fix - else values are shared. -->
+            <construct class="org.astrogrid.desktop.modules.auth.LoginDialogueImpl">
+                <service>ui.UiBuilder</service>
+            </construct>
 		</invoke-factory>
 	</service-point>
+    
+    <contribution configuration-id="ui.UiBuilderObjects">
+        <object name="swingLoginDialogue" class="org.astrogrid.desktop.modules.auth.SwingLoginDialogue" >
+        Describes how to build a swing login dialogue.
+            <inject object="service:system.ui" />
+            <inject object="service:votech.vomon"/>            
+            <inject object="service:system.browser" />
+            <inject object="service:ivoa.registry" />  
+            <inject object="literal:string:${astrogrid.community.register}" />
+            <inject object="literal:string:${astrogrid.community.defaultCommunity}" />
+        </object>
+    </contribution>            
 	
 	<!-- alternative implementation of the login dialogue, when running in headless mode -->
 	<implementation service-id="loginDialogue" if="property astrogrid.loginDialogue.disabled">

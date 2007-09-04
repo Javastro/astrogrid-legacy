@@ -3,6 +3,8 @@
  */
 package org.astrogrid;
 
+import org.astrogrid.desktop.modules.ui.EdtViolationIntegrationTest;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -21,6 +23,8 @@ public class AllRepeatableTests {
 		suite.addTest(AbsolutelyAllIntegrationTests.suite());
 	// I find this a bit too unreliable - run separately.
 	//	suite.addTest(BestSystemTests.suite());
+		// and finally, run the edt violation tests.
+		suite.addTest(EdtViolationIntegrationTest.suite());
 		return suite;
 	}
 

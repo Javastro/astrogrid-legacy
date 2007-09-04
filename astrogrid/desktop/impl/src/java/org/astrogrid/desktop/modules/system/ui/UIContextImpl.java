@@ -110,40 +110,24 @@ public class UIContextImpl implements UIContext{
 	
 	private final EventList tasksList; // list of running tasks
 	
-	// causes all windows to be hidden.
+	// causes all windows to be hidden -  - hivemind ensures this is always on EDT
 	public void hide() {
-		if (SwingUtilities.isEventDispatchThread()) {
-			setVisible(false);
-		} else {
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					setVisible(false);
-				}
-			});
-		}
+			for (Iterator i = windows.iterator(); i.hasNext();) {
+            	UIComponent c = (UIComponent) i.next();
+            	c.setVisible(false);
+            }		
+            visibleState.setEnabled(false);
+		
 	}
-	// show all windows.
+	// show all windows. - hivemind ensures this is always on EDT
 	public void show() {
-		if (SwingUtilities.isEventDispatchThread()) {
-				setVisible(true);
-			} else {
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						setVisible(true);
-					}
-				});
-			}
+				for (Iterator i = windows.iterator(); i.hasNext();) {
+                	UIComponent c = (UIComponent) i.next();
+                	c.setVisible(true);
+                }		
+                visibleState.setEnabled(true);
+			
 	}
-	// always runs on EDT
-	private void setVisible(boolean b){
-		for (Iterator i = windows.iterator(); i.hasNext();) {
-			UIComponent c = (UIComponent) i.next();
-			c.setVisible(b);
-		}		
-		visibleState.setEnabled(b);
-	}
-	
-	
 	public ButtonModel getLoggedInModel() {
 		return loggedInState;
 	}
@@ -157,42 +141,22 @@ public class UIContextImpl implements UIContext{
 	public void setLoggedIn(boolean b) {
 		loggedInState.setEnabled(b);
 	}
-	
+	//  - hivemind ensures this is always on EDT
 	public void setStatusMessage(final String arg0) {
-		if (SwingUtilities.isEventDispatchThread()) {
 			findMainWindow().setStatusMessage(arg0);
-		} else {
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					findMainWindow().setStatusMessage(arg0);					
-				}
-			});
-		}
+	
 	}
 	
 	private int throbberCallCount = 0;
+	 //- hivemind ensures this is always on EDT
 	public void startThrobbing() {
-		if (SwingUtilities.isEventDispatchThread()) {
 			throbbingState.setEnabled(++throbberCallCount > 0);
-		} else {
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					throbbingState.setEnabled(++throbberCallCount > 0);
-				}
-			});
-		}		
-		
+	
 	}
+	// - hivemind ensures this is always on EDT
 	public void stopThrobbing() {
-		if (SwingUtilities.isEventDispatchThread()) {
 			throbbingState.setEnabled(--throbberCallCount > 0);
-		} else {
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					throbbingState.setEnabled(--throbberCallCount > 0);
-				}
-			});
-		}		
+	
 	}
 	
 	public void registerWindow(UIComponent window) {

@@ -556,7 +556,6 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 			try {
 				//@@todo causes a long pause - do this on bg threa somehow.
 			    // however, only happens for non cea-apps. (cone, etc)
-			    System.err.println("finding app");
 				cea = apps.getCeaApplication(r.getId());
 			} catch (ACRException x) {
 				logger.error("ServiceException",x);

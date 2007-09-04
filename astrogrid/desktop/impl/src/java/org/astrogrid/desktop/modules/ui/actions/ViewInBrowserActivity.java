@@ -61,7 +61,7 @@ public class ViewInBrowserActivity extends AbstractFileActivity {
 			        // download file to temporary location, and then open it
 			        String name = StringUtils.substringBeforeLast(fo.getName().getBaseName(),".");
 			        String ext = StringUtils.substringAfterLast(fo.getName().getBaseName(),".");
-			        File f = File.createTempFile(name,"." + ext);
+			        File f = File.createTempFile("view-in-browser-" + name,"." + ext);
 			        f.deleteOnExit();
 			        logger.debug(f);
 			        FileObject tmp = vfs.resolveFile(f.toURI().toString());

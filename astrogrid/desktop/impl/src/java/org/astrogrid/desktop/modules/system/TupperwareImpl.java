@@ -95,7 +95,9 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener {
 			URI uri = (URI)i.next();
 			applicationRegisteredMessageHandler.interrogatePlasticApp(uri);
 		}
+
 	}
+
 	private final UIContext parent;
 	private final URI myPlasticId;
 	private final EventList  model;

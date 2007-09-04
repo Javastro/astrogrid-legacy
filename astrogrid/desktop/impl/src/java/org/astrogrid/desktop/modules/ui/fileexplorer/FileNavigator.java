@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Observable;
 
 import javax.swing.JMenuItem;
@@ -414,25 +415,28 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
                     files.getReadWriteLock().writeLock().unlock();
                 }
                 // populate the parents.
-                try {
-                    upList.getReadWriteLock().writeLock().lock();
-                    upList.clear();
-                    FileName fn = shown.getName().getParent();
-                    while(fn != null) {
-                        upList.add(new UpMenuItem(fn));
-                        fn = fn.getParent();
-                    }
-                } finally {
-                    upList.getReadWriteLock().writeLock().unlock();
+                java.util.List parents = new java.util.ArrayList();                    
+                upList.clear();
+                FileName fn = shown.getName().getParent();
+                while(fn != null) {
+                    parents.add(fn);
+                    fn = fn.getParent();
                 }
                 // listen for changes.
                 final FileSystem fileSystem = shown.getFileSystem();
                 isRoot = shown == fileSystem.getRoot();
                 fileSystem.addListener(shown,FileNavigator.this);            
-                return null;
+                return parents;
         }
         // update the ui.
         protected void doFinished(Object result) {
+            List parents = (java.util.List) result;
+            upList.clear();
+            for (Iterator i = parents.iterator(); i.hasNext();) {
+                FileName name = (FileName) i.next();
+                upList.add(new UpMenuItem(name));
+            }
+                        
             loc.setText(loc.getURI());
             if (requested != shown) { // we're meant to be showing a child of this folder.
                 int ix = model.getChildrenList().indexOf(requested);

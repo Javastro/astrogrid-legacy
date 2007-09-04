@@ -13,6 +13,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.swing.RepaintManager;
+
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
@@ -24,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.hivemind.GenerateHivedoc;
 import org.astrogrid.desktop.hivemind.Launcher;
 import org.astrogrid.desktop.hivemind.ListProperties;
+import org.jdesktop.swinghelper.debug.CheckThreadViolationRepaintManager;
 
 /** General Commandline Parser for different variants of AR
  * 
@@ -125,7 +128,7 @@ class CmdLineParser {
 			.withDescription("URL location of additional module file")
 			.create("addModuleURL"));
 		
-
+		o.addOption(OptionBuilder.withDescription("Enable UI Debugging").create("debugEDT"));
 		o.addOption(OptionBuilder.withDescription("Generate Hivedoc and exit").create("hivedoc"));
 		return o;
 	}
@@ -190,6 +193,11 @@ class CmdLineParser {
 		String[] moduleURLs = commandLine.getOptionValues("addModuleURL");
 		if (moduleURLs != null ) {
 			processModuleURLs(l, moduleURLs);		
+		}
+		
+		// enable EDT debugging
+		if (commandLine.hasOption("debugEDT")) {
+		    RepaintManager.setCurrentManager(new CheckThreadViolationRepaintManager());
 		}
 	}
 	/**

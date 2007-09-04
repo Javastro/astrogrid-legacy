@@ -435,6 +435,7 @@ STYLESHEET TRANSFORMER
 		<stylesheet regexp="." sheet="xmlverbatim.xsl" />
 	</contribution>
 		
+
 	
  </module>
  

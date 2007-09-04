@@ -4,6 +4,7 @@ import javax.security.auth.Subject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.astrogrid.UserInformation;
 import org.astrogrid.community.common.exception.CommunityIdentifierException;
 import org.astrogrid.community.common.exception.CommunitySecurityException;
 import org.astrogrid.community.common.exception.CommunityServiceException;
@@ -32,44 +33,39 @@ class LoginScriptEnvironment implements ScriptEnvironment {
      * @throws CommunityResolverException
      *
      */
-    public LoginScriptEnvironment(String name,
-                           String community,
-                           String password,
-                           String trustAnchors)
+    public LoginScriptEnvironment(UserInformation proposed, String trustAnchors)
         throws CommunityResolverException,
                CommunityServiceException,
                CommunitySecurityException,
                CommunityIdentifierException,
                RegistryException {
-
      // Establish grid credentials by logging on at a MyProxy service.
      // Not all communities have these services yet; trying to use a
      // non-existant MyProxy service causes a CommunityResolverException.
      // In this case, use the older method of logging on to a web service
      // at the community.
-     UserIvorn userIvorn = new UserIvorn(community, name, "");
-     HomeIvorn homeIvorn = new HomeIvorn(community, name, name + "/"); 
+     UserIvorn userIvorn = new UserIvorn(proposed.getCommunity(), proposed.getName(), "");
+     HomeIvorn homeIvorn = new HomeIvorn(proposed.getCommunity(), proposed.getName(), proposed.getName() + "/"); 
      Subject subject;
      CommunityPasswordResolver security = new CommunityPasswordResolver(); 
      try {
        logger.info("Logging in using MyProxy...");
        subject = security.checkPassword(userIvorn.toString(),
-                                        password,
+                                        proposed.getPassword(),
                                         48*3600, // duration of validity in seconds
                                         trustAnchors);
      }
      catch (CommunityResolverException e) {
        logger.info("No MyProxy service found; logging in using the AG web-service...");
        logger.debug("Stack Trace",e);
-       security.checkPassword(userIvorn.toString(),
-                              password);
+       security.checkPassword(userIvorn.toString(),proposed.getPassword());
        subject = new Subject(); // empty of credentials
      }
      this.guard = new SecurityGuard(subject);
 
      this.guard.getSubject().getPrincipals().add(userIvorn);
      this.guard.getSubject().getPrincipals().add(homeIvorn);
-     this.guard.getSubject().getPrivateCredentials().add(password);
+     this.guard.getSubject().getPrivateCredentials().add(proposed.getPassword());
    }
 
     /**

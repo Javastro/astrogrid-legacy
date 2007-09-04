@@ -88,6 +88,7 @@ ASTROSCOPE
  -->
 	<service-point id="astroscope" interface="org.astrogrid.desktop.modules.ui.AstroScopeInternal">
 			<interceptor service-id="system.snitchInterceptor" />
+            <interceptor service-id="system.edtInvoke" />
 		<invoke-factory> 
 		<construct class="org.astrogrid.desktop.modules.ui.AstroScopeFactory" >
 						<service>UiBuilder</service>
@@ -194,6 +195,7 @@ ASTROSCOPE
 		<interceptor service-id="system.snitchInterceptor" >
             <exclude method="hide" />
         </interceptor>  
+            <interceptor service-id="system.edtInvoke" />        
 		<invoke-factory>   
 			<construct class="org.astrogrid.desktop.modules.ui.TaskRunnerFactory">
 						<service>UiBuilder</service>
@@ -328,6 +330,7 @@ Query Builder
  	<service-point id="queryBuilder" 
 	interface="org.astrogrid.desktop.modules.ui.QueryBuilderInternal">
         <interceptor service-id="system.snitchInterceptor" />
+            <interceptor service-id="system.edtInvoke" />        
         <invoke-factory>   
             <construct class="org.astrogrid.desktop.modules.ui.QueryBuilderFactory">
                         <service>UiBuilder</service>
@@ -375,6 +378,12 @@ Query Builder
                 <exclude method="perform" />
                 <exclude method="setNextHandler" />
             </interceptor>
+            <interceptor service-id="system.edtInvoke"> 
+                 <exclude method="appendHandler" />
+                <exclude method="getHandledMessages" />
+                <exclude method="perform" />
+                <exclude method="setNextHandler" />
+             </interceptor>        
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ui.VOExplorerFactoryImpl" >
 				<service>UiBuilder</service>
@@ -432,6 +441,12 @@ FILE EXPLORER
                 <exclude method="perform" />
                 <exclude method="setNextHandler" />
         </interceptor>
+            <interceptor service-id="system.edtInvoke" >
+                <exclude method="appendHandler" />
+                <exclude method="getHandledMessages" />
+                <exclude method="perform" />
+                <exclude method="setNextHandler" />
+            </interceptor>                    
  		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ui.FileExplorerFactoryImpl" >
 				<service>UiBuilder</service>

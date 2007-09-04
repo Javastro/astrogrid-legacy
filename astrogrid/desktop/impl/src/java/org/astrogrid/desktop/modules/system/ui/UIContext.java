@@ -20,6 +20,10 @@ import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import ca.odell.glazedlists.EventList;
 
 /** central context object - used to store data common to all ui.
+ * 
+ * Any models returned from methods in this class aren't EDT-protecterd - 
+ * it's the responsibility of the caller of these methods to access the model in 
+ * an EDT-responsible way.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 10, 20077:06:31 PM
  */
@@ -50,11 +54,18 @@ public interface UIContext  extends UI{
 	  
 	/** button model that indicates logged in status using 'enabled' property
 	 * makes it simple to plug into a button and use it to flip between enabled / disabled icons
+	 * 
+	 * it's the caller's responsibility to use this in an EDT-sensitive manner.
 	 */
 	public ButtonModel getLoggedInModel() ;
-	/** indicates throbber status. same usage as {@link #getLoggedInModel} */
+	/** indicates throbber status. same usage as {@link #getLoggedInModel} 
+	 * 
+	 *      * it's the caller's responsibility to use this in an EDT-sensitive manner.
+	 * */
 	public ButtonModel getThrobbingModel() ;
-	/** indicates global visiblily of the UI. same usage as {@link #getLoggedInModel} */
+	/** indicates global visiblily of the UI. same usage as {@link #getLoggedInModel} 
+	 * 
+	 *      * it's the caller's responsibility to use this in an EDT-sensitive manner.*/
 	public ButtonModel getVisibleModel() ;
 	/** a dynamic, event-firing list of window. unmodifiable. */
 	public EventList getWindowList();

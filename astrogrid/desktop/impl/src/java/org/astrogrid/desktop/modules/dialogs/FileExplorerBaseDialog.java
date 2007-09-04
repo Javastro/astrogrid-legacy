@@ -74,14 +74,6 @@ public class FileExplorerBaseDialog extends BaseDialog implements DocumentListen
         this.view = builder.createStorageView(parent,acts);
         view.setSingleSelectionMode(true);
         view.getNavigator().addNavigationListener(this);
-//        (new BackgroundWorker(parent,"Resolving home")) {
-//
-//            protected Object construct() throws Exception {
-//                view.getNavigator().
-//                selected = view.getNavigator().current(); // will be 'home'
-//                return null;
-//            }
-//        }).start();
         view.getLocation().getDocument().addDocumentListener(this);
         JPanel main = parent.getMainPanel();
         parent.remove(main); // remove from this uicomponent - as we want to embed it in the dialog.

@@ -25,8 +25,8 @@ RESOURCE (FILE) CHOOSER
  -->
 	<service-point id="resourceChooser" interface="org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal">
 		Select a local or myspace file
-        <!--  some encapsilation leaking from ui here - would be nice to have an object builder which knew how to build this.. -->
-		<invoke-factory model="session">
+  	    <interceptor service-id="system.edtInvoke" />
+    	<invoke-factory model="session">
 			<construct class="org.astrogrid.desktop.modules.dialogs.ResourceChooserImpl" >
 			    <service>system.ui</service>
                 <service>ui.UiBuilder</service>		
@@ -45,6 +45,7 @@ TOOL EDITOR - FIXME - reimplement using regExplorer.
 	<!-- todo: make non-singleton? -->			
 	<service-point id="toolEditor" interface="org.astrogrid.desktop.modules.dialogs.ToolEditorInternal">
 		Edit a remote application invocation.
+            <interceptor service-id="system.edtInvoke" />        
 		<invoke-factory model="session">
 			<construct class="org.astrogrid.desktop.modules.dialogs.ToolEditorImpl" >
 				<service>system.ui</service>
@@ -66,9 +67,10 @@ TOOL EDITOR - FIXME - reimplement using regExplorer.
 ============================
 REGISTRY GOOGLE
  -->
-		<!-- FIXME: alter to use an instance of voexplorer here instead. -->
+		<!-- FIXME: incomplete -->
 	<service-point id="registryGoogle" interface="RegistryGoogle">
 		Select a registry resource
+            <interceptor service-id="system.edtInvoke" />        
 		<invoke-factory model="session">
 			<construct class="org.astrogrid.desktop.modules.dialogs.RegistryGoogleImpl" >
 				<service>system.ui</service>

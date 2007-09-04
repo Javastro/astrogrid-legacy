@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.3 2007/06/18 16:31:19 nw Exp $
+/*$Id: CommunityImpl.java,v 1.4 2007/09/04 13:38:37 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -66,19 +66,21 @@ public class CommunityImpl implements CommunityInternal {
     	if (isLoggedIn()) { //already logged in.
     		return;
     	}
-        loginDialogue.setUser(username);
-        loginDialogue.setPassword(password);
-        loginDialogue.setCommunity(community);
-        authenticate();
+        try {
+            authenticate(LoginFactory.mkUserInfo(community,username,password));
+        } catch (URISyntaxException x) {
+            throw new ServiceException("Failed to create user ivorn - invalid syntax",x);
+        }
     }
 
     public void logout() {
         userInformation = null;
-        loginDialogue.setPassword("");
         notifyListeners(false);
         ui.setStatusMessage("Not Logged In");
         ui.setLoggedIn(false);
     }
+    
+
 
     
     public UserInformation getUserInformation()  {
@@ -88,60 +90,39 @@ public class CommunityImpl implements CommunityInternal {
     public boolean isLoggedIn() {
         return userInformation != null;
     }
-    /** @todo strictly speaking this should call swing worker to put this on the event queue thread. I think  
-     * 
-     * however, it is just a dialogue. try putting the method under synchronization - see what this does..
-     * - seems to make it better. means that if  2 threads are trying to get the user to log in, only one will be able to - 
-     * second thread will wait.
-     * */
+
     
     public synchronized void guiLogin() {
-        if (isLoggedIn()) { // we're already logged in - no need to do anything.
-            return;
-        }
         while(!isLoggedIn()) {
-            if (! (loginDialogue.showDialog())) { // cancel was hit.
+            UserInformation proposed = loginDialogue.show();
+            if (proposed == null) { // cancel was hit.
                 break;
             }
             try {
-            	logger.info("About to authenticate at the community...");
-                authenticate();
-                logger.info("Authenticated");
+                authenticate(proposed);
             } catch (Exception e) {
             	logger.info("Authentication failed.");
                 UIComponentImpl.showError(null,"Failed to login",e);
             }
         }                    
     }
-     
-    /** uses fields in loginDialogue to autenticate against the server 
-     * @throws RegistryException
-     * @throws CommunityIdentifierException
-     * @throws CommunitySecurityException
-     * @throws CommunityServiceException
-     * @throws CommunityResolverException*/
-    private boolean authenticate() throws SecurityException, ServiceException{
-        logger.info("In authenticate");
+
+    private boolean authenticate(UserInformation proposed) throws SecurityException, ServiceException{
+        logger.info("Logging in " + 
+                proposed.getName() +
+                "@" +
+                proposed.getCommunity());
         try {
             ui.setStatusMessage("Logging in..");
-
-            logger.info("Logging in " + 
-                        loginDialogue.getUser() +
-                        "@" +
-                        loginDialogue.getCommunity());
-            ScriptEnvironment env = LoginFactory.login(loginDialogue.getUser(),loginDialogue.getCommunity(),loginDialogue.getPassword());
+            ScriptEnvironment env = LoginFactory.login(proposed);
+            // if we've gotten this far, we've successfullly logged in.
             this.guard = env.getSecurityGuard();
-            userInformation = new UserInformation(
-                new URI(env.getUserIvorn().toString())
-                ,loginDialogue.getUser()
-                ,loginDialogue.getPassword()
-                ,loginDialogue.getCommunity()
-               );
-           ui.setStatusMessage("Logged in as " + env.getUserIvorn());
+            this.userInformation = proposed;
+           ui.setStatusMessage("Logged in as " + userInformation.getId());
            ui.setLoggedIn(true);
            // snitch now they've successfully logged in.
            Map m = new HashMap();
-           m.put("username",loginDialogue.getCommunity() + "/" + loginDialogue.getUser());
+           m.put("username",userInformation.getCommunity() + "/" + userInformation.getName());
            snitch.snitch("LOGIN",m);           
            notifyListeners(true);
         } catch (CommunityResolverException e) {
@@ -154,14 +135,14 @@ public class CommunityImpl implements CommunityInternal {
             throw new SecurityException(e);
         } catch (RegistryException e) {
             throw new ServiceException(e);
-        } catch (URISyntaxException e) {
-            throw new ServiceException(e);
         } finally {
             if (!isLoggedIn()) {
                 ui.setStatusMessage("");
                 ui.setLoggedIn(false);
             }
         } 
+
+        logger.info("Authenticated");        
         return true;
     }
 
@@ -218,6 +199,9 @@ public class CommunityImpl implements CommunityInternal {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.4  2007/09/04 13:38:37  nw
+added debugging for EDT, and adjusted UI to not violate EDT rules.
+
 Revision 1.3  2007/06/18 16:31:19  nw
 check if we're logged in before logging in.
 

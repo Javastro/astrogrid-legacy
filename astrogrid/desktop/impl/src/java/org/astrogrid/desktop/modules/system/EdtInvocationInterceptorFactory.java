@@ -1,4 +1,4 @@
-/*$Id: ThrobberInterceptorFactory.java,v 1.4 2007/09/04 13:38:37 nw Exp $
+/*$Id: EdtInvocationInterceptorFactory.java,v 1.1 2007/09/04 13:38:38 nw Exp $
  * Created on 31-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,10 +11,15 @@
 package org.astrogrid.desktop.modules.system;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.SwingUtilities;
+
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.hivemind.ApplicationRuntimeException;
 import org.apache.hivemind.InterceptorStack;
 import org.apache.hivemind.ServiceInterceptorFactory;
@@ -30,23 +35,25 @@ import org.apache.hivemind.service.MethodIterator;
 import org.apache.hivemind.service.MethodSignature;
 import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.acr.system.UI;
-/** an interceptor that causes things to throb when messages are called 
- * Also traps and lifts unknown runtime exceptions. I'm unsure whether this is 
- * a good idea - obviously good for remote clients, but not so good for internal clients.
+/** an interceptor that ensures a method is being invoked on the EDT.
+ * if not on the EDT, it will call 'invokeLater' for void typed methods, and 
+ * 'invokeAndWait' for methods which return a value with a Runnable encapsulating
+ * the required method.
  * 
+ * 
+ * not possible to create 'inner classes' in the expression language of JavaAssist
+ *so using reflection to do the actual invocation - hopefully shouldn't be 
+ *too inefficient, as none of this is in tight loops.
  * */
-public class ThrobberInterceptorFactory implements ServiceInterceptorFactory {
+public class EdtInvocationInterceptorFactory implements ServiceInterceptorFactory {
 
-    public ThrobberInterceptorFactory(UI ui, SystemTray tray,ClassFactory factory) {
-        this.ui = ui;
-        this.tray = tray;
+    public EdtInvocationInterceptorFactory(ClassFactory factory) {
         this._factory = factory;
+        runSignature = (new MethodIterator(Runnable.class)).next();        
     }
-    protected final UI ui;
-    protected final SystemTray tray;
-
     
     protected final ClassFactory _factory;
+    private final MethodSignature runSignature;
 
     /**
      * Creates a method that delegates to the _delegate object; this is used for
@@ -66,50 +73,65 @@ public class ThrobberInterceptorFactory implements ServiceInterceptorFactory {
         classFab.addMethod(Modifier.PUBLIC, sig, builder.toString());
     }
 
-    protected void addServiceMethodImplementation(ClassFab classFab, MethodSignature sig)
+    protected void addServiceMethodImplementation(Class iface,ClassFab classFab, MethodSignature sig)
     {
         Class returnType = sig.getReturnType();
         String methodName = sig.getName();
 
         boolean isVoid = (returnType == void.class);
-
+        
+        // now create the interceptor method.
         BodyBuilder builder = new BodyBuilder();
-
+        String su = ClassFabUtils.getJavaClassName(SwingUtilities.class);
+        String invoke = ClassFabUtils.getJavaClassName(Invoke.class);
+        String ret = ClassFabUtils.getJavaClassName(returnType);
+        
         builder.begin();
-        builder.addln(" javax.swing.SwingUtilities.invokeLater(_startThrobbing); ");
-        builder.addln(" try { ");
-
-
+        builder.add("if (");
+        builder.add(su);
+        builder.addln(".isEventDispatchThread()) { ");
         if (!isVoid)
         {
-            builder.add(ClassFabUtils.getJavaClassName(returnType));
+            builder.add(ret);
             builder.add(" result = ");
         }
 
         builder.add("_delegate.");
         builder.add(methodName);
         builder.addln("($$);");
-        
-         
+                 
         if (!isVoid)  {
             builder.addln("return result;");
         }
-        builder.addln("} catch (RuntimeException e) {"); // catch runtime exceptions that are unknown to the client, and lift to runtime exception.
-        builder.addln(" if (e.getClass().getName().startsWith(\"java.\")) { ");
-        builder.addln(" throw e; ");
-        builder.addln(" } else { ");
-        builder.addln(" throw new RuntimeException(e.getClass().getName() + \" : \" + e.getMessage()); ");
-        builder.addln(" } ");
-        builder.addln(" } finally { ");
-        builder.addln(" javax.swing.SwingUtilities.invokeLater(_stopThrobbing); ");
-        builder.addln("  } ");
-
+        builder.addln("} else {");
+        builder.add(invoke);
+        builder.add(" invoke = new ");
+        builder.add(invoke);
+        builder.add("(");
+        builder.add(ClassFabUtils.getJavaClassName(iface));
+        builder.add(".class.getMethod(");
+        builder.addQuoted(methodName);
+        builder.addln(",$sig),$args,_delegate);");
+        
+        if (isVoid) {
+            builder.add(su);
+            builder.addln(".invokeLater(invoke);");
+        } else {
+            builder.add(su);
+            builder.addln(".invokeAndWait(invoke);");
+            builder.add("return (");
+            builder.add(ret);
+            builder.add(")invoke.getResult();");
+        }
+        builder.addln("}");
         builder.end();
 
         MethodFab methodFab = classFab.addMethod(Modifier.PUBLIC, sig, builder.toString());
 
 
     }
+
+
 
     protected void addServiceMethods(InterceptorStack stack, ClassFab fab, List parameters)
     {
@@ -121,14 +143,17 @@ public class ThrobberInterceptorFactory implements ServiceInterceptorFactory {
         {
             MethodSignature sig = mi.next();
 
-            if (includeMethod(matcher, sig))
-                addServiceMethodImplementation(fab, sig);
-            else
+            if (includeMethod(matcher, sig)) {
+                addServiceMethodImplementation(stack.getServiceInterface(),fab, sig);
+            }
+            else {
                 addPassThruMethodImplementation(fab, sig);
+            }
         }
 
-        if (!mi.getToString())
+        if (!mi.getToString()) {
             addToStringMethod(stack, fab);
+        }
     }
 
     /**
@@ -139,7 +164,7 @@ public class ThrobberInterceptorFactory implements ServiceInterceptorFactory {
     {
         ClassFabUtils.addToStringMethod(
             fab,
-            "<ThrobbingInterceptor for "
+            "<EdtInvocationInterceptor for "
                 + stack.getServiceExtensionPointId()
                 + "("
                 + stack.getServiceInterface().getName()
@@ -179,6 +204,7 @@ public class ThrobberInterceptorFactory implements ServiceInterceptorFactory {
 
         addServiceMethods(stack, classFab, parameters);
 
+
         return classFab.createClass();
     }
 
@@ -186,19 +212,14 @@ public class ThrobberInterceptorFactory implements ServiceInterceptorFactory {
     {
         Class topClass = ClassFabUtils.getInstanceClass(stack.peek(), stack.getServiceInterface());
 
-        classFab.addField("_ui", UI.class);
-        classFab.addField("_tray",SystemTray.class);
-
         classFab.addField("_delegate", topClass);
-        classFab.addField("_startThrobbing",Runnable.class);
-        classFab.addField("_stopThrobbing",Runnable.class);
 
         classFab.addConstructor(
-            new Class[] { UI.class,SystemTray.class, topClass ,Runnable.class,Runnable.class},
+            new Class[] {  topClass},
             null,
-            "{ _ui = $1; _tray = $2; _delegate = $3;"
-            + "_startThrobbing = $4; _stopThrobbing = $5;"
+            "{  _delegate = $1;"
             + " }");
+        
     }
 
     /**
@@ -224,7 +245,7 @@ public class ThrobberInterceptorFactory implements ServiceInterceptorFactory {
         catch (Exception ex)
         {
             throw new ApplicationRuntimeException(
-                    "Couldn't produce throbbing interceptor",ex);
+                    "Couldn't produce EDTInvocation interceptor",ex);
         }
     }
 
@@ -247,32 +268,16 @@ public class ThrobberInterceptorFactory implements ServiceInterceptorFactory {
 
         Constructor c = interceptorClass.getConstructors()[0];
 
-        return c.newInstance(new Object[] { this.ui, this.tray, stackTop,this.startThrobber,this.stopThrobber });
+        return c.newInstance(new Object[] {  stackTop });
     }
-    
-    private final Runnable startThrobber = new Runnable() {
 
-        public void run() {
-            ui.startThrobbing();
-            tray.startThrobbing();
-        }
-    };
-    private final Runnable stopThrobber = new Runnable() {
-
-        public void run() {
-            ui.stopThrobbing();
-            tray.stopThrobbing();
-        }
-    };
-
-
-
+   
 }
 
 
 /* 
-$Log: ThrobberInterceptorFactory.java,v $
-Revision 1.4  2007/09/04 13:38:37  nw
+$Log: EdtInvocationInterceptorFactory.java,v $
+Revision 1.1  2007/09/04 13:38:38  nw
 added debugging for EDT, and adjusted UI to not violate EDT rules.
 
 Revision 1.3  2006/06/15 09:51:30  nw

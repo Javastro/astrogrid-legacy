@@ -38,6 +38,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
 import org.apache.commons.logging.Log;
@@ -66,7 +67,7 @@ import com.l2fprod.common.swing.plaf.blue.BlueishButtonBarUI;
  * @author Noel Winstanley
  * @since Jan 12, 20074:19:31 PM
  */
-public class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChangeListener {
+class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChangeListener {
 	/**
 	 * Logger for this class
 	 */
@@ -120,7 +121,6 @@ public class PreferenceEditorDialogue  extends JPanel implements Runnable, Prope
 
 	/** displays the dialogue and takes action on 'ok' or 'cancel' */
 	public void run() {
-
 		// reset / update all fields
 		for (Iterator i1 = inputComponents.iterator(); i1.hasNext();) {
 			JComponent c1 = (JComponent) i1.next();
@@ -510,25 +510,26 @@ public class PreferenceEditorDialogue  extends JPanel implements Runnable, Prope
 				// set the verifier.
 				c.setInputVerifier(urlVerifier);
 				// append a browser open dialogue.
-				JButton b = new JButton("Test") {{
-					setToolTipText("Shpw this URL in webbrowser");
-					addActionListener(new ActionListener() {
-
-						public void actionPerformed(ActionEvent e) {
-							try {
-								URL u = new URL( ((ValueAccess)c).getValue());
-								cxt.getBrowser().openURL(u);
-							} catch (MalformedURLException x) {
-								// unlikelyt to happen, as input verifier should have caught this..
-								JOptionPane.showMessageDialog(c, "Failed to open URL - it's not valid");
-							} catch (ACRException x) {
-								logger.warn("Failed to open browser",x);
-							}
-						}
-					});
-				}};
-				
-				panel.add(b);
+				//Removed - BZ 2301
+//				JButton b = new JButton("Test") {{
+//					setToolTipText("Shpw this URL in webbrowser");
+//					addActionListener(new ActionListener() {
+//
+//						public void actionPerformed(ActionEvent e) {
+//							try {
+//								URL u = new URL( ((ValueAccess)c).getValue());
+//								cxt.getBrowser().openURL(u);
+//							} catch (MalformedURLException x) {
+//								// unlikelyt to happen, as input verifier should have caught this..
+//								JOptionPane.showMessageDialog(c, "Failed to open URL - it's not valid");
+//							} catch (ACRException x) {
+//								logger.warn("Failed to open browser",x);
+//							}
+//						}
+//					});
+//				}};
+//		`		
+//				panel.add(b);
 			} else if (Preference.BOOLEAN.equals(p.getUnits())) {
 				// ignore
 			} else { // unrecognized - fallback.

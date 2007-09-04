@@ -85,27 +85,29 @@ public class FallbackSystemTray  implements SystemTrayInternal, ActionListener {
     }
 
     public void run() {
-        timer = new Timer(5000,this);
-        timer.setRepeats(false);
-        
-        currentPopups = new ArrayList();
-        
-        ico.addActionListener(window);
-        // NB: can't set tooltip - as this seems to destroy the mouse draggable behaviour - how odd.
-        //ico.setToolTipText("Astro Runtime");
-        javax.swing.JPanel p = new JPanel();
-        p.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(1,1,1,1)
-                ,"Astro Runtime"
-                ,TitledBorder.LEFT
-                ,TitledBorder.TOP
-                ,UIConstants.SMALL_DIALOG_FONT
-                ,Color.GRAY));
-        p.add(ico);
-        window.getContentPane().add(p);
-        
-        window.pack();
-        window.setVisible(true);
+
+                timer = new Timer(5000,FallbackSystemTray.this);
+                timer.setRepeats(false);
+
+                currentPopups = new ArrayList();
+
+                ico.addActionListener(window);
+                // NB: can't set tooltip - as this seems to destroy the mouse draggable behaviour - how odd.
+                //ico.setToolTipText("Astro Runtime");
+                javax.swing.JPanel p = new JPanel();
+                p.setBorder(BorderFactory.createTitledBorder(
+                        BorderFactory.createEmptyBorder(1,1,1,1)
+                        ,"Astro Runtime"
+                        ,TitledBorder.LEFT
+                        ,TitledBorder.TOP
+                        ,UIConstants.SMALL_DIALOG_FONT
+                        ,Color.GRAY));
+                p.add(ico);
+                window.getContentPane().add(p);
+
+                window.pack();
+                window.setVisible(true);
+
     }
     
     //@todo add in icons to this.

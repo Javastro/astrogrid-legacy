@@ -452,6 +452,15 @@ System module.
 	 
 	 <service-point id="ui" interface="org.astrogrid.desktop.modules.system.ui.UIContext">
 	 	The User Interface central model.
+        <interceptor service-id="system.edtInvoke" >
+            <include method="show" />
+            <include method="hide" />
+            <include method="setLoggedIn" />
+            <include method="setStatusMessage" />
+            <include method="startThrobbing" />
+            <include method="stopThrobbing" />                                                
+            <exclude method="*" />
+        </interceptor>           
 	 	<invoke-factory>
 	 		<construct class="org.astrogrid.desktop.modules.system.ui.UIContextImpl">
 	 			<service>configuration</service>
@@ -821,7 +830,9 @@ SYSTEM TRAY
  -->
 	<service-point id="systray" interface="org.astrogrid.desktop.modules.system.SystemTrayInternal">		
 	System Tray
+                <interceptor service-id="system.edtInvoke" />
 	</service-point>
+    
 	 <contribution configuration-id="hivemind.Startup" >
         <startup object="service:systray" />
     </contribution>
@@ -1264,7 +1275,24 @@ MAC SETUP
 	<implementation service-id="throbber"  if="(property system.ui.disabled) and (property system.systray.disabled)" >
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
 	</implementation>	
-	
+	<!--  ============================
+    EDT invoker 
+    -->
+    <service-point id="edtInvoke"
+     interface="org.apache.hivemind.ServiceInterceptorFactory"
+        parameters-schema-id="hivemind.MethodFilter"      >
+        Causes all service methods to be invoked on the EDT thread.
+       <invoke-factory>
+            <construct class="org.astrogrid.desktop.modules.system.EdtInvocationInterceptorFactory">
+                <service>hivemind.ClassFactory</service>
+            </construct>
+        </invoke-factory>   
+    </service-point>
+    
+    <implementation service-id="throbber"  if="(property system.ui.disabled) and (property system.systray.disabled)" >
+        <invoke-factory service-id="hivemind.lib.PlaceholderFactory" />                 
+    </implementation>       
+    
 	<!--  ===========================
 	SNITCH
 	 -->
@@ -1333,6 +1361,8 @@ MAC SETUP
             </construct>
         </invoke-factory>
     </service-point>
+
+  
 <!--  ================================
 	TUPPERWARE
 	 -->
@@ -1371,8 +1401,9 @@ XML Persistence -->
  -->
  	<service-point id="configDialogue"  interface="java.lang.Runnable">
  		A configuration dialogue
+        <interceptor service-id="system.edtInvoke" />
  		<invoke-factory>
- 			<construct class="org.astrogrid.desktop.modules.system.pref.PreferenceEditorDialogue">
+ 			<construct class="org.astrogrid.desktop.modules.system.pref.PreferenceEditor">
  				<service>preferencesArranger</service>
  				<object>preference:acr.advanced</object>
  				<service>system.ui</service>

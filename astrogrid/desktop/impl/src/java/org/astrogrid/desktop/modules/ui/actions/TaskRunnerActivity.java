@@ -44,13 +44,8 @@ public void noneSelected() {
 
 	public void actionPerformed(ActionEvent e) {
 		if (currentResource != null) {
-	//	(new BackgroundWorker(uiParent.get(),"Opening task launcher") {
-
-			//protected Object construct() throws Exception {
 				t.invokeTask(currentResource);
-			//	return null;
-		//	}
-		//}).start();
+
 		} else if (currentFile != null) {
 			//@todo implement.
 		}

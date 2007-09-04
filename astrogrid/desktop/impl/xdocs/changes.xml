@@ -15,6 +15,13 @@
 	</head>
 <body>
 <release version="2007.4.alpha5" date="unreleased">
+    <action dev="nw" type="remove" issue="2301">
+        Removed misleading 'test' button.
+    </action>
+    <action dev="nw" type="fix">
+        Fixed construction of UI code so it's always on eventDispatchThread.
+        This should fix some of the problems seen under Windows / Java 6
+    </action>
     <action dev="nw" type="update">
         Updated file chooser dialogue to use new FileExplorer UI
     </action>

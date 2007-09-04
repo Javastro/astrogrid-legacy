@@ -1,4 +1,4 @@
-/*$Id: SingleInstanceListener.java,v 1.5 2007/01/29 11:11:36 nw Exp $
+/*$Id: SingleInstanceListener.java,v 1.6 2007/09/04 13:38:37 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -62,12 +62,7 @@ public class SingleInstanceListener implements InvocationHandler {
      * @see java.lang.reflect.InvocationHandler#invoke(java.lang.Object, java.lang.reflect.Method, java.lang.Object[])
      */
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                    ui.show();                           
-            }
-        });
-
+        ui.show();
         return null;
         
     }
@@ -78,6 +73,9 @@ public class SingleInstanceListener implements InvocationHandler {
 
 /* 
 $Log: SingleInstanceListener.java,v $
+Revision 1.6  2007/09/04 13:38:37  nw
+added debugging for EDT, and adjusted UI to not violate EDT rules.
+
 Revision 1.5  2007/01/29 11:11:36  nw
 updated contact details.
 

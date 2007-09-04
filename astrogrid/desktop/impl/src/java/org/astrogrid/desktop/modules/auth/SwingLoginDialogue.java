@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.3 2007/08/02 00:15:29 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.4 2007/09/04 13:38:37 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,8 @@ import java.net.URL;
 import java.util.prefs.Preferences;
 
 import javax.swing.Box;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -31,6 +33,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.MutableComboBoxModel;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 import org.apache.commons.logging.Log;
@@ -42,6 +45,8 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.votech.VoMonInternal;
 import org.astrogrid.store.Ivorn;
 import org.votech.VoMon;
@@ -53,12 +58,11 @@ import com.l2fprod.common.swing.JLinkButton;
  * Dialog for logging in to an Astrogrid community.
  * can be used on its own to acquire a logged-in 
  * {@link org.astrogrid.store.tree.TreeClient}.
- *@todo pass in UIImpl to use as parent for dialogue.
  * @author   Mark Taylor (Starlink)
  * @since    25 Nov 2004
  * @modified Noel Winstanley added a combo-box for authority. not editable at the moment - but codes around that possibility.
  */
-public class SwingLoginDialogue extends JPanel implements LoginDialogue {
+public class SwingLoginDialogue extends JPanel {
 	/**
 	 * Logger for this class
 	 */
@@ -75,16 +79,28 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
      * @throws MalformedURLException 
      * @throws ServiceException 
      */
-    public SwingLoginDialogue(final VoMonInternal monitor,final BrowserControl browser, Registry reg, String registerLink, String defaultCommunity) throws MalformedURLException, ServiceException {
+    public SwingLoginDialogue( final UIContext cxt,final VoMonInternal monitor,final BrowserControl browser, final Registry reg, String registerLink, String defaultCommunity) throws MalformedURLException, ServiceException {
     	this.defaultCommunity = defaultCommunity;
-    	// this query blocks - but I think that's acceptable.
-    	Resource[] knownCommunities = reg.xquerySearch(
-    			"for $r in //vor:Resource[not (@status='deleted' or @status='inactive') and vr:identifier &= '*PolicyManager'] order by $r/vr:identifier return $r");
-        /* Create query components. */
-        commField_ = new JComboBox(knownCommunities);
+    	final MutableComboBoxModel model = new DefaultComboBoxModel();
+    	commField_ = new JComboBox(model);
+    	//retreive a list of communities in a background thread
+    	(new BackgroundWorker(cxt,"Listing known communities") {
+
+            protected Object construct() throws Exception {
+                return reg.xquerySearch(
+                "for $r in //vor:Resource[not (@status='deleted' or @status='inactive') and vr:identifier &= '*PolicyManager'] order by $r/vr:identifier return $r");
+            }
+            protected void doFinished(Object result) {
+                Resource[] knownCommunities = (Resource[])result;
+                for (int i = 0; i < knownCommunities.length; i++) {
+                    model.addElement(knownCommunities[i]);
+                }
+            }
+    	}).start();
+    	/* Create query components. */
         userField_ = new JTextField();
         passField_ = new JPasswordField();
-       
+      
 
         /* Arrange query components. */
         Stack stack = new Stack();
@@ -92,7 +108,7 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
         stack.addItem( "User", userField_ );
         stack.addItem( "Password", passField_ );
 
-        Component strut = Box.createHorizontalStrut( 300 );
+        Component strut = Box.createHorizontalStrut( 400 );
         final URL registerURL = new URL(registerLink);
 
         JButton registerButton = new JLinkButton("Not got an account? Register..");
@@ -305,6 +321,9 @@ public class SwingLoginDialogue extends JPanel implements LoginDialogue {
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.4  2007/09/04 13:38:37  nw
+added debugging for EDT, and adjusted UI to not violate EDT rules.
+
 Revision 1.3  2007/08/02 00:15:29  nw
 prettified use of vomon
 

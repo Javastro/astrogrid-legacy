@@ -111,7 +111,7 @@ public class FileExplorerFactoryImpl  extends AbstractMessageHandler implements 
 					public void run() {
 						 FileManagerInternal newWindow = newWindow();
 						//@todo implement
-						//ve.displayResources(resList);
+						//newWindow.show()displayResources(resList);
 					}
 				});				
 				return Boolean.TRUE;
