@@ -165,13 +165,7 @@ public class CommandFactory {
 //        if( source.length() == 0 || source.charAt( source.length()-1 ) != ';' ) {
 //            source += ';' ;
 //        }
-        if( adqlCompiler == null ) {
-            adqlCompiler = new AdqlCompiler( new StringReader( source ) ) ;
-        }
-        else {
-            adqlCompiler.ReInit( new StringReader( source ) ) ;
-        }
-        return new EditCommand( adqlTree, undoManager, target, adqlCompiler ) ;
+        return new EditCommand( adqlTree, undoManager, target, getAdqlCompiler( source ) ) ;
     }
     
     public EditEnumeratedAttributeCommand newEditEnumeratedAttributeCommand( AdqlTree adqlTree, AdqlNode target ) {
@@ -391,5 +385,18 @@ public class CommandFactory {
         }
         
     } // end of class EditStore 
+
+    /**
+     * @return the adqlCompiler
+     */
+    public AdqlCompiler getAdqlCompiler( String source ) {
+        if( adqlCompiler == null ) {
+            adqlCompiler = new AdqlCompiler( new StringReader( source ) ) ;
+        }
+        else {
+            adqlCompiler.ReInit( new StringReader( source ) ) ;
+        }
+        return adqlCompiler;
+    }
        
 }

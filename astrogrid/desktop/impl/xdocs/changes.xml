@@ -14,6 +14,12 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<action dev="jl" type="fix" issue="2277">
+    Query Builder.
+    Reinstated one-touch expansion for split pane.
+    Corrected inability to see diagnostics and history panes.
+    Eliminated Adql/x validation messages in favour of AdqlCompiler messages.
+</action>
 <release version="2007.4.alpha5" date="unreleased">
     <action dev="nw" type="remove" issue="2301">
         Removed misleading 'test' button.

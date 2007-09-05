@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.desktop.modules.adqlEditor;
+package org.astrogrid.desktop.modules.adqlEditor; 
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -87,6 +87,7 @@ import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Catalog;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.adql.AdqlException;
 import org.astrogrid.adql.v1_0.beans.SelectType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.icons.IconHelper;
@@ -460,7 +461,7 @@ public class ADQLEditorPanel
 //    }
     
 
-    private void init() {   
+    private void _init() {   
         setLayout(new BorderLayout());
         // Put the editing panels plus the metadata panels in the top half of the split pane.
         add( initTopView(),BorderLayout.CENTER) ;
@@ -468,6 +469,31 @@ public class ADQLEditorPanel
         // Put the diagnostics panel at the bottom of the split pane.
         add( initBottomView(),BorderLayout.SOUTH) ; 
         setPreferredSize(new Dimension(400,450));
+    } // end of init()
+    
+    private void init() {
+        setLayout( new GridBagLayout() ) ;       
+        GridBagConstraints gbc ;
+        JSplitPane splAdqlToolEditor = new JSplitPane( JSplitPane.VERTICAL_SPLIT );
+
+        // Put the editing panels plus the metadata panels in the top half of the split pane.
+        splAdqlToolEditor.setTopComponent( initTopView() ) ;
+
+        // Put the diagnostics panel at the bottom of the split pane.
+        splAdqlToolEditor.setBottomComponent( initBottomView() ) ;
+
+        // Set the rest of the split pane's properties,
+        splAdqlToolEditor.setDividerLocation( 0.80 );
+        splAdqlToolEditor.setResizeWeight( 0.80 ) ;
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridheight = GridBagConstraints.REMAINDER;
+        gbc.anchor = GridBagConstraints.NORTH;
+        add(splAdqlToolEditor, gbc);
     } // end of init()
     
     
@@ -485,7 +511,7 @@ public class ADQLEditorPanel
         // apparantly float doesn't work unless splut pane is already visible
         topView.setDividerLocation(250);
         topView.setResizeWeight( 0.60 ) ;
-        topView.setOneTouchExpandable( false ) ; // confuses the user
+        topView.setOneTouchExpandable( true ) ; 
         return topView ;
     }
     
@@ -756,47 +782,51 @@ public class ADQLEditorPanel
     
     private void validateAdql() {
         if( log.isTraceEnabled() ) enterTrace( "validateAdql()" ) ; 
-        statusAfterValidate = false ;
-        // Create an XmlOptions instance and set the error listener.
-        XmlOptions validateOptions = new XmlOptions();
-        ArrayList errorList = new ArrayList();
-        validateOptions.setErrorListener(errorList);
-        
-        // Validate the XML.
-        boolean isValid = getRoot().validate(validateOptions);
-        
-        // If the XML isn't valid, loop through the listener's contents,
-        // printing contained messages.
-        this.diagnostics.setText( "" )  ;
-        if( !isValid ){
+        String[] messages = validateUponAdqlsFromRoot() ;      
+        if( messages.length != 0 ){
+            statusAfterValidate = false ;
+            setDiagnosticsIcon( false ) ;            
             StringBuffer buffer = new StringBuffer( 1024 ) ;
-            for (int i = 0; i < errorList.size(); i++) {
-                XmlError error = (XmlError)errorList.get(i);
-                buffer
-                	.append( "Message: " )
-                	.append( error.getMessage() )
-                	.append( "\n" )
-                	.append( "Error at: " ) ;
-                XmlObject xmlObj = error.getObjectLocation() ;
-                try {
-                    if( xmlObj == null ) {
-                        buffer.append( "no location given." ) ;
-                     }
-                    else {
-                        buffer.append( xmlObj.schemaType().getName().getLocalPart() ) ;
-                    }
-                    buffer.append( "\n" ) ;
-                }
-                catch( Exception ex ) {
-                    buffer.append( "The XML is not well formed.\n");
-                } 
-            }
-            this.diagnostics.setText( buffer.toString() ) ;
+          for (int i = 0; i < messages.length; i++) {
+              buffer.append( "[" + (i+1) + "] " ).append( messages[i] ).append( '\n' ) ;
+          }
+          this.diagnostics.setText( buffer.toString() ) ;         
         }
         else {
-            statusAfterValidate = true ;
+            this.diagnostics.setText( "" )  ;
+            setDiagnosticsIcon( true ) ; 
+            statusAfterValidate = true ;           
         }
         if( log.isTraceEnabled() ) exitTrace( "validateAdql()" ) ; 
+    }
+    
+    private String[] validateUponAdqlsFromRoot() {
+        String[] messages ;
+        XmlObject userObject = adqlTree.getRoot() ; 
+        userObject = AdqlUtils.modifyQuotedIdentifiers( userObject ) ;
+        XmlCursor nodeCursor = userObject.newCursor();
+        String text = nodeCursor.xmlText();
+        nodeCursor.dispose() ;
+        userObject = AdqlUtils.unModifyQuotedIdentifiers( userObject ) ;
+        String adqls = transformer.transformToAdqls( text, " " ) ; 
+        
+        try {  
+            adqlTree.getCommandFactory().getAdqlCompiler( adqls ).compileToXmlText() ;
+            messages = new String[0] ;
+        }
+        catch( AdqlException adqlex ) {
+            messages = adqlex.getMessages() ;
+            if( messages == null ) {
+                messages = ( new String[] { "Internal compiler error. See log."} ) ;
+            }  
+            else if ( messages.length == 0 ) {
+                messages = ( new String[] { "Internal compiler error. See log."} ) ;
+            }
+        }
+        catch( Exception ex ) {
+            messages = ( new String[] { "Internal compiler error. See log."} ) ;
+        }
+        return messages ;   
     }
     
     private class BranchExpansionListener implements TreeExpansionListener {
@@ -1706,6 +1736,7 @@ public class ADQLEditorPanel
      * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
      */
     public void stateChanged( ChangeEvent e) {
+        if( log.isTraceEnabled() ) enterTrace( "stateChanged()"  ) ;
         if( e.getSource() == adqlTree ) {
             if( adqlTree.isCatalogueResourceSet() ) {
                 chooseResourceButton.setEnabled( false ) ;
@@ -1713,11 +1744,21 @@ public class ADQLEditorPanel
             }
             else {
                 chooseResourceButton.setEnabled( true ) ;
-            }  
+            } 
+            if( log.isTraceEnabled() ) {
+                log.debug( "e.getSource() == adqlTree" ) ;
+                exitTrace( "stateChanged()"  ) ;
+            }
             return ;
         }
-        if( e.getSource() instanceof JTabbedPane == false )
+        if( e.getSource() instanceof JTabbedPane == false ) {
+            if( log.isTraceEnabled() ) {
+                log.debug( "e.getSource() instanceof JTabbedPane == false" ) ;
+                exitTrace( "stateChanged()"  ) ;
+            }
             return ;
+        }
+          
         JTabbedPane tp = (JTabbedPane)e.getSource() ;
         java.awt.Component c = tp.getSelectedComponent() ;
         if( c == this ) {
@@ -1730,13 +1771,14 @@ public class ADQLEditorPanel
             for( int i=0; i<mc; i++ ) {
                 menu = mb.getMenu(i) ;
                 String name = menu.getName() ;
+                String text = menu.getText();
                 if( name == null )
                     continue ;
-                if( name.equals("Edit") ) {
+                if( name.equals("Edit") || text.equals("Edit")) {
                     bEditFound = true ;
                     menu.setEnabled( true ) ;
                 }
-                else if( name.equals( "Options" ) ) {
+                else if( name.equals( "Options" ) || text.equals("Edit") ) {
                     bOptionsFound = true ;
                     menu.setEnabled( true ) ;
                 }
@@ -1759,6 +1801,9 @@ public class ADQLEditorPanel
                 editMenu.setEnabled( true ) ;
             }
             else {
+                if( log.isDebugEnabled() ) {
+                    log.debug( "site of: causes a NPE on startup." ) ;
+                }
             	// NW - temporarily edited out - causes a NPE on startup.
             	//
             	//     buildEditMenu( menu, (AdqlNode)adqlTree.getLastSelectedPathComponent() ) ;
@@ -1781,6 +1826,7 @@ public class ADQLEditorPanel
                 }
             }
         }
+        if( log.isTraceEnabled() ) exitTrace( "stateChanged()"  ) ;
     }
     
 
