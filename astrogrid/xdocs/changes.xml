@@ -55,6 +55,13 @@
         </release>
 		
         <release version="HEAD">
+        <action dev="kmb" type="fix">
+        <li>Reg_KMB_Translate0_100nHarvest registry</li> for changing client lite to suit pal
+		<li>KMBComms_SmallChange_RegClientUse community</li> changes to suit reg-client
+		<li>KMBApps_SmallChange_RegClientUse applications</li> changes to suit reg-client
+		<li>KMBDeploy_SmallChange_RegClientUse deployment </li> changes to suit reg-client
+		also built components: filemanager/filestore/workflow. CEA binaries are not released, awaiting for Guy to tidy things up.
+        </action>
         
         <action dev="gtr" type="fix">
     	    <em>Branch security-gtr-2244-3</em> 
