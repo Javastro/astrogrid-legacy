@@ -40,6 +40,8 @@ public class CodeManager extends HttpServlet {
                 java.io.OutputStream out = response.getOutputStream();
                 java.io.PrintStream ps = new java.io.PrintStream(out);
 
+                log("Evaluating scheme code from " + request.getRemoteHost());
+
                 Object val = SchemeWrapper
                         .getInstance()
                         .evalInputStream(request.getInputStream(), out);
@@ -62,6 +64,9 @@ public class CodeManager extends HttpServlet {
                                + val.getClass().toString());
                 }
             } else if (codeStatus.equals("disabled")) {
+                log("Received POST of scheme code from "
+                    + request.getRemoteHost()
+                    + " while code manager is disabled");
                 response.setStatus(response.SC_FORBIDDEN);
                 response.getWriter().println
                         ("Code updating forbidden by configuration");
