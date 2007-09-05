@@ -30,6 +30,21 @@
                ("one")
                ("one" "two" "three"))))
 
+(expect java-type
+        '(#t #t #t #t #f #f #f)
+        (define-java-classes <java.util.hash-set> <java.util.linked-hash-set>)
+        (let ((hash (java-new <java.util.hash-set>))
+              (linked-hash (java-new <java.util.linked-hash-set>)))
+          (map (lambda (p) (apply is-java-type? p))
+             `((,hash ,<java.util.hash-set>)
+               (,hash |java.util.HashSet|)
+               (,linked-hash ,<java.util.linked-hash-set>)
+               (,linked-hash ,<java.util.hash-set>) ;hash-set subclass of linked-hash-set
+               ;; and not...
+               (,(java-null <java.util.hash-set>) ,<java.util.hash-set>)
+               ("hello" ,<java.util.hash-set>)
+               (#f ,<java.util.hash-set>)))))
+
 (expect url-decode-to-jstring-1
         '(""
           "hello there"

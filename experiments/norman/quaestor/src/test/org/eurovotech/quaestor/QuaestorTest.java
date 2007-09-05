@@ -38,33 +38,37 @@ public class QuaestorTest
     public QuaestorTest(String name)
             throws Exception {
         super(name);
-        // the testGetTopPage test effectively checks that the
-        // Quaestor servlet is indeed running in Tomcat.
 
         if (quaestorURL == null) {
             // first time
             quaestorURL = new URL(System.getProperty
-                              ("quaestor.url",
-                               "http://localhost:8080/quaestor"));
+                                  ("quaestor.url",
+                                   "http://localhost:8080/quaestor"));
             contextURL = new URL(quaestorURL, quaestorURL.getPath() + "/");
             xmlrpcEndpoint = new URL(contextURL, "xmlrpc");
             System.err.println("Testing quaestorURL=" + quaestorURL);
-            System.err.println("...RPC endpoint=" + xmlrpcEndpoint);
-        }
-    }
+            System.err.println("    ...RPC endpoint=" + xmlrpcEndpoint);
 
-    public void testGetTopPage()
-            throws Exception {
-        HttpResult r = QuaestorConnection.httpGet(quaestorURL);
-        if (r.getStatus() == HttpURLConnection.HTTP_OK) {
-            assertContentType(r, "text/html");
-        } else {
-            // Tomcat appears not to be running.
-            // Print an explanatory message and stop the test.
-            System.err.println
-                    ("Can't get Quaestor top page: is Tomcat running?");
-            throw new junit.framework.AssertionFailedError
-                    ("Tomcat not running");
+            // Get the Quaestor front page -- this effectively checks that the
+            // Tomcat server is running.  Of course, this would show up pretty
+            // promptly below, but this gives us a chance to produce a
+            // more helpful error.
+            HttpResult r = QuaestorConnection.httpGet(quaestorURL);
+            if (r.getStatus() == HttpURLConnection.HTTP_OK) {
+                assertContentType(r, "text/html");
+            } else {
+                // Tomcat appears not to be running.
+                // Print an explanatory message and stop the test.
+                System.err.println
+                        ("Can't get Quaestor top page: is Tomcat running?");
+                throw new junit.framework.AssertionFailedError
+                        ("Tomcat not running");
+            }
+
+            // Attempt to delete the knowledgebase, whether or not it's there.
+            // Don't care about the return value.
+            System.err.println("Deleting any KB at " + makeKbUrl());
+            r = QuaestorConnection.httpDelete(makeKbUrl());
         }
     }
 
@@ -78,9 +82,7 @@ public class QuaestorTest
 
     public void testCreateKnowledgebase()
             throws Exception {
-        // Attempt to delete the knowledgebase, whether or not it's there.
-        // Don't care about the return value.
-        HttpResult r = QuaestorConnection.httpDelete(makeKbUrl());
+        HttpResult r;
 
         // create the new knowledgebase
         r = QuaestorConnection.httpPut(makeKbUrl(),
@@ -431,7 +433,6 @@ public class QuaestorTest
         assertTrue(rpc.isValid() && rpc.isFault());
         assertEquals(10, rpc.getFaultCode());
 
-        /* doesn't work: query-model accepts a variable arglist
         // good method, but wrong number of arguments (this one is checked
         // by the xmlrpc-handler harness, rather than the handler itself, so
         // is not redundant with the test above).
@@ -440,7 +441,6 @@ public class QuaestorTest
         rpc = getRpcResponse(QuaestorConnection.httpPost(xmlrpcEndpoint, call, "text/xml"));
         assertTrue(rpc.isValid() && rpc.isFault());
         assertEquals(2, rpc.getFaultCode());
-        */
 
         // query non-existent knowledgebase
         rpc = performXmlRpcCall("query-model",
@@ -510,10 +510,14 @@ public class QuaestorTest
             throws java.net.MalformedURLException {
         return makeKbUrl(null);
     }
+    private static URL makeKbUrlBase;
     private URL makeKbUrl(String submodel) 
             throws java.net.MalformedURLException {
-        if (submodel == null)
-            return new URL(contextURL, "kb/"+testKB);
+        if (submodel == null) {
+            if (makeKbUrlBase == null)
+                makeKbUrlBase = new URL(contextURL, "kb/"+testKB);
+            return makeKbUrlBase;
+        }
         else if (submodel.startsWith("?"))
             return new URL(contextURL, "kb/"+testKB+submodel);
         else

@@ -19,18 +19,20 @@
 
 (define-java-classes
   <java.lang.string>
-  <java.io.string-reader>)
+  <java.io.string-reader>
+  (<uri> |java.net.URI|))
 
 (define test-kb
   (let ()
-    (import* jena rdf:ingest-from-stream)
+    (import* jena rdf:ingest-from-stream/language)
     (import knowledgebase)
     
-    (let ((model (rdf:ingest-from-stream
+    (let ((model (rdf:ingest-from-stream/language
                   (java-new <java.io.string-reader>
                             (->jstring "<urn:example#i1> a <urn:example#c1>."))
+                  ""
                   "text/rdf+n3"))
-          (kb (kb:new "sparql-test-kb")))
+          (kb (kb:new (java-new <uri> (->jstring "urn:sparql-test-kb")) (rdf:new-empty-model))))
       (kb 'add-abox "abox" model)       ;just abox
       kb)))
 
@@ -45,10 +47,11 @@
 (test-kb 'add-tbox
          "tbox"
          (let ()
-           (import* jena rdf:ingest-from-stream)
-           (rdf:ingest-from-stream
+           (import* jena rdf:ingest-from-stream/language)
+           (rdf:ingest-from-stream/language
             (java-new <java.io.string-reader>
                       (->jstring "<urn:example#c1> a <http://www.w3.org/2002/07/owl#Class>."))
+            ""
             "application/n3")))
 
 (expect sparql-good-query-select-1

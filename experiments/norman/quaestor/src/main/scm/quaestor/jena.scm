@@ -16,7 +16,7 @@
 
 (module jena
 ( rdf:new-empty-model
-  rdf:ingest-from-stream
+  ;rdf:ingest-from-stream
   rdf:ingest-from-stream/language
   rdf:ingest-from-string/n3
   rdf:merge-models
@@ -26,7 +26,8 @@
   rdf:get-reasoner
   rdf:get-property-on-resource
   rdf:get-properties-on-resource
-  rdf:select-statements)
+  rdf:select-statements
+  rdf:select-object/string)
 
 (import* srfi-1
          fold)
@@ -46,7 +47,8 @@
   <java.io.reader>
   <com.hp.hpl.jena.rdf.model.resource>
   <com.hp.hpl.jena.rdf.model.property>
-  (<rdfnode> |com.hp.hpl.jena.rdf.model.RDFNode|))
+  (<rdfnode> |com.hp.hpl.jena.rdf.model.RDFNode|)
+  (<uri> |java.net.URI|))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -118,7 +120,10 @@
 
 ;; RDF:MERGE-MODELS : list -> model
 ;;
-;; Given a list of RDF models, merge them into a single one, and return it
+;; Given a list of RDF models, merge them into a single one, and return it.
+;; If there are no models in the list, return a new empty model.
+;; Note that if there is only one model in the input list, this currently
+;; has the effect of duplicating it -- this might change in future.
 (define/contract (rdf:merge-models (models list?) -> jena-model?)
   (define-generic-java-method add)
   (fold (lambda (new result)
@@ -199,15 +204,15 @@
 ;;
 ;; If there is a problem reading the stream, or if the mime-type is present
 ;; and illegal, then throw an error.
-(define/contract (rdf:ingest-from-stream (stream java-input?)
-                                         (mime-type string-or-false?)
-                                         -> jena-model?)
-  (let ((language (if mime-type
-                      (or (rdf:mime-type->language mime-type)
-                          (error (format #f "rdf:ingest-from-stream not an RDF MIME type: ~s"
-                                         mime-type)))
-                      (rdf:mime-type->language #f)))) ;use default
-    (rdf:ingest-from-stream/language stream "" language)))
+;; (define/contract (rdf:ingest-from-stream (stream java-input?)
+;;                                          (mime-type string-or-false?)
+;;                                          -> jena-model?)
+;;   (let ((language (if mime-type
+;;                       (or (rdf:mime-type->language mime-type)
+;;                           (error (format #f "rdf:ingest-from-stream not an RDF MIME type: ~s"
+;;                                          mime-type)))
+;;                       (rdf:mime-type->language #f)))) ;use default
+;;     (rdf:ingest-from-stream/language stream "" language)))
 
 ;; Implementation of the RDFErrorHandler interface
 (define-java-classes
@@ -351,15 +356,17 @@
 ;; Return the object S, which should be either a Java or Scheme string,
 ;; as a Scheme string.
 (define (as-scheme-string s)
+  (define-generic-java-method to-string)
   (cond ((string? s)
          s)
         ((java-object? s)               ;should be a jstring
-         (->string s))
+         (->string (to-string s)))
         (else
          #f)))
 (define (as-java-string s)
-  (cond ((jstring? s)
-         s)
+  (define-generic-java-method to-string)
+  (cond ((java-object? s)
+         (to-string s))
         ((string? s)
          (->jstring s))
         (else
@@ -395,11 +402,29 @@
                property
                (create-property model (->jstring property))))))))
 
+;; RDF:SELECT-OBJECT/STRING : model resource-or-string property-or-string -> string-or-false
+;; Equivalent to (->string (to-string (car (rdf:select-statements model resource property #f)))),
+;; but returning #f if there are no matches
+(define/contract (rdf:select-object/string (model jena-model?)
+                                           (subject   (or (jena-resource? subject)
+                                                          (string? subject)
+                                                          (jstring? subject)))
+                                           (predicate (or (jena-property? predicate)
+                                                          (string? predicate)
+                                                          (jstring? predicate)))
+                                           -> (lambda (x)
+                                                (or (not x)
+                                                    (string? x))))
+  (define-generic-java-method to-string)
+  (let ((result-nodes (rdf:select-statements model subject predicate #f)))
+    (and (not (null? result-nodes))
+         (->string (to-string (car result-nodes))))))
+
 ;; RDF:SELECT-STATEMENTS : model subject predicate object -> list-of-rdfnode
 ;;
 ;; Query a model, matching the specified patterns.
 ;;
-;; SUBJECT and PREDICATE may be scheme/java strings, or Java objects of type
+;; SUBJECT and PREDICATE may be scheme/java strings, or URIs, or Java objects of type
 ;; Resource and Property respectively.  In the former cases, they are
 ;; transformed into the appropriate Java objects.
 ;;
@@ -421,76 +446,91 @@
                                         (subject   (or (not subject)
                                                        (jena-resource? subject)
                                                        (string? subject)
+                                                       (is-java-type? subject <uri>)
                                                        (jstring? subject)))
                                         (predicate (or (not predicate)
                                                        (jena-property? predicate)
                                                        (string? predicate)
+                                                       (is-java-type? subject <uri>)
                                                        (jstring? predicate)))
                                         (object    (or (not object)
                                                        (jena-rdfnode? object)
                                                        (java-object? object)
                                                        (string? object)))
                                         -> list?)
-    (define-generic-java-methods
-      list-statements
-      create-resource
-      create-property
-      create-typed-literal
-      get-subject
-      get-predicate
-      get-object)
-    (define-java-classes
-      (<resource> |com.hp.hpl.jena.rdf.model.Resource|)
-      (<property> |com.hp.hpl.jena.rdf.model.Property|)
-      (<rdf-node> |com.hp.hpl.jena.rdf.model.RDFNode|))
-    (let ((accessor (cond ((not subject)   get-subject)
-                          ((not predicate) get-predicate)
-                          ((not object)    get-object)
-                          (else
-                           (error "Bad call to rdf:select-statements"))))
-          (qsubject (cond ((not subject)
-                           (java-null <resource>))
-                          ((is-java-type? subject <resource>)
-                           subject)
-                          (else         ;string
-                           (create-resource model
-                                            (as-java-string subject)))))
-          (qpredicate (cond ((not predicate)
-                             (java-null <property>))
-                            ((is-java-type? predicate <property>)
-                             predicate)
-                            ((and (string? predicate)
-                                  (string=? predicate "a"))
-                             (create-property
-                              model
-                              (->jstring "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
-                              (->jstring "")))
-                            (else       ; string
-                             (create-property
-                              model
-                              (as-java-string predicate)
-                              (->jstring "")))))
-          (qobject (cond ((not object)  ;#f
-                          (java-null <rdf-node>))
-                         ((is-java-type? object <rdf-node>)
+  (define-generic-java-methods
+    list-statements
+    create-resource
+    create-property
+    create-typed-literal
+    get-subject
+    get-predicate
+    get-object
+    to-string)
+  (define-java-classes
+    (<resource> |com.hp.hpl.jena.rdf.model.Resource|)
+    (<property> |com.hp.hpl.jena.rdf.model.Property|)
+    (<rdf-node> |com.hp.hpl.jena.rdf.model.RDFNode|))
+  (let ((accessor ;get accessor for result, checking precisely one #f.
+                                        ;Throw error if none, accessor => #f if more than one.
+         (cond ((not subject)   (and predicate object
+                                     get-subject))
+               ((not predicate) (and subject object
+                                     get-predicate))
+               ((not object)    (and subject predicate
+                                     get-object))
+               (else
+                (error 'rdf:select-statements "Bad call: no #f slot"))))
+        (qsubject                      ;subject, as a resource or null
+         (cond ((not subject)
+                (java-null <resource>))
+               ((is-java-type? subject <resource>)
+                subject)
+               ((is-java-type? subject <uri>)
+                (create-resource model (to-string subject)))
+               (else                    ;string
+                (create-resource model (as-java-string subject)))))
+        (qpredicate                  ;predicate, as a property or null
+         (cond ((not predicate)
+                (java-null <property>))
+               ((is-java-type? predicate <property>)
+                predicate)
+               ((and (string? predicate)
+                     (string=? predicate "a"))
+                (create-property
+                 model
+                 (->jstring "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
+                 (->jstring "")))
+               ((is-java-type? predicate <uri>)
+                (create-property model (to-string predicate)))
+               (else                    ; string
+                (create-property model (as-java-string predicate)
+                                 (->jstring "")))))
+        (qobject              ;object, as a resource, literal, or null
+         (cond ((not object)            ;#f
+                (java-null <rdf-node>))
+               ((is-java-type? object <rdf-node>)
                                         ;already a RDFNode
-                          object)
-                         ((java-object? object)
+                object)
+               ((java-object? object)
                                         ;some other Java obj
-                          (create-typed-literal model
-                                                object))
-                         ((string-prefix? "http://" object)
+                (create-typed-literal model
+                                      object))
+               ((string-prefix? "http://" object)
                                         ;string naming resource
-                          (create-resource model
-                                           (->jstring object)))
-                         (else          ;literal string
-                          (create-typed-literal model
-                                                (->jstring object))))))
-      (map accessor
-           (iterator->list (list-statements model
-                                            qsubject
-                                            qpredicate
-                                            qobject)))))
+                (create-resource model
+                                 (->jstring object)))
+               (else                    ;literal string
+                (create-typed-literal model
+                                      (->jstring object))))))
+    (if accessor
+        (map accessor
+             (iterator->list (list-statements model
+                                              qsubject
+                                              qpredicate
+                                              qobject)))
+        (error 'rdf:select-statements
+               "Bad call : more than one #f slot"))))
 
 ;; RDF:GET-REASONER : [string] -> reasoner
 ;;

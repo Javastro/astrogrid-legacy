@@ -2,49 +2,55 @@
 
 (require-library 'quaestor/knowledgebase)
 (import knowledgebase)
+(import s2j)
 
 (require-library 'quaestor/jena)
 (import* jena
          rdf:new-empty-model
          rdf:ingest-from-string/n3)
 
+(define-java-class <uri> |java.net.URI|)
+(define try1 (java-new <uri> (->jstring "urn:example/try1")))
+(define try2 (java-new <uri> (->jstring "urn:example/try2")))
+(define try3 (java-new <uri> (->jstring "urn:example/try3")))
+(define try-md (rdf:new-empty-model))
 
 (expect-true kb-create-1
-             (kb:new "try1"))
+             (kb:new try1 try-md))
 (expect-true kb-create-2
-             (kb:new "try2"))
+             (kb:new try2 try-md))
 (expect-failure kb-create-duplicate     ;can't create duplicates
-                (kb:new "try1"))
+                (kb:new try1 try-md))
 
 (expect kb-predicate
         '(#t #f #f)
         (map kb:knowledgebase?
-             `(,(kb:get "try1")
+             `(,(kb:get try1)
                "hello"
                ,(lambda () "hello"))))
 
 (expect kb-names
-        '("try2" "try1")                ;order isn't significant
+        (list try2 try1)                ;order isn't significant
         (kb:get-names))
 
 (expect-true kb-get-1
-             (kb:get "try1"))
+             (kb:get try1))
 (expect-true kb-get-2
-             (kb:get "try2"))
+             (kb:get try2))
 (expect kb-get-3
         #f
-        (kb:get "try3"))
+        (kb:get try3))
 
 (expect kb-discard
         #t
-        (kb:knowledgebase? (kb:discard "try2")))
+        (kb:knowledgebase? (kb:discard try2)))
 (expect-true kb-reget-1
-             (kb:get "try1"))
+             (kb:get try1))
 (expect kb-reget-2
         #f
-        (kb:get "try2"))
+        (kb:get try2))
 
-(let ((m (kb:get "try1")))
+(let ((m (kb:get try1)))
   (expect kb-retrieve-empty
           #f
           (m 'get-model))
@@ -55,7 +61,7 @@
   (expect-true kb-has-non-empty
                (m 'has-model))
   (expect-true kb-retrieve-non-empty
-               ((kb:get "try1") 'get-model))
+               ((kb:get try1) 'get-model))
 
   (expect-true kb-has-model-string
                (m 'has-model "s1"))
@@ -118,7 +124,7 @@
           (loop (+ n 1) (end m))
           n))))
 
-(let ((multimodel (kb:new "multi"))
+(let ((multimodel (kb:new (java-new <uri> (->jstring "urn:example/multi")) try-md))
       (example1-pattern (make-regexp-pattern "(urn:example1)"))
       (example2-pattern (make-regexp-pattern "(urn:example2)")))
   (expect multimodel-add1

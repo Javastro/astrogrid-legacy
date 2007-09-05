@@ -134,18 +134,20 @@
 ;; it's not, or if it's not a Java object at all.
 (define (is-java-type? jobject class)
   (define-generic-java-method instance?)
-  (if (java-object? jobject)
-      (->boolean
-       (instance? (cond ((java-class? class)
-                         class)
-                        ((string? class)
-                         (java-class (string->symbol class)))
-                        ((symbol? class)
-                         (java-class class))
-                        (else
-                         (error "Bad class in is-java-type?: ~s" class)))
-                  jobject))
-      #f))
+  (cond ((java-null? jobject)
+         #f)
+        ((java-object? jobject)
+         (->boolean
+          (instance? (cond ((java-class? class)
+                            class)
+                           ((string? class)
+                            (java-class (string->symbol class)))
+                           ((symbol? class)
+                            (java-class class))
+                           (else
+                            (error "Bad class in is-java-type?: ~s" class)))
+                     jobject)))
+        (else #f)))
 
 ;; Given a string S, return the URL-decoded string as a jstring
 (define/contract (url-decode-to-jstring (s string?) -> jstring?)

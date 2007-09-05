@@ -1,4 +1,5 @@
-;; SISC program to create a Scheme server
+;; SISC program to create a Scheme server which acts as a general-purpose,
+;; adaptable, SPARQL endpoint.
 ;;
 ;; See http://www.ietf.org/rfc/rfc2616.txt
 
@@ -33,11 +34,12 @@
   `((quaestor.version . "@VERSION@")
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.41 $ $Date: 2007/02/28 14:58:17 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.42 $ $Date: 2007/09/05 12:22:48 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
-  <java.lang.string>)
+  <java.lang.string>
+  (<uri> |java.net.URI|))
 (define (request? x)
   (define-java-class <javax.servlet.servlet-request>)
   (is-java-type? x <javax.servlet.servlet-request>))
@@ -51,46 +53,16 @@
   (or (not x)
       (string? x)))
 
+(define-syntax receive
+  (syntax-rules ()
+    ((_ formals expression body ...)
+     (call-with-values (lambda () expression)
+       (lambda formals
+         body ...)))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Implementation
-
-;; APPLY-WITH-TOP-FC procedure args... -> object
-;; This is intended to be a main entry point for the functions here.
-;; Call the given procedure with the given arguments, in the context
-;; of a suitable failure-continuation.
-;;
-;; Since the functions which are called via this typically have their
-;; own error handlers, this failure-continuation will generally only
-;; be called if something quite bad has gone wrong; therefore the
-;; failure-continuation shows debugging information and chatter, and
-;; returns a Java excaption.
-;; (define (apply-with-top-fc proc . args)
-;;   (with/fc
-;;       (lambda (m kontinuation)
-;;         (define-java-class <javax.servlet.servlet-exception>)
-;;         (java-new
-;;          <javax.servlet.servlet-exception>
-;;          (->jstring
-;;           (format #f "Top-level error: ~a~%~a~%~%Stack trace: ~a~%"
-;;                   (format-error-record m)
-;;                   (let ((c (chatter)))
-;;                     (cond ((list? c)    ;normal case
-;;                            (apply string-append
-;;                                   (map (lambda (x)
-;;                                          (format #f "[chatter: ~a]~%" x))
-;;                                        c)))
-;;                           ((not c)      ;no chatter
-;;                            "")
-;;                           (else         ;can't happen!
-;;                            (format #f
-;;                                    "[Can't happen: (chatter) produced ~s]" c))))
-;;                   (with-output-to-string
-;;                     (lambda () (print-stack-trace kontinuation)))))))
-;;     (lambda ()
-;;       (chatter "Applying proc ~s..." proc)
-;;       (parameterize ((suppressed-stack-trace-source-kinds '()))
-;;                     (apply proc args)))))
 
 (define (initialise-quaestor scheme-servlet)
   (define-generic-java-methods
@@ -159,22 +131,20 @@
 ;; Display an HTML page reporting on the knowledgebases available
 (define (get-knowledgebase-list path-info-list query-string request response)
   (define (display-kb-info kb-name)
-    (define-generic-java-methods
-      (get-request-uri |getRequestURI|))
+    (define-generic-java-methods write to-string)
     (define (model-to-string model)
-      (define-generic-java-methods write to-string)
       (define-java-class <java.io.string-writer>)
       (let ((sw (java-new <java.io.string-writer>)))
         (write model sw (->jstring "N3"))
         (->string (to-string sw))))
 
     (let* ((kb (kb:get kb-name))
+           (kb-name-string (->string (to-string kb-name)))
            (info (kb 'info))
-           (base-uri (webapp-base-from-request request #t))
            (submodel-pair (assq 'submodels info))) ;cdr is list of alists
       `(li "Knowledgebase "
-           (a (@ (href ,(format #f "~a/~a" base-uri kb-name)))
-              (strong ,kb-name))
+           (a (@ (href ,kb-name-string))
+              (strong ,kb-name-string))
            ", submodels:"
            (ul ,@(map (lambda (sm-alist)
                         (let ((name-pair (assq 'name sm-alist))
@@ -182,11 +152,7 @@
                               (namespaces (assq 'namespaces sm-alist)))
                           `(li
                             (p
-                             (a (@ (href ,(format #f
-                                                  "~a/~a/~a"
-                                                  base-uri
-                                                  kb-name
-                                                  (cdr name-pair))))
+                             (a (@ (href ,(format #f "~a/~a" kb-name-string (cdr name-pair))))
                                 ,(cdr name-pair))
                              ,(format #f " (~a)"
                                       (cond ((not tbox-pair)
@@ -258,7 +224,7 @@
          (string=? (car qp) "sparql")
          ;; the world is calling...
          (if (cdr qp)
-             (sparql-encoded-query (car path-info-list)
+             (sparql-encoded-query (request->kb-uri request)
                                    (cdr qp))
              (no-can-do request response
                         '|SC_BAD_REQUEST|
@@ -305,7 +271,7 @@
 
   (case (length path-info-list)
     ((1 2)
-     (let ((kb-name (car path-info-list))
+     (let ((kb-name (request->kb-uri request))
            (submodel-name (if (null? (cdr path-info-list))
                                #f       ;no submodel
                                (cadr path-info-list))))
@@ -343,11 +309,6 @@
                  (kb 'get-metadata)
                  (get-writer response)
                  (->jstring (cdr mime-and-lang)))
-;;                 (for-each (lambda (c) ; XXX
-;;                             ((generic-java-method '|println|)
-;;                              (get-writer response)
-;;                              (->jstring c)))
-;;                           (chatter))
                 #t)
 
                ((and kb (eq? query 'metadata))
@@ -387,11 +348,11 @@
           ((0)
            #t)
           ((1)                          ;URL referring to a knowledgebase
-           (if (kb:get (car path-list))
+           (if (kb:get (request->kb-uri request))
                #t
                (set-response-status! response '|SC_NOT_FOUND|)))
           ((2)                          ;URL referring to a submodel
-           (let ((status (let ((kb (kb:get (car path-list))))
+           (let ((status (let ((kb (kb:get (request->kb-uri request))))
                            (cond ((not kb)
                                   '|SC_NOT_FOUND|)
                                  ((kb 'get-model (cadr path-list))
@@ -424,61 +385,39 @@
        get-input-stream)
     (let ((kb (kb:get kb-name))
           (content-type (request->content-type request)))
-      (cond ((and kb
-                  query
-                  (string=? query "metadata")) ;update metadata
-             (if (not content-type)
-                 (report-exception 'http-put
-                                   '|SC_BAD_REQUEST|
-                                   "Can't post metadata without a content-type"))
-             (let ((kb-uri (string-append (webapp-base-from-request request #t)
-                                          "/" kb-name)))
-               (if (string=? content-type "text/plain")
-                   (kb 'set-metadata
-                       (reader->jstring (get-reader request))
-                       kb-uri      
-                       #f)
-                   (kb 'set-metadata
-                       (get-input-stream request)
-                       kb-uri
-                       content-type)))
-             (set-response-status! response '|SC_NO_CONTENT|))
+      (cond
+       ;; at one time there was a (and kb query (string=? query "metadata"))
+       ;; condition here, to update the metadata -- I no longer support this.
 
-            ((and kb query)             ;unrecognised query
-             (no-can-do request response '|SC_BAD_REQUEST|
-                        "Unrecognised query ~a?~a"
-                        kb-name query))
+       ((and kb query)                  ;unrecognised query
+        (no-can-do request response '|SC_BAD_REQUEST|
+                   "Unrecognised query ~a?~a"
+                   kb-name query))
 
-            (kb                                ;already exists
-             (no-can-do request response
-                        '|SC_FORBIDDEN| ;correct? or SC_CONFLICT?
-                        "Knowledgebase ~a already exists"
-                        kb-name))
+       (kb                              ;already exists
+        (no-can-do request response
+                   '|SC_FORBIDDEN|      ;correct? or SC_CONFLICT?
+                   "Knowledgebase ~a already exists (~s)"
+                   kb-name kb))
 
-            (query             ;no knowledgebase, but there is a query
-             (no-can-do request response '|SC_BAD_REQUEST|
-                        "Knowledgebase ~a does not exist, so query ~a is not allowed"
-                        kb-name query))
+       (query                  ;no knowledgebase, but there is a query
+        (no-can-do request response '|SC_BAD_REQUEST|
+                   "Knowledgebase ~a does not exist, so query ~a is not allowed"
+                   kb-name query))
 
-             ((not content-type)
-              (no-can-do request response
-                         '|SC_BAD_REQUEST|
-                         "Can't post metadata without a content-type"))
+       ((not content-type)
+        (no-can-do request response
+                   '|SC_BAD_REQUEST|
+                   "Can't post metadata without a content-type"))
 
-            (else                         ;normal case
-             (let ((nkb (kb:new kb-name))
-                   (kb-uri (string-append (webapp-base-from-request request #t)
-                                          "/" kb-name)))
-               (if (string=? content-type "text/plain")
-                   (nkb 'set-metadata
-                        (reader->jstring (get-reader request))
-                        kb-uri
-                        #f)
-                   (nkb 'set-metadata
-                        (get-input-stream request)
-                        kb-uri
-                        content-type))
-               (set-response-status! response '|SC_NO_CONTENT|))))))
+       (else                           ;normal case -- create a new KB
+        (kb:new kb-name
+                (get-metadata-from-source (if (string=? content-type "text/plain")
+                                              (reader->jstring (get-reader request))
+                                              (get-input-stream request))
+                                          kb-name
+                                          content-type))
+        (set-response-status! response '|SC_NO_CONTENT|)))))
 
   ;; Given a knowledgebase called KB-NAME, upload a RDF/XML submodel called
   ;; KB-NAME which is available from the given STREAM.  The RDF-MIME is
@@ -496,7 +435,7 @@
               (make-fc request response '|SC_BAD_REQUEST|)
             (lambda ()
               (chatter "update-submodel: about to read ~s" submodel-name)
-              (let ((m (rdf:ingest-from-stream stream rdf-mime)))
+              (let ((m (rdf:ingest-from-stream/language stream "" rdf-mime)))
                 (chatter "update-submodel: kb=~s submodel=~s"
                          kb submodel-name)
                 (if (kb (if tbox? 'add-tbox 'add-abox)
@@ -506,10 +445,8 @@
                     (no-can-do request response
                                '|SC_INTERNAL_SERVER_ERROR| ;correct?
                                "Unable to update model!")))))
-          (no-can-do request response
-                     '|SC_BAD_REQUEST|
-                     (format #f "No such knowledgebase ~a"
-                             kb-name)))))
+          (no-can-do request response '|SC_BAD_REQUEST|
+                     "No such knowledgebase ~a" kb-name))))
 
   (with/fc
       (make-fc request response '|SC_INTERNAL_SERVER_ERROR|)
@@ -519,18 +456,16 @@
      (let ((path-list (request->path-list request))
            (query-string (request->query-string request)))
        (cond ((not (content-headers-ok? request))
-              (no-can-do
-               request response
-               '|SC_NOT_IMPLEMENTED|
-               "Found unexpected content-* header; allowed ones are ~a"
-               (content-headers-ok?)))
+              (no-can-do request response '|SC_NOT_IMPLEMENTED|
+                         "Found unexpected content-* header; allowed ones are ~a"
+                         (content-headers-ok?)))
 
              ((= (length path-list) 1)
-              (manage-knowledgebase (car path-list)
+              (manage-knowledgebase (request->kb-uri request)
                                     query-string))
 
              ((= (length path-list) 2)
-              (update-submodel (car path-list)
+              (update-submodel (request->kb-uri request)
                                (cadr path-list)
                                (or (not query-string)
                                    (string=? query-string "tbox"))
@@ -570,15 +505,12 @@
                  (not query-string)
                  (or (not content-type)
                      (string=? content-type "application/sparql-query")))
-            (let ((kb (kb:get (car path-list))))
+            (let ((kb (kb:get (request->kb-uri request) ;; (car path-list)
+                              )))
               (or kb
-                  (report-exception
-                   'http-post
-                   '|SC_BAD_REQUEST|
-                   "don't know about knowledgebase ~a" (car path-list))
-                  ;; (error 'http-post
-;;                          "don't know about knowledgebase ~a" (car path-list))
-                  )
+                  (report-exception 'http-post
+                                    '|SC_BAD_REQUEST|
+                                    "don't know about knowledgebase ~a" (car path-list)))
               (let ((runner
                      (sparql:make-query-runner
                       kb
@@ -592,8 +524,7 @@
             (no-can-do request response
                        '|SC_BAD_REQUEST|
                        "POST SPARQL request must have one path element, no query, and content-type application/sparql-query~%(path=~s, query=~a, content-type=~a)"
-                       path-list query-string content-type))
-        ))))
+                       path-list query-string content-type))))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -607,34 +538,72 @@
   (with/fc
       (make-fc request response '|SC_INTERNAL_SERVER_ERROR|)
     (lambda ()
-      (let ((path-list (request->path-list request)))
-        (cond ((= (length path-list) 1)
-               (if (kb:discard (car path-list))
-                   (set-response-status! response '|SC_NO_CONTENT|)
-                   (no-can-do request response
-                              '|SC_NOT_FOUND| ;correct?
-                              "There was no knowledgebase ~a to delete"
-                              (car path-list))))
-              ((= (length path-list) 2)
-               (let ((kb-name (car path-list))
-                     (submodel (cadr path-list)))
-                 (cond ((kb:get kb-name)
-                        => (lambda (kb)
-                             (if (kb 'drop-submodel submodel)
-                                 (set-response-status! response '|SC_NO_CONTENT|)
-                                   (no-can-do request response
-                                              '|SC_BAD_REQUEST|
-                                              "No such submodel ~a"
-                                              submodel))))
-                       (else
-                        (no-can-do request response
-                                   '|SC_BAD_REQUEST|
-                                   "No such knowledgebase ~a" kb-name)))))
-              (else
+      (let ((path-list (request->path-list request))
+            (kb-name (request->kb-uri request)))
+        (case (length path-list)
+          ((1)
+           (if (kb:discard kb-name)
+               (set-response-status! response '|SC_NO_CONTENT|)
                (no-can-do request response
-                          '|SC_BAD_REQUEST|
-                          "The request path has too many elements ~s"
-                          path-list)))))))
+                          '|SC_NOT_FOUND| ;correct?
+                          "There was no knowledgebase ~a to delete"
+                          (car path-list))))
+          ((2)
+           (let ((submodel (cadr path-list)))
+             (cond ((kb:get kb-name)
+                    => (lambda (kb)
+                         (if (kb 'drop-submodel submodel)
+                             (set-response-status! response '|SC_NO_CONTENT|)
+                             (no-can-do request response
+                                        '|SC_BAD_REQUEST|
+                                        "No such submodel ~a"
+                                        submodel))))
+                   (else
+                    (no-can-do request response
+                               '|SC_BAD_REQUEST|
+                               "No such knowledgebase ~a" kb-name)))))
+          (else
+           (no-can-do request response
+                      '|SC_BAD_REQUEST|
+                      "The request path has too many elements ~s"
+                      path-list)))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Helpers specific to this module
+
+;; REQUEST->KB-URI : request -> uri-or-false
+;; Return a URI which will be used as the name of the KB referred to by the request
+;; (namely, the URL of the model).  Return false if there is no path
+(define (request->kb-uri request)
+  (let ((path-list (request->path-list request)))
+    (and (not (null? path-list))
+         (java-new <uri>
+                   (->jstring
+                    (string-append (webapp-base-from-request request #t)
+                                   "/"
+                                   (car path-list)))))))
+
+;; GET-METADATA-FROM-SOURCE : jinput-stream base-uri content-type -> jena-model
+;; GET-METADATA-FROM-SOURCE : jstring base-uri <ignored> -> jena-model
+;;
+;; Given an input stream, read a model from it; given a string, make
+;; a model which has this as a dc:description.
+(define (get-metadata-from-source source base-uri content-type)
+  (define-generic-java-method to-string)
+  (let ((base-uri-jstring (to-string base-uri)))
+    (if (is-java-type? source <java.lang.string>)
+        (let ((new-model (rdf:new-empty-model))) ;content is string
+          (define-generic-java-methods create-resource create-statement create-literal add)
+          (add new-model
+               (create-statement new-model
+                                 (create-resource new-model base-uri-jstring)
+                                 (java-retrieve-static-object
+                                  '|com.hp.hpl.jena.vocabulary.DC.description|)
+                                 (create-literal new-model source (->jstring "en")))))
+        (rdf:ingest-from-stream/language source ;content is model
+                                         base-uri-jstring
+                                         content-type))))
 
 ;; Small module to wrap a hashtable, which stores functions
 ;; (and possibly, later, continuations) in exchange for a token
@@ -712,47 +681,51 @@
           (fault message-code
                  "~a (~a)~%~a"
                  message-text
-                 (error-message m)
+                 (format-error-record m) ;(error-message m)
                  (with-output-to-string
                    (lambda () (print-stack-trace e))))
           (fault message-code
                  "~a (~a)"
                  message-text
-                 (error-message m)))))
+                 (format-error-record m) ;(error-message m) is tidier, but gives less info
+                 ))))
 
   ;; Get a single model.  The response contains a URL which points
   ;; to one of the HTTP GET methods.
   (define (xmlrpc-get-model quaestor-url . args)
-    (cond ((and (= (length args) 1)
-                (string? (car args)))
-           (let ((kb (kb:get (car args))))
-             (if kb
-                 (xmlrpc:create-response "~a/kb/~a"
-                                         quaestor-url (car args))
-                 (fault 'unknown-object
-                        "no such knowledgebase ~a" (car args)))))
-          ((and (= (length args) 2)
-                (string? (car args))
-                (string? (cadr args)))
-           (let ((kb (kb:get (car args))))
-             (if (and kb (kb 'has-model (cadr args)))
-                 (xmlrpc:create-response "~a/kb/~a/~a"
-                                         quaestor-url
-                                         (car args)
-                                         (cadr args))
-                 (fault 'unknown-object
-                        "no such model ~a/~a"
-                        (car args) (cadr args)))))
-          (else
-           (fault 'malformed-request
-                  "get-model requires 1 or 2 string args, got ~a ~s"
-                  (length args) args))))
+    (define-generic-java-methods resolve to-string)
+    (let* ((kb-shortname (and (not (null? args))
+                              (car args)))
+           (kb-name (resolve quaestor-url (->jstring (format #f "kb/~a" kb-shortname)))))
+      ;;(chatter "xmlrpc-get-model: kb-shortname=~s  base=~s  kb-name=~s" kb-shortname quaestor-url kb-name)
+      (case (length args)
+        ((1)
+         (let ((kb (kb:get kb-name)))
+           (if kb
+               (xmlrpc:create-response "~a" (->string (to-string kb-name)))
+               (fault 'unknown-object
+                      "no such knowledgebase ~a" kb-shortname))))
+        ((2)
+         (let ((kb (kb:get kb-name))
+               (submodel (cadr args)))
+           (if (and kb (kb 'has-model submodel))
+               (xmlrpc:create-response "~a/~a"
+                                       (->string (to-string kb-name)) 
+                                       submodel)
+               (fault 'unknown-object "no such model ~a/~a" kb-shortname submodel))))
+        (else
+         (fault 'malformed-request
+                "get-model requires 1 or 2 string args, got ~s"
+                args)))))
 
-  ;; xmlrpc-query-model string string string -> sexp
+  ;; xmlrpc-query-model uri string ?string -> sexp
   ;;
   ;; Do a query against the given model.
   (define (xmlrpc-query-model quaestor-url model-name query-string . mime-type)
-    (let ((kb (kb:get model-name)))
+    (define-generic-java-methods resolve to-string)
+    (or (string? model-name)
+        (fault 'malformed-request "malformed model name ~s (expected string)" model-name))
+    (let ((kb (kb:get (resolve quaestor-url (->jstring (string-append "kb/" model-name))))))
       (if kb
           (with/fc
               (make-fc-xmlrpc 'unparseable-query "can't process SPARQL query")
@@ -763,8 +736,8 @@
                                                (if (null? mime-type)
                                                    '("*/*")
                                                    `(,(car mime-type))))))
-                (xmlrpc:create-response "~a/pickup/~a"
-                                        quaestor-url
+                (xmlrpc:create-response "~apickup/~a"
+                                        (->string (to-string quaestor-url))
                                         (f->ftoken runner)))))
           (fault 'unknown-object
                  "don't know about knowledgebase ~a" model-name))))
@@ -772,14 +745,14 @@
   ;; method-name->handler symbol -> integer, procedure
   ;;
   ;; Map method names to procedures.
-  ;;    (method-name->handler 'NAME) => NARGS, HANDLER
+  ;;    (method-name->handler 'NAME) => CHECKER, HANDLER
   ;; Given a method NAME as a symbol, return a pair of values giving
-  ;; the number of arguments that method expects (or #f if it can
-  ;; handle a variable number), and a procedure which will do the
+  ;; a procedure which will validate that method's arguments,
+  ;; and a procedure which will do the
   ;; work.  The handler must match the signature
   ;;    (handler BASE-URI ARG ...) => XML-SEXP
   ;; The handler is passed the BASE-URI of this service and the
-  ;; requisite number of arguments extracted from the XML-RPC call,
+  ;; arguments extracted from the XML-RPC call,
   ;; and returns a sexp which is to be converted to XML as a
   ;; response.  This may most conveniently be generated by
   ;; XMLRPC:CREATE-RESPONSE or XMLRPC:CREATE-FAULT (wrapped in FAULT).
@@ -788,8 +761,16 @@
       (lambda (name)
         (or mappings
             (set! mappings
-                  `((get-model #f ,xmlrpc-get-model)
-                    (query-model #f ,xmlrpc-query-model))))
+                  `((get-model   ,(lambda (args)
+                                    (let ((s (map string? args)))
+                                      (or (equal? s '(#t))
+                                          (equal? s '(#t #t)))))
+                                 ,xmlrpc-get-model)
+                    (query-model ,(lambda (args)
+                                    (let ((s (map string? args)))
+                                      (or (equal? s '(#t #t))
+                                          (equal? s '(#t #t #t)))))
+                                 ,xmlrpc-query-model))))
         (cond ((not name)
                (values #f #f))
               ((assq name mappings)
@@ -801,39 +782,32 @@
   ;; Do the actual XML-RPC call, given a READER from which to read the 
   ;; XML, and a URL, which is the base URI of the service.  Return a sexp
   ;; which is to be turned into XML.
-  (define (do-xmlrpc-call my-url reader)
+  (define (do-xmlrpc-call base-uri reader)
     (let ((call (xmlrpc:new-call (sexp-xml:xml->sexp/reader reader))))
-      (call-with-values (lambda ()
-                          (method-name->handler (xmlrpc:method-name call)))
-        (lambda (nargs h)
-          (cond ((not h)
-                 (fault 'unrecognised-method
-                        "unrecognised method: ~a" (xmlrpc:method-name call)))
-                ((not (procedure? h))
-                 (error 'do-xmlrpc-call
-                        "handler was not procedure! ~a -> ~s"
-                        (xmlrpc:method-name call) h))
-                (nargs
-                 (if (= nargs (xmlrpc:number-of-params call))
-                     (apply h         ;normal case 1 -- fixed no. args
-                            (cons my-url (xmlrpc:method-param-list call)))
+      (receive (checker h) (method-name->handler (xmlrpc:method-name call))
+        (cond ((not h)
+               (fault 'unrecognised-method
+                      "unrecognised method: ~a" (xmlrpc:method-name call)))
+              ((not (procedure? h))
+               (error 'do-xmlrpc-call
+                      "handler was not procedure! ~a -> ~s"
+                      (xmlrpc:method-name call) h))
+              (checker
+               (let ((arglist (xmlrpc:method-param-list call)))
+                 (if (checker arglist)
+                     (apply h (cons base-uri arglist)) ;normal case
                      (fault 'malformed-request
-                            "method ~a expected ~a params, got ~a"
-                            (xmlrpc:method-name call)
-                            nargs
-                            (xmlrpc:number-of-params call))))
-                (else              ;normal case 2 -- variable no. args
-                 (apply h
-                        (cons my-url (xmlrpc:method-param-list call)))))))))
+                            "method ~a got wrong number or type of arguments: ~a"
+                            (xmlrpc:method-name call) arglist))))
+                
+              (else                ;normal case -- variable no. args
+               (apply h
+                      (cons base-uri (xmlrpc:method-param-list call))))))))
 
   ;; Handle a single XML-RPC request.  Return a response as a string
   ;; containing XML, success or failure.
   (define (_xmlrpc-handler request response)
-    (define-generic-java-methods
-      get-reader
-      get-local-name
-      get-local-port
-      get-context-path)
+    (define-generic-java-methods get-reader)
 
     ;; pre-emptively set the response status and content-type
     ;; (error handlers may change this)
@@ -844,11 +818,9 @@
        (lambda ()
          (cond  ((not (content-headers-ok? request))
                  ;; Unexpected Content-* header found
-                 (no-can-do
-                  request response
-                  '|SC_NOT_IMPLEMENTED|
-                  "Found unexpected content-* header; allowed ones are ~a"
-                  (content-headers-ok?)))
+                 (no-can-do request response '|SC_NOT_IMPLEMENTED|
+                            "Found unexpected content-* header; allowed ones are ~a"
+                            (content-headers-ok?)))
 
                 ((let ((type (request->content-type request)))
                    (and type (or (string=? type "text/xml")
@@ -860,7 +832,7 @@
                  ;; Now do the actual work of reading the method
                  ;; call from the input reader.
                  (do-xmlrpc-call
-                  (webapp-base-from-request request)
+                  (java-new <uri> (->jstring (string-append (webapp-base-from-request request) "/")))
                   (get-reader request)))
 
                 (else

@@ -9,6 +9,9 @@
 (require-library 'util/misc)
 (import* misc sort-list)
 
+(import s2j)
+(define-java-classes (<uri> |java.net.URI|))
+
 
 (let ((maps '(("application/n3"                      . "N3")      
               ("text/rdf+n3"                         . "N3")      
@@ -105,13 +108,14 @@
 ;;           (print-model-statements (rdf:merge-models models))))
 
 (let ((test-model
-       (n3->model "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>. <http://example.org#MyClass> a rdfs:Class; rdfs:subClassOf <http://example.org#MySuperClass>. <http://example.org#norman> <http://purl.org/dc/elements/1.1/name> \"Norman\".")))
+       (n3->model "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>. <http://example.org#MyClass> a rdfs:Class; rdfs:subClassOf <http://example.org#MySuperClass>. <http://example.org#norman> <http://purl.org/dc/elements/1.1/name> \"Norman\"."))
+       (norman-string "http://example.org#norman")
+       (norman-jstring (->jstring "http://example.org#norman")))
   (define-generic-java-methods
     create-resource create-property create-typed-literal to-string)
   (define (node->string n)
     (->string (to-string n)))
-  (let ((res  (create-resource test-model
-                               (->jstring "http://example.org#norman")))
+  (let ((res  (create-resource test-model norman-jstring))
         (class-resource
          (create-resource
           test-model
@@ -120,31 +124,36 @@
          (create-property test-model
                           (->jstring "http://purl.org/dc/elements/1.1/name")))
         (norman (create-typed-literal test-model
-                                      (->jstring "Norman"))))
+                                      (->jstring "Norman")))
+        (norman-uri (java-new <uri> norman-jstring)))
 
     (expect-failure select-failure      ;error: no #f slot
                     (rdf:select-statements test-model res name norman))
+    (expect-failure select-failure2     ;error: two #f slots
+                    (rdf:select-statements test-model res #f #f))
+    (expect-failure select-failure3     ;error: two #f slots
+                    (rdf:select-statements test-model #f name #f))
 
     (expect select-subjects
-            '("http://example.org#norman")
+            (list norman-string) ; '("http://example.org#norman")
             (map node->string
                  (rdf:select-statements test-model #f name norman)))
     (expect select-subjects-literal     ;predicate is string, object is jstring
-            '("http://example.org#norman")
+            (list norman-string) ;'("http://example.org#norman")
             (map node->string
                  (rdf:select-statements test-model
                                         #f
                                         "http://purl.org/dc/elements/1.1/name"
                                         (->jstring "Norman"))))
     (expect select-subjects-literal2    ;the same, but predicate is jstring
-            '("http://example.org#norman")
+            (list norman-string);'("http://example.org#norman")
             (map node->string
                  (rdf:select-statements test-model
                                         #f
                                         (->jstring "http://purl.org/dc/elements/1.1/name")
                                         (->jstring "Norman"))))
     (expect select-subjects-literal-string ;object is scheme string
-            '("http://example.org#norman")
+            (list norman-string) ;'("http://example.org#norman")
             (map node->string
                  (rdf:select-statements test-model
                                         #f
@@ -182,7 +191,7 @@
             '("http://purl.org/dc/elements/1.1/name")
             (map node->string
                  (rdf:select-statements test-model
-                                        "http://example.org#norman"
+                                        norman-string
                                         #f
                                         (->jstring "Norman"))))
     (expect select-objects              ;subject and predicate are RDFNodes
@@ -193,16 +202,46 @@
             '("Norman")
             (map node->string
                  (rdf:select-statements test-model
-                                        "http://example.org#norman"
+                                        norman-string
                                         "http://purl.org/dc/elements/1.1/name"
                                         #f)))
-
+    (expect select-objects-literal2 ;as before, but with jstring as subject
+            '("Norman")
+            (map node->string
+                 (rdf:select-statements test-model
+                                        norman-jstring
+                                        "http://purl.org/dc/elements/1.1/name"
+                                        #f)))
+    (expect select-objects-literal3     ;as before, but with URI as subject
+            '("Norman")
+            (map node->string
+                 (rdf:select-statements test-model
+                                        norman-uri
+                                        "http://purl.org/dc/elements/1.1/name"
+                                        #f)))
     (expect select-objects-none         ;no matches
             '()
             (rdf:select-statements test-model
-                                   "http://example.org#norman"
+                                   norman-string 
                                    "http://example.org/wibble"
                                    #f))
+
+    ;; now a couple of similar queries using rdf:select-object/string
+    (expect select-objects-string       ;object is a literal
+            "Norman"
+            (rdf:select-object/string test-model
+                                      norman-string
+                                      "http://purl.org/dc/elements/1.1/name"))
+    (expect select-objects-string-resource ;object is a resource
+            "http://example.org#MySuperClass"
+            (rdf:select-object/string test-model
+                                      "http://example.org#MyClass"
+                                      "http://www.w3.org/2000/01/rdf-schema#subClassOf"))
+    (expect select-objects-string-none  ;no such object
+            #f
+            (rdf:select-object/string test-model
+                                      norman-string
+                                      "http://purl.org/dc/elements/1.1/wibble"))
 
     (expect select-properties-property  ;predicate is Property
             '("Norman")
