@@ -5,7 +5,19 @@
     </properties>
     <body>
     	<release version="(Pending Integration)">
-     
+
+          <action dev="kea" type="fix">
+             Branch PAL-KEA-2235.  Enhancements and fixes including bugzilla tickets :
+             2219: Configuration documentation update 
+             2221: Improved error reporting for missing metadoc file
+             2230: HTML output available from CEA interfaces
+             2003/2237: VOResource 1.0 support
+             2118: HTTP chunking property now compulsory
+             1962: Enhanced self-registration interface, including proper
+                reporting of outcome and tests for appropriate authority ID
+             2222: Fix (I hope) for EJBException problem in tomcat 5.5
+          </action>
+
           <action dev="kea" type="fix">
              Branch PAL-KEA-2213.  Enhanced embedded installation 
              documentation.
