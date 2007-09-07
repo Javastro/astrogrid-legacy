@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: project.xml,v 1.3 2007/02/20 12:22:17 clq2 Exp $ -->
+<!-- $Id: project.xml,v 1.4 2007/09/07 11:02:21 mbt Exp $ -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
@@ -105,6 +105,12 @@
             <version>${astrogrid.community.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
+        </dependency>
+
+        <dependency>
+          <id>stil</id>
+          <groupId>starlink</groupId>
+          <version>2.6-3</version>
         </dependency>
 
        <!--

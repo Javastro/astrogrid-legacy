@@ -40,6 +40,15 @@
   </servlet>
 
   <servlet>
+    <servlet-name>MultiCone</servlet-name>
+    <description>Servlet for performing local-remote crossmatches implemented as a sequence of server-side cone searches.
+      The input table is submitted vi HTTP POST.
+      This service is not currently defined by a standard protocol.
+    </description>
+    <servlet-class>org.astrogrid.dataservice.service.multicone.MulticoneServlet</servlet-class>
+  </servlet>
+
+  <servlet>
     <servlet-name>BrowserAskQuery</servlet-name>
     <description>Servlet for asking (synchronous) queries via POST or GET suitable for browsers</description>
     <servlet-class>org.astrogrid.dataservice.service.servlet.BrowserAskQuery</servlet-class>
@@ -99,6 +108,11 @@
   <servlet-mapping>
     <servlet-name>SubmitCone</servlet-name>
     <url-pattern>SubmitCone</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>MultiCone</servlet-name>
+    <url-pattern>MultiCone</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
