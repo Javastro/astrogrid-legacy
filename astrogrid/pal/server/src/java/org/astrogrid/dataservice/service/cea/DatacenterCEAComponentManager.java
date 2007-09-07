@@ -1,4 +1,4 @@
-/*$Id: DatacenterCEAComponentManager.java,v 1.10 2006/03/22 09:56:14 kea Exp $
+/*$Id: DatacenterCEAComponentManager.java,v 1.11 2007/09/07 09:30:51 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,6 +24,9 @@ import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.service.DataServer;
 import org.picocontainer.MutablePicoContainer;
+import org.astrogrid.dataservice.metadata.MetadataException;
+import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
+
 
 /** Component manager implementation that assembles a CEA server which provides a single {@link DatacetnerApplicationDescription} for the
  * datacenter application
@@ -86,16 +89,6 @@ public class DatacenterCEAComponentManager extends EmptyCEAComponentManager {
     /** register the datacenter-specific components of this cea server */
     public static void registerDatacenterProvider(MutablePicoContainer pico, Config config) {
         logger.info("Registering Datacenter CEA Provider");
-       
-       //the application name must match the IVORN of the CeaApplicationType Resource, that is:
-       //<authorityId>/<ResourceKey>/ceaApplication
-       final String name= config.getString("datacenter.authorityId")+"/"+config.getString("datacenter.resourceKey")+"/ceaApplication";
-       logger.info("name =" + name);
-        pico.registerComponentInstance(new DatacenterApplicationDescriptionLibrary.DatacenterMetadata() {
-            public String getName() {
-                return name;
-            }
-        });
         pico.registerComponentImplementation(DatacenterApplicationDescriptionLibrary.class,DatacenterApplicationDescriptionLibrary.class);
         pico.registerComponentImplementation(DataServer.class,DataServer.class);
         pico.registerComponentImplementation(QueuedExecutor.class,CeaQueuedExecutor.class);
@@ -106,6 +99,12 @@ public class DatacenterCEAComponentManager extends EmptyCEAComponentManager {
 
 /*
 $Log: DatacenterCEAComponentManager.java,v $
+Revision 1.11  2007/09/07 09:30:51  clq2
+PAL_KEA_2235
+
+Revision 1.10.40.1  2007/09/04 08:41:37  kea
+Fixing v1.0 registrations and multi-catalog CEA stuff.
+
 Revision 1.10  2006/03/22 09:56:14  kea
 Bugfix.
 

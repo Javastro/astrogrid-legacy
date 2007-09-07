@@ -11,142 +11,188 @@ import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.metadata.VoResourcePlugin;
 import org.astrogrid.dataservice.metadata.v0_10.VoResourceSupport;
+import org.astrogrid.dataservice.metadata.VoResourceSupportBase;
+import org.astrogrid.dataservice.metadata.MetadataException;
+import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
+import org.astrogrid.tableserver.metadata.TableInfo;
+
+
 
 /**
- * Serves the CEA resources.  Bit of a mangled fudge at the moment to get
- * the right stuff from the right bit into the right bit.
- *
- * TOFIX THIS IS STILL SERVING OLD VERSION!!! JUST A PLACEHOLDER!! 
- * <p>
+ * Serves the CEA capabilities and application registrations.  
  * @author M Hill, K Andrews
  */
 
-public class CeaResources extends VoResourceSupport implements VoResourcePlugin {
+public class CeaResources extends VoResourceSupport {
    protected static Log log = LogFactory.getLog(VoDescriptionServer.class);
    
    /**
     * Returns a CeaServiceType resource element
     */
-   public String getVoResource() throws IOException {
+   public static String getCeaAppResource(String catalogName) 
+      throws IOException, MetadataException {
 
-      // Tofix take out later
-      throw new IOException(
-            "DON'T USE v1.0 REGISTRATIONS YET!  CODE NOT READY!");
+      String coneParams="", coneInters="";
+      String appId = 
+         VoResourceSupportBase.makeIvorn(catalogName+"/ceaApplication");
 
-      /*
-      String endpoint = 
-         ConfigFactory.getCommonConfig().getString("datacenter.url");
+      String catalogID = 
+         TableMetaDocInterpreter.getCatalogIDForName(catalogName);
+      TableInfo[] tables =
+           TableMetaDocInterpreter.getConesearchableTables(catalogID);
+      if (tables.length > 0) {
+         // We have some conesearchable tables in this catalog,
+         // so generate CEA-cone interfaces for them
+         coneParams = 
+            // Conesearch table
+             "      <parameterDefinition id='CatTable' type='text'>\n"+
+             "        <name>Table</name>\n"+
+             "        <description>Which table should be conesearched"+
+             "</description>\n"+
+            /*
+            "<defaultValue>" + catalogName +
+                     "." + tables[0].getName() + "</ceapd:DefaultValue>\n"+
+            */
+            "        <optionList>\n";
+
+         for (int i = 0; i < tables.length; i++) {
+            String fullTable = catalogName + "." + tables[i].getName();
+            coneParams = coneParams + "          <optionVal>" +
+               fullTable + "</optionVal>\n";
+         }
+         coneParams = coneParams + 
+            "        </optionList>\n    </parameterDefinition>\n" +
+               // Conesearch RA
+               "      <parameterDefinition id='RA' type='RA'>\n"+
+               "        <name>RA</name>\n"+
+               "        <description>Right-Ascension of cone search centre"+
+               "</description>\n"+
+               "        <unit>deg</unit>\n"+
+               "        <ucd>POS_RA_MAIN</ucd>\n"+
+               "      </parameterDefinition>\n"+
+
+               // Conesearch Dec
+               "      <parameterDefinition id='DEC' type='Dec'>\n"+
+               "        <name>DEC</name>\n"+
+               "        <description>Declination of cone search centre"+
+               "</description>\n"+
+               "        <unit>deg</unit>\n"+
+               "        <ucd>POS_DEC_MAIN</ucd>\n"+
+               "      </parameterDefinition>\n"+
+
+               // Conesearch Radius
+               "      <parameterDefinition id='Radius' type='real'>\n"+
+               "        <name>Radius</name>\n"+
+               "        <description>Radius of cone search area"+
+               "</description>\n"+
+               "        <unit>deg</unit>\n"+
+               "        <ucd>PHYS_SIZE_RADIUS</ucd>\n"+
+               "      </parameterDefinition>\n";
+
+         coneInters=
+               "      <interfaceDefinition id='ConeSearch'>\n"+
+               "        <input>\n"+
+               "          <pref ref='CatTable'/>\n"+
+               "          <pref ref='RA'/>\n"+
+               "          <pref ref='DEC'/>\n"+
+               "          <pref ref='Radius'/>\n"+
+               "          <pref ref='Format'/>\n"+
+               "        </input>\n"+
+               "        <output>\n"+
+               "          <pref ref='Result'/>\n"+
+               "        </output>\n"+
+               "      </interfaceDefinition>\n";
+      }
+
+      // Set up relationship tag
+      String[] end = new String[1];
+      end[0] = VoResourceSupportBase.makeIvorn(catalogName);
+      // We are allowed "service-for" but not "served-by" in the 
+      // relationship tag, so let's make the best of it with related-to
+      // (which at least allows you to find the server actually supporting
+      // this CEA Application type)
+      String relTag = VoResourceSupportBase.makeRelationshipTag(
+          "related-to", end);
+
+      String ceaApplication =
+         VoResourceSupportBase.openVoResourceElement_1_0("cea:CeaApplication") + 
+         VoResourceSupportBase.makeDublinCore(catalogName+"/ceaApplication","Cea Application",relTag)+
+
+         // Basic parameters used in the interfaces
+         "  <applicationDefinition>\n"+
+         "    <parameters>\n"+
+               
+         // Input ADQL query
+         "      <parameterDefinition id='Query' type='ADQL'>\n"+
+         "        <name>Query</name>\n"+
+         "        <description>Astronomy Data Query Language that defines the search criteria</description>\n"+
+         "      </parameterDefinition>\n"+
+
+         // Outgoing query results 
+         "      <parameterDefinition id='Result' type='text'>\n"+
+         "        <name>Result</name>\n"+
+         "        <description>Query results</description>\n"+
+         "      </parameterDefinition>\n"+
+
+         // Required results format
+         "      <parameterDefinition id='Format' type='text'>\n"+
+         "        <name>Format</name>\n"+
+         "        <description>Return format for the results.</description>\n"+
+         "        <defaultValue>VOTABLE</defaultValue>\n"+
+         "        <optionList>\n"+
+         "          <optionVal>VOTABLE</optionVal>\n"+
+         "          <optionVal>VOTABLE-BINARY</optionVal>\n"+
+         "          <optionVal>COMMA-SEPARATED</optionVal>\n"+
+         "          <optionVal>HTML</optionVal>\n"+
+         "        </optionList>\n"+
+         "      </parameterDefinition>\n"+
+
+         // Adding the conesearch entries if required
+               coneParams +
+         "    </parameters>\n"+
+            
+         // Interfaces available
+         "    <interfaces>\n"+
+         "      <interfaceDefinition id='ADQL'>\n"+
+         "        <input>\n"+
+         "          <pref ref='Query'/>\n"+
+         "          <pref ref='Format'/>\n"+
+         "        </input>\n"+
+         "        <output>\n"+
+         "          <pref ref='Result'/>\n"+
+         "        </output>\n"+
+         "      </interfaceDefinition>\n"+
+         // Adding the conesearch entries if required
+         coneInters +
+         "    </interfaces>\n"+
+         "  </applicationDefinition>\n"+
+         VoResourceSupportBase.closeVoResourceElement_1_0() + "\n";
+         return ceaApplication;
+   }
+
+   public static String getAppID(String catalogName) throws IOException {
+      return VoResourceSupportBase.makeIvorn(catalogName+"/ceaApplication");
+   }
+
+   public static String getCeaServerCapabilities(String catalogName) throws IOException {
+      String endpoint =
+           ConfigFactory.getCommonConfig().getString("datacenter.url");
       if (!endpoint.endsWith("/")) {
          endpoint = endpoint + "/";  // Add trailing separator if missing
       }
-      String ceaService =
-         makeVoResourceElement(
-             "cea:CeaServiceType",
-             // Namespaces
-             "xmlns:vs='http://www.ivoa.net/xml/VODataService/v0.5' " +
-             "xmlns:cea='http://www.ivoa.net/xml/CEAService/v0.2' ",
-             // Schema locations
-             "http://www.ivoa.net/xml/VODataService/v0.5 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v0.5/VODataService.xsd" + " " +
-             "http://www.ivoa.net/xml/CEAService/v0.2 http://software.astrogrid.org/schema/vo-resource-types/CEAService/v0.2/CEAService.xsd"
-             ) +
-         makeCore("ceaService")+
-         "<interface xsi:type='vs:WebService'>"+
-            "<accessURL use='full'>"+ endpoint + 
-            "services/CommonExecutionConnectorService"+
-            "</accessURL>"+
-         "</interface>"+
-         //reference to the application that this serves
-         "<cea:ManagedApplications>"+
-            "<cea:ApplicationReference>"+
-               makeId("ceaApplication")+
-            "</cea:ApplicationReference>"+
-         "</cea:ManagedApplications>"+
-         "</"+VORESOURCE_ELEMENT+">";
-      
+      String appId = getAppID(catalogName);
 
-      String ceaApplication =
-         makeVoResourceElement(
-             "cea:CeaApplicationType",
-             // Namespaces
-             "xmlns:cea='http://www.ivoa.net/xml/CEAService/v0.2' "   +
-             "xmlns:ceapd='http://www.astrogrid.org/schema/AGParameterDefinition/v1' " +
-             "xmlns:ceab='http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1' ",
-             // Schema locations
-             "http://www.ivoa.net/xml/CEAService/v0.2 http://software.astrogrid.org/schema/vo-resource-types/CEAService/v0.2/CEAService.xsd" + " " +
-             "http://www.astrogrid.org/schema/AGParameterDefinition/v1 http://software.astrogrid.org/schema/jes/AGParameterDefinition/v1.0/AGParameterDefinition.xsd" + " " + 
-             "http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1 http://software.astrogrid.org/schema/cea/CommonExecutionArchitectureBase/v1.0/CommonExecutionArchitectureBase.xsd"
-             ) +
-         makeCore("ceaApplication")+
-         "<cea:ApplicationDefinition>\n"+
-            "<cea:Parameters>\n"+
-               "<cea:ParameterDefinition name='Query' type='ADQL'>\n"+
-                  "<ceapd:UI_Name>Query</ceapd:UI_Name>\n"+
-                  "<ceapd:UI_Description>Astronomy Data Query Language that defines the search criteria</ceapd:UI_Description>\n"+
-                  //"<ceapd:UCD/>
-                  //"<ceapd:DefaultValue/>
-                  //"<ceapd:Units/>
-               "</cea:ParameterDefinition>\n"+
-               "<cea:ParameterDefinition name='Result' type='text'>\n"+
-                  "<ceapd:UI_Name>Result</ceapd:UI_Name>\n"+
-                  "<ceapd:UI_Description>Query results</ceapd:UI_Description>\n"+
-               "</cea:ParameterDefinition>\n"+
-               "<cea:ParameterDefinition name='Format' type='text'>\n"+
-                  "<ceapd:UI_Name>Format</ceapd:UI_Name>\n"+
-                  "<ceapd:UI_Description>How the results are to be returned.  VOTABLE, VOTABLE-BINARY or CSV for now</ceapd:UI_Description>\n"+
-                  "<ceapd:DefaultValue>VOTABLE</ceapd:DefaultValue>\n"+
-                  "<ceapd:OptionList>\n"+
-                       "<ceapd:OptionVal>VOTABLE</ceapd:OptionVal>\n"+
-                       "<ceapd:OptionVal>VOTABLE-BINARY</ceapd:OptionVal>\n"+
-                       "<ceapd:OptionVal>COMMA-SEPARATED</ceapd:OptionVal>\n"+
-                  "</ceapd:OptionList>\n"+
-               "</cea:ParameterDefinition>\n"+
-               "<cea:ParameterDefinition name='RA' type='double'>\n"+
-                  "<ceapd:UI_Name>RA</ceapd:UI_Name>\n"+
-                  "<ceapd:UI_Description>Right-Ascension of cone</ceapd:UI_Description>\n"+
-                  "<ceapd:UCD>POS_RA_MAIN</ceapd:UCD>\n"+
-                  "<ceapd:Units>deg</ceapd:Units>\n"+
-               "</cea:ParameterDefinition>\n"+
-               "<cea:ParameterDefinition name='DEC' type='double'>\n"+
-                  "<ceapd:UI_Name>DEC</ceapd:UI_Name>\n"+
-                  "<ceapd:UI_Description>Declination of cone</ceapd:UI_Description>\n"+
-                  "<ceapd:UCD>POS_DEC_MAIN</ceapd:UCD>\n"+
-                  "<ceapd:Units>deg</ceapd:Units>\n"+
-               "</cea:ParameterDefinition>\n"+
-               "<cea:ParameterDefinition name='Radius' type='double'>\n"+
-                  "<ceapd:UI_Name>Radius</ceapd:UI_Name>\n"+
-                  "<ceapd:UI_Description>Radius of cone</ceapd:UI_Description>\n"+
-                  "<ceapd:Units>deg</ceapd:Units>\n"+
-               "</cea:ParameterDefinition>\n"+
-            "</cea:Parameters>\n"+
-            
-            "<cea:Interfaces>\n"+
-               "<ceab:Interface name='adql'>\n"+
-                  "<ceab:input>\n"+
-                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='Query'/>\n"+
-                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='Format'/>\n"+
-                  "</ceab:input>\n"+
-                  "<ceab:output>\n"+
-                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='Result'/>\n"+
-                  "</ceab:output>\n"+
-               "</ceab:Interface>\n"+
-               "<ceab:Interface name='cone'>\n"+
-                  "<ceab:input>\n"+
-                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='RA'/>\n"+
-                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='DEC'/>\n"+
-                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='Radius'/>\n"+
-                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='Format'/>\n"+
-                  "</ceab:input>\n"+
-                  "<ceab:output>\n"+
-                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='Result'/>\n"+
-                  "</ceab:output>\n"+
-               "</ceab:Interface>\n"+
-            "</cea:Interfaces>\n"+
-         "</cea:ApplicationDefinition>\n"+
-         "</"+VORESOURCE_ELEMENT+">\n";
-         
-      //System.out.println(ceaService+ceaApplication);
-         return ceaService+ceaApplication;
-      */
+      StringBuffer cap = new StringBuffer();
+      cap.append("  <capability xsi:type=\"cea:CeaCapability\">\n");
+      cap.append("    <description>Access to two applications: general ADQL query, and asynchronous cone-search where relevant/enabled.</description>\n");
+      cap.append("    <interface  xsi:type=\"cea:CECInterface\">\n");
+      cap.append("      <accessURL use='full'>" + endpoint + 
+            "services/CommonExecutionConnectorService</accessURL>\n");
+      cap.append("    </interface>\n");
+      cap.append("    <managedApplications>\n");
+      cap.append("      <ApplicationReference>" + appId + "</ApplicationReference>\n");
+      cap.append("    </managedApplications>\n");
+      cap.append("  </capability>\n");
+      return cap.toString();
    }
-
 }

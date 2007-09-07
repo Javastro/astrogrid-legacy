@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.14 2007/06/08 13:16:12 clq2 Exp $
+ * $Id: SqlResults.java,v 1.15 2007/09/07 09:30:52 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -303,8 +303,15 @@ public class SqlResults extends TableResults {
             catch (SQLException se) {
                //log but carry on; eg postgres drivers don't seem to 
                //have implemented getColumnClassName
-               log.debug(se+" trying to get column class name for column with ID "+
+               log.debug(se+
+                  " trying to get column class name for column with ID "+
                    columnID);
+            }
+            //Added because of problems with strange oracle types
+            // BINARY_FLOAT, BINARY_DOUBLE, BINARY_INTEGER
+            catch (NullPointerException npe) {
+               log.warn("Error getting column class name for column with ID "+
+                 columnID+ ", column type may not be supported in JDBC?",npe);
             }
          }
          // Now that we have the metadata, we can start processing the table.
@@ -389,6 +396,12 @@ public class SqlResults extends TableResults {
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.15  2007/09/07 09:30:52  clq2
+ PAL_KEA_2235
+
+ Revision 1.14.4.1  2007/09/04 08:41:37  kea
+ Fixing v1.0 registrations and multi-catalog CEA stuff.
+
  Revision 1.14  2007/06/08 13:16:12  clq2
  KEA-PAL-2169
 

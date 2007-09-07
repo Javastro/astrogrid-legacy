@@ -1,4 +1,4 @@
-/*$Id: MetadataTest.java,v 1.4 2007/06/08 13:16:12 clq2 Exp $
+/*$Id: MetadataTest.java,v 1.5 2007/09/07 09:30:52 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -126,7 +126,9 @@ public class MetadataTest extends TestCase {
    }
 
    public void testServer_v1_0() throws Exception {
+      /*
       try {
+      */
          Document metadata = VoDescriptionServer.getVoDescription(VoDescriptionServer.V1_0);
          //debug
          DomHelper.DocumentToStream(metadata, System.out);
@@ -138,12 +140,14 @@ public class MetadataTest extends TestCase {
          String s = DomHelper.DocumentToString(metadata);
          
          DomHelper.newDocument(s);
+      /*
       }
       // Temporary until V1.0 resources enabled
       catch (Exception e) {
          return;
       }
       fail("Version 1.0 resources should not be enabled yet!");
+      */
    }
    
    /** Tests the resource generator */

@@ -1,6 +1,6 @@
 
 /*
- * $Id: DatacenterApplicationTest.java,v 1.9 2007/02/20 12:22:16 clq2 Exp $
+ * $Id: DatacenterApplicationTest.java,v 1.10 2007/09/07 09:30:51 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,6 +47,8 @@ import org.astrogrid.tableserver.test.PrecannedPlugin;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
+import org.astrogrid.tableserver.test.SampleStarsPlugin;
+
 
 /** Test whatever we can of the application object.
  * difficult one to test - as its a boundary class between cea and datacenter - and each takes different approaches to interfaces, mocking, etc.
@@ -79,6 +81,7 @@ public class DatacenterApplicationTest extends TestCase {
     */
    protected void setUp() throws Exception {
       super.setUp();
+      SampleStarsPlugin.initConfig();
       ds = new DataServer();
       ConfigFactory.getCommonConfig().setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY,PrecannedPlugin.class.getName());
       env = new ApplicationDescriptionEnvironment(
@@ -89,10 +92,10 @@ public class DatacenterApplicationTest extends TestCase {
                                     return "org.astrogrid.test";
                                  }
                            });
-      appDesc = new DatacenterApplicationDescription("test",ds,env,new DirectExecutor());
+      appDesc = new DatacenterApplicationDescription("astrogrid.org/test-dsa-catalog/ceaApplication",ds,env,new DirectExecutor());
       tool = new Tool();
       populateTool(tool);
-      app = (DatacenterApplication)appDesc.initializeApplication("test",new User(),tool);
+      app = (DatacenterApplication)appDesc.initializeApplication("astrogrid.org/test-dsa-catalog/ceaApplication",new User(),tool);
       runListener = new TestRunListener();
       resultListener  = new TestResultListener();
       app.addObserver(runListener);
@@ -255,6 +258,12 @@ public class DatacenterApplicationTest extends TestCase {
 
 /*
  $Log: DatacenterApplicationTest.java,v $
+ Revision 1.10  2007/09/07 09:30:51  clq2
+ PAL_KEA_2235
+
+ Revision 1.9.8.1  2007/09/04 08:41:37  kea
+ Fixing v1.0 registrations and multi-catalog CEA stuff.
+
  Revision 1.9  2007/02/20 12:22:16  clq2
  PAL_KEA_2062
 

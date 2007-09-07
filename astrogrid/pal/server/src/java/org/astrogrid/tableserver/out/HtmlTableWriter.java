@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlTableWriter.java,v 1.8 2007/03/02 13:43:45 kea Exp $
+ * $Id: HtmlTableWriter.java,v 1.9 2007/09/07 09:30:52 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -61,9 +61,11 @@ public class HtmlTableWriter extends AsciiTableSupport {
       
       printOut.println("<BODY>");
       printOut.println("<H1>"+title+"</H1>");
+      /*
       if (comment != null) {
          printOut.println("<P>"+comment+"</P>");
       }
+      */
       // Make sure stream is still ok
       checkErrors();
    }
@@ -191,6 +193,10 @@ public class HtmlTableWriter extends AsciiTableSupport {
    /** Closes writer - writes out the closing tags and closes wrapped stream
     */
    public void close() throws IOException {
+
+      if (comment != null) {
+         printOut.println("<P>"+comment+"</P>");
+      }
       
       printOut.println("</BODY>");
       
@@ -225,6 +231,12 @@ public class HtmlTableWriter extends AsciiTableSupport {
 
 /*
  $Log: HtmlTableWriter.java,v $
+ Revision 1.9  2007/09/07 09:30:52  clq2
+ PAL_KEA_2235
+
+ Revision 1.8.6.1  2007/08/10 14:13:29  kea
+ Work-in-progress update.
+
  Revision 1.8  2007/03/02 13:43:45  kea
  Added proper error checking to PrintWriter output stream writers in these
  classes;  failures were going undetected as PrintWriters do not throw

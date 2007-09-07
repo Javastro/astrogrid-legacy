@@ -1,5 +1,5 @@
 /*
- * $Id: TableMetaDocInterpreter.java,v 1.16 2007/06/08 13:16:09 clq2 Exp $
+ * $Id: TableMetaDocInterpreter.java,v 1.17 2007/09/07 09:30:51 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,6 +7,8 @@
 package org.astrogrid.tableserver.metadata;
 
 import java.io.IOException;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.Vector;
 
@@ -25,7 +27,6 @@ import org.xml.sax.SAXException;
 import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.contracts.SchemaMap;
 import org.astrogrid.tableserver.test.SampleStarsPlugin;
-import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.dataservice.queriers.DatabaseAccessException;
 
 /**
@@ -94,16 +95,23 @@ public class TableMetaDocInterpreter
       }
       docUrl = ConfigFactory.getCommonConfig().getUrl(
             TABLE_METADOC_URL_KEY, null);
+      String fileName = ConfigFactory.getCommonConfig().getString(
+            TABLE_METADOC_FILE_KEY);
       try {
          if (docUrl != null) {
             loadUrl(docUrl);
          }
          else {
-            docUrl = ConfigReader.resolveFilename(ConfigFactory.getCommonConfig().getString(TABLE_METADOC_FILE_KEY));
+            //docUrl = ConfigReader.resolveFilename(ConfigFactory.getCommonConfig().getString(TABLE_METADOC_FILE_KEY));
+            docUrl = ConfigReader.resolveFilename(fileName);
             loadUrl(docUrl);
          }
       }
       catch (IOException ioe) {
+         if (ioe instanceof FileNotFoundException) {
+            throw new MetadataException("The specified metadoc file " +
+               fileName + " cannot be found, please check your configuration.");
+         }
          throw new MetadataException(ioe.getMessage());
       }
       initialized = true;
@@ -196,6 +204,23 @@ public class TableMetaDocInterpreter
                info.setCatalog(getCatalogNameForID(catalogID),catalogID);
                vectorOfInfos.add(info);
             }
+         }
+      }
+      TableInfo[] infoArray = new TableInfo[vectorOfInfos.size()];
+      return (TableInfo[])vectorOfInfos.toArray(infoArray);
+   }
+
+   /** Returns all conesearchable tables in the specified catalog.  */
+   public static TableInfo[] getConesearchableTables(String catalogID) 
+      throws MetadataException 
+   {
+      Vector vectorOfInfos = new Vector();
+      initialize(false);
+      // Get all tables for the specified catalog IDcatalogs
+      TableInfo[] tables = getTablesInfoByID(catalogID);
+      for (int i = 0; i < tables.length; i++) {
+         if (tables[i].getConesearchable() == true) {
+            vectorOfInfos.add(tables[i]);
          }
       }
       TableInfo[] infoArray = new TableInfo[vectorOfInfos.size()];
@@ -891,6 +916,7 @@ public class TableMetaDocInterpreter
       // databases)
       String plugin = ConfigFactory.getCommonConfig().getString(
           "datacenter.querier.plugin");
+      /*
       if (!plugin.equals(
           "org.astrogrid.tableserver.test.SampleStarsPlugin")) {
          if (catalogs.length > 1) {
@@ -898,6 +924,7 @@ public class TableMetaDocInterpreter
               "This release of DSA/catalog can publish only a single catalog;  please make sure your metadoc only contains one Catalog element.");
          }
       }
+      */
       // Check them
       checkIDsAndNames(catalogs, "Catalog");
 

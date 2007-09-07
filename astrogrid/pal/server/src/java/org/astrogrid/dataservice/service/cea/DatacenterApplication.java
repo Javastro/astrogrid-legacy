@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.9 2007/06/12 12:12:00 kea Exp $
+/*$Id: DatacenterApplication.java,v 1.10 2007/09/07 09:30:51 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -75,7 +75,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
    
    public String getQuerierId() { return querierID;   }
    
-   /** Construct a new DatacetnerApplication
+   /** Construct a new DatacenterApplication
     * @param arg0
     * @param arg1
     * @param arg2
@@ -201,7 +201,76 @@ public class DatacenterApplication extends AbstractApplication implements Querie
          /*
          ReturnTable returnTable = new ReturnTable(ti,resultsFormat);
          */
+         // Let's see if we need to prepend a catalog prefix
+        
+         // Application ivorns/names here take the following form:
+         //
+         //  auth_id/resource_id/{DATABASE_NAME}/ceaApplication
+         //  The {DATABASE_NAME/} bit is only present in a multi-catalog
+         //  DSA - but if it is present, we need to make sure that table
+         //  names in the ADQL query have the appropriate database prefix
+         //  (we can't currently rely on the QB etc to put the db prefix in)
+         //
+         String appName = getApplicationDescription().getName();
+         String name = appName;
+
+         // First trim away everything up to and including the second "/"
+         // to eliminate the auth ID and resource name
+         // First remove auth ID
+         int slash = name.indexOf('/');
+         name = name.substring(slash+1);
+         // Now remove resource key
+         slash = name.indexOf('/');
+         name = name.substring(slash);
+         // Now remove trailing "ceaApplication" bit
+         slash = name.lastIndexOf('/');
+         name = name.substring(0,slash);
+         // Finally remove any slashes still present
+         name = name.replaceAll("/","");
+
+         // Now process the DATABASE_NAME bit (if present)
+         boolean catnameFound = false;
+         if ( ! ((name == null) || (name.equals(""))) ) {
+            // Having trimmed away everything else, we have something that 
+            // looks like a catalog name - let's check
+            String[] catalogNames = TableMetaDocInterpreter.getCatalogNames();
+            for (int c = 0; c < catalogNames.length; c++) {
+               if (name.equals(catalogNames[c])) {
+                  catnameFound = true;
+                  break;
+               }
+            }
+            if (!catnameFound) {
+               setStatus(Status.ERROR);
+               this.reportError(
+                     "System error: the CEA application you are using, " + 
+                     appName + ", refers to a catalog '" + name + 
+                     "' but this catalog is not recognised. " +
+                     "Please ask your DSA administrator to check the registry for out-of-date CEA registrations."
+               );
+               return;
+            }
+         }
+         else {
+            // We *don't* have a catalog name - let's just check that we
+            // don't have multiple catalogs in this DSA (we might get 
+            // an out-of-date registration if a DSA gets upgraded from
+            // single-cat to multi-cat)
+            String[] catalogNames = TableMetaDocInterpreter.getCatalogNames();
+            if ((catalogNames != null) && (catalogNames.length > 1)) {
+               setStatus(Status.ERROR);
+               this.reportError(
+                     "System error: the CEA application you are using, " + 
+                     appName + ", does not refer to a particular catalog but this DSA wraps multiple catalogs and needs to know which one you want.  Please ask your DSA administrator to check the registry for out-of-date CEA registrations."
+               );
+               return;
+            }
+         }
+
          Query query = buildQuery(getApplicationInterface());
+         if (catnameFound) {
+            query.setParentCatalogReferences(name);
+         }
          query.getResultsDef().setTarget(ti);
          query.getResultsDef().setFormat(resultsFormat);
          Querier querier = Querier.makeQuerier(acc,query, "CEA from "+AxisDataServer.getSource()+" [Job "+ids.getJobStepId()+"]");
@@ -360,6 +429,15 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
  $Log: DatacenterApplication.java,v $
+ Revision 1.10  2007/09/07 09:30:51  clq2
+ PAL_KEA_2235
+
+ Revision 1.9.4.3  2007/09/04 12:27:03  kea
+ Tweaks
+
+ Revision 1.9.4.1  2007/08/10 14:13:28  kea
+ Work-in-progress update.
+
  Revision 1.9  2007/06/12 12:12:00  kea
  Adding cone cea interface back.
 

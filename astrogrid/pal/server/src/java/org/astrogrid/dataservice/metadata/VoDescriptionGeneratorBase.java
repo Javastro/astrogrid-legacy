@@ -200,6 +200,8 @@ public class VoDescriptionGeneratorBase {
       throw new MetadataException("Programming Error: Attempt to instantiate VoDescriptionGeneratorBase instead of a versioned VoDescriptionGenerator.");
    }
 
+   /**
+    */
    public void checkAndAppendResource(StringBuffer vod, VoResourcePlugin plugin, String vodescElementStart, String vodescElementEnd) throws MetadataException, IOException {
 
       //get resources from plugin
@@ -211,13 +213,32 @@ public class VoDescriptionGeneratorBase {
          try {
             validateDescription(vodescElementStart+resources+vodescElementEnd);
          
-            vod.append(resources+"\n\n");
+            vod.append(resources+"\n");
          }
          catch (SAXException e) {
      //       throw new MetadataException("Plugin "+plugin.getClass()+" generated invalid XML ",e);
        
             log.error("Plugin "+plugin.getClass()+" generated invalid XML ",e);
-            vod.append(resources+"\n\n");
+            vod.append(resources+"\n");
+         }
+      }
+   }
+
+
+   /* Used with v1.0 resource generation */
+   public void checkAndAppendSubelements(StringBuffer vod, String subelements, String vodescElementStart, String vodescElementEnd, String pluginName) throws MetadataException, IOException {
+
+      if ((subelements != null) && !("".equals(subelements)) ){
+         try {
+            validateDescription(
+                  vodescElementStart + subelements + vodescElementEnd);
+            vod.append(subelements);
+         }
+         catch (SAXException e) {
+            log.error("Resource generator "+pluginName+" generated invalid XML ",e);
+            throw new MetadataException("Plugin "+pluginName+" generated invalid XML ",e);
+       
+            //vod.append(subelements);
          }
       }
    }
@@ -240,25 +261,16 @@ public class VoDescriptionGeneratorBase {
       return null; //not found
    }
 
-   /**
-    * Sends the voDescription to the registry, returning list of Registries that
-    * it was sent to
-    */
-   public String[] pushToRegistry() throws IOException, RegistryException {
-      RegistryAdminService service = RegistryDelegateFactory.createAdmin();
-      service.update(getVoDescription());
-      //return new String[] { ConfigFactory.getCommonConfig().getString(DelegateProperties.ADMIN_URL_PROPERTY) };
-      return new String[] { ConfigFactory.getCommonConfig().getString(RegistryDelegateFactory.ADMIN_URL_PROPERTY) };
-   }
 
    /**
-    * Sends the voDescription to the given registry URL, returning list of Registries that
-    * it was sent to
+    * Sends the voDescription to the given registry URL.
     */
-   public void pushToRegistry(URL targetRegistry) throws IOException, RegistryException {
-      RegistryAdminService service = RegistryDelegateFactory.createAdmin(targetRegistry);
+   public void pushToRegistry(URL targetRegistry, String versionParam) throws IOException, RegistryException {
+      RegistryAdminService service = RegistryDelegateFactory.createAdmin(
+          targetRegistry, versionParam);
       service.update(getVoDescription());
    }
+
 
    /**
     * for quick tests etc

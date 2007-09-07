@@ -1,4 +1,4 @@
-/*$Id: ConeResources.java,v 1.2 2007/06/08 13:16:11 clq2 Exp $
+/*$Id: ConeResources.java,v 1.3 2007/09/07 09:30:51 clq2 Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,6 +40,9 @@ public class ConeResources extends VoResourceSupport implements VoResourcePlugin
       return coneList;
    }
 
+   public String getVoCapabilities() throws IOException {
+      return "";  // No capabilities for v0.10
+   }
 
    protected String makeVoResource(String catName, String tabName) throws IOException {
       String cone =
@@ -77,6 +80,12 @@ public class ConeResources extends VoResourceSupport implements VoResourcePlugin
 
 /*
  $Log: ConeResources.java,v $
+ Revision 1.3  2007/09/07 09:30:51  clq2
+ PAL_KEA_2235
+
+ Revision 1.2.4.1  2007/07/26 16:04:26  kea
+ Still working.
+
  Revision 1.2  2007/06/08 13:16:11  clq2
  KEA-PAL-2169
 

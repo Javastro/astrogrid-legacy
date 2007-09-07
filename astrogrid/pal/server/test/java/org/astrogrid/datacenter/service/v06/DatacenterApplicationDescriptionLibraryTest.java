@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescriptionLibraryTest.java,v 1.6 2007/03/02 14:50:50 kea Exp $
+/*$Id: DatacenterApplicationDescriptionLibraryTest.java,v 1.7 2007/09/07 09:30:50 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.cea.CeaQueuedExecutor;
 import org.astrogrid.dataservice.service.cea.DatacenterApplicationDescriptionLibrary;
+import org.astrogrid.tableserver.test.SampleStarsPlugin;
 
 /** Test the application description library - not much to do here..
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Jul-2004
@@ -39,7 +40,11 @@ public class DatacenterApplicationDescriptionLibraryTest extends TestCase {
      * @see TestCase#setUp()
      */
     protected void setUp() throws Exception {
+
         super.setUp();
+
+        SampleStarsPlugin.initConfig();
+
         dataServer = new DataServer();
         env = new ApplicationDescriptionEnvironment(
                   new InMemoryIdGen(),
@@ -50,12 +55,14 @@ public class DatacenterApplicationDescriptionLibraryTest extends TestCase {
                            }
                      });
           
+        /*
         DatacenterApplicationDescriptionLibrary.DatacenterMetadata md = new DatacenterApplicationDescriptionLibrary.DatacenterMetadata() {
             public String getName() {
                 return "testdsa";
             }
         };
-        lib = new DatacenterApplicationDescriptionLibrary(md,dataServer,env,new CeaQueuedExecutor());
+        */
+        lib = new DatacenterApplicationDescriptionLibrary(/*md,*/dataServer,env,new CeaQueuedExecutor());
     }
     protected ApplicationDescriptionLibrary lib;
     protected DataServer dataServer;
@@ -71,6 +78,12 @@ public class DatacenterApplicationDescriptionLibraryTest extends TestCase {
 }
 /*
 $Log: DatacenterApplicationDescriptionLibraryTest.java,v $
+Revision 1.7  2007/09/07 09:30:50  clq2
+PAL_KEA_2235
+
+Revision 1.6.6.1  2007/09/04 08:41:37  kea
+Fixing v1.0 registrations and multi-catalog CEA stuff.
+
 Revision 1.6  2007/03/02 14:50:50  kea
 Updated to match change in CEA.
 

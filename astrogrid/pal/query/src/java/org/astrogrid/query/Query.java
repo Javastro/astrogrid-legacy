@@ -1,5 +1,5 @@
 /*
- * $Id: Query.java,v 1.10 2007/06/08 13:16:11 clq2 Exp $
+ * $Id: Query.java,v 1.11 2007/09/07 09:30:52 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -377,6 +377,16 @@ public class Query  {
       }
       return this.selectDocument;
    }
+
+   /** Sets the catalog prefix (e.g. "catalog.table") to the specified catalog 
+    * for ALL table references that don't have one in the query.
+    */
+   public void setParentCatalogReferences(String catalogName) throws QueryException 
+   {
+      // false flag = don't overwrite pre-existing catalog names
+      XmlBeanUtilities.setParentCatalogReferences(
+            this.selectDocument, catalogName, false); 
+   } 
 
    /** Allows an XSLT stylesheet to be applied against the adql query,
     * for example to transform it to sql. 

@@ -1,5 +1,5 @@
 /*
- * $Id: VoResourceSupportBase.java,v 1.2 2007/06/08 13:16:11 clq2 Exp $
+ * $Id: VoResourceSupportBase.java,v 1.3 2007/09/07 09:30:51 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -27,6 +27,7 @@ import org.xml.sax.SAXException;
 
 /**
  * Helper methods for constructing basic VoResource documents
+ * This is a bit of a fudge between v0.10 and v1.0 resourcesn now.
  *
  * @author M Hill, K Andrews
  */
@@ -43,29 +44,32 @@ public class VoResourceSupportBase {
 
 
    /** Constructs a minimum set of core elements for a VOresource from 
-    * the given strings 
+    * the given strings.  This is for the Dublin Core metadata that the
+    * IVOA can agree on.
     */
-   public String makeCore(String title, String id, String publisher, String contactName, String contactEmail, String creatorName, String creatorLogo, String description, String rootUrl, String refUrl, String type) {
+   public static String makeDublinCore(String title, String id, String publisher, String contactName, String contactEmail, String creatorName, String creatorLogo, String description, String rootUrl, String refUrl, String type, String relatedTag) {
    
       String core =
-         "\n<title>"+title+"</title>\n"+
-         "<identifier>"+id+"</identifier>\n"+
-         "<curation>\n"+
-           "<publisher>"+publisher+"</publisher>\n"+
-           "<creator>\n"+
-           "<name>"+creatorName+"</name>\n" +
-           "<logo>"+creatorLogo+"</logo>\n" +
-           "</creator>\n"+
-           "<contact>\n"+
-             "<name>"+contactName+"</name>\n"+
-             "<email>"+contactEmail+"</email>\n"+
-           "</contact>\n"+
-         "</curation>\n"+
-         "<content>\n"+
-           "<description>"+description+"</description>\n"+
-           "<referenceURL>"+refUrl+"</referenceURL>\n"+
-           "<type>"+type+"</type>\n"+
-         "</content>\n";
+         "\n  <title>"+title+"</title>\n"+
+         "  <identifier>"+id+"</identifier>\n"+
+         "  <curation>\n"+
+         "    <publisher>"+publisher+"</publisher>\n"+
+         "    <creator>\n"+
+         "      <name>"+creatorName+"</name>\n" +
+         "      <logo>"+creatorLogo+"</logo>\n" +
+         "    </creator>\n"+
+         "    <contact>\n"+
+         "      <name>"+contactName+"</name>\n"+
+         "      <email>"+contactEmail+"</email>\n"+
+         "    </contact>\n"+
+         "  </curation>\n"+
+         "  <content>\n"+
+         "    <subject>"+title+"</subject>\n"+
+         "    <description>"+description+"</description>\n"+
+         "    <referenceURL>"+refUrl+"</referenceURL>\n"+
+         "    <type>"+type+"</type>\n"+
+            relatedTag+ 
+         "  </content>\n";
          
       return core;
    }
@@ -75,7 +79,7 @@ public class VoResourceSupportBase {
     * file exists and uses that (incl validation) if so, and if not uses settings
     * in the configuration file to create it.
     */
-   public String makeCore(String idEnd, String titleSuffix) throws IOException {
+   public static String makeDublinCore(String idEnd, String titleSuffix, String relatedTag) throws IOException {
       String coreFile = ConfigFactory.getCommonConfig().getString("dataserver.metadata.core", null);
       if ( coreFile != null) {
          //use an on-disk resource file
@@ -99,12 +103,35 @@ public class VoResourceSupportBase {
 
       }
       else {
-         return makeConfigCore(idEnd, titleSuffix);
+         return makeConfigCore(idEnd, titleSuffix, relatedTag);
       }
+   }
+   /** Non-static versions for legacy v0.10 resources */
+   public String makeCore(String idEnd, String titleSuffix) throws IOException {
+      return VoResourceSupportBase.makeDublinCore(idEnd, titleSuffix,"");
+   }
+   public String makeCore(String title, String id, String publisher, String contactName, String contactEmail, String creatorName, String creatorLogo, String description, String rootUrl, String refUrl, String type) {
+      return VoResourceSupportBase.makeDublinCore(title,id,publisher,contactName,contactEmail,creatorName,creatorLogo,description,rootUrl,refUrl,type,"");
+   }
+   
+
+   /** Constructs a relationship tagset to express related resources */
+   public static String makeRelationshipTag(
+         String relType, String[] relatedResources) 
+   {
+      String relTag = 
+        "  <relationship>\n" +
+        "    <relationshipType>" + relType + "</relationshipType>\n";
+        for (int i = 0; i < relatedResources.length; i++) {
+           relTag = relTag + 
+            "    <relatedResource>"+relatedResources[i]+"</relatedResource>\n";
+        }                                
+      relTag = relTag +"  </relationship>";
+      return relTag;
    }
 
    /** Constructs core VOResource elements from settings in the configuration file */
-   private String makeConfigCore(String idEnd, String titleSuffix) throws IOException {
+   private static String makeConfigCore(String idEnd, String titleSuffix, String relatedTag) throws IOException {
       
          String refUrl = 
            ConfigFactory.getCommonConfig().getString("datacenter.reference.url", "");
@@ -121,9 +148,9 @@ public class VoResourceSupportBase {
          if ((titleSuffix != null) && (!("".equals(titleSuffix)))) {
             name = name + ": " + titleSuffix;
          }
-         return makeCore(
+         return makeDublinCore(
             name,
-            makeId(idEnd),
+            makeIvorn(idEnd),
             ConfigFactory.getCommonConfig().getString("datacenter.publisher",null),
             ConfigFactory.getCommonConfig().getString("datacenter.contact.name", ""),
             ConfigFactory.getCommonConfig().getString("datacenter.contact.email", ""),
@@ -132,12 +159,13 @@ public class VoResourceSupportBase {
             ConfigFactory.getCommonConfig().getString("datacenter.description", ""),
             ConfigFactory.getCommonConfig().getString("datacenter.url", ""),
             refUrl,
-            "Catalog"
+            "Catalog",
+            relatedTag
          );
    }
    
    /** Constructs an IVORN ID from an authority key and a resource key and the given extension */
-   public String makeId(String idEnd) throws IOException {
+   public static String makeIvorn(String idEnd) throws IOException {
       // KEA: Need to check for rogue "/"
       String authID = ConfigFactory.getCommonConfig().getString(AUTHID_KEY);
       String resKey = ConfigFactory.getCommonConfig().getString(RESKEY_KEY);
@@ -156,12 +184,20 @@ public class VoResourceSupportBase {
         ivornID = ivornID + "/"; // Append a '/' if not present
       }
       ivornID = ivornID + resKey;
-      if (resKey.charAt(resKey.length()-1) != '/') {
-        ivornID = ivornID + "/"; // Append a '/' if not present
+      if ((idEnd != null) && (!"".equals(idEnd))) {
+         if (resKey.charAt(resKey.length()-1) != '/') {
+           ivornID = ivornID + "/"; // Append a '/' if not present
+         }
+         ivornID = ivornID + idEnd;
       }
-      ivornID = ivornID + idEnd;
       return ivornID;
    }
+
+   /** Non-static version for legacy v0.10 resources */
+   public String makeId(String idEnd) throws IOException {
+      return VoResourceSupportBase.makeIvorn(idEnd);
+   }
+
 
    /** Constructs an IVORN ID for the corresponding Authority ID registration
     * from an authority key */
@@ -221,5 +257,29 @@ public class VoResourceSupportBase {
           new Date()
       );
     }
-}
 
+   /** Converts date to string suitable for registry v1.0*/
+   public static String toRegistryForm_v1_0(Date givenDate) {
+      //
+      // Copied from registry code (probably won't work outside the UK).
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+      return sdf.format(
+          new Date()
+          );
+    }
+
+   /** Constructs  a VoResource opening tag with the given resource type */
+   public static String openVoResourceElement_1_0(String vorType) {
+      VoResourceSupportBase vor = new VoResourceSupportBase();
+      String dateVal = toRegistryForm_v1_0(new Date());
+      return "<ri:Resource \n" + 
+         "status='active' updated='"+ dateVal  +
+         // KONA bit of a hack here - creation date of existing entry
+         // would be reset to update date
+         "' created='"+ dateVal+
+         "' xsi:type='"+vorType+"'"+ ">";
+   }
+   public static String closeVoResourceElement_1_0() {
+      return "</ri:Resource>\n"; 
+   }
+}

@@ -299,7 +299,7 @@ public class MetadocInterpreterTest extends TestCase {
    }
 
    /** Tests for conesearchable table methods */
-   public void testGetConesearchableTables() throws MetadataException, IOException {
+   public void testGetConesearchableTables1() throws MetadataException, IOException {
       setMetadocUrl("metadocs/good_metadoc.xml");
       TableMetaDocInterpreter.initialize(true);
 
@@ -316,6 +316,32 @@ public class MetadocInterpreterTest extends TestCase {
       assertTrue(tableInfos[0].getConesearchable() == true);
       assertTrue(tableInfos[0].getConeRAColName().equals("ColName1_POS_EQ_RA"));
       assertTrue(tableInfos[0].getConeDecColName().equals("ColName_POS_EQ_DEC"));
+   } 
+   public void testGetConesearchableTables2() throws MetadataException, IOException {
+      setMetadocUrl("metadocs/good_metadoc.xml");
+      TableMetaDocInterpreter.initialize(true);
+
+      TableInfo[] tableInfos = 
+         TableMetaDocInterpreter.getConesearchableTables("FIRST");
+      assertTrue(tableInfos != null);
+      assertTrue(tableInfos.length == 2);
+
+      // Sanitycheck the first one
+      assertTrue(tableInfos[0].getCatalogName().equals("CatName_FIRST"));
+      assertTrue(tableInfos[0].getCatalogID().equals("FIRST"));
+      assertTrue(tableInfos[0].getName().equals("TabName1_catalogue1"));
+      assertTrue(tableInfos[0].getId().equals("catalogue1"));
+      assertTrue(tableInfos[0].getConesearchable() == true);
+      assertTrue(tableInfos[0].getConeRAColName().equals("ColName1_POS_EQ_RA"));
+      assertTrue(tableInfos[0].getConeDecColName().equals("ColName_POS_EQ_DEC"));
+
+      tableInfos = TableMetaDocInterpreter.getConesearchableTables("SECOND");
+      assertTrue(tableInfos != null);
+      assertTrue(tableInfos.length == 1);
+
+      tableInfos = TableMetaDocInterpreter.getConesearchableTables("THIRD");
+      assertTrue(tableInfos != null);
+      assertTrue(tableInfos.length == 0);
    } 
 
    /** Tests for getTableInfoByID() */

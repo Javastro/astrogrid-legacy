@@ -1,4 +1,4 @@
-/*$Id: ConeResources.java,v 1.1 2007/03/21 18:54:53 kea Exp $
+/*$Id: ConeResources.java,v 1.2 2007/09/07 09:30:51 clq2 Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,54 +12,92 @@ package org.astrogrid.dataservice.service.cone.v1_0;
 
 import java.io.IOException;
 import org.astrogrid.cfg.ConfigFactory;
-import org.astrogrid.dataservice.metadata.VoResourcePlugin;
-import org.astrogrid.dataservice.metadata.v1_0.VoResourceSupport;
 import org.astrogrid.dataservice.service.ServletHelper;
-import org.astrogrid.query.Query;
+import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
+import org.astrogrid.tableserver.metadata.TableInfo;
 
 /** Returns Registry resources for a service type that indicates that this
  * service can provide cone searches
  */
-public class ConeResources extends VoResourceSupport implements VoResourcePlugin {
+public class ConeResources {
    
    /**
-    * Returns ServiceType for cone search
+    * Returns Capability XML for cone searchable tables in the 
+    * specified catalog.
     */
-   public String getVoResource() throws IOException {
+   public static String getConeCapabilities(String catalogName) throws IOException {
+      String coneList = "";
+      String catalogID = 
+         TableMetaDocInterpreter.getCatalogIDForName(catalogName);
+      TableInfo[] coneTables = 
+         TableMetaDocInterpreter.getConesearchableTables(catalogID);
+      for (int i = 0; i < coneTables.length; i++) {
+         coneList = coneList + getVoConeCapability(
+               coneTables[i].getCatalogName(),
+               coneTables[i].getName());
+      }
+      return coneList;
+   }
 
-      // Tofix take out later
-      throw new IOException(
-            "DON'T USE v1.0 REGISTRATIONS YET!  CODE NOT READY!");
-/*
-      String cone =
-         makeVoResourceElement(
-             //"ServiceType",
-             "vs:CatalogService",
-             // Namespaces
-             "xmlns:cs='http://www.ivoa.net/xml/ConeSearch/v1.0' "+
-             "xmlns:stc='http://www.ivoa.net/xml/STC/stc-v1.30.xsd' "+
-             "xmlns:xlink='http://www.w3.org/1999/xlink' ",
-             // Schema locations
-            "http://www.ivoa.net/xml/ConeSearch/v1.0 http://www.ivoa.net/xml/ConeSearch/v1.0 " +
-             "http://www.ivoa.net/xml/STC/stc-v1.30.xsd http://www.ivoa.net/xml/STC/stc-v1.30.xsd "
-        )+
-         makeCore("cone")+
-      
-        //"<Subject>Stars</Subject>"+ //etc
-        //"<ContentLevel>Research</ContentLevel>"+ //etc
-         "<vr:interface qtype=\"GET\" xmlns:vs=\"http://www.ivoa.net/xml/VODataService/v0.5\" xsi:schemaLocation=\"http://www.ivoa.net/xml/VODataService/v0.5 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v0.5/VODataService.xsd\" xsi:type=\"vs:ParamHTTP\">\n"+
-         "  <vr:accessURL use=\"base\">"+ServletHelper.getUrlStem()+"SubmitCone?</vr:accessURL>\n"+
-         "  <vs:resultType/>\n"+
-         "</vr:interface>\n"+
-         "<cs:capability>\n" +
-         "  <cs:maxSR>180</cs:maxSR>\n"+ //to do
-         "  <cs:maxRecords>"+ConfigFactory.getCommonConfig().getString(Query.MAX_RETURN_KEY,"0")+"</cs:maxRecords>\n"+
-         "  <cs:verbosity>false</cs:verbosity>\n"+ //no idea
-         "</cs:capability>\n"+
+   protected static String getVoConeCapability(String catName, String tabName) 
+      throws IOException {
 
-         "</"+VORESOURCE_ELEMENT+">\n";
-      
-      return cone;
-      */
+      // Get max row limit 
+      int maxRows;
+      double maxRadius;
+      String maxRowStr = ConfigFactory.getCommonConfig().getString(
+            "datacenter.max.return");
+      if ((maxRowStr == null) || ("".equals(maxRowStr))) {
+         //NB shouldn't get here
+         maxRows = 999999999; // A very big and obviously silly number
+      }
+      else if (maxRowStr.equals("0")) {
+         // No limit - use a dummy value
+         maxRows = 999999999; // A very big and obviously silly number
+      }
+      else {
+         try {
+            maxRows = Integer.parseInt(maxRowStr);
+         }
+         catch (NumberFormatException nfe) {
+            throw new IOException("Datacenter is misconfigured: datacenter.max.return has illegal value '" + maxRowStr + "'");
+         }
+      }
+      // Get max search radius
+      String maxRadStr = ConfigFactory.getCommonConfig().getString(
+            "conesearch.radius.limit");
+      if ((maxRadStr == null) || ("".equals(maxRadStr))) {
+         //NB shouldn't get here
+         maxRadius = 180.0;
+      }
+      else {
+         try {
+            maxRadius = Double.parseDouble(maxRadStr);
+         }
+         catch (NumberFormatException nfe) {
+            throw new IOException("Datacenter is misconfigured: conesearch.radius.limit has illegal value '" + maxRadStr + "'");
+         }
+      }
+
+      String coneCap = 
+         "  <capability xsi:type=\"cs:ConeSearch\" standardID=\"ivo://ivoa.net/std/ConeSearch\">\n" +
+         "    <description>Cone search on Catalog " + catName + 
+             ", table " +tabName +"</description>\n" +
+         "    <interface xsi:type=\"vs:ParamHTTP\">\n" + 
+         "      <accessURL use=\"base\">" + 
+            ServletHelper.getUrlStem()+"SubmitCone?DSACAT="+
+               catName+"&amp;DSATAB="+tabName+"&amp;" + "</accessURL>\n" +
+         "    </interface>\n" +
+         "    <maxSR>" + Double.toString(maxRadius) + "</maxSR>\n" +
+         "    <maxRecords>" + Integer.toString(maxRows) + "</maxRecords>\n" +
+         "    <verbosity>false</verbosity>\n" +
+         "    <testQuery>\n" +
+         "      <ra>96.0</ra>\n" +
+         "      <dec>5.0</dec>\n" +
+         "      <sr>0.001</sr>\n" +
+         "    </testQuery>\n" +
+         "  </capability>\n";
+
+      return coneCap;
    }
 }

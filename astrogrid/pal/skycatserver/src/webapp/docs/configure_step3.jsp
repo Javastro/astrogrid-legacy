@@ -41,17 +41,15 @@
 Relational Database Management Systems (RDBMSs) such as SQL
 Server, Postgres, etc.  DSA/catalog includes mechanisms to connect to any 
 RDBMS that provides a
-    <a href="http://java.sun.com/products/jdbc/">JDBC</a> driver; it has been tested with the following systems:
-   <ul>
-      <li><a href="http://www.mysql.com/">MySQL</a> - Open Source SQL database (version 4.1.16)</li>
-      <li><a href="http://www.postgresql.org/">PostgreSQL</a> - Open Source SQL database (version 7.2.3, version 8.1.4)</li>
-      <li><a href="http://www.microsoft.com/sql/">SQL Server</a> - Microsoft SQL Server (version 8.00) </li>
-      <li><a href="http://hsqldb.sourceforge.net/">HSQLDB</a> - pure-Java
-         RDBMS (version 1.8.0). For testing purposes or serving small 
-         databases based on textfiles. </li>
-   </ul>
-   </p>
+    <a href="http://java.sun.com/products/jdbc/">JDBC</a> driver.
+</p>
 
+<p>
+      The <b>Supported configurations</b> section at the bottom of this
+      page shows the RDBMS, JDBC driver and embedded stylesheet
+      combinations against which the DSA/Catalog has been known to operate 
+      succesfully (with any caveats listed).
+</p>
 
 <h3>Preparing your database</h3>
   <p>
@@ -116,6 +114,96 @@ RDBMS that provides a
   </li>
   </ul>
 
+<h3>Supported configurations</h3>
+      <p>
+      The table below shows the RDBMS, JDBC driver and embedded stylesheet
+      combinations against which the DSA/Catalog has been known to operate 
+      succesfully (with any caveats listed).
+      </p>
+
+      <table border="1" cellpadding="2" cellspacing="2">
+        <tr>
+          <td><strong>RDBMS</strong></td>
+          <td><strong>JDBC driver</strong></td>
+          <td><strong>XSLT stylesheet</strong></td>
+          <td><strong>Comments</strong></td>
+        </tr>
+        <tr>
+          <td><a href="http://hsqldb.sourceforge.net/">HSQLDB</a> 1.8.0</td>
+          <td>hsqldb-1.8.0.jar</td>
+          <td>HSQLDB-1.8.0.xsl</td>
+          <td><font color="green">Works.</font></td>
+        </tr>
+        <tr>
+          <td><a href="http://www.mysql.com/">MySQL</a> 4.1.16</td>
+          <td>mysql-connector-java-3.1.12-bin.jar</td>
+          <td>MYSQL-4.1.16.xsl</td>
+          <td><font color="green">Works.</font></td>
+        </tr>
+        <tr>
+          <td><a href="http://www.postgresql.org/">PostgreSQL</a> 7.2.3</td>
+          <td>pg72jdbc2.jar</td>
+          <td>POSTGRES-7.2.3.xsl</td>
+          <td><font color="orange">Works, but streaming data transfers from 
+              RDBMS don't work (so setting low return row limit 
+              recommended to avoid DSA running out of memory).</font></td>
+        </tr>
+        <tr>
+          <td><a href="http://www.postgresql.org/">PostgreSQL</a> 8.1.4</td>
+          <td>postgresql-8.1-407.jdbc3.jar</td>
+          <td>POSTGRES-7.2.3.xsl</td>
+          <td><font color="green">Works.</font></td>
+        </tr>
+        <tr>
+          <td><a href="http://www.microsoft.com/sql/">Microsoft SQL Server</a> 8.00</td>
+          <td>mssqlserver.jar, msbase.jar, msutil.jar
+            (unsure of provenance of these, presume from appropriate distro)</td>
+          <td>SQLSERVER-8.00.xsl</td>
+          <td><font color="green">Works.</font></td>
+        </tr>
+        <tr>
+          <td><a href="http://www.microsoft.com/sql/">Microsoft SQL Server</a> 2000</td>
+          <td>mssqlserver.jar, msbase.jar, msutil.jar
+            (from SQL Server 2000 distro.)</td>
+          <td>SQLSERVER-8.00.xsl</td>
+          <td><font color="green">Works.</font></td>
+        </tr>
+        <tr>
+          <td><a href="http://www.sybase.com">Sybase</a> ASR 15.0</td>
+          <td>jconnect55.jar</td>
+          <td>SYBASE-ASE-15.0.xsl</td>
+          <td><font color="red">Doesn't work</font> (JDBC driver too old)</td>
+        </tr>
+        <tr>
+          <td><a href="http://www.sybase.com">Sybase</a> ASR 15.0</td>
+          <td>jconnect60-exclude.jar</td>
+          <td>SYBASE-ASE-15.0.xsl</td>
+          <td><font color="orange">Works, but TRUNCATE() 
+            function not supported.</font></td>
+        </tr>
+        <tr>
+          <td><a href="http://www.sybase.com">Sybase</a> ASR 15.0</td>
+          <td>jconn3.jar</td>
+          <td>SYBASE-ASE-15.0.xsl</td>
+          <td><font color="orange">Works, but TRUNCATE() 
+              function not supported.</font></td>
+        </tr>
+        <!--
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        -->
+      </table>
+
+      <p>
+        We are always grateful to hear of other combinations of RDBMS,
+        driver and XSLT stylesheet that have been shown to work / not work.
+        We also welcome community contributions of stylesheets for other 
+        RDBMS systems.
+     </p>
 <h3>References</h3>
 <ul>
 <li><a href="http://java.sun.com/products/jdbc/">JDBC</a></li>

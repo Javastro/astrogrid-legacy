@@ -182,38 +182,6 @@ public class VoDescriptionServer {
    }
 
    /**
-    * Sends the voDescription to the registry, returning list of Registries that
-    * it was sent to
-    */
-   public static String[] pushToRegistry(String version) 
-            throws IOException, RegistryException 
-   {
-      // Deal with v0.10 resources
-      if (V0_10.equals(version)) {
-        if (isEnabled(version)) {
-          return generator_v0_10.pushToRegistry();
-        }
-        else {
-            throw new MetadataException("Support for v0.10 resources is disabled in DSA configuration file.");
-        }
-      } 
-      // Deal with v1.0 resources
-      else if (V1_0.equals(version)) {
-        if (isEnabled(version)) {
-          return generator_v1_0.pushToRegistry();
-        }
-        else {
-            throw new MetadataException("Support for v1.0 resources is disabled in DSA configuration file.");
-        }
-      }
-      // Deal with unrecognized resources
-      else {
-         throw new MetadataException("Unknown resources version '" +
-                version + "' requested.");
-      }
-   }
-
-   /**
     * Sends the voDescription to the given registry URL, returning list of Registries that
     * it was sent to
     */
@@ -222,7 +190,7 @@ public class VoDescriptionServer {
       // Deal with v0.10 resources
       if (V0_10.equals(version)) {
         if (isEnabled(version)) {
-          generator_v0_10.pushToRegistry(targetRegistry);
+          generator_v0_10.pushToRegistry(targetRegistry, "0.1");
         }
         else {
             throw new MetadataException("Support for v0.10 resources is disabled in DSA configuration file.");
@@ -231,7 +199,7 @@ public class VoDescriptionServer {
       // Deal with v1.0 resources
       else if (V1_0.equals(version)) {
         if (isEnabled(version)) {
-          generator_v1_0.pushToRegistry(targetRegistry);
+          generator_v1_0.pushToRegistry(targetRegistry, "1.0");
         }
         else {
             throw new MetadataException("Support for v1.0 resources is disabled in DSA configuration file.");

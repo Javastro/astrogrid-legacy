@@ -1,4 +1,4 @@
-/*$Id: InstallationPropertiesCheck.java,v 1.11 2007/08/24 16:10:14 clq2 Exp $
+/*$Id: InstallationPropertiesCheck.java,v 1.12 2007/09/07 09:30:51 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -68,12 +68,12 @@ public class InstallationPropertiesCheck extends TestCase {
       if (!checkSet("datacenter.max.return", accum)) { bad = bad+1; }
       if (!checkSet("datacenter.sql.timeout", accum)) { bad = bad+1; }
 
-      //if (!checkSet("datacenter.max.queries", accum)) { bad = bad+1; }
       if (!checkUnset("datacenter.max.queries", accum)) { bad = bad+1; }
       if (!checkSet("datacenter.max.async.queries", accum)) { bad = bad+1; }
       if (!checkSet("datacenter.max.sync.queries", accum)) { bad = bad+1; }
 
-      // KONA PUT BACK LATER FOR MULTICAT DSAs
+      // THIS FIRST ONE DOESN'T NEED TO BE COMPULSORY IF ONLY ONE CATALOG
+      // BEING WRAPPED - CHECKED ELSEWHERE 
       //if (!checkSet("datacenter.self-test.catalog", accum)) { bad = bad+1; }
       if (!checkSet("datacenter.self-test.table", accum)) { bad = bad+1; }
       if (!checkSet("datacenter.self-test.column1", accum)) { bad = bad+1; }
@@ -117,9 +117,6 @@ public class InstallationPropertiesCheck extends TestCase {
       if (!checkSet("datacenter.resource.register.v1_0", accum)) { 
          bad = bad+1;
       }
-      else {
-         if (!checkValue("datacenter.resource.register.v1_0", "disabled", "Property 'datacenter.resource.register.v1_0' MUST be disabled for now", accum)) { bad = bad+1; }
-      }
       /*
       // CURRENTLY DON'T HAVE AN AUTHORITY ID PLUGIN!
       // Check for authority ID setting
@@ -145,8 +142,11 @@ public class InstallationPropertiesCheck extends TestCase {
         // has no password
         //allOK = allOK && checkSet("datacenter.plugin.jdbc.password", accum);
       }
-      
+
       if (!checkSet("cea.access.policy", accum)) { bad = bad + 1; }
+
+      // Needed for filestore client
+      if (!checkSet("org.astrogrid.filestore.chunked.send", accum)) { bad = bad+1; }
 
       String accumString = "";
       for (int i = 0; i < accum.size(); i++) {

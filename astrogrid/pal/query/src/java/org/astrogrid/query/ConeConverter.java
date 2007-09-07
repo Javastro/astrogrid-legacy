@@ -1,5 +1,5 @@
 /*
- * $Id: ConeConverter.java,v 1.5 2007/08/01 16:06:38 kea Exp $
+ * $Id: ConeConverter.java,v 1.6 2007/09/07 09:30:52 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */

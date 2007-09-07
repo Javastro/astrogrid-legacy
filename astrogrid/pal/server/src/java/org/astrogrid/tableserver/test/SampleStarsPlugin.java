@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.12 2007/06/19 11:42:51 clq2 Exp $
+ * $Id: SampleStarsPlugin.java,v 1.13 2007/09/07 09:30:52 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -104,7 +104,7 @@ public class SampleStarsPlugin extends JdbcPlugin
 
       //configure which resources to produce
       ConfigFactory.getCommonConfig().setProperty("datacenter.resource.register.v0_10","enabled");
-      ConfigFactory.getCommonConfig().setProperty("datacenter.resource.register.v1_0","disabled");
+      ConfigFactory.getCommonConfig().setProperty("datacenter.resource.register.v1_0","enabled");
       // AUTH ID PLUGIN CURRENTLY NOT PROVIDED!
       //ConfigFactory.getCommonConfig().setProperty("datacenter.resource.register.authID","false");
 
@@ -121,6 +121,7 @@ public class SampleStarsPlugin extends JdbcPlugin
       ConfigFactory.getCommonConfig().setProperty("datacenter.self-test.table","SampleStars");
       ConfigFactory.getCommonConfig().setProperty("datacenter.self-test.column1","RA");
       ConfigFactory.getCommonConfig().setProperty("datacenter.self-test.column2","DEC");
+      ConfigFactory.getCommonConfig().setProperty("datacenter.max.return","0");
 
       //
       ConfigFactory.getCommonConfig().setProperty("datacenter.authorityId", "astrogrid.org");

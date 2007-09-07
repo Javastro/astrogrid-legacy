@@ -5,7 +5,8 @@
        org.astrogrid.cfg.ConfigFactory,
        org.astrogrid.registry.client.RegistryDelegateFactory,
        org.astrogrid.dataservice.metadata.*,
-       org.astrogrid.dataservice.service.*"
+       org.astrogrid.dataservice.service.*,
+       org.astrogrid.dataservice.service.servlet.Register"
    isThreadSafe="false"
    session="false"
 %>
@@ -26,6 +27,25 @@
 
 <body>
 
+<%
+   String phaseTwo = request.getParameter("PhaseTwo");
+   String regParam = request.getParameter("RegistryUrl");
+   if ("true".equals(phaseTwo)) 
+   {
+%>
+
+<!-- CONTENT FOR COMPLETED REGISTRATION -->
+<h1>Registration results for <%=DataServer.getDatacenterName() %></h1>
+
+<%= new Register().doRegistration(regParam) %>
+
+<%
+  }
+  else 
+  {
+%>
+
+<!-- PRE-REGISTRATION PAGE-->
   <h1>Registering <%= DataServer.getDatacenterName() %></h1>
 
 <%
@@ -52,7 +72,7 @@
         %>
   <p>
   You can send the Registry details from this datacenter to a remote Registry using this form:
-         <form action="Register" method="POST">
+         <form action="register.jsp" method="POST">
           <p>
             Registry URL <input type="text" name="RegistryUrl" size="60" value='<%= ConfigFactory.getCommonConfig().getString(RegistryDelegateFactory.ADMIN_URL_PROPERTY, "[WARNING: Property "+RegistryDelegateFactory.ADMIN_URL_PROPERTY+" not set]") %>'/>
             (leave blank to register on the
@@ -60,6 +80,8 @@
             <br />
           </p>
            <p>
+             <input type="hidden" name='PhaseTwo' value="true"  />
+             <!-- Tell self to go to phase two on submit -->
              <input type="submit" name='Submit' value="Register"  />
            </p>
       </form>
@@ -91,58 +113,9 @@
  }
 %>
 
-
-<!-- NO LONGER EXPLICITLY LISTED: links to test/standard registries -->
-<!--
-<hr>
-<table border='0'>
-   <tr>
-   <td><a href='http://hydra.star.le.ac.uk:8080/astrogrid-registry'>Hydra</a>
-   <td><a href='http://hydra.star.le.ac.uk:8080/astrogrid-registry/editEntry.jsp'>Entry Form</a>
-   <td><a href='Register?RegistryUrl=http://hydra.star.le.ac.uk:8080/astrogrid-registry/services/AdminService'>Push</a>
-   <td><a href='http://hydra.star.le.ac.uk:8080/astrogrid-registry/pullResources.jsp?ResourceUrl=<%=ServletHelper.getUrlStem() %>GetMetadata'>Pull</a>
-   </tr>
-
-   <tr>
-   <td><a href='http://twmbarlwm.star.le.ac.uk:8888/astrogrid-registry-SNAPSHOT'>Twmbarlwm:8888</a>
-   <td><a href='http://twmbarlwm.star.le.ac.uk:8888/astrogrid-registry-SNAPSHOT/editEntry.jsp'>Entry Form</a>
-   <td><a href='Register?RegistryUrl=http://twmbarlwm.star.le.ac.uk:8888/astrogrid-registry-SNAPSHOT/services/AdminService'>Push</a>
-   <td><a href='http://twmbarlwm.star.le.ac.uk:8888/astrogrid-registry-SNAPSHOT/pullResources.jsp?ResourceUrl=<%=ServletHelper.getUrlStem() %>GetMetadata'>Pull</a>
-   </tr>
-
-   <tr>
-   <td><a href='http://grendel12.roe.ac.uk:8080/astrogrid-registry'>ROE</a>
-   <td><a href='http://grendel12.roe.ac.uk:8080/astrogrid-registry/editEntry.jsp'>Entry Form</a>
-   <td><a href='Register?RegistryUrl=http://grendel12.roe.ac.uk:8080/astrogrid-registry/services/AdminService'>Push</a>
-   <td><a href='http://grendel12.roe.ac.uk:8080/astrogrid-registry/pullResources.jsp?ResourceUrl=<%=ServletHelper.getUrlStem() %>GetMetadata'>Pull</a>
-   </tr>
-
-   <tr>
-   <td><a href='http://katatjuta.star.le.ac.uk:8080/astrogrid-registry-SNAPSHOT'>Katatjuta:8080</a>
-   <td><a href='http://katatjuta.star.le.ac.uk:8080/astrogrid-registry-SNAPSHOT/editEntry.jsp'>Entry Form</a>
-   <td><a href='Register?RegistryUrl=http://katatjuta.star.le.ac.uk:8080/astrogrid-registry-SNAPSHOT/services/AdminService'>Push</a>
-   <td><a href='http://katatjuta.star.le.ac.uk:8080/astrogrid-registry-SNAPSHOT/pullResources.jsp?ResourceUrl=<%=ServletHelper.getUrlStem() %>GetMetadata'>Pull</a>
-   </tr>
-
-   <tr>
-   <td><a href='http://twmbarlwm.star.le.ac.uk:8080/astrogrid-registry-SNAPSHOT'>Twmbarlwm:8080</a>
-   <td><a href='http://twmbarlwm.star.le.ac.uk:8080/astrogrid-registry-SNAPSHOT/editEntry.jsp'>Entry Form</a>
-   <td><a href='Register?RegistryUrl=http://twmbarlwm.star.le.ac.uk:8080/astrogrid-registry-SNAPSHOT/services/AdminService'>Push</a>
-   <td><a href='http://twmbarlwm.star.le.ac.uk:8080/astrogrid-registry-SNAPSHOT/pullResources.jsp?ResourceUrl=<%=ServletHelper.getUrlStem() %>GetMetadata'>Pull</a>
-   </tr>
-
-   <tr>
-   <td><a href='http://zhumulangma.star.le.ac.uk:8080/astrogrid-registry-SNAPSHOT'>Zhumulangma:8080</a>
-   <td><a href='http://zhumulangma.star.le.ac.uk:8080/astrogrid-registry-SNAPSHOT/editEntry.jsp'>Entry Form</a>
-   <td><a href='Register?RegistryUrl=http://zhumulangma.star.le.ac.uk:8080/astrogrid-registry-SNAPSHOT/services/AdminService'>Push</a>
-   <td><a href='http://zhumulangma.star.le.ac.uk:8080/astrogrid-registry-SNAPSHOT/pullResources.jsp?ResourceUrl=<%=ServletHelper.getUrlStem() %>GetMetadata'>Pull</a>
-   </tr>
-
-</table>
--->
-
-</body>
-
+<%
+ }
+%>
 </div>
 
 <%@ include file='../footer.xml' %>

@@ -352,6 +352,72 @@ public class XmlBeanUtilities  {
       return catalogName;
    }
 
+   /** Sets the catalog attribute for the specified table.
+    */
+   public static void setParentCatalog(TableType tableType, 
+         String catalogName, boolean overwrite) 
+      throws QueryException
+   {
+      if ((tableType == null)) {
+         throw new QueryException("Input TableType may not be null!");
+      }
+      if ((catalogName == null) || catalogName.equals("")) {
+         throw new QueryException(
+               "Input catalogName may not be null or empty!");
+      }
+      if (overwrite == false) {
+         // Check to see if we have an empty catalog name;  if not,
+         // no need to do anything
+         String currName = tableType.getArchive();
+         if (  (currName != null) && (!currName.equals("")) ) {
+            // Already set - don't overwrite
+            return;
+         }
+      }
+      // Now overwrite
+      tableType.setArchive(catalogName);
+   }
+
+   /** Sets the catalog name for any tables that don't already have a catalog
+    * name specified.
+    *  This can be needed for dealing with VOTable metadata etc.
+    */
+   public static void setParentCatalogReferences(
+         SelectDocument selectDocument, String catalogName, boolean overwrite) 
+          throws QueryException
+   {
+      if (selectDocument == null) {
+         throw new QueryException("Input SelectDocument may not be null!");
+      }
+      // Need to find all From Tables with type tableType
+      // and set the catalogNameextract the Name attributes 
+      SelectType selectType = selectDocument.getSelect();
+      if (selectType.isSetFrom()) {
+         FromType from = selectType.getFrom();
+         int numTables = from.sizeOfTableArray();
+         Vector parentNames = new Vector();
+         for (int i = 0; i < numTables; i++) {
+            String name = "";
+            String parentCatalog = null;     //Default
+            FromTableType fromTable = (FromTableType)(from.getTableArray(i));
+            if (fromTable instanceof TableType) {
+               TableType tableType = 
+                  (TableType)(from.getTableArray(i));
+               setParentCatalog(tableType, catalogName, overwrite);
+            }
+            else if (fromTable instanceof JoinTableType) {
+               /*
+               JoinTableType tableType = 
+                  (JoinTableType)(from.getTableArray(i));
+               name = tableType.getName();
+               */
+               throw new QueryException("This DSA/catalog installation " +
+                     "can not handle queries involving joins");
+            }
+         }
+      }
+   } 
+
    /** Returns the real table name for the specified alias (or just 
     * returns the input value if it is actually a table name, not an alias).
     */
@@ -383,154 +449,6 @@ public class XmlBeanUtilities  {
       }
       return null;  // No name found for specified alias
    }
-
-
-   /** Allows an XSLT stylesheet to be applied against the adql query,
-    * for example to transform it to sql. 
-    * The sql produced reflects the lower of the query row limit and
-    * the local datacenter row limit.
-    *
-    */
-   /*
-   public static String convertWithXslt(SelectDocument selectDocument, InputStream xsltIn) 
-         throws QueryException
-   {
-      if (selectDocument == null) {
-         throw new QueryException("Input SelectDocument may not be null!");
-      }
-      if (xsltIn == null) {
-         throw new QueryException("Input XSLT InputStream may not be null!");
-      }
-
-      SelectDocument queryClone = (SelectDocument)selectDocument.copy(); 
-      // Tweak the limit value in the cloned query to reflect 
-      // the lower of the query and datacenter limit.
-      
-      long queryLimit = getLimit(selectDocument);
-      long localLimit = getLocalLimit(selectDocument);
-      if (queryLimit == Query.LIMIT_NOLIMIT) {  // Don't have a query limit
-         if (localLimit != Query.LIMIT_NOLIMIT) { // But do have a datacenter limit
-            setLimit(queryClone, localLimit);
-         }
-      }
-      else {   // Do have a local limit
-         if ((localLimit != Query.LIMIT_NOLIMIT) && (localLimit < queryLimit)) {
-            setLimit(queryClone, localLimit); // Datacenter limit is smaller
-         }
-      }
-      applyNameTransformations(queryClone);
-
-   	TransformerFactory tFactory = TransformerFactory.newInstance();
-      try {
-         tFactory.setAttribute("UseNamespaces", Boolean.FALSE);
-      }
-      catch (IllegalArgumentException iae) {
-         // From MCH:  Ignore - if UseNamespaces is unsupported, 
-         // it will chuck an exception, and we don't want 
-         // to use namespaces anyway so that's fine
-      }
-      try {
-        Transformer transformer = 
-          tFactory.newTransformer(new StreamSource(xsltIn));
-        StringWriter sw = new StringWriter();
-
-        // Extract the query as a Dom document
-        Document beanDom = DomHelper.newDocument(queryClone.toString());
-
-        // NOTE: Seem to require a DOMSource rather than a StreamSource
-        // here or the transformer barfs - no idea why
-        // StreamSource source = new StreamSource(adqlBeanDoc.toString());
-        DOMSource source = new DOMSource(beanDom);
-
-        // Actually transform the document
-        transformer.transform(source, new StreamResult(sw));
-        String sql = sw.toString();
-        return sql;
-      }
-      catch (SAXException se) {
-         throw new QueryException(
-             "Couldn't apply stylesheet to query: "+se, se);
-      }
-      catch (TransformerConfigurationException tce) {
-         throw new QueryException(
-             "Couldn't apply stylesheet to query: "+tce, tce);
-      }
-      catch (TransformerException te) {
-         throw new QueryException(
-             "Couldn't apply stylesheet to query: "+te, te);
-      }
-      catch (IOException ioe) {
-         throw new QueryException(
-             "Couldn't apply stylesheet to query: "+ioe, ioe);
-      }
-   }
-*/
-   
-
-   /*
-   public static void applyNameTransformations(SelectDocument selectDocument) 
-      throws QueryException
-   {
-      if (selectDocument == null) {
-         throw new QueryException("Input SelectDocument may not be null!");
-      }
-      // TOFIX SHOULD CHECK CONFIG PARAM FOR WHAT TO USE
-      NameTranslator translator = new MetadocNameTranslator();
-
-      // Make sure a FROM clause is present - add a default one
-      // if none is present and "default.table" property is set,
-      // otherwise reject query.
-      SelectType selectType = selectDocument.getSelect();
-      if (!selectType.isSetFrom()) {
-         throw new QueryException("Input SelectDocument must have a FROM clause!");
-      }
-      FromType from = selectType.getFrom();
-      int numTables = from.sizeOfTableArray();
-      for (int i = 0; i < numTables; i++) {
-         TableType tableType = (TableType)(from.getTableArray(i));
-         String tableName = tableType.getName(); 
-         String tableAlias = getTableAlias(selectDocument,tableName); // May come back null
-         // KONA TOFIX null toe be replaced by catalog name
-         String tableName = tableType.setName(
-            translator.getTableRealname(null,tableName));
-
-         // Now to find all SelectionList Items with type columnReferenceType,
-         // and extract the Name attributes for any columns coming from the 
-         // specified table.
-         SelectionListType selectionList = selectType.getSelectionList();
-         if (selectionList == null) { // CAN THIS BE NULL??
-            throw new QueryException("Input SelectionList must not be NULL!");
-         }
-         int numItems = selectionList.sizeOfItemArray();
-         Vector columnNames = new Vector();
-         for (int j = 0; j < numItems; j++) {
-            SelectionItemType itemType = selectionList.getItemArray(j);
-            if (itemType instanceof ColumnReferenceType) {
-               if (tableName.equals(
-                     ((ColumnReferenceType)itemType).getTable())) {
-                  String columnName = ((ColumnReferenceType)itemType).getName();
-                  System.out.println("WE HAVE COLUMN " + columnName + " FOR TABLE " +
-                        tableName);
-                  // KONA TOFIX nulls to be replaced by catalog name
-                  ((ColumnReferenceType)itemType).setName(
-                       translator.getColumnRealname(null,tableName,columnName));
-               }
-               else if (tableAlias != null) {
-                 if (tableAlias.equals(
-                       ((ColumnReferenceType)itemType).getTable())) {
-                     String columnName = ((ColumnReferenceType)itemType).getName();
-                     System.out.println("WE HAVE COLUMN " + columnName + " FOR TABLE " +
-                        tableAlias);
-                     // KONA TOFIX nulls to be replaced by catalog name
-                     ((ColumnReferenceType)itemType).setName(
-                       translator.getColumnRealname(null,tableName,columnName));
-                  }
-               }
-            }
-         }
-      }
-   }
-   */
 
    /** Uses xmlbeans functionality to validate the query's current 
     * contents against schema. */

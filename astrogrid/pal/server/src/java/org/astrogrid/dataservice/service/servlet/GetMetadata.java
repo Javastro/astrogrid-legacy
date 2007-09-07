@@ -1,5 +1,5 @@
 /*
- * $Id: GetMetadata.java,v 1.7 2007/03/21 18:59:41 kea Exp $
+ * $Id: GetMetadata.java,v 1.8 2007/09/07 09:30:51 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;
@@ -40,11 +40,29 @@ public class GetMetadata extends DefaultServlet {
          // Get version
          String version = request.getParameter("Version");
          if (version == null) {
-            // TOFIX - for now, default to v0.10
-            version = VoDescriptionServer.V0_10;
-            //throw new IOException("Please specify which version of metadata you require ('v0.10', 'v1.0' etc)");
+            //version = VoDescriptionServer.V0_10;
+            throw new IOException("Please specify which version of metadata you require ('v0.10', 'v1.0' etc)");
+            
+            //If no version given, do all enabled versions
+            /*
+            getVersionedMetadata(
+                  response,resourceType,VoDescriptionServer.V0_10);
+            getVersionedMetadata(
+                  response,resourceType,VoDescriptionServer.V1_0);
+            */
          }
-         
+         else {
+            getVersionedMetadata(response,resourceType,version);
+         }
+      }
+      catch (Throwable th) {
+         doError(response, "Getting Metadata",th);
+      }
+   }
+
+   protected void getVersionedMetadata(HttpServletResponse response, 
+         String resourceType, String version) throws IOException {
+      try {
          //nothing - all
          if (resourceType == null) {
             response.getWriter().write(DomHelper.DocumentToString(org.astrogrid.dataservice.metadata.VoDescriptionServer.getVoDescription(version)));

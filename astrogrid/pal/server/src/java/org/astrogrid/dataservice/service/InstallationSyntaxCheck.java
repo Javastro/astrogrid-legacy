@@ -1,4 +1,4 @@
-/*$Id: InstallationSyntaxCheck.java,v 1.9 2007/06/19 11:42:51 clq2 Exp $
+/*$Id: InstallationSyntaxCheck.java,v 1.10 2007/09/07 09:30:51 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -346,6 +346,7 @@ public class InstallationSyntaxCheck {
             ": " + e.getMessage(), e);
       }
 
+
       // Extract catalog, table, ra and dec names to use in test from config
       String defaultCatalogID = ConfigFactory.getCommonConfig().getString(
           "datacenter.self-test.catalog", null);
@@ -355,42 +356,50 @@ public class InstallationSyntaxCheck {
           "datacenter.self-test.column1", null);
       String colDecID = ConfigFactory.getCommonConfig().getString(
           "datacenter.self-test.column2", null);
-      // Perform some checks
-      // KONA PUT BACK LATER?
-      /*
-      if (defaultCatalogID == null) {
-         throw new QueryException(
-            "DataCentre is misconfigured - datacenter.self-test.catalog property is null");
-      }
-      */
-      if (defaultTableID == null) {
-         throw new QueryException(
-            "DataCentre is misconfigured - datacenter.self-test.table property is null");
-      }
-      if (colRaID == null) {
-         throw new QueryException("DataCentre is misconfigured - datacenter.self-test.column1 property is null");
-      }
-      if (colDecID == null) {
-         throw new QueryException("DataCentre is misconfigured - datacenter.self-test.column2 property is null");
-      }
 
-      // Metadoc "Name" can be different from metadoc "ID";  translate IDs
-      // into equivalent names so that ADQL query (which uses names) can be
-      // processed.
-      /*
-      boolean validMetadoc = false;
+      // Perform some checks
       try {
-         validMetadoc = TableMetaDocInterpreter.isValid();
+         TableMetaDocInterpreter.isValid();
       }
       catch (Exception e) {
-         throw new QueryException(e.getMessage()+", while loading DSA metadoc", e);
+         throw new QueryException(
+               "DSA metadoc cannot be validated: " + e.getMessage());
       }
-      if (!validMetadoc) {
-         /// Shouldn't actually get here - an exception will have been thrown
-         //by the TableMetaDocInterpreter earlier
-         throw new QueryException("DSA metadoc is not valid, please consult earlier error messages");
+      if (defaultCatalogID == null) {
+         try {
+            TableMetaDocInterpreter.isValid();
+         }
+         catch (Exception e) {
+            throw new QueryException(
+                  "DSA metadoc cannot be validated: " + e.getMessage());
+         }
+         String[] catIDs = new String[0];
+         try {
+            catIDs = TableMetaDocInterpreter.getCatalogIDs();
+         }
+         catch (MetadataException e) {
+            throw new QueryException(
+                  "Problem with DSA metadoc: " + e.getMessage());
+         }
+         if (catIDs.length > 1) {
+            throw new QueryException(
+               "DataCentre is misconfigured - 'datacenter.self-test.catalog' property is not set, and there are multiple catalogs to choose from in the metadoc");
+         }
+         else {
+            defaultCatalogID = catIDs[0];
+         }
       }
-      */
+      if (defaultTableID == null) {
+         throw new QueryException(
+            "DataCentre is misconfigured - datacenter.self-test.table property is not set");
+      }
+      if (colRaID == null) {
+         throw new QueryException("DataCentre is misconfigured - datacenter.self-test.column1 property is not set");
+      }
+      if (colDecID == null) {
+         throw new QueryException("DataCentre is misconfigured - datacenter.self-test.column2 property is not set");
+      }
+
       String defaultCatalogName, defaultTableName, colRaName, colDecName;
       try {
          defaultCatalogName = TableMetaDocInterpreter.getCatalogNameForID(

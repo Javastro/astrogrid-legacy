@@ -24,7 +24,11 @@
     <h5>Server administration</h5>
       <ul>
         <li><a href="./GenerateMetaDoc">Generate template metadoc</a>
-          <li><a href="../viewMetadata.jsp">View metadata table</a> or <a href='../GetMetadata'>XML</a></li>
+           <li><a href="../viewMetadata.jsp">View metadata table</a></li>
+         <li>View VOResource XML:<br/>
+            &nbsp;&nbsp;- <a href='../GetMetadata?Version=v0_10'>Version 0.10</a><br/>
+            &nbsp;&nbsp;- <a href='../GetMetadata?Version=v1_0'>Version 1.0</a>
+         </li>
        <%
            // Optionally enable registration (DISABLED when SampleStarsPlugin in use)
            String querierPlugin = ConfigFactory.getCommonConfig().getString(
@@ -75,4 +79,6 @@
 </div>
 </div>
 </div>
+
+
 

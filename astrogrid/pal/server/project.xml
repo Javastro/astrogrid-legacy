@@ -356,10 +356,17 @@
         <version>1.0</version>
     </dependency>
 
-    <!-- for CustomTestServlet -->
+    <!-- for CustomTestServlet, web-page self-tests -->
     <dependency>
        <id>junitee</id>
-       <version>1.8</version>
+       <version>1.11</version>
+    </dependency>
+    <!-- The Junitee stuff needs this jboss jar for EJBException -->
+    <dependency>
+		 <artifactId>jboss-j2ee</artifactId>
+		 <groupId>jboss</groupId>
+		 <version>3.2.3</version>
+		 <type>jar</type>
     </dependency>
 
 	<!-- xmlbeans for adql -->

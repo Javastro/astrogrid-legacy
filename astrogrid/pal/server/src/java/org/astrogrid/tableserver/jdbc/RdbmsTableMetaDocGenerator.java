@@ -1,5 +1,5 @@
 /*
- * $Id: RdbmsTableMetaDocGenerator.java,v 1.10 2007/06/08 13:16:12 clq2 Exp $
+ * $Id: RdbmsTableMetaDocGenerator.java,v 1.11 2007/09/07 09:30:52 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -59,28 +59,45 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
    /**
     * Returns the votable datatype for the given column.
     * @todo check these - these are made up/guessed
-    */
+    * These are are all the typs in Java 1.4:
+    *   http://java.sun.com/j2se/1.4.2/docs/api/java/sql/Types.html
+      ARRAY
+      BIGINT
+      BINARY
+      BIT
+      BLOB
+      BOOLEAN
+      CHAR
+      CLOB
+      DATALINK
+      DATE
+      DECIMAL
+      DISTINCT
+      DOUBLE
+      FLOAT
+      INTEGER
+      JAVA_OBJECT
+      LONGVARBINARY
+      LONGVARCHAR
+      NULL
+      NUMERIC
+      OTHER
+      REAL
+      REF
+      SMALLINT
+      STRUCT
+      TIME
+      TIMESTAMP
+      TINYINT
+      VARBINARY
+      VARCHAR 
+   */
    public static String getType(int sqlType, int typeSize) {
-      
+      String suffix = 
+         "is not currently supported, treating as string instead";
       switch (sqlType) {
          case Types.ARRAY    : log.error("Don't know how to cope with Arrays, storing as string", new RuntimeException()); return StdDataTypes.STRING;
-        /*
-         case Types.BIGINT:   return INT;
-         case Types.BOOLEAN:  return BOOLEAN;
-         case Types.BIT:      return BOOLEAN;
-         case Types.CHAR:     return STRING;
-         case Types.DATE:     return DATE;
-         case Types.DECIMAL:   return FLOAT;
-         case Types.DOUBLE:   return FLOAT;
-         case Types.FLOAT:    return FLOAT;
-         case Types.INTEGER:  return INT;
-//         case Types.NUMERIC:  return STRING;  ?tel nums?
-         case Types.REAL:     return FLOAT;
-         case Types.SMALLINT: return INT;
-         case Types.TINYINT:  return INT;
-         case Types.TIMESTAMP:return DATE;
-         case Types.VARCHAR:  return STRING;
-         */
+
          /* KEA NOTE: Erring on the side of excess precision here */
          case Types.BIGINT:   return StdDataTypes.LONG;
          case Types.BOOLEAN:  return StdDataTypes.BOOLEAN;
@@ -100,11 +117,59 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
 //         case Types.NUMERIC:  return StdDataTypes.STRING;  ?tel nums?
          case Types.REAL:     return StdDataTypes.DOUBLE;
          case Types.SMALLINT: return StdDataTypes.INT;
-         case Types.TINYINT:  return StdDataTypes.SHORT;
          case Types.TIMESTAMP:return StdDataTypes.DATE;
+         case Types.TINYINT:  return StdDataTypes.SHORT;
          case Types.VARCHAR:  return StdDataTypes.STRING;
+
+         // These ones are explicitly not supported at the moment
+         case Types.BINARY:
+            log.warn("SQL type 'BINARY' " + suffix);
+            return StdDataTypes.STRING;
+         case Types.BLOB:
+            log.warn("SQL type 'BLOB' " + suffix);
+            return StdDataTypes.STRING;
+         case Types.CLOB:
+            log.warn("SQL type 'CLOB' " + suffix);
+            return StdDataTypes.STRING;
+         case Types.DATALINK:
+            log.warn("SQL type 'DATALINK' " + suffix);
+            return StdDataTypes.STRING;
+         case Types.DISTINCT:
+            log.warn("SQL type 'DISTINCT' " + suffix);
+            return StdDataTypes.STRING;
+         case Types.JAVA_OBJECT:
+            log.warn("SQL type 'JAVA_OBJECT' " + suffix);
+            return StdDataTypes.STRING;
+         case Types.LONGVARBINARY:
+            log.warn("SQL type 'LONGVARBINARY' " + suffix);
+            return StdDataTypes.STRING;
+         case Types.LONGVARCHAR:
+            log.warn("SQL type 'LONGVARCHAR' " + suffix);
+            return StdDataTypes.STRING;
+         case Types.NULL:
+            log.warn("SQL type 'NULL' " + suffix);
+            return StdDataTypes.STRING;
+         case Types.NUMERIC:
+            log.warn("SQL type 'NUMERIC' " + suffix);
+            return StdDataTypes.STRING;
+         case Types.OTHER:
+            log.warn("SQL type 'OTHER' " + suffix);
+            return StdDataTypes.STRING;
+         case Types.REF:
+            log.warn("SQL type 'REF' " + suffix);
+            return StdDataTypes.STRING;
+         case Types.STRUCT:
+            log.warn("SQL type 'STRUCT' " + suffix);
+            return StdDataTypes.STRING;
+         case Types.TIME:
+            log.warn("SQL type 'TIME' " + suffix);
+            return StdDataTypes.STRING;
+         case Types.VARBINARY:
+            log.warn("SQL type 'VARBINARY' " + suffix);
+            return StdDataTypes.STRING;
+
          default: {
-            log.error("Don't know what SQL type "+sqlType+" should be, storing as string", new RuntimeException()); //add runtime exception so we get a stack trace
+            log.error("Don't understand the SQL type with index "+sqlType+", treating as string instead", new RuntimeException()); //add runtime exception so we get a stack trace
             return StdDataTypes.STRING;
          }
       }
@@ -373,3 +438,7 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
    }
    
 }
+
+
+
+
