@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.46 2007/09/04 16:24:46 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.47 2007/09/07 10:59:16 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -970,11 +970,11 @@ void boolean_term_S() #BooleanTerm :
 	// boolean_factor_S() ( <AND> boolean_term_S() )?
 	// which I believe is equivalent to the above
 //	try {
-//		( boolean_factor_S() //		  ( LOOKAHEAD(3) //		    <AND> { jjtThis.setAnd() ; }//		    boolean_term_S()//		  )? //		)
-		LOOKAHEAD(2147483647)
-		( { jjtThis.setAnd() ; } boolean_factor_S() <AND> boolean_term_S() { jjtThis.popPosition() ; } )
-		|
-		boolean_factor_S()  
+
+		( boolean_factor_S() 		  ( LOOKAHEAD(3) 		    <AND> { jjtThis.setAnd() ; }		    boolean_term_S()		  )? 		)
+// 
+// It IS possible to force JAVACC into recursion. This does so where a missing bracket occurs...
+//		LOOKAHEAD(2147483647)//		( { jjtThis.setAnd() ; } boolean_factor_S() <AND> boolean_term_S() { jjtThis.popPosition() ; } )//		|//		boolean_factor_S()  
 //	}//	catch( ParseException pex ) {//	   errorSkipTo( new int[]{ token.kind }, pex ) ;				//	}	
 	{
 		if( log.isTraceEnabled() ) exitTrace ( "boolean_term_S()" ) ;
@@ -1151,7 +1151,7 @@ void ASCIIStringLiteralPart() #ASCIIStringLiteralPart : {}
  * bnf-end
  *
  */
-void character_value_expression_S() #CharacterValueExpression : 
+void character_value_expression_S( String elementName ) #CharacterValueExpression : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "character_value_expression_S()" ) ;
 }
@@ -1163,7 +1163,7 @@ void character_value_expression_S() #CharacterValueExpression :
     //
     // To avoid left recursion, refactored to the following, which I believe
     // is equivalent...
-	character_factor_A() [ concatenation_operator_S() character_value_expression_S() ]
+	character_factor_A() [ concatenation_operator_S() character_value_expression_S( elementName) ]
 	{ 
 		if( log.isTraceEnabled() ) exitTrace ( "character_value_expression_S()" ) ;
 	}	
@@ -1490,7 +1490,7 @@ void escape_character_A() : {}
 {
 	//S:
 	// <escape_character> ::= <character_value_expression>
-	character_value_expression_S()	
+	character_value_expression_S( "todo" )	
 }
 
 /*
@@ -2141,7 +2141,7 @@ void match_value_S() #MatchValue :
 	//S:
 	// <match_value> ::= <character_value_expression>
 
-	character_value_expression_S()
+	character_value_expression_S( "todo" )
 	{
 	   if( log.isTraceEnabled() ) exitTrace ( "match_value_S()" ) ;
 	}	
@@ -2343,7 +2343,7 @@ void numeric_primary_S( String elementName ) :
 void numeric_value_expression_S( String elementName ) #NumericValueExpression : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "numeric_value_expression_S()" ) ;
-//	Token t = null ;
+	Token t = null ;
 }
 {
 	//S:
@@ -2353,15 +2353,7 @@ void numeric_value_expression_S( String elementName ) #NumericValueExpression :
     //  | <numeric_value_expression> <minus_sign> <term>
 	
 	// refactored to...
-//	( term_S( elementName ) //	  ( //	     LOOKAHEAD(3) //	     ( //	        ( t=<PLUS_SIGN> | t=<MINUS_SIGN> ) //	        { jjtThis.setOperator( t, elementName ); } //	     ) numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT ) //	  )? //	)
-
-	LOOKAHEAD(2147483647)
-	( {jjtThis.setPlus( elementName );} term_S( AdqlCompiler.ARG_ELEMENT ) <PLUS_SIGN>  numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT ) {jjtThis.popPosition();} )
-	|
-	LOOKAHEAD(2147483647)
-	( {jjtThis.setMinus( elementName );} term_S( AdqlCompiler.ARG_ELEMENT ) <PLUS_SIGN>  numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT ) {jjtThis.popPosition();} )
-	|
-	term_S( elementName )
+	( term_S( elementName ) 	  ( 	     LOOKAHEAD(3) 	     ( 	        ( t=<PLUS_SIGN> | t=<MINUS_SIGN> ) 	        { jjtThis.setOperator( t, elementName ); } 	     ) numeric_value_expression_S( AdqlCompiler.ARG_ELEMENT ) 	  )? 	)
     {
         if( log.isTraceEnabled() ) exitTrace ( "numeric_value_expression_S()" ) ;		
 	}
@@ -2598,7 +2590,7 @@ void pattern_A() :
 	//S:
 	//   <pattern> ::= <character_value_expression>
 	// character_string_literal_A()
-	character_value_expression_S()
+	character_value_expression_S( "todo" )
 	{
 		if( log.isTraceEnabled() ) exitTrace ( "pattern_A()" ) ;
 	}	
@@ -3378,12 +3370,8 @@ void search_condition_S() #SearchCondition :
 	// boolean_term() ( <OR> search_condition() )?
 	// which I believe is equivalent to the above
 //    try {
-
-// (for tracking) Refactored from this://		( boolean_term_S() //		  ( <OR> { jjtThis.setOr() ; }	      //		    search_condition_S() //		  )? //		)
-// To this:
-		LOOKAHEAD(2147483647) 
-		( {jjtThis.setOr();} boolean_term_S() <OR> search_condition_S() {jjtThis.popPosition();} )
-		|		boolean_term_S()
+		( boolean_term_S() 		  ( <OR> { jjtThis.setOr() ; }	      		    search_condition_S() 		  )? 		)
+		
 //    }//    catch( ParseException pex ) {//        errorSkipTo( new int[]{ token.kind }, pex ) ;	//    } 
 	{ 
 		if( log.isTraceEnabled() ) exitTrace ( "search_condition_S" ) ;	
@@ -3500,14 +3488,8 @@ void derived_column_S( String elementName ) #DerivedColumn :
 	//S:
 	// <derived_column> ::= <value_expression> [ <as_clause> ]
 	// <as_clause> ::= [ AS ] <column_name>
-//	( value_expression_A( elementName ) [ [ <AS> ] column_name_S() {jjtThis.setAliased();}  ] )
-	LOOKAHEAD(2147483647)
-	( { jjtThis.setAliased( elementName ) ; } 
-	  value_expression_A( AdqlCompiler.EXPRESSION_ELEMENT ) [ <AS> ] column_name_S()
-	  { jjtThis.popPosition( elementName ) ; } 
-	) 
-	|
-	( value_expression_A( elementName ) )
+	( value_expression_A( elementName ) [ [ <AS> ] column_name_S() {jjtThis.setAliased( elementName );}  ] )
+//	LOOKAHEAD(2147483647)//	( { jjtThis.setAliased( elementName ) ; } //	  value_expression_A( AdqlCompiler.EXPRESSION_ELEMENT ) [ <AS> ] column_name_S()//	  { jjtThis.popPosition( elementName ) ; } //	) //	|//	( value_expression_A( elementName ) )
 	{ 
 		if( log.isTraceEnabled() ) exitTrace ( "derived_column_S()" ) ;
 	}	
@@ -3642,7 +3624,7 @@ void string_value_expression_A( String elementName ) : {}
 	// <string_value_expression> ::=
     //    <character_value_expression>
     //  | <bit_value_expression>
-	character_value_expression_S()
+	character_value_expression_S( elementName )
 }
 
 /*
@@ -4016,7 +3998,7 @@ void table_value_constructor_list_S() : {}
 void term_S( String elementName ) #Term :  
 {
 	if( log.isTraceEnabled() ) enterTrace ( "term_S()" ) ;
-//	Token t = null ;
+	Token t = null ;
 }
 {
 	//S:
@@ -4027,14 +4009,11 @@ void term_S( String elementName ) #Term :
 
 	// refactored
 	// factor() ( LOOKAHEAD(2) (<ASTERISK> | <SOLIDUS> ) term() )?
-//	( //	   factor_S() //	   ( LOOKAHEAD(2) //	     ( //	       ( t=<ASTERISK> | t=<SOLIDUS> ) //	       { jjtThis.setOperator(t); } //	     ) //	     term_S( AdqlCompiler.ARG_ELEMENT )//	   )? 	//	)
-	LOOKAHEAD(2147483647)
-	( { jjtThis.setMultiply( elementName ); } factor_S( AdqlCompiler.ARG_ELEMENT ) <ASTERISK> term_S( AdqlCompiler.ARG_ELEMENT ) { jjtThis.popPosition(); }	)
-	|
-	LOOKAHEAD(2147483647)
-	( { jjtThis.setDivide( elementName ); } factor_S( AdqlCompiler.ARG_ELEMENT ) <SOLIDUS> term_S( AdqlCompiler.ARG_ELEMENT ) { jjtThis.popPosition(); }	)
-	|
-	factor_S( elementName )
+	( 	   factor_S( elementName ) 	   ( LOOKAHEAD(2) 	     ( 	       ( t=<ASTERISK> | t=<SOLIDUS> ) 	       { jjtThis.setOperator(t); } 	     ) 	     term_S( AdqlCompiler.ARG_ELEMENT )	   )? 		)
+
+//
+// Danger of recursion...
+//	LOOKAHEAD(2147483647)//	( { jjtThis.setMultiply( elementName ); } factor_S( AdqlCompiler.ARG_ELEMENT ) <ASTERISK> term_S( AdqlCompiler.ARG_ELEMENT ) { jjtThis.popPosition(); }	)//	|//	LOOKAHEAD(2147483647)//	( { jjtThis.setDivide( elementName ); } factor_S( AdqlCompiler.ARG_ELEMENT ) <SOLIDUS> term_S( AdqlCompiler.ARG_ELEMENT ) { jjtThis.popPosition(); }	)//	|//	factor_S( elementName )
 	{
 		if( log.isTraceEnabled() ) exitTrace ( "term_S()" ) ;
 	}
@@ -4364,6 +4343,10 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.47  2007/09/07 10:59:16  jl99
+A back peddle on position tracking. Needs a rethink.
+The experiment showed up a potential for recursion.
+
 Revision 1.46  2007/09/04 16:24:46  jl99
 Yet another attempt at refining position tracking.
 

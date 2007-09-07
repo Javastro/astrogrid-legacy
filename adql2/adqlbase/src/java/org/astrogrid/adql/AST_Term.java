@@ -13,36 +13,38 @@ public class AST_Term extends SimpleNode {
     
     private static Log log = LogFactory.getLog( AST_Term.class ) ;
     
-    String sBinaryOp = null ; 
+//    String sBinaryOp = null ; 
+    Token binaryOpToken = null ;
 
     public AST_Term(AdqlStoX p, int id) {
         super(p, id);
     }
  
-    public void setMultiply( String elementName ) {
-        this.sBinaryOp = "*" ;
-        pushPosition( elementName, BinaryExprType.type ) ;
-    }
-    
-    public void setDivide( String elementName ) {
-        this.sBinaryOp = "/" ;
-        pushPosition( elementName, BinaryExprType.type ) ;
-    }
-//    public void setOperator( Token binaryOpToken ) {       
-//        this.binaryOpToken = binaryOpToken ;      
-//        //
-//        // Adjust the child count. 
-//        // As a binary operation, it already has one child...
-//        Tracker t = getTracker() ;
+//    public void setMultiply( String elementName ) {
+//        this.sBinaryOp = "*" ;
+//        pushPosition( elementName, BinaryExprType.type ) ;
+//    }
+//    
+//    public void setDivide( String elementName ) {
+//        this.sBinaryOp = "/" ;
+//        pushPosition( elementName, BinaryExprType.type ) ;
+//    }
+//    
+    public void setOperator( Token binaryOpToken ) {       
+        this.binaryOpToken = binaryOpToken ;      
+        //
+        // Adjust the child count. 
+        // As a binary operation, it already has one child...
+        Tracker t = getTracker() ;
 //        Tracker.Part p = t.peek() ;
 //        p.setChildCount( 1 ) ;  
-//        //
-//        // Keep the current element but change its type to operator...
-//        t.setType( BinaryExprType.type ) ;
-//    }
+        //
+        // Keep the current element but change its type to operator...
+        t.setType( BinaryExprType.type ) ;
+    }
     
     public boolean isSetOperator() {
-        return sBinaryOp != null ;
+        return binaryOpToken != null ;
     }
 
     public void buildXmlTree( XmlObject xo ) {
@@ -67,11 +69,11 @@ public class AST_Term extends SimpleNode {
         }
         else {
             BinaryExprType beType = (BinaryExprType)xo.changeType( BinaryExprType.type ) ;
-            beType.setOper( BinaryOperatorType.Enum.forString( sBinaryOp ) ) ;
+            beType.setOper( BinaryOperatorType.Enum.forString( this.binaryOpToken.image ) ) ;
             if( log.isDebugEnabled() ) {
                 buffer
                     .append( "\nbinaryOpToken: " )
-                    .append( sBinaryOp ) ;
+                    .append( this.binaryOpToken.image ) ;
             }
             for( int i=0; i<childCount; i++ ) {
                 children[i].buildXmlTree( beType.addNewArg() ) ;

@@ -1,4 +1,4 @@
-/*$Id: AdqlException.java,v 1.1 2007/06/28 09:07:44 jl99 Exp $
+/*$Id: AdqlException.java,v 1.2 2007/09/07 10:59:16 jl99 Exp $
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
@@ -58,10 +58,12 @@ public class AdqlException extends Exception {
             if( !messages[i].endsWith( " " ) ) {
                 messages[i]+= " " ;
             }
-            messages[i]+= "at position " + e.toPosition() ;
+            String position = e.toPosition().trim() ;
+            if( position.length() > 0 ) {
+                messages[i]+= "at position " + position ;
+            }           
             i++ ;
-        }
-        
+        }        
         if( log.isTraceEnabled() ) { log.trace( "exit: getMessages()" ) ; } 
         return messages ;
     }
@@ -83,6 +85,10 @@ public class AdqlException extends Exception {
 
 /*
 $Log: AdqlException.java,v $
+Revision 1.2  2007/09/07 10:59:16  jl99
+A back peddle on position tracking. Needs a rethink.
+The experiment showed up a potential for recursion.
+
 Revision 1.1  2007/06/28 09:07:44  jl99
 Creation of temporary project adql2 to explore complexities of moving
 ADQL to conform to the draft spec of April 2007.

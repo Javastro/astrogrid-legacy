@@ -1233,7 +1233,7 @@ public class AdqlCompiler {
                 buffer.append( UNEXPECTED_REMAINDER ) ;
                 ListIterator iterator = rTokens.listIterator() ;
                 while( iterator.hasNext() ) {
-                    buffer.append( ((Token)iterator.next()).image ) ;
+                    buffer.append( ((Token)iterator.next()).image ).append( ' ' ) ;
                 }
                 throw new ParseException( buffer.toString() ) ;
             }
