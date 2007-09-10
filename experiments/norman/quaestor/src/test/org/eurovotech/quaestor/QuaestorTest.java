@@ -35,6 +35,8 @@ public class QuaestorTest
     private static URL xmlrpcEndpoint;
     private static final String testKB = "testing";
 
+    private static final String quaestorNamespace = "http://ns.eurovotech.org/quaestor#";
+
     public QuaestorTest(String name)
             throws Exception {
         super(name);
@@ -104,6 +106,49 @@ public class QuaestorTest
         assertStatus(r, HttpURLConnection.HTTP_FORBIDDEN);
     }
 
+    // as before, but this time uploading metadata
+    public void testCreateKnowledgebaseWithMetadata()
+            throws Exception {
+        HttpResult r;
+        String kbName = "kb/metadataTest";
+        URL testURL = new URL(contextURL, kbName);
+        String mdString =
+                "@prefix dc: <http://purl.org/dc/elements/1.1/>. @prefix quaestor: <"
+                + quaestorNamespace
+                + ">. <> dc:description \"My metadata-started knowledgebase\"; dc:creator \"Norman\"; quaestor:requiredReasoner [ quaestor:level \"simpleRDFS\" ].";
+
+        // Try this for alternative MIME types
+        String[] mimeTypes = { "text/rdf+n3", "application/x-turtle" };
+        
+        for (String mime : mimeTypes) {
+
+            // create the new knowledgebase
+            r = QuaestorConnection.httpPut(testURL, mdString, mime);
+            assertStatus(r, HttpURLConnection.HTTP_NO_CONTENT);
+            assertNull(r.getContentAsString());
+
+            // Does ?metadata work?
+            r = QuaestorConnection.httpGet(new URL(contextURL, kbName + "?metadata"));
+            assertStatus(r, HttpURLConnection.HTTP_OK);
+            assertContentType(r, "text/rdf+n3");
+
+            // try creating the knowledgebase again -- should fail, since
+            // we can't create the knowledgebase twice
+            r = QuaestorConnection.httpPut(testURL, mdString, mime);
+            assertStatus(r, HttpURLConnection.HTTP_FORBIDDEN);
+            
+            r = QuaestorConnection.httpGet(new URL(contextURL, "kb"));
+            assertStatus(r, HttpURLConnection.HTTP_OK);
+            // the following test is slightly fragile, as it depends on the detail of the
+            // Jena serialisation of the metadata model
+            assertTrue(r.getContentAsString().contains("dc:creator \"Norman\""));
+            assertContentType(r, "text/html");
+
+            // ...and delete it
+            r = QuaestorConnection.httpDelete(testURL);
+        }
+    }
+
     /* ******************** Other test methods ******************** */
 
     public void testAddOntology()
@@ -124,17 +169,15 @@ public class QuaestorTest
         assertNotNull(r.getContentAsString());
         // the actual content is a bit of a fuss to check
 
-        r = QuaestorConnection.httpGet(makeKbUrl("ontology"), "text/rdf+n3");
-        assertStatus(r, HttpURLConnection.HTTP_OK);
-        assertContentType(r, "text/rdf+n3");
-        assertNotNull(r.getContentAsString());
+        // check handling of Accept headers
+        String[] mimeTypes = { "text/rdf+n3", "application/n3", "application/x-turtle" };
+        for (String mime : mimeTypes) {
 
-        // same content type if we request deprecated application/n3
-        r = QuaestorConnection.httpGet(makeKbUrl("ontology"),
-                    new String[] {"Accept", "application/n3"});
-        assertStatus(r, HttpURLConnection.HTTP_OK);
-        assertContentType(r, "text/rdf+n3");
-        assertNotNull(r.getContentAsString());
+            r = QuaestorConnection.httpGet(makeKbUrl("ontology"), mime);
+            assertStatus(r, HttpURLConnection.HTTP_OK);
+            assertContentType(r, mime);
+            assertNotNull(r.getContentAsString());
+        }
     }
     
     public void testAddInstances ()

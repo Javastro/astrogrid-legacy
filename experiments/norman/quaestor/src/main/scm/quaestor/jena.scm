@@ -150,6 +150,7 @@
     ("application/n3"      . "N3")
     ;; ...http://infomesh.net/2002/notation3/#mimetype
     ;; (but deprecated in the Notation3 page above)
+    ("application/x-turtle" . "N3")     ;MIME type for Turtle http://www.dajobe.org/2004/01/turtle/
     ("application/rdf+xml" . "RDF/XML")
     ;; ...http://www.w3.org/TR/rdf-syntax-grammar/#section-MIME-Type
     ;; Generic RDF MIME type: http://www.ietf.org/rfc/rfc3870.txt

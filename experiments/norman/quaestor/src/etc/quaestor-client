@@ -299,6 +299,7 @@
 (define (get-language-from-extension filename)
   (let ((ext (file-name-extension filename))
         (ext-map '((".n3"  . "text/rdf+n3")
+                   (".ttl" . "application/x-turtle")     ;MIME type for Turtle http://www.dajobe.org/2004/01/turtle/
                    (".rdf" . "application/rdf+xml")
                    (".rdfs" . "application/rdf+xml")
                    (".owl" . "application/rdf+xml")

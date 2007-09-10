@@ -40,6 +40,8 @@ contain one of the following MIME types (see <a href='mime.html'
 >note</a>):</p>
 <ul>
   <li><code>text/rdf+n3</code> : Notation3 (default)</li>
+  <li><code>application/x-turtle</code> :
+    <a href='http://www.dajobe.org/2004/01/turtle/ '>Turtle (very like Notation3)</a></li>
   <li><code>application/rdf+xml</code> : RDF/XML serialisation</li>
   <li><code>text/plain</code> : N-triples format</li>
   <li><code>text/csv</code> : comma-separated values</li>
@@ -140,11 +142,11 @@ are resolved using the knowledgebase's own URI as the base-URI.</p>
 
 <p>You can add any metadata you like, but some properties are treated
 specially.  The following properties are in the namespace
-<code>http://ns.nxg.me.uk/quaestor#</code> (at present, this might
+<code>http://ns.eurovotech.org/quaestor#</code> (at present, this might
 change).</p>
 
 <pre>
-@prefix : &lt;http://ns.nxg.me.uk/quaestor#&gt;.
+@prefix : &lt;http://ns.eurovotech.org/quaestor#&gt;.
 @prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;.
 @prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;.
 @prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;.
@@ -176,7 +178,7 @@ inference documentation</a> for more discussion.</p>
 
 <pre>
 @prefix dc: &lt;http://purl.org/dc/elements/1.1/&gt;.
-@prefix quaestor: &lt;http://ns.nxg.me.uk/quaestor#&gt;.
+@prefix quaestor: &lt;http://ns.eurovotech.org/quaestor#&gt;.
 
 &lt;&gt; dc:description "UCD knowledgebase";
     dc:creator "Norman";

@@ -16,6 +16,7 @@
 (let ((maps '(("application/n3"                      . "N3")      
               ("text/rdf+n3"                         . "N3")      
               ("text/rdf+n3; charset=utf-8"          . "N3")      
+              ("application/x-turtle"                . "N3")
               ("application/rdf+xml"                 . "RDF/XML") 
               ("application/rdf+xml; charset=wibble" . "RDF/XML") 
               ("*/*"                                 . "N3")      

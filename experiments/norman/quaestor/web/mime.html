@@ -22,26 +22,31 @@ interacting with Quaestor:</p>
 in the standard <a href='http://www.w3.org/TR/rdf-syntax-grammar/'
 >RDF/XML</a> serialisation.</dd>
 
-<dt><code>application/xml</code></dt>
+<dt><code>application/sparql-query</code></dt>
 <dd>When annotating a SPARQL response, this produces a response in
 XML, using the
 <a href="http://www.w3.org/TR/rdf-sparql-XMLres/" >SPARQL response XML 
 schema</a>.</dd>
 
-<dt><code>application/sparql-query</code></dt>
+<dt><code>application/x-turtle</code></dt>
+<dd><a href='http://www.dajobe.org/2004/01/turtle/' >Turtle</a> is a
+well-established but still experimental text syntax for RDF.  It's
+very closely related to Notation3, but without some of that syntax's
+non-RDF extensions.  The MIME type is not yet registered, but
+<code>application/turtle</code> is being requested.</dd>
+
+<dt><code>application/xml</code></dt>
 <dd>This is the MIME type which should accompany a POSTed SPARQL
 query.  See the <a href='http://www.w3.org/TR/rdf-sparql-query/'
 >specification</a> for more details.</dd>
 
-<dt><code>text/rdf+n3</code></dt>
-<dd>This indicates that the content (upload or response) is formatted in
-<a href='http://www.w3.org/DesignIssues/Notation3' >Notation-3</a>.
-The <code>application/n3</code> MIME type is recognised but
-deprecated (see <a href='http://www.w3.org/DesignIssues/Notation3' >W3
-discussion</a>), since its IANA registration was never completed;
-<code>text/rdf+n3</code> is the preferred MIME type for Notation3, and
-if <code>application/n3</code> is requested, it is
-<code>text/rdf+n3</code> which will be returned.</dd>
+<dt><code>text/csv</code> (SELECT query responses only)</dt>
+<dd>Comma-separated-value output, conforming to RFC 4180.  The
+<code>Content-Type</code> of the response is
+<code>text/csv;header=present</code>, indicating that the first line
+of the response consists of 'column headings', consisting of the
+substitution variables in the input query.  These are not guaranteed
+to be in the same order as they were listed in the input query.</dd>
 
 <dt><code>text/plain</code></dt>
 <dd><p>This MIME type means various different things in different
@@ -56,19 +61,21 @@ machine-parseable.</p>
 href='http://www.w3.org/TR/rdf-testcases/#ntriples' >N-triple
 format</a> is also <code>text/plain</code>; however N-triple format is
 intended only for the RDF test cases, and is not expected to be useful
-otherwise.  When retrieving an ontology (using the <code>GET</code>
+otherwise (that's the party line, though in fact N-triple format can
+be quite useful when you need something that's trivial to parse, or
+when you want, say, to check how base-URIs have been resolved).
+When retrieving an ontology (using the <code>GET</code>
 HTTP method) or uploading one (using <code>PUT</code>), you can use
-<code>text/plain</code> to indicate N-triples, if you really
-must.</p>
+<code>text/plain</code> to indicate N-triples (but don't tell W3C).</p>
 </dd>
 
-<dt><code>text/csv</code> (SELECT query responses only)</dt>
-<dd>Comma-separated-value output, conforming to RFC 4180.  The
-<code>Content-Type</code> of the response is
-<code>text/csv;header=present</code>, indicating that the first line
-of the response consists of 'column headings', consisting of the
-substitution variables in the input query.  These are not guaranteed
-to be in the same order as they were listed in the input query.</dd>
+<dt><code>text/rdf+n3</code></dt>
+<dd>This indicates that the content (upload or response) is formatted in
+<a href='http://www.w3.org/DesignIssues/Notation3' >Notation-3</a>.
+The <code>application/n3</code> MIME type is recognised but
+deprecated (see <a href='http://www.w3.org/DesignIssues/Notation3' >W3
+discussion</a>), since its IANA registration was never completed;
+<code>text/rdf+n3</code> is the preferred MIME type for Notation3.</dd>
 
 <dt><code>text/tab-separated-values</code> (SELECT query responses only)</dt>
 <dd>Tab-separated-value output, conforming to the (rather informal)
@@ -76,6 +83,7 @@ specification
 <a href='http://www.iana.org/assignments/media-types/text/tab-separated-values'
 >at IANA</a>.  The first line will include a row of 'column headings'
 as above.</dd>
+
 </dl>
 
 </body>
