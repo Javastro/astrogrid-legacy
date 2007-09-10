@@ -86,16 +86,18 @@ public class VotCopyOutputStream extends OutputStream {
         InputSource saxsrc = new InputSource( in );
         try {
             VotCopy.saxCopy( saxsrc, handler_ );
+            filterOut_.flush();
         }
         catch ( SAXException e ) {
             throw (IOException) new IOException( "SAX processing error: " 
                                                + e.getMessage() )
                                .initCause( e );
         }
-        filterOut_.flush();
-        synchronized( this ) {
+        finally {
             finished_ = true;
-            notifyAll();
+            synchronized ( this ) {
+                notifyAll();
+            }
         }
     }
 
