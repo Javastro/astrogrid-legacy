@@ -178,7 +178,7 @@
     <dependency>
       <id>ttools</id>
       <groupId>starlink</groupId>
-      <version>1.3-3</version>
+      <version>1.3-4</version>
     </dependency>
 
     <dependency>

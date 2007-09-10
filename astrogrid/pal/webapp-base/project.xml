@@ -403,7 +403,7 @@
     <dependency>
       <artifactId>ttools</artifactId>
       <groupId>starlink</groupId>
-      <version>1.3-3</version>
+      <version>1.3-4</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
