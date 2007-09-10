@@ -147,14 +147,16 @@
         (begin (chatter "POST expr '~a' to URL ~a" code full-url)
                (call-curl
                 (curl ,@(verbose-option)
-                      --data-binary @- ;--upload-file -
+                      --data-binary @-
+                      --header "Content-type: text/plain"
                       ,full-url)
                 (<< ,code)))
         (begin (check-file-exists code)
                (chatter "POST code in ~a to URL ~a" code full-url)
                (call-curl
                 (curl ,@(verbose-option)
-                      --data-binary ,(string-append "@" code) ;--upload-file ,code
+                      --data-binary ,(string-append "@" code)
+                      --header "Content-type: text/plain"
                       ,full-url))))))
 
 ;; POST the contents of the given file (which may be '-') to the
