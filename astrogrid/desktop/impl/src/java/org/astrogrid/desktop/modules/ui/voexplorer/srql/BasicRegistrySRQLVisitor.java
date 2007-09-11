@@ -29,6 +29,7 @@ public class BasicRegistrySRQLVisitor implements Builder{
 		targets.put("name",new String[] {"$r/vr:shortName","$r/vr:title"});
 		targets.put("id",new String[] {"$r/vr:identifier"});
 		targets.put("subject",new String[]{"$r/vr:content/vr:subject"}); 
+		targets.put("source",new String[]{"$r/vr:content/vr:source"});
 		targets.put("description", new String[] {"$r/vr:content/vr:description"});
 		targets.put("default", defaultTarget);
 		targets.put("any", new String[] {"$r//*"}); //@todo add attributes too - can't get //@* to work with latest XQuery.

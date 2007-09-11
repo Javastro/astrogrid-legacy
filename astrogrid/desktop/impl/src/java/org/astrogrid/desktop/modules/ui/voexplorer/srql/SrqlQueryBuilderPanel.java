@@ -365,7 +365,7 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 		, new TextMatchTemplate("Curator","curation")
 		, new TextMatchTemplate("Short name","shortname")
 		, new TextMatchTemplate("Identifier","id")
-
+		, new TextMatchTemplate("Source","source")
 		,new TextMatchTemplate("Any field","any")
 	};
 	
