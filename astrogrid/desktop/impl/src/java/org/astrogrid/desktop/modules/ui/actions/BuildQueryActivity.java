@@ -40,8 +40,6 @@ public BuildQueryActivity(QueryBuilderInternal t) {
 }
 // thing to invoke
 private final QueryBuilderInternal t;
-// something to pass to the task invoker.
-private Object current;
 
 // unsure whether there's a better place to put these helper methods.
 	public static boolean hasAdqlParameter(CeaApplication a) {
@@ -105,97 +103,78 @@ private Object current;
 	        }	   
 	
 	public void actionPerformed(ActionEvent e) {
-		if (isDbSchema(current)) { 
-			// single db schema.
-			if (current instanceof DataCollection) {
-				t.build((DataCollection)current);
-			} /* not implemented else { // must be a catalog service.
-				t.build((CatalogService)current);
-			}*/
-		} else if (current instanceof CeaApplication) {
-			// a cea app.
-			t.build((CeaApplication)current);
-		//@future - add in a clause for tap.
-		} else if (current instanceof Resource[]) {
-			// filter down.
-			List useful = new ArrayList();
-			Resource[] rs = (Resource[])current;
-			for (int i = 0; i < rs.length; i++) {
-				if (isDbSchema(rs[i])) {
-					useful.add(rs[i]);
-				}
-			}
-			// pass in the useful list.
-		} else if (current instanceof FileObject) {
-			// a stored query.
-			t.edit((FileObject)current);
-		}
+	    List resources = computeInvokableResources();
+	    switch(resources.size()) {
+	        case 0:
+	            break;
+	        case 1:
+	            Resource r = (Resource) resources.get(0);
+	            if (isDbSchema(r)) { 
+	                // single db schema.
+	                if (r instanceof DataCollection) {
+	                    t.build((DataCollection)r);
+	                } /* not implemented else { // must be a catalog service.
+	                    t.build((CatalogService)r);
+	                }*/
+	            } else if (r instanceof CeaApplication) {
+	                // a cea app.
+	                t.build((CeaApplication)r);
+	            }
+	            break;
+	        default:
+	            //future for multi-table querying.	            
+	    }
+	    List files= computeInvokableFiles();
+	    switch(files.size()) {
+	        case 0:
+	            break;
+	        case 1:
+	            FileObject fo = (FileObject)files.get(0);
+	            t.edit(fo);
+	            break;
+	        default:
+	            //future - do something with a multiple selection.
+	    }
 	}
-	public void noneSelected() {
-		current = null;
-		super.noneSelected();
-	}	
+
 	 // can't operate on more than one file.
 	// ponder - should we open each selected adql file in a new viewer?
-	public void manyFilesSelected(FileObject[] l) {
+	public void manySelected(FileObject[] l) {
 		noneSelected();
 	}
 
 	// accept a single adql file.
-	public void oneSelected(FileObject fo) {
-		current = null;
-		try {
-		if (fo.getType().hasContent()) {
-			String mime = fo.getContent().getContentInfo().getContentType();
-			if (mime != null && mime.startsWith(VoDataFlavour.MIME_ADQL)) {
-				// testing with start-with to match against adql and adqlx
-				setEnabled(true);
-				current = fo;
-			} else {
-				setEnabled(false);
-			}
-		} else {
-			setEnabled(false);
-		}
-		} catch (FileSystemException e) {
-			setEnabled(false);
-		}
+	public boolean invokable(FileObject fo) {
+	    try {
+	        if (fo.getType().hasContent()) {
+	            String mime = fo.getContent().getContentInfo().getContentType();
+	            if (mime != null && mime.startsWith(VoDataFlavour.MIME_ADQL)) {
+	                // testing with start-with to match against adql and adqlx
+	                return true;
+	            } 	
+	        }
+	    } catch (FileSystemException e) {
+	        return false;
+	    }
+	    return false;
 	}
 	
 	// accept a single database schema, or a single queriable service.
-	public void oneSelected(Resource resource) {
-		current = null;
-		setEnabled( isDbSchema(resource) ||
-				 (resource instanceof CeaApplication && hasAdqlParameter((CeaApplication)resource)));
-			// @future add a rule for tap services, when they emrge too.
-		if (isEnabled()) {
-			current = resource;
-		}
+	public boolean invokable(Resource resource) {
+		return isDbSchema(resource) ||
+				 (resource instanceof CeaApplication && hasAdqlParameter((CeaApplication)resource));
+
 	}
 
 	// accept if any in selection are database schema.
 	public void manyResourcesSelected(Resource[] l) {
 		noneSelected();
-		/* @todo support multi-query later
-		current = null;
-		for (int i = 0; i < l.length; i++) {
-			Resource r = l[i];
-			if (isDbSchema(r)) {
-				setEnabled(true);
-				current = l; // don't bother filtering it yet.
-				return;
-			}
-		}
-		setEnabled(false);
-		*/
+		// later - support multi-query later
+
 	}
 	private boolean isDbSchema(Object r) { // just for tabular db at the moment.
 		return r instanceof DataCollection; // || r instanceof CatalogService;
 	}
 
-	
-	public void somethingElseSelected() {
-		noneSelected();
-	}
 	
 }

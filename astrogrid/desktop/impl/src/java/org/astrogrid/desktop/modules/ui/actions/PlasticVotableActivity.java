@@ -9,6 +9,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -19,10 +20,13 @@ import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.provider.DelegateFileObject;
+import org.astrogrid.acr.ivoa.resource.CatalogService;
+import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
+import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
 import org.astrogrid.io.Piper;
 import org.votech.plastic.CommonMessageConstants;
 
@@ -30,7 +34,7 @@ import org.votech.plastic.CommonMessageConstants;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 9, 20074:42:35 PM
  */
-public class PlasticVotableActivity extends AbstractFileActivity {
+public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 	private final PlasticApplicationDescription plas;
     private final PlasticScavenger scav;
 	/**
@@ -43,6 +47,8 @@ public class PlasticVotableActivity extends AbstractFileActivity {
         this.scav = scav;
 		PlasticScavenger.configureActivity("tables",this,plas);
 	}
+	
+    
 	protected boolean invokable(FileObject f) {
 		try {
 			final FileContent content = f.getContent();
@@ -51,6 +57,11 @@ public class PlasticVotableActivity extends AbstractFileActivity {
 			return false;
 		}
 	}
+	
+
+    protected boolean invokable(Resource r) {
+        return ConeProtocol.isCdsCatalog(r);
+    }
 
 	private static final List supportedProtocols = new ArrayList();
 	static {
@@ -60,50 +71,83 @@ public class PlasticVotableActivity extends AbstractFileActivity {
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-		List l = computeInvokable();
-		if (plas.understandsMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL)) {
-			for (Iterator i = l.iterator(); i.hasNext();) {
-			    try {
-				FileObject f = (FileObject) i.next();
-				if (f instanceof DelegateFileObject) { // if we've got a delegate, get to the source here...
-				    f = ((DelegateFileObject)f).getDelegateFile();
-				}
-				URL url = f.getURL();
-				if (supportedProtocols.contains(url.getProtocol())) {
-				    logger.debug("Sending URL message");
-				    sendLoadVotableURLMessage(f);
-				} else {
-				    logger.debug("Sending inline message");
-				    sendLoadVotableInlineMessage(f);
-				}
-			    } catch (FileSystemException ex) {
-			        // oh well. skip that one.
-			        //@todo report error in dialogue.
-			        logger.warn("Failed to send plastic message",ex);
-			    }
-			}
-		} else { // fallback
-			for (Iterator i = l.iterator(); i.hasNext();) {
-				FileObject f = (FileObject) i.next();
-				sendLoadVotableInlineMessage(f);
-			}			
-		}
+        List resources = computeInvokableResources();
+        List files = new ArrayList();
+        if (resources.size() > 0) {
+            // very CDS-specific at tge moment
+            for (Iterator i = resources.iterator(); i.hasNext();) {
+                CatalogService vizCatalog = (CatalogService) i.next();
+                URI s = SimpleDownloadActivity.findDownloadLinkForCDSResource(vizCatalog);
+                if (s != null) {
+                    files.add(s);
+                }
+            }               
+        }
+        // add in any selected files (it's an and/or thing really, but makes the code clearer)
+	    files.addAll(computeInvokableFiles());
+
+	    if (plas.understandsMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL)) {
+	        for (Iterator i = files.iterator(); i.hasNext();) {
+	            Object o = i.next();
+	            if (o instanceof FileObject) {                    
+	                FileObject f = (FileObject) o;
+	                if (f instanceof DelegateFileObject) { // if we've got a delegate, get to the source here...
+	                    f = ((DelegateFileObject)f).getDelegateFile();
+	                }
+	                (new LoadVotableWorker(f)).start();
+	            } else if (o instanceof URI) {
+	                (new LoadVotableWorker((URI)o)).start();                  
+	            }						    
+	        }
+	    } else { // fallback
+	        for (Iterator i = files.iterator(); i.hasNext();) {			    
+	            Object o = i.next();
+	            if (o instanceof FileObject) {
+	                (new LoadVotableInlineWorker((FileObject)o)).start();
+	            } else if (o instanceof URI) {
+	                (new LoadVotableInlineWorker((URI)o)).start();				    
+	            }
+	        }			
+	    }
+
 	}
 
-	private void sendLoadVotableInlineMessage(final FileObject f) {
-		(new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName()) {
+	/** background process that sends an inline votable plastic message */
+    private class LoadVotableInlineWorker extends BackgroundWorker {
+        protected FileObject fo;
+        protected URI uri;
+        /**
+         * 
+         */
+        public LoadVotableInlineWorker(FileObject fo) {
+            super(uiParent.get(),"Sending to " + plas.getName());
+            this.fo = fo;
+        }
+        public LoadVotableInlineWorker(URI uri) {
+            super(uiParent.get(),"Sending to " + plas.getName());
+            this.uri = uri;
+        }   	
+
 			protected Object construct() throws Exception {
+                logger.debug("Sending inline message");			    
 				InputStream is = null;
 				ByteArrayOutputStream os = null;
 				try {
 					List l = new ArrayList();
-					is = f.getContent().getInputStream();
+					String id;
+					if (fo != null) {
+					    is = fo.getContent().getInputStream();
+					    id = fo.getName().getBaseName();
+					} else { // must be auri then.
+					    is = uri.toURL().openStream();
+					    id = uri.toString();
+					}
 					os = new ByteArrayOutputStream();
 					Piper.pipe(is,os);
 					// inline value.
 					l.add(os.toString());
 					//URL url = f.getURL();
-					l.add(f.getName().getBaseName()); // identifier.
+					l.add(id); // identifier.
 					scav.getTupp().singleTargetPlasticMessage(CommonMessageConstants.VOTABLE_LOAD,l,plas.getId());
 					return null;
 				} finally {
@@ -124,65 +168,47 @@ public class PlasticVotableActivity extends AbstractFileActivity {
 			protected void doFinished(Object result) {
 				parent.setStatusMessage("Message sent to " + plas.getName());
                 scav.getSystray().displayInfoMessage("Message sent"," to " + plas.getName());				
-			}			
-		}).start();		
+			}				
 	}
 
-	private void sendLoadVotableURLMessage(final FileObject f) {
-		(new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName()) {
+    /** background process that attempts to send a load-votable-bvy-reference message
+     * , but will fallback to inlining if it's an odd scheme of url 
+     * @author Noel.Winstanley@manchester.ac.uk
+     * @since Sep 11, 200711:08:12 AM
+     */
+	private class LoadVotableWorker extends LoadVotableInlineWorker {
+
+        public LoadVotableWorker(FileObject fo) {
+            super(fo);
+        }
+        public LoadVotableWorker(URI uri) {
+            super(uri);
+        }        
+
 			protected Object construct() throws Exception {
-				List l = new ArrayList();
-				URL url = f.getURL();
-				l.add(url.toString());// url
-				l.add(f.getName().getBaseName()); // identifier - have nothing else to use really.			
-				scav.getTupp().singleTargetPlasticMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL,l,plas.getId());
-				return null;
-			}
-			protected void doFinished(Object result) {
-				parent.setStatusMessage("Message sent to " + plas.getName());
-                scav.getSystray().displayInfoMessage("Message sent"," to " + plas.getName());				
-			}			
-		}).start();		
-	}
-	/*
-	 * from original send-to
-    public void actionPerformed(ActionEvent e) {
-        (new BackgroundWorker(ui,super.getText()) {
-            private Set processedServices = new HashSet();
-            protected Object construct() throws Exception {
-                for (Iterator i = selectedNodes.iterator(); i.hasNext(); ) {
-                    final TreeNode tn = (TreeNode)i.next();
-                    // find each leaf node
-                    if (tn.getChildCount() > 0 ) {
-                        continue;
-                    }
-                    TreeNode service = tn.getParent().getParent().getParent();
-                    if (! processedServices.contains(service)) {
-                        processedServices.add(service);                       
-						URL url = new URL(service.getAttribute(Retriever.SERVICE_URL_ATTRIBUTE));
-                        List args = new ArrayList();  
-                        args.add(url.toString()); // plastic spec expects parameter types that are strings - but still parse into a url first, to check it's valid.
-                        args.add(url.toString()); // identifier.
-                        tupperware.singleTargetPlasticMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL,args,targetId);
-                    }// end if new catalog
-                    //next send plastic messages to highlight selected rows.
-                    // hard, as we're not maintining row ids at the moment - might be easier with prefuse beta.
-                }// end for each child node
-                return null;
-            }
-        }).start();
-    }
-	 */
-
-	/* code-snippets for how to do equivalent broadcast.
-	 *  enabling condition - 
-	 *  tupp.somethingAccepts(CommonMessageConstants.VOTABLE_LOAD)
-	 *   check for this along with what the current selection is.
-	 * 
-	 * sending the message.
-	 * 	tupp.broadcastPlasticMessageAsynch(CommonMessageConstants.VOTABLE_LOAD,l);
-
-	 * 
-	 */
+			    // first check if it's applicable, and if not fallback.
+			    URL url;
+			    String id;
+			    if (fo != null) {
+			        url = fo.getURL();
+			        id = fo.getName().getBaseName();
+			    } else { // must be a uri then.
+			        url = uri.toURL();
+			        id = uri.toString();
+			    }
+			    if (! supportedProtocols.contains(url.getProtocol())) {
+			        return super.construct(); // fallback.
+			    } else {
+                    logger.debug("Sending URL message");			        
+			        List l = new ArrayList();
+			        l.add(url.toString());// url
+			        l.add(id);	
+			        scav.getTupp().singleTargetPlasticMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL,l,plas.getId());
+			        return null;
+			    }
+			}		
+	}	
+	
+	
 	
 }

@@ -38,9 +38,9 @@ public class ViewInBrowserActivity extends AbstractFileActivity {
 		super();
 		this.browser = browser;
         this.vfs = vfs;
-		setText("View in browser");
+		setText("Open");
 		setIcon(IconHelper.loadIcon("browser16.png"));		
-		setToolTipText("display the selection in the system webbrowser");
+		setToolTipText("open with the default application on your computer");
 	}
 	
 	// can only handle a single selection.

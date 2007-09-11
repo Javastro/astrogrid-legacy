@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JFileChooser;
@@ -20,9 +22,13 @@ import org.apache.commons.vfs.FileSystem;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.FileUtil;
 import org.apache.commons.vfs.provider.local.LocalFileSystem;
+import org.astrogrid.acr.ivoa.resource.Capability;
+import org.astrogrid.acr.ivoa.resource.CatalogService;
+import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
 
 import com.l2fprod.common.swing.JDirectoryChooser;
 
@@ -33,7 +39,7 @@ import com.l2fprod.common.swing.JDirectoryChooser;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 10, 20071:03:46 PM
  */
-public class SimpleDownloadActivity extends AbstractFileActivity {
+public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
 
     private final FileSystemManager vfs;
     private final ResourceChooserInternal chooser;
@@ -44,6 +50,10 @@ public class SimpleDownloadActivity extends AbstractFileActivity {
 	    FileSystem fileSystem = f.getFileSystem();
 	    return ! (fileSystem instanceof LocalFileSystem);
 	}
+	
+    protected boolean invokable(Resource r) {
+        return ConeProtocol.isCdsCatalog(r);
+    }
 
 
 	public SimpleDownloadActivity(final FileSystemManager vfs, ResourceChooserInternal chooser) {
@@ -62,8 +72,20 @@ public class SimpleDownloadActivity extends AbstractFileActivity {
 //	
 
 	public void actionPerformed(ActionEvent e) {
-		final List l = computeInvokable();
-		logger.debug(l);
+        List resources = computeInvokableResources();
+        List files = new ArrayList();
+        if (resources.size() > 0) {
+            // very CDS swpecific at the moment
+            for (Iterator i = resources.iterator(); i.hasNext();) {
+                CatalogService vizCatalog = (CatalogService) i.next();
+                URI s = findDownloadLinkForCDSResource(vizCatalog);
+                if (s != null) {
+                    files.add(s);
+                }
+            }            
+        }	    
+		files.addAll(computeInvokableFiles());
+		logger.debug(files);
 //		if (chooser.showSaveDialog(uiParent.get().getFrame()) != JFileChooser.APPROVE_OPTION) {
 //		    return;
 //		}
@@ -73,9 +95,24 @@ public class SimpleDownloadActivity extends AbstractFileActivity {
         if (saveDir == null) {
             return;
         }
-		(new BulkCopyWorker(vfs,uiParent.get(),saveDir, l)).start();
+		(new BulkCopyWorker(vfs,uiParent.get(),saveDir, files)).start();
 		
 	}
+	
+	public static URI findDownloadLinkForCDSResource(CatalogService r) {
+	    Capability[] caps = r.getCapabilities();
+	    for (int i = 0; i < caps.length; i++) {
+            if (caps[i].getType().indexOf("ParamHTTP") != -1) {
+                org.astrogrid.acr.ivoa.resource.Interface[] ifaces = caps[i].getInterfaces();
+                // assume a single inteface
+                return ifaces[0].getAccessUrls()[0].getValueURI();
+            }
+        }
+	    return null;
+	}
+
+
+
 	
 	
 

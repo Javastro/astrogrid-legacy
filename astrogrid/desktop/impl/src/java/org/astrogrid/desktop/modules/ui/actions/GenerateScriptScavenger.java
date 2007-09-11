@@ -40,7 +40,7 @@ public class GenerateScriptScavenger extends AbstractActivityScavenger {
 	// can't do this in constructor, as ui Parent hasn't be set at that point.
 	// instead, initialize these lazily.
 	protected void loadChildren() {
-		add(GenerateScriptScavenger.class.getResource("adql.py"));
+//		add(GenerateScriptScavenger.class.getResource("adql.py"));
 		add(GenerateScriptScavenger.class.getResource("app.py"));
 		add(GenerateScriptScavenger.class.getResource("cone.py"));
 		add(GenerateScriptScavenger.class.getResource("conesearch.py"));

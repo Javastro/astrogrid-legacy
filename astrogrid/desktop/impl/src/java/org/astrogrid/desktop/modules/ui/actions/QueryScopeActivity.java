@@ -41,7 +41,7 @@ private final AstroScopeInternal ai;
 	protected boolean invokable(Resource r) {
 		boolean b =  r instanceof SiapService 
 				|| r instanceof ConeService
-				|| ConeProtocol.isCdsCatalogService(r)
+				|| ConeProtocol.isConeSearchableCdsCatalog(r)
 				|| r instanceof Service && 
 					(
 						r.getType().indexOf("Spectrum") != -1

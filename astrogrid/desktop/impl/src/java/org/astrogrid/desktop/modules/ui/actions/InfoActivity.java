@@ -43,9 +43,10 @@ private final Bag types = new TreeBag();
 
 	public void noneSelected() {
 		typeField.setVisible(false);
+		super.noneSelected();
 	}
 
-	public void manyFilesSelected(FileObject[] l) {
+	public void manySelected(FileObject[] l) {
 		typeField.setVisible(true);
 		types.clear();
 		for (int i = 0; i < l.length; i++) {
@@ -62,7 +63,7 @@ private final Bag types = new TreeBag();
 		fmtResult();		
 	}
 
-	public void manyResourcesSelected(Resource[] l) {
+	public void manySelected(Resource[] l) {
 		typeField.setVisible(true);
 		types.clear();
 		for (int i = 0; i < l.length; i++) {
@@ -80,9 +81,6 @@ private final Bag types = new TreeBag();
 		}
 	}
 
-	public void somethingElseSelected() {
-		noneSelected();
-	}	
 	
 	public void oneSelected(Resource r) {
 		typeField.setText("Selection: " + ResourceFormatter.formatType(r.getType()));
@@ -113,6 +111,16 @@ private final Bag types = new TreeBag();
 	public void addTo(JPopupMenu menu) {
 		// do nothing
 	}
+
+	// not used in this subclass.
+    protected boolean invokable(FileObject f) {
+        return false;
+    }
+
+    // not used in this subclass.
+    protected boolean invokable(Resource r) {
+        return false;
+    }
 
 
 

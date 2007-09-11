@@ -41,7 +41,7 @@ public abstract class AbstractResourceActivity extends AbstractActivity implemen
 		current = null;
 	}
 	
-	public void selected(Transferable r) {
+	public final void selected(Transferable r) {
 	    if (r == null) {
 	        return; 
 	    }

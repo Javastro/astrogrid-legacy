@@ -72,15 +72,7 @@ public final class GenerateScriptActivity extends AbstractResourceActivity {
 		} else {
 			return true;
 		}
-		/*
-	return r instanceof SiapService 
-			|| r instanceof ConeService
-			|| r instanceof CeaApplication
-			//@todo add vizier stuff here too.
-			|| (r instanceof Service && r.getType().indexOf("Spectrum") != -1
 
-			);
-		 */
 	}
 	private Closure condition;
 

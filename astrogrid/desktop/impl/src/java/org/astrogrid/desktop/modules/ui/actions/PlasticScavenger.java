@@ -60,31 +60,36 @@ protected void loadChildren() {
 }
 // Model interface implementation- maps a single plastic app to 0 or more activities.
 public List getChildren(Object sourceValue) {
-	PlasticApplicationDescription plas= (PlasticApplicationDescription)sourceValue;
-	List butts = new ArrayList();
-		if (plas.understandsMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL)
-				|| plas.understandsMessage(CommonMessageConstants.VOTABLE_LOAD)) {
-			AbstractActivity activity = new PlasticVotableActivity(plas,this);
-			activity.setUIParent(uiParent.get());
-			butts.add(activity);	
-		} 
-		if (plas.understandsMessage(CommonMessageConstants.FITS_LOAD_FROM_URL)) {
-			AbstractActivity activity = new PlasticFitsActivity(plas,this);
-			activity.setUIParent(uiParent.get());
-			butts.add(activity);
-		}
-		if  (plas.understandsMessage(SPECTRA_LOAD_FROM_URL)) {
-			AbstractActivity activity = new PlasticSpectrumActivity(plas,this);
-			activity.setUIParent(uiParent.get());
-			butts.add(activity);		
-			}		
-	if (plas.understandsMessage(VOExplorerFactoryImpl.VORESOURCE_LOAD)
-			|| plas.understandsMessage(VOExplorerFactoryImpl.VORESOURCE_LOADLIST)) {
-		Activity activity = new PlasticRegistryActivity(plas,this);
-		activity.setUIParent(uiParent.get());
-		butts.add(activity);
-	}
-	return butts;
+    PlasticApplicationDescription plas= (PlasticApplicationDescription)sourceValue;
+    List butts = new ArrayList();
+    if (plas.understandsMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL)
+            || plas.understandsMessage(CommonMessageConstants.VOTABLE_LOAD)) {
+        AbstractActivity activity = new PlasticVotableActivity(plas,this);
+        activity.setUIParent(uiParent.get());
+        butts.add(activity);	
+    } 
+    if (plas.understandsMessage(CommonMessageConstants.FITS_LOAD_FROM_URL)) {
+        AbstractActivity activity = new PlasticFitsActivity(plas,this);
+        activity.setUIParent(uiParent.get());
+        butts.add(activity);
+    }
+    if  (plas.understandsMessage(SPECTRA_LOAD_FROM_URL)) {
+        AbstractActivity activity = new PlasticSpectrumActivity(plas,this);
+        activity.setUIParent(uiParent.get());
+        butts.add(activity);		
+    }		
+    if (plas.understandsMessage(VOExplorerFactoryImpl.VORESOURCE_LOAD)
+            || plas.understandsMessage(VOExplorerFactoryImpl.VORESOURCE_LOADLIST)) {
+        Activity activity = new PlasticRegistryActivity(plas,this);
+        activity.setUIParent(uiParent.get());
+        butts.add(activity);
+    }
+    if (plas.understandsMessage(VOExplorerFactoryImpl.BIBCODE_MESSAGE)) {
+        Activity activity = new PlasticBibcodeActivity(plas,this);
+        activity.setUIParent(uiParent.get());
+        butts.add(activity);
+    }
+    return butts;
 }
 
 /** configure the name and icon of an activity from a plastic description */

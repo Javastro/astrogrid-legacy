@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.vfs.FileName;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystem;
 import org.apache.commons.vfs.FileSystemException;
@@ -15,6 +16,8 @@ import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.Selectors;
 import org.apache.commons.vfs.provider.AbstractFileObject;
 import org.apache.commons.vfs.provider.AbstractFileSystem;
+import org.apache.commons.vfs.provider.url.UrlFileObject;
+import org.apache.commons.vfs.provider.url.UrlFileSystem;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
@@ -40,7 +43,8 @@ public final class BulkCopyWorker extends BackgroundWorker {
     /**
      * @param parent ui parent
      * @param saveDir directory to copy data to.
-     * @param l list of file objects to copy.
+     * @param l list of files to copy. Contents can be mixture of fileObjects, things with a toString that can be resolved by 
+     * vfs - so URI, URL, String, etc. 
      */
     public BulkCopyWorker(FileSystemManager vfs,UIComponent parent,File saveDir, List l) {
         super(parent,  "Copying to " + saveDir);
@@ -69,6 +73,21 @@ public final class BulkCopyWorker extends BackgroundWorker {
         this.l = l;
     }
 
+    /** necessary to work around a bug - allows me to access the constructor. 
+     * 
+     * @author Noel.Winstanley@manchester.ac.uk
+     * @since Sep 11, 200712:09:07 PM
+     */
+    private static class MyUrlFileObject extends UrlFileObject {
+        /**
+             * @param fs
+             * @param fileName
+             */
+            public MyUrlFileObject(UrlFileSystem fs, FileName fileName) {
+                super(fs, fileName);
+            }
+        }
+  
     protected FileObject saveTarget;
     protected Object construct() throws Exception {
         if (saveObject != null) { // we've been given an file object
@@ -89,7 +108,21 @@ public final class BulkCopyWorker extends BackgroundWorker {
         Map errors = new HashMap();
         // go through each file in turn.
         for (Iterator i = this.l.iterator(); i.hasNext(); ) {
-                FileObject src = (FileObject)i.next();
+                FileObject src;
+                Object something = i.next();
+                if (something instanceof FileObject) {
+                    src = (FileObject)something;
+                } else {
+                    // bug in vfs here - if I call 'resolveFile' directly, if drops all after the '?'.
+                    // so I need to create an object by hand.
+                    //see VfsLibraryTest for proof of this.
+                    //@todo verify this works for all schemes - although HTTP is hte main one, to be hones.
+                    FileName name = vfs.resolveURI(something.toString());
+                    
+                    FileObject root = vfs.resolveFile(something.toString()); // just so we can get a handle on the correct filesystem.
+                    src = new MyUrlFileObject((UrlFileSystem)root.getFileSystem(),name);
+                    
+                }
                 try {
                 String name = StringUtils.substringBeforeLast(src.getName().getBaseName(),".");
                 String ext = StringUtils.substringAfterLast(src.getName().getBaseName(),".");
