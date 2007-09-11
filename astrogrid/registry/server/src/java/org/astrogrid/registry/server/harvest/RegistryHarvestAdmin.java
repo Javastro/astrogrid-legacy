@@ -269,6 +269,7 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
        
        String collectionName = "astrogridv" + versionNumber.replace('.','_');
        log.debug("Collection Name = " + collectionName);
+       boolean validateSingleResources = false;
        /* && !collectionName.equals("astrogridv0_10") */
        //adding back the && check for 0.10 collection there is just
        //no point in validating 0.10 during harvests to many mistakes and
@@ -281,19 +282,15 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
                RegistryValidator.isValid(xsDoc);
            }catch(AssertionFailedError afe) {
                afe.printStackTrace();
-               log.error("Error invalid document = " + afe.getMessage());
-               if(!versionNumber.equals("1.0")) {
-            	   throw new IOException("Error validating document " + afe.getMessage());
-               }else {
-            	   log.error("though validation error occurred 1.0 XML will be revalidated individually for each Resource");
-               }
-               //return SOAPFaultException.createAdminSOAPFaultException("Server Error: " + "Invalid update, document not valid ",afe.getMessage());           
+               validateSingleResources = true;
+               log.warn("Error invalid document = " + afe.getMessage());
+               log.warn("though validation error occurred, Resource Elements will be revalidated individually to better see the error.");
            }//catch
        }
 
        nl = xsDoc.getElementsByTagNameNS("*","Resource");
-       log.info("Number of Resources to try validating and updating = " + nl.getLength());
-       if(versionNumber.equals("1.0")) {
+       if(validateSingleResources) {
+       	   log.info("Number of Resources to try validating individually (invalid will be removed) = " + nl.getLength());
     	   int loopi = 0;
     	   while(loopi < nl.getLength()) {
     		   log.info("loopi = " + loopi + " and nl.getlength = " + nl.getLength());
@@ -311,7 +308,7 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
     	   }//while
        }
        
-       log.info("Number of Resources = " + nl.getLength());
+       log.info("Number of Resources to be updated = " + nl.getLength());
        AuthorityList someTestAuth = new AuthorityList(authorityID,versionNumber);      
        if(manageAuths.isEmpty()) {
            try {
