@@ -6,9 +6,7 @@ package org.astrogrid.desktop.modules.ui.comp;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.RenderingHints;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
@@ -47,7 +45,7 @@ import org.astrogrid.desktop.icons.IconHelper;
 
 public class SearchField extends JTextField {
     private boolean sendsNotificationForEachKeystroke = false;
-    private boolean showingPlaceholderText = false;
+    boolean showingPlaceholderText = false;
     private WrappedDocument wrappedDocument;
     
     public SearchField(String placeholderText) {
@@ -74,7 +72,12 @@ public class SearchField extends JTextField {
     
     
     private void initBorder() {
-        new CancelBorder().attachTo(this);
+        new CancelBorder(){
+
+            public void buttonActivated(MouseEvent e) {
+                    cancel();
+                }                
+        }.attachTo(this);
         new SearchIconBorder().attachTo(this);
     }
     
@@ -108,7 +111,7 @@ public class SearchField extends JTextField {
         this.sendsNotificationForEachKeystroke = eachKeystroke;
     }
     
-    private static final Color GRAY = new Color(0.7f, 0.7f, 0.7f);
+    static final Color GRAY = new Color(0.7f, 0.7f, 0.7f);
     
     /**
      * inactive border which just draws a search icon.
@@ -131,47 +134,6 @@ public class SearchField extends JTextField {
             // do nothing
         }
         
-    }
-    
-    /**
-     * Draws the cancel button as a gray circle with a white cross inside.
-     */
-    class CancelBorder extends InteractiveBorder {
-        CancelBorder() {
-            super(15, false);
-            setActivateOnPress(false);
-        }
-        
-        public void paintBorder(Component c, Graphics oldGraphics, int x, int y, int width, int height) {
-            SearchField field = (SearchField) c;
-            if (field.showingPlaceholderText || field.getText().length() == 0) {
-                return;
-            }
-            
-            Graphics2D g = (Graphics2D) oldGraphics;
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            
-            final int circleL = 14;
-            final int circleX = x + width - circleL;
-            final int circleY = y + (height - 1 - circleL)/2;
-            g.setColor(isArmed() ? Color.GRAY : GRAY);
-            g.fillOval(circleX, circleY, circleL, circleL);
-            
-            final int lineL = circleL - 8;
-            final int lineX = circleX + 4;
-            final int lineY = circleY + 4;
-            g.setColor(Color.WHITE);
-            g.drawLine(lineX, lineY, lineX + lineL, lineY + lineL);
-            g.drawLine(lineX, lineY + lineL, lineX + lineL, lineY);
-        }
-        
-        /**
-         * Handles a click on the cancel button by clearing the text and
-         * notifying any ActionListeners.
-         */
-        public void buttonActivated(MouseEvent e) {
-            cancel();
-        }
     }
     
     /**
