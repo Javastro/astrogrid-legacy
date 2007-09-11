@@ -270,7 +270,10 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
        String collectionName = "astrogridv" + versionNumber.replace('.','_');
        log.debug("Collection Name = " + collectionName);
        /* && !collectionName.equals("astrogridv0_10") */
-       if(validateResourceXML) {
+       //adding back the && check for 0.10 collection there is just
+       //no point in validating 0.10 during harvests to many mistakes and
+       //invalid to schema.
+       if(validateResourceXML && !collectionName.equals("astrogridv0_10")) {
            try {
                //validate the xml, the xsl should have made it into a well-formed xml doc with a 
         	   //wrapper(root element) valid to schema, as far as the rest of the xml the validator
