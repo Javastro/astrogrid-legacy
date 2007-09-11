@@ -54,7 +54,7 @@ public class SmartList extends ResourceFolder {
 	
 	public void display(RegistryGooglePanel p) {
 		logger.info("Displaying " + getName());
-		p.displayQuery(getName(),query);
+		p.displayQuery("Contents of " + getName(),query);
 	}
 
 	public void edit(VOExplorerImpl voe) {

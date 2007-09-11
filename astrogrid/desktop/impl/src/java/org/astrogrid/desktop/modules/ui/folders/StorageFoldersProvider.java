@@ -31,7 +31,7 @@ public class StorageFoldersProvider extends AbstractListProvider implements User
 		URI homeUri = SystemUtils.getUserHome().toURI();
 		getList().add(new StorageFolder("Home","home16.png",homeUri));
 		
-		getList().add(new StorageFolder("Workspace","networkdisk16.png",URI.create("workspace:///")));
+		getList().add(new StorageFolder("VO Workspace","networkdisk16.png",URI.create("workspace:///")));
 		
 		File[] fileRoots = File.listRoots();
         for ( int i = 0; i < fileRoots.length; i++ ) {

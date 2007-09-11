@@ -29,6 +29,17 @@ public class StaticList extends ResourceFolder  {
 	public StaticList(String name) {
 		super(name, defaultIcon);
 	}
+	
+	public StaticList(String name, Collection coll) {
+	    this(name);
+	    setResourceSet(coll);
+	}
+	
+	   public StaticList(String name,  String[] arr) {
+	        this(name);
+	        Collection c = Arrays.asList(arr);
+	        setResourceSet(c);
+	    }
 	// just for persistence.
 	/** @deprecated - only used for obsolete persistence method */
 	public String[] getResourceArray() {
@@ -79,7 +90,7 @@ public class StaticList extends ResourceFolder  {
 	}
 	public void display(RegistryGooglePanel p) {
 		logger.info("Displaying " + getName());
-		p.displayIdSet(getName(),resouceUris);
+		p.displayIdSet("Contents of " + getName(),resouceUris);
 	}
 	public void edit(VOExplorerImpl voe) {
 		voe.editExistingStaticList(this);
