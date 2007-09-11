@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/tools/commandretriever/src/webapp/WEB-INF/web.xml,v $</cvs:source>
     | <cvs:date>$Author: KevinBenson $</cvs:date>
-    | <cvs:author>$Date: 2007/01/19 09:14:57 $</cvs:author>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:author>$Date: 2007/09/11 14:34:01 $</cvs:author>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     | $Log: web.xml,v $
+    | Revision 1.2  2007/09/11 14:34:01  KevinBenson
+    | web.xml was all wrong needed to use a different servlet name
+    |
     | Revision 1.1  2007/01/19 09:14:57  KevinBenson
     | small corrections
     |
@@ -28,15 +31,15 @@
 <web-app>
 
 <servlet>
-   <servlet-name>Tape</servlet-name>
+   <servlet-name>CommandRunner</servlet-name>
    <servlet-class>
-      TapeExtractor
+      CommandRetriever
    </servlet-class>
 </servlet>
 
 <servlet-mapping>
-   <servlet-name>Tape</servlet-name>
-   <url-pattern>/Extract</url-pattern>
+   <servlet-name>CommandRunner</servlet-name>
+   <url-pattern>/Process</url-pattern>
 </servlet-mapping>
 
 </web-app>
