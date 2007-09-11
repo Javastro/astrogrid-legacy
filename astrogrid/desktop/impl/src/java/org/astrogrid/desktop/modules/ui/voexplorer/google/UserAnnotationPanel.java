@@ -1,0 +1,242 @@
+package org.astrogrid.desktop.modules.ui.voexplorer.google;
+
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.EventListener;
+import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+import javax.swing.Timer;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.EventListenerList;
+import javax.swing.text.JTextComponent;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.text.StrBuilder;
+import org.apache.commons.lang.text.StrMatcher;
+import org.apache.commons.lang.text.StrTokenizer;
+import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ui.comp.CancelBorder;
+import org.astrogrid.desktop.modules.ui.comp.ColorCellRenderer;
+import org.astrogrid.desktop.modules.ui.comp.MyTitledBorder;
+import org.astrogrid.desktop.modules.ui.comp.UIConstants;
+import org.astrogrid.desktop.modules.votech.UserAnnotation;
+
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
+/** class that displays the user's annotations, and allows them to be edited. */
+public class UserAnnotationPanel extends JPanel /*JCollapsiblePane*/ implements ItemListener, DocumentListener, ActionListener {
+	private final Timer notifyTimer;
+
+    /**
+	 * 
+	 */
+	public UserAnnotationPanel() {
+
+        notifyTimer = new Timer(750,this);
+        notifyTimer.setCoalesce(true);
+        notifyTimer.setRepeats(false);	    
+	    
+		FormLayout layout = new FormLayout(
+				"0dlu,30dlu,1dlu,29dlu,0dlu"
+				,"min,1dlu,min,1dlu,min,0dlu,min,1dlu,min,0dlu,fill:40dlu,1dlu,min,0dlu,min"
+		);
+		CellConstraints cc = new CellConstraints();
+		PanelBuilder builder = new PanelBuilder(layout,this);
+		int row = 1;
+
+		check = new JCheckBox("Flag");
+		check.setFont(UIConstants.SMALL_DIALOG_FONT);
+		check.setBackground(Color.white);
+		check.addItemListener(this);
+		builder.add(check,cc.xy(2,row));
+		builder.add(new JLabel(IconHelper.loadIcon("flag16.png"))
+		    ,cc.xyw(3,row++,2,"left, center"));
+		row++;
+
+		colours = new JComboBox(new Object[]{
+				Color.BLACK,Color.GREEN,Color.BLUE,Color.RED, Color.LIGHT_GRAY,Color.GRAY
+		});
+		colours.setRenderer(new ColorCellRenderer());
+		colours.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				 dirty();
+			}
+		});
+		
+		builder.addLabel("Highlight",cc.xy(2,row,"right, center")).setFont(UIConstants.SMALL_DIALOG_FONT);
+		builder.add(colours,cc.xy(4,row++));			
+
+		row++;
+
+		title = new JTextField();
+		new CancelBorder(){
+            public void buttonActivated(MouseEvent e) {
+                title.setText(null);
+            }
+            }.attachTo(title);			
+		title.setEditable(true);
+		title.setFont(UIConstants.SMALL_DIALOG_FONT);
+		title.getDocument().addDocumentListener(this);
+
+		builder.addLabel("Alternative title",cc.xyw(2,row++,3)).setFont(UIConstants.SMALL_DIALOG_FONT);
+		row++;
+		builder.add(title,cc.xyw(2,row++,3));
+		row++;
+		
+		note = new JTextArea();
+		note.getDocument().addDocumentListener(this);
+		note.setLineWrap(true);
+		note.setWrapStyleWord(true);
+		note.setEditable(true);
+		//note.putClientProperty("JEditorPane.honorDisplayProperties", Boolean.TRUE);		// this key is only defined on 1.5 - no effect on 1.4
+        note.setFont(UIConstants.SMALL_DIALOG_FONT);	
+        JScrollPane sp = new JScrollPane(note,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		builder.addLabel("Notes",cc.xyw(2,row++,3)).setFont(UIConstants.SMALL_DIALOG_FONT);
+		row++;			
+        builder.add(sp,cc.xyw(2,row++,3));
+        
+        row++;
+		tags = new JTextField();
+		tags.setFont(UIConstants.SMALL_DIALOG_FONT);
+		tags.setEditable(true);
+		tags.getDocument().addDocumentListener(this);
+
+		builder.addLabel("Tags",cc.xyw(2,row++,3)).setFont(UIConstants.SMALL_DIALOG_FONT);
+		row++;
+		builder.add(tags,cc.xyw(2,row++,3));
+
+		this.setBackground(Color.WHITE);
+		this.setBorder(MyTitledBorder.createLined("Annotate"));
+
+	}
+	
+private final JToggleButton check;
+private final JComboBox colours;
+private final JTextArea note;
+private final JTextComponent tags;
+private final JTextComponent title;
+
+// change notification interface.
+private final List listeners = new ArrayList();
+
+public void addChangeListener(ChangeListener e) {
+    listeners.add(e);
+}   
+
+public void removeChangeListener(ChangeListener e) {
+    listeners.remove(e);
+}
+
+/** something has changed - so that this editor is dirty. 
+ * however, don't want to save & update on every edit - so start a timer instead.
+ */
+private void dirty() {
+    notifyTimer.restart();
+}
+
+// callback from the notification timer.
+public void actionPerformed(ActionEvent ignored) {
+    ChangeEvent ce = new ChangeEvent(this);
+    for (int i = 0; i < listeners.size(); i++) {
+        ((ChangeListener)listeners.get(i)).stateChanged(ce);
+    }    
+}   
+
+public void clear() {
+    if (notifyTimer.isRunning()) {       
+        notifyTimer.stop();
+        // we've got outstanding things to save.
+        actionPerformed(null);
+    }
+
+    check.setSelected(false);
+    note.setText(null);
+    title.setText(null);
+    colours.setSelectedIndex(0);
+    tags.setText(null);
+    notifyTimer.stop(); // as all those 'sets' will have triggered it.
+}   
+
+
+// editor listeners..
+// listen for changes - and just note that this item is now dirty.
+public void changedUpdate(DocumentEvent e) {
+    dirty();
+}
+
+public void insertUpdate(DocumentEvent e) {
+    dirty();
+}
+
+public void itemStateChanged(ItemEvent e) {
+    dirty();
+}
+public void removeUpdate(DocumentEvent e) {
+    dirty();
+}
+
+// accessor.
+public void writeBackToAnnotation(UserAnnotation ann) {
+	ann.setFlagged(check.isSelected());
+
+	ann.setNote(StringUtils.trimToNull(note.getText()));
+	ann.setAlternativeTitle(StringUtils.trimToNull(title.getText()));
+	if (colours.getSelectedIndex() == 0) {
+		ann.setHighlight(null);
+	} else {
+		ann.setHighlight((Color)colours.getSelectedItem());
+	}
+	String ta =  tags.getText();
+	if (ta == null || ta.trim().length() ==0) {
+		ann.setTags(null);
+	} else {
+		// try to parse it.
+		StrTokenizer tok = new StrTokenizer(ta,StrMatcher.charSetMatcher(", ")); // matches spaces and commas as delimiters
+		ann.setTags(tok.getTokenArray());
+	}
+}
+
+public void setAnnotation(UserAnnotation ann) {
+    notifyTimer.stop();
+	check.setSelected(ann.isFlagged());
+	note.setText(ann.getNote());	
+	title.setText(ann.getAlternativeTitle());
+			
+	if (ann.getHighlight() == null) {
+		colours.setSelectedIndex(0);
+	} else {
+		colours.setSelectedItem(ann.getHighlight());
+	}
+	String[] tr = ann.getTags();
+	if (tr != null && tr.length > 0) {
+		StrBuilder sb = new StrBuilder();
+		sb.appendWithSeparators(tr," ");
+		tags.setText(sb.toString());
+	}
+	notifyTimer.stop(); // as all the previous sets have no-doubt triggered it.
+			
+}
+
+
+
+}

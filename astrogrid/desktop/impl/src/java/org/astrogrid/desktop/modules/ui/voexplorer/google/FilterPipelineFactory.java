@@ -26,6 +26,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.comp.ExpandCollapseButton;
 import org.astrogrid.desktop.modules.ui.comp.SearchField;
 import org.astrogrid.desktop.modules.votech.AnnotationService;
@@ -52,20 +53,21 @@ import com.l2fprod.common.swing.JCollapsiblePane;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 14, 20074:14:06 PM
  */
-public class FilterPipelineFactory   {
+public class FilterPipelineFactory implements PropertyChangeListener   {
 
 
-	public FilterPipelineFactory(SortedList items, PipelineStrategy[] strategies, AnnotationService annotationService) {
-		int pipelineSize = 3;
+	private final Preference advanced;
+
+    public FilterPipelineFactory(SortedList items, PipelineStrategy[] strategies, AnnotationService annotationService, Preference advanced) {
+		this.advanced = advanced;
+        int pipelineSize = 3;
 		
 		// system filters..
-		systemToggle = new JToggleButton(IconHelper.loadIcon("noserver16.png"),true); 
-		systemToggle.setToolTipText("Hide system resources");
-		systemToggle.putClientProperty("is3DEnabled", Boolean.FALSE);		
-		systemToggle.setBorderPainted(false);
-		FilterList systemFilteredItems = new FilterList(items
-				,new ToggleMatcherEditor(systemToggle,new SystemFilter()));
-		// incremental text field..
+		systemToggle = new JToggleButton(IconHelper.loadIcon("server16.png"),false); 
+		systemToggle.setToolTipText("Show technical system resources");	
+		systemFilteredItems = new FilterList(items
+				,new NotToggleMatcherEditor(systemToggle,new SystemFilter()));
+        // incremental text field..
 		//textField = new IconField(10);
 		SearchField sf = new SearchField("Filter results");
 		FilterList filteredItems = new FilterList(systemFilteredItems
@@ -91,6 +93,10 @@ public class FilterPipelineFactory   {
 		// create a toggle button to show / hide the collapsed pane.
 		toggleButton = new ExpandCollapseButton(filterPane);
 		toggleButton.setToolTipText("Expand for further filters");
+		
+		
+		advanced.addPropertyChangeListener(this);
+		advanced.initializeThroughListener(this);
 	}
 	
 	private final EventList totallyFilteredItems;
@@ -98,6 +104,7 @@ public class FilterPipelineFactory   {
 	private final JTextField textField;
 	private final JCollapsiblePane filterPane;
 	private final JToggleButton toggleButton;
+    private final FilterList systemFilteredItems;
 	
 	/** toggle button to control filtering of system resources */
 	public JToggleButton getSystemToggleButton() {
@@ -178,7 +185,7 @@ public class FilterPipelineFactory   {
 		//	setBorder(BorderFactory.createEtchedBorder());			
 			add(itemChooser,BorderLayout.NORTH);
 			add(new JScrollPane(itemsMatcherEditor.getJList()),BorderLayout.CENTER);
-			setPreferredSize(new Dimension(100,200));
+			setPreferredSize(new Dimension(100,160));
 		}
 		/** called when a different strategy was selected - splice this into the pipeline. */
 		public void itemStateChanged(ItemEvent e) { 
@@ -449,16 +456,16 @@ public class FilterPipelineFactory   {
 	}
 	
 	/** matcher editor which can be turned on/off by a toggle button */
-	private static class ToggleMatcherEditor extends AbstractMatcherEditor implements ItemListener{
+	private static class NotToggleMatcherEditor extends AbstractMatcherEditor implements ItemListener{
 		/**
-		 * Construct a matcher editor which applies the supplied matcher only when the toggle is 'true'
+		 * Construct a matcher editor which applies the supplied matcher only when the toggle is 'false'
 		 * @param control
 		 * @param matcher
 		 */
-		public ToggleMatcherEditor(JToggleButton control, Matcher matcher) {
+		public NotToggleMatcherEditor(JToggleButton control, Matcher matcher) {
 			control.addItemListener(this);
 			realMatcher = matcher;
-			if (control.isSelected()) {
+			if (! control.isSelected()) {
 				fireConstrained(realMatcher);
 			} else {
 				fireMatchAll();
@@ -468,7 +475,7 @@ public class FilterPipelineFactory   {
 		private final Matcher realMatcher;
 
 		public void itemStateChanged(ItemEvent e) {
-			if (e.getStateChange() == ItemEvent.SELECTED) {
+			if (e.getStateChange() != ItemEvent.SELECTED) {
 				fireConstrained(realMatcher);
 			} else {
 				fireMatchAll();
@@ -476,6 +483,25 @@ public class FilterPipelineFactory   {
 		}
 		
 	}
+	// triggered when advanced property is flipped.
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getSource() == this.advanced) {
+            if (advanced.asBoolean()) {
+                systemToggle.setVisible(true);
+            } else {
+                systemToggle.setVisible(false);
+                systemToggle.setSelected(false);
+            }
+        }
+    }
+
+
+    /** Used for counting size when in 'basic' mode.
+     * @return the systemFilteredItems
+     */
+    public final FilterList getSystemFilteredItems() {
+        return this.systemFilteredItems;
+    }
 
 
 }

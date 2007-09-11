@@ -1,0 +1,88 @@
+package org.astrogrid.desktop.modules.ui.voexplorer.google;
+
+import java.awt.Color;
+
+import javax.swing.BorderFactory;
+import javax.swing.JEditorPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.HyperlinkListener;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.text.StrBuilder;
+import org.astrogrid.desktop.modules.ui.comp.MyTitledBorder;
+import org.astrogrid.desktop.modules.ui.comp.UIConstants;
+import org.astrogrid.desktop.modules.votech.Annotation;
+
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
+/** ui panel that displays an 'external' annotation.
+ * Only displays those fields which are set.
+ * Uneditable - just a display.
+ * @author Noel.Winstanley@manchester.ac.uk
+ * @since Jun 19, 200712:14:22 PM
+ */
+public class AnnotationPanel extends JPanel {
+
+	public AnnotationPanel(Annotation ann, HyperlinkListener hyperLinkHandler) {
+		//@todo share these layouts - mk static?
+		FormLayout layout = new FormLayout(
+				"0dlu,60dlu,0dlu"
+				,"d,0dlu,d,1dlu,d,1dlu,d,0dlu,d"
+				);
+		CellConstraints cc = new CellConstraints();
+		PanelBuilder builder = new PanelBuilder(layout,this);
+		String t = StringUtils.trimToNull(ann.getAlternativeTitle());
+		if (t != null) {
+			title = new JTextField();				
+			title.setFont(UIConstants.SMALL_DIALOG_FONT);
+			title.setEditable(false);
+			title.setText(t);
+			title.setBorder(BorderFactory.createEmptyBorder());
+			builder.addLabel("Alternative title",cc.xy(2,1)).setFont(UIConstants.SMALL_DIALOG_FONT);
+			builder.add(title,cc.xy(2,3));
+		} else {
+			title = null;
+		}
+		
+		String n = StringUtils.trimToNull(ann.getNote());
+		if (n != null) {
+			note = new JEditorPane();
+			note.setContentType("text/html");
+			note.setBorder(BorderFactory.createEmptyBorder());
+			note.setEditable(false);
+			note.putClientProperty("JEditorPane.honorDisplayProperties", Boolean.TRUE);		// this key is only defined on 1.5 - no effect on 1.4
+	        note.setFont(UIConstants.SANS_FONT);
+			note.addHyperlinkListener(hyperLinkHandler);				
+			note.setText(n);
+		//	builder.addLabel("Notes",cc.xy(2,5)).setFont(SMALL_FONT);				
+			builder.add(note,cc.xy(2,5));
+		} else {
+			note = null;
+		}
+		
+		String[] ta = ann.getTags();
+		if (ta != null && ta.length > 0) {
+			tags = new JTextField();
+			tags.setFont(UIConstants.SMALL_DIALOG_FONT);
+			tags.setEditable(false);
+			StrBuilder sb = new StrBuilder();
+			sb.appendWithSeparators(ta,", ");
+			tags.setText(sb.toString());
+			tags.setBorder(BorderFactory.createEmptyBorder());
+			builder.addLabel("Tags",cc.xy(2,7)).setFont(UIConstants.SMALL_DIALOG_FONT);
+			builder.add(tags,cc.xy(2,9));
+		} else {
+			tags = null;
+		}
+		this.setBackground(Color.WHITE);
+		this.setBorder(MyTitledBorder.createLined(ann.getSource().getName()));
+	}
+
+	private final JEditorPane note;
+	private final JTextField tags;
+	private final JTextField title;
+}

@@ -24,7 +24,9 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 
 import jedit.JEditTextArea;
 import jedit.SyntaxDocument;
@@ -46,8 +48,7 @@ import org.w3c.dom.Document;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 13, 20072:33:10 PM
  */
-public class XMLResourceViewer extends JEditTextArea implements ResourceViewer, DragGestureListener, DragSourceListener, ActionListener, PropertyChangeListener {
-	private DragSource dragSource;
+public class XMLResourceViewer extends JTextArea implements ResourceViewer, ActionListener, PropertyChangeListener {
 	/**
 	 * 
 	 */
@@ -56,25 +57,13 @@ public class XMLResourceViewer extends JEditTextArea implements ResourceViewer, 
 		this.advancedPreference = advanced;
 		CSH.setHelpIDString(this, "reg.xml");		
 		setBorder(BorderFactory.createEmptyBorder());		
-        setDocument(new SyntaxDocument()); // necessary to prevent aliasing between jeditors.        
-        setTokenMarker(new XMLTokenMarker());
-        getPainter().setFont(Font.decode("Helvetica 10"));		
 		setEditable(false);
 		clear();
-		setPreferredSize(new Dimension(200,100));
-		
-		// drag n drop.
-		xmlImage = IconHelper.loadIcon("xml.gif").getImage();
-		this.dragSource = DragSource.getDefaultDragSource();
-		dragSource.createDefaultDragGestureRecognizer(this,DnDConstants.ACTION_COPY,this);
-		// copy and past.
-		
-		getInputHandler().addKeyBinding("C+C",this);
-		getInputHandler().addKeyBinding("A+C",this);
+	
+		scroller =new JScrollPane(this);
 	}
 	
 	private final Preference advancedPreference;
-	private final Image xmlImage;
 	private final Point offset = new Point(8,8);
  	
 	private UIComponentBodyguard parent;
@@ -99,38 +88,6 @@ public class XMLResourceViewer extends JEditTextArea implements ResourceViewer, 
 		}).start();
 	}
 
-// listen for drag gesturs.
-	public void dragGestureRecognized(DragGestureEvent dge) {
-		System.out.println("ouch");
-		Transferable trans = getSeletionTransferable();
-		try {
-			dge.startDrag(DragSource.DefaultCopyDrop, xmlImage,offset,trans,this); 
-		} catch (InvalidDnDOperationException e) {
-		}		
-	}
-/**
-	 * @return
-	 */
-	private Transferable getSeletionTransferable() {
-		return new XmlTransferable(getSelectedText());
-	}
-
-	// don't really care about any of these...
-	public void dragDropEnd(DragSourceDropEvent dsde) {
-	}
-
-	public void dragEnter(DragSourceDragEvent dsde) {
-	}
-
-	public void dragExit(DragSourceEvent dse) {
-	}
-
-	public void dragOver(DragSourceDragEvent dsde) {
-	}
-
-	public void dropActionChanged(DragSourceDragEvent dsde) {
-	}
-
 	// called to copy text to clipboard.
 	public void actionPerformed(ActionEvent e) {
 		copy();
@@ -146,13 +103,14 @@ public class XMLResourceViewer extends JEditTextArea implements ResourceViewer, 
 	}
 	
 	protected JTabbedPane tabPane;
+	protected final JScrollPane scroller;
 	
 
 	/** triggered when value of preference changes. - shows / hides xml representation. */
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getSource() == this.advancedPreference ) {
 			if (advancedPreference.asBoolean()) {
-				tabPane.addTab("XML entry", IconHelper.loadIcon("xml.gif"), this, "View the XML as entered in the registry");       			
+				tabPane.addTab("XML entry", IconHelper.loadIcon("xml.gif"), scroller, "View the XML as entered in the registry");       			
 			} else {
 				int ix = tabPane.indexOfComponent(this);
 				if (ix != -1) {

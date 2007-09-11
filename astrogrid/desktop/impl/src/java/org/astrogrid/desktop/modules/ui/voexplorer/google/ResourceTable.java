@@ -2,6 +2,7 @@ package org.astrogrid.desktop.modules.ui.voexplorer.google;
 
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;

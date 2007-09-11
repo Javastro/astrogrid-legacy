@@ -4,40 +4,24 @@
 package org.astrogrid.desktop.modules.ui.voexplorer.google;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.Comparator;
+import java.util.EventListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JEditorPane;
-import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JToggleButton;
 import javax.swing.ListCellRenderer;
 import javax.swing.Timer;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.EventListenerList;
 import javax.swing.event.HyperlinkListener;
-import javax.swing.plaf.basic.BasicComboBoxRenderer;
-import javax.swing.text.JTextComponent;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.text.StrBuilder;
-import org.apache.commons.lang.text.StrMatcher;
-import org.apache.commons.lang.text.StrTokenizer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -46,10 +30,8 @@ import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceFormatter;
 import org.astrogrid.desktop.modules.system.CSH;
-import org.astrogrid.desktop.modules.ui.comp.ColorSwatchIcon;
 import org.astrogrid.desktop.modules.ui.comp.ResourceDisplayPane;
 import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
-import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.votech.Annotation;
 import org.astrogrid.desktop.modules.votech.AnnotationService;
 import org.astrogrid.desktop.modules.votech.AnnotationSource;
@@ -73,24 +55,24 @@ import com.jgoodies.forms.layout.FormLayout;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 13, 20072:32:38 PM
  */
-public class AnnotatedResourceViewer extends ResourceDisplayPane implements ResourceViewer, AnnotationProcessor, ActionListener {
+public class AnnotatedResourceViewer extends ResourceDisplayPane implements EditableResourceViewer, AnnotationProcessor, ActionListener, ChangeListener {
 	/**
 	 * Logger for this class
 	 */
 	private static final Log logger = LogFactory
 			.getLog(AnnotatedResourceViewer.class);
-
-	public AnnotatedResourceViewer(final BrowserControl browser, final RegistryBrowser regBrowser, AnnotationService annService) {
+    public AnnotatedResourceViewer(final BrowserControl browser, final RegistryBrowser regBrowser, AnnotationService annService) {
 		super(browser, regBrowser);
 		this.annService = annService;
 		userSource = annService.getUserAnnotationSource();
+	
 		
 		// timer that triggers loading of further informatio when user has 'lingered' long enough.
-		lingerTimer = new Timer(1000,this); //@todo make the linger time a peference.
+		lingerTimer = new Timer(1000,this); //@todo make the linger time a peference.			
 		lingerTimer.setCoalesce(true);
 		lingerTimer.setRepeats(false);
-		hyperLinkHandler = getHyperlinkListeners()[0];
-			
+		
+		hyperLinkHandler = getHyperlinkListeners()[0];	
 		CSH.setHelpIDString(this, "reg.details");
 		
 		// sort the list, then map into JPanels.
@@ -110,7 +92,7 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Reso
 			// map to ui components.
 			public Object evaluate(Object arg0) {
 				// map all to annotation - as we're handling userAnnotation separately.
-				return new AnnotationPanel((Annotation)arg0);
+				return new AnnotationPanel((Annotation)arg0,hyperLinkHandler);
 			}
 		});
 		JEventListPanel annPanel = new JEventListPanel(annotationsPanels,new AnnotationsFormat());
@@ -145,6 +127,8 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Reso
 		toggleButton.setToolTipText("Annotate this resource");	
 		builder.add(toggleButton,cc.xy(2,1,"right,center"));
 		*/
+		 userAnnotationPanel = new UserAnnotationPanel();
+		 userAnnotationPanel.addChangeListener(this); // on change, will save.
 		builder.add(userAnnotationPanel,cc.xy(2,1));
 		builder.add(annPanel,cc.xy(2,2));	
 		
@@ -154,35 +138,42 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Reso
 		scrollPane.setBorder(BorderFactory.createEmptyBorder());
 		scrollPane.setPreferredSize(new Dimension(300,300));
 	}
-	
-	private final AnnotationSource userSource;
-	private final UserAnnotationPanel userAnnotationPanel = new UserAnnotationPanel();
+
 	private final EventList annotations = new BasicEventList();
-	private final JScrollPane scrollPane;
-	private final AnnotationService annService;
-	private final Timer lingerTimer;
-	private final HyperlinkListener hyperLinkHandler;
 	
+	private final AnnotationService annService;
+	private Resource current;
+	private final HyperlinkListener hyperLinkHandler;
+	private final Timer lingerTimer;
+	private final JScrollPane scrollPane;
+	private final UserAnnotationPanel userAnnotationPanel;
+	private final AnnotationSource userSource;
+	
+	
+	// callback called by linger timer..
+	public void actionPerformed(ActionEvent e) {
+		if (current != null) {
+		        annService.processRemainingAnnotations(current,this);
+		}
+	}
+
+	public void addTo(UIComponentBodyguard ignored,JTabbedPane t) {
+		t.addTab("Details", IconHelper.loadIcon("info16.png")
+				, scrollPane, "Details of chosen resource");			
+	}
+
 	public void clear() {
+	    userAnnotationPanel.clear();
 		lingerTimer.stop();
 		annotations.clear();
-		if (userAnnotationPanel.isDirty()) {
-			saveAnnotations();
-		}
 		current = null;
-		userAnnotationPanel.clear();
 		setText("<html><body></body></html>");
 	}
-	
-	private Resource current;
-	
+
 	public void display(Resource res) {
+	    userAnnotationPanel.clear(); // clear this first, which causes any writes to be saved.
 		annotations.clear();
-		if (userAnnotationPanel.isDirty()) {
-			saveAnnotations();
-		}		
 		current = res;
-		userAnnotationPanel.clear();
 		lingerTimer.restart();
 		final String html = ResourceFormatter.renderResourceAsHTML(res);
 		setText(html);
@@ -190,13 +181,12 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Reso
 		// annotations.
 		annService.processLocalAnnotations(res,this);
 	}
-
-	// callback called by linger timer..
-	public void actionPerformed(ActionEvent e) {
-		if (current != null) { 
-			annService.processRemainingAnnotations(current,this);
+	
+	public void process(Annotation a) {
+		if (current != null && current.getId().equals(a.getResourceId())) {		
+			annotations.add(a); // eventlist itself takes care of producing the new panel.
 		}
-	}	
+	}
 	
 	// callbacks to process annotations as they appear.
 	public void process(UserAnnotation a) {
@@ -206,37 +196,36 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Reso
 			process((Annotation)a); // no special treatment required.
 		}
 	}
-
-	public void process(Annotation a) {
-		if (current != null && current.getId().equals(a.getResourceId())) {		
-			annotations.add(a); // eventlist itself takes care of producing the new panel.
-		}
-	}
-
-	public void addTo(UIComponentBodyguard ignored,JTabbedPane t) {
-		t.addTab("Details", IconHelper.loadIcon("info16.png")
-				, scrollPane, "Details of chosen resource");			
-	}
 	
-	// save the annotations
-	private void saveAnnotations() {
-		if (current == null) {
-			return; // not a resource present.
-		}
+	private void saveAnnotation() {
 		UserAnnotation ann = new UserAnnotation();
 		ann.setResourceId(current.getId());
 		ann.setSource(userSource);
-		userAnnotationPanel.loadIntoAnnotation(ann);
+		userAnnotationPanel.writeBackToAnnotation(ann);
 		// now write back to store.
 		annService.setUserAnnotation(current,ann);
 	}
-	
-	/** formatter class - doesn't do much, as contents of list are already JComponents 
+	public void stateChanged(ChangeEvent e) {
+	    // called on notification from userannotationpanel.
+	    saveAnnotation();
+	}
+
+	// delegate listener management to the user annotation panel.
+    public void addChangeListener(ChangeListener e) {
+        this.userAnnotationPanel.addChangeListener(e);
+    }
+
+    public void removeChangeListener(ChangeListener e) {
+        this.userAnnotationPanel.removeChangeListener(e);
+    }
+
+	  
+	  /** formatter class - doesn't do much, as contents of list are already JComponents 
 	 * - gives more control as to what to display, and how to attach controllers 
 	 * @author Noel.Winstanley@manchester.ac.uk
 	 * @since Jun 19, 200712:08:44 PM
 	 */
-	public static class AnnotationsFormat extends JEventListPanel.AbstractFormat {
+	private static class AnnotationsFormat extends JEventListPanel.AbstractFormat {
 		public AnnotationsFormat() {
 			super("fill:pref"
 					,"fill:pref"
@@ -252,262 +241,4 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Reso
 			return 1;
 		}
 	}
-	
-	/** class that displays an 'external' annotation.
-	 * Only displays those fields which are set.
-	 * Uneditable, obviously.
-	 * Tags are handled separately - merged into a global list of tags.
-	 * @author Noel.Winstanley@manchester.ac.uk
-	 * @since Jun 19, 200712:14:22 PM
-	 */
-	private class AnnotationPanel extends JPanel {
-
-		public AnnotationPanel(Annotation ann) {
-			//@todo share these layouts - mk static?
-			FormLayout layout = new FormLayout(
-					"0dlu,60dlu,0dlu"
-					,"d,0dlu,d,1dlu,d,1dlu,d,0dlu,d"
-					);
-			CellConstraints cc = new CellConstraints();
-			PanelBuilder builder = new PanelBuilder(layout,this);
-			String t = StringUtils.trimToNull(ann.getAlternativeTitle());
-			if (t != null) {
-				title = new JTextField();
-				title.setFont(UIConstants.SMALL_DIALOG_FONT);
-				title.setEditable(false);
-				title.setText(t);
-				title.setBorder(BorderFactory.createEmptyBorder());
-				builder.addLabel("Alternative title",cc.xy(2,1)).setFont(UIConstants.SMALL_DIALOG_FONT);
-				builder.add(title,cc.xy(2,3));
-			} else {
-				title = null;
-			}
-			
-			String n = StringUtils.trimToNull(ann.getNote());
-			if (n != null) {
-				note = new JEditorPane();
-				note.setContentType("text/html");
-				note.setBorder(BorderFactory.createEmptyBorder());
-				note.setEditable(false);
-				note.putClientProperty("JEditorPane.honorDisplayProperties", Boolean.TRUE);		// this key is only defined on 1.5 - no effect on 1.4
-		        note.setFont(UIConstants.SANS_FONT);
-				note.addHyperlinkListener(hyperLinkHandler);				
-				note.setText(n);
-			//	builder.addLabel("Notes",cc.xy(2,5)).setFont(SMALL_FONT);				
-				builder.add(note,cc.xy(2,5));
-			} else {
-				note = null;
-			}
-			
-			String[] ta = ann.getTags();
-			if (ta != null && ta.length > 0) {
-				tags = new JTextField();
-				tags.setFont(UIConstants.SMALL_DIALOG_FONT);
-				tags.setEditable(false);
-				StrBuilder sb = new StrBuilder();
-				sb.appendWithSeparators(ta,", ");
-				tags.setText(sb.toString());
-				tags.setBorder(BorderFactory.createEmptyBorder());
-				builder.addLabel("Tags",cc.xy(2,7)).setFont(UIConstants.SMALL_DIALOG_FONT);
-				builder.add(tags,cc.xy(2,9));
-			} else {
-				tags = null;
-			}
-			this.setBackground(Color.WHITE);
-			this.setBorder(BorderFactory.createTitledBorder(
-					BorderFactory.createLineBorder(Color.LIGHT_GRAY)
-					,ann.getSource().getName()
-					,TitledBorder.LEFT
-					,TitledBorder.TOP
-					,UIConstants.SMALL_DIALOG_FONT
-					,Color.GRAY
-					));
-		}
-
-		private final JTextField title;
-		private final JEditorPane note;
-		private final JTextField tags;
-	}
-	
-	/** class that displays the user's annotations, and allows them to be edited. */
-	private class UserAnnotationPanel extends JPanel /*JCollapsiblePane*/ implements ItemListener, DocumentListener {
-		private boolean dirty = false;
-		public boolean isDirty() {
-			return dirty;
-		}
-		
-		/**
-		 * 
-		 */
-		public UserAnnotationPanel() {
-
-			FormLayout layout = new FormLayout(
-					"0dlu,30dlu,1dlu,29dlu,0dlu"
-					,"min,1dlu,min,1dlu,min,0dlu,min,1dlu,min,0dlu,fill:40dlu,1dlu,min,0dlu,min"
-			);
-			CellConstraints cc = new CellConstraints();
-			PanelBuilder builder = new PanelBuilder(layout,this);
-			int row = 1;
-
-			check = new JCheckBox("Flag");
-			check.setFont(UIConstants.SMALL_DIALOG_FONT);
-			check.setBackground(Color.white);
-			check.addItemListener(this);
-			builder.add(check,cc.xyw(2,row++,3));
-			row++;
-
-			colours = new JComboBox(new Object[]{
-					Color.WHITE,Color.YELLOW,Color.GREEN,Color.BLUE,Color.RED
-			});
-			colours.setRenderer(new ColorCellRenderer());
-			colours.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					 dirty= true;
-				}
-			});
-			
-			builder.addLabel("Highlight",cc.xy(2,row,"right, center")).setFont(UIConstants.SMALL_DIALOG_FONT);
-			builder.add(colours,cc.xy(4,row++));			
-
-			row++;
-
-			title = new JTextField();
-			title.setEditable(true);
-			title.setFont(UIConstants.SMALL_DIALOG_FONT);
-			title.getDocument().addDocumentListener(this);
-
-			builder.addLabel("Alternative title",cc.xyw(2,row++,3)).setFont(UIConstants.SMALL_DIALOG_FONT);
-			row++;
-			builder.add(title,cc.xyw(2,row++,3));
-			row++;
-			
-			note = new JTextArea();
-			note.getDocument().addDocumentListener(this);
-			note.setLineWrap(true);
-			note.setWrapStyleWord(true);
-			note.setEditable(true);
-			//note.putClientProperty("JEditorPane.honorDisplayProperties", Boolean.TRUE);		// this key is only defined on 1.5 - no effect on 1.4
-	        note.setFont(UIConstants.SMALL_DIALOG_FONT);	
-	        JScrollPane sp = new JScrollPane(note,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-			builder.addLabel("Notes",cc.xyw(2,row++,3)).setFont(UIConstants.SMALL_DIALOG_FONT);
-			row++;			
-	        builder.add(sp,cc.xyw(2,row++,3));
-	        
-	        row++;
-			tags = new JTextField();
-			tags.setFont(UIConstants.SMALL_DIALOG_FONT);
-			tags.setEditable(true);
-			tags.getDocument().addDocumentListener(this);
-
-			builder.addLabel("Tags",cc.xyw(2,row++,3)).setFont(UIConstants.SMALL_DIALOG_FONT);
-			row++;
-			builder.add(tags,cc.xyw(2,row++,3));
-
-			this.setBackground(Color.WHITE);
-			this.setBorder(BorderFactory.createTitledBorder(
-					BorderFactory.createLineBorder(Color.LIGHT_GRAY)
-					,"Annotate"
-					,TitledBorder.LEFT
-					,TitledBorder.TOP
-					,UIConstants.SMALL_DIALOG_FONT
-					,Color.GRAY
-			));		
-		}
-		
-	public void setAnnotation(UserAnnotation ann) {
-		check.setSelected(ann.isFlagged());
-		note.setText(ann.getNote());	
-		title.setText(ann.getAlternativeTitle());
-				
-		if (ann.getHighlight() == null) {
-			colours.setSelectedIndex(0);
-		} else {
-			colours.setSelectedItem(ann.getHighlight());
-		}
-		String[] tr = ann.getTags();
-		if (tr != null && tr.length > 0) {
-			StrBuilder sb = new StrBuilder();
-			sb.appendWithSeparators(tr," ");
-			tags.setText(sb.toString());
-		}
-				
-	}
-	
-	public void loadIntoAnnotation(UserAnnotation ann) {
-		ann.setFlagged(check.isSelected());
-
-		ann.setNote(StringUtils.trimToNull(note.getText()));
-		ann.setAlternativeTitle(StringUtils.trimToNull(title.getText()));
-		if (colours.getSelectedIndex() == 0) {
-			ann.setHighlight(null);
-		} else {
-			ann.setHighlight((Color)colours.getSelectedItem());
-		}
-		String ta =  tags.getText();
-		if (ta == null || ta.trim().length() ==0) {
-			ann.setTags(null);
-		} else {
-			// try to parse it.
-			StrTokenizer tok = new StrTokenizer(ta,StrMatcher.charSetMatcher(", ")); // matches spaces and commas as delimiters
-			ann.setTags(tok.getTokenArray());
-		}
-	}
-	
-	public void clear() {
-		check.setSelected(false);
-		note.setText(null);
-		title.setText(null);
-		colours.setSelectedIndex(0);
-		tags.setText(null);
-		dirty = false;
-	}
-
-	private final JTextComponent title;
-	private final JTextComponent tags;
-	private final JToggleButton check;
-	private final JComboBox colours;	
-	private final JTextArea note;
-	
-	// listen for changes - and just note that this item is now dirty.
-	public void itemStateChanged(ItemEvent e) {
-		dirty = true;
-	}
-
-	public void changedUpdate(DocumentEvent e) {
-		dirty = true;
-	}
-
-	public void insertUpdate(DocumentEvent e) {
-		dirty = true;
-	}
-
-	public void removeUpdate(DocumentEvent e) {
-		dirty = true;
-	}	
-
-	}
-
-	  public static class ColorCellRenderer extends BasicComboBoxRenderer {
-		    private final static Dimension preferredSize = new Dimension(16, 16);
-		    ColorSwatchIcon ico = new ColorSwatchIcon(Color.WHITE,preferredSize);
-		    public ColorCellRenderer() {
-		        setIcon(ico);
-		    }
-
-		    public Component getListCellRendererComponent(JList list, Object value,
-		        int index, boolean isSelected, boolean cellHasFocus) {
-		        if (isSelected) {
-		            setBackground(list.getSelectionBackground());
-		            setForeground(list.getSelectionForeground());
-		        } else {
-		            setBackground(list.getBackground());
-		            setForeground(list.getForeground());
-		        }
-		      if (value instanceof Color) {
-		          ico.setColor((Color)value);
-		      }
-		      return this;
-		    }
-		  }
-
 }

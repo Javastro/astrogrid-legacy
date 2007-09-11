@@ -4,10 +4,14 @@ import java.awt.Color;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.Icon;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
@@ -17,7 +21,9 @@ import org.astrogrid.acr.ivoa.resource.Contact;
 import org.astrogrid.acr.ivoa.resource.Creator;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.ResourceName;
+import org.astrogrid.acr.ivoa.resource.Source;
 import org.astrogrid.acr.ivoa.resource.Validation;
+import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.ui.comp.ModularColumn;
 import org.astrogrid.desktop.modules.ui.comp.ModularTableFormat;
@@ -28,6 +34,8 @@ import org.astrogrid.desktop.modules.votech.UserAnnotation;
 import org.astrogrid.desktop.modules.votech.VoMonInternal;
 import org.votech.VoMon;
 import org.votech.VoMonBean;
+
+import com.l2fprod.common.swing.renderer.DefaultCellRenderer;
 
 import ca.odell.glazedlists.GlazedLists;
 
@@ -51,10 +59,14 @@ public class ResourceTableFomat extends ModularTableFormat {
     protected final static String TYPE_NAME = "Type";
     protected final static String VALIDATION_NAME = "Validation";
     protected final static String VERSION_NAME = "Version";
-
+    protected final static String SOURCE_NAME = "Source";
+    
+    protected final static String FLAG_NAME = "Flagged";
+    protected final static String TAG_NAME = "Tags";
+    
     private final static String MORE = ", ...";  // continuation string
 
-    public ResourceTableFomat(AnnotationService annService,final VoMonInternal vomon,final CapabilityIconFactory capBuilder) {
+    public ResourceTableFomat(final AnnotationService annService,final VoMonInternal vomon,final CapabilityIconFactory capBuilder) {
         super();
         this.vomon = vomon;
         this.annService = annService;
@@ -76,15 +88,57 @@ public class ResourceTableFomat extends ModularTableFormat {
         });
 
         columnList.add(new StringColumn(LABEL_NAME) {
+            final StrBuilder result = new StrBuilder();
             public String getValue(Resource res) {
-                return createTitle(res);
+                if (res == null) {
+                    return "";
+                }
+                String title = null;
+                int titleLevel = Integer.MAX_VALUE;
+                Color highlight = null;
+                int highlightLevel = Integer.MAX_VALUE;
+                // check for overrides.
+                for (Iterator i = annService.getLocalAnnotations(res); i.hasNext(); ) {
+                    Annotation a = (Annotation)i.next();
+                    String t = StringUtils.trimToNull(a.getAlternativeTitle());
+                    if (t != null && a.getSource().getSortOrder() <= titleLevel) {
+                        title = t;
+                        titleLevel = a.getSource().getSortOrder();
+                    }
+                    if (a instanceof UserAnnotation) {
+                        UserAnnotation u = (UserAnnotation)a;
+                        if (u.getHighlight() != null && ! (u.getHighlight().equals(Color.BLACK) || u.getHighlight().equals(Color.WHITE)) 
+                                && u.getSource().getSortOrder() <= highlightLevel) {
+                            highlight = u.getHighlight();
+                            highlightLevel = u.getSource().getSortOrder();
+                        }
+                    }
+                }
+                
+                // work out what we've found, and assemble all bits of data into a single formatted string.
+                result.clear();
+                if (title != null|| highlight != null) {
+                    result.append("<html>");
+                }
+                if (highlight != null) {
+                    result.append("<body color='#");
+                    int i = highlight.getRGB();
+                    result.append(Integer.toHexString(i).substring(2,8));
+                    result.append("'>");
+                }
+                if (title != null) {
+                    result.append("<i>").append(title);
+                } else {
+                    result.append(StringUtils.replace(res.getTitle(), "\n", " ") );
+                }
+                return result.toString();
             }
             public void configureColumn(TableColumn tcol) {
                 tcol.setPreferredWidth(300);
             }
             public String getToolTipText(Resource res) {
-                HtmlBuilder result = new HtmlBuilder();
-                result.append("<b>").append(res.getTitle()).append("</b>");
+                result.clear();               
+                result.append("<html><b>").append(res.getTitle()).append("</b>");
                 result.append("<br><i>").append(res.getShortName()).append("</i>");
                 result.append("<br><i>").append(res.getId()).append("</i>");
                 return result.toString();
@@ -99,6 +153,17 @@ public class ResourceTableFomat extends ModularTableFormat {
                 tcol.setPreferredWidth(80);
                 tcol.setMaxWidth(100);
                 tcol.setResizable(true);
+                // using a custom renderer here as want the icon to be left aligned - 
+                // otherwise it doesn't display correctly.
+                DefaultTableCellRenderer r = new DefaultTableCellRenderer() {
+                    {
+                        setHorizontalAlignment(SwingConstants.LEFT);
+                    }
+                    protected void setValue(Object value) {
+                        setIcon((Icon)value);
+                    }
+                };                
+                tcol.setCellRenderer(r);
             }
             public String getToolTipText(Resource res) {
                 return capBuilder.getTooltip(getValue(res));
@@ -107,7 +172,11 @@ public class ResourceTableFomat extends ModularTableFormat {
 
         columnList.add(new StringColumn(DATE_NAME) {
             public String getValue(Resource res) {
-                return createDate(res);
+                String date = res.getUpdated();
+                if (date == null) {
+                    date = res.getCreated();
+                }
+                return date == null ? "" : date.substring(0,10);
             }
             public void configureColumn(TableColumn tcol) {
                 tcol.setPreferredWidth(90);
@@ -125,15 +194,11 @@ public class ResourceTableFomat extends ModularTableFormat {
         });
 
         columnList.add(new StringColumn(SUBJECT_NAME) {
+            final StrBuilder sbuf = new StrBuilder();
             public String getValue(Resource res) {
+                sbuf.clear();
                 String[] subjects = res.getContent().getSubject();
-                StrBuilder sbuf = new StrBuilder();
-                for (int i = 0; i < subjects.length; i++) {
-                    if (i > 0) {
-                        sbuf.append(", ");
-                    }
-                    sbuf.append(subjects[i]);
-                }
+                sbuf.appendWithSeparators(subjects,", ");
                 return sbuf.toString();
             }
             public void configureColumn(TableColumn tcol) {
@@ -151,9 +216,10 @@ public class ResourceTableFomat extends ModularTableFormat {
         });
 
         columnList.add(new StringColumn(CONTACT_NAME) {
+            final StrBuilder sbuf = new StrBuilder();
             public String getValue(Resource res) {
+                sbuf.clear();
                 Contact[] contacts = res.getCuration().getContacts();
-                StrBuilder sbuf = new StrBuilder();
                 if (contacts.length > 0) {
                     Contact contact = contacts[0];
                     String name = resourceNameToString(contact.getName());
@@ -179,9 +245,10 @@ public class ResourceTableFomat extends ModularTableFormat {
         });
 
         columnList.add(new StringColumn(CREATOR_NAME) {
+            final StrBuilder sbuf = new StrBuilder();
             public String getValue(Resource res) {
+                sbuf.clear();
                 Creator[] creators = res.getCuration().getCreators();
-                StrBuilder sbuf = new StrBuilder();
                 if (creators.length > 0) {
                     sbuf.append(resourceNameToString(creators[0].getName()));
                     if (creators.length > 1) {
@@ -213,11 +280,23 @@ public class ResourceTableFomat extends ModularTableFormat {
                 tcol.setPreferredWidth(150);
             }
         });
+        
+        columnList.add(new StringColumn(SOURCE_NAME) {
+
+            protected String getValue(Resource res) {
+                Source source = res.getContent().getSource();
+                if (source != null && source.getValue() != null) {
+                    return source.getValue();
+                } 
+                return "";
+            }
+        });
 
         columnList.add(new StringColumn(VALIDATION_NAME) {
+            final StrBuilder sbuf = new StrBuilder();
             public String getValue(Resource res) {
+                sbuf.clear();
                 Validation[] validations = res.getValidationLevel();
-                StrBuilder sbuf = new StrBuilder();
                 if (validations.length > 0) {
                     Validation validation = validations[0];
                     sbuf.append(validation.getValidationLevel())
@@ -240,6 +319,41 @@ public class ResourceTableFomat extends ModularTableFormat {
             }
             public void configureColumn(TableColumn tcol) {
                 tcol.setPreferredWidth(75);
+            }
+        });
+        
+        columnList.add(new IconColumn(FLAG_NAME) {
+            final Icon FLAG = IconHelper.loadIcon("flag16.png"); 
+            protected Icon getValue(Resource res) {
+                UserAnnotation a = annService.getUserAnnotation(res);
+                 return a != null && a.isFlagged() ?  FLAG : null;
+            }
+            public void configureColumn(TableColumn tcol) {
+                tcol.setPreferredWidth(40);
+                tcol.setMaxWidth(40);
+            }                        
+        });
+        
+        columnList.add(new StringColumn(TAG_NAME) {
+            final Set tags = new HashSet();
+            final StrBuilder sb = new StrBuilder();
+            protected String getValue(Resource res) {
+                tags.clear();
+                sb.clear();
+                for (Iterator i = annService.getLocalAnnotations(res); i.hasNext(); ) {
+                    Annotation a = (Annotation)i.next();
+                    String[] ts = a.getTags();
+                    if (ts != null) {
+                    for (int j = 0; j < ts.length; j++) {
+                      tags.add(ts[j]);  
+                    }
+                    }
+                }
+                sb.appendWithSeparators(tags,", ");
+                return sb.toString();
+            }
+            public void configureColumn(TableColumn tcol) {
+                tcol.setPreferredWidth(150);
             }
         });
 
@@ -277,77 +391,13 @@ public class ResourceTableFomat extends ModularTableFormat {
      */
     public String[] getDefaultColumns() {
         return new String[] {
-            STATUS_NAME, LABEL_NAME, CAPABILITY_NAME, DATE_NAME,
+            STATUS_NAME, FLAG_NAME,LABEL_NAME, CAPABILITY_NAME, DATE_NAME,
         };
     }
 
     private final CapabilityIconFactory capBuilder;
     private final AnnotationService annService;
     private final VoMonInternal vomon;
-
-    public final String createTitle(Resource r) {
-        if (r == null) {
-            return "";
-        }
-        String title = null;
-        int titleLevel = Integer.MAX_VALUE;
-        boolean flag = false;
-        Color highlight = null;
-        int highlightLevel = Integer.MAX_VALUE;
-        // check for overrides.
-        for (Iterator i = annService.getLocalAnnotations(r); i.hasNext(); ) {
-            Annotation a = (Annotation)i.next();
-            String t = StringUtils.trimToNull(a.getAlternativeTitle());
-            if (t != null && a.getSource().getSortOrder() <= titleLevel) {
-                title = t;
-                titleLevel = a.getSource().getSortOrder();
-            }
-            if (a instanceof UserAnnotation) {
-                UserAnnotation u = (UserAnnotation)a;
-                if (!flag && u.isFlagged()) {
-                    flag = true;
-                }
-                if (u.getHighlight() != null && ! u.getHighlight().equals(Color.WHITE) 
-                        && u.getSource().getSortOrder() <= highlightLevel) {
-                    highlight = u.getHighlight();
-                    highlightLevel = u.getSource().getSortOrder();
-                }
-            }
-        }
-
-        // work out what we've found, and assemble all bits of data into a single formatted string.
-        StrBuilder result = new StrBuilder();
-        if (flag || title != null|| highlight != null) {
-            result.append("<html>");
-        }
-        
-        if (highlight != null) {
-            result.append("<body bgcolor='#");
-            int i = highlight.getRGB();
-            result.append(Integer.toHexString(i).substring(2,8));
-            result.append("'>");
-        }
-        
-        if (flag) { // nasty ascii art for now.
-            result.append("<b>*</b>");
-        }
-        
-        if (title != null) {
-            result.append("<i>").append(title);
-        } else {
-            result.append(StringUtils.replace(r.getTitle(), "\n", " ") );
-        }
-        
-        return result.toString();
-    }        
-
-    private final String createDate(Resource r) {
-        String date = r.getUpdated();
-        if (date == null) {
-            date = r.getCreated();
-        }
-        return date == null ? "" : date.substring(0,10);
-    }
 
     /**
      * Converts a ResourceName to a human-readable string.

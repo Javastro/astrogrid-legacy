@@ -65,7 +65,9 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 		,"latest16.png"// stap
 		,"ssap16.png" // ssap
 		,"siap16.png"// siap
-		,"server16.png" // service
+		,"filesave16.png"//download
+		,"server16.png" // technical system service
+		,"unknown_thing16.png" // unknown service
 		,"exec16.png" // cea app
 		,"db16.png"// query
 		,"table16.png" // table.
@@ -79,8 +81,10 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 		,"Time Series access service (STAP)"
 		,"Spectrum access service (SSAP)"
 		,"Image access service (SIAP)"
-		,"Service"
-		,"Offline application (CEA)"
+		,"Downloadable Table"
+		,"Technical system service"
+		,"Unspecified service"
+		,"Remote application (CEA)"
 		,"Catalog query service (ADQL)"
 		,"Table metadata"
 		,"Web interface"
@@ -100,13 +104,15 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 		// store each result in a bit set.
 		// Carefule - order of tests here must match with order of icons in constructor.
 		if (r instanceof Service) {
-		caps.set(ix++,r instanceof ConeService || ConeProtocol.isCdsCatalogService(r));
+		caps.set(ix++,r instanceof ConeService || ConeProtocol.isConeSearchableCdsCatalog(r));
 		caps.set(ix++,r.getType().indexOf("SimpleTimeAccess") != -1);
 		caps.set(ix++,r.getType().indexOf("Spectrum") != -1);		
 		caps.set(ix++,r instanceof SiapService);
-		caps.set(ix++,caps.cardinality() == 0); // a service, but not of the subtypes.
+		caps.set(ix++,ConeProtocol.isCdsCatalog(r));
+		caps.set(ix++,SystemFilter.isBoringServiceTitle(r) || SystemFilter.isBoringRelationship(r));
+		caps.set(ix++, caps.cardinality() == 0); // a service, but an unrecognized one.
 		} else { // just skip these.
-			ix+=5;
+			ix+=7;
 		}
 		caps.set(ix++,r instanceof CeaApplication);
 		caps.set(ix++,r instanceof CeaApplication && BuildQueryActivity.hasAdqlParameter((CeaApplication)r));

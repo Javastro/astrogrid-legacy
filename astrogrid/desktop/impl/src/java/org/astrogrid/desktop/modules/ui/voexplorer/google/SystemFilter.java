@@ -3,11 +3,14 @@ package org.astrogrid.desktop.modules.ui.voexplorer.google;
 import java.net.URI;
 
 import org.apache.commons.lang.StringUtils;
+import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.CeaService;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.acr.ivoa.resource.Authority;
 import org.astrogrid.acr.ivoa.resource.ConeService;
+import org.astrogrid.acr.ivoa.resource.DataCollection;
 import org.astrogrid.acr.ivoa.resource.DataService;
+import org.astrogrid.acr.ivoa.resource.Organisation;
 import org.astrogrid.acr.ivoa.resource.RegistryService;
 import org.astrogrid.acr.ivoa.resource.Relationship;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -28,6 +31,12 @@ public final class SystemFilter implements Matcher {
 	public static final URI FILEMANAGER_KIND = URI.create("ivo://org.astrogrid/FileManagerKind");
 	public static final URI MYSPACE_KIND = URI.create("ivo://org.astrogrid/MySpaceKind");
 	public static final URI COMMUNITY_KIND = URI.create("ivo://org.astrogrid/CommunityServerKind");	
+	
+	/**
+     * 
+     */
+    public SystemFilter() {
+    }
 	public boolean matches(Object arg0) {
 		Resource r = (Resource)arg0;
 		
@@ -36,6 +45,9 @@ public final class SystemFilter implements Matcher {
 			(r instanceof ConeService)
 			|| (r instanceof DataService)
 			|| (r instanceof SiapService)
+			|| (r instanceof Organisation)
+			|| (r instanceof DataCollection)
+			|| (r instanceof CeaApplication)
 			) {
 			return true;
 		}
@@ -49,35 +61,46 @@ public final class SystemFilter implements Matcher {
 			return false;
 		}
 		// kinds of service to filter out
-		if (r instanceof Service) {
-
-			Relationship[] relationships = r.getContent().getRelationships();
-			for (int i = 0; i < relationships.length; i++) {
-				Relationship rel = relationships[i];
-				if (rel.getRelationshipType().equals("derived-from")) {
-					URI id = rel.getRelatedResources()[0].getId();
-					if (id != null && (
-							id.equals(FILESTORE_KIND)
-							|| id.equals(FILEMANAGER_KIND)
-							|| id.equals(MYSPACE_KIND)
-							|| id.equals(COMMUNITY_KIND)
-					)
-							) {
-						return false;
-					}
-				}
-			}
-			// try looking at title instead.
-			String t = r.getTitle();
-			if (	 StringUtils.containsIgnoreCase(t,"Security Service")
-					|| StringUtils.containsIgnoreCase(t,"Security Manager")
-					|| StringUtils.containsIgnoreCase(t,"Policy Service")
-					|| StringUtils.containsIgnoreCase(t,"MyProxy")
-					|| StringUtils.containsIgnoreCase(t,"Myspace Manager")
-			) {
-				return false;
-			}			
+		if (r instanceof Service
+		        && (	isBoringRelationship(r) || 
+			        isBoringServiceTitle(r)) ){
+				return false;					
 		}
+		// if in doubt.. keep it in.
 		return true;
 	}
+    /**
+     * @param r
+     */
+    public static boolean isBoringRelationship(Resource r) {
+        Relationship[] relationships = r.getContent().getRelationships();
+        for (int i = 0; i < relationships.length; i++) {
+        	Relationship rel = relationships[i];
+        	if (rel.getRelationshipType().equals("derived-from")) {
+        		URI id = rel.getRelatedResources()[0].getId();
+        		if (id != null && (
+        				id.equals(FILESTORE_KIND)
+        				|| id.equals(FILEMANAGER_KIND)
+        				|| id.equals(MYSPACE_KIND)
+        				|| id.equals(COMMUNITY_KIND)
+        		)
+        				) {
+        			return true;
+        		}
+        	}
+        }
+        return false;
+    }
+    /**
+     * @param t
+     * @return
+     */
+    public static boolean isBoringServiceTitle(Resource r) {
+        String t = r.getTitle();
+        return StringUtils.containsIgnoreCase(t,"Security Service")
+        		|| StringUtils.containsIgnoreCase(t,"Security Manager")
+        		|| StringUtils.containsIgnoreCase(t,"Policy Service")
+        		|| StringUtils.containsIgnoreCase(t,"MyProxy")
+        		|| StringUtils.containsIgnoreCase(t,"Myspace Manager");
+    }
 }
