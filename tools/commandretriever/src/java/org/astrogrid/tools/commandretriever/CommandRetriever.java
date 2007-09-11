@@ -24,11 +24,9 @@ import java.util.Properties;
 
 
 /**
- * This is a sample servlet, typically you would not use this, but it is useful
- * for testing the sanity of your web application configuration.
+ * Small Servlet that will run a command on a machine and stream some kind
+ * of output file back to the user.
  *
- * @web.servlet name="HelloWorld"
- * @web.servlet-mapping url-pattern="/HelloWorld"
  *
  */
 public class CommandRetriever extends HttpServlet {
@@ -36,7 +34,7 @@ public class CommandRetriever extends HttpServlet {
     private static final int BLOCK_SIZE = 2048;
 
     /**
-     * This prints out the standard "Hello world" message with a date stamp.
+     * 
      *
      * @param request
      *                   the HTTP request object
@@ -58,7 +56,7 @@ public class CommandRetriever extends HttpServlet {
     private InputStream loadProperty() {
        //new FileInputStream("tape.properties")
        ClassLoader loader = this.getClass().getClassLoader();
-       return loader.getResourceAsStream("tape.properties");
+       return loader.getResourceAsStream("command.properties");
     }
 
     private void processResult(HttpServletRequest request,
