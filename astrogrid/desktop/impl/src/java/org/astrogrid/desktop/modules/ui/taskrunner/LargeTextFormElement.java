@@ -29,7 +29,9 @@ public class LargeTextFormElement extends AbstractTaskFormElement implements Doc
 	 */
 	public LargeTextFormElement(ParameterValue pval, ParameterBean pdesc,ResourceChooserInternal chooser) {
 		super(pval, pdesc,chooser);
-		//indirectToggle.doClick(); // causes layout to flip.
+		if (pdesc.getType().equalsIgnoreCase("votable") || pdesc.getType().equalsIgnoreCase("anyxml")){
+		    indirectToggle.doClick(); // causes layout to flip.
+		}
 	}
 
 

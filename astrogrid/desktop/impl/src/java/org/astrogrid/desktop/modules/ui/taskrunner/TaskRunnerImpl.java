@@ -75,6 +75,7 @@ import org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity;
 import org.astrogrid.desktop.modules.ui.comp.EventListDropDownButton;
 import org.astrogrid.desktop.modules.ui.comp.EventListMenuManager;
 import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
+import org.astrogrid.desktop.modules.ui.comp.MyTitledBorder;
 import org.astrogrid.desktop.modules.ui.comp.ResourceDisplayPane;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker;
@@ -486,14 +487,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 		
 		// finish it all off.
 		final JScrollPane infoScroll = new JScrollPane(infoPane,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		infoScroll.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(Color.LIGHT_GRAY)
-                ,"Information"
-                ,TitledBorder.LEFT
-                ,TitledBorder.TOP
-                ,UIConstants.SMALL_DIALOG_FONT
-                ,Color.GRAY
-                ));        
+		infoScroll.setBorder(MyTitledBorder.createLined("Information"));        
 		final JScrollPane execScroll = new JScrollPane(trackerPanel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		execScroll.setBorder(BorderFactory.createEtchedBorder());
 

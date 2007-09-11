@@ -23,11 +23,11 @@ public class OutputFormElement extends AbstractTaskFormElement {
 	public OutputFormElement(ParameterValue pval, ParameterBean pdesc,ResourceChooserInternal chooser) {
 		super(pval, pdesc,chooser);
 		super.localFileEnabled=false;
-		indirectToggle.setToolTipText("Write this output direct to storage");
+		indirectToggle.setToolTipText("Save this result to vo workspace");
 	}
 
 	protected JComponent createEditor() {
-		return new JLabel("Direct"); // @todo describe this better later.
+		return new JLabel("Store in cache"); 
 	}
 
 	protected String getStringValue() {

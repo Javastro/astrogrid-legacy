@@ -84,13 +84,11 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 		this.pdesc = pdesc;
 		this.fileChooser = fileChooser;
 		this.indirectToggle = new JToggleButton(IconHelper.loadIcon("anystorage16.png"));
-		indirectToggle.setToolTipText("Load this input from storage");
+		indirectToggle.setToolTipText("Load this input from a file");
 		indirectToggle.setSelected(pval.getIndirect());
 		indirectToggle.addItemListener(this);
 		
-		StrBuilder sb = new StrBuilder();
-		sb.append(pdesc.getUiName());
-		label = new JLabel(sb.toString());
+		label = new JLabel(StringUtils.abbreviate(pdesc.getUiName(),30));
 		associate(label);	
 
 		indirectPanel = new javax.swing.Box(BoxLayout.X_AXIS);
