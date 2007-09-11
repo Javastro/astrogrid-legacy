@@ -178,9 +178,7 @@ public final class ResourceStreamParser implements Iterator {
 		m.put("getType",xsiType);
 		// add interfaces for the type this registry entry claims to be.
 		if (xsiType != null) {
-			if (StringUtils.contains(xsiType,"Service")) {
-				ifaces.add(Service.class);
-			} else if (StringUtils.contains(xsiType,"ConeSearch")
+		    if (StringUtils.contains(xsiType,"ConeSearch")
 					//|| StringUtils.contains(xsiType,"TabularSkyService") // make these look like cones too.
 						) {
 				ifaces.add(ConeService.class);
@@ -201,6 +199,8 @@ public final class ResourceStreamParser implements Iterator {
 				ifaces.add(Service.class);
 				ifaces.add(DataService.class);
 				m.put("getCoverage",new Coverage());		// coverage cannot be null.	
+			} else if (StringUtils.contains(xsiType,"Service")) {
+                ifaces.add(Service.class);
 			}
 		}
 	
@@ -250,10 +250,11 @@ public final class ResourceStreamParser implements Iterator {
 				} else if (elementName.equals("interface")) { //v0.10 legacy stuff.
 					String type = in.getAttributeValue(null,"type");
 				//	if (StringUtils.contains(type,"ParamHTTP")){
-						if (StringUtils.contains(xsiType,"ConeSearch")
+						if (StringUtils.contains(xsiType,"ConeSearch")){
+						        /* todo - need to check what effect commenting this out has.
 								|| (StringUtils.contains(xsiType,"TabularSkyService") // make these look like cones too.
 										&& m.get("getId").toString().indexOf("CDS") != -1) ) {
-						
+						    */
 								final ConeCapability coneCapability = parseV10ConeSearch();
 							capabilities.add(coneCapability);
 							m.put("findConeCapability",coneCapability);
