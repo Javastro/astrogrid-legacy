@@ -265,7 +265,7 @@ private void saveSourceList() {
 			final AnnotationSource source = (AnnotationSource) i.next();
 			if (source instanceof DynamicAnnotationSource &&
 					! m.containsKey(source)) {
-				(new BackgroundWorker(ui,"Processing " + source.getName()) {
+				(new BackgroundWorker(ui,"Loading annotations from " + source.getName()) {
 
 					protected Object construct() throws Exception {
 						final DynamicAnnotationSource dynSource = (DynamicAnnotationSource)source;

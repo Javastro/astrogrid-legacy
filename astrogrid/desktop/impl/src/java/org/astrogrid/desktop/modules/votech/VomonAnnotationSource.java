@@ -22,7 +22,7 @@ public class VomonAnnotationSource extends DynamicAnnotationSource {
 	
 	
 	public VomonAnnotationSource(VoMonInternal vomon) {
-		super(URI.create("votech://vomon"), "Monitoring");
+		super(URI.create("votech://vomon"), "Availability service");
 		this.vomon = vomon;
 		setSortOrder(3);
 	}
