@@ -4,12 +4,15 @@
 package org.astrogrid.desktop.modules.ag.vfs;
 
 import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Arrays;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.apache.commons.vfs.FileName;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystem;
 import org.apache.commons.vfs.FileSystemManager;
@@ -19,10 +22,14 @@ import org.apache.commons.vfs.FileUtil;
 import org.apache.commons.vfs.UserAuthenticationData;
 import org.apache.commons.vfs.VFS;
 import org.apache.commons.vfs.provider.DelegateFileObject;
+import org.apache.commons.vfs.provider.URLFileName;
+import org.apache.commons.vfs.provider.url.UrlFileObject;
+import org.apache.commons.vfs.provider.url.UrlFileSystem;
 import org.apache.commons.vfs.util.UserAuthenticatorUtils;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
 import org.astrogrid.desktop.modules.system.VfsSystemTest;
+import org.astrogrid.io.Piper;
 
 /** Library tests for commons VFS.
  * Checks my understanding about the behaviour of this library
@@ -57,6 +64,46 @@ public class VfsLibraryTest extends InARTestCase {
         
     }*/
 	
+	private static class MyUrlFileObject extends UrlFileObject {
+	/**
+         * @param fs
+         * @param fileName
+         */
+        public MyUrlFileObject(UrlFileSystem fs, FileName fileName) {
+            super(fs, fileName);
+        }
+    }
+	
+	public void testResolvingHttp() throws Exception {
+	    // having problems with this.
+	    String s = "http://vizier.u-strasbg.fr/viz-bin/votable/-dtd/-A?-source=J/A+A/382/60/table4";
+	    FileName fn = vfs.resolveURI(s);
+	    assertTrue(fn instanceof URLFileName);
+	    URLFileName urlName = (URLFileName)fn;
+        assertEquals(s,urlName.getURIEncoded(null));
+        assertEquals(s,urlName.toString());
+        
+        FileObject fo = vfs.resolveFile(urlName.toString());
+        assertTrue(fo instanceof UrlFileObject);
+
+        assertTrue(fo.getName() instanceof URLFileName);
+        assertEquals(fn,fo.getName());
+        // here's the bug - you pass in a full query, but the query gets lopped off.
+        // this should be true.
+        assertFalse(s.equals(((URLFileName)fo.getName()).getURIEncoded(null)));
+        
+        // is it possible to create a URLFileObject by hand?
+        UrlFileObject hacked = new MyUrlFileObject((UrlFileSystem)fo.getFileSystem(),fn);
+        // this should be true.
+        assertTrue(s.equals(((URLFileName)hacked.getName()).getURIEncoded(null)));        
+        
+       //byte[] content = FileUtil.getContent(fo);
+       // System.out.println(new String(content));
+       // InputStream is = new URL(urlName.toString()).openStream();
+        InputStream is = hacked.getInputStream();
+        Piper.pipe(is,System.out);
+	}
+	
 	public void testVirtual() throws Exception {
 	 //   FileObject root = vfs.resolveFile("ram:/");
 	    FileSystem virt = vfs.createVirtualFileSystem("nigel://").getFileSystem(); /* '//' necessary here, otherwise wont work */
@@ -68,9 +115,11 @@ public class VfsLibraryTest extends InARTestCase {
 	    assertTrue(f.exists());
 	    System.out.println(f);
 	    byte[] content = FileUtil.getContent(f);
-	    System.out.println(new String(content));
+	 //   System.out.println(new String(content));
 	    
 	    // can we traverse.
+	    
+	    // ok - this is a problem in vfs - it's a bug.
 	    FileObject foo = f.getParent();
 	    assertTrue(foo.exists());
 	    System.out.println(Arrays.asList(foo.getChildren()));                 
