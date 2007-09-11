@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.66 2007/07/26 18:21:44 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.67 2007/09/11 12:08:53 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -49,11 +49,13 @@ import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.lang.text.StrBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.cds.Sesame;
 import org.astrogrid.acr.cds.SesamePositionBean;
+import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
 import org.astrogrid.desktop.icons.IconHelper;
@@ -109,8 +111,7 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroScopeInternal, DecSexListener, FocusListener {
 
-
-	private static final String SCOPE_NAME = "VO Scope";         
+        
 
 	//@future add a application-wide tooltip formatter class - code seems to be repeated in different places at the moment.
 	public static final int TOOLTIP_WRAP_LENGTH = 50;
@@ -375,14 +376,10 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		summary.parent.set(this);
 		// keeps the selection models of prefuse and the summary view in-sunch..
 		new PrefuseGlazedListsBridge(vizualizations,summary,tabs);
-		JPanel summaryPanel = new JPanel(new BorderLayout());
-		summaryPanel.add(summary, BorderLayout.CENTER);
-		summaryPanel.add(summary.getToolbar(),BorderLayout.NORTH);
-		tabs.addTab("Services", summaryPanel);
+		tabs.addTab("Services", summary);
 		
 		pane.add(tabs, BorderLayout.CENTER);
-		this.setContentPane(pane);
-		this.setTitle(SCOPE_NAME);
+
 	// menu bar
 		JMenuBar mb = new JMenuBar();
 		JMenu fileMenu = new JMenu();
@@ -430,6 +427,10 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		});
 
 		getContext().getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.astroscopeLauncher");
+		
+		// finish it all off
+        this.setContentPane(pane);
+        this.setTitle("All-VO Scope");		
 	}
 
 	/** override:  create a help menu with additional entries */
@@ -515,13 +516,26 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	// configure to run against this list of services.
 	public void runSubset(List resources) {
 		this.resourceList = resources;
-		setTitle("Astroscope : on subset");
+		StrBuilder sb = new StrBuilder("VOScope");
+		if (resources.size() == 1) {
+		    sb.append(" - ").append(((Resource)resources.get(0)).getTitle());
+		}
 		for (Iterator i = protocols.iterator(); i.hasNext(); ) {
 			DalProtocol p = (DalProtocol)i.next();
 			p.getCheckBox().setEnabled(false); // no point showing these - there's no option.
 			Service[] services = p.filterServices(resources);
-			p.getCheckBox().setSelected(services != null && services.length > 0 ); // select this protocol if some of the subset belong to this protocol. 
-		}		
+			if (services != null && services.length > 0) {
+			    p.getCheckBox().setSelected(true);
+			    sb.append(" - ")
+			        .append(services.length)
+			        .append(" ")
+			        .append(p.getName())
+			        .append(" service");			    
+			} else {
+			    p.getCheckBox().setSelected(false);
+			}
+		}	
+		setTitle(sb.toString());
 	}
 	public Object create() {
 		return null; // @todo will refactor this away later.
@@ -792,7 +806,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		public void actionPerformed(ActionEvent e) {
 			submitButton.enableB();
 			Map m = new HashMap();
-			m.put("name",SCOPE_NAME);
+			m.put("name","VO Scope");
 			snitch.snitch("SUBMIT",m);
 			query();		
 		}

@@ -14,9 +14,12 @@ import javax.swing.SwingUtilities;
 
 import net.sourceforge.hiveutils.service.ObjectBuilder;
 
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
+import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.system.ui.UIContributionBuilder;
@@ -34,9 +37,12 @@ public class VOExplorerFactoryImpl  extends AbstractMessageHandler implements VO
 	public final TypesafeObjectBuilder builder;
 
 	private static final Log logger = LogFactory.getLog(VOExplorerFactoryImpl.class);
+
+    private final List plasticApps; // dynamic list model of currently registered applications.
 	
-	public VOExplorerFactoryImpl(TypesafeObjectBuilder builder) {
-		this.builder = builder;
+	public VOExplorerFactoryImpl(List plasticApps,TypesafeObjectBuilder builder) {
+		this.plasticApps = plasticApps;
+        this.builder = builder;
 	}	
 	private VOExplorerImpl newWindow() {
 		VOExplorerImpl vo = builder.createVoExplorer();
@@ -66,20 +72,27 @@ public class VOExplorerFactoryImpl  extends AbstractMessageHandler implements VO
 	}
 	public void search(String arg0) {
 		VOExplorerImpl impl = newWindow();
-		impl.doQuery(arg0);
+		impl.doQuery("Search",arg0);
 	}
 
 	// Message Handling Interface
+	public static final URI BIBCODE_MESSAGE = URI.create("ivo://votech.org/bibcode");
+
 	public static final List REGISTRY_MESSAGES = new ArrayList() {{
 			add(URI.create("ivo://votech.org/voresource/load"));
 			add(URI.create("ivo://votech.org/voresource/loadList"));
+	}};
+	
+	public static final List ALL_MESSAGES = new ArrayList() {{
+	    addAll(REGISTRY_MESSAGES);
+	    add(BIBCODE_MESSAGE);
 	}};
 	
 	public static final URI VORESOURCE_LOAD = (URI)REGISTRY_MESSAGES.get(0);
 	public static final URI VORESOURCE_LOADLIST= (URI)REGISTRY_MESSAGES.get(1);
 	
 	protected List getLocalMessages() {
-		return REGISTRY_MESSAGES;
+		return ALL_MESSAGES;
 	}
 	// handles both kinds of message - quite tolerant of different object types.
 	// however, at the moment will choke and fail on the first malformed uri.
@@ -111,11 +124,12 @@ public class VOExplorerFactoryImpl  extends AbstractMessageHandler implements VO
 					URI resourceId = new URI(o.toString());
 					resList.add(resourceId);
 				}
+				final String finalAppName = findSenderName(sender);
 				// got all the info we need. display the ui on the EDT.
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						VOExplorerImpl ve = newWindow();
-						ve.displayResources(resList);
+						ve.displayResources("Resources from " + finalAppName,resList);
 					}
 				});				
 				return Boolean.TRUE;
@@ -123,6 +137,30 @@ public class VOExplorerFactoryImpl  extends AbstractMessageHandler implements VO
 				logger.error("URISyntaxException",x);
 				return Boolean.FALSE;
 			}
+		} else if (BIBCODE_MESSAGE.equals(message) && args.size() == 1) {
+		    Object o = args.get(0);
+		    if (o == null) {
+                logger.warn("Null argument");
+                return Boolean.FALSE;
+		    } else {
+		        final String bibcode = o.toString();
+		        if (StringUtils.isEmpty(bibcode)) {
+                    logger.warn("Null argument");
+                    return Boolean.FALSE;		            
+		        }
+                //final String finalAppName = findSenderName(sender);
+                // got all the info we need. display the ui on the EDT.
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        VOExplorerImpl ve = newWindow();
+                        ve.doQuery("Resources for " + bibcode,
+                                "for $r in //vor:Resource[not (@status='inactive' or @status='deleted')] \n "+
+                                " where $r/vr:content/vr:source =  '" + StringEscapeUtils.escapeSql(bibcode) + "' \n" +
+                                " return $r" );
+                    }
+                }); 	
+                return Boolean.TRUE;
+		    }
 		} else {
 			// let other messages pass-thru to the next handler in the list.
 			if (nextHandler != null) {
@@ -132,6 +170,21 @@ public class VOExplorerFactoryImpl  extends AbstractMessageHandler implements VO
 			}
 		}
 	}
+    /**
+     * @param sender
+     * @return
+     */
+    private String findSenderName(URI sender) {
+        String appName = "unknown application";
+        for (Iterator i = plasticApps.iterator(); i.hasNext();) {
+            PlasticApplicationDescription desc = (PlasticApplicationDescription) i.next();
+            if (desc.getId().equals(sender)) {
+                appName = desc.getName();
+                break;
+            }
+        }
+        return appName;
+    }
 
 	
 }

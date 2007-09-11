@@ -1,4 +1,4 @@
-/*$Id: BackgroundWorker.java,v 1.11 2007/06/18 16:47:58 nw Exp $
+/*$Id: BackgroundWorker.java,v 1.12 2007/09/11 12:08:53 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -105,7 +105,7 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
         public static final int PENDING = 0;
         public static final int RUNNING = 1;
         public static final int COMPLETED = 2;
-        private int status = PENDING;
+        private volatile int status = PENDING;
         /** get the status of this background process - one of the int constants in this class */
         public int getStatus() {
             return status;
@@ -175,11 +175,11 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
                 }
             });
         }
-        private boolean run = true;
+        private volatile boolean run = true;
         /**
          * Starts the worker thread.
          */
-        public synchronized void start() {
+        public void start() {
         	if (! SwingUtilities.isEventDispatchThread()) {
         		SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
@@ -198,7 +198,7 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
          * Stops the worker . haven't got a handle on the thread, so can't easily interrupt it.
          * @todo find a way to really halt the thread.
          */
-        public synchronized void interrupt() {
+        public void interrupt() {
             run = false; // will halt a task if it hasn't already been executed.
             parent.getContext().getExecutor().interrupt(this); // will try to halt a running task
             result.setException(new InterruptedException());
@@ -301,6 +301,9 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
 
 /* 
 $Log: BackgroundWorker.java,v $
+Revision 1.12  2007/09/11 12:08:53  nw
+conccurency tweajs.
+
 Revision 1.11  2007/06/18 16:47:58  nw
 javadoc fixes.
 
