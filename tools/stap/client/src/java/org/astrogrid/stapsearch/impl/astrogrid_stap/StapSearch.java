@@ -209,9 +209,10 @@ public class StapSearch implements IStapSearch {
         } catch (Exception e) { 
             System.err.println("Got an exception! "); 
             System.err.println(e.getMessage()); 
-        }  
+        }
+        Statement stmt = null;
         try {
-        Statement stmt = conn.createStatement();
+        stmt = conn.createStatement();
         //String query = conf.getString("full.sql.syntax");
         //String sql = query.replaceAll("__start__", startTimeSQL).replaceAll("__end__", endTimeSQL);  
         
@@ -317,6 +318,16 @@ public class StapSearch implements IStapSearch {
         	return;
         }
         finally {
+        	try {
+        		if(stmt != null)
+        			stmt.close();
+        		if(conn != null)
+        			conn.close();
+        	}catch(SQLException sqe) {
+        		sqe.printStackTrace();
+        		out.write(sqe.getMessage());
+        		return;
+        	}
             stapMaker.writeEndVOTable(out);
         }
     }
