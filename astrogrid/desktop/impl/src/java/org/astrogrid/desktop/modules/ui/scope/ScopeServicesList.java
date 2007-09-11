@@ -58,14 +58,13 @@ public class ScopeServicesList extends RegistryGooglePanel
 	 * @param resources
 	 * @param bulk
 	 * @param vomon
+	 * @param pref 
 	 * @param pref
 	 */
-	public ScopeServicesList(RegistryInternal reg, Ehcache resources, Ehcache bulk, IterableObjectBuilder views,VoMonInternal vomon, final CapabilityIconFactory iconFac,AnnotationService annServer) {
-		super(reg, resources, bulk, views,vomon, iconFac,annServer);
-		getSearchTitleLabel().setText("Query Results");
-		getNewSearchButton().setVisible(false);
-		getHaltSearchButton().setVisible(false);
-	}
+	public ScopeServicesList(RegistryInternal reg, Ehcache resources, Ehcache bulk, IterableObjectBuilder views,VoMonInternal vomon, final CapabilityIconFactory iconFac,AnnotationService annServer, Preference pref) {
+		super(reg, resources, bulk, views,vomon, iconFac,annServer,pref);		
+		summary.setTitle("Query Results");
+	} 
 	// overridden -- to return results too
 	protected String[] viewNames() {
 	    return (String[])ArrayUtils.addAll(new String[]{"results"},super.viewNames());

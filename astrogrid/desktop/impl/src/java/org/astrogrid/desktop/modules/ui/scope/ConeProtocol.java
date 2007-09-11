@@ -1,4 +1,4 @@
-/*$Id: ConeProtocol.java,v 1.14 2007/06/18 16:42:36 nw Exp $
+/*$Id: ConeProtocol.java,v 1.15 2007/09/11 12:11:48 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -61,32 +61,43 @@ public class ConeProtocol extends SpatialDalProtocol {
 			Resource r = (Resource) i.next();
 			if (r instanceof ConeService
 					// special case for CDS.
-					|| isCdsCatalogService(r)) { 
+					|| isConeSearchableCdsCatalog(r)) { 
 				result.add(r);
 			}
 		}
 		return (Service[])result.toArray(new Service[result.size()]);
 	}
-    
-	public static boolean isCdsCatalogService(Resource r) {
-		if (! (r instanceof CatalogService)) {
-			return false;
-		}
-		if (r.getId().toString().indexOf("CDS") == -1) {
-			return false;
+    /** test whether a resource is from CDS,and is a catalogue which
+     * can be cone-searched - i.e. has a column wiht a position UCD
+     * @param r
+     * @return
+     */
+	public static boolean isConeSearchableCdsCatalog(Resource r) {
+		if (! isCdsCatalog(r)) {
+		    return false;
 		}
 		CatalogService c = (CatalogService)r;
 		TableBean[] tables = c.getTables();
 		for (int i = 0; i < tables.length; i++) {
 			ColumnBean[] columns = tables[i].getColumns();
 			for (int j = 0; j < columns.length; j++) {
-				if (POSITION_UCD.equals(columns[i].getUCD())) {
+				if (POSITION_UCD.equals(columns[j].getUCD())) {
 					return true;
 				}
 			}
 		}
 		return false;
 	}
+
+    /** test whether a resource is a catgalogue from CDS.
+     * 
+     * @param r
+     */
+    public static boolean isCdsCatalog(Resource r) {
+        return r instanceof CatalogService 
+            && r.getId().toString().startsWith("ivo://CDS/VizieR/");
+
+    }
 
 	public static final String POSITION_UCD = "POS_EQ_RA_MAIN";
     
@@ -96,6 +107,9 @@ public class ConeProtocol extends SpatialDalProtocol {
 
 /* 
 $Log: ConeProtocol.java,v $
+Revision 1.15  2007/09/11 12:11:48  nw
+improved handling of cds resources.
+
 Revision 1.14  2007/06/18 16:42:36  nw
 javadoc fixes.
 
