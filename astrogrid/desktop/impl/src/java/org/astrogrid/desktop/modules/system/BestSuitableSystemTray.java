@@ -27,7 +27,7 @@ public class BestSuitableSystemTray implements SystemTrayInternal {
         SystemTrayInternal best = null;
         try {
             best = new Java6SystemTray(cxt,shut,conf);
-        } catch (Exception e) {            
+        } catch (Throwable e) {            
             // fallback then.
             logger.info("Failed to create system tray - falling back");
             best = new FallbackSystemTray(cxt,shut,conf);

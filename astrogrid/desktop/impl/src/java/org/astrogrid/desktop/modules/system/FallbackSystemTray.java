@@ -4,11 +4,9 @@
 package org.astrogrid.desktop.modules.system;
 
 import java.awt.Color;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -16,16 +14,12 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JWindow;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
@@ -38,10 +32,8 @@ import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.comp.DraggableWindow;
+import org.astrogrid.desktop.modules.ui.comp.MyTitledBorder;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
-import org.astrogrid.desktop.modules.ui.folders.ResourceFolder;
-
-import EDU.oswego.cs.dl.util.concurrent.SynchronizedInt;
 
 /** Fallback system tray when not running on Java 6, on on OS where systray is not supported.
  *  * @todo add login/ logout icon and actions..
@@ -95,13 +87,7 @@ public class FallbackSystemTray  implements SystemTrayInternal, ActionListener {
                 // NB: can't set tooltip - as this seems to destroy the mouse draggable behaviour - how odd.
                 //ico.setToolTipText("Astro Runtime");
                 javax.swing.JPanel p = new JPanel();
-                p.setBorder(BorderFactory.createTitledBorder(
-                        BorderFactory.createEmptyBorder(1,1,1,1)
-                        ,"Astro Runtime"
-                        ,TitledBorder.LEFT
-                        ,TitledBorder.TOP
-                        ,UIConstants.SMALL_DIALOG_FONT
-                        ,Color.GRAY));
+                p.setBorder(MyTitledBorder.createEmpty("Astro Runtime"));
                 p.add(ico);
                 window.getContentPane().add(p);
 

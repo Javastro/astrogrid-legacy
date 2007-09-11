@@ -6,11 +6,13 @@ package org.astrogrid.desktop.modules.system;
 import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
+import java.awt.event.ActionEvent;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
 import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -114,6 +116,21 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
         sd.addActionListener(this);
         m.add(sd);
         return m;
+    }
+    
+    /** i've overridden actionPerformed, as I suspect that
+     * triggers from this system tray don't always happen on the EDT.
+     */
+    public void actionPerformed(final ActionEvent arg0) {
+        if (SwingUtilities.isEventDispatchThread()) {
+            super.actionPerformed(arg0);
+        } else {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    Java6SystemTray.super.actionPerformed(arg0);
+                }
+            });
+        }
     }
     
 
