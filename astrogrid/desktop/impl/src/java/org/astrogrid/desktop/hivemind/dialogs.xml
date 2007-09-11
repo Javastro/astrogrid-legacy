@@ -93,6 +93,7 @@ REGISTRY GOOGLE
 			<inject object="service:votech.vomon" />
 			<inject object="service:capabilityIconFactory" />
 			<inject object="service:votech.annotate" />
+            <inject object="preference:acr.advanced" />            
 		</object>
 	</contribution>
 	

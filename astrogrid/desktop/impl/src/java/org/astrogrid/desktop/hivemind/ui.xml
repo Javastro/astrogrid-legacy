@@ -125,6 +125,7 @@ ASTROSCOPE
 			<inject object="service:votech.vomon" />
 			<inject object="service:dialogs.capabilityIconFactory" />	
 			<inject object="service:votech.annotate" />
+            <inject object="preference:acr.advanced" />
 		</object>
 	</contribution>
 	
@@ -386,6 +387,7 @@ Query Builder
              </interceptor>        
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.ui.VOExplorerFactoryImpl" >
+                <service>system.plasticList</service>
 				<service>UiBuilder</service>
 			</construct>
 		</invoke-factory>	
@@ -516,6 +518,7 @@ ACTIONS
 		<invoke-factory model="singleton">
 			<construct class="org.astrogrid.desktop.modules.system.ui.ActivityFactoryImpl">
 				<service>actionsFactory</service>
+                <object>preference:acr.advanced</object>
 			</construct>
 		</invoke-factory>
 	</service-point>
@@ -594,13 +597,13 @@ ACTIONS
 			<inject name="section" object="literal:string:plastic" />
 		</object>
 		<!--  removed - too inefficient at the moment 
-		re-enable when I've got time to look at optimizing the GenerateScriptActivity.invokable()
+		re-enable when I've got time to look at optimizing the GenerateScriptActivity.invokable() -->
 		<object name="3script" class="org.astrogrid.desktop.modules.ui.actions.GenerateScriptScavenger">
 			<inject object="service:dialogs.resourceChooser" />
 			<inject object="service:system.vfs" />
 			<inject name="section" object="literal:string:script" />		
 		</object>
-		-->
+		
 		<object name="0selection" class="org.astrogrid.desktop.modules.ui.actions.InfoActivity">
 			<inject name="section" object="literal:string:info" />	
 		</object>
