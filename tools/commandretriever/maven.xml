@@ -182,43 +182,7 @@
         | These are the main project goals.
         +-->
 
-    <!--+
-        | Initialise the webapp files.
-        +-->
-    <preGoal name="war:init">
-        <ant:echo message=""/>
-        <ant:echo message="Artifact : ${pom.artifactId}"/>
-        <ant:echo message="Pre-processing for webapp task"/>
-        <!--
-        <attainGoal name="site-webapp"/>
-        -->
-        <attainGoal name="init.axis"/>
-        <ant:echo message="Modifying war:webapp location"/>
-        <ant:echo message="  Before : ${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
-        <core:expr value="${pom.getPluginContext('maven-war-plugin').setVariable('maven.war.webapp.dir', axisDir)}"/>
-        <ant:echo message="  After  : ${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
-    </preGoal>
 
-    <!--+
-        | Post-process our webapp.
-        +-->    
-    <postGoal name="war:webapp">
-
-        <ant:echo message=""/>
-        <ant:echo message="Artifact : ${pom.artifactId}"/>
-        <ant:echo message="Post-processing for webapp task"/>
-
-        <!--+
-            | Initialise our paths.
-            +-->
-        <attainGoal name="init.paths"/>
-    	
-        <!--+
-            | Initialise our classpaths.
-            +-->
-        <attainGoal name="init.classpath"/>
-        
-    </postGoal>
 	
     <preGoal name="test:test">
         <ant:echo message=""/>
