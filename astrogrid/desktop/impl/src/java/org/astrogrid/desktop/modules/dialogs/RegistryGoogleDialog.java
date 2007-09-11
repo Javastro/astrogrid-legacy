@@ -1,4 +1,4 @@
-/*$Id: RegistryGoogleDialog.java,v 1.11 2007/08/30 23:46:48 nw Exp $
+/*$Id: RegistryGoogleDialog.java,v 1.12 2007/09/11 12:08:22 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -146,10 +146,7 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
        if (jOptionPane == null) {
            JPanel main = parent.getMainPanel();
            parent.remove(main); // remove from this ui;
-           JPanel topPanel = new JPanel(new BorderLayout());
-           topPanel.add(getTopLabel(),BorderLayout.CENTER);
-           topPanel.add(chooserPanel.getToolbar(),BorderLayout.SOUTH);
-           main.add(topPanel,BorderLayout.NORTH);
+           main.add(getTopLabel(),BorderLayout.NORTH);
            main.add(chooserPanel,BorderLayout.CENTER);
            jOptionPane = new JOptionPane(main,JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
            jOptionPane.addPropertyChangeListener(this);
@@ -158,11 +155,11 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
            jOptionPane.getInputMap(jOptionPane.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).remove(enter);
            jOptionPane.getInputMap(jOptionPane.WHEN_IN_FOCUSED_WINDOW).remove(enter);
            jOptionPane.getInputMap(jOptionPane.WHEN_IN_FOCUSED_WINDOW).put(enter,"search");
-           jOptionPane.getActionMap().put("search",new AbstractAction() {
-               public void actionPerformed(ActionEvent e) {
-                   chooserPanel.actionPerformed(e);
-               }
-           });              
+//     obsolete      jOptionPane.getActionMap().put("search",new AbstractAction() {
+//               public void actionPerformed(ActionEvent e) {
+//                   chooserPanel.actionPerformed(e);
+//               }
+//           });              
        }
        return jOptionPane;
     }
@@ -174,6 +171,9 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
 
 /* 
 $Log: RegistryGoogleDialog.java,v $
+Revision 1.12  2007/09/11 12:08:22  nw
+services filter, and various layout alterations.
+
 Revision 1.11  2007/08/30 23:46:48  nw
 Complete - task 73: upgrade filechooser dialogue to new fileexplorer code
 replaced uses of myspace by uses of vfs where sensible

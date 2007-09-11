@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserImpl.java,v 1.14 2007/08/30 23:46:48 nw Exp $
+/*$Id: ResourceChooserImpl.java,v 1.15 2007/09/11 12:08:22 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,7 +30,7 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
     private final FileExplorerBaseDialog dialog;
     
     // public  API
-    public synchronized URI chooseResource(String title,boolean enableMySpace) {
+    public  URI chooseResource(String title,boolean enableMySpace) {
          FileExplorerBaseDialog d = getDialog();
         d.setTitle(title);
         d.setVospaceEnabled(enableMySpace);
@@ -41,7 +41,7 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
         return d.getUri();        
     }
     
-    public synchronized URI fullChooseResource(String title,boolean enableMySpace,boolean enableLocalFile,boolean enableURI) {
+    public  URI fullChooseResource(String title,boolean enableMySpace,boolean enableLocalFile,boolean enableURI) {
         getDialog().setLocalEnabled(enableLocalFile);
         getDialog().setUrlEnabled(enableURI);
         return chooseResource(title,enableMySpace);        
@@ -60,7 +60,7 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
     
 ///// Internal API
 
-    public synchronized URI chooseResourceWithParent(String title,boolean enableMySpace,boolean enableLocalFile, boolean enableURI,Component comp) {
+    public  URI chooseResourceWithParent(String title,boolean enableMySpace,boolean enableLocalFile, boolean enableURI,Component comp) {
     	getDialog().setLocationRelativeTo(comp);
         getDialog().setTitle(title);
         getDialog().setLocalEnabled(enableLocalFile);
@@ -73,7 +73,7 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
         return getDialog().getUri(); 
     }    
 
-    public synchronized URI chooseDirectoryWithParent(String title,boolean enableMySpace,boolean enableLocalFile, boolean enableURI,Component comp) {
+    public  URI chooseDirectoryWithParent(String title,boolean enableMySpace,boolean enableLocalFile, boolean enableURI,Component comp) {
         getDialog().setChooseDirectories(true);
         return chooseResourceWithParent(title, enableMySpace, enableLocalFile, enableURI, comp);
     }
@@ -92,6 +92,9 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
 
 /* 
 $Log: ResourceChooserImpl.java,v $
+Revision 1.15  2007/09/11 12:08:22  nw
+services filter, and various layout alterations.
+
 Revision 1.14  2007/08/30 23:46:48  nw
 Complete - task 73: upgrade filechooser dialogue to new fileexplorer code
 replaced uses of myspace by uses of vfs where sensible
