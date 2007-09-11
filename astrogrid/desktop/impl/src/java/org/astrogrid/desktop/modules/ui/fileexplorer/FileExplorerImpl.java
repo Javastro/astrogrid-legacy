@@ -1,4 +1,4 @@
-/*$Id: FileExplorerImpl.java,v 1.7 2007/08/30 23:46:48 nw Exp $
+/*$Id: FileExplorerImpl.java,v 1.8 2007/09/11 12:12:15 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -49,6 +49,8 @@ import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl.CloseAction;
 import org.astrogrid.desktop.modules.ui.actions.Activity;
 import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator.NavigationEvent;
+import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator.NavigationListener;
 import org.astrogrid.desktop.modules.ui.folders.ResourceFolder;
 
 import ca.odell.glazedlists.EventList;
@@ -60,14 +62,14 @@ import com.l2fprod.common.swing.JTaskPane;
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 30-Mar-2005
  *
  */
-public class FileExplorerImpl extends UIComponentImpl implements FileManagerInternal{
+public class FileExplorerImpl extends UIComponentImpl implements FileManagerInternal, NavigationListener{
 
 	public FileExplorerImpl( final UIContext context,  final ActivityFactory activityBuilder
 			,final UIContributionBuilder menuBuilder
 			, TypesafeObjectBuilder uiBuilder) {
         super(context);
  
-        this.setSize(800, 800);    
+        this.setSize(800, 600);    
         	
 		    getContext().getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.fileExplorer");        
 		    JPanel pane = getMainPanel();
@@ -126,6 +128,7 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 		    // finish it all off..
 			this.setContentPane(pane);
 			this.setTitle("File Explorer");
+			view.getNavigator().addNavigationListener(this);
 		  //@todo find a new icon  setIconImage(IconHelper.loadIcon("search16.png").getImage());  
     }
 	    
@@ -153,6 +156,13 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 	public void show(final FileObject fileToShow) {
 	    view.getNavigator().move(fileToShow);
 	}
+
+    public void moved(NavigationEvent e) {
+        setTitle("File Explorer - " + view.getNavigator().current().getName());
+    }
+
+    public void moving() {
+    }
 
 
 

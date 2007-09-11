@@ -279,7 +279,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
             this.o = f.getFile();       
         }
         private StorageFolder f = null;
-        private FileObject o = null;
+        private volatile FileObject o = null;
 
         public void actionPerformed(ActionEvent e) {
             history.move(this);
@@ -300,7 +300,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
          * else will throw.
          * @return
          */
-        public synchronized FileObject getFileObject() {
+        public FileObject getFileObject() {
             if (o == null) {
                 throw new IllegalStateException(getText() + " - Has not yet been resolved");
             } else {

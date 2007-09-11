@@ -3,6 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ui.fileexplorer;
 
+import java.awt.Color;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -295,8 +297,9 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	    mainPanel = new FlipPanel();
 	    mainPanel.add(new JScrollPane(fileList,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER)
 	    		,"list");
-	    mainPanel.add(new JScrollPane(fileTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER)
-	    		,"table");
+	    final JScrollPane tableScroll = new JScrollPane(fileTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+	    tableScroll.getViewport().setBackground(Color.WHITE);
+        mainPanel.add(tableScroll,"table");
 	    //@todo make it easer to add further views to the main panel.
 
   // finally, select first item in the views list, to start the whole thing going.
