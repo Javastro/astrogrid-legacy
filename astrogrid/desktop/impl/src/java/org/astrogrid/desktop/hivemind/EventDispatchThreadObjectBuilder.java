@@ -8,13 +8,11 @@ import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
+import net.sourceforge.hiveutils.service.impl.ObjectBuilderImpl;
+
 import org.apache.commons.logging.Log;
 import org.apache.hivemind.schema.Translator;
 import org.apache.hivemind.service.EventLinker;
-
-import EDU.oswego.cs.dl.util.concurrent.misc.SwingWorker;
-
-import net.sourceforge.hiveutils.service.impl.ObjectBuilderImpl;
 
 /** subclass of object builder which ensures objects
  * are always constructed on EDT (as you're meant to do with swing);
