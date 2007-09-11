@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.ivoa.resource.Content;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.FilterPipelineFactory.PipelineStrategy;
@@ -26,7 +27,19 @@ import ca.odell.glazedlists.matchers.Matcher;
  */
 public class TagStrategy extends PipelineStrategy {
 
-	private final AnnotationService annServer;
+	/**
+     * 
+     */
+    private static final String ANNOTATED = "ANNOTATED";
+    /**
+     * 
+     */
+    private static final String RETITLED = "RETITLED";
+    /**
+     * 
+     */
+    private static final String FLAGGED = "FLAGGED";
+    private final AnnotationService annServer;
 	
 	public TagStrategy(final AnnotationService annServer) {
 		super();
@@ -43,9 +56,17 @@ public class TagStrategy extends PipelineStrategy {
 					Annotation a = (Annotation)i.next();
 					if (a instanceof UserAnnotation 
 							&& ((UserAnnotation)a).isFlagged()
-							&& selected.contains("FLAGGED")) {
+							&& selected.contains(FLAGGED)) {
 						return true;
-					}					
+					}			
+					if (selected.contains(RETITLED) && StringUtils.isNotBlank(a.getAlternativeTitle())) {
+					    return true;
+					}
+// doesn't work - finds all the notes from vomon too.					
+//					if (selected.contains(ANNOTATED) && StringUtils.isNotBlank(a.getNote())) {
+//					    System.err.println(a.getNote());
+//					    return true;
+//					}
 					String[] tags = a.getTags();
 					if (tags != null && tags.length !=0) {
 						seenNone = false;
@@ -73,8 +94,21 @@ public class TagStrategy extends PipelineStrategy {
 						if (result == NONE_PROVIDED) {
 							result = new ArrayList();
 						}						
-						result.add("FLAGGED");
+						result.add(FLAGGED);
 					}
+					if (StringUtils.isNotBlank(a.getAlternativeTitle())) {
+					    if (result == NONE_PROVIDED) {
+					        result = new ArrayList();
+					    }
+					    result.add(RETITLED);
+					}
+					// doesn't work - finds all the notes from vomon too.       
+//				    if (StringUtils.isNotBlank(a.getNote())) {
+//				        if (result == NONE_PROVIDED) {
+//				            result = new ArrayList();
+//				        }
+//				        result.add(ANNOTATED);
+//				    }
 					String[] tags = a.getTags();
 					if (tags != null && tags.length != 0) {
 						if (result == NONE_PROVIDED) {
@@ -91,7 +125,7 @@ public class TagStrategy extends PipelineStrategy {
 	}
 
 	public String getName() {
-		return "Tags";
+		return "Annotations";
 	}
 
 }
