@@ -4,6 +4,8 @@
 package org.astrogrid.desktop.modules.system.ui;
 
 import java.awt.datatransfer.Transferable;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -16,6 +18,7 @@ import org.apache.commons.collections.map.ListOrderedMap;
 import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.CSH;
+import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.actions.Activity;
 import org.astrogrid.desktop.modules.ui.comp.SelfEnablingMenu;
@@ -42,7 +45,22 @@ public class ActivityFactoryImpl implements ActivityFactory {
 
 	}
 	
+	/** a group that is only visible when the 'advanced' preference is set */
+	private class AdvancedTaskPaneGroup extends MyTaskPaneGroup implements PropertyChangeListener {
+	    {
+	        advanced.addPropertyChangeListener(this);
+	        advanced.initializeThroughListener(this);
+	    }
+        public void propertyChange(PropertyChangeEvent evt) {
+            if (evt.getSource() == advanced) {
+                setVisible(advanced.asBoolean());
+                repaint();
+            }
+        }
+	}
+	
 	private final IterableObjectBuilder activityBuilder;
+    private final Preference advanced;
 
 	protected Activity[] create(UIComponent parent, JPopupMenu popup, JTaskPane actionsPanel, JMenu actions) {
 		Map actsMap = new ListOrderedMap();
@@ -80,7 +98,7 @@ public class ActivityFactoryImpl implements ActivityFactory {
 			setHelpId("resourceActions.info");
 			//setSpecial(true);
 		}});		
-		final MyTaskPaneGroup exportPane = new MyTaskPaneGroup() {{
+		final MyTaskPaneGroup exportPane = new AdvancedTaskPaneGroup() {{
 					setTitle("Export");
 					setExpanded(false);
 				}};
@@ -144,9 +162,10 @@ public class ActivityFactoryImpl implements ActivityFactory {
 	    return activities;
 	}
 
-	public ActivityFactoryImpl(final IterableObjectBuilder activityBuilder) {
+	public ActivityFactoryImpl(final IterableObjectBuilder activityBuilder, Preference advanced) {
 		super();
 		this.activityBuilder = activityBuilder;
+        this.advanced = advanced;
 	}
 
     public ActivitiesManager create(UIComponent parent, boolean wantPopup,
