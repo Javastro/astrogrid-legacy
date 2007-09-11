@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.16 2007/08/23 15:09:43 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.17 2007/09/11 12:10:27 nw Exp $
 >>>>>>> 1.12.2.6
  * Created on 02-Sep-2005
  *
@@ -12,6 +12,7 @@
 package org.astrogrid.desktop.modules.ui.voexplorer;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.datatransfer.Transferable;
@@ -31,6 +32,8 @@ import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -44,6 +47,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
@@ -78,9 +82,12 @@ import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.AdjustableColumnModel;
 import org.astrogrid.desktop.modules.ui.comp.CheckBoxMenu;
+import org.astrogrid.desktop.modules.ui.comp.MyTitledBorder;
 import org.astrogrid.desktop.modules.ui.comp.TableColumnModelAdapter;
 import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
+import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.CapabilityIconFactory;
+import org.astrogrid.desktop.modules.ui.voexplorer.google.EditableResourceViewer;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.FilterPipelineFactory;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.FormattedResourceViewer;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceFormViewer;
@@ -101,6 +108,7 @@ import org.astrogrid.desktop.modules.ui.voexplorer.strategy.CapabilityStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.ContentLevelStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.CreatorStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.PublisherStrategy;
+import org.astrogrid.desktop.modules.ui.voexplorer.strategy.SourceStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.SubjectsStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.TagStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.TypeStrategy;
@@ -134,7 +142,7 @@ import com.jgoodies.forms.layout.FormLayout;
  * @todo optimize query - no //vor:resouc
  */
 public class RegistryGooglePanel extends JPanel
-implements ActionListener,ListEventListener, ListSelectionListener, ChangeListener, TableModelListener {
+implements ListEventListener, ListSelectionListener, ChangeListener, TableModelListener {
 
 	private static final Log logger = LogFactory
 			.getLog(RegistryGooglePanel.class);
@@ -142,6 +150,93 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
     /** key in preferences database for this class giving list of table columns displayed.  The value is a tab-separated list of column names. */
     public static final String COLUMNS_KEY = "columns";
 
+    /** class that takes care of concatenating together various bits of information and updating a title 
+     * 
+     * not  thread safe - expects to be called on EDT
+     * 
+     * also listens to the advanced preference, and according to it's value, takes a reading either before or after the 'system filter'
+     *
+     * */
+    protected static class SearchSummaryFormatter implements PropertyChangeListener {
+        private final JLabel lab;
+        private final StrBuilder sb = new StrBuilder();
+        private final Preference advanced;
+        private final List advancedList;
+        private final List basicList;
+        private final List filteredList;
+
+        /**
+         * 
+         * @param lab label to format to
+         * @param advanced the 'advanced' preference
+         * @param advancedList resuylt list to take reading from in 'advanced' ode.
+         * @param basicList result list to take reading from in 'basic' mode.
+         * @param filteredList the filtered list.
+         */
+        public SearchSummaryFormatter(JLabel lab, Preference advanced, List advancedList, List basicList, List filteredList) {
+            super();
+            this.lab = lab;
+            this.advanced = advanced;
+            this.advancedList = advancedList;
+            this.basicList = basicList;
+            this.filteredList = filteredList;
+            advanced.addPropertyChangeListener(this);
+            advanced.initializeThroughListener(this);           
+        }
+        private String title = null;
+        private List searchCountSource;
+        private int searchCount = 0;
+        private int filterCount = 0;
+        public void setTitle(String t) {
+            title = t;
+            update();
+        }
+        
+        public void recount() {
+            int f = filteredList.size();
+            int s = searchCountSource.size();
+            if (f != filterCount || s != searchCount) {
+                filterCount = f;
+                searchCount = s;
+                update();
+            }
+        }
+        
+        private void update() {
+            sb.clear();
+            if (title != null) {
+                sb.append(title).append(" - ");
+            }
+            if (filterCount != searchCount) {
+                sb.append("filtering to ").append(filterCount).append(" of ");
+            }
+            
+            switch (searchCount) {
+                case 0:
+                    break;
+                case 1:
+                    sb.append("1 resource");
+                    break;
+                default:
+                    sb.append(searchCount).append(" resources");
+                } 
+            
+            lab.setText(sb.toString());
+        }
+        // triggered when preference changes.
+        public void propertyChange(PropertyChangeEvent evt) {
+            if (evt.getSource() == this.advanced) {
+                if (advanced.asBoolean()) {
+                    searchCountSource = advancedList;
+                } else {
+                    searchCountSource = basicList;
+                }
+                recount();
+            }
+        }
+        
+    }
+    
 	/** an asbtract background worker that provides machinery for processing the results of a streaming parse
 	 * and caching the result */
 	private abstract class Worker extends BackgroundWorker implements StreamProcessor {
@@ -162,7 +257,7 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 		}
 		
 		private Thread _thread;
-		private boolean interrupted = false;
+		private volatile boolean interrupted = false;
 		/** keep track of whrther this background process was interrupted */
 		private boolean isInterrupted() {
 		    if (_thread == null) {
@@ -214,12 +309,16 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 		}
 	
 		protected void runQuery(String xq) throws ServiceException {
-			// check bulk cache.
-			Element el = bulk.get(xq);
-			if (! isInterrupted() && el != null) {
-				load((Resource[])el.getValue()); 
-				return;// found a cached result - halt here.
-			}
+		    // check bulk cache.
+		    Element el = bulk.get(xq);			
+		    if (el != null) {
+		        if (bypassCache) { // remove it from the cache, whlle we're here.
+		            bulk.remove(xq);
+		        } else if (! isInterrupted()) {			    
+		            load((Resource[])el.getValue()); 
+		            return;// found a cached result - halt here.
+		        }
+		    }
 			reg.xquerySearchStream(xq,this);
 			// no need to lock - as we know we're the thread that was doing the modifying. and it's finished now.
 			
@@ -313,10 +412,6 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 	static final Builder briefXQueryBuilder = new BasicRegistrySRQLVisitor();
 	
 	// member variables.
-	private final JButton haltButton ;
-	private final JButton newButton;
-	private final JLabel searchCount;
-	private final JLabel filterCount;
 	protected final ResourceTable resourceTable;
 	protected final EventList  items ;
 	protected final EventList edtItems; // a view of the items event list, on the Event dispatch thread.
@@ -338,23 +433,11 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 	// stuff that's accessed when composing this pane together in the UI.
 	public final UIComponentBodyguard parent;
 
-    private JLabel searchTitle;
+    protected final SearchSummaryFormatter summary;
+
 	
 	public void setPopup(JPopupMenu popup) {
 		resourceTable.setPopup(popup);
-	}
-	
-	/** access the new search button - so a handler can be attached to it */
-	public JButton getNewSearchButton() {
-		return newButton;
-	}
-	public JButton getHaltSearchButton() {
-		return haltButton;
-	}
-	
-	/** access the search title label */
-	public JLabel getSearchTitleLabel() {
-		return searchTitle;
 	}
 
 	/** Construct a new RegistryChooserPanel
@@ -364,11 +447,12 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 	 * @param regBrowser used to display related registry entires.
 	 * @param resources caches resources.
 	 * @param vm used to annotate registry entries with availability information
+	 * @param advancedPreference 
 	 * @param pref controls whether to display 'advanced' features of the ui.
 	 */
 	public RegistryGooglePanel(final RegistryInternal reg,
 			final Ehcache resources, final Ehcache bulk, IterableObjectBuilder viewFactory
-			, final VoMonInternal vm, final CapabilityIconFactory iconFac, final AnnotationService annServer) {
+			, final VoMonInternal vm, final CapabilityIconFactory iconFac, final AnnotationService annServer, Preference advancedPreference) {
 		super();    
 		this.parent = new UIComponentBodyguard();
 		this.reg = reg;
@@ -406,10 +490,11 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 				,new CreatorStrategy()
 				, new CapabilityStrategy()
 				,new TagStrategy(annServer)
+				, new SourceStrategy()
 				//@todo move strategies out to hivemind? probably necessary for more advanced ones.
 				// @future add strategies for meta-metadata - last used, recently added, tags, etc.
 				};
-		FilterPipelineFactory mPipeline = new FilterPipelineFactory(sortedItems,pStrategies,annServer);
+		FilterPipelineFactory mPipeline = new FilterPipelineFactory(sortedItems,pStrategies,annServer,advancedPreference);
 		EventList filteredItems = mPipeline.getFilteredItems();
 
 		// item currenlty selected in table list.
@@ -418,41 +503,30 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 		currentResourceInView.addListSelectionListener(this); // assume this happens on EDT?
 		
 		FormLayout form = new FormLayout(
-				"1dlu, pref,0dlu,pref,0dlu,left:pref:grow,0dlu,right:80dlu,left:60dlu,0dlu,60dlu,pref,pref,1dlu" // cols
+				"2dlu,d:grow,60dlu,pref,pref,1dlu" // cols
 				,"d" // rows
 				);
 		PanelBuilder builder = new PanelBuilder(form);
 		CellConstraints cc = new CellConstraints();
-		
-		newButton = new JButton("New Search");
-		newButton.setToolTipText("Create a new Smart list by searching the Registry");
-		newButton.setEnabled(true);
-		builder.add(newButton,cc.xy(2,1));
-		
-		haltButton = new JButton("Stop Search");
-		haltButton.addActionListener(this);
-		haltButton.setEnabled(false);
-		
-		CSH.setHelpIDString(haltButton, "reg.search");
-		builder.add(haltButton, cc.xy(4, 1));
-		
-		searchTitle = builder.addLabel("",cc.xy(6,1));
-		
-		filterCount = new JLabel();
-		builder.add(filterCount,cc.xy(8,1));
-		searchCount = new JLabel();
-		builder.add(searchCount,cc.xy(9,1));
+
+        final JLabel summaryLabel = builder.addLabel("Resources",cc.xy(2,1));
+        summaryLabel.setForeground(Color.DARK_GRAY);
+        summaryLabel.setFont(UIConstants.SMALL_DIALOG_FONT);
+        this.summary = new SearchSummaryFormatter(summaryLabel,advancedPreference, edtItems,mPipeline.getSystemFilteredItems(),mPipeline.getFilteredItems());
 
 		final JTextField filterField = mPipeline.getTextField();
 		CSH.setHelpIDString(filterField, "reg.filter");
-		builder.add(filterField,cc.xy(11, 1));
-		builder.add(mPipeline.getSystemToggleButton(),cc.xy(12,1));
-		builder.add(mPipeline.getExpandButton(),cc.xy(13, 1));
+		builder.add(filterField,cc.xy(3, 1));
+		builder.add(mPipeline.getSystemToggleButton(),cc.xy(4,1));
+		builder.add(mPipeline.getExpandButton(),cc.xy(5, 1));
 		toolbar = builder.getPanel();
+		Box topBox = Box.createVerticalBox();
+		this.add(topBox,BorderLayout.NORTH);
+		topBox.add(toolbar);
 		
 		final JComponent filters = mPipeline.getFilters();
 		CSH.setHelpIDString(filters, "reg.filters");
-		add(filters,BorderLayout.NORTH);
+		topBox.add(filters);
 	
 		// middle pane
 		
@@ -466,9 +540,10 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 		// surprising - this is all that's needed tp add sorting to columns in the table.
 		new TableComparatorChooser(resourceTable,sortedItems,true);
 		tableScroller = new JScrollPane(resourceTable);
-		tableScroller.setBorder(BorderFactory.createEmptyBorder());
-		tableScroller.setMinimumSize(new Dimension(100,50)); 
-
+		tableScroller.setPreferredSize(null);
+		tableScroller.getViewport().setBackground(Color.WHITE);
+		this.setBorder(MyTitledBorder.createUntitledLined());
+		
         // arrange for the column model of the table to be configurable by the user.
         resourceColumnModel = createResourceColumnModel(tableFormat.getDefaultColumns(),resourceTable);
         resourceTable.setColumnModel(resourceColumnModel);
@@ -480,6 +555,7 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
         };
         JButton colButton = new JButton(colsAct);
         tableScroller.setCorner(JScrollPane.UPPER_RIGHT_CORNER, new JButton(colsAct));
+        tableScroller.setMinimumSize(new Dimension(50,100));
         resourceColumnModel.addColumnModelListener(new TableColumnModelAdapter() {
             public void columnAdded(TableColumnModelEvent evt) {
                 adjustScrolling();
@@ -499,8 +575,6 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 		tabPane = new JTabbedPane();    
 		tabPane.setBorder(BorderFactory.createEmptyBorder());
 		tabPane.addChangeListener(this);
-		tabPane.setMinimumSize(new Dimension(100,50));
-		tabPane.setPreferredSize(new Dimension(100,600));
 
 		String[] vns = viewNames();
 		resourceViewers = new ResourceViewer[vns.length];
@@ -508,23 +582,38 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 			ResourceViewer viewer= (ResourceViewer)viewFactory.create(vns[i]);
 			resourceViewers[i] = viewer;
 			viewer.addTo(parent,tabPane);
-		}
-		
+			if (viewer instanceof EditableResourceViewer) {
+			    // using an internal class here, as registryGooglePanel already implements 
+			    // change listener, and there's no easy way to distinguish between the different emitters.
+			    ((EditableResourceViewer)viewer).addChangeListener(new ChangeListener(){
+			        public void stateChanged(ChangeEvent e) {
+			            resourceTableModel.fireTableRowsUpdated(
+			                    currentResourceInView.getMinSelectionIndex()
+			                    ,currentResourceInView.getMaxSelectionIndex()
+			                    );			            
+			        }
+			    });
+			}
+		}	
 		// stitch middle and bottom together.
 		JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT,true,tableScroller,tabPane);
-		split.setResizeWeight(1.0); // all goes to the top. necessary for appearing filterwheels to work correctly
-		
-		split.setDividerLocation(200);
-		split.setDividerSize(7);
-		split.setBorder(BorderFactory.createEmptyBorder());
-		add(split,BorderLayout.CENTER);
+		split.setResizeWeight(1.0); // all goes to the top. necessary for appearing filterwheels to work correctly		
+		split.setDividerLocation(250);
+		split.setDividerSize(6);
+		split.setBorder(null);
+		add(split,BorderLayout.CENTER);		
 	}
 
 	/** lists the views to create - these names are passed to the objectBuilder
 	 * this method acts as an extensio point - subclasses can alter the
 	 * number andorder of the views. */
 	protected String[] viewNames() {
-		return new String[] {"annotated","table"/*,"form",*/,"xml"};
+		return new String[] {
+		        "annotated"
+		        ,"table"
+		        ,"xml"
+		        };
+	   
 	}
 	
 	/** called to create the format definition of the central table - maybe overridden by subclasses */
@@ -622,29 +711,14 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 				tabPane.setSelectedIndex(0);
 			}
 		}
-		// update total size count.
-		int sz = edtItems.size();
-		switch (sz) {
-		case 0:
-			searchCount.setText("");
-			break;
-		case 1:
-			searchCount.setText("1 resource");
-			break;
-		default:
-			searchCount.setText(sz + " resources");
-		}
+		summary.recount();
+
 	}
 	/** triggered when contents of table change */
 	public void tableChanged(TableModelEvent e) {
 		if (e.getType() != TableModelEvent.UPDATE) { // only interested in add or delete events.
-			int resultSize = edtItems.size();
-			int viewSize = resourceTableModel.getRowCount();
-			if (viewSize != resultSize) {
-				filterCount.setText("Filtering to " + viewSize + " of ");
-			} else {
-				filterCount.setText(null);
-			}
+		    summary.recount();
+			final int viewSize = resourceTableModel.getRowCount();
 			// on every change, if nothing is selcted, and there are some results,, select (display) first record.
 			if (viewSize > 0 && resourceTable.getSelectedRow() == -1) {
 					resourceTable.changeSelection(0, 1, false, false);			
@@ -660,9 +734,9 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 		updateViewers();
 	}
 	/** triggered when selected tab changes */
-	public void stateChanged(ChangeEvent ignored) {
-		previous = null; // view has changed, so need to re-render.
-		updateViewers();
+	public void stateChanged(ChangeEvent evt) {
+	        previous = null; // view has changed, so need to re-render.
+	        updateViewers();
 	}
 	private Resource previous;// tries to make things idempotent.
 	/** controller that takes care of displayng the current resource in the currently visible viewer */
@@ -683,13 +757,19 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 		}
 	}
 	
-// handler for various buttons in this ui.
-	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == haltButton) {
+/** halts the current query */
+	public void halt() {
 				this.parent.get().haltMyTasks();
 				fireLoadCompleted();
-		}
 	}
+	
+	/** set a flag to indicate that next query will bypass the cache
+	 *  - i.e. will remove this query results from cache first.
+	 */
+	public void setNextToBypassCache() {
+	    bypassCache = true;
+	}
+	private boolean bypassCache = false;
 	
 	/** expose the currently viewed resource */
 	public EventSelectionModel getCurrentResourceModel() {
@@ -733,13 +813,11 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 	
 	/** set scope to just display this list of resources */
 	public void displayIdSet(Collection idList) {
-		//getSearchTitleLabel().setText(null);
 		(new ListWorker(parent.get(),idList)).start();		
 	}
 	
 	public void displayIdSet(String title,Collection idList) {
-		// don't like this.
-		//getSearchTitleLabel().setText(title);
+	    summary.setTitle(title);
 		(new ListWorker(title,parent.get(),idList)).start();		
 	}
 	
@@ -747,24 +825,23 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 	/** set scope to display results of this query
 	 * @param query - an xquery
 	 */
-	public void displayQuery(String query) {
-		//getSearchTitleLabel().setText(null);		
+	public void displayQuery(String query) {	
 		(new XQueryWorker(parent.get(),query)).start();
 	}
 	
 	public void displayQuery(String title,String query) {
-		//getSearchTitleLabel().setText(title);		
+        summary.setTitle(title);	
 		(new XQueryWorker(title,parent.get(),query)).start();
 	}	
 	
 	public void displayQuery(SRQL query) {
-		//getSearchTitleLabel().setText(null);	
 		(new SRQLWorker(parent.get(),query)).start();
 	}
 	public void displayQuery(String title,SRQL query) {
-		//getSearchTitleLabel().setText(title);			
+        summary.setTitle(title);		
 		(new SRQLWorker(title,parent.get(),query)).start();
 	}
+
 	
 	/** build an xquery that will retrieve all items in a list */
 	public static String makeXQueryFromIdSet(Collection l) {
@@ -789,13 +866,6 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 		//@fixme implement
 	}
 
-	/** access the 'toolbar' for this component - it's up to the hosting
-	 * application to display this in some appropriate place.
-	 */
-	public JComponent getToolbar() {
-		return toolbar;
-	}
-	
 
 	public Transferable getSelectionTransferable() {
 		return resourceTable.getSelectionTransferable();
@@ -811,8 +881,6 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 
 	protected void fireLoadStarted() {
 		clear();
-		haltButton.setEnabled(true);
-		newButton.setEnabled(false);
 		      Object[] listeners = listenerList.getListenerList();
 		      // Process the listeners last to first, notifying
 		      // those that are interested in this event
@@ -828,8 +896,7 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 	}
 	
 	protected void fireLoadCompleted() {
-		haltButton.setEnabled(false);
-		newButton.setEnabled(true);
+	    bypassCache = false;
 	      Object[] listeners = listenerList.getListenerList();
 	      // Process the listeners last to first, notifying
 	      // those that are interested in this event
@@ -859,6 +926,9 @@ implements ActionListener,ListEventListener, ListSelectionListener, ChangeListen
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.17  2007/09/11 12:10:27  nw
+implemented andy's new lists.
+
 Revision 1.16  2007/08/23 15:09:43  nw
 Complete - task 147: add starter xquery to edit box
 

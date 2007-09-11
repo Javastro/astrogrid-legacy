@@ -74,6 +74,7 @@ public class ResourceLists extends JList implements DropTargetListener,ActionLis
 	 * Logger for this class
 	 */
 	private static final Log logger = LogFactory.getLog(ResourceLists.class);
+    private final  JMenuItem refresh;
 
 
 /**
@@ -81,7 +82,7 @@ public class ResourceLists extends JList implements DropTargetListener,ActionLis
  * @param folderList an event list of {@link ResourceFolder}
  * @param parent the ui component to report background tasks to.
  */
-public ResourceLists(EventList folderList, VOExplorerImpl  parent) {
+public ResourceLists(EventList folderList, VOExplorerImpl  parent, ActionListener refreshHandler) {
 	this.parent = parent;
 	CSH.setHelpIDString(this, "resourceLists");	
 	setDropTarget(new DropTarget(this,this));
@@ -138,18 +139,25 @@ public ResourceLists(EventList folderList, VOExplorerImpl  parent) {
 	properties.setEnabled(false);
 	properties.addActionListener(this);
 	
-	popup = new JPopupMenu("Edit Lists");
+	refresh = new JMenuItem("Refresh",IconHelper.loadIcon("reload16.png"));
+	refresh.setToolTipText("Refresh with list with the VO Registry");
+	refresh.setEnabled(false);
+	refresh.addActionListener(refreshHandler); // pass in a handler for this one, as isn't possible to solve it internal to this component.
+	
+	popup = new JPopupMenu();
 	JMenu nu = new JMenu("New");
 	nu.add(addSmart);
 	nu.add(addStatic);
 	nu.add(addXQuery);
 	popup.add(nu);
-//	popup.addSeparator();
+	popup.add(duplicate);
+	popup.addSeparator();
 	popup.add(rename);
 	popup.add(properties);
-	popup.add(duplicate);
 	popup.add(remove);
-	
+    popup.addSeparator();
+    popup.add(refresh);
+    
 	addMouseListener(this);
 }
 
@@ -449,6 +457,7 @@ private void tailorActionsToResource(ResourceFolder f) {
 	properties.setEnabled(fixed);
 	rename.setEnabled(fixed);
 	duplicate.setEnabled(f != null);
+	refresh.setEnabled(f != null);
 }
 
 

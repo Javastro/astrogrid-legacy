@@ -1,6 +1,6 @@
-/*$Id: VOExplorerImpl.java,v 1.9 2007/08/23 15:09:43 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.10 2007/09/11 12:10:27 nw Exp $
 =======
-/*$Id: VOExplorerImpl.java,v 1.9 2007/08/23 15:09:43 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.10 2007/09/11 12:10:27 nw Exp $
 >>>>>>> 1.6.2.2
  * Created on 30-Mar-2005
  *
@@ -27,7 +27,10 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -48,7 +51,9 @@ import org.astrogrid.desktop.modules.system.ui.UIContributionBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl.CloseAction;
 import org.astrogrid.desktop.modules.ui.actions.Activity;
+import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
 import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
+import org.astrogrid.desktop.modules.ui.comp.MyTitledBorder;
 import org.astrogrid.desktop.modules.ui.folders.ResourceFolder;
 import org.astrogrid.desktop.modules.ui.folders.SmartList;
 import org.astrogrid.desktop.modules.ui.folders.StaticList;
@@ -69,9 +74,12 @@ public class VOExplorerImpl extends UIComponentImpl
 	 * Logger for this class
 	 */
 	private static final Log logger = LogFactory.getLog(VOExplorerImpl.class);
+    private final Action newAction;
+    private final Action stopAction;
+    private final BiStateButton foldersButton;
 
 	public VOExplorerImpl( final UIContext context, final ActivityFactory activityBuilder
-			,final UIContributionBuilder menuBuilder, EventList folders, RegistryGooglePanel google, QuerySizer sizer) {
+			,final UIContributionBuilder menuBuilder, EventList folders, RegistryGooglePanel gl, QuerySizer sizer) {
 		super(context);
 		logger.info("Constructing new VOExplorer");
 		this.setSize(800, 600);    
@@ -108,23 +116,32 @@ public class VOExplorerImpl extends UIComponentImpl
 
 		// main pane.	    
 		this.mainPanel = new FlipPanel();
-		this.mainButtons = new FlipPanel();
 
 		// main resource view.
-		resourcesFolders = new ResourceLists(folders,this);
+		resourcesFolders = new ResourceLists(folders,this,new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                google.setNextToBypassCache(); 
+                ResourceFolder f =  (ResourceFolder)resourcesFolders.getSelectedValue();
+                if (f != null) { 
+                    activities.clearSelection();
+                    f.display(google);
+                    setTitle("VO Explorer - " + f.getName());
+                }                
+            }
+		});
 		resourcesFolders.addListSelectionListener(this);
 		resourcesFolders.setName(RESOURCES_VIEW);
 
 		// main view.
-		this.google = google;
+		this.google = gl;
 		google.parent.set(this);
 		// attach ourself to this reg chooser, to listen for selection changes.
 		google.getCurrentResourceModel().addListSelectionListener(this); // listen to currently selected resource
 		google.setPopup(activities.getPopupMenu());
-		google.getNewSearchButton().addActionListener(this);
+			
 		google.addLoadListener(this);
 		mainPanel.add(google,RESOURCES_VIEW);
-		mainButtons.add(google.getToolbar(),RESOURCES_VIEW);
         menuBar.add(google.createColumnsMenu("Columns"));
 
 		// build the various editing panels.
@@ -137,28 +154,55 @@ public class VOExplorerImpl extends UIComponentImpl
 		
 		// assemble all into main window.
 		final JScrollPane actionsScroll = new JScrollPane(activities.getTaskPane(),JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		actionsScroll.setBorder(BorderFactory.createEmptyBorder());
+		actionsScroll.setBorder(null);
 		actionsScroll.setMinimumSize(new Dimension(200,200));		
-		JScrollPane foldersScroll = new JScrollPane(resourcesFolders,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		foldersScroll.setBorder(BorderFactory.createEmptyBorder());
-		foldersScroll.setMinimumSize(new Dimension(200,100));
+		
+		JPanel foldersPanel = new JPanel(new BorderLayout());
+		final JScrollPane folderScroll = new JScrollPane(resourcesFolders,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		folderScroll.setBorder(null);
+        foldersPanel.add( folderScroll ,BorderLayout.CENTER
+		);
+		foldersPanel.setBorder(MyTitledBorder.createLined("Resource lists"));
+		foldersPanel.setMinimumSize(new Dimension(200,100));
+		
+        newAction = new AbstractAction("Make a new list"){
+            {
+                putValue(AbstractAction.SHORT_DESCRIPTION,"Create a new list by searching the whole VO registry");
+                setEnabled(true);
+            }
+            public void actionPerformed(ActionEvent e) {
+                SmartList sl = new SmartList();
+                editNewSmartList(sl);                
+            }
+        };
+        stopAction = new AbstractAction("Stop search"){
+            {
+                putValue(AbstractAction.SMALL_ICON,IconHelper.loadIcon("loader.gif"));
+                setEnabled(true);
+            }
+            public void actionPerformed(ActionEvent e) {
+                google.halt();
+            }
+        };
+            
+        this.foldersButton = new BiStateButton(newAction,stopAction);
+        foldersPanel.add(foldersButton,BorderLayout.SOUTH);
+		
 		// assemble folders and tasks into LHS 
-		JSplitPane leftPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, foldersScroll	,actionsScroll);
-		leftPane.setDividerLocation(200);
-		leftPane.setDividerSize(7);
-		leftPane.setResizeWeight(0.5); // even allocate new space to folders and actions.
-	//	leftPane.setBorder(BorderFactory.createMatteBorder(0,0,0,1,Color.GRAY));
-		leftPane.setBorder(BorderFactory.createEmptyBorder());
+		JSplitPane leftPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, foldersPanel	,actionsScroll);
+		leftPane.setDividerLocation(300);
+		leftPane.setDividerSize(6);
+		leftPane.setResizeWeight(0.5);
+		leftPane.setBorder(null);
 		// combine LHS and RSH
 		JSplitPane lrPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,leftPane,mainPanel);
 		lrPane.setDividerLocation(200);
 		lrPane.setResizeWeight(0.1); //most to the right
-		lrPane.setBorder(BorderFactory.createEmptyBorder());
-		lrPane.setDividerSize(7);
+		lrPane.setBorder(null);
+		lrPane.setDividerSize(6);
 		pane.add(lrPane,BorderLayout.CENTER); 
 
 		// add buttonbar on top.
-		pane.add(mainButtons,BorderLayout.NORTH);
 
 		// finish it all off..
 		this.setContentPane(pane);
@@ -175,13 +219,11 @@ public class VOExplorerImpl extends UIComponentImpl
 	 */
 	private void wireUpEditor(EditingPanel editor,String viewName) {
 		mainPanel.add(editor,viewName);
-		mainButtons.add(new JPanel(),viewName);// just want the toolbar to vanish in the new view.
 		editor.getOkButton().addActionListener(this);
 		editor.getCancelButton().addActionListener(this);		
 	}
 
 	private final FlipPanel mainPanel;
-	private final FlipPanel mainButtons;
 	private final ActivitiesManager activities;
 	public static final String RESOURCES_VIEW = "resources";
 	public static final String EDIT_SMART_VIEW = "edit-smart";
@@ -236,18 +278,17 @@ public class VOExplorerImpl extends UIComponentImpl
 	}
 /// load listener interface.
 	public void loadCompleted(LoadEvent e) {
+	    foldersButton.enableA();
 		resourcesFolders.setEnabled(true);
 	}
 
 	public void loadStarted(LoadEvent e) {
+	    foldersButton.enableB();
 		resourcesFolders.setEnabled(false);
 	}	
 //	 action Listener interface. handles ok/cancel from each of the editor panels.
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == google.getNewSearchButton()) {
-			SmartList sl = new SmartList();
-			editNewSmartList(sl);
-		} else if (e.getSource() == smartEditPanel.getOkButton()) {
+	    if (e.getSource() == smartEditPanel.getOkButton()) {
 			acceptEdit(smartEditPanel);
 		} else if (e.getSource() == staticEditPanel.getOkButton()) {
 			acceptEdit(staticEditPanel);
@@ -267,7 +308,6 @@ public class VOExplorerImpl extends UIComponentImpl
 		//display updated folder contents.
 		
         mainPanel.show(RESOURCES_VIEW);
-        mainButtons.show(RESOURCES_VIEW);
         // clearing selection and then setting hte selection will trigger a query reload in all circumstances.
         resourcesFolders.clearSelection();
         resourcesFolders.setSelectedValue(r,true);
@@ -284,7 +324,6 @@ public class VOExplorerImpl extends UIComponentImpl
 		smartEditPanel.getOkButton().setText("Create");
 		smartEditPanel.setCurrentlyEditing(f);
 		mainPanel.show(EDIT_SMART_VIEW);
-		mainButtons.show(EDIT_SMART_VIEW);
 		resourcesFolders.setEnabled(false);
 		activities.clearSelection(); // removes list of actions.
 	}
@@ -293,7 +332,6 @@ public class VOExplorerImpl extends UIComponentImpl
 		smartEditPanel.getOkButton().setText("Update");
 		smartEditPanel.setCurrentlyEditing(f);
 		mainPanel.show(EDIT_SMART_VIEW);
-		mainButtons.show(EDIT_SMART_VIEW);
 		resourcesFolders.setEnabled(false);
 		activities.clearSelection(); // removes list of actions.
 	}
@@ -302,7 +340,6 @@ public class VOExplorerImpl extends UIComponentImpl
 		staticEditPanel.getOkButton().setText("Create");
 		staticEditPanel.setCurrentlyEditing(f);
 		mainPanel.show(EDIT_STATIC_VIEW);
-		mainButtons.show(EDIT_STATIC_VIEW);
 		resourcesFolders.setEnabled(false);
 		activities.clearSelection(); // removes list of actions.
 	}
@@ -311,7 +348,6 @@ public class VOExplorerImpl extends UIComponentImpl
 		staticEditPanel.getOkButton().setText("Update");
 		staticEditPanel.setCurrentlyEditing(f);
 		mainPanel.show(EDIT_STATIC_VIEW);
-		mainButtons.show(EDIT_STATIC_VIEW);
 		resourcesFolders.setEnabled(false);
 		activities.clearSelection(); // removes list of actions.
 	}
@@ -320,7 +356,6 @@ public class VOExplorerImpl extends UIComponentImpl
 		xqueryEditPanel.getOkButton().setText("Create");
 		xqueryEditPanel.setCurrentlyEditing(f);
 		mainPanel.show(EDIT_XQUERY_VIEW);
-		mainButtons.show(EDIT_XQUERY_VIEW);
 		resourcesFolders.setEnabled(false);
 		activities.clearSelection(); // removes list of actions.
 	}
@@ -329,14 +364,12 @@ public class VOExplorerImpl extends UIComponentImpl
 		xqueryEditPanel.getOkButton().setText("Update");
 		xqueryEditPanel.setCurrentlyEditing(f);
 		mainPanel.show(EDIT_XQUERY_VIEW);
-		mainButtons.show(EDIT_XQUERY_VIEW);
 		resourcesFolders.setEnabled(false);
 		activities.clearSelection(); // removes list of actions.
 	}
 
 	public void showResourceView() {
 		mainPanel.show(RESOURCES_VIEW);
-		mainButtons.show(RESOURCES_VIEW);
 		resourcesFolders.setEnabled(true);
 	}	
 
@@ -345,17 +378,36 @@ public class VOExplorerImpl extends UIComponentImpl
 	 * @param uriList
 	 */
 	public void displayResources(List uriList) {
+	    resourcesFolders.clearSelection();
 		google.displayIdSet(uriList);
 	}
 	
+	public void displayResources(String title, List uriList) {
+        resourcesFolders.clearSelection();	    
+	    google.displayIdSet(title,uriList);
+	}
+	
 	public void doOpen(URI ivorn) {
+        resourcesFolders.clearSelection();	    
 		google.displayIdSet(Collections.singletonList(ivorn));
 		
 	}
 	
+	   public void doOpen(String title,URI ivorn) {
+	        resourcesFolders.clearSelection();	       
+	        google.displayIdSet(title,Collections.singletonList(ivorn));
+	        
+	    }
+	
 	public void doQuery(String query) {
+        resourcesFolders.clearSelection();	    
 		google.displayQuery(query);
 	}
+	
+	   public void doQuery(String title,String query) {
+	        resourcesFolders.clearSelection();	       
+	        google.displayQuery(title,query);
+	    }
 
 
 
