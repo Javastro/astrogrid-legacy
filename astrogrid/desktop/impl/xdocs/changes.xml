@@ -14,13 +14,34 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="2007.4.alpha5" date="unreleased">
+    <action dev="nw" type="add">
+        Added ability to directly download / send to plastic vizier tables from voexplorer 
+    </action>
+    <action dev="nw" type="fix">
+        Improved layout of voexplorer window
+    </action>
+    <action dev="nw" type="fix">
+        Improved display of annotations in resource table and details pane.
+    </action>
+    <action dev="nw" type="update">
+    Implemented new list of resourcelists in voexplorer 
+    </action>
 <action dev="jl" type="fix" issue="2277">
     Query Builder.
     Reinstated one-touch expansion for split pane.
     Corrected inability to see diagnostics and history panes.
     Eliminated Adql/x validation messages in favour of AdqlCompiler messages.
 </action>
-<release version="2007.4.alpha5" date="unreleased">
+    <action dev="nw" type="add">
+        VoExplorer sends and accepts bibcode plastic messages - for paperscope integration
+    </action>
+    <action dev="nw" type="fix">
+        Fixed fileexplorer window size.
+    </action>
+    <action dev="nw" type="fix">
+        Altered tables to have white background in metal LAF
+    </action>
     <action dev="nw" type="remove" issue="2301">
         Removed misleading 'test' button.
     </action>
