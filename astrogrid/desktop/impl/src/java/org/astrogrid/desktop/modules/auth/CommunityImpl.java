@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.4 2007/09/04 13:38:37 nw Exp $
+/*$Id: CommunityImpl.java,v 1.5 2007/09/11 12:07:27 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -58,8 +58,8 @@ public class CommunityImpl implements CommunityInternal {
     protected final UI ui;
     protected final SnitchInternal snitch;
     protected final LoginDialogue loginDialogue;
-    private UserInformation userInformation;
-    protected SecurityGuard guard;
+    private volatile UserInformation userInformation;
+    protected volatile SecurityGuard guard;
 
     public void login(String username,String password, String community) throws SecurityException, ServiceException {
     	// Fix suggested by JDT.
@@ -92,7 +92,7 @@ public class CommunityImpl implements CommunityInternal {
     }
 
     
-    public synchronized void guiLogin() {
+    public void guiLogin() {
         while(!isLoggedIn()) {
             UserInformation proposed = loginDialogue.show();
             if (proposed == null) { // cancel was hit.
@@ -199,6 +199,9 @@ public class CommunityImpl implements CommunityInternal {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.5  2007/09/11 12:07:27  nw
+potential concurrency fixes.
+
 Revision 1.4  2007/09/04 13:38:37  nw
 added debugging for EDT, and adjusted UI to not violate EDT rules.
 
