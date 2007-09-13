@@ -159,7 +159,7 @@ public class Interactive {
                  }
              }
              catch( AdqlException adlqException ) {
-                 print( "\nCompilation failed:" ) ;
+                 print( "Compilation failed:" ) ;
                  String[] messages = adlqException.getMessages() ;
                  for( int i=0; i<messages.length; i++ ) {
                      print( messages[i] ) ;
@@ -231,7 +231,7 @@ public class Interactive {
      
      private static AdqlCompiler getCompiler( StringReader source) {
          if( COMPILER == null ) {
-             COMPILER = new AdqlCompiler( source ); 
+             COMPILER = new AdqlCompiler( source );        
              initMetadata() ;
          }
          else {
