@@ -50,11 +50,12 @@ public class ActivityFactoryImpl implements ActivityFactory {
 	    {
 	        advanced.addPropertyChangeListener(this);
 	        advanced.initializeThroughListener(this);
+	        setScrollOnExpand(true);
 	    }
         public void propertyChange(PropertyChangeEvent evt) {
             if (evt.getSource() == advanced) {
                 setVisible(advanced.asBoolean());
-                repaint();
+                setExpanded(advanced.asBoolean());
             }
         }
 	}
