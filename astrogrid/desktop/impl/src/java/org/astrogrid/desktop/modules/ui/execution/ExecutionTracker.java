@@ -144,7 +144,8 @@ public class ExecutionTracker implements ListSelectionListener{
 	 * are dispatched onto the EDT by this component.
 	 * */
 	public void add(ProcessMonitor pm) {
-		monitors.add(pm);
+	    // modified to add to 'top' of list.
+		monitors.add(0,pm);
 	}
 	public void remove(ProcessMonitor pm) {
 	    monitors.remove(pm);
