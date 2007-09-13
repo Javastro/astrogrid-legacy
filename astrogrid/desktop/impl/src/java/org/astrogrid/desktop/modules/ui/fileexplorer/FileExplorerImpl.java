@@ -1,4 +1,4 @@
-/*$Id: FileExplorerImpl.java,v 1.8 2007/09/11 12:12:15 nw Exp $
+/*$Id: FileExplorerImpl.java,v 1.9 2007/09/13 13:47:16 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -107,19 +107,19 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 		    JComponent mainButtons = view.getMainButtons();
 		 
 		    // assemble all into main window.
-		    final JScrollPane scrollPane = new JScrollPane(activities.getTaskPane(),JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		    scrollPane.setBorder(BorderFactory.createEmptyBorder());
+		    final JScrollPane activitiesScroller = new JScrollPane(activities.getTaskPane(),JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		    activitiesScroller.setBorder(null);
 			// assemble folders and tasks into LHS 
 		    
 			JSplitPane leftPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, foldersPanel
-					,scrollPane);
-		    leftPane.setDividerLocation(400);
-		    leftPane.setBorder(BorderFactory.createMatteBorder(0,0,0,1,Color.GRAY));
+					,activitiesScroller);
+		    leftPane.setDividerLocation(250);
+		    leftPane.setBorder(null);
 
 		    // combine LHS and RSH
 		    JSplitPane lrPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,leftPane,mainPanel);
 		    lrPane.setDividerLocation(200);
-		    lrPane.setBorder(BorderFactory.createEmptyBorder());
+		    lrPane.setBorder(null);
 		    pane.add(lrPane,BorderLayout.CENTER); 
 		    
 		    // add buttonbar on top.
