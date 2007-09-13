@@ -14,7 +14,15 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="2007.4.alpha5" date="unreleased">
+<release version="next" date="unreleased">
+    <action dev="nw" type="fix" issue="2300">
+        fixed ui snag
+    </action>
+    <action dev="nw" type="remove">
+        Removed scirpting again - very memory inefficient - need to rethink and come up with a different approach.
+    </action>    
+</release>
+<release version="2007.4.alpha5" date="2007-09-11">
     <action dev="nw" type="add">
         Added ability to directly download / send to plastic vizier tables from voexplorer 
     </action>
