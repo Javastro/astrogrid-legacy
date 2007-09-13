@@ -116,6 +116,9 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener {
 
 	/** convenience method - calls a single application */
 	public Object singleTargetPlasticMessage(URI message, List args, URI target) {
+	    if (logger.isDebugEnabled()) {
+	        logger.debug("Single target:" + target + " message:" + message + " args:" + args);
+	    }
 	    List targetSet = new ArrayList();
 	    targetSet.add(target);
 	    Map m = hub.requestToSubset(myPlasticId, message, args, targetSet);
@@ -128,11 +131,17 @@ public class TupperwareImpl implements TupperwareInternal, PlasticListener {
 	
 	/** broadcast a message */
 	public Map broadcastPlasticMessage(URI message, List args) {
+	    if (logger.isDebugEnabled()) {
+	        logger.debug("Broadcast message: " + message + " args:" + args);
+	    }
 		return hub.request(myPlasticId,message,args);
 	}
 	
 	public void  broadcastPlasticMessageAsynch(URI message, List args) {
-		 hub.requestAsynch(myPlasticId,message,args);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Broadcast message asynch: " + message + " args:" + args);
+        }
+	    hub.requestAsynch(myPlasticId,message,args);
 	}
 
 	public boolean somethingAccepts(URI message) {
