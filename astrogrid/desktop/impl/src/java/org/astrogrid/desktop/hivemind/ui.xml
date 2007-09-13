@@ -596,14 +596,15 @@ ACTIONS
             <inject object="service:system.systray" />
 			<inject name="section" object="literal:string:plastic" />
 		</object>
-		<!--  removed - too inefficient at the moment 
-		re-enable when I've got time to look at optimizing the GenerateScriptActivity.invokable() -->
+		<!--  removed - too inefficient at the moment - causes oout of memory exceptions
+		re-enable when I've got time to look at optimizing the GenerateScriptActivity.invokable()
+        possibly replace groovy with a less ambitious scripting language. 
 		<object name="3script" class="org.astrogrid.desktop.modules.ui.actions.GenerateScriptScavenger">
 			<inject object="service:dialogs.resourceChooser" />
 			<inject object="service:system.vfs" />
 			<inject name="section" object="literal:string:script" />		
 		</object>
-		
+		-->
 		<object name="0selection" class="org.astrogrid.desktop.modules.ui.actions.InfoActivity">
 			<inject name="section" object="literal:string:info" />	
 		</object>
