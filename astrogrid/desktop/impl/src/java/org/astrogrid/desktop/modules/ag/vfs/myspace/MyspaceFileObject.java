@@ -124,6 +124,7 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
 	// as it's more efficient
 	protected FileObject[] doListChildrenResolved() throws Exception {
 		logger.debug("listChildrenResolved " + getName());
+		doAttach();
 		FileObject[] result = new FileObject[node.getChildCount()];
 		NodeIterator i = node.iterator();
 		final MyspaceFileName msName = getMsName();
