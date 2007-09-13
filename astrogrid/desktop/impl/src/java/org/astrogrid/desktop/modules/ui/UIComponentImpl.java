@@ -1,4 +1,4 @@
-/*$Id: UIComponentImpl.java,v 1.16 2007/08/02 00:16:26 nw Exp $
+/*$Id: UIComponentImpl.java,v 1.17 2007/09/13 13:45:56 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -86,7 +86,7 @@ import com.l2fprod.common.swing.StatusBar;
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 07-Apr-2005
  *
  */ 
-public class UIComponentImpl extends PositionRememberingJFrame implements UIComponent, ShutdownListener {
+public class UIComponentImpl extends JFrame implements UIComponent, ShutdownListener {
 /** convenience constant for the empty border - using this declutters the ui somewhat.*/
     public static final Border EMPTY_BORDER = BorderFactory.createEmptyBorder();
 
@@ -94,6 +94,8 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
      * Commons Logger for this class - can be used by subclasses too.
      */
     protected static final Log logger = LogFactory.getLog(UIComponentImpl.class);
+
+    private final UIContext context;
 
 	/** static helper method - show a well-formatted error in a popup dialogue
      * <p/>
@@ -182,7 +184,7 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
      * @throws HeadlessException
      */
     public UIComponentImpl(UIContext context) throws HeadlessException {
-        super(context);
+        this.context = context;
         context.registerWindow(this);
         tasksList = new FilterList(context.getTasksList(),new Matcher() {
 			public boolean matches(Object arg0) {
@@ -504,6 +506,10 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
          }
      }
 
+    public UIContext getContext() {
+        return context;
+    }
+
     
      
 }
@@ -511,6 +517,9 @@ public class UIComponentImpl extends PositionRememberingJFrame implements UIComp
 
 /* 
 $Log: UIComponentImpl.java,v $
+Revision 1.17  2007/09/13 13:45:56  nw
+removed obsolete superclass.
+
 Revision 1.16  2007/08/02 00:16:26  nw
 nicer progress indicator
 
