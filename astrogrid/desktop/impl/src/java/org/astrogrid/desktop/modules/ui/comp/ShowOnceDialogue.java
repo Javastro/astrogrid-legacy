@@ -25,6 +25,8 @@ import javax.swing.event.ChangeListener;
  * There's no integration with the rest of the workbench preferences system - as these
  * are lightweight, non-user-configurable options.
  * 
+ * each subclass will have it's own 'don't show this again' preference key.
+ * 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 16, 200710:42:02 AM
  */

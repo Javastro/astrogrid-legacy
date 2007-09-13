@@ -477,7 +477,7 @@ System module.
 	 
 	 <configuration-point id="windowFactories">
 	 	Defines factories that can create different kinds of top level UI windows.
-	 	ui module contributes to these - so will only be present in full version of Workbench.
+	 	ui module contributes to these 
 	 	<schema>
 			<element name="window" key-attribute="name" content-translator="object">
 	 				Reference to a service, or somesuch that acts as a factory.
