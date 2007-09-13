@@ -112,7 +112,7 @@ public class XMLResourceViewer extends JTextArea implements ResourceViewer, Acti
 			if (advancedPreference.asBoolean()) {
 				tabPane.addTab("XML entry", IconHelper.loadIcon("xml.gif"), scroller, "View the XML as entered in the registry");       			
 			} else {
-				int ix = tabPane.indexOfComponent(this);
+				int ix = tabPane.indexOfComponent(scroller);
 				if (ix != -1) {
 					tabPane.removeTabAt(ix);
 				}
