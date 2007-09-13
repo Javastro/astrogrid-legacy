@@ -29,8 +29,8 @@ public class ResourceListsProvider extends AbstractListProvider implements ListE
 		try {		   
 		ResourceFolder[] folders = new ResourceFolder[] {
 		        new XQueryList("Recent Changes",
-		                "let $thresh := current-dateTime() - xs:dayTimeDuration('P60D')\n"
-		                + "let $dthresh := current-date() - xs:dayTimeDuration('P60D')\n"
+		                "let $thresh := current-dateTime() - xs:dayTimeDuration('P30D')\n" // month
+		                + "let $dthresh := current-date() - xs:dayTimeDuration('P30D')\n" // month
 		                + "for $r in //vor:Resource[not (@status='inactive' or @status='deleted')]\n"
 		                + "where  ($r/@updated castable as xs:dateTime and xs:dateTime($r/@updated) > $thresh)\n"
 		                + "or ($r/@updated castable as xs:date and xs:date($r/@updated) > $dthresh)\n"
