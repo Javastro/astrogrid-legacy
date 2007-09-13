@@ -24,11 +24,6 @@ import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
  * @since Apr 16, 20078:21:37 PM
  */
 public  abstract class AbstractFileOrResourceActivity extends AbstractActivity{
-	/**
-	 * Logger for this class
-	 */
-	protected static final Log logger = LogFactory
-			.getLog(AbstractFileOrResourceActivity.class);
 
 	private FileObject[] currentFiles = null;
 	private Resource[] currentResources = null;

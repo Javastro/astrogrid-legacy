@@ -22,6 +22,7 @@ import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.provider.DelegateFileObject;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.desktop.modules.ag.vfs.myspace.MyspaceFileObject;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
@@ -189,7 +190,7 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 			    // first check if it's applicable, and if not fallback.
 			    URL url;
 			    String id;
-			    if (fo != null) {
+			    if (fo != null) {				        
 			        url = fo.getURL();
 			        id = fo.getName().getBaseName();
 			    } else { // must be a uri then.

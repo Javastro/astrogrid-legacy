@@ -74,7 +74,7 @@ public abstract class AbstractActivity extends AbstractAction implements Activit
 	/**
 	 * Logger for this class
 	 */
-	private static final Log logger = LogFactory.getLog(AbstractActivity.class);
+	protected static final Log logger = LogFactory.getLog(AbstractActivity.class);
 
 	
 	public JLinkButton createLinkButton() {
