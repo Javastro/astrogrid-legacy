@@ -131,7 +131,8 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	
 	private class IconsAction extends AbstractAction {
 		public IconsAction() {
-			super("Icons View",IconHelper.loadIcon("iconview22.png"));
+			super("Icons");
+			putValue(Action.SMALL_ICON,IconHelper.loadIcon("iconview22.png"));
 			putValue(Action.SHORT_DESCRIPTION,"Icons View: show items as icons");
 		}
 
@@ -143,7 +144,8 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	
 	private class ListAction extends AbstractAction {
 		public ListAction() {
-			super("List View",IconHelper.loadIcon("listview22.png"));
+			super("List");
+			putValue(Action.SMALL_ICON,IconHelper.loadIcon("listview22.png"));
 			putValue(Action.SHORT_DESCRIPTION,"List View: show items as a list");
 		}
 
@@ -211,101 +213,103 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     private final FileSystemManager vfs;
 
 
-	public StorageView(UIComponent parent, ActivitiesManager actsManager,EventList unfilteredfoldersList, FileSystemManager vfs, IconFinder iconFinder, Community comm) {
-		this.parent = parent;
-        this.vfs = vfs;
-		foldersListFilter = new MutableMatcherEditor();
-        this.foldersList = new FilterList(unfilteredfoldersList,foldersListFilter);
-		
-		// core model.
-        SearchField filter = new SearchField("Filter files");		
-        MatcherEditor ed = new TextComponentMatcherEditor(filter.getWrappedDocument(),new FileObjectFilterator());
-        navigator = new FileNavigator(getParent(),vfs,ed,actsManager,iconFinder);		
-        comm.addUserLoginListener(this);
-        navigator.addNavigationListener(this);
-	// hierarchies.
-		folders = new StorageFoldersList(foldersList,parent,vfs);
-		folders.addListSelectionListener(this);
-		folders.setName(STORAGE_VIEW);
-   // toolbar
-	    FormLayout layout = new FormLayout(
-	    		//      back fore      up            label             location             stop, refresh bookmark newFolder views        filter
-	    		"2dlu,pref,pref,4dlu,pref,4dlu,right:pref,2dlu 80dlu:grow,1dlu,pref,pref,pref, pref,4dlu, pref,1dlu,50dlu,1dlu" // cols
-	    		,"pref"); // rows
-	    PanelBuilder builder = new PanelBuilder(layout);
-	    CellConstraints cc = new CellConstraints();
-	    int c = 1;
-	    int r = 2;
-	    // previous button
-	    RangeList historyRange = new RangeList(navigator.getPreviousList());
-	    historyRange.setTailRange(navigator.getMaxHistorySize(),1); // not including the current.
-	    back = new EventListDropDownButton(new JButton(IconHelper.loadIcon("previous22.png")),historyRange,true);
-	    back.setToolTipText("Back: See folders you viewed previously");
-	    builder.add(back,cc.xy(r++,c));
-	    // next button.
-	    forward = new EventListDropDownButton(new JButton(IconHelper.loadIcon("next22.png")),navigator.getNextList(),true);
-	    forward.setToolTipText("Forward: See folders you viewed previously");
-	    builder.add(forward,cc.xy(r++,c));
-	    r++;
-	    up = new EventListDropDownButton(new JButton(IconHelper.loadIcon("up22.png")),navigator.getUpList(),false);
-	    up.setToolTipText("Up: navigate to the parent of the current folder");
-	    builder.add(up,cc.xy(r++,c));
-	    r++;
-	    builder.addLabel("Location",cc.xy(r++,c));
-	    r++;
-	    //@todo later - maybe add autocomplete support for this?
-	    location = new JTextField();
-	    location.requestFocusInWindow();
-	    location.setToolTipText("<html>Enter a URL or file location. Supported Schemes:"
-	    		+ "<br> [<b>file</b>://] absolute-path"
-	    		+ "<br> <b>workspace</b>://[ absolute-path]"
-	    		// decided not to put an example of myspace in here - looks confusingly like registry key.
-	    		+ "<br> <b>ftp</b>://[ username[: password]@] hostname[: port][ absolute-path]"
-	    		+ "<br> <b>sftp</b>://[ username[: password]@] hostname[: port][ absolute-path]"
-	    		+"<br><b>Examples</b>"
-	    		+"<br>/users/fred/myfile"
-	    		+ "<br>file:///home/someuser/somedir"
-	    		+ "<br>workspace:///myresults"
-	    		+ "<br>ftp://myusername:mypassword@somehost/pub/downloads/somefile.tgz"
-	    		+ "<br>sftp://myusername:mypassword@somehost/pub/downloads/somefile.tgz"
-	    		//@todo add examples of myspace and vospace schemes.
-	    );
-	    builder.add(location,cc.xy(r++,c));
-	    r++;
-		goButton = new BiStateButton(go,stop,true);
-		configureButton(goButton);
-	    builder.add(goButton,cc.xy(r++,c));
-	    builder.add(createMainButton(refresh),cc.xy(r++,c));
-	    builder.add(createMainButton(bookmark),cc.xy(r++,c));
-	    builder.add(createMainButton(newFolder),cc.xy(r++,c));
-	    r++;
-	    views = new BasicEventList();
-	    views.add(icons);
-	    views.add(list);
-	    builder.add(new ActionComboBox(views),cc.xy(r++,c));
-	    r++;
-	    // filter was created much earlier.
-	    builder.add(filter,cc.xy(r++,c));
-	    mainButtons = builder.getPanel();
-	     
-	    final KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
-		mainButtons.getInputMap(JPanel.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(enter,"go");
-		mainButtons.getActionMap().put("go",go);
-		
-		fileList =  new NavigableFilesList(navigator);
-	    fileTable = new NavigableFilesTable( navigator); 
-	    mainPanel = new FlipPanel();
-	    mainPanel.add(new JScrollPane(fileList,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER)
-	    		,"list");
-	    final JScrollPane tableScroll = new JScrollPane(fileTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-	    tableScroll.getViewport().setBackground(Color.WHITE);
-        mainPanel.add(tableScroll,"table");
-	    //@todo make it easer to add further views to the main panel.
-
-  // finally, select first item in the views list, to start the whole thing going.
-	    folders.clearSelection();
-	    folders.setSelectedIndex(0);
-	}
+		public StorageView(UIComponent parent, ActivitiesManager actsManager,EventList unfilteredfoldersList, FileSystemManager vfs, IconFinder iconFinder, Community comm) {
+    		this.parent = parent;
+            this.vfs = vfs;
+    		foldersListFilter = new MutableMatcherEditor();
+            this.foldersList = new FilterList(unfilteredfoldersList,foldersListFilter);
+    		
+    		// core model.
+            SearchField filter = new SearchField("Filter files");		
+            MatcherEditor ed = new TextComponentMatcherEditor(filter.getWrappedDocument(),new FileObjectFilterator());
+            navigator = new FileNavigator(getParent(),vfs,ed,actsManager,iconFinder);		
+            comm.addUserLoginListener(this);
+            navigator.addNavigationListener(this);
+    	// hierarchies.
+    		folders = new StorageFoldersList(foldersList,parent,vfs);
+    		folders.addListSelectionListener(this);
+    		folders.setName(STORAGE_VIEW);
+       // toolbar
+    	    FormLayout layout = new FormLayout(
+    	    		//      back fore      up            label             location             stop, refresh bookmark newFolder views        filter
+    	    		"1dlu,d,d,1dlu,d,1dlu,right:d,1dlu,80dlu:grow,0dlu,d,d,d,d,0dlu,d,0dlu,50dlu,1dlu" // cols
+    	    		,"pref"); // rows
+    	    PanelBuilder builder = new PanelBuilder(layout);
+    	    CellConstraints cc = new CellConstraints();
+    	    int c = 1;
+    	    int r = 2;
+    	    // previous button
+    	    RangeList historyRange = new RangeList(navigator.getPreviousList());
+    	    historyRange.setTailRange(navigator.getMaxHistorySize(),1); // not including the current.
+    	    back = new EventListDropDownButton(new JButton(IconHelper.loadIcon("previous22.png")),historyRange,true);
+    	    back.setToolTipText("Back: See folders you viewed previously");
+    	    builder.add(back,cc.xy(r++,c));
+    	    // next button.
+    	    forward = new EventListDropDownButton(new JButton(IconHelper.loadIcon("next22.png")),navigator.getNextList(),true);
+    	    forward.setToolTipText("Forward: See folders you viewed previously");
+    	    builder.add(forward,cc.xy(r++,c));
+    	    r++;
+    	    up = new EventListDropDownButton(new JButton(IconHelper.loadIcon("up22.png")),navigator.getUpList(),false);
+    	    up.setToolTipText("Up: navigate to the parent of the current folder");
+    	    builder.add(up,cc.xy(r++,c));
+    	    r++;
+    	    builder.addLabel("Location",cc.xy(r++,c));
+    	    r++;
+    	    //@todo later - maybe add autocomplete support for this?
+    	    location = new JTextField();
+    	    location.requestFocusInWindow();
+    	    location.setToolTipText("<html>Enter a URL or file location. Supported Schemes:"
+    	    		+ "<br> [<b>file</b>://] absolute-path"
+    	    		+ "<br> <b>workspace</b>://[ absolute-path]"
+    	    		// decided not to put an example of myspace in here - looks confusingly like registry key.
+    	    		+ "<br> <b>ftp</b>://[ username[: password]@] hostname[: port][ absolute-path]"
+    	    		+ "<br> <b>sftp</b>://[ username[: password]@] hostname[: port][ absolute-path]"
+    	    		+"<br><b>Examples</b>"
+    	    		+"<br>/users/fred/myfile"
+    	    		+ "<br>file:///home/someuser/somedir"
+    	    		+ "<br>workspace:///myresults"
+    	    		+ "<br>ftp://myusername:mypassword@somehost/pub/downloads/somefile.tgz"
+    	    		+ "<br>sftp://myusername:mypassword@somehost/pub/downloads/somefile.tgz"
+    	    		//@todo add examples of myspace and vospace schemes.
+    	    );
+    	    builder.add(location,cc.xy(r++,c));
+    	    r++;
+    		goButton = new BiStateButton(go,stop,true);
+    		configureButton(goButton);
+    	    builder.add(goButton,cc.xy(r++,c));
+    	    builder.add(createMainButton(refresh),cc.xy(r++,c));
+    	    builder.add(createMainButton(bookmark),cc.xy(r++,c));
+    	    builder.add(createMainButton(newFolder),cc.xy(r++,c));
+    	    r++;
+    	    views = new BasicEventList();
+    	    views.add(icons);
+    	    views.add(list);    	   
+    	    final ActionComboBox viewsCombo = new ActionComboBox(views);
+    	    viewsCombo.setToolTipText("Views: alter how the folder contents are displayed");
+            builder.add(viewsCombo,cc.xy(r++,c));
+    	    r++;
+    	    // filter was created much earlier.
+    	    builder.add(filter,cc.xy(r++,c));
+    	    mainButtons = builder.getPanel();
+    	     
+    	    final KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
+    		mainButtons.getInputMap(JPanel.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(enter,"go");
+    		mainButtons.getActionMap().put("go",go);
+    		
+    		fileList =  new NavigableFilesList(navigator);
+    	    fileTable = new NavigableFilesTable( navigator); 
+    	    mainPanel = new FlipPanel();
+    	    mainPanel.add(new JScrollPane(fileList,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER)
+    	    		,"list");
+    	    final JScrollPane tableScroll = new JScrollPane(fileTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    	    tableScroll.getViewport().setBackground(Color.WHITE);
+            mainPanel.add(tableScroll,"table");
+    	    //@todo make it easer to add further views to the main panel.
+    
+      // finally, select first item in the views list, to start the whole thing going.
+    	    folders.clearSelection();
+    	    folders.setSelectedIndex(0);
+    	}
 	// list of folders being displayed in LHS
 	private final EventList foldersList;
 	// list of Actions for selecting between different views.
@@ -343,7 +347,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	private void configureButton(JButton b) {
 		b.setBorderPainted(false);
 		b.setRolloverEnabled(true);
-		//@todo make this a preference, or something.
+		//future -  make this a preference, or something.
 		b.setText(null);
 	//	b.setVerticalTextPosition(JButton.BOTTOM);
 	//	b.setHorizontalTextPosition(JButton.CENTER);
