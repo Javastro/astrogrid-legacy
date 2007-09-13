@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.17 2007/09/11 12:10:27 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.18 2007/09/13 13:48:12 nw Exp $
 >>>>>>> 1.12.2.6
  * Created on 02-Sep-2005
  *
@@ -503,7 +503,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 		currentResourceInView.addListSelectionListener(this); // assume this happens on EDT?
 		
 		FormLayout form = new FormLayout(
-				"2dlu,d:grow,60dlu,pref,pref,1dlu" // cols
+				"2dlu,d:grow,60dlu,d,d,1dlu" // cols
 				,"d" // rows
 				);
 		PanelBuilder builder = new PanelBuilder(form);
@@ -813,6 +813,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	
 	/** set scope to just display this list of resources */
 	public void displayIdSet(Collection idList) {
+	    summary.setTitle("ID Set");
 		(new ListWorker(parent.get(),idList)).start();		
 	}
 	
@@ -826,6 +827,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	 * @param query - an xquery
 	 */
 	public void displayQuery(String query) {	
+	    summary.setTitle("XQuery");
 		(new XQueryWorker(parent.get(),query)).start();
 	}
 	
@@ -835,6 +837,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	}	
 	
 	public void displayQuery(SRQL query) {
+	    summary.setTitle("Query");
 		(new SRQLWorker(parent.get(),query)).start();
 	}
 	public void displayQuery(String title,SRQL query) {
@@ -926,6 +929,9 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.18  2007/09/13 13:48:12  nw
+minor ui fixes.
+
 Revision 1.17  2007/09/11 12:10:27  nw
 implemented andy's new lists.
 
