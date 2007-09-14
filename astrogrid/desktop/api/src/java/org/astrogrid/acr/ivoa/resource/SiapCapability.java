@@ -15,6 +15,7 @@ public class SiapCapability extends Capability {
 	 * 
 	 */
 	private static final long serialVersionUID = -1086101358715118591L;
+	
 	public static class SkySize implements Serializable {
 		/**
 		 * 
@@ -71,35 +72,115 @@ public class SiapCapability extends Capability {
 		
 	}
 	
-	public static class ImageSize extends SkySize {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 7494945150167698974L;
-		/**     The image size in the latitdude (Dec.) direction in pixels */
-		public float getLat() {
-			return super.getLat();
-		}
-		/** 
-                 The image size in the longitude (R.A.) direction in pixels */
-		public float getLong() {
-			return super.getLong();
-		}
+	public static class ImageSize implements Serializable {
+	
+        /**
+         * 
+         */
+        private static final long serialVersionUID = -2822467213850873238L;
+        private int _long;
+        private int _lat;
+        /** The maximum size in the latitdude (Dec.) direction */
+        public float getLat() {
+            return this._lat;
+        }
+        public void setLat(int _lat) {
+            this._lat = _lat;
+        }
+        /**     The maximum size in the longitude (R.A.) direction  */
+        public int getLong() {
+            return this._long;
+        }
+        public void setLong(int _long) {
+            this._long = _long;
+        }
+        /**
+             * toString methode: creates a String representation of the object
+             * @return the String representation
+             * @author info.vancauwenberge.tostring plugin
+        
+             */
+            public String toString() {
+                StringBuffer buffer = new StringBuffer();
+                buffer.append(getLong()).append(", ").append(getLat());
+                return buffer.toString();
+            }
+        public int hashCode() {
+            final int PRIME = 31;
+            int result = 1;
+            result = PRIME * result + this._lat;
+            result = PRIME * result + this._long;
+            return result;
+        }
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (! (obj instanceof SiapCapability))
+                return false;
+            final ImageSize other = (ImageSize) obj;
+            if (this._lat != other._lat)
+                return false;
+            if (this._long != other._long)
+                return false;
+            return true;
+        }
 	}
 	
-	public static class SkyPos extends SkySize {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -3092469767434030421L;
-		/**   The sky position in the latitdude (Dec.) direction  */
-		public float getLat() {
-			return super.getLat();
-		}
-		/**  The sky position in the longitude (R.A.) direction  */
-		public float getLong() {
-			return super.getLong();
-		}
+	public static class SkyPos implements Serializable {
+        /**
+         * 
+         */
+        private static final long serialVersionUID = -2983641280264751668L;
+        private double _long;
+        private double _lat;
+        /** The maximum size in the latitdude (Dec.) direction */
+        public double getLat() {
+            return this._lat;
+        }
+        public void setLat(double _lat) {
+            this._lat = _lat;
+        }
+        /**     The maximum size in the longitude (R.A.) direction  */
+        public double getLong() {
+            return this._long;
+        }
+        public void setLong(double _long) {
+            this._long = _long;
+        }
+        /**
+             * toString methode: creates a String representation of the object
+             * @return the String representation
+             * @author info.vancauwenberge.tostring plugin
+        
+             */
+            public String toString() {
+                StringBuffer buffer = new StringBuffer();
+                buffer.append(getLong()).append(", ").append(getLat());
+                return buffer.toString();
+            }
+        public int hashCode() {
+            final long PRIME = 31;
+            long result = 1;
+            result = PRIME * result + Double.doubleToLongBits(this._lat);
+            result = PRIME * result + Double.doubleToLongBits(this._long);
+            return (int)result;
+        }
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (! (obj instanceof SiapCapability))
+                return false;
+            final SkyPos other = (SkyPos) obj;
+            if (Double.doubleToLongBits(this._lat) != Double.doubleToLongBits(other._lat))
+                return false;
+            if (Double.doubleToLongBits(this._long) != Double.doubleToLongBits(other._long))
+                return false;
+            return true;
+        }
 	}
 	
 	public static class Query implements Serializable {
