@@ -93,6 +93,7 @@ project and are not suitable for use in instance documents.</p>
                   <ul>
                     <li><a href="../schema/dsa/DSAMetadoc/v0.2/TableMetaDoc.xsd">urn:astrogrid:schema:dsa:TableMetaDoc:v0.2</a></li>
                     <li><a href="../schema/dsa/DSAMetadoc/v1.0/TableMetaDoc.xsd">urn:astrogrid:schema:TableMetaDoc:v1</a></li>
+                    <li><a href="../schema/dsa/DSAMetadoc/v1.1/TableMetaDoc.xsd">urn:astrogrid:schema:TableMetaDoc:v1.1</a></li>
                   </ul>
                   
                   <h2>Registry service</h2>
