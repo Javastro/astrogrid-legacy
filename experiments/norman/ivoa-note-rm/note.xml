@@ -14,7 +14,7 @@
 <meta name="author" content="Norman Gray"/>
 <meta name="DC.subject"
       content="IVOA, International, Virtual, Observatory, Alliance, Registry, Metadata, RDF" />
-<meta name='rcsdate' content='$Date: 2007/09/15 01:17:49 $'/>
+<meta name='rcsdate' content='$Date: 2007/09/15 01:44:20 $'/>
 <link href="http://www.ivoa.net/misc/ivoa_note.css"
       rel="stylesheet"
       type="text/css" />
@@ -39,12 +39,12 @@ q:after  { content: "”"; }
            border="0"/></a></td></tr>
 </table>
 
-<!-- $Id: note.xml,v 1.1 2007/09/15 01:17:49 norman Exp $ -->
+<!-- $Id: note.xml,v 1.2 2007/09/15 01:44:20 norman Exp $ -->
 
 <h1>An RDF version of the VO Registry</h1>
 <h2>IVOA Note 
-<!--(v1.0, 2007 March 2)-->
-(working version $Revision: 1.1 $ $Date: 2007/09/15 01:17:49 $)
+<!--(V1.0, 2007 March 2)-->
+(working version $Revision: 1.2 $ $Date: 2007/09/15 01:44:20 $)
 </h2> <!-- XXX version/date -->
 <dl>
 <dt>Interest/Working Group</dt>
@@ -124,11 +124,11 @@ information about data archives, services, organisations and other
 objects, allowing data owners to create and manage data they are
 responsible for, and supporting the replication of the data between
 cooperating registry servers.  There are now production servers
-deployed in the UK, the USA and Europe (XXX full list -- is there a RoR yet?),
+deployed in the UK, the USA and Europe (<span class='todo'>XXX full list -- is there a RoR yet?</span>),
 managing 12-13000 structured records and supporting queries from a
 variety of user-facing and server applications.</p>
 
-<p>Starting from XXXX, the Registry Working Group has produced
+<p>Starting from <span class='todo'>XXXX</span>, the Registry Working Group has produced
 standards for Resource Metadata (RM) <span class='cite'>std:rm</span>,
 the registry update protocol <span class='cite'>std:regint</span>, the
 VOResource schema <span class='cite'>std:voresource</span>, and
@@ -166,7 +166,7 @@ Open Data movement</a>.</li>
 <p>This Note describes preliminary results of the experiment, and will
 be extended in future versions.  The RM schema and the registry data
 have been reasonably straightforwardly converted to RDF, and are at
-present available behind a SPARQL endpoint at XXX URL.  Performance
+present available behind a SPARQL endpoint at <span class='todo'>XXX URL</span>.  Performance
 seems acceptable, but has not been examined in detail.</p>
 
 <div class='section' id='rdf'>
@@ -373,7 +373,8 @@ accidental and we aim to change this in future).</p>
 
 <p>The other XSchemas in the list were all converted directly to RDFS
 by an XSLT transformation of the <code>.xsd</code> file, assisted by
-a few additional XSD <code>appinfo</code> annotations.</p>
+a few additional XSD <code>appinfo</code> annotations inserted into
+the file.</p>
 
 </div>
 
@@ -413,14 +414,14 @@ class='xref'>convinst</span> is stored in, and made available by, a
 <em>triple-store</em>.</p>
 
 <p>Triple-stores typically do very little reasoning, if they do any at
-all.  Generally they will do only RDFS reasoning; that is, those
+all.  Typically, they will do only RDFS reasoning; that is, those
 deductions following from subclass, subproperty, domain and range
 assertions.  In the example of <span class='xref'>rdf</span>, this
 would include the deductions that <code>http://sieglinde</code> is a
 <em>Female</em> and a <em>Person</em>, but it would be unable to make use
 of any information about the (OWL) <em>symmetricProperty</em> nature
-of <em>hasSibling</em> (which in the case of this particular example
-might well be regarded as fortunate!).</p>
+of <em>hasSibling</em> (in the case of this particular example,
+too much reasoning about family relationships might be injurious!).</p>
 
 <p>RDF cannot usefully be persisted using an RDB in a naïve way.  It
 seems obvious to store RDF triples in a single three-column table, but
@@ -516,7 +517,7 @@ where {
 </div>
 
 <p style="text-align: right; font-size: x-small; color: #888;">
-$Revision: 1.1 $ $Date: 2007/09/15 01:17:49 $
+$Revision: 1.2 $ $Date: 2007/09/15 01:44:20 $
 </p>
 
 </div>
