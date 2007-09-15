@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="utf-8"?><!--*- nxml -*-->
+<!-- Based on template at
+     http://www.ivoa.net/Documents/templates/ivoa-tmpl.html -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:dc="http://purl.org/dc/elements/1.1/"
+      xmlns:dcterms="http://purl.org/dc/terms/" 
+      xml:lang="en" lang='en'>
+
+<head>
+<title>An RDF version of the VO Registry</title>
+<link rev="made"
+      href="http://nxg.me.uk/norman/#norman"
+      title="Norman Gray"/>
+<meta name="author" content="Norman Gray"/>
+<meta name="DC.subject"
+      content="IVOA, International, Virtual, Observatory, Alliance, Registry, Metadata, RDF" />
+<meta name='rcsdate' content='$Date: 2007/09/15 01:17:49 $'/>
+<link href="http://www.ivoa.net/misc/ivoa_note.css"
+      rel="stylesheet"
+      type="text/css" />
+<!-- style: make the ToC a little more compact, and without bullets -->
+<style type='text/css'>
+div.toc ul { list-style: none; padding-left: 1em; }
+span.userinput { font-weight: bold; }
+span.url { font-family: monospace; }
+q { color: #666; }
+q:before { content: "“"; }
+q:after  { content: "”"; }
+.todo { background: #ff7; }
+</style>
+</head>
+
+<body>
+<div class='head'>
+<table>
+<tr><td><a href="http://www.ivoa.net/"
+           ><img alt="IVOA logo"
+           src="http://ivoa.net/icons/ivoa_logo_small.jpg"
+           border="0"/></a></td></tr>
+</table>
+
+<!-- $Id: note.xml,v 1.1 2007/09/15 01:17:49 norman Exp $ -->
+
+<h1>An RDF version of the VO Registry</h1>
+<h2>IVOA Note 
+<!--(v1.0, 2007 March 2)-->
+(working version $Revision: 1.1 $ $Date: 2007/09/15 01:17:49 $)
+</h2> <!-- XXX version/date -->
+<dl>
+<dt>Interest/Working Group</dt>
+<dd><em>Not applicable</em></dd>
+
+<!--
+<dt>This version</dt>
+<dd>XXX No URL available</dd>
+
+<dt>Latest version</dt>
+<dd>XXX No URL available</dd>
+-->
+
+<dt>Author</dt>
+<dd><a href="http://nxg.me.uk" ><span property='dc:creator'>Norman Gray</span></a>,
+<a href='http://eurovotech.org/' >Euro-VOTech project</a>
+and
+<a href='http://www.star.le.ac.uk/' >University of Leicester</a></dd>
+</dl>
+<hr/>
+</div>
+
+<div class='section-nonum' id='abstract'>
+<p class='title'>Abstract</p>
+
+<div class='abstract'>
+<p>We describe the initial implementation of an RDF version of the
+IVOA Resource Registry, serving the registry data via a SPARQL query
+endpoint, including the creation of the ontology analogues of an
+important subset of the relevant XML Schemas, and the mechanics of the
+conversion process.  The result is an experimental service, and this
+is an interim document.</p>
+</div>
+
+</div>
+
+<div class='section-nonum' id='status'>
+<p class='title'>Status of this document</p>
+
+<p>This is an IVOA Note.</p>
+
+<p>This document is an IVOA Note expressing suggestions from and opinions of
+the authors.  The first release of this document was 
+<span property='dc:date' >XXX Date</span>.</p>
+
+<p>It is intended to share best practices, possible approaches, or
+other perspectives on interoperability with the Virtual Observatory.
+It should not be referenced or otherwise interpreted as a standard
+specification.</p>
+
+<p>A list of current IVOA Recommendations and other technical
+documents can be found at
+<a href="http://www.ivoa.net/Documents/"
+   ><code>http://www.ivoa.net/Documents/</code></a>.</p>
+
+<h3>Acknowledgments</h3>
+
+<p>Thanks are due to Kevin Benson for the dump of the MSSL registry,
+and to Ray Plante for the script to convert the version 0.10 resource
+entries to version 1.0.</p>
+
+</div>
+
+<h2><a id="contents" name="contents">Table of Contents</a></h2>
+<div class="head">
+<?toc?>
+</div>
+
+<hr/>
+
+<div class='section' id='introduction'>
+<p class='title'>Introduction</p>
+
+<p>The VO has developed and deployed a network of metadata
+repositories known, collectively, as the Registry.  These contain
+information about data archives, services, organisations and other
+objects, allowing data owners to create and manage data they are
+responsible for, and supporting the replication of the data between
+cooperating registry servers.  There are now production servers
+deployed in the UK, the USA and Europe (XXX full list -- is there a RoR yet?),
+managing 12-13000 structured records and supporting queries from a
+variety of user-facing and server applications.</p>
+
+<p>Starting from XXXX, the Registry Working Group has produced
+standards for Resource Metadata (RM) <span class='cite'>std:rm</span>,
+the registry update protocol <span class='cite'>std:regint</span>, the
+VOResource schema <span class='cite'>std:voresource</span>, and
+others.  At the time of writing, most of the registries serve records
+conforming to version 0.10 of the metadata standard, but should be
+fully converted to version 1.0 records by the end of 2007.  The
+registries are currently queried either using SQL or XQuery <span
+class='cite'>std:xquery</span>.</p>
+
+<p>This Note describes an experimental version of the registry as an
+RDF triple store (see section <span class='xref'>rdf</span> for an
+introduction to RDF and related technologies), queriable through a SPARQL <span
+class='cite'>std:sparql</span> endpoint.  The goals of this experiment
+are:</p>
+<ol>
+<li>to investigate how straightforwardly the RM schemas, and the
+registry data itself, can be converted to RDF, both in terms of the
+conversion itself and the technologies required to store and
+distribute the resulting RDF;</li>
+<li>to discover what benefits this offers to registry clients, through
+the expressiveness of the SPARQL query language;</li>
+<li>to explore the costs and benefits of the inferencing possibilities
+of RDF Schemas and OWL, with the expectation that these will allow
+both richer queries and better targeted results than are possible with
+the current registry query facilities;</li>
+<li>to explore the links with other semantic technologies being
+developed by the VO, such as the vocabularies work and the Ontology of
+Astronomical Object Types <span class='cite'>std:ivoa-astro-onto</span></li>
+<li>in the longer term to explore the links with other RDF-based
+technologies and projects, such as a VO engagement with the <a
+href='http://esw.w3.org/topic/SweoIG/TaskForces/CommunityProjects/LinkingOpenData'>Linking
+Open Data movement</a>.</li>
+</ol>
+
+<p>This Note describes preliminary results of the experiment, and will
+be extended in future versions.  The RM schema and the registry data
+have been reasonably straightforwardly converted to RDF, and are at
+present available behind a SPARQL endpoint at XXX URL.  Performance
+seems acceptable, but has not been examined in detail.</p>
+
+<div class='section' id='rdf'>
+<p class='title'>RDF technologies</p>
+<p>The Resource Description Framework (<em>RDF</em> <span
+class='cite'>std:rdf</span>) is a family of technologies standardised
+by the W3C from 1999 (see <a href='http://www.w3.org/RDF'
+><code>http://www.w3.org/RDF</code></a> for tutorials and further
+references), building on a large volume of previous work in computing
+science and library science.  RDF is an abstract data model; it has a
+small number of alternate notations; and it has a lightweight schema
+language (RDF Schemas or RDFS <span class='cite'>std:rdfs</span>) for
+articulating subclass and subproperty relations.  Associated with it
+are a range of ontology languages (various levels of OWL) and
+associated formalisms building on it.</p>
+
+<p>The RDF abstract data model represents all knowledge as a set of
+<em>triples</em>: <em>resources</em> have <em>properties</em> whose
+values are either resources or literals.  All resources are named by
+URIs, most typically <code>http:</code> URIs, but also including
+<code>mailto:</code> URIs and other schemes.  Properties are also
+named by URIs.  RDF introduces the notion of a <em>class</em>, or
+type, for a resource, which is associated with a resource with the
+standard predicate <code>rdf:type</code>.</p>
+
+<p>RDFS adds to this the properties <code>rdfs:subClassOf</code> and
+<code>rdfs:subPropertyOf</code>, making it possible to express a
+hierarchy of classes and properties, such that if <em>B</em> is a
+subclass of <em>A</em> then any object of type <em>B</em> is
+necessarily also of type <em>A</em> (with an analogous relationship
+for properties).</p>
+
+<p>The Web Ontology Language (OWL) <span class='cite'>std:owl</span>
+takes this further, adding mechanisms for defining classes (for
+example as the union of two other classes), declaring relationships
+between classes (for example that they are equivalent or disjoint),
+and defining properties with various logical features (a symmetric
+property <em>p</em>, for example, is one such as 'has sibling', which
+is such that if resource <em>A</em> has a property <em>p</em> with
+value <em>B</em>, then <em>B</em> can be deduced to have a property
+<em>p</em> with value <em>A</em>).  OWL contains three levels of
+language, OWL Full, OWL DL and OWL Lite, with different implemention
+costs.</p>
+
+<p>An <em>ontology</em> is, in the now-standard description ultimately
+attributable to <span class='cite'>gruber93</span>, <q>a formal
+specification of a shared conceptualisation</q>, that is, a set of
+classes and properties which articulate a model of the world (see also
+<span class='cite'>baader04</span>).  It can range from an elaborate
+set of definitions and restrictions, to a lightweight model which is
+barely more than a set of subclass relationships.  For example, one
+might define the classes of <code>Person</code>, <code>Male</code> and
+<code>Female</code>, declare the the latter as subclasses of the
+former, and that a <code>Person</code> will have precisely one
+<code>geneticFather</code> and one <code>geneticMother</code>
+properties, which have <code>Male</code> and <code>Female</code> as
+their respective domains.</p>
+
+<p>RDF is useful by itself, as a useful lowest-common-demoninator data
+aggregation format: everything can be translated into RDF, at the cost
+of spectacularly increased (though generally hidable) verbosity,
+vocabularies and data sources can be mixed freely, and SPARQL allows
+the result to be queried flexibly.  In order to use the extra
+structure declared in an RDFS or OWL ontology one must employ a
+<em>reasoner</em>, which can consume an ontology and a set of asserted
+facts (for example that <code>http://siegfried</code> is a
+<em>Male</em> and has <em>geneticMother</em>
+<code>http://sieglinde</code>) and either implicitly or explicitly add
+the implied facts (in this case that <code>http://siegfried</code> is
+also a <em>Person</em>, and that <code>http://siglinde</code> must be
+a <em>Female</em> and thus also a <em>Person</em>).  A reasoner which
+can make the deductions required for RDFS is a lightweight and
+generally fast thing; at the other end of the scale it is possible to
+create an ontology using OWL Full expressing relationships which a
+reasoner cannot be guaranteed to discover in polynomial time.</p>
+
+<p>In this current RM work, the ontological work was done using
+only RDFS, with only a light garnishing of OWL annotations.</p>
+
+</div>
+
+</div>
+
+<div class='section'>
+<p class='title'>Conversion of registry metadata to RDF</p>
+<p>The conversion of the registry metadata to RDF required two
+parallel strands, namely the conversion of the current resource
+schemas from XML Schemas to the analogous RDFS and OWL ontologies, and
+the conversion of the registry records themselves to RDF triples;
+these are described in sections <span class='xref'>convschema</span>
+and <span class='xref'>convinst</span> below.  The resulting triples
+are served using a specialised `triple-store', briefly described in
+<span class='xref'>3store</span>.</p>
+
+<div class='section' id='convschema'>
+<p class='title'>Converting the registry resource schemas</p>
+
+<p>The IVOA maintains a number of XML Schemas (see <span
+class='url'>http://www.ivoa.net/xml/</span> for the collection) at
+various levels of standardisation.  As of September 2007, the
+production registries are using 0.x versions of the schemas for their
+records, though there is an ongoing campaign to move the registries to
+version 1.0+ schemas before the end of 2007.</p>
+
+<p>We have worked, on this occasion, with the XSchemas ConeSearch,
+RegistryInterface, SIA, STC (v1.30), TabularDB (v0.3), VODataService,
+VORegistry, and VOResource (all are v1.0 except where noted).
+Although the registry records use a broader range of schemas than
+this, this set covers 11894 out of the 12561 registry records we
+converted.</p>
+
+<p>The VOResource XSchema is the core schema for the registry, and the
+one with the richest structure; the corresponding ontology was
+therefore developed by hand, using Protégé <span
+class='cite'>protege07</span>.  Most of this development was rather
+mechanical, but part of the motivation with this
+conversion was to explore the extent to which OWL idioms could express
+the RM concepts more precisely, more expressively, or more
+intelligibly.  To this end we made a few non-obvious adjustments in
+the conversion, which include the following:</p>
+
+<ul>
+<li>In general, there are no restrictions on the number of times a
+property may appear (that is, the <code>maxOccurs</code> and
+<code>minOccurs</code> XSchema attributes have generally been
+ignored.  This is because (i) so-called `cardinality' constraints are
+(perhaps unexpectedly) difficult to reason about; (ii) the RDF
+version of the resource is envisaged as a mirror of the XML version,
+so that we might reasonably assume XML schema validity; and (iii)
+while XSchemas in general are heavily concerned with notions of
+syntactical validity -- forbidding this construction or that -- RDF
+schemas exist to provide the information required to reason with, and
+are not much concerned with validity.</li>
+
+<li>Similarly, and for similar reasons, we ignored the various restrictions of
+XSD String.</li>
+
+<li>The ontology concept <em>Actor</em> has no counterpart in the
+XSchema, but it is introduced here as a way of grouping
+<em>Contact</em>, <em>Creator</em> and <em>Resource</em>.  This means
+that the properties declared as having a domain of <em>Actor</em> may
+also be used on its subclasses; this has the side-effect that, since
+the <code>logo</code> property has a domain of <em>Actor</em>, the concepts
+<em>Contact</em> and <em>Resource</em> are valid domains for that
+property as well (in the XSchema, only Creator has a logo)</li>
+
+<li>In the XSchema, the simple type <code>Type</code> has a flat
+enumeration of permissible values.  In the ontology these were
+arranged into a shallow hierarchy, with <em>ArchiveType</em>, for
+example, a subClassOf <em>ScientificDataType</em>, which is in turn a
+subClassOf <em>ResourceType</em>.  At the same time, the concepts at
+the same level in this hierarchy were declared as being
+<em>disjoint</em>, in OWL terms, in the sense that no resource can be
+declared to be of <em>ArchiveType</em> and <em>SimulationType</em>
+(we make no claim that this hierarchy or these disjointedness
+assertions are strongly defensible -- the aim is to find to what
+extent extra structure such as this can add value to the registry).</li>
+
+<li>Similarly the <em>ContentLevel</em> concept acquired some hierarchy,
+as did <em>URI</em>, grouping <em>IdentifierURI</em> and the various
+<em>AccessURL</em> subclasses.  The <em>IdentifierURI</em> class is
+the domain for both a <code>uri</code> property and broken-out
+<em>authorityID</em> and <em>resourceKey</em> properties.</li>
+
+<li>The XSchema <code>Relationship</code> type contains
+<code>relationshipType</code> and <code>relatedResource</code>
+elements.  This is replaced in the ontology by a
+property <em>relatedResource</em> property, which takes a
+<em>ContentDescription</em> as domain and <em>Actor</em> as range.  It
+has subproperties <em>mirrorOf</em>, <em>servedBy</em>,
+<em>serviceFor</em> and <em>derivedFrom</em>, with the same domain and
+range.  Thus we have replaced the stand-off link of the XSchema with a
+direct link in the ontology.  We have verified that it is indeed
+feasible to convert XML instances to use the appropriate property, and
+we expect that the direct relationship will be more readily
+intelligible to the eventual users, of whichever type.</li>
+
+<li>In the XSchema, the <code>validationLevel</code> element contains
+one of an enumerated set of integers.  In the ontology, the
+<em>validationLevel</em> property has a domain of <em>Resource</em> or
+<em>Capability</em> and a range of <em>Organization</em>, and the
+level of validation is expressed by whichever of the successive
+<em>subproperties</em> <em>validationLevel0</em> to
+<em>validationLevel4</em> is used.  As well as being more direct, this
+directly encapsulates the information that a resource with a
+<em>validationLevel1</em> property necessarily also has a
+<em>validationLevel0</em> property with the same value.  Again, it
+remains to be seen by experience whether this does in fact make
+queries easier for users.</li>
+
+<li>Finally, we renamed a number of elements when creating
+corresponding concepts -- for example XSchema <code>Curation</code>
+turned into concept <em>CurationDescription</em>.  These were
+generally for stylistic and idiomatic reasons.</li>
+</ul>
+
+<p>Although the VOResource ontology uses a number of OWL features,
+none of them are essential, and it would be straightforward to define
+an alternative pure RDFS variant of the ontology with relatively
+little loss of functionality (at the time of writing, the <a
+href='http://www.mygrid.org.uk/OWL/Validator' >MyGrid OWL
+Validator</a> classifies the ontology as OWL Full, but this is
+accidental and we aim to change this in future).</p>
+
+<p>The other XSchemas in the list were all converted directly to RDFS
+by an XSLT transformation of the <code>.xsd</code> file, assisted by
+a few additional XSD <code>appinfo</code> annotations.</p>
+
+</div>
+
+<div class='section' id='convinst'>
+<p class='title'>Converting the registry records</p>
+
+<p>The resource registry records were converted from an XML dump of
+the contents of the MSSL registry, comprising records conforming to
+version 0.10 of the VOResource schema.  Since the conversion from XML
+to RDF presumed VOResource 1.0 records, the contents of the dump were
+pre-converted to VOResource 1.0 entries using <a
+href='http://www.ivoa.net/twiki/bin/view/IVOA/VoResourceConversionXSL'
+>Ray Plante's conversion script</a>.</p>
+
+<p>As with the ontologies described in <span
+class='xref'>convschema</span>, the conversion from the VOResource
+schema was done using a hand-written XSLT transform, and the
+conversions for the other supported schemas done by XSLT scripts
+generated from the XSchema files.</p>
+
+<p>Initial testing suggests that the transformation is accurate, but
+RDF does not have a notion of `validity' which is as straightforward
+as that for XML, so more testing and debugging is certainly
+necessary.</p>
+
+<p>Of the 12561 registry records in the supplied dump, 11894 converted
+without obvious error in this way; the remainder used XSchemas not
+supported so far, or included constructions not supported in the
+conversion scripts.  These records turned into 656104 triples.</p>
+</div>
+</div>
+
+<div class='section' id='3store'>
+<p class='title'>The triple-store</p>
+<p>The RDF resulting from the transformation in section <span
+class='xref'>convinst</span> is stored in, and made available by, a
+<em>triple-store</em>.</p>
+
+<p>Triple-stores typically do very little reasoning, if they do any at
+all.  Generally they will do only RDFS reasoning; that is, those
+deductions following from subclass, subproperty, domain and range
+assertions.  In the example of <span class='xref'>rdf</span>, this
+would include the deductions that <code>http://sieglinde</code> is a
+<em>Female</em> and a <em>Person</em>, but it would be unable to make use
+of any information about the (OWL) <em>symmetricProperty</em> nature
+of <em>hasSibling</em> (which in the case of this particular example
+might well be regarded as fortunate!).</p>
+
+<p>RDF cannot usefully be persisted using an RDB in a naïve way.  It
+seems obvious to store RDF triples in a single three-column table, but
+it seems that this is in fact infeasible.  As I understand it, the
+pattern of accesses of such a table, when servicing a SPARQL query,
+implies a large number of self-joins on the table, which is a pattern
+sufficiently unlike typical RDB accesses that it counfounds RDBMS
+query planners and becomes impossibly inefficient.  Triple-stores
+therefore have two options: they can use an RDBMS as a persistance
+mechanism, as long as they store the triples in a sufficiently clever
+way; or they can create a storage engine from scratch, optimised for
+storing RDF.</p>
+
+<p>We evaluated a number of triple-stores:</p>
+
+<ul>
+<li>InstanceStore
+<span class='url'>http://instancestore.man.ac.uk</span> is a pure Java
+store, which does not depend on an RDB back-end, and which can
+potentially do OWL-DL reasoning rather than just RDFS.  Uploading to
+it is somewhat complicated, however, and it appears to be moribund,
+with no development work being done on it since 2004.</li>
+
+<li>3store
+<span class='url'>http://sourceforge.net/projects/threestore/</span> can do
+RDFS reasoning, built on a MySQL back-end.  It is adeqately fast for
+small volumes of RDF (thousands of triples), but uploading became
+intolerably slow at 10<sup>5</sup> triples.</li>
+
+<li>Mulgara <span class='url'>http://www.mulgara.org/</span> is a pure
+Java store, which does not depend on an RDB back-end.  It can cope
+with large volumes of RDF and is under active development.
+Unfortunately, it uses its own query language, iTQL: although this is
+claimed to be more expressive than SPARQL, one goal of this current
+project is to make the Registry available using a standard language.
+The Mulgara developers are working on a SPARQL front-end, so this
+could be usefully revisited when that has matured.</li>
+
+<li>SDB <span class='url'>http://jena.sourceforge.net/SDB/</span> is a
+storage layer for the pure-Java Hewlett-Packard RDF toolkit, Jena.  It
+can use a range of RDBMS systems, with the marginally preferred system
+being PostgreSQL.  It is at present at an early stage of development,
+but is already adequately performant.  Crucially, it is very easy to
+integrate with our previous Jena-based work (the Quaestor server), and
+largely for this reason, it was this store that we chose to use.</li>
+</ul>
+
+<p>The following triple-stores were not evaluated, but should be.</p>
+
+<ul>
+<li>Virtuoso
+<span class='url'>http://www.openlinksw.com/virtuoso/</span> is a
+group of products with an open and a commercial version, and which
+includes RDF and SPARQL support.  No more is known at present.</li>
+
+<li>Sesame
+<span class='url'>http://www.openrdf.org/</span> is a mature and
+performant triple-store.  It has its own query language, SeRQL, but
+has a SPARQL front-end as well.  We have <em>not yet adequately
+evaluated Sesame</em>, though AstroGrid already has experience of it
+(Elizabeth Auden).</li>
+
+<li>OWLIM
+<span class='url'>http://www.ontotext.com/owlim/</span> is a store
+packaged as a `Storage and Inference Layer' for Sesame.  It comes in
+two versions, open-source SwiftOWLIM and commercial BigOWLIM, and is
+able to do OWL inference.</li>
+</ul>
+</div>
+
+<div class='section' id='sparql'>
+<p class='title'>SPARQL queries</p>
+<p>For example:</p>
+<pre>
+prefix vor: &lt;http://www.ivoa.net/xml/VOResource/v1.0#&gt;
+prefix sia: &lt;http://www.ivoa.net/xml/SIA/v1.0#&gt;
+
+select ?r
+where {
+ ?r vor:capability [ sia:imageServiceType [ a sia:ImageServiceTypeAtlas ]].
+ ?r vor:content [ vor:contentLevel [ a vor:ResearchContentLevel ] ].
+}
+</pre>
+<p>More to come.</p>
+</div>
+
+<div class='appendices'>
+
+<div class='section-nonum' id='bibliography'>
+<p class='title'>Bibliography</p>
+<?bibliography rm-refs ?>
+<!--<?bibliography compsci ?>-->
+</div>
+
+<p style="text-align: right; font-size: x-small; color: #888;">
+$Revision: 1.1 $ $Date: 2007/09/15 01:17:49 $
+</p>
+
+</div>
+
+</body>
+</html>
