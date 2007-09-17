@@ -1,6 +1,8 @@
 package org.astrogrid.desktop.modules.ui.voexplorer.google;
 
 import java.awt.Color;
+import java.util.List;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.JEditorPane;
@@ -64,8 +66,8 @@ public class AnnotationPanel extends JPanel {
 			note = null;
 		}
 		
-		String[] ta = ann.getTags();
-		if (ta != null && ta.length > 0) {
+		Set ta = ann.getTags();
+		if (ta != null && ta.size() > 0) {
 			tags = new JTextField();
 			tags.setFont(UIConstants.SMALL_DIALOG_FONT);
 			tags.setEditable(false);

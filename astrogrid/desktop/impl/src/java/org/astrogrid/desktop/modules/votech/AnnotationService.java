@@ -3,10 +3,12 @@
  */
 package org.astrogrid.desktop.modules.votech;
 
+import java.net.URI;
 import java.util.Iterator;
 
 import org.apache.commons.collections.Closure;
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.desktop.modules.system.ScheduledTask;
 
 
 
@@ -28,8 +30,6 @@ public interface AnnotationService {
 	 */
 	void addSource(AnnotationSource nu);
 	
-	/** permenantly remove the annotation source from the list */
-	void removeSource(AnnotationSource remove);
 	
 	// editing annotations.
 	
@@ -39,9 +39,13 @@ public interface AnnotationService {
 	 * may return 'null' if no annotation available for this resource
 	 */
 	UserAnnotation getUserAnnotation(Resource r);
+	UserAnnotation getUserAnnotation(URI resourceId);
 	
 	/** set the annotation for a particular resource */
 	void setUserAnnotation(Resource r, UserAnnotation ann);
+	
+	/** remove the user annotation for a resource */
+    public void removeUserAnnotation(Resource r);	
 	
 	// query for annotations.
 	

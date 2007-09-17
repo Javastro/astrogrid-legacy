@@ -7,7 +7,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.ivoa.resource.Content;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -67,14 +70,12 @@ public class TagStrategy extends PipelineStrategy {
 //					    System.err.println(a.getNote());
 //					    return true;
 //					}
-					String[] tags = a.getTags();
-					if (tags != null && tags.length !=0) {
+					Set tags = a.getTags();
+					if (tags != null && ! tags.isEmpty()) {
 						seenNone = false;
-						for (int j = 0; j < tags.length; j++) {
-							if (selected.contains(tags[j])) {
-								return true;
-							}
-						}
+						if (CollectionUtils.containsAny(selected,tags)) {
+						    return true;
+						}						
 					}
 				}
 				return seenNone && selected.contains(NONE_PROVIDED.get(0));
@@ -109,14 +110,12 @@ public class TagStrategy extends PipelineStrategy {
 //				        }
 //				        result.add(ANNOTATED);
 //				    }
-					String[] tags = a.getTags();
-					if (tags != null && tags.length != 0) {
+					Set tags = a.getTags();
+					if (tags != null && ! tags.isEmpty()) {
 						if (result == NONE_PROVIDED) {
-							result = new ArrayList(tags.length);
+							result = new ArrayList(tags.size());
 						}
-						for (int j = 0; j < tags.length; j++) {
-							result.add(tags[j]);
-						}
+						result.addAll(tags);
 					}
 				}
 				return result;

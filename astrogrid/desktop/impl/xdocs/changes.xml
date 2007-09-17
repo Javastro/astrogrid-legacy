@@ -15,6 +15,13 @@
 	</head>
 <body>
 <release version="next" date="unreleased">
+    <action dev="nw" type="update">
+        Tidied up annotations xml format - all previous annotations will be lost.
+        Improved annotation store performance.
+    </action>
+    <action dev="nw" type="add">
+        Added 'select all' and 'invert selection' menu operations.
+    </action>
     <action dev="nw" type="fix" issue="2300">
         fixed ui snag
     </action>

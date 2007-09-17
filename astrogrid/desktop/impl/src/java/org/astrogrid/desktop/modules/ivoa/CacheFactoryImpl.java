@@ -6,6 +6,7 @@ package org.astrogrid.desktop.modules.ivoa;
 import java.util.Iterator;
 import java.util.List;
 
+import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.config.CacheConfiguration;
@@ -75,8 +76,14 @@ public class CacheFactoryImpl implements ShutdownListener, CacheFactory, ObjectP
 	}
 
 
-	public void flush() {
-		getManager().clearAll();
+	public void flush() { // don't flush eternal caches.
+		String[] cacheNames = manager.getCacheNames();
+		for (int i = 0; i < cacheNames.length; i++) {
+            Cache cache = manager.getCache(cacheNames[i]);
+            if (! cache.isEternal()) {
+                cache.removeAll();
+            }
+        }
 	}
 
 	/** returns a matching ehcache instance, or null if not found */

@@ -5,6 +5,7 @@ package org.astrogrid.desktop.modules.ui.voexplorer.google;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.astrogrid.acr.ivoa.resource.Content;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -62,11 +63,9 @@ public final class ResourceTextFilterator implements Filterator, TextFilterator 
 			if (n != null) {
 				l.add(n);
 			}
-			String[] tags = a.getTags();
-			if (tags != null && tags.length > 0) {
-				for (int  j = 0; j < tags.length; j++) {
-					l.add(tags[j]);
-				}
+			Set tags = a.getTags();
+			if (tags != null) {
+			    l.addAll(tags);
 			}
 			if (a instanceof UserAnnotation 
 					&& ((UserAnnotation)a).isFlagged()) {

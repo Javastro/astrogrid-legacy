@@ -6,6 +6,8 @@ package org.astrogrid.desktop.modules.votech;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 /** representaiton of an annotation from an internal source.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -22,7 +24,7 @@ public class Annotation implements Serializable {
 	protected String alternativeTitle;
 	
 	/** a set of tags applied to this resource */
-	protected String[] tags;
+	protected Set tags;
 	
 	/** a set of arbitrary-length notes applied to this resource */
 	protected String note;
@@ -71,16 +73,16 @@ public class Annotation implements Serializable {
 	}
 
 	/**
-	 * @return the tags
+	 * @return the tags - a list of strings
 	 */
-	public final String[] getTags() {
+	public final Set getTags() {
 		return this.tags;
 	}
 
 	/**
 	 * @param tags the tags to set
 	 */
-	public final void setTags(String[] tags) {
+	public final void setTags(Set tags) {
 		this.tags = tags;
 	}
 
@@ -112,7 +114,7 @@ public class Annotation implements Serializable {
 			if (tags == null) {
 				buffer.append(", tags = ").append("null");
 			} else {
-				buffer.append(", tags = ").append(Arrays.asList(tags).toString());
+				buffer.append(", tags = ").append(tags);
 			}
 			buffer.append(", note = ").append(note);
 			buffer.append("]");

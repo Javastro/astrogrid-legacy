@@ -61,12 +61,15 @@ public class XStreamXmlPersist implements XmlPersist {
         
         // custom convertors, etc
         
-        // if we developo a lot of these, could  register them all via hivemind configurations...
-        xstream.alias("annotation",UserAnnotation.class);
+        xstream.alias("user-annotation",UserAnnotation.class);
+        xstream.alias("annotation",Annotation.class);
+        xstream.useAttributeFor(Annotation.class,"resourceId");
         xstream.registerConverter(new URIConverter());
         xstream.registerConverter(new ColorConverter());
         xstream.omitField(Annotation.class,"source");
         xstream.addImmutableType(Color.class);
+        xstream.useAttributeFor(UserAnnotation.class,"flagged");
+        xstream.addImplicitCollection(Annotation.class,"tags","tag",String.class);
         
         xstream.alias("astroscope-history",SearchHistoryItem.class);
         
@@ -88,8 +91,6 @@ public class XStreamXmlPersist implements XmlPersist {
         xstream.addImplicitCollection(StaticList.class,"resouceUris","resource",URI.class);// stuck with this mis-spelling of resourceUris now - but map it to something sensible.
 
         xstream.alias("xquery-list",XQueryList.class);
-        
-        
         
     }
     

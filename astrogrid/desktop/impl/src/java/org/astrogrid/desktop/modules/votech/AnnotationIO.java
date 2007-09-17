@@ -3,12 +3,16 @@
  */
 package org.astrogrid.desktop.modules.votech;
 
+import net.sf.ehcache.hibernate.EhCache;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
 import org.astrogrid.desktop.modules.system.XmlPersist;
 import org.astrogrid.desktop.modules.system.pref.Preference;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.folders.Folder;
 
 import com.thoughtworks.xstream.XStream;
@@ -37,21 +41,26 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 /** Handles the messy business of reading / writing anntotation files.
  * Keeps it separate from the rest of the implementation, 
  * and allows it to be switched around later.
  * 
- * @todo reimplement - find a way to avoid keeping list of userAnnotations in memory
- * 	- but still be able to write all out to a file.
- * random access file of some kind?
+ * at the moment only the reading-writing of single annotation files is properly developeed, tested and used.
+ * loading/saving of the list of annotation sources is undeveloped at the moment.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jun 18, 20078:34:03 PM
  */
-public class AnnotationIO implements ExceptionListener{
+public class AnnotationIO {
 	/**
 	 * Logger for this class
 	 */
@@ -60,21 +69,21 @@ public class AnnotationIO implements ExceptionListener{
 
 	private final File workDir;
 	private final AnnotationSource userSource;
-	private final File annotationSourceList;
+	private final File annotationSourceList; // unused at the moment.
 	private final File userAnnotationsFile;
-	private final List userAnnotations;
+	private final Set userAnnotationIds; // set of resource id's that contain user annotations.
 
     private final XmlPersist xml;
-	
 
-	
-	
-	public AnnotationIO(final Preference workDirPref, IterableObjectBuilder srcBuilder,XmlPersist xml) {
+    private final AnnotationServiceImpl service;
+		
+	public AnnotationIO(final Preference workDirPref, IterableObjectBuilder srcBuilder,XmlPersist xml, AnnotationServiceImpl service) {
 		super();
         this.xml = xml;
-		userAnnotations = new ArrayList();
+        this.service = service;
+		userAnnotationIds = new HashSet();
 		this.workDir = new File(workDirPref.toString());
-		userAnnotationsFile =  new File(workDir,"user-annotations.xstream");
+		userAnnotationsFile =  new File(workDir,"user-annotations.xml");
 		this.userSource = new AnnotationSource(userAnnotationsFile.toURI(),"User");
 		this.userSource.setSortOrder(0); // most important.
 		logger.info("Will load user annotations from " + userSource.getSource());
@@ -94,38 +103,37 @@ public class AnnotationIO implements ExceptionListener{
 	}
 
 	//temporary hard-coded annotation source list
-	//@fixme make more editable.
-	List loadAnnotationSourceList() {
+	//@todo make more editable.
+	public List loadAnnotationSourceList() {
 		return sources;
 	}
 	
 	private final List sources ;
 	
-	// does nothing
-	void saveAnnotationSourceList(AnnotationSource[] list) {
+	// does nothing - unimplemented
+	public void saveAnnotationSourceList(AnnotationSource[] list) {
 	}
-	
 	
 	/** get the special 'user' annotation source */
 	public AnnotationSource getUserSource() {
 		return userSource;
 	}
 	
-	
-	
 // management of annotations
-	//@todo replace with XStream.
-	Annotation[] load(AnnotationSource source) {
+	public Collection load(AnnotationSource source) {
 		InputStream is = null;
-
-			//@todo open streams in a more robust way (allowing for ivo://) later.
 			try {
 				is = source.getSource().toURL().openStream();
-				Annotation[] anns = (Annotation[])xml.fromXml(is);
+				Collection anns = (Collection)xml.fromXml(is);
 				if (anns != null) {
-					logger.info("Read " + anns.length + " from " + source);
-					if (source.equals(userSource)) {
-						userAnnotations.addAll(Arrays.asList(anns));
+					logger.info("Read " + anns.size() + " from " + source);
+					if (source.equals(userSource)) { // keep a list of the id's of the resoues which have a user annotation.
+					    // this is used afterwards to locate these resources when persisting.
+						userAnnotationIds.clear();						
+						for(Iterator i = anns.iterator(); i.hasNext(); ) {
+						    UserAnnotation  a = (UserAnnotation)i.next();
+						    userAnnotationIds.add(a.getResourceId());
+						}
 					}
 					return anns;
 				} else {
@@ -146,125 +154,56 @@ public class AnnotationIO implements ExceptionListener{
 				}				
 			}
 			// something's gone wrong - so just return an empty array.
-			return new Annotation[0];		
+			return Collections.EMPTY_LIST;
 		}
-	/** load a list of annotations from an annotation source */
-	Annotation[] loadSunXMLPersistence(AnnotationSource source) {
-		InputStream is = null;
-		XMLDecoder x = null;
-
-			//@todo open streams in a more robust way (allowing for ivo://) later.
-			try {
-				is = source.getSource().toURL().openStream();
-				x = new XMLDecoder(is, this,this);
-				Annotation[] anns = (Annotation[])x.readObject();
-				if (anns != null) {
-					logger.info("Read " + anns.length + " from " + source);
-					return anns;
-				} else {
-					logger.info("Empty Source " + source);
-				}
-			} catch (MalformedURLException x1) {
-				logger.error("MalformedURLException",x1);
-			} catch (IOException x1) {
-				logger.error("IOException",x1);
-			} catch (ArrayIndexOutOfBoundsException ex) {
-				// thrown when the file contains no data - a bit crap - no way to check this.
-				// fail gracefully.
-				logger.warn("Empty Source " + source);
-			} catch (NoSuchElementException ex) {
-				// thrown when the file contains no data - a bit crap - no way to check this.
-				// fail gracefully.
-				logger.warn("Empty Source" + source);						
-			} finally {
-				if (x != null) {
-					x.close();
-				} 
-				if (is != null) {
-					try {
-						is.close();
-					} catch (IOException x1) {
-						logger.error("IOException",x1);
-					}
-				}				
-			}
-			// something's gone wrong - so just return an empty array.
-			return new Annotation[0];		
-		}
-
+	
 	// user annotations.
-	/** add a new user annotation, and persist the whole lot */
-	void addUserAnnotation(UserAnnotation ann) {
-		userAnnotations.add(ann);
-		saveUserAnnotations();
+	/** mark a user annotation as updated, and persist the list */
+	public void updateUserAnnotation(UserAnnotation ann) {
+	        userAnnotationIds.add(ann.getResourceId());
+	        saveUserAnnotations();
 	}
-	
-	/** update a user annotation, and persist the whole lot */
-	void updateUserAnnotation(UserAnnotation ann) {
-		int ix = 0;
-		for (Iterator i = userAnnotations.iterator(); i.hasNext();ix++) {
-			UserAnnotation ua = (UserAnnotation) i.next();
-			if (ua.getResourceId().equals(ann.getResourceId())) {
-				userAnnotations.set(ix,ann);
-			}
-		}
-		saveUserAnnotations();
-	}
-	
-	/** update a user annotation, and persist the whole lot */
-	void removeUserAnnotation(UserAnnotation ann) {
-		userAnnotations.remove(ann);
-		saveUserAnnotations();
-	}
+	/** mark a user annotation as removed, and persist the list */
+	public void removeUserAnnotation(Resource r) {
+           userAnnotationIds.remove(r.getId());
+           saveUserAnnotations();
+   }
 
-	
 	/**
-	 * persist the user anotations.
+	 * persist the user anotations. - finds the user annotations from the cache, and then saves then to disk.
 	 */
 	private void saveUserAnnotations() {
-		OutputStream fos = null;
-		try {
-			fos = new FileOutputStream(userAnnotationsFile);
-			UserAnnotation[] arr = (UserAnnotation[])userAnnotations.toArray(new UserAnnotation[userAnnotations.size()]);
-			xml.toXml(arr,fos);
-		} catch (FileNotFoundException x) {
-			logger.error("Failed to save user annotations",x);
-		} catch (ServiceException x) {
-            logger.error("Failed to save user annotations",x);
-        } finally {
-			if (fos != null) {
-				try {
-					fos.close();
-				} catch (IOException x) {
-					logger.error("Failed to save user annotations",x);
-				}
-			}
-		}		
-	}
-	private void saveUserAnnotationsSeriaization() {
-		ObjectOutputStream fos = null;
-		try {
-			fos = new ObjectOutputStream(new FileOutputStream(userAnnotationsFile));
-			UserAnnotation[] arr = (UserAnnotation[])userAnnotations.toArray(new UserAnnotation[userAnnotations.size()]);
-			fos.writeObject(arr);
-		} catch (FileNotFoundException x) {
-			logger.error("Failed to save user annotations",x);
-		} catch (IOException x) {
-			logger.error("IOException",x);
-		} finally {
-			if (fos != null) {
-				try {
-					fos.close();
-				} catch (IOException x) {
-					logger.error("Failed to save user annotations",x);
-				}
-			}
-		}		
+	    new BackgroundWorker(service.ui,"Saving user annotations") {
+
+	        protected Object construct() throws Exception {
+	            OutputStream fos = null;
+	            try {
+	                List persistList = new ArrayList(userAnnotationIds.size());
+	                for (Iterator i = userAnnotationIds.iterator(); i.hasNext();) {
+	                    URI id = (URI) i.next();
+	                    UserAnnotation a = service.getUserAnnotation(id);
+	                    if (a != null) {
+	                        persistList.add(a);
+	                    }
+	                }
+	                fos = new FileOutputStream(userAnnotationsFile);
+	                xml.toXml(persistList,fos);
+	            } catch (FileNotFoundException x) {
+	                logger.error("Failed to save user annotations",x);
+	            } catch (ServiceException x) {
+	                logger.error("Failed to save user annotations",x);
+	            } finally {
+	                if (fos != null) {
+	                    try {
+	                        fos.close();
+	                    } catch (IOException x) {
+	                        logger.error("Failed to save user annotations",x);
+	                    }
+	                }
+	            }		
+	            return null;
+	        }
+	    }.start();
 	}
 
-	/** exception handler */
-	public void exceptionThrown(Exception e) {
-		logger.warn("Failed to read source - " + e.getMessage());
-		logger.debug(e);
-	}
 	}

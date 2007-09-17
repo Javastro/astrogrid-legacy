@@ -4,8 +4,7 @@
 package org.astrogrid.desktop.modules.votech;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -15,7 +14,6 @@ import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 
 import org.apache.commons.collections.IteratorUtils;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -40,11 +38,11 @@ public class AnnotationServiceImpl implements AnnotationService{
 	private final List annotationSources;
 	private final AnnotationIO io;
 	private final Ehcache cache;
-	private final UIContext ui;
+	protected final UIContext ui;
 	private final AnnotationSource userSource;
 	public AnnotationServiceImpl(final Ehcache cache, final UIContext ui, IterableObjectBuilder sources,Preference workDir, XmlPersist xml) {
 		super();
-		this.io = new AnnotationIO(workDir, sources,xml); 
+		this.io = new AnnotationIO(workDir, sources,xml,this); 
 		this.cache = cache;
 		this.ui = ui;
 		
@@ -108,12 +106,12 @@ private void saveSourceList() {
 	/** process a single static source */
 	public void loadStaticSource(final AnnotationSource source) {
 		// do this on a background thread..
-		(new BackgroundWorker(ui,"Loading annotations:" + source.getName()) {
+		(new BackgroundWorker(ui,"Loading annotations from " + source.getName()) {
 
 			protected Object construct() throws Exception {
-				Annotation[] anns = io.load(source);
-				for (int i = 0; i < anns.length; i++) {
-					Annotation a = anns[i];
+				Collection anns = io.load(source);
+				for (Iterator i = anns.iterator(); i.hasNext();) {
+					Annotation a = (Annotation) i.next();
 					a.setSource(source); // as probably haven't persisted this.
 					URI resourceId = a.getResourceId();
 					Element el = cache.get(resourceId);
@@ -141,7 +139,10 @@ private void saveSourceList() {
 		return userSource;
 	}
 	public UserAnnotation getUserAnnotation(Resource r) {
-		Element el = cache.get(r.getId());
+	    return getUserAnnotation(r.getId());
+	}
+	public UserAnnotation getUserAnnotation(URI resourceId) {
+		Element el = cache.get(resourceId);
 		if (el == null) {
 			return null;
 		}
@@ -150,24 +151,7 @@ private void saveSourceList() {
 		return ua;
 	}
 	
-	public void removeUserAnnotation(Resource r) {
-		if (r == null) {
-			return;
-		}
-		Element el = cache.get(r.getId());
-		if (el == null) {
-			// we're done.
-			return;
-		} else {
-			Map m = (Map)el.getValue();
-			
-			if (m.containsKey(userSource)) {
-				UserAnnotation ann = (UserAnnotation)m.remove(userSource);
-				removeUserAnnotation(ann);			
-				cache.put(el);		
-			}
-		}
-	}
+
 	
 	public void setUserAnnotation(Resource r, UserAnnotation ann) {
 		if (ann == null || r == null) {
@@ -183,47 +167,29 @@ private void saveSourceList() {
 			Map m = new HashMap();
 			m.put(userSource,ann);
 			el = new Element(r.getId(),m);
-			persistNewUserAnnotation(ann);
 		} else {
 			Map m = (Map)el.getValue();
-			if (m.containsKey(userSource)) {
-				persistUpdatedUserAnnotation(ann);
-			} else {
-				persistNewUserAnnotation(ann);				
-			}
 			m.put(userSource,ann);
 		}
 		cache.put(el);
+		io.updateUserAnnotation(ann);
 		
 	}
-	private void persistNewUserAnnotation(final UserAnnotation ann) {
-		(new BackgroundWorker(ui,"Saving new annotation") {
-
-			protected Object construct() throws Exception {
-				io.addUserAnnotation(ann);
-				return null;
-			}
-		}).start();
-	}	
 	
-	private void persistUpdatedUserAnnotation(final UserAnnotation ann) {
-		(new BackgroundWorker(ui,"Updating annotation") {
-
-			protected Object construct() throws Exception {
-				io.updateUserAnnotation(ann);
-				return null;
-			}
-		}).start();
-	}	
-	private void removeUserAnnotation(final UserAnnotation ann) {
-		(new BackgroundWorker(ui,"Removing annotation") {
-
-			protected Object construct() throws Exception {
-				io.removeUserAnnotation(ann);
-				return null;
-			}
-		}).start();
-	}	
+	
+	public void removeUserAnnotation(Resource r) {
+	    if (r == null) {
+	        return;
+	    }
+	    Element el = cache.get(r.getId());
+	    if (el != null) { // else nothing needs doing.
+	        Map m = (Map)el.getValue();
+	        if (m.remove(userSource) != null) { // else wasn't a user annotaiton anyhow
+	            cache.put(el);
+	            io.removeUserAnnotation(r);
+	        }
+	    }
+	}
 
 // process annotations
 	public void processLocalAnnotations(Resource r, AnnotationProcessor procesor) {
@@ -294,13 +260,6 @@ private void saveSourceList() {
 			}
 		}
 	}
-
-//	public void processRemainingAnnotationsForAll(Resource[] r, ResourceAnnotationProcessor processor) {
-//	}
-
-
-
-	
 
 
 }

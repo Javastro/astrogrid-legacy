@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 
 /** represents a static file containing a list of annotations to ingest into the 
  * annotation service.
+ * built via hivemind contributions.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jun 18, 20077:23:44 PM
  */

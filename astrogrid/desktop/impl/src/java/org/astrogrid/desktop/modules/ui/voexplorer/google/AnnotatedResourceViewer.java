@@ -198,12 +198,13 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Edit
 	}
 	
 	private void saveAnnotation() {
-		UserAnnotation ann = new UserAnnotation();
-		ann.setResourceId(current.getId());
-		ann.setSource(userSource);
-		userAnnotationPanel.writeBackToAnnotation(ann);
+		UserAnnotation ann = userAnnotationPanel.createAnnotation();
+		if (ann == null) {
+		    annService.removeUserAnnotation(current);
+		} else {		
 		// now write back to store.
-		annService.setUserAnnotation(current,ann);
+		    annService.setUserAnnotation(current,ann);
+		}
 	}
 	public void stateChanged(ChangeEvent e) {
 	    // called on notification from userannotationpanel.

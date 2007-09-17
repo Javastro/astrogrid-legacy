@@ -8,7 +8,9 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.EventListener;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -195,25 +197,41 @@ public void removeUpdate(DocumentEvent e) {
     dirty();
 }
 
-// accessor.
-public void writeBackToAnnotation(UserAnnotation ann) {
-	ann.setFlagged(check.isSelected());
-
-	ann.setNote(StringUtils.trimToNull(note.getText()));
-	ann.setAlternativeTitle(StringUtils.trimToNull(title.getText()));
-	if (colours.getSelectedIndex() == 0) {
-		ann.setHighlight(null);
-	} else {
-		ann.setHighlight((Color)colours.getSelectedItem());
+/** create an annotation containing the form values.
+ * if there's no values, return null.
+ */
+public UserAnnotation createAnnotation() {
+    LazyAnnotationBuilder b = new LazyAnnotationBuilder();
+	if (check.isSelected()) {
+	    b.getAnnotation().setFlagged(true);
+    }
+	if (StringUtils.isNotBlank(note.getText())) {
+	    b.getAnnotation().setNote(StringUtils.trimToEmpty(note.getText()));
+	}
+	if (StringUtils.isNotBlank(title.getText())) {
+	    b.getAnnotation().setAlternativeTitle(StringUtils.trimToEmpty(title.getText()));
+	}
+	if (colours.getSelectedIndex() != 0) {
+		b.getAnnotation().setHighlight((Color)colours.getSelectedItem());
 	}
 	String ta =  tags.getText();
-	if (ta == null || ta.trim().length() ==0) {
-		ann.setTags(null);
-	} else {
+	if (StringUtils.isNotBlank(ta)) {
 		// try to parse it.
 		StrTokenizer tok = new StrTokenizer(ta,StrMatcher.charSetMatcher(", ")); // matches spaces and commas as delimiters
-		ann.setTags(tok.getTokenArray());
+		b.getAnnotation().setTags(new LinkedHashSet(tok.getTokenList()));
 	}
+	return b.annotation; // which may be null at this point.
+}
+
+/** little helper class that lazily builds an annotation */
+private static class LazyAnnotationBuilder {
+    public UserAnnotation annotation;
+    public UserAnnotation getAnnotation() {
+        if (annotation == null) {
+            annotation = new UserAnnotation();
+        }
+        return annotation;
+    }
 }
 
 public void setAnnotation(UserAnnotation ann) {
@@ -227,8 +245,8 @@ public void setAnnotation(UserAnnotation ann) {
 	} else {
 		colours.setSelectedItem(ann.getHighlight());
 	}
-	String[] tr = ann.getTags();
-	if (tr != null && tr.length > 0) {
+	Set tr = ann.getTags();
+	if (tr != null && ! tr.isEmpty()) {
 		StrBuilder sb = new StrBuilder();
 		sb.appendWithSeparators(tr," ");
 		tags.setText(sb.toString());

@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.18 2007/09/13 13:48:12 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.19 2007/09/17 13:39:33 nw Exp $
 >>>>>>> 1.12.2.6
  * Created on 02-Sep-2005
  *
@@ -417,7 +417,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	protected final EventList edtItems; // a view of the items event list, on the Event dispatch thread.
     protected final EventTableModel resourceTableModel;
 	// tracks the currently clicked on registry entry - i.e. the one to display in viewer
-	private final EventSelectionModel currentResourceInView;
+	protected final EventSelectionModel currentResourceInView;
     private final ResettableAdjustableColumnModel resourceColumnModel;
     private final JScrollPane tableScroller;
 
@@ -929,6 +929,9 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.19  2007/09/17 13:39:33  nw
+improved annotations implementation
+
 Revision 1.18  2007/09/13 13:48:12  nw
 minor ui fixes.
 

@@ -342,11 +342,9 @@ public class ResourceTableFomat extends ModularTableFormat {
                 sb.clear();
                 for (Iterator i = annService.getLocalAnnotations(res); i.hasNext(); ) {
                     Annotation a = (Annotation)i.next();
-                    String[] ts = a.getTags();
+                    Set ts = a.getTags();
                     if (ts != null) {
-                    for (int j = 0; j < ts.length; j++) {
-                      tags.add(ts[j]);  
-                    }
+                        tags.addAll(ts);
                     }
                 }
                 sb.appendWithSeparators(tags,", ");

@@ -29,7 +29,7 @@ ANNOTATION SERVICE
 				<service>system.ui</service>
 				<service>annotationSourcesFactory</service>
 				<object>preference:astrogrid.workdir</object>
-                <service>system.xmlPersist</service>
+                <service>system.xmlPersist</service>                      
 			</construct>
 		</invoke-factory>
 	</service-point>	
@@ -37,14 +37,13 @@ ANNOTATION SERVICE
 	<contribution configuration-id="ivoa.caches">
 		cache of annotations
 		'unlimited' disk storage, lasts whole session, but is discarded at end of session.
-		
+		practically infinite storage - necessary because we're using this for real data.
 		<cache name="annotate"
-			maxElementsInMemory="100"
-			maxElementsOnDisk="10000"
+			maxElementsInMemory="1000"
+			maxElementsOnDisk="10000000"
 			overflowToDisk="true"
 			diskPersistent="false"
-			timeToLiveSeconds="72000"
-			timeToIdleSeconds="72000"
+            eternal="true"
 		/>
 	</contribution>
 
@@ -59,7 +58,7 @@ ANNOTATION SERVICE
 	
 	
 	<service-point id="annotationSourcesFactory" interface="org.astrogrid.desktop.hivemind.IterableObjectBuilder">
-		Object builder for annotationSources
+		Object builder for annotationSources - each should be an instance of AnnotationSource
 		<invoke-factory model="singleton">
 			<construct class="org.astrogrid.desktop.hivemind.IterableObjectBuilderImpl">
 				<log />

@@ -1,6 +1,6 @@
-/*$Id: VOExplorerImpl.java,v 1.10 2007/09/11 12:10:27 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.11 2007/09/17 13:39:33 nw Exp $
 =======
-/*$Id: VOExplorerImpl.java,v 1.10 2007/09/11 12:10:27 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.11 2007/09/17 13:39:33 nw Exp $
 >>>>>>> 1.6.2.2
  * Created on 30-Mar-2005
  *
@@ -82,6 +82,8 @@ public class VOExplorerImpl extends UIComponentImpl
 			,final UIContributionBuilder menuBuilder, EventList folders, RegistryGooglePanel gl, QuerySizer sizer) {
 		super(context);
 		logger.info("Constructing new VOExplorer");
+        this.google = gl;
+        google.parent.set(this);		
 		this.setSize(800, 600);    
 		getContext().getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.voexplorer");        
 		JPanel pane = getMainPanel();
@@ -98,7 +100,18 @@ public class VOExplorerImpl extends UIComponentImpl
 	        fileMenu.add(new JSeparator());
 	        fileMenu.add( new CloseAction());
 	        menuBar.add(fileMenu);
-	        menuBar.add(activities.getMenu()); 
+	        
+	      JMenu editMenu = new JMenu();
+	      editMenu.setText("Edit");
+	      editMenu.setMnemonic(KeyEvent.VK_E);
+	      editMenu.add(new SelectAllAction());
+	      editMenu.add(new InvertSelectionAction());
+	      menuBar.add(editMenu);
+	        
+	    menuBar.add(activities.getMenu());
+	    
+        menuBar.add(google.createColumnsMenu("Columns"));
+        
 		menuBuilder.populateWidget(menuBar,this,ArMainWindow.MENUBAR_NAME);
 		int sz = menuBar.getComponentCount();
 		
@@ -134,15 +147,13 @@ public class VOExplorerImpl extends UIComponentImpl
 		resourcesFolders.setName(RESOURCES_VIEW);
 
 		// main view.
-		this.google = gl;
-		google.parent.set(this);
+
 		// attach ourself to this reg chooser, to listen for selection changes.
 		google.getCurrentResourceModel().addListSelectionListener(this); // listen to currently selected resource
-		google.setPopup(activities.getPopupMenu());
-			
+		google.setPopup(activities.getPopupMenu());			
 		google.addLoadListener(this);
 		mainPanel.add(google,RESOURCES_VIEW);
-        menuBar.add(google.createColumnsMenu("Columns"));
+
 
 		// build the various editing panels.
 		smartEditPanel = new SmartListEditingPanel(this,sizer);
@@ -409,6 +420,32 @@ public class VOExplorerImpl extends UIComponentImpl
 	        google.displayQuery(title,query);
 	    }
 
+	   // actions - a little hacky - but dont really want to explose these
+	   // objects thriough accessors.
+	   private class SelectAllAction extends AbstractAction {
+	       /**
+         * 
+         */
+        public SelectAllAction() {
+            super("Select all resources");
+        }
+        
+        public void actionPerformed(ActionEvent e) {
+            google.resourceTable.selectAll();
+        }
+	   }
+	   
+	   private class InvertSelectionAction extends AbstractAction {
+	       /**
+         * 
+         */
+        public InvertSelectionAction() {
+            super("Invert resource selection");
+        }
+        public void actionPerformed(ActionEvent e) {
+            google.currentResourceInView.invertSelection();
+        }
+	   }
 
 
 }
