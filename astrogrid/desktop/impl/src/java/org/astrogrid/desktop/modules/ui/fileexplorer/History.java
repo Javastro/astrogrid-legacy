@@ -131,6 +131,7 @@ public class History  {
 			}
 			l.add(arg0);
 		}
+	
 
 		public void clear() {
 			l.clear();
@@ -255,5 +256,16 @@ public class History  {
 		}
 		fireCurrentChanged();
 	}
+    /** replace the current location with a new location, without firing any event updates
+     * use to resolve a location to a more concrete equivalent, replace a child with it's parent, etc.
+     * @param location
+     */
+    public void replace(Object location) {
+        if (location.equals(current())) {
+            return; // ignore
+        }
+        previousStack.pop();
+        previousStack.push(location);
+    }
 	
 }

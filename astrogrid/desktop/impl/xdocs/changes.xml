@@ -15,6 +15,10 @@
 	</head>
 <body>
 <release version="next" date="unreleased">
+    <action dev="nw" type="fix">
+    renamed and debugged the 'reveal file' action in task runner.
+        - now does a refresh if file is not present.
+    </action>
     <action dev="nw" type="update">
         Tidied up annotations xml format - all previous annotations will be lost.
         Improved annotation store performance.

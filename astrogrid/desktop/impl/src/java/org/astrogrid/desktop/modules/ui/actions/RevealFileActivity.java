@@ -56,9 +56,9 @@ public class RevealFileActivity extends AbstractFileActivity {
 		super();
         this.vfs = vfs;
         this.mgr = mgr;
-		setText("Reveal");
+		setText("Show file");
 		setIcon(IconHelper.loadIcon("fileopen16.png"));		
-		setToolTipText("Reveal this file in file explorer");
+		setToolTipText("Show this file in file explorer");
 	}
 
     // can only handle a single selection.

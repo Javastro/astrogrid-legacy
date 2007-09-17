@@ -1,4 +1,4 @@
-/*$Id: FileExplorerImpl.java,v 1.9 2007/09/13 13:47:16 nw Exp $
+/*$Id: FileExplorerImpl.java,v 1.10 2007/09/17 14:33:04 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -154,7 +154,7 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
     private StorageView view;
 	
 	public void show(final FileObject fileToShow) {
-	    view.getNavigator().move(fileToShow);
+	        view.getNavigator().move(fileToShow);
 	}
 
     public void moved(NavigationEvent e) {

@@ -398,13 +398,19 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
                     shown = requested;
                 } else {
                     shown = requested.getParent();
+                    history.replace(new Location(shown)); // replace in the history what was requested with what we're actually sowing
                 }
                 if (shown == null) {
                     return null;
                 }
                 // populate the children.
                 EventList files = model.getChildrenList();
+                // special case - if we're looking for a particular file, and it's not in the folder, do a refresh.
+                if (shown != requested && null == shown.getChild(requested.getName().getBaseName())) {
+                    shown.refresh();
+                }
                 FileObject[] children = shown.getChildren();
+                
                 try {
                     files.getReadWriteLock().writeLock().lock();
                     files.clear();
