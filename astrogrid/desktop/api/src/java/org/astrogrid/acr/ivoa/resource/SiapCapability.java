@@ -81,7 +81,7 @@ public class SiapCapability extends Capability {
         private int _long;
         private int _lat;
         /** The maximum size in the latitdude (Dec.) direction */
-        public float getLat() {
+        public int getLat() {
             return this._lat;
         }
         public void setLat(int _lat) {
