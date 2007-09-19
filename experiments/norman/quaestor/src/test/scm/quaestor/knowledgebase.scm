@@ -9,7 +9,14 @@
          rdf:new-empty-model
          rdf:ingest-from-string/n3)
 
-(define-java-class <uri> |java.net.URI|)
+(define-java-classes
+  (<uri> |java.net.URI|)
+  (<model> |com.hp.hpl.jena.rdf.model.Model|))
+
+(define (jena-model? x)
+  (is-java-type? x <model>))
+
+
 (define try1 (java-new <uri> (->jstring "urn:example/try1")))
 (define try2 (java-new <uri> (->jstring "urn:example/try2")))
 (define try3 (java-new <uri> (->jstring "urn:example/try3")))
@@ -211,3 +218,66 @@
           #f
           (multimodel 'has-model "model2"))
   )
+
+(let ((uri1 (java-new <uri> (->jstring "urn:example/simple1")))
+      (uri2 (java-new <uri> (->jstring "urn:example/simple2")))
+      (uri3 (java-new <uri> (->jstring "urn:example/simple3"))))
+  (let (;; metadata with a simpleRDFS reasoner
+        (simple-md1 (rdf:ingest-from-string/n3 "
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix quaestor: <http://ns.eurovotech.org/quaestor#>.
+
+<> dc:creator \"Norman\";
+  quaestor:requiredReasoner [
+    quaestor:level \"simpleRDFS\"
+  ].
+" uri1))
+        ;; metadata with no reasoner
+        (simple-md2 (rdf:ingest-from-string/n3 "
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix quaestor: <http://ns.eurovotech.org/quaestor#>.
+
+<> dc:creator \"Norman\";
+  quaestor:requiredReasoner [
+    quaestor:level \"none\"
+  ].
+" uri2))
+        ;; metadata with invalid reasoner
+        (simple-md3 (rdf:ingest-from-string/n3 "
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix quaestor: <http://ns.eurovotech.org/quaestor#>.
+
+<> dc:creator \"Norman\";
+  quaestor:requiredReasoner [
+    quaestor:level \"invalid\"
+  ].
+" uri3)))
+  
+    (expect-true kb-md-1
+                 (kb:new uri1 simple-md1))
+    (let ((kb (kb:get uri1)))
+      (expect-true kb-tbox-1
+                   (kb 'add-tbox "model1" model-1))
+      (expect-true kb-query-1
+                   (jena-model? (kb 'get-query-model))))
+
+    (expect-true kb-md-2
+                 (kb:new uri2 simple-md2))
+    (let ((kb (kb:get uri2)))
+      (expect-true kb-tbox-2
+                   (kb 'add-tbox "model1" model-1))
+      (expect-true kb-query-2
+                   (jena-model? (kb 'get-query-model))))
+
+    (expect-true kb-md-3
+                 (kb:new uri3 simple-md3))
+    (let ((kb (kb:get uri3)))
+      (expect-true kb-tbox-3
+                   (kb 'add-tbox "model1" model-1))
+      (expect kb-query-3
+              #f
+              (kb 'get-query-model)))
+  
+    ;; we could potentially test that the reasoner works, but...
+    ))
+

@@ -27,6 +27,9 @@
          sexp-xml:escape-string-for-xml)
 (require-library 'util/lambda-contract)
 
+(require-library 'sisc/libs/srfi/srfi-13)
+(import* srfi-13
+         string-index)
 
 (define (ident)
   (define-java-class <sisc.util.version>)
@@ -34,7 +37,7 @@
   `((quaestor.version . "@VERSION@")
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.42 $ $Date: 2007/09/05 12:22:48 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.43 $ $Date: 2007/09/19 14:38:35 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -259,14 +262,18 @@
           (let loop ((ml lang-mime-list))
             (if (null? ml)
                 #f                      ;ooops
-                (let ((lang-string (rdf:mime-type->language (car ml))))
+                (let* ((requested-mime-type (car ml))
+                       (lang-string (rdf:mime-type->language requested-mime-type)))
                   (chatter "rdf:mime-type->language: ~s -> ~s"
-                           (car ml) lang-string)
+                           requested-mime-type lang-string)
                   (if lang-string
-                      ;; convert lang back to mime-type: don't use (car ml)
-                      ;; in case it was */*; also this uses a canonical language
-                      (cons (rdf:language->mime-type lang-string)
-                            lang-string)
+                      (cond ((string-index requested-mime-type #\*)
+                             ;; convert lang back to mime-type: don't use (car ml)
+                             ;; since it includes a star (eg, */*); also this canonicalises the type
+                             (cons (rdf:language->mime-type lang-string)
+                                   lang-string))
+                            (else
+                             (cons requested-mime-type lang-string)))
                       (loop (cdr ml)))))))))
 
   (case (length path-info-list)
@@ -428,14 +435,20 @@
                            rdf-mime
                            stream
                            response)
+    (define-generic-java-methods concat to-string)
     (let ((kb (kb:get kb-name))
-          (ok-headers '(type length)))
+          (ok-headers '(type length))
+          (submodel-uri
+           ;; this is a rather clumsy way of constructing a sub-URI
+           ;; -- isn't there a better way?
+           (java-new <uri> (concat (to-string kb-name)
+                                                (->jstring (string-append "/" submodel-name))))))
       (if kb
           (with/fc
               (make-fc request response '|SC_BAD_REQUEST|)
             (lambda ()
-              (chatter "update-submodel: about to read ~s" submodel-name)
-              (let ((m (rdf:ingest-from-stream/language stream "" rdf-mime)))
+              (chatter "update-submodel: about to read ~s (base=~s)" submodel-name submodel-uri)
+              (let ((m (rdf:ingest-from-stream/language stream submodel-uri rdf-mime)))
                 (chatter "update-submodel: kb=~s submodel=~s"
                          kb submodel-name)
                 (if (kb (if tbox? 'add-tbox 'add-abox)

@@ -75,7 +75,7 @@
   (check (not (null? mime-type-list))
          "received null mime-type-list")
 
-  (let ((infmodel (kb 'get-inferencing-model))
+  (let ((query-model (kb 'get-query-model))
         (query-jstring (cond ((and (is-java-type? query '|java.lang.String|)
                                    (not (java-null? query)))
                               query)
@@ -85,8 +85,8 @@
                               (error 'sparql:make-query-runner
                                      "bad call: got query ~s, not string"
                                      query)))))
-    (check infmodel
-           "failed to get inferencing model from knowledgebase ~a"
+    (check query-model
+           "failed to get query model from knowledgebase ~a"
            (kb 'get-name))
 
     (let ((query (with/fc
@@ -106,7 +106,7 @@
           (error "can't happen: null query in sparql:make-query-runner"))
       (let ((executable-query (create (java-null <query-execution-factory>)
                                       query
-                                      infmodel))
+                                      query-model))
             (query-executor (find-query-executor query))
             (handler (make-result-set-handler 'sparql:make-query-runner
                                               mime-type-list

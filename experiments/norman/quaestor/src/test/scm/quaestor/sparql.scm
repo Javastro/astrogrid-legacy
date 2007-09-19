@@ -39,10 +39,11 @@
 ;; (format #t "test-kb=~s  procedure?=~s  kb?=~s~%"
 ;;         test-kb (procedure? test-kb) (kb:knowledgebase? test-kb))
 
-(expect-failure sparql-error-just-abox
-                (sparql:make-query-runner test-kb
-                                          ask-query
-                                          '("text/plain")))
+;; it is no longer a failure to run a query against a model with no TBox
+;; (expect-failure sparql-error-just-abox
+;;                 (sparql:make-query-runner test-kb
+;;                                           ask-query
+;;                                           '("text/plain")))
 
 (test-kb 'add-tbox
          "tbox"

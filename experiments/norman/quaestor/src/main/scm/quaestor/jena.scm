@@ -233,8 +233,8 @@
     ;; just add it to the logger
     (logger "Warning parsing RDF at ~a: ~a" uri (->string (get-message ex)))))
 
-;; RDF:INGEST-FROM-STREAM/LANGUAGE : jinput-stream string (j)string [symbol] -> model
-;; RDF:INGEST-FROM-STREAM/LANGUAGE : jreader       string (j)string [symbol] -> model
+;; RDF:INGEST-FROM-STREAM/LANGUAGE : jinput-stream string (j)string/uri [symbol] -> model
+;; RDF:INGEST-FROM-STREAM/LANGUAGE : jreader       string (j)string/uri [symbol] -> model
 ;;
 ;; This is the function which ingests RDF from an InputStream or Reader,
 ;; which is expected to be in the named LANGUAGE.  The RDF is read using the
@@ -271,7 +271,9 @@
 ;; ...and the actual procedure
 (define/contract (*rdf:ingest-from-stream/language
                   (stream java-input?)
-                  (base-uri (or (jstring? base-uri) (string? base-uri)))
+                  (base-uri (or (jstring? base-uri)
+                                (string? base-uri)
+                                (is-java-type? base-uri <uri>)))
                   (language (or (jstring? language) (string? language)))
                   (exception (or (not exception) (symbol? exception)))
                   -> jena-model?)
@@ -340,18 +342,24 @@
                 (chatter (apply string-append (cons "Logger warnings: " l))))))
     model))
 
-;; RDF:INGEST-FROM-STRING/N3 : string -> model
+;; RDF:INGEST-FROM-STRING/N3 : string uri? -> model
 ;;
 ;; Convenience method, which takes a string containing Notation3,
-;; and ingests it.  The language is fixed as N3, and the base URI as "".
+;; and ingests it.  The language is fixed as N3, and the base URI
+;; is either the given URI, or "".
 ;;
 ;; Either succeeds, or throws an exception.
-(define/contract (rdf:ingest-from-string/n3 (string string?)
+(define (rdf:ingest-from-string/n3 string . opt-base-uri)
+  (rdf:ingest-from-string/n3* string
+                              (if (null? opt-base-uri)
+                                  (->jstring "")
+                                  (as-java-string (car opt-base-uri)))))
+(define/contract (rdf:ingest-from-string/n3* (string string?) (base jstring?)
                   -> jena-model?)
   (define-java-class <java.io.string-reader>)
   (rdf:ingest-from-stream/language (java-new <java.io.string-reader>
                                              (->jstring string))
-                                   ""
+                                   base
                                    (->jstring "N3")))
 
 ;; Return the object S, which should be either a Java or Scheme string,
@@ -539,6 +547,8 @@
 ;; The optional KEY parameter is one of the strings transitive,
 ;; simpleRDFS, defaultRDFS, 
 ;; fullRDFS, defaultOWL=fullOWL (not yet miniOWL or microOWL).
+;;
+;; The string 'none' is a valid 'reasoner', but will still return #f.
 (define (rdf:get-reasoner . key)
 
   (define (get-dig-reasoner)
@@ -607,10 +617,15 @@
                                  (cons "transitive"
                                        (lambda ()
                                          (get-transitive-reasoner
-                                          (java-null <registry>)))))))
+                                          (java-null <registry>))))
+                                 ;; the key "none" is a valid 'reasoner', but it isn't
+                                 ;; in this list -- trapped below as an error
+                                 )))
         (lambda (name)
           (let ((getter (assoc name reasoner-list)))
-            (cond ((not getter)
+            (cond ((string=? name "none")
+                   #f)
+                  ((not getter)
                    #f)                       ;error
                   ((procedure? (cdr getter)) ;not cached yet
                    (chatter "Creating ~a reasoner" name)

@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.33 2007/08/31 10:55:20 norman Exp $
+     $Id: build.xml,v 1.34 2007/09/19 14:38:35 norman Exp $
 -->
 
 
@@ -143,6 +143,8 @@
    !                          directory which contains the jena.jar
    !                          file and friends.
    !
+   !       sdb.lib          : the SDB directory which contains sdb.jar
+   !
    !       sisc.bin         : the binary directory is the one which
    !                          contains the sisc program.
    !
@@ -214,7 +216,8 @@
   <!-- include Jena support -->
   <fileset dir="${jena.lib}"
            id="jena.support">
-    <!-- Jena jars... -->
+    <!-- This is a subset of the Jena jars, which is intended to be minimal, but may not be in fact.
+         The version in the Jena-2.3 distribution...
     <include name="antlr-2.7.5.jar"/>
     <include name="commons-logging.jar"/>
     <include name="icu4j_3_4.jar"/>
@@ -222,11 +225,25 @@
     <include name="jena.jar"/>
     <include name="xercesImpl.jar"/>
     <include name="xml-apis.jar"/>
+    -->
+
+    <!-- ...and the versions in the SDB SVN build -->
+    <include name="antlr-2.7.5.jar"/>
+    <include name="commons-logging-1.1.jar"/>
+    <include name="icu4j_3_4.jar"/>
+    <include name="jakarta-oro-2.0.8.jar"/>
+    <include name="jena.jar"/>
+    <include name='iri.jar'/>
+    <include name="xercesImpl.jar"/>
+    <include name="xml-apis.jar"/>
 
     <!-- ...and ARQ jars -->
     <include name="arq.jar"/>
     <include name="concurrent.jar"/>
   </fileset>
+
+  <filelist id='sdb.support' dir='${sdb.lib}' files='sdb.jar'/>
+  <fileset id='jdbc.support' file='${postgres.jar}'/>
 
   <!-- check availability of dependencies -->
   <target name="check-packages"
@@ -244,6 +261,17 @@
     <fail unless="jena.present"
           message="Must have Jena to build: see jena.sourceforge.net"/>
 
+    <available property='sdb.present'
+               filepath='${sdb.lib}'
+               file='sdb.jar'/>
+    <fail unless='sdb.present'
+          message='Must have SDB; version at least SVN XXX'/>
+
+    <available property='postgres.jdbc'
+               file='${postgres.jar}'/>
+    <fail unless='postgres.jdbc'
+          message='Must have PostgreSQL JSBC: see jdbc.postgresql.org'/>
+
     <!-- Need JUnit for the src/test/org/... testcases: not essential -->
     <available property="junit.present"
                classname="junit.framework.TestCase"/>
@@ -252,17 +280,6 @@
   </target>
 
   <!-- =================== Compilation Classpath ========================== -->
-
-  <!--
-
-  Rather than relying on the CLASSPATH environment variable, Ant includes
-  features that makes it easy to dynamically construct the classpath you
-  need for each compilation.  The example below constructs the compile
-  classpath to include the servlet.jar file, as well as the other components
-  that Tomcat makes available to web applications automatically, plus anything
-  that you explicitly added.
-
-  -->
 
   <path id="sisc.classpath">
     <fileset refid="sisc.support"/>
@@ -488,6 +505,8 @@
     <unjar dest="${build.home}/quaestorlib">
       <fileset refid="sisc.support"/>
       <fileset refid="jena.support"/>
+      <filelist refid="sdb.support"/>
+      <fileset refid="jdbc.support"/>
     </unjar>
     <copy todir="${build.home}/quaestorlib">
       <fileset dir="${build.war}/WEB-INF/classes">
@@ -608,6 +627,8 @@
     <copy todir="${build.lib}">
       <fileset refid="sisc.support"/>
       <fileset refid="jena.support"/>
+      <filelist refid="sdb.support"/>
+      <fileset refid='jdbc.support'/>
     </copy>
 
     <copy todir="${build.war}/WEB-INF">

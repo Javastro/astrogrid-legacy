@@ -27,6 +27,10 @@
            is-java-type?
            collection->list)
 
+  (define (in-quaestor-namespace fragment)
+    (let ((ns "http://ns.eurovotech.org/quaestor#"))
+      (string-append ns fragment)))
+
   (define (jena-model? x)
     (is-java-type? x '|com.hp.hpl.jena.rdf.model.Model|))
   (define (alist? x)
@@ -166,7 +170,7 @@
   ;;    (kb 'add-abox/tbox SUBMODEL-NAME SUBMODEL)
   ;;        Add or update a abox/tbox with the given name.
   ;;        SUBMODEL-NAME may be a string or a symbol.  Return #t on success
-  ;;    (kb 'get-inferencing-model)
+  ;;    (kb 'get-query-model)
   ;;        As with GET-MODEL, except that it is an inferencing model.
   ;;        Return #f on error.
   ;;    (kb 'get-model)
@@ -185,8 +189,8 @@
   ;;        (kb 'get-model [SUBMODEL-NAME]) would succeed.  Return #f otherwise.
   ;;    (kb 'drop-submodel SUBMODEL-NAME)
   ;;        Forget about the named submodel
-  ;;    (kb 'set-metadata jstream base-uri content-type)
-  ;;        Set the metadata to the arbitrary string INFO.
+  ;;    ;(kb 'set-metadata jstream base-uri content-type)
+  ;;    ;    Set the metadata to the arbitrary string INFO.
   ;;    (kb 'info)
   ;;        Return alist with info
   (define (make-kb kb-name metadata)
@@ -194,7 +198,7 @@
           (merged-model #f)             ;memo
           (merged-tbox #f)              ;memo
           (merged-abox #f)              ;memo
-          (inferencing-model #f)        ;memo
+          (query-model #f)              ;memo
           (sync-object (->jstring ""))) ;a dummy Java object
 
       (define-syntax kb-synchronized
@@ -218,7 +222,7 @@
         (set! merged-model #f)
         (set! merged-abox #f)
         (set! merged-tbox #f)
-        (set! inferencing-model #f))
+        (set! query-model #f))
 
       ;; Return the abox or tbox: BOXNAME is either 'tbox or 'abox.
       ;; Caches result in merged-abox/tbox.
@@ -242,19 +246,51 @@
                                 (rdf:merge-models (map cddr models)))
                             merged-abox))))))
 
-      ;; Add the given submodel to the model.  BOXNAME is either 'tbox or 'abox.
-      (define (add-box name submodel boxname)
-        (kb-synchronized
-         (set! submodels
-               (add-submodel submodels
-                             name
-                             submodel
-                             (eq? boxname 'tbox)))
-         (clear-memos!)))
+      (define (sdb-description->model model-or-resource)
+        (define-generic-java-methods create connect-default-model read)
+        (define-java-classes
+          (<store-factory> |com.hp.hpl.jena.sdb.store.StoreFactory|)
+          <com.hp.hpl.jena.sdb.store-desc>
+          (<sdb-factory> |com.hp.hpl.jena.sdb.SDBFactory|))
+        (connect-default-model (java-null <sdb-factory>)
+                       (create (java-null <store-factory>)
+                               (read (java-null <com.hp.hpl.jena.sdb.store-desc>)
+                                     model-or-resource))))
 
-      ;; Return a new inferencing model, using the settings in METADATA.
+      ;; Add the given submodel to the model.  BOXNAME is either 'tbox or 'abox.
+      ;; If the model is actually a description of an SDB store, then instead
+      ;; create the model which connects to that (this path is currently not covered by
+      ;; any tests).
+      (define (add-box name submodel boxname)
+        (let ((store-resources (rdf:select-statements submodel #f "a" "http://jena.hpl.hp.com/2007/sdb#Store")))
+          (let ((new-model
+                 (cond ((not (null? store-resources))
+                        (sdb-description->model submodel ;(car store-resources)
+                                                ))
+                       (else submodel))))
+            (kb-synchronized
+             (set! submodels
+                   (add-submodel submodels
+                                 name
+                                 new-model
+                                 (eq? boxname 'tbox)))
+             (clear-memos!)))))
+
+      ;; Return the merger of the submodels, performing and memoizing the merge if necessary
+      (define (get-merged-model)
+        (kb-synchronized
+         (if (null? submodels)
+             #f
+             (memoized (if (= (length submodels) 1)
+                           (cddar submodels)
+                           (rdf:merge-models (map cddr submodels)))
+                       merged-model))))
+
+      ;; Return the model which is to be queried, using the settings in METADATA.
       ;; Return false on errors
-      (define (create-inferencing-model)
+      ;; If there is no TBox, or if the requiredReasoner->level
+      ;; property is "none", then return simply the merged model
+      (define (get-query-model)
         (let ((tbox (get-box 'tbox))
               (abox (get-box 'abox)))
           (define-java-classes
@@ -264,30 +300,35 @@
           (let* ((levelres
                   (and metadata
                        kb-name
-                       (rdf:select-statements
-                        metadata
-                        kb-name
-                        "http://ns.nxg.me.uk/quaestor#requiredReasoner"
-                        #f)))
+                       (rdf:select-statements metadata
+                                              kb-name
+                                              (in-quaestor-namespace "requiredReasoner")
+                                              #f)))
                  (levelp (and levelres
                               (not (null? levelres))
                               (rdf:get-property-on-resource
                                (car levelres)
-                               "http://ns.nxg.me.uk/quaestor#level")))
+                               (in-quaestor-namespace "level"))))
                  (level (and levelp
                              (->string (to-string levelp)))))
             (chatter "Level for ~s is ~s" kb-name level)
-            (cond ((and tbox abox)
-                   (create-inf-model (java-null <factory>)
-                                     (rdf:get-reasoner level)
-                                     tbox
-                                     abox))
-                  (tbox
-                   (create-inf-model (java-null <factory>)
-                                     (rdf:get-reasoner level)
-                                     tbox))
-                  (else
-                   #f)))))
+            (let ((reasoner (and level
+                                 (rdf:get-reasoner level))))
+              (cond ((or (not level)
+                         (string=? level "none")
+                         (not tbox))
+                     (get-merged-model))
+                    (abox
+                     (and reasoner 
+                          (create-inf-model (java-null <factory>)
+                                            reasoner
+                                            tbox
+                                            abox)))
+                    (else
+                     (and reasoner
+                          (create-inf-model (java-null <factory>)
+                                            reasoner
+                                            tbox))))))))
 
       (lambda (cmd . args)
 
@@ -374,13 +415,7 @@
            ;; Return newly-merged model or #f if no models exist
            (case (length args)
              ((0)
-              (kb-synchronized
-               (if (null? submodels)
-                   #f
-                   (memoized (if (= (length submodels) 1)
-                                 (cddar submodels)
-                                 (rdf:merge-models (map cddr submodels)))
-                             merged-model))))
+              (get-merged-model))
              ((1)
               (let ((sm (assoc (car args) submodels)))
                 (and sm (cddr sm))))
@@ -389,13 +424,13 @@
                      "Bad call to get: wrong number of args in ~a"
                      args))))
 
-          ((get-inferencing-model)
+          ((get-query-model)
            ;; return #f on error
            (call-with-args 
             ()
             (kb-synchronized
-             (memoized (create-inferencing-model)
-                       inferencing-model))))
+             (memoized (get-query-model)
+                       query-model))))
 
           ((get-model-tbox get-model-abox)
            ;; (kb 'get-model-tbox/abox)

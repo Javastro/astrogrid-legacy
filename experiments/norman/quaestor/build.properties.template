@@ -14,6 +14,13 @@ catalina.home=<CATALINA.HOME>
 # This is the directory which contains the jena.jar file and friends.
 jena.lib=<JENA.LIB>
 
+# SDB distribution
+# (or should I use the Jena libraries in the SDB distribution?)
+sdb.lib=<SDB.LIB>
+
+# Location of the PostgreSQL JDBC connector jar
+postgres.jar=<POSTGRES.JAR>
+
 # SISC binary and library directories.
 # The binary directory is the one which contains the sisc program.
 sisc.bin=<SISC.BIN>
