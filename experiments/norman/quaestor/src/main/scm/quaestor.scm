@@ -37,7 +37,7 @@
   `((quaestor.version . "@VERSION@")
     (sisc.version . ,(->string (:version (java-null <sisc.util.version>))))
     (string
-     . "quaestor.scm @VERSION@ ($Revision: 1.43 $ $Date: 2007/09/19 14:38:35 $)")))
+     . "quaestor.scm @VERSION@ ($Revision: 1.44 $ $Date: 2007/09/20 10:39:10 $)")))
 
 ;; Predicates for contracts
 (define-java-classes
@@ -80,6 +80,7 @@
                         context
                         (java-wrap proc)))
     (reg "GET" kb http-get)
+    (reg "GET" (->jstring "/debug") http-debug-query)
     (reg "HEAD" kb http-head)
     (reg "PUT" kb http-put)
     (reg "POST" kb http-post)
@@ -127,7 +128,7 @@
   (set-content-type response (->jstring "text/html"))
   (response-page request response
                  "Quaestor"
-                 `((p "I don't recognise that URL.")
+                 `((p "Debugging the query.")
                    (p "The details of the request follow:")
                    ,@(tabulate-request-information request))))
 
@@ -342,6 +343,18 @@
                            get-model-query
                            get-model
                            get-fallback))
+
+;; A special debugging handler: handles /debug/*
+(define (http-debug-query request response)
+  (define-generic-java-method
+    set-content-type)
+  (set-content-type response (->jstring "text/html"))
+  (response-page request response
+                 "Quaestor"
+                 `((p "I don't recognise that URL.")
+                   (p ,(format #f "KB base: ~s" (request->kb-uri request)))
+                   (p "The details of the request follow:")
+                   ,@(tabulate-request-information request))))
 
 (define/contract (http-head (request  request?)
                             (response response?)
@@ -710,14 +723,14 @@
     (let* ((kb-shortname (and (not (null? args))
                               (car args)))
            (kb-name (resolve quaestor-url (->jstring (format #f "kb/~a" kb-shortname)))))
-      ;;(chatter "xmlrpc-get-model: kb-shortname=~s  base=~s  kb-name=~s" kb-shortname quaestor-url kb-name)
+      (chatter "xmlrpc-get-model: kb-shortname=~s  base=~s  kb-name=~s" kb-shortname quaestor-url kb-name)
       (case (length args)
         ((1)
          (let ((kb (kb:get kb-name)))
            (if kb
                (xmlrpc:create-response "~a" (->string (to-string kb-name)))
                (fault 'unknown-object
-                      "no such knowledgebase ~a" kb-shortname))))
+                      "no such knowledgebase ~a (~a)" kb-name kb-shortname))))
         ((2)
          (let ((kb (kb:get kb-name))
                (submodel (cadr args)))
