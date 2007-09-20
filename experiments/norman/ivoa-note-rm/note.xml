@@ -14,7 +14,7 @@
 <meta name="author" content="Norman Gray"/>
 <meta name="DC.subject"
       content="IVOA, International, Virtual, Observatory, Alliance, Registry, Metadata, RDF" />
-<meta name='rcsdate' content='$Date: 2007/09/15 01:44:20 $'/>
+<meta name='rcsdate' content='$Date: 2007/09/20 22:16:56 $'/>
 <link href="http://www.ivoa.net/misc/ivoa_note.css"
       rel="stylesheet"
       type="text/css" />
@@ -39,12 +39,12 @@ q:after  { content: "”"; }
            border="0"/></a></td></tr>
 </table>
 
-<!-- $Id: note.xml,v 1.2 2007/09/15 01:44:20 norman Exp $ -->
+<!-- $Id: note.xml,v 1.3 2007/09/20 22:16:56 norman Exp $ -->
 
 <h1>An RDF version of the VO Registry</h1>
 <h2>IVOA Note 
-<!--(V1.0, 2007 March 2)-->
-(working version $Revision: 1.2 $ $Date: 2007/09/15 01:44:20 $)
+(v1.0, 2007 September 20)
+<!--(working version $Revision: 1.3 $ $Date: 2007/09/20 22:16:56 $)-->
 </h2> <!-- XXX version/date -->
 <dl>
 <dt>Interest/Working Group</dt>
@@ -88,7 +88,7 @@ is an interim document.</p>
 
 <p>This document is an IVOA Note expressing suggestions from and opinions of
 the authors.  The first release of this document was 
-<span property='dc:date' >XXX Date</span>.</p>
+<span property='dc:date' >2007 September 20</span>.</p>
 
 <p>It is intended to share best practices, possible approaches, or
 other perspectives on interoperability with the Virtual Observatory.
@@ -124,11 +124,12 @@ information about data archives, services, organisations and other
 objects, allowing data owners to create and manage data they are
 responsible for, and supporting the replication of the data between
 cooperating registry servers.  There are now production servers
-deployed in the UK, the USA and Europe (<span class='todo'>XXX full list -- is there a RoR yet?</span>),
+deployed in the UK, the USA and Europe (and plans to create a
+`Registry of Registries' to help find them),
 managing 12-13000 structured records and supporting queries from a
 variety of user-facing and server applications.</p>
 
-<p>Starting from <span class='todo'>XXXX</span>, the Registry Working Group has produced
+<p>The Registry Working Group has produced
 standards for Resource Metadata (RM) <span class='cite'>std:rm</span>,
 the registry update protocol <span class='cite'>std:regint</span>, the
 VOResource schema <span class='cite'>std:voresource</span>, and
@@ -166,8 +167,11 @@ Open Data movement</a>.</li>
 <p>This Note describes preliminary results of the experiment, and will
 be extended in future versions.  The RM schema and the registry data
 have been reasonably straightforwardly converted to RDF, and are at
-present available behind a SPARQL endpoint at <span class='todo'>XXX URL</span>.  Performance
-seems acceptable, but has not been examined in detail.</p>
+present available behind a SPARQL endpoint at <span
+class='url'>http://thor.roe.ac.uk/quaestor</span> (this is an
+experimental service, and should not be relied on in the long term).  Performance
+seems acceptable, but has not been examined in detail.  For examples
+of use, see <span class='xref'>sparql</span>.</p>
 
 <div class='section' id='rdf'>
 <p class='title'>RDF technologies</p>
@@ -466,7 +470,7 @@ can use a range of RDBMS systems, with the marginally preferred system
 being PostgreSQL.  It is at present at an early stage of development,
 but is already adequately performant.  Crucially, it is very easy to
 integrate with our previous Jena-based work (the Quaestor server), and
-largely for this reason, it was this store that we chose to use.</li>
+largely for this reason it was this store that we chose to use.</li>
 </ul>
 
 <p>The following triple-stores were not evaluated, but should be.</p>
@@ -505,7 +509,25 @@ where {
  ?r vor:content [ vor:contentLevel [ a vor:ResearchContentLevel ] ].
 }
 </pre>
-<p>More to come.</p>
+<p>Using the (experimental, temporary) SPARQL endpoint at <span
+class='url'>http://thor.roe.ac.uk/quaestor</span>, and using
+<code>curl</code> to post to the service, we may query the
+RDF Registry as follows:</p>
+<pre>
+% curl --data-binary @all-research-atlases.rq \
+    --header content-type:application/sparql-query \
+    http://thor.roe.ac.uk/quaestor/kb/rm
+</pre>
+<p>(the RDF registry metadata has been uploaded to a Quaestor
+knowledgebase named `rm'; see the documentation at <span
+class='url'>http://thor.roe.ac.uk/quaestor</span> for discussion).
+This XML response conforms to the SPARQL standard <span
+class='cite'>std:sparql</span>.  Note that the Content-Type of the
+POSTed query is given as <code>application/sparql-query</code>.  If we
+add an Accept header via the <code>curl</code> option <code>--header
+accept:text/tab-separated-values</code>, we retrieve a simple list of
+hits.</p>
+
 </div>
 
 <div class='appendices'>
@@ -517,7 +539,7 @@ where {
 </div>
 
 <p style="text-align: right; font-size: x-small; color: #888;">
-$Revision: 1.2 $ $Date: 2007/09/15 01:44:20 $
+$Revision: 1.3 $ $Date: 2007/09/20 22:16:56 $
 </p>
 
 </div>
