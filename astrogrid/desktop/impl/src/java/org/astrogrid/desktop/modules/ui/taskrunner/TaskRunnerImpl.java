@@ -14,10 +14,14 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URI;
 import java.util.ArrayList;
@@ -79,9 +83,12 @@ import org.astrogrid.desktop.modules.ui.comp.MyTitledBorder;
 import org.astrogrid.desktop.modules.ui.comp.ResourceDisplayPane;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker;
+import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker.ShowDetailsEvent;
+import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker.ShowDetailsListener;
 import org.astrogrid.desktop.modules.votech.VoMonImpl;
 import org.astrogrid.desktop.modules.votech.VoMonInternal;
 import org.astrogrid.workflow.beans.v1.Tool;
+import org.exolab.castor.xml.CastorException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.ValidationException;
@@ -102,7 +109,7 @@ import com.jgoodies.forms.layout.FormLayout;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 4, 200712:30:46 PM
  */
-public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInternal, MouseListener{
+public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInternal, MouseListener, ShowDetailsListener{
 	/** worker which lists the services that provide the current application
      * @author Noel.Winstanley@manchester.ac.uk
      * @since Aug 2, 200712:43:15 AM
@@ -439,6 +446,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 
 		// processes panel
 		this.tracker = builder.createExecutionTracker(this);
+		tracker.addShowDetailsListener(this);
 		trackerPanel = tracker.getPanel();
         trackerPanel.addMouseListener(this);
 		trackerPanel.setBackground(Color.WHITE);
@@ -601,7 +609,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	 * @param cea
 	 */
 	protected void display(CeaApplication cea) {
-		// don't want to display this now.infoPane.display(cea);
+		infoPane.display(cea);
 		setTitle("Task Runner - " + cea.getTitle());
 	}
 
@@ -665,8 +673,6 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
             displayParameterHelp(t);
         }
 	}
-
-
 	
 	public void mouseExited(MouseEvent e) {
 	}
@@ -676,5 +682,43 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 
 	public void mouseReleased(MouseEvent e) {
 	}
+	
+// show details event listener - a callback from the task monitor.	
+    public void showDetails(ShowDetailsEvent e) {
+        ProcessMonitor monitor = e.getMoitor();
+        if (monitor instanceof ProcessMonitor.Advanced) {
+            Tool tool = ((ProcessMonitor.Advanced)monitor).getInvocationTool();
+            // now need to take a copy of this tool, and load this copy into the editor.
+            //can't use original, otherwise edits to the form will alter the original - rewriting history.
+            // copy the tool object by marshalling to and from xml.
+            Writer sw = null;
+            Reader r = null;                  
+            try {
+                sw = new StringWriter();
+                tool.marshal(sw);
+                r = new StringReader(sw.toString());
+                tool = Tool.unmarshalTool(r);
+                CeaApplication newApp =pForm.getModel().currentResource();
+                buildForm(tool,tool.getInterface(),newApp);
+            } catch (CastorException x) {
+                logger.error("MarshalException",x);
+           } finally {
+                if (sw != null) {
+                    try {
+                        sw.close();
+                    } catch (IOException x) {
+                        // ignored
+                    }
+                }
+                if (r != null) {
+                    try {
+                        r.close();
+                    } catch (IOException x) {
+                        //ignored
+                    }
+                }
+            }
+        }
+    }
 }
 

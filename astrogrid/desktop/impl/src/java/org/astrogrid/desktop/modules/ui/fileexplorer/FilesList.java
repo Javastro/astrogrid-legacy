@@ -88,14 +88,15 @@ public class FilesList extends JList {
            item = ((DelegateFileObject)item).getDelegateFile();
        }
        HtmlBuilder sb = new HtmlBuilder();
-       sb.append(item.getName().getFriendlyURI());
+       sb.h3(item.getName().getBaseName());
+       sb.append("URI: ").append(item.getName().getFriendlyURI());
        try {
        FileContent content = item.getContent();
-       sb.br().append(new Date(content.getLastModifiedTime()));
+       sb.br().append("Last modified: ").append(new Date(content.getLastModifiedTime()));
        if (item.getType().hasContent()) {
            long sz = content.getSize();
-           sb.br().append(sz < 1024 && sz > 0 ? 1 : sz / 1024).append("KB");
-           sb.br().append(content.getContentInfo().getContentType());
+           sb.br().append("Size: ").append(sz < 1024 && sz > 0 ? 1 : sz / 1024).append("KB");
+           sb.br().append("Content type: ").append(content.getContentInfo().getContentType());
        }
        } catch (FileSystemException ex) {
            // don't care

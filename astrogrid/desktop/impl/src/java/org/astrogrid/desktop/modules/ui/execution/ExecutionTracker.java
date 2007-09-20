@@ -15,6 +15,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.EventListener;
+import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
@@ -27,6 +29,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileObject;
@@ -35,6 +38,7 @@ import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.AbstractProcessMonitor;
 import org.astrogrid.desktop.modules.ag.ProcessMonitor;
@@ -55,6 +59,7 @@ import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectComparator;
 import org.astrogrid.desktop.modules.ui.fileexplorer.NavigableFilesList;
 import org.astrogrid.desktop.modules.ui.fileexplorer.OperableFilesList;
 import org.astrogrid.desktop.modules.ui.fileexplorer.VFSOperationsImpl;
+import org.astrogrid.workflow.beans.v1.Tool;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
@@ -70,10 +75,56 @@ import ca.odell.glazedlists.swing.JEventListPanel;
 import com.l2fprod.common.swing.JTaskPane;
 
 /** Tracks the execution of a series of remote processes
+ * 
+ * allows one or more components to register as ShowDetailsListeners - when the user presses the 'show details' button for a process, this event is fired.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 16, 20072:06:17 PM
  */
 public class ExecutionTracker implements ListSelectionListener{
+    public class ShowDetailsEvent extends EventObject {
+    
+   private final ProcessMonitor moitor;
+
+/**
+         * @param source
+         */
+        public ShowDetailsEvent(Object source,ProcessMonitor moitor) {
+            super(source);
+            this.moitor = moitor;
+            
+        }
+
+/** access the monitor to show details for .
+ * @return the moitor
+ */
+public final ProcessMonitor getMoitor() {
+    return this.moitor;
+}
+    }
+    
+    /** listener inteface for a client that displays the details of an executioin.
+     poorly named - at the moment used to reload the invocation params back in the editor.
+     */
+    public interface ShowDetailsListener extends EventListener {
+        public void showDetails(ShowDetailsEvent e);
+    }
+    
+    public void addShowDetailsListener(ShowDetailsListener l) {
+        listeners.add(l);
+    }
+    
+    public void removeShowDetailsListener(ShowDetailsListener l) {
+        listeners.remove(l);
+    }
+    private final ArrayList listeners = new ArrayList();
+ 
+    private void fireShowDetails(ProcessMonitor pm) {
+        ShowDetailsEvent e= new ShowDetailsEvent(this,pm);
+        for (Iterator i = listeners.iterator(); i.hasNext();) {
+            ShowDetailsListener l = (ShowDetailsListener) i.next();
+            l.showDetails(e);
+        }
+    }
     /**
      * Logger for this class
      */
@@ -102,7 +153,7 @@ public class ExecutionTracker implements ListSelectionListener{
 		TransformedList proxyList = GlazedListsSwing.swingThreadProxyList(monitors);
 		components = new FunctionList(proxyList, new FunctionList.Function() {
 			public Object evaluate(Object sourceValue) {
-				return new ProcessMonitorDisplay((ProcessMonitor)sourceValue);
+			        return new ProcessMonitorDisplay((ProcessMonitor)sourceValue);			    
 			}
 		});
         // make this a self-observing list.
@@ -167,6 +218,7 @@ public class ExecutionTracker implements ListSelectionListener{
 	 *  observable notifications and ui component updates are lifted onto the EDT.
 	 *  the original notification from ProcessManager will not be on EDT.
 	 * 
+	 * displays additional components when wrapped around a ProcessMonitor.Advanced
 	 * 
 	 * tightly integrates with the TrackerFormat.
 	 * @author Noel.Winstanley@manchester.ac.uk
@@ -186,18 +238,26 @@ public class ExecutionTracker implements ListSelectionListener{
 			messageLabel.setFont(UIConstants.SMALL_DIALOG_FONT);
 	
 			deleteButton = new JButton(IconHelper.loadIcon("stop16.png"));
-			deleteButton.putClientProperty("is3DEnabled",Boolean.FALSE);
+			//deleteButton.putClientProperty("is3DEnabled",Boolean.FALSE);
 			deleteButton.setRolloverEnabled(true);
-			deleteButton.setBorderPainted(false);
+			//deleteButton.setBorderPainted(false);
 			deleteButton.setToolTipText("Cancel task");
 			deleteButton.addActionListener(this);
 			
 			refreshButton = new JButton(IconHelper.loadIcon("reload16.png"));
-            refreshButton.putClientProperty("is3DEnabled",Boolean.FALSE);
-            refreshButton.setBorderPainted(false);
+            //refreshButton.putClientProperty("is3DEnabled",Boolean.FALSE);
+            //refreshButton.setBorderPainted(false);
             refreshButton.setRolloverEnabled(true);
             refreshButton.setToolTipText("Refresh task");
             refreshButton.addActionListener(this);
+            if (pm instanceof ProcessMonitor.Advanced) {
+                
+                loadParamsButton = new JButton(IconHelper.loadIcon("edit16.png"));//fixme
+                loadParamsButton.setToolTipText("Load the parameters used to run this task back into the parameter editor");
+                loadParamsButton.addActionListener(this);
+            } else {     // not available unless it's an 'advanced' monitor.
+                loadParamsButton = null;
+            }
             
             navigator = uiBuilder.createFileNavigator(parent,activities);
             results = new NavigableFilesList(navigator);
@@ -213,7 +273,8 @@ public class ExecutionTracker implements ListSelectionListener{
 		private final JLabel status = new JLabel(UIConstants.PENDING_ICON);
 		private final JLabel title = new JLabel();
 		private final JButton deleteButton;
-		private final JButton refreshButton;		
+		private final JButton refreshButton;	
+		private final JButton loadParamsButton;
 		private final NavigableFilesList results ;
 		
 		public JComponent getComponent(int ix) {
@@ -230,6 +291,8 @@ public class ExecutionTracker implements ListSelectionListener{
 			    return messageLabel;
 			case 5:
 			    return results;
+			case 6:
+			    return loadParamsButton;
 			default:
 				return new JLabel("invalid index: " + ix);
 			}
@@ -297,7 +360,7 @@ public class ExecutionTracker implements ListSelectionListener{
 		        }
 
 		        protected void doError(Throwable ex) {
-		            messageLabel.setText(ex.getMessage());
+		            messageLabel.setText("Failed to fetch results: " + ex.getMessage());
 		            logger.warn("Failed to fetch results",ex);
 		        }
 		    }).start();
@@ -323,7 +386,8 @@ public class ExecutionTracker implements ListSelectionListener{
                         builder.append(df.format(m.getTimestamp()))
                                 .append(" Status: ")
                                 .append(m.getStatus());
-                        builder.br().appendWrap(m.getContent(),50);
+                        builder.br().append("Message: ");
+                        builder.appendWrap(m.getContent(),50);
                         builder.p();        
                                  
                     }
@@ -362,11 +426,10 @@ public class ExecutionTracker implements ListSelectionListener{
 				title.setText(ei.getName());
 				HtmlBuilder sb = new HtmlBuilder();
 				sb.appendWrap(ei.getId(),50);
-				sb.br().append("Status: ").append(ei.getStatus());
 				sb.br().appendWrap(ei.getDescription(),50);
+				sb.append("<h3>Status: ").append(ei.getStatus()).append("</h3>");
 				if (ei.getStartTime() != null) {
-					sb.br()
-					    .append("Started: ")
+					sb.append("Started: ")
 					    .append(df.format(ei.getStartTime()));
 				} 
 				if (ei.getFinishTime() != null) {
@@ -374,8 +437,26 @@ public class ExecutionTracker implements ListSelectionListener{
 					    .append("Finished: ")
 					    .append(df.format(ei.getFinishTime()));
 				}
+				// display input and output information
+				if (pm instanceof ProcessMonitor.Advanced) {
+				    Tool t = ((ProcessMonitor.Advanced)pm).getInvocationTool();
+				    sb.h3("Inputs");
+				    ParameterValue[] ps = t.getInput().getParameter();
+				    for (int i = 0; i < ps.length; i++) {
+				        //issue - special case for adql - convert to adqls. - at the moment <select> is getitng treated as a html tag.
+				        // hmm - leave for now - instad will just html-escape all parameter values.
+				        sb.append(ps[i].getName()).append(" = ");
+				        sb.appendWrap(StringEscapeUtils.escapeHtml(ps[i].getValue()),50);
+                        sb.br();
+                    }
+                    sb.h3("Outputs");
+                    ps = t.getOutput().getParameter();
+                    for (int i = 0; i < ps.length; i++) {
+                        sb.append(ps[i].getName()).append(" = ").append(ps[i].getValue());
+                        sb.br();
+                    }				    
+				}
 				title.setToolTipText(sb.toString());
-				//result.setToolTipText(ei.getDescription());
 
 			} catch (ACRException x) {
 				title.setText("inaccessible: " + x.getMessage());
@@ -391,6 +472,8 @@ public class ExecutionTracker implements ListSelectionListener{
                         return null;
                     }
                 }).start();
+            } else if (e.getSource() == loadParamsButton) {
+                fireShowDetails(pm);
             } else {                // do a delete/halt
                 pm.removeProcessListener(this);
                 monitors.remove(pm);
@@ -433,10 +516,10 @@ public class ExecutionTracker implements ListSelectionListener{
 
 		public TrackerFormat() {
 			super("p,d,d"// rows
-					,"20px,fill:60px:grow,20px,20px" // cols
+					,"20px,fill:60px:grow,d,20px,20px" // cols
 					,"2dlu" // row spacing
 					,"0dlu" // colspacing
-					, new String[]{"2,1","1,1","3,1","4,1","2,2","1,3,4,1"}
+					, new String[]{"2,1","1,1","4,1","5,1","2,2","1,3,4,1","3,1"}
 			);
 		}
 
@@ -445,7 +528,7 @@ public class ExecutionTracker implements ListSelectionListener{
 		}
 
 		public int getComponentsPerElement() {
-		    return 6;
+		    return 7;
 		}
 
 

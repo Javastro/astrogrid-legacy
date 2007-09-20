@@ -15,19 +15,22 @@
 	</head>
 <body>
 <release version="next" date="unreleased">
+    <action dev="nw" type="add">
+        taskrunner: records parameter set used in each invocation, and offers ability to reload this parameterset back into the editor.
+    </action>
     <action dev="nw" type="fix">
-    renamed and debugged the 'reveal file' action in task runner.
+    taskrunner: renamed and debugged the 'reveal file' action.
         - now does a refresh if file is not present.
     </action>
     <action dev="nw" type="update">
-        Tidied up annotations xml format - all previous annotations will be lost.
+        voexplorer: Tidied up annotations xml format - all previous annotations will be lost.
         Improved annotation store performance.
     </action>
     <action dev="nw" type="add">
-        Added 'select all' and 'invert selection' menu operations.
+        voexplorer: Added 'select all' and 'invert selection' menu operations.
     </action>
     <action dev="nw" type="fix" issue="2300">
-        fixed ui snag
+        voexplorer: fixed ui snag
     </action>
     <action dev="nw" type="remove">
         Removed scirpting again - very memory inefficient - need to rethink and come up with a different approach.

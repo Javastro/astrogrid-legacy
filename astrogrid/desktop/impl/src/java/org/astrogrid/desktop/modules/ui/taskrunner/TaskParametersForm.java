@@ -98,7 +98,14 @@ public class TaskParametersForm extends JPanel implements ItemListener {
     private final TypesafeObjectBuilder builder;
 	
 	
-	public JCollapsiblePane getBottomPane() {
+	/**
+     * @return the model
+     */
+    public final Model getModel() {
+        return this.model;
+    }
+
+    public JCollapsiblePane getBottomPane() {
 	    return bottomPanel;
 	} 
 	
@@ -249,28 +256,32 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 	}
 	/** populates the contents of the current model 
 	 * 	 * */
-	public void buildForm(Tool values,String interfaceName,CeaApplication applicationResource) {
-		// if we've got this far, the interfacename is valid. nogthing stopping us now.
-		model.newApplication(applicationResource);
-		// populate the label.
-		resourceLabel.setText(model.currentResource().getTitle());
-		resourceLabel.setIcon(null);
-		doFetchIcon();
-		
-		// populate the top combo box.
-		// stop listening to the interface chooser for a moment.
-		try {
-			interfaceChooser.removeItemListener(this);
-			interfaceChooser.removeAllItems();
-			InterfaceBean[] ibs = applicationResource.getInterfaces();
-			for (int i = 0; i < ibs.length; i++) {
-				interfaceChooser.addItem(ibs[i].getName());			
-			}
-			interfaceChooser.setEnabled(ibs.length > 1);
-			interfaceChooser.setSelectedItem(interfaceName);
-		} finally {
-			interfaceChooser.addItemListener(this);
-		}
+	public void buildForm(Tool values,String interfaceName,CeaApplication applicationResource) {	    
+	    if (model.currentResource() != null && model.currentResource().getId().equals(applicationResource.getId())) { //application is unchanged.
+	        model.newApplication(applicationResource);
+	        interfaceChooser.setSelectedItem(interfaceName);
+	    } else { // it's a different application
+            model.newApplication(applicationResource);	        
+	        // populate the label.
+	        resourceLabel.setText(model.currentResource().getTitle());
+	        resourceLabel.setIcon(null);
+	        doFetchIcon();
+
+	        // populate the top combo box.
+	        // stop listening to the interface chooser for a moment.
+	        try {
+	            interfaceChooser.removeItemListener(this);
+	            interfaceChooser.removeAllItems();
+	            InterfaceBean[] ibs = applicationResource.getInterfaces();
+	            for (int i = 0; i < ibs.length; i++) {
+	                interfaceChooser.addItem(ibs[i].getName());			
+	            }
+	            interfaceChooser.setEnabled(ibs.length > 1);
+	            interfaceChooser.setSelectedItem(interfaceName);
+	        } finally {
+	            interfaceChooser.addItemListener(this);
+	        }
+	    }
 		model.changeTool(values,interfaceName);
 	}	
 	
