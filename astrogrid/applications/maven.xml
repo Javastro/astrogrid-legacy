@@ -126,7 +126,6 @@ middle to commandline tests - no jar produced, no error messages. so written all
         -->
 </goal>
 
-
 <!-- site -->
 <goal name="astrogrid-build-site">
    <echo message="Master Project: astrogrid-build-site"/>
