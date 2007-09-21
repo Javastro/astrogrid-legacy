@@ -4,33 +4,21 @@
 package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.event.ActionEvent;
-import java.io.File;
 import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.JFileChooser;
-
-import org.apache.commons.collections.Transformer;
-import org.apache.commons.lang.text.StrBuilder;
-import org.apache.commons.vfs.AllFileSelector;
 import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSelector;
 import org.apache.commons.vfs.FileSystem;
 import org.apache.commons.vfs.FileSystemManager;
-import org.apache.commons.vfs.FileUtil;
 import org.apache.commons.vfs.provider.local.LocalFileSystem;
 import org.astrogrid.acr.ivoa.resource.Capability;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
-
-import com.l2fprod.common.swing.JDirectoryChooser;
 
 /** simplistic activity which just allows users to download files to a local directory.
  * may even keep around once I've debugged the save activity..

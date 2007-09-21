@@ -1,4 +1,4 @@
-/*$Id: JettyWebServer.java,v 1.13 2007/06/18 17:00:13 nw Exp $
+/*$Id: JettyWebServer.java,v 1.14 2007/09/21 16:35:13 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -127,7 +127,6 @@ public class JettyWebServer implements WebServerInternal, ShutdownListener{
             server.destroy();
             */        
         } catch (InterruptedException e) {
-        	e.printStackTrace();
             logger.warn("InterruptedException",e);
         } catch (Throwable t) {
             logger.warn("throwable while halting..",t);
@@ -283,11 +282,11 @@ public void dropContext(String sessionId) {
 	HttpContext context = findContext(sessionId);
 	if (context != null) {
 		server.removeContext(context);
-	}
 	try {
 		context.stop();
 	} catch (InterruptedException x) {
 		logger.info("InterruptedException",x);
+	}
 	}
 }
 
@@ -328,6 +327,10 @@ public URL getContextBase(String sessionId) {
 
 /* 
 $Log: JettyWebServer.java,v $
+Revision 1.14  2007/09/21 16:35:13  nw
+improved error reporting,
+various code-review tweaks.
+
 Revision 1.13  2007/06/18 17:00:13  nw
 javadoc fixes.
 

@@ -3,12 +3,6 @@
  */
 package org.astrogrid.desktop.modules.ui.taskrunner;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -16,14 +10,15 @@ import java.text.ParseException;
 
 import javax.swing.Box;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.cds.Sesame;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle;
 import org.astrogrid.desktop.modules.ui.comp.NameResolvingPositionTextField;
 

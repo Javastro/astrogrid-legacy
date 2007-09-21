@@ -1,4 +1,4 @@
-/*$Id: UIComponentImpl.java,v 1.17 2007/09/13 13:45:56 nw Exp $
+/*$Id: UIComponentImpl.java,v 1.18 2007/09/21 16:35:14 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,7 +34,6 @@ import java.util.Properties;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -59,11 +58,14 @@ import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.builtin.ShutdownListener;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
+import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.comp.EventListPopupMenuManager;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.comp.IndeterminateProgressIndicator;
 import org.astrogrid.desktop.modules.ui.comp.MessageTimerProgressBar;
+import org.astrogrid.desktop.modules.ui.comp.TimedPopup;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 
 import ca.odell.glazedlists.FilterList;
@@ -99,29 +101,19 @@ public class UIComponentImpl extends JFrame implements UIComponent, ShutdownList
 
 	/** static helper method - show a well-formatted error in a popup dialogue
      * <p/>
-     * classes that extend this class should call {@link #showError(String, Throwable)} instead
+     * 
+     * @deprecated classes that extend this class should call {@link #showError(String, Throwable)} instead
      */
     public static final void showError(final Component parent,String msg, Throwable e) {
         logger.info(msg,e); 
         JLabel l = new JLabel();
-        Throwable innermost = e;
-        while (innermost.getCause() != null) {
-            innermost = innermost.getCause();            
-        }
-        String eMsg = null;
-        if (innermost.getMessage() != null) { 
-            int endOfPrefix = innermost.getMessage().lastIndexOf("Exception:") ; // try to get all nested exception messages
-            if (endOfPrefix > -1) {
-                eMsg = innermost.getMessage().substring(endOfPrefix+ 10);
-            } else {
-                eMsg = innermost.getMessage();
-            }
-        } else { // an exception with no message.
-            eMsg = innermost.getClass().getName(); 
-        }
-        String errorMessage = "<html><body><b>" + msg + 
-        "</b><br><b>Cause:</b> " + eMsg + "</body></html>";
-        l.setText(errorMessage);
+
+        HtmlBuilder hb = new HtmlBuilder();
+        hb.append("<b>").append(msg).append("</b>");
+        hb.br();
+        hb.append(ExceptionFormatter.formatException(e));
+
+        l.setText(hb.toString());
         
         int result = JOptionPane.showOptionDialog(parent,l,"An Error Occurred", 
                 JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null,
@@ -286,6 +278,21 @@ public class UIComponentImpl extends JFrame implements UIComponent, ShutdownList
       
     public void showError(String msg, Throwable e) {
         showError(this,msg,e);
+    }
+    
+
+    /** display an error message in a popup, which will vanish after a few seconds */
+    public void showTransientError(String title, String message) {
+        TimedPopup.showErrorMessage(getTasksButton(),title,message);
+    }
+
+    /** display a message in a popup, which will vanish after a few seconds */
+    public void showTransientMessage(String title, String message) {
+        TimedPopup.showInfoMessage(getTasksButton(),title,message);
+    }
+/** display a warning in a popup, which will vanish after a few seconds */
+    public void showTransientWarning(String title, String message) {
+        TimedPopup.showWarningMessage(getTasksButton(),title,message);     
     }
     private JProgressBar getProgressBar() {
         if (progressBar == null) {
@@ -468,7 +475,7 @@ public class UIComponentImpl extends JFrame implements UIComponent, ShutdownList
      * @param s
      * @throws HeadlessException
      */
-    protected void showError(String s) throws HeadlessException {
+    public void showError(String s) {
         JOptionPane.showMessageDialog(this,s,"Error",JOptionPane.ERROR_MESSAGE);
     }
 
@@ -517,6 +524,10 @@ public class UIComponentImpl extends JFrame implements UIComponent, ShutdownList
 
 /* 
 $Log: UIComponentImpl.java,v $
+Revision 1.18  2007/09/21 16:35:14  nw
+improved error reporting,
+various code-review tweaks.
+
 Revision 1.17  2007/09/13 13:45:56  nw
 removed obsolete superclass.
 

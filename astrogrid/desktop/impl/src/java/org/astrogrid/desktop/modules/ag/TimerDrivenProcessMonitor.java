@@ -3,14 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ag;
 
-import java.net.URI;
-
 import org.apache.commons.vfs.FileSystemManager;
-import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.SecurityException;
-import org.astrogrid.acr.ServiceException;
-import org.astrogrid.desktop.modules.system.SchedulerInternal;
 import org.astrogrid.desktop.modules.system.SchedulerInternal.DelayedContinuation;
 
 /** A process monitor which (probably) polls, driven by a timer.

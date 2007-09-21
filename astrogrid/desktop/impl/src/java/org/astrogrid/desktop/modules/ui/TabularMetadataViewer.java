@@ -22,12 +22,9 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
-import org.apache.commons.collections.ComparatorUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
 import org.astrogrid.acr.astrogrid.ColumnBean;
 import org.astrogrid.acr.astrogrid.TableBean;
@@ -43,14 +40,10 @@ import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FilterList;
-import ca.odell.glazedlists.FunctionList;
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.TextFilterator;
-import ca.odell.glazedlists.TransformedList;
-import ca.odell.glazedlists.event.ListEvent;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
-import ca.odell.glazedlists.gui.TableFormat;
 import ca.odell.glazedlists.matchers.TextMatcherEditor;
 import ca.odell.glazedlists.swing.AutoCompleteSupport;
 import ca.odell.glazedlists.swing.EventComboBoxModel;
@@ -280,21 +273,23 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 			cataLabel.setText(c == null || c.getDescription() == null 
 					? "" : "<html>" + c.getDescription());
 			tables.clear();
-			tables.addAll(Arrays.asList(c.getTables()));
-			if (c.getTables().length > 0) {
+			if (c != null && c.getTables().length > 0) {
+			    tables.addAll(Arrays.asList(c.getTables()));
 				tableCombo.setSelectedIndex(0);
 			}
-			tableCombo.setEnabled(c.getTables().length > 1);
+			tableCombo.setEnabled(c != null && c.getTables().length > 1);
 		} else if (e.getSource() == tableCombo) {
 			TableBean tb = (TableBean)e.getItem();
 			tableLabel.setText(tb == null || tb.getDescription() == null 
 					? "" : "<html>" + tb.getDescription());
 			columns.clear();
 //			columns.addAll(Arrays.asList(tb.getColumns()));
+			if (tb != null) {
 			final ColumnBean[] cbs = tb.getColumns();
             for (int i = 0; i < cbs.length; i++) {
                 columns.add(new NumberedColumnBean(cbs[i],i));
             }
+			}
 		}
 	}
 	    // datastructure used to add an 'index' column to the column beans.

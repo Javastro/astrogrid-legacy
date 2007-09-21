@@ -1,4 +1,4 @@
-/*$Id: RegistryGoogleDialog.java,v 1.12 2007/09/11 12:08:22 nw Exp $
+/*$Id: RegistryGoogleDialog.java,v 1.13 2007/09/21 16:35:15 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,14 +13,12 @@ package org.astrogrid.desktop.modules.dialogs;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.HeadlessException;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import javax.swing.AbstractAction;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -29,7 +27,6 @@ import javax.swing.KeyStroke;
 
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 
@@ -171,6 +168,10 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
 
 /* 
 $Log: RegistryGoogleDialog.java,v $
+Revision 1.13  2007/09/21 16:35:15  nw
+improved error reporting,
+various code-review tweaks.
+
 Revision 1.12  2007/09/11 12:08:22  nw
 services filter, and various layout alterations.
 

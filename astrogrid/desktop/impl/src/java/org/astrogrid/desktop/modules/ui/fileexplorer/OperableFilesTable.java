@@ -5,11 +5,6 @@ package org.astrogrid.desktop.modules.ui.fileexplorer;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Vector;
-
-import javax.swing.ListSelectionModel;
-import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
 
 import org.apache.commons.vfs.FileObject;
 

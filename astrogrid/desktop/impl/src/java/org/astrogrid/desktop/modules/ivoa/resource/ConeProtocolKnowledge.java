@@ -12,8 +12,8 @@ import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
  * @since Aug 7, 200612:44:28 PM
  */
 public class ConeProtocolKnowledge {
-	  public static ParameterBean[] parameters;
-	    public static InterfaceBean[] ifaces;
+	  public static final ParameterBean[] parameters;
+	    public static final InterfaceBean[] ifaces;
 	    static { // build static info for a cone applicaiton.
 	        // missing paramers are value, default value, units, type, subtype,options
 	        ParameterBean ra = new ParameterBean("ra","Right Ascension","right ascension of the position",null,null,null,"float",null,null); // @todo improve the metadata

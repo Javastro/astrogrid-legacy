@@ -6,10 +6,7 @@ package org.astrogrid.desktop.modules.ui.comp;
 import java.awt.Component;
 import java.util.Iterator;
 
-import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JMenu;
-import javax.swing.JPopupMenu;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.event.ListEvent;

@@ -4,8 +4,6 @@
 package org.astrogrid.desktop.modules.ui;
 
 import org.apache.commons.collections.Factory;
-import org.apache.commons.vfs.FileObject;
-import org.astrogrid.acr.ui.FileManager;
 import org.astrogrid.acr.ui.MyspaceBrowser;
 import org.votech.plastic.incoming.handlers.MessageHandler;
 

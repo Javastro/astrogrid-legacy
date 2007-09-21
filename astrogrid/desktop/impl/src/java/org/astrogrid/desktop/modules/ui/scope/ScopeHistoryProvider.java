@@ -4,34 +4,19 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.cds.SesamePositionBean;
 import org.astrogrid.desktop.modules.system.XmlPersist;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
-import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.comp.DoubleDimension;
 import org.astrogrid.desktop.modules.ui.folders.AbstractListProvider;
-import org.astrogrid.desktop.modules.ui.folders.ListProvider;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.RangeList;
 import ca.odell.glazedlists.UniqueList;
-import ca.odell.glazedlists.event.ListEvent;
-import ca.odell.glazedlists.event.ListEventListener;
 
 /** Provides a persistent model (for multiple views) of the astroscope
  * search history.
@@ -41,11 +26,7 @@ import ca.odell.glazedlists.event.ListEventListener;
  * @since May 2, 20072:07:44 PM
  */
 public class ScopeHistoryProvider extends AbstractListProvider{
-	/**
-	 * Logger for this class
-	 */
-	private static final Log logger = LogFactory
-			.getLog(ScopeHistoryProvider.class);
+
 
 	/** number of history items to remeber */
 	public static final int HISTORY_SIZE = 20;

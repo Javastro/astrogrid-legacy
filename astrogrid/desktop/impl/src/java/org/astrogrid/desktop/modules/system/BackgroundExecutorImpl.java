@@ -1,4 +1,4 @@
-/*$Id: BackgroundExecutorImpl.java,v 1.12 2007/09/04 18:50:50 nw Exp $
+/*$Id: BackgroundExecutorImpl.java,v 1.13 2007/09/21 16:35:13 nw Exp $
  * Created on 30-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -62,7 +62,9 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
                 if (r.equals(w.getCurrentTask())) {
                     Thread t = (Thread)threads_.get(w);
                     if (t != null) {
-                        try { t.interrupt(); } catch (Exception ex) { }
+                        try { t.interrupt(); } catch (Exception ex) {
+                            //ignored
+                        }
                     }
                 }
             }
@@ -248,6 +250,10 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
 
 /* 
 $Log: BackgroundExecutorImpl.java,v $
+Revision 1.13  2007/09/21 16:35:13  nw
+improved error reporting,
+various code-review tweaks.
+
 Revision 1.12  2007/09/04 18:50:50  nw
 Event Dispatch thread related fixes.
 

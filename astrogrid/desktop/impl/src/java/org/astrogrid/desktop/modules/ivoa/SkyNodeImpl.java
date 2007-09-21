@@ -1,4 +1,4 @@
-/*$Id: SkyNodeImpl.java,v 1.8 2007/04/18 15:47:05 nw Exp $
+/*$Id: SkyNodeImpl.java,v 1.9 2007/09/21 16:35:15 nw Exp $
  * Created on 22-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -440,11 +440,13 @@ public class SkyNodeImpl implements SkyNode {
 
     public void saveResults(URI arg0, Document arg1, URI arg2) throws InvalidArgumentException,
             NotFoundException, ServiceException, SecurityException {
+        // unimplemented
         
     }
 
     public void saveResultsF(URI arg0, Document arg1, URI arg2, String arg3)
             throws InvalidArgumentException, NotFoundException, ServiceException, SecurityException {
+        // unimplemented
     }
 
     /** helper method - checks whether a fault occured, and throws if that's the case.
@@ -643,6 +645,10 @@ private URL resolveService(URI id) throws InvalidArgumentException {
 
 /* 
 $Log: SkyNodeImpl.java,v $
+Revision 1.9  2007/09/21 16:35:15  nw
+improved error reporting,
+various code-review tweaks.
+
 Revision 1.8  2007/04/18 15:47:05  nw
 tidied up voexplorer, removed front pane.
 

@@ -33,6 +33,16 @@ public interface UIComponent {
 
 	void showError(String msg, Throwable e);
 
+    void showError(String msg);    
+
+    /** display an error message in a popup, which will vanish after a few seconds */
+    public void showTransientError(String title, String message);
+
+    /** display a message in a popup, which will vanish after a few seconds */
+    public void showTransientMessage(String title, String message);
+/** display a warning in a popup, which will vanish after a few seconds */
+    public void showTransientWarning(String title, String message);
+	
 	/** set maximum value for progress bar */
 	void setProgressMax(int i);
 

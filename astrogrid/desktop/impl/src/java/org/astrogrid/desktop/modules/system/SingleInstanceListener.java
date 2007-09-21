@@ -1,4 +1,4 @@
-/*$Id: SingleInstanceListener.java,v 1.6 2007/09/04 13:38:37 nw Exp $
+/*$Id: SingleInstanceListener.java,v 1.7 2007/09/21 16:35:13 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,8 +13,6 @@ package org.astrogrid.desktop.modules.system;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-
-import javax.swing.SwingUtilities;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -73,6 +71,10 @@ public class SingleInstanceListener implements InvocationHandler {
 
 /* 
 $Log: SingleInstanceListener.java,v $
+Revision 1.7  2007/09/21 16:35:13  nw
+improved error reporting,
+various code-review tweaks.
+
 Revision 1.6  2007/09/04 13:38:37  nw
 added debugging for EDT, and adjusted UI to not violate EDT rules.
 

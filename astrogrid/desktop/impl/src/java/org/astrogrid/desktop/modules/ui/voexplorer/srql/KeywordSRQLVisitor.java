@@ -10,11 +10,6 @@ package org.astrogrid.desktop.modules.ui.voexplorer.srql;
  * @since Aug 15, 200612:12:11 PM
  */
 public class KeywordSRQLVisitor implements SRQLVisitor {
-    /**
-     * 
-     */
-    public KeywordSRQLVisitor() {
-    }
 
 	public Object visit(AndSRQL q) {
 		return "(" + q.getLeft().accept(this) + ") AND (" + q.getRight().accept(this) + ")";

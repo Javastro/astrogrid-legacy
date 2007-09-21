@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.24 2007/08/13 19:29:48 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.25 2007/09/21 16:35:15 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -549,7 +549,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
         try {
             Tool t = (Tool)Unmarshaller.unmarshal(Tool.class,doc);
             return t.getName();
-        } catch (Exception e) {
+        } catch (CastorException e) {
             return null;
         }         
     }
@@ -612,6 +612,10 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.25  2007/09/21 16:35:15  nw
+improved error reporting,
+various code-review tweaks.
+
 Revision 1.24  2007/08/13 19:29:48  nw
 merged mark's and noel's changes.
 

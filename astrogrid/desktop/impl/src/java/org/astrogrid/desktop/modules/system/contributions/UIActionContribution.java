@@ -1,4 +1,4 @@
-/*$Id: UIActionContribution.java,v 1.11 2007/06/18 16:55:51 nw Exp $
+/*$Id: UIActionContribution.java,v 1.12 2007/09/21 16:35:16 nw Exp $
  * Created on 21-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -51,7 +51,7 @@ public class UIActionContribution extends AbstractAction implements UIStructureC
     private boolean onEventDispatchThread;
     
     
-    public static String VISIBLE_PROPERTY = "visible";
+    public static final String VISIBLE_PROPERTY = "visible";
     private Preference visiblePreference;
     private boolean visible = true;
     
@@ -262,6 +262,10 @@ public class UIActionContribution extends AbstractAction implements UIStructureC
 
 /* 
 $Log: UIActionContribution.java,v $
+Revision 1.12  2007/09/21 16:35:16  nw
+improved error reporting,
+various code-review tweaks.
+
 Revision 1.11  2007/06/18 16:55:51  nw
 javadoc fixes.
 

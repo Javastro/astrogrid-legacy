@@ -9,7 +9,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileObject;
@@ -17,6 +16,7 @@ import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.comp.PositionUtils;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.xml.sax.InputSource;
@@ -318,25 +318,15 @@ public abstract class Retriever extends BackgroundWorker {
     } //end of table parser.
 
 
-
-
     protected void doError(Throwable ex) {
     	logger.warn("Service failed " + ex.getMessage());
     	logger.debug("Exception",ex);
-        parent.setStatusMessage(service.getTitle() + " - failed; " + ex.getMessage());
-        model.addQueryResult(service,null,QueryResultSummarizer.ERROR,fmt(ex));
+    	String formattedEx = ExceptionFormatter.formatException(ex);
+     //   parent.setStatusMessage(service.getTitle() + " - failed; " + ex.getMessage());
+    	parent.showTransientWarning("Unable to query " + service.getTitle(),formattedEx);
+        model.addQueryResult(service,null,QueryResultSummarizer.ERROR,formattedEx);
     }
     
-    private String fmt(Throwable ex) {
-        StringBuffer sb = new StringBuffer();
-        sb.append(StringUtils.substringAfterLast(ex.getClass().getName(),"."));
-        String msg = ex.getMessage();
-        if (msg != null) {
-            sb.append(' ');
-            sb.append(msg);
-        }
-        return sb.toString();
-    }
 
     protected void doAlways() {
        parent.setProgressValue(parent.getProgressValue() + 1); // @issue -  sometimes we get a race here, leading to the display being off-by-one.

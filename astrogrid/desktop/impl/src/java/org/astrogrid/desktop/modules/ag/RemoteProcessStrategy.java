@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessStrategy.java,v 1.6 2007/07/30 17:59:55 nw Exp $
+/*$Id: RemoteProcessStrategy.java,v 1.7 2007/09/21 16:35:14 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,13 +11,9 @@
 package org.astrogrid.desktop.modules.ag;
 
 import java.net.URI;
-import java.util.Map;
 
 import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.desktop.modules.system.ScheduledTask;
 import org.w3c.dom.Document;
 
 /** interface to something that knows how to handle a certain flavour of remote process.
@@ -42,6 +38,10 @@ public interface RemoteProcessStrategy{
 
 /* 
 $Log: RemoteProcessStrategy.java,v $
+Revision 1.7  2007/09/21 16:35:14  nw
+improved error reporting,
+various code-review tweaks.
+
 Revision 1.6  2007/07/30 17:59:55  nw
 RESOLVED - bug 2257: More feedback, please
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2257

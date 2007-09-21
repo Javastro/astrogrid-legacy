@@ -1,4 +1,4 @@
-/*$Id: BackgroundWorker.java,v 1.12 2007/09/11 12:08:53 nw Exp $
+/*$Id: BackgroundWorker.java,v 1.13 2007/09/21 16:35:14 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,7 @@ import java.util.Observable;
 import javax.swing.SwingUtilities;
 
 import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 
 import EDU.oswego.cs.dl.util.concurrent.Callable;
 import EDU.oswego.cs.dl.util.concurrent.FutureResult;
@@ -281,12 +282,21 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
          */
         protected void doAlways() {
         }
+        // controls whether messages are shown in a modal, or a transient dialogue.
+        private boolean transientMessages= false;
+        protected void setTransient(boolean b) {
+            transientMessages = b;
+        }
 
         /**
          * defalt implementation of do error - displays an error message. override to handle errors differently.
          */
         protected void doError(Throwable ex) {
-            parent.showError(msg + ": Failed",ex);
+            if (transientMessages) {
+                parent.showTransientError("Failed: " + msg,ExceptionFormatter.formatException(ex));
+            } else {
+                parent.showError("Failed: " + msg,ex);
+            }
         }
         
         public int compareTo(Object o) {
@@ -301,6 +311,10 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
 
 /* 
 $Log: BackgroundWorker.java,v $
+Revision 1.13  2007/09/21 16:35:14  nw
+improved error reporting,
+various code-review tweaks.
+
 Revision 1.12  2007/09/11 12:08:53  nw
 conccurency tweajs.
 

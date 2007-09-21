@@ -8,17 +8,11 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
 
 /** represents a classical / static folder of resources */
 public class StaticList extends ResourceFolder  {
-	/**
-	 * Logger for this class
-	 */
-	private static final Log logger = LogFactory.getLog(StaticList.class);
 
 	public StaticList() {
 		super("New list",defaultIcon);

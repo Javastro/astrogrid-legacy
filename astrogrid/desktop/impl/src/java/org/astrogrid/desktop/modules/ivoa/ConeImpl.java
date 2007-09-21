@@ -1,4 +1,4 @@
-/*$Id: ConeImpl.java,v 1.5 2007/04/18 15:47:05 nw Exp $
+/*$Id: ConeImpl.java,v 1.6 2007/09/21 16:35:15 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,11 +33,6 @@ import org.astrogrid.desktop.modules.ag.MyspaceInternal;
  *
  */
 public class ConeImpl extends DALImpl implements Cone {
-	/**
-	 * Logger for this class
-	 */
-	private static final Log logger = LogFactory.getLog(ConeImpl.class);
-
 
     /** Construct a new ConeImpl
      * 
@@ -155,6 +150,10 @@ public class ConeImpl extends DALImpl implements Cone {
 
 /* 
 $Log: ConeImpl.java,v $
+Revision 1.6  2007/09/21 16:35:15  nw
+improved error reporting,
+various code-review tweaks.
+
 Revision 1.5  2007/04/18 15:47:05  nw
 tidied up voexplorer, removed front pane.
 

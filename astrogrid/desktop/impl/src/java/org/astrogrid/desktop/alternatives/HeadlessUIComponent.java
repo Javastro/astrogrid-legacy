@@ -48,6 +48,7 @@ public class HeadlessUIComponent implements UIComponent {
 		}
 
 		public void setBusy(boolean b) {
+		    //does nothing
 		}
 
 		public void setProgressMax(int i) {
@@ -80,6 +81,23 @@ public class HeadlessUIComponent implements UIComponent {
 		}
 
 		public void setVisible(boolean b) {
+		    //does nothing
 		}
+
+        public void showError(String msg) {
+            // does nothing
+        }
+
+        public void showTransientError(String title, String message) {
+            // does nothing
+        }
+
+        public void showTransientMessage(String title, String message) {
+            // does nothing
+        }
+
+        public void showTransientWarning(String title, String message) {
+            // does nothing
+        }
 }
 

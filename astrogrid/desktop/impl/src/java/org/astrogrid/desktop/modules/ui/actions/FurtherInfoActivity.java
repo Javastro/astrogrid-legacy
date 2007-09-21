@@ -10,6 +10,7 @@ import java.util.List;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 
 /** dispay further info webpage for the selected resource.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -29,8 +30,8 @@ public class FurtherInfoActivity extends AbstractResourceActivity {
 		URI referenceURI = r.getContent().getReferenceURI() ;
 		try {
 			browser.openURL(referenceURI.toURL());
-		} catch (Exception x) { // @todo display error dialogue.
-			logger.error("Failed to open further information",x);
+		} catch (Exception x) { 
+		    this.uiParent.get().showTransientError("Failed to open url",ExceptionFormatter.formatException(x));
 		}	
 	}
 	protected final BrowserControl browser;

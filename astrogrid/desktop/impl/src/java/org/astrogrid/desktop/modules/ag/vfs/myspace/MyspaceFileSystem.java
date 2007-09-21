@@ -100,10 +100,7 @@ public class MyspaceFileSystem extends AbstractFileSystem implements FileSystem 
 	public double getLastModTimeAccuracy() {
 		return 1000L; // gives us some leeway.
 	}
-	
-	public FileSystemOptions getFileSystemOptions() {
-		return super.getFileSystemOptions();
-	}
+
 	
 	public String toString() {
 	    return super.toString() + "/" + getRootName();

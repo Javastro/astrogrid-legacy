@@ -404,9 +404,9 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 				c.invoke("XQuerySearch",new Object[]{inStream});
 			} catch (XFireFault f) {
 				logger.error("Error",f);
-				throw new ServiceException("Registry Service Response:" + f.getMessage());
+				throw new ServiceException("Unable to query the registry service at " + endpoint,f);
 			} catch (Exception x) {
-					throw new ServiceException("Failed to query registry",x);
+					throw new ServiceException("Unable to query the registry service at "+ endpoint,x);
 			}	
 }
 

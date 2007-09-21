@@ -1,8 +1,6 @@
 package org.astrogrid.desktop.modules.ui.voexplorer.google;
 
 
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
@@ -21,28 +19,17 @@ import java.awt.event.MouseListener;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.TransferHandler;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
-import org.apache.commons.lang.text.StrBuilder;
-import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.ui.dnd.ResourceListTransferable;
 import org.astrogrid.desktop.modules.ui.dnd.ResourceTransferable;
 import org.astrogrid.desktop.modules.votech.VoMonInternal;
-import org.votech.VoMon;
-import org.votech.VoMonBean;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.swing.EventSelectionModel;
@@ -124,6 +111,7 @@ public class ResourceTable extends JTable implements DragGestureListener, DragSo
 		try {
 			dge.startDrag(DragSource.DefaultLinkDrop,trans instanceof ResourceListTransferable ? RESOURCES_IMAGE : resourceImage,OFFSET,trans,this); 
 		} catch (InvalidDnDOperationException e) {
+		    //ignored
 			}
 	}
 	
@@ -155,28 +143,36 @@ public class ResourceTable extends JTable implements DragGestureListener, DragSo
 
 	// drag source listener - unsure whether there's anything I want to listen to here..
 	public void dragDropEnd(DragSourceDropEvent dsde) {
+	    //ignored
 	}
 
 	public void dragEnter(DragSourceDragEvent dsde) {
+	    //ignored
 	}
 
 	public void dragExit(DragSourceEvent dse) {
+	    //ignored
 	}
 
 	public void dragOver(DragSourceDragEvent dsde) {
+	    //ignored
 	}
 
 	public void dropActionChanged(DragSourceDragEvent dsde) {
+	    //ignored
 	}
 
 	// mouse listener interface.
 	public void mouseClicked(MouseEvent e) {
+	    //ignored
 	}
 
 	public void mouseEntered(MouseEvent e) {
+	    //ignored
 	}
 
 	public void mouseExited(MouseEvent e) {
+	    //ignored
 	}
 
 	public void mousePressed(MouseEvent e) {

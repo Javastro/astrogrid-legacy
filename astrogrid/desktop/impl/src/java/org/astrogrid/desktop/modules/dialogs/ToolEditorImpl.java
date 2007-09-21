@@ -1,4 +1,4 @@
-/*$Id: ToolEditorImpl.java,v 1.16 2007/07/23 12:21:18 nw Exp $
+/*$Id: ToolEditorImpl.java,v 1.17 2007/09/21 16:35:15 nw Exp $
  * Created on 16-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.acr.InvalidArgumentException;
@@ -23,13 +22,8 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.CeaApplication;
-import org.astrogrid.acr.ivoa.Registry;
-import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
@@ -166,6 +160,10 @@ public class ToolEditorImpl implements ToolEditorInternal {
 
 /* 
 $Log: ToolEditorImpl.java,v $
+Revision 1.17  2007/09/21 16:35:15  nw
+improved error reporting,
+various code-review tweaks.
+
 Revision 1.16  2007/07/23 12:21:18  nw
 stopgap implementations of tool editor dialog - uses new codebase, but not tested at the moment.
 

@@ -1,4 +1,4 @@
-/*$Id: DALImpl.java,v 1.13 2007/06/18 17:02:24 nw Exp $
+/*$Id: DALImpl.java,v 1.14 2007/09/21 16:35:15 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -355,6 +355,7 @@ public abstract class DALImpl implements Dal{
 			}
 		}
 		public void endTable() throws SAXException {
+		    // does nothing
 		}
 
 		public void rowData(Object[] cells) throws SAXException {
@@ -409,6 +410,7 @@ public abstract class DALImpl implements Dal{
 			}
 		}
 		public void endTable() throws SAXException {
+		    //does nothing
 		}
 
 		public void rowData(Object[] cells) throws SAXException {
@@ -434,6 +436,10 @@ public abstract class DALImpl implements Dal{
 
 /* 
 $Log: DALImpl.java,v $
+Revision 1.14  2007/09/21 16:35:15  nw
+improved error reporting,
+various code-review tweaks.
+
 Revision 1.13  2007/06/18 17:02:24  nw
 javadoc fixes.
 

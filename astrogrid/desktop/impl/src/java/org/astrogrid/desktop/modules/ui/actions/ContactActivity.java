@@ -5,13 +5,13 @@ package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.event.ActionEvent;
 import java.net.URL;
-import java.util.Collections;
 import java.util.List;
 
 import org.astrogrid.acr.ivoa.resource.Contact;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 
 /** contac the curator person for a resource.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -54,8 +54,8 @@ public void actionPerformed(ActionEvent e) {
 	String email = r.getCuration().getContacts()[0].getEmail();
 	try {
 		browser.openURL(new URL("mailto:"+ email));
-	} catch (Exception x) { // @todo display error dialogue.
-		logger.error("Failed to open mailto:",x);
+	} catch (Exception x) { 
+	    this.uiParent.get().showTransientError("Unable to open mailto: link",ExceptionFormatter.formatException(x));
 	}	
 }
 

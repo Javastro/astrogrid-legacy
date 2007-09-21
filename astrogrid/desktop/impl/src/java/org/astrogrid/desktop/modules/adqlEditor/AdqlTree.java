@@ -69,6 +69,7 @@ import org.astrogrid.desktop.modules.adqlEditor.nodes.NestingNode;
 import org.astrogrid.desktop.modules.adqlEditor.nodes.NodeFactory;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 /**
  * A tree view on XML, with nodes representing both elements and attributes. See
  * {@link XmlEntry}and {@link XmlModel}for information on how information
@@ -417,6 +418,7 @@ public final class AdqlTree extends JTree
             }
             protected void doError(Throwable ex) {
                 cursor.dispose() ;
+                parent.showTransientWarning("Failed to find catalogue data",ExceptionFormatter.formatException(ex));
                 if( log.isDebugEnabled() ) {
                     log.debug( "Worker thread failed searching for catalogue data.", ex )  ;    
                 }

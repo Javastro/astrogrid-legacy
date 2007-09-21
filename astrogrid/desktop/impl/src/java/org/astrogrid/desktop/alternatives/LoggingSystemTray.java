@@ -5,7 +5,6 @@ package org.astrogrid.desktop.alternatives;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.desktop.modules.system.SystemTrayInternal;
 
 /** Alternative implementation of 'system tray' that just logs all events.

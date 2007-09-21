@@ -4,8 +4,6 @@ import java.awt.Font;
 import java.awt.datatransfer.Transferable;
 import java.util.Iterator;
 
-import javax.swing.table.DefaultTableModel;
-
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.ivoa.resource.Service;
 

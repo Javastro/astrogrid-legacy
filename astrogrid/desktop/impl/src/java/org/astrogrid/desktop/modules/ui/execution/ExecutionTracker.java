@@ -6,19 +6,13 @@ package org.astrogrid.desktop.modules.ui.execution;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.net.URI;
-import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Observable;
 
 import javax.swing.JButton;
@@ -33,7 +27,6 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
@@ -51,22 +44,17 @@ import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.comp.ObservableConnector;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
-import org.astrogrid.desktop.modules.ui.fileexplorer.FileModel;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator;
-import org.astrogrid.desktop.modules.ui.fileexplorer.FileObjectComparator;
 import org.astrogrid.desktop.modules.ui.fileexplorer.NavigableFilesList;
-import org.astrogrid.desktop.modules.ui.fileexplorer.OperableFilesList;
-import org.astrogrid.desktop.modules.ui.fileexplorer.VFSOperationsImpl;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FunctionList;
-import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.ObservableElementList;
-import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.TransformedList;
 import ca.odell.glazedlists.impl.ThreadSafeList;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
@@ -81,7 +69,7 @@ import com.l2fprod.common.swing.JTaskPane;
  * @since Jul 16, 20072:06:17 PM
  */
 public class ExecutionTracker implements ListSelectionListener{
-    public class ShowDetailsEvent extends EventObject {
+    public static class ShowDetailsEvent extends EventObject {
     
    private final ProcessMonitor moitor;
 
@@ -206,7 +194,7 @@ public final ProcessMonitor getMoitor() {
 	}
 
 
-	private static DateFormat df = SimpleDateFormat.getDateTimeInstance();
+	private final static DateFormat df = SimpleDateFormat.getDateTimeInstance();
 
 
     private final EventList components; 
@@ -361,7 +349,8 @@ public final ProcessMonitor getMoitor() {
 
 		        protected void doError(Throwable ex) {
 		            messageLabel.setText("Failed to fetch results: " + ex.getMessage());
-		            logger.warn("Failed to fetch results",ex);
+	                parent.showTransientError("Failed to fetch results",ExceptionFormatter.formatException(ex));
+	                  
 		        }
 		    }).start();
 		    // got a results root by this point.
@@ -466,6 +455,9 @@ public final ProcessMonitor getMoitor() {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == refreshButton && pm.started()) {
                 (new BackgroundWorker(parent,"Refreshing") {
+                    {
+                        setTransient(true);
+                    }
 
                     protected Object construct() throws Exception {
                         pm.refresh();

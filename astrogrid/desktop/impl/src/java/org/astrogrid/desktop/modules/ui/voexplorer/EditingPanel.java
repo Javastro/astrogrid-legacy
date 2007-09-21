@@ -10,7 +10,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import org.astrogrid.desktop.modules.ui.folders.ResourceFolder;
-import org.astrogrid.desktop.modules.ui.folders.SmartList;
 
 /** Abstract class for all components that allow editing of a resource list.
  * @author Noel.Winstanley@manchester.ac.uk

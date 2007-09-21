@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.23 2007/08/22 22:33:42 nw Exp $
+/*$Id: VospaceImpl.java,v 1.24 2007/09/21 16:35:14 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -54,8 +54,6 @@ import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.desktop.modules.ag.vfs.myspace.MemoizingCommunityAccountSpaceResolver;
 import org.astrogrid.desktop.modules.ag.vfs.myspace.MemoizingNodeDelegateResolver;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
-import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.filemanager.client.FileManagerClient;
 import org.astrogrid.filemanager.client.FileManagerClientFactory;
 import org.astrogrid.filemanager.client.FileManagerNode;
@@ -252,12 +250,14 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
                 try {
                     reader.close();
                 } catch (IOException e) {
+                    // meh
                }
             }
             if (writer != null) {
                 try {
                     writer.close();
                 } catch (IOException e) {
+                    //meh
                }
             }            
         }                                    
@@ -285,6 +285,7 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
                 try {
                     w.close();
                 } catch (IOException e) {
+                    // meh
                 }
             }
         }
@@ -380,12 +381,14 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
                 try {
                     reader.close();
                 } catch (IOException e) {
+                    // meh
                }
             }
             if (writer != null) {
                 try {
                     writer.close();
                 } catch (IOException e) {
+                    //meh
                }
             }            
         }   
@@ -412,6 +415,7 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
                 try {
                     w.close();
                 } catch (IOException e) {
+                    //meh
                 }
             }
         }        
@@ -796,6 +800,7 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
        
 
     public void userLogin(UserLoginEvent e) {
+        //meh
     }
 
 
@@ -906,6 +911,10 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.24  2007/09/21 16:35:14  nw
+improved error reporting,
+various code-review tweaks.
+
 Revision 1.23  2007/08/22 22:33:42  nw
 Complete - task 144: clear view when logging out and loggin in as different user
 

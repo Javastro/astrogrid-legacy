@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.67 2007/09/11 12:08:53 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.68 2007/09/21 16:35:14 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,7 +33,6 @@ import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -50,8 +49,6 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang.text.StrBuilder;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.cds.Sesame;
 import org.astrogrid.acr.cds.SesamePositionBean;
@@ -59,16 +56,12 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
-import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
 import org.astrogrid.desktop.modules.system.ui.ArMainWindow;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.system.ui.UIContributionBuilder;
-import org.astrogrid.desktop.modules.ui.actions.Activity;
 import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle;
 import org.astrogrid.desktop.modules.ui.comp.DoubleDimension;
@@ -76,7 +69,6 @@ import org.astrogrid.desktop.modules.ui.comp.EventListMenuManager;
 import org.astrogrid.desktop.modules.ui.comp.NameResolvingPositionTextField;
 import org.astrogrid.desktop.modules.ui.comp.PositionUtils;
 import org.astrogrid.desktop.modules.ui.comp.RadiusTextField;
-import org.astrogrid.desktop.modules.ui.comp.ShowOnceDialogue;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle.DecSexListener;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocolManager;
@@ -91,7 +83,6 @@ import org.astrogrid.desktop.modules.ui.scope.Vizualization;
 import org.astrogrid.desktop.modules.ui.scope.VizualizationManager;
 import org.astrogrid.desktop.modules.ui.scope.WindowedRadialVizualization;
 import org.astrogrid.desktop.modules.ui.scope.ScopeHistoryProvider.SearchHistoryItem;
-
 import org.freixas.jcalendar.JCalendarCombo;
 
 import ca.odell.glazedlists.EventList;
@@ -102,7 +93,6 @@ import ca.odell.glazedlists.event.ListEventListener;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-import com.l2fprod.common.swing.JTaskPane;
 
 import edu.berkeley.guir.prefuse.event.FocusEvent;
 import edu.berkeley.guir.prefuse.event.FocusListener;
@@ -124,8 +114,6 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		nf.setMinimumFractionDigits(6);
 		nf.setMaximumFractionDigits(6);
 	}
-
-	protected static final Log logger = LogFactory.getLog(AstroScopeLauncherImpl.class);
 
 	public AstroScopeLauncherImpl(UIContext context
 			, IterableObjectBuilder protocolsBuilder
@@ -556,7 +544,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 						return ses.resolve(positionString.trim());
 					}
 					protected void doError(Throwable ex) {
-						showError("Simbad failed to resolve " + positionString);
+						showError("Simbad failed to resolve " + positionString,ex);
 					}
 					protected void doFinished(Object result) {
 						SesamePositionBean pb = (SesamePositionBean)result;
@@ -606,7 +594,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 					}
 					protected void doFinished(Object result) {
 						Service[] services = (Service[])result;
-						logger.info(services.length + " " + p.getName() + " services to query");
+						parent.showTransientMessage(services.length + " " + p.getName() + " services to query","");
 						setProgressMax(getProgressMax() + services.length);
 						if (p instanceof SpatialDalProtocol) {
 							SpatialDalProtocol spatial = (SpatialDalProtocol)p;

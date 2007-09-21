@@ -1,10 +1,8 @@
 package org.astrogrid.desktop.modules.ui.voexplorer;
 
 import java.awt.Color;
-import java.awt.Font;
 
 import javax.swing.JProgressBar;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.plaf.metal.MetalProgressBarUI;
 
@@ -45,6 +43,9 @@ public class QuerySizeIndicator extends JProgressBar {
 		this.goodThresh = goodThresh;
 		this.acceptableThresh = acceptableThresh;
 		(new BackgroundWorker(parent,"Finding registry size") {
+		    {
+		        setTransient(true);
+		    }
 			protected Object construct() throws Exception {
 				return sizer.regSize();
 			}

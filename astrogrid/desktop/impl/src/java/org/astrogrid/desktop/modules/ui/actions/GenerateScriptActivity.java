@@ -11,8 +11,6 @@ import groovy.text.TemplateEngine;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URI;
 import java.util.HashMap;
@@ -22,7 +20,6 @@ import java.util.Map;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
@@ -113,8 +110,6 @@ public final class GenerateScriptActivity extends AbstractResourceActivity {
 				try {
 					writer = new OutputStreamWriter(vfs.resolveFile(u.toString()).getContent().getOutputStream());
 					w.writeTo(writer);
-				} catch (IOException x) {
-					logger.error("IOException",x);
 				} finally {
 					if (writer != null) {
 						writer.close();

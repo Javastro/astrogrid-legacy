@@ -37,7 +37,7 @@ public class QuerySizerImpl implements QuerySizer {
 	public Integer regSize() {
 		return size(ALL_QUERY);
 	}
-	private final String ALL_QUERY = "//vor:Resource[not (@status='inactive' or @status='deleted')]";
+	private static final String ALL_QUERY = "//vor:Resource[not (@status='inactive' or @status='deleted')]";
 	
 	public Integer size(SRQL query) {
 		try {
@@ -90,6 +90,7 @@ public class QuerySizerImpl implements QuerySizer {
 					try{
 						size = Integer.valueOf(szString);
 					} catch (NumberFormatException e) {
+					    //ignored
 					}
 		}
 		public Integer getResult() {

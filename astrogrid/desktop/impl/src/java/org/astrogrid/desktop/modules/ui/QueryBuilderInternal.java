@@ -6,9 +6,7 @@ package org.astrogrid.desktop.modules.ui;
 import org.apache.commons.collections.Factory;
 import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.astrogrid.CeaApplication;
-import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
-import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ui.QueryBuilder;
 
 /** Interface to a query builder component. Methods on this interface are called by VOExplorer to create new query builder windows

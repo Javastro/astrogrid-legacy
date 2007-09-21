@@ -1,14 +1,12 @@
 package org.astrogrid.desktop.modules.ui.voexplorer.google;
 
 import java.awt.Color;
-import java.util.List;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.HyperlinkListener;
 
 import org.apache.commons.lang.StringUtils;

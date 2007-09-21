@@ -6,7 +6,6 @@ package org.astrogrid.desktop.modules.ui.comp;
 import java.awt.Color;
 
 import javax.swing.BorderFactory;
-import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 /** titled border with some styling tweaks. use this class,

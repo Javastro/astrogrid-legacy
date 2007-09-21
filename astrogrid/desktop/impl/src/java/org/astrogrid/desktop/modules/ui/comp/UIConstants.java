@@ -30,4 +30,8 @@ public class UIConstants {
     public static final Icon PENDING_ICON = IconHelper.loadIcon("yellowled16.png");
     public static final Icon SERVICE_DOWN_ICON= IconHelper.loadIcon("redled16.png");
     public static final Icon SERVICE_OK_ICON = RUNNING_ICON;
+    
+    
+    /** length of time to display transient popups for */
+    public static final int POPUP_DISMISS_TIME = 5000;
 }

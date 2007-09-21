@@ -3,7 +3,6 @@
  */
 package org.astrogrid.desktop.modules.system;
 
-import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Arrays;

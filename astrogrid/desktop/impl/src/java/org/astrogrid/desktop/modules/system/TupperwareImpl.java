@@ -181,6 +181,7 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
 		private PlasticInterrogatorWorker(UIContext parent, String msg, URI id) {
 			super(parent, msg);
 			this.id = id;
+			setTransient(true);
 		}
 
 		protected Object construct() throws Exception {

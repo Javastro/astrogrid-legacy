@@ -3,34 +3,16 @@
  */
 package org.astrogrid.desktop.modules.ui.voexplorer.google;
 
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Image;
 import java.awt.Point;
-import java.awt.datatransfer.Transferable;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DragGestureEvent;
-import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DragSource;
-import java.awt.dnd.DragSourceDragEvent;
-import java.awt.dnd.DragSourceDropEvent;
-import java.awt.dnd.DragSourceEvent;
-import java.awt.dnd.DragSourceListener;
-import java.awt.dnd.InvalidDnDOperationException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
-
-import jedit.JEditTextArea;
-import jedit.SyntaxDocument;
-import jedit.XMLTokenMarker;
 
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.icons.IconHelper;
@@ -39,7 +21,6 @@ import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
-import org.astrogrid.desktop.modules.ui.dnd.XmlTransferable;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 

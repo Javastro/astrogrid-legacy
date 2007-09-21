@@ -15,6 +15,7 @@ import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.CSH;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 
 /** Display the webpage interface for a service, if given.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -68,7 +69,7 @@ public void actionPerformed(ActionEvent e) {
 			try {
 			browser.openURL(interfaces[0].getAccessUrls()[0].getValue());
 			} catch (Exception ex) {
-				logger.error("Failed to displauy web interface",ex);
+			    uiParent.get().showTransientError("Failed to show web interface",ExceptionFormatter.formatException(ex));
 			}
 		}
 	}	

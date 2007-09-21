@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.21 2007/08/13 19:29:47 nw Exp $
+/*$Id: Launcher.java,v 1.22 2007/09/21 16:35:15 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -55,7 +55,7 @@ public class Launcher implements Runnable {
 	 * @author Noel.Winstanley@manchester.ac.uk
 	 * @since Jul 17, 20071:13:04 PM
 	 */
-	private final class ExtensibleStreamHandler implements
+	private static final class ExtensibleStreamHandler implements
 			URLStreamHandlerFactory {
 		private URLStreamHandlerFactory followOn;
 
@@ -243,6 +243,10 @@ public class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.22  2007/09/21 16:35:15  nw
+improved error reporting,
+various code-review tweaks.
+
 Revision 1.21  2007/08/13 19:29:47  nw
 merged mark's and noel's changes.
 

@@ -1,4 +1,4 @@
-/*$Id: FileExplorerImpl.java,v 1.10 2007/09/17 14:33:04 nw Exp $
+/*$Id: FileExplorerImpl.java,v 1.11 2007/09/21 16:35:13 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,10 +11,7 @@
 package org.astrogrid.desktop.modules.ui.fileexplorer;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.datatransfer.Transferable;
 import java.awt.event.KeyEvent;
-import java.util.Iterator;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -22,41 +19,21 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ListSelectionEvent;
 
-import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemManager;
-import org.astrogrid.acr.astrogrid.Community;
-import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
-import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
 import org.astrogrid.desktop.modules.system.ui.ArMainWindow;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.system.ui.UIContributionBuilder;
-import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.FileManagerInternal;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
-import org.astrogrid.desktop.modules.ui.UIComponentImpl.CloseAction;
-import org.astrogrid.desktop.modules.ui.actions.Activity;
-import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator.NavigationEvent;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator.NavigationListener;
-import org.astrogrid.desktop.modules.ui.folders.ResourceFolder;
-
-import ca.odell.glazedlists.EventList;
-
-import com.l2fprod.common.swing.JOutlookBar;
-import com.l2fprod.common.swing.JTaskPane;
 
 /** Main window of fileexplorer - assembles together the contributions.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 30-Mar-2005

@@ -12,7 +12,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.CacheStrategy;
-import org.apache.commons.vfs.FileSystem;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.impl.DefaultFileReplicator;
 import org.apache.commons.vfs.impl.DefaultFileSystemManager;
@@ -77,11 +76,7 @@ public class HivemindFileSystemManager extends DefaultFileSystemManager implemen
 	public void setBaseFileString(String arg0) throws FileSystemException {
 		super.setBaseFile(new File(arg0));
 	}
-	
-	/** extended - to initialize the results virtual file system too */
-	public void init() throws FileSystemException {
-	    super.init();
-	}
+
 
 	
 	/** Overridden - as default implementatio causes a StackOverflow - as it delegates back to the

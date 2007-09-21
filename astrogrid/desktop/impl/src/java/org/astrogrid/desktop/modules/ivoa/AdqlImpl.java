@@ -23,7 +23,6 @@ import org.xml.sax.SAXException;
 public class AdqlImpl implements AdqlInternal {
 
     public Document s2x(String arg0) throws InvalidArgumentException {
-        AdqlCompiler adqlCompiler = new AdqlCompiler( new StringReader(arg0) ) ;
         try {
         	
         	// doesnt seem to give correcnt namespaces..

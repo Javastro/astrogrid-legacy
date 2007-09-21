@@ -12,8 +12,6 @@ import javax.swing.ImageIcon;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.system.SystemTrayInternal;
@@ -31,7 +29,6 @@ import ca.odell.glazedlists.swing.GlazedListsSwing;
  */
 public final class PlasticScavenger extends AbstractActivityScavenger implements Model{
 
-private static final Log logger = LogFactory.getLog(PlasticScavenger.class);
 private final SystemTrayInternal systray;
 
 public PlasticScavenger(EventList apps,TupperwareInternal tupp, SystemTrayInternal systray) {

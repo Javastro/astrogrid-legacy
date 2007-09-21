@@ -5,7 +5,6 @@ package org.astrogrid.desktop.modules.system;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 
 /** Run-at-startup class that just performs any necessary upgrade actions between current application version and previous version.

@@ -625,7 +625,7 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 		public boolean verify(JComponent input) {
 			String v = ((ValueAccess)input).getValue();
 			try {
-				int i = Integer.parseInt(v);
+				Integer.parseInt(v);
 				return true;
 			} catch (NumberFormatException e) {
 				return false;

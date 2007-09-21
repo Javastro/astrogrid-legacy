@@ -11,8 +11,6 @@ import javax.swing.Icon;
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.modules.ui.comp.EventListMenuManager;
 import org.astrogrid.desktop.modules.ui.comp.SelfEnablingMenu;
 
@@ -30,11 +28,7 @@ import com.l2fprod.common.swing.JTaskPaneGroup;
  * @since Apr 17, 20071:41:47 AM
  */
 public  abstract class AbstractActivityScavenger extends AbstractActivity{
-    /**
-     * Logger for this class
-     */
-    private static final Log logger = LogFactory
-            .getLog(AbstractActivityScavenger.class);
+
 	
 	public AbstractActivityScavenger() {
 		super();

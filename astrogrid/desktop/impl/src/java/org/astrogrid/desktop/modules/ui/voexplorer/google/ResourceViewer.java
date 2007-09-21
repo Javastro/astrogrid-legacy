@@ -3,11 +3,9 @@
  */
 package org.astrogrid.desktop.modules.ui.voexplorer.google;
 
-import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
 
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
 
 /** Inteface to a component that views resources.

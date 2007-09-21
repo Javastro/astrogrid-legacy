@@ -3,7 +3,6 @@
  */
 package org.astrogrid.desktop.modules.ui.actions;
 
-import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.ArrayList;
@@ -15,14 +14,8 @@ import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.provider.DelegateFileObject;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
-import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
-import org.astrogrid.desktop.modules.ui.scope.SsapRetrieval;
-import org.votech.plastic.CommonMessageConstants;
-
-import edu.berkeley.guir.prefuse.event.FocusEvent;
-import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 /**
  * @author Noel.Winstanley@manchester.ac.uk
@@ -62,6 +55,9 @@ public class PlasticSpectrumActivity extends AbstractFileActivity {
 
 	private void sendLoadSpectrumMessage(final FileObject f) {
 		(new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName()) {
+		    {
+		        setTransient(true);
+		    }
 			protected Object construct() throws Exception {
 				List l = new ArrayList();
 				URL url = f.getURL();
@@ -73,8 +69,7 @@ public class PlasticSpectrumActivity extends AbstractFileActivity {
 				return null;
 			}
 			protected void doFinished(Object result) {
-				parent.setStatusMessage("Message sent to " + plas.getName());
-                scav.getSystray().displayInfoMessage("Message sent"," to " + plas.getName());				
+                parent.showTransientMessage("Message sent to " + plas.getName(),"");	
 			}			
 		}).start();		
 	}

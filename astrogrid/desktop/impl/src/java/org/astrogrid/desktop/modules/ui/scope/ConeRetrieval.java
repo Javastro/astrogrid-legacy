@@ -7,7 +7,6 @@ import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.astrogrid.desktop.modules.ui.scope.Retriever.BasicTableHandler;
 import org.xml.sax.InputSource;
 
 import edu.berkeley.guir.prefuse.graph.TreeNode;

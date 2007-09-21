@@ -1,14 +1,8 @@
 package org.astrogrid.desktop.modules.ui.scope;
 
-import java.net.URL;
-
-import org.apache.commons.lang.WordUtils;
 import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.astrogrid.desktop.modules.ui.scope.Retriever.BasicTableHandler;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import edu.berkeley.guir.prefuse.graph.TreeNode;

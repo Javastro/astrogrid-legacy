@@ -5,8 +5,6 @@ package org.astrogrid.desktop.modules.votech;
 
 import java.io.Serializable;
 import java.net.URI;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 
 /** representaiton of an annotation from an internal source.

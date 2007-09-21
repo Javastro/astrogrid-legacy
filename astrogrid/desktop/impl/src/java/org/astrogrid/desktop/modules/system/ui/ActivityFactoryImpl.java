@@ -11,7 +11,6 @@ import java.util.Map;
 
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
-import javax.swing.MenuElement;
 
 import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.collections.map.ListOrderedMap;
@@ -22,7 +21,6 @@ import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.actions.Activity;
 import org.astrogrid.desktop.modules.ui.comp.SelfEnablingMenu;
-import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
 
 import com.l2fprod.common.swing.JTaskPane;
 import com.l2fprod.common.swing.JTaskPaneGroup;

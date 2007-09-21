@@ -3,26 +3,17 @@
  */
 package org.astrogrid.desktop.modules.system;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.Popup;
 import javax.swing.PopupFactory;
-import javax.swing.Timer;
-import javax.swing.UIManager;
-import javax.swing.border.TitledBorder;
 
 import org.apache.commons.collections.Factory;
 import org.apache.commons.logging.Log;
@@ -33,7 +24,7 @@ import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.comp.DraggableWindow;
 import org.astrogrid.desktop.modules.ui.comp.MyTitledBorder;
-import org.astrogrid.desktop.modules.ui.comp.UIConstants;
+import org.astrogrid.desktop.modules.ui.comp.TimedPopup;
 
 /** Fallback system tray when not running on Java 6, on on OS where systray is not supported.
  *  * @todo add login/ logout icon and actions..
@@ -77,12 +68,6 @@ public class FallbackSystemTray  implements SystemTrayInternal, ActionListener {
     }
 
     public void run() {
-
-                timer = new Timer(5000,FallbackSystemTray.this);
-                timer.setRepeats(false);
-
-                currentPopups = new ArrayList();
-
                 ico.addActionListener(window);
                 // NB: can't set tooltip - as this seems to destroy the mouse draggable behaviour - how odd.
                 //ico.setToolTipText("Astro Runtime");
@@ -104,7 +89,7 @@ public class FallbackSystemTray  implements SystemTrayInternal, ActionListener {
         for (Iterator facs = context.getWindowFactories().keySet().iterator(); facs.hasNext(); ) {
             final String key = (String) facs.next();
             JMenuItem f = new JMenuItem("New " + key);
-            f.setActionCommand(key.toString());
+            f.setActionCommand(key);
             f.addActionListener(this);
             m.add(f);
         }
@@ -139,13 +124,6 @@ public class FallbackSystemTray  implements SystemTrayInternal, ActionListener {
 
     // callbacks from menu items.
     public void actionPerformed(ActionEvent arg0) {
-        if (arg0.getSource() == timer) { // it's a timer call.
-            for (Iterator i = currentPopups.iterator(); i.hasNext();) {
-                Popup p = (Popup) i.next();
-                p.hide();
-                i.remove();
-            }           
-        } else {
             final String cmd = arg0.getActionCommand();
             if (cmd.equals(EXIT)) {
                 shutdown.halt();
@@ -162,44 +140,21 @@ public class FallbackSystemTray  implements SystemTrayInternal, ActionListener {
                     fac.create();
                 }
             }
-        }
+       
     }
 
     public void displayErrorMessage(String arg0, String arg1) {
-        JLabel l = new JLabel("<html><b>" + arg0 + "</b><br>" + arg1);
-        l.setIcon(UIManager.getIcon("OptionPane.errorIcon")); // wish these magic keys were documented somewhere.
-        l.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        showMessage(l);
+        TimedPopup.showErrorMessage(window,arg0,arg1);
     }
 
     public void displayInfoMessage(String arg0, String arg1) {
-        JLabel l = new JLabel("<html><b>" + arg0 + "</b><br>" + arg1);
-        l.setIcon(UIManager.getIcon("OptionPane.informationIcon")); // wish these magic keys were documented somewhere.
-        l.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        showMessage(l);        
+        TimedPopup.showInfoMessage(window,arg0,arg1);
     }
 
     public void displayWarningMessage(String arg0, String arg1) {
-        JLabel l = new JLabel("<html><b>" + arg0 + "</b><br>" + arg1);
-        l.setIcon(UIManager.getIcon("OptionPane.warningIcon")); // wish these magic keys were documented somewhere.
-        l.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        showMessage(l);        
+        TimedPopup.showWarningMessage(window,arg0,arg1);     
     }
     
-    private void showMessage(JLabel l) {
-        //@todo show the popup message offset from main window, and allow messages to stack
-        javax.swing.Popup p = popups.getPopup(window,l,window.getX(),window.getY());
-        currentPopups.add(p);
-        window.toFront();
-        window.requestFocus(); // hope this isn;t too intrusive.
-        timer.restart(); // instruct timer to start, triggering p.hide() in 5s time.
-        p.show();
-    }
-    
-    private List currentPopups;
-    private Timer timer;
-
-
     // no need to synchronize, as hivemind ensures this is only ever called from EDT.
   protected int throbberCallCount = 0;
     

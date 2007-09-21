@@ -1,4 +1,4 @@
-/*$Id: ConeImpl.java,v 1.11 2007/03/20 10:00:25 nw Exp $
+/*$Id: ConeImpl.java,v 1.12 2007/09/21 16:35:16 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,10 +27,6 @@ import org.astrogrid.desktop.modules.ivoa.DALImpl;
  *
  */
 public class ConeImpl extends DALImpl implements Cone {
-    /**
-     * Commons Logger for this class
-     */
-    private static final Log logger = LogFactory.getLog(ConeImpl.class);
 
     /** Construct a new ConeImpl
      * 
@@ -87,6 +83,10 @@ public class ConeImpl extends DALImpl implements Cone {
 
 /* 
 $Log: ConeImpl.java,v $
+Revision 1.12  2007/09/21 16:35:16  nw
+improved error reporting,
+various code-review tweaks.
+
 Revision 1.11  2007/03/20 10:00:25  nw
 revived nvo.cone for backwards compatability.
 

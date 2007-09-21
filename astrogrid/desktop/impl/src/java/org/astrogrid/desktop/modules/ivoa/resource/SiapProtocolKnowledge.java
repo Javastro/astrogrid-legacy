@@ -12,8 +12,8 @@ import org.astrogrid.acr.astrogrid.ParameterReferenceBean;
  * @since Aug 7, 200612:40:02 PM
  */
 public class SiapProtocolKnowledge {
-	 public static ParameterBean[] parameters;
-	    public static InterfaceBean[] ifaces;
+	 public static final ParameterBean[] parameters;
+	    public static final InterfaceBean[] ifaces;
 	    static { // build static info for a siap applicaiton - doesn't mention optional parameters.
 	        // missing paramers are value, default value, units, type, subtype,options
 	        ParameterBean pos = new ParameterBean("POS","Position",

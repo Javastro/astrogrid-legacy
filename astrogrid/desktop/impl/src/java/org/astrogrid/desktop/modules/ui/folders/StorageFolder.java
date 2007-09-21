@@ -19,7 +19,7 @@ import org.apache.commons.vfs.FileObject;
  */
 public class StorageFolder extends Folder {
 	
-	
+	//@todo is this needed now?
 	static  {
 		try { // set up the bean behaviour. - need to do this to prevent XMLSerializer persisting the FileObject. blergh.
 			BeanInfo info = Introspector.getBeanInfo(StorageFolder.class);

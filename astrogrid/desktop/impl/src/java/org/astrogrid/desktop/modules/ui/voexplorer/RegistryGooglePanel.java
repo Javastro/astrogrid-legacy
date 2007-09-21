@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.19 2007/09/17 13:39:33 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.20 2007/09/21 16:35:15 nw Exp $
 >>>>>>> 1.12.2.6
  * Created on 02-Sep-2005
  *
@@ -17,11 +17,9 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EventListener;
 import java.util.EventObject;
@@ -33,7 +31,6 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -45,15 +42,12 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableColumnModelEvent;
-import javax.swing.event.TableColumnModelListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
@@ -69,8 +63,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.acr.system.BrowserControl;
-import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
@@ -89,20 +81,14 @@ import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.CapabilityIconFactory;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.EditableResourceViewer;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.FilterPipelineFactory;
-import org.astrogrid.desktop.modules.ui.voexplorer.google.FormattedResourceViewer;
-import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceFormViewer;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTable;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTableFomat;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTitleComparator;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceViewer;
-import org.astrogrid.desktop.modules.ui.voexplorer.google.TabularMetadataResourceViewer;
-import org.astrogrid.desktop.modules.ui.voexplorer.google.XMLResourceViewer;
 import org.astrogrid.desktop.modules.ui.voexplorer.google.FilterPipelineFactory.PipelineStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.BasicRegistrySRQLVisitor;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.Builder;
-import org.astrogrid.desktop.modules.ui.voexplorer.srql.KeywordSRQLVisitor;
 import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQL;
-import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQLVisitor;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.AuthorityStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.CapabilityStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.ContentLevelStrategy;
@@ -115,10 +101,8 @@ import org.astrogrid.desktop.modules.ui.voexplorer.strategy.TypeStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.TypesStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.UcdStrategy;
 import org.astrogrid.desktop.modules.ui.voexplorer.strategy.WavebandStrategy;
-import org.astrogrid.desktop.modules.votech.Annotation;
 import org.astrogrid.desktop.modules.votech.AnnotationService;
 import org.astrogrid.desktop.modules.votech.VoMonInternal;
-import org.votech.VoMon;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
@@ -126,7 +110,6 @@ import ca.odell.glazedlists.ListSelection;
 import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.event.ListEvent;
 import ca.odell.glazedlists.event.ListEventListener;
-import ca.odell.glazedlists.gui.TableFormat;
 import ca.odell.glazedlists.swing.EventSelectionModel;
 import ca.odell.glazedlists.swing.EventTableModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
@@ -240,7 +223,6 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	/** an asbtract background worker that provides machinery for processing the results of a streaming parse
 	 * and caching the result */
 	private abstract class Worker extends BackgroundWorker implements StreamProcessor {
-		protected final Log logger = LogFactory.getLog(Worker.class);
 		
 		public Worker(UIComponent parent, String message) {
 			super(parent,message);
@@ -670,7 +652,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
     }
     
     /** an extended column model which knows how to reset itself back to it's original layout */
-    private class ResettableAdjustableColumnModel extends AdjustableColumnModel {
+    private static class ResettableAdjustableColumnModel extends AdjustableColumnModel {
         private final String[] defaultColNames;
         public ResettableAdjustableColumnModel(
                 TableColumnModel baseColumnModel, TableModel tableModel,String[] defaultColNames) {
@@ -929,6 +911,10 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.20  2007/09/21 16:35:15  nw
+improved error reporting,
+various code-review tweaks.
+
 Revision 1.19  2007/09/17 13:39:33  nw
 improved annotations implementation
 

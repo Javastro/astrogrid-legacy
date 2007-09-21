@@ -5,7 +5,6 @@ import java.net.URI;
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.CeaService;
-import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.acr.ivoa.resource.Authority;
 import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
@@ -31,12 +30,7 @@ public final class SystemFilter implements Matcher {
 	public static final URI FILEMANAGER_KIND = URI.create("ivo://org.astrogrid/FileManagerKind");
 	public static final URI MYSPACE_KIND = URI.create("ivo://org.astrogrid/MySpaceKind");
 	public static final URI COMMUNITY_KIND = URI.create("ivo://org.astrogrid/CommunityServerKind");	
-	
-	/**
-     * 
-     */
-    public SystemFilter() {
-    }
+
 	public boolean matches(Object arg0) {
 		Resource r = (Resource)arg0;
 		

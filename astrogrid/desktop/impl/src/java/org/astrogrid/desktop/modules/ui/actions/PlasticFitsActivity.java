@@ -3,43 +3,26 @@
  */
 package org.astrogrid.desktop.modules.ui.actions;
 
-import java.awt.Image;
-import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.ImageIcon;
-
-import org.apache.commons.lang.WordUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.provider.DelegateFileObject;
-import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
-import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.VOExplorerFactoryImpl;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
-import org.astrogrid.desktop.modules.ui.scope.SiapRetrieval;
 import org.votech.plastic.CommonMessageConstants;
-
-import edu.berkeley.guir.prefuse.event.FocusEvent;
-import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 /**
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 9, 20074:42:47 PM
  */
 public class PlasticFitsActivity extends AbstractFileActivity {
-	private static final Log logger = LogFactory
-	.getLog(PlasticRegistryActivity.class);
 
 private final PlasticApplicationDescription plas;
 
@@ -77,6 +60,9 @@ private final PlasticScavenger scav;
 
 	private void sendLoadImageMessage(final FileObject f) {
 		(new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName()) {
+		    {
+		        setTransient(true);
+		    }
 			protected Object construct() throws Exception {
 				List l = new ArrayList();
 				
@@ -86,8 +72,7 @@ private final PlasticScavenger scav;
 				return null;
 			}
 			protected void doFinished(Object result) {
-				parent.setStatusMessage("Message sent to " + plas.getName());
-				scav.getSystray().displayInfoMessage("Message sent"," to " + plas.getName());
+			    parent.showTransientMessage("Message sent to " + plas.getName(),"");
 			}			
 		}).start();		
 	}

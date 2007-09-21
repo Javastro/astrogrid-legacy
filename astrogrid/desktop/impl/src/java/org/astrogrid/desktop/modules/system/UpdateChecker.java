@@ -57,18 +57,24 @@ public class UpdateChecker implements Runnable {
 					try {
 						vr = new BufferedReader(new InputStreamReader(versionURL.openStream()));
 						if (vr != null) {
-							String newVersion = vr.readLine().trim();
-							logger.info("Current Version: " + currentVersion);
-							logger.info("New Version: " + newVersion);
-							return currentVersion.compareTo(newVersion) < 0 ? newVersion : null;
+							String newVersion = vr.readLine();
+							if (newVersion != null) {
+							    newVersion = newVersion.trim();
+							    logger.info("Current Version: " + currentVersion);
+							    logger.info("New Version: " + newVersion);
+							    return currentVersion.compareTo(newVersion) < 0 ? newVersion : null;
+							} else {
+							    return null;
+							}
 						}
-					} catch (Throwable t) {
+					} catch (IOException t) {
 						logger.info("Update checker failed",t);
 					} finally {
 						if (vr != null) {
 							try {
 								vr.close();
 							} catch (IOException ignored) {
+							    //meh
 							}
 						}
 					}

@@ -286,7 +286,7 @@ class CmdLineParser {
 			}
 		}
 	}
-	/**
+	/** @fixme - should this be called by something?
 	 * @param props
 	 */
 	private static void processPropertyKeys(String[] props) {

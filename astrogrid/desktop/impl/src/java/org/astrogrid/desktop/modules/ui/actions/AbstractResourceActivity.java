@@ -7,14 +7,9 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 
@@ -23,11 +18,6 @@ import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
  * @since Mar 6, 200711:29:18 AM
  */
 public abstract class AbstractResourceActivity extends AbstractActivity implements Predicate {
-	/**
-	 * Logger for this class
-	 */
-	protected static final Log logger = LogFactory.getLog(AbstractResourceActivity.class);
-
 
 	protected Resource[] current;
 	public boolean evaluate(Object arg0) {

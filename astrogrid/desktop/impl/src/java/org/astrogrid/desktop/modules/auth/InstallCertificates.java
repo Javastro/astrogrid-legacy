@@ -78,6 +78,7 @@ public class InstallCertificates implements Runnable {
 								in.close();
 							}
 						} catch (XMLStreamException x) {
+						    //meh
 						}
 					}					
 				}

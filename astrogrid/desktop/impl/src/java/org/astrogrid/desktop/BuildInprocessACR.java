@@ -1,4 +1,4 @@
-/*$Id: BuildInprocessACR.java,v 1.8 2007/06/18 16:19:14 nw Exp $
+/*$Id: BuildInprocessACR.java,v 1.9 2007/09/21 16:35:16 nw Exp $
  * Created on 28-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -79,6 +79,7 @@ public class BuildInprocessACR  {
 		}
 		if (main == null || m == null) { // double check.
 			logger.fatal("Failed to find any AR main class on the classpath");
+			return;
 		}
 		
 		try {

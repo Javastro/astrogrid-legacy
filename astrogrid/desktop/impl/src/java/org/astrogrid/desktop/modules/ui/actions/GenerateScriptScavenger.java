@@ -7,11 +7,10 @@ import groovy.lang.Closure;
 import groovy.lang.GroovyShell;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
@@ -25,11 +24,6 @@ import ca.odell.glazedlists.EventList;
  * @since May 8, 200710:12:17 AM
  */
 public class GenerateScriptScavenger extends AbstractActivityScavenger {
-	/**
-	 * Logger for this class
-	 */
-	private static final Log logger = LogFactory
-			.getLog(GenerateScriptScavenger.class);
 
 	public GenerateScriptScavenger(ResourceChooserInternal chooser, FileSystemManager vfs) {
 		super("Automation",IconHelper.loadIcon("wizard16.png"));
@@ -57,7 +51,9 @@ public class GenerateScriptScavenger extends AbstractActivityScavenger {
 		(new BackgroundWorker(super.uiParent.get(),"Reading script template") {
 
 			protected Object construct() throws Exception {
-				BufferedReader br = new BufferedReader(new InputStreamReader(u.openStream()));
+				BufferedReader br = null;
+				try {
+				    br = new BufferedReader(new InputStreamReader(u.openStream()));
 				// scan for a template header
 				String line;
 				StringBuffer header = new StringBuffer();
@@ -80,6 +76,15 @@ public class GenerateScriptScavenger extends AbstractActivityScavenger {
 					shell.evaluate(header.toString());
 				}
 				return template.toString();
+				} finally {
+				    if (br != null) {
+				        try {
+				            br.close();
+				        } catch (IOException e) {
+				            //meh
+				        }
+				    }
+				}
 			}
 			
 			protected GroovyShell shell;

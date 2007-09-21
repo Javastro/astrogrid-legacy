@@ -6,14 +6,6 @@ package org.astrogrid.desktop.modules.ui.fileexplorer;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import javax.swing.ListModel;
-
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
-
-import ca.odell.glazedlists.EventList;
-import ca.odell.glazedlists.swing.EventSelectionModel;
-
 /** extends files list with 
  *   - ability to select files.
  *   - make this a source for drag and drop (but not a sink)

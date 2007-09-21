@@ -14,7 +14,6 @@ import org.apache.commons.vfs.FileSystem;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.Selectors;
-import org.apache.commons.vfs.provider.AbstractFileObject;
 import org.apache.commons.vfs.provider.AbstractFileSystem;
 import org.apache.commons.vfs.provider.url.UrlFileObject;
 import org.apache.commons.vfs.provider.url.UrlFileSystem;
@@ -144,18 +143,19 @@ public final class BulkCopyWorker extends BackgroundWorker {
             }
         }
         // notify the parent object that we've made changes - cause a refresh.
-        if (saveTarget != null) {
+    //    if (saveTarget != null) {
             FileSystem fs = saveTarget.getFileSystem();
             if (fs instanceof AbstractFileSystem) {
                 ((AbstractFileSystem)fs).fireFileChanged(saveTarget);
             }
-        }
+      //  }
         return errors;
     }
 
     protected void doFinished(Object result) {
         Map errors = (Map)result;
         if (errors.size() ==0) {
+            parent.showTransientMessage("Finished copying files","");
             return;
         }
         HtmlBuilder msgBuilder = new HtmlBuilder();			    

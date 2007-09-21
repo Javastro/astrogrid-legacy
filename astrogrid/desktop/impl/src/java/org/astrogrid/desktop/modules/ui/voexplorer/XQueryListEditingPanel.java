@@ -3,29 +3,20 @@
  */
 package org.astrogrid.desktop.modules.ui.voexplorer;
 
-import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.text.Segment;
 
-import jedit.CTokenMarker;
-import jedit.JEditTextArea;
-import jedit.JavaScriptTokenMarker;
 import jedit.KeywordMap;
 import jedit.SQLTokenMarker;
-import jedit.SyntaxDocument;
 import jedit.Token;
-import jedit.TokenMarker;
 
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.folders.ResourceFolder;
-import org.astrogrid.desktop.modules.ui.folders.SmartList;
 import org.astrogrid.desktop.modules.ui.folders.XQueryList;
 
 import com.jgoodies.forms.builder.PanelBuilder;

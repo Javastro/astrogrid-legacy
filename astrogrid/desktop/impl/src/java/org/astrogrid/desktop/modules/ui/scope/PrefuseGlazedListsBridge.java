@@ -12,7 +12,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.desktop.modules.ui.actions.Activity;
 
 import ca.odell.glazedlists.EventList;
 import edu.berkeley.guir.prefuse.event.FocusEvent;

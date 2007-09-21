@@ -6,8 +6,6 @@ package org.astrogrid.desktop.modules.ui.comp;
 import javax.swing.Icon;
 import javax.swing.JButton;
 
-import org.astrogrid.desktop.icons.IconHelper;
-
 import ca.odell.glazedlists.EventList;
 
 

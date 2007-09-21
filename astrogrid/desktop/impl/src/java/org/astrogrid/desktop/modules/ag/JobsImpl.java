@@ -1,4 +1,4 @@
-/*$Id: JobsImpl.java,v 1.8 2007/03/22 19:00:45 nw Exp $
+/*$Id: JobsImpl.java,v 1.9 2007/09/21 16:35:14 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -224,6 +224,7 @@ public class JobsImpl implements JobsInternal, UserLoginListener {
     }
 
 	public void userLogin(UserLoginEvent arg0) {
+	    // does nothing
 	}
 
 	public synchronized void userLogout(UserLoginEvent arg0) {
@@ -238,6 +239,10 @@ public class JobsImpl implements JobsInternal, UserLoginListener {
 
 /* 
 $Log: JobsImpl.java,v $
+Revision 1.9  2007/09/21 16:35:14  nw
+improved error reporting,
+various code-review tweaks.
+
 Revision 1.8  2007/03/22 19:00:45  nw
 moved all auth components into separate folder, to keep separate from ag stuff.
 

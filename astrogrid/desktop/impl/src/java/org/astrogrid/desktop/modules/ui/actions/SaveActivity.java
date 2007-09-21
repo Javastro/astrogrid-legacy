@@ -4,7 +4,6 @@
 package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.Component;
-import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
@@ -127,6 +126,9 @@ public class SaveActivity extends AbstractFileActivity {
 		                return null;
 		            }
 		            
+			         protected void doFinished(Object result) {
+			            parent.showTransientMessage("Saved files","");
+			        }
 
 
 		            /**

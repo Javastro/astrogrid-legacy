@@ -24,7 +24,6 @@ import org.astrogrid.acr.ivoa.resource.ResourceName;
 import org.astrogrid.acr.ivoa.resource.Source;
 import org.astrogrid.acr.ivoa.resource.Validation;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.ui.comp.ModularColumn;
 import org.astrogrid.desktop.modules.ui.comp.ModularTableFormat;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
@@ -32,10 +31,6 @@ import org.astrogrid.desktop.modules.votech.Annotation;
 import org.astrogrid.desktop.modules.votech.AnnotationService;
 import org.astrogrid.desktop.modules.votech.UserAnnotation;
 import org.astrogrid.desktop.modules.votech.VoMonInternal;
-import org.votech.VoMon;
-import org.votech.VoMonBean;
-
-import com.l2fprod.common.swing.renderer.DefaultCellRenderer;
 
 import ca.odell.glazedlists.GlazedLists;
 
@@ -434,6 +429,7 @@ public class ResourceTableFomat extends ModularTableFormat {
          * @param  tcol  column to configure
          */
         public void configureColumn(TableColumn tcol) {
+            //by default does nothing
         }
 
         /**

@@ -5,17 +5,13 @@ package org.astrogrid.desktop.modules.ui.comp;
 
 import java.net.URI;
 import java.net.URL;
-import java.util.Enumeration;
-import java.util.Iterator;
 
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.Element;
-import javax.swing.text.AbstractDocument.LeafElement;
 import javax.swing.text.html.HTML;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.system.BrowserControl;

@@ -19,7 +19,6 @@ import javax.swing.JMenu;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSplitPane;
-import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -119,6 +118,7 @@ public class FileExplorerBaseDialog extends BaseDialog implements DocumentListen
     private class NullActivitiesManager implements ActivitiesManager {
 
         public void clearSelection() {
+            //does nothing.
         }
 
         public Transferable getCurrentSelection() {

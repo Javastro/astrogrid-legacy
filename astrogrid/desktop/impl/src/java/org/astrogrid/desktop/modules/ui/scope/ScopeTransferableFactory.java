@@ -27,12 +27,10 @@ import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.FileType;
 import org.apache.commons.vfs.NameScope;
 import org.apache.commons.vfs.RandomAccessContent;
-import org.apache.commons.vfs.impl.DecoratedFileObject;
 import org.apache.commons.vfs.operations.FileOperations;
 import org.apache.commons.vfs.util.RandomAccessMode;
 import org.astrogrid.desktop.modules.ui.dnd.FileObjectListTransferable;
 import org.astrogrid.desktop.modules.ui.dnd.FileObjectTransferable;
-import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 
 import edu.berkeley.guir.prefuse.focus.FocusSet;
 import edu.berkeley.guir.prefuse.graph.TreeNode;

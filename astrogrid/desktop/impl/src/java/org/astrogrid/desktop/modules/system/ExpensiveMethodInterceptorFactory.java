@@ -8,8 +8,6 @@ import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.SwingUtilities;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hivemind.ApplicationRuntimeException;

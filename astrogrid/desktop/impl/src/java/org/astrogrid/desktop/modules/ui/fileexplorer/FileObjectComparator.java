@@ -7,7 +7,6 @@ import java.util.Comparator;
 
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
-import org.apache.commons.vfs.FileType;
 
 /** comparison for file objects - first on filetype (folders get prominence), then on name
  * @author Noel.Winstanley@manchester.ac.uk

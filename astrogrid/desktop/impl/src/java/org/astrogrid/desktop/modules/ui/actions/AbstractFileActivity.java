@@ -3,9 +3,6 @@
  */
 package org.astrogrid.desktop.modules.ui.actions;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
@@ -21,11 +18,6 @@ import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
  * @since Apr 17, 200710:31:27 AM
  */
 public abstract class AbstractFileActivity extends AbstractActivity implements Predicate {
-	/**
-	 * Logger for this class
-	 */
-	protected static final Log logger = LogFactory
-			.getLog(AbstractFileActivity.class);
 
 	public void noneSelected() {
 		setEnabled(false);

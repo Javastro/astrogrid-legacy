@@ -7,11 +7,8 @@ import java.net.URI;
 
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
-import org.astrogrid.acr.SecurityException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.RemoteProcessManager;
-import org.astrogrid.acr.ivoa.resource.Service;
-import org.astrogrid.workflow.beans.v1.Tool;
 import org.w3c.dom.Document;
 
 /** Internal interface to remote process manager which 

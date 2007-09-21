@@ -5,7 +5,6 @@ package org.astrogrid.desktop.modules.ui.folders;
 
 import java.beans.ExceptionListener;
 import java.beans.XMLDecoder;
-import java.beans.XMLEncoder;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -120,17 +119,16 @@ implements ListEventListener,  ListProvider, ExceptionListener{
 
     public final void save(final File file, final List content) {
         (new BackgroundWorker(parent,"Saving list") {
-            protected Object construct() {
+            {
+                setTransient(true);
+            }
+            protected Object construct() throws Exception{
                 logger.info("Saving list to " + file);
                 OutputStream fos = null;
                 try {
                     fos = new FileOutputStream(file);
                     List output = new ArrayList(content); // necessary to copy, as glazedList doesn't serialize
                     xml.toXml(output,fos);
-                } catch (FileNotFoundException x) {
-                    logger.error(file.toString(),x);
-                } catch (ServiceException x) {
-                    logger.error("ServiceException",x);
                 } finally {
                     if (fos != null) {
                         try {

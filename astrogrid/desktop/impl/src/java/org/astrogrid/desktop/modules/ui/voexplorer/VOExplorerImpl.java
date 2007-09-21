@@ -1,6 +1,6 @@
-/*$Id: VOExplorerImpl.java,v 1.11 2007/09/17 13:39:33 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.12 2007/09/21 16:35:15 nw Exp $
 =======
-/*$Id: VOExplorerImpl.java,v 1.11 2007/09/17 13:39:33 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.12 2007/09/21 16:35:15 nw Exp $
 >>>>>>> 1.6.2.2
  * Created on 30-Mar-2005
  *
@@ -13,11 +13,7 @@
  **/
 package org.astrogrid.desktop.modules.ui.voexplorer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
@@ -30,18 +26,18 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
@@ -49,8 +45,6 @@ import org.astrogrid.desktop.modules.system.ui.ArMainWindow;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.system.ui.UIContributionBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
-import org.astrogrid.desktop.modules.ui.UIComponentImpl.CloseAction;
-import org.astrogrid.desktop.modules.ui.actions.Activity;
 import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
 import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
 import org.astrogrid.desktop.modules.ui.comp.MyTitledBorder;
@@ -61,8 +55,6 @@ import org.astrogrid.desktop.modules.ui.folders.XQueryList;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel.LoadEvent;
 
 import ca.odell.glazedlists.EventList;
-
-import com.l2fprod.common.swing.JTaskPane;
 
 /** Main window of voexplorer
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 30-Mar-2005

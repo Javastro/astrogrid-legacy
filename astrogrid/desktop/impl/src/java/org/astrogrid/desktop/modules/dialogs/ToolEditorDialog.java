@@ -1,4 +1,4 @@
-/*$Id: ToolEditorDialog.java,v 1.13 2007/07/23 12:21:18 nw Exp $
+/*$Id: ToolEditorDialog.java,v 1.14 2007/09/21 16:35:15 nw Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.List;
 
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -27,13 +26,8 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
 import org.astrogrid.acr.astrogrid.CeaApplication;
-import org.astrogrid.acr.ivoa.Registry;
-import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.taskrunner.TaskParametersForm;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -184,6 +178,10 @@ public class ToolEditorDialog extends JDialog implements PropertyChangeListener 
 
 /* 
 $Log: ToolEditorDialog.java,v $
+Revision 1.14  2007/09/21 16:35:15  nw
+improved error reporting,
+various code-review tweaks.
+
 Revision 1.13  2007/07/23 12:21:18  nw
 stopgap implementations of tool editor dialog - uses new codebase, but not tested at the moment.
 

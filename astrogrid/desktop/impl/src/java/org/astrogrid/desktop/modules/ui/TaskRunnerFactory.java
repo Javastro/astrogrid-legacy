@@ -3,21 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ui;
 
-import java.util.List;
-
-import net.sourceforge.hiveutils.service.ObjectBuilder;
-
-import org.astrogrid.acr.astrogrid.RemoteProcessManager;
-import org.astrogrid.acr.dialogs.RegistryGoogle;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.acr.ui.Lookout;
-import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.ag.RemoteProcessManagerInternal;
-import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
-import org.astrogrid.desktop.modules.system.pref.Preference;
-import org.astrogrid.desktop.modules.system.ui.UIContext;
-import org.astrogrid.desktop.modules.ui.taskrunner.TaskRunnerImpl;
 
 /** factory for the simplified app launcher.
  * @author Noel Winstanley

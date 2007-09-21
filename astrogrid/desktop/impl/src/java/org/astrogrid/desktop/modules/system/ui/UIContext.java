@@ -3,7 +3,6 @@
  */
 package org.astrogrid.desktop.modules.system.ui;
 
-import java.awt.event.ActionListener;
 import java.util.Map;
 
 import javax.swing.ButtonModel;

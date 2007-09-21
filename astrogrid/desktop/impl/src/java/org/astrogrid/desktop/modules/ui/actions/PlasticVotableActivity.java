@@ -3,28 +3,23 @@
  */
 package org.astrogrid.desktop.modules.ui.actions;
 
-import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.provider.DelegateFileObject;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.desktop.modules.ag.vfs.myspace.MyspaceFileObject;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
-import org.astrogrid.desktop.modules.system.TupperwareInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
@@ -123,10 +118,12 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
         public LoadVotableInlineWorker(FileObject fo) {
             super(uiParent.get(),"Sending to " + plas.getName());
             this.fo = fo;
+            setTransient(true);
         }
         public LoadVotableInlineWorker(URI uri) {
             super(uiParent.get(),"Sending to " + plas.getName());
             this.uri = uri;
+            setTransient(true);
         }   	
 
 			protected Object construct() throws Exception {
@@ -167,8 +164,7 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 				}
 			}
 			protected void doFinished(Object result) {
-				parent.setStatusMessage("Message sent to " + plas.getName());
-                scav.getSystray().displayInfoMessage("Message sent"," to " + plas.getName());				
+			    parent.showTransientMessage("Message sent","to " + plas.getName());		
 			}				
 	}
 

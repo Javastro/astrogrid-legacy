@@ -3,23 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ui;
 
-import java.net.URISyntaxException;
 import java.util.List;
-
-import net.sourceforge.hiveutils.service.ObjectBuilder;
-
-import org.astrogrid.acr.cds.Sesame;
-import org.astrogrid.acr.ivoa.Cone;
-import org.astrogrid.acr.ivoa.Registry;
-import org.astrogrid.acr.ivoa.Siap;
-import org.astrogrid.acr.ivoa.Ssap;
-import org.astrogrid.acr.ui.AstroScope;
-import org.astrogrid.acr.ui.RegistryBrowser;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
-import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
-import org.astrogrid.desktop.modules.system.SnitchInternal;
-import org.astrogrid.desktop.modules.system.TupperwareInternal;
-import org.astrogrid.desktop.modules.system.ui.UIContext;
 
 /** Factory that builds instances of astroscope.
  * used to enable more than one instance under hivemind.

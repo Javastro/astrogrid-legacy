@@ -5,7 +5,6 @@ package org.astrogrid.desktop.modules.ui.taskrunner;
 
 import java.awt.Color;
 import java.text.Format;
-import java.text.ParseException;
 import java.text.ParsePosition;
 
 import javax.swing.BorderFactory;

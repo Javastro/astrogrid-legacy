@@ -1,4 +1,4 @@
-/*$Id: RemoteProcessManagerImpl.java,v 1.17 2007/08/30 23:46:47 nw Exp $
+/*$Id: RemoteProcessManagerImpl.java,v 1.18 2007/09/21 16:35:14 nw Exp $
  * Created on 08-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
-import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
@@ -36,9 +35,7 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.acr.astrogrid.RemoteProcessListener;
-import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
-import org.astrogrid.workflow.beans.v1.Tool;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -329,6 +326,10 @@ public class RemoteProcessManagerImpl implements RemoteProcessManagerInternal{
 
 /* 
 $Log: RemoteProcessManagerImpl.java,v $
+Revision 1.18  2007/09/21 16:35:14  nw
+improved error reporting,
+various code-review tweaks.
+
 Revision 1.17  2007/08/30 23:46:47  nw
 Complete - task 73: upgrade filechooser dialogue to new fileexplorer code
 replaced uses of myspace by uses of vfs where sensible

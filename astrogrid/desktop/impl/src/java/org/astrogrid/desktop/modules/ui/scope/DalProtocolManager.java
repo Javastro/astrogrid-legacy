@@ -1,4 +1,4 @@
-/*$Id: DalProtocolManager.java,v 1.8 2007/05/03 19:20:43 nw Exp $
+/*$Id: DalProtocolManager.java,v 1.9 2007/09/21 16:35:15 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,22 +12,15 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.swing.JCheckBox;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
 import org.apache.commons.collections.iterators.UnmodifiableIterator;
 
-import org.astrogrid.acr.ivoa.resource.Service;
-
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
-import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.ObservableElementList;
 
 /**
@@ -110,6 +103,10 @@ public class DalProtocolManager {
 
 /* 
 $Log: DalProtocolManager.java,v $
+Revision 1.9  2007/09/21 16:35:15  nw
+improved error reporting,
+various code-review tweaks.
+
 Revision 1.8  2007/05/03 19:20:43  nw
 removed helioscope.merged into uberscope.
 

@@ -14,10 +14,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
@@ -44,7 +42,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
-import javax.swing.border.TitledBorder;
+import javax.swing.SwingUtilities;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.axis.utils.XMLUtils;
@@ -64,28 +62,26 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
+import org.astrogrid.desktop.modules.ag.ProcessMonitor;
 import org.astrogrid.desktop.modules.ag.RemoteProcessManagerInternal;
-import                     org.astrogrid.desktop.modules.ag.ProcessMonitor;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.system.ui.ArMainWindow;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.system.ui.UIContributionBuilder;
-import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.TaskRunnerInternal;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity;
 import org.astrogrid.desktop.modules.ui.comp.EventListDropDownButton;
 import org.astrogrid.desktop.modules.ui.comp.EventListMenuManager;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
 import org.astrogrid.desktop.modules.ui.comp.MyTitledBorder;
 import org.astrogrid.desktop.modules.ui.comp.ResourceDisplayPane;
-import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker.ShowDetailsEvent;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker.ShowDetailsListener;
-import org.astrogrid.desktop.modules.votech.VoMonImpl;
 import org.astrogrid.desktop.modules.votech.VoMonInternal;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.exolab.castor.xml.CastorException;
@@ -214,6 +210,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                     			try {
                     				fr.close();
                     			} catch (IOException ignored) {
+                    			    //meh
                     			}
                     		}
                     	}
@@ -254,9 +251,13 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	                    			try {
 	                    				w.close();
 	                    			} catch (IOException ignored) {
+	                    			    //meh
 	                    			}
 	                    		}
 	                    	}
+	                    }
+	                    protected void doFinished(Object result) {
+	                        parent.showTransientMessage("Saved task document","");
 	                    }
 	                }).start();            
 	        }
@@ -296,12 +297,19 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	                 // start it off
                      try {
                         monitor.start(service.getId());
-                    } catch (ACRException x) {
+                    } catch (final ACRException x) {
                         // catching exceptions here - don't want them to propagate
                         // (and so be reported as a popup dialogue
                         // and these exceptions from the monitor will
                         // be messaged back to the tracker anyhow.
                         logger.warn("ServiceException",x);
+                        SwingUtilities.invokeLater(new Runnable() {
+
+                            public void run() {
+                                parent.showTransientError("Unable to execute task",ExceptionFormatter.formatException(x));
+                            }
+                            
+                        });
                         return null; // bail out.
                     } 
 	                 
@@ -675,12 +683,15 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	}
 	
 	public void mouseExited(MouseEvent e) {
+	    //ignoired
 	}
 
 	public void mousePressed(MouseEvent e) {
+	    //ignored
 	}
 
 	public void mouseReleased(MouseEvent e) {
+	    //ignored
 	}
 	
 // show details event listener - a callback from the task monitor.	

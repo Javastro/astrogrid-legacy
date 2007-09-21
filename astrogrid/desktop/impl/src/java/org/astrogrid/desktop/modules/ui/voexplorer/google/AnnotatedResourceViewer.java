@@ -8,18 +8,15 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Comparator;
-import java.util.EventListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.ListCellRenderer;
 import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.EventListenerList;
 import javax.swing.event.HyperlinkListener;
 
 import org.apache.commons.logging.Log;
@@ -50,8 +47,6 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 /** displays resource as formatted html.
- * @fixme catch shutdown /window close and save last results if editor is dirty.
- * (or have a timed save - depends on storage mechanism being efficient).
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 13, 20072:32:38 PM
  */

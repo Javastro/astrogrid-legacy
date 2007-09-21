@@ -1,8 +1,5 @@
 package org.astrogrid.desktop.modules.ui.folders;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
@@ -15,10 +12,6 @@ import org.astrogrid.desktop.modules.ui.voexplorer.srql.SRQLParser;
  * @since Mar 2, 20075:29:27 PM
  */
 public class SmartList extends ResourceFolder {
-	/**
-	 * Logger for this class
-	 */
-	private static final Log logger = LogFactory.getLog(SmartList.class);
 
 	public SmartList(String name,String srql) throws InvalidArgumentException {
 		this();

@@ -4,7 +4,6 @@
 package org.astrogrid.desktop.modules.ui.actions;
 
 import java.util.Iterator;
-import java.util.List;
 
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;

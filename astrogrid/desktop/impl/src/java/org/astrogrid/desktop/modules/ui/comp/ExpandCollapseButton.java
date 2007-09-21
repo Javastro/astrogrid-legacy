@@ -1,7 +1,6 @@
 package org.astrogrid.desktop.modules.ui.comp;
 
 import javax.swing.Action;
-import javax.swing.JButton;
 import javax.swing.JToggleButton;
 
 import org.astrogrid.desktop.icons.IconHelper;

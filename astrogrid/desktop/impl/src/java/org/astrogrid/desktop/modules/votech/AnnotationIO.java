@@ -3,7 +3,20 @@
  */
 package org.astrogrid.desktop.modules.votech;
 
-import net.sf.ehcache.hibernate.EhCache;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,43 +26,6 @@ import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
 import org.astrogrid.desktop.modules.system.XmlPersist;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.folders.Folder;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.Converter;
-import com.thoughtworks.xstream.converters.MarshallingContext;
-import com.thoughtworks.xstream.converters.UnmarshallingContext;
-import com.thoughtworks.xstream.converters.basic.AbstractSingleValueConverter;
-import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-
-import java.awt.Color;
-import java.beans.ExceptionListener;
-import java.beans.XMLDecoder;
-import java.beans.XMLEncoder;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
 
 /** Handles the messy business of reading / writing anntotation files.
  * Keeps it separate from the rest of the implementation, 
@@ -112,6 +88,7 @@ public class AnnotationIO {
 	
 	// does nothing - unimplemented
 	public void saveAnnotationSourceList(AnnotationSource[] list) {
+	    //unimplemented
 	}
 	
 	/** get the special 'user' annotation source */
@@ -150,6 +127,7 @@ public class AnnotationIO {
 					try {
 						is.close();
 					} catch (IOException x1) {
+					    //meh
 					}
 				}				
 			}
@@ -174,6 +152,9 @@ public class AnnotationIO {
 	 */
 	private void saveUserAnnotations() {
 	    new BackgroundWorker(service.ui,"Saving user annotations") {
+	        {
+	            setTransient(true);
+	        }
 
 	        protected Object construct() throws Exception {
 	            OutputStream fos = null;
@@ -188,10 +169,6 @@ public class AnnotationIO {
 	                }
 	                fos = new FileOutputStream(userAnnotationsFile);
 	                xml.toXml(persistList,fos);
-	            } catch (FileNotFoundException x) {
-	                logger.error("Failed to save user annotations",x);
-	            } catch (ServiceException x) {
-	                logger.error("Failed to save user annotations",x);
 	            } finally {
 	                if (fos != null) {
 	                    try {

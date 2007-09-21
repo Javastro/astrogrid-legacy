@@ -6,9 +6,7 @@ package org.astrogrid.desktop.modules.votech;
 import java.net.URI;
 import java.util.Iterator;
 
-import org.apache.commons.collections.Closure;
 import org.astrogrid.acr.ivoa.resource.Resource;
-import org.astrogrid.desktop.modules.system.ScheduledTask;
 
 
 

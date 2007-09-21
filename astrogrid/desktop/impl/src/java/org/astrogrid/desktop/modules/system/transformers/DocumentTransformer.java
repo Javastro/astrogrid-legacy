@@ -9,7 +9,6 @@ import org.w3c.dom.Document;
 
 /** transforms a document to a string */
 public class DocumentTransformer implements Transformer {
-    public DocumentTransformer() {}
     /**
      * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
      */

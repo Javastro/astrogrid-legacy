@@ -1,4 +1,4 @@
-/*$Id: HtmlServlet.java,v 1.10 2007/06/18 16:58:47 nw Exp $
+/*$Id: HtmlServlet.java,v 1.11 2007/09/21 16:35:13 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,22 +10,9 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
-import org.astrogrid.acr.builtin.ComponentDescriptor;
-import org.astrogrid.acr.builtin.Descriptor;
-import org.astrogrid.acr.builtin.MethodDescriptor;
-import org.astrogrid.acr.builtin.ModuleDescriptor;
-import org.astrogrid.acr.builtin.ValueDescriptor;
-import org.astrogrid.desktop.framework.ReflectionHelper;
-
-import org.apache.commons.beanutils.Converter;
-import org.apache.commons.beanutils.MethodUtils;
-import org.apache.commons.collections.Transformer;
-import org.apache.commons.lang.StringUtils;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -35,6 +22,17 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.beanutils.Converter;
+import org.apache.commons.beanutils.MethodUtils;
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.lang.StringUtils;
+import org.astrogrid.acr.builtin.ComponentDescriptor;
+import org.astrogrid.acr.builtin.Descriptor;
+import org.astrogrid.acr.builtin.MethodDescriptor;
+import org.astrogrid.acr.builtin.ModuleDescriptor;
+import org.astrogrid.acr.builtin.ValueDescriptor;
+import org.astrogrid.desktop.framework.ReflectionHelper;
 
 /** servlet that exposes ACR functions over plain old http.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 31-Jan-2005
@@ -293,6 +291,10 @@ public class HtmlServlet extends AbstractReflectionServlet {
 
 /* 
 $Log: HtmlServlet.java,v $
+Revision 1.11  2007/09/21 16:35:13  nw
+improved error reporting,
+various code-review tweaks.
+
 Revision 1.10  2007/06/18 16:58:47  nw
 Added link to 'Configuration.reset()'
 

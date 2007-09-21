@@ -60,7 +60,6 @@ import ca.odell.glazedlists.matchers.CompositeMatcherEditor;
 import ca.odell.glazedlists.matchers.Matcher;
 import ca.odell.glazedlists.matchers.MatcherEditor;
 import ca.odell.glazedlists.swing.EventSelectionModel;
-import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 
 /** 
  * Class that provides a shared data/selection/dnd model for all linked file views.

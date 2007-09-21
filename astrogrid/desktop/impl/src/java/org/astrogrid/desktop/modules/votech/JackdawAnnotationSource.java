@@ -92,6 +92,7 @@ public class JackdawAnnotationSource extends DynamicAnnotationSource {
 					in.close();
 				}
 			} catch (XMLStreamException x) {
+			    //ignored
 			}			
 		}
 		return ann;

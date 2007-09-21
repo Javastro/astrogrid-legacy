@@ -3,9 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ui.taskrunner;
 
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,9 +31,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
-import javax.swing.SwingUtilities;
-
-import net.sourceforge.hiveutils.service.ObjectBuilder;
 
 import org.apache.commons.collections.ArrayStack;
 import org.apache.commons.lang.StringUtils;
@@ -44,16 +39,11 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.InterfaceBean;
 import org.astrogrid.acr.astrogrid.ParameterBean;
-import org.astrogrid.acr.cds.Sesame;
-import org.astrogrid.acr.dialogs.RegistryGoogle;
-import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Creator;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.adqlEditor.ADQLEditorPanel;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
-import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
-import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponent;
@@ -61,14 +51,14 @@ import org.astrogrid.desktop.modules.ui.comp.ExpandCollapseButton;
 import org.astrogrid.desktop.modules.ui.taskrunner.ParamBuilder.Param;
 import org.astrogrid.workflow.beans.v1.Tool;
 
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.swing.JEventListPanel;
+
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.l2fprod.common.swing.JCollapsiblePane;
-
-import ca.odell.glazedlists.BasicEventList;
-import ca.odell.glazedlists.EventList;
-import ca.odell.glazedlists.swing.JEventListPanel;
 
 /**Form which allows parameters of a tool document to be edited.
  * @author Noel.Winstanley@manchester.ac.uk

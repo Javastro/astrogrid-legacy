@@ -421,9 +421,11 @@ public void mouseClicked(MouseEvent e) {
 }
 
 public void mouseEntered(MouseEvent e) {
+    //ignored
 }
 
 public void mouseExited(MouseEvent e) {
+    //ignored
 }
 
 public void mousePressed(MouseEvent e) {

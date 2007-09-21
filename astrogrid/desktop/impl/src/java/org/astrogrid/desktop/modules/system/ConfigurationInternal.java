@@ -1,4 +1,4 @@
-/*$Id: ConfigurationInternal.java,v 1.6 2007/06/18 16:56:19 nw Exp $
+/*$Id: ConfigurationInternal.java,v 1.7 2007/09/21 16:35:13 nw Exp $
  * Created on 23-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,6 @@ package org.astrogrid.desktop.modules.system;
 
 import org.apache.hivemind.SymbolSource;
 import org.apache.hivemind.service.ObjectProvider;
-import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.pref.PreferenceManagerImpl;
@@ -38,6 +37,10 @@ public interface ConfigurationInternal extends Configuration, ObjectProvider, Sy
 
 /* 
 $Log: ConfigurationInternal.java,v $
+Revision 1.7  2007/09/21 16:35:13  nw
+improved error reporting,
+various code-review tweaks.
+
 Revision 1.6  2007/06/18 16:56:19  nw
 made reset() method public
 

@@ -479,6 +479,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
         		try {
         			os.close();
         		} catch (IOException ignored) {
+        		    //meh
         		}
         	}
         }
@@ -497,6 +498,7 @@ public class PlasticHubImpl implements PlasticHubListener, PlasticHubListenerInt
 				try {
 					is.close();
 				} catch (IOException e) {
+				    //meh
 				}
 			}
 		}

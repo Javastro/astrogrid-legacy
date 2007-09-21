@@ -9,31 +9,24 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.URI;
-import java.net.URLEncoder;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JFileChooser;
 
-import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.AstroWizard;
 import org.astrogrid.util.DomHelper;
 import org.netbeans.api.wizard.WizardDisplayer;
 import org.netbeans.spi.wizard.Summary;
 import org.netbeans.spi.wizard.Wizard;
 import org.netbeans.spi.wizard.WizardPage;
-import org.netbeans.spi.wizard.WizardPanel;
 import org.w3c.dom.Document;
 
 /** save one or more resources to disk.
@@ -131,6 +124,7 @@ public void actionPerformed(ActionEvent e) {
 	if (l.size() == 1) {
 		final URI u = chooser.chooseResourceWithParent("Save resource",true,true,true,comp);
 		(new BackgroundWorker(uiParent.get(),"Saving resource document") {
+
 			protected Object construct() throws Exception {
 				OutputStream os = null;
 				try {
@@ -149,7 +143,11 @@ public void actionPerformed(ActionEvent e) {
 				}
 				return null;
 			}
+			protected void doFinished(Object result) {
+			    parent.showTransientMessage("Resource saved","");
+			}
 		}).start();
+		
 	} else {/* do this later - need a nice generic utility to generate new filenames, etc.
 		final URI u = chooser.chooseDirectoryWithParent("Select a directory to save resources to",true,true,true,comp);
 		(new BackgroundWorker(uiParent.get(),"Saving resource documents") {

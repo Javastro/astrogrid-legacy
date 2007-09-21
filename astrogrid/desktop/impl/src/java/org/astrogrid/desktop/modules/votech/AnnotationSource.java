@@ -45,11 +45,15 @@ public class AnnotationSource implements Serializable, Comparable{
 		this.source = new URI(source);
 		this.name = name;
 	}
-	
-	public AnnotationSource() {
-	}
 
 	/**
+     * 
+     */
+    protected AnnotationSource() {
+        // called by subclasses.
+    }
+
+    /**
 	 * @return the name
 	 */
 	public final String getName() {

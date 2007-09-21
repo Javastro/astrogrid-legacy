@@ -13,8 +13,6 @@ import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystem;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
-import org.apache.commons.vfs.Selectors;
-import org.apache.commons.vfs.provider.AbstractFileObject;
 import org.apache.commons.vfs.provider.AbstractFileSystem;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
@@ -102,16 +100,16 @@ public final class BulkMoveWorker extends BackgroundWorker {
             }
         }
         // notify the parent object that we've made changes - cause a refresh.
-        if (saveTarget != null) {
+    //    if (saveTarget != null) {
             FileSystem fs = saveTarget.getFileSystem();
             if (fs instanceof AbstractFileSystem) {
                 ((AbstractFileSystem)fs).fireFileChanged(saveTarget);
             }
-        }
+     //   }
         // also need to notify old parents of the files we've moved.
         for (Iterator i = moveSourceDirs.iterator(); i.hasNext();) {
             FileObject p = (FileObject) i.next();
-            FileSystem fs = p.getFileSystem();
+            fs = p.getFileSystem();
             if (fs instanceof AbstractFileSystem) {
                 ((AbstractFileSystem)fs).fireFileChanged(p);
             }            
@@ -122,6 +120,7 @@ public final class BulkMoveWorker extends BackgroundWorker {
     protected void doFinished(Object result) {
         Map errors = (Map)result;
         if (errors.size() ==0) {
+            parent.showTransientMessage("Finished moving files","");
             return;
         }
         HtmlBuilder msgBuilder = new HtmlBuilder();			    

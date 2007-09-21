@@ -17,12 +17,8 @@ import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileExplorerImpl;
-import org.astrogrid.desktop.modules.ui.fileexplorer.FileModel;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator;
-import org.astrogrid.desktop.modules.ui.fileexplorer.OperableFilesList;
 import org.astrogrid.desktop.modules.ui.fileexplorer.StorageView;
-import org.astrogrid.desktop.modules.ui.fileexplorer.VFSOperations;
-import org.astrogrid.desktop.modules.ui.fileexplorer.VFSOperationsImpl;
 import org.astrogrid.desktop.modules.ui.taskrunner.AdqlTextFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.BinaryFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.BooleanFormElement;
@@ -38,7 +34,6 @@ import org.astrogrid.desktop.modules.ui.taskrunner.TextFormElement;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
 
-import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.matchers.MatcherEditor;
 
 /** wraps the untyped hivemind ObjectBuilder with 

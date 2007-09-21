@@ -8,11 +8,8 @@ import java.io.File;
 import java.net.URL;
 import java.util.List;
 
-import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.vfs.AllFileSelector;
 import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSelector;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.FileUtil;
 import org.astrogrid.acr.system.BrowserControl;

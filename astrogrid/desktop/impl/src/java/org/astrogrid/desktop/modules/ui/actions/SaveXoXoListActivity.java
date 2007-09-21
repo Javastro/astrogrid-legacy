@@ -4,13 +4,7 @@
 package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.Component;
-import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.util.Iterator;
@@ -23,12 +17,8 @@ import org.astrogrid.acr.ivoa.resource.Interface;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.comp.ShowOnceDialogue;
-import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
-import org.astrogrid.io.Piper;
 
 /** saves formatted details of the selection as a list to disk.
  * @author Noel.Winstanley@manchester.ac.uk

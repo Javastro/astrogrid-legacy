@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.5 2007/09/11 12:07:27 nw Exp $
+/*$Id: CommunityImpl.java,v 1.6 2007/09/21 16:35:15 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,6 +31,7 @@ import org.astrogrid.community.common.exception.CommunitySecurityException;
 import org.astrogrid.community.common.exception.CommunityServiceException;
 import org.astrogrid.community.resolver.exception.CommunityResolverException;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
+import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.security.SecurityGuard;
@@ -47,7 +48,7 @@ public class CommunityImpl implements CommunityInternal {
     /** Construct a new Community
      * 
      */
-    public CommunityImpl(UI ui,LoginDialogue loginDialogue, SnitchInternal snitch, String trustedCertificates) {       
+    public CommunityImpl(UIContext ui,LoginDialogue loginDialogue, SnitchInternal snitch, String trustedCertificates) {       
         this.ui = ui;
         this.loginDialogue = loginDialogue;
         this.snitch = snitch;
@@ -55,7 +56,7 @@ public class CommunityImpl implements CommunityInternal {
         logger.info("Trusted certificates directory set to: '" + trustedCertificates + "'");
         LoginFactory.declareTrustedCertificates(trustedCertificates);
     }
-    protected final UI ui;
+    protected final UIContext ui;
     protected final SnitchInternal snitch;
     protected final LoginDialogue loginDialogue;
     private volatile UserInformation userInformation;
@@ -118,7 +119,7 @@ public class CommunityImpl implements CommunityInternal {
             // if we've gotten this far, we've successfullly logged in.
             this.guard = env.getSecurityGuard();
             this.userInformation = proposed;
-           ui.setStatusMessage("Logged in as " + userInformation.getId());
+           ui.findMainWindow().showTransientMessage("Logged in", "as " + userInformation.getId());
            ui.setLoggedIn(true);
            // snitch now they've successfully logged in.
            Map m = new HashMap();
@@ -199,6 +200,10 @@ public class CommunityImpl implements CommunityInternal {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.6  2007/09/21 16:35:15  nw
+improved error reporting,
+various code-review tweaks.
+
 Revision 1.5  2007/09/11 12:07:27  nw
 potential concurrency fixes.
 

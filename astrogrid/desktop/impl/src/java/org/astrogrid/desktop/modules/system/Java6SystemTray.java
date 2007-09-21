@@ -14,14 +14,9 @@ import java.util.Iterator;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.desktop.framework.ReflectionHelper;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
-
-import EDU.oswego.cs.dl.util.concurrent.SynchronizedBoolean;
 
 /** System tray implementation for Java6
  * reuses much of the machinery of the fallback system tray.
@@ -86,7 +81,7 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
         for (Iterator facs = context.getWindowFactories().keySet().iterator(); facs.hasNext(); ) {
             final String key = (String) facs.next();
             MenuItem f = new MenuItem("New " + key);
-            f.setActionCommand(key.toString());
+            f.setActionCommand(key);
             f.addActionListener(this);
             m.add(f);
         }

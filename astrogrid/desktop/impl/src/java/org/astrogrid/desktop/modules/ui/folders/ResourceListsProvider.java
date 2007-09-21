@@ -9,7 +9,6 @@ import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.desktop.modules.system.XmlPersist;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
-import org.astrogrid.desktop.modules.ui.voexplorer.srql.TermSRQL;
 
 import ca.odell.glazedlists.event.ListEventListener;
 

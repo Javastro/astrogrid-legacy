@@ -3,10 +3,18 @@
  */
 package org.astrogrid.desktop.modules.ui.comp;
 
-import javax.swing.*;
-import javax.swing.table.*;
-import java.awt.*;
-import java.util.*;
+import java.awt.Component;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 /**
  * a multi-line table cell renderer, cribbed from
  * http://www.cretesoft.com/archive/newsletter.do?issue=106&print=yes&locale=en_US

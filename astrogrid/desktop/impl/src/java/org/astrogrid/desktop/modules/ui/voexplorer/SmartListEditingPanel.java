@@ -3,22 +3,14 @@
  */
 package org.astrogrid.desktop.modules.ui.voexplorer;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.Timer;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
-import jedit.JEditTextArea;
-import jedit.PythonTokenMarker;
-import jedit.SyntaxDocument;
-import jedit.TextAreaDefaults;
 
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
@@ -184,8 +176,8 @@ public class SmartListEditingPanel extends EditingPanel implements ActionListene
 	}	
 
 	private final KeywordSRQLVisitor vis = new KeywordSRQLVisitor();
-	private final String QB = "qb";
-	private final String WARNING = "warning";
+	private static final String QB = "qb";
+	private static final String WARNING = "warning";
 	
 	private SRQL parseSrqlTextBox() {
 		String q = text.getText();

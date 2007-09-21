@@ -4,7 +4,6 @@
 package org.astrogrid.desktop.modules.ui.comp;
 
 import java.awt.BorderLayout;
-import java.awt.Font;
 import java.awt.geom.AffineTransform;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -60,7 +59,7 @@ public abstract class ShowOnceDialogue extends JDialog implements PropertyChange
 	private final Preferences prefs;
 	private JCheckBox opt;
 	private boolean show;
-	private final String PREF_KEY = "show";
+	private final static String PREF_KEY = "show";
 
 	public void setVisible(boolean b) {
 		if (show) {

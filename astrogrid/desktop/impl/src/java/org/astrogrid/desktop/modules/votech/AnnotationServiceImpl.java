@@ -22,6 +22,7 @@ import org.astrogrid.desktop.modules.system.XmlPersist;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 
 /** Implementaiton of a service that provides additional metadata - annotaitons - about registry resources.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -128,7 +129,7 @@ private void saveSourceList() {
 				return null; // done.
 			}
 			protected void doError(Throwable ex) {
-				logger.warn("Failed loading " + source,ex);
+                parent.showTransientWarning("Failed to load annotations from " + source.getName(),ExceptionFormatter.formatException(ex));                
 			}
 		}).start();
 	}
@@ -232,7 +233,6 @@ private void saveSourceList() {
 			if (source instanceof DynamicAnnotationSource &&
 					! m.containsKey(source)) {
 				(new BackgroundWorker(ui,"Loading annotations from " + source.getName()) {
-
 					protected Object construct() throws Exception {
 						final DynamicAnnotationSource dynSource = (DynamicAnnotationSource)source;
 						Annotation ann = (dynSource).getAnnotationFor(r);
@@ -254,7 +254,7 @@ private void saveSourceList() {
 						}
 					}
 					protected void doError(Throwable ex) {
-						logger.info("Failed for " + source.getName());
+					    parent.showTransientWarning("Failed to load annotations from " + source.getName(),ExceptionFormatter.formatException(ex));
 					}
 				}).start();
 			}

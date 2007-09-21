@@ -3,13 +3,7 @@
  */
 package org.astrogrid.desktop.modules.system.ui;
 
-import javax.swing.JMenu;
-import javax.swing.JPopupMenu;
-
 import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.astrogrid.desktop.modules.ui.actions.Activity;
-
-import com.l2fprod.common.swing.JTaskPane;
 
 /** populates widgets with hivemind-defined action structures.
  * @author Noel.Winstanley@manchester.ac.uk

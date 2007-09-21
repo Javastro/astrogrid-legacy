@@ -3,7 +3,6 @@
  */
 package org.astrogrid.desktop.modules.system.ui;
 
-import java.awt.MenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -18,7 +17,6 @@ import javax.swing.ButtonModel;
 import javax.swing.DefaultButtonModel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.SwingUtilities;
 
 import org.apache.commons.collections.Factory;
 import org.astrogrid.acr.system.BrowserControl;
@@ -30,7 +28,6 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.comp.EventListMenuManager;
 import org.astrogrid.desktop.modules.ui.comp.ObservableConnector;
-import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
@@ -44,6 +41,7 @@ import ca.odell.glazedlists.ObservableElementList;
  * @since Apr 10, 20075:52:29 PM
  */
 public class UIContextImpl implements UIContext{
+
 
     /** convenience method - access the configuraiton componoent
      * @todo hide this. - have it passed into components, if required.
@@ -77,7 +75,6 @@ public class UIContextImpl implements UIContext{
 		this.browser = browser;
 		this.plastic = plastic;
 		this.windowFactories = windowFactories;
-
 		windows = new BasicEventList();
 		windowsView = GlazedLists.readOnlyList(windows);
 		
@@ -195,6 +192,7 @@ public class UIContextImpl implements UIContext{
 		return windowFactories;
 	}
 	public void showPreferencesDialog() {
+	    //@todo implement
 	}
 
 	//@todo , add in the equivalent of this

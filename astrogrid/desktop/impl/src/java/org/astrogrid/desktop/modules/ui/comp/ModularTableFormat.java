@@ -1,9 +1,8 @@
 package org.astrogrid.desktop.modules.ui.comp;
 
-import ca.odell.glazedlists.gui.AdvancedTableFormat;
-
-import java.util.Collection;
 import java.util.Comparator;
+
+import ca.odell.glazedlists.gui.AdvancedTableFormat;
 
 /**
  * <code>AdvancedTableFormat</code> implementation which can be built up 

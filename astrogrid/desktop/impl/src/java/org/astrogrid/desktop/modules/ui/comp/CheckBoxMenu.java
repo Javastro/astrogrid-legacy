@@ -1,9 +1,8 @@
 package org.astrogrid.desktop.modules.ui.comp;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import javax.swing.AbstractAction;
+
 import javax.swing.Action;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JCheckBoxMenuItem;

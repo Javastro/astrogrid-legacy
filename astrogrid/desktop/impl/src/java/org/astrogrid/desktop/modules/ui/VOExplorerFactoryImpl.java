@@ -12,21 +12,13 @@ import java.util.List;
 
 import javax.swing.SwingUtilities;
 
-import net.sourceforge.hiveutils.service.ObjectBuilder;
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.desktop.hivemind.IterableObjectBuilder;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
-import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
-import org.astrogrid.desktop.modules.system.ui.UIContext;
-import org.astrogrid.desktop.modules.system.ui.UIContributionBuilder;
 import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
 import org.votech.plastic.incoming.handlers.AbstractMessageHandler;
-
-import ca.odell.glazedlists.EventList;
 
 /** Factory for voexplorers - also handles some messages. 
  * @author Noel.Winstanley@manchester.ac.uk

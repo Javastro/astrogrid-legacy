@@ -5,12 +5,10 @@ package org.astrogrid.desktop.modules.votech;
 
 import java.net.URI;
 
-import org.apache.commons.lang.text.StrBuilder;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
-import org.votech.VoMon;
 import org.votech.VoMonBean;
 
 /**

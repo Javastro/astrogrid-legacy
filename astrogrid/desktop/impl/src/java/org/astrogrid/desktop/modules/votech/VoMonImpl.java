@@ -27,7 +27,6 @@ import net.sf.ehcache.Status;
 
 import org.apache.commons.collections.MultiHashMap;
 import org.apache.commons.collections.MultiMap;
-import org.apache.commons.lang.text.StrBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ServiceException;
@@ -35,8 +34,6 @@ import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
-import org.astrogrid.desktop.modules.system.ui.UIContext;
-import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.votech.VoMonBean;
 
@@ -173,6 +170,7 @@ public class VoMonImpl implements VoMonInternal {
 					in.close();
 				}
 			} catch (XMLStreamException x) {
+			    //ignored
 			}
 		}
 	}

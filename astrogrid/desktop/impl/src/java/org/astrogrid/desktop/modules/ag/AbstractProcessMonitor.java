@@ -3,10 +3,6 @@
  */
 package org.astrogrid.desktop.modules.ag;
 
-import org.apache.commons.lang.text.StrBuilder;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,24 +11,19 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.EventListener;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import javax.swing.event.EventListenerList;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystem;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
-import org.apache.commons.vfs.FileUtil;
 import org.apache.commons.vfs.Selectors;
 import org.apache.commons.vfs.provider.AbstractFileSystem;
-import org.apache.commons.vfs.util.FileObjectUtils;
-import org.apache.tools.ant.util.FileUtils;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.SecurityException;
@@ -42,7 +33,6 @@ import org.astrogrid.acr.astrogrid.ExecutionMessage;
 import org.astrogrid.acr.astrogrid.RemoteProcessListener;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
-import org.astrogrid.desktop.modules.ag.ProcessMonitor.ProcessListener;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.io.Piper;
 
@@ -247,12 +237,14 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
                 try {
                     is.close();
                 } catch (IOException e) {
+                    //meh
                 }
             }
             if (os != null) {
                 try {
                     os.close();
                 } catch (IOException e) {
+                    // meh
                 }
             }  
         }

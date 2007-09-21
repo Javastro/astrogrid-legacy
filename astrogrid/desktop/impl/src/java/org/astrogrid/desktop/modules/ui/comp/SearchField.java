@@ -118,7 +118,7 @@ public class SearchField extends JTextField {
      * @author Noel.Winstanley@manchester.ac.uk
      * @since Aug 1, 20071:15:24 PM
      */
-    class SearchIconBorder extends InteractiveBorder {
+    static class SearchIconBorder extends InteractiveBorder {
 
         private final Image image;
         public SearchIconBorder() {

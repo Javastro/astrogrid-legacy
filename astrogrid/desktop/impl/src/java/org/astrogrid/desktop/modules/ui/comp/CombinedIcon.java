@@ -8,8 +8,6 @@ import java.awt.Graphics;
 
 import javax.swing.Icon;
 
-import org.apache.commons.lang.ArrayUtils;
-
 /**
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jun 18, 20071:20:05 AM

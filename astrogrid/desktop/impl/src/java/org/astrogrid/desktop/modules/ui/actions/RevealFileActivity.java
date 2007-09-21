@@ -4,34 +4,13 @@
 package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.event.ActionEvent;
-import java.io.File;
-import java.net.URL;
-import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-
-import org.apache.commons.collections.Transformer;
-import org.apache.commons.lang.text.StrBuilder;
-import org.apache.commons.vfs.AllFileSelector;
 import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSelector;
-import org.apache.commons.vfs.FileSystem;
-import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
-import org.apache.commons.vfs.FileUtil;
-import org.apache.commons.vfs.Selectors;
-import org.apache.commons.vfs.provider.AbstractFileObject;
 import org.apache.commons.vfs.provider.DelegateFileObject;
-import org.apache.commons.vfs.provider.local.LocalFileSystem;
-import org.astrogrid.acr.system.BrowserControl;
-import org.astrogrid.acr.ui.FileManager;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.FileManagerFactory;
-
-import com.l2fprod.common.swing.JDirectoryChooser;
 
 /** action to reveal a file.
  * @author Noel.Winstanley@manchester.ac.uk

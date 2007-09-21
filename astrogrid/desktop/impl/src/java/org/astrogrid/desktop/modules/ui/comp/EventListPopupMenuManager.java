@@ -7,7 +7,6 @@ import java.awt.Component;
 import java.util.Iterator;
 
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
 
 import ca.odell.glazedlists.EventList;
