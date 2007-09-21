@@ -15,6 +15,9 @@
 	</head>
 <body>
 <release version="next" date="unreleased">
+    <action dev="nw" type="fix">
+        Improved error handling and reporting
+    </action>
     <action dev="nw" type="add">
         taskrunner: records parameter set used in each invocation, and offers ability to reload this parameterset back into the editor.
     </action>
