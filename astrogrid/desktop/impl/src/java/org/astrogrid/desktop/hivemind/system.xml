@@ -1435,21 +1435,7 @@ PLASTIC LIST MODEL -->
 		<create-instance class="ca.odell.glazedlists.BasicEventList" />
 	</service-point>
 
-    <!--  plastic filesystem
-    interresting idea, but incomplete.
-    <service-point id="plasticVfs" visibility="private" interface="org.astrogrid.desktop.modules.ag.vfs.VfsFileProvider" >
-        <invoke-factory>
-            <construct class="org.astrogrid.desktop.modules.ag.vfs.plastic.PlasticProvider">
-                <service>plasticList</service>
-            </construct>
-        </invoke-factory>
-    </service-point>
-        
-    <contribution configuration-id="system.vfsProviders">
-        <provider scheme="plastic"
-            implementation="service:plasticVfs" />
-    </contribution>
-     -->
+
 <!-- 
 ================================
 UPDATE CHECKER
