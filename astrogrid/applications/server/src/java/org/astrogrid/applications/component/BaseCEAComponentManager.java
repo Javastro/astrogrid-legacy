@@ -1,6 +1,8 @@
 package org.astrogrid.applications.component;
 
 import org.astrogrid.applications.contracts.Configuration;
+import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
+import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.manager.BaseConfiguration;
 import org.astrogrid.config.SimpleConfig;
 
@@ -22,6 +24,7 @@ public class BaseCEAComponentManager extends EmptyCEAComponentManager {
     super.registerDefaultServices(this.pico);
     this.pico.registerComponentImplementation(Configuration.class,
                                               BaseConfiguration.class);
+    this.pico.registerComponentImplementation(BaseApplicationDescriptionLibrary.class);
   }
   
 }

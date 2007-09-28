@@ -6,6 +6,7 @@
   <body>
       
      <menu name="Administrator documents">
+       <item name="About this component" href="about.txt"/>
        <item name="Overview" href="index.html"/>
        <item name="Download" href="DOWNLOAD.html"/>
        <item name="Installation" href="INSTALL.html"/>
@@ -18,7 +19,7 @@
 	     <item name="Reference manual" href="REFERENCE.html"/>
     </menu>
   	
-  	<menu name="Local controls for CEC">
+  	<menu name="Local controls for server">
   		<item name="Axis test" href="happyaxis.jsp"/>
   		<item name="Installation test" href="TestServlet?suite=org.astrogrid.applications.component.CEAComponentManagerFactory"/>
   		<item name="Fingerprint" href="fingerprint.jsp"/>

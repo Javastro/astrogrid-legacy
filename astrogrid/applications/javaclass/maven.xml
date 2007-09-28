@@ -24,6 +24,10 @@
     <attainGoal name="webapp-docs" />
   </preGoal>
   
+  <preGoal name="xdoc">
+    <echo message="${pom.name} ${pom.currentVersion}" file="${maven.docs.dest}/about.txt" level="error" verbose="true"/>
+  </preGoal>
+  
    <goal name="webapp-docs">
      <j:set var="maven.docs.dest" value="${maven.war.webapp.dir}"/>
      <echo>Generating web-app's internal documentation into ${maven.docs.dest}</echo>

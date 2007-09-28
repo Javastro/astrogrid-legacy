@@ -16,8 +16,13 @@
   <preGoal name="war:war">
     <attainGoal name="webapp-docs"/>
   </preGoal>
-
-   <!--hook into testing - need to make application executable before unit tests are run -->
+  
+  <!-- Before building the XML documentation, generate the "about" page. -->
+  <preGoal name="xdoc">
+    <echo message="${pom.name} ${pom.currentVersion}" file="${maven.docs.dest}/about.txt" level="error" verbose="true"/>
+  </preGoal>
+  
+  <!--hook into testing - need to make application executable before unit tests are run -->
   <postGoal name="test:test-resources">
     <j:choose><!--only do this when we're not skipping tests. -->
       <j:when test="${maven.test.skip}" />
@@ -64,7 +69,7 @@
      </copy>
    	
      <!-- Copy the xdocs that are provided specifically for the web application. -->
-     <copy todir="${tmp.docs}" >
+     <copy todir="${tmp.docs}" verbose="true">
        <fileset dir="${basedir}/war-xdocs" />
      </copy>
    	

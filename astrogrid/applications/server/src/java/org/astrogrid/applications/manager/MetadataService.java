@@ -1,4 +1,4 @@
-/*$Id: MetadataService.java,v 1.8 2006/03/17 17:50:58 clq2 Exp $
+/*$Id: MetadataService.java,v 1.9 2007/09/28 18:03:35 clq2 Exp $
  * Created on 21-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,12 +41,25 @@ public interface MetadataService {
      * service and application registration.
      */
     public URL getRegistrationTemplate();
-
+    
+    /**
+     * Reveals the IVORNs for the supported applications.
+     */
+    public String[] getApplicationIvorns();
 }
 
 
 /* 
 $Log: MetadataService.java,v $
+Revision 1.9  2007/09/28 18:03:35  clq2
+apps_gtr_2303
+
+Revision 1.8.52.1  2007/08/29 14:26:39  gtr
+I added a method to support VOSI.
+
+Revision 1.8.44.1  2007/05/30 18:02:33  gtr
+There is a new method in the interface: getApplicationIvorns().
+
 Revision 1.8  2006/03/17 17:50:58  clq2
 gtr_1489_cea correted version
 

@@ -1,4 +1,4 @@
-/*$Id: AbstractApplicationTest.java,v 1.6 2005/08/10 17:45:10 clq2 Exp $
+/*$Id: AbstractApplicationTest.java,v 1.7 2007/09/28 18:03:36 clq2 Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -109,8 +109,8 @@ public class AbstractApplicationTest extends TestCase {
                 return null;
             }
 
-            public boolean execute() throws CeaException {
-                return false;
+            public Runnable createExecutionTask() throws CeaException {
+                return null;
             }
         };
     obs = new TestObserver();           
@@ -278,6 +278,11 @@ public class AbstractApplicationTest extends TestCase {
         assertTrue(mt.getContent().startsWith("test warning"));
         assertEquals(orig,app.getStatus());      // app status remains unchanged           
     }
+    
+    public void testEnqueue() throws Exception {
+      app.enqueue();
+      assertEquals(Status.QUEUED, app.getStatus());
+    }
 
     protected static class TestObserver implements Observer {
         public boolean called;
@@ -298,6 +303,12 @@ public class AbstractApplicationTest extends TestCase {
 
 /* 
 $Log: AbstractApplicationTest.java,v $
+Revision 1.7  2007/09/28 18:03:36  clq2
+apps_gtr_2303
+
+Revision 1.6.82.1  2007/09/25 08:29:03  gtr
+I added a test for enqueue(). The app in setUp() now implements createExecutionTask() instead of execute().
+
 Revision 1.6  2005/08/10 17:45:10  clq2
 cea-server-nww-improve-tests
 

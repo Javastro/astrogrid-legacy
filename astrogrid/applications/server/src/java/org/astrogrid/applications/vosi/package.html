@@ -1,0 +1,36 @@
+<html>
+  <head></head>
+  <body>
+  <p>Classes implementing the IVOA "VO Support Interfaces" (VOSI) standard.</p>
+  
+  <h2>Package Specification</h2>
+  <p>
+    VOSI specifies that each service should provide two pages of XML,
+    one describing the service in terms of Capability elements and the other
+    stating the service availability. The URIs for these web-resources are
+    not fixed in the standard but are chosen by the service implementor and
+    registered.
+  </p>
+  <p>
+    In the AstroGrid, CEA implementation, the URIs are /VOSI/capabilities
+    and /VOSI/availability; i.e. the REST binding of VOSI is used. These
+    URIs should be mapped to the VosiServlet provided in this package. The
+    servlet sets as request attributes (NB: attributes not parameters) the
+    data needed to complete the VOSI responses and forwards the request to
+    one of the JSPs /VOSI/capabilities.jsp and /VOSI/availability.jsp to
+    generate the XML. When the servlet is configured into a web application,
+    it should mapped to the absolute paths /VOSI/capabilities
+    and /VOSI/availability. If, instead, it were mapped to /VOSI/*, then the
+    forwarding to the JSPs would not work.
+  </p>
+  <p>
+    The JSPs have to be provided separately, in the web-application where VOSI
+    is installed.
+  </p>
+  <p>
+    The servlet sets attributes as needed for the application servers. If a
+    different set of attributes is needed (e.g. for DSA), then a sub-class of
+    VosiServlet should be made in which the method setAttributes() is overridden.
+  </p>
+</body>
+</html>

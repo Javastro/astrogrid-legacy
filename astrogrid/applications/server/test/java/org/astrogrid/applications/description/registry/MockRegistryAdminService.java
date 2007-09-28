@@ -1,4 +1,4 @@
-/*$Id: MockRegistryAdminService.java,v 1.6 2007/09/04 15:42:41 clq2 Exp $
+/*$Id: MockRegistryAdminService.java,v 1.7 2007/09/28 18:03:36 clq2 Exp $
  * Created on 02-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,6 +38,12 @@ public class MockRegistryAdminService extends UpdateRegistry {
 
 /* 
 $Log: MockRegistryAdminService.java,v $
+Revision 1.7  2007/09/28 18:03:36  clq2
+apps_gtr_2303
+
+Revision 1.5.100.1  2007/09/24 13:15:05  gtr
+This is recovered from the trunk to deal with the upgraded registry.
+
 Revision 1.6  2007/09/04 15:42:41  clq2
 KMB changes for PAL
 

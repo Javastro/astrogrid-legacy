@@ -1,4 +1,4 @@
-/* $Id: TestRegistryQuerier.java,v 1.10 2006/03/17 17:50:58 clq2 Exp $
+/* $Id: TestRegistryQuerier.java,v 1.11 2007/09/28 18:03:36 clq2 Exp $
  * Created on 30-July-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -375,5 +375,9 @@ public class TestRegistryQuerier extends AbstractRegistryQuerier implements
     public Document keywordSearch(String keywords) throws RegistryException {
       throw new RegistryException("keywordSearch(String keywords) is not implemented.");
    }
+
+  public Document getIdentity() throws RegistryException {
+    return null;
+  }
 
 }

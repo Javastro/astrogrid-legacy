@@ -1,5 +1,5 @@
 /*
- * $Id: DummyVODescriptionProvider.java,v 1.9 2006/03/17 17:50:58 clq2 Exp $
+ * $Id: DummyVODescriptionProvider.java,v 1.10 2007/09/28 18:03:36 clq2 Exp $
  * Created on 02-Jun-2004
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -129,10 +129,28 @@ public class DummyVODescriptionProvider implements MetadataService {
         throw new CeaException("problem returning registry entry", e);
       }
    }
+   
+   /**
+    * Reveals the IVORNs for the supported applications.
+    */
+   public String[] getApplicationIvorns() {
+     String[] names = new String[1];
+     names[0] = "ivo://" + AUTH_ID + "/" + RES_KEY;
+     return names;
+   }
 }
 
 /*
  * $Log: DummyVODescriptionProvider.java,v $
+ * Revision 1.10  2007/09/28 18:03:36  clq2
+ * apps_gtr_2303
+ *
+ * Revision 1.9.52.1  2007/08/29 14:31:03  gtr
+ * VOSI support.
+ *
+ * Revision 1.9.44.1  2007/06/07 13:20:00  gtr
+ * I added the getApplicationIvorns() method.
+ *
  * Revision 1.9  2006/03/17 17:50:58  clq2
  * gtr_1489_cea correted version
  *

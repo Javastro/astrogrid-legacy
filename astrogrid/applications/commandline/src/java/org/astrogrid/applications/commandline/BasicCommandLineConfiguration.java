@@ -67,18 +67,42 @@ public class BasicCommandLineConfiguration
    * Reveals the name of the component.
    */
   public String getName() {
-    return "Configuration for command-line CEC";
+    return "Configuration for command-line-application server";
+  }
+  
+  /**
+   * Gets the duration, in milliseconds after which an executing job is aborted.
+   */
+  public long getRunTimeLimit() {
+    int def = 1000*365*24*60*60*1000; // 1000 years in milliseconds
+    return SimpleConfig.getSingleton().getInt("cea.run.time.limit", def);
+  }
+  
+  /**
+   * Gets the greatest number of jobs that may execute at the same time.
+   */
+  public int getParallelExecutionlimit() {
+    return SimpleConfig.getSingleton().getInt("cea.parallel.execution.limit", 5);
   }
   
   /**
    * Describes the component and its state.
    */
   public String getDescription() {
-    StringBuffer sb = new StringBuffer();
+    StringBuffer sb = new StringBuffer(super.getDescription());
+    
     sb.append("Application-description file: ");
     sb.append(this.applicationDescriptionUrl.toString());
     sb.append("\n");
-    return super.getDescription() + sb.toString();
+    
+    sb.append("Run-time limit (ms): ");
+    sb.append(getRunTimeLimit());
+    sb.append('\n');
+    
+    sb.append("Parallel-execution limit: ");
+    sb.append(getParallelExecutionlimit());
+    sb.append('\n');
+    return sb.toString();
   }
   
   /**

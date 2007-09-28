@@ -1,41 +1,36 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<!-- This is an application-description file of the kind read by the CL-CEC.
-	   It has one, dummy application, and is used as default until the operator 
-	   configures a proper description-file. It's not sufficient to run the
-	   CL-CEC in service but saves the CEC local controls from crashing due to
-	   uninitialized variables during the set-up process. -->
+<?xml version="1.0"?>
+<!-- This is an application-description file of the kind read by the
+     command-line-application server. It has one application: a sleep for
+     a user-defined time. There must be at least one application in this file
+     to stop the parser crashing when the application-server starts up. This
+     application serves that purpose and will actually run on must servers: it
+     just needs /bin/sleep to be present on the host. -->
 <CommandLineExecutionControllerConfig xmlns="http://www.astrogrid.org/schema/CEAImplementation/v1"
-	xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1"
-	xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v1
-	                    http://software.astrogrid.org/schema/cea/CEAImplementation/v1.0/CEAImplementation.xsd">
-	<!-- The application name is its IVO-ID.
-		   The org.astrogrid.localhost part is the authority ID;
-		   and Dummy is the resource key. -->
-	<Application name="ivo://org.astrogrid.localhost/Dummy">
-		<ceab:Parameters>
-            <CmdLineParameterDefn name="P1" type="text" commandPosition="1" fileRef="false">
-                <agpd:UI_Name>First dummy parameter</agpd:UI_Name>
-                <agpd:UI_Description>This is an example of a parameter that the application expects to be passed by value</agpd:UI_Description>
-            </CmdLineParameterDefn>
-            <CmdLineParameterDefn name="P2" type="text" commandPosition="2" fileRef="true">
-                <agpd:UI_Name>Second dummy parameter</agpd:UI_Name>
-                <agpd:UI_Description>This is an example of a parameter that the application expects to be passed as a path to a file</agpd:UI_Description>
-            </CmdLineParameterDefn>
-        </ceab:Parameters>
-		<ceab:Interfaces>
-            <!-- One or more interfaces may be supplied -->
-			<ceab:Interface name="Dummy">
-				<ceab:input>
-					<ceab:pref ref="P1"/>
-				</ceab:input>
-				<ceab:output>
-					<ceab:pref ref="P2"/>
-				</ceab:output>
-			</ceab:Interface>
-		</ceab:Interfaces>
-		<ExecutionPath>/nix/nada/not/there</ExecutionPath>
-		<LongName>Dummy</LongName>
-	</Application>
+    xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1"
+    xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.astrogrid.org/schema/CEAImplementation/v1
+	                http://software.astrogrid.org/schema/cea/CEAImplementation/v1.0/CEAImplementation.xsd">
+  <!-- The application name is its IVO-ID.
+       The org.astrogrid.localhost part is the authority ID;
+       and sleep is the resource key. -->
+  <Application name="ivo://org.astrogrid.localhost/sleep">
+    <ceab:Parameters>
+      <CmdLineParameterDefn name="P1" type="text" commandPosition="1" fileRef="false">
+        <agpd:UI_Name>Duration</agpd:UI_Name>
+        <agpd:UI_Description>Time to sleep</agpd:UI_Description>
+        <agpd:Units>s</agpd:Units>
+      </CmdLineParameterDefn>
+    </ceab:Parameters>
+    <ceab:Interfaces>
+      <ceab:Interface name="sleep">
+        <ceab:input>
+	  <ceab:pref ref="P1"/>
+        </ceab:input>
+      </ceab:Interface>
+    </ceab:Interfaces>
+    <ExecutionPath>/bin/sleep</ExecutionPath>
+    <LongName>sleep</LongName>
+    <Description>Sleeps for a given length of time.</Description>
+  </Application>
 </CommandLineExecutionControllerConfig>

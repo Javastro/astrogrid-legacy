@@ -284,6 +284,9 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
                    new User(), t);
            assertNotNull(app);
            assertTrue(app instanceof CommandLineApplication);
+           
+           app.setRunTimeLimit(20000);
+           
            // and now run it.
            MockMonitor monitor = new MockMonitor();
            app.addObserver(monitor);
@@ -294,6 +297,21 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
            assertEquals("Saw no (parameter) warnings",0, monitor.nwarn);
            assertEquals("application should have ended with error status",
                         Status.ERROR, app.getStatus());
+           ResultListType resultsList = app.getResult();
+           ParameterValue[] results = resultsList.getResult();
+           int nonNullValueCount = 0;
+           boolean sawCeaErrorResult = false;
+           for (int i = 0; i < results.length; i++) {
+             System.out.println(results[i].getName() + ":" + results[i].getValue());
+             if (results[i].getValue() != null) {
+               nonNullValueCount++;
+             }
+             if (results[i].getName().equals("cea-error")) {
+               sawCeaErrorResult = true;
+             }
+           }
+           assertTrue("Exactly one result has a value", nonNullValueCount == 1);
+           assertTrue("cea-error is present", sawCeaErrorResult);
        }
 
     private ResultListType execute(Tool t) throws Exception, CeaException,
@@ -305,6 +323,9 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
         
         assertNotNull(app);
         assertTrue(app instanceof CommandLineApplication);
+        
+        app.setRunTimeLimit(20000);
+        
         // and now run it.
         MockMonitor monitor = new MockMonitor();
 //        app.addObserver(controller);
@@ -358,4 +379,5 @@ public class CommandLineApplicationTest extends AbstractCmdLineAppTestCase {
     Thread t = new Thread(r);
     t.start();
   }
+
 }

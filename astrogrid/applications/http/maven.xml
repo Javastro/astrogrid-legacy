@@ -17,6 +17,10 @@
     <attainGoal name="webapp-docs"/>
   </preGoal>
   
+  <preGoal name="xdoc">
+     <echo message="${pom.name} ${pom.currentVersion}" file="${maven.docs.dest}/about.txt" level="error" verbose="true"/>
+  </preGoal>
+  
   <!-- When building the WAR, add the documentation from the main site; 
        but do it selectively. -->
   <preGoal name="war:war">

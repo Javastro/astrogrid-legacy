@@ -46,19 +46,25 @@ import java.util.Observable;
  * <I>This class provides a lot of protected-visibility helper methods, private fields, final methods, etc - it tries to 
  * impose some structure on the form the extension takes. This may mean that it'd be better to split this class into a framework class, and a plugin class. But we'll see</i>
  * <h2>Abstract Methods</h2>
- * Extenders must implement the {@link #execute()} method.
+ * Extenders must implement the {@link #createExecutionTask()} method.
  * <h2>Overridable Methods</h2>
- * The {@link #instantiateAdapter(ParameterValue, ParameterDescription, IndirectParameterValue)} method may be overridden to return instances of a custom {@link org.astrogrid.applications.parameter.ParameterAdapter} if needed<br/>
+ * The {@link #instantiateAdapter(ParameterValue, ParameterDescription, ExternalValue)}
+ * method may be overridden to return instances of a custom 
+ * {@link org.astrogrid.applications.parameter.ParameterAdapter} if needed.<br/>
  * The default implementaiton of {@link #attemptAbort()} does nothing. Providers may extend this if suitable.<br />
  * The {@link #createTemplateMessage()} method can also be overridden to return more application-specific information, similarly {@link #toString()} if desired.<br/>
  * 
  * <h2>Helper Methods</h2>
  * This class provides helper methods for working with parameters, parameter adapters, and for progress reporting.
 *  <h3>Parameters</h3>
-*    There's methods to iterate through input parameters, output parameters, and all parameters, and to find input / output / either by name
+*    There are methods to iterate through input parameters, output parameters, 
+ *   and all parameters, and to find input / output / either by name
 *  <h3>Parameter Adapters</h3>
-*    There's methods to iterate through input parameterAdapters, output parameterAdapters, and all parameterAdapters - ant to find input / output / eitther kind of adapter by parameter name.
-*    All these methods have {@link #createAdapters()} as a precondition - this initializes the adapter sets.
+*    There are methods to iterate through input parameterAdapters, 
+ * output parameterAdapters, and all parameterAdapters - ant to 
+ * find input / output / eitther kind of adapter by parameter name.
+*    All these methods have {@link #createAdapters()} as a precondition - 
+ * this initializes the adapter sets.
 *  <h3>Progress Reporting</h3>
 * There's a set of methods that hide the details of notifying observers<p>
 *  Calls to {@link #setStatus(Status)} update the status field of the application, and also send a change notification to all observers registered to this application. The 
@@ -66,8 +72,8 @@ import java.util.Observable;
 * will send a message <b>and</b> set the status of this application to {@link org.astrogrid.applications.Status#ERROR}. The overridable method {@link #createTemplateMessage()} 
 * is used to create the template messages for this methods.
 *  @author Noel Winstanley
- * @author Paul Harrison (pah@jb.man.ac.uk)
- * @version $Name:  $
+ * @author Paul Harrison
+ * @author Guy Rixon
  * @since iteration4.1
  * @see org.astrogrid.applications.javaclass.JavaClassApplication as an example extension
  * @see org.astrogrid.applications.Application
@@ -80,7 +86,6 @@ public abstract class AbstractApplication extends Observable implements Applicat
         /** the cea-assigned id for this application execution */
        public String getId();
        /** the user-assigned id for this application execution
-        * @todo rename to something less jes-specific
         * @return id for this execution
         */
        public String getJobStepId();
@@ -97,7 +102,7 @@ public abstract class AbstractApplication extends Observable implements Applicat
    private final ApplicationInterface applicationInterface;
    
    protected final IDs ids;
-   /** list of parameter adapters for the inputs to the application. emty at start */
+   /** list of parameter adapters for the inputs to the application. Empty at start. */
    private final List inputAdapters = new ArrayList();
    /** library of indirection protocol handlers */
    protected final ProtocolLibrary lib;
@@ -125,22 +130,159 @@ public abstract class AbstractApplication extends Observable implements Applicat
       this.ids = ids;
       this.tool = tool;
       this.lib = lib;
-
+      this.startTime = null;
+      this.endTime = null;
+      this.deadline = null;
+      
+      // This class has no mandate to set run-time limits: those are imposed
+      // where needed by sub-classes. However, the machinery requires a value to
+      // be present, so set a very long limit.
+      this.runTimeLimitMs = 1000 * 365 * 24 * 60 * 60 * 1000;
    }
     /** default implementation of attemptAbort - always fails, and returns false.
      */
     public boolean attemptAbort() {
         return false;
     }
+    
+  /**
+   * The instant at which execution of the application started.
+   * Should be null until the execution starts, which includes the
+   * time the application waits on the queue.
+   * This is used for execution time-outs and reporting.
+   */
+   protected Date startTime;
+   
+  /**
+   * The instant at which the execution of the application will be aborted
+   * if it has not already finished.
+   */
+   protected Date deadline;
+   
+  /**
+   * The instant at which execution of the application ended.
+   * Should be null until the execution starts, which includes the
+   * time the application waits on the queue and the actual execution.
+   * This is used for execution time-outs and reporting.
+   */
+   protected Date endTime;
+   
+  /**
+   * The execution time, in millisconds, allowed for the application.
+   * If this time is exceeded then the application will be aborted.
+   */
+  protected long runTimeLimitMs;
+
+  /**
+   * Reveals the time in milliseconds for which the application has been
+   * executing. This is zero if the application has been accepted by the server
+   * but execution has not yet begun.
+   */
+  protected long getExecutionDuration() {
+    if (this.startTime == null) {
+      return 0;
+    }
+    else {
+      if (this.endTime == null) {
+        return new Date().getTime() - this.startTime.getTime();
+      }
+      else {
+        return this.endTime.getTime() - this.startTime.getTime();
+      }
+    }
+  }
+  
+  /**
+   * Reveals the instant at which the application will be aborted. This method
+   * returns null if no deadline has been set. This will be generally be true
+   * before and after the execution of the job and may be true at all times
+   * if an implementation does not impose deadlines.
+   */
+  public Date getDeadline() {
+    return this.deadline;
+  }
+  
+  /**
+   * Reveals the instant at which the job started execution.
+   * This will be null if the execution has not yet started.
+   */
+  public Date getStartInstant() {
+    return this.startTime;
+  }
+  
+  /**
+   * Reveals the instant at which the job finished execution.
+   * This will be null if the execution has not yet finished.
+   */
+  public Date getEndInstant() {
+    return this.endTime;
+  }
+  
+  /**
+   * Specifies the allowed duration of excution, in milliseconds.
+   */
+  public void setRunTimeLimit(long ms) {
+    this.runTimeLimitMs = ms;
+    if (this.startTime != null) {
+      this.deadline = new Date(this.startTime.getTime() + ms);
+    }
+  }
+  
+  /**
+   * Reveals the allowed duration of excution, in milliseconds.
+   */
+  public long getRunTimeLimit() {
+    return this.runTimeLimitMs;
+  }
+  
+  /**
+   * Reveals whether the application has over-run its allowed deadline and
+   * hence been aborted.
+   */
+  public boolean isTimedOut() {
+    return (this.endTime != null && 
+            this.deadline != null && 
+            this.endTime.after(this.deadline));
+  }
+  
+  /**
+   * Records the instant at which execution of the application began.
+   * Annuls the end-time property.
+   * Updates the deadline for completion of the job.
+   */
+  protected void recordStartOfExecution() {
+    this.startTime = new Date();
+    this.endTime = null;
+    this.deadline = new Date(this.startTime.getTime() + this.runTimeLimitMs);
+  }
+  
+  /**
+   * Records the instant at which execution of the application ended.
+   */
+  protected void recordEndOfExecution() {
+    this.endTime = new Date();
+  }
+  
+  /**
+   * Reveals whether the job has outrun its allowed execution time.
+   */
+  protected boolean beforeDeadline() {
+    if (this.deadline == null) {
+      return true;
+    }
+    else {
+      return new Date().before(this.deadline);
+    }
+  }
 
     /** hook that specialized subclasses can overried - to return a custom adapter  
      * used in {@link #createAdapters}
      * @return a {@link DefaultParameterAdapter}
-     * @TODO perhaps make this create different types of adapter dependent on parameter type.
      */
     protected ParameterAdapter instantiateAdapter(ParameterValue pval, ParameterDescription descr,ExternalValue indirectVal) {
         return new DefaultParameterAdapter(pval,descr,indirectVal);
     }
+    
     /** sets up the list of input and output parameter adapters
      * must be called before any of the methods that access / query parameter adapters.
      * @throws ParameterDescriptionNotFoundException
@@ -170,7 +312,6 @@ public abstract class AbstractApplication extends Observable implements Applicat
      * Checks that all the parameters have been specified. 
      * It does this by looking through the interface that has been specified and checking that all the mandatory parameters have been specified at least once.
      * It will throw exception at the first error.
-     * @TODO it would be better to gather all of the errors together and thow an exception with all of them in, rather than just the first....
  * @throws ParameterNotInInterfaceException
  * @throws MandatoryParameterNotPassedException
  * @throws ParameterDescriptionNotFoundException
@@ -320,7 +461,9 @@ private void checkCardinality(String inputName, boolean isInput) throws Paramete
    
 
    /**
-    * @return
+    * Reveals the status of the job.
+    *
+    * @return The status.
     */
    public final  Status getStatus() {
       return status;
@@ -436,7 +579,7 @@ private void checkCardinality(String inputName, boolean isInput) throws Paramete
 
    /**
     * change the status of this application and notify all observers 
-    * @param status
+    * @param status The status to set.
     */
    public final void setStatus(Status status) {
       this.status = status;
@@ -449,34 +592,46 @@ private void checkCardinality(String inputName, boolean isInput) throws Paramete
       return getApplicationDescription().getName() + "#" + getApplicationInterface().getName();
    }
 
-   /*** to be implemented - create a runnable for applicaton execution, and then return
-    * <p>
-    * Usual body of method does
-    * <ol>
-    * <li>(optional) inspect / adjust parameter values
-    * <li> call {@link #createAdapters()} to create parameterAdapters
-    * <li> create runnable result object
-    * </ol>
-    * responsibilities of runnable are
-    * <ol> 
-    * <li>iterate through input parameter adapters, calling {@link ParameterAdapter#process()} on each, collecting returned parameter values
-    * <li>set application state to {@link Status#INITIALIZED}
-    *   <li>sets application state to {@link Status#RUNNING}
-    *   <li>performs applicatioin execution in some way, passing in parameter values
-    *   <li>reports progress via {@link #reportMessage(String)}, etc.
-    *   <li> on application complettion, set application state to {@link Status#WRITINGBACK}
-    *   <li>iterate through output parameter adapters, calling {@link ParameterAdapter#writeBack(Object)} on each.
-    *   <li>set application state to {@link Status#COMPLETED}
-    * </ol>
-    *</ol>
-    * 
-    *  default implementation of this method - for backwards compatability
-    * if this method returns null, then the deprecated {@link #execute()} will be called instead
-    * @see org.astrogrid.applications.Application#createExecutionTask()
-    * @return null 
-    */
-    public Runnable createExecutionTask() throws CeaException {
-        return null;
-    }
+  /** 
+   * Creates a Runnable that will execute the job.
+   * This must be suitably implemented in the sub-classes for particular
+   * types of application-server.
+   * <p>
+   * Usual body of method does
+   * <ol>
+   * <li>(optional) inspect / adjust parameter values</li>
+   * <li> call {@link #createAdapters()} to create parameterAdapters</li>
+   * <li> create runnable result object</li>
+   * </ol>
+   * responsibilities of runnable are
+   * <ol> 
+   * <li>iterate through input parameter adapters, calling 
+   *     {@link ParameterAdapter#process()} on each, collecting returned
+   *     parameter values;</li>
+   * <li>set application state to {@link Status#INITIALIZED};</li>
+   * <li>sets application state to {@link Status#RUNNING};</li>
+   * <li>performs applicatioin execution in some way, passing in parameter values;</li>
+   * <li>reports progress via {@link #reportMessage(String)}, etc.;</li>
+   * <li>on application complettion, set application 
+   *      state to {@link Status#WRITINGBACK};</li>
+   * <li>iterate through output parameter adapters, calling 
+   *     {@link ParameterAdapter#writeBack(Object)} on each;</li>
+   * <li>set application state to {@link Status#COMPLETED}.</li>
+   * </ol>
+   *
+   * @see org.astrogrid.applications.Application#createExecutionTask()
+   * @return null 
+   */
+  public abstract Runnable createExecutionTask() throws CeaException;
+    
+  /**
+   * Notes that the application is committed for execution but is held
+   * on a queue. Sets the status to QUEUED.
+   *
+   * @since 2007.2.02
+   */
+  public void enqueue() {
+    this.setStatus(Status.QUEUED);
+  }
 }
 

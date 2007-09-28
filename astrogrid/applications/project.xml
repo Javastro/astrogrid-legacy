@@ -4,7 +4,7 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-applications-master</artifactId>
   <name>CEA master project</name>
-  <currentVersion>2007.1.1</currentVersion>
+  <currentVersion>2007.2.01</currentVersion>
   <shortDescription>CEA components</shortDescription>
   <description>
     <![CDATA[<p>This project provides:</p>
@@ -56,6 +56,7 @@
     <report>maven-junit-report-plugin</report>
     <report>maven-pmd-plugin</report>
     <report>maven-license-plugin</report>
+    <report>maven-multiproject-plugin</report>
   </reports>
   
   <organization>

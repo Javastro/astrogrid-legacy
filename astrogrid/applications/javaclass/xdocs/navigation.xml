@@ -10,6 +10,7 @@
     </links>
       
      <menu name="Administrator Quickstart">
+       <item name="About this component" href="about.txt"/>
        <item name="Overview" href="index.html"/>
        <item name="Download" href="DOWNLOAD.html"/>
        <item name="Installation" href="INSTALL.html"/>

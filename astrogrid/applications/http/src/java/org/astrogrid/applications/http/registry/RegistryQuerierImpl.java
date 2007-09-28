@@ -1,4 +1,4 @@
-/* $Id: RegistryQuerierImpl.java,v 1.9 2005/07/05 08:27:01 clq2 Exp $
+/* $Id: RegistryQuerierImpl.java,v 1.10 2007/09/28 18:03:36 clq2 Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -236,6 +236,7 @@ public class RegistryQuerierImpl extends AbstractRegistryQuerier {
             return apps;
         } catch (RegistryException e) {
             log.error("getHttpApplications(): RegistryException", e);
+            e.printStackTrace();
             throw new IOException("Problem communicating with Registry");
         }
     }

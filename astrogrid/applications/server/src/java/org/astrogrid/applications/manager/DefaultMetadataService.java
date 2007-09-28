@@ -101,6 +101,19 @@ public class DefaultMetadataService implements MetadataService,
      this.lib = lib;
      this.configuration = configuration;
    }
+   
+   /**
+    * Reveals the IVORNs for the supported applications.
+    */
+   public String[] getApplicationIvorns() {
+     String[] names = this.lib.getApplicationNames();
+     for (int i = 0; i < names.length; i++) {
+       if (!names[i].startsWith("ivo://")) {
+         names[i] = "ivo://" + names[i];
+       }
+     }
+     return names;
+   }
 
    /**
     * Create the registry entry....

@@ -9,6 +9,7 @@
 
 package org.astrogrid.applications;
 
+import java.util.Date;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
@@ -22,41 +23,56 @@ import java.util.Observer;
 
 
 /**
- A single execution of an application
-  <p />
-This interface represents the application of a {@link org.astrogrid.workflow.beans.v1.Tool} to an {@link org.astrogrid.applications.description.ApplicationDescription} - 
-and models a single application execution / invocation / call.
-<p />
-This is the core interface to be implemented by CEA provider back-ends.
-The functionality splits into the following sections.
-<h2>Static info</h2>
-The {@link #getInputParameters()}, {@link #getID()}, {@link #getUser()}, {@link #getJobStepID()}, {@link #getApplicationDescription()}, {@link #getApplicationInterface()}
- methods return information provided when the application was created. This data does not change though the life of the application.
-
-<h2>State Changers</h2>
-{@link #execute()} starts the application running. (The application is initialized on creation of an instance of this class)<br>
-{@link #attemptAbort()} will attempt to abort the application. Not all providers are expected to support this.
-
-<h2>Dynamic Info</h2>
-{@link #getResult()} will access the results (so far computed) of the application execution.
-{@link #getStatus()} will return the current current state of the application execution.
-
-<h2>Callback Interface</h2>
-This interface follows the {@link java.util.Observable} pattern - interested parties can register as observers {@link #addObserver(Observer)} and then 
-receive notifications when the execution state changes, messages are produced, or results ready.
-
-The {@link #createTemplateMessage()} shoud be overridden by implementors to return a custom <tt>MessageType</tt> object, with fields pre-populated. This is used by the system
-as the basis for messages sent to the observers of the application.
-
-@author Paul Harrison
-@author Noel Winstanley
-@see org.astrogrid.applications.AbstractApplication
-@see java.util.Observer
-@see org.astrogrid.workflow.beans.v1.Tool
-@see org.astrogrid.applications.beans.v1.cea.castor.MessageType
-@see org.astrogrid.applications.beans.v1.parameters.ParameterValue
-@see org.astrogrid.applications.beans.v1.cea.castor.ResultListType
-@see org.astrogrid.applications.Status
+ * A single execution of an application.
+ * <p />
+ * This interface represents the application of a {@link org.astrogrid.workflow.beans.v1.Tool} 
+ * to an {@link org.astrogrid.applications.description.ApplicationDescription} - 
+ * and models a single application execution / invocation / call.
+ * <p />
+ * This is the core interface to be implemented by CEA provider back-ends.
+ * The functionality splits into the following sections.
+ * <h2>Static info</h2>
+ * The {@link #getInputParameters()}, {@link #getID()}, {@link #getUser()}, 
+ * {@link #getJobStepID()}, {@link #getApplicationDescription()}, 
+ * {@link #getApplicationInterface()}
+ * methods return information provided when the application was created. 
+ * This data does not change though the life of the application.
+ *
+ * <h2>State Changers</h2>
+ * <p>
+ * {@link #createExecutionTask()} returns a a Runnable. When the latter is run,
+ * it executes the job.</p>
+ * <p> {@link #attemptAbort()} will attempt to abort the application. 
+ * Not all providers are expected to support this.</p>
+ * 
+ * <h2>Dynamic Info</h2>
+ * <p>{@link #getResult()} will access the results (so far computed) of 
+ * the application execution.</p>
+ * <p>{@link #getStatus()} will return the current current state of 
+ * the application execution.</p>
+ *
+ * <h2>Callback Interface</h2>
+ * <p>
+ * This interface follows the {@link java.util.Observable} pattern - interested 
+ * parties can register as observers {@link #addObserver(Observer)} and then 
+ * receive notifications when the execution state changes, messages are 
+ * produced, or results ready.
+ * </p><p>
+ * The {@link #createTemplateMessage()} shoud be overridden by implementors 
+ * to return a custom <tt>MessageType</tt> object, with fields pre-populated.
+ * This is used by the system as the basis for messages sent to the observers 
+ * of the application.</p>
+ * 
+ * @author Paul Harrison
+ * @author Noel Winstanley
+ * @author Guy Rixon
+ * @see org.astrogrid.applications.AbstractApplication
+ * @see java.util.Observer
+ * @see org.astrogrid.workflow.beans.v1.Tool
+ * @see org.astrogrid.applications.beans.v1.cea.castor.MessageType
+ * @see org.astrogrid.applications.beans.v1.parameters.ParameterValue
+ * @see org.astrogrid.applications.beans.v1.cea.castor.ResultListType
+ * @see org.astrogrid.applications.Status
  */
 public interface Application  {
    
@@ -114,17 +130,71 @@ public interface Application  {
     */
    public MessageType createTemplateMessage();
    
-   /** add an observer to this application.
-    * 
-    * <p />
-    * an application can have 0 or more observers. These will be notified when
+   /** 
+    * Adds an observer to this application.
+    * An application can have 0 or more observers. These will be notified when
     * <ul>
-    * <li>The application changes state (i.e. the value of {@link getStatus()} changes
+    * <li>The application changes state (i.e. the value of {@link #getStatus()} changes
     * <li> When an execution error occurs
     * <li>Other application-defined things of interest happen - arbitrary messages
-    * @todo document types passed into observer.
-    * @param obs
+    * @param obs The object to be notified on state change.
     */
    public void addObserver(Observer obs);
+  
+  /**
+   * Reveals the instant at which the application will be aborted. This method
+   * returns null if no deadline has been set. This will be generally be true
+   * before and after the execution of the job and may be true at all times
+   * if an implement does not impose deadlines.
+   *
+   * @since 2007.2.02
+   */
+  public Date getDeadline();
+  
+  /**
+   * Reveals the instant at which the job started execution.
+   * This will be null if the execution has not yet started.
+   *
+   * @since 2007.2.02
+   */
+  public Date getStartInstant();
+  
+  /**
+   * Reveals the instant at which the job finished execution.
+   * This will be null if the execution has not yet finished.
+   *
+   * @since 2007.2.02
+   */
+  public Date getEndInstant();
+  
+  /**
+   * Specifies the allowed duration of excution, in milliseconds.
+   *
+   * @since 2007.2.02
+   */
+  public void setRunTimeLimit(long ms);
+  
+  /**
+   * Reveals the allowed duration of excution, in milliseconds.
+   *
+   * @since 2007.2.02
+   */
+  public long getRunTimeLimit();
+  
+  /**
+   * Reveals whether the application has over-run its allowed deadline and
+   * hence been aborted.
+   *
+   * @since 2007.2.02
+   */
+  public boolean isTimedOut();
+  
+  /**
+   * Notes that the application is committed for execution but is held
+   * on a queue. Sets the status to QUEUED.
+   *
+   * @since 2007.2.02
+   */
+  public void enqueue();
 }
    

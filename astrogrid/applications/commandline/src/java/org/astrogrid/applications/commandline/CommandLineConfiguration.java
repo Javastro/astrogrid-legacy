@@ -33,4 +33,14 @@ public interface CommandLineConfiguration extends Configuration {
    * @return The working directory.
    */
   public File getWorkingDirectory();
+  
+  /**
+   * Gets the duration, in milliseconds after which an executing job is aborted.
+   */
+  public long getRunTimeLimit();
+  
+  /**
+   * Gets the greatest number of jobs that may execute at the same time.
+   */
+  public int getParallelExecutionlimit();
 }

@@ -5,7 +5,7 @@
   <groupId>org.astrogrid</groupId>
   <artifactId>astrogrid-cea-http</artifactId>
   <name>CEA HTTP-application server</name>
-  <currentVersion>2007.2.01</currentVersion>
+  <currentVersion>2007.2.02</currentVersion>
   <shortDescription>CEA server for HTTP applications</shortDescription>
   <description>A CEA application-server for HTTP applications. The service provides
     CEA's standard SOAP interface, "CEC".</description>
@@ -90,6 +90,14 @@
       <version>2007.2.02</version>
       <type>jar</type>
       <url>http://software.astrogrid.org/</url>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-contracts</artifactId>
+      <version>2007.2.03</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
