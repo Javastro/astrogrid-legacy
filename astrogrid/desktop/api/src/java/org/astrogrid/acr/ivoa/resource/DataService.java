@@ -17,8 +17,4 @@ public interface DataService extends Service, HasCoverage {
 	/** the instruments used to collect the data contained or managed by this resource */
 	ResourceName[] getInstruments();
 	
-	/** 
-                     Extent of the content of the resource over space, time, 
-                     and frequency. */
-	public Coverage getCoverage();
 }
