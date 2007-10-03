@@ -28,7 +28,6 @@ import org.embl.ebi.escience.scuflui.workbench.Scavenger;
 import org.embl.ebi.escience.scuflui.workbench.ScavengerCreationException;
 
 import org.astrogrid.acr.astrogrid.Applications;
-import org.astrogrid.acr.astrogrid.ApplicationInformation;
 import org.astrogrid.acr.astrogrid.ExecutionInformation;
 
 import net.sf.taverna.utils.MyGridConfiguration;

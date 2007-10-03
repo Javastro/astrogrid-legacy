@@ -19,7 +19,7 @@
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/jdom/jars/jdom-1.0.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/acr-interface-2007.1.rc1.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/org.astrogrid/jars/acr-interface-2007.4alpha4.rc1.jar">
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/rmilite/jars/rmi-lite-1.0.jar">
   </classpathentry>

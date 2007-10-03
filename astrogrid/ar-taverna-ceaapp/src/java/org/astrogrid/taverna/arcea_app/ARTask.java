@@ -174,9 +174,11 @@ public class ARTask implements ProcessorTaskWorker {
 				TransformerFactory.newInstance().newTransformer().transform(new DOMSource(toolDoc), new StreamResult(outputToolDoc));
 				logger.warn("tooldoc to be written to file and submitted: = " + outputToolDoc);
 				logger.warn("creating file");
-				java.io.File toolFile = java.io.File.createTempFile((new java.rmi.server.UID()).toString(),null);
+				java.io.File toolFile = java.io.File.createTempFile("taverna",".wkfl");
 				toolFile.deleteOnExit();
-				TransformerFactory.newInstance().newTransformer().transform(new DOMSource(toolDoc), new StreamResult(toolFile));
+				logger.warn("created Temp File = " + toolFile.toString());
+				//TransformerFactory.newInstance().newTransformer().transform(new DOMSource(toolDoc), new StreamResult(toolFile));
+				TransformerFactory.newInstance().newTransformer().transform(new DOMSource(toolDoc), new StreamResult(new java.io.FileOutputStream(toolFile)));
 				logger.warn("set file to delete on exit file name = " + toolFile.toURI());
 				//save the toolDoc file
 				URI executionID;

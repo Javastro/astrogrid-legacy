@@ -12,7 +12,7 @@ import org.embl.ebi.escience.scuflui.shared.ScuflModelSet;
 import org.embl.ebi.escience.scuflui.spi.ProcessorActionSPI;
 import org.embl.ebi.escience.scuflworkers.ProcessorHelper;
 
-public class ARMyspaceAction implements ProcessorActionSPI
+public class ARMyspaceFolderAction implements ProcessorActionSPI
 {
 
 	ARProcessor processor;
@@ -30,7 +30,7 @@ public class ARMyspaceAction implements ProcessorActionSPI
 		//ScuflModel model= processor.getInternalModel();				
 		//ScuflModelSet.getInstance().addModel(model);
 		try {
-			URI chosenRes = SingletonACR.getURI("Choose File");
+			URI chosenRes = SingletonACR.getURIFolder("Choose Directory");
 			processor.setChosenDirectoryURI(chosenRes.toString());
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -44,7 +44,7 @@ public class ARMyspaceAction implements ProcessorActionSPI
 	}
 
 	public String getDescription() {
-		return "Set the Myspace File";
+		return "Set the Myspace Directory";
 	}
 
 	public ImageIcon getIcon() {

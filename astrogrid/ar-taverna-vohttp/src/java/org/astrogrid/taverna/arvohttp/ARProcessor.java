@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Properties;
 import org.apache.log4j.Logger;
 
+import org.astrogrid.acr.ivoa.resource.*;
+
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.builtin.ACR;
@@ -44,11 +46,11 @@ public class ARProcessor extends Processor implements Serializable {
 	
 	public ARProcessor(ScuflModel model, String name, String commonName) throws ProcessorCreationException, DuplicateProcessorNameException {
 		super(model,name);
-		logger.warn("in ARProcessor name = " + name + " commonName = " + commonName);
+		logger.debug("in ARProcessor name = " + name + " commonName = " + commonName);
 		this.commonName = commonName;
 		//this.name = name;
 		try {
-			if(commonName.equals("SIAP") || commonName.equals("CONE") || commonName.equals("STAP")) {
+			if(commonName.equals("SIAP") || commonName.equals("CONE") || commonName.equals("SSAP")) {
 				describeSearchPortList();
 				describeRADECPort();
 				describeSizePort();
@@ -85,7 +87,7 @@ public class ARProcessor extends Processor implements Serializable {
 			this.addPort(resultMap);
 			*/
 			setDescription("VOHTTP");
-			logger.warn("finished describing ports");
+			logger.debug("finished describing ports");
 		}catch (PortCreationException e) {
 			e.printStackTrace();
 			throw new ProcessorCreationException(e);
@@ -99,6 +101,18 @@ public class ARProcessor extends Processor implements Serializable {
 	public String getCommonName() {
 		return this.commonName;
 	}
+	
+	public void setChosenResources(Resource []res) {
+		//this.chosenDirectoryURI = dirURI;
+		InputPort []ips =  this.getInputPorts();
+		for(int j = 0;j < ips.length;j++) {
+			if(ips[j].getName().equals("Ivorns")) {
+				logger.warn("try setting the new defaultvalue for input port");
+				//ips[j].setDefaultValue(chosenDirectoryURI);
+				j = ips.length;
+			}
+		}
+	}	
 	
 	private void describeOutputPort() throws PortCreationException, DuplicatePortNameException {
 		OutputPort output = new OutputPort(this,"result");

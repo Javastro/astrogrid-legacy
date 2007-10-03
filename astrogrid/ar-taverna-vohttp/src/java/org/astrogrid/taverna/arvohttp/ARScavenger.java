@@ -30,7 +30,7 @@ public class ARScavenger extends Scavenger {
 	 */
 	public ARScavenger() throws ScavengerCreationException {
 		super("Astro Runtime VOHTTP");
-		logger.warn("start constructor in ARScavenger");
+		logger.debug("start constructor in ARScavenger");
 		listVOHTTPS();
 	}
 	
@@ -38,7 +38,7 @@ public class ARScavenger extends Scavenger {
 	/** alternate implementation of listApi */
 	private void listVOHTTPS() throws ScavengerCreationException {
 		//try {
-			logger.warn("start listApi in ARScavenger");
+			logger.debug("start listApi in ARScavenger");
 			//DefaultMutableTreeNode root = new DefaultMutableTreeNode("VO HTTP Services");
 			DefaultMutableTreeNode siapNode = 
 				new DefaultMutableTreeNode(new ARProcessorFactory("SIAP","SIAP"));
@@ -67,7 +67,7 @@ public class ARScavenger extends Scavenger {
 			add(ssapRegNode);	
 			add(stapRegNode);	
 			//add(root);
-			logger.warn("end listVOHTTPS successful ARScavenger");
+			logger.debug("end listVOHTTPS successful ARScavenger");
 		/*} catch (ACRException x) {
 			throw new ScavengerCreationException("Failed to list components of AR" + x.getMessage());
 		}	*/

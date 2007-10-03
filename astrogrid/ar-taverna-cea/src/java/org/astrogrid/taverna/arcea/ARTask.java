@@ -250,9 +250,11 @@ public class ARTask implements ProcessorTaskWorker {
 				TransformerFactory.newInstance().newTransformer().transform(new DOMSource(toolDoc), new StreamResult(outputToolDoc));
 				logger.warn("tooldoc to be written to file and submitted: = " + outputToolDoc);
 				logger.warn("creating file");
-				java.io.File toolFile = java.io.File.createTempFile((new java.rmi.server.UID()).toString(),null);
+				java.io.File toolFile = java.io.File.createTempFile("taverna",".wkfl");
 				toolFile.deleteOnExit();
-				TransformerFactory.newInstance().newTransformer().transform(new DOMSource(toolDoc), new StreamResult(toolFile));
+				//comment out this one it has problems in windows use the Fileoutputstream instead.
+				//TransformerFactory.newInstance().newTransformer().transform(new DOMSource(toolDoc), new StreamResult(toolFile));
+				TransformerFactory.newInstance().newTransformer().transform(new DOMSource(toolDoc), new StreamResult(new java.io.FileOutputStream(toolFile)));
 				logger.warn("set file to delete on exit file name = " + toolFile.toURI());
 				//save the toolDoc file
 				URI executionID;
@@ -288,8 +290,9 @@ public class ARTask implements ProcessorTaskWorker {
 					ExecutionInformation execInfo = apps.getExecutionInformation(executionID);
 					discovered = true;
 					while(execInfo.getStatus().equals(ExecutionInformation.INITIALIZING) ||
-						  execInfo.getStatus().equals(ExecutionInformation.RUNNING) ||
-						  execInfo.getStatus().equals(ExecutionInformation.PENDING)) {
+							  execInfo.getStatus().equals(ExecutionInformation.RUNNING) ||
+							  execInfo.getStatus().equals(ExecutionInformation.UNKNOWN) ||
+							  execInfo.getStatus().equals(ExecutionInformation.PENDING)) {
 						logger.warn("need to sleep hasn't completed, status = " + execInfo.getStatus());
 						Thread.sleep(1500);
 						//lookout.refresh();

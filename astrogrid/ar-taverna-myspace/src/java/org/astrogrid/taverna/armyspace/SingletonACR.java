@@ -44,6 +44,13 @@ public class SingletonACR {
 		return chosenRes;
 	}
 	
+	public static synchronized URI getURIFolder(String title) throws ACRException {
+		ACR acr = getACR();
+		ResourceChooser rc = (ResourceChooser)acr.getService(ResourceChooser.class);
+		URI chosenRes = rc.chooseFolder(title,true);
+		return chosenRes;
+	}
+	
 	public static synchronized Myspace getMyspace() throws ACRException {
 		ACR acr = getACR();
 		Myspace myspace = (Myspace)acr.getService(Myspace.class);
