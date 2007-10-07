@@ -249,7 +249,7 @@ public class IndeterminateProgressIndicator  extends JComponent{
     }
     
     public static void main(String[] args) {
-        // FIXME: we could auto-generate this kind of code via reflection.
+        // thought: we could auto-generate this kind of code via reflection.
         JFrame f = new JFrame("JAsynchronousProgressIndicator test");
         
         final IndeterminateProgressIndicator asynchronousProgressIndicator = new IndeterminateProgressIndicator();

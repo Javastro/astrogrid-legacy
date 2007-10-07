@@ -40,6 +40,10 @@ import org.astrogrid.desktop.icons.IconHelper;
  *if you want to listen for dociument changes, use {@link #getWrappedDocument()}
  *unless you want to receive notifactions for the placeholder text as well.
  * 
+ * Use only for incremental search UIs. For other cases where you want to show some greyed-out prompting
+ * text, use {@link JPromptingTextField}
+ * 
+ * 
  * @author Elliott Hughes
  */
 
