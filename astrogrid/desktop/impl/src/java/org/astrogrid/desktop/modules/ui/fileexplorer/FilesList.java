@@ -74,6 +74,9 @@ public class FilesList extends JList {
     
     public String getToolTipText(MouseEvent e) {
         int index = locationToIndex(e.getPoint());
+        if (index < 0) {
+            return null;
+        }
         ListModel dlm = getModel();
         ensureIndexIsVisible(index);
         FileObject item = (FileObject)dlm.getElementAt(index);
