@@ -42,7 +42,10 @@ private final PlasticScavenger scav;
 	protected boolean invokable(FileObject f) {
 		try {
 			final FileContent content = f.getContent();
-            return VoDataFlavour.MIME_FITS_IMAGE.equals(content.getContentInfo().getContentType());
+            final String contentType = content.getContentInfo().getContentType();
+            return VoDataFlavour.MIME_FITS_IMAGE.equals(contentType)
+                || VoDataFlavour.MIME_FITS_TABLE.equals(contentType)
+                || VoDataFlavour.MIME_FITS_SPECTRUM.equals(contentType);
 		} catch (FileSystemException x) {
 			return false;
 		}

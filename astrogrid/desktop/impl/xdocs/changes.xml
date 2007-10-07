@@ -15,6 +15,9 @@
 	</head>
 <body>
 <release version="next" date="2007-10-07">
+    <action dev="nw" type="fix" issue="2354">
+    fileexplorer: can now send fits files over plastic.
+    </action>
     <action dev="nw" type="add" >
         Taskrunner: passes a menu to QB to be used as a context-menu
     </action>
