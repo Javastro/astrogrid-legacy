@@ -22,6 +22,8 @@ public class QuerySizeIndicator extends JProgressBar {
 		this(parent,qs,500,1000); //@todo make this configurable.
 	}
 	
+	private volatile static boolean sizingAlreadyInProgress = false;
+	
 	public QuerySizeIndicator(UIComponent parent,QuerySizer qs,int goodThresh, int acceptableThresh) {
 		super(HORIZONTAL);
 		this.parent = parent;
@@ -42,6 +44,8 @@ public class QuerySizeIndicator extends JProgressBar {
 		setToolTipText("Indicates how many resources this query is likely to return");
 		this.goodThresh = goodThresh;
 		this.acceptableThresh = acceptableThresh;
+		if (!sizingAlreadyInProgress) {
+		    sizingAlreadyInProgress = true;
 		(new BackgroundWorker(parent,"Finding registry size") {
 		    {
 		        setTransient(true);
@@ -54,6 +58,7 @@ public class QuerySizeIndicator extends JProgressBar {
 				setMaximum(size);		
 			}
 		}).start();			
+		}
 	}
 
 	private final QuerySizer sizer;		
