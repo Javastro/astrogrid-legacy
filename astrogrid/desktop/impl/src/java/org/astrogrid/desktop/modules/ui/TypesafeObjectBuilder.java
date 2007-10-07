@@ -3,7 +3,6 @@
  */
 package org.astrogrid.desktop.modules.ui;
 
-import java.awt.event.MouseListener;
 import java.text.Format;
 
 import net.sourceforge.hiveutils.service.ObjectBuilder;
@@ -26,14 +25,18 @@ import org.astrogrid.desktop.modules.ui.taskrunner.EnumerationFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.LargeTextFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.LooselyFormattedFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.OutputFormElement;
+import org.astrogrid.desktop.modules.ui.taskrunner.ParametersInfoPane;
 import org.astrogrid.desktop.modules.ui.taskrunner.PositionFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.RadiusFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.TaskParametersForm;
 import org.astrogrid.desktop.modules.ui.taskrunner.TaskRunnerImpl;
 import org.astrogrid.desktop.modules.ui.taskrunner.TextFormElement;
+import org.astrogrid.desktop.modules.ui.taskrunner.UIComponentWithMenu;
+import org.astrogrid.desktop.modules.ui.taskrunner.TaskParametersForm.Model;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
 
+import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.matchers.MatcherEditor;
 
 /** wraps the untyped hivemind ObjectBuilder with 
@@ -74,10 +77,10 @@ public interface TypesafeObjectBuilder {
     
     
     /** returns a new object as named <tt>taskParametersForm</tt> */
-    public TaskParametersForm createTaskParametersForm(UIComponent parent, MouseListener listener);
-
+    public TaskParametersForm createTaskParametersForm(UIComponentWithMenu parent);
+    public ParametersInfoPane createParametersInfoPane(Model model,EventList elements);
     
-    ADQLEditorPanel createAdqlEditorPanel(ParameterValue pb, CeaApplication app, UIComponent parent);
+    ADQLEditorPanel createAdqlEditorPanel(ParameterValue pb, CeaApplication app, UIComponentWithMenu parent);
     
 //task parameter editors
     TextFormElement createTextFormElement(ParameterValue pv,ParameterBean pb);
@@ -88,7 +91,7 @@ public interface TypesafeObjectBuilder {
     BooleanFormElement createBooleanFormElement(ParameterValue pv,ParameterBean pb);
     OutputFormElement createOutputFormElement(ParameterValue pv,ParameterBean pb);
     PositionFormElement createPositionFormElement(ParameterValue ra, ParameterBean raDesc,ParameterValue dec, ParameterBean decDesc, UIComponent parent);
-    AdqlTextFormElement createAdqlTextFormElement(ParameterValue pv,ParameterBean pb, CeaApplication app,UIComponent parent);
+    AdqlTextFormElement createAdqlTextFormElement(ParameterValue pv,ParameterBean pb, CeaApplication app,UIComponentWithMenu parent);
     public RadiusFormElement createRadiusFormElement(ParameterValue radius,
             ParameterBean radiusDesc);
     

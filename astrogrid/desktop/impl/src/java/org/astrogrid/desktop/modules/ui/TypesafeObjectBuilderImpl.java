@@ -7,6 +7,8 @@ import java.awt.event.MouseListener;
 import java.text.Format;
 import java.util.Map;
 
+import javax.swing.JMenu;
+
 import net.sourceforge.hiveutils.service.ObjectBuilder;
 
 import org.apache.commons.logging.Log;
@@ -31,14 +33,18 @@ import org.astrogrid.desktop.modules.ui.taskrunner.EnumerationFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.LargeTextFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.LooselyFormattedFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.OutputFormElement;
+import org.astrogrid.desktop.modules.ui.taskrunner.ParametersInfoPane;
 import org.astrogrid.desktop.modules.ui.taskrunner.PositionFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.RadiusFormElement;
 import org.astrogrid.desktop.modules.ui.taskrunner.TaskParametersForm;
 import org.astrogrid.desktop.modules.ui.taskrunner.TaskRunnerImpl;
 import org.astrogrid.desktop.modules.ui.taskrunner.TextFormElement;
+import org.astrogrid.desktop.modules.ui.taskrunner.UIComponentWithMenu;
+import org.astrogrid.desktop.modules.ui.taskrunner.TaskParametersForm.Model;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
 
+import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.impl.matchers.FixedMatcherEditor;
 import ca.odell.glazedlists.matchers.MatcherEditor;
 import ca.odell.glazedlists.matchers.Matchers;
@@ -99,12 +105,12 @@ public class TypesafeObjectBuilderImpl extends EventDispatchThreadObjectBuilder 
     }
 
     public ADQLEditorPanel createAdqlEditorPanel(org.astrogrid.applications.beans.v1.parameters.ParameterValue pb,
-            CeaApplication app, UIComponent parent) {
+            CeaApplication app, UIComponentWithMenu parent) {
         return (ADQLEditorPanel)create("adqlPanel",new Object[]{pb,app,parent});
     }
 
     public AdqlTextFormElement createAdqlTextFormElement(ParameterValue pv,
-            ParameterBean pb,CeaApplication app, UIComponent parent) {
+            ParameterBean pb,CeaApplication app, UIComponentWithMenu parent) {
         return (AdqlTextFormElement)create("adqlFormElement",new Object[]{pv,pb,app,parent});
     }
 
@@ -160,9 +166,8 @@ public class TypesafeObjectBuilderImpl extends EventDispatchThreadObjectBuilder 
         return (TextFormElement)create("textFormElement",new Object[]{pv,pb});
     }
 
-    public TaskParametersForm createTaskParametersForm(UIComponent parent,
-            MouseListener listener) {
-        return (TaskParametersForm)create("taskParametersForm",new Object[]{parent,listener});
+    public TaskParametersForm createTaskParametersForm(UIComponentWithMenu parent) {
+        return (TaskParametersForm)create("taskParametersForm",parent);
     }
 
     public FileNavigator createFileNavigator(UIComponent parent,
@@ -178,6 +183,11 @@ public class TypesafeObjectBuilderImpl extends EventDispatchThreadObjectBuilder 
     public SwingLoginDialogue createLoginDialogue() {
         return (SwingLoginDialogue)create("swingLoginDialogue");
     }
+
+    public ParametersInfoPane createParametersInfoPane(Model model,
+            EventList elements) {
+        return (ParametersInfoPane)create("parametersInfoPane",new Object[]{model,elements});
+     }
 
 
 
