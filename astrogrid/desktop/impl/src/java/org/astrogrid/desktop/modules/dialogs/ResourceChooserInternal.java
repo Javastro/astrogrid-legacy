@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserInternal.java,v 1.7 2007/08/30 23:46:48 nw Exp $
+/*$Id: ResourceChooserInternal.java,v 1.8 2007/10/07 10:40:14 nw Exp $
  * Created on 24-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.desktop.modules.dialogs;
 import java.awt.Component;
 import java.net.URI;
 
+import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.dialogs.ResourceChooser;
 
 /** Internal interface to resource chooser - allows you to specifiy a parent component
@@ -26,11 +27,17 @@ public interface ResourceChooserInternal extends ResourceChooser {
     
     public URI chooseResourceWithParent(String title,boolean enableMySpaceDir,boolean enableLocalDir, boolean enableURL,Component comp);    
 
+    
+    /** access the vfs component - for convenience */
+    public FileSystemManager getVFS();
 }
 
 
 /* 
 $Log: ResourceChooserInternal.java,v $
+Revision 1.8  2007/10/07 10:40:14  nw
+added method to access VFS, as it's present.
+
 Revision 1.7  2007/08/30 23:46:48  nw
 Complete - task 73: upgrade filechooser dialogue to new fileexplorer code
 replaced uses of myspace by uses of vfs where sensible

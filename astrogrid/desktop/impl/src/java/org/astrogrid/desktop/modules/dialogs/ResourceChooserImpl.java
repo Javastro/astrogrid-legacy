@@ -1,4 +1,4 @@
-/*$Id: ResourceChooserImpl.java,v 1.15 2007/09/11 12:08:22 nw Exp $
+/*$Id: ResourceChooserImpl.java,v 1.16 2007/10/07 10:40:13 nw Exp $
  * Created on 21-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.desktop.modules.dialogs;
 import java.awt.Component;
 import java.net.URI;
 
+import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 
@@ -24,14 +25,14 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
  
 
     public ResourceChooserImpl(UIContext context,TypesafeObjectBuilder builder) {
-    		dialog = new FileExplorerBaseDialog(context, builder);
+    		dialog = new FileExplorerDialog(context, builder);
         getDialog().pack();
     }
-    private final FileExplorerBaseDialog dialog;
+    private final FileExplorerDialog dialog;
     
     // public  API
     public  URI chooseResource(String title,boolean enableMySpace) {
-         FileExplorerBaseDialog d = getDialog();
+         FileExplorerDialog d = getDialog();
         d.setTitle(title);
         d.setVospaceEnabled(enableMySpace);
         d.setLocationRelativeTo(null);
@@ -81,9 +82,13 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
 	/**
 	 * @return the dialog
 	 */
-	protected FileExplorerBaseDialog getDialog() {
+	protected FileExplorerDialog getDialog() {
 		return dialog;
 	}
+
+    public FileSystemManager getVFS() {
+        return getDialog().getVFS();
+    }
 
 
 
@@ -92,6 +97,9 @@ public class ResourceChooserImpl implements ResourceChooserInternal {
 
 /* 
 $Log: ResourceChooserImpl.java,v $
+Revision 1.16  2007/10/07 10:40:13  nw
+added method to access VFS, as it's present.
+
 Revision 1.15  2007/09/11 12:08:22  nw
 services filter, and various layout alterations.
 
