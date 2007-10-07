@@ -22,6 +22,7 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.actions.Activity;
 import org.astrogrid.desktop.modules.ui.comp.SelfEnablingMenu;
 
+import com.l2fprod.common.swing.GroupOfTaskPaneGroup;
 import com.l2fprod.common.swing.JTaskPane;
 import com.l2fprod.common.swing.JTaskPaneGroup;
 
@@ -69,7 +70,7 @@ public class ActivityFactoryImpl implements ActivityFactory {
 					setTitle("Actions");
 					setIconName("run16.png");
 					setHelpId("resourceActions.invoke");
-					setSpecial(true);
+					//setSpecial(true);
 				}};
 		// create the groups for this pane.
 		actsMap.put(Activity.USE_SECTION,usePane);
@@ -92,10 +93,9 @@ public class ActivityFactoryImpl implements ActivityFactory {
 		actsMap.put(Activity.PLASTIC_SECTION,usePane); // fold plastic in with actions
 		actsMap.put(Activity.INFO_SECTION, new MyTaskPaneGroup() {{
 			setTitle("About");
-			//setTitle("Further Information");
 			setIconName("info16.png");
 			setHelpId("resourceActions.info");
-			//setSpecial(true);
+			setSpecial(true);
 		}});		
 		final MyTaskPaneGroup exportPane = new AdvancedTaskPaneGroup() {{
 					setTitle("Export");
@@ -108,6 +108,10 @@ public class ActivityFactoryImpl implements ActivityFactory {
 			MyTaskPaneGroup t = (MyTaskPaneGroup) i.next();
 			actionsPanel.add(t);
 		}
+		//put the actions panes into a group - means only one expands at a time.
+		GroupOfTaskPaneGroup taskGroups = new GroupOfTaskPaneGroup();
+		taskGroups.add(usePane);
+		taskGroups.add(exportPane);
 		// assemble the menus.
 		JMenu popupNew = new SelfEnablingMenu("New");
 		JMenu actionsNew = new SelfEnablingMenu("New");
