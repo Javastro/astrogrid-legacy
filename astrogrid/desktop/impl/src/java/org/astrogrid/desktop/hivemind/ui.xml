@@ -240,9 +240,16 @@ ASTROSCOPE
         
         <object name="taskParametersForm" class="org.astrogrid.desktop.modules.ui.taskrunner.TaskParametersForm">
             <inject-arg />
-            <inject-arg />
             <inject object="service:astrogrid.applications" />
             <inject object="service:ui.UiBuilder" />
+            <inject object="service:system.vfs" />
+        </object>
+        
+        <object name="parametersInfoPane" class="org.astrogrid.desktop.modules.ui.taskrunner.ParametersInfoPane">
+            <inject-arg />
+            <inject-arg />
+            <inject object="service:system.browser" />
+            <inject object="service:ui.registryBrowser" />
         </object>
         
         <!--  full adql editor panel -->
