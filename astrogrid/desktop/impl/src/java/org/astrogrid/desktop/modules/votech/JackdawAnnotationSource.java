@@ -82,10 +82,8 @@ public class JackdawAnnotationSource extends DynamicAnnotationSource {
 			
 		} catch (IOException e) {
 			logger.warn("Failed to connect to jackdaw",e);
-			e.printStackTrace();
 		} catch (XMLStreamException x) {
 			logger.warn("Failed to parse jackdaw response",x);
-			x.printStackTrace();
 		} finally {
 			try {
 				if (in != null) {
