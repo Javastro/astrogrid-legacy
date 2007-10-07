@@ -62,7 +62,7 @@ public class RadiusFormElement extends AbstractTaskFormElement implements Proper
         }
         
         radiusField = new RadiusTextField(Double.parseDouble(pval.getValue()));
-        radiusField.addPropertyChangeListener("value",this);
+        radiusField.addPropertyChangeListener(RadiusTextField.VALUE_PROPERTY,this);
         toggle.addListener(radiusField);
         if (isExternalToggle) {
             return radiusField;

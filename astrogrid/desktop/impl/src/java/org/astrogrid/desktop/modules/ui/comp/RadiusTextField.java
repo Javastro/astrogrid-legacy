@@ -24,6 +24,10 @@ public class RadiusTextField extends JFormattedTextField implements DecSexToggle
         new RadiusFormatter(1.0, new DecimalFormat("0.000000", new DecimalFormatSymbols(Locale.UK)));
     private static final AbstractFormatter ARCSEC_FORMATTER =
         new RadiusFormatter(60.0 * 60.0, new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.UK)));
+    /**
+     * name of the property to monitor to be notified when the value of this field changes.
+     */
+    public static final String VALUE_PROPERTY = "value";
 
     private double radius;
     private boolean isDecimal = true;

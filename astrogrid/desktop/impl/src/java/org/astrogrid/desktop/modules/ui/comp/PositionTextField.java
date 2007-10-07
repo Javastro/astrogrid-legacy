@@ -20,6 +20,10 @@ import javax.swing.JFormattedTextField;
  */ 
 public class PositionTextField extends JFormattedTextField implements DecSexToggle.DecSexListener{
 
+    /**
+     * name of the property to monitor to be notified when the value of this field changes.
+     */
+    public static final String VALUE_PROPERTY = "value";
 
     
     protected class DecimalPositionFormatter extends AbstractFormatter {

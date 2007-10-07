@@ -66,7 +66,7 @@ public class PositionFormElement extends AbstractTaskFormElement implements Prop
         logger.debug("dec:" + dec.getValue());        
 
         positionField = new NameResolvingPositionTextField(parent,ses);
-        positionField.addPropertyChangeListener("value",this);
+        positionField.addPropertyChangeListener(NameResolvingPositionTextField.VALUE_PROPERTY,this);
         toggle = new DecSexToggle();
         toggle.addListener(positionField);
         try {
