@@ -2,11 +2,14 @@ package org.astrogrid.desktop.modules.ui.actions;
 
 import java.io.File;
 import java.net.URI;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs.FileName;
 import org.apache.commons.vfs.FileObject;
@@ -26,7 +29,7 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 25, 20074:49:51 PM
  */
-public final class BulkCopyWorker extends BackgroundWorker {
+public class BulkCopyWorker extends BackgroundWorker {
     /**
      * 
      */
@@ -103,8 +106,8 @@ public final class BulkCopyWorker extends BackgroundWorker {
         if (! saveTarget.isWriteable()) {
             throw new Exception("Not permitted to write to " + saveTarget.getName());
         }
-        // will records errors copy indivitual files, continue, and report at the end.
-        Map errors = new HashMap();
+        // will records destinations or errors of copying each individual file, continue, and report at the end.
+        Map outcome = new HashMap();
         // go through each file in turn.
         for (Iterator i = this.l.iterator(); i.hasNext(); ) {
                 FileObject src;
@@ -112,15 +115,17 @@ public final class BulkCopyWorker extends BackgroundWorker {
                 if (something instanceof FileObject) {
                     src = (FileObject)something;
                 } else {
-                    // bug in vfs here - if I call 'resolveFile' directly, if drops all after the '?'.
-                    // so I need to create an object by hand.
-                    //see VfsLibraryTest for proof of this.
-                    //@todo verify this works for all schemes - although HTTP is hte main one, to be hones.
-                    FileName name = vfs.resolveURI(something.toString());
-                    
-                    FileObject root = vfs.resolveFile(something.toString()); // just so we can get a handle on the correct filesystem.
-                    src = new MyUrlFileObject((UrlFileSystem)root.getFileSystem(),name);
-                    
+                    final String uriString = something.toString();
+                    if (StringUtils.contains(uriString,'?')) { // needs special treatment - just for http queries.
+                        // bug in vfs here - if I call 'resolveFile' directly, if drops all after the '?'.
+                        // so I need to create an object by hand.
+                        //see VfsLibraryTest for proof of this.
+                        FileName name = vfs.resolveURI(uriString);                    
+                        FileObject root = vfs.resolveFile(uriString); // just so we can get a handle on the correct filesystem.
+                        src = new MyUrlFileObject((UrlFileSystem)root.getFileSystem(),name);
+                    } else {
+                        src = vfs.resolveFile(uriString);
+                    }                    
                 }
                 try {
                 String name = StringUtils.substringBeforeLast(src.getName().getBaseName(),".");
@@ -138,8 +143,9 @@ public final class BulkCopyWorker extends BackgroundWorker {
                 
                 // cool. now got a non-existent destination file.
                 dest.copyFrom(src, Selectors.SELECT_ALL); // creates and copies from src. handles folders and files. nice!
+                outcome.put(src,dest.getName().getURI());
             } catch (FileSystemException x) {
-                errors.put(src,x);
+                outcome.put(src,x);
             }
         }
         // notify the parent object that we've made changes - cause a refresh.
@@ -149,20 +155,33 @@ public final class BulkCopyWorker extends BackgroundWorker {
                 ((AbstractFileSystem)fs).fireFileChanged(saveTarget);
             }
       //  }
-        return errors;
+        return outcome;
     }
 
     protected void doFinished(Object result) {
-        Map errors = (Map)result;
-        if (errors.size() ==0) {
-            parent.showTransientMessage("Finished copying files","");
+        Map outcome = (Map)result;
+        boolean seenErrs = CollectionUtils.exists(outcome.entrySet(),new Predicate() {
+
+            public boolean evaluate(Object arg0) {
+                Map.Entry kv = (Map.Entry)arg0;
+                return kv.getValue() instanceof Throwable;                    
+            }
+        });
+        if (! seenErrs) {             
+                parent.showTransientMessage("Copy completed",
+                outcome.size() == 1 
+                        ? outcome.keySet().iterator().next() + "<br>  copied to <br>" + outcome.values().iterator().next() 
+                        : outcome.size() + " files copied to " + saveTarget.getName().getURI());            
             return;
         }
         HtmlBuilder msgBuilder = new HtmlBuilder();			    
         msgBuilder.h2("Encountered errors when copying some files");
-        for (Iterator i = errors.entrySet().iterator(); i.hasNext();) {
+        for (Iterator i = outcome.entrySet().iterator(); i.hasNext();) {
             Map.Entry err = (Map.Entry) i.next();
             FileObject f = (FileObject)err.getKey();
+            if (! (err.getValue() instanceof Throwable )) {
+                continue;
+            }
             Throwable e = (Throwable)err.getValue();
             msgBuilder.append(f.getName().getPath()).append(":<ul>");
             do {
