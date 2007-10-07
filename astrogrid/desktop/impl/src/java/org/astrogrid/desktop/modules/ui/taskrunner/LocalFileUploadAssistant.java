@@ -86,7 +86,7 @@ public class LocalFileUploadAssistant implements PropertyChangeListener, Functio
      * @return
      */
     private void offerToRelocateFile(final URI u, final JFormattedTextField resultField) {
-        final boolean loggedIn = parent.getContext().getLoggedInModel().isSelected();
+        final boolean loggedIn = parent.getContext().getLoggedInModel().isEnabled();
         final boolean firstRun = prefs.getBoolean(FIRST_RUN_KEY,true);
         if ( ! loggedIn || firstRun
         ) {
@@ -104,6 +104,7 @@ public class LocalFileUploadAssistant implements PropertyChangeListener, Functio
         if (firstRun) {
             prefs.putBoolean(FIRST_RUN_KEY,false);
         }
+        resultField.setEnabled(false);
         List upload = new ArrayList();
         upload.add(u);
         parent.showTransientMessage("Uploading","Copying " + u);
@@ -112,10 +113,14 @@ public class LocalFileUploadAssistant implements PropertyChangeListener, Functio
                 super.doFinished(result);
                 Map outcome = (Map)result;
                 // I know very well it's' a single-item map at this point.
-                Object fo = outcome.values().iterator().next();
-                if (fo instanceof FileObject) {
-                    resultField.setValue(((FileObject)fo).getName().getURI());
-                }
+                Object outURI = outcome.values().iterator().next();
+                if (outURI instanceof String) {
+                    resultField.setValue((String)outURI);
+                } 
+            }
+            protected void doAlways() {
+                super.doAlways();
+                resultField.setEnabled(true);
             }
         }.start();
 

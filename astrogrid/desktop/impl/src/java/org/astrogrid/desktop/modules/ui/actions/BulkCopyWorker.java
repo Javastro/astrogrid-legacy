@@ -175,7 +175,7 @@ public class BulkCopyWorker extends BackgroundWorker {
             return;
         }
         HtmlBuilder msgBuilder = new HtmlBuilder();			    
-        msgBuilder.h2("Encountered errors when copying some files");
+        msgBuilder.h2("Encountered errors while copying files");
         for (Iterator i = outcome.entrySet().iterator(); i.hasNext();) {
             Map.Entry err = (Map.Entry) i.next();
             FileObject f = (FileObject)err.getKey();

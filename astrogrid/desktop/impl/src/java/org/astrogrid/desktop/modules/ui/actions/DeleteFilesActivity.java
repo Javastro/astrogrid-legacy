@@ -90,6 +90,7 @@ public class DeleteFilesActivity extends AbstractFileActivity {
                 Map errors = (Map)result;
                 if (errors.size() ==0) {
                     parent.showTransientMessage("Deleted files","");
+                    return;
                 }
                 HtmlBuilder msgBuilder = new HtmlBuilder();             
                 msgBuilder.h2("Encountered errors while deleting some files");
