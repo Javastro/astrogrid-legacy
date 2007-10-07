@@ -8,7 +8,7 @@ import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceFormatter;
 
-/** Exgtensaion to the resource display pane with methods for displaying resources,
+/** Exgtensaion to an JEditorPane  with methods for displaying resources,
  * (and a performance-optimization)
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 11, 20072:22:46 PM
