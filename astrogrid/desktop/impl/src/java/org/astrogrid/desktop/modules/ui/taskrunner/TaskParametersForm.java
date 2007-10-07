@@ -4,6 +4,7 @@
 package org.astrogrid.desktop.modules.ui.taskrunner;
 
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,7 +12,8 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.MouseListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.net.URI;
 import java.text.NumberFormat;
 import java.util.HashMap;
@@ -30,12 +32,15 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JToggleButton;
+import javax.swing.SwingUtilities;
 
 import org.apache.commons.collections.ArrayStack;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.InterfaceBean;
 import org.astrogrid.acr.astrogrid.ParameterBean;
@@ -48,10 +53,13 @@ import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.ExpandCollapseButton;
+import org.astrogrid.desktop.modules.ui.comp.MyTitledBorder;
+import org.astrogrid.desktop.modules.ui.comp.PinnableLabel;
+import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.taskrunner.ParamBuilder.Param;
 import org.astrogrid.workflow.beans.v1.Tool;
 
-import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.CompositeList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.swing.JEventListPanel;
 
@@ -61,6 +69,9 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.l2fprod.common.swing.JCollapsiblePane;
 
 /**Form which allows parameters of a tool document to be edited.
+ * Displays as two columns - left hand column is input parameters.
+ * Right hand column is a split pane, with outputs above, and a parameter documentation area below.
+ * 
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 3, 200710:23:22 AM
  */
@@ -72,20 +83,23 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 			.getLog(TaskParametersForm.class);
 
 	private final ApplicationsInternal apps;
-	private final UIComponent parent;
+	private final UIComponentWithMenu parent;
 	private final EventList inputElements;
 	private final EventList outputElements;
 	private final JComboBox interfaceChooser;
-	private final JLabel resourceLabel;
-	private final JCollapsiblePane bottomPanel;
+	private final JToggleButton resourceLabel;
+	private final JPanel bottomPanel;
 	
 	private final NumberFormat integerFormat;
 	private final NumberFormat floatFormat;
-	private final MouseListener hoverListener;
 	/* the internal model */
 	private final Model model = new Model();
 	/* constructs ui components */
     private final TypesafeObjectBuilder builder;
+/** parameter help display */
+    private final ParametersInfoPane infoPane;
+
+private LocalFileUploadAssistant uploadAssist;
 	
 	
 	/**
@@ -95,7 +109,7 @@ public class TaskParametersForm extends JPanel implements ItemListener {
         return this.model;
     }
 
-    public JCollapsiblePane getBottomPane() {
+    public JPanel getBottomPane() {
 	    return bottomPanel;
 	} 
 	
@@ -122,12 +136,12 @@ public class TaskParametersForm extends JPanel implements ItemListener {
         // belt-and-braces. there's an error in my logic somewhere
         // that means that the expansion state of the form and the button
         // get out-of-synch sometimes. this corrects it.
-        getBottomPane().setCollapsed(! b);
+        getBottomPane().setVisible( b);
     }
 
 	
 	/** returns a label which displays the name and icon of the current resouce being edited */
-	public JLabel getResourceLabel() {
+	public JComponent getResourceLabel() {
 		return resourceLabel;
 	}
 
@@ -140,12 +154,11 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 	public Tool getTool() {
 		return model.tool();
 	}
-/** @todo reduce number of parameters by using a form factory instead */
-	public TaskParametersForm(final UIComponent parent, MouseListener hoverListener,final ApplicationsInternal apps,TypesafeObjectBuilder builder) {
+	
+	public TaskParametersForm(final UIComponentWithMenu parent, final ApplicationsInternal apps,TypesafeObjectBuilder builder, FileSystemManager vfs) {
 		super();
 		this.parent = parent;
 		this.apps = apps;
-		this.hoverListener = hoverListener;
 		this.builder = builder;		
 		//@todo these formatters aren't strict enough - they seem
 		// to accept anything as long as it starts with a digit.
@@ -153,8 +166,22 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 		integerFormat.setMaximumFractionDigits(0);
 		floatFormat = NumberFormat.getNumberInstance();
 		
-		this.inputElements = new BasicEventList();
-		this.outputElements = new BasicEventList();
+		// datastructure of all inputs and outputs.
+		CompositeList allElements = new CompositeList(); // a view of all parameterrs.
+		this.inputElements = allElements.createMemberList();
+		allElements.addMemberList(inputElements);
+		this.outputElements = allElements.createMemberList();
+		allElements.addMemberList(outputElements);
+
+		// help pane - create early, as it listens to various other components.
+		infoPane = builder.createParametersInfoPane(model,allElements);
+		infoPane.setBorder(BorderFactory.createEmptyBorder());
+		final JScrollPane infoScroll = new JScrollPane(infoPane,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		infoScroll.setBorder(MyTitledBorder.createLined("Information")); 
+		infoScroll.setPreferredSize(new Dimension(100,100));
+		
+		// file upload assistant. - create it, and then leave it alone to do it's thing.
+		this.uploadAssist = new LocalFileUploadAssistant(parent,vfs,allElements);
 		
 		JEventListPanel inputsPanel = new JEventListPanel(inputElements, new ElementFormat());
 		inputsPanel.setBorder(BorderFactory.createEmptyBorder());
@@ -164,51 +191,52 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 		interfaceChooser = new JComboBox();
 		interfaceChooser.setEditable(false);
 		interfaceChooser.addItemListener(this);
-		interfaceChooser.addMouseListener(hoverListener);
 		
-		resourceLabel = new JLabel();
-		resourceLabel.setText("No task selected");
-		resourceLabel.addMouseListener(hoverListener);
+		resourceLabel = new PinnableLabel("No task selected");
+		resourceLabel.setToolTipText("Click to pin the overview documentation");
+		infoPane.registerAdditional(resourceLabel);
 		
-		JScrollPane inScroll = new JScrollPane(inputsPanel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		
+		JScrollPane inScroll = new JScrollPane(inputsPanel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);		
 		inScroll.setBorder(BorderFactory.createEtchedBorder());
+		
 		JScrollPane outScroll = new JScrollPane(outputsPanel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		outScroll.setBorder(BorderFactory.createEtchedBorder());
-		this.setBorder(BorderFactory.createEmptyBorder());
+		this.setBorder(null);
 		
-		bottomPanel = new JCollapsiblePane();
-		bottomPanel.setCollapsed(true);
+		bottomPanel = new JPanel(new FlowLayout());
+		bottomPanel.setBorder(null);		
+		bottomPanel.setVisible(false);
 		// listen to the frame changing size, and change preferred size of the adql pane accordingly
 		//-means that all free page gets assignrf to the adql page.
-		this.addComponentListener(new ComponentAdapter() {
-		    Dimension previousSize = null;
-		    public void componentResized(ComponentEvent e) {
-		        if (bottomPanel.getContentPane().getComponentCount() == 0) {
-		            // no adql panel present - no point continuing.
-		            return;
-		        }
-		        if (previousSize == null) {
-		            //first time wev'e been called - on window paint.
-		            previousSize = getSize();
-		        } else {
-		            // wev'e been resized. calculate the difference between new and old sizes.
-		            Dimension curr = getSize();
-		            double diff = curr.getHeight() - previousSize.getHeight();
-		            previousSize = curr;
-		            // now alter the size of the component.
-		            final JComponent comp = (JComponent)bottomPanel.getContentPane().getComponent(0);
-                    curr = comp.getPreferredSize();		            
-		            Dimension nu = new Dimension((int)curr.getWidth(),(int)(curr.getHeight() + diff));
-		            comp.setPreferredSize(nu);
-		            comp.revalidate();
-		        }
-		    }
-		});
+//		this.addComponentListener(new ComponentAdapter() {
+//		    Dimension previousSize = null;
+//		    public void componentResized(ComponentEvent e) {
+//		        if (bottomPanel.getContentPane().getComponentCount() == 0) {
+//		            // no adql panel present - no point continuing.
+//		            return;
+//		        }
+//		        if (previousSize == null) {
+//		            //first time wev'e been called - on window paint.
+//		            previousSize = getSize();
+//		        } else {
+//		            // wev'e been resized. calculate the difference between new and old sizes.
+//		            Dimension curr = getSize();
+//		            double diff = curr.getHeight() - previousSize.getHeight();
+//		            previousSize = curr;
+//		            // now alter the size of the component.
+//		            final JComponent comp = (JComponent)bottomPanel.getContentPane().getComponent(0);
+//                    curr = comp.getPreferredSize();		            
+//		            Dimension nu = new Dimension((int)curr.getWidth(),(int)(curr.getHeight() + diff));
+//		            comp.setPreferredSize(nu);
+//		            comp.revalidate();
+//		        }
+//		    }
+//		});
 		
 		FormLayout fl = new FormLayout(
 				"fill:d:grow,3dlu,fill:d:grow,3dlu,d:grow" // cols
-				,"d,d,fill:50dlu:grow,fill:p" // rows   - can't say 'grow' for the last row - as it takes up space even when not visible
+				,"d,d,fill:50dlu:grow,fill:d" // rows   - can't say 'grow' for the last row - as it takes up space even when not visible
 				);
 		fl.setColumnGroups(new int[][]{ {1, 3} });
 		PanelBuilder pb = new PanelBuilder(fl,this);
@@ -217,8 +245,29 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 		pb.addTitle("Outputs",cc.xy(3,2));
 		pb.addTitle("Execution",cc.xy(5,2));
 		pb.add(inScroll,cc.xy(1,3));
-		pb.add(outScroll,cc.xy(3,3));
+		final JSplitPane rightSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		rightSplit.setLeftComponent(outScroll);
+		rightSplit.setRightComponent(infoScroll);
+		rightSplit.setDividerLocation(250);
+		rightSplit.setDividerSize(7);
+		rightSplit.setBorder(null);
+		rightSplit.setResizeWeight(0.7);
+		pb.add(rightSplit,cc.xy(3,3));
 		pb.add(bottomPanel,cc.xyw(1,4,5));
+		
+        // hide info pane when bottom pane appears.
+		bottomPanel.addComponentListener(new ComponentAdapter() {
+		        public void componentShown(ComponentEvent e) {
+		        infoScroll.setVisible(false);
+		        rightSplit.setDividerLocation(1.0);	
+		        rightSplit.setDividerSize(0);		        
+		    }
+		        public void componentHidden(ComponentEvent e) {
+		        infoScroll.setVisible(true);
+		        rightSplit.setDividerLocation(0.5);		 
+		        rightSplit.setDividerSize(7);		        
+		    }
+		});
 	}
 
 	/** build a form with controls to edit parameters for the default interface of this application */
@@ -243,6 +292,7 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 	    interfaceChooser.addItemListener(this);
 	    inputElements.clear();
 	    outputElements.clear();
+	    infoPane.clear();
 	}
 	/** populates the contents of the current model 
 	 * 	 * */
@@ -364,7 +414,7 @@ public class TaskParametersForm extends JPanel implements ItemListener {
             if (iName != null) { // else we weren'te editing anything previously.
 	            InterfaceState leaving = (InterfaceState)m.get(iName);
 	            if (leaving != null) {
-	                leaving.collapsed = getBottomPane().isCollapsed();
+	                leaving.collapsed = ! getBottomPane().isVisible();
 	                logger.debug("Recording window state of interface we're leaving as " + leaving.collapsed);
 	            }
 	        }
@@ -399,7 +449,7 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 	        public Tool tool = null;
 	        public InterfaceState(Tool tool) {
 	            super();
-	            this.collapsed = getBottomPane().isCollapsed();
+	            this.collapsed = ! getBottomPane().isVisible();
 	            this.tool = tool;
 	        }
 	        public String toString() {
@@ -505,7 +555,6 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 			       ,dec.values[0]
 			       ,dec.description
 			       ,parent);
-			posForm.addMouseListener(hoverListener);
             inputElements.add(posForm);
 		} else {
 			// still might have found one of these - reset it, so it's not lost at the next step.
@@ -520,7 +569,6 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 		    } else {
                 radForm = builder.createRadiusFormElement(radius.values[0],radius.description,posForm.getToggle());		        
 		    }
-		    radForm.addMouseListener(hoverListener);
 		    inputElements.add(radForm);
 		}
 		
@@ -528,7 +576,8 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 			// full adql editor..
 			final AdqlTextFormElement adqlElement = builder.createAdqlTextFormElement(adql.values[0],adql.description,model.currentResource(),parent);
 			ADQLEditorPanel adqlEditor = adqlElement.getEditorPanel();
-	
+			adqlEditor.setBorder(null);
+	        adqlEditor.setPreferredSize(new Dimension(900,450));
 			bottomPanel.removeAll(); // might have an adql editor from a previous app.
 			bottomPanel.add(adqlEditor);			
 			// standard sized editor...
@@ -542,7 +591,6 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 					adqlElement.setEnabled(! ep.isSelected());
 				}
 			});
-			adqlElement.addMouseListener(hoverListener);
 			inputElements.add(adqlElement);
 		}
 	// end of the special cases
@@ -568,6 +616,9 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 				new FiddlyOutputManager(el,p); // takes care of adding / removing parameters.
 			}
 		}
+                
+		infoPane.displayCurrentResource();
+
 	}
 
 	/** work out what kind of editing widget to return for this value.
@@ -592,27 +643,24 @@ public class TaskParametersForm extends JPanel implements ItemListener {
     private AbstractTaskFormElement createInputFormElement(
             final ParameterBean desc, final ParameterValue value) {
         final String type = desc.getType();	
-		AbstractTaskFormElement el = null;
         if (type.equalsIgnoreCase("boolean")) {
-			el =  builder.createBooleanFormElement(value,desc);
+			return  builder.createBooleanFormElement(value,desc);
 		} else if (type.equalsIgnoreCase("fits") || type.equalsIgnoreCase("binary")) {
-			el = builder.createBinaryFormElement(value,desc);
+			return builder.createBinaryFormElement(value,desc);
 		} else if (desc.getOptions() != null && desc.getOptions().length > 0) {
-			el =  builder.createEnumerationFormElement(value,desc);
+		 return  builder.createEnumerationFormElement(value,desc);
 		} else if (type.equalsIgnoreCase("anyxml") || type.equalsIgnoreCase("adql") || type.equalsIgnoreCase("votable")){
-			el =  builder. createLargeTextFormElement(value,desc);
+			return  builder. createLargeTextFormElement(value,desc);
 		} else if (type.equalsIgnoreCase("anyuri")) {
-			el =  builder.createLooselyFormattedFormElement(value,desc,new URIFormat());
+			return  builder.createLooselyFormattedFormElement(value,desc,new URIFormat());
 		} else if (type.equalsIgnoreCase("integer")) {
-			el=  builder.createLooselyFormattedFormElement(value,desc,integerFormat);
+		 return  builder.createLooselyFormattedFormElement(value,desc,integerFormat);
 		} else if (type.equalsIgnoreCase("real") || type.equalsIgnoreCase("double") 
 					|| type.equalsIgnoreCase("ra") || type.equalsIgnoreCase("dec")) {
-			el =  builder.createLooselyFormattedFormElement(value,desc,floatFormat);
+			return  builder.createLooselyFormattedFormElement(value,desc,floatFormat);
 		} else {
-			el =  builder.createTextFormElement(value,desc);
+			return  builder.createTextFormElement(value,desc);
 		}
-		el.addMouseListener(hoverListener);
-		return el;
     }
 
 	/** work out what kind of editing widget to return for this value.
@@ -636,9 +684,7 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 
     private AbstractTaskFormElement createOutputFormElement(
             final ParameterBean desc, final ParameterValue value) {
-        AbstractTaskFormElement el = builder.createOutputFormElement(value,desc);
-		el.addMouseListener(hoverListener);
-		return el;
+        return builder.createOutputFormElement(value,desc);
     }
 	
 	/** additional logic that manages an optional / repeated / multiple parameter 
@@ -871,8 +917,8 @@ public class TaskParametersForm extends JPanel implements ItemListener {
     // formatting of the ui forms.
 	private static class ElementFormat extends JEventListPanel.AbstractFormat {
 		public ElementFormat() {
-			super("top:d,d" ,"22px,fill:60dlu:grow,6dlu,22px,22px,22px","4dlu","0dlu"
-					,new String[]{"2,1,5,1","2,2","4,2","5,2","6,2","1,1,1,2"});
+			super("top:d,d" ,"22px,fill:60dlu:grow,0dlu,22px,22px,22px","1dlu","0dlu"
+					,new String[]{"2,1,5,1","2,2","4,2","5,2","6,2","1,1"});
 		}
 		public JComponent getComponent(Object o, int ix) {
 			if (o instanceof JComponent) {
