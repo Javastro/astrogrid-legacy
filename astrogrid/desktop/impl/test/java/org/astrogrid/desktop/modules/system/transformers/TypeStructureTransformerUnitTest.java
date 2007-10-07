@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformerUnitTest.java,v 1.4 2007/01/29 10:40:47 nw Exp $
+/*$Id: TypeStructureTransformerUnitTest.java,v 1.5 2007/10/07 10:41:17 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -122,7 +122,19 @@ public class TypeStructureTransformerUnitTest extends TestCase {
         Object result = trans.transform(a);
         checkBasics(result);
         assertEquals(Hashtable.class,result.getClass());
-        assertEquals(3,((Hashtable)result).size());        
+        //assertTrue(
+        final Hashtable ht = (Hashtable)result;
+        assertTrue(ht.containsKey("values"));
+        assertTrue(ht.containsKey("children"));
+        assertTrue(ht.containsKey("foo"));
+        assertTrue(ht.containsKey("__interfaces"));
+        assertEquals(4,ht.size());
+        // verify the type informatio is correct
+        Object o = ht.get("__interfaces");
+        assertNotNull(o);
+        assertTrue(o instanceof Vector);
+        assertEquals(1,((Vector)o).size());
+        assertEquals(ABean.class.getName(),((Vector)o).get(0));
         
     }
     
@@ -130,7 +142,7 @@ public class TypeStructureTransformerUnitTest extends TestCase {
         Object result = trans.transform(b);
         checkBasics(result);   
         assertEquals(Hashtable.class,result.getClass());
-        assertEquals(3,((Hashtable)result).size());         
+        assertEquals(4,((Hashtable)result).size());         
     }
     
     public void testNestedBeans() {
@@ -142,7 +154,7 @@ public class TypeStructureTransformerUnitTest extends TestCase {
         Object result = trans.transform(a);
         checkBasics(result);
         assertEquals(Hashtable.class,result.getClass());
-        assertEquals(4,((Hashtable)result).size());    
+        assertEquals(5,((Hashtable)result).size());    
         Object oo = ((Hashtable)result).get("anotherBean");
         assertNotNull(oo);
         assertEquals(Hashtable.class,oo.getClass());
@@ -211,7 +223,6 @@ public class TypeStructureTransformerUnitTest extends TestCase {
     	Byte input = new Byte(b);
     	Object result = trans.transform(input);
     	assertNotNull(result);
-    	System.out.println(result);
     	assertEquals(input,result);
     }
     
@@ -221,6 +232,40 @@ public class TypeStructureTransformerUnitTest extends TestCase {
     	assertNotNull(result);
     	assertEquals(arr,result);
     }
+    
+    public void testInterfaceInformation() {
+        // check that the implementation class and the interfaces it impleemnts are reported.
+        Object result = trans.transform(new CBean());
+        assertNotNull(result);
+        assertTrue(result instanceof Hashtable);
+        Hashtable ht = (Hashtable)result;
+        assertTrue(ht.containsKey("__interfaces"));
+        Object ifaces = ht.get("__interfaces");
+        assertNotNull(ifaces);
+        assertTrue(ifaces instanceof Vector);
+        Vector iVector = (Vector)ifaces;
+        assertEquals(2,iVector.size());
+        assertTrue(iVector.contains(CBean.class.getName()));
+        assertTrue(iVector.contains(IInterface.class.getName()));
+        
+    }
+    public void testInheritedInterfaceInformation() {
+        // check that a subclass of this still reports the interfaces it's parent provides.
+        Object result = trans.transform(new DBean());
+        assertNotNull(result);
+        assertTrue(result instanceof Hashtable);
+        Hashtable ht = (Hashtable)result;
+        assertTrue(ht.containsKey("__interfaces"));
+        Object ifaces = ht.get("__interfaces");
+        assertNotNull(ifaces);
+        assertTrue(ifaces instanceof Vector);
+        Vector iVector = (Vector)ifaces;
+        assertEquals(3,iVector.size());
+        assertTrue(iVector.contains(DBean.class.getName())); // implementation class.
+        assertTrue(iVector.contains(JInterface.class.getName())); // interface implemented by this class
+        assertTrue(iVector.contains(IInterface.class.getName())); // interface implemented by parent class
+    }
+    
     
     public static class ABean {
                 public BBean getAnotherBean() {
@@ -277,12 +322,28 @@ private int i;
         private float j;
         private Map m;
     }
+    
+    // classes juset used to verify type inheritance.
+    public static interface IInterface {
+    }
+    
+    public static class CBean implements IInterface {
+    }
+    
+    public static interface JInterface {
+    }
+    
+    public static class DBean extends CBean implements JInterface {
+    }
 
 }
 
 
 /* 
 $Log: TypeStructureTransformerUnitTest.java,v $
+Revision 1.5  2007/10/07 10:41:17  nw
+tested added serialization of classnames
+
 Revision 1.4  2007/01/29 10:40:47  nw
 documentation fixes.
 
