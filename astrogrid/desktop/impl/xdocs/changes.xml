@@ -15,6 +15,7 @@
 	</head>
 <body>
 <release version="next" date="2007-10-07">
+    <action dev="nw" type="fix" issue="2349" />
     <action dev="nw" type="fix" issue="2354">
     fileexplorer: can now send fits files over plastic.
     </action>
@@ -24,7 +25,7 @@
     <action dev="nw" type="fix" issue="1894">
         Taskrunner: more helpful handling of file:// indirect parameters
     </action>
-    <action dev="nw" type="update">
+    <action dev="nw" type="update" >
         Taskrunner: improved form layout and help display, based on review suggestions
     </action>
     <action dev="nw" type="add">
