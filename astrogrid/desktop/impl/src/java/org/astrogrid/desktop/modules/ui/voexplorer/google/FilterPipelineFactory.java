@@ -66,7 +66,6 @@ public class FilterPipelineFactory implements PropertyChangeListener   {
 		systemFilteredItems = new FilterList(items
 				,new NotToggleMatcherEditor(systemToggle,new SystemFilter()));
         // incremental text field..
-		//textField = new IconField(10);
 		SearchField sf = new SearchField("Filter results");
 		FilterList filteredItems = new FilterList(systemFilteredItems
 				, new TextComponentMatcherEditor(sf.getWrappedDocument(), new ResourceTextFilterator(annotationService)));
