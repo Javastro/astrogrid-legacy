@@ -30,8 +30,11 @@ public class UIConstants {
     public static final Icon PENDING_ICON = IconHelper.loadIcon("yellowled16.png");
     public static final Icon SERVICE_DOWN_ICON= IconHelper.loadIcon("redled16.png");
     public static final Icon SERVICE_OK_ICON = RUNNING_ICON;
-    
+    public static final Icon PIN_ICON = IconHelper.loadIcon("pin16.gif");    
     
     /** length of time to display transient popups for */
     public static final int POPUP_DISMISS_TIME = 5000;
+    
+    /** threshold above which to prompt user that they really want to do an activity on so many resources */
+    public static final int LARGE_SELECTION_THRESHOLD = 30;
 }
