@@ -46,7 +46,7 @@ public abstract class AbstractActivity extends AbstractAction implements Activit
 	public void setSection(String section) {
 		this.section = section;
 	}
-	
+
 	public String getSection() {
 		return this.section;
 	}
@@ -142,4 +142,13 @@ public abstract class AbstractActivity extends AbstractAction implements Activit
 	public void addTo(JPopupMenu menu) {
 		menu.add(createMenuItem());
 	}	
+	
+	// helper methods for subclasses.
+	/** show a confirmation popup, to check before proceeding
+	 * @return true if the user can confirmed 
+	 */
+	protected boolean confirm(String message) {
+        return JOptionPane.showConfirmDialog(uiParent.get().getFrame(),message,"Confirm",JOptionPane.YES_NO_OPTION)
+                == JOptionPane.OK_OPTION;
+	}
 }
