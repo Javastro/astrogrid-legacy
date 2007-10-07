@@ -69,7 +69,11 @@ public class LargeTextFormElement extends AbstractTaskFormElement implements Doc
 
 
 	protected String getStringValue() {
-		return text.getText();
+	    if (text == null) {
+	        return "";
+	    } else {
+	        return text.getText();
+	    }
 	}
 
 
