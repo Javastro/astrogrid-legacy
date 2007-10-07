@@ -240,7 +240,7 @@ public final ProcessMonitor getMoitor() {
             refreshButton.addActionListener(this);
             if (pm instanceof ProcessMonitor.Advanced) {
                 
-                loadParamsButton = new JButton(IconHelper.loadIcon("edit16.png"));//fixme
+                loadParamsButton = new JButton(IconHelper.loadIcon("edit16.png"));
                 loadParamsButton.setToolTipText("Load the parameters used to run this task back into the parameter editor");
                 loadParamsButton.addActionListener(this);
             } else {     // not available unless it's an 'advanced' monitor.
