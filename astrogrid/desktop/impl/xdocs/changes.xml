@@ -14,29 +14,47 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="next" date="unreleased">
-    <action dev="nw" type="fix">
-        Improved error handling and reporting
+<release version="next" date="2007-10-07">
+    <action dev="nw" type="add" >
+        Taskrunner: passes a menu to QB to be used as a context-menu
+    </action>
+    <action dev="nw" type="fix" issue="1894">
+        Taskrunner: more helpful handling of file:// indirect parameters
+    </action>
+    <action dev="nw" type="update">
+        Taskrunner: improved form layout and help display, based on review suggestions
     </action>
     <action dev="nw" type="add">
-        taskrunner: records parameter set used in each invocation, and offers ability to reload this parameterset back into the editor.
+        Xmlrpc AR interface: serialized beans now provide type information
+    </action>
+    <action dev="nw" type="add">
+    Activities: when an activity is triggered on a large selection (> 30 items), user is prompted to confirm.
+    </action>
+    <action dev="nw" type="add">
+    File dialogue: added separate input field to specify filename.
     </action>
     <action dev="nw" type="fix">
-    taskrunner: renamed and debugged the 'reveal file' action.
+        General: Improved error handling and reporting
+    </action>
+    <action dev="nw" type="add">
+        Taskrunner: records parameter set used in each invocation, and offers ability to reload this parameterset back into the editor.
+    </action>
+    <action dev="nw" type="fix">
+    Taskrunner: renamed and debugged the 'reveal file' action.
         - now does a refresh if file is not present.
     </action>
     <action dev="nw" type="update">
-        voexplorer: Tidied up annotations xml format - all previous annotations will be lost.
-        Improved annotation store performance.
+        Voexplorer: Tidied up annotations xml format - all previous annotations will be lost.
+        Improved annotation store performance, and annotation ui.
     </action>
     <action dev="nw" type="add">
-        voexplorer: Added 'select all' and 'invert selection' menu operations.
+        Voexplorer: Added 'select all' and 'invert selection' menu operations.
     </action>
     <action dev="nw" type="fix" issue="2300">
-        voexplorer: fixed ui snag
+        Voexplorer: fixed ui snag
     </action>
     <action dev="nw" type="remove">
-        Removed scirpting again - very memory inefficient - need to rethink and come up with a different approach.
+        Activities: Removed scirpting again - very memory inefficient - need to rethink and come up with a different approach.
     </action>    
 </release>
 <release version="2007.4.alpha5" date="2007-09-11">
