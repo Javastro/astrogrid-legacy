@@ -30,7 +30,7 @@ public class BooleanFormElement extends AbstractTaskFormElement {
 
 	
 	protected JComponent createEditor() {
-	    cb = new JCheckBox();
+	    cb = new JCheckBox("true");
 	    if (! pval.getIndirect()) {
 	        if (pdesc.getDefaultValue() != null) {
 	            cb.setSelected(Boolean.valueOf(pdesc.getDefaultValue()).booleanValue());
