@@ -154,7 +154,6 @@ which ones to display, and in which order, is specified in the program code.-->
 			<inject object="service:votech.annotate" />
 	</object>	
 	<object name="table" class="org.astrogrid.desktop.modules.ui.voexplorer.google.TabularMetadataResourceViewer"/>
-	<object name="form" class="org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceFormViewer" />
 	<object name="xml" class="org.astrogrid.desktop.modules.ui.voexplorer.google.XMLResourceViewer">
 		<inject object="service:ivoa.registry" />
 			<inject object="preference:acr.advanced" />		
