@@ -36,7 +36,7 @@ public class AdqlTextFormElement extends AbstractTaskFormElement implements Mous
      * @param chooser
      */
     public AdqlTextFormElement(ParameterValue pval, ParameterBean pdesc,
-           CeaApplication app, UIComponent parent,  ResourceChooserInternal chooser, TypesafeObjectBuilder builder ) {
+           CeaApplication app, UIComponentWithMenu parent,  ResourceChooserInternal chooser, TypesafeObjectBuilder builder ) {
         super(pval, pdesc, chooser);
         this.adqled = builder.createAdqlEditorPanel(pval,app,parent);
         this.adqls = adqled.new AdqlsView(false);
