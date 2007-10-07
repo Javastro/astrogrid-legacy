@@ -9,9 +9,9 @@ import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -30,10 +30,8 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -56,7 +54,6 @@ import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.astrogrid.InterfaceBean;
-import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.acr.dialogs.RegistryGoogle;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
@@ -65,7 +62,6 @@ import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.ProcessMonitor;
 import org.astrogrid.desktop.modules.ag.RemoteProcessManagerInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
-import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.system.ui.ArMainWindow;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.system.ui.UIContributionBuilder;
@@ -76,9 +72,6 @@ import org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity;
 import org.astrogrid.desktop.modules.ui.comp.EventListDropDownButton;
 import org.astrogrid.desktop.modules.ui.comp.EventListMenuManager;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
-import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
-import org.astrogrid.desktop.modules.ui.comp.MyTitledBorder;
-import org.astrogrid.desktop.modules.ui.comp.ResourceDisplayPane;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker.ShowDetailsEvent;
 import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker.ShowDetailsListener;
@@ -105,7 +98,7 @@ import com.jgoodies.forms.layout.FormLayout;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 4, 200712:30:46 PM
  */
-public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInternal, MouseListener, ShowDetailsListener{
+public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInternal, ShowDetailsListener, UIComponentWithMenu{
 	/** worker which lists the services that provide the current application
      * @author Noel.Winstanley@manchester.ac.uk
      * @since Aug 2, 200712:43:15 AM
@@ -364,7 +357,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	private final Action save;
 	private final Action reset;
 	private final Action chooseApp;
-	private static final Icon PIN_ICON = IconHelper.loadIcon("pin16.gif");
+
 	/** list of servers that provide this application - should contain Service objects */
 	private final EventList executionServers =  new BasicEventList();;
 	protected final ApplicationsInternal apps;
@@ -381,7 +374,6 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	 * @throws HeadlessException
 	 */
 	public TaskRunnerImpl(UIContext context, ApplicationsInternal apps,RemoteProcessManagerInternal rpmi,ResourceChooserInternal rci,RegistryGoogle regChooser,UIContributionBuilder menuBuilder, TypesafeObjectBuilder builder, FileSystemManager vfs, VoMonInternal vomon) throws HeadlessException {
-	   
 		super(context);
         this.rpmi = rpmi;
 		this.fileChooser = rci;
@@ -400,7 +392,6 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 		this.setSize(900,600);
 		getContext().getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.taskRunner");
 		
-
 		// menu bar
 		JMenuBar menuBar =new JMenuBar();
 		JMenu fileMenu = new JMenu("File");
@@ -424,9 +415,10 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 		fileMenu.add( new CloseAction());		
 		menuBar.add(fileMenu);
 
-		JMenu editMenu = new JMenu("Edit");
-		editMenu.add(reset);
+		editMenu = new JMenu("Edit");
+        editMenu.add(reset);
 		editMenu.add(chooseApp);
+		editMenu.addSeparator(); // context-sensitive stuff comes after this.
 		menuBar.add(editMenu);
 		
         menuBuilder.populateWidget(menuBar,this,ArMainWindow.MENUBAR_NAME);
@@ -443,20 +435,12 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 		setJMenuBar(menuBar);
 				
 		// form panel
-		pForm = builder.createTaskParametersForm(this,this);
-		
-		// help pane
-		infoPane = new ResourceDisplayPane();
-		infoPane.setBorder(BorderFactory.createEmptyBorder());
-        infoPane.setPreferredSize(new Dimension(130,100));
+		pForm = builder.createTaskParametersForm(this);
         
-        
-
 		// processes panel
 		this.tracker = builder.createExecutionTracker(this);
 		tracker.addShowDetailsListener(this);
 		trackerPanel = tracker.getPanel();
-        trackerPanel.addMouseListener(this);
 		trackerPanel.setBackground(Color.WHITE);
 		trackerPanel.setBorder(BorderFactory.createEmptyBorder());
 		// tasks pane.
@@ -470,6 +454,8 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 		JButton appButton = new JButton(chooseApp);
 		// show icon only.
 		appButton.setText(null);
+		//FIXME - temporarily set to invisible, as not implemented.
+		appButton.setVisible(false);
 		int col = 2;
 		toolbar.add(appButton,cc.xy(col++,1));
 		toolbar.add(pForm.getResourceLabel(),cc.xy(col++,1));
@@ -502,44 +488,42 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 		
 		
 		// finish it all off.
-		final JScrollPane infoScroll = new JScrollPane(infoPane,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		infoScroll.setBorder(MyTitledBorder.createLined("Information"));        
+ 
 		final JScrollPane execScroll = new JScrollPane(trackerPanel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		execScroll.setBorder(BorderFactory.createEtchedBorder());
 
 		
 		final JScrollPane tasksScroll = new JScrollPane(tracker.getTaskPane(),JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		tasksScroll.setBorder(BorderFactory.createEmptyBorder());
-		
-		bottomFlipPanel = new FlipPanel();
-        bottomFlipPanel.add(infoScroll,INFORMATION);
-		bottomFlipPanel.add(tasksScroll,TASKS);
+
 		
 		final JSplitPane rightPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT
 				,execScroll
-				,bottomFlipPanel);
-		rightPane.setDividerLocation(300);
+				,tasksScroll);
+		rightPane.setDividerLocation(250);
 		rightPane.setDividerSize(7);
 		rightPane.setBorder(BorderFactory.createEmptyBorder());
 		rightPane.setResizeWeight(0.7);
 		rightPane.setPreferredSize(new Dimension(200,600));
-		
-		// hide info pane when bottom pane appears.
-		pForm.getBottomPane().addPropertyChangeListener("collapsed",new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (! pForm.getBottomPane().isCollapsed()) {
-                    bottomFlipPanel.setVisible(false);
-                    rightPane.setDividerLocation(1.0);
-                } else {
-                    bottomFlipPanel.setVisible(true);
-                    rightPane.setDividerLocation(0.5);
-                }               
-            }		    
+		pForm.getBottomPane().addComponentListener(new ComponentAdapter() {
+            public void componentShown(ComponentEvent e) {
+                tasksScroll.setVisible(false);
+                rightPane.setDividerLocation(1.0);
+                rightPane.setDividerSize(0);
+            }
+            
+            public void componentHidden(ComponentEvent e) {
+                    tasksScroll.setVisible(true);
+                    rightPane.setDividerLocation(0.5);     
+                    rightPane.setDividerSize(7);                    
+            }
 		});
-		
-		// abit of a hack at the moment - not the nicest way to build a form */
+				
+		// abit of a hack at the moment - not the nicest way to build a JForm
+		// as relies on knowledge of internal implementation (i.e. the grid layout) of pForm
 		pForm.add(toolbar.getPanel(),cc.xyw(1,1,5));
 		pForm.add(rightPane,cc.xy(5,3));
+		//
 		JPanel pane = getMainPanel();
 		pane.add(pForm,BorderLayout.CENTER);
 		this.setContentPane(pane);
@@ -550,9 +534,8 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	
 	//private final DescriptionsPanel descriptions;
 	protected final TaskParametersForm pForm;
-	private final ResourceDisplayPane infoPane;
     private final JPanel trackerPanel;
-    private final FlipPanel bottomFlipPanel;
+    private final JMenu editMenu;
 
 	public void invokeTask(Resource r) {
 		buildForm(r);
@@ -580,7 +563,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 		(new ListServicesWorker(appId)).start();
 		
 		selectStartingInterface(cea);
-		display(cea);
+		setTitle("Task Runner - " + cea.getTitle());
 	}
     /**
      * @param cea
@@ -611,87 +594,11 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 			}
 		}
 		pForm.buildForm(t,interfaceName,cea);
-		display(cea);
-	}
-	/**
-	 * @param cea
-	 */
-	protected void display(CeaApplication cea) {
-		infoPane.display(cea);
 		setTitle("Task Runner - " + cea.getTitle());
 	}
-
 	public Object create() {
 		// deliberately not implemented. will work out how to do this later.
 		return null;
-	}
-
-	// callback to display help in infoPane.
-	public void mouseEntered(MouseEvent e) {
-		JComponent comp = (JComponent)e.getSource();
-		if (comp == trackerPanel) {
-		    bottomFlipPanel.show(TASKS);
-		} else {
-		    bottomFlipPanel.show(INFORMATION);
-		}
-		if (! pinnedHelp) {
-	      AbstractTaskFormElement t = (AbstractTaskFormElement)comp.getClientProperty(AbstractTaskFormElement.class);
-		    displayParameterHelp(t);
-		}
-		//else {
-		    /** dunno if I want to display this -- too cramped.
-			Resource resource = pForm.getCurrentResource();
-			// show defalt information.
-			infoPane.display(resource);
-			*/
-		//}
-	}
-	
-	private boolean pinnedHelp = false;
-	
-    /** show help for a parameter.
-     * @param comp
-     */
-    private void displayParameterHelp(AbstractTaskFormElement t) {
-  		if (t != null) {
-			HtmlBuilder sb = new HtmlBuilder();
-			final ParameterBean d = t.getDescription();
-            sb.h2(d.getUiName());
-			sb.append(d.getDescription()).append("<p>");
-	        if (d.getType() != null) {
-	            sb.br().append("Type : ").append(d.getType());
-	        }
-	        if (d.getUcd() != null) {
-	            sb.br().append("UCD : ").append(d.getUcd());
-	        }
-	        if (d.getUnits() != null) {
-	            sb.br().append("Units : ").append(d.getUnits());
-	        }			
-			infoPane.setText(sb.toString());
-			infoPane.setCaretPosition(0);
-		}
-    }
-// these mouse events ignored.
-	public void mouseClicked(MouseEvent e) {
-	    JComponent comp = (JComponent)e.getSource();
-        AbstractTaskFormElement t = (AbstractTaskFormElement)comp.getClientProperty(AbstractTaskFormElement.class);
-        if (t != null && comp.equals(t.getLabel())) {
-            pinnedHelp = !pinnedHelp; // pin if was previously unpinned, and vise-versa
-            t.getLabel().setIcon(pinnedHelp ? PIN_ICON : null);
-            displayParameterHelp(t);
-        }
-	}
-	
-	public void mouseExited(MouseEvent e) {
-	    //ignoired
-	}
-
-	public void mousePressed(MouseEvent e) {
-	    //ignored
-	}
-
-	public void mouseReleased(MouseEvent e) {
-	    //ignored
 	}
 	
 // show details event listener - a callback from the task monitor.	
@@ -730,6 +637,9 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                 }
             }
         }
+    }
+    public JMenu getContextMenu() {
+        return editMenu;
     }
 }
 
