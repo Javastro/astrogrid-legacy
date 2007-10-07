@@ -21,6 +21,7 @@ import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
 import org.astrogrid.io.Piper;
@@ -69,6 +70,10 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 	public void actionPerformed(ActionEvent e) {
         List resources = computeInvokableResources();
         List files = new ArrayList();
+        int sz = resources.size() + files.size();
+        if (sz > UIConstants.LARGE_SELECTION_THRESHOLD && ! confirm("Send all " + sz + " files?" )) {
+            return;         
+        }        
         if (resources.size() > 0) {
             // very CDS-specific at tge moment
             for (Iterator i = resources.iterator(); i.hasNext();) {

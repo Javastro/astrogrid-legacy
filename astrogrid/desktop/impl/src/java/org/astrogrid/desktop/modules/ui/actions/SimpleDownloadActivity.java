@@ -18,6 +18,7 @@ import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
 
 /** simplistic activity which just allows users to download files to a local directory.
@@ -52,16 +53,14 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
 		setIcon(IconHelper.loadIcon("filesave16.png"));		
 		setToolTipText("Download the selected file(s) to local disk.");
 	}
-//	
-//	private static final JDirectoryChooser chooser = new JDirectoryChooser();
-//	static {
-//	    chooser.setShowingCreateDirectory(true);
-//	}
-//	
 
 	public void actionPerformed(ActionEvent e) {
         List resources = computeInvokableResources();
         List files = new ArrayList();
+        int sz = resources.size() + files.size();
+        if (sz > UIConstants.LARGE_SELECTION_THRESHOLD && ! confirm("Download all " + sz + " files?" )) {
+            return;         
+        }        
         if (resources.size() > 0) {
             // very CDS swpecific at the moment
             for (Iterator i = resources.iterator(); i.hasNext();) {
@@ -74,11 +73,6 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
         }	    
 		files.addAll(computeInvokableFiles());
 		logger.debug(files);
-//		if (chooser.showSaveDialog(uiParent.get().getFrame()) != JFileChooser.APPROVE_OPTION) {
-//		    return;
-//		}
-//		final File saveDir = chooser.getSelectedFile();
-//		logger.debug(saveDir);
         final URI saveDir = chooser.chooseDirectoryWithParent("Select directory to download to",false,true,false,uiParent.get().getFrame());
         if (saveDir == null) {
             return;

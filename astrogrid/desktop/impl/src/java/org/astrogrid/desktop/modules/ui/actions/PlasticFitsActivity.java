@@ -15,6 +15,7 @@ import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.provider.DelegateFileObject;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.votech.plastic.CommonMessageConstants;
 
@@ -49,6 +50,9 @@ private final PlasticScavenger scav;
 
 	public void actionPerformed(ActionEvent e) {
 		List l = computeInvokable();
+		if (l.size() > UIConstants.LARGE_SELECTION_THRESHOLD && ! confirm("Send all " + l.size() + " files?" )) {
+		    return;		    
+		}
 		for (Iterator i = l.iterator(); i.hasNext();) {
 			FileObject f = (FileObject) i.next();
             if (f instanceof DelegateFileObject) { // if we've got a delegate, get to the source here...

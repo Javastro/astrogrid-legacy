@@ -10,6 +10,7 @@ import org.astrogrid.acr.ivoa.resource.Source;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.VOExplorerFactoryImpl;
+import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 
 /** subclass of activity that presents a 'find source paper' plastic button
  *  */
@@ -42,6 +43,9 @@ public class PlasticBibcodeActivity extends AbstractResourceActivity {
 
 	public void actionPerformed(ActionEvent e) {
 		List l = computeInvokable();
+        if (l.size() > UIConstants.LARGE_SELECTION_THRESHOLD && ! confirm("Send all " + l.size() + " resources?" )) {
+            return;         
+        }		
 		for (Iterator i = l.iterator(); i.hasNext();) {
             Resource r = (Resource) i.next();
             sendBibcodeMessage(r);

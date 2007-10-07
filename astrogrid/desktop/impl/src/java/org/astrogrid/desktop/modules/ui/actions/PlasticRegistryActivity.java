@@ -9,6 +9,7 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.VOExplorerFactoryImpl;
+import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 
 /** subclass of activity that presents a 'load resource' plastic button
  *  */
@@ -30,6 +31,9 @@ public class PlasticRegistryActivity extends AbstractResourceActivity {
 
 	public void actionPerformed(ActionEvent e) {
 		List l = computeInvokable();
+        if (l.size() > UIConstants.LARGE_SELECTION_THRESHOLD && ! confirm("Send all " + l.size() + " resources?" )) {
+            return;         
+        }		
 		switch(l.size()) {
 		case 0:
 			return;

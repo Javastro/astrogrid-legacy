@@ -13,6 +13,7 @@ import org.astrogrid.acr.ivoa.resource.SiapService;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.AstroScopeInternal;
+import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
 
 /** invoke astroscope.
@@ -52,6 +53,9 @@ private final AstroScopeInternal ai;
 	}
 public void actionPerformed(ActionEvent e) {
 	List l = computeInvokable();
+    if (l.size() > UIConstants.LARGE_SELECTION_THRESHOLD && ! confirm("Query all " + l.size() + " files?" )) {
+        return;         
+    }	
 	ai.runSubset(l);
 }
 
