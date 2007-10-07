@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -33,6 +35,7 @@ import org.apache.commons.lang.text.StrTokenizer;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.comp.CancelBorder;
 import org.astrogrid.desktop.modules.ui.comp.ColorCellRenderer;
+import org.astrogrid.desktop.modules.ui.comp.JPromptingTextField;
 import org.astrogrid.desktop.modules.ui.comp.MyTitledBorder;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.votech.UserAnnotation;
@@ -42,7 +45,7 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 /** class that displays the user's annotations, and allows them to be edited. */
-public class UserAnnotationPanel extends JPanel /*JCollapsiblePane*/ implements ItemListener, DocumentListener, ActionListener {
+public class UserAnnotationPanel extends JPanel /*JCollapsiblePane*/ implements ItemListener, DocumentListener, ActionListener, PropertyChangeListener {
 	private final Timer notifyTimer;
 
     /**
@@ -63,6 +66,7 @@ public class UserAnnotationPanel extends JPanel /*JCollapsiblePane*/ implements 
 		int row = 1;
 
 		check = new JCheckBox("Flag");
+		check.setToolTipText("Flag this resource as important");
 		check.setFont(UIConstants.SMALL_DIALOG_FONT);
 		check.setBackground(Color.white);
 		check.addItemListener(this);
@@ -74,6 +78,7 @@ public class UserAnnotationPanel extends JPanel /*JCollapsiblePane*/ implements 
 		colours = new JComboBox(new Object[]{
 				Color.BLACK,Color.GREEN,Color.BLUE,Color.RED, Color.LIGHT_GRAY,Color.GRAY
 		});
+		colours.setToolTipText("Change the appearance of this resource in the list");
 		colours.setRenderer(new ColorCellRenderer());
 		colours.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -86,22 +91,20 @@ public class UserAnnotationPanel extends JPanel /*JCollapsiblePane*/ implements 
 
 		row++;
 
-		title = new JTextField();
-		new CancelBorder(){
-            public void buttonActivated(MouseEvent e) {
-                title.setText(null);
-            }
-            }.attachTo(title);			
-		title.setEditable(true);
+		title = new JPromptingTextField("Alternative title");
+		title.setToolTipText("Enter the title you'd like to use for this resource");
 		title.setFont(UIConstants.SMALL_DIALOG_FONT);
-		title.getDocument().addDocumentListener(this);
+		title.addPropertyChangeListener(JPromptingTextField.VALUE_PROPERTY,this);
 
-		builder.addLabel("Alternative title",cc.xyw(2,row++,3)).setFont(UIConstants.SMALL_DIALOG_FONT);
+		//builder.addLabel("Alternative title",cc.xyw(2,row++,3)).setFont(UIConstants.SMALL_DIALOG_FONT);
+		row++;
+		//
 		row++;
 		builder.add(title,cc.xyw(2,row++,3));
 		row++;
 		
 		note = new JTextArea();
+		note.setToolTipText("Use this to record your own notes about this resource");
 		note.getDocument().addDocumentListener(this);
 		note.setLineWrap(true);
 		note.setWrapStyleWord(true);
@@ -110,16 +113,19 @@ public class UserAnnotationPanel extends JPanel /*JCollapsiblePane*/ implements 
         note.setFont(UIConstants.SMALL_DIALOG_FONT);	
         JScrollPane sp = new JScrollPane(note,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		builder.addLabel("Notes",cc.xyw(2,row++,3)).setFont(UIConstants.SMALL_DIALOG_FONT);
+
 		row++;			
         builder.add(sp,cc.xyw(2,row++,3));
         
         row++;
-		tags = new JTextField();
+		tags = new JPromptingTextField("Tags");
+		tags.setToolTipText("label this resource with your own choice of tags");
 		tags.setFont(UIConstants.SMALL_DIALOG_FONT);
-		tags.setEditable(true);
-		tags.getDocument().addDocumentListener(this);
+		tags.addPropertyChangeListener(JPromptingTextField.VALUE_PROPERTY,this);
 
-		builder.addLabel("Tags",cc.xyw(2,row++,3)).setFont(UIConstants.SMALL_DIALOG_FONT);
+		//builder.addLabel("Tags",cc.xyw(2,row++,3)).setFont(UIConstants.SMALL_DIALOG_FONT);
+		row++;
+		//
 		row++;
 		builder.add(tags,cc.xyw(2,row++,3));
 
@@ -131,8 +137,8 @@ public class UserAnnotationPanel extends JPanel /*JCollapsiblePane*/ implements 
 private final JToggleButton check;
 private final JComboBox colours;
 private final JTextArea note;
-private final JTextComponent tags;
-private final JTextComponent title;
+private final JPromptingTextField  tags;
+private final JPromptingTextField title;
 
 // change notification interface.
 private final List listeners = new ArrayList();
@@ -169,9 +175,9 @@ public void clear() {
 
     check.setSelected(false);
     note.setText(null);
-    title.setText(null);
+    title.setValue(null);
     colours.setSelectedIndex(0);
-    tags.setText(null);
+    tags.setValue(null);
     notifyTimer.stop(); // as all those 'sets' will have triggered it.
 }   
 
@@ -192,7 +198,12 @@ public void itemStateChanged(ItemEvent e) {
 public void removeUpdate(DocumentEvent e) {
     dirty();
 }
-
+// propertychange listener - again, just note that the item is now dirty.
+public void propertyChange(PropertyChangeEvent evt) {
+    if (evt.getNewValue() != evt.getOldValue()) {
+        dirty();
+    }
+}
 /** create an annotation containing the form values.
  * if there's no values, return null.
  */
@@ -204,13 +215,13 @@ public UserAnnotation createAnnotation() {
 	if (StringUtils.isNotBlank(note.getText())) {
 	    b.getAnnotation().setNote(StringUtils.trimToEmpty(note.getText()));
 	}
-	if (StringUtils.isNotBlank(title.getText())) {
-	    b.getAnnotation().setAlternativeTitle(StringUtils.trimToEmpty(title.getText()));
+	if (StringUtils.isNotBlank((String)title.getValue())) {
+	    b.getAnnotation().setAlternativeTitle(StringUtils.trimToEmpty((String)title.getValue()));
 	}
 	if (colours.getSelectedIndex() != 0) {
 		b.getAnnotation().setHighlight((Color)colours.getSelectedItem());
 	}
-	String ta =  tags.getText();
+	String ta =  (String)tags.getValue();
 	if (StringUtils.isNotBlank(ta)) {
 		// try to parse it.
 		StrTokenizer tok = new StrTokenizer(ta,StrMatcher.charSetMatcher(", ")); // matches spaces and commas as delimiters
@@ -233,23 +244,27 @@ private static class LazyAnnotationBuilder {
 public void setAnnotation(UserAnnotation ann) {
     notifyTimer.stop();
 	check.setSelected(ann.isFlagged());
-	note.setText(ann.getNote());	
-	title.setText(ann.getAlternativeTitle());
 			
 	if (ann.getHighlight() == null) {
 		colours.setSelectedIndex(0);
 	} else {
 		colours.setSelectedItem(ann.getHighlight());
 	}
+
+	title.setValue(ann.getAlternativeTitle());
+	note.setText(ann.getNote());	
+
 	Set tr = ann.getTags();
 	if (tr != null && ! tr.isEmpty()) {
 		StrBuilder sb = new StrBuilder();
 		sb.appendWithSeparators(tr," ");
-		tags.setText(sb.toString());
+		tags.setValue(sb.toString());
 	}
 	notifyTimer.stop(); // as all the previous sets have no-doubt triggered it.
 			
 }
+
+
 
 
 
