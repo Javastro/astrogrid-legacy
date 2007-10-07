@@ -1,4 +1,4 @@
-/*$Id: BackgroundWorker.java,v 1.13 2007/09/21 16:35:14 nw Exp $
+/*$Id: BackgroundWorker.java,v 1.14 2007/10/07 10:41:36 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -293,9 +293,9 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
          */
         protected void doError(Throwable ex) {
             if (transientMessages) {
-                parent.showTransientError("Failed: " + msg,ExceptionFormatter.formatException(ex));
+                parent.showTransientError("An error occurred while " + msg.toLowerCase(),ExceptionFormatter.formatException(ex));
             } else {
-                parent.showError("Failed: " + msg,ex);
+                parent.showError("An error occurred while " + msg.toLowerCase(),ex);
             }
         }
         
@@ -311,6 +311,9 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
 
 /* 
 $Log: BackgroundWorker.java,v $
+Revision 1.14  2007/10/07 10:41:36  nw
+imporved error message formatting.
+
 Revision 1.13  2007/09/21 16:35:14  nw
 improved error reporting,
 various code-review tweaks.
