@@ -23,6 +23,8 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -110,6 +112,7 @@ import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.ui.TabularMetadataViewer;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
+import org.astrogrid.desktop.modules.ui.taskrunner.UIComponentWithMenu;
 
 /**
  * @author jl99
@@ -272,7 +275,7 @@ public class ADQLEditorPanel
           
     public ADQLEditorPanel(ParameterValue queryParam
     						  , Resource targetApplication
-    						  , UIComponent parent
+    						  , UIComponentWithMenu parent
     						  ,RegistryGoogle regChooser
                               , Registry registry
                               , Preference showDebugPanePref ) {
@@ -283,8 +286,58 @@ public class ADQLEditorPanel
         this.registry = registry ;
         this.transformer = new AdqlTransformer() ;
         this.showDebugPanePreference = showDebugPanePref;
-        this.showDebugPanePreference.addPropertyChangeListener(this);
+        this.showDebugPanePreference.addPropertyChangeListener(this);        
         this.init();
+        new ContextMenuAssistant(this,parent.getContextMenu());
+       
+    }
+    
+    /** class to manage showing / hiding of context menu items. 
+     * 
+     * populated with example menu items at the moment - in real use, the menu items 
+     * would probably be replaced with Action classes defined separately, 
+     * so this class would just populate / depopulate the menu and control the visibility of the items.
+     * */
+    private class ContextMenuAssistant implements HierarchyListener{
+        private final JMenu contextMenu;
+        private final JMenuItem it;
+        private final JMenu subMenu;
+
+        public ContextMenuAssistant(JPanel p, JMenu contextMenu) {
+            this.contextMenu = contextMenu;
+            it = new JMenuItem("context-sensitive-example");
+            it.setVisible(false);
+            subMenu = new JMenu("context-submenu");
+            subMenu.add(new JMenuItem("an entry"));
+            subMenu.setVisible(false);
+            p.addHierarchyListener(this);
+        }
+
+
+        public void hierarchyChanged(HierarchyEvent e) {
+            long flags = e.getChangeFlags();            
+            if ((flags &  HierarchyEvent.SHOWING_CHANGED ) != 0){
+                    if (isShowing()) {
+                        // show the menu entries
+                        it.setVisible(true);
+                        subMenu.setVisible(true);                        
+                    } else {
+                        // hide the menu entries
+                        it.setVisible(false);
+                        subMenu.setVisible(false);                        
+                    }
+            } else if ((flags &  HierarchyEvent.PARENT_CHANGED) != 0) {
+                    if (getParent() == null) {
+                        // remove the menu entries
+                        contextMenu.remove(it);
+                        contextMenu.remove(subMenu);
+                    } else {
+                        // add the menu entries.
+                        contextMenu.add(it);
+                        contextMenu.add(subMenu);
+                    }                  
+            } 
+        }
     }
 
       
@@ -475,7 +528,7 @@ public class ADQLEditorPanel
         setLayout( new GridBagLayout() ) ;       
         GridBagConstraints gbc ;
         JSplitPane splAdqlToolEditor = new JSplitPane( JSplitPane.VERTICAL_SPLIT );
-
+        splAdqlToolEditor.setBorder(null);
         // Put the editing panels plus the metadata panels in the top half of the split pane.
         splAdqlToolEditor.setTopComponent( initTopView() ) ;
 
@@ -499,6 +552,7 @@ public class ADQLEditorPanel
     
     private JSplitPane initTopView() {
         JSplitPane topView = new JSplitPane();
+        topView.setBorder(null);
       //  topView.setPreferredSize(new Dimension(600,350));
         topView.setMaximumSize(null);
         // Put the editor panels in the left side of the split pane.
@@ -567,7 +621,7 @@ public class ADQLEditorPanel
         // Create the components for the bottom view:
        
         tabbedBottomPane = new JTabbedPane();
-        tabbedBottomPane.setBorder(BorderFactory.createEmptyBorder());
+        tabbedBottomPane.setBorder(null);
         Dimension dim = new Dimension(400,80);
         tabbedBottomPane.setPreferredSize(dim);
         tabbedBottomPane.setMaximumSize(dim);

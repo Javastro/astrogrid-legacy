@@ -1,4 +1,4 @@
-/*$Id: ToolEditorDialog.java,v 1.14 2007/09/21 16:35:15 nw Exp $
+/*$Id: ToolEditorDialog.java,v 1.15 2007/10/07 10:41:31 nw Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,6 +20,8 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -30,6 +32,7 @@ import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.taskrunner.TaskParametersForm;
+import org.astrogrid.desktop.modules.ui.taskrunner.UIComponentWithMenu;
 import org.astrogrid.workflow.beans.v1.Tool;
 /** dialog that allows the user to edit a tool document - i.e. a set of parameters.
  * 
@@ -43,7 +46,8 @@ public class ToolEditorDialog extends JDialog implements PropertyChangeListener 
 
     
     JOptionPane jOptionPane = null;
-    private final UIComponentImpl parent;
+    private final MyUIComponent parent;
+    private final JMenu editMenu;
     
    	private JLabel topLabel = null;
     private TaskParametersForm parametersPanel;
@@ -51,8 +55,9 @@ public class ToolEditorDialog extends JDialog implements PropertyChangeListener 
    	
    	public ToolEditorDialog(UIContext context,TypesafeObjectBuilder builder) throws HeadlessException {
         super();          
-        this.parent = new UIComponentImpl(context);    
-        this.parametersPanel = builder.createTaskParametersForm(parent,new MouseAdapter(){}); // pass in a stub mouse adapter for now.
+        this.editMenu = new JMenu("edit");
+        this.parent = new MyUIComponent(context);  
+        this.parametersPanel = builder.createTaskParametersForm(parent); 
         init();
     }
 
@@ -75,6 +80,10 @@ public class ToolEditorDialog extends JDialog implements PropertyChangeListener 
     });                
         this.setModal(true);
         this.setContentPane(getJOptionPane());
+        JMenuBar mb = new JMenuBar();
+        mb.add(editMenu);
+        setJMenuBar(mb);
+         
 	}   	
     
     public void resetAndHide() {
@@ -162,6 +171,21 @@ public class ToolEditorDialog extends JDialog implements PropertyChangeListener 
        return jOptionPane;
     }
 
+    /** class that provides access to the context menu.*/
+    private class MyUIComponent extends UIComponentImpl implements UIComponentWithMenu {
+
+        /**
+         * @param context
+         * @throws HeadlessException
+         */
+        public MyUIComponent(UIContext context) throws HeadlessException {
+            super(context);
+        }
+
+        public JMenu getContextMenu() {
+            return editMenu;
+        }
+    }
     
 
     
@@ -178,6 +202,9 @@ public class ToolEditorDialog extends JDialog implements PropertyChangeListener 
 
 /* 
 $Log: ToolEditorDialog.java,v $
+Revision 1.15  2007/10/07 10:41:31  nw
+pass context menu into adql editor
+
 Revision 1.14  2007/09/21 16:35:15  nw
 improved error reporting,
 various code-review tweaks.
