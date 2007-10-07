@@ -4,8 +4,11 @@
 package org.astrogrid.desktop.modules.dialogs;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -13,22 +16,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSplitPane;
+import javax.swing.JTextField;
+import javax.swing.Timer;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.vfs.FileName;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
+import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.ui.fileexplorer.StorageView;
@@ -45,7 +56,7 @@ import com.l2fprod.common.swing.JTaskPane;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Aug 30, 20079:49:42 AM
  */
-public class FileExplorerBaseDialog extends BaseDialog implements DocumentListener, Matcher, NavigationListener{
+public class FileExplorerDialog extends BaseDialog implements DocumentListener, Matcher, NavigationListener, ActionListener{
 
     private final UIComponentImpl parent;
     private final StorageView view;
@@ -54,7 +65,9 @@ public class FileExplorerBaseDialog extends BaseDialog implements DocumentListen
     private boolean selectDirectories = false;
     private boolean localEnabled = true;
     private boolean urlEnabled = true;
-    private boolean vospaceEnabled= true; 
+    private boolean vospaceEnabled= true;
+    private final Timer validationTimer;
+    private final JTextField filename; 
 
     /**
      * @param foldersList 
@@ -63,7 +76,7 @@ public class FileExplorerBaseDialog extends BaseDialog implements DocumentListen
      * @param comm 
      * 
      */
-    public FileExplorerBaseDialog(UIContext context, TypesafeObjectBuilder builder) {
+    public FileExplorerDialog(UIContext context, TypesafeObjectBuilder builder) {
         super();
         getBanner().setVisible(false);
         // based on code reading...
@@ -73,9 +86,8 @@ public class FileExplorerBaseDialog extends BaseDialog implements DocumentListen
         this.view = builder.createStorageView(parent,acts);
         view.setSingleSelectionMode(true);
         view.getNavigator().addNavigationListener(this);
-        view.getLocation().getDocument().addDocumentListener(this);
-        JPanel main = parent.getMainPanel();
-        parent.remove(main); // remove from this uicomponent - as we want to embed it in the dialog.
+        JPanel uiComponentPanel = parent.getMainPanel();
+        parent.remove(uiComponentPanel); // detatch panel from it's uicomponent - as we want to embed it in the dialog.
         // rest of parent remains, invisible.
 
         // assemble new UI.
@@ -86,13 +98,32 @@ public class FileExplorerBaseDialog extends BaseDialog implements DocumentListen
         JSplitPane lrPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,foldersPanel,mainPanel);
         lrPane.setDividerLocation(200);
         lrPane.setBorder(BorderFactory.createEmptyBorder());
-        main.add(lrPane,BorderLayout.CENTER); 
+        uiComponentPanel.add(lrPane,BorderLayout.CENTER); 
         // add buttonbar on top.
-        main.add(mainButtons,BorderLayout.NORTH);
-
-        this.getContentPane().add(main);
+        uiComponentPanel.add(mainButtons,BorderLayout.NORTH);
+        // bottom of uiComponentPanel is pre-filled with the progress bar / activity monitor stuff.
+        
+        // Create a new panel for a filename text field.
+        this.filename = new JTextField(40);
+        filename.getDocument().addDocumentListener(this);
+        JPanel p = new JPanel(new FlowLayout());
+        nameFieldLabel = new JLabel("File name:");
+        p.add(nameFieldLabel);
+        p.add(filename);
+        // stack both panels together.
+        Box b = new Box(BoxLayout.Y_AXIS);
+        b.add(uiComponentPanel);
+        b.add(p);
+        
+        this.getContentPane().add(b);
+        
+        
         this.setModal(true);
         this.setSize(600,400);
+        
+        this.validationTimer = new Timer(700,this); // validate when the user has been silent for 700ms.
+        validationTimer.setCoalesce(true);
+        validationTimer.setRepeats(false);
     }
 
     public void cancel() {
@@ -112,8 +143,52 @@ public class FileExplorerBaseDialog extends BaseDialog implements DocumentListen
         reset();
     }
 
+    /** background worker that validates a text input.
+     * @author Noel.Winstanley@manchester.ac.uk
+     * @since Oct 1, 200710:22:37 AM
+     */
+    private final class ValidationWorker extends BackgroundWorker {
+        protected volatile boolean cond;
+        private final static String MSG =  "Validating text input";
+        /**
+         * @param parent
+         * @param msg
+         */
+        private ValidationWorker() {
+            super(FileExplorerDialog.this.parent, MSG);
+        }
+
+        protected Object construct() throws Exception {
+            if (StringUtils.isEmpty(filename.getText())) {
+                cond = false;
+                return null;
+            }
+            FileObject fo = view.getVfs().resolveFile(view.getLocation().getText().trim() + "/" + filename.getText().trim());
+            cond = isSchemeValid(fo.getName().getScheme()); 
+            if (fo.exists()) {
+               cond = cond && (selectDirectories == fo.getType().hasChildren());
+            } 
+            return fo;
+        }
+
+        protected void doFinished(Object result) {
+            if (this == latest) {
+                selected = (FileObject)result;
+                okButton.setEnabled(cond);
+                parent.setStatusMessage(MSG + " - " + (cond ? "OK" : "INVALID"));
+            }
+        }
+
+        protected void doError(Throwable ex) { // on error, just disable the button.
+            if (this == latest) {
+                okButton.setEnabled(false);
+                parent.setStatusMessage(MSG + " - INVALID: " + ex.getMessage());
+            }
+        }
+    }
+
     /** stubbed out class - this functionality is not needed in this usage
-     * all it does is listens to current selection and updates location field - as this is where we're getting the filename from.
+     * all it does is listens to current selection, stores the file object, and updates location and filename fields 
      *  */
     private class NullActivitiesManager implements ActivitiesManager {
 
@@ -140,15 +215,23 @@ public class FileExplorerBaseDialog extends BaseDialog implements DocumentListen
         // listens to selection events.
         public void setSelection(Transferable tran) {
             try {
-                URI uri = (URI) tran.getTransferData(VoDataFlavour.LOCAL_URI); // leave it to the transferable code to create a 'good' uri.
-                view.getLocation().setText(uri.toString());
                 selected = (FileObject)tran.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT);
-                okButton.setEnabled( (selectDirectories == selected.getType().hasChildren()) && isSchemeValid(selected.getName().getScheme()));                 
+                final boolean selectionIsFolder = selected.getType().hasChildren();
+                final FileName selectedName = selected.getName();
+                view.getLocation().setText(selectedName.getParent().getURI());
+                if (selectDirectories == selectionIsFolder) { // either we've got a folder, and we want a folder, or we've got a file and we want a file.
+                    filename.setText(selectedName.getBaseName());
+                } else { // it's not what we want - set to null;
+                    filename.setText(null);
+                }
+                
+                okButton.setEnabled( selectDirectories == selectionIsFolder && isSchemeValid(selectedName.getScheme()));                 
             } catch (UnsupportedFlavorException x) {
                 // unexpected
             } catch (IOException x) {
                 // unexpected, might possibly happen from getType() - though this should have been computed already..
                 okButton.setEnabled(false);
+                filename.setText(null);
             }
         }
     }
@@ -184,7 +267,7 @@ public class FileExplorerBaseDialog extends BaseDialog implements DocumentListen
         }
     }
 
-    //document listener - checks whether input is valid.
+    //document listener - used to check whether input is valid.
     public void changedUpdate(DocumentEvent e) {          
         validateLocation();
     }
@@ -196,38 +279,25 @@ public class FileExplorerBaseDialog extends BaseDialog implements DocumentListen
     public void removeUpdate(DocumentEvent e) {
         validateLocation();
     }
-    /** validate the contents of the location box */
+
+    
     private void validateLocation() {
-        if (! view.getLocation().isFocusOwner()) { // focus is elsewhere - so this event isn't something we need to validate
-            return;
-        }      
-        //@todo probably want a minor timer here - as in query sizer.
+        // interrupt any validation that's currently happening.
         if (latest != null) {
             latest.interrupt();
         }
-        // run this in the bg.
-        latest= new BackgroundWorker(parent,"Resolving user input") {
-            protected boolean cond;
-            protected Object construct() throws Exception {
-                FileObject fo = view.getVfs().resolveFile(view.getLocation().getText());
-                cond = isSchemeValid(fo.getName().getScheme()); 
-                if (fo.exists()) {
-                   cond = cond && (selectDirectories == fo.getType().hasChildren());
-                } 
-                return fo;
-            }
-            protected void doFinished(Object result) {
-                if (this == latest) {
-                    selected = (FileObject)result;
-                    okButton.setEnabled(cond);
-                }
-            }
-            protected void doError(Throwable ex) {
-                if (this == latest) {
-                    okButton.setEnabled(false);
-                }
-            }
-        };
+        if (filename.isFocusOwner()) { // document event came from a user edit.
+            validationTimer.restart(); // if no more edits in the timer duration, validate the user input.        
+        } else {
+            // focus is elsewhere - so this edit we don't need to validate, and it supercedes any pending edits.
+            validationTimer.stop();
+        }
+    }
+
+    /** validate the contents of the location box - called by the validation timer.*/
+    public void actionPerformed(ActionEvent e) {
+        // run this in the bg.        
+        latest= new ValidationWorker();
         latest.start();
     }
     // keeps track of the latest resolution worker.
@@ -241,24 +311,30 @@ public class FileExplorerBaseDialog extends BaseDialog implements DocumentListen
     private boolean isSchemeValid(String scheme) {
         return (  (localEnabled && "file".equals(scheme))
                 || (vospaceEnabled &&( "ivo".equals(scheme) || "workspace".equals(scheme)) )
-                || (urlEnabled && schemes.contains(scheme))
+                || (urlEnabled && URL_SCHEMES.contains(scheme))
              );
     }
-    private final static List schemes = new ArrayList();
+    private final static List URL_SCHEMES = new ArrayList();
     static {
-        schemes.add("http");
-        schemes.add("ftp");
-        schemes.add("sftp");
+        URL_SCHEMES.add("http");
+        URL_SCHEMES.add("ftp");
+        URL_SCHEMES.add("sftp");
     }
     
     // listen to navigation events.
     public void moved(NavigationEvent e) {
         selected = view.getNavigator().current();
         // current selection is the folder we've just moved to. do we want to select folders?
+        if (selectDirectories) {
+            filename.setText(selected.getName().getBaseName());
+        } else {
+            filename.setText(null);
+        }
         okButton.setEnabled(selectDirectories && isSchemeValid(selected.getName().getScheme())); 
     }
     
     private FileObject selected = null;
+    private final JLabel nameFieldLabel;
 
     public void moving() {
         // ignored.
@@ -273,13 +349,15 @@ public class FileExplorerBaseDialog extends BaseDialog implements DocumentListen
         
         // move back home.
         view.getNavigator().home();
-        validateCurrent();
+        filename.setText(null);        
+        okButton.setEnabled(false);
         
     }
 
     public void setChooseDirectories(boolean enableDirectorySelection) {
         this.selectDirectories = enableDirectorySelection;
         view.installFilter(this); // need to re-call this whenever our filtering conditions change.
+        nameFieldLabel.setText(enableDirectorySelection ? "Folder name:" : "File name:");
         validateCurrent();
     }
     
@@ -316,6 +394,10 @@ public class FileExplorerBaseDialog extends BaseDialog implements DocumentListen
         validateCurrent();        
     }
 
+    
+    public FileSystemManager getVFS() {
+        return view.getVfs();
+    }
 
     
 }
