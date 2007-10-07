@@ -274,9 +274,9 @@ System module.
 		<load service-id="webserver" /> 
 		<load service-id="rmi" /> 
 		<load service-id="scheduler"/>
+		<load service-id="snitch" />
 		<load service-id="executor" />
 		<load service-id="configuration" />
-		<load service-id="snitch" />
 		<load service-id="tupperware" />
 	</contribution>
 
@@ -1203,7 +1203,8 @@ SYSTEM TRAY
 	
 
 <!-- ==========================
-SINGLE INSTANCE LISTENER
+SINGLE INSTANCE LISTENER 
+- TODO - remove. obsolete. we never run under webstart now.
  -->
 	<service-point id="singleInstanceListener" visibility="private" interface="java.lang.reflect.InvocationHandler">
 	Hook into webstart system, and will display ui if app is webstarted repeatedly.
