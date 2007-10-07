@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformer.java,v 1.11 2007/01/29 11:11:36 nw Exp $
+/*$Id: TypeStructureTransformer.java,v 1.12 2007/10/07 10:40:05 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,6 +33,8 @@ import org.apache.commons.collections.Transformer;
 
 /** implem,entation of transformer that will render almost any object tree down to types suitable for xmlrpc lib.
  * Output should just be primitives,  maps, vectors.
+ * 
+ * @modified added type information - to indicate which sunclass is being returned
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 21-Feb-2005
  *
  */
@@ -91,7 +93,7 @@ public class TypeStructureTransformer implements Transformer {
         }
 
        
-       // special case for hashtable - as it's a supported type, we don't need to 
+       // special case for hashtable - as it's a type that's supported by our xmlrpc lib, we don't need to 
        // change it - - just transform the contents (which hopefully is more efficient than creating a whole new structure)
        
        if (arg0 instanceof Hashtable) {
@@ -167,7 +169,8 @@ public class TypeStructureTransformer implements Transformer {
                     || Writer.class.isAssignableFrom(type)){
                 continue;
             }            
-           //@future handle indexed and mapped properties, if needed.
+           //in the future, we might need to also handle indexed and mapped properties
+            // however, AR API doesn't use these at present.
             try {
                 Object value = db.get(name);
                 if (value != null) { // hashtable can't handle nulls..
@@ -177,7 +180,32 @@ public class TypeStructureTransformer implements Transformer {
                 // thrown by dynabean for properties with only a setter - ignore.
             }
         }
+        //modified - add originating class type information.
+        Vector iVector = getTypeInformation(arg0);
+        result.put("__interfaces",iVector);
         return result;
+    }
+
+
+
+
+    /** Creates a vector of the class names of the implementation class,
+     * plus any interfaces this class provides
+     * @param arg0 the object to inspect.
+     * @return a vector of strings.
+     */
+    private Vector getTypeInformation(Object arg0) {
+        Class beanClass = arg0.getClass();
+        Vector iVector = new Vector();
+        iVector.add(beanClass.getName());
+        do {
+            Class[] interfaces = beanClass.getInterfaces();
+            for(int i = 0; i < interfaces.length; i++) {
+                iVector.add(interfaces[i].getName());
+            }
+            beanClass = beanClass.getSuperclass();            
+        } while (beanClass != Object.class);
+        return iVector;
     }
    
 }
@@ -185,6 +213,9 @@ public class TypeStructureTransformer implements Transformer {
 
 /* 
 $Log: TypeStructureTransformer.java,v $
+Revision 1.12  2007/10/07 10:40:05  nw
+added serialization of classnames
+
 Revision 1.11  2007/01/29 11:11:36  nw
 updated contact details.
 
