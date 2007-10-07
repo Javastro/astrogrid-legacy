@@ -3,6 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ui.taskrunner;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,29 +14,37 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import javax.swing.AbstractButton;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
-import javax.swing.border.Border;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import javax.swing.Spring;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.astrogrid.ParameterBean;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.ui.actions.BulkCopyWorker;
 import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
+import org.astrogrid.desktop.modules.ui.comp.JPromptingTextField;
+import org.astrogrid.desktop.modules.ui.comp.PinnableLabel;
+
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
 
 /** Abstract class for all task form elements.
  * 
@@ -55,12 +64,12 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 	protected final ParameterBean pdesc;
 	
 	protected final JToggleButton indirectToggle;
-	private final JTextField indirectField;
-	protected final JLabel label;
+	private final JPromptingTextField indirectField;
+	protected final PinnableLabel label;
 	/** not final - so it can be lazily initialized if needed.
 	 do not refer to _editor directly - use getEditor() instead */
 	protected FlipPanel _editor;
-	protected final Box indirectPanel;
+	protected final JPanel indirectPanel;
 	protected final ResourceChooserInternal fileChooser;
 	protected JButton chooserButton;
 	protected boolean localFileEnabled = true;
@@ -79,17 +88,28 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 		indirectToggle.setSelected(pval.getIndirect());
 		indirectToggle.addItemListener(this);
 		
-		label = new JLabel(StringUtils.abbreviate(pdesc.getUiName(),30));
+		label =  new PinnableLabel(StringUtils.abbreviate(pdesc.getUiName(),50));
+		label.setToolTipText("Click to pin the documentation for this parameter");	
 		associate(label);	
+		
 
-		indirectPanel = new javax.swing.Box(BoxLayout.X_AXIS);
-		indirectPanel.add(new JLabel("URL:"));
-		indirectField = new IndirectURIField();
-		indirectPanel.add(indirectField);
+		FormLayout indirectForm = new FormLayout(
+		        "fill:d:grow,d" // cols
+		        ,"d,p:grow"
+		        );
+		PanelBuilder pb = new PanelBuilder(indirectForm);
+		CellConstraints cc = new CellConstraints();
+
+		indirectField = new IndirectURIField(pval);
+		pb.add(indirectField,cc.xy(1,1));
+		
         chooserButton = new JButton("Browse..");
         chooserButton.setToolTipText("Select a file");
         chooserButton.addActionListener(this);
-        indirectPanel.add(chooserButton);
+        pb.add(chooserButton,cc.xy(2,1));
+        
+        pb.add(Box.createVerticalGlue(),cc.xyw(1,2,2));
+        indirectPanel = pb.getPanel();
 	}
 	
 	/** customization method, for use by subclasses
@@ -117,84 +137,14 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 		URI u = fileChooser.chooseResourceWithParent("Choose a file",true,localFileEnabled,true,chooserButton);
 		if (u == null) {
 			return;
-		}
-		if (u.getScheme().equals("file")) {
-		    //@todo notify the user what we're doing?
-		    ByteArrayOutputStream s = null;
-		    InputStream is = null;
-		    try {
-		    s = new ByteArrayOutputStream();
-		    is = u.toURL().openStream();
-		    org.astrogrid.io.Piper.pipe(is,s);
-		    indirectField.setText(s.toString());
-		    } catch (java.io.IOException x) {
-		        //@todo report error
-		        logger.error(x);
-		    } finally {
-		        if (is != null) {
-		            try {
-                        is.close();
-                    } catch (IOException x) {
-                        logger.error("IOException",x);
-                    }
-		        }
-		        if (s != null) {
-		            try {
-                        s.close();
-                    } catch (IOException x) {
-                        logger.error("IOException",x);
-                    }
-		        }
-		    }
 		} else {
-		    indirectField.setText(u.toString());
+		
+		    indirectField.setValue(u.toString());
 		}
 		
 	}
-	
-	/** specialized text field that listens to itself and warns about incorrect references 
-	 * also updates value of pval on change.*/
-	private class IndirectURIField extends JTextField implements DocumentListener{
-		/**
-		 * 
-		 */
-		public IndirectURIField() {
-			original = getBorder();
-			warn = BorderFactory.createLineBorder(Color.RED);
-			getDocument().addDocumentListener(this);
-		}
-		public void changedUpdate(DocumentEvent e) {
-			update();
-		}
-		private void update() {
-			String s = getText();
-			pval.setIndirect(true); // should be set anyhow.
-			pval.setValue(s);
-			try {
-				URI u = new URI(s);
-				if (u.isAbsolute() && ! u.getScheme().equals("file")) {
-					setBorder(original);
-					return;
-				}
-			} catch (URISyntaxException x) {
-				// ok.
-			}
-			setBorder(warn);
-		}
-		protected final Border original;
-		protected final Border warn;
 
-		public void insertUpdate(DocumentEvent e) {
-			update();
-		}
-
-		public void removeUpdate(DocumentEvent e) {
-			update();
-		}
-	}// end of indirect field.
-	
-	
-	/** subclasses should implement this */
+    /** subclasses should implement this */
 	protected abstract JComponent createEditor();
 	/** subclesses should implement this to return the value contained by the editor */
 	protected abstract String getStringValue();
@@ -214,7 +164,7 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 		if (e.getSource() == indirectToggle) {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
 				pval.setIndirect(true);
-				pval.setValue(indirectField.getText());
+				pval.setValue((String)indirectField.getValue());
 				getEditor().show(INDIRECT);
 			} else {
 				pval.setIndirect(false);
@@ -278,7 +228,7 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 	        // populate it, if there's stuff already in the tool.
 	        if (pval.getValue() != null && pval.getIndirect()) {
 	            _editor.show(INDIRECT);
-	            indirectField.setText(pval.getValue());
+	            indirectField.setValue(pval.getValue());
 	        }	        
 	    }
 		return this._editor;
@@ -296,7 +246,7 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 	/** return the name label.
 	 * @return the label
 	 */
-	public final JLabel getLabel() {
+	public final PinnableLabel getLabel() {
 		return this.label;
 	}
 	/**
@@ -338,5 +288,13 @@ public abstract class AbstractTaskFormElement  implements ItemListener, ActionLi
 	protected final void associate(JComponent comp) {
 		comp.putClientProperty(AbstractTaskFormElement.class,this);
 	}
+
+    /**
+     * @return the indirectField
+     */
+    public final JPromptingTextField getIndirectField() {
+        return this.indirectField;
+    }
+
 	
 }
