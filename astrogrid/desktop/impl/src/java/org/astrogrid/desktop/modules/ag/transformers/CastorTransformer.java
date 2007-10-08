@@ -6,6 +6,7 @@ package org.astrogrid.desktop.modules.ag.transformers;
 import java.io.StringWriter;
 
 import org.apache.commons.collections.Transformer;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.exolab.castor.xml.Marshaller;
 
 /** transform castor object to String.
@@ -20,7 +21,7 @@ public class CastorTransformer implements Transformer {
                Marshaller.marshal(arg0,sw);
                return sw.toString();
            } catch (Exception e) {
-               throw new RuntimeException(e.getMessage());
+               throw new RuntimeException(new ExceptionFormatter().formatException(e));
            }      
 	}
 

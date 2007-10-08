@@ -41,6 +41,7 @@ import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.ui.fileexplorer.StorageView;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator.NavigationEvent;
@@ -182,7 +183,7 @@ public class FileExplorerDialog extends BaseDialog implements DocumentListener, 
         protected void doError(Throwable ex) { // on error, just disable the button.
             if (this == latest) {
                 okButton.setEnabled(false);
-                parent.setStatusMessage(MSG + " - INVALID: " + ex.getMessage());
+                parent.setStatusMessage(MSG + " - INVALID: " + ExceptionFormatter.formatException(ex));
             }
         }
     }

@@ -4,6 +4,7 @@
 package org.astrogrid.desktop.modules.ag.transformers;
 
 import org.apache.commons.collections.Transformer;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.util.DomHelper;
 import org.exolab.castor.xml.Marshaller;
 import org.w3c.dom.Document;
@@ -27,7 +28,7 @@ public class StyledCastorTransformer implements Transformer {
 			Marshaller.marshal(arg0,doc);
 			return doc;
 		} catch (Exception x) {
-			throw new RuntimeException(x.getMessage());
+			throw new RuntimeException(new ExceptionFormatter().formatException(x));
 		}
 
 	}

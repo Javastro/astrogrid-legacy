@@ -15,6 +15,7 @@ import org.apache.commons.lang.text.StrBuilder;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.xml.sax.SAXParseException;
 
 /** Utility class that converts exceptions into astronomer-friendly messages.
@@ -26,15 +27,53 @@ import org.xml.sax.SAXParseException;
  */
 public class ExceptionFormatter {
     
+    /** format all exceptions in the cause chain */
+    public static final int ALL = 0;
+    /** format only the outermost exception - the default */
+    public static final int OUTERMOST = 2;
+    /** format only the innermost exception */
+    public static final int INNERMOST = 1;
     
     private static final ExceptionFormatter instance = new ExceptionFormatter();
     /** safe to call from EDT. for use from other threads, create your own instance of this class */
     public static String formatException(Throwable ex) {
         return instance.format(ex);
     }
+
+    /** safe to call from EDT. From other threads, create your own instance and use the member method */
+    public static String formatException(Throwable ex,int strategy) {
+        return instance.format(ex,strategy);
+    }
     
     private final StrBuilder sb = new StrBuilder();
+    
+    /** format an exception, according to the provided strategy */
+    public String format(Throwable ex,int strategy) {
+        switch(strategy) {
+            case OUTERMOST:
+                return formatSingle(ex);
+            case INNERMOST:
+                while(ex.getCause() != null) {
+                    ex = ex.getCause();
+                }
+                return formatSingle(ex);
+            default:
+                StrBuilder hb = new StrBuilder();
+            do {
+                hb.append(formatSingle(ex));
+                hb.append("<br>");
+                ex = ex.getCause();           
+            } while(ex != null);
+            return hb.toString();
+        }
+    }
+    
+    /** format an exception, using the default strategy (Outermost)*/
     public String format(Throwable ex) {
+        return format(ex,OUTERMOST);
+    }
+    
+    private String formatSingle(Throwable ex) {
         if (ex instanceof InvalidArgumentException) {
             sb.clear();
             sb.append("Insufficient data - ");

@@ -1,4 +1,4 @@
-/*$Id: ApiHelpImpl.java,v 1.9 2007/06/18 17:00:13 nw Exp $
+/*$Id: ApiHelpImpl.java,v 1.10 2007/10/08 08:36:28 nw Exp $
  * Created on 23-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,6 +33,7 @@ import org.astrogrid.acr.system.ApiHelp;
 import org.astrogrid.desktop.framework.ACRInternal;
 import org.astrogrid.desktop.framework.Module;
 import org.astrogrid.desktop.framework.ReflectionHelper;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 
 /** Implementation of the APIHelp component
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 23-Jun-2005
@@ -361,7 +362,7 @@ public class ApiHelpImpl implements ApiHelp {
             	throw new ACRException(e.getCause());
            
 			} catch (NoSuchMethodException x) {
-				throw new NotFoundException(x.getMessage());
+				throw new NotFoundException(new ExceptionFormatter().format(x));
 			} catch (IllegalAccessException x) {
 				throw new ACRException(x);
 			}
@@ -375,6 +376,9 @@ public class ApiHelpImpl implements ApiHelp {
 
 /* 
 $Log: ApiHelpImpl.java,v $
+Revision 1.10  2007/10/08 08:36:28  nw
+improved exception formatting
+
 Revision 1.9  2007/06/18 17:00:13  nw
 javadoc fixes.
 
