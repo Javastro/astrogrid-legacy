@@ -1009,7 +1009,7 @@ SYSTEM TRAY
 	
 		<!-- ikkle services that vfs depends upon.	-->
 		
-    <service-point id="vfsCache" visibility="private" interface="org.apache.commons.vfs.FilesCache" >
+    <service-point id="vfsCache"  interface="org.apache.commons.vfs.FilesCache" >
         <invoke-factory model="primitive">
             <construct class="org.astrogrid.desktop.modules.ag.vfs.DesktopFilesCache">
             </construct>

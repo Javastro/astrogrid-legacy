@@ -1,4 +1,4 @@
-/*$Id: VospaceImpl.java,v 1.24 2007/09/21 16:35:14 nw Exp $
+/*$Id: VospaceImpl.java,v 1.25 2007/10/08 08:34:31 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,6 +38,7 @@ import java.rmi.RemoteException;
 import org.apache.axis.types.URI.MalformedURIException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.vfs.FilesCache;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotApplicableException;
@@ -82,12 +83,13 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
     /** Construct a new Vospace
      * 
      */
-    public VospaceImpl(Community community, Registry reg, BundlePreferences preferences, UIContext ui) {
+    public VospaceImpl(Community community, Registry reg, BundlePreferences preferences, UIContext ui,FilesCache filesCache) {
         super();
         this.community = community;
         this.prefs = preferences;
         this.ui = ui;
         this.reg = reg;
+        this.cache = filesCache;
     }
     protected final UIContext ui;
    protected final Community community;
@@ -95,13 +97,15 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
    protected final BundlePreferences prefs;
     protected URI home;
     protected FileManagerClient client;
+    private final FilesCache cache;
     
+    //@todo move this client creation into it's own service,
     public synchronized FileManagerClient getClient() throws CommunityException, RegistryException, URISyntaxException {
         if (client == null) {
      //       FileManagerClientFactory fac = new FileManagerClientFactory(prefs);
        //NWW - replaced with a version that uses memoization for speedup.
     	FileManagerClientFactory fac = new FileManagerClientFactory(
-    				new MemoizingNodeDelegateResolver(prefs)
+    				new MemoizingNodeDelegateResolver(prefs,cache)
     				,new MemoizingCommunityAccountSpaceResolver());        	
             client = fac.login(new Ivorn(community.getUserInformation().getId().toString()),community.getUserInformation().getPassword());
         } 
@@ -911,6 +915,9 @@ public class  VospaceImpl implements UserLoginListener, MyspaceInternal {
 
 /* 
 $Log: VospaceImpl.java,v $
+Revision 1.25  2007/10/08 08:34:31  nw
+added piping to in future allow client to write results direct to vfs cache.
+
 Revision 1.24  2007/09/21 16:35:14  nw
 improved error reporting,
 various code-review tweaks.

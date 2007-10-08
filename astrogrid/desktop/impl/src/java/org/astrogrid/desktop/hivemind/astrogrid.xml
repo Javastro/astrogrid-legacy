@@ -141,6 +141,7 @@ MYSPACE
 				<service>ivoa.registry</service>
 				<service>bundlePrefs</service>
 				<service>system.ui</service>
+                <service>system.vfsCache</service>
 				<event-listener service-id="community" />	
 			</construct>
 		</invoke-factory>	
