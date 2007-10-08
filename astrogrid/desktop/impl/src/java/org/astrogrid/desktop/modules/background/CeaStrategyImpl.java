@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.25 2007/09/21 16:35:15 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.26 2007/10/08 08:31:06 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -61,6 +61,7 @@ import org.astrogrid.desktop.modules.ag.TimerDrivenProcessMonitor;
 import org.astrogrid.desktop.modules.auth.CommunityInternal;
 import org.astrogrid.desktop.modules.system.SchedulerInternal;
 import org.astrogrid.desktop.modules.system.SchedulerInternal.DelayedContinuation;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.votech.VoMonInternal;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
@@ -150,7 +151,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
                 try {
                     arr = apps.listServersProviding(app.getId());
                 } catch (InvalidArgumentException x) {
-                    error("Unablel to find servers providing this application",x);                    
+                    error("Unable to find servers providing this application",x);                    
                     throw new NotFoundException(x);
                 }
                 
@@ -274,7 +275,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 		/** do a poll, and if increaseStandoff=true, increate the standoff value if nothing has happended */
 		public DelayedContinuation execute(boolean increaseStandoff) {
 		    if (getStatus().equals(ExecutionInformation.ERROR) 
-                    ||getStatus().equals(ExecutionInformation.COMPLETED)) {
+                            ||getStatus().equals(ExecutionInformation.COMPLETED)) {
 		        // we're done already (probably by an intermediate refresh..)
 		        return null; // halts the progress checking.
 		    }
@@ -308,35 +309,47 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 				setStatus(newStatus);
 
 				if (newStatus.equals(ExecutionInformation.ERROR) 
-						||newStatus.equals(ExecutionInformation.COMPLETED)) {
-					finishTime = qes.getTimestamp();
-					// retrive the results.
-					ExecutionSummaryType summ = delegate.getExecutionSumary(ceaid);
-					if (summ != null && summ.getResultList() != null) {
-					    ParameterBean[] descs = app.getParameters();
-						ParameterValue[] arr = summ.getResultList().getResult();
-						for (int i = 0 ; i < arr.length; i++) {
-							final ParameterValue val = arr[i];
-							ParameterBean desc = findDescriptionFor(val,descs);
-							if (val.getIndirect()) {
-							    // do something clever - get a pointer to the remote file, and then add this as the result.
-							    //@issue hope this doesn't force login. if it does, need to create an lazily-initialized file object here instead.
-							    FileObject src = vfs.resolveFile(val.getValue());
-							    addResult(val.getName(),src);							    
-							} else {
-							    // sugges a file extension here - makes the files stuff work better.
-							    addResult(val.getName() + suggestExtension(desc),val.getValue());
-							}
-						}
-						fireResultsReceived(resultMap);
-						// done
-						return null;
-					}
+				        ||newStatus.equals(ExecutionInformation.COMPLETED)) {
+				    finishTime = qes.getTimestamp();
+				    // retrive the results - might take us more than one execute() to get them all.
+				    ExecutionSummaryType summ = delegate.getExecutionSumary(ceaid);
+				    if (summ != null && summ.getResultList() != null) {
+				        ParameterBean[] descs = app.getParameters();
+				        ParameterValue[] arr = summ.getResultList().getResult();
+				        for (int i = 0 ; i < arr.length; i++) {
+				            final ParameterValue val = arr[i];
+				            ParameterBean desc = findDescriptionFor(val,descs);
+				                if (val.getIndirect()) { 
+				                    // do something clever - get a pointer to the remote file, and then add this as the result.
+				                    //@issue hope this doesn't force login. if it does, need to create an lazily-initialized file object here instead.
+				                    // however, user would probably have logged in to setup this indirection in the first place.
+				                    try {
+				                        FileObject src = vfs.resolveFile(val.getValue());
+				                            src.refresh();
+				                        if (! src.exists()) {
+				                            throw new FileSystemException(val.getValue() + " does not exist");
+				                        }
+				                        addResult(val.getName(),src);
+				                    } catch (FileSystemException e) {
+				                        logger.debug("Failed to retrieve " + val.getValue(),e);
+				                        warn("Failed to retrieve " + val.getValue() + "<br>" + exFormatter.format(e,ExceptionFormatter.ALL));
+				                    }
+				                } else {
+				                    // sugges a file extension here - makes the files stuff work better.
+				                    addResult(val.getName() + suggestExtension(desc),val.getValue());
+				                }
+				            
+				        }
+				        fireResultsReceived(resultMap); // send the results we've got, no matter whether they're all there or not.
+				        // done
+				        return  null; 
+				    }
 				}
 				return this;
 			} catch (Throwable x) {
 			    standOff(increaseStandoff);
-			    warn("Failed: " + x.getMessage());
+			    logger.debug("Failed",x);
+			    warn("Failed: " + exFormatter.format(x,ExceptionFormatter.ALL));
 				return this;
 			}
 
@@ -612,6 +625,9 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.26  2007/10/08 08:31:06  nw
+improved locating myspace files.
+
 Revision 1.25  2007/09/21 16:35:15  nw
 improved error reporting,
 various code-review tweaks.
