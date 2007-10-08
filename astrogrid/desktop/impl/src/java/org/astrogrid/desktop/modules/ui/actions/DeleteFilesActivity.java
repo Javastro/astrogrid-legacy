@@ -23,6 +23,7 @@ import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 
 /** delete one or more files.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -98,12 +99,9 @@ public class DeleteFilesActivity extends AbstractFileActivity {
                     Map.Entry err = (Map.Entry) i.next();
                     FileObject f = (FileObject)err.getKey();
                     Throwable e = (Throwable)err.getValue();
-                    msgBuilder.append(f.getName().getPath()).append(":<ul>");
-                    do {
-                        msgBuilder.append("<li>").append(e.getMessage());
-                        e = e.getCause();
-                    } while (e != null);
-                    msgBuilder.append("</ul>");
+                    msgBuilder.append(f.getName().getPath()).append("<br>");
+                    msgBuilder.append(ExceptionFormatter.formatException(e,ExceptionFormatter.ALL));
+                    msgBuilder.append("<p>");                    
                 }
                 ResultDialog rd = new ResultDialog(parent.getFrame(),msgBuilder);
                 rd.show();

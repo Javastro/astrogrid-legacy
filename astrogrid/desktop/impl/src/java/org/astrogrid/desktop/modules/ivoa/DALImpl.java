@@ -1,4 +1,4 @@
-/*$Id: DALImpl.java,v 1.14 2007/09/21 16:35:15 nw Exp $
+/*$Id: DALImpl.java,v 1.15 2007/10/08 08:29:02 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,6 +43,7 @@ import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.io.Piper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -165,7 +166,7 @@ public abstract class DALImpl implements Dal{
         parser.parse(	arg0.toString());
         return sb.getResult();
 		} catch (Exception x) {
-			throw new ServiceException(x.getMessage());
+			throw new ServiceException(new ExceptionFormatter().format(x));
 		}
 	}
 
@@ -240,11 +241,11 @@ public abstract class DALImpl implements Dal{
         return doSaveDatasets(saver);
 
 		} catch (SAXException x) {
-			throw new ServiceException(x.getMessage());
+			throw new ServiceException(new ExceptionFormatter().format(x));
 		} catch (ParserConfigurationException x) {
-			throw new ServiceException(x.getMessage());
+			throw new ServiceException(new ExceptionFormatter().format(x));
 		} catch (IOException x) {
-			throw new ServiceException(x.getMessage());
+			throw new ServiceException(new ExceptionFormatter().format(x));
 		}		
 	}
 
@@ -327,11 +328,11 @@ public abstract class DALImpl implements Dal{
         return doSaveDatasets(saver);
 
 		} catch (SAXException x) {
-			throw new ServiceException(x.getMessage());
+			throw new ServiceException(new ExceptionFormatter().format(x));
 		} catch (ParserConfigurationException x) {
-			throw new ServiceException(x.getMessage());
+			throw new ServiceException(new ExceptionFormatter().format(x));
 		} catch (IOException x) {
-			throw new ServiceException(x.getMessage());
+			throw new ServiceException(new ExceptionFormatter().format(x));
 		}		        
 
 	}
@@ -436,6 +437,9 @@ public abstract class DALImpl implements Dal{
 
 /* 
 $Log: DALImpl.java,v $
+Revision 1.15  2007/10/08 08:29:02  nw
+improved exception formatting
+
 Revision 1.14  2007/09/21 16:35:15  nw
 improved error reporting,
 various code-review tweaks.

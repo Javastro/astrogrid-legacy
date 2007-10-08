@@ -26,6 +26,7 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.ag.XPathHelper;
 import org.astrogrid.desktop.modules.ivoa.RegistryInternal.StreamProcessor;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceStreamParser;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.oldquery.sql.Sql2Adql;
 import org.astrogrid.registry.common.RegistryDOMHelper;
 import org.astrogrid.util.DomHelper;
@@ -212,7 +213,7 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 					new DOMSource(q));
 			c.invoke("Search",new Object[]{inStream});
 		} catch (XFireFault f) {
-			throw new ServiceException("Registry Service Response:" + f.getMessage());
+			throw new ServiceException("Registry Service Response:" + new ExceptionFormatter().format(f));
 		} catch (Exception x) {
 				throw new ServiceException("Failed to query registry",x);
 		}
@@ -273,7 +274,7 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 					new DOMSource(doc));
 			c.invoke("loadRegistry",new Object[]{inStream}); // think this is non-standard in v0.1 - a kev special.
 		} catch (XFireFault f) {
-			throw new ServiceException("Registry Service Response:" + f.getMessage());
+			throw new ServiceException("Registry Service Response:" + new ExceptionFormatter().format(f));
 		} catch (Exception x) {
 				throw new ServiceException("Failed to query registry",x);
 		}
@@ -333,7 +334,7 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 			if (f.getMessage().toLowerCase().indexOf("not found") != -1) {
 				throw new NotFoundException(ivorn.toString());
 			} else {
-				throw new ServiceException("Registry Service Response:" + f.getMessage());
+				throw new ServiceException("Registry Service Response:" + new ExceptionFormatter().format(f));
 			}
 		} catch (Exception x) {
 				throw new ServiceException("Failed to query registry",x);
@@ -370,7 +371,7 @@ public class StreamingExternalRegistryImpl implements  ExternalRegistryInternal 
 					new DOMSource(doc));
 			c.invoke("KeywordSearch",new Object[]{inStream});
 		} catch (XFireFault f) {
-			throw new ServiceException("Registry Service Response:" + f.getMessage());			
+			throw new ServiceException("Registry Service Response:" + new ExceptionFormatter().format(f));			
 		} catch (Exception x) {
 				throw new ServiceException("Failed to query registry",x);
 		}

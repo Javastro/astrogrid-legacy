@@ -18,6 +18,7 @@ import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 
 /** worker class which does a bulk move of a bunch of files/folders to another target.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -129,12 +130,9 @@ public final class BulkMoveWorker extends BackgroundWorker {
             Map.Entry err = (Map.Entry) i.next();
             FileObject f = (FileObject)err.getKey();
             Throwable e = (Throwable)err.getValue();
-            msgBuilder.append(f.getName().getPath()).append(":<ul>");
-            do {
-                msgBuilder.append("<li>").append(e.getMessage());
-                e = e.getCause();
-            } while (e != null);
-            msgBuilder.append("</ul>");
+            msgBuilder.append(f.getName().getPath()).append("<br>");
+            msgBuilder.append(ExceptionFormatter.formatException(e,ExceptionFormatter.ALL));
+            msgBuilder.append("<p>");
         }
         ResultDialog rd = new ResultDialog(parent.getFrame(),msgBuilder);
         rd.show();

@@ -348,7 +348,7 @@ public final ProcessMonitor getMoitor() {
 		        }
 
 		        protected void doError(Throwable ex) {
-		            messageLabel.setText("Failed to fetch results: " + ex.getMessage());
+		            messageLabel.setText("Failed to fetch results: " + ExceptionFormatter.formatException(ex));
 	                parent.showTransientError("Failed to fetch results",ExceptionFormatter.formatException(ex));
 	                  
 		        }
