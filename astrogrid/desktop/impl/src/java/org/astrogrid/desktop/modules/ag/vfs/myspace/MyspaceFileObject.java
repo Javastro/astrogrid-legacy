@@ -185,6 +185,7 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
 	        node.refresh();
 	    }
 	}
+	
 
 	protected void onChildrenChanged(FileName child, FileType newType) throws Exception {
 		logger.debug("childChanged " + getName());
@@ -197,7 +198,11 @@ public class MyspaceFileObject extends AbstractFileObject implements FileObject 
 	    if (!isAttached()) {
 	        doAttach();
 	    }
-            return node.contentURL();
+            URL content =  node.contentURL();
+            if (content == null) {
+                throw new FileSystemException("node has no content");
+            }
+            return content;
         } catch (Exception x) {
             throw new FileSystemException(x);
         } 
