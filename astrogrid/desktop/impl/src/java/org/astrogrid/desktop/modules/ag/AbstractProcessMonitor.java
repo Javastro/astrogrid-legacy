@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,6 +35,7 @@ import org.astrogrid.acr.astrogrid.RemoteProcessListener;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.io.Piper;
 
 /** abstract class that's an interface to a componoent that monitors the progress of a remote process.
@@ -53,7 +55,8 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
      */
     private static final Log logger = LogFactory
             .getLog(AbstractProcessMonitor.class);
-
+    /** exception formatter - need our own instance, as it's called from background threads */
+    protected final ExceptionFormatter exFormatter = new ExceptionFormatter();
 	private URI id;
 	private final FileSystemManager vfs;
 	protected FileSystem sys;
@@ -120,6 +123,7 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
 	}
 	
 	protected void info(String message) {
+	    logger.info(message);
         ExecutionMessage em = new ExecutionMessage(MONITOR_MESSAGE_SOURCE
                 ,LogLevel.INFO.toString()
                 ,getStatus()
@@ -129,6 +133,7 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
 	}
 	
     protected void warn(String message) {
+        logger.info("Warn:" + message);
         ExecutionMessage em = new ExecutionMessage(MONITOR_MESSAGE_SOURCE
                 ,LogLevel.WARN.toString()
                 ,getStatus()
@@ -150,6 +155,7 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
 	
 	// helper method to signal an error, record a message, change status to error, and fire a notification
 	protected final void error(String msg) {
+	    logger.info("Error: " + msg);
 		ExecutionMessage em = new ExecutionMessage(MONITOR_MESSAGE_SOURCE
 				,LogLevel.ERROR.toString()
 				,getStatus()
@@ -162,14 +168,8 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
 	// helper method to signal an error, extracting useful information from an exception
 	// use the messages from the  last exception in the cause chain.
 	protected final void error(String msg,Throwable t) {
-	    HtmlBuilder sb = new HtmlBuilder();
-	    sb.append(msg);
-	 //   sb.br().append(t.getMessage());
-	    while(t.getCause() != null) {
-	        t = t.getCause();
-	    }
-	    sb.br().append(t.getMessage());
-	    error(sb.toString());
+	    logger.debug(msg,t);
+	    error(msg + "<br>" +exFormatter.format(t,ExceptionFormatter.ALL));
 	}
 	
 	
@@ -188,8 +188,9 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
 	 * @fires {@link #fireStatusChanged(String)}
 	 * @param newStatus
 	 */
-	public final void setStatus(String newStatus) {
+	public final void setStatus(String newStatus) {	    
 		if (! status.equals(newStatus)) {
+		    logger.info("Setting status to " + newStatus);
 			status = newStatus;
 			fireStatusChanged(status);
 		}
@@ -261,9 +262,12 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
             resultLocation.getType(); // forces attachment, meaning that contacting filesystem happens on this bg thread, not on EDT thread
             //@todo need to verify that this is enough.
         }
-       // will use native result name instead sys.addJunction(resultname,resultLocation);
-        sys.addJunction(resultLocation.getName().getBaseName(),resultLocation);
-        resultMap.put(resultname,resultLocation.getURL());
+        // access all the required bits of filesystem data before we add anything to the map - this means if anything is going to throw a filesystem
+        // exception, it'll happen early, before our state is modified.
+        final URL url = resultLocation.getURL();
+        final String baseName = resultLocation.getName().getBaseName();
+        sys.addJunction(baseName,resultLocation);
+        resultMap.put(resultname,url);
     }
     
 	/** clean up - override to remove any associated resources, in part of deleting this
