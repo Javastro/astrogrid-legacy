@@ -1,4 +1,4 @@
-/*$Id: HtmlServlet.java,v 1.11 2007/09/21 16:35:13 nw Exp $
+/*$Id: HtmlServlet.java,v 1.12 2007/10/09 14:56:19 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -248,13 +248,14 @@ public class HtmlServlet extends AbstractReflectionServlet {
         }
 
         Object result = MethodUtils.invokeMethod(component,md.getName(),args);
-        // fix for bz #1647
-        if (m.getReturnType().equals(Void.TYPE)) {
-        	result="OK";
-        } 
         response.setContentType("text/" + resultType.trim().toLowerCase());
         PrintWriter out = response.getWriter();
-        if (resultType.equalsIgnoreCase("html")) {
+        // fix for bz #1647
+        if (m.getReturnType().equals(Void.TYPE)) {
+        	out.println("OK");
+        }  else if (result == null) {
+            out.println("null");
+        } else if (resultType.equalsIgnoreCase("html")) {
             out.println(html.transform(result));
         } else if (resultType.equalsIgnoreCase("plain")) {
             out.println( plain.transform(result));
@@ -291,6 +292,9 @@ public class HtmlServlet extends AbstractReflectionServlet {
 
 /* 
 $Log: HtmlServlet.java,v $
+Revision 1.12  2007/10/09 14:56:19  nw
+improved error handling.
+
 Revision 1.11  2007/09/21 16:35:13  nw
 improved error reporting,
 various code-review tweaks.

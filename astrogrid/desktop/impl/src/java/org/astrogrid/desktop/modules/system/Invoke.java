@@ -32,7 +32,7 @@ public class Invoke implements Runnable {
             this.result = meth.invoke(service,args);
         } catch (Exception e) {
                 logger.error("Failed to invoke method " + meth.getName());            
-                logger.debug("Exception",e);
+                logger.info("Exception",e);
         }
     }
     public Object getResult() {
