@@ -17,8 +17,6 @@ public class RegistryGoogleImpl implements RegistryGoogle {
 	public RegistryGoogleImpl( UIContext context,RegistryGooglePanel regPanel) {
         super();
         dialog = new RegistryGoogleDialog(context,regPanel);
-        dialog.pack();
-        // set size..
     }
     private final RegistryGoogleDialog dialog;
 
@@ -27,7 +25,7 @@ public class RegistryGoogleImpl implements RegistryGoogle {
 		return selectResourcesXQueryFilter(arg0,arg1,null);
 	}
 
-	//@todo unsure whether I'm going to be able to implement both adql and xquery variants.
+	//@todo remove this - replace with srql.
 	public Resource[] selectResourcesAdqlFilter(String arg0, boolean arg1,
 			String arg2) {
 		return selectResourcesXQueryFilter(arg0,arg1,arg2);

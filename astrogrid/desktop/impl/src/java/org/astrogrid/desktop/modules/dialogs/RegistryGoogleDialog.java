@@ -1,4 +1,4 @@
-/*$Id: RegistryGoogleDialog.java,v 1.13 2007/09/21 16:35:15 nw Exp $
+/*$Id: RegistryGoogleDialog.java,v 1.14 2007/10/12 10:58:24 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,56 +13,64 @@ package org.astrogrid.desktop.modules.dialogs;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.HeadlessException;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
+import org.astrogrid.desktop.modules.ui.UIDialogueComponentImpl;
+import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
 
 /** wraps a dialogue around a registry chooser pane.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Sep-2005
  *
  */
-public class RegistryGoogleDialog extends JDialog implements PropertyChangeListener {
+public class RegistryGoogleDialog extends UIDialogueComponentImpl implements ListSelectionListener {
 
-    JOptionPane jOptionPane = null;
     final RegistryGooglePanel chooserPanel;
-    private final UIComponentImpl parent;
+    private final JButton okButton;
     /** Construct a new RegistryChooserDialog
      * @throws java.awt.HeadlessException
      */
     public RegistryGoogleDialog( UIContext context, RegistryGooglePanel chooserPanel) throws HeadlessException {
-        super();
-        this.parent = new UIComponentImpl(context);
+        super(context);
         this.chooserPanel = chooserPanel;
-        chooserPanel.parent.set(parent);
-        this.setContentPane(getJOptionPane());           
+        this.okButton = getOkButton();
+        this.okButton.setEnabled(false);
+        chooserPanel.parent.set(this);
+        chooserPanel.getCurrentResourceModel().addListSelectionListener(this);
+        JPanel main =getMainPanel();
+        main.add(getTopLabel(),BorderLayout.NORTH);
+        main.add(chooserPanel,BorderLayout.CENTER);
+/* might need to do something like this in a bit
+        KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
+        jOptionPane.getInputMap().remove(enter);
+        jOptionPane.getInputMap(jOptionPane.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).remove(enter);
+        jOptionPane.getInputMap(jOptionPane.WHEN_IN_FOCUSED_WINDOW).remove(enter);
+        jOptionPane.getInputMap(jOptionPane.WHEN_IN_FOCUSED_WINDOW).put(enter,"search");
+        */        
+        this.getContentPane().add(main);           
      
         this.setTitle("Registry Resource Chooser");
-        this.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent we) {
-            /*
-             * Instead of directly closing the window,
-             * we're going to change the JOptionPane's
-             * value property.
-             */
-                jOptionPane.setValue(new Integer(JOptionPane.CLOSED_OPTION));
-        }
-    });                
-        this.setModal(true);
-        this.setSize(425,600);        
+        this.pack();
+        this.setSize(600,600);        
     }
     
     public RegistryGoogleDialog(Component parentComponent,UIContext context,RegistryGooglePanel reg) throws HeadlessException {
@@ -78,16 +86,16 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
     	// - script interpreter? bean constraint and update language?
     	// maybe this is a general requirement  anyhow - re brian's wishlist
     	// 
+        // think I need to allow the client to provide the query to run to provide a list of
+        // resources.
+        // actually, I need this in all cases.
+        // 
     }
 
     public void setMultipleResources(boolean multiple) {
         chooserPanel.setMultipleResources(multiple);
     }    
-    
-    public void resetAndHide() {
-        setVisible(false);
-        chooserPanel.clear();
-    }
+
     
     public Resource[] getSelectedResources() {
         return selectedResources;
@@ -95,35 +103,23 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
     
     private Resource[] selectedResources = null;
     
-    public void propertyChange(PropertyChangeEvent e) {
-        String prop = e.getPropertyName();
-        if (isVisible()
-         && (e.getSource() == jOptionPane)
-         && (JOptionPane.VALUE_PROPERTY.equals(prop) ||
-             JOptionPane.INPUT_VALUE_PROPERTY.equals(prop))) {
-            Object value = jOptionPane.getValue();
-
-            if (value == JOptionPane.UNINITIALIZED_VALUE) {
-                //ignore reset
-                return;
-            }
-
-            //Reset the JOptionPane's value.
-            //If you don't do this, then if the user
-            //presses the same button next time, no
-            //property change event will be fired.
-            jOptionPane.setValue(
-                    JOptionPane.UNINITIALIZED_VALUE);
-
-            if (JOptionPane.OK_OPTION == ((Integer)value).intValue()) {
-              //  selectedResources = chooserPanel.getSelectedResources();
-            	//@fixme implement against current selection.
-                    resetAndHide();                
-            } else { //user closed dialog or clicked cancel           
-                selectedResources = null;
-                resetAndHide();
-            }
-        }
+    public void ok() {
+        Transferable tran = chooserPanel.getSelectionTransferable(); // see what's been chosen then
+        try {
+            selectedResources =(Resource[]) tran.getTransferData(VoDataFlavour.RESOURCE_ARRAY);
+        } catch (UnsupportedFlavorException x) { // unlikely.
+            logger.error("UnsupportedFlavorException",x);
+        } catch (IOException x) { // unlikely
+            logger.error("IOException",x);
+        } 
+        super.ok();
+        chooserPanel.clear();
+    }
+    
+    public void cancel() {
+        super.cancel();
+        selectedResources = null;
+        chooserPanel.clear();
     }
     
     public void setPrompt(String s) {
@@ -137,37 +133,20 @@ public class RegistryGoogleDialog extends JDialog implements PropertyChangeListe
         }
         return topLabel;
     }
-        
- 
-    private JOptionPane getJOptionPane() {
-       if (jOptionPane == null) {
-           JPanel main = parent.getMainPanel();
-           parent.remove(main); // remove from this ui;
-           main.add(getTopLabel(),BorderLayout.NORTH);
-           main.add(chooserPanel,BorderLayout.CENTER);
-           jOptionPane = new JOptionPane(main,JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
-           jOptionPane.addPropertyChangeListener(this);
-           KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
-           jOptionPane.getInputMap().remove(enter);
-           jOptionPane.getInputMap(jOptionPane.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).remove(enter);
-           jOptionPane.getInputMap(jOptionPane.WHEN_IN_FOCUSED_WINDOW).remove(enter);
-           jOptionPane.getInputMap(jOptionPane.WHEN_IN_FOCUSED_WINDOW).put(enter,"search");
-//     obsolete      jOptionPane.getActionMap().put("search",new AbstractAction() {
-//               public void actionPerformed(ActionEvent e) {
-//                   chooserPanel.actionPerformed(e);
-//               }
-//           });              
-       }
-       return jOptionPane;
-    }
-    
 
+    // listens to changes in the user's selection.
+    public void valueChanged(ListSelectionEvent e) {
+        okButton.setEnabled(chooserPanel.getSelectionTransferable() != null); 
+    }
 
 }
 
 
 /* 
 $Log: RegistryGoogleDialog.java,v $
+Revision 1.14  2007/10/12 10:58:24  nw
+re-worked dialogues to use new ui baseclass and new ui components.
+
 Revision 1.13  2007/09/21 16:35:15  nw
 improved error reporting,
 various code-review tweaks.

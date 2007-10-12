@@ -41,6 +41,7 @@ import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
+import org.astrogrid.desktop.modules.ui.UIDialogueComponentImpl;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.ui.fileexplorer.StorageView;
@@ -57,9 +58,8 @@ import com.l2fprod.common.swing.JTaskPane;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Aug 30, 20079:49:42 AM
  */
-public class FileExplorerDialog extends BaseDialog implements DocumentListener, Matcher, NavigationListener, ActionListener{
+public class FileExplorerDialog extends UIDialogueComponentImpl implements DocumentListener, Matcher, NavigationListener, ActionListener{
 
-    private final UIComponentImpl parent;
     private final StorageView view;
     private URI uri;
     private final JButton okButton;
@@ -78,31 +78,26 @@ public class FileExplorerDialog extends BaseDialog implements DocumentListener, 
      * 
      */
     public FileExplorerDialog(UIContext context, TypesafeObjectBuilder builder) {
-        super();
-        getBanner().setVisible(false);
+        super(context);
         // based on code reading...
-        this.okButton = getRootPane().getDefaultButton();
-        this.parent = new UIComponentImpl(context);
+        this.okButton = getOkButton();
         ActivitiesManager acts = new NullActivitiesManager();
-        this.view = builder.createStorageView(parent,acts);
+        this.view = builder.createStorageView(this,acts);
         view.setSingleSelectionMode(true);
         view.getNavigator().addNavigationListener(this);
-        JPanel uiComponentPanel = parent.getMainPanel();
-        parent.remove(uiComponentPanel); // detatch panel from it's uicomponent - as we want to embed it in the dialog.
-        // rest of parent remains, invisible.
+        JPanel mainPanel = getMainPanel();
 
         // assemble new UI.
         JComponent foldersPanel = view.getHierarchiesPanel();
-        JComponent mainPanel = view.getMainPanel();
+        JComponent mainViewPanel = view.getMainPanel();
         JComponent mainButtons = view.getMainButtons();
         // combine LHS and RSH
-        JSplitPane lrPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,foldersPanel,mainPanel);
+        JSplitPane lrPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,foldersPanel,mainViewPanel);
         lrPane.setDividerLocation(200);
         lrPane.setBorder(BorderFactory.createEmptyBorder());
-        uiComponentPanel.add(lrPane,BorderLayout.CENTER); 
+        mainPanel.add(lrPane,BorderLayout.CENTER); 
         // add buttonbar on top.
-        uiComponentPanel.add(mainButtons,BorderLayout.NORTH);
-        // bottom of uiComponentPanel is pre-filled with the progress bar / activity monitor stuff.
+        mainPanel.add(mainButtons,BorderLayout.NORTH);
         
         // Create a new panel for a filename text field.
         this.filename = new JTextField(40);
@@ -113,13 +108,10 @@ public class FileExplorerDialog extends BaseDialog implements DocumentListener, 
         p.add(filename);
         // stack both panels together.
         Box b = new Box(BoxLayout.Y_AXIS);
-        b.add(uiComponentPanel);
+        b.add(mainPanel);
         b.add(p);
         
-        this.getContentPane().add(b);
-        
-        
-        this.setModal(true);
+        this.getContentPane().add(b);                
         this.setSize(600,400);
         
         this.validationTimer = new Timer(700,this); // validate when the user has been silent for 700ms.
@@ -156,7 +148,7 @@ public class FileExplorerDialog extends BaseDialog implements DocumentListener, 
          * @param msg
          */
         private ValidationWorker() {
-            super(FileExplorerDialog.this.parent, MSG);
+            super(FileExplorerDialog.this, MSG);
         }
 
         protected Object construct() throws Exception {

@@ -1,4 +1,4 @@
-/*$Id: ToolEditorImpl.java,v 1.17 2007/09/21 16:35:15 nw Exp $
+/*$Id: ToolEditorImpl.java,v 1.18 2007/10/12 10:58:24 nw Exp $
  * Created on 16-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,17 +11,12 @@
 package org.astrogrid.desktop.modules.dialogs;
 
 import java.awt.Component;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.acr.InvalidArgumentException;
-import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.astrogrid.Applications;
-import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -29,24 +24,17 @@ import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.w3c.dom.Document;
 
-/** Implementation of the ToolEditor component.
- * Displays a {@link org.astrogrid.desktop.modules.dialogs.editors.BasicToolEditorPanel} in a dialogue 
+/** Implementation of the ToolEditor component
  *  @author Noel Winstanley noel.winstanley@manchester.ac.uk 16-May-2005
  *
  */
 public class ToolEditorImpl implements ToolEditorInternal {
-  private final Applications apps;
    private final ToolEditorDialog dialog;   
 
 
     public ToolEditorImpl(UIContext context
             ,TypesafeObjectBuilder builder, Applications apps) {
-        super(); 
-        dialog = new ToolEditorDialog(context,builder);
-        //dialog.setSize(600,425);
-        dialog.pack();      
-        
-        this.apps = apps;
+        this.dialog = new ToolEditorDialog(context,builder,apps);   
     }
     
 
@@ -84,41 +72,18 @@ public class ToolEditorImpl implements ToolEditorInternal {
 
 
     public Tool editStoredTool(URI toolLocation, Component comp) throws InvalidArgumentException, ServiceException {
-        Tool t = null;
-        try {
-            InputStream is = toolLocation.toURL().openStream();
-            t = Tool.unmarshalTool(new InputStreamReader(is));
-        } catch (Exception e) {
-            throw new InvalidArgumentException(e);
-        } 
-        return editTool(t,comp);
+        dialog.load(toolLocation);
+        dialog.setLocationRelativeTo(comp);
+        return dialog.getTool();
     }
     
  
     public Tool editTool(Tool t,Component comp) throws InvalidArgumentException {
-        try {
-        URI uri = new URI(t.getName().startsWith("ivo://") ? t.getName() : "ivo://" + t.getName());
-        CeaApplication desc = apps.getCeaApplication(uri);
-        Tool t1 = editToolWithDescription(t, desc,comp);
-        return t1;
-        } catch (URISyntaxException e) {
-            throw new InvalidArgumentException(e);
-        } catch (ServiceException e) {
-            throw new InvalidArgumentException(e);
-        } catch (NotFoundException e) {
-            throw new InvalidArgumentException(e);
-        } 
-    }
-
-    public Tool editToolWithDescription(Tool t, CeaApplication desc,Component comp) {        
-        dialog.populate(t,desc);
+        dialog.populate(t);
         dialog.setLocationRelativeTo(comp);
-        dialog.setVisible(true);
-        dialog.toFront();
-        dialog.requestFocus();
         return dialog.getTool();
+     
     }
-
 
     /**
      * @see org.astrogrid.acr.dialogs.ToolEditor#selectAndBuild()
@@ -142,17 +107,8 @@ public class ToolEditorImpl implements ToolEditorInternal {
      */
     public Tool selectAndBuildTool(Component comp) throws ServiceException {
         dialog.setLocationRelativeTo(comp);
-        dialog.setVisible(true);
         return dialog.getTool();   
     }
-    /** variant of {@link #selectAndBuildTool} that only allows CEA apps to be selected */
-    public Tool selectAndBuildCEATool(Component comp) throws ServiceException {
-        dialog.setLocationRelativeTo(comp);
-        dialog.nextDisplayShowCEAOnly();
-        dialog.setVisible(true);
-        return dialog.getTool();   
-    }
-
 
 
 }
@@ -160,6 +116,9 @@ public class ToolEditorImpl implements ToolEditorInternal {
 
 /* 
 $Log: ToolEditorImpl.java,v $
+Revision 1.18  2007/10/12 10:58:24  nw
+re-worked dialogues to use new ui baseclass and new ui components.
+
 Revision 1.17  2007/09/21 16:35:15  nw
 improved error reporting,
 various code-review tweaks.

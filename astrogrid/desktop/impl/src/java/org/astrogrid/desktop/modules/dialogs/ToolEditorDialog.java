@@ -1,4 +1,4 @@
-/*$Id: ToolEditorDialog.java,v 1.15 2007/10/07 10:41:31 nw Exp $
+/*$Id: ToolEditorDialog.java,v 1.16 2007/10/12 10:58:24 nw Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,196 +12,153 @@ package org.astrogrid.desktop.modules.dialogs;
 
 import java.awt.BorderLayout;
 import java.awt.HeadlessException;
-import java.awt.event.MouseAdapter;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URI;
 
-import javax.swing.JDialog;
-import javax.swing.JLabel;
+import javax.swing.AbstractAction;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
 
+import org.astrogrid.acr.astrogrid.Applications;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
+import org.astrogrid.desktop.modules.ui.UIDialogueComponentImpl;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.taskrunner.TaskParametersForm;
+import org.astrogrid.desktop.modules.ui.taskrunner.TaskRunnerImpl;
 import org.astrogrid.desktop.modules.ui.taskrunner.UIComponentWithMenu;
+import org.astrogrid.desktop.modules.ui.taskrunner.TaskRunnerImpl.TaskRunnerToolbar;
 import org.astrogrid.workflow.beans.v1.Tool;
+
+import com.l2fprod.common.swing.BaseDialog;
+
 /** dialog that allows the user to edit a tool document - i.e. a set of parameters.
  * 
- * <p>
- * tool editing business done by {@link org.astrogrid.desktop.modules.dialogs.editors.BasicToolEditorPanel}
  * this class is just concerned with the dialogue side of thinigs
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 23-Mar-2005
+ * 
+ * @todo add cut/copy/paste operations to edit menu.
  *
  */
-public class ToolEditorDialog extends JDialog implements PropertyChangeListener {
-
+public class ToolEditorDialog extends UIDialogueComponentImpl implements UIComponentWithMenu{
     
-    JOptionPane jOptionPane = null;
-    private final MyUIComponent parent;
     private final JMenu editMenu;
-    
-   	private JLabel topLabel = null;
     private TaskParametersForm parametersPanel;
+    private final Applications apps;
    
+    private class ChooseAppAction extends AbstractAction {
+        {
+            setEnabled(false);
+        }
+           
+        public void actionPerformed(ActionEvent e) {
+            //@todo implement
+        }
+
+    }
    	
-   	public ToolEditorDialog(UIContext context,TypesafeObjectBuilder builder) throws HeadlessException {
-        super();          
-        this.editMenu = new JMenu("edit");
-        this.parent = new MyUIComponent(context);  
-        this.parametersPanel = builder.createTaskParametersForm(parent); 
-        init();
-    }
+   	public ToolEditorDialog(UIContext context,TypesafeObjectBuilder builder,Applications apps) throws HeadlessException {
+   	    super(context);
+   	    this.apps = apps;
+   	    setTitle("Task Editor");
+   	    setSize(600,600);
 
-
-	/**
-	 * 
-	 */
-	private void init() {
-		this.setTitle("Task Editor");
-        this.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent we) {
-            /*
-             * Instead of directly closing the window,
-             * we're going to change the JOptionPane's
-             * value property.
-             */
-                jOptionPane.setValue(new Integer(JOptionPane.CLOSED_OPTION));
-        }
-    });                
-        this.setModal(true);
-        this.setContentPane(getJOptionPane());
-        JMenuBar mb = new JMenuBar();
-        mb.add(editMenu);
-        setJMenuBar(mb);
-         
-	}   	
-    
-    public void resetAndHide() {
-        setVisible(false);
-        getTopLabel().setText(null);
-        getTopLabel().setToolTipText(null);
-        parametersPanel.clear();
+   	    this.editMenu = new JMenu("Edit");
+   	    
+   	    this.parametersPanel = builder.createTaskParametersForm(this);
+   	    ChooseAppAction chooseAppAction = new ChooseAppAction();
+   	    TaskRunnerToolbar toolbar = new TaskRunnerImpl.TaskRunnerToolbar(parametersPanel,chooseAppAction);
+   	    parametersPanel.setToolbar(toolbar);
+   	    parametersPanel.setRightPane("ignored",null);
+   	    JPanel main = getMainPanel();
+   	    main.add(parametersPanel,BorderLayout.CENTER);
+   	    getContentPane().add(main);
+   	    JMenuBar mb = new JMenuBar();
+   	    mb.add(editMenu);
+   	// unsure whether a menubar is generally useful or not.    
+   	//    setJMenuBar(mb);
     }
-    
-    private Tool editedTool = null;
-    
-    public Tool getTool() {
-        return editedTool;
-    }
-    
-    /** call this before setVisible() to restrict possible selections to only cea apps
-     * only applies to next display of dialog - after which, goes back to 'all'
-     *
+   	
+   
+    /** show the dialogue and return the user's input.
+     * 
+     * @return the edited tool, or null if cancel was pressed
      */
-    public void nextDisplayShowCEAOnly() {
-        //@todo implement or remove this
-    //	parametersPanel.putClientProperty(CompositeToolEditorPanel.CEA_ONLY_CLIENT_PROPERTY,Boolean.TRUE);
+    public Tool getTool() {
+        Tool result = null;
+        if (ask()) {
+         result  = parametersPanel.getTool();
+        } 
+        parametersPanel.clear();        
+        return result;
     }
-    /** overridden - resets client property */
-    public void setVisible(boolean b) {
-    	super.setVisible(b);
-    	// once we've gotten here, modal dialogue has returned. so safe to remove the client property, if it exists
-   // 	parametersPanel.putClientProperty(CompositeToolEditorPanel.CEA_ONLY_CLIENT_PROPERTY,null);
-    }
-    
-    
-    public void populate(Tool t, CeaApplication desc) {
-        editedTool = null;
-        //@todo check the interfacename for validity first.
-        parametersPanel.buildForm(t,t.getInterface(),desc);    
-        getTopLabel().setText(desc.getTitle());
-        getTopLabel().setToolTipText(desc.getContent().getDescription());
-    }
+     
+    public void populate(final Tool t) {
+        new BackgroundWorker(this,"Retrieving tool metadata") {
 
-    
-    
-    public void propertyChange(PropertyChangeEvent e) {
-        String prop = e.getPropertyName();
-        if (isVisible()
-         && (e.getSource() == jOptionPane)
-         && (JOptionPane.VALUE_PROPERTY.equals(prop) ||
-             JOptionPane.INPUT_VALUE_PROPERTY.equals(prop))) {
-            Object value = jOptionPane.getValue();
-
-            if (value == JOptionPane.UNINITIALIZED_VALUE) {
-                //ignore reset
-                return;
+            protected Object construct() throws Exception {
+                URI uri = new URI(t.getName().startsWith("ivo://") ? t.getName() : "ivo://" + t.getName());
+                return apps.getCeaApplication(uri);   
             }
-
-            //Reset the JOptionPane's value.
-            //If you don't do this, then if the user
-            //presses the same button next time, no
-            //property change event will be fired.
-            jOptionPane.setValue(
-                    JOptionPane.UNINITIALIZED_VALUE);
-
-            if (JOptionPane.OK_OPTION == ((Integer)value).intValue()) {
-                editedTool = parametersPanel.getTool();
-                    resetAndHide();                
-            } else { //user closed dialog or clicked cancel           
-                editedTool = null;
-                resetAndHide();
+            protected void doFinished(Object result) {
+                CeaApplication desc = (CeaApplication)result;
+                parametersPanel.buildForm(t,t.getInterface(),desc);    
+                super.doFinished(result);
             }
-        }
+            protected void doError(Throwable ex) {
+                ExceptionFormatter.showError(ToolEditorDialog.this,"An error occurred while " + msg.toLowerCase(),ex);
+            }            
+        }.start();
     }
     
+    /** load tool from a storage location */
+    public void load(final URI location) {
+        new BackgroundWorker(this,"Loading tool from " + location) {
 
-    private JOptionPane getJOptionPane() {
-       if (jOptionPane == null) {
-           JPanel main = parent.getMainPanel();
-           parent.remove(main);
-           main.add(getTopLabel(),BorderLayout.NORTH);
-           main.add(parametersPanel,BorderLayout.CENTER);
-           JScrollPane detailsPane =  new JScrollPane(main);
-           detailsPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-           jOptionPane = new JOptionPane(detailsPane,JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
-           //jOptionPane = new JOptionPane(main,JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
-           jOptionPane.addPropertyChangeListener(this);
-       }
-       return jOptionPane;
+            protected Object construct() throws Exception {
+                Reader is = null;                
+                try {
+                    is = new InputStreamReader(location.toURL().openStream());
+                    return Tool.unmarshalTool(is);
+                } finally {
+                    try {
+                        is.close();
+                    } catch (IOException e) {
+                        // don 't care
+                    }
+                }
+            }
+            protected void doFinished(Object result) {
+                populate((Tool)result);
+            }
+            // overridden to display error in front of dialogue.
+            protected void doError(Throwable ex) {
+                ExceptionFormatter.showError(ToolEditorDialog.this,"An error occurred while " + msg.toLowerCase(),ex);
+            }
+        }.start();
     }
 
-    /** class that provides access to the context menu.*/
-    private class MyUIComponent extends UIComponentImpl implements UIComponentWithMenu {
-
-        /**
-         * @param context
-         * @throws HeadlessException
-         */
-        public MyUIComponent(UIContext context) throws HeadlessException {
-            super(context);
-        }
 
         public JMenu getContextMenu() {
             return editMenu;
         }
-    }
     
-
     
-    private JLabel getTopLabel() {
-        if (topLabel == null) {
-            topLabel = new JLabel();
-        }
-        return topLabel;
-    }
-      
-   
-}  //  @jve:decl-index=0:visual-constraint="10,10"
+}
 
 
 /* 
 $Log: ToolEditorDialog.java,v $
+Revision 1.16  2007/10/12 10:58:24  nw
+re-worked dialogues to use new ui baseclass and new ui components.
+
 Revision 1.15  2007/10/07 10:41:31  nw
 pass context menu into adql editor
 

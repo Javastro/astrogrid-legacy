@@ -1,4 +1,4 @@
-/*$Id: ToolEditorInternal.java,v 1.8 2007/06/18 17:03:12 nw Exp $
+/*$Id: ToolEditorInternal.java,v 1.9 2007/10/12 10:58:24 nw Exp $
  * Created on 24-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -56,30 +56,17 @@ public interface ToolEditorInternal extends ToolEditor {
      * @throws ServiceException if any exception occurs during editng.
      */
     Tool selectAndBuildTool(Component comp) throws ServiceException;
-    
-    
-    /** 
-     * variant of {@link #selectAndBuildTool(Component)}, restricted to cea apps.
-     * @return a new tool document
-     * @param comp ui component to center this dialog on.     
-     * @throws ServiceException if any exception occurs during editng.
-     */
-    Tool selectAndBuildCEATool(Component comp) throws ServiceException;
-    
-
-    /**
-     * Internal variant 
-     * @param t
-     * @param desc
-     */
-    public Tool editToolWithDescription(Tool t, CeaApplication desc,Component comp) ;
-        
+  
+     
 
 }
 
 
 /* 
 $Log: ToolEditorInternal.java,v $
+Revision 1.9  2007/10/12 10:58:24  nw
+re-worked dialogues to use new ui baseclass and new ui components.
+
 Revision 1.8  2007/06/18 17:03:12  nw
 javadoc fixes.
 
