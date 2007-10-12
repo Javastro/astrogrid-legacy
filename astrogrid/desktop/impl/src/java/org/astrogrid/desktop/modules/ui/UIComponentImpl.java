@@ -1,4 +1,4 @@
-/*$Id: UIComponentImpl.java,v 1.18 2007/09/21 16:35:14 nw Exp $
+/*$Id: UIComponentImpl.java,v 1.19 2007/10/12 11:04:00 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,74 +12,34 @@ package org.astrogrid.desktop.modules.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.HeadlessException;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JProgressBar;
-import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.builtin.ShutdownListener;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.dialogs.ResultDialog;
-import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
-import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
-import org.astrogrid.desktop.modules.ui.comp.EventListPopupMenuManager;
-import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
-import org.astrogrid.desktop.modules.ui.comp.IndeterminateProgressIndicator;
-import org.astrogrid.desktop.modules.ui.comp.MessageTimerProgressBar;
-import org.astrogrid.desktop.modules.ui.comp.TimedPopup;
-import org.astrogrid.desktop.modules.ui.comp.UIConstants;
-
-import ca.odell.glazedlists.FilterList;
-import ca.odell.glazedlists.FunctionList;
-import ca.odell.glazedlists.RangeList;
-import ca.odell.glazedlists.matchers.Matcher;
-import ca.odell.glazedlists.swing.EventListModel;
-
-import com.l2fprod.common.swing.StatusBar;
 
 
-/** baseclass for ui components.
+
+
+/** baseclass for non-dialogue ui components.
  *<p>
- *extends position-remembering frame, adds a progress bar / status message at the bottom, and
+ *adds a progress bar / status message at the bottom, and
  *provides a worker class that indicates progress using these.
  *
  *Also provides a place to have convenient common functionality - definitions of a 
@@ -88,9 +48,8 @@ import com.l2fprod.common.swing.StatusBar;
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 07-Apr-2005
  *
  */ 
-public class UIComponentImpl extends JFrame implements UIComponent, ShutdownListener {
-/** convenience constant for the empty border - using this declutters the ui somewhat.*/
-    public static final Border EMPTY_BORDER = BorderFactory.createEmptyBorder();
+public class UIComponentImpl extends JFrame implements UIComponent {
+
 
     /**
      * Commons Logger for this class - can be used by subclasses too.
@@ -98,79 +57,7 @@ public class UIComponentImpl extends JFrame implements UIComponent, ShutdownList
     protected static final Log logger = LogFactory.getLog(UIComponentImpl.class);
 
     private final UIContext context;
-
-	/** static helper method - show a well-formatted error in a popup dialogue
-     * <p/>
-     * 
-     * @deprecated classes that extend this class should call {@link #showError(String, Throwable)} instead
-     */
-    public static final void showError(final Component parent,String msg, Throwable e) {
-        logger.info(msg,e); 
-        JLabel l = new JLabel();
-
-        HtmlBuilder hb = new HtmlBuilder();
-        hb.append("<b>").append(msg).append("</b>");
-        hb.br();
-        hb.append(ExceptionFormatter.formatException(e));
-
-        l.setText(hb.toString());
-        
-        int result = JOptionPane.showOptionDialog(parent,l,"An Error Occurred", 
-                JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null,
-                new Object[]{"Ok","Details.."}, "Ok"
-                );
-        if (result == 1) { // user wants to see the gory details      
-            StringWriter sw = new StringWriter();        
-            PrintWriter pw = new PrintWriter(sw);
-            pw.println("<html><body><pre>");
-            pw.println("Date of Error: " + (new Date()).toString());
-            if (parent != null) {
-                pw.println("Within component: " + parent.getClass().getName());
-            }
-            // maybe add more header info here - user, etc. - hard to get to.
-        
-            pw.println();
-            e.printStackTrace(pw);
-
-            if (parent != null && parent instanceof UIComponentImpl) {            
-                pw.println();
-                UIComponent u = (UIComponent)parent;
-                try {
-                    Map m = u.getContext().getConfiguration().list();
-                    Properties props = new Properties();
-                    props.putAll(m);
-                    // nggg. clunky.
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    props.save(bos,"Application Configuration");
-                    pw.println(bos.toString());
-                } catch (ACRException ex) {
-                    pw.println("Failed to list configuration");
-                    ex.printStackTrace(pw);
-                }
-            }
-
-            pw.println();   
-            Properties sysProps = System.getProperties();
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            sysProps.save(bos,"System Properties");
-            pw.println(bos.toString());
-        
-            pw.println();
-            pw.println("If you think this is a bug in the Workbench, please email this transcript to");
-            pw.println("astrogrid_help@star.le.ac.uk, along with details of your username and a description");
-            pw.println("of what was happening at the time of the error");
-            
-            // finish off the report
-            pw.println("</pre></body></html>");
-
-            // display report in a dialogue
-            ResultDialog rd = new ResultDialog(parent,sw.toString());
-            rd.setVisible(true);
-            rd.toFront();
-            rd.requestFocus();
-        }
-    }
-
+    private final UIComponentAssist assist;
      /** Construct a new UIComponentImpl
      * @param context
      * @throws HeadlessException
@@ -178,273 +65,22 @@ public class UIComponentImpl extends JFrame implements UIComponent, ShutdownList
     public UIComponentImpl(UIContext context) throws HeadlessException {
         this.context = context;
         context.registerWindow(this);
-        tasksList = new FilterList(context.getTasksList(),new Matcher() {
-			public boolean matches(Object arg0) {
-				BackgroundWorker w = (BackgroundWorker)arg0;
-				return w.special || w.parent == UIComponentImpl.this;
-			}
-        });
+        assist = new UIComponentAssist(this);
+        setContentPane(assist.getMainPanel());
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e) {
             	getContext().unregisterWindow(UIComponentImpl.this);
             	setVisible(false);
             	// detach myself from the context.
-            	//should I do any further cleanup - listeners, etc?
-            	throbber.setModel(null);
-            	tasksList.dispose();
-            	((EventListModel)plasticList.getModel()).dispose();
-            	login.setModel(null);
+            	assist.cleanup();
             	dispose();
             }
         });        
     }
-     private JProgressBar progressBar;
-    private StatusBar bottomPanel;
-    private JButton helpButton;
-    private JPanel jContentPane;
-    private JButton login;
-    private JList plasticList;
-    private JButton tasksButton;
-    private final FilterList tasksList;
-    private JButton throbber;
-
     
-    
-    public JFrame getFrame() {
+    public Component getComponent() {
 		return this;
-	}
-    // default implementation of Shutdown listener - just ensure this window gets closed.
-    /** access the main panel, where other components can be added..
-     * @return a JPane with {@link BorderLayout}. The southern segment is already taken by the activity indicator & status message.
-     */ 
-    public JPanel getMainPanel() {       
-        if (jContentPane == null) {
-            jContentPane = new javax.swing.JPanel();
-            jContentPane.setLayout(new java.awt.BorderLayout());
-            jContentPane.add(getBottomPanel(), java.awt.BorderLayout.SOUTH);
-            jContentPane.setBorder(EMPTY_BORDER);
-        }
-        return jContentPane;
-    }
-    /** get the maximum value for the progress bar */
-    public int getProgressMax() {
-        return getProgressBar().getMaximum();
-    }
-
-    /** get the current progress value - between <tt>0</tt> and <tt>getProgressMax()</tt> */
-    public int getProgressValue() {
-        return getProgressBar().getValue();
-    }
-
-    public void halting() {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                setVisible(false);
-                dispose();
-            }
-        });
-    }
-    public String lastChance() {
-        return null;
-    }
-
-    
-    /** set maximum value for progress bar */
-    public void setProgressMax(int i) {
-        getProgressBar().setMaximum(i);
-        getProgressBar().setString("");
-    }
-    
-    /** set current value in progress bar - between <tt>0</tt> and <tt>getProgressMax()</tt> */
-    public void setProgressValue(int i) {
-        getProgressBar().setValue(i);
-    }
-    
-    /** set the status message at the bottom of this pane
-     * 
-     * @param s a message ("" to clear a previous message");
-     */
-    public void setStatusMessage(String s) {
-        getProgressBar().setString(s);
-    }
-    
-    
-    /** display a well-formatted error message in a popup dialogue.
-     * 
-     * @param msg message
-     * @param e the exception that is the cause.
-     */
-      
-    public void showError(String msg, Throwable e) {
-        showError(this,msg,e);
-    }
-    
-
-    /** display an error message in a popup, which will vanish after a few seconds */
-    public void showTransientError(String title, String message) {
-        TimedPopup.showErrorMessage(getTasksButton(),title,message);
-    }
-
-    /** display a message in a popup, which will vanish after a few seconds */
-    public void showTransientMessage(String title, String message) {
-        TimedPopup.showInfoMessage(getTasksButton(),title,message);
-    }
-/** display a warning in a popup, which will vanish after a few seconds */
-    public void showTransientWarning(String title, String message) {
-        TimedPopup.showWarningMessage(getTasksButton(),title,message);     
-    }
-    private JProgressBar getProgressBar() {
-        if (progressBar == null) {
-            progressBar = new MessageTimerProgressBar(0,100);
-            progressBar.setBorder(EMPTY_BORDER);
-        }
-        return progressBar;
-    }
-    
-    /** halt all tasks owned by this component (and not special) */
-    public void haltMyTasks() {
-    	for (Iterator i = tasksList.iterator(); i.hasNext();) {
-			BackgroundWorker w = (BackgroundWorker) i.next();
-			if (!w.special) {
-				w.interrupt();
-			}
-		}
-    }
-    
-    private StatusBar getBottomPanel() {
-    	if (bottomPanel == null) {
-    		bottomPanel = new StatusBar();
-            bottomPanel.setBorder(EMPTY_BORDER);
-            bottomPanel.setZoneBorder(EMPTY_BORDER);   
-            
-            bottomPanel.addZone("throbber",getThrobber(),"20");
-            bottomPanel.addZone("background tasks",getTasksButton(),"25");
-
-            bottomPanel.addZone("status",getProgressBar(),"*");
-            bottomPanel.addZone("help",getContextSensitiveHelpButton(),"20");
-            bottomPanel.addZone("login",getLogin(),"18");
-            bottomPanel.addZone("plasticApps",getPlasticList(),"100");            
-    	}
-    	return bottomPanel;
-    }
-    
-    private JButton getContextSensitiveHelpButton() {
-        if (helpButton == null) {
-            helpButton = new JButton(IconHelper.loadIcon("contexthelp18.png"));
-            helpButton.putClientProperty("is3DEnabled",Boolean.TRUE);
-            helpButton.setBorder(BorderFactory.createEtchedBorder());            
-            helpButton.setToolTipText("<html><b>Click</b> for context-sensitive help,<br> or press <b>'F1'</b> for overview help</html>");
-            helpButton.addActionListener(getContext().getHelpServer().createContextSensitiveHelpListener());
-        }
-        return helpButton;
-    }
-    
-
-	private JComponent getLogin() {
-		if (login == null) {
-			login = new JButton();
-			login.setModel(getContext().getLoggedInModel());
-			login.setText("");
-	        login.setDisabledIcon(IconHelper.loadIcon("connect_no16.png"));
-	        login.setIcon(IconHelper.loadIcon("connect_established16.png"));
-	        login.setToolTipText("Indicates login status");
-		}
-		return login;
-	}
-    private JList getPlasticList() {
-		if (plasticList == null) {
-			plasticList = new JList(new EventListModel(getContext().getPlasticList()));
-			//plasticApps.setToolTipText("Connected Vizualization Tools");
-			plasticList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-			plasticList.setVisibleRowCount(1);
-			plasticList.setFocusable(false);
-			plasticList.setBorder(BorderFactory.createEtchedBorder());
-			plasticList.setCellRenderer(new ListCellRenderer() {
-				JLabel l = new JLabel();
-				{
-					l.setMaximumSize(new Dimension(16,16));
-					l.setFont(new Font("Dialog",Font.PLAIN,8));
-				}
-				public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-					PlasticApplicationDescription plas = (PlasticApplicationDescription)value;
-					if (plas.getIcon() != null) {
-						ImageIcon scaled = new ImageIcon((plas.getIcon()).getImage().getScaledInstance(-1,16,Image.SCALE_SMOOTH));
-						l.setIcon(scaled);
-					} else {
-						l.setIcon(IconHelper.loadIcon("plasticeye.gif"));
-					}
-					l.setToolTipText(StringUtils.capitalize(plas.getName() + " is connected"));
-					return l;
-				}
-			});
-
-		}
-		return plasticList;
-	}
-    
-    private JButton getTasksButton() {
-        if (tasksButton == null) {
-            tasksButton = new IndeterminateProgressIndicator.Button();
-            tasksButton.putClientProperty("is3DEnabled",Boolean.TRUE);
-            tasksButton.setBorder(BorderFactory.createEtchedBorder());
-            tasksButton.setToolTipText("<html>List background tasks.<br> Click a task to halt and cancel it.");
-            final JPopupMenu tasksMenu = new JPopupMenu();
-            tasksButton.addMouseListener(new MouseAdapter() {
-                public void mousePressed(MouseEvent e) {
-                    tasksMenu.show(tasksButton,e.getX(),e.getY());
-                }
-            });
-            RangeList rangeList = new RangeList(tasksList);
-            rangeList.setHeadRange(0,30); // only display 30 items.
-            final ActionListener l  = new ActionListener() {// handler for menu items.
-				public void actionPerformed(ActionEvent e) {
-					// retrive the worker for this item.
-					BackgroundWorker w = (BackgroundWorker) ((JComponent)e.getSource()).getClientProperty(BackgroundWorker.class);
-					w.interrupt();
-					//@todo display a fuller management dialogue here instead.
-				}
-            };
-            final FunctionList jcomponentList = new FunctionList(rangeList,new FunctionList.Function() {
-
-            	public Object evaluate(Object arg0) {
-            		BackgroundWorker w = (BackgroundWorker)arg0;
-            		JMenuItem mi = new JMenuItem(w.getMessage());
-            		mi.putClientProperty(BackgroundWorker.class,w); // store the worker for this menu item.
-            		mi.addActionListener(l);
-            		switch (w.getStatus()) {
-            		case BackgroundWorker.PENDING:
-            			mi.setIcon(UIConstants.PENDING_ICON);
-            			break;
-            		case BackgroundWorker.RUNNING:
-            			mi.setIcon(UIConstants.RUNNING_ICON);
-            			break;
-            		case BackgroundWorker.COMPLETED:
-            			mi.setIcon(UIConstants.COMPLETED_ICON);
-            			break;                         
-            		}
-            		return mi;    
-            	}
-            });
-			// utility class that manages populating the popup.
-            new EventListPopupMenuManager(jcomponentList,tasksButton,tasksMenu,false);
-        }
-        return tasksButton;
-    }
-
-    
-    private JComponent getThrobber() {
-	    if (throbber == null) {
-	        throbber = new JButton();
-	        throbber.setModel(getContext().getThrobbingModel());
-	        throbber.setText("");
-	        throbber.setIcon(IconHelper.loadIcon("running16.png"));
-	       // throbber.setIcon(IconHelper.loadIcon("circle-ball-dark-antialiased.gif"));
-	       // throbber.setIcon(IconHelper.loadIcon("loader.gif"));
-	        throbber.setDisabledIcon(IconHelper.loadIcon("idle16.png"));   
-	        throbber.setToolTipText("When active, something is communicating with VO services");
-	    }
-	    return throbber;
 	}
 
     /** create an action that will display the help viewer */
@@ -464,20 +100,7 @@ public class UIComponentImpl extends JFrame implements UIComponent, ShutdownList
     		helpMenu.add(createHelpAction());
     		return helpMenu;
     }
-    
-    /** @deprecated - use {@link #getMainPanel()} instead */
-    protected JPanel getJContentPane() {
-        return getMainPanel();
-    }
 
-
-    /**
-     * @param s
-     * @throws HeadlessException
-     */
-    public void showError(String s) {
-        JOptionPane.showMessageDialog(this,s,"Error",JOptionPane.ERROR_MESSAGE);
-    }
 
 	/** Convenience class - a local subclass of {@link BackgroundWorker} that ties
      * into the enclosing UIComponentImpl instance.
@@ -516,14 +139,123 @@ public class UIComponentImpl extends JFrame implements UIComponent, ShutdownList
     public UIContext getContext() {
         return context;
     }
+// from here on, just delegate to assistant.
 
-    
-     
+
+    /**
+     * @return
+     * @see org.astrogrid.desktop.modules.ui.UIComponentAssist#getMainPanel()
+     */
+    public final JPanel getMainPanel() {
+        return this.assist.getMainPanel();
+    }
+
+
+    /**
+     * @return
+     * @see org.astrogrid.desktop.modules.ui.UIComponentAssist#getProgressMax()
+     */
+    public final int getProgressMax() {
+        return this.assist.getProgressMax();
+    }
+
+
+    /**
+     * @return
+     * @see org.astrogrid.desktop.modules.ui.UIComponentAssist#getProgressValue()
+     */
+    public final int getProgressValue() {
+        return this.assist.getProgressValue();
+    }
+
+
+    /**
+     * 
+     * @see org.astrogrid.desktop.modules.ui.UIComponentAssist#haltMyTasks()
+     */
+    public final void haltMyTasks() {
+        this.assist.haltMyTasks();
+    }
+
+
+
+    /**
+     * @param i
+     * @see org.astrogrid.desktop.modules.ui.UIComponentAssist#setProgressMax(int)
+     */
+    public final  void setProgressMax(int i) {
+        this.assist.setProgressMax(i);
+    }
+
+
+    /**
+     * @param i
+     * @see org.astrogrid.desktop.modules.ui.UIComponentAssist#setProgressValue(int)
+     */
+    public final void setProgressValue(int i) {
+        this.assist.setProgressValue(i);
+    }
+
+
+    /**
+     * @param s
+     * @see org.astrogrid.desktop.modules.ui.UIComponentAssist#setStatusMessage(java.lang.String)
+     */
+    public final void setStatusMessage(String s) {
+        this.assist.setStatusMessage(s);
+    }
+
+
+    /**
+     * @param msg
+     * @param e
+     * @see org.astrogrid.desktop.modules.ui.UIComponentAssist#showError(java.lang.String, java.lang.Throwable)
+     */
+    public final void showError(String msg, Throwable e) {
+        this.assist.showError(msg, e);
+    }
+
+    public final void showError(String msg) {
+        this.assist.showError(msg);
+    }
+
+    /**
+     * @param title
+     * @param message
+     * @see org.astrogrid.desktop.modules.ui.UIComponentAssist#showTransientError(java.lang.String, java.lang.String)
+     */
+    public final void showTransientError(String title, String message) {
+        this.assist.showTransientError(title, message);
+    }
+
+
+    /**
+     * @param title
+     * @param message
+     * @see org.astrogrid.desktop.modules.ui.UIComponentAssist#showTransientMessage(java.lang.String, java.lang.String)
+     */
+    public final void showTransientMessage(String title, String message) {
+        this.assist.showTransientMessage(title, message);
+    }
+
+
+    /**
+     * @param title
+     * @param message
+     * @see org.astrogrid.desktop.modules.ui.UIComponentAssist#showTransientWarning(java.lang.String, java.lang.String)
+     */
+    public final void showTransientWarning(String title, String message) {
+        this.assist.showTransientWarning(title, message);
+    }
+
 }
 
 
 /* 
 $Log: UIComponentImpl.java,v $
+Revision 1.19  2007/10/12 11:04:00  nw
+refactored uiComponent implementations.
+
 Revision 1.18  2007/09/21 16:35:14  nw
 improved error reporting,
 various code-review tweaks.

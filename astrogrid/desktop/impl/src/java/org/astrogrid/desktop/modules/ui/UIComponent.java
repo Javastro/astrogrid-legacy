@@ -3,7 +3,11 @@
  */
 package org.astrogrid.desktop.modules.ui;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
+
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 
@@ -55,11 +59,19 @@ public interface UIComponent {
 	/** get the maximum value for the progress bar */
 	int getProgressMax();
 
-	/** access the Swing frame this UIComponent is associated with.
+	/** access the AWT component this UIComponent is associated with.
 	 * used to centering new windows, etc.
-	 * in Headless mode, wil return null */
+	 * in Headless mode, wil return null 
+	 * other times, usually returns 'this'*/
 	
-	JFrame getFrame();
+	Component getComponent();
+	
+    /** access the main panel, where other components can be added..
+     * @return a JPane with {@link BorderLayout}. The southern segment is already taken by the activity indicator & status message.
+     * 
+      */ 
+    public JPanel getMainPanel() ;
+	
     /** halt all tasks owned by this component (and not special) */
 	public void haltMyTasks() ;
 
