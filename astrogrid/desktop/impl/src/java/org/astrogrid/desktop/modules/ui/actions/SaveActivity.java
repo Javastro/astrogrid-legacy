@@ -71,7 +71,7 @@ public class SaveActivity extends AbstractFileActivity {
 		}	
 		final UIComponent ui = uiParent.get();
 		final List files = computeInvokable();
-        final URI saveLocationRoot = chooser.chooseDirectoryWithParent("Save Data",true,true,true,ui.getFrame());
+        final URI saveLocationRoot = chooser.chooseDirectoryWithParent("Save Data",true,true,true,ui.getComponent());
         if (saveLocationRoot == null) {
             return;
         }
@@ -83,7 +83,7 @@ public class SaveActivity extends AbstractFileActivity {
 		                    SwingUtilities.invokeLater(
 		                            new Runnable() {
 		                                public void run() {
-		                                    JOptionPane.showMessageDialog(ui.getFrame(), 
+		                                    JOptionPane.showMessageDialog(ui.getComponent(), 
 		                                            "You can only save data to a folder, nothing was saved.",
 		                                            "Selection is not a folder", JOptionPane.OK_OPTION );
 		                                }

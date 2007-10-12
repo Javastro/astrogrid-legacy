@@ -103,7 +103,7 @@ public class DeleteFilesActivity extends AbstractFileActivity {
                     msgBuilder.append(ExceptionFormatter.formatException(e,ExceptionFormatter.ALL));
                     msgBuilder.append("<p>");                    
                 }
-                ResultDialog rd = new ResultDialog(parent.getFrame(),msgBuilder);
+                ResultDialog rd = new ResultDialog(parent.getComponent(),msgBuilder);
                 rd.show();
             }            
 		}).start();

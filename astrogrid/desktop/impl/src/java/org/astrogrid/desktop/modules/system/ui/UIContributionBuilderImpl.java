@@ -3,6 +3,7 @@
  */
 package org.astrogrid.desktop.modules.system.ui;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -121,7 +122,7 @@ public class UIContributionBuilderImpl implements ContributionInvoker, UIContrib
                     //sc.setBorder(EMPTY_BORDER);
                     sc.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
                     sc.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-                    sc.getHorizontalScrollBar().setBorder(UIComponentImpl.EMPTY_BORDER);
+                    sc.getHorizontalScrollBar().setBorder(null);
                     sc.getHorizontalScrollBar().putClientProperty("is3DEnabled",Boolean.FALSE);          
                     sc.getViewport().setPreferredSize(new Dimension(600,100));
                     final JTabbedPane tabs = (JTabbedPane)current;
@@ -157,7 +158,7 @@ public class UIContributionBuilderImpl implements ContributionInvoker, UIContrib
         int result = JOptionPane.YES_OPTION;
         final String msg = action.getConfirmMessage();
 		if (msg != null  && msg.trim().length() > 0) {
-            result = JOptionPane.showConfirmDialog(action.getUiComponent().getFrame(),msg,"Confirmation",JOptionPane.YES_NO_OPTION);
+            result = JOptionPane.showConfirmDialog(action.getUiComponent().getComponent(),msg,"Confirmation",JOptionPane.YES_NO_OPTION);
         }
         if (result == JOptionPane.YES_OPTION) {
         	InvokerWorker op = new InvokerWorker(action.getUiComponent(),conv,trans,action);

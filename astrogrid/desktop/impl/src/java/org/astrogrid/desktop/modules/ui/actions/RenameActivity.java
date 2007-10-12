@@ -61,7 +61,7 @@ public class RenameActivity extends AbstractFileActivity {
 		        final FileObject parent = original.getParent();
 		        FileObject f;
 		        do {
-		            String nuName = JOptionPane.showInputDialog(uiParent.get().getFrame(),"Enter a new name",original.getName().getBaseName());
+		            String nuName = JOptionPane.showInputDialog(uiParent.get().getComponent(),"Enter a new name",original.getName().getBaseName());
 		            if (StringUtils.isEmpty(nuName)) {
 		                return null; // user pressed cancel;
 		            }

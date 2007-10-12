@@ -73,7 +73,7 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
         }	    
 		files.addAll(computeInvokableFiles());
 		logger.debug(files);
-        final URI saveDir = chooser.chooseDirectoryWithParent("Select directory to download to",false,true,false,uiParent.get().getFrame());
+        final URI saveDir = chooser.chooseDirectoryWithParent("Select directory to download to",false,true,false,uiParent.get().getComponent());
         if (saveDir == null) {
             return;
         }

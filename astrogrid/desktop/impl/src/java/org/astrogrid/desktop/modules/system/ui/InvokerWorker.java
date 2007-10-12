@@ -3,6 +3,7 @@
  */
 package org.astrogrid.desktop.modules.system.ui;
 
+import java.awt.Component;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 
@@ -57,7 +58,7 @@ public class InvokerWorker extends BackgroundWorker {
     
       protected void doFinished(Object r) {
             if (r != null) {                
-                    ResultDialog rd = new ResultDialog(parent.getFrame(),r);
+                    ResultDialog rd = new ResultDialog(parent.getComponent(),r);
                     rd.show();
                     rd.toFront();
                     rd.requestFocus();

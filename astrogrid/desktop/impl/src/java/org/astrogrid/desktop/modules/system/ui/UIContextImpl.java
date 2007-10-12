@@ -243,7 +243,7 @@ public class UIContextImpl implements UIContext{
 			public Object evaluate(Object arg0) {
 				final UIComponent c = (UIComponent)arg0;
 				final JMenuItem mi = new JMenuItem(c.getTitle());
-				c.getFrame().addPropertyChangeListener("title",new PropertyChangeListener() {
+				c.getComponent().addPropertyChangeListener("title",new PropertyChangeListener() {
 					public void propertyChange(PropertyChangeEvent evt) {
 						mi.setText(c.getTitle());
 					}

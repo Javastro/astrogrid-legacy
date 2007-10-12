@@ -148,7 +148,7 @@ public abstract class AbstractActivity extends AbstractAction implements Activit
 	 * @return true if the user can confirmed 
 	 */
 	protected boolean confirm(String message) {
-        return JOptionPane.showConfirmDialog(uiParent.get().getFrame(),message,"Confirm",JOptionPane.YES_NO_OPTION)
+        return JOptionPane.showConfirmDialog(uiParent.get().getComponent(),message,"Confirm",JOptionPane.YES_NO_OPTION)
                 == JOptionPane.OK_OPTION;
 	}
 }

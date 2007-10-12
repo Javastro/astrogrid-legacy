@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.68 2007/09/21 16:35:14 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.69 2007/10/12 11:04:19 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -416,8 +416,6 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 
 		getContext().getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.astroscopeLauncher");
 		
-		// finish it all off
-        this.setContentPane(pane);
         this.setTitle("All-VO Scope");		
 	}
 

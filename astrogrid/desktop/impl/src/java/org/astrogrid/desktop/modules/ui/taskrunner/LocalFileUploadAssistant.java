@@ -90,7 +90,7 @@ public class LocalFileUploadAssistant implements PropertyChangeListener, Functio
         final boolean firstRun = prefs.getBoolean(FIRST_RUN_KEY,true);
         if ( ! loggedIn || firstRun
         ) {
-            int code = JOptionPane.showConfirmDialog(parent.getFrame(),
+            int code = JOptionPane.showConfirmDialog(parent.getComponent(),
                     "<html>You have selected a file on a local disk. Local disks cannot be accessed by remote applications."
                     +"<br>Do you want to have this file uploaded to MySpace, where it will be accessible?"
                     + (! loggedIn ? "<br>(This will require you to login)" :"")

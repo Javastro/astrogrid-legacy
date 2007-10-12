@@ -1,4 +1,4 @@
-/*$Id: ArMainWindow.java,v 1.1 2007/04/18 15:47:04 nw Exp $
+/*$Id: ArMainWindow.java,v 1.2 2007/10/12 11:03:19 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved. 
@@ -34,8 +34,7 @@ public class ArMainWindow extends UIComponentImpl {
         uiBuilder.populateWidget(getTabbedPane(),this,ArMainWindow.TABS_NAME);
         
         JPanel main = getMainPanel();
-        main.add(getTabbedPane(), java.awt.BorderLayout.CENTER);    
-        this.setContentPane(main);
+        main.add(getTabbedPane(), java.awt.BorderLayout.CENTER);   
         
         getContext().getHelpServer().enableHelpKey(this.getRootPane(),"top");   
         setIconImage(IconHelper.loadIcon("server16.png").getImage());          
@@ -57,7 +56,7 @@ public class ArMainWindow extends UIComponentImpl {
 	private JTabbedPane getTabbedPane() {
         if (tabbedPane == null) {
             tabbedPane = new JTabbedPane();
-            tabbedPane.setBorder(EMPTY_BORDER);
+            tabbedPane.setBorder(null);
         }
         return tabbedPane;
     }
@@ -67,6 +66,9 @@ public class ArMainWindow extends UIComponentImpl {
 
 /* 
 $Log: ArMainWindow.java,v $
+Revision 1.2  2007/10/12 11:03:19  nw
+side effect of refactoring UIComponent
+
 Revision 1.1  2007/04/18 15:47:04  nw
 tidied up voexplorer, removed front pane.
 

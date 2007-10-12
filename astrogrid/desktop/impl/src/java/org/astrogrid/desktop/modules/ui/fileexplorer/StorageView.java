@@ -180,7 +180,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	            protected Object construct() throws Exception {
 	                FileObject f;
 	                do {
-	                    String nuName = JOptionPane.showInputDialog(getParent().getFrame(),"Enter new folder name","NewFolder");
+	                    String nuName = JOptionPane.showInputDialog(getParent().getComponent(),"Enter new folder name","NewFolder");
 	                    if (StringUtils.isEmpty(nuName)) {
 	                        return null; // user pressed cancel;
 	                    }

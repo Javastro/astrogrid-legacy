@@ -139,7 +139,7 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 		opane.setMessageType(JOptionPane.PLAIN_MESSAGE);
 		opane.setOptionType(JOptionPane.OK_CANCEL_OPTION);
 		opane.setMessage(this);
-		JDialog dialog = opane.createDialog(cxt.findMainWindow().getFrame(), "Preferences");
+		JDialog dialog = opane.createDialog(cxt.findMainWindow().getComponent(), "Preferences");
 		dialog.setContentPane(opane);
 		// temporarily enable advanced view, so that we pack to the correct size.
 		boolean showOptional =  showAdvancedPreference.asBoolean();

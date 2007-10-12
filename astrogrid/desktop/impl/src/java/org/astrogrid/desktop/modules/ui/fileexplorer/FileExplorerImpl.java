@@ -1,4 +1,4 @@
-/*$Id: FileExplorerImpl.java,v 1.11 2007/09/21 16:35:13 nw Exp $
+/*$Id: FileExplorerImpl.java,v 1.12 2007/10/12 11:06:47 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -50,7 +50,6 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
         	
 		    getContext().getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.fileExplorer");        
 		    JPanel pane = getMainPanel();
-		    pane.setBorder(BorderFactory.createEmptyBorder());
 
 		    // build the actions menu / pane / popup.
 		    activities = activityBuilder.create(this);
@@ -103,7 +102,6 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 		    pane.add(mainButtons,BorderLayout.NORTH);
 		    
 		    // finish it all off..
-			this.setContentPane(pane);
 			this.setTitle("File Explorer");
 			view.getNavigator().addNavigationListener(this);
 		  //@todo find a new icon  setIconImage(IconHelper.loadIcon("search16.png").getImage());  

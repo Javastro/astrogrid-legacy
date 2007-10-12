@@ -34,7 +34,7 @@ public abstract class ProgressMonitoringBackgroundWorker extends BackgroundWorke
 	
 	public void run() {
 		// start the monitor
-		monitor = new ProgressMonitor(parent.getFrame(),msg,"",0,1);
+		monitor = new ProgressMonitor(parent.getComponent(),msg,"",0,1);
 		super.run();
 	}
 
