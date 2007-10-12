@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.20 2007/09/21 16:35:15 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.21 2007/10/12 10:55:49 nw Exp $
 >>>>>>> 1.12.2.6
  * Created on 02-Sep-2005
  *
@@ -42,6 +42,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -521,7 +522,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 		resourceTable.setSelectionModel(currentResourceInView);
 		// surprising - this is all that's needed tp add sorting to columns in the table.
 		new TableComparatorChooser(resourceTable,sortedItems,true);
-		tableScroller = new JScrollPane(resourceTable);
+		tableScroller = new JScrollPane(resourceTable,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		tableScroller.setPreferredSize(null);
 		tableScroller.getViewport().setBackground(Color.WHITE);
 		this.setBorder(MyTitledBorder.createUntitledLined());
@@ -848,7 +849,10 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	/** set whether user is permitted to select multiple resources 
 	 * @param multiple if true, multiple selection is permitted.*/
 	public void setMultipleResources(boolean multiple) {
-		//@fixme implement
+	    resourceTable.setSelectionMode(
+	            multiple ? ListSelection.MULTIPLE_INTERVAL_SELECTION_DEFENSIVE
+	                    : ListSelectionModel.SINGLE_SELECTION
+	            );
 	}
 
 
@@ -911,6 +915,9 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.21  2007/10/12 10:55:49  nw
+minor fixes, discovered while trying to use this in a dialogue
+
 Revision 1.20  2007/09/21 16:35:15  nw
 improved error reporting,
 various code-review tweaks.
