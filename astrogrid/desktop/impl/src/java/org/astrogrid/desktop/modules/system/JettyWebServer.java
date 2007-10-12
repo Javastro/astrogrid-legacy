@@ -1,4 +1,4 @@
-/*$Id: JettyWebServer.java,v 1.14 2007/09/21 16:35:13 nw Exp $
+/*$Id: JettyWebServer.java,v 1.15 2007/10/12 11:02:49 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,14 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -21,10 +26,18 @@ import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.Vector;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xmlrpc.XmlRpcClient;
+import org.apache.xmlrpc.XmlRpcException;
 import org.astrogrid.acr.builtin.ShutdownListener;
 import org.astrogrid.desktop.modules.system.contributions.ServletContextContribution;
 import org.astrogrid.desktop.modules.system.contributions.ServletsContribution;
@@ -322,11 +335,101 @@ public URL getContextBase(String sessionId) {
 		return null;
 	}
 
+    public Test getSelftest() {
+        TestSuite ts = new TestSuite("Internal webserver");
+        ts.addTest(new TestCase("AR connection file"){
+            protected void runTest() {
+                File f = new File(SystemUtils.getUserHome(),".astrogrid-desktop");
+                assertTrue("~/.astrogrid-desktop not present",f.exists());
+                FileReader fr = null;
+                URL endpoint = null;
+                try {
+                    fr = new FileReader(f);
+                    String str = new BufferedReader(fr).readLine();
+                    assertNotNull("~/.astrogrid-desktop is empty",str);
+                    endpoint = new URL(str);
+                } catch (MalformedURLException ex) {
+                    fail("unable to parse contents of ~/.astrogrid-desktop");
+                } catch (FileNotFoundException x) {
+                    // just tested for this.
+                    fail("~/.astrogrid-desktop not present");                    
+                } catch (IOException x) {
+                    fail("unable to read ~/.astrogrid-desktop");
+                } finally {
+                    if (fr != null) {
+                        try {
+                            fr.close();
+                        } catch (IOException e) {
+                            // ho hum
+                        }
+                    }
+                }
+                if (endpoint == null) {
+                    fail("unable to parse contents of ~/.astrogrid-desktop");
+                }
+                assertEquals("incorrect endpoint in ~/.astrogrid-desktop",getRoot(),endpoint);
+                try {
+                    endpoint.openConnection().connect();
+                } catch (IOException x) {
+                    fail("unable to connect to internal webserver");
+                }
+            }
+        });
+        ts.addTest(new TestCase("HTML access to AR"){
+            protected void runTest() {
+                InputStream is = null;
+                try {
+                    URL endpoint = new URL(getRoot(),"system/webserver/getRoot/plain");
+                    is = endpoint.openStream();
+                    String val = new BufferedReader(new InputStreamReader(is)).readLine();
+                    assertNotNull("no response from webserver",val);                    
+                    assertEquals("webserver didn't repond with expected result",getRoot().toString(),val.trim());
+                } catch (MalformedURLException x) {
+                    fail("Unable to construct html call url");
+                } catch (IOException x) {
+                    fail("Unable to call html interface");
+                } finally {
+                    if (is != null) {
+                        try {
+                            is.close();
+                        } catch (IOException e) {
+                            // don't care
+                        }
+                    }
+                }                
+            }
+        });
+        ts.addTest(new TestCase("XMLRPC access to AR") {
+            protected void runTest() { //@todo test passing a parameter to the server too??
+                XmlRpcClient client;
+                try {
+                    client = new XmlRpcClient(new URL(getRoot(),"xmlrpc"));
+                    Object result = client.execute("system.webserver.getRoot",new Vector());
+                    assertNotNull("no response from xmlrpc server",result);
+                    assertTrue("unexpected response from xmlrpc server",result instanceof String);
+                    assertEquals("xmlrpc server didn't respond with expected result",getRoot().toString(),result);
+                } catch (MalformedURLException x) {
+                    fail("unable to construct xmlrpc endpoint");
+                } catch (XmlRpcException x) {
+                    logger.info("self test failure",x);
+                    fail("xmlrpc failure");
+                } catch (IOException x) {
+                    logger.info("self test failure", x);
+                    fail("IO failure");
+                }
+            }
+        });
+        return ts;
+    }
+
 }
 
 
 /* 
 $Log: JettyWebServer.java,v $
+Revision 1.15  2007/10/12 11:02:49  nw
+added code for selftesting
+
 Revision 1.14  2007/09/21 16:35:13  nw
 improved error reporting,
 various code-review tweaks.

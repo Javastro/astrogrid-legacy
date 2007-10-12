@@ -1,4 +1,4 @@
-/*$Id: AbstractRmiServerImpl.java,v 1.7 2007/06/17 17:03:17 jl99 Exp $
+/*$Id: AbstractRmiServerImpl.java,v 1.8 2007/10/12 11:02:49 nw Exp $
  * Created on 27-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,7 +29,7 @@ import org.astrogrid.acr.system.RmiServer;
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 27-Jul-2005
  *
  */
-public abstract class AbstractRmiServerImpl implements RmiServer{
+public abstract class AbstractRmiServerImpl implements RmiServerInternal{
 
     
     
@@ -165,6 +165,9 @@ public abstract class AbstractRmiServerImpl implements RmiServer{
 
 /* 
 $Log: AbstractRmiServerImpl.java,v $
+Revision 1.8  2007/10/12 11:02:49  nw
+added code for selftesting
+
 Revision 1.7  2007/06/17 17:03:17  jl99
 Merge of branch workbench-jl-2152b.
 First Query Builder bug fix after VOExplorer development.

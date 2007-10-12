@@ -11,6 +11,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.desktop.modules.util.Selftest;
 import org.w3c.dom.Document;
 
 /** Internal extension interface - provides more efficient access to the data.
@@ -22,7 +23,7 @@ import org.w3c.dom.Document;
  * @author Noel Winstanley
  * @since Jul 26, 200611:41:37 PM
  */
-public interface RegistryInternal extends org.astrogrid.acr.ivoa.Registry {
+public interface RegistryInternal extends org.astrogrid.acr.ivoa.Registry, Selftest {
 
 	/** perform an xquery, and consume results with the parameter processor */
 	public void xquerySearchStream(String xquery, StreamProcessor processor) throws ServiceException;

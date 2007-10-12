@@ -1,4 +1,4 @@
-/*$Id: SesameDynamicImpl.java,v 1.8 2007/04/18 15:47:05 nw Exp $
+/*$Id: SesameDynamicImpl.java,v 1.9 2007/10/12 10:58:08 nw Exp $
  * Created on 28-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,6 +23,9 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import junit.framework.Test;
+import junit.framework.TestCase;
+
 import org.apache.axis.client.Service;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
@@ -37,7 +40,7 @@ import org.astrogrid.desktop.modules.system.pref.Preference;
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 28-Feb-2006
  *
  */
-public class SesameDynamicImpl implements Sesame {
+public class SesameDynamicImpl implements SesameInternal {
 
 	
     public SesameDynamicImpl() {
@@ -56,6 +59,21 @@ public class SesameDynamicImpl implements Sesame {
 
     public void setEndpoint(Preference e) {
         this.endpoint = e;
+    }
+    
+    public Test getSelftest() {
+        return new TestCase("Sesame object name resolver") {
+            protected void runTest(){
+                try {
+                    SesamePositionBean pos = resolve("m32");
+                    assertNotNull(pos);
+                } catch (ServiceException x) {
+                    fail("Unable to access Sesame service");
+                } catch (NotFoundException x) {
+                    fail("Sesame service was unable to resolve 'm32' to a position");
+                }
+            }
+        };
     }
     
     public String sesame(String parameter, String arg1) throws ServiceException {
@@ -158,6 +176,9 @@ public class SesameDynamicImpl implements Sesame {
 
 /* 
 $Log: SesameDynamicImpl.java,v $
+Revision 1.9  2007/10/12 10:58:08  nw
+added code for selftesting
+
 Revision 1.8  2007/04/18 15:47:05  nw
 tidied up voexplorer, removed front pane.
 

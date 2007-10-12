@@ -1,4 +1,4 @@
-/*$Id: RmiLiteRmiServerImpl.java,v 1.12 2007/04/18 15:47:07 nw Exp $
+/*$Id: RmiLiteRmiServerImpl.java,v 1.13 2007/10/12 11:02:49 nw Exp $
  * Created on 27-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,15 @@
 **/
 package org.astrogrid.desktop.modules.system;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.UnknownHostException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -23,14 +31,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import net.ladypleaser.rmilite.impl.RemoteInvocationHandler;
 import net.ladypleaser.rmilite.impl.RemoteInvocationHandlerImpl;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.ACRException;
+import org.astrogrid.acr.Finder;
+import org.astrogrid.acr.InvalidArgumentException;
+import org.astrogrid.acr.NotFoundException;
+import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.builtin.ComponentDescriptor;
 import org.astrogrid.acr.builtin.ShutdownListener;
+import org.astrogrid.acr.system.RmiServer;
 import org.astrogrid.desktop.framework.ACRInternal;
 import org.astrogrid.desktop.framework.Module;
 import org.astrogrid.desktop.framework.SessionManagerInternal;
@@ -183,12 +202,78 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
 		}
 		
     }
+
+    public Test getSelftest() {
+        TestSuite ts = new TestSuite("RMI");
+        ts.addTest(new TestCase("RMI connection file"){
+            protected void runTest()  {
+                File f = new File(SystemUtils.getUserHome(),".acr-rmi-port");
+                assertTrue("~/.acr-rmi-port not present",f.exists());
+                FileReader fr = null;
+                try {
+                    fr = new FileReader(f);
+                    String str = new BufferedReader(fr).readLine();
+                    assertNotNull("~/.acr-rmi-port is empty",str);
+                    int port = Integer.parseInt(str);
+                    assertEquals("incorrect port in ~/.acr-rmi-port",getPort(),port);
+                } catch (NumberFormatException ex) {
+                    fail("unable to parse contents of ~/.acr-rmi-port");
+                } catch (FileNotFoundException x) {
+                    // just tested for this.
+                    fail("~/.acr-rmi-port not present");                    
+                } catch (IOException x) {
+                    fail("unable to read ~/.acr-rmi-port");
+                } finally {
+                    if (fr != null) {
+                        try {
+                            fr.close();
+                        } catch (IOException e) {
+                            // ho hum
+                        }
+                    }
+                }
+            }
+        });
+        ts.addTest(new TestCase("RMI access to AR") {
+            protected void runTest()  {
+                Finder f = new Finder() {
+                    // overridden to only ever try to connect external, and not to cache.
+                    public ACR find(boolean ignored, boolean alsoIgnored) {
+                        try {
+                            return connectExternal();
+                        } catch (Exception ex) {
+                            logger.info("Failed to connect to AR",ex);
+                            fail("failure when connecting to AR");
+                            return null; // never reached
+                        }
+                    }
+                };
+                // ok. got a connection. now try doing some stuff with it.
+                try {
+                    ACR ar = f.find(false,false);
+                    assertNotNull("failed to connect to AR",ar);
+                    RmiServer arRmi = (RmiServer) ar.getService(RmiServer.class);
+                    assertEquals("rmi service didn't respond with expected result",getPort(),arRmi.getPort());
+                } catch (InvalidArgumentException x) {
+                    fail("error while retreiving AR component");
+                } catch (NotFoundException x) {
+                    fail("unable to locate required AR component");
+                } catch (ACRException x) {
+                    fail("error when connecting to AR");
+                }
+            }
+        });
+        return ts;
+    }
  
 }
 
 
 /* 
 $Log: RmiLiteRmiServerImpl.java,v $
+Revision 1.13  2007/10/12 11:02:49  nw
+added code for selftesting
+
 Revision 1.12  2007/04/18 15:47:07  nw
 tidied up voexplorer, removed front pane.
 

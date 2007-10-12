@@ -6,12 +6,13 @@ package org.astrogrid.desktop.modules.system;
 import java.net.URL;
 
 import org.astrogrid.acr.system.WebServer;
+import org.astrogrid.desktop.modules.util.Selftest;
 
 /** Adds methods necessary for providing sessions
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 21, 20076:10:14 PM
  */
-public interface WebServerInternal extends WebServer {
+public interface WebServerInternal extends WebServer, Selftest {
 
 	/** clones the default servlet context to this sessionId
 	 * means that any URL requests with this id in the path get mapped to the 
