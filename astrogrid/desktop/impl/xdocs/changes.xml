@@ -14,8 +14,16 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="next" date="unreleased">
+    <action dev="nw" type="update">
+        Updated AR dialogues toolEditor, fileChooser and resourceChooser to use latest UI
+    </action>
+    <action dev="nw" type="add">
+        Added self-tests on startup to detect and warn about common problems (no network, core services unavailable, etc)
+    </action>
+</release>
 <release version="2007.4.alpha6" date="2007-10-08">
-    <action dev="nw> type=fix" issue="2334">
+    <action dev="nw" type=fix" issue="2334">
         Taskrunner: myspace outputs now appear
     </action>
     <action dev="nw" type="fix" issue="2349">
