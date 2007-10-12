@@ -1,6 +1,6 @@
-/*$Id: VOExplorerImpl.java,v 1.12 2007/09/21 16:35:15 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.13 2007/10/12 10:57:16 nw Exp $
 =======
-/*$Id: VOExplorerImpl.java,v 1.12 2007/09/21 16:35:15 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.13 2007/10/12 10:57:16 nw Exp $
 >>>>>>> 1.6.2.2
  * Created on 30-Mar-2005
  *
@@ -208,7 +208,6 @@ public class VOExplorerImpl extends UIComponentImpl
 		// add buttonbar on top.
 
 		// finish it all off..
-		this.setContentPane(pane);
 		this.setTitle("VO Explorer");
 		setIconImage(IconHelper.loadIcon("search16.png").getImage());  
 		logger.info("New VOExplorer - Completed");

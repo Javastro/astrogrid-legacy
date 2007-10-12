@@ -3,6 +3,8 @@
  */
 package org.astrogrid.desktop.alternatives;
 
+import java.awt.Component;
+
 import junit.framework.TestCase;
 
 import org.astrogrid.desktop.modules.system.BackgroundExecutor;
@@ -56,7 +58,7 @@ public class HeadlessUIComponentUnitTest extends TestCase{
 	 * Test method for 'org.astrogrid.desktop.alternatives.HeadlessUI.getFrame()'
 	 */
 	public void testGetFrame() {
-		assertNull(ui.getFrame());
+		assertNull(ui.getComponent());
 	}
 
 	/*

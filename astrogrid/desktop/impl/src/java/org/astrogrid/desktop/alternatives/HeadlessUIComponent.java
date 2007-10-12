@@ -1,6 +1,9 @@
 package org.astrogrid.desktop.alternatives;
 
+import java.awt.Component;
+
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,7 +34,7 @@ public class HeadlessUIComponent implements UIComponent {
 			// does nothing.
 		}
 
-		public JFrame getFrame() {
+		public Component getComponent() {
 			return null;
 		}
 
@@ -98,6 +101,10 @@ public class HeadlessUIComponent implements UIComponent {
 
         public void showTransientWarning(String title, String message) {
             // does nothing
+        }
+
+        public JPanel getMainPanel() {
+            return null;
         }
 }
 
