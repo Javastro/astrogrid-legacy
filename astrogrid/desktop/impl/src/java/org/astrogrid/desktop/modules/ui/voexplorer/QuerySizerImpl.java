@@ -37,7 +37,8 @@ public class QuerySizerImpl implements QuerySizer {
 	public Integer regSize() {
 		return size(ALL_QUERY);
 	}
-	private static final String ALL_QUERY = "//vor:Resource[not (@status='inactive' or @status='deleted')]";
+	/** the query that returns all 'active' resources. use with caution */
+	public static final String ALL_QUERY = "//vor:Resource[not (@status='inactive' or @status='deleted')]";
 	
 	public Integer size(SRQL query) {
 		try {
@@ -50,7 +51,7 @@ public class QuerySizerImpl implements QuerySizer {
 	}
 	
 	public Integer size(String query) {
-		String sizingQuery = "let $sizeResults := ( " + query.trim() + ") return <size>{count($sizeResults)}</size>";
+		String sizingQuery = constructSizingQuery(query);
 		Element result = cache.get(sizingQuery);
 		if (result != null) {
 			return (Integer)result.getValue();
@@ -69,6 +70,14 @@ public class QuerySizerImpl implements QuerySizer {
 		}
 		
 	}
+
+    /** construct a query which will return a result of format &lt;size>size of query&lt;/size>
+     * @param query
+     * @return
+     */
+    public static String constructSizingQuery(String query) {
+        return "let $sizeResults := ( " + query.trim() + ") return <size>{count($sizeResults)}</size>";
+    }
 	
 	private final Builder queryBuilder = new OnlyCompleteQueriesVisitor();
 	
