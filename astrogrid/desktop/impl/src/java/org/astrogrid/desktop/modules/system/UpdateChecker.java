@@ -3,6 +3,7 @@
  */
 package org.astrogrid.desktop.modules.system;
 
+import java.awt.Component;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -82,7 +83,7 @@ public class UpdateChecker implements Runnable {
 				}
 				protected void doFinished(Object result) {
 					if (result != null) {
-					int code = JOptionPane.showConfirmDialog(ui.findMainWindow().getFrame(),
+					int code = JOptionPane.showConfirmDialog(ui.findMainWindow().getComponent(),
 							"<html>Latest version is " + result + "<br>Open download site?" 
 							,"A new version is available",JOptionPane.YES_NO_OPTION);
 					if (code == JOptionPane.YES_OPTION) {
