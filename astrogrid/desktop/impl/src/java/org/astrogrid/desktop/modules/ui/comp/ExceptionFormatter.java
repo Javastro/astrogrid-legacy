@@ -3,19 +3,32 @@
  */
 package org.astrogrid.desktop.modules.ui.comp;
 
+import java.awt.Component;
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.ConnectException;
 import java.net.NoRouteToHostException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Date;
+import java.util.Map;
+import java.util.Properties;
+
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
+import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.xml.sax.SAXParseException;
 
 /** Utility class that converts exceptions into astronomer-friendly messages.
@@ -115,6 +128,78 @@ public class ExceptionFormatter {
             sb.append(" - ");
             sb.append(ex.getMessage());
             return sb.toString();     
+        }
+    }
+
+    /** static helper method - show a well-formatted error in a popup dialogue
+     * <p/>
+     * 
+     * @deprecated classes that extend this class should call {@link #showError(String, Throwable)} instead
+     * @todo hide visibility altogether, or add suitable replacement code elsehwere.
+     */
+    public static final void showError(final Component parent,String msg, Throwable e) {
+        JLabel l = new JLabel();
+    
+        HtmlBuilder hb = new HtmlBuilder();
+        hb.append("<b>").append(msg).append("</b>");
+        hb.br();
+        hb.append(formatException(e));
+    
+        l.setText(hb.toString());
+        
+        int result = JOptionPane.showOptionDialog(parent,l,"An Error Occurred", 
+                JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null,
+                new Object[]{"Ok","Details.."}, "Ok"
+                );
+        if (result == 1) { // user wants to see the gory details      
+            StringWriter sw = new StringWriter();        
+            PrintWriter pw = new PrintWriter(sw);
+            pw.println("<html><body><pre>");
+            pw.println("Date of Error: " + (new Date()).toString());
+            if (parent != null) {
+                pw.println("Within component: " + parent.getClass().getName());
+            }
+            // maybe add more header info here - user, etc. - hard to get to.
+        
+            pw.println();
+            e.printStackTrace(pw);
+    
+            if (parent != null && parent instanceof UIComponentImpl) {            
+                pw.println();
+                UIComponent u = (UIComponent)parent;
+                try {
+                    Map m = u.getContext().getConfiguration().list();
+                    Properties props = new Properties();
+                    props.putAll(m);
+                    // nggg. clunky.
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    props.save(bos,"Application Configuration");
+                    pw.println(bos.toString());
+                } catch (ACRException ex) {
+                    pw.println("Failed to list configuration");
+                    ex.printStackTrace(pw);
+                }
+            }
+    
+            pw.println();   
+            Properties sysProps = System.getProperties();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            sysProps.save(bos,"System Properties");
+            pw.println(bos.toString());
+        
+            pw.println();
+            pw.println("If you think this is a bug in the Workbench, please email this transcript to");
+            pw.println("astrogrid_help@star.le.ac.uk, along with details of your username and a description");
+            pw.println("of what was happening at the time of the error");
+            
+            // finish off the report
+            pw.println("</pre></body></html>");
+    
+            // display report in a dialogue
+            ResultDialog rd = new ResultDialog(parent,sw.toString());
+            rd.setVisible(true);
+            rd.toFront();
+            rd.requestFocus();
         }
     }
     
