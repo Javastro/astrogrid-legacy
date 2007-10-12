@@ -68,7 +68,7 @@ public class VoMonImplUnitTest extends TestCase {
 	}
 
 	public void testLoad() throws Exception {
-		VoMonImpl mon = new VoMonImpl(endpoint.toString(),refresh,cache);
+		VoMonInternal mon = new VoMonImpl(endpoint.toString(),refresh,cache);
 		mon.reload();
 		assertTrue(cache.getSize() > 0);
 		//System.out.println(cache.getKeys());
