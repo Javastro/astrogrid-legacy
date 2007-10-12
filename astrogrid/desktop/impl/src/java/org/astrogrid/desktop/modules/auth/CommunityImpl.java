@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.6 2007/09/21 16:35:15 nw Exp $
+/*$Id: CommunityImpl.java,v 1.7 2007/10/12 10:57:52 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,6 +33,7 @@ import org.astrogrid.community.resolver.exception.CommunityResolverException;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.security.SecurityGuard;
 
@@ -103,7 +104,7 @@ public class CommunityImpl implements CommunityInternal {
                 authenticate(proposed);
             } catch (Exception e) {
             	logger.info("Authentication failed.");
-                UIComponentImpl.showError(null,"Failed to login",e);
+                ExceptionFormatter.showError(null,"Failed to login",e);
             }
         }                    
     }
@@ -200,6 +201,9 @@ public class CommunityImpl implements CommunityInternal {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.7  2007/10/12 10:57:52  nw
+refactored exception formatting code.
+
 Revision 1.6  2007/09/21 16:35:15  nw
 improved error reporting,
 various code-review tweaks.
