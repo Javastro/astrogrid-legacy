@@ -94,6 +94,10 @@
 			timeToIdleSeconds="345600"
 		/>			
 	</contribution>
+    
+     <contribution configuration-id="util.selftest" >
+        <object>service-property:registry:selftest</object>
+    </contribution>
 	
 	<implementation service-id="registry" if="property ivoa.registry.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	

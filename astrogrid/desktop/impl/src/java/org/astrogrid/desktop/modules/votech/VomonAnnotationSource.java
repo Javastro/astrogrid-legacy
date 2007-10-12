@@ -4,6 +4,7 @@
 package org.astrogrid.desktop.modules.votech;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -19,8 +20,8 @@ public class VomonAnnotationSource extends DynamicAnnotationSource {
 
 	
 	
-	public VomonAnnotationSource(VoMonInternal vomon) {
-		super(URI.create("votech://vomon"), "Availability service");
+	public VomonAnnotationSource(VoMonInternal vomon) throws URISyntaxException {
+		super(new URI(vomon.getEndpoint().toString()), "Availability service");
 		this.vomon = vomon;
 		setSortOrder(3);
 	}

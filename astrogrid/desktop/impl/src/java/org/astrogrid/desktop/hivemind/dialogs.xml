@@ -40,7 +40,7 @@ RESOURCE (FILE) CHOOSER
 	
 <!-- 
 ===========================
-TOOL EDITOR - FIXME - reimplement using regExplorer.
+TOOL EDITOR
  -->
 	<!-- todo: make non-singleton? -->			
 	<service-point id="toolEditor" interface="org.astrogrid.desktop.modules.dialogs.ToolEditorInternal">

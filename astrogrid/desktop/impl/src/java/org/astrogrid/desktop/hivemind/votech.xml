@@ -55,7 +55,10 @@ ANNOTATION SERVICE
 	<contribution configuration-id="hivemind.EagerLoad">
 		<load service-id="annotate"/><!--  loads and processes the annotation files -->
 	</contribution>
-	
+
+     <contribution configuration-id="util.selftest" >
+        <object>service-property:annotate:selftest</object>
+    </contribution>	
 	
 	<service-point id="annotationSourcesFactory" interface="org.astrogrid.desktop.hivemind.IterableObjectBuilder">
 		Object builder for annotationSources - each should be an instance of AnnotationSource
@@ -72,6 +75,7 @@ ANNOTATION SERVICE
 <configuration-point id="annotationSources" schema-id="hiveutils.ObjectBuilderSchema">
 	Configuration point for the list of annotation sources
 </configuration-point>
+
 
 <contribution configuration-id="annotationSources">
 	<object name="ag" class="org.astrogrid.desktop.modules.votech.AnnotationSource">
@@ -146,6 +150,10 @@ VOMON
 				<description>Period between reloading the monitoring information</description>
 			</preference>
 	</contribution>
+    
+     <contribution configuration-id="util.selftest" >
+        <object>service-property:vomon:selftest</object>
+    </contribution>
 
 	<!--  load on startup -->
 	<contribution configuration-id="hivemind.EagerLoad">

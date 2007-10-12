@@ -3,6 +3,8 @@
  */
 package org.astrogrid.desktop.modules.votech;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
@@ -10,8 +12,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
+import net.sf.ehcache.Status;
 
 import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.logging.Log;
@@ -260,6 +267,32 @@ private void saveSourceList() {
 			}
 		}
 	}
+
+    public Test getSelftest() {
+        TestSuite ts = new TestSuite("Annotations");
+        ts.addTest(new TestCase("Annotations") {
+            protected void runTest()  {
+                assertEquals("Problem with cache",Status.STATUS_ALIVE,cache.getStatus());
+            }
+        });
+        AnnotationSource[] srcs = listSources();
+        for (int i = 0; i < srcs.length; i++) {
+            final AnnotationSource src = srcs[i];
+            ts.addTest(new TestCase( src.getName() + " annotations"){
+                protected void runTest() throws Throwable {
+                    try {
+                        src.getSource().toURL().openConnection().connect();
+                    } catch (MalformedURLException x) {
+                        fail("invalid endpoint");
+                    } catch (IOException x) {
+                        fail("Unable to connect to endpoint");
+                    }
+                }
+            });
+
+        }
+        return ts;
+    }
 
 
 }

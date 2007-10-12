@@ -737,7 +737,11 @@ System module.
 	<implementation service-id="webserver"  if="property system.webserver.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
 	</implementation>	
-
+    
+     <contribution configuration-id="util.selftest" >
+        <object>service-property:webserver:selftest</object>
+    </contribution>
+    \
 	<contribution configuration-id="framework.preferences" if="not (property system.webserver.disabled)">
 		<preference name="system.webserver.port" default-value="-1"
 		requires-restart="true" advanced="true">
@@ -895,7 +899,7 @@ SYSTEM TRAY
 	==============================
 	RMI
 	 -->
-	<service-point id="rmi" interface="RmiServer">
+	<service-point id="rmi" interface="org.astrogrid.desktop.modules.system.RmiServerInternal">
 		RMI Service. Consumes the rmiListenerInterfaces configuration
 		<invoke-factory>
 			<construct 
@@ -913,7 +917,11 @@ SYSTEM TRAY
 			</construct>
 		</invoke-factory>	
 	</service-point>	
-	
+
+     <contribution configuration-id="util.selftest" >
+        <object>service-property:rmi:selftest</object>
+    </contribution>
+    	
 	<implementation service-id="rmi"  if="property system.rmi.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />					
 	</implementation>

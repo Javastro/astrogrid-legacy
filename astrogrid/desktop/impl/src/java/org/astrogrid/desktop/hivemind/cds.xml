@@ -24,7 +24,7 @@
 ======================
 SESAME
  -->
-	<service-point id="sesame" interface="Sesame">
+	<service-point id="sesame" interface="org.astrogrid.desktop.modules.cds.SesameInternal">
 		Name resolver
         <interceptor service-id="system.edt" />        
 		<interceptor service-id="system.throbber" />		
@@ -47,6 +47,10 @@ SESAME
 				<units>url</units>
 			</preference>
 	</contribution>
+    
+     <contribution configuration-id="util.selftest" >
+        <object>service-property:sesame:selftest</object>
+    </contribution>
 <!-- 
 ======================
 VIZIER

@@ -7,6 +7,7 @@ import java.net.URI;
 import java.util.Iterator;
 
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.desktop.modules.util.Selftest;
 
 
 
@@ -14,7 +15,7 @@ import org.astrogrid.acr.ivoa.resource.Resource;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jun 18, 20077:21:46 PM
  */
-public interface AnnotationService {
+public interface AnnotationService extends Selftest {
 
 	// control annotation sources.
 	/** List the locations that annotation sources are being read from

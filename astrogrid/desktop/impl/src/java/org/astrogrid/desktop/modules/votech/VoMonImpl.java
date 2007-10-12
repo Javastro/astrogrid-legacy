@@ -21,6 +21,10 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.Status;
@@ -47,7 +51,7 @@ public class VoMonImpl implements VoMonInternal {
 	 */
 	private static final Log logger = LogFactory.getLog(VoMonImpl.class);
 
-	private final URL voMonEndpoint;
+	private final URL endpoint;
 	private final int refreshSeconds;
 	private final Ehcache cache;
 
@@ -83,7 +87,7 @@ public class VoMonImpl implements VoMonInternal {
 		XMLInputFactory fac = XMLInputFactory.newInstance();
 		XMLStreamReader in = null;
 		try {
-			in = fac.createXMLStreamReader(voMonEndpoint.openStream());
+			in = fac.createXMLStreamReader(endpoint.openStream());
 			VoMonBean bean = null;
 			MultiMap apps = new MultiHashMap();
 			while(in.hasNext()) {
@@ -183,7 +187,7 @@ public class VoMonImpl implements VoMonInternal {
 		} catch (MalformedURLException e) {
 			u = null; // not going to work..
 		}
-		this.voMonEndpoint = u;
+		this.endpoint = u;
 		this.refreshSeconds = refreshSeconds;
 		this.cache =cache;
 	}
@@ -269,6 +273,31 @@ public class VoMonImpl implements VoMonInternal {
         } else {
             return null;
         }
+    }
+
+    
+    public Test getSelftest() {
+        return new TestCase("Services monitor") {
+            protected void runTest()  {
+                assertNotNull("Invalid endpoint",endpoint);
+                try {
+                    endpoint.openConnection().connect();
+                } catch (IOException x) {
+                    fail("Unable to access monitor service");
+                }
+                assertEquals("Problem with cache",Status.STATUS_ALIVE,cache.getStatus());
+            //race condition - may not yet have downloaded ...
+                assertTrue("Service statuses not downloaded",cache.getSize() > 0);
+                
+            }
+        };
+    }
+
+    /**
+     * @return the endpoint
+     */
+    public final URL getEndpoint() {
+        return this.endpoint;
     }
 
 
