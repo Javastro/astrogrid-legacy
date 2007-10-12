@@ -99,7 +99,13 @@ public class TaskParametersForm extends JPanel implements ItemListener {
 /** parameter help display */
     private final ParametersInfoPane infoPane;
 
-private LocalFileUploadAssistant uploadAssist;
+private final LocalFileUploadAssistant uploadAssist;
+
+private final CellConstraints cc;
+
+private final PanelBuilder pb;
+
+private FormLayout fl;
 	
 	
 	/**
@@ -153,6 +159,27 @@ private LocalFileUploadAssistant uploadAssist;
 	/** access the model - all changes are live on this */
 	public Tool getTool() {
 		return model.tool();
+	}
+	
+	
+	/** splice an externally created toolbar into the panel.*/
+	public void setToolbar(JPanel toolbar) {
+	    pb.add(toolbar,cc.xyw(1,1,5));
+	}
+	/** splice an externally created right-most pane into the panel 
+	 * 
+	 * @param title title for the right-most pane
+	 * @param rightPane compoent to display in right-most column. If set to null,
+	 * the right column is removed from the layout instead. (HACK)
+	 */
+	public void setRightPane(String title,JComponent rightPane) {
+	    if (rightPane == null) {
+	        fl.removeColumn(5);
+	        fl.removeColumn(4);
+	    } else {
+	        pb.addTitle("Execution",cc.xy(5,2));
+	        pb.add(rightPane,cc.xy(5,3));
+	    }
 	}
 	
 	public TaskParametersForm(final UIComponentWithMenu parent, final ApplicationsInternal apps,TypesafeObjectBuilder builder, FileSystemManager vfs) {
@@ -234,16 +261,15 @@ private LocalFileUploadAssistant uploadAssist;
 //		    }
 //		});
 		
-		FormLayout fl = new FormLayout(
+		fl = new FormLayout(
 				"fill:d:grow,3dlu,fill:d:grow,3dlu,d:grow" // cols
 				,"d,d,fill:50dlu:grow,fill:d" // rows   - can't say 'grow' for the last row - as it takes up space even when not visible
 				);
-		fl.setColumnGroups(new int[][]{ {1, 3} });
-		PanelBuilder pb = new PanelBuilder(fl,this);
-		CellConstraints cc = new CellConstraints();
-		pb.addTitle("Inputs",cc.xy(1,2));
+        fl.setColumnGroups(new int[][]{ {1, 3} });
+		pb = new PanelBuilder(fl,this);
+        cc = new CellConstraints();
+        pb.addTitle("Inputs",cc.xy(1,2));
 		pb.addTitle("Outputs",cc.xy(3,2));
-		pb.addTitle("Execution",cc.xy(5,2));
 		pb.add(inScroll,cc.xy(1,3));
 		final JSplitPane rightSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		rightSplit.setLeftComponent(outScroll);

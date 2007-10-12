@@ -158,7 +158,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 
         protected void doFinished(Object result) {
             if (result != null) {
-                executionServers.addAll((List)result);
+                toolbar.executionServers.addAll((List)result);
             }
         }
     }
@@ -337,7 +337,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	            super("Change task...",IconHelper.loadIcon("clearright16.png"));
 	            this.putValue(SHORT_DESCRIPTION,"Select a different task to run");
 	            //this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_N));
-	            this.setEnabled(true);
+	            this.setEnabled(false); // as not implemented at present.
 	        }
 	        public void actionPerformed(ActionEvent e) {
 	            JOptionPane.showMessageDialog(TaskRunnerImpl.this,"not implemented");
@@ -358,8 +358,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	private final Action reset;
 	private final Action chooseApp;
 
-	/** list of servers that provide this application - should contain Service objects */
-	private final EventList executionServers =  new BasicEventList();;
+
 	protected final ApplicationsInternal apps;
 	private final ResourceChooserInternal fileChooser;
 	private final RegistryGoogle regChooser;
@@ -399,17 +398,10 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 		fileMenu.add(open);
 		fileMenu.add(save);
 		fileMenu.add(new JSeparator());
-		
+
+		// execution related stuff.
 		JMenu executeMenu =new JMenu("Execute");
 		fileMenu.add(executeMenu);
-	      // function that maps a service to an 'Execute' menu operation */
-        FunctionList.Function executionBuilderFunction = new FunctionList.Function() {
-            public Object evaluate(Object sourceValue) {
-                return new ExecuteTaskMenuItem((Service)sourceValue);
-            }
-        };
-        new EventListMenuManager(new FunctionList(executionServers,executionBuilderFunction),executeMenu, false);
-
 		
 		fileMenu.add(new JSeparator());
 		fileMenu.add( new CloseAction());		
@@ -446,47 +438,8 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 		// tasks pane.
 
 		// toolbar
-		PanelBuilder toolbar = new PanelBuilder(new FormLayout(
-				"2dlu,d,200dlu,10dlu,right:d,d,10dlu:grow,d,2dlu" // cols
-				,"d" // rows
-				));
-		CellConstraints cc = new CellConstraints();
-		JButton appButton = new JButton(chooseApp);
-		// show icon only.
-		appButton.setText(null);
-		//FIXME - temporarily set to invisible, as not implemented.
-		appButton.setVisible(false);
-		int col = 2;
-		toolbar.add(appButton,cc.xy(col++,1));
-		toolbar.add(pForm.getResourceLabel(),cc.xy(col++,1));
-		col++;
-		toolbar.addLabel("Interface:",cc.xy(col++,1));
-		toolbar.add(pForm.getInterfaceCombo(),cc.xy(col++,1));
-		col++;
-		
-		// drop-down 'execute' button
-		final EventListDropDownButton execButton = new EventListDropDownButton("Unavailable",IconHelper.loadIcon("run16.png")
-                ,new FunctionList(executionServers, executionBuilderFunction)
-                ,false);
-		execButton.setEnabled(false);
-		// enable / disable various bits of the exec button, depending on what is available.
-		executionServers.addListEventListener(new ListEventListener() {
-            public void listChanged(ListEvent listChanges) {
-                while (listChanges.hasNext()) {
-                    listChanges.next();
-                    if (executionServers.isEmpty()) {
-                            execButton.setEnabled(false);
-                            execButton.getMainButton().setText("Unavailable");
-                    }else {
-                            execButton.setEnabled(true);
-                            execButton.getMainButton().setText("Execute!");                                  
-                    }
-                }
-            }
-		});
-		toolbar.add(execButton,cc.xy(col++,1));
-		
-		
+		toolbar = new ExecutingTaskRunnerToolbar(pForm,chooseApp,executeMenu);
+	
 		// finish it all off.
  
 		final JScrollPane execScroll = new JScrollPane(trackerPanel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -518,24 +471,89 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                     rightPane.setDividerSize(7);                    
             }
 		});
-				
-		// abit of a hack at the moment - not the nicest way to build a JForm
-		// as relies on knowledge of internal implementation (i.e. the grid layout) of pForm
-		pForm.add(toolbar.getPanel(),cc.xyw(1,1,5));
-		pForm.add(rightPane,cc.xy(5,3));
+		pForm.setToolbar(toolbar);
+		pForm.setRightPane("Execute",rightPane); 
 		//
 		JPanel pane = getMainPanel();
 		pane.add(pForm,BorderLayout.CENTER);
-		this.setContentPane(pane);
 		this.setTitle("Task Runner");
 		setIconImage(IconHelper.loadIcon("applaunch16.png").getImage());
 		logger.info("New TaskRunner - Completed");
+	}
+	
+	
+	/** simple toolbar for taskrunner */;
+	public static class TaskRunnerToolbar extends JPanel {
+	    protected final PanelBuilder builder;
+        protected final CellConstraints cc;
+
+        /**
+         * 
+         */
+        public TaskRunnerToolbar(TaskParametersForm pForm, Action chooseAppAction) {
+            builder = new PanelBuilder(new FormLayout(
+                    "2dlu,d,200dlu,10dlu,right:d,d,10dlu:grow,d,2dlu" // cols
+                    ,"d" // rows
+                    ),this);
+            cc = new CellConstraints();
+            JButton appButton = new JButton(chooseAppAction);
+            // show icon only.
+            appButton.setText(null);
+            //FIXME - temporarily set to invisible, as not implemented.
+            appButton.setVisible(chooseAppAction.isEnabled());
+            int col = 2;
+            builder.add(appButton,cc.xy(col++,1));
+            builder.add(pForm.getResourceLabel(),cc.xy(col++,1));
+            col++;
+            builder.addLabel("Interface:",cc.xy(col++,1));
+            builder.add(pForm.getInterfaceCombo(),cc.xy(col++,1));
+        }
+	}
+	/** extended toolbar which adds an 'execute' button - not static, as more tightly integrated into the taskrunner */
+	public class ExecutingTaskRunnerToolbar extends TaskRunnerToolbar implements ListEventListener {
+	    /** list of servers that provide this application - should contain Service objects */
+	    private final EventList executionServers =  new BasicEventList();
+	    /** function that creates a menu item from a service */
+	    private final FunctionList.Function executionBuilderFunction = new FunctionList.Function() {
+	        public Object evaluate(Object sourceValue) {
+	            return new ExecuteTaskMenuItem((Service)sourceValue);
+	        }
+	    };
+	    
+	    private final EventListDropDownButton execButton;
+	    
+	    public ExecutingTaskRunnerToolbar(TaskParametersForm pform, Action chooseAppAction, JMenu executeMenu) {
+	        super(pform,chooseAppAction);
+	        // function that maps a service to an 'Execute' menu operation */
+	        new EventListMenuManager(new FunctionList(executionServers,executionBuilderFunction),executeMenu, false);
+	        execButton = new EventListDropDownButton("Unavailable",IconHelper.loadIcon("run16.png")
+	                ,new FunctionList(executionServers, executionBuilderFunction)
+	                ,false);
+	        execButton.setEnabled(false);
+	        executionServers.addListEventListener(this);
+	        builder.add(execButton,cc.xy(8,1));     
+	    }
+	    // enable / disable various bits of the exec button, depending on what is available.
+	    public void listChanged(ListEvent listChanges) {
+	        while (listChanges.hasNext()) {
+	            listChanges.next();
+	            if (executionServers.isEmpty()) {
+	                execButton.setEnabled(false);
+	                execButton.getMainButton().setText("Unavailable");
+	            }else {
+	                execButton.setEnabled(true);
+	                execButton.getMainButton().setText("Execute!");                                  
+	            }
+	        }
+	    }
+
 	}
 	
 	//private final DescriptionsPanel descriptions;
 	protected final TaskParametersForm pForm;
     private final JPanel trackerPanel;
     private final JMenu editMenu;
+    private ExecutingTaskRunnerToolbar toolbar;
 
 	public void invokeTask(Resource r) {
 		buildForm(r);
@@ -558,7 +576,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 		}
 		
 		// start off a background process to find a list of servers that execute this app.
-		this.executionServers.clear();
+		toolbar.executionServers.clear();
 		final URI appId = cea.getId();
 		(new ListServicesWorker(appId)).start();
 		
