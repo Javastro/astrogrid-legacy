@@ -1,4 +1,4 @@
-/*$Id: ConeImpl.java,v 1.6 2007/09/21 16:35:15 nw Exp $
+/*$Id: ConeImpl.java,v 1.7 2007/10/15 17:34:11 mbt Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -53,7 +53,7 @@ public class ConeImpl extends DALImpl implements Cone {
         			addOption(
         			addOption(
         			addOption(
-        					addOption(endpoint,"-c",Double.toString(arg1) + " " + Double.toString(arg2))
+        					addOption(endpoint,"-c",Double.toString(arg1) + " " + (arg2>=0?"+":"") + Double.toString(arg2))
         					, "-c.r",Double.toString(arg3))
         					,"-c.u","deg")
         					,"-oc.form","dec")
@@ -150,6 +150,9 @@ public class ConeImpl extends DALImpl implements Cone {
 
 /* 
 $Log: ConeImpl.java,v $
+Revision 1.7  2007/10/15 17:34:11  mbt
+Vizier seems to require explicit leading '+' for declination
+
 Revision 1.6  2007/09/21 16:35:15  nw
 improved error reporting,
 various code-review tweaks.
