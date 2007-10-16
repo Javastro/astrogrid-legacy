@@ -143,6 +143,12 @@ public class ARProcessor extends Processor implements Serializable {
 		resListID.getMetadata().setMIMETypes(mimeID);
 		resListID.setSyntacticType(computeType(java.lang.String.class,mimeID));
 		this.addPort(resListID);
+		
+		OutputPort execInfo = new OutputPort(this,"ExecutionInformation");
+		execInfo.getMetadata().setDescription("Execution Information");		
+		execInfo.getMetadata().setMIMETypes(mimeID);
+		execInfo.setSyntacticType(computeType(java.lang.String.class,mimeID));
+		this.addPort(execInfo);		
 	}
 	
 	private void describeVotableInputs() throws PortCreationException, DuplicatePortNameException {

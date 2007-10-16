@@ -207,6 +207,7 @@ public class ARTask implements ProcessorTaskWorker {
 			//if(parameterThing.getDataObject().equals("false")) {
 			int tempCounter = 0;
 			boolean discovered = false;
+			String finalExecutionInfo = null;
 			
 			while(!discovered && tempCounter < 5) {
 				try {
@@ -224,7 +225,7 @@ public class ARTask implements ProcessorTaskWorker {
 						execInfo = apps.getExecutionInformation(executionID);
 					}//while
 					logger.warn("finished with execution the final status = " + execInfo.getStatus());
-					
+					finalExecutionInfo = execInfo.toString();
 					finalResultMap = apps.getResults(executionID);
 					logger.warn("map size after finish  = " + finalResultMap.size());
 					if(finalResultMap.size() == 0) {						
@@ -255,6 +256,7 @@ public class ARTask implements ProcessorTaskWorker {
 		    */
 		    outputMap.put("ResultList",DataThingFactory.bake(new ArrayList(finalResultMap.values())));
 		    outputMap.put("ExecutionID",DataThingFactory.bake(executionID.toString()));
+		    outputMap.put("ExecutionInformation",DataThingFactory.bake(finalExecutionInfo));
 		    logger.warn("end cea execute in ARTask");
 		    return outputMap;
 		} catch (Throwable x) {

@@ -109,6 +109,10 @@ public class ARProcessor extends Processor implements Serializable {
 						if(pbi[j].getMin() == 0) {
 							paramInput.setOptional(true);
 						}
+						logger.warn("the default value name = " + pb.getName() + " value = " + pb.getDefaultValue());
+						if(pb.getDefaultValue() != null && pb.getDefaultValue().trim().length() > 0) {
+							paramInput.setDefaultValue(pb.getDefaultValue());
+						}
 						this.addPort(paramInput);
 					}//for
 					logger.warn("add optional CeaService ivorn");
@@ -164,6 +168,12 @@ public class ARProcessor extends Processor implements Serializable {
 			resListID.getMetadata().setMIMETypes(mimesText);
 			resListID.setSyntacticType(computeType(java.lang.String.class,mimesText));
 			this.addPort(resListID);
+			
+			OutputPort statusOutput = new OutputPort(this,"ExecutionInformation");
+			statusOutput.getMetadata().setDescription("A description of the CEA execution such as status, time, description");
+			statusOutput.getMetadata().setMIMETypes(mimesText);
+			statusOutput.setSyntacticType(computeType(java.lang.String.class,mimesText));
+			this.addPort(statusOutput);			
 
 			setDescription("CEA Application");
 		}/*catch(NotFoundException e) {
