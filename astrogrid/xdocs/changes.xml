@@ -7,6 +7,12 @@
     	<release version="(Pending Integration)">
 
           <action dev="kea" type="fix">
+             Branch PAL-KEA-2314.  Merge of CEA multicone work in progress
+             so Mark T can take a fresh branch - PLEASE DON'T MAKE A NEW
+             DSA RELEASE FROM THIS BRANCH!
+          </action>
+
+          <action dev="kea" type="fix">
              Branch PAL-KEA-2213.  Enhanced embedded installation 
              documentation.
           </action>
