@@ -29,6 +29,9 @@ public interface NameTranslator {
    /** Gets the database name for the specified catalog */
    public String getColumnRealname(String catalog, String table, String column) throws MetadataException;
 
+   /** Returns the number of catalogs in the metadoc - useful for finding
+    *  out if this DSA is running in multi-catalog mode. */
+   public int getNumCatalogs() throws MetadataException;
 }
 
 

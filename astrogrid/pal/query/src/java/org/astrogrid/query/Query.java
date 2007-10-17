@@ -1,5 +1,5 @@
 /*
- * $Id: Query.java,v 1.11 2007/09/07 09:30:52 clq2 Exp $
+ * $Id: Query.java,v 1.12 2007/10/17 09:58:20 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -445,7 +445,9 @@ public class Query  {
 
    /** Accepts an ADQL/xml query as a string, converts it to xmlbeans
     * representation (including validation against schema) and stores 
-    * the beans tree within the Query instance.
+    * the beans tree within the Query instance.  If the string doesn't
+    * seem to be valid XML, tries treating it as an ADQL/sql query
+    * instead.
     * Includes a botch fix for linux browsers, which have been
     * known to change closing </Table> and </Select> elements 
     * to lower case.
@@ -460,34 +462,50 @@ public class Query  {
          throw new QueryException("Input adql string may not be null/empty");
       }
 
-      //botch fix for linux browsers
-      adqlString.replaceAll("</table>", "</Table>");
-      adqlString.replaceAll("</select>", "</Select>");
-
-     // Check for expected namespace before trying to parse
-      if (adqlString.indexOf(NAMESPACE_1_0) == -1) {
-         // Not adql 1.0 
-         if (adqlString.indexOf(NAMESPACE_0_7_4) == -1) {
-            // Not adql 0.7.4 either, barf
-            throw new QueryException(
-                "Unrecognised namespace: expecting either " +
-                NAMESPACE_0_7_4 + " or " +
-                NAMESPACE_1_0);
-         }
-         else {
-            // Move 0.7.4 into 1.0 (TOFIX temporary until we have translator!)
-            adqlString = tweakNamespace(adqlString);
+      if (adqlString.indexOf("</Select>") == -1) {
+         //Do we have an ADQL/s string instead?
+         StringReader source = new StringReader(adqlString) ;
+         try {
+            this.selectDocument =  
+                    (SelectDocument)getCompiler(source).compileToXmlBeans();
+         } 
+         catch (Exception e) {
+            throw new QueryException("Could not translate input query (presumed ADQL/sql) into valid ADQL/xml", e);
          }
       }
-      // Now, parse the XML into an xmlbeans structure.  
-      // This step DOESN'T validate against schema.
-      try {
-         this.selectDocument = SelectDocument.Factory.parse(adqlString.trim());
-      }
-      catch (XmlException e) {
-        throw new QueryException("Couldn't parse ADQL: " + e, e);
-      }
+      else {
+         // Try XML
+         
+         //botch fix for linux browsers
+         adqlString.replaceAll("</table>", "</Table>");
+         adqlString.replaceAll("</select>", "</Select>");
 
+        // Check for expected namespace before trying to parse
+         if (adqlString.indexOf(NAMESPACE_1_0) == -1) {
+            // Not adql 1.0 
+            if (adqlString.indexOf(NAMESPACE_0_7_4) == -1) {
+            // Not adql 0.7.4 either 
+               // Not adql 0.7.4 either, barf
+               throw new QueryException(
+                   "Unrecognised ADQL/xml namespace: expecting either " +
+                   NAMESPACE_0_7_4 + " or " +
+                   NAMESPACE_1_0);
+            }
+            else {
+               // Move 0.7.4 into 1.0 (TOFIX temporary until we have translator!)
+               adqlString = tweakNamespace(adqlString);
+            }
+         }
+         // Now, parse the XML into an xmlbeans structure.  
+         // This step DOESN'T validate against schema.
+         try {
+            this.selectDocument = SelectDocument.Factory.parse(adqlString.trim());
+         }
+         catch (XmlException e) {
+           throw new QueryException("Couldn't parse ADQL: " + e, e);
+         }
+
+      }
       // Postprocess to meet our query conventions
       postprocessSelectDocument();
    }

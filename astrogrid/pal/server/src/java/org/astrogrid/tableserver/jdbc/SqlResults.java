@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.15 2007/09/07 09:30:52 clq2 Exp $
+ * $Id: SqlResults.java,v 1.16 2007/10/17 09:58:21 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -79,7 +79,7 @@ public class SqlResults extends TableResults {
          case Types.CHAR:     return String.class;
          case Types.DOUBLE:   return Double.class;
          case Types.FLOAT:    return Float.class;
-         case Types.INTEGER:  return Integer.class;
+
          case Types.REAL:     return Float.class;
          case Types.SMALLINT: return Integer.class;
          case Types.TINYINT:  return Integer.class;
@@ -198,6 +198,8 @@ public class SqlResults extends TableResults {
                            "' in metadoc");
                         tableID = null;
                      }
+                     if (tableID != null) {
+                     }
                   }
                }
             }
@@ -275,18 +277,18 @@ public class SqlResults extends TableResults {
                // from the DSA's own configuration
                // KONA TOFIX WHAT IS THIS ACTUALLY DOING??
                cols[i-1] = TableMetaDocInterpreter.getColumnInfoByID(
-                     null, tableID, columnID);
+                     catalogID, tableID, columnID);
 
                cols[i-1].setId(tableID+"."+columnID);
 
                cols[i-1].setUcd(TableMetaDocInterpreter.getColumnInfoByID(
-                     null, tableID, columnID).getUcd("1"),"1");
+                     catalogID, tableID, columnID).getUcd("1"),"1");
 
                cols[i-1].setUnits(TableMetaDocInterpreter.getColumnInfoByID(
-                     null, tableID, columnID).getUnits());
+                     catalogID, tableID, columnID).getUnits());
 
                cols[i-1].setPublicType(TableMetaDocInterpreter.getColumnInfoByID(
-                     null, tableID, columnID).getPublicType());
+                     catalogID, tableID, columnID).getPublicType());
             }
             // Now try to add some final JDBC metadata
             //read direct from sql metadata
@@ -396,6 +398,12 @@ public class SqlResults extends TableResults {
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.16  2007/10/17 09:58:21  clq2
+ PAL_KEA-2314
+
+ Revision 1.15.2.1  2007/09/25 17:17:29  kea
+ Working on CEA interface for multicone service.
+
  Revision 1.15  2007/09/07 09:30:52  clq2
  PAL_KEA_2235
 

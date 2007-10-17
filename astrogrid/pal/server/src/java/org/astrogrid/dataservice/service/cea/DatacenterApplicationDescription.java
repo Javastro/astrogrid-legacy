@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescription.java,v 1.5 2007/06/12 12:12:01 kea Exp $
+/*$Id: DatacenterApplicationDescription.java,v 1.6 2007/10/17 09:58:19 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ import org.astrogrid.applications.description.base.ApplicationDescriptionEnviron
 import org.astrogrid.applications.description.base.BaseApplicationInterface;
 import org.astrogrid.applications.description.base.BaseParameterDescription;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
+import org.astrogrid.applications.beans.v1.parameters.OptionList;
 import org.astrogrid.community.User;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -48,8 +49,26 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
     public static final String QUERY = "Query";
     /** name of the 'format' parameter */
     public static final String FORMAT = "Format";
+    public static final String[] FORMAT_OPTIONS = 
+       {"VOTABLE", "VOTABLE-BINARY", "COMMA-SEPARATED", "HTML"};
     /** name of the 'catalog.table' parameter */
     public static final String CATTABLE = "CatTable";
+
+    /* These additional parameters are for the "Multicone" 
+     * simple crossmatch service */
+    /** name of the simple crossmatch search interface */
+    public static final String MULTICONE_IFACE = "multicone";
+    /** Where the VOTable with rows to be matched is located */
+    public static final String INPUT_VOTABLE = "Input_VOTable";
+    /** name of the column (or expression) giving Right Ascension in degrees */
+    public static final String RA_EXPR = "RA_Column_Name";
+    /** name of the column (or expression) giving Declination in degrees */
+    public static final String DEC_EXPR = "Dec_Column_Name";
+    /** name of (optional) flag indicating match type */
+    public static final String FIND_MODE = "Find_Mode";
+    public static final String[] FIND_MODE_OPTIONS = {"BESTY", "ALLY"};
+     
+
     /**
      * Commons Logger for this class
      */
@@ -108,11 +127,14 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
        this.addParameterDescription(radius);
         
         BaseParameterDescription format = new BaseParameterDescription();
-        format.setDisplayDescription("How the results are to be returned.  VOTABLE (tabledata) or VOTABLE-BINARY (binary form) or CSV for now");
+        format.setDisplayDescription("Format in which the results are to be returned.");
         format.setDisplayName(FORMAT);
         format.setName(FORMAT);
         format.setDefaultValue("VOTABLE");
         format.setType(ParameterTypes.TEXT);
+        OptionList formatOptionList = new OptionList();
+        formatOptionList.setOptionVal(FORMAT_OPTIONS);
+        format.setOptionList(formatOptionList);
         this.addParameterDescription(format);
 
         BaseParameterDescription catTab = new BaseParameterDescription();
@@ -130,6 +152,39 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
         result.setType(ParameterTypes.TEXT); // probably votable.
         this.addParameterDescription(result);
         
+        BaseParameterDescription inputVotable = new BaseParameterDescription();
+        inputVotable.setDisplayDescription("Input VOTable of positions for matching against");
+        inputVotable.setDisplayName(INPUT_VOTABLE);
+        inputVotable.setName(INPUT_VOTABLE);
+        inputVotable.setType(ParameterTypes.ANYURI);
+        inputVotable.setType(ParameterTypes.TEXT);   
+        this.addParameterDescription(inputVotable);
+
+        BaseParameterDescription raExpr = new BaseParameterDescription();
+        raExpr.setDisplayDescription("Name for input Right-Ascension column (or expression): column data in degrees");
+        raExpr.setDisplayName(RA_EXPR);
+        raExpr.setName(RA_EXPR);
+        raExpr.setType(ParameterTypes.TEXT);
+        this.addParameterDescription(raExpr);
+       
+        BaseParameterDescription decExpr = new BaseParameterDescription();
+        decExpr.setDisplayDescription("Name for input Declination column (or expression): column data in degrees");
+        decExpr.setDisplayName(DEC_EXPR);
+        decExpr.setName(DEC_EXPR);
+        decExpr.setType(ParameterTypes.TEXT);
+        this.addParameterDescription(decExpr);
+
+        BaseParameterDescription findMode = new BaseParameterDescription();
+        findMode.setDisplayDescription("Find mode for matches");
+        findMode.setDisplayName(FIND_MODE);
+        findMode.setName(FIND_MODE);
+        findMode.setType(ParameterTypes.TEXT);
+        OptionList findModeOptionList = new OptionList();
+        findModeOptionList.setOptionVal(FIND_MODE_OPTIONS);
+        findMode.setOptionList(findModeOptionList);
+        this.addParameterDescription(findMode);
+
+
         BaseApplicationInterface adql = new BaseApplicationInterface(ADQL_IFACE,this);
         this.addInterface(adql);
         adql.addInputParameter(FORMAT);
@@ -144,6 +199,18 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
         cone.addInputParameter(DEC);
         cone.addInputParameter(RADIUS);
         cone.addOutputParameter(RESULT);
+
+        // Note: format of multicone output is fixed to VOTable right now
+        BaseApplicationInterface multicone = new BaseApplicationInterface(MULTICONE_IFACE,this);
+        this.addInterface(multicone);
+        multicone.addInputParameter(CATTABLE);
+        multicone.addInputParameter(RA_EXPR);
+        multicone.addInputParameter(DEC_EXPR);
+        multicone.addInputParameter(RADIUS);
+//        multicone.addInputParameter(FIND_MODE,0,1);
+        multicone.addInputParameter(FIND_MODE);
+        multicone.addInputParameter(INPUT_VOTABLE);
+        multicone.addOutputParameter(RESULT);
     }
     
     protected final DataServer ds;
@@ -164,6 +231,15 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
 
 /*
 $Log: DatacenterApplicationDescription.java,v $
+Revision 1.6  2007/10/17 09:58:19  clq2
+PAL_KEA-2314
+
+Revision 1.5.10.2  2007/10/11 13:53:19  kea
+Still working on multicone stuff.
+
+Revision 1.5.10.1  2007/09/25 17:17:29  kea
+Working on CEA interface for multicone service.
+
 Revision 1.5  2007/06/12 12:12:01  kea
 Adding cone cea interface back.
 

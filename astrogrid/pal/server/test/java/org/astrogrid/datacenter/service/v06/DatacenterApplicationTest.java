@@ -1,6 +1,6 @@
 
 /*
- * $Id: DatacenterApplicationTest.java,v 1.10 2007/09/07 09:30:51 clq2 Exp $
+ * $Id: DatacenterApplicationTest.java,v 1.11 2007/10/17 09:58:20 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,6 +23,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.Status;
+import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
@@ -190,6 +191,57 @@ public class DatacenterApplicationTest extends TestCase {
       VoTableTestHelper.assertIsVotable(votableString);
       
    }
+
+   public void testGetCatalogNameFromAppIvorn() throws CeaException {
+
+      String s1 = app.getCatalogNameFromAppIvorn(
+      "ivo://astrogrid.org/test-dsa-catalog/ceaApplication");
+      assertEquals(s1,"");
+
+      s1 = app.getCatalogNameFromAppIvorn(
+      "ivo://astrogrid.org/test-dsa-catalog/catalog/ceaApplication");
+      assertEquals(s1,"catalog");
+
+      s1 = app.getCatalogNameFromAppIvorn(
+      "ivo://astrogrid.org/test-dsa-catalog/catalog/extrabit/ceaApplication");
+      assertEquals(s1,"catalog/extrabit");
+
+      try {
+         s1 = app.getCatalogNameFromAppIvorn(
+            "ivo://my.auth.id/test-dsa-catalog/ceaApplication");
+         fail("Should have rejected IVORN - bad authority ID");
+      }
+      catch (CeaException ce) {
+      }
+      try {
+         s1 = app.getCatalogNameFromAppIvorn(
+            "ivo://astrogrid.org/my_resource/ceaApplication");
+         fail("Should have rejected IVORN - bad resource key");
+      }
+      catch (CeaException ce) {
+      }
+      try {
+         s1 = app.getCatalogNameFromAppIvorn(
+            "ivo://astrogrid.org/my_resource/foo");
+         fail("Should have rejected IVORN - bad suffix");
+      }
+      catch (CeaException ce) {
+      }
+      try {
+         s1 = app.getCatalogNameFromAppIvorn(
+            "ivo://astrogrid.org/my_resource/ceaApplication/");
+         fail("Should have rejected IVORN - trailing slash");
+      }
+      catch (CeaException ce) {
+      }
+      try {
+         s1 = app.getCatalogNameFromAppIvorn(
+            "sivo://astrogrid.org/my_resource/ceaApplication/");
+         fail("Should have rejected IVORN - strange prefix");
+      }
+      catch (CeaException ce) {
+      }
+   }
    
    protected boolean notFinished(Status stat) {
       if (stat.equals(Status.COMPLETED) || stat.equals(Status.ERROR) || stat.equals(Status.UNKNOWN)) {
@@ -258,6 +310,12 @@ public class DatacenterApplicationTest extends TestCase {
 
 /*
  $Log: DatacenterApplicationTest.java,v $
+ Revision 1.11  2007/10/17 09:58:20  clq2
+ PAL_KEA-2314
+
+ Revision 1.10.2.1  2007/10/11 13:53:20  kea
+ Still working on multicone stuff.
+
  Revision 1.10  2007/09/07 09:30:51  clq2
  PAL_KEA_2235
 

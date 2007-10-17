@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescriptionTest.java,v 1.6 2006/03/17 17:56:58 clq2 Exp $
+/*$Id: DatacenterApplicationDescriptionTest.java,v 1.7 2007/10/17 09:58:20 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -62,12 +62,20 @@ public class DatacenterApplicationDescriptionTest extends TestCase {
     
     public void testMetadata() throws ParameterNotInInterfaceException {
         ApplicationInterface[] ifaces = appDesc.getInterfaces();
-        assertEquals("Unexpected number of interfaces (cone search may be disabled) ",2,ifaces.length);
+        assertEquals("Unexpected number of interfaces (cone search may be disabled) ",3,ifaces.length);
         for (int i = 0; i < ifaces.length; i++) {
             ApplicationInterface iface = ifaces[i];
             // minimum for all interfaces.
             assertNotNull(iface.getName());
-            assertNotNull(iface.getInputParameter(DatacenterApplicationDescription.FORMAT)); // all need a format parameter
+            if ("multicone".equals(iface.getName())) {
+               assertNotNull(iface.getInputParameter(DatacenterApplicationDescription.INPUT_VOTABLE)); 
+            } 
+            else if ("cone".equals(iface.getName())) {
+               assertNotNull(iface.getInputParameter(DatacenterApplicationDescription.RA)); 
+            }
+            else if ("adql".equals(iface.getName())) {
+               assertNotNull(iface.getInputParameter(DatacenterApplicationDescription.QUERY)); 
+            }
             assertNotNull(iface.getOutputParameter(DatacenterApplicationDescription.RESULT)); // all need a result.
         }
     }
@@ -76,6 +84,12 @@ public class DatacenterApplicationDescriptionTest extends TestCase {
 
 /*
 $Log: DatacenterApplicationDescriptionTest.java,v $
+Revision 1.7  2007/10/17 09:58:20  clq2
+PAL_KEA-2314
+
+Revision 1.6.46.1  2007/09/25 17:17:30  kea
+Working on CEA interface for multicone service.
+
 Revision 1.6  2006/03/17 17:56:58  clq2
 gtr_1489_cea correted version
 

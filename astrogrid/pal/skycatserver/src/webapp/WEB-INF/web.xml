@@ -40,6 +40,12 @@
   </servlet>
 
   <servlet>
+    <servlet-name>SubmitSimpleQuery</servlet-name>
+    <description>Servlet for submitting simple ADQL/s queries via POST or GET</description>
+    <servlet-class>org.astrogrid.dataservice.service.simplequery.SubmitSimpleQuery</servlet-class>
+  </servlet>
+
+  <servlet>
     <servlet-name>MultiCone</servlet-name>
     <description>Servlet for performing local-remote crossmatches implemented as a sequence of server-side cone searches.
       The input table is submitted vi HTTP POST.
@@ -108,6 +114,11 @@
   <servlet-mapping>
     <servlet-name>SubmitCone</servlet-name>
     <url-pattern>SubmitCone</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>SubmitSimpleQuery</servlet-name>
+    <url-pattern>SubmitSimpleQuery</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

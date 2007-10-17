@@ -37,11 +37,6 @@
 
 <%= new TableMetaDocRenderer().renderMetaDoc() %>
 
-<h1>Raw Metadata</h1>
-
-<p>Download the raw metadata xml document <a href='GetMetadata'>here</a></p>
-<%-- <p>If you have access to administrator functions, you can download regenerated metadata <a href='admin/generateMetadata.jsp'>here</a></p> --%>
-
 </div>
 
    <%@ include file="footer.xml" %>

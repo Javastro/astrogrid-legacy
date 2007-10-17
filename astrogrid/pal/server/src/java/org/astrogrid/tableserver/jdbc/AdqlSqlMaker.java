@@ -1,4 +1,4 @@
-/*$Id: AdqlSqlMaker.java,v 1.4 2007/06/08 13:16:12 clq2 Exp $
+/*$Id: AdqlSqlMaker.java,v 1.5 2007/10/17 09:58:21 clq2 Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -330,14 +330,19 @@ public class AdqlSqlMaker implements SqlMaker {
                   translator.getTableRealname(catalogName,tableName));
             if (tableType.isSetArchive()) {
                // First check if we need to remove the archive to hide
-               // it from the sql backend
-               String hideCat = "true";
-               try {
-                  hideCat = ConfigFactory.getCommonConfig().getString(
-                       "datacenter.plugin.jdbc.hidecatalog","true");
-               }
-               catch (Exception e) {
-                 // Ignore if not found
+               // it from the sql backend.  If we only have one database
+               // exposed (e.g. in SampleStars config), we don't need 
+               // the catalog name.
+               String hideCat = "true";   //By default
+               int numCats = translator.getNumCatalogs();
+               if (numCats > 1) {
+                  try {
+                     hideCat = ConfigFactory.getCommonConfig().getString(
+                          "datacenter.plugin.jdbc.hidecatalog","false");
+                  }
+                  catch (Exception e) {
+                    // Ignore if not found
+                  }
                }
                if ("true".equals(hideCat) || "TRUE".equals(hideCat)) {
                   //Don't want to expose the catalog (schema) name
@@ -347,6 +352,7 @@ public class AdqlSqlMaker implements SqlMaker {
                   String archiveName = tableType.getArchive(); 
                   tableType.setArchive(
                     translator.getCatalogRealname(catalogName));
+                 
                }
             }
             // Now to find all SelectionList Items of type columnReferenceType,

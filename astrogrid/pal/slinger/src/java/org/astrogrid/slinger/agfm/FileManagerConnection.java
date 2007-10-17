@@ -102,8 +102,6 @@ public class FileManagerConnection extends URLConnection {
       }
       /**/
    }
-
-   
    /** Used to set the mime type of the data about to be sent to the source. Guesses
     * from the filename */
    public String getContentType() {

@@ -1,5 +1,5 @@
 /*
- * $Id: ServletHelper.java,v 1.6 2007/06/08 13:16:11 clq2 Exp $
+ * $Id: ServletHelper.java,v 1.7 2007/10/17 09:58:20 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -423,6 +423,17 @@ public class ServletHelper
       }
    }
    
+   /** Convenience routine for extracting an input ADQL query string */
+   public static String getAdql(HttpServletRequest request)
+   {
+      String adqlString = request.getParameter("ADQL");
+      if (adqlString == null) { adqlString = request.getParameter("adql"); }
+      if (adqlString == null) {
+         throw new IllegalArgumentException("No input query given as parameter 'ADQL'");
+      }
+      return adqlString;
+   }
+
    /** Convenience routine for returning the correct 'HTML' snippet that
     * refreshes the page given by the URL - which should point to the same page
     * that contains the snippet */
@@ -460,7 +471,13 @@ public class ServletHelper
       
       String ops = "";
       for (int i = 0; i < f.length; i++) {
-         ops = ops + "<option>"+MimeNames.humanFriendly(f[i])+"</option>";
+         String option = MimeNames.humanFriendly(f[i]);
+         if ("HTML".equals(option)) {
+            ops = ops + "<option SELECTED>"+MimeNames.humanFriendly(f[i])+"</option>";
+         }
+         else {
+            ops = ops + "<option>"+MimeNames.humanFriendly(f[i])+"</option>";
+         }
       }
       return ops;
    }

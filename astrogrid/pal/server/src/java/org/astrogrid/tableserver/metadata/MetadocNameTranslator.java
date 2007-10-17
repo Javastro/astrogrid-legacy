@@ -40,6 +40,18 @@ public class MetadocNameTranslator implements NameTranslator {
    {
       return TableMetaDocInterpreter.getColumnIDForName(catalog, table, column);
    }
+
+   /** Returns the number of catalogs in the metadoc - useful for finding
+    * out if this DSA is running in multi-catalog mode. */
+   public int getNumCatalogs() throws MetadataException {
+      String catalogIDs[] = TableMetaDocInterpreter.getCatalogIDs();
+      if (catalogIDs == null) { // Shouldn't happen
+         return 0;
+      }
+      else {
+         return catalogIDs.length;
+      }
+   }
 }
 
 

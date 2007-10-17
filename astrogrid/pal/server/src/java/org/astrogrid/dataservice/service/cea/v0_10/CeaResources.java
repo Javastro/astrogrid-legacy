@@ -1,5 +1,5 @@
 /*
- * $Id: CeaResources.java,v 1.4 2007/09/07 09:30:52 clq2 Exp $
+ * $Id: CeaResources.java,v 1.5 2007/10/17 09:58:20 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -79,6 +79,8 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
          
          String coneParams = ""; 
          String coneInters = ""; 
+         String multiConeParams = ""; 
+         String multiConeInters = ""; 
          String catalogID =
             TableMetaDocInterpreter.getCatalogIDForName(catalogName);
          TableInfo[] tables =
@@ -139,6 +141,57 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
                   "<ceab:pref maxoccurs='1' minoccurs='1' ref='Result'/>\n"+
                "</ceab:output>\n"+
             "</ceab:Interface>\n";
+
+
+            multiConeParams = 
+               // Multicone RA expression
+               "      <cea:ParameterDefinition name='RA_Column_Name' type='text'>\n"+
+               "        <ceapd:UI_Name>RA column name</ceapd:UI_Name>\n"+
+               "        <ceapd:UI_Description>Name for input Right-Ascension column (or expression): column data in degrees"+
+               "</ceapd:UI_Description>\n"+
+               "        <ceapd:Units>deg</ceapd:Units>\n"+
+               "      </cea:ParameterDefinition>\n"+
+
+               // Multicone Dec expression
+               "      <cea:ParameterDefinition name='Dec_Column_Name' type='text'>\n"+
+               "        <ceapd:UI_Name>Dec column name</ceapd:UI_Name>\n"+
+               "        <ceapd:UI_Description>Name for input Declination column (or expression): column data in degrees"+
+               "</ceapd:UI_Description>\n"+
+               "      </cea:ParameterDefinition>\n"+
+
+               // Multicone find mode 
+               "      <cea:ParameterDefinition name='Find_Mode' type='text'>\n"+
+               "        <ceapd:UI_Name>Find Mode</ceapd:UI_Name>\n"+
+               "        <ceapd:UI_Description>Find mode for matches: BEST or ALL"+
+               "</ceapd:UI_Description>\n"+
+               "<ceapd:DefaultValue>ALL</ceapd:DefaultValue>\n"+
+               "<ceapd:OptionList>\n"+
+                    "<ceapd:OptionVal>BEST</ceapd:OptionVal>\n"+
+                    "<ceapd:OptionVal>ALL</ceapd:OptionVal>\n"+
+               "</ceapd:OptionList>\n"+
+               "      </cea:ParameterDefinition>\n"+
+
+               // Multicone input VOTable url
+               "      <cea:ParameterDefinition name='Input_VOTable' type='text'>\n"+
+               "        <ceapd:UI_Name>Input VOTable</ceapd:UI_Name>\n"+
+               "        <ceapd:UI_Description>Input VOTable, containing Right Ascension and Declination columns, for matching against)"+
+               "</ceapd:UI_Description>\n"+
+               "      </cea:ParameterDefinition>\n";
+
+            multiConeInters=
+               "      <ceab:Interface name='multicone'>\n"+
+               "        <ceab:input>\n"+
+               "          <ceab:pref maxoccurs='1' minoccurs='1' ref='CatTable'/>\n"+
+               "          <ceab:pref maxoccurs='1' minoccurs='1' ref='Input_VOTable'/>\n"+
+               "          <ceab:pref maxoccurs='1' minoccurs='1' ref='RA_Column_Name'/>\n"+
+               "          <ceab:pref maxoccurs='1' minoccurs='1' ref='Dec_Column_Name'/>\n"+
+               "          <ceab:pref maxoccurs='1' minoccurs='1' ref='Radius'/>\n"+
+               "          <ceab:pref maxoccurs='1' minoccurs='0' ref='Find_Mode'/>\n"+
+               "        </ceab:input>\n"+
+               "        <ceab:output>\n"+
+               "          <ceab:pref maxoccurs='1' minoccurs='1' ref='Result'/>\n"+
+               "        </ceab:output>\n"+
+               "      </ceab:Interface>\n";
          }
 
 
@@ -182,6 +235,8 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
 
                   coneParams +
 
+                  multiConeParams +
+
                "</cea:Parameters>\n"+
                
                "<cea:Interfaces>\n"+
@@ -196,6 +251,8 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
                   "</ceab:Interface>\n"+
 
                   coneInters +
+
+                  multiConeInters +
 
                "</cea:Interfaces>\n"+
             "</cea:ApplicationDefinition>\n"+

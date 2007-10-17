@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.10 2007/09/07 09:30:51 clq2 Exp $
+/*$Id: DatacenterApplication.java,v 1.11 2007/10/17 09:58:20 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,24 +13,38 @@ package org.astrogrid.dataservice.service.cea;
 import EDU.oswego.cs.dl.util.concurrent.Executor;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.OutputStream;
+import java.io.InputStream;
+import java.io.ByteArrayInputStream;
+
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.Principal;
 import java.util.StringTokenizer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.cfg.PropertyNotFoundException;
+
 import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.Status;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
+import org.astrogrid.applications.parameter.ParameterAdapter;
+import org.astrogrid.applications.description.ParameterDescription;
+import org.astrogrid.applications.parameter.protocol.ExternalValue;
+
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierListener;
 import org.astrogrid.dataservice.queriers.status.QuerierStatus;
 import org.astrogrid.dataservice.service.AxisDataServer;
 import org.astrogrid.dataservice.service.DataServer;
+import org.astrogrid.dataservice.service.multicone.DsaConeSearcher;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
+import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.io.account.LoginAccount;
 import org.astrogrid.io.mime.MimeNames;
 import org.astrogrid.query.Query;
@@ -40,11 +54,26 @@ import org.astrogrid.query.QueryState;
 import org.astrogrid.slinger.sourcetargets.HomespaceSourceTarget;
 import org.astrogrid.slinger.sourcetargets.URISourceTargetMaker;
 import org.astrogrid.slinger.targets.TargetIdentifier;
+import org.astrogrid.slinger.sources.SourceIdentifier;
 import org.astrogrid.slinger.targets.WriterTarget;
+import org.astrogrid.slinger.agfm.FileManagerConnection;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.xml.sax.SAXException;
 import org.astrogrid.slinger.homespace.HomespaceName;
 import org.astrogrid.slinger.ivo.IVORN;
+
+// For the multicone stuff
+import uk.ac.starlink.table.StarTable;
+import uk.ac.starlink.table.StarTableWriter;
+import uk.ac.starlink.votable.VOTableWriter;
+import uk.ac.starlink.votable.DataFormat;
+import uk.ac.starlink.task.TaskException;
+import uk.ac.starlink.ttools.cone.SkyConeMatch2Producer;
+import uk.ac.starlink.ttools.task.TableProducer;
+import uk.ac.starlink.util.DataSource;
+import uk.ac.starlink.table.OnceRowPipe;
+import uk.ac.starlink.table.TableBuilder;
+import uk.ac.starlink.votable.VOTableBuilder;
 
 /** Represents a query running against the datacenter.
  * <p />
@@ -88,6 +117,60 @@ public class DatacenterApplication extends AbstractApplication implements Querie
       this.acc = new LoginAccount(ids.getUser().getUserId(),ids.getUser().getCommunity());
       logger.info("CEA DSA initialised, Job ID="+ids.getJobStepId());
    }
+
+   /**
+    * 
+    */
+   public void run() {
+      logger.debug("Starting to run CEA task with querier id " + getQuerierId());
+      try {
+         createAdapters();
+
+         // Get result target and format
+         TargetIdentifier ti = getResultTargetIdentifier();
+         String resultsFormat = getResultsFormat();
+         logger.debug("Selected results format is " + resultsFormat);
+         
+         String iName = getApplicationInterface().getName();
+         if (
+           DatacenterApplicationDescription.MULTICONE_IFACE.equals(iName)
+         ) { 
+              // Handle the multicone application as a special case.
+              // Note: the doMultiConeService method will set the
+              // CEA status as required
+              logger.info(
+                 "Got a multicone job, handing off to multicone service");
+              doMulticoneService(ti);
+         }
+         else {
+            // For regular cone or adql query, build and run a single query
+            // Get catalog name if set in Ivorn
+            String catName = getCatalogNameFromAppIvorn(
+                  getApplicationDescription().getName());
+            // Make sure that it's legit
+            runCatalogNameCheck(catName);
+
+            Query query = buildQuery(getApplicationInterface());
+            if ((catName != null) && (!"".equals(catName))) {
+               query.setParentCatalogReferences(catName);
+            }
+            query.getResultsDef().setTarget(ti);
+            query.getResultsDef().setFormat(resultsFormat);
+            Querier querier = Querier.makeQuerier(acc,query, "CEA from "+AxisDataServer.getSource()+" [Job "+ids.getJobStepId()+"]");
+            querier.addListener(this);
+            
+            setStatus(Status.INITIALIZED);
+            querierID = serv.submitQuerier(querier);
+            logger.info("assigned QuerierID " + querierID);
+         }
+      }
+      catch (Throwable e) {
+         this.setStatus(Status.ERROR);
+         this.reportError(e+" executing "+this.getTool().getName(),e);
+         return;
+      }
+   }
+
    
    /** construct a query from the contents of the tool
     * (mch) not entirely happy with this following changes to Query that include
@@ -99,17 +182,8 @@ public class DatacenterApplication extends AbstractApplication implements Querie
     * @return
     */
    protected final Query buildQuery(ApplicationInterface interf)  throws IOException, CeaException, QueryException {
-     //logger.debug("GOT INTO BUILDQUERY");
-
-      if (interf.getName().equals(DatacenterApplicationDescription.CONE_IFACE)) {
-         //logger.debug("GOT INTO BUILDQUERY CONE");
-        /*
-         return SimpleQueryMaker.makeConeQuery(
-            Double.parseDouble((String)findInputParameterAdapter(DatacenterApplicationDescription.RA).process())
-               , Double.parseDouble((String)findInputParameterAdapter(DatacenterApplicationDescription.DEC).process())
-               , Double.parseDouble((String)findInputParameterAdapter(DatacenterApplicationDescription.RADIUS).process())
-         );
-         */
+      if (interf.getName().equals(
+               DatacenterApplicationDescription.CONE_IFACE)) {
          String catalogName = "", tableName = "";
          String fullName = (String)findInputParameterAdapter(
                DatacenterApplicationDescription.CATTABLE).process();
@@ -156,7 +230,6 @@ public class DatacenterApplication extends AbstractApplication implements Querie
          logger.fatal("Programming logic error - unknown interface" + interf.getName());
          throw new IllegalArgumentException("Programming logic error - unknown interface" + interf.getName());
       }
-      
    }
    
    /**
@@ -166,89 +239,141 @@ public class DatacenterApplication extends AbstractApplication implements Querie
      return this;
    }
    
-   /**
-    * 
-    */
-   public void run() {
-      logger.debug("Starting to run CEA task with querier id " + getQuerierId());
+
+   protected TargetIdentifier getResultTargetIdentifier() throws CeaException
+   {
       try {
-         createAdapters();
          ParameterValue resultTarget = findOutputParameter(DatacenterApplicationDescription.RESULT);
-         TargetIdentifier ti = null;
          if (resultTarget.getIndirect()==true) {
             //results will go to the URI given in the parameter
             if ((resultTarget.getValue() == null) || (resultTarget.getValue().trim().length() == 0)) {
-               //throw new CeaException("ResultTarget is indirect but value is empty");
-               setStatus(Status.ERROR);
-               this.reportError("Query parameter error: ResultTarget is indirect but value is empty");
-               return;
+               throw new CeaException("Query parameter error: ResultTarget is indirect but value is empty");
             }
-            
+         }
+         if (resultTarget.getIndirect()==true) {
             //special botch for converting ivo:// to homespace:// etc
             String targetUri = transformTarget(resultTarget.getValue());
-            
-            ti = URISourceTargetMaker.makeSourceTarget(targetUri);
+            return URISourceTargetMaker.makeSourceTarget(targetUri);
          } else {
-            //direct-to-cea target, so results must get written to a string to be inserted into the
-            //parametervalue when complete.  See queryStatusChanged for what happens to the results
+            //direct-to-cea target, so results must get written to a string 
+            //to be inserted into the parametervalue when complete.  
+            //See queryStatusChanged for what happens to the results
             //when the query is complete
-            ti = new WriterTarget(new StringWriter(), true); //close stream when finished writing to it
+            //close stream when finished writing to it
+            return new WriterTarget(new StringWriter(), true); 
          }
+      }
+      catch (Exception ex) {
+         throw new CeaException(
+               "Query parameter error: couldn't process results destination: "+
+               ex.getMessage());
+      }
+   }
 
-         String resultsFormat = MimeNames.getMimeType( findInputParameterAdapter(DatacenterApplicationDescription.FORMAT).process().toString());
-         logger.debug("Selected results format is " + resultsFormat);
-         
-         /*
-         ReturnTable returnTable = new ReturnTable(ti,resultsFormat);
-         */
-         // Let's see if we need to prepend a catalog prefix
-        
-         // Application ivorns/names here take the following form:
-         //
-         //  auth_id/resource_id/{DATABASE_NAME}/ceaApplication
-         //  The {DATABASE_NAME/} bit is only present in a multi-catalog
-         //  DSA - but if it is present, we need to make sure that table
-         //  names in the ADQL query have the appropriate database prefix
-         //  (we can't currently rely on the QB etc to put the db prefix in)
-         //
-         String appName = getApplicationDescription().getName();
-         String name = appName;
+   protected String getResultsFormat() throws CeaException
+   {
+      try {
+         ParameterAdapter formatAdapter = findInputParameterAdapter(
+               DatacenterApplicationDescription.FORMAT);
+         if (formatAdapter == null) {
+            // Default to VOTable - for multicone
+            return MimeNames.getMimeType("VOTable"); 
+         }
+         else {
+            return MimeNames.getMimeType(formatAdapter.process().toString());
+         }
+      }
+      catch (Exception ex) {
+         throw new CeaException(
+               "Query parameter error: couldn't process results format: "+
+               ex.getMessage());
+      }
+   }
 
-         // First trim away everything up to and including the second "/"
-         // to eliminate the auth ID and resource name
-         // First remove auth ID
-         int slash = name.indexOf('/');
-         name = name.substring(slash+1);
-         // Now remove resource key
-         slash = name.indexOf('/');
-         name = name.substring(slash);
-         // Now remove trailing "ceaApplication" bit
-         slash = name.lastIndexOf('/');
-         name = name.substring(0,slash);
-         // Finally remove any slashes still present
-         name = name.replaceAll("/","");
+   public String getCatalogNameFromAppIvorn(String ivorn) throws CeaException
+   {
+      // Application ivorns/names here take the following form:
+      //  auth_id/resource_id/{DATABASE_NAME}/ceaApplication
+      //  The {DATABASE_NAME/} bit is only present in a multi-catalog
+      //  DSA - but if it is present, we need to make sure that table
+      //  names in the ADQL query have the appropriate database prefix
+      //  (we can't currently rely on the QB etc to put the db prefix in)
+      //
+      //  IMPORTANT NOTE:  The resource_id might legitimately contain a "/"
+      //  character
+      // First check that we haven't got *no* cat name
+      //
+      if (ivorn == null || "".equals(ivorn)) {
+         // Just for sanity
+         return "";
+      }
+      String ceaSuffix = "/ceaApplication";
+      String name = ivorn;
+      if (name.startsWith("ivo://")) {
+         name = name.substring(6);
+      }
+      String authID = "", resKey = "", autoIvorn="",autoPrefix="";
+      try {
+         authID =  ConfigFactory.getCommonConfig().getString(
+            "datacenter.authorityId");
+         resKey =  ConfigFactory.getCommonConfig().getString(
+            "datacenter.resourceKey");
+         autoPrefix = authID+"/"+resKey;
+         autoIvorn = autoPrefix+ceaSuffix;
+      }
+      catch (PropertyNotFoundException pnfe) {
+         // NB Shouldn't get here
+         throw new CeaException("Configuration error: Properties 'datacenter.authorityId' and 'datacenter.resourceKey' must both be set, please check your configuration.");
+      }
+      if (autoIvorn.equals(name)) {
+         //Simplest case
+         return "";     // Definitely no catalog name present
+      }
+      // We expect the registration to start with the autoPrefix
+      if (!name.startsWith(autoPrefix)) {
+         throw new CeaException("Programming logic error:  expected CEA Application IVORN to commence with '" + autoPrefix + "';  instead it is " + ivorn);
+      }
+      // We expect the registration to end with "/ceaApplication"
+      if (!name.endsWith(ceaSuffix)) {
+         throw new CeaException("Programming logic error:  expected CEA Application IVORN to end with '" + ceaSuffix + "';  instead it is " + ivorn);
+      }
+      // We must have some additional material present in the ivorn apart
+      // from prefix and suffix;  this means that there will also be an
+      // extra / after the prefix
+      // Remove prefix 
+      name = name.substring(autoPrefix.length()+1);
+      // Remove suffix
+      name = name.substring(0,name.length()-ceaSuffix.length());
+      return name;
+   }
 
-         // Now process the DATABASE_NAME bit (if present)
-         boolean catnameFound = false;
+   protected void runCatalogNameCheck(String name) throws CeaException
+   {
+      try {
          if ( ! ((name == null) || (name.equals(""))) ) {
-            // Having trimmed away everything else, we have something that 
-            // looks like a catalog name - let's check
-            String[] catalogNames = TableMetaDocInterpreter.getCatalogNames();
-            for (int c = 0; c < catalogNames.length; c++) {
-               if (name.equals(catalogNames[c])) {
-                  catnameFound = true;
-                  break;
+            // If a catalog name is included in the IVORN, check that
+            // it is valid
+            boolean catnameFound = false;
+            try {
+               String[] catalogNames = 
+                  TableMetaDocInterpreter.getCatalogNames();
+               for (int c = 0; c < catalogNames.length; c++) {
+                  if (name.equals(catalogNames[c])) {
+                     catnameFound = true;
+                  }
                }
             }
+            catch (MetadataException me) {
+               throw new CeaException(
+                 "System error: this datacenter is misconfigured, please consult the system administrator: " + me.getMessage());
+            }
             if (!catnameFound) {
-               setStatus(Status.ERROR);
-               this.reportError(
-                     "System error: the CEA application you are using, " + 
-                     appName + ", refers to a catalog '" + name + 
+               throw new CeaException(
+                     "System error: the CEA application you are using " +
+                     "refers to a catalog '" + name + 
                      "' but this catalog is not recognised. " +
                      "Please ask your DSA administrator to check the registry for out-of-date CEA registrations."
                );
-               return;
             }
          }
          else {
@@ -258,42 +383,126 @@ public class DatacenterApplication extends AbstractApplication implements Querie
             // single-cat to multi-cat)
             String[] catalogNames = TableMetaDocInterpreter.getCatalogNames();
             if ((catalogNames != null) && (catalogNames.length > 1)) {
-               setStatus(Status.ERROR);
-               this.reportError(
-                     "System error: the CEA application you are using, " + 
-                     appName + ", does not refer to a particular catalog but this DSA wraps multiple catalogs and needs to know which one you want.  Please ask your DSA administrator to check the registry for out-of-date CEA registrations."
+               throw new CeaException(
+                     "System error: the CEA application you are using " + 
+                     "does not refer to a particular catalog but this DSA wraps multiple catalogs and needs to know which one you want.  Please ask your DSA administrator to check the registry for out-of-date CEA registrations."
                );
-               return;
             }
          }
-
-         Query query = buildQuery(getApplicationInterface());
-         if (catnameFound) {
-            query.setParentCatalogReferences(name);
-         }
-         query.getResultsDef().setTarget(ti);
-         query.getResultsDef().setFormat(resultsFormat);
-         Querier querier = Querier.makeQuerier(acc,query, "CEA from "+AxisDataServer.getSource()+" [Job "+ids.getJobStepId()+"]");
-         querier.addListener(this);
-         
-         setStatus(Status.INITIALIZED);
-         querierID = serv.submitQuerier(querier);
-         logger.info("assigned QuerierID " + querierID);
       }
-      catch (Throwable e) {
-         this.reportError(e+" executing "+this.getTool().getName(),e);
-         // run() shouldn't really throw exceptions, better to report
-         // error in normal framework
-         /*
-         if (e instanceof CeaException) {
-            throw (CeaException) e;
-         }
-         else {
-            throw new CeaException(e+", executing application "+this.getTool().getName(),e);
-         }
-         */
+      catch (MetadataException me) {
+         throw new CeaException(
+           "System error: this datacenter is misconfigured, please consult the system administrator: " + me.getMessage());
       }
    }
+
+
+   protected void doMulticoneService(TargetIdentifier ti) 
+   {
+      // The multicone application needs special handling
+      try {
+         // First work out which table needs to be searched
+         String catalogName = "", tableName = "";
+         String fullName = (String)findInputParameterAdapter(
+               DatacenterApplicationDescription.CATTABLE).process();
+         int dotIndex = fullName.lastIndexOf('.');
+         if (dotIndex == -1) {   //Not found
+            throw new QueryException(
+                "Expected table name of the form 'catalog.table', but got '"
+                + fullName + "'");
+         }
+         else {
+            catalogName = fullName.substring(0,dotIndex);
+            tableName = fullName.substring(dotIndex+1);
+         }
+      
+         // Now work out which are the RA and Dec columns in the
+         // input VOTable, and the search radius
+         // All these ones will be set (they are compulsory)
+         String raCol = (String)findInputParameterAdapter(
+               DatacenterApplicationDescription.RA_EXPR).process();
+         String decCol = (String)findInputParameterAdapter(
+               DatacenterApplicationDescription.DEC_EXPR).process();
+         String radius = (String)findInputParameterAdapter(
+               DatacenterApplicationDescription.RADIUS).process();
+         // Bit naughty casting here but we need to get at some 
+         // datacenter-specific bits of the parameter
+         DatacenterParameterAdapter votableAdapter = 
+               (DatacenterParameterAdapter)findInputParameterAdapter(
+               DatacenterApplicationDescription.INPUT_VOTABLE);
+         String inputVotable = (String)votableAdapter.process();
+         boolean isIndirect = votableAdapter.isIndirect();
+
+         // This one is optional
+         boolean bestOnly = false;
+         String findMode = null;
+         ParameterAdapter findAdapter = findInputParameterAdapter(DatacenterApplicationDescription.FIND_MODE);
+         if ((findAdapter == null) || ("".equals(findAdapter))) {
+            // Shouldn't get here
+            bestOnly = false;
+         }
+         else {
+            findMode = (String)findAdapter.process();
+            if ("BEST".equalsIgnoreCase(findMode)) {
+               bestOnly = true;
+            }
+            else if ("ALL".equalsIgnoreCase(findMode)) {
+               bestOnly = false;
+            }
+            else {
+               throw new IllegalArgumentException("Find Mode must be BEST or ALL - unrecognised value "+findMode);
+            }
+         }
+         // Check if our INPUT_VOTABLE parameter is direct or indirect,
+         // and choose behaviour accordingly
+         final InputStream in;
+         if (isIndirect) {
+            SourceIdentifier si = null;
+            String sourceUri = transformTarget(inputVotable);
+            //String sourceUri = inputVotable;
+            si = URISourceTargetMaker.makeSourceTarget(sourceUri);
+            in = si.openInputStream();
+         }
+         else {
+            in = new ByteArrayInputStream(inputVotable.getBytes());
+         }
+
+         final TableBuilder inputHandler = new VOTableBuilder();
+         TableProducer inProd = new TableProducer() {
+            public StarTable getTable() throws IOException {
+               OnceRowPipe rowStore = new OnceRowPipe();
+               inputHandler.streamStarTable(in, rowStore, null);
+               return rowStore.waitForStarTable();
+            }
+         };
+
+         TableProducer outProd =
+             new SkyConeMatch2Producer(
+                   new DsaConeSearcher(catalogName, tableName, 
+                      acc, "CEA multicone application"), 
+                   inProd, bestOnly, raCol, decCol, radius, "*");
+
+         // Obtains the output table object.
+         StarTable outTable;
+         outTable = outProd.getTable();
+         //
+         // Serializes the output table to the TargetIdentifier output stream
+         StarTableWriter outputHandler =
+               new VOTableWriter(DataFormat.TABLEDATA, true);
+         //response.setContentType(outputHandler.getMimeType());
+         OutputStream ostrm = ti.openOutputStream();
+         outputHandler.writeStarTable(outTable, ostrm);
+         ostrm.flush();
+         ostrm.close();
+         this.setStatus(Status.COMPLETED);
+      }
+      catch (Throwable e) {
+         this.setStatus(Status.ERROR);
+         this.reportError(e+" executing "+this.getTool().getName(),e);
+         return;
+      }
+   }
+
 
    /**
     * If the incoming URI describing the target location is an IVORN, it might be
@@ -302,14 +511,13 @@ public class DatacenterApplication extends AbstractApplication implements Querie
     * if the Registry can resolve it.  If it is of the right form, and the registry
     * cannot resolve it, turns it into a homespacename
     */
-   public String transformTarget(String targetUri) throws IllegalArgumentException, URISyntaxException {
+   protected String transformTarget(String targetUri) throws IllegalArgumentException, URISyntaxException {
       
       int hashIdx = targetUri.indexOf("#");
       String key = targetUri.substring(0,hashIdx).substring(6);
       int slashIdx = key.indexOf("/");
 
       /* just assume it's a homespace ivorn for now
-      
       if (!IVORN.isIvorn(targetUri)) { return targetUri; } //some other URI
 
       int hashIdx = targetUri.indexOf("#");
@@ -335,7 +543,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 //      }
 //      return targetUri;
    }
-         
+
    /** Implemented by calling abot on the querier object - so if the underlyng database back end supports abort, the cec does too
     * @see org.astrogrid.applications.Application#attemptAbort()
     */
@@ -415,20 +623,27 @@ public class DatacenterApplication extends AbstractApplication implements Querie
       
    }
    
-   
    /** overridden, to return instances of datacenter parameter adapter.
     * @see org.astrogrid.applications.AbstractApplication#instantiateAdapter(org.astrogrid.applications.beans.v1.parameters.ParameterValue, org.astrogrid.applications.description.ParameterDescription, org.astrogrid.applications.parameter.indirect.IndirectParameterValue)
-    *
-   protected ParameterAdapter instantiateAdapter(ParameterValue arg0,
-                                                 ParameterDescription arg1, ExternalValue arg2) {
-      return new DatacenterParameterAdapter(arg0, arg1, arg2);
-   }
     */
+   protected ParameterAdapter instantiateAdapter(ParameterValue pval,
+        ParameterDescription descr, ExternalValue indirectVal) {
+      return new DatacenterParameterAdapter(pval, descr, indirectVal);
+   }
 }
 
 
 /*
  $Log: DatacenterApplication.java,v $
+ Revision 1.11  2007/10/17 09:58:20  clq2
+ PAL_KEA-2314
+
+ Revision 1.10.2.2  2007/10/11 13:53:19  kea
+ Still working on multicone stuff.
+
+ Revision 1.10.2.1  2007/09/25 17:17:29  kea
+ Working on CEA interface for multicone service.
+
  Revision 1.10  2007/09/07 09:30:51  clq2
  PAL_KEA_2235
 
@@ -612,4 +827,8 @@ public class DatacenterApplication extends AbstractApplication implements Querie
  first draft of an itn06 CEA implementation for datacenter
  
  */
+
+
+
+
 

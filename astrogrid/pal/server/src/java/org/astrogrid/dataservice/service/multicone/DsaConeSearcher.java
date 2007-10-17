@@ -13,6 +13,7 @@ import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.TableSinkTarget;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
+import org.astrogrid.dataservice.metadata.MetadataException;
 import uk.ac.starlink.table.OnceRowPipe;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.ttools.cone.ConeSearcher;
@@ -54,6 +55,7 @@ public class DsaConeSearcher implements ConeSearcher {
         }
 
         try {
+           setConeNamesUnits(this.catalogName, this.tableName);
             this.raColName = TableMetaDocInterpreter
                             .getConeRAColumnByName(catalogName, tableName);
             this.decColName = TableMetaDocInterpreter
@@ -64,6 +66,33 @@ public class DsaConeSearcher implements ConeSearcher {
         catch (Exception e) {
             throw new ServletException(e.getMessage(), e);
         }
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param  catalogName  The name of the catalog (database) to be searched
+     * @param  tableName  The name of the table in the catalog to be searched
+     * @param  user  The identity of the user running the query (if known - may be null)
+     * @param  source  The source of the query (if known - may be null)
+     * KONA TOFIX WHAT SHOULD USER AND SOURCE BE IF NULL??
+     */
+    public DsaConeSearcher(String catalogName, String tableName, Principal user, String source) throws ServletException {
+       this.catalogName = catalogName;
+       this.tableName = tableName;
+       this.user = user;
+       this.source = source;
+       try {
+          this.raColName = TableMetaDocInterpreter
+                   .getConeRAColumnByName(catalogName, tableName);
+          this.decColName = TableMetaDocInterpreter
+                   .getConeDecColumnByName(catalogName, tableName);
+          this.units = TableMetaDocInterpreter
+                   .getConeUnitsByName(catalogName, tableName);
+       }
+       catch (Exception e) {
+          throw new ServletException(e.getMessage(), e);
+       }
     }
 
     public int getRaIndex(StarTable result) {
@@ -121,5 +150,10 @@ public class DsaConeSearcher implements ConeSearcher {
 
         // Return the query result as a streamed StarTable object.
         return rowStore.waitForStarTable();
+    }
+
+    protected final void setConeNamesUnits(String catalogName, String tableName) 
+             throws MetadataException 
+    {
     }
 }

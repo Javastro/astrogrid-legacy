@@ -1,4 +1,4 @@
-/*$Id: InstallationPropertiesCheck.java,v 1.12 2007/09/07 09:30:51 clq2 Exp $
+/*$Id: InstallationPropertiesCheck.java,v 1.13 2007/10/17 09:58:20 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -72,9 +72,9 @@ public class InstallationPropertiesCheck extends TestCase {
       if (!checkSet("datacenter.max.async.queries", accum)) { bad = bad+1; }
       if (!checkSet("datacenter.max.sync.queries", accum)) { bad = bad+1; }
 
-      // THIS FIRST ONE DOESN'T NEED TO BE COMPULSORY IF ONLY ONE CATALOG
-      // BEING WRAPPED - CHECKED ELSEWHERE 
-      //if (!checkSet("datacenter.self-test.catalog", accum)) { bad = bad+1; }
+      // Make the catalog compulsory for simplicity, even when only one
+      // cat being wrapped
+      if (!checkSet("datacenter.self-test.catalog", accum)) { bad = bad+1; }
       if (!checkSet("datacenter.self-test.table", accum)) { bad = bad+1; }
       if (!checkSet("datacenter.self-test.column1", accum)) { bad = bad+1; }
       if (!checkSet("datacenter.self-test.column2", accum)) { bad = bad+1; }
