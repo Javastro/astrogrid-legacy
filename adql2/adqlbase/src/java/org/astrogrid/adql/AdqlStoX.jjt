@@ -1,4 +1,4 @@
-/*$Id: AdqlStoX.jjt,v 1.48 2007/09/13 13:50:54 jl99 Exp $*/
+/*$Id: AdqlStoX.jjt,v 1.49 2007/10/19 15:32:03 jl99 Exp $*/
 
 //
 // High-level JavaDoc comments are present in this file.
@@ -153,7 +153,7 @@ PARSER_END(AdqlStoX)
  * bnf-end
  * bnf-start
  *  <nonquote_character> ::= 
- *  !! One ASCII character
+ *  !! One ASCII character but not a single quote 
  * bnf-end
  *
  */
@@ -202,9 +202,6 @@ SKIP :
  *   | <question_mark>
  *   | <underscore>
  *   | <vertical_bar>
- *  !! ADQL Note:
- *  !! The draft spec omits <ampersand> <semicolon> <question_mark> and <vertical_bar>
- *  !! I believe these need to be included.
  * bnf-end
  * bnf-start
  *  <space> ::=
@@ -358,10 +355,6 @@ TOKEN : // <SQL_embedded_language_character>
  *   | WHEN | WHENEVER | WHERE | WITH | WORK | WRITE
  *   | YEAR
  *   | ZONE
- *  !! ADQL Note:
- *  !! Removed DEC from the reserved words.
- *  !! There was just too much hassle involved.
- *  !! But perhaps this should be the only exception.
  * bnf-end
  */
 TOKEN : // <SQL_reserved_word>
@@ -611,6 +604,7 @@ TOKEN : // <SQL_reserved_word>
  *    | ATAN 
  *    | ATAN2 
  *    | CEILING 
+ *    | CIRCLE
  *    | COS 
  *    | DEGREES 
  *    | EXP 
@@ -619,8 +613,10 @@ TOKEN : // <SQL_reserved_word>
  *    | LOG10 
  *    | MODE 
  *    | PI 
+ *    | POLYGON
  *    | POWER 
  *    | RADIANS 
+ *    | RECTANGLE
  *    | REGION 
  *    | RAND 
  *    | ROUND 
@@ -630,10 +626,7 @@ TOKEN : // <SQL_reserved_word>
  *    | TOP
  *    | TAN 
  *    | TRUNCATE
- *    | UDF  
- *    | VAR
- *  !! ADQL Note:
- *  !! VAR is part of an experiment in supporting scripting variables.
+ *    !! ADQL Note: GAL and ICRS removed. UDF also removed.
  * bnf-end
  *
  */
@@ -651,8 +644,13 @@ TOKEN : // <ADQL_reserved_word>
 |   < CIRCLE: "CIRCLE" >
 |   < RECT: "RECT" >
 |   < POLY: "POLY" >
+|   < POLYGON: "POLYGON" >
 |   < CHULL: "CHULL" >
 |   < BOX: "BOX" >
+|   < RECTANGLE: "RECTANGLE" >
+|   < INTERSECTS: "INTERSECTS" >
+//|   < ICRS: "ICRS" >
+//|   < GAL: "GAL">
 	
 	//math
 |   < ABS: "abs" >
@@ -665,7 +663,6 @@ TOKEN : // <ADQL_reserved_word>
 |	< POWER: "power" >
 |	< RADIANS: "radians" >
 |	< SQRT: "sqrt" >
-// <SQUARE> is not in the draft standard
 |	< SQUARE: "square" >
 |	< LOG10: "log10" >
 |	< RAND: "rand" >
@@ -688,19 +685,19 @@ TOKEN : // <ADQL_reserved_word>
 /*
  * TOKEN <ADQL_special_character>
  *
- * bnf-start
- *  <ADQL_special_character> ::=
- *      <left_brace>
- *    | <right_brace>
- *    | <dollar>
- *   !! ADQL Note:
- *   !! These are not present in the ADQL draft.
- *   !! Part of an experiment to see whether it is possible to accommodate
- *   !! the presence of scripting variables in a query.
- * bnf-end
- * bnf-single <left_brace> ::= {
- * bnf-single <right_brace> ::= }
- * bnf-single <dollar> ::= $
+ *-bnf-start
+ *- <ADQL_special_character> ::=
+ *-     <left_brace>
+ *-   | <right_brace>
+ *-   | <dollar>
+ *-  !! ADQL Note:
+ *-  !! These are not present in the ADQL draft.
+ *-  !! Part of an experiment to see whether it is possible to accommodate
+ *-  !! the presence of scripting variables in a query.
+ *-bnf-end
+ *-bnf-single <left_brace> ::= {
+ *-bnf-single <right_brace> ::= }
+ *-bnf-single <dollar> ::= $
  */
 TOKEN : // <ADQL_special_character>
 { 
@@ -745,19 +742,34 @@ TOKEN : // <ADQL_special_character>
  * bnf-start
  *  <regular_identifier> ::=
  *      <simple_Latin_letter>... 
- *      [ { <digit> | <simple_Latin_letter> | <dollar> | <underscore> }... ]
- *  !! ADQL Note:
- *  !! Draft spec does not have <dollar>. 
+ *      [ { <digit> | <simple_Latin_letter> | <underscore> }... ]
  * bnf-end
- * bnf-start
- *  <delimited_identifier> ::=
- *  !! ADQL Note:
- *  !! Begins and ends with a double quote as delimiters
- *  !! but itself contains no double quotes or white space.
- *  !! The draft spec needs adjusting. It has
- *  !! <delimited_identifier> ::= <double_quote> <regular_identifier> <double_quote> 
- *  !! which cannot be correct, as we could then simply make do with <regular_identifier>.
+ *-bnf-start
+ *- <delimited_identifier> ::=
+ *- !! ADQL Note:
+ *- !! Begins and ends with a double quote as delimiters
+ *- !! but itself contains no double quotes or white space.
+ *- !! The draft spec needs adjusting. It has
+ *- !! <delimited_identifier> ::= <double_quote> <regular_identifier> <double_quote> 
+ *- !! which cannot be correct, as we could then simply make do with <regular_identifier>.
+ *-bnf-end
+ *
+ * bnf-start 
+ *  <delimited_identifier> ::= <double_quote> <delimited_identifier_body> <double_quote>
+ *  !! These diagrams are somewhat difficult to follow through and understand immediately. 
+ *  !! The idea is to allow any identifier to be quoted by enclosing within double quotes.
+ *  !! This can allow the use of reserved words as identifiers, eg: "DATE" as a column name.  
+ *  !! The identifier can also contain double quotes as long as they are escaped by double quotes. 
+ *  !! For example: "Table""X" will be identifier Table"X
  * bnf-end
+ * bnf-single <delimited_identifier_body> ::= <delimited_identifier_part>...
+ * bnf-single <delimited_identifier_part> ::= <nondoublequote_character> | <doublequote_symbol>
+ * bnf-single <double_quote_symbol> ::= <double_quote><double_quote>
+ * bnf-start 
+ *   <nondoublequote_character> ::= 
+ *   !! See SQL92 syntax rules. But basically what it says.
+ * bnf-end
+ *
  * bnf-single <unsigned_integer> ::= <digit>...
  * bnf-single <mantissa> ::= <exact_numeric_literal>
  * bnf-single <exponent> ::= <signed_integer> 
@@ -827,9 +839,6 @@ TOKEN : // The remainder
  *    |   <double_period>
  *    |   <left_bracket>
  *    |   <right_bracket>
- *   !! ADQL Note:
- *   !! The draft spec has <boolean_literal> and does not have <delimitied_identifier> 
- *   !! Should it also have <ADQL_special_character> ? 
  * bnf-end
  * bnf-start
  *  <nondelimiter_token> ::= 
@@ -983,11 +992,6 @@ void boolean_term_S() #BooleanTerm :
  *
  * bnf-start
  *   <boolean_factor> ::= [ NOT ] <boolean_primary>
- *   !! ADQL Note:
- *   !! The draft spec supports <boolean_test> and its adjunct <truth value>. 
- *   !! There is some doubt as to whether we should or not.
- *   !! <boolean_test> could be an unwarranted complication.
- *   !! It's presence does seem to add potential complexities.
  * bnf-end
  */
 void boolean_factor_S() #BooleanFactor :
@@ -1021,12 +1025,6 @@ void boolean_factor_S() #BooleanFactor :
  * bnf-start
  *  <like_predicate> ::=
  *      <match_value> [ NOT ] LIKE <pattern>
- *  !! For information,
- *  !! The ADQL draft spec has
- *  !! <like_predicate> ::= 
- *  !!   <character_value_expression> [ NOT ] LIKE <character_value_expression>
- *  !! But there is no underlying difference. Just different documentation.
- *  !! Using <match_value> and <pattern> is in line with SQL92.
  * bnf-end
  *
  */
@@ -1103,16 +1101,21 @@ void character_primary_A() : {}
  *     [ { <separator>... <quote> [ <character_representation>... ] <quote> }... ]
  * bnf-end
  *
- * bnf-start
- *  <character_representation> ::= 
- *  !! This is one ASCII character (but not a single quote).
- *  !! The ADQL spec supports
- *  !! <character_representation> ::= <nonquote_character> | <quote_symbol>
- *  !! <quote_symbol> ::= <quote> <quote>
- *  !! which follows SQL92.
- *  !! Not sure I understand why the <quote_symbol> is here.
- * bnf-end
+ *-bnf-start
+ *- <character_representation> ::= 
+ *- !! This is one ASCII character (but not a single quote).
+ *- !! The ADQL spec supports
+ *- !! <character_representation> ::= <nonquote_character> | <quote_symbol>
+ *- !! <quote_symbol> ::= <quote> <quote>
+ *- !! which follows SQL92.
+ *- !! Not sure I understand why the <quote_symbol> is here.
+ *-bnf-end
  *
+ * bnf-start
+ * <character_representation> ::= <nonquote_character> | <quote_symbol>
+ * !! A way of allowing a single quote to be escaped by a single quote.
+ * bnf-end
+ * bnf-single <quote_symbol> ::= <quote> <quote>
  * bnf-single <separator> ::= { <comment> | <space> | <newline> }...
  *
  */
@@ -1649,11 +1652,10 @@ void from_clause_S() #From :
  * bnf-start
  *  <general_literal> ::= <character_string_literal>
  *  !! ADQL Note:
- *  !! Not present in the draft spec.
  *  !! For information, SQL92 has <general_literal>, and also supports
  *  !! <national_character_string_literal>, <bit_string_literal>, 
  *  !! <hex_string_literal>, <datetime_literal> and <interval_literal>
- *  !! Is it good to retain it as a place-holder, bearing in mind
+ *  !! Good to retain this as a place-holder, bearing in mind
  *  !! that we might need <bit_string_literal> and <hex_string_literal>
  *  !! at some point in the future?
  * bnf-end
@@ -1709,14 +1711,14 @@ void general_set_function_A() #GeneralSetFunction :
 /*
  * general_value_specification_A
  *
- * bnf-start
- *  <general_value_specification> ::= <variable_specification>
- *  !! ADQL Note:
- *  !! Missing from the ADQL draft spec.
- *  !! Part of an experiment to see if scripting variables can be accommodated.
- *  !! SQL92 also supports <parameter_specification>, <dynamic_parameter_specification>,
- *  !! USER, CURRENT_USER, SESSION_USER, SYSTEM_USER and VALUE
- * bnf-end
+ *-bnf-start
+ *- <general_value_specification> ::= <variable_specification>
+ *- !! ADQL Note:
+ *- !! Missing from the ADQL draft spec.
+ *- !! Part of an experiment to see if scripting variables can be accommodated.
+ *- !! SQL92 also supports <parameter_specification>, <dynamic_parameter_specification>,
+ *- !! USER, CURRENT_USER, SESSION_USER, SYSTEM_USER and VALUE
+ *-bnf-end
  *
  */
 void general_value_specification_A() : {}
@@ -2270,10 +2272,6 @@ void math_function_A( String elementName ) #MathFunction :
  *
  * bnf-start
  *  <null_predicate> ::= <column_reference> IS [ NOT ] NULL
- *  !! ADQL Note:
- *  !! The draft spec has an omission here. It has
- *  !! <null_predicate> ::= IS [ NOT ] NULL	
- *  !! which means there is no column to test for NULL.
  * bnf-end
  *
  */
@@ -2400,13 +2398,14 @@ void numeric_value_function_A( String elementName ) :
  *  <user_defined_function> ::=
  *      <user_defined_function_name> 
  *          <left_paren> 
- *              [ <numeric_value_expression> [ { <comma> <numeric_value_expression> }... ] ]
+ *              [ <user_defined_function_param> [ { <comma> <user_defined_function_param> }... ] ]
  *          <right_paren> 
  *  !! ADQL Note:
- *  !! This is an experiment. Not currently present in the draft spec.
  *  !! If metadata on a user defined function is available, this should be used.
  *  !! For example, function names and cardinality of arguments should be checked.
  * bnf-end
+ *
+ * bnf-single  <user_defined_function_param> ::= <value_expression>
  *
  * bnf-start
  *   <user_defined_function_name> ::=
@@ -2674,194 +2673,262 @@ void predicate_A() :
 }
 
 
+///*// * region_predicate_A// *// * bnf-start// *  <region_predicate> ::=// *    <position> [ NOT ] IN <region_specification>// *  !! ADQL Note:// *  !! This is an experiment that differs from the draft spec.// *  !! It only covers Circle, Box and Polygon for J2000.// *  !! For information, the draft spec has...// *  !! <region_predicate> ::= // *  !!   <table_reference> <period> REGION // *  !!   <left_paren> // *  !!   <region_specification>// *  !!   [ <comma> <column_reference> [ { <comma> <column_reference> }... ] ]// *  !!   <right_paren>// *  !! <region_specification> ::= // *  !! Region definition from STC schema here// * bnf-end// *// *///void region_predicate_A() #RegionPredicate :      //{//	if( log.isTraceEnabled() ) enterTrace ( "region_predicate_A()" ) ;//}//{//	position_A() //	[ <NOT> { jjtThis.setIn(false); } ] //	<IN> region_specification_A()	//    {//    	if( log.isTraceEnabled() ) exitTrace ( "region_predicate_A()" ) ;	//    }//} 
+
+
 /*
  * region_predicate_A
  *
  * bnf-start
- *  <region_predicate> ::=
- *    <position> [ NOT ] IN <region_specification>
- *  !! ADQL Note:
- *  !! This is an experiment that differs from the draft spec.
- *  !! It only covers Circle, Box and Polygon for J2000.
- *  !! For information, the draft spec has...
- *  !! <region_predicate> ::= 
- *  !!   <table_reference> <period> REGION 
- *  !!   <left_paren> 
- *  !!   <region_specification>
- *  !!   [ <comma> <column_reference> [ { <comma> <column_reference> }... ] ]
- *  !!   <right_paren>
- *  !! <region_specification> ::= 
- *  !! Region definition from STC schema here
+ *  <region_predicate> ::= <contains_predicate> | <intersects_predicate>   
  * bnf-end
  *
  */
-void region_predicate_A() #RegionPredicate :      
+void region_predicate_A() :      
 {
 	if( log.isTraceEnabled() ) enterTrace ( "region_predicate_A()" ) ;
 }
 {
-	position_A() 
-	[ <NOT> { jjtThis.setIn(false); } ] 
-	<IN> region_specification_A()	
+	contains_predicate_A() | intersects_predicate_A()	
     {
     	if( log.isTraceEnabled() ) exitTrace ( "region_predicate_A()" ) ;	
     }
 } 
 
+/*
+ * contains_predicate_A
+ *
+ * bnf-start
+ *  <contains_predicate> ::= <position> [ NOT ] IN <region>   
+ * bnf-end
+ *
+ */
+void contains_predicate_A() :      
+{
+	if( log.isTraceEnabled() ) enterTrace ( "contains_predicate_A()" ) ;
+}
+{
+	position_A() [ <NOT> { jjtThis.setIn(false); } ] <IN> region_A()
+    {
+    	if( log.isTraceEnabled() ) exitTrace ( "contains_predicate_A()" ) ;	
+    }
+} 
 
 /*
- * point_A
+ * intersects_predicate_A
+ *
+ * bnf-start
+ *  <intersects_predicate> ::= <region> INTERSECTS <region>   
+ * bnf-end
+ *
+ */
+void intersects_predicate_A() :      
+{
+	if( log.isTraceEnabled() ) enterTrace ( "intersects_predicate_A()" ) ;
+}
+{
+	region_A() <INTERSECTS> region_A()
+    {
+    	if( log.isTraceEnabled() ) exitTrace ( "intersects_predicate_A()" ) ;	
+    }
+} 
+
+
+/*
+ * position_A
  *
  * bnf-start
  *  <position> ::= 
- *    <left_paren> <coord_one> <comma> <coord_two> <right_paren>
+ *    <left_paren> <coord_sys> <comma> <coord_lon> <comma> <coord_lat> <right_paren>
  * bnf-end
  *
- * bnf-single <coord_one> ::= <numeric_value_expression>
- * bnf-single <coord_two> ::= <numeric_value_expression>
+ * bnf-start 
+ *   <coord_lon> ::= <numeric_value_expression>
+ *   !! generic longitude
+ * bnf-end
+ * bnf-start 
+ *   <coord_lat> ::= <numeric_value_expression>
+ *   !! generic latitude
+ * bnf-end
  *
  */
-void position_A() #Point : 
+void position_A() #Position : 
 {
 	if( log.isTraceEnabled() ) enterTrace ( "position_A()" ) ;
-	jjtThis.pushPosition( compiler.POSITION_ELEMENT, PositionType.type  ) ;
 }
 {
-	<LEFT_PAREN> numeric_value_expression_S( null ) 
+	<LEFT_PAREN> 
+		 coord_sys_A()
+		 <COMMA> numeric_value_expression_S( null ) 
 	     <COMMA> numeric_value_expression_S( null ) 
 	<RIGHT_PAREN>
 	{
-	   jjtThis.popPosition( compiler.POSITION_ELEMENT ) ;
 	   if( log.isTraceEnabled() ) exitTrace ( "position_A()" ) ;	
 	}	
 }
 
 /*
- * region_specification_A
+ * coord_sys_A
  *
  * bnf-start
- *  <region_specification> ::=
- *     BOX <box>
- *   | CIRCLE <circle>
- *   | POLY <polygon>
+ *  <coord_sys> ::= <coord_sys_literal> | <coord_sys_value>   
  * bnf-end
  *
  */
-void region_specification_A() : 
+void coord_sys_A() : 
 {
-    if( log.isTraceEnabled() ) enterTrace ( "region_specification_A()" ) ;
-    tracker.push( AdqlCompiler.REGION_ELEMENT ) ;
+	if( log.isTraceEnabled() ) enterTrace ( "coord_sys_A()" ) ;
 }
 {
-	(		
-		( <BOX> box_A() )
-		|
-		( <CIRCLE> circle_A() )
-		|
-		( <POLY> polygon_A() )
-//		|//		( <CHULL> convex_hull_A() )//		|//		( <CONVEX> convex_A() )
-	)
+	coord_sys_literal_A() | coord_sys_value_A()
 	{
-		tracker.pop() ;
-		if( log.isTraceEnabled() ) exitTrace ( "region_specification_A()" ) ;
-	}
+	   if( log.isTraceEnabled() ) exitTrace ( "coord_sys_A()" ) ;	
+	}	
 }
 
 /*
- * convex_A
+ * coord_sys_literal_A
  *
  *-bnf-start
- *-  <convex> ::= 
- *-       LATLON <convex_LatLon>
- *-     | CARTESIAN <convex_Cartesian>
- *-     | [ J2000 ] <convex_J2000>
+ *- <coord_sys_keyword> ::= ICRS | GAL  
  *-bnf-end
+ *
+ * bnf-start
+ *  <coord_sys_literal> ::= <character_string_literal>
+ *  !! For example, 'ICRS' and 'GAL'  
+ * bnf-end
+ *
  */
-void convex_A() : 
+void coord_sys_literal_A() : 
 {
-    if( log.isTraceEnabled() ) enterTrace ( "convex_A()" ) ;
+	if( log.isTraceEnabled() ) enterTrace ( "coord_sys_literal_A()" ) ;
 }
-{	
-	(	
-	    ( <LATLON> convex_LatLon_A() )	    |	    ( <CARTESIAN> convex_Cartesian_A() )	    |
-		( [ <J2000> ] convex_J2000_A() )
-	)
+{
+	<ICRS> | <GAL>
 	{
-		if( log.isTraceEnabled() ) exitTrace ( "convex_A()" ) ;
+	   if( log.isTraceEnabled() ) exitTrace ( "coord_sys_literal_A()" ) ;	
+	}	
+}
+
+/*
+ * coord_sys_value_A
+ *
+ * bnf-start
+ *  <coord_sys_value> ::= <column_reference> | <user_defined_function>   
+ * bnf-end
+ *
+ *
+ */
+void coord_sys_value_A() : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "coord_sys_value_A()" ) ;
+}
+{
+	LOOKAHEAD(2)
+	column_reference_A() | user_defined_function_A()
+	{
+	   if( log.isTraceEnabled() ) exitTrace ( "coord_sys_value_A()" ) ;	
 	}	
 }
 
 
-/* * convex_LatLon_A * *-bnf-start *-  <convex_LatLon> ::=  *-     <left_paren> <longitude> <comma> <latitude> <comma> <direction> <right_paren> *-   { <left_paren> <longitude> <comma> <latitude> <comma> <direction> <right_paren> }... *-bnf-end */void convex_LatLon_A() #ConvexLatLon: {    if( log.isTraceEnabled() ) enterTrace ( "convex_LatLon_A()" ) ;}{	  ( LOOKAHEAD(2)	    <LEFT_PAREN> numeric_value_expression_S( null ) <COMMA> numeric_value_expression_S( null ) <COMMA>	direction_A() <RIGHT_PAREN> )+      {          if( log.isTraceEnabled() ) exitTrace ( "convex_LatLon_A()" ) ;      }}/* * convex_Cartesian_A * *-bnf-start *-  <convex_Cartesian> ::=  *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma> <direction> <right_paren> *-   { <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma> <direction> <right_paren> }... *-bnf-end */void convex_Cartesian_A() #ConvexCartesian : {    if( log.isTraceEnabled() ) enterTrace ( "convex_Cartesian_A()" ) ;}{	  ( LOOKAHEAD(2)	    <LEFT_PAREN> numeric_value_expression_S( null ) 	         <COMMA> numeric_value_expression_S( null )	         <COMMA> numeric_value_expression_S( null )  	         <COMMA> direction_A() <RIGHT_PAREN> )+      {          if( log.isTraceEnabled() ) exitTrace ( "convex_Cartesian_A()" ) ;      }}
-
-
 /*
- * convex_J2000_A
- *
- *-bnf-start
- *-  <convex_J2000> ::= 
- *-     <left_paren> <coord_one> <comma> <coord_two> <comma> <direction> <right_paren>
- *-   { <left_paren> <coord_one> <comma> <coord_one> <comma> <direction> <right_paren> }...
- *-bnf-end
- */
-void convex_J2000_A() #ConvexJ2000 : 
-{
-    if( log.isTraceEnabled() ) enterTrace ( "convex_J2000_A()" ) ;
-}
-{
-	  ( LOOKAHEAD(2)
-	    <LEFT_PAREN> numeric_value_expression_S( null ) <COMMA> numeric_value_expression_S( null ) <COMMA>	direction_A() <RIGHT_PAREN> )+
-      {
-          if( log.isTraceEnabled() ) exitTrace ( "convex_J2000_A()" ) ;
-      }
-}
-
-/*
- * box_A
+ * region__A
  *
  * bnf-start
- *   <box> ::= [ J2000 ] <box_J2000>
+ *  <region> ::= <region_expression> | <region_value>
  * bnf-end
+ *
  */
-void box_A() : 
+void region_A() : 
 {
-	if( log.isTraceEnabled() ) enterTrace ( "box_A()" ) ;
-} 
+    if( log.isTraceEnabled() ) enterTrace ( "region_A()" ) ;
+}
 {
-	( [ <J2000> ] box_J2000_A() )	
+	(		
+		region_expression_A() | region_value_A()
+	)
 	{
-		if( log.isTraceEnabled() ) exitTrace ( "box_A()" ) ;	
+		if( log.isTraceEnabled() ) exitTrace ( "region_A()" ) ;
 	}
 }
 
-/* * box_LatLon_A * *-bnf-start *-  <box_LatLon> ::=  *-     <left_paren> <latitude> <comma> <longitude> <comma> <length> <comma> <breadth> <right_paren> *-bnf-end * */void box_LatLon_A() #BoxLatLon : {	if( log.isTraceEnabled() ) enterTrace ( "box_LatLon_A()" ) ;}{	(	  <LEFT_PAREN> numeric_value_expression_S( null ) 	       <COMMA> numeric_value_expression_S( null ) 	       <COMMA> numeric_value_expression_S( null ) 	       <COMMA> numeric_value_expression_S( null ) 	 <RIGHT_PAREN>        )      {      	   if( log.isTraceEnabled() ) exitTrace ( "box_LatLon_A()" ) ;      }}/* * box_Cartesian_A * *-bnf-start *-  <box_Cartesian> ::=  *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma>  *-                   <length> <comma> <breadth> <right_paren> *-bnf-end * */void box_Cartesian_A() #BoxCartesian : {	if( log.isTraceEnabled() ) enterTrace ( "box_Cartesian_A()" ) ;}{	(	  <LEFT_PAREN> numeric_value_expression_S( null ) 	       <COMMA> numeric_value_expression_S( null ) 	       <COMMA> numeric_value_expression_S( null ) 	       <COMMA> numeric_value_expression_S( null ) 	       <COMMA> numeric_value_expression_S( null ) 	 <RIGHT_PAREN>        )      {      	   if( log.isTraceEnabled() ) exitTrace ( "box_Cartesian_A()" ) ;      }}
-
 /*
- * box_J2000_A
+ * region_expression_A
  *
  * bnf-start
- *   <box_J2000> ::= 
- *      <left_paren> <coord_one> <comma> <coord_two> <comma> <length> <comma> <breadth> <right_paren>
+ *  <region_expression> ::=
+ *     <circle>
+ *   | <rectangle>
+ *   | <polygon>
  * bnf-end
  *
- * bnf-single <length> ::= <numeric_value_expression>
- * bnf-single <breadth> ::= <numeric_value_expression>
  */
-void box_J2000_A() #BoxJ2000 : 
+void region_expression_A() : 
 {
-	if( log.isTraceEnabled() ) enterTrace ( "box_J2000_A()" ) ;
+    if( log.isTraceEnabled() ) enterTrace ( "region_expression_A()" ) ;
+}
+{
+	(		
+		rectangle_A()
+		|
+		circle_A() 
+		|
+		polygon_A() 
+	)
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "region_expression_A()" ) ;
+	}
+}
+
+/*
+ * region_value_A
+ *
+ * bnf-start
+ *  <region_value> ::= <column_reference> | <user_defined_function>
+ * bnf-end
+ *
+ */
+void region_value_A() : 
+{
+    if( log.isTraceEnabled() ) enterTrace ( "region_value_A()" ) ;
+}
+{
+	(		
+	    LOOKAHEAD(2)
+		column_reference_A() | user_defined_function_A()
+	)
+	{
+		if( log.isTraceEnabled() ) exitTrace ( "region_value_A()" ) ;
+	}
+}
+
+/*
+ * rectangle_A
+ *
+ * bnf-start
+ *   <rectangle> ::= 
+ *      RECTANGLE <left_paren> <coord_sys>
+ *                     <comma> <coord_lon> <comma> <coord_lat> 
+ *                     <comma> <coord_lon> <comma> <coord_lat> <right_paren>
+ * bnf-end
+ *
+ */
+void rectangle_A() : 
+{
+	if( log.isTraceEnabled() ) enterTrace ( "rectangle_A()" ) ;
 }
 {
 	(
-	  <LEFT_PAREN> numeric_value_expression_S( null ) 
-	       <COMMA> numeric_value_expression_S( null ) 
-	       <COMMA> numeric_value_expression_S( null ) 
-	       <COMMA> numeric_value_expression_S( null ) 
-	 <RIGHT_PAREN> 
-   
+	  <RECTANGLE> <LEFT_PAREN> coord_sys_A()
+	                   <COMMA> numeric_value_expression_S( null ) 
+	                   <COMMA> numeric_value_expression_S( null ) 
+	                   <COMMA> numeric_value_expression_S( null ) 
+	                   <COMMA> numeric_value_expression_S( null ) 
+	             <RIGHT_PAREN>   
     )
       {
-      	   if( log.isTraceEnabled() ) exitTrace ( "box_J2000_A()" ) ;
+      	   if( log.isTraceEnabled() ) exitTrace ( "rectangle_A()" ) ;
       }
 }
 
@@ -2870,7 +2937,11 @@ void box_J2000_A() #BoxJ2000 :
  * circle_A
  *
  * bnf-start
- *  <circle> ::= [ J2000 ] <circle_J2000>
+ *   <circle> ::= 
+ *      CIRCLE <left_paren> <coord_sys> 
+ *                  <comma> <coord_lon> 
+ *                  <comma> <coord_lat> 
+ *                  <comma> <radius> <right_paren>
  * bnf-end
  */
 void circle_A() : 
@@ -2878,39 +2949,26 @@ void circle_A() :
 	if( log.isTraceEnabled() ) enterTrace ( "circle_A()" ) ;
 }
 { 
-	( [ <J2000> ] circle_J2000_A() ) 
+	( <CIRCLE> <LEFT_PAREN> coord_sys_A()
+	                <COMMA> numeric_value_expression_S( null ) 
+	                <COMMA> numeric_value_expression_S( null ) 
+	                <COMMA> radius_A() 
+	           <RIGHT_PAREN> )
 	{
 		if( log.isTraceEnabled() ) exitTrace ( "circle_A()" ) ;	
 	}
-}
-
-/* * circle_LatLon_A * *-bnf-start *-  <circle_LatLon> ::=  *-     <left_paren> <latitude> <comma> <longitude> <comma> <radius> <right_paren> *-bnf-end */void circle_LatLon_A() #CircleLatLon : {	if( log.isTraceEnabled() ) enterTrace ( "circle_LatLon_A()" ) ;}{	 ( <LEFT_PAREN> numeric_value_expression_S( null ) <COMMA> numeric_value_expression_S( null ) <COMMA> radius_A() <RIGHT_PAREN> )	 {	 	if( log.isTraceEnabled() ) exitTrace ( "circle_LatLon_A()" ) ;		 }}/* * circle_Cartesian_A * *-bnf-start *-  <circle_Cartesian> ::=  *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <comma> <radius> <right_paren> *-bnf-end */void circle_Cartesian_A() #CircleCartesian : {	if( log.isTraceEnabled() ) enterTrace ( "circle_Cartesian_A()" ) ;}{	 ( <LEFT_PAREN> numeric_value_expression_S( null ) 	        <COMMA> numeric_value_expression_S( null ) 	        <COMMA> numeric_value_expression_S( null )	        <COMMA> radius_A() 	   <RIGHT_PAREN> )	 {	 	if( log.isTraceEnabled() ) exitTrace ( "circle_Cartesian_A()" ) ;		 }}
-
-
-/*
- * circle_J2000_A
- *
- * bnf-start
- *   <circle_J2000> ::= 
- *      <left_paren> <coord_one> <comma> <coord_two> <comma> <radius> <right_paren>
- * bnf-end
- */
-void circle_J2000_A() #CircleJ2000 : 
-{
-	if( log.isTraceEnabled() ) enterTrace ( "circle_J2000_A()" ) ;
-}
-{
-	 ( <LEFT_PAREN> numeric_value_expression_S( null ) <COMMA> numeric_value_expression_S( null ) <COMMA> radius_A() <RIGHT_PAREN> )
-	 {
-	 	if( log.isTraceEnabled() ) exitTrace ( "circle_J2000_A()" ) ;	
-	 }
 }
 
 /*
  * polygon_A
  *
  * bnf-start
- *  <polygon> ::= [ J2000 ] <polygon_J2000>
+ *   <polygon> ::=
+ *      POLYGON <left_paren> <coord_sys> 
+ *                   <comma> <coord_lon> <comma> <coord_lat> 
+ *                   <comma> <coord_lon> <comma> <coord_lat> 
+ *                 { <comma> <coord_lon> <comma> <coord_lat> }...
+ *              <right_paren>
  * bnf-end
  */
 void polygon_A() : 
@@ -2918,105 +2976,17 @@ void polygon_A() :
 	if( log.isTraceEnabled() ) enterTrace ( "polygon_A()" ) ;
 }
 {
-	( [ <J2000> ] polygon_J2000_A() ) 
+	<POLYGON> <LEFT_PAREN> coord_sys_A()
+	               <COMMA> numeric_value_expression_S( null ) 
+	               <COMMA> numeric_value_expression_S( null ) 
+	  	           <COMMA> numeric_value_expression_S( null ) 
+	  	           <COMMA> numeric_value_expression_S( null ) 
+                 ( <COMMA> numeric_value_expression_S( null ) 
+                   <COMMA> numeric_value_expression_S( null ) )+ 
+             <RIGHT_PAREN>
 	{
 		if( log.isTraceEnabled() ) exitTrace ( "polygon_A()" ) ;	
 	}
-}
-
-/* * polygon_LatLon_A * *-bnf-start *-  <polygon_LatLon> ::= *-     <left_paren> <latitude> <comma> <longitude> <right_paren> *-     <left_paren> <latitude> <comma> <longitude> <right_paren> *-   { <left_paren> <latitude> <comma> <longitude> <right_paren> }... *-bnf-end */void polygon_LatLon_A() #PolygonLatLon : {	if( log.isTraceEnabled() ) enterTrace ( "polygon_LatLon_A()" ) ;}{	  (	  	<LEFT_PAREN>		 	numeric_value_expression_S( null ) <COMMA>		 	numeric_value_expression_S( null ) 	  	<RIGHT_PAREN> 	  	<LEFT_PAREN>		 	numeric_value_expression_S( null ) <COMMA>		 	numeric_value_expression_S( null ) 	  	<RIGHT_PAREN> 		( LOOKAHEAD(2)	  	  <LEFT_PAREN>		 	numeric_value_expression_S( null ) <COMMA>		 	numeric_value_expression_S( null ) 	  	  <RIGHT_PAREN> )+ 	  )	  {	  		if( log.isTraceEnabled() ) exitTrace ( "polygon_LatLon_A()" ) ;	  }}/* * polygon_Cartesian_A * *-bnf-start *-  <polygon_Cartesian> ::= *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> *-   { <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> }... *-bnf-end */void polygon_Cartesian_A() #PolygonCartesian : {	if( log.isTraceEnabled() ) enterTrace ( "polygon_Cartesian_A()" ) ;}{	  (	  	<LEFT_PAREN>		 	numeric_value_expression_S( null ) <COMMA>		 	numeric_value_expression_S( null ) <COMMA>		 	numeric_value_expression_S( null ) 	  	<RIGHT_PAREN> 	  	<LEFT_PAREN>		 	numeric_value_expression_S( null ) <COMMA>		 	numeric_value_expression_S( null ) <COMMA>		 	numeric_value_expression_S( null ) 	  	<RIGHT_PAREN> 		( LOOKAHEAD(2)	  	  <LEFT_PAREN>		 	numeric_value_expression_S( null ) <COMMA>		 	numeric_value_expression_S( null ) <COMMA>		 	numeric_value_expression_S( null ) 	  	  <RIGHT_PAREN> )+ 	  )	  {	  		if( log.isTraceEnabled() ) exitTrace ( "polygon_Cartesian_A()" ) ;	  }}
-
-
-/*
- * polygon_J2000_A
- *
- * bnf-start
- *   <polygon_J2000> ::=
- *      <left_paren> <coord_one> <comma> <coord_two> <right_paren>
- *      <left_paren> <coord_one> <comma> <coord_two> <right_paren>
- *    { <left_paren> <coord_one> <comma> <coord_two> <right_paren> }...
- * bnf-end
- */
-void polygon_J2000_A() #PolygonJ2000 : 
-{
-	if( log.isTraceEnabled() ) enterTrace ( "polygon_J2000_A()" ) ;
-}
-{
-	  (
-	  	<LEFT_PAREN>
-		 	numeric_value_expression_S( null ) <COMMA>
-		 	numeric_value_expression_S( null ) 
-	  	<RIGHT_PAREN> 
-	  	<LEFT_PAREN>
-		 	numeric_value_expression_S( null ) <COMMA>
-		 	numeric_value_expression_S( null ) 
-	  	<RIGHT_PAREN> 
-		( LOOKAHEAD(2)
-	  	  <LEFT_PAREN>
-		 	numeric_value_expression_S( null ) <COMMA>
-		 	numeric_value_expression_S( null ) 
-	  	  <RIGHT_PAREN> )+ 
-	  )
-	  {
-	  		if( log.isTraceEnabled() ) exitTrace ( "polygon_J2000_A()" ) ;
-	  }
-}
-
-
-/*
- * convex_hull_A
- *
- *-bnf-start
- *- <convex_hull> ::= [ J2000 ] <convex_hull_J2000>
- *-bnf-end
- */
-void convex_hull_A() : 
-{
-	if( log.isTraceEnabled() ) enterTrace ( "convex_hull_A()" ) ;
-}
-{
-	( [ <J2000> ] convex_hull_J2000_A() ) 
-	{
-		if( log.isTraceEnabled() ) exitTrace ( "convex_hull_A()" ) ;
-	}
-}
-
-
-/* * convex_hull_LatLon_A * *-bnf-start *-  <convex_hull_LatLon> ::=  *-     <left_paren> <latitude> <comma> <longitude> <right_paren> *-     <left_paren> <latitude> <comma> <longitude> <right_paren> *-   { <left_paren> <latitude> <comma> <longitude> <right_paren> }... *-bnf-end */void convex_hull_LatLon_A() #ConvexHullLatLon : {	if( log.isTraceEnabled() ) enterTrace ( "convex_hull_LatLon_A()" ) ;}{	  <LEFT_PAREN>		 numeric_value_expression_S( null ) <COMMA>		 numeric_value_expression_S( null ) 	  <RIGHT_PAREN> 	  <LEFT_PAREN>		 numeric_value_expression_S( null ) <COMMA>		 numeric_value_expression_S( null ) 	  <RIGHT_PAREN> 	( LOOKAHEAD(2)	  <LEFT_PAREN>		 numeric_value_expression_S( null ) <COMMA>		 numeric_value_expression_S( null ) 	  <RIGHT_PAREN> )+ 	  	  {	  	  if( log.isTraceEnabled() ) exitTrace ( "convex_hull_LatLon_A()" ) ;	  }}/* * convex_hull_Cartesian_A * *-bnf-start *-  <convex_hull_Cartesian> ::=  *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> *-     <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> *-   { <left_paren> <x_coord> <comma> <y_coord> <comma> <z_coord> <right_paren> }... *-bnf-end */void convex_hull_Cartesian_A() #ConvexHullCartesian : {	if( log.isTraceEnabled() ) enterTrace ( "convex_hull_Cartesian_A()" ) ;}{	  <LEFT_PAREN>		 numeric_value_expression_S( null ) <COMMA>		 numeric_value_expression_S( null ) 	  <RIGHT_PAREN> 	  <LEFT_PAREN>		 numeric_value_expression_S( null ) <COMMA>		 numeric_value_expression_S( null ) 	  <RIGHT_PAREN> 	( LOOKAHEAD(2)	  <LEFT_PAREN>		 numeric_value_expression_S( null ) <COMMA>		 numeric_value_expression_S( null ) 	  <RIGHT_PAREN> )+ 	  	  {	  	  if( log.isTraceEnabled() ) exitTrace ( "convex_hull_Cartesian_A()" ) ;	  }}
-
-
-/*
- * convex_hull_J2000_A
- *
- *-bnf-start
- *-  <convex_hull_J2000> ::= 
- *-     <left_paren> <coord_one> <comma> <coord_two> <right_paren>
- *-     <left_paren> <coord_one> <comma> <coord_two> <right_paren>
- *-   { <left_paren> <coord_one> <comma> <coord_two> <right_paren> }...
- *-bnf-end
- */
-void convex_hull_J2000_A() #ConvexHullJ2000 : 
-{
-	if( log.isTraceEnabled() ) enterTrace ( "convex_hull_J2000_A()" ) ;
-}
-{
-	  <LEFT_PAREN>
-		 numeric_value_expression_S( null ) <COMMA>
-		 numeric_value_expression_S( null ) 
-	  <RIGHT_PAREN> 
-	  <LEFT_PAREN>
-		 numeric_value_expression_S( null ) <COMMA>
-		 numeric_value_expression_S( null ) 
-	  <RIGHT_PAREN> 
-	( LOOKAHEAD(2)
-	  <LEFT_PAREN>
-		 numeric_value_expression_S( null ) <COMMA>
-		 numeric_value_expression_S( null ) 
-	  <RIGHT_PAREN> )+ 
-	  
-	  {
-	  	  if( log.isTraceEnabled() ) exitTrace ( "convex_hull_J2000_A()" ) ;
-	  }
 }
 
 /*
@@ -3139,10 +3109,6 @@ void qualified_name_A() #QualifiedName :
  *
  * bnf-start
  *    <schema_name> ::= [ <catalog_name> <period> ] <unqualified_schema name>
- *    !! ADQL Note:
- *    !! The draft spec has
- *    !! <schema_name> ::= [ <identifier> <period> ] <identifier>
- *    !! which is less informative, but the two are equivalent.
  * bnf-end
  * bnf-single <catalog_name> ::= <identifier>
  * bnf-single <unqualified_schema name> ::= <identifier>
@@ -3870,10 +3836,6 @@ void table_name_A() #TableName :
  *     <table_name> [ <correlation_specification> ]
  *   | <derived_table> <correlation_specification>
  *   | <joined_table>
- *  !! ADQL Note: The spec uses <table_subquery> rather than <derived_table>.
- *  !! Needed to make some adjustment similar to the above to enable <joined_table>
- *  !! to have a <correlation_specification> if required. In SQL92 this is enabled
- *  !! way down within <derived_table>.
  * bnf-end
  *
  */
@@ -4139,8 +4101,7 @@ void unsigned_literal_S() : {}
  * bnf-start
  *  <unsigned_numeric_literal> ::=
  *     <exact_numeric_literal>
- *     |
- *     <approximate_numeric_literal>
+ *   | <approximate_numeric_literal>
  * bnf-end
  *
  */
@@ -4215,8 +4176,6 @@ void approximate_numeric_literal_S( int sign ) #ApproximateNumericLiteral :
  *  <unsigned_value_specification> ::=
  *      <unsigned_literal>
  *    | <general_value_specification>
- *  !! ADQL Note:
- *  !! The draft spec does not have <general_value_specification>
  * bnf-end
  *
  */
@@ -4280,14 +4239,14 @@ void value_expression_A( String elementName ) #ValueExpression :
 /*
  * variable_specification_A
  *
- * bnf-start
- * <variable_specification> ::=
- *     <dollar> <left_brace> <regular_identifier> <right_brace>
- *   | VAR <regular_identifier>
- *  !! ADQL Note:
- *  !! Not in the draft spec.
- *  !! Part of an ADQL experiment to specify symbolic scripting variables.
- * bnf-end
+ *-bnf-start
+ *-<variable_specification> ::=
+ *-    <dollar> <left_brace> <regular_identifier> <right_brace>
+ *-  | VAR <regular_identifier>
+ *- !! ADQL Note:
+ *- !! Not in the draft spec.
+ *- !! Part of an ADQL experiment to specify symbolic scripting variables.
+ *-bnf-end
  *
  */
 void variable_specification_A() #VariableSpec : 
@@ -4339,6 +4298,9 @@ void where_clause_S() #Where :
     
 /* 
 $Log: AdqlStoX.jjt,v $
+Revision 1.49  2007/10/19 15:32:03  jl99
+Towards 18th Sept draft plus Cambridge Interop
+
 Revision 1.48  2007/09/13 13:50:54  jl99
 Minor change - elimination of commented-out code.
 
