@@ -15,8 +15,11 @@
 	</head>
 <body>
 <release version="next" date="unreleased">
+    <action dev="nw" type="fix" issue="2116">
+        AR: util.tables now accepts CSV as input.
+    </action>
     <action dev="nw" type="update">
-        Updated AR dialogues toolEditor, fileChooser and resourceChooser to use latest UI
+        Updated AR dialogues: login, toolEditor, fileChooser and resourceChooser to use latest UI
     </action>
     <action dev="nw" type="add">
         Added self-tests on startup to detect and warn about common problems (no network, core services unavailable, etc)

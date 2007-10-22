@@ -35,12 +35,8 @@ public class TablesImplUnitTest extends TestCase {
 		assertNotNull(input);
 	}
 
-	private MockControl myspaceControl;
-	private MyspaceInternal mockMs;
 	protected void tearDown() throws Exception {
 		super.tearDown();
-		myspaceControl = null;
-		mockMs = null;
 	}
 	
 	TablesImpl tables;

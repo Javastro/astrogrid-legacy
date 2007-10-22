@@ -17,6 +17,7 @@ public class AllUtilUnitTests {
 				"Unit test for utils module.");
 		//$JUnit-BEGIN$
 		suite.addTestSuite(TablesImplUnitTest.class);
+		suite.addTestSuite(Tables2116UnitTest.class);
 		//$JUnit-END$
 		return suite;
 	}
