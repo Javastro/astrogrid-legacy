@@ -1,4 +1,4 @@
-/*$Id: RmiLiteRmiServerImpl.java,v 1.13 2007/10/12 11:02:49 nw Exp $
+/*$Id: RmiLiteRmiServerImpl.java,v 1.14 2007/10/22 10:28:31 nw Exp $
  * Created on 27-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,6 +35,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import net.ladypleaser.rmilite.RemoteInvocationException;
 import net.ladypleaser.rmilite.impl.RemoteInvocationHandler;
 import net.ladypleaser.rmilite.impl.RemoteInvocationHandlerImpl;
 
@@ -186,6 +187,17 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
 			session.adoptSession(p);
 			try {
 				return super.invoke(methodName,paramTypes,args);
+			} catch (RemoteInvocationException ex) { // re-map runtime exceptions which are not known client-side.
+			    Throwable cause = ex.getCause();
+			    if (cause != null 
+			            && cause instanceof RuntimeException
+			            && ! cause.getClass().getName().startsWith("java")) {
+			        RemoteInvocationException replacement = new RemoteInvocationException(methodName
+			                , new RuntimeException(cause.getClass().getName() + " : " + cause.getMessage()));
+			        throw replacement;
+			    } else {
+			        throw ex; // re-throw the original exception.
+			    }
 			} finally {
 				session.clearSession();
 			}
@@ -271,6 +283,9 @@ public class RmiLiteRmiServerImpl extends AbstractRmiServerImpl implements  Shut
 
 /* 
 $Log: RmiLiteRmiServerImpl.java,v $
+Revision 1.14  2007/10/22 10:28:31  nw
+moved runtime exceptioni lifting to the RmiServer, where it belongs.
+
 Revision 1.13  2007/10/12 11:02:49  nw
 added code for selftesting
 
