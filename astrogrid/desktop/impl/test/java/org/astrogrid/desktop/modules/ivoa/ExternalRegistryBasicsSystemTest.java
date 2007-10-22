@@ -15,6 +15,7 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.ivoa.ExternalRegistry;
 import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.resource.RegistryService;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.ARTestSetup;
@@ -81,12 +82,12 @@ public class ExternalRegistryBasicsSystemTest extends InARTestCase {
 	/**
 	 * Test method for {@link org.astrogrid.desktop.modules.ivoa.StreamingExternalRegistryImpl#getIdentity(java.net.URI)}.
 	 */
-	//FIXME fails at moment, as don't have a parser for RegustryService.
-//	public void testGetIdentity() throws Exception{
-//		Resource r = ex.getIdentity(endpoint);
-//		assertNotNull(r);
-//		assertEquals(endpoint,r.getId());
-//	}
+	public void testGetIdentity() throws Exception{
+	    RegistryService r = ex.getIdentity(endpoint);
+		assertNotNull(r);
+		assertNotNull(r.getManagedAuthorities());
+		assertTrue(r.getManagedAuthorities().length > 0);
+	}
 
 	/**
 	 * Test method for {@link org.astrogrid.desktop.modules.ivoa.StreamingExternalRegistryImpl#getIdentityXML(java.net.URI)}.

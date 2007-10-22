@@ -337,13 +337,12 @@ public class StreamingRegistryImpl implements RegistryInternal {
                         logger.error("failed to connect to registry service",x);
                         fail("Failed to connect to registry service");
                     }
-                    // getIdentity not implemented
-//                    try {
-//                        RegistryService serv = reg.getIdentity(getSystemRegistryEndpoint());
-//                        assertNotNull("No registry identity returned",serv);
-//                    } catch (ServiceException x) {
-//                        fail("Failed to get registry identity");
-//                    }
+                    try {
+                        RegistryService serv = reg.getIdentity(getSystemRegistryEndpoint());
+                        assertNotNull("No registry identity returned",serv);
+                    } catch (ServiceException x) {
+                        fail("Failed to get registry identity");
+                    }
                    try {
                     Document doc = reg.xquerySearchXML(getSystemRegistryEndpoint(),QuerySizerImpl.constructSizingQuery(QuerySizerImpl.ALL_QUERY));
                     assertNotNull("No response returned from xquery",doc);
@@ -373,13 +372,12 @@ public class StreamingRegistryImpl implements RegistryInternal {
                         logger.error("Failed to connect to registry service",x);
                         fail("Failed to connect to registry service");
                     }
-                    // get identntiy not implemented
-//                    try {
-//                        RegistryService serv = reg.getIdentity(getFallbackSystemRegistryEndpoint());
-//                        assertNotNull("No registry identity returned",serv);
-//                    } catch (ServiceException x) {
-//                        fail("Failed to get registry identity");
-//                    }  
+                    try {
+                        RegistryService serv = reg.getIdentity(getFallbackSystemRegistryEndpoint());
+                        assertNotNull("No registry identity returned",serv);
+                    } catch (ServiceException x) {
+                        fail("Failed to get registry identity");
+                    }  
                     try {
                         Document doc = reg.xquerySearchXML(getSystemRegistryEndpoint(),QuerySizerImpl.constructSizingQuery(QuerySizerImpl.ALL_QUERY));
                         assertNotNull("No response returned from xquery",doc);

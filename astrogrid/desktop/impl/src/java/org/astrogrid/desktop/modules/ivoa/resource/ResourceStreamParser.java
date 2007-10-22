@@ -51,6 +51,7 @@ import org.astrogrid.acr.ivoa.resource.HarvestCapability;
 import org.astrogrid.acr.ivoa.resource.HasCoverage;
 import org.astrogrid.acr.ivoa.resource.Interface;
 import org.astrogrid.acr.ivoa.resource.Organisation;
+import org.astrogrid.acr.ivoa.resource.RegistryService;
 import org.astrogrid.acr.ivoa.resource.Relationship;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.ResourceName;
@@ -199,6 +200,9 @@ public final class ResourceStreamParser implements Iterator {
 				ifaces.add(Service.class);
 				ifaces.add(DataService.class);
 				m.put("getCoverage",new Coverage());		// coverage cannot be null.	
+			} else if (StringUtils.contains(xsiType,"Registry")) {
+			    ifaces.add(RegistryService.class);
+			    ifaces.add(Service.class);
 			} else if (StringUtils.contains(xsiType,"Service")) {
                 ifaces.add(Service.class);
 			}
@@ -215,6 +219,8 @@ public final class ResourceStreamParser implements Iterator {
 		final List formats = new ArrayList();
 		// used in catalogue service.
 		final List tables = new ArrayList();
+		// used in registry service
+		final List managedAuthorities = new ArrayList();
 		
 		// case for each top-level element.
 		// if onlyu java had a decent switch statement...
@@ -313,6 +319,8 @@ public final class ResourceStreamParser implements Iterator {
 					ifaces.add(TabularDB.class);
 				} else if (elementName.equals("table")) { // TabularSkyService
 					tables.add( parseTable());
+				} else if (elementName.equals("managedAuthority")) { // Registry
+				    managedAuthorities.add(in.getElementText().trim());
 				} else {
 					logger.debug("Unknown element" + elementName);
 				}
@@ -356,6 +364,12 @@ public final class ResourceStreamParser implements Iterator {
 		if (ifaces.contains(DataCollection.class)) {
 			m.put("getFormats",formats.toArray(new Format[formats.size()]));
 			m.put("getCatalogues",catalogues.toArray(new Catalog[catalogues.size()]));
+		}
+		if (ifaces.contains(RegistryService.class)) {
+		    m.put("getManagedAuthorities",managedAuthorities.toArray(new String[managedAuthorities.size()]));
+            m.put("findHarvestCapability",null); // not fully provided. 
+            m.put("findSearchCapability",null); // not provided in current schema.
+            m.put("isFull",Boolean.TRUE); // not provided.		  
 		}
 		Object o =  Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), (Class[])ifaces.toArray(new Class[ifaces.size()]), new Handler(m));
 		logger.debug("Returning");

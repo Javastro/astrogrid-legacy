@@ -15,6 +15,9 @@
 	</head>
 <body>
 <release version="next" date="unreleased">
+    <action dev="nw" type="fix" issue="2148">
+        Implemented missing registry method.
+    </action>
     <action dev="nw" type="fix" issue="2116">
         AR: util.tables now accepts CSV as input.
     </action>
