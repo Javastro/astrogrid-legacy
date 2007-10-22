@@ -20,6 +20,8 @@ import java.util.Properties;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+import net.sourceforge.hivelock.SecurityException;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
 import org.astrogrid.acr.ACRException;
@@ -115,13 +117,17 @@ public class ExceptionFormatter {
             sb.clear();
             sb.append("Unknown service - ");
             sb.append(ex.getMessage());
-            return sb.toString();                             
+            return sb.toString();              
+        } else if (ex instanceof SecurityException) { // hivelock - only caused by login.
+            return "You must be logged in to perform this operation";
         } else if (ex instanceof IOException) {
             return ex.getMessage();
         } else if (ex instanceof ServiceException) {
             return ex.getMessage();
         } else if (ex instanceof ACRException) { // should have clauses for subclasses here too.
-            return ex.getMessage();        
+            return ex.getMessage();
+        } else if (ex instanceof RuntimeException && ex.getCause() != null) { //always traverse a runtimeException
+            return formatSingle(ex.getCause());
         } else {
             sb.clear();
             sb.append(StringUtils.substringAfterLast(ex.getClass().getName(),"."));
