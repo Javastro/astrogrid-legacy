@@ -1,4 +1,4 @@
-/*$Id: AbstractRmiServerImpl.java,v 1.8 2007/10/12 11:02:49 nw Exp $
+/*$Id: AbstractRmiServerImpl.java,v 1.9 2007/10/22 10:29:54 nw Exp $
  * Created on 27-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,8 +36,8 @@ public abstract class AbstractRmiServerImpl implements RmiServerInternal{
     private InetAddress inetAddress;
     
     
-    public AbstractRmiServerImpl() throws UnknownHostException {
-    	inetAddress = InetAddress.getLocalHost();  
+    public AbstractRmiServerImpl()  {
+        inetAddress = MyInetAddress.myAddress();
     }
     
     
@@ -165,6 +165,9 @@ public abstract class AbstractRmiServerImpl implements RmiServerInternal{
 
 /* 
 $Log: AbstractRmiServerImpl.java,v $
+Revision 1.9  2007/10/22 10:29:54  nw
+factored common inet-address code into separate helper class.
+
 Revision 1.8  2007/10/12 11:02:49  nw
 added code for selftesting
 

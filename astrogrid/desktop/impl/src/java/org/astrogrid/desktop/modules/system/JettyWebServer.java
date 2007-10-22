@@ -1,4 +1,4 @@
-/*$Id: JettyWebServer.java,v 1.16 2007/10/22 07:23:56 nw Exp $
+/*$Id: JettyWebServer.java,v 1.17 2007/10/22 10:29:54 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -90,18 +90,8 @@ public class JettyWebServer implements WebServerInternal, ShutdownListener{
        // this.server.setStopGracefully(true); 
         this.servlets = servlets;
         this.contextObjects = contextObjects;
-        
-        try {
-			inetAddress = InetAddress.getLocalHost(); // default, but can be overridden later using setter.
-		} catch (UnknownHostException x) {
-			logger.warn("Failed to resolve local ip - falling back to loopback address");
-			logger.debug("Cause was",x);
-			try {
-				inetAddress = InetAddress.getByName("127.0.0.1");
-			} catch (UnknownHostException x1) {
-				logger.fatal("Loopback address considered invalid",x1); 
-			} 
-		} 
+        inetAddress = MyInetAddress.myAddress();
+       
     }
    
     public String getKey() {
@@ -433,6 +423,9 @@ public URL getContextBase(String sessionId) {
 
 /* 
 $Log: JettyWebServer.java,v $
+Revision 1.17  2007/10/22 10:29:54  nw
+factored common inet-address code into separate helper class.
+
 Revision 1.16  2007/10/22 07:23:56  nw
 improved logging.
 
