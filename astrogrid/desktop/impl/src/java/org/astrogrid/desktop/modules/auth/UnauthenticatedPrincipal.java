@@ -32,4 +32,8 @@ public  class UnauthenticatedPrincipal implements Principal {
 	public String[] getRoles() {
 		return UNAUTHENTICATED_ROLES;
 	}
+	
+	public String toString() {
+	    return getName();
+	}
 }
