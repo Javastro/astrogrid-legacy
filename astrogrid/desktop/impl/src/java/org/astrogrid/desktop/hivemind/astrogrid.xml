@@ -271,7 +271,7 @@ LOGIN DIALOGUE -->
 
 	<service-point id="loginDialogue"  visibility="private" interface="org.astrogrid.desktop.modules.auth.LoginDialogue">
         <interceptor service-id="system.edtInvoke" />	
-        <invoke-factory model="session"><!--  privacy fix - else values are shared. -->
+        <invoke-factory model="session"><!--  privacy fix - else input field values are shared. -->
             <construct  class="org.astrogrid.desktop.modules.auth.SwingLoginDialogue" >
                 <service>system.ui</service>
                 <service>votech.vomon</service>
