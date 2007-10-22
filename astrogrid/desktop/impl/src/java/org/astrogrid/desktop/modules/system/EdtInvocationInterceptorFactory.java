@@ -1,4 +1,4 @@
-/*$Id: EdtInvocationInterceptorFactory.java,v 1.2 2007/09/04 18:50:50 nw Exp $
+/*$Id: EdtInvocationInterceptorFactory.java,v 1.3 2007/10/22 10:27:41 nw Exp $
  * Created on 31-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,6 +40,9 @@ import org.astrogrid.desktop.framework.ReflectionHelper;
  * if not on the EDT, it will call 'invokeLater' for void typed methods, and 
  * 'invokeAndWait' for methods which return a value with a Runnable encapsulating
  * the required method.
+ * 
+ * Alteration - do all in invokeAndWait - else we can have unexpected
+ * timing / sequencing problems.
  * 
  * 
  * not possible to create 'inner classes' in the expression language of JavaAssist
@@ -118,7 +121,9 @@ public class EdtInvocationInterceptorFactory implements ServiceInterceptorFactor
         
         if (isVoid) {
             builder.add(su);
-            builder.addln(".invokeLater(invoke);");
+          //  builder.addln(".invokeLater(invoke);");
+            // altered - wait for all calls, even if nothin returned.
+            builder.addln(".invokeAndWait(invoke);");            
         } else {
             builder.add(su);
             builder.addln(".invokeAndWait(invoke);");
@@ -316,6 +321,9 @@ public class EdtInvocationInterceptorFactory implements ServiceInterceptorFactor
 
 /* 
 $Log: EdtInvocationInterceptorFactory.java,v $
+Revision 1.3  2007/10/22 10:27:41  nw
+altered behaviour - so always invoke and wait.
+
 Revision 1.2  2007/09/04 18:50:50  nw
 Event Dispatch thread related fixes.
 
