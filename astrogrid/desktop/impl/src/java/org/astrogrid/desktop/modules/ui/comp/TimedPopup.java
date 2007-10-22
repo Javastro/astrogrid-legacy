@@ -171,7 +171,9 @@ public class TimedPopup {
      * @param period milliseconds to display the mesage for
      */
     public static void showMessage(final Component owner, final Component message, int period) {
-        
+        if (! owner.isShowing()) {
+            return; // owning window isn't visible, so don't show the popup.
+        }
         Object o = popupsForComponent.get(owner);
         int xoffset = 0;
         int yoffset = 0;
@@ -208,6 +210,7 @@ public class TimedPopup {
                 }
             }
         }
+      
         Point loc = owner.getLocationOnScreen(); // top left corner of owner
         
         //want to place bottom left corner of message in center of owner, and then take stacking into account 
