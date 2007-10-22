@@ -17,6 +17,7 @@ import org.astrogrid.acr.cds.Sesame;
 import org.astrogrid.acr.cds.SesamePositionBean;
 import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.Registry;
+import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.ARTestSetup;
@@ -56,10 +57,12 @@ public class ConeSystemTest extends InARTestCase {
         return new ARTestSetup(new TestSuite(ConeSystemTest.class));
     }    
     public static final String CONE_TEST_SERVICE ="ivo://nasa.heasarc/swiftmastr";
-	/*
+	
+    public static final String VIZIER_TEST_SERVICE = "ivo://CDS/VizieR/VII/188/table3";
+    /*
 	 * Test method for 'org.astrogrid.desktop.modules.nvo.ConeImpl.constructQuery(URI, double, double, double)'
 	 */
-	public void testQuery() throws Exception{
+	public void testResolvedQuery() throws Exception{
 		Resource r = reg.getResource(new URI(CONE_TEST_SERVICE));
 		SesamePositionBean pos = ses.resolve("crab");		
 		URL u = cone.constructQuery(r.getId(),pos.getRa(),pos.getDec(),0.001);
@@ -69,6 +72,24 @@ public class ConeSystemTest extends InARTestCase {
 
 	}
 	
+	public void testVizierPositiveParameters() throws Exception {// see bz#2372
+	    Resource r= reg.getResource(new URI(VIZIER_TEST_SERVICE));
+	    assertNotNull(r);
+	    URL u = cone.constructQuery(r.getId(),45.0,0.5,20.0);
+	    Map[] rows = cone.execute(u);
+	    assertNotNull(rows);
+	    assertTrue("no results",rows.length > 0);
+	}
+	
+	
+	   public void testVizierNegativeParameters() throws Exception {// see bz#2372
+	        Resource r= reg.getResource(new URI(VIZIER_TEST_SERVICE));
+	        assertNotNull(r);
+	        URL u = cone.constructQuery(r.getId(),45.0,-0.5,20.0);
+	        Map[] rows = cone.execute(u);
+	        assertNotNull(rows);
+	        assertTrue("no results",rows.length > 0);
+	    }
 
 	public void testGetAdqlRegistryQueryNewReg() throws InvalidArgumentException, NotFoundException, ACRException, Exception {
 		String q = cone.getRegistryAdqlQuery();
@@ -101,7 +122,7 @@ public class ConeSystemTest extends InARTestCase {
 	
 	private void checkConeResource(Resource r) {
 		//@todo refine this later..
-		assertTrue(r instanceof Service);
+		assertTrue(r instanceof ConeService);
 	}	
 	
 

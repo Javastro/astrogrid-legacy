@@ -1,4 +1,4 @@
-/*$Id: ConeImpl.java,v 1.7 2007/10/15 17:34:11 mbt Exp $
+/*$Id: ConeImpl.java,v 1.8 2007/10/22 11:59:40 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,8 +47,8 @@ public class ConeImpl extends DALImpl implements Cone {
     public URL constructQuery(URI arg0, double arg1, double arg2, double arg3)
             throws InvalidArgumentException, NotFoundException {
         URL endpoint = resolveEndpoint(arg0);
+        /* appears not to be needed - vizier does cone search (think this is a new development?)
         if (endpoint.toString().indexOf("vizier") != -1) { // dirty hack, for now.
-        	//@fixme add more reliable detection of vizier resources here.
         	endpoint = addOption(
         			addOption(
         			addOption(
@@ -58,14 +58,14 @@ public class ConeImpl extends DALImpl implements Cone {
         					,"-c.u","deg")
         					,"-oc.form","dec")
         					,"-oc","deg");
-        				//@todo work out what other params I need here.
         } else {
+        */
         endpoint = addOption(
         					addOption( 
         							addOption(endpoint,"RA",Double.toString(arg1))
         						,"DEC",Double.toString(arg2))
         					,"SR",Double.toString(arg3));
-        }
+      //  }
         return endpoint;
       
     }
@@ -150,6 +150,10 @@ public class ConeImpl extends DALImpl implements Cone {
 
 /* 
 $Log: ConeImpl.java,v $
+Revision 1.8  2007/10/22 11:59:40  nw
+RESOLVED - bug 2372: VOScope cone search with +ve declination fails
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2372
+
 Revision 1.7  2007/10/15 17:34:11  mbt
 Vizier seems to require explicit leading '+' for declination
 

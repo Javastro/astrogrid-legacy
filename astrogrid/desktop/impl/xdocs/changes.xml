@@ -15,6 +15,9 @@
 	</head>
 <body>
 <release version="next" date="unreleased">
+    <action dev="nw" type="fix" issue="2372">
+        Fixed vizier search with +ve declination
+    </action>
     <action dev="nw" type="fix" issue="2148">
         Implemented missing registry method.
     </action>
