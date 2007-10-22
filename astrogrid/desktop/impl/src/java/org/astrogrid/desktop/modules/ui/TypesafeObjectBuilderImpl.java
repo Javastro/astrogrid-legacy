@@ -180,10 +180,6 @@ public class TypesafeObjectBuilderImpl extends EventDispatchThreadObjectBuilder 
         return createFileNavigator(parent,new FixedMatcherEditor(Matchers.trueMatcher()),acts);
     }
 
-    public SwingLoginDialogue createLoginDialogue() {
-        return (SwingLoginDialogue)create("swingLoginDialogue");
-    }
-
     public ParametersInfoPane createParametersInfoPane(Model model,
             EventList elements) {
         return (ParametersInfoPane)create("parametersInfoPane",new Object[]{model,elements});

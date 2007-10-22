@@ -23,7 +23,7 @@ import com.l2fprod.common.swing.BaseDialog;
 public class UIDialogueComponentImpl extends BaseDialog implements UIComponent {
     protected static final Log logger = LogFactory.getLog(UIDialogueComponentImpl.class);
     private final UIContext context;
-    private UIComponentAssist assist;
+    protected UIComponentAssist assist;
     public UIDialogueComponentImpl(UIContext context) throws HeadlessException {
         super();
         getBanner().setVisible(false);

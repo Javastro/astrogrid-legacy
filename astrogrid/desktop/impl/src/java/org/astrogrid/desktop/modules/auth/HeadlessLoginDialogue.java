@@ -19,9 +19,8 @@ public class HeadlessLoginDialogue implements LoginDialogue {
 	}
 	private final Log logger;
 
-    public UserInformation show() {
+    public void  login() {
         logger.warn("Something's trying to prompt for a login - will fail it");
-        return null;
     }
 
 

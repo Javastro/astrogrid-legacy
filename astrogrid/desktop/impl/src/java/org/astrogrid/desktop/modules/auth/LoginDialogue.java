@@ -3,7 +3,6 @@
  */
 package org.astrogrid.desktop.modules.auth;
 
-import org.astrogrid.acr.astrogrid.UserInformation;
 
 
 /** Micro-service - wraps the invocation of the login dialogue.
@@ -15,10 +14,8 @@ import org.astrogrid.acr.astrogrid.UserInformation;
 public interface LoginDialogue {
 
     /** show a dialogue, prompting for password
-     * 
-     * @return a user information object containing the captured input - username, community, password
-     * or null if cancel was pressed instead.
+    * and performs login.
      */
-    UserInformation show();
+    void login();
     
 }

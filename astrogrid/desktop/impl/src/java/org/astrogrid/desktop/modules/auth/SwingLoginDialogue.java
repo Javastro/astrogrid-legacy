@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.4 2007/09/04 13:38:37 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.5 2007/10/22 07:24:20 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,6 +17,7 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.prefs.Preferences;
 
@@ -40,6 +41,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.Community;
 import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.BrowserControl;
@@ -47,22 +49,21 @@ import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.UIDialogueComponentImpl;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.votech.VoMonInternal;
 import org.astrogrid.store.Ivorn;
 import org.votech.VoMon;
 import org.votech.VoMonBean;
 
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
 import com.l2fprod.common.swing.JLinkButton;
 
 /**
- * Dialog for logging in to an Astrogrid community.
- * can be used on its own to acquire a logged-in 
- * {@link org.astrogrid.store.tree.TreeClient}.
- * @author   Mark Taylor (Starlink)
- * @since    25 Nov 2004
- * @modified Noel Winstanley added a combo-box for authority. not editable at the moment - but codes around that possibility.
- */
-public class SwingLoginDialogue extends JPanel {
+ * Dialog for logging in to an Astrogrid community. */
+public class SwingLoginDialogue extends UIDialogueComponentImpl implements LoginDialogue {
 	/**
 	 * Logger for this class
 	 */
@@ -72,20 +73,21 @@ public class SwingLoginDialogue extends JPanel {
     private final JComboBox commField_;
     private final JTextField userField_;
     private final JPasswordField passField_;
-    private final JOptionPane opane_;
     private final String defaultCommunity;
+    private final Preferences prefs;
+    private final Community comm;
     /**
      * Constructs a new dialog.
      * @throws MalformedURLException 
      * @throws ServiceException 
      */
-    public SwingLoginDialogue( final UIContext cxt,final VoMonInternal monitor,final BrowserControl browser, final Registry reg, String registerLink, String defaultCommunity) throws MalformedURLException, ServiceException {
+    public SwingLoginDialogue( final UIContext coxt,final VoMonInternal monitor,final BrowserControl browser, final Registry reg, final Community comm,String registerLink, String defaultCommunity) throws MalformedURLException, ServiceException {
+        super(coxt);
+        this.comm = comm;
     	this.defaultCommunity = defaultCommunity;
     	final MutableComboBoxModel model = new DefaultComboBoxModel();
-    	commField_ = new JComboBox(model);
     	//retreive a list of communities in a background thread
-    	(new BackgroundWorker(cxt,"Listing known communities") {
-
+    	(new BackgroundWorker(this,"Listing known communities") {
             protected Object construct() throws Exception {
                 return reg.xquerySearch(
                 "for $r in //vor:Resource[not (@status='deleted' or @status='inactive') and vr:identifier &= '*PolicyManager'] order by $r/vr:identifier return $r");
@@ -97,41 +99,42 @@ public class SwingLoginDialogue extends JPanel {
                 }
             }
     	}).start();
-    	/* Create query components. */
-        userField_ = new JTextField();
+    	FormLayout fl = new FormLayout("20dlu:grow,right:p,2dlu,80dlu,20dlu:grow","5dlu,p,5dlu,p,2dlu,p,2dlu,p,5dlu,p,5dlu");
+    	fl.setColumnGroups(new int[][]{{1,5}});
+    	PanelBuilder pb = new PanelBuilder(fl);    	
+    	CellConstraints cc = new CellConstraints();
+    	commField_ = new JComboBox(model);
+    	pb.addTitle("Enter your login details",cc.xyw(2,2,3));
+    	pb.addLabel("Community",cc.xy(2,4));
+    	pb.add(commField_,cc.xy(4,4));
+    	
+    	pb.addLabel("User",cc.xy(2,6));
+    	userField_ = new JTextField();
+    	pb.add(userField_,cc.xy(4,6));
+    	
+    	pb.addLabel("Password",cc.xy(2,8));
         passField_ = new JPasswordField();
-      
+        pb.add(passField_,cc.xy(4,8));
 
-        /* Arrange query components. */
-        Stack stack = new Stack();
-        stack.addItem( "Community", commField_ );
-        stack.addItem( "User", userField_ );
-        stack.addItem( "Password", passField_ );
-
-        Component strut = Box.createHorizontalStrut( 400 );
         final URL registerURL = new URL(registerLink);
 
         JButton registerButton = new JLinkButton("Not got an account? Register..");
-        registerButton.addActionListener(new ActionListener() {
+        registerButton.setToolTipText("Click here to apply for an account on the virtual observatory");
+        
+        registerButton.addActionListener(new ActionListener() {           
         	public void actionPerformed(ActionEvent e) {
-        		try {
-					browser.openURL(registerURL);
-				} catch (ACRException x) {
-					// not expected to fail.
-					logger.error("Failed to open register link",x);
-				}
-				//@future close the dialog?
+        	    new BackgroundWorker(SwingLoginDialogue.this,"Opening registration page") {
+
+                    protected Object construct() throws Exception {
+                        browser.openURL(registerURL);
+                        return null;
+                    }
+        	    }.start();
         	}
         });
-        
-        
-        /* The main panel will be a JOptionPane since it has icons and
-         * layout set up for free.  We won't be using its various
-          * static show methods though. */
-        opane_ = new JOptionPane();
-        opane_.setMessageType( JOptionPane.QUESTION_MESSAGE );
-        opane_.setOptionType( JOptionPane.OK_CANCEL_OPTION );
-        opane_.setMessage( new Component[] { stack, strut ,registerButton} );
+        pb.add(registerButton,cc.xyw(2,10,3));
+
+        JPanel p = pb.getPanel(); // main panel of the form.
         prefs = Preferences.userNodeForPackage(SwingLoginDialogue.class);
         userField_.setText(prefs.get("username",""));
         primSetCommunity();
@@ -153,25 +156,41 @@ public class SwingLoginDialogue extends JPanel {
 				return this;
 			}
         });
+        // configure the dialogue.
+        setTitle("Virtual Observatory Login");
+        JPanel mainPanel = getMainPanel();
+        mainPanel.add(p,BorderLayout.CENTER);
+        getContentPane().add(mainPanel);
+        assist.getPlasticList().setVisible(false); // don't show the plastic list - just clutter in this ui.
+        pack();
+        centerOnScreen();
     }
 
-    protected void save() {
+    //overridden to save inputs as preferences.
+    public void ok() {
+        
         prefs.put("community",getCommunity());
         prefs.put("username",getUser());
+        
+        // user pressed ok - so try to login
+        new BackgroundWorker(this,"Logging in") {
+
+            protected Object construct() throws Exception {
+                comm.login(getUser(),getPassword(),getCommunity()); 
+                return null;
+            }
+            protected void doFinished(Object result) {
+                setVisible(false); // close the dialogue.
+            }
+            protected void doError(Throwable ex) {
+                showTransientError("Unable to login",ExceptionFormatter.formatException(ex,ExceptionFormatter.INNERMOST));
+            }
+
+        }.start();
+        
     }
     
-    protected final Preferences prefs;
-    
-    /**
-     * Sets the content of the community text entry field.
-     *
-     * @param  comm  community identifier
-     */
-    public void setCommunity( String comm ) {
-        prefs.put("community",comm);
-        primSetCommunity();
-    }
-    
+
     private void primSetCommunity() {
     	String community = prefs.get("community",defaultCommunity);
     	// find mactching string in llist.
@@ -200,7 +219,7 @@ public class SwingLoginDialogue extends JPanel {
      *
      * @return  community identifier
      */
-    public String getCommunity() {
+    private String getCommunity() {
     	Object o = commField_.getSelectedItem();
     	if (o instanceof Resource) {
     		return mkCommunityString((Resource)o);
@@ -212,107 +231,35 @@ public class SwingLoginDialogue extends JPanel {
     private String mkCommunityString(Resource r) {
     	return r.getId().getAuthority();
     }
-    
-    /**
-     * Sets the content of the user text entry field.
-     *
-     * @param   user  user identifier
-     */
-    public void setUser( String user ) {
-        prefs.put("username",user);
-        userField_.setText( user );
-    }
+ 
 
     /**
      * Returns the content of the user text entry field.
      * 
      * @return  user identifier
      */
-    public String getUser() {
+    private String getUser() {
         return userField_.getText();
     }
     
-    public String getPassword() {
+    private String getPassword() {
         return passField_.getText();
-    }
-    
-    public void setPassword(String password) {
-        passField_.setText(password);
-    }
-    
-   
-
-    /**
-     * Returns the <code>Ivorn</code> defined by the current entries
-     * in this dialogue's fields.
-     *
-     * @return  ivorn 
-     */
-    public Ivorn getIvorn() throws CommunityException {
-        String community = getCommunity();
-        String user = getUser();
-        if ( user != null && user.trim().length() > 0 &&
-             community != null && community.trim().length() > 0 ) {
-            return CommunityAccountIvornFactory
-                  .createIvorn( community, user );
-        }
-        else {
-            return null;
-        }
     }
 
   
-    /** show the dialog, to get user input. will return 'true' if user confirms, 'false' if user cancels*/
-    public boolean showDialog() {
-        JDialog dialog = opane_.createDialog( null, "Virtual Observatory Login" );
-        dialog.getContentPane().add( opane_ );               
-            dialog.setVisible(true);
-            passField_.requestFocus();     
-            dialog.toFront();  
-            Object status = opane_.getValue();            
-            dialog.dispose();
-            boolean result =   status instanceof Integer &&
-                 ((Integer) status).intValue() == JOptionPane.OK_OPTION ;
-            if (result) {
-                save();
-            }
-            return result;
+    public void setVisible(boolean b) {
+        super.setVisible(b);
+        if (b) {
+            passField_.setText("");
+            toFront();
+            requestFocus();
+            passField_.requestFocus();
+        }
     }
 
- 
-
-    /**
-     * Helper class for positioning pairs of components in a vertical stack.
-     * Insulates the rest of the class from having to deal with the
-     * apallingly unfriendly GridBagLayout.
-     */
-    private static class Stack extends JPanel {
-        private final GridBagLayout layer_ = new GridBagLayout();
-        private final GridBagConstraints gbc_ = new GridBagConstraints();
-        private final JComponent container_ = new JPanel( layer_ );
-        Stack() {
-            super( new BorderLayout() );
-            add( container_ );
-            gbc_.gridy = 0;
-        }
-        void addItem( String text, JComponent comp ) {
-            gbc_.gridx = 0;
-            gbc_.anchor = GridBagConstraints.EAST;
-            gbc_.weightx = 0.0;
-            gbc_.fill = GridBagConstraints.NONE;
-            JLabel label = new JLabel( text + ": " );
-            layer_.setConstraints( label, gbc_ );
-            container_.add( label );
-
-            gbc_.gridx = 1;
-            gbc_.anchor = GridBagConstraints.WEST;
-            gbc_.weightx = 1.0;
-            gbc_.fill = GridBagConstraints.HORIZONTAL;
-            layer_.setConstraints( comp, gbc_ );
-            container_.add( comp );
-
-            gbc_.gridy++;
-        }
+    /** show the login dialogue and prompt for input */
+    public void login() {
+      ask();
     }
 
 
@@ -321,6 +268,9 @@ public class SwingLoginDialogue extends JPanel {
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.5  2007/10/22 07:24:20  nw
+altered login dialogue to be a full UIComponent.
+
 Revision 1.4  2007/09/04 13:38:37  nw
 added debugging for EDT, and adjusted UI to not violate EDT rules.
 

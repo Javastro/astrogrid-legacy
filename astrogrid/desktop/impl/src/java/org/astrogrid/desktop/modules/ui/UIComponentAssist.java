@@ -205,7 +205,7 @@ public final class UIComponentAssist {
         }
         return login;
     }
-    private JList getPlasticList() {
+    public JList getPlasticList() {
         if (plasticList == null) {
             plasticList = new JList(new EventListModel(parent.getContext().getPlasticList()));
             //plasticApps.setToolTipText("Connected Vizualization Tools");

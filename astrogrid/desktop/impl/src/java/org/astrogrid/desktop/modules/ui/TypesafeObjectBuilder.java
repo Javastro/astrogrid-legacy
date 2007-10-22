@@ -106,11 +106,6 @@ public interface TypesafeObjectBuilder {
     // access the core object builder
     public ObjectBuilder getObjectBuilder();
 
-    /**
-     * @return
-     */
-    public SwingLoginDialogue createLoginDialogue();
-
 
     
     

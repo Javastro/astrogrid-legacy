@@ -1,4 +1,4 @@
-/*$Id: CommunityImpl.java,v 1.7 2007/10/12 10:57:52 nw Exp $
+/*$Id: CommunityImpl.java,v 1.8 2007/10/22 07:24:19 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -95,18 +95,7 @@ public class CommunityImpl implements CommunityInternal {
 
     
     public void guiLogin() {
-        while(!isLoggedIn()) {
-            UserInformation proposed = loginDialogue.show();
-            if (proposed == null) { // cancel was hit.
-                break;
-            }
-            try {
-                authenticate(proposed);
-            } catch (Exception e) {
-            	logger.info("Authentication failed.");
-                ExceptionFormatter.showError(null,"Failed to login",e);
-            }
-        }                    
+        loginDialogue.login();
     }
 
     private boolean authenticate(UserInformation proposed) throws SecurityException, ServiceException{
@@ -201,6 +190,9 @@ public class CommunityImpl implements CommunityInternal {
 
 /* 
 $Log: CommunityImpl.java,v $
+Revision 1.8  2007/10/22 07:24:19  nw
+altered login dialogue to be a full UIComponent.
+
 Revision 1.7  2007/10/12 10:57:52  nw
 refactored exception formatting code.
 
