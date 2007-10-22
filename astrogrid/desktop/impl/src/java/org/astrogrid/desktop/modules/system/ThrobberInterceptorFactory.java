@@ -1,4 +1,4 @@
-/*$Id: ThrobberInterceptorFactory.java,v 1.4 2007/09/04 13:38:37 nw Exp $
+/*$Id: ThrobberInterceptorFactory.java,v 1.5 2007/10/22 10:29:21 nw Exp $
  * Created on 31-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,8 +31,6 @@ import org.apache.hivemind.service.MethodSignature;
 import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.acr.system.UI;
 /** an interceptor that causes things to throb when messages are called 
- * Also traps and lifts unknown runtime exceptions. I'm unsure whether this is 
- * a good idea - obviously good for remote clients, but not so good for internal clients.
  * 
  * */
 public class ThrobberInterceptorFactory implements ServiceInterceptorFactory {
@@ -94,12 +92,6 @@ public class ThrobberInterceptorFactory implements ServiceInterceptorFactory {
         if (!isVoid)  {
             builder.addln("return result;");
         }
-        builder.addln("} catch (RuntimeException e) {"); // catch runtime exceptions that are unknown to the client, and lift to runtime exception.
-        builder.addln(" if (e.getClass().getName().startsWith(\"java.\")) { ");
-        builder.addln(" throw e; ");
-        builder.addln(" } else { ");
-        builder.addln(" throw new RuntimeException(e.getClass().getName() + \" : \" + e.getMessage()); ");
-        builder.addln(" } ");
         builder.addln(" } finally { ");
         builder.addln(" javax.swing.SwingUtilities.invokeLater(_stopThrobbing); ");
         builder.addln("  } ");
@@ -272,6 +264,9 @@ public class ThrobberInterceptorFactory implements ServiceInterceptorFactory {
 
 /* 
 $Log: ThrobberInterceptorFactory.java,v $
+Revision 1.5  2007/10/22 10:29:21  nw
+moved runtime exceptioni lifting from here to the RmiServer, where it belongs.
+
 Revision 1.4  2007/09/04 13:38:37  nw
 added debugging for EDT, and adjusted UI to not violate EDT rules.
 
