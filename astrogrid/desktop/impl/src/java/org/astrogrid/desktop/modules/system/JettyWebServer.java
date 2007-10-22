@@ -1,4 +1,4 @@
-/*$Id: JettyWebServer.java,v 1.15 2007/10/12 11:02:49 nw Exp $
+/*$Id: JettyWebServer.java,v 1.16 2007/10/22 07:23:56 nw Exp $
  * Created on 31-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -349,11 +349,13 @@ public URL getContextBase(String sessionId) {
                     assertNotNull("~/.astrogrid-desktop is empty",str);
                     endpoint = new URL(str);
                 } catch (MalformedURLException ex) {
+                    logger.info("unable to parse contents",ex);
                     fail("unable to parse contents of ~/.astrogrid-desktop");
                 } catch (FileNotFoundException x) {
                     // just tested for this.
                     fail("~/.astrogrid-desktop not present");                    
                 } catch (IOException x) {
+                    logger.info("unable to read ~/.astrogrid-desktop");
                     fail("unable to read ~/.astrogrid-desktop");
                 } finally {
                     if (fr != null) {
@@ -371,6 +373,7 @@ public URL getContextBase(String sessionId) {
                 try {
                     endpoint.openConnection().connect();
                 } catch (IOException x) {
+                    logger.error("unable to connect to internal webserver",x);
                     fail("unable to connect to internal webserver");
                 }
             }
@@ -385,8 +388,10 @@ public URL getContextBase(String sessionId) {
                     assertNotNull("no response from webserver",val);                    
                     assertEquals("webserver didn't repond with expected result",getRoot().toString(),val.trim());
                 } catch (MalformedURLException x) {
+                    logger.error("unable to construct html call url",x);
                     fail("Unable to construct html call url");
                 } catch (IOException x) {
+                    logger.error("unable to call html interface",x);
                     fail("Unable to call html interface");
                 } finally {
                     if (is != null) {
@@ -409,12 +414,13 @@ public URL getContextBase(String sessionId) {
                     assertTrue("unexpected response from xmlrpc server",result instanceof String);
                     assertEquals("xmlrpc server didn't respond with expected result",getRoot().toString(),result);
                 } catch (MalformedURLException x) {
+                    logger.error("unable to contruct xmlrpc endpoint",x);
                     fail("unable to construct xmlrpc endpoint");
                 } catch (XmlRpcException x) {
-                    logger.info("self test failure",x);
+                    logger.error("xmlrpc failure",x);
                     fail("xmlrpc failure");
                 } catch (IOException x) {
-                    logger.info("self test failure", x);
+                    logger.error("IO Failure", x);
                     fail("IO failure");
                 }
             }
@@ -427,6 +433,9 @@ public URL getContextBase(String sessionId) {
 
 /* 
 $Log: JettyWebServer.java,v $
+Revision 1.16  2007/10/22 07:23:56  nw
+improved logging.
+
 Revision 1.15  2007/10/12 11:02:49  nw
 added code for selftesting
 

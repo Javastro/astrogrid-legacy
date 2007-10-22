@@ -328,10 +328,13 @@ public class StreamingRegistryImpl implements RegistryInternal {
                         URI r = getSystemRegistryEndpoint();
                         r.toURL().openConnection().connect();
                     } catch (ServiceException x) {
+                        logger.error("Misconfigured registry endpoint",x);
                         fail("Misconfigured registry endpoint");
                     } catch (MalformedURLException x) {
+                        logger.error("Misconfigured registry endpoint",x);                        
                         fail("Misconfigured registry endpoint");
                     } catch (IOException x) {
+                        logger.error("failed to connect to registry service",x);
                         fail("Failed to connect to registry service");
                     }
                     // getIdentity not implemented
@@ -349,6 +352,7 @@ public class StreamingRegistryImpl implements RegistryInternal {
                     String docString = DomHelper.DocumentToString(doc);
                     assertTrue("xquery didn't return expected response",StringUtils.contains(docString,"<size>"));
                 } catch (ServiceException x) {
+                    logger.error("Failed to xquery registry",x);
                     fail("Failed to xquery registry");
                 }
                 // could test 'getResource' here too - but I think this is enough.
@@ -360,10 +364,13 @@ public class StreamingRegistryImpl implements RegistryInternal {
                         URI r = getFallbackSystemRegistryEndpoint();
                         r.toURL().openConnection().connect();
                     } catch (ServiceException x) {
+                        logger.error("Misconfigured registry endpoint",x);
                         fail("Misconfigured  registry endpoint");
                     } catch (MalformedURLException x) {
-                        fail("Misconfigured main registry endpoint");
+                        logger.error("Misconfigured registry endpoint",x);
+                        fail("Misconfigured registry endpoint");
                     } catch (IOException x) {
+                        logger.error("Failed to connect to registry service",x);
                         fail("Failed to connect to registry service");
                     }
                     // get identntiy not implemented
@@ -379,6 +386,7 @@ public class StreamingRegistryImpl implements RegistryInternal {
                         String docString = DomHelper.DocumentToString(doc);
                         assertTrue("xquery didn't return expected response",StringUtils.contains(docString,"<size>"));                        
                     } catch (ServiceException x) {
+                        logger.error("Failed to xquery registry",x);
                         fail("Failed to xquery registry");
                     }                   
                 }

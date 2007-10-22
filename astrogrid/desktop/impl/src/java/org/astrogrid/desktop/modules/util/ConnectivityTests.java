@@ -61,7 +61,7 @@ public class ConnectivityTests extends TestSuite{
                         });
                     }
                 });
-             //   logger.info("Available network interfaces:" +ifaces);
+                logger.info("Available network interfaces:" +ifaces);
                 assertTrue("No external network interfaces found",! ifaces.isEmpty());
                 
             }
@@ -73,6 +73,7 @@ public class ConnectivityTests extends TestSuite{
                     assertNotNull("Failed to resolve",addr);
                     
                 } catch (UnknownHostException x) {
+                    logger.error("unable to resolve 'www.google.com - suspect DNS is unavailable",x);
                     fail("Unable to resolve 'www.google.com' - suspect DNS is unavailable");
                 }
             }
@@ -84,23 +85,24 @@ public class ConnectivityTests extends TestSuite{
                 try {
                     u.openConnection().connect();
                 } catch (IOException x) {
+                    logger.error("unable to connect to port 80 at www.google.com",x);
                   fail("Unable to connect to port 80 at www.google.com");
                 }
             }
         });
-        /*@todo find a well-known webservice that responds to 8080
         addTest(new TestCase("Access port 8080") {
             protected void runTest()  throws Throwable{
-                URL u = new URL("http://www.google.com:8080");
+                URL u = new URL("http://galahad.star.le.ac.uk:8080/");
                 assertNotNull(u);
                 try {
                     u.openConnection().connect();
                 } catch (IOException x) {
-                  fail("Unable to connect to port 8080 at www.google.com");
+                    logger.error("unable to connect to port 8080 on galahad",x);
+                  fail("Unable to connect to port 8080 at galahad");
                 }
             }
         });
-        */
+        
     }
     
     // for stand-alone development.
