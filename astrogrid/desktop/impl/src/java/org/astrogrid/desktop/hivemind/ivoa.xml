@@ -110,20 +110,18 @@
 				<ui-name>Registry endpoint</ui-name>
 				<description>http url of the main registry service</description>
 				<alternative>http://msslxv.mssl.ucl.ac.uk:8080/mssl-registry/services/RegistryQuery</alternative>
+				<alternative>http://harvesting-registry.roe.ac.uk/astrogrid-registry</alternative>
 				<alternative>http://twmbarlwm.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQuery</alternative>
-				<alternative>http://cass123.ast.cam.ac.uk/astrogrid-registry/services/RegistryQuery</alternative>
-				<alternative>http://archive.lamost.org/astrogrid-registry/services/RegistryQuery</alternative>
 				<units>url</units>
 		</preference>
 		<preference name="org.astrogrid.registry.query.altendpoint"
 			advanced="false" requires-restart="true" propagate-to-config="true"		
-			default-value="http://cass123.ast.cam.ac.uk/astrogrid-registry/services/RegistryQuery" >
+			default-value="http://harvesting-registry.roe.ac.uk/astrogrid-registry" >
 				<ui-name>Fallback Registry endpoint</ui-name>
 				<description>http url of the main registry service</description>
 				<alternative>http://msslxv.mssl.ucl.ac.uk:8080/mssl-registry/services/RegistryQuery</alternative>
 				<alternative>http://twmbarlwm.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQuery</alternative>
 				<alternative>http://galahad.star.le.ac.uk:8080/galahad-registry/services/RegistryQuery</alternative>				
-				<alternative>http://archive.lamost.org/astrogrid-registry/services/RegistryQuery</alternative>
 				<units>url</units>
 		</preference>
 		<preference name="ivo.registry.cacheLife" requires-restart="true"
