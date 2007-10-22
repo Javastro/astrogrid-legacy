@@ -3,6 +3,9 @@
  */
 package org.astrogrid.desktop.modules.auth;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.Principal;
@@ -30,6 +33,11 @@ import org.astrogrid.desktop.modules.system.WebServerInternal;
  * @since Mar 20, 20072:39:22 PM
  */
 public class SessionManagerImpl  extends SingleSessionManager implements UserLoginListener {
+    /**
+     * Logger for this class
+     */
+    private static final Log logger = LogFactory
+            .getLog(SessionManagerImpl.class);
 
 	public SessionManagerImpl(SecurityService s, WebServerInternal ws,CommunityInternal comm, SchedulerInternal scheduler) {
 		super(s,ws);
@@ -41,7 +49,9 @@ public class SessionManagerImpl  extends SingleSessionManager implements UserLog
 	private final CommunityInternal comm;
 	
 	public void attemptUpgrade(){	
+	    logger.debug("Attempting upgrade of " + ss.getCurrentUser());
 		comm.guiLogin();		
+		logger.debug("Called comm.guiLogin(), returning");
 		// and now wait for the callback, if any.
 	}
 
