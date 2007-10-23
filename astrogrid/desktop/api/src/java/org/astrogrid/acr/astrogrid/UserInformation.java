@@ -1,4 +1,4 @@
-/*$Id: UserInformation.java,v 1.4 2007/01/24 14:04:44 nw Exp $
+/*$Id: UserInformation.java,v 1.5 2007/10/23 07:48:57 nw Exp $
  * Created on 17-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,7 +44,6 @@ public class UserInformation extends AbstractInformation {
     }
     
     /** access the password for the current user
-     *  - just here temporarily
      * @return
      */
     public String getPassword() {
@@ -58,6 +57,9 @@ public class UserInformation extends AbstractInformation {
 
 /* 
 $Log: UserInformation.java,v $
+Revision 1.5  2007/10/23 07:48:57  nw
+doc fix.
+
 Revision 1.4  2007/01/24 14:04:44  nw
 updated my email address
 
