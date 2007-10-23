@@ -1,4 +1,4 @@
-/*$Id: DALImpl.java,v 1.15 2007/10/08 08:29:02 nw Exp $
+/*$Id: DALImpl.java,v 1.16 2007/10/23 12:20:56 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,12 +44,14 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ag.MyspaceInternal;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
+import org.astrogrid.desktop.modules.ui.scope.QueryResultSummarizer;
 import org.astrogrid.io.Piper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 import uk.ac.starlink.table.ColumnInfo;
+import uk.ac.starlink.table.DescribedValue;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.votable.TableContentHandler;
 import uk.ac.starlink.votable.TableHandler;
@@ -304,7 +306,7 @@ public abstract class DALImpl implements Dal{
 	 * @throws MalformedURLException
 	 * @todo move this elsewhere
 	 */
-	public static OutputStream getOutputStream(URI location) throws FileNotFoundException, IOException, MalformedURLException {
+	private OutputStream getOutputStream(URI location) throws FileNotFoundException, IOException, MalformedURLException {
 		OutputStream os;
 		if (location.getScheme().equals("file")) { //FIXME - this code needs to be factored out and reused
 			 os = new FileOutputStream(new File(location));
@@ -340,6 +342,7 @@ public abstract class DALImpl implements Dal{
 	protected StructureBuilder newStructureBuilder() {
 		return new StructureBuilder();
 	}
+	/** table handler that builds an array of maps as a result of parsing a votable */
 	protected static class StructureBuilder implements TableHandler {
 		List result = new ArrayList();
 		public Map[] getResult() {
@@ -348,6 +351,22 @@ public abstract class DALImpl implements Dal{
 		protected String[] keys;
 		int colCount;
 		public void startTable(StarTable t) throws SAXException {
+		      DescribedValue qStatus = t.getParameterByName("Error");
+		        if (qStatus != null) {
+		            String message = qStatus.getInfo().getDescription();
+		            if (message == null) {
+		                message = qStatus.getValueAsString(1000);
+		            }
+		            throw new SAXException(message);
+		        }
+		        qStatus = t.getParameterByName("QUERY_STATUS");		        
+		        if (qStatus != null && qStatus.getValue() != null &&  ! "OK".equalsIgnoreCase(qStatus.getValueAsString(1000))) {
+	                    String message = qStatus.getInfo().getDescription();
+	                    if (message == null) {
+	                        message = qStatus.getValueAsString(1000);
+	                    }
+	                    throw new SAXException(message);		            
+		        }
 			colCount = t.getColumnCount();
 			keys = new String[colCount];
 			for (int col = 0; col < colCount; col++) {
@@ -373,7 +392,7 @@ public abstract class DALImpl implements Dal{
 	protected DatasetSaver newDatasetSaver() {
 		return new DatasetSaver();
 	}
-	
+	/** table handler that saves linked data to disk */
 	protected static class DatasetSaver implements TableHandler {
 		public void setSubset(List rows) {
 			subset = true;
@@ -437,6 +456,10 @@ public abstract class DALImpl implements Dal{
 
 /* 
 $Log: DALImpl.java,v $
+Revision 1.16  2007/10/23 12:20:56  nw
+RESOLVED - bug 1837: Verify astroscope detects all error responses.
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=1837
+
 Revision 1.15  2007/10/08 08:29:02  nw
 improved exception formatting
 

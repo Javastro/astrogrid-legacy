@@ -31,6 +31,7 @@ import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
+import org.astrogrid.desktop.modules.ui.scope.Retriever.DalProtocolException;
 import org.xml.sax.SAXParseException;
 
 /** Utility class that converts exceptions into astronomer-friendly messages.
@@ -99,6 +100,8 @@ public class ExceptionFormatter {
             sb.append("Malformed XML - ");
             sb.append(ex.getMessage());
             return sb.toString();
+        } else if (ex instanceof DalProtocolException) {
+            return ex.getMessage();
         } else if (ex instanceof ConnectException) { // subclass of socket exception
               return "Could not connect to service";
         } else if (ex instanceof NoRouteToHostException) {// subclass of socket exception

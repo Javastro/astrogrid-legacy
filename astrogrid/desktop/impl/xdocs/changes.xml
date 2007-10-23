@@ -15,6 +15,9 @@
 	</head>
 <body>
 <release version="2007.4.alpha7" date="unreleased">
+    <action dev="nw" type="fix" issue="1837">
+    Astroscope / AR: improved detection of DAL error responses.
+    </action>
     <action dev="nw" type="fix" issue="2189">
         AR: made STAP service accessible from XMLRPC
     </action>

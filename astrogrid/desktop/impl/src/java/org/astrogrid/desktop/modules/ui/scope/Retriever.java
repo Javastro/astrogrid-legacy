@@ -24,6 +24,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 import uk.ac.starlink.table.ColumnInfo;
+import uk.ac.starlink.table.DescribedValue;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.votable.TableContentHandler;
 import uk.ac.starlink.votable.TableHandler;
@@ -120,6 +121,17 @@ public abstract class Retriever extends BackgroundWorker {
         public TreeNode getServiceNode();
     }
 
+    /** exception to represent a failure of the dal request */
+    public static class DalProtocolException extends SAXException {
+
+        /**
+         * @param message
+         */
+        public DalProtocolException(String message) {
+            super(message);
+        }
+    }
+    
     /** sax-style parser for votables - these methods get called in callbacks, sax-style, as the document whizzes by, instead of having an in-memory model
      * maybe this will stop my laptop overheating whenever I do M54,1.0 - at the moment the overheating trip cuts in and shus the machine down. :)
      * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Dec-2005
@@ -166,12 +178,33 @@ public abstract class Retriever extends BackgroundWorker {
        public final TreeNode getServiceNode() {
            return serviceNode;
        }
+      
        
     /** here we get passed in a start table that is meta-data only
      * @see uk.ac.starlink.votable.TableHandler#startTable(uk.ac.starlink.table.StarTable)
      */
     public void startTable(StarTable starTable) throws SAXException {
     	newTableExtensionPoint(starTable);
+    	// get the info.
+    	DescribedValue qStatus = starTable.getParameterByName("Error");
+    	if (qStatus != null) {
+    	    resultCount = QueryResultSummarizer.ERROR;
+    	    
+    	    message = qStatus.getInfo().getDescription();
+    	    if (message == null) {
+    	        message = qStatus.getValueAsString(1000);
+    	    }
+    	    throw new DalProtocolException(message);
+    	}
+    	qStatus = starTable.getParameterByName("QUERY_STATUS");
+    	if (qStatus != null && qStatus.getValue() != null &&  ! "OK".equalsIgnoreCase(qStatus.getValueAsString(1000))) {
+            resultCount = QueryResultSummarizer.ERROR;
+            message = qStatus.getInfo().getDescription();
+            if (message == null) {
+                message = qStatus.getValueAsString(1000);
+            }
+    	    throw new DalProtocolException(message);
+    	}
         titles = new String[starTable.getColumnCount()];
         for (int col = 0; col < starTable.getColumnCount(); col++) {
             ColumnInfo columnInfo = starTable.getColumnInfo(col);
@@ -223,10 +256,10 @@ public abstract class Retriever extends BackgroundWorker {
      * @see uk.ac.starlink.votable.TableHandler#rowData(java.lang.Object[])
      */
     public void rowData(Object[] row) throws SAXException {
-        if (!isWorthProceeding()) { // no point, not enough metadata - sadly, get called for each row of the table - no way to bail out.
+        if (!isWorthProceeding()) { // no point, not enough metadata 
             resultCount = QueryResultSummarizer.ERROR;
             message = "Insufficient table metadata";
-            return;
+            throw new SAXException(message);
         }
         resultCount++;
         String rowRa = safeTrim(row[raCol]);
