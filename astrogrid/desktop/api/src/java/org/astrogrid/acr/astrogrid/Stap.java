@@ -1,4 +1,4 @@
-/*$Id: Stap.java,v 1.6 2007/03/08 17:46:56 nw Exp $
+/*$Id: Stap.java,v 1.7 2007/10/23 07:49:06 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.acr.astrogrid;
 import java.net.URI;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Date;
 
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
@@ -23,6 +24,7 @@ import org.astrogrid.acr.ivoa.Dal;
  * @service astrogrid.stap
  * @since 1.4
  * @author Kevin Benson
+ * @modified Noel Winstanley - changed from Calendar to Date for XMLRPC compatability.
  */
 public interface Stap extends Dal  {
     
@@ -34,7 +36,7 @@ public interface Stap extends Dal  {
      * @throws InvalidArgumentException if <tt>service</tt> is not a http:// or ivo:// reference.
      * @throws NotFoundException if the service does not exist (i.e. cannot be resolved in registry)
     */ 
-    URL constructQuery(URI service,Calendar start, Calendar end) throws InvalidArgumentException, NotFoundException;
+    URL constructQuery(URI service,Date start, Date end) throws InvalidArgumentException, NotFoundException;
 
     /** construct query on START, DATE, FORMAT 
      * @param service URL of the service endpoint, or ivorn of the service description
@@ -44,7 +46,7 @@ public interface Stap extends Dal  {
      * @return query URL that can be fetched using a HTTP GET to execute query
      * @throws InvalidArgumentException if <tt>service</tt> is not a http:// or ivo:// reference.
      * @throws NotFoundException if the service does not exist (i.e. cannot be resolved in registry)*/ 
-    URL constructQueryF(URI service,Calendar start, Calendar end, String format) throws InvalidArgumentException, NotFoundException;
+    URL constructQueryF(URI service,Date start, Date end, String format) throws InvalidArgumentException, NotFoundException;
 
     
     /** construct query on START, END RA, DEC, SIZE 
@@ -57,7 +59,7 @@ public interface Stap extends Dal  {
      * @return query URL that can be fetched using a HTTP GET to execute query
      * @throws InvalidArgumentException if <tt>service</tt> is not a http:// or ivo:// reference.
      * @throws NotFoundException if the service does not exist (i.e. cannot be resolved in registry)*/ 
-    URL constructQuery(URI service, Calendar start, Calendar end, double ra, double dec, double size) throws InvalidArgumentException, NotFoundException;
+    URL constructQuery(URI service, Date start, Date end, double ra, double dec, double size) throws InvalidArgumentException, NotFoundException;
    
     /** construct query on START, END, RA, DEC, SIZE, FORMAT 
      * @param service URL of the service endpoint, or ivorn of the service description
@@ -70,7 +72,7 @@ public interface Stap extends Dal  {
      * @return query URL that can be fetched using a HTTP GET to execute query
      * @throws InvalidArgumentException if <tt>service</tt> is not a http:// or ivo:// reference.
      * @throws NotFoundException if the service does not exist (i.e. cannot be resolved in registry)*/ 
-   URL constructQueryF(URI service, Calendar start, Calendar end, double ra,double dec, double size, String format) throws InvalidArgumentException, NotFoundException;
+   URL constructQueryF(URI service, Date start, Date end, double ra,double dec, double size, String format) throws InvalidArgumentException, NotFoundException;
    
    /** construct query on START, END, RA, DEC, RA_SIZE, DEC_SIZE
     * @param service URL of the service endpoint, or ivorn of the service description
@@ -83,7 +85,7 @@ public interface Stap extends Dal  {
     * @return query URL that can be fetched using a HTTP GET to execute query
     * @throws InvalidArgumentException if <tt>service</tt> is not a http:// or ivo:// reference.
     * @throws NotFoundException if the service does not exist (i.e. cannot be resolved in registry)*/   
-   URL constructQueryS(URI service, Calendar start, Calendar end, double ra,double dec,double ra_size, double dec_size) throws InvalidArgumentException, NotFoundException;
+   URL constructQueryS(URI service, Date start, Date end, double ra,double dec,double ra_size, double dec_size) throws InvalidArgumentException, NotFoundException;
    
    /** construct query on START, END, RA, DEC, RA_SIZE, DEC_SIZE, FORMAT
     * @param service URL of the service endpoint, or ivorn of the service description
@@ -97,13 +99,17 @@ public interface Stap extends Dal  {
     * @return query URL that can be fetched using a HTTP GET to execute query
     * @throws InvalidArgumentException if <tt>service</tt> is not a http:// or ivo:// reference.
     * @throws NotFoundException if the service does not exist (i.e. cannot be resolved in registry)*/ 
-   URL constructQuerySF(URI service, Calendar start, Calendar end, double ra, double dec, double ra_size, double dec_size, String format) throws InvalidArgumentException, NotFoundException;   
+   URL constructQuerySF(URI service,Date start, Date end, double ra, double dec, double ra_size, double dec_size, String format) throws InvalidArgumentException, NotFoundException;   
    
 }
 
 
 /* 
 $Log: Stap.java,v $
+Revision 1.7  2007/10/23 07:49:06  nw
+ASSIGNED - bug 2189: How to query stap services
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2189
+
 Revision 1.6  2007/03/08 17:46:56  nw
 removed deprecated interfaces.
 
