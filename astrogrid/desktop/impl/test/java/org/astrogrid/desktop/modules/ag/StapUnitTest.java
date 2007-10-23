@@ -12,7 +12,7 @@ import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.desktop.modules.ivoa.SiapUnitTest;
 import org.easymock.MockControl;
 
-/** @implement this class - based on {@link SiapUnitTest}
+/** 
  * @author Noel Winstanley
  * @since Jun 13, 20067:02:10 PM
  */

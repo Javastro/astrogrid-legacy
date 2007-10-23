@@ -14,7 +14,10 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="next" date="unreleased">
+<release version="2007.4.alpha7" date="unreleased">
+    <action dev="nw" type="fix" issue="2189">
+        AR: made STAP service accessible from XMLRPC
+    </action>
     <action dev="nw" type="fix" issue="2372">
         Fixed vizier search with +ve declination
     </action>
@@ -32,7 +35,7 @@
     </action>
 </release>
 <release version="2007.4.alpha6" date="2007-10-08">
-    <action dev="nw" type=fix" issue="2334">
+    <action dev="nw" type="fix" issue="2334">
         Taskrunner: myspace outputs now appear
     </action>
     <action dev="nw" type="fix" issue="2349">

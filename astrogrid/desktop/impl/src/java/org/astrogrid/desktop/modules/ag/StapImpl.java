@@ -1,4 +1,4 @@
-/*$Id: StapImpl.java,v 1.9 2007/04/18 15:47:10 nw Exp $
+/*$Id: StapImpl.java,v 1.10 2007/10/23 09:26:00 nw Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import java.net.URI;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.astrogrid.acr.InvalidArgumentException;
@@ -23,8 +24,8 @@ import org.astrogrid.acr.ivoa.Registry;
 import org.astrogrid.desktop.modules.ivoa.DALImpl;
 
 /** Implementaiton of a component that does siap queries.
- * @todo refine stap interface - simplify - there's loads of similar methods. overloaded methods aren't available via xmlrpc.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 17-Oct-2005
+ * @modified Noel Winstanley changed from using Calendar to using Date.
  *
  */
 public class StapImpl extends DALImpl implements Stap {
@@ -40,10 +41,10 @@ public class StapImpl extends DALImpl implements Stap {
         
     }
     
-    private URL constructQueryPrim(URI arg0, Calendar start, Calendar end) throws InvalidArgumentException, NotFoundException {
+    private URL constructQueryPrim(URI arg0, Date start, Date end) throws InvalidArgumentException, NotFoundException {
         return addOption(
-        		addOption(resolveEndpoint(arg0),"START",dateFormat.format(start.getTime()))
-        		, "END", dateFormat.format(end.getTime()));
+        		addOption(resolveEndpoint(arg0),"START",dateFormat.format(start))
+        		, "END", dateFormat.format(end));
         /*
         StringBuffer urlSB = new StringBuffer(url);
         // add a query part, if not already there
@@ -60,14 +61,14 @@ public class StapImpl extends DALImpl implements Stap {
     }
     
 
-    private URL constructQueryPrim(URI service, Calendar start, Calendar end, double ra,double dec) throws InvalidArgumentException, NotFoundException {
+    private URL constructQueryPrim(URI service, Date start, Date end, double ra,double dec) throws InvalidArgumentException, NotFoundException {
         return addOption(constructQueryPrim(service,start,end),"POS",Double.toString(ra).concat(",").concat(Double.toString(dec)));
     }
     
     /**
      * @see org.astrogrid.acr.ivoa.Siap#constructQuery(java.net.URI, double, double, double)
      */
-    public URL constructQuery(URI service, Calendar start, Calendar end)
+    public URL constructQuery(URI service, Date start, Date end)
             throws InvalidArgumentException, NotFoundException {
         return constructQueryPrim(service,start,end);
     }
@@ -75,7 +76,7 @@ public class StapImpl extends DALImpl implements Stap {
     /**
      * @see org.astrogrid.acr.ivoa.Siap#constructQueryF(java.net.URI, double, double, double, java.lang.String)
      */
-    public URL constructQueryF(URI service, Calendar start, Calendar end, String format)
+    public URL constructQueryF(URI service, Date start,Date end, String format)
             throws InvalidArgumentException, NotFoundException {
         return addOption(constructQueryPrim(service,start,end),"FORMAT",format);
     }
@@ -85,7 +86,7 @@ public class StapImpl extends DALImpl implements Stap {
     /**
      * @see org.astrogrid.acr.ivoa.Siap#constructQuery(java.net.URI, double, double, double)
      */
-    public URL constructQuery(URI service, Calendar start, Calendar end, double ra, double dec, double size)
+    public URL constructQueryP(URI service, Date start, Date end, double ra, double dec, double size)
             throws InvalidArgumentException, NotFoundException {
         return addOption(constructQueryPrim(service, start, end, ra, dec),"SIZE",Double.toString(size));
     }
@@ -93,18 +94,18 @@ public class StapImpl extends DALImpl implements Stap {
     /**
      * @see org.astrogrid.acr.ivoa.Siap#constructQueryF(java.net.URI, double, double, double, java.lang.String)
      */
-    public URL constructQueryF(URI service, Calendar start, Calendar end, double ra, double dec, double size, String format)
+    public URL constructQueryPF(URI service,Date start, Date end, double ra, double dec, double size, String format)
             throws InvalidArgumentException, NotFoundException {
-        return addOption(constructQuery(service,start, end, ra, dec, size),"FORMAT",format);
+        return addOption(constructQueryP(service,start, end, ra, dec, size),"FORMAT",format);
     }
     
     /**
      * @see org.astrogrid.acr.ivoa.Siap#constructQueryS(java.net.URI, double, double, double, double)
      */
-    public URL constructQueryS(URI service, Calendar start, Calendar end, double ra, double dec, double ra_size, double dec_size)
+    public URL constructQueryS(URI service, Date start, Date end, double ra, double dec, double ra_size, double dec_size)
             throws InvalidArgumentException, NotFoundException {
         if (ra_size == dec_size) {
-            return constructQuery(service, start, end, ra, dec,ra_size);
+            return constructQueryP(service, start, end, ra, dec,ra_size);
         } else {
             String sizeStr = Double.toString(ra_size) + "," + Double.toString(dec_size);
             return addOption(constructQueryPrim(service,start, end, ra,dec),"SIZE",sizeStr);
@@ -114,7 +115,7 @@ public class StapImpl extends DALImpl implements Stap {
     /**
      * @see org.astrogrid.acr.ivoa.Siap#constructQuerySF(java.net.URI, double, double, double, double, java.lang.String)
      */
-    public URL constructQuerySF(URI service, Calendar start, Calendar end, double ra, double dec, double ra_size, double dec_size, String format)
+    public URL constructQuerySF(URI service, Date start, Date end, double ra, double dec, double ra_size, double dec_size, String format)
             throws InvalidArgumentException, NotFoundException {
             return addOption(constructQueryS(service, start, end, ra, dec, ra_size, dec_size),"FORMAT",format);        
     }    
@@ -141,6 +142,10 @@ public class StapImpl extends DALImpl implements Stap {
 
 /* 
 $Log: StapImpl.java,v $
+Revision 1.10  2007/10/23 09:26:00  nw
+RESOLVED - bug 2189: How to query stap services
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2189
+
 Revision 1.9  2007/04/18 15:47:10  nw
 tidied up voexplorer, removed front pane.
 

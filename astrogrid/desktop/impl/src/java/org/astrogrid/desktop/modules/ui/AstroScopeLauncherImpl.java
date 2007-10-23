@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.69 2007/10/12 11:04:19 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.70 2007/10/23 09:26:00 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,6 +24,7 @@ import java.awt.geom.Point2D;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -601,8 +602,8 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 							}                            
 						} else if (p instanceof TemporalDalProtocol) {
 							TemporalDalProtocol temporal = (TemporalDalProtocol)p;
-							Calendar start = startCal.getCalendar();
-							Calendar end = endCal.getCalendar();
+							Date start = startCal.getDate();
+							Date end = endCal.getDate();
 							for (int i = 0; i < services.length; i++) {
 								if (noPosition.isSelected()) { // zero out the positional fields.
 									temporal.createRetriever(AstroScopeLauncherImpl.this,services[i],start,end,Double.NaN,Double.NaN,Double.NaN,Double.NaN).start();

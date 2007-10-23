@@ -3,6 +3,7 @@ package org.astrogrid.desktop.modules.ui.scope;
 import java.net.URI;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
@@ -33,12 +34,12 @@ public class StapRetrieval extends Retriever {
 	 */
 	static final Log logger = LogFactory.getLog(StapRetrieval.class);
 
-	private final Calendar start;
-	private final Calendar end;
+	private final Date start;
+	private final Date end;
 	private final String format;
 
 	public StapRetrieval(UIComponent comp,Service information,TreeNode primaryNode,VizModel model, 
-			Stap stap, Calendar start, Calendar end, double ra, double dec, double raSize,double decSize)  {
+			Stap stap, Date start, Date end, double ra, double dec, double raSize,double decSize)  {
 		super(comp,information,primaryNode,model,ra,dec);
 		this.raSize = raSize;
 		this.decSize = decSize;
@@ -49,7 +50,7 @@ public class StapRetrieval extends Retriever {
 	}
 
 	public StapRetrieval(UIComponent comp,Service information,TreeNode primaryNode,VizModel model, 
-			Stap stap, Calendar start, Calendar end, double ra, double dec, double raSize,double decSize, String format)  {
+			Stap stap, Date start,Date end, double ra, double dec, double raSize,double decSize, String format)  {
 		super(comp,information,primaryNode,model,ra,dec);
 		this.raSize = raSize;
 		this.decSize = decSize;

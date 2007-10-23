@@ -1,4 +1,4 @@
-/*$Id: StapProtocol.java,v 1.9 2007/06/18 16:42:36 nw Exp $
+/*$Id: StapProtocol.java,v 1.10 2007/10/23 09:26:00 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.desktop.modules.ui.scope;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -49,13 +50,13 @@ public class StapProtocol extends TemporalDalProtocol {
 
 
 
-	public Retriever createRetriever(UIComponent parent, Service i, Calendar start, Calendar end, double ra, double dec, double raSize, double decSize, String format) {
+	public Retriever createRetriever(UIComponent parent, Service i, Date start, Date end, double ra, double dec, double raSize, double decSize, String format) {
 		return new StapRetrieval(parent,i,getPrimaryNode(),getVizModel(),stap, start, end,ra,dec,raSize,decSize,format); 
 				 
 	}
 
 
-	public Retriever createRetriever(UIComponent parent, Service i, Calendar start, Calendar end, double ra, double dec, double raSize, double decSize) {
+	public Retriever createRetriever(UIComponent parent, Service i, Date start, Date end, double ra, double dec, double raSize, double decSize) {
 		return new StapRetrieval(parent,i,getPrimaryNode(),getVizModel(),stap, start, end,ra,dec,raSize,decSize); 
 				 
 	}
@@ -76,6 +77,10 @@ public class StapProtocol extends TemporalDalProtocol {
 
 /* 
 $Log: StapProtocol.java,v $
+Revision 1.10  2007/10/23 09:26:00  nw
+RESOLVED - bug 2189: How to query stap services
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2189
+
 Revision 1.9  2007/06/18 16:42:36  nw
 javadoc fixes.
 

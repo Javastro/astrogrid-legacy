@@ -1,4 +1,4 @@
-/*$Id: AllAstrogridSystemTests.java,v 1.6 2007/06/18 16:14:09 nw Exp $
+/*$Id: AllAstrogridSystemTests.java,v 1.7 2007/10/23 09:26:00 nw Exp $
  * Created on 03-Aug-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,6 +33,7 @@ public class AllAstrogridSystemTests {
         //deprecate myspace now - moving over to vfs.
 //        suite.addTestSuite(MyspaceSystemTest.class);     
        suite.addTestSuite(ApplicationsSystemTest.class); 
+       suite.addTestSuite(StapSystemTest.class);
         // deprecated - don't care about it enoug anymore
        // riun the test by hand if important. 
        //suite.addTestSuite(JobsSystemTest.class);
@@ -44,6 +45,10 @@ public class AllAstrogridSystemTests {
 
 /* 
 $Log: AllAstrogridSystemTests.java,v $
+Revision 1.7  2007/10/23 09:26:00  nw
+RESOLVED - bug 2189: How to query stap services
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2189
+
 Revision 1.6  2007/06/18 16:14:09  nw
 commented out myspace system tests - too troublesome, and hopefully not long for this world.
 

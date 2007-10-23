@@ -75,7 +75,6 @@ public class SiapSystemTest extends InARTestCase {
 	public void testGetAdqlRegistryQueryNewReg() throws InvalidArgumentException, NotFoundException, ACRException, Exception {
 		String q = siap.getRegistryAdqlQuery();
 		assertNotNull(q);
-		org.astrogrid.acr.ivoa.Registry reg = (org.astrogrid.acr.ivoa.Registry)getACR().getService(org.astrogrid.acr.ivoa.Registry.class);
 		Resource[] arr = reg.adqlsSearch(q);
 		assertNotNull(arr);
 		assertTrue(arr.length > 0);
@@ -88,7 +87,6 @@ public class SiapSystemTest extends InARTestCase {
 	public void testGetXQueryRegistryQuery() throws Exception {
 		String xq = siap.getRegistryXQuery();
 		assertNotNull(xq);
-		org.astrogrid.acr.ivoa.Registry reg = (org.astrogrid.acr.ivoa.Registry)getACR().getService(org.astrogrid.acr.ivoa.Registry.class);
 		Resource[] arr = reg.xquerySearch(xq);
 		assertNotNull(arr);
 		assertTrue(arr.length > 0);
