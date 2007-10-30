@@ -195,12 +195,13 @@ functions
         
          </xsl:result-document>
         <xsl:result-document href="intfclasses.h">
+           <xsl:call-template name="header"></xsl:call-template>
            <xsl:text>
 #ifndef INTFCLASSES_H_
 #define INTFCLASSES_H_
+#include "arcontainers.h"
 
            </xsl:text>
-           <xsl:call-template name="header"></xsl:call-template>
            <xsl:message>
             <xsl:copy-of select="$hier" />
            </xsl:message>
@@ -572,11 +573,29 @@ struct  </xsl:text>
             </xsl:otherwise>
          </xsl:choose>
          </xsl:attribute>
-         <xsl:attribute name="type">
-          <xsl:call-template name="convert-type">
+         <xsl:variable name="typeseq" as="xs:string *">
+          <xsl:call-template name="convert-type-class">
             <xsl:with-param name="p" select="." />
          </xsl:call-template>
+         
+         </xsl:variable>
+         <xsl:attribute name="type">
+           <xsl:value-of select="$typeseq[1]"/>
          </xsl:attribute>
+         <xsl:attribute name="cat">
+           <xsl:value-of select="$typeseq[2]"/>
+         </xsl:attribute>
+         
+         <xsl:if test="contains(@fulltype,'[')">
+            <xsl:attribute name="array">
+            t
+            </xsl:attribute>
+         </xsl:if>
+         <xsl:if test="not(@type = $javaStdTypes)">
+            <xsl:attribute name="class">
+            t
+            </xsl:attribute>
+         </xsl:if>
          </xsl:element>
     </xsl:for-each>
     </members>     
@@ -584,9 +603,11 @@ struct  </xsl:text>
    
    <xsl:template name="beanclassdef">
       <xsl:param name="b"></xsl:param>
+      <xsl:variable name="strucname" select="translate($b/@type,'.','_')"></xsl:variable>
+      <xsl:variable name="classname" select="concat($strucname,'_')" ></xsl:variable>
       <xsl:text>
 class </xsl:text>
-      <xsl:value-of select="translate(concat($b/@type,'_'),'.','_')" />
+      <xsl:value-of select="$classname" />
       <xsl:if
          test="count($b/implements/interface[not (@type = $stdInterfaces)])>0">
          <xsl:text> : </xsl:text>
@@ -603,11 +624,14 @@ public:
          </xsl:call-template>
       </xsl:variable>
       <xsl:for-each select="$members/members/member">
-         <xsl:value-of select="concat(@type,' ',@name,'_;')"></xsl:value-of>
-         <xsl:text>
+      <xsl:if test="@array"><xsl:text>ListOf&lt;</xsl:text></xsl:if>
+         <xsl:value-of select="@type"></xsl:value-of>
+       <xsl:if test="@array"><xsl:text>&gt;</xsl:text></xsl:if>
+        <xsl:value-of select="concat(' ',@name,'_;')"></xsl:value-of>
+          <xsl:text>
 </xsl:text>
       </xsl:for-each>
-      <xsl:value-of select="translate(concat($b/@type,'_'),'.','_')" />
+      <xsl:value-of select="$classname" />
       <xsl:text>( XmlRpcValue&amp; v)</xsl:text>
       <xsl:if
          test="count($b/implements/interface[not (@type = $stdInterfaces)])>0 or count($members/members/*) > 0">
@@ -616,7 +640,7 @@ public:
             select="for $i in $b/implements/interface[not (@type = $stdInterfaces)]/@type  return concat(translate(concat($i, '_'),'.','_'),'(v)')"
             separator=", " />
          <xsl:if
-            test="count($b/implements/interface[not (@type = $stdInterfaces)])>0">
+            test="count($b/implements/interface[not (@type = $stdInterfaces)])>0 and count($members/members/*) > 0">
             <xsl:text>, </xsl:text>
          </xsl:if>
          <xsl:value-of
@@ -629,9 +653,38 @@ virtual ~</xsl:text>
          <xsl:value-of select="translate(concat($b/@type,'_'),'.','_')" />
          <xsl:text>() {
 }
-</xsl:text>
-      <xsl:text>
 
+operator struct </xsl:text><xsl:value-of select="$strucname"/><xsl:text>() const {
+struct </xsl:text><xsl:value-of select="$strucname"/><xsl:text> s;
+</xsl:text>
+   <xsl:for-each select="$members/members/member">
+     <xsl:choose>
+        
+        <xsl:when test="@array">
+        <xsl:variable name="ctype">
+         <xsl:choose>
+           <xsl:when test="@cat ='s' ">
+             <xsl:value-of select="('struct ',replace(@type,'_$',''))" />
+           </xsl:when>
+           <xsl:otherwise>
+             <xsl:value-of select="@type"></xsl:value-of>
+           </xsl:otherwise>
+         </xsl:choose>
+         </xsl:variable>
+          <xsl:value-of select="concat('s.',@name,'.list = copyArray&lt;',@type,', ',$ctype,'&gt;(', @name,'_);')"/><xsl:text>
+           </xsl:text>
+           <xsl:value-of select="concat('s.',@name,'.n = ', @name,'_.size();')"/><xsl:text>
+           </xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="concat('    s.',@name,' = ', @name,'_;')"/><xsl:text>
+          </xsl:text>
+        </xsl:otherwise>
+     </xsl:choose>
+   </xsl:for-each>
+ <xsl:text>
+   return s;
+}
 
 };
 </xsl:text>
@@ -669,6 +722,24 @@ virtual ~</xsl:text>
          </xsl:otherwise>
       </xsl:choose>
    </xsl:template>
+   <xsl:template name="convert-type-class"><!-- this is a little ugly... -->
+      <xsl:param name="p" /> <!-- the actual type -->
+      <xsl:choose>
+         <xsl:when test="$typeMap/map/t[@from = $p/@type]">            
+            <xsl:sequence select="($typeMap/map/t[@from = $p/@type]/@to, 'c')"/>
+         </xsl:when>
+         <xsl:when
+            test="contains($p/@fulltype,'java')  or $p/@fulltype = $javaSimpleTypes">
+<!--  standard lib or prim type. -->
+            <xsl:sequence select="($p/@type, 'p')" />
+         </xsl:when>
+         <xsl:otherwise><!-- complex type - use a struct -->            
+            <xsl:sequence select="(concat(translate($p/@type,'.','_'),'_'), 's')" />
+           
+         </xsl:otherwise>
+      </xsl:choose>
+   </xsl:template>
+   
    <xsl:template name="listof">
       <xsl:param name="t" />
       <xsl:variable name="tt">
@@ -686,7 +757,7 @@ typedef struct {
     struct </xsl:text>
       <xsl:value-of select="$tt"></xsl:value-of>
       <!-- IMPL prehaps it would be nicer to have more meaningful member name for the list -->
-      <xsl:text> *list[];
+      <xsl:text> *list; /* note that this is an array */        
    } ListOf</xsl:text>
       <xsl:value-of select="$tt" />
       <xsl:text>;</xsl:text>
