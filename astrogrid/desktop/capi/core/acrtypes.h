@@ -1,5 +1,5 @@
 /*
- * $Id: acrtypes.h,v 1.1 2007/10/23 14:06:52 pah Exp $
+ * $Id: acrtypes.h,v 1.2 2007/10/30 15:53:07 pah Exp $
  * 
  * Created on 6 Sep 2007 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2007 Astrogrid. All rights reserved.
@@ -59,37 +59,37 @@ typedef struct {
 /* TODO - this is probably not appropriate in all cases that List is used - assuming list of strings...*/
 typedef struct {
 	int n;
-	JString * list[];
+	JString * list;
 } ACRList;
 
 typedef struct {
 	int n;
-	IvornOrURI * list[];
+	IvornOrURI * list;
 } ListOfIvornOrURI;
 
 typedef struct {
 	int n;
-	time_t * list[];
+	time_t * list;
 } ListOftime_t;
 
 typedef struct {
     int n;
-    void *list[];
+    void *list;
    } ListOfbyte;
 
 typedef struct {
     int n;
-    URI * list[];
+    URI * list;
   } ListOfURI;
 
 typedef struct {
           int n;
-    JString * list[];
+    JString * list;
     } ListOfJString;
 
  typedef struct {
 	 int n;
-      Object * list[];
+      Object * list;
     } ListOfObject;
 
 #ifdef __cplusplus
