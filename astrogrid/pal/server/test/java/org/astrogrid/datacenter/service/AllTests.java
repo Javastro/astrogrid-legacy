@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+/*$Id: AllTests.java,v 1.2 2007/11/01 11:25:46 kea Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,6 +23,7 @@ public class AllTests {
             new TestSuite("Test for org.astrogrid.datacenter.service");
         //$JUnit-BEGIN$
         suite.addTest(DataServiceTest.suite());
+        suite.addTest(new TestSuite(MulticoneTest.class));
 //        suite.addTest(org.astrogrid.datacenter.service.v041.AllTests.suite());
 //        suite.addTest(org.astrogrid.datacenter.service.v05.AllTests.suite());
         //$JUnit-END$
@@ -42,8 +43,14 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
-Revision 1.1  2005/02/17 18:37:35  mch
-*** empty log message ***
+Revision 1.2  2007/11/01 11:25:46  kea
+Merging MBT's branch pal-mbt-multicone1.
+
+Revision 1.1.1.1.140.1  2007/10/26 16:45:05  mbt
+Add MulticoneTest
+
+Revision 1.1.1.1  2005/02/17 18:37:35  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:25  mch
 Initial checkin

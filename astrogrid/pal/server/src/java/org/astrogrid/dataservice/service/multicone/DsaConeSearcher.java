@@ -3,9 +3,7 @@ package org.astrogrid.dataservice.service.multicone;
 import java.io.IOException;
 import java.security.Principal;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 import org.astrogrid.dataservice.service.DataServer;
-import org.astrogrid.dataservice.service.ServletHelper;
 import org.astrogrid.query.Query;
 import org.astrogrid.query.QueryException;
 import org.astrogrid.query.returns.ReturnSpec; 
@@ -38,61 +36,30 @@ public class DsaConeSearcher implements ConeSearcher {
     /**
      * Constructor.
      *
-     * @param  request  the servlet request which provides the context within
-     *         which the searcher will be used
+     * @param  catalogName  The name of the catalog (database) to be searched
+     * @param  tableName  The name of the table in the catalog to be searched
+     * @param  user  The identity of the user running the query
+     *               (if known - may be null)
+     * @param  source  The source of the query (if known - may be null)
+     * KONA TOFIX WHAT SHOULD USER AND SOURCE BE IF NULL??
      */
-    public DsaConeSearcher(HttpServletRequest request) throws ServletException {
+    public DsaConeSearcher(String catalogName, String tableName, Principal user,
+                           String source) throws ServletException {
+        this.catalogName = catalogName;
+        this.tableName = tableName;
+        this.user = user;
+        this.source = source;
         try {
-            this.catalogName = ServletHelper.getCatalogName(request);
-            this.tableName = ServletHelper.getTableName(request);
-            this.user = ServletHelper.getUser(request);
-            this.source = request.getRemoteHost()
-                        + " (" + request.getRemoteAddr()
-                        + ") via MultiCone servlet";
-        }
-        catch (IllegalArgumentException e) {
-            throw new ServletException(e.getMessage(), e);
-        }
-
-        try {
-           setConeNamesUnits(this.catalogName, this.tableName);
             this.raColName = TableMetaDocInterpreter
-                            .getConeRAColumnByName(catalogName, tableName);
+                    .getConeRAColumnByName(catalogName, tableName);
             this.decColName = TableMetaDocInterpreter
-                             .getConeDecColumnByName(catalogName, tableName);
+                    .getConeDecColumnByName(catalogName, tableName);
             this.units = TableMetaDocInterpreter
-                        .getConeUnitsByName(catalogName, tableName);
+                    .getConeUnitsByName(catalogName, tableName);
         }
         catch (Exception e) {
             throw new ServletException(e.getMessage(), e);
         }
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param  catalogName  The name of the catalog (database) to be searched
-     * @param  tableName  The name of the table in the catalog to be searched
-     * @param  user  The identity of the user running the query (if known - may be null)
-     * @param  source  The source of the query (if known - may be null)
-     * KONA TOFIX WHAT SHOULD USER AND SOURCE BE IF NULL??
-     */
-    public DsaConeSearcher(String catalogName, String tableName, Principal user, String source) throws ServletException {
-       this.catalogName = catalogName;
-       this.tableName = tableName;
-       this.user = user;
-       this.source = source;
-       try {
-          this.raColName = TableMetaDocInterpreter
-                   .getConeRAColumnByName(catalogName, tableName);
-          this.decColName = TableMetaDocInterpreter
-                   .getConeDecColumnByName(catalogName, tableName);
-          this.units = TableMetaDocInterpreter
-                   .getConeUnitsByName(catalogName, tableName);
-       }
-       catch (Exception e) {
-          throw new ServletException(e.getMessage(), e);
-       }
     }
 
     public int getRaIndex(StarTable result) {
@@ -150,10 +117,5 @@ public class DsaConeSearcher implements ConeSearcher {
 
         // Return the query result as a streamed StarTable object.
         return rowStore.waitForStarTable();
-    }
-
-    protected final void setConeNamesUnits(String catalogName, String tableName) 
-             throws MetadataException 
-    {
     }
 }

@@ -61,14 +61,24 @@
      <ul>
        <li><a  href="./adqlXmlForm.jsp">Run an ADQL/xml query</a></li>
        <%
-           // Optionally enabled coneSearch interface
+           // Optionally enabled coneSearch and multicone interface
            String coneEnabled = ConfigFactory.getCommonConfig().getString(
                    "datacenter.implements.conesearch");
-           if ( (coneEnabled != null) && (coneEnabled.equals("true") || coneEnabled.equals("TRUE")) ) {
-                 out.write("<li><a href=\"./coneForm.jsp\">Run a cone search</a></li>");
+           String multiEnabled = ConfigFactory.getCommonConfig().getString(
+                   "datacenter.implements.multicone");
+           boolean hasCone = "true".equalsIgnoreCase(coneEnabled);
+           boolean hasMulti = hasCone && "true".equalsIgnoreCase(multiEnabled);
+           if (hasCone) {
+               out.write("<li><a href=\"admin/coneForm.jsp\">Run a cone search</a></li>");
            }
            else {
-              out.write("<li><font color=\"#999999\">Run a cone search</font></li>");
+               out.write("<li><font color=\"#999999\">Run a cone search</font></li>");
+           }
+           if (hasMulti) {
+               out.write("<li><a href='admin/multiconeForm.jsp'>Run a multiple cone search</a></li>");
+           }
+           else {
+               out.write("<li><font color='#999999'>Run a multiple cone search</font></li>");
            }
        %>
      </ul>

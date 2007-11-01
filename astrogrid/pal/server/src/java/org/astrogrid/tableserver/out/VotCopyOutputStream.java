@@ -89,6 +89,8 @@ public class VotCopyOutputStream extends OutputStream {
             filterOut_.flush();
         }
         catch ( SAXException e ) {
+            finished_ = true;
+            notifyAll();
             throw (IOException) new IOException( "SAX processing error: " 
                                                + e.getMessage() )
                                .initCause( e );

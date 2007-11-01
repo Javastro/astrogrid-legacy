@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.11 2007/10/17 09:58:20 clq2 Exp $
+/*$Id: DatacenterApplication.java,v 1.12 2007/11/01 11:25:46 kea Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,6 +43,7 @@ import org.astrogrid.dataservice.queriers.status.QuerierStatus;
 import org.astrogrid.dataservice.service.AxisDataServer;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.multicone.DsaConeSearcher;
+import org.astrogrid.dataservice.service.multicone.DsaQuerySequenceFactory;
 import org.astrogrid.tableserver.metadata.TableMetaDocInterpreter;
 import org.astrogrid.dataservice.metadata.MetadataException;
 import org.astrogrid.io.account.LoginAccount;
@@ -420,11 +421,11 @@ public class DatacenterApplication extends AbstractApplication implements Querie
          // input VOTable, and the search radius
          // All these ones will be set (they are compulsory)
          String raCol = (String)findInputParameterAdapter(
-               DatacenterApplicationDescription.RA_EXPR).process();
+               DatacenterApplicationDescription.RA_COL).process();
          String decCol = (String)findInputParameterAdapter(
-               DatacenterApplicationDescription.DEC_EXPR).process();
-         String radius = (String)findInputParameterAdapter(
-               DatacenterApplicationDescription.RADIUS).process();
+               DatacenterApplicationDescription.DEC_COL).process();
+         double radius = Double.parseDouble((String)findInputParameterAdapter(
+               DatacenterApplicationDescription.RADIUS).process());
          // Bit naughty casting here but we need to get at some 
          // datacenter-specific bits of the parameter
          DatacenterParameterAdapter votableAdapter = 
@@ -479,8 +480,9 @@ public class DatacenterApplication extends AbstractApplication implements Querie
          TableProducer outProd =
              new SkyConeMatch2Producer(
                    new DsaConeSearcher(catalogName, tableName, 
-                      acc, "CEA multicone application"), 
-                   inProd, bestOnly, raCol, decCol, radius, "*");
+                                       acc, "CEA multicone application"), 
+                   inProd, new DsaQuerySequenceFactory(raCol, decCol, radius),
+                   bestOnly, "*");
 
          // Obtains the output table object.
          StarTable outTable;
@@ -635,6 +637,12 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
  $Log: DatacenterApplication.java,v $
+ Revision 1.12  2007/11/01 11:25:46  kea
+ Merging MBT's branch pal-mbt-multicone1.
+
+ Revision 1.11.4.1  2007/10/25 14:26:59  mbt
+ Fixed to match modified multicone interface
+
  Revision 1.11  2007/10/17 09:58:20  clq2
  PAL_KEA-2314
 

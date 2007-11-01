@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescription.java,v 1.6 2007/10/17 09:58:19 clq2 Exp $
+/*$Id: DatacenterApplicationDescription.java,v 1.7 2007/11/01 11:25:46 kea Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -61,13 +61,13 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
     /** Where the VOTable with rows to be matched is located */
     public static final String INPUT_VOTABLE = "Input_VOTable";
     /** name of the column (or expression) giving Right Ascension in degrees */
-    public static final String RA_EXPR = "RA_Column_Name";
+    public static final String RA_COL = "RA_Column_Name";
     /** name of the column (or expression) giving Declination in degrees */
-    public static final String DEC_EXPR = "Dec_Column_Name";
+    public static final String DEC_COL = "Dec_Column_Name";
     /** name of (optional) flag indicating match type */
     public static final String FIND_MODE = "Find_Mode";
-    public static final String[] FIND_MODE_OPTIONS = {"BESTY", "ALLY"};
-     
+    public static final String[] FIND_MODE_OPTIONS = {"BEST", "ALL"};
+
 
     /**
      * Commons Logger for this class
@@ -162,15 +162,15 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
 
         BaseParameterDescription raExpr = new BaseParameterDescription();
         raExpr.setDisplayDescription("Name for input Right-Ascension column (or expression): column data in degrees");
-        raExpr.setDisplayName(RA_EXPR);
-        raExpr.setName(RA_EXPR);
+        raExpr.setDisplayName(RA_COL);
+        raExpr.setName(RA_COL);
         raExpr.setType(ParameterTypes.TEXT);
         this.addParameterDescription(raExpr);
        
         BaseParameterDescription decExpr = new BaseParameterDescription();
         decExpr.setDisplayDescription("Name for input Declination column (or expression): column data in degrees");
-        decExpr.setDisplayName(DEC_EXPR);
-        decExpr.setName(DEC_EXPR);
+        decExpr.setDisplayName(DEC_COL);
+        decExpr.setName(DEC_COL);
         decExpr.setType(ParameterTypes.TEXT);
         this.addParameterDescription(decExpr);
 
@@ -182,8 +182,8 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
         OptionList findModeOptionList = new OptionList();
         findModeOptionList.setOptionVal(FIND_MODE_OPTIONS);
         findMode.setOptionList(findModeOptionList);
+        findMode.setDefaultValue("BEST");
         this.addParameterDescription(findMode);
-
 
         BaseApplicationInterface adql = new BaseApplicationInterface(ADQL_IFACE,this);
         this.addInterface(adql);
@@ -204,10 +204,9 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
         BaseApplicationInterface multicone = new BaseApplicationInterface(MULTICONE_IFACE,this);
         this.addInterface(multicone);
         multicone.addInputParameter(CATTABLE);
-        multicone.addInputParameter(RA_EXPR);
-        multicone.addInputParameter(DEC_EXPR);
+        multicone.addInputParameter(RA_COL);
+        multicone.addInputParameter(DEC_COL);
         multicone.addInputParameter(RADIUS);
-//        multicone.addInputParameter(FIND_MODE,0,1);
         multicone.addInputParameter(FIND_MODE);
         multicone.addInputParameter(INPUT_VOTABLE);
         multicone.addOutputParameter(RESULT);
@@ -231,6 +230,12 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
 
 /*
 $Log: DatacenterApplicationDescription.java,v $
+Revision 1.7  2007/11/01 11:25:46  kea
+Merging MBT's branch pal-mbt-multicone1.
+
+Revision 1.6.4.1  2007/10/25 14:28:49  mbt
+Rename RA_EXPR and DEC_EXPR to RA_COL and DEC_COL to match their new functions
+
 Revision 1.6  2007/10/17 09:58:19  clq2
 PAL_KEA-2314
 
