@@ -367,6 +367,7 @@ public abstract class DefaultQueryService {
    }   
    
    /**
+    * 
     * Method: GetResourcesByIdentifier
     * Description: This is the currently used web service method from client (Iteration 0.9).  But is expected to be
     * deprecated.  And to use GetResourceByIdentifier, because an identifier can only return one Resource only.  Currently
@@ -375,6 +376,7 @@ public abstract class DefaultQueryService {
     * have that AuthorityID.  Reason it is currently used is eXist seems to have a problem in embedded mode where
     * plainly I have seen it lose some elements.  After getting the identifier call GetResourcesByIdentifier(String,versionNumber).
     * 
+    * @deprecated
     * @param query - A Soap body request containing an identifier element holding the identifier to be queries on.
     * @return XML docuemnt object representing the result of the query.
     */

@@ -1,5 +1,5 @@
 <%@ page import="org.astrogrid.registry.server.query.*,
-                 org.w3c.dom.Document,
+                 org.w3c.dom.*,
                  org.astrogrid.util.DomHelper,
                  org.astrogrid.config.SimpleConfig,
  	  				  org.astrogrid.registry.server.http.servlets.helper.JSPHelper,                 
@@ -24,15 +24,37 @@
 
 <%
    String resource = "";
-   
    Document resourceDoc = null;
    if(request.getParameter("IVORN") != null && request.getParameter("IVORN").trim().length() > 0) {
-        ISearch server = JSPHelper.getQueryService(request);
-	     resourceDoc = server.getQueryHelper().getResourcesByIdentifier(request.getParameter("IVORN"));
+       ISearch server = JSPHelper.getQueryService(request);
+	   resourceDoc = server.getQueryHelper().getResourceByIdentifier(request.getParameter("IVORN"));
 	   if (resourceDoc != null) {
-    	  resource = DomHelper.DocumentToString(resourceDoc);
-	   }
-	}
+	     StringBuffer resContent = new StringBuffer(DomHelper.ElementToString(((Element)(resourceDoc.getDocumentElement().getElementsByTagNameNS("*","Resource").item(0)))));
+	     if(server.getContractVersion().equals("0.1")) {    	  
+			String temp = resContent.substring(0,resContent.indexOf(">"));
+			int tempIndex = resContent.indexOf("created=\"");
+			int tempIndex2;
+			if(tempIndex != -1 && tempIndex < temp.length()) {
+				tempIndex2 = resContent.indexOf("T",tempIndex);
+				tempIndex = (resContent.indexOf("\"",tempIndex +  5));
+				if(tempIndex2 != -1 && tempIndex2 < tempIndex) {
+					resContent.replace(tempIndex2,tempIndex,"");
+				}
+				temp = resContent.substring(0,resContent.indexOf(">"));
+			}//if
+		
+			tempIndex = resContent.indexOf("updated=\"");
+			if(tempIndex != -1 && tempIndex < temp.length()) {
+				tempIndex2 = resContent.indexOf("T",tempIndex);
+				tempIndex = (resContent.indexOf("\"",tempIndex + 5));
+				if(tempIndex2 > 0 && tempIndex2 < tempIndex) {
+					resContent.replace(tempIndex2,tempIndex,"");
+				}//if
+			}//if
+		}//if
+	    resource = resContent.toString();
+	   }//if
+	}//if
 %>
 
 <h1>Add/Update Entry</h1>

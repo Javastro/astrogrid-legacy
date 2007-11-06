@@ -4,12 +4,14 @@
                  java.net.URL,
  	  		     org.astrogrid.registry.server.http.servlets.helper.JSPHelper,                 
                  org.w3c.dom.Document,
+                 org.w3c.dom.Element,
+                 org.w3c.dom.NodeList,
                  org.astrogrid.io.Piper,
                  org.astrogrid.util.DomHelper,
                  org.apache.axis.utils.XMLUtils,
                  java.util.Date,
                  java.util.Locale,
-					  java.text.*,
+				 java.text.*,
                  java.io.*"
    isThreadSafe="false"
    session="false" %>
@@ -65,13 +67,20 @@ URL:
 	    }
 		URL url = new URL(reqHarvestURL);
 		Document identDoc = DomHelper.newDocument(url);
- 	    IAdmin ras = JSPHelper.getAdminService(request);
-		Document resultDoc = null;
-		resultDoc = ras.updateInternal(identDoc);
-		if(resultDoc.getElementsByTagNameNS("*","Fault").getLength() > 0) {
-			out.write("<br /><br /><pre>");
-			out.write(DomHelper.DocumentToString(resultDoc));
-			out.write("</pre>");
+		NodeList nl = identDoc.getElementsByTagNameNS("*","Resource");
+		if(nl.getLength() > 0) {
+		    Element resElem = (Element)nl.item(0);
+		    Document submitDoc = DomHelper.newDocument(DomHelper.ElementToString(resElem));
+	 	    IAdmin ras = JSPHelper.getAdminService(request);
+			Document resultDoc = null;
+			resultDoc = ras.updateInternal(submitDoc);
+			if(resultDoc.getElementsByTagNameNS("*","Fault").getLength() > 0) {
+				out.write("<br /><br /><pre>");
+				out.write(DomHelper.DocumentToString(resultDoc));
+				out.write("</pre>");
+			}
+		}else {
+		  out.write("No Resource Element found at the url: " + reqHarvestURL);
 		}
    }
 %>

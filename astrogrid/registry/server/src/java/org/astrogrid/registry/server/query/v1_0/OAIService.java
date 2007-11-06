@@ -4,10 +4,12 @@ package org.astrogrid.registry.server.query.v1_0;
 import org.astrogrid.registry.server.query.DefaultOAIService;
 
 /**
- * Class: RegistryQueryService
- * Description: The main class for all queries to the Registry to go to via Web Service or via internal
- * calls such as jsp pages or other classes.  The main focus is Web Service Interface methods are here
- * such as Search, KeywordSearch, and GetResourceByIdentifier.
+ * Class: OAIService
+ * Description: Main Query Service for OAI Harvests.  All the work is actually
+ * done in the super abstract class.  Note this webservice actually constructs an
+ * internal http url to the internal HTTP-GET OAI service and takees that DOM and
+ * returns it.
+ * 
  *
  * @author Kevin Benson
  */

@@ -5,13 +5,41 @@ import org.xmldb.api.base.Resource;
 import org.xmldb.api.base.ResourceSet;
 
 
+/**
+ * Class: ResultStreamer
+ * Description: RegistryXMLStreamDelegate is the main class for streaming results
+ * to the client, this subclass overrides the abstract method getResourceContent to
+ * do anything special to any single Resource before being sent to the client.  Also the class
+ * passes up to the super class the set of Resources and any xml wrapper that is needed for the
+ * XML.
+ * @author kevinbenson
+ *
+ */
 public class ResultStreamer extends RegistryXMLStreamDelegate {
 	
 	
+	/**
+	 * Constructor
+	 * Simply passes the information up to the abstract super class RegistryXMLStreamDelegate.
+	 * Passes a set of XML Resources to be iterated through and sent to the client.
+	 * @param resSet ResourceSet much like ResultSet.  Set of XML Resources.
+	 * @param xmlWrapper XML String to be used for wrapping around the XML (full set) of Resources.
+	 */	
 	public ResultStreamer(ResourceSet resSet, String xmlWrapper) {
 		super(resSet, xmlWrapper);
 	}
 	
+	
+	/**
+	 * Method: getResourceContent
+	 * Description: returns a String of XML for a Single XML Resource.  A Resource is
+	 * passed in and analyzed to see if it needs anything special added to it such as schemaLocations or
+	 * dates being modified or only to extract out the identifier elements.
+	 * @param res Single XML Resource object from the database.
+	 * @param identOnly boolean to determine if only identifier elements are needed.
+	 * @return XML String of the Resource to be streamed out to the client.
+	 * @throws org.xmldb.api.base.XMLDBException Error fetching/connecting to the database to get the Resource object contents.
+	 */	
 	public String getResourceContent(Resource res, boolean identOnly) throws org.xmldb.api.base.XMLDBException {
 		StringBuffer resContent = new StringBuffer(res.getContent().toString());
 		int tempIndex;

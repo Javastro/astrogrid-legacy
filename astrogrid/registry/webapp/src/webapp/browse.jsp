@@ -106,12 +106,12 @@ Find IVORNs including: <input name="IvornPart" type="text" value='<%= ivornpart 
 
       for (int n=0;n<resources.getLength();n++) {
          Element resourceElement = (Element) resources.item(n);
-	     	boolean deleted = false; 
-	     	boolean inactive = false;
-	     	if(resourceElement.getAttribute("status").length() > 0) {
-		  		deleted = resourceElement.getAttribute("status").toLowerCase().equals("deleted");         
-		  		inactive = resourceElement.getAttribute("status").toLowerCase().equals("inactive");
-		  	}
+	     boolean deleted = false; 
+	     boolean inactive = false;
+	     if(resourceElement.getAttribute("status").length() > 0) {
+		  	deleted = resourceElement.getAttribute("status").toLowerCase().equals("deleted");         
+		  	inactive = resourceElement.getAttribute("status").toLowerCase().equals("inactive");
+		  }
          String bgColour = "#FFFFFF";
          String fgColour = "#000000";
          
@@ -135,31 +135,31 @@ Find IVORNs including: <input name="IvornPart" type="text" value='<%= ivornpart 
            xsiType = xsiType.substring(xsiType.indexOf(":")+1);
          }
             //authr
-				String authority = RegistryDOMHelper.getAuthorityID(resourceElement);
-				String resource = RegistryDOMHelper.getResourceKey(resourceElement);
-   
-            String ivoStr = null;
+			String authority = RegistryDOMHelper.getAuthorityID(resourceElement);
+			String resource = RegistryDOMHelper.getResourceKey(resourceElement);
+            String ivoStr = RegistryDOMHelper.getIdentifier(resourceElement);
+            ivoStr = ivoStr.substring(6);
+            
             if (authority == null || authority.trim().length() <= 0) {
                out.write("<td>null?!</td>");
             } else {
                out.write("<td><a href='browse.jsp?IvornPart="+authority+"'>"+authority+"</a></td>\n");
-               ivoStr = authority;
             }
    
             if (resource == null || resource.trim().length() <= 0) {
+               
                out.write("<td>null?!</td>");
             } else { 
                out.write("<td>"+setFG+resource+endFG+"</td>\n");
-               ivoStr = ivoStr+"/"+resource;
             }
             ivoStr = java.net.URLEncoder.encode(("ivo://" + ivoStr),"UTF-8");
    
             //last update date
             out.write("<td>"+setFG+resourceElement.getAttribute("updated")+endFG+"</td>");
             out.write("<td>");
-            out.write("<a href=viewResourceEntry.jsp?IVORN="+ivoStr+">XML,</a>  ");
-            out.write("<a href=admin/editEntry.jsp?IVORN="+ivoStr+">Edit</a>");
-//            out.write("<a href=admin/xforms/XFormsProcessor.jsp?mapType="+xsiType+"&IVORN="+ ivoStr + ">XEdit</a>");
+            out.write("<a href=viewResourceEntry.jsp?IVORN="+ivoStr+">View</a>, ");
+            out.write("<a href=viewResourceEntry.jsp?IVORN="+ivoStr+">XML</a>, ");
+            out.write("<a href=registration/EditorLinks.jsp?IVORN="+ivoStr+">Edit</a>");
 
 			/*
             if (!deleted) {

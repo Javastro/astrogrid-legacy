@@ -153,13 +153,13 @@ public class RegistryDOMHelper {
     * @return String of the identifier.
     * @throws IOException
     */
-   public static String getIdentifier(Node nd) throws IOException {
-      String ident = getAuthorityID((Element)nd);
-      if(ident == null || ident.trim().length() == 0) 
-          return null;
-      String resKey = getResourceKey((Element)nd);
-      if(resKey != null && resKey.trim().length() > 0) ident += "/" + resKey;
-      return "ivo://" + ident;
+   public static String getIdentifier(Node doc) throws IOException {
+	  NodeList nl = ((Element)doc).getElementsByTagNameNS("*","identifier" );
+      if(nl.getLength() == 0)
+    	  return null;
+      String val = null;
+      val = nl.item(0).getFirstChild().getNodeValue().trim();       
+      return val;
    }
    
    private static final int VORESOURCE_VERSION_SEARCHTYPE = 0;

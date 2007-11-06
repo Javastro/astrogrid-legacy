@@ -25,6 +25,16 @@ import org.xmldb.api.modules.XMLResource;
 import org.xmldb.api.base.Collection;
 import org.xmldb.api.base.XMLDBException;
 
+/**
+ * Class: QueryHelper
+ * Description: Helper Class that will form the appropriate queries 
+ * usually from the properties file.  Perform the Query and return back
+ * normally a ResourceSet or a Resource object from the database to be
+ * used.
+ * 
+ * @author kevinbenson
+ *
+ */
 public class QueryHelper {
     
     /**
@@ -61,10 +71,28 @@ public class QueryHelper {
        }
     }
     
+    /**
+     * Constructor:
+     * Description: Constructor for the Helper Class takes in a ISearch interface
+     * which has the necessary information such as contract versions, namespaces to 
+     * perform the Query to the database.
+     * 
+     * @param search ISearch interface.
+     */
     public QueryHelper(ISearch search) {
         this(search.getWSDLNameSpace(),search.getContractVersion(),search.getResourceVersion());
     }
     
+    /**
+     * Constructor:
+     * Description: Constructor for the Helper Class takes in the necessary parameters
+     * such as contract versions, namespaces to perform the Query to the database.
+     *
+     * @param queryWSDLNS wsdl namespace used for constructing soap fault exceptions if they happen.
+     * @param contractVersion the contract version
+     * @param voResourceVersion version number for the VOResource, commonly used for extracting an xquery from
+     * the properties file.
+     */
     public QueryHelper(String queryWSDLNS, String contractVersion, String voResourceVersion) {
         this.queryWSDLNS = queryWSDLNS;
         this.contractVersion = contractVersion;
@@ -73,6 +101,14 @@ public class QueryHelper {
         xdbRegistry = new XMLDBRegistry();
     }
     
+    /**
+     * Constructor
+     * Description: old constructor that only gives the version number of the VOResource
+     * to perform xqueries.
+     * @deprecated
+     * @param voResourceVersion version number for the VOResource, commonly used for extracting an xquery from
+     * the properties file.
+     */
     public QueryHelper(String voResourceVersion) {
         this(null, null, voResourceVersion);        
     }
@@ -98,6 +134,16 @@ public class QueryHelper {
         //return resultDoc;
     }
     
+    /**
+     * Method: keywordQuery
+     * Description: A Keyword search method. Splits the keywords and forms a xql query for the key word search.
+     * The paths used for comparison with the keywords are obtained from the properties file they are a comma
+     * seperated xpath form.
+     * 
+     * @param keywords - String of keywords seperated by spaces.
+     * @param orKeywords - Are the key words to be or'ed together
+     * @return Set of XML Resources which is normally iterated through and streamed out to the client.
+     */     
     public ResourceSet keywordQuery(String keywords, boolean orKeywords)  throws SOAPFaultException {
         return keywordQuery(keywords, orKeywords, null, null);
     }
@@ -108,10 +154,11 @@ public class QueryHelper {
      * The paths used for comparison with the keywords are obtained from the JNDI/properties file they are a comma
      * seperated xpath form.
      * 
-     * @param query - String of keywords seperated by spaces.
+     * @param keywords - String of keywords seperated by spaces.
      * @param orKeywords - Are the key words to be or'ed together
-     * @param version - The version number from vr namespace used to form the collection name and get the xpaths from the properties. 
-     * @return XML docuemnt object representing the result of the query.
+     * @param start - Resource Number to start from.
+     * @param max - how many Resources to return. 
+     * @return Set of XML Resources which is normally iterated through and streamed out to the client.
      */   
     public ResourceSet keywordQuery(String keywords, boolean orKeywords, String start, String max)  throws SOAPFaultException {
         long beginQ = System.currentTimeMillis();
@@ -150,18 +197,13 @@ public class QueryHelper {
                 (System.currentTimeMillis() - beginQ));
         log.debug("end keywordsearch");         
         return queryRegistry(xqlString,start,max);
-        //return resultDoc;
-        //To be correct we need to transform the results, with a correct response element 
-        //for the soap message and for the right root element around the resources.
-        //return processQueryResults(resultDoc, "SearchResponse");
     }
     
     /**
      * Method: getAll
-     * Description: Conventient method for the browse all jsp page which queries the entire
+     * Description: Convenient method for the 'browse all jsp page' which queries the entire
      * collection in the registry based on a version number.
-     * @param versionNumber version number to form the collection(like a table) to query on.
-     * @return XML docuemnt object representing the result of the query.
+     * @return Set of XML Resources which is normally iterated through and streamed out to the client.
      */
     public ResourceSet getAll()  throws SOAPFaultException {    
         String xqlString = QueryConfigExtractor.getAllQuery(voResourceVersion);
@@ -177,10 +219,11 @@ public class QueryHelper {
      * each time and only receiving one resource, but it could pass in ivo://{authorityid} and get all Resources that
      * have that AuthorityID.  Reason it is currently used is eXist seems to have a problem in embedded mode where
      * plainly I have seen it lose some elements.
-  
+     * 
+     * @deprecated
+     * 
      * @param ivorn - Identifier String.
-     * @param versionNumber - version number to query on, if null use the default version number for the registry.
-     * @return XML docuemnt object representing the result of the query.
+     * @return Set of XML Resources which is normally iterated through and streamed out to the client.
      */
     public ResourceSet getResourcesByIdentifier(String ivorn) throws SOAPFaultException {
         if(ivorn == null || ivorn.trim().length() <= 0) {
@@ -199,12 +242,10 @@ public class QueryHelper {
 
     /**
      * Method: GetResourceByIdentifier
-     * Description: Used by JSP's and teh interface method form web service. 
-     * Takes an identifier and the versionNumber of the registry to be queries on. 
-     * (No query is actually performed). Grabs the Resource from the database based on
+     * Description: (No query is actually performed). Grabs the Resource from the database based on
      * identifier, this is because the identifier is the primary key (or id) in the db.
      * 
-     * @param query - soab body containing a identifier element for the identifier to query on.
+     * @param ivorn - identifier string
      * @return XML docuemnt object representing the result of the query.
      */
     public Document getResourceByIdentifier(String ivorn) throws SOAPFaultException {
@@ -253,7 +294,19 @@ public class QueryHelper {
         
     }
     
-
+    /**
+     * Method: getResourcesByAnyIdentifier
+     * Description: Used by JSP pages. Currently
+     * this method will query for part of the Identifier. From the client perspective it is passing an entire identifier
+     * each time and only receiving one resource, but it could pass in ivo://{authorityid} and get all Resources that
+     * have that AuthorityID.  Reason it is currently used is eXist seems to have a problem in embedded mode where
+     * plainly I have seen it lose some elements.
+     * 
+     * @deprecated
+     * 
+     * @param ivorn - Identifier String.
+     * @return Set of XML Resources which is normally iterated through and streamed out to the client.
+     */
     public ResourceSet getResourcesByAnyIdentifier(String ivorn) throws SOAPFaultException  {
         String xqlString = QueryConfigExtractor.queryForAllResource(ivorn,voResourceVersion);
         return queryRegistry(xqlString);
@@ -299,6 +352,14 @@ public class QueryHelper {
         return al;
     }
     
+    /**
+     * Method: queryRegistry
+     * Description: Queries the Registry with no start or max parameters and returns the results
+     * as a Set to be iterated through.
+     * @param xqlString an xquery string
+     * @return Resource Set
+     * @throws SOAPFaultException
+     */    
     public ResourceSet queryRegistry(String xqlString) throws SOAPFaultException   {
         return queryRegistry(xqlString,null,null);
     }

@@ -91,7 +91,7 @@
 		<dependency>
   		  <groupId>org.astrogrid</groupId>
 	      <artifactId>astrogrid-contracts</artifactId>
-  		  <version>2007.1.1</version>
+  		  <version>2007.2.03</version>
 	      <type>jar</type>
 		</dependency>
     	
@@ -439,6 +439,7 @@
             <resource>
            	   <directory>${basedir}/src</directory>
 		        <includes>
+		            <include>xml/*.xml</include>
 		           	<include>xsl/*.xsl</include>
 		        	<include>wsdd/*</include>
 		        </includes>            	

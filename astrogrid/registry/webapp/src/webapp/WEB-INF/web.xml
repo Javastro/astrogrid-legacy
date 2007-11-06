@@ -1,10 +1,5 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-
-<!DOCTYPE web-app
-    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
-    "http://java.sun.com/dtd/web-app_2_3.dtd">
-
-
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
   <display-name>Astrogrid Registry</display-name>
 
@@ -264,6 +259,38 @@
          <param-value>1.0</param-value>
       </init-param>
     </servlet>
+    
+    <servlet>
+        <servlet-name>DublinCoreServlet</servlet-name>
+        <description>Updates a resource's Dublin-core metadata in respons to a form.</description>
+        <servlet-class>org.astrogrid.registry.registration.DublinCoreServlet</servlet-class>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>NewIdentifierServlet</servlet-name>
+        <description>Validates a new IVORN and creates a new resource.</description>
+        <servlet-class>org.astrogrid.registry.registration.NewIdentifierServlet</servlet-class>
+    </servlet>
+    
+    
+    <servlet>
+        <servlet-name>CapabilitiesServlet</servlet-name>
+        <description>Gets service metadata from the service via VOSI and adds it to a registration.</description>
+        <servlet-class>org.astrogrid.registry.registration.CapabilitiesServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CoverageServlet</servlet-name>
+        <servlet-class>org.astrogrid.registry.registration.CoverageServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DublinCoreServlet</servlet-name>
+        <url-pattern>/registration/DublinCore</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>NewIdentifierServlet</servlet-name>
+        <url-pattern>/registration/NewIdentifier</url-pattern>
+    </servlet-mapping>
 
 
 	<servlet-mapping>
@@ -344,6 +371,14 @@
 
   <!-- various MIME type mappings ====================================== -->
 
+    <servlet-mapping>
+        <servlet-name>CapabilitiesServlet</servlet-name>
+        <url-pattern>/registration/ServiceMetadata</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CoverageServlet</servlet-name>
+        <url-pattern>/registration/Coverage</url-pattern>
+    </servlet-mapping>
     <mime-mapping>
         <extension>css</extension>
         <mime-type>text/css</mime-type>
@@ -401,7 +436,7 @@
 
   <security-constraint>
     <web-resource-collection>
-      <web-resource-name></web-resource-name>
+      <web-resource-name/>
       <url-pattern>/admin/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
@@ -452,21 +487,21 @@
 	<env-entry>
 		<description>The admin password used to create Resources or collections in the xmldb database, and startup/shutdown the internal eXist database if it is internally being ran.</description>
 		<env-entry-name>xmldb.admin.password</env-entry-name>
-		<env-entry-value></env-entry-value>
+		<env-entry-value/>
 		<env-entry-type>java.lang.String</env-entry-type>
 	</env-entry>
 
 	<env-entry>
 		<description>The user used to query Resources.</description>
 		<env-entry-name>xmldb.query.user</env-entry-name>
-		<env-entry-value></env-entry-value>
+		<env-entry-value/>
 		<env-entry-type>java.lang.String</env-entry-type>
 	</env-entry>
 
 	<env-entry>
 		<description>The query password used to query Resources.</description>
 		<env-entry-name>xmldb.query.password</env-entry-name>
-		<env-entry-value></env-entry-value>
+		<env-entry-value/>
 		<env-entry-type>java.lang.String</env-entry-type>
 	</env-entry>
 
@@ -517,7 +552,7 @@
 	<env-entry>
 		<description>Point to another exist configuration file on your disk hence a different data directory as well.  (only for internal db use).  This might be handly if you want to use the internal database, but not have the configuration file and data directory of eXist db with the war file so undeploying/updating wars will not lose data. Also use if servlet container does not unpack war file.</description>
 		<env-entry-name>reg.custom.exist.configuration</env-entry-name>
-		<env-entry-value></env-entry-value>
+		<env-entry-value/>
 		<env-entry-type>java.lang.String</env-entry-type>
 	</env-entry>
 

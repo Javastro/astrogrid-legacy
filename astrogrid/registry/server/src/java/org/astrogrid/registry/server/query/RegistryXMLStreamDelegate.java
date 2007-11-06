@@ -12,7 +12,18 @@ import org.xmldb.api.base.XMLDBException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-
+/**
+ * Class: RegistryXMLStreamDelegate
+ * Description: Main Streaming Delegate that handles streaming results
+ * of a query back to the client via XFire.  This delegate will take into
+ * account an XML Wrapper around a ResourceSet then cursor through a ResourceSet
+ * streaming out the XML from each Resource in the set.  Finally streeaming out the ending
+ * wrapper elements.
+ * This class is abstract a ResultStreamer class is defined for each contract.  The ResultStreamer
+ * will handle anything special for each Resource content such as adding schemaLocations. 
+ * @author kevinbenson
+ *
+ */
 public abstract class RegistryXMLStreamDelegate extends StreamReaderDelegate implements XMLStreamReader {
 
   protected ResourceSet resSet = null;
@@ -42,32 +53,70 @@ public abstract class RegistryXMLStreamDelegate extends StreamReaderDelegate imp
         }
   }  
   
+  /**
+   * Constructor
+   * Description: Get the Set of Resources, and the xml string that is a wrapper around the whole Resource set.
+   * @param resSet Set of XML Resource objects
+   * @param xmlWrapper XML string used to wrap the ResourceSet hence it elements at the beginning and end.
+   */
   public RegistryXMLStreamDelegate(ResourceSet resSet,String xmlWrapper) {
     super();
   	this.resSet = resSet;
+  	//create a StreamReader for the xml string wrapper.  And since this is in the beginning set it as the current parent.
   	wrapperStreamReader = STAXUtils.createXMLStreamReader(new StringReader(xmlWrapper));
   	setParent(wrapperStreamReader);
   }
   
+  /**
+   * Constructor
+   * Description: Get the Set of Resources, and the xml string that is a wrapper around the whole Resource set.
+   * @param resSet Set of XML Resource objects
+   * @param xmlWrapper XML string used to wrap the ResourceSet hence it elements at the beginning and end.
+   * @param identOnly identifier only set to stream out only identifier elements not a whole Resource.
+   */
   public RegistryXMLStreamDelegate(ResourceSet resSet,String xmlWrapper, boolean identOnly) {
 	    super();
 	  	this.resSet = resSet;
 	  	this.identOnly = identOnly;
+	  	//create a StreamReader for the xml string wrapper.  And since this is in the beginning set it as the current parent.	  	
 	  	wrapperStreamReader = STAXUtils.createXMLStreamReader(new StringReader(xmlWrapper));
 	  	setParent(wrapperStreamReader);
 	  }  
   
+  /**
+   * Method: abstract getResourceContent
+   * Description: Used by subclasses to analyze each single Resource from the Set and add
+   * anything special to the Resource such as schemalocations finally returning the XML as a string which is
+   * streamed out.
+   * @param res Single XML Resource
+   * @param identOnly boolean to determine if only the identifier element should be returned instead of the whole XML Resource.
+   * @return XML string of normally the XML Resource or in other cases just the identifier.
+   * @throws org.xmldb.api.base.XMLDBException thrown if a problem getting the XML Resource from the database.
+   */
   public abstract String getResourceContent(Resource res, boolean identOnly) throws org.xmldb.api.base.XMLDBException;
   
+  /**
+   * Method: next
+   * Description: Overwrites the next() method in the Xfire StreamReaderDelegate.
+   * This method figures out if there is a next element and streams that element out to the 
+   * client.  But does other logic such as determine if it is at the END of a Wrapper Element so it
+   * can start going through the ResourceSet and streaming out the XML Resources whereby when done go
+   * back to the wrap Streamer to finish off the end. 
+   * 
+   * @return next element type. Should constantly be called till END_DOCUMENT.
+   * @throws XMLStreamException
+   */
   public int next()  throws XMLStreamException {
    	
 	int current;
 	try {
+		//Check if were processing a Resource in the ResourceSet
+		//if so then simply call super.next().
     if(resXMLStreamReader != null) {
     	return super.next();
     }
     
-    //okay resourceset size is 0 and and not on the wrapper(header/footer) reader.
+    //okay resourceset size is 0 and  not on the wrapper(header/footer) reader.
     //so lets set it back to the wrapper reader and return an end_element.  This
     //should now put it is back on the end element for the footer area.
   	if(resSet.getSize() == 0 && !currentReaderisWrapper) {
@@ -105,7 +154,16 @@ public abstract class RegistryXMLStreamDelegate extends StreamReaderDelegate imp
   	return current;
   }
   
-  
+  /**
+   * Method: hasNext
+   * Description: Overwrites the hasNext in the Xfire StreamerDelegate.
+   * This method determines if were at the end of a Resource and step through
+   * the ResourceSet to the next Resource whereby it will return true till
+   * the last element in the last Resource of the Set has gone through.
+   * 
+   * @return true or false if there are more Nodes to process.
+   * @throws XMLStreamException
+   */
   public boolean hasNext()  throws XMLStreamException {
   	boolean current = super.hasNext();
   	//check if we are processing xml in the ResourceSet.
@@ -116,14 +174,12 @@ public abstract class RegistryXMLStreamDelegate extends StreamReaderDelegate imp
     		if(resSet.getSize() > 0) {
     	    resXMLStreamReader.close();
     	    //log.info("hasNext() resset size = " + resSet.getSize() + " here is the string in hasNext() and resources still left = " + getResourceContent(resSet.getResource((resSet.getSize() - 1)), identOnly));
+    	    //Make a StreamReader out of a Single Resource.
+    	    //Calls getResourceContent in the ResultStreamer subclass in case there is 
+    	    //anything special to be done to the Resource first.
     		resXMLStreamReader = STAXUtils.createXMLStreamReader
   	                           (new StringReader(getResourceContent(resSet.getResource((resSet.getSize()-1)), identOnly)));
     		
-    		/*
-    		 * resXMLStreamReader = STAXUtils.createXMLStreamReader
-  	                           (new StringReader(getResourceContent(resSet.getResource(0), identOnly)));
-    	    
-    		 */
     	    
   	        //set a new parent reader.
   	        setParent(resXMLStreamReader);
@@ -131,7 +187,6 @@ public abstract class RegistryXMLStreamDelegate extends StreamReaderDelegate imp
 	  	   //okay we should have our content in the stream reader
   		   //remove the resource from the collection.
   	   	   resSet.removeResource((resSet.getSize() - 1));
-  	   	   //resSet.removeResource(0);
   	  	   //log.info("just removed some kind of resource size = " + resSet.getSize());  	   	   
   	   	   return true;
   	   	   }else {

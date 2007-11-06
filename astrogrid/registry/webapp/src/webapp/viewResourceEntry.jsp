@@ -27,6 +27,9 @@
 	   if (nl.getLength() == 0) {
 	       out.write("<Error>No entry returned</Error>");
 	   } else {
+	      if(!request.getParameter("XML").equals("true")) {
+			  out.write("<?xml-stylesheet type='text/xsl' href='ResourceToDublinCoreDisplay.xsl'?>");
+		  }
 	      XMLUtils.ElementToWriter((Element)nl.item(0),out);
 	   }
  	}

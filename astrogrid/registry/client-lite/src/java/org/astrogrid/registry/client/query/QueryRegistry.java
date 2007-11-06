@@ -233,9 +233,13 @@ public abstract class QueryRegistry {
    
    protected Document searchDOM(Document searchDoc) {
        Element newRoot = searchDoc.createElementNS(getSoapBodyNamespaceURI(), "reg:Search");
-       Element whereElem = searchDoc.createElementNS(getSoapBodyNamespaceURI(), "reg:Where");
-       NodeList nl = searchDoc.getElementsByTagNameNS("*","Where");
-       
+       Element whereElem = null;
+       NodeList nl = searchDoc.getElementsByTagNameNS("*","Where");       
+       if(getContractVersion().equals("0.1")) {
+       	whereElem = searchDoc.createElementNS(nl.item(0).getNamespaceURI(), "reg:Where");
+       }else {
+       	whereElem = searchDoc.createElementNS(getSoapBodyNamespaceURI(), "reg:Where");
+       }       
        Element currentRoot = null;
        if(nl.getLength() > 0) {
            currentRoot = (Element)nl.item(0);

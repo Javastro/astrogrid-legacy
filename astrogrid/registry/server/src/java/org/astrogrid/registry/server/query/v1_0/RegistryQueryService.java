@@ -183,13 +183,20 @@ public class RegistryQueryService extends DefaultQueryService implements ISearch
     	}
     }
     
+   
     /**
-     * Need to write javadoc later on this one, it has now recently changed.
-     * Don't need start or max or identonly.
-     * It is now only used for GetResource(ident) or SoapFaults.
+     * Method: streamResults
+     * Description: Streams results to the client for a Node.  Which is always either a single
+     * Resource or a Soap Fault error.  Also takes an xml wrapper and used to wrap around the Node. Also
+     * tends to analyze the single Resource to see if anything special needs to happen such as
+     * adding schemalocations, dates, and such.
+     * @param resultDBNode DOM Node containing normally a Fault Element or a Single Resource.
+     * @param responseWrapper XML string of any wrapper xml to be placed around the Single Resource.
+     * @return A Stream Reader which is streamed out to the client via XFire.
+     * @throws IOException io problem with the stream.
      */
-    private XMLStreamReader streamResults(Node resultDBNode,String responseWrapper) throws IOException, XMLDBException {
-            //check if it is a Fault, if so just return the resultDoc;
+    private XMLStreamReader streamResults(Node resultDBNode,String responseWrapper) throws IOException {
+            //check if it is a Fault, if so just return the resultDoc no need to use a wrapper;
             if(resultDBNode.getNodeName().indexOf("Fault") != -1 || 
                (resultDBNode.hasChildNodes() && resultDBNode.getFirstChild().getNodeName().indexOf("Fault") != -1)  ) {
                 //All Faults should have been created by server.SOAPFaultException meaning a Document object.
@@ -206,6 +213,8 @@ public class RegistryQueryService extends DefaultQueryService implements ISearch
             }
             childNodes = responseDoc.getElementsByTagNameNS("*","Resource");
             
+            //See if some modifications needs to be made to this single Resource
+            //and add the wrapper around it if needed.
             String schemaLocations = null;
             schemaLocations =  "http://www.ivoa.net/xml/VOResource/v1.0 "  + schemaLocationBase + 
             				   "registry/RegistryInterface/v1.0/RegistryInterface.xsd " + 
@@ -238,20 +247,19 @@ public class RegistryQueryService extends DefaultQueryService implements ISearch
 		                    }else if(temp.endsWith("OpenSkyNode")) {
 		                        schemaLocations += " http://www.ivoa.net/xml/OpenSkyNode/v1.0 " + schemaLocations + "vo-resource-types/OpenSkyNode/v1.0/OpenSkyNode.xsd";
 		                    }else if(temp.endsWith("CeaService") || temp.endsWith("CeaHttpApplicationType") || temp.endsWith("CeaApplicationType")) {
-		                        schemaLocations += "http://www.ivoa.net/xml/CEAService/v1.0 " + schemaLocations + "vo-resource-types/CEAService/v1.0/CEAService.xsd";
+		                        schemaLocations += " http://www.ivoa.net/xml/CEA/v1.0rc1 " + schemaLocations + "vo-resource-types/CEAService/v1.0rc1/CEAService.xsd";
 		                    }
 		                }
 		                //add schemaLocation.
 		                resContent.insert(resContent.indexOf(">")," xsi:schemaLocation=\"" + schemaLocations + "\"");
                 }//if type
                   }//if schemalocations
-                  //resContent.insert(resContent.indexOf("Resource"),"ri:");
-                  //resContent.insert(resContent.indexOf(">")," xmlns:ri=\"" + QUERY_WSDL_NS + "\" ");
-                  //resContent.insert(resContent.indexOf("/Resource")+1,"ri:");
+
                   resultBuffer.append(resContent.toString());
                 if(responseWrapper != null && responseWrapper.trim().length() > 0) {
                 	resultBuffer.append(("</riw:" + responseWrapper + ">"));
                 }
+                //return the results as a stream to the client.
                 return STAXUtils.createXMLStreamReader(new StringReader(resultBuffer.toString()));
     }
     
@@ -261,6 +269,7 @@ public class RegistryQueryService extends DefaultQueryService implements ISearch
      * Description: process an actual response from a query to the database. 
      * Goes through a set/collection of xmlresources processing them and sending the
      * result to the outputstream.
+     * The Streaming of the set is done by the ResultStreamer and RegistryXMLDelegate classes.
      * @param resultSet - a collection of XMLResources from the query of the db.
      * @param responseWrapper - a string name to be used as the wrapped method name
      * hence first element of soap:body.

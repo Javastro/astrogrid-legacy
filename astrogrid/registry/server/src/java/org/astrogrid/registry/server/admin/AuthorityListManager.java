@@ -133,15 +133,20 @@ public class AuthorityListManager {
         
         NodeList resources = registries.getElementsByTagNameNS("*","Resource");
         log.info("Number of Resources found loading up registries = " + resources.getLength());
-        String val = null;       
+        String val = null;
+        Element resourceElem = null;
         for(int j = 0;j < resources.getLength();j++) {
-            String mainOwner = RegistryDOMHelper.getAuthorityID((Element)resources.item(j));
-            NodeList mgList = ((Element)resources.item(j)).getElementsByTagNameNS("*","managedAuthority");
-            log.info("mglist size = " + mgList.getLength());
-            for(int i = 0;i < mgList.getLength();i++) {
-                val = mgList.item(i).getFirstChild().getNodeValue();
-                manageAuthorities.put(new AuthorityList(val,regVersion),new AuthorityList(val, regVersion, mainOwner));
-            }//for
+        	resourceElem = (Element)resources.item(j);
+        	if(resourceElem.hasAttribute("status") &&
+        	   resourceElem.getAttribute("status").equals("active")) {
+	            String mainOwner = RegistryDOMHelper.getAuthorityID(resourceElem);
+	            NodeList mgList = resourceElem.getElementsByTagNameNS("*","managedAuthority");
+	            log.info("mglist size = " + mgList.getLength());
+	            for(int i = 0;i < mgList.getLength();i++) {
+	                val = mgList.item(i).getFirstChild().getNodeValue();
+	                manageAuthorities.put(new AuthorityList(val,regVersion),new AuthorityList(val, regVersion, mainOwner));
+	            }//for
+        	}//if
         }//for
         return manageAuthorities;
     }   

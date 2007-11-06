@@ -15,9 +15,9 @@ import org.codehaus.xfire.MessageContext;
 
 /**
  * Class: SoapDispatcher
- * Description: The dispatcher handles all soap requests and responses.  Called via the
+ * Description: The dispatcher handles all soap requests and responses for a Query.  Called via the
  * SoapServlet. SoapRequests (Bodies) are placed into a DOM and by analyzing the uri 
- * determine if for query or admin service.  Responses are Stream based (NOT DOM) into an 
+ * determine the correct query service for the correct contract.  Responses are Stream based (NOT DOM) into an 
  * XMLStreamReader with the help of PipedStreams.
  * @author kevinbenson
  *
@@ -33,7 +33,7 @@ public class SoapDispatcher {
    */
   public SoapDispatcher() {
 	  interfaceMappings = new Hashtable();
-	  //Small hashtable for determing the query  interface.
+	  //Small hashtable for determing the query interface.
 	  interfaceMappings.put("http://www.ivoa.net/wsdl/RegistrySearch/v1.0","1.0");
 	  interfaceMappings.put("http://www.ivoa.net/wsdl/RegistrySearch/v0.9","0.9");
 	  interfaceMappings.put("http://www.ivoa.net/wsdl/RegistrySearch/v0.1","0.1");
@@ -67,6 +67,7 @@ public class SoapDispatcher {
 	  	 }
 	     XMLStreamReader responseReader = null;
 	     if(query != null) {
+	    	 
 	    	 String interfaceName = inputDoc.getDocumentElement().getLocalName().intern();
 	    	 if(interfaceName == "Search".intern()) {
 	    		 responseReader = query.Search(inputDoc);	    		 
@@ -85,7 +86,7 @@ public class SoapDispatcher {
 	    	 }else if(interfaceName == "loadRegistry".intern()) {
 	    		 responseReader = query.loadRegistry(inputDoc);	    		 
 	    	 }else {
-	    		System.out.println("darn not called/found interfacename"); 
+	    		System.out.println("No interfacename found to call"); 
 	    	 }
 	     }//if
 	 	 //System.out.println("returning responsereader");

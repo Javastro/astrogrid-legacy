@@ -56,8 +56,15 @@ public class RegistryHarvestService extends org.astrogrid.registry.server.harves
 
    private static final String VORESOURCE_VERSION = "0.10";
    
+   private static final String NAMESPACE_URI = "http://www.ivoa.net/wsdl/RegistryHarvest/v0.1";   
+   
    public RegistryHarvestService() {
        super(CONTRACT_VERSION, VORESOURCE_VERSION);
+   }
+   
+   
+   public String getNameSpaceURI() {
+   	return NAMESPACE_URI;
    }
       
    /**
@@ -79,6 +86,7 @@ public class RegistryHarvestService extends org.astrogrid.registry.server.harves
       
 
       String identifier = RegistryDOMHelper.getIdentifier(resource);
+      log.debug("0.10 - identifier in beginHarvest = " + identifier);
       //String versionNumber = RegistryDOMHelper.getRegistryVersionFromNode(resource);
 
       //get the accessurl and invocation type.
@@ -87,9 +95,9 @@ public class RegistryHarvestService extends org.astrogrid.registry.server.harves
       //boolean isRegistryType = (typeAttribute != null) &&
       //                 (typeAttribute.getNodeValue().indexOf("Registry") >= 0);
 
-      nl = ((Element) resource).getElementsByTagNameNS("*","AccessURL");
+      nl = ((Element) resource).getElementsByTagNameNS("*","accessURL");      
       if(nl.getLength() == 0) {
-          nl = ((Element) resource).getElementsByTagNameNS("*","accessURL");
+      	nl = ((Element) resource).getElementsByTagNameNS("*","AccessURL");    
       }
       if(nl.getLength() == 0) {
           log.error("Error did not find a AccessURL");
@@ -128,7 +136,7 @@ public class RegistryHarvestService extends org.astrogrid.registry.server.harves
               rha.addStatInfo(identifier, VORESOURCE_VERSION, results);
       }catch(RegistryException re) {
           log.error(re);
-          rha.addStatError(identifier,VORESOURCE_VERSION,re.getMessage());
+          //rha.addStatError(identifier,VORESOURCE_VERSION,re.getMessage());
           throw re;
       }
       log.debug("exist beginHarvest(Node)");

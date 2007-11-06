@@ -29,8 +29,8 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Class: OAIService
  * Description: The OAIService holds the web service interface methods for OAI (the open archives initiative).  OAI
- * is the standard interface for harvesting.  This method is actually just a wrapper for the OAI calls to the WebBrowser
- * verison (http).
+ * is the standard interface for harvesting.  This method is actually just a wrapper for the OAI calls to the HTTP-GET
+ * verison.
  * @see http://www.openarchives.org
  * 
  * @author Kevin Benson
@@ -113,6 +113,14 @@ public abstract class DefaultOAIService {
        return addWrapperElement("IdentifyResponse",resultDoc);
     }
     
+    /**
+     * Method: addWrapperElement
+     * Description: Simply wraps some XML around the result for the Web Service.
+     * Typically the internface name which is required by the soap body/wsdl.
+     * @param wrapNodeString XML string to wrap around the results.
+     * @param resultDoc the DOM Document containing the OAI XML.
+     * @return stream reader created from the DOM to be returned to the client.
+     */
     private XMLStreamReader addWrapperElement(String wrapNodeString,
                                        Document resultDoc) {
         if(resultDoc.getElementsByTagNameNS("*","error").getLength() > 0) {
@@ -241,7 +249,7 @@ public abstract class DefaultOAIService {
            oaiServlet += "&until=" + nl.item(0).getFirstChild().getNodeValue();
          if( (nl = query.getElementsByTagNameNS("*","set")).getLength() > 0  )
              oaiServlet += "&set=" + nl.item(0).getFirstChild().getNodeValue();         
-         if( (nl = query.getElementsByTagNameNS("*","resumtptionToken")).getLength() > 0  )
+         if( (nl = query.getElementsByTagNameNS("*","resumptionToken")).getLength() > 0  )
              oaiServlet += "&resumptionToken=" + nl.item(0).getFirstChild().getNodeValue();                
          Document resultDoc = queryOAI(oaiServlet);
          return addWrapperElement("ListRecordsResponse",resultDoc);

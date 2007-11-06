@@ -56,11 +56,16 @@ public class RegistryHarvestService extends org.astrogrid.registry.server.harves
     
    public static final String CONTRACT_VERSION = "1.0";
    
-   private static final String VORESOURCE_VERSION = "1.0";   
+   private static final String VORESOURCE_VERSION = "1.0";
    
+   private static final String NAMESPACE_URI = "http://www.ivoa.net/wsdl/RegistryHarvest/v1.0";
    
    public RegistryHarvestService() {
        super(CONTRACT_VERSION, VORESOURCE_VERSION);
+   }
+   
+   public String getNameSpaceURI() {
+   	return NAMESPACE_URI;
    }
       
    /**
@@ -83,6 +88,7 @@ public class RegistryHarvestService extends org.astrogrid.registry.server.harves
       
 
       String identifier = RegistryDOMHelper.getIdentifier(resource);
+      log.debug("1.0 - identifier in beginHarvest = " + identifier);
       //String versionNumber = RegistryDOMHelper.getRegistryVersionFromNode(resource);
 
       //get the accessurl and invocation type.
@@ -126,7 +132,7 @@ public class RegistryHarvestService extends org.astrogrid.registry.server.harves
           accessURL = accessURL.substring(0,accessURL.indexOf("?wsdl"));
       }
       
-      log.debug("The access URL = " + accessURL + " invocationType = " + invocationType);
+      log.info("The access URL = " + accessURL + " invocationType = " + typeAttribute.getNodeValue() + " identifier = " + identifier);
       try {
           String results = beginHarvest(accessURL, typeAttribute.getNodeValue(),dt, lastResumptionToken, identifier, null);
 //        here we need to add new harvestdate to the stat
@@ -135,7 +141,7 @@ public class RegistryHarvestService extends org.astrogrid.registry.server.harves
               rha.addStatInfo(identifier, VORESOURCE_VERSION, results);
       }catch(RegistryException re) {
           log.error(re);
-          rha.addStatError(identifier,VORESOURCE_VERSION,re.getMessage());
+          //rha.addStatError(identifier,VORESOURCE_VERSION,re.getMessage());
           throw re;
       }
       log.debug("exist beginHarvest(Node)");

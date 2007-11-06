@@ -3,6 +3,13 @@ package org.astrogrid.registry.server.query;
 import org.w3c.dom.Document;
 import javax.xml.stream.*;
 
+/**
+ * Interface: ISearch
+ * Description: Standard methods used for the Query Service which implements
+ * this interface.
+ * @author kevinbenson
+ *
+ */
 public interface IOAIHarvestService {
 	
 	

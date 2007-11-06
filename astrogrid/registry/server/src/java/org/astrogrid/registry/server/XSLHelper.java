@@ -229,20 +229,12 @@ public class XSLHelper {
     }   
    
    /**
-    * Method: transformUpdate
-    * Description: Allows the registry to transform the XML before going into the database. It is multiple versioned
-    * based on the vr namespace and can be applied to regular updates (from Astrogrid) or on harvests from other
-    * registries. 
-    * This usefullness is best described in some examples:
-    * ex 1: 0.9 - used substitution groups hence same xml could be expressed in 2 or 3 ways meaning xql queries very
-    * difficult, so a xsl stylesshet was applied to make the xml consistent and be able to query easier.
-    * ex 2: 0.10 - no more subtituion groups, but the way the main Resource element was described any number of XML name 
-    * with any number of namespaces could be of type Resouce.  So XSL is used to again put it in the way that is 
-    * consistent in the db.
+    * Method: transformVersionConversion
+    * Description: This method will go away in the near future, a helper xsl method to
+    * transform 0.10 XML Resources to 1.0 XML Resources.
+    * 
     * @param doc XML to be transformed.
-    * @param versionNumber version number of main vr namespace.
-    * @param harvestUpdate is this used on a harvest, if so use a different xsl stylesheet name.
-    * @return XML to be updated into the database.
+    * @return XML 1.0 Resource DOM.
     */
    public Document transformVersionConversion(Node doc) throws RegistryException {
        

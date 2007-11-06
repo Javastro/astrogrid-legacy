@@ -104,6 +104,7 @@ public class HarvestDaemon extends HttpServlet //implements Runnable
        System.out.println("initialized HarvestDaemon");
        
        String contractVersion = getInitParameter("registry_contract_version");
+       System.out.println("Contract Version = " + contractVersion);
        //get the current date and time.
        servletInitTime = new Date();
        //instantiate teh harvest service.
@@ -115,6 +116,7 @@ public class HarvestDaemon extends HttpServlet //implements Runnable
        }
        //hmmm lets make sure there is no timer going at the moment.
        if(scheduleTimer != null) {
+       		System.out.println("scheduleTimer not null in init so cancel");
            //hmmm just in case the servlet container decides to re-initialize
            //this servlet.
            scheduleTimer.cancel();
@@ -124,7 +126,7 @@ public class HarvestDaemon extends HttpServlet //implements Runnable
        scheduleTimer = new Timer();
        boolean harvestEnabled = conf.getBoolean("reg.amend.harvest",false);
        if(harvestEnabled) {
-           //check wif we have already setup all the interval time values.
+           //check if we have already setup all the interval time values.
           if(!valuesSet) {
               System.out.println("harvest is enabled");
               valuesSet = true;
@@ -143,6 +145,7 @@ public class HarvestDaemon extends HttpServlet //implements Runnable
           System.out.println("in init of harvestDaemon and starting thread.");
           
           //schedule the timer class.
+          System.out.println("scheduling for contractVersion = " + contractVersion);
           scheduleTimer.scheduleAtFixedRate(new HarvestTimer("HarvestNow"),
                        (long)harvestInterval*3600*1000,
                        (long)harvestInterval*3600*1000);          

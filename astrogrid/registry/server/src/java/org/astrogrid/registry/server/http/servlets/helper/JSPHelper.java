@@ -41,6 +41,10 @@ public class JSPHelper {
     
     public static String getContractVersion(HttpServletRequest hsr) {
     	
+    	if(hsr.getParameter("contract_version") != null) {
+    		return setContractVersion(hsr,hsr.getParameter("contract_version"));
+    	}
+    	
         return hsr.getSession().getAttribute("reg.defaultContractVersion") == null ? 
                 setContractVersion(hsr,QueryConfigExtractor.getDefaultContractVersion()) :
                 (String)hsr.getSession().getAttribute("reg.defaultContractVersion");

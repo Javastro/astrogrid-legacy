@@ -13,11 +13,14 @@ import org.codehaus.xfire.util.STAXUtils;
 import org.codehaus.xfire.MessageContext;
 
 /**
- * Class: SoapDispatcher
- * Description: The dispatcher handles all soap requests and responses.  Called via the
+ * Class: SoapHarvestDispatcher
+ * Description: The dispatcher handles all soap requests and responses dealing with Harvest Soap calls.  
+ * Called via the
  * SoapServlet. SoapRequests (Bodies) are placed into a DOM and by analyzing the uri 
- * determine if for query or admin service.  Responses are Stream based (NOT DOM) into an 
- * XMLStreamReader with the help of PipedStreams.
+ * determine if which harvest contract is being called and which interface method to call.  
+ * Calls the interface method and returns the results.  Though a stream is 
+ * returned as a response.  Should note currently Harvest Service is still DOM 
+ * based at this moment. Only Query Service streams results. 
  * @author kevinbenson
  *
  */
@@ -50,14 +53,17 @@ public class SoapHarvestDispatcher {
 	 try {
 		 //get the soap request.
 	     XMLStreamReader reader = context.getInMessage().getXMLStreamReader();
-	     //form a DOM for the request.
+	     //form a DOM for the request to analyze the DOM.
+	     //Note this is the DOM inside the Soap body.
 		 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 	     DocumentBuilder builder = dbf.newDocumentBuilder();
 	     Document inputDoc = STAXUtils.read(builder,reader,true);
+	     //get the namespace uri to see if we have a mapping of that
+	     //namespace to a contract.
 	     String inputURI = inputDoc.getDocumentElement().getNamespaceURI();
 	     IOAIHarvestService oaiquery;
 	     if(interfaceMappings.containsKey(inputURI)) {
-	    	 //okay get the ISearch query interface.
+	    	 //okay get the oai query interface from the oai factory.
 	    	 oaiquery = OAIHarvestFactory.createOAIHarvestService((String)interfaceMappings.get(inputURI));
 	  	 }else {
 	  		 //very old clients just might not match which must be 0.1
@@ -66,7 +72,10 @@ public class SoapHarvestDispatcher {
 	  	 }
 	     XMLStreamReader responseReader = null;
 	     if(oaiquery != null) {
-	    	 String interfaceName = inputDoc.getDocumentElement().getLocalName().intern();
+	    	 //The method/interface name to be called should be the soap body
+	    	 //first child element.  Get the local name and compare names and call the
+	    	 //method.
+	    	 String interfaceName = inputDoc.getDocumentElement().getLocalName().intern();	    	 
 	    	 if(interfaceName == "Identify".intern()) {
 	    		 responseReader = oaiquery.Identify(inputDoc);	    		 
 	    	 }else if(interfaceName == "ListRecords".intern()) {
@@ -82,10 +91,9 @@ public class SoapHarvestDispatcher {
 	    	 }else if(interfaceName == "GetRecord".intern()) {
 	    		 responseReader = oaiquery.GetRecord(inputDoc);	    		 
 	    	 }else {
-	    		System.out.println("darn not called/found interfacename"); 
+	    		System.out.println("no interfacename found, nothing to call"); 
 	    	 }
 	     }//if
-	 	 //System.out.println("returning responsereader");
 	 	 return responseReader;
 	 }catch(Exception e) {
 		 e.printStackTrace();

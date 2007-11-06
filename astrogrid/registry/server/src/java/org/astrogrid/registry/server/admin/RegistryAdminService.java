@@ -367,9 +367,11 @@ public abstract class RegistryAdminService {
             try {
                xdbRegistry.storeXMLResource(tempIdent.replaceAll("[^\\w*]","_") + ".xml",
                                             collectionName, root/*currentResource*/);
+               /*
                xdbRegistry.storeXMLResource(tempIdent.replaceAll("[^\\w*]","_") + ".xml",
                                             "statv" + versionNumber.replace('.','_'), 
-                                            adminHelper.createStats(tempIdent));               
+                                            adminHelper.createStats(tempIdent));
+               */               
             } catch(XMLDBException xdbe) {
                log.error(xdbe);
                throw new SOAPFaultException("Server Error: " + xdbe.getMessage(),xdbe,adminwsdlNS,  SOAPFaultException.ADMINSOAP_TYPE);
@@ -428,11 +430,13 @@ public abstract class RegistryAdminService {
                 	//System.out.println("okay storing the registry type root doc = " + DomHelper.ElementToString((Element)root) + " and collectionanme = " + collectionName);
                     xdbRegistry.storeXMLResource(tempIdent.replaceAll("[^\\w*]","_") + ".xml", 
                                                  collectionName, root /*currentResource*/);
+                    /*
                     if(xdbRegistry.getResource(tempIdent.replaceAll("[^\\w*]","_") + ".xml",collectionName) == null) {
                         xdbRegistry.storeXMLResource(tempIdent.replaceAll("[^\\w*]","_") + ".xml",
                                                      "statv" + versionNumber.replace('.','_'), 
                                                      adminHelper.createStats(tempIdent,false));                        
                      }
+                     */
                  } catch(XMLDBException xdbe) {
                      log.error(xdbe);
                      throw new SOAPFaultException("Server Error: " + xdbe.getMessage(),xdbe, adminwsdlNS, SOAPFaultException.ADMINSOAP_TYPE);
@@ -503,9 +507,11 @@ public abstract class RegistryAdminService {
                        root = xsDoc.createElementNS("urn:astrogrid:schema:RegistryStoreResource:v1","agr:AstrogridResource");
                        root.appendChild(currentResource);
                        try {
+                    	   /*
                            xdbRegistry.storeXMLResource(tempIdent.replaceAll("[^\\w*]","_") + ".xml", 
                                                         "statv" + versionNumber.replace('.','_'), 
                                                         adminHelper.createStats(tempIdent));
+                           */
                            xdbRegistry.storeXMLResource(tempIdent.replaceAll("[^\\w*]","_") + ".xml", 
                                                         collectionName, root /*currentResource*/);
                        } catch(XMLDBException xdbe) {

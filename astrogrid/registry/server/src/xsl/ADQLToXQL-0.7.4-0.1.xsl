@@ -1,5 +1,12 @@
 <?xml version="1.0"?>
-<xsl:stylesheet xmlns="http://www.ivoa.net/xml/ADQL/v0.7.4" xmlns:ad="http://www.ivoa.net/xml/ADQL/v0.7.4" xmlns:q1="urn:nvo-region" xmlns:q2="urn:nvo-coords" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0">
+<xsl:stylesheet xmlns="http://www.ivoa.net/xml/ADQL/v0.7.4" 
+                xmlns:ri="http://www.ivoa.net/wsdl/RegistrySearch/v0.1" 
+                xmlns:ad="http://www.ivoa.net/xml/ADQL/v0.7.4" 
+                xmlns:q1="urn:nvo-region" 
+                xmlns:q2="urn:nvo-coords" 
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0">
+
    <!--
    - Stylesheet to convert ADQL version 0.7.4 to an SQL String
    - Version 1.0 - Initial Revision
@@ -275,6 +282,16 @@
       </xsl:if>
       <xsl:text>]</xsl:text>
    </xsl:template>
+   
+   <xsl:template match="ri:Where">
+   <xsl:text>//</xsl:text><xsl:value-of select="$resource_elem"/><xsl:text>[</xsl:text>
+      <xsl:if test="ad:Condition">
+		<xsl:text>(</xsl:text>
+        <xsl:apply-templates select="ad:Condition"/>
+        <xsl:text>)</xsl:text>
+      </xsl:if>
+      <xsl:text>]</xsl:text>
+   </xsl:template>    
    
    <!-- scalarExpressionTypes -->
    <!--

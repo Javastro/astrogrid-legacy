@@ -18,6 +18,13 @@ import org.xmldb.api.base.XMLDBException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * Class: XMLDBRegistry
+ * Description: Class that does all the lower level to the database
+ * such as the actual Storing/Inserting/Querying of the database.
+ * @author kevinbenson
+ *
+ */
 public class XMLDBRegistry {
     
     private XMLDBService xdb = null;
@@ -44,19 +51,29 @@ public class XMLDBRegistry {
      */
      private static final Log log = LogFactory.getLog(XMLDBRegistry.class);
     
-    
+    /**
+     * Constructor
+     * Description: creates an xmldb service which is a connectiong to the
+     * database.  The connection might be established each time, but the
+     * actual creating of the service should be static and is not created
+     * each time.
+     * 
+     * @see org.astrogrid.xmldb.client.XMLDBService
+     *
+     */
     public XMLDBRegistry() {
         xdb = XMLDBFactory.createXMLDBService();
     }
     
     /**
-     * Method: queryExist
+     * Method: query
      * Description: Queries the xml database, on the collection of the registry. This method
      * will read from properties a xql expression and fill out the expression then perform the query. This
      * is a convenience in case of customization for other xml databases.
      * @param xqlString an XQuery to query the database
      * @param collectionName the location in the database to query (sort of like a table)
      * @return xml DOM object returned from the database, which are Resource elements
+     * @throws XMLDBException error connecting to the db 
      */
     public ResourceSet query(String xqlString, String collectionName) throws XMLDBException {
        log.debug("start query");
@@ -80,6 +97,16 @@ public class XMLDBRegistry {
        }//finally
     }
     
+    /**
+     * Method: getResource
+     * Description: get a single XML Resource by its identifier.  Does not do a query to the db
+     * since the identifier is like a primary key name stored in the db. It can look it up via the
+     * name.
+     * @param ident unique string in the db also happens to be the identifier element.
+     * @param collectionName the location in the database to query (sort of like a table)
+     * @return XMLResource object from the database.
+     * @throws XMLDBException error connecting to the db
+     */
     public XMLResource getResource(String ident, String collectionName) throws XMLDBException {
         XMLResource xmr = null;    
         Collection coll = null;
@@ -96,6 +123,13 @@ public class XMLDBRegistry {
         return xmr;
     }
     
+    /**
+     * Method: ListRootCollections
+     * Description: Returns a string array of all the collections based off the
+     * root.  Does not do any recursion down the tree just the collections under /db
+     * @return  Array of collection names.
+     * @throws XMLDBException error connecting to the db
+     */
     public String[] listRootCollections() throws XMLDBException {        
         Collection coll = null;
         try {
@@ -110,6 +144,23 @@ public class XMLDBRegistry {
         }
     }
         
+    /**
+     * Method: storeXMLResource
+     * Description: stores an xml Resource into the database.  It will 
+     * insert or update automatically.  This method lets you pass in a Node DOM
+     * which is checked to make sure is an Element or Document DOM to be stored
+     * into the db.
+     * NOTE: Had problems in the past submitting just a Node element to the DB though it is
+     * part of the xmldb api such as losing a namespace.  
+     * So currently convert it to a string and store that into the db which
+     * gets placed correctly into the DB.
+     * @param ident unique string that is used as the name for storage in the db.
+     * @param collectionName like a table name is the location of where it will be stored in the db.
+     * @param node DOM Node to be stored.
+     * @return if it is successfull in storing the XML.
+     * @throws XMLDBException error connecting to the db
+     * @throws InvalidStorageNodeException if it is not a valid DOM type (Document or Elment).
+     */
     public boolean storeXMLResource(String ident, String collectionName, Node node) throws XMLDBException, InvalidStorageNodeException {
         if(Node.ELEMENT_NODE == node.getNodeType()) {
             return storeXMLResource(ident, collectionName, DomHelper.ElementToString((Element)node));
@@ -119,6 +170,18 @@ public class XMLDBRegistry {
         throw new InvalidStorageNodeException("Unknown or Invalid Node trying to be stored in the registry db.  Only Document and Element nodes are allowed");
     }
 
+    /**
+     * Method: storeXMLResource
+     * Description: stores an xml Resource into the database.  It will 
+     * insert or update automatically.   
+     * So currently convert it to a string and store that into the db which
+     * gets placed correctly into the DB.
+     * @param ident unique string that is used as the name for storage in the db.
+     * @param collectionName like a table name is the location of where it will be stored in the db.
+     * @param node DOM Node to be stored.
+     * @return if it is successfull in storing the XML.
+     * @throws XMLDBException error connecting to the db
+     */    
     private boolean storeXMLResource(String ident,String collectionName, String node) throws XMLDBException {
         Collection coll = null;
         try {
@@ -130,6 +193,15 @@ public class XMLDBRegistry {
         return true;
     }
     
+    /**
+     * Method: getCollection
+     * Description: get a Collection object from the DB.  Which houses information
+     * about that Collection (think of Collection as similiar to a table).
+     * @param collectionName the location in the database to query (sort of like a table)
+     * @param admin login as an admin user.
+     * @return collection object.
+     * @throws XMLDBException error connecting to the db
+     */
     public Collection getCollection(String collectionName, boolean admin) throws XMLDBException {
         if(admin)
             return xdb.openAdminCollection(collectionName);
@@ -137,6 +209,23 @@ public class XMLDBRegistry {
             return xdb.openCollection(collectionName);
     }
     
+    /**
+     * Method: storeXMLResource
+     * Description: stores an xml Resource into the database.  It will 
+     * insert or update automatically.  This method lets you pass in a Node DOM
+     * which is checked to make sure is an Element or Document DOM to be stored
+     * into the db.
+     * NOTE: Had problems in the past submitting just a Node element to the DB though it is
+     * part of the xmldb api such as losing a namespace.  
+     * So currently convert it to a string and store that into the db which
+     * gets placed correctly into the DB.
+     * @param ident unique string that is used as the name for storage in the db.
+     * @param coll Collection object.
+     * @param node DOM Node to be stored.
+     * @return if it is successfull in storing the XML.
+     * @throws XMLDBException error connecting to the db
+     * @throws InvalidStorageNodeException if it is not a valid DOM type (Document or Elment).
+     */ 
     public boolean storeXMLResource(Collection coll, String ident, Node node) throws XMLDBException, InvalidStorageNodeException {
     	
     	 if(Node.ELEMENT_NODE == node.getNodeType()) {  
@@ -149,12 +238,25 @@ public class XMLDBRegistry {
         throw new InvalidStorageNodeException("Unknown or Invalid Node trying to be stored in the registry db.  Only Document and Element nodes are allowed");
     }
     
+    /**
+     * Method: closeCollection
+     * Description: closes a collection object.
+     * @param coll Collection object
+     * @return true if successfull otherwise an XMLDBException should have been thrown
+     * @throws XMLDBException error connecting to the db
+     */
     public boolean closeCollection(Collection coll) throws XMLDBException {
         xdb.closeCollection(coll);
         return true;
     }
         
-    
+    /**
+     * Method: removeResource
+     * Description: Removes a Resource from the database.
+     * @param ident unique string which is the name of the Resource in the database.
+     * @param collectionName colleciton/table in the database the Resource lives in.
+     * @throws XMLDBException error connecting to the db
+     */
     public void removeResource(String ident, String collectionName) throws XMLDBException {
         Collection coll = null;
         try {    

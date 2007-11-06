@@ -30,7 +30,10 @@ import javax.xml.stream.*;
  * Class: RegistryQueryService
  * Description: The main class for all queries to the Registry to go to via Web Service or via internal
  * calls such as jsp pages or other classes.  The main focus is Web Service Interface methods are here
- * such as Search, KeywordSearch, and GetResourceByIdentifier.
+ * such as Search, KeywordSearch, and GetResourceByIdentifier. Most are actually implemented
+ * in the parent abstract class DefaultQueryService.  Most of the work here is for
+ * processing the response and sending the response on the OutputStream.  Also a couple
+ * of rarely used validate methods for the Soap messages
  *
  * @author Kevin Benson
  */
@@ -136,13 +139,21 @@ public class RegistryQueryService extends DefaultQueryService implements ISearch
     		return processSingleResult(sfe.getFaultDocument(),null);    		
     	}
     }
-    
-    private XMLStreamReader streamResults(Node resultDBNode,String responseWrapper) throws IOException, XMLDBException {
+   
+    /**
+     * Method: streamResults
+     * Description: Streams results to the client for a Node.  Which is always either a single
+     * Resource or a Soap Fault error.  Also takes an xml wrapper and used to wrap around the Node. Also
+     * tends to analyze the single Resource to see if anything special needs to happen such as
+     * adding schemalocations, dates, and such.
+     * @param resultDBNode DOM Node containing normally a Fault Element or a Single Resource.
+     * @param responseWrapper XML string of any wrapper xml to be placed around the Single Resource.
+     * @return A Stream Reader which is streamed out to the client via XFire.
+     * @throws IOException io problem with the stream.
+     */    
+    private XMLStreamReader streamResults(Node resultDBNode,String responseWrapper) throws IOException {
         
-        //Document doc = null;
-        //Okay nothing from the query
             //check if it is a Fault, if so just return the resultDoc;
-    	
             if(resultDBNode.getNodeName().indexOf("Fault") != -1 || 
                (resultDBNode.hasChildNodes() && resultDBNode.getFirstChild().getNodeName().indexOf("Fault") != -1)  ) {
                 //All Faults should have been created by server.SOAPFaultException meaning a Document object.
@@ -157,8 +168,12 @@ public class RegistryQueryService extends DefaultQueryService implements ISearch
             }else if(resultDBNode instanceof Element) {
                 responseDoc = ((Element)resultDBNode).getOwnerDocument();
             }
-            
+            //Get the Resource Nodes but only going to process item 0 which is all that 
+            //should be in this List.
             childNodes = responseDoc.getElementsByTagNameNS("*","Resource");
+            
+            //Analyze the Node and add wrapper elements if needed and
+            //schemaLocations.
             String schemaLocations = null;
             schemaLocations =  "http://www.ivoa.net/xml/VOResource/v0.10 " + 
             schemaLocationBase + "vo-resource-types/VOResource/v0.10/VOResource.xsd " +
@@ -169,9 +184,16 @@ public class RegistryQueryService extends DefaultQueryService implements ISearch
             	resultBuffer.append(("<ri:" + responseWrapper + " xmlns:ri=\"" + QUERY_WSDL_NS + "\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"));
             }
 
+            //Contract 0.1 requires VOResources to be wrapped on even single Nodes
+            //unlike 1.0 which is just the Resource.
             resultBuffer.append(("<ri:VOResources xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:ri=\"http://www.ivoa.net/xml/RegistryInterface/v0.1\" xsi:schemaLocation=\"" + schemaLocations + "\">"));
             StringBuffer resContent = new StringBuffer(DomHelper.ElementToString((Element)childNodes.item(0)));
+            
             String temp = resContent.substring(0,resContent.indexOf(">"));
+            
+            //Big mess up on 0.10 Resources with some of the created and updated
+            //attributes having Time data which is not valid to schema so cut it out
+            //for the return.
     		int tempIndex = resContent.indexOf("created=\"");
     		int tempIndex2;
     		if(tempIndex != -1 && tempIndex < temp.length()) {
@@ -219,7 +241,7 @@ public class RegistryQueryService extends DefaultQueryService implements ISearch
 	                resContent.insert(resContent.indexOf(">")," xsi:schemaLocation=\"" + schemaLocations + "\"");
           }//if type
             }//if schemalocations
-            //write it otu to the outputstream.
+            //write it out to the outputstream.
             resultBuffer.append(resContent.toString());	                
             resultBuffer.append(("</ri:VOResources>"));
             if(responseWrapper != null && responseWrapper.trim().length() > 0) {
@@ -228,7 +250,22 @@ public class RegistryQueryService extends DefaultQueryService implements ISearch
             return STAXUtils.createXMLStreamReader(new StringReader(resultBuffer.toString()));
     }
     
-    
+   
+    /**
+     * Method: streamResults
+     * Description: process an actual response from a query to the database. 
+     * Goes through a set/collection of xmlresources processing them and sending the
+     * result to the outputstream. 
+     * The Streaming of the set is done by the ResultStreamer and RegistryXMLDelegate classes.
+     * @param resultSet - a collection of XMLResources from the query of the db.
+     * @param responseWrapper - a string name to be used as the wrapped method name
+     * hence first element of soap:body.
+     * @param start - number of the starting point of the query.
+     * @param max - number of maximum allowed resources to be returned.
+     * @param identOnly - should the identifiers only be returned or the full Resource.
+     * @param singleResource - boolean to determine if this is a single Resource
+     * which means it does not require the common wrapper VOResources.
+     */     
    private XMLStreamReader streamResults(ResourceSet resultSet,String responseWrapper, String start, String max, String identOnly, boolean singleResource) throws IOException, XMLDBException {
         
         //Document doc = null;

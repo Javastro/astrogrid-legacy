@@ -1,8 +1,8 @@
 <%@ page import="org.astrogrid.registry.server.admin.*,
+                 org.astrogrid.registry.server.harvest.*,
                  org.astrogrid.store.Ivorn,
-                 org.astrogrid.registry.server.RegistryServerHelper,
-                 org.astrogrid.registry.common.RegistryDOMHelper,
                  org.astrogrid.registry.common.RegistryValidator,
+                 org.astrogrid.registry.server.http.servlets.helper.JSPHelper,
                  junit.framework.AssertionFailedError,
                  org.w3c.dom.Document,
                  org.astrogrid.io.Piper,
@@ -21,9 +21,7 @@
   boolean update = false;
   String errorTemp = "";
   boolean isMultipart = FileUpload.isMultipartContent(request);
-//System.out.println("the ismultipart = " + isMultipart + " doc url = " + request.getParameter("docurl") + " and addFromURL = " + request.getParameter("addFromURL"));
-//System.out.println("validate = " + request.getParameter("validate"));
- if(isMultipart) {
+  if(isMultipart) {
    DiskFileUpload upload = new DiskFileUpload();  
    List /* FileItem */ items = upload.parseRequest(request);
    Iterator iter = items.iterator();
@@ -89,13 +87,13 @@
 <head>
 <title>Edit Registry Entry</title>
 <style type="text/css" media="all">
-          @import url("../style/astrogrid.css");
+   <%@ include file="/style/astrogrid.css" %>          
 </style>
 </head>
 
 <body>
-<%@ include file="../header.xml" %>
-<%@ include file="navigation.xml" %>
+<%@ include file="/style/header.xml" %>
+<%@ include file="/style/navigation.xml" %>
 
 <div id='bodyColumn'>
 

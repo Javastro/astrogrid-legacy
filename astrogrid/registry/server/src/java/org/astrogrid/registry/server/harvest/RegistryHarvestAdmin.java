@@ -29,7 +29,18 @@ import junit.framework.AssertionFailedError;
 import org.xmldb.api.base.Collection;
 
 
-
+/**
+ * Class: RegistryHarvestAdmin
+ * Description: Similiar to RegistryAdminService in that it stores XML Resources
+ * into the database along with methods to store status information.  The main difference
+ * is the XML Resources to be stored are normally coming from an OAI harvest request/response.
+ * So the update method must transform the OAI document verify it is valid and then store the information
+ * into the database.
+ * 
+ * @author Kevin Benson
+ * @TODO - Move the status information into some other class.
+ *
+ */
 public class RegistryHarvestAdmin extends RegistryAdminService {
     
     /**
@@ -38,15 +49,31 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
    private static final Log log = 
                                LogFactory.getLog(RegistryHarvestAdmin.class);
    
-   
-   
+   /**
+    * Default constructor which currently does not set or do anything.
+    */
    public RegistryHarvestAdmin() {
        super(null,null,null);
    }
-   
+
+   /**
+    * Method: addStatNewDate
+    * Description: Adds Date information to the status document for a 
+    * XML Resource.  The name of the status document is based around the 
+    * identifier (normally identifier for a Registry type) since this method is
+    * called from Harvesting.  The Date stored is used in the next harvest cycle to
+    * call a Registry based on a 'from' date to get recently changed Resources.
+    * 
+    * @param identifier - unique string for the XML Resource, since this is called from the 
+    * harvest mechanism it is typically the identifier for a Registry type.
+    * @param versionNumber - XML Resource version number (0.10 or 1.0).  Used for determining the
+    * collection/table to store the document in the database e.g. statv{versionNumber}
+    */
    public void addStatNewDate(String identifier, String versionNumber) throws RegistryException {
+   	   log.debug("begin addStatNewDate identifier = " + identifier + " version = " + versionNumber);
        Document statDoc = getStatus(identifier, versionNumber);
        if(statDoc != null) {
+       	   log.debug("statDoc not null add Date elements");
            Date statsTimeMillis = new Date();
            DateFormat shortDT = DateFormat.getDateTimeInstance();
            NodeList nl = statDoc.getElementsByTagNameNS("*","StatsDateMillis");
@@ -65,10 +92,13 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
                elem.appendChild(statDoc.createTextNode(shortDT.format(statsTimeMillis)));
                statDoc.getDocumentElement().appendChild(elem);
            }
+           log.debug("storeStat");
            storeStat(identifier, versionNumber, statDoc);
        }
+       log.debug("end addStatNewDate");
    }
-   
+
+   /*
    public void addResumptionToken(String identifier, String versionNumber, String resumptionToken) throws RegistryException {
        Document statDoc = getStatus(identifier, versionNumber);
        if(statDoc != null) {
@@ -84,104 +114,164 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
            }//else
        }//if
    }
+   */
    
-   
-   public void clearOAILastUpdateInfo(String identifier, String versionNumber) throws RegistryException {
-       Document statDoc = getStatus(identifier, versionNumber);
-       if(statDoc != null) {
-       
-           NodeList nl = statDoc.getElementsByTagNameNS("*","LastUpdateInfo");
-           if(nl.getLength() > 0) {
-               statDoc.removeChild(nl.item(0));
-           }
-           storeStat(identifier, versionNumber, statDoc);
-       }else {
-           System.out.println("it was null clearoai");
-       }
-   }
-   
+    
+   /**
+    * Method: addStatInfo
+    * Description: Adds an Info element to the status document for a 
+    * XML Resource.  The Info Element contains the current date attribute and a 
+    * text description of any usefull Information.  Typically a comma seperated list of
+    * the identifiers harvested from a particular registry.
+    * 
+    * @param identifier - unique string for the XML Resource, since this is called from the 
+    * harvest mechanism it is typically the identifier for a Registry type.
+    * @param versionNumber - XML Resource version number (0.10 or 1.0).  Used for determining the
+    * collection/table to store the document in the database e.g. statv{versionNumber}
+    */   
    public void addStatInfo(String identifier, String versionNumber, String info) throws RegistryException {
+   	   log.debug("begin addStatInfo identifier = " + identifier + " version = " + versionNumber + " info = " + info);
        Document statDoc = getStatus(identifier, versionNumber);
        if(statDoc != null) {
-           
-           NodeList nl = statDoc.getElementsByTagNameNS("*","LastUpdateInfo");
+       	   log.debug("found statDoc add the info elements");
+           NodeList nl = statDoc.getElementsByTagNameNS("*","HarvestInfo");
+           java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+           java.util.Calendar rightNow = java.util.Calendar.getInstance();
+           Element elem = statDoc.createElement("Info");
+           elem.setAttribute("date",sdf.format(rightNow.getTime()));
+           elem.appendChild(statDoc.createTextNode(info));           
            if(nl.getLength() > 0) {
-               Element elem = statDoc.createElement("Info");
-               elem.appendChild(statDoc.createTextNode(info));
                nl.item(0).appendChild(elem);
            }else {
-               Element lui = statDoc.createElement("LastUpdateInfo");
-               Element elem = statDoc.createElement("Info");
-               java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-               Element elemDT = statDoc.createElement("AttemptDate");
-               java.util.Calendar rightNow = java.util.Calendar.getInstance();
-               elemDT.appendChild(statDoc.createTextNode(sdf.format(rightNow.getTime())));           
-               elem.appendChild(statDoc.createTextNode(info));
-               lui.appendChild(elemDT);
+               Element lui = statDoc.createElement("HarvestInfo");
                lui.appendChild(elem);
                statDoc.getDocumentElement().appendChild(lui);
            }
            storeStat(identifier, versionNumber, statDoc);
        }else {
-           System.out.println("it was null info = " + info);
+           log.error("No StatusDocument found to add info of " + info);
        }
+       log.debug("end addStatInfo");
    }
    
+   /**
+    * Method: addStatError
+    * Description: Adds an Error element to the status document for a 
+    * XML Resource.  The Error Element contains the current date attribute and a 
+    * text description of any Error occurred during harvesting.
+    * 
+    * @param identifier - unique string for the XML Resource, since this is called from the 
+    * harvest mechanism it is typically the identifier for a Registry type.
+    * @param versionNumber - XML Resource version number (0.10 or 1.0).  Used for determining the
+    * collection/table to store the document in the database e.g. statv{versionNumber}
+    */    
    public void addStatError(String identifier, String versionNumber, String error) throws RegistryException {
+   	   log.debug("begin addStatError identifier = " + identifier + " versionNumber = " + versionNumber + " error = " + error);
        Document statDoc = getStatus(identifier, versionNumber);
        if(statDoc != null) {
-           
-           NodeList nl = statDoc.getElementsByTagNameNS("*","LastUpdateInfo");
+       	   log.debug("statDoc not null add the Error elements");
+           NodeList nl = statDoc.getElementsByTagNameNS("*","HarvestInfo");
+           java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+           java.util.Calendar rightNow = java.util.Calendar.getInstance();
+           Element elem = statDoc.createElement("Error");
+           elem.setAttribute("date",sdf.format(rightNow.getTime()));
+           elem.appendChild(statDoc.createTextNode(error));           
            if(nl.getLength() > 0) {
-               Element elem = statDoc.createElement("Error");
-               elem.appendChild(statDoc.createTextNode(error));
                nl.item(0).appendChild(elem);
            }else {
-               Element lui = statDoc.createElement("LastUpdateInfo");
-               java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-               Element elemDT = statDoc.createElement("AttemptDate");
-               java.util.Calendar rightNow = java.util.Calendar.getInstance();
-               elemDT.appendChild(statDoc.createTextNode(sdf.format(rightNow.getTime())));           
-               Element elem = statDoc.createElement("Error");
-               elem.appendChild(statDoc.createTextNode(error));
-               lui.appendChild(elemDT);
+               Element lui = statDoc.createElement("HarvestInfo");
                lui.appendChild(elem);
                statDoc.getDocumentElement().appendChild(lui);
            }
            storeStat(identifier, versionNumber, statDoc);
        }else {
-           System.out.println("it was null error = " + error);
+           log.error("No Status Document Found cannot set the error = " + error);
        }
+       log.debug("end addStatError");
    }
-      
+   
+   /**
+    * Method: getStatus
+    * Description: Get a Status Document for a particular Resource.
+    * 
+    * @param identifier - unique string for the XML Resource, since this is called from the 
+    * harvest mechanism it is typically the identifier for a Registry type.
+    * @param versionNumber - XML Resource version number (0.10 or 1.0).  Used for determining the
+    * collection/table to store the document in the database e.g. statv{versionNumber}
+    * @return Document DOM object of the status document.  
+    */
    public Document getStatus(String identifier, String versionNumber) throws RegistryException {
+   	   log.debug("getStatus identifier = " + identifier + " versionNumber = " + versionNumber);
        String tempIdent = identifier;
        Document statDoc = null;
        if(identifier.startsWith("ivo"))
         tempIdent = identifier.substring(6);
        
-       try {
-          
-           XMLResource xmlr = xdbRegistry.getResource(tempIdent.replaceAll("[^\\w*]","_") + ".xml","statv" + versionNumber.replace('.','_'));           
+       try {        
+           XMLResource xmlr = xdbRegistry.getResource(tempIdent.replaceAll("[^\\w*]","_"),"statv" + versionNumber.replace('.','_'));           
            if(xmlr != null) {
                try {
-                System.out.println("it was not null in getSTatus and content = " + xmlr.getContent().toString());
+                log.debug("it was not null in getStatus and content = " + xmlr.getContent().toString());
                 statDoc = DomHelper.newDocument(xmlr.getContent().toString());
                }catch(Exception e) {
+               	   log.error("exception trying to create statDoc from getStatus");
                    log.error(e);
                }
            }
        } catch(XMLDBException xe) {
                throw new RegistryException(xe);
-       }           
+       }    
+       if(statDoc == null) {
+       	 log.debug("No statDoc found so creating empty statDoc");
+         statDoc = createNewStat(identifier, versionNumber);
+       }
+       log.debug("end getStatus");
        return statDoc;
    }
    
+   /**
+    * Method: createNewStat
+    * Description: Creates a blank status document for a Resource in
+    * the stat location.  A blank status document is just an empty HarvestInfo element.
+    * 
+    * @param identifier - unique string for the XML Resource, since this is called from the 
+    * harvest mechanism it is typically the identifier for a Registry type.
+    * @param versionNumber - XML Resource version number (0.10 or 1.0).  Used for determining the
+    * collection/table to store the document in the database e.g. statv{versionNumber}
+    * @return Document DOM object of the {empty} status document.
+    */
+   private Document createNewStat(String identifier, String versionNumber)  throws RegistryException {
+   	log.debug("begin createNewStat identifier = " + identifier + " version = " + versionNumber);
+   	Document doc = null;
+   	try {
+   		doc = DomHelper.newDocument("<HarvestInfo></HarvestInfo>");
+   		storeStat(identifier,versionNumber,doc.getDocumentElement());
+   	}catch(Exception e) {
+   		log.error(e);
+   	}
+   	log.debug("end createNewStat");
+   	return doc;
+   }
+
+   /**
+    * Method: storeStat
+    * Description: stores an XML Status Document (DOM Node) into the database.
+    * 
+    * @param identifier - unique string for the XML Resource, since this is called from the 
+    * harvest mechanism it is typically the identifier for a Registry type.
+    * @param versionNumber - XML Resource version number (0.10 or 1.0).  Used for determining the
+    * collection/table to store the document in the database e.g. statv{versionNumber}
+    * @param statDoc - A DOM Document/Element to be stored in the database in the status location
+    * based on the identifier and versionNumber parameters.   
+    */
    private void storeStat(String identifier, String versionNumber, Node statDoc) throws RegistryException {
+   	   log.debug("begin storeStat identifier = " + identifier + " versionNumber = " + versionNumber);
        String tempIdent = identifier;
        if(identifier.startsWith("ivo"))
         tempIdent = identifier.substring(6);
-       try {           
+       
+       try {
+       	log.debug("store into the database");
        xdbRegistry.storeXMLResource(tempIdent.replaceAll("[^\\w*]","_") + ".xml",
                "statv" + versionNumber.replace('.','_'), statDoc);
        }catch(InvalidStorageNodeException in) {
@@ -190,14 +280,17 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
        }catch(XMLDBException xe) {
            throw new RegistryException(xe);
        }
+       log.debug("end storeStat");
    }
     
     /**
-     * Method: updateNoCheck
+     * Method: harvestingUpdate
      * Description: Also an update method that updates into this Registry's db. But it does no
      * special checking.  This is used internally by harvesting other registries to
      * go ahead and place the Resources into our db.  It does check the Registry type entries
-     * coming in to verify the authority id's are not conflicting with other Registries.
+     * coming in to verify the authority id's are not conflicting with other Registries. And it
+     * also validates the XML to verify they validate agains the schema before being stored into the 
+     * database. 
      * 
      * @param update A DOM of XML of  one or more Resources.
      * @param verisonNumber the version of the registry to be updated, this discovers the colleciton/table name
@@ -238,6 +331,8 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
 
        //String versionNumber = attrVersion.replace('.','_');      
        
+       //Currently all docs now have a xsl stylesheet when dealing
+       //with OAI.  This might change in the near future.
        boolean hasStyleSheet = true;//conf.getBoolean("reg.custom.harveststylesheet." + versionNumber,false);
        Document xsDoc = null;
 
@@ -247,6 +342,10 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
           try {
         	  NodeList convertCheck = update.getDocumentElement().getElementsByTagNameNS("*","Resource");
         	  log.info("checking versions and convertCheck");
+        	  //Will factor away in the future.  Allows for a Registry to publish
+        	  //0.10 data and have it transformed to 1.0 and stored into the 1.0 table.
+        	  //To do this a Registry Type had to be stored into the 1.0 table/collection
+        	  //that had a harvesting url that produced 0.10 data.
         	  if(versionNumber.equals("1.0") && convertCheck.getLength() > 0 &&
         	     convertCheck.item(0).getNamespaceURI().indexOf("0.10") != -1) {
         		  log.info("yes it needs converting to 1.0");
@@ -255,6 +354,9 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
        			  log.info("XML result After converting 0.10-1.0 = " + DomHelper.DocumentToString(xsDoc));
         	  }
         	  else {
+        	  	//Transform the OAI document to a typical VOResources document.
+        	  	//OAI schema pretty much allows 'any' elements.  By
+        	  	//transforming to VOREsources we can validate the XML.
         		  xsDoc = xs.transformUpdate((Node)update.getDocumentElement(),versionNumber,true);
         	  }
           }catch(RegistryException re) {
@@ -267,10 +369,15 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
        }
        log.debug("After = " + DomHelper.DocumentToString(update));
        
+       //collection/table name to be used for storing into the db.
        String collectionName = "astrogridv" + versionNumber.replace('.','_');
        log.debug("Collection Name = " + collectionName);
+       
+
+       //validate Resources individually this becomes true
+       //if the whole VOResources document has errors and is invalid.
        boolean validateSingleResources = false;
-       /* && !collectionName.equals("astrogridv0_10") */
+       
        //adding back the && check for 0.10 collection there is just
        //no point in validating 0.10 during harvests to many mistakes and
        //invalid to schema.
@@ -288,7 +395,12 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
            }//catch
        }
 
+       //Grab all the Resource Elements.
        nl = xsDoc.getElementsByTagNameNS("*","Resource");
+       
+       //If we are validating Single Resources because some are 
+       //invalid then loop through the Single Resoruces and remove 
+       //the invalid entries.
        if(validateSingleResources) {
        	   log.info("Number of Resources to try validating individually (invalid will be removed) = " + nl.getLength());
     	   int loopi = 0;
@@ -309,7 +421,12 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
        }
        
        log.info("Number of Resources to be updated = " + nl.getLength());
-       AuthorityList someTestAuth = new AuthorityList(authorityID,versionNumber);      
+       
+       
+       AuthorityList authCheck = new AuthorityList(authorityID,versionNumber);
+       //ManaghAuths contains a hashmap of all the authorityid's and the authorityid
+       //that owns/manages.  If it is not populated yet then have it
+       //populated via the AuthorityListManager class.
        if(manageAuths.isEmpty()) {
            try {
                alm.populateManagedMaps(collectionName, versionNumber);
@@ -317,7 +434,11 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
                xmldbe.printStackTrace();
                log.error(xmldbe);
            }
-       }else if(!manageAuths.isEmpty() && !manageAuths.containsKey(someTestAuth)) {
+       }else if(!manageAuths.isEmpty() && !manageAuths.containsKey(authCheck)) {
+       	   //hmmm somehow the manageAuths is populated with something but does
+       	   //not have our main authorityid of this registry in it which it normally should have.
+       	   //so re-populate the map just in case (possibly registry setup to harvest but has not self-registered
+       	   //which is ok to do).
            try {
                alm.populateManagedMaps(collectionName, versionNumber);
            }catch(XMLDBException xmldbe) {
@@ -328,28 +449,35 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
        
        //hmmm user is doing harvesting before he setup the registry, okay let it go.
        if(manageAuths.isEmpty()) {
-           log.debug("seems like user is doing harvesting first for versionNumber=" + versionNumber);
+           log.debug("Appears user is doing harvesting for versionNumber=" + versionNumber + " and has not self registered");
            //okay this must be the very first time into the registry where
            //registry is empty. So put a an empty entry for this version.          
        }
        String errorMessages = "";
-       
-       // This does seem a little strange as if an infinte loop,
-       // but later on an appendChild is performed which
-       // automatically reduced the length by one.
+
+       //get how many resources there are. Use a 'final' 
+       //because as we modify the nodelist placing it in the db
+       //the number will be reduced so use a final.
        final int resourceNum = nl.getLength();
        log.info("Attempting to update number of Resources = " + resourceNum);
        boolean updateResource = true;
+       //get a Collection object we use this so we can store XML Resources
+       //a little faster instead of open, store, close each individual resource.
+       //Now we can open, store all, close.
        Collection harvestColl = xdbRegistry.getCollection(collectionName,true);
        try {
+       	//loop through the resources.
        for(int i = 0;i < resourceNum;i++) {
           updateResource = true;
+          //only get the '0' element because as we append/modify
+          //the nodelist it will be removed hence like a queue.
           Element currentResource = (Element)nl.item(0);
           ident = RegistryDOMHelper.getAuthorityID( currentResource);
           resKey = RegistryDOMHelper.getResourceKey( currentResource);
           
 
-          
+          //check if we are harvesting ourselves or another registry sending back
+          //authorityid's already owned by this registry.
           if(manageAuths.containsValue(new AuthorityList(ident,versionNumber,authorityID))) {
               log.error("Either your harvesting your own Registry or another Registry is submitting authority id's owned by this registry. Ident = " + ident);
               currentResource.getParentNode().removeChild(currentResource);
@@ -360,7 +488,9 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
               if(resKey != null) tempIdent += "/" + resKey;
               log.debug("the ident in updateNoCheck = " + tempIdent);
               
-              
+              //Do some special processing if it is a Registry Type
+              //to make sure we get the authority id's it manages
+              //set in our list and verify there is no conflicts.
               if(currentResource.hasAttributes()) {                 
                   Node typeAttribute = currentResource.getAttributes().getNamedItem("xsi:type");
                   String nodeVal = null;
@@ -373,45 +503,44 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
                       //check if it is a registry type.
                       if(nodeVal != null && nodeVal.indexOf("Registry") != -1)
                       {
-                         log.debug("A RegistryType in updateNoCheck add stats");
+                         log.debug("A RegistryType in harvestingUpdate add stats");
                          //update this registry resource into our registry.
-                            /*
-                            if(xdbRegistry.getResource(tempIdent.replaceAll("[^\\w*]","_") + ".xml", "statv" + versionNumber.replace('.','_')) == null) {
-                                 xdbRegistry.storeXMLResource(tempIdent.replaceAll("[^\\w*]","_") + ".xml",
-                                                              "statv" + versionNumber.replace('.','_'), 
-                                                              adminHelper.createStats(tempIdent,false));
-                            }
-                            
-                            else {
-                                 xdbRegistry.storeXMLResource(tempIdent.replaceAll("[^\\w*]","_") + ".xml",
-                                                      "statv" + versionNumber.replace('.','_'),
-                                                      adminHelper.createStats(tempIdent));
-                            }
-                            */
                             NodeList manageList = adminHelper.getManagedAuthorities(currentResource);
-                            if(manageList.getLength() > 0)
-                                alm.clearManagedAuthoritiesForOwner(ident, versionNumber);
-                            else {
-                                log.warn("Registry type from a Harvest has no ManagedAuthorities; AuthorityID = " + ident + " versionNumber = " + versionNumber);
-                                errorMessages += "Registry type from a Harvest has no ManagedAuthorities, this is okay but rare logging as error for double checking; AuthorityID = " + ident + " versionNumber = " + versionNumber + "\n";
-                            }
+                            if(currentResource.hasAttribute("status") &&
+                               currentResource.getAttribute("status").equals("active")) {
+	                            if(manageList.getLength() > 0)
+	                                alm.clearManagedAuthoritiesForOwner(ident, versionNumber);
+	                            else {
+	                                log.warn("Registry type from a Harvest has no ManagedAuthorities; AuthorityID = " + ident + " versionNumber = " + versionNumber);
+	                                errorMessages += "Registry type from a Harvest has no ManagedAuthorities, this is okay but rare logging as error for double checking; AuthorityID = " + ident + " versionNumber = " + versionNumber + "\n";
+	                            }
                             
-                            for(int k = 0;k < manageList.getLength();k++) {
-                                String manageNodeVal = manageList.item(k).getFirstChild().getNodeValue();
-                                if(manageAuths.containsKey((tempAuthorityListKey = new AuthorityList(manageNodeVal,versionNumber)))) {
-                                    tempAuthorityListVal = (AuthorityList)manageAuths.get(tempAuthorityListKey);
-                                    log.error("Error - mismatch: Tried to update a Registry Type that has this managed Authority: " + manageNodeVal +
-                                         " with this main Identifiers Authority ID " + ident + " This mismatches with another Registry Type that ownes/manages " + 
-                                         " this same authority id, other registry type authority id: " + tempAuthorityListVal.getOwner() + "; NO UPDATE WILL HAPPEN FOR THIS Registry Type Resouce Entry");
-                                    errorMessages += "Error - mismatch: Tried to update a Registry Type that has this managed Authority: " + manageNodeVal +
-                                    " with this main Identifiers Authority ID " + ident + " This mismatches with another Registry Type that ownes/manages " + 
-                                    " this same authority id, other registry type authority id: " + tempAuthorityListVal.getOwner() + "; NO UPDATE WILL HAPPEN FOR THIS Registry Type Resouce Entry\n";
-                                    updateResource = false;                                   
-                                }//if                           
-                                if(manageNodeVal != null && manageNodeVal.trim().length() > 0) {
-                                    manageAuths.put(tempAuthorityListKey, new AuthorityList(manageNodeVal,versionNumber,ident));
-                                }//if
-                            }//for
+	                            //verify there are no conflicts on the authority id
+	                            //already being owned by some other Registry.
+	                            //only check active Registry types.
+	                            for(int k = 0;k < manageList.getLength();k++) {
+	                                String manageNodeVal = manageList.item(k).getFirstChild().getNodeValue();
+	                                if(manageAuths.containsKey((tempAuthorityListKey = new AuthorityList(manageNodeVal,versionNumber)))) {
+	                                    tempAuthorityListVal = (AuthorityList)manageAuths.get(tempAuthorityListKey);
+	                                    log.error("Error - mismatch: Tried to update a Registry Type that has this managed Authority: " + manageNodeVal +
+	                                         " with this main Identifiers Authority ID " + ident + " This mismatches with another Registry Type that ownes/manages " + 
+	                                         " this same authority id, other registry type authority id: " + tempAuthorityListVal.getOwner() + "; NO UPDATE WILL HAPPEN FOR THIS Registry Type Resouce Entry");
+	                                    errorMessages += "Error - mismatch: Tried to update a Registry Type that has this managed Authority: " + manageNodeVal +
+	                                    " with this main Identifiers Authority ID " + ident + " This mismatches with another Registry Type that ownes/manages " + 
+	                                    " this same authority id, other registry type authority id: " + tempAuthorityListVal.getOwner() + "; NO UPDATE WILL HAPPEN FOR THIS Registry Type Resouce Entry\n";
+	                                    updateResource = false;                                   
+	                                }//if                           
+	                                if(manageNodeVal != null && manageNodeVal.trim().length() > 0) {
+	                                    manageAuths.put(tempAuthorityListKey, new AuthorityList(manageNodeVal,versionNumber,ident));
+	                                }//if
+	                            }//for
+                            }else {
+                            	//not an active resource lets clear it of
+                            	//any managed authorities if there are any.
+                            	if(manageList.getLength() > 0) {
+	                                alm.clearManagedAuthoritiesForOwner(ident, versionNumber);
+                            	}//if
+                            }
                             if(errorMessages.trim().length() > 0) {
                             	throw new IOException(errorMessages);
                             	/*
@@ -424,23 +553,29 @@ public class RegistryHarvestAdmin extends RegistryAdminService {
                       }//if
                   }//if
                       if(updateResource) {
+                      		//store the Resource into the db.
                           root = xsDoc.createElementNS("urn:astrogrid:schema:RegistryStoreResource:v1","agr:AstrogridResource");
                           root.appendChild(currentResource);
                           xdbRegistry.storeXMLResource(harvestColl, tempIdent.replaceAll("[^\\w*]","_") + ".xml", root); 
                                                          //collectionName, root /*currentResource*/);
                           //xdbRegistry.storeXMLResource(tempIdent.replaceAll("[^\\w*]","_") + ".xml", 
                                                        //collectionName, root /*currentResource*/);
+                          returnString += tempIdent + ",\r\n";
                       }else {
+                      	//could not update the resource because of some other error.
+                      	//So remove the resource so we can continue through the loop.
                         currentResource.getParentNode().removeChild(currentResource);
                       }
-                      returnString += tempIdent + ",\r\n";
+                      
           }//else
        }//for
        }finally {
+       	//close the collection were done.
            xdbRegistry.closeCollection(harvestColl);
            //System.out.println("harvesting update took this long with remove= " + (System.currentTimeMillis() - begin));
        }
        log.debug("end updateNoCheck");
+       //return string should have comma seperated list of identifiers updated.       
        return returnString;
    }
 }

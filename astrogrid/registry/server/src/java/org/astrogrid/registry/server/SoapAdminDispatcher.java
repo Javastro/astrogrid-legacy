@@ -14,11 +14,12 @@ import org.codehaus.xfire.util.STAXUtils;
 import org.codehaus.xfire.MessageContext;
 
 /**
- * Class: SoapDispatcher
- * Description: The dispatcher handles all soap requests and responses.  Called via the
+ * Class: SoapAdminDispatcher
+ * Description: The dispatcher handles all soap requests and responses for Admin Service.  Called via the
  * SoapServlet. SoapRequests (Bodies) are placed into a DOM and by analyzing the uri 
- * determine if for query or admin service.  Responses are Stream based (NOT DOM) into an 
- * XMLStreamReader with the help of PipedStreams.
+ * determine the admin service.  Should note that the Admin Service on updates/inserts still
+ * deals in the DOM approach only Query Service uses streaming.  Admin uses DOM and then streams out
+ * the DOM in the end.
  * @author kevinbenson
  *
  */
@@ -63,8 +64,8 @@ public class SoapAdminDispatcher {
 	    	 //okay get the ISearch query interface.
 	    	 admin = AdminFactory.createAdminService((String)interfaceMappings.get(inputURI));
 	  	 }else {
-	  		 //very old clients just might not match which must be 0.1
-	  		 //query interface.
+	  		//very old clients just might not match which must be 0.1
+	  		//query interface.
 	  		admin = AdminFactory.createAdminService("0.1");
 	  	 }	     
 	     
@@ -74,4 +75,5 @@ public class SoapAdminDispatcher {
 	 }
 	 return null;
   }  
+  
 }
