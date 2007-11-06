@@ -111,10 +111,15 @@ public class SchemaMap {
       	ALL.put("http://www.ivoa.net/xml/VOApplication/v1.0rc1",SchemaMap.class.getResource("/schema/vo-resource-types/VOApplication/v1.0rc1/VOApplication.xsd"));
         // likewise, omitted VOResourceRelType-*        
         ALL.put("http://www.ivoa.net/xml/VOStandard/v0.1",SchemaMap.class.getResource("/schema/vo-resource-types/VOStandard/v0.1/VOStandard.xsd"));
-        ALL.put("http://www.ivoa.net/xml/VOStandard/v0.2beta1",SchemaMap.class.getResource("/schema/vo-resource-types/VOStandard/v0.2beta1/VOStandard.xsd"));        
+        ALL.put("http://www.ivoa.net/xml/VOStandard/v0.2beta1",SchemaMap.class.getResource("/schema/vo-resource-types/VOStandard/v0.2beta1/VOStandard.xsd"));
+
+        ALL.put("urn:astrogrid:schema:RegistryStoreResource:v1",SchemaMap.class.getResource("/schema/registry/RegistryUpdate/v1.0/RegistryStoreResource.xsd"));
+
+        
         
         //This is an aid to instantiating resource documents with oXygen et al.; it provides a global element for each resource type.
-        ALL.put("urn:astrogrid:schema:vo-resource-types:AllResourceTypes:v0.2",SchemaMap.class.getResource("/schema/vo-resource-types/AllResourceTypes/v0.2/AllResourceTypes.xsd"));        
+        ALL.put("urn:astrogrid:schema:vo-resource-types:AllResourceTypes:v0.2",SchemaMap.class.getResource("/schema/vo-resource-types/AllResourceTypes/v0.2/AllResourceTypes.xsd"));
+        
 
     }
     
@@ -124,6 +129,9 @@ public class SchemaMap {
 
 /* 
 $Log: SchemaMap.java,v $
+Revision 1.10  2007/11/06 14:35:02  KevinBenson
+Added the AstrogridResource schema to the contracts so it could be validated against via some new registration xsl/jsp pages
+
 Revision 1.9  2007/06/08 12:49:58  clq2
 *** empty log message ***
 
