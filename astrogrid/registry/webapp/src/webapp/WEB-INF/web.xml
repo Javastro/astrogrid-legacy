@@ -443,6 +443,16 @@
       <role-name>manager</role-name>
     </auth-constraint>
   </security-constraint>
+  
+  <security-constraint>
+  	<web-resource-collection>
+    	<web-resource-name/>
+      	<url-pattern>/admin/*</url-pattern>
+    </web-resource-collection>    
+    <auth-constraint>      
+    	<role-name>agWebAdminUser</role-name>
+    </auth-constraint>
+  </security-constraint>
    
   <login-config>
     <auth-method>BASIC</auth-method>
@@ -452,6 +462,10 @@
   <security-role>
     <role-name>manager</role-name>
   </security-role>
+  
+	<security-role>
+    	<role-name>agWebAdminUser</role-name>
+  	</security-role>
 
 	<env-entry>
 		<description>The Main Authority ID for this Registry (Authority ID used for the Registry type). The identifier of a namespace under the control of a single naming Authority.  Typically a domain name ex: uk.ac.le.star, mssl.ucl.ac.uk</description>
