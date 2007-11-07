@@ -1,5 +1,5 @@
 /*
-   $Id: DomHelper.java,v 1.2 2006/03/22 15:14:47 clq2 Exp $
+   $Id: DomHelper.java,v 1.3 2007/11/07 16:51:00 kea Exp $
 
    (c) Copyright...
 */
@@ -66,11 +66,14 @@ public class DomHelper
       }
       
       for (int i = 0; i < nodes.getLength(); i++) {
-         if ((nodes.item(i) instanceof Element) && (nodes.item(i).getLocalName().equals(child))) {
+         String localName = nodes.item(i).getLocalName();
+         if (localName == null) { 
+            localName = "";
+         }
+         if ((nodes.item(i) instanceof Element) && (localName.equals(child))) {
             return getValueOf( (Element) nodes.item(i));
          }
       }
-
       return "";
     }
     
