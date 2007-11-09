@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/tools/inflater/src/webapp/WEB-INF/web.xml,v $</cvs:source>
+    | <cvs:date>$Author: KevinBenson $</cvs:date>
+    | <cvs:author>$Date: 2007/11/09 10:06:04 $</cvs:author>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:log>
+    | $Log: web.xml,v $
+    | Revision 1.1  2007/11/09 10:06:04  KevinBenson
+    | Small tool that is basically a servlet that can inflate zipped/archive files up.  Found usefull in cases of certain files such as Fits all zipped up and the client would prefer to have it unzipped on the fly so they can send it straight to aladin or myspace in the raw contents.
+    |
+    | Revision 1.1  2007/01/19 09:14:57  KevinBenson
+    | small corrections
+    |
+    | Revision 1.1  2003/06/12 18:19:38  dave
+    | Initial import into cvs ...
+    |
+    | Revision 1.1  2003/06/05 09:05:56  dave
+    | Added JWS and RPC WebService tests.
+    |
+    | </cvs:log>
+    | 
+    | Dummy webapp configuration file for the Axis docs.
+    | 
+    +-->
+
+<!DOCTYPE web-app
+   PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
+   "http://java.sun.com/j2ee/dtds/web-app_2.2.dtd">
+
+<web-app>
+
+<servlet>
+   <servlet-name>Inflater</servlet-name>
+   <servlet-class>org.astrogrid.tools.inflater.Inflater</servlet-class>
+</servlet>
+
+<servlet-mapping>
+   <servlet-name>Inflater</servlet-name>
+   <url-pattern>/Inflate</url-pattern>
+</servlet-mapping>
+
+</web-app>

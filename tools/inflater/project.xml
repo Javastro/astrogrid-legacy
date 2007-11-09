@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    | Maven project description for the AstroGrid registry webapp.
+    |
+    +-->
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+  xsi:noNamespaceSchemaLocation="maven-project.xsd">
+
+    <!--+
+        | Extend the common project descriptor.
+        +-->
+    <extend>${basedir}/maven/project.xml</extend>
+
+    <!--+
+        | The short name of the project.
+        | This is used when naming jars and distribution files.
+        +-->
+    <id>astrogrid-tools-inflater</id>
+
+    <!--+
+        | The full name of the project.
+        | This is used when generating JavaDoc titles.
+        +-->
+    <name>AstroGrid Inflater</name>
+
+    <!--+
+        | A short description of the project.
+        | The short description should be limited to a single line.
+        +-->
+    <shortDescription>
+      Simple Servlet that will take a url from the request and inflate it.  For Gzip and Zip files only.
+    </shortDescription>
+
+    <!--+
+        | A detailed description of the project.
+        | This is used to generate the front page of the projects web site. 
+        +-->
+    <description>
+        <![CDATA[
+	<p>
+    	      Simple Servlet that will take a url from the request and inflate it.  For Gzip and Zip files only.
+	</p>
+		]]>        
+    </description>
+
+    <!--+
+        | Our cvs repository location.
+        +-->
+    <repository>
+        <connection>
+            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:tools/inflater
+        </connection>
+        <developerConnection>
+            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:tools/inflater
+        </developerConnection>
+    </repository>
+
+    <!--+
+        | The external libraries required to build our component.
+        +-->
+    <dependencies>
+                            
+        <dependency>
+            <artifactId>servletapi</artifactId>
+            <groupId>servletapi</groupId>
+            <version>2.3</version>
+        </dependency>
+        
+    </dependencies>
+
+    <!--+
+        | The build properties for our project.
+        +-->
+    <build>
+        <!--+
+            | The location of our Java source code.
+            +-->
+        <sourceDirectory>src/java</sourceDirectory>
+    	
+    	
+        <!--+
+            | The location of our JUnit source code.
+            +-->
+        <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
+        <!--+
+            | Our JUnit test classes.
+            +-->
+        <unitTest>
+
+            <!--+
+                | Which tests to include.
+                +-->
+            <includes>
+                <include>**/*Test.java</include>
+            </includes>
+
+        	
+            <!--+
+                | Which tests to include.
+                +-->
+            <resources>
+                <resource>
+               	   <directory>${basedir}/src/junit</directory>
+    		        <includes>
+    		           	<include>**/*.xml</include>
+       		           	<include>**/*.properties</include>
+      		           	<include>**/data</include>
+      		           	<include>**/data/*</include>
+    		        </includes>            	
+                </resource>
+            </resources>
+        </unitTest>
+    </build>
+    <reports>
+        <report><!--few reports for this subproject-->
+            maven-changelog-plugin
+        </report>
+    </reports>     
+
+</project>
