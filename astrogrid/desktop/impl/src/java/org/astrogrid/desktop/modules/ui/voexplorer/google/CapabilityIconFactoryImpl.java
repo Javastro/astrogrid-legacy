@@ -133,7 +133,7 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 				// ignore already existing composite icons.
 				Icon[] is = new Icon[caps.cardinality()];
 				StringBuffer tip = new StringBuffer();
-                tip.append("<html>");
+                tip.append("<html>This resource has multiple capabilities:<br>");
 				int j = 0;
 				for (Iterator entries = icons.entrySet().iterator(); entries.hasNext(); ) {
 					Map.Entry e = (Map.Entry) entries.next();

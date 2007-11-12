@@ -132,11 +132,7 @@ public class ResourceTableFomat extends ModularTableFormat {
                 tcol.setPreferredWidth(300);
             }
             public String getToolTipText(Resource res) {
-                result.clear();               
-                result.append("<html><b>").append(res.getTitle()).append("</b>");
-                result.append("<br><i>").append(res.getShortName()).append("</i>");
-                result.append("<br><i>").append(res.getId()).append("</i>");
-                return result.toString();
+                return res.getTitle();
             }
         });
 
