@@ -129,6 +129,8 @@ public class ExceptionFormatter {
             return ex.getMessage();
         } else if (ex instanceof ACRException) { // should have clauses for subclasses here too.
             return ex.getMessage();
+        } else if (ex instanceof OutOfMemoryError) {
+            return "Out of Memory - consider increasing memory using the -Xmx flag. e.g. -Xmx256M";
         } else if (ex instanceof RuntimeException && ex.getCause() != null) { //always traverse a runtimeException
             return formatSingle(ex.getCause());
         } else {
