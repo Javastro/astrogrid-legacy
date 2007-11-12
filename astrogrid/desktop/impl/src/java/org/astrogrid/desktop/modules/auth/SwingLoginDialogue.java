@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.5 2007/10/22 07:24:20 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.6 2007/11/12 11:53:17 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,6 +35,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.MutableComboBoxModel;
+import javax.swing.Timer;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 import org.apache.commons.logging.Log;
@@ -76,6 +77,8 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
     private final String defaultCommunity;
     private final Preferences prefs;
     private final Community comm;
+
+    private Timer vomonRecheckTimer;
     /**
      * Constructs a new dialog.
      * @throws MalformedURLException 
@@ -118,7 +121,7 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
 
         final URL registerURL = new URL(registerLink);
 
-        JButton registerButton = new JLinkButton("Not got an account? Register..");
+        JButton registerButton = new JLinkButton("Not got an account? Click here to register..");
         registerButton.setToolTipText("Click here to apply for an account on the virtual observatory");
         
         registerButton.addActionListener(new ActionListener() {           
@@ -138,7 +141,7 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
         prefs = Preferences.userNodeForPackage(SwingLoginDialogue.class);
         userField_.setText(prefs.get("username",""));
         primSetCommunity();
-        commField_.setEditable(false); // don't think there's any point - if it's not in the registry, it's not usable.
+        commField_.setEditable(false); // don't allow manual edits.
         commField_.setRenderer(new BasicComboBoxRenderer() {
    
 			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
@@ -156,6 +159,20 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
 				return this;
 			}
         });
+        if (! isVomonPopulated(monitor, model)) {
+            vomonRecheckTimer = new Timer(5000,new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    if (isVomonPopulated(monitor,model)) { // now loaded, so wiggle the selection and then stop the timer.
+                        Object o = model.getSelectedItem();
+                        model.setSelectedItem(null);
+                        model.setSelectedItem(o);
+                        vomonRecheckTimer.stop();
+                    } 
+                }
+            });
+            vomonRecheckTimer.setRepeats(true);
+            vomonRecheckTimer.start();
+        }
         // configure the dialogue.
         setTitle("Virtual Observatory Login");
         JPanel mainPanel = getMainPanel();
@@ -164,6 +181,25 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
         assist.getPlasticList().setVisible(false); // don't show the plastic list - just clutter in this ui.
         pack();
         centerOnScreen();
+    }
+
+    /** test to see whether vomon returns any suggestions for the list of resources.
+     * @param monitor
+     * @param model
+     * @return
+     */
+    private boolean isVomonPopulated(final VoMonInternal monitor,
+            final MutableComboBoxModel model) {
+        int sz = model.getSize();
+        boolean monitorKnows = false;
+        for (int i = 0; i < sz; i++) {
+            Object o = model.getElementAt(i);
+            if (o instanceof Resource && monitor.suggestIconFor((Resource)o) != null) {
+                monitorKnows = true;
+                break;
+            }
+        }
+        return monitorKnows;
     }
 
     //overridden to save inputs as preferences.
@@ -268,6 +304,10 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.6  2007/11/12 11:53:17  nw
+RESOLVED - bug 2389: When you login, the Leicester community always appears as down
+http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2389
+
 Revision 1.5  2007/10/22 07:24:20  nw
 altered login dialogue to be a full UIComponent.
 
