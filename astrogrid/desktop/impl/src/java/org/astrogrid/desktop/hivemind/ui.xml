@@ -27,61 +27,7 @@
 			<acrService id="queryBuilder" interface="QueryBuilder" />
 	</contribution>
 
-	
-<!--  
-==============================
-UI STRUCTURES
- -->
 
-<!-- assume that if this module is loaded, we're running as workbench -->
-	<contribution configuration-id="system.uiStructure">
-			<action parentName="help" name="about" text="About Astro Runtime.." onEventDispatchThread="true"
-			object="instance:java.lang.String" methodName="concat" iconName="AGlogo16x16.png"
-			after="*" > 
-			<parameter><![CDATA[
-			<html>
-			<h1>VO Explorer v${astrogrid.desktop.version}</h1>		
-			<b>http://www.astrogrid.org/desktop</b><br>
-			<h2>Contributors</h2>
-			<ul>
-			 <li>Alasdair Allan</li>
-			<li>Elizabeth Auden</li>
-			<li>Kona Andrews</li>
-			<li>Kevin Benson</li>
-			<li>Silvia Dalla</li>
-			<li>Gary Gilchrist</li>
-			<li>Eduardo Gonzalez</li>
-			<li>Norman Gray</li>
-			<li>Paul Harrison</li>
-			<li>Tony Linde</li>
-			<li>Jeff Lusted</li>
-			<li>Phil Nicholson</li>
-			<li>Keith Noddle</li>
-			<li>Jonathan Tedds</li>
-			<li>Dave Morris</li>
-			<li>Catherine Qin</li>
-			<li>Anita Richards</li>
-			<li>Guy Rixon</li>
-			<li>John Taylor</li>
-			<li>Mark Taylor</li>
-			<li>Nicholas Walton</li>
-			<li>Noel Winstanley</li>
-			</ul>			
-			<h2>Acknowledgements</h2>
-			Contains code and/or integrates with services provided by CADC, CDS, ESA-VO, NVO, Starlink, Plastic, VOTech
-
-			<hr>
-			<h2>Build Information</h2>
-			Built: ${astrogrid.build.date}<br>
-			At: ${astrogrid.build.location}<br>
-			With ${astrogrid.build.jdk}<br>
-			By: ${astrogrid.build.by}
-			</html>
-			]]></parameter>
-		</action>	
-	</contribution>
-	
-	
 <!--  
 ===============================
 ASTROSCOPE
@@ -106,8 +52,7 @@ ASTROSCOPE
 		Describes how to build a new astroscope window.
 			<inject object="service:system.ui"/>			
 			<inject object="service:protocolsBuilder" />
-			<inject object="service:actionsBuilder" />	
-            <inject object="service:system.uiBuilder" />            		
+			<inject object="service:actionsBuilder" />	        		
 			<inject object="service-property:scopeHistory:list" />
 			<inject object="ui:scopeServiceList" />
 			<inject object="service:system.vfs" />
@@ -216,9 +161,7 @@ ASTROSCOPE
             <inject object="service:astrogrid.processManager" />	
 			<inject object="service:dialogs.resourceChooser" />
 			<inject object="service:dialogs.registryGoogle" />	
-            <inject object="service:system.uiBuilder" />
-            <inject object="service:ui.UiBuilder" />   
-            <inject object="service:system.vfs" />         	
+            <inject object="service:ui.UiBuilder" />        	
             <inject object="service:votech.vomon" />
 		</object>
         
@@ -355,9 +298,7 @@ Query Builder
             <inject object="service:astrogrid.processManager" />    
             <inject object="service:dialogs.resourceChooser" />
             <inject object="service:dialogs.registryGoogle" />  
-            <inject object="service:system.uiBuilder" />
-            <inject object="service:ui.UiBuilder" />   
-            <inject object="service:system.vfs" />  
+            <inject object="service:ui.UiBuilder" />  
              <inject object="service:votech.vomon" />                                  
             <inject object="service:ivoa.registry" />                
         </object>
@@ -413,24 +354,25 @@ Query Builder
 		<object name="voexplorer" class="org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl">
 			<inject object="service:system.ui"/>
 			<inject object="service:actionsBuilder" />
-			<inject object="service:system.uiBuilder" />
-			<inject object="service-property:resourceFolders:list" />
+			<inject object="service-property:resourceFolderModel:treeModel" />
 			<inject object="ui:registryGooglePanel" />
 			<inject object="service:querySize" /> 
+			<inject object="service:dialogs.resourceChooser" />
+			<inject object="service:system.xmlPersist" />
 		</object>
 	</contribution>
 
-	<service-point id="resourceFolders" visibility="private" interface="org.astrogrid.desktop.modules.ui.folders.ListProvider">
+    <service-point id="resourceFolderModel" visibility="private" interface="org.astrogrid.desktop.modules.ui.folders.TreeProvider">
 		Loads / saves the list of resource folders. shared between multiple instances of voexplorer.
-		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.ui.folders.ResourceListsProvider">
-				<service>system.ui</service>
-				<object>preference:astrogrid.workdir</object>
+        <invoke-factory>
+            <construct class="org.astrogrid.desktop.modules.ui.folders.ResourceTreeProvider">
+                <service>system.ui</service>
+                <object>preference:astrogrid.workdir</object>
                 <service>system.xmlPersist</service>
-			</construct>
-		</invoke-factory>
-	</service-point>
-	
+            </construct>
+        </invoke-factory>
+    </service-point>
+
 	<!--  makes the registryBrowser dsplay on startup if we've not got a system tray -->
     <!-- 
 	<contribution configuration-id="hivemind.Startup" if="not (class java.awt.SystemTray)">
@@ -476,7 +418,6 @@ FILE EXPLORER
 		<object name="fileExplorer" class="org.astrogrid.desktop.modules.ui.fileexplorer.FileExplorerImpl">
 			<inject object="service:system.ui"/>
 			<inject object="service:actionsBuilder" />
-			<inject object="service:system.uiBuilder" />
             <inject object="service:ui.UiBuilder" />
 		</object>
         </contribution>
@@ -525,16 +466,15 @@ ACTIONS
 		<invoke-factory model="singleton">
 			<construct class="org.astrogrid.desktop.modules.system.ui.ActivityFactoryImpl">
 				<service>actionsFactory</service>
-                <object>preference:acr.advanced</object>
 			</construct>
 		</invoke-factory>
 	</service-point>
 	
-	<service-point id="actionsFactory" interface="org.astrogrid.desktop.hivemind.IterableObjectBuilder"
+	<service-point id="actionsFactory" interface="org.astrogrid.desktop.hivemind.ClassKeyObjectBuilder"
 		visibility="private">
 		Object builder for actions
 		<invoke-factory model="singleton">
-			<construct class="org.astrogrid.desktop.hivemind.IterableObjectBuilderImpl">
+			<construct class="org.astrogrid.desktop.hivemind.ClassKeyObjectBuilderImpl">
 				<log />
 				<configuration>actions</configuration>
 				<service>hiveutils.ObjectTranslator</service>
@@ -547,29 +487,24 @@ ACTIONS
 		Configuration point for the list of 'invoke' tasks.
 	</configuration-point>
 		
-	<!--  lists of Actions  -->
+	<!--  lists of Actions  - name is ignored.-->
 	<contribution configuration-id="actions">
-		<object name="0queryscope" class="org.astrogrid.desktop.modules.ui.actions.QueryScopeActivity">
+		<object name="scope" class="org.astrogrid.desktop.modules.ui.actions.QueryScopeActivity">
 			<inject object="service:astroscope" />
-			<inject name="section" object="literal:string:use" />
 		</object>		
-		<object name="0query" class="org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity">
-			<inject object="service:queryBuilder"/>
-			<inject name="section" object="literal:string:use" />			
+		<object name="query" class="org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity">
+			<inject object="service:queryBuilder"/>		
 		</object>		
-		<object name="0cea" class="org.astrogrid.desktop.modules.ui.actions.TaskRunnerActivity">
-			<inject object="service:applicationLauncher"/>
-			<inject name="section" object="literal:string:use" />			
+		<object name="task" class="org.astrogrid.desktop.modules.ui.actions.TaskRunnerActivity">
+			<inject object="service:applicationLauncher"/>		
 		</object>
-		<object name="1viewBrowser" class="org.astrogrid.desktop.modules.ui.actions.ViewInBrowserActivity">
+		<object name="viewBrowser" class="org.astrogrid.desktop.modules.ui.actions.ViewInBrowserActivity">
 			<inject object="service:system.browser"/>
             <inject object="service:system.vfs" />
-			<inject name="section" object="literal:string:use" />
 		</object>
-        <object name="2reveal" class="org.astrogrid.desktop.modules.ui.actions.RevealFileActivity">
+        <object name="reveal" class="org.astrogrid.desktop.modules.ui.actions.RevealFileActivity">
             <inject object="service:system.vfs" />
             <inject object="service:ui.fileManager" />
-            <inject name="section" object="literal:string:use" />
         </object>
         <!--  not implemented	
 		<object name="1saveFile" class="org.astrogrid.desktop.modules.ui.actions.SaveActivity">
@@ -579,29 +514,27 @@ ACTIONS
 		</object>
         		-->
                 
-        <object name="1download" class="org.astrogrid.desktop.modules.ui.actions.SimpleDownloadActivity">
+        <object name="download" class="org.astrogrid.desktop.modules.ui.actions.SimpleDownloadActivity">
             <inject object="service:system.vfs" />
             <inject object="service:dialogs.resourceChooser" />
-            <inject name="section" object="literal:string:use" />
         </object>
 
-        <object name="2rename" class="org.astrogrid.desktop.modules.ui.actions.RenameActivity">
+        <object name="rename" class="org.astrogrid.desktop.modules.ui.actions.RenameActivity">
             <inject object="service:system.vfs" />
-            <inject name="section" object="literal:string:use" />
-        </object>      
-        <object name="2delete" class="org.astrogrid.desktop.modules.ui.actions.DeleteFilesActivity">
+        </object>
+        <object name="duplicate" class="org.astrogrid.desktop.modules.ui.actions.DuplicateActivity">
             <inject object="service:system.vfs" />
-            <inject name="section" object="literal:string:use" />
+        </object>              
+        <object name="delete" class="org.astrogrid.desktop.modules.ui.actions.DeleteFilesActivity">
+            <inject object="service:system.vfs" />
         </object> 
-		<object name="1web" class="org.astrogrid.desktop.modules.ui.actions.WebInterfaceActivity">
-			<inject object="service:system.browser" />
-			<inject name="section" object="literal:string:use" />			
+		<object name="web" class="org.astrogrid.desktop.modules.ui.actions.WebInterfaceActivity">
+			<inject object="service:system.browser" />		
 		</object>	
-		<object name="2plastic" class="org.astrogrid.desktop.modules.ui.actions.PlasticScavenger">
+		<object name="plastic" class="org.astrogrid.desktop.modules.ui.actions.PlasticScavenger">
 			<inject object="service:system.plasticList" />
 			<inject object="service:system.tupperware" />
             <inject object="service:system.systray" />
-			<inject name="section" object="literal:string:plastic" />
 		</object>
 		<!--  removed - too inefficient at the moment - causes oout of memory exceptions
 		re-enable when I've got time to look at optimizing the GenerateScriptActivity.invokable()
@@ -612,36 +545,25 @@ ACTIONS
 			<inject name="section" object="literal:string:script" />		
 		</object>
 		-->
-		<object name="0selection" class="org.astrogrid.desktop.modules.ui.actions.InfoActivity">
-			<inject name="section" object="literal:string:info" />	
+		<object name="selection" class="org.astrogrid.desktop.modules.ui.actions.InfoActivity">
 		</object>
-		<object name="1further" class="org.astrogrid.desktop.modules.ui.actions.FurtherInfoActivity">
-			<inject object="service:system.browser"/>
-			<inject name="section" object="literal:string:info" />			
+		<object name="info" class="org.astrogrid.desktop.modules.ui.actions.FurtherInfoActivity">
+			<inject object="service:system.browser"/>			
 		</object>
-		<object name="2contact" class="org.astrogrid.desktop.modules.ui.actions.ContactActivity">
-			<inject object="service:system.browser"/>
-			<inject name="section" object="literal:string:info" />			
+		<object name="contact" class="org.astrogrid.desktop.modules.ui.actions.ContactActivity">
+			<inject object="service:system.browser"/>	
 		</object>	
-		
 		<object name="saveResource" class="org.astrogrid.desktop.modules.ui.actions.SaveResourceActivity" >
 			<inject object="service:system.ui" />
 			<inject object="service:dialogs.resourceChooser" />
 			<inject object="service:ivoa.registry" />
-			<inject object="service:system.vfs" />
-			<inject name="section" object="literal:string:export" />			
-		</object>
-		<object name="saveIds" class="org.astrogrid.desktop.modules.ui.actions.SaveIdListActivity" >
-			<inject object="service:dialogs.resourceChooser" />
-			<inject object="service:system.vfs" />
-			<inject name="section" object="literal:string:export" />			
+			<inject object="service:system.vfs" />			
 		</object>
 		<object name="saveXoXo" class="org.astrogrid.desktop.modules.ui.actions.SaveXoXoListActivity" >
 			<inject object="service:dialogs.resourceChooser" />
-			<inject object="service:system.vfs" />
-			<inject name="section" object="literal:string:export" />			
+			<inject object="service:system.vfs" />			
 		</object>	
-		<!--  possibly - add 'broadcast' operations - see code in PlasticVotableActivity -->
+         
 	</contribution>
 		
 	<!--  help links -->

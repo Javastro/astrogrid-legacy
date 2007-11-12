@@ -72,7 +72,7 @@ good place to put functionality and coding tests - which should be part of the m
             </preference>
     </contribution>
     
-        <implementation service-id="vomon" if="property util.selftest.disabled">
+        <implementation service-id="selftest" if="property util.selftest.disabled">
         <invoke-factory service-id="hivemind.lib.PlaceholderFactory" /> 
     </implementation>   
     
@@ -89,10 +89,6 @@ good place to put functionality and coding tests - which should be part of the m
     <contribution configuration-id="selftest" >
         <object>instance:org.astrogrid.desktop.modules.util.ConnectivityTests</object>
     </contribution>
-    
-    <contribution configuration-id="system.uiStructure">
-        <action parentName="runtime" name="selftest" text="Self tests.." onEventDispatchThread="true"
-            object="service:selftest" methodName="show" after="prefs" before="reset"/>
-    </contribution>
+
  </module>
  

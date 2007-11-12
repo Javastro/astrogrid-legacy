@@ -35,227 +35,8 @@ System module.
 				</rules>
 			</element>		
 	</schema>	
-	
-	<!--  
-	=====================================
-	FUNDAMENTAL UI STRUCTURES
-	 -->
-	<!-- always define a tab named advanced, but labelling and placement differs by mode -->
-	<contribution configuration-id="uiStructure" if="property acr.mode">
-		<tab name="advanced" text="Astro Runtime" before="*" help-id="tab.advanced " />	
-		<tab name="links" text="Links" after="advanced" help-id="tab.links" />			
-	</contribution>
-		<contribution configuration-id="uiStructure" if="property hub.mode">
-		<tab name="advanced" text="Plastic" before="*" help-id="tab.plastic" />	
-		<tab name="links" text="Links" after="advanced" help-id="tab.links"  />			
-	</contribution>
-	<contribution configuration-id="uiStructure" if="property workbench.mode">
-		<menu name="links" text="Other VO-Enabled Applications" parentName="help" before="projects" after="div2"/>		
-		<tab name="advanced" text="Advanced" after="*" visibleCondition="preference:acr.advanced" help-id="tab.advanced"/>
-	</contribution>
 
-	<!--  help for these structures. -->
-	<contribution configuration-id="helpmap">
-		<item id="tab.advanced" url="http://www2.astrogrid.org/desktop/astro-runtime" /> <!-- todo  -->
-		<item id="tab.plastic" url="http://plastic.sourceforge.net" />
-		<item id="tab.links" url="http://www2.astrogrid.org/science/documentation/workbench-helper-applications" />
-	</contribution>
-	
-	<contribution configuration-id="uiStructure">
-		<menu name="runtime" text="Runtime" parentName="menubar" before="*" />
-		<menu name="help" text="Help" parentName="menubar" after="*" />
-			<divider parentName="help" name="div1"
-				before="div2" />
-			<divider parentName="help" name="div2"
-			after="div1"  />					
-		<menu name="projects" text="About Projects" parentName="help" before="about" after="div2"/>
 
-		<action parentName="runtime" name="exit" text="Exit" iconName="exit16.png" onEventDispatchThread="true"
-			object="service:builtin.shutdown" methodName="halt" after="*">
-			<tooltip>Halt the service</tooltip>
-			<confirmMessage>About to close all windows and exit. Continue?</confirmMessage>
-		</action>	
-        
-		<action parentName="runtime" name="prefs" text="Preferences.." onEventDispatchThread="true"
-			object="service:configDialogue" methodName="run"  before="reset"/>
-		<action parentName="runtime" name="reset" text="Reset configuration"
-			object="service:configuration" methodName="reset" before="exit">
-			<tooltip>Reset all configuration back to factory defaults</tooltip>
-			<confirmMessage>Reset: All user settings wil be lost. Continue?</confirmMessage>
-		</action>
-				
-	</contribution>
-	
-
-	<!--  APP AND PROJECT LINKS -->
-	<!--  Links that don't appear in 'hiub mode' -->
-	<contribution configuration-id="uiStructure" if="not (property system.browser.disabled) and not (property hub.mode)">
-		<action parentName="projects" name="ivoaProject" text="IVOA" iconName="ivoa.gif"
-			object="service:system.browser" methodName="openURL"
-			>
-			<tooltip>Home Page for the International Virtual Observatory Alliance</tooltip>
-			<parameter>http://www.ivoa.net</parameter>
-		</action>	
-		<action parentName="projects" name="cadcProject" text="CADC" iconName="cadc.jpg"
-			object="service:system.browser" methodName="openURL"
-			>
-			<tooltip>Home Page for Canadian Astronomy Data Center (CADC)</tooltip>
-			<parameter>http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/cadc</parameter>
-		</action>
-
-		<action parentName="projects" name="cdsProject" 
-			text="CDS" iconName="cds_icon.gif"
-			object="service:system.browser" methodName="openURL">
-			<tooltip>Centre de Donnees Astronomiques Home Page</tooltip>			
-			<parameter>http://cdsweb.u-strasbg.fr/</parameter>
-		</action>				
-		<action parentName="projects" name="esacProject" text="ESA-VO" iconName="esavo33.gif"
-			object="service:system.browser" methodName="openURL"
-			>
-			<tooltip>Home Page for ESA-VO</tooltip>
-			<parameter>http://esavo.esa.int/</parameter>
-		</action>	
-		<action parentName="projects" name="egg" visibleCondition="preference:acr.advanced"
-			text="Perspective" object="service:system.browser" methodName="openURL"
-			after="*">
-			<tooltip>It helps to keep a sense of perspective...</tooltip>
-			<parameter>http://dingo.care2.com/cards/flash/5409/galaxy.swf</parameter>
-		</action>	
-		
-		<!--  TODO - add RVO, VO-Paris, and others listed in weasl.
-		also - member os plastic?? -->
-		<!--  TODO - find details
-		<action parentName="projects" name="estarProject" 
-			text="EStar" iconName="estar_icon.gif"
-			object="service:system.browser" methodName="openURL">
-			<tooltip>ESTAR - FILL in TITLE of PAGE</tooltip>			
-			<parameter>FILL IN ESTAR URL</parameter>
-		</action>		
-		<action parentName="projects" name="voeventProject" 
-			text="VOEvent" iconName="voevent_icon.gif"
-			object="service:system.browser" methodName="openURL">
-			<tooltip>VOEVENT - FILL in TITLE of PAGE</tooltip>			
-			<parameter>FILL IN VOEVNET URL</parameter>
-		</action>	
-		-->	
-	</contribution>
-	
-	<!--  LINKS that alwasys appear -->
-	<contribution configuration-id="uiStructure" if="not (property system.browser.disabled)">
-		<!-- 
-		PROJECTS
-		 -->
-		<action parentName="projects" name="plasticProject" text="Plastic" iconName="plastic.gif"
-			object="service:system.browser" methodName="openURL"
-			>
-			<tooltip>Home Page for PLASTIC</tooltip>
-			<parameter>http://plastic.sourceforge.net/</parameter>
-		</action>	
-		<action parentName="projects" name="votechProject" 
-			text="VOTech" iconName="votech_icon.gif"
-			object="service:system.browser" methodName="openURL">
-			<tooltip>Euro-VO VOTech Project Home Page</tooltip>			
-			<parameter>http://eurovotech.org/</parameter>
-		</action>
-		<action parentName="projects" name="agProject" text="AstroGrid" iconName="logo48x48.png"
-			object="service:browser" methodName="openURL" before="*">
-			<parameter>http://www.astrogrid.org</parameter>
-		</action>	
-	
-
-		<!--  other menu items -->
-		<action parentName="help" name="bugreport" text="Feature request / Bug report " 
-			after="projects" before="about"
-			object="service:browser" methodName="openURL"  >
-			<parameter>http://www.astrogrid.org/bugzilla/enter_bug.cgi?product=Workbench%20and%20ACR</parameter>
-		</action>
-		<!--  
-		APPLICATIONS
-		 -->
-		<action parentName="links" name="aladin" text="Aladin" iconName="aladin_48pix.png"
-			object="service:browser" methodName="openURL">
-			<tooltip><![CDATA[
-			<html><b>Aladin</b> is an interactive software sky atlas allowing the user to <br>
-			visualize digitized images of any part of the sky, to superimpose entries from <br>
-			astronomical catalogs or personal user data files, and to interactively access related <br>
-			data and information from the SIMBAD, NED, VizieR, or other archives for all known objects in the field. </tooltip>
-			]]></tooltip>
-			<parameter>http://aladin.u-strasbg.fr/</parameter>
-		</action>	
-		<action parentName="links" name="gaia" text="GAIA" iconName="gaialogo.gif" after="aladin"
-			object="service:browser" methodName="openURL">
-			<tooltip><![CDATA[
-			<html><b>GAIA</b> is an image display and analysis tool. It provides the usual <br>
-			facilities of image display tools, plus more astronomically useful ones such as <br>
-			aperture & optimal photometry, contouring, source detection, surface photometry, <br>
-			arbitrary region analysis, celestial coordinate readout, calibration and modification,<br>
-			 grid overlays, blink comparison, defect patching and the ability to<br>
-			  query on-line (WWW) catalogues.
-						]]></tooltip>
-			<parameter>http://star-www.dur.ac.uk/~pdraper/gaia/gaia.html</parameter>
-		</action>			
-		<action parentName="links" name="octet" text="Octet" iconName="cvo.png" after="gaia"
-			object="service:browser" methodName="openURL">
-			<tooltip><![CDATA[
-			<html>With Octet, CVO has developed advanced observation query capabilities to help users <br>
-			fully exploit the broad wavelength coverage of our collections. We have also included data from <br>
-			select external collections to increase wavelength coverage from radio (FIRST) to X-ray (RASS).
-			]]></tooltip>
-			<parameter>http://www2.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/cvo/</parameter>
-		</action>
-		<action parentName="links" name="splat" text="SPLAT" iconName="splat.gif"
-			after="octet"
-			object="service:browser" methodName="openURL">
-			<tooltip><![CDATA[
-			<html><b>SPLAT</b>is a graphical tool for displaying, comparing, modifying and<br>
-			 analysing astronomical spectra stored in NDF, FITS and TEXT files <br>
-			 as well as the new NDX format. 
-			]]></tooltip>
-				<parameter>http://star-www.dur.ac.uk/~pdraper/splat/splat.html</parameter>
-		</action>	
-		<action parentName="links" name="topcat" text="TopCat" iconName="tc3.gif"
-			after="splat"
-			object="service:browser" methodName="openURL" >
-			<tooltip><![CDATA[
-			<html><b>TOPCAT</b> is an interactive graphical viewer and editor for tabular data.<br>
-			 It has been designed for use with astronomical tables such as object catalogues, but is not <br>
-			 restricted to astronomical applications. It understands a number of different astronomically<br>
-			 important formats (including FITS and VOTable) and more formats can be added.
-			]]></tooltip>
-			<parameter>http://www.star.bris.ac.uk/~mbt/topcat/</parameter>
-		</action>
-		<action parentName="links" name="visivo" text="VisIVO" iconName="visivo.png"
-			after="topcat"
-			object="service:browser" methodName="openURL">
-			<tooltip><![CDATA[
-			<html><b>VisIVO</b> is a visualisation and analysis software for astrophysical data.<br>
-			 VisIVO can handle both observational and theoretical data.<br>
-			  It can be used both as a stand-alone application, that acts on local files, <br>
-			  and as an interface to the Virtual Observatory framework.
-			  ]]></tooltip>
-			<parameter>http://visivo.cineca.it/</parameter>
-		</action>
-
-		<action parentName="links" name="vospec" text="VOSpec" iconName="vospecLogo.png"
-			after="visivo"
-			object="service:browser" methodName="openURL">
-			<tooltip><![CDATA[
-			<html><b>VOSpec</b>: A tool to handle VO-compatible spectra
-			  ]]></tooltip>
-			<parameter>http://esavo.esa.int/vospecapp</parameter>
-		</action>
-
-	</contribution>	
-	<!-- add a link to the workbench if we're not running in workbench mode. -->
-	<contribution configuration-id="uiStructure" if="not (property system.browser.disabled) and ((property hub.mode) or (property acr.mode))">
-		<action parentName="links" name="voexplorer" text="VO Explorer" iconName="logo48x48.png"
-			before="aladin" object="service:browser" methodName="openURL" >
-			<tooltip><![CDATA[
-			<html><b>VO Explorer</b> needs a description.
-			]]></tooltip>
-			<parameter>http://www2.astrogrid.org/desktop</parameter>
-		</action>
-	</contribution>
 	
 	<contribution configuration-id="framework.preferences">	
 		<!-- working directory - used for storing various data. -->
@@ -326,49 +107,6 @@ System module.
 		<item id="tutorial.cosmology" url="http://www2.astrogrid.org/science/science-cosmology" />
 	</contribution>
 	
-	<!--  only display this set of help in workbench mode. later maybe add an equivalent set of buttons for plastic. -->
-	<contribution configuration-id="uiStructure" if="not (property system.help.disabled) and (property workbench.mode)">
-		<action parentName="help" name="intro" text="AstroGrid: Science Introduction"
-			object="service:help" methodName="showHelp" before="*" />
-
-		<action parentName="help" name="started" text="Getting Started"
-			object="service:help" methodName="showHelpForTarget" 
-			after="intro"  before="contents" iconName="help16.png" >
-			<parameter>gettingStarted</parameter>
-		</action>		
-		
-		<action parentName="help" name="contents" text="Help Contents"
-			object="service:help" methodName="showHelpForTarget" 
-			after="started" before="tutorials" 
-			iconName="contents16.png" >
-			<parameter>contents</parameter>
-		</action>
-		
-		
-	<menu name="tutorials" text="Tutorials" parentName="help" after="contents" before="div1" />
-
- 	<action parentName="tutorials" name="access" text="Data Access"
- 		object="service:help" methodName="showHelpForTarget" before="*">
- 			<parameter>tutorial.dataAccess</parameter>
- 	</action>
- 	 	<action parentName="tutorials" name="cosmology" text="Cosmology"
- 		object="service:help" methodName="showHelpForTarget"  after="access" before="galaxy">
- 			<parameter>tutorial.cosmology</parameter>
- 	</action>
- 	 	<action parentName="tutorials" name="galaxy" text="Galaxies"
- 		object="service:help" methodName="showHelpForTarget"  after="cosmology" before="star">
- 			<parameter>tutorial.galactic</parameter>
- 	</action>
- 	 	<action parentName="tutorials" name="star" text="Stars"
- 		object="service:help" methodName="showHelpForTarget" before="solar" after="galaxy">
- 			<parameter>tutorial.stars</parameter>
- 	</action>
- 	 	<action parentName="tutorials" name="solar" text="Solar"
- 		object="service:help" methodName="showHelpForTarget" after="*">
- 			<parameter>tutorial.solar</parameter>
- 	</action>
-
-	</contribution>
 	<!--  
 	================================
 	BROWSER CONTROL
@@ -460,7 +198,8 @@ System module.
             <include method="setLoggedIn" />
             <include method="setStatusMessage" />
             <include method="startThrobbing" />
-            <include method="stopThrobbing" />                                                
+            <include method="stopThrobbing" />  
+            <include method="actionPerformed" />                                              
             <exclude method="*" />
         </interceptor>           
 	 	<invoke-factory>
@@ -469,6 +208,12 @@ System module.
 	 			<service>executor</service>
 	 			<service>help</service>
 	 			<service>browser</service>
+                <service>ivoa.cache</service>
+                <service>astrogrid.community</service>
+                <service>builtin.shutdown</service>
+                <service>util.selftest</service>
+                <service>configDialogue</service>
+                <service>aboutDialogue</service>
 	 			<service>plasticList</service>
 	 			<configuration>windowFactories</configuration>
 	 		</construct>
@@ -492,25 +237,7 @@ System module.
 			</element>	
 	 	</schema>
 	 </configuration-point>
-	 
-	 <!--  todo - maybe replace this with a uiBuilder instead. -->
-	<service-point id="uiView" interface="org.astrogrid.desktop.modules.ui.UIComponent"> 
-		Main user interface view, used in AR and PLastic versions.
-		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.system.ui.ArMainWindow"> 
-				<service>builtin.shutdown</service>
-				<service>ui</service>
-				<service>uiBuilder</service>
-				<event-listener service-id="builtin.shutdown" />				
-				<set property="visible" value="${system.ui.visible}" /> 
-				<set property="title"	value="${system.ui.title}" />
-			</construct>
-		</invoke-factory>		
-	</service-point>
-	
-	<implementation service-id="uiView"  if="(property system.ui.disabled) or (property workbench.mode)">
-		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />
-	</implementation>
+
 	
 		<!--  need to add some extra logic here - so that it's possible to get it back after hide. -->
 	<contribution configuration-id="framework.preferences" if="not (property asr.mode)">
@@ -523,193 +250,7 @@ System module.
 	</contribution>	
 		
 
-	<!-- start this  eager as we want to display a UI 
-		need to determine whether system.ui.visble takes effect as wanted-->
-	<contribution configuration-id="hivemind.EagerLoad">
-		<load service-id="uiView"/>
-	</contribution>
-	
-	<service-point id="uiBuilder" interface="org.astrogrid.desktop.modules.system.ui.UIContributionBuilder">
-		Consumes the UI Contribution, and builds a UI from it.
-		<invoke-factory>
-			<construct class="org.astrogrid.desktop.modules.system.ui.UIContributionBuilderImpl">
-				<configuration>uiStructure</configuration>
-				<service>framework.htmlResultTransformer</service>
-				<service>framework.converter</service>
-				<error-handler/>			
-			</construct>
-		</invoke-factory>
-	</service-point>	
-	
-	<configuration-point id="uiStructure">
-		Defines menus, tabs, and entries of the user interface.
-		<schema>
-			<element name="menu" key-attribute="name">
-				A new menu
-				<attribute name="parentName"  required="true">
-					names the parent of this menu - i.e. where it should be added.
-					Either nominate another menu, or 'menubar' to add a new top-level menu
-				</attribute>
-				<attribute name="name" required="true" unique="true" >
-					the name of this new menu 
-				</attribute>
-				<attribute name="text" required="true" >
-					Display text for this menu
-				</attribute>
-				<attribute name="visibleCondition" translator="object">
-					tie this ui component to a preference object, and only make this component visible when the
-					preference is true
-				</attribute>
-				<element name="tooltip">
-					<rules>
-						<push-content />
-						<invoke-parent method="setToolTipText" />
-					</rules>					
-				</element>
-				<attribute name="iconName">
-					unqualified name of the icon file. Must be loadable by IconHelper
-				</attribute>
-				<attribute name="before" >
-					list of names of items that this menu should appear before.
-					Use '*' to indicate all.
-				</attribute>
-				<attribute name="after">		
-					list of names of items that this menu should appear after. Use '*' to indicate all.
-				</attribute>
-				<conversion class="org.astrogrid.desktop.modules.system.contributions.UIMenuContribution" />
-			</element>	
-		<element name="divider" key-attribute="name">
-			A divider / menu separtor
-				<attribute name="parentName"  required="true">
-					Names the parent tab or menu this divider belongs to
-				</attribute>
-				<attribute name="name" required="true" unique="true" >					
-					name of this divider
-				</attribute>	
-				<attribute name="before" >
-					list of names of items that this divider should appear before.
-					Use '*' to indicate all.					
-				</attribute>
-				<attribute name="after" >
-					list of names of items that this divider should appear after.
-					Use '*' to indicate all.					
-				</attribute>		
-				<conversion class="org.astrogrid.desktop.modules.system.contributions.UIDividerContribution" />				
-		</element>	
-		
-		<element name="action" key-attribute="name">	
-			A new action - materializes as a button or menu entry.
-				<attribute name="onEventDispatchThread" translator="boolean">
-					If true, run on EDT, if false, run in background (default).
-					Set to true for blocking dialogues  - else once the background task
-					timesout, the dialogue will be dismissed.
-				</attribute>
-				<attribute name="parentName"  required="true">
-					Names the parent tab or menu for this action.
-				</attribute>
-				<attribute name="name" required="true" unique="true" >					
-					name of this action.
-				</attribute>
-				<attribute name="text" required="true" >
-					Display text for this action.
-				</attribute>
-				<attribute name="visibleCondition" translator="object">
-					tie this ui component to a preference object, and only make this component visible when the
-					preference is true
-				</attribute>			
-				<element name="tooltip">
-					<rules>
-						<push-content />
-						<invoke-parent method="setToolTipText" />
-					</rules>					
-				</element>
-				<attribute name="iconName" > 
-					unqualified name of the icon file. Must be loadable by IconHelper					
-				</attribute>
-				<attribute name="before" >
-					list of names of items that this menu should appear before.
-					Use '*' to indicate all.					
-				</attribute>
-				<attribute name="after" >
-					list of names of items that this menu should appear after.
-					Use '*' to indicate all.					
-				</attribute>
-				<attribute name="object" required="true" translator="object">
-					The object that this action invokes a method on. May refer to an
-					existing service using 'service:..' or a new object using 'instance:..'
-				</attribute>
-				<attribute name="methodName" required="true" >	
-					name of the method to invoke.
-				</attribute>
-				<attribute name="help-id">
-					a help id to display help for this tab.
-				</attribute>					
-				<element name="confirmMessage" > 
-					If present, this element defines a message to display in a 'yes'/'no' popup
-					dialogue before invoking the action method. Useful for 'are you sure'
-					checks.
-					<rules>
-						<push-content />
-						<invoke-parent method="setConfirmMessage" />
-					</rules>					
-				</element>
-				<element name="parameter">
-					An inline parameter to the action method. Will be converted from
-					string to the appropriate basic type if necessary.
-					<rules>
-						<push-content />
-						<invoke-parent method="addParameter" />
-					</rules>
-				</element>			
-				<element name="reference">
-					A parameter given as a reference to some other object 
-					- e.g. a  service: or instance:
-					<attribute name="value" translator="object"/>
-					<rules>
-						<push-attribute  attribute="value" />
-						<invoke-parent method="addParameter" />
-					</rules>
-				</element>
-			
-				<conversion class="org.astrogrid.desktop.modules.system.contributions.UIActionContribution" />				
-			</element>						
-			<element name="tab" key-attribute="name">
-				A new tab in the user interface
-				<attribute name="name" required="true" unique="true" >
-					name of this tab
-				</attribute>
-				<attribute name="text" required="true" >
-					text to display
-				</attribute>
-				<attribute name="visibleCondition" translator="object">
-					tie this ui component to a preference object, and only make this component visible when the
-					preference is true
-				</attribute>			
-				<element name="tooltip">
-					<rules>
-						<push-content />
-						<invoke-parent method="setToolTipText" />
-					</rules>					
-				</element>
-				<attribute name="iconName">
-				unqualified name of the icon file. Must be loadable by IconHelper		
-				</attribute>					
-				<attribute name="before" >
-		list of names of items that this menu should appear before.
-					Use '*' to indicate all.							
-				</attribute>
-				<attribute name="after" >		
-		list of names of items that this menu should appear after.
-					Use '*' to indicate all.		
-				</attribute>
-				<attribute name="help-id">
-					a help id to display help for this tab.
-				</attribute>					
-				<conversion class="org.astrogrid.desktop.modules.system.contributions.UITabContribution" />				
-			</element>							
-		</schema>
-	</configuration-point>
-		
+
 	<!-- 
 	====================
 	WEBSERVER
@@ -848,8 +389,6 @@ SYSTEM TRAY
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.system.BestSuitableSystemTray">
 				<service>system.ui</service>
-				<service>builtin.shutdown</service>
-				<service>configDialogue</service>
 			</construct>
 		</invoke-factory>
 	</implementation>
@@ -859,8 +398,6 @@ SYSTEM TRAY
         <invoke-factory>
             <construct class="org.astrogrid.desktop.modules.system.FallbackSystemTray">
                 <service>system.ui</service>
-                <service>builtin.shutdown</service>
-                <service>configDialogue</service>
             </construct>
         </invoke-factory>
     </implementation>
@@ -1245,8 +782,6 @@ MAC SETUP
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.system.MacSetup">
 				<service>ui</service>
-				<service>builtin.shutdown</service>
-				<service>configDialogue</service>
 			</construct>
 		</invoke-factory>		
 	</implementation>
@@ -1410,7 +945,7 @@ XML Persistence -->
 <!-- ================================
 	CONFIGURATION DIALOGUE
  -->
- 	<service-point id="configDialogue"  interface="java.lang.Runnable">
+ 	<service-point id="configDialogue" visibility="private"  interface="java.lang.Runnable">
  		A configuration dialogue
         <interceptor service-id="system.edtInvoke" />
  		<invoke-factory>
@@ -1433,7 +968,47 @@ XML Persistence -->
  	
  
  <!--  ===================
- ABOUT Dialogue - TODO -->
+ ABOUT Dialogue - -->
+ <service-point id="aboutDialogue" visibility="private" interface="java.lang.Runnable">
+    An about dialogue
+    <interceptor service-id="system.edtInvoke" />
+    <invoke-factory>
+        <construct class="org.astrogrid.desktop.modules.system.AboutDialogue">
+            <service>browser</service>
+            <string><![CDATA[
+            <html>
+            <h1>VO Desktop v${astrogrid.desktop.version}</h1>      
+            <b><a href="http://www.astrogrid.org">http://www.astrogrid.org</a></b><br>
+            <h2>Contributors</h2>
+             Alasdair&nbsp;Allan, Elizabeth&nbsp;Auden, Kona&nbsp;Andrews, Kevin&nbsp;Benson, Silvia&nbsp;Dalla,
+             Gary&nbsp;Gilchrist, Eduardo&nbsp;Gonzalez&nbsp;Solares, Norman&nbsp;Gray, Paul&nbsp;Harrison,
+             Andrew&nbsp;Lawrence, Tony&nbsp;Linde, Jeff&nbsp;Lusted, Phil&nbsp;Nicholson, Keith&nbsp;Noddle, Jonathan&nbsp;Tedds, 
+            Dave&nbsp;Morris, Catherine&nbsp;Qin, Anita&nbsp;Richards, Guy&nbsp;Rixon, John&nbsp;Taylor,
+            Mark&nbsp;Taylor, Nicholas&nbsp;Walton, Noel&nbsp;Winstanley
+                     
+            <h2>Acknowledgements</h2>
+            Contains code and/or integrates with services provided by 
+            <a href="http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/cadc">Canadian&nbsp;Astronomy&nbsp;Data&nbsp;Center</a>, 
+            <a href="http://cdsweb.u-strasbg.fr/">Centre&nbsp;de&nbsp;Donnees&nbsp;Astronomiques</a>, 
+            <a href="http://esavo.esa.int/">ESA-VO</a>, 
+            <a href="http://plastic.sourceforge.net/">Plastic</a>, 
+            <a href="http://www.us-vo.org/">US&nbsp;National&nbsp;Virtual&nbsp;Observatory</a>, 
+            <a href="http://www.starlink.rl.ac.uk/">Starlink</a>, 
+            <a href="http://eurovotech.org/">Euro-VO&nbsp;VOTech</a>
+            and other <a href="http://www.ivoa.net">International&nbsp;Virtual&nbsp;Observatory&nbsp;Alliance</a> partners.
+
+            <h2>Build Information</h2>
+            Built: ${astrogrid.build.date}<br>
+            At: ${astrogrid.build.location}<br>
+            With ${astrogrid.build.jdk}<br>
+            By: ${astrogrid.build.by}
+            <br>
+            <a href="http://dingo.care2.com/cards/flash/5409/galaxy.swf">perspective</a>
+            </html>
+            ]]></string>
+        </construct>
+    </invoke-factory>
+ </service-point>
  		
 
 <!--  ======================

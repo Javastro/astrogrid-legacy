@@ -3,7 +3,7 @@
 	<!ENTITY descriptors SYSTEM "classpath:/org/astrogrid/desktop/hivemind/ivoa-descriptors.xml">
 	]>
 <module id="ivoa" version="1.0.0" package="org.astrogrid.acr.ivoa">
-	IVOA standard services.
+	IVOA standard services. 
 
 	
 	<contribution configuration-id="framework.descriptors">
@@ -23,16 +23,6 @@
 			<acrService id="cache" interface="CacheFactory" />
 	</contribution>
 	
-	
-	<contribution configuration-id="system.uiStructure" if="not (property ivoa.cache.disabled)">
-		<action parentName="runtime" name="cacheClear" text="Flush Cache" onEventDispatchThread="true"
-			object="service:cache" methodName="flush"  before="reset" after="prefs">
-			<confirmMessage><![CDATA[<html>
-				Remove all cached registry documents and other data?
-				Proceed?
-			]]></confirmMessage>
-		</action>		
-	</contribution>		
 	
 	<!--  =====================
 	ADQL
