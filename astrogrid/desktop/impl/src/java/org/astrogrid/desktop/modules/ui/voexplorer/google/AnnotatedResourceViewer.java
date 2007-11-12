@@ -153,8 +153,8 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Edit
 	}
 
 	public void addTo(UIComponentBodyguard ignored,JTabbedPane t) {
-		t.addTab("Details", IconHelper.loadIcon("info16.png")
-				, scrollPane, "Details of chosen resource");			
+		t.addTab("Information", IconHelper.loadIcon("info16.png")
+				, scrollPane, "Information provided by the resource");			
 	}
 
 	public void clear() {
