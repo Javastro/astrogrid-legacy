@@ -36,13 +36,20 @@ public class ExternalViewerHyperlinkListener implements HyperlinkListener {
 		this.browser = browser;
 		this.registry = registry;
 	}
+	
+	/** listener for just http links */
+	   public ExternalViewerHyperlinkListener(final BrowserControl browser) {
+	        super();
+	        this.browser = browser;
+	        this.registry = null;
+	    }
 
 	public void hyperlinkUpdate(HyperlinkEvent e) {
 		try {
 		if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
 			URL u = e.getURL();
 			if (u != null) { // it's a url the system knows about - so hand it off to the browser.
-				if (u.getProtocol().equals("ivo")) { // double check - incase somehow a URL is produced from a ivo://
+				if (u.getProtocol().equals("ivo") && registry != null) { // double check - incase somehow a URL is produced from a ivo://
 					//registry.search(StringUtils.substringBefore(u.toString(),"#"));
 					registry.open(new URI(u.toString()));
 				} else {
@@ -54,7 +61,7 @@ public class ExternalViewerHyperlinkListener implements HyperlinkListener {
 				AttributeSet a = (AttributeSet)attr.getAttribute(HTML.Tag.A);
 				if (a != null) {
 					String ivoid= (String)a.getAttribute(HTML.Attribute.HREF);
-					if (ivoid != null) {
+					if (ivoid != null && registry != null) {
 						registry.open(new URI(ivoid));
 					}
 				}
