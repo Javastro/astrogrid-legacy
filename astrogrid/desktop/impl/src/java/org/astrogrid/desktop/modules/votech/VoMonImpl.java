@@ -55,12 +55,15 @@ public class VoMonImpl implements VoMonInternal {
 	private final int refreshSeconds;
 	private final Ehcache cache;
 
+	/** catch - prevents any serivce predictions from being made until the vomon status.xml is first downloaded */
+    private boolean populated;
+
 
 	public VoMonBean checkAvailability(URI arg0) {
 		if (arg0 == null) {
 			return null;
 		}
-		if (! cache.getStatus().equals(Status.STATUS_ALIVE)) {
+		if (! populated || ! cache.getStatus().equals(Status.STATUS_ALIVE)) {
 			return null;
 		}
 		Element e = cache.get(arg0);
@@ -164,6 +167,7 @@ public class VoMonImpl implements VoMonInternal {
 					Element el = new Element(appId,serviceArr);
 					cache.put(el);
 			}
+			populated = true; // now got some data.
 		} catch (XMLStreamException x) {
 			throw new ServiceException(x);
 		} catch (IOException x) {
@@ -190,6 +194,7 @@ public class VoMonImpl implements VoMonInternal {
 		this.endpoint = u;
 		this.refreshSeconds = refreshSeconds;
 		this.cache =cache;
+		this.populated = false;
 	}
 
 	
@@ -211,13 +216,16 @@ public class VoMonImpl implements VoMonInternal {
 
 	// higher-level utilities.
     public String getTooltipInformationFor(Resource ri) {
+        if (! populated) {
+            return null;
+        }
         HtmlBuilder result = new HtmlBuilder();
         if (ri instanceof Service) {
             VoMonBean b = checkAvailability(ri.getId());
             if (b == null) {
                 result.append("This resource is unknown to the monitoring service");
             } else {
-                result.append("<b>")
+                result.append("The monitoring service judged this resource to be <b>")
                 .append(b.getStatus())
                 .append("</b> at ")
                 .append(b.getTimestamp());
@@ -227,12 +235,12 @@ public class VoMonImpl implements VoMonInternal {
             if (arr == null || arr.length == 0) {
                 result.append("The monitoring service knows of no providers of this application");
             } else {
-                result.append("Provided by<ul>");
+                result.append("This application is prrovided by the following services:<ul>");
                 for (int i =0; i < arr.length; i++) {
                     VoMonBean b = arr[i];
                     result.append("<li>")
                     .append(b.getId())
-                    .append(" - ")
+                    .append(" - judged to be ")
                     .append(" <b>")
                     .append(b.getStatus())
                     .append("</b> at ")
@@ -245,7 +253,9 @@ public class VoMonImpl implements VoMonInternal {
     }
 
     public Icon suggestIconFor(Resource r) {
-
+        if (! populated) {
+            return null;
+        }
         if (r instanceof Service) {
             VoMonBean b = checkAvailability(r.getId());
             if (b == null) {// unknown
