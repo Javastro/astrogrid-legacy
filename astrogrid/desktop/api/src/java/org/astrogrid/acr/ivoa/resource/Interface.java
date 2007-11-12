@@ -4,7 +4,6 @@
 package org.astrogrid.acr.ivoa.resource;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.util.Arrays;
 
 /** 

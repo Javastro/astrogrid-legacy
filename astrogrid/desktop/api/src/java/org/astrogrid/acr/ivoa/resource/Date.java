@@ -10,6 +10,8 @@ import java.io.Serializable;
              
  * @author Noel Winstanley
  * @since Aug 2, 200612:20:23 PM
+ * 
+ * FIXME rename this to something better
  */
 public class Date implements Serializable {
 	/**

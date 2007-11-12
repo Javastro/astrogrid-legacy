@@ -5,7 +5,6 @@ package org.astrogrid.acr.builtin;
 
 import java.net.URL;
 
-import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.Finder;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotApplicableException;

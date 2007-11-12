@@ -34,7 +34,7 @@ public interface VFS {
 	
 	void delete(URI uri);
 	
-	void delete(URI uri, String wildcard);// good idea?
+	void deleteMany(URI uri, String wildcard);// good idea?
 	
 	URI move(URI src,URI dest); // check - should it be parent,newName instead of dest?
 	

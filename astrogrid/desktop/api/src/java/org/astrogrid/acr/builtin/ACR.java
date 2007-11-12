@@ -1,4 +1,4 @@
-/*$Id: ACR.java,v 1.5 2007/01/24 14:04:46 nw Exp $
+/*$Id: ACR.java,v 1.6 2007/11/12 13:36:27 pah Exp $
  * Created on 15-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,8 +14,6 @@ package org.astrogrid.acr.builtin;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.NotFoundException;
-
-import java.util.Iterator;
 
 /** Interface into a running AR daemon, from which services provided by the AR API can be accessed..
  * 
@@ -72,6 +70,9 @@ public interface ACR {
 
 /* 
  $Log: ACR.java,v $
+ Revision 1.6  2007/11/12 13:36:27  pah
+ change parameter name to structure
+
  Revision 1.5  2007/01/24 14:04:46  nw
  updated my email address
 

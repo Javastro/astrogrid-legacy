@@ -1,4 +1,4 @@
-/*$Id: BrowserControl.java,v 1.5 2007/01/24 14:04:44 nw Exp $
+/*$Id: BrowserControl.java,v 1.6 2007/11/12 13:36:27 pah Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ package org.astrogrid.acr.system;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 /** Control the desktop webbrowser.
@@ -49,6 +48,9 @@ public interface BrowserControl {
 
 /* 
 $Log: BrowserControl.java,v $
+Revision 1.6  2007/11/12 13:36:27  pah
+change parameter name to structure
+
 Revision 1.5  2007/01/24 14:04:44  nw
 updated my email address
 

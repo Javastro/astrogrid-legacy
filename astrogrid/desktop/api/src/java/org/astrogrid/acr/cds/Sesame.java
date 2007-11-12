@@ -9,8 +9,6 @@ package org.astrogrid.acr.cds;
 
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
-
-import org.w3c.dom.Document;
 /**
  * Resolve object  names to position by querying  Simbad and/or NED and/or VizieR.
  * 

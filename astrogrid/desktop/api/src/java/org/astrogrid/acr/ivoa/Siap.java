@@ -1,4 +1,4 @@
-/*$Id: Siap.java,v 1.7 2007/03/08 17:48:06 nw Exp $
+/*$Id: Siap.java,v 1.8 2007/11/12 13:36:27 pah Exp $
  * Created on 17-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -76,7 +76,7 @@ public interface Siap extends Dal {
     * 
     * {@inheritDoc}*/
 public Map[] execute(URL query) throws ServiceException;
-   
+   /* FIXME - this is a redefinition that simply changes the documentation  - causes problems for the C code generation. */
    
    
 }
@@ -84,6 +84,9 @@ public Map[] execute(URL query) throws ServiceException;
 
 /* 
 $Log: Siap.java,v $
+Revision 1.8  2007/11/12 13:36:27  pah
+change parameter name to structure
+
 Revision 1.7  2007/03/08 17:48:06  nw
 tidied.
 

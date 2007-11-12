@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Implementation object that backs Resource instances. Only used internally.

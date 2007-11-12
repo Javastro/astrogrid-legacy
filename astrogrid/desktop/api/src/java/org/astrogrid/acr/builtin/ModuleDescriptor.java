@@ -1,4 +1,4 @@
-/*$Id: ModuleDescriptor.java,v 1.3 2007/01/24 14:04:46 nw Exp $
+/*$Id: ModuleDescriptor.java,v 1.4 2007/11/12 13:36:27 pah Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.acr.builtin;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -69,6 +68,9 @@ public class ModuleDescriptor  extends Descriptor {
 
 /* 
 $Log: ModuleDescriptor.java,v $
+Revision 1.4  2007/11/12 13:36:27  pah
+change parameter name to structure
+
 Revision 1.3  2007/01/24 14:04:46  nw
 updated my email address
 

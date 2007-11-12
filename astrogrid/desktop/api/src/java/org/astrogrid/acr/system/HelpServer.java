@@ -1,4 +1,4 @@
-/*$Id: HelpServer.java,v 1.6 2007/01/24 14:04:44 nw Exp $
+/*$Id: HelpServer.java,v 1.7 2007/11/12 13:36:27 pah Exp $
  * Created on 17-Jun-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,8 +9,6 @@
  *
  **/
 package org.astrogrid.acr.system;
-
-import javax.swing.Action;
 
 /**Control the workbench help viewer.
  *
@@ -31,6 +29,9 @@ public interface HelpServer {
 
 /* 
  $Log: HelpServer.java,v $
+ Revision 1.7  2007/11/12 13:36:27  pah
+ change parameter name to structure
+
  Revision 1.6  2007/01/24 14:04:44  nw
  updated my email address
 

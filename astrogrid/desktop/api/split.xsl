@@ -35,7 +35,7 @@ Used to provide in-program api documentation within the workbench implementation
  		<xsl:with-param name="marker" select="'.'" />
  	</xsl:call-template>
 	</xsl:variable>
-	<redirect:write select="concat($outputDir,$packageName,'-descriptors.xml')">
+	<redirect:write select="concat($outputDir,$packageName,'-descriptors.xml')" >
 	   <xsl:apply-templates select="$services[@package=$curr]">
 		<xsl:sort select="@type" />
 	    </xsl:apply-templates>

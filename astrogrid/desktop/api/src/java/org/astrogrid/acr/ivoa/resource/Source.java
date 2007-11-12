@@ -10,6 +10,7 @@ import java.io.Serializable;
                 derived or extracted.  
  * @author Noel Winstanley
  * @since Jul 31, 20064:55:55 PM
+ * @TODO not a good name - easily confused with astronomical source - better ResourceSource - pah
  */
 public class Source implements Serializable {
 	

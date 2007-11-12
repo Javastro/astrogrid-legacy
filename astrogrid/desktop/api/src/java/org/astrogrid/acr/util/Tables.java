@@ -3,7 +3,6 @@
  */
 package org.astrogrid.acr.util;
 
-import java.io.IOException;
 import java.net.URI;
 
 import org.astrogrid.acr.InvalidArgumentException;

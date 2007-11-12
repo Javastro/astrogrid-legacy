@@ -1,4 +1,4 @@
-/*$Id: Applications.java,v 1.10 2007/03/08 17:46:56 nw Exp $
+/*$Id: Applications.java,v 1.11 2007/11/12 13:36:28 pah Exp $
  * Created on 21-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -172,12 +172,12 @@ public interface Applications {
     
     /** convert a invocation structure to the equivalent document. 
      * 
-     * @param struct a tool structure
+     * @param structure a tool structure
      * @return the equivalent tool document
      * @throws InvalidArgumentException if structure cannot be converted to a document
      * @see #convertDocumentToStruct(Document)
      * */
-   Document convertStructToDocument(Map struct) throws InvalidArgumentException ;
+   Document convertStructToDocument(Map structure) throws InvalidArgumentException ;
     
   /**Validate an invocation document against the  application's description
    * <br />
@@ -295,6 +295,9 @@ public interface Applications {
 
 /* 
  $Log: Applications.java,v $
+ Revision 1.11  2007/11/12 13:36:28  pah
+ change parameter name to structure
+
  Revision 1.10  2007/03/08 17:46:56  nw
  removed deprecated interfaces.
 

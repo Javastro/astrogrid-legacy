@@ -1,4 +1,4 @@
-/*$Id: Finder.java,v 1.15 2007/03/22 18:54:10 nw Exp $
+/*$Id: Finder.java,v 1.16 2007/11/12 13:36:27 pah Exp $
  * Created on 26-Jul-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,8 +9,6 @@
  *
 **/
 package org.astrogrid.acr;
-
-import net.ladypleaser.rmilite.Client;
 
 import org.astrogrid.acr.builtin.ACR;
 import org.astrogrid.acr.builtin.SessionManager;
@@ -482,6 +480,9 @@ public class Finder {
 
 /* 
 $Log: Finder.java,v $
+Revision 1.16  2007/11/12 13:36:27  pah
+change parameter name to structure
+
 Revision 1.15  2007/03/22 18:54:10  nw
 added support for sessions.
 

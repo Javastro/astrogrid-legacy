@@ -1,4 +1,4 @@
-/*$Id: ComponentDescriptor.java,v 1.4 2007/01/24 14:04:45 nw Exp $
+/*$Id: ComponentDescriptor.java,v 1.5 2007/11/12 13:36:27 pah Exp $
  * Created on 10-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.acr.builtin;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -87,6 +86,9 @@ public class ComponentDescriptor extends Descriptor{
 
 /* 
 $Log: ComponentDescriptor.java,v $
+Revision 1.5  2007/11/12 13:36:27  pah
+change parameter name to structure
+
 Revision 1.4  2007/01/24 14:04:45  nw
 updated my email address
 
