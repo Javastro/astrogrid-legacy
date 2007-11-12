@@ -317,15 +317,7 @@ public class ADQLEditorPanel
         public void hierarchyChanged(HierarchyEvent e) {
             long flags = e.getChangeFlags();            
             if ((flags &  HierarchyEvent.SHOWING_CHANGED ) != 0){
-                    if (isShowing()) {
-                        // show the menu entries
-                        it.setVisible(true);
-                        subMenu.setVisible(true);                        
-                    } else {
-                        // hide the menu entries
-                        it.setVisible(false);
-                        subMenu.setVisible(false);                        
-                    }
+                contextMenu.setEnabled(isShowing());
             } else if ((flags &  HierarchyEvent.PARENT_CHANGED) != 0) {
                     if (getParent() == null) {
                         // remove the menu entries
