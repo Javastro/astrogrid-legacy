@@ -7,11 +7,14 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.Action;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JList;
@@ -19,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
@@ -26,6 +30,7 @@ import javax.swing.event.ListSelectionListener;
 
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.pref.Preference;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.comp.ExpandCollapseButton;
 import org.astrogrid.desktop.modules.ui.comp.SearchField;
 import org.astrogrid.desktop.modules.votech.AnnotationService;
@@ -51,7 +56,7 @@ import com.l2fprod.common.swing.JCollapsiblePane;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 14, 20074:14:06 PM
  */
-public class FilterPipelineFactory implements PropertyChangeListener   {
+public class FilterPipelineFactory   {
 
 
 	private final Preference advanced;
@@ -61,7 +66,7 @@ public class FilterPipelineFactory implements PropertyChangeListener   {
         int pipelineSize = 3;
 		
 		// system filters..
-		systemToggle = new JToggleButton(IconHelper.loadIcon("server16.png"),false); 
+		systemToggle = new JCheckBoxMenuItem("Show Technical System Resources",false); 
 		systemToggle.setToolTipText("Show technical system resources");	
 		systemFilteredItems = new FilterList(items
 				,new NotToggleMatcherEditor(systemToggle,new SystemFilter()));
@@ -89,22 +94,35 @@ public class FilterPipelineFactory implements PropertyChangeListener   {
 		
 		// create a toggle button to show / hide the collapsed pane.
 		toggleButton = new ExpandCollapseButton(filterPane);
-		toggleButton.setToolTipText("Expand for further filters");
+		final Action toggleAction = toggleButton.getAction();
+		toggleAction.putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_B,UIComponentMenuBar.MENU_KEYMASK));
+		toggleAction.putValue(Action.NAME,"Show Browser");
+		toggleAction.putValue(Action.SHORT_DESCRIPTION,"Show Browser: Quickly filter this list of resources");
+		filterPane.addPropertyChangeListener("collapsed",new PropertyChangeListener() {
+
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (filterPane.isCollapsed()) {
+                    toggleAction.putValue(Action.NAME,"Show Browser");                   
+                } else {
+                    toggleAction.putValue(Action.NAME,"Hide Browser");                    
+                }
+            }
+		});
 		
-		
-		advanced.addPropertyChangeListener(this);
-		advanced.initializeThroughListener(this);
+		// unused - alwasy show this toggle.
+	//	advanced.addPropertyChangeListener(this);
+	//	advanced.initializeThroughListener(this);
 	}
 	
 	private final EventList totallyFilteredItems;
-	private JToggleButton systemToggle;	
+	private JCheckBoxMenuItem systemToggle;	
 	private final JTextField textField;
 	private final JCollapsiblePane filterPane;
 	private final JToggleButton toggleButton;
     private final FilterList systemFilteredItems;
 	
 	/** toggle button to control filtering of system resources */
-	public JToggleButton getSystemToggleButton() {
+	public JCheckBoxMenuItem getSystemToggleButton() {
 		return systemToggle;
 	}
 	
@@ -459,7 +477,7 @@ public class FilterPipelineFactory implements PropertyChangeListener   {
 		 * @param control
 		 * @param matcher
 		 */
-		public NotToggleMatcherEditor(JToggleButton control, Matcher matcher) {
+		public NotToggleMatcherEditor(JCheckBoxMenuItem control, Matcher matcher) {
 			control.addItemListener(this);
 			realMatcher = matcher;
 			if (! control.isSelected()) {
@@ -481,16 +499,16 @@ public class FilterPipelineFactory implements PropertyChangeListener   {
 		
 	}
 	// triggered when advanced property is flipped.
-    public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getSource() == this.advanced) {
-            if (advanced.asBoolean()) {
-                systemToggle.setVisible(true);
-            } else {
-                systemToggle.setVisible(false);
-                systemToggle.setSelected(false);
-            }
-        }
-    }
+//    public void propertyChange(PropertyChangeEvent evt) {
+//        if (evt.getSource() == this.advanced) {
+//            if (advanced.asBoolean()) {
+//                systemToggle.setVisible(true);
+//            } else {
+//                systemToggle.setVisible(false);
+//                systemToggle.setSelected(false);
+//            }
+//        }
+//    }
 
 
     /** Used for counting size when in 'basic' mode.

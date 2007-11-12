@@ -14,11 +14,16 @@ import java.awt.dnd.DragSourceDropEvent;
 import java.awt.dnd.DragSourceEvent;
 import java.awt.dnd.DragSourceListener;
 import java.awt.dnd.InvalidDnDOperationException;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.List;
 
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
@@ -27,6 +32,7 @@ import javax.swing.table.TableModel;
 
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.dnd.ResourceListTransferable;
 import org.astrogrid.desktop.modules.ui.dnd.ResourceTransferable;
 import org.astrogrid.desktop.modules.votech.VoMonInternal;
@@ -41,10 +47,46 @@ import ca.odell.glazedlists.swing.EventTableModel;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 12, 20077:33:02 PM
  */
-public class ResourceTable extends JTable implements DragGestureListener, DragSourceListener, MouseListener {
+public class ResourceTable extends JTable implements MouseListener {
+    private class SelectAllAction extends AbstractAction {
+        /**
+      * 
+      */
+     public SelectAllAction() {
+         super("Select All");
+     }
+     
+     public void actionPerformed(ActionEvent e) {
+         selectAll();
+     }
+    }
+    
+    private class InvertSelectionAction extends AbstractAction {
+        /**
+      * 
+      */
+     public InvertSelectionAction() {
+         super("Invert Selection");
+     }
+     public void actionPerformed(ActionEvent e) {
+         ((EventSelectionModel)getSelectionModel()).invertSelection();
+     }
+    }
+    private class ClearSelectionAction extends AbstractAction {
+        /**
+         * 
+         */
+        public ClearSelectionAction() {
+            super("Clear Selection");
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            clearSelection();
+        }
+        
+    }
 	private final List items;
 	private final VoMonInternal vomon;
-	private final DragSource dragSource;
 
 	/**
 	 * 
@@ -63,14 +105,19 @@ public class ResourceTable extends JTable implements DragGestureListener, DragSo
 		
 		// drag and drop.
 		resourceImage = IconHelper.loadIcon("doc16.png").getImage();
-		this.dragSource = DragSource.getDefaultDragSource();
-		dragSource.createDefaultDragGestureRecognizer(this,DnDConstants.ACTION_LINK,this);
 		setTransferHandler( new ResourceTableTransferHandler());
 		setDragEnabled(true);
 		//right-click menu.
 		popup = new JPopupMenu();
 		//1.5 only :( setComponentPopupMenu(popup);
 		addMouseListener(this);
+		
+		// setup the actionmap.
+		ActionMap map = getActionMap();
+	      map.put(UIComponentMenuBar.EditMenuBuilder.COPY,TransferHandler.getCopyAction());
+	      map.put(UIComponentMenuBar.EditMenuBuilder.SELECT_ALL,new SelectAllAction());
+	      map.put(UIComponentMenuBar.EditMenuBuilder.INVERT_SELECTION,new InvertSelectionAction());
+	      map.put(UIComponentMenuBar.EditMenuBuilder.CLEAR_SELECTION,new ClearSelectionAction());	      	 				
 	}
 
 	/** construct a tool tip, based on vomon information */
@@ -103,21 +150,15 @@ public class ResourceTable extends JTable implements DragGestureListener, DragSo
 		this.popup = p;
 	}
 	public static final Point OFFSET = new Point(8,8);
-	public static  final Image RESOURCES_IMAGE = IconHelper.loadIcon("multiplefile16.png").getImage();
+	
+	public static  final ImageIcon RESOURCES_ICON = IconHelper.loadIcon("multiplefile16.png");
+
 	private final Image resourceImage;
-	// listen for drag gestures.
-	public void dragGestureRecognized(DragGestureEvent dge) {
-		Transferable trans = getSelectionTransferable();
-		try {
-			dge.startDrag(DragSource.DefaultLinkDrop,trans instanceof ResourceListTransferable ? RESOURCES_IMAGE : resourceImage,OFFSET,trans,this); 
-		} catch (InvalidDnDOperationException e) {
-		    //ignored
-			}
-	}
+
 	
 	private class ResourceTableTransferHandler extends TransferHandler {
 		public int getSourceActions(JComponent c) {
-			return DnDConstants.ACTION_LINK;
+			return COPY;
 		}
 		public boolean canImport(JComponent comp, DataFlavor[] transferFlavors) {
 			return false;
@@ -139,27 +180,6 @@ public class ResourceTable extends JTable implements DragGestureListener, DragSo
 		default:
 			return  new ResourceListTransferable(selected);
 		} 
-	}
-
-	// drag source listener - unsure whether there's anything I want to listen to here..
-	public void dragDropEnd(DragSourceDropEvent dsde) {
-	    //ignored
-	}
-
-	public void dragEnter(DragSourceDragEvent dsde) {
-	    //ignored
-	}
-
-	public void dragExit(DragSourceEvent dse) {
-	    //ignored
-	}
-
-	public void dragOver(DragSourceDragEvent dsde) {
-	    //ignored
-	}
-
-	public void dropActionChanged(DragSourceDragEvent dsde) {
-	    //ignored
 	}
 
 	// mouse listener interface.
