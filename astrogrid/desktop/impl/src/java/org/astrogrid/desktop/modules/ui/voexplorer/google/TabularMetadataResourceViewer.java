@@ -17,8 +17,8 @@ public class TabularMetadataResourceViewer extends TabularMetadataViewer impleme
 
 
 	public void addTo(UIComponentBodyguard parent, JTabbedPane t) {
-		t.addTab("Tables",IconHelper.loadIcon("table16.png")
-				,this,"Tabular schema for this resource");
+		t.addTab("Table Metadata",IconHelper.loadIcon("table16.png")
+				,this,"View the table metadata provided by this resource");
 				
 	}
 
