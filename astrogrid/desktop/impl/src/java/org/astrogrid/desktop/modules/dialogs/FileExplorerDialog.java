@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -30,6 +31,7 @@ import javax.swing.Timer;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs.FileName;
 import org.apache.commons.vfs.FileObject;
@@ -42,6 +44,7 @@ import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.UIDialogueComponentImpl;
+import org.astrogrid.desktop.modules.ui.actions.Activity;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.ui.fileexplorer.StorageView;
@@ -88,7 +91,7 @@ public class FileExplorerDialog extends UIDialogueComponentImpl implements Docum
         JPanel mainPanel = getMainPanel();
 
         // assemble new UI.
-        JComponent foldersPanel = view.getHierarchiesPanel();
+        JComponent foldersPanel = view.getFoldersList();
         JComponent mainViewPanel = view.getMainPanel();
         JComponent mainButtons = view.getMainButtons();
         // combine LHS and RSH
@@ -193,9 +196,6 @@ public class FileExplorerDialog extends UIDialogueComponentImpl implements Docum
             return null;
         }
 
-        public JMenu getMenu() {
-            return null;
-        }
 
         public JPopupMenu getPopupMenu() {
             return null;
@@ -226,6 +226,14 @@ public class FileExplorerDialog extends UIDialogueComponentImpl implements Docum
                 okButton.setEnabled(false);
                 filename.setText(null);
             }
+        }
+
+        public Activity getActivity(Class activityClass) {
+            return null;
+        }
+
+        public Iterator iterator() {
+            return IteratorUtils.emptyIterator();
         }
     }
 
