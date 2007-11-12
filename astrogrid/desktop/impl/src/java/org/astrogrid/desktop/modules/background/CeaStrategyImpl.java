@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.26 2007/10/08 08:31:06 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.27 2007/11/12 11:53:42 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -335,8 +335,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 				                        warn("Failed to retrieve " + val.getValue() + "<br>" + exFormatter.format(e,ExceptionFormatter.ALL));
 				                    }
 				                } else {
-				                    // sugges a file extension here - makes the files stuff work better.
-				                    addResult(val.getName() + suggestExtension(desc),val.getValue());
+				                    addResult(val.getName(),val.getValue());
 				                }
 				            
 				        }
@@ -355,26 +354,29 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 
 		}
 
-		/** work out a suitable file extension for this parameter, if none was provided */
-	    private String suggestExtension(ParameterBean pb) {
-	        if (pb == null) {
-	            return "";
-	        }
-	        String type = pb.getType();
-	        if (type.equalsIgnoreCase("fits")) {
-	            return ".fits";
-	        } else if (type.equalsIgnoreCase("binary")) {
-	            return ".bin";
-	        } else if (type.equalsIgnoreCase("anyxml")) {
-	            return ".xml";
-	        } else if (type.equalsIgnoreCase("votable")) {
-	            return ".vot";
-	        } else if(type.equalsIgnoreCase("adql")) {
-	            return ".adql";
-	        } else {
-	            return ".txt";
-	        }
-	    }
+		/** work out a suitable file extension for this parameter, if none was provided
+		 * 
+		 *  not a good idea - as changes the key names- which is a pain.
+		 *  */
+//	    private String suggestExtension(ParameterBean pb) {
+//	        if (pb == null) {
+//	            return "";
+//	        }
+//	        String type = pb.getType();
+//	        if (type.equalsIgnoreCase("fits")) {
+//	            return ".fits";
+//	        } else if (type.equalsIgnoreCase("binary")) {
+//	            return ".bin";
+//	        } else if (type.equalsIgnoreCase("anyxml")) {
+//	            return ".xml";
+//	        } else if (type.equalsIgnoreCase("votable")) {
+//	            return ".vot";
+//	        } else if(type.equalsIgnoreCase("adql")) {
+//	            return ".adql";
+//	        } else {
+//	            return ".txt";
+//	        }
+//	    }
 
 		private long runAgain = SHORTEST;
 		public long getDelay() {
@@ -625,6 +627,9 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.27  2007/11/12 11:53:42  nw
+fixed result parameter naming.
+
 Revision 1.26  2007/10/08 08:31:06  nw
 improved locating myspace files.
 
