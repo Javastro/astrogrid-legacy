@@ -118,7 +118,7 @@ public class SelfTesterImpl implements SelfTester, Runnable {
          * @throws HeadlessException
          */
         public SelfTestDisplay(UIContext context) throws HeadlessException {
-            super(context);
+            super(context,"Self Testing","ui.selftest");
             
             // a table component, based on the testResults, where all updates occur on the EDT
             JTable table = new JTable(new EventTableModel(
