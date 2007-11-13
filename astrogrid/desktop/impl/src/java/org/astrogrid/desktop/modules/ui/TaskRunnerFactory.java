@@ -3,6 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ui;
 
+import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.ivoa.resource.Resource;
 
 /** factory for the simplified app launcher.
@@ -22,8 +23,8 @@ public class TaskRunnerFactory implements TaskRunnerInternal{
 	
 	public void invokeTask(Resource r) {
 		TaskRunnerInternal tr = newInstance();
-		tr.invokeTask(r);
 		tr.show();
+		tr.invokeTask(r);
 	}
 
 
@@ -42,5 +43,11 @@ public class TaskRunnerFactory implements TaskRunnerInternal{
 		tr.show();
 		return tr;
 	}
+
+    public void edit(FileObject o) {
+        TaskRunnerInternal tr = newInstance();
+        tr.show();        
+        tr.edit(o);
+    }
 
 }
