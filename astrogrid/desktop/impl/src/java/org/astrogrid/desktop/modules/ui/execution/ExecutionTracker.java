@@ -3,6 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ui.execution;
 
+import java.awt.Component;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,10 +16,15 @@ import java.util.EventObject;
 import java.util.Iterator;
 import java.util.Observable;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ActionMap;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -44,11 +50,18 @@ import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
+import org.astrogrid.desktop.modules.ui.actions.InfoActivity;
+import org.astrogrid.desktop.modules.ui.actions.PlasticScavenger;
+import org.astrogrid.desktop.modules.ui.actions.RevealFileActivity;
+import org.astrogrid.desktop.modules.ui.actions.SimpleDownloadActivity;
+import org.astrogrid.desktop.modules.ui.actions.ViewInBrowserActivity;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.comp.ObservableConnector;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator;
 import org.astrogrid.desktop.modules.ui.fileexplorer.NavigableFilesList;
+import org.astrogrid.desktop.modules.ui.taskrunner.TaskRunnerImpl;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 import ca.odell.glazedlists.BasicEventList;
@@ -60,6 +73,9 @@ import ca.odell.glazedlists.impl.ThreadSafeList;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.JEventListPanel;
 
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
 import com.l2fprod.common.swing.JTaskPane;
 
 /** Tracks the execution of a series of remote processes
@@ -69,70 +85,26 @@ import com.l2fprod.common.swing.JTaskPane;
  * @since Jul 16, 20072:06:17 PM
  */
 public class ExecutionTracker implements ListSelectionListener{
-    public static class ShowDetailsEvent extends EventObject {
+    private final static DateFormat df = SimpleDateFormat.getDateTimeInstance();
     
-   private final ProcessMonitor moitor;
-
-/**
-         * @param source
-         */
-        public ShowDetailsEvent(Object source,ProcessMonitor moitor) {
-            super(source);
-            this.moitor = moitor;
-            
-        }
-
-/** access the monitor to show details for .
- * @return the moitor
- */
-public final ProcessMonitor getMoitor() {
-    return this.moitor;
-}
-    }
-    
-    /** listener inteface for a client that displays the details of an executioin.
-     poorly named - at the moment used to reload the invocation params back in the editor.
-     */
-    public interface ShowDetailsListener extends EventListener {
-        public void showDetails(ShowDetailsEvent e);
-    }
-    
-    public void addShowDetailsListener(ShowDetailsListener l) {
-        listeners.add(l);
-    }
-    
-    public void removeShowDetailsListener(ShowDetailsListener l) {
-        listeners.remove(l);
-    }
-    private final ArrayList listeners = new ArrayList();
- 
-    private void fireShowDetails(ProcessMonitor pm) {
-        ShowDetailsEvent e= new ShowDetailsEvent(this,pm);
-        for (Iterator i = listeners.iterator(); i.hasNext();) {
-            ShowDetailsListener l = (ShowDetailsListener) i.next();
-            l.showDetails(e);
-        }
-    }
     /**
      * Logger for this class
      */
     private static final Log logger = LogFactory.getLog(ExecutionTracker.class);
-
-
-	private final TypesafeObjectBuilder uiBuilder;
-
-    private ActivitiesManager activities;
-
-    private final UIComponent parent;
-
-
+    
     public ExecutionTracker(UIComponent parent,RemoteProcessManagerInternal rpmi, TypesafeObjectBuilder uiBuilder, ActivityFactory actFact) {
 		super();
-		logger.debug("creating executioon tracker");
+		logger.debug("creating execution tracker");
         this.parent = parent;
 		this.rpmi = rpmi;
         this.uiBuilder = uiBuilder;
-        this.activities = actFact.create(parent);
+        this.acts = actFact.create(parent,new Class[]{
+                ViewInBrowserActivity.class
+                ,SimpleDownloadActivity.class 
+                ,PlasticScavenger.class
+                ,RevealFileActivity.class
+                ,InfoActivity.class                
+        });
         logger.debug("created activities");
 		monitors = new ThreadSafeList(new BasicEventList()); // trying this instead of a basic event list, to provide a bit more thread-safety without all the hassle of locking myself.
 		// wrap the monitors list with a proxy that fires all updates on the EDT
@@ -153,19 +125,32 @@ public final ProcessMonitor getMoitor() {
 
 
 	}
-	private final EventList monitors;
+    
+    private final ActivitiesManager acts;
+    private final EventList components;
+ 
+    private final ArrayList listeners = new ArrayList();
+    private final EventList monitors;
+
 
 	private JEventListPanel panel;
 
-	// necessary so I can delete the monitors.
+    private final UIComponent parent;
+
+    // necessary so I can delete the monitors.
 	private final RemoteProcessManagerInternal rpmi;
-	
-	/** access the task pane for working with activities */
-	public JTaskPane getTaskPane() {
-	    return activities.getTaskPane();
+
+
+    private final TypesafeObjectBuilder uiBuilder;
+	/** add a new monitor to the tracker 
+	 * @threads can be called on any thread - notifications and updates to display
+	 * are dispatched onto the EDT by this component.
+	 * */
+	public void add(ProcessMonitor pm) {
+	    // modified to add to 'top' of list.
+		monitors.add(0,pm);
 	}
-	
-	
+
 	/** add a monitor for the specified id to the tracker 
      * @threads can be called on any thread - notifications and updates to display
      * are dispatched onto the EDT by this component.	 
@@ -176,29 +161,98 @@ public final ProcessMonitor getMoitor() {
 			add(m);
 		}
 	}
+
+	public void addShowDetailsListener(ShowDetailsListener l) {
+        listeners.add(l);
+    }
+	
+	public final ActivitiesManager getActs() {
+        return this.acts;
+    }
 	
 	
-	/** add a new monitor to the tracker 
-	 * @threads can be called on any thread - notifications and updates to display
-	 * are dispatched onto the EDT by this component.
-	 * */
-	public void add(ProcessMonitor pm) {
-	    // modified to add to 'top' of list.
-		monitors.add(0,pm);
+	public JPanel getPanel() {
+		return panel;
+	}
+	
+	
+	/** access the task pane for working with activities */
+	public JTaskPane getTaskPane() {
+	    return acts.getTaskPane();
 	}
 	public void remove(ProcessMonitor pm) {
 	    monitors.remove(pm);
 	}
-	public JPanel getPanel() {
-		return panel;
-	}
+	public void removeShowDetailsListener(ShowDetailsListener l) {
+        listeners.remove(l);
+    }
 
 
-	private final static DateFormat df = SimpleDateFormat.getDateTimeInstance();
+	public void valueChanged(ListSelectionEvent e) {
+        NavigableFilesList src = (NavigableFilesList) e.getSource();
+        if (! src.isSelectedIndex(e.getFirstIndex())) {
+            return; // only care about selection events, not deselections.
+        }
+        Transferable currentSelection = acts.getCurrentSelection();
+        if (currentSelection == null) { // dunno why I sometimes get a null here, but it seems to happen breifly.
+            return;
+        }
+        // go through the other items of the the list, and if the selection is non-null, clear it.
+        for (Iterator i = components.iterator(); i.hasNext();) {
+            ProcessMonitorDisplay proc = (ProcessMonitorDisplay) i.next();
+            NavigableFilesList list = proc.results;
+            if (list == src) { 
+                continue;
+            }
+            if (! list.isSelectionEmpty()) {
+                list.clearSelection(); // sadly tis fires an event to the shared activities manager, notifying that the selection has now been cleared.
+            }
+        }
+        // a bit ikky -  activity manager has lost it's selection - so now remind it what it's meant to be displaying.        
+        acts.setSelection(currentSelection);
+        
+        
+    }
 
 
-    private final EventList components; 
-	/** container class that holds the ui components required to display a single process monitor
+    private void fireShowDetails(ProcessMonitor pm) {
+        ShowDetailsEvent e= new ShowDetailsEvent(this,pm);
+        for (Iterator i = listeners.iterator(); i.hasNext();) {
+            ShowDetailsListener l = (ShowDetailsListener) i.next();
+            l.showDetails(e);
+        }
+    } 
+	public static class ShowDetailsEvent extends EventObject {
+    
+   /**
+         * @param source
+         */
+        public ShowDetailsEvent(Object source,ProcessMonitor moitor) {
+            super(source);
+            this.moitor = moitor;
+            
+        }
+
+private final ProcessMonitor moitor;
+
+/** access the monitor to show details for .
+ * @return the moitor
+ */
+public final ProcessMonitor getMoitor() {
+    return this.moitor;
+}
+    }
+
+	/** listener inteface for a client that displays the details of an executioin.
+     poorly named - at the moment used to reload the invocation params back in the editor.
+     */
+    public interface ShowDetailsListener extends EventListener {
+        public void showDetails(ShowDetailsEvent e);
+    }
+
+	// list selection listener interface. - used to remove selection in other file views when a click happens in one file view.
+	
+    /** container class that holds the ui components required to display a single process monitor
 	 * 
 	 *  listens to the process manager, and updates ui components on changes.
 	 *  acts as an observable, to notify managing list when this has changed.
@@ -212,7 +266,7 @@ public final ProcessMonitor getMoitor() {
 	 * @author Noel.Winstanley@manchester.ac.uk
 	 * @since Jul 16, 20073:14:55 PM
 	 */
-	private class ProcessMonitorDisplay extends Observable implements ProcessListener, ActionListener {
+	private class ProcessMonitorDisplay extends Observable implements ProcessListener {
 
 	    /** constructor is always called on the EDT, 
 	     * however, need to delegate to the EDT when receiving
@@ -224,71 +278,77 @@ public final ProcessMonitor getMoitor() {
 			this.pm = pm;
 			pm.addProcessListener(this);
 			messageLabel.setFont(UIConstants.SMALL_DIALOG_FONT);
-	
-			deleteButton = new JButton(IconHelper.loadIcon("stop16.png"));
-			//deleteButton.putClientProperty("is3DEnabled",Boolean.FALSE);
-			deleteButton.setRolloverEnabled(true);
-			//deleteButton.setBorderPainted(false);
-			deleteButton.setToolTipText("Cancel task");
-			deleteButton.addActionListener(this);
 			
-			refreshButton = new JButton(IconHelper.loadIcon("reload16.png"));
-            //refreshButton.putClientProperty("is3DEnabled",Boolean.FALSE);
-            //refreshButton.setBorderPainted(false);
-            refreshButton.setRolloverEnabled(true);
-            refreshButton.setToolTipText("Refresh task");
-            refreshButton.addActionListener(this);
-            if (pm instanceof ProcessMonitor.Advanced) {
-                
-                loadParamsButton = new JButton(IconHelper.loadIcon("edit16.png"));
-                loadParamsButton.setToolTipText("Load the parameters used to run this task back into the parameter editor");
-                loadParamsButton.addActionListener(this);
-            } else {     // not available unless it's an 'advanced' monitor.
-                loadParamsButton = null;
-            }
-            
-            navigator = uiBuilder.createFileNavigator(parent,activities);
+			JButton controls = new JButton(IconHelper.loadIcon("downarrow16.png"));
+			final JPopupMenu controlsMenu = new JPopupMenu();
+			controlsMenu.add(refresh);
+			controlsMenu.add(halt);
+			controlsMenu.add(delete);
+			if (pm instanceof ProcessMonitor.Advanced) {
+			    controlsMenu.addSeparator();
+			    controlsMenu.add(loadParams);
+			}
+			controls.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    Component c = (Component) e.getSource();
+                    int px = c.getX();
+                    int py = c.getY() + c.getHeight() + 2;        
+                    if(!controlsMenu.isShowing()) {                 
+                        controlsMenu.show( c, 0, py  );
+                    } else { 
+                        controlsMenu.setVisible(false);
+                    }                  
+                }
+			});            
+            navigator = uiBuilder.createFileNavigator(parent,acts);
             results = new NavigableFilesList(navigator);
+            results.getActionMap().remove(UIComponentMenuBar.EditMenuBuilder.PASTE); // don't allow pasting into this menu.
+
+            
             results.addListSelectionListener(ExecutionTracker.this);
 					populateMsgLabel();			
 					populateStatusLabel();			
 					populateTitleLabel();
 					triggerUpdate();
+					
+			CellConstraints cc = new CellConstraints();
+			FormLayout l = new FormLayout( "20px,fill:60px:grow,d", "p,d,d");
+            PanelBuilder pb = new PanelBuilder(l);
+            pb.add(status,cc.xy(1,1));
+            pb.add(title,cc.xy(2,1));
+            pb.add(controls,cc.xy(3,1));
+            pb.add(messageLabel,cc.xy(2,2));
+            pb.add(results,cc.xyw(1,3,3));
+            displayPanel = pb.getPanel();
+            ActionMap actionMap = title.getActionMap();
+            title.setFocusable(true);
+            actionMap.put(UIComponentMenuBar.EditMenuBuilder.DELETE,delete);
+            actionMap.put(TaskRunnerImpl.HALT,halt);
+            actionMap.put(TaskRunnerImpl.REFRESH,refresh);
+            actionMap.put(TaskRunnerImpl.POPULATE,loadParams);
 		}
-
-		private final ProcessMonitor pm;
-		private final JLabel messageLabel = new JLabel();
-		private final JLabel status = new JLabel(UIConstants.PENDING_ICON);
-		private final JLabel title = new JLabel();
-		private final JButton deleteButton;
-		private final JButton refreshButton;	
-		private final JButton loadParamsButton;
+        
+        private final Action delete = new DeleteAction();
+        private final Action halt = new HaltAction();
+        private final Action loadParams = new LoadParamsAction();
+        private final Action refresh = new RefreshAction();
+        
+        private final JLabel messageLabel = new JLabel();
+        private FileNavigator navigator;
+        private final ProcessMonitor pm;
+		private int previousMsgCount = 0;
 		private final NavigableFilesList results ;
-		
+		private final JPanel displayPanel;
+		private final JLabel status = new JLabel(UIConstants.PENDING_ICON);	
+		private final JLabel title = new JLabel();
+
 		public JComponent getComponent(int ix) {
 			switch(ix) {
 			case 0:
-				return title;
-			case 1:
-				return status;
-			case 2:
-			    return refreshButton;
-			case 3:
-			    return deleteButton;
-			case 4:
-			    return messageLabel;
-			case 5:
-			    return results;
-			case 6:
-			    return loadParamsButton;
+				return displayPanel;
 			default:
 				return new JLabel("invalid index: " + ix);
 			}
-		}
-
-		private void triggerUpdate() {
-			super.setChanged();
-			super.notifyObservers();			
 		}
 
 		// need to delegate to the edt here.
@@ -300,6 +360,7 @@ public final ProcessMonitor getMoitor() {
 				}
 			});
 		}
+
 		public void resultsReceived(ProcessEvent ev) {
 			SwingUtilities.invokeLater(new Runnable() {
 
@@ -318,44 +379,13 @@ public final ProcessMonitor getMoitor() {
 				}
 			});
 		}
-		private FileObject resultsRoot;
-		/** not to be called before task has been 'init()' - as it's not got an ID at that stage */
-		private void populateResults() {
-		    if (!pm.started()) {
-		        // not started - so won't have any results to retrieve.
-		        return;
-		    }
-		    
-		    (new BackgroundWorker(parent,"Listing results") {
-		        private boolean alreadyFoundRoot;
-		        protected Object construct() throws Exception {
-		            if (! alreadyFoundRoot) {
-		                final FileObject root = pm.getResultsFileSystem().getRoot();
-		                if (root.exists()) { // it's created lazily, once children are present.
-		                    alreadyFoundRoot = true;
-		                    return root; // returned on first time.
-		                }
-		            }
-		            return null;
-		        }
-		        
-		        protected void doFinished(Object result) {
-		            if (result != null) {
-		                navigator.move((FileObject)result);		                
-		            } else if  (alreadyFoundRoot) {
-		                navigator.refresh();
-		            }
-		        }
-
-		        protected void doError(Throwable ex) {
-		            messageLabel.setText("Failed to fetch results: " + ExceptionFormatter.formatException(ex));
-	                parent.showTransientError("Failed to fetch results",ExceptionFormatter.formatException(ex));
-	                  
-		        }
-		    }).start();
-		    // got a results root by this point.
-		}
-		
+		private boolean hasFinished() {
+            if (! pm.started()) {
+                return false;
+            }
+            final String stat = pm.getStatus();
+            return stat.equalsIgnoreCase("ERROR") || stat.equalsIgnoreCase("COMPLETED");
+        }
 		private void populateMsgLabel() {
 			try {
 				ExecutionMessage[] messages = pm.getMessages();
@@ -386,18 +416,55 @@ public final ProcessMonitor getMoitor() {
 				messageLabel.setText("inaccessible: " + x.getMessage());
 			}
 		}
-		private int previousMsgCount = 0;
-        private FileNavigator navigator;
+		
+		/** not to be called before task has been 'init()' - as it's not got an ID at that stage */
+		private void populateResults() {
+		    if (!pm.started()) {
+		        // not started - so won't have any results to retrieve.
+		        return;
+		    }
+		    
+		    (new BackgroundWorker(parent,"Listing results") {
+		        private boolean alreadyFoundRoot;
+		        protected Object construct() throws Exception {
+		            if (! alreadyFoundRoot) {
+		                final FileObject root = pm.getResultsFileSystem().getRoot();
+		                if (root.exists()) { // it's created lazily, once children are present.
+		                    alreadyFoundRoot = true;
+		                    return root; // returned on first time.
+		                }
+		            }
+		            return null;
+		        }
+		        
+		        protected void doError(Throwable ex) {
+		            messageLabel.setText("Failed to fetch results: " + ExceptionFormatter.formatException(ex));
+	                parent.showTransientError("Failed to fetch results",ExceptionFormatter.formatException(ex));
+	                  
+		        }
+
+		        protected void doFinished(Object result) {
+		            if (result != null) {
+		                navigator.move((FileObject)result);		                
+		            } else if  (alreadyFoundRoot) {
+		                navigator.refresh();
+		            }
+		        }
+		    }).start();
+		    // got a results root by this point.
+		}
 		// can share this - as is only ever run on EDT.
 		private void populateStatusLabel() {
 			String st = pm.getStatus();
 			if (st.equalsIgnoreCase("error")) {
-			    alterButton();
+			    delete.setEnabled(true);
+			    halt.setEnabled(false);
 				status.setIcon(UIConstants.ERROR_ICON);
 				populateResults();
 			} else if (st.equalsIgnoreCase("completed")) {
 				status.setIcon(UIConstants.COMPLETED_ICON);
-				alterButton();
+                delete.setEnabled(true);
+                halt.setEnabled(false);
 				populateResults();
 			} else if (st.equalsIgnoreCase("pending")) {
 				status.setIcon(UIConstants.PENDING_ICON);
@@ -408,8 +475,7 @@ public final ProcessMonitor getMoitor() {
 			}
 			status.setToolTipText(st);
 		}
-
-		private void populateTitleLabel() {
+        private void populateTitleLabel() {
 			try {
 				ExecutionInformation ei = pm.getExecutionInformation();
 				title.setText(ei.getName());
@@ -451,23 +517,32 @@ public final ProcessMonitor getMoitor() {
 				title.setText("inaccessible: " + x.getMessage());
 			}
 		}
+		private void triggerUpdate() {
+			super.setChanged();
+			super.notifyObservers();			
+		}
 
-        public void actionPerformed(ActionEvent e) {
-            if (e.getSource() == refreshButton && pm.started()) {
-                (new BackgroundWorker(parent,"Refreshing") {
-                    {
-                        setTransient(true);
-                    }
+		/** does the same job as halt - just different labelling */
+		private class DeleteAction extends HaltAction {
+	
+            public DeleteAction() {
+                super("Delete Task",IconHelper.loadIcon("editdelete16.png"));
+                putValue(SHORT_DESCRIPTION,"Delete this task");
+                setEnabled(false);
+            }
 
-                    protected Object construct() throws Exception {
-                        pm.refresh();
-                        return null;
-                    }
-                }).start();
-            } else if (e.getSource() == loadParamsButton) {
-                fireShowDetails(pm);
-            } else {                // do a delete/halt
-                pm.removeProcessListener(this);
+        }
+
+        private class HaltAction extends AbstractAction {
+            public HaltAction(String s, Icon i) {
+                super(s,i);
+            }
+            public HaltAction() {
+                super("Halt Task",IconHelper.loadIcon("stop16.png"));
+                putValue(SHORT_DESCRIPTION,"Halt execution of this task");   
+            }
+            public void actionPerformed(ActionEvent e) {
+                pm.removeProcessListener(ProcessMonitorDisplay.this);
                 monitors.remove(pm);
                 // record these conditions now.. else they might change.
                 final boolean running = pm.started() && ! hasFinished();
@@ -482,24 +557,45 @@ public final ProcessMonitor getMoitor() {
                     protected void doError(Throwable ex) {
                         logger.error("NotFoundException",ex);
                     }
-                }).start();
-            }            
-        }
-        private boolean hasFinished() {
-            if (! pm.started()) {
-                return false;
+                }).start();                
             }
-            final String stat = pm.getStatus();
-            return stat.equalsIgnoreCase("ERROR") || stat.equalsIgnoreCase("COMPLETED");
+        }
+        private class LoadParamsAction extends AbstractAction {
+
+            public LoadParamsAction() {
+                super("Populate Form",IconHelper.loadIcon("edit16.png"));
+                putValue(SHORT_DESCRIPTION,"Load the parameters used to run this task back into the parameter editor");                    
+            }
+            public void actionPerformed(ActionEvent e) {
+                fireShowDetails(pm);
+            }
         }
         
-        private void alterButton() {
-            deleteButton.setToolTipText("Delete this task");
-            deleteButton.setIcon(IconHelper.loadIcon("editdelete16.png"));
+        private class RefreshAction extends AbstractAction {
+            public RefreshAction() {
+                super("Refresh Task",IconHelper.loadIcon("reload16.png"));
+                putValue(SHORT_DESCRIPTION,"Refresh the status of this task");
+                setEnabled(false);
+            }
+            public void actionPerformed(ActionEvent e) {
+                if (!pm.started()) {
+                    return;
+                }
+                (new BackgroundWorker(parent,"Refreshing") {
+                    {
+                        setTransient(true);
+                    }
+
+                    protected Object construct() throws Exception {
+                        pm.refresh();
+                        return null;
+                    }
+                }).start();                
+            }
         }
 	}
 
-	/** produices a panel for each monitor bean - delegates it's implementation to ProcessMonitorDisplay
+    /** produices a panel for each monitor bean - delegates it's implementation to ProcessMonitorDisplay
 	 * 
 	 * @author Noel.Winstanley@manchester.ac.uk
 	 * @since Jul 16, 20075:49:58 PM
@@ -507,51 +603,24 @@ public final ProcessMonitor getMoitor() {
 	private static class TrackerFormat extends JEventListPanel.AbstractFormat {
 
 		public TrackerFormat() {
-			super("p,d,d"// rows
-					,"20px,fill:60px:grow,d,20px,20px" // cols
+			super("pref"// rows
+					,"fill:pref:grow" // cols
 					,"2dlu" // row spacing
 					,"0dlu" // colspacing
-					, new String[]{"2,1","1,1","4,1","5,1","2,2","1,3,4,1","3,1"}
+					, new String[]{"1,1"}
 			);
 		}
+
 
 		public JComponent getComponent(Object element, int component) {
 			return ((ProcessMonitorDisplay)element).getComponent(component);
 		}
 
 		public int getComponentsPerElement() {
-		    return 7;
+		    return 1;
 		}
 
 
 	}
-
-	// list selection listener interface. - used to remove selection in other file views when a click happens in one file view.
-	
-    public void valueChanged(ListSelectionEvent e) {
-        NavigableFilesList src = (NavigableFilesList) e.getSource();
-        if (! src.isSelectedIndex(e.getFirstIndex())) {
-            return; // only care about selection events, not deselections.
-        }
-        Transferable currentSelection = activities.getCurrentSelection();
-        if (currentSelection == null) { // dunno why I sometimes get a null here, but it seems to happen breifly.
-            return;
-        }
-        // go through the other items of the the list, and if the selection is non-null, clear it.
-        for (Iterator i = components.iterator(); i.hasNext();) {
-            ProcessMonitorDisplay proc = (ProcessMonitorDisplay) i.next();
-            NavigableFilesList list = proc.results;
-            if (list == src) { 
-                continue;
-            }
-            if (! list.isSelectionEmpty()) {
-                list.clearSelection(); // sadly tis fires an event to the shared activities manager, notifying that the selection has now been cleared.
-            }
-        }
-        // a bit ikky -  activity manager has lost it's selection - so now remind it what it's meant to be displaying.        
-        activities.setSelection(currentSelection);
-        
-        
-    }
 
 }
