@@ -69,7 +69,7 @@ public abstract class UIComponentMenuBar extends JMenuBar {
 
     public UIComponentMenuBar(UIComponentImpl parent) {
         super();
-        boolean hideSystemOperations = false && SystemUtils.IS_OS_MAC_OSX;
+        boolean hideSystemOperations = SystemUtils.IS_OS_MAC_OSX;
         this.bridge = new ActionBridge();
         this.uiParent = parent;
         this.context = uiParent.getContext();        
