@@ -21,6 +21,7 @@ import org.astrogrid.acr.ServiceException;
 import org.astrogrid.desktop.modules.system.XmlPersist;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 
 /**
  * TreeModel which holds the set of resources for the VOExplorer.
@@ -171,7 +172,9 @@ public class ResourceTreeModel extends DefaultTreeModel {
                             final String subscription) {
         new BackgroundWorker(parent, 
                              "Loading subscription at " + subscription) {
-            {assert isAttached();}
+            {
+                assert isAttached();
+            }
 
             protected Object construct() throws IOException, ServiceException {
 
@@ -208,6 +211,7 @@ public class ResourceTreeModel extends DefaultTreeModel {
                     (ResourceFolder) newNode.getUserObject();
                 newFolder.setSubscription(subscription);
                 newFolder.setName(oldFolder.getName());
+                newFolder.setIconName(oldFolder.getIconName());
                 DefaultMutableTreeNode parentNode =
                     (DefaultMutableTreeNode) oldNode.getParent();
                 int childIndex = parentNode.getIndex(oldNode);
@@ -219,7 +223,7 @@ public class ResourceTreeModel extends DefaultTreeModel {
                 // Prepare and insert node.
                 removeNodeFromParent(oldNode);
                 insertNodeInto(newNode, parentNode, childIndex);
-
+                
                 // Recursively check new node's children for any subscription
                 // elements
                 for (Enumeration en = newNode.children();
@@ -234,7 +238,7 @@ public class ResourceTreeModel extends DefaultTreeModel {
                 if (!isAttached()) {
                     return;
                 }
-
+                parent.showTransientError("Failed to load subscription from " + subscription,ExceptionFormatter.formatException(e));
                 logger.warn("Failed to load subscribed resource list from " +
                             subscription, e);
 
