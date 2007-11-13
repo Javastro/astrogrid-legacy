@@ -27,7 +27,7 @@ public class ResourceListTransferable implements Transferable {
 	 * 
 	 */
 	public ResourceListTransferable(List l) {
-		this.l = l;
+		this.l = new ArrayList(l); // take a copy, else the selection changes as we drag.
 	}
 	
 	private final List l;
