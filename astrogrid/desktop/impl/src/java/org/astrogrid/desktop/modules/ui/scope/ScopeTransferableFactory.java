@@ -94,9 +94,9 @@ public class ScopeTransferableFactory{
 		case 0:
 			return null; 
 		case 1:
-			return new FileObjectTransferable((FileObject)l.get(0));
+			return new FileObjectTransferable((FileObject)l.get(0),false);
 		default:
-			return new FileObjectListTransferable(l);
+			return new FileObjectListTransferable(l); 
 		}
 	}
 

@@ -45,19 +45,19 @@ public class SmartListEditingPanel extends EditingPanel implements ActionListene
 		int row = 1;
 		
 		builder.addLabel("The search named:",cc.xy(2,row));
-		folderName.setText("My new search");
+		folderName.setText("New Search");
 		folderName.setColumns(20);
 		builder.add(folderName,cc.xy(4,row));
 
 		row++;
 		qb = new SrqlQueryBuilderPanel();
 		qb.getClauses().addListEventListener(this);
-		flip = new FlipPanel();
 		flip.add(qb,QB);
-		JLabel l = new JLabel("<html>The query entered is either too complex or malformed,"
-				+ "<br> and so cannot be edited in the form"
+		JLabel l = new JLabel("<html>The query entered is either too complex to be edited in the form"
 				+ "<br>Use the text-entry box below instead");
-		flip.add(l,WARNING);
+		flip.add(l,COMPLEX);
+		l = new JLabel("<html>The query is either empty or cannot be parsed.<br> Provide a correct query using the text-entry box below");
+		flip.add(l,ERROR);
 		builder.add(flip,cc.xyw(2,row,7));
 
 		row++;
@@ -81,7 +81,7 @@ public class SmartListEditingPanel extends EditingPanel implements ActionListene
 
 	private final JTextArea text;
 	private final SrqlQueryBuilderPanel qb;
-	private final FlipPanel flip;
+	private final FlipPanel flip = new FlipPanel();
 	private final QuerySizeIndicator sizing;
 
 	public void setCurrentlyEditing(ResourceFolder currentlyEditing) {
@@ -93,29 +93,32 @@ public class SmartListEditingPanel extends EditingPanel implements ActionListene
 		if (sl.getQuery() != null) {
 			SRQL srql = sl.getQuery();
 			sizing.setValue(srql);
-			if (qb.canDisplayQuery(srql)) {
-					flip.show(QB);
-					qb.setQuery(srql);
-			} else {
-				flip.show(WARNING);
+			if (qb.canDisplayQuery(srql)) { // simple query
+			        qb.setQuery(srql);
+			        showForm();
+			} else { // complex query
+			    showTooComplex();
 				String qText = (String) srql.accept(vis);
 				text.getDocument().removeDocumentListener(this); // temporarily remove listener, to prevent event-cycles. hope this isn't too expensive
 				text.setText(qText);
 				text.getDocument().addDocumentListener(this);
 			}
-		} else {
+		} else { // no query 
 			qb.reset();
+			showForm();
 		}
 	}
 	/** load the edits made into the currentlyEdited resource */
 	public void loadEdits() {
 		super.loadEdits();
 		SmartList sl = (SmartList)getCurrentlyEditing();		
-		if (QB.equals(flip.currentlyShowing())) {
+		if (isFormShowing()) {
 			sl.setQuery(qb.getQuery());
-		} else { // is a complex query, git it from the text box
+		} else if (isTooComplexShowing()){ // is a complex query, git it from the text box
 			sl.setQuery(parseSrqlTextBox());
-		}	
+		}	else {
+		    // error is showing - do nothing
+		}
 	}
 // integration with QuerySizeIndicator..
 	
@@ -159,25 +162,48 @@ public class SmartListEditingPanel extends EditingPanel implements ActionListene
 			text.getDocument().addDocumentListener(this);
 		} else if (e.getSource().equals(textTimer)) {
 			SRQL srql = parseSrqlTextBox();
-			if (srql != null) {
+			if (srql == null) {
+			    showError();
+			} else {
 				sizing.setValue(srql);
 				if (qb.canDisplayQuery(srql)) {
-					flip.show(QB);
+					showForm();
 					qb.getClauses().removeListEventListener(this); // temporarily stop listening.			
 					qb.setQuery(srql);
 					qb.getClauses().addListEventListener(this);				
 				} else {
-					flip.show(WARNING);
+					showTooComplex();
 				}
-			} else {
-				flip.show(WARNING);
 			}
 		} 
 	}	
+	
+	private boolean isFormShowing() {
+	    return QB.equals(flip.currentlyShowing())	 ;   
+	}
+	private boolean isErrorShowing() {
+        return ERROR.equals(flip.currentlyShowing())    ;   	    
+	}
+	private boolean isTooComplexShowing() {
+        return COMPLEX.equals(flip.currentlyShowing())   ;   	    
+	}
+	private void showForm() {
+        flip.show(QB);	    
+        ok.setEnabled(true);
+	}
+	private void showError() {
+	    flip.show(ERROR);
+	    ok.setEnabled(false);
+	}
+	private void showTooComplex() {
+	    flip.show(COMPLEX);
+	    ok.setEnabled(true);
+	}
 
 	private final KeywordSRQLVisitor vis = new KeywordSRQLVisitor();
 	private static final String QB = "qb";
-	private static final String WARNING = "warning";
+	private static final String COMPLEX = "complex";
+	private static final String ERROR = "error";
 	
 	private SRQL parseSrqlTextBox() {
 		String q = text.getText();
@@ -191,6 +217,6 @@ public class SmartListEditingPanel extends EditingPanel implements ActionListene
 
 	// validation @future - check that the query is complete - need to integrate with the query parser.
 	protected boolean shouldOkBeEnabled() {
-		return super.shouldOkBeEnabled() ; 
+		return super.shouldOkBeEnabled() && ! isErrorShowing(); 
 	}
 }
