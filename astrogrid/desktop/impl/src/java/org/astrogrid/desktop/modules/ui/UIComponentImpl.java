@@ -1,4 +1,4 @@
-/*$Id: UIComponentImpl.java,v 1.19 2007/10/12 11:04:00 nw Exp $
+/*$Id: UIComponentImpl.java,v 1.20 2007/11/13 04:51:03 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.desktop.modules.ui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.HeadlessException;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -24,6 +25,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
@@ -58,13 +60,21 @@ public class UIComponentImpl extends JFrame implements UIComponent {
 
     private final UIContext context;
     private final UIComponentAssist assist;
+
+    protected final String applicationName;
+
+    protected final String helpKey;
      /** Construct a new UIComponentImpl
      * @param context
      * @throws HeadlessException
      */
-    public UIComponentImpl(UIContext context) throws HeadlessException {
+    public UIComponentImpl(UIContext context, String name, String helpId) throws HeadlessException {
         this.context = context;
+        this.applicationName = name;
+        setTitle(applicationName);
+        this.helpKey = helpId;
         context.registerWindow(this);
+        context.getHelpServer().enableHelpKey(this.getRootPane(),helpId);
         assist = new UIComponentAssist(this);
         setContentPane(assist.getMainPanel());
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -83,23 +93,6 @@ public class UIComponentImpl extends JFrame implements UIComponent {
 		return this;
 	}
 
-    /** create an action that will display the help viewer */
-    protected Action createHelpAction() {
-    	return new AbstractAction("Help Contents") {
-    		public void actionPerformed(ActionEvent e) {
-    			getContext().getHelpServer().showHelpForTarget("contents");
-    		}
-    	};
-    }
-
-	/** create a help menu, containing a single action */
-    protected JMenu createHelpMenu() {
-    		JMenu helpMenu = new JMenu();
-    		helpMenu.setText("Help");
-    		helpMenu.setMnemonic(KeyEvent.VK_H);
-    		helpMenu.add(createHelpAction());
-    		return helpMenu;
-    }
 
 
 	/** Convenience class - a local subclass of {@link BackgroundWorker} that ties
@@ -125,9 +118,10 @@ public class UIComponentImpl extends JFrame implements UIComponent {
 	/** generic close window action */
      public final class CloseAction extends AbstractAction {
          public CloseAction() {
-             super("Close",IconHelper.loadIcon("close16.png"));
+             super("Close Window",IconHelper.loadIcon("close16.png"));
              this.putValue(SHORT_DESCRIPTION,"Close window");
              this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
+             this.putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_W,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
          }
          public void actionPerformed(ActionEvent e) {
              hide();
@@ -253,6 +247,9 @@ public class UIComponentImpl extends JFrame implements UIComponent {
 
 /* 
 $Log: UIComponentImpl.java,v $
+Revision 1.20  2007/11/13 04:51:03  nw
+Complete - task 229: menuing redesign.
+
 Revision 1.19  2007/10/12 11:04:00  nw
 refactored uiComponent implementations.
 
