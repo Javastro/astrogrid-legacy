@@ -6,6 +6,11 @@ package org.astrogrid.desktop.modules.ui.fileexplorer;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import javax.swing.ActionMap;
+import javax.swing.TransferHandler;
+
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
+
 /** extends files list with 
  *   - ability to select files.
  *   - make this a source for drag and drop (but not a sink)
@@ -16,7 +21,7 @@ import java.awt.event.MouseListener;
  */
 public class OperableFilesList extends FilesList implements MouseListener{
 
-    private final FileModel fileModel;
+    private final Filemodel fileModel;
 
     /**
      * @param files
@@ -24,7 +29,7 @@ public class OperableFilesList extends FilesList implements MouseListener{
      * client of this class to listen for notifications on this model.
      * @param icons
      */
-    public OperableFilesList( IconFinder icons, FileModel fileModel) {
+    public OperableFilesList( IconFinder icons, Filemodel fileModel) {
         super(fileModel.getChildrenList(),  icons);
         this.fileModel = fileModel;
         setSelectionModel(fileModel.getSelection());      
@@ -32,7 +37,14 @@ public class OperableFilesList extends FilesList implements MouseListener{
         
         // dnd
         fileModel.enableDragAndDropFor(this);
-        setDragEnabled(true);        
+        setDragEnabled(true);    
+        
+        // populate the action map with named actions, so they can be triggered from menu.
+        ActionMap aMap = getActionMap();
+        aMap.put(UIComponentMenuBar.EditMenuBuilder.COPY,TransferHandler.getCopyAction());
+        aMap.put(UIComponentMenuBar.EditMenuBuilder.PASTE,TransferHandler.getPasteAction());
+        aMap.put(UIComponentMenuBar.EditMenuBuilder.SELECT_ALL,aMap.get("selectAll"));        
+        aMap.put(UIComponentMenuBar.EditMenuBuilder.CLEAR_SELECTION,aMap.get("clearSelection"));        
     }
 
     

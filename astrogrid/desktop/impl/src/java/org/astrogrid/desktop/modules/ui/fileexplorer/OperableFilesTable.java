@@ -6,7 +6,11 @@ package org.astrogrid.desktop.modules.ui.fileexplorer;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import javax.swing.ActionMap;
+import javax.swing.TransferHandler;
+
 import org.apache.commons.vfs.FileObject;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 
 /** display a table of files, and allow selection, drag-n-drop and right-click popup menu
  * @author Noel.Winstanley@manchester.ac.uk
@@ -15,13 +19,13 @@ import org.apache.commons.vfs.FileObject;
 public class OperableFilesTable extends FilesTable implements MouseListener {
 
 
-    protected final FileModel fileModel;
+    protected final Filemodel fileModel;
 
     /**
      * @param icons
      * @param fileModel
      */
-    public OperableFilesTable(IconFinder icons, FileModel fileModel) {
+    public OperableFilesTable(IconFinder icons, Filemodel fileModel) {
         super(fileModel.getChildrenList(),icons);
         this.fileModel = fileModel;
         //@todo selection doesn't seem to show up.
@@ -30,7 +34,15 @@ public class OperableFilesTable extends FilesTable implements MouseListener {
         
         //dnd
         fileModel.enableDragAndDropFor(this);
-        setDragEnabled(true);        
+        setDragEnabled(true);
+        
+        // populate the action map with named actions, so they can be triggered from menu.
+        ActionMap aMap = getActionMap();
+        aMap.put(UIComponentMenuBar.EditMenuBuilder.COPY,TransferHandler.getCopyAction());
+        aMap.put(UIComponentMenuBar.EditMenuBuilder.PASTE,TransferHandler.getPasteAction());
+        aMap.put(UIComponentMenuBar.EditMenuBuilder.SELECT_ALL,aMap.get("selectAll"));        
+        aMap.put(UIComponentMenuBar.EditMenuBuilder.CLEAR_SELECTION,aMap.get("clearSelection"));        
+        
     }
 
     public String getToolTipText(MouseEvent e) {

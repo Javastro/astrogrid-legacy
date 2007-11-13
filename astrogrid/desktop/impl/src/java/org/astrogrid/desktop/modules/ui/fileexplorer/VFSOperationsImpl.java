@@ -45,4 +45,8 @@ public class VFSOperationsImpl implements VFSOperations {
 		(new BulkMoveWorker(vfs,parent,target,fileObjects)).start();
 	}
 
+    public FileSystemManager getVFS() {
+        return vfs;
+    }
+
 }

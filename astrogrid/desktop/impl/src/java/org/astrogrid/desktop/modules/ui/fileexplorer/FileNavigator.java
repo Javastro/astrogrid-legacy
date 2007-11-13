@@ -5,13 +5,17 @@ package org.astrogrid.desktop.modules.ui.fileexplorer;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 
@@ -27,9 +31,11 @@ import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystem;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
+import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.fileexplorer.History.HistoryEvent;
 import org.astrogrid.desktop.modules.ui.fileexplorer.History.HistoryListener;
 import org.astrogrid.desktop.modules.ui.folders.StorageFolder;
@@ -125,7 +131,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
      */
     private static final Log logger = LogFactory.getLog(FileNavigator.class);
 
-    private final FileModel model;
+    private final Filemodel model;
     private final History history;
     private final UIComponent parent;
     private final EventList upList;
@@ -138,13 +144,13 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
         this.parent = parent;
         this.vfs = vfs;
         this.icons = icons;
-        this.model = FileModel.newInstance(ed,activities,icons,new VFSOperationsImpl(parent,this,vfs));
+        this.model = Filemodel.newInstance(ed,activities,icons,new VFSOperationsImpl(parent,this,vfs));
         this.history = new History();
         history.addHistoryListener(this);
         this.upList = new BasicEventList();
     }
 
-    public FileModel getModel() {
+    public Filemodel getModel() {
         return model;
     }
 
@@ -436,6 +442,9 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
                 FileName name = (FileName) i.next();
                 upList.add(new UpMenuItem(name));
             }
+            upAction.setEnabled(!upList.isEmpty());
+            backAction.setEnabled(history.hasPrevious());
+            forwardAction.setEnabled(history.hasNext());
                         
             loc.setText(loc.getURI());
             if (requested != shown) { // we're meant to be showing a child of this folder.
@@ -470,6 +479,106 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
   //      }
     }
 
+    private final Action goHomeAction = new GoHomeAction();
+    private final Action goWorkspaceAcgtion = new GoWorkspaceAction();
+    private final Action upAction = new UpAction();
+    private final Action backAction = new BackAction();
+    private final Action forwardAction = new ForwardAction();
 
+    private class GoHomeAction extends AbstractAction {
+
+        public GoHomeAction() {
+            super("Home",IconHelper.loadIcon("home16.png"));
+            putValue(SHORT_DESCRIPTION,"Go to home folder");
+            putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_H,UIComponentMenuBar.SHIFT_MENU_KEYMASK));
+        }
+        
+        public void actionPerformed(ActionEvent e) {
+            home();
+        }
+    }
+    
+    private class GoWorkspaceAction extends AbstractAction {
+    
+        public GoWorkspaceAction() {
+            super("Workspace",IconHelper.loadIcon("networkdisk16.png"));
+            putValue(SHORT_DESCRIPTION,"Go to workspace");
+            putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_W,UIComponentMenuBar.SHIFT_MENU_KEYMASK));
+             
+        }
+        public void actionPerformed(ActionEvent e) {
+            move("workspace:///");
+        }                
+    }
+    
+    private class UpAction extends AbstractAction {
+
+        public UpAction() {
+            super("Enclosing Folder");
+            putValue(SHORT_DESCRIPTION,"Move up to the enclosing folder");
+            putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_UP,UIComponentMenuBar.MENU_KEYMASK));
+            setEnabled(false);
+        }
+        public void actionPerformed(ActionEvent e) {
+            up();
+        }
+    }
+    private class BackAction extends AbstractAction {
+
+        public BackAction() {
+            super("Back");
+            putValue(SHORT_DESCRIPTION,"Move up to previous location");
+            putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_OPEN_BRACKET,UIComponentMenuBar.MENU_KEYMASK));
+            setEnabled(false);
+        }
+        public void actionPerformed(ActionEvent e) {
+            previous();
+        }
+    }
+    private class ForwardAction extends AbstractAction {
+
+        public ForwardAction() {
+            super("Forward");
+            putValue(SHORT_DESCRIPTION,"Move up to the next location");
+            putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_CLOSE_BRACKET,UIComponentMenuBar.MENU_KEYMASK));
+            setEnabled(false);
+            
+        }
+        public void actionPerformed(ActionEvent e) {
+            next();
+        }
+    }
+
+    /**
+     * @return the goHomeAction
+     */
+    public final Action getGoHomeAction() {
+        return this.goHomeAction;
+    }
+    /**
+     * @return the goWorkspaceAcgtion
+     */
+    public final Action getGoWorkspaceAcgtion() {
+        return this.goWorkspaceAcgtion;
+    }
+    /**
+     * @return the backAction
+     */
+    public final Action getBackAction() {
+        return this.backAction;
+    }
+    /**
+     * @return the forwardAction
+     */
+    public final Action getForwardAction() {
+        return this.forwardAction;
+    }
+    /**
+     * @return the upAction
+     */
+    public final Action getUpAction() {
+        return this.upAction;
+    }
+    
 
 }

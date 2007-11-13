@@ -1,4 +1,4 @@
-/*$Id: FileExplorerImpl.java,v 1.12 2007/10/12 11:06:47 nw Exp $
+/*$Id: FileExplorerImpl.java,v 1.13 2007/11/13 05:06:04 nw Exp $
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,25 +13,30 @@ package org.astrogrid.desktop.modules.ui.fileexplorer;
 import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
 
-import javax.swing.BorderFactory;
 import javax.swing.JComponent;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 
 import org.apache.commons.vfs.FileObject;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
-import org.astrogrid.desktop.modules.system.ui.ArMainWindow;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
-import org.astrogrid.desktop.modules.system.ui.UIContributionBuilder;
 import org.astrogrid.desktop.modules.ui.FileManagerInternal;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
+import org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity;
+import org.astrogrid.desktop.modules.ui.actions.DeleteFilesActivity;
+import org.astrogrid.desktop.modules.ui.actions.DuplicateActivity;
+import org.astrogrid.desktop.modules.ui.actions.InfoActivity;
+import org.astrogrid.desktop.modules.ui.actions.PlasticScavenger;
+import org.astrogrid.desktop.modules.ui.actions.QueryScopeActivity;
+import org.astrogrid.desktop.modules.ui.actions.RenameActivity;
+import org.astrogrid.desktop.modules.ui.actions.RevealFileActivity;
+import org.astrogrid.desktop.modules.ui.actions.SimpleDownloadActivity;
+import org.astrogrid.desktop.modules.ui.actions.TaskRunnerActivity;
+import org.astrogrid.desktop.modules.ui.actions.ViewInBrowserActivity;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator.NavigationEvent;
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator.NavigationListener;
 
@@ -42,52 +47,90 @@ import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator.NavigationLis
 public class FileExplorerImpl extends UIComponentImpl implements FileManagerInternal, NavigationListener{
 
 	public FileExplorerImpl( final UIContext context,  final ActivityFactory activityBuilder
-			,final UIContributionBuilder menuBuilder
-			, TypesafeObjectBuilder uiBuilder) {
-        super(context);
+			,TypesafeObjectBuilder uiBuilder) {
+        super(context,"File Explorer","fileexplorer.intro");
  
         this.setSize(800, 600);    
         	
-		    getContext().getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.fileExplorer");        
-		    JPanel pane = getMainPanel();
+	    JPanel pane = getMainPanel();
 
-		    // build the actions menu / pane / popup.
-		    activities = activityBuilder.create(this);
+		    // build the actions menu / pane
+		    acts = activityBuilder.create(this,new Class[]{
+		        //    BuildQueryActivity.class - non functional
+		            TaskRunnerActivity.class
+		            ,ViewInBrowserActivity.class
+		            ,SimpleDownloadActivity.class
+		            ,RenameActivity.class
+		            ,DuplicateActivity.class
+		            ,DeleteFilesActivity.class
+		            ,PlasticScavenger.class
+		            ,InfoActivity.class
+		    });
+		    view = uiBuilder.createStorageView(this,acts);
 
-	// build the rest of the menuing system.
-		    JMenuBar menuBar = new JMenuBar();
-	          JMenu fileMenu = new JMenu();
-	            fileMenu.setText("File");
-	            fileMenu.setMnemonic(KeyEvent.VK_F);
-	            fileMenu.add(new JSeparator());
-	            fileMenu.add( new CloseAction());
-	            menuBar.add(fileMenu);
-	            
-	        menuBar.add(activities.getMenu()); 
-	        
-		    menuBuilder.populateWidget(menuBar,this,ArMainWindow.MENUBAR_NAME);
-		    int sz = menuBar.getComponentCount();
-			
-	        JMenu help = menuBar.getMenu(sz-1);
-	        help.insertSeparator(0);
-	        JMenuItem sci = new JMenuItem("FileExplorer: Introduction");
-	        getContext().getHelpServer().enableHelpOnButton(sci,"fileexplorer.intro");
-	        help.insert(sci,0); 			
-			
-			menuBar.add(getContext().createWindowMenu(this),sz-1); // insert before the help menu.
-		    setJMenuBar(menuBar);		
+	// build the menus
+		    UIComponentMenuBar menuBar = new UIComponentMenuBar(this) {
+		        protected void populateFileMenu(FileMenuBuilder fmb) {
+		            fmb.windowOperation(view.getNewFolder())
+		                .windowOperation(view.getFoldersList().getCreate())
+		                .windowOperation(acts.getActivity(ViewInBrowserActivity.class))
+		                //.windowOperation(acts.getActivity(BuildQueryActivity.class)) non functional
+		                .windowOperation(acts.getActivity(TaskRunnerActivity.class))
+		                .windowOperation(acts.getActivity(SimpleDownloadActivity.class))
+		                .windowOperation(view.getUpload());
+		            acts.getActivity(PlasticScavenger.class).addTo(fmb.getMenu());
+		                fmb.closeWindow()
+		                .separator()
+		                .windowOperation(acts.getActivity(RenameActivity.class))
+		                .windowOperation(acts.getActivity(DuplicateActivity.class))
+		                .windowOperation(acts.getActivity(DeleteFilesActivity.class))
+		                .windowOperation(view.getBookmark())
+		                .windowOperation(view.getFoldersList().getEdit())
+		                .windowOperation(view.getFoldersList().getDelete());
+		        }
+		        protected void populateEditMenu(EditMenuBuilder emb) { 
+		            emb.cut()
+		                .copy()
+		                .paste()
+		                .selectAll()
+		                .clearSelection();
+		               // .invertSelection();
+		        }
+		        protected void constructAdditionalMenus() {
+		            MenuBuilder vmb = new MenuBuilder("View",KeyEvent.VK_V)
+		                .windowOperation(view.getRefresh())
+		                .windowOperation(view.getStop())
+		                .separator()
+		                .radiobox(view.getIcons())
+		                .radiobox(view.getList());
+		            add(vmb.create());
+		            
+		            MenuBuilder gmb = new MenuBuilder("Go",KeyEvent.VK_G);
+		            gmb.windowOperation(view.getNavigator().getBackAction())
+		                .windowOperation(view.getNavigator().getForwardAction())
+		                .windowOperation(view.getNavigator().getUpAction())
+		                .separator()
+		                .windowOperationWithIcon(view.getNavigator().getGoHomeAction())
+		                .windowOperationWithIcon(view.getNavigator().getGoWorkspaceAcgtion())
+		                .separator()
+		                .windowOperation(view.getOpenLocation())
+		                .windowOperation(view.getOpenFolder());
+		            add(gmb.create());
+		        }
+		    };
 
-		    view = uiBuilder.createStorageView(this,activities);
-            JComponent foldersPanel = view.getHierarchiesPanel();
-		    JComponent mainPanel = view.getMainPanel();
+	        setJMenuBar(menuBar);		
+
+            JComponent mainPanel = view.getMainPanel();
 		    JComponent mainButtons = view.getMainButtons();
 		 
 		    // assemble all into main window.
-		    final JScrollPane activitiesScroller = new JScrollPane(activities.getTaskPane(),JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		    final JScrollPane activitiesScroller = new JScrollPane(acts.getTaskPane(),JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		    activitiesScroller.setBorder(null);
 			// assemble folders and tasks into LHS 
-		    
-			JSplitPane leftPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, foldersPanel
+		    final JScrollPane foldersScroller = new JScrollPane(view.getFoldersList(),JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		    foldersScroller.setBorder(null);
+			JSplitPane leftPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, foldersScroller
 					,activitiesScroller);
 		    leftPane.setDividerLocation(250);
 		    leftPane.setBorder(null);
@@ -110,23 +153,9 @@ public class FileExplorerImpl extends UIComponentImpl implements FileManagerInte
 // event listener.
   
 	
-	   /** override:  create a help menu with additional entries */
-	   protected JMenu createHelpMenu() {
-		JMenu menu = super.createHelpMenu();
-		menu.insertSeparator(0);
-	/*
-		JMenuItem ref = new JMenuItem("Reference");
-		getHelpServer().enableHelpOnButton(ref, "astroscope.menu.reference");
-		menu.insert(ref,0);
-		*/
-		JMenuItem sci = new JMenuItem("FileExplorer Help");
-		getContext().getHelpServer().enableHelpOnButton(sci, "userInterface.fileExplorer");
-		menu.insert(sci,0);
-		return menu;
-	}
 
-	private final ActivitiesManager activities;
-    private StorageView view;
+	final ActivitiesManager acts;
+    StorageView view;
 	
 	public void show(final FileObject fileToShow) {
 	        view.getNavigator().move(fileToShow);

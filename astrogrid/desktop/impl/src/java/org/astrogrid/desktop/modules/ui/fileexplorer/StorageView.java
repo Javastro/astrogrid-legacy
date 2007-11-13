@@ -6,13 +6,20 @@ package org.astrogrid.desktop.modules.ui.fileexplorer;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Arrays;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -22,6 +29,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileObject;
@@ -35,7 +43,8 @@ import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
-import org.astrogrid.desktop.modules.ui.comp.ActionComboBox;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
+import org.astrogrid.desktop.modules.ui.actions.BulkCopyWorker;
 import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
 import org.astrogrid.desktop.modules.ui.comp.EventListDropDownButton;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
@@ -45,7 +54,6 @@ import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator.BookmarkNavig
 import org.astrogrid.desktop.modules.ui.fileexplorer.FileNavigator.NavigationEvent;
 import org.astrogrid.desktop.modules.ui.folders.StorageFolder;
 
-import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FilterList;
 import ca.odell.glazedlists.ListSelection;
@@ -58,6 +66,7 @@ import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import com.l2fprod.common.swing.JDirectoryChooser;
 /** View for storage.
  * 
  * based on ubuntu nautilus, mostly.
@@ -85,6 +94,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 		public RefreshAction() {
 			super("Refresh",IconHelper.loadIcon("reload22.png"));
 			putValue(Action.SHORT_DESCRIPTION,"Refresh: reload information about the current folder");
+			putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_R,UIComponentMenuBar.MENU_KEYMASK));
 			setEnabled(false);
 		}
 
@@ -105,10 +115,46 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 		}
 	}
 	
+	private class OpenLocationAction extends AbstractAction {
+	    public OpenLocationAction() {
+	        super("Go to Location"+UIComponentMenuBar.ELLIPSIS);
+	        putValue(SHORT_DESCRIPTION,"Navigate to a provided URI");
+	        putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_G,UIComponentMenuBar.MENU_KEYMASK));	        
+	    }
+        public void actionPerformed(ActionEvent e) {
+            location.selectAll();
+            location.requestFocusInWindow();
+        }
+	}
+	
+	private class OpenFolderAction extends AbstractAction {
+
+        public OpenFolderAction() {
+            super("Go to Local Folder"+UIComponentMenuBar.ELLIPSIS);
+            putValue(SHORT_DESCRIPTION,"Select and open a local folder");     
+            putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_G,UIComponentMenuBar.SHIFT_MENU_KEYMASK));                        
+        }
+        public void actionPerformed(ActionEvent e) {
+            JDirectoryChooser chooser = new JDirectoryChooser(SystemUtils.getUserHome());
+            chooser.setShowingCreateDirectory(false);
+            int code = chooser.showOpenDialog(mainPanel);
+            if (code == JDirectoryChooser.APPROVE_OPTION) {
+                try {
+                    URL f = chooser.getSelectedFile().toURL();
+                    navigator.move(f.toString());
+                } catch (MalformedURLException ex) {
+                    parent.showTransientError("Unable to open file",ExceptionFormatter.formatException(ex));
+                }
+            }
+        }
+	}
+	
 	private class StopAction extends AbstractAction {
 		public StopAction() {
 			super("Stop",IconHelper.loadIcon("stop22.png"));
 			putValue(Action.SHORT_DESCRIPTION,"Stop: halt loading of current folder");
+		    putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD,UIComponentMenuBar.MENU_KEYMASK));
+		       
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -119,33 +165,39 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	
 	private class IconsAction extends AbstractAction {
 		public IconsAction() {
-			super("Icons");
-			putValue(Action.SMALL_ICON,IconHelper.loadIcon("iconview22.png"));
+			super("as Icons");
+			//putValue(Action.SMALL_ICON,IconHelper.loadIcon("iconview22.png"));
 			putValue(Action.SHORT_DESCRIPTION,"Icons View: show items as icons");
+			putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_1,UIComponentMenuBar.MENU_KEYMASK));
 		}
 
 		public void actionPerformed(ActionEvent e) {
 			mainPanel.show("list");
+			fileList.requestFocusInWindow();
 			
 		}		
 	}
 	
 	private class ListAction extends AbstractAction {
 		public ListAction() {
-			super("List");
-			putValue(Action.SMALL_ICON,IconHelper.loadIcon("listview22.png"));
+			super("as List");
+			//putValue(Action.SMALL_ICON,IconHelper.loadIcon("listview22.png"));
 			putValue(Action.SHORT_DESCRIPTION,"List View: show items as a list");
+            putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_2,UIComponentMenuBar.MENU_KEYMASK));
+
 		}
 
 		public void actionPerformed(ActionEvent e) {
 			mainPanel.show("table");
+			fileTable.requestFocusInWindow();
 		}		
 	}
 	
 	private class BookmarkAction extends AbstractAction {
 		public BookmarkAction() {
-			super("Add Bookmark", IconHelper.loadIcon("addbookmark22.png"));
+			super("Bookmark this Folder", IconHelper.loadIcon("addbookmark22.png"));
 			putValue(Action.SHORT_DESCRIPTION,"Bookmark the current location");
+			putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_K,UIComponentMenuBar.MENU_KEYMASK));
 			setEnabled(false);
 		}
 		public void actionPerformed(ActionEvent e) {
@@ -164,10 +216,36 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 		}
 	}
 	
+	private class UploadAction extends AbstractAction {
+	    /**
+         * 
+         */
+        public UploadAction() {
+            super("Upload"+UIComponentMenuBar.ELLIPSIS);
+            putValue(Action.SHORT_DESCRIPTION,"Upload local files to this folder");
+            putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_UP,UIComponentMenuBar.SHIFT_MENU_KEYMASK));
+            setEnabled(true);
+        }
+        public void actionPerformed(ActionEvent e) {
+            FileObject base = navigator.current();
+            JFileChooser chooser = new JFileChooser(SystemUtils.getUserHome());
+            chooser.setDialogTitle("Choose files to upload");
+            chooser.setApproveButtonText("Upload");
+            chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+            chooser.setMultiSelectionEnabled(true);
+            int code = chooser.showOpenDialog(getParent().getComponent());
+            if (code == JFileChooser.APPROVE_OPTION) {
+                File[] files = chooser.getSelectedFiles();
+                new BulkCopyWorker(vfs,getParent(),base,Arrays.asList(files)).start();
+            }
+        }
+	}
+	
 	private class NewFolderAction extends AbstractAction {
 	    public  NewFolderAction() {
-	        super("New Folder", IconHelper.loadIcon("foldernew16.png"));
+	        super("New Folder"+UIComponentMenuBar.ELLIPSIS, IconHelper.loadIcon("foldernew16.png"));
 	        putValue(Action.SHORT_DESCRIPTION,"Create a new folder in the current location");
+	        putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_N,UIComponentMenuBar.MENU_KEYMASK));
 	        setEnabled(true);
 	    }
 	    public void actionPerformed(ActionEvent e) {
@@ -207,6 +285,11 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     		foldersListFilter = new MutableMatcherEditor();
             this.foldersList = new FilterList(unfilteredfoldersList,foldersListFilter);
     		
+            ButtonGroup bg = new ButtonGroup();
+            bg.add(icons);
+            bg.add(list);
+            icons.setSelected(true);
+            
     		// core model.
             SearchField filter = new SearchField("Filter files");		
             MatcherEditor ed = new TextComponentMatcherEditor(filter.getWrappedDocument(),new FileObjectFilterator());
@@ -230,15 +313,15 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     	    RangeList historyRange = new RangeList(navigator.getPreviousList());
     	    historyRange.setTailRange(navigator.getMaxHistorySize(),1); // not including the current.
     	    back = new EventListDropDownButton(new JButton(IconHelper.loadIcon("previous22.png")),historyRange,true);
-    	    back.setToolTipText("Back: See folders you viewed previously");
+    	    back.getMainButton().setToolTipText("Back: See folders you viewed previously");
     	    builder.add(back,cc.xy(r++,c));
     	    // next button.
     	    forward = new EventListDropDownButton(new JButton(IconHelper.loadIcon("next22.png")),navigator.getNextList(),true);
-    	    forward.setToolTipText("Forward: See folders you viewed previously");
+    	    forward.getMainButton().setToolTipText("Forward: See folders you viewed previously");
     	    builder.add(forward,cc.xy(r++,c));
     	    r++;
     	    up = new EventListDropDownButton(new JButton(IconHelper.loadIcon("up22.png")),navigator.getUpList(),false);
-    	    up.setToolTipText("Up: navigate to the parent of the current folder");
+    	    up.getMainButton().setToolTipText("Up: navigate to the parent of the current folder");
     	    builder.add(up,cc.xy(r++,c));
     	    r++;
     	    builder.addLabel("Location",cc.xy(r++,c));
@@ -260,6 +343,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     	    		+ "<br>sftp://myusername:mypassword@somehost/pub/downloads/somefile.tgz"
     	    		//@todo add examples of myspace and vospace schemes.
     	    );
+           
     	    builder.add(location,cc.xy(r++,c));
     	    r++;
     		goButton = new BiStateButton(go,stop,true);
@@ -269,12 +353,15 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     	    builder.add(createMainButton(bookmark),cc.xy(r++,c));
     	    builder.add(createMainButton(newFolder),cc.xy(r++,c));
     	    r++;
+    	    /* can't be bothered making this track the menu entries, so remove - declutters.
     	    views = new BasicEventList();
     	    views.add(icons);
     	    views.add(list);    	   
     	    final ActionComboBox viewsCombo = new ActionComboBox(views);
     	    viewsCombo.setToolTipText("Views: alter how the folder contents are displayed");
             builder.add(viewsCombo,cc.xy(r++,c));
+            */
+    	    r++; // instead
     	    r++;
     	    // filter was created much earlier.
     	    builder.add(filter,cc.xy(r++,c));
@@ -287,21 +374,21 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     		fileList =  new NavigableFilesList(navigator);
     	    fileTable = new NavigableFilesTable( navigator); 
     	    mainPanel = new FlipPanel();
-    	    mainPanel.add(new JScrollPane(fileList,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER)
+    	    mainPanel.add(new JScrollPane(fileList,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER)
     	    		,"list");
-    	    final JScrollPane tableScroll = new JScrollPane(fileTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    	    final JScrollPane tableScroll = new JScrollPane(fileTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     	    tableScroll.getViewport().setBackground(Color.WHITE);
             mainPanel.add(tableScroll,"table");
-    	    //@todo make it easer to add further views to the main panel.
     
       // finally, select first item in the views list, to start the whole thing going.
     	    folders.clearSelection();
     	    folders.setSelectedIndex(0);
+    	    fileList.requestFocusInWindow();
     	}
 	// list of folders being displayed in LHS
 	private final EventList foldersList;
 	// list of Actions for selecting between different views.
-	private final EventList views;
+	//private final EventList views;
 	private final StorageFoldersList folders;
 	private final NavigableFilesList fileList;
 	private final JTable fileTable;
@@ -313,15 +400,19 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	private final EventListDropDownButton up;
 	private final Action refresh = new RefreshAction();
 	private final Action stop = new StopAction();
+	private final Action openFolder = new OpenFolderAction();
+	private final Action openLocation = new OpenLocationAction();
 	private final Action go = new GoAction();
-	private final Action icons = new IconsAction();
-	private final Action list = new ListAction();
+	private final JRadioButtonMenuItem icons = new JRadioButtonMenuItem(new IconsAction());
+	private final JRadioButtonMenuItem list = new JRadioButtonMenuItem(new ListAction());
 	private final Action bookmark = new BookmarkAction();
 	private final Action newFolder = new NewFolderAction();
+
 	private final FileNavigator navigator;
 	private final JTextField location;
 	private final BiStateButton goButton;
     private final MutableMatcherEditor foldersListFilter;
+    private final Action upload = new UploadAction();
 
 	
 	/** create and configure a button from an action */
@@ -342,7 +433,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 		b.putClientProperty("is3DEnabled", Boolean.FALSE);		
 	}
 
-	public StorageFoldersList getHierarchiesPanel() {
+	public StorageFoldersList getFoldersList() {
 		return folders;
 	}
 
@@ -451,6 +542,74 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
     public final FileSystemManager getVfs() {
         return this.vfs;
     }
+
+
+    /**
+     * @return the refresh action
+     */
+    public final Action getRefresh() {
+        return this.refresh;
+    }
+
+    /**
+     * @return the stop action
+     */
+    public final Action getStop() {
+        return this.stop;
+    }
+
+
+    /**
+     * @return the icons action
+     */
+    public final JRadioButtonMenuItem getIcons() {
+        return this.icons;
+    }
+
+    /**
+     * @return the list action
+     */
+    public final JRadioButtonMenuItem getList() {
+        return this.list;
+    }
+
+    /**
+     * @return the bookmark action
+      */
+    public final Action getBookmark() {
+        return this.bookmark;
+    }
+
+    /**
+     * @return the newFolder action
+     */
+    public final Action getNewFolder() {
+        return this.newFolder;
+    }
+
+    /**
+     * @return the openFolder
+     */
+    public final Action getOpenFolder() {
+        return this.openFolder;
+    }
+
+    /**
+     * @return the openLocation
+     */
+    public final Action getOpenLocation() {
+        return this.openLocation;
+    }
+
+    /**
+     * @return
+     */
+    public Action getUpload() {
+        return this.upload;
+    }
+
+
+
 
 
 }

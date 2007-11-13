@@ -4,8 +4,12 @@
 package org.astrogrid.desktop.modules.ui.fileexplorer;
 
 import java.awt.Component;
+import java.awt.Event;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDragEvent;
@@ -14,36 +18,57 @@ import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StreamTokenizer;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.StringTokenizer;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.Icon;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import javax.swing.TransferHandler;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.vfs.FileName;
 import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.ui.folders.Folder;
 import org.astrogrid.desktop.modules.ui.folders.StorageFolder;
 import org.astrogrid.desktop.modules.ui.voexplorer.ResourceLists;
+import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTable;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.swing.EventListModel;
@@ -56,18 +81,25 @@ import ca.odell.glazedlists.swing.EventListModel;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 26, 200710:24:52 PM
  */
-public class StorageFoldersList extends JList implements DropTargetListener, ListSelectionListener, ActionListener, MouseListener {
+public class StorageFoldersList extends JList implements  ListSelectionListener,MouseListener {
 	/**
 	 * Logger for this class
 	 */
 	private static final Log logger = LogFactory
 			.getLog(StorageFoldersList.class);
+    private final FileSystemManager vfs;
 
 	public StorageFoldersList(EventList folderList, UIComponent parent,FileSystemManager vfs) {
 		this.parent = parent;
+        this.vfs = vfs;
 		CSH.setHelpIDString(this,"storageFolders");
 		this.folderList = folderList;
-		setDropTarget(new DropTarget(this,DnDConstants.ACTION_LINK,this));
+		this.delete = new DeleteBookmarkAction();
+		this.edit = new EditBookmarkAction();
+		this.create = new NewBookmarkAction();
+		
+		setTransferHandler(new StorageFoldersListTransferHandler());
+		setDragEnabled(true);
 		
 		setBorder(ResourceLists.EMPTY_BORDER);
 		setModel(new EventListModel(folderList));
@@ -78,175 +110,122 @@ public class StorageFoldersList extends JList implements DropTargetListener, Lis
 			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 				JLabel l = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected,
 						cellHasFocus);
-				Folder f = (Folder)value;				
+				StorageFolder f = (StorageFolder)value;				
 				l.setText(f == null ? "" : f.getName());
 				l.setIcon(f == null ? null : f.getIcon());
+				l.setToolTipText(f.getUriString());
 				return l;
 			}
 		});	
-		// build a button bar.
-		add = new JMenuItem("New",IconHelper.loadIcon("editadd16.png"));
-		add.setToolTipText("Add a mount or favorite folder");
-		add.addActionListener(this);
 		
-		remove = new JMenuItem("Remove",IconHelper.loadIcon("editremove16.png"));
-		remove.setToolTipText("Remove a favorite or mount");
-		remove.setEnabled(false);
-		remove.addActionListener(this);
-		
-		properties = new JMenuItem("Properties",IconHelper.loadIcon("edit16.png"));
-		properties.setToolTipText("Edit a favorite or mount");
-		properties.setEnabled(false);
-		properties.addActionListener(this);
+		// build a popup menu
 		popup = new JPopupMenu();
-		popup.add(add);
-		popup.add(remove);
-		popup.add(properties);
+		popup.add(create);
+		popup.add(delete);
+		popup.add(edit);
 		addMouseListener(this);
 		
 	}
-	private final JMenuItem add;
-	private final JMenuItem remove;
-	private final JMenuItem properties;
+	
+	private class NewBookmarkAction extends AbstractAction {
+
+        public NewBookmarkAction() {
+            super("New Bookmark" + UIComponentMenuBar.ELLIPSIS,IconHelper.loadIcon("editadd16.png"));
+            putValue(SHORT_DESCRIPTION,"Add a new bookmark");
+            putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_N,UIComponentMenuBar.SHIFT_MENU_KEYMASK));
+        }
+        public void actionPerformed(ActionEvent e) {
+            StorageFolder f = new StorageFolder();
+            String n = JOptionPane.showInputDialog(StorageFoldersList.this,"Choose a name for this bookmark");
+            if (n == null) {
+                return;
+            }
+            f.setName(n);
+            while(true) {
+                try {
+                    String s = JOptionPane.showInputDialog(StorageFoldersList.this,"Enter the URI for this bookmark");
+                    if (s == null) {
+                        return;
+                    }
+                    f.setUriString(s);
+                    break;
+                } catch (URISyntaxException ex) {
+                    parent.showTransientError("Invalid URI",ExceptionFormatter.formatException(ex));
+                }
+            }
+            folderList.add(f);            
+        }
+	}
+	
+	private class DeleteBookmarkAction extends AbstractAction {
+
+        public DeleteBookmarkAction() {
+            super("Delete Bookmark",IconHelper.loadIcon("editremove16.png"));
+            putValue(SHORT_DESCRIPTION,"Remove a bookmark");
+            putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE,UIComponentMenuBar.SHIFT_MENU_KEYMASK));
+            setEnabled(false);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            Folder f = (Folder)getSelectedValue();
+            if (f != null) {
+                folderList.remove(f);
+                setSelectedIndex(0);
+            }            
+        }
+	}
+	private class EditBookmarkAction extends AbstractAction {
+
+        public EditBookmarkAction() {
+            super("Edit Bookmark" + UIComponentMenuBar.ELLIPSIS,IconHelper.loadIcon("edit16.png"));
+            putValue(SHORT_DESCRIPTION,"Edit a bookmark");
+            putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_E,UIComponentMenuBar.MENU_KEYMASK));
+            setEnabled(false);
+        }
+        public void actionPerformed(ActionEvent e) {
+            StorageFolder f = (StorageFolder)getSelectedValue();
+            int ix = getSelectedIndex();
+            if (f != null) {
+                final String newName = JOptionPane.showInputDialog(StorageFoldersList.this,"Rename this bookmark",f.getName());
+                if (newName == null) {
+                    return;
+                }               
+                f.setName(newName);
+                while(true) {
+                    try {
+                        String s = JOptionPane.showInputDialog(StorageFoldersList.this,"Edit the URI for this bookmark",f.getUriString());
+                        if (s == null) {
+                            break; // user pressed cancel - probably just wante to edit the name.
+                        }
+                        f.setUriString(s);
+                        break;
+                    } catch (URISyntaxException ex) {
+                        parent.showTransientError("Invalid URI",ExceptionFormatter.formatException(ex));
+                    }
+                }               
+                // although we're aliasing, do this to notify the folder list that things have changed.
+                folderList.set(ix,f);
+            }
+        }
+	}
+	
+	private final Action edit;
+	private final Action create;
+	private final Action delete;
 	private final JPopupMenu popup;
 	private final EventList folderList;
 	private final UIComponent parent;
 
-	private final static DataFlavor[] inputFlavors = new DataFlavor[]{
-		VoDataFlavour.LOCAL_FILEOBJECT
-	//	,VoDataFlavour.LOCAL_FILEOBJECT_LIST don't know what to do with a multiple selection at the moment
-		,VoDataFlavour.LOCAL_URI
-		,VoDataFlavour.LOCAL_URL
-	//	,VoDataFlavour.URL
-//		,VoDataFlavour.URI_LIST
-	};
-
-	private final static Predicate dragPredicate = new Predicate() {
-		public boolean evaluate(Object arg0) {
-			return ArrayUtils.contains(inputFlavors,arg0);
-		}
-	};
-
-	public void dragEnter(DropTargetDragEvent dtde) {
-		if (CollectionUtils.exists(dtde.getCurrentDataFlavorsAsList(),dragPredicate)) {
-			dtde.acceptDrag(DnDConstants.ACTION_LINK);
-			this.setBorder(ResourceLists.DROP_BORDER);
-		}		
-	}
-	public void dragExit(DropTargetEvent dte) {
-		setBorder(ResourceLists.EMPTY_BORDER);		
-	}
-	public void dragOver(DropTargetDragEvent dtde) {
-		//unused
-	}
-	public void drop(DropTargetDropEvent dtde) {
-		setBorder(ResourceLists.EMPTY_BORDER);
-		Transferable t = dtde.getTransferable();
-		if (CollectionUtils.exists(dtde.getCurrentDataFlavorsAsList(),dragPredicate)) {
-			dtde.acceptDrop(DnDConstants.ACTION_LINK);
-			try {
-				StorageFolder sf = null;
-				if (t.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT)) {
-					FileObject fo = (FileObject)t.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT);
-					if (fo.getType().hasChildren()) {
-						sf =new StorageFolder();
-						sf.setFile(fo);
-						sf.setName(fo.getName().getBaseName());
-						sf.setUriString(fo.getName().getURI());
-					} // rejects non-folders.
-				} else if (t.isDataFlavorSupported(VoDataFlavour.LOCAL_URI) ){
-					URI u = (URI)t.getTransferData(VoDataFlavour.LOCAL_URI);
-					sf = new StorageFolder();
-					sf.setName(u.toString());
-					sf.setUriString(u.toString());
-				} else if (t.isDataFlavorSupported(VoDataFlavour.LOCAL_URL)) {
-					URL u = (URL)t.getTransferData(VoDataFlavour.LOCAL_URL);
-					sf = new StorageFolder();
-					sf.setName(u.toString());
-					sf.setUriString(u.toString());					
-				} else {
-					logger.warn("Unknown type of transferable " + t);
-				}
-				if (sf != null) {
-					folderList.add(sf);		
-					dtde.dropComplete(true);
-				} else {
-					dtde.dropComplete(false);
-				}
-			} catch (Exception e) {
-				dtde.dropComplete(false);
-			}
-		} else {
-			dtde.rejectDrop();
-		}
-
-	}
-	public void dropActionChanged(DropTargetDragEvent dtde) {
-		//ignored
-	}
 	// listening to myself.
 	public void valueChanged(ListSelectionEvent e) {
 		if (e.getSource() != this || e.getValueIsAdjusting()) {
 			return; // ignore
 		}
 		Folder f = (Folder) getSelectedValue();
-		remove.setEnabled(f != null);
-		properties.setEnabled(f != null);		
+		delete.setEnabled(f != null);
+		edit.setEnabled(f != null);		
 	}
-	public void actionPerformed(ActionEvent e) {
-		// process add/ remove/ properties calls.
-		if (e.getSource() == add) {
-			StorageFolder f = new StorageFolder();
-			String n = JOptionPane.showInputDialog(this,"Choos a name for this folder");
-			if (n == null) {
-				return;
-			}
-			f.setName(n);
-			while(true) {
-				try {
-					String s = JOptionPane.showInputDialog(this,"Enter the URI for this folder");
-					if (s == null) {
-						return;
-					}
-					f.setUriString(s);
-					break;
-				} catch (URISyntaxException ex) {
-					JOptionPane.showMessageDialog(this,ex.getMessage(),"Invalid URI",JOptionPane.ERROR_MESSAGE);
-				}
-			}
-			folderList.add(f);
-		} else if (e.getSource() == remove) {
-			Folder f = (Folder)getSelectedValue();
-			if (f != null) {
-				folderList.remove(f);
-				setSelectedIndex(0);
-			}
-		} else if(e.getSource() == properties) {
-			StorageFolder f = (StorageFolder)getSelectedValue();
-			int ix = getSelectedIndex();
-			if (f != null) {
-				final String newName = JOptionPane.showInputDialog(this,"Rename this folder",f.getName());
-				if (newName == null) {
-					return;
-				}				
-				f.setName(newName);
-				while(true) {
-					try {
-						String s = JOptionPane.showInputDialog(this,"Edit the URI for this folder",f.getUriString());
-						if (s == null) {
-							break; // user pressed cancel - probably just wante to edit the name.
-						}
-						f.setUriString(s);
-						break;
-					} catch (URISyntaxException ex) {
-						JOptionPane.showMessageDialog(this,ex.getMessage(),"Invalid URI",JOptionPane.ERROR_MESSAGE);
-					}
-				}				
-				// although we're aliasing, do this to notify the folder list that things have changed.
-				folderList.set(ix,f);
-			}
-		}		
-	}
+
 //	 listen for popup menu trigger.
 	public void mouseClicked(MouseEvent e) {
 	}
@@ -272,5 +251,194 @@ public class StorageFoldersList extends JList implements DropTargetListener, Lis
 	         event.getX(), event.getY() );
 	   }
 	}	
+	
+	private final static DataFlavor[] inputFlavors = new DataFlavor[]{
+	    VoDataFlavour.LOCAL_FILEOBJECT
+	    //	,VoDataFlavour.LOCAL_FILEOBJECT_LIST don't know what to do with a multiple selection at the moment
+	    ,VoDataFlavour.LOCAL_URI
+	    ,VoDataFlavour.LOCAL_URL
+	    ,VoDataFlavour.URL
+		,VoDataFlavour.URI_LIST
+		,VoDataFlavour.URI_LIST_STRING
+		,VoDataFlavour.STRING
+	};
+	/** transfer handler - accepts drops of file objects, and also allows export of uri of 
+	 * a storage folder */
+	private class StorageFoldersListTransferHandler extends TransferHandler {
+
+	    public int getSourceActions(JComponent c) {
+	        return COPY;
+	    }
+	    public boolean canImport(JComponent comp, DataFlavor[] transferFlavors) {
+	        // don't want to import into self - how do I prevent that?
+	        // can't here - but can in thje 'import data' method
+	        for (int i = 0; i < transferFlavors.length; i++) {
+                if (ArrayUtils.contains(inputFlavors,transferFlavors[i])){
+                    return true;
+                }
+            }
+	        return false;	        
+	    }
+	    
+	    public boolean importData(JComponent comp, Transferable t) {
+	        if (t instanceof StorageFoldersListTransferable || ! canImport(comp,t.getTransferDataFlavors())) {
+	            return false; // don't import things that originate here
+	        }
+	        try {
+                StorageFolder sf = null;
+                if (t.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT)) {
+                    FileObject fo = (FileObject)t.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT);
+                    if (fo.getType().hasChildren()) {
+                        sf = build(fo.getName());
+                        sf.setFile(fo);
+                    } // rejects non-folders.
+                } else if (t.isDataFlavorSupported(VoDataFlavour.LOCAL_URI) ){
+                    sf = build(t.getTransferData(VoDataFlavour.LOCAL_URI));
+                } else if (t.isDataFlavorSupported(VoDataFlavour.LOCAL_URL)) {
+                    sf = build(t.getTransferData(VoDataFlavour.LOCAL_URL));
+                } else if (t.isDataFlavorSupported(VoDataFlavour.URL)) {
+                    final URL u = (URL) t.getTransferData(VoDataFlavour.URL);
+                    // this is a url received from outside. it probably doesn't follow java's
+                    // broken conventions for a file url - so we need to 'break it' before passing it on.
+                    sf = build(VoDataFlavour.mkJavanese(u));
+                } else if (t.isDataFlavorSupported(VoDataFlavour.URI_LIST)) {
+                    BufferedReader r = null;
+                    try {
+                        InputStream is = (InputStream)t.getTransferData(VoDataFlavour.URI_LIST);
+                        r = new BufferedReader(new InputStreamReader(is));
+                        String line;
+                        // we only parse the first in the list.
+                        if ((line = r.readLine()) != null) {
+                            // must be a url (as we've registered a url handler for all our types of uri)
+                            URL u = VoDataFlavour.mkJavanese(new URL(line.trim()));
+                            sf = build(u);
+                        }                        
+                    } finally {
+                        if (r != null) {
+                            try { r.close(); } catch (IOException e) { /* ignored*/ }
+                        }
+                    }
+                } else if (t.isDataFlavorSupported(VoDataFlavour.URI_LIST_STRING)) {
+                        String s= (String)t.getTransferData(VoDataFlavour.URI_LIST_STRING);
+                        StringTokenizer tok = new StringTokenizer(s);
+                        s = tok.nextToken();
+                        sf = build(s);
+                } else if(t.isDataFlavorSupported(VoDataFlavour.STRING)) {
+                       sf = build(t.getTransferData(VoDataFlavour.STRING));
+                } else {
+                    logger.warn("Unknown type of transferable " + t);
+                }
+                if (sf != null) {
+                    folderList.add(sf);     
+                    return true;
+                } 
+            } catch (Exception e) {
+                parent.showTransientError("Failed to import",ExceptionFormatter.formatException(e));
+            }
+            return false;
+	    }
+	    
+	    /** attempt to build a storage folder from a string
+	     * on parse error, will log error, and reutrn null;
+	     * @param s
+	     * @return
+	     */
+	   
+
+	    
+	    /** attempt to build a storage folder from an object (via vfs parsing of  toString()) */
+	    private StorageFolder build(Object o) {
+            try {
+                FileName fn = vfs.resolveURI(o.toString());                
+                return build(fn);
+            } catch (FileSystemException x) {
+                
+                parent.showTransientError("Failed to parse as filename",ExceptionFormatter.formatException(x));
+            }	        
+            return null;
+	    }
+	    
+	    private StorageFolder build(FileName fn) {
+	        try {
+            StorageFolder sf = new StorageFolder();
+            sf.setName(fn.getBaseName());
+            sf.setUriString(fn.getURI());
+            return sf;
+            } catch (URISyntaxException e) {
+                parent.showTransientError("Failed to parse dropped uri",ExceptionFormatter.formatException(e));
+            }
+            return null;
+	    }
+	    
+	    protected Transferable createTransferable(JComponent c) {
+	        StorageFolder s = (StorageFolder)getSelectedValue();
+	        
+	        return new StorageFoldersListTransferable(s);
+	    }
+	}
+	
+	/** transferable for a storage folder.
+	 * at the moment this is for export only - no real use in the application itself
+	 * so just returns an externalizable 'uri-list'
+	 * @author Noel.Winstanley@manchester.ac.uk
+	 * @since Oct 31, 20079:56:45 AM
+	 */
+	private static class StorageFoldersListTransferable implements Transferable {
+
+        private final URI uri;
+
+        public StorageFoldersListTransferable(StorageFolder sf) {
+            this.uri = sf.getUri();
+        }
+
+        public Object getTransferData(DataFlavor flavor)
+                throws UnsupportedFlavorException, IOException {
+            if (! isDataFlavorSupported(flavor)) {
+                throw new UnsupportedFlavorException(flavor);
+            }
+            if (VoDataFlavour.URI_LIST.equals(flavor)) {
+                return new ByteArrayInputStream(uri.toString().getBytes());
+            } else if (VoDataFlavour.URI_LIST_STRING.equals(flavor)) {
+                return uri.toString();
+            } else {
+                // can't really happen
+                throw new UnsupportedFlavorException(flavor);
+            }
+        }
+
+        public DataFlavor[] getTransferDataFlavors() {
+            return flavs;
+        }
+
+        public boolean isDataFlavorSupported(DataFlavor flavor) {
+            return ArrayUtils.contains(flavs,flavor);
+        }
+        
+        private static final DataFlavor[] flavs = new DataFlavor[] {
+            VoDataFlavour.URI_LIST
+            ,VoDataFlavour.URI_LIST_STRING
+        };
+	}
+
+    /**
+     * @return the edit
+     */
+    public final Action getEdit() {
+        return this.edit;
+    }
+
+    /**
+     * @return the create
+     */
+    public final Action getCreate() {
+        return this.create;
+    }
+
+    /**
+     * @return the delete
+     */
+    public final Action getDelete() {
+        return this.delete;
+    }
 
 }
