@@ -15,6 +15,13 @@ public abstract class ResourceFolder extends Folder{
 	/** whether this resource is 'fixed' - cannot be removed by user.*/
 	private boolean fixed = false;
 
+    /**
+     * URL of XML specification of this item.  If non-null the item
+     * may/should be regenerated from the XML at this location if possible.
+     * @see  {@link org.astrogrid.desktop.impl.modules.system.XStreamXmlPersist}
+     */
+    private String subscription;
+
 	public ResourceFolder(String name, String iconName) {
 		super(name,iconName);
 	}
@@ -28,6 +35,16 @@ public abstract class ResourceFolder extends Folder{
 	/** edit this folder's definition from new */
 	public abstract void editAsNew(VOExplorerImpl voe);
 
+    /** edit the subscription attribute for this folder */
+    public void editSubscription(VOExplorerImpl voe) {
+        voe.editExistingSubscription(this);
+    }
+
+    /** edit the subscriptino attribute for this folder from new */
+    public void editSubscriptionAsNew(VOExplorerImpl voe) {
+        voe.editNewSubscription(this);
+    }
+
 	public String getName() {
 		return name;
 	}
@@ -40,10 +57,31 @@ public abstract class ResourceFolder extends Folder{
 		return fixed;
 	}
 
+    /**
+     * Sets the URL of a location for an XML file containing a description
+     * (XStream) of the content of this folder.
+     *
+     * @param  subscription  XML file URL as string
+     */
+    public void setSubscription(String subscription) {
+        this.subscription = subscription;
+    }
+
+    /**
+     * Returns the URL of a location for an XML file containing a description
+     * (XStream) of the content of this folder.
+     *
+     * @return  XML file URL as string
+     */
+    public String getSubscription() {
+        return subscription;
+    }
+
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
         result = prime * result + (this.fixed ? 1231 : 1237);
+        result = prime * result + this.subscription == null ? 23 : subscription.hashCode();
         return result;
     }
 
@@ -56,6 +94,8 @@ public abstract class ResourceFolder extends Folder{
             return false;
         final ResourceFolder other = (ResourceFolder) obj;
         if (this.fixed != other.fixed)
+            return false;
+        if (!(""+this.subscription).equals(""+other.subscription))
             return false;
         return true;
     }

@@ -41,7 +41,7 @@ implements ListEventListener,  ListProvider, ExceptionListener{
      * Logger for this class
      */
     protected static final Log logger = LogFactory
-    .getLog(ResourceListsProvider.class);
+    .getLog(ListProvider.class);
     /**
      *  create a new persisten list.
      *  
