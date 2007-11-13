@@ -15,8 +15,8 @@ import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
  */
 public class ResourceBranch extends ResourceFolder {
 
-    public static final String defaultIcon = "file-manager.png";
-
+   // public static final String defaultIcon = "file-manager.png";
+    private static final String defaultIcon ="folder16.png";
     /**
      * Constructs a branch with a given name.
      *
