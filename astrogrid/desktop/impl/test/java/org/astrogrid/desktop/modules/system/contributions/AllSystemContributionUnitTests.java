@@ -16,11 +16,8 @@ public class AllSystemContributionUnitTests {
 		TestSuite suite = new TestSuite(
 				"Unit Test for System Contributions");
 		suite.addTestSuite(ServletsContributionUnitTest.class);
-		suite.addTestSuite(UITabContributionUnitTest.class);
 		suite.addTestSuite(ConverterContributionUnitTest.class);
-		suite.addTestSuite(UIMenuContributionUnitTest.class);
 		suite.addTestSuite(ServletContextContributionUnitTest.class);
-		suite.addTestSuite(UIActionContributionUnitTest.class);
 		suite.addTestSuite(StylesheetsContributionUnitTest.class);
 		suite.addTestSuite(HelpItemContributionUnitTest.class);
 		return suite;
