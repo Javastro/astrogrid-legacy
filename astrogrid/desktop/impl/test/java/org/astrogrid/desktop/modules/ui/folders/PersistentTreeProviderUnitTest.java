@@ -93,9 +93,7 @@ public class PersistentTreeProviderUnitTest extends TestCase {
         public TestTreeProvider(UIContext parent, File storage,
                                 XmlPersist persister) {
             super(parent, storage, persister);
-           // init(); // @fixme won't compile. When I tried replacing with
-                //init(new ResourceTreeModel(parent,persister));
-                // all the tests fail with class cast exceptions.
+            init(new DefaultTreeModel(new DefaultMutableTreeNode("root",true)));
         }
 
         public DefaultMutableTreeNode getDefaultRoot() {
