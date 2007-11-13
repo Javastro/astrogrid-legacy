@@ -3,6 +3,7 @@
  */
 package org.astrogrid.desktop.modules.system.ui;
 
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -10,6 +11,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.swing.AbstractAction;
@@ -17,8 +19,14 @@ import javax.swing.ButtonModel;
 import javax.swing.DefaultButtonModel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
 
 import org.apache.commons.collections.Factory;
+import org.astrogrid.acr.ServiceException;
+import org.astrogrid.acr.astrogrid.Community;
+import org.astrogrid.acr.builtin.Shutdown;
+import org.astrogrid.acr.ivoa.CacheFactory;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.alternatives.HeadlessUIComponent;
@@ -28,6 +36,7 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.comp.EventListMenuManager;
 import org.astrogrid.desktop.modules.ui.comp.ObservableConnector;
+import org.astrogrid.desktop.modules.util.SelfTester;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
@@ -37,11 +46,23 @@ import ca.odell.glazedlists.ObservableElementList;
 
 /** A context object - provides generally useful services to various UI windows, 
  * and mantains a list of current UI windows, common UI models, etc.
+ * 
+ * means that a lot of other services get passed into this component - so that 
+ * it's easier for ui windows to access these service occasionally without excess plumbing.
+ * 
+ * also implements the single handler for all global events.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 10, 20075:52:29 PM
  */
 public class UIContextImpl implements UIContext{
 
+
+    private final CacheFactory cache;
+    private final Community community;
+    private final Shutdown shutdown;
+    private final SelfTester tester;
+    private final Runnable configDialog;
+    private final Runnable aboutDialog;
 
     /** convenience method - access the configuraiton componoent
      * @todo hide this. - have it passed into components, if required.
@@ -62,19 +83,38 @@ public class UIContextImpl implements UIContext{
 	public BrowserControl getBrowser() {
 		return browser;
 	}
+	
+
+	
 	//convenience constructor used while testing.
 	public UIContextImpl(final Configuration configuration,  BackgroundExecutor executor,final HelpServerInternal help, final BrowserControl browser) {
-		this(configuration,executor,help,browser, new BasicEventList(),new HashMap());
+		this(configuration,executor,help,browser,null,null,null,null,null,null, new BasicEventList(),new HashMap());
 	}
 	
-	public UIContextImpl(final Configuration configuration,  BackgroundExecutor executor,final HelpServerInternal help, final BrowserControl browser, EventList plastic, Map windowFactories) {
+	public UIContextImpl(final Configuration configuration
+	        ,  BackgroundExecutor executor,
+	        final HelpServerInternal help
+	        , final BrowserControl browser
+	        , CacheFactory cache
+	        , Community community
+	        , Shutdown shutdown
+	        , SelfTester tester
+	        ,Runnable configDialog
+	        ,Runnable aboutDialog
+	        ,EventList plastic, Map windowFactories) {
 		super();
 		this.configuration = configuration;
 		this.help = help;
 		this.executor = executor;
 		this.browser = browser;
+        this.cache = cache;
+        this.community = community;
+        this.shutdown = shutdown;
+        this.tester = tester;
+        this.configDialog = configDialog;
+        this.aboutDialog = aboutDialog;
 		this.plastic = plastic;
-		this.windowFactories = windowFactories;
+		this.windowFactories = new LinkedHashMap(windowFactories);
 		windows = new BasicEventList();
 		windowsView = GlazedLists.readOnlyList(windows);
 		
@@ -90,7 +130,7 @@ public class UIContextImpl implements UIContext{
     			new ObservableConnector());
 				
 	}
-	private final Map windowFactories;
+	final Map windowFactories;
 	private final BrowserControl browser;
 	private final BackgroundExecutor executor;
 	private final Configuration configuration;
@@ -186,58 +226,43 @@ public class UIContextImpl implements UIContext{
 	}	
 	
 	public void showAboutDialog() {
-		//@todo implement
+		aboutDialog.run();
 	}
 	public Map getWindowFactories() {
 		return windowFactories;
 	}
 	public void showPreferencesDialog() {
-	    //@todo implement
+	    configDialog.run();
 	}
 
-	//@todo , add in the equivalent of this
-	/*
-	 *    this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        this.addWindowListener(new WindowAdapter(){
-            public void windowClosing(WindowEvent e) {
-            	if (getContext().getWindowList().size() ==1) { // we're the last.
-            		//@todo improve this message...
-                int code = JOptionPane.showConfirmDialog(UIComponentImpl.this,"Closing the UI. Do you want  the ACR service to continue to run in the background?", 
-                        "Closing UI",JOptionPane.INFORMATION_MESSAGE);
-                if (code == JOptionPane.CANCEL_OPTION) {
-                    return;
-                }
-                hide(); // always fo this..
-                if (code == JOptionPane.NO_OPTION) {                    
-                        shutdown.halt(); 
-                }
-            }
-        });        
-	 */
-	
+
+	static final int[] FN_KEYS = new int[] {
+	    KeyEvent.VK_F1
+	    ,KeyEvent.VK_F2
+        ,KeyEvent.VK_F3
+        ,KeyEvent.VK_F4
+        ,KeyEvent.VK_F5
+        ,KeyEvent.VK_F6
+        ,KeyEvent.VK_F7
+        ,KeyEvent.VK_F8
+        ,KeyEvent.VK_F9        
+        ,KeyEvent.VK_F10
+        ,KeyEvent.VK_F11
+        ,KeyEvent.VK_F12      
+	};
 	public JMenu createWindowMenu( UIComponentImpl owner) {
 		JMenu windowMenu = new JMenu();
 		windowMenu.setText("Window");
 		windowMenu.setMnemonic(KeyEvent.VK_W);
-		windowMenu.add(owner.new CloseAction());		
-		windowMenu.addSeparator();
 		// splice in the new window factories.
-		for (Iterator facs = windowFactories.entrySet().iterator(); facs.hasNext();) {
-			final Map.Entry entry = (Map.Entry) facs.next();
-			JMenuItem mi = new JMenuItem("New " + entry.getKey());
-			mi.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					Factory fac = (Factory)entry.getValue();
-					fac.create(); //@todo do I need to set location, or anything??
-				}
-			});
-			windowMenu.add(mi);
-		}
-
+		addWindowFactories(windowMenu);
 		windowMenu.addSeparator();
-		// add window list here
-		JMenu windowListMenu = new JMenu("Windows");
-		windowMenu.add(windowListMenu); // would like to display this in-line really.
+		JMenuItem selftest = new JMenuItem("Self Tests");
+		selftest.setActionCommand(SELFTEST);
+		selftest.addActionListener(this);
+
+		windowMenu.add(selftest);
+		windowMenu.addSeparator();
 		EventList w = new FunctionList(this.getWindowList(),new FunctionList.Function() {
 
 			public Object evaluate(Object arg0) {
@@ -256,11 +281,26 @@ public class UIContextImpl implements UIContext{
 				return mi;
 			}
 		});
-		new EventListMenuManager(w,windowListMenu,false);
+		new EventListMenuManager(w,windowMenu,false);
 //@todo consider whether this is a good thing to do on all platofrms.
 //		windowMenu.add(new HideAllAction());
 		return windowMenu;
 	}
+    /**
+     * @param windowMenu
+     */
+    private void addWindowFactories(JMenu windowMenu) {
+        int i = 0;
+		for (Iterator facs = windowFactories.entrySet().iterator(); facs.hasNext(); i++) {
+			final Map.Entry entry = (Map.Entry) facs.next();
+			final String key = (String)entry.getKey();
+            JMenuItem mi = new JMenuItem("New " + key);
+			mi.setAccelerator(KeyStroke.getKeyStroke(FN_KEYS[i],Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+			mi.setActionCommand(key);
+			mi.addActionListener(this);
+			windowMenu.add(mi);
+		}
+    }
 	
     //@todo add a preference on acr.advanced to only enable this at certain times.
     private final class HideAllAction extends AbstractAction {
@@ -273,6 +313,47 @@ public class UIContextImpl implements UIContext{
         }
     }
 
-
+// action listener interface
+    // callbacks from menu items.
+    // intercepted - so will always be on EDT.
+    public void actionPerformed(ActionEvent arg0) {
+            final String cmd = arg0.getActionCommand();
+            if (cmd.equals(UIContext.EXIT)) {
+                if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null,"Do you really want to quit?","Really Quit?",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {                                            
+                    shutdown.halt();
+                }
+            } else if (cmd.equals(UIContext.PREF)) {
+                showPreferencesDialog();
+            } else if (cmd.equals(UIContext.HELP)) {
+                getHelpServer().showHelp();
+            } else if (cmd.equals(UIContext.ABOUT)) {
+                showAboutDialog();
+            } else if (cmd.equals(UIContext.LOGIN)) {
+                community.guiLogin();
+            } else if (cmd.equals(UIContext.LOGOUT)) {
+                community.logout();
+            } else if (cmd.equals(UIContext.SELFTEST)){
+                tester.show();
+            } else if (cmd.equals(UIContext.RESET)) {
+                if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null,"All user settings will be lost. Continue?","Reset Configuration",JOptionPane.YES_NO_OPTION)) {
+                    try {
+                        getConfiguration().reset();
+                    } catch (ServiceException x) {
+                           // ignore.
+                    }
+                }                            
+            } else if (cmd.equals(UIContext.CLEAR_CACHE)) {
+                if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null,"All cached data will be removed. Continue?","Clear Cache",JOptionPane.YES_NO_OPTION)) {
+                    cache.flush();
+                }                
+            } else {
+                // assume it's the name of a new window facotry.
+                Factory fac = (Factory)getWindowFactories().get(cmd);
+                if (fac != null) {
+                    fac.create();
+                }
+            }
+       
+    }
 
 }
