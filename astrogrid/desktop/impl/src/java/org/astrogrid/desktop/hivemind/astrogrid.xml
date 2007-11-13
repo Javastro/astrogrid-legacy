@@ -15,6 +15,7 @@
 			<acrService id="jobs" interface="Jobs" />
 			<acrService id="processManager" interface="RemoteProcessManager" />
 			<acrService id="stap" interface="Stap"/>
+            <acrService id="publish" interface="Publish"/>
 	</contribution>
 
 	<contribution configuration-id="framework.descriptors">
@@ -212,6 +213,24 @@ STAP
 	<implementation service-id="stap" if="property astrogrid.stap.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>			
+<!-- 
+=========================
+Publish
+ -->
+   <service-point id="publish" interface="Publish">
+      Client Publishing resource to registry
+       <interceptor service-id="system.edt" />        
+      <interceptor service-id="system.throbber" />    
+      <invoke-factory>
+         <construct class="org.astrogrid.desktop.modules.ag.PublishImpl" >
+            <service>ivoa.registry</service>
+         </construct>         
+      </invoke-factory> 
+   </service-point>
+   
+   <implementation service-id="publish" if="property astrogrid.publish.disabled">
+      <invoke-factory service-id="hivemind.lib.PlaceholderFactory" />   
+   </implementation>       
 <!-- 
 ============================
 APPLICATIONS
