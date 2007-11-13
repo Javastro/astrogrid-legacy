@@ -4,12 +4,15 @@
 package org.astrogrid.desktop.modules.system.ui;
 
 import java.awt.datatransfer.Transferable;
+import java.util.Iterator;
 
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 
-/**interface to a component that manages activities,
- * and provides access that displays these activities.
+import org.astrogrid.desktop.modules.ui.actions.Activity;
+
+/** Manages a set of activities - their activation state, etc.
+ * and also provides access to them so that they can be added to menus, etc.
  * 
  * 
  * @see ActivityFactory
@@ -33,6 +36,13 @@ public interface ActivitiesManager {
      */
     public Transferable getCurrentSelection();
     
+
+    /** retrieve a named activity from the manager. */
+    public Activity getActivity(Class activityClass);
+ 
+    /** iterate through all the acitivites contained in this manager */
+    public Iterator iterator();
+    
     /** access a shared popup menu that provides operations over the current
      * selection 
      * 
@@ -43,7 +53,5 @@ public interface ActivitiesManager {
     
     /** acccess a task pane that lists the available activities */
     public com.l2fprod.common.swing.JTaskPane getTaskPane();
-    
-    /** access a menu that lists the available acticities */
-    public JMenu getMenu();
+
 }
