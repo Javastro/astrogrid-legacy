@@ -4,11 +4,15 @@
 package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.KeyStroke;
+
+import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystem;
 import org.apache.commons.vfs.FileSystemManager;
@@ -18,8 +22,11 @@ import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
+
+import com.l2fprod.common.swing.JDirectoryChooser;
 
 /** simplistic activity which just allows users to download files to a local directory.
  * may even keep around once I've debugged the save activity..
@@ -49,9 +56,10 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
 		super();
         this.vfs = vfs;
         this.chooser = chooser;
-		setText("Download");
+		setText("Download" + UIComponentMenuBar.ELLIPSIS);
 		setIcon(IconHelper.loadIcon("filesave16.png"));		
 		setToolTipText("Download the selected file(s) to local disk.");
+		setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN,UIComponentMenuBar.SHIFT_MENU_KEYMASK));
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -73,10 +81,19 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
         }	    
 		files.addAll(computeInvokableFiles());
 		logger.debug(files);
-        final URI saveDir = chooser.chooseDirectoryWithParent("Select directory to download to",false,true,false,uiParent.get().getComponent());
-        if (saveDir == null) {
+		
+		// decided to use dirchooser here instead...
+        //final URI saveDir = chooser.chooseDirectoryWithParent("Select directory to download to",false,true,false,uiParent.get().getComponent());
+        JDirectoryChooser chooser = new JDirectoryChooser(SystemUtils.getUserHome());
+        chooser.setShowingCreateDirectory(false);
+        chooser.setMultiSelectionEnabled(false);
+        chooser.setApproveButtonText("Save");
+        chooser.setDialogTitle("Choose destination for download");
+        int code = chooser.showSaveDialog(uiParent.get().getComponent());
+        if (code != JDirectoryChooser.APPROVE_OPTION) {
             return;
         }
+        URI saveDir = chooser.getSelectedFile().toURI();
 		(new BulkCopyWorker(vfs,uiParent.get(),saveDir, files)).start();
 		
 	}

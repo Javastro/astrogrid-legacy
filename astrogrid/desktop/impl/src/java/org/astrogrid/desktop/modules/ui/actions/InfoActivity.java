@@ -15,6 +15,7 @@ import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceFormatter;
+import org.astrogrid.desktop.modules.ui.actions.Activity.Info;
 import org.astrogrid.desktop.modules.ui.scope.ScopeTransferableFactory.AstroscopeFileObject;
 
 import com.l2fprod.common.swing.JTaskPaneGroup;
@@ -25,7 +26,7 @@ import com.l2fprod.common.swing.JTaskPaneGroup;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Feb 26, 20071:29:37 PM
  */
-public class InfoActivity extends AbstractFileOrResourceActivity{
+public class InfoActivity extends AbstractFileOrResourceActivity implements Activity.Info, Activity.NoContext{
 
 public InfoActivity() {
 	typeField = new JTextArea();
@@ -62,7 +63,7 @@ private final Bag types = new TreeBag();
 		fmtResult();		
 	}
 
-	public void manySelected(Resource[] l) {
+	public void someSelected(Resource[] l) {
 		typeField.setVisible(true);
 		types.clear();
 		for (int i = 0; i < l.length; i++) {

@@ -3,27 +3,69 @@
  */
 package org.astrogrid.desktop.modules.ui.actions;
 
+import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.JMenuItem;
+
 import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.provider.DelegateFileObject;
+import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.votech.plastic.CommonMessageConstants;
 
+import com.l2fprod.common.swing.JLinkButton;
+
 /**
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 9, 20074:42:47 PM
  */
 public class PlasticFitsActivity extends AbstractFileActivity {
+    /** variant which is invokable  on any kind of file not accepted by default implementation, only appears on the main menu */
+    
+    public static class Fallback extends PlasticFitsActivity {
+
+    public Fallback(PlasticApplicationDescription plas, PlasticScavenger scav) {
+        super(plas, scav);
+        String title = getText();
+        setText("Attempt to " + Character.toLowerCase(title.charAt(0)) + title.substring(1));
+    }
+    protected boolean invokable(FileObject f) {
+        try {
+            return ! super.invokable(f) && f.getType().hasContent();
+        } catch (FileSystemException x) {
+            return false;
+        }
+    }
+    protected boolean invokable(Resource r) {
+        return false ; // only ever for files.
+    }
+    //don't allow invokcation on multiple resources though - too dodgy.
+    public void manySelected(FileObject[] list) {
+        noneSelected();
+    }
+    
+    // create components but keep them invisible.
+    public JLinkButton createLinkButton() {
+        JLinkButton b = new JLinkButton(this);
+        b.setVisible(false);
+        return b;
+    }
+    public JMenuItem createHidingMenuItem() {
+        JMenuItem i = new JMenuItem(this);
+        i.setVisible(false);
+        return i;
+    }
+    }
 
 private final PlasticApplicationDescription plas;
 
@@ -39,6 +81,11 @@ private final PlasticScavenger scav;
 		PlasticScavenger.configureActivity("FITS",this,plas);
 	}
 
+    /// use a hiding item - so that this and the 'fallback' implementation appear to 
+    // be the same item - should never see both at once.
+    public JMenuItem createMenuItem() {
+        return super.createHidingMenuItem();
+    }
 	protected boolean invokable(FileObject f) {
 		try {
 			final FileContent content = f.getContent();

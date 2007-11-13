@@ -4,7 +4,10 @@
 package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.List;
+
+import javax.swing.KeyStroke;
 
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
@@ -13,6 +16,7 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.TaskRunnerInternal;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 
 /** invoke a cea task.
@@ -30,6 +34,7 @@ public TaskRunnerActivity(TaskRunnerInternal t) {
 	setText("Execute Task");
 	setIcon(IconHelper.loadIcon("exec16.png"));
 	setToolTipText("Invoke the selected Remote Application (CEA)");
+    //setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_3,UIComponentMenuBar.MENU_KEYMASK));	
 }
 private final TaskRunnerInternal t;
 
@@ -51,7 +56,7 @@ public void actionPerformed(ActionEvent e) {
             break;
         case 1:
             FileObject fo = (FileObject)files.get(0);
-            //@todo - implement.
+            t.edit(fo);
             break;
         default:
             //future - do something with a multiple selection.
@@ -60,11 +65,11 @@ public void actionPerformed(ActionEvent e) {
 
 
 	
-	public void manyFilesSelected(FileObject[] l) {
+	public void manySelected(FileObject[] l) {
 		noneSelected(); // can't operate on more than one file.
 	}
 
-	public void manyResourcesSelected(Resource[] l) {
+	public void someSelected(Resource[] l) {
 		noneSelected(); // can't operate on more than one resource;
 	}
 

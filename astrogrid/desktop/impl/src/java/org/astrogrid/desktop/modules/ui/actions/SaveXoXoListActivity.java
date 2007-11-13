@@ -19,12 +19,14 @@ import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 
 /** saves formatted details of the selection as a list to disk.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 6, 200711:54:38 AM
  */
-public class SaveXoXoListActivity extends AbstractResourceActivity {
+public class SaveXoXoListActivity extends AbstractResourceActivity 
+    implements Activity.NoContext, Activity.NoTask{
 
 	protected boolean invokable(Resource r) {
 		return true;
@@ -37,8 +39,8 @@ public class SaveXoXoListActivity extends AbstractResourceActivity {
 	public SaveXoXoListActivity(ResourceChooserInternal chooser,FileSystemManager vfs) {
 		this.chooser = chooser;
 		this.vfs = vfs;
-		setText("Save Formatted List");
-		setToolTipText("Save formatted details of the current selection to a textfile");
+		setText("Export Summaries"+ UIComponentMenuBar.ELLIPSIS);
+		setToolTipText("Export formatted details of the selected resource(s)");
 		setIcon(IconHelper.loadIcon("ascii16.png"));
 	}
 
@@ -50,11 +52,11 @@ public class SaveXoXoListActivity extends AbstractResourceActivity {
 		if (e.getSource() instanceof Component) {
 			comp = (Component)e.getSource();
 		}	
-		final URI u = chooser.chooseResourceWithParent("Save resource list",true,true,true,comp);
+		final URI u = chooser.chooseResourceWithParent("Choose output file",true,true,true,comp);
 		if (u == null) {
 			return;
 		}
-		(new BackgroundWorker(uiParent.get(),"Saving resource list") {
+		(new BackgroundWorker(uiParent.get(),"Exporting summaries") {
 			protected Object construct() throws Exception {
 				PrintWriter out = null;
 				try {
@@ -116,6 +118,9 @@ public class SaveXoXoListActivity extends AbstractResourceActivity {
 				}
 				return null;
 			}
+            protected void doFinished(Object result) {
+                parent.showTransientMessage("Export complete","");
+            }			
 		}).start();
 	}
 

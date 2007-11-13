@@ -16,6 +16,7 @@ import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.provider.AbstractFileSystem;
 import org.apache.commons.vfs.provider.DelegateFileObject;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 
 /** Activity to rename a single file.
  * @author Noel.Winstanley@manchester.ac.uk
@@ -39,7 +40,7 @@ public class RenameActivity extends AbstractFileActivity {
 	public RenameActivity(final FileSystemManager vfs) {
 		super();
         this.vfs = vfs;
-		setText("Rename");
+		setText("Rename"+UIComponentMenuBar.ELLIPSIS);
 		//setIcon(IconHelper.loadIcon("browser16.png"));		
 		setToolTipText("rename this file");
 	}

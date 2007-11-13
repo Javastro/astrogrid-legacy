@@ -32,7 +32,7 @@ public final class PlasticScavenger extends AbstractActivityScavenger implements
 private final SystemTrayInternal systray;
 
 public PlasticScavenger(EventList apps,TupperwareInternal tupp, SystemTrayInternal systray) {
-	super("Plastic Applications");
+	super("Send to");
 	this.tupp = tupp;   
 	this.apps = apps;
     this.systray = systray;
@@ -64,16 +64,25 @@ public List getChildren(Object sourceValue) {
         AbstractActivity activity = new PlasticVotableActivity(plas,this);
         activity.setUIParent(uiParent.get());
         butts.add(activity);	
+        activity = new PlasticVotableActivity.Fallback(plas,this);
+        activity.setUIParent(uiParent.get());
+        butts.add(activity);            
     } 
     if (plas.understandsMessage(CommonMessageConstants.FITS_LOAD_FROM_URL)) {
         AbstractActivity activity = new PlasticFitsActivity(plas,this);
         activity.setUIParent(uiParent.get());
         butts.add(activity);
+        activity = new PlasticFitsActivity.Fallback(plas,this);
+        activity.setUIParent(uiParent.get());
+        butts.add(activity);         
     }
     if  (plas.understandsMessage(SPECTRA_LOAD_FROM_URL)) {
         AbstractActivity activity = new PlasticSpectrumActivity(plas,this);
         activity.setUIParent(uiParent.get());
         butts.add(activity);		
+        activity = new PlasticSpectrumActivity.Fallback(plas,this);
+        activity.setUIParent(uiParent.get());
+        butts.add(activity);        
     }		
     if (plas.understandsMessage(VOExplorerFactoryImpl.VORESOURCE_LOAD)
             || plas.understandsMessage(VOExplorerFactoryImpl.VORESOURCE_LOADLIST)) {

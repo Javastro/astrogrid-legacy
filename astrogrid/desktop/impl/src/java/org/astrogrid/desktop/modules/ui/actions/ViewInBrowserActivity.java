@@ -4,9 +4,12 @@
 package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.net.URL;
 import java.util.List;
+
+import javax.swing.KeyStroke;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs.FileObject;
@@ -15,6 +18,7 @@ import org.apache.commons.vfs.FileUtil;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 
 /**
  * @author Noel.Winstanley@manchester.ac.uk
@@ -35,9 +39,10 @@ public class ViewInBrowserActivity extends AbstractFileActivity {
 		super();
 		this.browser = browser;
         this.vfs = vfs;
-		setText("Open");
+		setText("View");
 		setIcon(IconHelper.loadIcon("browser16.png"));		
-		setToolTipText("open with the default application on your computer");
+		setToolTipText("View with the default application on your computer");
+		setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_SLASH,UIComponentMenuBar.MENU_KEYMASK));
 	}
 	
 	// can only handle a single selection.

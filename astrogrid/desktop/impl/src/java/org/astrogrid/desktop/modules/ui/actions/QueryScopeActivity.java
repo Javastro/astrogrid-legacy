@@ -4,7 +4,10 @@
 package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.List;
+
+import javax.swing.KeyStroke;
 
 import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -13,6 +16,7 @@ import org.astrogrid.acr.ivoa.resource.SiapService;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.AstroScopeInternal;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
 
@@ -30,6 +34,7 @@ public QueryScopeActivity(AstroScopeInternal ai) {
 	setText("Query");
 	setIcon(IconHelper.loadIcon("scope16.png"));
 	setToolTipText("Query the selected services(s)");
+	//setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1,UIComponentMenuBar.MENU_KEYMASK));
 }
 
 private final AstroScopeInternal ai;

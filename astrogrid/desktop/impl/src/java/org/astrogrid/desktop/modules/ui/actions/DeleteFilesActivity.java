@@ -4,6 +4,7 @@
 package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
 
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystem;
@@ -23,6 +25,7 @@ import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 
 /** delete one or more files.
@@ -51,6 +54,7 @@ public class DeleteFilesActivity extends AbstractFileActivity {
 		setText("Delete");
 		setIcon(IconHelper.loadIcon("editdelete16.png"));		
 		setToolTipText("Delete this files");
+		setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE,UIComponentMenuBar.MENU_KEYMASK));
 	}
 
 

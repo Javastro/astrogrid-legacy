@@ -4,7 +4,10 @@
 package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.List;
+
+import javax.swing.KeyStroke;
 
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
@@ -17,6 +20,7 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.QueryBuilderInternal;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 
 /** build a query from a selected resource.
@@ -34,7 +38,7 @@ public BuildQueryActivity(QueryBuilderInternal t) {
 	setText("Build ADQL");
 	setIcon(IconHelper.loadIcon("db16.png"));
 	setToolTipText("Construct an ADQL query against the selected table descriptions");
-	
+   // setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2,UIComponentMenuBar.MENU_KEYMASK));	
 }
 // thing to invoke
 private final QueryBuilderInternal t;
@@ -165,7 +169,7 @@ private final QueryBuilderInternal t;
 	}
 
 	// accept if any in selection are database schema.
-	public void manyResourcesSelected(Resource[] l) {
+	public void someSelected(Resource[] list) {
 		noneSelected();
 		// later - support multi-query later
 

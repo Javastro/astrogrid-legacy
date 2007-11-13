@@ -12,7 +12,7 @@ import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 
 import org.astrogrid.desktop.modules.ui.comp.EventListMenuManager;
-import org.astrogrid.desktop.modules.ui.comp.SelfEnablingMenu;
+import org.astrogrid.desktop.modules.ui.comp.EventListPopupMenuManager;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FunctionList;
@@ -80,26 +80,27 @@ public  abstract class AbstractActivityScavenger extends AbstractActivity{
 		if (! loaded) {
 			loadChildren();
 			loaded = true;
-		}		
-		JMenu m = new SelfEnablingMenu(this);
-		new EventListMenuManager(createNewMenuItemList(),m,false);		
-		menu.add(m);
+		}
+        new EventListMenuManager(createNewMenuItemList(false),menu,false); 		
 	}
+	
 	public void addTo(JPopupMenu menu) {
 		if (! loaded) {
 			loadChildren();
 			loaded = true;
 		}			
-		JMenu m = new SelfEnablingMenu(this);
-		new EventListMenuManager(createNewMenuItemList(),m,false);	
-		menu.add(m);		
+		new EventListPopupMenuManager(createNewMenuItemList(true),null,menu,false);	
 	}
 
-	private EventList createNewMenuItemList() {
+	protected EventList createNewMenuItemList(final boolean hiding) {
 		return new FunctionList(getChildren(), new FunctionList.Function() {
 			public Object evaluate(Object arg0) {
 				AbstractActivity a = (AbstractActivity)arg0;
-				return a.createMenuItem();
+				if (hiding) {
+				    return a.createHidingMenuItem();
+				} else {
+				    return a.createMenuItem();
+				}
 			}
 		});
 	}

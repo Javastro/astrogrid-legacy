@@ -6,6 +6,7 @@ package org.astrogrid.desktop.modules.ui.actions;
 import java.awt.Component;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -14,6 +15,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,16 +42,7 @@ public abstract class AbstractActivity extends AbstractAction implements Activit
 		super(name);
 		setEnabled(false);
 	}
-	
-	private String section;
-	
-	public void setSection(String section) {
-		this.section = section;
-	}
 
-	public String getSection() {
-		return this.section;
-	}
 	protected final UIComponentBodyguard uiParent = new UIComponentBodyguard();
 	public final void setUIParent(UIComponent up) {
 		uiParent.set(up);
@@ -60,6 +53,14 @@ public abstract class AbstractActivity extends AbstractAction implements Activit
 	
 	public void setText(String s) {
 		putValue(Action.NAME,s);
+	}
+	
+	public String getText() {
+	    return (String)getValue(Action.NAME);
+	}
+	
+	public void setAccelerator(KeyStroke ke) {
+	    putValue(Action.ACCELERATOR_KEY,ke);
 	}
 	
 	public void setIcon(Icon i) {
@@ -88,16 +89,20 @@ public abstract class AbstractActivity extends AbstractAction implements Activit
 	}
 	
 	public JMenuItem createMenuItem() {
-		JMenuItem m =  new JMenuItem(this) {
-			public void setEnabled(boolean b) {
-				super.setEnabled(b);
-				setVisible(b);
-			}
-		};
+		JMenuItem m =  new JMenuItem(this);
 		return m;
 		
 	}
-	
+    public JMenuItem createHidingMenuItem() {
+        JMenuItem m =  new JMenuItem(this) {
+            public void setEnabled(boolean b) {
+                super.setEnabled(b);
+                setVisible(b);
+            }
+        };
+        return m;
+        
+    }	
 
 	/** called by owning group when there's no current selection */
 	public   abstract void noneSelected();
@@ -140,7 +145,7 @@ public abstract class AbstractActivity extends AbstractAction implements Activit
 	}
 
 	public void addTo(JPopupMenu menu) {
-		menu.add(createMenuItem());
+		menu.add(createHidingMenuItem());
 	}	
 	
 	// helper methods for subclasses.

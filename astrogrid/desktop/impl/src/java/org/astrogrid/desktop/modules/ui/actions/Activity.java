@@ -5,6 +5,7 @@ package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.datatransfer.Transferable;
 
+import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 
@@ -17,7 +18,7 @@ import com.l2fprod.common.swing.JTaskPaneGroup;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Apr 16, 20076:30:28 PM
  */
-public interface Activity {
+public interface Activity extends Action {
 
 	/** called by owning group when there's no current selection */
 	public void noneSelected();
@@ -47,19 +48,19 @@ public interface Activity {
 	public void addTo(JMenu menu);
 	/** add this activity to a popup menu */
 	public void addTo(JPopupMenu menu);
-	
-	/** the logical 'section' of the UI that this activity belongs to */
-	public String getSection();
+
 	
 	/** set the ui parent - used for task reporting, etc */
 	public void setUIParent(UIComponent up);
+
+	/** marker inteface for activities which should appear in the 'info' section */
+	public interface Info {
+	}
 	
-	// some pre-defined sections - not an exhaustive list.
-	public final static String USE_SECTION = "use";
-	public final static String NEW_SECTION = "new";
-	public final static String INFO_SECTION = "info";
-	public final static String PLASTIC_SECTION = "plastic";
-	public final static String SCRIPT_SECTION = "script";
-	public final static String EXPORT_SECTION = "export";
-	
+	/** marker interface for activities that shouldn't appear in the context menu */
+	public interface NoContext {
+	}
+	/** marker interface for activites that shouldn't appear in the task pane */
+	public interface NoTask {
+	}
 }

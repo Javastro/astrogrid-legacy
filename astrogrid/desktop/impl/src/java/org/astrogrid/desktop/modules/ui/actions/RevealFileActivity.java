@@ -35,7 +35,7 @@ public class RevealFileActivity extends AbstractFileActivity {
 		super();
         this.vfs = vfs;
         this.mgr = mgr;
-		setText("Show file");
+		setText("Show in File Explorer");
 		setIcon(IconHelper.loadIcon("fileopen16.png"));		
 		setToolTipText("Show this file in file explorer");
 	}

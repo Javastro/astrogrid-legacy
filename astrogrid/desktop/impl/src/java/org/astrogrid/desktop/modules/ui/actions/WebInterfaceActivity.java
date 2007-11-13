@@ -4,7 +4,10 @@
 package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.List;
+
+import javax.swing.KeyStroke;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,6 +18,7 @@ import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.CSH;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 
 /** Display the webpage interface for a service, if given.
@@ -36,6 +40,7 @@ public WebInterfaceActivity(BrowserControl browser) {
 	setText("Web interface");
 	setIcon(IconHelper.loadIcon("browser16.png"));
 	setToolTipText("Open the web interface for this resource in the system browser");
+  //  setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_4,UIComponentMenuBar.MENU_KEYMASK));	
 }
 	protected boolean invokable(Resource r) {
 		return hasWebBrowserInterface(r);

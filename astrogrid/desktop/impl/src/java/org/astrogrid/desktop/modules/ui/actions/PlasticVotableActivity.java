@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
@@ -27,11 +31,52 @@ import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
 import org.astrogrid.io.Piper;
 import org.votech.plastic.CommonMessageConstants;
 
+import com.ctc.wstx.util.StringUtil;
+import com.l2fprod.common.swing.JLinkButton;
+import com.l2fprod.common.swing.JTaskPaneGroup;
+
 /**
  * @author Noel.Winstanley@manchester.ac.uk
  * @since May 9, 20074:42:35 PM
  */
 public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
+    
+    /** variant which is invokable  on any kind of file not accepted by default implementation, only appears on the main menu */
+    public static class Fallback extends PlasticVotableActivity  {
+
+        public Fallback(PlasticApplicationDescription plas, PlasticScavenger scav) {
+            super(plas, scav);
+            String title = getText();
+            setText("Attempt to " + Character.toLowerCase(title.charAt(0)) + title.substring(1));
+        }
+        protected boolean invokable(FileObject f) {
+            try {
+                return ! super.invokable(f) && f.getType().hasContent();
+            } catch (FileSystemException x) {
+                return false;
+            }
+        }
+        protected boolean invokable(Resource r) {
+            return false ; // only ever for files.
+        }
+        //don't allow invokcation on multiple resources though - too dodgy.
+        public void manySelected(FileObject[] list) {
+            noneSelected();
+        }
+        
+        // create components but keep them invisible.
+        public JLinkButton createLinkButton() {
+            JLinkButton b = new JLinkButton(this);
+            b.setVisible(false);
+            return b;
+        }
+        public JMenuItem createHidingMenuItem() {
+            JMenuItem i = new JMenuItem(this);
+            i.setVisible(false);
+            return i;
+        }
+    }
+    
 	private final PlasticApplicationDescription plas;
     private final PlasticScavenger scav;
 	/**
@@ -44,6 +89,12 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
         this.scav = scav;
 		PlasticScavenger.configureActivity("tables",this,plas);
 	}
+	
+    /// use a hiding item - so that this and the 'fallback' implementation appear to 
+    // be the same item - should never see both at once.
+    public JMenuItem createMenuItem() {
+        return super.createHidingMenuItem();
+    }
 	
     
 	protected boolean invokable(FileObject f) {

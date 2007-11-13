@@ -150,8 +150,8 @@ public  abstract class AbstractFileOrResourceActivity extends AbstractActivity{
 		    someSelected((Resource[])r.getTransferData(VoDataFlavour.RESOURCE_ARRAY));
 		} else if (r.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT)) {
 			oneSelected((FileObject)r.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT));
-		} else if (r.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT_LIST)) {
-			manySelected((FileObject[])r.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT_LIST));
+		} else if (r.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT_ARRAY)) {
+			manySelected((FileObject[])r.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT_ARRAY));
 		} else {
 			noneSelected();
 		}

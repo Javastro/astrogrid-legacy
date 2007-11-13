@@ -4,20 +4,24 @@
 package org.astrogrid.desktop.modules.ui.actions;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.net.URL;
 import java.util.List;
+
+import javax.swing.KeyStroke;
 
 import org.astrogrid.acr.ivoa.resource.Contact;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 
 /** contac the curator person for a resource.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 6, 200711:56:23 AM
  */
-public class ContactActivity extends AbstractResourceActivity {
+public class ContactActivity extends AbstractResourceActivity implements Activity.Info {
 
 	protected boolean invokable(Resource r) {
 		 Contact[] contacts = r.getCuration().getContacts();
@@ -29,7 +33,6 @@ public class ContactActivity extends AbstractResourceActivity {
 	public void oneSelected(Resource resource) {
 		if (invokable(resource)) {
 			setEnabled(true);
-			setText("Email " + resource.getCuration().getContacts()[0].getName().getValue());
 			current = new Resource[]{resource};
 		} else {
 			setEnabled( false);
@@ -45,7 +48,8 @@ public ContactActivity(BrowserControl browser) {
 	this.browser = browser;
 	setIcon(IconHelper.loadIcon("person16.png"));
 	setToolTipText("Email the contact responsible for this resouce");
-	setText("Email curator"); 
+	setText("Email Curator");
+	setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M,UIComponentMenuBar.MENU_KEYMASK));
 }
 
 public void actionPerformed(ActionEvent e) {
