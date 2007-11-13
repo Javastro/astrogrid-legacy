@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import javax.swing.JComponent;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -22,26 +24,32 @@ import org.apache.commons.vfs.FileSystemException;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Mar 30, 200712:15:13 AM
  */
-public class FileObjectTransferable implements Transferable {
+public class FileObjectTransferable implements Transferable{
 	/**
 	 * Logger for this class
 	 */
 	private static final Log logger = LogFactory
 			.getLog(FileObjectTransferable.class);
 
+
 	
-	
-	public FileObjectTransferable(FileObject fo){
-		this.fo = fo;
-		//String mime = null; //not a good idea..= fo.getContent().getContentInfo().getContentType();
-	//	if (mime == null) {
-			flavs = alwaysSupportedDataFlavors;
-		//} else {
-			//DataFlavor mimeFlavor = new DataFlavor(mime);
-			//flavs = (DataFlavor[])ArrayUtils.add(alwaysSupportedDataFlavors,mimeFlavor);
-	//	}
+	/**
+	 * tries to determine from the file object what kind of file this is.
+	 * @param fo
+	 * @throws FileSystemException
+	 */
+	public FileObjectTransferable(FileObject fo) throws FileSystemException{
+	    this(fo,fo.getType().hasChildren());
 	}
-		private final DataFlavor[] flavs;
+		/** constructor where the kind of file object is specified
+     * @param fileObject
+     * @param isFolder if true, this is a folder. else it's a file.
+     */
+    public FileObjectTransferable(FileObject fileObject, boolean isFolder) {
+        this.fo = fileObject;
+        flavs = isFolder ? folderDataFlavours : fileDataFlavours;
+    }
+        private final DataFlavor[] flavs;
 	
 	private final FileObject fo;
 	public Object getTransferData(DataFlavor flavor)
@@ -60,6 +68,8 @@ public class FileObjectTransferable implements Transferable {
 			}
 		} else if (VoDataFlavour.URI_LIST.equals(flavor)) {
 			return new ByteArrayInputStream((StringUtils.replaceChars(fo.getName().getURI(),' ','+')).getBytes());
+		} else if (VoDataFlavour.URI_LIST_STRING.equals(flavor)){
+		    return StringUtils.replaceChars(fo.getName().getURI(),' ','+');
 		} else { // must be asking for the content of the file then..
 			return fo.getContent().getInputStream();
 		}
@@ -73,10 +83,22 @@ public class FileObjectTransferable implements Transferable {
 		return ArrayUtils.contains(flavs,flavor);
 	}
 	
-	private static final DataFlavor[] alwaysSupportedDataFlavors = new DataFlavor[] {
+	private static final DataFlavor[] fileDataFlavours = new DataFlavor[] {
 		VoDataFlavour.LOCAL_FILEOBJECT
 		,VoDataFlavour.LOCAL_URI
 		,VoDataFlavour.URI_LIST
+		,VoDataFlavour.URI_LIST_STRING
+		,VoDataFlavour.PLAIN // seems to take precedence over uri-list. but this is probably generally more useful.
 	};
+	   private static final DataFlavor[] folderDataFlavours = new DataFlavor[] {
+	        VoDataFlavour.LOCAL_FILEOBJECT
+	        ,VoDataFlavour.LOCAL_URI
+	        ,VoDataFlavour.URI_LIST
+	        ,VoDataFlavour.URI_LIST_STRING
+	        
+	    };
+
+
+
 
 }

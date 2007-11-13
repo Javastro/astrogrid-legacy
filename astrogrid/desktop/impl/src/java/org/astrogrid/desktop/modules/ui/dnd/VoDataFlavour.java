@@ -4,8 +4,12 @@
 package org.astrogrid.desktop.modules.ui.dnd;
 
 import java.awt.datatransfer.DataFlavor;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.List;
+
+import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -33,17 +37,17 @@ public class VoDataFlavour {
 	
 // types for file objects...
 	public static final DataFlavor LOCAL_FILEOBJECT = localDataFlavor(FileObject.class,"VFS file object");
-	public static final DataFlavor LOCAL_FILEOBJECT_LIST = localDataFlavor(FileObject[].class,"List of VFS file objects");
-	// dunno if it's possible to do a non-local version - as fileobject isn't serializable.
+	public static final DataFlavor LOCAL_FILEOBJECT_ARRAY = localDataFlavor(FileObject[].class,"List of VFS file objects");
+	// doubt if it's possible to do a non-local version - as fileobject isn't serializable.
 	
 //	 reference types
 	public static final DataFlavor LOCAL_URL = localDataFlavor(java.net.URL.class,"URL Reference");
-	public static final DataFlavor URL = new DataFlavor("text/x-url;class=java.net.URL","URL Reference");
+	public static final DataFlavor URL = new DataFlavor("application/x-java-url;class=java.net.URL","URL Reference");
 	public static final DataFlavor LOCAL_URI = localDataFlavor(URI.class,"URI Reference");
 	
 	public static final DataFlavor LOCAL_URI_ARRAY = localDataFlavor(URI[].class,"List of URI references");
 	public static final DataFlavor URI_LIST = new DataFlavor("text/uri-list","List of URI references");
-	
+	public static final DataFlavor URI_LIST_STRING =new DataFlavor("text/uri-list;class=java.lang.String","List of URI references");
 // types specific to astroscope.
 	
 	
@@ -100,6 +104,9 @@ public class VoDataFlavour {
 		
 	public static final String MIME_OCTET_STREAM = "application/octet-stream";
 	
+	
+	/** Treenode flavour - not very vo, but keeps them all in one place. */
+	public static final DataFlavor TREENODE = localDataFlavor(DefaultMutableTreeNode.class,"Tree Node");
 	//@todo add types for solar.
 	
 		//@todo define some types for movies..
@@ -113,7 +120,20 @@ public class VoDataFlavour {
 		return new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType
 				+ ";class=\"" + clazz.getName() + "\"", descr);
 	}
-
 	
+	/** java has broken handling of urls. if this url is a file:// with a host,
+	 * remove the host field. else pass-thru unchanged.
+	 * @param u
+	 * @return
+	 * @throws MalformedURLException 
+	 */
+	public static URL mkJavanese(URL u) throws MalformedURLException {
+	    if ("file".equals(u.getProtocol()) && u.getHost() != null) {
+	        return new URL(u.getProtocol(),null,u.getFile());
+	    } else {
+	        return u;
+	    }
+	}
+
 	
 }
