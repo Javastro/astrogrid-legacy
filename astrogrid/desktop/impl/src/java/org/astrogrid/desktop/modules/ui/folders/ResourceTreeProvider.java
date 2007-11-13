@@ -73,9 +73,10 @@ public class ResourceTreeProvider extends PersistentTreeProvider {
     private static DefaultMutableTreeNode createExamplesNode() {
         ResourceBranch examplesBranch = new ResourceBranch(EXAMPLES_NODE_NAME);
 
-        // Subscribe to central updating examples file?
-        // examplesBranch.setSubscription("http://www.astrogrid.org/voexamples.xml");
-
+        // Subscribe to central updating examples file
+        //@todo move this to a more stable location.
+        examplesBranch.setSubscription("http://wiki.astrogrid.org/pub/Astrogrid/VoExplorerSubscriptions/exampleResourceLists.xml");
+        examplesBranch.setIconName("myspace16.png");
         DefaultMutableTreeNode examplesNode =
             new DefaultMutableTreeNode(examplesBranch, true);
         ResourceFolder[] folders = getExampleFolders();
