@@ -55,7 +55,7 @@ public class FileObjectTransferableUnitTest extends TestCase {
 		mn1.replay();		
 		mc1.replay();
 		
-		trans = new FileObjectTransferable(f1);
+		trans = new FileObjectTransferable(f1,false);
 	}
 	public static final String MIME = "application/pdf";
 	FileObject f1;
@@ -68,6 +68,7 @@ public class FileObjectTransferableUnitTest extends TestCase {
 		u1 = null;
 		trans = null;
 	}
+
 
 	public void testGetDataFlavors() throws Exception {
 		DataFlavor[] arr = trans.getTransferDataFlavors();

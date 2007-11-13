@@ -83,9 +83,9 @@ public class FileObjectListTransferableUnitTest extends TestCase {
 	}
 
 	public void testLocalFileObjectFlavor() throws Exception {
-		assertTrue(trans.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT_LIST));
-		Object o = trans.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT_LIST);
-		assertFalse(VoDataFlavour.LOCAL_FILEOBJECT_LIST.isFlavorSerializedObjectType());
+		assertTrue(trans.isDataFlavorSupported(VoDataFlavour.LOCAL_FILEOBJECT_ARRAY));
+		Object o = trans.getTransferData(VoDataFlavour.LOCAL_FILEOBJECT_ARRAY);
+		assertFalse(VoDataFlavour.LOCAL_FILEOBJECT_ARRAY.isFlavorSerializedObjectType());
 		assertNotNull(o);
 		assertTrue(o instanceof FileObject[]);
 		assertEquals(l,Arrays.asList((FileObject[])o));
