@@ -225,6 +225,8 @@ public abstract class PersistentTreeProvider implements TreeProvider {
      * remove itself from the provider's saver member.
      * If when it finishes another saver is waiting, it will start that one
      * running.
+     * 
+     * @todo convert this to a background worker - or at least use the background executor.
      */
     private class Saver extends Thread {
         private final Object bean;
