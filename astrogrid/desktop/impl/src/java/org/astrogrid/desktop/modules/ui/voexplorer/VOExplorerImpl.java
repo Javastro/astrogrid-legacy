@@ -1,7 +1,5 @@
-/*$Id: VOExplorerImpl.java,v 1.13 2007/10/12 10:57:16 nw Exp $
-=======
-/*$Id: VOExplorerImpl.java,v 1.13 2007/10/12 10:57:16 nw Exp $
->>>>>>> 1.6.2.2
+/*$Id: VOExplorerImpl.java,v 1.14 2007/11/13 05:22:38 nw Exp $
+
  * Created on 30-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,35 +24,57 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
+import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.TreeModel;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.acr.ivoa.resource.Contact;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.system.XmlPersist;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
-import org.astrogrid.desktop.modules.system.ui.ArMainWindow;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
-import org.astrogrid.desktop.modules.system.ui.UIContributionBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar.EditMenuBuilder;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar.FileMenuBuilder;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar.MenuBuilder;
+import org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity;
+import org.astrogrid.desktop.modules.ui.actions.ContactActivity;
+import org.astrogrid.desktop.modules.ui.actions.FurtherInfoActivity;
+import org.astrogrid.desktop.modules.ui.actions.InfoActivity;
+import org.astrogrid.desktop.modules.ui.actions.PlasticScavenger;
+import org.astrogrid.desktop.modules.ui.actions.QueryScopeActivity;
+import org.astrogrid.desktop.modules.ui.actions.SaveResourceActivity;
+import org.astrogrid.desktop.modules.ui.actions.SaveXoXoListActivity;
+import org.astrogrid.desktop.modules.ui.actions.SimpleDownloadActivity;
+import org.astrogrid.desktop.modules.ui.actions.TaskRunnerActivity;
+import org.astrogrid.desktop.modules.ui.actions.WebInterfaceActivity;
 import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
 import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
 import org.astrogrid.desktop.modules.ui.comp.MyTitledBorder;
+import org.astrogrid.desktop.modules.ui.folders.ResourceBranch;
 import org.astrogrid.desktop.modules.ui.folders.ResourceFolder;
 import org.astrogrid.desktop.modules.ui.folders.SmartList;
 import org.astrogrid.desktop.modules.ui.folders.StaticList;
 import org.astrogrid.desktop.modules.ui.folders.XQueryList;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel.LoadEvent;
-
-import ca.odell.glazedlists.EventList;
 
 /** Main window of voexplorer
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 30-Mar-2005
@@ -66,83 +86,127 @@ public class VOExplorerImpl extends UIComponentImpl
 	 * Logger for this class
 	 */
 	private static final Log logger = LogFactory.getLog(VOExplorerImpl.class);
-    private final Action newAction;
-    private final Action stopAction;
+    private final Action stopAction = new StopAction();
     private final BiStateButton foldersButton;
+    private final Action refreshAction= new RefreshAction();
+    
+    public static final String EXPORT = "export";
 
 	public VOExplorerImpl( final UIContext context, final ActivityFactory activityBuilder
-			,final UIContributionBuilder menuBuilder, EventList folders, RegistryGooglePanel gl, QuerySizer sizer) {
-		super(context);
+			, TreeModel folderModel, final RegistryGooglePanel gl, QuerySizer sizer
+            ,ResourceChooserInternal chooser,  XmlPersist persister) { //@todo move these into a separate builder.
+		super(context,"VO Explorer","userInterface.voexplorer");
+        this.chooser = chooser;
+        this.persister = persister;
 		logger.info("Constructing new VOExplorer");
         this.google = gl;
         google.parent.set(this);		
 		this.setSize(800, 600);    
-		getContext().getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.voexplorer");        
 		JPanel pane = getMainPanel();
 		pane.setBorder(BorderFactory.createEmptyBorder());
 
-		// build the actions menu / pane / popup.
-		activities = activityBuilder.create(this);
-
-		// build the rest of the menuing system.
-		JMenuBar menuBar = new JMenuBar();
-	      JMenu fileMenu = new JMenu();
-	        fileMenu.setText("File");
-	        fileMenu.setMnemonic(KeyEvent.VK_F);
-	        fileMenu.add(new JSeparator());
-	        fileMenu.add( new CloseAction());
-	        menuBar.add(fileMenu);
-	        
-	      JMenu editMenu = new JMenu();
-	      editMenu.setText("Edit");
-	      editMenu.setMnemonic(KeyEvent.VK_E);
-	      editMenu.add(new SelectAllAction());
-	      editMenu.add(new InvertSelectionAction());
-	      menuBar.add(editMenu);
-	        
-	    menuBar.add(activities.getMenu());
-	    
-        menuBar.add(google.createColumnsMenu("Columns"));
+		// build the actions menu / pane
+		acts = activityBuilder.create(this,new Class[]{
+		        QueryScopeActivity.class
+		       ,BuildQueryActivity.class
+		       ,TaskRunnerActivity.class
+		       ,WebInterfaceActivity.class
+		       ,PlasticScavenger.class
+		       ,SimpleDownloadActivity.class
+		       ,InfoActivity.class
+		       ,FurtherInfoActivity.class
+		       ,ContactActivity.class
+		       ,SaveXoXoListActivity.class
+		       ,SaveResourceActivity.class
+		});
+		
+        // main resource view.		
+        resourceLists = new ResourceTree(folderModel, this, chooser,persister,refreshAction); 
+        resourceLists.setName(RESOURCES_VIEW);
+        resourceLists.addTreeSelectionListener(new TreeSelectionListener() {
+            public void valueChanged(TreeSelectionEvent evt) {
+                if (! resourceLists.isDragging()) {
+                    ResourceFolder folder = resourceLists.getSelectedFolder();
+                    if (folder != null) {
+                        acts.clearSelection();
+                        folder.display(google);
+                        setTitle("VO Explorer - " + folder.getName());
+                    }
+                }
+            }
+        });	
         
-		menuBuilder.populateWidget(menuBar,this,ArMainWindow.MENUBAR_NAME);
-		int sz = menuBar.getComponentCount();
-		
-		// splice additional things into help menu.
-		JMenu help = menuBar.getMenu(sz-1);
-		help.insertSeparator(0);
-		JMenuItem sci = new JMenuItem("VOExplorer: Introduction");
-		getContext().getHelpServer().enableHelpOnButton(sci,"voexplorer.intro");
-			//	"userInterface.voexplorer");
-		help.insert(sci,0);		
-		
-		// add other menus.
-		menuBar.add(getContext().createWindowMenu(this),sz-1); // insert before the help menu.
+		// build the menus.		
+		UIComponentMenuBar menuBar = new UIComponentMenuBar(this) {
+		    protected void populateFileMenu(FileMenuBuilder fmb) {
+		        fmb
+		                .windowOperation(resourceLists.getAddSmart())
+		                .windowOperation(resourceLists.getAddStatic())
+		            // new list from selection
+		                .windowOperation(resourceLists.getAddXQuery())
+		                .windowOperation(resourceLists.getAddSubscription())
+		                .windowOperation(resourceLists.getAddBranch())
+		                .separator()
+		            // add selection to list
+		                .windowOperation(resourceLists.getProperties())
+		                .windowOperation(resourceLists.getRename())
+		                .windowOperation(resourceLists.getDuplicate())
+		                .windowOperation(resourceLists.getRemove())
+		                .separator();
+		                fmb.closeWindow()
+		                .windowOperation(resourceLists.getImport())
+		                .windowOperation(resourceLists.getExport());
+		                
+		       }
+		    protected void populateEditMenu(EditMenuBuilder emb) {
+		        //@todo attach.
+		        emb
+		            .cut()
+		            .copy()
+		            .paste()
+		            .selectAll()
+		            .clearSelection()
+		           . invertSelection();
+		    }
+		    protected void constructAdditionalMenus() {
+                MenuBuilder vmb = new MenuBuilder("View",KeyEvent.VK_V);
+                vmb
+                    .windowOperationWithIcon(google.getExpandAction())
+                    .submenu(google.createColumnsMenu("Columns"))
+                    .checkbox(google.getSystemToggleButton())
+                    .separator()
+                    .windowOperation(refreshAction)              
+                    .windowOperation(stopAction);
+                add(vmb.create());
+                                                    
+                MenuBuilder rmb = new MenuBuilder("Resource",KeyEvent.VK_R)
+                    .windowOperation(acts.getActivity(QueryScopeActivity.class))
+                    .windowOperation(acts.getActivity(BuildQueryActivity.class))
+                    .windowOperation(acts.getActivity(TaskRunnerActivity.class))
+                    .windowOperation(acts.getActivity(WebInterfaceActivity.class));
+                    
+                acts.getActivity(PlasticScavenger.class).addTo(rmb.getMenu());
+                 
+                    rmb.windowOperation(acts.getActivity(SimpleDownloadActivity.class))
+                    .separator()
+                    .windowOperation(acts.getActivity(FurtherInfoActivity.class))
+                    .windowOperation(acts.getActivity(ContactActivity.class))
+                    .separator()
+                    .windowOperation(acts.getActivity(SaveXoXoListActivity.class))
+                    .windowOperation(acts.getActivity(SaveResourceActivity.class));
+                add(rmb.create());                        
+		    }
+		};
 		setJMenuBar(menuBar);
 
 		// main pane.	    
 		this.mainPanel = new FlipPanel();
 
-		// main resource view.
-		resourcesFolders = new ResourceLists(folders,this,new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                google.setNextToBypassCache(); 
-                ResourceFolder f =  (ResourceFolder)resourcesFolders.getSelectedValue();
-                if (f != null) { 
-                    activities.clearSelection();
-                    f.display(google);
-                    setTitle("VO Explorer - " + f.getName());
-                }                
-            }
-		});
-		resourcesFolders.addListSelectionListener(this);
-		resourcesFolders.setName(RESOURCES_VIEW);
-
 		// main view.
 
 		// attach ourself to this reg chooser, to listen for selection changes.
 		google.getCurrentResourceModel().addListSelectionListener(this); // listen to currently selected resource
-		google.setPopup(activities.getPopupMenu());			
+		google.setPopup(acts.getPopupMenu());			
 		google.addLoadListener(this);
 		mainPanel.add(google,RESOURCES_VIEW);
 
@@ -154,43 +218,27 @@ public class VOExplorerImpl extends UIComponentImpl
 		wireUpEditor(staticEditPanel,EDIT_STATIC_VIEW);
 		xqueryEditPanel = new XQueryListEditingPanel(this,sizer);
 		wireUpEditor(xqueryEditPanel,EDIT_XQUERY_VIEW);
+        subscriptionEditPanel = new SubscriptionEditingPanel(chooser);
+        wireUpEditor(subscriptionEditPanel,EDIT_SUBSCRIPTION_VIEW);
 		
 		// assemble all into main window.
-		final JScrollPane actionsScroll = new JScrollPane(activities.getTaskPane(),JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		final JScrollPane actionsScroll = new JScrollPane(acts.getTaskPane(),JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		actionsScroll.setBorder(null);
 		actionsScroll.setMinimumSize(new Dimension(200,200));		
+
 		
 		JPanel foldersPanel = new JPanel(new BorderLayout());
-		final JScrollPane folderScroll = new JScrollPane(resourcesFolders,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		folderScroll.setBorder(null);
-        foldersPanel.add( folderScroll ,BorderLayout.CENTER
-		);
-		foldersPanel.setBorder(MyTitledBorder.createLined("Resource lists"));
+        JScrollPane foldersScroll = new JScrollPane(resourceLists,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        foldersScroll.setBorder(MyTitledBorder.createEmpty("Resource Lists")); 
+        foldersScroll.setMinimumSize(new Dimension(200,100));
+        foldersPanel.add( foldersScroll ,BorderLayout.CENTER);
+		foldersPanel.setBorder(null);
 		foldersPanel.setMinimumSize(new Dimension(200,100));
 		
-        newAction = new AbstractAction("Make a new list"){
-            {
-                putValue(AbstractAction.SHORT_DESCRIPTION,"Create a new list by searching the whole VO registry");
-                setEnabled(true);
-            }
-            public void actionPerformed(ActionEvent e) {
-                SmartList sl = new SmartList();
-                editNewSmartList(sl);                
-            }
-        };
-        stopAction = new AbstractAction("Stop search"){
-            {
-                putValue(AbstractAction.SMALL_ICON,IconHelper.loadIcon("loader.gif"));
-                setEnabled(true);
-            }
-            public void actionPerformed(ActionEvent e) {
-                google.halt();
-            }
-        };
             
-        this.foldersButton = new BiStateButton(newAction,stopAction);
+        this.foldersButton = new BiStateButton(resourceLists.getAddSmart(),stopAction);
         foldersPanel.add(foldersButton,BorderLayout.SOUTH);
-		
+
 		// assemble folders and tasks into LHS 
 		JSplitPane leftPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, foldersPanel	,actionsScroll);
 		leftPane.setDividerLocation(300);
@@ -208,12 +256,10 @@ public class VOExplorerImpl extends UIComponentImpl
 		// add buttonbar on top.
 
 		// finish it all off..
-		this.setTitle("VO Explorer");
 		setIconImage(IconHelper.loadIcon("search16.png").getImage());  
 		logger.info("New VOExplorer - Completed");
 		// finally, display first folder.
-		resourcesFolders.setSelectedIndex(0);
-		((ResourceFolder)folders.get(0)).display(google);
+		resourceLists.initialiseViewAndSelection();
 	}
 
 	/**
@@ -226,67 +272,53 @@ public class VOExplorerImpl extends UIComponentImpl
 	}
 
 	private final FlipPanel mainPanel;
-	private final ActivitiesManager activities;
+	final ActivitiesManager acts;
 	public static final String RESOURCES_VIEW = "resources";
 	public static final String EDIT_SMART_VIEW = "edit-smart";
 	public static final String EDIT_STATIC_VIEW = "edit-static";
 	public static final String EDIT_XQUERY_VIEW = "edit-xquery";
-	private final ResourceLists resourcesFolders;
+    public static final String EDIT_SUBSCRIPTION_VIEW = "edit-subscription";
+    private final ResourceChooserInternal chooser;
+    private final XmlPersist persister;
+    private final ResourceTree resourceLists;
 	private final RegistryGooglePanel google;
 	private final EditingPanel smartEditPanel;
 	private final EditingPanel staticEditPanel;
 	private final XQueryListEditingPanel xqueryEditPanel;
+    private final SubscriptionEditingPanel subscriptionEditPanel;
 
-	/** override:  create a help menu with additional entries */
-	protected JMenu createHelpMenu() {
-		System.out.println("called");
-		JMenu menu = super.createHelpMenu();
-		menu.insertSeparator(0);
-		/*
-		JMenuItem ref = new JMenuItem("Reference");
-		getHelpServer().enableHelpOnButton(ref, "astroscope.menu.reference");
-		menu.insert(ref,0);
-		 */
-		JMenuItem sci = new JMenuItem("VOExplorer: Introduction");
-		getContext().getHelpServer().enableHelpOnButton(sci,"voexplorer.intro");
-			//	"userInterface.voexplorer");
-		menu.insert(sci,0);
-		return menu;
-	}
 
 	private void notifyResourceTasks() {
 		Transferable tran = google.getSelectionTransferable();
 		if (tran == null) {
-			activities.clearSelection();
+			acts.clearSelection();
 		} else {
-		    activities.setSelection(tran);
+		    acts.setSelection(tran);
 		}
 	}
-	// listens to clicks on resource Folders and registry google.
+	// listens to clicks on registry google.
 	public void valueChanged(ListSelectionEvent e) {
 		if (e.getValueIsAdjusting()) {
 			return; // ignore
 		}
-		if (e.getSource() == resourcesFolders) {
-			ResourceFolder f =  (ResourceFolder)resourcesFolders.getSelectedValue();
-			if (f != null) { 
-				activities.clearSelection();
-				f.display(google);
-				setTitle("VO Explorer - " + f.getName());
-			}
-		} else {		// from the table 
-			notifyResourceTasks();
-		}
+		// from the table 
+		notifyResourceTasks();
 	}
 /// load listener interface.
 	public void loadCompleted(LoadEvent e) {
 	    foldersButton.enableA();
-		resourcesFolders.setEnabled(true);
+		resourceLists.setEnabled(true);
+		stopAction.setEnabled(false);
+		final Boolean previous = (Boolean)refreshAction.getValue("previous");		
+		refreshAction.setEnabled(true);
 	}
 
 	public void loadStarted(LoadEvent e) {
 	    foldersButton.enableB();
-		resourcesFolders.setEnabled(false);
+		resourceLists.setEnabled(false);
+		stopAction.setEnabled(true);
+		refreshAction.setEnabled(false);
+		
 	}	
 //	 action Listener interface. handles ok/cancel from each of the editor panels.
 	public void actionPerformed(ActionEvent e) {
@@ -296,9 +328,13 @@ public class VOExplorerImpl extends UIComponentImpl
 			acceptEdit(staticEditPanel);
 		} else if (e.getSource() == xqueryEditPanel.getOkButton()) {
 			acceptEdit(xqueryEditPanel);			
+        } else if (e.getSource() == subscriptionEditPanel.getOkButton()) {
+		    resourceLists.setEnabled(true);
+            acceptEdit(subscriptionEditPanel);
 		} else if (e.getSource() == smartEditPanel.getCancelButton()
 				|| e.getSource() == staticEditPanel.getCancelButton()
-				|| e.getSource() == xqueryEditPanel.getCancelButton()) {
+				|| e.getSource() == xqueryEditPanel.getCancelButton()
+                || e.getSource() == subscriptionEditPanel.getCancelButton()) {
 			showResourceView();
 		}
 	}	
@@ -306,13 +342,14 @@ public class VOExplorerImpl extends UIComponentImpl
 	private void acceptEdit(EditingPanel p) {
 		p.loadEdits();
 		ResourceFolder r = p.getCurrentlyEditing();
-		resourcesFolders.store(r);
+		resourceLists.store(r);
 		//display updated folder contents.
 		
         mainPanel.show(RESOURCES_VIEW);
         // clearing selection and then setting hte selection will trigger a query reload in all circumstances.
-        resourcesFolders.clearSelection();
-        resourcesFolders.setSelectedValue(r,true);
+        resourceLists.clearSelection();
+        resourceLists.setSelectedFolder(r);
+
         // make sure the edited folder is the selected one (necessary when we've just created a new one..
        // if (resourcesFolders.getSelectedValue() != r) {
        //     resourcesFolders.setSelectedValue(r,true);
@@ -326,117 +363,167 @@ public class VOExplorerImpl extends UIComponentImpl
 		smartEditPanel.getOkButton().setText("Create");
 		smartEditPanel.setCurrentlyEditing(f);
 		mainPanel.show(EDIT_SMART_VIEW);
-		resourcesFolders.setEnabled(false);
-		activities.clearSelection(); // removes list of actions.
+		resourceLists.setEnabled(false);
+		acts.clearSelection(); // removes list of actions.
 	}
 
 	public void editExistingSmartList(SmartList f) {
 		smartEditPanel.getOkButton().setText("Update");
 		smartEditPanel.setCurrentlyEditing(f);
 		mainPanel.show(EDIT_SMART_VIEW);
-		resourcesFolders.setEnabled(false);
-		activities.clearSelection(); // removes list of actions.
+		resourceLists.setEnabled(false);
+		acts.clearSelection(); // removes list of actions.
 	}
 	
 	public void editNewStaticList(StaticList f) {
 		staticEditPanel.getOkButton().setText("Create");
 		staticEditPanel.setCurrentlyEditing(f);
 		mainPanel.show(EDIT_STATIC_VIEW);
-		resourcesFolders.setEnabled(false);
-		activities.clearSelection(); // removes list of actions.
+		resourceLists.setEnabled(false);
+		acts.clearSelection(); // removes list of actions.
 	}
 
 	public void editExistingStaticList(StaticList f) {
 		staticEditPanel.getOkButton().setText("Update");
 		staticEditPanel.setCurrentlyEditing(f);
 		mainPanel.show(EDIT_STATIC_VIEW);
-		resourcesFolders.setEnabled(false);
-		activities.clearSelection(); // removes list of actions.
+		resourceLists.setEnabled(false);
+		acts.clearSelection(); // removes list of actions.
 	}
 	
 	public void editNewQueryList(XQueryList f) {
 		xqueryEditPanel.getOkButton().setText("Create");
 		xqueryEditPanel.setCurrentlyEditing(f);
 		mainPanel.show(EDIT_XQUERY_VIEW);
-		resourcesFolders.setEnabled(false);
-		activities.clearSelection(); // removes list of actions.
+		resourceLists.setEnabled(false);
+		acts.clearSelection(); // removes list of actions.
 	}
 
 	public void editExistingQueryList(XQueryList f) {
 		xqueryEditPanel.getOkButton().setText("Update");
 		xqueryEditPanel.setCurrentlyEditing(f);
 		mainPanel.show(EDIT_XQUERY_VIEW);
-		resourcesFolders.setEnabled(false);
-		activities.clearSelection(); // removes list of actions.
+		resourceLists.setEnabled(false);
+		acts.clearSelection(); // removes list of actions.
 	}
+
+    public void editNewResourceBranch(ResourceBranch f) {
+        String name = JOptionPane.showInputDialog(this, "Name for new container", f.getName());
+        if (StringUtils.isNotEmpty(name)) {
+            f.setName(name);
+        }
+        resourceLists.appendFolder(f);
+    }
+
+    public void editNewSubscription(ResourceFolder f) {
+        subscriptionEditPanel.getOkButton().setText("Create");
+        subscriptionEditPanel.setCurrentlyEditing(f);
+        mainPanel.show(EDIT_SUBSCRIPTION_VIEW);
+        resourceLists.setEnabled(false);
+        acts.clearSelection();
+    }
+
+    public void editExistingSubscription(ResourceFolder f) {
+        subscriptionEditPanel.getOkButton().setText("Create");
+        subscriptionEditPanel.setCurrentlyEditing(f);
+        mainPanel.show(EDIT_SUBSCRIPTION_VIEW);
+        resourceLists.setEnabled(false);
+        acts.clearSelection();
+    }
 
 	public void showResourceView() {
 		mainPanel.show(RESOURCES_VIEW);
-		resourcesFolders.setEnabled(true);
+		resourceLists.setEnabled(true);
 	}	
 
-// publlic api.
+// public api.
 	/** called to display a specific set of resouces in this view.
 	 * @param uriList
 	 */
 	public void displayResources(List uriList) {
-	    resourcesFolders.clearSelection();
+        resourceLists.clearSelection();     
 		google.displayIdSet(uriList);
 	}
 	
 	public void displayResources(String title, List uriList) {
-        resourcesFolders.clearSelection();	    
+        resourceLists.clearSelection();         
 	    google.displayIdSet(title,uriList);
 	}
 	
 	public void doOpen(URI ivorn) {
-        resourcesFolders.clearSelection();	    
+        resourceLists.clearSelection();         
 		google.displayIdSet(Collections.singletonList(ivorn));
 		
 	}
 	
 	   public void doOpen(String title,URI ivorn) {
-	        resourcesFolders.clearSelection();	       
+           resourceLists.clearSelection();       
 	        google.displayIdSet(title,Collections.singletonList(ivorn));
 	        
 	    }
 	
 	public void doQuery(String query) {
-        resourcesFolders.clearSelection();	    
+        resourceLists.clearSelection();         
 		google.displayQuery(query);
 	}
 	
 	   public void doQuery(String title,String query) {
-	        resourcesFolders.clearSelection();	       
+	        resourceLists.clearSelection();	       
 	        google.displayQuery(title,query);
 	    }
 
-	   // actions - a little hacky - but dont really want to explose these
-	   // objects thriough accessors.
-	   private class SelectAllAction extends AbstractAction {
-	       /**
+	   /**
+     * @author Noel.Winstanley@manchester.ac.uk
+     * @since Nov 8, 20071:47:58 PM
+     */
+    private final class StopAction extends AbstractAction {
+        public StopAction() {
+            super("Halt Search");
+            putValue(AbstractAction.SMALL_ICON,IconHelper.loadIcon("loader.gif"));
+            putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD,UIComponentMenuBar.MENU_KEYMASK));
+            setEnabled(false);
+        }
+
+        /**
+         * @param name
+         */
+        private StopAction(String name) {
+            super(name);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            google.halt();
+        }
+    }
+
+    /** perform a refresh action.
+     * @author Noel.Winstanley@manchester.ac.uk
+     * @since Nov 8, 200712:09:36 PM
+     */
+    private final class RefreshAction extends AbstractAction {
+        /**
          * 
          */
-        public SelectAllAction() {
-            super("Select all resources");
+        public RefreshAction() {
+            super("Refresh",IconHelper.loadIcon("reload16.png"));
+            putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_R,UIComponentMenuBar.MENU_KEYMASK));
+            putValue(Action.SHORT_DESCRIPTION,"Refresh: reload the contents of the current list from the VO Registry");
+            setEnabled(false);
         }
-        
+
         public void actionPerformed(ActionEvent e) {
-            google.resourceTable.selectAll();
+            google.setNextToBypassCache(); 
+            ResourceFolder f =  (ResourceFolder)resourceLists.getSelectedFolder();
+            if (f != null) { 
+                acts.clearSelection();
+                f.display(google);
+                setTitle("VO Explorer - " + f.getName());
+            } else {
+                System.err.println("resouce folder was null");//@todo remove me.
+            }
         }
-	   }
-	   
-	   private class InvertSelectionAction extends AbstractAction {
-	       /**
-         * 
-         */
-        public InvertSelectionAction() {
-            super("Invert resource selection");
-        }
-        public void actionPerformed(ActionEvent e) {
-            google.currentResourceInView.invertSelection();
-        }
-	   }
+    }
+
 
 
 }

@@ -216,6 +216,7 @@ private FormLayout fl;
 		outputsPanel.setBorder(BorderFactory.createEmptyBorder());
 
 		interfaceChooser = new JComboBox();
+		interfaceChooser.setToolTipText("Change the set of parameters required to call this task");
 		interfaceChooser.setEditable(false);
 		interfaceChooser.addItemListener(this);
 		
@@ -268,8 +269,8 @@ private FormLayout fl;
         fl.setColumnGroups(new int[][]{ {1, 3} });
 		pb = new PanelBuilder(fl,this);
         cc = new CellConstraints();
-        pb.addTitle("Inputs",cc.xy(1,2));
-		pb.addTitle("Outputs",cc.xy(3,2));
+        pb.addTitle("Inputs",cc.xy(1,2)).setToolTipText("This column lists the input parameters for the task");
+		pb.addTitle("Outputs",cc.xy(3,2)).setToolTipText("This column lists the outputs of the task");
 		pb.add(inScroll,cc.xy(1,3));
 		final JSplitPane rightSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		rightSplit.setLeftComponent(outScroll);
@@ -380,7 +381,7 @@ private FormLayout fl;
 	    }
 	    private CeaApplication application;
 	    private Tool tool=nullTool;
-	    private String iName;
+	    private String interfaceName;
 	    /** map to cache some info about ui state of different form elements 
 	     *  - a cache of interfaceName -> InterfaceState objects*/	    
 	    private Map m= new HashMap();
@@ -391,7 +392,7 @@ private FormLayout fl;
 	        logger.debug("clearing model");
 	        application = null;
 	        tool = nullTool;
-	        iName = null;
+	        interfaceName = null;
 	        setExpanded(false);
 	        m.clear();
 	    }
@@ -408,37 +409,37 @@ private FormLayout fl;
 	        // first of all, record the final configuratio of this interface..
 	        rememberCurrent();
 	        // now onto the new interface
-	        this.iName = interfacename;
+	        this.interfaceName = interfacename;
 	     // see if we've got a previously worked-on tool for this interface.
-	        InterfaceState previously = (InterfaceState)m.get(iName);
+	        InterfaceState previously = (InterfaceState)m.get(interfaceName);
 	        if (previously != null) {
 	            if (logger.isDebugEnabled()) {
-	                logger.debug("Found previous state for inteface" + iName + " " + previously);
+	                logger.debug("Found previous state for inteface" + interfaceName + " " + previously);
 	            }
 	            //grand. work from this on.e
 	            tool = previously.tool;
 	            // build the form.
-	            doBuildForm(iName);
+	            doBuildForm(interfaceName);
 	            // update the expansion state
 	            setExpanded(! previously.collapsed);
 	        } else { // create a new tool.
-	            logger.debug("Creating new state for interface" + iName);
+	            logger.debug("Creating new state for interface" + interfaceName);
 	            // create a template tool.         
-	            tool = apps.createTemplateTool(iName,currentResource());
+	            tool = apps.createTemplateTool(interfaceName,currentResource());
 	            // build the form.
-	            doBuildForm(iName);	          
+	            doBuildForm(interfaceName);	          
 	            // update the expansion state.
 	            setExpanded(false);
 	            // record this new state.
-	            m.put(iName, new InterfaceState(tool));                       
+	            m.put(interfaceName, new InterfaceState(tool));                       
 	        }	        
 	    }
         /**
          * remembers current edit state - do this before changing to another tool / interface
          */
         private void rememberCurrent() {
-            if (iName != null) { // else we weren'te editing anything previously.
-	            InterfaceState leaving = (InterfaceState)m.get(iName);
+            if (interfaceName != null) { // else we weren'te editing anything previously.
+	            InterfaceState leaving = (InterfaceState)m.get(interfaceName);
 	            if (leaving != null) {
 	                leaving.collapsed = ! getBottomPane().isVisible();
 	                logger.debug("Recording window state of interface we're leaving as " + leaving.collapsed);
@@ -449,7 +450,7 @@ private FormLayout fl;
 	    /** change the tool to a different one in the same application */
 	    public void changeTool(Tool t, String iName) {
 	        rememberCurrent();
-	        this.iName = iName;
+	        this.interfaceName = iName;
 	        this.tool = t;
             // now build the form.
             doBuildForm(iName);
@@ -481,7 +482,10 @@ private FormLayout fl;
 	        public String toString() {
 	            return "InterfaceState[" + tool.getName() + ", " + collapsed +"]";
 	        }
-	    }	    
+	    }
+        public final String getIName() {
+            return this.interfaceName;
+        }	    
 	}// end inner class 'Model'
 
     /** fetch the icon for this application in a background thread.
@@ -791,7 +795,7 @@ private FormLayout fl;
 		//	JToggleButton optionalButton = new JToggleButton(IconHelper.loadIcon("remove16.png"));
 			JCheckBox optionalButton = new JCheckBox();
 			optionalButton.setSelected(true);
-			optionalButton.setToolTipText("Check to enable this parameter");
+			optionalButton.setToolTipText("This is an optional parameter: check to enable it");
 			optionalButton.setActionCommand("optional");
 			optionalButton.addActionListener(this);
 			el.setOptionalButton(optionalButton);

@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.21 2007/10/12 10:55:49 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.22 2007/11/13 05:22:38 nw Exp $
 >>>>>>> 1.12.2.6
  * Created on 02-Sep-2005
  *
@@ -32,6 +32,7 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -42,6 +43,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -398,9 +400,9 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	protected final ResourceTable resourceTable;
 	protected final EventList  items ;
 	protected final EventList edtItems; // a view of the items event list, on the Event dispatch thread.
-    protected final EventTableModel resourceTableModel;
+    private final EventTableModel resourceTableModel;
 	// tracks the currently clicked on registry entry - i.e. the one to display in viewer
-	protected final EventSelectionModel currentResourceInView;
+	private final EventSelectionModel currentResourceInView;
     private final ResettableAdjustableColumnModel resourceColumnModel;
     private final JScrollPane tableScroller;
 
@@ -417,6 +419,10 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	public final UIComponentBodyguard parent;
 
     protected final SearchSummaryFormatter summary;
+
+    private final JCheckBoxMenuItem systemToggleButton;
+
+    private final Action expandAction;
 
 	
 	public void setPopup(JPopupMenu popup) {
@@ -486,7 +492,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 		currentResourceInView.addListSelectionListener(this); // assume this happens on EDT?
 		
 		FormLayout form = new FormLayout(
-				"2dlu,d:grow,60dlu,d,d,1dlu" // cols
+				"2dlu,d:grow,60dlu,0dlu,d,1dlu" // cols
 				,"d" // rows
 				);
 		PanelBuilder builder = new PanelBuilder(form);
@@ -500,8 +506,10 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 		final JTextField filterField = mPipeline.getTextField();
 		CSH.setHelpIDString(filterField, "reg.filter");
 		builder.add(filterField,cc.xy(3, 1));
-		builder.add(mPipeline.getSystemToggleButton(),cc.xy(4,1));
-		builder.add(mPipeline.getExpandButton(),cc.xy(5, 1));
+		this.systemToggleButton = mPipeline.getSystemToggleButton();
+		final JToggleButton expandButton = mPipeline.getExpandButton();		
+        builder.add(expandButton,cc.xy(5, 1));
+        this.expandAction = expandButton.getAction();
 		toolbar = builder.getPanel();
 		Box topBox = Box.createVerticalBox();
 		this.add(topBox,BorderLayout.NORTH);
@@ -911,10 +919,29 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 			super(source);
 		}
 	}
+
+    /**
+     * @return the systemToggleButton
+     */
+    public final JCheckBoxMenuItem getSystemToggleButton() {
+        return this.systemToggleButton;
+    }
+
+    /**
+     * @return the expandAction
+     */
+    public final Action getExpandAction() {
+        return this.expandAction;
+    }
 }
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.22  2007/11/13 05:22:38  nw
+Complete - task 229: menuing redesign.
+
+Complete - task 182: add ability for user to send *any* plastic message.
+
 Revision 1.21  2007/10/12 10:55:49  nw
 minor fixes, discovered while trying to use this in a dialogue
 

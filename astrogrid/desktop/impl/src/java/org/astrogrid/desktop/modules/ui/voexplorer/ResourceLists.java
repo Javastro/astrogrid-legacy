@@ -91,7 +91,7 @@ public ResourceLists(EventList folderList, VOExplorerImpl  parent, ActionListene
 	
 	setModel(new EventListModel(folderList));
 	setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-	setSelectedIndex(0);
+	setSelectedIndex(0); 
 	setCellRenderer(new DefaultListCellRenderer() {
 		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 			JLabel l = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected,
