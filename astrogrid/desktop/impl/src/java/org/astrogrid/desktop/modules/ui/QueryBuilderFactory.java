@@ -40,8 +40,8 @@ public class QueryBuilderFactory implements QueryBuilderInternal{
 
     public void build(CeaApplication app) {
         QueryBuilderInternal tr = newInstance();
-        tr.build(app);
         tr.show();        
+        tr.build(app);
     }
 
     public void build(DataCollection coll) {
@@ -57,8 +57,8 @@ public class QueryBuilderFactory implements QueryBuilderInternal{
 
     public void edit(FileObject fo) {
         QueryBuilderInternal tr = newInstance();
-        tr.edit(fo);   
         tr.show();        
+        tr.edit(fo);   
     }
 
 }

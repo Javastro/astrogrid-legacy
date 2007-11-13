@@ -8,7 +8,6 @@ import java.net.URI;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.dialogs.RegistryGoogle;
@@ -19,7 +18,6 @@ import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.RemoteProcessManagerInternal;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
-import org.astrogrid.desktop.modules.system.ui.UIContributionBuilder;
 import org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity;
 import org.astrogrid.desktop.modules.ui.taskrunner.TaskRunnerImpl;
 import org.astrogrid.desktop.modules.votech.VoMonInternal;
@@ -36,11 +34,11 @@ public class QueryBuilderImpl extends TaskRunnerImpl implements
     public QueryBuilderImpl(UIContext context, ApplicationsInternal apps,
             RemoteProcessManagerInternal rpmi
             ,ResourceChooserInternal rci, RegistryGoogle regChooser,
-            UIContributionBuilder menuBuilder, TypesafeObjectBuilder builder
-            ,FileSystemManager vfs, VoMonInternal vomon
+             TypesafeObjectBuilder builder
+            , VoMonInternal vomon
             ,Registry reg)
             throws HeadlessException {
-        super(context, apps, rpmi,rci, regChooser, menuBuilder, builder,vfs,vomon);
+        super(context, apps, rpmi,rci, regChooser, builder,vomon);
         this.reg = reg;
     }
 
@@ -86,7 +84,7 @@ public class QueryBuilderImpl extends TaskRunnerImpl implements
     }
 
     public void edit(FileObject fo) {
-        //@fixme implement
+       super.edit(fo);
     }
     
 
