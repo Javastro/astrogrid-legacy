@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.70 2007/10/23 09:26:00 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.71 2007/11/13 04:42:23 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,13 +39,10 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
@@ -60,9 +57,10 @@ import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
-import org.astrogrid.desktop.modules.system.ui.ArMainWindow;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
-import org.astrogrid.desktop.modules.system.ui.UIContributionBuilder;
+import org.astrogrid.desktop.modules.ui.actions.PlasticScavenger;
+import org.astrogrid.desktop.modules.ui.actions.SimpleDownloadActivity;
+import org.astrogrid.desktop.modules.ui.actions.ViewInBrowserActivity;
 import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle;
 import org.astrogrid.desktop.modules.ui.comp.DoubleDimension;
@@ -74,14 +72,13 @@ import org.astrogrid.desktop.modules.ui.comp.DecSexToggle.DecSexListener;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocolManager;
 import org.astrogrid.desktop.modules.ui.scope.HyperbolicVizualization;
-import org.astrogrid.desktop.modules.ui.scope.PrefuseGlazedListsBridge;
 import org.astrogrid.desktop.modules.ui.scope.Retriever;
 import org.astrogrid.desktop.modules.ui.scope.ScopeServicesList;
 import org.astrogrid.desktop.modules.ui.scope.SpatialDalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.TemporalDalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.VizModel;
-import org.astrogrid.desktop.modules.ui.scope.Vizualization;
 import org.astrogrid.desktop.modules.ui.scope.VizualizationManager;
+import org.astrogrid.desktop.modules.ui.scope.VizualizationsPanel;
 import org.astrogrid.desktop.modules.ui.scope.WindowedRadialVizualization;
 import org.astrogrid.desktop.modules.ui.scope.ScopeHistoryProvider.SearchHistoryItem;
 import org.freixas.jcalendar.JCalendarCombo;
@@ -119,32 +116,38 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	public AstroScopeLauncherImpl(UIContext context
 			, IterableObjectBuilder protocolsBuilder
 			,  final ActivityFactory activityBuilder
-			, UIContributionBuilder menuBuilder	
-			, EventList history
+			, final EventList history
 			, ScopeServicesList summary
 			,FileSystemManager vfs
 			,Sesame ses
 			,SnitchInternal snitch)  {
-		super(context);
+		super(context,"Astroscope","scope.intro");
 		this.history = history;
 		this.snitch = snitch;
 		this.protocols = new DalProtocolManager();
 		this.ses = ses;
 		this.summary = summary;
+	    this.summary.parent.set(this);
 
 		for (Iterator i = protocolsBuilder.creationIterator(); i.hasNext(); ) {
 			protocols.add((DalProtocol)i.next());
 		}
 		
 		// create the activities.
-	      activities = activityBuilder.create(this);
-	      JPopupMenu popup = activities.getPopupMenu();
+	      acts = activityBuilder.create(this, new Class[]{
+	              ViewInBrowserActivity.class
+	              ,SimpleDownloadActivity.class
+	              ,PlasticScavenger.class
+	      });
+	      JPopupMenu popup = acts.getPopupMenu();
 		// create the shared model
 		vizModel = new VizModel(protocols,summary,vfs);
 		// create the vizualizations
 		vizualizations = new VizualizationManager(vizModel);
-		vizualizations.add(new WindowedRadialVizualization(vizualizations,popup,this));
-		vizualizations.add(new HyperbolicVizualization(vizualizations,popup,this));
+		final WindowedRadialVizualization radialViz = new WindowedRadialVizualization(vizualizations,popup,this);
+        vizualizations.add(radialViz);
+		final HyperbolicVizualization hyperbolicViz = new HyperbolicVizualization(vizualizations,popup,this);
+        vizualizations.add(hyperbolicViz);
 
 		// build the ui.
 		this.setSize(1000, 707); // same proportions as A4,
@@ -155,7 +158,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 				+ ",bottom:max(20dlu;p),p,p,p,p,p" // spatial
 				+ ",p,bottom:max(20dlu;p),p,p,p,p" // temporal
 				+ ",bottom:max(20dlu;p),m,m" // navigate
-				+ ",bottom:max(20dlu;p),top:p:grow" //process
+				+ ",bottom:max(20dlu;p),fill:p:grow" //process
 				);
 		layout.setColumnGroups(new int[][]{ {2, 4} });		
 		CellConstraints cc = new CellConstraints();
@@ -271,7 +274,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
         builder.add(startCal,cc.xyw(2,row,3));
         
         row++;
-		final JLabel temporalLabel2 = builder.addLabel("End date && time",cc.xyw(2,row,3));
+		final JLabel temporalLabel2 = builder.addLabel("End date && time",cc.xyw(2,row,3)); // double ampersand is intentional.
 		
 		row++;
         endCal = new JCalendarCombo(JCalendarCombo.DISPLAY_DATE|JCalendarCombo.DISPLAY_TIME,true);
@@ -336,7 +339,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		
 		row++; 
 
-		final JScrollPane actionsScroll = new JScrollPane(activities.getTaskPane(),JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		final JScrollPane actionsScroll = new JScrollPane(acts.getTaskPane(),JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		actionsScroll.setBorder(BorderFactory.createEmptyBorder());
 		actionsScroll.setMinimumSize(new Dimension(200,200));			
 		builder.add(actionsScroll,cc.xyw(2,row,4));
@@ -355,58 +358,66 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		pane.add(searchPanel,BorderLayout.WEST);
 		
 	// main part of the window
-		JTabbedPane tabs = new JTabbedPane();
-		// spidergrams
-		for (Iterator i = vizualizations.iterator(); i.hasNext();) {
-			Vizualization v = (Vizualization) i.next();
-			tabs.addTab(v.getName(), v.getDisplay());
-		}
-	// tablular view 
-		summary.parent.set(this);
-		// keeps the selection models of prefuse and the summary view in-sunch..
-		new PrefuseGlazedListsBridge(vizualizations,summary,tabs);
-		tabs.addTab("Services", summary);
+		flip = new VizualizationsPanel(vizualizations,radialViz,hyperbolicViz,summary);
 		
-		pane.add(tabs, BorderLayout.CENTER);
+		pane.add(flip, BorderLayout.CENTER);
 
-	// menu bar
-		JMenuBar mb = new JMenuBar();
-		JMenu fileMenu = new JMenu();
-		fileMenu.setText("File");
-		fileMenu.setMnemonic(KeyEvent.VK_F);
-		fileMenu.add(searchAction);
-		fileMenu.add(haltAction);
-		fileMenu.add(clearAction);
-		fileMenu.add(new JSeparator());
-		fileMenu.add( new CloseAction());
-		mb.add(fileMenu);
-				
-		JMenu historyMenu = new JMenu();
-		historyMenu.setText("History");
-		historyMenu.setMnemonic(KeyEvent.VK_H);
-		// map the history list to menu items, and display in the history menu.
-		new EventListMenuManager(new FunctionList(history,new FunctionList.Function() {
-			public Object evaluate(Object arg0) {
-				SearchHistoryItem i = (SearchHistoryItem)arg0;
-				return new HistoryMenuItem(i);
-			}
-		}),historyMenu,false);
-		mb.add(historyMenu);
-		
-		mb.add(activities.getMenu());
-		
-		   menuBuilder.populateWidget(mb,this,ArMainWindow.MENUBAR_NAME);
-           int sz = mb.getComponentCount();
-           
-           JMenu help = mb.getMenu(sz-1);
-           help.insertSeparator(0);
-           JMenuItem sci = new JMenuItem("AstroScope: Introduction");
-           getContext().getHelpServer().enableHelpOnButton(sci,"scope.intro");
-           help.insert(sci,0);                 
-       
-       mb.add(getContext().createWindowMenu(this),sz-1); // insert before help menu.
+		UIComponentMenuBar menuBar = new UIComponentMenuBar(this) {
+            protected void populateEditMenu(EditMenuBuilder emb) {
+                //@fixme hook these operations into the result displays.
+                emb.cut() // fields only
+                    .copy() // fields & results
+                    .paste() //fields only
+                    .selectAll() // fields or results
+                    .clearSelection() // fields & results  clearAction for results.
+                    .invertSelection(); // results only.
+            }
 
-		this.setJMenuBar(mb);
+            protected void populateFileMenu(FileMenuBuilder fmb) {
+                fmb
+                //@fixme add some 'new' operations - need to think what optinos to provide for 'all'
+                // new all-vo
+                // select services
+                    .windowOperation(searchAction)
+                    .windowOperation(haltAction)
+                    ;
+                fmb.closeWindow();
+            }
+            
+            protected void constructAdditionalMenus() {
+                MenuBuilder vmb = new MenuBuilder("View",KeyEvent.VK_V)
+                       .windowOperation(topAction)
+                // up one level
+                       .separator()
+                       .windowOperation(flip.getRadialAction())
+                       .windowOperation(flip.getHyperbolicAction())
+                       .windowOperation(flip.getServicesAction())
+                       ;                
+                add(vmb.create());
+                
+                final JMenu historyMenu = new JMenu("History");
+                historyMenu.setMnemonic(KeyEvent.VK_H);
+                // map the history list to menu items, and display in the history menu.
+                new EventListMenuManager(new FunctionList(history,new FunctionList.Function() {
+                    public Object evaluate(Object arg0) {
+                        SearchHistoryItem i = (SearchHistoryItem)arg0;
+                        return new HistoryMenuItem(i);
+                    }
+                }),historyMenu,false);
+                historyMenu.addSeparator();
+                historyMenu.add(new ClearHistoryAction());
+                add(historyMenu);
+                
+                MenuBuilder rmb = new MenuBuilder("Result",KeyEvent.VK_R);
+                rmb
+                    .windowOperation(acts.getActivity(ViewInBrowserActivity.class))
+                    .windowOperation(acts.getActivity(SimpleDownloadActivity.class))
+                    ;
+               acts.getActivity(PlasticScavenger.class).addTo(rmb.getMenu());
+               add(rmb.create());
+            }
+		};					
+		setJMenuBar(menuBar);
 
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -415,33 +426,20 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 			}
 		});
 
-		getContext().getHelpServer().enableHelpKey(this.getRootPane(),"userInterface.astroscopeLauncher");
-		
         this.setTitle("All-VO Scope");		
 	}
 
-	/** override:  create a help menu with additional entries */
-	protected JMenu createHelpMenu() {
-		JMenu menu = super.createHelpMenu();
-		menu.insertSeparator(0);
-		/*
-		JMenuItem ref = new JMenuItem("Reference");
-		getHelpServer().enableHelpOnButton(ref, "astroscope.menu.reference");
-		menu.insert(ref,0);
-		 */
-		JMenuItem sci = new JMenuItem("Astroscope Help");
-		getContext().getHelpServer().enableHelpOnButton(sci, "astroscope.menu.science");
-		menu.insert(sci,0);
-		return menu;
-	}
 
 	/** buffer of history items */
 	private final EventList history;
 	private List resourceList;
 	private final SnitchInternal snitch;
 	private BiStateButton submitButton;
-	private final ActivitiesManager activities;	
+	final ActivitiesManager acts;	
+	protected final VizualizationsPanel flip;
+
 	protected final Action clearAction = new ClearSelectionAction();
+
 	protected final DecSexToggle dsToggle;
 	protected final NameResolvingPositionTextField posText;
 	protected final DalProtocolManager protocols;
@@ -673,10 +671,10 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		}
 
 		public void degreesSelected(EventObject ignored) {
-			StringBuffer sb = new StringBuffer();
+			StrBuilder sb = new StrBuilder();
 			try {
 				if (shi.getPosition().getOName() != null) {
-					sb.append("Object: ").append(shi.getPosition().getOName()).append(", ");
+					sb.append(shi.getPosition().getOName()).append(", ");
 				}
 				sb.append("position: ")
 				.append(nf.format(shi.getPosition().getRa()))
@@ -700,10 +698,10 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		}
 
 		public void sexaSelected(EventObject ignored) {
-			StringBuffer sb = new StringBuffer();
+			StrBuilder sb = new StrBuilder();
 			try {
 				if (shi.getPosition().getOName() != null) {
-					sb.append("Object: ").append(shi.getPosition().getOName()).append(", ");
+					sb.append(shi.getPosition().getOName()).append(", ");
 				}
 				// thought - could use the sexa string provided in the position
 				// bean, if it's there - although this might be a bit inconsistent
@@ -737,16 +735,17 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		if (somethingSelected) {
 			Transferable tran = vizModel.getSelectionTransferable();
 			if (tran == null) { // unlikely
-				activities.clearSelection();
+				acts.clearSelection();
 			} else {
-				activities.setSelection(tran);
+				acts.setSelection(tran);
 			}
 		} else {
-			activities.clearSelection();			
+			acts.clearSelection();			
 		}
 	}
 	
 // action classes
+
 	/** clear selection action */
 	protected class ClearSelectionAction extends AbstractAction {
 		public ClearSelectionAction() {
@@ -773,8 +772,9 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	/** halt seartch action */
 	protected class HaltAction extends AbstractAction {
 		public HaltAction() {
-			super("Halt",IconHelper.loadIcon("stop32.png"));
+			super("Halt Search",IconHelper.loadIcon("stop32.png"));
 			this.putValue(SHORT_DESCRIPTION,"Halt the search");
+			this.putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD,UIComponentMenuBar.MENU_KEYMASK));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -788,6 +788,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		public SearchAction() {
 			super("Search",IconHelper.loadIcon("search32.png"));
 			this.putValue(SHORT_DESCRIPTION,"Find resources for this Position");
+			this.putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_G,UIComponentMenuBar.MENU_KEYMASK));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -806,13 +807,25 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		public TopAction() {
 			super("Go To Top"); //,IconHelper.loadIcon("top32.png"));
 			this.putValue(SHORT_DESCRIPTION,"Focus display to 'Search Results'");
-			this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_G));
+			putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_T,UIComponentMenuBar.MENU_KEYMASK));
 			this.setEnabled(false);
 		}
 		public void actionPerformed(ActionEvent e) {
 			vizualizations.refocusMainNodes();
 			vizualizations.reDrawGraphs();
 		}
+	}
+	
+	protected class ClearHistoryAction extends AbstractAction {
+	    /**
+         * 
+         */
+        public ClearHistoryAction() {
+            super("Clear History");
+        }
+        public void actionPerformed(ActionEvent e) {
+            history.clear();
+        }
 	}
 
 }
