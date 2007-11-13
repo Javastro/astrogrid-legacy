@@ -243,7 +243,6 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 			DataCollection coll = (DataCollection)res;
 			List colList = Arrays.asList(coll.getCatalogues());
 			catalogues.addAll(colList);
-			cataCombo.setEnabled(colList.size() > 1);
 			cataCombo.setSelectedIndex(0);
 		
 		} else if (res instanceof CatalogService) {
@@ -252,7 +251,6 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 			cat.setName("");
 			cat.setTables(serv.getTables());
 			catalogues.add(cat);
-			cataCombo.setEnabled(false);
 			cataCombo.setSelectedIndex(0);
 			
 		} else { // it's not of interest.
