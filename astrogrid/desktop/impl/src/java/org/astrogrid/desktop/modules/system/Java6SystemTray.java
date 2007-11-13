@@ -11,8 +11,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
+import javax.swing.ButtonModel;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.astrogrid.desktop.framework.ReflectionHelper;
 import org.astrogrid.desktop.icons.IconHelper;
@@ -25,8 +28,8 @@ import org.astrogrid.desktop.modules.system.ui.UIContext;
  */
 public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInternal {
 
-	public Java6SystemTray(UIContext context,org.astrogrid.acr.builtin.Shutdown shutdown,Runnable config) throws Exception {
-	    super(context, shutdown,config);
+	public Java6SystemTray(UIContext context) throws Exception {
+	    super(context);
 
         Class systrayClz = Class.forName("java.awt.SystemTray");
         Object b =ReflectionHelper.callStatic(systrayClz,"isSupported");
@@ -82,56 +85,60 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
             final String key = (String) facs.next();
             MenuItem f = new MenuItem("New " + key);
             f.setActionCommand(key);
-            f.addActionListener(this);
+            f.addActionListener(context);
             m.add(f);
         }
         m.addSeparator();
-        MenuItem pref = new MenuItem("Preferences..");
-        pref.setActionCommand(PREF);
-        pref.addActionListener(this);
-        m.add(pref);
+        MenuItem test = new MenuItem("Self Tests");
+        test.setActionCommand(UIContext.SELFTEST);
+        test.addActionListener(context);
+        m.add(test);
+        
+        final ButtonModel model = context.getLoggedInModel();        
         m.addSeparator();
+        final MenuItem login = new MenuItem("Login...");
+        login.setActionCommand(UIContext.LOGIN);
+        login.addActionListener(context);
+        login.setEnabled(!model.isEnabled());
+        m.add(login);
         
-
+        final MenuItem logout = new MenuItem("Logout");
+        logout.setActionCommand(UIContext.LOGOUT);
+        logout.addActionListener(context);
+        logout.setEnabled(model.isEnabled());
+        m.add(logout);
         
-        MenuItem h = new MenuItem("Help contents");
-        h.setActionCommand(HELP);
-        h.addActionListener(this);
+        model.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                login.setEnabled(! model.isEnabled());
+                logout.setEnabled(model.isEnabled());                
+            }            
+        });
+                
+        MenuItem pref = new MenuItem("Preferences...");
+        pref.setActionCommand(UIContext.PREF);
+        pref.addActionListener(context);
+        m.add(pref);        
+        
+        
+        
+        MenuItem h = new MenuItem("VO Desktop Help");
+        h.setActionCommand(UIContext.HELP);
+        h.addActionListener(context);
         m.add(h);
+        
+        MenuItem a = new MenuItem("About VO Desktop");
+        a.setActionCommand(UIContext.ABOUT);
+        a.addActionListener(context);
+        m.add(a);   
         m.addSeparator();        
-        /* @todo implement UIContextImpl.getAbout() first 
-        MenuItem a = new MenuItem("About AstroRuntime..");
-        a.setActionCommand(ABOUT);
-        a.addActionListener(this);
-        m.add(a);        
-        */
         
         MenuItem sd = new MenuItem("Exit");
-        sd.setActionCommand(EXIT);
-        sd.addActionListener(this);
+        sd.setActionCommand(UIContext.EXIT);
+        sd.addActionListener(context);
         m.add(sd);
         return m;
     }
-    
-    /** i've overridden actionPerformed, as I suspect that
-     * triggers from this system tray don't always happen on the EDT.
-     */
-    public void actionPerformed(final ActionEvent arg0) {
-        if (SwingUtilities.isEventDispatchThread()) {
-            super.actionPerformed(arg0);
-        } else {
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    Java6SystemTray.super.actionPerformed(arg0);
-                }
-            });
-        }
-    }
-    
-
-	
-
-	
 	
 	public void displayErrorMessage(String arg0, String arg1) {
 	        displayMsg(arg0,arg1,"ERROR");

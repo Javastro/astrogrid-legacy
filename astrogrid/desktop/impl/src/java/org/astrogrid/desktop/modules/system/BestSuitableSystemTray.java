@@ -22,15 +22,15 @@ public class BestSuitableSystemTray implements SystemTrayInternal {
      * @param conf 
      * 
      */
-    public BestSuitableSystemTray(UIContext cxt, Shutdown shut, Runnable conf) {
+    public BestSuitableSystemTray(UIContext cxt) {
         // first try to construct a java6 systray.
         SystemTrayInternal best = null;
         try {
-            best = new Java6SystemTray(cxt,shut,conf);
+            best = new Java6SystemTray(cxt);
         } catch (Throwable e) {            
             // fallback then.
             logger.info("Failed to create system tray - falling back");
-            best = new FallbackSystemTray(cxt,shut,conf);
+            best = new FallbackSystemTray(cxt);
         }
         
         theTray = best;

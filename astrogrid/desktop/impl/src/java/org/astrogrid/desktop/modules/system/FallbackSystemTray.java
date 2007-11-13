@@ -3,16 +3,21 @@
  */
 package org.astrogrid.desktop.modules.system;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.Iterator;
 
 import javax.swing.Icon;
 import javax.swing.JButton;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
 import javax.swing.PopupFactory;
 
 import org.apache.commons.collections.Factory;
@@ -22,6 +27,7 @@ import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.comp.DraggableWindow;
 import org.astrogrid.desktop.modules.ui.comp.MyTitledBorder;
 import org.astrogrid.desktop.modules.ui.comp.TimedPopup;
@@ -33,46 +39,47 @@ import org.astrogrid.desktop.modules.ui.comp.TimedPopup;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 21, 20076:24:07 PM
  */
-public class FallbackSystemTray  implements SystemTrayInternal, ActionListener {
+public class FallbackSystemTray  implements SystemTrayInternal{
 
     protected static final Log logger = LogFactory.getLog(SystemTray.class);
     
-    /**
-     */
-    protected static final String EXIT = "exit";
-    protected static final String PREF = "pref";  
-    protected static final String ABOUT = "about";
-    protected static final String HELP = "HELP";
-    
-    protected final org.astrogrid.acr.builtin.Shutdown shutdown;
     protected final UIContext context;
-    protected final Runnable configDialogue;
     protected final PopupFactory popups;
     private final Icon defaultImage;
     private final Icon throbbingImage;
     private final JButton ico;
-    private final PopupDraggableWindow window;
+    private final DraggableWindow window;
+
+    private JPopupMenu popup;
     
-    public FallbackSystemTray( UIContext context, Shutdown shutdown,
-            Runnable configDialogue) {
+    public FallbackSystemTray( UIContext context) {
         super();
-        this.shutdown = shutdown;
         this.context = context;
-        this.configDialogue = configDialogue;
         this.popups = PopupFactory.getSharedInstance();
-        this.defaultImage = IconHelper.loadIcon("ivoa.gif");
+        this.defaultImage = IconHelper.loadIcon("ar16.png");
         this.throbbingImage = IconHelper.loadIcon("running16.png"); // @todo find a larger icon here.
-        this.window = new PopupDraggableWindow(createPopupMenu());
-        this.ico = new JButton(defaultImage);
-        
+        this.window = new DraggableWindow();
+        this.ico = new JButton("Start",defaultImage);
+        this.popup = createPopupMenu();
     }
 
     public void run() {
-                ico.addActionListener(window);
+                ico.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        Component c = (Component) e.getSource();
+                        int px = c.getX();
+                        int py = c.getY() + c.getHeight();        
+                        if(!popup.isShowing()) {                 
+                            popup.show( c, 0, py  );
+                        } else { 
+                            popup.setVisible(false);
+                        }                  
+                    }
+                });
                 // NB: can't set tooltip - as this seems to destroy the mouse draggable behaviour - how odd.
                 //ico.setToolTipText("Astro Runtime");
                 javax.swing.JPanel p = new JPanel();
-                p.setBorder(MyTitledBorder.createEmpty("Astro Runtime"));
+                p.setBorder(MyTitledBorder.createEmpty("VO Desktop"));
                 p.add(ico);
                 window.getContentPane().add(p);
 
@@ -88,61 +95,47 @@ public class FallbackSystemTray  implements SystemTrayInternal, ActionListener {
         //window factories.
         for (Iterator facs = context.getWindowFactories().keySet().iterator(); facs.hasNext(); ) {
             final String key = (String) facs.next();
-            JMenuItem f = new JMenuItem("New " + key);
+            JMenuItem f = new JMenuItem("New " + key);            
             f.setActionCommand(key);
-            f.addActionListener(this);
+            f.addActionListener(context);
             m.add(f);
         }
         m.addSeparator();
-        JMenuItem pref = new JMenuItem("Preferences..");
-        pref.setActionCommand(PREF);
-        pref.addActionListener(this);
-        m.add(pref);
-        m.addSeparator();
-
+        JMenuItem test = new JMenuItem("Self Tests");
+        test.setActionCommand(UIContext.SELFTEST);
+        test.addActionListener(context);
+        m.add(test);
         
-        JMenuItem h = new JMenuItem("Help contents");
-        h.setActionCommand(HELP);
-        h.addActionListener(this);
+        m.addSeparator();
+        m.add(new UIComponentMenuBar.LoginMenuItem(context));
+        m.add(new UIComponentMenuBar.LogoutMenuItem(context));
+        JMenuItem pref = new JMenuItem("Preferences" + UIComponentMenuBar.ELLIPSIS);
+        pref.setActionCommand(UIContext.PREF);
+        pref.addActionListener(context);
+                
+        m.add(pref);
+        m.addSeparator();     
+        
+        JMenuItem h = new JMenuItem("VO Desktop Help");
+        h.setActionCommand(UIContext.HELP);
+        h.addActionListener(context);
+                
         m.add(h);
-        m.addSeparator();              
-        /* @todo implement UIContextImpl.getAbout first 
-        JMenuItem a = new JMenuItem("About AstroRuntime..");
-        a.setActionCommand(ABOUT);
-        a.addActionListener(this);
+ 
+        JMenuItem a = new JMenuItem("About VO Desktop");
+        a.setActionCommand(UIContext.ABOUT);
+        a.addActionListener(context);
         m.add(a);
-      */
+        m.addSeparator();              
         
         JMenuItem sd = new JMenuItem("Exit");
         sd.setIcon(IconHelper.loadIcon("exit16.png"));
-        sd.setActionCommand(EXIT);
-        sd.addActionListener(this);
+        sd.setActionCommand(UIContext.EXIT);
+         sd.addActionListener(context);
         m.add(sd);
         return m;
     }
     
-
-    // callbacks from menu items.
-    public void actionPerformed(ActionEvent arg0) {
-            final String cmd = arg0.getActionCommand();
-            if (cmd.equals(EXIT)) {
-                shutdown.halt();
-            } else if (cmd.equals(PREF)) {
-                configDialogue.run();
-            } else if (cmd.equals(HELP)) {
-                context.getHelpServer().showHelp();
-            } else if (cmd.equals(ABOUT)) {
-                context.showAboutDialog();
-            } else {
-                // assume it's the name of a new window facotry.
-                Factory fac = (Factory)context.getWindowFactories().get(cmd);
-                if (fac != null) {
-                    fac.create();
-                }
-            }
-       
-    }
-
     public void displayErrorMessage(String arg0, String arg1) {
         TimedPopup.showErrorMessage(window,arg0,arg1);
     }
@@ -168,44 +161,6 @@ public class FallbackSystemTray  implements SystemTrayInternal, ActionListener {
         if (! (--throbberCallCount> 0)) {
                     ico.setIcon(defaultImage);
         }        
-    }
-    
-    /** draggable window with a popup menu */
-    private static class PopupDraggableWindow extends DraggableWindow implements ActionListener{
-
-        private final  JPopupMenu menu;
-
-        /**
-         * @param createPopupMenu
-         */
-        public PopupDraggableWindow(JPopupMenu createPopupMenu) {
-            super();
-            this.menu = createPopupMenu;
-        }
-        public void mousePressed(MouseEvent me) {
-            super.mousePressed(me);
-            checkForTriggerEvent(me);
-        }
-        
-        public void mouseReleased(MouseEvent e) {
-            super.mouseReleased(e);
-            checkForTriggerEvent(e);
-        }
-        
-     // determine whether event should trigger popup menu
-        private void checkForTriggerEvent( MouseEvent event ){
-           if ( event.isPopupTrigger() ) { //|| SwingUtilities.isRightMouseButton(event) ) {
-               showMenu();
-                 //event.getX(), event.getY() );
-           }
-        }
-        
-        public void showMenu() {
-            menu.show(this,15,15);
-        }
-        public void actionPerformed(ActionEvent e) {
-            showMenu();
-        }
     }
 
 }
