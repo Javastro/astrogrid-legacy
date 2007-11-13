@@ -15,6 +15,27 @@
 	</head>
 <body>
 <release version="2007.4.alpha7" date="unreleased">
+    <action dev="nw" type="fix" issue="2317">
+     Added upload and download buttons to fileexplorer
+    </action>
+    <action dev="nw" type="fix" issue="2389">
+    repaint of status balls in login dialogue
+    </action>
+    <action dev="nw" type="update">
+    Re-jigged and extended application menus. Added cut / copy / paste support. Some work still to do on astroscope menus.
+    </action>
+    <action dev="nw" type="fix" issue="2377">
+        Made any plastic operation selectable, regardless of whether type information matches.
+    </action>
+    <action dev="nw" type="update">
+        Extended drag-n-drop integration with host OS
+        (drag files between fileExplorer and local text editor / file manager)
+    </action>
+    <action dev="mbt" type="add">
+       Changed VOExplorer resource lists component from a JList to a JTree.
+       Associated changes include providing subscribed lists/folders and
+       folder import/export.
+    </action>
     <action dev="nw" type="fix" issue="1837">
     Astroscope / AR: improved detection of DAL error responses.
     </action>
