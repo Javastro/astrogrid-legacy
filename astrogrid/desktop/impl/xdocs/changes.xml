@@ -22,14 +22,14 @@
     repaint of status balls in login dialogue
     </action>
     <action dev="nw" type="update">
-    Re-jigged and extended application menus. Added cut / copy / paste support. Some work still to do on astroscope menus.
+    Filled out the application menubars, guided by Apple usability docs. Added cut / copy / paste support. Some work still to do on astroscope menus.
     </action>
     <action dev="nw" type="fix" issue="2377">
         Made any plastic operation selectable, regardless of whether type information matches.
     </action>
     <action dev="nw" type="update">
         Extended drag-n-drop integration with host OS
-        (drag files between fileExplorer and local text editor / file manager)
+        (drag files between fileExplorer and local text editor / file manager). Works on OSX, partly on Ubuntu, not yet on Windows
     </action>
     <action dev="mbt" type="add">
        Changed VOExplorer resource lists component from a JList to a JTree.
