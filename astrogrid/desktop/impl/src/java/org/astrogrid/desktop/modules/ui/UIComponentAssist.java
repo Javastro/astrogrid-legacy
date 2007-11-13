@@ -187,7 +187,7 @@ public final class UIComponentAssist {
             helpButton = new JButton(IconHelper.loadIcon("contexthelp18.png"));
             helpButton.putClientProperty("is3DEnabled",Boolean.TRUE);
             helpButton.setBorder(BorderFactory.createEtchedBorder());            
-            helpButton.setToolTipText("<html><b>Click</b> for context-sensitive help,<br> or press <b>'F1'</b> for overview help</html>");
+            helpButton.setToolTipText("<html><b>Click this button</b>, and then <b>click on another window component</b> for help about that component.<br> or press <b>'F1'</b> for overview help</html>");
             helpButton.addActionListener(parent.getContext().getHelpServer().createContextSensitiveHelpListener());
         }
         return helpButton;
@@ -208,6 +208,7 @@ public final class UIComponentAssist {
     public JList getPlasticList() {
         if (plasticList == null) {
             plasticList = new JList(new EventListModel(parent.getContext().getPlasticList()));
+            plasticList.setToolTipText("Indicates what helper applications are connected");
             //plasticApps.setToolTipText("Connected Vizualization Tools");
             plasticList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
             plasticList.setVisibleRowCount(1);
@@ -302,7 +303,7 @@ public final class UIComponentAssist {
             // throbber.setIcon(IconHelper.loadIcon("circle-ball-dark-antialiased.gif"));
             // throbber.setIcon(IconHelper.loadIcon("loader.gif"));
             throbber.setDisabledIcon(IconHelper.loadIcon("idle16.png"));   
-            throbber.setToolTipText("When active, something is communicating with VO services");
+            throbber.setToolTipText("Indicates when the application is communicating with VO services");
         }
         return throbber;
     }
