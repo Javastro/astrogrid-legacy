@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
@@ -46,6 +47,8 @@ import javax.swing.KeyStroke;
 import javax.swing.TransferHandler;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -152,7 +155,7 @@ public class ResourceTree extends JTree {
      *
      * @param   tree model - must be a ResourceTreeModel with correct content
      */
-    public ResourceTree(TreeModel model, VOExplorerImpl parent,
+    public ResourceTree(final TreeModel model, VOExplorerImpl parent,
                         ResourceChooserInternal chooser, XmlPersist persister
                         , Action refreshAction) {
         super(model);
@@ -194,13 +197,11 @@ public class ResourceTree extends JTree {
         // Configure visual properties.
         getSelectionModel().setSelectionMode(TreeSelectionModel
                                             .SINGLE_TREE_SELECTION);
-       // NW - would prefer not to have the root shown.
-        // setRootVisible(true);
-        setRootVisible(false);
-       // setShowsRootHandles(false);
+        setRootVisible(true);
+        setShowsRootHandles(false);
         setExpandsSelectedPaths(true);
-        setCellRenderer(RESOURCE_RENDERER);
 
+        setCellRenderer(RESOURCE_RENDERER);
         // Set up a popup menu.
         addSmart = new TreeAction("New Smart List",
                                   IconHelper.loadIcon("editadd16.png"),
@@ -640,7 +641,9 @@ public class ResourceTree extends JTree {
                 new ResourceBranch().editAsNew(parent);
             }
             else if (this == addSubscription) {
-                new ResourceBranch("New Subscription").editSubscriptionAsNew(parent);
+                ResourceBranch subs = new ResourceBranch("New Subscription");
+                subs.setIconName("myspace16.png"); // make it look like a subscription.
+                subs.editSubscriptionAsNew(parent);
             }
             else if (this == remove && node != null) {
                 boolean deleteSelected = true;
@@ -694,6 +697,7 @@ public class ResourceTree extends JTree {
             }
         }
     }
+    
     /**
      * TransferHandler which defines almost all of the drag'n'drop 
      * functionality for this tree.
@@ -785,37 +789,47 @@ public class ResourceTree extends JTree {
             DefaultMutableTreeNode targetNode = path == null
                 ? null
                 : (DefaultMutableTreeNode) path.getLastPathComponent();
-            if (isFixed(targetNode)) {
+            if (targetNode != null && isFixed(targetNode)) {
                 return false;
             }
             if (trans.isDataFlavorSupported(VoDataFlavour.LOCAL_RESOURCE_ARRAY)) {
+                logger.debug("local resource array");
                 return dropResources(targetNode, (Resource[]) trans.getTransferData(VoDataFlavour.LOCAL_RESOURCE_ARRAY));
             }
             else if (trans.isDataFlavorSupported(VoDataFlavour.LOCAL_RESOURCE)) {
+                logger.debug("local resource");
                 return dropResources(targetNode, new Resource[] {(Resource) trans.getTransferData(VoDataFlavour.LOCAL_RESOURCE)});
             }
             else if (trans.isDataFlavorSupported(VoDataFlavour.RESOURCE_ARRAY)) {
+                logger.debug("resource array");
                 return dropResources(targetNode, (Resource[]) trans.getTransferData(VoDataFlavour.RESOURCE_ARRAY));
             }
             else if (trans.isDataFlavorSupported(VoDataFlavour.RESOURCE)) {
+                logger.debug("resource");
                 return dropResources(targetNode, new Resource[] {(Resource) trans.getTransferData(VoDataFlavour.RESOURCE)});
             }
             else if (trans.isDataFlavorSupported(VoDataFlavour.TREENODE)) {
+                logger.debug("treenode");
                 return dropTreeNode(targetNode, (DefaultMutableTreeNode) trans.getTransferData(VoDataFlavour.TREENODE));
             }
             else if (trans.isDataFlavorSupported(VoDataFlavour.LOCAL_URI)) {
+                logger.debug("local uri");
                 return dropUris(targetNode, new URI[] {(URI) trans.getTransferData(VoDataFlavour.LOCAL_URI)});
             }
             else if (trans.isDataFlavorSupported(VoDataFlavour.LOCAL_URI_ARRAY)) {
+                logger.debug("local uri array");
                 return dropUris(targetNode, (URI[]) trans.getTransferData(VoDataFlavour.LOCAL_URI_ARRAY));
             }
             else if (trans.isDataFlavorSupported(VoDataFlavour.URI_LIST)) {
+                logger.debug("uri list");
                 return dropUris(targetNode, convertUnknownToUriList(trans.getTransferData(VoDataFlavour.URI_LIST)));
             }
             else if (trans.isDataFlavorSupported(VoDataFlavour.PLAIN)) {
+                logger.debug("plain");
                 return dropUris(targetNode, convertUnknownToUriList(trans.getTransferData(VoDataFlavour.PLAIN)));
             }
             else if (trans.isDataFlavorSupported(VoDataFlavour.STRING)) {
+                logger.debug("string");
                 return dropUris(targetNode, convertUnknownToUriList(trans.getTransferData(VoDataFlavour.STRING)));
             }
             else {
@@ -841,7 +855,7 @@ public class ResourceTree extends JTree {
         /**
          * Does the work for dropping a list of URIs.
          *
-         * @param  targetNode   node to drop onto
+         * @param  targetNode   node to drop onto (may be null)
          * @param  ids   URIs representing resource IDs
          * @return   true iff the drop was successful
          */
@@ -850,25 +864,25 @@ public class ResourceTree extends JTree {
                 logger.debug("Empty ids list passed in - bailing out here");
                 return false;
             }
-            ResourceFolder folder = getFolder(targetNode);
-
-            // Dropped on existing dumb folder
-            if (folder instanceof StaticList) {
-                StaticList list = (StaticList) folder;
-                for (int i = 0; i < ids.length; i++) {
-                    list.getResourceSet().add(ids[i]);
+            if (targetNode != null) { // dropped onto something.
+                ResourceFolder folder = getFolder(targetNode);
+                if (folder instanceof StaticList) { // if dropped onto a static folder, add to this folder.
+                    StaticList list = (StaticList) folder;
+                    for (int i = 0; i < ids.length; i++) {
+                        list.getResourceSet().add(ids[i]);
+                    }
+                    model.nodeStructureChanged(targetNode);
+                    return true; // that'll do.
                 }
-                model.nodeStructureChanged(targetNode);
             }
 
-            // Dropped in space or on smart list - create new folder
-            else {
-                StaticList list = new StaticList();
-                for (int i = 0; i < ids.length; i++) {
-                    list.getResourceSet().add(ids[i]);
-                }
-                appendFolder(list);
+            //fall-thru -  Dropped in space or onto an unsuitable kind of node - create new folder
+            StaticList list = new StaticList();
+            for (int i = 0; i < ids.length; i++) {
+                list.getResourceSet().add(ids[i]);
             }
+            appendFolder(list);
+
             return true;
         }
 
@@ -1025,7 +1039,7 @@ public class ResourceTree extends JTree {
                 ResourceFolder folder = 
                     (ResourceFolder)
                     ((DefaultMutableTreeNode) value).getUserObject();
-                label.setFont(getFont(folder.getSubscription() != null));
+        //removed use of italics for notation of subscribed resources.        label.setFont(getFont(folder.getSubscription() != null));
                 label.setText(folder.getName());
                 label.setIcon(folder.getIcon());
                 label.setDisabledIcon(null);
@@ -1062,6 +1076,7 @@ public class ResourceTree extends JTree {
         return this.addBranch;
     }
 
+    
     /**
      * @return the addSubscription
      */
