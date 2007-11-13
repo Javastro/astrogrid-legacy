@@ -14,7 +14,9 @@ import java.net.URISyntaxException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ServiceException;
+import org.astrogrid.desktop.modules.ui.folders.BranchBean;
 import org.astrogrid.desktop.modules.ui.folders.Folder;
+import org.astrogrid.desktop.modules.ui.folders.ResourceBranch;
 import org.astrogrid.desktop.modules.ui.folders.ResourceFolder;
 import org.astrogrid.desktop.modules.ui.folders.SmartList;
 import org.astrogrid.desktop.modules.ui.folders.StaticList;
@@ -72,16 +74,19 @@ public class XStreamXmlPersist implements XmlPersist {
         
         xstream.alias("astroscope-history",SearchHistoryItem.class);
         
-        
         xstream.alias("folder",Folder.class);
         xstream.alias("storage-folder",StorageFolder.class);
         xstream.omitField(StorageFolder.class,"file");
         xstream.omitField(SRQL.class,"class");
         
         xstream.useAttributeFor(ResourceFolder.class,"fixed");
+        xstream.useAttributeFor(ResourceFolder.class,"subscription");
         xstream.useAttributeFor(Folder.class,"name");
         xstream.useAttributeFor(Folder.class,"iconName");
-        
+
+        xstream.alias("branch",BranchBean.class);
+        xstream.alias("resource-branch",ResourceBranch.class);
+
         xstream.alias("smart-list",SmartList.class);
         xstream.registerConverter(new SmartListConverter());
         xstream.registerConverter(new SRQLConverter());
@@ -154,6 +159,10 @@ public class XStreamXmlPersist implements XmlPersist {
             writer.addAttribute("name",sl.getName());
             writer.addAttribute("iconName",sl.getIconName());
             writer.addAttribute("fixed",Boolean.toString(sl.isFixed()));
+            String subscription = sl.getSubscription();
+            if (subscription != null) {
+                writer.addAttribute("subscription",subscription);
+            }
             writer.startNode("query");
             context.convertAnother(sl.getQuery());
             writer.endNode();
@@ -166,6 +175,8 @@ public class XStreamXmlPersist implements XmlPersist {
             if (fixedVal != null) {
                 sl.setFixed(Boolean.valueOf(fixedVal).booleanValue());
             }
+            final String subscription = reader.getAttribute("subscription");
+            sl.setSubscription(subscription);
             final String nameVal = reader.getAttribute("name");
             if (nameVal != null) {
                 sl.setName(nameVal);
