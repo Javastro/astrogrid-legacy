@@ -75,8 +75,8 @@ public class StaticList extends ResourceFolder  {
 			}
 		}
 	}
-
-	private static final String defaultIcon ="folder16.png";
+    private static final String defaultIcon ="doc16.png";
+	//private static final String defaultIcon ="folder16.png";
 	private Set resouceUris = new LinkedHashSet(); // maintains order of insertion.
 	
 	public int getSize() {
