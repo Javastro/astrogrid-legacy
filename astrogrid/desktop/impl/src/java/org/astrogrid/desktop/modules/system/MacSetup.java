@@ -3,16 +3,21 @@
  */
 package org.astrogrid.desktop.modules.system;
 
+import java.awt.event.ActionEvent;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.builtin.Shutdown;
 import org.astrogrid.desktop.framework.ReflectionHelper;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 
 /** Configuraiton and UI enhancements only available on mac platform.
  * 
@@ -32,10 +37,8 @@ public class MacSetup implements InvocationHandler {
 	 */
 	private static final Log logger = LogFactory.getLog(MacSetup.class);
 	
-	public MacSetup(UIContext ui, Shutdown shutdown, Runnable config) throws ClassNotFoundException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+	public MacSetup(UIContext ui) throws ClassNotFoundException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		this.ui = ui;
-		this.shutdown = shutdown;
-		this.config = config;
 		Class applicationClass = Class.forName("com.apple.eawt.Application");
 		Class listenerClass = Class.forName("com.apple.eawt.ApplicationListener");
 		Class eventClass= Class.forName("com.apple.eawt.ApplicationEvent");
@@ -69,21 +72,33 @@ public class MacSetup implements InvocationHandler {
 	protected final Method quitMethod;
 	protected final Method reopenMethod;
 	protected final UIContext ui;
-	protected final Shutdown shutdown;
 	protected final Method handledMethod;
-	protected final Runnable config;
 
 	/** handles calls to the menu */
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 		if (method.equals(aboutMethod)) {
-			ui.showAboutDialog();
+		    ui.actionPerformed(new ActionEvent(this,0,UIContext.ABOUT));
 			handledMethod.invoke(args[0],new Object[]{Boolean.TRUE});			
 		} else if (method.equals(preferencesMethod)) {
-			config.run();
+		    ui.actionPerformed(new ActionEvent(this,0,UIContext.PREF));
 			handledMethod.invoke(args[0],new Object[]{Boolean.TRUE});			
 		} else if (method.equals(quitMethod)) {
-			shutdown.reallyHalt(); // no way of stopping it, but at least we can notify folk.
-			handledMethod.invoke(args[0],new Object[]{Boolean.TRUE});
+	        // Workaround for 2868805:  show modal dialogs in a separate thread.
+	        // This encapsulation is not necessary in 10.2, 
+	        // but will not break either.
+	        SwingUtilities.invokeLater(new Runnable() {
+	            public void run() {
+	                ui.actionPerformed(new ActionEvent(this,0,UIContext.EXIT));	            
+	            }
+	        });
+
+	        // Throw IllegalStateException so new thread can execute.  
+	        // If showing dialog on this thread in 10.2, we would throw
+	        // upon JOptionPane.NO_OPTION
+	        throw new IllegalStateException("Quit Pending User Confirmation");
+		    
+		//	shutdown.reallyHalt(); // no way of stopping it, but at least we can notify folk.
+		//	handledMethod.invoke(args[0],new Object[]{Boolean.TRUE});
 		} else if (method.equals(reopenMethod)) {
 			ui.show(); // opens all ui.
 			handledMethod.invoke(args[0],new Object[]{Boolean.TRUE});
