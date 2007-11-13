@@ -1,4 +1,4 @@
-/*$Id: VOExplorerImpl.java,v 1.14 2007/11/13 05:22:38 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.15 2007/11/13 11:12:11 nw Exp $
 
  * Created on 30-Mar-2005
  *
@@ -142,12 +142,11 @@ public class VOExplorerImpl extends UIComponentImpl
 		        fmb
 		                .windowOperation(resourceLists.getAddSmart())
 		                .windowOperation(resourceLists.getAddStatic())
-		            // new list from selection
+		                .windowOperation(new NewFolderFromSelectionAction())
 		                .windowOperation(resourceLists.getAddXQuery())
 		                .windowOperation(resourceLists.getAddSubscription())
 		                .windowOperation(resourceLists.getAddBranch())
 		                .separator()
-		            // add selection to list
 		                .windowOperation(resourceLists.getProperties())
 		                .windowOperation(resourceLists.getRename())
 		                .windowOperation(resourceLists.getDuplicate())
@@ -229,7 +228,7 @@ public class VOExplorerImpl extends UIComponentImpl
 		
 		JPanel foldersPanel = new JPanel(new BorderLayout());
         JScrollPane foldersScroll = new JScrollPane(resourceLists,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        foldersScroll.setBorder(MyTitledBorder.createEmpty("Resource Lists")); 
+        foldersScroll.setBorder(null);
         foldersScroll.setMinimumSize(new Dimension(200,100));
         foldersPanel.add( foldersScroll ,BorderLayout.CENTER);
 		foldersPanel.setBorder(null);
@@ -425,10 +424,11 @@ public class VOExplorerImpl extends UIComponentImpl
 
     public void editExistingSubscription(ResourceFolder f) {
         subscriptionEditPanel.getOkButton().setText("Create");
-        subscriptionEditPanel.setCurrentlyEditing(f);
+        subscriptionEditPanel.setCurrentlyEditing(f);        
         mainPanel.show(EDIT_SUBSCRIPTION_VIEW);
         resourceLists.setEnabled(false);
         acts.clearSelection();
+        
     }
 
 	public void showResourceView() {
@@ -523,8 +523,25 @@ public class VOExplorerImpl extends UIComponentImpl
             }
         }
     }
-
-
-
+    
+  private final class NewFolderFromSelectionAction extends AbstractAction implements ListSelectionListener {
+      /**
+     * 
+     */
+    public NewFolderFromSelectionAction() {
+        super("New List from Selection");
+        setEnabled(false);
+        google.resourceTable.getSelectionModel().addListSelectionListener(this);
+    }
+    public void actionPerformed(ActionEvent e) {
+        Transferable trans = google.getSelectionTransferable();
+        resourceLists.clearSelection();
+        resourceLists.getTransferHandler().importData(resourceLists,trans);
+    }
+    // listens to the selection.
+    public void valueChanged(ListSelectionEvent e) {
+        setEnabled(google.resourceTable.getSelectedRowCount() > 0);
+    }
+  }
 }
 
