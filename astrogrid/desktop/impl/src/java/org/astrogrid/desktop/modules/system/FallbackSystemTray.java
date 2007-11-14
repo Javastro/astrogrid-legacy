@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.util.Iterator;
 
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -45,7 +46,7 @@ public class FallbackSystemTray  implements SystemTrayInternal{
     
     protected final UIContext context;
     protected final PopupFactory popups;
-    private final Icon defaultImage;
+    private final ImageIcon defaultImage;
     private final Icon throbbingImage;
     private final JButton ico;
     private final DraggableWindow window;
@@ -59,6 +60,8 @@ public class FallbackSystemTray  implements SystemTrayInternal{
         this.defaultImage = IconHelper.loadIcon("ar16.png");
         this.throbbingImage = IconHelper.loadIcon("running16.png"); // @todo find a larger icon here.
         this.window = new DraggableWindow();
+        this.window.setTitle("VO Desktop"); // although wndow title is not shown, this appears in the systray.
+        this.window.setIconImage(defaultImage.getImage());
         this.ico = new JButton("Start",defaultImage);
         this.popup = createPopupMenu();
     }

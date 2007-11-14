@@ -5,6 +5,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JWindow;
 
@@ -13,7 +14,7 @@ import javax.swing.JWindow;
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jul 22, 20071:08:53 AM
  */
-public class DraggableWindow extends JWindow implements MouseListener , MouseMotionListener {
+public class DraggableWindow extends JFrame implements MouseListener , MouseMotionListener {
     /**
      * 
      */
@@ -21,6 +22,9 @@ public class DraggableWindow extends JWindow implements MouseListener , MouseMot
         addMouseListener(this);
         
         addMouseMotionListener(this);
+        setResizable(false);
+        setUndecorated(true);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     }
     // draggable window machinery
     private Point location;
