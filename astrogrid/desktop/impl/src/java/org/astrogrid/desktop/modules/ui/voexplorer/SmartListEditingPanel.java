@@ -215,7 +215,7 @@ public class SmartListEditingPanel extends EditingPanel implements ActionListene
 		}
 	}
 
-	// validation @future - check that the query is complete - need to integrate with the query parser.
+	// validation 
 	protected boolean shouldOkBeEnabled() {
 		return super.shouldOkBeEnabled() && ! isErrorShowing(); 
 	}
