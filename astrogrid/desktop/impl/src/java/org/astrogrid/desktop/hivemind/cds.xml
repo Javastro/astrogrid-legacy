@@ -30,7 +30,8 @@ SESAME
 		<interceptor service-id="system.throbber" />		
 		<invoke-factory>
 			<construct class="org.astrogrid.desktop.modules.cds.SesameDynamicImpl" >
-			<set-object property="endpoint" value="preference:cds.sesame.endpoint" />
+			 <object>cache:positions</object>
+            <set-object property="endpoint" value="preference:cds.sesame.endpoint" />
 			</construct>
 		</invoke-factory>	
 	</service-point>
@@ -50,6 +51,19 @@ SESAME
     
      <contribution configuration-id="util.selftest" >
         <object>service-property:sesame:selftest</object>
+    </contribution>
+    
+    <contribution configuration-id="ivoa.caches">
+        cache for previously resolved object names.
+        uses same configration as registry caches - although I guess this info is even more unchanging really.
+        <cache name="positions"
+            maxElementsInMemory="2"
+            maxElementsOnDisk="100"
+            overflowToDisk="true"
+            diskPersistent="true"
+            timeToLiveSeconds="${ivo.registry.cacheLife}"
+            timeToIdleSeconds="345600"
+        />
     </contribution>
 <!-- 
 ======================

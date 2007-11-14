@@ -1,4 +1,4 @@
-/*$Id: SesameDynamicImpl.java,v 1.9 2007/10/12 10:58:08 nw Exp $
+/*$Id: SesameDynamicImpl.java,v 1.10 2007/11/14 07:21:04 nw Exp $
  * Created on 28-Feb-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,6 +26,9 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.Test;
 import junit.framework.TestCase;
 
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
+
 import org.apache.axis.client.Service;
 import org.astrogrid.acr.NotFoundException;
 import org.astrogrid.acr.ServiceException;
@@ -43,8 +46,11 @@ import org.astrogrid.desktop.modules.system.pref.Preference;
 public class SesameDynamicImpl implements SesameInternal {
 
 	
-    public SesameDynamicImpl() {
+    private final Ehcache cache;
+
+    public SesameDynamicImpl(Ehcache cache) {
         super();
+        this.cache = cache;
         service = new Service();
         inputFactory = XMLInputFactory.newInstance(); 
         // initialize to sensible default.
@@ -65,7 +71,7 @@ public class SesameDynamicImpl implements SesameInternal {
         return new TestCase("Sesame object name resolver") {
             protected void runTest(){
                 try {
-                    SesamePositionBean pos = resolve("m32");
+                    SesamePositionBean pos = primResolve("m32");
                     assertNotNull(pos);
                 } catch (ServiceException x) {
                     fail("Unable to access Sesame service");
@@ -104,7 +110,21 @@ public class SesameDynamicImpl implements SesameInternal {
         }        
     }
 
-	public SesamePositionBean resolve(String arg0) throws ServiceException, NotFoundException {
+    public SesamePositionBean resolve(String pos) throws ServiceException, NotFoundException {
+        Element element = cache.get(pos);
+        if (element != null && element.getValue() != null) {
+            return (SesamePositionBean)element.getValue();
+        } else {
+            SesamePositionBean b = primResolve(pos);
+            if (b != null) { // unlikely to be null, but still.
+                cache.put(new Element(pos,b));
+            }
+            return b;
+        }
+    }
+    
+    /** actually call the service and resolve */
+	private SesamePositionBean primResolve(String arg0) throws ServiceException, NotFoundException {
 		String response = this.sesame(arg0,"xi");
 		SesamePositionBean result = new SesamePositionBean();
 		List infoList = new ArrayList();
@@ -176,6 +196,9 @@ public class SesameDynamicImpl implements SesameInternal {
 
 /* 
 $Log: SesameDynamicImpl.java,v $
+Revision 1.10  2007/11/14 07:21:04  nw
+Complete - task 223: make position-resolving input widget block
+
 Revision 1.9  2007/10/12 10:58:08  nw
 added code for selftesting
 

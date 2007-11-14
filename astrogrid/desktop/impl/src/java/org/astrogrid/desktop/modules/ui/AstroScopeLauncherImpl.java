@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.71 2007/11/13 04:42:23 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.72 2007/11/14 07:21:04 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -69,6 +69,7 @@ import org.astrogrid.desktop.modules.ui.comp.NameResolvingPositionTextField;
 import org.astrogrid.desktop.modules.ui.comp.PositionUtils;
 import org.astrogrid.desktop.modules.ui.comp.RadiusTextField;
 import org.astrogrid.desktop.modules.ui.comp.DecSexToggle.DecSexListener;
+import org.astrogrid.desktop.modules.ui.comp.NameResolvingPositionTextField.ResolutionEvent;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocol;
 import org.astrogrid.desktop.modules.ui.scope.DalProtocolManager;
 import org.astrogrid.desktop.modules.ui.scope.HyperbolicVizualization;
@@ -320,7 +321,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		
 		row++;
 		final Action haltAction = new HaltAction();	
-		final Action searchAction = new SearchAction();		
+		final Action searchAction = new SearchAction(posText);		
 		submitButton = new BiStateButton(searchAction,haltAction);
 		builder.add(submitButton,cc.xyw(2,row,3));
 		
@@ -783,12 +784,13 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		}
 	}
 
-	/** search action */
-	protected class SearchAction extends AbstractAction {
-		public SearchAction() {
+	/** search action - listens to position field and is only enabled when position field is valiud.*/
+	protected class SearchAction extends AbstractAction implements NameResolvingPositionTextField.ResolutionListener {
+		public SearchAction(NameResolvingPositionTextField pos) {		    
 			super("Search",IconHelper.loadIcon("search32.png"));
 			this.putValue(SHORT_DESCRIPTION,"Find resources for this Position");
 			this.putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_G,UIComponentMenuBar.MENU_KEYMASK));
+			pos.addResolutionListener(this);
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -798,6 +800,14 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 			snitch.snitch("SUBMIT",m);
 			query();		
 		}
+
+        public void resolved(ResolutionEvent ev) {
+            setEnabled(true);
+        }
+
+        public void resolving(ResolutionEvent ev) {
+            setEnabled(false);
+        }
 	}
 
 
