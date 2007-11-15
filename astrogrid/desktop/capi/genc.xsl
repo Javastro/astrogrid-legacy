@@ -34,9 +34,13 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema"
        <t from="URI" to="IvornOrURI" />
        <t from="boolean" to="BOOL" />
        <t from="float" to="double" />
-       <t from="Calendar" to="time_t" /><!-- use the time type from <time.h> -->
-       <t from="Date" to="time_t" />
+       <t from="Calendar" to="ACRDate" /><!-- use the time type from <time.h> -->
+       <t from="Date" to="ACRDate" />
       </map>
+   </xsl:variable>
+   <xsl:variable name="nl">
+<xsl:text>
+</xsl:text>   
    </xsl:variable>
    <xsl:variable name="stdInterfaces" select="('Serializable', 'Comparator', 'InvocationHandler')" />
    <!-- compute a list of package names - will reuse this to iterate through later.. -->
@@ -222,6 +226,20 @@ functions
 #endif
         </xsl:text>
         </xsl:result-document> 
+        <xsl:result-document href="intfclasses.cpp">
+        <xsl:call-template name="header"></xsl:call-template>
+        <xsl:text>
+#include "intfclasses.h"
+
+// factory methods
+
+</xsl:text>
+<xsl:for-each select="$hier/hierarchy//*[count(child::*) >0 and not(name() = preceding::*/name())]">
+<xsl:call-template name="factory"><xsl:with-param  name="b" select="$jel/jelclass[@type=current()/name()]"></xsl:with-param><xsl:with-param name="doDefn" select="'t'">
+</xsl:with-param></xsl:call-template>
+</xsl:for-each>
+
+        </xsl:result-document>
       
    </xsl:template>
    
@@ -550,69 +568,77 @@ struct  </xsl:text>
    <!-- todo - integrate with the DataMembers call -->
        <xsl:param name="t" />
       <xsl:message>
- data members for element <xsl:value-of select="node-name($t)" />, type<xsl:value-of select="$t/@type" />
+ datamembersseq for element <xsl:value-of select="node-name($t)" />, type<xsl:value-of select="$t/@type" />
     </xsl:message>
-    <members>
-      <xsl:for-each
-         select="$t/methods/method[@visibility='public' and contains(@name,'get')]">
-         <xsl:element name="member">
-         <xsl:attribute name="name">
+      <members>
+         <xsl:for-each
+            select="$t/methods/method[@visibility='public' and contains(@name,'get')]"
+         >
+             <xsl:element name="member">
+               <xsl:attribute name="name">
          <xsl:variable name="tmp" select="substring-after(@name,'get')" />
          <!-- convert method to javabean style field name. -->
          <xsl:variable name="fieldname"
-            select="concat( lower-case(substring($tmp,1,1) ) ,substring($tmp,2) )" />
+                     select="concat( lower-case(substring($tmp,1,1) ) ,substring($tmp,2) )"
+                  />
          <xsl:choose>
             <!-- IMPL specific hack to change reserved fieldname token long into something nicer - perhaps the acr could chose a different  -->
             <xsl:when test="$fieldname = 'long'">
                <xsl:text>lon</xsl:text>
             </xsl:when>
             <xsl:when test="$fieldname = 'struct'">
-            <xsl:text>structure</xsl:text></xsl:when>
+            <xsl:text>structure</xsl:text>
+            </xsl:when>
             <xsl:otherwise>
                <xsl:value-of select="$fieldname" />
             </xsl:otherwise>
          </xsl:choose>
-         </xsl:attribute>
-         <xsl:variable name="typeseq" as="xs:string *">
-          <xsl:call-template name="convert-type-class">
-            <xsl:with-param name="p" select="." />
-         </xsl:call-template>
          
-         </xsl:variable>
-         <xsl:attribute name="type">
-           <xsl:value-of select="$typeseq[1]"/>
          </xsl:attribute>
-         <xsl:attribute name="cat">
-           <xsl:value-of select="$typeseq[2]"/>
+               <xsl:variable name="typeseq" as="xs:string *">
+                  <xsl:call-template name="convert-type-class">
+                     <xsl:with-param name="p" select="." />
+                  </xsl:call-template>
+               </xsl:variable>
+               <xsl:attribute name="type">
+           <xsl:value-of select="$typeseq[1]" />
          </xsl:attribute>
-         
-         <xsl:if test="contains(@fulltype,'[')">
-            <xsl:attribute name="array">
-            t
-            </xsl:attribute>
-         </xsl:if>
-         <xsl:if test="not(@type = $javaStdTypes)">
-            <xsl:attribute name="class">
-            t
-            </xsl:attribute>
-         </xsl:if>
-         </xsl:element>
-    </xsl:for-each>
-    </members>     
+               <xsl:attribute name="cat">
+           <xsl:value-of select="$typeseq[2]" />
+         </xsl:attribute>
+               <xsl:if test="contains(@fulltype,'[')">
+                  <xsl:attribute name="array">t</xsl:attribute>
+               </xsl:if>
+               <xsl:if test="not(@type = $javaStdTypes)">
+                  <xsl:attribute name="class">t</xsl:attribute>
+               </xsl:if>
+               <xsl:if
+                  test="count($hier/hierarchy//*[name()=current()/@type and not(name() = preceding::*/name())]/*)>0"
+               >
+                  <xsl:attribute name="baseclass">t</xsl:attribute>
+               </xsl:if>
+            </xsl:element>
+         </xsl:for-each>
+      </members>
    </xsl:template>
    
    <xsl:template name="beanclassdef">
       <xsl:param name="b"></xsl:param>
       <xsl:variable name="strucname" select="translate($b/@type,'.','_')"></xsl:variable>
       <xsl:variable name="classname" select="concat($strucname,'_')" ></xsl:variable>
+      <xsl:variable name="superclasses" as="xs:string *">
+        <xsl:sequence select="$hier/hierarchy//*[name() = $b/@type]/parent::*[name() != 'hierarchy' and not(name() = preceding::*/name())]/name()"></xsl:sequence>
+      </xsl:variable>
+      
+     <xsl:message><xsl:value-of select="concat('beanclassdef class=',$classname,' count=',count($superclasses),' superlasses=')"/><xsl:value-of select="$superclasses" separator=","/></xsl:message>
       <xsl:text>
 class </xsl:text>
       <xsl:value-of select="$classname" />
-      <xsl:if
-         test="count($b/implements/interface[not (@type = $stdInterfaces)])>0">
+       <xsl:if
+         test="count($superclasses)>0 ">
          <xsl:text> : </xsl:text>
          <xsl:value-of
-            select="for $i in $b/implements/interface[not (@type = $stdInterfaces)]/@type return concat('public ',translate(concat($i, '_'),'.','_'))"
+            select="for $i in $superclasses return concat('public ',translate(concat($i, '_'),'.','_'))"
             separator="," />
       </xsl:if>
       <xsl:text>{
@@ -624,71 +650,150 @@ public:
          </xsl:call-template>
       </xsl:variable>
       <xsl:for-each select="$members/members/member">
-      <xsl:if test="@array"><xsl:text>ListOf&lt;</xsl:text></xsl:if>
+         <xsl:if test="@array">
+            <xsl:text>ListOf&lt;</xsl:text>
+         </xsl:if>
          <xsl:value-of select="@type"></xsl:value-of>
-       <xsl:if test="@array"><xsl:text>&gt;</xsl:text></xsl:if>
-        <xsl:value-of select="concat(' ',@name,'_;')"></xsl:value-of>
-          <xsl:text>
+         <xsl:if test="@array">
+            <xsl:text>&gt;</xsl:text>
+         </xsl:if>
+         <xsl:value-of select="concat(' ',@name,'_;')"></xsl:value-of>
+         <xsl:text>
 </xsl:text>
       </xsl:for-each>
       <xsl:value-of select="$classname" />
       <xsl:text>( XmlRpcValue&amp; v)</xsl:text>
       <xsl:if
-         test="count($b/implements/interface[not (@type = $stdInterfaces)])>0 or count($members/members/*) > 0">
+         test="count($superclasses)>0 or count($members/members/*) > 0">
          <xsl:text> : </xsl:text>
          <xsl:value-of
-            select="for $i in $b/implements/interface[not (@type = $stdInterfaces)]/@type  return concat(translate(concat($i, '_'),'.','_'),'(v)')"
+            select="for $i in $superclasses  return concat(translate(concat($i, '_'),'.','_'),'(v)')"
             separator=", " />
          <xsl:if
-            test="count($b/implements/interface[not (@type = $stdInterfaces)])>0 and count($members/members/*) > 0">
+            test="count($superclasses)>0 and count($members/members/*) > 0">
             <xsl:text>, </xsl:text>
          </xsl:if>
          <xsl:value-of
-            select="for $j in $members/members/member/@name return concat($j,'_(v[&quot;',$j,'&quot;])')"
+            select="for $j in $members/members/member/@name return concat($j,'_(v.mem(&quot;',$j,'&quot;))')"
             separator=", " />
       </xsl:if>
+      <!-- TODO should only be virtual where there is a derived class  - also need to free resources...-->
          <xsl:text> {
-}
+} 
 virtual ~</xsl:text>
          <xsl:value-of select="translate(concat($b/@type,'_'),'.','_')" />
          <xsl:text>() {
 }
 
-operator struct </xsl:text><xsl:value-of select="$strucname"/><xsl:text>() const {
-struct </xsl:text><xsl:value-of select="$strucname"/><xsl:text> s;
+void asStruct( struct </xsl:text><xsl:value-of select="$strucname"/><xsl:text>* s ) const {
 </xsl:text>
-   <xsl:for-each select="$members/members/member">
-     <xsl:choose>
-        
-        <xsl:when test="@array">
-        <xsl:variable name="ctype">
-         <xsl:choose>
-           <xsl:when test="@cat ='s' ">
-             <xsl:value-of select="('struct ',replace(@type,'_$',''))" />
-           </xsl:when>
-           <xsl:otherwise>
-             <xsl:value-of select="@type"></xsl:value-of>
-           </xsl:otherwise>
-         </xsl:choose>
-         </xsl:variable>
-          <xsl:value-of select="concat('s.',@name,'.list = copyArray&lt;',@type,', ',$ctype,'&gt;(', @name,'_);')"/><xsl:text>
-           </xsl:text>
-           <xsl:value-of select="concat('s.',@name,'.n = ', @name,'_.size();')"/><xsl:text>
-           </xsl:text>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="concat('    s.',@name,' = ', @name,'_;')"/><xsl:text>
-          </xsl:text>
-        </xsl:otherwise>
-     </xsl:choose>
+   <xsl:for-each select="$superclasses">
+      <xsl:variable name="superstrucname" select="translate(.,'.','_')"></xsl:variable>
+      <xsl:variable name="superclassname" select="concat($superstrucname,'_')" ></xsl:variable>
+      <xsl:value-of select="concat($superclassname,'::asStruct((struct ',$superstrucname,' *)s);', $nl)"></xsl:value-of>
    </xsl:for-each>
- <xsl:text>
-   return s;
+   <xsl:for-each select="$members/members/member">
+      <xsl:choose>
+         <xsl:when test="@array">
+               <xsl:value-of
+               select="concat('   s->',@name,'.list = ')"
+            />
+               <xsl:choose>
+                  <xsl:when test="@cat ='s' and @baseclass">
+                     <xsl:value-of
+                        select="concat('copyArrayAsStruct&lt;',@type,', struct ',@type,'Base', '&gt;(', @name,'_);', $nl)"
+                     />
+                  </xsl:when>
+                  <xsl:when test="@cat ='s' ">
+                     <xsl:value-of
+                        select="concat('copyArrayAsStruct&lt;',@type,', struct ',replace(@type,'_$',''), '&gt;(', @name,'_);', $nl)"
+                     />
+                   </xsl:when>
+                  <xsl:otherwise>
+                     <xsl:value-of
+                        select="concat('copyArray&lt;',@type,', ',@type, '&gt;(', @name,'_);', $nl)"
+                     />
+                  </xsl:otherwise>
+               </xsl:choose>
+            
+            <xsl:value-of
+               select="concat('   s->',@name,'.n = ', @name,'_.size();',$nl)"
+            />
+         </xsl:when>
+         <xsl:when test="@cat = 's'">
+              <xsl:value-of
+               select="concat('   ',@name,'_.asStruct(&amp;s->',@name,');',$nl)"
+            />
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:value-of
+               select="concat('  s->',@name,' = ', @name,'_;', $nl)"
+            />
+          </xsl:otherwise>
+      </xsl:choose>
+   </xsl:for-each>
+   <xsl:value-of select="concat('s->_type = ', $strucname)"/>
+  <xsl:text>;
+  
 }
-
+</xsl:text>
+<xsl:if test="count($hier/hierarchy//*[name()=$b/@type and not(name() = preceding::*/name())]/*)>0">
+<xsl:call-template name="factory"><xsl:with-param  name="b" select="$b"></xsl:with-param></xsl:call-template>
+</xsl:if>
+<xsl:text>
 };
 </xsl:text>
    </xsl:template>
+   
+   <xsl:template name="factory"><xsl:param name="b"/><xsl:param name="doDefn"></xsl:param>
+       <xsl:variable name="strucname" select="translate($b/@type,'.','_')"></xsl:variable>
+      <xsl:variable name="classname" select="concat($strucname,'_')" ></xsl:variable>
+ 
+   <xsl:text>
+   static </xsl:text><xsl:value-of select="concat($classname, '* ')"/>
+   <xsl:if test="$doDefn">
+       <xsl:value-of select="concat($classname, '::')"/>
+   </xsl:if>
+   <xsl:text>create(XmlRpcValue &amp; v) </xsl:text>
+   <xsl:if test="$doDefn">
+    <xsl:text>{
+       XmlRpcValue intf = v.mem("__interfaces");
+       std::set&lt;std::string&gt; intfs;
+       std::string s1 = intf[0];
+       for (int i = 0; i &lt; intf.size(); ++i) {
+         std::string itf = intf[i];
+         intfs.insert(itf);
+       }
+       //order these with the deepest child first - ordering that appears in __interfaces is apparently random...
+         </xsl:text>
+         <xsl:apply-templates select="$hier/hierarchy//*[name()=$b/@type]" mode="factory"></xsl:apply-templates>
+      <xsl:text>
+      return 0;
+      }</xsl:text>
+      </xsl:if>
+      <xsl:text>;
+      </xsl:text>
+      
+   </xsl:template>
+      <xsl:template match="node()" mode="factory">
+      <xsl:if test="count(*)>0">
+         <xsl:apply-templates select="*" mode="factory" />
+      </xsl:if>
+     
+         <xsl:message>
+            <xsl:value-of select="('factory for bean', name())" />
+         </xsl:message>
+        <xsl:text>
+         if(intfs.count( "</xsl:text><xsl:value-of select="$jel/jelclass[@type=current()/name()]/@fulltype"/><xsl:text>") > 0)
+         {
+            return new </xsl:text><xsl:value-of select="translate(./name(),'.','_')"/>
+            <xsl:text>_(v);
+         }
+   
+   </xsl:text>
+      
+   </xsl:template>
+   
    <xsl:template name="convert-type"><!-- this is a little ugly... -->
       <xsl:param name="p" /> <!-- the actual type -->
       <xsl:param name="f"/> <!-- in a function definition -->
