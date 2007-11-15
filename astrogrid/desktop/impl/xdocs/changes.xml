@@ -14,7 +14,15 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
-<release version="2007.4.alpha7" date="unreleased">
+<release version="2007.4.alpha8" date="unreleased">
+    <action dev="nw" type="fix" issue="2411">
+    fixed misconfigured registry endpoint
+    </action>
+    <action dev="nw" type="update">
+    improved usability of astroscopes position-resolving input field.
+    </action>
+</release>
+<release version="2007.4.alpha7" date="2007-11-13">
     <action dev="nw" type="fix" issue="2317">
      Added upload and download buttons to fileexplorer
     </action>
