@@ -59,7 +59,7 @@ public class HtmlBuilder extends StrBuilder {
 	}
 	
 	public HtmlBuilder appendWrap(Object txt, int wrap) {
-	    append(WordUtils.wrap(ObjectUtils.toString(txt),wrap,"<br>",true));
+	    append(WordUtils.wrap(ObjectUtils.toString(txt),wrap,"<br>",false));
 	    return this;
 	}
 	

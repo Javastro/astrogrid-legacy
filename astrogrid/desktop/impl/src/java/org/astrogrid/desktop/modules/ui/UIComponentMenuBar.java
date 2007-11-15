@@ -209,6 +209,10 @@ public abstract class UIComponentMenuBar extends JMenuBar {
         }
         
         public JMenu create() {
+            separator();
+            menu.add(new LoginMenuItem(context));
+            
+            menu.add(new LogoutMenuItem(context));
             if (!isOsx) {
                 addSystemActions();
             }
@@ -224,11 +228,6 @@ public abstract class UIComponentMenuBar extends JMenuBar {
          *  add login / logout / exit actions.
          */
         private void addSystemActions() {
-            separator();
-            menu.add(new LoginMenuItem(context));
-            
-            menu.add(new LogoutMenuItem(context));
-            // toggle the state of these items.
 
             separator();
             JMenuItem exit = new JMenuItem("Exit"+ UIComponentMenuBar.ELLIPSIS,KeyEvent.VK_E);
@@ -253,9 +252,11 @@ public abstract class UIComponentMenuBar extends JMenuBar {
         }
         
         public JMenu create() {
+            separator();
             if (!isOsx) {
-                addSystemActions();
+                addNonOSXActions();
             }
+            addFinalActions();
             return menu;
         }
         public static final String CUT = "cut-to-clipboard";
@@ -297,16 +298,16 @@ public abstract class UIComponentMenuBar extends JMenuBar {
             return this;
        }        
         /**
-         *  add login / logout / exit actions.
+         * if not on OSX, add a link to the confituration diallogue.
          */
-        private void addSystemActions() {
-            separator();
+        private void addNonOSXActions() {
             JMenuItem showPrefs = new JMenuItem("Preferences" + UIComponentMenuBar.ELLIPSIS);
             showPrefs.setActionCommand(UIContext.PREF);
             showPrefs.addActionListener(context);
             showPrefs.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA,UIComponentMenuBar.MENU_KEYMASK));
             menu.add(showPrefs);
-            
+        } 
+        private void addFinalActions() { // would like to put these on the OSx application menu, but doesn't seem to be possible in java.
             JMenuItem reset = new JMenuItem("Reset Configuration" + UIComponentMenuBar.ELLIPSIS);
             reset.setToolTipText("Reset all configuration back to factory defaults");
             reset.setActionCommand(UIContext.RESET);

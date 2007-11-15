@@ -28,6 +28,8 @@ import javax.swing.PopupFactory;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 
+import org.apache.commons.lang.WordUtils;
+
 /**
  * Convenience class that displays a popup window for a fixed period of time, after which it
  * is hidden.
@@ -101,7 +103,7 @@ public class TimedPopup {
      * @param message the content of the error
      */
     public static void showErrorMessage(Component owner,String title, String message) {
-        JLabel l = new JLabel("<html><b>" + title + "</b><br>" + message);
+        JLabel l = new JLabel("<html><b>" + title + "</b><br>" + WordUtils.wrap(message,100,"<br>",false));
         l.setIcon(UIManager.getIcon("OptionPane.errorIcon")); // wish these magic keys were documented somewhere.
         l.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         showMessage(owner,l);

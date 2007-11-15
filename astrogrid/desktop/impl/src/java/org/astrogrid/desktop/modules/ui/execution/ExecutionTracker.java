@@ -30,6 +30,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileObject;
@@ -44,6 +45,7 @@ import org.astrogrid.desktop.modules.ag.ProcessMonitor;
 import org.astrogrid.desktop.modules.ag.RemoteProcessManagerInternal;
 import org.astrogrid.desktop.modules.ag.ProcessMonitor.ProcessEvent;
 import org.astrogrid.desktop.modules.ag.ProcessMonitor.ProcessListener;
+import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
@@ -135,7 +137,7 @@ public class ExecutionTracker implements ListSelectionListener{
 
 	private JEventListPanel panel;
 
-    private final UIComponent parent;
+    final UIComponent parent;
 
     // necessary so I can delete the monitors.
 	private final RemoteProcessManagerInternal rpmi;
@@ -282,6 +284,7 @@ public final ProcessMonitor getMoitor() {
 			JButton controls = new JButton(IconHelper.loadIcon("downarrow16.png"));
 			final JPopupMenu controlsMenu = new JPopupMenu();
 			controlsMenu.add(refresh);
+			controlsMenu.add(transcript);
 			controlsMenu.add(halt);
 			controlsMenu.add(delete);
 			if (pm instanceof ProcessMonitor.Advanced) {
@@ -332,6 +335,7 @@ public final ProcessMonitor getMoitor() {
         private final Action halt = new HaltAction();
         private final Action loadParams = new LoadParamsAction();
         private final Action refresh = new RefreshAction();
+        private final Action transcript = new ShowTranscriptAction();
         
         private final JLabel messageLabel = new JLabel();
         private FileNavigator navigator;
@@ -406,7 +410,7 @@ public final ProcessMonitor getMoitor() {
                                 .append(" Status: ")
                                 .append(m.getStatus());
                         builder.br().append("Message: ");
-                        builder.appendWrap(m.getContent(),50);
+                        builder.appendWrap(m.getContent(),100);
                         builder.p();        
                                  
                     }
@@ -475,13 +479,14 @@ public final ProcessMonitor getMoitor() {
 			}
 			status.setToolTipText(st);
 		}
+	
         private void populateTitleLabel() {
 			try {
 				ExecutionInformation ei = pm.getExecutionInformation();
 				title.setText(ei.getName());
 				HtmlBuilder sb = new HtmlBuilder();
-				sb.appendWrap(ei.getId(),50);
-				sb.br().appendWrap(ei.getDescription(),50);
+				sb.appendWrap(ei.getId(),100);
+				sb.br().appendWrap(ei.getDescription(),100);
 				sb.append("<h3>Status: ").append(ei.getStatus()).append("</h3>");
 				if (ei.getStartTime() != null) {
 					sb.append("Started: ")
@@ -501,7 +506,7 @@ public final ProcessMonitor getMoitor() {
 				        //issue - special case for adql - convert to adqls. - at the moment <select> is getitng treated as a html tag.
 				        // hmm - leave for now - instad will just html-escape all parameter values.
 				        sb.append(ps[i].getName()).append(" = ");
-				        sb.appendWrap(StringEscapeUtils.escapeHtml(ps[i].getValue()),50);
+				        sb.appendWrap(StringEscapeUtils.escapeHtml(ps[i].getValue()),100);
                         sb.br();
                     }
                     sb.h3("Outputs");
@@ -569,6 +574,24 @@ public final ProcessMonitor getMoitor() {
             public void actionPerformed(ActionEvent e) {
                 fireShowDetails(pm);
             }
+        }
+        
+        private class ShowTranscriptAction extends AbstractAction {
+            /**
+             * 
+             */
+            public ShowTranscriptAction() {
+                super("Show Transcript");
+                putValue(SHORT_DESCRIPTION,"<html>Display the execution transcript for this task in a popup window." +  
+                            "<br><i>It can also be accessed by hovering the mouse over the message field");
+            }
+            public void actionPerformed(ActionEvent e) {
+                String msg = title.getToolTipText() + "<h3>Messages</h3>" + messageLabel.getToolTipText();
+                ResultDialog rd = new ResultDialog(parent.getComponent(),msg);
+                rd.setTitle("Execution Transcript");
+                rd.show();
+            }
+            
         }
         
         private class RefreshAction extends AbstractAction {

@@ -549,7 +549,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	                        SwingUtilities.invokeLater(new Runnable() {
 
 	                            public void run() {
-	                                parent.showTransientError("Unable to execute task",ExceptionFormatter.formatException(x));
+	                                parent.showTransientError("Unable to execute task - see transcript for details",ExceptionFormatter.formatException(x));
 	                            }
 	                            
 	                        });

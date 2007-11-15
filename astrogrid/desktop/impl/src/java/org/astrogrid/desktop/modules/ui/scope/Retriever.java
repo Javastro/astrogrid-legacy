@@ -356,7 +356,7 @@ public abstract class Retriever extends BackgroundWorker {
     	logger.debug("Exception",ex);
     	String formattedEx = ExceptionFormatter.formatException(ex);
      //   parent.setStatusMessage(service.getTitle() + " - failed; " + ex.getMessage());
-    	parent.showTransientWarning("Unable to query " + service.getTitle(),formattedEx);
+    	parent.showTransientWarning("Unable to query " + service.getTitle(),formattedEx.length() < 200 ? formattedEx : "See services view for details");
         model.addQueryResult(service,null,QueryResultSummarizer.ERROR,formattedEx);
     }
     
