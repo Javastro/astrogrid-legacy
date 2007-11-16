@@ -15,7 +15,6 @@
 			<acrService id="jobs" interface="Jobs" />
 			<acrService id="processManager" interface="RemoteProcessManager" />
 			<acrService id="stap" interface="Stap"/>
-            <acrService id="publish" interface="Publish"/>
 	</contribution>
 
 	<contribution configuration-id="framework.descriptors">
@@ -214,24 +213,6 @@ STAP
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>			
 <!-- 
-=========================
-Publish
- -->
-   <service-point id="publish" interface="Publish">
-      Client Publishing resource to registry
-       <interceptor service-id="system.edt" />        
-      <interceptor service-id="system.throbber" />    
-      <invoke-factory>
-         <construct class="org.astrogrid.desktop.modules.ag.PublishImpl" >
-            <service>ivoa.registry</service>
-         </construct>         
-      </invoke-factory> 
-   </service-point>
-   
-   <implementation service-id="publish" if="property astrogrid.publish.disabled">
-      <invoke-factory service-id="hivemind.lib.PlaceholderFactory" />   
-   </implementation>       
-<!-- 
 ============================
 APPLICATIONS
  -->		
@@ -305,15 +286,12 @@ JOBS
 	<implementation service-id="jobs" if="property astrogrid.jobs.disabled">
 		<invoke-factory service-id="hivemind.lib.PlaceholderFactory" />	
 	</implementation>		
-	
-<contribution configuration-id="framework.preferences">
-		<preference name="jes.job.controller.endpoint"  advanced="true" requires-restart="true" propagate-to-config="true"
-			default-value="http://galahad.star.le.ac.uk:8080/astrogrid-jes/services/JobControllerService" >
-			<ui-name>Job Execution Server</ui-name>
-			<description>http url of the JES server</description>
-			<units>url</units>
-		</preference>
-	</contribution>		
+
+    <contribution configuration-id="hivemind.FactoryDefaults">
+        <default symbol="jes.job.controller.endpoint"
+                value="http://galahad.star.le.ac.uk:8080/astrogrid-jes/services/JobControllerService"
+                />
+    </contribution>	
 <!-- 
 ===========================
 REMOTE PROCESS MANAGER

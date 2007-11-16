@@ -216,6 +216,7 @@ System module.
                 <service>aboutDialogue</service>
 	 			<service>plasticList</service>
 	 			<configuration>windowFactories</configuration>
+                <string>${system.ui.launch}</string>
 	 		</construct>
 	 	</invoke-factory>
 	 </service-point>
@@ -239,13 +240,20 @@ System module.
 	 </configuration-point>
 
 	
-		<!--  need to add some extra logic here - so that it's possible to get it back after hide. -->
-	<contribution configuration-id="framework.preferences" if="not (property asr.mode)">
-		<preference name="system.ui.visible" advanced="true"
-			default-value="true">
-			<ui-name>Display main window on startup</ui-name>
-			<description>If false, will startup in hidden mode</description>
-			<units>boolean</units>
+		<!--  control which application to show at startup 
+        names must exactly match name attribute of corresponding system.windowFactory
+        
+        -->
+      <contribution configuration-id="framework.preferences">
+		<preference name="system.ui.launch" advanced="false"
+			default-value="VO Explorer">
+			<ui-name>At startup, launch</ui-name>
+			<description>Select which window to open at startup</description>
+            <option>VO Explorer</option>
+            <option>All-VO Scope</option>
+            <option>Task Runner</option>
+            <option>File Explorer</option>
+            <option>none</option>            
 		</preference>
 	</contribution>	
 		
@@ -286,7 +294,7 @@ System module.
 	<contribution configuration-id="framework.preferences" if="not (property system.webserver.disabled)">
 		<preference name="system.webserver.port" default-value="-1"
 		requires-restart="true" advanced="true">
-			<ui-name>Run Webserver on port</ui-name>
+			<ui-name>Run webserver on port</ui-name>
 			<alternative>-1</alternative>
 			<units>(-1 to scan for available port)</units>
 			<description></description>

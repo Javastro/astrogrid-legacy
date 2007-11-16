@@ -8,12 +8,12 @@
 
 	<contribution configuration-id="preferences">
 		<preference name="acr.advanced" default-value="false">
-			<ui-name>Show Advanced Features</ui-name>
+			<ui-name>Show advanced features</ui-name>
 			<description>Enables additional UI components for advanced use</description>
 			<units>boolean</units>
 		</preference>
 		<preference name="acr.debug" default-value="false" advanced="true">
-			<ui-name>Debugging Mode</ui-name>
+			<ui-name>Debugging mode</ui-name>
 			<description>Enables additional UI components for debugging and testing</description>
 			<units>boolean</units>		
 		</preference>

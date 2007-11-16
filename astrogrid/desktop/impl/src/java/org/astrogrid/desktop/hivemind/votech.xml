@@ -137,7 +137,7 @@ VOMON
 		<preference name="votech.vomon.endpoint" 
 			requires-restart="true" advanced="true"
 			default-value="http://vomon.roe.ac.uk/status.xml" >
-			<ui-name>Monitoring endpoint</ui-name>
+			<ui-name>Services monitor endpoint</ui-name>
 			<description>A http url that returns a vomon xml document</description>
 			<alternative>http://vomon.astrogrid.org/status.xml</alternative>			
 			<units>url</units>
@@ -145,7 +145,7 @@ VOMON
 		<preference name="votech.vomon.reload" 
 			requires-restart="true"
 			default-value="3600" > <!--  hourly -->
-				<ui-name>Refresh monitor every</ui-name>
+				<ui-name>Refresh services monitor every</ui-name>
 				<units>seconds</units>
 				<description>Period between reloading the monitoring information</description>
 			</preference>

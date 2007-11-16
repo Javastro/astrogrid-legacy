@@ -57,17 +57,26 @@ good place to put functionality and coding tests - which should be part of the m
                 <service>system.ui</service>
                 <service>system.scheduler</service>
                 <configuration>selftest</configuration>
+                <service>system.systray</service>
                 <int>${util.selftest.testDelay}</int><!-- delay between AR startup and running selftests -->
+                <boolean>${util.selftest.runAtStartup}</boolean>
             </construct>
         </invoke-factory>
     </service-point>
     
     <contribution configuration-id="framework.preferences">
+            <preference name="util.selftest.runAtStartup" 
+            advanced="false"
+            default-value="true">
+                <ui-name>Run self tests at startup</ui-name>
+                <description>If true, self tests will be run automatically when VODesktop starts</description> 
+                <units>boolean</units>
+            </preference>
         <preference name="util.selftest.testDelay" 
             requires-restart="true" advanced="true"
             default-value="5">
                 <ui-name>Self test delay</ui-name>
-                <description>Time to wait after AR startup before running self tests</description> 
+                <description>Time to wait after startup before running self tests</description> 
                 <units>seconds</units>
             </preference>
     </contribution>
