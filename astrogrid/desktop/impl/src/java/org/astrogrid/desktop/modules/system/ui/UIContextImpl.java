@@ -21,6 +21,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
 import org.apache.commons.collections.Factory;
 import org.astrogrid.acr.ServiceException;
@@ -32,6 +34,7 @@ import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.alternatives.HeadlessUIComponent;
 import org.astrogrid.desktop.modules.system.BackgroundExecutor;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
+import org.astrogrid.desktop.modules.system.SchedulerInternal;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.comp.EventListMenuManager;
@@ -88,7 +91,7 @@ public class UIContextImpl implements UIContext{
 	
 	//convenience constructor used while testing.
 	public UIContextImpl(final Configuration configuration,  BackgroundExecutor executor,final HelpServerInternal help, final BrowserControl browser) {
-		this(configuration,executor,help,browser,null,null,null,null,null,null, new BasicEventList(),new HashMap());
+		this(configuration,executor,help,browser,null,null,null,null,null,null, new BasicEventList(),new HashMap(),null);
 	}
 	
 	public UIContextImpl(final Configuration configuration
@@ -101,7 +104,9 @@ public class UIContextImpl implements UIContext{
 	        , SelfTester tester
 	        ,Runnable configDialog
 	        ,Runnable aboutDialog
-	        ,EventList plastic, Map windowFactories) {
+	        ,EventList plastic, Map windowFactories
+	        ,final String launchAppName
+	        ) {
 		super();
 		this.configuration = configuration;
 		this.help = help;
@@ -129,6 +134,18 @@ public class UIContextImpl implements UIContext{
     	tasksList = new ObservableElementList(new BasicEventList(),
     			new ObservableConnector());
 				
+    	
+    	// launch the preferred window.
+    	// had tried using the ar scheduler here, but causes a deadlock - thinkn it 
+    	// introduces a circular dep between the two components too early in the startup process.
+    	Timer t = new Timer(3000,new ActionListener(){
+
+            public void actionPerformed(ActionEvent e) {
+                UIContextImpl.this.actionPerformed(new ActionEvent(this,0,launchAppName));
+            }
+    	});
+    	t.setRepeats(false);
+    	t.start();
 	}
 	final Map windowFactories;
 	private final BrowserControl browser;

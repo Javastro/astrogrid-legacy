@@ -275,22 +275,26 @@ private void saveSourceList() {
                 assertEquals("Problem with cache",Status.STATUS_ALIVE,cache.getStatus());
             }
         });
-        AnnotationSource[] srcs = listSources();
-        for (int i = 0; i < srcs.length; i++) {
-            final AnnotationSource src = srcs[i];
-            ts.addTest(new TestCase( src.getName() + " annotations"){
-                protected void runTest() throws Throwable {
-                    try {
-                        src.getSource().toURL().openConnection().connect();
-                    } catch (MalformedURLException x) {
-                        fail("invalid endpoint");
-                    } catch (IOException x) {
-                        fail("Unable to connect to endpoint");
-                    }
-                }
-            });
-
-        }
+        // don't think there's much point doing any of this - none are vital.
+//        AnnotationSource[] srcs = listSources();
+//        for (int i = 0; i < srcs.length; i++) {
+//            final AnnotationSource src = srcs[i];
+//            if (src == io.getUserSource()) {
+//                continue; // don't test this one - it's local, and not always present
+//            }
+//            ts.addTest(new TestCase( src.getName() + " annotations"){
+//                protected void runTest() throws Throwable {
+//                    try {
+//                        src.getSource().toURL().openConnection().connect();
+//                    } catch (MalformedURLException x) {
+//                        fail("invalid endpoint");
+//                    } catch (IOException x) {
+//                        fail("Unable to connect to endpoint");
+//                    }
+//                }
+//            });
+//
+//        }
         return ts;
     }
 

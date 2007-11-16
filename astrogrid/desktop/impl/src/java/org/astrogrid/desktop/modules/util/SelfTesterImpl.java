@@ -25,11 +25,13 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import org.astrogrid.acr.system.SystemTray;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.SchedulerInternal;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
@@ -63,14 +65,18 @@ public class SelfTesterImpl implements SelfTester, Runnable {
     private final EventList testResults = new BasicEventList();
 
     private final UIContext context;
+
+    private final SystemTray tray;
     
     /**
      * @throws InvocationTargetException 
      * @throws InterruptedException 
      * 
      */
-    public SelfTesterImpl(final UIContext context,SchedulerInternal scheduler,List contribution,int delay)  {
+    public SelfTesterImpl(final UIContext context,SchedulerInternal scheduler,List contribution
+            ,SystemTray tray,int delay,boolean runAtStartup)  {
         this.context = context;
+        this.tray = tray;
         // assemble the test suite.
         logger.info("Assembling self test suite");
         this.suite = new TestSuite("Runtime self tests");
@@ -80,9 +86,12 @@ public class SelfTesterImpl implements SelfTester, Runnable {
             suite.addTest(t);
            }
         }
+        
         logger.info(suite.countTestCases() + " self tests found");
         // set the tests to run, once, in a few seconds.
-        scheduler.executeAfterDelay(1000 * delay,this);
+        if (runAtStartup) {
+            scheduler.executeAfterDelay(1000 * delay,this);
+        }
         
     }
     
@@ -101,6 +110,10 @@ public class SelfTesterImpl implements SelfTester, Runnable {
     }
     // EDT-call enforced by hivemind.
     public void show() {
+        if (theDisplay == null) { // wont have been created if tests weren't run autmatically at startup.
+            theDisplay = new SelfTestDisplay(context);            
+            theDisplay.actionPerformed(null);
+        }
         theDisplay.show();
     }
     
@@ -119,6 +132,7 @@ public class SelfTesterImpl implements SelfTester, Runnable {
          */
         public SelfTestDisplay(UIContext context) throws HeadlessException {
             super(context,"Self Testing","ui.selftest");
+            context.unregisterWindow(this); // registered by parent, don't want it.
             
             // a table component, based on the testResults, where all updates occur on the EDT
             JTable table = new JTable(new EventTableModel(
@@ -126,7 +140,16 @@ public class SelfTesterImpl implements SelfTester, Runnable {
                     ,new SelfTestTableFormat()
                     ));
             table.getColumnModel().getColumn(0).setMaxWidth(10);
-            
+            setJMenuBar(new UIComponentMenuBar(this,true) { // minimalistic menu
+
+                protected void populateEditMenu(EditMenuBuilder emb) {
+                    // ignored
+                }
+
+                protected void populateFileMenu(FileMenuBuilder fmb) {
+                    fmb.closeWindow();
+                }
+            });
             setSize(600,400);
             JPanel pane = getMainPanel();
             pane.add(new JScrollPane(table,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED),BorderLayout.CENTER);
@@ -138,11 +161,11 @@ public class SelfTesterImpl implements SelfTester, Runnable {
             setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
             // remove the window listener defined by the parent class.
             removeWindowListener(getWindowListeners()[0]);
-            addWindowListener(new WindowAdapter() {
-                public void windowClosing(WindowEvent e) {
-                    getContext().unregisterWindow(SelfTestDisplay.this);
-                }
-            });
+//            addWindowListener(new WindowAdapter() {
+//                public void windowClosing(WindowEvent e) {
+//                    getContext().unregisterWindow(SelfTestDisplay.this);
+//                }
+//            });
             
 
         }
@@ -228,16 +251,21 @@ public class SelfTesterImpl implements SelfTester, Runnable {
 
         public void addError(Test arg0, Throwable arg1) {
             currentTest.error = arg1;
-            showIfNotShowing();
+            warnIfNotShowing();
         }
         
         public void addFailure(Test arg0, AssertionFailedError arg1) {
             currentTest.failure = arg1;
-            showIfNotShowing();
+            warnIfNotShowing();
         }
 
-        
-        private void showIfNotShowing() {
+        boolean shownOnce = false;
+        private void warnIfNotShowing() {
+            if (! isVisible() && ! shownOnce) {
+                shownOnce = true;
+                tray.displayWarningMessage("There are failures in the self-tests","Display the Self Tests window for details");
+            }
+            /*
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
                     if (! isVisible()) {
@@ -245,7 +273,7 @@ public class SelfTesterImpl implements SelfTester, Runnable {
                         setVisible(true);
                     }        
                 }
-            });
+            });*/
         }
 
     }

@@ -68,25 +68,33 @@ public abstract class UIComponentMenuBar extends JMenuBar {
     public static final int SHIFT_MENU_KEYMASK = KeyEvent.SHIFT_DOWN_MASK  | MENU_KEYMASK;
 
     public UIComponentMenuBar(UIComponentImpl parent) {
+        this(parent,false);
+    }
+
+    public UIComponentMenuBar(UIComponentImpl parent, boolean minimalistic) {
         super();
         boolean hideSystemOperations = SystemUtils.IS_OS_MAC_OSX;
         this.bridge = new ActionBridge();
         this.uiParent = parent;
-        this.context = uiParent.getContext();        
+        this.context = uiParent.getContext();                
         FileMenuBuilder fmb = new FileMenuBuilder(hideSystemOperations);        
         populateFileMenu(fmb);
         fileMenu = fmb.create();
-        
-        EditMenuBuilder emb = new EditMenuBuilder(hideSystemOperations);
-        populateEditMenu(emb);
-        editMenu = emb.create();
-        
+        if (! minimalistic) {
+            EditMenuBuilder emb = new EditMenuBuilder(hideSystemOperations);
+            populateEditMenu(emb);
+            editMenu = emb.create();
+        } else {
+            editMenu = null;
+        }
         windowMenu = uiParent.getContext().createWindowMenu(uiParent);
         helpMenu = new HelpMenuBuilder(uiParent.applicationName, uiParent.helpKey,hideSystemOperations).create();
-    
+
         add(fileMenu);
-        add(editMenu);
-        constructAdditionalMenus();
+        if (! minimalistic) {
+            add(editMenu);
+            constructAdditionalMenus();
+        }
         add(windowMenu);
         add(helpMenu);                
     }
