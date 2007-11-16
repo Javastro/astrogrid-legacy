@@ -48,6 +48,7 @@ import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
@@ -263,7 +264,7 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 		
 		List thisPanelInputComponents = new ArrayList();
 		
-		if (basicPrefs != null) {
+		if (basicPrefs != null && basicPrefs.size() > 0) {
 			// order the preferences  first.
 			RowFactory fac = new RowFactory();
 			for (Iterator i = basicPrefs.iterator(); i.hasNext();) {
@@ -272,7 +273,7 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 			}
 			thisPanelInputComponents.addAll(fac.inputComponentList);
 		}
-		if (advancedPrefs != null ) {
+		if (advancedPrefs != null && advancedPrefs.size() > 0) {
 			RowFactory fac = new RowFactory();		
 			JComponent label = builder.appendSeparator("Advanced");
 			componentsOnlyVisibleWhenAdvanced.add(label); // want this to vanish.
@@ -437,7 +438,8 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 				
 		if (p.isRequiresRestart()) {
 			//JLabel l = new JLabel("<html><FONT color='red'>*");
-			JLabel l = new JLabel("*");
+			JLabel l = new JLabel("Requires restart");
+			l.setFont(UIConstants.SMALL_DIALOG_FONT);
 			l.setToolTipText("Requires restart to take effect");
 			allComponentList.add(l);
 			builder.append(l);

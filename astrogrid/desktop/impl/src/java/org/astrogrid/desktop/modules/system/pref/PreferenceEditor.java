@@ -7,8 +7,7 @@ import javax.swing.SwingUtilities;
 
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 
-/** Delegate class - ensures the dialogue is created on the EDT, and so avoid threading problems
- * @author Noel.Winstanley@manchester.ac.uk
+/**  @author Noel.Winstanley@manchester.ac.uk
  * @since Aug 31, 20072:33:22 PM
  */
 public class PreferenceEditor implements Runnable {
