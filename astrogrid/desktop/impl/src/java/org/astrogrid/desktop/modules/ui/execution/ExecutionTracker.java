@@ -463,16 +463,20 @@ public final ProcessMonitor getMoitor() {
 			if (st.equalsIgnoreCase("error")) {
 			    delete.setEnabled(true);
 			    halt.setEnabled(false);
+			    refresh.setEnabled(false);
 				status.setIcon(UIConstants.ERROR_ICON);
 				populateResults();
 			} else if (st.equalsIgnoreCase("completed")) {
 				status.setIcon(UIConstants.COMPLETED_ICON);
                 delete.setEnabled(true);
                 halt.setEnabled(false);
+                refresh.setEnabled(false);
 				populateResults();
 			} else if (st.equalsIgnoreCase("pending")) {
+			    refresh.setEnabled(true);
 				status.setIcon(UIConstants.PENDING_ICON);
 			} else if (st.equalsIgnoreCase("running")) {
+			    refresh.setEnabled(true);
 				status.setIcon(UIConstants.RUNNING_ICON);
 			} else {
 				status.setIcon(UIConstants.UNKNOWN_ICON);
@@ -606,7 +610,10 @@ public final ProcessMonitor getMoitor() {
                 }
                 (new BackgroundWorker(parent,"Refreshing") {
                     {
+                        parent.showTransientMessage("Refreshing task status","");
                         setTransient(true);
+                        setEnabled(false); // disable the action, to prevent it being called multiple times.
+                        // will be re-enabled by the populateStatusLabel method if appropriate.
                     }
 
                     protected Object construct() throws Exception {
