@@ -32,7 +32,7 @@ public class AnnotationPanel extends JPanel {
 		//@todo share these layouts - mk static?
 		FormLayout layout = new FormLayout(
 				"0dlu,60dlu,0dlu"
-				,"d,0dlu,d,1dlu,d,1dlu,d,0dlu,d"
+				,"d,0dlu,d,1dlu,p,1dlu,d,0dlu,d"
 				);
 		CellConstraints cc = new CellConstraints();
 		PanelBuilder builder = new PanelBuilder(layout,this);
@@ -59,8 +59,12 @@ public class AnnotationPanel extends JPanel {
 	        note.setFont(UIConstants.SANS_FONT);
 			note.addHyperlinkListener(hyperLinkHandler);				
 			note.setText(n);
+			// necessary to wrap it all in a scroll pane (even though we don't want any scroll bars)
+			// to ensure all text content is displayed. odd.
+			JScrollPane sp = new JScrollPane(note,JScrollPane.VERTICAL_SCROLLBAR_NEVER,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			sp.setBorder(null);
 		//	builder.addLabel("Notes",cc.xy(2,5)).setFont(SMALL_FONT);
-			builder.add(note,cc.xy(2,5));
+			builder.add(sp,cc.xy(2,5));
 		} else {
 			note = null;
 		}
