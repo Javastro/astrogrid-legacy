@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.6 2007/11/12 11:53:17 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.7 2007/11/20 06:01:37 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -85,7 +85,7 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
      * @throws ServiceException 
      */
     public SwingLoginDialogue( final UIContext coxt,final VoMonInternal monitor,final BrowserControl browser, final Registry reg, final Community comm,String registerLink, String defaultCommunity) throws MalformedURLException, ServiceException {
-        super(coxt);
+        super(coxt,"Virtual Observatory Login","ui.login");
         this.comm = comm;
     	this.defaultCommunity = defaultCommunity;
     	final MutableComboBoxModel model = new DefaultComboBoxModel();
@@ -174,7 +174,6 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
             vomonRecheckTimer.start();
         }
         // configure the dialogue.
-        setTitle("Virtual Observatory Login");
         JPanel mainPanel = getMainPanel();
         mainPanel.add(p,BorderLayout.CENTER);
         getContentPane().add(mainPanel);
@@ -304,6 +303,9 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.7  2007/11/20 06:01:37  nw
+added help id
+
 Revision 1.6  2007/11/12 11:53:17  nw
 RESOLVED - bug 2389: When you login, the Leicester community always appears as down
 http://www.astrogrid.org/bugzilla/show_bug.cgi?id=2389
