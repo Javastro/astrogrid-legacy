@@ -24,10 +24,12 @@ public class UIDialogueComponentImpl extends BaseDialog implements UIComponent {
     protected static final Log logger = LogFactory.getLog(UIDialogueComponentImpl.class);
     private final UIContext context;
     protected UIComponentAssist assist;
-    public UIDialogueComponentImpl(UIContext context) throws HeadlessException {
+    public UIDialogueComponentImpl(UIContext context,String name,String helpId) throws HeadlessException {
         super();
         getBanner().setVisible(false);
         setModal(true);
+        setTitle(name);
+        context.getHelpServer().enableHelpKey(this.getRootPane(),helpId);
         this.context = context;
         this.assist = new UIComponentAssist(this);
         
