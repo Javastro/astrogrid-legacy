@@ -235,7 +235,7 @@ public class VoMonImpl implements VoMonInternal {
             if (arr == null || arr.length == 0) {
                 result.append("The monitoring service knows of no providers of this application");
             } else {
-                result.append("This application is prrovided by the following services:<ul>");
+                result.append("This application is provided by the following services:<ul>");
                 for (int i =0; i < arr.length; i++) {
                     VoMonBean b = arr[i];
                     result.append("<li>")
