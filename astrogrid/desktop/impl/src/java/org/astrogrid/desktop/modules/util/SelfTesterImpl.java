@@ -17,6 +17,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -154,7 +156,12 @@ public class SelfTesterImpl implements SelfTester, Runnable {
             JPanel pane = getMainPanel();
             pane.add(new JScrollPane(table,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED),BorderLayout.CENTER);
             retest = new JButton("Re-run self tests");
-            pane.add(retest,BorderLayout.NORTH);
+            JButton helpButton = context.getHelpServer().createHelpButton("ui.selftest");
+            Box topPanel = new Box(BoxLayout.X_AXIS);
+            topPanel.add(retest);
+            topPanel.add(Box.createHorizontalGlue());
+            topPanel.add(helpButton);
+            pane.add(topPanel,BorderLayout.NORTH);
             retest.addActionListener(this);
             this.setTitle("Self Testing");
             // as this window can be re-shown, override the windowCLose op defined by parent class
