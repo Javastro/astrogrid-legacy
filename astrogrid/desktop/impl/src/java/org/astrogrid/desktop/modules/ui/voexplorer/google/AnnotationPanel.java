@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.swing.BorderFactory;
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.event.HyperlinkListener;
 
@@ -51,14 +52,14 @@ public class AnnotationPanel extends JPanel {
 		String n = StringUtils.trimToNull(ann.getNote());
 		if (n != null) {
 			note = new JEditorPane();
-			note.setContentType("text/html");
+			note.setContentType("text/html");		
 			note.setBorder(BorderFactory.createEmptyBorder());
 			note.setEditable(false);
 			note.putClientProperty("JEditorPane.honorDisplayProperties", Boolean.TRUE);		// this key is only defined on 1.5 - no effect on 1.4
 	        note.setFont(UIConstants.SANS_FONT);
 			note.addHyperlinkListener(hyperLinkHandler);				
 			note.setText(n);
-		//	builder.addLabel("Notes",cc.xy(2,5)).setFont(SMALL_FONT);				
+		//	builder.addLabel("Notes",cc.xy(2,5)).setFont(SMALL_FONT);
 			builder.add(note,cc.xy(2,5));
 		} else {
 			note = null;

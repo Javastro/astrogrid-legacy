@@ -3,6 +3,7 @@
  */
 package org.astrogrid.desktop.modules.votech;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -62,7 +63,7 @@ public class JackdawAnnotationSource extends DynamicAnnotationSource {
 							sb.append(title);
 						} else {
 							sb.append(uri.getAuthority());
-							sb.append(uri.getPath());
+							sb.append(StringUtils.replace(uri.getPath(),"/","/<wbr>"));// mark potential word-wrap points.
 						}
 						sb.append("</a><br>");
 						} catch (URISyntaxException e) {

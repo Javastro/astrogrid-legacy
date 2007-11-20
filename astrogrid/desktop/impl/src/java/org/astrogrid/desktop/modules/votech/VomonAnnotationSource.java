@@ -6,6 +6,7 @@ package org.astrogrid.desktop.modules.votech;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.apache.commons.lang.StringUtils;
 import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
@@ -44,7 +45,7 @@ public class VomonAnnotationSource extends DynamicAnnotationSource {
 					.append(b.getId())
 					.append("'>")
 					.append(b.getId().getAuthority())
-					.append(b.getId().getPath())
+					.append(StringUtils.replace(b.getId().getPath(),"/","/<wbr>"))// mark potential word-wrap points.
 					.append("</a><br>")
 					.append(" - <b>")
 					.append(b.getStatus())
