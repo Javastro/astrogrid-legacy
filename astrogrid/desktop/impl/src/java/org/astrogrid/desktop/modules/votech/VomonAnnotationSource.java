@@ -22,7 +22,7 @@ public class VomonAnnotationSource extends DynamicAnnotationSource {
 	
 	
 	public VomonAnnotationSource(VoMonInternal vomon) throws URISyntaxException {
-		super(new URI(vomon.getEndpoint().toString()), "Availability service");
+		super(new URI(vomon.getEndpoint().toString()), "Monitoring service");
 		this.vomon = vomon;
 		setSortOrder(3);
 	}
@@ -31,14 +31,14 @@ public class VomonAnnotationSource extends DynamicAnnotationSource {
 		Annotation ann = new Annotation();
 		ann.setResourceId(r.getId());
 		ann.setSource(this);
-		// slightly different formatting than getTooltipInformationFor
+		// slightly more compact formatting than getTooltipInformationFor
+		HtmlBuilder sb = new HtmlBuilder();
 		if (r instanceof CeaApplication) {
 			VoMonBean[] beans = vomon.checkCeaAvailability(r.getId());
 			if (beans == null || beans.length ==0) {
-				ann.setNote("Not known");
+				sb.append("No known providing services");
 			} else {
-				// non-synchronized version of StringBuffer.
-				HtmlBuilder sb = new HtmlBuilder();
+				sb.append("<i>Provided by these services:</i><br>");
 				for (int i =0; i < beans.length; i++) {
 					VoMonBean b = beans[i];
 					sb.append("<a href='")
@@ -46,21 +46,28 @@ public class VomonAnnotationSource extends DynamicAnnotationSource {
 					.append("'>")
 					.append(b.getId().getAuthority())
 					.append(StringUtils.replace(b.getId().getPath(),"/","/<wbr>"))// mark potential word-wrap points.
-					.append("</a><br>")
-					.append(" - <b>")
+					.append("</a> - ")
 					.append(b.getStatus())
-					.append("</b> at ")
+					.append(" at ")
 					.append(b.getTimestamp())
 					.append("<br>");
 				}			
-				ann.setNote(sb.toString());
 			}
 		} else if (r instanceof Service){
-		    ann.setNote(vomon.getTooltipInformationFor(r));
+		    VoMonBean b = vomon.checkAvailability(r.getId());
+		    if (b == null) {
+		        return null;
+		    } else {
+		        sb.append("Judged to be ")
+		            .append(b.getStatus())
+		            .append(" at ")
+		            .append(b.getTimestamp());
+		    }
 		} else {
 			return null;
 		}
-		
+
+		ann.setNote(sb.toString());
 		return ann;
 	}
 	public boolean shouldCache() {

@@ -51,7 +51,7 @@ public class JackdawAnnotationSource extends DynamicAnnotationSource {
 				if (in.isStartElement()) {
 					String localName = in.getLocalName();
 					if (localName.equals("group")) {
-						sb.append("<b>").append(in.getAttributeValue(null,"description")).append("</b><br>");
+						sb.append("<i>").append(in.getAttributeValue(null,"description")).append("</i><br>");
 					} else if (localName.equals("url")) {
 						String title =  in.getAttributeValue(null,"title");
 						try {
