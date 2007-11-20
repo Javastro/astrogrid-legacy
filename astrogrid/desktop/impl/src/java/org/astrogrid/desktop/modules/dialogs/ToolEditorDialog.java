@@ -1,4 +1,4 @@
-/*$Id: ToolEditorDialog.java,v 1.16 2007/10/12 10:58:24 nw Exp $
+/*$Id: ToolEditorDialog.java,v 1.17 2007/11/20 06:02:55 nw Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -65,9 +65,8 @@ public class ToolEditorDialog extends UIDialogueComponentImpl implements UICompo
     }
    	
    	public ToolEditorDialog(UIContext context,TypesafeObjectBuilder builder,Applications apps) throws HeadlessException {
-   	    super(context);
+   	    super(context,"Task Editor","ui.taskeditorDialogue");
    	    this.apps = apps;
-   	    setTitle("Task Editor");
    	    setSize(600,600);
 
    	    this.editMenu = new JMenu("Edit");
@@ -156,6 +155,9 @@ public class ToolEditorDialog extends UIDialogueComponentImpl implements UICompo
 
 /* 
 $Log: ToolEditorDialog.java,v $
+Revision 1.17  2007/11/20 06:02:55  nw
+added help ids.
+
 Revision 1.16  2007/10/12 10:58:24  nw
 re-worked dialogues to use new ui baseclass and new ui components.
 

@@ -1,4 +1,4 @@
-/*$Id: RegistryGoogleDialog.java,v 1.14 2007/10/12 10:58:24 nw Exp $
+/*$Id: RegistryGoogleDialog.java,v 1.15 2007/11/20 06:02:55 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -50,7 +50,7 @@ public class RegistryGoogleDialog extends UIDialogueComponentImpl implements Lis
      * @throws java.awt.HeadlessException
      */
     public RegistryGoogleDialog( UIContext context, RegistryGooglePanel chooserPanel) throws HeadlessException {
-        super(context);
+        super(context,"Registry Resource Chooser","ui.registryChooserDialogue");
         this.chooserPanel = chooserPanel;
         this.okButton = getOkButton();
         this.okButton.setEnabled(false);
@@ -68,7 +68,6 @@ public class RegistryGoogleDialog extends UIDialogueComponentImpl implements Lis
         */        
         this.getContentPane().add(main);           
      
-        this.setTitle("Registry Resource Chooser");
         this.pack();
         this.setSize(600,600);        
     }
@@ -144,6 +143,9 @@ public class RegistryGoogleDialog extends UIDialogueComponentImpl implements Lis
 
 /* 
 $Log: RegistryGoogleDialog.java,v $
+Revision 1.15  2007/11/20 06:02:55  nw
+added help ids.
+
 Revision 1.14  2007/10/12 10:58:24  nw
 re-worked dialogues to use new ui baseclass and new ui components.
 
