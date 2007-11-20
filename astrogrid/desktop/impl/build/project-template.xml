@@ -90,7 +90,7 @@
  	<type>jar</type>
  	<version>0.6.2</version>
  	<properties>
- 		<strip>false</strip> <!-- TODO fix this now -->
+ 		<strip>false</strip> 
  		<dist.bundle>true</dist.bundle>
  	</properties>
  </dependency>
@@ -102,7 +102,7 @@
  	<type>jar</type>
 	<version>0.6.2</version>
  	<properties>
- 		<strip>false</strip> <!-- TODO fix this now -->
+ 		<strip>false</strip> 
  		<dist.bundle>true</dist.bundle>
  	</properties>
  </dependency>
@@ -114,7 +114,7 @@
  	<type>jar</type>
  	<version>0.6.2</version>
  	<properties>
- 		<strip>false</strip> <!-- TODO fix this now -->
+ 		<strip>false</strip> 
  		<dist.bundle>true</dist.bundle>
  	</properties>
  </dependency> 
@@ -159,7 +159,7 @@
 	<type>jar</type>
 	<properties>
 		<dist.bundle>true</dist.bundle>		
-		<strip>false</strip><!-- true causes a NPE, and only saves 30K -->
+		<strip>true</strip>
 	</properties>
 </dependency>	
 	
@@ -248,59 +248,15 @@
     -->
    <dependency>
         <groupId>l2fprod</groupId>
-        <artifactId>l2fprod-common-buttonbar</artifactId>
+        <artifactId>l2fprod-common-all</artifactId>
         <version>6.11</version> 
-	<properties>
-		<dist.bundle>${ifBuildingASR.getValue() != 'true'}</dist.bundle>
-		<uberjar.bundle>${ifBuildingASR.getValue() != 'true'}</uberjar.bundle>
-		<strip>true</strip>	
-	 </properties>	 	
-    </dependency>
-    
-   <dependency>
-        <groupId>l2fprod</groupId>
-        <artifactId>l2fprod-common-tasks</artifactId>
-        <version>6.11</version> 
-	<properties>
-		<dist.bundle>${ifBuildingASR.getValue() != 'true'}</dist.bundle>
-		<uberjar.bundle>${ifBuildingASR.getValue() != 'true'}</uberjar.bundle>
-		<strip>true</strip>	
-	 </properties>	 	
+    <properties>
+        <dist.bundle>${ifBuildingASR.getValue() != 'true'}</dist.bundle>
+        <uberjar.bundle>${ifBuildingASR.getValue() != 'true'}</uberjar.bundle>
+        <strip>true</strip> 
+     </properties>      
     </dependency>   
-    
-       <dependency>
-        <groupId>l2fprod</groupId>
-        <artifactId>l2fprod-common-shared</artifactId>
-        <version>6.11</version> 
-	<properties>
-		<dist.bundle>${ifBuildingASR.getValue() != 'true'}</dist.bundle>
-		<uberjar.bundle>${ifBuildingASR.getValue() != 'true'}</uberjar.bundle>
-		<strip>true</strip>	
-	 </properties>	 	
-    </dependency>    
-    
-        <dependency>
-        <groupId>l2fprod</groupId>
-        <artifactId>l2fprod-common-directorychooser</artifactId>
-        <version>6.11</version> 
-	<properties>
-		<dist.bundle>${ifBuildingASR.getValue() != 'true'}</dist.bundle>
-		<uberjar.bundle>${ifBuildingASR.getValue() != 'true'}</uberjar.bundle>
-		<strip>true</strip>	
-	 </properties>	 	
-    </dependency>  
-    
-	<dependency>
-		<artifactId>l2fprod-common-outlookbar</artifactId>
-		<groupId>l2fprod</groupId>
-		<version>6.11</version>
-		<properties>
-		<dist.bundle>${ifBuildingASR.getValue() != 'true'}</dist.bundle>
-		<uberjar.bundle>${ifBuildingASR.getValue() != 'true'}</uberjar.bundle>
-			<strip>true</strip>
-		</properties>
-	</dependency>  
-	    
+  
 	<dependency>
 		<artifactId>forms</artifactId>
 		<groupId>jgoodies</groupId>
@@ -360,7 +316,7 @@
         <!-- <version>2.0.2</version>-->
 		<properties>
 			<dist.bundle>true</dist.bundle>
-			<strip>true</strip>
+			<strip>true</strip><!--  required by xfire, so won't strip this yet. -->
 		</properties>		
 	</dependency>
 	
@@ -380,7 +336,8 @@
     	    <dependency>
 	<groupId>proguard</groupId>
 	<artifactId>proguard</artifactId>
-	<version>3.7</version>
+	<!--  <version>3.7</version> -->
+    <version>4.0</version>
 	<properties>
 		<uberjar.bundle>false</uberjar.bundle>
 	</properties>
@@ -429,7 +386,7 @@
      <dependency>
       <artifactId>plastic</artifactId>
       <groupId>starlink</groupId>
-      <version>20060808-unsigned</version>
+  s    <version>20060808-unsigned</version>
       <url>http://www.star.bris.ac.uk/~mbt/plastic</url>
 		<properties>
 			<uberjar.bundle>false</uberjar.bundle>

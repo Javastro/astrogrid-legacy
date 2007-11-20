@@ -15,6 +15,12 @@
 	</head>
 <body>
 <release version="2007.4.alpha8" date="unreleased">
+    <action dev="nw" type="fix" issue="2417">
+        VOExplorer: Fixed word-wrapping in annotation boxes
+    </action>
+    <action dev="nw" type="fix" issue="2420">
+        Task Runner: enabled refresh operation
+    </action>
     <action dev="nw" type="fix" issue="2414">
     Self tests: made tests less twitchy, improved ui, and made less intrusive.
     </action>

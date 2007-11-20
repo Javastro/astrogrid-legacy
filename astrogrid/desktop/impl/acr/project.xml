@@ -111,7 +111,7 @@
 	 <type>jar</type>
      <properties>
 		 <dist.bundle>true</dist.bundle>
-		 <strip>${strip.xmlbeans}</strip>
+		 <strip>true</strip>
 	 </properties>			 
   </dependency>
   <dependency>
@@ -123,7 +123,7 @@
 	 <type>jar</type>
      <properties>
 		 <dist.bundle>true</dist.bundle>
-		 <strip>${strip.xmlbeans}</strip>
+		 <strip>true</strip>
 	 </properties>			 
   </dependency>
   <dependency>
@@ -134,7 +134,7 @@
 	 <type>jar</type>
 	 <properties>
 		 <dist.bundle>true</dist.bundle>
-		 <strip>${strip.xmlbeans}</strip>
+		 <strip>true</strip>
 	 </properties>		 
  </dependency>
  <!-- end compiler and beans for adql -->

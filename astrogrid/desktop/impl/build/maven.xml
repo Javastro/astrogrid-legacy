@@ -66,8 +66,9 @@ common definitions and hooks used by the impl projects.
 	<attainGoal name="jar-strip" />
 <!--  package as a jar file -->
 	<attainGoal name="app-jar" />
-	<!--  sign this jar .-->	
+	<!--  sign this jar - not any more
 		<attainGoal name="sign" />
+    .-->	
 	<!-- smoke-test -->
 	<attainGoal name="smoke-test" />
 <!--  package as an osx app -->
@@ -80,11 +81,13 @@ common definitions and hooks used by the impl projects.
 		<echo>Not running on OSX - can't build mac bundle</echo>
 	</j:otherwise>	
 	</j:choose>
-	<!-- package as an installer -->
+	<!-- package as an installer - not any more
 	<attainGoal name="installer" />		
+     -->
 	<j:if test="${! (ifBuildingASR.getValue().equals('true'))}">
-	<!--  package as a webstart app -->
+	<!--  package as a webstart app - not any more.
 		<attainGoal name="webstart" />
+     -->
 	</j:if>
 	<attainGoal name="generate-artifact-index" />
 </postGoal>
@@ -521,7 +524,7 @@ todo see if we can include other things in the disk image too. -->
 	 		<j:forEach var="f" items="${d.listFiles()}"> 
 	 			<!--  a file called *.xml, but not hivemind*.xml or fallback*.xml -->
 	 			<j:set var="fname" value="${f.getName()}" />	
-	 			<j:if test="${fname.endsWith('.xml') &amp;&amp; ! fname.startsWith('hivemind') &amp;&amp; ! fname.startsWith('fallback') &amp;&amp; ! fname.startsWith('version')}">		
+             	<j:if test="${fname.endsWith('.xml') &amp;&amp; ! fname.startsWith('hivemind') &amp;&amp; ! fname.startsWith('fallback') &amp;&amp; ! fname.startsWith('version')}">		
 	 				<j:set var="ignored" value="${descriptorList.add(fname)}" /><!--  idoom - just used for side effect. -->
 					<!-- load the file, and filter oout the entity references that maven can't handle
 					within the files included via entity references there's no references to classes that we don't already know about 
@@ -543,14 +546,14 @@ todo see if we can include other things in the disk image too. -->
 					<x:parse var="hd" validate="false" text="${context.findVariable(fname)}" />
 					
 					<!--  use xpath to search for referecned classes within the parsed descriptor -->
+                    <x:set var="pkg" select="$hd/module/@package" />                    
 					<x:set var="classes" select="
 						  $hd//@class
 						| $hd//@servletClass
-						| $hd//@interface[not(starts-with(.,'org.astrogrid.acr')) and contains(.,'.')]
+						| $hd//@interface[not(starts-with(.,'org.astrogrid.acr'))]
 						| $hd//@*[starts-with(.,'instance:')]
 						| $hd//text()[starts-with(.,'instance:')]
 						" />
-
 					<!--  append classes we found in this descriptor to the set -->
 					<j:forEach var="i" items="${classes}">
 						<j:set var="classname" value="${i.getStringValue()}" />
@@ -559,6 +562,19 @@ todo see if we can include other things in the disk image too. -->
 								<!--  only interested in side-effect - j:set just used to prevent lots of output to console -->
 								<j:set var="ignored" value="${classSet.add(classname.substring(9))}" />
 							</j:when>
+                            <j:when test="${classname.indexOf('.') == (0 - 1)}"><!--  unqualified classname -->
+                                <j:new  var="sb" className="java.lang.StringBuffer" />
+                                <j:invoke method="append" on="${sb}">
+                                    <j:arg value="${pkg[0].getStringValue()}"/>
+                                </j:invoke>
+                                <j:invoke method="append" on="${sb}">
+                                    <j:arg value="."/>
+                                </j:invoke>
+                                <j:invoke method="append" on="${sb}">
+                                    <j:arg value="${classname}"/>
+                                </j:invoke>
+                                <j:set var="ignored"    value="${classSet.add(sb.toString())}"/>                            
+                            </j:when>
 							<j:otherwise>
 								<j:set var="ignored"	value="${classSet.add(classname)}"/>
 							</j:otherwise>
@@ -570,7 +586,7 @@ todo see if we can include other things in the disk image too. -->
 			<echo>Scanned descriptors: ${descriptorList} </echo>
 	</goal>
 	
-	<!--  helper goal, that lists extracted descriptors -->
+	<!--  helper goal, that lists extracted descriptors-->
 	<goal name="listDescriptors" prereqs="scanDescriptors" description="Debugging goal - lists all classes referenced in hivemind descriptors">
 		<echo>The following classes are referenced in the hivemind descriptors</echo>
 		<j:forEach var="i" items="${hivemindRequiredClasses}">
@@ -581,21 +597,26 @@ todo see if we can include other things in the disk image too. -->
 	
 	<!-- strip unused classes, and optimize the rest
 	
-	load of rules here - some not relevant to smaller packagings - but this isn't a problem,
-	as jars aren't available in these cases.
+	load of rules here 
+    
+    to re-run this step alone, use 'maven dist:build-setup jar-strip'
+    
+    
 	-->
 <goal name="jar-strip"
 	description="strip and optimize the jars. depends on dist:build-bin" prereqs="scanDescriptors">
 	<echo>Stripping Jar: ${maven.final.name}-app.jar</echo>
-	<!--  very twitchy about whitespace inside loops and between tags. - need to pass in args directly for it to work. -->
+	<!-- optimization seems to introduce errors, so just strip. -->
     <proguard  printseeds="false"
     	skipnonpubliclibraryclasses="false"
     	skipnonpubliclibraryclassmembers="false"
     	allowaccessmodification="false"
-    	verbose="true"
+         forceprocessing="true"
     	ignorewarnings="true" 
-    	warn="true" note="true"
-    	shrink="true" optimize="true" obfuscate="false" >
+    	warn="false" note="false"
+        verbose="true"
+    	shrink="true" optimize="false" obfuscate="false"
+         >
      	-injars ${maven.build.dir}/${maven.final.name}.jar     	
      	<j:forEach var="lib" items="${pom.artifacts}">
     		<j:set var="dep" value="${lib.dependency}"/>
@@ -631,36 +652,71 @@ todo see if we can include other things in the disk image too. -->
   	=============
   	ROOTS - which classes to keep
   	 -->
-  	<!--  main classes-->	
-    	-keep public class org.astrogrid.* {
-    		public static void main(java.lang.String[]);
-    		public protected *;
-    	}	
+     
+  	<!--  various start classes-->
+    -keep public class org.astrogrid.* {
+        public static void main(java.lang.String[]);
+        public protected *;
+        }
+	    
     <!--  keep all classes referenced from hivemind visibly the same. -->	
     <j:forEach var="cl" items="${hivemindRequiredClasses}" trim="false">
-    	-keep class ${cl} {
-    		public  protected *;
-    	}
+        -keep class ${cl} {
+            public protected *;
+            }
     </j:forEach>
-    	<!--  preserve handlers too -->
-    	-keep class org.astrogrid.desktop.protocol.** {
-    		public protected *;
-    		}
-    <!-- keep all things that extend AR interface classes -->
-    	-keep class * implements org.astrogrid.acr.** {
-    		public protected *;
-    	}
+
+    <!--  referred to only by text in interceptor-->
+    -keep class org.astrogrid.desktop.modules.system.Invoke {
+        public protected *;
+        }
+
+    <!--  seems to get missed. -->
+    -keep class org.astrogrid.desktop.modules.util.Selftest {
+        public protected *;
+        }     
+    <!--  inner interface that's just passed to xstream, but never invoked -->    
+     -keep class org.astrogrid.desktop.modules.ivoa.StreamingExternalRegistryImpl** {
+        public protected *;
+     }   
+  
+    <!--  preserve handlers-->
+    -keep class org.astrogrid.desktop.protocol.** {
+        public protected *;
+        }
+
     <!-- smoke-testing  entry point -->
-    	-keep class org.astrogrid.desktop.BuildInprocessWorkbench {
-    		public protected *;
-    		}
+        -keep class org.astrogrid.desktop.BuildInprocessWorkbench {
+            public protected *;
+            }
     		
-    <!--  blunderbuss - would like to remove this rule in the fututre, and just use the ones above 
-    	seems to be necessary to fix problems with xstream. todo - look into this.
-    -->
-    -keep class org.astrogrid.desktop.** {
-    	public protected *;
-    	}
+        <!--  Dynamically checked by the Finder class see bug JDT1845  -->
+        -keep class org.astrogrid.desktop.BuildInprocessACR {
+            public protected *;
+            }
+            
+    <!--  required to make security work - these are some kind of data beans   -->                
+    -keep class org.astrogrid.community.common.*.data** { 
+        public protected *;
+    }
+    <!-- keep  xml beans for tool doc in workflow objects
+        second rule could be narrowed a little more
+     -->
+    -keep class org.astrogrid.workflow.beans.v1.*Descriptor     {
+        public protected *;
+        public static *;
+        }  
+    -keep class org.astrogrid.applications.beans.v1.**Descriptor {
+        public protected *;
+        public static *;
+        }          
+
+    <!--  other rules for ag codebase, based on proguard warnings 
+    probably not needed
+    -keep class * implements org.astrogrid.applications.component.CEAComponentManager {
+        public *;
+    }
+    -->     
 	<!-- 
 	=================== 
 	How to preserve classes that are kept.
@@ -672,30 +728,157 @@ todo see if we can include other things in the disk image too. -->
     		private void writeObject(java.io.ObjectOutputStream);
     		private void readObject(java.io.ObjectInputStream);
     		java.lang.Object writeReplace();
-    		java.lang.Object readResolve();
+    		java.lang.Object readResolve();                        
 		}		
+        
+    <!-- 
+    =================
+    Supporting libraries
+     -->    
+        <!--  preserve UI look and feel - always dynamically loaded-->          
+    -keep class * extends javax.swing.plaf.ComponentUI {
+        public static javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent);
+    }    
+    <!--   commons logging  -->
+    -keep class org.apache.commons.logging.impl.LogFactoryImpl {
+        public *;
+        }
+    -keep class org.apache.commons.logging.impl.Log4JLogger {
+        public *;
+        }
+    -keep class org.apache.commons.logging.Log {
+        public  *;
+    }   
+ <!--  stilts - uses a plugin discovery mechanism.-->
+    -keep class * implements uk.ac.starlink.table.StarTableWriter {
+        public *;
+    }
+    -keep class * implements uk.ac.starlink.table.TableBuilder {
+        public *;
+    }    
+     -keepclassmembers class * {
+        public uk.ac.starlink.table.StarTableWriter[] getStarTableWriters(); 
+     }     
+    <!--  attempt at a work-around for something that causes optimizer to break. 
+    tells proguard not to optimize this class. doesn't seem to work.
+    -keep , allowshrinking class uk.ac.starlink.fits.** {
+        *;
+        }
+    -->
+   <!--  castor  - need to keep all - narrower stripping gives 
+   an unfixable error. At least treating it as a lib means we can optimize it,
+   and strip a little off the jars it depends upon. 
+   previous attempted rules for castor.
+   -keep class org.exolab.castor.builder.FieldInfoFactory {
+        public protected *;
+        }
+   -keep class org.exolab.castor.xml.UnmarshalHandler {
+        public protected *;
+        }    
+   -->
+   -keep class org.exolab.castor.** {
+        public protected *;
+        }   
+   -keep class * implements org.apache.xml.serialize.Serializer {
+        public protected *;
+        }     
+   
+    <!-- xstream -->
+    -keep class com.thoughtworks.xstream.converters.**Converter {
+        public protected *;
+    }
+        <!--  xfire - issues warnings about
+    classFOrName org.jdom.adapters.DOMAdapter
+Note: org.codehaus.xfire.handler.CustomFaultHandler accesses a method 'getFaultInfo()' dynamically
+Note: org.codehaus.xfire.service.binding.ObjectServiceFactory accesses a method 'getFaultInfo()' dynamically
+Note: org.codehaus.xfire.XFireFactory accesses a method 'createInstance()' dynamically   
+Note: org.codehaus.xfire.wsdl11.parser.WSDLServiceConfigurator accesses a method 'getElement()' dynamically
+Note: org.codehaus.xfire.wsdl11.parser.WSDLServiceBuilder accesses a method 'getElement()' dynamically
+Note: org.codehaus.xfire.service.binding.DefaultServiceConfiguration accesses a method 'getFaultName()' dynamically 
+    
+    and previous rule was -
+    -keep class * implements javax.xml.stream.XMLStreamReader{
+        public *;
+        }
+    however, seems to work ok untouched. maybe these are all server-side only?
+    -->
+  <!--  xmlbeans 
+Note: org.apache.xmlbeans.impl.tool.SchemaCompiler calls '(org.apache.xmlbeans.SchemaCodePrinter)Class.forName(variable).newInstance()'
+org.apache.xmlbeans.impl.jam.internal.javadoc.JavadocTigerDelegate calls '(org.apache.xmlbeans.impl.jam.internal.javadoc.JavadocTigerDelegate)Class.forName(variable).newInstance()'
+ org.apache.xmlbeans.impl.jam.internal.reflect.ReflectTigerDelegate calls '(org.apache.xmlbeans.impl.jam.internal.reflect.ReflectTigerDelegate)Class.forName(variable).newInstance()
+ Note: org.apache.xmlbeans.impl.jam.internal.javadoc.JavadocResults accesses a method '_getRoot()' dynamically
+       Maybe this is program method 'org.apache.xmlbeans.impl.jam.internal.javadoc.JavadocResults { com.sun.javadoc.RootDoc _getRoot(); }'
+Note: org.apache.xmlbeans.impl.jam.internal.javadoc.JavadocResults accesses a method 'getInstance()' dynamically
+org.apache.xmlbeans.XmlBeans accesses a field 'type' dynamically
+    - think this is a field 'org.apache.xmlbeans.SchemaType type;'
+    
+Note: org.apache.xmlbeans.impl.schema.SchemaTypeSystemImpl accesses a field 'typeSystem' dynamically
+      Maybe this is program field 'schemaorg_apache_xmlbeans.system.s2AEA7D228DB83D6EA12A6A0F2F278CBB.TypeSystemHolder { org.apache.xmlbeans.SchemaTypeSystem typeSystem; }'
+      Maybe this is program field 'schemaorg_apache_xmlbeans.system.sXMLCONFIG.TypeSystemHolder { org.apache.xmlbeans.SchemaTypeSystem typeSystem; }'
+      Maybe this is program field 'schemaorg_apache_xmlbeans.system.sXMLLANG.TypeSystemHolder { org.apache.xmlbeans.SchemaTypeSystem typeSystem; }'
+      Maybe this is program field 'schemaorg_apache_xmlbeans.system.sXMLSCHEMA.TypeSystemHolder { org.apache.xmlbeans.SchemaTypeSystem typeSystem; }'
+      Maybe this is program field 'schemaorg_apache_xmlbeans.system.sXMLTOOLS.TypeSystemHolder { org.apache.xmlbeans.SchemaTypeSystem typeSystem; }'    
+
+Note: org.apache.xmlbeans.impl.schema.SchemaTypeImpl accesses a field 'table' dynamically
+    org.apache.xmlbeans.StringEnumAbstractBase$Table table;
+    
+    don't work 
+     -keepclassmembers class * implements org.apache.xmlbeans.XmlObject {
+            org.apache.xmlbeans.SchemaType type;
+            org.apache.xmlbeans.StringEnumAbstractBase$Table table;
+       }
+       -->
+    <!--  keep the adql beans unchanged - TODO if STC or STC/REGION are used, need to add rules for these too. -->
+    -keep class org.astrogrid.adql.v1_0.** {
+        *;
+        }
+    -keep class org.apache.xmlbeans.impl.schema.SchemaTypeLoaderImpl {
+        public *;
+        }
+    -keep class org.apache.xmlbeans.impl.schema.BuiltinSchemaTypeSystem {
+        public *;
+        }   
+    -keep class org.apache.xmlbeans.impl.schema.SchemaTypeSystemCompiler {
+        public *;
+    }
+    -keep class org.apache.xmlbeans.impl.store.Locale {
+        public *;
+        }
+    -keep class org.apache.xmlbeans.impl.schema.PathResourceLoader {
+        public *;
+        }   
+    -keep class org.apache.xmlbeans.impl.store.Path {
+        public *;
+        }
+    -keep class org.apache.xmlbeans.impl.store.Query {
+        public *;
+        }   
+    -keep class org.apache.xmlbeans.impl.schema.SchemaTypeSystemImpl {
+        public *;
+        }   
+          
+    <!-- security - can't get to strip successfully. need to find a config for astrogrid-security first.
+    cryptix.provider.elgamal.BaseElGamalKeyPairGenerator calls '(cryptix.provider.elgamal.GenericElGamalParameterSet)Class.forName(variable).newInstance()'
+ cryptix.asn1.encoding.BaseCoder calls '(cryptix.asn1.encoding.CoderOperations)Class.forName(variable).newInstance()'
+ 
+     -->
+
 	<!-- 
 	=================
-	Additional Rules for AG codebase -->
-        <!--  Dynamically checked by the Finder class see bug JDT1845  -->
-        -keep class org.astrogrid.desktop.BuildInprocessACR {
-            public protected *;
-        }		
-	<!--  required to make security work. -->		
-	-keep class org.astrogrid.community.** { <!-- could narrow to community**securtity?? -->
-		public protected *;
-	}
-	-keep class org.astrogrid.security.** {
-		public protected *;
-		}  
-	<!--  castor beans - keep these classes -->
-	-keep class org.astrogrid.workflow.beans.**.* {
-		*;
-		}
-	-keep class org.astrogrid.applications.beans.**.* {
-		*;
-		}			      
-	<!--  complains that it can't find javax.xml.rpc.Service.createCall() - so make it a root -->
+	Additional library rules based on proguard warnings. -->
+
+    -keep class * implements ca.odell.glazedlists.util.concurrent.LockFactory {
+        public *;
+        }
+     -keep class * implements org.mortbay.http.handler.NotFoundHandler {
+        public *;
+        }
+
+	<!-- 
+    ====================================
+    OLD AFTER THIS -->
+
+	<!--  complains that it can't find javax.xml.rpc.Service.createCall() - so make it a root 
 	 -keep class org.astrogrid.applications.delegate.impl.CommonExecutionConnectorDelegateImpl {
 	 	*;
 	 	}
@@ -705,25 +888,9 @@ todo see if we can include other things in the disk image too. -->
 	 -keep class * implements javax.xml.rpc.Service {
 	 	public protected *;
 	 	}
-	<!-- 
-	=================
-	Additional Rules for supporting libraries
-	 -->	
-	<!--  preserve commons logging factory -->
-	-keep class org.apache.commons.logging.impl.LogFactoryImpl {
-		public *;
-		}
-	-keep class org.apache.commons.logging.impl.Log4JLogger {
-		public *;
-		}
-	-keep class org.apache.commons.logging.Log {
-		public  *;
-	}	
-	<!--  fallback - and used within plastic hub variant. -->
-	-keep class org.apache.commons.logging.impl.SimpleLog {
-		public *;
-	}
-	<!--  log4j code- althrough we're not stripping log4j at the moment-->
+    -->
+
+	<!--  log4j code- althrough we're not stripping log4j at the moment
 	-keep class org.apache.log4j.ConsoleAppender {
 		public *;
 		}
@@ -736,11 +903,8 @@ todo see if we can include other things in the disk image too. -->
 	-keep class org.apache.log4j.Category {
 		public *;
 	}		
-		<!--  preserve UI look and feel - always dynamically loaded-->			
-	-keep class com.l2fprod.**.* extends javax.swing.plaf.ComponentUI {
-    	public static javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent);
-	}    
-	<!--  security -->
+    -->
+	<!--  security
 	-keep class org.globus.myproxy.MyProxy {
 		public *;
 		}	
@@ -750,13 +914,15 @@ todo see if we can include other things in the disk image too. -->
 	-keep class org.globus.gsi.gssapi.net.impl.GSIGssSocketFactory {
 		public *;
 		}
-	<!--  later - should whittle this down further later -->
+     -->
+	<!--  later - should whittle this down further later 
 	-keep public class cryptix.** {
 		public *;
 		}
 	-keep public class org.apache.xml.security.** {
 		public *;
 		}
+    -->
 	<!--  not enough - meh. 
 	-keep class org.apache.xml.security.Init {
 		public *;
@@ -772,62 +938,18 @@ todo see if we can include other things in the disk image too. -->
 		}
 	-keep class org.apache.xml.security.algorithms.implementations.SignatureBaseRSA {
 		public *;
-		}-->
+		}
+        -->
+        <!--  
 	-keep public class org.bouncycastle.** {
 		public *;
 		}	
 	-keep public class org.apache.ws.security.**.* {
 		public *;
 		}
-	<!--  jdbm -->
-	-keep class jdbm.recman.Provider {
-		public *;
-		}
-		<!--  adql beans - keep as is. -->		
-	-keep class org.astrogrid.adql.**.* {
-		*;
-		}
-	<!--  xmlbeans -->
-	-keep class org.apache.xmlbeans.impl.schema.SchemaTypeLoaderImpl {
-		public *;
-		}
-	-keep class org.apache.xmlbeans.impl.schema.BuiltinSchemaTypeSystem {
-		public *;
-		}	
-	-keep class org.apache.xmlbeans.impl.schema.SchemaTypeSystemCompiler {
-		public *;
-	}
-	-keep class org.apache.xmlbeans.impl.store.Locale {
-		public *;
-		}
-	-keep class org.apache.xmlbeans.impl.schema.PathResourceLoader {
-		public *;
-		}	
-	-keep class org.apache.xmlbeans.impl.store.Path {
-		public *;
-		}
-	-keep class org.apache.xmlbeans.impl.store.Query {
-		public *;
-		}	
-	-keep class org.apache.xmlbeans.impl.schema.SchemaTypeSystemImpl {
-		public *;
-		}	
-	<!--  castor - preserve all for the moment, else seems to fail - but include in strip path, so dependencies are processed. -->
-	-keep class org.exolab.castor.**.* {
-		*;
-		}
-	<!--  for jxpath (used within castor)  todo either remove, or strip this lib -->
-	-keep public class * implements org.apache.commons.jxpath.ri.model.NodePointerFactory {
-		public *;
-		}
-	-keep class org.apache.commons.jxpath.ri.JXPathContextFactoryReferenceImpl {
-		public *;
-		}
-	<!--  xml streaming / xfire todo - todo try removing this-->
-<!--	-keep class * implements javax.xml.stream.XMLStreamReader{-->
-<!--		public *;-->
-<!--		}-->
-	<!--  axis, and dependent jars--> 
+        -->	
+	
+	<!--  axis, and dependent jars
 	-keep class org.apache.axis.transport.http.HTTPSender {
 		public *;
 		}
@@ -849,13 +971,8 @@ todo see if we can include other things in the disk image too. -->
 	-keep class * implements org.apache.axis.components.net.SocketFactory {
 		public *;
 	}
-	<!--  stilts - uses a plugin discovery mechanism. -->
-	-keep class * implements uk.ac.starlink.table.StarTableWriter {
-		public *;
-	}
-	-keep class * implements uk.ac.starlink.table.TableBuilder {
-		public *;
-	}
+    --> 
+
     </proguard>	
 	<echo>Stripping completed</echo>
 	</goal>
@@ -879,9 +996,11 @@ todo see if we can include other things in the disk image too. -->
          <echo>signing test classes - so they can be run with the signed app jar</echo>
          <j:set var="testJar" value="${maven.build.dir}/${maven.final.name}-tests.jar" />
          <jar destfile="${testJar}" basedir="${maven.test.dest}" />
+          <!-- not required any more 
          <signjar jar="${testJar}" 
          	alias="${astrogrid.signature.alias}" storepass="${astrogrid.signature.storepass}" 
          	lazy="true"/>
+            -->
 	 	<!--  based on maven test plugin. -->
 	 	<mkdir dir="${maven.build.dir}/smoke-test-reports" />
 	 	<echo>Running Smoke Tests: ${smoke.tests}</echo>
