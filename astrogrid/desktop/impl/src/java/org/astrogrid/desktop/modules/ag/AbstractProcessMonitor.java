@@ -218,18 +218,17 @@ public abstract class AbstractProcessMonitor implements ProcessMonitor {
      * 
      * adds result into map, and presents result as a file in the file view.
      * 
-     * returns the temporary file containing this result - whiose basename will == resultname
      */
-    protected void addResult(String resultname,String result) {
+    protected void addResult(String resultname,String filename,String result) {
         OutputStream os = null;
         InputStream is = null;
         try {
-            FileObject tmp = vfs.resolveFile(localResultsRoot,resultname);
+            FileObject tmp = vfs.resolveFile(localResultsRoot,filename);
             tmp.createFile();
             is = new ByteArrayInputStream(result.getBytes());
             os = tmp.getContent().getOutputStream();
             Piper.pipe(is,os);
-            sys.addJunction(resultname,tmp);
+            sys.addJunction(filename,tmp);
             resultMap.put(resultname,result); // doh! don't really want to cache value in memory too, but can't be helped - map is passed back throught eh RemoteProcessManager AR api, so can't contain any weirdness.
         } catch (Exception x) {
             throw new RuntimeException("Unexpected storage error",x);

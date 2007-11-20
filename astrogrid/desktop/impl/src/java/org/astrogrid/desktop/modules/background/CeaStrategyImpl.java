@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.27 2007/11/12 11:53:42 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.28 2007/11/20 06:31:38 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -327,6 +327,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 				                        FileObject src = vfs.resolveFile(val.getValue());
 				                            src.refresh();
 				                        if (! src.exists()) {
+				                            // caught by surrounding block.
 				                            throw new FileSystemException(val.getValue() + " does not exist");
 				                        }
 				                        addResult(val.getName(),src);
@@ -335,7 +336,7 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 				                        warn("Failed to retrieve " + val.getValue() + "<br>" + exFormatter.format(e,ExceptionFormatter.ALL));
 				                    }
 				                } else {
-				                    addResult(val.getName(),val.getValue());
+				                    addResult(val.getName(),val.getName() + suggestExtension(desc),val.getValue());
 				                }
 				            
 				        }
@@ -358,25 +359,25 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 		 * 
 		 *  not a good idea - as changes the key names- which is a pain.
 		 *  */
-//	    private String suggestExtension(ParameterBean pb) {
-//	        if (pb == null) {
-//	            return "";
-//	        }
-//	        String type = pb.getType();
-//	        if (type.equalsIgnoreCase("fits")) {
-//	            return ".fits";
-//	        } else if (type.equalsIgnoreCase("binary")) {
-//	            return ".bin";
-//	        } else if (type.equalsIgnoreCase("anyxml")) {
-//	            return ".xml";
-//	        } else if (type.equalsIgnoreCase("votable")) {
-//	            return ".vot";
-//	        } else if(type.equalsIgnoreCase("adql")) {
-//	            return ".adql";
-//	        } else {
-//	            return ".txt";
-//	        }
-//	    }
+	    private String suggestExtension(ParameterBean pb) {
+	        if (pb == null) {
+	            return "";
+	        }
+	        String type = pb.getType();
+	        if (type.equalsIgnoreCase("fits")) {
+	            return ".fits";
+	        } else if (type.equalsIgnoreCase("binary")) {
+	            return ".bin";
+	        } else if (type.equalsIgnoreCase("anyxml")) {
+	            return ".xml";
+	        } else if (type.equalsIgnoreCase("votable")) {
+	            return ".vot";
+	        } else if(type.equalsIgnoreCase("adql")) {
+	            return ".adql";
+	        } else {
+	            return ".txt";
+	        }
+	    }
 
 		private long runAgain = SHORTEST;
 		public long getDelay() {
@@ -627,6 +628,9 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.28  2007/11/20 06:31:38  nw
+re-fixed result parameter naming so that that file-types are provided, yet AR interface isn't affected.
+
 Revision 1.27  2007/11/12 11:53:42  nw
 fixed result parameter naming.
 

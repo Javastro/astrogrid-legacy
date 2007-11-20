@@ -1,4 +1,4 @@
-/*$Id: JesStrategyImpl.java,v 1.15 2007/08/13 19:29:48 nw Exp $
+/*$Id: JesStrategyImpl.java,v 1.16 2007/11/20 06:31:38 nw Exp $
  * Created on 05-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -174,7 +174,7 @@ public class JesStrategyImpl implements RemoteProcessStrategy {
 					StringWriter sw = new StringWriter();
 					try {
 						wf.marshal(sw);
-						addResult("transcript",sw.toString());
+						addResult("transcript","trascript.xml",sw.toString());
 						HashMap m = new HashMap();
 						m.put("transcript",sw.toString());
 
@@ -313,6 +313,9 @@ public class JesStrategyImpl implements RemoteProcessStrategy {
 
 /* 
 $Log: JesStrategyImpl.java,v $
+Revision 1.16  2007/11/20 06:31:38  nw
+re-fixed result parameter naming so that that file-types are provided, yet AR interface isn't affected.
+
 Revision 1.15  2007/08/13 19:29:48  nw
 merged mark's and noel's changes.
 
