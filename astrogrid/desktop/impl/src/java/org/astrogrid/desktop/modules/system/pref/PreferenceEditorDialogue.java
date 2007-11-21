@@ -4,7 +4,6 @@ package org.astrogrid.desktop.modules.system.pref;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.LayoutManager;
@@ -30,29 +29,25 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
-import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.acr.ACRException;
-import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.desktop.icons.IconHelper;
-import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.FormLayout;
+import com.l2fprod.common.swing.BaseDialog;
 import com.l2fprod.common.swing.JButtonBar;
 import com.l2fprod.common.swing.JDirectoryChooser;
 import com.l2fprod.common.swing.plaf.blue.BlueishButtonBarUI;
@@ -80,6 +75,7 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 
 			this.showAdvancedPreference = advancedPreference;
 			this.cxt = cxt;
+			setBorder(null);
 			// build the user interface.
 			initUI(arranger);
 			// start listening to changes 
@@ -136,41 +132,44 @@ class PreferenceEditorDialogue  extends JPanel implements Runnable, PropertyChan
 				c1.setBorder(b); // reset borders - removing any previous warnings.
 			}
 		} 
-		JOptionPane opane = new JOptionPane();
-		opane.setMessageType(JOptionPane.PLAIN_MESSAGE);
-		opane.setOptionType(JOptionPane.OK_CANCEL_OPTION);
-		opane.setMessage(this);
-		JDialog dialog = opane.createDialog(cxt.findMainWindow().getComponent(), "Preferences");
-		dialog.setContentPane(opane);
+		BaseDialog dialog = new BaseDialog() {
+		    {
+		        setDialogMode(BaseDialog.OK_CANCEL_DIALOG);
+		        setModal(false);
+		        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		        getBanner().setVisible(false);
+		        getContentPane().add(PreferenceEditorDialogue.this);  
+		        setTitle("Preferences");
+		    }
+		    public void ok() {
+		        super.ok();
+	            // go through each of the input components, saving back to preferences those that
+	            // have been modified.
+	            for (Iterator i = inputComponents.iterator(); i.hasNext();) {
+	                JComponent c = (JComponent) i.next();
+	                Preference p = (Preference) c.getClientProperty(Preference.class);
+	                if (! (c instanceof ValueAccess)) {
+	                    throw new IllegalStateException("Programming error: Encountered a component that was not a value access: " + c);
+	                }
+	                String editedValue = ((ValueAccess)c).getValue();
+	                p.setValue(editedValue); // only firest events if a value change has happened.
+	            }		        
+		    }
+		};		
+
 		// temporarily enable advanced view, so that we pack to the correct size.
 		boolean showOptional =  showAdvancedPreference.asBoolean();
 		if (! showOptional) {
 		showOptionalComponents(true);
 		}
 	    dialog.pack(); // packs for maximum size.
+        dialog.centerOnScreen();
 	    // now flip back to the selected view setting.
 	    if (! showOptional) {
 	    	showOptionalComponents(false);
 	    }
 	    dialog.setVisible(true);
-	    dialog.toFront();
-	    Object status = opane.getValue();
-	    dialog.dispose();
-	    boolean ok = status instanceof Integer && 
-	    	((Integer)status).intValue() == JOptionPane.OK_OPTION;
-	    if (ok) {
-	    	// go through each of the input components, saving back to preferences those that
-			// have been modified.
-			for (Iterator i = inputComponents.iterator(); i.hasNext();) {
-				JComponent c = (JComponent) i.next();
-				Preference p = (Preference) c.getClientProperty(Preference.class);
-				if (! (c instanceof ValueAccess)) {
-					throw new IllegalStateException("Programming error: Encountered a component that was not a value access: " + c);
-				}
-				String editedValue = ((ValueAccess)c).getValue();
-				p.setValue(editedValue); // only firest events if a value change has happened.
-			}
-	    }  
+	    dialog.toFront();	  
 	}
 
 

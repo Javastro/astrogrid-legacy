@@ -42,15 +42,18 @@ public class PlasticBibcodeActivity extends AbstractResourceActivity {
 
 
 	public void actionPerformed(ActionEvent e) {
-		List l = computeInvokable();
-        if (l.size() > UIConstants.LARGE_SELECTION_THRESHOLD && ! confirm("Send all " + l.size() + " resources?" )) {
-            return;         
-        }		
+		final List l = computeInvokable();
+        Runnable act= new Runnable() {
+
+            public void run() {
 		for (Iterator i = l.iterator(); i.hasNext();) {
             Resource r = (Resource) i.next();
             sendBibcodeMessage(r);
         }
-		
+            }
+        };
+        int sz = l.size();
+        confirmWhenOverThreshold(sz,"Send all " + " resources?",act);	
 	}
 	private void sendBibcodeMessage(final Resource r) {
 		(new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName()) {						

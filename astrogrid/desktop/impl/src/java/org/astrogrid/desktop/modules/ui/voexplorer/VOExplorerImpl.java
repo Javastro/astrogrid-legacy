@@ -1,4 +1,4 @@
-/*$Id: VOExplorerImpl.java,v 1.15 2007/11/13 11:12:11 nw Exp $
+/*$Id: VOExplorerImpl.java,v 1.16 2007/11/21 07:55:39 nw Exp $
 
  * Created on 30-Mar-2005
  *
@@ -12,7 +12,12 @@
 package org.astrogrid.desktop.modules.ui.voexplorer;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dialog;
 import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.HeadlessException;
+import java.awt.Window;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,16 +29,14 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
@@ -43,7 +46,6 @@ import javax.swing.tree.TreeModel;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.acr.ivoa.resource.Contact;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.XmlPersist;
@@ -52,9 +54,6 @@ import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
-import org.astrogrid.desktop.modules.ui.UIComponentMenuBar.EditMenuBuilder;
-import org.astrogrid.desktop.modules.ui.UIComponentMenuBar.FileMenuBuilder;
-import org.astrogrid.desktop.modules.ui.UIComponentMenuBar.MenuBuilder;
 import org.astrogrid.desktop.modules.ui.actions.BuildQueryActivity;
 import org.astrogrid.desktop.modules.ui.actions.ContactActivity;
 import org.astrogrid.desktop.modules.ui.actions.FurtherInfoActivity;
@@ -68,13 +67,14 @@ import org.astrogrid.desktop.modules.ui.actions.TaskRunnerActivity;
 import org.astrogrid.desktop.modules.ui.actions.WebInterfaceActivity;
 import org.astrogrid.desktop.modules.ui.comp.BiStateButton;
 import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
-import org.astrogrid.desktop.modules.ui.comp.MyTitledBorder;
 import org.astrogrid.desktop.modules.ui.folders.ResourceBranch;
 import org.astrogrid.desktop.modules.ui.folders.ResourceFolder;
 import org.astrogrid.desktop.modules.ui.folders.SmartList;
 import org.astrogrid.desktop.modules.ui.folders.StaticList;
 import org.astrogrid.desktop.modules.ui.folders.XQueryList;
 import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel.LoadEvent;
+
+import com.l2fprod.common.swing.BaseDialog;
 
 /** Main window of voexplorer
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 30-Mar-2005
@@ -407,12 +407,64 @@ public class VOExplorerImpl extends UIComponentImpl
 	}
 
     public void editNewResourceBranch(ResourceBranch f) {
-        String name = JOptionPane.showInputDialog(this, "Name for new container", f.getName());
-        if (StringUtils.isNotEmpty(name)) {
-            f.setName(name);
+        Window w = (Window)SwingUtilities.getAncestorOfClass(Window.class,getComponent());
+        
+        final BaseDialog d;
+        if (w instanceof Frame) {
+            d = new RenameDialog((Frame)w, f);
+        } else if (w instanceof Dialog) {
+            d = new RenameDialog((Dialog)w, f);          
+        } else {
+            d = new RenameDialog(f);         
         }
-        resourceLists.appendFolder(f);
+        d.setVisible(true);
     }
+    private class RenameDialog extends BaseDialog {
+        private final ResourceFolder folder;
+
+        public RenameDialog(ResourceFolder folder) throws HeadlessException {
+            super();
+            this.folder = folder;
+            init();
+        }
+        public RenameDialog(Frame f,ResourceFolder folder) throws HeadlessException {
+            super(f);
+            this.folder = folder;
+            init();
+        }
+        public RenameDialog(Dialog f,ResourceFolder folder) throws HeadlessException {
+            super(f);
+            this.folder = folder;
+            init();
+        }            
+        private final JTextField tf = new JTextField(20);
+        private void init() {
+            setModal( false);
+            setDialogMode(BaseDialog.OK_CANCEL_DIALOG);
+            setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            setTitle("New Container");
+            getBanner().setTitle("Enter a name for the new container");
+            getBanner().setSubtitleVisible(false);
+            tf.setText("New Container");
+            
+            final Container cp = getContentPane();
+            cp.setLayout(new java.awt.FlowLayout());
+            cp.add(new JLabel("Name :"));
+            cp.add(tf);                
+            pack();
+            setLocationRelativeTo(VOExplorerImpl.this.getComponent());
+        }
+        
+        public void ok() {
+            super.ok();
+            String nuName =tf.getText();
+            if (StringUtils.isNotEmpty(nuName)) {
+                folder.setName(nuName);
+                resourceLists.appendFolder(folder);            
+            }           
+        }
+    }
+
 
     public void editNewSubscription(ResourceFolder f) {
         subscriptionEditPanel.getOkButton().setText("Create");

@@ -16,7 +16,7 @@ import org.astrogrid.desktop.modules.ivoa.resource.ResourceFormatter;
 public class ResourceDisplayPane extends JEditorPane {
 	public ResourceDisplayPane() {
 		setContentType("text/html");
-		setBorder(BorderFactory.createEmptyBorder());
+		setBorder(null);
 		setEditable(false);
 		putClientProperty("JEditorPane.honorDisplayProperties", Boolean.TRUE);		// this key is only defined on 1.5 - no effect on 1.4
 		setFont(UIConstants.SANS_FONT);

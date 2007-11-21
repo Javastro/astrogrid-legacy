@@ -24,7 +24,6 @@ import java.util.Properties;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;

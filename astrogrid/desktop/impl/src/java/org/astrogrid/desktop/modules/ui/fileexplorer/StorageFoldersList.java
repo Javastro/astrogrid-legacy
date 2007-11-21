@@ -4,20 +4,14 @@
 package org.astrogrid.desktop.modules.ui.fileexplorer;
 
 import java.awt.Component;
-import java.awt.Event;
-import java.awt.Point;
-import java.awt.Toolkit;
+import java.awt.Dialog;
+import java.awt.Frame;
+import java.awt.HeadlessException;
+import java.awt.Window;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetEvent;
-import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -26,33 +20,32 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StreamTokenizer;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.DefaultListCellRenderer;
-import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
+import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs.FileName;
@@ -68,10 +61,14 @@ import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.ui.folders.Folder;
 import org.astrogrid.desktop.modules.ui.folders.StorageFolder;
 import org.astrogrid.desktop.modules.ui.voexplorer.ResourceLists;
-import org.astrogrid.desktop.modules.ui.voexplorer.google.ResourceTable;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.swing.EventListModel;
+
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+import com.l2fprod.common.swing.BaseDialog;
 
 /** view and controller for a set of storage 'roots' - either roots of mounted filesystems,
  * or shortcuts to favorite locations within these mounts. - add a divider between roots and 
@@ -136,25 +133,47 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
         }
         public void actionPerformed(ActionEvent e) {
             StorageFolder f = new StorageFolder();
-            String n = JOptionPane.showInputDialog(StorageFoldersList.this,"Choose a name for this bookmark");
-            if (n == null) {
-                return;
+            Window w = (Window)SwingUtilities.getAncestorOfClass(Window.class,parent.getComponent());
+            final BaseDialog d;
+            if (w instanceof Frame) {
+                d = new CreateBookmarkDialog((Frame)w, f);
+            } else if (w instanceof Dialog) {
+                d = new CreateBookmarkDialog((Dialog)w, f);          
+            } else {
+                d = new CreateBookmarkDialog(f);         
             }
-            f.setName(n);
-            while(true) {
-                try {
-                    String s = JOptionPane.showInputDialog(StorageFoldersList.this,"Enter the URI for this bookmark");
-                    if (s == null) {
-                        return;
-                    }
-                    f.setUriString(s);
-                    break;
-                } catch (URISyntaxException ex) {
-                    parent.showTransientError("Invalid URI",ExceptionFormatter.formatException(ex));
-                }
-            }
-            folderList.add(f);            
+            d.setVisible(true);     
         }
+        /** dialog for creating a new bookmark */
+        private final class CreateBookmarkDialog extends BookmarkDialog {
+        
+            public CreateBookmarkDialog(Dialog w, StorageFolder f2) {
+                super(w, f2);
+            }
+        
+            public CreateBookmarkDialog(Frame owner, StorageFolder f)
+                    throws HeadlessException {
+                super(owner, f);
+            }
+        
+            public CreateBookmarkDialog(StorageFolder f2) {
+                super(f2);
+            }
+            
+            protected void init() {
+                super.init();
+                setTitle("Create Bookmark");
+                getBanner().setTitle("Enter the new bookmark details");
+                name.setText("untitled");
+                uri.setText(SystemUtils.getUserHome().toURI().toString());
+                
+            }
+            
+            protected void saveChanges(){
+                folderList.add(f);  // add the new folder to the dialog            
+            }
+        }
+
 	}
 	
 	private class DeleteBookmarkAction extends AbstractAction {
@@ -183,31 +202,56 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
             setEnabled(false);
         }
         public void actionPerformed(ActionEvent e) {
-            StorageFolder f = (StorageFolder)getSelectedValue();
-            int ix = getSelectedIndex();
+            final StorageFolder f = (StorageFolder)getSelectedValue();
+            final int ix = getSelectedIndex();
             if (f != null) {
-                final String newName = JOptionPane.showInputDialog(StorageFoldersList.this,"Rename this bookmark",f.getName());
-                if (newName == null) {
-                    return;
-                }               
-                f.setName(newName);
-                while(true) {
-                    try {
-                        String s = JOptionPane.showInputDialog(StorageFoldersList.this,"Edit the URI for this bookmark",f.getUriString());
-                        if (s == null) {
-                            break; // user pressed cancel - probably just wante to edit the name.
-                        }
-                        f.setUriString(s);
-                        break;
-                    } catch (URISyntaxException ex) {
-                        parent.showTransientError("Invalid URI",ExceptionFormatter.formatException(ex));
-                    }
-                }               
-                // although we're aliasing, do this to notify the folder list that things have changed.
-                folderList.set(ix,f);
+                Window w = (Window)SwingUtilities.getAncestorOfClass(Window.class,parent.getComponent());
+                final BaseDialog d;
+                if (w instanceof Frame) {
+                    d = new EditBookmarkDialog((Frame)w, f, ix);
+                } else if (w instanceof Dialog) {
+                    d = new EditBookmarkDialog((Dialog)w, f, ix);          
+                } else {
+                    d = new EditBookmarkDialog(f,ix);         
+                }
+                d.setVisible(true);     
+
+            }
+        }
+        /** dialog for editing an existing bookmark */
+        private final class EditBookmarkDialog extends BookmarkDialog {
+        
+            private final int ix;
+            public EditBookmarkDialog(Frame owner, StorageFolder f, int ix)
+                    throws HeadlessException {
+                super(owner, f);
+                this.ix = ix;
+            }
+        
+            public EditBookmarkDialog(Dialog w, StorageFolder f2, int ix2) {
+                super(w, f2);
+                this.ix = ix2;
+            }
+        
+            public EditBookmarkDialog(StorageFolder f2, int ix2) {
+                super(f2);
+                this.ix = ix2;
+            }
+            protected void init() {
+                super.init();
+                setTitle("Edit Bookmark");
+                getBanner().setTitle("Editing " + this.f.getName());
+                name.setText(this.f.getName());
+                uri.setText(this.f.getUriString());            
+            }
+            
+            protected void saveChanges() {
+                folderList.set(this.ix,this.f);
             }
         }
 	}
+	
+	
 	
 	private final Action edit;
 	private final Action create;
@@ -419,6 +463,73 @@ public class StorageFoldersList extends JList implements  ListSelectionListener,
             ,VoDataFlavour.URI_LIST_STRING
         };
 	}
+
+	/** abstract class for editing a dialog
+     * @author Noel.Winstanley@manchester.ac.uk
+     * @since Nov 21, 200710:47:30 AM
+     */
+    private abstract class BookmarkDialog extends BaseDialog {
+        /**
+         * 
+         */
+        protected final StorageFolder f;
+
+        protected JTextField name = new JTextField();
+        protected JTextField uri = new JTextField();
+        protected void init(){
+            setModal(false);
+            setDialogMode(BaseDialog.OK_CANCEL_DIALOG);
+            setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            getBanner().setSubtitleVisible(true);
+            
+            final JPanel cp = (JPanel)getContentPane();
+            CellConstraints cc = new CellConstraints();
+            PanelBuilder pb = new PanelBuilder(new FormLayout("right:d,2dlu,fill:100dlu:grow","d,2dlu,d"),cp);
+            pb.addLabel("Name :",cc.xy(1,1));
+            pb.add(name,cc.xy(3,1));
+            pb.addLabel("Location :",cc.xy(1,3));
+            pb.add(uri,cc.xy(3,3));
+            pack();
+            setLocationRelativeTo(parent.getComponent());
+            
+        }
+    
+        public BookmarkDialog(Frame owner, StorageFolder f)
+                throws HeadlessException {
+            super(owner);
+            this.f = f;
+            init();
+        }
+    
+        public BookmarkDialog(Dialog w, StorageFolder f2) {
+            super(w);
+            f = f2;
+            init();
+        }
+    
+        public BookmarkDialog(StorageFolder f2) {
+            f = f2;
+            init();
+        }
+    
+        public void ok() {
+            if (StringUtils.isEmpty(name.getText()) || StringUtils.isEmpty(uri.getText())) {
+                return;
+            }
+            this.f.setName(name.getText().trim());
+            try {
+                this.f.setUriString(uri.getText().trim());
+            } catch (URISyntaxException e) {
+                getBanner().setSubtitle("Invalid location entered - please try again");
+                return;
+            }
+            // although we're aliasing, do this to notify the folder list that things have changed.
+            super.ok(); // closes the dialogue.
+            saveChanges();
+        }
+        /** subclasses should implement this to save changes to folder */
+        protected abstract void saveChanges();
+    }
 
     /**
      * @return the edit

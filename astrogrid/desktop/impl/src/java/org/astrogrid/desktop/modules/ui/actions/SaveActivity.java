@@ -41,6 +41,7 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
 /** Save selection to local disk
  * @author Noel.Winstanley@manchester.ac.uk
  * @todo later rewrite to use VFS
+ * @todo if I re-enabled this, need to make the notifications non modal - probably use transient popups instead, or background worker.
  * @since May 10, 20077:51:45 PM
  */
 public class SaveActivity extends AbstractFileActivity {
@@ -83,6 +84,7 @@ public class SaveActivity extends AbstractFileActivity {
 		                    SwingUtilities.invokeLater(
 		                            new Runnable() {
 		                                public void run() {
+		                                    //@todo change to BaseDialog
 		                                    JOptionPane.showMessageDialog(ui.getComponent(), 
 		                                            "You can only save data to a folder, nothing was saved.",
 		                                            "Selection is not a folder", JOptionPane.OK_OPTION );

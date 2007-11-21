@@ -19,6 +19,9 @@ import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.desktop.modules.system.pref.Preference;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
+
+import com.l2fprod.common.swing.BaseDialog;
 
 /** checks for updates to the software.
  * @author Noel Winstanley
@@ -81,18 +84,29 @@ public class UpdateChecker implements Runnable {
 					}
 					return null;
 				}
-				protected void doFinished(Object result) {
+				protected void doFinished(final Object result) {
 					if (result != null) {
-					int code = JOptionPane.showConfirmDialog(ui.findMainWindow().getComponent(),
-							"<html>Latest version is " + result + "<br>Open download site?" 
-							,"A new version is available",JOptionPane.YES_NO_OPTION);
-					if (code == JOptionPane.YES_OPTION) {
-						try {
-							browser.openURL(downloadURL);
-						} catch (ACRException x) {
-							logger.error("Failed to open browser",x);
-						}
-					}
+					    BaseDialog bd = new BaseDialog() {
+					        {
+					            setModal(false);
+					            setTitle("New version available");
+					            getBanner().setTitle("A new version of VODesktop (v " + result + ") is available");
+					            getBanner().setSubtitle("Open download site?");
+					            pack();
+					            centerOnScreen();
+					        }
+					        public void ok() {
+					            super.ok();
+					            // ok has been clicked - lets process it.
+		                        try {
+		                            browser.openURL(downloadURL);
+		                        } catch (ACRException x) {
+		                            parent.showTransientError("Failed to open browser",ExceptionFormatter.formatException(x));
+		                        }					            
+					        }
+					    };
+					    bd.setVisible(true);
+					    bd.toFront();
 					}
 				}
 				

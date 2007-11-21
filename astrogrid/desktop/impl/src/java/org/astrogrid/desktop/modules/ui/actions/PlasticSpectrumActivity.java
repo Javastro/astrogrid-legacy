@@ -98,17 +98,21 @@ public class PlasticSpectrumActivity extends AbstractFileActivity {
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-		List l = computeInvokable();		
-        if (l.size() > UIConstants.LARGE_SELECTION_THRESHOLD && ! confirm("Send all " + l.size() + " files?" )) {
-            return;         
-        }		
-		for (Iterator i = l.iterator(); i.hasNext();) {
-			FileObject f = (FileObject) i.next();
-            if (f instanceof DelegateFileObject) { // if we've got a delegate, get to the source here...
-                f = ((DelegateFileObject)f).getDelegateFile();
-            }			
-			sendLoadSpectrumMessage(f);
-		}	
+		final List l = computeInvokable();	
+		final int sz = l.size();	
+		Runnable r= new Runnable() {
+
+		    public void run() {
+		        for (Iterator i = l.iterator(); i.hasNext();) {
+		            FileObject f = (FileObject) i.next();
+		            if (f instanceof DelegateFileObject) { // if we've got a delegate, get to the source here...
+		                f = ((DelegateFileObject)f).getDelegateFile();
+		            }			
+		            sendLoadSpectrumMessage(f);
+		        }	
+		    }
+		};
+        confirmWhenOverThreshold(sz,"Send all " + sz + " files?",r);
 	}
 
 	private void sendLoadSpectrumMessage(final FileObject f) {

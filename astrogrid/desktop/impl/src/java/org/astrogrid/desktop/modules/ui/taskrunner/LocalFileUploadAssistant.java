@@ -17,6 +17,7 @@ import javax.swing.JOptionPane;
 
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
+import org.astrogrid.desktop.modules.dialogs.ConfirmDialog;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.actions.BulkCopyWorker;
 import org.astrogrid.desktop.modules.ui.comp.JPromptingTextField;
@@ -88,22 +89,26 @@ public class LocalFileUploadAssistant implements PropertyChangeListener, Functio
     private void offerToRelocateFile(final URI u, final JFormattedTextField resultField) {
         final boolean loggedIn = parent.getContext().getLoggedInModel().isEnabled();
         final boolean firstRun = prefs.getBoolean(FIRST_RUN_KEY,true);
-        if ( ! loggedIn || firstRun
-        ) {
-            int code = JOptionPane.showConfirmDialog(parent.getComponent(),
-                    "<html>You have selected a file on a local disk. Local disks cannot be accessed by remote applications."
+        if ( ! loggedIn || firstRun) {
+            ConfirmDialog.newConfirmDialog(parent.getComponent(),"Upload this file to myspace?"
+                    , "<html>You have selected a file on a local disk. Local disks cannot be accessed by remote applications."
                     +"<br>Do you want to have this file uploaded to MySpace, where it will be accessible?"
                     + (! loggedIn ? "<br>(This will require you to login)" :"")
-                    ,"Upload this file to myspace?"
-                    ,JOptionPane.YES_NO_OPTION
-                    ,JOptionPane.WARNING_MESSAGE);
-            if (code != JOptionPane.YES_OPTION) {
-                return ;
+                    , new Runnable() {
+                public void run() {
+                    if (firstRun) {
+                        prefs.putBoolean(FIRST_RUN_KEY,false);
+                    }                    
+                    relocateFile(u,resultField);
+                }
             }
-        } 
-        if (firstRun) {
-            prefs.putBoolean(FIRST_RUN_KEY,false);
-        }
+            ).setVisible(true);
+        } else {
+            relocateFile(u,resultField);            
+        }       
+    }
+    
+    private void relocateFile(final URI u,final JFormattedTextField resultField) {
         resultField.setEnabled(false);
         List upload = new ArrayList();
         upload.add(u);

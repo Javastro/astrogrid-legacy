@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.UIManager;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
@@ -176,7 +178,6 @@ public class BulkCopyWorker extends BackgroundWorker {
             return;
         }
         HtmlBuilder msgBuilder = new HtmlBuilder();			    
-        msgBuilder.h2("Encountered errors while copying files");
         for (Iterator i = outcome.entrySet().iterator(); i.hasNext();) {
             Map.Entry err = (Map.Entry) i.next();
             FileObject f = (FileObject)err.getKey();
@@ -188,7 +189,12 @@ public class BulkCopyWorker extends BackgroundWorker {
             msgBuilder.append(ExceptionFormatter.formatException(e,ExceptionFormatter.ALL));
             msgBuilder.append("<p>");
         }
-        ResultDialog rd = new ResultDialog(parent.getComponent(),msgBuilder);
+        ResultDialog rd = ResultDialog.newResultDialog(parent.getComponent(),msgBuilder);
+        rd.getBanner().setVisible(true);
+        rd.getBanner().setTitle("Errors encountered while copying files");
+        rd.getBanner().setSubtitleVisible(false);
+        rd.getBanner().setIcon(UIManager.getIcon("OptionPane.warningIcon"));
+        rd.pack();
         rd.show();
     }
 }

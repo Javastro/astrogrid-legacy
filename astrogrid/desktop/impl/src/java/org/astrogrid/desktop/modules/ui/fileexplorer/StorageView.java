@@ -4,6 +4,12 @@
 package org.astrogrid.desktop.modules.ui.fileexplorer;
 
 import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dialog;
+import java.awt.Frame;
+import java.awt.HeadlessException;
+import java.awt.TextField;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -17,7 +23,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
@@ -25,6 +31,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -66,6 +74,7 @@ import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import com.l2fprod.common.swing.BaseDialog;
 import com.l2fprod.common.swing.JDirectoryChooser;
 /** View for storage.
  * 
@@ -242,7 +251,94 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	}
 	
 	private class NewFolderAction extends AbstractAction {
-	    public  NewFolderAction() {
+	    /**
+         * @author Noel.Winstanley@manchester.ac.uk
+         * @since Nov 21, 200711:35:08 AM
+         */
+        private final class NewFolderDialog extends BaseDialog {
+            /**
+             * 
+             */
+            private String baseName;
+            /**
+             * 
+             */
+            private final FileObject base;
+            private TextField tf = new TextField(20);
+            private void init (){
+                baseName = base.getName().getBaseName();
+                setModal(false);
+                setDialogMode(BaseDialog.OK_CANCEL_DIALOG);
+                setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+                setTitle("Create New Folder");
+                getBanner().setTitle("Create new subfolder of " + this.baseName);
+                getBanner().setSubtitle("Enter a name for this folder");
+                getBanner().setSubtitleVisible(true);
+                tf.setText("NewFolder");
+                
+                final Container cp = getContentPane();
+                cp.setLayout(new java.awt.FlowLayout());
+                cp.add(new JLabel("Folder Name :"));
+                cp.add(tf);
+                pack();
+                setLocationRelativeTo(StorageView.this.getParent().getComponent());                
+            }
+
+
+            private NewFolderDialog(FileObject base)
+            throws HeadlessException {
+                this.base = base;
+                init();
+            }
+            private NewFolderDialog(Dialog d,FileObject base)
+            throws HeadlessException {
+                super(d);
+                this.base = base;
+                init();
+            }
+            private NewFolderDialog(Frame f,FileObject base)
+            throws HeadlessException {
+                super(f);
+                this.base = base;
+                init();
+            }
+            public void ok() {
+                (new BackgroundWorker(StorageView.this.getParent(),"Creating subfolder of " + this.baseName) {
+                    
+                    protected Object construct() throws Exception {
+                        String nuName = tf.getText();
+                        if (StringUtils.isEmpty(nuName)) {
+                            return null; // bail out.
+                        }
+                        FileObject f = base.resolveFile(nuName);
+                        if (f.exists()) {
+                            return nuName + " already exists";
+                        }
+                        // ok, user has made some input, and it's fairly valid - we can close the dialogue immediately.
+                        SwingUtilities.invokeLater(new Runnable() {
+                            public void run() {
+                                NewFolderDialog.super.ok();
+                            }
+                           });	                        
+                        f.createFolder();
+                        FileSystem fs =base.getFileSystem();
+                        if (fs instanceof AbstractFileSystem) {
+                            ((AbstractFileSystem)fs).fireFileChanged(base);
+                        }
+                        return null;
+                    }
+                    protected void doFinished(Object result) {
+                        if (result == null && isVisible()) {
+                            NewFolderDialog.super.ok();
+                        } else {
+                            getBanner().setSubtitleColor(Color.RED);
+                            getBanner().setSubtitle(result + " - Choose another name");
+                        }
+                    }	                    
+                }).start();	       
+            }
+        }
+        public  NewFolderAction() {
 	        super("New Folder"+UIComponentMenuBar.ELLIPSIS, IconHelper.loadIcon("foldernew16.png"));
 	        putValue(Action.SHORT_DESCRIPTION,"Create a new folder in the current location");
 	        putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_N,UIComponentMenuBar.MENU_KEYMASK));
@@ -251,27 +347,19 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
 	    public void actionPerformed(ActionEvent e) {
 	        // work out where we are at the moment.
 	        final FileObject base =navigator.current();
-	    
+	        Window w = (Window)SwingUtilities.getAncestorOfClass(Window.class,parent.getComponent());
 	        
-	        (new BackgroundWorker(getParent(),"Creating subfolder of " + base.getName().getBaseName()) {
+	        final BaseDialog d;
+	        if (w instanceof Frame) {
+	            d = new NewFolderDialog((Frame)w, base);
+	        } else if (w instanceof Dialog) {
+	            d = new NewFolderDialog((Dialog)w, base);          
+	        } else {
+	            d = new NewFolderDialog(base);         
+	        }
+	        d.setVisible(true);
 
-	            protected Object construct() throws Exception {
-	                FileObject f;
-	                do {
-	                    String nuName = JOptionPane.showInputDialog(getParent().getComponent(),"Enter new folder name","NewFolder");
-	                    if (StringUtils.isEmpty(nuName)) {
-	                        return null; // user pressed cancel;
-	                    }
-	                    f = base.resolveFile(nuName);
-	                } while (f.exists());
-	                f.createFolder();
-	                FileSystem fs = base.getFileSystem();
-	                if (fs instanceof AbstractFileSystem) {
-	                    ((AbstractFileSystem)fs).fireFileChanged(base);
-	                }
-	                return null;
-	            }
-	        }).start();	        
+	        
 	    }
 	}
 	

@@ -32,6 +32,7 @@ import org.astrogrid.acr.ivoa.CacheFactory;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.system.Configuration;
 import org.astrogrid.desktop.alternatives.HeadlessUIComponent;
+import org.astrogrid.desktop.modules.dialogs.ConfirmDialog;
 import org.astrogrid.desktop.modules.system.BackgroundExecutor;
 import org.astrogrid.desktop.modules.system.HelpServerInternal;
 import org.astrogrid.desktop.modules.system.SchedulerInternal;
@@ -336,9 +337,13 @@ public class UIContextImpl implements UIContext{
     public void actionPerformed(ActionEvent arg0) {
             final String cmd = arg0.getActionCommand();
             if (cmd.equals(UIContext.EXIT)) {
-                if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null,"Do you really want to quit?","Really Quit?",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {                                            
-                    shutdown.halt();
-                }
+                ConfirmDialog exitDialog = new ConfirmDialog("Really Quit?","Do you really want to quit?",new Runnable(){
+                    public void run() {
+                        shutdown.halt();
+                    }
+                });
+                exitDialog.setModal(true);
+                exitDialog.setVisible(true);                
             } else if (cmd.equals(UIContext.PREF)) {
                 showPreferencesDialog();
             } else if (cmd.equals(UIContext.HELP)) {
@@ -352,17 +357,22 @@ public class UIContextImpl implements UIContext{
             } else if (cmd.equals(UIContext.SELFTEST)){
                 tester.show();
             } else if (cmd.equals(UIContext.RESET)) {
-                if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null,"All user settings will be lost. Continue?","Reset Configuration",JOptionPane.YES_NO_OPTION)) {
-                    try {
-                        getConfiguration().reset();
-                    } catch (ServiceException x) {
-                           // ignore.
+                new ConfirmDialog("Reset Configuration","All user settings will be lost. Continue?",new Runnable() {
+                    public void run() {
+                        try {
+                            getConfiguration().reset();
+                        } catch (ServiceException x) {
+                            // ignore.
+                        }
                     }
-                }                            
+                }).setVisible(true);                                          
             } else if (cmd.equals(UIContext.CLEAR_CACHE)) {
-                if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null,"All cached data will be removed. Continue?","Clear Cache",JOptionPane.YES_NO_OPTION)) {
-                    cache.flush();
-                }                
+                new ConfirmDialog("Clear Cache","All cached data will be removed. Continue?",new Runnable() {                   
+                    public void run() {
+                        cache.flush();
+                    }
+                }).setVisible(true);
+                               
             } else {
                 // assume it's the name of a new window facotry.
                 Factory fac = (Factory)getWindowFactories().get(cmd);

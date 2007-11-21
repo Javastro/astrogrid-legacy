@@ -58,6 +58,7 @@ public class StorageFolder extends Folder {
 	} 
 	public void setUriString(String uri) throws URISyntaxException {
 		this.uri = new URI(uri);
+		file = null;
 	}
 	
 	private transient FileObject file;

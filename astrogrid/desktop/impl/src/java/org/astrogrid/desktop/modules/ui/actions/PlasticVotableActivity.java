@@ -119,12 +119,16 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-        List resources = computeInvokableResources();
-        List files = new ArrayList();
-        int sz = resources.size() + files.size();
-        if (sz > UIConstants.LARGE_SELECTION_THRESHOLD && ! confirm("Send all " + sz + " files?" )) {
-            return;         
-        }        
+        final List resources = computeInvokableResources();
+        final List files = new ArrayList();
+        int sz = resources.size() + files.size(); 
+        confirmWhenOverThreshold(sz,"Send all " + sz + " files?",new Runnable() {
+            public void run() {
+                doit(resources,files);
+            }
+        });
+	}
+	public void doit(List resources, List files) {
         if (resources.size() > 0) {
             // very CDS-specific at tge moment
             for (Iterator i = resources.iterator(); i.hasNext();) {

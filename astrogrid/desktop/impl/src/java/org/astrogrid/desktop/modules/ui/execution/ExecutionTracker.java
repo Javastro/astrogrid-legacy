@@ -591,8 +591,12 @@ public final ProcessMonitor getMoitor() {
             }
             public void actionPerformed(ActionEvent e) {
                 String msg = title.getToolTipText() + "<h3>Messages</h3>" + messageLabel.getToolTipText();
-                ResultDialog rd = new ResultDialog(parent.getComponent(),msg);
+                ResultDialog rd = ResultDialog.newResultDialog(parent.getComponent(),msg);
                 rd.setTitle("Execution Transcript");
+                rd.getBanner().setVisible(true);
+                rd.getBanner().setTitle("Execution Transcript");
+                rd.getBanner().setSubtitleVisible(false);
+                rd.pack();
                 rd.show();
             }
             

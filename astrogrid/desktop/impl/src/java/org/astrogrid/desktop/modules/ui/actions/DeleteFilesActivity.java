@@ -14,6 +14,7 @@ import java.util.Set;
 
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
+import javax.swing.UIManager;
 
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystem;
@@ -61,11 +62,9 @@ public class DeleteFilesActivity extends AbstractFileActivity {
 	public void actionPerformed(ActionEvent e) {
 		final List l = computeInvokable(); 
 		logger.debug(l);
-		if (! confirm("Delete these " + l.size() + " files?")) {
-		    return; 
-		}
 
-		(new BackgroundWorker(uiParent.get(),"Deleting files") {
+
+		BackgroundWorker act = new BackgroundWorker(uiParent.get(),"Deleting files") {
             protected Object construct() throws Exception {
                 Set parents = new HashSet();
                 Map errors = new HashMap();
@@ -98,7 +97,6 @@ public class DeleteFilesActivity extends AbstractFileActivity {
                     return;
                 }
                 HtmlBuilder msgBuilder = new HtmlBuilder();             
-                msgBuilder.h2("Encountered errors while deleting some files");
                 for (Iterator i = errors.entrySet().iterator(); i.hasNext();) {
                     Map.Entry err = (Map.Entry) i.next();
                     FileObject f = (FileObject)err.getKey();
@@ -107,10 +105,16 @@ public class DeleteFilesActivity extends AbstractFileActivity {
                     msgBuilder.append(ExceptionFormatter.formatException(e,ExceptionFormatter.ALL));
                     msgBuilder.append("<p>");                    
                 }
-                ResultDialog rd = new ResultDialog(parent.getComponent(),msgBuilder);
+                ResultDialog rd =ResultDialog.newResultDialog(parent.getComponent(),msgBuilder);
+                rd.getBanner().setVisible(true);
+                rd.getBanner().setTitle("Errors encountered while deleting files");
+                rd.getBanner().setSubtitleVisible(false);
+                rd.getBanner().setIcon(UIManager.getIcon("OptionPane.warningIcon"));
+                rd.pack();
                 rd.show();
             }            
-		}).start();
+		};
+		confirm("Delete these " + l.size() + " files?",act);
 		
 	}
 	

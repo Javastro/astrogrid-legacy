@@ -1,4 +1,4 @@
-/*$Id: FallbackBrowserControl.java,v 1.4 2007/06/18 16:19:39 nw Exp $
+/*$Id: FallbackBrowserControl.java,v 1.5 2007/11/21 07:55:39 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -50,7 +50,7 @@ public class FallbackBrowserControl implements BrowserControl {
      * @see org.astrogrid.acr.system.BrowserControl#openURL(java.net.URL)
      */
     public void openURL(URL url) throws ACRException {
-       ResultDialog rd = new ResultDialog(null,"Cannot control browser\n Please go to \n" + url.toString());
+       ResultDialog rd = new ResultDialog("Cannot control browser\n Please go to \n" + url.toString());
        rd.show();
     }
     
@@ -74,6 +74,9 @@ public class FallbackBrowserControl implements BrowserControl {
 
 /* 
 $Log: FallbackBrowserControl.java,v $
+Revision 1.5  2007/11/21 07:55:39  nw
+Complete - task 65: Replace modal dialogues
+
 Revision 1.4  2007/06/18 16:19:39  nw
 javadoc fixes.
 

@@ -1,10 +1,17 @@
 package org.astrogrid.desktop.modules.ui.voexplorer;
 
 import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dialog;
 import java.awt.Font;
-import java.awt.Image;
+import java.awt.Frame;
+import java.awt.HeadlessException;
 import java.awt.Point;
-import java.awt.Toolkit;
+import java.awt.Window;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
@@ -12,12 +19,7 @@ import java.awt.dnd.DragSourceAdapter;
 import java.awt.dnd.DragSourceDragEvent;
 import java.awt.dnd.DragSourceDropEvent;
 import java.awt.dnd.DragSourceEvent;
-import java.awt.dnd.DnDConstants;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -43,23 +45,20 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
+import javax.swing.WindowConstants;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
@@ -73,7 +72,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -91,8 +89,8 @@ import org.astrogrid.desktop.modules.ui.folders.ResourceTreeModel;
 import org.astrogrid.desktop.modules.ui.folders.SmartList;
 import org.astrogrid.desktop.modules.ui.folders.StaticList;
 import org.astrogrid.desktop.modules.ui.folders.XQueryList;
-import org.astrogrid.desktop.modules.ui.voexplorer.VOExplorerImpl;
-import org.astrogrid.desktop.modules.ui.voexplorer.RegistryGooglePanel;
+
+import com.l2fprod.common.swing.BaseDialog;
 
 /**
  * Tree containing resource folders.
@@ -745,13 +743,17 @@ public class ResourceTree extends JTree {
                 }
             }
             else if (this == rename && folder != null) {
-                String nuName =
-                    JOptionPane.showInputDialog(parent, "Enter a new name",
-                                                folder.getName());
-                if (StringUtils.isNotEmpty(nuName)) {
-                    folder.setName(nuName);
-                    model.nodeStructureChanged(node);
+                Window w = (Window)SwingUtilities.getAncestorOfClass(Window.class,parent.getComponent());
+                
+                final BaseDialog d;
+                if (w instanceof Frame) {
+                    d = new RenameDialog((Frame)w, folder,node);
+                } else if (w instanceof Dialog) {
+                    d = new RenameDialog((Dialog)w, folder,node);          
+                } else {
+                    d = new RenameDialog(folder,node);         
                 }
+                d.setVisible(true);                
             }
             else if (this == export && node != null) {
                 exportNode(node);
@@ -761,6 +763,57 @@ public class ResourceTree extends JTree {
             }
             else {
                 assert false;
+            }
+        }
+        
+        private class RenameDialog extends BaseDialog {
+            private final ResourceFolder folder;
+            private final DefaultMutableTreeNode node;
+
+            public RenameDialog(ResourceFolder folder, DefaultMutableTreeNode node) throws HeadlessException {
+                super();
+                this.folder = folder;
+                this.node = node;
+                init();
+            }
+            public RenameDialog(Frame f,ResourceFolder folder, DefaultMutableTreeNode node) throws HeadlessException {
+                super(f);
+                this.folder = folder;
+                this.node = node;
+                init();
+            }
+            public RenameDialog(Dialog f,ResourceFolder folder, DefaultMutableTreeNode node) throws HeadlessException {
+                super(f);
+                this.folder = folder;
+                this.node = node;
+                init();
+            }            
+            private final JTextField tf = new JTextField(20);
+            private void init() {
+                setModal( false);
+                setDialogMode(BaseDialog.OK_CANCEL_DIALOG);
+                setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+                setTitle("Rename");
+                getBanner().setTitle("Renaming " + folder.getName());
+                getBanner().setSubtitle("Enter a new name");
+                getBanner().setSubtitleVisible(false);
+                tf.setText(folder.getName());
+                
+                final Container cp = getContentPane();
+                cp.setLayout(new java.awt.FlowLayout());
+                cp.add(new JLabel("Name :"));
+                cp.add(tf);                
+                pack();
+                setLocationRelativeTo(parent.getComponent());
+            }
+            
+            public void ok() {
+                super.ok();
+                String nuName =tf.getText();
+                if (StringUtils.isNotEmpty(nuName)) {
+                    folder.setName(nuName);
+                    model.nodeStructureChanged(node);
+                }                
             }
         }
     }
@@ -993,12 +1046,8 @@ public class ResourceTree extends JTree {
                       .append(folder.getName())
                       .append( "\"" );
             }
-            final Object msg = msgbuf.toString();
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    JOptionPane.showMessageDialog(ResourceTree.this, msg, "Drop Failed", JOptionPane.WARNING_MESSAGE);
-                }
-            });
+            parent.showTransientWarning("Drop Failed",msgbuf.toString());
+
         }
 
         /**

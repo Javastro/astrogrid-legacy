@@ -30,33 +30,36 @@ public class PlasticRegistryActivity extends AbstractResourceActivity {
 
 
 	public void actionPerformed(ActionEvent e) {
-		List l = computeInvokable();
-        if (l.size() > UIConstants.LARGE_SELECTION_THRESHOLD && ! confirm("Send all " + l.size() + " resources?" )) {
-            return;         
-        }		
-		switch(l.size()) {
-		case 0:
-			return;
-		case 1:
-			// handle case of only supporting one message. type
-			if (plas.understandsMessage(VOExplorerFactoryImpl.VORESOURCE_LOAD)) {
-				sendLoadMessage((Resource)l.get(0));
-			} else {
-				sendLoadListMessage(l);
-			}
-			return;
-		default:
-			// likewise - use the best message supported.
-			if (plas.understandsMessage(VOExplorerFactoryImpl.VORESOURCE_LOADLIST)) {
-				sendLoadListMessage(l);
-			} else {
-				for (Iterator i = l.iterator(); i.hasNext();) {
-					Resource r = (Resource) i.next();					
-					sendLoadMessage(r);
-				}
-			}			
-		}
+		final List l = computeInvokable();
+		int sz = l.size();
+		Runnable r = new Runnable() {
 
+            public void run() {
+                switch(l.size()) {
+                    case 0:
+                        return;
+                    case 1:
+                        // handle case of only supporting one message. type
+                        if (plas.understandsMessage(VOExplorerFactoryImpl.VORESOURCE_LOAD)) {
+                            sendLoadMessage((Resource)l.get(0));
+                        } else {
+                            sendLoadListMessage(l);
+                        }
+                        return;
+                    default:
+                        // likewise - use the best message supported.
+                        if (plas.understandsMessage(VOExplorerFactoryImpl.VORESOURCE_LOADLIST)) {
+                            sendLoadListMessage(l);
+                        } else {
+                            for (Iterator i = l.iterator(); i.hasNext();) {
+                                Resource r = (Resource) i.next();					
+                                sendLoadMessage(r);
+                            }
+                        }			
+                }
+            }
+		};
+		confirmWhenOverThreshold(sz,"Send all " + sz + " resources?",r);
 	}
 	private void sendLoadMessage(final Resource r) {
 		(new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName()) {		

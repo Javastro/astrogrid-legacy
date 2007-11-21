@@ -11,6 +11,7 @@ import javax.swing.JScrollPane;
 
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.ui.comp.ExternalViewerHyperlinkListener;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 
@@ -23,20 +24,16 @@ public class AboutDialogue implements Runnable {
     private final String content;
     
     public void run() {
-        JEditorPane l = new JEditorPane();
-        l.setContentType("text/html");
-        l.setBorder(null);
-        l.setEditable(false);
-        l.putClientProperty("JEditorPane.honorDisplayProperties", Boolean.TRUE);      // this key is only defined on 1.5 - no effect on 1.4
-        l.setFont(UIConstants.SANS_FONT);   
-        l.addHyperlinkListener(new ExternalViewerHyperlinkListener(browser));
-        l.setText(content);
-        
-        JScrollPane sp = new JScrollPane(l,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        sp.setPreferredSize(new Dimension(400,400));
-        JOptionPane.showMessageDialog(null,sp,"About VODesktop"
-                ,JOptionPane.INFORMATION_MESSAGE
-                ,IconHelper.loadIcon("logo48x48.png"));
+        ResultDialog rd = new ResultDialog(content);
+        rd.getResultDisplay().addHyperlinkListener(new ExternalViewerHyperlinkListener(browser));
+        rd.setSize(new Dimension(500,600));
+        rd.getBanner().setVisible(true);
+        rd.getBanner().setTitle("About VODesktop");
+        rd.getBanner().setSubtitleVisible(false);
+        rd.getBanner().setIcon(IconHelper.loadIcon("logo48x48.png"));
+        rd.centerOnScreen();
+        rd.setVisible(true);        
+        rd.toFront();
     }
 
     public AboutDialogue(BrowserControl browser, String content) {

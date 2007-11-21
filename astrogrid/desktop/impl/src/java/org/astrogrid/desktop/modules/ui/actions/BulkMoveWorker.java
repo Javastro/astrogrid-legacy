@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.UIManager;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystem;
@@ -125,7 +127,6 @@ public final class BulkMoveWorker extends BackgroundWorker {
             return;
         }
         HtmlBuilder msgBuilder = new HtmlBuilder();			    
-        msgBuilder.h2("Encountered errors when moving some files");
         for (Iterator i = errors.entrySet().iterator(); i.hasNext();) {
             Map.Entry err = (Map.Entry) i.next();
             FileObject f = (FileObject)err.getKey();
@@ -134,7 +135,12 @@ public final class BulkMoveWorker extends BackgroundWorker {
             msgBuilder.append(ExceptionFormatter.formatException(e,ExceptionFormatter.ALL));
             msgBuilder.append("<p>");
         }
-        ResultDialog rd = new ResultDialog(parent.getComponent(),msgBuilder);
+        ResultDialog rd = ResultDialog.newResultDialog(parent.getComponent(),msgBuilder);
+        rd.getBanner().setVisible(true);
+        rd.getBanner().setTitle("Errors encountered while moving files");
+        rd.getBanner().setSubtitleVisible(false);
+        rd.getBanner().setIcon(UIManager.getIcon("OptionPane.warningIcon"));      
+        rd.pack();
         rd.show();
     }
 }

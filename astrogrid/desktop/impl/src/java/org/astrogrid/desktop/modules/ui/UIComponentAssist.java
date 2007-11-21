@@ -21,11 +21,12 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.ListCellRenderer;
+import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.desktop.icons.IconHelper;
@@ -43,6 +44,7 @@ import ca.odell.glazedlists.RangeList;
 import ca.odell.glazedlists.matchers.Matcher;
 import ca.odell.glazedlists.swing.EventListModel;
 
+import com.l2fprod.common.swing.BaseDialog;
 import com.l2fprod.common.swing.StatusBar;
 /**
  * common implementation of most of the UIComponent functionality.
@@ -141,9 +143,19 @@ public final class UIComponentAssist {
      * @param s
      * @throws HeadlessException
      */
-    public void showError(String s) {
-        JOptionPane.showMessageDialog(parent.getComponent(),s,"Error",JOptionPane.ERROR_MESSAGE);
-    }
+    public void showError(final String s) {
+        BaseDialog bd = BaseDialog.newBaseDialog(parent.getComponent());
+        bd.setModal(false);
+        bd.setTitle("An Error Occurred");
+        bd.getBanner().setTitle("An Error Occurred");
+        bd.getBanner().setSubtitle(s);
+        bd.getBanner().setIcon(UIManager.getIcon("OptionPane.errorIcon"));
+        bd.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        bd.setDialogMode(BaseDialog.CLOSE_DIALOG);        
+        bd.pack();
+        bd.setLocationRelativeTo(parent.getComponent());
+        bd.setVisible(true);
+      }
     /** display a well-formatted error message in a popup dialogue.
      * 
      * @param msg message

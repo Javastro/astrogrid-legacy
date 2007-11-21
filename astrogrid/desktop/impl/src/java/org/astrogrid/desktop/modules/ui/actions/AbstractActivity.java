@@ -19,8 +19,11 @@ import javax.swing.KeyStroke;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.desktop.modules.dialogs.ConfirmDialog;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.UIComponentBodyguard;
+import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 
 import com.l2fprod.common.swing.JLinkButton;
 import com.l2fprod.common.swing.JTaskPaneGroup;
@@ -150,10 +153,31 @@ public abstract class AbstractActivity extends AbstractAction implements Activit
 	
 	// helper methods for subclasses.
 	/** show a confirmation popup, to check before proceeding
-	 * @return true if the user can confirmed 
 	 */
-	protected boolean confirm(String message) {
-        return JOptionPane.showConfirmDialog(uiParent.get().getComponent(),message,"Confirm",JOptionPane.YES_NO_OPTION)
-                == JOptionPane.OK_OPTION;
+	protected void confirm(String message,Runnable continuation) {
+	    ConfirmDialog.newConfirmDialog(uiParent.get().getComponent(),"Confirm",message,continuation).setVisible(true);
+	}
+
+	protected void confirm(String message,final BackgroundWorker continuation) {
+	    ConfirmDialog.newConfirmDialog(uiParent.get().getComponent(),"Confirm",message,new Runnable() {
+
+	        public void run() {
+	            continuation.start();
+	        }
+	    }).setVisible(true);
+	}
+	
+	/** show a confirm dialogue if sz > LargeSelectionThreshold,
+	 * else just run the action 
+	 * @param sz
+	 * @param message
+	 * @param continuation
+	 */
+	protected void confirmWhenOverThreshold(int sz,String message,Runnable continuation) {
+	    if (sz > UIConstants.LARGE_SELECTION_THRESHOLD) {
+	        confirm(message,continuation);
+	    } else {
+	        continuation.run();
+	    }
 	}
 }

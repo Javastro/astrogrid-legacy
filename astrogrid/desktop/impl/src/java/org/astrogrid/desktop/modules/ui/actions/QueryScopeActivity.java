@@ -57,11 +57,14 @@ private final AstroScopeInternal ai;
 		return b;
 	}
 public void actionPerformed(ActionEvent e) {
-	List l = computeInvokable();
-    if (l.size() > UIConstants.LARGE_SELECTION_THRESHOLD && ! confirm("Query all " + l.size() + " files?" )) {
-        return;         
-    }	
-	ai.runSubset(l);
+	final List l = computeInvokable();
+	int sz = l.size();
+	confirmWhenOverThreshold(sz,"Query all " + sz + " files?",new Runnable() {
+
+        public void run() {
+            ai.runSubset(l);
+        }
+	});
 }
 
 

@@ -99,17 +99,21 @@ private final PlasticScavenger scav;
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		List l = computeInvokable();
-		if (l.size() > UIConstants.LARGE_SELECTION_THRESHOLD && ! confirm("Send all " + l.size() + " files?" )) {
-		    return;		    
-		}
-		for (Iterator i = l.iterator(); i.hasNext();) {
-			FileObject f = (FileObject) i.next();
-            if (f instanceof DelegateFileObject) { // if we've got a delegate, get to the source here...
-                f = ((DelegateFileObject)f).getDelegateFile();
-            }			
-			sendLoadImageMessage(f);
-		}
+	    final List l = computeInvokable();
+	    Runnable r = new Runnable() {
+
+	        public void run() {
+	            for (Iterator i = l.iterator(); i.hasNext();) {
+	                FileObject f = (FileObject) i.next();
+	                if (f instanceof DelegateFileObject) { // if we've got a delegate, get to the source here...
+	                    f = ((DelegateFileObject)f).getDelegateFile();
+	                }			
+	                sendLoadImageMessage(f);
+	            }
+	        }
+	    };
+	    int sz = l.size();
+	    confirmWhenOverThreshold(sz,"Sent all " + sz + " files?",r);
 	}
 
 	private void sendLoadImageMessage(final FileObject f) {

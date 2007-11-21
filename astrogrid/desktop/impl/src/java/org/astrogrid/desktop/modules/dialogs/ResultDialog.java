@@ -1,4 +1,4 @@
-/*$Id: ResultDialog.java,v 1.5 2007/01/29 11:11:37 nw Exp $
+/*$Id: ResultDialog.java,v 1.6 2007/11/21 07:55:39 nw Exp $
  * Created on 10-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,9 @@ package org.astrogrid.desktop.modules.dialogs;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dialog;
+import java.awt.Frame;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -19,95 +22,85 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
+
+import org.astrogrid.desktop.modules.ui.comp.UIConstants;
+
+import com.l2fprod.common.swing.BaseDialog;
 /**
  * Simple dialog that displays a result in a text box - which allows for cutting / copying
  * the result into something else. 
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 10-May-2005
  *
  */
-public class ResultDialog extends JDialog {
+public class ResultDialog extends BaseDialog {
 
-	private javax.swing.JPanel jContentPane = null;
-	private JEditorPane resultDisplay = null;
-	private JButton okButton = null;
-	/**
-	 * This method initializes jTextArea	
-	 * 	
-	 * @return javax.swing.JTextArea	
-	 */    
-	private JEditorPane getResultDisplay() {
-		if (resultDisplay == null) {
-			resultDisplay = new JEditorPane();
-            resultDisplay.setEditable(false);
-            resultDisplay.setContentType("text/html");
-		}
-		return resultDisplay;
-	}
-	/**
-	 * This method initializes jButton	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */    
-	private JButton getOkButton() {
-		if (okButton == null) {
-			okButton = new JButton();
-			okButton.setText("Ok");
-            okButton.addActionListener(new ActionListener() {
-
-                public void actionPerformed(ActionEvent e) {                    
-                    dispose();
-                }
-            });
-		}
-		return okButton;
-	}
-
-	/**
-	 * This is the default constructor
-	 */
-	public ResultDialog() {
-		super();
-		initialize();
-	}
     
-    public ResultDialog(Component parentComponent, Object message) {
-        this();
-        getResultDisplay().setText(message.toString());
-        getResultDisplay().setCaretPosition(0);
-        setLocationRelativeTo(parentComponent);
+    private JEditorPane resultDisplay;
+
+    public static ResultDialog newResultDialog(Component parent, Object message) {
+        Window window = (Window)SwingUtilities.getAncestorOfClass(Window.class, parent);
+        if (window instanceof Frame) {
+          return new ResultDialog((Frame)window,message);
+        } else if (window instanceof Dialog) {
+          return new ResultDialog((Dialog)window,message);      
+        } else {
+          return new ResultDialog(message);
+        }
     }
     
-	/**
-	 * This method initializes this
-	 * 
-	 * @return void
-	 */
-	private void initialize() {
-		this.setTitle("Result");
-		//this.setModal(true);
-		this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		this.setSize(565,400);
-		this.setContentPane(getJContentPane());
-	}
-	/**
-	 * This method initializes jContentPane
-	 * 
-	 * @return javax.swing.JPanel
-	 */
-	private javax.swing.JPanel getJContentPane() {
-		if(jContentPane == null) {
-			jContentPane = new javax.swing.JPanel();
-			jContentPane.setLayout(new java.awt.BorderLayout());
-            jContentPane.add(new JScrollPane(getResultDisplay()),BorderLayout.CENTER);
-			jContentPane.add(getOkButton(), java.awt.BorderLayout.SOUTH);
-		}
-		return jContentPane;
-	}
+    public ResultDialog(Dialog owner, Object message) {
+        super(owner);
+        init(message);
+        setLocationRelativeTo(owner);
+    }
+    
+    public ResultDialog(Frame owner,Object message) {
+        super(owner);
+        init(message);        
+        setLocationRelativeTo(owner);
+    }
+
+    
+    public ResultDialog(Object message) {
+        init(message);
+         centerOnScreen();
+    }
+    
+    private final void init(Object message) {
+        this.setTitle("Result");
+        this.setModal(false);
+        this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        this.setDialogMode(BaseDialog.CLOSE_DIALOG);
+        resultDisplay = new JEditorPane();
+        resultDisplay.setEditable(false);
+        resultDisplay.setContentType("text/html");
+        resultDisplay.setText(message.toString());
+        resultDisplay.setBorder(null);
+        resultDisplay.putClientProperty("JEditorPane.honorDisplayProperties", Boolean.TRUE);      // this key is only defined on 1.5 - no effect on 1.4
+        resultDisplay.setFont(UIConstants.SANS_FONT);           
+        resultDisplay.setCaretPosition(0);
+        getContentPane().add(new JScrollPane(resultDisplay,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
+        getBanner().setVisible(false);
+        this.setSize(565,400);
+        this.pack();
+        
+    }
+    
+   
+
+    public final JEditorPane getResultDisplay() {
+        return this.resultDisplay;
+    }
+
 }
 
 
 /* 
 $Log: ResultDialog.java,v $
+Revision 1.6  2007/11/21 07:55:39  nw
+Complete - task 65: Replace modal dialogues
+
 Revision 1.5  2007/01/29 11:11:37  nw
 updated contact details.
 

@@ -3,7 +3,11 @@
  */
 package org.astrogrid.desktop.modules.ui.comp;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -17,8 +21,11 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
+import javax.swing.JEditorPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 
 import net.sourceforge.hivelock.SecurityException;
 
@@ -27,12 +34,14 @@ import org.apache.commons.lang.text.StrBuilder;
 import org.astrogrid.acr.ACRException;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.ServiceException;
-import org.astrogrid.desktop.modules.dialogs.ResultDialog;
-import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
+import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.scope.Retriever.DalProtocolException;
 import org.xml.sax.SAXParseException;
+
+import com.l2fprod.common.swing.BaseDialog;
+import com.l2fprod.common.swing.JLinkButton;
 
 /** Utility class that converts exceptions into astronomer-friendly messages.
  * 
@@ -148,70 +157,92 @@ public class ExceptionFormatter {
      * @deprecated classes that extend this class should call {@link #showError(String, Throwable)} instead
      * @todo hide visibility altogether, or add suitable replacement code elsehwere.
      */
-    public static final void showError(final Component parent,String msg, Throwable e) {
-        JLabel l = new JLabel();
-    
-        HtmlBuilder hb = new HtmlBuilder();
-        hb.append("<b>").append(msg).append("</b>");
-        hb.br();
-        hb.append(formatException(e));
-    
-        l.setText(hb.toString());
+    public static final void showError(final Component parent,String msg, final Throwable e) {
+
+        final BaseDialog bd = BaseDialog.newBaseDialog(parent);
+
+        bd.setModal(false);
+        bd.setTitle("An Error Occurred");
+        bd.getBanner().setTitle(msg);
+        bd.getBanner().setSubtitle("<html>" + formatException(e));        
+        bd.getBanner().setIcon(UIManager.getIcon("OptionPane.errorIcon"));
+        bd.setDialogMode(BaseDialog.CLOSE_DIALOG);
+        bd.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        JLinkButton lb = new JLinkButton("Show details" + UIComponentMenuBar.ELLIPSIS);
         
-        int result = JOptionPane.showOptionDialog(parent,l,"An Error Occurred", 
-                JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null,
-                new Object[]{"Ok","Details.."}, "Ok"
-                );
-        if (result == 1) { // user wants to see the gory details      
-            StringWriter sw = new StringWriter();        
-            PrintWriter pw = new PrintWriter(sw);
-            pw.println("<html><body><pre>");
-            pw.println("Date of Error: " + (new Date()).toString());
-            if (parent != null) {
-                pw.println("Within component: " + parent.getClass().getName());
-            }
-            // maybe add more header info here - user, etc. - hard to get to.
-        
-            pw.println();
-            e.printStackTrace(pw);
-    
-            if (parent != null && parent instanceof UIComponentImpl) {            
-                pw.println();
-                UIComponent u = (UIComponent)parent;
-                try {
-                    Map m = u.getContext().getConfiguration().list();
-                    Properties props = new Properties();
-                    props.putAll(m);
-                    // nggg. clunky.
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    props.save(bos,"Application Configuration");
-                    pw.println(bos.toString());
-                } catch (ACRException ex) {
-                    pw.println("Failed to list configuration");
-                    ex.printStackTrace(pw);
+        JPanel content = (JPanel)bd.getContentPane();
+        content.setLayout(new BorderLayout());
+        content.add(lb,BorderLayout.NORTH);
+        final JEditorPane resultDisplay = new JEditorPane();
+        resultDisplay.setContentType("text/html");
+        resultDisplay.setEditable(false);
+        resultDisplay.setBorder(null);
+        resultDisplay.putClientProperty("JEditorPane.honorDisplayProperties", Boolean.TRUE);      // this key is only defined on 1.5 - no effect on 1.4
+        resultDisplay.setFont(UIConstants.SANS_FONT);                       
+        final JScrollPane sp = new JScrollPane(resultDisplay,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        sp.setVisible(false);
+        sp.setSize(500,400);
+        sp.setPreferredSize(new Dimension(500,400));
+        content.add(sp,BorderLayout.CENTER);
+        lb.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ev) {
+                StringWriter sw = new StringWriter();        
+                PrintWriter pw = new PrintWriter(sw);
+                pw.println("<html><body><pre>");
+                pw.println("Date of Error: " + (new Date()).toString());
+                if (parent != null) {
+                    pw.println("Within component: " + parent.getClass().getName());
                 }
+                // maybe add more header info here - user, etc. - hard to get to.
+                
+                pw.println();
+                e.printStackTrace(pw);
+                
+                if (parent != null && parent instanceof UIComponentImpl) {            
+                    pw.println();
+                    UIComponent u = (UIComponent)parent;
+                    try {
+                        Map m = u.getContext().getConfiguration().list();
+                        Properties props = new Properties();
+                        props.putAll(m);
+                        // nggg. clunky.
+                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                        props.save(bos,"Application Configuration");
+                        pw.println(bos.toString());
+                    } catch (ACRException ex) {
+                        pw.println("Failed to list configuration");
+                        ex.printStackTrace(pw);
+                    }
+                }
+                
+                pw.println();   
+                Properties sysProps = System.getProperties();
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                sysProps.save(bos,"System Properties");
+                pw.println(bos.toString());
+                
+                pw.println();
+                pw.println("If you think this is a bug in the Workbench, please email this transcript to");
+                pw.println("astrogrid_help@star.le.ac.uk, along with details of your username and a description");
+                pw.println("of what was happening at the time of the error");
+                
+                // finish off the report
+                pw.println("</pre></body></html>");
+                
+                // display report in a dialogue
+                resultDisplay.setText(sw.toString());
+                resultDisplay.setCaretPosition(0);
+                sp.setVisible(true);
+                bd.pack();
             }
-    
-            pw.println();   
-            Properties sysProps = System.getProperties();
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            sysProps.save(bos,"System Properties");
-            pw.println(bos.toString());
-        
-            pw.println();
-            pw.println("If you think this is a bug in the Workbench, please email this transcript to");
-            pw.println("astrogrid_help@star.le.ac.uk, along with details of your username and a description");
-            pw.println("of what was happening at the time of the error");
-            
-            // finish off the report
-            pw.println("</pre></body></html>");
-    
-            // display report in a dialogue
-            ResultDialog rd = new ResultDialog(parent,sw.toString());
-            rd.setVisible(true);
-            rd.toFront();
-            rd.requestFocus();
-        }
+        });
+       bd.pack();
+       if (parent == null) {
+           bd.centerOnScreen();
+       } else {
+           bd.setLocationRelativeTo(parent);
+       }       
+       bd.setVisible(true);
     }
     
     /* might need to get to the innermost one first - see if this seems to be needed.

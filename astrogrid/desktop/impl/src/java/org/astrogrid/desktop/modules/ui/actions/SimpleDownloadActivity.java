@@ -63,12 +63,16 @@ public class SimpleDownloadActivity extends AbstractFileOrResourceActivity {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-        List resources = computeInvokableResources();
-        List files = new ArrayList();
+        final List resources = computeInvokableResources();
+        final List files = new ArrayList();
         int sz = resources.size() + files.size();
-        if (sz > UIConstants.LARGE_SELECTION_THRESHOLD && ! confirm("Download all " + sz + " files?" )) {
-            return;         
-        }        
+        confirmWhenOverThreshold(sz,"Download all " + sz + " files?",new Runnable() {
+            public void run() {
+                doit(resources,files);
+            }
+        });      
+	}
+	private void doit(List resources, List files) {
         if (resources.size() > 0) {
             // very CDS swpecific at the moment
             for (Iterator i = resources.iterator(); i.hasNext();) {
