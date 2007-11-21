@@ -337,7 +337,7 @@ public class UIContextImpl implements UIContext{
     public void actionPerformed(ActionEvent arg0) {
             final String cmd = arg0.getActionCommand();
             if (cmd.equals(UIContext.EXIT)) {
-                ConfirmDialog exitDialog = new ConfirmDialog("Really Quit?","Do you really want to quit?",new Runnable(){
+                ConfirmDialog exitDialog = new ConfirmDialog("About to Exit","Do you really want to exit the application?",new Runnable(){
                     public void run() {
                         shutdown.halt();
                     }

@@ -117,7 +117,7 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 					FieldPosition pos) {
 				TableBean tb = (TableBean)obj;
 				if (tb != null) {
-					toAppendTo.append(tb.getName());
+					toAppendTo.append(tb.getName() == null ? "" : tb.getName());
 				} 
 				return toAppendTo;
 			}
@@ -223,8 +223,14 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 	protected final  JScrollPane jtableScrollpane;
 
 	public void clear() {
-		
-		cataCombo.setSelectedIndex(-1);
+        catalogues.clear();               
+        tables.clear();
+        columns.clear();
+        //@todo maybe fallback to resource title if catalogue lacks a description.
+        cataLabel.setText("");
+        tableLabel.setText("");
+        
+	    cataCombo.setSelectedIndex(-1);
 		tableCombo.setSelectedIndex(-1);
 		
 		cataCombo.setEnabled(false);
@@ -232,17 +238,12 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 	}
 
 	public void display(Resource res) {
-		catalogues.clear();
-		tables.clear();
-		columns.clear();
-		//@todo maybe fallback to resource title if catalogue lacks a description.
-		cataLabel.setText("");
-		tableLabel.setText("");
-		
+	    clear(); // reset everything first.
 		if (res instanceof DataCollection) {
 			DataCollection coll = (DataCollection)res;
 			List colList = Arrays.asList(coll.getCatalogues());
 			catalogues.addAll(colList);
+			cataCombo.setEnabled(true);
 			cataCombo.setSelectedIndex(0);
 		
 		} else if (res instanceof CatalogService) {
@@ -253,12 +254,10 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 			catalogues.add(cat);
 			cataCombo.setSelectedIndex(0);
 			
-		} else { // it's not of interest.
-			cataCombo.setEnabled(false);
-			cataCombo.setSelectedIndex(-1);			
-			tableCombo.setEnabled(false);
-			tableCombo.setSelectedIndex(-1);
+		} else { // it's not of interest.		    
+			cataLabel.setText("This resource provides no table metadata");
 		}
+		
 	}
 
 	public void itemStateChanged(ItemEvent e) {
