@@ -62,6 +62,7 @@ import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.ag.ApplicationsInternal;
 import org.astrogrid.desktop.modules.ag.ProcessMonitor;
 import org.astrogrid.desktop.modules.ag.RemoteProcessManagerInternal;
+import org.astrogrid.desktop.modules.dialogs.ConfirmDialog;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.TaskRunnerInternal;
@@ -676,9 +677,13 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	            this.setEnabled(true);
 	        }
 	        public void actionPerformed(ActionEvent e) {
-	            CeaApplication res = pForm.getModel().currentResource();
-	            String iface = pForm.getModel().getIName();
-	            pForm.buildForm(iface,res);
+	            ConfirmDialog.newConfirmDialog(TaskRunnerImpl.this.getComponent(),"Reset Form","Any edits will be lost. Continue?",new Runnable() {
+                    public void run() {
+                        CeaApplication res = pForm.getModel().currentResource();
+                        String iface = pForm.getModel().getIName();
+                        pForm.buildForm(iface,res);
+                    }
+	            });
 	        }
 	    }
 	
