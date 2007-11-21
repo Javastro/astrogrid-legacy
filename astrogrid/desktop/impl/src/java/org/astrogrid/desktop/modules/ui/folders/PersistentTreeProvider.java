@@ -42,7 +42,7 @@ public abstract class PersistentTreeProvider implements TreeProvider {
      * Thread which is currently engaged in saving the state of this object
      * to a file.  When it finishes it should remove itself.
      */
-    private Saver saver;
+    private volatile Saver saver;
 
     /**
      * Constructor.
@@ -163,7 +163,11 @@ public abstract class PersistentTreeProvider implements TreeProvider {
         // If we're not already saving, save now in a background thread.
         if (this.saver == null) {
             this.saver = new Saver(root);
-            this.saver.start();
+            try {
+                parent.getExecutor().execute(saver);
+            } catch (InterruptedException x) {
+                logger.error("InterruptedException",x);
+            }
         }
 
         // If a save operation is already in progress, store the new saver
@@ -177,10 +181,13 @@ public abstract class PersistentTreeProvider implements TreeProvider {
 
     /**
      * Blocks until no save operation is pending.
+     * only used from unit test
+     * join() not possible now that we're using an executor. - biut only used from testing.
      */
     synchronized void waitForUpdate() throws InterruptedException {
         while (saver != null) {
-            saver.join();
+            // busy-wait.
+            //saver.join();
         }
     }
 
@@ -226,9 +233,9 @@ public abstract class PersistentTreeProvider implements TreeProvider {
      * If when it finishes another saver is waiting, it will start that one
      * running.
      * 
-     * @todo convert this to a background worker - or at least use the background executor.
+     * NWW - modified from a Thread to a Runnable, which is then passed to background executor to run - pooling of threads.
      */
-    private class Saver extends Thread {
+    private class Saver implements Runnable {
         private final Object bean;
 
         /**
@@ -237,7 +244,7 @@ public abstract class PersistentTreeProvider implements TreeProvider {
          * @param   root  state to save
          */
         Saver(TreeNode root) {
-            super("Tree saver");
+          //  super("Tree saver");
             bean = BranchBean.fromTreeNode(root);
         }
 
@@ -265,7 +272,11 @@ public abstract class PersistentTreeProvider implements TreeProvider {
                 // If another save request has been submitted since we 
                 // started, then start that one running.
                 else if (workingSaver != null) {
-                    workingSaver.start();
+                    try {
+                        parent.getExecutor().execute(workingSaver);
+                    } catch (InterruptedException x) {
+                        logger.error("InterruptedException",x);
+                    }
                 }
             }
         }
