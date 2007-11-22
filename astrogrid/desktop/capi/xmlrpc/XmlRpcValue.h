@@ -17,6 +17,7 @@
 # include <string>
 # include <vector>
 # include <time.h>
+#include <iostream>
 #include "acrtypes.h"
 #endif
 
@@ -60,7 +61,7 @@ namespace XmlRpc {
     XmlRpcValue(const char* value)  : _type(TypeString)
     { _value.asString = new std::string(value); }
 
-    XmlRpcValue(struct tm* value)  : _type(TypeDateTime) 
+    XmlRpcValue(const struct tm* value)  : _type(TypeDateTime) 
     { _value.asTime = new struct tm(*value); }
 
 
@@ -101,6 +102,7 @@ namespace XmlRpc {
     XmlRpcValue& operator=(long const& rhs) { return operator=(XmlRpcValue((long)rhs)); }
     XmlRpcValue& operator=(double const& rhs) { return operator=(XmlRpcValue(rhs)); }
     XmlRpcValue& operator=(const char* rhs) { return operator=(XmlRpcValue(std::string(rhs))); }
+    XmlRpcValue& operator=(const struct tm& rhs) { return operator=(XmlRpcValue(&rhs)); }
 
     bool operator==(XmlRpcValue const& other) const;
     bool operator!=(XmlRpcValue const& other) const;
@@ -112,7 +114,7 @@ namespace XmlRpc {
     operator std::string&()   { assertTypeOrInvalid(TypeString); return *_value.asString; }
     operator BinaryData&()    { assertTypeOrInvalid(TypeBase64); return *_value.asBinary; }
     operator struct tm&()     { assertTypeOrInvalid(TypeDateTime); return *_value.asTime; }
-    operator const char *()   { assertTypeOrInvalid(TypeString); return (*_value.asString).c_str();}
+    operator  char *()    { assertTypeOrInvalid(TypeString); char * retval; retval = (char *)malloc((*_value.asString).size() +1); strcpy(retval,(*_value.asString).c_str()); return retval;} // return a copy...IMPL - it seems odd to me that just 
     
     //ACR
     operator ACRKeyValueMap();
@@ -121,8 +123,8 @@ namespace XmlRpc {
     XmlRpcValue const& operator[](int i) const { assertArray(i+1); return _value.asArray->at(i); }
     XmlRpcValue& operator[](int i)             { assertArray(i+1); return _value.asArray->at(i); }
 
-    XmlRpcValue& operator[](std::string const& k) { assertStruct(); return (*_value.asStruct)[k]; }
-    XmlRpcValue& operator[](const char* k) { assertStruct(); std::string s(k); return (*_value.asStruct)[s]; }
+    XmlRpcValue & operator[](std::string const & k)  { assertStruct(); return (*_value.asStruct)[k]; }
+    XmlRpcValue& mem(const char* k) { std::cerr << " accessing member " << k << "\n"; assertStruct(); std::string s(k); return (*_value.asStruct)[s]; }
 
     // Accessors
     //! Return true if the value has been set to something.
