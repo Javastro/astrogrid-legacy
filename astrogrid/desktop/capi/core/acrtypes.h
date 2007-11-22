@@ -1,5 +1,5 @@
 /*
- * $Id: acrtypes.h,v 1.2 2007/10/30 15:53:07 pah Exp $
+ * $Id: acrtypes.h,v 1.3 2007/11/22 20:50:44 pah Exp $
  * 
  * Created on 6 Sep 2007 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2007 Astrogrid. All rights reserved.
@@ -33,6 +33,7 @@ typedef const char* URI;
 typedef const char* URLString;
 typedef const char* XMLString;
 typedef const char* Document; /* for returning a org.w3c.dom.Document TODO check org.w3c.dom.Document return*/
+typedef struct tm ACRDate;
 /*TODO  perhaps an enum would be better */
 typedef int BOOL;
 
@@ -69,8 +70,8 @@ typedef struct {
 
 typedef struct {
 	int n;
-	time_t * list;
-} ListOftime_t;
+	struct tm * list;
+} ListOfACRDate;
 
 typedef struct {
     int n;
