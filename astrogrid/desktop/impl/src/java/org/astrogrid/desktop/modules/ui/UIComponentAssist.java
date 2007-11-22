@@ -20,10 +20,12 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
+import javax.swing.JSeparator;
 import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
@@ -263,8 +265,15 @@ public final class UIComponentAssist {
             tasksButton = new IndeterminateProgressIndicator.Button();
             tasksButton.putClientProperty("is3DEnabled",Boolean.TRUE);
             tasksButton.setBorder(BorderFactory.createEtchedBorder());
-            tasksButton.setToolTipText("<html>List background tasks.<br> Click a task to halt and cancel it.");
+            tasksButton.setToolTipText("List running processes");
             final JPopupMenu tasksMenu = new JPopupMenu();
+            tasksMenu.add("Halt All Processes").addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    parent.haltMyTasks();
+                }
+            });
+            tasksMenu.add(new JSeparator());
             tasksButton.addMouseListener(new MouseAdapter() {
                 public void mousePressed(MouseEvent e) {
                     tasksMenu.show(tasksButton,e.getX(),e.getY());
@@ -284,9 +293,11 @@ public final class UIComponentAssist {
                 
                 public Object evaluate(Object arg0) {
                     BackgroundWorker w = (BackgroundWorker)arg0;
-                    JMenuItem mi = new JMenuItem(w.getMessage());
-                    mi.putClientProperty(BackgroundWorker.class,w); // store the worker for this menu item.
-                    mi.addActionListener(l);
+                    JMenu mi = new JMenu(w.getMessage());
+                    JMenuItem halt = new JMenuItem("Halt");
+                    halt.addActionListener(l);
+                    halt.putClientProperty(BackgroundWorker.class,w); // store the worker for this menu item.
+                    mi.add(halt);
                     switch (w.getStatus()) {
                         case BackgroundWorker.PENDING:
                             mi.setIcon(UIConstants.PENDING_ICON);
