@@ -239,14 +239,14 @@ public class TabularMetadataViewer extends JPanel implements ItemListener {
 
 	public void display(Resource res) {
 	    clear(); // reset everything first.
-		if (res instanceof DataCollection) {
+		if (res instanceof DataCollection && ((DataCollection)res).getCatalogues().length > 0) {
 			DataCollection coll = (DataCollection)res;
 			List colList = Arrays.asList(coll.getCatalogues());
-			catalogues.addAll(colList);
-			cataCombo.setEnabled(true);
-			cataCombo.setSelectedIndex(0);
+			    catalogues.addAll(colList);
+			    cataCombo.setEnabled(true);
+			    cataCombo.setSelectedIndex(0);
 		
-		} else if (res instanceof CatalogService) {
+		} else if (res instanceof CatalogService && ((CatalogService)res).getTables().length > 0) {
 			CatalogService serv = (CatalogService)res;
 			Catalog cat =new Catalog();
 			cat.setName("");

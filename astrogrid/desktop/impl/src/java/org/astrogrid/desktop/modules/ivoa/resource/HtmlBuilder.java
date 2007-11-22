@@ -67,50 +67,90 @@ public class HtmlBuilder extends StrBuilder {
 	 * also adds br afterwards.*/
 	public HtmlBuilder appendTitledSequence(String title,Object[] list) {
 		if (list != null && list.length > 0) {
-			append(title)
-				.append(": ")
+			appendLabel(title)
 				.appendWithSeparators(list,", ")
 				.append("<br>");
 		} 
 		return this;
 	}
-
+    public HtmlBuilder appendTitledSequenceNoBR(String title,Object[] list) {
+        if (list != null && list.length > 0) {
+            appendLabel(title)
+                .appendWithSeparators(list,", ")
+                .append("&nbsp; ");
+        } 
+        return this;
+    }
+    
+    /** append text, formatted as a label */
+    public HtmlBuilder appendLabel(String text) {
+        append("<cite class='label'>").append(text).append("</cite>&nbsp;");
+        return this;
+    }
+    
 	/** appends the list, prefixed with the title, if the object is non-null
 	 * also adds a br afterwards */
 	public HtmlBuilder appendTitledObject(String title,Object o) {
 		if (o != null) {
-			append(title)
-				.append(": ")
+			appendLabel(title)
 				.append(o)
 				.append("<br>");
 		} 
 		return this;
 	}
+	
+	   public HtmlBuilder appendTitledObjectNoBR(String title,Object o) {
+	        if (o != null) {
+	            appendLabel(title)	              
+	                .append(o)
+	                .append("&nbsp; ");
+	        } 
+	        return this;
+	    }
 /** append a reouscr name, prefixed with title, if the resource name is non-null
  * adds a br afterwards
  */
 	public HtmlBuilder appendTitledResourceName(String title,ResourceName name) {
-		if (name != null) {
-			append(title).append(": ");
-		if (name.getId() != null) {
-			append("<a href='").append(name.getId()).append("'>");
-			String v = name.getValue();
-			append(v == null || v.trim().length() == 0 ? name.getId().toString() : v);
-			append("</a>");
-		} else {
-			append(name.getValue());
-		}
-		append("<br>");
-		}
-		
+	    if (name != null) {
+	        appendLabel(title);
+	        if (name.getId() != null) {
+	            append("<a class='res' href='").append(name.getId()).append("'>");
+	            String v = name.getValue();
+	            append(v == null  ? name.getId().toString() : v);
+	            append("</a>");
+	        } else {
+	            append(name.getValue());
+	        }
+	        append("<br>");
+	    }
+
 		return this;
 	}
+	   public HtmlBuilder appendTitledResourceNameNoBR(String title,ResourceName name) {
+	        if (name != null) {
+	            appendLabel(title);
+	            if (name.getId() != null) {
+	                append("<a class='res' href='").append(name.getId()).append("'>");
+	                String v = name.getValue();
+	                append(v == null ? name.getId().toString() : v);
+	                append("</a>");
+	            } else {
+	                append(name.getValue());
+	            }
+	            append("&nbsp; ");
+	        }
+
+	        return this;
+	    }
 	/** appends a resouce name, hyperlinked if an id is provided. */
 	public HtmlBuilder appendResourceName(ResourceName name) {
+	    if (name == null) {
+	        return this;
+	    }
 		if (name.getId() != null) {
-			append("<a href='").append(name.getId()).append("'>");
+			append("<a class='res' href='").append(name.getId()).append("'>");
 			String v = name.getValue();
-			append(v == null || v.trim().length() == 0 ? name.getId().toString() : v);
+			append(v == null? name.getId().toString() : v);
 			append("</a>");
 		} else {
 			append(name.getValue());
@@ -123,8 +163,7 @@ public class HtmlBuilder extends StrBuilder {
 	 */
 	public HtmlBuilder appendTitledResourceNames(String title, ResourceName[] list) {
 		if (list != null && list.length > 0) {
-			append(title);
-			append(": ");
+			appendLabel(title);
 			for (int i = 0; i < list.length; i++) {
 				appendResourceName(list[i]);
 				append(" ");
@@ -133,11 +172,19 @@ public class HtmlBuilder extends StrBuilder {
 		} 
 		return this;
 	}	
-
+    public HtmlBuilder appendTitledResourceNamesNoBR(String title, ResourceName[] list) {
+        if (list != null && list.length > 0) {
+            appendLabel(title);
+            for (int i = 0; i < list.length; i++) {
+                appendResourceName(list[i]);
+                append(" ");
+            }
+        } 
+        return this;
+    }   
 	public HtmlBuilder appendTitledURIs(String title, URI[] list) {
 		if (list != null && list.length > 0) {
-			append(title);
-			append(": ");
+			appendLabel(title);
 			for (int i = 0; i < list.length; i++) {
 				appendURI(list[i]);
 				append(" ");
@@ -155,16 +202,41 @@ public class HtmlBuilder extends StrBuilder {
 		if (url != null) {
 		String scheme = url.getScheme();
 		// fix for BZ 1970 - odd scheme types.
-		if (scheme != null && (scheme.equals("http") || scheme.equals("ftp") || scheme.equals("ivo"))) {
+		String wrappedURL = StringUtils.replace(url.toString(),"/","/<wbr>");
+		if ("http".equals(scheme) || "ftp".equals(scheme)) {
 			append("<a href='").append(url).append("'>");
-			append(url).append("</a>");
+			append(wrappedURL).append("</a>");
+		} else if ("ivo".equals(scheme)) {
+            append("<a class='res' href='").append(url).append("'>");
+            append(wrappedURL).append("</a>");		    
 		} else {
-				append(url);
+				append(wrappedURL);
 		}
 		}
 		return this;
 	}
-	
+    public  HtmlBuilder appendURI(String text, final URI url) {
+        if (url != null) {
+        String scheme = url.getScheme();
+        // fix for BZ 1970 - odd scheme types.
+        String wrappedURL = StringUtils.replace(url.toString(),"/","/<wbr>");
+        if ("http".equals(scheme) || "ftp".equals(scheme)) {
+            append("<a href='").append(url).append("'>");
+            append(text).append("</a>");
+        } else if ("ivo".equals(scheme)) {
+                append("<a class='res' href='").append(url).append("'>");
+                append(text).append("</a>");            
+        } else {
+                append("&lt;")
+                .append(text)
+                .append(" - ")
+                .append(wrappedURL)
+                .append("&gt;");
+        }
+        }
+        return this;
+    }	
+  
 	
 	/** append o if pred is true, following with a hr */
 	public HtmlBuilder conditionalAppend(boolean pred,Object o) {

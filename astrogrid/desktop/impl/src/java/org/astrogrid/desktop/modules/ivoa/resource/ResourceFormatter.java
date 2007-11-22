@@ -204,7 +204,7 @@ public final class ResourceFormatter {
 	 * @param sb
 	 * @param curation
 	 */
-	public static void formatCuration(HtmlBuilder sb, final Curation curation) {
+	private static void formatCuration(HtmlBuilder sb, final Curation curation) {
 		sb.h3("Curation");
 		if (curation.getCreators().length > 0) {
 			final Creator creator = curation.getCreators()[0];
@@ -246,7 +246,7 @@ public final class ResourceFormatter {
 	 * @param sb
 	 * @param s
 	 */
-	public static void formatService(HtmlBuilder sb, Service s) {
+	private static void formatService(HtmlBuilder sb, Service s) {
 		final Capability[] capabilities = s.getCapabilities();
 		sb.append("<table><tr bgcolor='#dddddd'><th>Capability</th><th>Details</th></tr>");
 		for (int i = 0; i < capabilities.length; i++) {
@@ -348,7 +348,7 @@ public final class ResourceFormatter {
 
 	
 
-	public static void formatCeaApplication(CeaApplication cea, HtmlBuilder sb) {
+	private static void formatCeaApplication(CeaApplication cea, HtmlBuilder sb) {
 
 		ParameterBean[] params = cea.getParameters();
 		InterfaceBean[] ifaces =cea.getInterfaces();
@@ -381,7 +381,7 @@ public final class ResourceFormatter {
 		sb.append("</table>");
 	}
 
-	public static void formatCatalog(Catalog c, HtmlBuilder sb) {
+	private static void formatCatalog(Catalog c, HtmlBuilder sb) {
 		sb.h3(c.getName());
 		if (c.getDescription() != null && c.getDescription().trim().length() > 0) {
 			sb.append("<p>").append(c.getDescription()).append("</p>");
@@ -389,7 +389,7 @@ public final class ResourceFormatter {
 			formatTables(c.getTables(),sb);
 	}
 	
-	public static void formatTables(TableBean[] ts, HtmlBuilder sb) {
+	private static void formatTables(TableBean[] ts, HtmlBuilder sb) {
 		//too costly for ukidss, takes generation time from 20ms to almost a minute.
 		// surpisingly, generation time is much more expensive than the time it taks to display it.
 		if (ts.length < DISPLAY_FULL_TABLE_THRESHOLD) {
@@ -427,7 +427,7 @@ public final class ResourceFormatter {
 	}
 	public static final int DISPLAY_FULL_TABLE_THRESHOLD = 6;
 	
-	public static void formatCoverage(Coverage c,HtmlBuilder sb) {
+	private static void formatCoverage(Coverage c,HtmlBuilder sb) {
 		sb.h3("Coverage");
 		sb.appendTitledResourceName("Footprint",c.getFootprint());
 		sb.appendTitledSequence("Wavebands",c.getWavebands());
@@ -457,7 +457,7 @@ public final class ResourceFormatter {
 	 * @param sb
 	 * @param content
 	 */
-	public static void formatContent(HtmlBuilder sb, final Content content) {
+	private static void formatContent(HtmlBuilder sb, final Content content) {
 		if (content != null) {
 		if (! (content.getDescription() == null || content.getDescription().equals("not set") || content.getDescription().equals("(no description available)")) ) {
 			sb.append("<p>").append(content.getDescription()).append("</p>");
@@ -503,7 +503,7 @@ public final class ResourceFormatter {
 	}
 
 
-	public static void fmtDateArray(StrBuilder sb, Date[] arr) {
+	private static void fmtDateArray(StrBuilder sb, Date[] arr) {
 		for (int i = 0; i < arr.length; i++) {
 			sb.append(arr[i].getValue());
 			if (i < arr.length -1) {
@@ -511,7 +511,7 @@ public final class ResourceFormatter {
 			}
 		}
 	}
-	public static void fmtParameterList(StrBuilder sb, ParameterReferenceBean[] arr) {
+	private static void fmtParameterList(StrBuilder sb, ParameterReferenceBean[] arr) {
 		for (int i = 0; i < arr.length; i++) {
 			sb.append(arr[i].getRef());
 			if (i < arr.length -1) {

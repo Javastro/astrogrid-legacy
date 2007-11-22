@@ -23,7 +23,7 @@ import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 public class FurtherInfoActivity extends AbstractResourceActivity implements Activity.Info {
 
 	protected boolean invokable(Resource r) {
-		return r.getContent().getReferenceURI() != null;
+		return r.getContent() != null &&  r.getContent().getReferenceURI() != null;
 	}
 	public void someSelected(Resource[] arr) {
 		noneSelected();

@@ -16,6 +16,9 @@
 <body>
 <release version="2007.4.alpha8" date="unreleased">
     <action dev="nw" type="update">
+    VOExplorer: improved formatted of resource contents
+    </action>
+    <action dev="nw" type="update">
     UI: reviewed modal dialogues, replaced with non-modal where sensible
     </action>
     <action dev="nw" type="fix" issue="2415">

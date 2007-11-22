@@ -122,7 +122,7 @@ public final class ResourceStreamParser implements Iterator {
 	 * parser will use additional hard-coded protocol information to add more to registry entries.
 	 *  */
 	public ResourceStreamParser(XMLStreamReader in,boolean addProtocolKnowledge) {
-		this.in = in;
+		this.in = new TrimmingXMLStreamReader(in);
 		this.addProtocolKnowledge = addProtocolKnowledge;
 	}
 	protected final boolean addProtocolKnowledge;
@@ -231,11 +231,14 @@ public final class ResourceStreamParser implements Iterator {
 				if (elementName.equals("validationLevel")) {					
 					validations.add(parseValidationLevel());
 				} else if (elementName.equals("title")) {
-					m.put("getTitle",in.getElementText().trim());
+					m.put("getTitle",in.getElementText());
 				} else if (elementName.equals("shortName")) {
-					m.put("getShortName",in.getElementText().trim());
+					m.put("getShortName",in.getElementText());
 				} else if (elementName.equals("identifier")) {
-					m.put("getId",new URI(in.getElementText().trim()));
+				    String id = in.getElementText();
+				    if (id != null) {
+				        m.put("getId",new URI(id));
+				    }
 				} else if (elementName.equals("curation")) {
 					m.put("getCuration",parseCuration());
 				} else if (elementName.equals("content")) {
@@ -248,7 +251,10 @@ public final class ResourceStreamParser implements Iterator {
 				} else if (elementName.equals("instrument")) { //can't deduce type - either organisation, or datacollection
 					instruments.add(parseResourceName());
 				} else if (elementName.equals("rights")) {
-					rights.add(in.getElementText().trim().toLowerCase());
+				    String right = in.getElementText();
+				    if (right != null) {
+				        rights.add(right.toLowerCase());
+				    }
 					// service interface
 				//} else if (elementName.equals("capability")) {//v1.0 - disabled for now..
 				//	capabilities.add(parseCapability());
@@ -320,7 +326,7 @@ public final class ResourceStreamParser implements Iterator {
 				} else if (elementName.equals("table")) { // TabularSkyService
 					tables.add( parseTable());
 				} else if (elementName.equals("managedAuthority")) { // Registry
-				    managedAuthorities.add(in.getElementText().trim());
+				    managedAuthorities.add(in.getElementText());
 				} else {
 					logger.debug("Unknown element" + elementName);
 				}
@@ -454,7 +460,10 @@ public final class ResourceStreamParser implements Iterator {
 					try {
 					final String elementName = in.getLocalName();
 					if (elementName.equals("waveband")) {
-						wavebands.add(in.getElementText().trim().toLowerCase());
+					    String wb = in.getElementText();
+					    if (wb != null) {					        
+					        wavebands.add(wb.toLowerCase());
+					    }
 					} else if (elementName.equals("footprint")) {
 						c.setFootprint(parseResourceName());
 					} else {
@@ -484,21 +493,33 @@ public final class ResourceStreamParser implements Iterator {
 					try {
 					final String elementName = in.getLocalName();
 					if (elementName.equals("subject")) {	
-						subject.add(in.getElementText().trim().toLowerCase());							
+					    String subj = in.getElementText();
+					    if (subj != null) {
+					        subject.add(subj.toLowerCase());
+					    }
 					} else if (elementName.equals("description")) {
-							c.setDescription(in.getElementText().trim());					
+							c.setDescription(in.getElementText());					
 					} else if (elementName.equals("source")) {
 						c.setSource(parseSource());					
 					} else if (elementName.equals("referenceURL")) {
 						try {
-							c.setReferenceURI(new URI(in.getElementText().trim()));
+						    String ref = in.getElementText();
+						    if (ref != null) {
+						        c.setReferenceURI(new URI(ref));
+						    }
 						} catch (URISyntaxException e) {
 							logger.debug("Content - Description",e);
 						}							
 					} else if (elementName.equals("type")) {
-							type.add(in.getElementText().trim().toLowerCase());
+					    String ty = in.getElementText();
+					    if (ty != null) {
+							type.add(ty.toLowerCase());
+					    }
 					} else if (elementName.equals("contentLevel")) {
-							contentLevel.add(in.getElementText().trim().toLowerCase());
+					    String cont = in.getElementText();
+					    if (cont != null) {
+							contentLevel.add(cont.toLowerCase());
+					    }
 					} else if (elementName.equals("relationship")) {
 						relationship.add(parseRelationship());					
 					} else {
@@ -523,7 +544,7 @@ public final class ResourceStreamParser implements Iterator {
 		final Source s = new Source();
 		s.setFormat( in.getAttributeValue(null,"format"));
 		try {
-			s.setValue(in.getElementText().trim());
+			s.setValue(in.getElementText());
 		} catch (XMLStreamException x) {
 			logger.debug("source - reference - XMLStreamException",x);
 		}		
@@ -539,7 +560,7 @@ public final class ResourceStreamParser implements Iterator {
 					try {
 					final String elementName = in.getLocalName();
 					if (elementName.equals("relationshipType")) {
-							rel.setRelationshipType(in.getElementText().trim());
+							rel.setRelationshipType(in.getElementText());
 					} else if (elementName.equals("relatedResource")) {
 							resource.add(parseResourceName());
 					} else {
@@ -576,7 +597,7 @@ public final class ResourceStreamParser implements Iterator {
 					} else if (elementName.equals("contributor")) {
 						contributor.add(parseResourceName());
 					} else if (elementName.equals("version")) {
-							c.setVersion(in.getElementText().trim());
+							c.setVersion(in.getElementText());
 					} else if (elementName.equals("contact")) {
 						contact.add(parseContact());
 					} else if (elementName.equals("date")) {
@@ -610,7 +631,7 @@ public final class ResourceStreamParser implements Iterator {
 			logger.debug("resouceName - uri - URISyntaxException",x);
 		}
 		try {
-			rn.setValue(in.getElementText().trim());
+			rn.setValue(in.getElementText());
 		} catch (XMLStreamException x) {
 			logger.debug("resourceName - value - XMLStreamException",x);
 		}
@@ -621,7 +642,7 @@ public final class ResourceStreamParser implements Iterator {
 		final Date d = new Date();
 		d.setRole(in.getAttributeValue(null,"role"));
 		try {
-			d.setValue(in.getElementText().trim());
+			d.setValue(in.getElementText());
 		} catch (XMLStreamException x) {
 			logger.debug("date - value - XMLStreamException",x);
 		}			
@@ -637,8 +658,10 @@ public final class ResourceStreamParser implements Iterator {
 				final String elementName = in.getLocalName();
 				if (elementName.equals("logo")) {
 					try {
-						String url = in.getElementText().trim();
-						c.setLogoURI(new URI(url));
+						String url = in.getElementText();
+						if (url != null) {
+						    c.setLogoURI(new URI(url));
+						}
 					} catch (URISyntaxException x) {
 						logger.debug("creator logo",x);
 					}
@@ -666,11 +689,11 @@ public final class ResourceStreamParser implements Iterator {
 				try {
 				final String elementName = in.getLocalName();
 				if (elementName.equals("address")) {
-					c.setAddress(in.getElementText().trim());
+					c.setAddress(in.getElementText());
 				} else if (elementName.equals("email")) {
-						c.setEmail(in.getElementText().trim());
+						c.setEmail(in.getElementText());
 				} else 	if (elementName.equals("telephone")) {
-						c.setTelephone(in.getElementText().trim());
+						c.setTelephone(in.getElementText());
 				} else if (elementName.equals("name")) {
 					c.setName(parseResourceName());
 				} else {
@@ -773,12 +796,14 @@ public final class ResourceStreamParser implements Iterator {
 					final String elementName = in.getLocalName();
 					if (elementName.equals("ApplicationReference")) {
 						
-						String s = (in.getElementText().trim());
+						String s = (in.getElementText());
+						if (s != null) {
 						try {
 							URI u = new URI(s);
 							result.add(u);
 						} catch (URISyntaxException x) {
 							logger.debug("URISyntaxException",x);
+						}
 						}
 					} else {
 						logger.debug("Unknown element" + elementName);
@@ -815,9 +840,9 @@ public final class ResourceStreamParser implements Iterator {
 				try {
 				final String elementName = in.getLocalName();
 				if (elementName.equals("name")) {
-					c.setName(in.getElementText().trim());
+					c.setName(in.getElementText());
 				} else 	if (elementName.equals("description")) {	
-					c.setDescription(in.getElementText().trim());
+					c.setDescription(in.getElementText());
 				} else if (elementName.equals("table")) {
 					tables.add(parseTable());
 				} else {
@@ -847,9 +872,9 @@ public final class ResourceStreamParser implements Iterator {
 				try {
 				final String elementName = in.getLocalName();
 				if (elementName.equals("name")) {
-					name = in.getElementText().trim();
+					name = in.getElementText();
 				} else 	if (elementName.equals("description")) {	
-					description = in.getElementText().trim();
+					description = in.getElementText();
 				} else if (elementName.equals("column")) {
 					columns.add(parseColumn());
 				} else {
@@ -880,15 +905,15 @@ public final class ResourceStreamParser implements Iterator {
 				final String elementName = in.getLocalName();
 				try {
 				if (elementName.equals("name")) {
-					name = in.getElementText().trim();
+					name = in.getElementText();
 				} else 	if (elementName.equals("description")) {	
-					description = in.getElementText().trim();
+					description = in.getElementText();
 				} else 	if (elementName.equals("ucd")) {	
-					ucd = in.getElementText().trim();
+					ucd = in.getElementText();
 				} else 	if (elementName.equalsIgnoreCase("datatype")) {	
-					datatype = in.getElementText().trim();
+					datatype = in.getElementText();
 				} else 	if (elementName.equals("unit")) {	
-					unit = in.getElementText().trim();					
+					unit = in.getElementText();					
 				} else {
 					logger.debug("Unknown element" + elementName);
 				}
@@ -947,17 +972,17 @@ public final class ResourceStreamParser implements Iterator {
 					final String elementName = in.getLocalName();
 					try {
 					if (elementName.equals("UI_Name")) {
-						uiName = in.getElementText().trim();
+						uiName = in.getElementText();
 					} else 	if (elementName.equals("UI_Description")) {	
-						description = in.getElementText().trim();
+						description = in.getElementText();
 					} else 	if (elementName.equals("UCD")) {	
-						ucd = in.getElementText().trim();
+						ucd = in.getElementText();
 					} else 	if (elementName.equals("DefaultValue")) {	
-						defaultValue = in.getElementText().trim();
+						defaultValue = in.getElementText();
 					} else 	if (elementName.equals("Units")) {	
-						units = in.getElementText().trim();	
+						units = in.getElementText();	
 					} else if (elementName.equals("OptionVal")) {
-						options.add(in.getElementText().trim());
+						options.add(in.getElementText());
 					} else {
 						logger.debug("Unknown element" + elementName);
 					}
@@ -1054,14 +1079,14 @@ public final class ResourceStreamParser implements Iterator {
 				try {
 				final String elementName = in.getLocalName();
 				if (elementName.equals("description")) {
-						c.setDescription(in.getElementText().trim());
+						c.setDescription(in.getElementText());
 				} else if (elementName.equals("interface")) {
 					interfaces.add(parseInterface());
 				} else 	if (elementName.equals("validationLevel")) {					
 					validations.add(parseValidationLevel());
 				} else if (elementName.equals("maxRecords")) { // extension type.
 					try {
-						int v= Integer.parseInt(in.getElementText().trim());
+						int v= Integer.parseInt(in.getElementText());
 						if (c instanceof HarvestCapability) {
 							((HarvestCapability)c).setMaxRecords(v);
 						}
@@ -1072,9 +1097,9 @@ public final class ResourceStreamParser implements Iterator {
 						logger.debug("capability - maxRecords",e);
 					} 
 				} else if (elementName.equals("optionalProtocol")  && c instanceof SearchCapability) {
-					optionalProtols.add(in.getElementText().trim());
+					optionalProtols.add(in.getElementText());
 				} else if (elementName.equals("extensionSearchSupport") && c instanceof SearchCapability){
-					((SearchCapability)c).setExtensionSearchSupport(in.getElementText().trim());
+					((SearchCapability)c).setExtensionSearchSupport(in.getElementText());
 				} else {
 					//@todo - cea managed applications, siap capability, cone capability. this design won't scale, but will do for now.
 					logger.debug("Unknown element" + elementName);
@@ -1130,7 +1155,7 @@ public final class ResourceStreamParser implements Iterator {
 		final AccessURL url = new AccessURL();
 		url.setUse(in.getAttributeValue(null,"use"));
 		try {
-			final String element = in.getElementText().trim();
+			final String element = in.getElementText();
 			if (element != null) {
 				url.setValueURI(new URI(element));
 			}
@@ -1152,7 +1177,10 @@ public final class ResourceStreamParser implements Iterator {
 			}
 		}
 		try {
-			f.setValue(in.getElementText().trim().toLowerCase());
+		    String fmt = in.getElementText();
+		    if (fmt != null) {		        
+		        f.setValue(fmt.toLowerCase());
+		    }
 		} catch (XMLStreamException x) {
 			logger.error("XMLStreamException",x);
 		}

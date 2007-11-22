@@ -12,6 +12,7 @@ import java.util.Arrays;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.astrogrid.acr.ivoa.resource.Resource;
+import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceFormatter;
 
 /** transferable object that rerpresents a single registry resource
@@ -40,7 +41,7 @@ public class ResourceTransferable implements Transferable {
 			return new ByteArrayInputStream( (r.getId().toString() ).getBytes());
 		} else if (VoDataFlavour.HTML.equals(flavor)) {
 			//@todo add more efficient stream method here later?
-			String s = ResourceFormatter.renderResourceAsHTML(r);
+			String s = PrettierResourceFormatter.renderResourceAsHTML(r);
 			return new ByteArrayInputStream(s.getBytes());
 		} else {
 			throw new UnsupportedFlavorException(flavor);

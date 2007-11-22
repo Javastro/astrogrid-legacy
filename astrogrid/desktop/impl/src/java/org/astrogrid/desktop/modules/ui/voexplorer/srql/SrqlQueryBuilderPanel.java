@@ -350,7 +350,10 @@ public class SrqlQueryBuilderPanel extends JPanel  implements ObservableElementL
 			vals.add(new DescribedValue("Time","Time Series access service (STAP)"));
 			vals.add(new DescribedValue("CeaApplication","Offline application (CEA)"));
 			vals.add(new DescribedValue("Registry",""));
-			vals.add(new DescribedValue("Service","Other services"));			
+			vals.add(new DescribedValue("Service","Other services"));	
+			vals.add(new DescribedValue("Authority",""));
+			vals.add(new DescribedValue("Organisation",""));
+			vals.add(new DescribedValue("DataCollection",""));
 		}}
 		//@future - replace these with capabilities -
 		//   @future capability - tricky. - don't know how to do this yet. - mix of capability and capabilitty type.

@@ -6,6 +6,7 @@ import javax.swing.JEditorPane;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.RegistryBrowser;
+import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceFormatter;
 
 /** Exgtensaion to an JEditorPane  with methods for displaying resources,
@@ -33,7 +34,7 @@ public class ResourceDisplayPane extends JEditorPane {
 	public void display(Resource r) {
 		if (currentResource != r) {
 			currentResource = r;
-			currentHTML = ResourceFormatter.renderResourceAsHTML(r);
+			currentHTML = PrettierResourceFormatter.renderResourceAsHTML(r);
 		}
 		setText(currentHTML); // will do this, even if it was the cached content - as pane may have been setTexted() some other way.
 		setCaretPosition(0);

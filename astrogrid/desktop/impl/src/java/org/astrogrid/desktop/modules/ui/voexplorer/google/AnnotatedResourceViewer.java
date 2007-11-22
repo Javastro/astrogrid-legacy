@@ -9,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Comparator;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -25,6 +27,7 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.system.BrowserControl;
 import org.astrogrid.acr.ui.RegistryBrowser;
 import org.astrogrid.desktop.icons.IconHelper;
+import org.astrogrid.desktop.modules.ivoa.resource.PrettierResourceFormatter;
 import org.astrogrid.desktop.modules.ivoa.resource.ResourceFormatter;
 import org.astrogrid.desktop.modules.system.CSH;
 import org.astrogrid.desktop.modules.ui.comp.ResourceDisplayPane;
@@ -56,6 +59,7 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Edit
 	 */
 	private static final Log logger = LogFactory
 			.getLog(AnnotatedResourceViewer.class);
+
     public AnnotatedResourceViewer(final BrowserControl browser, final RegistryBrowser regBrowser, AnnotationService annService) {
 		super(browser, regBrowser);
 		this.annService = annService;
@@ -69,6 +73,7 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Edit
 		
 		hyperLinkHandler = getHyperlinkListeners()[0];	
 		CSH.setHelpIDString(this, "reg.details");
+
 		
 		// sort the list, then map into JPanels.
 		FunctionList annotationsPanels = new FunctionList(new SortedList(annotations,new Comparator() {
@@ -170,7 +175,7 @@ public class AnnotatedResourceViewer extends ResourceDisplayPane implements Edit
 		annotations.clear();
 		current = res;
 		lingerTimer.restart();
-		final String html = ResourceFormatter.renderResourceAsHTML(res);
+		final String html = PrettierResourceFormatter.renderResourceAsHTML(res);
 		setText(html);
 		setCaretPosition(0);		
 		// annotations.

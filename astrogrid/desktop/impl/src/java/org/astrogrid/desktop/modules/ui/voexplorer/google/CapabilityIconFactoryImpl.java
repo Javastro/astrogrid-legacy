@@ -116,7 +116,7 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 		}
 		caps.set(ix++,r instanceof CeaApplication);
 		caps.set(ix++,r instanceof CeaApplication && BuildQueryActivity.hasAdqlParameter((CeaApplication)r));
-		caps.set(ix++, (r instanceof DataCollection) || (r instanceof CatalogService));
+		caps.set(ix++, hasTabularMetadata(r));
 		caps.set(ix++,WebInterfaceActivity.hasWebBrowserInterface(r));
 		caps.set(ix++,r instanceof Organisation);
 		caps.set(ix++,r instanceof Authority);
@@ -153,6 +153,15 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 			return i;
 		}
 	}
+
+    /**
+     * @param r
+     * @return
+     */
+    public static boolean hasTabularMetadata(Resource r) {
+        return (r instanceof DataCollection  && ((DataCollection)r).getCatalogues().length > 0) 
+		        || (r instanceof CatalogService && ((CatalogService)r).getTables().length > 0);
+    }
 
 	public String getTooltip(Icon i) {
 		return (String)tips.get(i);
