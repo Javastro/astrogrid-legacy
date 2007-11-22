@@ -204,6 +204,8 @@ functions
 #ifndef INTFCLASSES_H_
 #define INTFCLASSES_H_
 #include "arcontainers.h"
+#include "intf.h"
+using namespace XmlRpc;
 
            </xsl:text>
            <xsl:message>
@@ -410,57 +412,84 @@ struct  </xsl:text>
       */
    </xsl:template>
    <xsl:template name="funcbody">
-   <xsl:param name="service"></xsl:param>
-   <xsl:param name="f"></xsl:param>
-   <xsl:text>
+      <xsl:param name="service"></xsl:param>
+      <xsl:param name="f"></xsl:param>
+      <xsl:variable name="classprops">
+      <xsl:call-template name="classprops"><xsl:with-param name="b" select="$jel/jelclass[@type=$f/@type]"><!-- $f was ok because it has same attribute names... --></xsl:with-param></xsl:call-template>
+      </xsl:variable>
+      
+      <xsl:text>
    {
      XmlRpcValue _args, _result;
    </xsl:text>
-   <xsl:if test="$f/@type != 'void'">
-   
-   <xsl:call-template name="convert-type"><xsl:with-param name="p" select="$f"></xsl:with-param></xsl:call-template><xsl:text> retval;
+      <xsl:if test="$f/@type != 'void'">
+         <xsl:call-template name="convert-type">
+            <xsl:with-param name="p" select="$f"></xsl:with-param>
+         </xsl:call-template>
+         <xsl:text> retval;
    </xsl:text>
-   </xsl:if>
-   <xsl:for-each select="$f/params/param">
-   <xsl:text>_args[</xsl:text><xsl:value-of select="position()-1"/><xsl:text>] = </xsl:text><xsl:value-of select="@name"/><xsl:text>;
+      </xsl:if>
+      <xsl:for-each select="$f/params/param">
+         <xsl:text>_args[</xsl:text>
+         <xsl:value-of select="position()-1" />
+         <xsl:text>] = </xsl:text><xsl:value-of select="@name"/><xsl:text>;
    </xsl:text>
    </xsl:for-each>
-   <xsl:text>
-     if (myAR->execute("</xsl:text><xsl:value-of select="concat($service,'.',$f/@name)"/>
-     <xsl:text>", _args, _result))
+      <xsl:text>
+     if (myAR->execute("</xsl:text>
+      <xsl:value-of select="concat($service,'.',$f/@name)" />
+      <xsl:text>", _args, _result))
      {
      </xsl:text>
-     <xsl:choose>
-     <xsl:when test="$f/@type = $javaStdTypes">
-       <xsl:if test="$f/@type != 'void'">
-         <xsl:choose>
-            <xsl:when test="contains($f/@fulltype, '[')">
-            <xsl:text>//FIXME  simple array types to be filled here 
+      <xsl:choose>
+         <xsl:when test="$f/@type = $javaStdTypes">
+            <xsl:if test="$f/@type != 'void'">
+               <xsl:choose>
+                  <xsl:when test="contains($f/@fulltype, '[')">
+                     <xsl:text>//FIXME  simple array types to be filled here 
             </xsl:text>
-            
-            </xsl:when>
-            <xsl:otherwise>
-            <xsl:text>    retval = _result;</xsl:text>
-            </xsl:otherwise>
-        </xsl:choose>
-       </xsl:if>
-     </xsl:when>
-    
-     <xsl:otherwise> <!-- object is returned  
-         <xsl:call-template name="retbody"><xsl:with-param name="t" select="$jel/jelclass[@type = $f/@type]"></xsl:with-param></xsl:call-template>
-         -->
-         <xsl:text>//FIXME object type to be filled here</xsl:text>
-     </xsl:otherwise>
-     </xsl:choose>
-     <xsl:text>
+                  </xsl:when>
+                  <xsl:otherwise>
+                     <xsl:text>    retval = _result;</xsl:text>
+                  </xsl:otherwise>
+               </xsl:choose>
+            </xsl:if>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:choose>
+               <xsl:when test="contains($f/@fulltype, '[')">
+                  <xsl:text>//FIXME  struct array types to be filled here 
+            </xsl:text>
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:value-of
+                     select="concat($classprops/classname,'* res = ')" />
+                    <xsl:choose>
+                      <xsl:when test="$classprops/isBase = 0">
+                         <xsl:value-of
+                             select="concat('new ',$classprops/classname)"/>
+                      </xsl:when>
+                      <xsl:otherwise>
+                          <xsl:value-of
+                             select="concat($classprops/baseclassname,'_::create')"/>
+                          
+                      </xsl:otherwise>
+                    </xsl:choose>
+                  <xsl:text>(_result);
+        res->asStruct(&amp;retval);</xsl:text>
+               </xsl:otherwise>
+            </xsl:choose>
+         </xsl:otherwise>
+      </xsl:choose>
+      <xsl:text>
      }
     </xsl:text>
-    <xsl:if test="$f/@type != 'void'">
-    <xsl:text>
+      <xsl:if test="$f/@type != 'void'">
+         <xsl:text>
      return retval;
     </xsl:text>
-    </xsl:if>
-    <xsl:text>
+      </xsl:if>
+      <xsl:text>
    };
    </xsl:text>
    </xsl:template>
@@ -622,12 +651,34 @@ struct  </xsl:text>
       </members>
    </xsl:template>
    
+   <xsl:template name="classprops">
+     <xsl:param name="b"></xsl:param>
+     <strucname><xsl:value-of select="translate($b/@type,'.','_')"/></strucname>
+     <classname><xsl:value-of select="concat(translate($b/@type,'.','_'),'_')"/></classname>
+     <superclasses>
+        <xsl:for-each select="$hier/hierarchy//*[name() = $b/@type]/parent::*[name() != 'hierarchy' and not(name() = preceding::*/name())]">
+           <class><xsl:value-of select="name()"/></class>
+        </xsl:for-each>
+     </superclasses>
+     <isBase><xsl:value-of select="count($hier/hierarchy//*[name() = $b/@type]/*)"/></isBase>
+     <baseclassname><xsl:value-of select="$hier/hierarchy//*[name() = $b/@type and not(name() = preceding::*/name())]/ancestor-or-self::*[parent::*/name()='hierarchy']/name()"/></baseclassname>
+   </xsl:template>
+   
    <xsl:template name="beanclassdef">
       <xsl:param name="b"></xsl:param>
-      <xsl:variable name="strucname" select="translate($b/@type,'.','_')"></xsl:variable>
-      <xsl:variable name="classname" select="concat($strucname,'_')" ></xsl:variable>
+      <xsl:variable name="classprops">
+      <xsl:call-template name="classprops"><xsl:with-param name="b" select="$b"></xsl:with-param></xsl:call-template>
+      </xsl:variable>
+      <xsl:variable name="strucname" select="$classprops/strucname"></xsl:variable>
+      <xsl:variable name="classname" select="$classprops/classname" ></xsl:variable>
       <xsl:variable name="superclasses" as="xs:string *">
-        <xsl:sequence select="$hier/hierarchy//*[name() = $b/@type]/parent::*[name() != 'hierarchy' and not(name() = preceding::*/name())]/name()"></xsl:sequence>
+        <xsl:sequence select="$classprops/superclasses/class"></xsl:sequence>
+      </xsl:variable>
+      <xsl:variable name="isBase">
+        <xsl:value-of select="$classprops/isBase"/>
+      </xsl:variable>
+      <xsl:variable name="baseclassname" >
+        <xsl:value-of select="$classprops/baseclassname"/>
       </xsl:variable>
       
      <xsl:message><xsl:value-of select="concat('beanclassdef class=',$classname,' count=',count($superclasses),' superlasses=')"/><xsl:value-of select="$superclasses" separator=","/></xsl:message>
@@ -650,9 +701,14 @@ public:
          </xsl:call-template>
       </xsl:variable>
       <xsl:for-each select="$members/members/member">
-         <xsl:if test="@array">
+         <xsl:choose>
+         <xsl:when test="@array and @baselass">
+            <xsl:text>ListOfBase&lt;</xsl:text>
+         </xsl:when>
+         <xsl:when test="@array">
             <xsl:text>ListOf&lt;</xsl:text>
-         </xsl:if>
+         </xsl:when>
+         </xsl:choose>
          <xsl:value-of select="@type"></xsl:value-of>
          <xsl:if test="@array">
             <xsl:text>&gt;</xsl:text>
@@ -680,12 +736,13 @@ public:
       <!-- TODO should only be virtual where there is a derived class  - also need to free resources...-->
          <xsl:text> {
 } 
+
 virtual ~</xsl:text>
          <xsl:value-of select="translate(concat($b/@type,'_'),'.','_')" />
          <xsl:text>() {
 }
 
-void asStruct( struct </xsl:text><xsl:value-of select="$strucname"/><xsl:text>* s ) const {
+virtual void asStruct( struct </xsl:text><xsl:value-of select="$strucname"/><xsl:text>* s ) const {
 </xsl:text>
    <xsl:for-each select="$superclasses">
       <xsl:variable name="superstrucname" select="translate(.,'.','_')"></xsl:variable>
@@ -738,7 +795,15 @@ void asStruct( struct </xsl:text><xsl:value-of select="$strucname"/><xsl:text>* 
 }
 </xsl:text>
 <xsl:if test="count($hier/hierarchy//*[name()=$b/@type and not(name() = preceding::*/name())]/*)>0">
+<!-- need to do this in subclasses as ell -->
+<xsl:text>
+virtual void asStruct (struct </xsl:text><xsl:value-of select="$baseclassname" /><xsl:text>_Base* s) const {
+   asStruct(&amp;s->d.</xsl:text><xsl:value-of select="lower-case($strucname)" /><xsl:text>);
+   s->_type = </xsl:text><xsl:value-of select="$strucname" /><xsl:text>;
+}
+</xsl:text>
 <xsl:call-template name="factory"><xsl:with-param  name="b" select="$b"></xsl:with-param></xsl:call-template>
+
 </xsl:if>
 <xsl:text>
 };
@@ -748,9 +813,11 @@ void asStruct( struct </xsl:text><xsl:value-of select="$strucname"/><xsl:text>* 
    <xsl:template name="factory"><xsl:param name="b"/><xsl:param name="doDefn"></xsl:param>
        <xsl:variable name="strucname" select="translate($b/@type,'.','_')"></xsl:variable>
       <xsl:variable name="classname" select="concat($strucname,'_')" ></xsl:variable>
- 
+   <xsl:if test="not($doDefn)">  
    <xsl:text>
-   static </xsl:text><xsl:value-of select="concat($classname, '* ')"/>
+   static </xsl:text>
+   </xsl:if>
+   <xsl:value-of select="concat($classname, '* ')"/>
    <xsl:if test="$doDefn">
        <xsl:value-of select="concat($classname, '::')"/>
    </xsl:if>
@@ -802,6 +869,16 @@ void asStruct( struct </xsl:text><xsl:value-of select="$strucname"/><xsl:text>* 
          <xsl:text>ListOf</xsl:text>
       </xsl:if>
       <xsl:choose>
+         <xsl:when test="contains('org.astrogrid.acr.ivoa.resource.Date',$p/@fulltype)"> <!-- special because of unfortunate naming of date -->
+           <xsl:if test="not (contains($p/@fulltype,'[]'))">
+               <xsl:text>struct </xsl:text>
+            </xsl:if>
+            <xsl:text>CurationDate</xsl:text>
+            <!-- if in a function parameter definition then add pointer -->
+            <xsl:if test="$f">
+              <xsl:text>* </xsl:text>
+            </xsl:if> 
+         </xsl:when>
          <xsl:when test="$typeMap/map/t[@from = $p/@type]">            
             <xsl:value-of select="$typeMap/map/t[@from = $p/@type]/@to"/>
          </xsl:when>
@@ -830,6 +907,10 @@ void asStruct( struct </xsl:text><xsl:value-of select="$strucname"/><xsl:text>* 
    <xsl:template name="convert-type-class"><!-- this is a little ugly... -->
       <xsl:param name="p" /> <!-- the actual type -->
       <xsl:choose>
+         <xsl:when test="contains('org.astrogrid.acr.ivoa.resource.Date',$p/@fulltype)"> <!-- special because of unfortunate naming of date -->
+           
+            <xsl:text>CurationDate_</xsl:text>
+         </xsl:when>
          <xsl:when test="$typeMap/map/t[@from = $p/@type]">            
             <xsl:sequence select="($typeMap/map/t[@from = $p/@type]/@to, 'c')"/>
          </xsl:when>
