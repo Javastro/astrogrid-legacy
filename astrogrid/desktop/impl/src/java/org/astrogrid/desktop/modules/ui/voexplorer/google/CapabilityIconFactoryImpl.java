@@ -11,11 +11,13 @@ import java.util.Map;
 import javax.swing.Icon;
 
 import org.astrogrid.acr.astrogrid.CeaApplication;
+import org.astrogrid.acr.astrogrid.CeaService;
 import org.astrogrid.acr.ivoa.resource.Authority;
 import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.ConeService;
 import org.astrogrid.acr.ivoa.resource.DataCollection;
 import org.astrogrid.acr.ivoa.resource.Organisation;
+import org.astrogrid.acr.ivoa.resource.RegistryService;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.SiapService;
@@ -109,7 +111,7 @@ public class CapabilityIconFactoryImpl implements CapabilityIconFactory {
 		caps.set(ix++,r.getType().indexOf("Spectrum") != -1);		
 		caps.set(ix++,r instanceof SiapService);
 		caps.set(ix++,ConeProtocol.isCdsCatalog(r));
-		caps.set(ix++,SystemFilter.isBoringServiceTitle(r) || SystemFilter.isBoringRelationship(r));
+		caps.set(ix++,r instanceof CeaService || r instanceof RegistryService|| SystemFilter.isBoringServiceTitle(r) || SystemFilter.isBoringRelationship(r));
 		caps.set(ix++, caps.cardinality() == 0); // a service, but an unrecognized one.
 		} else { // just skip these.
 			ix+=7;
