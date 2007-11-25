@@ -5,6 +5,8 @@ import org.w3c.dom.Node;
 import org.codehaus.xfire.util.STAXUtils;
 import java.io.StringReader;
 
+import org.astrogrid.registry.common.NodeDescriber;
+
 import javax.xml.stream.*;
 
 import java.io.IOException;
@@ -93,6 +95,8 @@ public abstract class DefaultQueryService {
    public abstract XMLStreamReader processResults(ResourceSet resultSet,String responseWrapper);
    
    public abstract XMLStreamReader processResults(ResourceSet resultSet,String responseWrapper, String start, String max, String identOnly);
+   
+   public abstract NodeDescriber getXQuerySearchRootResourceNode();
       
    /**
     * Method: Search
@@ -154,12 +158,14 @@ public abstract class DefaultQueryService {
    public XMLStreamReader XQuerySearch(Document query) {
          log.debug("start XQuerySearch");         
          try {
+        	 NodeDescriber nd = getXQuerySearchRootResourceNode();
              String xql = DomHelper.getNodeTextValue(query,"xquery");
              int tempIndexCheck1 = 0;
              int tempIndexCheck2;
              if(xql == null || xql.trim().length() == 0)
             	 xql = DomHelper.getNodeTextValue(query,"XQuery");
              log.debug("Found XQuery in XQuerySearch = " + xql);
+             
              /*
               * Hmmmm right now Astrogrid knows it is vor:Resource in our db, but others do not and
               * might send vr:Resource we will need to translate/replace those and possibly
@@ -169,13 +175,13 @@ public abstract class DefaultQueryService {
              */
             
              if(xql.indexOf("//RootResource") != -1) {
-                 xql = xql.replaceAll("//RootResource","//" + ConfigExtractor.getRootNodeName(voResourceVersion));
+                 xql = xql.replaceAll("//RootResource","//RootResource:" + nd.getLocalName());
              }
              else if(xql.indexOf("/RootResource") != -1) {
-                 xql = xql.replaceAll("/RootResource","//" + ConfigExtractor.getRootNodeName(voResourceVersion));
+                 xql = xql.replaceAll("/RootResource","//RootResource:" + nd.getLocalName());
              }
              else if(xql.indexOf("RootResource") != -1) {
-                xql = xql.replaceAll("RootResource","//" + ConfigExtractor.getRootNodeName(voResourceVersion));
+                xql = xql.replaceAll("RootResource","//RootResource:" + nd.getLocalName());
              }
              
              boolean cont = true;
@@ -252,7 +258,7 @@ public abstract class DefaultQueryService {
             		 xql = xql.replaceAll("\\$r/", "./");
             	 }
              }
-             
+             xql = "declare namespace RootResource = '" + nd.getNameSpace() + "'; " + xql;
              //log.info("Query to be ran = " + xql);
              ResourceSet rs = xdbRegistry.query(xql,collectionName);
              String wrapper = ("<ri:XQuerySearchResponse xmlns:ri=\"" + queryWSDLNS +"\"></ri:XQuerySearchResponse>");

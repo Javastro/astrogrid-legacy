@@ -9,6 +9,7 @@ import org.astrogrid.registry.server.query.ISearch;
 import org.codehaus.xfire.util.STAXUtils;
 import java.io.StringReader;
 
+import org.astrogrid.registry.common.NodeDescriber;
 
 import org.astrogrid.registry.common.RegistryValidator;
 import junit.framework.AssertionFailedError;
@@ -53,7 +54,11 @@ public class RegistryQueryService extends DefaultQueryService implements ISearch
     
     private static final String VORESOURCE_VERSION = "1.0";
     
-    private static final String QUERYINTERFACE_ROOT = "VOResources";    
+    private static final String QUERYINTERFACE_ROOT = "VOResources";   
+    
+    private static final NodeDescriber xqueryNodeDescriber = 
+    	new NodeDescriber("http://www.ivoa.net/xml/RegistryInterface/v1.0",
+    			"Resource","ri");
 
     public RegistryQueryService() {
         super(QUERY_WSDL_NS, CONTRACT_VERSION, VORESOURCE_VERSION);     
@@ -63,6 +68,10 @@ public class RegistryQueryService extends DefaultQueryService implements ISearch
     public String getContractVersion() { return this.CONTRACT_VERSION;}
     public String getResourceVersion() { return this.VORESOURCE_VERSION;}
     public String getQueryInterfaceRoot(String wsInterfaceMethod) {return QUERYINTERFACE_ROOT;}
+    
+    public NodeDescriber getXQuerySearchRootResourceNode() {
+    	return xqueryNodeDescriber;
+    }
     
     public org.astrogrid.registry.server.query.QueryHelper getQueryHelper() {
         if(queryHelper == null) {

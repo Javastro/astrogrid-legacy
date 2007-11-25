@@ -8,6 +8,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import org.astrogrid.registry.common.NodeDescriber;
+
 import org.codehaus.xfire.util.STAXUtils;
 import java.io.StringReader;
 
@@ -52,11 +54,14 @@ public class RegistryQueryService extends DefaultQueryService implements ISearch
     
     private static final String QUERYINTERFACE_ROOT = "vor:VOResources";
     
-
+    private static final NodeDescriber xqueryNodeDescriber = 
+    	new NodeDescriber("http://www.ivoa.net/xml/RegistryInterface/v0.1",
+    			"Resource","ri");
+    
     public RegistryQueryService() {
         super(QUERY_WSDL_NS, CONTRACT_VERSION, VORESOURCE_VERSION);     
     }
-    
+        
     public String getWSDLNameSpace() {return QUERY_WSDL_NS;}
     
     public String getContractVersion() { return CONTRACT_VERSION;}
@@ -64,6 +69,10 @@ public class RegistryQueryService extends DefaultQueryService implements ISearch
     public String getResourceVersion() { return VORESOURCE_VERSION;}
     
     public String getQueryInterfaceRoot(String wsInterfaceMethod) {return QUERYINTERFACE_ROOT;}
+  
+    public NodeDescriber getXQuerySearchRootResourceNode() {
+    	return xqueryNodeDescriber;
+    }    
     
     public org.astrogrid.registry.server.query.QueryHelper getQueryHelper() {
         if(queryHelper == null) {
