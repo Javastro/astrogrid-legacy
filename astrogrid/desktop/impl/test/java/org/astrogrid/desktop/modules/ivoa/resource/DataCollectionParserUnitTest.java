@@ -232,12 +232,12 @@ public class DataCollectionParserUnitTest extends AbstractTestForParser{
 		,new String[] {}
 		, new Relationship[] {}); 
 		DataCollection c = validateDataCollection(r);
-		
 		assertNull(c.getAccessURL());
 		assertEquals(1,c.getCatalogues().length);
 		Catalog cat = c.getCatalogues()[0];
 		assertEquals("Solar Event Catalogue",cat.getName());
-		assertEquals("",cat.getDescription());
+		assertNull(cat.getDescription());
+		
 		TableBean[] tables = cat.getTables();
 		assertNotNull(tables);
 		assertEquals(17,tables.length);
@@ -252,8 +252,7 @@ public class DataCollectionParserUnitTest extends AbstractTestForParser{
 		assertNotNull(cb);		
 		assertNotNull(cb.getName());
 		assertEquals("time_start",cb.getName());
-		assertNotNull(cb.getDescription());
-		assertEquals("",cb.getDescription());
+		assertNull(cb.getDescription());
 		assertNotNull(cb.getDatatype());
 		assertEquals("char",cb.getDatatype());
 		assertNull(cb.getUCD());

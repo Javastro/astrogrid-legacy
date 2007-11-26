@@ -56,7 +56,7 @@ public class PlasticBibcodeActivity extends AbstractResourceActivity {
         confirmWhenOverThreshold(sz,"Send all " + " resources?",act);	
 	}
 	private void sendBibcodeMessage(final Resource r) {
-		(new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName()) {						
+		(new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY) {						
 			protected Object construct() throws Exception {
 				List l = new ArrayList();
 				l.add(r.getContent().getSource().getValue());

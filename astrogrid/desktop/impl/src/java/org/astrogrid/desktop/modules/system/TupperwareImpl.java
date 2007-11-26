@@ -185,14 +185,21 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
 		}
 
 		protected Object construct() throws Exception {
+		    final int opCount = 7;
+		    int progress = 0;
+		    setProgress(progress,opCount);
 		    List noArgs = new ArrayList();
 		    String ivorn = safeStringCast(singleTargetPlasticMessage(CommonMessageConstants.GET_IVORN,noArgs,this.id));
+            setProgress(++progress,opCount);
 		    if (AR_IVORN.equals(ivorn)) {
 		    	return null; // it's only ourselves
 		    }
 		    String name =hub.getName(this.id) ;
+            setProgress(++progress,opCount);		    
 		    String description = safeStringCast(singleTargetPlasticMessage(CommonMessageConstants.GET_DESCRIPTION,noArgs,this.id));
+            setProgress(++progress,opCount);
 		    String version = safeStringCast(singleTargetPlasticMessage(CommonMessageConstants.GET_VERSION,noArgs,this.id));
+            setProgress(++progress,opCount);		    
 		    String iconURLString = safeStringCast(singleTargetPlasticMessage(CommonMessageConstants.GET_ICON,noArgs,this.id));
 		    URL iconUrl;
             ImageIcon icon;
@@ -204,8 +211,9 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
                 iconUrl = null;
                 icon = null; //TODO default?
             }
-			
+            setProgress(++progress,opCount);
 		    List appMsgList = hub.getUnderstoodMessages(this.id);
+            setProgress(++progress,opCount);		    
 		     PlasticApplicationDescription result = new PlasticApplicationDescription(this.id,name,description,appMsgList,version,icon,iconUrl,ivorn);
 		     try {
 		    	 model.getReadWriteLock().writeLock().lock();
@@ -215,6 +223,7 @@ public class ApplicationRegisteredMessageHandler extends AbstractMessageHandler 
 		     } finally {
 		    	 model.getReadWriteLock().writeLock().unlock();
 		     }
+	            setProgress(++progress,opCount);
 			return null;
 		}
 	}

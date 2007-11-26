@@ -84,7 +84,7 @@ public class SnitchImpl implements SnitchInternal {
 
 	public void snitch(final String message, final Map params) {
 		if (! snitchDisabled) {
-		(new BackgroundWorker(ui,"") {
+		(new BackgroundWorker(ui,"Reporting usage",BackgroundWorker.VERY_SHORT_TIMEOUT,Thread.MIN_PRIORITY) {
 
 		protected Object construct() throws Exception {
 			StrBuilder sb = new StrBuilder(base);

@@ -44,7 +44,7 @@ public final class BulkMoveWorker extends BackgroundWorker {
      * @param l list of file objects to copy.
      */
     public BulkMoveWorker(FileSystemManager vfs,UIComponent parent,File saveDir, List l) {
-        super(parent,  "Moving to " + saveDir);
+        super(parent,  "Moving to " + saveDir,BackgroundWorker.VERY_LONG_TIMEOUT);
         this.vfs = vfs;
         this.saveDir = saveDir;
         saveObject = null;
@@ -52,15 +52,22 @@ public final class BulkMoveWorker extends BackgroundWorker {
     }
     
     public BulkMoveWorker(FileSystemManager vfs,UIComponent parent,FileObject saveObject, List l) {
-        super(parent,  "Moving to " + saveObject.getName().getPath());
+        super(parent,  "Moving to " + saveObject.getName().getPath(),BackgroundWorker.VERY_LONG_TIMEOUT);
         this.vfs = vfs;
         this.saveObject = saveObject;
         this.saveDir = null;
         this.l = l;
     }
+    {
+        setWouldLikeIndividualMonitor(true);
+    }
 
     protected FileObject saveTarget;
     protected Object construct() throws Exception {
+        final int tasksCount = l.size() + 1;
+        int progress = 0;
+        setProgress(progress,tasksCount);
+        reportProgress("Validating save location");        
         Set moveSourceDirs = new HashSet();
         if (saveObject == null) {
             saveTarget = vfs.resolveFile(this.saveDir.toURI().toString());
@@ -68,29 +75,35 @@ public final class BulkMoveWorker extends BackgroundWorker {
             saveTarget = saveObject;
         }
         if (! saveTarget.exists()) {
+            reportProgress("Creating save location");
             saveTarget.createFolder();
         }
         if (! saveTarget.isWriteable()) {
             throw new Exception("Not permitted to write to " + saveTarget.getName());
         }
+        reportProgress("Save location validated");
+        setProgress(++progress,tasksCount);        
         // will records errors copy indivitual files, continue, and report at the end.
         Map errors = new HashMap();
         // go through each file in turn.
         for (Iterator i = this.l.iterator(); i.hasNext(); ) {
                 FileObject src = (FileObject)i.next();
+                reportProgress("Processing " + src.getName().getBaseName());                
+                FileObject dest = null;
                 try {
                 String name = StringUtils.substringBeforeLast(src.getName().getBaseName(),".");
                 String ext = StringUtils.substringAfterLast(src.getName().getBaseName(),".");
                 if (StringUtils.isNotBlank(ext)) {
                     ext = "." + ext;
                 }
-                FileObject dest = null;
                 int n = 0;
                 // create a target filename - and if it already exists, change it by adding a number.
                 do {
                     dest = saveTarget.resolveFile(name + (n == 0 ? "" : "-" + n ) +  ext);
                     n++;
                 } while  (dest.exists());
+                reportProgress("Destination will be " + dest.getName().getBaseName());
+                
                 
                 // cool. now got a non-existent destination file.
                 FileObject srcParent = src.getParent();
@@ -100,6 +113,9 @@ public final class BulkMoveWorker extends BackgroundWorker {
                 src.moveTo(dest);
             } catch (FileSystemException x) {
                 errors.put(src,x);
+                reportProgress("Move from " + src.getName().getBaseName() + " failed");                
+            }finally {
+                setProgress(++progress,tasksCount);                
             }
         }
         // notify the parent object that we've made changes - cause a refresh.

@@ -114,7 +114,7 @@ private void saveSourceList() {
 	/** process a single static source */
 	public void loadStaticSource(final AnnotationSource source) {
 		// do this on a background thread..
-		(new BackgroundWorker(ui,"Loading annotations from " + source.getName()) {
+		(new BackgroundWorker(ui,"Loading annotations from " + source.getName(),BackgroundWorker.LONG_TIMEOUT,Thread.MIN_PRIORITY) {
 
 			protected Object construct() throws Exception {
 				Collection anns = io.load(source);
@@ -239,7 +239,7 @@ private void saveSourceList() {
 			final AnnotationSource source = (AnnotationSource) i.next();
 			if (source instanceof DynamicAnnotationSource &&
 					! m.containsKey(source)) {
-				(new BackgroundWorker(ui,"Loading annotations from " + source.getName()) {
+				(new BackgroundWorker(ui,"Loading annotations from " + source.getName(),BackgroundWorker.SHORT_TIMEOUT,Thread.MIN_PRIORITY) {
 					protected Object construct() throws Exception {
 						final DynamicAnnotationSource dynSource = (DynamicAnnotationSource)source;
 						Annotation ann = (dynSource).getAnnotationFor(r);

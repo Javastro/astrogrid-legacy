@@ -56,6 +56,7 @@ import org.astrogrid.desktop.modules.ui.comp.ExpandCollapseButton;
 import org.astrogrid.desktop.modules.ui.comp.MyTitledBorder;
 import org.astrogrid.desktop.modules.ui.comp.PinnableLabel;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
+import org.astrogrid.desktop.modules.ui.execution.ExecutionTracker;
 import org.astrogrid.desktop.modules.ui.taskrunner.ParamBuilder.Param;
 import org.astrogrid.workflow.beans.v1.Tool;
 
@@ -506,7 +507,7 @@ private FormLayout fl;
         for (int i = 0; i < creators.length; i++) {
             final URI logoURI = creators[i].getLogoURI();
             if (logoURI != null) {
-                (new BackgroundWorker(parent,"Fetching creator logo") {
+                (new BackgroundWorker(parent,"Fetching creator logo",BackgroundWorker.SHORT_TIMEOUT,Thread.MIN_PRIORITY) {
                     
                     protected Object construct() throws Exception {
                         Image currentResourceLogo = IconHelper.loadIcon(logoURI.toURL()).getImage();

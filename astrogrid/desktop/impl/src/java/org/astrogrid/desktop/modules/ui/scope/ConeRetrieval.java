@@ -24,6 +24,7 @@ public class ConeRetrieval extends Retriever {
     private final Cone cone;
     private final double sz;
     protected Object construct() throws Exception {
+        reportProgress("Constructing query");
         URL coneURL = cone.constructQuery(service.getId(),ra,dec,sz);        
         // construct 2 urls - one that returns minimal results to query on to get data for astroscope.
         // other - with fullest data -  to use as the url passed to plastic apps / saved to disk
@@ -41,6 +42,7 @@ public class ConeRetrieval extends Retriever {
         
         TreeNode serviceNode = createServiceNode(fullURL, sb.toString());
         
+        reportProgress("Querying service");
         InputSource source = new InputSource(prelimURL.openStream());
         SummarizingTableHandler th = createTableHandler(serviceNode);
         parseTable(source, th);

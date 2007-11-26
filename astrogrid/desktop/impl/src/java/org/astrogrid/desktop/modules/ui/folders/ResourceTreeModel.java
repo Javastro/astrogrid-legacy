@@ -171,7 +171,7 @@ public class ResourceTreeModel extends DefaultTreeModel {
     private void updateNode(final DefaultMutableTreeNode oldNode,
                             final String subscription) {
         new BackgroundWorker(parent, 
-                             "Loading subscription at " + subscription) {
+                             "Loading subscription at " + subscription,BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
             {
                 assert isAttached();
             }

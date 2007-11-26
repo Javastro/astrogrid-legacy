@@ -64,7 +64,9 @@ import org.astrogrid.desktop.modules.ag.ProcessMonitor;
 import org.astrogrid.desktop.modules.ag.RemoteProcessManagerInternal;
 import org.astrogrid.desktop.modules.dialogs.ConfirmDialog;
 import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
+import org.astrogrid.desktop.modules.system.ui.RetriableBackgroundWorker;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.TaskRunnerInternal;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
@@ -385,7 +387,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
      * @param o - either a vfs.FileObject, or a URI
      */
     private void loadToolDocument(final Object o) {
-        (new BackgroundOperation("Opening task document") {
+        (new BackgroundOperation("Opening task document",Thread.MAX_PRIORITY) {
             private CeaApplication newApp;
             private InterfaceBean newInterface;
             private FileObject fo;
@@ -397,10 +399,13 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
             	    } else if (o instanceof FileObject) {
             	        fo = (FileObject)o;
             	    }
+            	    reportProgress("Resolved file");
                 fr = new InputStreamReader(fo.getContent().getInputStream());
                Tool t = Tool.unmarshalTool(fr);
+               reportProgress("Loaded file contents");
                
-               newApp = apps.getCeaApplication(new URI("ivo://" + t.getName()));                       
+               newApp = apps.getCeaApplication(new URI("ivo://" + t.getName()));      
+               reportProgress("Found associated registry resource");
                InterfaceBean[] candidates = newApp.getInterfaces();
                for (int i = 0; i < candidates.length; i++) {
                    if (candidates[i].getName().equalsIgnoreCase(t.getInterface().trim())) {
@@ -410,6 +415,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                if (newInterface == null) {
                    throw new IllegalArgumentException("Cannot find interface " + t.getInterface() + " in registry entry for " + t.getName());
                }
+               reportProgress("Completed");
                return t;
             	} finally {
             		if (fr != null) {
@@ -526,14 +532,15 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 
 	         public void actionPerformed(ActionEvent e) {
 	             final Tool tOrig = pForm.getTool();
-	             (new BackgroundOperation("Executing @ " + service.getTitle()) {
+	             (new BackgroundOperation("Executing @ " + service.getTitle(),BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
 	                 protected Object construct() throws ParserConfigurationException, MarshalException, ValidationException, InvalidArgumentException, ServiceException, NotFoundException  {
 	                     logger.debug("Executing");
 	                     Document doc = XMLUtils.newDocument();
 	                     Marshaller.marshal(tOrig,doc);
+	                     reportProgress("Serialized document");
 	                     // ok. looks like a goer - lets create a monitor.
-	                     logger.debug("Created monitor");
 	                     ProcessMonitor monitor = rpmi.create(doc);
+	                     reportProgress("Created monitor");
 	                     // start tracking it - i.e. display it in the ui.
 	                     // we do this early, even before we start it to show some visual progress.
 	                     tracker.add(monitor);
@@ -541,6 +548,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	                     // start it off
 	                     try {
 	                        monitor.start(service.getId());
+	                        reportProgress("Started task");
 	                    } catch (final ACRException x) {
 	                        // catching exceptions here - don't want them to propagate
 	                        // (and so be reported as a popup dialogue
@@ -557,7 +565,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
 	                        return null; // bail out.
 	                    } 
 	                     
-	                     rpmi.addMonitor(monitor); // it's running - so now can add it to the rpmi's monitor list.
+	                     rpmi.addMonitor(monitor); // it's running - so now can add it to the rpmi's monitor list.	                     
 	                     return null;
 	                 } 
 
@@ -570,13 +578,18 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
      * @author Noel.Winstanley@manchester.ac.uk
      * @since Aug 2, 200712:43:15 AM
      */
-    private final class ListServicesWorker extends BackgroundOperation {
+    private final class ListServicesWorker extends RetriableBackgroundWorker {
 
         private ListServicesWorker(URI appId) {
-            super("Listing task providers");
+            super(TaskRunnerImpl.this,"Listing task providers",Thread.MAX_PRIORITY);
             this.appId = appId;
         }
 
+
+        public BackgroundWorker createRetryWorker() {
+            return new ListServicesWorker(appId);
+        }
+        
         private final URI appId;
 
         protected Object construct() throws Exception {
@@ -734,8 +747,12 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                        protected Object construct() throws Exception {
                            Writer w = null;
                            try {
-                               w = new OutputStreamWriter(vfs.resolveFile(u.toString()).getContent().getOutputStream());
+                               final FileObject fo = vfs.resolveFile(u.toString());
+                               reportProgress("Resolved file");
+                            w = new OutputStreamWriter(fo.getContent().getOutputStream());
+                            reportProgress("Opened file for writing");
                             t.marshal(w);                       
+                            reportProgress("Wrote file");
                            return null;
                            } finally {
                                if (w != null) {

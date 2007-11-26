@@ -94,7 +94,7 @@ public class RenameActivity extends AbstractFileActivity {
 
         /** process input */
         public void ok() {
-            (new BackgroundWorker(uiParent.get(),"Renaming " + originalName) {
+            (new BackgroundWorker(uiParent.get(),"Renaming " + originalName,Thread.MAX_PRIORITY) {
                 
                 protected Object construct() throws Exception {
                     final FileObject parent = original.getParent();

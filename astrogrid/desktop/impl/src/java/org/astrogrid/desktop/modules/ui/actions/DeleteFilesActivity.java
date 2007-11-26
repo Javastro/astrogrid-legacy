@@ -64,12 +64,19 @@ public class DeleteFilesActivity extends AbstractFileActivity {
 		logger.debug(l);
 
 
-		BackgroundWorker act = new BackgroundWorker(uiParent.get(),"Deleting files") {
+		BackgroundWorker act = new BackgroundWorker(uiParent.get(),"Deleting files",BackgroundWorker.LONG_TIMEOUT) {
+		    {
+		        setWouldLikeIndividualMonitor(true);
+		    }
             protected Object construct() throws Exception {
+                int count = 0;
+                int max = l.size();
+                setProgress(count,max);
                 Set parents = new HashSet();
                 Map errors = new HashMap();
                 for (Iterator i = l.iterator(); i.hasNext();) {
-                    FileObject f = (FileObject) i.next();         
+                    FileObject f = (FileObject) i.next();
+                    reportProgress("Deleting " + f.getName().getBaseName());
                     try {
                         FileObject parent = f.getParent();
                         if (parent != null) {
@@ -78,6 +85,9 @@ public class DeleteFilesActivity extends AbstractFileActivity {
                         f.delete(Selectors.SELECT_ALL);
                     } catch(FileSystemException x) {
                         errors.put(f,x);
+                        reportProgress("Failed to delete");
+                    } finally {
+                        setProgress(++count,max);
                     }
                 }
                 for (Iterator i = parents.iterator(); i.hasNext();) {

@@ -117,7 +117,7 @@ private final PlasticScavenger scav;
 	}
 
 	private void sendLoadImageMessage(final FileObject f) {
-		(new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName()) {
+		(new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY) {
 		    {
 		        setTransient(true);
 		    }

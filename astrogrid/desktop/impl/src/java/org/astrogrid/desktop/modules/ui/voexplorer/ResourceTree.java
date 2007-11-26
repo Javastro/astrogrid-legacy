@@ -72,6 +72,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.vfs.FileObject;
 import org.astrogrid.acr.InvalidArgumentException;
 import org.astrogrid.acr.ServiceException;
 import org.astrogrid.acr.ivoa.resource.Resource;
@@ -584,16 +585,20 @@ public class ResourceTree extends JTree {
         if (loc == null) {
             return;
         }
-        new BackgroundWorker(parent, "Saving folder description") {
+        new BackgroundWorker(parent, "Saving folder description",BackgroundWorker.LONG_TIMEOUT,Thread.MIN_PRIORITY + 3) {
             {
                 setTransient(true); // display errors as transient popup.
             }
             protected Object construct() throws IOException, ServiceException {
                 OutputStream os = null;
                 try {
-                    os = chooser.getVFS().resolveFile(loc.toString()).getContent()
-                                                        .getOutputStream();
+                    reportProgress("Resolving file");
+                    final FileObject fo = chooser.getVFS().resolveFile(loc.toString());
+                    reportProgress("Opening file");
+                    os = fo.getContent().getOutputStream();
+                    reportProgress("Exporting data");
                     persister.toXml(bean, os);
+                    reportProgress("Completed");
                 }
                 finally {
                     if (os != null) {
@@ -619,13 +624,18 @@ public class ResourceTree extends JTree {
         if (loc == null) {
             return;
         }
-        new BackgroundWorker(parent, "Loading folder description") {
+        new BackgroundWorker(parent, "Loading folder description",BackgroundWorker.LONG_TIMEOUT) {
             public Object construct() throws IOException, ServiceException {
                 InputStream is = null;
                 try {
-                    is = chooser.getVFS().resolveFile(loc.toString()).getContent()
+                    reportProgress("Resolving file");
+                    final FileObject fo = chooser.getVFS().resolveFile(loc.toString());
+                    reportProgress("Opening file");
+                    is = fo.getContent()
                             .getInputStream();
+                    reportProgress("Reading contents");
                     Object bean = persister.fromXml(is);
+                    reportProgress("Completed");
                     return bean;
                 }
                 finally {

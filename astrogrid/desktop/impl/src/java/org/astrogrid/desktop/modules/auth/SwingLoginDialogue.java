@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.8 2007/11/21 07:55:39 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.9 2007/11/26 14:44:45 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -75,7 +75,11 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
     	this.defaultCommunity = defaultCommunity;
     	final MutableComboBoxModel model = new DefaultComboBoxModel();
     	//retreive a list of communities in a background thread
-    	(new BackgroundWorker(this,"Listing known communities") {
+    	(new BackgroundWorker(this,"Listing known communities",Thread.MAX_PRIORITY) {
+    	    {
+    	        setTransient(true);
+    	    }
+    	        
             protected Object construct() throws Exception {
                 return reg.xquerySearch(
                 "for $r in //vor:Resource[not (@status='deleted' or @status='inactive') and vr:identifier &= '*PolicyManager'] order by $r/vr:identifier return $r");
@@ -193,7 +197,7 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
         prefs.put("username",getUser());
         
         // user pressed ok - so try to login
-        new BackgroundWorker(this,"Logging in") {
+        new BackgroundWorker(this,"Logging in",BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
 
             protected Object construct() throws Exception {
                 comm.login(getUser(),getPassword(),getCommunity()); 
@@ -288,6 +292,9 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.9  2007/11/26 14:44:45  nw
+Complete - task 224: review configuration of all backgroiund workers
+
 Revision 1.8  2007/11/21 07:55:39  nw
 Complete - task 65: Replace modal dialogues
 

@@ -167,7 +167,7 @@ public class NameResolvingPositionTextField extends PositionTextField implements
         fireResolving();                
     	objectName = inputPos;
     	pos = new SesamePositionBean(); // temporary placehoder
-    	latest = new BackgroundWorker(parent,"Resolving " + inputPos + " using Sesame",Thread.MAX_PRIORITY) {
+    	latest = new BackgroundWorker(parent,"Resolving " + inputPos + " using Sesame",BackgroundWorker.SHORT_TIMEOUT,Thread.MAX_PRIORITY) {
 			protected Object construct() throws Exception {
 				return ses.resolve(inputPos.trim());   
 			}

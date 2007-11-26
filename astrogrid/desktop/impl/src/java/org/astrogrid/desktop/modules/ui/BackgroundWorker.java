@@ -1,4 +1,4 @@
-/*$Id: BackgroundWorker.java,v 1.15 2007/11/26 12:01:48 nw Exp $
+/*$Id: BackgroundWorker.java,v 1.16 2007/11/26 14:44:45 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -174,6 +174,14 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
         	this(context.findMainWindow(),msg,timeout);
         	system = true;
         }        
+        public BackgroundWorker(UIContext context, String msg, int priority) {
+            this(context.findMainWindow(),msg,priority);
+            system = true;
+        }  
+        public BackgroundWorker(UIContext context, String msg, TimeoutEnum timeout,int priority) {
+            this(context.findMainWindow(),msg,timeout,priority);
+            system = true;
+        }          
         public BackgroundWorker(UIComponent parent,String msg) {
             this(parent,msg,DEFAULT_TIMEOUT,Thread.NORM_PRIORITY);
         }
@@ -198,12 +206,13 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
             super();
             this.parent = parent;
             this.workerTitle = msg;
-            String val = parent.getContext().getConfiguration().getKey("performance.timeoutFactor");
-            long tout;
-            try {
-                tout = Long.parseLong(val) * timeout.factor;
-            } catch (NumberFormatException e) {               
-                tout = 5 * timeout.factor;
+            long tout = 5 * timeout.factor;
+            if (parent.getContext() != null && parent.getContext().getConfiguration() != null) {
+                String val = parent.getContext().getConfiguration().getKey("performance.timeoutFactor");
+                try {
+                    tout = Long.parseLong(val) * timeout.factor;
+                } catch (NumberFormatException e) { 
+                }
             }
             this.timeout = tout;
             this.priority = priority;
@@ -437,6 +446,7 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
         protected final void reportProgress(String s) {
             // only most recent message is persisted.
             progressMessage = s;
+            // add logging here too?
             setChanged();
             notifyObservers();
         }
@@ -505,6 +515,9 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
 
 /* 
 $Log: BackgroundWorker.java,v $
+Revision 1.16  2007/11/26 14:44:45  nw
+Complete - task 224: review configuration of all backgroiund workers
+
 Revision 1.15  2007/11/26 12:01:48  nw
 added framework for progress indication for background processes
 

@@ -1,4 +1,4 @@
-/*$Id: JesStrategyImpl.java,v 1.16 2007/11/20 06:31:38 nw Exp $
+/*$Id: JesStrategyImpl.java,v 1.17 2007/11/26 14:44:46 nw Exp $
  * Created on 05-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -218,6 +218,10 @@ public class JesStrategyImpl implements RemoteProcessStrategy {
 
         public void refresh() throws ServiceException {
             execute();
+        }
+
+        public String getTitle() {
+            return "Tracking execution of " + wf.getName();
         }		
 
 	}
@@ -313,6 +317,9 @@ public class JesStrategyImpl implements RemoteProcessStrategy {
 
 /* 
 $Log: JesStrategyImpl.java,v $
+Revision 1.17  2007/11/26 14:44:46  nw
+Complete - task 224: review configuration of all backgroiund workers
+
 Revision 1.16  2007/11/20 06:31:38  nw
 re-fixed result parameter naming so that that file-types are provided, yet AR interface isn't affected.
 

@@ -113,16 +113,18 @@ public class AuthorityParserUnitTest extends AbstractTestForParser{
 				, "STScI ARC"
 				, "Space Telescope Science Institute Archive"
 				, "Authority");
+		
 		checkCuration(r.getCuration()
 				, new Contact[] {		}
 		, new Creator[] {	new Creator() } // hmm should empty records be included? - garbage in, garbage out, I guess
-		, new ResourceName[] { new ResourceName(){{setValue("");}}}
+		, new ResourceName[] { new ResourceName()}
 		, new Date[] {	}
 		, new ResourceName() {{
 			setValue("Space Telescope Science Institute");
 			}}
-		, "");
+		, null);
 		
+			
 		checkContent(r.getContent()
 				, new String[] {"hubble space telescope","hst archive"}
 		, new String[] {} // nb, note lower casing here.
@@ -132,7 +134,7 @@ public class AuthorityParserUnitTest extends AbstractTestForParser{
 		assertNull(a.getManagingOrg());
 		
 		WebTester tester = basicResourceRendererTests(a);
-		tester.assertTextPresent("Authority");		
+		tester.assertTextPresent("Authority");
 	}
 	
 	public void testAuthority4() throws Exception {

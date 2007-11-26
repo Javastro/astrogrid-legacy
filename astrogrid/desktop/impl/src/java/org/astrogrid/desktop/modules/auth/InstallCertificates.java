@@ -48,18 +48,22 @@ public class InstallCertificates implements Runnable {
 		
 	}
 	public void run() {
-		(new BackgroundWorker(ui,"Checking for new certificates") {
+		(new BackgroundWorker(ui,"Checking for new certificates",Thread.MIN_PRIORITY) {
 			protected Object construct()  {
 				if (! certDir.exists()) {
-					logger.info("Certificate directory does not exist - creating " + certDir);
+					reportProgress("Certificate directory does not exist - creating " + certDir);
 					certDir.mkdirs();
 				}
-				XMLInputFactory fac = XMLInputFactory.newInstance();				
+				XMLInputFactory fac = XMLInputFactory.newInstance();
+				int count = 0;
+				int max = certLists.size();
+				setProgress(count,max);
 				for (Iterator i = certLists.iterator(); i.hasNext(); ) {
 					// fetch and parse each of these certificate lists.
+				    
 					XMLStreamReader in = null;
 					String certList = (String)i.next();
-					logger.info("Reading certificate list from " + certList);
+					reportProgress("Reading certificate list from " + certList);
 					try {
 						in = fac.createXMLStreamReader((new URL(certList)).openStream());
 						while (in.hasNext()) {
@@ -69,10 +73,11 @@ public class InstallCertificates implements Runnable {
 							}
 						}
 					} catch (XMLStreamException x) {
-						logger.warn("Failed to parse " + certList );
+						reportProgress("Failed to parse " + certList );
 					} catch (IOException x) {
-						logger.warn("Failed to parse " + certList );						
+						reportProgress("Failed to parse " + certList );						
 					} finally {
+					    setProgress(++count,max);
 						try {
 							if (in != null) {
 								in.close();

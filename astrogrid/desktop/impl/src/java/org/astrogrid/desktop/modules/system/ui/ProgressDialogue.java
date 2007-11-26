@@ -113,9 +113,10 @@ public class ProgressDialogue extends BaseDialog implements Observer {
         // check for new messages.
         final Info info = worker.getInfo();
         String m = info.getProgressMessage();
-        if (lm.size() > 0 && ! lm.get(0).equals(m)) {
-            lm.add(0,m);
-            list.ensureIndexIsVisible(0);
+        int lastix =lm.getSize() -1; 
+        if (lastix < 0 || ! lm.get(lastix).equals(m)) {
+            lm.addElement(m);
+            list.ensureIndexIsVisible(lastix+1);
         }
         if (info.getStatus() == BackgroundWorker.COMPLETED && hide.isSelected()) {
             setVisible(false);

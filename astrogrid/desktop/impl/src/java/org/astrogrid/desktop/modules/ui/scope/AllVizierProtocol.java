@@ -136,7 +136,9 @@ protected TreeNode createServiceNode(URL serviceURL, String tooltip) {
 	return plain;
 }
 		protected Object construct() throws Exception {
+	        reportProgress("Constructing query");		    
 			URL q = cone.constructQuery(vizierEndpoint,ra,dec,raSize);
+	        reportProgress("Querying service");			
 			InputSource source = new InputSource(q.openStream());
 			SummarizingTableHandler th = createTableHandler();
 			parseTable(source,th);

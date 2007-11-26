@@ -32,8 +32,10 @@ import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.SchedulerInternal;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker.TimeoutEnum;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
@@ -122,6 +124,56 @@ public class SelfTesterImpl implements SelfTester, Runnable {
     // ui component to display the results.
     private class SelfTestDisplay extends UIComponentImpl implements TestListener, ActionListener{
 
+        /**
+         * @author Noel.Winstanley@manchester.ac.uk
+         * @since Nov 26, 20077:31:02 PM
+         */
+        private final class TestRunningWorker extends BackgroundWorker implements TestListener{
+            /**
+             * @param parent
+             * @param msg
+             * @param timeout
+             * @param priority
+             */
+            private TestRunningWorker() {
+                super(SelfTestDisplay.this.getContext(), "Running self tests", BackgroundWorker.LONG_TIMEOUT, Thread.MIN_PRIORITY);
+            }
+            int count = 0;
+            int max = suite.countTestCases();
+            protected Object construct() throws Exception {
+                setProgress(count,max);
+                TestResult result = new TestResult();
+                result.addListener(SelfTestDisplay.this); // listener methods will be called on the BG thread, but changes appear in ui on EDT thread
+                result.addListener(this);// just for prgress monitor reporting.
+                suite.run(result);
+                reportProgress("Completed");
+                return result;
+            }
+
+            protected void doFinished(Object result) {
+                TestResult tr= (TestResult)result;
+               setTitle("Self Testing - " + tr.runCount() + " tests run, " + tr.failureCount() + " failures, " + tr.errorCount() + " errors");
+            }
+
+            protected void doAlways() {
+                retest.setEnabled(true);              
+            }
+
+            public void addError(Test arg0, Throwable arg1) {
+            }
+
+            public void addFailure(Test arg0, AssertionFailedError arg1) {
+            }
+
+            public void endTest(Test arg0) {
+                setProgress(++count,max);
+            }
+            public void startTest(Test arg0) {
+                if (arg0 instanceof TestCase) {
+                    reportProgress("Testing " + ((TestCase)arg0).getName());
+                }
+            }
+        }
         // handle on the currently running test
         private SingleTestResult currentTest = null;
         // button to trigger a retest
@@ -196,22 +248,7 @@ public class SelfTesterImpl implements SelfTester, Runnable {
             } finally {
                 testResults.getReadWriteLock().writeLock().unlock();
             }
-            new BackgroundWorker(this,"Running self tests") {
-
-                protected Object construct() throws Exception {
-                    TestResult result = new TestResult();
-                    result.addListener(SelfTestDisplay.this); // listener methods will be called on the BG thread, but changes appear in ui on EDT thread
-                    suite.run(result);
-                    return result;
-                }
-                protected void doFinished(Object result) {
-                    TestResult tr= (TestResult)result;
-                   setTitle("Self Testing - " + tr.runCount() + " tests run, " + tr.failureCount() + " failures, " + tr.errorCount() + " errors");
-                }
-                protected void doAlways() {
-                    retest.setEnabled(true);              
-                }
-            }.start();
+            new TestRunningWorker().start();
         }
         
         // test listener interface. build up the list of results.

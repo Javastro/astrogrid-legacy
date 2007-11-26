@@ -151,7 +151,7 @@ public class AnnotationIO {
 	 * persist the user anotations. - finds the user annotations from the cache, and then saves then to disk.
 	 */
 	private void saveUserAnnotations() {
-	    new BackgroundWorker(service.ui,"Saving user annotations") {
+	    new BackgroundWorker(service.ui,"Saving user annotations",Thread.MIN_PRIORITY) {
 	        {
 	            setTransient(true);
 	        }

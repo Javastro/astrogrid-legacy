@@ -38,6 +38,7 @@ public class SiapRetrieval extends Retriever {
     private final double decSize;
     private final Siap siap;
     protected Object construct() throws Exception{
+        reportProgress("Constructing query");        
             URL siapURL = siap.constructQueryS(service.getId(),ra, dec,raSize,decSize);
             StringBuffer sb = new StringBuffer();
             sb.append("<html>Title: ").append(service.getTitle())
@@ -53,7 +54,7 @@ public class SiapRetrieval extends Retriever {
                   
             TreeNode serviceNode = createServiceNode(siapURL,sb.toString());
             // build subtree for this service
-
+            reportProgress("Querying service");
             InputSource source = new InputSource(siapURL.openStream());
             SummarizingTableHandler th = new SiapTableHandler(serviceNode);
             parseTable(source, th);

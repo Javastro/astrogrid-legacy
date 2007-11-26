@@ -1,4 +1,4 @@
-/*$Id: SsapRetrieval.java,v 1.11 2007/09/21 16:35:15 nw Exp $
+/*$Id: SsapRetrieval.java,v 1.12 2007/11/26 14:44:45 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,6 +39,7 @@ public class SsapRetrieval extends Retriever {
     protected final double raSize;
     protected final double decSize;
     protected Object construct() throws Exception {
+        reportProgress("Constructing query");        
         URL ssapURL =  ssap.constructQueryS(service.getId(),ra,dec,raSize,decSize);
         StringBuffer sb = new StringBuffer();
         sb.append("<html>Title: ").append(service.getTitle())
@@ -50,7 +51,7 @@ public class SsapRetrieval extends Retriever {
             }
                 sb.append("</html>");        TreeNode serviceNode = createServiceNode(ssapURL,sb.toString());
         // build subtree for this service
-
+                reportProgress("Querying service");
         InputSource source = new InputSource(ssapURL.openStream());
         SummarizingTableHandler th = new SsapTableHandler(serviceNode);
         parseTable(source, th); 
@@ -197,6 +198,9 @@ public class SsapRetrieval extends Retriever {
 
 /* 
 $Log: SsapRetrieval.java,v $
+Revision 1.12  2007/11/26 14:44:45  nw
+Complete - task 224: review configuration of all backgroiund workers
+
 Revision 1.11  2007/09/21 16:35:15  nw
 improved error reporting,
 various code-review tweaks.

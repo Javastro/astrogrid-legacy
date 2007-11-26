@@ -1,4 +1,4 @@
-/*$Id: CeaStrategyImpl.java,v 1.28 2007/11/20 06:31:38 nw Exp $
+/*$Id: CeaStrategyImpl.java,v 1.29 2007/11/26 14:44:46 nw Exp $
  * Created on 11-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -396,6 +396,11 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
             return app;
         }
 
+        public String getTitle() {
+           
+            return "Tracking execution of " + app.getTitle();
+        }
+
 
 	}
 	
@@ -628,6 +633,9 @@ public class CeaStrategyImpl implements RemoteProcessStrategy{
 
 /* 
 $Log: CeaStrategyImpl.java,v $
+Revision 1.29  2007/11/26 14:44:46  nw
+Complete - task 224: review configuration of all backgroiund workers
+
 Revision 1.28  2007/11/20 06:31:38  nw
 re-fixed result parameter naming so that that file-types are provided, yet AR interface isn't affected.
 

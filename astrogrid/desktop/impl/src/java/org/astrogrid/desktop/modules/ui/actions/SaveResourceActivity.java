@@ -57,12 +57,16 @@ public void actionPerformed(ActionEvent e) {
 	}	
 	final List l = computeInvokable();
 		final URI u = chooser.chooseResourceWithParent("Choose output file",true,true,true,comp);
-		(new BackgroundWorker(uiParent.get(),"Exporting XML") {
+		(new BackgroundWorker(uiParent.get(),"Exporting XML",BackgroundWorker.LONG_TIMEOUT) {
 
 			protected Object construct() throws Exception {
 				OutputStream os = null;
+				int max = l.size() + 2;
+				int count = 0;
+				setProgress(count,max);
 				try {
 				    os = vfs.resolveFile(u.toString()).getContent().getOutputStream();
+				    setProgress(++count,max);
 				    if (l.size() > 1) {
 				        os.write("<resources>\n".getBytes());
 				    }
@@ -70,10 +74,12 @@ public void actionPerformed(ActionEvent e) {
 				        Resource res = (Resource)l.get(i);
 				        Document doc = reg.getResourceXML(res.getId());
 				        DomHelper.ElementToStream(doc.getDocumentElement(),os);
+				        setProgress(++count,max);
 				    }
                     if (l.size() > 1) {
                         os.write("\n</resources>".getBytes());
                     }				    
+                    setProgress(++count,max);
 				} finally {
 					if (os != null) {
 						try {

@@ -62,7 +62,7 @@ public class PlasticRegistryActivity extends AbstractResourceActivity {
 		confirmWhenOverThreshold(sz,"Send all " + sz + " resources?",r);
 	}
 	private void sendLoadMessage(final Resource r) {
-		(new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName()) {		
+		(new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY) {		
 		    {
 		        setTransient(true);
 		    }
@@ -80,7 +80,7 @@ public class PlasticRegistryActivity extends AbstractResourceActivity {
 	}
 
 	private void sendLoadListMessage(final List resources) {
-		(new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName()) {
+		(new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY) {
 		    {
 		        setTransient(true);
 		    }

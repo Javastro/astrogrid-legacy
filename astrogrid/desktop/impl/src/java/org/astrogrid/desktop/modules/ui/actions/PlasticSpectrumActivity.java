@@ -116,7 +116,7 @@ public class PlasticSpectrumActivity extends AbstractFileActivity {
 	}
 
 	private void sendLoadSpectrumMessage(final FileObject f) {
-		(new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName()) {
+		(new BackgroundWorker(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY) {
 		    {
 		        setTransient(true);
 		    }

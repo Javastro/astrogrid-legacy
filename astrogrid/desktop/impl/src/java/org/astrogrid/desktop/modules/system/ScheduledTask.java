@@ -1,4 +1,4 @@
-/*$Id: ScheduledTask.java,v 1.9 2007/09/21 16:35:13 nw Exp $
+/*$Id: ScheduledTask.java,v 1.10 2007/11/26 14:44:46 nw Exp $
  * Created on 05-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,8 @@ import java.security.Principal;
  */
 public interface ScheduledTask{
 
+    public String getName();
+    
 	public void execute();
 	/** period (milliseconds) after which to repeat this task */
    public long getPeriod();
@@ -32,6 +34,9 @@ public interface ScheduledTask{
 
 /* 
 $Log: ScheduledTask.java,v $
+Revision 1.10  2007/11/26 14:44:46  nw
+Complete - task 224: review configuration of all backgroiund workers
+
 Revision 1.9  2007/09/21 16:35:13  nw
 improved error reporting,
 various code-review tweaks.

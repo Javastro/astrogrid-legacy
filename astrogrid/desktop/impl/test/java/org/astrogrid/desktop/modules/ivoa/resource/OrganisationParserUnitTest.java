@@ -178,7 +178,6 @@ public class OrganisationParserUnitTest extends AbstractTestForParser{
 		}
 		, new Creator[] {
 			new Creator() {{
-				setLogoURI(new URI(""));
 				setName(new ResourceName() {{
 			setValue("NULL");
 			setId(new URI("ivo://x.x/"));

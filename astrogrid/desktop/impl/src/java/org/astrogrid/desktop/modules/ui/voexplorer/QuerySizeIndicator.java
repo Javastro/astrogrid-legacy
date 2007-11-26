@@ -46,7 +46,7 @@ public class QuerySizeIndicator extends JProgressBar {
 		this.acceptableThresh = acceptableThresh;
 		if (!sizingAlreadyInProgress) {
 		    sizingAlreadyInProgress = true;
-		(new BackgroundWorker(parent,"Finding registry size") {
+		(new BackgroundWorker(parent,"Finding registry size",BackgroundWorker.LONG_TIMEOUT,Thread.MIN_PRIORITY + 3) {
 		    {
 		        setTransient(true);
 		    }

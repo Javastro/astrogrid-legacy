@@ -76,8 +76,9 @@ public class SaveActivity extends AbstractFileActivity {
         if (saveLocationRoot == null) {
             return;
         }
-			(new BackgroundWorker(ui,"Saving Data") {
+			(new BackgroundWorker(ui,"Saving Data",BackgroundWorker.LONG_TIMEOUT) {
 			     protected Object construct() throws Exception {
+			         //@todo add progress report.
 		                //make sure they chose a directory if not then return.
 		                if("file".equals(saveLocationRoot.getScheme()) && !new File(saveLocationRoot).isDirectory()
 		                    || "ivo".equals(saveLocationRoot.getScheme()) &&   ! myspace.getNodeInformation(saveLocationRoot).isFolder() ) {

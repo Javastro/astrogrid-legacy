@@ -55,12 +55,13 @@ public class ViewInBrowserActivity extends AbstractFileActivity {
 		logger.debug(l);
 		final FileObject fo = (FileObject)l.get(0);
 		logger.debug(fo);
-		(new BackgroundWorker(uiParent.get(),"Displaying " + fo.getName().getBaseName()) {
+		(new BackgroundWorker(uiParent.get(),"Displaying " + fo.getName().getBaseName(),BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
 
 			protected Object construct() throws Exception {
 			    URL u = fo.getURL();
 			    if (! (u.getProtocol().equals("file") || u.getProtocol().equals("http") || u.getProtocol().equals("ftp"))) { // pass it to the browser directly.
 			        // download file to temporary location, and then open it
+			        reportProgress("Downloading file to temporary location");
 			        String name = StringUtils.substringBeforeLast(fo.getName().getBaseName(),".");
 			        String ext = StringUtils.substringAfterLast(fo.getName().getBaseName(),".");
 			        File f = File.createTempFile("view-in-browser-" + name,"." + ext);
@@ -70,7 +71,7 @@ public class ViewInBrowserActivity extends AbstractFileActivity {
 			        FileUtil.copyContent(fo,tmp);
 			        u = tmp.getURL();
 			    }
-			    logger.debug("instructing browser to open " + u);
+			    reportProgress("Instructing browser to open " + u);
 			    browser.openURL(u);
 				return null;
 			}

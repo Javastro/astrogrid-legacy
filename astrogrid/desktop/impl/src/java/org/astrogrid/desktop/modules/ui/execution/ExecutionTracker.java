@@ -49,10 +49,12 @@ import org.astrogrid.desktop.modules.dialogs.ResultDialog;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
+import org.astrogrid.desktop.modules.system.ui.RetriableBackgroundWorker;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker.TimeoutEnum;
 import org.astrogrid.desktop.modules.ui.actions.InfoActivity;
 import org.astrogrid.desktop.modules.ui.actions.PlasticScavenger;
 import org.astrogrid.desktop.modules.ui.actions.RevealFileActivity;
@@ -97,7 +99,7 @@ public class ExecutionTracker implements ListSelectionListener{
     public ExecutionTracker(UIComponent parent,RemoteProcessManagerInternal rpmi, TypesafeObjectBuilder uiBuilder, ActivityFactory actFact) {
 		super();
 		logger.debug("creating execution tracker");
-        this.parent = parent;
+        this.uiParent = parent;
 		this.rpmi = rpmi;
         this.uiBuilder = uiBuilder;
         this.acts = actFact.create(parent,new Class[]{
@@ -137,7 +139,7 @@ public class ExecutionTracker implements ListSelectionListener{
 
 	private JEventListPanel panel;
 
-    final UIComponent parent;
+    final UIComponent uiParent;
 
     // necessary so I can delete the monitors.
 	private final RemoteProcessManagerInternal rpmi;
@@ -303,7 +305,7 @@ public final ProcessMonitor getMoitor() {
                     }                  
                 }
 			});            
-            navigator = uiBuilder.createFileNavigator(parent,acts);
+            navigator = uiBuilder.createFileNavigator(uiParent,acts);
             results = new NavigableFilesList(navigator);
             results.getActionMap().remove(UIComponentMenuBar.EditMenuBuilder.PASTE); // don't allow pasting into this menu.
 
@@ -428,33 +430,7 @@ public final ProcessMonitor getMoitor() {
 		        return;
 		    }
 		    
-		    (new BackgroundWorker(parent,"Listing results") {
-		        private boolean alreadyFoundRoot;
-		        protected Object construct() throws Exception {
-		            if (! alreadyFoundRoot) {
-		                final FileObject root = pm.getResultsFileSystem().getRoot();
-		                if (root.exists()) { // it's created lazily, once children are present.
-		                    alreadyFoundRoot = true;
-		                    return root; // returned on first time.
-		                }
-		            }
-		            return null;
-		        }
-		        
-		        protected void doError(Throwable ex) {
-		            messageLabel.setText("Failed to fetch results: " + ExceptionFormatter.formatException(ex));
-	                parent.showTransientError("Failed to fetch results",ExceptionFormatter.formatException(ex));
-	                  
-		        }
-
-		        protected void doFinished(Object result) {
-		            if (result != null) {
-		                navigator.move((FileObject)result);		                
-		            } else if  (alreadyFoundRoot) {
-		                navigator.refresh();
-		            }
-		        }
-		    }).start();
+		    new LoadResultsWorker().start();
 		    // got a results root by this point.
 		}
 		// can share this - as is only ever run on EDT.
@@ -531,7 +507,48 @@ public final ProcessMonitor getMoitor() {
 			super.notifyObservers();			
 		}
 
-		/** does the same job as halt - just different labelling */
+		/**
+         * @author Noel.Winstanley@manchester.ac.uk
+         * @since Nov 26, 20077:09:23 PM
+         */
+        private final class LoadResultsWorker extends RetriableBackgroundWorker {
+            private boolean alreadyFoundRoot;
+
+            /**
+             * @param parent
+             * @param msg
+             * @param timeout
+             * @param priority
+             */
+            private LoadResultsWorker() {
+                super(uiParent, "Listing results", BackgroundWorker.VERY_LONG_TIMEOUT, Thread.MAX_PRIORITY);
+            }
+
+            protected Object construct() throws Exception {
+                if (! alreadyFoundRoot) {
+                    final FileObject root = pm.getResultsFileSystem().getRoot();
+                    if (root.exists()) { // it's created lazily, once children are present.
+                        alreadyFoundRoot = true;
+                        return root; // returned on first time.
+                    }
+                }
+                return null;
+            }
+
+            protected void doFinished(Object result) {
+                if (result != null) {
+                    navigator.move((FileObject)result);		                
+                } else if  (alreadyFoundRoot) {
+                    navigator.refresh();
+                }
+            }
+
+            public BackgroundWorker createRetryWorker() {
+                return new LoadResultsWorker();
+            }
+        }
+
+        /** does the same job as halt - just different labelling */
 		private class DeleteAction extends HaltAction {
 	
             public DeleteAction() {
@@ -555,7 +572,7 @@ public final ProcessMonitor getMoitor() {
                 monitors.remove(pm);
                 // record these conditions now.. else they might change.
                 final boolean running = pm.started() && ! hasFinished();
-                (new BackgroundWorker(parent,"Cleaning up") {                    
+                (new BackgroundWorker(uiParent,"Cleaning up",Thread.MIN_PRIORITY) {                    
                     protected Object construct() throws Exception {
                         if (running) {
                             pm.halt();
@@ -591,7 +608,7 @@ public final ProcessMonitor getMoitor() {
             }
             public void actionPerformed(ActionEvent e) {
                 String msg = title.getToolTipText() + "<h3>Messages</h3>" + messageLabel.getToolTipText();
-                ResultDialog rd = ResultDialog.newResultDialog(parent.getComponent(),msg);
+                ResultDialog rd = ResultDialog.newResultDialog(uiParent.getComponent(),msg);
                 rd.setTitle("Execution Transcript");
                 rd.getBanner().setVisible(true);
                 rd.getBanner().setTitle("Execution Transcript");
@@ -612,7 +629,7 @@ public final ProcessMonitor getMoitor() {
                 if (!pm.started()) {
                     return;
                 }
-                (new BackgroundWorker(parent,"Refreshing") {
+                (new BackgroundWorker(uiParent,"Refreshing",Thread.MAX_PRIORITY) {
                     {
                         parent.showTransientMessage("Refreshing task status","");
                         setTransient(true);

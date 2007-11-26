@@ -54,7 +54,7 @@ public class UpdateChecker implements Runnable {
 			return; //
 		}
 		if (! currentVersion.equals( "${astrogrid.desktop.version}") ) { // not in development mode
-			(new BackgroundWorker(ui,"Checking for software updates") {
+			(new BackgroundWorker(ui,"Checking for software updates",BackgroundWorker.SHORT_TIMEOUT,Thread.MIN_PRIORITY) {
 				protected Object construct() throws Exception {
 					
 					BufferedReader vr =null;

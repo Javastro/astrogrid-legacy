@@ -303,7 +303,7 @@ public class StorageView  implements  ListSelectionListener, FileNavigator.Navig
                 init();
             }
             public void ok() {
-                (new BackgroundWorker(StorageView.this.getParent(),"Creating subfolder of " + this.baseName) {
+                (new BackgroundWorker(StorageView.this.getParent(),"Creating subfolder of " + this.baseName,BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
                     
                     protected Object construct() throws Exception {
                         String nuName = tf.getText();

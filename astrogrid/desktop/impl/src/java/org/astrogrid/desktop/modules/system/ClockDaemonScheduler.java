@@ -1,4 +1,4 @@
-/*$Id: ClockDaemonScheduler.java,v 1.11 2007/11/26 12:01:48 nw Exp $
+/*$Id: ClockDaemonScheduler.java,v 1.12 2007/11/26 14:44:46 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -82,7 +82,7 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
     public void schedule(final ScheduledTask task) {
         daemon.executePeriodically(task.getPeriod(), new Runnable() {
         	public void run() {
-        		BackgroundWorker worker = new BackgroundWorker(context,null) {
+        		BackgroundWorker worker = new BackgroundWorker(context,task.getName(),BackgroundWorker.VERY_LONG_TIMEOUT,Thread.MIN_PRIORITY) {
 
 					protected Object construct() throws Exception {
 						task.execute();
@@ -103,7 +103,7 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
 		daemon.executeAfterDelay(task.getDelay(),new Runnable() {
 
 			public void run() {// rund on scheduler thread. just submits a new backgroundWorker for execution.
-				BackgroundWorker worker = new BackgroundWorker(context,null) {
+				BackgroundWorker worker = new BackgroundWorker(context,task.getTitle(),BackgroundWorker.LONG_TIMEOUT) {
 
 					protected Object construct() throws Exception {
 						DelayedContinuation next =  task.execute();
@@ -146,6 +146,9 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
 
 /* 
 $Log: ClockDaemonScheduler.java,v $
+Revision 1.12  2007/11/26 14:44:46  nw
+Complete - task 224: review configuration of all backgroiund workers
+
 Revision 1.11  2007/11/26 12:01:48  nw
 added framework for progress indication for background processes
 

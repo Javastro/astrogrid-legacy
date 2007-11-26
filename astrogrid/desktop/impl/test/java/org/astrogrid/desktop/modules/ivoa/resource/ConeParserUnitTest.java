@@ -120,8 +120,7 @@ public class ConeParserUnitTest extends AbstractTestForParser{
 		checkCuration(r.getCuration()
 				, new Contact[] {
 			new Contact() {{
-				setName(new ResourceName() {{setValue("");}});
-				setEmail("");
+				setName(new ResourceName() );
 			}}
 		}
 		, new Creator[] {
@@ -134,9 +133,7 @@ public class ConeParserUnitTest extends AbstractTestForParser{
 		}
 		, new ResourceName[] {	}
 		, new Date[] {}
-		, new ResourceName() {{
-			setValue("");
-			}}
+		, new ResourceName() 
 		, null);
 		
 		checkContent(r.getContent()

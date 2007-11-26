@@ -350,7 +350,7 @@ public final class AdqlTree extends JTree
          
         final XmlCursor cursor = getRoot().newCursor() ;
         
-        (new BackgroundWorker( parent, "Fetching Catalogue Data" ) {
+        (new BackgroundWorker( parent, "Fetching Catalogue Data" ,BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
             protected Object construct() throws Exception {
                 DataCollection dc = null ;
                 String piName = null ;

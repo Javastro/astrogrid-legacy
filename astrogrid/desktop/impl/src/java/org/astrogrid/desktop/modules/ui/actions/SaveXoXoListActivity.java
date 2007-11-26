@@ -56,12 +56,15 @@ public class SaveXoXoListActivity extends AbstractResourceActivity
 		if (u == null) {
 			return;
 		}
-		(new BackgroundWorker(uiParent.get(),"Exporting summaries") {
+		(new BackgroundWorker(uiParent.get(),"Exporting summaries",BackgroundWorker.LONG_TIMEOUT) {
 			protected Object construct() throws Exception {
 				PrintWriter out = null;
+				int max = rs.size() + 2;
+				int count = 0;
+				setProgress(count,max);
 				try {
 				    out = new PrintWriter(new java.io.OutputStreamWriter(vfs.resolveFile(u.toString()).getContent().getOutputStream()));
-
+				    setProgress(++count,max);
 					out.print("<ul class='xoxo'>");
 					out.println("<!-- See http://microformats.org/wiki/xoxo for details of XoXo format -->");
 					for (Iterator i = rs.iterator(); i.hasNext();) {
@@ -109,12 +112,14 @@ public class SaveXoXoListActivity extends AbstractResourceActivity
 			//			out.println("         </dd>");
 						out.println("      </dl>");
 						out.println("  </li>");
+		                  setProgress(++count,max);
 					}
 					out.println("</ul>");
 				} finally {
 					if (out != null) {
 						out.close();
 					}
+	                   setProgress(++count,max);
 				}
 				return null;
 			}

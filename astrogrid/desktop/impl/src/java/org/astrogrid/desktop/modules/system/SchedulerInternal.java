@@ -1,4 +1,4 @@
-/*$Id: SchedulerInternal.java,v 1.8 2007/07/13 23:14:55 nw Exp $
+/*$Id: SchedulerInternal.java,v 1.9 2007/11/26 14:44:46 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -59,6 +59,8 @@ public interface SchedulerInternal {
 		 */
 		public Principal getPrincipal();
 		
+		public String getTitle();
+		
 	}
 
 }
@@ -66,6 +68,9 @@ public interface SchedulerInternal {
 
 /* 
 $Log: SchedulerInternal.java,v $
+Revision 1.9  2007/11/26 14:44:46  nw
+Complete - task 224: review configuration of all backgroiund workers
+
 Revision 1.8  2007/07/13 23:14:55  nw
 Complete - task 1: task runner
 

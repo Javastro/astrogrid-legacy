@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.72 2007/11/14 07:21:04 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.73 2007/11/26 14:44:45 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -58,6 +58,7 @@ import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker.TimeoutEnum;
 import org.astrogrid.desktop.modules.ui.actions.PlasticScavenger;
 import org.astrogrid.desktop.modules.ui.actions.SimpleDownloadActivity;
 import org.astrogrid.desktop.modules.ui.actions.ViewInBrowserActivity;
@@ -537,7 +538,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 			// so we'll resolve it ourselves - simplest thing to do - if we've got the position string..
 			// hopefully we've got something we can work with..
 			if (positionString != null) {
-				(new BackgroundOperation("Resolving object " + positionString) {
+				(new BackgroundOperation("Resolving object " + positionString,BackgroundWorker.SHORT_TIMEOUT,Thread.MAX_PRIORITY) {
 					protected Object construct() throws Exception {
 						return ses.resolve(positionString.trim());
 					}
@@ -582,7 +583,7 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		for (Iterator i = protocols.iterator(); i.hasNext(); ) {
 			final DalProtocol p =(DalProtocol)i.next();
 			if (p.getCheckBox().isSelected()) {
-				(new BackgroundOperation("Searching for " + p.getName() + " Services") {
+				(new BackgroundOperation("Searching for " + p.getName() + " Services",BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
 					protected Object construct() throws Exception {
 						if (resourceList == null) {
 							return p.listServices();

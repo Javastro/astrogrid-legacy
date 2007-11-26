@@ -366,7 +366,7 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
     private class OpenDirectoryWorker extends BackgroundWorker {
 
         public OpenDirectoryWorker() {
-            super(FileNavigator.this.parent,"Listing contents",Thread.MAX_PRIORITY);
+            super(FileNavigator.this.parent,"Listing contents",BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY);
             if (SwingUtilities.isEventDispatchThread()) {
                 fireMoving();
             } else {
@@ -392,8 +392,10 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
             }
             // now load the new one.
                 loc = (Location)history.current();
-                loc.resolveFileObject();                
+                reportProgress("Resolving directory");
+                loc.resolveFileObject();                                
                 requested = loc.getFileObject();
+                reportProgress("Listing children");
                 if (requested.getType().hasChildren()) {
                     shown = requested;
                 } else {
@@ -431,7 +433,8 @@ public class FileNavigator implements HistoryListener, VFSOperationsImpl.Current
                 // listen for changes.
                 final FileSystem fileSystem = shown.getFileSystem();
                 isRoot = shown == fileSystem.getRoot();
-                fileSystem.addListener(shown,FileNavigator.this);            
+                fileSystem.addListener(shown,FileNavigator.this);
+                reportProgress("Completed");
                 return parents;
         }
         // update the ui.

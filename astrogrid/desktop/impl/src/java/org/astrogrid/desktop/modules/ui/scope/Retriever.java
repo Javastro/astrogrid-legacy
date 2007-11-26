@@ -183,7 +183,15 @@ public abstract class Retriever extends BackgroundWorker {
     /** here we get passed in a start table that is meta-data only
      * @see uk.ac.starlink.votable.TableHandler#startTable(uk.ac.starlink.table.StarTable)
      */
+       private int rowCount;
+       private int processedRows;
     public void startTable(StarTable starTable) throws SAXException {
+        rowCount = (int)starTable.getRowCount();
+        if (rowCount != -1) { // would be nice, but never works - rowcount is always -1
+            processedRows = 0;
+            setProgress(0,rowCount);
+            reportProgress("Parsing response");
+        } 
     	newTableExtensionPoint(starTable);
     	// get the info.
     	DescribedValue qStatus = starTable.getParameterByName("Error");
@@ -256,12 +264,15 @@ public abstract class Retriever extends BackgroundWorker {
      * @see uk.ac.starlink.votable.TableHandler#rowData(java.lang.Object[])
      */
     public void rowData(Object[] row) throws SAXException {
+        if (rowCount != -1) {
+            setProgress(++processedRows,rowCount);
+        }
         if (!isWorthProceeding()) { // no point, not enough metadata 
             resultCount = QueryResultSummarizer.ERROR;
             message = "Insufficient table metadata";
             throw new SAXException(message);
         }
-        resultCount++;
+        resultCount++; 
         String rowRa = safeTrim(row[raCol]);
         String rowDec = safeTrim(row[decCol]);                                 
         DefaultTreeNode valNode = createValueNode();

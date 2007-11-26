@@ -1,4 +1,4 @@
-/*$Id: RegistryGooglePanel.java,v 1.22 2007/11/13 05:22:38 nw Exp $
+/*$Id: RegistryGooglePanel.java,v 1.23 2007/11/26 14:44:45 nw Exp $
 >>>>>>> 1.12.2.6
  * Created on 02-Sep-2005
  *
@@ -228,12 +228,13 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	private abstract class Worker extends BackgroundWorker implements StreamProcessor {
 		
 		public Worker(UIComponent parent, String message) {
-			super(parent,message);
+			super(parent,message,BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY);
 			fireLoadStarted();
 		}
 
 		// callback from the xml stream reader.
 		public void process(XMLStreamReader reader) throws Exception {
+		    reportProgress("Parsing registry response");
 		    if (isInterrupted()) {
 		        return;
 		    }
@@ -295,6 +296,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 	
 		protected void runQuery(String xq) throws ServiceException {
 		    // check bulk cache.
+		    reportProgress("Running query");
 		    Element el = bulk.get(xq);			
 		    if (el != null) {
 		        if (bypassCache) { // remove it from the cache, whlle we're here.
@@ -304,10 +306,12 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 		            return;// found a cached result - halt here.
 		        }
 		    }
+		    reportProgress("Querying registry");
 			reg.xquerySearchStream(xq,this);
 			// no need to lock - as we know we're the thread that was doing the modifying. and it's finished now.
 			
 			if (! isInterrupted() && items.size() > 0) {
+			    reportProgress("Caching result for future use");
 				cacheResult(xq);
 			}
 		}
@@ -342,6 +346,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 			this.q = q;	
 		}
 		protected Object construct() throws Exception {   
+		        reportProgress("Building Query");
 				// produce a query from the search parse tree.
 				String briefXQuery = briefXQueryBuilder.build(this.q,null);
 				runQuery(briefXQuery);
@@ -387,6 +392,7 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 		private final Collection ids;
 		
 		protected Object construct() throws Exception {   
+		    reportProgress("Constructing xquery");
 				String xq = makeXQueryFromIdSet(ids);
 				runQuery(xq);
 				return null;
@@ -937,6 +943,9 @@ implements ListEventListener, ListSelectionListener, ChangeListener, TableModelL
 
 /* 
 $Log: RegistryGooglePanel.java,v $
+Revision 1.23  2007/11/26 14:44:45  nw
+Complete - task 224: review configuration of all backgroiund workers
+
 Revision 1.22  2007/11/13 05:22:38  nw
 Complete - task 229: menuing redesign.
 

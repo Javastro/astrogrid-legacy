@@ -55,8 +55,10 @@ public class XMLResourceViewer extends JTextArea implements ResourceViewer, Acti
 
 	public void display( final Resource res) {
 
-		(new BackgroundWorker(parent.get(),"Fetching Record") {
-
+		(new BackgroundWorker(parent.get(),"Fetching Record",BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
+		    {
+		        setTransient(true);
+		    }
 			protected Object construct() throws Exception {
 				Document doc = reg.getResourceXML(res.getId());
 				//return XMLUtils.DocumentToString(doc);

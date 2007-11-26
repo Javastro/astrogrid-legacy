@@ -310,6 +310,10 @@ public class VoMonImpl implements VoMonInternal {
         return this.endpoint;
     }
 
+    public String getName() {
+        return "Loading statuses from monitor service";
+    }
+
 
 
 

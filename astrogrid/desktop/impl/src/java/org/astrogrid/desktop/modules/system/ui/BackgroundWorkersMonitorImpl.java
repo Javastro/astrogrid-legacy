@@ -162,7 +162,8 @@ public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWo
                                 final UIComponent comp = (UIComponent)subsetCombo.getItemAt(ix);
                                 fireChanged(new Matcher() {
                                     public boolean matches(Object arg0) {
-                                        return ((BackgroundWorkerCell)arg0).getWorker().getParent() == comp;
+                                        final BackgroundWorker worker = ((BackgroundWorkerCell)arg0).getWorker();
+                                        return worker.getParent() == comp && ! worker.getInfo().isSystem();
                                     }                                    
                                 });
                         }

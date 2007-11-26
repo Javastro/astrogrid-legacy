@@ -65,7 +65,7 @@ public class QueryBuilderImpl extends TaskRunnerImpl implements
         // find the related cea app, and go from there...
         final String s = StringUtils.substringBeforeLast(coll.getId().toString(),"/");
         // do the query to find a related cea app on a bg thread.
-        (new BackgroundOperation("Finding application definition for this collection") {
+        (new BackgroundOperation("Finding application definition for this collection",Thread.MAX_PRIORITY) {
 
             protected Object construct() throws Exception {
                 URI id = new URI(s + "/ceaApplication");

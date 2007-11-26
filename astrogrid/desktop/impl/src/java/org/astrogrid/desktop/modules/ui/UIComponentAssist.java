@@ -269,7 +269,8 @@ public final class UIComponentAssist {
             final FilterList fl = new FilterList(parent.getContext().getTasksList(),new Matcher() {
 
                 public boolean matches(Object arg0) {
-                    return ((BackgroundWorker)arg0).getParent() == parent;
+                    final BackgroundWorker backgroundWorker = ((BackgroundWorker)arg0);
+                    return backgroundWorker.getParent() == parent && ! backgroundWorker.getInfo().isSystem();
                 }
             });
             // now listen to changes to this list, and enable / disable the button.

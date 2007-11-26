@@ -1,4 +1,4 @@
-/*$Id: ToolEditorDialog.java,v 1.18 2007/11/26 12:01:49 nw Exp $
+/*$Id: ToolEditorDialog.java,v 1.19 2007/11/26 14:44:46 nw Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -100,7 +100,7 @@ public class ToolEditorDialog extends UIDialogueComponentImpl implements UICompo
     }
      
     public void populate(final Tool t) {
-        new BackgroundWorker(this,"Retrieving tool metadata") {
+        new BackgroundWorker(this,"Retrieving tool metadata",BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
 
             protected Object construct() throws Exception {
                 URI uri = new URI(t.getName().startsWith("ivo://") ? t.getName() : "ivo://" + t.getName());
@@ -119,7 +119,7 @@ public class ToolEditorDialog extends UIDialogueComponentImpl implements UICompo
     
     /** load tool from a storage location */
     public void load(final URI location) {
-        new BackgroundWorker(this,"Loading tool from " + location) {
+        new BackgroundWorker(this,"Loading tool from " + location,BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
 
             protected Object construct() throws Exception {
                 Reader is = null;                
@@ -155,6 +155,9 @@ public class ToolEditorDialog extends UIDialogueComponentImpl implements UICompo
 
 /* 
 $Log: ToolEditorDialog.java,v $
+Revision 1.19  2007/11/26 14:44:46  nw
+Complete - task 224: review configuration of all backgroiund workers
+
 Revision 1.18  2007/11/26 12:01:49  nw
 added framework for progress indication for background processes
 

@@ -65,6 +65,7 @@ public class StapRetrieval extends Retriever {
 	private final double decSize;
 	private final Stap stap;
 	protected Object construct() throws Exception{
+        reportProgress("Constructing query");	    
 		URL stapURL = null;
 		final URI endpoint = service.getId();
 		//check if there is a ra,dec and construct a stap query accordingly.
@@ -94,7 +95,7 @@ public class StapRetrieval extends Retriever {
 
 		TreeNode serviceNode = createServiceNode(stapURL, sb.toString());
 		// build subtree for this service
-
+        reportProgress("Querying service");
 		InputSource source = new InputSource(stapURL.openStream());
 		SummarizingTableHandler th = new StapTableHandler(serviceNode);
 		parseTable(source, th);

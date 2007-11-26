@@ -176,12 +176,12 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
          * 
          */
         public LoadVotableInlineWorker(FileObject fo) {
-            super(uiParent.get(),"Sending to " + plas.getName());
+            super(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY);
             this.fo = fo;
             setTransient(true);
         }
         public LoadVotableInlineWorker(URI uri) {
-            super(uiParent.get(),"Sending to " + plas.getName());
+            super(uiParent.get(),"Sending to " + plas.getName(),Thread.MAX_PRIORITY);
             this.uri = uri;
             setTransient(true);
         }   	
@@ -200,13 +200,16 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 					    is = uri.toURL().openStream();
 					    id = uri.toString();
 					}
+					reportProgress("Opened file");
 					os = new ByteArrayOutputStream();
 					Piper.pipe(is,os);
+					reportProgress("Downloaded file");
 					// inline value.
 					l.add(os.toString());
 					//URL url = f.getURL();
-					l.add(id); // identifier.
+					l.add(id); // identifier.					
 					scav.getTupp().singleTargetPlasticMessage(CommonMessageConstants.VOTABLE_LOAD,l,plas.getId());
+					reportProgress("Sent plastic message");
 					return null;
 				} finally {
 					if (is != null) {
@@ -253,14 +256,17 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 			        url = uri.toURL();
 			        id = uri.toString();
 			    }
+			    reportProgress("Resolved URI");
 			    if (! supportedProtocols.contains(url.getProtocol())) {
+			        reportProgress("URI is an unsupported protocol - will copy and send");
 			        return super.construct(); // fallback.
 			    } else {
-                    logger.debug("Sending URL message");			        
+                    reportProgress("Sending URL message");			        
 			        List l = new ArrayList();
 			        l.add(url.toString());// url
 			        l.add(id);	
 			        scav.getTupp().singleTargetPlasticMessage(CommonMessageConstants.VOTABLE_LOAD_FROM_URL,l,plas.getId());
+			        reportProgress("Plastic message sent");
 			        return null;
 			    }
 			}		

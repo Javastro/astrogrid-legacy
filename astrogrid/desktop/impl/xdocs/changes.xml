@@ -19,7 +19,7 @@
     AR: added configuration preferences to assist running in low-bandwidth environments
     </action>
     <action dev="nw" type="update">
-    UI: improved interface to running processes
+    UI: improved interface to background processes - progress reporting, viewing, retry.
     </action>
     <action dev="nw" type="update">
     VOExplorer: improved formatted of resource contents

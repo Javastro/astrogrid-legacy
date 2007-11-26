@@ -89,6 +89,10 @@ public class SystemModuleIntegrationTest extends InARTestCase {
 			public Principal getPrincipal() {
 				return null;
 			}
+
+            public String getName() {
+                return "Test";
+            }
 		});
 	}
 	

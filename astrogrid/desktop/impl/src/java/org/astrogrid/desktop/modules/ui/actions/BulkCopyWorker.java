@@ -52,7 +52,7 @@ public class BulkCopyWorker extends BackgroundWorker {
      * vfs - so URI, URL, String, etc. 
      */
     public BulkCopyWorker(FileSystemManager vfs,UIComponent parent,File saveDir, List l) {
-        super(parent,  "Copying to " + saveDir);
+        super(parent,  "Copying to " + saveDir,BackgroundWorker.VERY_LONG_TIMEOUT);
         this.vfs = vfs;
         this.saveDir = saveDir;
         saveObject = null;
@@ -61,7 +61,7 @@ public class BulkCopyWorker extends BackgroundWorker {
     }
     
     public BulkCopyWorker(FileSystemManager vfs,UIComponent parent,FileObject saveObject, List l) {
-        super(parent,  "Copying to " + saveObject.getName().getPath());
+        super(parent,  "Copying to " + saveObject.getName().getPath(),BackgroundWorker.VERY_LONG_TIMEOUT);
         this.vfs = vfs;
         this.saveObject = saveObject;
         this.saveDir = null;
@@ -70,12 +70,15 @@ public class BulkCopyWorker extends BackgroundWorker {
     }
     
     public BulkCopyWorker(FileSystemManager vfs,UIComponent parent,URI saveLoc, List l) {
-        super(parent,  "Copying to " + saveLoc);
+        super(parent,  "Copying to " + saveLoc,BackgroundWorker.VERY_LONG_TIMEOUT);
         this.vfs = vfs;
         this.saveLoc = saveLoc;
         this.saveObject = null;
         this.saveDir = null;
         this.l = l;
+    }
+    {
+        setWouldLikeIndividualMonitor(true);
     }
 
     /** necessary to work around a bug - allows me to access the constructor. 
@@ -95,6 +98,10 @@ public class BulkCopyWorker extends BackgroundWorker {
   
     protected FileObject saveTarget;
     protected Object construct() throws Exception {
+        final int tasksCount = l.size() + 1;
+        int progress = 0;
+        setProgress(progress,tasksCount);
+        reportProgress("Validating save location");
         if (saveObject != null) { // we've been given an file object
             saveTarget = saveObject;
         } else if (saveDir != null) { // we've been given a file
@@ -104,11 +111,14 @@ public class BulkCopyWorker extends BackgroundWorker {
         }
         
         if (! saveTarget.exists()) {
+            reportProgress("Creating save location");
             saveTarget.createFolder();
         }
         if (! saveTarget.isWriteable()) {
             throw new Exception("Not permitted to write to " + saveTarget.getName());
         }
+        reportProgress("Save location validated");
+        setProgress(++progress,tasksCount);
         // will records destinations or errors of copying each individual file, continue, and report at the end.
         Map outcome = new HashMap();
         // go through each file in turn.
@@ -130,26 +140,30 @@ public class BulkCopyWorker extends BackgroundWorker {
                         src = vfs.resolveFile(uriString);
                     }                    
                 }
-                try {
-                String name = StringUtils.substringBeforeLast(src.getName().getBaseName(),".");
-                String ext = StringUtils.substringAfterLast(src.getName().getBaseName(),".");
-                if (StringUtils.isNotBlank(ext)) {
-                    ext = "." + ext;
-                }
+                reportProgress("Processing " + src.getName().getBaseName());
                 FileObject dest = null;
-                int n = 0;
-                // create a target filename - and if it already exists, change it by adding a number.
-                do {
-                    dest = saveTarget.resolveFile(name + (n == 0 ? "" : "-" + n ) +  ext);
-                    n++;
-                } while  (dest.exists());
-                
-                // cool. now got a non-existent destination file.
-                dest.copyFrom(src, Selectors.SELECT_ALL); // creates and copies from src. handles folders and files. nice!
-                outcome.put(src,dest.getName().getURI());
-            } catch (FileSystemException x) {
-                outcome.put(src,x);
-            }
+                try {
+                    String name = StringUtils.substringBeforeLast(src.getName().getBaseName(),".");
+                    String ext = StringUtils.substringAfterLast(src.getName().getBaseName(),".");
+                    if (StringUtils.isNotBlank(ext)) {
+                        ext = "." + ext;
+                    }
+                    int n = 0;
+                    // create a target filename - and if it already exists, change it by adding a number.
+                    do {
+                        dest = saveTarget.resolveFile(name + (n == 0 ? "" : "-" + n ) +  ext);
+                        n++;
+                    } while  (dest.exists());
+                    reportProgress("Destination will be " + dest.getName().getBaseName());
+                    // cool. now got a non-existent destination file.
+                    dest.copyFrom(src, Selectors.SELECT_ALL); // creates and copies from src. handles folders and files. nice!
+                    outcome.put(src,dest.getName().getURI());
+                } catch (FileSystemException x) {
+                    outcome.put(src,x);
+                    reportProgress("Copy from " + src.getName().getBaseName() + " failed");
+                } finally {
+                    setProgress(++progress,tasksCount);
+                }
         }
         // notify the parent object that we've made changes - cause a refresh.
     //    if (saveTarget != null) {

@@ -123,7 +123,7 @@ implements ListEventListener,  ListProvider, ExceptionListener{
                 setTransient(true);
             }
             protected Object construct() throws Exception{
-                logger.info("Saving list to " + file);
+                reportProgress("Saving list to " + file);
                 OutputStream fos = null;
                 try {
                     fos = new FileOutputStream(file);

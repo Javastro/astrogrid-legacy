@@ -151,7 +151,7 @@ public class FileExplorerDialog extends UIDialogueComponentImpl implements Docum
          * @param msg
          */
         private ValidationWorker() {
-            super(FileExplorerDialog.this, MSG);
+            super(FileExplorerDialog.this, MSG,BackgroundWorker.SHORT_TIMEOUT,Thread.MAX_PRIORITY);
         }
 
         protected Object construct() throws Exception {
