@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+<module id="performance" version="1.0.0" package="org.astrogrid.acr.system">
+Performance Configuration
+	
+    <contribution configuration-id="framework.preferences">
+            <preference name="performance.maxWorkerThreads" 
+            advanced="false" default-value="20"
+            requires-restart="true">
+                <ui-name>Maximum background threads</ui-name>
+                <description><![CDATA[<html>Maximum number of background threads to run simultaneously.
+                <br>If the number of background processes exceed this number, the excess are queued until a 
+                <br>runningprocess completes. 
+                <br>Reduce this number if running on a low-bandwidth network, but not below 2
+                ]]></description> 
+                <units>number</units>
+            </preference>
+            <preference name="performance.timeoutFactor" 
+            advanced="false" default-value="5"
+            requires-restart="false">
+                <ui-name>Timeout Scaling Factor</ui-name>
+                <description><![CDATA[<html>A value used to linearly scale application timeouts.
+                <br>(default is 5). Increase this number if running on a low-bandwidth network. 
+                <br>Must always be greater than 0
+                ]]></description> 
+                <units>number</units>
+            </preference>       
+            <preference name="performance.showProgressDialogueAfter" 
+            advanced="false" default-value="5"
+            requires-restart="true">
+                <ui-name>Show progress dialogues after </ui-name>
+                <description><![CDATA[<html>Show progress dialogues for important processes
+                after they have been running for a certain amount of seconds.
+                <br>(default is 5 seconds). Set to 0 to always show progress dialogues, -1 to never show progress dialogues.
+                ]]></description> 
+                <units>seconds</units>
+            </preference>                     
+    </contribution>
+    
+ </module>
+ 

@@ -64,6 +64,8 @@ public interface UIContext  extends UI, ActionListener{
     public static final String CLEAR_CACHE = "clearcache";
     /** show self-tests */
     public static final String SELFTEST = "selftest";
+    /** show processes monitor */
+    public static final String PROCESSES = "processes";
     
 
     /** convenience method - access the configuraiton componoent
@@ -98,6 +100,9 @@ public interface UIContext  extends UI, ActionListener{
 	 *      * it's the caller's responsibility to use this in an EDT-sensitive manner.
 	 * */
 	public ButtonModel getThrobbingModel() ;
+	
+	/** provide access to it here, to simplify plumbing */
+	public BackgroundWorkersMonitor getWorkersMonitor();
 	/** indicates global visiblily of the UI. same usage as {@link #getLoggedInModel} 
 	 * 
 	 *      * it's the caller's responsibility to use this in an EDT-sensitive manner.*/
@@ -122,6 +127,6 @@ public interface UIContext  extends UI, ActionListener{
 	 *  create a new menu, which shows the window list, and has operations
 	 *  to hide 'owner', hide all, and create new windows of various UI types (if available)
 	 */
-	public JMenu createWindowMenu( UIComponentImpl owner) ;
+	public JMenu createWindowMenu( ) ;
 
 }

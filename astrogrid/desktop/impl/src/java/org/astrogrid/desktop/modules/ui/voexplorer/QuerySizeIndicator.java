@@ -88,7 +88,7 @@ public class QuerySizeIndicator extends JProgressBar {
 		if (latest != null) { // previous sizing task running.
 			latest.interrupt();
 		}
-		latest = new BackgroundWorker(parent,"Computing query size",5000,Thread.MAX_PRIORITY) {
+		latest = new BackgroundWorker(parent,"Computing query size",BackgroundWorker.VERY_SHORT_TIMEOUT,Thread.MAX_PRIORITY) {
 
 			protected Object construct() throws Exception {
 				return sizer.size(query);
@@ -121,7 +121,7 @@ public class QuerySizeIndicator extends JProgressBar {
 		if (latest != null) { // previous sizing task running.
 			latest.interrupt();
 		}
-		latest = new BackgroundWorker(parent,"Computing query size",5000,Thread.MAX_PRIORITY) {
+		latest = new BackgroundWorker(parent,"Computing query size",BackgroundWorker.VERY_SHORT_TIMEOUT,Thread.MAX_PRIORITY) {
 
 			protected Object construct() throws Exception {
 				return sizer.size(query);

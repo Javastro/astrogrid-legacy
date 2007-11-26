@@ -31,8 +31,8 @@ public class BackgroundExecutorTimeSensitiveTest extends InARTestCase {
 		 * @param msg
 		 * @param msecs
 		 */
-		public TestWorker(UIContext parent, long msecs) {
-			super(parent, "test worker", msecs);
+		public TestWorker(UIContext parent, TimeoutEnum enum) {
+			super(parent, "test worker",enum);
 		}
 		public int construct;
 		public int always;
@@ -86,7 +86,7 @@ public class BackgroundExecutorTimeSensitiveTest extends InARTestCase {
 	 */
 	public void testExecuteWorker() throws InterruptedException {
 		final Object expectedResult = new Object();
-		TestWorker tw = new TestWorker(ui,1000L) {
+		TestWorker tw = new TestWorker(ui,BackgroundWorker.VERY_SHORT_TIMEOUT) {
 			protected Object construct() throws Exception {
 				construct++;
 				return expectedResult;
@@ -103,7 +103,7 @@ public class BackgroundExecutorTimeSensitiveTest extends InARTestCase {
 
 	public void testExecuteWorkerException() throws InterruptedException {
 		final Exception e = new Exception();
-		TestWorker tw = new TestWorker(ui,1000L) {
+		TestWorker tw = new TestWorker(ui,BackgroundWorker.VERY_SHORT_TIMEOUT) {
 			protected Object construct() throws Exception {
 				construct++;
 				throw e;
@@ -136,16 +136,16 @@ public class BackgroundExecutorTimeSensitiveTest extends InARTestCase {
 	
 	public void testTimeOut() throws InterruptedException {
 		// set timeout to 1s, worker will sleep for 10s, test sleeps for 2s.
-		// timeout fails silently - no error, no result., but always is still run.
-		TestWorker tw = new TestWorker(ui, 1000L);
+		// timeout fails  - with error, no result., but always is still run.
+		TestWorker tw = new TestWorker(ui, BackgroundWorker.INSANELY_SHORT_TIMEOUT);
 		exec.executeWorker(tw);
 		Thread.sleep(5000);	
 		assertEquals(1,tw.construct);
-		assertEquals(0,tw.error);
 		assertEquals(1,tw.always);
+		assertEquals(1,tw.error);
 		assertEquals(0,tw.finished);
 		assertNull(tw.result);
-		assertNull(tw.ex);
+		assertNotNull(tw.ex);
 	}
 
 	/*
@@ -153,8 +153,8 @@ public class BackgroundExecutorTimeSensitiveTest extends InARTestCase {
 	 */
 	public void testInterrupt() throws InterruptedException {
 		// set timeout to 10s, worker will sleep for 10s, test sleeps for 2s.
-		// interrupt - same result as a timeout.
-		TestWorker tw = new TestWorker(ui, 10000L);
+		// interrupt - error is not called, just always.
+	    TestWorker tw = new TestWorker(ui, BackgroundWorker.VERY_SHORT_TIMEOUT);
 		exec.executeWorker(tw);
 		Thread.sleep(2000);	
 		exec.interrupt(tw);

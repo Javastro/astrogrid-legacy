@@ -1,4 +1,4 @@
-/*$Id: BackgroundExecutorImpl.java,v 1.13 2007/09/21 16:35:13 nw Exp $
+/*$Id: BackgroundExecutorImpl.java,v 1.14 2007/11/26 12:01:48 nw Exp $
  * Created on 30-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,7 +46,7 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
     
     
     static class TimeoutPooledExecutor extends PooledExecutor {
-        TimeoutPooledExecutor(Channel arg0,int maxThreads,int startThreads, SessionManagerInternal ss) {
+        TimeoutPooledExecutor(Channel arg0,int maxThreads,int startThreads,  SessionManagerInternal ss) {
             super(arg0,maxThreads);
             this.ss = ss;
             setMinimumPoolSize(startThreads);
@@ -94,11 +94,12 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
                             Object o;
                             do {
                                 o = c.take(); // wait until passed a timeout value.
-                            } while (! (o instanceof Long)); // must have gotten out-of-step - lets try again..
+                            } while (! (o instanceof BackgroundWorker)); // must have gotten out-of-step - lets try again..
                         
-                        Long l = (Long)o;
-                        Object result = c.poll(l.longValue()); // wait for the prescribed timeout.
+                        BackgroundWorker bw = (BackgroundWorker)o;
+                        Object result = c.poll(bw.getInfo().getTimeout()); // wait for the prescribed timeout.
                         if (result == null) {
+                            bw.getControl().setTimedOut(true);
                             executionThread.interrupt(); // abort executioin thread
                         }
                         } catch (InterruptedException e) {
@@ -133,15 +134,15 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
                         if (firstTask_ != null) {                         
                             if (firstTask_ instanceof BackgroundWorker) {
                             	BackgroundWorker bw = (BackgroundWorker)firstTask_;
-                            	long timeout = bw.getTimeout();
+                            	long timeout = bw.getInfo().getTimeout();
                             	if (timeout  > 0L ) {
-                            		c.put(new Long(timeout));
+                            		c.put(bw);
                             	}
-                            	ss.adoptSession(bw.getPrincipal());
+                            	ss.adoptSession(bw.getControl().getPrincipal());
                                 firstTask_.run();
                                 ss.clearSession();
                                 if (timeout > 0L ) {
-                                	c.put(firstTask_); //throw anything handy at it.
+                                	c.put(NULL_OBJ);
                                 }
                             } else { // it's just a runnable. unlikely.
                             	firstTask_.run(); 
@@ -150,7 +151,7 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
                         }
                         firstTask_ = getTask();
                     } while (firstTask_ != null);                   
-                }  catch (InterruptedException ex) {  // fall through
+                }  catch (InterruptedException ex) {  // fall through    
                 } finally {
                     firstTask_ = null;
                     workerDone(this);
@@ -159,6 +160,7 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
         }
     }
     
+    private static final Object NULL_OBJ = new Object();
     public BackgroundExecutorImpl(UIContext ui, SessionManagerInternal ss) {
         this.ui = ui;        
         this.ss = ss;
@@ -186,11 +188,11 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
         	// this is called by Thread.start(), and any other ways to execute this worker
         	// so we've waited till the last moment, and now capture the permissions / session
         	// of the calling thread, so it'll be passed into the background thread.
-        	if (worker.getPrincipal() == null) { // if a principal has already been set, that's fine
+        	if (worker.getControl().getPrincipal() == null) { // if a principal has already been set, that's fine
         		Principal p = ss.currentSession();
         		if (p != null) {
         		    logger.debug("setting principal to " + p.getName());
-        		    worker.setPrincipal(p);
+        		    worker.getControl().setPrincipal(p);
         		}
         	}
             exec.execute(worker);
@@ -250,6 +252,9 @@ public class BackgroundExecutorImpl implements BackgroundExecutor , ShutdownList
 
 /* 
 $Log: BackgroundExecutorImpl.java,v $
+Revision 1.14  2007/11/26 12:01:48  nw
+added framework for progress indication for background processes
+
 Revision 1.13  2007/09/21 16:35:13  nw
 improved error reporting,
 various code-review tweaks.

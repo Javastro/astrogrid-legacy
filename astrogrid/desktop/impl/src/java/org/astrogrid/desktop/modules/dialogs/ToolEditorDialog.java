@@ -1,4 +1,4 @@
-/*$Id: ToolEditorDialog.java,v 1.17 2007/11/20 06:02:55 nw Exp $
+/*$Id: ToolEditorDialog.java,v 1.18 2007/11/26 12:01:49 nw Exp $
  * Created on 23-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -112,7 +112,7 @@ public class ToolEditorDialog extends UIDialogueComponentImpl implements UICompo
                 super.doFinished(result);
             }
             protected void doError(Throwable ex) {
-                ExceptionFormatter.showError(ToolEditorDialog.this,"An error occurred while " + msg.toLowerCase(),ex);
+                ExceptionFormatter.showError(ToolEditorDialog.this,"An error occurred while " + workerTitle.toLowerCase(),ex);
             }            
         }.start();
     }
@@ -139,7 +139,7 @@ public class ToolEditorDialog extends UIDialogueComponentImpl implements UICompo
             }
             // overridden to display error in front of dialogue.
             protected void doError(Throwable ex) {
-                ExceptionFormatter.showError(ToolEditorDialog.this,"An error occurred while " + msg.toLowerCase(),ex);
+                ExceptionFormatter.showError(ToolEditorDialog.this,"An error occurred while " + workerTitle.toLowerCase(),ex);
             }
         }.start();
     }
@@ -155,6 +155,9 @@ public class ToolEditorDialog extends UIDialogueComponentImpl implements UICompo
 
 /* 
 $Log: ToolEditorDialog.java,v $
+Revision 1.18  2007/11/26 12:01:49  nw
+added framework for progress indication for background processes
+
 Revision 1.17  2007/11/20 06:02:55  nw
 added help ids.
 

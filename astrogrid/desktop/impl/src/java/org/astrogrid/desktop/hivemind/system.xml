@@ -212,6 +212,7 @@ System module.
                 <service>astrogrid.community</service>
                 <service>builtin.shutdown</service>
                 <service>util.selftest</service>
+                <service>workersMonitor</service>
                 <service>configDialogue</service>
                 <service>aboutDialogue</service>
 	 			<service>plasticList</service>
@@ -257,7 +258,19 @@ System module.
 		</preference>
 	</contribution>	
 		
-
+<!--
+============================
+ Background workers §tor
+ -->
+    <service-point id="workersMonitor" interface="org.astrogrid.desktop.modules.system.ui.BackgroundWorkersMonitor">
+        Monitor ui for background workers
+        <interceptor service-id="system.edtInvoke" />
+        <invoke-factory>
+            <construct class="org.astrogrid.desktop.modules.system.ui.BackgroundWorkersMonitorImpl">
+                <service>ui</service>
+            </construct>
+        </invoke-factory>        
+    </service-point>
 
 	<!-- 
 	====================
@@ -737,8 +750,8 @@ SYSTEM TRAY
 				<service>ui</service>
 				<service>builtin.sessionManager</service>
 				<set property="queueSize" value="${system.executor.queueSize}" />
-				<set property="startThreads" value="${system.executor.startThreads}" />
-				<set property="maxThreads" value="${system.executor.maxThreads}" />
+				<set property="startThreads" value="${performance.maxWorkerThreads}" />
+				<set property="maxThreads" value="${performance.maxWorkerThreads}" />
 				<event-listener service-id="builtin.shutdown" />				
 			</construct>		
 		</invoke-factory>
@@ -750,8 +763,10 @@ SYSTEM TRAY
 	
 	<contribution configuration-id="hivemind.FactoryDefaults">			
 	    <default symbol="system.executor.queueSize" value="10000" />
+        <!-- unused
 		<default symbol="system.executor.startThreads" value="15" />
 		<default symbol="system.executor.maxThreads" value="30" />
+         -->
 	</contribution>		
 	
 

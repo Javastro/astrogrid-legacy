@@ -87,7 +87,7 @@ public abstract class UIComponentMenuBar extends JMenuBar {
         } else {
             editMenu = null;
         }
-        windowMenu = uiParent.getContext().createWindowMenu(uiParent);
+        windowMenu = uiParent.getContext().createWindowMenu();
         helpMenu = new HelpMenuBuilder(uiParent.applicationName, uiParent.helpKey,hideSystemOperations).create();
 
         add(fileMenu);
@@ -238,11 +238,7 @@ public abstract class UIComponentMenuBar extends JMenuBar {
         private void addSystemActions() {
 
             separator();
-            JMenuItem exit = new JMenuItem("Exit"+ UIComponentMenuBar.ELLIPSIS,KeyEvent.VK_E);
-            exit.setToolTipText("Close all windows and exit VODesktop");
-            exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q,UIComponentMenuBar.MENU_KEYMASK));
-            exit.setActionCommand(UIContext.EXIT);
-            exit.addActionListener(context);
+            JMenuItem exit = createExitMenuItem(context);
             menu.add(exit);
         }
        
@@ -344,17 +340,11 @@ public abstract class UIComponentMenuBar extends JMenuBar {
         public HelpMenuBuilder(String applicationName, final String helpKey, boolean isOsx) {
             super("Help",KeyEvent.VK_H);
             this.isOsx = isOsx;
-            final JMenuItem appHelp = menu.add(applicationName + " Help");
-            appHelp.addActionListener(new ActionListener() {
-
-                public void actionPerformed(ActionEvent e) {
-                    uiParent.getContext().getHelpServer().showHelpForTarget(helpKey);                    
-                }
-            });
-            appHelp.setAccelerator(KeyStroke.getKeyStroke(new Character('?'),UIComponentMenuBar.MENU_KEYMASK));
-            JMenuItem contents = menu.add("Help Contents");
-            contents.setActionCommand(UIContext.HELP);
-            contents.addActionListener(context);
+            final JMenuItem appHelp = createApplicationHelpMenuItem(context,applicationName, helpKey);
+            menu.add(appHelp);
+            
+            JMenuItem contents = createHelpContentsMenuItem(context);
+            menu.add(contents);
         
             // recommended apps submenu
             JMenu apps = new JMenu("Other Applications");
@@ -562,5 +552,45 @@ public abstract class UIComponentMenuBar extends JMenuBar {
 
     public final JMenu getHelpMenu() {
         return this.helpMenu;
+    }
+
+    /**
+     * @return
+     */
+    public static JMenuItem createHelpContentsMenuItem(UIContext context) {
+        JMenuItem contents = new JMenuItem("Help Contents");
+        contents.setActionCommand(UIContext.HELP);
+        contents.addActionListener(context);
+        return contents;
+    }
+
+    /**
+     * @param applicationName
+     * @param helpKey
+     * @return
+     */
+    public  static JMenuItem createApplicationHelpMenuItem(final UIContext context,String applicationName,
+            final String helpKey) {
+        final JMenuItem appHelp = new JMenuItem(applicationName + " Help");
+        appHelp.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                context.getHelpServer().showHelpForTarget(helpKey);                    
+            }
+        });
+        appHelp.setAccelerator(KeyStroke.getKeyStroke(new Character('?'),UIComponentMenuBar.MENU_KEYMASK));
+        return appHelp;
+    }
+
+    /**
+     * @return
+     */
+    public static JMenuItem createExitMenuItem(UIContext context) {
+        JMenuItem exit = new JMenuItem("Exit"+ UIComponentMenuBar.ELLIPSIS,KeyEvent.VK_E);
+        exit.setToolTipText("Close all windows and exit VODesktop");
+        exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q,UIComponentMenuBar.MENU_KEYMASK));
+        exit.setActionCommand(UIContext.EXIT);
+        exit.addActionListener(context);
+        return exit;
     }
 }

@@ -1,4 +1,4 @@
-/*$Id: UIComponentImpl.java,v 1.20 2007/11/13 04:51:03 nw Exp $
+/*$Id: UIComponentImpl.java,v 1.21 2007/11/26 12:01:48 nw Exp $
  * Created on 07-Apr-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,19 +13,15 @@ package org.astrogrid.desktop.modules.ui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.HeadlessException;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
@@ -33,8 +29,8 @@ import javax.swing.border.Border;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.builtin.ShutdownListener;
-import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.ui.comp.AbstractCloseAction;
 
 
 
@@ -107,30 +103,24 @@ public class UIComponentImpl extends JFrame implements UIComponent {
          public BackgroundOperation(String msg,int priority) {
              super(UIComponentImpl.this,msg,priority);
          }
-         public BackgroundOperation(String msg,long timeout) {
+         public BackgroundOperation(String msg,TimeoutEnum timeout) {
              super(UIComponentImpl.this,msg,timeout);
          }
-         public BackgroundOperation(String msg,long timeout, int priority) {
+         public BackgroundOperation(String msg,TimeoutEnum timeout, int priority) {
              super(UIComponentImpl.this,msg,timeout,priority);
          }
      }
 
-	/** generic close window action */
-     public final class CloseAction extends AbstractAction {
-         public CloseAction() {
-             super("Close Window",IconHelper.loadIcon("close16.png"));
-             this.putValue(SHORT_DESCRIPTION,"Close window");
-             this.putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
-             this.putValue(ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_W,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-         }
+	/** close window action for ui components. */
+     public final class CloseAction extends AbstractCloseAction {
+
          public void actionPerformed(ActionEvent e) {
              hide();
              getContext().unregisterWindow(UIComponentImpl.this);
              dispose();
          }
      }
-
-    public UIContext getContext() {
+     public UIContext getContext() {
         return context;
     }
 // from here on, just delegate to assistant.
@@ -247,6 +237,9 @@ public class UIComponentImpl extends JFrame implements UIComponent {
 
 /* 
 $Log: UIComponentImpl.java,v $
+Revision 1.21  2007/11/26 12:01:48  nw
+added framework for progress indication for background processes
+
 Revision 1.20  2007/11/13 04:51:03  nw
 Complete - task 229: menuing redesign.
 

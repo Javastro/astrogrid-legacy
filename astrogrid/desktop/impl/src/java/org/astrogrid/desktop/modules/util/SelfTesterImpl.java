@@ -133,7 +133,7 @@ public class SelfTesterImpl implements SelfTester, Runnable {
          * @throws HeadlessException
          */
         public SelfTestDisplay(UIContext context) throws HeadlessException {
-            super(context,"Self Testing","ui.selftest");
+            super(context,"Self Tests","ui.selftest");
             context.unregisterWindow(this); // registered by parent, don't want it.
             
             // a table component, based on the testResults, where all updates occur on the EDT

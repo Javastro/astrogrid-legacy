@@ -1,4 +1,4 @@
-/*$Id: Launcher.java,v 1.22 2007/09/21 16:35:15 nw Exp $
+/*$Id: Launcher.java,v 1.23 2007/11/26 12:01:48 nw Exp $
  * Created on 15-Mar-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -172,12 +172,12 @@ public class Launcher implements Runnable {
         addModuleByName("hivemind");
         addModuleByName("hivemind-lib");
         addModuleByName("hiveutils");
-        //@todo move these to just the AR variants - not plastic hub.
         addModuleByName("hivelock.core");
         
         addModuleByName("framework");        
         addModuleByName("builtin");
         addModuleByName("test");
+        addModuleByName("performance");
     }
 
     // internal flag to keep track of whether the handler factory has been set in this vm yet.
@@ -243,6 +243,9 @@ public class Launcher implements Runnable {
 
 /* 
 $Log: Launcher.java,v $
+Revision 1.23  2007/11/26 12:01:48  nw
+added framework for progress indication for background processes
+
 Revision 1.22  2007/09/21 16:35:15  nw
 improved error reporting,
 various code-review tweaks.

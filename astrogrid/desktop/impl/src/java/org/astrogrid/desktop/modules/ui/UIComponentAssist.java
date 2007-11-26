@@ -43,6 +43,8 @@ import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import ca.odell.glazedlists.FilterList;
 import ca.odell.glazedlists.FunctionList;
 import ca.odell.glazedlists.RangeList;
+import ca.odell.glazedlists.event.ListEvent;
+import ca.odell.glazedlists.event.ListEventListener;
 import ca.odell.glazedlists.matchers.Matcher;
 import ca.odell.glazedlists.swing.EventListModel;
 
@@ -66,13 +68,7 @@ public final class UIComponentAssist {
      */
     public UIComponentAssist(final UIComponent parent) {
         super();
-        this.parent = parent;
-        tasksList = new FilterList(parent.getContext().getTasksList(),new Matcher() {
-            public boolean matches(Object arg0) {
-                BackgroundWorker w = (BackgroundWorker)arg0;
-                return w.special || w.parent == parent;
-            }
-        });            
+        this.parent = parent;           
     }
 
     private StatusBar bottomPanel;
@@ -83,14 +79,12 @@ public final class UIComponentAssist {
     private JList plasticList;
     private JProgressBar progressBar;
     private JButton tasksButton;
-    private final FilterList tasksList;
     private JButton throbber;
 
     /** detach this class from the Context, stop listening to things, etc */
     public void cleanup() {
         //should I do any further cleanup - listeners, etc?
         throbber.setModel(null);
-        tasksList.dispose();
         ((EventListModel)plasticList.getModel()).dispose();
         login.setModel(null);            
     }
@@ -117,9 +111,9 @@ public final class UIComponentAssist {
     }        
     /** halt all tasks owned by this component (and not special) */
     public void haltMyTasks() {
-        for (Iterator i = tasksList.iterator(); i.hasNext();) {
-            BackgroundWorker w = (BackgroundWorker) i.next();
-            if (!w.special) {
+        for (Iterator i =parent.getContext().getTasksList().iterator(); i.hasNext();) {
+            BackgroundWorker w = (BackgroundWorker) i.next();            
+            if (w.parent == parent) {
                 w.interrupt();
             }
         }
@@ -266,54 +260,25 @@ public final class UIComponentAssist {
             tasksButton.putClientProperty("is3DEnabled",Boolean.TRUE);
             tasksButton.setBorder(BorderFactory.createEtchedBorder());
             tasksButton.setToolTipText("List running processes");
-            final JPopupMenu tasksMenu = new JPopupMenu();
-            tasksMenu.add("Halt All Processes").addActionListener(new ActionListener() {
+            tasksButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    parent.getContext().getWorkersMonitor().showProcessesFor(parent);
+                }
+            });
+            // filter down to this window's tasks.
+            final FilterList fl = new FilterList(parent.getContext().getTasksList(),new Matcher() {
 
-                public void actionPerformed(ActionEvent e) {
-                    parent.haltMyTasks();
+                public boolean matches(Object arg0) {
+                    return ((BackgroundWorker)arg0).getParent() == parent;
                 }
             });
-            tasksMenu.add(new JSeparator());
-            tasksButton.addMouseListener(new MouseAdapter() {
-                public void mousePressed(MouseEvent e) {
-                    tasksMenu.show(tasksButton,e.getX(),e.getY());
+            // now listen to changes to this list, and enable / disable the button.
+            fl.addListEventListener(new ListEventListener() {
+                public void listChanged(ListEvent arg0) {
+                    tasksButton.setEnabled(! fl.isEmpty());                    
                 }
             });
-            RangeList rangeList = new RangeList(tasksList);
-            rangeList.setHeadRange(0,30); // only display 30 items.
-            final ActionListener l  = new ActionListener() {// handler for menu items.
-                public void actionPerformed(ActionEvent e) {
-                    // retrive the worker for this item.
-                    BackgroundWorker w = (BackgroundWorker) ((JComponent)e.getSource()).getClientProperty(BackgroundWorker.class);
-                    w.interrupt();
-                    //@todo display a fuller management dialogue here instead.
-                }
-            };
-            final FunctionList jcomponentList = new FunctionList(rangeList,new FunctionList.Function() {
-                
-                public Object evaluate(Object arg0) {
-                    BackgroundWorker w = (BackgroundWorker)arg0;
-                    JMenu mi = new JMenu(w.getMessage());
-                    JMenuItem halt = new JMenuItem("Halt");
-                    halt.addActionListener(l);
-                    halt.putClientProperty(BackgroundWorker.class,w); // store the worker for this menu item.
-                    mi.add(halt);
-                    switch (w.getStatus()) {
-                        case BackgroundWorker.PENDING:
-                            mi.setIcon(UIConstants.PENDING_ICON);
-                            break;
-                        case BackgroundWorker.RUNNING:
-                            mi.setIcon(UIConstants.RUNNING_ICON);
-                            break;
-                        case BackgroundWorker.COMPLETED:
-                            mi.setIcon(UIConstants.COMPLETED_ICON);
-                            break;                         
-                    }
-                    return mi;    
-                }
-            });
-            // utility class that manages populating the popup.
-            new EventListPopupMenuManager(jcomponentList,tasksButton,tasksMenu,false);
+      
         }
         return tasksButton;
     }

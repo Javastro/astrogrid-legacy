@@ -20,6 +20,7 @@ import javax.swing.event.ChangeListener;
 import org.astrogrid.desktop.framework.ReflectionHelper;
 import org.astrogrid.desktop.icons.IconHelper;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
+import org.astrogrid.desktop.modules.system.ui.UIContextImpl;
 
 /** System tray implementation for Java6
  * reuses much of the machinery of the fallback system tray.
@@ -93,6 +94,11 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
         test.setActionCommand(UIContext.SELFTEST);
         test.addActionListener(context);
         m.add(test);
+        
+        MenuItem processes = new MenuItem("Background Processes");
+        processes.setActionCommand(UIContext.PROCESSES);
+        processes.addActionListener(context);
+        m.add(processes);
         
         final ButtonModel model = context.getLoggedInModel();        
         m.addSeparator();

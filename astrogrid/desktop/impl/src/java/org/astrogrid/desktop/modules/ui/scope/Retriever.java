@@ -82,7 +82,7 @@ public abstract class Retriever extends BackgroundWorker {
 
     
     public Retriever(UIComponent comp,Service information,TreeNode primaryNode,VizModel model,double ra, double dec) {
-        super(comp,information.getTitle(),1000*60L,Thread.MIN_PRIORITY+3); // make low priority, timeout after 1 min.
+        super(comp,information.getTitle(),SHORT_TIMEOUT,Thread.MIN_PRIORITY+3);
         this.ra = ra;
         this.dec = dec;
         this.service = information;

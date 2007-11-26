@@ -65,6 +65,7 @@ public class UIContextImpl implements UIContext{
     private final Community community;
     private final Shutdown shutdown;
     private final SelfTester tester;
+    private final BackgroundWorkersMonitor monitor;
     private final Runnable configDialog;
     private final Runnable aboutDialog;
 
@@ -92,7 +93,7 @@ public class UIContextImpl implements UIContext{
 	
 	//convenience constructor used while testing.
 	public UIContextImpl(final Configuration configuration,  BackgroundExecutor executor,final HelpServerInternal help, final BrowserControl browser) {
-		this(configuration,executor,help,browser,null,null,null,null,null,null, new BasicEventList(),new HashMap(),null);
+		this(configuration,executor,help,browser,null,null,null,null,null,null,null, new BasicEventList(),new HashMap(),null);
 	}
 	
 	public UIContextImpl(final Configuration configuration
@@ -103,6 +104,7 @@ public class UIContextImpl implements UIContext{
 	        , Community community
 	        , Shutdown shutdown
 	        , SelfTester tester
+	        ,BackgroundWorkersMonitor monitor
 	        ,Runnable configDialog
 	        ,Runnable aboutDialog
 	        ,EventList plastic, Map windowFactories
@@ -117,6 +119,7 @@ public class UIContextImpl implements UIContext{
         this.community = community;
         this.shutdown = shutdown;
         this.tester = tester;
+        this.monitor = monitor;
         this.configDialog = configDialog;
         this.aboutDialog = aboutDialog;
 		this.plastic = plastic;
@@ -132,6 +135,8 @@ public class UIContextImpl implements UIContext{
 		visibleState.setEnabled(false);
 		
     	//create an event list that observes notifications emitted by items in the list.
+		// implementation note: all adds / deletes and in-place update notifications 
+		// must take place on the EDT.
     	tasksList = new ObservableElementList(new BasicEventList(),
     			new ObservableConnector());
 				
@@ -268,18 +273,24 @@ public class UIContextImpl implements UIContext{
         ,KeyEvent.VK_F11
         ,KeyEvent.VK_F12      
 	};
-	public JMenu createWindowMenu( UIComponentImpl owner) {
+	public JMenu createWindowMenu() {
 		JMenu windowMenu = new JMenu();
 		windowMenu.setText("Window");
 		windowMenu.setMnemonic(KeyEvent.VK_W);
 		// splice in the new window factories.
 		addWindowFactories(windowMenu);
 		windowMenu.addSeparator();
+	
 		JMenuItem selftest = new JMenuItem("Self Tests");
 		selftest.setActionCommand(SELFTEST);
 		selftest.addActionListener(this);
-
 		windowMenu.add(selftest);
+		
+		JMenuItem processes = new JMenuItem("Background Processes");
+		processes.setActionCommand(PROCESSES);
+		processes.addActionListener(this);
+		windowMenu.add(processes);
+		
 		windowMenu.addSeparator();
 		EventList w = new FunctionList(this.getWindowList(),new FunctionList.Function() {
 
@@ -356,6 +367,9 @@ public class UIContextImpl implements UIContext{
                 community.logout();
             } else if (cmd.equals(UIContext.SELFTEST)){
                 tester.show();
+            } else if (cmd.equals(UIContext.PROCESSES)) {
+                monitor.showAll();
+                
             } else if (cmd.equals(UIContext.RESET)) {
                 new ConfirmDialog("Reset Configuration","All user settings will be lost. Continue?",new Runnable() {
                     public void run() {
@@ -381,6 +395,9 @@ public class UIContextImpl implements UIContext{
                 }
             }
        
+    }
+    public BackgroundWorkersMonitor getWorkersMonitor() {
+        return monitor;
     }
 
 }

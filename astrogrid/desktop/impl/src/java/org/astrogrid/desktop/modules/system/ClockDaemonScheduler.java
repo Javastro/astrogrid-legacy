@@ -1,4 +1,4 @@
-/*$Id: ClockDaemonScheduler.java,v 1.10 2007/07/13 23:14:55 nw Exp $
+/*$Id: ClockDaemonScheduler.java,v 1.11 2007/11/26 12:01:48 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -89,7 +89,7 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
 						return null;
 					}
         		};
-				worker.setPrincipal(task.getPrincipal() == null ? defaultSession : task.getPrincipal());
+				worker.getControl().setPrincipal(task.getPrincipal() == null ? defaultSession : task.getPrincipal());
 				worker.start();
         	}
         }
@@ -113,7 +113,7 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
 						return null;
 					}
 				};
-				worker.setPrincipal(task.getPrincipal() == null ? defaultSession : task.getPrincipal());
+				worker.getControl().setPrincipal(task.getPrincipal() == null ? defaultSession : task.getPrincipal());
 				worker.start();
 			}
 		});
@@ -146,6 +146,9 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
 
 /* 
 $Log: ClockDaemonScheduler.java,v $
+Revision 1.11  2007/11/26 12:01:48  nw
+added framework for progress indication for background processes
+
 Revision 1.10  2007/07/13 23:14:55  nw
 Complete - task 1: task runner
 

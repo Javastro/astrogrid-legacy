@@ -107,6 +107,11 @@ public class FallbackSystemTray  implements SystemTrayInternal{
         test.addActionListener(context);
         m.add(test);
         
+        JMenuItem processes = new JMenuItem("Background Processes");
+        processes.setActionCommand(UIContext.PROCESSES);
+        processes.addActionListener(context);
+        m.add(processes);
+        
         m.addSeparator();
         m.add(new UIComponentMenuBar.LoginMenuItem(context));
         m.add(new UIComponentMenuBar.LogoutMenuItem(context));
