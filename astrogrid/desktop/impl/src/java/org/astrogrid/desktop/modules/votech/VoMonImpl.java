@@ -194,7 +194,8 @@ public class VoMonImpl implements VoMonInternal {
 		this.endpoint = u;
 		this.refreshSeconds = refreshSeconds;
 		this.cache =cache;
-		this.populated = false;
+		
+		this.populated = cache.getSize() > 0;
 	}
 
 	

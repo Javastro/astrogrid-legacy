@@ -42,8 +42,9 @@ ANNOTATION SERVICE
 			maxElementsInMemory="1000"
 			maxElementsOnDisk="10000000"
 			overflowToDisk="true"
-			diskPersistent="false"
-            eternal="true"
+            diskPersistent="true"
+            timeToLiveSeconds="${ivo.registry.cacheLife}"
+            timeToIdleSeconds="345600"
 		/>
 	</contribution>
 
@@ -121,12 +122,16 @@ VOMON
 		'unlimited' disk storage for entire document
 		<cache name="vomon"
 			maxElementsInMemory="100"
-			maxElementsOnDisk="10000"
+			maxElementsOnDisk="100000"
 			overflowToDisk="true"
-			diskPersistent="false"
+			diskPersistent="true"
+            timeToLiveSeconds="${ivo.registry.cacheLife}"
+            timeToIdleSeconds="345600"            
+		/>
+        <!-- 
 			timeToLiveSeconds="7200"
 			timeToIdleSeconds="7200"
-		/>
+         -->
 	</contribution>
 
 	<implementation service-id="vomon" if="property votech.vomon.disabled">
