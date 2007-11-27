@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.HashSet;
@@ -31,6 +32,9 @@ import net.sf.ehcache.Status;
 
 import org.apache.commons.collections.MultiHashMap;
 import org.apache.commons.collections.MultiMap;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.CountingInputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.acr.ServiceException;
@@ -38,6 +42,9 @@ import org.astrogrid.acr.astrogrid.CeaApplication;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.WorkerProgressReporter;
+import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
 import org.votech.VoMonBean;
 
@@ -83,26 +90,46 @@ public class VoMonImpl implements VoMonInternal {
 		}
 		return (VoMonBean[])e.getObjectValue();
 	}
-
+	/** public api */
+public void reload() throws ServiceException {
+    reload(null);
+}
 	/** reloads service list - blocking until completed  - storing it all in cache.
+	 * @param w worker for progress reporting. may be null
 	 * @throws ServiceException */
-	public void reload() throws ServiceException{ 
+	private void reload(WorkerProgressReporter w) throws ServiceException{ 
 		XMLInputFactory fac = XMLInputFactory.newInstance();
 		XMLStreamReader in = null;
 		try {
-			in = fac.createXMLStreamReader(endpoint.openStream());
+		    URLConnection conn = endpoint.openConnection();
+		    CountingInputStream counter = null;
+		    int sz = 0;
+		    if (w != null) {
+		        int contentLength = conn.getContentLength();
+		        w.reportProgress("Downloading service statuses - " + FileUtils.byteCountToDisplaySize(contentLength));
+		        sz = contentLength / 10240; // measure in 10kb.		        
+		        counter = new CountingInputStream(conn.getInputStream());
+		        w.setProgress(0,sz);
+		        in = fac.createXMLStreamReader(counter);
+		    } else {
+		        in = fac.createXMLStreamReader(conn.getInputStream());
+		    }
 			VoMonBean bean = null;
 			MultiMap apps = new MultiHashMap();
 			while(in.hasNext()) {
 				in.next();
 				if (in.isStartElement()) {
 					final String localName = in.getLocalName();
-					if ( localName.equals("host")) { // create a new bean
+					if ( localName.equals("host")) { // create a new bean					    
 						try {
 							bean = new VoMonBean();
 							bean.setId(new URI(in.getAttributeValue(null,"name")));
 						} catch (URISyntaxException x) {
 							bean = null;
+						}
+						// nice time to report size again.
+						if (w != null) {
+						    w.setProgress(counter.getCount()/10240,sz); // only fires a notification if values have changed
 						}
 					}
 					else if (localName.equals("status")) {
@@ -199,11 +226,12 @@ public class VoMonImpl implements VoMonInternal {
 	}
 
 	
-	public void execute() {
+	public void execute(WorkerProgressReporter reporter) {
 		try {
-			reload();
+			reload(reporter);
 		} catch (Throwable t) {
-			logger.warn("Failed to download service statuses: ",t);
+		    reporter.reportProgress("Failed to download statuses");
+		    reporter.reportProgress(new ExceptionFormatter().format(t));
 		}		
 	}
 

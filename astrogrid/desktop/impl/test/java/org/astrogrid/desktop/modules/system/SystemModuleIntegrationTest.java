@@ -19,6 +19,8 @@ import org.astrogrid.acr.system.UI;
 import org.astrogrid.acr.system.WebServer;
 import org.astrogrid.desktop.ARTestSetup;
 import org.astrogrid.desktop.InARTestCase;
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.WorkerProgressReporter;
 
 /**
  * @author Noel Winstanley
@@ -79,7 +81,7 @@ public class SystemModuleIntegrationTest extends InARTestCase {
 		SchedulerInternal s = (SchedulerInternal)assertComponentExists(SchedulerInternal.class, "system.scheduler");
 		s.schedule(new ScheduledTask() {
 
-			public void execute() {
+			public void execute(WorkerProgressReporter worker) {
 			}
 
 			public long getPeriod() {

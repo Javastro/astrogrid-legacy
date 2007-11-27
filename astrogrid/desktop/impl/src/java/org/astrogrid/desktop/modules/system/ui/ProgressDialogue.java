@@ -7,9 +7,12 @@ import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
+import java.util.Collections;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.AbstractListModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
 import javax.swing.JList;
@@ -38,9 +41,42 @@ public class ProgressDialogue extends BaseDialog implements Observer {
     private final BackgroundWorker worker;
     private BackgroundWorkerCell display;
     private JCheckBox hide;
-    private DefaultListModel lm;
+    private MyListModel lm;
     private JList list;
 
+    
+    /** list model tuned to this application - attached to a standard
+     * List, and it knows the list will only ever have items appended */
+    private static class MyListModel extends AbstractListModel {
+
+        public MyListModel(List delegate) {
+            super();
+            this.delegate = delegate;
+            sz = delegate.size();
+        }
+        int sz;
+        private final List delegate;
+
+        public Object getElementAt(int index) {
+            return delegate.get(index);
+        }
+
+        public int getSize() {
+            return delegate.size();
+        }
+        /** called when we want to inform the model (and the List component) 
+         * that the delegate list object has grown.
+         */
+        public void notifyListGrown() {
+            // see what the new size is
+            int nuSz = delegate.size();
+            if (nuSz > sz) {
+                fireIntervalAdded(this,sz,nuSz-1);
+                sz = nuSz;
+            }
+        }
+        
+    }
     /**
      * @param backgroundWorker
      */
@@ -82,8 +118,9 @@ public class ProgressDialogue extends BaseDialog implements Observer {
         pb.add(display.getWorkerTitle(),cc.xy(3,1));
         pb.add(display.getHalt(),cc.xy(5,1));      
                
-        lm = new DefaultListModel();
+        lm = new MyListModel(info.getProgressMessages());
         list = new JList(lm);
+        list.setFocusable(false);// it's not an input, its a display.
         pb.add(new JScrollPane(list,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED)
             ,cc.xy(3,3));       
         hide = new JCheckBox("Close this dialogue when task completes");
@@ -112,12 +149,8 @@ public class ProgressDialogue extends BaseDialog implements Observer {
         display.reload();
         // check for new messages.
         final Info info = worker.getInfo();
-        String m = info.getProgressMessage();
-        int lastix =lm.getSize() -1; 
-        if (lastix < 0 || ! lm.get(lastix).equals(m)) {
-            lm.addElement(m);
-            list.ensureIndexIsVisible(lastix+1);
-        }
+        lm.notifyListGrown();
+        list.ensureIndexIsVisible(lm.getSize()-1);       
         if (info.getStatus() == BackgroundWorker.COMPLETED && hide.isSelected()) {
             setVisible(false);
         }

@@ -1,4 +1,4 @@
-/*$Id: ClockDaemonScheduler.java,v 1.12 2007/11/26 14:44:46 nw Exp $
+/*$Id: ClockDaemonScheduler.java,v 1.13 2007/11/27 07:09:51 nw Exp $
  * Created on 21-Oct-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -85,7 +85,7 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
         		BackgroundWorker worker = new BackgroundWorker(context,task.getName(),BackgroundWorker.VERY_LONG_TIMEOUT,Thread.MIN_PRIORITY) {
 
 					protected Object construct() throws Exception {
-						task.execute();
+						task.execute(this);
 						return null;
 					}
         		};
@@ -146,6 +146,9 @@ public class ClockDaemonScheduler implements SchedulerInternal , ShutdownListene
 
 /* 
 $Log: ClockDaemonScheduler.java,v $
+Revision 1.13  2007/11/27 07:09:51  nw
+integrate commons.io
+
 Revision 1.12  2007/11/26 14:44:46  nw
 Complete - task 224: review configuration of all backgroiund workers
 

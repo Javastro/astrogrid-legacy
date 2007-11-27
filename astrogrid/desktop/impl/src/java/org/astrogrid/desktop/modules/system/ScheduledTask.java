@@ -1,4 +1,4 @@
-/*$Id: ScheduledTask.java,v 1.10 2007/11/26 14:44:46 nw Exp $
+/*$Id: ScheduledTask.java,v 1.11 2007/11/27 07:09:51 nw Exp $
  * Created on 05-Nov-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,9 @@ package org.astrogrid.desktop.modules.system;
 
 import java.security.Principal;
 
+import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.WorkerProgressReporter;
+
 /** interface to a schedulable task. the execute method is called each 'period' milliseconds.
  * @author Noel Winstanley noel.winstanley@manchester.ac.uk 05-Nov-2005
  *
@@ -20,7 +23,11 @@ public interface ScheduledTask{
 
     public String getName();
     
-	public void execute();
+    /** perform the execution of the scheduled task
+     * 
+     * @param reporter - interface to report progress.
+     */
+	public void execute(WorkerProgressReporter reporter);
 	/** period (milliseconds) after which to repeat this task */
    public long getPeriod();
 	/** specify the session to run this continuation as
@@ -34,6 +41,9 @@ public interface ScheduledTask{
 
 /* 
 $Log: ScheduledTask.java,v $
+Revision 1.11  2007/11/27 07:09:51  nw
+integrate commons.io
+
 Revision 1.10  2007/11/26 14:44:46  nw
 Complete - task 224: review configuration of all backgroiund workers
 

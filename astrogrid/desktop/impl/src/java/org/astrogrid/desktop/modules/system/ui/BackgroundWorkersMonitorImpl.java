@@ -327,7 +327,10 @@ public class BackgroundWorkersMonitorImpl extends JFrame implements BackgroundWo
         /** called when background worker has updated */
         public void reload() {
             final Info info = worker.getInfo();
-            message.setText(info.getProgressMessage());
+            int sz = info.getProgressMessages().size();
+            if (sz > 0) {
+                message.setText((String)info.getProgressMessages().get(sz-1));
+            }
             switch(info.getStatus()) {
                 case BackgroundWorker.RUNNING:
                     if (info.getMaxProgress() == BackgroundWorker.MAX_VALUE_UNSPECIFIED) {

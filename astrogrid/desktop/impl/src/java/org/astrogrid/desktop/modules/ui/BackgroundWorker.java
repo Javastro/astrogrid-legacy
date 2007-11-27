@@ -1,4 +1,4 @@
-/*$Id: BackgroundWorker.java,v 1.16 2007/11/26 14:44:45 nw Exp $
+/*$Id: BackgroundWorker.java,v 1.17 2007/11/27 07:09:51 nw Exp $
  * Created on 02-Sep-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 
 import javax.swing.SwingUtilities;
@@ -43,7 +45,9 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
       * @author Noel Winstanley noel.winstanley@manchester.ac.uk 02-Apr-2005
       *
       */
-    public abstract class BackgroundWorker  extends Observable implements Runnable, Comparable  {
+    public abstract class BackgroundWorker  extends Observable implements Runnable, Comparable, WorkerProgressReporter{
+        
+
 
         /** enumeration class for timeout values. defined in terms of a
          * 'timeout factor' which is defined in application preferences.
@@ -111,8 +115,8 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
             public final int getCurrentProgress() {
                 return currentValue;
             }
-            public final String getProgressMessage() {
-                return progressMessage;
+            public final List getProgressMessages() {
+                return progressMessages;
             }
             
         }
@@ -443,14 +447,14 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
          * report the progress of the task
          * @param s
          */
-        protected final void reportProgress(String s) {
+        public final void reportProgress(String s) {
             // only most recent message is persisted.
-            progressMessage = s;
+            progressMessages.add(s);
             // add logging here too?
             setChanged();
             notifyObservers();
         }
-        private String progressMessage;
+        private final List progressMessages = new ArrayList(10);
         
       
 
@@ -460,9 +464,9 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
          * @param newCurrentValue current progress
          * @param newMaxValue maximum value for progress (i.e. when currentValue reaches this, task will have completed)
          */
-        protected final void setProgress(final int newCurrentValue, final int newMaxValue) {
+        public final void setProgress(final int newCurrentValue, final int newMaxValue) {
             if (newCurrentValue != currentValue) {
-                currentValue = newCurrentValue;
+                currentValue = newCurrentValue;              
                 setChanged();
             }
             if (newMaxValue != maxVaue) {
@@ -515,6 +519,9 @@ import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
 
 /* 
 $Log: BackgroundWorker.java,v $
+Revision 1.17  2007/11/27 07:09:51  nw
+integrate commons.io
+
 Revision 1.16  2007/11/26 14:44:45  nw
 Complete - task 224: review configuration of all backgroiund workers
 
