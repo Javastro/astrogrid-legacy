@@ -15,6 +15,9 @@
 	</head>
 <body>
 <release version="2007.4.alpha8" date="unreleased">
+    <action dev="nw" type="fix" issue="2427">
+    System tray: added additional armour to fallback if system tray fails after initialization.
+    </action>
     <action dev="nw" type="add">
     AR: added configuration preferences to assist running in low-bandwidth environments
     </action>

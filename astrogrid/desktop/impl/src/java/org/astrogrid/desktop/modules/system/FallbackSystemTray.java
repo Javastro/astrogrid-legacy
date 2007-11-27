@@ -45,7 +45,7 @@ public class FallbackSystemTray  implements SystemTrayInternal{
     protected static final Log logger = LogFactory.getLog(SystemTray.class);
     
     protected final UIContext context;
-    protected final PopupFactory popups;
+    private final PopupFactory popups;
     private final ImageIcon defaultImage;
     private final Icon throbbingImage;
     private final JButton ico;
@@ -89,7 +89,6 @@ public class FallbackSystemTray  implements SystemTrayInternal{
 
     }
     
-    //@todo add in icons to this.
     private  JPopupMenu createPopupMenu() {
         JPopupMenu m = new JPopupMenu();
 

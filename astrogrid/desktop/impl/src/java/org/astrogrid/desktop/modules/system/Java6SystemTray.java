@@ -24,6 +24,10 @@ import org.astrogrid.desktop.modules.system.ui.UIContextImpl;
 
 /** System tray implementation for Java6
  * reuses much of the machinery of the fallback system tray.
+ * 
+ * 
+ * added lots of code armour - the first time that a java6 call fails, behaviour reverts 
+ * to the fallback system tray.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Jun 20, 200710:30:07 AM
  */
@@ -31,7 +35,8 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
 
 	public Java6SystemTray(UIContext context) throws Exception {
 	    super(context);
-
+	    // so got all the fallback machinery all ready. see if java6 will behave..
+	    
         Class systrayClz = Class.forName("java.awt.SystemTray");
         Object b =ReflectionHelper.callStatic(systrayClz,"isSupported");
         if (((Boolean)b).booleanValue() == false) { // not supported
@@ -51,7 +56,9 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
         String tooltip = "Astro Runtime";
         PopupMenu menu = createPopupMenu();
         trayIcon = trayConstructor.newInstance(new Object[]{defaultImage,tooltip,menu});
-        ReflectionHelper.call(trayIcon,"setImageAutoSize",Boolean.TRUE);           
+        ReflectionHelper.call(trayIcon,"setImageAutoSize",Boolean.TRUE);
+        // if we get this far, java6 is looking ok.
+        java6Failed = false; 
 	}
 	
 	
@@ -59,24 +66,23 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
     private final Image defaultImage;
     private final Image throbbingImage;
     private final Object systemTray;
+    private volatile boolean java6Failed = true; // assume it's going to fail by default
     
 	// overridden to display as system tray.
     public void run() {
-		// crap, got to do all this by reflection...
-		logger.info("Starting Java 1.6 Systemtray");
-		try {
-			ReflectionHelper.call(systemTray,"add",trayIcon);
-		} catch (NoSuchMethodException x) {
-			logger.warn("System tray lacks expected methods");
-		} catch (IllegalArgumentException x) {
-			logger.error("IllegalArgumentException",x);
-		} catch (IllegalAccessException x) {
-			logger.error("IllegalAccessException",x);
-		} catch (InvocationTargetException x) {
-			logger.error("InvocationTargetException",x);
-		} 
-	}
-
+        if (java6Failed) {
+            super.run();
+        } else {
+            logger.info("Starting Java 1.6 Systemtray");
+            try {
+                ReflectionHelper.call(systemTray,"add",trayIcon);
+            } catch (Throwable x) {
+                logger.warn("Failed to call SystemTray.add() - belatedly falling back",x);
+                java6Failed = true;
+                super.run();
+            } 
+        }
+    }
     
     private  PopupMenu createPopupMenu() {
         PopupMenu m = new PopupMenu();
@@ -125,9 +131,7 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
         pref.setActionCommand(UIContext.PREF);
         pref.addActionListener(context);
         m.add(pref);        
-        
-        
-        
+                        
         MenuItem h = new MenuItem("VO Desktop Help");
         h.setActionCommand(UIContext.HELP);
         h.addActionListener(context);
@@ -147,70 +151,91 @@ public class Java6SystemTray extends FallbackSystemTray implements SystemTrayInt
     }
 	
 	public void displayErrorMessage(String arg0, String arg1) {
-	        displayMsg(arg0,arg1,"ERROR");
+	    if (java6Failed) {
+	        super.displayErrorMessage(arg0,arg1);
+	    } else {
+	        try {
+	            displayMsg(arg0,arg1,"ERROR");
+            } catch (Throwable t) {
+                logger.warn("Failed to call java6 - falling back",t);
+                java6Failed = true;
+                super.run();
+                super.displayErrorMessage(arg0,arg1);
+            }	            
+	    }
 	}
 
 	public void displayInfoMessage(String arg0, String arg1) {
-	        displayMsg(arg0,arg1,"INFO");
+	    if (java6Failed) {
+	        super.displayInfoMessage(arg0,arg1);
+	    } else {
+	        try {
+	            displayMsg(arg0,arg1,"INFO");
+            } catch (Throwable t) {
+                logger.warn("Failed to call java6 - falling back",t);
+                java6Failed = true;
+                super.run();
+                super.displayInfoMessage(arg0,arg1);
+            }	            
+	    }
 	}
 
 	public void displayWarningMessage(String arg0, String arg1) {
-	        displayMsg(arg0,arg1,"WARNING");
+	    if (java6Failed) {
+	        super.displayWarningMessage(arg0,arg1);
+	    } else {
+	        try {
+	            displayMsg(arg0,arg1,"WARNING");
+	        } catch (Throwable t) {
+	            logger.warn("Failed to call java6 - falling back",t);
+	            java6Failed = true;
+	            super.run();
+	            super.displayWarningMessage(arg0,arg1);
+	        }
+	    }
 	}
 	
-	private void displayMsg(String caption, String text, String type) {
-		try {
+	private void displayMsg(String caption, String text, String type) throws ClassNotFoundException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 			// first, convert string type into new-fangled enumeration..
 			Class en = Class.forName("java.awt.TrayIcon$MessageType");
 			Object o = ReflectionHelper.callStatic(en,"valueOf",type);
 			// now call the action.
-			ReflectionHelper.call(trayIcon,"displayMessage",caption,text,o);
-		} catch (ClassNotFoundException x) {
-			logger.error("ClassNotFoundException",x);
-		} catch (IllegalArgumentException x) {
-			logger.error("IllegalArgumentException",x);
-		} catch (NoSuchMethodException x) {
-			logger.error("NoSuchMethodException",x);
-		} catch (IllegalAccessException x) {
-			logger.error("IllegalAccessException",x);
-		} catch (InvocationTargetException x) {
-			logger.error("InvocationTargetException",x);
-		}
+			ReflectionHelper.call(trayIcon,"displayMessage",caption,text,o);	
 	}
 
 	public void startThrobbing() {
-        if (++throbberCallCount > 0) {
-        	try {
-				ReflectionHelper.call(trayIcon,"setImage",throbbingImage);
-			} catch (IllegalArgumentException x) {
-				logger.error("IllegalArgumentException",x);
-			} catch (IllegalAccessException x) {
-				logger.error("IllegalAccessException",x);
-			} catch (InvocationTargetException x) {
-				logger.error("InvocationTargetException",x);
-			} catch (NoSuchMethodException x) {
-				logger.error("NoSuchMethodException",x);
-			}
-        }		
+	    if (java6Failed) {
+	        super.startThrobbing();
+	    } else {
+	        if (++throbberCallCount > 0) {
+	            try {
+	                ReflectionHelper.call(trayIcon,"setImage",throbbingImage);
+	            } catch (Throwable x) {
+	                logger.warn("Failed to start throbbing - falling back",x);
+	                java6Failed = true;
+	                super.run(); // show fallbck systray
+	                throbberCallCount -= 1;
+	                super.startThrobbing();			    
+	            }
+	        }	
+	    }
 	}
 
 	public void stopThrobbing() {
-        if (! (--throbberCallCount > 0)) {
-        	try {
-				ReflectionHelper.call(trayIcon,"setImage",defaultImage);
-			} catch (IllegalArgumentException x) {
-				logger.error("IllegalArgumentException",x);
-			} catch (IllegalAccessException x) {
-				logger.error("IllegalAccessException",x);
-			} catch (InvocationTargetException x) {
-				logger.error("InvocationTargetException",x);
-			} catch (NoSuchMethodException x) {
-				logger.error("NoSuchMethodException",x);
-			}
-        }		
+	    if (java6Failed) {
+	        super.stopThrobbing();
+	    } else {
+	        if (! (--throbberCallCount > 0)) {
+	            try {
+	                ReflectionHelper.call(trayIcon,"setImage",defaultImage);
+	            } catch (Throwable x) {
+	                logger.warn("Failed to stop throbbing - falling back",x);
+	                java6Failed = true;
+	                super.run(); // show fallback
+	                throbberCallCount += 1;
+	                super.stopThrobbing();
+	            }
+	        }		
+	    }
 	}
-
-	
-
-
 }
