@@ -43,6 +43,7 @@ import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ivoa.resource.HtmlBuilder;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.MonitoringInputStream;
 import org.astrogrid.desktop.modules.ui.WorkerProgressReporter;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.comp.UIConstants;
@@ -101,18 +102,12 @@ public void reload() throws ServiceException {
 		XMLInputFactory fac = XMLInputFactory.newInstance();
 		XMLStreamReader in = null;
 		try {
-		    URLConnection conn = endpoint.openConnection();
-		    CountingInputStream counter = null;
-		    int sz = 0;
 		    if (w != null) {
-		        int contentLength = conn.getContentLength();
-		        w.reportProgress("Downloading service statuses - " + FileUtils.byteCountToDisplaySize(contentLength));
-		        sz = contentLength / 10240; // measure in 10kb.		        
-		        counter = new CountingInputStream(conn.getInputStream());
-		        w.setProgress(0,sz);
-		        in = fac.createXMLStreamReader(counter);
+		        MonitoringInputStream min = MonitoringInputStream.create(w,endpoint,MonitoringInputStream.ONE_KB * 10);
+		        w.reportProgress("Downloading service statuses - " + min.getFormattedSize());
+		        in = fac.createXMLStreamReader(min);
 		    } else {
-		        in = fac.createXMLStreamReader(conn.getInputStream());
+		        in = fac.createXMLStreamReader(endpoint.openStream());
 		    }
 			VoMonBean bean = null;
 			MultiMap apps = new MultiHashMap();
@@ -126,10 +121,6 @@ public void reload() throws ServiceException {
 							bean.setId(new URI(in.getAttributeValue(null,"name")));
 						} catch (URISyntaxException x) {
 							bean = null;
-						}
-						// nice time to report size again.
-						if (w != null) {
-						    w.setProgress(counter.getCount()/10240,sz); // only fires a notification if values have changed
 						}
 					}
 					else if (localName.equals("status")) {

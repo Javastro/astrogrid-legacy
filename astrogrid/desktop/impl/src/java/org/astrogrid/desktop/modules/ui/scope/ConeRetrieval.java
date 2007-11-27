@@ -6,6 +6,7 @@ import org.apache.commons.lang.WordUtils;
 import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
+import org.astrogrid.desktop.modules.ui.MonitoringInputStream;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.xml.sax.InputSource;
 
@@ -43,7 +44,8 @@ public class ConeRetrieval extends Retriever {
         TreeNode serviceNode = createServiceNode(fullURL, sb.toString());
         
         reportProgress("Querying service");
-        InputSource source = new InputSource(prelimURL.openStream());
+        InputSource source = new InputSource(
+                MonitoringInputStream.create(this,prelimURL,MonitoringInputStream.ONE_KB * 10));
         SummarizingTableHandler th = createTableHandler(serviceNode);
         parseTable(source, th);
         return th;

@@ -14,6 +14,7 @@ import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.astrogrid.Stap;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
+import org.astrogrid.desktop.modules.ui.MonitoringInputStream;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.xml.sax.InputSource;
@@ -96,7 +97,8 @@ public class StapRetrieval extends Retriever {
 		TreeNode serviceNode = createServiceNode(stapURL, sb.toString());
 		// build subtree for this service
         reportProgress("Querying service");
-		InputSource source = new InputSource(stapURL.openStream());
+		InputSource source = new InputSource(
+		        MonitoringInputStream.create(this,stapURL,MonitoringInputStream.ONE_KB ));
 		SummarizingTableHandler th = new StapTableHandler(serviceNode);
 		parseTable(source, th);
 		return th;           

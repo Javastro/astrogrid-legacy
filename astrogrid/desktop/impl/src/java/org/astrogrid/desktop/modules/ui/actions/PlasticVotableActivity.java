@@ -14,9 +14,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
@@ -25,15 +24,13 @@ import org.astrogrid.acr.ivoa.resource.CatalogService;
 import org.astrogrid.acr.ivoa.resource.Resource;
 import org.astrogrid.desktop.modules.plastic.PlasticApplicationDescription;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
-import org.astrogrid.desktop.modules.ui.comp.UIConstants;
+import org.astrogrid.desktop.modules.ui.MonitoringInputStream;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.astrogrid.desktop.modules.ui.scope.ConeProtocol;
 import org.astrogrid.io.Piper;
 import org.votech.plastic.CommonMessageConstants;
 
-import com.ctc.wstx.util.StringUtil;
 import com.l2fprod.common.swing.JLinkButton;
-import com.l2fprod.common.swing.JTaskPaneGroup;
 
 /**
  * @author Noel.Winstanley@manchester.ac.uk
@@ -189,41 +186,28 @@ public class PlasticVotableActivity extends AbstractFileOrResourceActivity {
 			protected Object construct() throws Exception {
                 logger.debug("Sending inline message");			    
 				InputStream is = null;
-				ByteArrayOutputStream os = null;
 				try {
 					List l = new ArrayList();
 					String id;
 					if (fo != null) {
-					    is = fo.getContent().getInputStream();
+					    is = MonitoringInputStream.create(this,fo,MonitoringInputStream.ONE_KB * 10);
 					    id = fo.getName().getBaseName();
 					} else { // must be auri then.
-					    is = uri.toURL().openStream();
+					    is = MonitoringInputStream.create(this,uri.toURL(),MonitoringInputStream.ONE_KB * 10);
 					    id = uri.toString();
 					}
 					reportProgress("Opened file");
-					os = new ByteArrayOutputStream();
-					Piper.pipe(is,os);
+					String hopefullyNotVeryBig = IOUtils.toString(is);
 					reportProgress("Downloaded file");
 					// inline value.
-					l.add(os.toString());
+					l.add(hopefullyNotVeryBig);
 					//URL url = f.getURL();
 					l.add(id); // identifier.					
 					scav.getTupp().singleTargetPlasticMessage(CommonMessageConstants.VOTABLE_LOAD,l,plas.getId());
 					reportProgress("Sent plastic message");
 					return null;
 				} finally {
-					if (is != null) {
-						try {
-							is.close();
-						} catch (IOException e) {
-						}
-					}
-					if (os != null) {
-						try {
-							os.close();
-						} catch (IOException e) {
-						}
-					}
+				    IOUtils.closeQuietly(is);
 				}
 			}
 			protected void doFinished(Object result) {

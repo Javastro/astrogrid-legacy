@@ -23,6 +23,7 @@ import org.astrogrid.acr.ivoa.resource.Curation;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.acr.ivoa.resource.Validation;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
+import org.astrogrid.desktop.modules.ui.MonitoringInputStream;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.xml.sax.InputSource;
@@ -139,7 +140,8 @@ protected TreeNode createServiceNode(URL serviceURL, String tooltip) {
 	        reportProgress("Constructing query");		    
 			URL q = cone.constructQuery(vizierEndpoint,ra,dec,raSize);
 	        reportProgress("Querying service");			
-			InputSource source = new InputSource(q.openStream());
+			InputSource source = new InputSource(
+			        MonitoringInputStream.create(this,q,MonitoringInputStream.ONE_KB * 20));
 			SummarizingTableHandler th = createTableHandler();
 			parseTable(source,th);
 			return th;

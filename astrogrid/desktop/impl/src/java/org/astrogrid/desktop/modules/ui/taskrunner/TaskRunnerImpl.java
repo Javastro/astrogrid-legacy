@@ -45,8 +45,10 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.collections.ListUtils;
+import org.apache.commons.io.input.CountingInputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemManager;
 import org.astrogrid.acr.ACRException;
@@ -67,6 +69,7 @@ import org.astrogrid.desktop.modules.dialogs.ResourceChooserInternal;
 import org.astrogrid.desktop.modules.system.ui.RetriableBackgroundWorker;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
 import org.astrogrid.desktop.modules.ui.BackgroundWorker;
+import org.astrogrid.desktop.modules.ui.MonitoringInputStream;
 import org.astrogrid.desktop.modules.ui.TaskRunnerInternal;
 import org.astrogrid.desktop.modules.ui.TypesafeObjectBuilder;
 import org.astrogrid.desktop.modules.ui.UIComponentImpl;
@@ -400,7 +403,8 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
             	        fo = (FileObject)o;
             	    }
             	    reportProgress("Resolved file");
-                fr = new InputStreamReader(fo.getContent().getInputStream());
+            	    MonitoringInputStream mis = MonitoringInputStream.create(this,fo,MonitoringInputStream.ONE_KB);
+            	    fr = new InputStreamReader(mis);
                Tool t = Tool.unmarshalTool(fr);
                reportProgress("Loaded file contents");
                
@@ -751,6 +755,7 @@ public class TaskRunnerImpl extends UIComponentImpl implements TaskRunnerInterna
                                reportProgress("Resolved file");
                             w = new OutputStreamWriter(fo.getContent().getOutputStream());
                             reportProgress("Opened file for writing");
+                            // can't monitor this without knowing how large the tool document is..
                             t.marshal(w);                       
                             reportProgress("Wrote file");
                            return null;

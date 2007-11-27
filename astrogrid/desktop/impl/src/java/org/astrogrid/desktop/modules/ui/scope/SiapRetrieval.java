@@ -11,6 +11,7 @@ import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.Siap;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
+import org.astrogrid.desktop.modules.ui.MonitoringInputStream;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.xml.sax.InputSource;
@@ -55,7 +56,8 @@ public class SiapRetrieval extends Retriever {
             TreeNode serviceNode = createServiceNode(siapURL,sb.toString());
             // build subtree for this service
             reportProgress("Querying service");
-            InputSource source = new InputSource(siapURL.openStream());
+            InputSource source = new InputSource(
+                    MonitoringInputStream.create(this,siapURL,MonitoringInputStream.ONE_KB ));
             SummarizingTableHandler th = new SiapTableHandler(serviceNode);
             parseTable(source, th);
             return th;           

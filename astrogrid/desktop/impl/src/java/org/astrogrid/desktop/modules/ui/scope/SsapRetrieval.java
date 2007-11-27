@@ -1,4 +1,4 @@
-/*$Id: SsapRetrieval.java,v 1.12 2007/11/26 14:44:45 nw Exp $
+/*$Id: SsapRetrieval.java,v 1.13 2007/11/27 08:19:01 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import org.apache.commons.vfs.FileSystemException;
 import org.astrogrid.acr.ivoa.Ssap;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
+import org.astrogrid.desktop.modules.ui.MonitoringInputStream;
 import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
 import org.xml.sax.InputSource;
@@ -52,7 +53,8 @@ public class SsapRetrieval extends Retriever {
                 sb.append("</html>");        TreeNode serviceNode = createServiceNode(ssapURL,sb.toString());
         // build subtree for this service
                 reportProgress("Querying service");
-        InputSource source = new InputSource(ssapURL.openStream());
+        InputSource source = new InputSource(
+                MonitoringInputStream.create(this,ssapURL,MonitoringInputStream.ONE_KB ));
         SummarizingTableHandler th = new SsapTableHandler(serviceNode);
         parseTable(source, th); 
         return th;                 
@@ -198,6 +200,10 @@ public class SsapRetrieval extends Retriever {
 
 /* 
 $Log: SsapRetrieval.java,v $
+Revision 1.13  2007/11/27 08:19:01  nw
+integrate commons.io
+progress tracking or reading from streams.
+
 Revision 1.12  2007/11/26 14:44:45  nw
 Complete - task 224: review configuration of all backgroiund workers
 
