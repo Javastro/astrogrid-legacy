@@ -15,6 +15,9 @@
 	</head>
 <body>
 <release version="2007.4.beta1" date="unreleased">
+    <action dev="nw" type="update">
+        Astroscope: Hide service-type balloons for those service-types that are not being queried.
+    </action>
     <action dev="nw" type="fix" issue="1729">
         Astroscope: Corrected parsing of siap and ssap service responses.
     </action>

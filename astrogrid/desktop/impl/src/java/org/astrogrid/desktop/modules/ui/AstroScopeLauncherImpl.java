@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.73 2007/11/26 14:44:45 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.74 2007/11/28 11:08:27 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -97,6 +97,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import edu.berkeley.guir.prefuse.event.FocusEvent;
 import edu.berkeley.guir.prefuse.event.FocusListener;
 import edu.berkeley.guir.prefuse.focus.FocusSet;
+import edu.berkeley.guir.prefuse.graph.DefaultEdge;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
 public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroScopeInternal, DecSexListener, FocusListener {
@@ -582,7 +583,20 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 
 		for (Iterator i = protocols.iterator(); i.hasNext(); ) {
 			final DalProtocol p =(DalProtocol)i.next();
-			if (p.getCheckBox().isSelected()) {
+			final TreeNode rootNode = vizModel.getRootNode();
+			if (!p.getCheckBox().isSelected()) {
+			    // remove this protocol node - we're not searching on it.
+			    if (rootNode.isChild(p.getPrimaryNode())) {
+			        rootNode.removeChild(p.getPrimaryNode());
+			    }
+			} else {
+			    // previously this protocol has been removed - splice it back in
+			    if (!rootNode.isChild(p.getPrimaryNode())) {
+			        DefaultEdge edge = new DefaultEdge(rootNode,p.getPrimaryNode());
+			        //blemish - code coopied verbatim from vizModel
+		            edge.setAttribute(Retriever.WEIGHT_ATTRIBUTE,"3");			        
+			        rootNode.addChild(edge);
+			    }
 				(new BackgroundOperation("Searching for " + p.getName() + " Services",BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
 					protected Object construct() throws Exception {
 						if (resourceList == null) {
