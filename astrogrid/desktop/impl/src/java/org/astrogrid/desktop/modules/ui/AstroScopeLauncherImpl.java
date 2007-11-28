@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.74 2007/11/28 11:08:27 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.75 2007/11/28 12:03:22 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -597,42 +597,20 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		            edge.setAttribute(Retriever.WEIGHT_ATTRIBUTE,"3");			        
 			        rootNode.addChild(edge);
 			    }
-				(new BackgroundOperation("Searching for " + p.getName() + " Services",BackgroundWorker.LONG_TIMEOUT,Thread.MAX_PRIORITY) {
-					protected Object construct() throws Exception {
-						if (resourceList == null) {
-							return p.listServices();
-						} else {
-							return p.filterServices(resourceList);
-						}
-					}
-					protected void doFinished(Object result) {
-						Service[] services = (Service[])result;
-						parent.showTransientMessage(services.length + " " + p.getName() + " services to query","");
-						setProgressMax(getProgressMax() + services.length);
-						if (p instanceof SpatialDalProtocol) {
-							SpatialDalProtocol spatial = (SpatialDalProtocol)p;
-							for (int i = 0; i < services.length; i++) {
-								spatial.createRetriever(AstroScopeLauncherImpl.this,services[i],ra,dec,radius,radius).start();
-							}                            
-						} else if (p instanceof TemporalDalProtocol) {
-							TemporalDalProtocol temporal = (TemporalDalProtocol)p;
-							Date start = startCal.getDate();
-							Date end = endCal.getDate();
-							for (int i = 0; i < services.length; i++) {
-								if (noPosition.isSelected()) { // zero out the positional fields.
-									temporal.createRetriever(AstroScopeLauncherImpl.this,services[i],start,end,Double.NaN,Double.NaN,Double.NaN,Double.NaN).start();
-								} else {
-									temporal.createRetriever(AstroScopeLauncherImpl.this,services[i],start,end,ra,dec,radius,radius).start();
-								}
-							}      							
-						}
-					}                            
-				}).start();
+				new ListServicesRegistryQuerier( radius, dec, ra, p).start();
 			}
 		}
 	}
 	protected void haltQuery() {
-		haltMyTasks();
+		for (Iterator i = getContext().getTasksList().iterator(); i.hasNext(); ) {
+		    BackgroundWorker w = (BackgroundWorker)i.next();
+		    // halts all retrievers and list-services queries - leaving other tasks (e.g. downloads, plastic interactions) untouched.
+		   
+		    if (w.parent == this &&
+		            (w instanceof Retriever  || w instanceof ListServicesRegistryQuerier) ) {
+		        w.interrupt();
+		    }
+		}
 		setProgressValue(getProgressMax());
 	}
 	/** removes previous results, just leaving the skeleton */
@@ -658,7 +636,79 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 	}
 
 
-	/** implementation of an item in the history menu.
+	/** worker that queries registry to produce a list of all services of a particlar type.
+     * @author Noel.Winstanley@manchester.ac.uk
+     * @since Nov 28, 20075:30:43 PM
+     */
+    private final class ListServicesRegistryQuerier extends BackgroundOperation {
+        /**
+         * 
+         */
+        private final double radius;
+        /**
+         * 
+         */
+        private final double dec;
+        /**
+         * 
+         */
+        private final double ra;
+        /**
+         * 
+         */
+        private final DalProtocol p;
+
+        /**
+         * @param msg
+         * @param timeout
+         * @param priority
+         * @param radius
+         * @param dec
+         * @param ra
+         * @param p
+         */
+        private ListServicesRegistryQuerier(double radius, double dec, double ra,
+                DalProtocol p) {
+            super("Searching for " + p.getName() + " Services",  BackgroundWorker.LONG_TIMEOUT, Thread.MAX_PRIORITY);
+            this.radius = radius;
+            this.dec = dec;
+            this.ra = ra;
+            this.p = p;
+        }
+
+        protected Object construct() throws Exception {
+        	if (resourceList == null) {
+        		return this.p.listServices();
+        	} else {
+        		return this.p.filterServices(resourceList);
+        	}
+        }
+
+        protected void doFinished(Object result) {
+        	Service[] services = (Service[])result;
+        	parent.showTransientMessage(services.length + " " + this.p.getName() + " services to query","");
+        	setProgressMax(getProgressMax() + services.length);
+        	if (this.p instanceof SpatialDalProtocol) {
+        		SpatialDalProtocol spatial = (SpatialDalProtocol)this.p;
+        		for (int i = 0; i < services.length; i++) {
+        			spatial.createRetriever(AstroScopeLauncherImpl.this,services[i],this.ra,this.dec,this.radius,this.radius).start();
+        		}                            
+        	} else if (this.p instanceof TemporalDalProtocol) {
+        		TemporalDalProtocol temporal = (TemporalDalProtocol)this.p;
+        		Date start = startCal.getDate();
+        		Date end = endCal.getDate();
+        		for (int i = 0; i < services.length; i++) {
+        			if (noPosition.isSelected()) { // zero out the positional fields.
+        				temporal.createRetriever(AstroScopeLauncherImpl.this,services[i],start,end,Double.NaN,Double.NaN,Double.NaN,Double.NaN).start();
+        			} else {
+        				temporal.createRetriever(AstroScopeLauncherImpl.this,services[i],start,end,this.ra,this.dec,this.radius,this.radius).start();
+        			}
+        		}      							
+        	}
+        }
+    }
+
+    /** implementation of an item in the history menu.
 	 * 
 	 * each listens to decSexToggle - to change representation from one system to other.
 	 * @author Noel Winstanley
