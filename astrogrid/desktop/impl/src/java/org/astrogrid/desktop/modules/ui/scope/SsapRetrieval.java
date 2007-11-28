@@ -1,4 +1,4 @@
-/*$Id: SsapRetrieval.java,v 1.13 2007/11/27 08:19:01 nw Exp $
+/*$Id: SsapRetrieval.java,v 1.14 2007/11/28 09:03:51 nw Exp $
  * Created on 27-Jan-2006
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,6 +26,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import uk.ac.starlink.table.ColumnInfo;
+import uk.ac.starlink.table.StarTable;
 import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
@@ -82,6 +83,30 @@ public class SsapRetrieval extends Retriever {
         int spectrumDimeqCol = -1;
         int spectrumScaleqCol = -1;
         int spectrumUnitsCol = -1;
+        
+        private boolean skipNextTable = false;
+        private boolean resultsTableParsed = false;
+        
+
+        public void resource(String name, String id, String type)
+                throws SAXException {
+            skipNextTable = ! "results".equals(type);
+        }
+        
+        public void startTable(StarTable starTable) throws SAXException {
+            if (skipNextTable || resultsTableParsed) {
+                return;
+            }
+                super.startTable(starTable);
+        }
+        public void rowData(Object[] row) throws SAXException {
+            if (skipNextTable || resultsTableParsed) {
+                return;
+            }
+           super.rowData(row);
+            
+        }
+       
         
         protected void startTableExtensionPoint(int col, ColumnInfo columnInfo) {
             super.startTableExtensionPoint(col, columnInfo);
@@ -186,10 +211,16 @@ public class SsapRetrieval extends Retriever {
         }        
         
         public void endTable() throws SAXException {
-            super.endTable();
-            urlCol= -1;
-            titleCol = -1;
-            formatCol = -1;
+            if (skipNextTable || resultsTableParsed) {
+                return;
+                
+            }
+            resultsTableParsed = true;
+                super.endTable();
+                urlCol= -1;
+                titleCol = -1;
+                formatCol = -1;
+            
         }
     }// end table handler class.
     public String getServiceType() {
@@ -200,6 +231,9 @@ public class SsapRetrieval extends Retriever {
 
 /* 
 $Log: SsapRetrieval.java,v $
+Revision 1.14  2007/11/28 09:03:51  nw
+Complete - task 256: Complete retriever bugfxes
+
 Revision 1.13  2007/11/27 08:19:01  nw
 integrate commons.io
 progress tracking or reading from streams.

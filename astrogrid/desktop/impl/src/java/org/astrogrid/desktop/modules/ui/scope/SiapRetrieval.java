@@ -18,6 +18,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import uk.ac.starlink.table.ColumnInfo;
+import uk.ac.starlink.table.StarTable;
 import edu.berkeley.guir.prefuse.graph.DefaultTreeNode;
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
@@ -66,6 +67,7 @@ public class SiapRetrieval extends Retriever {
     public static final String IMAGE_TYPE_ATTRIBUTE = "type";
     /** attribute containing reference url for this image */
     public static final String IMAGE_URL_ATTRIBUTE = "imgURL";   
+    //parse additional siap data, and ignore non results tables.
     public class SiapTableHandler extends BasicTableHandler {
 
 
@@ -77,6 +79,28 @@ public class SiapRetrieval extends Retriever {
         int sizeCol = -1;
         int titleCol = -1;   
         int dataLinkCol = -1;
+        private boolean skipNextTable = false;
+        private boolean resultsTableParsed = false;
+        
+        public void resource(String name, String id, String type)
+                throws SAXException {
+            skipNextTable = ! "results".equals(type);
+        }
+        
+        public void startTable(StarTable starTable) throws SAXException {
+            if (skipNextTable || resultsTableParsed) {
+                return;
+            }
+                super.startTable(starTable);
+        }
+        public void rowData(Object[] row) throws SAXException {
+            if (skipNextTable || resultsTableParsed) {
+                return;
+            }
+           super.rowData(row);
+            
+        }
+       
         
         protected void startTableExtensionPoint(int col,ColumnInfo columnInfo) {
             String ucd = columnInfo.getUCD();
@@ -140,12 +164,18 @@ protected void rowDataExtensionPoint(Object[] row, TreeNode valNode) {
     
     // extended - resets our new variables too.
     public void endTable() throws SAXException {
-        super.endTable();
-        imgCol = -1;
-        formatCol = -1;
-        sizeCol = -1;
-        titleCol = -1;           
-        dataLinkCol = -1;
+        if (skipNextTable || resultsTableParsed) {
+            return;
+            
+        }
+        resultsTableParsed = true;
+            super.endTable();
+            imgCol = -1;
+            formatCol = -1;
+            sizeCol = -1;
+            titleCol = -1;           
+            dataLinkCol = -1;
+        
     }
         
     } // end table handler class.

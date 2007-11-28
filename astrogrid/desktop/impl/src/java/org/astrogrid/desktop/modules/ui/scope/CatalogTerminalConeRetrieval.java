@@ -3,6 +3,7 @@ package org.astrogrid.desktop.modules.ui.scope;
 import org.astrogrid.acr.ivoa.Cone;
 import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.scope.ConeRetrieval.ConeTableHandler;
 import org.xml.sax.SAXException;
 
 import edu.berkeley.guir.prefuse.graph.TreeNode;
@@ -22,7 +23,7 @@ public class CatalogTerminalConeRetrieval extends ConeRetrieval {
 	}
 	
 	/** table handler that just counts the number of rows */
-    public class CatalogTerminalTableHandler extends BasicTableHandler {
+    public class CatalogTerminalTableHandler extends ConeTableHandler {
 
 		/**
 		 * @param serviceNode

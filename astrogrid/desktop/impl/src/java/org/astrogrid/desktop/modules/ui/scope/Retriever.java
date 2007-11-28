@@ -19,6 +19,7 @@ import org.astrogrid.desktop.modules.ui.UIComponent;
 import org.astrogrid.desktop.modules.ui.comp.ExceptionFormatter;
 import org.astrogrid.desktop.modules.ui.comp.PositionUtils;
 import org.astrogrid.desktop.modules.ui.dnd.VoDataFlavour;
+import org.astrogrid.desktop.modules.ui.scope.VotableContentHandler.VotableHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -102,17 +103,17 @@ public abstract class Retriever extends BackgroundWorker {
      * @throws ParserConfigurationException
      * @throws SAXException
      * @throws IOException*/
-    protected void parseTable(InputSource source, TableHandler tableHandler) throws ParserConfigurationException, FactoryConfigurationError, IOException, SAXException {
+    protected void parseTable(InputSource source, VotableHandler tableHandler) throws ParserConfigurationException, FactoryConfigurationError, IOException, SAXException {
         XMLReader parser = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
-        TableContentHandler votHandler = new TableContentHandler(false);
+        VotableContentHandler votHandler = new VotableContentHandler(false);
         votHandler.setReadHrefTables(true);
-        votHandler.setTableHandler(tableHandler);
+        votHandler.setVotableHandler(tableHandler);
         parser.setContentHandler(votHandler);
         parser.parse(source);        
     }
     
     /** extension to the starlink tablehandler that produces a summary of what it's parsed too */
-    public interface SummarizingTableHandler extends TableHandler {
+    public interface SummarizingTableHandler extends VotableHandler {
         /** return a count of the number of rows parsed - or {@link QueryResultSummarizer#ERROR} if failed to parse */
         public int getResultCount();
         /** return an optional message about the results of the parse */
@@ -358,6 +359,21 @@ public abstract class Retriever extends BackgroundWorker {
     // otherwise, we just skip it.
     protected boolean isWorthProceeding() {
         return raCol >= 0 && decCol >= 0; 
+    }
+
+// methods for inspecting votable content outside tables.
+    public void info(String name, String value, String content)
+            throws SAXException {
+    }
+
+
+    public void param(String name, String value, String description)
+            throws SAXException {
+    }
+
+
+    public void resource(String name, String id, String type)
+            throws SAXException {
     }       
     } //end of table parser.
 

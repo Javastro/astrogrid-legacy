@@ -14,6 +14,11 @@
 		  href="changes.rss" type="application/rss+xml"/>		
 	</head>
 <body>
+<release version="2007.4.beta1" date="unreleased">
+    <action dev="nw" type="fix" issue="1729">
+        Astroscope: Corrected parsing of siap and ssap service responses.
+    </action>
+</release>
 <release version="2007.4.alpha8" date="2007-11-27">
     <action dev="nw" type="fix" issue="2427">
     System tray: added additional armour to fallback if system tray fails after initialization.

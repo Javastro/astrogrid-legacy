@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!-- test case for multiple resources -->
+<VOTABLE xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.0 http://www.ivoa.net/xml/VOTable/v1.0"
+ xmlns="http://www.ivoa.net/xml/VOTable/v1.0">
+  <RESOURCE type="results">
+    <INFO name="QUERY_STATUS" value="OK"></INFO>
+    <PARAM name="INPUT:POS"/>
+    <PARAM name="INPUT:SIZE" value="0"/>
+   </RESOURCE>
+   <RESOURCE name="fred" ID="42">
+    <INFO name="QUERY_STATUS" value="OK"></INFO>
+    <PARAM name="INPUT:POS"/>   
+    <!-- nested resource -->
+        <RESOURCE name="nested" type="meta">
+        <INFO name="QUERY_STATUS" value="OK"></INFO>
+        </RESOURCE>
+   </RESOURCE>
+   </VOTABLE>

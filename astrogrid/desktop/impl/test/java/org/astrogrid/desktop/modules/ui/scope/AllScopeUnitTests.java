@@ -17,6 +17,7 @@ public class AllScopeUnitTests {
                 "Test for org.astrogrid.desktop.modules.ui.scope");
         //$JUnit-BEGIN$
         suite.addTestSuite(ScopeHistoryProviderUnitTest.class);
+        suite.addTestSuite(VotableContentHandlerUnitTest.class);
         //$JUnit-END$
         return suite;
     }

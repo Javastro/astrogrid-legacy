@@ -8,7 +8,10 @@ import org.astrogrid.acr.ivoa.resource.Service;
 import org.astrogrid.desktop.modules.ui.AstroScopeLauncherImpl;
 import org.astrogrid.desktop.modules.ui.MonitoringInputStream;
 import org.astrogrid.desktop.modules.ui.UIComponent;
+import org.astrogrid.desktop.modules.ui.scope.Retriever.BasicTableHandler;
+import org.astrogrid.desktop.modules.ui.scope.Retriever.DalProtocolException;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import edu.berkeley.guir.prefuse.graph.TreeNode;
 
@@ -54,6 +57,34 @@ public class ConeRetrieval extends Retriever {
 	protected BasicTableHandler createTableHandler(TreeNode serviceNode) {
 		return new BasicTableHandler(serviceNode);
 	}
+	
+	/** extension that detected various odd ways that a cone service can report error */
+	public class ConeTableHandler extends BasicTableHandler {
+	    public void info(String name, String value, String content)
+	            throws SAXException {
+	           checkForError(name,value,content);
+	    }
+	    public void param(String name, String value, String description)
+	            throws SAXException {
+	       checkForError(name,value,description);
+	    }
+	    
+	    private void checkForError(String name,String value,String description) throws DalProtocolException {
+	        if ("Error".equals(name)) {
+	            resultCount = QueryResultSummarizer.ERROR;
+	            message = description != null ? description : value;	            
+	            throw new DalProtocolException(message);
+	        }
+	    }
+	    
+        /**
+         * @param serviceNode
+         */
+        public ConeTableHandler(TreeNode serviceNode) {
+            super(serviceNode);
+        }
+	}
+	
     public String getServiceType() {
         return CONE;
     }
