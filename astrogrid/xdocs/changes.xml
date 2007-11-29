@@ -7,6 +7,23 @@
     	<release version="(Pending Integration)">
 
           <action dev="kea" type="fix">
+             Branch PAL-KEA-2378.  Final merge of CEA multicone work,
+             plus other bugfixes:
+             Bug 2225 
+             Bug 2318
+             Bug 2160 
+             Bug 2407
+             Bug 2227
+             Bug 2392
+             Bug 2374
+             Bug 2311
+             Bug 2405
+             Bug 2412
+             Bug 2402
+             Bug 2433
+          </action>
+
+          <action dev="kea" type="fix">
              Branch PAL-KEA-2314.  Merge of CEA multicone work in progress
              so Mark T can take a fresh branch - PLEASE DON'T MAKE A NEW
              DSA RELEASE FROM THIS BRANCH!
