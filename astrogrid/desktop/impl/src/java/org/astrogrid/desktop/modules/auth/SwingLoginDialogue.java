@@ -1,4 +1,4 @@
-/*$Id: SwingLoginDialogue.java,v 1.9 2007/11/26 14:44:45 nw Exp $
+/*$Id: SwingLoginDialogue.java,v 1.10 2007/11/30 08:33:40 nw Exp $
  * Created on 01-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -271,15 +271,14 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
     }
 
   
-    public void setVisible(boolean b) {
-        super.setVisible(b);
-        if (b) {
-            passField_.setText("");
-            toFront();
-            requestFocus();
-            passField_.requestFocus();
-        }
+    public void show() {
+        super.show();
+        passField_.setText("");
+        toFront();
+        requestFocus();
+        passField_.requestFocus();
     }
+ 
 
     /** show the login dialogue and prompt for input */
     public void login() {
@@ -292,6 +291,9 @@ public class SwingLoginDialogue extends UIDialogueComponentImpl implements Login
 
 /* 
 $Log: SwingLoginDialogue.java,v $
+Revision 1.10  2007/11/30 08:33:40  nw
+changes to how uidialogues register in the window list.
+
 Revision 1.9  2007/11/26 14:44:45  nw
 Complete - task 224: review configuration of all backgroiund workers
 

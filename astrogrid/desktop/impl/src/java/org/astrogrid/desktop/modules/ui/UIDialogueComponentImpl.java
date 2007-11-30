@@ -5,6 +5,8 @@ package org.astrogrid.desktop.modules.ui;
 
 import java.awt.Component;
 import java.awt.HeadlessException;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -17,6 +19,9 @@ import org.astrogrid.desktop.modules.system.ui.UIContext;
 import com.l2fprod.common.swing.BaseDialog;
 
 /** baseclass fror dialogue ui components.
+ * 
+ * @todo think whether this and all subclasses absolutely have to be modal.
+ * swing login dialogue obviously does - but do the other ones?
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Oct 12, 200711:35:27 AM
  */
@@ -33,6 +38,15 @@ public class UIDialogueComponentImpl extends BaseDialog implements UIComponent {
         this.context = context;
         this.assist = new UIComponentAssist(this);
         
+    }
+
+    public void show() {
+        super.show();
+        context.registerWindow(this);
+    }
+    public void hide() {
+        super.hide();
+        context.unregisterWindow(this);
     }
     
     /** based on code reading
