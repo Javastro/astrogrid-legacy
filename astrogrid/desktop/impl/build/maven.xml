@@ -675,7 +675,7 @@ todo see if we can include other things in the disk image too. -->
     -keep class org.astrogrid.desktop.modules.util.Selftest {
         public protected *;
         }     
-    <!--  inner interface that's just passed to xstream, but never invoked -->    
+    <!--  inner interface that's just passed to xfire, but never invoked -->    
      -keep class org.astrogrid.desktop.modules.ivoa.StreamingExternalRegistryImpl** {
         public protected *;
      }   
@@ -759,12 +759,7 @@ todo see if we can include other things in the disk image too. -->
      -keepclassmembers class * {
         public uk.ac.starlink.table.StarTableWriter[] getStarTableWriters(); 
      }     
-    <!--  attempt at a work-around for something that causes optimizer to break. 
-    tells proguard not to optimize this class. doesn't seem to work.
-    -keep , allowshrinking class uk.ac.starlink.fits.** {
-        *;
-        }
-    -->
+
    <!--  castor  - need to keep all - narrower stripping gives 
    an unfixable error. At least treating it as a lib means we can optimize it,
    and strip a little off the jars it depends upon. 
@@ -782,53 +777,25 @@ todo see if we can include other things in the disk image too. -->
    -keep class * implements org.apache.xml.serialize.Serializer {
         public protected *;
         }     
-   
+   <!--  jx path -->
+   -keep class org.apache.commons.jxpath.ri.JXPathContextFactoryReferenceImpl {
+        public *;
+        }
+   -keep class org.apache.commons.jxpath.JXPathContext {
+        public *;
+        }
+     -keep class org.apache.commons.jxpath.ri.JXPathContextReferenceImpl {
+        public *;
+        }
+    -keep class * implements org.apache.commons.jxpath.ri.model.NodePointerFactory {
+        public *;
+        }
     <!-- xstream -->
     -keep class com.thoughtworks.xstream.converters.**Converter {
         public protected *;
     }
-        <!--  xfire - issues warnings about
-    classFOrName org.jdom.adapters.DOMAdapter
-Note: org.codehaus.xfire.handler.CustomFaultHandler accesses a method 'getFaultInfo()' dynamically
-Note: org.codehaus.xfire.service.binding.ObjectServiceFactory accesses a method 'getFaultInfo()' dynamically
-Note: org.codehaus.xfire.XFireFactory accesses a method 'createInstance()' dynamically   
-Note: org.codehaus.xfire.wsdl11.parser.WSDLServiceConfigurator accesses a method 'getElement()' dynamically
-Note: org.codehaus.xfire.wsdl11.parser.WSDLServiceBuilder accesses a method 'getElement()' dynamically
-Note: org.codehaus.xfire.service.binding.DefaultServiceConfiguration accesses a method 'getFaultName()' dynamically 
-    
-    and previous rule was -
-    -keep class * implements javax.xml.stream.XMLStreamReader{
-        public *;
-        }
-    however, seems to work ok untouched. maybe these are all server-side only?
-    -->
-  <!--  xmlbeans 
-Note: org.apache.xmlbeans.impl.tool.SchemaCompiler calls '(org.apache.xmlbeans.SchemaCodePrinter)Class.forName(variable).newInstance()'
-org.apache.xmlbeans.impl.jam.internal.javadoc.JavadocTigerDelegate calls '(org.apache.xmlbeans.impl.jam.internal.javadoc.JavadocTigerDelegate)Class.forName(variable).newInstance()'
- org.apache.xmlbeans.impl.jam.internal.reflect.ReflectTigerDelegate calls '(org.apache.xmlbeans.impl.jam.internal.reflect.ReflectTigerDelegate)Class.forName(variable).newInstance()
- Note: org.apache.xmlbeans.impl.jam.internal.javadoc.JavadocResults accesses a method '_getRoot()' dynamically
-       Maybe this is program method 'org.apache.xmlbeans.impl.jam.internal.javadoc.JavadocResults { com.sun.javadoc.RootDoc _getRoot(); }'
-Note: org.apache.xmlbeans.impl.jam.internal.javadoc.JavadocResults accesses a method 'getInstance()' dynamically
-org.apache.xmlbeans.XmlBeans accesses a field 'type' dynamically
-    - think this is a field 'org.apache.xmlbeans.SchemaType type;'
-    
-Note: org.apache.xmlbeans.impl.schema.SchemaTypeSystemImpl accesses a field 'typeSystem' dynamically
-      Maybe this is program field 'schemaorg_apache_xmlbeans.system.s2AEA7D228DB83D6EA12A6A0F2F278CBB.TypeSystemHolder { org.apache.xmlbeans.SchemaTypeSystem typeSystem; }'
-      Maybe this is program field 'schemaorg_apache_xmlbeans.system.sXMLCONFIG.TypeSystemHolder { org.apache.xmlbeans.SchemaTypeSystem typeSystem; }'
-      Maybe this is program field 'schemaorg_apache_xmlbeans.system.sXMLLANG.TypeSystemHolder { org.apache.xmlbeans.SchemaTypeSystem typeSystem; }'
-      Maybe this is program field 'schemaorg_apache_xmlbeans.system.sXMLSCHEMA.TypeSystemHolder { org.apache.xmlbeans.SchemaTypeSystem typeSystem; }'
-      Maybe this is program field 'schemaorg_apache_xmlbeans.system.sXMLTOOLS.TypeSystemHolder { org.apache.xmlbeans.SchemaTypeSystem typeSystem; }'    
 
-Note: org.apache.xmlbeans.impl.schema.SchemaTypeImpl accesses a field 'table' dynamically
-    org.apache.xmlbeans.StringEnumAbstractBase$Table table;
-    
-    don't work 
-     -keepclassmembers class * implements org.apache.xmlbeans.XmlObject {
-            org.apache.xmlbeans.SchemaType type;
-            org.apache.xmlbeans.StringEnumAbstractBase$Table table;
-       }
-       -->
-    <!--  keep the adql beans unchanged - TODO if STC or STC/REGION are used, need to add rules for these too. -->
+    <!-- xmlbeans  keep the adql beans unchanged - TODO if STC or STC/REGION are used, need to add rules for these too. -->
     -keep class org.astrogrid.adql.v1_0.** {
         *;
         }

@@ -2,7 +2,7 @@
 	<document>
 	<!-- see http://maven.apache.org/reference/plugins/changes/index.html 
 	     
-	     action - type="add|fix|remove|update"
+	     action - type="add|fix|remove|upXdate"
 	     	     - issue="bug-id"
 	     -->
 	<properties>
@@ -15,6 +15,9 @@
 	</head>
 <body>
 <release version="2007.4.beta1" date="unreleased">
+    <action dev="nw" type="fix" due-to="kevin">
+    TaskRunner: fixed missing class error when executing an ADQL query.
+    </action>
     <action dev="nw" type="update">
         Astroscope: Hide service-type balloons for those service-types that are not being queried.
     </action>

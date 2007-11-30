@@ -398,7 +398,7 @@
       <url>http://xml.apache.org/</url>
       <properties>   
         <dist.bundle>true</dist.bundle>
-                <strip>false</strip>
+                <strip>true</strip> <!--  give this a go, see how we get on -->
       </properties>
     </dependency>
     
@@ -410,7 +410,7 @@
     <url>http://xml.apache.org/</url>
     <properties>    
       <dist.bundle>true</dist.bundle>
-                <strip>false</strip>
+            <strip>true</strip> <!--  give this a go, see how we get on -->
     </properties>
   </dependency>
     
@@ -422,7 +422,7 @@
       <url>http://xml.apache.org/</url>
       <properties>   
         <dist.bundle>true</dist.bundle>
-                <strip>false</strip>
+            <strip>false</strip>
       </properties>
     </dependency>
 
