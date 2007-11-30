@@ -1,4 +1,4 @@
-/*$Id: AstroScopeLauncherImpl.java,v 1.75 2007/11/28 12:03:22 nw Exp $
+/*$Id: AstroScopeLauncherImpl.java,v 1.76 2007/11/30 10:04:20 nw Exp $
  * Created on 12-May-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -58,7 +58,6 @@ import org.astrogrid.desktop.modules.system.SnitchInternal;
 import org.astrogrid.desktop.modules.system.ui.ActivitiesManager;
 import org.astrogrid.desktop.modules.system.ui.ActivityFactory;
 import org.astrogrid.desktop.modules.system.ui.UIContext;
-import org.astrogrid.desktop.modules.ui.BackgroundWorker.TimeoutEnum;
 import org.astrogrid.desktop.modules.ui.actions.PlasticScavenger;
 import org.astrogrid.desktop.modules.ui.actions.SimpleDownloadActivity;
 import org.astrogrid.desktop.modules.ui.actions.ViewInBrowserActivity;
@@ -349,10 +348,10 @@ public class AstroScopeLauncherImpl extends UIComponentImpl implements  AstroSco
 		
 		// done building the left side.
 		final JPanel searchPanel = builder.getPanel();
-		//@fixme this doesn't work on my mac. dunno if it doesn't work elsewhere too.
 		KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
-		searchPanel.getInputMap(searchPanel.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(enter, "search");
-		searchPanel.getActionMap().put("search", new AbstractAction() {
+		final String CMD = "pressButton";
+		searchPanel.getInputMap(searchPanel.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(enter, CMD);
+		searchPanel.getActionMap().put(CMD, new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
 				submitButton.doClick(); 
 			}
