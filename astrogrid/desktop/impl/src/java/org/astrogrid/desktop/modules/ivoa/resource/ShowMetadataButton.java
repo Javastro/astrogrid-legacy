@@ -17,6 +17,9 @@ import org.astrogrid.desktop.icons.IconHelper;
  * 
  * necessarily static so that it can be inserted
  * via a 'object' html tag with minimal hassle.
+ * 
+ * 
+ * implementation relies on the 'table metata' view being the one following the formatted resource view.
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Nov 22, 20072:23:19 PM
  */
