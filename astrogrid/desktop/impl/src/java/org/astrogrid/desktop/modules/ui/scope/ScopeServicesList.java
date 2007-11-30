@@ -3,6 +3,7 @@
  */
 package org.astrogrid.desktop.modules.ui.scope;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,12 +64,12 @@ public class ScopeServicesList extends RegistryGooglePanel
 	/** bidirectional map between Resource objects and TreeNodes */
 	final BidiMap services = new DualHashBidiMap();
 
-	
+	/** overridden - to show additional columns */
 	protected ResourceTableFomat createTableFormat() {
 		return new ServicesListTableFormat(annServer,vomon,iconFac);
 	}
 	
-// query summarizer stuff	
+// query summarizer interface
 	public void clear() {
 		super.clear();
 		results.clear();
@@ -91,15 +92,18 @@ public class ScopeServicesList extends RegistryGooglePanel
 			items.getReadWriteLock().writeLock().unlock();
 		}
 	}
-	
+	// other public methods
+	/** for a service resource find the corresponding tree node */
 	public TreeNode findTreeNode(Service s) {
 		return (TreeNode)services.get(s);
 	}
 	
+	/** for a tree node, find the corresponding service resource */
 	public Service findService(TreeNode t) {
 		return (Service)services.getKey(t);
 	}
 	
+	/** give access to the table contents */
 	public EventList getList() {
 		return edtItems;
 	}
@@ -111,18 +115,30 @@ public class ScopeServicesList extends RegistryGooglePanel
                 VoMonInternal vomon, CapabilityIconFactory capBuilder) {
             super(annService, vomon, capBuilder);
             ModularColumn[] already = getColumns();
-            ModularColumn[] more = new ModularColumn[already.length+2];
+            ModularColumn[] more = new ModularColumn[already.length+1];
             System.arraycopy(already,0,more,0,already.length);
-            more[already.length] =new Column(RESULTS_NAME,Integer.class,GlazedLists.comparableComparator()){
+            more[already.length] =new Column(RESULTS_NAME,Integer.class,new Comparator() {
+                // has to handle integers, and the string 'failed'
+                public int compare(Object arg0, Object arg1) {
+                    if (arg0 instanceof String) {
+                        return -1;
+                    } else if (arg1 instanceof String) {
+                        return 1;
+                    } else {
+                        return ((Integer)arg0).compareTo(arg1);
+                    }
+                }
+            }){
                 public Object getColumnValue(Object baseObj) {
                     Resource r = (Resource)baseObj;
                     Object o = results.get(r);
-                    return o != null && (o instanceof Integer) ? o : null;                    
+                    return o != null && (o instanceof Integer) ? o : "Failed";                    
                 }
                 public void configureColumn(TableColumn tcol) {
-                    tcol.setPreferredWidth(40);
+                    tcol.setPreferredWidth(60);
                 }
             };
+            /* don't include this here - put it in the results pane instead 
             more[already.length + 1] = new StringColumn(ERRORS_NAME,true) {
 
                 protected String getValue(Resource r) {
@@ -133,16 +149,17 @@ public class ScopeServicesList extends RegistryGooglePanel
                     tcol.setPreferredWidth(500);
                 }
             };
+            */
             setColumns(more);
         }
 
         private final static String RESULTS_NAME = "Results"; // integer, comparableComparator
-	    private final static String ERRORS_NAME = "Error Message"; // long string, caseInsensitiveComparator
+	    //private final static String ERRORS_NAME = "Error Message"; // long string, caseInsensitiveComparator
 
 	    
 	    public String[] getDefaultColumns() {
 	        return new String[] {
-	                STATUS_NAME,RESULTS_NAME,LABEL_NAME,CAPABILITY_NAME,ERRORS_NAME
+	                STATUS_NAME,RESULTS_NAME,LABEL_NAME,CAPABILITY_NAME//,ERRORS_NAME
 	        };
 	    }
 	}
