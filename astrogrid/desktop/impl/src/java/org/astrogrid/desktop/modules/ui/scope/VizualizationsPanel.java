@@ -18,6 +18,8 @@ import org.astrogrid.desktop.modules.ui.UIComponentMenuBar;
 import org.astrogrid.desktop.modules.ui.comp.FlipPanel;
 
 import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.event.ListEvent;
+import ca.odell.glazedlists.event.ListEventListener;
 
 import edu.berkeley.guir.prefuse.event.FocusEvent;
 import edu.berkeley.guir.prefuse.event.FocusListener;
@@ -28,33 +30,35 @@ import edu.berkeley.guir.prefuse.graph.TreeNode;
 /** custom flip panel for managing the different vizualizations.
  * 
  * also acts as a bridge, to keep the selection set synchrobnized between the 
- * prefuse and glazed lists worlds. more work to do here probably.
+ * prefuse and glazed lists worlds. 
+ * 
+ * at the moment this implementation listens to selection changes constantly - however, we could 
+ * just do a synch-of-selection when the view flips? Depends how we're doing activity selections
+ * 
+ * @fixme once I've implemented the resource view, should I extend the 
+ * selection copying down to individual files?
  * @author Noel.Winstanley@manchester.ac.uk
  * @since Nov 12, 200712:24:42 PM
  */
-public class VizualizationsPanel extends FlipPanel implements FocusListener,  ListSelectionListener {
+public class VizualizationsPanel extends FlipPanel implements FocusListener, ListEventListener {
 
     private final VizualizationManager viz;
-    private final EventList glazedSelected;
-    private final FocusSet prefuse;
-    private final ScopeServicesList glazed;
-    
+    private final EventList tableSelected;
+    private final FocusSet vizSelected;
+    private final ScopeServicesList table;    
     private boolean servicesHasPrecedence = false;
     
-    public VizualizationsPanel(VizualizationManager viz,Vizualization radialViz, Vizualization hyperbolicViz, ScopeServicesList summary) {
+    public VizualizationsPanel(VizualizationManager viz,Vizualization radialViz, Vizualization hyperbolicViz, ScopeServicesList table) {
         this.viz = viz;
-        this.prefuse = viz.getVizModel().getSelectionFocusSet();    
-        prefuse.addFocusListener(this);
-        this.glazed = summary;
-        this.glazedSelected = summary.getCurrentResourceModel().getTogglingSelected();
-        summary.getCurrentResourceModel().addListSelectionListener(this);
-        
+        this.vizSelected = viz.getVizModel().getSelectionFocusSet();    
+        vizSelected.addFocusListener(this);
+        this.table = table;
+        this.tableSelected = table.getCurrentResourceModel().getTogglingSelected();
+        tableSelected.addListEventListener(this);
         add(RADIAL_VIEW,radialViz.getDisplay());
         add(HYPERBOLIC_VIEW,hyperbolicViz.getDisplay());
-        add(SERVICES_VIEW,summary);
+        add(SERVICES_VIEW,table);
     }
-
-
 
 //prefuse listener interface
  public void focusChanged(FocusEvent arg0) {
@@ -67,9 +71,9 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener,  Li
              for (int i = 0; i < added.length; i++) {
                  if (added[i].getAttribute(Retriever.SERVICE_ID_ATTRIBUTE) != null) {
                      // found a service node - add the equivalent resource, and add to glazed side.
-                     Service s = glazed.findService((TreeNode)added[i]);
-                     if (s != null && ! glazedSelected.contains(s)) {
-                         glazedSelected.add(s); 
+                     Service s = table.findService((TreeNode)added[i]);
+                     if (s != null && ! tableSelected.contains(s)) {
+                         tableSelected.add(s); 
                      }
                  }
              }
@@ -79,55 +83,45 @@ public class VizualizationsPanel extends FlipPanel implements FocusListener,  Li
              for (int i = 0; i < removed.length; i++) {
                  if (removed[i].getAttribute(Retriever.SERVICE_ID_ATTRIBUTE) != null) {
                      // found a service node - add the equivalent resource, and add to glazed side.
-                     Service s = glazed.findService((TreeNode)removed[i]);
-                     if (s != null && glazedSelected.contains(s)) {
-                         glazedSelected.remove(s); 
+                     Service s = table.findService((TreeNode)removed[i]);
+                     if (s != null && tableSelected.contains(s)) {
+                         tableSelected.remove(s); 
                      }
                  }
              }               
              break;
          case FocusEvent.FOCUS_SET:
-             glazedSelected.clear();
+             tableSelected.clear();
              for (Iterator i = arg0.getFocusSet().iterator(); i.hasNext();) {
                  TreeNode t = (TreeNode)i.next();
                  if (t.getAttribute(Retriever.SERVICE_ID_ATTRIBUTE) != null) {
                      // found a service node - add the equivalent resource, and add to glazed side.
-                     Service s = glazed.findService(t);
-                     if (s != null && ! glazedSelected.contains(s)) {
-                         glazedSelected.add(s); 
+                     Service s = table.findService(t);
+                     if (s != null && ! tableSelected.contains(s)) {
+                         tableSelected.add(s); 
                      }
                  }
              }               
          }
  }
 
- // glazed lists listener interface
- public void valueChanged(ListSelectionEvent e) {
-     if (!servicesHasPrecedence) {// prefuse is driving
+// table listener interface.
+ public void listChanged(ListEvent listChanges) {
+     if (! servicesHasPrecedence) {
          return;
-     }
-
-     try {
-         for (int i = e.getFirstIndex(); i <= e.getLastIndex(); i++) {
-             Service s = (Service)glazed.getList().get(i);
-             if (s != null) {
-                 TreeNode t = glazed.findTreeNode(s);    
-                 if (t != null) {
-                     if (glazed.getCurrentResourceModel().isSelectedIndex(i)) {
-                         if (! prefuse.contains(t)) {
-                             DoubleClickMultiSelectFocusControl.selectSubtree(t,prefuse);
-                         }
-                     } else if (prefuse.contains(t)) {
-                         DoubleClickMultiSelectFocusControl.deselectSubtree(t,prefuse);
-                     }                   
-                 }
-             }
+     }     
+     // just synch the two views - too fiddly to compute the differences.
+     // especially as prefuse might have non-service subtrees selected anyhow.
+     vizSelected.clear();    
+     for(int i = 0; i < tableSelected.size(); i++) {
+         Service s = (Service)tableSelected.get(i);
+         TreeNode t = table.findTreeNode(s);
+         if (t != null) {
+             DoubleClickMultiSelectFocusControl.selectSubtree(t,vizSelected);
          }
-     } finally {
-         viz.reDrawGraphs();
-     }       
+     }     
+     viz.reDrawGraphs();     
  }
- 
  
 //actions for use in menus. 
  protected class RadialAction extends AbstractAction {
@@ -181,4 +175,7 @@ public final Action getRadialAction() {
 public final Action getHyperbolicAction() {
     return this.hyperbolicAction;
 }
+
+
+
 }
