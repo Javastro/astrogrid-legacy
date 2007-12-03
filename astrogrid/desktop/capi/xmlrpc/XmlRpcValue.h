@@ -71,14 +71,32 @@ namespace XmlRpc {
     }
     
     // ACR
+    XmlRpcValue (const ListOfchar & bin) : _type(TypeBase64)
+    {
+    	_value.asBinary = new BinaryData(bin.value, bin.value+bin.size);
+    }
     XmlRpcValue (const ACRKeyValueMap &map) :_type(TypeStruct)
       {
-     	
-      	//FIXME need to actually fill this
+        _value.asStruct = new ValueStruct;
+        for (int i = 0; i < map.n; ++i) {
+        	const std::string name = map.map[i].key;
+        	XmlRpcValue val(map.map[i].val);
+            const std::pair<const std::string, XmlRpcValue> p(name, val);
+             _value.asStruct->insert(p);
+        	
+		}
+      	
       }
+    
     XmlRpcValue (const ACRList &list) : _type(TypeStruct)
       {
-      	//FIXME need to actually fill this
+    	 _value.asArray = new ValueArray;
+    	 XmlRpcValue v;
+    	 for (int i = 0; i < list.n; ++i) {
+    		 v = new XmlRpcValue(list.list[i]);
+    		 _value.asArray->push_back(v);
+			
+		}
       }
       
     // - end ACR
@@ -103,6 +121,8 @@ namespace XmlRpc {
     XmlRpcValue& operator=(double const& rhs) { return operator=(XmlRpcValue(rhs)); }
     XmlRpcValue& operator=(const char* rhs) { return operator=(XmlRpcValue(std::string(rhs))); }
     XmlRpcValue& operator=(const struct tm& rhs) { return operator=(XmlRpcValue(&rhs)); }
+    XmlRpcValue& operator=(const BinaryData& rhs) { return operator=(XmlRpcValue(&rhs)); }
+    XmlRpcValue& operator=(const ListOfchar& rhs) { return operator=(XmlRpcValue(&rhs)); }
 
     bool operator==(XmlRpcValue const& other) const;
     bool operator!=(XmlRpcValue const& other) const;
@@ -118,7 +138,8 @@ namespace XmlRpc {
     
     //ACR
     operator ACRKeyValueMap();
-    //ACR-END
+    operator ListOfchar() {assertTypeOrInvalid(TypeBase64); ListOfchar a; a.size= _value.asBinary->size(); a.value = &_value.asBinary->front(); return a;} //TODO - is this correct? this is not retrieving a copy of the binary data, but pointing to the original - a copy should be made
+   //ACR-END
 
     XmlRpcValue const& operator[](int i) const { assertArray(i+1); return _value.asArray->at(i); }
     XmlRpcValue& operator[](int i)             { assertArray(i+1); return _value.asArray->at(i); }

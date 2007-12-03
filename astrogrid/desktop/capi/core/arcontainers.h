@@ -1,5 +1,5 @@
 /*
- * $Id: arcontainers.h,v 1.2 2007/11/22 20:51:27 pah Exp $
+ * $Id: arcontainers.h,v 1.3 2007/12/03 15:08:41 pah Exp $
  * 
  * Created on 29 Oct 2007 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2007 Astrogrid. All rights reserved.
@@ -13,7 +13,9 @@
 #ifndef ARCONTAINERS_H_
 #define ARCONTAINERS_H_
 #include <set>
+#include <map>
 #include "XmlRpc.h"
+
 
 template<class T> class ListOf {
 public:
@@ -84,23 +86,15 @@ template<class F, class T> T * copyArrayAsStruct(const ListOf<F> & from) {
 	return toArray;
 }
 ;
+template<class F, class T> T * copyArrayAsBaseStruct(const ListOfBase<F> & from) {
+	T * toArray = new T[from.size()]; //should use malloc?
+	for (int i = 0; i < from.size(); ++i) {
+		  from[i]->asStruct(&toArray[i]);
 
-typedef const char * JString_;
-//convenience class to make it easier to write the string expressions in C++ (avoiding char * for as long as possible)
-/*
- class JString_ {
- private:
- std::string str;
- public:
- JString_(){}
- JString_(XmlRpc::XmlRpcValue& v) : str(static_cast<const char *>(v)) {}
- operator const char *()  const {  return str.c_str();}   	 
- };
- */
-typedef JString_ IvornOrURI_;
-typedef JString_ URI_;
-typedef JString_ URLString_;
-typedef JString_ XMLString_;
-typedef JString_ Document_;
+	}
+	return toArray;
+}
+;
+
 
 #endif /*ARCONTAINERS_H_*/

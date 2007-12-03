@@ -1,5 +1,5 @@
 /*
- * $Id: acrtypes.h,v 1.3 2007/11/22 20:50:44 pah Exp $
+ * $Id: acrtypes.h,v 1.4 2007/12/03 15:08:41 pah Exp $
  * 
  * Created on 6 Sep 2007 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2007 Astrogrid. All rights reserved.
@@ -38,6 +38,7 @@ typedef struct tm ACRDate;
 typedef int BOOL;
 
 typedef void * Object;
+typedef const char * ACRClass; /* FIXME - do not really want this detail in the interface*/
 
 /* types for a primitive map - strings only */
 struct keyval {
@@ -50,10 +51,6 @@ typedef  struct acrmap {
 	struct keyval   *map;	
 } ACRKeyValueMap;
 
-typedef struct {
-	int n;
-	ACRKeyValueMap * list[];
-} ListOfACRKeyValueMap;
 
 /* types for a primitive list */
 
@@ -73,10 +70,10 @@ typedef struct {
 	struct tm * list;
 } ListOfACRDate;
 
-typedef struct {
-    int n;
-    void *list;
-   } ListOfbyte;
+typedef struct { 
+    int size;
+    char *value;
+   } ListOfchar; //really just a pointer to a byte array in java terms...
 
 typedef struct {
     int n;

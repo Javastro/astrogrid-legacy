@@ -620,7 +620,7 @@ namespace XmlRpc {
 	  for( iter = _value.asStruct->begin(),  i = 0; iter !=  _value.asStruct->end(); iter++, i++ ) {
            kv[i].key = std::string(iter->first).c_str();
            std::string s = iter->second; //avoid ambiguity of using the above style for XMLRpcValue
-           kv[i].val = std::string(s).c_str(); //IMPL what is the lifetime of this string - really want to create a new string...
+           kv[i].val = (new std::string(s))->c_str(); //IMPL what is the lifetime of this string - really want to create a new string...
 	  }
 	  ACRKeyValueMap map;
 	  map.n = _value.asStruct->size();
@@ -628,6 +628,8 @@ namespace XmlRpc {
 	  return map;
 	  
   }
+  
+  
 
 } // namespace XmlRpc
 
