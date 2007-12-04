@@ -7,6 +7,7 @@
 #ifndef MAKEDEPEND
 # include <iostream>
 # include <ostream>
+# include <sstream>
 # include <stdlib.h>
 # include <stdio.h>
 #endif
@@ -618,9 +619,12 @@ namespace XmlRpc {
 	  std::map<std::string,XmlRpcValue>::iterator iter; 
 	  int i;
 	  for( iter = _value.asStruct->begin(),  i = 0; iter !=  _value.asStruct->end(); iter++, i++ ) {
-           kv[i].key = std::string(iter->first).c_str();
-           std::string s = iter->second; //avoid ambiguity of using the above style for XMLRpcValue
-           kv[i].val = (new std::string(s))->c_str(); //IMPL what is the lifetime of this string - really want to create a new string...
+           kv[i].key = (new std::string(iter->first))->c_str(); //new string created to ensure that it is private to the 
+           //IMPL convert everything to a string for now....
+           std::ostringstream  s;
+           s << iter->second; 
+           kv[i].val = (new std::string(s.str()))->c_str(); 
+          // std::cerr << kv[i].key << " " << kv[i].val << "\n";
 	  }
 	  ACRKeyValueMap map;
 	  map.n = _value.asStruct->size();
@@ -628,7 +632,24 @@ namespace XmlRpc {
 	  return map;
 	  
   }
-  
+  XmlRpcValue::operator ACRList() {
+ 	  //IMPL note that this only works for values as simple types at the moment
+ 	  assertTypeOrInvalid(TypeArray);
+ 	  const char ** kv = new const char*[_value.asArray->size()];
+ 	  for( int i = 0; i <  _value.asArray->size();  i++ ) {
+            std::ostringstream  s;
+            XmlRpcValue v = _value.asArray->at(i);
+            s << v; 
+            kv[i] = (new std::string(s.str()))->c_str(); 
+          
+ 	  }
+ 	  ACRList list;
+ 	  list.n = _value.asArray->size();
+ 	  list.list = kv;
+ 	  return list;
+ 	  
+   }
+   
   
 
 } // namespace XmlRpc

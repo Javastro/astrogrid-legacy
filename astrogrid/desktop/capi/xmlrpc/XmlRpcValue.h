@@ -138,6 +138,7 @@ namespace XmlRpc {
     
     //ACR
     operator ACRKeyValueMap();
+    operator ACRList();
     operator ListOfchar() {assertTypeOrInvalid(TypeBase64); ListOfchar a; a.size= _value.asBinary->size(); a.value = &_value.asBinary->front(); return a;} //TODO - is this correct? this is not retrieving a copy of the binary data, but pointing to the original - a copy should be made
    //ACR-END
 
@@ -145,7 +146,7 @@ namespace XmlRpc {
     XmlRpcValue& operator[](int i)             { assertArray(i+1); return _value.asArray->at(i); }
 
     XmlRpcValue & operator[](std::string const & k)  { assertStruct(); return (*_value.asStruct)[k]; }
-    XmlRpcValue& mem(const char* k) { std::cerr << " accessing member " << k << "\n"; assertStruct(); std::string s(k); return (*_value.asStruct)[s]; }
+    XmlRpcValue& mem(const char* k) { /*std::cerr << " accessing member " << k << "\n";*/ assertStruct(); std::string s(k); return (*_value.asStruct)[s]; }
 
     // Accessors
     //! Return true if the value has been set to something.
