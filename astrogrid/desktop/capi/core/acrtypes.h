@@ -1,5 +1,5 @@
 /*
- * $Id: acrtypes.h,v 1.4 2007/12/03 15:08:41 pah Exp $
+ * $Id: acrtypes.h,v 1.5 2007/12/04 16:03:33 pah Exp $
  * 
  * Created on 6 Sep 2007 by Paul Harrison (paul.harrison@manchester.ac.uk)
  * Copyright 2007 Astrogrid. All rights reserved.
@@ -51,6 +51,10 @@ typedef  struct acrmap {
 	struct keyval   *map;	
 } ACRKeyValueMap;
 
+typedef struct {
+	int n;
+	ACRKeyValueMap * list;
+} ListOfACRKeyValueMap;
 
 /* types for a primitive list */
 
