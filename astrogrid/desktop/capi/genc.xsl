@@ -655,7 +655,7 @@ struct  </xsl:text>
          <xsl:when test="$f/@type = $javaStdTypes">
             <xsl:if test="$f/@type != 'void'">
                <xsl:choose>
-                  <xsl:when test="contains($f/@fulltype, '[') and not (@type = ('Map', 'byte'))"> <!-- map and byte have handwritten C++ types that will do necessary conversions -->
+                  <xsl:when test="contains($f/@fulltype, '[') and not (@type = ( 'byte'))"> <!-- map and byte have handwritten C++ types that will do necessary conversions -->
                      <xsl:variable name="rettype" as="xs:string *">
                         <xsl:call-template name="convert-type-class">
                            <xsl:with-param name="p" select="$f"></xsl:with-param>
@@ -1131,7 +1131,7 @@ virtual void asStruct( struct </xsl:text>
       <xsl:param name="p" /><!-- the actual type -->
       <xsl:param name="f" /><!-- in a function definition -->
       <xsl:param name="c" /><!-- in a class definition -->
-      <xsl:if test="contains($p/@fulltype,'[]') and @type != 'Map'"> <!-- map is already a type of list -->
+      <xsl:if test="contains($p/@fulltype,'[]') "> <!-- map is already a type of list -->
          <xsl:text>ListOf</xsl:text>
       </xsl:if>
       <xsl:choose>
