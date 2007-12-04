@@ -17,7 +17,7 @@
          <Name>ColName_ID</Name>
          <Datatype>int</Datatype>
          <Description>IDENTITY</Description>
-         <UCD version='1'>ID_CATALOG</UCD>
+         <UCD version='1'>ID_MAIN</UCD>
          <UCD version='1+'>meta.id</UCD>
       </Column>
       <Column  ID="NAME" indexed="false">
@@ -151,7 +151,7 @@
          <Name>ColName_ID</Name>
          <Datatype>int</Datatype>
          <Description>IDENTITY</Description>
-         <UCD version='1'>ID_CATALOG</UCD>
+         <UCD version='1'>ID_MAIN</UCD>
          <UCD version='1+'>meta.id</UCD>
       </Column>
       <Column  ID="NAME" indexed="false">

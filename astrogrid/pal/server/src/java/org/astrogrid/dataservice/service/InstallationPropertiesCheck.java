@@ -1,4 +1,4 @@
-/*$Id: InstallationPropertiesCheck.java,v 1.13 2007/10/17 09:58:20 clq2 Exp $
+/*$Id: InstallationPropertiesCheck.java,v 1.14 2007/12/04 17:31:39 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -79,12 +79,21 @@ public class InstallationPropertiesCheck extends TestCase {
       if (!checkSet("datacenter.self-test.column1", accum)) { bad = bad+1; }
       if (!checkSet("datacenter.self-test.column2", accum)) { bad = bad+1; }
 
+      // Conesearch properties
       if (!checkSet("datacenter.implements.conesearch", accum)) { bad = bad+1; }
       String cone = ConfigFactory.getCommonConfig().getString(
           "datacenter.implements.conesearch");
       if ((cone != null) && (cone.toLowerCase().equals("true")) ) {
         if (!checkSet("conesearch.radius.limit", accum)) { bad = bad+1; }
       }
+      // Multicone properties
+      if (!checkSet("datacenter.implements.multicone", accum)) { bad = bad+1; }
+      String multicone = ConfigFactory.getCommonConfig().getString(
+          "datacenter.implements.multicone");
+      if ((multicone != null) && (multicone.toLowerCase().equals("true")) ) {
+        if (!checkSet("multicone.radius.limit", accum)) { bad = bad+1; }
+      }
+
       // Old conesearch settings - check not present
       if (!checkUnset("conesearch.table", accum)) { bad = bad+1; }
       if (!checkUnset("conesearch.ra.column", accum)) { bad = bad+1; }

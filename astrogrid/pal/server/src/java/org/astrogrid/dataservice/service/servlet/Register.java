@@ -1,5 +1,5 @@
 /*
- * $Id: Register.java,v 1.8 2007/09/07 09:30:51 clq2 Exp $
+ * $Id: Register.java,v 1.9 2007/12/04 17:31:39 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;
@@ -109,18 +109,18 @@ public class Register extends DefaultServlet {
                   " is not set, please set it!"); 
          }
       }
-      //Get querying registry
+      //We need to check that the publishing registry recognises our
+      //authority ID. 
+      //First, construct publishing registry's query url
+      //NASTY HACK!!
       String queryRegUrl = "";
-      try {
-        queryRegUrl=  ConfigFactory.getCommonConfig().getString(
-              RegistryDelegateFactory.QUERY_URL_PROPERTY);
+      int tailIndex = registryURL.lastIndexOf("RegistryUpdate");
+      if (tailIndex == -1) {
+         throw new IOException("Programming logic error: Expected property " +
+               RegistryDelegateFactory.ADMIN_URL_PROPERTY +
+               " to contain substring 'RegistryUpdate', but it doesn't.");
       }
-      catch (PropertyNotFoundException pnfe) {
-         //Shouldn't get here if self-tests ok
-         throw new IOException("Configuration error: Property " +
-               RegistryDelegateFactory.QUERY_URL_PROPERTY +
-               " is not set, please set it!"); 
-      }
+      queryRegUrl = registryURL.substring(0,tailIndex)+"RegistryQuery";
       //Get authority ID
       String authorityID = "";
       try {

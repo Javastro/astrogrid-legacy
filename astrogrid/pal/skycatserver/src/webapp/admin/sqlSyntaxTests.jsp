@@ -14,6 +14,8 @@ for that sql, for a collection of sample queries.
    isThreadSafe="false"
    session="false"
 %>
+<% String pathPrefix = ".."; // For the navigation include %>
+
 <html>
 <head>
 <title>SQL syntax test page for <%=DataServer.getDatacenterName() %> </title>
@@ -25,7 +27,7 @@ for that sql, for a collection of sample queries.
 
 <body>
 <%@ include file="../header.xml" %>
-<%@ include file="navigation.xml" %>
+<%@ include file="../navigation.xml" %>
 
 <div id='bodyColumn'>
 

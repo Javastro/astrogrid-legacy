@@ -1,4 +1,4 @@
-/*$Id: AdqlSqlMaker.java,v 1.5 2007/10/17 09:58:21 clq2 Exp $
+/*$Id: AdqlSqlMaker.java,v 1.6 2007/12/04 17:31:39 clq2 Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -64,6 +64,8 @@ import org.astrogrid.tableserver.metadata.MetadocNameTranslator;
 public class AdqlSqlMaker implements SqlMaker {
 
    private static final Log log = LogFactory.getLog(AdqlSqlMaker.class);
+   private static TransformerFactory tFactory = null; 
+   private static Transformer transformer = null; 
    
    /**
     * Constructs an SQL statement for the given Query.  Uses the ADQL generator
@@ -76,7 +78,159 @@ public class AdqlSqlMaker implements SqlMaker {
      return sql;
    }
 
+
+   /**
+    * Constructs an SQL count statement for the given Query.
+    */
+
+   /**
+    * Constructs an SQL count statement for the given Query.
+    * @TOFIX KEA SAYS: This is a truly disgusting hack which won't
+    * work with ADQL queries with complex expression selections as 
+    * aliased columns.  It may also fail if "select" or "from" appears
+    * in unexpected places (e.g. as part of column / table names).
+    * However, this method is intended for administrative/testing 
+    * use only (I'm going to remove it from the public Datacenter
+    * API) so I will leave it here for now.
+    * @deprecated Because it's horrible/fragile
+    */
+   public String makeCountSql(Query query) throws QueryException {
+
+      //get ordinary SQL
+      String sql = makeSql(query);
+      String lowercaseSql = sql.toLowerCase();
+      
+      //remove anything between SELECT and FROM and replace with COUNT(*)
+      // Use lowercased sql to find indices
+      int selectIdx = lowercaseSql.indexOf("select");
+      int fromIdx = lowercaseSql.indexOf("from");
+      String countSql = sql.substring(0,selectIdx+6)+" COUNT(*) "+sql.substring(fromIdx);
+      return countSql;
+   }
+   /*
+    * This version will count the rows in a table; it's likely
+    * to be more reliable, but doesn't reflect the original query constraints.
+   public String makeCountSql(Query query) throws QueryException {
+
+      String tableNames[] = query.getTableReferences();
+      if (tableNames.length == 0) {
+         // This should never happen, as Query class creates a default
+         // FROM table if one is not given in the input ADQL.
+         throw new QueryException(
+           "Unexpected error - query contained no table references!");
+      }
+      if (tableNames.length > 1) {
+         throw new QueryException(
+          "Cannot produce count(*) SQL from query referencing multiple tables");
+      }
+      // Once we get here, we have 1 table name only
+      String countSql = "SELECT COUNT(*) FROM " + tableNames[0] + ";";
+      return countSql;
+   }
+   */
+
+
+   /** Allows an XSLT stylesheet to be applied against the adql query,
+    * for example to transform it to sql. 
+    * The sql produced reflects the lower of the query row limit and
+    * the local datacenter row limit.
+    *
+    */
    protected String doXsltTransformation(Query query) throws QueryException
+   {
+      if (query == null) {
+         throw new QueryException("Input Query may not be null!");
+      }
+      SelectDocument selectDocument = query.getSelectDocument();
+      if (selectDocument == null) {
+         // Shouldn't get here
+         throw new QueryException("Input Query may not be empty!");
+      }
+      // Lazy initialization of transformer factory
+      synchronized (AdqlSqlMaker.class) {
+         if (tFactory == null) {
+   	      tFactory = TransformerFactory.newInstance();
+            try {
+               tFactory.setAttribute("UseNamespaces", Boolean.FALSE);
+            }
+            catch (IllegalArgumentException iae) {
+               // From MCH:  Ignore - if UseNamespaces is unsupported, 
+               // it will chuck an exception, and we don't want 
+               // to use namespaces anyway so that's fine
+            }
+         }
+         if (transformer == null) {
+            InputStream xsltIn = getXsltIn();
+            if (xsltIn == null) {
+               // Shouldn't get here
+               throw new QueryException(
+                     "Input XSLT InputStream may not be null!");
+            }
+            try {
+               transformer = 
+                  tFactory.newTransformer(new StreamSource(xsltIn));
+            }
+            catch (TransformerConfigurationException tce) {
+               throw new QueryException(
+                  "Couldn't apply stylesheet to query: "+tce, tce);
+            }
+         }
+      }
+      SelectDocument queryClone = (SelectDocument)selectDocument.copy(); 
+      // Tweak the limit value in the cloned query to reflect 
+      // the lower of the query and datacenter limit.
+      
+      long queryLimit = XmlBeanUtilities.getLimit(selectDocument);
+      long localLimit = XmlBeanUtilities.getLocalLimit(selectDocument);
+      if (queryLimit == Query.LIMIT_NOLIMIT) {  // Don't have a query limit
+         if (localLimit != Query.LIMIT_NOLIMIT) { // But do have a datacenter limit
+            XmlBeanUtilities.setLimit(queryClone, localLimit);
+         }
+      }
+      else {   // Do have a local limit
+         if ((localLimit != Query.LIMIT_NOLIMIT) && (localLimit < queryLimit)) {
+            XmlBeanUtilities.setLimit(queryClone, localLimit); // Datacenter limit is smaller
+         }
+      }
+      queryClone = applyNameTransformations(queryClone);
+
+      try {
+        //Transformer transformer = 
+        StringWriter sw = new StringWriter();
+
+        // Extract the query as a Dom document
+        Document beanDom = DomHelper.newDocument(queryClone.toString());
+
+        // NOTE: Seem to require a DOMSource rather than a StreamSource
+        // here or the transformer barfs - no idea why
+        // StreamSource source = new StreamSource(adqlBeanDoc.toString());
+        DOMSource source = new DOMSource(beanDom);
+
+        // Actually transform the document
+        synchronized (AdqlSqlMaker.class) {
+           // Individual transformers can be re-used, but are not
+           // threadsafe
+           transformer.transform(source, new StreamResult(sw));
+        }
+        String sql = sw.toString();
+        log.debug("Result of ADQL->SQL transformation is:\n" + sql);
+        return sql;
+      }
+      catch (SAXException se) {
+         throw new QueryException(
+             "Couldn't apply stylesheet to query: "+se, se);
+      }
+      catch (TransformerException te) {
+         throw new QueryException(
+             "Couldn't apply stylesheet to query: "+te, te);
+      }
+      catch (IOException ioe) {
+         throw new QueryException(
+             "Couldn't apply stylesheet to query: "+ioe, ioe);
+      }
+   }
+
+   protected InputStream getXsltIn() throws QueryException
    {
       InputStream xsltIn = null;
       String key = "datacenter.sqlmaker.xslt";
@@ -156,145 +310,9 @@ public class AdqlSqlMaker implements SqlMaker {
               "', cannot translate to sql.");
       }
       */
-
-      // Now get the query to convert itself with the stylesheet
-      //return query.convertWithXslt(xsltIn);
-      //SelectDocument selectDocument = query.getSelectDocument();
-      return convertWithXslt(query.getSelectDocument(), xsltIn);
-
+      return xsltIn;
    }
 
-
-   /**
-    * Constructs an SQL count statement for the given Query.
-    */
-
-   /**
-    * Constructs an SQL count statement for the given Query.
-    * @TOFIX KEA SAYS: This is a truly disgusting hack which won't
-    * work with ADQL queries with complex expression selections as 
-    * aliased columns.  It may also fail if "select" or "from" appears
-    * in unexpected places (e.g. as part of column / table names).
-    * However, this method is intended for administrative/testing 
-    * use only (I'm going to remove it from the public Datacenter
-    * API) so I will leave it here for now.
-    * @deprecated Because it's horrible/fragile
-    */
-   public String makeCountSql(Query query) throws QueryException {
-
-      //get ordinary SQL
-      String sql = makeSql(query);
-      String lowercaseSql = sql.toLowerCase();
-      
-      //remove anything between SELECT and FROM and replace with COUNT(*)
-      // Use lowercased sql to find indices
-      int selectIdx = lowercaseSql.indexOf("select");
-      int fromIdx = lowercaseSql.indexOf("from");
-      String countSql = sql.substring(0,selectIdx+6)+" COUNT(*) "+sql.substring(fromIdx);
-      return countSql;
-   }
-   /*
-    * This version will count the rows in a table; it's likely
-    * to be more reliable, but doesn't reflect the original query constraints.
-   public String makeCountSql(Query query) throws QueryException {
-
-      String tableNames[] = query.getTableReferences();
-      if (tableNames.length == 0) {
-         // This should never happen, as Query class creates a default
-         // FROM table if one is not given in the input ADQL.
-         throw new QueryException(
-           "Unexpected error - query contained no table references!");
-      }
-      if (tableNames.length > 1) {
-         throw new QueryException(
-          "Cannot produce count(*) SQL from query referencing multiple tables");
-      }
-      // Once we get here, we have 1 table name only
-      String countSql = "SELECT COUNT(*) FROM " + tableNames[0] + ";";
-      return countSql;
-   }
-   */
-
-
-   /** Allows an XSLT stylesheet to be applied against the adql query,
-    * for example to transform it to sql. 
-    * The sql produced reflects the lower of the query row limit and
-    * the local datacenter row limit.
-    *
-    */
-   protected String convertWithXslt(SelectDocument selectDocument, InputStream xsltIn) 
-         throws QueryException
-   {
-      if (selectDocument == null) {
-         throw new QueryException("Input SelectDocument may not be null!");
-      }
-      if (xsltIn == null) {
-         throw new QueryException("Input XSLT InputStream may not be null!");
-      }
-
-      SelectDocument queryClone = (SelectDocument)selectDocument.copy(); 
-      // Tweak the limit value in the cloned query to reflect 
-      // the lower of the query and datacenter limit.
-      
-      long queryLimit = XmlBeanUtilities.getLimit(selectDocument);
-      long localLimit = XmlBeanUtilities.getLocalLimit(selectDocument);
-      if (queryLimit == Query.LIMIT_NOLIMIT) {  // Don't have a query limit
-         if (localLimit != Query.LIMIT_NOLIMIT) { // But do have a datacenter limit
-            XmlBeanUtilities.setLimit(queryClone, localLimit);
-         }
-      }
-      else {   // Do have a local limit
-         if ((localLimit != Query.LIMIT_NOLIMIT) && (localLimit < queryLimit)) {
-            XmlBeanUtilities.setLimit(queryClone, localLimit); // Datacenter limit is smaller
-         }
-      }
-      queryClone = applyNameTransformations(queryClone);
-
-   	TransformerFactory tFactory = TransformerFactory.newInstance();
-      try {
-         tFactory.setAttribute("UseNamespaces", Boolean.FALSE);
-      }
-      catch (IllegalArgumentException iae) {
-         // From MCH:  Ignore - if UseNamespaces is unsupported, 
-         // it will chuck an exception, and we don't want 
-         // to use namespaces anyway so that's fine
-      }
-      try {
-        Transformer transformer = 
-          tFactory.newTransformer(new StreamSource(xsltIn));
-        StringWriter sw = new StringWriter();
-
-        // Extract the query as a Dom document
-        Document beanDom = DomHelper.newDocument(queryClone.toString());
-
-        // NOTE: Seem to require a DOMSource rather than a StreamSource
-        // here or the transformer barfs - no idea why
-        // StreamSource source = new StreamSource(adqlBeanDoc.toString());
-        DOMSource source = new DOMSource(beanDom);
-
-        // Actually transform the document
-        transformer.transform(source, new StreamResult(sw));
-        String sql = sw.toString();
-        log.debug("Result of ADQL->SQL transformation is:\n" + sql);
-        return sql;
-      }
-      catch (SAXException se) {
-         throw new QueryException(
-             "Couldn't apply stylesheet to query: "+se, se);
-      }
-      catch (TransformerConfigurationException tce) {
-         throw new QueryException(
-             "Couldn't apply stylesheet to query: "+tce, tce);
-      }
-      catch (TransformerException te) {
-         throw new QueryException(
-             "Couldn't apply stylesheet to query: "+te, te);
-      }
-      catch (IOException ioe) {
-         throw new QueryException(
-             "Couldn't apply stylesheet to query: "+ioe, ioe);
-      }
-   }
    /** foo */
    protected SelectDocument applyNameTransformations(SelectDocument selectDocument) 
       throws QueryException

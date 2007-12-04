@@ -10,6 +10,8 @@
    isThreadSafe="false"
    session="false"
 %>
+<% String pathPrefix = ".."; // For the navigation include %>
+
 <html>
 <head>
 <title>Register <%=DataServer.getDatacenterName() %></title>
@@ -21,7 +23,7 @@
 
 <body>
 <%@ include file='../header.xml' %>
-<%@ include file='navigation.xml' %>
+<%@ include file='../navigation.xml' %>
 
 <div id='bodyColumn'>
 

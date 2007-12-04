@@ -1,5 +1,5 @@
 /*
- * $Id: MimeTypes.java,v 1.3 2007/02/20 12:22:15 clq2 Exp $
+ * $Id: MimeTypes.java,v 1.4 2007/12/04 17:31:40 clq2 Exp $
  *
  */
 
@@ -36,6 +36,8 @@ public interface MimeTypes  {
 
    //see ivoa forum comments http://www.ivoa.net/forum/dal/0406/0198.htm.
    // "encoding=" part added by KEA at MB's suggestion
+   // KONA TOFIX - Conesearch says text/xml;content=x-votable
+   // http://www.ivoa.net/Documents/PR/DAL/ConeSearch-20070914.html#req
    public static final String VOTABLE           = "application/x-votable+xml; encoding=\"TABLEDATA\"";
    public static final String VOTABLE_BINARY = "application/x-votable+xml; encoding=\"BINARY\"";
    // This one is not in use

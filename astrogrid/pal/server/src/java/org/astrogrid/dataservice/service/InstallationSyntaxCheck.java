@@ -1,4 +1,4 @@
-/*$Id: InstallationSyntaxCheck.java,v 1.10 2007/09/07 09:30:51 clq2 Exp $
+/*$Id: InstallationSyntaxCheck.java,v 1.11 2007/12/04 17:31:39 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -123,6 +123,10 @@ public class InstallationSyntaxCheck {
             failures = failures + 1;
             temphtml.append("<font color=\"red\"><strong>QUERY FAILED</strong>");
             String message = e.getMessage();
+            if (message == null) {
+               message = "[NO MESSAGE]";
+               System.out.println(message);
+            }
             message = message.replaceAll("<","\\&lt;");
             message = message.replaceAll(">","\\&gt;");
             temphtml.append("<p>" + message + "</p></font>");

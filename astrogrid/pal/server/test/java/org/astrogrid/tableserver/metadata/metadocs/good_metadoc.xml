@@ -115,7 +115,7 @@
 				<Name>ColName_ID_FIELD</Name>
 				<Datatype>string</Datatype>
 				<Description>Name of field in which the object was observed.</Description>
-				<UCD version="1">ID_FIELD</UCD>
+				<UCD version="1">ID_MAIN</UCD>
 				<UCD version="1+">meta.id;obs.field</UCD>
 			</Column>
 		</Table>
@@ -230,7 +230,7 @@
 				<Name>ColName_ID_FIELD</Name>
 				<Datatype>string</Datatype>
 				<Description>Name of field in which the object was observed.</Description>
-				<UCD version="1">ID_FIELD</UCD>
+				<UCD version="1">ID_MAIN</UCD>
 				<UCD version="1+">meta.id;obs.field</UCD>
 			</Column>
 		</Table>
@@ -347,7 +347,7 @@
 				<Name>ColName_ID_FIELD</Name>
 				<Datatype>string</Datatype>
 				<Description>Name of field in which the object was observed.</Description>
-				<UCD version="1">ID_FIELD</UCD>
+				<UCD version="1">ID_MAIN</UCD>
 				<UCD version="1+">meta.id;obs.field</UCD>
 			</Column>
 		</Table>
@@ -459,7 +459,7 @@
 				<Name>ColName_ID_FIELD</Name>
 				<Datatype>string</Datatype>
 				<Description>Name of field in which the object was observed.</Description>
-				<UCD version="1">ID_FIELD</UCD>
+				<UCD version="1">ID_MAIN</UCD>
 				<UCD version="1+">meta.id;obs.field</UCD>
 			</Column>
 		</Table>

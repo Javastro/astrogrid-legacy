@@ -1,5 +1,5 @@
 /*
- * $Id: CeaResources.java,v 1.5 2007/10/17 09:58:20 clq2 Exp $
+ * $Id: CeaResources.java,v 1.6 2007/12/04 17:31:39 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -81,119 +81,144 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
          String coneInters = ""; 
          String multiConeParams = ""; 
          String multiConeInters = ""; 
-         String catalogID =
-            TableMetaDocInterpreter.getCatalogIDForName(catalogName);
-         TableInfo[] tables =
-            TableMetaDocInterpreter.getConesearchableTables(catalogID);
-         if (tables.length == 0) {
-            coneParams = "";
-            coneInters = "";
-         }
-         else {
-            coneParams = 
-            "<cea:ParameterDefinition name='CatTable' type='text'>\n"+
-               "<ceapd:UI_Name>Search Table</ceapd:UI_Name>\n"+
-               "<ceapd:UI_Description>Which table should be conesearched</ceapd:UI_Description>\n"+
-               /*
-               "<ceapd:DefaultValue>" + tables[0].getCatalogName() + 
-                        "." + tables[0].getName() + "</ceapd:DefaultValue>\n"+
-               */
-               "<ceapd:OptionList>\n";
 
-            for (int j = 0; j < tables.length; j++) {
-               String fullTable = tables[j].getCatalogName() + "." +
-                  tables[j].getName();
-               coneParams = coneParams + "<ceapd:OptionVal>" +
-                  fullTable + "</ceapd:OptionVal>\n";
+         // NOTE: At the moment, cone and multicone are *always* enabled
+         // via CEA if any conesearchable tables are defined.
+         /*
+         boolean coneEnabled = false;
+         boolean multiconeEnabled = false;
+         String coneConfig = ConfigFactory.getCommonConfig().getString(
+                            "datacenter.implements.conesearch","false");
+         String multiconeConfig = ConfigFactory.getCommonConfig().getString(
+                            "datacenter.implements.multicone");
+         if ("true".equals(coneConfig.toLowerCase())) {
+            coneEnabled = true;
+         }
+         if ("true".equals(multiconeConfig.toLowerCase())) {
+            multiconeEnabled = true;
+         }
+
+         if (coneEnabled == true) {
+         */
+            String catalogID =
+               TableMetaDocInterpreter.getCatalogIDForName(catalogName);
+            TableInfo[] tables =
+               TableMetaDocInterpreter.getConesearchableTables(catalogID);
+            if (tables.length == 0) {
+               coneParams = "";
+               coneInters = "";
             }
-            coneParams = coneParams +
-               "</ceapd:OptionList>\n"+
-            "</cea:ParameterDefinition>\n"+
-            "<cea:ParameterDefinition name='RA' type='double'>\n"+
-               "<ceapd:UI_Name>RA</ceapd:UI_Name>\n"+
-               "<ceapd:UI_Description>Right-Ascension of cone</ceapd:UI_Description>\n"+
-               "<ceapd:UCD>POS_RA_MAIN</ceapd:UCD>\n"+
-               "<ceapd:Units>deg</ceapd:Units>\n"+
-            "</cea:ParameterDefinition>\n"+
-            "<cea:ParameterDefinition name='DEC' type='double'>\n"+
-               "<ceapd:UI_Name>DEC</ceapd:UI_Name>\n"+
-               "<ceapd:UI_Description>Declination of cone</ceapd:UI_Description>\n"+
-               "<ceapd:UCD>POS_DEC_MAIN</ceapd:UCD>\n"+
-               "<ceapd:Units>deg</ceapd:Units>\n"+
-            "</cea:ParameterDefinition>\n"+
-            "<cea:ParameterDefinition name='Radius' type='double'>\n"+
-               "<ceapd:UI_Name>Radius</ceapd:UI_Name>\n"+
-               "<ceapd:UI_Description>Radius of cone</ceapd:UI_Description>\n"+
-               "<ceapd:UCD>PHYS_SIZE_RADIUS</ceapd:UCD>\n"+
-               "<ceapd:Units>deg</ceapd:Units>\n"+
-            "</cea:ParameterDefinition>\n";
+            else {
+               coneParams = 
+               "<cea:ParameterDefinition name='CatTable' type='text'>\n"+
+                  "<ceapd:UI_Name>Search Table</ceapd:UI_Name>\n"+
+                  "<ceapd:UI_Description>Which table should be conesearched</ceapd:UI_Description>\n"+
+                  /*
+                  "<ceapd:DefaultValue>" + tables[0].getCatalogName() + 
+                           "." + tables[0].getName() + "</ceapd:DefaultValue>\n"+
+                  */
+                  "<ceapd:OptionList>\n";
 
-            coneInters = 
-            "<ceab:Interface name='cone'>\n"+
-               "<ceab:input>\n"+
-                  "<ceab:pref maxoccurs='1' minoccurs='1' ref='CatTable'/>\n"+
-                  "<ceab:pref maxoccurs='1' minoccurs='1' ref='RA'/>\n"+
-                  "<ceab:pref maxoccurs='1' minoccurs='1' ref='DEC'/>\n"+
-                  "<ceab:pref maxoccurs='1' minoccurs='1' ref='Radius'/>\n"+
-                  "<ceab:pref maxoccurs='1' minoccurs='1' ref='Format'/>\n"+
-               "</ceab:input>\n"+
-               "<ceab:output>\n"+
-                  "<ceab:pref maxoccurs='1' minoccurs='1' ref='Result'/>\n"+
-               "</ceab:output>\n"+
-            "</ceab:Interface>\n";
+               for (int j = 0; j < tables.length; j++) {
+                  String fullTable = tables[j].getCatalogName() + "." +
+                     tables[j].getName();
+                  coneParams = coneParams + "<ceapd:OptionVal>" +
+                     fullTable + "</ceapd:OptionVal>\n";
+               }
+               coneParams = coneParams +
+                  "</ceapd:OptionList>\n"+
+               "</cea:ParameterDefinition>\n"+
+               "<cea:ParameterDefinition name='RA' type='double'>\n"+
+                  "<ceapd:UI_Name>RA</ceapd:UI_Name>\n"+
+                  "<ceapd:UI_Description>Right-Ascension of cone</ceapd:UI_Description>\n"+
+                  "<ceapd:UCD>POS_RA_MAIN</ceapd:UCD>\n"+
+                  "<ceapd:Units>deg</ceapd:Units>\n"+
+               "</cea:ParameterDefinition>\n"+
+               "<cea:ParameterDefinition name='DEC' type='double'>\n"+
+                  "<ceapd:UI_Name>DEC</ceapd:UI_Name>\n"+
+                  "<ceapd:UI_Description>Declination of cone</ceapd:UI_Description>\n"+
+                  "<ceapd:UCD>POS_DEC_MAIN</ceapd:UCD>\n"+
+                  "<ceapd:Units>deg</ceapd:Units>\n"+
+               "</cea:ParameterDefinition>\n"+
+               "<cea:ParameterDefinition name='Radius' type='double'>\n"+
+                  "<ceapd:UI_Name>Radius</ceapd:UI_Name>\n"+
+                  "<ceapd:UI_Description>Radius of cone</ceapd:UI_Description>\n"+
+                  "<ceapd:UCD>PHYS_SIZE_RADIUS</ceapd:UCD>\n"+
+                  "<ceapd:Units>deg</ceapd:Units>\n"+
+               "</cea:ParameterDefinition>\n";
+
+               coneInters = 
+               "<ceab:Interface name='cone'>\n"+
+                  "<ceab:input>\n"+
+                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='CatTable'/>\n"+
+                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='RA'/>\n"+
+                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='DEC'/>\n"+
+                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='Radius'/>\n"+
+                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='Format'/>\n"+
+                  "</ceab:input>\n"+
+                  "<ceab:output>\n"+
+                     "<ceab:pref maxoccurs='1' minoccurs='1' ref='Result'/>\n"+
+                  "</ceab:output>\n"+
+               "</ceab:Interface>\n";
 
 
-            multiConeParams = 
-               // Multicone RA expression
-               "      <cea:ParameterDefinition name='RA_Column_Name' type='text'>\n"+
-               "        <ceapd:UI_Name>RA column name</ceapd:UI_Name>\n"+
-               "        <ceapd:UI_Description>Name for input Right-Ascension column (or expression): column data in degrees"+
-               "</ceapd:UI_Description>\n"+
-               "        <ceapd:Units>deg</ceapd:Units>\n"+
-               "      </cea:ParameterDefinition>\n"+
+               /*
+               if (multiconeEnabled == true) {
+               */
+                  multiConeParams = 
+                     // Multicone RA expression
+                     "      <cea:ParameterDefinition name='RA_Column_Name' type='text'>\n"+
+                     "        <ceapd:UI_Name>RA column name</ceapd:UI_Name>\n"+
+                     "        <ceapd:UI_Description>Name for input Right-Ascension column (or expression): column data in degrees"+
+                     "</ceapd:UI_Description>\n"+
+                     "        <ceapd:Units>deg</ceapd:Units>\n"+
+                     "      </cea:ParameterDefinition>\n"+
 
-               // Multicone Dec expression
-               "      <cea:ParameterDefinition name='Dec_Column_Name' type='text'>\n"+
-               "        <ceapd:UI_Name>Dec column name</ceapd:UI_Name>\n"+
-               "        <ceapd:UI_Description>Name for input Declination column (or expression): column data in degrees"+
-               "</ceapd:UI_Description>\n"+
-               "      </cea:ParameterDefinition>\n"+
+                     // Multicone Dec expression
+                     "      <cea:ParameterDefinition name='Dec_Column_Name' type='text'>\n"+
+                     "        <ceapd:UI_Name>Dec column name</ceapd:UI_Name>\n"+
+                     "        <ceapd:UI_Description>Name for input Declination column (or expression): column data in degrees"+
+                     "</ceapd:UI_Description>\n"+
+                     "      </cea:ParameterDefinition>\n"+
 
-               // Multicone find mode 
-               "      <cea:ParameterDefinition name='Find_Mode' type='text'>\n"+
-               "        <ceapd:UI_Name>Find Mode</ceapd:UI_Name>\n"+
-               "        <ceapd:UI_Description>Find mode for matches: BEST or ALL"+
-               "</ceapd:UI_Description>\n"+
-               "<ceapd:DefaultValue>ALL</ceapd:DefaultValue>\n"+
-               "<ceapd:OptionList>\n"+
-                    "<ceapd:OptionVal>BEST</ceapd:OptionVal>\n"+
-                    "<ceapd:OptionVal>ALL</ceapd:OptionVal>\n"+
-               "</ceapd:OptionList>\n"+
-               "      </cea:ParameterDefinition>\n"+
+                     // Multicone find mode 
+                     "      <cea:ParameterDefinition name='Find_Mode' type='text'>\n"+
+                     "        <ceapd:UI_Name>Find Mode</ceapd:UI_Name>\n"+
+                     "        <ceapd:UI_Description>Find mode for matches: BEST or ALL"+
+                     "</ceapd:UI_Description>\n"+
+                     "<ceapd:DefaultValue>ALL</ceapd:DefaultValue>\n"+
+                     "<ceapd:OptionList>\n"+
+                          "<ceapd:OptionVal>BEST</ceapd:OptionVal>\n"+
+                          "<ceapd:OptionVal>ALL</ceapd:OptionVal>\n"+
+                     "</ceapd:OptionList>\n"+
+                     "      </cea:ParameterDefinition>\n"+
 
-               // Multicone input VOTable url
-               "      <cea:ParameterDefinition name='Input_VOTable' type='text'>\n"+
-               "        <ceapd:UI_Name>Input VOTable</ceapd:UI_Name>\n"+
-               "        <ceapd:UI_Description>Input VOTable, containing Right Ascension and Declination columns, for matching against)"+
-               "</ceapd:UI_Description>\n"+
-               "      </cea:ParameterDefinition>\n";
+                     // Multicone input VOTable url
+                     "      <cea:ParameterDefinition name='Input_VOTable' type='text'>\n"+
+                     "        <ceapd:UI_Name>Input VOTable</ceapd:UI_Name>\n"+
+                     "        <ceapd:UI_Description>Input VOTable, containing Right Ascension and Declination columns, for matching against)"+
+                     "</ceapd:UI_Description>\n"+
+                     "      </cea:ParameterDefinition>\n";
 
-            multiConeInters=
-               "      <ceab:Interface name='multicone'>\n"+
-               "        <ceab:input>\n"+
-               "          <ceab:pref maxoccurs='1' minoccurs='1' ref='CatTable'/>\n"+
-               "          <ceab:pref maxoccurs='1' minoccurs='1' ref='Input_VOTable'/>\n"+
-               "          <ceab:pref maxoccurs='1' minoccurs='1' ref='RA_Column_Name'/>\n"+
-               "          <ceab:pref maxoccurs='1' minoccurs='1' ref='Dec_Column_Name'/>\n"+
-               "          <ceab:pref maxoccurs='1' minoccurs='1' ref='Radius'/>\n"+
-               "          <ceab:pref maxoccurs='1' minoccurs='0' ref='Find_Mode'/>\n"+
-               "        </ceab:input>\n"+
-               "        <ceab:output>\n"+
-               "          <ceab:pref maxoccurs='1' minoccurs='1' ref='Result'/>\n"+
-               "        </ceab:output>\n"+
-               "      </ceab:Interface>\n";
+                  multiConeInters=
+                     "      <ceab:Interface name='multicone'>\n"+
+                     "        <ceab:input>\n"+
+                     "          <ceab:pref maxoccurs='1' minoccurs='1' ref='CatTable'/>\n"+
+                     "          <ceab:pref maxoccurs='1' minoccurs='1' ref='Input_VOTable'/>\n"+
+                     "          <ceab:pref maxoccurs='1' minoccurs='1' ref='RA_Column_Name'/>\n"+
+                     "          <ceab:pref maxoccurs='1' minoccurs='1' ref='Dec_Column_Name'/>\n"+
+                     "          <ceab:pref maxoccurs='1' minoccurs='1' ref='Radius'/>\n"+
+                     "          <ceab:pref maxoccurs='1' minoccurs='0' ref='Find_Mode'/>\n"+
+                     "        </ceab:input>\n"+
+                     "        <ceab:output>\n"+
+                     "          <ceab:pref maxoccurs='1' minoccurs='1' ref='Result'/>\n"+
+                     "        </ceab:output>\n"+
+                     "      </ceab:Interface>\n";
+               /*
+               }
+            }
+            */
          }
-
 
          String ceaApplication =
             makeVoResourceElement(

@@ -1,5 +1,5 @@
 /*
- * $Id: TableMetaDocInterpreter.java,v 1.17 2007/09/07 09:30:51 clq2 Exp $
+ * $Id: TableMetaDocInterpreter.java,v 1.18 2007/12/04 17:31:39 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -52,13 +52,11 @@ public class TableMetaDocInterpreter
 {
    private static Log log = LogFactory.getLog(TableMetaDocInterpreter.class);
    
-   protected static boolean initialized = false;
+   //protected static boolean initialized = false;
 
 // Element[] catalogs; //root list of catalogs
    protected static Element metadoc = null;
 
-   protected static URL docUrl = null;
-   
    public final static String TABLE_METADOC_URL_KEY = "datacenter.metadoc.url";
    public final static String TABLE_METADOC_FILE_KEY = "datacenter.metadoc.file";
    public final static String ALLOWED_METADOC_NAMESPACES[] =  {
@@ -70,56 +68,86 @@ public class TableMetaDocInterpreter
    /** Make the constructor private to prevent instantiating this class. */
    private TableMetaDocInterpreter() throws MetadataException
    {
-      throw new MetadataException("Please don't instantiate the TableMetaDocinterpreter class - all its useful methods are static methods.");
+      throw new MetadataException("Please don't instantiate the TableMetaDocInterpreter class - all its useful methods are static methods.");
    }
 
-   /** Initialize to interpret the table metadoc given in the config file.
-    * If "force" is set to true, always re-initializes the metadata. */
-   public static void initialize(boolean force) throws MetadataException {
-     if ((initialized) && (force == false)) {
-        return;  // No need to do anything
-     }
-     try {
-       // Initialise SampleStars plugin if required (may not be initialised
-       // if admin has not run the self-tests)
-        String plugin = ConfigFactory.getCommonConfig().getString(
-            "datacenter.querier.plugin");
-         if (plugin.equals(
-               "org.astrogrid.tableserver.test.SampleStarsPlugin")) {
-            // This has no effect if the plugin is already initialised
-            SampleStarsPlugin.initialise();  // Just in case
-         }
-      }
-      catch (DatabaseAccessException dbe) {
-         throw new MetadataException(dbe.getMessage());
-      }
-      docUrl = ConfigFactory.getCommonConfig().getUrl(
-            TABLE_METADOC_URL_KEY, null);
-      String fileName = ConfigFactory.getCommonConfig().getString(
-            TABLE_METADOC_FILE_KEY);
+   public static void initialize() throws MetadataException
+   {
+      URL theUrl = null;
       try {
-         if (docUrl != null) {
-            loadUrl(docUrl);
+         theUrl = ConfigFactory.getCommonConfig().getUrl(
+              TABLE_METADOC_URL_KEY, null);
+         if (theUrl == null) {
+            String fileName = ConfigFactory.getCommonConfig().getString(
+                 TABLE_METADOC_FILE_KEY);
+             theUrl = ConfigReader.resolveFilename(fileName);
          }
-         else {
-            //docUrl = ConfigReader.resolveFilename(ConfigFactory.getCommonConfig().getString(TABLE_METADOC_FILE_KEY));
-            docUrl = ConfigReader.resolveFilename(fileName);
-            loadUrl(docUrl);
+         if (theUrl == null) {
+            throw new MetadataException("Could not resolve location of DSA metadoc file, please check your configuration!");
          }
       }
       catch (IOException ioe) {
          if (ioe instanceof FileNotFoundException) {
-            throw new MetadataException("The specified metadoc file " +
-               fileName + " cannot be found, please check your configuration.");
+            throw new MetadataException("The specified metadoc file for this DSA cannot be found, please check your configuration.");
          }
          throw new MetadataException(ioe.getMessage());
       }
-      initialized = true;
+      initialize(theUrl);
+   }
+
+   /** Initialize to interpret the table metadoc given in the config file.
+    * If "force" is set to true, always re-initializes the metadata. 
+    * The guts of method must be synchronized on the class itself to 
+    * ensure that the "metadoc" variable is accessed safely by multiple 
+    * threads. */
+   public static void initialize(URL metadocUrl) throws MetadataException {
+     synchronized (TableMetaDocInterpreter.class) {
+        if (metadoc != null) { //Initialized already
+          //log.error("KONA METADOC ALREADY LOADED!");
+          return;
+        }
+        else { // metadoc is null
+           try {
+             // Initialise SampleStars plugin if required 
+             // (may not be initialised if admin has not run the self-tests)
+              String plugin = ConfigFactory.getCommonConfig().getString(
+                  "datacenter.querier.plugin");
+               if (plugin.equals(
+                     "org.astrogrid.tableserver.test.SampleStarsPlugin")) {
+                  // This has no effect if the plugin is already initialised
+                  SampleStarsPlugin.initialise();  // Just in case
+               }
+            }
+            catch (DatabaseAccessException dbe) {
+               throw new MetadataException(dbe.getMessage());
+            }
+            try {
+               //log.error("KONA LOADING METADOC!");
+               metadoc = loadAndValidateMetadoc(metadocUrl);
+               //log.error("KONA FINISHED LOADING METADOC!");
+            }
+            catch (IOException ioe) {
+               if (ioe instanceof FileNotFoundException) {
+                  throw new MetadataException("The specified metadoc file for this DSA cannot be found, please check your configuration.");
+               }
+               throw new MetadataException(ioe.getMessage());
+            }
+            // After initial syntactic validation, make sure our conesearch 
+            // settings (if any) are ok
+            try {
+               checkValidConeTables();
+            }
+            catch (MetadataException me) {
+               metadoc = null;  // If a problem, don't accept it
+               throw me;
+            }
+         }// End of initialization actions
+      }//End of synchronization block
    }
 
    public static boolean isValid() {
       try {
-         initialize(false);
+         initialize();
       }
       catch (Exception e) {
          return false;
@@ -133,13 +161,13 @@ public class TableMetaDocInterpreter
    /** Returns the list of IDs of all the catalogs in the metadoc */
    public static String[] getCatalogIDs() throws MetadataException  
    {
-      initialize(false);
+      initialize();
 
-      Element[] elements = DomHelper.getChildrenByTagName(metadoc, "Catalog");
+      Element[] elements = getChildrenByTagName(metadoc, "Catalog");
       String[] catIDs = new String[elements.length];
       for (int i = 0; i < elements.length; i++)
       {
-         catIDs[i] = elements[i].getAttribute("ID");
+         catIDs[i] = getAttribute(elements[i],("ID"));
       }
       return catIDs;
    }
@@ -147,12 +175,12 @@ public class TableMetaDocInterpreter
    /** Returns the list of names of all the catalogs in the metadoc */
    public static String[] getCatalogNames() throws MetadataException  
    {
-      initialize(false);
-      Element[] elements = DomHelper.getChildrenByTagName(metadoc, "Catalog");
+      initialize();
+      Element[] elements = getChildrenByTagName(metadoc, "Catalog");
       String[] catNames = new String[elements.length];
       for (int i = 0; i < elements.length; i++)
       {
-         catNames[i] = DomHelper.getValueOf(elements[i], "Name");
+         catNames[i] = getValueOf(elements[i], "Name");
       }
       return catNames;
    }
@@ -160,12 +188,12 @@ public class TableMetaDocInterpreter
    /** Returns the list of descriptions of all the catalogs in the metadoc */
    public static String[] getCatalogDescriptions() throws MetadataException  
    {
-      initialize(false);
-      Element[] elements = DomHelper.getChildrenByTagName(metadoc, "Catalog");
+      initialize();
+      Element[] elements = getChildrenByTagName(metadoc, "Catalog");
       String[] catDescs = new String[elements.length];
       for (int i = 0; i < elements.length; i++)
       {
-         catDescs[i] = DomHelper.getValueOf(elements[i], "Description");
+         catDescs[i] = getValueOf(elements[i], "Description");
       }
       return catDescs;
    }
@@ -174,33 +202,36 @@ public class TableMetaDocInterpreter
    public static String getCatalogNameForID(String catalogID) 
          throws MetadataException 
    {
+      initialize();
       Element catNode = getCatalogElementByID(catalogID);
-      return DomHelper.getValueOf(catNode, "Name");
+      return getValueOf(catNode, "Name");
    }
    /** Return the ID associated with a particular catalog Name */
    public static String getCatalogIDForName(String catalogName) 
          throws MetadataException 
    {
+      initialize();
       Element catNode = getCatalogElementByName(catalogName);
-      return catNode.getAttribute("ID");
+      return getAttribute(catNode,"ID");
    }
 
 
    /** Returns all conesearchable tables.  */
    public static TableInfo[] getConesearchableTables() throws MetadataException 
    {
+      initialize();
       Vector vectorOfInfos = new Vector();
-      initialize(false);
+      initialize();
       // Get all catalogs
-      Element[] catalogs = DomHelper.getChildrenByTagName(metadoc, "Catalog");
+      Element[] catalogs = getChildrenByTagName(metadoc, "Catalog");
       for (int i = 0; i < catalogs.length; i++) {
          // Get all tables
-         Element[] tables = DomHelper.getChildrenByTagName(
+         Element[] tables = getChildrenByTagName(
               catalogs[i], "Table");
          for (int j = 0; j < tables.length; j++) {
             TableInfo info = makeTableInfo(tables[j]);
             if (info.getConesearchable() == true) {
-               String catalogID = catalogs[i].getAttribute("ID");
+               String catalogID = getAttribute(catalogs[i],"ID");
                info.setCatalog(getCatalogNameForID(catalogID),catalogID);
                vectorOfInfos.add(info);
             }
@@ -214,8 +245,9 @@ public class TableMetaDocInterpreter
    public static TableInfo[] getConesearchableTables(String catalogID) 
       throws MetadataException 
    {
+      initialize();
       Vector vectorOfInfos = new Vector();
-      initialize(false);
+      initialize();
       // Get all tables for the specified catalog IDcatalogs
       TableInfo[] tables = getTablesInfoByID(catalogID);
       for (int i = 0; i < tables.length; i++) {
@@ -231,6 +263,7 @@ public class TableMetaDocInterpreter
    public static TableInfo getTableInfoByID(String catalogID, String tableID) 
          throws MetadataException 
    {
+      initialize();
       TableInfo info = makeTableInfo(getTableElementByID(
                getCatalogElementByID(catalogID), tableID));
       info.setCatalog(getCatalogNameForID(catalogID), catalogID);
@@ -241,6 +274,7 @@ public class TableMetaDocInterpreter
    public static TableInfo getTableInfoByName(String catalogName, 
          String tableName) throws MetadataException 
    {
+      initialize();
       TableInfo info = makeTableInfo(getTableElementByName(
                getCatalogElementByName(catalogName), tableName));
       info.setCatalog(catalogName, getCatalogIDForName(catalogName));
@@ -251,17 +285,19 @@ public class TableMetaDocInterpreter
    public static String getTableNameForID(String catalogID, String tableID) 
        throws MetadataException
    {
+      initialize();
       Element catNode = getCatalogElementByID(catalogID);
       Element tableNode = getTableElementByID(catNode, tableID);
-      return DomHelper.getValueOf(tableNode, "Name");
+      return getValueOf(tableNode, "Name");
    }
    /** Return the ID associated with a particular table Name */
    public static String getTableIDForName(String catalogName, String tableName)
          throws MetadataException 
    {
+      initialize();
       Element catNode = getCatalogElementByName(catalogName);
       Element tableNode = getTableElementByName(catNode, tableName);
-      return tableNode.getAttribute("ID");
+      return getAttribute(tableNode,"ID");
    }
 
    /** Return the ID associated with a particular table Name, when
@@ -271,8 +307,9 @@ public class TableMetaDocInterpreter
    public static String guessTableIDForName(String tableName)
          throws MetadataException 
    {
+      initialize();
       String foundID = null;  // Don't know what the ID is
-      Element[] cats = DomHelper.getChildrenByTagName(metadoc, "Catalog");
+      Element[] cats = getChildrenByTagName(metadoc, "Catalog");
       for (int i = 0; i < cats.length; i++) {
          Element tableNode = null;
          try {
@@ -288,7 +325,7 @@ public class TableMetaDocInterpreter
                 throw new TooManyTablesException( "Table with name '"+
                       tableName+"' found in more than one catalog");
             }
-            foundID = tableNode.getAttribute("ID");
+            foundID = getAttribute(tableNode,"ID");
          } 
       }
       if (foundID == null) { // Didn't find one
@@ -304,8 +341,8 @@ public class TableMetaDocInterpreter
    public static TableInfo[] getTablesInfoByID(String catalogID) 
       throws MetadataException 
    {
-      initialize(false);
-      Element[] elements = DomHelper.getChildrenByTagName(getCatalogElementByID(catalogID), "Table");
+      initialize();
+      Element[] elements = getChildrenByTagName(getCatalogElementByID(catalogID), "Table");
       TableInfo[] infos = new TableInfo[elements.length];
       for (int i = 0; i < elements.length; i++)
       {
@@ -321,6 +358,7 @@ public class TableMetaDocInterpreter
    public static TableInfo[] getTablesInfoByName(String catalogName) 
       throws MetadataException 
    {
+      initialize();
       String catID = getCatalogIDForName(catalogName);
       return getTablesInfoByID(catID);
    }
@@ -331,6 +369,7 @@ public class TableMetaDocInterpreter
    public static ColumnInfo getColumnInfoByID(String catalogID, String tableID, 
          String columnID) throws MetadataException 
    {
+      initialize();
       return makeColumnInfo(catalogID,
             tableID, getColumnElementByID(catalogID, tableID, columnID));
    }
@@ -340,6 +379,7 @@ public class TableMetaDocInterpreter
    public static ColumnInfo getColumnInfoByName(String catalogName, 
          String tableName, String columnName) throws MetadataException 
    {
+      initialize();
       // Translate to IDs, needed by makeColumnInfo
       String catID = getCatalogIDForName(catalogName);
       String tableID = getTableIDForName(catalogName,tableName);
@@ -350,14 +390,16 @@ public class TableMetaDocInterpreter
    /** Return the ID associated with a particular column Name */
    public static String getColumnIDForName(String catalogName, String tableName,          String colName) throws MetadataException 
    {
+      initialize();
       Element colNode = getColumnElementByName(catalogName, tableName, colName);
-      return colNode.getAttribute("ID");
+      return getAttribute(colNode,"ID");
    }
    /** Return the Name associated with a particular column ID */
    public static String getColumnNameForID(String catalogID, String tableID, 
          String colID) throws MetadataException {
+      initialize();
       Element colNode = getColumnElementByID(catalogID, tableID, colID);
-      return DomHelper.getValueOf(colNode, "Name");
+      return getValueOf(colNode, "Name");
    }
 
 
@@ -365,9 +407,10 @@ public class TableMetaDocInterpreter
    public static String getConeRAColumnByName(String catalogName, String tableName)
             throws MetadataException {
 
+      initialize();
       Element tableNode = getTableElementByName(
             getCatalogElementByName(catalogName), tableName);
-      Element cone = DomHelper.getSingleChildByTagName(tableNode, "ConeSettings");
+      Element cone = getSingleChildByTagName(tableNode, "ConeSettings");
       if (cone == null) {
          // Table is not conesearchable!!
          throw new MetadataException("Table '" + tableName + 
@@ -375,15 +418,16 @@ public class TableMetaDocInterpreter
                "' is not configured for conesearch");
       }
       // Should be valid, checked at load-time
-      return (DomHelper.getValueOf(cone,"RAColName").trim());
+      return (getValueOf(cone,"RAColName").trim());
    }
    /** Returns the Dec column for a particular conesearchable table */
    public static String getConeDecColumnByName(
          String catalogName, String tableName) throws MetadataException 
    {
+      initialize();
       Element tableNode = getTableElementByName(
             getCatalogElementByName(catalogName), tableName);
-      Element cone = DomHelper.getSingleChildByTagName(
+      Element cone = getSingleChildByTagName(
             tableNode, "ConeSettings");
       if (cone == null) {
          // Table is not conesearchable!!
@@ -392,16 +436,17 @@ public class TableMetaDocInterpreter
                "' is not configured for conesearch");
       }
       // Should be valid, checked at load-time
-      return (DomHelper.getValueOf(cone,"DecColName").trim());
+      return (getValueOf(cone,"DecColName").trim());
    }
    /** Returns the Units for a particular column, sanitychecked to make
     * sure that they are valid conesearch units (deg or rad) */
    public static String getConeUnitsByName(String catalogName, String tableName)
          throws MetadataException 
    {
+      initialize();
       String raCol = getConeRAColumnByName(catalogName, tableName);
       Element colNode = getColumnElementByName(catalogName, tableName, raCol);
-      String units = DomHelper.getValueOf(colNode,"Units");
+      String units = getValueOf(colNode,"Units");
       if ( !"deg".equals(units) && !"rad".equals(units) ) {
          //Shouldn't get here, has been prechecked at load time
          throw new MetadataException("Column '" + raCol + "' in table '" + 
@@ -419,11 +464,11 @@ public class TableMetaDocInterpreter
    public static ColumnInfo[] getColumnsInfoByID(String catalogID, 
          String tableID) throws MetadataException 
    {
-      initialize(false);
+      initialize();
       Element tableElement = 
             getTableElementByID(getCatalogElementByID(catalogID), tableID);
       Element[] elements = 
-            DomHelper.getChildrenByTagName(tableElement, "Column");
+            getChildrenByTagName(tableElement, "Column");
       ColumnInfo[] infos = new ColumnInfo[elements.length];
       for (int i = 0; i < elements.length; i++) {
          infos[i] = makeColumnInfo(catalogID, tableID, elements[i]);
@@ -437,6 +482,7 @@ public class TableMetaDocInterpreter
    public static ColumnInfo[] getColumnsInfoByName(String catalogName, 
          String tableName) throws MetadataException 
    {
+      initialize();
       // Translate from Names to IDs
       String catID = getCatalogIDForName(catalogName);
       String tableID = getTableIDForName(catalogName, tableName);
@@ -452,7 +498,7 @@ public class TableMetaDocInterpreter
    public static ColumnInfo guessColumn(
          String[] tableNames, String columnID) throws IOException 
    {
-      initialize(false);
+      initialize();
 
       Element foundCol = null;
       String foundTableID = null;
@@ -468,10 +514,10 @@ public class TableMetaDocInterpreter
          //if table(s) not given, use all tables
          if ((tableNames==null) || (tableNames.length == 0)) {
             Element[] realTables = 
-                DomHelper.getChildrenByTagName(catNode, "Table");
+                getChildrenByTagName(catNode, "Table");
             localTables = new String[realTables.length];
             for (int i = 0; i < realTables.length; i++) {
-               localTables[i] = DomHelper.getValueOf(DomHelper.getSingleChildByTagName(realTables[i], "Name"));
+               localTables[i] = getValueOf(getSingleChildByTagName(realTables[i], "Name"));
             }
          }
          else {
@@ -503,10 +549,10 @@ public class TableMetaDocInterpreter
                   //Table not found in this catalog
                }   
                if (tableElement != null) {
-                  Element[] cols = DomHelper.getChildrenByTagName(
+                  Element[] cols = getChildrenByTagName(
                         tableElement, "Column");
                   for (int c = 0; c < cols.length; c++) {
-                     String colID = cols[c].getAttribute("ID");
+                     String colID = getAttribute(cols[c],"ID");
                      if (colID.trim().toLowerCase().equals(
                               columnID.toLowerCase())) {
                         if (foundCol == null) {
@@ -542,9 +588,10 @@ public class TableMetaDocInterpreter
     */
    protected static Element getCatalogForNullParam() throws MetadataException
    {
-      Element[] cats = DomHelper.getChildrenByTagName(metadoc, "Catalog");
+      initialize();
+      Element[] cats = getChildrenByTagName(metadoc, "Catalog");
       if (cats.length > 0) {
-         log.debug("Requested null catalog name/ID : defaulting to first catalog specified in metadoc");
+         log.debug("Requested null catalog name/ID : defaulting to first catalog specified in metadoc, with ID " + getAttribute(cats[0],"ID"));
          return cats[0];
       }
       throw new MetadataException("Cannot find default catalog to use");
@@ -556,14 +603,14 @@ public class TableMetaDocInterpreter
    protected static Element getCatalogElementByID(String catalogID) 
           throws MetadataException 
    {
-      initialize(false);
+      initialize();
       if ((catalogID == null) || (catalogID.trim().length()==0)) {
          return getCatalogForNullParam();
       }
-      Element[] cats = DomHelper.getChildrenByTagName(metadoc, "Catalog");
+      Element[] cats = getChildrenByTagName(metadoc, "Catalog");
 
       for (int i = 0; i < cats.length; i++) {
-         String catId = cats[i].getAttribute("ID");
+         String catId = getAttribute(cats[i],"ID");
          if ((catId == null) || (catId.trim().length()==0)) { 
            String errorMsg = 
               "Metadoc is invalid, at least one catalog has a " +
@@ -586,13 +633,13 @@ public class TableMetaDocInterpreter
    protected static Element getCatalogElementByName(String catalogName) 
          throws MetadataException 
    {
-      initialize(false);
+      initialize();
       if ((catalogName == null) || (catalogName.trim().length()==0)) {
          return getCatalogForNullParam();
       }
-      Element[] cats = DomHelper.getChildrenByTagName(metadoc, "Catalog");
+      Element[] cats = getChildrenByTagName(metadoc, "Catalog");
       for (int i = 0; i < cats.length; i++) {
-         String catName = DomHelper.getValueOf(cats[i], "Name");
+         String catName = getValueOf(cats[i], "Name");
          if ((catName == null) || (catName.trim().length()==0)) { 
            // NB: Schema validation should catch this error earlier
            String errorMsg = 
@@ -614,16 +661,16 @@ public class TableMetaDocInterpreter
     */
    protected static Element getTableElementByID(Element catalog, String tableID) throws MetadataException
    {
-      initialize(false);
+      initialize();
       if (tableID == null || tableID.trim().length() == 0) { 
          throw new IllegalArgumentException("No table specified"); 
       }
       if (catalog == null) { 
          throw new IllegalArgumentException("Null catalog element supplied"); 
       }
-      Element[] tables = DomHelper.getChildrenByTagName(catalog, "Table");
+      Element[] tables = getChildrenByTagName(catalog, "Table");
       for (int i = 0; i < tables.length; i++) {
-         String id = tables[i].getAttribute("ID");
+         String id = getAttribute(tables[i],"ID");
          if ((id == null) || (id.trim().length()==0)) { 
            // NB: Schema validation should catch this error earlier
            String errorMsg = 
@@ -637,7 +684,8 @@ public class TableMetaDocInterpreter
          }
       }
       throw new NoSuchTableException("Couldn't find table with ID '" +
-            tableID + "' in supplied catalog element.");
+            tableID + "' in supplied catalog element with ID '" + 
+            getAttribute(catalog,"ID") + "'");
    }
 
    /** Returns the element describing the table with the given Name element.
@@ -645,7 +693,7 @@ public class TableMetaDocInterpreter
     */
    protected static Element getTableElementByName(Element catalog, String tableName) throws MetadataException 
    {
-      initialize(false);
+      initialize();
       if (tableName == null || tableName.trim().length() == 0) { 
          throw new IllegalArgumentException("No table specified"); 
       }
@@ -653,9 +701,9 @@ public class TableMetaDocInterpreter
          throw new IllegalArgumentException("Null catalog element supplied"); 
       }
       
-      Element[] tables = DomHelper.getChildrenByTagName(catalog, "Table");
+      Element[] tables = getChildrenByTagName(catalog, "Table");
       for (int i = 0; i < tables.length; i++) {
-         String name = DomHelper.getValueOf(tables[i], "Name");
+         String name = getValueOf(tables[i], "Name");
          if ((name == null) || (name.trim().length()==0)) { 
            // NB: Schema validation should catch this error earlier
            String errorMsg = 
@@ -669,14 +717,15 @@ public class TableMetaDocInterpreter
          }
       }
       throw new NoSuchTableException("Couldn't find table with Name '" +
-            tableName + "' in supplied catalog element.");
+            tableName + "' in supplied catalog element with Name '" +
+            getValueOf(catalog, "Name") + "'");
    }
 
    /** Return column info with the given id in the given table id.  
     * Ignores the catalog for now */
    protected static Element getColumnElementByID(String catalogID, String tableID, String columnID) throws MetadataException  
    {
-      initialize(false);
+      initialize();
       
       // KONA TOFIX : CatalogID currently allowed to be null, change later
       if (tableID == null || tableID.trim().length() == 0) { 
@@ -689,7 +738,7 @@ public class TableMetaDocInterpreter
       Element tableRes = getTableElementByID(
             getCatalogElementByID(catalogID), tableID);
 
-      Element[] cols = DomHelper.getChildrenByTagName(tableRes, "Column");
+      Element[] cols = getChildrenByTagName(tableRes, "Column");
       
       if (cols == null) {
          //no columns in given table
@@ -700,7 +749,7 @@ public class TableMetaDocInterpreter
          // "catalog.table.column" in the metadoc
          /*
          String colID = "";
-         String fullID = cols[i].getAttribute("ID");
+         String fullID = getAttribute(cols[i],"ID");
          int lastdot = fullID.lastIndexOf(".");
          if (lastdot == -1) { // No dot
             colID = fullID;
@@ -709,8 +758,8 @@ public class TableMetaDocInterpreter
             colID = fullID.substring(lastdot+1);
          }
          */
-         //String colID = cols[i].getAttribute("ID");
-         String colID = cols[i].getAttribute("ID");
+         //String colID = getAttribute(cols[i],"ID");
+         String colID = getAttribute(cols[i],"ID");
          if (colID.trim().toLowerCase().equals(columnID.toLowerCase())) {
             return cols[i];
          }
@@ -723,7 +772,7 @@ public class TableMetaDocInterpreter
     * Ignores the catalog for now */
    protected static Element getColumnElementByName(String catalogName, String tableName, String columnName) throws MetadataException  
    {
-      initialize(false);
+      initialize();
       
       // KONA TOFIX : CatalogName currently allowed to be null
       //
@@ -737,15 +786,15 @@ public class TableMetaDocInterpreter
       Element tableRes = getTableElementByName(
             getCatalogElementByName(catalogName), tableName);
 
-      Element[] cols = DomHelper.getChildrenByTagName(tableRes, "Column");
+      Element[] cols = getChildrenByTagName(tableRes, "Column");
       
       if (cols == null) {
          //no columns in given table
          throw new IllegalArgumentException("No Columns found in table "+tableName);
       }
       for (int i = 0; i < cols.length; i++) {
-         String colName = DomHelper.getValueOf(
-               DomHelper.getSingleChildByTagName(cols[i], "Name"));
+         String colName = getValueOf(
+               getSingleChildByTagName(cols[i], "Name"));
          if (colName.trim().toLowerCase().equals(columnName.toLowerCase())) {
             return cols[i];
          }
@@ -760,22 +809,22 @@ public class TableMetaDocInterpreter
    /** Creates a TableInfo instance from the given RDBMS Resource table element */
    protected static TableInfo makeTableInfo(Element element) throws MetadataException 
    {
-      initialize(false);
+      initialize();
       
       if (element == null) { 
          throw new IllegalArgumentException("Received empty table element when trying to make TableInfo description"); 
       }
       
       TableInfo info = new TableInfo();
-      info.setName(DomHelper.getValueOf(element, "Name"));
-      String id = element.getAttribute("ID");
+      info.setName(getValueOf(element, "Name"));
+      String id = getAttribute(element,"ID");
       info.setId(id);
-      info.setDescription(nullIfEmpty(DomHelper.getValueOf(element, "Description")));
+      info.setDescription(nullIfEmpty(getValueOf(element, "Description")));
       // Now include conesearch information
-      Element cone = DomHelper.getSingleChildByTagName(element, "ConeSettings");
+      Element cone = getSingleChildByTagName(element, "ConeSettings");
       if (cone != null) {
-         String raColName = DomHelper.getValueOf(cone,"RAColName").trim();
-         String decColName = DomHelper.getValueOf(cone,"DecColName").trim();
+         String raColName = getValueOf(cone,"RAColName").trim();
+         String decColName = getValueOf(cone,"DecColName").trim();
          info.setConesearchable(true);
          info.setConeRAColName(raColName);
          info.setConeDecColName(decColName);
@@ -789,31 +838,31 @@ public class TableMetaDocInterpreter
    /** Creates a ColumnInfo instance from the given RDBMS Resource column element */
    protected static ColumnInfo makeColumnInfo(String catalogID, String tableID, Element element) throws MetadataException 
    {
-      initialize(false);
+      initialize();
       if (element == null) { 
          throw new IllegalArgumentException("Received empty column element when trying to make ColumnInfo description"); 
       }
       ColumnInfo info = new ColumnInfo();
-      info.setName(DomHelper.getValueOf(element, "Name"));
+      info.setName(getValueOf(element, "Name"));
       info.setGroup(getTableNameForID(catalogID, tableID), tableID);
 
-      String id = element.getAttribute("ID");
+      String id = getAttribute(element,"ID");
       /*  DON'T DO THIS!
       if ((id == null) || (id.length()==0)) {
          id = info.getGroup()+"."+info.getName();
       }
       */
       info.setId(id);
-      info.setDescription(nullIfEmpty(DomHelper.getValueOf(element, "Description")));
-      info.setUnits(nullIfEmpty(DomHelper.getValueOf(element, "Units")));
-      info.setErrorField(nullIfEmpty(DomHelper.getValueOf(element, "ErrorColumn")));
+      info.setDescription(nullIfEmpty(getValueOf(element, "Description")));
+      info.setUnits(nullIfEmpty(getValueOf(element, "Units")));
+      info.setErrorField(nullIfEmpty(getValueOf(element, "ErrorColumn")));
 
-      Element[] ucdNodes = DomHelper.getChildrenByTagName(element, "UCD");
+      Element[] ucdNodes = getChildrenByTagName(element, "UCD");
       for (int u = 0; u < ucdNodes.length; u++) {
-         info.setUcd(DomHelper.getValueOf(ucdNodes[u]), ucdNodes[u].getAttribute("version"));
+         info.setUcd(getValueOf(ucdNodes[u]), getAttribute(ucdNodes[u],"version"));
       }
 
-      String datatype = nullIfEmpty(DomHelper.getValueOf(element, "Datatype"));
+      String datatype = nullIfEmpty(getValueOf(element, "Datatype"));
       if (datatype == null) {
          throw new MetadataException("Column "+info.getName()+" has no Datatype element in metadoc");
       }
@@ -838,12 +887,28 @@ public class TableMetaDocInterpreter
       return s;
    }
 
+   /* This one is for unit tests */
+   /*
+   public static void validateFileMetadoc(String filename) throws IOException {
+      MetadocInterpreterTest.class.getResource(
+                           metadocFilename).toString());
 
-   /** Loads metadoc from given URL */
-   private static void loadUrl(URL url) throws IOException {
+      URL theUrl = ConfigReader.resolveFilename(filename);
+      //System.out.println("KONA THE URL IS " + theUrl.toString());
+      Element metadoc = loadAndValidateMetadoc(theUrl);
+   }
+   */
+
+
+   /** Loads metadoc from given URL and validates it.  
+    * This one doesn't need to be synchronised because it accesses its
+    * own private Element.
+    */
+   public static Element loadAndValidateMetadoc(URL url) throws IOException {
+      Element urlElement = null;
       try {
          log.debug("Loading metadoc from "+url);
-         metadoc = DomHelper.newDocument(url).getDocumentElement();
+         urlElement = DomHelper.newDocument(url).getDocumentElement();
       }
       catch (SAXException e) {
          throw new MetadataException("Server's TableMetaDoc at "+url+" is invalid XML: "+e);
@@ -851,11 +916,11 @@ public class TableMetaDocInterpreter
       // We have loaded it, so it's syntactically valid at least.
       // Now check that it is the minimum required version - currently
       // version 1.1.
-      String nodeName = metadoc.getNodeName();
+      String nodeName = urlElement.getNodeName();
       if ("DataDescription".equals(nodeName) || 
           "DatasetDescription".equals(nodeName)) {
-         //String attrVal = metadoc.getAttribute("xmlns");
-         String attrVal = metadoc.getNamespaceURI();
+         //String attrVal = urlElement.getAttribute("xmlns");
+         String attrVal = urlElement.getNamespaceURI();
          if (attrVal == null || (attrVal.equals("")) ) { 
             // No namespace specified
             String errMess = 
@@ -885,12 +950,12 @@ public class TableMetaDocInterpreter
       // Now validate it against its schema
       // This will ensure that all compulsory attributes (e.g. the ID 
       // attribute) and tags (e.g. the Name tag) are present.
-      String rootElement = metadoc.getLocalName();
+      String rootElement = urlElement.getLocalName();
       if(rootElement == null) {
-         rootElement = metadoc.getNodeName();
+         rootElement = urlElement.getNodeName();
       }
       try {
-         AstrogridAssert.assertSchemaValid(metadoc,rootElement,SchemaMap.ALL);
+         AstrogridAssert.assertSchemaValid(urlElement,rootElement,SchemaMap.ALL);
       }
       catch (Throwable th) {
          throw new MetadataException("Resource metadoc file is invalid: "+th.getMessage(), th);
@@ -907,7 +972,7 @@ public class TableMetaDocInterpreter
       String errS = "Metadoc is invalid: ";
 
       // Get all the catalogs and check their IDs and Names 
-      Element[] catalogs = DomHelper.getChildrenByTagName(metadoc, "Catalog");
+      Element[] catalogs = getChildrenByTagName(urlElement, "Catalog");
 
       // KONA REMOVE LATER
       // For now, restrict things to a single catalog (and assume JDBC
@@ -931,7 +996,7 @@ public class TableMetaDocInterpreter
       for (int i = 0; i < catalogs.length; i++) {
 
          // Get all tables for each catalog 
-         Element[] tables = DomHelper.getChildrenByTagName(
+         Element[] tables = getChildrenByTagName(
                catalogs[i], "Table");
          // Now check that table IDs don't contain "." (don't think
          // old autogen metadoc made IDs of the form "catalog.table,
@@ -954,7 +1019,7 @@ public class TableMetaDocInterpreter
 
          for (int j = 0; j < tables.length; j++) {
             // Get all columns for each table 
-            Element[] columns = DomHelper.getChildrenByTagName(
+            Element[] columns = getChildrenByTagName(
                tables[j], "Column");
             // Now check that columns don't contain "." (old autogen 
             // metadoc made IDs of the form "table.column", want to
@@ -976,17 +1041,17 @@ public class TableMetaDocInterpreter
 
             // Now check for any conesearchable tables, and check that their
             // conesearch columns are sane.
-            Element cone = DomHelper.getSingleChildByTagName(
+            Element cone = getSingleChildByTagName(
                tables[j], "ConeSettings");
             if (cone != null) {
-               String raColName = DomHelper.getValueOf(cone,"RAColName");
+               String raColName = getValueOf(cone,"RAColName");
                if ((raColName == null) || ("".equals(raColName))) {
                   throw new MetadataException(
                     "Resource metadoc file is invalid: "+
                     "conesearch RaColName element may not be empty"); 
                }
                raColName = raColName.trim();
-               String decColName = DomHelper.getValueOf(cone,"DecColName");
+               String decColName = getValueOf(cone,"DecColName");
                if ((decColName == null) || ("".equals(decColName))) {
                   throw new MetadataException(
                     "Resource metadoc file is invalid: "+
@@ -1000,7 +1065,7 @@ public class TableMetaDocInterpreter
                String unitsRA = "";
                String unitsDec = "";
                for (int k = 0; k < columns.length; k++) {
-                  String colName = DomHelper.getValueOf(columns[k], "Name");
+                  String colName = getValueOf(columns[k], "Name");
                   if (colName == null) {
                      // Shouldn't get here!
                      throw new MetadataException(
@@ -1011,7 +1076,7 @@ public class TableMetaDocInterpreter
                   if (raColName.toLowerCase().equals(colName)) {
                      raFound = true;
                      // Now check that units of column are recognized
-                     unitsRA = DomHelper.getValueOf(columns[k], "Units");
+                     unitsRA = getValueOf(columns[k], "Units");
                      if ("".equals(unitsRA)) {
                         throw new MetadataException(
                           "Resource metadoc file is invalid: "+
@@ -1029,7 +1094,7 @@ public class TableMetaDocInterpreter
                   if (decColName.toLowerCase().equals(colName)) {
                      decFound = true;
                      // Now check that units of column are recognized
-                     unitsDec = DomHelper.getValueOf(columns[k], "Units");
+                     unitsDec = getValueOf(columns[k], "Units");
                      if ("".equals(unitsDec)) {
                         throw new MetadataException(
                           "Resource metadoc file is invalid: "+
@@ -1053,14 +1118,14 @@ public class TableMetaDocInterpreter
                     "Resource metadoc file is invalid: "+
                     "specified conesearch RaColName '"+ raColName + 
                     "' was not found in table " +
-                        DomHelper.getValueOf(tables[j], "Name") );
+                        getValueOf(tables[j], "Name") );
                }
                if (!decFound) {
                   throw new MetadataException(
                     "Resource metadoc file is invalid: "+
                     "specified conesearch DecColName '"+ decColName + 
                     "' was not found in table " +
-                        DomHelper.getValueOf(tables[j], "Name") );
+                        getValueOf(tables[j], "Name") );
                }
                if (!unitsRA.equals(unitsDec)) {
                    throw new MetadataException(
@@ -1070,8 +1135,93 @@ public class TableMetaDocInterpreter
             }
          }
       }
+      return urlElement;
    }
-   
+
+   /** Checks to see that the conesearchable tables have the expected
+    * UCDs to produce valid conesearch output. */
+
+   protected static void checkValidConeTables() throws MetadataException
+   {
+      //Now check that conesearchable tables have the proper UCDs
+      TableInfo[] tables = getConesearchableTables();
+      for (int i = 0; i < tables.length; i++) {
+         String catalogName = tables[i].getCatalogName();
+         String tableName = tables[i].getName();
+
+         // Check RA column has valid UCD
+         String raColName = getConeRAColumnByName(catalogName, tableName);
+         ColumnInfo raColInfo = getColumnInfoByName(
+               catalogName, tableName, raColName);
+         String raUcd = raColInfo.getUcd("1");
+         if (!"POS_EQ_RA_MAIN".equals(raUcd)) {
+            throw new MetadataException(
+               "Resource metadoc file is invalid: "+
+               "Conesearchable RA column with name '" +raColName +
+               "' in table with name '" + tableName +
+               "' in catalog with name '" + catalogName +
+               "' must have its <UCD version='1'> tag set to 'POS_EQ_RA_MAIN' "+
+               "(in order to produce valid conesearch results.) "); }
+
+         // Check Dec column has valid UCD
+         String decColName = getConeDecColumnByName(catalogName, tableName);
+         ColumnInfo decColInfo = getColumnInfoByName(
+               catalogName, tableName, decColName);
+         String decUcd = decColInfo.getUcd("1");
+         if (!"POS_EQ_DEC_MAIN".equals(decUcd)) {
+            throw new MetadataException(
+               "Resource metadoc file is invalid: "+
+               "Conesearchable Dec column with name '" +decColName +
+               "' in table with name '" + tableName +
+               "' in catalog with name '" + catalogName +
+               "' must have its <UCD version='1'> tag set to 'POS_EQ_DEC_MAIN' "+
+               "(in order to produce valid conesearch results.) ");
+         }
+         // Check ID_MAIN column exists
+         ColumnInfo[] allCols = getColumnsInfoByName(catalogName, tableName);
+         int found = 0;
+         for (int j = 0; j < allCols.length; j++) {
+            if ("ID_MAIN".equals(allCols[j].getUcd("1"))) {
+               found = found + 1; 
+            }
+         }
+         if (found != 1) {
+            throw new MetadataException(
+               "Resource metadoc file is invalid: "+
+               "' Conesearchable table with name '" + tableName +
+               "' in catalog with name '" + catalogName +
+               "' must contain exactly one column with the " +
+               "' <UCD version='1'> tag set to 'ID_MAIN' " +
+               "(in order to produce valid conesearch results.) ");
+         }
+      }
+   }
+
+   /** Checks to see that a string contains only characters allowed
+     in published names. */
+   protected static String checkValidName(String name) throws MetadataException
+   {
+      if (name == null || "".equals(name)) {
+         return("Name fields in the DSA metadoc may not be left empty");
+      }
+      if (!Character.isLetter(name.charAt(0))) {
+         return("Name fields in the DSA metadoc MUST begin with a letter - name '" + name +"' is illegal");
+      }
+      for (int i = 1; i < name.length(); i++) {
+        if (!(
+         Character.isLetter(name.charAt(i)) ||
+         Character.isDigit(name.charAt(i)) ||
+         name.charAt(i) == '_'
+        )) {
+         return("Name fields in the DSA metadoc MUST contain only letters, numbers or underscores - name '" + name +"' is illegal");
+        }
+      }
+      // If we got here, all ok
+      return null;
+   }
+
+   /** This is only used by loadAndValidateMetadoc and doesn't 
+    * need extra synchronization */
    protected static void checkIDsAndNames(Element[] elements, 
          String elementType) throws MetadataException 
    {
@@ -1086,7 +1236,7 @@ public class TableMetaDocInterpreter
          throw new MetadataException(errorMsg);
       }
       // First check that the names and IDs aren't null/empty,
-      // and that names don't contain any "." characters
+      // and that names don't contain any illegal characters
       for (int i = 0; i < elements.length; i++) {
          String theID = elements[i].getAttribute("ID");
          if ((theID == null || theID.trim().length() == 0)) {
@@ -1095,27 +1245,26 @@ public class TableMetaDocInterpreter
             log.error(errorMsg);
             throw new MetadataException(errorMsg);
          }
-         String theName = DomHelper.getValueOf(elements[i], "Name");
+         String theName = getValueOf(elements[i], "Name");
          if ((theName == null || theName.trim().length() == 0)) {
             errorMsg = errS + "Null/empty " + elementType + 
                "Name tag value present";
             log.error(errorMsg);
             throw new MetadataException(errorMsg);
          }
-         int dotIndex = theName.indexOf('.');
-         if (dotIndex != -1) {   //Dot found (shouldn't get here)
+         String nameOk = checkValidName(theName);
+         if (nameOk != null) {
             errorMsg = errS + "Element of type " + elementType + 
-               "has illegal name '" + theName + 
-               "': the '.' character is not allowed";
+               " has illegal name '" + theName + 
+               "': " + nameOk;
             log.error(errorMsg);
             throw new MetadataException(errorMsg);
          }
-
       }
       // Now check that the names and IDs are case-insensitively unique
       for (int i = 0; i < elements.length; i++) {
          String theID1 = elements[i].getAttribute("ID");
-         String theName1 = DomHelper.getValueOf(elements[i], "Name");
+         String theName1 = getValueOf(elements[i], "Name");
          for (int j = i+1; j < elements.length; j++) {
             String theID2 = elements[j].getAttribute("ID");
             if (theID1.trim().toLowerCase().equals(
@@ -1126,7 +1275,7 @@ public class TableMetaDocInterpreter
                log.error(errorMsg);
                throw new MetadataException(errorMsg);
             }
-            String theName2 = DomHelper.getValueOf(elements[j], "Name");
+            String theName2 = getValueOf(elements[j], "Name");
             if (theName1.trim().toLowerCase().equals(
                      theName2.trim().toLowerCase())) {
                errorMsg = errS + "Duplicate " + elementType + "Names '" +
@@ -1138,6 +1287,30 @@ public class TableMetaDocInterpreter
          }
       }
    }
+   private static String getAttribute(Element element, String attName) {
+      synchronized (TableMetaDocInterpreter.class) {
+         return element.getAttribute(attName);
+      }
+   }
+   private static Element getSingleChildByTagName(Element element, String tagName) {
+      synchronized (TableMetaDocInterpreter.class) {
+         return DomHelper.getSingleChildByTagName(element, tagName);
+      }
+   }
+   private static String getValueOf(Element element, String tagName) {
+      synchronized (TableMetaDocInterpreter.class) {
+         return DomHelper.getValueOf(element, tagName);
+      }
+   }
+   private static String getValueOf(Element element) {
+      synchronized (TableMetaDocInterpreter.class) {
+         return DomHelper.getValueOf(element);
+      }
+   }
+
+   private static Element[] getChildrenByTagName(Element parent, String tagName) {
+      synchronized (TableMetaDocInterpreter.class) {
+         return DomHelper.getChildrenByTagName(parent, tagName);
+      }
+   }
 }
-
-

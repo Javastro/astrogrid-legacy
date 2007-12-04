@@ -1,5 +1,5 @@
 /*
- * $Id: Query.java,v 1.12 2007/10/17 09:58:20 clq2 Exp $
+ * $Id: Query.java,v 1.13 2007/12/04 17:31:39 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -86,9 +86,9 @@ public class Query  {
    public static final int LIMIT_NOLIMIT = 0; 
 
    /** Allowed namespaces */
-   private static String NAMESPACE_0_7_4 = 
+   private final static String NAMESPACE_0_7_4 = 
             "http://www.ivoa.net/xml/ADQL/v0.7.4";
-   private static String NAMESPACE_1_0 = 
+   private final static String NAMESPACE_1_0 = 
             "http://www.ivoa.net/xml/ADQL/v1.0";
 
    // Note: Need to put all the namespace stuff in the ADQL fragments 
@@ -96,13 +96,30 @@ public class Query  {
    // important for unit testability).
    // @TOFIX : This isn't maybe the most elegant way to set up the Table
    // entry using xmlbeans. 
-   private static String FROM_ADQL =
+   private final static String FROM_ADQL =
       "<Table xsi:type=\"tableType\" Alias=\"a\" Name=\"INSERT_TABLE\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.ivoa.net/xml/ADQL/v1.0\"/>";
    
    /** For xmlbeans validation against schema */
    private static XmlOptions xmlOptions;
 
+   /* NB THESE ARE FOR FUTURE USE - NOT USED AT THE MOMENT */
+   public final static String ADQL_SOURCE = "adql"; 
+   public final static String CONE_SOURCE = "cone"; 
+   public final static String MULTICONE_SOURCE = "multicone"; 
+   public final static String SOURCES[] = new String[] {
+      ADQL_SOURCE,
+      CONE_SOURCE,
+      MULTICONE_SOURCE
+   }; 
 
+   private String querySource = ADQL_SOURCE; //Default query source
+
+   /* Shared compiler instance for compiling ADQL/s to ADQL/xml beans.
+    * Access to this compiler must be synchronized.
+    * NOTE:  NOT CLEAR THAT IT'S MORE EFFICIENT TO HAVE A SINGLE COMPILER:
+    * THE OVERHEAD SEEMS TO BE PARSING, NOT IN CREATING THE COMPILER.
+   private static AdqlCompiler compiler = null;
+   */
 
    /** Constructs a Query from a string containing ADQL/xml. 
     */
@@ -206,13 +223,8 @@ public class Query  {
           coneRA, coneDec, coneRadius);
 
       StringReader source = new StringReader(adqlString) ;
-      try {
-         setSelectDocument( 
-           (SelectDocument)getCompiler(source).compileToXmlBeans() );
-      } 
-      catch (Exception e) {
-         throw new QueryException("Could not translate conesearch ADQL/sql query into valid ADQL/xml", e);
-      }
+      setSelectDocument(compileSelectDocument(source));
+      querySource = CONE_SOURCE;
       this.results = returnSpec;
    }
 
@@ -227,13 +239,8 @@ public class Query  {
       String adqlString = ConeConverter.getAdql(coneRA, coneDec, coneRadius);
       //setSelectDocument(adqlString);
       StringReader source = new StringReader(adqlString) ;
-      try {
-         setSelectDocument( 
-           (SelectDocument)getCompiler(source).compileToXmlBeans() );
-      } 
-      catch (Exception e) {
-         throw new QueryException("Could not translate conesearch ADQL/sql query into valid ADQL/xml", e);
-      }
+      setSelectDocument(compileSelectDocument(source));
+      querySource = CONE_SOURCE;
       this.results = returnSpec;
    }
    */
@@ -252,9 +259,29 @@ public class Query  {
           new ConeConverter(coneRA, coneDec, coneRadius, tableName);
       String adqlString = converter.getADQL();
       setSelectDocument(adqlString);
+      querySource = CONE_SOURCE;
       this.results = new ReturnTable(new WriterTarget(new StringWriter()));
    }
    */
+   /** Sets the source of the query (incoming ADQL by default, but might
+    * also be e.g. conesearch or multiconesearch).
+    */
+   public void setQuerySource(String querySource) throws QueryException {
+      for (int i = 0; i < SOURCES.length; i++) {
+         if (SOURCES[i].equalsIgnoreCase(querySource)) {
+            this.querySource = SOURCES[i];
+            return;
+         }
+      }
+      throw new QueryException("Query source identifier '" + querySource
+         + "' is not recognized");
+   }
+   /** Returns an identifier describing the original source of the 
+    * query (ADQL, cone etc).
+    */
+   public String getQuerySource() {
+      return querySource;
+   }
 
    /** Returns the XML query as a string */
    public String getAdqlString() throws QueryException
@@ -462,16 +489,11 @@ public class Query  {
          throw new QueryException("Input adql string may not be null/empty");
       }
 
-      if (adqlString.indexOf("</Select>") == -1) {
+      // Check if we have adql/sql input first 
+      if (adqlString.toLowerCase().indexOf("select>") == -1) {
          //Do we have an ADQL/s string instead?
          StringReader source = new StringReader(adqlString) ;
-         try {
-            this.selectDocument =  
-                    (SelectDocument)getCompiler(source).compileToXmlBeans();
-         } 
-         catch (Exception e) {
-            throw new QueryException("Could not translate input query (presumed ADQL/sql) into valid ADQL/xml", e);
-         }
+         this.selectDocument = compileSelectDocument(source);
       }
       else {
          // Try XML
@@ -661,20 +683,27 @@ public class Query  {
       return adqlString;
    }
 
-   /** Creates an ADQL/sql compiler where required, and/or compiles
-    * a given ADQL/sql fragment.  */ 
-   private AdqlCompiler getCompiler(StringReader source) 
+   /** Compiles a given ADQL/sql fragment into ADQL/xml beans.
+    */
+   private SelectDocument compileSelectDocument(StringReader source) 
+      throws QueryException
    {
-     //return new AdqlStoX(source);
-     return new AdqlCompiler(source);
-     /*
-      if (compiler == null) {
-         compiler = new AdqlStoX(source);
+      synchronized (Query.class) {
+         try {
+            /*
+            if (compiler == null) {
+               compiler = new AdqlCompiler(source);
+            }
+            else {
+               compiler.ReInit(source);
+            }
+            */
+            AdqlCompiler compiler = new AdqlCompiler(source);
+            return (SelectDocument) compiler.compileToXmlBeans();
+         }
+         catch (Exception e) {
+            throw new QueryException("Could not translate conesearch ADQL/sql query into valid ADQL/xml", e);
+         }
       }
-      else {
-         compiler.ReInit(source);
-      }
-      return compiler;
-      */
    }
 }

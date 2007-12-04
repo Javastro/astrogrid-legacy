@@ -1,4 +1,4 @@
-/*$Id: ConeResources.java,v 1.3 2007/09/07 09:30:51 clq2 Exp $
+/*$Id: ConeResources.java,v 1.4 2007/12/04 17:31:39 clq2 Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,12 +30,16 @@ public class ConeResources extends VoResourceSupport implements VoResourcePlugin
     */
    public String getVoResource() throws IOException {
       String coneList = "";
-      TableInfo[] coneTables = 
-         TableMetaDocInterpreter.getConesearchableTables();
-      for (int i = 0; i < coneTables.length; i++) {
-         coneList = coneList + makeVoResource(
-               coneTables[i].getCatalogName(),
-               coneTables[i].getName());
+      String coneConfig = ConfigFactory.getCommonConfig().getString(
+            "datacenter.implements.conesearch","false");
+      if ("true".equals(coneConfig.toLowerCase())) {
+         TableInfo[] coneTables = 
+            TableMetaDocInterpreter.getConesearchableTables();
+         for (int i = 0; i < coneTables.length; i++) {
+            coneList = coneList + makeVoResource(
+                  coneTables[i].getCatalogName(),
+                  coneTables[i].getName());
+         }
       }
       return coneList;
    }
@@ -80,6 +84,15 @@ public class ConeResources extends VoResourceSupport implements VoResourcePlugin
 
 /*
  $Log: ConeResources.java,v $
+ Revision 1.4  2007/12/04 17:31:39  clq2
+ PAL_KEA_2378
+
+ Revision 1.3.4.2  2007/11/29 12:24:08  kea
+ Preparing for merge.
+
+ Revision 1.3.4.1  2007/11/27 16:48:58  kea
+ Tidying for release
+
  Revision 1.3  2007/09/07 09:30:51  clq2
  PAL_KEA_2235
 

@@ -199,6 +199,7 @@
 
   <!-- Security stuff - ensure admin & setup pages are not readily available -->
   <!-- paladmin is a legacy role, dsaadmin is used in dsa/catalog -->
+  <!-- agWebAdminUser is a role often used with Registry.-->
   <security-constraint>
       <web-resource-collection>
           <web-resource-name></web-resource-name>
@@ -207,6 +208,7 @@
       <auth-constraint>
           <role-name>paladmin</role-name>
           <role-name>dsaadmin</role-name>
+          <role-name>agWebAdminUser</role-name>
       </auth-constraint>
   </security-constraint>
 
@@ -218,6 +220,7 @@
       <auth-constraint>
           <role-name>paladmin</role-name>
           <role-name>dsaadmin</role-name>
+          <role-name>agWebAdminUser</role-name>
       </auth-constraint>
   </security-constraint>
    
@@ -233,6 +236,7 @@
   <security-role>
      <role-name>paladmin</role-name>
      <role-name>dsaadmin</role-name>
+     <role-name>agWebAdminUser</role-name>
   </security-role>
 
   <!-- This one is required for the CEA server in DSA/catalog.

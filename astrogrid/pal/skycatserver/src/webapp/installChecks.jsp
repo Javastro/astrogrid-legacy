@@ -4,6 +4,7 @@
    isThreadSafe="false"
    session="false"
 %>
+<% String pathPrefix = "."; // For the navigation include %>
 
 <html>
 <head>

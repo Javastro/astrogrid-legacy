@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.13 2007/09/07 09:30:52 clq2 Exp $
+ * $Id: SampleStarsPlugin.java,v 1.14 2007/12/04 17:31:40 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -61,7 +61,13 @@ public class SampleStarsPlugin extends JdbcPlugin
       ConfigFactory.getCommonConfig().setProperty(
           "db.trigfuncs.in.radians","true");
       ConfigFactory.getCommonConfig().setProperty(
+          "datacenter.implements.conesearch","true");
+      ConfigFactory.getCommonConfig().setProperty(
+          "datacenter.implements.multicone","true");
+      ConfigFactory.getCommonConfig().setProperty(
           "conesearch.radius.limit","180.0");
+      ConfigFactory.getCommonConfig().setProperty(
+          "multicone.radius.limit","180.0");
 
       //set up properties so we connect to the db and translate to the correct
       //flavour of SQL

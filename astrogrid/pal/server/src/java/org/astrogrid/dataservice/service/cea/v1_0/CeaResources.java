@@ -39,122 +39,148 @@ public class CeaResources extends VoResourceSupport {
 
       String catalogID = 
          TableMetaDocInterpreter.getCatalogIDForName(catalogName);
-      TableInfo[] tables =
-           TableMetaDocInterpreter.getConesearchableTables(catalogID);
-      if (tables.length > 0) {
-         // We have some conesearchable tables in this catalog,
-         // so generate CEA-cone interfaces for them
-         conableTables = 
-            // Conesearch table
-             "      <parameterDefinition id='CatTable' type='text'>\n"+
-             "        <name>Table</name>\n"+
-             "        <description>Which table should be conesearched"+
-             "</description>\n"+
+
+      /*
+      // NOTE: At the moment, cone and multicone are *always* enabled
+      // via CEA if any conesearchable tables are defined.  
+      boolean coneEnabled = false;
+      boolean multiconeEnabled = false;
+      String coneConfig = ConfigFactory.getCommonConfig().getString(
+                         "datacenter.implements.conesearch","false");
+      String multiconeConfig = ConfigFactory.getCommonConfig().getString(
+                         "datacenter.implements.multicone");
+      if ("true".equals(coneConfig.toLowerCase())) {
+         coneEnabled = true;
+      }
+      if ("true".equals(multiconeConfig.toLowerCase())) {
+         multiconeEnabled = true;
+      }
+
+      if (coneEnabled == true) {
+      */
+         TableInfo[] tables =
+              TableMetaDocInterpreter.getConesearchableTables(catalogID);
+         if (tables.length > 0) {
+            // We have some conesearchable tables in this catalog,
+            // so generate CEA-cone interfaces for them
+            conableTables = 
+               // Conesearch table
+                "      <parameterDefinition id='CatTable' type='text'>\n"+
+                "        <name>Table</name>\n"+
+                "        <description>Which table should be conesearched"+
+                "</description>\n"+
+               /*
+               "<defaultValue>" + catalogName +
+                        "." + tables[0].getName() + "</ceapd:DefaultValue>\n"+
+               */
+               "        <optionList>\n";
+
+            for (int i = 0; i < tables.length; i++) {
+               String fullTable = catalogName + "." + tables[i].getName();
+               conableTables = conableTables + "          <optionVal>" +
+                  fullTable + "</optionVal>\n";
+            }
+            conableTables = conableTables + 
+               "        </optionList>\n    </parameterDefinition>\n";
+
+            coneParams = conableTables+ 
+                  // Conesearch RA
+                  "      <parameterDefinition id='RA' type='RA'>\n"+
+                  "        <name>RA</name>\n"+
+                  "        <description>Right-Ascension of cone search centre"+
+                  "</description>\n"+
+                  "        <unit>deg</unit>\n"+
+                  "        <ucd>POS_RA_MAIN</ucd>\n"+
+                  "      </parameterDefinition>\n"+
+
+                  // Conesearch Dec
+                  "      <parameterDefinition id='DEC' type='Dec'>\n"+
+                  "        <name>DEC</name>\n"+
+                  "        <description>Declination of cone search centre"+
+                  "</description>\n"+
+                  "        <unit>deg</unit>\n"+
+                  "        <ucd>POS_DEC_MAIN</ucd>\n"+
+                  "      </parameterDefinition>\n"+
+                  // Conesearch Radius
+                  "      <parameterDefinition id='Radius' type='real'>\n"+
+                  "        <name>Radius</name>\n"+
+                  "        <description>Radius of cone search area"+
+                  "</description>\n"+
+                  "        <unit>deg</unit>\n"+
+                  "        <ucd>PHYS_SIZE_RADIUS</ucd>\n"+
+                  "      </parameterDefinition>\n";
+
+
+            coneInters=
+                  "      <interfaceDefinition id='ConeSearch'>\n"+
+                  "        <input>\n"+
+                  "          <pref ref='CatTable'/>\n"+
+                  "          <pref ref='RA'/>\n"+
+                  "          <pref ref='DEC'/>\n"+
+                  "          <pref ref='Radius'/>\n"+
+                  "          <pref ref='Format'/>\n"+
+                  "        </input>\n"+
+                  "        <output>\n"+
+                  "          <pref ref='Result'/>\n"+
+                  "        </output>\n"+
+                  "      </interfaceDefinition>\n";
+
             /*
-            "<defaultValue>" + catalogName +
-                     "." + tables[0].getName() + "</ceapd:DefaultValue>\n"+
+            if (multiconeEnabled == true) {
             */
-            "        <optionList>\n";
+               multiConeParams = 
+                     // Multicone RA expression
+                     "      <parameterDefinition id='RA_Column_Name' type='text'>\n"+
+                     "        <name>RA column name</name>\n"+
+                     "        <description>Name for input Right-Ascension column (or expression): column data in degrees"+
+                     "</description>\n"+
+                     "        <unit>deg</unit>\n"+
+                     "      </parameterDefinition>\n"+
 
-         for (int i = 0; i < tables.length; i++) {
-            String fullTable = catalogName + "." + tables[i].getName();
-            conableTables = conableTables + "          <optionVal>" +
-               fullTable + "</optionVal>\n";
+                     // Multicone Dec expression
+                     "      <parameterDefinition id='Dec_Column_Name' type='text'>\n"+
+                     "        <name>DEC column name</name>\n"+
+                     "        <description>Name for input Declination column (or expression): column data in degrees"+
+                     "</description>\n"+
+                     "      </parameterDefinition>\n"+
+
+                     // Multicone find mode 
+                     "      <parameterDefinition id='Find_Mode' type='text'>\n"+
+                     "        <name>Find Mode</name>\n"+
+                     "        <description>Find mode for matches: BEST or ALL"+
+                     "</description>\n"+
+                     "        <defaultValue>ALL</defaultValue>\n"+
+                     "        <optionList>\n"+
+                     "          <optionVal>BEST</optionVal>\n"+
+                     "          <optionVal>ALL</optionVal>\n"+
+                     "        </optionList>\n"+
+                     "      </parameterDefinition>\n"+
+
+                     // Multicone input VOTable url
+                     "      <parameterDefinition id='Input_VOTable' type='text'>\n"+
+                     "        <name>Input VOTable</name>\n"+
+                     "        <description>Input VOTable, containing Right Ascension and Declination columns, for matching against"+
+                     "</description>\n"+
+                     "      </parameterDefinition>\n";
+
+               multiConeInters=
+                     "      <interfaceDefinition id='MultiCone'>\n"+
+                     "        <input>\n"+
+                     "          <pref ref='CatTable'/>\n"+
+                     "          <pref ref='Input_VOTable'/>\n"+
+                     "          <pref ref='RA_Column_Name'/>\n"+
+                     "          <pref ref='Dec_Column_Name'/>\n"+
+                     "          <pref ref='Radius'/>\n"+
+                     "          <pref ref='Find_Mode'/>\n"+
+                     "        </input>\n"+
+                     "        <output>\n"+
+                     "          <pref ref='Result'/>\n"+
+                     "        </output>\n"+
+                     "      </interfaceDefinition>\n";
+        /*
+            }
          }
-         conableTables = conableTables + 
-            "        </optionList>\n    </parameterDefinition>\n";
-
-         coneParams = conableTables+ 
-               // Conesearch RA
-               "      <parameterDefinition id='RA' type='RA'>\n"+
-               "        <name>RA</name>\n"+
-               "        <description>Right-Ascension of cone search centre"+
-               "</description>\n"+
-               "        <unit>deg</unit>\n"+
-               "        <ucd>POS_RA_MAIN</ucd>\n"+
-               "      </parameterDefinition>\n"+
-
-               // Conesearch Dec
-               "      <parameterDefinition id='DEC' type='Dec'>\n"+
-               "        <name>DEC</name>\n"+
-               "        <description>Declination of cone search centre"+
-               "</description>\n"+
-               "        <unit>deg</unit>\n"+
-               "        <ucd>POS_DEC_MAIN</ucd>\n"+
-               "      </parameterDefinition>\n"+
-               // Conesearch Radius
-               "      <parameterDefinition id='Radius' type='real'>\n"+
-               "        <name>Radius</name>\n"+
-               "        <description>Radius of cone search area"+
-               "</description>\n"+
-               "        <unit>deg</unit>\n"+
-               "        <ucd>PHYS_SIZE_RADIUS</ucd>\n"+
-               "      </parameterDefinition>\n";
-
-
-         coneInters=
-               "      <interfaceDefinition id='ConeSearch'>\n"+
-               "        <input>\n"+
-               "          <pref ref='CatTable'/>\n"+
-               "          <pref ref='RA'/>\n"+
-               "          <pref ref='DEC'/>\n"+
-               "          <pref ref='Radius'/>\n"+
-               "          <pref ref='Format'/>\n"+
-               "        </input>\n"+
-               "        <output>\n"+
-               "          <pref ref='Result'/>\n"+
-               "        </output>\n"+
-               "      </interfaceDefinition>\n";
-
-         multiConeParams = 
-               // Multicone RA expression
-               "      <parameterDefinition id='RA_Column_Name' type='text'>\n"+
-               "        <name>RA column name</name>\n"+
-               "        <description>Name for input Right-Ascension column (or expression): column data in degrees"+
-               "</description>\n"+
-               "        <unit>deg</unit>\n"+
-               "      </parameterDefinition>\n"+
-
-               // Multicone Dec expression
-               "      <parameterDefinition id='Dec_Column_Name' type='text'>\n"+
-               "        <name>DEC column name</name>\n"+
-               "        <description>Name for input Declination column (or expression): column data in degrees"+
-               "</description>\n"+
-               "      </parameterDefinition>\n"+
-
-               // Multicone find mode 
-               "      <parameterDefinition id='Find_Mode' type='text'>\n"+
-               "        <name>Find Mode</name>\n"+
-               "        <description>Find mode for matches: BEST or ALL"+
-               "</description>\n"+
-               "        <defaultValue>ALL</defaultValue>\n"+
-               "        <optionList>\n"+
-               "          <optionVal>BEST</optionVal>\n"+
-               "          <optionVal>ALL</optionVal>\n"+
-               "        </optionList>\n"+
-               "      </parameterDefinition>\n"+
-
-               // Multicone input VOTable url
-               "      <parameterDefinition id='Input_VOTable' type='text'>\n"+
-               "        <name>Input VOTable</name>\n"+
-               "        <description>Input VOTable, containing Right Ascension and Declination columns, for matching against"+
-               "</description>\n"+
-               "      </parameterDefinition>\n";
-
-         multiConeInters=
-               "      <interfaceDefinition id='MultiCone'>\n"+
-               "        <input>\n"+
-               "          <pref ref='CatTable'/>\n"+
-               "          <pref ref='Input_VOTable'/>\n"+
-               "          <pref ref='RA_Column_Name'/>\n"+
-               "          <pref ref='Dec_Column_Name'/>\n"+
-               "          <pref ref='Radius'/>\n"+
-               "          <pref ref='Find_Mode'/>\n"+
-               "        </input>\n"+
-               "        <output>\n"+
-               "          <pref ref='Result'/>\n"+
-               "        </output>\n"+
-               "      </interfaceDefinition>\n";
+         */
       }
 
       // Set up relationship tag

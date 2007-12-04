@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.11 2007/06/19 11:42:51 clq2 Exp $
+/*$Id: InstallationSelfCheck.java,v 1.12 2007/12/04 17:31:39 clq2 Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -126,6 +126,10 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
     * public interfaces */
    public void testQueryDirect() throws Throwable {
       initConfig();
+      // First check that metadoc is ok - otherwise we will get a confusing
+      // error message if it isn't
+      TableMetaDocInterpreter.initialize();
+
       StringWriter sw = new StringWriter(); //although we throw away the results
       DataServer server = new DataServer();
       server.askQuery(testPrincipal,makeTestQuery(new WriterTarget(sw), ReturnTable.VOTABLE), this);
@@ -180,6 +184,10 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
       }
       // OK, conesearch is enabled.
      
+      // First check that metadoc is ok - otherwise we will get a confusing
+      // error message if it isn't
+      TableMetaDocInterpreter.initialize();
+
       // Find a table to conesearch
       TableInfo[] coneTables = 
          TableMetaDocInterpreter.getConesearchableTables();
@@ -254,7 +262,7 @@ public class InstallationSelfCheck extends InstallationPropertiesCheck {
    public void testMetadocValidity() throws MetadataException, IOException {
       initConfig();
       // This will check the metadoc
-      TableMetaDocInterpreter.initialize(true);
+      TableMetaDocInterpreter.initialize();
    }
 
    /**

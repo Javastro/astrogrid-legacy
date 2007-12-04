@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlXmlBeansTest.java,v 1.3 2007/06/08 13:16:11 clq2 Exp $
+ * $Id: AdqlXmlBeansTest.java,v 1.4 2007/12/04 17:31:39 clq2 Exp $
  * (C) Copyright Astrogrid...
  */
 
@@ -100,6 +100,9 @@ public class AdqlXmlBeansTest extends XMLTestCase   {
    
    public void testSelectAll_1_0() throws Exception {
      suiteTest("selectAll", "v1_0", true);
+   }
+   public void testSelectAllWithNamespaces1_0() throws Exception {
+     suiteTest("selectAllWithNamespaces", "v1_0", true);
    }
    public void testSelectAll_0_7_4() throws Exception {
      suiteTest("selectAll", "v074", true);

@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.12 2007/11/01 11:25:46 kea Exp $
+/*$Id: DatacenterApplication.java,v 1.13 2007/12/04 17:31:39 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -500,8 +500,28 @@ public class DatacenterApplication extends AbstractApplication implements Querie
       }
       catch (Throwable e) {
          this.setStatus(Status.ERROR);
-         this.reportError(e+" executing "+this.getTool().getName(),e);
+         reportFailure("An exception occurred in processing this job: " + 
+               e.toString());
+         this.reportError(e.toString()+" executing "+this.getTool().getName(),e);
          return;
+      }
+   }
+   private void reportFailure(String message) {
+      try {
+         // Make a value object to carry the report as a parameter.
+         ParameterValue report = new ParameterValue();
+         report.setName("cea-error");
+         report.setIndirect(false);
+         report.setValue(message);
+         //
+         // Add the packaged report to the list of results such that the client
+         // gets it together with (or instead of) the output parameters.
+         this.getResult().addResult(report);
+      }
+      // If the error reporting fails, then there's nothing to do but log it and
+      // go on.
+      catch (Exception ex) {
+         this.logger.error("Failed to make an error report to the client: ", ex);
       }
    }
 
@@ -637,6 +657,12 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
  $Log: DatacenterApplication.java,v $
+ Revision 1.13  2007/12/04 17:31:39  clq2
+ PAL_KEA_2378
+
+ Revision 1.11.2.1  2007/11/15 18:19:15  kea
+ Multicone fixes, various bugzilla ticket fixes, tweaks after profiling.
+
  Revision 1.12  2007/11/01 11:25:46  kea
  Merging MBT's branch pal-mbt-multicone1.
 

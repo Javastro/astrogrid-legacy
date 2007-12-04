@@ -7,6 +7,8 @@
    isThreadSafe="false"
    session="false"
 %>
+<% String pathPrefix = ".."; // For the navigation include %>
+
 <html>
 <head>
 <title><%=DataServer.getDatacenterName() %> Metadata pushed</title>
@@ -18,7 +20,7 @@
 
 <body>
 <%@ include file='../header.xml' %>
-<%@ include file='navigation.xml' %>
+<%@ include file='../navigation.xml' %>
 
 <div id='bodyColumn'>
 

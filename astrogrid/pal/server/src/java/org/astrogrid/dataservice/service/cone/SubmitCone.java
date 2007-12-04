@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitCone.java,v 1.11 2007/06/08 13:16:12 clq2 Exp $
+ * $Id: SubmitCone.java,v 1.12 2007/12/04 17:31:39 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.service.cone;
@@ -96,6 +96,9 @@ public class SubmitCone extends DefaultServlet {
             }
             else {
                // This one is a blocking request
+               // TOFIX KONA CHECK VALID CONTENT TYPE FOR NORMAL CONE
+               // (NOT JUST BROWSER)
+               response.setContentType(coneQuery.getResultsDef().getFormat());
                server.askQuery(ServletHelper.getUser(request), coneQuery, request.getRemoteHost()+" ("+request.getRemoteAddr()+") via SubmitCone servlet");
             }
          }
@@ -103,6 +106,7 @@ public class SubmitCone extends DefaultServlet {
             //otherwise we direct the response to the target and put status 
             //info to the browser
             response.setContentType(MimeTypes.HTML);
+
             response.getWriter().println(
                "<html>"+
                "<head><title>Submitting Query</title></head>"+

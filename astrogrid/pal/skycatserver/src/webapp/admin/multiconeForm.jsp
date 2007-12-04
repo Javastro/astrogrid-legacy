@@ -7,6 +7,7 @@
        org.astrogrid.tableserver.metadata.TableMetaDocInterpreter"
     session="false"
 %>
+<% String pathPrefix = ".."; // For the navigation include %>
 
 <html>
 <head>
@@ -19,7 +20,7 @@
 
 <body>
 <%@ include file="../header.xml" %>
-<%@ include file="navigation.xml" %>
+<%@ include file="../navigation.xml" %>
 
 <div id="bodycolumn">
 

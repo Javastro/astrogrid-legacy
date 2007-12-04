@@ -1,5 +1,5 @@
 /*
- * $Id: ConeConverter.java,v 1.6 2007/09/07 09:30:52 clq2 Exp $
+ * $Id: ConeConverter.java,v 1.7 2007/12/04 17:31:39 clq2 Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -165,8 +165,15 @@ public class ConeConverter  {
       double decMin = coneDec - coneRadius;
       double decMax = coneDec + coneRadius;
 
-      double raMin = coneRA - coneRadius;
-      double raMax = coneRA + coneRadius;
+      // This lifted from uk.ac.starlink.ttools.cone.JdbcConer
+      double deltaRa = 
+          Math.toDegrees( calculateDeltaRa( 
+                   Math.toRadians( coneRA ),
+                   Math.toRadians( coneDec ),
+                   Math.toRadians( coneRadius ) ) );
+
+      double raMin = coneRA - deltaRa;
+      double raMax = coneRA + deltaRa;
 
       double colsRaMin = raMin;
       double colsRaMax = raMax;
@@ -178,7 +185,7 @@ public class ConeConverter  {
       }
 
       String raClipCondition = "";
-      if (coneRadius >= 180) {
+      if (deltaRa >= 180) {
         // Forget about RA clipping in this case, might as well do
         // the lot.
         log.debug("Ignoring RA boxcut for huge search radius");
@@ -375,6 +382,42 @@ public class ConeConverter  {
       }
       return adqlString;
    }
+
+
+    /**
+     * Works out the minimum change in Right Ascension which will encompass
+     * all points within a given search radius at a given central ra, dec.
+     * This is lifted verbatim from the STIL class
+     * uk.ac.starlink.ttools.cone.JdbcConer.
+     *
+     * @param   ra   right ascension of the centre of the search region
+     *               in radians
+     * @param   dec  declination of the centre of the search region 
+     *               in radians
+     * @param   sr   radius of the search region in radians
+     * @return  minimum change in radians of RA from the central value
+     *          which will contain the entire search region
+     */
+    public static double calculateDeltaRa( double ra, double dec, double sr ) {
+ 
+        /* Get the arc angle between the pole and the cone centre. */
+        double hypArc = Math.PI / 2 - Math.abs( dec );
+
+        /* If the search radius is greater than this, then all right 
+         * ascensions must be included. */
+        if ( sr >= hypArc ) {
+            return Math.PI;
+        }
+        /* In the more general case, we need a bit of spherical trigonometry.
+         * Consider a right spherical triangle with one vertex at the pole,
+         * one vertex at the centre of the search circle, and the right angle
+         * vertex at the tangent between the search circle and a line of
+         * longitude; then apply Napier's Pentagon.  The vertex angle at the
+         * pole is the desired change in RA. */
+        return Math.asin( Math.cos( Math.PI / 2 - sr ) / Math.sin( hypArc ) );
+    }
+
+
 }
 
 /* NOTES ABOUT CONESEARCH MATHS

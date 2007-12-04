@@ -9,6 +9,8 @@
    isThreadSafe="false"
    session="false"
 %>
+<% String pathPrefix = ".."; // For the navigation include %>
+
 <html>
 <head>
 <title>Clearing Status Log on <%=DataServer.getDatacenterName() %></title>
@@ -20,7 +22,7 @@
 
 <body>
 <%@ include file='../header.xml' %>
-<%@ include file='navigation.xml' %>
+<%@ include file='../navigation.xml' %>
 
 <div id='bodyColumn'>
 <h1>Status Log</h1>

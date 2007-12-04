@@ -1,5 +1,5 @@
 /*
- * $Id: StatusLogger.java,v 1.4 2007/02/20 12:22:16 clq2 Exp $
+ * $Id: StatusLogger.java,v 1.5 2007/12/04 17:31:39 clq2 Exp $
  */
 
 package org.astrogrid.dataservice.queriers.status;
@@ -39,7 +39,19 @@ public class StatusLogger {
    
    public StatusLogger() {
       statusPageDirectory = new File(ConfigFactory.getCommonConfig().getString(STATUS_PAGE_DIRECTORY_KEY, "/tmp/"));
-      statusLog = new File(statusPageDirectory, "palstatus.log");
+
+      String authID = ConfigFactory.getCommonConfig().getString(
+         "datacenter.authorityId", "TestAuthority");
+      String resKey = ConfigFactory.getCommonConfig().getString(
+         "datacenter.resourceKey", "TestResource");
+
+      authID = authID.replace('/','_');
+      resKey = resKey.replace('/','_');
+      // Just in case below - shouldn't have spaces
+      authID = authID.replace(' ','_');
+      resKey = resKey.replace(' ','_');
+
+      statusLog = new File(statusPageDirectory, authID+"_"+resKey+"_status.log");
    }
    
    /** Stores copy of status page on disk, and adds to summary list file */

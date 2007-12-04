@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescription.java,v 1.7 2007/11/01 11:25:46 kea Exp $
+/*$Id: DatacenterApplicationDescription.java,v 1.8 2007/12/04 17:31:39 clq2 Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -67,7 +67,6 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
     /** name of (optional) flag indicating match type */
     public static final String FIND_MODE = "Find_Mode";
     public static final String[] FIND_MODE_OPTIONS = {"BEST", "ALL"};
-
 
     /**
      * Commons Logger for this class
@@ -230,6 +229,12 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
 
 /*
 $Log: DatacenterApplicationDescription.java,v $
+Revision 1.8  2007/12/04 17:31:39  clq2
+PAL_KEA_2378
+
+Revision 1.6.2.1  2007/11/15 18:19:15  kea
+Multicone fixes, various bugzilla ticket fixes, tweaks after profiling.
+
 Revision 1.7  2007/11/01 11:25:46  kea
 Merging MBT's branch pal-mbt-multicone1.
 

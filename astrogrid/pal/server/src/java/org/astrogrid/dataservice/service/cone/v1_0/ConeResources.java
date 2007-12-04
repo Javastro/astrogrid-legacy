@@ -1,4 +1,4 @@
-/*$Id: ConeResources.java,v 1.2 2007/09/07 09:30:51 clq2 Exp $
+/*$Id: ConeResources.java,v 1.3 2007/12/04 17:31:39 clq2 Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,14 +27,18 @@ public class ConeResources {
     */
    public static String getConeCapabilities(String catalogName) throws IOException {
       String coneList = "";
-      String catalogID = 
-         TableMetaDocInterpreter.getCatalogIDForName(catalogName);
-      TableInfo[] coneTables = 
-         TableMetaDocInterpreter.getConesearchableTables(catalogID);
-      for (int i = 0; i < coneTables.length; i++) {
-         coneList = coneList + getVoConeCapability(
-               coneTables[i].getCatalogName(),
-               coneTables[i].getName());
+      String coneConfig = ConfigFactory.getCommonConfig().getString(
+         "datacenter.implements.conesearch","false");
+      if ("true".equals(coneConfig.toLowerCase())) {
+         String catalogID = 
+            TableMetaDocInterpreter.getCatalogIDForName(catalogName);
+         TableInfo[] coneTables = 
+            TableMetaDocInterpreter.getConesearchableTables(catalogID);
+         for (int i = 0; i < coneTables.length; i++) {
+            coneList = coneList + getVoConeCapability(
+                  coneTables[i].getCatalogName(),
+                  coneTables[i].getName());
+         }
       }
       return coneList;
    }
