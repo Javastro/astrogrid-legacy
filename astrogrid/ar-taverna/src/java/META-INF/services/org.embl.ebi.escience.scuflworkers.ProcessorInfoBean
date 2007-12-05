@@ -1,1 +1,5 @@
 org.astrogrid.taverna.ar.ARProcessorInfoBean
+org.astrogrid.taverna.arcea.ARProcessorInfoBean
+org.astrogrid.taverna.arcea_app.ARProcessorInfoBean
+org.astrogrid.taverna.armyspace.ARProcessorInfoBean
+org.astrogrid.taverna.arvohttp.ARProcessorInfoBean

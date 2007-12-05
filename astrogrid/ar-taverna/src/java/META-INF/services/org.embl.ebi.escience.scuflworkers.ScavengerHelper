@@ -1,1 +1,6 @@
 org.astrogrid.taverna.ar.ARScavengerHelper
+org.astrogrid.taverna.arcea.ARScavengerHelper
+org.astrogrid.taverna.arcea_app.ARScavengerHelperReg
+org.astrogrid.taverna.arcea_app.ARScavengerHelper
+org.astrogrid.taverna.armyspace.ARScavengerHelper
+org.astrogrid.taverna.arvohttp.ARScavengerHelper

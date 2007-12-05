@@ -79,6 +79,7 @@ public class ARTask implements ProcessorTaskWorker {
 		    logger.info("end execute in ARTask");
 		    return outputMap;
 		} catch (Throwable x) {
+			logger.warn("Error from ar.execute toString = " + x.toString() + " message = " + x.getMessage());
 			TaskExecutionException tee =  new TaskExecutionException("Failed to execute: " + processor.getMethodName(),x);
 			tee.initCause(x);
 			throw tee;
