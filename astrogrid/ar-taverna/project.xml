@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: project.xml,v 1.7 2007/09/03 14:54:31 KevinBenson Exp $ -->
+<!-- $Id: project.xml,v 1.8 2007/12/05 15:56:30 KevinBenson Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
   <extend>../maven-base/project.xml</extend>
   <artifactId>ar-taverna</artifactId>
@@ -87,7 +87,15 @@
   		<artifactId>taverna-scavenger</artifactId>
   		<type>jar</type>
   		<version>${taverna.version}</version>
-  	</dependency>    	
+  	</dependency>  
+  	
+  	  	
+ 	<dependency>
+  		<groupId>uk.org.mygrid</groupId>
+  		<artifactId>taverna-bootstrap</artifactId>
+  		<type>jar</type>
+  		<version>${taverna.version}</version>
+  	</dependency>   	
   	
   	<dependency>
   		<groupId>jdom</groupId>
@@ -105,6 +113,51 @@
 		<dist.bundle>true</dist.bundle>
 	</properties>      
     </dependency>
+    
+    
+                    <dependency>
+                           <groupId>org.astrogrid</groupId>
+                           <artifactId>astrogrid-workflow-objects</artifactId>
+                           <version>2007.1wo</version>
+                        <url>http://www.astrogrid.org/</url>
+                </dependency>  
+                
+  <dependency>
+                        <artifactId>castor</artifactId>
+                        <groupId>castor</groupId>
+                        <version>0.9.5-xml</version>
+                        <url>http://castor.exolab.org/</url>
+                </dependency>
+        <dependency>
+                    <id>regexp</id>
+                <version>1.3</version>
+                <url>http://jakarta.apache.org/commons/</url>
+                </dependency>  
+                
+  <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-common</artifactId>
+      <version>2007.1c</version>
+      <url>http://www.astrogrid.org/</url>
+    </dependency>  
+    
+        
+	 <dependency>
+                <groupId>starlink</groupId>
+                <artifactId>stil</artifactId>
+               <version>2.6</version>
+                <url>http://www.star.bristol.ac.uk/~mbt/stil/</url>
+                <properties>
+		    <dist.bundle>true</dist.bundle>		    
+		    <strip>true</strip>
+                </properties>
+        </dependency>   
+        
+          <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.12</version>
+    </dependency>                    
     
 
 <!-- stuff required by acr-interface -->
