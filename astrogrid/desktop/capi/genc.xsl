@@ -7,12 +7,8 @@
    2 listOf
    
    ListOf - may be a list of base type
-   
-   
-   preconditions set by cleanjel.xsl;
-   
-   
-   
+    preconditions set by cleanjel.xsl;
+  
 -->
 <xsl:stylesheet version="2.0"
    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -37,17 +33,17 @@
       <map>
          <t from="Map" to="ACRKeyValueMap" /><!-- TODO - check if this has things other than strings in it -->
          <t from="List" to="ACRList" /><!-- TODO - check if this has things other than strings in it -->
-         <t from="String" to="JString" fmt="%s"/><!-- make all floats double -->
-         <t from="URL" to="URLString" fmt="%s"/>
-         <t from="Document" to="XMLString" fmt="%s"/>
-         <t from="URI" to="IvornOrURI" fmt="%s"/>
-         <t from="boolean" to="BOOL" fmt="%d"/>
-         <t from="float" to="double" fmt="%f"/>
+         <t from="String" to="JString" fmt="%s" idlType="str.s" idlConv="acridl_StrToSTRING" />
+         <t from="URL" to="URLString" fmt="%s"  idlType="str.s" idlConv="acridl_StrToSTRING" />
+         <t from="Document" to="XMLString" fmt="%s"  idlType="str.s" idlConv="acridl_StrToSTRING"/>
+         <t from="URI" to="IvornOrURI" fmt="%s"  idlType="str.s" idlConv="acridl_StrToSTRING"/>
+         <t from="boolean" to="BOOL" fmt="%d" idlType="i" idlConv="IDL_GettmpInt" />
+         <t from="float" to="double" fmt="%f"  idlType="d"/>
          <t from="Calendar" to="ACRDate" /><!-- use the time type from <time.h> -->
          <t from="Date" to="ACRDate" />
-         <t from="double" to="double" fmt="%f"/>
-         <t from="int" to="int" fmt="%d"/>
-         <t from="long" to="long" fmt="%f"/>
+         <t from="double" to="double" fmt="%f"  idlType="d"/>
+         <t from="int" to="int" fmt="%d" idlType="i" idlConv="IDL_GettmpInt"/>
+         <t from="long" to="long" fmt="%f" idlType="i" idlConv="IDL_GettmpInt"/>
          <t from="Class" to="ACRClass" />
          <t from="byte" to="char" />
       </map>
@@ -433,6 +429,105 @@ printf("structure </xsl:text><xsl:value-of select="concat($classprops/strucname,
         </xsl:text>
       
       </xsl:result-document>
+       <xsl:variable name="functions">
+    <xsl:for-each select="$services">
+       <xsl:variable name="inheritanceTypes"
+          select="./implements/interface/@fulltype"
+       />
+       <xsl:variable name="service-name"
+          select="./comment/attribute[@name='@service']/description"
+       />
+       
+       <xsl:element name="service">
+          <xsl:attribute name="name"
+             select="$service-name"
+          />
+          <!-- note that callFunction is being explicitly excluded -->
+          <xsl:for-each
+             select="for $x in . | /jel/jelclass[@fulltype =$inheritanceTypes]  return $x/methods/method[@visibility='public' and not ( comment/attribute[@name='@deprecated'] or contains(@name, 'Listener') or @name='callFunction') ]"
+          >
+             <xsl:copy>
+                <xsl:attribute name="externalName" select="translate(concat($service-name,'_',@name ),'.','_')" />
+                <xsl:copy-of select="*|@*" />
+             </xsl:copy>
+          </xsl:for-each>
+       </xsl:element>
+    </xsl:for-each>
+ </xsl:variable>
+      
+      <xsl:result-document href="idl/idl_acr.cpp">
+      <xsl:call-template name="header"></xsl:call-template>
+ <xsl:text>
+#include &lt;stdio.h&gt;
+#include "idlhelper.h"
+
+using namespace std;
+ 
+ </xsl:text>
+ <xsl:message><xsl:copy-of select="$functions"/></xsl:message>     
+ <xsl:for-each select="$functions/service/method">
+      
+          <xsl:call-template name="idlfuncbody">
+            <xsl:with-param name="f" select="."></xsl:with-param>
+         </xsl:call-template>
+   
+ </xsl:for-each>
+ <xsl:text>static IDL_SYSFUN_DEF2 procedure_addr[] = {
+ </xsl:text>
+  <xsl:call-template name="IDLdecl" > <xsl:with-param name="m " select="$functions/service/method[@type='void']"/>  
+  </xsl:call-template>
+<xsl:text>
+      { (IDL_SYSRTN_GENERIC) NULL, "", 0, 0, 0, 0}
+  
+};
+
+static IDL_SYSFUN_DEF2 function_addr[] = {
+</xsl:text>
+ <xsl:call-template name="IDLdecl" > <xsl:with-param name="m " select="$functions/service/method[@type!='void']"/>  
+  </xsl:call-template>
+
+ <xsl:text>
+     { (IDL_SYSRTN_GENERIC) NULL, "", 0, 0, 0, 0}
+ 
+};
+
+/*****************************************************************************/
+
+
+extern "C" {
+//    __declspec(dllexport) int IDL_Load(void)
+     int IDL_Load(void)
+    {
+        return IDL_SysRtnAdd(function_addr, TRUE, IDL_CARRAY_ELTS(function_addr)-1)
+            &amp;&amp; IDL_SysRtnAdd(procedure_addr, FALSE, IDL_CARRAY_ELTS(procedure_addr)-1);
+    }
+   
+}
+
+ </xsl:text>
+      </xsl:result-document>
+      <xsl:result-document href="idl/acr.dlm">
+<xsl:text>MODULE ACR
+DESCRIPTION Access to the Virtual Observatory
+VERSION 0.1
+SOURCE AstroGrid
+</xsl:text>
+<xsl:value-of select="concat('BUILD_DATE ',current-date(),$nl)"/>
+<xsl:for-each select="$functions/service/method">
+<xsl:choose>
+<xsl:when test="@type = 'void'">
+<xsl:text>
+PROCEDURE </xsl:text>
+</xsl:when>
+<xsl:otherwise>
+<xsl:text>
+FUNCTION </xsl:text>
+</xsl:otherwise>
+</xsl:choose>
+<xsl:value-of select="concat(upper-case(@externalName),' ')"/>
+<xsl:value-of select="concat(count(params/param),' ',count(params/param))"/>
+</xsl:for-each>
+      </xsl:result-document>
    </xsl:template>
    <!-- end of main template -->
    <xsl:template name="dobean">
@@ -739,6 +834,99 @@ struct  </xsl:text>
       <xsl:text>
    };
    </xsl:text>
+   </xsl:template>
+   
+   <xsl:template name="idlfuncbody">
+      <xsl:param name="f"></xsl:param>
+      <xsl:variable name="classprops">
+         <xsl:call-template name="classprops">
+            <xsl:with-param name="b"
+               select="$jel/jelclass[@type=$f/@type]"
+            ><!-- $f was ok because it has same attribute names... --></xsl:with-param>
+         </xsl:call-template>
+      </xsl:variable>
+      <xsl:choose>
+      <xsl:when test="$f/@type = 'void'">
+         <xsl:value-of select="'static void IDL_'"/>
+      </xsl:when>
+      <xsl:otherwise>
+          <xsl:value-of select="'static IDL_VPTR IDL_'"/>
+      </xsl:otherwise>
+      </xsl:choose>
+      <xsl:value-of select="$f/@externalName"/>
+<xsl:text>(int argc, IDL_VPTR *argv, char* argk)
+{
+</xsl:text>
+   
+      <xsl:if test="$f/@type != 'void'">
+         <xsl:call-template name="convert-type">
+            <xsl:with-param name="p" select="$f"></xsl:with-param>
+         </xsl:call-template>
+         <xsl:text> retval;
+   </xsl:text>
+      </xsl:if>
+      <xsl:for-each select="$f/params/param">
+      <xsl:text>   </xsl:text>
+         <xsl:call-template name="convert-type">
+            <xsl:with-param name="p" select="."></xsl:with-param>
+         </xsl:call-template>
+        <xsl:value-of select="concat(' ', @name,';',$nl)" />
+        <xsl:choose>
+           <xsl:when test="$typeMap/map/t[@from = current()/@type]/@idlType">
+                      <xsl:value-of select="concat('   ',@name, ' = argv[',position()-1,']-&gt;value.',$typeMap/map/t[@from = current()/@type]/@idlType,';',$nl)" />
+           </xsl:when>
+           <xsl:otherwise>
+              <xsl:text>//FIXME type too complex for IDL? - need to think of way of representing....
+</xsl:text>
+           </xsl:otherwise>
+        </xsl:choose>
+      </xsl:for-each>
+      
+     
+       <xsl:if test="$f/@type != 'void'">
+          <xsl:value-of select="'retval = '" />
+ </xsl:if>    
+       <xsl:value-of select="concat($f/@externalName,'(')" />
+       <xsl:value-of select="$f/params/param/@name" separator=", "/>
+       <xsl:value-of select="concat(');', $nl)" />
+       
+       <xsl:text>
+       IDL_VPTR idl_retval;
+</xsl:text>
+       <xsl:choose>
+         <xsl:when test="$f/@type = $javaStdTypes">
+            <xsl:if test="$f/@type != 'void'">
+               <xsl:choose>
+                  <xsl:when test="contains($f/@fulltype, '[') "> 
+                     <xsl:text> idl_retval = 0; //FIXME this is an array of simple type - do not know how to yet </xsl:text>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:value-of select="concat(' idl_retval = ',$typeMap/map/t[@from = $f/@type]/@idlConv,'(retval);')"/>
+                  </xsl:otherwise>
+               </xsl:choose>
+            </xsl:if>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:choose>
+               <xsl:when test="contains($f/@fulltype, '[')">
+               <xsl:text> idl_retval = 0; //FIXME this is an array of struct type - do not know how to yet </xsl:text>
+               
+         </xsl:when>
+               <xsl:otherwise>
+                  <xsl:text> idl_retval = 0; //FIXME this is a struct type - do not know how to yet </xsl:text>
+ 
+               </xsl:otherwise>
+            </xsl:choose>
+         </xsl:otherwise>
+      </xsl:choose>
+      <xsl:if test="$f/@type != 'void'">
+         <xsl:text>
+     return idl_retval;
+    </xsl:text>
+      </xsl:if>
+      <xsl:text>
+   };
+</xsl:text>
    </xsl:template>
    <xsl:template name="retbody">
       <xsl:param name="t"></xsl:param>
@@ -1432,11 +1620,24 @@ treetype=<xsl:value-of select="$t/@type" />
          </xsl:if>
       </xsl:element>
    </xsl:template>
+   <xsl:template name="IDLdecl">
+     <xsl:param name="m"></xsl:param>
+       <xsl:for-each select="$m">
+       <xsl:value-of select="concat('{ (IDL_SYSRTN_GENERIC) IDL_',@externalName, ',&quot;', upper-case(@externalName),'&quot;')"/>
+       <xsl:value-of select="concat(', ',count(params/param))"/>
+       <xsl:value-of select="concat(', ',count(params/param))"/>
+       <xsl:value-of select="', 0, 0 },'"/>
+       <xsl:value-of select="$nl"/>
+ </xsl:for-each>
+     
+   </xsl:template>
    <xsl:template name="header">
-      <xsl:text>
-/*
+      <xsl:text>/*
 C interface to the AR
 Paul Harrison paul.harrison@manchester.ac.uk
+</xsl:text>
+<xsl:value-of select="concat('produced on ',current-date())"/>
+<xsl:text>
 
 DO NOT EDIT - this file is produced automatically by the AR build process
 
